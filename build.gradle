@@ -1,6 +1,6 @@
-description = "Gradle version for maven reflections plugin."
+description = "Gradle port for Maven Reflections Plugin."
 
-group 'com.teamdev'
+group 'org.spine3'
 version '1.0'
 
 apply plugin: 'idea'
