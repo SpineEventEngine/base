@@ -1,4 +1,4 @@
-package com.teamdev.gradle.plugins
+package org.spine3.gradle
 
 import org.gradle.api.Task
 import org.gradle.api.Plugin
@@ -13,7 +13,7 @@ class ReflectionsPlugin implements Plugin<Project> {
 
     @Override
     void apply(Project target) {
-        final Task scanClassPathForEvents = target.task("scanClassPathForEvents") {
+        final Task scanClassPath = target.task("scanClassPath") {
             def outputDir = "${target.projectDir}/build"
             def reflectionsOutputDir = "${target.projectDir}/src/generated/resources/META-INF/reflections"
             def reflectionsOutputFilePath = "$reflectionsOutputDir/${project.name}-reflections.xml"
@@ -41,9 +41,7 @@ class ReflectionsPlugin implements Plugin<Project> {
             reflections.save(reflectionsOutputFilePath);
         }
 
-        target.s
-
-        scanClassPathForEvents.dependsOn("classes")
-        target.getTasks().getByPath("build").dependsOn(scanClassPathForEvents)
+        scanClassPath.dependsOn("classes")
+        target.getTasks().getByPath("build").dependsOn(scanClassPath)
     }
 }
