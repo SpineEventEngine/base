@@ -9,6 +9,11 @@ import org.reflections.scanners.TypeAnnotationsScanner
 import org.reflections.serializers.XmlSerializer
 import org.reflections.util.ConfigurationBuilder
 
+/**
+ * Gradle port for Maven Reflections Plugin.
+ *
+ * <p>Uses reflections embedded scanners to build it's serialized config.
+ */
 class ReflectionsPlugin implements Plugin<Project> {
 
     @Override
