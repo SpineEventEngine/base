@@ -54,11 +54,11 @@ class ReflectionsPlugin implements Plugin<Project> {
     }
 
     private static void scanClassPath(Project project) {
-        final String outputDir = "${project.projectDir}/build"
+        final GString outputDir = "${project.projectDir}/build"
         final File outputFile = new File(outputDir)
         outputFile.mkdirs()
 
-        final String reflectionsOutputDir = "${project.projectDir}/src/generated/resources/META-INF/reflections"
+        final GString reflectionsOutputDir = "${project.projectDir}/src/generated/resources/META-INF/reflections"
         final File reflectionsOutputDirFile = new File(reflectionsOutputDir)
         reflectionsOutputDirFile.mkdirs()
 
@@ -73,7 +73,7 @@ class ReflectionsPlugin implements Plugin<Project> {
         config.setSerializer(serializerInstance)
 
         final Reflections reflections = new Reflections(config)
-        final String reflectionsOutputFilePath = "$reflectionsOutputDir/${project.name}-reflections.xml"
+        final GString reflectionsOutputFilePath = "$reflectionsOutputDir/${project.name}-reflections.xml"
         reflections.save(reflectionsOutputFilePath)
     }
 }
