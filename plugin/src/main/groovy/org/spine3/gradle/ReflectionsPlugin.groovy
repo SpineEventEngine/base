@@ -19,13 +19,13 @@
  */
 
 package org.spine3.gradle
-
-import org.gradle.api.Task
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.Task
 import org.reflections.Reflections
 import org.reflections.scanners.SubTypesScanner
 import org.reflections.scanners.TypeAnnotationsScanner
+import org.reflections.serializers.Serializer
 import org.reflections.serializers.XmlSerializer
 import org.reflections.util.ConfigurationBuilder
 
@@ -42,41 +42,38 @@ class ReflectionsPlugin implements Plugin<Project> {
     /**
      * Applied to project.
      *
-     * <p>The plugin runs after :classes task and before :build.
+     * <p>The plugin runs after `:classes` task and before `:processResources`.
      */
     @Override
-    void apply(Project target) {
-        final Task scanClassPath = target.task("scanClassPath") {
-            // TODO:2016-07-11:mikhail.mikhaylov: @alexander.litus I would suggest finalizing variables and using semicolons
-            def outputDir = "${target.projectDir}/build"
-            def reflectionsOutputDir = "${target.projectDir}/src/generated/resources/META-INF/reflections"
-            def reflectionsOutputFilePath = "$reflectionsOutputDir/${project.name}-reflections.xml"
-
-            def outputFile = new File(outputDir)
-            def reflectionsOutputDirFile = new File(reflectionsOutputDir)
-
-            outputFile.mkdirs()
-            reflectionsOutputDirFile.mkdirs()
-
-            def config = new ConfigurationBuilder()
-
-            final def urls = new HashSet<URL>()
-            urls.add(outputFile.toURI().toURL())
-
-            config.setUrls(urls)
-
-            config.setScanners(new SubTypesScanner(), new TypeAnnotationsScanner());
-
-            def serializerInstance = new XmlSerializer();
-            config.setSerializer(serializerInstance);
-
-            def reflections = new Reflections(config);
-
-            reflections.save(reflectionsOutputFilePath);
+    void apply(Project project) {
+        final Task scanClassPath = project.task("scanClassPath") {
+            scanClassPath(project)
         }
-
         scanClassPath.dependsOn("classes")
-        // TODO:2016-07-11:mikhail.mikhaylov: @alexander.litus I would suggest changing :build dependency to :processResources
-        target.getTasks().getByPath("build").dependsOn(scanClassPath)
+        project.getTasks().getByPath("processResources").dependsOn(scanClassPath)
+    }
+
+    private static void scanClassPath(Project project) {
+        final String outputDir = "${project.projectDir}/build"
+        final File outputFile = new File(outputDir)
+        outputFile.mkdirs()
+
+        final String reflectionsOutputDir = "${project.projectDir}/src/generated/resources/META-INF/reflections"
+        final File reflectionsOutputDirFile = new File(reflectionsOutputDir)
+        reflectionsOutputDirFile.mkdirs()
+
+        final ConfigurationBuilder config = new ConfigurationBuilder()
+        final Set urls = new HashSet<URL>()
+        urls.add(outputFile.toURI().toURL())
+        config.setUrls(urls)
+
+        config.setScanners(new SubTypesScanner(), new TypeAnnotationsScanner())
+
+        final Serializer serializerInstance = new XmlSerializer()
+        config.setSerializer(serializerInstance)
+
+        final Reflections reflections = new Reflections(config)
+        final String reflectionsOutputFilePath = "$reflectionsOutputDir/${project.name}-reflections.xml"
+        reflections.save(reflectionsOutputFilePath)
     }
 }
