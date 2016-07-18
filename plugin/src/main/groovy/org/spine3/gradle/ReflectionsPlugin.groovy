@@ -50,7 +50,7 @@ class ReflectionsPlugin implements Plugin<Project> {
             scanClassPath(project)
         }
         scanClassPath.dependsOn("classes")
-        project.getTasks().getByPath("processResources").dependsOn(scanClassPath)
+        project.getTasks().getByPath("build").dependsOn(scanClassPath)
     }
 
     private static void scanClassPath(Project project) {
