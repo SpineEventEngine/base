@@ -18,7 +18,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.spine3.gradle
+package org.spine3.gradle.reflections
+
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -54,12 +55,14 @@ class ReflectionsPlugin implements Plugin<Project> {
     }
 
     private static void scanClassPath(Project project) {
+        project.extensions.create("reflectionsPlugin", Extension.class)
+
         final GString outputDir = "${project.projectDir}/build"
         final File outputFile = new File(outputDir)
         outputFile.mkdirs()
 
-        final GString reflectionsOutputDir = "${project.projectDir}/src/generated/resources/META-INF/reflections"
-        final File reflectionsOutputDirFile = new File(reflectionsOutputDir)
+        final GString targetDir = Extension.getTargetDir(project)
+        final File reflectionsOutputDirFile = new File(targetDir)
         reflectionsOutputDirFile.mkdirs()
 
         final ConfigurationBuilder config = new ConfigurationBuilder()
@@ -73,7 +76,7 @@ class ReflectionsPlugin implements Plugin<Project> {
         config.setSerializer(serializerInstance)
 
         final Reflections reflections = new Reflections(config)
-        final GString reflectionsOutputFilePath = "$reflectionsOutputDir/${project.name}-reflections.xml"
+        final GString reflectionsOutputFilePath = "$targetDir/${project.name}-reflections.xml"
         reflections.save(reflectionsOutputFilePath)
     }
 }
