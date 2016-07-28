@@ -39,7 +39,6 @@ class Given {
     /** Creates a project with all required tasks. */
     static Project newProject() {
         final Project project = ProjectBuilder.builder()
-                .withProjectDir(new File("testProject"))
                 .build()
         project.task(CLASSES_TASK)
         project.task(BUILD_TASK)
