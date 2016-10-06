@@ -9,5 +9,11 @@ dependencies {
 
     compile 'org.reflections:reflections:0.9.10'
     compile 'dom4j:dom4j:1.6.1'
-    compile 'org.codehaus.groovy:groovy-all:2.4.4'
+    testCompile 'org.testng:testng:+'
+}
+
+// This fixes the conflict of dependencies on `groovy-all`.
+// For more info see here: https://discuss.gradle.org/t/conflicting-module-versions-with-groovy-all/16935
+configurations {
+    all*.exclude group: 'org.codehaus.groovy', module: 'groovy-all'
 }
