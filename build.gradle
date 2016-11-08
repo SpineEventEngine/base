@@ -1,8 +1,5 @@
 description = "Gradle port for Maven Reflections Plugin."
 
-group 'org.spine3'
-version '1.0'
-
 dependencies {
     compile gradleApi()
     compile localGroovy()
