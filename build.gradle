@@ -2,17 +2,10 @@ description = "Gradle port for Maven Reflections Plugin."
 
 dependencies {
     compile gradleApi()
-    compile localGroovy()
 
     compile 'org.reflections:reflections:0.9.10'
     compile 'dom4j:dom4j:1.6.1'
     testCompile 'org.testng:testng:+'
 
     compile project(path: ":common")
-}
-
-// This fixes the conflict of dependencies on `groovy-all`.
-// For more info see here: https://discuss.gradle.org/t/conflicting-module-versions-with-groovy-all/16935
-configurations {
-    all*.exclude group: 'org.codehaus.groovy', module: 'groovy-all'
 }
