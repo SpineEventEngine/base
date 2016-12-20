@@ -7,6 +7,8 @@ dependencies {
     compile 'org.reflections:reflections:0.9.10'
     compile 'dom4j:dom4j:1.6.1'
     testCompile 'org.testng:testng:+'
+
+    compile project(path: ":common")
 }
 
 // This fixes the conflict of dependencies on `groovy-all`.
