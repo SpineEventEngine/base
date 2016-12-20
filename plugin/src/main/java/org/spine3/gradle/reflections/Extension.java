@@ -17,28 +17,45 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.spine3.gradle.reflections;
 
-package org.spine3.gradle.reflections
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Joiner;
+import org.gradle.api.Project;
 
-import org.gradle.api.Project
+import static java.io.File.separator;
 
 /**
- * A config for the {@link ReflectionsPlugin}.
+ * A configuration for the {@link ReflectionsPlugin}.
+ *
+ * @author Alex Tymchenko
  */
-class Extension {
+@SuppressWarnings("PublicField")    // as this is a Gradle extension.
+public class Extension {
+
+    /* package */ static final String REFLECTIONS_PLUGIN_EXTENSION = "reflectionsPlugin";
 
     /**
      * The absolute path to the target directory which contains generated `.xml` file with reflections.
      */
-    GString targetDir
+    public String targetDir;
 
-
-    static GString getTargetDir(Project project) {
-        final GString path = project.reflectionsPlugin.targetDir
-        if (!path) {
-            return "${project.projectDir}/src/generated/resources/META-INF/reflections"
+    /* package */
+    static String getTargetDir(Project project) {
+        final String path = reflectionsPlugin(project).targetDir;
+        if (path == null || path.isEmpty()) {
+            return project.getProjectDir() + separator +
+                    Joiner.on(separator)
+                          .join(new String[]{"src", "generated", "resources", "META-INF", "reflections"});
         } else {
-            return path
+            return path;
         }
     }
+
+    @VisibleForTesting      // it should have been `private`.
+    /* package */ static Extension reflectionsPlugin(Project project) {
+        return (Extension) project.getExtensions()
+                                  .getByName(REFLECTIONS_PLUGIN_EXTENSION);
+    }
+
 }

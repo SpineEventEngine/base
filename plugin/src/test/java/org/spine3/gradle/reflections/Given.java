@@ -1,4 +1,5 @@
 /*
+ *
  * Copyright 2016, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
@@ -16,32 +17,32 @@
  * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
  */
+package org.spine3.gradle.reflections;
 
-package org.spine3.gradle.protobuf
+import org.gradle.api.Project;
+import org.gradle.testfixtures.ProjectBuilder;
 
-import org.gradle.api.Project
-import org.gradle.testfixtures.ProjectBuilder
+import static org.spine3.gradle.TaskName.BUILD;
+import static org.spine3.gradle.TaskName.CLASSES;
 
 /**
- * A factory which creates the test data.
+ * @author Alex Tymchenko
  */
-class Given {
+public class Given {
 
-    static final String REFLECTIONS_PLUGIN_ID = 'reflections-plugin'
+    /* package */ static final String REFLECTIONS_PLUGIN_ID = "reflections-plugin";
 
-    /** The name of the `classes` task.*/
-    static final String CLASSES_TASK = "classes"
-
-    /** The name of the `build` task.*/
-    static final String BUILD_TASK = "build"
+    private Given() {
+    }
 
     /** Creates a project with all required tasks. */
-    static Project newProject() {
+    public static Project newProject() {
         final Project project = ProjectBuilder.builder()
-                .build()
-        project.task(CLASSES_TASK)
-        project.task(BUILD_TASK)
-        return project
+                                              .build();
+        project.task(CLASSES.getValue());
+        project.task(BUILD.getValue());
+        return project;
     }
 }

@@ -16,38 +16,10 @@
  * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *
+ * A Gradle plugin and related utilities for the Maven Reflections plugin port.
+ *
+ * @author Alex Tymchenko
  */
-
-package org.spine3.gradle.protobuf
-
-import org.gradle.api.Project
-import org.gradle.api.Task
-import org.gradle.api.tasks.TaskContainer
-import org.junit.Test
-
-import static org.junit.Assert.assertNotNull
-import static org.junit.Assert.assertTrue
-import static org.spine3.gradle.protobuf.Given.*
-
-@SuppressWarnings("GroovyInstanceMethodNamingConvention")
-class ReflectionsPluginShould {
-
-    @Test
-    void apply_to_project() {
-        final Project project = newProject()
-        project.pluginManager.apply(REFLECTIONS_PLUGIN_ID)
-    }
-
-    @Test
-    void add_task_scanClassPath() {
-        final Project project = newProject()
-
-        project.pluginManager.apply(REFLECTIONS_PLUGIN_ID)
-        final TaskContainer tasks = project.tasks
-
-        final Task scanClassPath = tasks.scanClassPath
-        assertNotNull(scanClassPath)
-        assertTrue(scanClassPath.getDependsOn().contains(CLASSES_TASK))
-        assertTrue(tasks.build.getDependsOn().contains(scanClassPath))
-    }
-}
+package org.spine3.gradle.reflections;
