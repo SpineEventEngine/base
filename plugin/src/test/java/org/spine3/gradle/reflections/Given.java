@@ -28,9 +28,9 @@ import static org.spine3.gradle.TaskName.CLASSES;
 /**
  * @author Alex Tymchenko
  */
-public class Given {
+class Given {
 
-    /* package */ static final String REFLECTIONS_PLUGIN_ID = "reflections-plugin";
+    static final String REFLECTIONS_PLUGIN_ID = "reflections-plugin";
 
     private Given() {
     }

@@ -33,14 +33,13 @@ import static java.io.File.separator;
 @SuppressWarnings("PublicField")    // as this is a Gradle extension.
 public class Extension {
 
-    /* package */ static final String REFLECTIONS_PLUGIN_EXTENSION = "reflectionsPlugin";
+    static final String REFLECTIONS_PLUGIN_EXTENSION = "reflectionsPlugin";
 
     /**
      * The absolute path to the target directory which contains generated `.xml` file with reflections.
      */
     public String targetDir;
 
-    /* package */
     static String getTargetDir(Project project) {
         final String path = reflectionsPlugin(project).targetDir;
         if (path == null || path.isEmpty()) {
@@ -53,7 +52,7 @@ public class Extension {
     }
 
     @VisibleForTesting      // it should have been `private`.
-    /* package */ static Extension reflectionsPlugin(Project project) {
+    static Extension reflectionsPlugin(Project project) {
         return (Extension) project.getExtensions()
                                   .getByName(REFLECTIONS_PLUGIN_EXTENSION);
     }
