@@ -65,6 +65,7 @@ public class ReflectionsPlugin extends SpinePlugin {
      */
     @Override
     public void apply(final Project project) {
+        log().debug("Applying Reflections plugin");
         project.getExtensions()
                .create(REFLECTIONS_PLUGIN_EXTENSION, Extension.class);
 
@@ -82,6 +83,7 @@ public class ReflectionsPlugin extends SpinePlugin {
     }
 
     private static void scanClassPath(Project project) {
+        log().debug("Scanning class path for Reflections framework");
 
         final String outputDirPath = project.getProjectDir() + "/build";
         final File outputDir = new File(outputDirPath);
@@ -121,7 +123,7 @@ public class ReflectionsPlugin extends SpinePlugin {
         try {
             Files.createParentDirs(folder);
         } catch (IOException e) {
-            throw new RuntimeException("Cannot create a  folder: " + folder.getAbsolutePath(), e);
+            throw new RuntimeException("Cannot create a folder: " + folder.getAbsolutePath(), e);
         }
     }
 
