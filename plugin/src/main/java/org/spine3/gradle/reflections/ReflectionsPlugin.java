@@ -65,7 +65,7 @@ public class ReflectionsPlugin extends SpinePlugin {
      */
     @Override
     public void apply(final Project project) {
-        log().debug("Applying Reflections plugin");
+        log().debug("Applying the Reflections plugin");
         project.getExtensions()
                .create(REFLECTIONS_PLUGIN_EXTENSION, Extension.class);
 
@@ -83,7 +83,7 @@ public class ReflectionsPlugin extends SpinePlugin {
     }
 
     private static void scanClassPath(Project project) {
-        log().debug("Scanning class path for Reflections framework");
+        log().debug("Scanning the class path for Reflections framework");
 
         final String outputDirPath = project.getProjectDir() + "/build";
         final File outputDir = new File(outputDirPath);
