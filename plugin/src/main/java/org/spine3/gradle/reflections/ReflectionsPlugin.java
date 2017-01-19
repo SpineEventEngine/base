@@ -83,7 +83,7 @@ public class ReflectionsPlugin extends SpinePlugin {
     }
 
     private static void scanClassPath(Project project) {
-        log().debug("Scanning the class path for Reflections framework");
+        log().debug("Scanning the classpath");
 
         final String outputDirPath = project.getProjectDir() + "/build";
         final File outputDir = new File(outputDirPath);
