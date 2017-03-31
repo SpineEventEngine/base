@@ -75,9 +75,10 @@ public class ReflectionsPlugin extends SpinePlugin {
                 scanClassPath(project);
             }
         };
-        final GradleTask task = newTask(SCAN_CLASS_PATH, scanClassPathAction).insertAfterTask(CLASSES)
-                                                                             .insertBeforeTask(BUILD)
-                                                                             .applyNowTo(project);
+        final GradleTask task =
+                newTask(SCAN_CLASS_PATH, scanClassPathAction).insertAfterTask(CLASSES)
+                                                             .insertBeforeTask(BUILD)
+                                                             .applyNowTo(project);
 
         log().debug("Reflection Gradle plugin initialized with the Gradle task: {}", task);
     }
@@ -114,7 +115,9 @@ public class ReflectionsPlugin extends SpinePlugin {
             urls.add(outputDir.toURI()
                               .toURL());
         } catch (MalformedURLException e) {
-            throw new IllegalArgumentException("Cannot parse an output directory: " + outputDir.getAbsolutePath(), e);
+            final String message = "Cannot parse an output directory: "
+                    + outputDir.getAbsolutePath();
+            throw new IllegalArgumentException(message, e);
         }
         return urls;
     }
