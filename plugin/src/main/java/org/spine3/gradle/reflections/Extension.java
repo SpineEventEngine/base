@@ -36,7 +36,8 @@ public class Extension {
     static final String REFLECTIONS_PLUGIN_EXTENSION = "reflectionsPlugin";
 
     /**
-     * The absolute path to the target directory which contains generated `.xml` file with reflections.
+     * The absolute path to the target directory which contains generated `.xml` file
+     * with reflections.
      */
     public String targetDir;
 
@@ -45,7 +46,8 @@ public class Extension {
         if (path == null || path.isEmpty()) {
             return project.getProjectDir() + separator +
                     Joiner.on(separator)
-                          .join(new String[]{"src", "generated", "resources", "META-INF", "reflections"});
+                          .join(new String[]{"src", "generated", "resources", "META-INF",
+                                  "reflections"});
         } else {
             return path;
         }
