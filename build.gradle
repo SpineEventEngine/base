@@ -5,9 +5,7 @@ dependencies {
 
     compile 'org.reflections:reflections:0.9.10'
     compile 'dom4j:dom4j:1.6.1'
-    //TODO:2017-03-03:illiashepilov: change the testng version to the latest when issue will be fixed
-    // https://github.com/cbeust/testng/issues/1369
-    testCompile 'org.testng:testng:6.10'
+    testCompile 'org.testng:testng:+'
 
     compile project(path: ":common")
 }
