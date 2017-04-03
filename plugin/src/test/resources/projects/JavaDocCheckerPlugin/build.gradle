@@ -1,0 +1,11 @@
+plugins {
+    id 'java'
+    id 'org.spine3.tools.spine-codestyle-checker' apply false
+}
+
+apply plugin: 'org.spine3.tools.spine-codestyle-checker'
+
+checkJavadoc {
+    threshold = thresholdValue
+    responseType = responseTypeValue
+}
