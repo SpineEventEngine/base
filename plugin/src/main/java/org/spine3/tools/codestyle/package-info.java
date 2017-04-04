@@ -19,6 +19,6 @@
  */
 
 /**
- * The Gradle plugins for code style check.
+ * The Gradle plugins for the code style check.
  */
 package org.spine3.tools.codestyle;
