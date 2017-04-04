@@ -17,7 +17,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.spine3.tools.codestyle.javadoc;
+package org.spine3.tools.codestyle;
 
 import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
@@ -26,11 +26,11 @@ import org.gradle.internal.impldep.org.apache.commons.io.IOUtils;
 import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.BuildTask;
 import org.gradle.testkit.runner.GradleRunner;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.spine3.gradle.TaskName;
+import org.spine3.tools.codestyle.javadoc.Response;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -49,21 +49,22 @@ import static org.junit.Assert.assertTrue;
 
 public class FqnCheckPluginShould {
 
-    private String resourceFolder = "";
     private static final String SOURCE_FOLDER = "src/main/java";
+    private static final String ERROR_RESPONSE_NAME = Response.ERROR.getValue();
+    private static final String WRONG_LINK_FORMAT_MSG = "Wrong link format found";
+    private static final int THRESHOLD = 2;
+
+    private String resourceFolder = "";
     private final String checkJavadocLink = TaskName.CHECK_FQN.getValue();
-    private final int threshold = 2;
-    private final String responseType = "error";
 
     @Rule
     public final TemporaryFolder testProjectDir = new TemporaryFolder();
 
     public void setUpTestProject(int threshold, String responseType) throws IOException {
         final Path buildGradleFile = testProjectDir.getRoot()
-                                             .toPath()
-                                             .resolve("build.gradle");
+                                                   .toPath()
+                                                   .resolve("build.gradle");
         final InputStream input = getBuildFileContent(threshold, responseType);
-
 
         final Path testSources = testProjectDir.getRoot()
                                                .toPath()
@@ -81,12 +82,11 @@ public class FqnCheckPluginShould {
 
     @Test
     public void fail_build_if_wrong_fqn_name_found() throws IOException {
-        setUpTestProject(threshold, responseType);
+        setUpTestProject(THRESHOLD, ERROR_RESPONSE_NAME);
         final Path testSources = testProjectDir.getRoot()
                                                .toPath()
                                                .resolve(SOURCE_FOLDER);
         FileUtils.copyDirectory(new File(resourceFolder), new File(testSources.toString()));
-
 
         BuildResult buildResult = GradleRunner.create()
                                               .withProjectDir(testProjectDir.getRoot())
@@ -94,12 +94,13 @@ public class FqnCheckPluginShould {
                                               .withArguments(checkJavadocLink, "--debug")
                                               .buildAndFail();
 
-        assertTrue(buildResult.getOutput().contains("Wrong link format found"));
+        assertTrue(buildResult.getOutput()
+                              .contains(WRONG_LINK_FORMAT_MSG));
     }
 
     @Test
     public void allow_correct_fqn_name_format() throws IOException {
-        setUpTestProject(threshold, responseType);
+        setUpTestProject(THRESHOLD, ERROR_RESPONSE_NAME);
         final Path testSources = testProjectDir.getRoot()
                                                .toPath()
                                                .resolve(SOURCE_FOLDER);
@@ -122,7 +123,7 @@ public class FqnCheckPluginShould {
 
     @Test
     public void warn_by_default_about_wrong_link_formats() throws IOException {
-        setUpTestProject(2, "warn");
+        setUpTestProject(2, Response.WARN.getValue());
         final Path testSources = testProjectDir.getRoot()
                                                .toPath()
                                                .resolve(SOURCE_FOLDER);
@@ -137,7 +138,8 @@ public class FqnCheckPluginShould {
         final List<String> expected = Arrays.asList(":compileJava", ":checkJavadocLink");
 
         assertEquals(expected, extractTasks(buildResult));
-        assertTrue(buildResult.getOutput().contains("Wrong link format found"));
+        assertTrue(buildResult.getOutput()
+                              .contains(WRONG_LINK_FORMAT_MSG));
     }
 
     private static List<String> extractTasks(BuildResult buildResult) {
