@@ -17,38 +17,39 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.spine3.tools.codestyle.javadoc;
+package org.spine3.tools.codestyle;
 
-import com.google.common.base.MoreObjects;
+import org.gradle.api.Project;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.spine3.gradle.SpinePlugin;
+import org.spine3.tools.codestyle.javadoc.JavadocCheckerPlugin;
 
 /**
+ * The plugin that verifies code style.
+ *
  * @author Alexander Aleksandrov
  */
-public class InvalidFqnUsage {
+public class CodestyleCheckerPlugin extends SpinePlugin {
 
-    private final String actualUsage;
-    private int index = 0;
-
-    public InvalidFqnUsage(String actualUsage) {
-        this.actualUsage = actualUsage;
-    }
-
-    public String getActualUsage() {
-        return actualUsage;
-    }
-
-    public int getIndex() {
-        return index;
-    }
-
-    public void setIndex(int index) {
-        this.index = index;
-    }
+    public static final String SPINE_LINK_CHECKER_EXTENSION_NAME = "checkCodestyle";
 
     @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-                          .add("actualUsage", actualUsage)
-                          .toString();
+    public void apply(final Project project) {
+        project.getExtensions()
+               .create(SPINE_LINK_CHECKER_EXTENSION_NAME, Extension.class);
+
+        log().debug("Applying Spine Javadoc checker plugin");
+        new JavadocCheckerPlugin().apply(project);
+    }
+
+    private static Logger log() {
+        return LogSingleton.INSTANCE.value;
+    }
+
+    private enum LogSingleton {
+        INSTANCE;
+        @SuppressWarnings("NonSerializableFieldInSerializableClass")
+        private final Logger value = LoggerFactory.getLogger(CodestyleCheckerPlugin.class);
     }
 }

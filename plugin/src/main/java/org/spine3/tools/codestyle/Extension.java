@@ -17,14 +17,16 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.spine3.tools.codestyle.javadoc;
+package org.spine3.tools.codestyle;
 
 import org.gradle.api.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.spine3.tools.codestyle.CodestyleCheckerPlugin.SPINE_LINK_CHECKER_EXTENSION_NAME;
+
 /**
- * A configuration class for the {@link CheckJavadocPlugin}.
+ * A configuration class for the {@link CodestyleCheckerPlugin}.
  *
  * @author Alexander Aleksandrov
  */
@@ -71,7 +73,7 @@ public class Extension {
 
     private static Extension checkJavadoc(Project project) {
         return (Extension) project.getExtensions()
-                                  .getByName(CheckJavadocPlugin.SPINE_LINK_CHECKER_EXTENSION_NAME);
+                                  .getByName(SPINE_LINK_CHECKER_EXTENSION_NAME);
     }
 
     private static Logger log() {

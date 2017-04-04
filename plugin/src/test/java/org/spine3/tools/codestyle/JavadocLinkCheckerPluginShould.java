@@ -30,7 +30,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.spine3.gradle.TaskName;
-import org.spine3.tools.codestyle.javadoc.Response;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -47,7 +46,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class FqnCheckPluginShould {
+public class JavadocLinkCheckerPluginShould {
 
     private static final String SOURCE_FOLDER = "src/main/java";
     private static final String ERROR_RESPONSE_NAME = Response.ERROR.getValue();

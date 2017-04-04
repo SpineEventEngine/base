@@ -17,7 +17,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.spine3.tools.codestyle.javadoc;
+package org.spine3.tools.codestyle.javadoc.link;
 
 import com.google.common.base.Optional;
 import org.gradle.api.Action;
@@ -25,6 +25,9 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.spine3.gradle.SpinePlugin;
+import org.spine3.tools.codestyle.Extension;
+import org.spine3.tools.codestyle.Response;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,24 +44,41 @@ import java.util.regex.Pattern;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.regex.Pattern.compile;
+import static org.spine3.gradle.TaskName.CHECK_FQN;
+import static org.spine3.gradle.TaskName.COMPILE_JAVA;
+import static org.spine3.gradle.TaskName.PROCESS_RESOURCES;
 
 /**
- * Checks the target project Javadocs for broken links that are stated in the wrong format.
- * <p> {@code exceptionThreshold} is a quantity of broken link that will make an exception.
- * {@code responseType} is behavior that can be either warning or error.
+ * The plugin that checks the target project Javadocs for broken links that
+ * are stated in the wrong format.
  *
  * @author Alexander Aleksandrov
  */
-public class FqnLinkInspection {
-    private int exceptionThreshold = 0;
-    private Response responseType = Response.WARN;
-    private final Project project;
+public class JavadocLinkCheckerPlugin extends SpinePlugin {
+
     private static final String DIRECTORY_TO_CHECK = "/src/main/java";
     private static final String JAVA_EXTENSION = ".java";
     private static final InvalidResultStorage storage = new InvalidResultStorage();
 
-    public FqnLinkInspection(Project project) {
-        this.project = project;
+    /**
+     * The quantity of broken link that will make an exception.
+     */
+    private int exceptionThreshold = 0;
+
+    /**
+     * The behavior that can be either warning or error.
+     *
+     * {@link Response#WARN} is default.
+     */
+    private Response responseType = Response.WARN;
+
+    @Override
+    public void apply(Project project) {
+        final Action<Task> action = actionFor(project);
+        newTask(CHECK_FQN, action).insertAfterTask(COMPILE_JAVA)
+                                  .insertBeforeTask(PROCESS_RESOURCES)
+                                  .applyNowTo(project);
+        log().debug("Starting to check Javadocs {}", action);
     }
 
     public Action<Task> actionFor(final Project project) {
@@ -144,34 +164,35 @@ public class FqnLinkInspection {
         } catch (IOException e) {
             throw new IllegalStateException("Cannot read the contents of the file: " + path, e);
         }
-        final List<Optional<InvalidFqnUsage>> invalidLinks = check(content);
+        final List<InvalidFqnUsage> invalidLinks = check(content);
 
         if (!invalidLinks.isEmpty()) {
             storage.save(path, invalidLinks);
             if (storage.getLinkTotal() > exceptionThreshold) {
                 storage.logInvalidFqnUsages();
-                responseType.logOrFail(path);
+                responseType.logOrFail(new InvalidFqnUsageException());
             }
         }
     }
 
-    private static List<Optional<InvalidFqnUsage>> check(List<String> content) {
+    private static List<InvalidFqnUsage> check(List<String> content) {
         int lineNumber = 0;
-        final List<Optional<InvalidFqnUsage>> invalidLinks = newArrayList();
+        final List<InvalidFqnUsage> invalidLinks = newArrayList();
         for (String line : content) {
             final Optional<InvalidFqnUsage> result = checkSingleComment(line);
             lineNumber++;
             if (result.isPresent()) {
-                result.get().setIndex(lineNumber);
-                invalidLinks.add(result);
+                final InvalidFqnUsage invalidFqnUsage = result.get();
+                invalidFqnUsage.setIndex(lineNumber);
+                invalidLinks.add(invalidFqnUsage);
             }
         }
         return invalidLinks;
     }
 
     private static Optional<InvalidFqnUsage> checkSingleComment(String comment) {
-        final Matcher matcher = FqnLinkInspection.JavadocPattern.LINK.getPattern()
-                                                                     .matcher(comment);
+        final Matcher matcher = JavadocLinkCheckerPlugin.JavadocPattern.LINK.getPattern()
+                                                                            .matcher(comment);
         final boolean found = matcher.find();
         if (found) {
             final String improperUsage = matcher.group(0);
@@ -246,13 +267,13 @@ public class FqnLinkInspection {
     }
 
     private static Logger log() {
-        return FqnLinkInspection.LogSingleton.INSTANCE.value;
+        return JavadocLinkCheckerPlugin.LogSingleton.INSTANCE.value;
     }
 
     private enum LogSingleton {
         INSTANCE;
         @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = LoggerFactory.getLogger(FqnLinkInspection.class);
+        private final Logger value = LoggerFactory.getLogger(JavadocLinkCheckerPlugin.class);
     }
 
 }

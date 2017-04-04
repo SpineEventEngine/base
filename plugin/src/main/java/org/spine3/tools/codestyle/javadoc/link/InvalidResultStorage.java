@@ -17,15 +17,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.spine3.tools.codestyle.javadoc;
+package org.spine3.tools.codestyle.javadoc.link;
 
-import com.google.common.base.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -38,38 +36,34 @@ import static java.lang.String.format;
  */
 public class InvalidResultStorage {
 
-    private static final Map<Path, List<Optional<InvalidFqnUsage>>> resultStorage = new HashMap<>();
+    private static final Map<Path, List<InvalidFqnUsage>> resultStorage = new HashMap<>();
 
-    public Map<Path, List<Optional<InvalidFqnUsage>>> getResults() {
+    public Map<Path, List<InvalidFqnUsage>> getResults() {
         return resultStorage;
     }
 
     public int getLinkTotal() {
         int total = 0;
-        for (List<Optional<InvalidFqnUsage>> l : resultStorage.values()) {
+        for (List<InvalidFqnUsage> l : resultStorage.values()) {
             total += l.size();
         }
         return total;
     }
 
-    @SuppressWarnings("MethodWithMultipleLoops")//we need it to go through a map
     public void logInvalidFqnUsages() {
-        final Iterator iterator = resultStorage.entrySet()
-                                         .iterator();
-        while (iterator.hasNext()) {
-            Map.Entry<Path, List<Optional<InvalidFqnUsage>>> pair = (Map.Entry) iterator.next();
-            for (Optional<InvalidFqnUsage> link : pair.getValue()) {
-                if (link.isPresent()) {
-                    final InvalidFqnUsage invalidFqnUsage = link.get();
-                    final String msg = format(
-                            " Wrong link format found: %s on %s line in %s",
-                            invalidFqnUsage.getActualUsage(),
-                            invalidFqnUsage.getIndex(),
-                            pair.getKey());
-                    log().error(msg);
-                }
-            }
-            iterator.remove();
+        for (Map.Entry<Path, List<InvalidFqnUsage>> entry : resultStorage.entrySet()) {
+            logInvalidFqnUsages(entry);
+        }
+    }
+
+    private static void logInvalidFqnUsages(Map.Entry<Path, List<InvalidFqnUsage>> entry) {
+        for (InvalidFqnUsage invalidFqnUsage : entry.getValue()) {
+            final String msg = format(
+                    " Wrong link format found: %s on %s line in %s",
+                    invalidFqnUsage.getActualUsage(),
+                    invalidFqnUsage.getIndex(),
+                    entry.getKey());
+            log().error(msg);
         }
     }
 
@@ -79,7 +73,7 @@ public class InvalidResultStorage {
      * @param path file path that contain wrong fomated links
      * @param list list of invalid fully qualified names usages
      */
-    public void save(Path path, List<Optional<InvalidFqnUsage>> list) {
+    public void save(Path path, List<InvalidFqnUsage> list) {
         resultStorage.put(path, list);
     }
 

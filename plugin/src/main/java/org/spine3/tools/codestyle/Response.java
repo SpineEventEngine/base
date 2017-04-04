@@ -17,47 +17,61 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.spine3.tools.codestyle.javadoc;
+package org.spine3.tools.codestyle;
 
-import org.gradle.api.Action;
-import org.gradle.api.Project;
-import org.gradle.api.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.spine3.gradle.SpinePlugin;
-
-import static org.spine3.gradle.TaskName.CHECK_FQN;
-import static org.spine3.gradle.TaskName.COMPILE_JAVA;
-import static org.spine3.gradle.TaskName.PROCESS_RESOURCES;
 
 /**
- * The plugin that verifies Javadoc comments.
+ * This enum states two behavior types that either log warnings or fail build process.
  *
  * @author Alexander Aleksandrov
  */
-public class CheckJavadocPlugin extends SpinePlugin {
+public enum Response {
 
-    public static final String SPINE_LINK_CHECKER_EXTENSION_NAME = "checkJavadoc";
+    /**
+     * This instance will log warning message.
+     */
+    WARN("warn"),
 
-    @Override
-    public void apply(final Project project) {
-        project.getExtensions()
-               .create(SPINE_LINK_CHECKER_EXTENSION_NAME, Extension.class);
-        final FqnLinkInspection fqnLinkInspection = new FqnLinkInspection(project);
-        final Action<Task> action = fqnLinkInspection.actionFor(project);
-        newTask(CHECK_FQN, action).insertAfterTask(COMPILE_JAVA)
-                                  .insertBeforeTask(PROCESS_RESOURCES)
-                                  .applyNowTo(project);
-        log().debug("Starting to check Javadocs {}", action);
+    /**
+     * This instance will log warning message and then will throw an
+     * exception and fail a build process.
+     */
+    ERROR("error") {
+        @Override
+        public void logOrFail(Throwable cause) {
+            super.logOrFail(cause);
+            throw new RuntimeException(cause);
+        }
+    };
+
+    private final String responseType;
+
+    Response(String responseType) {
+        this.responseType = responseType;
+    }
+
+    public String getValue() {
+        return responseType;
+    }
+
+    /**
+     * Logs the {@linkplain Throwable#getMessage() cause message} .
+     *
+     * @param cause the conflict cause
+     */
+    public void logOrFail(Throwable cause) {
+        log().error(cause.getMessage());
     }
 
     private static Logger log() {
-        return LogSingleton.INSTANCE.value;
+        return Response.LogSingleton.INSTANCE.value;
     }
 
     private enum LogSingleton {
         INSTANCE;
         @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = LoggerFactory.getLogger(CheckJavadocPlugin.class);
+        private final Logger value = LoggerFactory.getLogger(Response.class);
     }
 }

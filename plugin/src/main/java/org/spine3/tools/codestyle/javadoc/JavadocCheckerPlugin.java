@@ -19,64 +19,32 @@
  */
 package org.spine3.tools.codestyle.javadoc;
 
+import org.gradle.api.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.nio.file.Path;
+import org.spine3.gradle.SpinePlugin;
+import org.spine3.tools.codestyle.javadoc.link.JavadocLinkCheckerPlugin;
 
 /**
- * This enum states two behavior types that either log warnings or fail build process.
+ * The plugin that verifies Javadoc comments.
  *
  * @author Alexander Aleksandrov
  */
-public enum Response {
-    /**
-     * This instance will log warning message.
-     */
-    WARN("warn"),
+public class JavadocCheckerPlugin extends SpinePlugin {
 
-    /**
-     * This instance will log warning message and then will throw an
-     * exception and fail a build process.
-     */
-    ERROR("error"){
-        @Override
-        public void logOrFail(Path path) {
-            super.logOrFail(path);
-            throw new InvalidFqnUsageException(path.toFile()
-                                                   .getAbsolutePath(), message);
-        }
-    };
-
-    private final String responseType;
-    private static final String message =
-            "Links with fully-qualified names should be in format {@link <FQN> <text>}" +
-            " or {@linkplain <FQN> <text>}.";
-
-    Response(String responseType) {
-        this.responseType = responseType;
-    }
-
-    public String getValue() {
-        return responseType;
-    }
-
-    /**
-     * Logs error message.
-     *
-     * @param path target path to the file under check.
-     */
-    public void logOrFail(Path path){
-        log().error(message);
+    @Override
+    public void apply(final Project project) {
+        new JavadocLinkCheckerPlugin().apply(project);
+        log().debug("Applying Spine Javadoc link checker plugin");
     }
 
     private static Logger log() {
-        return Response.LogSingleton.INSTANCE.value;
+        return LogSingleton.INSTANCE.value;
     }
 
     private enum LogSingleton {
         INSTANCE;
         @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = LoggerFactory.getLogger(Response.class);
+        private final Logger value = LoggerFactory.getLogger(JavadocCheckerPlugin.class);
     }
 }

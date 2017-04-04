@@ -17,27 +17,38 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.spine3.tools.codestyle.javadoc;
+package org.spine3.tools.codestyle.javadoc.link;
+
+import com.google.common.base.MoreObjects;
 
 /**
- * Thrown to indicate that invalid FQN usage was found in javadoc.
- *
  * @author Alexander Aleksandrov
  */
-public class InvalidFqnUsageException extends RuntimeException {
+public class InvalidFqnUsage {
 
-    final String filename;
-    private final String message = getMessage();
+    private final String actualUsage;
+    private int index = 0;
 
-    public InvalidFqnUsageException(String filename, String message) {
-        super(message);
-        this.filename = filename;
+    public InvalidFqnUsage(String actualUsage) {
+        this.actualUsage = actualUsage;
     }
 
-    @SuppressWarnings("MethodDoesntCallSuperMethod")
+    public String getActualUsage() {
+        return actualUsage;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
     @Override
     public String toString() {
-        final String str = getClass().getName();
-        return (message != null) ? (str + ": " + message) : str;
+        return MoreObjects.toStringHelper(this)
+                          .add("actualUsage", actualUsage)
+                          .toString();
     }
 }
