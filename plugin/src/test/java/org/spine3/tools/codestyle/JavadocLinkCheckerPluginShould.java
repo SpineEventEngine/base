@@ -36,30 +36,31 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
+import static java.lang.String.format;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class JavadocLinkCheckerPluginShould {
 
     private static final String SOURCE_FOLDER = "src/main/java";
-    private static final String ERROR_RESPONSE_NAME = Response.ERROR.getValue();
     private static final String WRONG_LINK_FORMAT_MSG = "Wrong link format found";
+    private static final String CHECK_JAVADOC_LINK = TaskName.CHECK_FQN.getValue();
+    private static final String DEBUG_OPTION = "--debug";
     private static final int THRESHOLD = 2;
 
     private String resourceFolder = "";
-    private final String checkJavadocLink = TaskName.CHECK_FQN.getValue();
 
     @Rule
     public final TemporaryFolder testProjectDir = new TemporaryFolder();
 
-    public void setUpTestProject(int threshold, String responseType) throws IOException {
+    public void setUpTestProject(int threshold, Response responseType) throws IOException {
         final Path buildGradleFile = testProjectDir.getRoot()
                                                    .toPath()
                                                    .resolve("build.gradle");
@@ -81,7 +82,7 @@ public class JavadocLinkCheckerPluginShould {
 
     @Test
     public void fail_build_if_wrong_fqn_name_found() throws IOException {
-        setUpTestProject(THRESHOLD, ERROR_RESPONSE_NAME);
+        setUpTestProject(THRESHOLD, Response.ERROR);
         final Path testSources = testProjectDir.getRoot()
                                                .toPath()
                                                .resolve(SOURCE_FOLDER);
@@ -90,7 +91,7 @@ public class JavadocLinkCheckerPluginShould {
         BuildResult buildResult = GradleRunner.create()
                                               .withProjectDir(testProjectDir.getRoot())
                                               .withPluginClasspath()
-                                              .withArguments(checkJavadocLink, "--debug")
+                                              .withArguments(CHECK_JAVADOC_LINK, DEBUG_OPTION)
                                               .buildAndFail();
 
         assertTrue(buildResult.getOutput()
@@ -99,7 +100,7 @@ public class JavadocLinkCheckerPluginShould {
 
     @Test
     public void allow_correct_fqn_name_format() throws IOException {
-        setUpTestProject(THRESHOLD, ERROR_RESPONSE_NAME);
+        setUpTestProject(THRESHOLD, Response.ERROR);
         final Path testSources = testProjectDir.getRoot()
                                                .toPath()
                                                .resolve(SOURCE_FOLDER);
@@ -112,7 +113,7 @@ public class JavadocLinkCheckerPluginShould {
         BuildResult buildResult = GradleRunner.create()
                                               .withProjectDir(testProjectDir.getRoot())
                                               .withPluginClasspath()
-                                              .withArguments(checkJavadocLink, "--debug")
+                                              .withArguments(CHECK_JAVADOC_LINK, DEBUG_OPTION)
                                               .build();
 
         final List<String> expected = Arrays.asList(":compileJava", ":checkJavadocLink");
@@ -122,7 +123,7 @@ public class JavadocLinkCheckerPluginShould {
 
     @Test
     public void warn_by_default_about_wrong_link_formats() throws IOException {
-        setUpTestProject(2, Response.WARN.getValue());
+        setUpTestProject(2, Response.WARN);
         final Path testSources = testProjectDir.getRoot()
                                                .toPath()
                                                .resolve(SOURCE_FOLDER);
@@ -131,7 +132,7 @@ public class JavadocLinkCheckerPluginShould {
         BuildResult buildResult = GradleRunner.create()
                                               .withProjectDir(testProjectDir.getRoot())
                                               .withPluginClasspath()
-                                              .withArguments(checkJavadocLink, "--debug")
+                                              .withArguments(CHECK_JAVADOC_LINK, DEBUG_OPTION)
                                               .build();
 
         final List<String> expected = Arrays.asList(":compileJava", ":checkJavadocLink");
@@ -153,16 +154,22 @@ public class JavadocLinkCheckerPluginShould {
                 .toList();
     }
 
-    private InputStream getBuildFileContent(int threshold, String reactionType) throws IOException {
+    private InputStream getBuildFileContent(int threshold, Response responseType)
+            throws IOException {
         final InputStream input =
                 getClass().getClassLoader()
                           .getResourceAsStream("projects/JavaDocCheckerPlugin/build.gradle");
-        StringWriter writer = new StringWriter();
+        final StringWriter writer = new StringWriter();
         IOUtils.copy(input, writer);
-        String str = writer.toString();
-        String result = str.replace("thresholdValue", String.valueOf(threshold));
-        result = result.replace("responseTypeValue", '"' + reactionType + '"');
-        final InputStream stream = new ByteArrayInputStream(result.getBytes(StandardCharsets.UTF_8));
+
+        final String thresholdValue = String.valueOf(threshold);
+        final String responseTypeValue = format("\"%s\"", responseType.getValue());
+
+        final String writerContent = writer.toString();
+        String result = writerContent.replace("thresholdValue", thresholdValue);
+        result = result.replace("responseTypeValue", responseTypeValue);
+
+        final InputStream stream = new ByteArrayInputStream(result.getBytes(UTF_8));
         return stream;
     }
 }
