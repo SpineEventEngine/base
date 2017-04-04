@@ -58,7 +58,8 @@ public class JavadocLinkCheckerPlugin extends SpinePlugin {
 
     private static final String DIRECTORY_TO_CHECK = "/src/main/java";
     private static final String JAVA_EXTENSION = ".java";
-    private static final InvalidResultStorage storage = new InvalidResultStorage();
+
+    private final InvalidResultStorage storage = new InvalidResultStorage();
 
     /**
      * The quantity of broken link that will make an exception.
@@ -82,7 +83,7 @@ public class JavadocLinkCheckerPlugin extends SpinePlugin {
     }
 
     public Action<Task> actionFor(final Project project) {
-        log().debug("Preparing an action for the Javadock checker");
+        log().debug("Preparing an action for the Javadoc checker");
         return new Action<Task>() {
             @Override
             public void execute(Task task) {
