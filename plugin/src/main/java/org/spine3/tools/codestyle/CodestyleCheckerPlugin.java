@@ -23,7 +23,7 @@ import org.gradle.api.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spine3.gradle.SpinePlugin;
-import org.spine3.tools.codestyle.javadoc.JavadocCheckerPlugin;
+import org.spine3.tools.codestyle.javadoc.JavadocLinkCheckerPlugin;
 
 /**
  * The plugin that verifies code style.
@@ -32,15 +32,15 @@ import org.spine3.tools.codestyle.javadoc.JavadocCheckerPlugin;
  */
 public class CodestyleCheckerPlugin extends SpinePlugin {
 
-    public static final String SPINE_LINK_CHECKER_EXTENSION_NAME = "checkCodestyle";
+    public static final String CODESTYLE_CHECKER_EXTENSION_NAME = "checkCodestyle";
 
     @Override
     public void apply(final Project project) {
         project.getExtensions()
-               .create(SPINE_LINK_CHECKER_EXTENSION_NAME, Extension.class);
+               .create(CODESTYLE_CHECKER_EXTENSION_NAME, Extension.class);
 
-        log().debug("Applying Spine Javadoc checker plugin");
-        new JavadocCheckerPlugin().apply(project);
+        log().debug("Applying Spine Javadoc link checker plugin");
+        new JavadocLinkCheckerPlugin().apply(project);
     }
 
     private static Logger log() {

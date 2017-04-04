@@ -23,7 +23,7 @@ import org.gradle.api.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.spine3.tools.codestyle.CodestyleCheckerPlugin.SPINE_LINK_CHECKER_EXTENSION_NAME;
+import static org.spine3.tools.codestyle.CodestyleCheckerPlugin.CODESTYLE_CHECKER_EXTENSION_NAME;
 
 /**
  * A configuration class for the {@link CodestyleCheckerPlugin}.
@@ -73,7 +73,7 @@ public class Extension {
 
     private static Extension checkJavadoc(Project project) {
         return (Extension) project.getExtensions()
-                                  .getByName(SPINE_LINK_CHECKER_EXTENSION_NAME);
+                                  .getByName(CODESTYLE_CHECKER_EXTENSION_NAME);
     }
 
     private static Logger log() {

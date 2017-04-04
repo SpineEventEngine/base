@@ -19,7 +19,7 @@
  */
 
 /**
- * This package provides plugins and utilities to check Spine Javadoc style.
+ * This package provides plugins and utilities to check Javadoc style.
  */
 package org.spine3.tools.codestyle.javadoc;
 

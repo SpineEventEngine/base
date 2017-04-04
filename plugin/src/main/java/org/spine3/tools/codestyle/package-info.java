@@ -1,5 +1,5 @@
 /*
- * Copyright 2016, TeamDev Ltd. All rights reserved.
+ * Copyright 2017, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -17,34 +17,8 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.spine3.tools.codestyle.javadoc;
-
-import org.gradle.api.Project;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.spine3.gradle.SpinePlugin;
-import org.spine3.tools.codestyle.javadoc.link.JavadocLinkCheckerPlugin;
 
 /**
- * The plugin that verifies Javadoc comments.
- *
- * @author Alexander Aleksandrov
+ * The Gradle plugins for code style check.
  */
-public class JavadocCheckerPlugin extends SpinePlugin {
-
-    @Override
-    public void apply(final Project project) {
-        new JavadocLinkCheckerPlugin().apply(project);
-        log().debug("Applying Spine Javadoc link checker plugin");
-    }
-
-    private static Logger log() {
-        return LogSingleton.INSTANCE.value;
-    }
-
-    private enum LogSingleton {
-        INSTANCE;
-        @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = LoggerFactory.getLogger(JavadocCheckerPlugin.class);
-    }
-}
+package org.spine3.tools.codestyle;
