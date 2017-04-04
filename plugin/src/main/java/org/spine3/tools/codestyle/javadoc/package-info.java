@@ -17,9 +17,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/**
- * This package provides plugin and utilities to check javadocs in Spine
- */
 
+/**
+ * This package provides plugins and utilities to check Spine Javadoc style.
+ */
 package org.spine3.tools.codestyle.javadoc;
 
