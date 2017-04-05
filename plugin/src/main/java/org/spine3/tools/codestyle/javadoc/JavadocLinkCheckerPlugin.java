@@ -46,7 +46,7 @@ import static java.util.regex.Pattern.compile;
 import static org.spine3.gradle.TaskName.CHECK_FQN;
 import static org.spine3.gradle.TaskName.COMPILE_JAVA;
 import static org.spine3.gradle.TaskName.PROCESS_RESOURCES;
-import static org.spine3.tools.codestyle.CodestyleCheckerPlugin.addSubcheckerExtension;
+import static org.spine3.tools.codestyle.CodestyleCheckerPlugin.createSubcheckerExtension;
 
 /**
  * The plugin that checks the target project Javadocs for broken links that
@@ -65,7 +65,7 @@ public class JavadocLinkCheckerPlugin extends SpinePlugin {
 
     @Override
     public void apply(Project project) {
-        extension = addSubcheckerExtension(JAVADOC_LINK_CHECKER_EXTENSION_NAME, project);
+        extension = createSubcheckerExtension(JAVADOC_LINK_CHECKER_EXTENSION_NAME, project);
         final Action<Task> action = actionFor(project);
         newTask(CHECK_FQN, action).insertAfterTask(COMPILE_JAVA)
                                   .insertBeforeTask(PROCESS_RESOURCES)

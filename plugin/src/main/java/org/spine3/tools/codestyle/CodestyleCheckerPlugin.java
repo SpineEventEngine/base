@@ -38,21 +38,19 @@ public class CodestyleCheckerPlugin extends SpinePlugin {
     @Override
     public void apply(final Project project) {
         project.getExtensions()
-               .add(CODESTYLE_CHECKER_EXTENSION_NAME, CodestyleExtension.class);
+               .create(CODESTYLE_CHECKER_EXTENSION_NAME, CodestyleExtension.class);
 
         log().debug("Applying Spine Javadoc link checker plugin");
         new JavadocLinkCheckerPlugin().apply(project);
     }
 
-    public static SubcheckerExtension addSubcheckerExtension(
+    public static SubcheckerExtension createSubcheckerExtension(
             String extensionName, Project project) {
         final ExtensionAware codestyleExtension =
                 (ExtensionAware) project.getExtensions()
                                         .getByName(CODESTYLE_CHECKER_EXTENSION_NAME);
-        codestyleExtension.getExtensions()
-                          .add(extensionName, SubcheckerExtension.class);
-        return (SubcheckerExtension) codestyleExtension.getExtensions()
-                                                       .getByName(extensionName);
+        return codestyleExtension.getExtensions()
+                                 .create(extensionName, SubcheckerExtension.class);
     }
 
     private static Logger log() {
