@@ -30,10 +30,10 @@ import org.slf4j.LoggerFactory;
 public class SubcheckerExtension {
 
     private Threshold threshold = new Threshold(0);
-    private Response responseType = Response.WARN;
+    private ReportType reportType = ReportType.WARN;
 
-    public Response getResponseType() {
-        return responseType;
+    public ReportType getReportType() {
+        return reportType;
     }
 
     public Threshold getThreshold() {
@@ -45,9 +45,9 @@ public class SubcheckerExtension {
         log().debug("Threshold set up to {}", threshold);
     }
 
-    public void setResponseType(String responseType) {
-        this.responseType = Response.of(responseType);
-        log().debug("Reaction type set up to {}", this.responseType);
+    public void setReportType(String reportType) {
+        this.reportType = ReportType.of(reportType);
+        log().debug("Report type set up to {}", this.reportType);
     }
 
     private static Logger log() {

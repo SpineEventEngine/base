@@ -60,11 +60,11 @@ public class JavadocLinkCheckerPluginShould {
     @Rule
     public final TemporaryFolder testProjectDir = new TemporaryFolder();
 
-    public void setUpTestProject(int threshold, Response responseType) throws IOException {
+    public void setUpTestProject(int threshold, ReportType reportType) throws IOException {
         final Path buildGradleFile = testProjectDir.getRoot()
                                                    .toPath()
                                                    .resolve("build.gradle");
-        final InputStream input = getBuildFileContent(threshold, responseType);
+        final InputStream input = getBuildFileContent(threshold, reportType);
 
         final Path testSources = testProjectDir.getRoot()
                                                .toPath()
@@ -82,7 +82,7 @@ public class JavadocLinkCheckerPluginShould {
 
     @Test
     public void fail_build_if_wrong_fqn_name_found() throws IOException {
-        setUpTestProject(THRESHOLD, Response.ERROR);
+        setUpTestProject(THRESHOLD, ReportType.ERROR);
         final Path testSources = testProjectDir.getRoot()
                                                .toPath()
                                                .resolve(SOURCE_FOLDER);
@@ -100,7 +100,7 @@ public class JavadocLinkCheckerPluginShould {
 
     @Test
     public void allow_correct_fqn_name_format() throws IOException {
-        setUpTestProject(THRESHOLD, Response.ERROR);
+        setUpTestProject(THRESHOLD, ReportType.ERROR);
         final Path testSources = testProjectDir.getRoot()
                                                .toPath()
                                                .resolve(SOURCE_FOLDER);
@@ -123,7 +123,7 @@ public class JavadocLinkCheckerPluginShould {
 
     @Test
     public void warn_by_default_about_wrong_link_formats() throws IOException {
-        setUpTestProject(2, Response.WARN);
+        setUpTestProject(2, ReportType.WARN);
         final Path testSources = testProjectDir.getRoot()
                                                .toPath()
                                                .resolve(SOURCE_FOLDER);
@@ -154,7 +154,7 @@ public class JavadocLinkCheckerPluginShould {
                 .toList();
     }
 
-    private InputStream getBuildFileContent(int threshold, Response responseType)
+    private InputStream getBuildFileContent(int threshold, ReportType reportType)
             throws IOException {
         final InputStream input =
                 getClass().getClassLoader()
@@ -163,11 +163,11 @@ public class JavadocLinkCheckerPluginShould {
         IOUtils.copy(input, writer);
 
         final String thresholdValue = String.valueOf(threshold);
-        final String responseTypeValue = format("\"%s\"", responseType.getValue());
+        final String reportTypeValue = format("\"%s\"", reportType.getValue());
 
         final String writerContent = writer.toString();
         String result = writerContent.replace("thresholdValue", thresholdValue);
-        result = result.replace("responseTypeValue", responseTypeValue);
+        result = result.replace("reportTypeValue", reportTypeValue);
 
         final InputStream stream = new ByteArrayInputStream(result.getBytes(UTF_8));
         return stream;

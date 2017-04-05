@@ -29,7 +29,7 @@ import static java.lang.String.format;
  *
  * @author Alexander Aleksandrov
  */
-public enum Response {
+public enum ReportType {
 
     /**
      * This instance will log warning message.
@@ -48,14 +48,14 @@ public enum Response {
         }
     };
 
-    private final String responseType;
+    private final String value;
 
-    Response(String responseType) {
-        this.responseType = responseType;
+    ReportType(String value) {
+        this.value = value;
     }
 
     public String getValue() {
-        return responseType;
+        return value;
     }
 
     /**
@@ -67,25 +67,25 @@ public enum Response {
         log().error(cause.getMessage());
     }
 
-    public static Response of(String responseType) {
-        for (Response response : Response.values()) {
-            if (response.getValue()
-                        .equals(responseType)) {
-                return response;
+    public static ReportType of(String value) {
+        for (ReportType reportType : ReportType.values()) {
+            if (reportType.getValue()
+                          .equals(value)) {
+                return reportType;
             }
         }
 
-        final String msg = format("Invalid response type \"%s\".", responseType);
+        final String msg = format("Invalid report type \"%s\".", value);
         throw new IllegalStateException(msg);
     }
 
     private static Logger log() {
-        return Response.LogSingleton.INSTANCE.value;
+        return ReportType.LogSingleton.INSTANCE.value;
     }
 
     private enum LogSingleton {
         INSTANCE;
         @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = LoggerFactory.getLogger(Response.class);
+        private final Logger value = LoggerFactory.getLogger(ReportType.class);
     }
 }

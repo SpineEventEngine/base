@@ -157,7 +157,7 @@ public class JavadocLinkCheckerPlugin extends SpinePlugin {
             if (storage.getLinkTotal() > extension.getThreshold()
                                                   .getValue()) {
                 storage.logInvalidFqnUsages();
-                extension.getResponseType()
+                extension.getReportType()
                          .logOrFail(new InvalidFqnUsageException());
             }
         }

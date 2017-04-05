@@ -9,6 +9,6 @@ codestyleChecker {
 
     javadocLinkChecker {
         threshold = thresholdValue
-        responseType = responseTypeValue
+        reportType = reportTypeValue
     }
 }

@@ -22,7 +22,7 @@ package org.spine3.tools.codestyle;
 
 /**
  * A bearable (non-negative) threshold of code style violations,
- * that will not trigger a {@link Response}.
+ * that will not trigger a code style verification report.
  *
  * @author Dmytro Grankin
  */
