@@ -27,7 +27,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spine3.gradle.SpinePlugin;
 import org.spine3.tools.codestyle.Extension;
-import org.spine3.tools.codestyle.Response;
 
 import java.io.File;
 import java.io.IOException;
@@ -47,6 +46,7 @@ import static java.util.regex.Pattern.compile;
 import static org.spine3.gradle.TaskName.CHECK_FQN;
 import static org.spine3.gradle.TaskName.COMPILE_JAVA;
 import static org.spine3.gradle.TaskName.PROCESS_RESOURCES;
+import static org.spine3.tools.codestyle.CodestyleCheckerPlugin.getExtension;
 
 /**
  * The plugin that checks the target project Javadocs for broken links that
@@ -58,41 +58,26 @@ public class JavadocLinkCheckerPlugin extends SpinePlugin {
 
     private static final String DIRECTORY_TO_CHECK = "/src/main/java";
     private static final String JAVA_EXTENSION = ".java";
+    public static final String JAVADOC_LINK_CHECKER_EXTENSION_NAME = "javadocLinkChecker";
 
     private final InvalidResultStorage storage = new InvalidResultStorage();
-
-    /**
-     * The quantity of broken link that will make an exception.
-     */
-    private int exceptionThreshold = 0;
-
-    /**
-     * The behavior that can be either warning or error.
-     *
-     * {@link Response#WARN} is default.
-     */
-    private Response responseType = Response.WARN;
+    private Extension extension;
 
     @Override
     public void apply(Project project) {
+        extension = getExtension(JAVADOC_LINK_CHECKER_EXTENSION_NAME, project);
         final Action<Task> action = actionFor(project);
         newTask(CHECK_FQN, action).insertAfterTask(COMPILE_JAVA)
                                   .insertBeforeTask(PROCESS_RESOURCES)
                                   .applyNowTo(project);
-        log().debug("Starting to check Javadocs {}", action);
+        log().debug("Starting to check Javadoc links {}", action);
     }
 
     public Action<Task> actionFor(final Project project) {
-        log().debug("Preparing an action for the Javadoc checker");
+        log().debug("Preparing an action for the Javadoc link checker");
         return new Action<Task>() {
             @Override
             public void execute(Task task) {
-                exceptionThreshold = Extension.getThreshold(project);
-                final String type = Extension.getResponseType(project)
-                                             .trim()
-                                             .toUpperCase();
-                responseType = Response.valueOf(type);
-
                 final List<String> dirsToCheck = getDirsToCheck(project);
                 findFqnLinksWithoutText(dirsToCheck);
                 log().debug("Ending an action");
@@ -169,9 +154,11 @@ public class JavadocLinkCheckerPlugin extends SpinePlugin {
 
         if (!invalidLinks.isEmpty()) {
             storage.save(path, invalidLinks);
-            if (storage.getLinkTotal() > exceptionThreshold) {
+            if (storage.getLinkTotal() > extension.getThreshold()
+                                                  .getValue()) {
                 storage.logInvalidFqnUsages();
-                responseType.logOrFail(new InvalidFqnUsageException());
+                extension.getResponseType()
+                         .logOrFail(new InvalidFqnUsageException());
             }
         }
     }

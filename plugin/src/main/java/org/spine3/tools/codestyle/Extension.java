@@ -19,61 +19,46 @@
  */
 package org.spine3.tools.codestyle;
 
-import org.gradle.api.Project;
+import org.gradle.api.Named;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.spine3.tools.codestyle.CodestyleCheckerPlugin.CODESTYLE_CHECKER_EXTENSION_NAME;
-
 /**
- * A configuration class for the {@link CodestyleCheckerPlugin}.
+ * A configuration class for the {@link CodestyleCheckerPlugin} nested plugins.
  *
  * @author Alexander Aleksandrov
  */
-public class Extension {
+public class Extension implements Named {
 
-    private int threshold = 0;
-    private String responseType = "";
+    private final String name;
+    private Threshold threshold = new Threshold(0);
+    private Response responseType = Response.WARN;
 
-    public String getResponseType() {
+    public Extension(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    public Response getResponseType() {
         return responseType;
     }
 
-    public int getThreshold() {
+    public Threshold getThreshold() {
         return threshold;
     }
 
-    public void setThreshold(int threshold) {
-        log().debug("Setting up threshold to {}", threshold);
-        this.threshold = threshold;
+    public void setThreshold(int value) {
+        this.threshold = new Threshold(value);
+        log().debug("Threshold set up to {}", threshold);
     }
 
     public void setResponseType(String responseType) {
-        log().debug("Setting up reaction type to {}", responseType);
-        this.responseType = responseType;
-    }
-
-    public static String getResponseType(Project project) {
-        final String responseType = checkJavadoc(project).responseType;
-        if (responseType.isEmpty()) {
-            return Response.WARN.getValue();
-        } else {
-            return responseType;
-        }
-    }
-
-    public static int getThreshold(Project project) {
-        final int threshold = checkJavadoc(project).threshold;
-        if (threshold < 0) {
-            return 0;
-        } else {
-            return threshold;
-        }
-    }
-
-    private static Extension checkJavadoc(Project project) {
-        return (Extension) project.getExtensions()
-                                  .getByName(CODESTYLE_CHECKER_EXTENSION_NAME);
+        this.responseType = Response.of(responseType);
+        log().debug("Reaction type set up to {}", this.responseType);
     }
 
     private static Logger log() {

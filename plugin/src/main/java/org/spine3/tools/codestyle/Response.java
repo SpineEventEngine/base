@@ -22,6 +22,8 @@ package org.spine3.tools.codestyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static java.lang.String.format;
+
 /**
  * This enum states two behavior types that either log warnings or fail build process.
  *
@@ -63,6 +65,18 @@ public enum Response {
      */
     public void logOrFail(Throwable cause) {
         log().error(cause.getMessage());
+    }
+
+    public static Response of(String responseType) {
+        for (Response response : Response.values()) {
+            if (response.getValue()
+                        .equals(responseType)) {
+                return response;
+            }
+        }
+
+        final String msg = format("Invalid response type \"%s\".", responseType);
+        throw new IllegalStateException(msg);
     }
 
     private static Logger log() {
