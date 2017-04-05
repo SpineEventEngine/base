@@ -19,8 +19,8 @@
  */
 package org.spine3.tools.codestyle;
 
-import org.gradle.api.NamedDomainObjectContainer;
 import org.gradle.api.Project;
+import org.gradle.api.plugins.ExtensionAware;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spine3.gradle.SpinePlugin;
@@ -37,22 +37,22 @@ public class CodestyleCheckerPlugin extends SpinePlugin {
 
     @Override
     public void apply(final Project project) {
-        final NamedDomainObjectContainer<Extension> subExtensions =
-                project.container(Extension.class);
         project.getExtensions()
-               .add(CODESTYLE_CHECKER_EXTENSION_NAME, subExtensions);
+               .add(CODESTYLE_CHECKER_EXTENSION_NAME, CodestyleExtension.class);
 
         log().debug("Applying Spine Javadoc link checker plugin");
         new JavadocLinkCheckerPlugin().apply(project);
     }
 
-    public static Extension getExtension(String extensionName, Project project) {
-        final NamedDomainObjectContainer subExtensions =
-                (NamedDomainObjectContainer) project.getExtensions()
-                                                    .getByName(CODESTYLE_CHECKER_EXTENSION_NAME);
-
-        final Extension extension = (Extension) subExtensions.getByName(extensionName);
-        return extension;
+    public static SubcheckerExtension addSubcheckerExtension(
+            String extensionName, Project project) {
+        final ExtensionAware codestyleExtension =
+                (ExtensionAware) project.getExtensions()
+                                        .getByName(CODESTYLE_CHECKER_EXTENSION_NAME);
+        codestyleExtension.getExtensions()
+                          .add(extensionName, SubcheckerExtension.class);
+        return (SubcheckerExtension) codestyleExtension.getExtensions()
+                                                       .getByName(extensionName);
     }
 
     private static Logger log() {

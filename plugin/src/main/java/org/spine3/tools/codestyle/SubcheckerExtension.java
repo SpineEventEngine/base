@@ -19,7 +19,6 @@
  */
 package org.spine3.tools.codestyle;
 
-import org.gradle.api.Named;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,20 +27,10 @@ import org.slf4j.LoggerFactory;
  *
  * @author Alexander Aleksandrov
  */
-public class Extension implements Named {
+public class SubcheckerExtension {
 
-    private final String name;
     private Threshold threshold = new Threshold(0);
     private Response responseType = Response.WARN;
-
-    public Extension(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String getName() {
-        return name;
-    }
 
     public Response getResponseType() {
         return responseType;
@@ -68,6 +57,6 @@ public class Extension implements Named {
     private enum LoggerSingleton {
         INSTANCE;
         @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger logger = LoggerFactory.getLogger(Extension.class);
+        private final Logger logger = LoggerFactory.getLogger(SubcheckerExtension.class);
     }
 }

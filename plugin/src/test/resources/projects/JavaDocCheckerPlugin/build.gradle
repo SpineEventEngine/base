@@ -5,7 +5,10 @@ plugins {
 
 apply plugin: 'org.spine3.tools.spine-codestyle-checker'
 
-checkCodestyle {
-    threshold = thresholdValue
-    responseType = responseTypeValue
+codestyleChecker {
+
+    javadocLinkChecker {
+        threshold = thresholdValue
+        responseType = responseTypeValue
+    }
 }
