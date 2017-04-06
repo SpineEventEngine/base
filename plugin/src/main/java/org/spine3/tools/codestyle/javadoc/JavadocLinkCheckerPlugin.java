@@ -73,7 +73,7 @@ public class JavadocLinkCheckerPlugin extends SpinePlugin {
         log().debug("Starting to check Javadoc links {}", action);
     }
 
-    public Action<Task> actionFor(final Project project) {
+    private Action<Task> actionFor(final Project project) {
         log().debug("Preparing an action for the Javadoc link checker");
         return new Action<Task>() {
             @Override
@@ -249,7 +249,7 @@ public class JavadocLinkCheckerPlugin extends SpinePlugin {
             this.pattern = pattern;
         }
 
-        public Pattern getPattern() {
+        Pattern getPattern() {
             return pattern;
         }
     }

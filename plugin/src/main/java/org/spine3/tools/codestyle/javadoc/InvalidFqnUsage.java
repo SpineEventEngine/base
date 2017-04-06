@@ -24,24 +24,24 @@ import com.google.common.base.MoreObjects;
 /**
  * @author Alexander Aleksandrov
  */
-public class InvalidFqnUsage {
+class InvalidFqnUsage {
 
     private final String actualUsage;
     private int index = 0;
 
-    public InvalidFqnUsage(String actualUsage) {
+    InvalidFqnUsage(String actualUsage) {
         this.actualUsage = actualUsage;
     }
 
-    public String getActualUsage() {
+    String getActualUsage() {
         return actualUsage;
     }
 
-    public int getIndex() {
+    int getIndex() {
         return index;
     }
 
-    public void setIndex(int index) {
+    void setIndex(int index) {
         this.index = index;
     }
 

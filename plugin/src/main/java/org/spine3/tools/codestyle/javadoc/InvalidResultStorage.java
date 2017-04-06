@@ -34,7 +34,7 @@ import static java.lang.String.format;
  *
  * @author Alexander Aleksandrov
  */
-public class InvalidResultStorage {
+class InvalidResultStorage {
 
     private static final Map<Path, List<InvalidFqnUsage>> resultStorage = new HashMap<>();
 
@@ -42,7 +42,7 @@ public class InvalidResultStorage {
         return resultStorage;
     }
 
-    public int getLinkTotal() {
+    int getLinkTotal() {
         int total = 0;
         for (List<InvalidFqnUsage> l : resultStorage.values()) {
             total += l.size();
@@ -50,7 +50,7 @@ public class InvalidResultStorage {
         return total;
     }
 
-    public void logInvalidFqnUsages() {
+    void logInvalidFqnUsages() {
         for (Map.Entry<Path, List<InvalidFqnUsage>> entry : resultStorage.entrySet()) {
             logInvalidFqnUsages(entry);
         }
@@ -73,7 +73,7 @@ public class InvalidResultStorage {
      * @param path file path that contain wrong fomated links
      * @param list list of invalid fully qualified names usages
      */
-    public void save(Path path, List<InvalidFqnUsage> list) {
+    void save(Path path, List<InvalidFqnUsage> list) {
         resultStorage.put(path, list);
     }
 
