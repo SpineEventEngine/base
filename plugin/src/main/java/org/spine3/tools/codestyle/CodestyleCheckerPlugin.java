@@ -69,6 +69,14 @@ public class CodestyleCheckerPlugin extends SpinePlugin {
         new JavadocLinkCheckerPlugin().apply(project);
     }
 
+    /**
+     * Creates {@linkplain StepConfiguration step extension}
+     * with the specified name in the specified project.
+     *
+     * @param extensionName the extension name to create
+     * @param project       the project in which to create extensions
+     * @return the created extension
+     */
     public static StepConfiguration createStepExtension(String extensionName, Project project) {
         final ExtensionAware codestyleExtension =
                 (ExtensionAware) project.getExtensions()
