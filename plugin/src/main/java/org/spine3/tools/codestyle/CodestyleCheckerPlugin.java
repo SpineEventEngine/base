@@ -53,6 +53,8 @@ import org.spine3.tools.codestyle.javadoc.JavadocLinkCheckerPlugin;
  * }</pre>
  *
  * @author Alexander Aleksandrov
+ * @see Threshold
+ * @see ReportType
  */
 public class CodestyleCheckerPlugin extends SpinePlugin {
 
