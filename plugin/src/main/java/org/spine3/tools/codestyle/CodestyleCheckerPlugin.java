@@ -29,6 +29,29 @@ import org.spine3.tools.codestyle.javadoc.JavadocLinkCheckerPlugin;
 /**
  * The plugin that verifies code style.
  *
+ * <p>The plugin verifies the few code style aspects.
+ *
+ * <p>Every verification starts one by one during a build process and
+ * has {@linkplain Threshold "threshold"} and {@linkplain ReportType "reportType"} parameters.
+ *
+ * <p>The configuration may look like:
+ * <pre>{@code
+ * codestyleChecker {
+ *
+ *      javadocLinkChecker {
+ *
+ *          threshold = 0
+ *          reportType = "warn"
+ *      }
+ *
+ *      anotherCodestyleChecker {
+ *
+ *          threshold = 5
+ *          reportType = "error"
+ *      }
+ * }
+ * }</pre>
+ *
  * @author Alexander Aleksandrov
  */
 public class CodestyleCheckerPlugin extends SpinePlugin {
