@@ -27,5 +27,5 @@ package org.spine3.tools.codestyle;
  *
  * @author Dmytro Grankin
  */
-public class CodestyleExtension {
+public class CodestylePluginConfiguration {
 }

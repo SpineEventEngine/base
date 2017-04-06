@@ -38,7 +38,7 @@ public class CodestyleCheckerPlugin extends SpinePlugin {
     @Override
     public void apply(final Project project) {
         project.getExtensions()
-               .create(CODESTYLE_CHECKER_EXTENSION_NAME, CodestyleExtension.class);
+               .create(CODESTYLE_CHECKER_EXTENSION_NAME, CodestylePluginConfiguration.class);
 
         log().debug("Applying Spine Javadoc link checker plugin");
         new JavadocLinkCheckerPlugin().apply(project);
