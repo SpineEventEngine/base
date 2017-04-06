@@ -44,13 +44,12 @@ public class CodestyleCheckerPlugin extends SpinePlugin {
         new JavadocLinkCheckerPlugin().apply(project);
     }
 
-    public static SubcheckerExtension createSubcheckerExtension(
-            String extensionName, Project project) {
+    public static StepConfiguration createStepExtension(String extensionName, Project project) {
         final ExtensionAware codestyleExtension =
                 (ExtensionAware) project.getExtensions()
                                         .getByName(CODESTYLE_CHECKER_EXTENSION_NAME);
         return codestyleExtension.getExtensions()
-                                 .create(extensionName, SubcheckerExtension.class);
+                                 .create(extensionName, StepConfiguration.class);
     }
 
     private static Logger log() {

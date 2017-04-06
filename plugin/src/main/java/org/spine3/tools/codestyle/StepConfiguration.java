@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Alexander Aleksandrov
  */
-public class SubcheckerExtension {
+public class StepConfiguration {
 
     private Threshold threshold = new Threshold(0);
     private ReportType reportType = ReportType.WARN;
@@ -57,6 +57,6 @@ public class SubcheckerExtension {
     private enum LoggerSingleton {
         INSTANCE;
         @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger logger = LoggerFactory.getLogger(SubcheckerExtension.class);
+        private final Logger logger = LoggerFactory.getLogger(StepConfiguration.class);
     }
 }

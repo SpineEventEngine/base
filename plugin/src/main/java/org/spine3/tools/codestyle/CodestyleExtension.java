@@ -23,7 +23,7 @@ package org.spine3.tools.codestyle;
 /**
  * A configuration class for the {@link CodestyleCheckerPlugin}.
  *
- * <p>Serves as a parent extension for {@link SubcheckerExtension}s.
+ * <p>Serves as a parent extension for {@link StepConfiguration}s.
  *
  * @author Dmytro Grankin
  */
