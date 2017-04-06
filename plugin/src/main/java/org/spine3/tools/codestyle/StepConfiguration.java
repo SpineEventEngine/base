@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
 /**
  * A configuration class for the {@link CodestyleCheckerPlugin} nested plugins.
  *
- * @author Alexander Aleksandrov
+ * @author Dmytro Grankin
  */
 public class StepConfiguration {
 
