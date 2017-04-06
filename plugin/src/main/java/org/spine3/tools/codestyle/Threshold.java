@@ -21,10 +21,17 @@
 package org.spine3.tools.codestyle;
 
 /**
- * A bearable (non-negative) threshold of code style violations,
- * that will not trigger a code style verification report.
+ * A bearable (non-negative) threshold of code style violations.
+ *
+ * <p>If a code style violations amount not exceed a threshold value,
+ * then a code style verification is considered passed:
+ * <ul>
+ * <li>violations should not be reported;</li>
+ * <li>if report type is {@linkplain ReportType#ERROR error}, build should not be failed.</li>
+ * </ul>that violations should not be reported
  *
  * @author Dmytro Grankin
+ * @see ReportType
  */
 public class Threshold {
 
@@ -35,7 +42,7 @@ public class Threshold {
      *
      * @param value the non-negative value
      */
-    public Threshold(int value) {
+    Threshold(int value) {
         this.value = Math.max(value, 0);
     }
 
