@@ -44,7 +44,7 @@ import org.spine3.tools.codestyle.javadoc.JavadocLinkCheckerPlugin;
  *
  *      javadocLinkChecker {
  *
- *          // Will report the violations if a number of broken FQN links is exceed zero.
+ *          // Will report the broken FQN links if a number of them is exceed zero.
  *          threshold = 0
  *
  *          // Report consists of a logged violations.
