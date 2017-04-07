@@ -29,7 +29,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  * @author Dmytro Grankin
  */
-public final class StepConfiguration {
+public class StepConfiguration {
 
     /**
      * A bearable threshold of code style violations.
