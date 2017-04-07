@@ -22,14 +22,27 @@ package org.spine3.tools.codestyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * A configuration class for the {@link CodestyleCheckerPlugin} nested plugins.
  *
  * @author Dmytro Grankin
  */
-public class StepConfiguration {
+public final class StepConfiguration {
 
+    /**
+     * A bearable threshold of code style violations.
+     *
+     * Zero is default.
+     */
     private Threshold threshold = new Threshold(0);
+
+    /**
+     * A plugin {@link ReportType}.
+     *
+     * {@link ReportType#WARN} is default.
+     */
     private ReportType reportType = ReportType.WARN;
 
     public ReportType getReportType() {
@@ -46,6 +59,7 @@ public class StepConfiguration {
     }
 
     public void setReportType(String reportType) {
+        checkNotNull(reportType);
         this.reportType = ReportType.of(reportType);
         log().debug("Report type set up to {}", this.reportType);
     }
