@@ -26,19 +26,21 @@ package org.spine3.tools.codestyle;
  * <p>If a code style violations amount not exceed a threshold value,
  * then a code style verification is considered passed:
  * <ul>
- * <li>violations should not be reported;</li>
- * <li>if report type is {@linkplain ReportType#ERROR error}, build should not be failed.</li>
+ *     <li>violations should not be reported;</li>
+ *     <li>if report type is {@linkplain ReportType#ERROR error}, build should not be failed.</li>
  * </ul>that violations should not be reported
  *
  * @author Dmytro Grankin
  * @see ReportType
  */
-public class Threshold {
+public final class Threshold {
 
     private final int value;
 
     /**
      * Creates a new instance.
+     *
+     * <p>If the specified value is negative, zero will be set.
      *
      * @param value the non-negative value
      */
