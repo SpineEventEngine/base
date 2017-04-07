@@ -44,19 +44,20 @@ import org.spine3.tools.codestyle.javadoc.JavadocLinkCheckerPlugin;
  *
  *      javadocLinkChecker {
  *
- *          // Will report the broken FQN links if a number of them is exceed zero.
+ *          // Will report the broken FQN links if there is at least one.
  *          threshold = 0
  *
- *          // Report consists of a logged violations.
+ *          // The violations are logged to the build report.
  *          reportType = "warn"
  *      }
  *
  *      anotherCodestyleChecker {
  *
- *          // Will report the code style violations if a number of them is exceed five.
+ *          // Will report the code style violations if their number exceeds five.
  *          threshold = 5
  *
- *          // Report consists of a logged violations and a failed build.
+ *          // If threshold is exceeded, the build will fail.
+ *          // Its report will contain the violations.
  *          reportType = "error"
  *      }
  * }
