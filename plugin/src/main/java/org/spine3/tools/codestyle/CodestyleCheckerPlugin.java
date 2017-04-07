@@ -29,30 +29,41 @@ import org.spine3.tools.codestyle.javadoc.JavadocLinkCheckerPlugin;
 /**
  * The plugin that verifies code style.
  *
- * <p>The plugin verifies the few code style aspects.
+ * <p>The verification consists of several steps, executed in a chain during the build process.
  *
- * <p>Every verification starts one by one during a build process and
- * has {@linkplain Threshold "threshold"} and {@linkplain ReportType "reportType"} parameters.
+ * <p>Each step is configured with the parameters as follows:
+ * <ul>
+ *     <li>{@linkplain Threshold "threshold"} is a number of code style violations
+ *     to consider check passed;</li>
+ *     <li>{@linkplain ReportType "reportType"} if a check is not passed.</li>
+ * </ul>
  *
- * <p>The configuration may look like:
+ * <p>Example:
  * <pre>{@code
  * codestyleChecker {
  *
  *      javadocLinkChecker {
  *
+ *          // Will report the violations if a number of broken FQN links is exceed zero.
  *          threshold = 0
+ *
+ *          // Report represents a logged violations.
  *          reportType = "warn"
  *      }
  *
  *      anotherCodestyleChecker {
  *
+ *          // Will report the code style violations if a number of them is exceed five.
  *          threshold = 5
+ *
+ *          // Report represents a logged violations and a failed build.
  *          reportType = "error"
  *      }
  * }
  * }</pre>
  *
  * @author Alexander Aleksandrov
+ * @author Dmytro Grankin
  * @see Threshold
  * @see ReportType
  */
