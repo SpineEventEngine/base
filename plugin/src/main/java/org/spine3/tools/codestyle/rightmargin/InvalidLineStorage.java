@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2016, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -17,7 +17,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.spine3.tools.codestyle.javadoc;
+package org.spine3.tools.codestyle.rightmargin;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,38 +30,36 @@ import java.util.Map;
 import static java.lang.String.format;
 
 /**
- * Utility class to save and address results of fully qualified name javadoc validate.
+ * Utility class to save and address results of right margin wrapping validate.
  *
  * @author Alexander Aleksandrov
  */
-class InvalidResultStorage {
+public class InvalidLineStorage {
+    private static final Map<Path, List<InvalidLineLength>> resultStorage = new HashMap<>();
 
-    private static final Map<Path, List<InvalidFqnUsage>> resultStorage = new HashMap<>();
-
-    public Map<Path, List<InvalidFqnUsage>> getResults() {
+    public Map<Path, List<InvalidLineLength>> getResults() {
         return resultStorage;
     }
 
-    int getLinkTotal() {
+    int getLinesTotal() {
         int total = 0;
-        for (List<InvalidFqnUsage> l : resultStorage.values()) {
+        for (List<InvalidLineLength> l : resultStorage.values()) {
             total += l.size();
         }
         return total;
     }
 
-    void logInvalidFqnUsages() {
-        for (Map.Entry<Path, List<InvalidFqnUsage>> entry : resultStorage.entrySet()) {
-            logInvalidFqnUsages(entry);
+    void logInvalidLines() {
+        for (Map.Entry<Path, List<InvalidLineLength>> entry : resultStorage.entrySet()) {
+            logInvalidLines(entry);
         }
     }
 
-    private static void logInvalidFqnUsages(Map.Entry<Path, List<InvalidFqnUsage>> entry) {
-        for (InvalidFqnUsage invalidFqnUsage : entry.getValue()) {
+    private static void logInvalidLines(Map.Entry<Path, List<InvalidLineLength>> entry) {
+        for (InvalidLineLength invalidLineLength : entry.getValue()) {
             final String msg = format(
-                    " Wrong link format found: %s on %s line in %s",
-                    invalidFqnUsage.getActualUsage(),
-                    invalidFqnUsage.getIndex(),
+                    " Long line found on: %s line in %s",
+                    invalidLineLength.getIndex(),
                     entry.getKey());
             log().error(msg);
         }
@@ -73,17 +71,18 @@ class InvalidResultStorage {
      * @param path file path that contain wrong fomated links
      * @param list list of invalid fully qualified names usages
      */
-    void save(Path path, List<InvalidFqnUsage> list) {
+    void save(Path path, List<InvalidLineLength> list) {
         resultStorage.put(path, list);
     }
 
     private static Logger log() {
-        return InvalidResultStorage.LogSingleton.INSTANCE.value;
+        return InvalidLineStorage.LogSingleton.INSTANCE.value;
     }
 
     private enum LogSingleton {
         INSTANCE;
         @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = LoggerFactory.getLogger(InvalidResultStorage.class);
+        private final Logger value = LoggerFactory.getLogger(InvalidLineStorage.class);
     }
+
 }

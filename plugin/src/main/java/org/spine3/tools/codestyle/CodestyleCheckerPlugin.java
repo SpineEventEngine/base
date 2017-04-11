@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spine3.gradle.SpinePlugin;
 import org.spine3.tools.codestyle.javadoc.JavadocLinkCheckerPlugin;
+import org.spine3.tools.codestyle.rightmargin.RightMarginCheckerPlugin;
 
 /**
  * The plugin that verifies code style.
@@ -34,8 +35,8 @@ import org.spine3.tools.codestyle.javadoc.JavadocLinkCheckerPlugin;
  * <p>Each step is configured with the parameters as follows:
  * <ul>
  *     <li>{@linkplain Threshold "threshold"} is a number of code style violations
- *     to consider check passed;</li>
- *     <li>{@linkplain ReportType "reportType"} if a check is not passed.</li>
+ *     to consider validate passed;</li>
+ *     <li>{@linkplain ReportType "reportType"} if a validate is not passed.</li>
  * </ul>
  *
  * <p>Example:
@@ -79,6 +80,8 @@ public class CodestyleCheckerPlugin extends SpinePlugin {
 
         log().debug("Applying Spine Javadoc link checker plugin");
         new JavadocLinkCheckerPlugin().apply(project);
+        log().debug("Applying Spine Right margin wrapping checker plugin");
+        new RightMarginCheckerPlugin().apply(project);
     }
 
     /**

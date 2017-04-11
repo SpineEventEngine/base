@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2016, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -17,9 +17,24 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.spine3.tools.codestyle.rightmargin;
+
+import org.spine3.tools.codestyle.CodestyleException;
 
 /**
- * This package provides plugins and utilities to validate Javadoc style.
+ * @author Alexander Aleksandrov
  */
-package org.spine3.tools.codestyle.javadoc;
+public class InvalidLineLengthException extends CodestyleException {
+    private static final long serialVersionUID = 0L;
 
+    public InvalidLineLengthException() {
+        super("Lines should be no longer than right margin");
+    }
+
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
+    @Override
+    public String toString() {
+        final String str = getClass().getName();
+        return str + ": " + getMessage();
+    }
+}

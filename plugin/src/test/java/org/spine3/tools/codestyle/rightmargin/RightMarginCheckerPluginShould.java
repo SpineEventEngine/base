@@ -17,7 +17,8 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.spine3.tools.codestyle;
+
+package org.spine3.tools.codestyle.rightmargin;
 
 import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
@@ -30,12 +31,16 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.spine3.gradle.TaskName;
+import org.spine3.tools.codestyle.ReportType;
+import org.spine3.tools.codestyle.StepConfiguration;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.net.URI;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -47,13 +52,12 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class JavadocLinkCheckerPluginShould {
-
+public class RightMarginCheckerPluginShould {
     private static final String SOURCE_FOLDER = "src/main/java";
-    private static final String WRONG_LINK_FORMAT_MSG = "Wrong link format found";
-    private static final String CHECK_JAVADOC_LINK = TaskName.CHECK_FQN.getValue();
+    private static final String LONG_LINE_MSG = "Long line found";
+    private static final String CHECK_RIGHT_MARGIN_WRAPPING = TaskName.CHECK_RIGHT_MARGIN_WRAPPING.getValue();
     private static final String DEBUG_OPTION = "--debug";
-    private static final int THRESHOLD = 2;
+    private static final int THRESHOLD = 100;
 
     private String resourceFolder = "";
 
@@ -81,8 +85,8 @@ public class JavadocLinkCheckerPluginShould {
     }
 
     @Test
-    public void fail_build_if_wrong_fqn_name_found() throws IOException {
-        setUpTestProject(THRESHOLD, ReportType.ERROR);
+    public void warn_by_default_about_long_lines() throws IOException {
+        setUpTestProject(THRESHOLD, ReportType.WARN);
         final Path testSources = testProjectDir.getRoot()
                                                .toPath()
                                                .resolve(SOURCE_FOLDER);
@@ -91,54 +95,27 @@ public class JavadocLinkCheckerPluginShould {
         BuildResult buildResult = GradleRunner.create()
                                               .withProjectDir(testProjectDir.getRoot())
                                               .withPluginClasspath()
-                                              .withArguments(CHECK_JAVADOC_LINK, DEBUG_OPTION)
-                                              .buildAndFail();
-
-        assertTrue(buildResult.getOutput().contains(WRONG_LINK_FORMAT_MSG));
-    }
-
-    @Test
-    public void allow_correct_fqn_name_format() throws IOException {
-        setUpTestProject(THRESHOLD, ReportType.ERROR);
-        final Path testSources = testProjectDir.getRoot()
-                                               .toPath()
-                                               .resolve(SOURCE_FOLDER);
-        final Path wrongFqnFormat = Paths.get(testSources.toString() + "/WrongFQNformat.java");
-        final Path wrongMultipleFqnFormat = Paths.get(testSources.toString() + "/MultipleWrongFqnLinks.java");
-        FileUtils.copyDirectory(new File(resourceFolder), new File(testSources.toString()));
-        Files.deleteIfExists(wrongFqnFormat);
-        Files.deleteIfExists(wrongMultipleFqnFormat);
-
-        BuildResult buildResult = GradleRunner.create()
-                                              .withProjectDir(testProjectDir.getRoot())
-                                              .withPluginClasspath()
-                                              .withArguments(CHECK_JAVADOC_LINK, DEBUG_OPTION)
+                                              .withArguments(CHECK_RIGHT_MARGIN_WRAPPING, DEBUG_OPTION)
                                               .build();
 
-        final List<String> expected = Arrays.asList(":compileJava", ":checkJavadocLink");
-
-        assertEquals(expected, extractTasks(buildResult));
-    }
-
-    @Test
-    public void warn_by_default_about_wrong_link_formats() throws IOException {
-        setUpTestProject(2, ReportType.WARN);
-        final Path testSources = testProjectDir.getRoot()
-                                               .toPath()
-                                               .resolve(SOURCE_FOLDER);
-        FileUtils.copyDirectory(new File(resourceFolder), new File(testSources.toString()));
-
-        BuildResult buildResult = GradleRunner.create()
-                                              .withProjectDir(testProjectDir.getRoot())
-                                              .withPluginClasspath()
-                                              .withArguments(CHECK_JAVADOC_LINK, DEBUG_OPTION)
-                                              .build();
-
-        final List<String> expected = Arrays.asList(":compileJava", ":checkJavadocLink");
+        final List<String> expected = Arrays.asList(":compileJava", ":checkRightMarginWrapping");
 
         assertEquals(expected, extractTasks(buildResult));
         assertTrue(buildResult.getOutput()
-                              .contains(WRONG_LINK_FORMAT_MSG));
+                              .contains(LONG_LINE_MSG));
+    }
+
+    @Test
+    public void warn_longLines() throws IOException {
+        ClassLoader classLoader = getClass().getClassLoader();
+        File file = new File(classLoader.getResource("AllowedFqnFormats.java").getFile());
+        final Path path = Paths.get(file.getAbsolutePath());
+        final StepConfiguration configuration = new StepConfiguration();
+        configuration.setThreshold(100);
+        configuration.setReportType("warn");
+        RightMarginValidator validator = new RightMarginValidator(configuration);
+        validator.validate(path);
+
     }
 
     private static List<String> extractTasks(BuildResult buildResult) {
@@ -157,7 +134,7 @@ public class JavadocLinkCheckerPluginShould {
             throws IOException {
         final InputStream input =
                 getClass().getClassLoader()
-                          .getResourceAsStream("projects/JavaDocCheckerPlugin/build.gradle");
+                          .getResourceAsStream("projects/JavaDocCheckerPlugin/build-right-margin.gradle");
         final StringWriter writer = new StringWriter();
         IOUtils.copy(input, writer);
 
@@ -171,4 +148,5 @@ public class JavadocLinkCheckerPluginShould {
         final InputStream stream = new ByteArrayInputStream(result.getBytes(UTF_8));
         return stream;
     }
+
 }

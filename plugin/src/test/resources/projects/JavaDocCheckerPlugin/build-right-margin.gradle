@@ -1,0 +1,14 @@
+plugins {
+    id 'java'
+    id 'org.spine3.tools.spine-codestyle-checker' apply false
+}
+
+apply plugin: 'org.spine3.tools.spine-codestyle-checker'
+
+codestyleChecker {
+
+    rightMarginWrappingChecker {
+        threshold = thresholdValue
+    }
+
+}

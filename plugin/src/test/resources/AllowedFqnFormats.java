@@ -7,5 +7,12 @@
  {@link This.Iss}
 */
 package org.spine3.tools.codestyle.javadoc;
+
+import java.lang.annotation.AnnotationTypeMismatchException;
+import java.lang.invoke.WrongMethodTypeException;
+
 class AllowedFqnFormats {
+    public static void SomeVeryLongnameForaTestMethod(WrongMethodTypeException exception, AnnotationTypeMismatchException annotation) {
+
+    }
 }

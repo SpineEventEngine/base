@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2016, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -19,7 +19,6 @@
  */
 
 /**
- * This package provides plugins and utilities to validate Javadoc style.
+ * This package provides classes for plugins and utilities to validate code style.
  */
-package org.spine3.tools.codestyle.javadoc;
-
+package org.spine3.tools.codestyle.rightmargin;

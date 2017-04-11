@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2016, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -17,7 +17,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.spine3.tools.codestyle.javadoc;
+package org.spine3.tools.codestyle.rightmargin;
 
 import org.gradle.api.Action;
 import org.gradle.api.Project;
@@ -28,41 +28,39 @@ import org.spine3.gradle.SpinePlugin;
 import org.spine3.tools.codestyle.FileChecker;
 import org.spine3.tools.codestyle.StepConfiguration;
 
-import static org.spine3.gradle.TaskName.CHECK_FQN;
+import static org.spine3.gradle.TaskName.CHECK_RIGHT_MARGIN_WRAPPING;
 import static org.spine3.gradle.TaskName.COMPILE_JAVA;
 import static org.spine3.gradle.TaskName.PROCESS_RESOURCES;
 import static org.spine3.tools.codestyle.CodestyleCheckerPlugin.createStepExtension;
 
 /**
- * The plugin that checks the target project Javadocs for broken links that
- * are stated in the wrong format.
+ * The plugin that checks the target project java files for lines that is longer then
+ * allowed threshold.
  *
  * @author Alexander Aleksandrov
  */
-public class JavadocLinkCheckerPlugin extends SpinePlugin {
-
-    public static final String JAVADOC_LINK_CHECKER_EXTENSION_NAME = "javadocLinkChecker";
+public class RightMarginCheckerPlugin extends SpinePlugin {
+    public static final String RIGHT_MARGIN_CHECKER_EXTENSION_NAME = "rightMarginWrappingChecker";
     private StepConfiguration configuration;
 
     @Override
     public void apply(Project project) {
-        configuration = createStepExtension(JAVADOC_LINK_CHECKER_EXTENSION_NAME, project);
-        final FileChecker checker = new FileChecker(new InvalidFqnUsageValidator(configuration));
+        configuration = createStepExtension(RIGHT_MARGIN_CHECKER_EXTENSION_NAME, project);
+        final FileChecker checker = new FileChecker(new RightMarginValidator(configuration));
         final Action<Task> action = checker.actionFor(project);
-        newTask(CHECK_FQN, action).insertAfterTask(COMPILE_JAVA)
-                                  .insertBeforeTask(PROCESS_RESOURCES)
-                                  .applyNowTo(project);
-        log().debug("Starting to validate Javadoc links {}", action);
+        newTask(CHECK_RIGHT_MARGIN_WRAPPING, action).insertAfterTask(COMPILE_JAVA)
+                                                    .insertBeforeTask(PROCESS_RESOURCES)
+                                                    .applyNowTo(project);
+        log().debug("Starting to validate right margin wrapping {}", action);
     }
 
     private static Logger log() {
-        return JavadocLinkCheckerPlugin.LogSingleton.INSTANCE.value;
+        return RightMarginCheckerPlugin.LogSingleton.INSTANCE.value;
     }
 
     private enum LogSingleton {
         INSTANCE;
         @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = LoggerFactory.getLogger(JavadocLinkCheckerPlugin.class);
+        private final Logger value = LoggerFactory.getLogger(RightMarginCheckerPlugin.class);
     }
-
 }
