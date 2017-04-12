@@ -41,7 +41,7 @@ import static org.spine3.tools.codestyle.CodestyleCheckerPlugin.createStepExtens
  */
 public class RightMarginCheckerPlugin extends SpinePlugin {
     public static final String RIGHT_MARGIN_CHECKER_EXTENSION_NAME = "rightMarginWrappingChecker";
-    private StepConfiguration configuration;
+    public StepConfiguration configuration;
 
     @Override
     public void apply(Project project) {

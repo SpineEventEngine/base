@@ -39,8 +39,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
-import java.net.URI;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -101,8 +99,7 @@ public class RightMarginCheckerPluginShould {
         final List<String> expected = Arrays.asList(":compileJava", ":checkRightMarginWrapping");
 
         assertEquals(expected, extractTasks(buildResult));
-        assertTrue(buildResult.getOutput()
-                              .contains(LONG_LINE_MSG));
+        assertTrue(buildResult.getOutput().contains(LONG_LINE_MSG));
     }
 
     @Test
