@@ -7,5 +7,5 @@ dependencies {
     compile 'dom4j:dom4j:1.6.1'
     testCompile 'org.testng:testng:+'
 
-    compile project(path: ":common")
+    compile project(path: ":spine-tools-common")
 }
