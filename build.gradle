@@ -5,5 +5,5 @@ dependencies {
 
     compile group: 'com.google.guava', name: 'guava', version: guavaVersion
 
-    compile project(path: ":common")
+    compile project(path: ":spine-tools-common")
 }
