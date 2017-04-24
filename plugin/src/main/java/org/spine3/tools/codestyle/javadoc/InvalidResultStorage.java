@@ -21,6 +21,7 @@ package org.spine3.tools.codestyle.javadoc;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.spine3.tools.codestyle.CodestyleViolation;
 
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -36,32 +37,32 @@ import static java.lang.String.format;
  */
 class InvalidResultStorage {
 
-    private static final Map<Path, List<InvalidFqnUsage>> resultStorage = new HashMap<>();
+    private static final Map<Path, List<CodestyleViolation>> resultStorage = new HashMap<>();
 
-    public Map<Path, List<InvalidFqnUsage>> getResults() {
+    public Map<Path, List<CodestyleViolation>> getResults() {
         return resultStorage;
     }
 
     int getLinkTotal() {
         int total = 0;
-        for (List<InvalidFqnUsage> l : resultStorage.values()) {
+        for (List<CodestyleViolation> l : resultStorage.values()) {
             total += l.size();
         }
         return total;
     }
 
     void logInvalidFqnUsages() {
-        for (Map.Entry<Path, List<InvalidFqnUsage>> entry : resultStorage.entrySet()) {
+        for (Map.Entry<Path, List<CodestyleViolation>> entry : resultStorage.entrySet()) {
             logInvalidFqnUsages(entry);
         }
     }
 
-    private static void logInvalidFqnUsages(Map.Entry<Path, List<InvalidFqnUsage>> entry) {
-        for (InvalidFqnUsage invalidFqnUsage : entry.getValue()) {
+    private static void logInvalidFqnUsages(Map.Entry<Path, List<CodestyleViolation>> entry) {
+        for (CodestyleViolation codestyleViolation : entry.getValue()) {
             final String msg = format(
                     " Wrong link format found: %s on %s line in %s",
-                    invalidFqnUsage.getActualUsage(),
-                    invalidFqnUsage.getIndex(),
+                    codestyleViolation.getActualUsage(),
+                    codestyleViolation.getIndex(),
                     entry.getKey());
             log().error(msg);
         }
@@ -73,7 +74,7 @@ class InvalidResultStorage {
      * @param path file path that contain wrong fomated links
      * @param list list of invalid fully qualified names usages
      */
-    void save(Path path, List<InvalidFqnUsage> list) {
+    void save(Path path, List<CodestyleViolation> list) {
         resultStorage.put(path, list);
     }
 

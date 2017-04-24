@@ -21,43 +21,44 @@
 package org.spine3.tools.codestyle.javadoc;
 
 import org.junit.Test;
+import org.spine3.tools.codestyle.CodestyleViolation;
 
 import static org.junit.Assert.assertEquals;
 
 public class InvalidFqnUsageShould {
     public static final String expectedLink = "invalidFqnLink";
 
-    private InvalidFqnUsage invalidFqnUsage;
-    public InvalidFqnUsage setUpInvalidFqnUsage(String actualUsage, int index){
-        final InvalidFqnUsage invalidFqnUsage = new InvalidFqnUsage(actualUsage);
-        invalidFqnUsage.setIndex(index);
-        return invalidFqnUsage;
+    private CodestyleViolation codestyleViolation;
+    public CodestyleViolation setUpInvalidFqnUsage(String actualUsage, int index){
+        final CodestyleViolation codestyleViolation = new CodestyleViolation(actualUsage);
+        codestyleViolation.setIndex(index);
+        return codestyleViolation;
     }
 
     @Test
     public void getActualUsage() throws Exception {
-        invalidFqnUsage = setUpInvalidFqnUsage(expectedLink, 1);
-        assertEquals(expectedLink, invalidFqnUsage.getActualUsage());
+        codestyleViolation = setUpInvalidFqnUsage(expectedLink, 1);
+        assertEquals(expectedLink, codestyleViolation.getActualUsage());
     }
 
     @Test
     public void getIndex() throws Exception {
-        invalidFqnUsage = setUpInvalidFqnUsage(expectedLink, 1);
-        assertEquals(1, invalidFqnUsage.getIndex());
+        codestyleViolation = setUpInvalidFqnUsage(expectedLink, 1);
+        assertEquals(1, codestyleViolation.getIndex());
     }
 
     @Test
     public void setIndex() throws Exception {
-        invalidFqnUsage = setUpInvalidFqnUsage(expectedLink, 2);
-        invalidFqnUsage.setIndex(3);
-        assertEquals(3, invalidFqnUsage.getIndex());
+        codestyleViolation = setUpInvalidFqnUsage(expectedLink, 2);
+        codestyleViolation.setIndex(3);
+        assertEquals(3, codestyleViolation.getIndex());
     }
 
     @Test
     public void override_toString() throws Exception {
-        invalidFqnUsage = setUpInvalidFqnUsage(expectedLink, 1);
-        final String result = "InvalidFqnUsage{actualUsage=invalidFqnLink}";
-        assertEquals(result, invalidFqnUsage.toString());
+        codestyleViolation = setUpInvalidFqnUsage(expectedLink, 1);
+        final String result = "CodestyleViolation{actualUsage=invalidFqnLink}";
+        assertEquals(result, codestyleViolation.toString());
     }
 
 }

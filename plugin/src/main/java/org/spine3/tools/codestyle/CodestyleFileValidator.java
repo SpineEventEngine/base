@@ -20,11 +20,18 @@
 package org.spine3.tools.codestyle;
 
 import java.nio.file.Path;
+import java.util.List;
 
 /**
  * @author Alexander Aleksandrov
  */
-public interface CodestyleFileValidator {
+public interface CodestyleFileValidator{
 
     void validate(Path path) throws CodestyleException;
+
+    List<CodestyleViolation> checkForViolations(List<String> list);
+
+    void checkThreshold();
+
+    void onAboveThreshold();
 }

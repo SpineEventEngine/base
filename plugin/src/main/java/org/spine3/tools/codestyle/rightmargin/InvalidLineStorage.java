@@ -21,6 +21,7 @@ package org.spine3.tools.codestyle.rightmargin;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.spine3.tools.codestyle.CodestyleViolation;
 
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -35,33 +36,34 @@ import static java.lang.String.format;
  * @author Alexander Aleksandrov
  */
 public class InvalidLineStorage {
-    private static final Map<Path, List<InvalidLineLength>> resultStorage = new HashMap<>();
+    private static final Map<Path, List<CodestyleViolation>> resultStorage = new HashMap<>();
 
-    public Map<Path, List<InvalidLineLength>> getResults() {
+    public Map<Path, List<CodestyleViolation>> getResults() {
         return resultStorage;
     }
 
     int getLinesTotal() {
         int total = 0;
-        for (List<InvalidLineLength> l : resultStorage.values()) {
+        for (List<CodestyleViolation> l : resultStorage.values()) {
             total += l.size();
         }
         return total;
     }
 
     void logInvalidLines() {
-        for (Map.Entry<Path, List<InvalidLineLength>> entry : resultStorage.entrySet()) {
+        for (Map.Entry<Path, List<CodestyleViolation>> entry : resultStorage.entrySet()) {
             logInvalidLines(entry);
         }
     }
 
-    private static void logInvalidLines(Map.Entry<Path, List<InvalidLineLength>> entry) {
-        for (InvalidLineLength invalidLineLength : entry.getValue()) {
+    private static void logInvalidLines(Map.Entry<Path, List<CodestyleViolation>> entry) {
+        for (CodestyleViolation codestyleViolation : entry.getValue()) {
             final String msg = format(
                     " Long line found on: %s line in %s",
-                    invalidLineLength.getIndex(),
+                    codestyleViolation.getIndex(),
                     entry.getKey());
             log().error(msg);
+            System.out.println(msg);
         }
     }
 
@@ -71,7 +73,7 @@ public class InvalidLineStorage {
      * @param path file path that contain wrong fomated links
      * @param list list of invalid fully qualified names usages
      */
-    void save(Path path, List<InvalidLineLength> list) {
+    void save(Path path, List<CodestyleViolation> list) {
         resultStorage.put(path, list);
     }
 

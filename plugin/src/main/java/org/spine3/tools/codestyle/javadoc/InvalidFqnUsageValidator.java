@@ -23,6 +23,7 @@ import com.google.common.base.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spine3.tools.codestyle.CodestyleFileValidator;
+import org.spine3.tools.codestyle.CodestyleViolation;
 import org.spine3.tools.codestyle.StepConfiguration;
 
 import java.io.IOException;
@@ -51,120 +52,128 @@ public class InvalidFqnUsageValidator implements CodestyleFileValidator {
 
     @Override
     public void validate(Path path) throws InvalidFqnUsageException {
+        final List<String> content;
+        if (!path.toString()
+                 .endsWith(JAVA_EXTENSION)) {
+            return;
+        }
+        try {
+            content = Files.readAllLines(path, StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            throw new IllegalStateException("Cannot read the contents of the file: " + path, e);
+        }
+        final List<CodestyleViolation> invalidLinks = checkForViolations(content);
+        if (!invalidLinks.isEmpty()) {
+            storage.save(path, invalidLinks);
+        }
+        checkThreshold();
+    }
 
-            final List<String> content;
-            if (!path.toString()
-                     .endsWith(JAVA_EXTENSION)) {
-                return;
-            }
-            try {
-                content = Files.readAllLines(path, StandardCharsets.UTF_8);
-            } catch (IOException e) {
-                throw new IllegalStateException("Cannot read the contents of the file: " + path, e);
-            }
-            final List<InvalidFqnUsage> invalidLinks = check(content);
+    @Override
+    public void checkThreshold() {
+        if (storage.getLinkTotal() > configuration.getThreshold().getValue()) {
+            onAboveThreshold();
+        }
+    }
 
-            if (!invalidLinks.isEmpty()) {
-                storage.save(path, invalidLinks);
-                if (storage.getLinkTotal() > configuration.getThreshold()
-                                                          .getValue()) {
-                    storage.logInvalidFqnUsages();
-                    configuration.getReportType()
-                                 .logOrFail(new InvalidFqnUsageException());
-                }
-            }
+    @Override
+    public void onAboveThreshold() {
+        storage.logInvalidFqnUsages();
+        configuration.getReportType().logOrFail(new InvalidFqnUsageException());
+    }
+
+    private enum JavadocPattern {
+
+        /*
+         * This regexp matches every link or linkplain in javadoc that is not in the format of
+         * {@link <FQN> <text>} or {@linkplain <FQN> <text>}.
+         *
+         * Wrong links: {@link org.spine3.base.Client} or {@linkplain com.guava.AnyClass }
+         * Correct linsk: {@link Class.InternalClass}, {@link org.spine3.base.Client Client},
+         * {@linkplain org.spine3.base.Client some client class}
+         *
+         * 1st Capturing Group "(\{@link|\{@linkplain)"
+         * 1st Alternative "\{@link"
+         * "\{" matches the character "{" literally (case sensitive)
+         * "@link" matches the characters "@link" literally (case sensitive)
+         * 2nd Alternative "\{@linkplain"
+         * "\{" matches the character "{" literally (case sensitive)
+         * "@linkplain" matches the characters "@linkplain" literally (case sensitive)
+         * " *" matches the character " " literally (case sensitive)
+         * "*" Quantifier — Matches between zero and unlimited times, as many times as possible,
+         * giving back as needed (greedy)
+
+         * 2nd Capturing Group "((?!-)[a-z0-9-]{1,63}\.)"
+         * Negative Lookahead "(?!-)"
+         * Assert that the Regex below does not match
+         * "-"matches the character "-" literally (case sensitive)
+         * Match a single character present in the list below "[a-z0-9-]{1,63}"
+         * "{1,63}" Quantifier — Matches between 1 and 63 times, as many times as possible,
+         * giving back as needed (greedy)
+         * "a-z" a single character in the range between "a" (ASCII 97) and "z" (ASCII 122)
+         * (case sensitive)
+         * "0-9" a single character in the range between "0" (ASCII 48) and "9" (ASCII 57)
+         * (case sensitive)
+         * "-" matches the character "-" literally (case sensitive)
+         * "\." matches the character "." literally (case sensitive)
+
+         * 3rd Capturing Group "((?!-)[a-zA-Z0-9-]{1,63}[a-zA-Z0-9-]\.)+"
+         * "+" Quantifier — Matches between one and unlimited times, as many times as possible,
+         * giving back as needed (greedy)
+         * A repeated capturing group will only capture the last iteration.
+         * Put a capturing group around the repeated group to capture all iterations or use a
+         * non-capturing group instead if you're not interested in the data.
+
+         * 4th Capturing Group "(\}|\ *\})"
+         * 1st Alternative "\}"
+         * "\}" matches the character "}" literally (case sensitive)
+         * 2nd Alternative "\ *\}"
+         * "\ *" matches the character " " literally (case sensitive)
+         *  "*" Quantifier — Matches between zero and unlimited times, as many times as possible,
+         *  giving back as needed (greedy)
+         * "\}" matches the character "}" literally (case sensitive)
+         */
+        LINK(compile("(\\{@link|\\{@linkplain) *((?!-)[a-z0-9-]{1,63}\\.)((?!-)[a-zA-Z0-9-]{1,63}[a-zA-Z0-9-]\\.)+[a-zA-Z]{2,63}(\\}|\\ *\\})"));
+
+        private final Pattern pattern;
+
+        JavadocPattern(Pattern pattern) {
+            this.pattern = pattern;
         }
 
-        private static List<InvalidFqnUsage> check(List<String> content) {
-            int lineNumber = 0;
-            final List<InvalidFqnUsage> invalidLinks = newArrayList();
-            for (String line : content) {
-                final Optional<InvalidFqnUsage> result = checkSingleComment(line);
-                lineNumber++;
-                if (result.isPresent()) {
-                    final InvalidFqnUsage invalidFqnUsage = result.get();
-                    invalidFqnUsage.setIndex(lineNumber);
-                    invalidLinks.add(invalidFqnUsage);
-                }
-            }
-            return invalidLinks;
+        Pattern getPattern() {
+            return pattern;
         }
+    }
 
-        private static Optional<InvalidFqnUsage> checkSingleComment(String comment) {
-            final Matcher matcher = InvalidFqnUsageValidator.JavadocPattern.LINK.getPattern()
-                                                                                .matcher(comment);
-            final boolean found = matcher.find();
-            if (found) {
-                final String improperUsage = matcher.group(0);
-                final InvalidFqnUsage result = new InvalidFqnUsage(improperUsage);
-                return Optional.of(result);
-            }
-            return Optional.absent();
-        }
-
-        private enum JavadocPattern {
-
-            /*
-             * This regexp matches every link or linkplain in javadoc that is not in the format of
-             * {@link <FQN> <text>} or {@linkplain <FQN> <text>}.
-             *
-             * Wrong links: {@link org.spine3.base.Client} or {@linkplain com.guava.AnyClass }
-             * Correct linsk: {@link Class.InternalClass}, {@link org.spine3.base.Client Client},
-             * {@linkplain org.spine3.base.Client some client class}
-             *
-             * 1st Capturing Group "(\{@link|\{@linkplain)"
-             * 1st Alternative "\{@link"
-             * "\{" matches the character "{" literally (case sensitive)
-             * "@link" matches the characters "@link" literally (case sensitive)
-             * 2nd Alternative "\{@linkplain"
-             * "\{" matches the character "{" literally (case sensitive)
-             * "@linkplain" matches the characters "@linkplain" literally (case sensitive)
-             * " *" matches the character " " literally (case sensitive)
-             * "*" Quantifier — Matches between zero and unlimited times, as many times as possible,
-             * giving back as needed (greedy)
-
-             * 2nd Capturing Group "((?!-)[a-z0-9-]{1,63}\.)"
-             * Negative Lookahead "(?!-)"
-             * Assert that the Regex below does not match
-             * "-"matches the character "-" literally (case sensitive)
-             * Match a single character present in the list below "[a-z0-9-]{1,63}"
-             * "{1,63}" Quantifier — Matches between 1 and 63 times, as many times as possible,
-             * giving back as needed (greedy)
-             * "a-z" a single character in the range between "a" (ASCII 97) and "z" (ASCII 122)
-             * (case sensitive)
-             * "0-9" a single character in the range between "0" (ASCII 48) and "9" (ASCII 57)
-             * (case sensitive)
-             * "-" matches the character "-" literally (case sensitive)
-             * "\." matches the character "." literally (case sensitive)
-
-             * 3rd Capturing Group "((?!-)[a-zA-Z0-9-]{1,63}[a-zA-Z0-9-]\.)+"
-             * "+" Quantifier — Matches between one and unlimited times, as many times as possible,
-             * giving back as needed (greedy)
-             * A repeated capturing group will only capture the last iteration.
-             * Put a capturing group around the repeated group to capture all iterations or use a
-             * non-capturing group instead if you're not interested in the data.
-
-             * 4th Capturing Group "(\}|\ *\})"
-             * 1st Alternative "\}"
-             * "\}" matches the character "}" literally (case sensitive)
-             * 2nd Alternative "\ *\}"
-             * "\ *" matches the character " " literally (case sensitive)
-             *  "*" Quantifier — Matches between zero and unlimited times, as many times as possible,
-             *  giving back as needed (greedy)
-             * "\}" matches the character "}" literally (case sensitive)
-             */
-            LINK(compile("(\\{@link|\\{@linkplain) *((?!-)[a-z0-9-]{1,63}\\.)((?!-)[a-zA-Z0-9-]{1,63}[a-zA-Z0-9-]\\.)+[a-zA-Z]{2,63}(\\}|\\ *\\})"));
-
-            private final Pattern pattern;
-
-            JavadocPattern(Pattern pattern) {
-                this.pattern = pattern;
-            }
-
-            Pattern getPattern() {
-                return pattern;
+    @Override
+    public List<CodestyleViolation> checkForViolations(List<String> list) {
+        int lineNumber = 0;
+        final List<CodestyleViolation> invalidLinks = newArrayList();
+        for (String line : list) {
+            final Optional<CodestyleViolation> result = checkSingleComment(line);
+            lineNumber++;
+            if (result.isPresent()) {
+                final CodestyleViolation codestyleViolation = result.get();
+                codestyleViolation.setIndex(lineNumber);
+                invalidLinks.add(codestyleViolation);
             }
         }
+        return invalidLinks;
+    }
+
+    private static Optional<CodestyleViolation> checkSingleComment(String comment) {
+        final Matcher matcher = InvalidFqnUsageValidator.JavadocPattern.LINK.getPattern()
+                                                                            .matcher(comment);
+        final boolean found = matcher.find();
+        if (found) {
+            final String improperUsage = matcher.group(0);
+            final CodestyleViolation result = new CodestyleViolation(improperUsage);
+            return Optional.of(result);
+        }
+        return Optional.absent();
+    }
+
     private static Logger log() {
         return InvalidFqnUsageValidator.LogSingleton.INSTANCE.value;
     }

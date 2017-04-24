@@ -17,37 +17,37 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.spine3.tools.codestyle.rightmargin;
+package org.spine3.tools.codestyle;
 
 import com.google.common.base.MoreObjects;
 
 /**
  * @author Alexander Aleksandrov
  */
-public class InvalidLineLength {
-    private final String actualLine;
+public class CodestyleViolation {
+    private final String actualUsage;
     private int index = 0;
 
-    InvalidLineLength(String actualUsage) {
-        this.actualLine = actualUsage;
+    public CodestyleViolation(String actualUsage) {
+        this.actualUsage = actualUsage;
     }
 
-    String getActualLine() {
-        return actualLine;
+    public String getActualUsage() {
+        return actualUsage;
     }
 
-    int getIndex() {
+    public int getIndex() {
         return index;
     }
 
-    void setIndex(int index) {
+    public void setIndex(int index) {
         this.index = index;
     }
 
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                          .add("actualLine", actualLine)
+                          .add("actualUsage", actualUsage)
                           .toString();
     }
 }

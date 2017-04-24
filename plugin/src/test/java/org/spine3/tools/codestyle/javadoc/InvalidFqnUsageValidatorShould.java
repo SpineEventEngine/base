@@ -22,60 +22,86 @@ package org.spine3.tools.codestyle.javadoc;
 
 import org.junit.Test;
 import org.spine3.tools.codestyle.StepConfiguration;
-import org.spine3.tools.codestyle.rightmargin.RightMarginValidator;
 
+import javax.annotation.Nullable;
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 public class InvalidFqnUsageValidatorShould {
-    public InvalidFqnUsageValidator validator;
+    private InvalidFqnUsageValidator validator;
+    private static final String MULTIPLE_WRONG_FQN_LINKS_JAVA = "MultipleWrongFqnLinks.java";
+    private static final String ALLOWED_FQN_FORMATS_JAVA = "AllowedFqnFormats.java";
+    private static final String errorReportType = "error";
+    private static final String warnReportType = "warn";
+
 
     @Test(expected = RuntimeException.class)
     public void throw_exception_for_invalid_fqn_links_over_threshold() throws InvalidFqnUsageException {
-        validator = setUpValidator(2, "error");
-        validator.validate(getPath("MultipleWrongFqnLinks.java"));
+        validator = setUpValidator(2, errorReportType);
+        validator.validate(getPath(MULTIPLE_WRONG_FQN_LINKS_JAVA));
     }
 
     @Test(expected = RuntimeException.class)
     public void throw_exception_file_format_is_not_utf8() throws InvalidFqnUsageException {
-        validator = setUpValidator(2, "error");
-        validator.validate(getPath("MultipleWrongFqnLinks.java"));
+        validator = setUpValidator(2, errorReportType);
+        validator.validate(getPath(MULTIPLE_WRONG_FQN_LINKS_JAVA));
     }
 
     @Test
     public void check_only_files_with_java_extension() {
-        validator = setUpValidator(0, "error");
-        validator.validate(getPath(".hiden_file"));
+        InvalidFqnUsageValidator mockedObject = mock(InvalidFqnUsageValidator.class);
+        final Path path = getPath(".hiden_file");
+        final List<String> list = new ArrayList<>();
+        mockedObject.validate(path);
+        verify(mockedObject).validate(path);
+        verify(mockedObject, never()).checkForViolations(list);
     }
 
     @Test
     public void throw_warning_for_invalid_fqn_links_over_threshold() {
-        validator = setUpValidator(2, "warn");
-        validator.validate(getPath("MultipleWrongFqnLinks.java"));
+        InvalidFqnUsageValidator impl = spy(
+                new InvalidFqnUsageValidator(setStepConfiguration(0, warnReportType)));
+        final Path path = getPath(MULTIPLE_WRONG_FQN_LINKS_JAVA);
+        impl.validate(path);
+        verify(impl).validate(path);
+        verify(impl).onAboveThreshold();
     }
 
     @Test
-    public void allow_correct_fqn_links() throws IOException {
-        validator = setUpValidator(0, "error");
-        validator.validate(getPath("AllowedFqnFormats.java"));
-
+    public void allow_correct_fqn_links() throws RuntimeException {
+        InvalidFqnUsageValidator impl = spy(
+                new InvalidFqnUsageValidator(setStepConfiguration(0, warnReportType)));
+        final Path path = getPath(ALLOWED_FQN_FORMATS_JAVA);
+        impl.validate(path);
+        verify(impl).validate(path);
     }
 
     private static InvalidFqnUsageValidator setUpValidator(int threshold, String reportType) {
+        InvalidFqnUsageValidator validator = new InvalidFqnUsageValidator(
+                setStepConfiguration(threshold, reportType));
+        return validator;
+    }
+
+    private static StepConfiguration setStepConfiguration(int threshold, String reportType) {
         final StepConfiguration configuration = new StepConfiguration();
         configuration.setThreshold(threshold);
         configuration.setReportType(reportType);
-        InvalidFqnUsageValidator validator = new InvalidFqnUsageValidator(configuration);
-        return validator;
+        return configuration;
     }
 
     private Path getPath (String fileName){
         final ClassLoader classLoader = getClass().getClassLoader();
-        final File file = new File(classLoader.getResource(fileName).getFile());
+        final String pathname = classLoader.getResource(fileName)
+                                        .getFile();
+        final File file = new File(pathname);
         final Path path = Paths.get(file.getAbsolutePath());
         return path;
     }
