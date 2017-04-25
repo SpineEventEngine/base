@@ -250,7 +250,7 @@ public class ExcludeInternalDocletShould {
                     }
                 });
             } catch (IOException e) {
-                throw Exceptions.wrappedCause(e);
+                throw Exceptions.illegalArgumentWithCauseOf(e);
             }
         }
     }
