@@ -57,7 +57,7 @@ public class InvalidLineStorage {
     /**
      * Add a new record to storage if it is already exist or creates a new one in case if it's not.
      *
-     * @param path file path that contain wrong fomated links
+     * @param path file path that contain wrong formatted links
      * @param list list of invalid fully qualified names usages
      */
     void save(Path path, List<CodestyleViolation> list) {

@@ -34,13 +34,19 @@ import java.util.regex.Pattern;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.regex.Pattern.compile;
+import static org.spine3.tools.codestyle.JavaSources.getReadFileErrMsg;
+import static org.spine3.tools.codestyle.JavaSources.javaExt;
 
 /**
+ * It checks javadoc comments in files for the links that are used in wrong format.
+ * In case if any violation is found it will be logged as warning in build's
+ * stacktrace info or an error will be thrown. That depends on threshold and report type parameters
+ * stated in build file.
+ *
  * @author Alexander Aleksandrov
  */
 public class InvalidFqnUsageValidator implements CodestyleFileValidator {
 
-    private static final String JAVA_EXTENSION = ".java";
     private final InvalidResultStorage storage = new InvalidResultStorage();
     private final StepConfiguration configuration;
 
@@ -52,13 +58,13 @@ public class InvalidFqnUsageValidator implements CodestyleFileValidator {
     public void validate(Path path) throws InvalidFqnUsageException {
         final List<String> content;
         if (!path.toString()
-                 .endsWith(JAVA_EXTENSION)) {
+                 .endsWith(javaExt())) {
             return;
         }
         try {
             content = Files.readAllLines(path, StandardCharsets.UTF_8);
         } catch (IOException e) {
-            throw new IllegalStateException("Cannot read the contents of the file: " + path, e);
+            throw new IllegalStateException(getReadFileErrMsg() + path, e);
         }
         final List<CodestyleViolation> invalidLinks = checkForViolations(content);
         if (!invalidLinks.isEmpty()) {
@@ -87,7 +93,7 @@ public class InvalidFqnUsageValidator implements CodestyleFileValidator {
          * {@link <FQN> <text>} or {@linkplain <FQN> <text>}.
          *
          * Wrong links: {@link org.spine3.base.Client} or {@linkplain com.guava.AnyClass }
-         * Correct linsk: {@link Class.InternalClass}, {@link org.spine3.base.Client Client},
+         * Correct links: {@link Class.InternalClass}, {@link org.spine3.base.Client Client},
          * {@linkplain org.spine3.base.Client some client class}
          *
          * 1st Capturing Group "(\{@link|\{@linkplain)"

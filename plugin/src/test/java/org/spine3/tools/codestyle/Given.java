@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2016, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -17,26 +17,35 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.spine3.tools.codestyle;
 
 /**
-{@link org.spine3.server.event.EventBus EventBus}
-{@linkplain org.spine3.server.event.EventBus EventBus}
-{@link org.spine3.this.is.a.very.long.package.name.to.test.YourPlugin YourPlugin}
-{@linkplain org.spine3.this.is.a.very.long.package.name.to.test.YourPlugin YourPlugin}
-{@link this.is.few.excessive.Spaces             Spaces}
- {@link This.Iss}
-*/
-package org.spine3.tools.codestyle.javadoc;
-
-import java.lang.annotation.AnnotationTypeMismatchException;
-import java.lang.invoke.WrongMethodTypeException;
-
-
-/**
- * <a href = kljhaskdjfh lk asdkjfh askldj hfkajshd fkj haskldjfh kaljsdh fkjasdlkfjh askdjfh alksjdhf lkjh asdf></>
+ * @author Alexander Aleksandrov
  */
-class AllowedFqnFormats {
-    public static void SomeVeryLongnameForaTestMethod(WrongMethodTypeException exception, AnnotationTypeMismatchException annotation) {
+public class Given {
+    private static final String SOURCE_FOLDER = "src/main/java";
+    private static final String DEBUG_OPTION = "--debug";
+    private static final String testFile = "AllowedFqnFormats.java";
+    private static final String COMPILE_LOG = ":compileJava";
+    private static final String buildGradleFile = "build.gradle";
 
+    public static String getBuildGradleFile() {
+        return buildGradleFile;
+    }
+
+    public static String getCompileLog() {
+        return COMPILE_LOG;
+    }
+
+    public static String getTestFile() {
+        return testFile;
+    }
+
+    public static String getDebugOption() {
+        return DEBUG_OPTION;
+    }
+
+    public static String getSourceFolder() {
+        return SOURCE_FOLDER;
     }
 }

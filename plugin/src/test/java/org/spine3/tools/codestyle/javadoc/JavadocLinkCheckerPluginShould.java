@@ -21,8 +21,6 @@ package org.spine3.tools.codestyle.javadoc;
 
 import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
-import org.gradle.api.Nullable;
-import org.gradle.internal.impldep.com.esotericsoftware.kryo.NotNull;
 import org.gradle.internal.impldep.org.apache.commons.io.FileUtils;
 import org.gradle.internal.impldep.org.apache.commons.io.IOUtils;
 import org.gradle.testkit.runner.BuildResult;
@@ -34,7 +32,6 @@ import org.junit.rules.TemporaryFolder;
 import org.spine3.gradle.TaskName;
 import org.spine3.tools.codestyle.ReportType;
 
-import javax.annotation.CheckForNull;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -50,17 +47,17 @@ import static java.lang.String.format;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.spine3.tools.codestyle.Given.getBuildGradleFile;
+import static org.spine3.tools.codestyle.Given.getCompileLog;
+import static org.spine3.tools.codestyle.Given.getDebugOption;
+import static org.spine3.tools.codestyle.Given.getSourceFolder;
+import static org.spine3.tools.codestyle.Given.getTestFile;
 
 public class JavadocLinkCheckerPluginShould {
-
-    private static final String SOURCE_FOLDER = "src/main/java";
     private static final String WRONG_LINK_FORMAT_MSG = "Wrong link format found";
     private static final String CHECK_JAVADOC_LINK = TaskName.CHECK_FQN.getValue();
-    private static final String DEBUG_OPTION = "--debug";
-    private static final String COMPILE_LOG = ":compileJava";
     private static final String CHECK_JAVADOC_LOG = ":checkJavadocLink";
     private static final int THRESHOLD = 2;
-
     private String resourceFolder = "";
 
     @Rule
@@ -69,17 +66,17 @@ public class JavadocLinkCheckerPluginShould {
     public void setUpTestProject(int threshold, ReportType reportType) throws IOException {
         final Path buildGradleFile = testProjectDir.getRoot()
                                                    .toPath()
-                                                   .resolve("build.gradle");
+                                                   .resolve(getBuildGradleFile());
         final InputStream input = getBuildFileContent(threshold, reportType);
 
         final Path testSources = testProjectDir.getRoot()
                                                .toPath()
-                                               .resolve(SOURCE_FOLDER);
+                                               .resolve(getSourceFolder());
         Files.copy(input, buildGradleFile);
         Files.createDirectories(testSources);
 
         ClassLoader classLoader = getClass().getClassLoader();
-        final String testFile = "AllowedFqnFormats.java";
+        final String testFile = getTestFile();
         final String resourceFilePath = classLoader.getResource(testFile)
                                                    .getPath();
         final int endIndex = resourceFilePath.length() - testFile.length();
@@ -91,13 +88,13 @@ public class JavadocLinkCheckerPluginShould {
         setUpTestProject(THRESHOLD, ReportType.ERROR);
         final Path testSources = testProjectDir.getRoot()
                                                .toPath()
-                                               .resolve(SOURCE_FOLDER);
+                                               .resolve(getSourceFolder());
         FileUtils.copyDirectory(new File(resourceFolder), new File(testSources.toString()));
 
         BuildResult buildResult = GradleRunner.create()
                                               .withProjectDir(testProjectDir.getRoot())
                                               .withPluginClasspath()
-                                              .withArguments(CHECK_JAVADOC_LINK, DEBUG_OPTION)
+                                              .withArguments(CHECK_JAVADOC_LINK, getDebugOption())
                                               .buildAndFail();
 
         assertTrue(buildResult.getOutput().contains(WRONG_LINK_FORMAT_MSG));
@@ -108,7 +105,7 @@ public class JavadocLinkCheckerPluginShould {
         setUpTestProject(THRESHOLD, ReportType.ERROR);
         final Path testSources = testProjectDir.getRoot()
                                                .toPath()
-                                               .resolve(SOURCE_FOLDER);
+                                               .resolve(getSourceFolder());
         final Path wrongFqnFormat = Paths.get(testSources.toString() + "/WrongFQNformat.java");
         final Path wrongMultipleFqnFormat = Paths.get(testSources.toString() + "/MultipleWrongFqnLinks.java");
         FileUtils.copyDirectory(new File(resourceFolder), new File(testSources.toString()));
@@ -118,10 +115,10 @@ public class JavadocLinkCheckerPluginShould {
         final GradleRunner gradleRunner = GradleRunner.create()
                                                       .withProjectDir(testProjectDir.getRoot())
                                                       .withPluginClasspath()
-                                                      .withArguments(CHECK_JAVADOC_LINK, DEBUG_OPTION);
+                                                      .withArguments(CHECK_JAVADOC_LINK, getDebugOption());
         BuildResult buildResult = gradleRunner.build();
 
-        final List<String> expected = Arrays.asList(COMPILE_LOG, CHECK_JAVADOC_LOG);
+        final List<String> expected = Arrays.asList(getCompileLog(), CHECK_JAVADOC_LOG);
 
         assertEquals(expected, extractTasks(buildResult));
     }
@@ -131,16 +128,16 @@ public class JavadocLinkCheckerPluginShould {
         setUpTestProject(2, ReportType.WARN);
         final Path testSources = testProjectDir.getRoot()
                                                .toPath()
-                                               .resolve(SOURCE_FOLDER);
+                                               .resolve(getSourceFolder());
         FileUtils.copyDirectory(new File(resourceFolder), new File(testSources.toString()));
 
         BuildResult buildResult = GradleRunner.create()
                                               .withProjectDir(testProjectDir.getRoot())
                                               .withPluginClasspath()
-                                              .withArguments(CHECK_JAVADOC_LINK, DEBUG_OPTION)
+                                              .withArguments(CHECK_JAVADOC_LINK, getDebugOption())
                                               .build();
 
-        final List<String> expected = Arrays.asList(COMPILE_LOG, CHECK_JAVADOC_LOG);
+        final List<String> expected = Arrays.asList(getCompileLog(), CHECK_JAVADOC_LOG);
 
         assertEquals(expected, extractTasks(buildResult));
         assertTrue(buildResult.getOutput()

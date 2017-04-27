@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2016, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -17,26 +17,20 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.spine3.tools.codestyle;
 
 /**
-{@link org.spine3.server.event.EventBus EventBus}
-{@linkplain org.spine3.server.event.EventBus EventBus}
-{@link org.spine3.this.is.a.very.long.package.name.to.test.YourPlugin YourPlugin}
-{@linkplain org.spine3.this.is.a.very.long.package.name.to.test.YourPlugin YourPlugin}
-{@link this.is.few.excessive.Spaces             Spaces}
- {@link This.Iss}
-*/
-package org.spine3.tools.codestyle.javadoc;
-
-import java.lang.annotation.AnnotationTypeMismatchException;
-import java.lang.invoke.WrongMethodTypeException;
-
-
-/**
- * <a href = kljhaskdjfh lk asdkjfh askldj hfkajshd fkj haskldjfh kaljsdh fkjasdlkfjh askdjfh alksjdhf lkjh asdf></>
+ * @author Alexander Aleksandrov
  */
-class AllowedFqnFormats {
-    public static void SomeVeryLongnameForaTestMethod(WrongMethodTypeException exception, AnnotationTypeMismatchException annotation) {
+public class JavaSources {
+    private static final String ext = ".java";
+    private static final String readFileErrMsg = "Cannot read the contents of the file: ";
 
+    public static String javaExt(){
+        return ext;
+    }
+
+    public static String getReadFileErrMsg(){
+        return readFileErrMsg;
     }
 }

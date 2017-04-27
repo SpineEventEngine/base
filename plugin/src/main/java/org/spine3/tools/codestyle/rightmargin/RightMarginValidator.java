@@ -34,6 +34,8 @@ import java.util.regex.Pattern;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.regex.Pattern.compile;
+import static org.spine3.tools.codestyle.JavaSources.getReadFileErrMsg;
+import static org.spine3.tools.codestyle.JavaSources.javaExt;
 
 /**
  * It checks files for the lines that are going out of the right margin value, specified by
@@ -43,7 +45,6 @@ import static java.util.regex.Pattern.compile;
  * @author Alexander Aleksandrov
  */
 public class RightMarginValidator implements CodestyleFileValidator {
-    private static final String JAVA_EXTENSION = ".java";
 
     private final InvalidLineStorage storage = new InvalidLineStorage();
     private final StepConfiguration configuration;
@@ -56,13 +57,13 @@ public class RightMarginValidator implements CodestyleFileValidator {
     public void validate(Path path) throws InvalidLineLengthException {
         final List<String> content;
         if (!path.toString()
-                 .endsWith(JAVA_EXTENSION)) {
+                 .endsWith(javaExt())) {
             return;
         }
         try {
             content = Files.readAllLines(path, StandardCharsets.UTF_8);
         } catch (IOException e) {
-            throw new IllegalStateException("Cannot read the contents of the file: " + path, e);
+            throw new IllegalStateException(getReadFileErrMsg() + path, e);
         }
         final List<CodestyleViolation> invalidLines = checkForViolations(content);
         if (!invalidLines.isEmpty()) {

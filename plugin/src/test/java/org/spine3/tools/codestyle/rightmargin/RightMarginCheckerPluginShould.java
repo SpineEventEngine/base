@@ -49,12 +49,15 @@ import static java.lang.String.format;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.spine3.tools.codestyle.Given.getBuildGradleFile;
+import static org.spine3.tools.codestyle.Given.getCompileLog;
+import static org.spine3.tools.codestyle.Given.getDebugOption;
+import static org.spine3.tools.codestyle.Given.getSourceFolder;
+import static org.spine3.tools.codestyle.Given.getTestFile;
 
 public class RightMarginCheckerPluginShould {
-    private static final String SOURCE_FOLDER = "src/main/java";
     private static final String LONG_LINE_MSG = "Long line found";
     private static final String CHECK_RIGHT_MARGIN_WRAPPING = TaskName.CHECK_RIGHT_MARGIN_WRAPPING.getValue();
-    private static final String DEBUG_OPTION = "--debug";
     private static final int THRESHOLD = 100;
 
     private String resourceFolder = "";
@@ -65,17 +68,17 @@ public class RightMarginCheckerPluginShould {
     public void setUpTestProject(int threshold, ReportType reportType) throws IOException {
         final Path buildGradleFile = testProjectDir.getRoot()
                                                    .toPath()
-                                                   .resolve("build.gradle");
+                                                   .resolve(getBuildGradleFile());
         final InputStream input = getBuildFileContent(threshold, reportType);
 
         final Path testSources = testProjectDir.getRoot()
                                                .toPath()
-                                               .resolve(SOURCE_FOLDER);
+                                               .resolve(getSourceFolder());
         Files.copy(input, buildGradleFile);
         Files.createDirectories(testSources);
 
         ClassLoader classLoader = getClass().getClassLoader();
-        final String testFile = "AllowedFqnFormats.java";
+        final String testFile = getTestFile();
         final String resourceFilePath = classLoader.getResource(testFile)
                                                    .getPath();
         final int endIndex = resourceFilePath.length() - testFile.length();
@@ -87,16 +90,16 @@ public class RightMarginCheckerPluginShould {
         setUpTestProject(THRESHOLD, ReportType.WARN);
         final Path testSources = testProjectDir.getRoot()
                                                .toPath()
-                                               .resolve(SOURCE_FOLDER);
+                                               .resolve(getSourceFolder());
         FileUtils.copyDirectory(new File(resourceFolder), new File(testSources.toString()));
 
         BuildResult buildResult = GradleRunner.create()
                                               .withProjectDir(testProjectDir.getRoot())
                                               .withPluginClasspath()
-                                              .withArguments(CHECK_RIGHT_MARGIN_WRAPPING, DEBUG_OPTION)
+                                              .withArguments(CHECK_RIGHT_MARGIN_WRAPPING, getDebugOption())
                                               .build();
 
-        final List<String> expected = Arrays.asList(":compileJava", ":checkRightMarginWrapping");
+        final List<String> expected = Arrays.asList(getCompileLog(), ":checkRightMarginWrapping");
 
         assertEquals(expected, extractTasks(buildResult));
         assertTrue(buildResult.getOutput().contains(LONG_LINE_MSG));
@@ -105,7 +108,7 @@ public class RightMarginCheckerPluginShould {
     @Test
     public void warn_longLines() throws IOException {
         ClassLoader classLoader = getClass().getClassLoader();
-        File file = new File(classLoader.getResource("AllowedFqnFormats.java").getFile());
+        final File file = new File(classLoader.getResource(getTestFile()).getFile());
         final Path path = Paths.get(file.getAbsolutePath());
         final StepConfiguration configuration = new StepConfiguration();
         configuration.setThreshold(100);
