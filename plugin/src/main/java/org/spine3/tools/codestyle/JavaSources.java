@@ -23,9 +23,10 @@ package org.spine3.tools.codestyle;
  * @author Alexander Aleksandrov
  */
 public class JavaSources {
-    private JavaSources(){}
     private static final String ext = ".java";
     private static final String readFileErrMsg = "Cannot read the contents of the file: ";
+
+    private JavaSources(){}
 
     public static String javaExt(){
         return ext;
