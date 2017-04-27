@@ -17,10 +17,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.spine3.tools.codestyle;
+package org.spine3.tools.codestyle.javadoc;
 
 import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
+import org.gradle.api.Nullable;
+import org.gradle.internal.impldep.com.esotericsoftware.kryo.NotNull;
 import org.gradle.internal.impldep.org.apache.commons.io.FileUtils;
 import org.gradle.internal.impldep.org.apache.commons.io.IOUtils;
 import org.gradle.testkit.runner.BuildResult;
@@ -30,7 +32,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.spine3.gradle.TaskName;
+import org.spine3.tools.codestyle.ReportType;
 
+import javax.annotation.CheckForNull;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -53,6 +57,8 @@ public class JavadocLinkCheckerPluginShould {
     private static final String WRONG_LINK_FORMAT_MSG = "Wrong link format found";
     private static final String CHECK_JAVADOC_LINK = TaskName.CHECK_FQN.getValue();
     private static final String DEBUG_OPTION = "--debug";
+    private static final String COMPILE_LOG = ":compileJava";
+    private static final String CHECK_JAVADOC_LOG = ":checkJavadocLink";
     private static final int THRESHOLD = 2;
 
     private String resourceFolder = "";
@@ -109,13 +115,13 @@ public class JavadocLinkCheckerPluginShould {
         Files.deleteIfExists(wrongFqnFormat);
         Files.deleteIfExists(wrongMultipleFqnFormat);
 
-        BuildResult buildResult = GradleRunner.create()
-                                              .withProjectDir(testProjectDir.getRoot())
-                                              .withPluginClasspath()
-                                              .withArguments(CHECK_JAVADOC_LINK, DEBUG_OPTION)
-                                              .build();
+        final GradleRunner gradleRunner = GradleRunner.create()
+                                                      .withProjectDir(testProjectDir.getRoot())
+                                                      .withPluginClasspath()
+                                                      .withArguments(CHECK_JAVADOC_LINK, DEBUG_OPTION);
+        BuildResult buildResult = gradleRunner.build();
 
-        final List<String> expected = Arrays.asList(":compileJava", ":checkJavadocLink");
+        final List<String> expected = Arrays.asList(COMPILE_LOG, CHECK_JAVADOC_LOG);
 
         assertEquals(expected, extractTasks(buildResult));
     }
@@ -134,7 +140,7 @@ public class JavadocLinkCheckerPluginShould {
                                               .withArguments(CHECK_JAVADOC_LINK, DEBUG_OPTION)
                                               .build();
 
-        final List<String> expected = Arrays.asList(":compileJava", ":checkJavadocLink");
+        final List<String> expected = Arrays.asList(COMPILE_LOG, CHECK_JAVADOC_LOG);
 
         assertEquals(expected, extractTasks(buildResult));
         assertTrue(buildResult.getOutput()

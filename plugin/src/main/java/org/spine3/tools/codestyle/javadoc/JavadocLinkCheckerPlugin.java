@@ -42,11 +42,12 @@ import static org.spine3.tools.codestyle.CodestyleCheckerPlugin.createStepExtens
 public class JavadocLinkCheckerPlugin extends SpinePlugin {
 
     public static final String JAVADOC_LINK_CHECKER_EXTENSION_NAME = "javadocLinkChecker";
-    private StepConfiguration configuration;
+
 
     @Override
     public void apply(Project project) {
-        configuration = createStepExtension(JAVADOC_LINK_CHECKER_EXTENSION_NAME, project);
+        final StepConfiguration configuration =
+                createStepExtension(JAVADOC_LINK_CHECKER_EXTENSION_NAME, project);
         final FileChecker checker = new FileChecker(new InvalidFqnUsageValidator(configuration));
         final Action<Task> action = checker.actionFor(project);
         newTask(CHECK_FQN, action).insertAfterTask(COMPILE_JAVA)

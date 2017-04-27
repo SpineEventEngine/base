@@ -34,18 +34,18 @@ import static org.spine3.gradle.TaskName.PROCESS_RESOURCES;
 import static org.spine3.tools.codestyle.CodestyleCheckerPlugin.createStepExtension;
 
 /**
- * The plugin that checks the target project java files for lines that is longer then
+ * The plugin that checks the target project java files for the lines that is longer then
  * allowed threshold.
  *
  * @author Alexander Aleksandrov
  */
 public class RightMarginCheckerPlugin extends SpinePlugin {
     public static final String RIGHT_MARGIN_CHECKER_EXTENSION_NAME = "rightMarginWrappingChecker";
-    public StepConfiguration configuration;
 
     @Override
     public void apply(Project project) {
-        configuration = createStepExtension(RIGHT_MARGIN_CHECKER_EXTENSION_NAME, project);
+        final StepConfiguration configuration =
+                createStepExtension(RIGHT_MARGIN_CHECKER_EXTENSION_NAME, project);
         final FileChecker checker = new FileChecker(new RightMarginValidator(configuration));
         final Action<Task> action = checker.actionFor(project);
         newTask(CHECK_RIGHT_MARGIN_WRAPPING, action).insertAfterTask(COMPILE_JAVA)

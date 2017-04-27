@@ -22,6 +22,9 @@ package org.spine3.tools.codestyle;
 import com.google.common.base.MoreObjects;
 
 /**
+ * This class describes any code style violation. It has actual founded violation and it's
+ * position in code.
+ *
  * @author Alexander Aleksandrov
  */
 public class CodestyleViolation {

@@ -37,7 +37,7 @@ import static java.lang.String.format;
  */
 class InvalidResultStorage {
 
-    private static final Map<Path, List<CodestyleViolation>> resultStorage = new HashMap<>();
+    private final Map<Path, List<CodestyleViolation>> resultStorage = new HashMap<>();
 
     public Map<Path, List<CodestyleViolation>> getResults() {
         return resultStorage;

@@ -44,7 +44,7 @@ public class InvalidFqnUsageValidator implements CodestyleFileValidator {
 
     private static final String JAVA_EXTENSION = ".java";
     private final InvalidResultStorage storage = new InvalidResultStorage();
-    private StepConfiguration configuration;
+    private final StepConfiguration configuration;
 
     public InvalidFqnUsageValidator(StepConfiguration configuration) {
         this.configuration = configuration;

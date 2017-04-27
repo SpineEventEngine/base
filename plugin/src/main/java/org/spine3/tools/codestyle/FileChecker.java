@@ -38,6 +38,9 @@ import java.util.List;
 import static com.google.common.collect.Lists.newArrayList;
 
 /**
+ * Goes recursively through all files from project directory and validates them depending on
+ * {@link CodestyleFileValidator} implementation passed to constructor.
+ *
  * @author Alexander Aleksandrov
  */
 public class FileChecker {
@@ -49,6 +52,12 @@ public class FileChecker {
         this.visitor = new RecursiveFileChecker(validator);
     }
 
+    /**
+     * Creates a gradle action task for this instance of file checker.
+     *
+     * @param project target project that should be checked
+     * @return {@code Action<Task>} for gradle.
+     */
     public Action<Task> actionFor(final Project project) {
         log().debug("Preparing an action for the validator");
         return new Action<Task>() {

@@ -36,19 +36,7 @@ import static java.lang.String.format;
  * @author Alexander Aleksandrov
  */
 public class InvalidLineStorage {
-    private static final Map<Path, List<CodestyleViolation>> resultStorage = new HashMap<>();
-
-    public Map<Path, List<CodestyleViolation>> getResults() {
-        return resultStorage;
-    }
-
-    int getLinesTotal() {
-        int total = 0;
-        for (List<CodestyleViolation> l : resultStorage.values()) {
-            total += l.size();
-        }
-        return total;
-    }
+    private final Map<Path, List<CodestyleViolation>> resultStorage = new HashMap<>();
 
     void logInvalidLines() {
         for (Map.Entry<Path, List<CodestyleViolation>> entry : resultStorage.entrySet()) {
@@ -63,7 +51,6 @@ public class InvalidLineStorage {
                     codestyleViolation.getIndex(),
                     entry.getKey());
             log().error(msg);
-            System.out.println(msg);
         }
     }
 

@@ -20,6 +20,9 @@
 package org.spine3.tools.codestyle;
 
 /**
+ * This exception can be thrown when any {@link CodestyleViolation} is found and
+ * a build should be stopped.
+ *
  * @author Alexander Aleksandrov
  */
 public class CodestyleException extends RuntimeException {

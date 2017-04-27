@@ -39,13 +39,17 @@ import static com.google.common.collect.Lists.newArrayList;
 import static java.util.regex.Pattern.compile;
 
 /**
+ * It checks files for the lines that are going out of the right margin value, specified by
+ * threshold. In case if any violation is found it will be logged as warning in build's
+ * stacktrace info.
+ *
  * @author Alexander Aleksandrov
  */
 public class RightMarginValidator implements CodestyleFileValidator {
     private static final String JAVA_EXTENSION = ".java";
 
     private final InvalidLineStorage storage = new InvalidLineStorage();
-    private StepConfiguration configuration;
+    private final StepConfiguration configuration;
 
     public RightMarginValidator(StepConfiguration configuration) {
         this.configuration = configuration;
@@ -63,9 +67,9 @@ public class RightMarginValidator implements CodestyleFileValidator {
         } catch (IOException e) {
             throw new IllegalStateException("Cannot read the contents of the file: " + path, e);
         }
-        final List<CodestyleViolation> invalidLinks = checkForViolations(content);
-        if (!invalidLinks.isEmpty()) {
-            storage.save(path, invalidLinks);
+        final List<CodestyleViolation> invalidLines = checkForViolations(content);
+        if (!invalidLines.isEmpty()) {
+            storage.save(path, invalidLines);
         }
         checkThreshold();
     }
@@ -94,7 +98,7 @@ public class RightMarginValidator implements CodestyleFileValidator {
     @Override
     public void onAboveThreshold() {
         storage.logInvalidLines();
-        configuration.getReportType().logOrFail(new InvalidFqnUsageException());
+        configuration.getReportType().logOrFail(new InvalidLineLengthException());
     }
 
     private Optional<CodestyleViolation> checkSingleLine(String line) {
@@ -115,7 +119,7 @@ public class RightMarginValidator implements CodestyleFileValidator {
 
     private enum JavadocPattern {
 
-        LINK(compile("import|<a href>"));
+        LINK(compile("import|<a href"));
 
         private final Pattern pattern;
 

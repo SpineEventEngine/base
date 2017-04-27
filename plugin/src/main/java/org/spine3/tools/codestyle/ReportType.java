@@ -67,6 +67,12 @@ public enum ReportType {
         log().error(cause.getMessage());
     }
 
+    /**
+     * Creates ReportType instance of passed value.
+     *
+     * @param value report type warn or error
+     * @return {@link ReportType} instance
+     */
     public static ReportType of(String value) {
         for (ReportType reportType : ReportType.values()) {
             if (reportType.getValue()

@@ -23,6 +23,8 @@ import java.nio.file.Path;
 import java.util.List;
 
 /**
+ * An interface to gather all common operations for validators.
+ *
  * @author Alexander Aleksandrov
  */
 public interface CodestyleFileValidator{
