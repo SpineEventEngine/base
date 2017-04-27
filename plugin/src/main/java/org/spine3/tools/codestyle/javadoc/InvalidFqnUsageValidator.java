@@ -20,8 +20,6 @@
 package org.spine3.tools.codestyle.javadoc;
 
 import com.google.common.base.Optional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.spine3.tools.codestyle.CodestyleFileValidator;
 import org.spine3.tools.codestyle.CodestyleViolation;
 import org.spine3.tools.codestyle.StepConfiguration;
@@ -172,15 +170,5 @@ public class InvalidFqnUsageValidator implements CodestyleFileValidator {
             return Optional.of(result);
         }
         return Optional.absent();
-    }
-
-    private static Logger log() {
-        return InvalidFqnUsageValidator.LogSingleton.INSTANCE.value;
-    }
-
-    private enum LogSingleton {
-        INSTANCE;
-        @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = LoggerFactory.getLogger(InvalidFqnUsageValidator.class);
     }
 }

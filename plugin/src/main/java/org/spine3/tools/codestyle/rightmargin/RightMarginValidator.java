@@ -20,12 +20,9 @@
 package org.spine3.tools.codestyle.rightmargin;
 
 import com.google.common.base.Optional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.spine3.tools.codestyle.CodestyleFileValidator;
 import org.spine3.tools.codestyle.CodestyleViolation;
 import org.spine3.tools.codestyle.StepConfiguration;
-import org.spine3.tools.codestyle.javadoc.InvalidFqnUsageException;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -131,15 +128,4 @@ public class RightMarginValidator implements CodestyleFileValidator {
             return pattern;
         }
     }
-
-    private static Logger log() {
-        return RightMarginValidator.LogSingleton.INSTANCE.value;
-    }
-
-    private enum LogSingleton {
-        INSTANCE;
-        @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = LoggerFactory.getLogger(RightMarginValidator.class);
-    }
-
 }

@@ -10,7 +10,11 @@ package org.spine3.tools.codestyle.javadoc;
 
 import java.lang.annotation.AnnotationTypeMismatchException;
 import java.lang.invoke.WrongMethodTypeException;
+                              import org.spine3.tools.codestyle.rightmargin.RightMarginCheckerPluginShould;
 
+/**
+ * <a href = kljhaskdjfh lk asdkjfh askldj hfkajshd fkj haskldjfh kaljsdh fkjasdlkfjh askdjfh alksjdhf lkjh asdf></>
+ */
 class AllowedFqnFormats {
     public static void SomeVeryLongnameForaTestMethod(WrongMethodTypeException exception, AnnotationTypeMismatchException annotation) {
 

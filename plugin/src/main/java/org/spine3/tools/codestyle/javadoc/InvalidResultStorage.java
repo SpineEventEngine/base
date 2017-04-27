@@ -39,10 +39,6 @@ class InvalidResultStorage {
 
     private final Map<Path, List<CodestyleViolation>> resultStorage = new HashMap<>();
 
-    public Map<Path, List<CodestyleViolation>> getResults() {
-        return resultStorage;
-    }
-
     int getLinkTotal() {
         int total = 0;
         for (List<CodestyleViolation> l : resultStorage.values()) {
