@@ -152,7 +152,7 @@ public class ExcludeInternalDoclet extends Standard {
             try {
                 return process(method.invoke(target, args), method.getReturnType());
             } catch (InvocationTargetException e) {
-                throw Exceptions.wrappedCause(e);
+                throw Exceptions.illegalStateWithCauseOf(e);
             }
         }
 
