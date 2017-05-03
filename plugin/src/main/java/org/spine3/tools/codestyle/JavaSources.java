@@ -19,6 +19,8 @@
  */
 package org.spine3.tools.codestyle;
 
+import java.nio.file.Path;
+
 /**
  * This is a string constants keeper class.
  * @author Alexander Aleksandrov
@@ -45,5 +47,9 @@ public final class JavaSources {
      */
     public static String readFileErrMsg(){
         return readFileErrMsg;
+    }
+
+    public static boolean notJavaFile(Path path) {
+        return !path.toString().endsWith(javaExt());
     }
 }

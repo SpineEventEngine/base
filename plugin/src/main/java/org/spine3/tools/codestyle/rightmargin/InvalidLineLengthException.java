@@ -27,16 +27,10 @@ import org.spine3.tools.codestyle.CodeStyleException;
  * @author Alexander Aleksandrov
  */
 public class InvalidLineLengthException extends CodeStyleException {
+
     private static final long serialVersionUID = 0L;
 
     public InvalidLineLengthException() {
         super("Lines should be no longer than right margin");
-    }
-
-    @SuppressWarnings("MethodDoesntCallSuperMethod")
-    @Override
-    public String toString() {
-        final String str = getClass().getName();
-        return str + ": " + getMessage();
     }
 }

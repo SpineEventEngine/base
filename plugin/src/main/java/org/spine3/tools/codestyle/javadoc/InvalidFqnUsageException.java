@@ -34,11 +34,4 @@ public class InvalidFqnUsageException extends CodeStyleException {
         super("Links with FQN should be in format {@link <FQN> <text>}"
                       + " or {@linkplain <FQN> <text>}.");
     }
-
-    @SuppressWarnings("MethodDoesntCallSuperMethod")
-    @Override
-    public String toString() {
-        final String str = getClass().getName();
-        return str + ": " + getMessage();
-    }
 }

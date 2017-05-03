@@ -34,8 +34,8 @@ import java.util.regex.Pattern;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.regex.Pattern.compile;
+import static org.spine3.tools.codestyle.JavaSources.notJavaFile;
 import static org.spine3.tools.codestyle.JavaSources.readFileErrMsg;
-import static org.spine3.tools.codestyle.JavaSources.javaExt;
 
 /**
  * It checks javadoc comments in files for the links that are used in wrong format.
@@ -57,8 +57,7 @@ public class InvalidFqnUsageValidator implements CodeStyleFileValidator {
     @Override
     public void validate(Path path) throws InvalidFqnUsageException {
         final List<String> content;
-        if (!path.toString()
-                 .endsWith(javaExt())) {
+        if (notJavaFile(path)) {
             return;
         }
         try {

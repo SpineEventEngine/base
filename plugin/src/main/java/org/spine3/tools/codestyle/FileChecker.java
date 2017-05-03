@@ -38,8 +38,8 @@ import java.util.List;
 import static com.google.common.collect.Lists.newArrayList;
 
 /**
- * Goes recursively through all files from project directory and validates them depending on
- * {@link CodeStyleFileValidator} implementation passed to constructor.
+ * A utility that walks recursively through all files from project directory and
+ * validates them depending on {@link CodeStyleFileValidator} implementation passed to constructor.
  *
  * @author Alexander Aleksandrov
  */
@@ -47,9 +47,11 @@ public class FileChecker {
 
     private static final String DIRECTORY_TO_CHECK = "/src/main/java";
     private final FileVisitor<Path> visitor;
+    private final CodeStyleFileValidator validator;
 
     public FileChecker(CodeStyleFileValidator validator) {
         this.visitor = new RecursiveFileChecker(validator);
+        this.validator = validator;
     }
 
     /**
@@ -59,36 +61,35 @@ public class FileChecker {
      * @return {@code Action<Task>} for gradle.
      */
     public Action<Task> actionFor(final Project project) {
-        log().debug("Preparing an action for the validator");
-        return new Action<Task>() {
-            @Override
-            public void execute(Task task) {
-                final List<String> dirsToCheck = getDirsToCheck(project);
-                findCases(dirsToCheck);
-                log().debug("Ending an action");
-            }
-        };
+        log().debug("Preparing an action for the {} validator", validator.getClass().getCanonicalName());
+
+        return new ValidatorAction(project);
     }
 
-    private static List<String> getDirsToCheck(Project project) {
-        log().debug("Finding the directories to validate");
-        final String mainScopeJavaFolder = project.getProjectDir()
-                                                  .getAbsolutePath() + DIRECTORY_TO_CHECK;
-        final List<String> result = newArrayList(mainScopeJavaFolder);
-        log().debug("{} directories found for the validate: {}", result.size(), result);
+    private class ValidatorAction implements Action<Task> {
 
-        return result;
+        private final Project project;
+
+        private ValidatorAction(Project project) {
+            this.project = project;
+        }
+
+        @Override
+        public void execute(Task task) {
+            log().debug("Finding the directory for project: {}.", project);
+            final String projectDir = project.getProjectDir().getAbsolutePath() + DIRECTORY_TO_CHECK;
+            log().debug("Project directory: {}", projectDir);
+            findCases(projectDir);
+        }
     }
 
-    private void findCases(List<String> pathsToDirs) {
-        for (String path : pathsToDirs) {
+    private void findCases(String path) {
             final File file = new File(path);
             if (file.exists()) {
                 checkRecursively(file.toPath());
             } else {
                 log().debug("No more files left to validate");
             }
-        }
     }
 
     private void checkRecursively(Path path) {
