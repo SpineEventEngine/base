@@ -111,6 +111,7 @@ public class FileChecker {
         private final CodeStyleFileValidator validator;
 
         private RecursiveFileChecker(CodeStyleFileValidator validator) {
+            super();
             this.validator = validator;
         }
 

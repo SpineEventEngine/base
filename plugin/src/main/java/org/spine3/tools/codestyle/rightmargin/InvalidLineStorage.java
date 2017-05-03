@@ -48,7 +48,7 @@ public class InvalidLineStorage {
     private static void logInvalidLines(Map.Entry<Path, List<CodeStyleViolation>> entry) {
         for (CodeStyleViolation codeStyleViolation : entry.getValue()) {
             final String msg = format(
-                    " Long line found on line %s in %s",
+                    "Right margin trespassing found on line %s in %s",
                     codeStyleViolation.getIndex(),
                     entry.getKey());
             log().error(msg);
