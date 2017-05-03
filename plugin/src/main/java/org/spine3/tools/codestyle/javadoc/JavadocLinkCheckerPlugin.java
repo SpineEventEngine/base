@@ -31,7 +31,7 @@ import org.spine3.tools.codestyle.StepConfiguration;
 import static org.spine3.gradle.TaskName.CHECK_FQN;
 import static org.spine3.gradle.TaskName.COMPILE_JAVA;
 import static org.spine3.gradle.TaskName.PROCESS_RESOURCES;
-import static org.spine3.tools.codestyle.CodestyleCheckerPlugin.createStepExtension;
+import static org.spine3.tools.codestyle.CodeStyleCheckerPlugin.createStepExtension;
 
 /**
  * The plugin that checks the target project Javadocs for broken links that

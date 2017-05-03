@@ -68,7 +68,7 @@ public enum ReportType {
     }
 
     /**
-     * Creates ReportType instance of passed value.
+     * Creates {@code ReportType} instance of passed value.
      *
      * @param value report type warn or error
      * @return {@link ReportType} instance

@@ -21,7 +21,7 @@ package org.spine3.tools.codestyle.javadoc;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.spine3.tools.codestyle.CodestyleViolation;
+import org.spine3.tools.codestyle.CodeStyleViolation;
 
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -37,28 +37,28 @@ import static java.lang.String.format;
  */
 class InvalidResultStorage {
 
-    private final Map<Path, List<CodestyleViolation>> resultStorage = new HashMap<>();
+    private final Map<Path, List<CodeStyleViolation>> resultStorage = new HashMap<>();
 
     int getLinkTotal() {
         int total = 0;
-        for (List<CodestyleViolation> l : resultStorage.values()) {
+        for (List<CodeStyleViolation> l : resultStorage.values()) {
             total += l.size();
         }
         return total;
     }
 
     void logInvalidFqnUsages() {
-        for (Map.Entry<Path, List<CodestyleViolation>> entry : resultStorage.entrySet()) {
+        for (Map.Entry<Path, List<CodeStyleViolation>> entry : resultStorage.entrySet()) {
             logInvalidFqnUsages(entry);
         }
     }
 
-    private static void logInvalidFqnUsages(Map.Entry<Path, List<CodestyleViolation>> entry) {
-        for (CodestyleViolation codestyleViolation : entry.getValue()) {
+    private static void logInvalidFqnUsages(Map.Entry<Path, List<CodeStyleViolation>> entry) {
+        for (CodeStyleViolation codeStyleViolation : entry.getValue()) {
             final String msg = format(
                     " Wrong link format found: %s on %s line in %s",
-                    codestyleViolation.getActualUsage(),
-                    codestyleViolation.getIndex(),
+                    codeStyleViolation.getActualUsage(),
+                    codeStyleViolation.getIndex(),
                     entry.getKey());
             log().error(msg);
         }
@@ -70,7 +70,7 @@ class InvalidResultStorage {
      * @param path file path that contain wrong formatted links
      * @param list list of invalid fully qualified names usages
      */
-    void save(Path path, List<CodestyleViolation> list) {
+    void save(Path path, List<CodeStyleViolation> list) {
         resultStorage.put(path, list);
     }
 

@@ -19,14 +19,14 @@
  */
 package org.spine3.tools.codestyle.javadoc;
 
-import org.spine3.tools.codestyle.CodestyleException;
+import org.spine3.tools.codestyle.CodeStyleException;
 
 /**
  * Thrown to indicate that invalid FQN usage was found in javadoc.
  *
  * @author Alexander Aleksandrov
  */
-public class InvalidFqnUsageException extends CodestyleException {
+public class InvalidFqnUsageException extends CodeStyleException {
 
     private static final long serialVersionUID = 0L;
 

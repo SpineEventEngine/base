@@ -21,11 +21,11 @@
 package org.spine3.tools.codestyle;
 
 /**
- * A configuration class for the {@link CodestyleCheckerPlugin}.
+ * A configuration class for the {@link CodeStyleCheckerPlugin}.
  *
  * <p>Serves as a parent extension for {@link StepConfiguration}s.
  *
  * @author Dmytro Grankin
  */
-public class CodestylePluginConfiguration {
+public class CodeStylePluginConfiguration {
 }

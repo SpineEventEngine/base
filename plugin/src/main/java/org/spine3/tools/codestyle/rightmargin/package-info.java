@@ -19,6 +19,6 @@
  */
 
 /**
- * This package provides classes for plugins and utilities to validate code style.
+ * This package provides classes for plugins and utilities to validate the code style.
  */
 package org.spine3.tools.codestyle.rightmargin;

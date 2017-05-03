@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A configuration class for the {@link CodestyleCheckerPlugin} nested plugins.
+ * A configuration class for the {@link CodeStyleCheckerPlugin} nested plugins.
  *
  * @author Dmytro Grankin
  */

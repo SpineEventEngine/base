@@ -20,8 +20,8 @@
 package org.spine3.tools.codestyle.javadoc;
 
 import com.google.common.base.Optional;
-import org.spine3.tools.codestyle.CodestyleFileValidator;
-import org.spine3.tools.codestyle.CodestyleViolation;
+import org.spine3.tools.codestyle.CodeStyleFileValidator;
+import org.spine3.tools.codestyle.CodeStyleViolation;
 import org.spine3.tools.codestyle.StepConfiguration;
 
 import java.io.IOException;
@@ -34,7 +34,7 @@ import java.util.regex.Pattern;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.regex.Pattern.compile;
-import static org.spine3.tools.codestyle.JavaSources.getReadFileErrMsg;
+import static org.spine3.tools.codestyle.JavaSources.readFileErrMsg;
 import static org.spine3.tools.codestyle.JavaSources.javaExt;
 
 /**
@@ -45,7 +45,7 @@ import static org.spine3.tools.codestyle.JavaSources.javaExt;
  *
  * @author Alexander Aleksandrov
  */
-public class InvalidFqnUsageValidator implements CodestyleFileValidator {
+public class InvalidFqnUsageValidator implements CodeStyleFileValidator {
 
     private final InvalidResultStorage storage = new InvalidResultStorage();
     private final StepConfiguration configuration;
@@ -64,9 +64,9 @@ public class InvalidFqnUsageValidator implements CodestyleFileValidator {
         try {
             content = Files.readAllLines(path, StandardCharsets.UTF_8);
         } catch (IOException e) {
-            throw new IllegalStateException(getReadFileErrMsg() + path, e);
+            throw new IllegalStateException(readFileErrMsg() + path, e);
         }
-        final List<CodestyleViolation> invalidLinks = checkForViolations(content);
+        final List<CodeStyleViolation> invalidLinks = checkForViolations(content);
         if (!invalidLinks.isEmpty()) {
             storage.save(path, invalidLinks);
         }
@@ -151,28 +151,28 @@ public class InvalidFqnUsageValidator implements CodestyleFileValidator {
     }
 
     @Override
-    public List<CodestyleViolation> checkForViolations(List<String> list) {
+    public List<CodeStyleViolation> checkForViolations(List<String> list) {
         int lineNumber = 0;
-        final List<CodestyleViolation> invalidLinks = newArrayList();
+        final List<CodeStyleViolation> invalidLinks = newArrayList();
         for (String line : list) {
-            final Optional<CodestyleViolation> result = checkSingleComment(line);
+            final Optional<CodeStyleViolation> result = checkSingleComment(line);
             lineNumber++;
             if (result.isPresent()) {
-                final CodestyleViolation codestyleViolation = result.get();
-                codestyleViolation.setIndex(lineNumber);
-                invalidLinks.add(codestyleViolation);
+                final CodeStyleViolation codeStyleViolation = result.get();
+                codeStyleViolation.setIndex(lineNumber);
+                invalidLinks.add(codeStyleViolation);
             }
         }
         return invalidLinks;
     }
 
-    private static Optional<CodestyleViolation> checkSingleComment(String comment) {
+    private static Optional<CodeStyleViolation> checkSingleComment(String comment) {
         final Matcher matcher = InvalidFqnUsageValidator.JavadocPattern.LINK.getPattern()
                                                                             .matcher(comment);
         final boolean found = matcher.find();
         if (found) {
             final String improperUsage = matcher.group(0);
-            final CodestyleViolation result = new CodestyleViolation(improperUsage);
+            final CodeStyleViolation result = new CodeStyleViolation(improperUsage);
             return Optional.of(result);
         }
         return Optional.absent();

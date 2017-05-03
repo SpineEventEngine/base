@@ -19,38 +19,15 @@
  */
 package org.spine3.tools.codestyle;
 
-import com.google.common.base.MoreObjects;
-
 /**
- * This class describes any code style violation. It has actual founded violation and it's
- * position in code.
+ * This exception should be thrown when any {@link CodeStyleViolation} is found and
+ * a build should be stopped.
  *
  * @author Alexander Aleksandrov
  */
-public class CodestyleViolation {
-    private final String actualUsage;
-    private int index = 0;
+public class CodeStyleException extends RuntimeException {
 
-    public CodestyleViolation(String actualUsage) {
-        this.actualUsage = actualUsage;
-    }
-
-    public String getActualUsage() {
-        return actualUsage;
-    }
-
-    public int getIndex() {
-        return index;
-    }
-
-    public void setIndex(int index) {
-        this.index = index;
-    }
-
-    @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-                          .add("actualUsage", actualUsage)
-                          .toString();
+    public CodeStyleException(String message) {
+        super(message);
     }
 }

@@ -27,13 +27,31 @@ import java.util.List;
  *
  * @author Alexander Aleksandrov
  */
-public interface CodestyleFileValidator{
+public interface CodeStyleFileValidator {
 
-    void validate(Path path) throws CodestyleException;
+    /**
+     * Validates the file on code style violations depending on implementation.
+     *
+     * @param path Path to the target file
+     * @throws CodeStyleException
+     */
+    void validate(Path path) throws CodeStyleException;
 
-    List<CodestyleViolation> checkForViolations(List<String> list);
+    /**
+     * Goes through the file content represented as list of strings.
+     *
+     * @param list Content of the file under validation.
+     * @return List of {@link CodeStyleViolation} from that file.
+     */
+    List<CodeStyleViolation> checkForViolations(List<String> list);
 
+    /**
+     * Check the threshold parameter from build file.
+     */
     void checkThreshold();
 
+    /**
+     * Describes the behavior in case if threshold is exceeded.
+     */
     void onAboveThreshold();
 }

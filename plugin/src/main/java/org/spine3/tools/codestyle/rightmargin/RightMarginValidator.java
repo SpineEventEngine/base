@@ -20,8 +20,8 @@
 package org.spine3.tools.codestyle.rightmargin;
 
 import com.google.common.base.Optional;
-import org.spine3.tools.codestyle.CodestyleFileValidator;
-import org.spine3.tools.codestyle.CodestyleViolation;
+import org.spine3.tools.codestyle.CodeStyleFileValidator;
+import org.spine3.tools.codestyle.CodeStyleViolation;
 import org.spine3.tools.codestyle.StepConfiguration;
 
 import java.io.IOException;
@@ -34,7 +34,7 @@ import java.util.regex.Pattern;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.regex.Pattern.compile;
-import static org.spine3.tools.codestyle.JavaSources.getReadFileErrMsg;
+import static org.spine3.tools.codestyle.JavaSources.readFileErrMsg;
 import static org.spine3.tools.codestyle.JavaSources.javaExt;
 
 /**
@@ -44,7 +44,7 @@ import static org.spine3.tools.codestyle.JavaSources.javaExt;
  *
  * @author Alexander Aleksandrov
  */
-public class RightMarginValidator implements CodestyleFileValidator {
+public class RightMarginValidator implements CodeStyleFileValidator {
 
     private final InvalidLineStorage storage = new InvalidLineStorage();
     private final StepConfiguration configuration;
@@ -63,9 +63,9 @@ public class RightMarginValidator implements CodestyleFileValidator {
         try {
             content = Files.readAllLines(path, StandardCharsets.UTF_8);
         } catch (IOException e) {
-            throw new IllegalStateException(getReadFileErrMsg() + path, e);
+            throw new IllegalStateException(readFileErrMsg() + path, e);
         }
-        final List<CodestyleViolation> invalidLines = checkForViolations(content);
+        final List<CodeStyleViolation> invalidLines = checkForViolations(content);
         if (!invalidLines.isEmpty()) {
             storage.save(path, invalidLines);
         }
@@ -73,16 +73,16 @@ public class RightMarginValidator implements CodestyleFileValidator {
     }
 
     @Override
-    public List<CodestyleViolation> checkForViolations(List<String> list) {
+    public List<CodeStyleViolation> checkForViolations(List<String> list) {
         int lineNumber = 0;
-        final List<CodestyleViolation> invalidLines = newArrayList();
+        final List<CodeStyleViolation> invalidLines = newArrayList();
         for (String line : list) {
-            final Optional<CodestyleViolation> result = checkSingleLine(line);
+            final Optional<CodeStyleViolation> result = checkSingleLine(line);
             lineNumber++;
             if (result.isPresent()) {
-                final CodestyleViolation codestyleViolation = result.get();
-                codestyleViolation.setIndex(lineNumber);
-                invalidLines.add(codestyleViolation);
+                final CodeStyleViolation codeStyleViolation = result.get();
+                codeStyleViolation.setIndex(lineNumber);
+                invalidLines.add(codeStyleViolation);
             }
         }
         return invalidLines;
@@ -99,7 +99,7 @@ public class RightMarginValidator implements CodestyleFileValidator {
         configuration.getReportType().logOrFail(new InvalidLineLengthException());
     }
 
-    private Optional<CodestyleViolation> checkSingleLine(String line) {
+    private Optional<CodeStyleViolation> checkSingleLine(String line) {
         final Matcher matcher = RightMarginValidator.JavadocPattern.LINK.getPattern()
                                                                         .matcher(line);
         final boolean found = matcher.find();
@@ -109,7 +109,7 @@ public class RightMarginValidator implements CodestyleFileValidator {
         final int margin = configuration.getThreshold()
                                         .getValue();
         if (line.length() > margin) {
-            final CodestyleViolation result = new CodestyleViolation(line);
+            final CodeStyleViolation result = new CodeStyleViolation(line);
             return Optional.of(result);
         }
         return Optional.absent();

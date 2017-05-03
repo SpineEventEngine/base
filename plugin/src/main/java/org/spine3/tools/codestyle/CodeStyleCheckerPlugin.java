@@ -35,8 +35,8 @@ import org.spine3.tools.codestyle.rightmargin.RightMarginCheckerPlugin;
  * <p>Each step is configured with the parameters as follows:
  * <ul>
  *     <li>{@linkplain Threshold "threshold"} is a number of code style violations
- *     to consider validate passed;</li>
- *     <li>{@linkplain ReportType "reportType"} if a validate is not passed.</li>
+ *     to consider validation passed;</li>
+ *     <li>{@linkplain ReportType "reportType"} if a validation is not passed.</li>
  * </ul>
  *
  * <p>Example:
@@ -52,7 +52,7 @@ import org.spine3.tools.codestyle.rightmargin.RightMarginCheckerPlugin;
  *          reportType = "warn"
  *      }
  *
- *      anotherCodestyleChecker {
+ *      anotherCodeStyleChecker {
  *
  *          // Will report the code style violations if their number exceeds five.
  *          threshold = 5
@@ -69,14 +69,14 @@ import org.spine3.tools.codestyle.rightmargin.RightMarginCheckerPlugin;
  * @see Threshold
  * @see ReportType
  */
-public class CodestyleCheckerPlugin extends SpinePlugin {
+public class CodeStyleCheckerPlugin extends SpinePlugin {
 
     public static final String CODESTYLE_CHECKER_EXTENSION_NAME = "codestyleChecker";
 
     @Override
     public void apply(final Project project) {
         project.getExtensions()
-               .create(CODESTYLE_CHECKER_EXTENSION_NAME, CodestylePluginConfiguration.class);
+               .create(CODESTYLE_CHECKER_EXTENSION_NAME, CodeStylePluginConfiguration.class);
 
         log().debug("Applying Spine Javadoc link checker plugin");
         new JavadocLinkCheckerPlugin().apply(project);
@@ -93,10 +93,10 @@ public class CodestyleCheckerPlugin extends SpinePlugin {
      * @return the created extension
      */
     public static StepConfiguration createStepExtension(String extensionName, Project project) {
-        final ExtensionAware codestyleExtension =
+        final ExtensionAware codeStyleExtension =
                 (ExtensionAware) project.getExtensions()
                                         .getByName(CODESTYLE_CHECKER_EXTENSION_NAME);
-        return codestyleExtension.getExtensions()
+        return codeStyleExtension.getExtensions()
                                  .create(extensionName, StepConfiguration.class);
     }
 
@@ -107,6 +107,6 @@ public class CodestyleCheckerPlugin extends SpinePlugin {
     private enum LogSingleton {
         INSTANCE;
         @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = LoggerFactory.getLogger(CodestyleCheckerPlugin.class);
+        private final Logger value = LoggerFactory.getLogger(CodeStyleCheckerPlugin.class);
     }
 }

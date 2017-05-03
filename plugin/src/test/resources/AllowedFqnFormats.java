@@ -18,14 +18,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
-{@link org.spine3.server.event.EventBus EventBus}
-{@linkplain org.spine3.server.event.EventBus EventBus}
-{@link org.spine3.this.is.a.very.long.package.name.to.test.YourPlugin YourPlugin}
-{@linkplain org.spine3.this.is.a.very.long.package.name.to.test.YourPlugin YourPlugin}
-{@link this.is.few.excessive.Spaces             Spaces}
- {@link This.Iss}
-*/
 package org.spine3.tools.codestyle.javadoc;
 
 import java.lang.annotation.AnnotationTypeMismatchException;
@@ -33,9 +25,17 @@ import java.lang.invoke.WrongMethodTypeException;
 
 
 /**
- * <a href = kljhaskdjfh lk asdkjfh askldj hfkajshd fkj haskldjfh kaljsdh fkjasdlkfjh askdjfh alksjdhf lkjh asdf></>
+ * <a href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#google.protobuf.FieldMask">FieldMask specs</a>.
  */
 class AllowedFqnFormats {
+    /**
+      * {@link org.spine3.server.event.EventBus EventBus}
+      * {@linkplain org.spine3.server.event.EventBus EventBus}
+      * {@link org.spine3.this.is.a.very.long.package.name.to.test.YourPlugin YourPlugin}
+      * {@linkplain org.spine3.this.is.a.very.long.package.name.to.test.YourPlugin YourPlugin}
+      * {@link this.is.few.excessive.Spaces             Spaces}
+      * {@link This.Iss}
+      */
     public static void SomeVeryLongnameForaTestMethod(WrongMethodTypeException exception, AnnotationTypeMismatchException annotation) {
 
     }

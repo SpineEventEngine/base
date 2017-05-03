@@ -21,7 +21,7 @@ package org.spine3.tools.codestyle.rightmargin;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.spine3.tools.codestyle.CodestyleViolation;
+import org.spine3.tools.codestyle.CodeStyleViolation;
 
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -31,36 +31,37 @@ import java.util.Map;
 import static java.lang.String.format;
 
 /**
- * Utility class to save and address results of right margin wrapping validate.
+ * A utility class to save and address results of the right margin wrapping validation.
  *
  * @author Alexander Aleksandrov
  */
 public class InvalidLineStorage {
-    private final Map<Path, List<CodestyleViolation>> resultStorage = new HashMap<>();
+
+    private final Map<Path, List<CodeStyleViolation>> resultStorage = new HashMap<>();
 
     void logInvalidLines() {
-        for (Map.Entry<Path, List<CodestyleViolation>> entry : resultStorage.entrySet()) {
+        for (Map.Entry<Path, List<CodeStyleViolation>> entry : resultStorage.entrySet()) {
             logInvalidLines(entry);
         }
     }
 
-    private static void logInvalidLines(Map.Entry<Path, List<CodestyleViolation>> entry) {
-        for (CodestyleViolation codestyleViolation : entry.getValue()) {
+    private static void logInvalidLines(Map.Entry<Path, List<CodeStyleViolation>> entry) {
+        for (CodeStyleViolation codeStyleViolation : entry.getValue()) {
             final String msg = format(
-                    " Long line found on: %s line in %s",
-                    codestyleViolation.getIndex(),
+                    " Long line found on line %s in %s",
+                    codeStyleViolation.getIndex(),
                     entry.getKey());
             log().error(msg);
         }
     }
 
     /**
-     * Add a new record to storage if it is already exist or creates a new one in case if it's not.
+     * Add a new record to storage if it already exists or creates a new one in case if it's not.
      *
-     * @param path file path that contain wrong formatted links
+     * @param path file path that contains wrong formatted links
      * @param list list of invalid fully qualified names usages
      */
-    void save(Path path, List<CodestyleViolation> list) {
+    void save(Path path, List<CodeStyleViolation> list) {
         resultStorage.put(path, list);
     }
 

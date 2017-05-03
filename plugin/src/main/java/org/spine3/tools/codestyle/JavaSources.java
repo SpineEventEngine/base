@@ -20,19 +20,30 @@
 package org.spine3.tools.codestyle;
 
 /**
+ * This is a string constants keeper class.
  * @author Alexander Aleksandrov
  */
-public class JavaSources {
+public final class JavaSources {
     private static final String ext = ".java";
     private static final String readFileErrMsg = "Cannot read the contents of the file: ";
 
-    private JavaSources(){}
+    private JavaSources(){
+        // Prevent initialization of this utility class
+    }
 
+    /**
+     * Getter for the java file extension string constant.
+     * @return ".java" string
+     */
     public static String javaExt(){
         return ext;
     }
 
-    public static String getReadFileErrMsg(){
+    /**
+     * Getter for the string with the error message that file cannot be read.
+     * @return "Cannot read the contents of the file: " string
+     */
+    public static String readFileErrMsg(){
         return readFileErrMsg;
     }
 }

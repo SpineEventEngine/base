@@ -29,23 +29,23 @@ public class Given {
     private static final String COMPILE_LOG = ":compileJava";
     private static final String buildGradleFile = "build.gradle";
 
-    public static String getBuildGradleFile() {
+    public static String buildGradleFile() {
         return buildGradleFile;
     }
 
-    public static String getCompileLog() {
+    public static String compileLog() {
         return COMPILE_LOG;
     }
 
-    public static String getTestFile() {
+    public static String testFile() {
         return testFile;
     }
 
-    public static String getDebugOption() {
+    public static String debugOption() {
         return DEBUG_OPTION;
     }
 
-    public static String getSourceFolder() {
+    public static String sourceFolder() {
         return SOURCE_FOLDER;
     }
 }

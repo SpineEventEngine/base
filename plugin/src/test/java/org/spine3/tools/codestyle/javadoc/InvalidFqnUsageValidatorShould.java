@@ -21,10 +21,8 @@
 package org.spine3.tools.codestyle.javadoc;
 
 import org.junit.Test;
-import org.spine3.tools.codestyle.Given;
 import org.spine3.tools.codestyle.StepConfiguration;
 
-import javax.annotation.Nullable;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -38,11 +36,11 @@ import static org.mockito.Mockito.verify;
 import static org.spine3.tools.codestyle.Given.*;
 
 public class InvalidFqnUsageValidatorShould {
+
     private InvalidFqnUsageValidator validator;
     private static final String MULTIPLE_WRONG_FQN_LINKS_JAVA = "MultipleWrongFqnLinks.java";
     private static final String errorReportType = "error";
     private static final String warnReportType = "warn";
-
 
     @Test(expected = RuntimeException.class)
     public void throw_exception_for_invalid_fqn_links_over_threshold() throws InvalidFqnUsageException {
@@ -80,7 +78,7 @@ public class InvalidFqnUsageValidatorShould {
     public void allow_correct_fqn_links() throws RuntimeException {
         InvalidFqnUsageValidator impl = spy(
                 new InvalidFqnUsageValidator(setStepConfiguration(0, warnReportType)));
-        final Path path = getPath(getTestFile());
+        final Path path = getPath(testFile());
         impl.validate(path);
         verify(impl).validate(path);
     }

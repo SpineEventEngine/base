@@ -1,5 +1,5 @@
 /*
- * Copyright 2016, TeamDev Ltd. All rights reserved.
+ * Copyright 2017, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -19,15 +19,38 @@
  */
 package org.spine3.tools.codestyle;
 
+import com.google.common.base.MoreObjects;
+
 /**
- * This exception can be thrown when any {@link CodestyleViolation} is found and
- * a build should be stopped.
+ * This class describes any code style violation. It has actual founded violation and it's
+ * position in code.
  *
  * @author Alexander Aleksandrov
  */
-public class CodestyleException extends RuntimeException {
+public class CodeStyleViolation {
+    private final String actualUsage;
+    private int index = 0;
 
-    public CodestyleException(String message) {
-        super(message);
+    public CodeStyleViolation(String actualUsage) {
+        this.actualUsage = actualUsage;
+    }
+
+    public String getActualUsage() {
+        return actualUsage;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                          .add("actualUsage", actualUsage)
+                          .toString();
     }
 }

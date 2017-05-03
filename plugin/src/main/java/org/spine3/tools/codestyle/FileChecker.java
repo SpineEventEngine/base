@@ -39,7 +39,7 @@ import static com.google.common.collect.Lists.newArrayList;
 
 /**
  * Goes recursively through all files from project directory and validates them depending on
- * {@link CodestyleFileValidator} implementation passed to constructor.
+ * {@link CodeStyleFileValidator} implementation passed to constructor.
  *
  * @author Alexander Aleksandrov
  */
@@ -48,7 +48,7 @@ public class FileChecker {
     private static final String DIRECTORY_TO_CHECK = "/src/main/java";
     private final FileVisitor<Path> visitor;
 
-    public FileChecker(CodestyleFileValidator validator) {
+    public FileChecker(CodeStyleFileValidator validator) {
         this.visitor = new RecursiveFileChecker(validator);
     }
 
@@ -107,9 +107,9 @@ public class FileChecker {
      */
     private static class RecursiveFileChecker extends SimpleFileVisitor<Path> {
 
-        private final CodestyleFileValidator validator;
+        private final CodeStyleFileValidator validator;
 
-        private RecursiveFileChecker(CodestyleFileValidator validator) {
+        private RecursiveFileChecker(CodeStyleFileValidator validator) {
             this.validator = validator;
         }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016, TeamDev Ltd. All rights reserved.
+ * Copyright 2017, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -31,10 +31,10 @@ import org.spine3.tools.codestyle.StepConfiguration;
 import static org.spine3.gradle.TaskName.CHECK_RIGHT_MARGIN_WRAPPING;
 import static org.spine3.gradle.TaskName.COMPILE_JAVA;
 import static org.spine3.gradle.TaskName.PROCESS_RESOURCES;
-import static org.spine3.tools.codestyle.CodestyleCheckerPlugin.createStepExtension;
+import static org.spine3.tools.codestyle.CodeStyleCheckerPlugin.createStepExtension;
 
 /**
- * The plugin that checks the target project java files for the lines that is longer then
+ * The plugin that checks the target project java files for the line that are longer than
  * allowed threshold.
  *
  * @author Alexander Aleksandrov

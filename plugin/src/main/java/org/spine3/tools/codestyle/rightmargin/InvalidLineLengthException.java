@@ -19,12 +19,14 @@
  */
 package org.spine3.tools.codestyle.rightmargin;
 
-import org.spine3.tools.codestyle.CodestyleException;
+import org.spine3.tools.codestyle.CodeStyleException;
 
 /**
+ * Thrown to indicate that the line longer than threshold was found in file.
+ *
  * @author Alexander Aleksandrov
  */
-public class InvalidLineLengthException extends CodestyleException {
+public class InvalidLineLengthException extends CodeStyleException {
     private static final long serialVersionUID = 0L;
 
     public InvalidLineLengthException() {
