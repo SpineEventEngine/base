@@ -56,7 +56,7 @@ import static org.spine3.tools.codestyle.Given.sourceFolder;
 import static org.spine3.tools.codestyle.Given.testFile;
 
 public class RightMarginCheckerPluginShould {
-    private static final String LONG_LINE_MSG = "Long line found";
+    private static final String LONG_LINE_MSG = "Right margin trespassing found";
     private static final String CHECK_RIGHT_MARGIN_WRAPPING = TaskName.CHECK_RIGHT_MARGIN_WRAPPING.getValue();
     private static final int THRESHOLD = 100;
 
