@@ -36,7 +36,6 @@ import static com.google.common.collect.Lists.newArrayList;
 import static java.util.regex.Pattern.compile;
 import static org.spine3.tools.codestyle.JavaSources.notJavaFile;
 import static org.spine3.tools.codestyle.JavaSources.readFileErrMsg;
-import static org.spine3.tools.codestyle.JavaSources.javaExt;
 
 /**
  * It checks files for the lines that are going out of the right margin value, specified by
@@ -90,13 +89,14 @@ public class RightMarginValidator implements CodeStyleFileValidator {
 
     @Override
     public void checkThreshold() {
-            onAboveThreshold();
+        onAboveThreshold();
     }
 
     @Override
     public void onAboveThreshold() {
         storage.logInvalidLines();
-        configuration.getReportType().logOrFail(new InvalidLineLengthException());
+        configuration.getReportType()
+                     .logOrFail(new InvalidLineLengthException());
     }
 
     private Optional<CodeStyleViolation> checkSingleLine(String line) {

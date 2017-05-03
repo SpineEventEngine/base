@@ -33,9 +33,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.List;
-
-import static com.google.common.collect.Lists.newArrayList;
 
 /**
  * A utility that walks recursively through all files from project directory and
@@ -61,7 +58,8 @@ public class FileChecker {
      * @return {@code Action<Task>} for gradle.
      */
     public Action<Task> actionFor(final Project project) {
-        log().debug("Preparing an action for the {} validator", validator.getClass().getCanonicalName());
+        log().debug("Preparing an action for the {} validator", validator.getClass()
+                                                                         .getCanonicalName());
 
         return new ValidatorAction(project);
     }
@@ -77,19 +75,20 @@ public class FileChecker {
         @Override
         public void execute(Task task) {
             log().debug("Finding the directory for project: {}.", project);
-            final String projectDir = project.getProjectDir().getAbsolutePath() + DIRECTORY_TO_CHECK;
+            final String projectDir = project.getProjectDir()
+                                             .getAbsolutePath() + DIRECTORY_TO_CHECK;
             log().debug("Project directory: {}", projectDir);
             findCases(projectDir);
         }
     }
 
     private void findCases(String path) {
-            final File file = new File(path);
-            if (file.exists()) {
-                checkRecursively(file.toPath());
-            } else {
-                log().debug("No more files left to validate");
-            }
+        final File file = new File(path);
+        if (file.exists()) {
+            checkRecursively(file.toPath());
+        } else {
+            log().debug("No more files left to validate");
+        }
     }
 
     private void checkRecursively(Path path) {
@@ -130,6 +129,7 @@ public class FileChecker {
             return FileVisitResult.TERMINATE;
         }
     }
+
     private static Logger log() {
         return FileChecker.LogSingleton.INSTANCE.value;
     }

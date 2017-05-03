@@ -23,33 +23,37 @@ import java.nio.file.Path;
 
 /**
  * This is a string constants keeper class.
+ *
  * @author Alexander Aleksandrov
  */
 public final class JavaSources {
     private static final String ext = ".java";
     private static final String readFileErrMsg = "Cannot read the contents of the file: ";
 
-    private JavaSources(){
+    private JavaSources() {
         // Prevent initialization of this utility class
     }
 
     /**
      * Getter for the java file extension string constant.
+     *
      * @return ".java" string
      */
-    public static String javaExt(){
+    public static String javaExt() {
         return ext;
     }
 
     /**
      * Getter for the string with the error message that file cannot be read.
+     *
      * @return "Cannot read the contents of the file: " string
      */
-    public static String readFileErrMsg(){
+    public static String readFileErrMsg() {
         return readFileErrMsg;
     }
 
     public static boolean notJavaFile(Path path) {
-        return !path.toString().endsWith(javaExt());
+        return !path.toString()
+                    .endsWith(javaExt());
     }
 }
