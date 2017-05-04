@@ -1,0 +1,3 @@
+dependencies {
+    compile group: 'com.google.cloud', name: 'google-cloud-storage', version: '1.0.0'
+}
