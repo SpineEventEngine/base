@@ -52,6 +52,7 @@ public class InvalidFqnUsageValidator extends AbstractCodeStyleFileValidator imp
     private final StepConfiguration configuration;
 
     public InvalidFqnUsageValidator(StepConfiguration configuration) {
+        super();
         this.configuration = configuration;
     }
 

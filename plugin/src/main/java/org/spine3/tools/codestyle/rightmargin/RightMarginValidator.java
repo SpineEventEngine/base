@@ -51,6 +51,7 @@ public class RightMarginValidator extends AbstractCodeStyleFileValidator impleme
     private final StepConfiguration configuration;
 
     public RightMarginValidator(StepConfiguration configuration) {
+        super();
         this.configuration = configuration;
     }
 
