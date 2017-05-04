@@ -20,6 +20,7 @@
 package org.spine3.tools.codestyle.rightmargin;
 
 import com.google.common.base.Optional;
+import org.spine3.tools.codestyle.AbstractCodeStyleFileValidator;
 import org.spine3.tools.codestyle.CodeStyleFileValidator;
 import org.spine3.tools.codestyle.CodeStyleViolation;
 import org.spine3.tools.codestyle.StepConfiguration;
@@ -34,7 +35,7 @@ import java.util.regex.Pattern;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.regex.Pattern.compile;
-import static org.spine3.tools.codestyle.JavaSources.notJavaFile;
+import static org.spine3.tools.codestyle.JavaSources.isJavaFile;
 import static org.spine3.tools.codestyle.JavaSources.readFileErrMsg;
 
 /**
@@ -44,7 +45,7 @@ import static org.spine3.tools.codestyle.JavaSources.readFileErrMsg;
  *
  * @author Alexander Aleksandrov
  */
-public class RightMarginValidator implements CodeStyleFileValidator {
+public class RightMarginValidator extends AbstractCodeStyleFileValidator implements CodeStyleFileValidator {
 
     private final InvalidLineStorage storage = new InvalidLineStorage();
     private final StepConfiguration configuration;
@@ -56,7 +57,7 @@ public class RightMarginValidator implements CodeStyleFileValidator {
     @Override
     public void validate(Path path) throws InvalidLineLengthException {
         final List<String> content;
-        if (notJavaFile(path)) {
+        if (!isJavaFile(path)) {
             return;
         }
         try {
@@ -88,12 +89,12 @@ public class RightMarginValidator implements CodeStyleFileValidator {
     }
 
     @Override
-    public void checkThreshold() {
+    protected void checkThreshold() {
         onAboveThreshold();
     }
 
     @Override
-    public void onAboveThreshold() {
+    protected void onAboveThreshold() {
         storage.logInvalidLines();
         configuration.getReportType()
                      .logOrFail(new InvalidLineLengthException());

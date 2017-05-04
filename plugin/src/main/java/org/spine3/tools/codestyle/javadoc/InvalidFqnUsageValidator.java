@@ -20,6 +20,7 @@
 package org.spine3.tools.codestyle.javadoc;
 
 import com.google.common.base.Optional;
+import org.spine3.tools.codestyle.AbstractCodeStyleFileValidator;
 import org.spine3.tools.codestyle.CodeStyleFileValidator;
 import org.spine3.tools.codestyle.CodeStyleViolation;
 import org.spine3.tools.codestyle.StepConfiguration;
@@ -34,7 +35,7 @@ import java.util.regex.Pattern;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.regex.Pattern.compile;
-import static org.spine3.tools.codestyle.JavaSources.notJavaFile;
+import static org.spine3.tools.codestyle.JavaSources.isJavaFile;
 import static org.spine3.tools.codestyle.JavaSources.readFileErrMsg;
 
 /**
@@ -45,7 +46,7 @@ import static org.spine3.tools.codestyle.JavaSources.readFileErrMsg;
  *
  * @author Alexander Aleksandrov
  */
-public class InvalidFqnUsageValidator implements CodeStyleFileValidator {
+public class InvalidFqnUsageValidator extends AbstractCodeStyleFileValidator implements CodeStyleFileValidator {
 
     private final InvalidResultStorage storage = new InvalidResultStorage();
     private final StepConfiguration configuration;
@@ -57,7 +58,7 @@ public class InvalidFqnUsageValidator implements CodeStyleFileValidator {
     @Override
     public void validate(Path path) throws InvalidFqnUsageException {
         final List<String> content;
-        if (notJavaFile(path)) {
+        if (!isJavaFile(path)) {
             return;
         }
         try {
@@ -73,14 +74,14 @@ public class InvalidFqnUsageValidator implements CodeStyleFileValidator {
     }
 
     @Override
-    public void checkThreshold() {
+    protected void checkThreshold() {
         if (storage.getLinkTotal() > configuration.getThreshold().getValue()) {
             onAboveThreshold();
         }
     }
 
     @Override
-    public void onAboveThreshold() {
+    protected void onAboveThreshold() {
         storage.logInvalidFqnUsages();
         configuration.getReportType().logOrFail(new InvalidFqnUsageException());
     }

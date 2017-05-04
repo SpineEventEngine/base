@@ -1,5 +1,5 @@
 /*
- * Copyright 2016, TeamDev Ltd. All rights reserved.
+ * Copyright 2017, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -19,40 +19,30 @@
  */
 package org.spine3.tools.codestyle;
 
-import java.nio.file.Path;
+import java.util.List;
 
 /**
- * This is a string constants keeper class.
+ * Abstract class to gather not public common methods for validators.
  *
  * @author Alexander Aleksandrov
  */
-public final class JavaSources {
-    private static final String JAVA_FILE_EXTENSION = ".java";
-    private static final String READ_FILE_ERR_MSG = "Cannot read the contents of the file: ";
-
-    private JavaSources() {
-        // Prevent initialization of this utility class
-    }
+public abstract class AbstractCodeStyleFileValidator {
 
     /**
-     * Returns the java file extension string constant.
+     * Goes through the file content represented as list of strings.
      *
-     * @return ".java" string
+     * @param list Content of the file under validation.
+     * @return List of {@link CodeStyleViolation} from that file.
      */
-    public static String javaExt() {
-        return JAVA_FILE_EXTENSION;
-    }
+    protected abstract List<CodeStyleViolation> checkForViolations(List<String> list);
 
     /**
-     * Returns the string with the error message that file cannot be read.
-     *
-     * @return "Cannot read the contents of the file: " string
+     * Check the threshold parameter from build file.
      */
-    public static String readFileErrMsg() {
-        return READ_FILE_ERR_MSG;
-    }
+    protected abstract void checkThreshold();
 
-    public static boolean isJavaFile(Path path) {
-        return path.toString().endsWith(javaExt());
-    }
+    /**
+     * Describes the behavior in case if threshold is exceeded.
+     */
+    protected abstract void onAboveThreshold();
 }

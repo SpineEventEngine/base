@@ -20,7 +20,6 @@
 package org.spine3.tools.codestyle;
 
 import java.nio.file.Path;
-import java.util.List;
 
 /**
  * An interface to gather all common operations for validators.
@@ -30,28 +29,10 @@ import java.util.List;
 public interface CodeStyleFileValidator {
 
     /**
-     * Validates the file on code style violations depending on implementation.
+     * Checks the file for the looked up code style violations.
      *
      * @param path Path to the target file
      * @throws CodeStyleException
      */
     void validate(Path path) throws CodeStyleException;
-
-    /**
-     * Goes through the file content represented as list of strings.
-     *
-     * @param list Content of the file under validation.
-     * @return List of {@link CodeStyleViolation} from that file.
-     */
-    List<CodeStyleViolation> checkForViolations(List<String> list);
-
-    /**
-     * Check the threshold parameter from build file.
-     */
-    void checkThreshold();
-
-    /**
-     * Describes the behavior in case if threshold is exceeded.
-     */
-    void onAboveThreshold();
 }
