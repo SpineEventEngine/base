@@ -31,6 +31,7 @@ import com.google.common.collect.Ordering;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
+import org.joda.time.DateTime;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.spine3.gradle.SpinePlugin;
@@ -39,7 +40,6 @@ import javax.annotation.Nullable;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Date;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -92,15 +92,10 @@ public class GcsPlugin extends SpinePlugin {
         }
 
         final Blob oldestBlob = getOldestBlob(allBlobs);
-        final Date lastCleaningDate = new Date(oldestBlob.getCreateTime());
-        final Date nextCleaningDate =
-                new Date(lastCleaningDate.getTime() + extension.getCleaningInternal()
-                                                               .toMillis());
-        final Date now = new Date();
-        log().debug("Last cleaning date is `{}`.", lastCleaningDate);
-        log().debug("Next cleaning date is `{}`.", nextCleaningDate);
-
-        final boolean isCleaningRequired = nextCleaningDate.before(now);
+        final DateTime oldestBlobCreation = new DateTime(oldestBlob.getCreateTime());
+        final DateTime cleaningThreshold = oldestBlobCreation.plus(extension.getCleaningInternal()
+                                                                            .toMillis());
+        final boolean isCleaningRequired = cleaningThreshold.isBeforeNow();
         if (isCleaningRequired) {
             for (Blob blob : allBlobs) {
                 storage.delete(blob.getBlobId());
@@ -108,7 +103,8 @@ public class GcsPlugin extends SpinePlugin {
             log().info("Folder `{}` in bucket `{}` deleted.",
                        extension.getCleaningFolder(), extension.getBucket());
         } else {
-            log().info("Cleaning is not required yet.");
+            log().info("Cleaning is not required yet and will be triggered after {}.",
+                       cleaningThreshold);
         }
     }
 
