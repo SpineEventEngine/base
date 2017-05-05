@@ -66,9 +66,6 @@ public class Extension {
      *
      * <p>If the specified cleaning folder not ends with a slash, it will be appended.
      *
-     * <p>Appending is required in reason of that GCS recognizes a folder
-     * by a slash in the end of an object name.
-     *
      * @param cleaningFolder the cleaning folder
      */
     public void setCleaningFolder(String cleaningFolder) {
