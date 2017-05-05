@@ -22,7 +22,7 @@ package org.spine3.tools.codestyle;
 import java.nio.file.Path;
 
 /**
- * This is a string constants keeper class.
+ * Class that represent java file extension.
  *
  * @author Alexander Aleksandrov
  */
