@@ -20,16 +20,21 @@
 
 package org.spine3.tools.gcs;
 
+import org.gradle.api.Project;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.spine3.gradle.TaskName.CLEAN_GCS;
+import static org.spine3.tools.gcs.Given.newProject;
 
 /**
  * @author Dmytro Grankin
  */
 public class CleanGcsTaskShould {
 
-    private final CleanGcsTask task = new CleanGcsTask();
+    private final Project project = newProject();
+    private final CleanGcsTask task = project.getTasks()
+                                             .create(CLEAN_GCS.getValue(), CleanGcsTask.class);
 
     @Test
     public void append_slash_to_folder_name_without_trailing_slash() {
