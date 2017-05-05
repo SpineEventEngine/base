@@ -61,15 +61,27 @@ public class Extension {
         return cleaningFolder;
     }
 
+    /**
+     * Sets the cleaning folder.
+     *
+     * <p>If the specified cleaning folder not ends with a slash, it will be appended.
+     *
+     * <p>Appending is required in reason of that GCS recognizes a folder
+     * by a slash in the end of an object name.
+     *
+     * @param cleaningFolder the cleaning folder
+     */
     public void setCleaningFolder(String cleaningFolder) {
-        this.cleaningFolder = cleaningFolder;
+        this.cleaningFolder = cleaningFolder.endsWith("/")
+                              ? cleaningFolder
+                              : cleaningFolder + '/';
     }
 
     public CleaningInterval getCleaningInternal() {
         return cleaningInternal;
     }
 
-    public void setCleaningInternal(CleaningInterval cleaningInternal) {
-        this.cleaningInternal = cleaningInternal;
+    public void setCleaningInternal(int days) {
+        this.cleaningInternal = new CleaningInterval(days);
     }
 }
