@@ -102,8 +102,8 @@ public class FileChecker {
     }
 
     /**
-     * Custom {@linkplain java.nio.file.FileVisitor visitor} which recursively checks
-     * the contents of the walked folder.
+     * Custom {@linkplain java.nio.file.FileVisitor visitor} which checks the contents of
+     * the walked folder recursively.
      */
     private static class RecursiveFileChecker extends SimpleFileVisitor<Path> {
 

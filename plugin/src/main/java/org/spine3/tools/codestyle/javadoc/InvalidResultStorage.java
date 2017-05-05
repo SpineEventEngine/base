@@ -21,10 +21,10 @@ package org.spine3.tools.codestyle.javadoc;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.spine3.tools.codestyle.AbstractStorage;
 import org.spine3.tools.codestyle.CodeStyleViolation;
 
 import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -35,20 +35,11 @@ import static java.lang.String.format;
  *
  * @author Alexander Aleksandrov
  */
-class InvalidResultStorage {
+class InvalidResultStorage extends AbstractStorage {
 
-    private final Map<Path, List<CodeStyleViolation>> resultStorage = new HashMap<>();
-
-    int getLinkTotal() {
-        int total = 0;
-        for (List<CodeStyleViolation> l : resultStorage.values()) {
-            total += l.size();
-        }
-        return total;
-    }
-
-    void logInvalidFqnUsages() {
-        for (Map.Entry<Path, List<CodeStyleViolation>> entry : resultStorage.entrySet()) {
+    @Override
+    public void logViolations() {
+        for (Map.Entry<Path, List<CodeStyleViolation>> entry : getContent().entries()) {
             logInvalidFqnUsages(entry);
         }
     }
@@ -62,16 +53,6 @@ class InvalidResultStorage {
                     entry.getKey());
             log().error(msg);
         }
-    }
-
-    /**
-     * Add a new record to storage if it is already exist or creates a new one in case if it's not.
-     *
-     * @param path file path that contain wrong formatted links
-     * @param list list of invalid fully qualified names usages
-     */
-    void save(Path path, List<CodeStyleViolation> list) {
-        resultStorage.put(path, list);
     }
 
     private static Logger log() {

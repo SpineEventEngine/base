@@ -21,22 +21,15 @@ package org.spine3.tools.codestyle.rightmargin;
 
 import com.google.common.base.Optional;
 import org.spine3.tools.codestyle.AbstractCodeStyleFileValidator;
-import org.spine3.tools.codestyle.CodeStyleFileValidator;
 import org.spine3.tools.codestyle.CodeStyleViolation;
 import org.spine3.tools.codestyle.StepConfiguration;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.regex.Pattern.compile;
-import static org.spine3.tools.codestyle.JavaSources.isJavaFile;
-import static org.spine3.tools.codestyle.JavaSources.readFileErrMsg;
 
 /**
  * It checks files for the lines that are going out of the right margin value, specified by
@@ -45,9 +38,8 @@ import static org.spine3.tools.codestyle.JavaSources.readFileErrMsg;
  *
  * @author Alexander Aleksandrov
  */
-public class RightMarginValidator extends AbstractCodeStyleFileValidator implements CodeStyleFileValidator {
+public class RightMarginValidator extends AbstractCodeStyleFileValidator {
 
-    private final InvalidLineStorage storage = new InvalidLineStorage();
     private final StepConfiguration configuration;
 
     public RightMarginValidator(StepConfiguration configuration) {
@@ -56,21 +48,8 @@ public class RightMarginValidator extends AbstractCodeStyleFileValidator impleme
     }
 
     @Override
-    public void validate(Path path) throws InvalidLineLengthException {
-        final List<String> content;
-        if (!isJavaFile(path)) {
-            return;
-        }
-        try {
-            content = Files.readAllLines(path, StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            throw new IllegalStateException(readFileErrMsg() + path, e);
-        }
-        final List<CodeStyleViolation> invalidLines = checkForViolations(content);
-        if (!invalidLines.isEmpty()) {
-            storage.save(path, invalidLines);
-        }
-        checkThreshold();
+    protected InvalidLineStorage createStorage(){
+         return new InvalidLineStorage();
     }
 
     @Override
@@ -90,13 +69,13 @@ public class RightMarginValidator extends AbstractCodeStyleFileValidator impleme
     }
 
     @Override
-    protected void checkThreshold() {
+    protected void checkViolationsAmount() {
         onAboveThreshold();
     }
 
     @Override
     protected void onAboveThreshold() {
-        storage.logInvalidLines();
+        getStorage().logViolations();
         configuration.getReportType()
                      .logOrFail(new InvalidLineLengthException());
     }

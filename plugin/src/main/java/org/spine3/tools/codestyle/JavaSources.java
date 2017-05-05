@@ -28,7 +28,6 @@ import java.nio.file.Path;
  */
 public final class JavaSources {
     private static final String JAVA_FILE_EXTENSION = ".java";
-    private static final String READ_FILE_ERR_MSG = "Cannot read the contents of the file: ";
 
     private JavaSources() {
         // Prevent initialization of this utility class
@@ -43,16 +42,8 @@ public final class JavaSources {
         return JAVA_FILE_EXTENSION;
     }
 
-    /**
-     * Returns the string with the error message that file cannot be read.
-     *
-     * @return "Cannot read the contents of the file: " string
-     */
-    public static String readFileErrMsg() {
-        return READ_FILE_ERR_MSG;
-    }
-
     public static boolean isJavaFile(Path path) {
-        return path.toString().endsWith(javaExt());
+        return path.toString()
+                   .endsWith(javaExt());
     }
 }

@@ -21,10 +21,10 @@ package org.spine3.tools.codestyle.rightmargin;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.spine3.tools.codestyle.AbstractStorage;
 import org.spine3.tools.codestyle.CodeStyleViolation;
 
 import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -35,12 +35,11 @@ import static java.lang.String.format;
  *
  * @author Alexander Aleksandrov
  */
-public class InvalidLineStorage {
+public class InvalidLineStorage extends AbstractStorage {
 
-    private final Map<Path, List<CodeStyleViolation>> resultStorage = new HashMap<>();
-
-    void logInvalidLines() {
-        for (Map.Entry<Path, List<CodeStyleViolation>> entry : resultStorage.entrySet()) {
+    @Override
+    public void logViolations() {
+        for (Map.Entry<Path, List<CodeStyleViolation>> entry : getContent().entries()) {
             logInvalidLines(entry);
         }
     }
@@ -53,16 +52,6 @@ public class InvalidLineStorage {
                     entry.getKey());
             log().error(msg);
         }
-    }
-
-    /**
-     * Add a new record to storage if it already exists or creates a new one in case if it's not.
-     *
-     * @param path file path that contains wrong formatted links
-     * @param list list of invalid fully qualified names usages
-     */
-    void save(Path path, List<CodeStyleViolation> list) {
-        resultStorage.put(path, list);
     }
 
     private static Logger log() {

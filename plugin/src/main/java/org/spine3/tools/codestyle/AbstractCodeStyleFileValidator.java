@@ -19,14 +19,57 @@
  */
 package org.spine3.tools.codestyle;
 
+import org.spine3.tools.codestyle.rightmargin.InvalidLineLengthException;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
+
+import static org.spine3.tools.codestyle.JavaSources.isJavaFile;
 
 /**
  * Abstract class to gather not public common methods for validators.
  *
  * @author Alexander Aleksandrov
  */
-public abstract class AbstractCodeStyleFileValidator {
+public abstract class AbstractCodeStyleFileValidator implements CodeStyleFileValidator {
+
+    private AbstractStorage storage;
+    private static final String READ_FILE_ERR_MSG = "Cannot read the contents of the file: ";
+
+    protected AbstractStorage getStorage() {
+        return storage;
+    }
+
+    @Override
+    public void validate(Path path) throws InvalidLineLengthException {
+        final List<String> content;
+        if (!isJavaFile(path)) {
+            return;
+        }
+        try {
+            content = Files.readAllLines(path, StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            throw new IllegalStateException(READ_FILE_ERR_MSG + path, e);
+        }
+        final List<CodeStyleViolation> violations = checkForViolations(content);
+        storage = createStorage();
+        saveToStorage(path, violations);
+        checkViolationsAmount();
+    }
+
+    private void saveToStorage(Path path, List<CodeStyleViolation> violations) {
+        if (!violations.isEmpty()) {
+            storage.save(path, violations);
+        }
+    }
+
+    /**
+     * Creates storage for violations.
+     */
+    protected abstract AbstractStorage createStorage();
 
     /**
      * Goes through the file content represented as list of strings.
@@ -37,9 +80,9 @@ public abstract class AbstractCodeStyleFileValidator {
     protected abstract List<CodeStyleViolation> checkForViolations(List<String> list);
 
     /**
-     * Check the threshold parameter from build file.
+     * Compares the number of founded violations with threshold amount.
      */
-    protected abstract void checkThreshold();
+    protected abstract void checkViolationsAmount();
 
     /**
      * Describes the behavior in case if threshold is exceeded.

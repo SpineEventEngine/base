@@ -21,22 +21,15 @@ package org.spine3.tools.codestyle.javadoc;
 
 import com.google.common.base.Optional;
 import org.spine3.tools.codestyle.AbstractCodeStyleFileValidator;
-import org.spine3.tools.codestyle.CodeStyleFileValidator;
 import org.spine3.tools.codestyle.CodeStyleViolation;
 import org.spine3.tools.codestyle.StepConfiguration;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.regex.Pattern.compile;
-import static org.spine3.tools.codestyle.JavaSources.isJavaFile;
-import static org.spine3.tools.codestyle.JavaSources.readFileErrMsg;
 
 /**
  * It checks javadoc comments in files for the links that are used in wrong format.
@@ -46,9 +39,8 @@ import static org.spine3.tools.codestyle.JavaSources.readFileErrMsg;
  *
  * @author Alexander Aleksandrov
  */
-public class InvalidFqnUsageValidator extends AbstractCodeStyleFileValidator implements CodeStyleFileValidator {
+public class InvalidFqnUsageValidator extends AbstractCodeStyleFileValidator {
 
-    private final InvalidResultStorage storage = new InvalidResultStorage();
     private final StepConfiguration configuration;
 
     public InvalidFqnUsageValidator(StepConfiguration configuration) {
@@ -57,34 +49,51 @@ public class InvalidFqnUsageValidator extends AbstractCodeStyleFileValidator imp
     }
 
     @Override
-    public void validate(Path path) throws InvalidFqnUsageException {
-        final List<String> content;
-        if (!isJavaFile(path)) {
-            return;
-        }
-        try {
-            content = Files.readAllLines(path, StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            throw new IllegalStateException(readFileErrMsg() + path, e);
-        }
-        final List<CodeStyleViolation> invalidLinks = checkForViolations(content);
-        if (!invalidLinks.isEmpty()) {
-            storage.save(path, invalidLinks);
-        }
-        checkThreshold();
+    protected InvalidResultStorage createStorage() {
+        return new InvalidResultStorage();
     }
 
     @Override
-    protected void checkThreshold() {
-        if (storage.getLinkTotal() > configuration.getThreshold().getValue()) {
+    protected void checkViolationsAmount() {
+        if (getStorage().size() > configuration.getThreshold()
+                                               .getValue()) {
             onAboveThreshold();
         }
     }
 
     @Override
     protected void onAboveThreshold() {
-        storage.logInvalidFqnUsages();
-        configuration.getReportType().logOrFail(new InvalidFqnUsageException());
+        getStorage().logViolations();
+        configuration.getReportType()
+                     .logOrFail(new InvalidFqnUsageException());
+    }
+
+    @Override
+    public List<CodeStyleViolation> checkForViolations(List<String> list) {
+        int lineNumber = 0;
+        final List<CodeStyleViolation> invalidLinks = newArrayList();
+        for (String line : list) {
+            final Optional<CodeStyleViolation> result = checkSingleComment(line);
+            lineNumber++;
+            if (result.isPresent()) {
+                final CodeStyleViolation codeStyleViolation = result.get();
+                codeStyleViolation.setIndex(lineNumber);
+                invalidLinks.add(codeStyleViolation);
+            }
+        }
+        return invalidLinks;
+    }
+
+    private static Optional<CodeStyleViolation> checkSingleComment(String comment) {
+        final Matcher matcher = InvalidFqnUsageValidator.JavadocPattern.LINK.getPattern()
+                                                                            .matcher(comment);
+        final boolean found = matcher.find();
+        if (found) {
+            final String improperUsage = matcher.group(0);
+            final CodeStyleViolation result = new CodeStyleViolation(improperUsage);
+            return Optional.of(result);
+        }
+        return Optional.absent();
     }
 
     private enum JavadocPattern {
@@ -149,33 +158,6 @@ public class InvalidFqnUsageValidator extends AbstractCodeStyleFileValidator imp
         Pattern getPattern() {
             return pattern;
         }
-    }
 
-    @Override
-    public List<CodeStyleViolation> checkForViolations(List<String> list) {
-        int lineNumber = 0;
-        final List<CodeStyleViolation> invalidLinks = newArrayList();
-        for (String line : list) {
-            final Optional<CodeStyleViolation> result = checkSingleComment(line);
-            lineNumber++;
-            if (result.isPresent()) {
-                final CodeStyleViolation codeStyleViolation = result.get();
-                codeStyleViolation.setIndex(lineNumber);
-                invalidLinks.add(codeStyleViolation);
-            }
-        }
-        return invalidLinks;
-    }
-
-    private static Optional<CodeStyleViolation> checkSingleComment(String comment) {
-        final Matcher matcher = InvalidFqnUsageValidator.JavadocPattern.LINK.getPattern()
-                                                                            .matcher(comment);
-        final boolean found = matcher.find();
-        if (found) {
-            final String improperUsage = matcher.group(0);
-            final CodeStyleViolation result = new CodeStyleViolation(improperUsage);
-            return Optional.of(result);
-        }
-        return Optional.absent();
     }
 }
