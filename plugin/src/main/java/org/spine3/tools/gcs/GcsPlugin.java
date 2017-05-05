@@ -26,7 +26,6 @@ import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.Bucket;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.Storage.BlobListOption;
-import com.google.cloud.storage.Storage.BucketGetOption;
 import com.google.cloud.storage.StorageOptions;
 import com.google.common.collect.Ordering;
 import org.gradle.api.Action;
@@ -42,6 +41,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static org.slf4j.LoggerFactory.getLogger;
 import static org.spine3.gradle.TaskName.BUILD;
@@ -76,21 +76,23 @@ public class GcsPlugin extends SpinePlugin {
 
     private void cleanGcs() {
         final Storage storage = getStorage();
-        final Bucket bucket = storage.get(extension.getBucket(), BucketGetOption.fields());
+        final Bucket bucket = storage.get(extension.getBucket());
 
         if (bucket == null) {
-            throw new IllegalStateException("Specified bucket was not found.");
+            throw new IllegalStateException("Specified bucket is not exists.");
         }
 
         final Page<Blob> blobs = bucket.list(BlobListOption.prefix(extension.getCleaningFolder()));
-        if (!blobs.iterateAll()
-                  .iterator()
-                  .hasNext()) {
-            log().info("Folder `{}` is empty. Nothing to clean.", extension.getCleaningFolder());
+        final Iterable<Blob> allBlobs = blobs.iterateAll();
+        if (!allBlobs.iterator()
+                     .hasNext()) {
+            log().info("Folder `{}` is not exists. Nothing to clean.",
+                       extension.getCleaningFolder());
             return;
         }
 
-        final Date lastCleaningDate = new Date(getMinCreationDate(blobs));
+        final Blob oldestBlob = getOldestBlob(allBlobs);
+        final Date lastCleaningDate = new Date(oldestBlob.getCreateTime());
         final Date nextCleaningDate =
                 new Date(lastCleaningDate.getTime() + extension.getCleaningInternal()
                                                                .toMillis());
@@ -100,10 +102,10 @@ public class GcsPlugin extends SpinePlugin {
 
         final boolean isCleaningRequired = nextCleaningDate.before(now);
         if (isCleaningRequired) {
-            for (Blob blob : blobs.iterateAll()) {
+            for (Blob blob : allBlobs) {
                 storage.delete(blob.getBlobId());
             }
-            log().info("Folder `{}` in bucket `{}` cleaned.",
+            log().info("Folder `{}` in bucket `{}` deleted.",
                        extension.getCleaningFolder(), extension.getBucket());
         } else {
             log().info("Cleaning is not required yet.");
@@ -131,7 +133,9 @@ public class GcsPlugin extends SpinePlugin {
                              .getService();
     }
 
-    private static long getMinCreationDate(Page<Blob> blobs) {
+    private static Blob getOldestBlob(Iterable<Blob> blobs) {
+        checkArgument(blobs.iterator()
+                           .hasNext());
         final Ordering<Blob> creationDateOrdering = new Ordering<Blob>() {
             @Override
             public int compare(@Nullable Blob left, @Nullable Blob right) {
@@ -142,8 +146,7 @@ public class GcsPlugin extends SpinePlugin {
             }
         };
 
-        final Blob oldestBlob = creationDateOrdering.min(blobs.iterateAll());
-        return oldestBlob.getCreateTime();
+        return creationDateOrdering.min(blobs);
     }
 
     private static Logger log() {
