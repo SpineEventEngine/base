@@ -20,50 +20,28 @@
 
 package org.spine3.tools.gcs;
 
-import org.gradle.api.Project;
-import org.gradle.api.Task;
-import org.gradle.api.tasks.TaskContainer;
-import org.junit.Before;
 import org.junit.Test;
-import org.spine3.gradle.TaskName;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.spine3.gradle.TaskDependencies.dependsOn;
-import static org.spine3.gradle.TaskName.BUILD;
-import static org.spine3.gradle.TaskName.CLEAN_GCS;
-import static org.spine3.tools.gcs.Given.GCS_PLUGIN_ID;
-import static org.spine3.tools.gcs.Given.newProject;
 
 /**
  * @author Dmytro Grankin
  */
-public class GcsPluginShould {
+public class CleanGcsTaskShould {
 
-    private TaskContainer tasks;
+    private final CleanGcsTask task = new CleanGcsTask();
 
-    @Before
-    public void setUp() {
-        final Project project = newProject();
-        project.getPluginManager()
-               .apply(GCS_PLUGIN_ID);
-        tasks = project.getTasks();
+    @Test
+    public void append_slash_to_folder_name_without_trailing_slash() {
+        final String folderName = "just-folder-name";
+        task.setCleaningFolder(folderName);
+        assertEquals(folderName + '/', task.getCleaningFolder());
     }
 
     @Test
-    public void apply_to_project() {
-        final Project project = newProject();
-        project.getPluginManager()
-               .apply(GCS_PLUGIN_ID);
-    }
-
-    @Test
-    public void add_task_cleanGCS() {
-        assertNotNull(task(CLEAN_GCS));
-    }
-
-    private Task task(TaskName taskName) {
-        return tasks.getByName(taskName.getValue());
+    public void not_append_slash_to_folder_name_with_trailing_slash() {
+        final String folderName = "slash-in-the-end/";
+        task.setCleaningFolder(folderName);
+        assertEquals(folderName, task.getCleaningFolder());
     }
 }

@@ -20,131 +20,26 @@
 
 package org.spine3.tools.gcs;
 
-import com.google.api.gax.paging.Page;
-import com.google.auth.oauth2.ServiceAccountCredentials;
-import com.google.cloud.storage.Blob;
-import com.google.cloud.storage.Bucket;
-import com.google.cloud.storage.Storage;
-import com.google.cloud.storage.Storage.BlobListOption;
-import com.google.cloud.storage.StorageOptions;
-import com.google.common.collect.Ordering;
-import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
-import org.joda.time.DateTime;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.spine3.gradle.SpinePlugin;
 
-import javax.annotation.Nullable;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
 import static org.slf4j.LoggerFactory.getLogger;
-import static org.spine3.gradle.TaskName.BUILD;
 import static org.spine3.gradle.TaskName.CLEAN_GCS;
 
 /**
- * The plugin for Google Cloud Storage.
- *
- * <p>The plugin deletes the specified folder if it's age exceeds {@link CleaningThreshold}.
+ * The plugin for working with Google Cloud Storage via gradle tasks.
  *
  * @author Dmytro Grankin
  */
 public class GcsPlugin extends SpinePlugin {
 
-    private static final String PROJECT_ID_KEY = "project_id";
-
-    private Extension extension;
-
     @Override
     public void apply(Project project) {
-        log().debug("Applying the GCS plugin");
-        extension = Extension.createFor(project);
-
-        final Action<Task> cleanGcsAction = new Action<Task>() {
-            @Override
-            public void execute(Task task) {
-                cleanGcs();
-            }
-        };
-        final GradleTask task = newTask(CLEAN_GCS, cleanGcsAction).insertBeforeTask(BUILD)
-                                                                  .applyNowTo(project);
+        final Task task = project.getTasks()
+                                 .create(CLEAN_GCS.getValue(), CleanGcsTask.class);
         log().debug("GCS Gradle plugin initialized with the Gradle task: {}", task);
-    }
-
-    private void cleanGcs() {
-        final Storage storage = getStorage();
-        final Bucket bucket = storage.get(extension.getBucket());
-
-        if (bucket == null) {
-            throw new IllegalStateException("Specified bucket is not exists.");
-        }
-
-        final Page<Blob> blobs = bucket.list(BlobListOption.prefix(extension.getCleaningFolder()));
-        final Iterable<Blob> allBlobs = blobs.iterateAll();
-        if (!allBlobs.iterator()
-                     .hasNext()) {
-            log().info("Folder `{}` is not exists. Nothing to clean.",
-                       extension.getCleaningFolder());
-            return;
-        }
-
-        final Blob oldestBlob = getOldestBlob(allBlobs);
-        final DateTime oldestBlobCreation = new DateTime(oldestBlob.getCreateTime());
-        final DateTime cleaningTrigger = oldestBlobCreation.plus(extension.getCleaningThreshold()
-                                                                          .toMillis());
-        final boolean isCleaningRequired = cleaningTrigger.isBeforeNow();
-        if (isCleaningRequired) {
-            for (Blob blob : allBlobs) {
-                storage.delete(blob.getBlobId());
-            }
-            log().info("Folder `{}` in bucket `{}` deleted.",
-                       extension.getCleaningFolder(), extension.getBucket());
-        } else {
-            log().info("Cleaning is not required yet and will be triggered after {}.",
-                       cleaningTrigger);
-        }
-    }
-
-    private Storage getStorage() {
-        final byte[] keyFileBytes = extension.getKeyFileContent()
-                                             .getBytes();
-        final InputStream serviceAccountFile = new ByteArrayInputStream(keyFileBytes);
-        final ServiceAccountCredentials credentials;
-
-        try {
-            credentials = ServiceAccountCredentials.fromStream(serviceAccountFile);
-        } catch (IOException e) {
-            throw new IllegalStateException("Invalid key file content was specified.", e);
-        }
-
-        final JSONObject json = new JSONObject(extension.getKeyFileContent());
-        final String projectId = (String) json.get(PROJECT_ID_KEY);
-        return StorageOptions.newBuilder()
-                             .setProjectId(projectId)
-                             .setCredentials(credentials)
-                             .build()
-                             .getService();
-    }
-
-    private static Blob getOldestBlob(Iterable<Blob> blobs) {
-        checkArgument(blobs.iterator()
-                           .hasNext());
-        final Ordering<Blob> creationDateOrdering = new Ordering<Blob>() {
-            @Override
-            public int compare(@Nullable Blob left, @Nullable Blob right) {
-                checkNotNull(left);
-                checkNotNull(right);
-                return left.getCreateTime()
-                           .compareTo(right.getCreateTime());
-            }
-        };
-
-        return creationDateOrdering.min(blobs);
     }
 
     private static Logger log() {
