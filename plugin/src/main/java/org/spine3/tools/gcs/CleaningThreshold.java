@@ -23,20 +23,20 @@ package org.spine3.tools.gcs;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Cleaning interval measurable in days amount.
+ * Cleaning threshold measurable in days.
  *
  * @author Dmytro Grankin
  */
-public class CleaningInterval {
+public class CleaningThreshold {
 
     private final int days;
 
-    public CleaningInterval(int days) {
+    public CleaningThreshold(int days) {
         this.days = days;
     }
 
     /**
-     * Converts cleaning interval to milliseconds.
+     * Converts cleaning threshold to milliseconds.
      *
      * @return cleaning interval in millis
      */

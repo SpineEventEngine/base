@@ -48,7 +48,9 @@ import static org.spine3.gradle.TaskName.BUILD;
 import static org.spine3.gradle.TaskName.CLEAN_GCS;
 
 /**
- * The plugin for Google Cloud Storage, that cleans the folder with the specified period.
+ * The plugin for Google Cloud Storage.
+ *
+ * <p>The plugin deletes the specified folder if it's age exceeds {@link CleaningThreshold}.
  *
  * @author Dmytro Grankin
  */
@@ -93,9 +95,9 @@ public class GcsPlugin extends SpinePlugin {
 
         final Blob oldestBlob = getOldestBlob(allBlobs);
         final DateTime oldestBlobCreation = new DateTime(oldestBlob.getCreateTime());
-        final DateTime cleaningThreshold = oldestBlobCreation.plus(extension.getCleaningInternal()
-                                                                            .toMillis());
-        final boolean isCleaningRequired = cleaningThreshold.isBeforeNow();
+        final DateTime cleaningTrigger = oldestBlobCreation.plus(extension.getCleaningThreshold()
+                                                                          .toMillis());
+        final boolean isCleaningRequired = cleaningTrigger.isBeforeNow();
         if (isCleaningRequired) {
             for (Blob blob : allBlobs) {
                 storage.delete(blob.getBlobId());
@@ -104,7 +106,7 @@ public class GcsPlugin extends SpinePlugin {
                        extension.getCleaningFolder(), extension.getBucket());
         } else {
             log().info("Cleaning is not required yet and will be triggered after {}.",
-                       cleaningThreshold);
+                       cleaningTrigger);
         }
     }
 

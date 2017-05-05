@@ -34,7 +34,7 @@ public class Extension {
     private String keyFileContent;
     private String bucket;
     private String cleaningFolder;
-    private CleaningInterval cleaningInternal;
+    private CleaningThreshold cleaningThreshold;
 
     static Extension createFor(Project project) {
         return project.getExtensions()
@@ -74,11 +74,11 @@ public class Extension {
                               : cleaningFolder + '/';
     }
 
-    public CleaningInterval getCleaningInternal() {
-        return cleaningInternal;
+    public CleaningThreshold getCleaningThreshold() {
+        return cleaningThreshold;
     }
 
-    public void setCleaningInternal(int days) {
-        this.cleaningInternal = new CleaningInterval(days);
+    public void setCleaningThreshold(int days) {
+        this.cleaningThreshold = new CleaningThreshold(days);
     }
 }
