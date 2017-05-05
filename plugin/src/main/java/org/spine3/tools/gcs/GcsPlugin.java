@@ -32,6 +32,7 @@ import com.google.common.collect.Ordering;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.spine3.gradle.SpinePlugin;
 
@@ -53,6 +54,8 @@ import static org.spine3.gradle.TaskName.CLEAN_GCS;
  */
 public class GcsPlugin extends SpinePlugin {
 
+    private static final String PROJECT_ID_KEY = "project_id";
+
     private Extension extension;
 
     @Override
@@ -66,10 +69,8 @@ public class GcsPlugin extends SpinePlugin {
                 cleanGcs();
             }
         };
-        final GradleTask task =
-                newTask(CLEAN_GCS, cleanGcsAction).insertAfterTask(BUILD)
-                                                  .applyNowTo(project);
-
+        final GradleTask task = newTask(CLEAN_GCS, cleanGcsAction).insertBeforeTask(BUILD)
+                                                                  .applyNowTo(project);
         log().debug("GCS Gradle plugin initialized with the Gradle task: {}", task);
     }
 
@@ -103,7 +104,7 @@ public class GcsPlugin extends SpinePlugin {
                 storage.delete(blob.getBlobId());
             }
             log().info("Folder `{}` in bucket `{}` cleaned.",
-                       extension.getCleaningFolder(), bucket.getName());
+                       extension.getCleaningFolder(), extension.getBucket());
         } else {
             log().info("Cleaning is not required yet.");
         }
@@ -121,7 +122,10 @@ public class GcsPlugin extends SpinePlugin {
             throw new IllegalStateException("Invalid key file content was specified.", e);
         }
 
+        final JSONObject json = new JSONObject(extension.getKeyFileContent());
+        final String projectId = (String) json.get(PROJECT_ID_KEY);
         return StorageOptions.newBuilder()
+                             .setProjectId(projectId)
                              .setCredentials(credentials)
                              .build()
                              .getService();
