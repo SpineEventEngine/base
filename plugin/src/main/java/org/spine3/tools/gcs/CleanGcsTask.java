@@ -51,12 +51,17 @@ import static java.lang.String.format;
 /**
  * The task, that deletes the specified folder if it's age exceeds {@link CleaningThreshold}.
  *
+ * <p>To use the task, all parameters must be specified.
+ *
  * @author Dmytro Grankin
  */
 public class CleanGcsTask extends DefaultTask {
 
     private static final String PROJECT_ID_KEY = "project_id";
 
+    /**
+     * File that contains service account credentials in JSON format.
+     */
     private String keyFile;
     private String bucketName;
     private String cleaningFolder;
