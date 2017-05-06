@@ -80,7 +80,7 @@ public class CleanGcsTaskShould {
                                .build());
         storage.create(BlobInfo.newBuilder(task.getBucketName(), "text.txt")
                                .build());
-        taskSpy.setCleaningThreshold(0);
+        taskSpy.setThreshold(0);
         taskSpy.cleanGcs();
 
         assertEquals(1, size(storage.list(task.getBucketName())
@@ -91,7 +91,7 @@ public class CleanGcsTaskShould {
     public void not_delete_specified_folder_if_threshold_is_not_exceeded() {
         storage.create(BlobInfo.newBuilder(task.getBucketName(), task.getTargetFolder())
                                .build());
-        taskSpy.setCleaningThreshold(10);
+        taskSpy.setThreshold(10);
         taskSpy.cleanGcs();
         assertEquals(1, size(storage.list(task.getBucketName())
                                     .iterateAll()));
@@ -99,7 +99,7 @@ public class CleanGcsTaskShould {
 
     @Test
     public void do_nothing_if_cleaningFolder_is_not_exists() {
-        taskSpy.setCleaningThreshold(0);
+        taskSpy.setThreshold(0);
         taskSpy.cleanGcs();
         verify(taskSpy, never()).getOldestBlobCreationDate(ArgumentMatchers.<Blob>anyIterable());
     }

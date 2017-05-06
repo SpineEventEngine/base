@@ -65,7 +65,7 @@ public class CleanGcsTask extends DefaultTask {
     private String keyFile;
     private String bucketName;
     private String targetFolder;
-    private CleaningThreshold cleaningThreshold;
+    private CleaningThreshold threshold;
 
     @TaskAction
     void cleanGcs() {
@@ -82,7 +82,7 @@ public class CleanGcsTask extends DefaultTask {
         }
 
         final DateTime oldestBlobCreation = getOldestBlobCreationDate(allBlobs);
-        final DateTime cleaningTrigger = oldestBlobCreation.plus(cleaningThreshold.toMillis());
+        final DateTime cleaningTrigger = oldestBlobCreation.plus(threshold.toMillis());
         final boolean isCleaningRequired = cleaningTrigger.isBeforeNow();
         if (isCleaningRequired) {
             for (Blob blob : allBlobs) {
@@ -161,7 +161,7 @@ public class CleanGcsTask extends DefaultTask {
         checkNotNull(keyFile, "`keyFile` should be set.");
         checkNotNull(bucketName, "`bucketName` should be set.");
         checkNotNull(targetFolder, "`targetFolder` should be set.");
-        checkNotNull(cleaningThreshold, "`cleaningThreshold` should be set.");
+        checkNotNull(threshold, "`threshold` should be set.");
     }
 
     public void setKeyFile(String keyFile) {
@@ -185,8 +185,8 @@ public class CleanGcsTask extends DefaultTask {
                               : targetFolder + '/';
     }
 
-    public void setCleaningThreshold(int days) {
-        this.cleaningThreshold = new CleaningThreshold(days);
+    public void setThreshold(int days) {
+        this.threshold = new CleaningThreshold(days);
     }
 
     public String getKeyFile() {
@@ -201,8 +201,8 @@ public class CleanGcsTask extends DefaultTask {
         return targetFolder;
     }
 
-    public CleaningThreshold getCleaningThreshold() {
-        return cleaningThreshold;
+    public CleaningThreshold getThreshold() {
+        return threshold;
     }
 
     private static Logger log() {
