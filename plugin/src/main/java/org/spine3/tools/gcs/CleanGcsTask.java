@@ -36,12 +36,16 @@ import org.slf4j.Logger;
 
 import javax.annotation.Nullable;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Properties;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.lang.String.format;
 
 /**
  * The task, that deletes the specified folder if it's age exceeds {@link CleaningThreshold}.
@@ -52,7 +56,7 @@ public class CleanGcsTask extends DefaultTask {
 
     private static final String PROJECT_ID_KEY = "project_id";
 
-    private String keyFileContent;
+    private String keyFile;
     private String bucketName;
     private String cleaningFolder;
     private CleaningThreshold cleaningThreshold;
@@ -85,12 +89,12 @@ public class CleanGcsTask extends DefaultTask {
             }
             log().info("Folder `{}` in bucketName `{}` deleted.", cleaningFolder, bucketName);
         } else {
-            log().info("Cleaning is not required yet and will be triggered after {}.",
-                       cleaningTrigger);
+            log().info("Cleaning is not required until {}.", cleaningTrigger);
         }
     }
 
     private Storage getStorage() {
+        final String keyFileContent = getKeyFileContent();
         final byte[] keyFileBytes = keyFileContent.getBytes();
         final InputStream serviceAccountFile = new ByteArrayInputStream(keyFileBytes);
         final ServiceAccountCredentials credentials;
@@ -126,15 +130,28 @@ public class CleanGcsTask extends DefaultTask {
         return creationDateOrdering.min(blobs);
     }
 
+    private String getKeyFileContent() {
+        final File file = getProject().file(keyFile);
+        final Path keyFilePath = Paths.get(file.getAbsolutePath());
+        final byte[] keyFileBytes;
+        try {
+            keyFileBytes = Files.readAllBytes(keyFilePath);
+            return new String(keyFileBytes);
+        } catch (IOException e) {
+            final String msg = format("Unable to read key file `%s`.", keyFile);
+            throw new IllegalStateException(msg, e);
+        }
+    }
+
     private void checkParameters() {
-        checkNotNull(keyFileContent, "`keyFileContent` should be set.");
-        checkNotNull(bucketName,"`bucketName` should be set.");
+        checkNotNull(keyFile, "`keyFile` should be set.");
+        checkNotNull(bucketName, "`bucketName` should be set.");
         checkNotNull(cleaningFolder, "`cleaningFolder` should be set.");
         checkNotNull(cleaningThreshold, "`cleaningThreshold` should be set.");
     }
 
-    public void setKeyFileContent(String keyFileContent) {
-        this.keyFileContent = keyFileContent;
+    public void setKeyFile(String keyFile) {
+        this.keyFile = keyFile;
     }
 
     public void setBucketName(String bucketName) {
@@ -158,8 +175,8 @@ public class CleanGcsTask extends DefaultTask {
         this.cleaningThreshold = new CleaningThreshold(days);
     }
 
-    public String getKeyFileContent() {
-        return keyFileContent;
+    public String getKeyFile() {
+        return keyFile;
     }
 
     public String getBucketName() {
