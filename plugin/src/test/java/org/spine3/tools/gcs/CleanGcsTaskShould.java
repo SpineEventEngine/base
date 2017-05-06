@@ -74,9 +74,9 @@ public class CleanGcsTaskShould {
 
     @Test
     public void delete_specified_folder_if_threshold_exceeded() {
-        storage.create(BlobInfo.newBuilder(task.getBucketName(), task.getCleaningFolder() + 1)
+        storage.create(BlobInfo.newBuilder(task.getBucketName(), task.getTargetFolder() + 1)
                                .build());
-        storage.create(BlobInfo.newBuilder(task.getBucketName(), task.getCleaningFolder() + 2)
+        storage.create(BlobInfo.newBuilder(task.getBucketName(), task.getTargetFolder() + 2)
                                .build());
         storage.create(BlobInfo.newBuilder(task.getBucketName(), "text.txt")
                                .build());
@@ -89,7 +89,7 @@ public class CleanGcsTaskShould {
 
     @Test
     public void not_delete_specified_folder_if_threshold_is_not_exceeded() {
-        storage.create(BlobInfo.newBuilder(task.getBucketName(), task.getCleaningFolder())
+        storage.create(BlobInfo.newBuilder(task.getBucketName(), task.getTargetFolder())
                                .build());
         taskSpy.setCleaningThreshold(10);
         taskSpy.cleanGcs();
@@ -107,15 +107,15 @@ public class CleanGcsTaskShould {
     @Test
     public void append_slash_to_folder_name_without_trailing_slash() {
         final String folderName = "just-folder-name";
-        task.setCleaningFolder(folderName);
-        assertEquals(folderName + '/', task.getCleaningFolder());
+        task.setTargetFolder(folderName);
+        assertEquals(folderName + '/', task.getTargetFolder());
     }
 
     @Test
     public void not_append_slash_to_folder_name_with_trailing_slash() {
         final String folderName = "slash-in-the-end/";
-        task.setCleaningFolder(folderName);
-        assertEquals(folderName, task.getCleaningFolder());
+        task.setTargetFolder(folderName);
+        assertEquals(folderName, task.getTargetFolder());
     }
 
     @Test

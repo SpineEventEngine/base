@@ -64,7 +64,7 @@ public class CleanGcsTask extends DefaultTask {
      */
     private String keyFile;
     private String bucketName;
-    private String cleaningFolder;
+    private String targetFolder;
     private CleaningThreshold cleaningThreshold;
 
     @TaskAction
@@ -73,11 +73,11 @@ public class CleanGcsTask extends DefaultTask {
         final Storage storage = getStorage();
         checkBucketExists(storage);
 
-        final Page<Blob> blobs = storage.list(bucketName, BlobListOption.prefix(cleaningFolder));
+        final Page<Blob> blobs = storage.list(bucketName, BlobListOption.prefix(targetFolder));
         final Iterable<Blob> allBlobs = blobs.iterateAll();
         if (!allBlobs.iterator()
                      .hasNext()) {
-            log().info("Folder `{}` is not exists. Nothing to clean.", cleaningFolder);
+            log().info("Folder `{}` is not exists. Nothing to clean.", targetFolder);
             return;
         }
 
@@ -88,7 +88,7 @@ public class CleanGcsTask extends DefaultTask {
             for (Blob blob : allBlobs) {
                 storage.delete(blob.getBlobId());
             }
-            log().info("Folder `{}` in bucketName `{}` deleted.", cleaningFolder, bucketName);
+            log().info("Folder `{}` in bucketName `{}` deleted.", targetFolder, bucketName);
         } else {
             log().info("Cleaning is not required until {}.", cleaningTrigger);
         }
@@ -160,7 +160,7 @@ public class CleanGcsTask extends DefaultTask {
     private void checkParameters() {
         checkNotNull(keyFile, "`keyFile` should be set.");
         checkNotNull(bucketName, "`bucketName` should be set.");
-        checkNotNull(cleaningFolder, "`cleaningFolder` should be set.");
+        checkNotNull(targetFolder, "`targetFolder` should be set.");
         checkNotNull(cleaningThreshold, "`cleaningThreshold` should be set.");
     }
 
@@ -173,16 +173,16 @@ public class CleanGcsTask extends DefaultTask {
     }
 
     /**
-     * Sets the cleaning folder.
+     * Sets the target folder.
      *
-     * <p>If the specified cleaning folder not ends with a slash, it will be appended.
+     * <p>If the specified folder not ends with a slash, it will be appended.
      *
-     * @param cleaningFolder the cleaning folder
+     * @param targetFolder the target folder
      */
-    public void setCleaningFolder(String cleaningFolder) {
-        this.cleaningFolder = cleaningFolder.endsWith("/")
-                              ? cleaningFolder
-                              : cleaningFolder + '/';
+    public void setTargetFolder(String targetFolder) {
+        this.targetFolder = targetFolder.endsWith("/")
+                              ? targetFolder
+                              : targetFolder + '/';
     }
 
     public void setCleaningThreshold(int days) {
@@ -197,8 +197,8 @@ public class CleanGcsTask extends DefaultTask {
         return bucketName;
     }
 
-    public String getCleaningFolder() {
-        return cleaningFolder;
+    public String getTargetFolder() {
+        return targetFolder;
     }
 
     public CleaningThreshold getCleaningThreshold() {

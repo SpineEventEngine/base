@@ -35,7 +35,7 @@ public class Given {
     static final String GCS_PLUGIN_ID = "org.spine3.tools.gcs-plugin";
     private static final String KEY_FILE = "Required just for pass the check.";
     private static final String BUCKET_NAME = "test-bucket.com";
-    private static final String CLEANING_FOLDER = "clean-me";
+    private static final String TARGET_FOLDER = "clean-me";
 
     private Given() {
         // Prevent instantiation of this utility class.
@@ -53,7 +53,7 @@ public class Given {
                                          .create(CLEAN_GCS.getValue(), CleanGcsTask.class);
         task.setKeyFile(KEY_FILE);
         task.setBucketName(BUCKET_NAME);
-        task.setCleaningFolder(CLEANING_FOLDER);
+        task.setTargetFolder(TARGET_FOLDER);
         return task;
     }
 }
