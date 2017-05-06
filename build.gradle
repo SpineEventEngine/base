@@ -2,4 +2,6 @@ dependencies {
     compile project(path: ":spine-tools-common")
     
     compile group: 'com.google.cloud', name: 'google-cloud-storage', version: '1.0.0'
+    testCompile group: 'com.google.cloud', name: 'google-cloud-nio', version: '0.17.1-alpha'
+    testCompile group: 'org.mockito', name: 'mockito-core', version: '2.+'
 }

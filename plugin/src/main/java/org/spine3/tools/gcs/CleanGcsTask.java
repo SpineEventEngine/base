@@ -27,6 +27,7 @@ import com.google.cloud.storage.Bucket;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.Storage.BlobListOption;
 import com.google.cloud.storage.StorageOptions;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Ordering;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.TaskAction;
@@ -62,16 +63,12 @@ public class CleanGcsTask extends DefaultTask {
     private CleaningThreshold cleaningThreshold;
 
     @TaskAction
-    private void cleanGcs() {
+    void cleanGcs() {
         checkParameters();
         final Storage storage = getStorage();
-        final Bucket bucket = storage.get(bucketName);
+        checkBucketExists(storage);
 
-        if (bucket == null) {
-            throw new IllegalStateException("Specified bucketName is not exists.");
-        }
-
-        final Page<Blob> blobs = bucket.list(BlobListOption.prefix(cleaningFolder));
+        final Page<Blob> blobs = storage.list(bucketName, BlobListOption.prefix(cleaningFolder));
         final Iterable<Blob> allBlobs = blobs.iterateAll();
         if (!allBlobs.iterator()
                      .hasNext()) {
@@ -79,8 +76,7 @@ public class CleanGcsTask extends DefaultTask {
             return;
         }
 
-        final Blob oldestBlob = getOldestBlob(allBlobs);
-        final DateTime oldestBlobCreation = new DateTime(oldestBlob.getCreateTime());
+        final DateTime oldestBlobCreation = getOldestBlobCreationDate(allBlobs);
         final DateTime cleaningTrigger = oldestBlobCreation.plus(cleaningThreshold.toMillis());
         final boolean isCleaningRequired = cleaningTrigger.isBeforeNow();
         if (isCleaningRequired) {
@@ -93,7 +89,17 @@ public class CleanGcsTask extends DefaultTask {
         }
     }
 
-    private Storage getStorage() {
+    @VisibleForTesting
+    void checkBucketExists(Storage storage) {
+        final Bucket bucket = storage.get(bucketName);
+        if (bucket == null) {
+            final String msg = format("Bucket `%s` is not exists.", bucketName);
+            throw new IllegalStateException(msg);
+        }
+    }
+
+    @VisibleForTesting
+    Storage getStorage() {
         final String keyFileContent = getKeyFileContent();
         final byte[] keyFileBytes = keyFileContent.getBytes();
         final InputStream serviceAccountFile = new ByteArrayInputStream(keyFileBytes);
@@ -114,7 +120,8 @@ public class CleanGcsTask extends DefaultTask {
                              .getService();
     }
 
-    private static Blob getOldestBlob(Iterable<Blob> blobs) {
+    @VisibleForTesting
+    DateTime getOldestBlobCreationDate(Iterable<Blob> blobs) {
         checkArgument(blobs.iterator()
                            .hasNext());
         final Ordering<Blob> creationDateOrdering = new Ordering<Blob>() {
@@ -127,10 +134,12 @@ public class CleanGcsTask extends DefaultTask {
             }
         };
 
-        return creationDateOrdering.min(blobs);
+        final Blob oldestBlob = creationDateOrdering.min(blobs);
+        return new DateTime(oldestBlob.getCreateTime());
     }
 
-    private String getKeyFileContent() {
+    @VisibleForTesting
+    String getKeyFileContent() {
         final File file = getProject().file(keyFile);
         final Path keyFilePath = Paths.get(file.getAbsolutePath());
         final byte[] keyFileBytes;
