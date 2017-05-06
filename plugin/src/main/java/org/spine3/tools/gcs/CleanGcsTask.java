@@ -60,7 +60,9 @@ public class CleanGcsTask extends DefaultTask {
     private static final String PROJECT_ID_KEY = "project_id";
 
     /**
-     * File that contains service account credentials in JSON format.
+     * Relative path to a file that contains service account credentials in JSON format.
+     *
+     * <p>Path should starts from a project root.
      */
     private String keyFile;
     private String bucketName;
