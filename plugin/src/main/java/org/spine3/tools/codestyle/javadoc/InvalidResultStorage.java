@@ -49,7 +49,7 @@ class InvalidResultStorage extends AbstractStorage {
                 " Wrong link format found: %s on %s line in %s",
                 entry.getValue()
                      .getActualUsage(),
-                entry.getValue(),
+                entry.getValue().getIndex(),
                 entry.getKey());
         log().error(msg);
     }
