@@ -43,6 +43,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+import static org.spine3.tools.gcs.CleanGcsTask.FOLDER_DELIMITER;
 import static org.spine3.tools.gcs.Given.createCleanGcsTask;
 import static org.spine3.tools.gcs.Given.newProject;
 
@@ -105,15 +106,15 @@ public class CleanGcsTaskShould {
     }
 
     @Test
-    public void append_slash_to_folder_name_without_trailing_slash() {
+    public void append_delimiter_to_folder_name_without_trailing_delimiter() {
         final String folderName = "just-folder-name";
         task.setTargetFolder(folderName);
-        assertEquals(folderName + '/', task.getTargetFolder());
+        assertEquals(folderName + FOLDER_DELIMITER, task.getTargetFolder());
     }
 
     @Test
-    public void not_append_slash_to_folder_name_with_trailing_slash() {
-        final String folderName = "slash-in-the-end/";
+    public void not_append_delimiter_to_folder_name_with_trailing_delimiter() {
+        final String folderName = "slash-at-the-end" + FOLDER_DELIMITER;
         task.setTargetFolder(folderName);
         assertEquals(folderName, task.getTargetFolder());
     }

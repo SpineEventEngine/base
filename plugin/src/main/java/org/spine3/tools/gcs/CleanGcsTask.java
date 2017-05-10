@@ -73,6 +73,13 @@ public class CleanGcsTask extends DefaultTask {
     private static final String PROJECT_ID_KEY = "project_id";
 
     /**
+     * A delimiter for "folders" used in Google Cloud Storage.
+     *
+     * @see <a href="https://cloud.google.com/storage/docs/naming">Object name considerations</a>
+     */
+    static final String FOLDER_DELIMITER = "/";
+
+    /**
      * A relative path to a file that contains service account credentials in JSON format.
      *
      * <p>Path should starts from a project root.
@@ -204,14 +211,14 @@ public class CleanGcsTask extends DefaultTask {
     /**
      * Sets the target folder.
      *
-     * <p>If the specified folder not ends with a slash, it will be appended.
+     * <p>If the specified folder not ends with {@link #FOLDER_DELIMITER}, it will be appended.
      *
      * @param targetFolder the target folder
      */
     public void setTargetFolder(String targetFolder) {
-        this.targetFolder = targetFolder.endsWith("/")
+        this.targetFolder = targetFolder.endsWith(FOLDER_DELIMITER)
                             ? targetFolder
-                            : targetFolder + '/';
+                            : targetFolder + FOLDER_DELIMITER;
     }
 
     public void setThreshold(int days) {
