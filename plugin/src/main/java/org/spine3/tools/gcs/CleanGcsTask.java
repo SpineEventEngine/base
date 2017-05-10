@@ -51,7 +51,7 @@ import static java.lang.String.format;
 /**
  * The task, that deletes the specified folder from Google Cloud Storage.
  *
- * The folder will be deleted if its age is over than {@link CleaningThreshold}.
+ * The folder will be deleted if its age is over than {@link #threshold}.
  *
  * <p>Configuration example:
  * <pre>{@code
@@ -91,7 +91,7 @@ public class CleanGcsTask extends DefaultTask {
     /**
      * A cleaning threshold measurable in days.
      *
-     * <p>If a threshold exceeded, {@link #targetFolder} will be deleted.
+     * <p>If {@link #targetFolder} age exceeds a threshold, {@link #targetFolder} will be deleted.
      */
     private CleaningThreshold threshold;
 
