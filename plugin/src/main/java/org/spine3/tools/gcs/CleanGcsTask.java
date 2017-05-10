@@ -215,7 +215,7 @@ public class CleanGcsTask extends DefaultTask {
     }
 
     public void setThreshold(int days) {
-        this.threshold = new CleaningThreshold(days);
+        this.threshold = CleaningThreshold.ofDays(days);
     }
 
     public String getKeyFile() {

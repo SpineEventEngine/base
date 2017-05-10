@@ -31,8 +31,18 @@ public class CleaningThreshold {
 
     private final int days;
 
-    public CleaningThreshold(int days) {
+    private CleaningThreshold(int days) {
         this.days = days;
+    }
+
+    /**
+     * Creates a new {@link CleaningThreshold} representing the days amount.
+     *
+     * @param days the days amount
+     * @return the cleaning threshold
+     */
+    public static CleaningThreshold ofDays(int days) {
+        return new CleaningThreshold(days);
     }
 
     /**
