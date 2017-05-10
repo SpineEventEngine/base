@@ -19,7 +19,7 @@
  */
 
 /**
- * A gradle plugin for working with Google Cloud Storage.
+ * Gradle plugins and utilities for working with Google Cloud Storage.
  *
  * @author Dmytro Grankin
  */
