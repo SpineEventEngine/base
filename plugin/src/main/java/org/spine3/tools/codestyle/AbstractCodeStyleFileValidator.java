@@ -36,8 +36,16 @@ import static org.spine3.tools.codestyle.JavaSources.isJavaFile;
  */
 public abstract class AbstractCodeStyleFileValidator implements CodeStyleFileValidator {
 
-    private AbstractStorage storage;
     private static final String READ_FILE_ERR_MSG = "Cannot read the contents of the file: ";
+    private final AbstractStorage storage;
+
+    @SuppressWarnings({"AbstractMethodCallInConstructor",
+            "OverridableMethodCallDuringObjectConstruction",
+            "OverriddenMethodCallDuringObjectConstruction"})
+            //Because we need to create storage only once for the whole project validation process.
+    protected AbstractCodeStyleFileValidator() {
+        this.storage = createStorage();
+    }
 
     protected AbstractStorage getStorage() {
         return storage;
@@ -55,7 +63,6 @@ public abstract class AbstractCodeStyleFileValidator implements CodeStyleFileVal
             throw new IllegalStateException(READ_FILE_ERR_MSG + path, e);
         }
         final List<CodeStyleViolation> violations = checkForViolations(content);
-        storage = createStorage();
         saveToStorage(path, violations);
         checkViolationsCount();
     }
