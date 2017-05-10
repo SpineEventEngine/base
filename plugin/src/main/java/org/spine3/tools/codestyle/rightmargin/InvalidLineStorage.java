@@ -25,7 +25,6 @@ import org.spine3.tools.codestyle.AbstractStorage;
 import org.spine3.tools.codestyle.CodeStyleViolation;
 
 import java.nio.file.Path;
-import java.util.List;
 import java.util.Map;
 
 import static java.lang.String.format;
