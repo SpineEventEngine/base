@@ -29,6 +29,7 @@ import com.google.cloud.storage.Storage.BlobListOption;
 import com.google.cloud.storage.StorageOptions;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Ordering;
+import groovy.time.Duration;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.TaskAction;
 import org.joda.time.DateTime;
@@ -100,11 +101,11 @@ public class CleanGcsTask extends DefaultTask {
     private String targetFolder;
 
     /**
-     * A cleaning threshold measurable in days.
+     * A cleaning threshold.
      *
      * <p>If {@link #targetFolder} age exceeds a threshold, {@link #targetFolder} will be deleted.
      */
-    private CleaningThreshold threshold;
+    private Duration threshold;
 
     @TaskAction
     void cleanGcs() {
@@ -121,7 +122,7 @@ public class CleanGcsTask extends DefaultTask {
         }
 
         final DateTime oldestBlobCreation = getOldestBlobCreationDate(allBlobs);
-        final DateTime cleaningTrigger = oldestBlobCreation.plus(threshold.toMillis());
+        final DateTime cleaningTrigger = oldestBlobCreation.plus(threshold.toMilliseconds());
         final boolean isCleaningRequired = cleaningTrigger.isBeforeNow();
         if (isCleaningRequired) {
             for (Blob blob : allBlobs) {
@@ -224,8 +225,8 @@ public class CleanGcsTask extends DefaultTask {
                             : targetFolder + FOLDER_DELIMITER;
     }
 
-    public void setThreshold(int days) {
-        this.threshold = CleaningThreshold.ofDays(days);
+    public void setThreshold(Duration duration) {
+        this.threshold = duration;
     }
 
     public String getKeyFile() {
@@ -240,7 +241,7 @@ public class CleanGcsTask extends DefaultTask {
         return targetFolder;
     }
 
-    public CleaningThreshold getThreshold() {
+    public Duration getThreshold() {
         return threshold;
     }
 
