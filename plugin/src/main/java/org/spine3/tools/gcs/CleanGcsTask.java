@@ -48,9 +48,10 @@ import static java.lang.String.format;
 import static org.joda.time.DateTime.now;
 
 /**
- * The task, that deletes the specified folder from Google Cloud Storage.
+ * The task, that deletes objects from Google Cloud Storage
+ * within {@link #bucketName} and {@link #targetFolder}.
  *
- * The folder will be deleted if its age exceeds {@link #threshold}.
+ * An object will be deleted if its age exceeds {@link #threshold}.
  *
  * <p>Configuration example:
  * <pre>{@code
@@ -93,14 +94,17 @@ public class CleanGcsTask extends DefaultTask {
     private String bucketName;
 
     /**
-     * A name of folder to delete if {@link #threshold} exceeded.
+     * A name of folder, within which will be cleaning.
+     *
+     * <p>Essentially it's a prefix for objects. If an object starts with a prefix and
+     * {@link #threshold} exceeded, then an object will be deleted.
      */
     private String targetFolder;
 
     /**
      * A cleaning threshold.
      *
-     * <p>If {@link #targetFolder} age exceeds a threshold, {@link #targetFolder} will be deleted.
+     * <p>If an object age exceeds a threshold, it will be deleted.
      */
     private Duration threshold;
 
