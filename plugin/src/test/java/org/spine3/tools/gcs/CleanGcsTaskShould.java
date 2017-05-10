@@ -114,7 +114,7 @@ public class CleanGcsTaskShould {
 
     @Test
     public void not_append_delimiter_to_folder_name_with_trailing_delimiter() {
-        final String folderName = "slash-at-the-end" + FOLDER_DELIMITER;
+        final String folderName = "delimiter-at-the-end" + FOLDER_DELIMITER;
         task.setTargetFolder(folderName);
         assertEquals(folderName, task.getTargetFolder());
     }
