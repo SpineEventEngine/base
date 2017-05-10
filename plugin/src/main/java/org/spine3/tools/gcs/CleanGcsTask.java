@@ -28,16 +28,13 @@ import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.Storage.BlobListOption;
 import com.google.cloud.storage.StorageOptions;
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.Ordering;
 import groovy.time.Duration;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.TaskAction;
-import org.joda.time.DateTime;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nullable;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -46,9 +43,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
+import static org.joda.time.DateTime.now;
 
 /**
  * The task, that deletes the specified folder from Google Cloud Storage.
@@ -114,24 +111,28 @@ public class CleanGcsTask extends DefaultTask {
         checkBucketExists(storage);
 
         final Page<Blob> blobs = storage.list(bucketName, BlobListOption.prefix(targetFolder));
-        final Iterable<Blob> allBlobs = blobs.iterateAll();
-        if (!allBlobs.iterator()
-                     .hasNext()) {
-            log().info("Folder `{}` does not exist. There is nothing to clean.", targetFolder);
-            return;
-        }
-
-        final DateTime oldestBlobCreation = getOldestBlobCreationDate(allBlobs);
-        final DateTime cleaningTrigger = oldestBlobCreation.plus(threshold.toMilliseconds());
-        final boolean isCleaningRequired = cleaningTrigger.isBeforeNow();
-        if (isCleaningRequired) {
-            for (Blob blob : allBlobs) {
+        for (Blob blob : blobs.iterateAll()) {
+            final long cleaningTrigger = getCreateTime(blob) + threshold.toMilliseconds();
+            final boolean isCleaningRequired = now().isAfter(cleaningTrigger);
+            if (isCleaningRequired) {
                 storage.delete(blob.getBlobId());
+                log().info("Object `{}` deleted from bucket `{}`.", blob.getName(), bucketName);
             }
-            log().info("Folder `{}` in bucketName `{}` deleted.", targetFolder, bucketName);
-        } else {
-            log().info("Cleaning is not required until {}.", cleaningTrigger);
         }
+    }
+
+    /**
+     * Returns {@link Blob#getCreateTime()} result.
+     *
+     * <p>Needed exclusively for mocking in test purposes.
+     *
+     * @param blob the blob
+     * @return the creation time of the blob
+     */
+    @VisibleForTesting
+    // Needed to for test needs
+    long getCreateTime(Blob blob) {
+        return blob.getCreateTime();
     }
 
     @VisibleForTesting
@@ -163,24 +164,6 @@ public class CleanGcsTask extends DefaultTask {
                              .setCredentials(credentials)
                              .build()
                              .getService();
-    }
-
-    @VisibleForTesting
-    DateTime getOldestBlobCreationDate(Iterable<Blob> blobs) {
-        checkArgument(blobs.iterator()
-                           .hasNext());
-        final Ordering<Blob> creationDateOrdering = new Ordering<Blob>() {
-            @Override
-            public int compare(@Nullable Blob left, @Nullable Blob right) {
-                checkNotNull(left);
-                checkNotNull(right);
-                return left.getCreateTime()
-                           .compareTo(right.getCreateTime());
-            }
-        };
-
-        final Blob oldestBlob = creationDateOrdering.min(blobs);
-        return new DateTime(oldestBlob.getCreateTime());
     }
 
     @VisibleForTesting

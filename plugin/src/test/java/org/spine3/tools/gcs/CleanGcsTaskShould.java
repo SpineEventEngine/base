@@ -31,20 +31,20 @@ import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import org.mockito.ArgumentMatchers;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static com.google.common.collect.Iterables.size;
+import static groovy.time.TimeCategory.getDays;
 import static groovy.time.TimeCategory.getMilliseconds;
+import static org.joda.time.DateTime.now;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
 import static org.spine3.tools.gcs.CleanGcsTask.FOLDER_DELIMITER;
 import static org.spine3.tools.gcs.Given.createCleanGcsTask;
 import static org.spine3.tools.gcs.Given.newProject;
@@ -54,10 +54,7 @@ import static org.spine3.tools.gcs.Given.newProject;
  */
 public class CleanGcsTaskShould {
 
-    /**
-     * Blob lifetime in millis.
-     */
-    private static final int BLOB_LIFETIME_MS = 1000;
+    private static final DateTime BLOB_CREATION_TIME = now();
 
     private final Project project = newProject();
     private final CleanGcsTask task = createCleanGcsTask(project);
@@ -74,21 +71,31 @@ public class CleanGcsTaskShould {
         doNothing().when(taskSpy)
                    .checkBucketExists(storage);
 
-        doReturn(DateTime.now()
-                         .minus(BLOB_LIFETIME_MS)).when(taskSpy)
-                                                  .getOldestBlobCreationDate(
-                                                          ArgumentMatchers.<Blob>anyIterable());
+        doReturn(BLOB_CREATION_TIME.getMillis()).when(taskSpy)
+                                                .getCreateTime(any(Blob.class));
     }
 
     @Test
-    public void delete_specified_folder_if_threshold_exceeded() {
-        storage.create(BlobInfo.newBuilder(task.getBucketName(), task.getTargetFolder() + 1)
-                               .build());
-        storage.create(BlobInfo.newBuilder(task.getBucketName(), task.getTargetFolder() + 2)
-                               .build());
-        storage.create(BlobInfo.newBuilder(task.getBucketName(), "text.txt")
-                               .build());
-        final Duration threshold = getMilliseconds(BLOB_LIFETIME_MS / 2);
+    public void delete_object_if_its_age_exceeds_threshold() {
+        final BlobInfo blobInfo = BlobInfo.newBuilder(task.getBucketName(), task.getTargetFolder())
+                                          .build();
+        storage.create(blobInfo);
+
+        final Duration threshold = getMilliseconds(0);
+        taskSpy.setThreshold(threshold);
+        taskSpy.cleanGcs();
+
+        assertEquals(0, size(storage.list(task.getBucketName())
+                                    .iterateAll()));
+    }
+
+    @Test
+    public void not_delete_object_if_its_age_not_exceeds_threshold() {
+        final BlobInfo blobInfo = BlobInfo.newBuilder(task.getBucketName(), task.getTargetFolder())
+                                          .build();
+        storage.create(blobInfo);
+
+        final Duration threshold = getDays(1);
         taskSpy.setThreshold(threshold);
         taskSpy.cleanGcs();
 
@@ -97,22 +104,18 @@ public class CleanGcsTaskShould {
     }
 
     @Test
-    public void not_delete_specified_folder_if_threshold_is_not_exceeded() {
-        storage.create(BlobInfo.newBuilder(task.getBucketName(), task.getTargetFolder())
-                               .build());
-        final Duration threshold = getMilliseconds(BLOB_LIFETIME_MS * 2);
+    public void not_delete_object_from_non_target_folder() {
+        final String nonTargetFolder = "non-target-folder";
+        final BlobInfo blobInfo = BlobInfo.newBuilder(task.getBucketName(), nonTargetFolder)
+                                          .build();
+        storage.create(blobInfo);
+
+        final Duration threshold = getMilliseconds(0);
         taskSpy.setThreshold(threshold);
         taskSpy.cleanGcs();
+
         assertEquals(1, size(storage.list(task.getBucketName())
                                     .iterateAll()));
-    }
-
-    @Test
-    public void do_nothing_if_cleaningFolder_is_not_exists() {
-        final Duration threshold = getMilliseconds(BLOB_LIFETIME_MS);
-        taskSpy.setThreshold(threshold);
-        taskSpy.cleanGcs();
-        verify(taskSpy, never()).getOldestBlobCreationDate(ArgumentMatchers.<Blob>anyIterable());
     }
 
     @Test
