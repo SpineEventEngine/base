@@ -61,7 +61,7 @@ import static java.lang.String.format;
  *      keyFile = "gcs-key-file.json"
  *      bucketName = "example.com"
  *      targetFolder = "trash"
- *      threshold = 30
+ *      threshold = TimeCategory.getDays(30)
  * }
  * }</pre>
  *
