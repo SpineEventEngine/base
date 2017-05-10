@@ -51,7 +51,17 @@ import static java.lang.String.format;
 /**
  * The task, that deletes the specified folder if it's age exceeds {@link CleaningThreshold}.
  *
- * <p>To use the task, all parameters must be specified.
+ * <p>Configuration example:
+ * <pre>{@code
+ * cleanGCS {
+ *      keyFile = "gcs-key-file.json"
+ *      bucketName = "example.com"
+ *      targetFolder = "trash"
+ *      threshold = 30
+ * }
+ * }</pre>
+ *
+ * <p>All task parameters are mandatory.
  *
  * @author Dmytro Grankin
  */
@@ -60,13 +70,25 @@ public class CleanGcsTask extends DefaultTask {
     private static final String PROJECT_ID_KEY = "project_id";
 
     /**
-     * Relative path to a file that contains service account credentials in JSON format.
+     * A relative path to a file that contains service account credentials in JSON format.
      *
      * <p>Path should starts from a project root.
      */
     private String keyFile;
+
+    /**
+     * A name of bucket containing {@link #targetFolder}.
+     */
     private String bucketName;
+
+    /**
+     * A name of folder to delete if {@link #threshold} exceeded.
+     */
     private String targetFolder;
+
+    /**
+     * Cleaning threshold measurable in days.
+     */
     private CleaningThreshold threshold;
 
     @TaskAction
