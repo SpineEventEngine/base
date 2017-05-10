@@ -39,7 +39,7 @@ public class GcsPlugin extends SpinePlugin {
     public void apply(Project project) {
         final Task task = project.getTasks()
                                  .create(CLEAN_GCS.getValue(), CleanGcsTask.class);
-        log().debug("GCS Gradle plugin initialized with the Gradle task: {}", task);
+        log().debug("{} added.", task);
     }
 
     private static Logger log() {
