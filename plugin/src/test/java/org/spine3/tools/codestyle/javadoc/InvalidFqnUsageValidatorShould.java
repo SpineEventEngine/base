@@ -71,7 +71,6 @@ public class InvalidFqnUsageValidatorShould {
         final Path path = getPath(MULTIPLE_WRONG_FQN_LINKS_JAVA);
         impl.validate(path);
         verify(impl).validate(path);
-        verify(impl).onAboveThreshold();
     }
 
     @Test

@@ -83,9 +83,4 @@ public abstract class AbstractCodeStyleFileValidator implements CodeStyleFileVal
      * Compares the number of founded violations with threshold amount.
      */
     protected abstract void checkViolationsAmount();
-
-    /**
-     * Describes the behavior in case if threshold is exceeded.
-     */
-    protected abstract void onAboveThreshold();
 }

@@ -61,8 +61,10 @@ public class InvalidFqnUsageValidator extends AbstractCodeStyleFileValidator {
         }
     }
 
-    @Override
-    protected void onAboveThreshold() {
+    /**
+     * Describes the behavior in case if threshold is exceeded.
+     */
+    private void onAboveThreshold() {
         getStorage().logViolations();
         configuration.getReportType()
                      .logOrFail(new InvalidFqnUsageException());

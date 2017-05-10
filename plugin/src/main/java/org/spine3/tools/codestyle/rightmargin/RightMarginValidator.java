@@ -70,18 +70,13 @@ public class RightMarginValidator extends AbstractCodeStyleFileValidator {
 
     @Override
     protected void checkViolationsAmount() {
-        onAboveThreshold();
-    }
-
-    @Override
-    protected void onAboveThreshold() {
         getStorage().logViolations();
         configuration.getReportType()
                      .logOrFail(new InvalidLineLengthException());
     }
 
     private Optional<CodeStyleViolation> checkSingleLine(String line) {
-        final Matcher matcher = RightMarginValidator.JavadocPattern.LINK.getPattern()
+        final Matcher matcher = JavadocPattern.LINK.getPattern()
                                                                         .matcher(line);
         final boolean found = matcher.find();
         if (found) {
