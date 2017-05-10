@@ -34,6 +34,7 @@ import org.gradle.api.tasks.TaskAction;
 import org.joda.time.DateTime;
 import org.json.JSONObject;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;
 import java.io.ByteArrayInputStream;
@@ -209,8 +210,8 @@ public class CleanGcsTask extends DefaultTask {
      */
     public void setTargetFolder(String targetFolder) {
         this.targetFolder = targetFolder.endsWith("/")
-                              ? targetFolder
-                              : targetFolder + '/';
+                            ? targetFolder
+                            : targetFolder + '/';
     }
 
     public void setThreshold(int days) {
@@ -240,6 +241,6 @@ public class CleanGcsTask extends DefaultTask {
     private enum LogSingleton {
         INSTANCE;
         @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = org.slf4j.LoggerFactory.getLogger(CleanGcsTask.class);
+        private final Logger value = LoggerFactory.getLogger(CleanGcsTask.class);
     }
 }
