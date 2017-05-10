@@ -22,7 +22,7 @@ package org.spine3.tools.codestyle;
 import java.nio.file.Path;
 
 /**
- * Class that represent java file extension.
+ * A utility for working with the Java source files.
  *
  * @author Alexander Aleksandrov
  */
@@ -42,6 +42,11 @@ public final class JavaSources {
         return JAVA_FILE_EXTENSION;
     }
 
+    /**
+     * Checks the file path.
+     * @param path  the target file path
+     * @return {@code true} in case if the file has the .java extension.
+     */
     public static boolean isJavaFile(Path path) {
         return path.toString()
                    .endsWith(javaExt());

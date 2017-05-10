@@ -32,7 +32,7 @@ import static com.google.common.collect.Lists.newArrayList;
 import static java.util.regex.Pattern.compile;
 
 /**
- * It checks javadoc comments in files for the links that are used in wrong format.
+ * Javadoc comments checker that validates the links wrong format usage.
  * In case if any violation is found it will be logged as warning in build's
  * stacktrace info or an error will be thrown. That depends on threshold and report type parameters
  * stated in build file.
@@ -54,8 +54,9 @@ public class InvalidFqnUsageValidator extends AbstractCodeStyleFileValidator {
     }
 
     @Override
-    protected void checkViolationsAmount() {
-        if (getStorage().size() > configuration.getThreshold()
+    protected void checkViolationsCount() {
+        if (getStorage().getContent()
+                        .size() > configuration.getThreshold()
                                                .getValue()) {
             onAboveThreshold();
         }

@@ -26,29 +26,16 @@ import java.nio.file.Path;
 import java.util.List;
 
 /**
- * Abstract class to define basic storage functions.
+ * An abstract code style violations storage.
  *
  * @author Alexander Aleksandrov
  */
 public abstract class AbstractStorage {
 
-    private final Multimap<Path, List<CodeStyleViolation>> content = HashMultimap.create();
+    private final Multimap<Path, CodeStyleViolation> content = HashMultimap.create();
 
-    protected Multimap<Path, List<CodeStyleViolation>> getContent() {
+    public Multimap<Path, CodeStyleViolation> getContent() {
         return content;
-    }
-
-    /**
-     * Obtains amount of all violations in storage.
-     *
-     * @return number of violations
-     */
-    public int size() {
-        int total = 0;
-        for (List<CodeStyleViolation> l : getContent().values()) {
-            total += l.size();
-        }
-        return total;
     }
 
     /**
@@ -63,7 +50,7 @@ public abstract class AbstractStorage {
      * @param list list of violations
      */
     void save(Path path, List<CodeStyleViolation> list) {
-        getContent().put(path, list);
+        getContent().putAll(path, list);
     }
 
 }

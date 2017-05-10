@@ -39,20 +39,19 @@ class InvalidResultStorage extends AbstractStorage {
 
     @Override
     public void logViolations() {
-        for (Map.Entry<Path, List<CodeStyleViolation>> entry : getContent().entries()) {
+        for (Map.Entry<Path, CodeStyleViolation> entry : getContent().entries()) {
             logInvalidFqnUsages(entry);
         }
     }
 
-    private static void logInvalidFqnUsages(Map.Entry<Path, List<CodeStyleViolation>> entry) {
-        for (CodeStyleViolation codeStyleViolation : entry.getValue()) {
-            final String msg = format(
-                    " Wrong link format found: %s on %s line in %s",
-                    codeStyleViolation.getActualUsage(),
-                    codeStyleViolation.getIndex(),
-                    entry.getKey());
-            log().error(msg);
-        }
+    private static void logInvalidFqnUsages(Map.Entry<Path, CodeStyleViolation> entry) {
+        final String msg = format(
+                " Wrong link format found: %s on %s line in %s",
+                entry.getValue()
+                     .getActualUsage(),
+                entry.getValue(),
+                entry.getKey());
+        log().error(msg);
     }
 
     private static Logger log() {
