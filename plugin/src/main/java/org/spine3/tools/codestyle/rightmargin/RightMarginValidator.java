@@ -69,7 +69,7 @@ public class RightMarginValidator extends AbstractCodeStyleFileValidator {
     }
 
     @Override
-    protected void checkViolationsCount() {
+    protected void processValidationResult() {
         getStorage().logViolations();
     }
 

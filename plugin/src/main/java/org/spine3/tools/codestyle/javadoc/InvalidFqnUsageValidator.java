@@ -54,7 +54,7 @@ public class InvalidFqnUsageValidator extends AbstractCodeStyleFileValidator {
     }
 
     @Override
-    protected void checkViolationsCount() {
+    protected void processValidationResult() {
         if (getStorage().getContent()
                         .size() > configuration.getThreshold()
                                                .getValue()) {

@@ -64,7 +64,7 @@ public abstract class AbstractCodeStyleFileValidator implements CodeStyleFileVal
         }
         final List<CodeStyleViolation> violations = checkForViolations(content);
         saveToStorage(path, violations);
-        checkViolationsCount();
+        processValidationResult();
     }
 
     private void saveToStorage(Path path, List<CodeStyleViolation> violations) {
@@ -89,5 +89,5 @@ public abstract class AbstractCodeStyleFileValidator implements CodeStyleFileVal
     /**
      * Compares the number of founded violations with threshold amount.
      */
-    protected abstract void checkViolationsCount();
+    protected abstract void processValidationResult();
 }
