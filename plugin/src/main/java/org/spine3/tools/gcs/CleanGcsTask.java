@@ -70,6 +70,9 @@ import static java.lang.String.format;
  */
 public class CleanGcsTask extends DefaultTask {
 
+    /**
+     * A key to retrieve a project ID from {@link #keyFile}.
+     */
     private static final String PROJECT_ID_KEY = "project_id";
 
     /**
