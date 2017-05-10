@@ -71,8 +71,6 @@ public class RightMarginValidator extends AbstractCodeStyleFileValidator {
     @Override
     protected void checkViolationsCount() {
         getStorage().logViolations();
-        configuration.getReportType()
-                     .logOrFail(new InvalidLineLengthException());
     }
 
     private Optional<CodeStyleViolation> checkSingleLine(String line) {
