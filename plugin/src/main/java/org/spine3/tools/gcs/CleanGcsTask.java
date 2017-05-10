@@ -53,7 +53,7 @@ import static java.lang.String.format;
 /**
  * The task, that deletes the specified folder from Google Cloud Storage.
  *
- * The folder will be deleted if its age is over than {@link #threshold}.
+ * The folder will be deleted if its age exceeds {@link #threshold}.
  *
  * <p>Configuration example:
  * <pre>{@code
@@ -117,7 +117,7 @@ public class CleanGcsTask extends DefaultTask {
         final Iterable<Blob> allBlobs = blobs.iterateAll();
         if (!allBlobs.iterator()
                      .hasNext()) {
-            log().info("Folder `{}` is not exists. Nothing to clean.", targetFolder);
+            log().info("Folder `{}` does not exist. There is nothing to clean.", targetFolder);
             return;
         }
 

@@ -29,7 +29,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 import static org.spine3.gradle.TaskName.CLEAN_GCS;
 
 /**
- * The plugin for working with Google Cloud Storage via gradle tasks.
+ * The plugin for working with Google Cloud Storage via Gradle tasks.
  *
  * @author Dmytro Grankin
  */
