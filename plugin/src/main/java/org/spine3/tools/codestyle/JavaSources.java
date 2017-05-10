@@ -44,6 +44,7 @@ public final class JavaSources {
 
     /**
      * Checks the file path.
+     *
      * @param path  the target file path
      * @return {@code true} in case if the file has the .java extension.
      */
