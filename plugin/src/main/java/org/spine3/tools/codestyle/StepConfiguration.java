@@ -39,6 +39,13 @@ public class StepConfiguration {
     private Threshold threshold = new Threshold(0);
 
     /**
+     * A bearable code line length.
+     *
+     * Hundred is default.
+     */
+    private int rightMargin = 100;
+
+    /**
      * A plugin {@link ReportType}.
      *
      * {@link ReportType#WARN} is default.
@@ -51,6 +58,15 @@ public class StepConfiguration {
 
     public Threshold getThreshold() {
         return threshold;
+    }
+
+    public int getRightMargin() {
+        return rightMargin;
+    }
+
+    public void setRightMargin(int value) {
+        this.rightMargin = value;
+        log().debug("Right margin set up to {}", rightMargin);
     }
 
     public void setThreshold(int value) {
