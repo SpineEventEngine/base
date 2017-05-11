@@ -134,22 +134,22 @@ public class CleanGcsTaskShould {
 
     @Test
     public void properly_read_keyFile_content() throws IOException {
-        final String keyFile = "keys.txt";
-        final String keyFileContent = "Key file content.";
+        final String authKeyPath = "keys.txt";
+        final String authKeyContent = "Key file content.";
 
         final TemporaryFolder projectDir = new TemporaryFolder();
         projectDir.create();
         final Path keyFilePath = projectDir.getRoot()
                                            .toPath()
-                                           .resolve(keyFile);
+                                           .resolve(authKeyPath);
         final Project project = ProjectBuilder.builder()
                                               .withProjectDir(projectDir.getRoot())
                                               .build();
 
-        Files.write(keyFilePath, keyFileContent.getBytes());
+        Files.write(keyFilePath, authKeyContent.getBytes());
         final CleanGcsTask task = createCleanGcsTask(project);
-        task.setKeyFile(keyFile);
+        task.setAuthKeyPath(authKeyPath);
 
-        assertEquals(keyFileContent, task.getKeyFileContent());
+        assertEquals(authKeyContent, task.getKeyFileContent());
     }
 }

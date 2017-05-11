@@ -33,7 +33,7 @@ import static org.spine3.gradle.TaskName.CLEAN_GCS;
 public class Given {
 
     static final String GCS_PLUGIN_ID = "org.spine3.tools.gcs-plugin";
-    private static final String KEY_FILE = "Required just for pass the check.";
+    private static final String AUTH_KEY_PATH = "Required just for pass the check.";
     private static final String BUCKET_NAME = "test-bucket.com";
     private static final String TARGET_FOLDER = "clean-me";
 
@@ -51,7 +51,7 @@ public class Given {
     static CleanGcsTask createCleanGcsTask(Project project) {
         final CleanGcsTask task = project.getTasks()
                                          .create(CLEAN_GCS.getValue(), CleanGcsTask.class);
-        task.setKeyFile(KEY_FILE);
+        task.setAuthKeyPath(AUTH_KEY_PATH);
         task.setBucketName(BUCKET_NAME);
         task.setTargetFolder(TARGET_FOLDER);
         return task;

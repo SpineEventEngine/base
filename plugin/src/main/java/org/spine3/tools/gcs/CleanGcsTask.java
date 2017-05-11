@@ -56,7 +56,7 @@ import static org.joda.time.DateTime.now;
  * <p>Configuration example:
  * <pre>{@code
  * cleanGCS {
- *      keyFile = "gcs-key-file.json"
+ *      authKeyPath = "gcs-key-file.json"
  *      bucketName = "example.com"
  *      targetFolder = "trash"
  *      threshold = TimeCategory.getDays(30)
@@ -70,7 +70,7 @@ import static org.joda.time.DateTime.now;
 public class CleanGcsTask extends DefaultTask {
 
     /**
-     * A key to retrieve a project ID from {@link #keyFile}.
+     * A key to retrieve a project ID from {@link #authKeyPath}.
      */
     private static final String PROJECT_ID_KEY = "project_id";
 
@@ -86,7 +86,7 @@ public class CleanGcsTask extends DefaultTask {
      *
      * <p>Path should starts from a project root.
      */
-    private String keyFile;
+    private String authKeyPath;
 
     /**
      * A name of bucket containing {@link #targetFolder}.
@@ -172,27 +172,27 @@ public class CleanGcsTask extends DefaultTask {
 
     @VisibleForTesting
     String getKeyFileContent() {
-        final File file = getProject().file(keyFile);
+        final File file = getProject().file(authKeyPath);
         final Path keyFilePath = Paths.get(file.getAbsolutePath());
         final byte[] keyFileBytes;
         try {
             keyFileBytes = Files.readAllBytes(keyFilePath);
             return new String(keyFileBytes);
         } catch (IOException e) {
-            final String msg = format("Unable to read key file `%s`.", keyFile);
+            final String msg = format("Unable to read key file `%s`.", authKeyPath);
             throw new IllegalStateException(msg, e);
         }
     }
 
     private void checkParameters() {
-        checkNotNull(keyFile, "`keyFile` should be set.");
+        checkNotNull(authKeyPath, "`authKeyPath` should be set.");
         checkNotNull(bucketName, "`bucketName` should be set.");
         checkNotNull(targetFolder, "`targetFolder` should be set.");
         checkNotNull(threshold, "`threshold` should be set.");
     }
 
-    public void setKeyFile(String keyFile) {
-        this.keyFile = keyFile;
+    public void setAuthKeyPath(String authKeyPath) {
+        this.authKeyPath = authKeyPath;
     }
 
     public void setBucketName(String bucketName) {
@@ -216,8 +216,8 @@ public class CleanGcsTask extends DefaultTask {
         this.threshold = duration;
     }
 
-    public String getKeyFile() {
-        return keyFile;
+    public String getAuthKeyPath() {
+        return authKeyPath;
     }
 
     public String getBucketName() {
