@@ -8,7 +8,7 @@ apply plugin: 'org.spine3.tools.spine-codestyle-checker'
 codestyleChecker {
 
     rightMarginWrappingChecker {
-        rightMargin = thresholdValue
+        maxTextWidth = thresholdValue
     }
 
 }

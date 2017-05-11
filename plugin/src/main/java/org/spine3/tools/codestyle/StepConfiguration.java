@@ -43,7 +43,7 @@ public class StepConfiguration {
      *
      * Hundred is default.
      */
-    private int rightMargin = 100;
+    private int maxTextWidth = 100;
 
     /**
      * A plugin {@link ReportType}.
@@ -60,13 +60,13 @@ public class StepConfiguration {
         return threshold;
     }
 
-    public int getRightMargin() {
-        return rightMargin;
+    public int getMaxTextWidth() {
+        return maxTextWidth;
     }
 
-    public void setRightMargin(int value) {
-        this.rightMargin = value;
-        log().debug("Right margin set up to {}", rightMargin);
+    public void setMaxTextWidth(int value) {
+        this.maxTextWidth = value;
+        log().debug("Right margin set up to {}", maxTextWidth);
     }
 
     public void setThreshold(int value) {

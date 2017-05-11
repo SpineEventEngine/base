@@ -80,8 +80,8 @@ public class RightMarginValidator extends AbstractCodeStyleFileValidator {
         if (found) {
             return Optional.absent();
         }
-        final int margin = configuration.getRightMargin();
-        if (line.length() > margin) {
+        final int maxTextWidth = configuration.getMaxTextWidth();
+        if (line.length() > maxTextWidth) {
             final CodeStyleViolation result = new CodeStyleViolation(line);
             return Optional.of(result);
         }
