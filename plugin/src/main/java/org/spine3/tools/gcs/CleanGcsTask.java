@@ -94,10 +94,10 @@ public class CleanGcsTask extends DefaultTask {
     private String bucketName;
 
     /**
-     * A name of folder, within which will be cleaning.
+     * A name of folder, in which to search objects for deletion.
      *
-     * <p>Essentially it's a prefix for objects. If an object starts with a prefix and
-     * {@link #threshold} exceeded, then an object will be deleted.
+     * <p>Essentially it's a prefix for objects. If the object starts with a prefix and
+     * {@link #threshold} exceeded, then the object will be deleted.
      */
     private String targetFolder;
 
@@ -202,7 +202,7 @@ public class CleanGcsTask extends DefaultTask {
     /**
      * Sets the target folder.
      *
-     * <p>If the specified folder not ends with {@link #FOLDER_DELIMITER}, it will be appended.
+     * <p>If the specified folder does not end with {@link #FOLDER_DELIMITER}, it will be appended.
      *
      * @param targetFolder the target folder
      */
