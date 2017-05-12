@@ -20,10 +20,14 @@
 
 package org.spine3.tools.gcs;
 
+import com.google.api.client.http.HttpTransport;
+import com.google.common.annotations.VisibleForTesting;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.slf4j.Logger;
 import org.spine3.gradle.SpinePlugin;
+
+import java.util.logging.Level;
 
 import static org.slf4j.LoggerFactory.getLogger;
 import static org.spine3.gradle.TaskName.CLEAN_GCS;
@@ -37,9 +41,25 @@ public class GcsPlugin extends SpinePlugin {
 
     @Override
     public void apply(Project project) {
+        limitHttpLogging();
+
         final Task task = project.getTasks()
                                  .create(CLEAN_GCS.getValue(), CleanGcsTask.class);
         log().debug("{} added.", task);
+    }
+
+    /**
+     * Sets {@link HttpTransport} logging level to {@link Level#WARNING}.
+     *
+     * <p>The goal of this is to limit excessive logging about
+     * {@linkplain com.google.api.client.http.HttpRequest HTTP requests} and
+     * {@linkplain com.google.api.client.http.HttpResponse HTTP responses}.
+     */
+    @VisibleForTesting
+    static void limitHttpLogging() {
+        final String name = HttpTransport.class.getName();
+        final java.util.logging.Logger log = java.util.logging.Logger.getLogger(name);
+        log.setLevel(Level.WARNING);
     }
 
     private static Logger log() {

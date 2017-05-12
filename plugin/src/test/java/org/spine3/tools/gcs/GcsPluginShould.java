@@ -20,6 +20,7 @@
 
 package org.spine3.tools.gcs;
 
+import com.google.api.client.http.HttpTransport;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.tasks.TaskContainer;
@@ -27,11 +28,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.spine3.gradle.TaskName;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.spine3.gradle.TaskDependencies.dependsOn;
-import static org.spine3.gradle.TaskName.BUILD;
 import static org.spine3.gradle.TaskName.CLEAN_GCS;
 import static org.spine3.tools.gcs.Given.GCS_PLUGIN_ID;
 import static org.spine3.tools.gcs.Given.newProject;
@@ -61,6 +62,17 @@ public class GcsPluginShould {
     @Test
     public void add_task_cleanGCS() {
         assertNotNull(task(CLEAN_GCS));
+    }
+
+    @Test
+    public void limit_excessive_logging_from_HttpTransport() {
+        final Project project = newProject();
+        project.getPluginManager()
+               .apply(GCS_PLUGIN_ID);
+
+        final String name = HttpTransport.class.getName();
+        final Logger log = Logger.getLogger(name);
+        assertEquals(Level.WARNING, log.getLevel());
     }
 
     private Task task(TaskName taskName) {
