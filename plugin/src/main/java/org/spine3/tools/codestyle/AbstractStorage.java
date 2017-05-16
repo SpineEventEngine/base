@@ -53,4 +53,11 @@ public abstract class AbstractStorage {
         getContent().putAll(path, list);
     }
 
+    /**
+     * Clears the content of the storage.
+     */
+    void clear() {
+        content.clear();
+    }
+
 }

@@ -65,6 +65,7 @@ public abstract class AbstractCodeStyleFileValidator implements CodeStyleFileVal
         final List<CodeStyleViolation> violations = checkForViolations(content);
         saveToStorage(path, violations);
         processValidationResult();
+        storage.clear();
     }
 
     private void saveToStorage(Path path, List<CodeStyleViolation> violations) {
