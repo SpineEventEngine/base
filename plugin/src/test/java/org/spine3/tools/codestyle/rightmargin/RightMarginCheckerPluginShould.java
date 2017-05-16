@@ -100,7 +100,7 @@ public class RightMarginCheckerPluginShould {
                                               .build();
 
         final List<String> expected = Arrays.asList(compileLog(), ":checkRightMarginWrapping");
-        System.out.println(buildResult.getOutput());
+
         assertEquals(expected, extractTasks(buildResult));
         assertTrue(buildResult.getOutput().contains(LONG_LINE_MSG));
     }
