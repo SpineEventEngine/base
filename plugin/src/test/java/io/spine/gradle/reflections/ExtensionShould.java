@@ -17,14 +17,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.spine3.gradle.reflections;
+package io.spine.gradle.reflections;
 
 import org.gradle.api.Project;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.spine3.gradle.reflections.Given.REFLECTIONS_PLUGIN_ID;
-import static org.spine3.gradle.reflections.Given.newProject;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
@@ -38,9 +36,9 @@ public class ExtensionShould {
 
     @Before
     public void setUp() {
-        project = newProject();
+        project = Given.newProject();
         project.getPluginManager()
-               .apply(REFLECTIONS_PLUGIN_ID);
+               .apply(Given.REFLECTIONS_PLUGIN_ID);
     }
 
     @Test

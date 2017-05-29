@@ -17,7 +17,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.spine3.gradle.reflections;
+package io.spine.gradle.reflections;
 
 import com.google.common.io.Files;
 import org.gradle.api.Action;
@@ -31,7 +31,7 @@ import org.reflections.serializers.XmlSerializer;
 import org.reflections.util.ConfigurationBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.spine3.gradle.SpinePlugin;
+import io.spine.gradle.SpinePlugin;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,10 +41,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static java.io.File.separatorChar;
-import static org.spine3.gradle.TaskName.BUILD;
-import static org.spine3.gradle.TaskName.CLASSES;
-import static org.spine3.gradle.TaskName.SCAN_CLASS_PATH;
-import static org.spine3.gradle.reflections.Extension.REFLECTIONS_PLUGIN_EXTENSION;
+import static io.spine.gradle.TaskName.BUILD;
+import static io.spine.gradle.TaskName.CLASSES;
+import static io.spine.gradle.TaskName.SCAN_CLASS_PATH;
+import static io.spine.gradle.reflections.Extension.REFLECTIONS_PLUGIN_EXTENSION;
 
 /**
  * Gradle port for Maven Reflections Plugin.
