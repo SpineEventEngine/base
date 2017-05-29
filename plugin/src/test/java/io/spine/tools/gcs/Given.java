@@ -18,13 +18,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.spine3.tools.gcs;
+package io.spine.tools.gcs;
 
 import org.gradle.api.Project;
 import org.gradle.testfixtures.ProjectBuilder;
 
-import static org.spine3.gradle.TaskName.BUILD;
-import static org.spine3.gradle.TaskName.CLEAN_GCS;
+import static io.spine.gradle.TaskName.BUILD;
+import static io.spine.gradle.TaskName.CLEAN_GCS;
 
 /**
  * @author Dmytro Grankin

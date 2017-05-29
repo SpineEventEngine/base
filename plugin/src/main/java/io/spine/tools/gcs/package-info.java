@@ -24,6 +24,6 @@
  * @author Dmytro Grankin
  */
 @ParametersAreNonnullByDefault
-package org.spine3.tools.gcs;
+package io.spine.tools.gcs;
 
 import javax.annotation.ParametersAreNonnullByDefault;

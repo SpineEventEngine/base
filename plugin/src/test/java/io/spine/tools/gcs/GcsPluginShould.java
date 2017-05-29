@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.spine3.tools.gcs;
+package io.spine.tools.gcs;
 
 import com.google.api.client.http.HttpTransport;
 import org.gradle.api.Project;
@@ -26,16 +26,14 @@ import org.gradle.api.Task;
 import org.gradle.api.tasks.TaskContainer;
 import org.junit.Before;
 import org.junit.Test;
-import org.spine3.gradle.TaskName;
+import io.spine.gradle.TaskName;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.spine3.gradle.TaskName.CLEAN_GCS;
-import static org.spine3.tools.gcs.Given.GCS_PLUGIN_ID;
-import static org.spine3.tools.gcs.Given.newProject;
+import static io.spine.gradle.TaskName.CLEAN_GCS;
 
 /**
  * @author Dmytro Grankin
@@ -46,17 +44,17 @@ public class GcsPluginShould {
 
     @Before
     public void setUp() {
-        final Project project = newProject();
+        final Project project = Given.newProject();
         project.getPluginManager()
-               .apply(GCS_PLUGIN_ID);
+               .apply(Given.GCS_PLUGIN_ID);
         tasks = project.getTasks();
     }
 
     @Test
     public void apply_to_project() {
-        final Project project = newProject();
+        final Project project = Given.newProject();
         project.getPluginManager()
-               .apply(GCS_PLUGIN_ID);
+               .apply(Given.GCS_PLUGIN_ID);
     }
 
     @Test
@@ -66,9 +64,9 @@ public class GcsPluginShould {
 
     @Test
     public void limit_excessive_logging_from_HttpTransport() {
-        final Project project = newProject();
+        final Project project = Given.newProject();
         project.getPluginManager()
-               .apply(GCS_PLUGIN_ID);
+               .apply(Given.GCS_PLUGIN_ID);
 
         final String name = HttpTransport.class.getName();
         final Logger log = Logger.getLogger(name);

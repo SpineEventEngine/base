@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.spine3.tools.gcs;
+package io.spine.tools.gcs;
 
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.BlobInfo;
@@ -45,9 +45,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
-import static org.spine3.tools.gcs.CleanGcsTask.FOLDER_DELIMITER;
-import static org.spine3.tools.gcs.Given.createCleanGcsTask;
-import static org.spine3.tools.gcs.Given.newProject;
+import static io.spine.tools.gcs.CleanGcsTask.FOLDER_DELIMITER;
 
 /**
  * @author Dmytro Grankin
@@ -56,8 +54,8 @@ public class CleanGcsTaskShould {
 
     private static final DateTime BLOB_CREATION_TIME = now();
 
-    private final Project project = newProject();
-    private final CleanGcsTask task = createCleanGcsTask(project);
+    private final Project project = Given.newProject();
+    private final CleanGcsTask task = Given.createCleanGcsTask(project);
     private final CleanGcsTask taskSpy = spy(task);
     private final Storage storage = LocalStorageHelper.getOptions()
                                                       .getService();
@@ -147,7 +145,7 @@ public class CleanGcsTaskShould {
                                               .build();
 
         Files.write(keyFilePath, authKeyContent.getBytes());
-        final CleanGcsTask task = createCleanGcsTask(project);
+        final CleanGcsTask task = Given.createCleanGcsTask(project);
         task.setAuthKeyPath(authKeyPath);
 
         assertEquals(authKeyContent, task.getKeyFileContent());

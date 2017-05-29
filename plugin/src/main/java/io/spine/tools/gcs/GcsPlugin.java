@@ -18,19 +18,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.spine3.tools.gcs;
+package io.spine.tools.gcs;
 
 import com.google.api.client.http.HttpTransport;
 import com.google.common.annotations.VisibleForTesting;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.slf4j.Logger;
-import org.spine3.gradle.SpinePlugin;
+import io.spine.gradle.SpinePlugin;
 
 import java.util.logging.Level;
 
 import static org.slf4j.LoggerFactory.getLogger;
-import static org.spine3.gradle.TaskName.CLEAN_GCS;
+import static io.spine.gradle.TaskName.CLEAN_GCS;
 
 /**
  * The plugin for working with Google Cloud Storage via Gradle tasks.
