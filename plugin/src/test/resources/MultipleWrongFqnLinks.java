@@ -17,28 +17,28 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.spine3.tools.codestyle.javadoc;
+package io.spine.tools.codestyle.javadoc;
 class MultipleWrongFqnLinks {
     private MultipleWrongFqnLinks() {
     }
-    /**{@link org.spine3.server.event.EventBus}*/
+    /**{@link io.spine.server.event.EventBus}*/
     public static void main(String[] args) {
         System.out.println("");
     }
 
-    /**{@link org.spine3.server.event.EventBus    }*/
+    /**{@link io.spine.server.event.EventBus    }*/
     public void method(){
         System.out.println("Love yourself");
     }
-    /**{@link org.spine3.server.event.EventBus    }*/
+    /**{@link io.spine.server.event.EventBus    }*/
     public void method1(){
         System.out.println("Take care of your health");
     }
-    /**{@link org.spine3.server.event.EventBus Event   }*/
+    /**{@link io.spine.server.event.EventBus Event   }*/
     public void method2(){
         System.out.println("Take care of your mind");
     }
-    /**{@link org.spine3.server.event.EventBus   }*/
+    /**{@link io.spine.server.event.EventBus   }*/
     public void method3(){
         System.out.println("Take care of your soul");
     }

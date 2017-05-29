@@ -18,25 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.codestyle.javadoc;
-
-import java.lang.annotation.AnnotationTypeMismatchException;
-import java.lang.invoke.WrongMethodTypeException;
-
-
 /**
- * <a href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#google.protobuf.FieldMask">FieldMask specs</a>.
+ * The Gradle plugins for the code style validation.
  */
-class AllowedFqnFormats {
-    /**
-      * {@link io.spine.server.event.EventBus EventBus}
-      * {@linkplain io.spine.server.event.EventBus EventBus}
-      * {@link io.spine.this.is.a.very.long.package.name.to.test.YourPlugin YourPlugin}
-      * {@linkplain io.spine.this.is.a.very.long.package.name.to.test.YourPlugin YourPlugin}
-      * {@link this.is.few.excessive.Spaces             Spaces}
-      * {@link This.Iss}
-      */
-    public static void SomeVeryLongnameForaTestMethod(WrongMethodTypeException exception, AnnotationTypeMismatchException annotation) {
-
-    }
-}
+package io.spine.tools.codestyle;

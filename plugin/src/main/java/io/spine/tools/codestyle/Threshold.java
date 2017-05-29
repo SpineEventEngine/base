@@ -18,25 +18,42 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.codestyle.javadoc;
-
-import java.lang.annotation.AnnotationTypeMismatchException;
-import java.lang.invoke.WrongMethodTypeException;
-
+package io.spine.tools.codestyle;
 
 /**
- * <a href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#google.protobuf.FieldMask">FieldMask specs</a>.
+ * A bearable (non-negative) threshold of code style violations.
+ *
+ * <p>If a code style violations amount not exceed a threshold value,
+ * then a code style verification is considered passed:
+ * <ul>
+ *     <li>violations should not be reported;</li>
+ *     <li>if report type is {@linkplain ReportType#ERROR error}, build should not be failed.</li>
+ * </ul>that violations should not be reported
+ *
+ * @author Dmytro Grankin
+ * @see ReportType
  */
-class AllowedFqnFormats {
-    /**
-      * {@link io.spine.server.event.EventBus EventBus}
-      * {@linkplain io.spine.server.event.EventBus EventBus}
-      * {@link io.spine.this.is.a.very.long.package.name.to.test.YourPlugin YourPlugin}
-      * {@linkplain io.spine.this.is.a.very.long.package.name.to.test.YourPlugin YourPlugin}
-      * {@link this.is.few.excessive.Spaces             Spaces}
-      * {@link This.Iss}
-      */
-    public static void SomeVeryLongnameForaTestMethod(WrongMethodTypeException exception, AnnotationTypeMismatchException annotation) {
+public final class Threshold {
 
+    private final int value;
+
+    /**
+     * Creates a new instance.
+     *
+     * <p>If the specified value is negative, zero will be set.
+     *
+     * @param value the non-negative value
+     */
+    Threshold(int value) {
+        this.value = Math.max(value, 0);
+    }
+
+    public int getValue() {
+        return value;
+    }
+
+    @Override
+    public String toString() {
+        return String.valueOf(value);
     }
 }

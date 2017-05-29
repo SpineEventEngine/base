@@ -17,26 +17,40 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package io.spine.tools.codestyle;
 
-package io.spine.tools.codestyle.javadoc;
-
-import java.lang.annotation.AnnotationTypeMismatchException;
-import java.lang.invoke.WrongMethodTypeException;
-
+import com.google.common.base.MoreObjects;
 
 /**
- * <a href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#google.protobuf.FieldMask">FieldMask specs</a>.
+ * This class describes any code style violation. It has actual founded violation and it's
+ * position in code.
+ *
+ * @author Alexander Aleksandrov
  */
-class AllowedFqnFormats {
-    /**
-      * {@link io.spine.server.event.EventBus EventBus}
-      * {@linkplain io.spine.server.event.EventBus EventBus}
-      * {@link io.spine.this.is.a.very.long.package.name.to.test.YourPlugin YourPlugin}
-      * {@linkplain io.spine.this.is.a.very.long.package.name.to.test.YourPlugin YourPlugin}
-      * {@link this.is.few.excessive.Spaces             Spaces}
-      * {@link This.Iss}
-      */
-    public static void SomeVeryLongnameForaTestMethod(WrongMethodTypeException exception, AnnotationTypeMismatchException annotation) {
+public class CodeStyleViolation {
+    private final String actualUsage;
+    private int index = 0;
 
+    public CodeStyleViolation(String actualUsage) {
+        this.actualUsage = actualUsage;
+    }
+
+    public String getActualUsage() {
+        return actualUsage;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                          .add("actualUsage", actualUsage)
+                          .toString();
     }
 }

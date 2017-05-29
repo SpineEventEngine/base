@@ -17,26 +17,47 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package io.spine.tools.codestyle;
 
-package io.spine.tools.codestyle.javadoc;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 
-import java.lang.annotation.AnnotationTypeMismatchException;
-import java.lang.invoke.WrongMethodTypeException;
-
+import java.nio.file.Path;
+import java.util.List;
 
 /**
- * <a href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#google.protobuf.FieldMask">FieldMask specs</a>.
+ * An abstract code style violations storage.
+ *
+ * @author Alexander Aleksandrov
  */
-class AllowedFqnFormats {
-    /**
-      * {@link io.spine.server.event.EventBus EventBus}
-      * {@linkplain io.spine.server.event.EventBus EventBus}
-      * {@link io.spine.this.is.a.very.long.package.name.to.test.YourPlugin YourPlugin}
-      * {@linkplain io.spine.this.is.a.very.long.package.name.to.test.YourPlugin YourPlugin}
-      * {@link this.is.few.excessive.Spaces             Spaces}
-      * {@link This.Iss}
-      */
-    public static void SomeVeryLongnameForaTestMethod(WrongMethodTypeException exception, AnnotationTypeMismatchException annotation) {
+public abstract class AbstractStorage {
 
+    private final Multimap<Path, CodeStyleViolation> content = HashMultimap.create();
+
+    public Multimap<Path, CodeStyleViolation> getContent() {
+        return content;
     }
+
+    /**
+     * Logs all violations from storage.
+     */
+    public abstract void logViolations();
+
+    /**
+     * Add a new record to storage if it is already exist or creates a new one in case if it's not.
+     *
+     * @param path file path that contain violations
+     * @param list list of violations
+     */
+    void save(Path path, List<CodeStyleViolation> list) {
+        getContent().putAll(path, list);
+    }
+
+    /**
+     * Clears the content of the storage.
+     */
+    void clear() {
+        content.clear();
+    }
+
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2016, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -17,26 +17,35 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-package io.spine.tools.codestyle.javadoc;
-
-import java.lang.annotation.AnnotationTypeMismatchException;
-import java.lang.invoke.WrongMethodTypeException;
-
+package io.spine.tools.codestyle;
 
 /**
- * <a href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#google.protobuf.FieldMask">FieldMask specs</a>.
+ * @author Alexander Aleksandrov
  */
-class AllowedFqnFormats {
-    /**
-      * {@link io.spine.server.event.EventBus EventBus}
-      * {@linkplain io.spine.server.event.EventBus EventBus}
-      * {@link io.spine.this.is.a.very.long.package.name.to.test.YourPlugin YourPlugin}
-      * {@linkplain io.spine.this.is.a.very.long.package.name.to.test.YourPlugin YourPlugin}
-      * {@link this.is.few.excessive.Spaces             Spaces}
-      * {@link This.Iss}
-      */
-    public static void SomeVeryLongnameForaTestMethod(WrongMethodTypeException exception, AnnotationTypeMismatchException annotation) {
+public class Given {
+    private static final String SOURCE_FOLDER = "src/main/java";
+    private static final String DEBUG_OPTION = "--debug";
+    private static final String testFile = "AllowedFqnFormats.java";
+    private static final String COMPILE_LOG = ":compileJava";
+    private static final String buildGradleFile = "build.gradle";
 
+    public static String buildGradleFile() {
+        return buildGradleFile;
+    }
+
+    public static String compileLog() {
+        return COMPILE_LOG;
+    }
+
+    public static String testFile() {
+        return testFile;
+    }
+
+    public static String debugOption() {
+        return DEBUG_OPTION;
+    }
+
+    public static String sourceFolder() {
+        return SOURCE_FOLDER;
     }
 }

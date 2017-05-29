@@ -1,4 +1,4 @@
-package org.spine3.tools.codestyle.javadoc;
+package io.spine.tools.codestyle.javadoc;
 class ClassWithoutJavadocs {
     private ClassWithoutJavadocs() {
     }

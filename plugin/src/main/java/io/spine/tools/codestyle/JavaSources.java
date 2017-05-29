@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2016, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -17,26 +17,39 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package io.spine.tools.codestyle;
 
-package io.spine.tools.codestyle.javadoc;
-
-import java.lang.annotation.AnnotationTypeMismatchException;
-import java.lang.invoke.WrongMethodTypeException;
-
+import java.nio.file.Path;
 
 /**
- * <a href="https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#google.protobuf.FieldMask">FieldMask specs</a>.
+ * A utility for working with the Java source files.
+ *
+ * @author Alexander Aleksandrov
  */
-class AllowedFqnFormats {
-    /**
-      * {@link io.spine.server.event.EventBus EventBus}
-      * {@linkplain io.spine.server.event.EventBus EventBus}
-      * {@link io.spine.this.is.a.very.long.package.name.to.test.YourPlugin YourPlugin}
-      * {@linkplain io.spine.this.is.a.very.long.package.name.to.test.YourPlugin YourPlugin}
-      * {@link this.is.few.excessive.Spaces             Spaces}
-      * {@link This.Iss}
-      */
-    public static void SomeVeryLongnameForaTestMethod(WrongMethodTypeException exception, AnnotationTypeMismatchException annotation) {
+public final class JavaSources {
+    private static final String JAVA_FILE_EXTENSION = ".java";
 
+    private JavaSources() {
+        // Prevent initialization of this utility class
+    }
+
+    /**
+     * Returns the java file extension string constant.
+     *
+     * @return ".java" string
+     */
+    public static String javaExt() {
+        return JAVA_FILE_EXTENSION;
+    }
+
+    /**
+     * Checks the file path.
+     *
+     * @param path  the target file path
+     * @return {@code true} in case if the file has the .java extension.
+     */
+    public static boolean isJavaFile(Path path) {
+        return path.toString()
+                   .endsWith(javaExt());
     }
 }
