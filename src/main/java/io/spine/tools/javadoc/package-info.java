@@ -22,6 +22,6 @@
  * This package provides custom doclets for Javadoc tool.
  */
 @ParametersAreNonnullByDefault
-package org.spine3.tools.javadoc;
+package io.spine.tools.javadoc;
 
 import javax.annotation.ParametersAreNonnullByDefault;
