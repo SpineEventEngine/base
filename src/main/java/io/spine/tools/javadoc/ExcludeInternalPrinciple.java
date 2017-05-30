@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.spine3.tools.javadoc;
+package io.spine.tools.javadoc;
 
 import com.sun.javadoc.PackageDoc;
 import com.sun.javadoc.ProgramElementDoc;
