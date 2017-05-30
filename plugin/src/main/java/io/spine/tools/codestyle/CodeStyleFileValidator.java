@@ -32,7 +32,7 @@ public interface CodeStyleFileValidator {
      * Checks the file for the looked up code style violations.
      *
      * @param path Path to the target file
-     * @throws CodeStyleException
+     * @throws CodeStyleException in case of any violations found
      */
     void validate(Path path) throws CodeStyleException;
 }
