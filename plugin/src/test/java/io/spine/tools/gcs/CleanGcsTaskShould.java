@@ -39,13 +39,15 @@ import java.nio.file.Path;
 import static com.google.common.collect.Iterables.size;
 import static groovy.time.TimeCategory.getDays;
 import static groovy.time.TimeCategory.getMilliseconds;
+import static io.spine.tools.gcs.CleanGcsTask.FOLDER_DELIMITER;
+import static io.spine.tools.gcs.Given.createCleanGcsTask;
+import static io.spine.tools.gcs.Given.newProject;
 import static org.joda.time.DateTime.now;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
-import static io.spine.tools.gcs.CleanGcsTask.FOLDER_DELIMITER;
 
 /**
  * @author Dmytro Grankin
@@ -54,8 +56,8 @@ public class CleanGcsTaskShould {
 
     private static final DateTime BLOB_CREATION_TIME = now();
 
-    private final Project project = Given.newProject();
-    private final CleanGcsTask task = Given.createCleanGcsTask(project);
+    private final Project project = newProject();
+    private final CleanGcsTask task = createCleanGcsTask(project);
     private final CleanGcsTask taskSpy = spy(task);
     private final Storage storage = LocalStorageHelper.getOptions()
                                                       .getService();
@@ -145,7 +147,7 @@ public class CleanGcsTaskShould {
                                               .build();
 
         Files.write(keyFilePath, authKeyContent.getBytes());
-        final CleanGcsTask task = Given.createCleanGcsTask(project);
+        final CleanGcsTask task = createCleanGcsTask(project);
         task.setAuthKeyPath(authKeyPath);
 
         assertEquals(authKeyContent, task.getKeyFileContent());
