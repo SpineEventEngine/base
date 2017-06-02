@@ -17,7 +17,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.gradle.reflections;
+package io.spine.tools.reflections;
 
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -30,8 +30,8 @@ import static io.spine.gradle.TaskDependencies.dependsOn;
 import static io.spine.gradle.TaskName.BUILD;
 import static io.spine.gradle.TaskName.CLASSES;
 import static io.spine.gradle.TaskName.SCAN_CLASS_PATH;
-import static io.spine.gradle.reflections.Given.REFLECTIONS_PLUGIN_ID;
-import static io.spine.gradle.reflections.Given.newProject;
+import static io.spine.tools.reflections.Given.REFLECTIONS_PLUGIN_ID;
+import static io.spine.tools.reflections.Given.newProject;
 
 /**
  * @author Alex Tymchenko

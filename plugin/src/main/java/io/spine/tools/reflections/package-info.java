@@ -17,30 +17,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.gradle.reflections;
-
-import org.gradle.api.Project;
-import org.gradle.testfixtures.ProjectBuilder;
-
-import static io.spine.gradle.TaskName.BUILD;
-import static io.spine.gradle.TaskName.CLASSES;
 
 /**
+ * A Gradle plugin and related utilities for the Maven Reflections plugin port.
+ *
  * @author Alex Tymchenko
  */
-class Given {
-
-    static final String REFLECTIONS_PLUGIN_ID = "reflections-plugin";
-
-    private Given() {
-    }
-
-    /** Creates a project with all required tasks. */
-    public static Project newProject() {
-        final Project project = ProjectBuilder.builder()
-                                              .build();
-        project.task(CLASSES.getValue());
-        project.task(BUILD.getValue());
-        return project;
-    }
-}
+package io.spine.tools.reflections;
