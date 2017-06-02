@@ -32,7 +32,7 @@ import static io.spine.gradle.TaskName.CLEAN_GCS;
 @SuppressWarnings("UtilityClass")
 public class Given {
 
-    static final String GCS_PLUGIN_ID = "org.spine3.tools.gcs-plugin";
+    static final String GCS_PLUGIN_ID = "io.spine.tools.gcs-plugin";
     private static final String AUTH_KEY_PATH = "Required just for pass the check.";
     private static final String BUCKET_NAME = "test-bucket.com";
     private static final String TARGET_FOLDER = "clean-me";
