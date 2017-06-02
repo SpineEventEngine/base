@@ -1,9 +1,9 @@
 plugins {
     id 'java'
-    id 'org.spine3.tools.spine-codestyle-checker' apply false
+    id 'io.spine.tools.spine-codestyle-checker' apply false
 }
 
-apply plugin: 'org.spine3.tools.spine-codestyle-checker'
+apply plugin: 'io.spine.tools.spine-codestyle-checker'
 
 codestyleChecker {
 
