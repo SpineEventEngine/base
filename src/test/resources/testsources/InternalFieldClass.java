@@ -1,6 +1,6 @@
 package testsources;
 
-import org.spine3.annotation.Internal;
+import io.spine.annotation.Internal;
 
 public class InternalFieldClass {
 

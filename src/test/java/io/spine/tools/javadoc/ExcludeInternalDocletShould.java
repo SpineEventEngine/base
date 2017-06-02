@@ -25,7 +25,7 @@ import com.sun.javadoc.MethodDoc;
 import com.sun.javadoc.RootDoc;
 import org.junit.After;
 import org.junit.Test;
-import org.spine3.util.Exceptions;
+import io.spine.util.Exceptions;
 
 import java.io.IOException;
 import java.nio.file.FileVisitResult;

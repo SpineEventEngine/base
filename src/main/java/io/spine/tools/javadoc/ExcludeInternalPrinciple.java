@@ -23,7 +23,7 @@ package io.spine.tools.javadoc;
 import com.sun.javadoc.PackageDoc;
 import com.sun.javadoc.ProgramElementDoc;
 import com.sun.javadoc.RootDoc;
-import org.spine3.annotation.Internal;
+import io.spine.annotation.Internal;
 
 import java.util.Collection;
 

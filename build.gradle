@@ -8,7 +8,7 @@ repositories {
 
 dependencies {
     compile files("${System.properties['java.home']}/../lib/tools.jar")
-    compile group: 'org.spine3', name: 'spine-client-core', version: spineVersion
+    compile group: 'io.spine', name: 'spine-client-core', version: spineVersion
     compile group: 'javax.annotation', name: 'javax.annotation-api', version: '1.3'
 }
 
