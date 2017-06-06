@@ -26,8 +26,8 @@ import com.sun.tools.javadoc.MethodDocImpl;
 import com.sun.javadoc.RootDoc;
 import com.sun.tools.doclets.standard.Standard;
 import com.sun.tools.javadoc.Main;
-import org.spine3.annotation.Internal;
-import org.spine3.util.Exceptions;
+import io.spine.annotation.Internal;
+import io.spine.util.Exceptions;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Array;
