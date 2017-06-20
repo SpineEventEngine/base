@@ -63,17 +63,20 @@ public class MessageTypeCache {
                                     ? (sourceProtoPackage + '.')
                                     : "";
         final String sourceJavaPackage = options.getJavaPackage();
-        String javaPackage = !sourceJavaPackage.isEmpty()
-                             ? sourceJavaPackage + '.'
-                             : "";
+        final StringBuilder javaPackage =
+                new StringBuilder(!sourceJavaPackage.isEmpty()
+                                          ? sourceJavaPackage + '.'
+                                          : "");
 
         if (!options.getJavaMultipleFiles()) {
             final String singleFileSuffix = JavaCode.getOuterClassName(fileDescriptor);
-            javaPackage = javaPackage + singleFileSuffix + '.';
+            javaPackage.append(singleFileSuffix)
+                       .append('.');
         }
 
-        cacheMessageTypes(fileDescriptor, protoPackage, javaPackage);
-        cacheEnumTypes(fileDescriptor, protoPackage, javaPackage);
+        final String pkgValue = javaPackage.toString();
+        cacheMessageTypes(fileDescriptor, protoPackage, pkgValue);
+        cacheEnumTypes(fileDescriptor, protoPackage, pkgValue);
     }
 
     private void cacheMessageTypes(FileDescriptorProto fileDescriptor,
