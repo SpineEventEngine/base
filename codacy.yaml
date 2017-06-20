@@ -1,4 +1,4 @@
 ---
 exclude_paths:
-  - "./gradle-plugins/plugin-base/src/test/**/*.*"
-  - "./gradle-plugins/model-compiler/src/test/**/*.*"
+  - "gradle-plugins/plugin-base/src/test/**/*.*"
+  - "gradle-plugins/model-compiler/src/test/**/*.*"
