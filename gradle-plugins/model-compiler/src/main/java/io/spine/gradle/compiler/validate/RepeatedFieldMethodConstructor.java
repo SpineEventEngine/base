@@ -284,7 +284,7 @@ class RepeatedFieldMethodConstructor implements MethodConstructor {
                                                                           listElementClassName);
         final String fieldName = fieldDescriptor.getName();
         final String addAllValues = getMessageBuilder()
-                + format(".addAll%s(%s)", methodNamePart, "value");
+                + format(".addAll%s(%s)", methodNamePart, VALUE);
         final MethodSpec result = MethodSpec.methodBuilder(methodName)
                                             .returns(builderClassName)
                                             .addModifiers(Modifier.PUBLIC)
