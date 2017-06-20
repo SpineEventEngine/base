@@ -168,8 +168,7 @@ class MethodConstructors {
         final URL resource = MethodConstructors.class.getClassLoader()
                                                      .getResource(TEMPLATE_PATH);
         if (resource == null) {
-            final String exMessage = String.format("The template file %s is not found.",
-                                                   TEMPLATE_PATH);
+            final String exMessage = format("The template file %s is not found.", TEMPLATE_PATH);
             throw newIllegalStateException(exMessage);
         }
 
