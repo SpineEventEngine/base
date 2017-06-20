@@ -50,7 +50,7 @@ dependencies {
     compile "com.google.protobuf:protobuf-java:${protobufVersion}"
 
     //TODO:6/20/17:alex.tymchenko: switch to `base` dependency instead.
-    compile(group: 'io.spine', name: 'spine-server-core', version: spineVersion) {
+    compile(group: 'io.spine', name: 'spine-client-core', version: spineVersion) {
         exclude(group: 'com.google.protobuf')
     }
 
