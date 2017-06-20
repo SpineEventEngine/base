@@ -48,6 +48,7 @@ import static io.spine.gradle.compiler.validate.MethodConstructors.createDescrip
 import static io.spine.gradle.compiler.validate.MethodConstructors.createValidateStatement;
 import static io.spine.gradle.compiler.validate.MethodConstructors.getMessageBuilder;
 import static io.spine.gradle.compiler.validate.MethodConstructors.rawSuffix;
+import static io.spine.gradle.compiler.validate.MethodConstructors.removePrefix;
 import static io.spine.gradle.compiler.validate.MethodConstructors.returnThis;
 import static java.lang.String.format;
 
@@ -67,7 +68,6 @@ class RepeatedFieldMethodConstructor implements MethodConstructor {
     private static final String INDEX = "index";
     private static final String ADD_PREFIX = "add";
     private static final String SET_PREFIX = "set";
-    private static final String REMOVE_PREFIX = "remove";
     private static final String ADD_RAW_PREFIX = "addRaw";
     private static final String SET_RAW_PREFIX = "setRaw";
     private static final String CONVERTED_VALUE = "convertedValue";
@@ -329,9 +329,9 @@ class RepeatedFieldMethodConstructor implements MethodConstructor {
     }
 
     private MethodSpec createRemoveObjectByIndexMethod() {
-        final String methodName = REMOVE_PREFIX + methodNamePart;
+        final String methodName = removePrefix() + methodNamePart;
         final String addValue = format("%s.%s%s(%s)", getMessageBuilder(),
-                                       REMOVE_PREFIX, methodNamePart, INDEX);
+                                       removePrefix(), methodNamePart, INDEX);
         final MethodSpec result = MethodSpec.methodBuilder(methodName)
                                             .returns(builderClassName)
                                             .addModifiers(Modifier.PUBLIC)
