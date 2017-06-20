@@ -31,6 +31,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class JavaCode {
 
+    private static final String UNDERSCORE = "_";
+
     private JavaCode() {
     }
 
@@ -74,7 +76,7 @@ public class JavaCode {
         checkNotNull(fileName);
         final StringBuilder result = new StringBuilder(fileName.length());
 
-        for (final String word : fileName.split("_")) {
+        for (final String word : fileName.split(UNDERSCORE)) {
             if (!word.isEmpty()) {
                 result.append(Character.toUpperCase(word.charAt(0)));
                 result.append(word.substring(1)
@@ -96,7 +98,7 @@ public class JavaCode {
      */
     public static String toJavaFieldName(String protoFieldName, boolean capitalizeFirst) {
         checkNotNull(protoFieldName);
-        final String[] words = protoFieldName.split("_");
+        final String[] words = protoFieldName.split(UNDERSCORE);
         final StringBuilder builder = new StringBuilder(words[0]);
         for (int i = 1; i < words.length; i++) {
             final String word = words[i];
