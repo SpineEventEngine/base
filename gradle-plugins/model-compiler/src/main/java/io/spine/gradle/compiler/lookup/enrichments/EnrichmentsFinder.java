@@ -148,6 +148,7 @@ class EnrichmentsFinder {
         return mergedResult.build();
     }
 
+    @SuppressWarnings("MethodWithMultipleLoops")  // It's fine as we don't expect too many items.
     private void putEntry(Multimap<String, String> targetMap, DescriptorProto msg) {
         final Map<String, String> entries = scanMsg(msg);
         for (Map.Entry<String, String> entry : entries.entrySet()) {
@@ -368,7 +369,7 @@ class EnrichmentsFinder {
     @SuppressWarnings("DuplicateStringLiteralInspection")
     private static IllegalStateException invalidByOptionValue(String msgName) {
         throw new IllegalStateException(
-                "Field of message `" + msgName + "` has invalid 'by' option value, " +
+                "The message field `" + msgName + "` has invalid 'by' option value, " +
                         "which must be a fully-qualified field reference.");
     }
 
