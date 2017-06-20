@@ -1,0 +1,271 @@
+//
+// Copyright 2017, TeamDev Ltd. All rights reserved.
+//
+// Redistribution and use in source and/or binary forms, with or without
+// modification, must retain the above copyright notice and the following
+// disclaimer.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+
+import groovy.time.TimeCategory
+
+buildscript {
+
+    // Applying from `ext.gradle` inside the `buildscript` section to reuse the properties.
+    //
+    // As long as `buildscript` section is always evaluated first, we need to apply
+    // `ext.gradle` explicitly here.
+    apply from: 'ext.gradle'
+
+    ext {
+        spineRepository = 'http://maven.teamdev.com/repository/spine'
+        spineSnapshotsRepository = 'http://maven.teamdev.com/repository/spine-snapshots'
+    }
+
+    repositories {
+        jcenter()
+        // Google's mirror of Maven Central
+        maven { url = 'https://maven-central.storage.googleapis.com' }
+
+        mavenCentral()
+        mavenLocal()
+
+        // Spine releases repository.
+        maven { url = spineRepository }
+
+        // Spine snapshots repository.
+        maven { url = spineSnapshotsRepository }
+    }
+
+    dependencies {
+        classpath group: 'com.google.guava', name: 'guava', version: guavaVersion
+        /* Uncomment the below statement if you want the dependency to be fetched on each build.
+           Please note that offline builds will not be available then. */
+                                                          //, changing: true
+
+        classpath group: 'io.spine.tools', name: 'spine-codestyle-checker', version: spineToolsVersion
+        classpath group: 'io.spine.tools', name: 'gcs-plugin', version: spineToolsVersion
+    }
+    configurations.all({
+        resolutionStrategy.cacheChangingModulesFor(0, 'seconds')
+    })
+}
+
+apply from: 'ext.gradle'
+
+ext {
+    protobufDependency = "com.google.protobuf:protoc:${protobufVersion}"
+    spineCodestyleCheckerId = 'io.spine.tools.spine-codestyle-checker'
+    spineGcsPlugin = 'io.spine.tools.gcs-plugin'
+    spineJacocoScript = "${rootDir}/scripts/jacoco.gradle"
+
+    credentialsPropertyFile = 'credentials.properties'
+    publishPlugin = "$rootDir/scripts/publish.gradle"
+    projectsToPublish = ["model-compiler", "plugin-base"]
+}
+
+allprojects {
+    apply plugin: 'maven'
+    apply plugin: 'jacoco'
+    apply plugin: 'idea'
+    apply plugin: 'project-report'
+
+    group = 'io.spine'
+
+    // Use the same version numbering for the Spine Base library.
+    version = spineVersion
+}
+
+
+subprojects {
+
+    project.ext {
+        sourcesRootDir = "$projectDir/src"
+        generatedRootDir = "$projectDir/generated"
+
+        generatedJavaDir = "$generatedRootDir/main/java"
+        generatedTestJavaDir = "$generatedRootDir/test/java"
+
+        generatedGrpcDir = "$generatedRootDir/main/grpc"
+        generatedTestGrpcDir = "$generatedRootDir/test/grpc"
+
+        generatedSpineDir = "$generatedRootDir/main/spine"
+        generatedTestSpineDir = "$generatedRootDir/test/spine"
+
+        testArtifactsScript = "${rootDir}/scripts/test-artifacts.gradle"
+        generateDescriptorSetScript = "${rootDir}/scripts/generate-descriptor-set.gradle"
+        filterInternalJavadocsScript = "${rootDir}/scripts/no-internal-javadoc.gradle"
+        gRpcScript = "${rootDir}/scripts/grpc.gradle"
+    }
+
+    apply plugin: 'java'
+    apply plugin: spineCodestyleCheckerId
+    apply plugin: 'maven-publish'
+
+    // Verifies code style.
+    // The parameters are same for any kind of verification:
+    //
+    //      - "threshold" - is a number of code style violations to consider check passed.
+    //      - "reportType" - report type if a check is not passed. Can be either "error" or "warn".
+    //              * "warn" - the violations are logged to the build report.
+    //              * "error" - build will fail and its report will contain the violations.
+    //
+    //      For more details please see io.spine.tools.codestyle.CodestyleCheckerPlugin
+    codestyleChecker {
+
+        // Javadoc @link/@linkplain format checker.
+        //
+        // Finds and reports FQNs used in links in the wrong format.
+        javadocLinkChecker {
+            threshold = 0
+            reportType = "warn"
+        }
+
+        // Right margin line checker.
+        //
+        // Finds and reports about the lines of a code with length above threshold.
+        rightMarginWrappingChecker {
+            maxTextWidth = 100
+        }
+    }
+
+    sourceCompatibility = 1.7
+    targetCompatibility = 1.7
+
+    // Set Java home to point to JDK7 in gradle.properties file.
+    //
+    // For Mac OS X, it looks like this:
+    //
+    // # suppress inspection "UnusedProperty"
+    // org.gradle.java.home=/Library/Java/JavaVirtualMachines/jdk1.7.0_80.jdk/Contents/Home/
+
+    repositories {
+        jcenter()
+        // Google's mirror of Maven Central
+        maven { url = 'https://maven-central.storage.googleapis.com' }
+        mavenCentral()
+        mavenLocal()
+
+        // Spine releases repository.
+        maven { url = spineRepository }
+
+        // Spine snapshots repository.
+        maven { url = spineSnapshotsRepository }
+    }
+
+    dependencies {
+        compile group: 'com.google.guava', name: 'guava', version: guavaVersion
+    }
+
+    sourceSets {
+        main {
+            java.srcDirs = [generatedJavaDir, "$sourcesRootDir/main/java", generatedSpineDir]
+            resources.srcDirs = ["$sourcesRootDir/main/resources", "$generatedRootDir/main/resources"]
+        }
+        test {
+            java.srcDirs = [generatedTestJavaDir, "$sourcesRootDir/test/java", generatedTestSpineDir]
+            resources.srcDirs = ["$sourcesRootDir/test/resources", "$generatedRootDir/test/resources"]
+        }
+    }
+
+    /* Uncomment this block if you need to display console output during the Gradle build.*/
+    test {
+        testLogging {
+            // Make sure output from standard out or error is shown in Gradle output.
+            showStandardStreams = true
+
+            // Or we use events method:
+            // events 'standard_out', 'standard_error'
+
+            // Or set property events:
+            // events = ['standard_out', 'standard_error']
+
+            // Instead of string values we can
+            // use enum values:
+            // events org.gradle.api.tasks.testing.logging.TestLogEvent.STANDARD_OUT,
+            //        org.gradle.api.tasks.testing.logging.TestLogEvent.STANDARD_ERROR,
+        }
+    }
+
+    javadoc {
+        source = sourceSets.main.allJava
+    }
+
+    task sourceJar(type: Jar) {
+        from sourceSets.main.allJava
+        classifier "sources"
+    }
+
+    task testOutputJar(type: Jar) {
+        from sourceSets.test.output
+        classifier "test"
+    }
+
+    task javadocJar(type: Jar, dependsOn: 'javadoc') {
+        from ("$projectDir/build/docs/javadoc")
+        classifier "javadoc"
+    }
+
+    apply from: filterInternalJavadocsScript
+
+    idea.module.iml {
+        beforeMerged { final module ->
+            module.dependencies.clear()
+        }
+        whenMerged { final module ->
+            module.dependencies*.exported = true
+        }
+    }
+
+    idea.module {
+        generatedSourceDirs += file(generatedJavaDir)
+        testSourceDirs += file(generatedTestJavaDir)
+    }
+
+    idea {
+        module {
+            downloadJavadoc = true
+            downloadSources = true
+        }
+    }
+}
+
+idea.project.ipr {
+    beforeMerged { final project ->
+        project.modulePaths.clear()
+    }
+    withXml { final provider ->
+        provider.node.component
+                .find { it.@name == 'VcsDirectoryMappings' }
+                .mapping.@vcs = 'Git'
+    }
+}
+
+// Aggregated coverage report across all subprojects.
+apply from: spineJacocoScript
+
+apply from: publishPlugin
+
+apply plugin: spineGcsPlugin
+
+cleanGCS {
+    final Properties properties = new Properties()
+    final File gcsProperties = project.file("${rootDir}/config/gcs.properties")
+    properties.load(gcsProperties.newDataInputStream())
+
+    authKeyPath = "gcs-auth-key.json"
+    bucketName = properties.getProperty("artifacts.bucket")
+    targetFolder = properties.getProperty("artifacts.folder")
+    threshold = TimeCategory.getDays(10)
+}

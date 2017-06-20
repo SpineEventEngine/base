@@ -1,0 +1,7 @@
+syntax = "proto3";
+
+import "spine/options.proto";
+
+service SpiService {
+    option (SPI_service) = true;
+}

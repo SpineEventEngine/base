@@ -1,0 +1,60 @@
+//
+// Copyright 2017, TeamDev Ltd. All rights reserved.
+//
+// Redistribution and use in source and/or binary forms, with or without
+// modification, must retain the above copyright notice and the following
+// disclaimer.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+
+ext {
+    roasterVersion = '2.20.0.Final'
+}
+
+group = 'io.spine.tools'
+
+dependencies {
+    compile project(':plugin-base')
+
+    compile group: 'com.squareup', name: 'javapoet', version: '1.8.0'
+    compile group: 'com.google.template', name: 'soy', version: '2017-02-01'
+    compile group: 'com.google.guava', name: 'guava', version: guavaVersion
+    compile group: 'com.google.protobuf', name: 'protobuf-java', version: protobufVersion
+    compile group: 'com.google.protobuf', name: 'protobuf-java-util', version: protobufVersion
+
+    //TODO:6/20/17:alex.tymchenko: Switch the dependency from `core` to `base` instead.
+    compile (group: 'io.spine', name: 'spine-client-core', version: spineVersion) {
+        exclude(group: 'com.google.protobuf')
+    }
+
+    // A library for parsing Java sources.
+    // Used for parsing Java sources generated from Protobuf files
+    // to make their annotation more convenient.
+    compile group: 'org.jboss.forge.roaster', name: 'roaster-api', version: roasterVersion
+    compile group: 'org.jboss.forge.roaster', name: 'roaster-jdt', version: roasterVersion
+    testCompile group: 'io.spine', name: 'spine-testutil-core', version: spineVersion
+    testCompile group: 'com.google.guava', name: 'guava-testlib', version: guavaVersion
+    testCompile gradleTestKit()
+
+    // "tools.jar" contains Javadoc classes used in the failures Javadoc generation tests.
+    // It is a local version bundled within the JDK installation.
+    // "JAVA_HOME" environment variable must be set for correct work.
+    testCompile files("${System.properties['java.home']}/../lib/tools.jar")
+}
+
+// Tests use the Protobuf plugin.
+test {
+    dependsOn publishToMavenLocal
+    dependsOn project.project(':plugin-base').publishToMavenLocal
+}

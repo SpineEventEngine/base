@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+option (SPI_all) = true;
+
+import "spine/options.proto";
+
+message First {
+    option (SPI_type) = true;
+}
