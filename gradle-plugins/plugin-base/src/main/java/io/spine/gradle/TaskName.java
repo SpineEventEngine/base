@@ -153,11 +153,11 @@ public enum TaskName {
      */
     ANNOTATE_TEST_PROTO("annotateTestProto");
 
+    private final String value;
+
     TaskName(String value) {
         this.value = value;
     }
-
-    private final String value;
 
     public String getValue() {
         return value;
