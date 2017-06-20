@@ -97,7 +97,7 @@ public class PropertiesWriter {
             bufferedWriter.close();
             log().debug("Properties file written successfully");
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
     }
 
@@ -109,8 +109,7 @@ public class PropertiesWriter {
                 props.load(fis);
             } catch (@SuppressWarnings("OverlyBroadCatchBlock") IOException e) {
                 final String errMsg = "Error loading the properties from the file: ";
-                throw new RuntimeException(errMsg +
-                                                   file.getAbsolutePath(), e);
+                throw new IllegalStateException(errMsg + file.getAbsolutePath(), e);
             }
         } else {
             createParentFolders(file);
@@ -122,7 +121,7 @@ public class PropertiesWriter {
             Files.createParentDirs(file);
         } catch (IOException e) {
             final String errMsg = "Cannot create the parent folders at ";
-            throw new RuntimeException(errMsg + file.getAbsolutePath(), e);
+            throw new IllegalStateException(errMsg + file.getAbsolutePath(), e);
         }
     }
 

@@ -93,9 +93,9 @@ public class DescriptorSetUtil {
             }
         } catch (@SuppressWarnings("OverlyBroadCatchBlock") IOException e) {
             final String errMsg = "Cannot get proto file descriptors. Path = " + descriptorSetPath;
-            throw new RuntimeException(errMsg, e);
+            throw new IllegalStateException(errMsg, e);
         }
-        log().trace("Found {} files:\n{}", fileDescriptors.size(), fileDescriptors);
+        log().trace("Found {} files: {}", fileDescriptors.size(), fileDescriptors);
 
         return fileDescriptors;
     }

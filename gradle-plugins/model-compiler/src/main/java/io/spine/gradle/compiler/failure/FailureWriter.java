@@ -104,7 +104,7 @@ public class FailureWriter {
             javaFile.writeTo(outputDirectory);
             log().debug("Failure {} written successfully", failureMetadata.getClassName());
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
     }
 

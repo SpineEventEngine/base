@@ -82,7 +82,8 @@ public class CleaningPlugin extends SpinePlugin {
             log().debug("Starting to delete the files recursively in {}", path.toString());
             Files.walkFileTree(path, visitor);
         } catch (IOException e) {
-            throw new RuntimeException("Failed to delete the folder with its contents: " + path, e);
+            throw new IllegalStateException(
+                    "Failed to delete the folder with its contents: " + path, e);
         }
     }
 
