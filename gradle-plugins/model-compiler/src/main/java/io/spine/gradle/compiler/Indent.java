@@ -20,6 +20,7 @@
 
 package io.spine.gradle.compiler;
 
+import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 
 /**
@@ -35,8 +36,26 @@ public class Indent {
         this.indent = indent;
     }
 
-    public String getJavaPoetIndent() {
+    @Override
+    public String toString() {
         final String result = Strings.repeat(" ", indent);
         return result;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Indent indent1 = (Indent) o;
+        return indent == indent1.indent;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(indent);
     }
 }

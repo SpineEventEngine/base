@@ -116,7 +116,7 @@ class ValidatingBuilderWriter {
             Files.touch(rootFolder);
             JavaFile.builder(javaPackage, validator)
                     .skipJavaLangImports(true)
-                    .indent(indent.getJavaPoetIndent())
+                    .indent(indent.toString())
                     .build()
                     .writeTo(rootFolder);
         } catch (IOException e) {
