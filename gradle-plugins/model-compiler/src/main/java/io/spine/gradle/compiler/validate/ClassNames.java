@@ -35,6 +35,8 @@ import static io.spine.util.Exceptions.newIllegalArgumentException;
 
 /**
  * Utility class for working with the {@code ClassName}s.
+ *
+ * @author Illia Shepilov
  */
 final class ClassNames {
 
