@@ -37,7 +37,8 @@ import java.util.TreeSet;
 /**
  * A utility class for writing to {@code .properties} file.
  *
- * @author Alexander Litus, Alex Tymchenko
+ * @author Alexander Litus
+ * @author Alex Tymchenko
  */
 public class PropertiesWriter {
 
