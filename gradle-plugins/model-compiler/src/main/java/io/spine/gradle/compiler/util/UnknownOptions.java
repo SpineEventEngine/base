@@ -50,16 +50,16 @@ import static java.util.Collections.emptyMap;
  *
  * [(decimal_max).value = "64.5", (decimal_max).inclusive = true];
  *
- * Currently, we do not need options with several properties.
- * So, only first option property values are obtained, and others are ignored.
+ * <p>Currently, we do not need options with several properties.
+ * So, only the first option property values are obtained, and others are ignored.
  *
  * @author Alexander Litus
  */
 public class UnknownOptions {
 
-    private static final Pattern PATTERN_COLON = Pattern.compile(":");
     @SuppressWarnings("HardcodedLineSeparator")
     private static final Pattern PATTERN_NEW_LINE = Pattern.compile("\n");
+    private static final Pattern PATTERN_COLON = Pattern.compile(":");
     private static final String QUOTE = "\"";
 
     private UnknownOptions() {
