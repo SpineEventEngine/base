@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-option (SPI_all) = true;
-
 import "spine/options.proto";
+
+option (SPI_all) = true;
 
 service First {
 }

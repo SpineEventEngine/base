@@ -76,9 +76,9 @@ import static org.slf4j.LoggerFactory.getLogger;
  * <p>For {@code FileOptions}:
  *
  * <pre>{@code
- * option (experimental_all) = true;
- *
  * import "spine/options.proto";
+ *
+ * option (experimental_all) = true;
  *
  * message Message {
  * }
