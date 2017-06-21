@@ -140,7 +140,7 @@ public class PropertiesWriter {
     private static final class SortedProperties extends Properties {
 
         // Generated automatically.
-        private static final long serialVersionUID = -4508611340425795981L;
+        private static final long serialVersionUID = 0L;
 
         @SuppressWarnings("RefusedBequest")
         // as we replace `keys()` with a completely different behavior.
