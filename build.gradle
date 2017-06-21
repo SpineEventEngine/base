@@ -219,36 +219,39 @@ subprojects {
 
     apply from: filterInternalJavadocsScript
 
-    idea.module.iml {
-        beforeMerged { final module ->
-            module.dependencies.clear()
-        }
-        whenMerged { final module ->
-            module.dependencies*.exported = true
-        }
-    }
-
-    idea.module {
-        generatedSourceDirs += file(generatedJavaDir)
-        testSourceDirs += file(generatedTestJavaDir)
-    }
-
+    // Apply the same IDEA module configuration for each of sub-projects.
     idea {
         module {
+            generatedSourceDirs += file(generatedJavaDir)
+            testSourceDirs += file(generatedTestJavaDir)
             downloadJavadoc = true
             downloadSources = true
+
+            iml {
+                beforeMerged { final module ->
+                    module.dependencies.clear()
+                }
+                whenMerged { final module ->
+                    module.dependencies*.exported = true
+                }
+            }
         }
     }
 }
 
-idea.project.ipr {
-    beforeMerged { final project ->
-        project.modulePaths.clear()
-    }
-    withXml { final provider ->
-        provider.node.component
-                .find { it.@name == 'VcsDirectoryMappings' }
-                .mapping.@vcs = 'Git'
+// IDEA project configuration.
+idea {
+    project {
+        ipr {
+            beforeMerged { final project ->
+                project.modulePaths.clear()
+            }
+            withXml { final provider ->
+                provider.node.component
+                        .find { it.@name == 'VcsDirectoryMappings' }
+                        .mapping.@vcs = 'Git'
+            }
+        }
     }
 }
 
