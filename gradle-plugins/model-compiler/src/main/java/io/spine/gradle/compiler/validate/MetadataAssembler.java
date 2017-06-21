@@ -128,7 +128,6 @@ class MetadataAssembler {
         final Set<VBMetadata> result = newHashSet();
 
         for (VBMetadata metadata : metadataSet) {
-
             if (metadata.getJavaPackage()
                         .contains(PROTOBUF_PACKAGE_NAME)) {
                 continue;
@@ -168,8 +167,7 @@ class MetadataAssembler {
     private VBMetadata createMetadata(DescriptorProto msgDescriptor) {
         final String className = msgDescriptor.getName() + JAVA_CLASS_NAME_SUFFIX;
         final String javaPackage = getJavaPackage(msgDescriptor);
-        final VBMetadata result =
-                new VBMetadata(javaPackage, className, msgDescriptor);
+        final VBMetadata result = new VBMetadata(javaPackage, className, msgDescriptor);
         return result;
     }
 
@@ -187,25 +185,22 @@ class MetadataAssembler {
             final FieldDescriptorProto fieldDescriptor = fieldAndType.fieldDescriptor;
 
             log().trace("        - Analyzing the field {}", fieldDescriptor.getName());
-
             if (isMap(fieldDescriptor)) {
                 log().trace("        - It is a Map.");
+
                 final FieldDescriptorProto keyDescriptor = fieldAndType.fieldType.getField(0);
                 addToDeque(deque, keyDescriptor);
-
                 final FieldDescriptorProto valueDescriptor = fieldAndType.fieldType.getField(1);
                 addToDeque(deque, valueDescriptor);
-
             } else {
                 final String fieldTypeName = trimTypeName(fieldDescriptor);
                 if(!processedTypeNames.contains(fieldTypeName)) {
                     final DescriptorProto type = allMessageDescriptors.get(fieldTypeName);
+                    log().trace("        - It is not map. Adding {} to results.", type);
+
                     result.add(type);
                     processedTypeNames.add(fieldTypeName);
-
                     addMembersToDeque(deque, type);
-
-                    log().trace("        - It is not map. Adding {} to results.", type);
                 }
             }
         }
@@ -222,7 +217,6 @@ class MetadataAssembler {
         final List<FieldDescriptorProto> fieldList = msgDescriptor.getFieldList();
         int nestedTypeIndex = 0;
         for (FieldDescriptorProto fieldDescriptor : fieldList) {
-
             if (!isMessage(fieldDescriptor)) {
                 continue;
             }
@@ -236,9 +230,7 @@ class MetadataAssembler {
                     final String typeName = trimTypeName(fieldDescriptor);
                     fieldType = allMessageDescriptors.get(typeName);
                 }
-
                 final FieldAndType wrapper = new FieldAndType(fieldDescriptor, fieldType);
-
                 deque.add(wrapper);
             } catch (RuntimeException e) {
                 log().error("Cannot process the field {} of message descriptor {}",
@@ -272,8 +264,8 @@ class MetadataAssembler {
         final Set<FileDescriptorProto> result = newHashSet();
         final Collection<FileDescriptorProto> allDescriptors =
                 DescriptorSetUtil.getProtoFileDescriptors(descFilePath);
-        for (FileDescriptorProto fileDescriptor : allDescriptors) {
 
+        for (FileDescriptorProto fileDescriptor : allDescriptors) {
             cacheAllMessageDescriptors(fileDescriptor);
             cacheFileDescriptors(fileDescriptor);
             messageTypeCache.cacheTypes(fileDescriptor);
