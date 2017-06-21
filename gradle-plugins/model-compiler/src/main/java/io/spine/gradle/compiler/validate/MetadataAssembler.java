@@ -104,8 +104,7 @@ class MetadataAssembler {
     }
 
     @SuppressWarnings("MethodWithMultipleLoops")    // It's fine, as for the utility plugin.
-    private Set<VBMetadata> obtainFileMetadata(
-            Iterable<FileDescriptorProto> fileDescriptors) {
+    private Set<VBMetadata> obtainFileMetadata(Iterable<FileDescriptorProto> fileDescriptors) {
         log().trace("Obtaining the file-level metadata for the validating builders.");
         final Set<VBMetadata> result = newHashSet();
         for (FileDescriptorProto fileDescriptor : fileDescriptors) {
@@ -123,8 +122,7 @@ class MetadataAssembler {
     }
 
     @SuppressWarnings("MethodWithMultipleLoops")    // It's fine, as for the utility plugin.
-    private Set<VBMetadata> obtainFieldMetadata(
-            Iterable<VBMetadata> metadataSet) {
+    private Set<VBMetadata> obtainFieldMetadata(Iterable<VBMetadata> metadataSet) {
         log().trace("Obtaining the metadata for the validating builders, " +
                             "which will be generated for the Message fields.");
         final Set<VBMetadata> result = newHashSet();
@@ -156,8 +154,7 @@ class MetadataAssembler {
         return result;
     }
 
-    private Set<VBMetadata> constructMessageFieldMetadata(
-            Iterable<DescriptorProto> descriptors) {
+    private Set<VBMetadata> constructMessageFieldMetadata(Iterable<DescriptorProto> descriptors) {
         final Set<VBMetadata> result = newHashSet();
         for (DescriptorProto descriptorMsg : descriptors) {
             if (isNotProtoLangMessage.apply(descriptorMsg)) {
@@ -252,8 +249,7 @@ class MetadataAssembler {
         }
     }
 
-    private void addToDeque(Deque<FieldAndType> deque,
-                            FieldDescriptorProto fieldDescriptor) {
+    private void addToDeque(Deque<FieldAndType> deque, FieldDescriptorProto fieldDescriptor) {
 
         if (!isMessage(fieldDescriptor)) {
             return;
