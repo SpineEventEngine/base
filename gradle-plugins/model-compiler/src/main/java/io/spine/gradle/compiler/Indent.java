@@ -50,8 +50,8 @@ public class Indent {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Indent indent1 = (Indent) o;
-        return indent == indent1.indent;
+        Indent other = (Indent) o;
+        return indent == other.indent;
     }
 
     @Override
