@@ -1,0 +1,62 @@
+// Copyright 2017, TeamDev Ltd. All rights reserved.
+//
+// Redistribution and use in source and/or binary forms, with or without
+// modification, must retain the above copyright notice and the following
+// disclaimer.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+syntax = "proto3";
+
+package spine.sample.failures;
+
+option java_package="io.spine.sample.failures";
+option java_multiple_files = false;
+// Do not specify java_outer_classname option as we're not generating multiple Java classes for failures.
+option java_generate_equals_and_hash = true;
+
+import public "spine/sample/failures/deps/deps.proto";
+import "google/protobuf/any.proto";
+
+message Failure1 {
+    spine.sample.failures.deps.Failure1Dep id = 1;
+}
+
+message Failure2 {
+    spine.sample.failures.deps.Failure2DepEnum id = 1;
+}
+
+message Failure3 {
+    string id_string = 1;
+    Failure3Inner innerMessage = 2;
+
+    message Failure3Inner {
+        string id = 1;
+    }
+}
+
+message Failure4 {
+    message Failure4Inner {
+        string id = 1;
+    }
+
+    enum Failure4InnerEnum {
+        OK = 0;
+    }
+
+    string id = 1;
+    google.protobuf.Any any_id = 2;
+    bool boolean_id = 3;
+    Failure4Inner inner_id = 4;
+    Failure4InnerEnum inner_enum_id = 5;
+}
