@@ -26,6 +26,7 @@ import org.gradle.internal.impldep.org.apache.commons.io.IOUtils;
 import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.BuildTask;
 import org.gradle.testkit.runner.GradleRunner;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -36,12 +37,15 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static java.lang.String.format;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -53,14 +57,21 @@ import static io.spine.tools.codestyle.Given.debugOption;
 import static io.spine.tools.codestyle.Given.sourceFolder;
 import static io.spine.tools.codestyle.Given.testFile;
 
+/**
+ * @author Alexander Aleksandrov
+ */
 public class JavadocLinkCheckerPluginShould {
     private static final String WRONG_LINK_FORMAT_MSG = "Wrong link format found";
     private static final String CHECK_JAVADOC_LINK = TaskName.CHECK_FQN.getValue();
     private static final String CHECK_JAVADOC_LOG = ":checkJavadocLink";
     private static final int THRESHOLD = 2;
+    private static final Pattern THRESHOLD_VALUE = Pattern.compile("thresholdValue", Pattern.LITERAL);
+    private static final Pattern REPORT_TYPE_VALUE = Pattern.compile("reportTypeValue", Pattern.LITERAL);
+
     private String resourceFolder = "";
 
     @Rule
+    @SuppressWarnings("PublicField")    // JUnit rules should be `public`.
     public final TemporaryFolder testProjectDir = new TemporaryFolder();
 
     public void setUpTestProject(int threshold, ReportType reportType) throws IOException {
@@ -125,7 +136,7 @@ public class JavadocLinkCheckerPluginShould {
 
     @Test
     public void warn_by_default_about_wrong_link_formats() throws IOException {
-        setUpTestProject(2, ReportType.WARN);
+        setUpTestProject(THRESHOLD, ReportType.WARN);
         final Path testSources = testProjectDir.getRoot()
                                                .toPath()
                                                .resolve(sourceFolder());
@@ -168,8 +179,10 @@ public class JavadocLinkCheckerPluginShould {
         final String reportTypeValue = format("\"%s\"", reportType.getValue());
 
         final String writerContent = writer.toString();
-        String result = writerContent.replace("thresholdValue", thresholdValue);
-        result = result.replace("reportTypeValue", reportTypeValue);
+        String result = THRESHOLD_VALUE.matcher(writerContent)
+                               .replaceAll(Matcher.quoteReplacement(thresholdValue));
+        result = REPORT_TYPE_VALUE.matcher(result)
+                        .replaceAll(Matcher.quoteReplacement(reportTypeValue));
 
         final InputStream stream = new ByteArrayInputStream(result.getBytes(UTF_8));
         return stream;

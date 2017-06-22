@@ -25,6 +25,9 @@ import io.spine.tools.codestyle.CodeStyleViolation;
 
 import static org.junit.Assert.assertEquals;
 
+/**
+ * @author Alexander Aleksandrov
+ */
 public class InvalidFqnUsageShould {
 
     public static final String expectedLink = "invalidFqnLink";

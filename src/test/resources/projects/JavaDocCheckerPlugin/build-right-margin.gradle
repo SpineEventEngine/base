@@ -10,5 +10,4 @@ codestyleChecker {
     rightMarginWrappingChecker {
         maxTextWidth = thresholdValue
     }
-
 }

@@ -35,6 +35,9 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
+/**
+ * @author Alexander Aleksandrov
+ */
 public class InvalidFqnUsageValidatorShould {
 
     private InvalidFqnUsageValidator validator;
@@ -57,7 +60,7 @@ public class InvalidFqnUsageValidatorShould {
     @Test
     public void check_only_files_with_java_extension() {
         InvalidFqnUsageValidator mockedObject = mock(InvalidFqnUsageValidator.class);
-        final Path path = getPath(".hiden_file");
+        final Path path = getPath(".hidden_file");
         final List<String> list = new ArrayList<>();
         mockedObject.validate(path);
         verify(mockedObject).validate(path);
@@ -95,10 +98,10 @@ public class InvalidFqnUsageValidatorShould {
         return configuration;
     }
 
-    private Path getPath (String fileName){
+    private Path getPath(String fileName) {
         final ClassLoader classLoader = getClass().getClassLoader();
         final String pathname = classLoader.getResource(fileName)
-                                        .getFile();
+                                           .getFile();
         final File file = new File(pathname);
         final Path path = Paths.get(file.getAbsolutePath());
         return path;

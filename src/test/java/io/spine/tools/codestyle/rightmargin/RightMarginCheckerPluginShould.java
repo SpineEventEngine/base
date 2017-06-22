@@ -51,6 +51,9 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+/**
+ * @author Alexander Aleksandrov
+ */
 public class RightMarginCheckerPluginShould {
     private static final String LONG_LINE_MSG = "Right margin trespassing found";
     private static final String CHECK_RIGHT_MARGIN_WRAPPING = TaskName.CHECK_RIGHT_MARGIN_WRAPPING.getValue();
@@ -111,7 +114,6 @@ public class RightMarginCheckerPluginShould {
         configuration.setReportType("warn");
         RightMarginValidator validator = new RightMarginValidator(configuration);
         validator.validate(path);
-
     }
 
     private static List<String> extractTasks(BuildResult buildResult) {
