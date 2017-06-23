@@ -33,8 +33,7 @@ dependencies {
     compile group: 'com.google.protobuf', name: 'protobuf-java', version: protobufVersion
     compile group: 'com.google.protobuf', name: 'protobuf-java-util', version: protobufVersion
 
-    //TODO:6/20/17:alex.tymchenko: Switch the dependency from `core` to `base` instead.
-    compile (group: 'io.spine', name: 'spine-client-core', version: spineVersion) {
+    compile (group: 'io.spine', name: 'spine-base', version: spineVersion) {
         exclude(group: 'com.google.protobuf')
     }
 
@@ -43,7 +42,7 @@ dependencies {
     // to make their annotation more convenient.
     compile group: 'org.jboss.forge.roaster', name: 'roaster-api', version: roasterVersion
     compile group: 'org.jboss.forge.roaster', name: 'roaster-jdt', version: roasterVersion
-    testCompile group: 'io.spine', name: 'spine-testutil-core', version: spineVersion
+    testCompile group: 'io.spine', name: 'spine-testutil-base', version: spineVersion
     testCompile group: 'com.google.guava', name: 'guava-testlib', version: guavaVersion
     testCompile gradleTestKit()
 

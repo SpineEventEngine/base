@@ -37,7 +37,8 @@ import static java.util.Collections.singletonList;
  *
  * @author Alex Tymchenko
  */
-@SuppressWarnings("PublicField")    // as this is a Gradle extension.
+@SuppressWarnings({"PublicField", "ClassWithTooManyMethods", "WeakerAccess"})
+// as this is a Gradle extension.
 public class Extension {
 
     private static final String DEFAULT_GEN_ROOT_DIR = "/generated";
@@ -46,14 +47,14 @@ public class Extension {
     private static final String DEFAULT_MAIN_GEN_RES_DIR = DEFAULT_GEN_ROOT_DIR + "/main/resources";
     private static final String DEFAULT_MAIN_GEN_DIR = DEFAULT_GEN_ROOT_DIR + "/main/java";
     private static final String DEFAULT_MAIN_GEN_GRPC_DIR = DEFAULT_GEN_ROOT_DIR + "/main/grpc";
-    private static final String DEFAULT_MAIN_GEN_FAILURES_DIR = DEFAULT_GEN_ROOT_DIR + "/main/spine";
+    private static final String DEFAULT_MAIN_GEN_SPINE_DIR = DEFAULT_GEN_ROOT_DIR + "/main/spine";
     private static final String DEFAULT_MAIN_DESCRIPTORS_PATH = "/build/descriptors/main.desc";
 
     private static final String DEFAULT_TEST_PROTO_SRC_DIR = "/src/test/proto";
     private static final String DEFAULT_TEST_GEN_RES_DIR = DEFAULT_GEN_ROOT_DIR + "/test/resources";
     private static final String DEFAULT_TEST_GEN_DIR = DEFAULT_GEN_ROOT_DIR + "/test/java";
     private static final String DEFAULT_TEST_GEN_GRPC_DIR = DEFAULT_GEN_ROOT_DIR + "/test/grpc";
-    private static final String DEFAULT_TEST_GEN_FAILURES_DIR = DEFAULT_GEN_ROOT_DIR + "/test/spine";
+    private static final String DEFAULT_TEST_GEN_SPINE_DIR = DEFAULT_GEN_ROOT_DIR + "/test/spine";
     private static final String DEFAULT_TEST_DESCRIPTORS_PATH = "/build/descriptors/test.desc";
 
     /**
@@ -121,14 +122,14 @@ public class Extension {
     public String targetTestGenFailuresRootDir;
 
     /**
-     * The absolute path to the main target generated validators root directory.
+     * The absolute path to the main target generated validating builders root directory.
      */
-    public String targetGenValidatorsRootDir;
+    public String targetGenVBuildersRootDir;
 
     /**
-     * The absolute path to the test target generated validators root directory.
+     * The absolute path to the test target generated generated validating builders root directory.
      */
-    public String targetTestGenValidatorsRootDir;
+    public String targetTestGenVBuildersRootDir;
 
     /**
      * The absolute path to directory to delete.
@@ -163,143 +164,79 @@ public class Extension {
     public List<String> dirsToClean = new LinkedList<>();
 
     public static String getMainProtoSrcDir(Project project) {
-        final String path = spineProtobuf(project).mainProtoSrcDir;
-        if (isNullOrEmpty(path)) {
-            return project.getProjectDir()
-                          .getAbsolutePath() + DEFAULT_MAIN_PROTO_SRC_DIR;
-        } else {
-            return path;
-        }
+        return pathOrDefault(spineProtobuf(project).mainProtoSrcDir,
+                             root(project) + DEFAULT_MAIN_PROTO_SRC_DIR);
     }
 
     public static String getMainTargetGenResourcesDir(Project project) {
-        final String path = spineProtobuf(project).mainTargetGenResourcesDir;
-        if (isNullOrEmpty(path)) {
-            return project.getProjectDir()
-                          .getAbsolutePath() + DEFAULT_MAIN_GEN_RES_DIR;
-        } else {
-            return path;
-        }
+        return pathOrDefault(spineProtobuf(project).mainTargetGenResourcesDir,
+                             root(project) + DEFAULT_MAIN_GEN_RES_DIR);
     }
 
     public static String getMainGenGrpcDir(Project project) {
-        final String path = spineProtobuf(project).mainGenGrpcDir;
-        if (isNullOrEmpty(path)) {
-            return project.getProjectDir()
-                          .getAbsolutePath() + DEFAULT_MAIN_GEN_GRPC_DIR;
-        } else {
-            return path;
-        }
+        return pathOrDefault(spineProtobuf(project).mainGenGrpcDir,
+                             root(project) + DEFAULT_MAIN_GEN_GRPC_DIR);
     }
 
     public static String getMainGenProtoDir(Project project) {
-        final String path = spineProtobuf(project).mainGenProtoDir;
-        if (isNullOrEmpty(path)) {
-            return project.getProjectDir()
-                          .getAbsolutePath() + DEFAULT_MAIN_GEN_DIR;
-        } else {
-            return path;
-        }
+        return pathOrDefault(spineProtobuf(project).mainGenProtoDir,
+                             root(project) + DEFAULT_MAIN_GEN_DIR);
     }
 
     public static String getTestTargetGenResourcesDir(Project project) {
-        final String path = spineProtobuf(project).testTargetGenResourcesDir;
-        if (isNullOrEmpty(path)) {
-            return project.getProjectDir()
-                          .getAbsolutePath() + DEFAULT_TEST_GEN_RES_DIR;
-        } else {
-            return path;
-        }
+        return pathOrDefault(spineProtobuf(project).testTargetGenResourcesDir,
+                             root(project) + DEFAULT_TEST_GEN_RES_DIR);
     }
 
     public static String getTestProtoSrcDir(Project project) {
-        final String path = spineProtobuf(project).testProtoSrcDir;
-        if (isNullOrEmpty(path)) {
-            return project.getProjectDir()
-                          .getAbsolutePath() + DEFAULT_TEST_PROTO_SRC_DIR;
-        } else {
-            return path;
-        }
+        return pathOrDefault(spineProtobuf(project).testProtoSrcDir,
+                             root(project) + DEFAULT_TEST_PROTO_SRC_DIR);
     }
 
     public static String getTestGenGrpcDir(Project project) {
-        final String path = spineProtobuf(project).testGenGrpcDir;
-        if (isNullOrEmpty(path)) {
-            return project.getProjectDir()
-                          .getAbsolutePath() + DEFAULT_TEST_GEN_GRPC_DIR;
-        } else {
-            return path;
-        }
+        return pathOrDefault(spineProtobuf(project).testGenGrpcDir,
+                             root(project) + DEFAULT_TEST_GEN_GRPC_DIR);
     }
 
     public static String getTestGenProtoDir(Project project) {
-        final String path = spineProtobuf(project).testGenProtoDir;
-        if (isNullOrEmpty(path)) {
-            return project.getProjectDir()
-                          .getAbsolutePath() + DEFAULT_TEST_GEN_DIR;
-        } else {
-            return path;
-        }
+        return pathOrDefault(spineProtobuf(project).testGenProtoDir,
+                             root(project) + DEFAULT_TEST_GEN_DIR);
     }
 
     public static String getMainDescriptorSetPath(Project project) {
-        final String path = spineProtobuf(project).mainDescriptorSetPath;
-        if (isNullOrEmpty(path)) {
-            return project.getProjectDir()
-                          .getAbsolutePath() + DEFAULT_MAIN_DESCRIPTORS_PATH;
-        } else {
-            return path;
-        }
+        return pathOrDefault(spineProtobuf(project).mainDescriptorSetPath,
+                             root(project) + DEFAULT_MAIN_DESCRIPTORS_PATH);
     }
 
     public static String getTestDescriptorSetPath(Project project) {
-        final String path = spineProtobuf(project).testDescriptorSetPath;
-        if (isNullOrEmpty(path)) {
-            return project.getProjectDir()
-                          .getAbsolutePath() + DEFAULT_TEST_DESCRIPTORS_PATH;
-        } else {
-            return path;
-        }
+        return pathOrDefault(spineProtobuf(project).testDescriptorSetPath,
+                             root(project) + DEFAULT_TEST_DESCRIPTORS_PATH);
     }
 
     public static String getTargetGenFailuresRootDir(Project project) {
-        final String path = spineProtobuf(project).targetGenFailuresRootDir;
-        if (isNullOrEmpty(path)) {
-            return project.getProjectDir()
-                          .getAbsolutePath() + DEFAULT_MAIN_GEN_FAILURES_DIR;
-        } else {
-            return path;
-        }
+        return pathOrDefault(spineProtobuf(project).targetGenFailuresRootDir,
+                             root(project) + DEFAULT_MAIN_GEN_SPINE_DIR);
     }
 
     public static String getTargetTestGenFailuresRootDir(Project project) {
-        final String path = spineProtobuf(project).targetTestGenFailuresRootDir;
-        if (isNullOrEmpty(path)) {
-            return project.getProjectDir()
-                          .getAbsolutePath() + DEFAULT_TEST_GEN_FAILURES_DIR;
-        } else {
-            return path;
-        }
+        return pathOrDefault(spineProtobuf(project).targetTestGenFailuresRootDir,
+                             root(project) + DEFAULT_TEST_GEN_SPINE_DIR);
     }
 
     public static String getTargetGenValidatorsRootDir(Project project) {
-        final String path = spineProtobuf(project).targetGenValidatorsRootDir;
-        if (isNullOrEmpty(path)) {
-            return project.getProjectDir()
-                          .getAbsolutePath() + DEFAULT_MAIN_GEN_DIR;
-        } else {
-            return path;
-        }
+        return pathOrDefault(spineProtobuf(project).targetGenVBuildersRootDir,
+                             root(project) + DEFAULT_MAIN_GEN_SPINE_DIR);
     }
 
     public static String getTargetTestGenValidatorsRootDir(Project project) {
-        final String path = spineProtobuf(project).targetTestGenValidatorsRootDir;
-        if (isNullOrEmpty(path)) {
-            return project.getProjectDir()
-                          .getAbsolutePath() + DEFAULT_TEST_GEN_DIR;
-        } else {
-            return path;
-        }
+        return pathOrDefault(spineProtobuf(project).targetTestGenVBuildersRootDir,
+                             root(project) + DEFAULT_TEST_GEN_SPINE_DIR);
+    }
+
+    private static String pathOrDefault(String path, String defaultValue) {
+        return isNullOrEmpty(path)
+                ? defaultValue
+                : path;
     }
 
     public static boolean isGenerateValidatingBuilders(Project project) {
@@ -354,10 +291,14 @@ public class Extension {
             log().debug("Found directory to clean: {}", singleDir);
             return singletonList(singleDir);
         }
-        final String defaultValue = project.getProjectDir()
-                                           .getAbsolutePath() + DEFAULT_GEN_ROOT_DIR;
+        final String defaultValue = root(project) + DEFAULT_GEN_ROOT_DIR;
         log().debug("Default directory to clean: {}", defaultValue);
         return singletonList(defaultValue);
+    }
+
+    private static String root(Project project) {
+        return project.getProjectDir()
+                      .getAbsolutePath();
     }
 
     private static Extension spineProtobuf(Project project) {
