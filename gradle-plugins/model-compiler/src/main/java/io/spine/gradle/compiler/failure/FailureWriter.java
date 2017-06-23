@@ -26,7 +26,7 @@ import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
-import io.spine.base.FailureThrowable;
+import io.spine.base.ThrowableMessage;
 import io.spine.gradle.compiler.message.fieldtype.FieldType;
 import io.spine.gradle.compiler.message.fieldtype.FieldTypeFactory;
 import io.spine.gradle.compiler.util.GenerationUtils;
@@ -92,10 +92,10 @@ public class FailureWriter {
                                              .addJavadoc(javadocGenerator.generateClassJavadoc())
                                              .addAnnotation(GenerationUtils.constructGeneratedAnnotation())
                                              .addModifiers(PUBLIC)
-                                             .superclass(FailureThrowable.class)
+                                             .superclass(ThrowableMessage.class)
                                              .addField(constructSerialVersionUID())
                                              .addMethod(constructConstructor())
-                                             .addMethod(constructGetFailureMessage())
+                                             .addMethod(constructGetMessageThrown())
                                              .build();
             final JavaFile javaFile = JavaFile.builder(failureMetadata.getJavaPackage(), failure)
                                               .skipJavaLangImports(true)
@@ -147,16 +147,16 @@ public class FailureWriter {
         return superStatement.toString();
     }
 
-    private MethodSpec constructGetFailureMessage() {
-        log().trace("Constructing getFailureMessage()");
+    private MethodSpec constructGetMessageThrown() {
+        log().trace("Constructing getMessageThrown()");
 
         final TypeName returnTypeName = ClassName.get(failureMetadata.getOuterClassName(),
                                                       failureMetadata.getClassName());
-        return MethodSpec.methodBuilder("getFailureMessage")
+        return MethodSpec.methodBuilder("getMessageThrown")
                          .addAnnotation(Override.class)
                          .addModifiers(PUBLIC)
                          .returns(returnTypeName)
-                         .addStatement("return (" + returnTypeName + ") super.getFailureMessage()")
+                         .addStatement("return (" + returnTypeName + ") super.getMessageThrown()")
                          .build();
     }
 
