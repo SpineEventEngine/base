@@ -20,7 +20,6 @@
 
 package io.spine.gradle.compiler.validate;
 
-import com.google.common.io.Files;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
@@ -36,6 +35,7 @@ import org.slf4j.LoggerFactory;
 import javax.lang.model.element.Modifier;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 
 import static io.spine.gradle.compiler.util.GenerationUtils.constructGeneratedAnnotation;
 import static io.spine.gradle.compiler.util.JavaSources.getBuilderClassName;
@@ -114,7 +114,7 @@ class ValidatingBuilderWriter {
     private static void writeClass(File rootFolder, TypeSpec validator,
                                    String javaPackage, Indent indent) {
         try {
-            Files.touch(rootFolder);
+            Files.createDirectories(rootFolder.toPath());
             JavaFile.builder(javaPackage, validator)
                     .skipJavaLangImports(true)
                     .indent(indent.toString())
