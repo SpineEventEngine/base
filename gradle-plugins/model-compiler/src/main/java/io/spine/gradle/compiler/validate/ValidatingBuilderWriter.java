@@ -80,12 +80,13 @@ class ValidatingBuilderWriter {
 
         final File rootDirectory = new File(targetDir);
         final TypeSpec.Builder classBuilder = TypeSpec.classBuilder(javaClass);
-        setupClassContract(classBuilder,
-                           messageClassName,
-                           messageBuilderClassName,
-                           methodsAssembler.createMethods());
-        final TypeSpec javaClassToWrite = classBuilder.addAnnotation(constructGeneratedAnnotation())
-                                                      .build();
+        final TypeSpec javaClassToWrite =
+                setupClassContract(classBuilder,
+                                   messageClassName,
+                                   messageBuilderClassName,
+                                   methodsAssembler.createMethods())
+                        .addAnnotation(constructGeneratedAnnotation())
+                        .build();
 
         log().debug("Writing the {} class under the {} package",
                     metadata.getJavaClass(), metadata.getJavaPackage());
