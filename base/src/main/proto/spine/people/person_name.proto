@@ -17,30 +17,36 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
+syntax = "proto3";
 
-/**
- *  The versions of the libraries used.
- *
- *  This file is used in both module `build.gradle` scripts and in the integration tests,
- *  as we want to manage the versions in a single source.
- */
+package spine.people;
 
-def final SPINE_VERSION = '0.9.29-SNAPSHOT'
+import "spine/options.proto";
 
-ext {
-    spineVersion = SPINE_VERSION
+option (type_url_prefix) = "type.spine.io";
+option java_generate_equals_and_hash = true;
+option java_multiple_files = true;
+option java_outer_classname = "PersonNameProto";
+option java_package = "io.spine.people";
 
-    guavaVersion = '20.0'
-    findBugsVersion = '3.0.0'
-    protobufVersion = '3.3.0'
-    gRpcVersion = '1.4.0'
-    slf4JVersion = '1.7.21'
-    jUnitVersion = '4.12'
-    mockitoVersion = '2.7.22'
-    hamcrestVersion = '1.3'
+// A name of a person.
+message PersonName {
 
-    // We use Spine tools in the build process.
-    spineToolsVersion = '0.9.25-SNAPSHOT'
+    // A minimum requirement to refer to a person.
+    option (required_field) = "given_name|honorific_prefix & family_name";
 
-    protobufGradlePluginVerison = '0.8.1'
+    // The honorific prefix (such as "Dr." or "Prof.") for this person.
+    string honorific_prefix = 1;
+
+    // The given (first) name of the person.
+    string given_name = 2;
+
+    // The middle name or the patronymic of this person.
+    string middle_name = 3;
+
+    // The family (last) name of the person.
+    string family_name = 4;
+
+    // The honorific suffixes (such as "Jr.") for this person.
+    string honorific_suffix = 5;
 }

@@ -17,30 +17,28 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
+syntax = "proto3";
 
-/**
- *  The versions of the libraries used.
- *
- *  This file is used in both module `build.gradle` scripts and in the integration tests,
- *  as we want to manage the versions in a single source.
- */
+package spine.net;
 
-def final SPINE_VERSION = '0.9.29-SNAPSHOT'
+import "spine/options.proto";
 
-ext {
-    spineVersion = SPINE_VERSION
+option (type_url_prefix) = "type.spine.io";
+option java_generate_equals_and_hash = true;
+option java_multiple_files = true;
+option java_outer_classname = "EmailAddressProto";
+option java_package = "io.spine.net";
 
-    guavaVersion = '20.0'
-    findBugsVersion = '3.0.0'
-    protobufVersion = '3.3.0'
-    gRpcVersion = '1.4.0'
-    slf4JVersion = '1.7.21'
-    jUnitVersion = '4.12'
-    mockitoVersion = '2.7.22'
-    hamcrestVersion = '1.3'
+// An email address.
+message EmailAddress {
 
-    // We use Spine tools in the build process.
-    spineToolsVersion = '0.9.25-SNAPSHOT'
+    //TODO:2016-02-20:alexander.yevsyukov: Make it structured, to reflect http://www.ietf.org/rfc/rfc822.txt
+    // A minimum it should have fields like `user`, `domain`, `personal`, `suffix` - the part coming after `+`.
+    // See also InternetAddress from JavaMail: http://docs.oracle.com/javaee/6/api/javax/mail/internet/InternetAddress.html
+    // See how it's done for Url in url.proto and related utilities.
 
-    protobufGradlePluginVerison = '0.8.1'
+    // String value of the address.
+    //
+    // No validation is performed for the passed value.
+    string value = 1;
 }

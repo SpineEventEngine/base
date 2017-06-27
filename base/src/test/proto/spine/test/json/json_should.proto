@@ -17,30 +17,19 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
+syntax = "proto3";
 
-/**
- *  The versions of the libraries used.
- *
- *  This file is used in both module `build.gradle` scripts and in the integration tests,
- *  as we want to manage the versions in a single source.
- */
+package spine.test.types;
 
-def final SPINE_VERSION = '0.9.29-SNAPSHOT'
+option (type_url_prefix) = "type.spine.io";
+option java_package="io.spine.json.given";
+option java_multiple_files = true;
 
-ext {
-    spineVersion = SPINE_VERSION
+import "spine/options.proto";
 
-    guavaVersion = '20.0'
-    findBugsVersion = '3.0.0'
-    protobufVersion = '3.3.0'
-    gRpcVersion = '1.4.0'
-    slf4JVersion = '1.7.21'
-    jUnitVersion = '4.12'
-    mockitoVersion = '2.7.22'
-    hamcrestVersion = '1.3'
-
-    // We use Spine tools in the build process.
-    spineToolsVersion = '0.9.25-SNAPSHOT'
-
-    protobufGradlePluginVerison = '0.8.1'
+// A simple binary tree node for testing Json output.
+message Node {
+    string name = 1;
+    Node left = 2;
+    Node right = 3;
 }
