@@ -26,6 +26,7 @@ group = 'io.spine.tools'
 
 dependencies {
     compile project(':plugin-base')
+    compile project(':base')
 
     compile group: 'com.squareup', name: 'javapoet', version: '1.8.0'
     compile group: 'com.google.template', name: 'soy', version: '2017-02-01'
@@ -33,16 +34,14 @@ dependencies {
     compile group: 'com.google.protobuf', name: 'protobuf-java', version: protobufVersion
     compile group: 'com.google.protobuf', name: 'protobuf-java-util', version: protobufVersion
 
-    compile (group: 'io.spine', name: 'spine-base', version: spineVersion) {
-        exclude(group: 'com.google.protobuf')
-    }
 
     // A library for parsing Java sources.
     // Used for parsing Java sources generated from Protobuf files
     // to make their annotation more convenient.
     compile group: 'org.jboss.forge.roaster', name: 'roaster-api', version: roasterVersion
     compile group: 'org.jboss.forge.roaster', name: 'roaster-jdt', version: roasterVersion
-    testCompile group: 'io.spine', name: 'spine-testutil-base', version: spineVersion
+
+    compile project(':testutil-base')
     testCompile group: 'com.google.guava', name: 'guava-testlib', version: guavaVersion
     testCompile gradleTestKit()
 
@@ -56,4 +55,6 @@ dependencies {
 test {
     dependsOn publishToMavenLocal
     dependsOn project.project(':plugin-base').publishToMavenLocal
+    dependsOn project.project(':base').publishToMavenLocal
+    dependsOn project.project(':testutil-base').publishToMavenLocal
 }
