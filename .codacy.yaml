@@ -1,4 +1,7 @@
 ---
 exclude_paths:
+  - "base/src/main/java/io/spine/net/Patterns.java"
+  - "base/src/test/**/*.*"
+  - "testutil-base/src/test/**/*.*"
   - "gradle-plugins/plugin-base/src/test/**/*.*"
   - "gradle-plugins/model-compiler/src/test/**/*.*"
