@@ -236,8 +236,8 @@ public class IdentifierShould {
         assertTrue(Type.MESSAGE.matchMessage(Timestamp.getDefaultInstance()));
 
         assertFalse(Type.MESSAGE.matchMessage(StringValue.getDefaultInstance()));
-        assertFalse(Type.MESSAGE.matchMessage(UInt32Value.getDefaultInstance()));
-        assertFalse(Type.MESSAGE.matchMessage(UInt64Value.getDefaultInstance()));
+        assertFalse(Type.MESSAGE.matchMessage(Int32Value.getDefaultInstance()));
+        assertFalse(Type.MESSAGE.matchMessage(Int64Value.getDefaultInstance()));
     }
 
     @Test
