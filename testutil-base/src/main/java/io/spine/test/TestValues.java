@@ -21,11 +21,11 @@
 package io.spine.test;
 
 import com.google.protobuf.StringValue;
-import io.spine.protobuf.Wrapper;
 
 import java.util.concurrent.ThreadLocalRandom;
 
 import static io.spine.Identifier.newUuid;
+import static io.spine.protobuf.TypeConverter.toMessage;
 
 /**
  * Utility factories for test values.
@@ -45,7 +45,7 @@ public class TestValues {
      * but do not want to resort to {@code Timestamp} via {@code Timestamps#getCurrentTime()}.
      */
     public static StringValue newUuidValue() {
-        return Wrapper.forString(newUuid());
+        return toMessage(newUuid());
     }
 
     /**

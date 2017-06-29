@@ -32,11 +32,11 @@ import com.google.protobuf.StringValue;
 import com.google.protobuf.Timestamp;
 import com.google.protobuf.UInt32Value;
 import io.spine.option.EntityOption;
-import io.spine.protobuf.Wrapper;
 import io.spine.test.Tests;
 import org.junit.Test;
 
 import static io.spine.Identifier.newUuid;
+import static io.spine.protobuf.TypeConverter.toMessage;
 import static io.spine.type.TypeUrl.composeTypeUrl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -64,7 +64,7 @@ public class TypeUrlShould {
 
     @Test
     public void create_from_message() {
-        final TypeUrl typeUrl = TypeUrl.of(Wrapper.forString(newUuid()));
+        final TypeUrl typeUrl = TypeUrl.of(toMessage(newUuid()));
 
         assertIsStringValueUrl(typeUrl);
     }
