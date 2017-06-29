@@ -21,8 +21,10 @@
 package io.spine.type;
 
 import com.google.common.testing.NullPointerTester;
+import com.google.protobuf.Descriptors;
 import com.google.protobuf.StringValue;
 import com.google.protobuf.UInt64Value;
+import io.spine.option.EntityOption;
 import io.spine.option.IfMissingOption;
 import org.junit.Test;
 
@@ -40,6 +42,8 @@ public class TypeNameShould {
     @Test
     public void pass_the_null_tolerance_check() {
         new NullPointerTester()
+                .setDefault(Descriptors.Descriptor.class, EntityOption.getDefaultInstance()
+                                                                      .getDescriptorForType())
                 .testAllPublicStaticMethods(TypeName.class);
     }
 

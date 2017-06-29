@@ -31,9 +31,9 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.StringValue;
 import com.google.protobuf.Timestamp;
 import com.google.protobuf.UInt32Value;
+import io.spine.option.EntityOption;
 import io.spine.protobuf.Wrapper;
 import io.spine.test.Tests;
-import io.spine.test.types.GivenEnumeration;
 import org.junit.Test;
 
 import static io.spine.Identifier.newUuid;
@@ -113,7 +113,7 @@ public class TypeUrlShould {
 
     @Test
     public void create_by_descriptor_of_spine_msg() {
-        final Descriptors.Descriptor descriptor = io.spine.base.Error.getDescriptor();
+        final Descriptors.Descriptor descriptor = EntityOption.getDescriptor();
         final String expectedUrl = composeTypeUrl(TypeUrl.Prefix.SPINE.value(),
                                                   descriptor.getFullName());
 
@@ -131,7 +131,7 @@ public class TypeUrlShould {
     @Test
     public void create_by_enum_descriptor_of_spine_msg() {
         assertCreatesTypeUrlFromEnum(TypeUrl.Prefix.SPINE.value(),
-                                     GivenEnumeration.getDescriptor());
+                                     EntityOption.Kind.getDescriptor());
     }
 
     private static void assertCreatesTypeUrlFromEnum(String typeUrlPrefix,

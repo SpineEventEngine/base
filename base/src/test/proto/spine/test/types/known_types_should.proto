@@ -19,22 +19,27 @@
 //
 syntax = "proto3";
 
-package spine.test.json;
+package spine.test.types;
 
 option (type_url_prefix) = "type.spine.io";
-option java_package="io.spine.json.given";
+option java_package="io.spine.test.types";
 option java_multiple_files = true;
 
 import "spine/options.proto";
 
-// A simple binary tree node for testing Json output.
-message Node {
-    string name = 1;
-    Node left = 2;
-    Node right = 3;
+// The types declared below are used to test the `KnownTypes#getTypesFromPackage`.
+//
+// See `KnownTypesShould` for the unit test code.
+//
+message TaskId {
+    string value = 1;
 }
 
-// String value wrapped for testing the Json parsing.
-message WrappedString {
+message TaskName {
     string value = 1;
+}
+
+message Task {
+    TaskId id = 1;
+    TaskName name = 2;
 }

@@ -19,29 +19,19 @@
 //
 syntax = "proto3";
 
-package spine.test.types.count;
+package spine.test.failures;
 
 option (type_url_prefix) = "type.spine.io";
-
-// This package us used for test of obtaining all types from a given package.
-// See `KnownTypesShould.return_all_types_under_certain_package()`
-option java_package="io.spine.type.given.count";
-option java_multiple_files = true;
+option (SPI_all) = true;
+option java_package = "io.spine.test.failures";
+// Keep all the failures under the same outer class called `Failures`.
+option java_generate_equals_and_hash = true;
 
 import "spine/options.proto";
 
-message TypeOne {
-    string value = 1;
-}
+// This failure serves as a smoke test of a successful compilation of a generated failure class.
+message ShouldCompileProperly {
 
-message TypeTwo {
-    int32 value = 1;
+    // A mock property.
+    string upon_generation_of_failure_class = 1;
 }
-
-message TypeThree {
-    uint64 value = 1;
-}
-
-// If you want to add more types, please make sure to modify the code of
-// `KnownTypesShould.return_all_types_under_certain_package()` accordingly with new number of types
-// in the package.

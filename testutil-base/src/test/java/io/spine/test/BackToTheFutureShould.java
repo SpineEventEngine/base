@@ -20,13 +20,11 @@
 
 package io.spine.test;
 
-import com.google.protobuf.Timestamp;
 import io.spine.test.TimeTests.BackToTheFuture;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import static io.spine.test.TimeTests.BackToTheFuture.THIRTY_YEARS_IN_HOURS;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -41,7 +39,6 @@ public class BackToTheFutureShould {
     public void setUp() {
        timeProvider = new BackToTheFuture();
     }
-
     @Test
     public void create_with_start_in_the_future() {
         assertTrue(TimeTests.Future.isFuture(timeProvider.getCurrentTime()));
@@ -51,10 +48,10 @@ public class BackToTheFutureShould {
     public void rewind_backward() {
         // Rewind to somewhere around present.
         Assert.assertNotEquals(timeProvider.getCurrentTime(),
-                               timeProvider.backward(THIRTY_YEARS_IN_HOURS));
+                               timeProvider.backward(BackToTheFuture.THIRTY_YEARS_IN_HOURS));
 
         // ... and back to 30 years in the past.
-        timeProvider.backward(THIRTY_YEARS_IN_HOURS);
+        timeProvider.backward(BackToTheFuture.THIRTY_YEARS_IN_HOURS);
 
         assertFalse(TimeTests.Future.isFuture(timeProvider.getCurrentTime()));
     }
@@ -62,12 +59,11 @@ public class BackToTheFutureShould {
     @SuppressWarnings("MagicNumber")
     @Test
     public void rewind_forward() {
-        // Since the provider initializes in the future, rewind to somewhere around present time.
-        timeProvider.backward(THIRTY_YEARS_IN_HOURS);
+        // Rewind to somewhere around present.
+        timeProvider.backward(BackToTheFuture.THIRTY_YEARS_IN_HOURS);
 
-        final Timestamp futureTime = timeProvider.forward(THIRTY_YEARS_IN_HOURS + 24L);
+        timeProvider.forward(BackToTheFuture.THIRTY_YEARS_IN_HOURS + 24L);
 
-        assertTrue(TimeTests.Future.isFuture(futureTime));
         assertTrue(TimeTests.Future.isFuture(timeProvider.getCurrentTime()));
     }
 }

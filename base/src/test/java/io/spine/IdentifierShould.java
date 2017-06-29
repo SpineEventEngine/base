@@ -34,6 +34,7 @@ import io.spine.protobuf.AnyPacker;
 import io.spine.protobuf.Wrapper;
 import io.spine.test.identifiers.NestedMessageId;
 import io.spine.test.identifiers.SeveralFieldsId;
+import io.spine.test.identifiers.TimestampFieldId;
 import org.junit.Test;
 
 import static io.spine.Identifier.EMPTY_ID;
@@ -54,17 +55,10 @@ public class IdentifierShould {
 
     private static final String TEST_ID = "someTestId 1234567890 !@#$%^&()[]{}-+=_";
 
-    @SuppressWarnings({"UnnecessaryBoxing", "ResultOfMethodCallIgnored"})
-    // We want to make the unsupported type obvious.
+    @SuppressWarnings("UnnecessaryBoxing") // We want to make the unsupported type obvious.
     @Test(expected = IllegalArgumentException.class)
     public void reject_objects_of_unsupported_class_passed() {
         Identifier.toString(Boolean.valueOf(true));
-    }
-
-    @Test
-    public void expose_id_suffix_constant() {
-        // Make this constant `used`. It is a part of API, which is used by the `core-java` project.
-        assertFalse(Identifier.ID_PROPERTY_SUFFIX.isEmpty());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -82,7 +76,7 @@ public class IdentifierShould {
     @Test
     public void unpack_passed_Any() {
         final StringValue id = newUuidValue();
-        assertEquals(Identifier.toString(AnyPacker.pack(id)), id.getValue());
+        assertEquals(id.getValue(), Identifier.toString(AnyPacker.pack(id)));
     }
 
     @Test
@@ -108,6 +102,11 @@ public class IdentifierShould {
     @Test
     public void return_EMPTY_ID_if_convert_empty_string_to_string() {
         assertEquals(EMPTY_ID, Identifier.toString(""));
+    }
+
+    @Test
+    public void return_EMPTY_ID_if_result_of_Message_to_string_conversion_is_empty_string() {
+        assertEquals(EMPTY_ID, Identifier.toString(TimestampFieldId.getDefaultInstance()));
     }
 
     @Test

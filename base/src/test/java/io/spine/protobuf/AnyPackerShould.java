@@ -25,7 +25,7 @@ import com.google.protobuf.Any;
 import com.google.protobuf.Message;
 import com.google.protobuf.StringValue;
 import io.spine.test.Tests;
-import io.spine.test.types.TaskId;
+import io.spine.test.protobuf.MessageToPack;
 import io.spine.type.TypeUrl;
 import org.junit.Test;
 
@@ -45,9 +45,9 @@ public class AnyPackerShould {
     private final StringValue googleMsg = Wrapper.forString(newUuid());
 
     /** A message with different type URL. */
-    private final TaskId spineMsg = TaskId.newBuilder()
-                                          .setValue(newUuid())
-                                          .build();
+    private final MessageToPack spineMsg = MessageToPack.newBuilder()
+                                                        .setValue(newUuidValue())
+                                                        .build();
 
     @Test
     public void have_private_constructor() {
@@ -68,7 +68,7 @@ public class AnyPackerShould {
     public void unpack_spine_message_from_Any() {
         final Any any = AnyPacker.pack(spineMsg);
 
-        final TaskId actual = AnyPacker.unpack(any);
+        final MessageToPack actual = AnyPacker.unpack(any);
 
         assertEquals(spineMsg, actual);
     }
