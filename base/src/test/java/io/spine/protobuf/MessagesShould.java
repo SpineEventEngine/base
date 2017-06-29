@@ -22,13 +22,13 @@ package io.spine.protobuf;
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Any;
 import com.google.protobuf.Message;
-import com.google.protobuf.StringValue;
 import com.google.protobuf.Timestamp;
+import io.spine.test.messages.MessageWithStringValue;
 import io.spine.time.Time;
 import org.junit.Test;
 
 import static io.spine.protobuf.AnyPacker.unpack;
-import static io.spine.protobuf.Wrappers.pack;
+import static io.spine.protobuf.TypeConverter.toAny;
 import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -45,7 +45,7 @@ public class MessagesShould {
 
     @Test
     public void return_the_same_any_from_toAny() {
-        final Any any = pack(getClass().getSimpleName());
+        final Any any = toAny(getClass().getSimpleName());
         assertSame(any, AnyPacker.pack(any));
     }
 
@@ -57,9 +57,9 @@ public class MessagesShould {
 
     @Test
     public void return_builder_for_the_message() {
-        final Message.Builder messageBuilder = Messages.builderFor(StringValue.class);
+        final Message.Builder messageBuilder = Messages.builderFor(MessageWithStringValue.class);
         assertNotNull(messageBuilder);
-        assertEquals(StringValue.class, messageBuilder.build().getClass());
+        assertEquals(MessageWithStringValue.class, messageBuilder.build().getClass());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -69,7 +69,7 @@ public class MessagesShould {
 
     @Test
     public void return_true_when_message_is_checked(){
-        assertTrue(Messages.isMessage(StringValue.class));
+        assertTrue(Messages.isMessage(MessageWithStringValue.class));
     }
 
     @Test

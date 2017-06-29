@@ -26,7 +26,7 @@ import com.google.protobuf.Message;
 import com.google.protobuf.StringValue;
 import com.google.protobuf.util.JsonFormat;
 import io.spine.json.given.Node;
-import io.spine.protobuf.Wrapper;
+import io.spine.json.given.WrappedString;
 import io.spine.test.Tests;
 import io.spine.type.KnownTypes;
 import io.spine.type.TypeUrl;
@@ -34,9 +34,11 @@ import org.junit.Test;
 
 import java.util.List;
 
+import static io.spine.Identifier.newUuid;
 import static io.spine.json.Json.fromJson;
 import static io.spine.json.Json.toCompactJson;
 import static io.spine.json.Json.toJson;
+import static io.spine.protobuf.TypeConverter.toMessage;
 import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -74,35 +76,28 @@ public class JsonShould {
 
     @Test
     public void print_to_json() {
-        final StringValue value = Wrapper.forString("print_to_json");
+        final StringValue value = toMessage("print_to_json");
         assertFalse(toJson(value).isEmpty());
     }
 
     @Test
     public void print_to_compact_json() {
-        final Message value = givenMessage();
-        final String result = toCompactJson(value);
+        final String idValue = newUuid();
+        final Node node = Node.newBuilder()
+                              .setName(idValue)
+                              .setRight(Node.getDefaultInstance())
+                              .build();
+        final String result = toCompactJson(node);
         assertFalse(result.isEmpty());
         assertFalse(result.contains(System.lineSeparator()));
     }
 
     @Test
     public void parse_from_json() {
-        final Message msg = givenMessage();
-        final String jsonMessage = toCompactJson(msg);
-
-        final Message parsed = fromJson(jsonMessage, Node.class);
-        assertNotNull(msg);
-        assertEquals(msg, parsed);
-    }
-
-    private Message givenMessage() {
-        return Node.newBuilder()
-                   .setName("Parent")
-                   .setLeft(Node.newBuilder()
-                                .setName("Left"))
-                   .setRight(Node.newBuilder()
-                                 .setName("Right"))
-                   .build();
+        final String idValue = newUuid();
+        final String jsonMessage = String.format("{value:%s}", idValue);
+        final WrappedString parsedValue = fromJson(jsonMessage, WrappedString.class);
+        assertNotNull(parsedValue);
+        assertEquals(idValue, parsedValue.getValue());
     }
 }

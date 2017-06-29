@@ -19,45 +19,19 @@
 //
 syntax = "proto3";
 
-package spine.test.types;
+package spine.test.protobuf;
 
 option (type_url_prefix) = "type.spine.io";
-option java_package="io.spine.test.types";
+option java_package="io.spine.test.protobuf";
 option java_multiple_files = true;
+option java_outer_classname = "AnyPackerShouldProto";
+
+import "google/protobuf/wrappers.proto";
 
 import "spine/options.proto";
 
-// The types declared below are used to test the `KnownTypes#getTypesFromPackage`.
-//
-// See `KnownTypesShould` for the unit test code.
-//
-message TaskId {
-    string value = 1;
-}
+// Only for usage in `AnyPackerShould` class.
 
-message TaskName {
-    string value = 1;
-}
-
-message Task {
-    TaskId id = 1;
-    TaskName name = 2;
-}
-
-// The message for testing obtaining outer class name by inner type descriptor.
-// See KnownTypesShould.java
-message OuterMessage {
-
-    message InnerMessage {
-        string value = 1;
-    }
-
-    InnerMessage inner = 1;
-}
-
-// Test enumeration for known enum types.
-enum GivenEnumeration {
-    ZERO = 0;
-    ONE = 1;
-    TWO = 2;
+message MessageToPack {
+    google.protobuf.StringValue value = 1;
 }

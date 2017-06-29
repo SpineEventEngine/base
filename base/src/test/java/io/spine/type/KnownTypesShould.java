@@ -27,13 +27,12 @@ import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import com.google.protobuf.StringValue;
 import com.google.protobuf.Timestamp;
-import io.spine.base.FieldFilter;
-import io.spine.base.FieldPath;
-import io.spine.test.types.OuterMessage;
+import io.spine.base.Error;
+import io.spine.option.EntityOption;
+import io.spine.option.IfMissingOption;
+import io.spine.test.types.Task;
+import io.spine.test.types.TaskId;
 import io.spine.test.types.TaskName;
-import io.spine.type.given.count.TypeOne;
-import io.spine.type.given.count.TypeThree;
-import io.spine.type.given.count.TypeTwo;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -68,9 +67,9 @@ public class KnownTypesShould {
 
     @Test
     public void return_spine_java_class_names_by_proto_type_urls() {
-        assertHasClassNameByTypeUrlOf(FieldFilter.class);
-        assertHasClassNameByTypeUrlOf(FieldPath.class);
-        assertHasClassNameByTypeUrlOf(io.spine.base.Error.class);
+        assertHasClassNameByTypeUrlOf(EntityOption.class);
+        assertHasClassNameByTypeUrlOf(Error.class);
+        assertHasClassNameByTypeUrlOf(IfMissingOption.class);
     }
 
     @Test
@@ -91,20 +90,20 @@ public class KnownTypesShould {
 
     @Test
     public void return_java_inner_class_name_by_proto_type_url() {
-        final TypeUrl typeUrl = TypeUrl.from(OuterMessage.InnerMessage.getDescriptor());
+        final TypeUrl typeUrl = TypeUrl.from(EntityOption.Kind.getDescriptor());
 
         final ClassName className = KnownTypes.getClassName(typeUrl);
 
-        assertEquals(ClassName.of(OuterMessage.InnerMessage.class), className);
+        assertEquals(ClassName.of(EntityOption.Kind.class), className);
     }
 
     @Test
     public void return_proto_type_url_by_java_class_name() {
-        final ClassName className = ClassName.of(TaskName.class);
+        final ClassName className = ClassName.of(EntityOption.class);
 
         final TypeUrl typeUrl = KnownTypes.getTypeUrl(className);
 
-        assertEquals(TypeUrl.from(TaskName.getDescriptor()), typeUrl);
+        assertEquals(TypeUrl.from(EntityOption.getDescriptor()), typeUrl);
     }
 
     @Test
@@ -118,11 +117,11 @@ public class KnownTypesShould {
 
     @Test
     public void return_all_types_under_certain_package() {
-        final TypeUrl taskId = TypeUrl.from(TypeOne.getDescriptor());
-        final TypeUrl taskName = TypeUrl.from(TypeTwo.getDescriptor());
-        final TypeUrl task = TypeUrl.from(TypeThree.getDescriptor());
+        final TypeUrl taskId = TypeUrl.from(TaskId.getDescriptor());
+        final TypeUrl taskName = TypeUrl.from(TaskName.getDescriptor());
+        final TypeUrl task = TypeUrl.from(Task.getDescriptor());
 
-        final String packageName = "spine.test.types.count";
+        final String packageName = "spine.test.types";
 
         final Collection<TypeUrl> packageTypes = getAllFromPackage(packageName);
         assertSize(3, packageTypes);

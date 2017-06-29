@@ -31,19 +31,15 @@ import com.google.protobuf.UInt32Value;
 import com.google.protobuf.UInt64Value;
 import io.spine.Identifier.Type;
 import io.spine.protobuf.AnyPacker;
-import io.spine.protobuf.Wrapper;
 import io.spine.test.identifiers.NestedMessageId;
 import io.spine.test.identifiers.SeveralFieldsId;
+import io.spine.test.identifiers.TimestampFieldId;
 import org.junit.Test;
 
 import static io.spine.Identifier.EMPTY_ID;
 import static io.spine.Identifier.NULL_ID;
 import static io.spine.Identifier.newUuid;
-import static io.spine.protobuf.Wrapper.forInteger;
-import static io.spine.protobuf.Wrapper.forLong;
-import static io.spine.protobuf.Wrapper.forString;
-import static io.spine.protobuf.Wrapper.forUnsignedInteger;
-import static io.spine.protobuf.Wrapper.forUnsignedLong;
+import static io.spine.protobuf.TypeConverter.toMessage;
 import static io.spine.test.TestValues.newUuidValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -54,17 +50,10 @@ public class IdentifierShould {
 
     private static final String TEST_ID = "someTestId 1234567890 !@#$%^&()[]{}-+=_";
 
-    @SuppressWarnings({"UnnecessaryBoxing", "ResultOfMethodCallIgnored"})
-    // We want to make the unsupported type obvious.
+    @SuppressWarnings("UnnecessaryBoxing") // We want to make the unsupported type obvious.
     @Test(expected = IllegalArgumentException.class)
     public void reject_objects_of_unsupported_class_passed() {
         Identifier.toString(Boolean.valueOf(true));
-    }
-
-    @Test
-    public void expose_id_suffix_constant() {
-        // Make this constant `used`. It is a part of API, which is used by the `core-java` project.
-        assertFalse(Identifier.ID_PROPERTY_SUFFIX.isEmpty());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -82,7 +71,7 @@ public class IdentifierShould {
     @Test
     public void unpack_passed_Any() {
         final StringValue id = newUuidValue();
-        assertEquals(Identifier.toString(AnyPacker.pack(id)), id.getValue());
+        assertEquals(id.getValue(), Identifier.toString(AnyPacker.pack(id)));
     }
 
     @Test
@@ -111,6 +100,11 @@ public class IdentifierShould {
     }
 
     @Test
+    public void return_EMPTY_ID_if_result_of_Message_to_string_conversion_is_empty_string() {
+        assertEquals(EMPTY_ID, Identifier.toString(TimestampFieldId.getDefaultInstance()));
+    }
+
+    @Test
     public void return_EMPTY_ID_if_convert_empty_message_to_string() {
         assertEquals(EMPTY_ID, Identifier.toString(StringValue.getDefaultInstance()));
     }
@@ -123,7 +117,7 @@ public class IdentifierShould {
     @Test
     public void return_same_string_when_convert_string_wrapped_into_message() {
 
-        final StringValue id = forString(TEST_ID);
+        final StringValue id = toMessage(TEST_ID);
 
         final String result = Identifier.toString(id);
 
@@ -133,7 +127,7 @@ public class IdentifierShould {
     @Test
     public void convert_to_string_integer_id_wrapped_into_message() {
         final Integer value = 1024;
-        final Int32Value id = forInteger(value);
+        final Int32Value id = toMessage(value);
         final String expected = value.toString();
 
         final String actual = Identifier.toString(id);
@@ -144,7 +138,7 @@ public class IdentifierShould {
     @Test
     public void convert_to_string_long_id_wrapped_into_message() {
         final Long value = 100500L;
-        final Int64Value id = forLong(value);
+        final Int64Value id = toMessage(value);
         final String expected = value.toString();
 
         final String actual = Identifier.toString(id);
@@ -154,7 +148,7 @@ public class IdentifierShould {
 
     @Test
     public void convert_to_string_message_id_with_string_field() {
-        final StringValue id = forString(TEST_ID);
+        final StringValue id = toMessage(TEST_ID);
 
         final String result = Identifier.toString(id);
 
@@ -163,7 +157,7 @@ public class IdentifierShould {
 
     @Test
     public void convert_to_string_message_id_with_message_field() {
-        final StringValue value = forString(TEST_ID);
+        final StringValue value = toMessage(TEST_ID);
         final NestedMessageId idToConvert = NestedMessageId.newBuilder()
                                                            .setId(value)
                                                            .build();
@@ -179,10 +173,11 @@ public class IdentifierShould {
         final String outerString = "outer_string";
         final Integer number = 256;
 
+        final StringValue nestedMessageString = toMessage(nestedString);
         final SeveralFieldsId idToConvert = SeveralFieldsId.newBuilder()
                                                            .setString(outerString)
                                                            .setNumber(number)
-                                                           .setMessage(forString(nestedString))
+                                                           .setMessage(nestedMessageString)
                                                            .build();
 
         final String expected =
@@ -197,7 +192,7 @@ public class IdentifierShould {
 
     @Test
     public void convert_to_string_message_id_wrapped_in_Any() {
-        final StringValue messageToWrap = forString(TEST_ID);
+        final StringValue messageToWrap = toMessage(TEST_ID);
         final Any any = AnyPacker.pack(messageToWrap);
 
         final String result = Identifier.toString(any);
@@ -229,29 +224,29 @@ public class IdentifierShould {
                              .isInteger());
         assertTrue(Identifier.from(0L)
                              .isLong());
-        assertTrue(Identifier.from(Wrapper.forInteger(300))
+        assertTrue(Identifier.from(toMessage(300))
                              .isMessage());
     }
 
     @Test
     public void recognize_type_by_supported_message_type() {
-        assertTrue(Type.INTEGER.matchMessage(forUnsignedInteger(10)));
-        assertTrue(Type.LONG.matchMessage(forUnsignedLong(1020L)));
-        assertTrue(Type.STRING.matchMessage(forString("")));
+        assertTrue(Type.INTEGER.matchMessage(toMessage(10)));
+        assertTrue(Type.LONG.matchMessage(toMessage(1020L)));
+        assertTrue(Type.STRING.matchMessage(toMessage("")));
         assertTrue(Type.MESSAGE.matchMessage(Timestamp.getDefaultInstance()));
 
         assertFalse(Type.MESSAGE.matchMessage(StringValue.getDefaultInstance()));
-        assertFalse(Type.MESSAGE.matchMessage(UInt32Value.getDefaultInstance()));
-        assertFalse(Type.MESSAGE.matchMessage(UInt64Value.getDefaultInstance()));
+        assertFalse(Type.MESSAGE.matchMessage(Int32Value.getDefaultInstance()));
+        assertFalse(Type.MESSAGE.matchMessage(Int64Value.getDefaultInstance()));
     }
 
     @Test
     public void create_values_depending_on_wrapper_message_type() {
-        assertEquals(10, Type.INTEGER.fromMessage(forUnsignedInteger(10)));
-        assertEquals(1024L, Type.LONG.fromMessage(forUnsignedLong(1024L)));
+        assertEquals(10, Type.INTEGER.fromMessage(toMessage(10)));
+        assertEquals(1024L, Type.LONG.fromMessage(toMessage(1024L)));
 
         final String value = getClass().getSimpleName();
-        assertEquals(value, Type.STRING.fromMessage(forString(value)));
+        assertEquals(value, Type.STRING.fromMessage(toMessage(value)));
     }
 
     @Test(expected = IllegalArgumentException.class)

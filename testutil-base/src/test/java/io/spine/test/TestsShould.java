@@ -60,7 +60,7 @@ public class TestsShould {
     public void return_null_reference() {
         assertNull(Tests.nullRef());
     }
-    
+
     @Test
     public void assert_equality_of_booleans() {
         assertEquals(true, true);

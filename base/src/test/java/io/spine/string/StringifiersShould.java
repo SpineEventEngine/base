@@ -80,6 +80,8 @@ public class StringifiersShould {
         assertEquals(testId, result);
     }
 
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
+    // OK as these are standard Stringifiers we add ourselves.
     @Test
     public void handle_null_in_standard_converters() {
         final StringifierRegistry registry = StringifierRegistry.getInstance();
@@ -144,8 +146,7 @@ public class StringifiersShould {
         assertTrue(convertedMessage.contains(idValue));
     }
 
-    @SuppressWarnings({"EmptyClass" /* is part of the test data. */,
-                        "ResultOfMethodCallIgnored" /* because it throws. */})
+    @SuppressWarnings("EmptyClass") // is the part of the test.
     @Test(expected = MissingStringifierException.class)
     public void raise_exception_on_missing_stringifer() {
         Stringifiers.toString(new Object() {});

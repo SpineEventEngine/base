@@ -27,8 +27,6 @@ option java_multiple_files = true;
 option java_outer_classname = "ValidationTestCommandsProto";
 option java_package = "io.spine.test.validate.msg.altfields";
 
-import "google/protobuf/wrappers.proto";
-
 import "spine/options.proto";
 
 message PersonName {

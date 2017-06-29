@@ -19,7 +19,7 @@
 //
 syntax = "proto3";
 
-package spine.test.types;
+package spine.test.json;
 
 option (type_url_prefix) = "type.spine.io";
 option java_package="io.spine.json.given";
@@ -32,4 +32,9 @@ message Node {
     string name = 1;
     Node left = 2;
     Node right = 3;
+}
+
+// String value wrapped for testing the Json parsing.
+message WrappedString {
+    string value = 1;
 }

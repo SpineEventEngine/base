@@ -25,13 +25,14 @@ import com.google.protobuf.Any;
 import com.google.protobuf.Message;
 import com.google.protobuf.StringValue;
 import io.spine.test.Tests;
-import io.spine.test.types.TaskId;
+import io.spine.test.protobuf.MessageToPack;
 import io.spine.type.TypeUrl;
 import org.junit.Test;
 
 import java.util.Iterator;
 
 import static io.spine.Identifier.newUuid;
+import static io.spine.protobuf.TypeConverter.toMessage;
 import static io.spine.test.TestValues.newUuidValue;
 import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
 import static org.junit.Assert.assertEquals;
@@ -42,12 +43,12 @@ import static org.junit.Assert.assertSame;
 public class AnyPackerShould {
 
     /** A message with type URL standard to Google Protobuf. */
-    private final StringValue googleMsg = Wrapper.forString(newUuid());
+    private final StringValue googleMsg = toMessage(newUuid());
 
     /** A message with different type URL. */
-    private final TaskId spineMsg = TaskId.newBuilder()
-                                          .setValue(newUuid())
-                                          .build();
+    private final MessageToPack spineMsg = MessageToPack.newBuilder()
+                                                        .setValue(newUuidValue())
+                                                        .build();
 
     @Test
     public void have_private_constructor() {
@@ -68,7 +69,7 @@ public class AnyPackerShould {
     public void unpack_spine_message_from_Any() {
         final Any any = AnyPacker.pack(spineMsg);
 
-        final TaskId actual = AnyPacker.unpack(any);
+        final MessageToPack actual = AnyPacker.unpack(any);
 
         assertEquals(spineMsg, actual);
     }
