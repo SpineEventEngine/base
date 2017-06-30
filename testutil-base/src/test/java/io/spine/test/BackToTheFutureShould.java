@@ -25,6 +25,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import static io.spine.test.TimeTests.BackToTheFuture.THIRTY_YEARS_IN_HOURS;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -48,10 +49,10 @@ public class BackToTheFutureShould {
     public void rewind_backward() {
         // Rewind to somewhere around present.
         Assert.assertNotEquals(timeProvider.getCurrentTime(),
-                               timeProvider.backward(BackToTheFuture.THIRTY_YEARS_IN_HOURS));
+                               timeProvider.backward(THIRTY_YEARS_IN_HOURS));
 
         // ... and back to 30 years in the past.
-        timeProvider.backward(BackToTheFuture.THIRTY_YEARS_IN_HOURS);
+        timeProvider.backward(THIRTY_YEARS_IN_HOURS);
 
         assertFalse(TimeTests.Future.isFuture(timeProvider.getCurrentTime()));
     }
@@ -60,9 +61,9 @@ public class BackToTheFutureShould {
     @Test
     public void rewind_forward() {
         // Rewind to somewhere around present.
-        timeProvider.backward(BackToTheFuture.THIRTY_YEARS_IN_HOURS);
+        timeProvider.backward(THIRTY_YEARS_IN_HOURS);
 
-        timeProvider.forward(BackToTheFuture.THIRTY_YEARS_IN_HOURS + 24L);
+        timeProvider.forward(THIRTY_YEARS_IN_HOURS + 24L);
 
         assertTrue(TimeTests.Future.isFuture(timeProvider.getCurrentTime()));
     }
