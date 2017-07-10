@@ -20,12 +20,13 @@ syntax = "proto3";
 
 package spine.sample.map.types;
 
+import "spine/options.proto";
+
 option (type_url_prefix) = "type.spine.io";
 option java_package = "io.spine.sample.map.types";
 option java_multiple_files = true;
 option java_outer_classname = "MapTypesProto";
 
-import "spine/options.proto";
 
 message SimpleMsg {
     string value = 1;

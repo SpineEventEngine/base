@@ -22,6 +22,8 @@ syntax = "proto3";
 
 package spine.samples;
 
+import "spine/options.proto";
+
 option java_package = "io.spine.samples";
 option java_outer_classname = "ChangesProto";
 option java_multiple_files = true;
@@ -29,7 +31,6 @@ option java_generate_equals_and_hash = true;
 
 import "google/protobuf/wrappers.proto";
 
-import "spine/options.proto";
 import "attributes.proto";
 
 message LabelDetailsChange {
