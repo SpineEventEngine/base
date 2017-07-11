@@ -22,6 +22,7 @@ package io.spine.validate;
 
 import com.google.protobuf.BoolValue;
 import com.google.protobuf.DoubleValue;
+import com.google.protobuf.FieldMask;
 import com.google.protobuf.FloatValue;
 import com.google.protobuf.Int32Value;
 import com.google.protobuf.Int64Value;
@@ -33,6 +34,7 @@ import io.spine.test.validate.msg.RequiredMsgFieldValue;
 import org.junit.Test;
 
 import static com.google.protobuf.Descriptors.FieldDescriptor;
+import static java.util.Collections.emptyList;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -121,5 +123,14 @@ public class FieldValidatorFactoryShould {
         final FieldValidator validator = FieldValidatorFactory.create(field, new Object(), FIELD_PATH);
 
         assertTrue(validator instanceof BooleanFieldValidator);
+    }
+
+    @Test
+    public void create_field_validator_for_repeated_field() {
+        final FieldDescriptor field = FieldMask.getDescriptor().getFields().get(0);
+
+        final FieldValidator<?> validator = FieldValidatorFactory.create(field, emptyList(), FIELD_PATH);
+
+        assertTrue(validator instanceof StringFieldValidator);
     }
 }
