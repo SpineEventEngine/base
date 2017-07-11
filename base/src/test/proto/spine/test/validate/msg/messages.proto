@@ -29,6 +29,7 @@ option java_package = "io.spine.test.validate.msg";
 
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
+import "google/protobuf/any.proto";
 
 import "spine/options.proto";
 
@@ -170,4 +171,38 @@ message EnclosedMessageFieldValueWithCustomInvalidMessage {
 
 message EnclosedMessageFieldValueWithoutAnnotationFieldValueWithCustomInvalidMessage {
     RequiredStringFieldValue outer_msg_field = 1 [(if_invalid).msg_format = "Custom error is redundant in this case"];
+}
+
+// Messages for testing validation of repeated fields.
+
+message MessageWithRepeatedUnchekedStringField {
+    repeated string free = 1;
+}
+
+message MessageWithRepeatedValidatedStringField {
+    repeated string validated = 1 [(valid) = true, (pattern).regex = "\\w+"];
+}
+
+message MessageWithRepeatedRequiredValidatedStringField {
+    repeated string bound = 1 [(valid) = true, (required) = true, (pattern).regex = "\\w+"];
+}
+
+message MessageWithRepeatedUnchekedMessageField {
+    repeated InvalidMessage free = 1;
+}
+
+message MessageWithRepeatedValidatedMessageField {
+    repeated InvalidMessage validated = 1 [(valid) = true];
+}
+
+message MessageWithRepeatedRequiredValidatedMessageField {
+    repeated InvalidMessage bound = 1 [(valid) = true, (required) = true];
+}
+
+// A message which is invalid by design.
+//
+// The field `s` must contain a non-empty value, but it also must match "^$" regex, which represents
+// an empty string. Thus, any instance of this message type is invalid.
+message InvalidMessage {
+    string s = 1 [(required) = true, (pattern).regex = "^$"];
 }
