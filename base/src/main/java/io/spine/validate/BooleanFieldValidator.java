@@ -62,11 +62,11 @@ class BooleanFieldValidator extends FieldValidator<Boolean> {
     }
 
     @Override
-    protected List<ConstraintViolation> validate() {
+    protected List<ConstraintViolation> doValidate() {
         if (isRequiredField()) {
             log().warn("'required' option not allowed for boolean field");
         }
-        return super.validate();
+        return super.doValidate();
     }
 
     private enum LogSingleton {

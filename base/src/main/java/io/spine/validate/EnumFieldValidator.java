@@ -57,9 +57,9 @@ class EnumFieldValidator extends FieldValidator<EnumValueDescriptor> {
     }
 
     @Override
-    protected List<ConstraintViolation> validate() {
+    protected List<ConstraintViolation> doValidate() {
         checkIfRequiredAndNotSet();
-        final List<ConstraintViolation> violations = super.validate();
+        final List<ConstraintViolation> violations = super.doValidate();
         return violations;
     }
 }

@@ -76,7 +76,7 @@ class MessageFieldValidator extends FieldValidator<Message> {
     }
 
     @Override
-    protected List<ConstraintViolation> validate() {
+    protected List<ConstraintViolation> doValidate() {
         checkIfRequiredAndNotSet();
         if (!getValues().isEmpty()) {
             validateFieldsOfMessageIfNeeded();
@@ -84,7 +84,7 @@ class MessageFieldValidator extends FieldValidator<Message> {
                 validateTimestamps();
             }
         }
-        final List<ConstraintViolation> violations = super.validate();
+        final List<ConstraintViolation> violations = super.doValidate();
         return violations;
     }
 

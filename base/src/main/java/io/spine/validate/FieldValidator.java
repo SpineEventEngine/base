@@ -113,6 +113,11 @@ abstract class FieldValidator<V> {
      */
     protected abstract boolean isValueNotSet(V value);
 
+    // TODO:2017-07-11:dmytro.dashenkov: Document.
+    protected final List<ConstraintViolation> validate() {
+        return doValidate();
+    }
+
     /**
      * Validates messages according to Spine custom protobuf options and returns validation
      * constraint violations found.
@@ -121,7 +126,7 @@ abstract class FieldValidator<V> {
      *
      * <p>Use {@link #addViolation(ConstraintViolation)} method in custom implementations.
      */
-    protected List<ConstraintViolation> validate() {
+    protected List<ConstraintViolation> doValidate() {
         if (!isRequiredField() && hasCustomMissingMessage()) {
             log().warn("'if_missing' option is set without '(required) = true'");
         }
@@ -255,6 +260,11 @@ abstract class FieldValidator<V> {
     /** Returns a path to the current field. */
     protected FieldPath getFieldPath() {
         return fieldPath;
+    }
+
+    private boolean shouldValidate() {
+        return isRequiredEntityIdField()
+                || isRequiredField();
     }
 
     private enum LogSingleton {
