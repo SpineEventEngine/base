@@ -1,0 +1,100 @@
+//
+// Copyright 2017, TeamDev Ltd. All rights reserved.
+//
+// Redistribution and use in source and/or binary forms, with or without
+// modification, must retain the above copyright notice and the following
+// disclaimer.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+
+syntax = "proto3";
+
+package spine.test.validate.msg;
+
+option (type_url_prefix) = "type.spine.io";
+option java_generate_equals_and_hash = true;
+option java_multiple_files = true;
+option java_outer_classname = "ValidatingBuilderShouldProto";
+option java_package = "io.spine.test.validate.msg.builder";
+
+import "google/protobuf/timestamp.proto";
+
+import "spine/options.proto";
+
+import "spine/net/email_address.proto";
+import "spine/people/person_name.proto";
+
+message Customer {
+
+    // Short names of the contact people.
+    //
+    // This field is both required and validated.
+    //
+    repeated string name = 1 [(valid) = true, (pattern).regex = ".+\\s+.+", (required) = true];
+
+    // The contact emails.
+    //
+    // This field is validated but not required.
+    repeated net.EmailAddress email = 2 [(valid) = true, (pattern).regex = ".+@.+\\..+"];
+
+    // The map of the positions in the company to the peaple who occupy them.
+    //
+    // This field is required but never validated.
+    //
+    map<string, people.PersonName> position_in_company = 3 [(required) = true, (valid) = true];
+
+    // The fax numbers of the company.
+    //
+    // This field is neither required, nor validated (since nobody uses fax nowadays and
+    // the humanity has lost the knowledge about how do they even look like).
+    //
+    repeated string fax_number = 4;
+
+    // The contracts with this customer.
+    //
+    // This field validated but not required.
+    //
+    map<string, Contract> contract = 5 [(valid) = true, (required) = false];
+
+    // The old contracts with this customer.
+    //
+    // This field is neither required, nor validated.
+    //
+    map<string, Contract> old_contract = 6;
+
+    repeated Product product = 7 [(required) = true];
+
+    // The map of the country name to the time when the customer poped up on the marked for that
+    // country.
+    //
+    // This field is required but not validated.
+    //
+    map<string, google.protobuf.Timestamp> appeared_on_market = 8 [(required) = true];
+}
+
+message Contract {
+
+    google.protobuf.Timestamp since = 1 [(required) = true, (when).in = PAST];
+
+    google.protobuf.Timestamp expires = 2;
+
+    string text = 3 [(required) = true];
+}
+
+enum Product {
+    PRODUCT_UNDEFINED = 0;
+    PROJECTS = 1;
+    JX_BROWSER = 2;
+    DOT_NET_BROWSER = 3;
+}
