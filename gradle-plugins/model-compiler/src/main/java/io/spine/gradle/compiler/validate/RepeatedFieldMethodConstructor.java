@@ -21,6 +21,7 @@
 package io.spine.gradle.compiler.validate;
 
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
+import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
@@ -40,6 +41,7 @@ import java.util.Collection;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type.*;
 import static io.spine.gradle.compiler.util.JavaCode.toJavaFieldName;
 import static io.spine.gradle.compiler.validate.MethodConstructors.clearPrefix;
 import static io.spine.gradle.compiler.validate.MethodConstructors.clearProperty;
@@ -80,7 +82,7 @@ class RepeatedFieldMethodConstructor implements MethodConstructor {
     private final ClassName listElementClassName;
     private final ClassName builderGenericClassName;
     private final FieldDescriptorProto fieldDescriptor;
-    private final boolean isScalarType;
+    private final boolean isScalarOrEnum;
 
     /**
      * Constructs the {@code RepeatedFieldMethodConstructor}.
@@ -103,7 +105,7 @@ class RepeatedFieldMethodConstructor implements MethodConstructor {
         this.builderClassName = ClassNames.getClassName(javaPackage, javaClass);
         final MessageTypeCache messageTypeCache = builder.getMessageTypeCache();
         this.listElementClassName = ClassNames.getParameterClassName(fieldDescriptor, messageTypeCache);
-        this.isScalarType = isScalarType(fieldDescriptor);
+        this.isScalarOrEnum = isScalarType(fieldDescriptor) || isEnumType(fieldDescriptor);
     }
 
     @Override
@@ -150,7 +152,7 @@ class RepeatedFieldMethodConstructor implements MethodConstructor {
         methods.add(createRawAddAllMethod());
 
         // Some methods are not available in Protobuf Message.Builder for scalar types.
-        if (!isScalarType) {
+        if (!isScalarOrEnum) {
             methods.add(createRawAddObjectByIndexMethod());
         }
 
@@ -166,8 +168,9 @@ class RepeatedFieldMethodConstructor implements MethodConstructor {
         methods.add(createSetObjectByIndexMethod());
         methods.add(createAddAllMethod());
 
-        // Some methods are not available in Protobuf Message.Builder for scalar types.
-        if (!isScalarType) {
+        // Some methods are not available in Protobuf Message.Builder for scalar types and enums.
+        if (!isScalarOrEnum) {
+            methods.add(createAddObjectByIndexMethod());
             methods.add(createRemoveObjectByIndexMethod());
         }
         return methods;
@@ -175,13 +178,19 @@ class RepeatedFieldMethodConstructor implements MethodConstructor {
 
     private static boolean isScalarType(FieldDescriptorProto fieldDescriptor) {
         boolean isScalarType = false;
-        final FieldDescriptorProto.Type type = fieldDescriptor.getType();
+        final Type type = fieldDescriptor.getType();
         for (ProtoScalarType scalarType : ProtoScalarType.values()) {
             if (scalarType.getProtoScalarType() == type) {
                 isScalarType = true;
             }
         }
         return isScalarType;
+    }
+
+    private static boolean isEnumType(FieldDescriptorProto fieldDescriptor) {
+        final Type type = fieldDescriptor.getType();
+        final boolean result = type == TYPE_ENUM;
+        return result;
     }
 
     private MethodSpec createRawAddObjectMethod() {
@@ -317,6 +326,10 @@ class RepeatedFieldMethodConstructor implements MethodConstructor {
                                             .addStatement(returnThis())
                                             .build();
         return result;
+    }
+
+    private MethodSpec createAddObjectByIndexMethod() {
+        return modifyCollectionByIndex(ADD_PREFIX);
     }
 
     private MethodSpec createSetObjectByIndexMethod() {

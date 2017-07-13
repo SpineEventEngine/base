@@ -35,53 +35,53 @@ import "spine/options.proto";
 import "spine/net/email_address.proto";
 import "spine/people/person_name.proto";
 
-//message Customer {
-//
-//    // Short names of the contact people.
-//    //
-//    // This field is both required and validated.
-//    //
-//    repeated string name = 1 [(valid) = true, (pattern).regex = ".+\\s+.+", (required) = true];
-//
-//    // The contact emails.
-//    //
-//    // This field is validated but not required.
-//    repeated net.EmailAddress email = 2 [(valid) = true, (pattern).regex = ".+@.+\\..+"];
-//
-//    // The map of the positions in the company to the peaple who occupy them.
-//    //
-//    // This field is required but never validated.
-//    //
-//    map<string, people.PersonName> position_in_company = 3 [(required) = true, (valid) = true];
-//
-//    // The fax numbers of the company.
-//    //
-//    // This field is neither required, nor validated (since nobody uses fax nowadays and
-//    // the humanity has lost the knowledge about how do they even look like).
-//    //
-//    repeated string fax_number = 4;
-//
-//    // The contracts with this customer.
-//    //
-//    // This field validated but not required.
-//    //
-//    map<string, Contract> contract = 5 [(valid) = true, (required) = false];
-//
-//    // The old contracts with this customer.
-//    //
-//    // This field is neither required, nor validated.
-//    //
-//    map<string, Contract> old_contract = 6;
-//
-//    repeated Product product = 7 [(required) = true];
-//
-//    // The map of the country name to the time when the customer poped up on the marked for that
-//    // country.
-//    //
-//    // This field is required but not validated.
-//    //
-//    map<string, google.protobuf.Timestamp> appeared_on_market = 8 [(required) = true];
-//}
+message Customer {
+
+    // Short names of the contact people.
+    //
+    // This field is both required and validated.
+    //
+    repeated string name = 1 [(valid) = true, (pattern).regex = ".+\\s+.+", (required) = true];
+
+    // The contact emails.
+    //
+    // This field is validated but not required.
+    repeated net.EmailAddress email = 2 [(valid) = true, (pattern).regex = ".+@.+\\..+"];
+
+    // The map of the positions in the company to the peaple who occupy them.
+    //
+    // This field is required but never validated.
+    //
+    map<string, people.PersonName> position_in_company = 3 [(required) = true, (valid) = true];
+
+    // The fax numbers of the company.
+    //
+    // This field is neither required, nor validated (since nobody uses fax nowadays and
+    // the humanity has lost the knowledge about how do they even look like).
+    //
+    repeated string fax_number = 4;
+
+    // The contracts with this customer.
+    //
+    // This field validated but not required.
+    //
+    map<string, Contract> contract = 5 [(valid) = true, (required) = false];
+
+    // The old contracts with this customer.
+    //
+    // This field is neither required, nor validated.
+    //
+    map<string, Contract> old_contract = 6;
+
+    repeated Product product = 7 [(required) = true];
+
+    // The map of the country name to the time when the customer poped up on the marked for that
+    // country.
+    //
+    // This field is required but not validated.
+    //
+    map<string, google.protobuf.Timestamp> appeared_on_market = 8 [(required) = true];
+}
 
 message Contract {
 
