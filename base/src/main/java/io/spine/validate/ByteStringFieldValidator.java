@@ -24,8 +24,6 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.base.FieldPath;
 
-import java.util.List;
-
 /**
  * Validates fields of type {@link ByteString}.
  *
@@ -55,13 +53,6 @@ class ByteStringFieldValidator extends FieldValidator<ByteString> {
     protected boolean isValueNotSet(ByteString value) {
         final boolean result = value.isEmpty();
         return result;
-    }
-
-    @Override
-    protected List<ConstraintViolation> validate() {
-        checkIfRequiredAndNotSet();
-        final List<ConstraintViolation> violations = super.validate();
-        return violations;
     }
 
     @Override

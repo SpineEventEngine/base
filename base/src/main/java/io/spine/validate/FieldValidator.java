@@ -50,7 +50,7 @@ import static com.google.common.collect.Lists.newLinkedList;
 abstract class FieldValidator<V> {
 
     private static final String ENTITY_ID_REPEATED_FIELD_MSG =
-                                "Entity ID must not be a repeated field.";
+            "Entity ID must not be a repeated field.";
 
     private final FieldDescriptor fieldDescriptor;
     private final ImmutableList<V> values;
@@ -119,6 +119,14 @@ abstract class FieldValidator<V> {
      */
     protected abstract boolean isValueNotSet(V value);
 
+    // TODO:2017-07-13:dmytro.dashenkov: Document.
+    protected final List<ConstraintViolation> validate() {
+        checkIfRequiredAndNotSet();
+        doValidate();
+        final List<ConstraintViolation> result = assembleViolations();
+        return result;
+    }
+
     /**
      * Validates messages according to Spine custom protobuf options and returns validation
      * constraint violations found.
@@ -127,14 +135,13 @@ abstract class FieldValidator<V> {
      *
      * <p>Use {@link #addViolation(ConstraintViolation)} method in custom implementations.
      */
-    protected List<ConstraintViolation> validate() {
-        if (!isRequiredField() && hasCustomMissingMessage()) {
-            log().warn("'if_missing' option is set without '(required) = true'");
-        }
-
+    protected void doValidate() {
         if (isRequiredEntityIdField()) {
             validateEntityId();
         }
+    }
+
+    private List<ConstraintViolation> assembleViolations() {
         return copyOf(violations);
     }
 
@@ -187,6 +194,9 @@ abstract class FieldValidator<V> {
      */
     protected void checkIfRequiredAndNotSet() {
         if (!isRequiredField()) {
+            if (hasCustomMissingMessage()) {
+                log().warn("'if_missing' option is set without '(required) = true'");
+            }
             return;
         }
         if (values.isEmpty()) {
@@ -233,7 +243,8 @@ abstract class FieldValidator<V> {
      */
     protected String getErrorMsgFormat(Message option, String customMsg) {
         final String defaultMsg = option.getDescriptorForType()
-                                        .getOptions().getExtension(OptionsProto.defaultMessage);
+                                        .getOptions()
+                                        .getExtension(OptionsProto.defaultMessage);
         final String msg = customMsg.isEmpty() ? defaultMsg : customMsg;
         return msg;
     }
@@ -241,11 +252,12 @@ abstract class FieldValidator<V> {
     /**
      * Returns a field validation option.
      *
-     * @param <T> the type of option
+     * @param <T>       the type of option
      * @param extension an extension key used to obtain a validation option
      */
     protected final <T> T getFieldOption(GeneratedExtension<FieldOptions, T> extension) {
-        final T option = fieldDescriptor.getOptions().getExtension(extension);
+        final T option = fieldDescriptor.getOptions()
+                                        .getExtension(extension);
         return option;
     }
 
@@ -263,9 +275,8 @@ abstract class FieldValidator<V> {
         return fieldPath;
     }
 
-    private boolean shouldValidate() {
-        return isRequiredEntityIdField()
-                || isRequiredField();
+    protected boolean isRepeatedOrMap() {
+        return fieldDescriptor.isRepeated() || fieldDescriptor.isMapField();
     }
 
     private enum LogSingleton {

@@ -2,15 +2,14 @@ package io.spine.validate;
 
 import com.google.protobuf.Timestamp;
 import io.spine.Identifier;
-import io.spine.net.EmailAddress;
 import io.spine.people.PersonName;
 import io.spine.test.validate.msg.builder.Contract;
 import io.spine.test.validate.msg.builder.CustomerVBuilder;
-import io.spine.test.validate.msg.builder.Product;
-import io.spine.time.Time;
+import io.spine.test.validate.msg.builder.Signature;
 import org.junit.Before;
 import org.junit.Test;
 
+import static com.google.protobuf.ByteString.copyFrom;
 import static com.google.protobuf.util.Durations.fromSeconds;
 import static com.google.protobuf.util.Timestamps.add;
 import static io.spine.time.Time.getCurrentTime;
@@ -47,16 +46,8 @@ public class ValidatingBuilderShould {
     }
 
     @Test(expected = ValidationException.class)
-    public void check_required_validated_map_field_keys() {
-        builder.putPositionInCompany("", PersonName.newBuilder()
-                                                   .setGivenName("Abraham")
-                                                   .setFamilyName("Lincoln")
-                                                   .build());
-    }
-
-    @Test(expected = ValidationException.class)
     public void check_required_validated_map_field_values() {
-        builder.putPositionInCompany("President of the US", PersonName.getDefaultInstance());
+        builder.putPositionInCompany("SEO", PersonName.getDefaultInstance());
     }
 
     @Test(expected = ValidationException.class)
@@ -67,22 +58,13 @@ public class ValidatingBuilderShould {
 
     @Test(expected = ValidationException.class)
     public void check_validated_repeated_fields() {
-        builder.addEmail(EmailAddress.getDefaultInstance());
+        builder.addEmail("");
     }
 
     @Test
     public void dispense_with_validated_repeated_fields() {
         builder.clearEmail();
         builder.build();
-    }
-
-    @Test(expected = ValidationException.class)
-    public void check_validated_map_field_keys() {
-        final Timestamp timeInPast = timeInPast();
-        builder.putContract("", Contract.newBuilder()
-                                        .setSince(timeInPast)
-                                        .setText("My contract text")
-                                        .build());
     }
 
     @Test(expected = ValidationException.class)
@@ -98,23 +80,20 @@ public class ValidatingBuilderShould {
 
     @Test
     public void accept_any_required_repeated_fields() {
-        builder.addProduct(Product.UNRECOGNIZED);
+        builder.addSign(Signature.newBuilder()
+                                 .setValue(copyFrom(new byte[1]))
+                                 .build());
     }
 
     @Test(expected = ValidationException.class)
     public void ensure_required_repeated_fields() {
-        builder.clearProduct();
+        builder.clearSign();
         builder.build();
     }
 
     @Test
-    public void accept_any_required_map_field_key() {
-        builder.putAppearedOnMarket("", Time.getCurrentTime());
-    }
-
-    @Test
     public void accept_any_required_map_field_value() {
-        builder.putAppearedOnMarket("Montenegro", Timestamp.getDefaultInstance());
+        builder.putAppearedOnMarket("Montenegro", timeInFuture());
     }
 
     @Test(expected = ValidationException.class)
@@ -132,15 +111,6 @@ public class ValidatingBuilderShould {
     public void dispense_with_unchecked_repeated_fields() {
         builder.clearFaxNumber();
         builder.build();
-    }
-
-    @Test
-    public void accept_any_unchecked_map_field_key() {
-        final Timestamp timeInPast = timeInPast();
-        builder.putOldContract("", Contract.newBuilder()
-                                           .setSince(timeInPast)
-                                           .setText("My very old contract text")
-                                           .build());
     }
 
     @Test
@@ -164,11 +134,13 @@ public class ValidatingBuilderShould {
                                               .setFamilyName("Smith")
                                               .build();
         final Timestamp timeInPast = timeInPast();
+        final Signature sign = Signature.newBuilder()
+                                        .setValue(copyFrom(new byte[]{1, 2, 3}))
+                                        .build();
         final CustomerVBuilder builder = CustomerVBuilder.newBuilder()
                                                          .addName("John Smith")
                                                          .putPositionInCompany("CEO", fullName)
-                                                         .addProduct(Product.PROJECTS)
-                                                         .addProduct(Product.JX_BROWSER)
+                                                         .addSign(sign)
                                                          .putAppearedOnMarket("USA", timeInPast);
         builder.build(); // Ensure no ValidationException is thrown.
         return builder;
@@ -176,5 +148,9 @@ public class ValidatingBuilderShould {
 
     private static Timestamp timeInPast() {
         return add(getCurrentTime(), fromSeconds(-1000L));
+    }
+
+    private static Timestamp timeInFuture() {
+        return add(getCurrentTime(), fromSeconds(1000L));
     }
 }

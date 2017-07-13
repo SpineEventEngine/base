@@ -22,6 +22,7 @@ package io.spine.validate;
 
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
+import com.google.protobuf.ProtocolMessageEnum;
 import io.spine.annotation.Internal;
 import io.spine.base.ConversionException;
 import io.spine.base.FieldPath;
@@ -34,6 +35,7 @@ import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Throwables.getRootCause;
+import static io.spine.validate.FieldValidatorFactory.create;
 
 /**
  * Serves as an abstract base for all {@linkplain ValidatingBuilder validating builders}.
@@ -110,8 +112,13 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
         final FieldPath fieldPath = FieldPath.newBuilder()
                                              .addFieldName(fieldName)
                                              .build();
-        final FieldValidator<?> validator =
-                FieldValidatorFactory.create(descriptor, fieldValue, fieldPath);
+        final Object valueToValidate;
+        if (fieldValue instanceof ProtocolMessageEnum) {
+            valueToValidate = ((ProtocolMessageEnum) fieldValue).getValueDescriptor();
+        } else {
+            valueToValidate = fieldValue;
+        }
+        final FieldValidator<?> validator = create(descriptor, valueToValidate, fieldPath);
         final List<ConstraintViolation> violations = validator.validate();
         onViolations(violations);
     }

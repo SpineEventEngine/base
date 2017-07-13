@@ -46,7 +46,7 @@ message Customer {
     // The contact emails.
     //
     // This field is validated but not required.
-    repeated net.EmailAddress email = 2 [(valid) = true, (pattern).regex = ".+@.+\\..+"];
+    repeated string email = 2 [(valid) = true, (pattern).regex = ".+@.+\\..+"];
 
     // The map of the positions in the company to the peaple who occupy them.
     //
@@ -73,14 +73,20 @@ message Customer {
     //
     map<string, Contract> old_contract = 6;
 
-    repeated Product product = 7 [(required) = true];
+    // The signatures of the company proxy people.
+    //
+    // This field is required but not validated.
+    //
+    repeated Signature sign = 7 [(required) = true];
 
     // The map of the country name to the time when the customer poped up on the marked for that
     // country.
     //
     // This field is required but not validated.
     //
-    map<string, google.protobuf.Timestamp> appeared_on_market = 8 [(required) = true];
+    // Note that the `when` option is redundant.
+    //
+    map<string, google.protobuf.Timestamp> appeared_on_market = 8 [(required) = true, (when).in = PAST];
 }
 
 message Contract {
@@ -92,9 +98,10 @@ message Contract {
     string text = 3 [(required) = true];
 }
 
-enum Product {
-    PRODUCT_UNDEFINED = 0;
-    PROJECTS = 1;
-    JX_BROWSER = 2;
-    DOT_NET_BROWSER = 3;
+message Signature {
+
+    bytes value = 1 [(required) = true];
+
+    string name = 2 [(pattern).regex = ".+\\s+.+"];
+
 }

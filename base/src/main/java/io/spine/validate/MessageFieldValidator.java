@@ -29,7 +29,6 @@ import io.spine.option.IfInvalidOption;
 import io.spine.option.OptionsProto;
 import io.spine.option.Time;
 import io.spine.option.TimeOption;
-import io.spine.protobuf.AnyPacker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,6 +36,7 @@ import java.util.List;
 
 import static io.spine.option.Time.FUTURE;
 import static io.spine.option.Time.TIME_UNDEFINED;
+import static io.spine.protobuf.AnyPacker.pack;
 import static io.spine.time.Time.getCurrentTime;
 import static io.spine.time.Timestamps2.isLaterThan;
 import static io.spine.validate.Validate.isDefault;
@@ -48,9 +48,9 @@ import static io.spine.validate.Validate.isDefault;
  */
 class MessageFieldValidator extends FieldValidator<Message> {
 
-    private final TimeOption timeOption;
-    private final boolean validateOption;
-    private final IfInvalidOption ifInvalidOption;
+    private final TimeOption timeConstraint;
+    private final boolean validate;
+    private final IfInvalidOption ifInvalid;
     private final boolean isFieldTimestamp;
 
     /**
@@ -69,52 +69,29 @@ class MessageFieldValidator extends FieldValidator<Message> {
               FieldValidator.<Message>toValueList(fieldValues),
               rootFieldPath,
               strict);
-        this.timeOption = getFieldOption(OptionsProto.when);
-        this.validateOption = getFieldOption(OptionsProto.valid);
-        this.ifInvalidOption = getFieldOption(OptionsProto.ifInvalid);
+        this.validate = getFieldOption(OptionsProto.valid);
+        this.ifInvalid = getFieldOption(OptionsProto.ifInvalid);
+        this.timeConstraint = getFieldOption(OptionsProto.when);
         this.isFieldTimestamp = isTimestamp();
     }
 
     @Override
-    protected List<ConstraintViolation> validate() {
-        checkIfRequiredAndNotSet();
-        if (!getValues().isEmpty()) {
-            validateFieldsOfMessageIfNeeded();
+    protected void doValidate() {
+        super.doValidate();
+        if (validate) {
+            validateFields();
+        }
+        if (shouldValidateOwnMessages()) {
             if (isFieldTimestamp) {
                 validateTimestamps();
             }
+            // Some additional options should be checked here.
         }
-        final List<ConstraintViolation> violations = super.validate();
-        return violations;
     }
 
     @Override
     protected boolean isValueNotSet(Message value) {
         final boolean result = isDefault(value);
-        return result;
-    }
-
-    private void validateFieldsOfMessageIfNeeded() {
-        if (!validateOption) {
-            if (hasCustomInvalidMessage()) {
-                log().warn("'if_invalid' option is set without '(valid) = true'");
-            }
-            return;
-        }
-        for (Message value : getValues()) {
-            final MessageValidator validator = MessageValidator.newInstance(getFieldPath());
-            final List<ConstraintViolation> violations = validator.validate(value);
-            if (!violations.isEmpty()) {
-                addViolation(newValidViolation(value, violations));
-            }
-        }
-    }
-
-    /**
-     * @return {@code true} if the option {@code 'if_invalid'} is set to a non-default value.
-     */
-    private boolean hasCustomInvalidMessage() {
-        final boolean result = !isDefault(ifInvalidOption);
         return result;
     }
 
@@ -125,8 +102,31 @@ class MessageFieldValidator extends FieldValidator<Message> {
         return isTimestamp;
     }
 
+    private void validateFields() {
+        for (Message value : getValues()) {
+            final MessageValidator validator = MessageValidator.newInstance(getFieldPath());
+            final List<ConstraintViolation> violations = validator.validate(value);
+            if (!violations.isEmpty()) {
+                addViolation(newValidViolation(value, violations));
+            }
+        }
+    }
+
+    /**
+     * Shows if the message own validation constraints should be checked.
+     *
+     * <p>More formally, returns {@code true} if the options representing concrete message
+     * validation constraints should be evaluated.
+     *
+     * <p>An example of such option is {@code when} option for the {@link Timestamp} values.
+     */
+    private boolean shouldValidateOwnMessages() {
+        final boolean repeatedOrMap = isRepeatedOrMap();
+        return !repeatedOrMap || validate;
+    }
+
     private void validateTimestamps() {
-        final Time when = timeOption.getIn();
+        final Time when = timeConstraint.getIn();
         if (when == TIME_UNDEFINED) {
             return;
         }
@@ -158,31 +158,28 @@ class MessageFieldValidator extends FieldValidator<Message> {
     }
 
     private ConstraintViolation newTimeViolation(Timestamp fieldValue) {
-        final String msg = getErrorMsgFormat(timeOption, timeOption.getMsgFormat());
-        final String when = timeOption.getIn()
-                                      .toString()
-                                      .toLowerCase();
-        final ConstraintViolation violation =
-                ConstraintViolation.newBuilder()
-                                   .setMsgFormat(msg)
-                                   .addParam(when)
-                                   .setFieldPath(getFieldPath())
-                                   .setFieldValue(AnyPacker.pack(fieldValue))
-                                   .build();
+        final String msg = getErrorMsgFormat(timeConstraint, timeConstraint.getMsgFormat());
+        final String when = timeConstraint.getIn()
+                                          .toString()
+                                          .toLowerCase();
+        final ConstraintViolation violation = ConstraintViolation.newBuilder()
+                                                                 .setMsgFormat(msg)
+                                                                 .addParam(when)
+                                                                 .setFieldPath(getFieldPath())
+                                                                 .setFieldValue(pack(fieldValue))
+                                                                 .build();
         return violation;
     }
 
     private ConstraintViolation newValidViolation(Message fieldValue,
                                                   Iterable<ConstraintViolation> violations) {
-        final String msg = getErrorMsgFormat(ifInvalidOption, ifInvalidOption.getMsgFormat());
-        final ConstraintViolation violation =
-                ConstraintViolation.newBuilder()
-                                   .setMsgFormat(msg)
-                                   .setFieldPath(getFieldPath())
-                                   .setFieldValue(
-                                           AnyPacker.pack(fieldValue))
-                                   .addAllViolation(violations)
-                                   .build();
+        final String msg = getErrorMsgFormat(ifInvalid, ifInvalid.getMsgFormat());
+        final ConstraintViolation violation = ConstraintViolation.newBuilder()
+                                                                 .setMsgFormat(msg)
+                                                                 .setFieldPath(getFieldPath())
+                                                                 .setFieldValue(pack(fieldValue))
+                                                                 .addAllViolation(violations)
+                                                                 .build();
         return violation;
     }
 
