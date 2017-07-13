@@ -148,6 +148,11 @@
     <inspection_tool class="ConfusingMainMethod" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="ConfusingOctalEscape" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="ConstantAssertCondition" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="ConstantConditions" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="SUGGEST_NULLABLE_ANNOTATIONS" value="false" />
+      <option name="DONT_REPORT_TRUE_ASSERT_STATEMENTS" value="false" />
+      <option name="REPORT_UNCHECKED_OPTIONALS" value="false" />
+    </inspection_tool>
     <inspection_tool class="ConstantNamingConvention" enabled="false" level="WARNING" enabled_by_default="false">
       <option name="onlyCheckImmutables" value="true" />
       <option name="m_regex" value="[A-Z_\d]*" />
@@ -366,8 +371,8 @@
     <inspection_tool class="MethodCount" enabled="true" level="WARNING" enabled_by_default="true">
       <scope name="Tests" level="TYPO" enabled="true">
         <option name="m_limit" value="20" />
-        <option name="ignoreGettersAndSetters" value="false" />
-        <option name="ignoreOverridingMethods" value="false" />
+        <option name="ignoreGettersAndSetters" value="true" />
+        <option name="ignoreOverridingMethods" value="true" />
       </scope>
       <option name="m_limit" value="20" />
       <option name="ignoreGettersAndSetters" value="true" />
@@ -718,7 +723,7 @@
     </inspection_tool>
     <inspection_tool class="UnnecessaryCallToStringValueOf" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="UnnecessaryConstantArrayCreationExpression" enabled="true" level="WARNING" enabled_by_default="true" />
-    <inspection_tool class="UnnecessaryConstructor" enabled="true" level="TYPO" enabled_by_default="true">
+    <inspection_tool class="UnnecessaryConstructor" enabled="false" level="TYPO" enabled_by_default="false">
       <option name="ignoreAnnotations" value="true" />
     </inspection_tool>
     <inspection_tool class="UnnecessaryDefault" enabled="true" level="WARNING" enabled_by_default="true" />
