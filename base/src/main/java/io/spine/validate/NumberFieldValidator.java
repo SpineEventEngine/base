@@ -95,7 +95,6 @@ abstract class NumberFieldValidator<V extends Number & Comparable<V>> extends Fi
 
     @Override
     protected void doValidate() {
-        super.doValidate();
         for (V value : getValues()) {
             validateRangeOptions(value);
             validateDigitsOption(value);

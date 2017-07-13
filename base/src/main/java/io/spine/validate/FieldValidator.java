@@ -119,27 +119,38 @@ abstract class FieldValidator<V> {
      */
     protected abstract boolean isValueNotSet(V value);
 
-    // TODO:2017-07-13:dmytro.dashenkov: Document.
+    /**
+     * Validates messages according to Spine custom protobuf options and returns validation
+     * constraint violations found.
+     *
+     * <p>This method defines the general flow of the field validation. Override
+     * {@link #doValidate()} to customize the validation behavior.
+     *
+     * <p>The flow of the validation is as follows:
+     * <ol>
+     *     <li>check the field to be set if it is {@code required};
+     *     <li>validate the field as an Entity ID if required;
+     *     <li>performs the {@linkplain #doValidate() custom type-dependant validation}.
+     * </ol>
+     *
+     * @return a list of found {@linkplain ConstraintViolation constraint violations} is any
+     */
     protected final List<ConstraintViolation> validate() {
         checkIfRequiredAndNotSet();
+        if (isRequiredEntityIdField()) {
+            validateEntityId();
+        }
         doValidate();
         final List<ConstraintViolation> result = assembleViolations();
         return result;
     }
 
     /**
-     * Validates messages according to Spine custom protobuf options and returns validation
-     * constraint violations found.
-     *
-     * <p>The default implementation calls {@link #validateEntityId()} method if needed.
+     * Performs the custom type-dependant field validation.
      *
      * <p>Use {@link #addViolation(ConstraintViolation)} method in custom implementations.
      */
-    protected void doValidate() {
-        if (isRequiredEntityIdField()) {
-            validateEntityId();
-        }
-    }
+    protected abstract void doValidate();
 
     private List<ConstraintViolation> assembleViolations() {
         return copyOf(violations);

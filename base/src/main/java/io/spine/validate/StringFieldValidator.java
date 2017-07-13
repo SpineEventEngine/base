@@ -56,7 +56,6 @@ class StringFieldValidator extends FieldValidator<String> {
 
     @Override
     protected void doValidate() {
-        super.doValidate();
         checkIfMatchesToRegexp();
     }
 

@@ -55,6 +55,16 @@ class ByteStringFieldValidator extends FieldValidator<ByteString> {
         return result;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>Performs no validation.
+     */
+    @Override
+    protected void doValidate() {
+        // NoOp
+    }
+
     @Override
     @SuppressWarnings("RefusedBequest")
     protected void validateEntityId() {

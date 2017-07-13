@@ -77,7 +77,6 @@ class MessageFieldValidator extends FieldValidator<Message> {
 
     @Override
     protected void doValidate() {
-        super.doValidate();
         if (validate) {
             validateFields();
         }

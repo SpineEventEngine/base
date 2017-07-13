@@ -53,4 +53,14 @@ class EnumFieldValidator extends FieldValidator<EnumValueDescriptor> {
         final boolean result = intValue <= 0;
         return result;
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>Performs no validation.
+     */
+    @Override
+    protected void doValidate() {
+        // NoOp
+    }
 }
