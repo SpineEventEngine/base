@@ -168,7 +168,6 @@ class RepeatedFieldMethodConstructor implements MethodConstructor {
 
         // Some methods are not available in Protobuf Message.Builder for scalar types.
         if (!isScalarType) {
-            methods.add(createAddObjectByIndexMethod());
             methods.add(createRemoveObjectByIndexMethod());
         }
         return methods;
@@ -318,10 +317,6 @@ class RepeatedFieldMethodConstructor implements MethodConstructor {
                                             .addStatement(returnThis())
                                             .build();
         return result;
-    }
-
-    private MethodSpec createAddObjectByIndexMethod() {
-        return modifyCollectionByIndex(ADD_PREFIX);
     }
 
     private MethodSpec createSetObjectByIndexMethod() {
