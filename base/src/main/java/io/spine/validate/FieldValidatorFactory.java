@@ -55,7 +55,7 @@ class FieldValidatorFactory {
         final JavaType fieldType = descriptor.getJavaType();
         switch (fieldType) {
             case MESSAGE:
-                return new MessageFieldValidator(descriptor, fieldValue, strict, rootFieldPath);
+                return new MessageFieldValidator(descriptor, fieldValue, rootFieldPath, strict);
             case INT:
                 return new IntegerFieldValidator(descriptor, fieldValue, rootFieldPath);
             case LONG:

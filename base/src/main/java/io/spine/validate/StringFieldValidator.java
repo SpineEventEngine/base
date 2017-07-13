@@ -57,10 +57,10 @@ class StringFieldValidator extends FieldValidator<String> {
     }
 
     @Override
-    protected List<ConstraintViolation> doValidate() {
+    protected List<ConstraintViolation> validate() {
         checkIfRequiredAndNotSet();
         checkIfMatchesToRegexp();
-        final List<ConstraintViolation> violations = super.doValidate();
+        final List<ConstraintViolation> violations = super.validate();
         return violations;
     }
 

@@ -58,9 +58,9 @@ class ByteStringFieldValidator extends FieldValidator<ByteString> {
     }
 
     @Override
-    protected List<ConstraintViolation> doValidate() {
+    protected List<ConstraintViolation> validate() {
         checkIfRequiredAndNotSet();
-        final List<ConstraintViolation> violations = super.doValidate();
+        final List<ConstraintViolation> violations = super.validate();
         return violations;
     }
 

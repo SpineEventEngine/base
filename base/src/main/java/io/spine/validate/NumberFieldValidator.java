@@ -95,12 +95,12 @@ abstract class NumberFieldValidator<V extends Number & Comparable<V>> extends Fi
     }
 
     @Override
-    protected List<ConstraintViolation> doValidate() {
+    protected List<ConstraintViolation> validate() {
         for (V value : getValues()) {
             validateRangeOptions(value);
             validateDigitsOption(value);
         }
-        final List<ConstraintViolation> violations = super.doValidate();
+        final List<ConstraintViolation> violations = super.validate();
         return violations;
     }
 

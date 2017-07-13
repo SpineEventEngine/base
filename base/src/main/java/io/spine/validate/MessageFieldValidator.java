@@ -63,8 +63,8 @@ class MessageFieldValidator extends FieldValidator<Message> {
      */
     MessageFieldValidator(FieldDescriptor descriptor,
                           Object fieldValues,
-                          boolean strict,
-                          FieldPath rootFieldPath) {
+                          FieldPath rootFieldPath,
+                          boolean strict) {
         super(descriptor,
               FieldValidator.<Message>toValueList(fieldValues),
               rootFieldPath,
@@ -76,7 +76,7 @@ class MessageFieldValidator extends FieldValidator<Message> {
     }
 
     @Override
-    protected List<ConstraintViolation> doValidate() {
+    protected List<ConstraintViolation> validate() {
         checkIfRequiredAndNotSet();
         if (!getValues().isEmpty()) {
             validateFieldsOfMessageIfNeeded();
@@ -84,7 +84,7 @@ class MessageFieldValidator extends FieldValidator<Message> {
                 validateTimestamps();
             }
         }
-        final List<ConstraintViolation> violations = super.doValidate();
+        final List<ConstraintViolation> violations = super.validate();
         return violations;
     }
 

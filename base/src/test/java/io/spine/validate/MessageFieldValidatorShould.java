@@ -74,7 +74,7 @@ public class MessageFieldValidatorShould extends FieldValidatorShould<Message> {
                                                List<? extends Message> values) {
         return new MessageFieldValidator(field,
                                          values,
-                                         false,
-                                         FieldPath.getDefaultInstance());
+                                         FieldPath.getDefaultInstance(),
+                                         false);
     }
 }

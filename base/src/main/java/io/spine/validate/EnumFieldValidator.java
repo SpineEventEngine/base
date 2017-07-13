@@ -52,14 +52,14 @@ class EnumFieldValidator extends FieldValidator<EnumValueDescriptor> {
     @Override
     protected boolean isValueNotSet(EnumValueDescriptor value) {
         final int intValue = value.getNumber();
-        final boolean result = intValue == 0;
+        final boolean result = intValue <= 0;
         return result;
     }
 
     @Override
-    protected List<ConstraintViolation> doValidate() {
+    protected List<ConstraintViolation> validate() {
         checkIfRequiredAndNotSet();
-        final List<ConstraintViolation> violations = super.doValidate();
+        final List<ConstraintViolation> violations = super.validate();
         return violations;
     }
 }

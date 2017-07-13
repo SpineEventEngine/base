@@ -34,7 +34,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Map;
 
+import static com.google.common.collect.ImmutableList.copyOf;
+import static com.google.common.collect.ImmutableList.of;
 import static com.google.common.collect.Lists.newLinkedList;
 
 /**
@@ -95,9 +98,12 @@ abstract class FieldValidator<V> {
     @SuppressWarnings({"unchecked", "IfMayBeConditional"})
     static <T> ImmutableList<T> toValueList(Object fieldValue) {
         if (fieldValue instanceof List) {
-            return ImmutableList.copyOf((List<T>) fieldValue);
+            return copyOf((List<T>) fieldValue);
+        } else if (fieldValue instanceof Map) {
+            final Map<?, T> map = (Map<?, T>) fieldValue;
+            return copyOf(map.values());
         } else {
-            return ImmutableList.of((T) fieldValue);
+            return of((T) fieldValue);
         }
     }
 
@@ -113,11 +119,6 @@ abstract class FieldValidator<V> {
      */
     protected abstract boolean isValueNotSet(V value);
 
-    // TODO:2017-07-11:dmytro.dashenkov: Document.
-    protected final List<ConstraintViolation> validate() {
-        return doValidate();
-    }
-
     /**
      * Validates messages according to Spine custom protobuf options and returns validation
      * constraint violations found.
@@ -126,7 +127,7 @@ abstract class FieldValidator<V> {
      *
      * <p>Use {@link #addViolation(ConstraintViolation)} method in custom implementations.
      */
-    protected List<ConstraintViolation> doValidate() {
+    protected List<ConstraintViolation> validate() {
         if (!isRequiredField() && hasCustomMissingMessage()) {
             log().warn("'if_missing' option is set without '(required) = true'");
         }
@@ -134,7 +135,7 @@ abstract class FieldValidator<V> {
         if (isRequiredEntityIdField()) {
             validateEntityId();
         }
-        return ImmutableList.copyOf(violations);
+        return copyOf(violations);
     }
 
     /**
