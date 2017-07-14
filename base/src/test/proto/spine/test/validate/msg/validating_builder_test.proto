@@ -103,5 +103,4 @@ message Signature {
     bytes value = 1 [(required) = true];
 
     string name = 2 [(pattern).regex = ".+\\s+.+"];
-
 }
