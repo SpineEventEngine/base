@@ -58,7 +58,8 @@ class ByteStringFieldValidator extends FieldValidator<ByteString> {
     /**
      * {@inheritDoc}
      *
-     * <p>Performs no validation.
+     * <p>Performs no action since no special options are declared for the {@link ByteString}
+     * validation.
      */
     @Override
     protected void doValidate() {
