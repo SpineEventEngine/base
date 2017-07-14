@@ -27,7 +27,7 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import io.spine.base.ConversionException;
-import io.spine.base.Types;
+import io.spine.reflect.Types;
 import io.spine.gradle.compiler.message.MessageTypeCache;
 import io.spine.gradle.compiler.message.fieldtype.FieldType;
 import io.spine.gradle.compiler.message.fieldtype.ProtoScalarType;

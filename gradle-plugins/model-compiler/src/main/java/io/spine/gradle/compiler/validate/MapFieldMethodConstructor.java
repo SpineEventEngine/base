@@ -26,7 +26,7 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
 import io.spine.base.ConversionException;
-import io.spine.base.Types;
+import io.spine.reflect.Types;
 import io.spine.gradle.compiler.message.fieldtype.MapFieldType;
 import io.spine.validate.ValidationException;
 import org.slf4j.Logger;
