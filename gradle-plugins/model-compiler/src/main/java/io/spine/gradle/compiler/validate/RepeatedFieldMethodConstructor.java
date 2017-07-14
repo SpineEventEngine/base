@@ -41,8 +41,10 @@ import java.util.Collection;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type.*;
+import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type.TYPE_ENUM;
 import static io.spine.gradle.compiler.util.JavaCode.toJavaFieldName;
+import static io.spine.gradle.compiler.validate.ClassNames.getClassName;
+import static io.spine.gradle.compiler.validate.ClassNames.getParameterClassName;
 import static io.spine.gradle.compiler.validate.MethodConstructors.clearPrefix;
 import static io.spine.gradle.compiler.validate.MethodConstructors.clearProperty;
 import static io.spine.gradle.compiler.validate.MethodConstructors.createConvertSingularValue;
@@ -102,9 +104,9 @@ class RepeatedFieldMethodConstructor implements MethodConstructor {
         this.methodNamePart = toJavaFieldName(fieldDescriptor.getName(), true);
         final String javaClass = builder.getJavaClass();
         final String javaPackage = builder.getJavaPackage();
-        this.builderClassName = ClassNames.getClassName(javaPackage, javaClass);
+        this.builderClassName = getClassName(javaPackage, javaClass);
         final MessageTypeCache messageTypeCache = builder.getMessageTypeCache();
-        this.listElementClassName = ClassNames.getParameterClassName(fieldDescriptor, messageTypeCache);
+        this.listElementClassName = getParameterClassName(fieldDescriptor, messageTypeCache);
         this.isScalarOrEnum = isScalarType(fieldDescriptor) || isEnumType(fieldDescriptor);
     }
 
