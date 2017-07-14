@@ -16,14 +16,13 @@ import static org.hamcrest.MatcherAssert.assertThat;
  */
 public abstract class FieldValidatorShould<V> {
 
-    protected abstract FieldValidator<V>
-    getValidatorForValidatedRequiredField(ImmutableList<V> values);
+    protected abstract FieldValidator<V> validatedRequiredRepeatedField(ImmutableList<V> values);
 
-    protected abstract FieldValidator<V> getValidatorForRequiredField(ImmutableList<V> values);
+    protected abstract FieldValidator<V> requiredRepeatedField(ImmutableList<V> values);
 
-    protected abstract FieldValidator<V> getValidatorForValidatedField(ImmutableList<V> values);
+    protected abstract FieldValidator<V> validatedRepeatedField(ImmutableList<V> values);
 
-    protected abstract FieldValidator<V> getValidatorForUncheckedField(ImmutableList<V> values);
+    protected abstract FieldValidator<V> uncheckedRepeatedField(ImmutableList<V> values);
 
 
     protected abstract V newValue();
@@ -32,31 +31,39 @@ public abstract class FieldValidatorShould<V> {
 
     @Test
     public void validate_repeated_fields_if_specified() {
-        final FieldValidator<V> validator = getValidatorForValidatedRequiredField(of(newValue(),
-                                                                                     defaultValue()));
+        final FieldValidator<V> validator = validatedRequiredRepeatedField(of(newValue(),
+                                                                              defaultValue()));
         final List<ConstraintViolation> violations = validator.validate();
         assertNotEmpty(violations);
     }
 
     @Test
     public void skip_repeated_fields_if_not_specified() {
-        final FieldValidator<V> validator = getValidatorForUncheckedField(of(defaultValue(),
-                                                                             defaultValue(),
-                                                                             defaultValue()));
+        final FieldValidator<V> validator = uncheckedRepeatedField(of(defaultValue(),
+                                                                      defaultValue(),
+                                                                      defaultValue()));
         final List<ConstraintViolation> violations = validator.validate();
         assertEmpty(violations);
     }
 
     @Test
     public void skip_empty_repeated_fields_if_not_required() {
-        final FieldValidator<V> validator = getValidatorForUncheckedField(ImmutableList.<V>of());
+        final FieldValidator<V> validator = uncheckedRepeatedField(ImmutableList.<V>of());
         final List<ConstraintViolation> violations = validator.validate();
         assertEmpty(violations);
     }
 
     @Test
     public void skip_empty_repeated_validated_not_required_fields() {
-        final FieldValidator<V> validator = getValidatorForValidatedField(ImmutableList.<V>of());
+        final FieldValidator<V> validator = validatedRepeatedField(ImmutableList.<V>of());
+        final List<ConstraintViolation> violations = validator.validate();
+        assertEmpty(violations);
+    }
+
+    @Test
+    public void not_validate_elements_of_repeated_field() {
+        final FieldValidator<V> validator = requiredRepeatedField(of(defaultValue(),
+                                                                     defaultValue()));
         final List<ConstraintViolation> violations = validator.validate();
         assertEmpty(violations);
     }
