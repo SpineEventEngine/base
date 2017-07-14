@@ -112,7 +112,6 @@ public class ProtoToJavaMapperPlugin extends SpinePlugin {
         };
     }
 
-    @SuppressWarnings("MethodParameterNamingConvention")
     private static void mapProtoToJavaAndWriteProps(String targetGeneratedResourcesDir,
                                                     String descriptorSetPath) {
         final Map<String, String> propsMap = newHashMap();

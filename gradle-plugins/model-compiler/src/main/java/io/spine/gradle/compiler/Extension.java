@@ -259,7 +259,7 @@ public class Extension {
     }
 
     // The variable and its setter is named according to its meaning.
-    @SuppressWarnings({"InstanceMethodNamingConvention", "MethodParameterNamingConvention"})
+    @SuppressWarnings("InstanceMethodNamingConvention")
     public void setGenerateValidatingBuildersFromClasspath(boolean generateFromClasspath) {
         this.generateBuildersFromClasspath = generateFromClasspath;
         log().trace("Validating builder are set to be generated from  {}",
@@ -267,7 +267,7 @@ public class Extension {
     }
 
     // The variable and its setter is named according to its meaning.
-    @SuppressWarnings({"MethodParameterNamingConvention", "unused"})
+    @SuppressWarnings("unused")
     public void setGenerateValidatingBuilders(boolean generateValidatingBuilders) {
         this.generateValidatingBuilders = generateValidatingBuilders;
         log().trace("Validating builder generation has been {}",

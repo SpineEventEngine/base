@@ -366,8 +366,8 @@
     <inspection_tool class="MethodCount" enabled="true" level="WARNING" enabled_by_default="true">
       <scope name="Tests" level="TYPO" enabled="true">
         <option name="m_limit" value="20" />
-        <option name="ignoreGettersAndSetters" value="false" />
-        <option name="ignoreOverridingMethods" value="false" />
+        <option name="ignoreGettersAndSetters" value="true" />
+        <option name="ignoreOverridingMethods" value="true" />
       </scope>
       <option name="m_limit" value="20" />
       <option name="ignoreGettersAndSetters" value="true" />
@@ -522,7 +522,7 @@
     <inspection_tool class="PackageWithTooManyClasses" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="limit" value="50" />
     </inspection_tool>
-    <inspection_tool class="ParameterNamingConvention" enabled="true" level="WARNING" enabled_by_default="true">
+    <inspection_tool class="ParameterNamingConvention" enabled="true" level="TYPO" enabled_by_default="true">
       <option name="m_regex" value="[a-z][A-Za-z\d]*" />
       <option name="m_minLength" value="1" />
       <option name="m_maxLength" value="20" />
@@ -718,7 +718,7 @@
     </inspection_tool>
     <inspection_tool class="UnnecessaryCallToStringValueOf" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="UnnecessaryConstantArrayCreationExpression" enabled="true" level="WARNING" enabled_by_default="true" />
-    <inspection_tool class="UnnecessaryConstructor" enabled="true" level="TYPO" enabled_by_default="true">
+    <inspection_tool class="UnnecessaryConstructor" enabled="false" level="TYPO" enabled_by_default="false">
       <option name="ignoreAnnotations" value="true" />
     </inspection_tool>
     <inspection_tool class="UnnecessaryDefault" enabled="true" level="WARNING" enabled_by_default="true" />

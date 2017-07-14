@@ -219,7 +219,6 @@ class RepeatedFieldMethodConstructor implements MethodConstructor {
         return modifyCollectionByIndexWithRaw(SET_RAW_PREFIX, SET_PREFIX);
     }
 
-    @SuppressWarnings("MethodParameterNamingConvention")    // named according to its meaning.
     private MethodSpec modifyCollectionByIndexWithRaw(String methodNamePrefix,
                                                       String realBuilderCallPrefix) {
         final String methodName = methodNamePrefix + methodNamePart;
