@@ -60,7 +60,7 @@ class BooleanFieldValidator extends FieldValidator<Boolean> {
     }
 
     @Override
-    protected void doValidate() {
+    protected void validateSpecific() {
         if (isRequiredField()) {
             log().warn("'required' option not allowed for boolean field");
         }

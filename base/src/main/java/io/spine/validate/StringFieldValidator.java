@@ -55,7 +55,7 @@ class StringFieldValidator extends FieldValidator<String> {
     }
 
     @Override
-    protected void doValidate() {
+    protected void validateSpecific() {
         checkIfMatchesToRegexp();
     }
 

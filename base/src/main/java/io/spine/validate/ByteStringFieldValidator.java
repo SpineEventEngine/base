@@ -62,7 +62,7 @@ class ByteStringFieldValidator extends FieldValidator<ByteString> {
      * validation.
      */
     @Override
-    protected void doValidate() {
+    protected void validateSpecific() {
         // NoOp
     }
 
