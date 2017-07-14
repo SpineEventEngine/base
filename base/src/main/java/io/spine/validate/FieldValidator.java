@@ -27,6 +27,7 @@ import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import com.google.protobuf.Message;
 import io.spine.base.FieldPath;
+import io.spine.option.IfInvalidOption;
 import io.spine.option.IfMissingOption;
 import io.spine.option.OptionsProto;
 import io.spine.util.CodeLayout;
@@ -62,6 +63,8 @@ abstract class FieldValidator<V> {
     private final boolean isFirstField;
     private final boolean required;
     private final IfMissingOption ifMissingOption;
+    private final boolean validate;
+    private final IfInvalidOption ifInvalid;
 
     /**
      * If set the validator would assume that the field is required even
@@ -93,6 +96,8 @@ abstract class FieldValidator<V> {
         this.isFirstField = fieldDescriptor.getIndex() == 0;
         this.required = getFieldOption(OptionsProto.required);
         this.ifMissingOption = getFieldOption(OptionsProto.ifMissing);
+        this.validate = getFieldOption(OptionsProto.valid);
+        this.ifInvalid = getFieldOption(OptionsProto.ifInvalid);
     }
 
     @SuppressWarnings({"unchecked", "IfMayBeConditional"})
@@ -140,7 +145,9 @@ abstract class FieldValidator<V> {
         if (isRequiredEntityIdField()) {
             validateEntityId();
         }
-        doValidate();
+        if (shouldValidate()) {
+            doValidate();
+        }
         final List<ConstraintViolation> result = assembleViolations();
         return result;
     }
@@ -214,10 +221,10 @@ abstract class FieldValidator<V> {
             addViolation(newViolation(ifMissingOption));
             return;
         }
-        for (V value : values) {
+        if (!isRepeatedOrMap()) {
+            final V value = values.get(0);
             if (isValueNotSet(value)) {
                 addViolation(newViolation(ifMissingOption));
-                return; // because one error message is enough for the "required" option
             }
         }
     }
@@ -272,6 +279,18 @@ abstract class FieldValidator<V> {
         return option;
     }
 
+    protected final boolean shouldValidate() {
+        return !isRepeatedOrMap() || validate;
+    }
+
+    protected final IfInvalidOption ifInvalid() {
+        return ifInvalid;
+    }
+
+    protected final boolean getValidateOption() {
+        return validate;
+    }
+
     /**
      * Returns {@code true} if the field must be an entity ID
      * (if the field is the first in a command message), {@code false} otherwise.
@@ -281,13 +300,14 @@ abstract class FieldValidator<V> {
         return result;
     }
 
+    protected boolean isRepeatedOrMap() {
+        return fieldDescriptor.isRepeated() || fieldDescriptor.isMapField();
+    }
+
+
     /** Returns a path to the current field. */
     protected FieldPath getFieldPath() {
         return fieldPath;
-    }
-
-    protected boolean isRepeatedOrMap() {
-        return fieldDescriptor.isRepeated() || fieldDescriptor.isMapField();
     }
 
     private enum LogSingleton {

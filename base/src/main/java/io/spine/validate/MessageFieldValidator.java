@@ -49,8 +49,6 @@ import static io.spine.validate.Validate.isDefault;
 class MessageFieldValidator extends FieldValidator<Message> {
 
     private final TimeOption timeConstraint;
-    private final boolean validate;
-    private final IfInvalidOption ifInvalid;
     private final boolean isFieldTimestamp;
 
     /**
@@ -69,22 +67,18 @@ class MessageFieldValidator extends FieldValidator<Message> {
               FieldValidator.<Message>toValueList(fieldValues),
               rootFieldPath,
               strict);
-        this.validate = getFieldOption(OptionsProto.valid);
-        this.ifInvalid = getFieldOption(OptionsProto.ifInvalid);
         this.timeConstraint = getFieldOption(OptionsProto.when);
         this.isFieldTimestamp = isTimestamp();
     }
 
     @Override
     protected void doValidate() {
-        if (validate) {
+        final boolean recursiveValidationRequired = getValidateOption();
+        if (recursiveValidationRequired) {
             validateFields();
         }
-        if (shouldValidateOwnMessages()) {
-            if (isFieldTimestamp) {
-                validateTimestamps();
-            }
-            // Some additional options should be checked here.
+        if (isFieldTimestamp) {
+            validateTimestamps();
         }
     }
 
@@ -109,19 +103,6 @@ class MessageFieldValidator extends FieldValidator<Message> {
                 addViolation(newValidViolation(value, violations));
             }
         }
-    }
-
-    /**
-     * Shows if the message own validation constraints should be checked.
-     *
-     * <p>More formally, returns {@code true} if the options representing concrete message
-     * validation constraints should be evaluated.
-     *
-     * <p>An example of such option is {@code when} option for the {@link Timestamp} values.
-     */
-    private boolean shouldValidateOwnMessages() {
-        final boolean repeatedOrMap = isRepeatedOrMap();
-        return !repeatedOrMap || validate;
     }
 
     private void validateTimestamps() {
@@ -172,6 +153,7 @@ class MessageFieldValidator extends FieldValidator<Message> {
 
     private ConstraintViolation newValidViolation(Message fieldValue,
                                                   Iterable<ConstraintViolation> violations) {
+        final IfInvalidOption ifInvalid = ifInvalid();
         final String msg = getErrorMsgFormat(ifInvalid, ifInvalid.getMsgFormat());
         final ConstraintViolation violation = ConstraintViolation.newBuilder()
                                                                  .setMsgFormat(msg)
