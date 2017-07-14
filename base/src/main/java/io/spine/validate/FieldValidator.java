@@ -153,7 +153,7 @@ abstract class FieldValidator<V> {
     }
 
     /**
-     * Performs the custom type-dependant field validation.
+     * Performs custom type-dependant field validation.
      *
      * <p>Use {@link #addViolation(ConstraintViolation)} method in custom implementations.
      */
