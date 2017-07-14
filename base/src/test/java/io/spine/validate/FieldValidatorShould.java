@@ -16,13 +16,13 @@ import static org.hamcrest.MatcherAssert.assertThat;
  */
 public abstract class FieldValidatorShould<V> {
 
-    protected abstract FieldValidator<V> validatedRequiredRepeatedField(ImmutableList<V> values);
+    protected abstract FieldValidator<V> validatedRequiredRepeatedField(List<V> values);
 
-    protected abstract FieldValidator<V> requiredRepeatedField(ImmutableList<V> values);
+    protected abstract FieldValidator<V> requiredRepeatedField(List<V> values);
 
-    protected abstract FieldValidator<V> validatedRepeatedField(ImmutableList<V> values);
+    protected abstract FieldValidator<V> validatedRepeatedField(List<V> values);
 
-    protected abstract FieldValidator<V> uncheckedRepeatedField(ImmutableList<V> values);
+    protected abstract FieldValidator<V> uncheckedRepeatedField(List<V> values);
 
 
     protected abstract V newValue();

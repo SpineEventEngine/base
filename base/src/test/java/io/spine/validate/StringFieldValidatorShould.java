@@ -1,6 +1,5 @@
 package io.spine.validate;
 
-import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.base.FieldPath;
 import io.spine.test.validate.msg.MessageWithRepeatedRequiredValidatedStringField;
@@ -35,22 +34,22 @@ public class StringFieldValidatorShould extends FieldValidatorShould<String> {
                                                            .getFields()
                                                            .get(0);
     @Override
-    protected StringFieldValidator validatedRequiredRepeatedField(ImmutableList<String> values) {
+    protected StringFieldValidator validatedRequiredRepeatedField(List<String> values) {
         return getValidator(VALIDATED_REQUIRED_FIELD_DESC, values);
     }
 
     @Override
-    protected StringFieldValidator requiredRepeatedField(ImmutableList<String> values) {
+    protected StringFieldValidator requiredRepeatedField(List<String> values) {
         return getValidator(REQUIRED_FIELD_DESC, values);
     }
 
     @Override
-    protected StringFieldValidator validatedRepeatedField(ImmutableList<String> values) {
+    protected StringFieldValidator validatedRepeatedField(List<String> values) {
         return getValidator(VALIDATED_FIELD_DESC, values);
     }
 
     @Override
-    protected StringFieldValidator uncheckedRepeatedField(ImmutableList<String> values) {
+    protected StringFieldValidator uncheckedRepeatedField(List<String> values) {
         return getValidator(UNCHECKED_FIELD_DESC, values);
     }
 

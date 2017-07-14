@@ -1,6 +1,5 @@
 package io.spine.validate;
 
-import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
 import io.spine.base.FieldPath;
@@ -38,22 +37,22 @@ public class MessageFieldValidatorShould extends FieldValidatorShould<Message> {
                                                             .get(0);
 
     @Override
-    protected MessageFieldValidator validatedRequiredRepeatedField(ImmutableList<Message> values) {
+    protected MessageFieldValidator validatedRequiredRepeatedField(List<Message> values) {
         return getValidator(VALIDATED_REQUIRED_FIELD_DESC, values);
     }
 
     @Override
-    protected MessageFieldValidator requiredRepeatedField(ImmutableList<Message> values) {
+    protected MessageFieldValidator requiredRepeatedField(List<Message> values) {
         return getValidator(REQUIRED_FIELD_DESC, values);
     }
 
     @Override
-    protected MessageFieldValidator validatedRepeatedField(ImmutableList<Message> values) {
+    protected MessageFieldValidator validatedRepeatedField(List<Message> values) {
         return getValidator(VALIDATED_FIELD_DESC, values);
     }
 
     @Override
-    protected MessageFieldValidator uncheckedRepeatedField(ImmutableList<Message> values) {
+    protected MessageFieldValidator uncheckedRepeatedField(List<Message> values) {
         return getValidator(UNCHECKED_FIELD_DESC, values);
     }
 
