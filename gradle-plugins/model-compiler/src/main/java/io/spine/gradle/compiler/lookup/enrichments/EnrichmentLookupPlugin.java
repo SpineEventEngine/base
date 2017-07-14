@@ -112,7 +112,7 @@ public class EnrichmentLookupPlugin extends SpinePlugin {
 
     private static void findEnrichmentsAndWriteProps(
             // It's important to have a self-explanatory name for this variable.
-            @SuppressWarnings("MethodParameterNamingConvention") String targetGeneratedResourcesDir,
+            String targetGeneratedResourcesDir,
             String descriptorSetPath) {
         log().debug("Enrichment lookup started");
 
