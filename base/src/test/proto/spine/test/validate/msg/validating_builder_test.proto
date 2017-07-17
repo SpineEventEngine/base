@@ -33,74 +33,86 @@ import "google/protobuf/timestamp.proto";
 import "spine/options.proto";
 
 import "spine/net/email_address.proto";
+import "spine/net/url.proto";
 import "spine/people/person_name.proto";
 
-message Customer {
+// The test definitions for the ValidatingBuilder tests.
+//
+// Use in ValidatingBuilderShould.java only.
 
-    // Short names of the contact people.
+message Project {
+
+    // The tasks contained in this project
     //
     // This field is both required and validated.
     //
-    repeated string name = 1 [(valid) = true, (pattern).regex = ".+\\s+.+", (required) = true];
+    repeated Task task = 1 [(valid) = true, (required) = true];
 
-    // The contact emails.
+    // The emails of the project subscribers.
     //
     // This field is validated but not required.
-    repeated string email = 2 [(valid) = true, (pattern).regex = ".+@.+\\..+"];
+    repeated string subscriber_email = 2 [(valid) = true, (pattern).regex = ".+@.+\\..+"];
 
-    // The map of the positions in the company to the peaple who occupy them.
+    // The members of the project.
     //
-    // This field is required but never validated.
+    // This field is required, but the contents of the messages are never validated.
     //
-    map<string, people.PersonName> position_in_company = 3 [(required) = true, (valid) = true];
+    repeated Member member = 3 [(required) = true];
 
-    // The fax numbers of the company.
-    //
-    // This field is neither required, nor validated (since nobody uses fax nowadays and
-    // the humanity has lost the knowledge about how do they even look like).
-    //
-    repeated string fax_number = 4;
-
-    // The contracts with this customer.
-    //
-    // This field validated but not required.
-    //
-    map<string, Contract> contract = 5 [(valid) = true, (required) = false];
-
-    // The old contracts with this customer.
+    // A set of descriptions which are added to this project.
     //
     // This field is neither required, nor validated.
     //
-    map<string, Contract> old_contract = 6;
+    repeated string description = 4;
 
-    // The signatures of the company proxy people.
+    // The map of the roles of the members in this project.
     //
-    // This field is required but not validated.
+    // This field is required but never validated.
     //
-    repeated Signature sign = 7 [(required) = true];
+    map<string, Member> role = 5 [(required) = true, (valid) = true];
 
-    // The map of the country name to the time when the customer poped up on the marked for that
-    // country.
+    // A map of the task IDs to the task attachments.
     //
-    // This field is required but not validated.
+    // This field validated but not required.
+    //
+    map<string, Attachment> attachment = 6 [(valid) = true, (required) = false];
+
+    // The map of the task IDs to the time when the task was deleted.
+    //
+    // This field is required, but the contents of the messages are never validated.
     //
     // Note that the `when` option is redundant.
     //
-    map<string, google.protobuf.Timestamp> appeared_on_market = 8 [(required) = true, (when).in = PAST];
+    map<string, google.protobuf.Timestamp> deleted_task = 7 [(required) = true, (when).in = PAST];
+
+    // The map of the task IDs to the labels of the task.
+    //
+    // This field is neither required, nor validated.
+    //
+    map<string, string> label = 8;
 }
 
-message Contract {
+message Task {
 
-    google.protobuf.Timestamp since = 1 [(required) = true, (when).in = PAST];
+    string id = 1 [(required) = true];
 
-    google.protobuf.Timestamp expires = 2;
-
-    string text = 3 [(required) = true];
+    string name = 2 [(required) = true];
 }
 
-message Signature {
+message Member {
 
-    bytes value = 1 [(required) = true];
+    string id = 1 [(required) = true];
 
     string name = 2 [(pattern).regex = ".+\\s+.+"];
+
+    bytes avatar_image = 3 [(required) = true];
+}
+
+message Attachment {
+
+    string id = 1 [(required) = true];
+
+    string title = 2 [(required) = true, (pattern).regex = ".*\\w+.*"];
+
+    spine.net.Url url = 3 [(required) = true, (valid) = true];
 }

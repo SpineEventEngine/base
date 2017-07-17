@@ -1,17 +1,17 @@
 package io.spine.validate;
 
 import com.google.protobuf.Timestamp;
-import io.spine.Identifier;
-import io.spine.people.PersonName;
-import io.spine.test.validate.msg.builder.Contract;
-import io.spine.test.validate.msg.builder.CustomerVBuilder;
-import io.spine.test.validate.msg.builder.Signature;
+import io.spine.test.validate.msg.builder.Attachment;
+import io.spine.test.validate.msg.builder.Member;
+import io.spine.test.validate.msg.builder.ProjectVBuilder;
+import io.spine.test.validate.msg.builder.Task;
 import org.junit.Before;
 import org.junit.Test;
 
 import static com.google.protobuf.ByteString.copyFrom;
 import static com.google.protobuf.util.Durations.fromSeconds;
 import static com.google.protobuf.util.Timestamps.add;
+import static io.spine.Identifier.newUuid;
 import static io.spine.time.Time.getCurrentTime;
 
 /**
@@ -27,7 +27,7 @@ import static io.spine.time.Time.getCurrentTime;
  */
 public class ValidatingBuilderShould {
 
-    private CustomerVBuilder builder;
+    private ProjectVBuilder builder;
 
     @Before
     public void setUp() {
@@ -36,112 +36,101 @@ public class ValidatingBuilderShould {
 
     @Test(expected = ValidationException.class)
     public void check_required_validated_repeated_fields() {
-        builder.addName("invalid_name");
+        builder.addTask(Task.getDefaultInstance());
     }
 
     @Test(expected = ValidationException.class)
     public void ensure_required_validated_repeated_fields() {
-        builder.clearName();
+        builder.clearTask();
         builder.build();
     }
 
     @Test(expected = ValidationException.class)
     public void check_required_validated_map_field_values() {
-        builder.putPositionInCompany("SEO", PersonName.getDefaultInstance());
+        builder.putRole("Co-owner", Member.getDefaultInstance());
     }
 
     @Test(expected = ValidationException.class)
     public void ensure_required_validated_map_fields() {
-        builder.clearPositionInCompany();
+        builder.clearRole();
         builder.build();
     }
 
     @Test(expected = ValidationException.class)
     public void check_validated_repeated_fields() {
-        builder.addEmail("");
+        builder.addSubscriberEmail("");
     }
 
     @Test
     public void dispense_with_validated_repeated_fields() {
-        builder.clearEmail();
+        builder.clearSubscriberEmail();
         builder.build();
     }
 
     @Test(expected = ValidationException.class)
     public void check_validated_map_field_values() {
-        builder.putContract(Identifier.newUuid(), Contract.getDefaultInstance());
+        builder.putAttachment(newUuid(), Attachment.getDefaultInstance());
     }
 
     @Test
     public void dispense_with_validated_map_fields() {
-        builder.clearContract();
+        builder.clearAttachment();
         builder.build();
     }
 
     @Test
     public void accept_any_required_repeated_fields() {
-        builder.addSign(Signature.newBuilder()
-                                 .setValue(copyFrom(new byte[1]))
-                                 .build());
+        builder.addMember(Member.getDefaultInstance());
     }
 
     @Test(expected = ValidationException.class)
     public void ensure_required_repeated_fields() {
-        builder.clearSign();
+        builder.clearMember();
         builder.build();
     }
 
     @Test
     public void accept_any_required_map_field_value() {
-        builder.putAppearedOnMarket("Montenegro", timeInFuture());
+        builder.putDeletedTask(newUuid(), timeInFuture());
     }
 
     @Test(expected = ValidationException.class)
     public void ensure_required_map_fields() {
-        builder.clearAppearedOnMarket();
+        builder.clearDeletedTask();
         builder.build();
     }
 
     @Test
     public void accept_any_unchecked_repeated_fields() {
-        builder.addFaxNumber("Who knows how do they actually look like?");
+        builder.addDescription("");
     }
 
     @Test
     public void dispense_with_unchecked_repeated_fields() {
-        builder.clearFaxNumber();
+        builder.clearDescription();
         builder.build();
     }
 
     @Test
     public void accept_any_unchecked_map_field_value() {
-        builder.putOldContract("Forgotten", Contract.getDefaultInstance());
+        builder.putLabel("empty", "none");
     }
 
     @Test
     public void dispense_with_unchecked_map_fields() {
-        builder.clearOldContract();
+        builder.clearLabel();
         builder.build();
     }
 
     /**
-     * Creates a valid {@link CustomerVBuilder} instance.
+     * Creates a valid {@link ProjectVBuilder} instance.
      */
-    private static CustomerVBuilder fill() {
-        final PersonName fullName = PersonName.newBuilder()
-                                              .setHonorificPrefix("Mr.")
-                                              .setGivenName("John")
-                                              .setFamilyName("Smith")
-                                              .build();
-        final Timestamp timeInPast = timeInPast();
-        final Signature sign = Signature.newBuilder()
-                                        .setValue(copyFrom(new byte[]{1, 2, 3}))
-                                        .build();
-        final CustomerVBuilder builder = CustomerVBuilder.newBuilder()
-                                                         .addName("John Smith")
-                                                         .putPositionInCompany("CEO", fullName)
-                                                         .addSign(sign)
-                                                         .putAppearedOnMarket("USA", timeInPast);
+    private static ProjectVBuilder fill() {
+        final ProjectVBuilder builder = ProjectVBuilder.newBuilder()
+                                                       .addTask(task())
+                                                       .addMember(member())
+                                                       .putRole("Ownner", member())
+                                                       .putDeletedTask(newUuid(), timeInPast());
         builder.build(); // Ensure no ValidationException is thrown.
         return builder;
     }
@@ -152,5 +141,20 @@ public class ValidatingBuilderShould {
 
     private static Timestamp timeInFuture() {
         return add(getCurrentTime(), fromSeconds(1000L));
+    }
+
+    private static Task task() {
+        final Task.Builder task = Task.newBuilder()
+                                      .setId(newUuid());
+        task.setName("Task name" + task.getId());
+        return task.build();
+    }
+
+    private static Member member() {
+        final Member.Builder member = Member.newBuilder()
+                                            .setId(newUuid())
+                                            .setName("John Smith")
+                                            .setAvatarImage(copyFrom(new byte[] {1, 2, 3}));
+        return member.build();
     }
 }
