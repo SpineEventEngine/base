@@ -70,7 +70,7 @@ public class MessageFieldValidatorShould extends FieldValidatorShould<Message> {
     @Override
     protected InvalidMessage newValue() {
         return InvalidMessage.newBuilder()
-                             .setS("some non-empty string")
+                             .setInvalidField("some non-empty string")
                              .build();
     }
 

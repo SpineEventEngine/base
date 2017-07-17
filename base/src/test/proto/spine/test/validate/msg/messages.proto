@@ -221,5 +221,5 @@ message MessageWithMapMessageField {
 // The field `s` must contain a non-empty value, but it also must match "^$" regex, which represents
 // an empty string. Thus, any instance of this message type is invalid.
 message InvalidMessage {
-    string s = 1 [(required) = true, (pattern).regex = "^$"];
+    string invalid_field = 1 [(required) = true, (pattern).regex = "^$"];
 }
