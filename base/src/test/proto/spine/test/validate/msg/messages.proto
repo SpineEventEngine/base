@@ -216,6 +216,10 @@ message MessageWithMapMessageField {
     map<string, google.protobuf.Any> map_field = 1;
 }
 
+message MessageWithMapByteStringField {
+    map<string, bytes> map_field = 1;
+}
+
 // A message which is invalid by design.
 //
 // The field `s` must contain a non-empty value, but it also must match "^$" regex, which represents

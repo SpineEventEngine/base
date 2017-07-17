@@ -21,6 +21,7 @@
 package io.spine.validate;
 
 import com.google.protobuf.BoolValue;
+import com.google.protobuf.ByteString;
 import com.google.protobuf.DoubleValue;
 import com.google.protobuf.FieldMask;
 import com.google.protobuf.FloatValue;
@@ -28,14 +29,20 @@ import com.google.protobuf.Int32Value;
 import com.google.protobuf.Int64Value;
 import com.google.protobuf.StringValue;
 import io.spine.base.FieldPath;
+import io.spine.test.validate.msg.MessageWithMapStringField;
+import io.spine.test.validate.msg.MessageWithMapByteStringField;
 import io.spine.test.validate.msg.RequiredByteStringFieldValue;
 import io.spine.test.validate.msg.RequiredEnumFieldValue;
 import io.spine.test.validate.msg.RequiredMsgFieldValue;
 import org.junit.Test;
 
+import static com.google.common.collect.ImmutableMap.of;
 import static com.google.protobuf.Descriptors.FieldDescriptor;
+import static io.spine.validate.FieldValidatorFactory.create;
 import static java.util.Collections.emptyList;
-import static org.junit.Assert.assertTrue;
+import static java.util.Collections.emptyMap;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.junit.Assert.assertThat;
 
 /**
  * @author Alexander Litus
@@ -48,89 +55,127 @@ public class FieldValidatorFactoryShould {
     public void create_message_field_validator() {
         final FieldDescriptor field = RequiredMsgFieldValue.getDescriptor().getFields().get(0);
 
-        final FieldValidator validator = FieldValidatorFactory.create(field, StringValue.getDefaultInstance(), FIELD_PATH);
+        final FieldValidator validator = create(field,
+                                                StringValue.getDefaultInstance(),
+                                                FIELD_PATH);
 
-        assertTrue(validator instanceof MessageFieldValidator);
+        assertThat(validator, instanceOf(MessageFieldValidator.class));
     }
 
     @Test
     public void create_integer_field_validator() {
         final FieldDescriptor field = Int32Value.getDescriptor().getFields().get(0);
 
-        final FieldValidator validator = FieldValidatorFactory.create(field, 0, FIELD_PATH);
+        final FieldValidator validator = create(field, 0, FIELD_PATH);
 
-        assertTrue(validator instanceof IntegerFieldValidator);
+        assertThat(validator, instanceOf(IntegerFieldValidator.class));
     }
 
     @Test
     public void create_long_field_validator() {
         final FieldDescriptor field = Int64Value.getDescriptor().getFields().get(0);
 
-        final FieldValidator validator = FieldValidatorFactory.create(field, 0, FIELD_PATH);
+        final FieldValidator validator = create(field, 0, FIELD_PATH);
 
-        assertTrue(validator instanceof LongFieldValidator);
+        assertThat(validator, instanceOf(LongFieldValidator.class));
     }
 
     @Test
     public void create_float_field_validator() {
         final FieldDescriptor field = FloatValue.getDescriptor().getFields().get(0);
 
-        final FieldValidator validator = FieldValidatorFactory.create(field, 0, FIELD_PATH);
+        final FieldValidator validator = create(field, 0, FIELD_PATH);
 
-        assertTrue(validator instanceof FloatFieldValidator);
+        assertThat(validator, instanceOf(FloatFieldValidator.class));
     }
 
     @Test
     public void create_double_field_validator() {
         final FieldDescriptor field = DoubleValue.getDescriptor().getFields().get(0);
 
-        final FieldValidator validator = FieldValidatorFactory.create(field, 0, FIELD_PATH);
+        final FieldValidator validator = create(field, 0, FIELD_PATH);
 
-        assertTrue(validator instanceof DoubleFieldValidator);
+        assertThat(validator, instanceOf(DoubleFieldValidator.class));
     }
 
     @Test
     public void create_String_field_validator() {
         final FieldDescriptor field = StringValue.getDescriptor().getFields().get(0);
 
-        final FieldValidator validator = FieldValidatorFactory.create(field, "", FIELD_PATH);
+        final FieldValidator validator = create(field, "", FIELD_PATH);
 
-        assertTrue(validator instanceof StringFieldValidator);
+        assertThat(validator, instanceOf(StringFieldValidator.class));
     }
 
     @Test
     public void create_ByteString_field_validator() {
-        final FieldDescriptor field = RequiredByteStringFieldValue.getDescriptor().getFields().get(0);
+        final FieldDescriptor field = RequiredByteStringFieldValue.getDescriptor()
+                                                                  .getFields()
+                                                                  .get(0);
 
-        final FieldValidator validator = FieldValidatorFactory.create(field, new Object(), FIELD_PATH);
+        final FieldValidator validator = create(field, new Object(), FIELD_PATH);
 
-        assertTrue(validator instanceof ByteStringFieldValidator);
+        assertThat(validator, instanceOf(ByteStringFieldValidator.class));
     }
 
     @Test
     public void create_Enum_field_validator() {
         final FieldDescriptor field = RequiredEnumFieldValue.getDescriptor().getFields().get(0);
 
-        final FieldValidator validator = FieldValidatorFactory.create(field, new Object(), FIELD_PATH);
+        final FieldValidator validator = create(field, new Object(), FIELD_PATH);
 
-        assertTrue(validator instanceof EnumFieldValidator);
+        assertThat(validator, instanceOf(EnumFieldValidator.class));
     }
 
     @Test
     public void create_Boolean_field_validator() {
         final FieldDescriptor field = BoolValue.getDescriptor().getFields().get(0);
 
-        final FieldValidator validator = FieldValidatorFactory.create(field, new Object(), FIELD_PATH);
+        final FieldValidator validator = create(field, new Object(), FIELD_PATH);
 
-        assertTrue(validator instanceof BooleanFieldValidator);
+        assertThat(validator, instanceOf(BooleanFieldValidator.class));
     }
 
     @Test
     public void create_field_validator_for_repeated_field() {
         final FieldDescriptor field = FieldMask.getDescriptor().getFields().get(0);
 
-        final FieldValidator<?> validator = FieldValidatorFactory.create(field, emptyList(), FIELD_PATH);
+        final FieldValidator<?> validator = create(field, emptyList(), FIELD_PATH);
 
-        assertTrue(validator instanceof StringFieldValidator);
+        assertThat(validator, instanceOf(StringFieldValidator.class));
+    }
+
+    @Test
+    public void create_field_validator_for_map_String_field() {
+        final FieldDescriptor field = MessageWithMapStringField.getDescriptor()
+                                                               .getFields()
+                                                               .get(0);
+        final FieldValidator<?> validator = create(field,
+                                                   of("key", "value"),
+                                                   FIELD_PATH);
+
+        assertThat(validator, instanceOf(StringFieldValidator.class));
+    }
+
+    @Test
+    public void create_field_validator_for_empty_map_field() {
+        final FieldDescriptor field = MessageWithMapStringField.getDescriptor()
+                                                               .getFields()
+                                                               .get(0);
+        final FieldValidator<?> validator = create(field, emptyMap(), FIELD_PATH);
+
+        assertThat(validator, instanceOf(EmptyMapFieldValidator.class));
+    }
+
+    @Test
+    public void create_field_validator_for_bytes_map_field() {
+        final FieldDescriptor field = MessageWithMapByteStringField.getDescriptor()
+                                                                   .getFields()
+                                                                   .get(0);
+        final FieldValidator<?> validator = create(field,
+                                                   of("key", ByteString.EMPTY),
+                                                   FIELD_PATH);
+
+        assertThat(validator, instanceOf(ByteStringFieldValidator.class));
     }
 }
