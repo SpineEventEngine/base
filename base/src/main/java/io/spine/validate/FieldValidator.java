@@ -303,7 +303,8 @@ abstract class FieldValidator<V> {
     }
 
     protected boolean isRepeatedOrMap() {
-        return fieldDescriptor.isRepeated() || fieldDescriptor.isMapField();
+        return fieldDescriptor.isRepeated()
+                || fieldDescriptor.isMapField();
     }
 
 

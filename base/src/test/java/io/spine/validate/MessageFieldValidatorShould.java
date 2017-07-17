@@ -4,11 +4,13 @@ import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
 import io.spine.base.FieldPath;
 import io.spine.test.validate.msg.InvalidMessage;
+import io.spine.test.validate.msg.MessageWithMapMessageField;
 import io.spine.test.validate.msg.MessageWithRepeatedRequiredValidatedMessageField;
 import io.spine.test.validate.msg.MessageWithRepeatedUnchekedMessageField;
 import io.spine.test.validate.msg.MessageWithRepeatedValidatedMessageField;
 import io.spine.test.validate.msg.MessegeWithRepeatedRequiredMessageField;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -36,6 +38,10 @@ public class MessageFieldValidatorShould extends FieldValidatorShould<Message> {
                                                             .getFields()
                                                             .get(0);
 
+    private static final FieldDescriptor MAP_FIELD_DESC = MessageWithMapMessageField.getDescriptor()
+                                                                                    .getFields()
+                                                                                    .get(0);
+
     @Override
     protected MessageFieldValidator validatedRequiredRepeatedField(List<Message> values) {
         return getValidator(VALIDATED_REQUIRED_FIELD_DESC, values);
@@ -54,6 +60,11 @@ public class MessageFieldValidatorShould extends FieldValidatorShould<Message> {
     @Override
     protected MessageFieldValidator uncheckedRepeatedField(List<Message> values) {
         return getValidator(UNCHECKED_FIELD_DESC, values);
+    }
+
+    @Override
+    protected FieldValidator<Message> mapField() {
+        return getValidator(MAP_FIELD_DESC, Collections.<Message>emptyList());
     }
 
     @Override

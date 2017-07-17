@@ -208,6 +208,14 @@ message MessageWithRepeatedRequiredValidatedMessageField {
     repeated InvalidMessage bound = 1 [(valid) = true, (required) = true];
 }
 
+message MessageWithMapStringField {
+    map<string, string> map_field = 1;
+}
+
+message MessageWithMapMessageField {
+    map<string, google.protobuf.Any> map_field = 1;
+}
+
 // A message which is invalid by design.
 //
 // The field `s` must contain a non-empty value, but it also must match "^$" regex, which represents
