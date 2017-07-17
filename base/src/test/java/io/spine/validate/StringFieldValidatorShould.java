@@ -41,27 +41,27 @@ public class StringFieldValidatorShould extends FieldValidatorShould<String> {
                                                                                   .get(0);
 
     @Override
-    protected StringFieldValidator validatedRequiredRepeatedField(List<String> values) {
+    protected StringFieldValidator validatedRequiredRepeatedFieldValidator(List<String> values) {
         return getValidator(VALIDATED_REQUIRED_FIELD_DESC, values);
     }
 
     @Override
-    protected StringFieldValidator requiredRepeatedField(List<String> values) {
+    protected StringFieldValidator requiredRepeatedFieldValidator(List<String> values) {
         return getValidator(REQUIRED_FIELD_DESC, values);
     }
 
     @Override
-    protected StringFieldValidator validatedRepeatedField(List<String> values) {
+    protected StringFieldValidator validatedRepeatedFieldValidator(List<String> values) {
         return getValidator(VALIDATED_FIELD_DESC, values);
     }
 
     @Override
-    protected StringFieldValidator uncheckedRepeatedField(List<String> values) {
+    protected StringFieldValidator uncheckedRepeatedFieldValidator(List<String> values) {
         return getValidator(UNCHECKED_FIELD_DESC, values);
     }
 
     @Override
-    protected FieldValidator<String> mapField() {
+    protected FieldValidator<String> mapFieldValidator() {
         return getValidator(MAP_FIELD_DESC, Collections.<String>emptyList());
     }
 

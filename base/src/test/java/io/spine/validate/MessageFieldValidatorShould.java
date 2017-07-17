@@ -43,27 +43,27 @@ public class MessageFieldValidatorShould extends FieldValidatorShould<Message> {
                                                                                     .get(0);
 
     @Override
-    protected MessageFieldValidator validatedRequiredRepeatedField(List<Message> values) {
+    protected MessageFieldValidator validatedRequiredRepeatedFieldValidator(List<Message> values) {
         return getValidator(VALIDATED_REQUIRED_FIELD_DESC, values);
     }
 
     @Override
-    protected MessageFieldValidator requiredRepeatedField(List<Message> values) {
+    protected MessageFieldValidator requiredRepeatedFieldValidator(List<Message> values) {
         return getValidator(REQUIRED_FIELD_DESC, values);
     }
 
     @Override
-    protected MessageFieldValidator validatedRepeatedField(List<Message> values) {
+    protected MessageFieldValidator validatedRepeatedFieldValidator(List<Message> values) {
         return getValidator(VALIDATED_FIELD_DESC, values);
     }
 
     @Override
-    protected MessageFieldValidator uncheckedRepeatedField(List<Message> values) {
+    protected MessageFieldValidator uncheckedRepeatedFieldValidator(List<Message> values) {
         return getValidator(UNCHECKED_FIELD_DESC, values);
     }
 
     @Override
-    protected FieldValidator<Message> mapField() {
+    protected FieldValidator<Message> mapFieldValidator() {
         return getValidator(MAP_FIELD_DESC, Collections.<Message>emptyList());
     }
 
