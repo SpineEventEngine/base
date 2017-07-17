@@ -61,7 +61,7 @@ public class StringFieldValidatorShould extends FieldValidatorShould<String> {
     }
 
     @Override
-    protected FieldValidator<String> mapFieldValidator() {
+    protected FieldValidator<String> emptyMapFieldValidator() {
         return getValidator(MAP_FIELD_DESC, Collections.<String>emptyList());
     }
 

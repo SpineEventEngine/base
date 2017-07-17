@@ -36,9 +36,9 @@ import "spine/net/email_address.proto";
 import "spine/net/url.proto";
 import "spine/people/person_name.proto";
 
-// The test definitions for the ValidatingBuilder tests.
+// The test definitions for the `ValidatingBuilder` tests.
 //
-// Use in ValidatingBuilderShould.java only.
+// Use in `ValidatingBuilderShould` only
 
 message Project {
 

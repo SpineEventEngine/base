@@ -19,10 +19,11 @@ import static org.junit.Assert.assertTrue;
 public abstract class FieldValidatorShould<V> {
 
     /**
-     * Creates a {@link FieldValidator} for a repeated required validated field.
+     * Creates a {@link FieldValidator} for a repeated required field, which child items are also
+     * validated separately.
      *
      * <p>The proto description of this field looks as follows:
-     * {repeated T field_name = 42 [(required) = true, (valid) = true];}, where {@code T} is
+     * {@code repeated T field_name = 42 [(required) = true, (valid) = true];}, where {@code T} is
      * the type parameter of the tested {@link FieldValidator}.
      *
      * @param values the list of the field values
@@ -31,11 +32,12 @@ public abstract class FieldValidatorShould<V> {
     protected abstract FieldValidator<V> validatedRequiredRepeatedFieldValidator(List<V> values);
 
     /**
-     * Creates a {@link FieldValidator} for a repeated required but not validated field.
+     * Creates a {@link FieldValidator} for a repeated required field, which child items are not
+     * validated separately.
      *
      * <p>The proto description of this field looks as follows:
-     * {repeated T field_name = 42 [(required) = true;}, where {@code T} is the type parameter of
-     * the tested {@link FieldValidator}.
+     * {@code repeated T field_name = 42 [(required) = true;}, where {@code T} is the type parameter
+     * of the tested {@link FieldValidator}.
      *
      * @param values the list of the field values
      * @return new instance of {@link FieldValidator}
@@ -46,8 +48,8 @@ public abstract class FieldValidatorShould<V> {
      * Creates a {@link FieldValidator} for a repeated validated but not required field.
      *
      * <p>The proto description of this field looks as follows:
-     * {repeated T field_name = 42 [(valid) = true];}, where {@code T} is the type parameter of
-     * the tested {@link FieldValidator}.
+     * {@code repeated T field_name = 42 [(valid) = true];}, where {@code T} is the type parameter
+     * of the tested {@link FieldValidator}.
      *
      * @param values the list of the field values
      * @return new instance of {@link FieldValidator}
@@ -58,7 +60,7 @@ public abstract class FieldValidatorShould<V> {
      * Creates a {@link FieldValidator} for a repeated non-required non-validated field.
      *
      * <p>The proto description of this field looks as follows:
-     * {repeated T field_name = 42;}, where {@code T} is the type parameter of the tested
+     * {@code repeated T field_name = 42;}, where {@code T} is the type parameter of the tested
      * {@link FieldValidator}.
      *
      * @param values the list of the field values
@@ -73,7 +75,7 @@ public abstract class FieldValidatorShould<V> {
      *
      * @return new instance of {@link FieldValidator}
      */
-    protected abstract FieldValidator<V> mapFieldValidator();
+    protected abstract FieldValidator<V> emptyMapFieldValidator();
 
     /**
      * Generates a new non-default valid value of the type of the validated field.
@@ -132,7 +134,7 @@ public abstract class FieldValidatorShould<V> {
 
     @Test
     public void flag_map_fields() {
-        final FieldValidator<?> validator = mapFieldValidator();
+        final FieldValidator<?> validator = emptyMapFieldValidator();
         assertTrue(validator.isRepeatedOrMap());
     }
 

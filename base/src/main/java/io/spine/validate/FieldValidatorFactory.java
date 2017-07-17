@@ -66,6 +66,7 @@ class FieldValidatorFactory {
      * @param fieldValue    a value of the field to validate
      * @param rootFieldPath a path to the root field
      * @param strict        if {@code true} validators would always assume that the field is
+     *                      required
      */
     private static FieldValidator<?> createForLinear(FieldDescriptor descriptor,
                                                      Object fieldValue,

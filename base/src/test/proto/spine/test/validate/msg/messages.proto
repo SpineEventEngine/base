@@ -240,10 +240,10 @@ message MessageWithMapDoubleField {
     map<string, double> map_field = 1;
 }
 
-// A message which is invalid by design.
+// A message which is used to violate its constraints in scope of `MessageFieldValidator` tests.
 //
-// The field `s` must contain a non-empty value, but it also must match "^$" regex, which represents
-// an empty string. Thus, any instance of this message type is invalid.
+// The field `invalid_field` must contain a non-empty value, but it also must match "^$" regex,
+// which represents an empty string. Thus, any instance of this message type is invalid.
 message InvalidMessage {
     string invalid_field = 1 [(required) = true, (pattern).regex = "^$"];
 }
