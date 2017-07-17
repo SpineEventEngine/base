@@ -20,6 +20,7 @@
 
 package io.spine.validate;
 
+import com.google.protobuf.Any;
 import com.google.protobuf.BoolValue;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.DoubleValue;
@@ -29,8 +30,14 @@ import com.google.protobuf.Int32Value;
 import com.google.protobuf.Int64Value;
 import com.google.protobuf.StringValue;
 import io.spine.base.FieldPath;
-import io.spine.test.validate.msg.MessageWithMapStringField;
+import io.spine.test.validate.msg.MessageWithMapBoolField;
 import io.spine.test.validate.msg.MessageWithMapByteStringField;
+import io.spine.test.validate.msg.MessageWithMapDoubleField;
+import io.spine.test.validate.msg.MessageWithMapFloatField;
+import io.spine.test.validate.msg.MessageWithMapIntField;
+import io.spine.test.validate.msg.MessageWithMapLongField;
+import io.spine.test.validate.msg.MessageWithMapMessageField;
+import io.spine.test.validate.msg.MessageWithMapStringField;
 import io.spine.test.validate.msg.RequiredByteStringFieldValue;
 import io.spine.test.validate.msg.RequiredEnumFieldValue;
 import io.spine.test.validate.msg.RequiredMsgFieldValue;
@@ -177,5 +184,77 @@ public class FieldValidatorFactoryShould {
                                                    FIELD_PATH);
 
         assertThat(validator, instanceOf(ByteStringFieldValidator.class));
+    }
+
+    @Test
+    public void create_field_validator_for_Message_map_field() {
+        final FieldDescriptor field = MessageWithMapMessageField.getDescriptor()
+                                                                .getFields()
+                                                                .get(0);
+        final FieldValidator<?> validator = create(field,
+                                                   of("key", Any.getDefaultInstance()),
+                                                   FIELD_PATH);
+
+        assertThat(validator, instanceOf(MessageFieldValidator.class));
+    }
+
+    @Test
+    public void create_field_validator_for_int_map_field() {
+        final FieldDescriptor field = MessageWithMapIntField.getDescriptor()
+                                                            .getFields()
+                                                            .get(0);
+        final FieldValidator<?> validator = create(field,
+                                                   of("key", 0),
+                                                   FIELD_PATH);
+
+        assertThat(validator, instanceOf(IntegerFieldValidator.class));
+    }
+
+    @Test
+    public void create_field_validator_for_long_map_field() {
+        final FieldDescriptor field = MessageWithMapLongField.getDescriptor()
+                                                             .getFields()
+                                                             .get(0);
+        final FieldValidator<?> validator = create(field,
+                                                   of("key", 1L),
+                                                   FIELD_PATH);
+
+        assertThat(validator, instanceOf(LongFieldValidator.class));
+    }
+
+    @Test
+    public void create_field_validator_for_float_map_field() {
+        final FieldDescriptor field = MessageWithMapFloatField.getDescriptor()
+                                                              .getFields()
+                                                              .get(0);
+        final FieldValidator<?> validator = create(field,
+                                                   of("key", 0.0f),
+                                                   FIELD_PATH);
+
+        assertThat(validator, instanceOf(FloatFieldValidator.class));
+    }
+
+    @Test
+    public void create_field_validator_for_double_map_field() {
+        final FieldDescriptor field = MessageWithMapDoubleField.getDescriptor()
+                                                               .getFields()
+                                                               .get(0);
+        final FieldValidator<?> validator = create(field,
+                                                   of("key", 0.0),
+                                                   FIELD_PATH);
+
+        assertThat(validator, instanceOf(DoubleFieldValidator.class));
+    }
+
+    @Test
+    public void create_field_validator_for_bool_map_field() {
+        final FieldDescriptor field = MessageWithMapBoolField.getDescriptor()
+                                                             .getFields()
+                                                             .get(0);
+        final FieldValidator<?> validator = create(field,
+                                                   of("key", true),
+                                                   FIELD_PATH);
+
+        assertThat(validator, instanceOf(BooleanFieldValidator.class));
     }
 }

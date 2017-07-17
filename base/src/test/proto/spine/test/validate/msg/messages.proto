@@ -220,6 +220,26 @@ message MessageWithMapByteStringField {
     map<string, bytes> map_field = 1;
 }
 
+message MessageWithMapIntField {
+    map<string, int32> map_field = 1;
+}
+
+message MessageWithMapLongField {
+    map<string, int64> map_field = 1;
+}
+
+message MessageWithMapBoolField {
+    map<string, bool> map_field = 1;
+}
+
+message MessageWithMapFloatField {
+    map<string, float> map_field = 1;
+}
+
+message MessageWithMapDoubleField {
+    map<string, double> map_field = 1;
+}
+
 // A message which is invalid by design.
 //
 // The field `s` must contain a non-empty value, but it also must match "^$" regex, which represents
