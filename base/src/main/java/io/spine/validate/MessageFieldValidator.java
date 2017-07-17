@@ -72,7 +72,7 @@ class MessageFieldValidator extends FieldValidator<Message> {
     }
 
     @Override
-    protected void validateSpecific() {
+    protected void validateOwnRules() {
         final boolean recursiveValidationRequired = getValidateOption();
         if (recursiveValidationRequired) {
             validateFields();

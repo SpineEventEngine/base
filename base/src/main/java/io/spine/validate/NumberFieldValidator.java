@@ -94,7 +94,7 @@ abstract class NumberFieldValidator<V extends Number & Comparable<V>> extends Fi
     }
 
     @Override
-    protected void validateSpecific() {
+    protected void validateOwnRules() {
         for (V value : getValues()) {
             validateRangeOptions(value);
             validateDigitsOption(value);

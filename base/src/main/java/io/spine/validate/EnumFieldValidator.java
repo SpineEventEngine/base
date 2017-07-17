@@ -60,7 +60,7 @@ class EnumFieldValidator extends FieldValidator<EnumValueDescriptor> {
      * <p>Performs no action since no special options are declared for the enum values validation.
      */
     @Override
-    protected void validateSpecific() {
+    protected void validateOwnRules() {
         // NoOp
     }
 }

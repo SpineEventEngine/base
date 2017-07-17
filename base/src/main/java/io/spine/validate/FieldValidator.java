@@ -129,13 +129,13 @@ abstract class FieldValidator<V> {
      * constraint violations found.
      *
      * <p>This method defines the general flow of the field validation. Override
-     * {@link #validateSpecific()} to customize the validation behavior.
+     * {@link #validateOwnRules()} to customize the validation behavior.
      *
      * <p>The flow of the validation is as follows:
      * <ol>
      *     <li>check the field to be set if it is {@code required};
      *     <li>validate the field as an Entity ID if required;
-     *     <li>performs the {@linkplain #validateSpecific() custom type-dependant validation}.
+     *     <li>performs the {@linkplain #validateOwnRules() custom type-dependant validation}.
      * </ol>
      *
      * @return a list of found {@linkplain ConstraintViolation constraint violations} is any
@@ -146,7 +146,7 @@ abstract class FieldValidator<V> {
             validateEntityId();
         }
         if (shouldValidate()) {
-            validateSpecific();
+            validateOwnRules();
         }
         final List<ConstraintViolation> result = assembleViolations();
         return result;
@@ -159,7 +159,7 @@ abstract class FieldValidator<V> {
      *
      * <p>Do not call this method directly. Use {@link #validate() validate()} instead.
      */
-    protected abstract void validateSpecific();
+    protected abstract void validateOwnRules();
 
     private List<ConstraintViolation> assembleViolations() {
         return copyOf(violations);
