@@ -29,8 +29,6 @@ import io.spine.option.IfInvalidOption;
 import io.spine.option.OptionsProto;
 import io.spine.option.Time;
 import io.spine.option.TimeOption;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -162,15 +160,5 @@ class MessageFieldValidator extends FieldValidator<Message> {
                                                                  .addAllViolation(violations)
                                                                  .build();
         return violation;
-    }
-
-    private enum LogSingleton {
-        INSTANCE;
-        @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = LoggerFactory.getLogger(MessageFieldValidator.class);
-    }
-
-    private static Logger log() {
-        return LogSingleton.INSTANCE.value;
     }
 }
