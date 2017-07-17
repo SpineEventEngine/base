@@ -25,8 +25,6 @@ import io.spine.base.FieldPath;
 import io.spine.option.OptionsProto;
 import io.spine.option.PatternOption;
 
-import java.util.List;
-
 import static io.spine.protobuf.TypeConverter.toAny;
 
 /**
@@ -57,11 +55,8 @@ class StringFieldValidator extends FieldValidator<String> {
     }
 
     @Override
-    protected List<ConstraintViolation> validate() {
-        checkIfRequiredAndNotSet();
+    protected void validateOwnRules() {
         checkIfMatchesToRegexp();
-        final List<ConstraintViolation> violations = super.validate();
-        return violations;
     }
 
     private void checkIfMatchesToRegexp() {

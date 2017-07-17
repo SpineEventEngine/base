@@ -32,7 +32,6 @@ import io.spine.option.MaxOption;
 import io.spine.option.MinOption;
 import io.spine.option.OptionsProto;
 
-import java.util.List;
 import java.util.regex.Pattern;
 
 import static io.spine.protobuf.TypeConverter.toAny;
@@ -95,13 +94,11 @@ abstract class NumberFieldValidator<V extends Number & Comparable<V>> extends Fi
     }
 
     @Override
-    protected List<ConstraintViolation> validate() {
+    protected void validateOwnRules() {
         for (V value : getValues()) {
             validateRangeOptions(value);
             validateDigitsOption(value);
         }
-        final List<ConstraintViolation> violations = super.validate();
-        return violations;
     }
 
     @Override

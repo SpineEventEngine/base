@@ -200,14 +200,14 @@ public class MessageValidatorShould {
     }
 
     @Test
-    public void find_out_that_repeated_required_field_has_empty_value() {
-        final RepeatedRequiredMsgFieldValue invalidMsg =
+    public void ignore_repeated_required_field_with_empty_value() {
+        final RepeatedRequiredMsgFieldValue msg =
                 RepeatedRequiredMsgFieldValue.newBuilder()
                                              .addValue(newStringValue()) // valid value
-                                             .addValue(StringValue.getDefaultInstance()) // invalid value
+                                             .addValue(StringValue.getDefaultInstance()) // empty value
                                              .build();
-        validate(invalidMsg);
-        assertIsValid(false);
+        validate(msg);
+        assertIsValid(true);
     }
 
     @Test

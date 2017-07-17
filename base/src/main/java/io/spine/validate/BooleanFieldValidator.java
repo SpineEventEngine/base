@@ -25,8 +25,6 @@ import io.spine.base.FieldPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
-
 /**
  * Validates fields of type {@link Boolean}.
  *
@@ -62,11 +60,10 @@ class BooleanFieldValidator extends FieldValidator<Boolean> {
     }
 
     @Override
-    protected List<ConstraintViolation> validate() {
+    protected void validateOwnRules() {
         if (isRequiredField()) {
             log().warn("'required' option not allowed for boolean field");
         }
-        return super.validate();
     }
 
     private enum LogSingleton {
