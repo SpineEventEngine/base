@@ -24,8 +24,6 @@ import com.google.protobuf.Descriptors;
 import com.google.protobuf.Descriptors.EnumValueDescriptor;
 import io.spine.base.FieldPath;
 
-import java.util.List;
-
 /**
  * Validates fields of type {@link EnumValueDescriptor}.
  *
@@ -52,14 +50,17 @@ class EnumFieldValidator extends FieldValidator<EnumValueDescriptor> {
     @Override
     protected boolean isValueNotSet(EnumValueDescriptor value) {
         final int intValue = value.getNumber();
-        final boolean result = intValue == 0;
+        final boolean result = intValue <= 0;
         return result;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>Performs no action since no special options are declared for the enum values validation.
+     */
     @Override
-    protected List<ConstraintViolation> validate() {
-        checkIfRequiredAndNotSet();
-        final List<ConstraintViolation> violations = super.validate();
-        return violations;
+    protected void validateOwnRules() {
+        // NoOp
     }
 }

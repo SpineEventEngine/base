@@ -31,6 +31,7 @@ option java_package = "io.spine.test.validate.msg";
 
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
+import "google/protobuf/any.proto";
 
 
 // Messages for general validation tests.
@@ -171,4 +172,78 @@ message EnclosedMessageFieldValueWithCustomInvalidMessage {
 
 message EnclosedMessageFieldValueWithoutAnnotationFieldValueWithCustomInvalidMessage {
     RequiredStringFieldValue outer_msg_field = 1 [(if_invalid).msg_format = "Custom error is redundant in this case"];
+}
+
+// Messages for testing validation of repeated fields.
+
+message MessageWithRepeatedUnchekedStringField {
+    repeated string unchecked = 1;
+}
+
+message MessageWithRepeatedValidatedStringField {
+    repeated string validated = 1 [(valid) = true, (pattern).regex = "\\w+"];
+}
+
+message MessegeWithRepeatedRequiredStringField {
+    repeated string required_field = 1 [(required) = true];
+}
+
+message MessageWithRepeatedRequiredValidatedStringField {
+    repeated string bound = 1 [(valid) = true, (required) = true, (pattern).regex = "\\w+"];
+}
+
+message MessageWithRepeatedUnchekedMessageField {
+    repeated InvalidMessage unchecked = 1;
+}
+
+message MessageWithRepeatedValidatedMessageField {
+    repeated InvalidMessage validated = 1 [(valid) = true];
+}
+
+message MessegeWithRepeatedRequiredMessageField {
+    repeated InvalidMessage required_field = 1 [(required) = true];
+}
+
+message MessageWithRepeatedRequiredValidatedMessageField {
+    repeated InvalidMessage bound = 1 [(valid) = true, (required) = true];
+}
+
+message MessageWithMapStringField {
+    map<string, string> map_field = 1;
+}
+
+message MessageWithMapMessageField {
+    map<string, google.protobuf.Any> map_field = 1;
+}
+
+message MessageWithMapByteStringField {
+    map<string, bytes> map_field = 1;
+}
+
+message MessageWithMapIntField {
+    map<string, int32> map_field = 1;
+}
+
+message MessageWithMapLongField {
+    map<string, int64> map_field = 1;
+}
+
+message MessageWithMapBoolField {
+    map<string, bool> map_field = 1;
+}
+
+message MessageWithMapFloatField {
+    map<string, float> map_field = 1;
+}
+
+message MessageWithMapDoubleField {
+    map<string, double> map_field = 1;
+}
+
+// A message which is used to violate its constraints in scope of `MessageFieldValidator` tests.
+//
+// The field `invalid_field` must contain a non-empty value, but it also must match "^$" regex,
+// which represents an empty string. Thus, any instance of this message type is invalid.
+message InvalidMessage {
+    string invalid_field = 1 [(required) = true, (pattern).regex = "^$"];
 }
