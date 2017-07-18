@@ -22,15 +22,14 @@ package io.spine.base;
 
 import com.google.common.reflect.TypeToken;
 import com.google.common.testing.NullPointerTester;
-import io.spine.reflect.Types;
 import org.junit.Test;
 
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 
-import static io.spine.reflect.Types.listTypeOf;
-import static io.spine.reflect.Types.mapTypeOf;
+import static io.spine.base.Types.listTypeOf;
+import static io.spine.base.Types.mapTypeOf;
 import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
 import static org.junit.Assert.assertEquals;
 
