@@ -28,7 +28,6 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import io.spine.base.ConversionException;
-import io.spine.reflect.Types;
 import io.spine.gradle.compiler.message.MessageTypeCache;
 import io.spine.gradle.compiler.message.fieldtype.FieldType;
 import io.spine.gradle.compiler.message.fieldtype.ProtoScalarType;
@@ -273,7 +272,6 @@ class RepeatedFieldMethodConstructor implements MethodConstructor {
                                             .addStatement(createGetConvertedCollectionValue(),
                                                           List.class,
                                                           listElementClassName,
-                                                          Types.class,
                                                           listElementClassName)
                                             .addStatement(descriptorCodeLine, FieldDescriptor.class)
                                             .addStatement(createValidateStatement(CONVERTED_VALUE),
@@ -384,8 +382,7 @@ class RepeatedFieldMethodConstructor implements MethodConstructor {
     }
 
     private static String createGetConvertedCollectionValue() {
-        final String result = "final $T<$T> convertedValue = " +
-                "convert(value, $T.listTypeOf($T.class))";
+        final String result = "final $T<$T> convertedValue = convertToList(value, $T.class)";
         return result;
     }
 

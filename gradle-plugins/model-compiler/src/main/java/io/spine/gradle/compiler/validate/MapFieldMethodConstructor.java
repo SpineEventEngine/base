@@ -26,7 +26,6 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
 import io.spine.base.ConversionException;
-import io.spine.reflect.Types;
 import io.spine.gradle.compiler.message.fieldtype.MapFieldType;
 import io.spine.validate.ValidationException;
 import org.slf4j.Logger;
@@ -240,12 +239,14 @@ class MapFieldMethodConstructor implements MethodConstructor {
                                             .addException(ConversionException.class)
                                             .addStatement(descriptorCodeLine, FieldDescriptor.class)
                                             .addStatement(createGetConvertedMapValue(),
-                                                          Map.class, keyTypeName,
-                                                          valueTypeName, Types.class,
+                                                          Map.class, keyTypeName, valueTypeName,
                                                           keyTypeName, valueTypeName)
                                             .addStatement(putAllStatement)
                                             .addStatement(returnThis())
                                             .build();
+
+
+
         return result;
     }
 
@@ -275,7 +276,7 @@ class MapFieldMethodConstructor implements MethodConstructor {
 
     private static String createGetConvertedMapValue() {
         final String result = "final $T<$T, $T> convertedValue = " +
-                "convert(map, $T.mapTypeOf($T.class, $T.class))";
+                "convertToMap(map, $T.class, $T.class)";
         return result;
     }
 
