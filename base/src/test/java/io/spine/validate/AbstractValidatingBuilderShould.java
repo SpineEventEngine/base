@@ -28,6 +28,9 @@ import java.util.Map;
 
 import static junit.framework.TestCase.assertTrue;
 
+/**
+ * @author Alexander Aleksandrov
+ */
 public class AbstractValidatingBuilderShould {
 
     @Test
@@ -61,5 +64,4 @@ public class AbstractValidatingBuilderShould {
         assertTrue(convertedValue.contains(key1));
         assertTrue(convertedValue.contains(value));
     }
-
 }
