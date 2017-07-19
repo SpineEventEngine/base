@@ -36,8 +36,6 @@ import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Throwables.getRootCause;
-import static io.spine.base.Types.listTypeOf;
-import static io.spine.base.Types.mapTypeOf;
 import static io.spine.validate.FieldValidatorFactory.create;
 
 /**
@@ -125,8 +123,7 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
     public <K, V> Map<K, V> convertToMap(String value,
                                          Class<K> keyClass,
                                          Class<V> valueClass) throws ConversionException {
-        final Type mapType = mapTypeOf(keyClass, valueClass);
-        final Map<K, V> result = convert(value, mapType);
+        final Map<K, V> result = Stringifiers.newForMapOf(keyClass, valueClass).reverse().convert(value);
         return result;
     }
 
@@ -143,8 +140,7 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
      */
     public <V> List<V> convertToList(String value,
                                      Class<V> valueClass) throws ConversionException {
-        final Type mapType = listTypeOf(valueClass);
-        final List<V> result = convert(value, mapType);
+        final List<V> result = Stringifiers.newForListOf(valueClass).reverse().convert(value);
         return result;
     }
 

@@ -28,17 +28,21 @@ import java.util.Map;
 
 import static junit.framework.TestCase.assertTrue;
 
-
 public class AbstractValidatingBuilderShould {
 
     @Test
     public void convert_to_map() throws Exception {
         final String key1 = "key1";
-        final UInt32Value value = UInt32Value.newBuilder().setValue(123).build();
+        final UInt32Value value = UInt32Value.newBuilder()
+                                             .setValue(123)
+                                             .build();
         final String mapStr = "\"key1\":\"123\",\"key2\":\"234\"";
 
         final UInt32ValueVBuilder uInt32ValueVBuilder = UInt32ValueVBuilder.newBuilder();
-        final Map<String, UInt32Value> convertedValue = uInt32ValueVBuilder.convertToMap(mapStr, String.class, UInt32Value.class);
+        final Map<String, UInt32Value> convertedValue =
+                uInt32ValueVBuilder.convertToMap(mapStr,
+                                                 String.class,
+                                                 UInt32Value.class);
 
         assertTrue(convertedValue.containsKey(key1));
         assertTrue(convertedValue.containsValue(value));
@@ -51,7 +55,8 @@ public class AbstractValidatingBuilderShould {
         final String listStr = "\"key1\",\"123\",\"key2\",\"234\"";
 
         final StringValueVBuilder stringValueVBuilder = StringValueVBuilder.newBuilder();
-        final List<String> convertedValue = stringValueVBuilder.convertToList(listStr, String.class);
+        final List<String> convertedValue = stringValueVBuilder.convertToList(listStr,
+                                                                              String.class);
 
         assertTrue(convertedValue.contains(key1));
         assertTrue(convertedValue.contains(value));
