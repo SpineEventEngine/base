@@ -171,7 +171,7 @@ abstract class Annotator<O extends ExtendableMessage, D extends GeneratedMessage
      *
      * @return the option number
      */
-    protected final long getOptionNumber() {
+    protected final int getOptionNumber() {
         return option.getNumber();
     }
 

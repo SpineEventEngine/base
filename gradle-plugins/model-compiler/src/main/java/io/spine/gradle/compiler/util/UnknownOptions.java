@@ -63,6 +63,7 @@ public class UnknownOptions {
     private static final String QUOTE = "\"";
 
     private UnknownOptions() {
+        // Prevent instantiation of this utility class.
     }
 
     /**
@@ -71,13 +72,30 @@ public class UnknownOptions {
      * @param file the file descriptor, from which to get options
      * @return a file option number to an option value map
      */
-    public static Map<Long, String> getUnknownOptions(FileDescriptorProto file) {
+    public static Map<Integer, String> getUnknownOptions(FileDescriptorProto file) {
         final String optionsStr = file.getOptions()
                                       .getUnknownFields()
                                       .toString()
                                       .trim();
-        final Map<Long, String> result = parseOptions(optionsStr);
+        final Map<Integer, String> result = parseOptions(optionsStr);
         return result;
+    }
+
+    /**
+     * Tells whether the message is marked with an option which has the given number
+     * in its definition.
+     *
+     * @param message             the message descriptor to check the option presence
+     * @param messageOptionNumber the option number for the option to check
+     * @return {@code} true if the message has the option
+     */
+    public static boolean hasUnknownOption(DescriptorProto message, int messageOptionNumber) {
+        final String optionsStr = message.getOptions()
+                                         .getUnknownFields()
+                                         .toString()
+                                         .trim();
+        final String rawMessageOptionNumber = String.valueOf(messageOptionNumber);
+        return optionsStr.contains(rawMessageOptionNumber);
     }
 
     /**
@@ -88,8 +106,8 @@ public class UnknownOptions {
      * @param optionFieldNumber the requested option field number
      * @return a string representation of the option
      */
-    public static String getUnknownOptionValue(FileDescriptorProto file, Long optionFieldNumber) {
-        final Map<Long, String> options = getUnknownOptions(file);
+    public static String getUnknownOptionValue(FileDescriptorProto file, int optionFieldNumber) {
+        final Map<Integer, String> options = getUnknownOptions(file);
         final String result = options.get(optionFieldNumber);
         return result;
     }
@@ -100,12 +118,12 @@ public class UnknownOptions {
      * @param message the message descriptor, from which to get options
      * @return a message option number to an option value map
      */
-    public static Map<Long, String> getUnknownOptions(DescriptorProto message) {
+    public static Map<Integer, String> getUnknownOptions(DescriptorProto message) {
         final String optionsStr = message.getOptions()
                                          .getUnknownFields()
                                          .toString()
                                          .trim();
-        final Map<Long, String> result = parseOptions(optionsStr);
+        final Map<Integer, String> result = parseOptions(optionsStr);
         return result;
     }
 
@@ -118,8 +136,8 @@ public class UnknownOptions {
      * @return a string representation of the option
      */
     public static String getUnknownOptionValue(EnumDescriptorProto enumDescriptor,
-                                               Long optionFieldNumber) {
-        final Map<Long, String> options = getUnknownOptions(enumDescriptor);
+                                               int optionFieldNumber) {
+        final Map<Integer, String> options = getUnknownOptions(enumDescriptor);
         final String result = options.get(optionFieldNumber);
         return result;
     }
@@ -130,12 +148,12 @@ public class UnknownOptions {
      * @param enumDescriptor the enum descriptor, from which to get options
      * @return an enum option number to an option value map
      */
-    public static Map<Long, String> getUnknownOptions(EnumDescriptorProto enumDescriptor) {
+    public static Map<Integer, String> getUnknownOptions(EnumDescriptorProto enumDescriptor) {
         final String optionsStr = enumDescriptor.getOptions()
                                                 .getUnknownFields()
                                                 .toString()
                                                 .trim();
-        final Map<Long, String> result = parseOptions(optionsStr);
+        final Map<Integer, String> result = parseOptions(optionsStr);
         return result;
     }
 
@@ -147,8 +165,8 @@ public class UnknownOptions {
      * @param optionFieldNumber the requested option field number
      * @return a string representation of the option
      */
-    public static String getUnknownOptionValue(DescriptorProto msg, Long optionFieldNumber) {
-        final Map<Long, String> options = getUnknownOptions(msg);
+    public static String getUnknownOptionValue(DescriptorProto msg, int optionFieldNumber) {
+        final Map<Integer, String> options = getUnknownOptions(msg);
         final String result = options.get(optionFieldNumber);
         return result;
     }
@@ -159,12 +177,12 @@ public class UnknownOptions {
      * @param field the field descriptor, from which to get options
      * @return an field option number to an option value map
      */
-    public static Map<Long, String> getUnknownOptions(FieldDescriptorProto field) {
+    public static Map<Integer, String> getUnknownOptions(FieldDescriptorProto field) {
         final String optionsStr = field.getOptions()
                                        .getUnknownFields()
                                        .toString()
                                        .trim();
-        final Map<Long, String> result = parseOptions(optionsStr);
+        final Map<Integer, String> result = parseOptions(optionsStr);
         return result;
     }
 
@@ -177,8 +195,8 @@ public class UnknownOptions {
      * @return a string representation of option
      */
     public static String getUnknownOptionValue(ServiceDescriptorProto service,
-                                               Long optionFieldNumber) {
-        final Map<Long, String> options = getUnknownOptions(service);
+                                               int optionFieldNumber) {
+        final Map<Integer, String> options = getUnknownOptions(service);
         final String result = options.get(optionFieldNumber);
         return result;
     }
@@ -189,7 +207,7 @@ public class UnknownOptions {
      * @param service the service descriptor, from which to get options
      * @return a service option number to an option value map
      */
-    public static Map<Long, String> getUnknownOptions(ServiceDescriptorProto service) {
+    public static Map<Integer, String> getUnknownOptions(ServiceDescriptorProto service) {
         final String optionsStr = service.getOptions()
                                          .getUnknownFields()
                                          .toString()
@@ -205,7 +223,7 @@ public class UnknownOptions {
      * @param optionFieldNumber the option number for the option to check
      * @return {@code} true if the field has the option
      */
-    public static boolean hasUnknownOption(FieldDescriptorProto field, Long optionFieldNumber) {
+    public static boolean hasUnknownOption(FieldDescriptorProto field, int optionFieldNumber) {
         final String optionsStr = field.getOptions()
                                        .getUnknownFields()
                                        .toString()
@@ -222,18 +240,18 @@ public class UnknownOptions {
      * @param optionFieldNumber the requested option field number
      * @return a string representation of the option
      */
-    public static String getUnknownOptionValue(FieldDescriptorProto field, Long optionFieldNumber) {
-        final Map<Long, String> options = getUnknownOptions(field);
+    public static String getUnknownOptionValue(FieldDescriptorProto field, int optionFieldNumber) {
+        final Map<Integer, String> options = getUnknownOptions(field);
         final String result = options.get(optionFieldNumber);
         return result;
     }
 
-    private static Map<Long, String> parseOptions(String optionsStr) {
+    private static Map<Integer, String> parseOptions(String optionsStr) {
         if (optionsStr.trim()
                       .isEmpty()) {
             return emptyMap();
         }
-        final Map<Long, String> map = newHashMap();
+        final Map<Integer, String> map = newHashMap();
         final String[] options = PATTERN_NEW_LINE.split(optionsStr);
         for (String option : options) {
             parseAndPutNumberAndValue(option, map);
@@ -241,12 +259,12 @@ public class UnknownOptions {
         return ImmutableMap.copyOf(map);
     }
 
-    private static void parseAndPutNumberAndValue(String option, Map<Long, String> map) {
+    private static void parseAndPutNumberAndValue(String option, Map<Integer, String> map) {
         // we need only two parts split by the first colon
         final int limit = 2;
         final String[] numberAndValue = PATTERN_COLON.split(option, limit);
         final String numberStr = numberAndValue[0].trim();
-        final Long number = Long.valueOf(numberStr);
+        final int number = Integer.valueOf(numberStr);
         String value = numberAndValue[1].trim();
         if (value.startsWith(QUOTE) && value.endsWith(QUOTE)) {
             value = value.substring(1, value.length() - 1);
