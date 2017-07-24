@@ -34,10 +34,10 @@ import static io.spine.gradle.TaskName.COMPILE_JAVA;
 import static io.spine.gradle.TaskName.COMPILE_TEST_JAVA;
 import static io.spine.gradle.TaskName.FIND_ENRICHMENTS;
 import static io.spine.gradle.TaskName.FIND_TEST_ENRICHMENTS;
-import static io.spine.gradle.TaskName.GENERATE_FAILURES;
 import static io.spine.gradle.TaskName.GENERATE_PROTO;
-import static io.spine.gradle.TaskName.GENERATE_TEST_FAILURES;
+import static io.spine.gradle.TaskName.GENERATE_REJECTIONS;
 import static io.spine.gradle.TaskName.GENERATE_TEST_PROTO;
+import static io.spine.gradle.TaskName.GENERATE_TEST_REJECTIONS;
 import static io.spine.gradle.TaskName.GENERATE_TEST_VALIDATING_BUILDERS;
 import static io.spine.gradle.TaskName.GENERATE_VALIDATING_BUILDERS;
 import static io.spine.gradle.TaskName.MAP_PROTO_TO_JAVA;
@@ -79,20 +79,20 @@ public class ModelCompilerPluginShould {
     }
 
     @Test
-    public void add_task_generateFailures() {
+    public void add_task_generateRejections() {
 
-        final Task genFailures = task(GENERATE_FAILURES);
-        assertNotNull(genFailures);
-        assertTrue(dependsOn(genFailures, GENERATE_PROTO));
-        assertTrue(dependsOn(task(COMPILE_JAVA), genFailures));
+        final Task genRejections = task(GENERATE_REJECTIONS);
+        assertNotNull(genRejections);
+        assertTrue(dependsOn(genRejections, GENERATE_PROTO));
+        assertTrue(dependsOn(task(COMPILE_JAVA), genRejections));
     }
 
     @Test
-    public void add_task_generateTestFailures() {
-        final Task genTestFailures = task(GENERATE_TEST_FAILURES);
-        assertNotNull(genTestFailures);
-        assertTrue(dependsOn(genTestFailures, GENERATE_TEST_PROTO));
-        assertTrue(dependsOn(task(COMPILE_TEST_JAVA), genTestFailures));
+    public void add_task_generateTestRejections() {
+        final Task genTestRejections = task(GENERATE_TEST_REJECTIONS);
+        assertNotNull(genTestRejections);
+        assertTrue(dependsOn(genTestRejections, GENERATE_TEST_PROTO));
+        assertTrue(dependsOn(task(COMPILE_TEST_JAVA), genTestRejections));
     }
 
     @Test

@@ -45,7 +45,7 @@ dependencies {
     testCompile group: 'com.google.guava', name: 'guava-testlib', version: guavaVersion
     testCompile gradleTestKit()
 
-    // "tools.jar" contains Javadoc classes used in the failures Javadoc generation tests.
+    // "tools.jar" contains Javadoc classes used in the rejections Javadoc generation tests.
     // It is a local version bundled within the JDK installation.
     // "JAVA_HOME" environment variable must be set for correct work.
     testCompile files("${System.properties['java.home']}/../lib/tools.jar")

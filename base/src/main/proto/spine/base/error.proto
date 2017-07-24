@@ -35,9 +35,6 @@ import "spine/validate/constraint_violation.proto";
 import "spine/validate/validation_error.proto";
 
 // Information on a technical error occurred in the system.
-//
-// See `spine.base.BusinessFailure` for definition of business failure type.
-//
 message Error {
 
     // The type of the error.
