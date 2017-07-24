@@ -55,7 +55,6 @@ import static org.junit.Assert.assertEquals;
 @SuppressWarnings("UseOfSystemOutOrSystemErr")  // It's OK: running a Gradle build inside.
 public class FailuresGenPluginShould {
 
-    @SuppressWarnings("PublicField") // Rules should be public.
     @Rule
     public final TemporaryFolder testProjectDir = new TemporaryFolder();
     private final CountDownLatch countDownLatch = new CountDownLatch(1);

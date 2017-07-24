@@ -39,7 +39,6 @@ import static io.spine.gradle.compiler.ProjectConfigurator.newEmptyResultHandler
  */
 public class ValidatingBuilderGenPluginShould {
 
-    @SuppressWarnings("PublicField") // Rules should be public.
     @Rule
     public final TemporaryFolder testProjectDir = new TemporaryFolder();
 

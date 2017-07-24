@@ -71,7 +71,6 @@ import static java.nio.file.Paths.get;
 @SuppressWarnings("UseOfSystemOutOrSystemErr")  // It's fine for a test, running a Gradle build.
 public class ProtoAnnotatorPluginShould {
 
-    @SuppressWarnings("PublicField") // Rules should be public.
     @Rule
     public final TemporaryFolder testProjectDir = new TemporaryFolder();
 

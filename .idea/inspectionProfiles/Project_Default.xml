@@ -543,6 +543,7 @@
       <option name="ignoreEnums" value="false" />
       <option name="ignorableAnnotations">
         <value>
+          <item value="org.junit.Rule" />
           <item value="org.junit.Test" />
         </value>
       </option>
