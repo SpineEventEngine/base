@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+import "spine/options.proto";
+
+message Outer {
+
+    string NonEmptyString = 1;
+
+    message AtLeastFiveCharacterRule {
+        option (validation_of) = "Outer.NonEmptyString";
+
+        string value = 1 [(pattern).regex = "^.{5,}$"];
+    }
+}

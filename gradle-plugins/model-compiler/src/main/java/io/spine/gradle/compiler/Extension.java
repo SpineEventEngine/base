@@ -321,6 +321,11 @@ public class Extension {
         return DEFAULT_MAIN_DESCRIPTORS_PATH;
     }
 
+    @VisibleForTesting
+    public static String getDefaultMainGenResDir() {
+        return DEFAULT_MAIN_GEN_RES_DIR;
+    }
+
     private static Logger log() {
         return LoggerSingleton.INSTANCE.logger;
     }

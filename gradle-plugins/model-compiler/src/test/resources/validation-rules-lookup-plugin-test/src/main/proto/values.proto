@@ -1,0 +1,8 @@
+syntax = "proto3";
+
+import "spine/options.proto";
+
+message NonEmptyString {
+
+    string value = 1 [(required) = true];
+}
