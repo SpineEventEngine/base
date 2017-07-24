@@ -28,11 +28,7 @@ import static org.slf4j.LoggerFactory.getLogger;
  * Finds Protobuf definitions of validation rules and creates a {@code .properties} file,
  * which contains entries like:
  *
- * <p>{@code VALIDATION_RULE_TYPE_NAME=MESSAGE_TYPE_FOR_VALIDATION_RULE}
- *
- * <p>There can be several message types:
- *
- * <p>{@code VALIDATION_RULE_TYPE_NAME=FIRST_MESSAGE_TYPE_NAME,SECOND_MESSAGE_TYPE_NAME}
+ * <p>{@code VALIDATION_RULE_TYPE=MESSAGE_TYPE_FOR_VALIDATION_RULE.FIELD_NAME}
  *
  * @author Dmytro Grankin
  */

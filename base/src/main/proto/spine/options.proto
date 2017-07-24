@@ -296,30 +296,41 @@ extend google.protobuf.MessageOptions {
     // The option to mark a message as state of an entity.
     EntityOption entity = 73903;
 
-    // A validation rule for field declaration(s).
+    // A validation rule for a field declaration.
     //
-    // Allows to define validation options for fields of the declaration(s).
-    // If a specified options is already defined in a target message, then will be used
-    // options from a validation rule.
+    // Allows to define validation options for fields of the field declaration.
+    // If a specified options is already defined in a target message,
+    // then options from the validation rule will be used.
     //
     // Validation rules are applicable only for field declarations of a message type.
     //
     // Target of a validation rule should be specified with the following pattern:
     // `package.MessageName.field_name`.
-    // If the validation rule is for multiple fields, their routes should be separated with comma.
     //
-    // You can apply a validation rule using the message option - `validation_rules`.
+    // For example, you have a message that should be used in several places,
+    // that are impose context-dependent validation rules. The definitions will look like:
     //
-    // For example, you want to add custom validation options for a `StringChange`
-    // without defining a new message, that can be done like this:
+    // message StringChange {
     //
-    // message ValidationRule {
-    //      option (validation_of) = "package.MessageType.field_name";
+    //      string previous_value = 1;
     //
-    //      string previous_value = 1 [(required) = true];
-    //
-    //      string new_value = 2 [(required) = false];
+    //      string new_value = 2;
     // }
+    //
+    // message DescriptionChangeRule {
+    //      option (validation_of) = "package.UpdateDescription.change";
+    //
+    //      string previous_value = 1;
+    //
+    //      string new_value = 2 [(required) = true, (pattern).regex = "(.*?[a-zA-Z0-9]){3,}.*"];
+    // }
+    //
+    // message UpdateDescription {
+    //      option (validation_rules) = "package.DescriptionChangeRule";
+    //
+    //      StringChange change = 1 [(required) = true];
+    // }
+    //
     string validation_of = 73904;
 
     // Validation rules for the fields of a message.
@@ -327,6 +338,7 @@ extend google.protobuf.MessageOptions {
     // You can specify path to a validation rule with the following pattern:
     // `package.ValidationRuleType`
     // To specify several validation rules, their routes should be separated with comma.
+    //
     string validation_rules = 73905;
 
     // reserved 73906 to 73910 for future validation options
