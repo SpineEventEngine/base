@@ -296,7 +296,40 @@ extend google.protobuf.MessageOptions {
     // The option to mark a message as state of an entity.
     EntityOption entity = 73903;
 
-    // reserved 73904 to 73910 for future validation options
+    // A validation rule for field declaration(s).
+    //
+    // Allows to define validation options for fields of the declaration(s).
+    // If a specified options is already defined in a target message, then will be used
+    // options from a validation rule.
+    //
+    // Validation rules are applicable only for field declarations of a message type.
+    //
+    // Target of a validation rule should be specified with the following pattern:
+    // `package.MessageName.field_name`.
+    // If the validation rule is for multiple fields, their routes should be separated with comma.
+    //
+    // You can apply a validation rule using the message option - `validation_rules`.
+    //
+    // For example, you want to add custom validation options for a `StringChange`
+    // without defining a new message, that can be done like this:
+    //
+    // message ValidationRule {
+    //      option (validation_of) = "package.MessageType.field_name";
+    //
+    //      string previous_value = 1 [(required) = true];
+    //
+    //      string new_value = 2 [(required) = false];
+    // }
+    string validation_of = 73904;
+
+    // Validation rules for the fields of a message.
+    //
+    // You can specify path to a validation rule with the following pattern:
+    // `package.ValidationRuleType`
+    // To specify several validation rules, their routes should be separated with comma.
+    string validation_rules = 73905;
+
+    // reserved 73906 to 73910 for future validation options
 
     // API Annotations
     //-----------------
