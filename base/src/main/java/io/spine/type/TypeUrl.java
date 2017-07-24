@@ -48,8 +48,8 @@ import static java.lang.String.format;
  *
  * <p>Consists of the two parts separated with a slash.
  * The first part is the type URL prefix (for example, {@code "type.googleapis.com"}).
- * The second part is a {@linkplain Descriptors.Descriptor#getFullName() fully-qualified Protobuf
- * type name}.
+ * The second part is a {@linkplain com.google.protobuf.Descriptors.Descriptor#getFullName()
+ * fully-qualified Protobuf type name}.
  *
  * @author Alexander Yevsyukov
  * @see Any#getTypeUrl()

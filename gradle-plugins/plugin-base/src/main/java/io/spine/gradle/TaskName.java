@@ -28,7 +28,7 @@ import com.google.common.base.MoreObjects;
  *
  * @author Alex Tymchenko
  */
-@SuppressWarnings("unused") // These are used after deployment.
+//@SuppressWarnings("unused") // These are used after deployment.
 public enum TaskName {
 
     /*
