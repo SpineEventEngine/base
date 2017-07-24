@@ -135,14 +135,14 @@ public class Given {
         private static final String JAVA_PACKAGE = "io.spine.sample.rejections";
         private static final String CLASS_COMMENT =
                 "The rejection definition to test Javadoc generation.";
-        private static final String FAILURE_NAME = "Rejections";
-        private static final String FAILURES_FILE_NAME = "javadoc_rejections.proto";
+        private static final String REJECTION_OUTER_CLASS_NAME = "Rejections";
+        private static final String REJECTIONS_FILE_NAME = "javadoc_rejections.proto";
         private static final String FIRST_FIELD_COMMENT = "The rejection ID.";
         private static final String FIRST_FIELD_NAME = "id";
         private static final String SECOND_FIELD_COMMENT = "The rejection message.";
         private static final String SECOND_FIELD_NAME = "message";
         public static final String TEST_SOURCE = "/generated/main/spine/io/spine/sample/rejections/"
-                + FAILURE_NAME + getJavaExtension();
+                + REJECTION_OUTER_CLASS_NAME + getJavaExtension();
 
         public RejectionsJavadocConfigurator(TemporaryFolder projectDirectory) {
             super(projectDirectory);
@@ -151,11 +151,11 @@ public class Given {
         @Override
         public ProjectConnection configure() throws IOException {
             writeBuildGradle();
-            writeFailureProto();
+            writeRejectionProto();
             return createProjectConnection();
         }
 
-        private void writeFailureProto() throws IOException {
+        private void writeRejectionProto() throws IOException {
             final Iterable<String> sourceLines = Arrays.asList(
                     "syntax = \"proto3\";",
                     "package spine.sample.rejections;",
@@ -163,7 +163,7 @@ public class Given {
                     "option java_multiple_files = false;",
 
                     "//" + CLASS_COMMENT,
-                    "message " + FAILURE_NAME + " {",
+                    "message " + REJECTION_OUTER_CLASS_NAME + " {",
 
                     "//" + FIRST_FIELD_COMMENT,
                     "int32 " + FIRST_FIELD_NAME + " = 1; // Is not a part of Javadoc.",
@@ -178,7 +178,7 @@ public class Given {
 
             final Path sourcePath =
                     getProjectDirectory().toPath()
-                                         .resolve(BASE_PROTO_LOCATION + FAILURES_FILE_NAME);
+                                         .resolve(BASE_PROTO_LOCATION + REJECTIONS_FILE_NAME);
             Files.createDirectories(sourcePath.getParent());
             Files.write(sourcePath, sourceLines, Charsets.UTF_8);
         }
@@ -187,7 +187,8 @@ public class Given {
             return ' ' + "<pre>" + JAVADOC_LINE_SEPARATOR
                     + ' ' + CLASS_COMMENT + JAVADOC_LINE_SEPARATOR
                     + " </pre>" + JAVADOC_LINE_SEPARATOR + JAVADOC_LINE_SEPARATOR
-                    + " Rejection based on proto type {@code " + JAVA_PACKAGE + '.' + FAILURE_NAME
+                    + " Rejection based on proto type {@code " + JAVA_PACKAGE + '.' +
+                    REJECTION_OUTER_CLASS_NAME
                     + '}' + JAVADOC_LINE_SEPARATOR;
         }
 
