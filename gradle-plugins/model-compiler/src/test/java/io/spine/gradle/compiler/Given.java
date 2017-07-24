@@ -20,17 +20,9 @@
 
 package io.spine.gradle.compiler;
 
-import com.sun.javadoc.RootDoc;
 import org.gradle.api.Project;
 import org.gradle.testfixtures.ProjectBuilder;
-import org.gradle.tooling.ProjectConnection;
-import org.junit.rules.TemporaryFolder;
 
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.UUID;
 
 import static io.spine.gradle.TaskName.CLEAN;
@@ -40,8 +32,6 @@ import static io.spine.gradle.TaskName.GENERATE_PROTO;
 import static io.spine.gradle.TaskName.GENERATE_TEST_PROTO;
 import static io.spine.gradle.TaskName.PROCESS_RESOURCES;
 import static io.spine.gradle.TaskName.PROCESS_TEST_RESOURCES;
-import static io.spine.gradle.compiler.util.JavaCode.toJavaFieldName;
-import static io.spine.gradle.compiler.util.JavaSources.getJavaExtension;
 
 /**
  * A helper class for the test data generation.
@@ -53,8 +43,8 @@ public class Given {
 
     static final String SPINE_PROTOBUF_PLUGIN_ID = "io.spine.tools.spine-model-compiler";
 
-    // prevent instantiation of this utility class
     private Given() {
+        // Prevent instantiation of this utility class.
     }
 
     /** Creates a project with all required tasks. */
@@ -75,132 +65,5 @@ public class Given {
         final String result = UUID.randomUUID()
                                   .toString();
         return result;
-    }
-
-    public static class FailuresGenerationConfigurator extends ProjectConfigurator {
-
-        private static final String PROJECT_NAME = "failures-gen-plugin-test/";
-        private static final String[] TEST_PROTO_FILES = {
-                "test_failures.proto",
-                "outer_class_by_file_name_failures.proto",
-                "outer_class_set_failures.proto",
-                "deps/deps.proto"
-        };
-
-        public FailuresGenerationConfigurator(TemporaryFolder projectDirectory) {
-            super(projectDirectory);
-        }
-
-        @Override
-        public ProjectConnection configure() throws IOException {
-            writeBuildGradle();
-            for (String protoFile : TEST_PROTO_FILES) {
-                writeProto(PROJECT_NAME, protoFile);
-            }
-
-            return createProjectConnection();
-        }
-    }
-
-    public static class ValidatorsGenerationConfigurator extends ProjectConfigurator {
-
-        private static final String PROJECT_NAME = "validators-gen-plugin-test/";
-        private static final String[] TEST_PROTO_FILES = {
-                "identifiers.proto",
-                "attributes.proto",
-                "changes.proto",
-                "c/test_commands.proto"
-        };
-
-        public ValidatorsGenerationConfigurator(TemporaryFolder projectDirectory) {
-            super(projectDirectory);
-        }
-
-        @Override
-        public ProjectConnection configure() throws IOException {
-            writeBuildGradle();
-            for (String protoFile : TEST_PROTO_FILES) {
-                writeProto(PROJECT_NAME, protoFile);
-            }
-
-            return createProjectConnection();
-        }
-    }
-
-    public static class FailuresJavadocConfigurator extends ProjectConfigurator {
-
-        /** Javadocs received from {@link RootDoc} contain "\n" line separator. */
-        @SuppressWarnings("HardcodedLineSeparator")
-        private static final String JAVADOC_LINE_SEPARATOR = "\n";
-
-        private static final String JAVA_PACKAGE = "io.spine.sample.failures";
-        private static final String CLASS_COMMENT =
-                "The failure definition to test Javadoc generation.";
-        private static final String FAILURE_NAME = "Failure";
-        private static final String FAILURES_FILE_NAME = "javadoc_failures.proto";
-        private static final String FIRST_FIELD_COMMENT = "The failure ID.";
-        private static final String FIRST_FIELD_NAME = "id";
-        private static final String SECOND_FIELD_COMMENT = "The failure message.";
-        private static final String SECOND_FIELD_NAME = "message";
-        public static final String TEST_SOURCE = "/generated/main/spine/io/spine/sample/failures/"
-                + FAILURE_NAME + getJavaExtension();
-
-        public FailuresJavadocConfigurator(TemporaryFolder projectDirectory) {
-            super(projectDirectory);
-        }
-
-        @Override
-        public ProjectConnection configure() throws IOException {
-            writeBuildGradle();
-            writeFailureProto();
-            return createProjectConnection();
-        }
-
-        private void writeFailureProto() throws IOException {
-            final Iterable<String> sourceLines = Arrays.asList(
-                    "syntax = \"proto3\";",
-                    "package spine.sample.failures;",
-                    "option java_package = \"" + JAVA_PACKAGE + "\";",
-                    "option java_multiple_files = false;",
-
-                    "//" + CLASS_COMMENT,
-                    "message " + FAILURE_NAME + " {",
-
-                    "//" + FIRST_FIELD_COMMENT,
-                    "int32 " + FIRST_FIELD_NAME + " = 1; // Is not a part of Javadoc.",
-
-                    "//" + SECOND_FIELD_COMMENT,
-                    "string " + SECOND_FIELD_NAME + " = 2;",
-
-                    "bool hasNoComment = 3;",
-                    "}"
-
-            );
-
-            final Path sourcePath =
-                    getProjectDirectory().toPath()
-                                         .resolve(BASE_PROTO_LOCATION + FAILURES_FILE_NAME);
-            Files.createDirectories(sourcePath.getParent());
-            Files.write(sourcePath, sourceLines, Charset.forName("UTF-8"));
-        }
-
-        public static String getExpectedClassComment() {
-            return ' ' + "<pre>" + JAVADOC_LINE_SEPARATOR
-                    + ' ' + CLASS_COMMENT + JAVADOC_LINE_SEPARATOR
-                    + " </pre>" + JAVADOC_LINE_SEPARATOR + JAVADOC_LINE_SEPARATOR
-                    + " Failure based on protobuf type {@code " + JAVA_PACKAGE + '.' + FAILURE_NAME
-                    + '}' + JAVADOC_LINE_SEPARATOR;
-        }
-
-        public static String getExpectedCtorComment() {
-            final String param = " @param ";
-            final String firstFieldJavaName = toJavaFieldName(FIRST_FIELD_NAME, false);
-            final String secondFieldJavaName = toJavaFieldName(SECOND_FIELD_NAME, false);
-            return " Creates a new instance." + JAVADOC_LINE_SEPARATOR + JAVADOC_LINE_SEPARATOR
-                    + param + firstFieldJavaName + "      " + FIRST_FIELD_COMMENT
-                    + JAVADOC_LINE_SEPARATOR
-                    + param + secondFieldJavaName + ' ' + SECOND_FIELD_COMMENT
-                    + JAVADOC_LINE_SEPARATOR;
-        }
     }
 }

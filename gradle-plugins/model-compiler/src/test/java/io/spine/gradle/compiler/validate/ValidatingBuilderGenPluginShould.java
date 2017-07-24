@@ -20,13 +20,14 @@
 
 package io.spine.gradle.compiler.validate;
 
-import io.spine.gradle.compiler.Given.ValidatorsGenerationConfigurator;
+import io.spine.gradle.compiler.ProjectConfigurator;
 import org.gradle.tooling.BuildLauncher;
 import org.gradle.tooling.ProjectConnection;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
+import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -48,7 +49,7 @@ public class ValidatingBuilderGenPluginShould {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
 
         final ProjectConnection connection =
-                new ValidatorsGenerationConfigurator(testProjectDir).configure();
+                new ValidatorsProjectConfigurator(testProjectDir).configure();
         final BuildLauncher launcher = connection.newBuild();
 
         launcher.setStandardError(System.out)
@@ -60,5 +61,30 @@ public class ValidatingBuilderGenPluginShould {
         }
 
         countDownLatch.await(100, TimeUnit.MILLISECONDS);
+    }
+
+    private static class ValidatorsProjectConfigurator extends ProjectConfigurator {
+
+        private static final String PROJECT_NAME = "validators-gen-plugin-test/";
+        private static final String[] TEST_PROTO_FILES = {
+                "identifiers.proto",
+                "attributes.proto",
+                "changes.proto",
+                "c/test_commands.proto"
+        };
+
+        private ValidatorsProjectConfigurator(TemporaryFolder projectDirectory) {
+            super(projectDirectory);
+        }
+
+        @Override
+        public ProjectConnection configure() throws IOException {
+            writeBuildGradle();
+            for (String protoFile : TEST_PROTO_FILES) {
+                writeProto(PROJECT_NAME, protoFile);
+            }
+
+            return createProjectConnection();
+        }
     }
 }
