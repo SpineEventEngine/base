@@ -15,6 +15,8 @@ import java.util.Map;
 import static com.google.common.collect.Maps.newHashMap;
 import static io.spine.gradle.TaskName.FIND_TEST_VALIDATION_RULES;
 import static io.spine.gradle.TaskName.FIND_VALIDATION_RULES;
+import static io.spine.gradle.TaskName.GENERATE_PROTO;
+import static io.spine.gradle.TaskName.GENERATE_TEST_PROTO;
 import static io.spine.gradle.TaskName.PROCESS_RESOURCES;
 import static io.spine.gradle.TaskName.PROCESS_TEST_RESOURCES;
 import static io.spine.gradle.compiler.Extension.getMainDescriptorSetPath;
@@ -38,19 +40,26 @@ public class ValidationRulesLookupPlugin extends SpinePlugin {
 
     @Override
     public void apply(Project project) {
-        logDependingTask(log(), FIND_VALIDATION_RULES, PROCESS_RESOURCES);
+        logDependingTask(log(), FIND_VALIDATION_RULES, PROCESS_RESOURCES, GENERATE_PROTO);
         final Action<Task> mainScopeAction = mainScopeActionFor(project);
         final GradleTask findRules = newTask(FIND_VALIDATION_RULES,
-                                             mainScopeAction).insertBeforeTask(PROCESS_RESOURCES)
+                                             mainScopeAction).insertAfterTask(GENERATE_PROTO)
+                                                             .insertBeforeTask(PROCESS_RESOURCES)
                                                              .applyNowTo(project);
-        logDependingTask(log(), FIND_TEST_VALIDATION_RULES, PROCESS_TEST_RESOURCES);
+        logDependingTask(log(), FIND_TEST_VALIDATION_RULES, PROCESS_TEST_RESOURCES,
+                         GENERATE_TEST_PROTO);
         final Action<Task> testScopeAction = testScopeActionFor(project);
         final GradleTask findTestRules =
                 newTask(FIND_TEST_VALIDATION_RULES,
-                        testScopeAction).insertBeforeTask(PROCESS_TEST_RESOURCES)
+                        testScopeAction).insertAfterTask(GENERATE_TEST_PROTO)
+                                        .insertBeforeTask(PROCESS_TEST_RESOURCES)
                                         .applyNowTo(project);
         log().debug("Validation rules lookup phase initialized with tasks: {}, {}",
                     findRules, findTestRules);
+    }
+
+    public static String getValidationPropsFileName() {
+        return VALIDATION_PROPS_FILE_NAME;
     }
 
     private static Action<Task> mainScopeActionFor(final Project project) {

@@ -117,6 +117,7 @@ public class ModelCompilerPluginShould {
     public void add_task_findValidationRules() {
         final Task find = task(FIND_VALIDATION_RULES);
         assertNotNull(find);
+        assertTrue(dependsOn(find, GENERATE_PROTO));
         assertTrue(dependsOn(task(PROCESS_RESOURCES), find));
     }
 
@@ -124,6 +125,7 @@ public class ModelCompilerPluginShould {
     public void add_task_findTestValidationRules() {
         final Task find = task(FIND_TEST_VALIDATION_RULES);
         assertNotNull(find);
+        assertTrue(dependsOn(find, GENERATE_TEST_PROTO));
         assertTrue(dependsOn(task(PROCESS_TEST_RESOURCES), find));
     }
 
