@@ -65,18 +65,17 @@ public class RejectionWriter {
     /**
      * Creates a new instance.
      *
-     * @param rejectionMetadata a rejection metadata
-     * @param outputDirectory   a {@linkplain File directory} to write a Rejection
-     * @param messageTypeMap    pre-scanned map with proto types and their appropriate Java classes
+     * @param metadata        a rejection metadata
+     * @param outputDirectory a {@linkplain File directory} to write a Rejection
+     * @param messageTypeMap  pre-scanned map with proto types and their appropriate Java classes
      */
-    public RejectionWriter(RejectionMetadata rejectionMetadata,
+    public RejectionWriter(RejectionMetadata metadata,
                            File outputDirectory,
                            Map<String, String> messageTypeMap) {
-        this.rejectionMetadata = rejectionMetadata;
+        this.rejectionMetadata = metadata;
         this.outputDirectory = outputDirectory;
-        this.fieldTypeFactory = new FieldTypeFactory(rejectionMetadata.getDescriptor(),
-                                                     messageTypeMap);
-        this.javadocGenerator = new RejectionJavadocGenerator(rejectionMetadata);
+        this.fieldTypeFactory = new FieldTypeFactory(metadata.getDescriptor(), messageTypeMap);
+        this.javadocGenerator = new RejectionJavadocGenerator(metadata);
     }
 
     /**
@@ -98,9 +97,10 @@ public class RejectionWriter {
                             .addMethod(constructConstructor())
                             .addMethod(constructGetMessageThrown())
                             .build();
-            final JavaFile javaFile = JavaFile.builder(rejectionMetadata.getJavaPackage(), rejection)
-                                              .skipJavaLangImports(true)
-                                              .build();
+            final JavaFile javaFile =
+                    JavaFile.builder(rejectionMetadata.getJavaPackage(), rejection)
+                            .skipJavaLangImports(true)
+                            .build();
             log().debug("Writing {}", rejectionMetadata.getClassName());
             javaFile.writeTo(outputDirectory);
             log().debug("Rejection {} written successfully", rejectionMetadata.getClassName());

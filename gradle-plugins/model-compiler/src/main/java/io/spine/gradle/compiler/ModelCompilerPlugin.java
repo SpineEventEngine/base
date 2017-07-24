@@ -53,7 +53,7 @@ public class ModelCompilerPlugin implements Plugin<Project> {
         log().debug("Applying Spine enrichment lookup plugin.");
         new EnrichmentLookupPlugin().apply(project);
 
-        log().debug("Applying Spine failure generation plugin.");
+        log().debug("Applying Spine rejection generation plugin.");
         new RejectionGenPlugin().apply(project);
 
         log().debug("Applying Spine validating builder generation plugin.");

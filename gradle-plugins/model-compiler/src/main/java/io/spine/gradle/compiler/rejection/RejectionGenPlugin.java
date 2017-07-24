@@ -177,7 +177,7 @@ public class RejectionGenPlugin extends SpinePlugin {
                     javaOuterClassName);
         final List<DescriptorProto> rejections = descriptor.getMessageTypeList();
         for (DescriptorProto rejection : rejections) {
-            // The name of the generated ThrowableFailure will be the same
+            // The name of the generated `ThrowableMessage` will be the same
             // as for the Protobuf message.
             log().trace("Processing rejection '{}'", rejection.getName());
 

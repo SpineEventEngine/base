@@ -79,20 +79,20 @@ public class ModelCompilerPluginShould {
     }
 
     @Test
-    public void add_task_generateFailures() {
+    public void add_task_generateRejections() {
 
-        final Task genFailures = task(GENERATE_REJECTIONS);
-        assertNotNull(genFailures);
-        assertTrue(dependsOn(genFailures, GENERATE_PROTO));
-        assertTrue(dependsOn(task(COMPILE_JAVA), genFailures));
+        final Task genRejections = task(GENERATE_REJECTIONS);
+        assertNotNull(genRejections);
+        assertTrue(dependsOn(genRejections, GENERATE_PROTO));
+        assertTrue(dependsOn(task(COMPILE_JAVA), genRejections));
     }
 
     @Test
-    public void add_task_generateTestFailures() {
-        final Task genTestFailures = task(GENERATE_TEST_REJECTIONS);
-        assertNotNull(genTestFailures);
-        assertTrue(dependsOn(genTestFailures, GENERATE_TEST_PROTO));
-        assertTrue(dependsOn(task(COMPILE_TEST_JAVA), genTestFailures));
+    public void add_task_generateTestRejections() {
+        final Task genTestRejections = task(GENERATE_TEST_REJECTIONS);
+        assertNotNull(genTestRejections);
+        assertTrue(dependsOn(genTestRejections, GENERATE_TEST_PROTO));
+        assertTrue(dependsOn(task(COMPILE_TEST_JAVA), genTestRejections));
     }
 
     @Test
