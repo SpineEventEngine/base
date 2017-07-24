@@ -55,6 +55,8 @@ import static org.junit.Assert.assertEquals;
 @SuppressWarnings("UseOfSystemOutOrSystemErr")  // It's OK: running a Gradle build inside.
 public class FailuresGenPluginShould {
 
+    private static final String PROJECT_NAME = "failures-gen-plugin-test";
+
     @Rule
     public final TemporaryFolder testProjectDir = new TemporaryFolder();
     private final CountDownLatch countDownLatch = new CountDownLatch(1);
@@ -109,7 +111,6 @@ public class FailuresGenPluginShould {
 
     private static class FailuresGenerationConfigurator extends ProjectConfigurator {
 
-        private static final String PROJECT_NAME = "failures-gen-plugin-test/";
         private static final String[] TEST_PROTO_FILES = {
                 "test_failures.proto",
                 "outer_class_by_file_name_failures.proto",
@@ -118,14 +119,14 @@ public class FailuresGenPluginShould {
         };
 
         private FailuresGenerationConfigurator(TemporaryFolder projectDirectory) {
-            super(projectDirectory);
+            super(PROJECT_NAME, projectDirectory);
         }
 
         @Override
         public ProjectConnection configure() throws IOException {
             writeBuildGradle();
             for (String protoFile : TEST_PROTO_FILES) {
-                writeProto(PROJECT_NAME, protoFile);
+                writeProto(protoFile);
             }
 
             return createProjectConnection();
@@ -151,7 +152,7 @@ public class FailuresGenPluginShould {
         private static final String SECOND_FIELD_NAME = "message";
 
         private FailuresJavadocConfigurator(TemporaryFolder projectDirectory) {
-            super(projectDirectory);
+            super(PROJECT_NAME, projectDirectory);
         }
 
         static String getExpectedClassComment() {

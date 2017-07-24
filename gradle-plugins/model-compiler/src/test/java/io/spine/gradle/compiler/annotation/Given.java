@@ -172,19 +172,17 @@ public class Given {
 
     static class ProtoAnnotatorConfigurator extends ProjectConfigurator {
 
-        private static final String PROJECT_NAME = "annotator-plugin-test/";
-
         private final String protoFile;
 
         ProtoAnnotatorConfigurator(TemporaryFolder projectDirectory, String protoFile) {
-            super(projectDirectory);
+            super("annotator-plugin-test", projectDirectory);
             this.protoFile = protoFile;
         }
 
         @Override
         public ProjectConnection configure() throws IOException {
             writeBuildGradle();
-            writeProto(PROJECT_NAME, protoFile);
+            writeProto(protoFile);
             return createProjectConnection();
         }
     }

@@ -50,10 +50,12 @@ public abstract class ProjectConfigurator {
     private static final String EXT_GRADLE_NAME = "ext.gradle";
     protected static final String BASE_PROTO_LOCATION = "src/main/proto/";
 
+    private final String projectName;
     private final TemporaryFolder projectDirectory;
 
-    protected ProjectConfigurator(TemporaryFolder projectDirectory) {
+    protected ProjectConfigurator(String projectName, TemporaryFolder projectDirectory) {
         this.projectDirectory = projectDirectory;
+        this.projectName = projectName;
     }
 
     public abstract ProjectConnection configure() throws IOException;
@@ -88,14 +90,14 @@ public abstract class ProjectConfigurator {
         Files.copy(extGradleSourcePath, extGradleResultingPath);
     }
 
-    protected void writeProto(String projectName, String protoFile) throws IOException {
+    protected void writeProto(String protoFile) throws IOException {
         final String protoFilePath = BASE_PROTO_LOCATION + protoFile;
 
         final Path resultingPath = getProjectDirectory().toPath()
                                                         .resolve(protoFilePath);
+        final String fqnPath = projectName + '/' + protoFilePath;
         final InputStream fileContent = getClass().getClassLoader()
-                                                  .getResourceAsStream(projectName + protoFilePath);
-
+                                                  .getResourceAsStream(fqnPath);
         Files.createDirectories(resultingPath.getParent());
         Files.copy(fileContent, resultingPath);
     }

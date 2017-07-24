@@ -64,7 +64,6 @@ public class ValidatingBuilderGenPluginShould {
 
     private static class ValidatorsProjectConfigurator extends ProjectConfigurator {
 
-        private static final String PROJECT_NAME = "validators-gen-plugin-test/";
         private static final String[] TEST_PROTO_FILES = {
                 "identifiers.proto",
                 "attributes.proto",
@@ -73,14 +72,14 @@ public class ValidatingBuilderGenPluginShould {
         };
 
         private ValidatorsProjectConfigurator(TemporaryFolder projectDirectory) {
-            super(projectDirectory);
+            super("validators-gen-plugin-test", projectDirectory);
         }
 
         @Override
         public ProjectConnection configure() throws IOException {
             writeBuildGradle();
             for (String protoFile : TEST_PROTO_FILES) {
-                writeProto(PROJECT_NAME, protoFile);
+                writeProto(protoFile);
             }
 
             return createProjectConnection();
