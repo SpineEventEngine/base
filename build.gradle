@@ -19,7 +19,7 @@
 //
 
 dependencies {
-    compile group: 'io.spine', name: 'spine-client-core', version: spineVersion
+    compile group: 'io.spine', name: 'spine-base', version: spineVersion
 
     compile files("${System.properties['java.home']}/../lib/tools.jar")
     compile group: 'javax.annotation', name: 'javax.annotation-api', version: '1.3'
