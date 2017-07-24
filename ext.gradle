@@ -32,7 +32,7 @@ ext {
 
     guavaVersion = '20.0'
     findBugsVersion = '3.0.0'
-    protobufVersion = '3.3.2'
+    protobufVersion = '3.3.0'
     gRpcVersion = '1.5.0'
     slf4JVersion = '1.7.25'
     jUnitVersion = '4.12'
