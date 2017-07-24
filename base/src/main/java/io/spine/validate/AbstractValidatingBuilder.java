@@ -123,7 +123,9 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
     public <K, V> Map<K, V> convertToMap(String value,
                                          Class<K> keyClass,
                                          Class<V> valueClass) throws ConversionException {
-        final Map<K, V> result = Stringifiers.newForMapOf(keyClass, valueClass).reverse().convert(value);
+        final Map<K, V> result = Stringifiers.newForMapOf(keyClass, valueClass)
+                                             .reverse()
+                                             .convert(value);
         return result;
     }
 

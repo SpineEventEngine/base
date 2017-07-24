@@ -47,12 +47,12 @@ import static java.lang.String.format;
  * A URL of a Protobuf type.
  *
  * <p>Consists of the two parts separated with a slash.
- * The first part is the type URL prefix (for example, {@code "type.googleapis.com"});
- * the second part is a fully-qualified Protobuf type name.
+ * The first part is the type URL prefix (for example, {@code "type.googleapis.com"}).
+ * The second part is a {@linkplain Descriptors.Descriptor#getFullName() fully-qualified Protobuf
+ * type name}.
  *
  * @author Alexander Yevsyukov
  * @see Any#getTypeUrl()
- * @see Descriptors.Descriptor#getFullName()
  */
 public final class TypeUrl implements Serializable {
 
