@@ -17,8 +17,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.gradle.compiler.failure;
+package io.spine.gradle.compiler.rejection;
 
+import com.google.common.collect.Lists;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.gradle.SpinePlugin;
@@ -32,24 +33,23 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import static io.spine.gradle.TaskName.COMPILE_JAVA;
 import static io.spine.gradle.TaskName.COMPILE_TEST_JAVA;
-import static io.spine.gradle.TaskName.GENERATE_FAILURES;
 import static io.spine.gradle.TaskName.GENERATE_PROTO;
-import static io.spine.gradle.TaskName.GENERATE_TEST_FAILURES;
+import static io.spine.gradle.TaskName.GENERATE_REJECTIONS;
 import static io.spine.gradle.TaskName.GENERATE_TEST_PROTO;
+import static io.spine.gradle.TaskName.GENERATE_TEST_REJECTIONS;
 import static io.spine.gradle.compiler.Extension.getMainDescriptorSetPath;
-import static io.spine.gradle.compiler.Extension.getTargetGenFailuresRootDir;
-import static io.spine.gradle.compiler.Extension.getTargetTestGenFailuresRootDir;
+import static io.spine.gradle.compiler.Extension.getTargetGenRejectionsRootDir;
+import static io.spine.gradle.compiler.Extension.getTargetTestGenRejectionsRootDir;
 import static io.spine.gradle.compiler.Extension.getTestDescriptorSetPath;
 import static io.spine.gradle.compiler.util.DescriptorSetUtil.getProtoFileDescriptors;
 
 /**
- * Plugin which generates Failures, based on failures.proto files.
+ * Plugin which generates Rejections declared in {@code rejections.proto} files.
  *
  * <p>Uses generated proto descriptors.
  *
@@ -60,7 +60,11 @@ import static io.spine.gradle.compiler.util.DescriptorSetUtil.getProtoFileDescri
  * @author Alexander Litus
  * @author Alex Tymchenko
  */
-public class FailuresGenPlugin extends SpinePlugin {
+public class RejectionGenPlugin extends SpinePlugin {
+
+    /** The name suffix for proto files containing rejection declarations. */
+    private static final String REJECTIONS_FILE_SUFFIX = "rejections.proto";
+    private static final String OUTER_CLASS_NAME_SUFFIX = "Rejections";
 
     /** A map from Protobuf type name to Java class FQN. */
     private final MessageTypeCache messageTypeCache = new MessageTypeCache();
@@ -68,83 +72,83 @@ public class FailuresGenPlugin extends SpinePlugin {
     /**
      * Applies the plug-in to a project.
      *
-     * <p>Adds {@code :generateFailures} and {@code :generateTestFailures} tasks.
+     * <p>Adds {@code :generateRejections} and {@code :generateTestRejections} tasks.
      *
      * <p>Tasks depend on corresponding {@code :generateProto} tasks and are executed
      * before corresponding {@code :compileJava} tasks.
      */
     @Override
     public void apply(final Project project) {
-        log().debug("Preparing to generate failures");
+        log().trace("Preparing to generate rejections");
         final Action<Task> mainScopeAction = new Action<Task>() {
             @Override
             public void execute(Task task) {
                 final String path = getMainDescriptorSetPath(project);
-                log().debug("Generating the failures from {}", path);
-                final List<FileDescriptorProto> filesWithFailures =
-                        getFailureProtoFileDescriptors(path);
-                processDescriptors(filesWithFailures, getTargetGenFailuresRootDir(project));
+                log().debug("Generating rejections from {}", path);
+                final List<FileDescriptorProto> filesWithRejections =
+                        collectRejectionFiles(path);
+                processDescriptors(filesWithRejections, getTargetGenRejectionsRootDir(project));
             }
         };
 
-        logDependingTask(log(), GENERATE_FAILURES, COMPILE_JAVA, GENERATE_PROTO);
-        final GradleTask generateFailures =
-                newTask(GENERATE_FAILURES, mainScopeAction).insertAfterTask(GENERATE_PROTO)
+        logDependingTask(log(), GENERATE_REJECTIONS, COMPILE_JAVA, GENERATE_PROTO);
+        final GradleTask generateRejections =
+                newTask(GENERATE_REJECTIONS, mainScopeAction).insertAfterTask(GENERATE_PROTO)
                                                            .insertBeforeTask(COMPILE_JAVA)
                                                            .applyNowTo(project);
-        log().debug("Preparing to generate test failures");
+        log().trace("Preparing to generate test rejections");
         final Action<Task> testScopeAction = new Action<Task>() {
             @Override
             public void execute(Task task) {
                 final String path = getTestDescriptorSetPath(project);
-                log().debug("Generating the test failures from {}", path);
-                final List<FileDescriptorProto> filesWithFailures =
-                        getFailureProtoFileDescriptors(path);
-                processDescriptors(filesWithFailures, getTargetTestGenFailuresRootDir(project));
+                log().debug("Generating test rejections from {}", path);
+                final List<FileDescriptorProto> rejectionFiles = collectRejectionFiles(path);
+                processDescriptors(rejectionFiles, getTargetTestGenRejectionsRootDir(project));
             }
         };
 
-        logDependingTask(log(), GENERATE_TEST_FAILURES, COMPILE_TEST_JAVA, GENERATE_TEST_PROTO);
-        final GradleTask generateTestFailures =
-                newTask(GENERATE_TEST_FAILURES,
+        logDependingTask(log(), GENERATE_TEST_REJECTIONS, COMPILE_TEST_JAVA, GENERATE_TEST_PROTO);
+        final GradleTask generateTestRejections =
+                newTask(GENERATE_TEST_REJECTIONS,
                         testScopeAction).insertAfterTask(GENERATE_TEST_PROTO)
                                         .insertBeforeTask(COMPILE_TEST_JAVA)
                                         .applyNowTo(project);
-        log().debug("Failure generation phase initialized with tasks: {}, {}",
-                    generateFailures,
-                    generateTestFailures);
+        log().debug("Rejection generation phase initialized with tasks: {}, {}",
+                    generateRejections,
+                    generateTestRejections);
     }
 
-    private List<FileDescriptorProto> getFailureProtoFileDescriptors(String descFilePath) {
-        final List<FileDescriptorProto> result = new LinkedList<>();
+    private List<FileDescriptorProto> collectRejectionFiles(String descFilePath) {
+        final List<FileDescriptorProto> result = Lists.newLinkedList();
         final Collection<FileDescriptorProto> allDescriptors =
                 getProtoFileDescriptors(descFilePath);
         for (FileDescriptorProto file : allDescriptors) {
             if (file.getName()
-                    .endsWith("failures.proto")) {
-                log().trace("Found failures file: {}", file.getName());
+                    .endsWith(REJECTIONS_FILE_SUFFIX)) {
+                log().trace("Found rejections file: {}", file.getName());
                 result.add(file);
             }
             messageTypeCache.cacheTypes(file);
         }
-        log().trace("Found failures in files: {}", result);
+        log().trace("Found rejections in files: {}", result);
 
         return result;
     }
 
-    private void processDescriptors(List<FileDescriptorProto> descriptors, String failuresRootDir) {
-        log().debug("Processing the file descriptors for the failures {}", descriptors);
+    private void processDescriptors(List<FileDescriptorProto> descriptors,
+                                    String rejectionsRootDir) {
+        log().debug("Processing the file descriptors for the rejections {}", descriptors);
         for (FileDescriptorProto file : descriptors) {
-            if (isFileWithFailures(file)) {
-                generateFailures(file, messageTypeCache.getCachedTypes(), failuresRootDir);
+            if (isRejectionsFile(file)) {
+                generateRejections(file, messageTypeCache.getCachedTypes(), rejectionsRootDir);
             } else {
-                log().error("Invalid failures file: {}", file.getName());
+                log().error("Invalid rejections file: {}", file.getName());
             }
         }
     }
 
-    private static boolean isFileWithFailures(FileDescriptorProto descriptor) {
-        // By convention failures are generated into one file.
+    private static boolean isRejectionsFile(FileDescriptorProto descriptor) {
+        // By convention rejections are generated into one file.
         if (descriptor.getOptions()
                       .getJavaMultipleFiles()) {
             return false;
@@ -153,36 +157,33 @@ public class FailuresGenPlugin extends SpinePlugin {
                                                     .getJavaOuterClassname();
         if (javaOuterClassName.isEmpty()) {
             // There's no outer class name given in options.
-            // Assuming the file name ends with `failures.proto`, it's a good failures file.
+            // Assuming the file name ends with `rejections.proto`, it's a good rejections file.
             return true;
         }
 
-        // it's OK, since a duplicated piece is totally unrelated and
-        // is located in the test codebase.
-        @SuppressWarnings("DuplicateStringLiteralInspection")
-        final boolean result = javaOuterClassName.endsWith("Failures");
+        final boolean result = javaOuterClassName.endsWith(OUTER_CLASS_NAME_SUFFIX);
         return result;
     }
 
-    private static void generateFailures(FileDescriptorProto descriptor,
-                                         Map<String, String> messageTypeMap,
-                                         String failuresRootDir) {
-        log().debug("Generating failures from file {}", descriptor.getName());
+    private static void generateRejections(FileDescriptorProto descriptor,
+                                           Map<String, String> messageTypeMap,
+                                           String rejectionsRootDir) {
+        log().debug("Generating rejections from file {}", descriptor.getName());
         final String javaPackage = descriptor.getOptions()
                                              .getJavaPackage();
         final String javaOuterClassName = JavaCode.getOuterClassName(descriptor);
         log().trace("Found options: javaPackage: {}, javaOuterClassName: {}",
                     javaPackage,
                     javaOuterClassName);
-        final List<DescriptorProto> failures = descriptor.getMessageTypeList();
-        for (DescriptorProto failure : failures) {
+        final List<DescriptorProto> rejections = descriptor.getMessageTypeList();
+        for (DescriptorProto rejection : rejections) {
             // The name of the generated ThrowableFailure will be the same
             // as for the Protobuf message.
-            log().trace("Processing failure '{}'", failure.getName());
+            log().trace("Processing rejection '{}'", rejection.getName());
 
-            final FailureMetadata metadata = new FailureMetadata(failure, descriptor);
-            final File outputDir = new File(failuresRootDir);
-            final FailureWriter writer = new FailureWriter(metadata, outputDir, messageTypeMap);
+            final RejectionMetadata metadata = new RejectionMetadata(rejection, descriptor);
+            final File outputDir = new File(rejectionsRootDir);
+            final RejectionWriter writer = new RejectionWriter(metadata, outputDir, messageTypeMap);
             writer.write();
         }
     }
@@ -194,6 +195,6 @@ public class FailuresGenPlugin extends SpinePlugin {
     private enum LogSingleton {
         INSTANCE;
         @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = LoggerFactory.getLogger(FailuresGenPlugin.class);
+        private final Logger value = LoggerFactory.getLogger(RejectionGenPlugin.class);
     }
 }

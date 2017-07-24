@@ -18,11 +18,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.gradle.compiler.failure;
+package io.spine.gradle.compiler.rejection;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Ordering;
 import com.google.common.primitives.Ints;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
@@ -35,7 +36,6 @@ import io.spine.gradle.compiler.util.JavaCode;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -44,9 +44,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
 
 /**
- * A generator for the failure Javadocs content.
+ * Generates Javadoc for a rejection.
  *
- * <p>Could be used only if protobuf plugin configured properly:
+ * <p>Requires the following Protobuf plugin configuration:
  * <pre> {@code
  * generateProtoTasks {
  *     all().each { final task ->
@@ -62,7 +62,7 @@ import static java.lang.String.format;
  * @see <a href="https://github.com/google/protobuf-gradle-plugin/blob/master/README.md#generate-descriptor-set-files">
  * Protobuf plugin configuration</a>
  */
-public class FailureJavadocGenerator {
+public class RejectionJavadocGenerator {
 
     @VisibleForTesting
     protected static final String OPENING_PRE = "<pre>";
@@ -72,20 +72,20 @@ public class FailureJavadocGenerator {
     @SuppressWarnings("HardcodedLineSeparator")
     private static final String LINE_SEPARATOR = "\n";
 
-    private final FailureMetadata failureMetadata;
+    private final RejectionMetadata rejectionMetadata;
 
-    public FailureJavadocGenerator(FailureMetadata failureMetadata) {
-        this.failureMetadata = failureMetadata;
+    public RejectionJavadocGenerator(RejectionMetadata rejectionMetadata) {
+        this.rejectionMetadata = rejectionMetadata;
     }
 
     /**
-     * Generates a Javadoc content for the failure.
+     * Generates a Javadoc content for the rejection.
      *
      * @return the class-level Javadoc content
      */
     @SuppressWarnings("StringBufferWithoutInitialCapacity") // Cannot make valuable initialization
     public String generateClassJavadoc() {
-        final Optional<String> leadingComments = getFailureLeadingComments();
+        final Optional<String> leadingComments = getRejectionLeadingComments();
         final StringBuilder builder = new StringBuilder();
 
         if (leadingComments.isPresent()) {
@@ -97,17 +97,17 @@ public class FailureJavadocGenerator {
                    .append(LINE_SEPARATOR);
         }
 
-        builder.append("Failure based on protobuf type {@code ")
-               .append(failureMetadata.getJavaPackage())
+        builder.append("Rejection based on proto type {@code ")
+               .append(rejectionMetadata.getJavaPackage())
                .append('.')
-               .append(failureMetadata.getClassName())
+               .append(rejectionMetadata.getClassName())
                .append('}')
                .append(LINE_SEPARATOR);
         return builder.toString();
     }
 
     /**
-     * Generates a Javadoc content for the failure constructor.
+     * Generates a Javadoc content for the rejection constructor.
      *
      * @return the constructor Javadoc content
      */
@@ -135,9 +135,9 @@ public class FailureJavadocGenerator {
     }
 
     /**
-     * Returns the failure field leading comments.
+     * Returns the rejection field leading comments.
      *
-     * @param field the failure field
+     * @param field the descriptor of the field
      * @return the field leading comments or empty {@code Optional} if there are no such comments
      */
     private Optional<String> getFieldLeadingComments(FieldDescriptorProto field) {
@@ -146,11 +146,11 @@ public class FailureJavadocGenerator {
     }
 
     /**
-     * Returns the failure leading comments.
+     * Returns the rejection leading comments.
      *
-     * @return the failure leading comments or empty {@code Optional} if there are no such comments
+     * @return the comments text or empty {@code Optional} if there are no such comments
      */
-    private Optional<String> getFailureLeadingComments() {
+    private Optional<String> getRejectionLeadingComments() {
         final LocationPath messagePath = getMessageLocationPath();
         return getLeadingComments(messagePath);
     }
@@ -162,9 +162,9 @@ public class FailureJavadocGenerator {
      * @return the leading comments or empty {@code Optional} if there are no such comments
      */
     private Optional<String> getLeadingComments(LocationPath locationPath) {
-        if (!failureMetadata.getFileDescriptor()
-                            .hasSourceCodeInfo()) {
-            final String errMsg = "To enable failure generation, please configure the Gradle " +
+        if (!rejectionMetadata.getFileDescriptor()
+                              .hasSourceCodeInfo()) {
+            final String errMsg = "To enable rejection generation, please configure the Gradle " +
                     "Protobuf plugin as follows: `task.descriptorSetOptions.includeSourceInfo = true`.";
             throw new IllegalStateException(errMsg);
         }
@@ -206,26 +206,26 @@ public class FailureJavadocGenerator {
     }
 
     private int getTopLevelMessageIndex() {
-        final List<DescriptorProto> messages = failureMetadata.getFileDescriptor()
-                                                              .getMessageTypeList();
+        final List<DescriptorProto> messages = rejectionMetadata.getFileDescriptor()
+                                                                .getMessageTypeList();
         for (DescriptorProto currentMessage : messages) {
-            if (currentMessage.equals(failureMetadata.getDescriptor())) {
-                return messages.indexOf(failureMetadata.getDescriptor());
+            if (currentMessage.equals(rejectionMetadata.getDescriptor())) {
+                return messages.indexOf(rejectionMetadata.getDescriptor());
             }
         }
 
-        final String msg = format("The failure file \"%s\" should contain \"%s\" failure.",
-                                  failureMetadata.getFileDescriptor()
-                                                 .getName(),
-                                  failureMetadata.getDescriptor()
-                                                 .getName());
+        final String msg = format("The rejection file \"%s\" should contain \"%s\" rejection.",
+                                  rejectionMetadata.getFileDescriptor()
+                                                   .getName(),
+                                  rejectionMetadata.getDescriptor()
+                                                   .getName());
         throw new IllegalStateException(msg);
     }
 
     private int getFieldIndex(FieldDescriptorProto field) {
-        return failureMetadata.getDescriptor()
-                              .getFieldList()
-                              .indexOf(field);
+        return rejectionMetadata.getDescriptor()
+                                .getFieldList()
+                                .indexOf(field);
     }
 
     /**
@@ -235,9 +235,9 @@ public class FailureJavadocGenerator {
      * @return the location for the path
      */
     private Location getLocation(LocationPath locationPath) {
-        for (Location location : failureMetadata.getFileDescriptor()
-                                                .getSourceCodeInfo()
-                                                .getLocationList()) {
+        for (Location location : rejectionMetadata.getFileDescriptor()
+                                                  .getSourceCodeInfo()
+                                                  .getLocationList()) {
             if (location.getPathList()
                         .equals(locationPath.getPath())) {
                 return location;
@@ -246,22 +246,22 @@ public class FailureJavadocGenerator {
 
         final String msg = format("The location with %s path should be present in \"%s\".",
                                   locationPath,
-                                  failureMetadata.getFileDescriptor()
-                                                 .getName());
+                                  rejectionMetadata.getFileDescriptor()
+                                                   .getName());
         throw new IllegalStateException(msg);
     }
 
     /**
      * Returns field-to-comment map in order of {@linkplain FieldDescriptorProto fields}
-     * declaration in the failure.
+     * declaration in the rejection.
      *
      * @return the commented fields
      */
     private Map<FieldDescriptorProto, String> getCommentedFields() {
-        final Map<FieldDescriptorProto, String> commentedFields = new LinkedHashMap<>();
+        final Map<FieldDescriptorProto, String> commentedFields = Maps.newLinkedHashMap();
 
-        for (FieldDescriptorProto field : failureMetadata.getDescriptor()
-                                                         .getFieldList()) {
+        for (FieldDescriptorProto field : rejectionMetadata.getDescriptor()
+                                                           .getFieldList()) {
             final Optional<String> leadingComments = getFieldLeadingComments(field);
             if (leadingComments.isPresent()) {
                 commentedFields.put(field, leadingComments.get());

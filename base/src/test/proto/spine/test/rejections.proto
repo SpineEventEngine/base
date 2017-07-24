@@ -19,20 +19,20 @@
 //
 syntax = "proto3";
 
-package spine.test.failures;
+package spine.test.rejections;
 
 import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
 option (SPI_all) = true;
-option java_package = "io.spine.test.failures";
-// Keep all the failures under the same outer class called `Failures`.
+option java_package = "io.spine.test.rejections";
+// Keep all the rejections under the same outer class called `Rejections`.
 option java_generate_equals_and_hash = true;
 
 
-// This failure serves as a smoke test of a successful compilation of a generated failure class.
+// This rejection serves as a smoke test of a successful compilation of a generated rejection class.
 message ShouldCompileProperly {
 
     // A mock property.
-    string upon_generation_of_failure_class = 1;
+    string upon_generation_of_rejection_class = 1;
 }

@@ -51,8 +51,8 @@ public class ThrowableMessageShould {
 
         private static final long serialVersionUID = 0L;
 
-        private TestThrowableMessage(GeneratedMessageV3 failure) {
-            super(failure);
+        private TestThrowableMessage(GeneratedMessageV3 rejection) {
+            super(rejection);
         }
     }
 }

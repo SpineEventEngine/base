@@ -20,6 +20,7 @@
 
 package io.spine.gradle.compiler;
 
+import com.google.common.base.Charsets;
 import com.sun.javadoc.RootDoc;
 import org.gradle.api.Project;
 import org.gradle.testfixtures.ProjectBuilder;
@@ -27,7 +28,6 @@ import org.gradle.tooling.ProjectConnection;
 import org.junit.rules.TemporaryFolder;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -53,9 +53,8 @@ public class Given {
 
     static final String SPINE_PROTOBUF_PLUGIN_ID = "io.spine.tools.spine-model-compiler";
 
-    // prevent instantiation of this utility class
-    private Given() {
-    }
+    /** Prevents instantiation of this utility class. */
+    private Given() {}
 
     /** Creates a project with all required tasks. */
     static Project newProject() {
@@ -77,17 +76,17 @@ public class Given {
         return result;
     }
 
-    public static class FailuresGenerationConfigurator extends ProjectConfigurator {
+    public static class RejectionsGenerationConfigurator extends ProjectConfigurator {
 
-        private static final String PROJECT_NAME = "failures-gen-plugin-test/";
+        private static final String PROJECT_NAME = "rejections-gen-plugin-test/";
         private static final String[] TEST_PROTO_FILES = {
-                "test_failures.proto",
-                "outer_class_by_file_name_failures.proto",
-                "outer_class_set_failures.proto",
+                "test_rejections.proto",
+                "outer_class_by_file_name_rejections.proto",
+                "outer_class_set_rejections.proto",
                 "deps/deps.proto"
         };
 
-        public FailuresGenerationConfigurator(TemporaryFolder projectDirectory) {
+        public RejectionsGenerationConfigurator(TemporaryFolder projectDirectory) {
             super(projectDirectory);
         }
 
@@ -127,25 +126,25 @@ public class Given {
         }
     }
 
-    public static class FailuresJavadocConfigurator extends ProjectConfigurator {
+    public static class RejectionsJavadocConfigurator extends ProjectConfigurator {
 
         /** Javadocs received from {@link RootDoc} contain "\n" line separator. */
         @SuppressWarnings("HardcodedLineSeparator")
         private static final String JAVADOC_LINE_SEPARATOR = "\n";
 
-        private static final String JAVA_PACKAGE = "io.spine.sample.failures";
+        private static final String JAVA_PACKAGE = "io.spine.sample.rejections";
         private static final String CLASS_COMMENT =
-                "The failure definition to test Javadoc generation.";
-        private static final String FAILURE_NAME = "Failure";
-        private static final String FAILURES_FILE_NAME = "javadoc_failures.proto";
-        private static final String FIRST_FIELD_COMMENT = "The failure ID.";
+                "The rejection definition to test Javadoc generation.";
+        private static final String FAILURE_NAME = "Rejections";
+        private static final String FAILURES_FILE_NAME = "javadoc_rejections.proto";
+        private static final String FIRST_FIELD_COMMENT = "The rejection ID.";
         private static final String FIRST_FIELD_NAME = "id";
-        private static final String SECOND_FIELD_COMMENT = "The failure message.";
+        private static final String SECOND_FIELD_COMMENT = "The rejection message.";
         private static final String SECOND_FIELD_NAME = "message";
-        public static final String TEST_SOURCE = "/generated/main/spine/io/spine/sample/failures/"
+        public static final String TEST_SOURCE = "/generated/main/spine/io/spine/sample/rejections/"
                 + FAILURE_NAME + getJavaExtension();
 
-        public FailuresJavadocConfigurator(TemporaryFolder projectDirectory) {
+        public RejectionsJavadocConfigurator(TemporaryFolder projectDirectory) {
             super(projectDirectory);
         }
 
@@ -159,7 +158,7 @@ public class Given {
         private void writeFailureProto() throws IOException {
             final Iterable<String> sourceLines = Arrays.asList(
                     "syntax = \"proto3\";",
-                    "package spine.sample.failures;",
+                    "package spine.sample.rejections;",
                     "option java_package = \"" + JAVA_PACKAGE + "\";",
                     "option java_multiple_files = false;",
 
@@ -181,14 +180,14 @@ public class Given {
                     getProjectDirectory().toPath()
                                          .resolve(BASE_PROTO_LOCATION + FAILURES_FILE_NAME);
             Files.createDirectories(sourcePath.getParent());
-            Files.write(sourcePath, sourceLines, Charset.forName("UTF-8"));
+            Files.write(sourcePath, sourceLines, Charsets.UTF_8);
         }
 
         public static String getExpectedClassComment() {
             return ' ' + "<pre>" + JAVADOC_LINE_SEPARATOR
                     + ' ' + CLASS_COMMENT + JAVADOC_LINE_SEPARATOR
                     + " </pre>" + JAVADOC_LINE_SEPARATOR + JAVADOC_LINE_SEPARATOR
-                    + " Failure based on protobuf type {@code " + JAVA_PACKAGE + '.' + FAILURE_NAME
+                    + " Rejection based on proto type {@code " + JAVA_PACKAGE + '.' + FAILURE_NAME
                     + '}' + JAVADOC_LINE_SEPARATOR;
         }
 

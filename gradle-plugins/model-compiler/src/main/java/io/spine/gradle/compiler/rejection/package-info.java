@@ -19,11 +19,11 @@
  */
 
 /**
- * Plugins and utilities for Spine Failure generation.
+ * Plugins and utilities for Spine Rejection generation.
  *
  * @author Alex Tymchenko
  */
 @ParametersAreNonnullByDefault
-package io.spine.gradle.compiler.failure;
+package io.spine.gradle.compiler.rejection;
 
 import javax.annotation.ParametersAreNonnullByDefault;

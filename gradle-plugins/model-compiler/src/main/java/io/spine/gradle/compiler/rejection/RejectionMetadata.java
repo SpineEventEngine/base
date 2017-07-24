@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.gradle.compiler.failure;
+package io.spine.gradle.compiler.rejection;
 
 import io.spine.gradle.compiler.util.JavaCode;
 
@@ -26,11 +26,11 @@ import static com.google.protobuf.DescriptorProtos.DescriptorProto;
 import static com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 
 /**
- * Encapsulates a failure metadata sufficient for failure writing.
+ * A code generation metadata on a rejection.
  *
  * @author Dmytro Grankin
  */
-public class FailureMetadata {
+public class RejectionMetadata {
 
     private final DescriptorProto descriptor;
     private final String outerClassName;
@@ -39,11 +39,12 @@ public class FailureMetadata {
     /**
      * Creates a new instance.
      *
-     * @param failureDescriptor {@link DescriptorProto} of failure's proto message
-     * @param fileDescriptor    {@link FileDescriptorProto}, that contains the failure
+     * @param rejectionDescriptor {@link DescriptorProto} of rejection's proto message
+     * @param fileDescriptor      {@link FileDescriptorProto}, that contains the rejection
      */
-    public FailureMetadata(DescriptorProto failureDescriptor, FileDescriptorProto fileDescriptor) {
-        this.descriptor = failureDescriptor;
+    public RejectionMetadata(DescriptorProto rejectionDescriptor,
+                             FileDescriptorProto fileDescriptor) {
+        this.descriptor = rejectionDescriptor;
         this.outerClassName = JavaCode.getOuterClassName(fileDescriptor);
         this.fileDescriptor = fileDescriptor;
     }

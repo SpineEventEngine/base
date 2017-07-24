@@ -24,7 +24,7 @@ import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.EnumDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileOptions;
-import io.spine.gradle.compiler.failure.FailuresGenPlugin;
+import io.spine.gradle.compiler.rejection.RejectionGenPlugin;
 import io.spine.gradle.compiler.util.JavaCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,11 +35,11 @@ import static com.google.common.collect.Maps.newHashMap;
 
 /**
  * A cache for the Protobuf message types parsed into appropriate Java types during
- * the Spine Failure generation.
+ * the Spine Rejection generation.
  *
  * @author Alexander Yevsyukov
  * @author Alex Tymchenko
- * @see FailuresGenPlugin
+ * @see RejectionGenPlugin
  */
 public class MessageTypeCache {
 

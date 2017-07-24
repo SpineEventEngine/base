@@ -18,13 +18,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.gradle.compiler.failure;
+package io.spine.gradle.compiler.rejection;
 
 import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.ConstructorDoc;
 import com.sun.javadoc.RootDoc;
-import io.spine.gradle.compiler.Given.FailuresGenerationConfigurator;
-import io.spine.gradle.compiler.Given.FailuresJavadocConfigurator;
+import io.spine.gradle.compiler.Given.RejectionsGenerationConfigurator;
+import io.spine.gradle.compiler.Given.RejectionsJavadocConfigurator;
 import org.gradle.tooling.BuildLauncher;
 import org.gradle.tooling.GradleConnectionException;
 import org.gradle.tooling.ProjectConnection;
@@ -37,27 +37,27 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import static io.spine.gradle.TaskName.COMPILE_JAVA;
-import static io.spine.gradle.compiler.Given.FailuresJavadocConfigurator.TEST_SOURCE;
-import static io.spine.gradle.compiler.Given.FailuresJavadocConfigurator.getExpectedClassComment;
-import static io.spine.gradle.compiler.Given.FailuresJavadocConfigurator.getExpectedCtorComment;
+import static io.spine.gradle.compiler.Given.RejectionsJavadocConfigurator.TEST_SOURCE;
+import static io.spine.gradle.compiler.Given.RejectionsJavadocConfigurator.getExpectedClassComment;
+import static io.spine.gradle.compiler.Given.RejectionsJavadocConfigurator.getExpectedCtorComment;
 import static org.junit.Assert.assertEquals;
 
 /**
  * @author Dmytro Grankin
  */
 @SuppressWarnings("UseOfSystemOutOrSystemErr")  // It's OK: running a Gradle build inside.
-public class FailuresGenPluginShould {
+public class RejectionGenPluginShould {
 
     @SuppressWarnings("PublicField") // Rules should be public.
     @Rule
     public final TemporaryFolder testProjectDir = new TemporaryFolder();
 
     @Test
-    public void compile_generated_failures() throws Exception {
+    public void compile_generated_rejections() throws Exception {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
 
         final ProjectConnection connection =
-                new FailuresGenerationConfigurator(testProjectDir).configure();
+                new RejectionsGenerationConfigurator(testProjectDir).configure();
         final BuildLauncher launcher = connection.newBuild();
 
         launcher.setStandardError(System.out)
@@ -82,11 +82,11 @@ public class FailuresGenPluginShould {
     }
 
     @Test
-    public void generate_failure_javadoc() throws Exception {
+    public void generate_rejection_javadoc() throws Exception {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
 
         final ProjectConnection connection
-                = new FailuresJavadocConfigurator(testProjectDir).configure();
+                = new RejectionsJavadocConfigurator(testProjectDir).configure();
         final BuildLauncher launcher = connection.newBuild();
 
         launcher.setStandardError(System.out)
@@ -96,11 +96,11 @@ public class FailuresGenPluginShould {
                 @Override
                 public void onComplete(Void aVoid) {
                     final RootDoc root = RootDocReceiver.getRootDoc(testProjectDir, TEST_SOURCE);
-                    final ClassDoc failureDoc = root.classes()[0];
-                    final ConstructorDoc failureCtorDoc = failureDoc.constructors()[0];
+                    final ClassDoc rejectionDoc = root.classes()[0];
+                    final ConstructorDoc rejectionCtorDoc = rejectionDoc.constructors()[0];
 
-                    assertEquals(getExpectedClassComment(), failureDoc.getRawCommentText());
-                    assertEquals(getExpectedCtorComment(), failureCtorDoc.getRawCommentText());
+                    assertEquals(getExpectedClassComment(), rejectionDoc.getRawCommentText());
+                    assertEquals(getExpectedCtorComment(), rejectionCtorDoc.getRawCommentText());
                     countDownLatch.countDown();
                 }
 

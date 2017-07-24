@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.gradle.compiler.failure;
+package io.spine.gradle.compiler.rejection;
 
 import com.sun.javadoc.RootDoc;
 import com.sun.tools.doclets.standard.Standard;
