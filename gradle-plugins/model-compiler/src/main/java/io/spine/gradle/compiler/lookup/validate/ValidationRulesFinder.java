@@ -32,17 +32,23 @@ class ValidationRulesFinder {
         this.packagePrefix = fileDescriptor.getPackage() + PROTO_TYPE_SEPARATOR;
     }
 
+    /**
+     * Finds Protobuf definitions of validation rules in the file descriptor.
+     *
+     * @return a map from a validation rule type name to the target field
+     */
     Map<String, String> findRules() {
         log().debug("Looking up for validation rules in {}.", fileDescriptor.getName());
         final Map<String, String> rules = newLinkedHashMap();
         for (DescriptorProto messageDescriptor : fileDescriptor.getMessageTypeList()) {
-            scanMessage(rules, messageDescriptor);
+            scanMessageRecursively(rules, messageDescriptor);
         }
         log().debug("Found validation rules: {}.", rules.toString());
         return rules;
     }
 
-    private void scanMessage(Map<String, String> rules, DescriptorProto messageDescriptor) {
+    private void scanMessageRecursively(Map<String, String> rules,
+                                        DescriptorProto messageDescriptor) {
         if (isValidationRule(messageDescriptor)) {
             final String ruleType = packagePrefix + messageDescriptor.getName();
             final String ruleTarget = getUnknownOptionValue(messageDescriptor,
@@ -51,7 +57,7 @@ class ValidationRulesFinder {
         }
 
         for (DescriptorProto nestedMessageDescriptor : messageDescriptor.getNestedTypeList()) {
-            scanMessage(rules, nestedMessageDescriptor);
+            scanMessageRecursively(rules, nestedMessageDescriptor);
         }
     }
 
