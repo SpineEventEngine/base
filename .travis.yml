@@ -11,6 +11,10 @@ env:
 before_install:
   - chmod +x gradlew
 
+before_script:
+ - echo $JAVA_OPTS
+ - export JAVA_OPTS=-Xmx2048m
+
 after_success:
   # See: https://github.com/codecov/example-java/blob/master/.travis.yml
   - bash <(curl -s https://codecov.io/bash)
@@ -20,7 +24,7 @@ after_success:
   - ./scripts/publish-artifacts.sh
 
 script:
-  - ./gradlew check --stacktrace --debug
+  - ./gradlew check --stacktrace
   # Decrypt and unarchive Maven and Google Cloud Storage credentials.
   -  openssl aes-256-cbc -K $encrypted_ea839d9d9d79_key -iv $encrypted_ea839d9d9d79_iv -in credentials.tar.enc -out credentials.tar -d
   - tar xvf credentials.tar
