@@ -23,18 +23,14 @@ package io.spine.gradle.compiler.annotation;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import io.spine.annotation.SPI;
-import io.spine.gradle.compiler.ProjectConfigurator;
-import org.gradle.tooling.ProjectConnection;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
 import org.jboss.forge.roaster.model.source.AnnotationSource;
 import org.jboss.forge.roaster.model.source.AnnotationTargetSource;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.jboss.forge.roaster.model.source.JavaSource;
 import org.jboss.forge.roaster.model.source.MethodSource;
-import org.junit.rules.TemporaryFolder;
 
 import javax.annotation.Nullable;
-import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.util.Collections;
 
@@ -48,7 +44,7 @@ import static org.junit.Assert.assertNull;
 /**
  * @author Dmytro Grankin
  */
-public class Given {
+class Given {
 
     private static final Class<? extends Annotation> ANNOTATION_CLASS = SPI.class;
     static final String NO_SPI_OPTIONS_FILENAME = "no_spi_options.proto";
@@ -128,8 +124,8 @@ public class Given {
         private void checkAccessorsAnnotation(JavaClassSource message) {
             final String fieldName = toJavaFieldName(fieldDescriptor.getName(), true);
             for (MethodSource method : message.getMethods()) {
-                final boolean shouldAnnotate =
-                        shouldAnnotateMethod(method.getName(), fieldName, Collections.<String>emptyList());
+                final boolean shouldAnnotate = shouldAnnotateMethod(method.getName(), fieldName,
+                                                                    Collections.<String>emptyList());
                 if (method.isPublic() && shouldAnnotate) {
                     final AnnotationSource annotation = getAnnotation(method);
                     if (shouldBeAnnotated) {
@@ -167,23 +163,6 @@ public class Given {
                 new FieldAnnotationValidator(fieldDescriptor, shouldBeAnnotated).apply(nestedType);
             }
             return null;
-        }
-    }
-
-    static class ProtoAnnotatorConfigurator extends ProjectConfigurator {
-
-        private final String protoFile;
-
-        ProtoAnnotatorConfigurator(TemporaryFolder projectDirectory, String protoFile) {
-            super("annotator-plugin-test", projectDirectory);
-            this.protoFile = protoFile;
-        }
-
-        @Override
-        public ProjectConnection configure() throws IOException {
-            writeBuildGradle();
-            writeProto(protoFile);
-            return createProjectConnection();
         }
     }
 

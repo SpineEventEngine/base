@@ -1,10 +1,6 @@
 package io.spine.gradle.compiler.lookup.validate;
 
-import io.spine.gradle.compiler.ProjectConfigurator;
-import org.gradle.tooling.BuildLauncher;
-import org.gradle.tooling.GradleConnectionException;
-import org.gradle.tooling.ProjectConnection;
-import org.gradle.tooling.ResultHandler;
+import io.spine.gradle.compiler.GradleProject;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -16,8 +12,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Dictionary;
 import java.util.Properties;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 import static io.spine.gradle.TaskName.FIND_VALIDATION_RULES;
 import static io.spine.gradle.compiler.Extension.getDefaultMainGenResDir;
@@ -30,36 +24,17 @@ import static org.junit.Assert.assertTrue;
  */
 public class ValidationRulesLookupPluginShould {
 
+    private static final String PROJECT_NAME = "validation-rules-lookup-plugin-test";
+
     @Rule
     public final TemporaryFolder testProjectDir = new TemporaryFolder();
-    private final CountDownLatch countDownLatch = new CountDownLatch(1);
 
-    @SuppressWarnings("UseOfSystemOutOrSystemErr") // To print errors of a test Gradle build.
     @Test
     public void findNestedValidationRules() throws Exception {
-        final ProjectConnection connection =
-                new Configurator(testProjectDir, "nested_validation_rule.proto").configure();
-        final BuildLauncher launcher = connection.newBuild();
-
-        launcher.setStandardError(System.out)
-                .forTasks(FIND_VALIDATION_RULES.getValue());
-        try {
-            launcher.run(new ResultHandler<Void>() {
-                @Override
-                public void onComplete(Void aVoid) {
-                    assertTrue(getProperties().elements()
-                                              .hasMoreElements());
-                }
-
-                @Override
-                public void onFailure(GradleConnectionException e) {
-                    throw e;
-                }
-            });
-        } finally {
-            connection.close();
-        }
-        countDownLatch.await(100, TimeUnit.MILLISECONDS);
+        final String file = "nested_validation_rule.proto";
+        newGradleProject(file).executeTask(FIND_VALIDATION_RULES);
+        assertTrue(getProperties().elements()
+                                  .hasMoreElements());
     }
 
     private Dictionary getProperties() {
@@ -77,20 +52,11 @@ public class ValidationRulesLookupPluginShould {
         }
     }
 
-    private static class Configurator extends ProjectConfigurator {
-
-        private final String protoFile;
-
-        private Configurator(TemporaryFolder projectDirectory, String protoFile) {
-            super("validation-rules-lookup-plugin-test", projectDirectory);
-            this.protoFile = protoFile;
-        }
-
-        @Override
-        public ProjectConnection configure() throws IOException {
-            writeBuildGradle();
-            writeProto(protoFile);
-            return createProjectConnection();
-        }
+    private GradleProject newGradleProject(String protoFileName) {
+        return GradleProject.newBuilder()
+                            .setProjectName(PROJECT_NAME)
+                            .setProjectFolder(testProjectDir)
+                            .addProtoFile(protoFileName)
+                            .build();
     }
 }

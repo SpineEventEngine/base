@@ -326,6 +326,11 @@ public class Extension {
         return DEFAULT_MAIN_GEN_RES_DIR;
     }
 
+    @VisibleForTesting
+    public static String getDefaultMainGenSpineDir() {
+        return DEFAULT_MAIN_GEN_SPINE_DIR;
+    }
+
     private static Logger log() {
         return LoggerSingleton.INSTANCE.logger;
     }
