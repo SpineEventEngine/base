@@ -62,8 +62,7 @@ public class GradleProject {
     private GradleProject(Builder builder) throws IOException {
         this.name = builder.name;
         this.gradleRunner = GradleRunner.create()
-                                        .withProjectDir(builder.folder.getRoot())
-                                        .withDebug(true);
+                                        .withProjectDir(builder.folder.getRoot());
         writeBuildGradle();
         for (String protoFile : builder.protoFileNames) {
             writeProto(protoFile);
