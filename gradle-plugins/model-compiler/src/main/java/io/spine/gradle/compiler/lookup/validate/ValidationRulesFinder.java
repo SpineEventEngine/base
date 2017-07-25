@@ -1,5 +1,6 @@
 package io.spine.gradle.compiler.lookup.validate;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import org.slf4j.Logger;
@@ -20,7 +21,8 @@ import static org.slf4j.LoggerFactory.getLogger;
  */
 class ValidationRulesFinder {
 
-    private static final String PROTO_TYPE_SEPARATOR = ".";
+    @VisibleForTesting
+    static final String PROTO_TYPE_SEPARATOR = ".";
 
     private final FileDescriptorProto fileDescriptor;
     private final String packagePrefix;

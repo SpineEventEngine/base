@@ -38,7 +38,7 @@ class Given {
 
     static GradleProject newProjectWithRejectionsJavadoc(TemporaryFolder projectFolder) {
         return GradleProject.newBuilder()
-                            .setProjectName(PROJECT_NAME)
+                            .setProjectName("rejections-javadoc")
                             .setProjectFolder(projectFolder)
                             .createProto(REJECTIONS_FILE_NAME, rejectionWithJavadoc())
                             .build();
@@ -62,7 +62,6 @@ class Given {
 
                 "bool hasNoComment = 3;",
                 "}"
-
         );
     }
 

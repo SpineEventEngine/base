@@ -10,14 +10,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Dictionary;
+import java.util.List;
 import java.util.Properties;
 
 import static io.spine.gradle.TaskName.FIND_VALIDATION_RULES;
 import static io.spine.gradle.compiler.Extension.getDefaultMainGenResDir;
+import static io.spine.gradle.compiler.lookup.validate.ValidationRulesFinder.PROTO_TYPE_SEPARATOR;
 import static io.spine.gradle.compiler.lookup.validate.ValidationRulesLookupPlugin.getValidationPropsFileName;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author Dmytro Grankin
@@ -26,15 +29,35 @@ public class ValidationRulesLookupPluginShould {
 
     private static final String PROJECT_NAME = "validation-rules-lookup-plugin-test";
 
+    private static final String PROTO_FILE_PACKAGE = "test.valrule";
+    private static final String VALIDATION_RULE_TYPE = "ValidationRule";
+    private static final String VALIDATION_TARGET = "package.TargetMessageType.field_name";
+    private static final List<String> NESTED_VALIDATION_RULE_PROTO =
+            Arrays.asList("syntax = \"proto3\";",
+                          "import \"spine/options.proto\";",
+                          "package " + PROTO_FILE_PACKAGE + ';',
+
+                          "message Outer {",
+
+                          "message " + VALIDATION_RULE_TYPE + " {",
+                          "option (validation_of) = \"" + VALIDATION_TARGET + "\";",
+                          "}",
+
+                          "}"
+            );
+
     @Rule
     public final TemporaryFolder testProjectDir = new TemporaryFolder();
 
     @Test
     public void findNestedValidationRules() throws Exception {
         final String file = "nested_validation_rule.proto";
-        newGradleProject(file).executeTask(FIND_VALIDATION_RULES);
-        assertTrue(getProperties().elements()
-                                  .hasMoreElements());
+        final GradleProject project = newGradleProject(file, NESTED_VALIDATION_RULE_PROTO);
+        project.executeTask(FIND_VALIDATION_RULES);
+
+        final String expectedKey = PROTO_FILE_PACKAGE + PROTO_TYPE_SEPARATOR + VALIDATION_RULE_TYPE;
+        final String value = (String) getProperties().get(expectedKey);
+        assertEquals(value, VALIDATION_TARGET);
     }
 
     private Dictionary getProperties() {
@@ -52,11 +75,11 @@ public class ValidationRulesLookupPluginShould {
         }
     }
 
-    private GradleProject newGradleProject(String protoFileName) {
+    private GradleProject newGradleProject(String protoFileName, List<String> protoFileLines) {
         return GradleProject.newBuilder()
                             .setProjectName(PROJECT_NAME)
                             .setProjectFolder(testProjectDir)
-                            .addProtoFile(protoFileName)
+                            .createProto(protoFileName, protoFileLines)
                             .build();
     }
 }
