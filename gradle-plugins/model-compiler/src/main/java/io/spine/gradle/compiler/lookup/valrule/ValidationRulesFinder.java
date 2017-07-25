@@ -1,4 +1,4 @@
-package io.spine.gradle.compiler.lookup.validate;
+package io.spine.gradle.compiler.lookup.valrule;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;

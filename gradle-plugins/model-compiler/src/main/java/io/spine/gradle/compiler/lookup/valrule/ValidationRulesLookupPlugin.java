@@ -1,4 +1,4 @@
-package io.spine.gradle.compiler.lookup.validate;
+package io.spine.gradle.compiler.lookup.valrule;
 
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.gradle.SpinePlugin;

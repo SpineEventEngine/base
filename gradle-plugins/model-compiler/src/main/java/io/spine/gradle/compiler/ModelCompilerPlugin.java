@@ -24,7 +24,7 @@ import io.spine.gradle.compiler.cleaning.CleaningPlugin;
 import io.spine.gradle.compiler.rejection.RejectionGenPlugin;
 import io.spine.gradle.compiler.lookup.enrichments.EnrichmentLookupPlugin;
 import io.spine.gradle.compiler.lookup.proto.ProtoToJavaMapperPlugin;
-import io.spine.gradle.compiler.lookup.validate.ValidationRulesLookupPlugin;
+import io.spine.gradle.compiler.lookup.valrule.ValidationRulesLookupPlugin;
 import io.spine.gradle.compiler.validate.ValidatingBuilderGenPlugin;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;

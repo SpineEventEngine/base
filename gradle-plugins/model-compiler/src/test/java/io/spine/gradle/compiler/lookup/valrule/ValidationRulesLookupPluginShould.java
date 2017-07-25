@@ -1,4 +1,4 @@
-package io.spine.gradle.compiler.lookup.validate;
+package io.spine.gradle.compiler.lookup.valrule;
 
 import io.spine.gradle.compiler.GradleProject;
 import org.junit.Rule;
@@ -17,8 +17,8 @@ import java.util.Properties;
 
 import static io.spine.gradle.TaskName.FIND_VALIDATION_RULES;
 import static io.spine.gradle.compiler.Extension.getDefaultMainGenResDir;
-import static io.spine.gradle.compiler.lookup.validate.ValidationRulesFinder.PROTO_TYPE_SEPARATOR;
-import static io.spine.gradle.compiler.lookup.validate.ValidationRulesLookupPlugin.getValidationPropsFileName;
+import static io.spine.gradle.compiler.lookup.valrule.ValidationRulesFinder.PROTO_TYPE_SEPARATOR;
+import static io.spine.gradle.compiler.lookup.valrule.ValidationRulesLookupPlugin.getValidationPropsFileName;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 import static org.junit.Assert.assertEquals;
 
