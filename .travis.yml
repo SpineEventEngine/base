@@ -11,10 +11,6 @@ env:
 before_install:
   - chmod +x gradlew
 
-before_script:
- - echo $JAVA_OPTS
- - export JAVA_OPTS=-Xmx2048m
-
 after_success:
   # See: https://github.com/codecov/example-java/blob/master/.travis.yml
   - bash <(curl -s https://codecov.io/bash)
