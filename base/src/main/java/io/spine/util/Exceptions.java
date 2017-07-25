@@ -68,6 +68,34 @@ public final class Exceptions {
     }
 
     /**
+     * Always throws {@code UnsupportedOperationException} initialized with the formatted string.
+     *
+     * <p>Use this method in combination with static import for brevity of code for
+     * unsupported operations.
+     * The return type is given to keep Java type system happy when called in methods with
+     * return type as shown below:
+     *
+     * <pre>
+     *   import static io.spine.util.Exceptions.unsupported;
+     *   ...
+     *   T doSomething() {
+     *      throw unsupported("This operation is not supported because of %s and %s", arg1, arg2);
+     *   }
+     * </pre>
+     *
+     * @param format the format string
+     * @param args   formatting parameters
+     * @return nothing ever
+     * @throws UnsupportedOperationException always
+     */
+    public static UnsupportedOperationException unsupported(String format, Object... args) {
+        checkNotNull(format);
+        checkNotNull(args);
+        final String msg = formatMessage(format, args);
+        return unsupported(msg);
+    }
+
+    /**
      * Always throws {@code UnsupportedOperationException}.
      *
      * <p>Use this method in combination with static import for brevity of code for
@@ -127,7 +155,7 @@ public final class Exceptions {
      * Throws {@code IllegalArgumentException} with the formatted string.
      *
      * @param format the format string
-     * @param args formatting parameters
+     * @param args   formatting parameters
      * @return nothing ever, always throws an exception. The return type is given for convenience.
      * @throws IllegalArgumentException always
      */
