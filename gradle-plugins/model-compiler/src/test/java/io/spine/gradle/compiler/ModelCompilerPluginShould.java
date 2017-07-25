@@ -36,7 +36,6 @@ import static io.spine.gradle.TaskName.FIND_ENRICHMENTS;
 import static io.spine.gradle.TaskName.FIND_TEST_ENRICHMENTS;
 import static io.spine.gradle.TaskName.FIND_TEST_VALIDATION_RULES;
 import static io.spine.gradle.TaskName.FIND_VALIDATION_RULES;
-import static io.spine.gradle.TaskName.GENERATE_FAILURES;
 import static io.spine.gradle.TaskName.GENERATE_PROTO;
 import static io.spine.gradle.TaskName.GENERATE_REJECTIONS;
 import static io.spine.gradle.TaskName.GENERATE_TEST_PROTO;
