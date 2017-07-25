@@ -62,9 +62,9 @@ public class Logging {
     /**
      * Obtains a logger for the passed class depending on the state of the {@link Environment}.
      *
-     * <p>In {@linkplain Environment#isTests() tests mode}, the returned logger is an instance of
-     * {@link org.slf4j.helpers.SubstituteLogger SubstituteLogger} delegating to a logger obtained
-     * from the {@link LoggerFactory#getLogger(Class) LoggerFactory}.
+     * <p>In {@linkplain Environment#isTests() tests mode}, the returned logger is a <em>new</em>
+     * instance of {@link org.slf4j.helpers.SubstituteLogger SubstituteLogger} delegating to
+     * a logger obtained from the {@link LoggerFactory#getLogger(Class) LoggerFactory}.
      *
      * <p>In {@linkplain Environment#isProduction() production mode}, returns the instance obtained
      * from the {@link LoggerFactory#getLogger(Class) LoggerFactory}.
