@@ -17,7 +17,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.gradle.compiler.lookup.enrichments;
+package io.spine.gradle.compiler.lookup.enrichment;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.HashMultimap;
