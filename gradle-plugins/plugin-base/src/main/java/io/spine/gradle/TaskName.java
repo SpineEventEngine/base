@@ -28,9 +28,10 @@ import com.google.common.base.MoreObjects;
  *
  * @author Alex Tymchenko
  */
+//@SuppressWarnings("unused") // These are used after deployment.
 public enum TaskName {
 
-    /**
+    /*
      * Gradle-own and 3rd-party task names.
      **********************/
 
@@ -48,7 +49,7 @@ public enum TaskName {
     PROCESS_RESOURCES("processResources"),
     PROCESS_TEST_RESOURCES("processTestResources"),
 
-    /**
+    /*
      * Spine custom task names.
      **********************/
 
@@ -72,44 +73,44 @@ public enum TaskName {
     CHECK_RIGHT_MARGIN_WRAPPING("checkRightMarginWrapping"),
 
     /**
-     * The name of the failure generation task added to the Gradle lifecycle.
+     * The name of the rejection generation task added to the Gradle lifecycle.
      *
-     * <p>Relates to `main` classes and resources scope.
+     * <p>Handles the {@code main} classes and resources scope.
      */
-    GENERATE_FAILURES("generateFailures"),
+    GENERATE_REJECTIONS("generateRejections"),
 
     /**
-     * The name of the failure generation task added to the Gradle lifecycle.
+     * The name of the rejection generation task added to the Gradle lifecycle.
      *
-     * <p>Relates to `test` classes and resources scope.
+     * <p>Handles the {@code test} classes and resources scope.
      */
-    GENERATE_TEST_FAILURES("generateTestFailures"),
+    GENERATE_TEST_REJECTIONS("generateTestRejections"),
 
     /**
      * The name of the validating builder generation task added to the Gradle lifecycle.
      *
-     * <p>Relates to `main` classes and resource scope.
+     * <p>Handles the {@code test} classes and resources scope.
      */
     GENERATE_VALIDATING_BUILDERS("generateValidatingBuilders"),
 
     /**
      * The name of the validating builder generation task added to the Gradle lifecycle.
      *
-     * <p>Relates to `test` classes and resource scope.
+     * <p>Handles the {@code main} classes and resources scope.
      */
     GENERATE_TEST_VALIDATING_BUILDERS("generateTestValidatingBuilders"),
 
     /**
      * The name of the enrichment lookup task added to the Gradle lifecycle.
      *
-     * <p>Relates to `main` classes and resources scope.
+     * <p>Handles the {@code main} classes and resources scope.
      */
     FIND_ENRICHMENTS("findEnrichments"),
 
     /**
      * The name of the enrichment lookup task added to the Gradle lifecycle.
      *
-     * <p>Relates to `test` classes and resources scope.
+     * <p>Handles the {@code test} classes and resources scope.
      */
     FIND_TEST_ENRICHMENTS("findTestEnrichments"),
 
@@ -130,14 +131,14 @@ public enum TaskName {
     /**
      * The name of the {@code .proto}-to-Java mapping task added to the Gradle lifecycle.
      *
-     * <p>Relates to `main` classes and resources scope.
+     * <p>Handles the {@code main} classes and resources scope.
      */
     MAP_PROTO_TO_JAVA("mapProtoToJava"),
 
     /**
      * The name of the {@code .proto}-to-Java mapping task added to the Gradle lifecycle.
      *
-     * <p>Relates to `test` classes and resources scope.
+     * <p>Handles the {@code test} classes and resources scope.
      */
     MAP_TEST_PROTO_TO_JAVA("mapTestProtoToJava"),
 
@@ -155,7 +156,7 @@ public enum TaskName {
      * The name of the task, that annotates the Java sources generated from {@code .proto} files,
      * added to the Gradle lifecycle.
      *
-     * <p>Relates to `main` classes and resource scope.
+     * <p>Handles the {@code main} classes and resources scope.
      */
     ANNOTATE_PROTO("annotateProto"),
 
@@ -163,7 +164,7 @@ public enum TaskName {
      * The name of the task, that annotates the Java sources generated from {@code .proto} files,
      * added to the Gradle lifecycle.
      *
-     * <p>Relates to `test` classes and resource scope.
+     * <p>Handles the {@code test} classes and resources scope.
      */
     ANNOTATE_TEST_PROTO("annotateTestProto");
 

@@ -36,9 +36,9 @@ public class JavaCodeShould {
     @SuppressWarnings("DuplicateStringLiteralInspection")
     @Test
     public void calculate_outer_class_name() {
-        assertEquals("Failures", JavaCode.toCamelCase("failures"));
-        assertEquals("ManyFailures", JavaCode.toCamelCase("many_failures"));
-        assertEquals("ManyMoreFailures", JavaCode.toCamelCase("many_more_failures"));
+        assertEquals("Rejections", JavaCode.toCamelCase("rejections"));
+        assertEquals("ManyRejections", JavaCode.toCamelCase("many_rejections"));
+        assertEquals("ManyMoreRejections", JavaCode.toCamelCase("many_more_rejections"));
     }
 
     @Test

@@ -112,14 +112,14 @@ public class Extension {
     public String testDescriptorSetPath;
 
     /**
-     * The absolute path to the main target generated failures root directory.
+     * The absolute path to the main target generated rejections root directory.
      */
-    public String targetGenFailuresRootDir;
+    public String targetGenRejectionsRootDir;
 
     /**
-     * The absolute path to the test target generated failures root directory.
+     * The absolute path to the test target generated rejections root directory.
      */
-    public String targetTestGenFailuresRootDir;
+    public String targetTestGenRejectionsRootDir;
 
     /**
      * The absolute path to the main target generated validating builders root directory.
@@ -213,13 +213,13 @@ public class Extension {
                              root(project) + DEFAULT_TEST_DESCRIPTORS_PATH);
     }
 
-    public static String getTargetGenFailuresRootDir(Project project) {
-        return pathOrDefault(spineProtobuf(project).targetGenFailuresRootDir,
+    public static String getTargetGenRejectionsRootDir(Project project) {
+        return pathOrDefault(spineProtobuf(project).targetGenRejectionsRootDir,
                              root(project) + DEFAULT_MAIN_GEN_SPINE_DIR);
     }
 
-    public static String getTargetTestGenFailuresRootDir(Project project) {
-        return pathOrDefault(spineProtobuf(project).targetTestGenFailuresRootDir,
+    public static String getTargetTestGenRejectionsRootDir(Project project) {
+        return pathOrDefault(spineProtobuf(project).targetTestGenRejectionsRootDir,
                              root(project) + DEFAULT_TEST_GEN_SPINE_DIR);
     }
 

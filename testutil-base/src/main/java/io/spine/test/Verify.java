@@ -141,7 +141,7 @@ public final class Verify extends Assert {
      * </pre>
      *
      * <p>Without the {@code try ... catch} block around lines 11-13 the stack trace following a
-     * test failure would look a little like:
+     * test rejection would look a little like:
      *
      * <p><pre>
      * java.lang.AssertionError: ...
@@ -155,7 +155,7 @@ public final class Verify extends Assert {
      * </pre>
      *
      * <p>Note that the source of the error isn't readily apparent as the first line in the stack
-     * trace is the code within the custom assert. If we were debugging the failure we would be
+     * trace is the code within the custom assert. If we were debugging the rejection we would be
      * more interested in the second line of the stack trace which shows us where in our tests the
      * assert failed.
      *

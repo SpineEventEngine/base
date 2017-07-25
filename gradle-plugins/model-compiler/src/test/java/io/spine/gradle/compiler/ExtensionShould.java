@@ -114,19 +114,19 @@ public class ExtensionShould {
     }
 
     @Test
-    public void return_default_targetGenFailuresRootDir_if_not_set() {
-        final String dir = Extension.getTargetGenFailuresRootDir(project);
+    public void return_default_targetGenRejectionsRootDir_if_not_set() {
+        final String dir = Extension.getTargetGenRejectionsRootDir(project);
 
         assertNotEmptyAndIsInProjectDir(dir);
     }
 
     @Test
-    public void return_targetGenFailuresRootDir_if_set() {
-        spineProtobuf().targetGenFailuresRootDir = newUuid();
+    public void return_targetGenRejectionsRootDir_if_set() {
+        spineProtobuf().targetGenRejectionsRootDir = newUuid();
 
-        final String dir = Extension.getTargetGenFailuresRootDir(project);
+        final String dir = Extension.getTargetGenRejectionsRootDir(project);
 
-        assertEquals(spineProtobuf().targetGenFailuresRootDir, dir);
+        assertEquals(spineProtobuf().targetGenRejectionsRootDir, dir);
     }
 
     @Test

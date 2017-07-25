@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.gradle.compiler.failure;
+package io.spine.gradle.compiler.rejection;
 
 import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.ConstructorDoc;
@@ -41,7 +41,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * @author Dmytro Grankin
  */
-public class FailuresGenPluginShould {
+public class RejectionGenPluginShould {
 
     @Rule
     public final TemporaryFolder testProjectDir = new TemporaryFolder();
