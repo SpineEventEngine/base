@@ -23,14 +23,17 @@ package io.spine.util;
 import com.google.common.base.Supplier;
 import com.google.common.testing.NullPointerTester;
 import io.spine.test.Tests;
-import io.spine.util.given.LoggingTestEnv;
 import io.spine.util.given.LoggingTestEnv.Base;
 import io.spine.util.given.LoggingTestEnv.ChildOne;
 import io.spine.util.given.LoggingTestEnv.ChildTwo;
 import org.junit.Test;
 import org.slf4j.Logger;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Alexander Yevsyukov
