@@ -41,14 +41,15 @@ class ValidationRulesFinder {
         log().debug("Looking up for validation rules in {}.", fileDescriptor.getName());
         final Map<String, String> rules = newLinkedHashMap();
         for (DescriptorProto messageDescriptor : fileDescriptor.getMessageTypeList()) {
-            scanMessageRecursively(rules, messageDescriptor);
+            final Map<String, String> foundRules = scanMessageAndNestedTypes(messageDescriptor);
+            rules.putAll(foundRules);
         }
         log().debug("Found validation rules: {}.", rules.toString());
         return rules;
     }
 
-    private void scanMessageRecursively(Map<String, String> rules,
-                                        DescriptorProto messageDescriptor) {
+    private Map<String, String> scanMessageAndNestedTypes(DescriptorProto messageDescriptor) {
+        final Map<String, String> rules = newLinkedHashMap();
         if (isValidationRule(messageDescriptor)) {
             final String ruleType = packagePrefix + messageDescriptor.getName();
             final String ruleTarget = getUnknownOptionValue(messageDescriptor,
@@ -56,9 +57,23 @@ class ValidationRulesFinder {
             rules.put(ruleType, ruleTarget);
         }
 
-        for (DescriptorProto nestedMessageDescriptor : messageDescriptor.getNestedTypeList()) {
-            scanMessageRecursively(rules, nestedMessageDescriptor);
+        rules.putAll(scanNestedTypes(messageDescriptor));
+        return rules;
+    }
+
+    private Map<String, String> scanNestedTypes(DescriptorProto messageDescriptor) {
+        final Map<String, String> rules = newLinkedHashMap();
+        for (DescriptorProto nestedMessage : messageDescriptor.getNestedTypeList()) {
+            if (isValidationRule(nestedMessage)) {
+                final String outerMessageType = packagePrefix + messageDescriptor.getName();
+                final String ruleType =
+                        outerMessageType + PROTO_TYPE_SEPARATOR + nestedMessage.getName();
+                final String ruleTarget = getUnknownOptionValue(nestedMessage,
+                                                                VALIDATION_OF_FIELD_NUMBER);
+                rules.put(ruleType, ruleTarget);
+            }
         }
+        return rules;
     }
 
     private static boolean isValidationRule(DescriptorProto messageDescriptor) {
