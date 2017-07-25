@@ -51,12 +51,13 @@ public final class Exceptions {
      * return type as shown below:
      *
      * <pre>
+     *  {@code
      *   import static io.spine.util.Exceptions.unsupported;
      *   ...
      *   T doSomething() {
      *      throw unsupported("Cannot do this");
      *   }
-     * </pre>
+     * }</pre>
      *
      * @param message a message for exception
      * @return nothing ever
@@ -76,12 +77,14 @@ public final class Exceptions {
      * return type as shown below:
      *
      * <pre>
+     *  {@code
+     *
      *   import static io.spine.util.Exceptions.unsupported;
      *   ...
      *   T doSomething() {
      *      throw unsupported("This operation is not supported because of %s and %s", arg1, arg2);
      *   }
-     * </pre>
+     * }</pre>
      *
      * @param format the format string
      * @param args   formatting parameters
