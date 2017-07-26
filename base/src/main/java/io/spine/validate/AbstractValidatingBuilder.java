@@ -149,15 +149,13 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
     @Override
     public <V> void validate(FieldDescriptor descriptor, V fieldValue, String fieldName)
             throws ValidationException {
-        final FieldPath fieldPath = FieldPath.newBuilder()
-                                             .addFieldName(fieldName)
-                                             .build();
         final Object valueToValidate;
         if (fieldValue instanceof ProtocolMessageEnum) {
             valueToValidate = ((ProtocolMessageEnum) fieldValue).getValueDescriptor();
         } else {
             valueToValidate = fieldValue;
         }
+        final FieldPath fieldPath = FieldPath.getDefaultInstance();
         final FieldValidator<?> validator = create(descriptor, valueToValidate, fieldPath);
         final List<ConstraintViolation> violations = validator.validate();
         onViolations(violations);
