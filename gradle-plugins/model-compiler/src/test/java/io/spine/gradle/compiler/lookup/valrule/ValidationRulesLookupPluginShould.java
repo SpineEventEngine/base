@@ -18,7 +18,6 @@ import java.util.Properties;
 import static io.spine.gradle.TaskName.FIND_VALIDATION_RULES;
 import static io.spine.gradle.compiler.Extension.getDefaultMainGenResDir;
 import static io.spine.gradle.compiler.lookup.valrule.ValidationRulesFinder.PROTO_TYPE_SEPARATOR;
-import static io.spine.gradle.compiler.lookup.valrule.ValidationRulesLookupPlugin.getValidationPropsFileName;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 import static org.junit.Assert.assertEquals;
 
@@ -67,7 +66,7 @@ public class ValidationRulesLookupPluginShould {
         final String projectPath = testProjectDir.getRoot()
                                                  .getAbsolutePath();
         final Path path = Paths.get(projectPath, getDefaultMainGenResDir(),
-                                    getValidationPropsFileName());
+                                    ValidationRulesLookupPlugin.VALIDATION_PROPS_FILE_NAME);
         try {
             final InputStream inputStream = new FileInputStream(path.toFile());
             final Properties properties = new Properties();

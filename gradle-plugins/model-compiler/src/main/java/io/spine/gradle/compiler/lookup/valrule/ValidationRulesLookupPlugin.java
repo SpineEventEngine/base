@@ -1,5 +1,6 @@
 package io.spine.gradle.compiler.lookup.valrule;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.gradle.SpinePlugin;
 import io.spine.gradle.compiler.util.DescriptorSetUtil.IsNotGoogleProto;
@@ -36,7 +37,8 @@ import static org.slf4j.LoggerFactory.getLogger;
  */
 public class ValidationRulesLookupPlugin extends SpinePlugin {
 
-    private static final String VALIDATION_PROPS_FILE_NAME = "validation_rules.properties";
+    @VisibleForTesting
+    static final String VALIDATION_PROPS_FILE_NAME = "validation_rules.properties";
 
     @Override
     public void apply(Project project) {
@@ -56,10 +58,6 @@ public class ValidationRulesLookupPlugin extends SpinePlugin {
                                         .applyNowTo(project);
         log().debug("Validation rules lookup phase initialized with tasks: {}, {}",
                     findRules, findTestRules);
-    }
-
-    public static String getValidationPropsFileName() {
-        return VALIDATION_PROPS_FILE_NAME;
     }
 
     private static Action<Task> mainScopeActionFor(final Project project) {
