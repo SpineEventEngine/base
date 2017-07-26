@@ -27,10 +27,15 @@ import static io.spine.Identifier.newUuid;
 import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 import static io.spine.util.Exceptions.newIllegalStateException;
+import static io.spine.util.Exceptions.toError;
 import static io.spine.util.Exceptions.unsupported;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * @author Alexander Litus
+ * @author Alexander Yevsyukov
  */
 @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
 public class ExceptionsShould {
@@ -48,6 +53,20 @@ public class ExceptionsShould {
     @Test(expected = UnsupportedOperationException.class)
     public void create_and_throw_unsupported_operation_exception_with_message() {
         unsupported(newUuid());
+    }
+
+    @Test
+    public void throw_formatted_unsupported_exception() {
+        final String arg1 = getClass().getCanonicalName();
+        final long arg2 = 100500L;
+        try {
+            unsupported("%s %d", arg1, arg2);
+            fail();
+        } catch (UnsupportedOperationException e) {
+            final String exceptionMessage = e.getMessage();
+            assertTrue(exceptionMessage.contains(arg1));
+            assertTrue(exceptionMessage.contains(String.valueOf(arg2)));
+        }
     }
 
     @Test
@@ -77,5 +96,15 @@ public class ExceptionsShould {
     public void throw_formatted_ISE_with_cause() {
         newIllegalStateException(new RuntimeException(getClass().getSimpleName()),
                                             "%s %s", "taram", "param");
+    }
+
+    @Test
+    public void convert_throwable_to_Error() {
+        final int errorCode = 404;
+        final String errorMessage = newUuid();
+        io.spine.base.Error error = toError(new RuntimeException(errorMessage), errorCode);
+
+        assertEquals(errorCode, error.getCode());
+        assertEquals(errorMessage, error.getMessage());
     }
 }
