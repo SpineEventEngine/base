@@ -42,6 +42,8 @@ class ValidationRulesMap {
     /**
      * A path to the file, which contains validation rules and their target fields paths.
      */
+    @SuppressWarnings("DuplicateStringLiteralInspection") // To avoid the undesirable dependency
+                                                          // on the model compiler.
     private static final String PROPS_FILE_NAME = "validation_rules.properties";
     private static final String PROTO_TYPE_SEPARATOR = ".";
 
@@ -56,7 +58,7 @@ class ValidationRulesMap {
      *
      * @return the immutable map
      */
-    @SuppressWarnings("ReturnOfCollectionOrArrayField") // As return value is immutable collection.
+    @SuppressWarnings("ReturnOfCollectionOrArrayField") // As return value is an immutable collection.
     static ImmutableBiMap<Descriptor, FieldDescriptor> getInstance() {
         return rules;
     }
