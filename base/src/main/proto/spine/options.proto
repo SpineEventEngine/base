@@ -304,6 +304,8 @@ extend google.protobuf.MessageOptions {
     //
     // Validation rules are applicable only for field declarations of a message type.
     //
+    // Validation rule target should be marked as `valid`. Otherwise a rule will be ignored.
+    //
     // Target of a validation rule should be specified with the following pattern:
     // `package.MessageName.field_name`.
     //
@@ -320,28 +322,18 @@ extend google.protobuf.MessageOptions {
     // message DescriptionChangeRule {
     //      option (validation_of) = "package.UpdateDescription.change";
     //
-    //      string previous_value = 1;
-    //
     //      string new_value = 2 [(required) = true, (pattern).regex = "(.*?[a-zA-Z0-9]){3,}.*"];
     // }
     //
     // message UpdateDescription {
     //      option (validation_rules) = "package.DescriptionChangeRule";
     //
-    //      StringChange change = 1 [(required) = true];
+    //      StringChange change = 1 [(required) = true, (valid) = true];
     // }
     //
     string validation_of = 73904;
 
-    // Validation rules for the fields of a message.
-    //
-    // You can specify path to a validation rule with the following pattern:
-    // `package.ValidationRuleType`
-    // To specify several validation rules, their routes should be separated with comma.
-    //
-    string validation_rules = 73905;
-
-    // reserved 73906 to 73910 for future validation options
+    // reserved 73905 to 73910 for future validation options
 
     // API Annotations
     //-----------------
