@@ -20,6 +20,7 @@
 
 package io.spine.validate;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.FieldOptions;
 import com.google.protobuf.Descriptors.FieldDescriptor;
@@ -271,9 +272,15 @@ abstract class FieldValidator<V> {
      * @param <T>       the type of option
      */
     protected final <T> T getFieldOption(GeneratedExtension<FieldOptions, T> extension) {
-        final T option = fieldDescriptor.getOptions()
-                                        .getExtension(extension);
-        return option;
+        final Optional<T> externalOption = ValidationRuleOptions.getOptionValue(descriptorPath,
+                                                                                extension);
+        if (externalOption.isPresent()) {
+            return externalOption.get();
+        }
+
+        final T ownOption = fieldDescriptor.getOptions()
+                                           .getExtension(extension);
+        return ownOption;
     }
 
     protected final boolean shouldValidate() {

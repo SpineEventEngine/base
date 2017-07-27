@@ -25,6 +25,7 @@ import io.spine.base.FieldPath;
 
 import java.util.Collections;
 import java.util.Deque;
+import java.util.Iterator;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newLinkedList;
@@ -95,6 +96,28 @@ class DescriptorPath {
      */
     FieldPath getFieldPath() {
         return fieldPath;
+    }
+
+    /**
+     * Determines whether this path ends with specified.
+     *
+     * @param descriptorPath the path to check
+     * @return {@code true} if this path ends with the specified
+     */
+    boolean endsWith(DescriptorPath descriptorPath) {
+        final Iterator<FieldDescriptor> currentIterator = descriptors.descendingIterator();
+        final Iterator<FieldDescriptor> otherIterator =
+                descriptorPath.descriptors.descendingIterator();
+
+        while (currentIterator.hasNext() || otherIterator.hasNext()) {
+            final FieldDescriptor fromCurrent = currentIterator.next();
+            final FieldDescriptor fromOther = otherIterator.next();
+            if (fromCurrent.compareTo(fromOther) != 0) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private static FieldPath fieldPathOf(Iterable<FieldDescriptor> descriptors) {

@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.validate.rules;
+package io.spine.validate;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
@@ -27,59 +27,53 @@ import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 
-import java.util.List;
 import java.util.Map;
 
-import static com.google.common.collect.Lists.newLinkedList;
+import static com.google.common.collect.ImmutableMap.builder;
 
 /**
  * Utilities for obtaining Protobuf options extracted from validation rules.
  *
  * @author Dmytro Grankin
  */
-public class ValidationRuleOptions {
+class ValidationRuleOptions {
 
     /**
-     * A map between validation rules targets and the sub targets.
+     * A map from a descriptor path to the options extracted from a validation rule.
      */
-    private static final Map<FieldDescriptor, List<ValidationRuleSubTarget>> targets =
-            new Builder().build();
+    private static final Map<DescriptorPath, FieldOptions> options = new Builder().build();
 
     private ValidationRuleOptions() {
         // Prevent instantiation of this utility class.
     }
 
     /**
-     * Obtains value of the specified option for the specified field descriptor.
+     * Obtains value of the specified option by the specified descriptor path.
      *
-     * @param fieldDescriptor       the field descriptor to obtain the option
-     * @param parentFieldDescriptor the parent field descriptor for the field
-     * @param option                the option to obtain
-     * @param <T>                   the type of the option
+     * @param descriptorPath the field descriptor to obtain the option
+     * @param option         the option to obtain
+     * @param <T>            the type of the option
      * @return the {@code Optional} of option value
      *         or {@code Optional.absent()} if there is not option for the field descriptor
      */
-    public static <T> Optional<T> getOptionValue(FieldDescriptor fieldDescriptor,
-                                                 FieldDescriptor parentFieldDescriptor,
-                                                 GeneratedExtension<FieldOptions, T> option) {
-        final List<ValidationRuleSubTarget> subTargets = targets.get(parentFieldDescriptor);
-        for (ValidationRuleSubTarget subTarget : subTargets) {
-            final FieldDescriptor subTargetDescriptor = subTarget.getDescriptor();
-            if (subTargetDescriptor.equals(fieldDescriptor)) {
-                final T optionValue = subTarget.getOptions()
-                                               .getExtension(option);
-                return Optional.fromNullable(optionValue);
+    static <T> Optional<T> getOptionValue(DescriptorPath descriptorPath,
+                                          GeneratedExtension<FieldOptions, T> option) {
+        for (DescriptorPath path : options.keySet()) {
+            if (descriptorPath.endsWith(path)) {
+                final FieldOptions fieldOptions = options.get(path);
+                final T optionValue = fieldOptions.getExtension(option);
+                return Optional.of(optionValue);
             }
         }
+
         return Optional.absent();
     }
 
     private static class Builder {
 
-        private final ImmutableMap.Builder<FieldDescriptor, List<ValidationRuleSubTarget>> builder =
-                ImmutableMap.builder();
+        private final ImmutableMap.Builder<DescriptorPath, FieldOptions> builder = builder();
 
-        private Map<FieldDescriptor, List<ValidationRuleSubTarget>> build() {
+        private ImmutableMap<DescriptorPath, FieldOptions> build() {
             final Map<Descriptor, FieldDescriptor> rules = ValidationRulesMap.getInstance();
             for (Descriptor rule : rules.keySet()) {
                 final FieldDescriptor target = rules.get(rule);
@@ -90,14 +84,12 @@ public class ValidationRuleOptions {
 
         private void put(Descriptor rule, FieldDescriptor target) {
             final Descriptor targetType = target.getMessageType();
-            final List<ValidationRuleSubTarget> subTargets = newLinkedList();
             for (FieldDescriptor ruleField : rule.getFields()) {
-                final FieldDescriptor subField = targetType.findFieldByName(ruleField.getName());
-                final ValidationRuleSubTarget subTarget =
-                        new ValidationRuleSubTarget(subField, ruleField.getOptions());
-                subTargets.add(subTarget);
+                final FieldDescriptor subTarget = targetType.findFieldByName(ruleField.getName());
+                final DescriptorPath subTargetPath = DescriptorPath.newInstance(target)
+                                                                   .forChild(subTarget);
+                builder.put(subTargetPath, ruleField.getOptions());
             }
-            builder.put(target, subTargets);
         }
     }
 }

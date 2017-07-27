@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.validate.rules;
+package io.spine.validate;
 
 import com.google.common.collect.ImmutableBiMap;
 import com.google.protobuf.Descriptors.Descriptor;
