@@ -46,8 +46,6 @@ import static org.jboss.forge.roaster.model.util.Strings.isBlank;
  * <p>{@code GradleProject} sets up {@linkplain TemporaryFolder test project directory}
  * and allows execute Gradle tasks.
  *
- * <p>Code executed by a Gradle task is debuggable.
- *
  * @author Dmytro Grankin
  */
 public class GradleProject {

@@ -19,7 +19,7 @@
  */
 
 /**
- * Plugins and utilities for validation rule processing.
+ * Plugins and utilities for validation rules processing.
  */
 
 package io.spine.gradle.compiler.lookup.valrule;
