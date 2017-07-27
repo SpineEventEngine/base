@@ -21,7 +21,8 @@
 package io.spine.validate;
 
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.base.FieldPath;
+
+import java.util.Deque;
 
 import static java.lang.Math.abs;
 
@@ -34,14 +35,12 @@ class IntegerFieldValidator extends NumberFieldValidator<Integer> {
 
     /**
      * Creates a new validator instance.
-     *  @param descriptor    a descriptor of the field to validate
+     *
+     * @param fieldPathDescriptors a field path in descriptors form to the field
      * @param fieldValues   values to validate
-     * @param rootFieldPath a path to the root field (if present)
      */
-    IntegerFieldValidator(FieldDescriptor descriptor, Object fieldValues, FieldPath rootFieldPath) {
-        super(descriptor,
-              FieldValidator.<Integer>toValueList(fieldValues),
-              rootFieldPath);
+    IntegerFieldValidator(Deque<FieldDescriptor> fieldPathDescriptors, Object fieldValues) {
+        super(fieldPathDescriptors, FieldValidator.<Integer>toValueList(fieldValues));
     }
 
     @Override

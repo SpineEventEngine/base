@@ -21,9 +21,10 @@
 package io.spine.validate;
 
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.base.FieldPath;
 import io.spine.option.OptionsProto;
 import io.spine.option.PatternOption;
+
+import java.util.Deque;
 
 import static io.spine.protobuf.TypeConverter.toAny;
 
@@ -39,17 +40,16 @@ class StringFieldValidator extends FieldValidator<String> {
 
     /**
      * Creates a new validator instance.
-     * @param descriptor   a descriptor of the field to validate
-     * @param fieldValues   values to validate
-     * @param rootFieldPath a path to the root field (if present)
-     * @param strict        if {@code true} the validator would assume that the field is required
-     *                      even if the corresponding option is not set
+     *
+     * @param fieldPathDescriptors a field path in descriptors form to the field
+     * @param fieldValues          values to validate
+     * @param strict               if {@code true} the validator would assume that the field
+     *                             is required even if the corresponding option is not set
      */
-    StringFieldValidator(FieldDescriptor descriptor,
+    StringFieldValidator(Deque<FieldDescriptor> fieldPathDescriptors,
                          Object fieldValues,
-                         FieldPath rootFieldPath,
                          boolean strict) {
-        super(descriptor, FieldValidator.<String>toValueList(fieldValues), rootFieldPath, strict);
+        super(fieldPathDescriptors, FieldValidator.<String>toValueList(fieldValues), strict);
         this.patternOption = getFieldOption(OptionsProto.pattern);
         this.regex = patternOption.getRegex();
     }

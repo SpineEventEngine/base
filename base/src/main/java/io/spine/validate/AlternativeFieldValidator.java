@@ -26,14 +26,17 @@ import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 import com.google.protobuf.Message;
-import io.spine.base.FieldPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;
+import java.util.Deque;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
+
+import static com.google.common.collect.Lists.newLinkedList;
+import static io.spine.validate.FieldValidatorFactory.createStrict;
 
 /**
  * Validates that one of the fields defined by the {@code required_field} option is present.
@@ -70,18 +73,19 @@ class AlternativeFieldValidator {
     private final Descriptor messageDescriptor;
 
     /**
-     * The field path of the message we validate.
+     * The field path descriptors of the message we validate.
      */
-    private final FieldPath rootFieldPath;
+    private final Deque<FieldDescriptor> rootFieldPathDescriptors;
 
     /**
      * The list builder to accumulate violations.
      */
     private final ImmutableList.Builder<ConstraintViolation> violations = ImmutableList.builder();
 
-    AlternativeFieldValidator(Descriptor messageDescriptor, FieldPath rootFieldPath) {
+    AlternativeFieldValidator(Descriptor messageDescriptor,
+                              Deque<FieldDescriptor> rootFieldPathDescriptors) {
         this.messageDescriptor = messageDescriptor;
-        this.rootFieldPath = rootFieldPath;
+        this.rootFieldPathDescriptors = rootFieldPathDescriptors;
     }
 
     List<? extends ConstraintViolation> validate(Message message) {
@@ -152,10 +156,12 @@ class AlternativeFieldValidator {
             return false;
         }
 
+        final Deque<FieldDescriptor> fieldPathDescriptors = newLinkedList();
+        fieldPathDescriptors.addAll(rootFieldPathDescriptors);
+        fieldPathDescriptors.add(field);
+
         Object fieldValue = message.getField(field);
-        final FieldValidator<?> fieldValidator = FieldValidatorFactory.createStrict(field,
-                                                                                    fieldValue,
-                                                                                    rootFieldPath);
+        final FieldValidator<?> fieldValidator = createStrict(fieldPathDescriptors, fieldValue);
         final List<ConstraintViolation> violations = fieldValidator.validate();
 
         // Do not add violations to the results because we have options.

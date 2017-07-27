@@ -2,7 +2,6 @@ package io.spine.validate;
 
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
-import io.spine.base.FieldPath;
 import io.spine.test.validate.msg.InvalidMessage;
 import io.spine.test.validate.msg.MessageWithMapMessageField;
 import io.spine.test.validate.msg.MessageWithRepeatedRequiredValidatedMessageField;
@@ -10,8 +9,11 @@ import io.spine.test.validate.msg.MessageWithRepeatedUnchekedMessageField;
 import io.spine.test.validate.msg.MessageWithRepeatedValidatedMessageField;
 import io.spine.test.validate.msg.MessegeWithRepeatedRequiredMessageField;
 
+import java.util.ArrayDeque;
 import java.util.Collections;
 import java.util.List;
+
+import static java.util.Collections.singletonList;
 
 /**
  * @author Dmytro Dashenkov
@@ -81,9 +83,8 @@ public class MessageFieldValidatorShould extends FieldValidatorShould<Message> {
 
     private MessageFieldValidator getValidator(FieldDescriptor field,
                                                List<? extends Message> values) {
-        return new MessageFieldValidator(field,
+        return new MessageFieldValidator(new ArrayDeque<>(singletonList(field)),
                                          values,
-                                         FieldPath.getDefaultInstance(),
                                          false);
     }
 }

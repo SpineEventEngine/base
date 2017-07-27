@@ -21,13 +21,17 @@
 package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
-import io.spine.base.FieldPath;
 
+import java.util.Deque;
 import java.util.List;
+
+import static com.google.common.collect.Lists.newLinkedList;
+import static io.spine.validate.FieldValidatorFactory.create;
 
 /**
  * Validates messages according to Spine custom protobuf options and provides constraint
@@ -38,11 +42,11 @@ import java.util.List;
 @Internal
 public class MessageValidator {
 
-    private final FieldPath rootFieldPath;
+    private final Deque<FieldDescriptor> rootFieldPathDescriptors;
 
     /** Creates a new validator instance. */
     public static MessageValidator newInstance() {
-        return new MessageValidator(FieldPath.getDefaultInstance());
+        return new MessageValidator(Lists.<FieldDescriptor>newLinkedList());
     }
 
     /**
@@ -51,14 +55,15 @@ public class MessageValidator {
      * <p>Use this constructor for inner messages
      * (which are marked with "valid" option in Protobuf).
      *
-     * @param rootFieldPath the path to the message field which is the root for this message
+     * @param rootFieldPathDescriptors the descriptors path to the message field
+     *                                 which is the root for this message
      */
-    static MessageValidator newInstance(FieldPath rootFieldPath) {
-        return new MessageValidator(rootFieldPath);
+    static MessageValidator newInstance(Deque<FieldDescriptor> rootFieldPathDescriptors) {
+        return new MessageValidator(rootFieldPathDescriptors);
     }
 
-    private MessageValidator(FieldPath rootFieldPath) {
-        this.rootFieldPath = rootFieldPath;
+    private MessageValidator(Deque<FieldDescriptor> rootFieldPathDescriptors) {
+        this.rootFieldPathDescriptors = rootFieldPathDescriptors;
     }
 
     /**
@@ -78,7 +83,7 @@ public class MessageValidator {
                                            ImmutableList.Builder<ConstraintViolation> result) {
         final Descriptor typeDescr = message.getDescriptorForType();
         final AlternativeFieldValidator altFieldValidator =
-                new AlternativeFieldValidator(typeDescr, rootFieldPath);
+                new AlternativeFieldValidator(typeDescr, rootFieldPathDescriptors);
         result.addAll(altFieldValidator.validate(message));
     }
 
@@ -87,9 +92,12 @@ public class MessageValidator {
         final Descriptor msgDescriptor = message.getDescriptorForType();
         final List<FieldDescriptor> fields = msgDescriptor.getFields();
         for (FieldDescriptor field : fields) {
+            final Deque<FieldDescriptor> fieldPathDescriptors = newLinkedList();
+            fieldPathDescriptors.addAll(rootFieldPathDescriptors);
+            fieldPathDescriptors.add(field);
+
             final Object value = message.getField(field);
-            final FieldValidator<?> fieldValidator =
-                    FieldValidatorFactory.create(field, value, rootFieldPath);
+            final FieldValidator<?> fieldValidator = create(fieldPathDescriptors, value);
             final List<ConstraintViolation> violations = fieldValidator.validate();
             result.addAll(violations);
         }

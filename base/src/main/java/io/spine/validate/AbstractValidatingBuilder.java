@@ -25,18 +25,20 @@ import com.google.protobuf.Message;
 import com.google.protobuf.ProtocolMessageEnum;
 import io.spine.annotation.Internal;
 import io.spine.base.ConversionException;
-import io.spine.base.FieldPath;
 import io.spine.protobuf.Messages;
 import io.spine.string.Stringifiers;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Type;
+import java.util.Deque;
 import java.util.List;
 import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Throwables.getRootCause;
+import static com.google.common.collect.Lists.newLinkedList;
 import static io.spine.validate.FieldValidatorFactory.create;
+import static java.util.Collections.singletonList;
 
 /**
  * Serves as an abstract base for all {@linkplain ValidatingBuilder validating builders}.
@@ -155,8 +157,9 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
         } else {
             valueToValidate = fieldValue;
         }
-        final FieldPath fieldPath = FieldPath.getDefaultInstance();
-        final FieldValidator<?> validator = create(descriptor, valueToValidate, fieldPath);
+        final Deque<FieldDescriptor> fieldPathDescriptors =
+                newLinkedList(singletonList(descriptor));
+        final FieldValidator<?> validator = create(fieldPathDescriptors, valueToValidate);
         final List<ConstraintViolation> violations = validator.validate();
         onViolations(violations);
     }

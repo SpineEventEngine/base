@@ -20,10 +20,11 @@
 
 package io.spine.validate;
 
-import com.google.protobuf.Descriptors;
-import io.spine.base.FieldPath;
+import com.google.protobuf.Descriptors.FieldDescriptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Deque;
 
 /**
  * Validates fields of type {@link Boolean}.
@@ -35,14 +36,11 @@ class BooleanFieldValidator extends FieldValidator<Boolean> {
     /**
      * Creates a new validator instance.
      *
-     * @param descriptor    a descriptor of the field to validate
-     * @param fieldValues   values to validate
-     * @param rootFieldPath a path to the root field (if present)
+     * @param fieldPathDescriptors a field path in descriptors form to the field
+     * @param fieldValues          values to validate
      */
-    BooleanFieldValidator(Descriptors.FieldDescriptor descriptor,
-                          Object fieldValues,
-                          FieldPath rootFieldPath) {
-        super(descriptor, FieldValidator.<Boolean>toValueList(fieldValues), rootFieldPath, false);
+    BooleanFieldValidator(Deque<FieldDescriptor> fieldPathDescriptors, Object fieldValues) {
+        super(fieldPathDescriptors, FieldValidator.<Boolean>toValueList(fieldValues), false);
     }
 
     private static Logger log() {

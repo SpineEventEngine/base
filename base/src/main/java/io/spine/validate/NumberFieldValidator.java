@@ -24,7 +24,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Any;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
-import io.spine.base.FieldPath;
 import io.spine.option.DecimalMaxOption;
 import io.spine.option.DecimalMinOption;
 import io.spine.option.DigitsOption;
@@ -32,6 +31,7 @@ import io.spine.option.MaxOption;
 import io.spine.option.MinOption;
 import io.spine.option.OptionsProto;
 
+import java.util.Deque;
 import java.util.regex.Pattern;
 
 import static io.spine.protobuf.TypeConverter.toAny;
@@ -60,14 +60,12 @@ abstract class NumberFieldValidator<V extends Number & Comparable<V>> extends Fi
     /**
      * Creates a new validator instance.
      *
-     * @param descriptor    a descriptor of the field to validate
-     * @param fieldValues   values to validate
-     * @param rootFieldPath a path to the root field (if present)
+     * @param fieldPathDescriptors a field path in descriptors form to the field
+     * @param fieldValues          values to validate
      */
-    protected NumberFieldValidator(FieldDescriptor descriptor,
-                                   ImmutableList<V> fieldValues,
-                                   FieldPath rootFieldPath) {
-        super(descriptor, fieldValues, rootFieldPath, false);
+    protected NumberFieldValidator(Deque<FieldDescriptor> fieldPathDescriptors,
+                                   ImmutableList<V> fieldValues) {
+        super(fieldPathDescriptors, fieldValues, false);
         this.minDecimalOpt = getFieldOption(OptionsProto.decimalMin);
         this.isMinDecimalInclusive = minDecimalOpt.getInclusive();
         this.maxDecimalOpt = getFieldOption(OptionsProto.decimalMax);

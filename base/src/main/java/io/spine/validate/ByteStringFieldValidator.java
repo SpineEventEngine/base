@@ -22,7 +22,8 @@ package io.spine.validate;
 
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.base.FieldPath;
+
+import java.util.Deque;
 
 /**
  * Validates fields of type {@link ByteString}.
@@ -36,17 +37,12 @@ class ByteStringFieldValidator extends FieldValidator<ByteString> {
     /**
      * Creates a new validator instance.
      *
-     * @param descriptor    a descriptor of the field to validate
-     * @param fieldValues   values to validate
-     * @param rootFieldPath a path to the root field (if present)
+     * @param fieldPathDescriptors a field path in descriptors form to the field
+     * @param fieldValues          values to validate
      */
-    ByteStringFieldValidator(FieldDescriptor descriptor,
-                             Object fieldValues,
-                             FieldPath rootFieldPath) {
-        super(descriptor,
-              FieldValidator.<ByteString>toValueList(fieldValues),
-              rootFieldPath,
-              false);
+    ByteStringFieldValidator(Deque<FieldDescriptor> fieldPathDescriptors,
+                             Object fieldValues) {
+        super(fieldPathDescriptors, FieldValidator.<ByteString>toValueList(fieldValues), false);
     }
 
     @Override

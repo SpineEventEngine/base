@@ -1,15 +1,17 @@
 package io.spine.validate;
 
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.base.FieldPath;
 import io.spine.test.validate.msg.MessageWithMapStringField;
 import io.spine.test.validate.msg.MessageWithRepeatedRequiredValidatedStringField;
 import io.spine.test.validate.msg.MessageWithRepeatedUnchekedStringField;
 import io.spine.test.validate.msg.MessageWithRepeatedValidatedStringField;
 import io.spine.test.validate.msg.MessegeWithRepeatedRequiredStringField;
 
+import java.util.ArrayDeque;
 import java.util.Collections;
 import java.util.List;
+
+import static java.util.Collections.singletonList;
 
 /**
  * @author Dmytro Dashenkov
@@ -77,9 +79,8 @@ public class StringFieldValidatorShould extends FieldValidatorShould<String> {
 
     private StringFieldValidator getValidator(FieldDescriptor field,
                                               List<? extends String> values) {
-        return new StringFieldValidator(field,
+        return new StringFieldValidator(new ArrayDeque<>(singletonList(field)),
                                         values,
-                                        FieldPath.getDefaultInstance(),
                                         false);
     }
 }

@@ -22,11 +22,14 @@ package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Any;
+import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.FloatValue;
-import io.spine.base.FieldPath;
 import io.spine.protobuf.AnyPacker;
 import org.junit.Test;
 
+import java.util.ArrayDeque;
+
+import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -37,9 +40,10 @@ public class FloatFieldValidatorShould {
     private static final Float VALUE = 0.5F;
     private static final Float NEGATIVE_VALUE = -0.5F;
 
+    private final FieldDescriptor fieldDescriptor = Any.getDescriptor().getFields().get(0);
     private final FloatFieldValidator validator =
-            new FloatFieldValidator(Any.getDescriptor().getFields().get(0),
-                                    ImmutableList.of(VALUE), FieldPath.getDefaultInstance());
+            new FloatFieldValidator(new ArrayDeque<>(singletonList(fieldDescriptor)),
+                                    ImmutableList.of(VALUE));
 
     @Test
     public void convert_string_to_number() {
