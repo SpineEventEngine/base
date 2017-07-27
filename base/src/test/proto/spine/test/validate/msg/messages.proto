@@ -246,7 +246,7 @@ message ValidationRule {
     option (validation_of) = "spine.test.validate.msg.ValidationRuleTarget.can_be_valid";
 
     // Redefines regex for invalid message, so it can be valid if has one more character.
-    string invalid_field = 1 [(required) = true, (pattern).regex = "^{1,}$"];
+    string invalid_field = 1 [(required) = true, (pattern).regex = "^.{1,}$"];
 }
 
 message ValidationRuleTarget {

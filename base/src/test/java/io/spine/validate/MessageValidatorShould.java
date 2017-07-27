@@ -823,7 +823,8 @@ public class MessageValidatorShould {
         final ValidationRuleTarget target = ValidationRuleTarget.newBuilder()
                                                                 .setCanBeValid(invalidMessage)
                                                                 .build();
-        validator.validate(target);
+        validate(target);
+        assertIsValid(true);
     }
 
 
