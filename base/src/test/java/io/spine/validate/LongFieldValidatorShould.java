@@ -39,7 +39,7 @@ public class LongFieldValidatorShould {
 
     private final FieldDescriptor fieldDescriptor = Any.getDescriptor().getFields().get(0);
     private final LongFieldValidator validator =
-            new LongFieldValidator(DescriptorPath.createRoot(fieldDescriptor),
+            new LongFieldValidator(FieldContext.create(fieldDescriptor),
                                    ImmutableList.of(VALUE));
 
     @Test

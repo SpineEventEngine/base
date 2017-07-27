@@ -154,8 +154,8 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
         } else {
             valueToValidate = fieldValue;
         }
-        final DescriptorPath descriptorPath = DescriptorPath.createRoot(descriptor);
-        final FieldValidator<?> validator = create(descriptorPath, valueToValidate);
+        final FieldContext fieldContext = FieldContext.create(descriptor);
+        final FieldValidator<?> validator = create(fieldContext, valueToValidate);
         final List<ConstraintViolation> violations = validator.validate();
         onViolations(violations);
     }

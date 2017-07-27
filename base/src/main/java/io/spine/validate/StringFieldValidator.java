@@ -38,15 +38,15 @@ class StringFieldValidator extends FieldValidator<String> {
     /**
      * Creates a new validator instance.
      *
-     * @param descriptorPath the descriptor path
-     * @param fieldValues    values to validate
-     * @param strict         if {@code true} the validator would assume that the field
-     *                       is required even if the corresponding option is not set
+     * @param fieldContext the context of the field to validate
+     * @param fieldValues  values to validate
+     * @param strict       if {@code true} the validator would assume that the field
+     *                     is required even if the corresponding option is not set
      */
-    StringFieldValidator(DescriptorPath descriptorPath,
+    StringFieldValidator(FieldContext fieldContext,
                          Object fieldValues,
                          boolean strict) {
-        super(descriptorPath, FieldValidator.<String>toValueList(fieldValues), strict);
+        super(fieldContext, FieldValidator.<String>toValueList(fieldValues), strict);
         this.patternOption = getFieldOption(OptionsProto.pattern);
         this.regex = patternOption.getRegex();
     }

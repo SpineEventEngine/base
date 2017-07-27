@@ -39,28 +39,28 @@ import static com.google.common.collect.ImmutableMap.builder;
 class ValidationRuleOptions {
 
     /**
-     * A map from a descriptor path to the options extracted from a validation rule.
+     * A map from a field context to the options extracted from a validation rule.
      */
-    private static final Map<DescriptorPath, FieldOptions> options = new Builder().build();
+    private static final Map<FieldContext, FieldOptions> options = new Builder().build();
 
     private ValidationRuleOptions() {
         // Prevent instantiation of this utility class.
     }
 
     /**
-     * Obtains value of the specified option by the specified descriptor path.
+     * Obtains value of the specified option by the specified field context.
      *
-     * @param descriptorPath the field descriptor to obtain the option
-     * @param option         the option to obtain
-     * @param <T>            the type of the option
+     * @param fieldContext the field descriptor to obtain the option
+     * @param option       the option to obtain
+     * @param <T>          the type of the option
      * @return the {@code Optional} of option value
      *         or {@code Optional.absent()} if there is not option for the field descriptor
      */
-    static <T> Optional<T> getOptionValue(DescriptorPath descriptorPath,
+    static <T> Optional<T> getOptionValue(FieldContext fieldContext,
                                           GeneratedExtension<FieldOptions, T> option) {
-        for (DescriptorPath path : options.keySet()) {
-            if (descriptorPath.endsWith(path)) {
-                final FieldOptions fieldOptions = options.get(path);
+        for (FieldContext context : options.keySet()) {
+            if (fieldContext.haveSameTargetAndParent(context)) {
+                final FieldOptions fieldOptions = options.get(context);
                 final T optionValue = fieldOptions.getExtension(option);
                 return Optional.of(optionValue);
             }
@@ -71,9 +71,9 @@ class ValidationRuleOptions {
 
     private static class Builder {
 
-        private final ImmutableMap.Builder<DescriptorPath, FieldOptions> builder = builder();
+        private final ImmutableMap.Builder<FieldContext, FieldOptions> builder = builder();
 
-        private ImmutableMap<DescriptorPath, FieldOptions> build() {
+        private ImmutableMap<FieldContext, FieldOptions> build() {
             final Map<Descriptor, FieldDescriptor> rules = ValidationRulesMap.getInstance();
             for (Descriptor rule : rules.keySet()) {
                 final FieldDescriptor target = rules.get(rule);
@@ -86,9 +86,9 @@ class ValidationRuleOptions {
             final Descriptor targetType = target.getMessageType();
             for (FieldDescriptor ruleField : rule.getFields()) {
                 final FieldDescriptor subTarget = targetType.findFieldByName(ruleField.getName());
-                final DescriptorPath subTargetPath = DescriptorPath.createRoot(target)
-                                                                   .forChild(subTarget);
-                builder.put(subTargetPath, ruleField.getOptions());
+                final FieldContext subTargetContext = FieldContext.create(target)
+                                                                  .forChild(subTarget);
+                builder.put(subTargetContext, ruleField.getOptions());
             }
         }
     }

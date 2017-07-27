@@ -33,11 +33,11 @@ class BooleanFieldValidator extends FieldValidator<Boolean> {
     /**
      * Creates a new validator instance.
      *
-     * @param descriptorPath the descriptor path
-     * @param fieldValues    values to validate
+     * @param fieldContext the context of the field to validate
+     * @param fieldValues  values to validate
      */
-    BooleanFieldValidator(DescriptorPath descriptorPath, Object fieldValues) {
-        super(descriptorPath, FieldValidator.<Boolean>toValueList(fieldValues), false);
+    BooleanFieldValidator(FieldContext fieldContext, Object fieldValues) {
+        super(fieldContext, FieldValidator.<Boolean>toValueList(fieldValues), false);
     }
 
     private static Logger log() {

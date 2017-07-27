@@ -33,14 +33,14 @@ import static org.junit.Assert.assertTrue;
 
 public class AlternativeFieldValidatorShould {
 
-    private final DescriptorPath rootDescriptorPath = DescriptorPath.empty();
+    private static final FieldContext EMPTY_CONTEXT = FieldContext.empty();
 
     private AlternativeFieldValidator validator;
 
     @Before
     public void setUp() {
         final Descriptor descriptor = PersonName.getDescriptor();
-        validator = new AlternativeFieldValidator(descriptor, rootDescriptorPath);
+        validator = new AlternativeFieldValidator(descriptor, EMPTY_CONTEXT);
     }
 
     @Test
@@ -82,7 +82,7 @@ public class AlternativeFieldValidatorShould {
     public void report_missing_field() {
         final AlternativeFieldValidator testee =
                 new AlternativeFieldValidator(MessageWithMissingField.getDescriptor(),
-                                              rootDescriptorPath);
+                                              EMPTY_CONTEXT);
         final MessageWithMissingField msg = MessageWithMissingField.newBuilder()
                                                                    .setPresent(true)
                                                                    .build();

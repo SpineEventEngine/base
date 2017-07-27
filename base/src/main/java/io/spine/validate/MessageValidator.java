@@ -39,11 +39,11 @@ import static io.spine.validate.FieldValidatorFactory.create;
 @Internal
 public class MessageValidator {
 
-    private final DescriptorPath rootDescriptorPath;
+    private final FieldContext rootContext;
 
     /** Creates a new validator instance. */
     public static MessageValidator newInstance() {
-        return new MessageValidator(DescriptorPath.empty());
+        return new MessageValidator(FieldContext.empty());
     }
 
     /**
@@ -52,15 +52,15 @@ public class MessageValidator {
      * <p>Use this constructor for inner messages
      * (which are marked with "valid" option in Protobuf).
      *
-     * @param rootDescriptorPath the descriptor path to the message field,
-     *                           which is the root for this message
+     * @param rootContext the context of the message field,
+     *                    which is the root for the messages to validate
      */
-    static MessageValidator newInstance(DescriptorPath rootDescriptorPath) {
-        return new MessageValidator(rootDescriptorPath);
+    static MessageValidator newInstance(FieldContext rootContext) {
+        return new MessageValidator(rootContext);
     }
 
-    private MessageValidator(DescriptorPath rootDescriptorPath) {
-        this.rootDescriptorPath = rootDescriptorPath;
+    private MessageValidator(FieldContext rootContext) {
+        this.rootContext = rootContext;
     }
 
     /**
@@ -80,7 +80,7 @@ public class MessageValidator {
                                            ImmutableList.Builder<ConstraintViolation> result) {
         final Descriptor typeDescr = message.getDescriptorForType();
         final AlternativeFieldValidator altFieldValidator =
-                new AlternativeFieldValidator(typeDescr, rootDescriptorPath);
+                new AlternativeFieldValidator(typeDescr, rootContext);
         result.addAll(altFieldValidator.validate(message));
     }
 
@@ -89,9 +89,9 @@ public class MessageValidator {
         final Descriptor msgDescriptor = message.getDescriptorForType();
         final List<FieldDescriptor> fields = msgDescriptor.getFields();
         for (FieldDescriptor field : fields) {
-            final DescriptorPath fieldDescriptorPath = rootDescriptorPath.forChild(field);
+            final FieldContext fieldContext = rootContext.forChild(field);
             final Object value = message.getField(field);
-            final FieldValidator<?> fieldValidator = create(fieldDescriptorPath, value);
+            final FieldValidator<?> fieldValidator = create(fieldContext, value);
             final List<ConstraintViolation> violations = fieldValidator.validate();
             result.addAll(violations);
         }

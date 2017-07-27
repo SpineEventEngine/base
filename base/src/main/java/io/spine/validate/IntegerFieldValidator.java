@@ -32,11 +32,11 @@ class IntegerFieldValidator extends NumberFieldValidator<Integer> {
     /**
      * Creates a new validator instance.
      *
-     * @param descriptorPath the descriptor path
-     * @param fieldValues    values to validate
+     * @param fieldContext the context of the field to validate
+     * @param fieldValues  values to validate
      */
-    IntegerFieldValidator(DescriptorPath descriptorPath, Object fieldValues) {
-        super(descriptorPath, FieldValidator.<Integer>toValueList(fieldValues));
+    IntegerFieldValidator(FieldContext fieldContext, Object fieldValues) {
+        super(fieldContext, FieldValidator.<Integer>toValueList(fieldValues));
     }
 
     @Override

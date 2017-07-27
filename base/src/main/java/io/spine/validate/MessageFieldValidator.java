@@ -50,15 +50,15 @@ class MessageFieldValidator extends FieldValidator<Message> {
     /**
      * Creates a new validator instance.
      *
-     * @param descriptorPath the descriptor path
-     * @param fieldValues    values to validate
-     * @param strict         if {@code true} the validator would assume that the field
-     *                       is required even if the corresponding field option is not present
+     * @param fieldContext the context of the field to validate
+     * @param fieldValues  values to validate
+     * @param strict       if {@code true} the validator would assume that the field
+     *                     is required even if the corresponding field option is not present
      */
-    MessageFieldValidator(DescriptorPath descriptorPath,
+    MessageFieldValidator(FieldContext fieldContext,
                           Object fieldValues,
                           boolean strict) {
-        super(descriptorPath, FieldValidator.<Message>toValueList(fieldValues), strict);
+        super(fieldContext, FieldValidator.<Message>toValueList(fieldValues), strict);
         this.timeConstraint = getFieldOption(OptionsProto.when);
         this.isFieldTimestamp = isTimestamp();
     }
@@ -89,7 +89,7 @@ class MessageFieldValidator extends FieldValidator<Message> {
 
     private void validateFields() {
         for (Message value : getValues()) {
-            final MessageValidator validator = MessageValidator.newInstance(getDescriptorPath());
+            final MessageValidator validator = MessageValidator.newInstance(getFieldContext());
             final List<ConstraintViolation> violations = validator.validate(value);
             if (!violations.isEmpty()) {
                 addViolation(newValidViolation(value, violations));

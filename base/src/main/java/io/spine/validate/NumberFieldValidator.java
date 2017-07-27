@@ -58,12 +58,12 @@ abstract class NumberFieldValidator<V extends Number & Comparable<V>> extends Fi
     /**
      * Creates a new validator instance.
      *
-     * @param descriptorPath the descriptor path
-     * @param fieldValues    values to validate
+     * @param fieldContext the context of the field to validate
+     * @param fieldValues  values to validate
      */
-    protected NumberFieldValidator(DescriptorPath descriptorPath,
+    protected NumberFieldValidator(FieldContext fieldContext,
                                    ImmutableList<V> fieldValues) {
-        super(descriptorPath, fieldValues, false);
+        super(fieldContext, fieldValues, false);
         this.minDecimalOpt = getFieldOption(OptionsProto.decimalMin);
         this.isMinDecimalInclusive = minDecimalOpt.getInclusive();
         this.maxDecimalOpt = getFieldOption(OptionsProto.decimalMax);

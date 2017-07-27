@@ -246,7 +246,7 @@ public class FieldValidatorFactoryShould {
     }
 
     private static FieldValidator<?> create(FieldDescriptor fieldDescriptor, Object value) {
-        final DescriptorPath path = DescriptorPath.createRoot(fieldDescriptor);
-        return FieldValidatorFactory.create(path, value);
+        final FieldContext context = FieldContext.create(fieldDescriptor);
+        return FieldValidatorFactory.create(context, value);
     }
 }

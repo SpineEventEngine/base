@@ -32,11 +32,11 @@ class DoubleFieldValidator extends FloatFieldValidatorBase<Double> {
     /**
      * Creates a new validator instance.
      *
-     * @param descriptorPath the descriptor path
-     * @param fieldValues    values to validate
+     * @param fieldContext the context of the field to validate
+     * @param fieldValues  values to validate
      */
-    DoubleFieldValidator(DescriptorPath descriptorPath, Object fieldValues) {
-        super(descriptorPath, FieldValidator.<Double>toValueList(fieldValues));
+    DoubleFieldValidator(FieldContext fieldContext, Object fieldValues) {
+        super(fieldContext, FieldValidator.<Double>toValueList(fieldValues));
     }
 
     @Override

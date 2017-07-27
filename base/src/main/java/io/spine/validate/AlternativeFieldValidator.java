@@ -71,19 +71,18 @@ class AlternativeFieldValidator {
     private final Descriptor messageDescriptor;
 
     /**
-     * The descriptor path of the message we validate.
+     * The descriptor context of the message we validate.
      */
-    private final DescriptorPath rootDescriptorPath;
+    private final FieldContext rootContext;
 
     /**
      * The list builder to accumulate violations.
      */
     private final ImmutableList.Builder<ConstraintViolation> violations = ImmutableList.builder();
 
-    AlternativeFieldValidator(Descriptor messageDescriptor,
-                              DescriptorPath rootDescriptorPath) {
+    AlternativeFieldValidator(Descriptor messageDescriptor, FieldContext rootContext) {
         this.messageDescriptor = messageDescriptor;
-        this.rootDescriptorPath = rootDescriptorPath;
+        this.rootContext = rootContext;
     }
 
     List<? extends ConstraintViolation> validate(Message message) {
@@ -154,9 +153,9 @@ class AlternativeFieldValidator {
             return false;
         }
 
-        final DescriptorPath fieldDescriptorPath = rootDescriptorPath.forChild(field);
+        final FieldContext fieldContext = rootContext.forChild(field);
         Object fieldValue = message.getField(field);
-        final FieldValidator<?> fieldValidator = createStrict(fieldDescriptorPath, fieldValue);
+        final FieldValidator<?> fieldValidator = createStrict(fieldContext, fieldValue);
         final List<ConstraintViolation> violations = fieldValidator.validate();
 
         // Do not add violations to the results because we have options.
