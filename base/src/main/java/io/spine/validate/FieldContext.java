@@ -122,7 +122,7 @@ class FieldContext {
      * @return {@code true} if this context have the same target and the same parent
      */
     boolean haveSameTargetAndParent(FieldContext other) {
-        final boolean sameTarget = getTarget().compareTo(other.getTarget()) == 0;
+        final boolean sameTarget = getTarget().equals(other.getTarget());
         if (!sameTarget) {
             return false;
         }
@@ -130,7 +130,8 @@ class FieldContext {
         final Optional<FieldDescriptor> parentFromThis = getTargetParent();
         final Optional<FieldDescriptor> parentFromOther = other.getTargetParent();
         final boolean bothHaveParents = parentFromThis.isPresent() && parentFromOther.isPresent();
-        return bothHaveParents && parentFromThis.get().compareTo(parentFromOther.get()) == 0;
+        return bothHaveParents && parentFromThis.get()
+                                                .equals(parentFromOther.get());
     }
 
     private static FieldPath fieldPathOf(Iterable<FieldDescriptor> descriptors) {
