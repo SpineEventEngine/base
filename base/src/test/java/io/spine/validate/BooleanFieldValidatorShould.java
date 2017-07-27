@@ -34,7 +34,7 @@ public class BooleanFieldValidatorShould {
 
     private final FieldDescriptor fieldDescriptor = Any.getDescriptor().getFields().get(0);
     private final BooleanFieldValidator validator =
-            new BooleanFieldValidator(DescriptorPath.newInstance(fieldDescriptor),
+            new BooleanFieldValidator(DescriptorPath.createRoot(fieldDescriptor),
                                       ImmutableList.of(false));
 
     @Test

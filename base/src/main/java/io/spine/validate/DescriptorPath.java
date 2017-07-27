@@ -50,13 +50,13 @@ class DescriptorPath {
     }
 
     /**
-     * Creates a new instance for the specified root descriptor.
+     * Creates the root descriptor path for the specified field descriptor.
      *
-     * @param rootDescriptor the root of path to create
+     * @param field the root of path to create
      * @return the descriptor path
      */
-    static DescriptorPath newInstance(FieldDescriptor rootDescriptor) {
-        return new DescriptorPath(singleton(rootDescriptor));
+    static DescriptorPath createRoot(FieldDescriptor field) {
+        return new DescriptorPath(singleton(field));
     }
 
     /**

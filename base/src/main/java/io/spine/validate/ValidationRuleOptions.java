@@ -86,7 +86,7 @@ class ValidationRuleOptions {
             final Descriptor targetType = target.getMessageType();
             for (FieldDescriptor ruleField : rule.getFields()) {
                 final FieldDescriptor subTarget = targetType.findFieldByName(ruleField.getName());
-                final DescriptorPath subTargetPath = DescriptorPath.newInstance(target)
+                final DescriptorPath subTargetPath = DescriptorPath.createRoot(target)
                                                                    .forChild(subTarget);
                 builder.put(subTargetPath, ruleField.getOptions());
             }

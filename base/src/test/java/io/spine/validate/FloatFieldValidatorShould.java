@@ -39,7 +39,7 @@ public class FloatFieldValidatorShould {
 
     private final FieldDescriptor fieldDescriptor = Any.getDescriptor().getFields().get(0);
     private final FloatFieldValidator validator =
-            new FloatFieldValidator(DescriptorPath.newInstance(fieldDescriptor),
+            new FloatFieldValidator(DescriptorPath.createRoot(fieldDescriptor),
                                     ImmutableList.of(VALUE));
 
     @Test

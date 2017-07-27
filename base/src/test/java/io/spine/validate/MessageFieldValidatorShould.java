@@ -80,7 +80,7 @@ public class MessageFieldValidatorShould extends FieldValidatorShould<Message> {
 
     private static MessageFieldValidator getValidator(FieldDescriptor field,
                                                       List<? extends Message> values) {
-        final DescriptorPath path = DescriptorPath.newInstance(field);
+        final DescriptorPath path = DescriptorPath.createRoot(field);
         return new MessageFieldValidator(path, values, false);
     }
 }

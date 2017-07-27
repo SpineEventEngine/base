@@ -76,7 +76,7 @@ public class StringFieldValidatorShould extends FieldValidatorShould<String> {
 
     private StringFieldValidator getValidator(FieldDescriptor field,
                                               List<? extends String> values) {
-        return new StringFieldValidator(DescriptorPath.newInstance(field),
+        return new StringFieldValidator(DescriptorPath.createRoot(field),
                                         values,
                                         false);
     }

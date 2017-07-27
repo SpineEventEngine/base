@@ -39,7 +39,7 @@ public class IntegerFieldValidatorShould {
 
     private final FieldDescriptor fieldDescriptor = Any.getDescriptor().getFields().get(0);
     private final IntegerFieldValidator validator =
-            new IntegerFieldValidator(DescriptorPath.newInstance(fieldDescriptor),
+            new IntegerFieldValidator(DescriptorPath.createRoot(fieldDescriptor),
                                       ImmutableList.of(VALUE));
 
     @Test
