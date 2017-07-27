@@ -78,7 +78,8 @@ abstract class FieldValidator<V> {
      *
      * @param descriptorPath the descriptor path
      * @param values         values to validate
-     * @param strict         if {@code true} the validator would assume that the field
+     * @param strict         if {@code true} the validator would assume that the field is required,
+     *                       even if corresponding field option is not present
      */
     protected FieldValidator(DescriptorPath descriptorPath,
                              ImmutableList<V> values,
@@ -269,7 +270,7 @@ abstract class FieldValidator<V> {
      * Returns a field validation option.
      *
      * @param extension an extension key used to obtain a validation option
-     * @param <T>       the type of option
+     * @param <T>       the type of the option
      */
     protected final <T> T getFieldOption(GeneratedExtension<FieldOptions, T> extension) {
         final Optional<T> externalOption = ValidationRuleOptions.getOptionValue(descriptorPath,
@@ -310,7 +311,7 @@ abstract class FieldValidator<V> {
     }
 
     /**
-     * Obtains descriptor path for the field path.
+     * Obtains descriptor path for the field.
      *
      * @return the descriptor path
      */

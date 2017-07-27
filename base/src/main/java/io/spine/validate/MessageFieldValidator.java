@@ -123,8 +123,8 @@ class MessageFieldValidator extends FieldValidator<Message> {
      */
     private static boolean isTimeInvalid(Timestamp timeToCheck, Time whenExpected, Timestamp now) {
         final boolean isValid = (whenExpected == FUTURE)
-                ? isLaterThan(timeToCheck, /*than*/ now)
-                : isLaterThan(now, /*than*/ timeToCheck);
+                                ? isLaterThan(timeToCheck, /*than*/ now)
+                                : isLaterThan(now, /*than*/ timeToCheck);
         final boolean isInvalid = !isValid;
         return isInvalid;
     }
