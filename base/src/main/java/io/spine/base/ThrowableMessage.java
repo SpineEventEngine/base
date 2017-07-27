@@ -28,7 +28,7 @@ import static io.spine.time.Time.getCurrentTime;
 /**
  * A {@code Throwable}, which state is a {@link Message}.
  *
- * <p>Typically used to signalize about a business rejection, occurred in a system. In which case
+ * <p>Typically used to signalize about a command rejection, occurred in a system. In which case
  * the {@code message} thrown is a detailed description of the rejection reason.
  *
  * @author Alex Tymchenko
