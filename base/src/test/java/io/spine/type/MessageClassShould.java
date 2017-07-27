@@ -55,7 +55,7 @@ public class MessageClassShould {
 
     @Test
     public void convert_value_to_string() {
-        assertEquals(String.valueOf(MSG_CLASS), testMsgClass.toString());
+        assertEquals(MSG_CLASS.getName(), testMsgClass.toString());
     }
 
     @Test
