@@ -22,6 +22,7 @@ package io.spine.type;
 
 import com.google.protobuf.Message;
 import com.google.protobuf.StringValue;
+import io.spine.test.Tests;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -76,6 +77,16 @@ public class MessageClassShould {
     @Test
     public void be_equal_to_object_with_the_same_value() {
         assertEquals(testMsgClass, new TestMessageClass(MSG_CLASS));
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void reject_null_value() {
+        new TestMessageClass(Tests.<Class<? extends Message>>nullRef());
+    }
+
+    @Test
+    public void return_class_name() {
+        assertEquals(MSG_CLASS.getName(), testMsgClass.toString());
     }
 
     @Test
