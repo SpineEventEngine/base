@@ -21,9 +21,6 @@
 package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
-import com.google.protobuf.Descriptors.FieldDescriptor;
-
-import java.util.Deque;
 
 /**
  * A base for floating point number field validators.
@@ -39,12 +36,12 @@ abstract class FloatFieldValidatorBase<V extends Number & Comparable<V>>
     /**
      * Creates a new validator instance.
      *
-     * @param fieldPathDescriptors a field path in descriptors form to the field
-     * @param fieldValues          values to validate
+     * @param descriptorPath the descriptor path
+     * @param fieldValues    values to validate
      */
-    protected FloatFieldValidatorBase(Deque<FieldDescriptor> fieldPathDescriptors,
+    protected FloatFieldValidatorBase(DescriptorPath descriptorPath,
                                       ImmutableList<V> fieldValues) {
-        super(fieldPathDescriptors, fieldValues);
+        super(descriptorPath, fieldValues);
     }
 
     @Override

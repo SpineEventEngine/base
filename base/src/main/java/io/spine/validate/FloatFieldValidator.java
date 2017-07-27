@@ -20,10 +20,6 @@
 
 package io.spine.validate;
 
-import com.google.protobuf.Descriptors.FieldDescriptor;
-
-import java.util.Deque;
-
 import static java.lang.Math.abs;
 
 /**
@@ -36,11 +32,11 @@ class FloatFieldValidator extends FloatFieldValidatorBase<Float> {
     /**
      * Creates a new validator instance.
      *
-     * @param fieldPathDescriptors a field path in descriptors form to the field
-     * @param fieldValues          values to validate
+     * @param descriptorPath the descriptor path
+     * @param fieldValues    values to validate
      */
-    FloatFieldValidator(Deque<FieldDescriptor> fieldPathDescriptors, Object fieldValues) {
-        super(fieldPathDescriptors, FieldValidator.<Float>toValueList(fieldValues));
+    FloatFieldValidator(DescriptorPath descriptorPath, Object fieldValues) {
+        super(descriptorPath, FieldValidator.<Float>toValueList(fieldValues));
     }
 
     @Override

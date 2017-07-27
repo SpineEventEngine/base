@@ -9,11 +9,8 @@ import io.spine.test.validate.msg.MessageWithRepeatedUnchekedMessageField;
 import io.spine.test.validate.msg.MessageWithRepeatedValidatedMessageField;
 import io.spine.test.validate.msg.MessegeWithRepeatedRequiredMessageField;
 
-import java.util.ArrayDeque;
 import java.util.Collections;
 import java.util.List;
-
-import static java.util.Collections.singletonList;
 
 /**
  * @author Dmytro Dashenkov
@@ -81,10 +78,9 @@ public class MessageFieldValidatorShould extends FieldValidatorShould<Message> {
         return InvalidMessage.getDefaultInstance();
     }
 
-    private MessageFieldValidator getValidator(FieldDescriptor field,
-                                               List<? extends Message> values) {
-        return new MessageFieldValidator(new ArrayDeque<>(singletonList(field)),
-                                         values,
-                                         false);
+    private static MessageFieldValidator getValidator(FieldDescriptor field,
+                                                      List<? extends Message> values) {
+        final DescriptorPath path = DescriptorPath.newInstance(field);
+        return new MessageFieldValidator(path, values, false);
     }
 }

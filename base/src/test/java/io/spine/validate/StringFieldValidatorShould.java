@@ -7,11 +7,8 @@ import io.spine.test.validate.msg.MessageWithRepeatedUnchekedStringField;
 import io.spine.test.validate.msg.MessageWithRepeatedValidatedStringField;
 import io.spine.test.validate.msg.MessegeWithRepeatedRequiredStringField;
 
-import java.util.ArrayDeque;
 import java.util.Collections;
 import java.util.List;
-
-import static java.util.Collections.singletonList;
 
 /**
  * @author Dmytro Dashenkov
@@ -79,7 +76,7 @@ public class StringFieldValidatorShould extends FieldValidatorShould<String> {
 
     private StringFieldValidator getValidator(FieldDescriptor field,
                                               List<? extends String> values) {
-        return new StringFieldValidator(new ArrayDeque<>(singletonList(field)),
+        return new StringFieldValidator(DescriptorPath.newInstance(field),
                                         values,
                                         false);
     }

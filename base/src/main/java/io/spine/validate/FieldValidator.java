@@ -34,7 +34,6 @@ import io.spine.util.CodeLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Deque;
 import java.util.List;
 import java.util.Map;
 
@@ -56,8 +55,7 @@ abstract class FieldValidator<V> {
 
     private final FieldDescriptor fieldDescriptor;
     private final ImmutableList<V> values;
-    private final Deque<FieldDescriptor> fieldPathDescriptors;
-    private final FieldPath fieldPath;
+    private final DescriptorPath descriptorPath;
 
     private final List<ConstraintViolation> violations = newLinkedList();
 
@@ -77,16 +75,15 @@ abstract class FieldValidator<V> {
     /**
      * Creates a new validator instance.
      *
-     * @param fieldPathDescriptors a field path in descriptors form to the field
-     * @param values               values to validate
-     * @param strict               if {@code true} the validator would assume that the field
+     * @param descriptorPath the descriptor path
+     * @param values         values to validate
+     * @param strict         if {@code true} the validator would assume that the field
      */
-    protected FieldValidator(Deque<FieldDescriptor> fieldPathDescriptors,
+    protected FieldValidator(DescriptorPath descriptorPath,
                              ImmutableList<V> values,
                              boolean strict) {
-        this.fieldDescriptor = fieldPathDescriptors.peekLast();
-        this.fieldPathDescriptors = newLinkedList(fieldPathDescriptors);
-        this.fieldPath = constructFieldPath(fieldPathDescriptors);
+        this.fieldDescriptor = descriptorPath.getLast();
+        this.descriptorPath = descriptorPath;
         this.values = values;
         this.strict = strict;
         final FileDescriptor file = fieldDescriptor.getFile();
@@ -305,27 +302,18 @@ abstract class FieldValidator<V> {
                 || fieldDescriptor.isMapField();
     }
 
+    /**
+     * Obtains descriptor path for the field path.
+     *
+     * @return the descriptor path
+     */
+    protected DescriptorPath getDescriptorPath() {
+        return descriptorPath;
+    }
+
     /** Returns a path to the current field. */
     protected FieldPath getFieldPath() {
-        return fieldPath;
-    }
-
-    /**
-     * Obtains field descriptors for the field path.
-     *
-     * @return the field descriptors
-     */
-    public Deque<FieldDescriptor> getFieldPathDescriptors() {
-        return newLinkedList(fieldPathDescriptors);
-    }
-
-    private static FieldPath constructFieldPath(Iterable<FieldDescriptor> fieldPathDescriptors) {
-        final FieldPath.Builder builder = FieldPath.newBuilder();
-        for (FieldDescriptor fieldPathDescriptor : fieldPathDescriptors) {
-            final String fieldName = fieldPathDescriptor.getName();
-            builder.addFieldName(fieldName);
-        }
-        return builder.build();
+        return descriptorPath.getFieldPath();
     }
 
     private enum LogSingleton {

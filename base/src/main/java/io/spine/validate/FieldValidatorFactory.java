@@ -27,7 +27,6 @@ import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 import com.google.protobuf.Message;
 
-import java.util.Deque;
 import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -62,18 +61,18 @@ class FieldValidatorFactory {
      * <p>The target field of the resulting validator is represented with a linear data structure,
      * i.e. not a map.
      *
-     * @param fieldPathDescriptors a field path descriptors for the field to validate
-     * @param fieldValue           a value of the field to validate
-     * @param strict               if {@code true} validators would always assume that the field is
-     *                             required
+     * @param descriptorPath the descriptor path
+     * @param fieldValue     a value of the field to validate
+     * @param strict         if {@code true} validators would always assume that the field is
+     *                       required
      */
-    private static FieldValidator<?> createForLinear(Deque<FieldDescriptor> fieldPathDescriptors,
+    private static FieldValidator<?> createForLinear(DescriptorPath descriptorPath,
                                                      Object fieldValue,
                                                      boolean strict) {
-        final JavaType fieldType = fieldPathDescriptors.peekLast()
-                                                       .getJavaType();
+        final JavaType fieldType = descriptorPath.getLast()
+                                                 .getJavaType();
         return createForLinear(fieldType,
-                               fieldPathDescriptors,
+                               descriptorPath,
                                fieldValue,
                                strict);
     }
@@ -84,58 +83,58 @@ class FieldValidatorFactory {
      * <p>The target field of the resulting validator is represented with a linear data structure,
      * i.e. not a map.
      *
-     * @param fieldType            the required field type
-     * @param fieldPathDescriptors a field path descriptors for the field to validate
-     * @param fieldValue           a value of the field to validate
-     * @param strict               if {@code true} validators would always assume that the field is
-     *                             required
+     * @param fieldType      the required field type
+     * @param descriptorPath the descriptor path
+     * @param fieldValue     a value of the field to validate
+     * @param strict         if {@code true} validators would always assume that the field is
+     *                       required
      */
     private static FieldValidator<?> createForLinear(JavaType fieldType,
-                                                     Deque<FieldDescriptor> fieldPathDescriptors,
+                                                     DescriptorPath descriptorPath,
                                                      Object fieldValue,
                                                      boolean strict) {
         checkNotNull(fieldType);
         switch (fieldType) {
             case MESSAGE:
-                return new MessageFieldValidator(fieldPathDescriptors, fieldValue, strict);
+                return new MessageFieldValidator(descriptorPath, fieldValue, strict);
             case INT:
-                return new IntegerFieldValidator(fieldPathDescriptors, fieldValue);
+                return new IntegerFieldValidator(descriptorPath, fieldValue);
             case LONG:
-                return new LongFieldValidator(fieldPathDescriptors, fieldValue);
+                return new LongFieldValidator(descriptorPath, fieldValue);
             case FLOAT:
-                return new FloatFieldValidator(fieldPathDescriptors, fieldValue);
+                return new FloatFieldValidator(descriptorPath, fieldValue);
             case DOUBLE:
-                return new DoubleFieldValidator(fieldPathDescriptors, fieldValue);
+                return new DoubleFieldValidator(descriptorPath, fieldValue);
             case STRING:
-                return new StringFieldValidator(fieldPathDescriptors, fieldValue, strict);
+                return new StringFieldValidator(descriptorPath, fieldValue, strict);
             case BYTE_STRING:
-                return new ByteStringFieldValidator(fieldPathDescriptors, fieldValue);
+                return new ByteStringFieldValidator(descriptorPath, fieldValue);
             case BOOLEAN:
-                return new BooleanFieldValidator(fieldPathDescriptors, fieldValue);
+                return new BooleanFieldValidator(descriptorPath, fieldValue);
             case ENUM:
-                return new EnumFieldValidator(fieldPathDescriptors, fieldValue);
+                return new EnumFieldValidator(descriptorPath, fieldValue);
             default:
-                throw fieldTypeIsNotSupported(fieldPathDescriptors.peekLast());
+                throw fieldTypeIsNotSupported(descriptorPath.getLast());
         }
     }
 
     /**
      * Creates a new validator instance for a map field.
      *
-     * @param fieldPathDescriptors a field path descriptors for the field to validate
-     * @param value                a value of the field to validate
-     * @param strict               if {@code true} validators would always assume that the field is
-     *                             required
+     * @param descriptorPath the descriptor path
+     * @param value          a value of the field to validate
+     * @param strict         if {@code true} validators would always assume that the field is
+     *                       required
      */
-    private static FieldValidator<?> createForMap(Deque<FieldDescriptor> fieldPathDescriptors,
+    private static FieldValidator<?> createForMap(DescriptorPath descriptorPath,
                                                   Map<?, ?> value,
                                                   boolean strict) {
-        final FieldDescriptor descriptor = fieldPathDescriptors.peekLast();
+        final FieldDescriptor descriptor = descriptorPath.getLast();
         checkArgument(descriptor.isMapField(),
                       "Field %s is not a map field.",
                       descriptor.getFullName());
         if (value.isEmpty()) {
-            return new EmptyMapFieldValidator(fieldPathDescriptors, strict);
+            return new EmptyMapFieldValidator(descriptorPath, strict);
         }
         final Object firstValue = find(value.values(), notNull());
         final Class<?> valueClass = firstValue.getClass();
@@ -153,24 +152,24 @@ class FieldValidatorFactory {
             }
         }
         final FieldValidator<?> validator = createForLinear(type,
-                                                            fieldPathDescriptors,
+                                                            descriptorPath,
                                                             value,
                                                             strict);
         return validator;
     }
 
-    static FieldValidator<?> create(Deque<FieldDescriptor> fieldPathDescriptors,
+    static FieldValidator<?> create(DescriptorPath descriptorPath,
                                     Object fieldValue) {
         return fieldValue instanceof Map
-                ? createForMap(fieldPathDescriptors, (Map<?, ?>) fieldValue, false)
-                : createForLinear(fieldPathDescriptors, fieldValue, false);
+                ? createForMap(descriptorPath, (Map<?, ?>) fieldValue, false)
+                : createForLinear(descriptorPath, fieldValue, false);
     }
 
-    static FieldValidator<?> createStrict(Deque<FieldDescriptor> fieldPathDescriptors,
+    static FieldValidator<?> createStrict(DescriptorPath descriptorPath,
                                           Object fieldValue) {
         return fieldValue instanceof Map
-                ? createForMap(fieldPathDescriptors, (Map<?, ?>) fieldValue, true)
-                : createForLinear(fieldPathDescriptors, fieldValue, true);
+                ? createForMap(descriptorPath, (Map<?, ?>) fieldValue, true)
+                : createForLinear(descriptorPath, fieldValue, true);
     }
 
     private static IllegalArgumentException fieldTypeIsNotSupported(FieldDescriptor descriptor) {

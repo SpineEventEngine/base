@@ -25,9 +25,6 @@ import com.google.protobuf.Any;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import org.junit.Test;
 
-import java.util.ArrayDeque;
-
-import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertFalse;
 
 /**
@@ -37,7 +34,7 @@ public class BooleanFieldValidatorShould {
 
     private final FieldDescriptor fieldDescriptor = Any.getDescriptor().getFields().get(0);
     private final BooleanFieldValidator validator =
-            new BooleanFieldValidator(new ArrayDeque<>(singletonList(fieldDescriptor)),
+            new BooleanFieldValidator(DescriptorPath.newInstance(fieldDescriptor),
                                       ImmutableList.of(false));
 
     @Test

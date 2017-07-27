@@ -21,9 +21,6 @@
 package io.spine.validate;
 
 import com.google.protobuf.Descriptors.EnumValueDescriptor;
-import com.google.protobuf.Descriptors.FieldDescriptor;
-
-import java.util.Deque;
 
 /**
  * Validates fields of type {@link EnumValueDescriptor}.
@@ -35,12 +32,11 @@ class EnumFieldValidator extends FieldValidator<EnumValueDescriptor> {
     /**
      * Creates a new validator instance.
      *
-     * @param fieldPathDescriptors a field path in descriptors form to the field
-     * @param fieldValues          values to validate
+     * @param descriptorPath the descriptor path
+     * @param fieldValues    values to validate
      */
-    EnumFieldValidator(Deque<FieldDescriptor> fieldPathDescriptors,
-                       Object fieldValues) {
-        super(fieldPathDescriptors,
+    EnumFieldValidator(DescriptorPath descriptorPath, Object fieldValues) {
+        super(descriptorPath,
               FieldValidator.<EnumValueDescriptor>toValueList(fieldValues),
               false);
     }

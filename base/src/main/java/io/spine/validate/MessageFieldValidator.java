@@ -21,7 +21,6 @@
 package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
-import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
 import io.spine.option.IfInvalidOption;
@@ -29,7 +28,6 @@ import io.spine.option.OptionsProto;
 import io.spine.option.Time;
 import io.spine.option.TimeOption;
 
-import java.util.Deque;
 import java.util.List;
 
 import static io.spine.option.Time.FUTURE;
@@ -52,15 +50,15 @@ class MessageFieldValidator extends FieldValidator<Message> {
     /**
      * Creates a new validator instance.
      *
-     * @param fieldPathDescriptors a field path in descriptors form to the field
-     * @param fieldValues          values to validate
-     * @param strict               if {@code true} the validator would assume that the field
-     *                             is required even if the corresponding field option is not present
+     * @param descriptorPath the descriptor path
+     * @param fieldValues    values to validate
+     * @param strict         if {@code true} the validator would assume that the field
+     *                       is required even if the corresponding field option is not present
      */
-    MessageFieldValidator(Deque<FieldDescriptor> fieldPathDescriptors,
+    MessageFieldValidator(DescriptorPath descriptorPath,
                           Object fieldValues,
                           boolean strict) {
-        super(fieldPathDescriptors, FieldValidator.<Message>toValueList(fieldValues), strict);
+        super(descriptorPath, FieldValidator.<Message>toValueList(fieldValues), strict);
         this.timeConstraint = getFieldOption(OptionsProto.when);
         this.isFieldTimestamp = isTimestamp();
     }
@@ -91,7 +89,7 @@ class MessageFieldValidator extends FieldValidator<Message> {
 
     private void validateFields() {
         for (Message value : getValues()) {
-            final MessageValidator validator = MessageValidator.newInstance(getFieldPathDescriptors());
+            final MessageValidator validator = MessageValidator.newInstance(getDescriptorPath());
             final List<ConstraintViolation> violations = validator.validate(value);
             if (!violations.isEmpty()) {
                 addViolation(newValidViolation(value, violations));
@@ -125,8 +123,8 @@ class MessageFieldValidator extends FieldValidator<Message> {
      */
     private static boolean isTimeInvalid(Timestamp timeToCheck, Time whenExpected, Timestamp now) {
         final boolean isValid = (whenExpected == FUTURE)
-                                ? isLaterThan(timeToCheck, /*than*/ now)
-                                : isLaterThan(now, /*than*/ timeToCheck);
+                ? isLaterThan(timeToCheck, /*than*/ now)
+                : isLaterThan(now, /*than*/ timeToCheck);
         final boolean isInvalid = !isValid;
         return isInvalid;
     }

@@ -30,12 +30,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;
-import java.util.Deque;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import static com.google.common.collect.Lists.newLinkedList;
 import static io.spine.validate.FieldValidatorFactory.createStrict;
 
 /**
@@ -73,9 +71,9 @@ class AlternativeFieldValidator {
     private final Descriptor messageDescriptor;
 
     /**
-     * The field path descriptors of the message we validate.
+     * The descriptor path of the message we validate.
      */
-    private final Deque<FieldDescriptor> rootFieldPathDescriptors;
+    private final DescriptorPath rootDescriptorPath;
 
     /**
      * The list builder to accumulate violations.
@@ -83,9 +81,9 @@ class AlternativeFieldValidator {
     private final ImmutableList.Builder<ConstraintViolation> violations = ImmutableList.builder();
 
     AlternativeFieldValidator(Descriptor messageDescriptor,
-                              Deque<FieldDescriptor> rootFieldPathDescriptors) {
+                              DescriptorPath rootDescriptorPath) {
         this.messageDescriptor = messageDescriptor;
-        this.rootFieldPathDescriptors = rootFieldPathDescriptors;
+        this.rootDescriptorPath = rootDescriptorPath;
     }
 
     List<? extends ConstraintViolation> validate(Message message) {
@@ -156,12 +154,9 @@ class AlternativeFieldValidator {
             return false;
         }
 
-        final Deque<FieldDescriptor> fieldPathDescriptors = newLinkedList();
-        fieldPathDescriptors.addAll(rootFieldPathDescriptors);
-        fieldPathDescriptors.add(field);
-
+        final DescriptorPath fieldDescriptorPath = rootDescriptorPath.forChild(field);
         Object fieldValue = message.getField(field);
-        final FieldValidator<?> fieldValidator = createStrict(fieldPathDescriptors, fieldValue);
+        final FieldValidator<?> fieldValidator = createStrict(fieldDescriptorPath, fieldValue);
         final List<ConstraintViolation> violations = fieldValidator.validate();
 
         // Do not add violations to the results because we have options.

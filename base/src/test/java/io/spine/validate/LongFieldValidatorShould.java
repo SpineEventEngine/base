@@ -27,9 +27,6 @@ import com.google.protobuf.Int64Value;
 import io.spine.protobuf.AnyPacker;
 import org.junit.Test;
 
-import java.util.ArrayDeque;
-
-import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -42,7 +39,7 @@ public class LongFieldValidatorShould {
 
     private final FieldDescriptor fieldDescriptor = Any.getDescriptor().getFields().get(0);
     private final LongFieldValidator validator =
-            new LongFieldValidator(new ArrayDeque<>(singletonList(fieldDescriptor)),
+            new LongFieldValidator(DescriptorPath.newInstance(fieldDescriptor),
                                    ImmutableList.of(VALUE));
 
     @Test

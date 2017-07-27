@@ -1,9 +1,7 @@
 package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
-import com.google.protobuf.Descriptors.FieldDescriptor;
 
-import java.util.Deque;
 import java.util.Map;
 
 /**
@@ -16,12 +14,12 @@ final class EmptyMapFieldValidator extends FieldValidator<Map<?, ?>> {
     /**
      * Creates a new validator instance.
      *
-     * @param fieldPathDescriptors a field path in descriptors form to the field
-     * @param strict               if {@code true} the validator would assume that the field
-     *                             is required even if the corresponding option is not set
+     * @param descriptorPath the descriptor path
+     * @param strict         if {@code true} the validator would assume that the field
+     *                       is required even if the corresponding option is not set
      */
-    EmptyMapFieldValidator(Deque<FieldDescriptor> fieldPathDescriptors, boolean strict) {
-        super(fieldPathDescriptors, ImmutableList.<Map<?, ?>>of(), strict);
+    EmptyMapFieldValidator(DescriptorPath descriptorPath, boolean strict) {
+        super(descriptorPath, ImmutableList.<Map<?, ?>>of(), strict);
     }
 
     @Override

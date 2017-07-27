@@ -30,15 +30,12 @@ import io.spine.string.Stringifiers;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Type;
-import java.util.Deque;
 import java.util.List;
 import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Throwables.getRootCause;
-import static com.google.common.collect.Lists.newLinkedList;
 import static io.spine.validate.FieldValidatorFactory.create;
-import static java.util.Collections.singletonList;
 
 /**
  * Serves as an abstract base for all {@linkplain ValidatingBuilder validating builders}.
@@ -157,9 +154,8 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
         } else {
             valueToValidate = fieldValue;
         }
-        final Deque<FieldDescriptor> fieldPathDescriptors =
-                newLinkedList(singletonList(descriptor));
-        final FieldValidator<?> validator = create(fieldPathDescriptors, valueToValidate);
+        final DescriptorPath descriptorPath = DescriptorPath.newInstance(descriptor);
+        final FieldValidator<?> validator = create(descriptorPath, valueToValidate);
         final List<ConstraintViolation> violations = validator.validate();
         onViolations(violations);
     }

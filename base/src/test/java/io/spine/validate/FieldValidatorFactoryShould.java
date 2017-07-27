@@ -42,14 +42,10 @@ import io.spine.test.validate.msg.RequiredEnumFieldValue;
 import io.spine.test.validate.msg.RequiredMsgFieldValue;
 import org.junit.Test;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
-
 import static com.google.common.collect.ImmutableMap.of;
 import static com.google.protobuf.Descriptors.FieldDescriptor;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
-import static java.util.Collections.singleton;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.Assert.assertThat;
 
@@ -250,7 +246,7 @@ public class FieldValidatorFactoryShould {
     }
 
     private static FieldValidator<?> create(FieldDescriptor fieldDescriptor, Object value) {
-        final Deque<FieldDescriptor> descriptor = new ArrayDeque<>(singleton(fieldDescriptor));
-        return FieldValidatorFactory.create(descriptor, value);
+        final DescriptorPath path = DescriptorPath.newInstance(fieldDescriptor);
+        return FieldValidatorFactory.create(path, value);
     }
 }
