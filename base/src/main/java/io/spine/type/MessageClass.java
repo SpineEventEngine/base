@@ -25,6 +25,8 @@ import com.google.protobuf.Message;
 import javax.annotation.Nullable;
 import java.util.Objects;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * A base class for value objects storing references to message classes.
  *
@@ -35,6 +37,7 @@ public abstract class MessageClass {
     private final Class<? extends Message> value;
 
     protected MessageClass(Class<? extends Message> value) {
+        checkNotNull(value);
         this.value = value;
     }
 
@@ -43,9 +46,14 @@ public abstract class MessageClass {
         return this.value;
     }
 
+    /**
+     * Returns {@linkplain Class#getName() the name} of the enclosed class value.
+     *
+     * @return the value class name
+     */
     @Override
     public String toString() {
-        return String.valueOf(value);
+        return value.getName();
     }
 
     /** Obtains the {@code ClassName} for this message class. */

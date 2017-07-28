@@ -19,6 +19,7 @@
  */
 package io.spine.protobuf;
 
+import com.google.protobuf.Any;
 import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
 
@@ -76,6 +77,7 @@ public final class Messages {
      * @param <B>   the builder type
      * @return the message builder
      */
+    @SuppressWarnings("JavaReflectionMemberAccess") // The method is available in generated code.
     public static <B extends Message.Builder> B builderFor(Class<? extends Message> clazz) {
         checkNotNull(clazz);
         try {
@@ -105,5 +107,21 @@ public final class Messages {
             return isMessage;
         }
         return false;
+    }
+
+    /**
+     * Ensures that the passed instance of {@code Message} is not an {@code Any},
+     * and unwraps the message if {@code Any} is passed.
+     */
+    public static Message ensureMessage(Message msgOrAny) {
+        checkNotNull(msgOrAny);
+        Message commandMessage;
+        if (msgOrAny instanceof Any) {
+            final Any any = (Any) msgOrAny;
+            commandMessage = AnyPacker.unpack(any);
+        } else {
+            commandMessage = msgOrAny;
+        }
+        return commandMessage;
     }
 }
