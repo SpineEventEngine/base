@@ -34,8 +34,8 @@ import static java.util.Collections.singleton;
 /**
  * A context of a {@link FieldDescriptor}.
  *
- * <p>The context in essence is a list of parent field descriptors,
- * which are leading to the field descriptor.
+ * <p>In particular, holds a hierarchy of field descriptors from
+ * the top-level descriptor to the descriptor of the current field.
  *
  * @author Dmytro Grankin
  */
@@ -43,6 +43,20 @@ class FieldContext {
 
     /**
      * Parent descriptors and the target descriptor of this context at the end.
+     *
+     * <p>E.g, we have the following declarations:
+     * <pre>{@code
+     * message User {
+     *     UserId id = 1;
+     * }
+     *
+     * message UserId {
+     *     string value = 1;
+     * }
+     * }</pre>
+     *
+     * <p>The value of this field for the {@code value} field of the {@code UserId} is
+     * {@code [FieldDescriptor_for_id, FieldDescriptor_for_value]}.
      */
     private final List<FieldDescriptor> descriptors;
     private final FieldPath fieldPath;
@@ -98,10 +112,10 @@ class FieldContext {
     }
 
     private Optional<FieldDescriptor> getTargetParent() {
-        final int targetParenIndex = descriptors.size() - 2;
-        final boolean parentExists = targetParenIndex > -1;
+        final int targetParentIndex = descriptors.size() - 2;
+        final boolean parentExists = targetParentIndex > -1;
         return parentExists
-                ? Optional.of(descriptors.get(targetParenIndex))
+                ? Optional.of(descriptors.get(targetParentIndex))
                 : Optional.<FieldDescriptor>absent();
     }
 
