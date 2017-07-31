@@ -33,11 +33,12 @@ import static io.spine.util.Exceptions.newIllegalStateException;
 import static io.spine.util.PropertyFiles.loadAllProperties;
 
 /**
- * A map from a validation rule descriptor to the field descriptor of the rule target.
+ * {@code ValidationRules} provides access to a map
+ * from a validation rule descriptor to the field descriptor of the rule target.
  *
  * @author Dmytro Grankin
  */
-class ValidationRulesMap {
+class ValidationRules {
 
     /**
      * A path to the file, which contains validation rules and their target fields paths.
@@ -47,79 +48,110 @@ class ValidationRulesMap {
     private static final String PROPS_FILE_NAME = "validation_rules.properties";
     private static final String PROTO_TYPE_SEPARATOR = ".";
 
-    private static final ImmutableBiMap<Descriptor, FieldDescriptor> rules = buildValidationRulesMap();
+    private static final ImmutableBiMap<Descriptor, FieldDescriptor> rules = build();
 
-    private ValidationRulesMap() {
+    private ValidationRules() {
         // Prevent instantiation of this class.
     }
 
     /**
-     * Obtains validation rules map instance.
+     * Obtains the validation rules map.
      *
      * @return the immutable map
      */
-    @SuppressWarnings("ReturnOfCollectionOrArrayField") // As return value is an immutable collection.
-    static ImmutableBiMap<Descriptor, FieldDescriptor> getInstance() {
+    @SuppressWarnings("ReturnOfCollectionOrArrayField") // As the return value
+                                                        // is an immutable collection.
+    static ImmutableBiMap<Descriptor, FieldDescriptor> getMap() {
         return rules;
     }
 
-    private static ImmutableBiMap<Descriptor, FieldDescriptor> buildValidationRulesMap() {
+    private static ImmutableBiMap<Descriptor, FieldDescriptor> build() {
         final Set<Properties> propertiesSet = loadAllProperties(PROPS_FILE_NAME);
         final Builder builder = new Builder(propertiesSet);
         return builder.build();
     }
 
+    /**
+     * {@code Builder} assembles the validation rules map from the specified {@code Properties}.
+     */
     private static class Builder {
 
+        /**
+         * Properties to process.
+         *
+         * <p>Properties must contain the list of validation rules and the targets for the rules.
+         */
         private final Iterable<Properties> properties;
-        private final ImmutableBiMap.Builder<Descriptor, FieldDescriptor> builder;
+
+        /**
+         * The state of the validation rules map to be assembled.
+         */
+        private final ImmutableBiMap.Builder<Descriptor, FieldDescriptor> state;
 
         private Builder(Iterable<Properties> properties) {
             this.properties = properties;
-            this.builder = ImmutableBiMap.builder();
+            this.state = ImmutableBiMap.builder();
         }
 
         private ImmutableBiMap<Descriptor, FieldDescriptor> build() {
             for (Properties props : this.properties) {
                 put(props);
             }
-            return builder.build();
+            return state.build();
         }
 
+        /**
+         * Puts the validation rules obtained from the specified properties to the {@link #state}.
+         *
+         * @param properties the properties to process
+         * @throws IllegalStateException if an entry from the properties contains invalid data
+         */
         private void put(Properties properties) {
             for (String validationRuleType : properties.stringPropertyNames()) {
-                final String validationRuleTarget = properties.getProperty(validationRuleType);
+                final String ruleTargetPath = properties.getProperty(validationRuleType);
                 final Descriptor rule = TypeName.of(validationRuleType)
                                                 .getDescriptor();
-                final FieldDescriptor target = getTargetDescriptor(validationRuleTarget);
+                final FieldDescriptor target = getTargetDescriptor(ruleTargetPath);
                 checkValidationRule(rule, target);
-                builder.put(rule, target);
+                state.put(rule, target);
             }
         }
 
-        private static FieldDescriptor getTargetDescriptor(String target) {
-            final int typeAndFieldNameBound = target.lastIndexOf(PROTO_TYPE_SEPARATOR);
+        /**
+         * Obtains {@link FieldDescriptor} by the specified path.
+         *
+         * @param targetPath the path to a validation rule target
+         * @return the field descriptor
+         */
+        private static FieldDescriptor getTargetDescriptor(String targetPath) {
+            final int typeAndFieldNameBound = targetPath.lastIndexOf(PROTO_TYPE_SEPARATOR);
             if (typeAndFieldNameBound == -1) {
                 final String msg = "Invalid validation rule target `%s`. " +
                         "Proper format is `package.TargetMessage.target_field`.";
-                throw newIllegalStateException(msg, target);
+                throw newIllegalStateException(msg, targetPath);
             }
 
-            final String fieldName = target.substring(typeAndFieldNameBound + 1);
-            final String targetMessageType = target.substring(0, typeAndFieldNameBound);
+            final String fieldName = targetPath.substring(typeAndFieldNameBound + 1);
+            final String targetMessageType = targetPath.substring(0, typeAndFieldNameBound);
             final Descriptor message = TypeName.of(targetMessageType)
                                                .getDescriptor();
             final FieldDescriptor field = message.findFieldByName(fieldName);
             if (field == null) {
-                throw newIllegalStateException("`%s` has not the field `%s`.",
-                                               message.getName(), fieldName);
+                throw newIllegalStateException("The field '%s' is not found in the '%s' message.",
+                                               fieldName, message.getName());
             }
             return field;
         }
 
+        /**
+         * Ensures that the specified rule is valid for the specified target.
+         *
+         * @param rule the validation rule
+         * @param target the target of the validation rule
+         */
         private static void checkValidationRule(Descriptor rule, FieldDescriptor target) {
             if (target.getJavaType() != MESSAGE) {
-                final String errMsg = "Validation rule target should be a message." +
+                final String errMsg = "Validation rule target must be a Message." +
                         " Specified type is `%s`.";
                 throw newIllegalStateException(errMsg, target.getJavaType());
             }
@@ -129,15 +161,15 @@ class ValidationRulesMap {
                 final String ruleFieldName = ruleField.getName();
                 final FieldDescriptor targetField = targetType.findFieldByName(ruleFieldName);
                 if (targetField == null) {
-                    final String msg = "Validation rule target `%s` of type `%s`" +
-                            " has not field `%s`.";
-                    throw newIllegalStateException(msg, target.getFullName(),
-                                                   targetType.getName(), ruleFieldName);
+                    final String msg = "The validation rule '%s' declares the field `%s`, " +
+                            "which was not found in the `%s` message.";
+                    throw newIllegalStateException(msg, rule.getFullName(),
+                                                   ruleFieldName, targetType.getName());
                 }
 
                 final boolean isCorrectType = ruleField.getJavaType() == targetField.getJavaType();
                 if (!isCorrectType) {
-                    final String errMsg = "`%s` should be of type `%s`.";
+                    final String errMsg = "`%s` must be of type `%s`.";
                     throw newIllegalStateException(errMsg, ruleField.getFullName(),
                                                    targetField.getJavaType());
                 }

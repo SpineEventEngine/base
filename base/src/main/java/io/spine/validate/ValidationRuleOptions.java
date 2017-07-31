@@ -74,7 +74,7 @@ class ValidationRuleOptions {
         private final ImmutableMap.Builder<FieldContext, FieldOptions> builder = builder();
 
         private ImmutableMap<FieldContext, FieldOptions> build() {
-            final Map<Descriptor, FieldDescriptor> rules = ValidationRulesMap.getInstance();
+            final Map<Descriptor, FieldDescriptor> rules = ValidationRules.getMap();
             for (Descriptor rule : rules.keySet()) {
                 final FieldDescriptor target = rules.get(rule);
                 put(rule, target);
