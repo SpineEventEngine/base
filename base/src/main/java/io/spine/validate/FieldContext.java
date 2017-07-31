@@ -115,13 +115,13 @@ class FieldContext {
     }
 
     /**
-     * Determines whether this context have the same target and
+     * Determines whether this context has the same target and
      * the same parent as the specified context.
      *
      * @param other the context to check
-     * @return {@code true} if this context have the same target and the same parent
+     * @return {@code true} if this context has the same target and the same parent
      */
-    boolean haveSameTargetAndParent(FieldContext other) {
+    boolean hasSameTargetAndParent(FieldContext other) {
         final boolean sameTarget = getTarget().equals(other.getTarget());
         if (!sameTarget) {
             return false;

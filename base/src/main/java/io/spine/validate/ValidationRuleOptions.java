@@ -59,7 +59,7 @@ class ValidationRuleOptions {
     static <T> Optional<T> getOptionValue(FieldContext fieldContext,
                                           GeneratedExtension<FieldOptions, T> option) {
         for (FieldContext context : options.keySet()) {
-            if (fieldContext.haveSameTargetAndParent(context)) {
+            if (fieldContext.hasSameTargetAndParent(context)) {
                 final FieldOptions fieldOptions = options.get(context);
                 final T optionValue = fieldOptions.getExtension(option);
                 return Optional.of(optionValue);
