@@ -55,9 +55,9 @@ buildscript {
            Please note that offline builds will not be available then. */
                                                           //, changing: true
 
-        // To use `spine-plugin-base` supplied with model compiler (is newer than version used in tools).
-        classpath group: 'io.spine.tools', name: 'spine-plugin-base', version: spineModelCompilerVersion
-
+        classpath group: 'io.spine.tools',
+                  name: 'spine-model-compiler',
+                  version: spineModelCompilerVersion
         classpath group: 'io.spine.tools', name: 'spine-codestyle-checker', version: spineToolsVersion
         classpath group: 'io.spine.tools', name: 'gcs-plugin', version: spineToolsVersion
     }
