@@ -55,9 +55,7 @@ public class ValidationRulesLookupPluginShould {
                                                     "field_name";
     private static final List<String> NESTED_VALIDATION_RULE_PROTO =
             Arrays.asList("syntax = \"proto3\";",
-
                           "package " + PROTO_FILE_PACKAGE + ';',
-
                           "import \"spine/options.proto\";",
 
                           "message " + OUTER_MESSAGE_TYPE + " {",
