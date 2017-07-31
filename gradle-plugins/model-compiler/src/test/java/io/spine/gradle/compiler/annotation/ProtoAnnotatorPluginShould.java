@@ -160,12 +160,12 @@ public class ProtoAnnotatorPluginShould {
     @Test
     public void compile_generated_sources_with_potential_annotation_duplication() throws Exception {
         final String file = "potential_annotation_duplication.proto";
-        newGradleProject(file).executeTask(COMPILE_JAVA);
+        newProjectWithFile(file).executeTask(COMPILE_JAVA);
     }
 
     private void assertServiceAnnotations(final String testFile,
                                           final boolean shouldBeAnnotated) throws Exception {
-        newGradleProject(testFile).executeTask(ANNOTATE_PROTO);
+        newProjectWithFile(testFile).executeTask(ANNOTATE_PROTO);
 
         final FileDescriptorProto fileDescriptor = getDescriptor(testFile);
         final List<ServiceDescriptorProto> services = fileDescriptor.getServiceList();
@@ -178,7 +178,7 @@ public class ProtoAnnotatorPluginShould {
 
     private void assertFieldAnnotations(final String testFile,
                                         final boolean shouldBeAnnotated) throws Exception {
-        newGradleProject(testFile).executeTask(ANNOTATE_PROTO);
+        newProjectWithFile(testFile).executeTask(ANNOTATE_PROTO);
 
         final FileDescriptorProto fileDescriptor = getDescriptor(testFile);
         final DescriptorProto messageDescriptor = fileDescriptor.getMessageType(0);
@@ -192,7 +192,7 @@ public class ProtoAnnotatorPluginShould {
 
     private void assertFieldAnnotationsMultiple(final String testFile,
                                                 final boolean shouldBeAnnotated) throws Exception {
-        newGradleProject(testFile).executeTask(ANNOTATE_PROTO);
+        newProjectWithFile(testFile).executeTask(ANNOTATE_PROTO);
 
         final FileDescriptorProto fileDescriptor = getDescriptor(testFile);
         final DescriptorProto messageDescriptor = fileDescriptor.getMessageType(0);
@@ -203,7 +203,7 @@ public class ProtoAnnotatorPluginShould {
 
     private void assertMainDefinitionAnnotations(final String testFile,
                                                  final boolean shouldBeAnnotated) throws Exception {
-        newGradleProject(testFile).executeTask(ANNOTATE_PROTO);
+        newProjectWithFile(testFile).executeTask(ANNOTATE_PROTO);
 
         final FileDescriptorProto fileDescriptor = getDescriptor(testFile);
         for (DescriptorProto messageDescriptor : fileDescriptor.getMessageTypeList()) {
@@ -220,7 +220,7 @@ public class ProtoAnnotatorPluginShould {
 
     private void assertNestedTypesAnnotations(final String testFile,
                                               final boolean shouldBeAnnotated) throws Exception {
-        newGradleProject(testFile).executeTask(ANNOTATE_PROTO);
+        newProjectWithFile(testFile).executeTask(ANNOTATE_PROTO);
 
         final FileDescriptorProto fileDescriptor = getDescriptor(testFile);
         final Path sourcePath = getFilePath(fileDescriptor);
@@ -281,7 +281,7 @@ public class ProtoAnnotatorPluginShould {
         return Iterables.get(descriptors, 0);
     }
 
-    private GradleProject newGradleProject(String protoFileName) {
+    private GradleProject newProjectWithFile(String protoFileName) {
         return GradleProject.newBuilder()
                             .setProjectName(PROJECT_NAME)
                             .setProjectFolder(testProjectDir)

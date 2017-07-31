@@ -44,7 +44,7 @@ import static org.jboss.forge.roaster.model.util.Strings.isBlank;
  * {@code GradleProject} for the test needs.
  *
  * <p>{@code GradleProject} sets up {@linkplain TemporaryFolder test project directory}
- * and allows execute Gradle tasks.
+ * and allows to execute Gradle tasks.
  *
  * @author Dmytro Grankin
  */
