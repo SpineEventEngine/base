@@ -20,14 +20,12 @@
 
 package io.spine.gradle.compiler.lookup.valrule;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import org.slf4j.Logger;
 
 import java.util.Map;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Maps.newLinkedHashMap;
 import static io.spine.gradle.compiler.util.UnknownOptions.getUnknownOptionValue;
 import static io.spine.gradle.compiler.util.UnknownOptions.hasUnknownOption;
@@ -35,40 +33,39 @@ import static io.spine.option.OptionsProto.VALIDATION_OF_FIELD_NUMBER;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
- * Finds Protobuf definitions of validation rules.
+ * Utilities for finding Protobuf definitions of validation rules.
  *
  * @author Dmytro Grankin
  */
 class ValidationRulesFinder {
 
-    @VisibleForTesting
-    static final String PROTO_TYPE_SEPARATOR = ".";
+    private static final String PROTO_TYPE_SEPARATOR = ".";
 
-    private final FileDescriptorProto fileDescriptor;
-    private final String packagePrefix;
-
-    ValidationRulesFinder(FileDescriptorProto fileDescriptor) {
-        this.fileDescriptor = checkNotNull(fileDescriptor);
-        this.packagePrefix = fileDescriptor.getPackage() + PROTO_TYPE_SEPARATOR;
+    private ValidationRulesFinder() {
+        // Prevent instantiation of this utility class.
     }
 
     /**
-     * Finds Protobuf definitions of validation rules in the file descriptor.
+     * Finds Protobuf definitions of validation rules in the specified file descriptor.
      *
+     * @param fileDescriptor the descriptor to scan
      * @return a map from a validation rule type name to the target field
      */
-    Map<String, String> findRules() {
+    static Map<String, String> find(FileDescriptorProto fileDescriptor) {
         log().debug("Looking up for validation rules in {}.", fileDescriptor.getName());
+        final String packagePrefix = getPackagePrefix(fileDescriptor);
         final Map<String, String> rules = newLinkedHashMap();
         for (DescriptorProto messageDescriptor : fileDescriptor.getMessageTypeList()) {
-            final Map<String, String> foundRules = scanMessageAndNestedTypes(messageDescriptor);
+            final Map<String, String> foundRules = scanMessageAndNestedTypes(packagePrefix,
+                                                                             messageDescriptor);
             rules.putAll(foundRules);
         }
         log().debug("Found validation rules: {}.", rules.toString());
         return rules;
     }
 
-    private Map<String, String> scanMessageAndNestedTypes(DescriptorProto messageDescriptor) {
+    private static Map<String, String> scanMessageAndNestedTypes(String packagePrefix,
+                                                                 DescriptorProto messageDescriptor) {
         final Map<String, String> rules = newLinkedHashMap();
         if (isValidationRule(messageDescriptor)) {
             final String ruleType = packagePrefix + messageDescriptor.getName();
@@ -77,11 +74,14 @@ class ValidationRulesFinder {
             rules.put(ruleType, ruleTarget);
         }
 
-        rules.putAll(scanNestedTypes(messageDescriptor));
+        final Map<String, String> rulesFromNestedTypes = scanNestedTypes(packagePrefix,
+                                                                         messageDescriptor);
+        rules.putAll(rulesFromNestedTypes);
         return rules;
     }
 
-    private Map<String, String> scanNestedTypes(DescriptorProto messageDescriptor) {
+    private static Map<String, String> scanNestedTypes(String packagePrefix,
+                                                       DescriptorProto messageDescriptor) {
         final Map<String, String> rules = newLinkedHashMap();
         for (DescriptorProto nestedMessage : messageDescriptor.getNestedTypeList()) {
             if (isValidationRule(nestedMessage)) {
@@ -98,6 +98,10 @@ class ValidationRulesFinder {
 
     private static boolean isValidationRule(DescriptorProto messageDescriptor) {
         return hasUnknownOption(messageDescriptor, VALIDATION_OF_FIELD_NUMBER);
+    }
+
+    private static String getPackagePrefix(FileDescriptorProto fileDescriptor) {
+        return fileDescriptor.getPackage() + PROTO_TYPE_SEPARATOR;
     }
 
     private static Logger log() {

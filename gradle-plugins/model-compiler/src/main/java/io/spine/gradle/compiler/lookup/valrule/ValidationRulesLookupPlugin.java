@@ -111,7 +111,7 @@ public class ValidationRulesLookupPlugin extends SpinePlugin {
         final Collection<FileDescriptorProto> files = getProtoFileDescriptors(descriptorSetPath,
                                                                               protoFilter);
         for (FileDescriptorProto file : files) {
-            final Map<String, String> rules = new ValidationRulesFinder(file).findRules();
+            final Map<String, String> rules = ValidationRulesFinder.find(file);
             propsMap.putAll(rules);
         }
         if (propsMap.isEmpty()) {

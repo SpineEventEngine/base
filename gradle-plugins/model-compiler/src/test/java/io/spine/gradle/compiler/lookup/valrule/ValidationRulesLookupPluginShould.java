@@ -37,7 +37,6 @@ import java.util.Properties;
 
 import static io.spine.gradle.TaskName.FIND_VALIDATION_RULES;
 import static io.spine.gradle.compiler.Extension.getDefaultMainGenResDir;
-import static io.spine.gradle.compiler.lookup.valrule.ValidationRulesFinder.PROTO_TYPE_SEPARATOR;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 import static org.junit.Assert.assertEquals;
 
@@ -46,13 +45,14 @@ import static org.junit.Assert.assertEquals;
  */
 public class ValidationRulesLookupPluginShould {
 
+    private static final char DOT = '.';
     private static final String PROJECT_NAME = "validation-rules-lookup-plugin-test";
-
     private static final String PROTO_FILE_PACKAGE = "test.valrule";
     private static final String OUTER_MESSAGE_TYPE = "Outer";
     private static final String VALIDATION_RULE_TYPE = "ValidationRule";
-    private static final String VALIDATION_TARGET = PROTO_FILE_PACKAGE + PROTO_TYPE_SEPARATOR +
-            OUTER_MESSAGE_TYPE + PROTO_TYPE_SEPARATOR + "field_name";
+    private static final String VALIDATION_TARGET = PROTO_FILE_PACKAGE + DOT +
+                                                    OUTER_MESSAGE_TYPE + DOT +
+                                                    "field_name";
     private static final List<String> NESTED_VALIDATION_RULE_PROTO =
             Arrays.asList("syntax = \"proto3\";",
 
@@ -77,8 +77,9 @@ public class ValidationRulesLookupPluginShould {
         final GradleProject project = newProjectWithFile(file, NESTED_VALIDATION_RULE_PROTO);
         project.executeTask(FIND_VALIDATION_RULES);
 
-        final String expectedKey = PROTO_FILE_PACKAGE + PROTO_TYPE_SEPARATOR +
-                OUTER_MESSAGE_TYPE + PROTO_TYPE_SEPARATOR + VALIDATION_RULE_TYPE;
+        final String expectedKey = PROTO_FILE_PACKAGE + DOT +
+                                   OUTER_MESSAGE_TYPE + DOT +
+                                   VALIDATION_RULE_TYPE;
         final String value = (String) getProperties().get(expectedKey);
         assertEquals(value, VALIDATION_TARGET);
     }
