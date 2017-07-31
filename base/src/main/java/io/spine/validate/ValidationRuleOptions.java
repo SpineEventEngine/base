@@ -69,9 +69,15 @@ class ValidationRuleOptions {
         return Optional.absent();
     }
 
+    /**
+     * {@code Builder} assembles a map from a field context
+     * to the options extracted from a validation rule.
+     *
+     * <p>Keys of the resulting map are field contexts for the fields of a validation rule target.
+     */
     private static class Builder {
 
-        private final ImmutableMap.Builder<FieldContext, FieldOptions> builder = builder();
+        private final ImmutableMap.Builder<FieldContext, FieldOptions> state = builder();
 
         private ImmutableMap<FieldContext, FieldOptions> build() {
             final Map<Descriptor, FieldDescriptor> rules = ValidationRules.getMap();
@@ -79,7 +85,7 @@ class ValidationRuleOptions {
                 final FieldDescriptor target = rules.get(rule);
                 put(rule, target);
             }
-            return builder.build();
+            return state.build();
         }
 
         private void put(Descriptor rule, FieldDescriptor target) {
@@ -88,7 +94,7 @@ class ValidationRuleOptions {
                 final FieldDescriptor subTarget = targetType.findFieldByName(ruleField.getName());
                 final FieldContext subTargetContext = FieldContext.create(target)
                                                                   .forChild(subTarget);
-                builder.put(subTargetContext, ruleField.getOptions());
+                state.put(subTargetContext, ruleField.getOptions());
             }
         }
     }
