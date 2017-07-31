@@ -302,31 +302,41 @@ extend google.protobuf.MessageOptions {
     // If a specified options is already defined in a target message,
     // then options from the validation rule will be used.
     //
-    // Validation rules are applicable only for field declarations of a message type.
+    // Validation rules are applicable only for field declarations of a `Message` type.
     //
     // Validation rule target should be marked as `valid`. Otherwise a rule will be ignored.
     //
-    // Target of a validation rule should be specified with the following pattern:
+    // Target of a validation rule should be specified according to the pattern as follows:
     // `package.MessageName.field_name`.
     //
-    // For example, you have a message that should be used in several places,
-    // that are impose context-dependent validation rules. The definitions will look like:
+    // In the following example a `StringChange` message defines a value object,
+    // that is reused in other messages. However, in each of the use-cases we want
+    // to apply different validation rules to the `StringChange` field values.
     //
+    // package io.spine.example;
+    //
+    // // Definition of a change in a string field.
     // message StringChange {
     //
+    //      // The value of the field that's changing.
     //      string previous_value = 1;
     //
+    //      // The new value of the field.
     //      string new_value = 2;
     // }
     //
+    // // The validation rule for `StringChange` defined in `UpdateDescription`.
     // message DescriptionChangeRule {
-    //      option (validation_of) = "package.UpdateDescription.change";
+    //      option (validation_of) = "io.spine.example.UpdateDescription.change";
     //
-    //      string new_value = 2 [(pattern).regex = "(.*?[a-zA-Z0-9]){3,}.*"];
+    //      // A description should not be empty.
+    //      string new_value = 2 [(required) = true];
     // }
     //
+    // // A message that contains the validation rule target.
     // message UpdateDescription {
     //
+    //      // The validation rule target.
     //      StringChange change = 1 [(valid) = true];
     // }
     //
