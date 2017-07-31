@@ -109,7 +109,7 @@ extend google.protobuf.FieldOptions {
     // The option to indicate that the fields's internal field should be included into the
     // validation.
     //
-    // The target type of the option is Message.
+    // The target type of the option is a message, a map or a repeated field.
     //
     // Default value is false.
     //
@@ -322,13 +322,12 @@ extend google.protobuf.MessageOptions {
     // message DescriptionChangeRule {
     //      option (validation_of) = "package.UpdateDescription.change";
     //
-    //      string new_value = 2 [(required) = true, (pattern).regex = "(.*?[a-zA-Z0-9]){3,}.*"];
+    //      string new_value = 2 [(pattern).regex = "(.*?[a-zA-Z0-9]){3,}.*"];
     // }
     //
     // message UpdateDescription {
-    //      option (validation_rules) = "package.DescriptionChangeRule";
     //
-    //      StringChange change = 1 [(required) = true, (valid) = true];
+    //      StringChange change = 1 [(valid) = true];
     // }
     //
     string validation_of = 73904;
