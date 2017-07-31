@@ -55,15 +55,16 @@ public class ValidationRulesLookupPluginShould {
             OUTER_MESSAGE_TYPE + PROTO_TYPE_SEPARATOR + "field_name";
     private static final List<String> NESTED_VALIDATION_RULE_PROTO =
             Arrays.asList("syntax = \"proto3\";",
+
                           "package " + PROTO_FILE_PACKAGE + ';',
+
                           "import \"spine/options.proto\";",
 
                           "message " + OUTER_MESSAGE_TYPE + " {",
 
-                          "message " + VALIDATION_RULE_TYPE + " {",
-                          "option (validation_of) = \"" + VALIDATION_TARGET + "\";",
-                          "}",
-
+                                "message " + VALIDATION_RULE_TYPE + " {",
+                                    "option (validation_of) = \"" + VALIDATION_TARGET + "\";",
+                                "}",
                           "}"
             );
 
@@ -73,7 +74,7 @@ public class ValidationRulesLookupPluginShould {
     @Test
     public void findNestedValidationRules() throws Exception {
         final String file = "nested_validation_rule.proto";
-        final GradleProject project = newGradleProject(file, NESTED_VALIDATION_RULE_PROTO);
+        final GradleProject project = newProjectWithFile(file, NESTED_VALIDATION_RULE_PROTO);
         project.executeTask(FIND_VALIDATION_RULES);
 
         final String expectedKey = PROTO_FILE_PACKAGE + PROTO_TYPE_SEPARATOR +
@@ -97,7 +98,7 @@ public class ValidationRulesLookupPluginShould {
         }
     }
 
-    private GradleProject newGradleProject(String protoFileName, List<String> protoFileLines) {
+    private GradleProject newProjectWithFile(String protoFileName, List<String> protoFileLines) {
         return GradleProject.newBuilder()
                             .setProjectName(PROJECT_NAME)
                             .setProjectFolder(testProjectDir)
