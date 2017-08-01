@@ -32,7 +32,6 @@ public interface JavadocFileFormatter {
      * Checks the file for the looked up code style violations.
      *
      * @param path Path to the target file
-     * @throws CodeStyleException in case of any violations found
      */
-    void format(Path path) throws CodeStyleException;
+    void format(Path path);
 }

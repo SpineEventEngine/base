@@ -19,38 +19,27 @@
  */
 package io.spine.tools.protobufjavadoc;
 
-import com.google.common.base.MoreObjects;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
- * This class describes any code style violation. It has actual founded violation and it's
- * position in code.
- *
  * @author Alexander Aleksandrov
  */
-public class CodeStyleViolation {
-    private final String actualUsage;
-    private int index = 0;
+public class JavadocBackTickFormatter extends AbstractJavadocFileFormatter {
 
-    public CodeStyleViolation(String actualUsage) {
-        this.actualUsage = actualUsage;
-    }
-
-    public String getActualUsage() {
-        return actualUsage;
-    }
-
-    public int getIndex() {
-        return index;
-    }
-
-    public void setIndex(int index) {
-        this.index = index;
+    JavadocBackTickFormatter() {
     }
 
     @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-                          .add("actualUsage", actualUsage)
-                          .toString();
+    public List<String> checkForCases(List<String> list) {
+        Pattern p = Pattern.compile("`[^`]+`");
+        for (int i = 0; i < list.size(); i++) {
+            Matcher matcher = p.matcher(list.get(i));
+            String withCode = matcher.toString();
+            withCode = "{@code" + withCode.substring(1, withCode.length()-1) + "}";
+            list.set(i, matcher.replaceAll(withCode));
+        }
+        return list;
     }
 }

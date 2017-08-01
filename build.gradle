@@ -22,6 +22,7 @@ group 'io.spine.tools'
 version '0.9.41-SNAPSHOT'
 
 apply plugin: 'java'
+apply plugin: 'java-gradle-plugin'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8

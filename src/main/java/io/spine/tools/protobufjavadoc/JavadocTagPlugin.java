@@ -20,23 +20,31 @@
 package io.spine.tools.protobufjavadoc;
 
 import io.spine.gradle.SpinePlugin;
+import org.gradle.api.Action;
 import org.gradle.api.Project;
+import org.gradle.api.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static io.spine.gradle.TaskName.CHECK_FQN;
+import static io.spine.gradle.TaskName.GENERATE_PROTO;
+import static io.spine.gradle.TaskName.PROCESS_RESOURCES;
 
 /**
  * The plugin that cleans javadoc from {@code <pre></pre>} tags in prtobuf generated files.
  *
  *  @author Alexander Aleksandrov
  */
-public class ProtobufJavadocPlugin extends SpinePlugin {
+public class JavadocTagPlugin extends SpinePlugin {
 
     @Override
-    public void apply(final Project project) {
-        log().debug("Applying Javadoc tag formatter plugin");
-        new JavadocTagPlugin().apply(project);
-        log().debug("Applying Javadoc backtick formatter plugin");
-        new JavadocBackTickPlugin().apply(project);
+    public void apply(Project project) {
+        final FileChecker checker = new FileChecker(new JavadocTagFormatter());
+        final Action<Task> action = checker.actionFor(project);
+        newTask(CHECK_FQN, action).insertAfterTask(GENERATE_PROTO)
+                                  .insertBeforeTask(PROCESS_RESOURCES)
+                                  .applyNowTo(project);
+        log().debug("Starting to format Javadoc <pre> tags", action);
     }
 
     private static Logger log() {
@@ -46,6 +54,6 @@ public class ProtobufJavadocPlugin extends SpinePlugin {
     private enum LogSingleton {
         INSTANCE;
         @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = LoggerFactory.getLogger(ProtobufJavadocPlugin.class);
+        private final Logger value = LoggerFactory.getLogger(JavadocTagPlugin.class);
     }
 }

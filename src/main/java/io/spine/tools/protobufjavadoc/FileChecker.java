@@ -44,11 +44,11 @@ public class FileChecker {
 
     private static final String DIRECTORY_TO_CHECK = "/generated/main/java";
     private final FileVisitor<Path> visitor;
-    private final JavadocFileFormatter validator;
+    private final JavadocFileFormatter formatter;
 
-    public FileChecker(JavadocFileFormatter validator) {
-        this.visitor = new RecursiveFileChecker(validator);
-        this.validator = validator;
+    public FileChecker(JavadocFileFormatter formatter) {
+        this.visitor = new RecursiveFileChecker(formatter);
+        this.formatter = formatter;
     }
 
     /**
@@ -58,7 +58,7 @@ public class FileChecker {
      * @return {@code Action<Task>} for gradle.
      */
     public Action<Task> actionFor(final Project project) {
-        log().debug("Preparing an action for the {} validator", validator.getClass()
+        log().debug("Preparing an action for the {} formatter", formatter.getClass()
                                                                          .getCanonicalName());
 
         return new ValidatorAction(project);
@@ -107,18 +107,18 @@ public class FileChecker {
      */
     private static class RecursiveFileChecker extends SimpleFileVisitor<Path> {
 
-        private final JavadocFileFormatter validator;
+        private final JavadocFileFormatter formatter;
 
-        private RecursiveFileChecker(JavadocFileFormatter validator) {
+        private RecursiveFileChecker(JavadocFileFormatter formatter) {
             super();
-            this.validator = validator;
+            this.formatter = formatter;
         }
 
         @Override
         public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) throws IOException {
             super.visitFile(path, attrs);
-            log().debug("Performing validation for the file: {}", path);
-            validator.format(path);
+            log().debug("Performing formatting for the file: {}", path);
+            formatter.format(path);
             return FileVisitResult.CONTINUE;
         }
 

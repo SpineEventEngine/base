@@ -19,16 +19,30 @@
  */
 package io.spine.tools.protobufjavadoc;
 
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
- * This exception should be thrown when any {@link CodeStyleViolation} is found and
- * a build should be stopped.
+ * Javadoc comments checker that validates the links wrong format usage.
+ * In case if any violation is found it will be logged as warning in build's
+ * stacktrace info or an error will be thrown. That depends on threshold and report type parameters
+ * stated in build file.
  *
  * @author Alexander Aleksandrov
  */
-public class CodeStyleException extends RuntimeException {
+public class JavadocTagFormatter extends AbstractJavadocFileFormatter {
 
-    public CodeStyleException(String message) {
-        super(message);
+    JavadocTagFormatter() {
+    }
+
+    @Override
+    public List<String> checkForCases(List<String> list) {
+        Pattern p = Pattern.compile("<pre>|<\\/pre>");
+        for (int i = 0; i < list.size(); i++) {
+            Matcher matcher = p.matcher(list.get(i));
+            list.set(i, matcher.replaceAll(""));
+        }
+        return list;
     }
 }
-

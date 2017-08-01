@@ -33,19 +33,10 @@ import java.util.List;
 public abstract class AbstractJavadocFileFormatter implements JavadocFileFormatter {
 
     private static final String READ_FILE_ERR_MSG = "Cannot read the contents of the file: ";
-//    private final AbstractStorage storage;
+    private static final String WRITE_FILE_ERR_MSG = "Cannot write the contents to the file: ";
 
-    @SuppressWarnings({"AbstractMethodCallInConstructor",
-            "OverridableMethodCallDuringObjectConstruction",
-            "OverriddenMethodCallDuringObjectConstruction"})
-    //Because we need to create storage only once for the whole project validation process.
-    protected AbstractJavadocFileFormatter() {
-//        this.storage = createStorage();
+    AbstractJavadocFileFormatter() {
     }
-
-//    protected AbstractStorage getStorage() {
-//        return storage;
-//    }
 
     @Override
     public void format(Path path) {
@@ -53,38 +44,25 @@ public abstract class AbstractJavadocFileFormatter implements JavadocFileFormatt
         if (!JavaSources.isJavaFile(path)) {
             return;
         }
+
         try {
             content = Files.readAllLines(path, StandardCharsets.UTF_8);
         } catch (IOException e) {
             throw new IllegalStateException(READ_FILE_ERR_MSG + path, e);
         }
-        final List<CodeStyleViolation> violations = checkForViolations(content);
-//        saveToStorage(path, violations);
-//        processValidationResult();
-//        storage.clear();
+
+        final List<String> updatedContent = checkForCases(content);
+        try {
+            Files.write(path, updatedContent, StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            throw new IllegalStateException(WRITE_FILE_ERR_MSG + path, e);
+        }
     }
-
-//    private void saveToStorage(Path path, List<CodeStyleViolation> violations) {
-//        if (!violations.isEmpty()) {
-//            storage.save(path, violations);
-//        }
-//    }
-
-    /**
-     * Creates storage for violations.
-     */
-//    protected abstract AbstractStorage createStorage();
 
     /**
      * Goes through the file content represented as list of strings.
      *
      * @param list Content of the file under validation.
-     * @return List of {@link CodeStyleViolation} from that file.
      */
-    protected abstract List<CodeStyleViolation> checkForViolations(List<String> list);
-
-    /**
-     * Compares the number of founded violations with threshold amount.
-     */
-//    protected abstract void processValidationResult();
+    protected abstract List<String> checkForCases(List<String> list);
 }
