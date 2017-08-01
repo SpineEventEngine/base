@@ -53,7 +53,6 @@ public class GradleProject {
     private static final String BUILD_GRADLE_NAME = "build.gradle";
     private static final String EXT_GRADLE_NAME = "ext.gradle";
     private static final String BASE_PROTO_LOCATION = "src/main/proto/";
-    private static final String DEBUG_OPTION = "--debug";
 
     private final String name;
     private final GradleRunner gradleRunner;
@@ -70,7 +69,7 @@ public class GradleProject {
     }
 
     public BuildResult executeTask(TaskName taskName) {
-        return gradleRunner.withArguments(taskName.getValue(), DEBUG_OPTION)
+        return gradleRunner.withArguments(taskName.getValue())
                            .build();
     }
 
@@ -122,7 +121,7 @@ public class GradleProject {
         private final List<String> protoFileNames = newLinkedList();
 
         private Builder() {
-            // Prevent instantiation of this class from outside.
+            // Prevent direct instantiation of this class.
         }
 
         public Builder setProjectName(String name) {
