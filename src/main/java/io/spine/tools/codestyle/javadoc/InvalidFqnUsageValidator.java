@@ -161,6 +161,5 @@ public class InvalidFqnUsageValidator extends AbstractCodeStyleFileValidator {
         Pattern getPattern() {
             return pattern;
         }
-
     }
 }

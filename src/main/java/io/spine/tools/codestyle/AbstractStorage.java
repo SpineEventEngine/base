@@ -59,5 +59,4 @@ public abstract class AbstractStorage {
     void clear() {
         content.clear();
     }
-
 }
