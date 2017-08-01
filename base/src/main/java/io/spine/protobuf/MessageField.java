@@ -81,12 +81,11 @@ public abstract class MessageField implements Serializable {
      * @return field value
      * @throws RuntimeException or a derived exception class if the field is not available
      * @see #isFieldAvailable(Message)
-     * @see #createUnavailableFieldException(Message, String)
+     * @see #createUnavailableFieldException(Message)
      */
     public Object getValue(Message message) {
         if (!isFieldAvailable(message)) {
-            final String fieldName = getFieldName(message, getIndex());
-            throw createUnavailableFieldException(message, fieldName);
+            throw createUnavailableFieldException(message);
         }
 
         final Method method = getAccessor(message);
@@ -94,6 +93,7 @@ public abstract class MessageField implements Serializable {
             final Object result = method.invoke(message);
             return result;
         } catch (InvocationTargetException | IllegalAccessException e) {
+            //TODO:2017-08-01:alexander.yevsyukov: raise MessageFieldException
             throw new IllegalStateException(e);
         }
     }
@@ -102,11 +102,9 @@ public abstract class MessageField implements Serializable {
      * Creates an exception for the case of a missing or incompatible field in the passed message.
      *
      * @param message   a message passed for obtaining value
-     * @param fieldName a name of the field at the required index
      * @return new exception instance
      */
-    protected abstract RuntimeException createUnavailableFieldException(Message message,
-                                                                        String fieldName);
+    protected abstract RuntimeException createUnavailableFieldException(Message message);
 
     /**
      * Verifies if a field is available in the passed message.

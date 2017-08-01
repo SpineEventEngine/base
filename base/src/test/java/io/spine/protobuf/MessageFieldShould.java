@@ -124,8 +124,7 @@ public class MessageFieldShould {
         }
 
         @Override
-        protected RuntimeException createUnavailableFieldException(Message message,
-                                                                   String fieldName) {
+        protected RuntimeException createUnavailableFieldException(Message message) {
             return new IllegalStateException("");
         }
 
