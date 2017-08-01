@@ -11,7 +11,7 @@ zip -r reports/jacoco-reports.zip **/build/jacoco
 
 # Returns the value for the specified key.
 function getProp() {
-    grep "${1}" gcs.properties | cut -d'=' -f2
+    grep "${1}" config/gcs.properties | cut -d'=' -f2
 }
 
 # Upload the prepared reports to GCS.

@@ -149,13 +149,6 @@ subprojects {
     sourceCompatibility = 1.7
     targetCompatibility = 1.7
 
-    // Set Java home to point to JDK7 in gradle.properties file.
-    //
-    // For Mac OS X, it looks like this:
-    //
-    // # suppress inspection "UnusedProperty"
-    // org.gradle.java.home=/Library/Java/JavaVirtualMachines/jdk1.7.0_80.jdk/Contents/Home/
-
     repositories {
         jcenter()
         maven { url = googleMavenCentralMirror }
