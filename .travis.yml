@@ -1,5 +1,6 @@
 language: java
 
+# To increase the memory size available during Travis build.
 sudo: required
 
 env:
@@ -22,7 +23,7 @@ after_success:
   - ./scripts/publish-artifacts.sh
 
 script:
-  - ./gradlew check --no-daemon --stacktrace --debug
+  - ./gradlew check --stacktrace
   # Decrypt and unarchive Maven and Google Cloud Storage credentials.
   -  openssl aes-256-cbc -K $encrypted_ea839d9d9d79_key -iv $encrypted_ea839d9d9d79_iv -in credentials.tar.enc -out credentials.tar -d
   - tar xvf credentials.tar
