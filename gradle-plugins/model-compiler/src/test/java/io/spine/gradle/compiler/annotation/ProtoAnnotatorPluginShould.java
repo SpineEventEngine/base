@@ -27,14 +27,15 @@ import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.ServiceDescriptorProto;
 import io.spine.gradle.compiler.GradleProject;
-import io.spine.gradle.compiler.annotation.Given.FieldAnnotationValidator;
-import io.spine.gradle.compiler.annotation.Given.MainDefinitionAnnotationValidator;
-import io.spine.gradle.compiler.annotation.Given.NestedTypeFieldsAnnotationValidator;
-import io.spine.gradle.compiler.annotation.Given.NestedTypesAnnotationValidator;
+import io.spine.gradle.compiler.annotation.given.Given.FieldAnnotationValidator;
+import io.spine.gradle.compiler.annotation.given.Given.MainDefinitionAnnotationValidator;
+import io.spine.gradle.compiler.annotation.given.Given.NestedTypeFieldsAnnotationValidator;
+import io.spine.gradle.compiler.annotation.given.Given.NestedTypesAnnotationValidator;
+import io.spine.gradle.compiler.annotation.given.Given.SourceValidator;
 import io.spine.util.Exceptions;
 import org.jboss.forge.roaster.Roaster;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
-import org.jboss.forge.roaster.model.source.JavaSource;
+import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -51,8 +52,8 @@ import static io.spine.gradle.TaskName.COMPILE_JAVA;
 import static io.spine.gradle.compiler.Extension.getDefaultMainDescriptorsPath;
 import static io.spine.gradle.compiler.Extension.getDefaultMainGenDir;
 import static io.spine.gradle.compiler.Extension.getDefaultMainGenGrpcDir;
-import static io.spine.gradle.compiler.annotation.Given.NO_SPI_OPTIONS_FILENAME;
-import static io.spine.gradle.compiler.annotation.Given.NO_SPI_OPTIONS_MULTIPLE_FILENAME;
+import static io.spine.gradle.compiler.annotation.given.Given.NO_SPI_OPTIONS_FILENAME;
+import static io.spine.gradle.compiler.annotation.given.Given.NO_SPI_OPTIONS_MULTIPLE_FILENAME;
 import static io.spine.gradle.compiler.util.DescriptorSetUtil.getProtoFileDescriptors;
 import static io.spine.gradle.compiler.util.JavaSources.getFilePath;
 import static io.spine.util.Exceptions.newIllegalStateException;
@@ -211,7 +212,7 @@ public class ProtoAnnotatorPluginShould {
                     getFilePath(messageDescriptor, false, fileDescriptor);
             final Path messageOrBuilderPath =
                     getFilePath(messageDescriptor, true, fileDescriptor);
-            final SourceVisitor annotationValidator =
+            final SourceValidator annotationValidator =
                     new MainDefinitionAnnotationValidator(shouldBeAnnotated);
             validate(messagePath, annotationValidator);
             validate(messageOrBuilderPath, annotationValidator);
@@ -228,36 +229,33 @@ public class ProtoAnnotatorPluginShould {
     }
 
     @SuppressWarnings("unchecked")
-    private <T extends JavaSource<T>> void validate(Path sourcePath,
-                                                    SourceVisitor<T> validationFunction) {
+    private void validate(Path sourcePath, SourceValidator validator) {
         final String projectPath = testProjectDir.getRoot()
                                                  .getAbsolutePath();
         final Path fullSourcePath = get(projectPath, getDefaultMainGenDir(), sourcePath.toString());
 
-        final AbstractJavaSource<T> javaSource;
+        final AbstractJavaSource<JavaClassSource> javaSource;
         try {
             javaSource = Roaster.parse(AbstractJavaSource.class, fullSourcePath.toFile());
         } catch (FileNotFoundException e) {
             throw Exceptions.illegalStateWithCauseOf(e);
         }
-        validationFunction.apply(javaSource);
+        validator.apply(javaSource);
     }
 
     @SuppressWarnings("unchecked")
-    private <T extends JavaSource<T>> void validateGrpcService(Path servicePath,
-                                                               SourceVisitor<T> validationFn) {
+    private void validateGrpcService(Path servicePath, SourceValidator validator) {
         final String projectPath = testProjectDir.getRoot()
                                                  .getAbsolutePath();
         final Path fullSourcePath = get(projectPath, getDefaultMainGenGrpcDir(),
                                         servicePath.toString());
-
-        final AbstractJavaSource<T> javaSource;
+        final AbstractJavaSource<JavaClassSource> javaSource;
         try {
             javaSource = Roaster.parse(AbstractJavaSource.class, fullSourcePath.toFile());
         } catch (FileNotFoundException e) {
             throw Exceptions.illegalStateWithCauseOf(e);
         }
-        validationFn.apply(javaSource);
+        validator.apply(javaSource);
     }
 
     private FileDescriptorProto getDescriptor(final String fileName) {

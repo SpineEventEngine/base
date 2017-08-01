@@ -18,11 +18,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.gradle.compiler.annotation;
+package io.spine.gradle.compiler.annotation.given;
 
+import com.google.common.base.Function;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import io.spine.annotation.SPI;
+import org.jboss.forge.roaster.model.JavaType;
+import org.jboss.forge.roaster.model.TypeHolder;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
 import org.jboss.forge.roaster.model.source.AnnotationSource;
 import org.jboss.forge.roaster.model.source.AnnotationTargetSource;
@@ -32,33 +35,31 @@ import org.jboss.forge.roaster.model.source.MethodSource;
 
 import javax.annotation.Nullable;
 import java.lang.annotation.Annotation;
-import java.util.Collections;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.gradle.compiler.annotation.FieldAnnotator.getBuilder;
-import static io.spine.gradle.compiler.annotation.FieldAnnotator.shouldAnnotateMethod;
 import static io.spine.gradle.compiler.util.JavaCode.toJavaFieldName;
+import static io.spine.gradle.compiler.util.JavaSources.getBuilderClassName;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 /**
  * @author Dmytro Grankin
  */
-class Given {
+public class Given {
 
+    public static final String NO_SPI_OPTIONS_FILENAME = "no_spi_options.proto";
+    public static final String NO_SPI_OPTIONS_MULTIPLE_FILENAME = "no_spi_options_multiple.proto";
     private static final Class<? extends Annotation> ANNOTATION_CLASS = SPI.class;
-    static final String NO_SPI_OPTIONS_FILENAME = "no_spi_options.proto";
-    static final String NO_SPI_OPTIONS_MULTIPLE_FILENAME = "no_spi_options_multiple.proto";
 
     private Given() {
         // Prevent instantiation of this utility class.
     }
 
-    static class NestedTypesAnnotationValidator implements SourceVisitor<JavaClassSource> {
+    public static class NestedTypesAnnotationValidator implements SourceValidator {
 
         private final boolean shouldBeAnnotated;
 
-        NestedTypesAnnotationValidator(boolean shouldBeAnnotated) {
+        public NestedTypesAnnotationValidator(boolean shouldBeAnnotated) {
             this.shouldBeAnnotated = shouldBeAnnotated;
         }
 
@@ -78,11 +79,11 @@ class Given {
         }
     }
 
-    static class MainDefinitionAnnotationValidator implements SourceVisitor<JavaClassSource> {
+    public static class MainDefinitionAnnotationValidator implements SourceValidator {
 
         private final boolean shouldBeAnnotated;
 
-        MainDefinitionAnnotationValidator(boolean shouldBeAnnotated) {
+        public MainDefinitionAnnotationValidator(boolean shouldBeAnnotated) {
             this.shouldBeAnnotated = shouldBeAnnotated;
         }
 
@@ -100,12 +101,13 @@ class Given {
         }
     }
 
-    static class FieldAnnotationValidator implements SourceVisitor<JavaClassSource> {
+    public static class FieldAnnotationValidator implements SourceValidator {
 
         private final FieldDescriptorProto fieldDescriptor;
         private final boolean shouldBeAnnotated;
 
-        FieldAnnotationValidator(FieldDescriptorProto fieldDescriptor, boolean shouldBeAnnotated) {
+        public FieldAnnotationValidator(FieldDescriptorProto fieldDescriptor,
+                                        boolean shouldBeAnnotated) {
             this.fieldDescriptor = fieldDescriptor;
             this.shouldBeAnnotated = shouldBeAnnotated;
         }
@@ -124,9 +126,7 @@ class Given {
         private void checkAccessorsAnnotation(JavaClassSource message) {
             final String fieldName = toJavaFieldName(fieldDescriptor.getName(), true);
             for (MethodSource method : message.getMethods()) {
-                final boolean shouldAnnotate = shouldAnnotateMethod(method.getName(), fieldName,
-                                                                    Collections.<String>emptyList());
-                if (method.isPublic() && shouldAnnotate) {
+                if (method.isPublic() && method.getName().contains(fieldName)) {
                     final AnnotationSource annotation = getAnnotation(method);
                     if (shouldBeAnnotated) {
                         assertNotNull(annotation);
@@ -136,15 +136,21 @@ class Given {
                 }
             }
         }
+
+        private static JavaClassSource getBuilder(JavaSource messageSource) {
+            final TypeHolder messageType = (TypeHolder) messageSource;
+            final JavaType builderType = messageType.getNestedType(getBuilderClassName());
+            return (JavaClassSource) builderType;
+        }
     }
 
-    static class NestedTypeFieldsAnnotationValidator implements SourceVisitor<JavaClassSource> {
+    public static class NestedTypeFieldsAnnotationValidator implements SourceValidator {
 
         private final DescriptorProto messageDescriptor;
         private final boolean shouldBeAnnotated;
 
-        NestedTypeFieldsAnnotationValidator(DescriptorProto messageDescriptor,
-                                            boolean shouldBeAnnotated) {
+        public NestedTypeFieldsAnnotationValidator(DescriptorProto messageDescriptor,
+                                                   boolean shouldBeAnnotated) {
             this.messageDescriptor = messageDescriptor;
             this.shouldBeAnnotated = shouldBeAnnotated;
         }
@@ -174,5 +180,11 @@ class Given {
             }
         }
         return null;
+    }
+
+    /**
+     * Interface for validation of a {@link JavaClassSource}.
+     */
+    public interface SourceValidator extends Function<AbstractJavaSource<JavaClassSource>, Void> {
     }
 }
