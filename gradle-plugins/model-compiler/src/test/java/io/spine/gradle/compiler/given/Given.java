@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.gradle.compiler;
+package io.spine.gradle.compiler.given;
 
 import org.gradle.api.Project;
 import org.gradle.testfixtures.ProjectBuilder;
@@ -41,14 +41,14 @@ import static io.spine.gradle.TaskName.PROCESS_TEST_RESOURCES;
 @SuppressWarnings("UtilityClass")
 public class Given {
 
-    static final String SPINE_PROTOBUF_PLUGIN_ID = "io.spine.tools.spine-model-compiler";
+    public static final String SPINE_PROTOBUF_PLUGIN_ID = "io.spine.tools.spine-model-compiler";
 
     private Given() {
         // Prevent instantiation of this utility class.
     }
 
     /** Creates a project with all required tasks. */
-    static Project newProject() {
+    public static Project newProject() {
         final Project project = ProjectBuilder.builder()
                                               .build();
         project.task(CLEAN.getValue());
@@ -61,7 +61,7 @@ public class Given {
         return project;
     }
 
-    static String newUuid() {
+    public static String newUuid() {
         final String result = UUID.randomUUID()
                                   .toString();
         return result;

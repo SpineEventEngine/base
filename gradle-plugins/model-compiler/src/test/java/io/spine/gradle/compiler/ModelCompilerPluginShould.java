@@ -47,8 +47,8 @@ import static io.spine.gradle.TaskName.MAP_TEST_PROTO_TO_JAVA;
 import static io.spine.gradle.TaskName.PRE_CLEAN;
 import static io.spine.gradle.TaskName.PROCESS_RESOURCES;
 import static io.spine.gradle.TaskName.PROCESS_TEST_RESOURCES;
-import static io.spine.gradle.compiler.Given.SPINE_PROTOBUF_PLUGIN_ID;
-import static io.spine.gradle.compiler.Given.newProject;
+import static io.spine.gradle.compiler.given.Given.SPINE_PROTOBUF_PLUGIN_ID;
+import static io.spine.gradle.compiler.given.Given.newProject;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 

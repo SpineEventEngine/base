@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.gradle.compiler.rejection;
+package io.spine.gradle.compiler.rejection.given;
 
 import com.sun.javadoc.RootDoc;
 import io.spine.gradle.compiler.GradleProject;
@@ -33,30 +33,32 @@ import static io.spine.gradle.compiler.util.JavaSources.getJavaExtension;
 /**
  * @author Dmytro Grankin
  */
-class Given {
+public class Given {
 
-    static final String PROJECT_NAME = "rejections-gen-plugin-test";
+    public static final String PROJECT_NAME = "rejections-gen-plugin-test";
 
     /** Javadocs received from {@link RootDoc} contain "\n" line separator. */
     @SuppressWarnings("HardcodedLineSeparator")
     private static final String JAVADOC_LINE_SEPARATOR = "\n";
-    static final String JAVA_PACKAGE = "io.spine.sample.rejections";
-    static final String CLASS_COMMENT =
+    private static final String JAVA_PACKAGE = "io.spine.sample.rejections";
+    private static final String CLASS_COMMENT =
             "The rejection definition to test Javadoc generation.";
-    static final String REJECTION_NAME = "Rejection";
-    static final String TEST_SOURCE = getDefaultMainGenSpineDir() + "/io/spine/sample/rejections/"
-            + REJECTION_NAME + getJavaExtension();
-    static final String REJECTIONS_FILE_NAME = "javadoc_rejections.proto";
-    static final String FIRST_FIELD_COMMENT = "The rejection ID.";
-    static final String FIRST_FIELD_NAME = "id";
-    static final String SECOND_FIELD_COMMENT = "The rejection message.";
-    static final String SECOND_FIELD_NAME = "message";
+    private static final String REJECTION_NAME = "Rejection";
+    private static final String REJECTIONS_FILE_NAME = "javadoc_rejections.proto";
+    private static final String FIRST_FIELD_COMMENT = "The rejection ID.";
+    private static final String FIRST_FIELD_NAME = "id";
+    private static final String SECOND_FIELD_COMMENT = "The rejection message.";
+    private static final String SECOND_FIELD_NAME = "rejection_message";
+
+    private static final String JAVA_PACKAGE_AS_DIR = JAVA_PACKAGE.replace('.', '/');
+    public static final String TEST_SOURCE = getDefaultMainGenSpineDir() + '/' +
+            JAVA_PACKAGE_AS_DIR + '/' + REJECTION_NAME + getJavaExtension();
 
     private Given() {
         // Prevent instantiation of this utility class.
     }
 
-    static GradleProject newProjectWithRejectionsJavadoc(TemporaryFolder projectFolder) {
+    public static GradleProject newProjectWithRejectionsJavadoc(TemporaryFolder projectFolder) {
         return GradleProject.newBuilder()
                             .setProjectName("rejections-javadoc")
                             .setProjectFolder(projectFolder)
@@ -85,7 +87,7 @@ class Given {
         );
     }
 
-    static String getExpectedClassComment() {
+    public static String getExpectedClassComment() {
         return ' ' + "<pre>" + JAVADOC_LINE_SEPARATOR
                 + ' ' + CLASS_COMMENT + JAVADOC_LINE_SEPARATOR
                 + " </pre>" + JAVADOC_LINE_SEPARATOR + JAVADOC_LINE_SEPARATOR
@@ -93,14 +95,14 @@ class Given {
                 + '}' + JAVADOC_LINE_SEPARATOR;
     }
 
-    static String getExpectedCtorComment() {
+    public static String getExpectedCtorComment() {
         final String param = " @param ";
         final String firstFieldJavaName = toJavaFieldName(FIRST_FIELD_NAME, false);
         final String secondFieldJavaName = toJavaFieldName(SECOND_FIELD_NAME, false);
         return " Creates a new instance." + JAVADOC_LINE_SEPARATOR + JAVADOC_LINE_SEPARATOR
-                + param + firstFieldJavaName + "      " + FIRST_FIELD_COMMENT
+                + param + firstFieldJavaName + "                " + FIRST_FIELD_COMMENT
                 + JAVADOC_LINE_SEPARATOR
-                + param + secondFieldJavaName + ' ' + SECOND_FIELD_COMMENT
+                + param + secondFieldJavaName + "  " + SECOND_FIELD_COMMENT
                 + JAVADOC_LINE_SEPARATOR;
     }
 }

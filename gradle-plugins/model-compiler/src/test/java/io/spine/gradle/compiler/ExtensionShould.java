@@ -26,10 +26,10 @@ import org.junit.Test;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static io.spine.gradle.compiler.Given.SPINE_PROTOBUF_PLUGIN_ID;
-import static io.spine.gradle.compiler.Given.newProject;
-import static io.spine.gradle.compiler.Given.newUuid;
 import static io.spine.gradle.compiler.ModelCompilerPlugin.SPINE_MODEL_COMPILER_EXTENSION_NAME;
+import static io.spine.gradle.compiler.given.Given.SPINE_PROTOBUF_PLUGIN_ID;
+import static io.spine.gradle.compiler.given.Given.newProject;
+import static io.spine.gradle.compiler.given.Given.newUuid;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;

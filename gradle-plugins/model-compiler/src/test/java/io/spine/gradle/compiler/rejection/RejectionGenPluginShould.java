@@ -32,10 +32,11 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import static io.spine.gradle.TaskName.COMPILE_JAVA;
-import static io.spine.gradle.compiler.rejection.Given.TEST_SOURCE;
-import static io.spine.gradle.compiler.rejection.Given.getExpectedClassComment;
-import static io.spine.gradle.compiler.rejection.Given.getExpectedCtorComment;
-import static io.spine.gradle.compiler.rejection.Given.newProjectWithRejectionsJavadoc;
+import static io.spine.gradle.compiler.rejection.given.Given.PROJECT_NAME;
+import static io.spine.gradle.compiler.rejection.given.Given.TEST_SOURCE;
+import static io.spine.gradle.compiler.rejection.given.Given.getExpectedClassComment;
+import static io.spine.gradle.compiler.rejection.given.Given.getExpectedCtorComment;
+import static io.spine.gradle.compiler.rejection.given.Given.newProjectWithRejectionsJavadoc;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -53,7 +54,7 @@ public class RejectionGenPluginShould {
                                                        "outer_class_set_rejections.proto",
                                                        "deps/deps.proto");
         final GradleProject project = GradleProject.newBuilder()
-                                                   .setProjectName(Given.PROJECT_NAME)
+                                                   .setProjectName(PROJECT_NAME)
                                                    .setProjectFolder(testProjectDir)
                                                    .addProtoFiles(files)
                                                    .build();
