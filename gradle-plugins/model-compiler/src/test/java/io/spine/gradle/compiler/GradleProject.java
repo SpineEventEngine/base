@@ -53,6 +53,7 @@ public class GradleProject {
     private static final String BUILD_GRADLE_NAME = "build.gradle";
     private static final String EXT_GRADLE_NAME = "ext.gradle";
     private static final String BASE_PROTO_LOCATION = "src/main/proto/";
+    private static final String DEBUG_OPTION = "--debug";
 
     private final String name;
     private final GradleRunner gradleRunner;
@@ -69,7 +70,7 @@ public class GradleProject {
     }
 
     public BuildResult executeTask(TaskName taskName) {
-        return gradleRunner.withArguments(taskName.getValue())
+        return gradleRunner.withArguments(taskName.getValue(), DEBUG_OPTION)
                            .build();
     }
 
