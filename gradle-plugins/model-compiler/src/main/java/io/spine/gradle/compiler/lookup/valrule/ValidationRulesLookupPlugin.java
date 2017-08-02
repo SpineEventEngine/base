@@ -24,10 +24,10 @@ import com.google.common.base.Predicate;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.gradle.SpinePlugin;
+import io.spine.gradle.compiler.message.MessageDeclaration;
 import io.spine.gradle.compiler.util.DescriptorSetUtil.IsNotGoogleProto;
-import io.spine.gradle.compiler.util.MessageContext;
-import io.spine.gradle.compiler.util.MessageFinder;
 import io.spine.gradle.compiler.util.PropertiesWriter;
+import io.spine.type.TypeName;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -35,7 +35,6 @@ import org.slf4j.Logger;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -50,6 +49,7 @@ import static io.spine.gradle.compiler.Extension.getMainDescriptorSetPath;
 import static io.spine.gradle.compiler.Extension.getMainTargetGenResourcesDir;
 import static io.spine.gradle.compiler.Extension.getTestDescriptorSetPath;
 import static io.spine.gradle.compiler.Extension.getTestTargetGenResourcesDir;
+import static io.spine.gradle.compiler.message.MessageDeclarations.find;
 import static io.spine.gradle.compiler.util.DescriptorSetUtil.getProtoFileDescriptors;
 import static io.spine.gradle.compiler.util.UnknownOptions.getUnknownOptionValue;
 import static io.spine.gradle.compiler.util.UnknownOptions.hasUnknownOption;
@@ -116,20 +116,19 @@ public class ValidationRulesLookupPlugin extends SpinePlugin {
         final IsNotGoogleProto fileFilter = new IsNotGoogleProto();
         final Collection<FileDescriptorProto> files = getProtoFileDescriptors(descriptorSetPath,
                                                                               fileFilter);
-        final List<MessageContext> rulesContexts = MessageFinder.find(files,
-                                                                      new IsValidationRule());
-        writeProperties(targetGeneratedResourcesDir, rulesContexts);
+        final Collection<MessageDeclaration> declarations = find(files, new IsValidationRule());
+        writeProperties(targetGeneratedResourcesDir, declarations);
         log().debug("Validation rules lookup complete.");
     }
 
     private static void writeProperties(String targetGeneratedResourcesDir,
-                                        List<MessageContext> rulesContexts) {
+                                        Collection<MessageDeclaration> ruleDeclarations) {
         final Map<String, String> propsMap = newHashMap();
-        for (MessageContext ruleContext : rulesContexts) {
-            final String type = ruleContext.getType();
-            final String ruleTarget = getUnknownOptionValue(ruleContext.getTarget(),
+        for (MessageDeclaration declaration : ruleDeclarations) {
+            final TypeName typeName = declaration.getTypeName();
+            final String ruleTarget = getUnknownOptionValue(declaration.getDescriptor(),
                                                             VALIDATION_OF_FIELD_NUMBER);
-            propsMap.put(type, ruleTarget);
+            propsMap.put(typeName.value(), ruleTarget);
         }
 
         log().trace("Writing the validation rules description to {}/{}.",

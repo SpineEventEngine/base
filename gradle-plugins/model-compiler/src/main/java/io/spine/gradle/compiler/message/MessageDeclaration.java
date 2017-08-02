@@ -18,10 +18,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.gradle.compiler.util;
+package io.spine.gradle.compiler.message;
 
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
+import io.spine.type.TypeName;
 
 import java.util.Collections;
 import java.util.List;
@@ -30,96 +31,100 @@ import static com.google.common.collect.Lists.newLinkedList;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
- * A context of a {@linkplain DescriptorProto message declaration}.
+ * A declaration of a Protobuf message.
+ *
+ * <p>Additionally to a {@linkplain DescriptorProto message descriptor},
+ * includes information about the location of the declaration.
  *
  * @author Dmytro Grankin
  */
-public class MessageContext {
+public class MessageDeclaration {
 
     private static final String PROTO_TYPE_SEPARATOR = ".";
 
     /**
-     * The target of the context.
+     * The descriptor of the declaration.
      */
-    private final DescriptorProto target;
+    private final DescriptorProto descriptor;
 
     /**
-     * Descriptors for the outer messages of the {@link #target}.
+     * Descriptors for the outer messages of the declaration.
      *
      * <p>The descriptors ordered from a top-level definition of a file
-     * to the outer message for the target.
+     * to the outer message for the declaration.
      */
     private final List<DescriptorProto> outerMessages;
 
     /**
-     * A file descriptors, that contains the {@link #target}.
+     * A file descriptors, that contains the declaration
      */
     private final FileDescriptorProto fileDescriptor;
 
-    private MessageContext(DescriptorProto target,
-                           List<DescriptorProto> outerMessages,
-                           FileDescriptorProto fileDescriptor) {
-        this.target = target;
+    private MessageDeclaration(DescriptorProto descriptor,
+                               List<DescriptorProto> outerMessages,
+                               FileDescriptorProto fileDescriptor) {
+        this.descriptor = descriptor;
         this.outerMessages = outerMessages;
         this.fileDescriptor = fileDescriptor;
     }
 
     /**
-     * Creates the message context for the specified message.
+     * Creates the declaration for the specified message.
      *
      * @param message        the top-level definition from the file descriptor
      * @param fileDescriptor the file descriptor containing the message
-     * @return the message context
+     * @return the message declaration
      */
-    public static MessageContext create(DescriptorProto message,
-                                        FileDescriptorProto fileDescriptor) {
+    public static MessageDeclaration create(DescriptorProto message,
+                                            FileDescriptorProto fileDescriptor) {
         final boolean fileContainsTarget = fileDescriptor.getMessageTypeList()
                                                          .contains(message);
         if (!fileContainsTarget) {
-            final String errMsg = "Top-level message definition `%s` was not found in `%s`.";
+            final String errMsg = "Top-level message `%s` was not found in `%s`.";
             throw newIllegalStateException(errMsg, message.getName(), fileDescriptor.getName());
         }
 
         final List<DescriptorProto> outerMessages = Collections.emptyList();
-        return new MessageContext(message, outerMessages, fileDescriptor);
+        return new MessageDeclaration(message, outerMessages, fileDescriptor);
     }
 
     /**
-     * Obtains the context for the specified nested message of the {@link #target}.
+     * Obtains the declaration for the specified nested message of the declaration.
      *
-     * @param nestedMessage the nested message for the target
-     * @return the nested message context
+     * @param nestedMessage the nested message from this declaration
+     * @return the nested message declaration
      */
-    public MessageContext forNested(DescriptorProto nestedMessage) {
-        final boolean isNestedForCurrentTarget = target.getNestedTypeList()
-                                                       .contains(nestedMessage);
+    public MessageDeclaration forNested(DescriptorProto nestedMessage) {
+        final boolean isNestedForCurrentTarget = descriptor.getNestedTypeList()
+                                                           .contains(nestedMessage);
         if (!isNestedForCurrentTarget) {
             final String errMsg = "Nested message `%s` was not found in `%s`.";
-            throw newIllegalStateException(errMsg, nestedMessage.getName(), target.getName());
+            throw newIllegalStateException(errMsg, nestedMessage.getName(), descriptor.getName());
         }
 
         final List<DescriptorProto> outerMessagesForNested = newLinkedList(outerMessages);
-        outerMessagesForNested.add(target);
-        return new MessageContext(nestedMessage, outerMessagesForNested, fileDescriptor);
+        outerMessagesForNested.add(descriptor);
+        return new MessageDeclaration(nestedMessage, outerMessagesForNested, fileDescriptor);
     }
 
     /**
-     * Obtains fully qualified type name for the target of the context.
+     * Obtains type name for the declaration.
      *
-     * @return the fully qualified type name
+     * @return the type name
      */
-    public String getType() {
+    public TypeName getTypeName() {
         final String packagePrefix = fileDescriptor.getPackage() + PROTO_TYPE_SEPARATOR;
         final StringBuilder typeBuilder = new StringBuilder(packagePrefix);
         for (DescriptorProto outerMessage : outerMessages) {
             typeBuilder.append(outerMessage.getName())
                        .append(PROTO_TYPE_SEPARATOR);
         }
-        typeBuilder.append(target.getName());
-        return typeBuilder.toString();
+        typeBuilder.append(descriptor.getName());
+        final String value = typeBuilder.toString();
+        return TypeName.of(value);
     }
 
-    public DescriptorProto getTarget() {
-        return target;
+    public DescriptorProto getDescriptor() {
+        return descriptor;
     }
 }
