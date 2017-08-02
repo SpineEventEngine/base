@@ -19,11 +19,20 @@
  */
 package io.spine.base;
 
+import com.google.common.base.Optional;
+import com.google.protobuf.Any;
 import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
+import io.spine.Identifier;
+import io.spine.annotation.Internal;
+import io.spine.string.Stringifiers;
 
+import javax.annotation.Nullable;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.time.Time.getCurrentTime;
+import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
  * A {@code Throwable}, which state is a {@link Message}.
@@ -32,6 +41,7 @@ import static io.spine.time.Time.getCurrentTime;
  * the {@code message} thrown is a detailed description of the rejection reason.
  *
  * @author Alex Tymchenko
+ * @author Alexander Yevsyukov
  */
 public abstract class ThrowableMessage extends Throwable {
 
@@ -46,9 +56,13 @@ public abstract class ThrowableMessage extends Throwable {
     /** The moment of creation of this object. */
     private final Timestamp timestamp;
 
+    /** Optional ID of the entity which thrown the message. */
+    @Nullable
+    private Any producerId;
+
     protected ThrowableMessage(GeneratedMessageV3 message) {
         super();
-        this.message = message;
+        this.message = checkNotNull(message);
         this.timestamp = getCurrentTime();
     }
 
@@ -61,5 +75,33 @@ public abstract class ThrowableMessage extends Throwable {
      */
     public Timestamp getTimestamp() {
         return timestamp;
+    }
+
+    /**
+     * Initializes the ID of the entity, which thrown the message.
+     *
+     * <p>This internal API method can be called only once. It is supposed to be used by
+     * the framework, and must not be called by the user's code.
+     *
+     * @param  producerId the ID of the entity packed into {@code Any}
+     * @return a reference to this {@code ThrowableMessage} instance
+     */
+    @Internal
+    public synchronized ThrowableMessage initProducer(Any producerId) {
+        checkNotNull(producerId);
+        if (this.producerId != null) {
+            final Object unpackedId = Identifier.unpack(producerId);
+            final String stringId = Stringifiers.toString(unpackedId);
+            throw newIllegalStateException("Producer already initialized: %s", stringId);
+        }
+        this.producerId = producerId;
+        return this;
+    }
+
+    /**
+     * Obtains ID of the entity which thrown the message.
+     */
+    public Optional<Any> producerId() {
+        return Optional.fromNullable(producerId);
     }
 }
