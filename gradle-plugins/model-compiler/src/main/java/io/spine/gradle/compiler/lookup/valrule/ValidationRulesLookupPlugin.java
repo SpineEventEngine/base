@@ -20,20 +20,25 @@
 
 package io.spine.gradle.compiler.lookup.valrule;
 
-import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Predicate;
+import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.gradle.SpinePlugin;
 import io.spine.gradle.compiler.util.DescriptorSetUtil.IsNotGoogleProto;
+import io.spine.gradle.compiler.util.MessageContext;
+import io.spine.gradle.compiler.util.MessageFinder;
 import io.spine.gradle.compiler.util.PropertiesWriter;
-import io.spine.validate.ValidationRules;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.slf4j.Logger;
 
+import javax.annotation.Nullable;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Maps.newHashMap;
 import static io.spine.gradle.TaskName.FIND_TEST_VALIDATION_RULES;
 import static io.spine.gradle.TaskName.FIND_VALIDATION_RULES;
@@ -46,6 +51,9 @@ import static io.spine.gradle.compiler.Extension.getMainTargetGenResourcesDir;
 import static io.spine.gradle.compiler.Extension.getTestDescriptorSetPath;
 import static io.spine.gradle.compiler.Extension.getTestTargetGenResourcesDir;
 import static io.spine.gradle.compiler.util.DescriptorSetUtil.getProtoFileDescriptors;
+import static io.spine.gradle.compiler.util.UnknownOptions.getUnknownOptionValue;
+import static io.spine.gradle.compiler.util.UnknownOptions.hasUnknownOption;
+import static io.spine.option.OptionsProto.VALIDATION_OF_FIELD_NUMBER;
 import static io.spine.validate.ValidationRules.getValRulesPropsFileName;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -105,17 +113,23 @@ public class ValidationRulesLookupPlugin extends SpinePlugin {
                                                          String descriptorSetPath) {
         log().debug("Validation rules lookup started.");
 
-        final Map<String, String> propsMap = newHashMap();
-        final IsNotGoogleProto protoFilter = new IsNotGoogleProto();
+        final IsNotGoogleProto fileFilter = new IsNotGoogleProto();
         final Collection<FileDescriptorProto> files = getProtoFileDescriptors(descriptorSetPath,
-                                                                              protoFilter);
-        for (FileDescriptorProto file : files) {
-            final Map<String, String> rules = ValidationRulesFinder.find(file);
-            propsMap.putAll(rules);
-        }
-        if (propsMap.isEmpty()) {
-            log().debug("Validation rules lookup complete. No rules found.");
-            return;
+                                                                              fileFilter);
+        final List<MessageContext> rulesContexts = MessageFinder.find(files,
+                                                                      new IsValidationRule());
+        writeProperties(targetGeneratedResourcesDir, rulesContexts);
+        log().debug("Validation rules lookup complete.");
+    }
+
+    private static void writeProperties(String targetGeneratedResourcesDir,
+                                        List<MessageContext> rulesContexts) {
+        final Map<String, String> propsMap = newHashMap();
+        for (MessageContext ruleContext : rulesContexts) {
+            final String type = ruleContext.getType();
+            final String ruleTarget = getUnknownOptionValue(ruleContext.getTarget(),
+                                                            VALIDATION_OF_FIELD_NUMBER);
+            propsMap.put(type, ruleTarget);
         }
 
         log().trace("Writing the validation rules description to {}/{}.",
@@ -123,8 +137,15 @@ public class ValidationRulesLookupPlugin extends SpinePlugin {
         final PropertiesWriter writer = new PropertiesWriter(targetGeneratedResourcesDir,
                                                              getValRulesPropsFileName());
         writer.write(propsMap);
+    }
 
-        log().debug("Validation rules lookup complete.");
+    private static class IsValidationRule implements Predicate<DescriptorProto> {
+
+        @Override
+        public boolean apply(@Nullable DescriptorProto input) {
+            checkNotNull(input);
+            return hasUnknownOption(input, VALIDATION_OF_FIELD_NUMBER);
+        }
     }
 
     private static Logger log() {
