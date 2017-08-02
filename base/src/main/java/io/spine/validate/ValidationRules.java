@@ -23,6 +23,7 @@ package io.spine.validate;
 import com.google.common.collect.ImmutableBiMap;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
+import io.spine.annotation.Internal;
 import io.spine.type.TypeName;
 
 import java.util.Properties;
@@ -43,14 +44,13 @@ import static io.spine.util.PropertyFiles.loadAllProperties;
  *
  * @author Dmytro Grankin
  */
-class ValidationRules {
+@Internal
+public class ValidationRules {
 
     /**
      * A name of the file, which contains validation rules and their target fields paths.
      */
-    @SuppressWarnings("DuplicateStringLiteralInspection") // To avoid the undesirable dependency
-                                                          // on the model compiler.
-    private static final String PROPS_FILE_NAME = "validation_rules.properties";
+    private static final String VAL_RULES_PROPS_FILE_NAME = "validation_rules.properties";
     private static final String PROTO_TYPE_SEPARATOR = ".";
 
     private static final ImmutableBiMap<Descriptor, FieldDescriptor> rules = build();
@@ -70,8 +70,12 @@ class ValidationRules {
         return rules;
     }
 
+    public static String getValRulesPropsFileName() {
+        return VAL_RULES_PROPS_FILE_NAME;
+    }
+
     private static ImmutableBiMap<Descriptor, FieldDescriptor> build() {
-        final Set<Properties> propertiesSet = loadAllProperties(PROPS_FILE_NAME);
+        final Set<Properties> propertiesSet = loadAllProperties(VAL_RULES_PROPS_FILE_NAME);
         final Builder builder = new Builder(propertiesSet);
         return builder.build();
     }

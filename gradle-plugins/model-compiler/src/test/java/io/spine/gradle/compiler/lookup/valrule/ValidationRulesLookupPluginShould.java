@@ -21,6 +21,7 @@
 package io.spine.gradle.compiler.lookup.valrule;
 
 import io.spine.gradle.compiler.GradleProject;
+import io.spine.validate.ValidationRules;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -38,6 +39,7 @@ import java.util.Properties;
 import static io.spine.gradle.TaskName.FIND_VALIDATION_RULES;
 import static io.spine.gradle.compiler.Extension.getDefaultMainGenResDir;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
+import static io.spine.validate.ValidationRules.getValRulesPropsFileName;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -86,7 +88,7 @@ public class ValidationRulesLookupPluginShould {
         final String projectPath = testProjectDir.getRoot()
                                                  .getAbsolutePath();
         final Path path = Paths.get(projectPath, getDefaultMainGenResDir(),
-                                    ValidationRulesLookupPlugin.VALIDATION_PROPS_FILE_NAME);
+                                    getValRulesPropsFileName());
         try {
             final InputStream inputStream = new FileInputStream(path.toFile());
             final Properties properties = new Properties();

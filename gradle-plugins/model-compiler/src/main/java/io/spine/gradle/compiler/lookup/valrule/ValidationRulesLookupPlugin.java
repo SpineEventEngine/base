@@ -25,6 +25,7 @@ import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.gradle.SpinePlugin;
 import io.spine.gradle.compiler.util.DescriptorSetUtil.IsNotGoogleProto;
 import io.spine.gradle.compiler.util.PropertiesWriter;
+import io.spine.validate.ValidationRules;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -45,6 +46,7 @@ import static io.spine.gradle.compiler.Extension.getMainTargetGenResourcesDir;
 import static io.spine.gradle.compiler.Extension.getTestDescriptorSetPath;
 import static io.spine.gradle.compiler.Extension.getTestTargetGenResourcesDir;
 import static io.spine.gradle.compiler.util.DescriptorSetUtil.getProtoFileDescriptors;
+import static io.spine.validate.ValidationRules.getValRulesPropsFileName;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -56,9 +58,6 @@ import static org.slf4j.LoggerFactory.getLogger;
  * @author Dmytro Grankin
  */
 public class ValidationRulesLookupPlugin extends SpinePlugin {
-
-    @VisibleForTesting
-    static final String VALIDATION_PROPS_FILE_NAME = "validation_rules.properties";
 
     @Override
     public void apply(Project project) {
@@ -120,9 +119,9 @@ public class ValidationRulesLookupPlugin extends SpinePlugin {
         }
 
         log().trace("Writing the validation rules description to {}/{}.",
-                    targetGeneratedResourcesDir, VALIDATION_PROPS_FILE_NAME);
+                    targetGeneratedResourcesDir, getValRulesPropsFileName());
         final PropertiesWriter writer = new PropertiesWriter(targetGeneratedResourcesDir,
-                                                             VALIDATION_PROPS_FILE_NAME);
+                                                             getValRulesPropsFileName());
         writer.write(propsMap);
 
         log().debug("Validation rules lookup complete.");
