@@ -813,7 +813,7 @@ public class MessageValidatorShould {
      */
 
     @Ignore //TODO:2017-07-27:dmytro.grankin: enable this test if version of the model compiler
-            // used in this module is `0.9.46-SNAPSHOT` or higher.
+            // used in this module is `0.9.48-SNAPSHOT` or higher.
     @Test
     public void validate_according_to_validation_rule() {
         final String validValue = "any text";
