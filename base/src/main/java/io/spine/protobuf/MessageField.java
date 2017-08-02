@@ -22,11 +22,13 @@ package io.spine.protobuf;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Maps;
+import com.google.protobuf.Descriptors;
 import com.google.protobuf.Message;
 
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.List;
 import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -79,7 +81,7 @@ public abstract class MessageField implements Serializable {
      *
      * @param message a message to get the field value from
      * @return field value
-     * @throws RuntimeException or a derived exception class if the field is not available
+     * @throws MessageFieldException if the field is not available
      * @see #isFieldAvailable(Message)
      * @see #createUnavailableFieldException(Message)
      */
@@ -93,8 +95,7 @@ public abstract class MessageField implements Serializable {
             final Object result = method.invoke(message);
             return result;
         } catch (InvocationTargetException | IllegalAccessException e) {
-            //TODO:2017-08-01:alexander.yevsyukov: raise MessageFieldException
-            throw new IllegalStateException(e);
+            throw (MessageFieldException) (new MessageFieldException(message).initCause(e));
         }
     }
 
@@ -104,7 +105,7 @@ public abstract class MessageField implements Serializable {
      * @param message   a message passed for obtaining value
      * @return new exception instance
      */
-    protected abstract RuntimeException createUnavailableFieldException(Message message);
+    protected abstract MessageFieldException createUnavailableFieldException(Message message);
 
     /**
      * Verifies if a field is available in the passed message.
@@ -174,13 +175,29 @@ public abstract class MessageField implements Serializable {
     /**
      * Obtains Protobuf field name for the passed message.
      *
-     * @param msg   a message to inspect
-     * @param index a zero-based index of the field
+     * @param  msg   a message to inspect
+     * @param  index a zero-based index of the field
+     * @throws IndexOutOfBoundsException
+     *         if the index is greater or equal the number of fields in the passed message
      * @return name of the field
      */
     public static String getFieldName(Message msg, int index) {
         final FieldDescriptor fieldDescriptor = getFieldDescriptor(msg, index);
         final String fieldName = fieldDescriptor.getName();
         return fieldName;
+    }
+
+    /**
+     * Obtains a number of fields in the passed message.
+     *
+     * @param msg  the message to inspect
+     * @return a positive number of fields or zero of the message type does not define fields
+     */
+    public static int getFieldCount(Message msg) {
+        checkNotNull(msg);
+        final Descriptors.Descriptor descriptor = msg.getDescriptorForType();
+        final List<FieldDescriptor> fields = descriptor.getFields();
+        return fields.size();
+
     }
 }

@@ -20,13 +20,16 @@
 
 package io.spine.protobuf;
 
+import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import com.google.protobuf.StringValue;
+import com.google.protobuf.Timestamp;
 import org.junit.Test;
 
 import static com.google.protobuf.Descriptors.FieldDescriptor;
 import static com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 import static io.spine.Identifier.newUuid;
+import static io.spine.protobuf.MessageField.getFieldCount;
 import static io.spine.protobuf.MessageField.getFieldDescriptor;
 import static io.spine.protobuf.MessageField.getFieldName;
 import static io.spine.protobuf.MessageField.toAccessorMethodName;
@@ -66,7 +69,7 @@ public class MessageFieldShould {
         new TestMessageField(-5);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = MessageFieldException.class)
     public void throw_exception_if_field_is_not_available() {
         final TestMessageField field = new TestMessageField(STR_VALUE_FIELD_INDEX);
         field.setIsFieldAvailable(false);
@@ -111,21 +114,29 @@ public class MessageFieldShould {
         assertEquals("getAggregateRootId", toAccessorMethodName("aggregate_root_id"));
     }
 
+    @Test
+    public void obtain_number_of_fields() {
+        assertEquals(0, getFieldCount(Empty.getDefaultInstance()));
+        assertEquals(1, getFieldCount(StringValue.getDefaultInstance()));
+        assertEquals(2, getFieldCount(Timestamp.getDefaultInstance()));
+    }
+
     private static class TestMessageField extends MessageField {
 
         private boolean isFieldAvailable = true;
 
-        protected TestMessageField(int index) {
+        TestMessageField(int index) {
             super(index);
         }
 
+        @SuppressWarnings("SameParameterValue") // Now is used only once to overwrite default value.
         void setIsFieldAvailable(boolean isFieldAvailable) {
             this.isFieldAvailable = isFieldAvailable;
         }
 
         @Override
-        protected RuntimeException createUnavailableFieldException(Message message) {
-            return new IllegalStateException("");
+        protected MessageFieldException createUnavailableFieldException(Message message) {
+            return new MessageFieldException(message);
         }
 
         @Override
