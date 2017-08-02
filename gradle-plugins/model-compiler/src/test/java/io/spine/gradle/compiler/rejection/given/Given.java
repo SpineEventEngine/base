@@ -35,8 +35,6 @@ import static io.spine.gradle.compiler.util.JavaSources.getJavaExtension;
  */
 public class Given {
 
-    public static final String PROJECT_NAME = "rejections-gen-plugin-test";
-
     /** Javadocs received from {@link RootDoc} contain "\n" line separator. */
     @SuppressWarnings("HardcodedLineSeparator")
     private static final String JAVADOC_LINE_SEPARATOR = "\n";
@@ -44,15 +42,10 @@ public class Given {
     private static final String CLASS_COMMENT =
             "The rejection definition to test Javadoc generation.";
     private static final String REJECTION_NAME = "Rejection";
-    private static final String REJECTIONS_FILE_NAME = "javadoc_rejections.proto";
     private static final String FIRST_FIELD_COMMENT = "The rejection ID.";
     private static final String FIRST_FIELD_NAME = "id";
     private static final String SECOND_FIELD_COMMENT = "The rejection message.";
     private static final String SECOND_FIELD_NAME = "rejection_message";
-
-    private static final String JAVA_PACKAGE_AS_DIR = JAVA_PACKAGE.replace('.', '/');
-    public static final String TEST_SOURCE = getDefaultMainGenSpineDir() + '/' +
-            JAVA_PACKAGE_AS_DIR + '/' + REJECTION_NAME + getJavaExtension();
 
     private Given() {
         // Prevent instantiation of this utility class.
@@ -62,8 +55,14 @@ public class Given {
         return GradleProject.newBuilder()
                             .setProjectName("rejections-javadoc")
                             .setProjectFolder(projectFolder)
-                            .createProto(REJECTIONS_FILE_NAME, rejectionWithJavadoc())
+                            .createProto("javadoc_rejections.proto", rejectionWithJavadoc())
                             .build();
+    }
+
+    public static String rejectionsJavadocSourceName() {
+        final String packageAsDirectory = JAVA_PACKAGE.replace('.', '/');
+        return getDefaultMainGenSpineDir() + '/' + packageAsDirectory + '/'
+                + REJECTION_NAME + getJavaExtension();
     }
 
     private static Iterable<String> rejectionWithJavadoc() {

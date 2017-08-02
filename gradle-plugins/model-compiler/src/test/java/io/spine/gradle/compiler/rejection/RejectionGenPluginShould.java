@@ -32,11 +32,10 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import static io.spine.gradle.TaskName.COMPILE_JAVA;
-import static io.spine.gradle.compiler.rejection.given.Given.PROJECT_NAME;
-import static io.spine.gradle.compiler.rejection.given.Given.TEST_SOURCE;
 import static io.spine.gradle.compiler.rejection.given.Given.getExpectedClassComment;
 import static io.spine.gradle.compiler.rejection.given.Given.getExpectedCtorComment;
 import static io.spine.gradle.compiler.rejection.given.Given.newProjectWithRejectionsJavadoc;
+import static io.spine.gradle.compiler.rejection.given.Given.rejectionsJavadocSourceName;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -54,7 +53,7 @@ public class RejectionGenPluginShould {
                                                        "outer_class_set_rejections.proto",
                                                        "deps/deps.proto");
         final GradleProject project = GradleProject.newBuilder()
-                                                   .setProjectName(PROJECT_NAME)
+                                                   .setProjectName("rejections-gen-plugin-test")
                                                    .setProjectFolder(testProjectDir)
                                                    .addProtoFiles(files)
                                                    .build();
@@ -66,7 +65,8 @@ public class RejectionGenPluginShould {
         final GradleProject project = newProjectWithRejectionsJavadoc(testProjectDir);
         project.executeTask(COMPILE_JAVA);
 
-        final RootDoc root = RootDocReceiver.getRootDoc(testProjectDir, TEST_SOURCE);
+        final RootDoc root = RootDocReceiver.getRootDoc(testProjectDir,
+                                                        rejectionsJavadocSourceName());
         final ClassDoc rejectionDoc = root.classes()[0];
         final ConstructorDoc rejectionCtorDoc = rejectionDoc.constructors()[0];
 
