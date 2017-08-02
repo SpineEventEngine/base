@@ -25,6 +25,7 @@ import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
 import io.spine.Identifier;
+import io.spine.annotation.Internal;
 import io.spine.string.Stringifiers;
 
 import javax.annotation.Nullable;
@@ -40,6 +41,7 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  * the {@code message} thrown is a detailed description of the rejection reason.
  *
  * @author Alex Tymchenko
+ * @author Alexander Yevsyukov
  */
 public abstract class ThrowableMessage extends Throwable {
 
@@ -60,7 +62,7 @@ public abstract class ThrowableMessage extends Throwable {
 
     protected ThrowableMessage(GeneratedMessageV3 message) {
         super();
-        this.message = message;
+        this.message = checkNotNull(message);
         this.timestamp = getCurrentTime();
     }
 
@@ -76,19 +78,21 @@ public abstract class ThrowableMessage extends Throwable {
     }
 
     /**
-     * Initialized the ID of the entity, which thrown the message.
+     * Initializes the ID of the entity, which thrown the message.
      *
-     * <p>This method can be called only once.
+     * <p>This internal API method can be called only once. It is supposed to be used by
+     * the framework, and must not be called by the user's code.
      *
      * @param  producerId the ID of the entity packed into {@code Any}
      * @return a reference to this {@code ThrowableMessage} instance
      */
+    @Internal
     public synchronized ThrowableMessage initProducer(Any producerId) {
         checkNotNull(producerId);
         if (this.producerId != null) {
             final Object unpackedId = Identifier.unpack(producerId);
             final String stringId = Stringifiers.toString(unpackedId);
-            throw newIllegalStateException("Producer already initialized %s", stringId);
+            throw newIllegalStateException("Producer already initialized: %s", stringId);
         }
         this.producerId = producerId;
         return this;

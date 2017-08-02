@@ -24,6 +24,7 @@ import com.google.protobuf.Any;
 import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.util.Timestamps;
 import io.spine.Identifier;
+import io.spine.test.Tests;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -77,6 +78,17 @@ public class ThrowableMessageShould {
     public void not_allow_repeated_producer_initialization() {
         throwableMessage.initProducer(producer)
                         .initProducer(producer);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void not_allow_null_producer() {
+        throwableMessage.initProducer(Tests.<Any>nullRef());
+    }
+
+    @SuppressWarnings("ThrowableNotThrown")
+    @Test(expected = NullPointerException.class)
+    public void prohibit_null_message() {
+        new TestThrowableMessage(Tests.<GeneratedMessageV3>nullRef());
     }
 
     /**
