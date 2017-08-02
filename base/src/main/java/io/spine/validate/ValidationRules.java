@@ -26,6 +26,7 @@ import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.annotation.Internal;
 import io.spine.type.TypeName;
 
+import java.util.Collection;
 import java.util.Properties;
 import java.util.Set;
 
@@ -34,9 +35,8 @@ import static io.spine.util.Exceptions.newIllegalStateException;
 import static io.spine.util.PropertyFiles.loadAllProperties;
 
 /**
- * {@code ValidationRules} provides access to a map from
- * a {@linkplain io.spine.option.OptionsProto#validationOf validation rule} descriptor to
- * the field descriptor of the rule target.
+ * Utilities for obtaining {@linkplain io.spine.option.OptionsProto#validationOf validation rule}
+ * descriptors and the descriptors of the targets for the rules.
  *
  * <p>During initialization of this class, definitions of validation rules are
  * {@linkplain Builder#put(Properties) validated}. If an invalid validation rule was found,
@@ -60,14 +60,22 @@ public class ValidationRules {
     }
 
     /**
-     * Obtains the validation rules map.
+     * Obtains all descriptors of validation rules.
      *
-     * @return the immutable map
+     * @return the immutable collection of the descriptors
      */
-    @SuppressWarnings("ReturnOfCollectionOrArrayField") // As the return value
-                                                        // is an immutable collection.
-    static ImmutableBiMap<Descriptor, FieldDescriptor> getMap() {
-        return rules;
+    static Collection<Descriptor> getRules() {
+        return rules.keySet();
+    }
+
+    /**
+     * Obtains the target for the specified validation rule.
+     *
+     * @param validationRule the descriptor of the rule
+     * @return the field descriptor of the rule target
+     */
+    static FieldDescriptor getTarget(Descriptor validationRule) {
+        return rules.get(validationRule);
     }
 
     public static String getValRulesPropsFileName() {
@@ -155,7 +163,7 @@ public class ValidationRules {
         /**
          * Ensures that the specified rule is valid for the specified target.
          *
-         * @param rule the validation rule
+         * @param rule   the validation rule
          * @param target the target of the validation rule
          */
         private static void checkValidationRule(Descriptor rule, FieldDescriptor target) {
