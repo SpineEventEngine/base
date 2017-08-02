@@ -1,7 +1,9 @@
 package io.spine.protobuf;
 
+import com.google.protobuf.Empty;
 import com.google.protobuf.StringValue;
 import com.google.protobuf.Timestamp;
+import io.spine.test.Tests;
 import io.spine.time.Time;
 import org.junit.Test;
 
@@ -37,5 +39,10 @@ public class MessageFieldExceptionShould {
 
         assertEquals(protobufMessage, exception.getProtobufMessage());
         assertTrue(exception.getMessage().isEmpty());
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void allow_null_params() {
+        new MessageFieldException(Empty.getDefaultInstance(), Tests.<String>nullRef());
     }
 }

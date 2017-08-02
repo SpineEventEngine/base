@@ -2,12 +2,11 @@ package io.spine.protobuf;
 
 import com.google.protobuf.Message;
 
-import javax.annotation.Nullable;
-
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.lang.String.format;
 
 /**
- * Signals an error working with a protobuf message field.
+ * Signals an error working with a Protobuf message field.
  *
  * @author Alexander Yevsyukov
  */
@@ -20,13 +19,13 @@ public class MessageFieldException extends RuntimeException {
      *
      * @param protobufMessage    a Protobuf message object working with a field of which caused
      *                           an error
-     * @param errorMessageFormat a formatted string for error message
+     * @param errorMessageFormat a format string for the error message
      * @param params             error message parameters
      */
     public MessageFieldException(Message protobufMessage,
                                  String errorMessageFormat,
-                                 @Nullable Object... params) {
-        super(formatMessage(checkNotNull(errorMessageFormat), params));
+                                 Object... params) {
+        super(format(checkNotNull(errorMessageFormat), params));
         this.protobufMessage = checkNotNull(protobufMessage);
     }
 
@@ -45,12 +44,5 @@ public class MessageFieldException extends RuntimeException {
      */
     public Message getProtobufMessage() {
         return protobufMessage;
-    }
-
-    private static String formatMessage(String format, @Nullable Object... params) {
-        if (params == null) {
-            return format;
-        }
-        return String.format(format, params);
     }
 }
