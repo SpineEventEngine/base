@@ -19,29 +19,64 @@
  */
 package io.spine.base;
 
+import com.google.common.base.Optional;
+import com.google.protobuf.Any;
 import com.google.protobuf.GeneratedMessageV3;
-import com.google.protobuf.StringValue;
 import com.google.protobuf.util.Timestamps;
+import io.spine.Identifier;
+import org.junit.Before;
 import org.junit.Test;
 
-import static io.spine.Identifier.newUuid;
-import static io.spine.protobuf.TypeConverter.toMessage;
+import static io.spine.test.TestValues.newUuidValue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 /**
  * @author Alex Tymchenko
+ * @author Alexander Yevsyukov
  */
 public class ThrowableMessageShould {
 
+    private GeneratedMessageV3 message;
+    private ThrowableMessage throwableMessage;
+    private Any producer;
+
+    @Before
+    public void setUp() {
+        message = newUuidValue();
+        throwableMessage = new TestThrowableMessage(message);
+        producer = Identifier.pack(getClass().getName());
+    }
+
     @Test
-    public void create_instance() {
-        final StringValue message = toMessage(newUuid());
-
-        final ThrowableMessage throwableMessage = new TestThrowableMessage(message);
-
+    public void return_message_thrown() {
         assertEquals(message, throwableMessage.getMessageThrown());
+    }
+
+    @Test
+    public void have_timestamp() {
         assertTrue(Timestamps.isValid(throwableMessage.getTimestamp()));
+    }
+
+    @Test
+    public void init_producer() {
+        assertFalse(throwableMessage.producerId()
+                                    .isPresent());
+
+        final ThrowableMessage retVal = throwableMessage.initProducer(producer);
+
+        assertSame(throwableMessage, retVal);
+        final Optional<Any> optional = throwableMessage.producerId();
+        assertTrue(optional.isPresent());
+        assertEquals(producer, optional.get());
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void not_allow_repeated_producer_initialization() {
+        throwableMessage.initProducer(producer)
+                        .initProducer(producer);
     }
 
     /**
