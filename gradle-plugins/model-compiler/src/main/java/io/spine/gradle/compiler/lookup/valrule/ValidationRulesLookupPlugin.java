@@ -51,7 +51,7 @@ import static org.slf4j.LoggerFactory.getLogger;
  * Finds Protobuf definitions of validation rules and creates a {@code .properties} file,
  * which contains entries like:
  *
- * <p>{@code VALIDATION_RULE_TYPE=MESSAGE_TYPE_FOR_VALIDATION_RULE.FIELD_NAME}
+ * <p>{@code foo.bar.ValidationRule=alpha.beta.TargetMessage.name_of_field_for_rule}.
  *
  * @author Dmytro Grankin
  */

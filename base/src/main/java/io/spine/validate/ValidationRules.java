@@ -33,15 +33,20 @@ import static io.spine.util.Exceptions.newIllegalStateException;
 import static io.spine.util.PropertyFiles.loadAllProperties;
 
 /**
- * {@code ValidationRules} provides access to a map
- * from a validation rule descriptor to the field descriptor of the rule target.
+ * {@code ValidationRules} provides access to a map from
+ * a {@linkplain io.spine.option.OptionsProto#validationOf validation rule} descriptor to
+ * the field descriptor of the rule target.
+ *
+ * <p>During initialization of this class, definitions of validation rules are
+ * {@linkplain Builder#put(Properties) validated}. If an invalid validation rule was found,
+ * a runtime exception will be raised.
  *
  * @author Dmytro Grankin
  */
 class ValidationRules {
 
     /**
-     * A path to the file, which contains validation rules and their target fields paths.
+     * A name of the file, which contains validation rules and their target fields paths.
      */
     @SuppressWarnings("DuplicateStringLiteralInspection") // To avoid the undesirable dependency
                                                           // on the model compiler.
