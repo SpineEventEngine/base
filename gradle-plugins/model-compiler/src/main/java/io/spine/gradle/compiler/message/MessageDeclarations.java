@@ -25,7 +25,7 @@ import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 
 import java.util.Collection;
-import java.util.Collections;
+import java.util.Deque;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newLinkedList;
@@ -48,8 +48,8 @@ public class MessageDeclarations {
      * @param predicate       the predicate to test a message
      * @return the message declarations
      */
-    public static Collection<MessageDeclaration> find(Collection<FileDescriptorProto> fileDescriptors,
-                                                      Predicate<DescriptorProto> predicate) {
+    public static Collection<MessageDeclaration> find(
+            Collection<FileDescriptorProto> fileDescriptors, Predicate<DescriptorProto> predicate) {
         final List<MessageDeclaration> result = newLinkedList();
         for (FileDescriptorProto fileDescriptor : fileDescriptors) {
             final Collection<MessageDeclaration> declarationsFromFile = scanFile(fileDescriptor,
@@ -77,22 +77,20 @@ public class MessageDeclarations {
 
     private static Collection<MessageDeclaration> scanNestedTypesRecursively(
             MessageDeclaration declaration, Predicate<DescriptorProto> predicate) {
+        final List<MessageDeclaration> result = newLinkedList();
         final List<DescriptorProto> nestedTypes = declaration.getDescriptor()
                                                              .getNestedTypeList();
-        if (nestedTypes.isEmpty()) {
-            return Collections.emptyList();
-        }
+        final Deque<DescriptorProto> deque = newLinkedList(nestedTypes);
 
-        final List<MessageDeclaration> result = newLinkedList();
-        for (DescriptorProto nestedType : nestedTypes) {
-            final MessageDeclaration nestedTypeDeclaration = declaration.forNested(nestedType);
-            if (predicate.apply(nestedType)) {
-                result.add(nestedTypeDeclaration);
+        while (!deque.isEmpty()) {
+            final DescriptorProto nestedMessage = deque.pollFirst();
+            final MessageDeclaration nestedDeclaration = declaration.forNested(nestedMessage);
+
+            if (predicate.apply(nestedMessage)) {
+                result.add(nestedDeclaration);
             }
 
-            final Collection<MessageDeclaration> nestedDeclaration =
-                    scanNestedTypesRecursively(nestedTypeDeclaration, predicate);
-            result.addAll(nestedDeclaration);
+            deque.addAll(nestedMessage.getNestedTypeList());
         }
         return result;
     }
