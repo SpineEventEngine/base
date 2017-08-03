@@ -1,0 +1,14 @@
+plugins {
+    id 'java'
+    id 'io.spine.tools.protobuf-javadoc-plugin' apply false
+}
+
+apply plugin: 'io.spine.tools.protobuf-javadoc-plugin'
+
+codestyleChecker {
+
+    javadocLinkChecker {
+        threshold = thresholdValue
+        reportType = reportTypeValue
+    }
+}
