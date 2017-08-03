@@ -8,4 +8,5 @@ project(':model-compiler').projectDir = new File('./gradle-plugins/model-compile
 
 include 'base'
 include 'testutil-base'
+include 'protoc-plugin'
 

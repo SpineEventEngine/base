@@ -1,0 +1,5 @@
+group 'io.spine.tools'
+
+dependencies {
+
+}
