@@ -25,7 +25,6 @@ import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.EnumDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
-import com.google.protobuf.DescriptorProtos.FileOptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,6 +36,7 @@ import java.util.Map;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Lists.newLinkedList;
 import static io.spine.gradle.compiler.option.UnknownOptions.getUnknownOptionValue;
+import static io.spine.gradle.compiler.util.JavaCode.getOuterClassName;
 import static io.spine.option.OptionsProto.TYPE_URL_PREFIX_FIELD_NUMBER;
 
 /**
@@ -54,9 +54,6 @@ public class ProtoToJavaTypeMapper {
 
     private static final String GOOGLE_TYPE_URL_PREFIX = "type.googleapis.com";
     private static final String PROTO_TYPE_URL_SEPARATOR = "/";
-
-    private static final String PROTO_FILE_NAME_SEPARATOR = "_";
-    private static final int EXPECTED_MAX_CLASSNAME_LENGTH = 128;
 
     private final FileDescriptorProto file;
 
@@ -220,47 +217,21 @@ public class ProtoToJavaTypeMapper {
     }
 
     private static String getCommonOuterJavaClassPrefix(FileDescriptorProto file) {
-        String commonOuterClass = "";
-        final FileOptions options = file.getOptions();
-        if (!options.getJavaMultipleFiles()) {
-            final String javaOuterClassname = options.getJavaOuterClassname();
-            commonOuterClass = javaOuterClassname.isEmpty()
-                               ? toClassName(file.getName())
-                               : javaOuterClassname;
-        }
+        final String commonOuterClass = getOuterClassName(file);
         final String result = commonOuterClass.isEmpty()
                               ? ""
                               : (commonOuterClass + JAVA_INNER_CLASS_SEPARATOR);
         return result;
     }
 
-    private static String getParentTypesPrefix(
-            Collection<String> parentTypeNames, String separator) {
+    private static String getParentTypesPrefix(Collection<String> parentTypeNames,
+                                               String separator) {
         if (parentTypeNames.isEmpty()) {
             return "";
         }
         final String result = Joiner.on(separator)
                                     .join(parentTypeNames) + separator;
         return result;
-    }
-
-    /**
-     * Converts `.proto` file name to Java class name,
-     * for example: `my_test.proto` to `MyTest`.
-     */
-    private static String toClassName(String fullFileName) {
-        final String fileName = fullFileName.substring(fullFileName.lastIndexOf('/') + 1,
-                                                       fullFileName.lastIndexOf(DOT));
-        StringBuilder builder = new StringBuilder(EXPECTED_MAX_CLASSNAME_LENGTH);
-        final String[] parts = fileName.split(PROTO_FILE_NAME_SEPARATOR);
-        for (String part : parts) {
-            final String firstChar = part.substring(0, 1)
-                                         .toUpperCase();
-            final String partProcessed = firstChar + part.substring(1)
-                                                         .toLowerCase();
-            builder.append(partProcessed);
-        }
-        return builder.toString();
     }
 
     private static Logger log() {
