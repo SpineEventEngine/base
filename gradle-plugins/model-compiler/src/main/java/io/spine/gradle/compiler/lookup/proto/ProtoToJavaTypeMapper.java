@@ -35,7 +35,7 @@ import java.util.Map;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Lists.newLinkedList;
-import static io.spine.gradle.compiler.option.UnknownOptions.getUnknownOptionValue;
+import static io.spine.option.UnknownOptions.getUnknownOptionValue;
 import static io.spine.gradle.compiler.util.JavaCode.getOuterClassName;
 import static io.spine.option.OptionsProto.TYPE_URL_PREFIX_FIELD_NUMBER;
 

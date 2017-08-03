@@ -51,8 +51,8 @@ import static io.spine.gradle.compiler.Extension.getTestDescriptorSetPath;
 import static io.spine.gradle.compiler.Extension.getTestTargetGenResourcesDir;
 import static io.spine.gradle.compiler.message.MessageDeclarations.find;
 import static io.spine.gradle.compiler.util.DescriptorSetUtil.getProtoFileDescriptors;
-import static io.spine.gradle.compiler.option.UnknownOptions.getUnknownOptionValue;
-import static io.spine.gradle.compiler.option.UnknownOptions.hasUnknownOption;
+import static io.spine.option.UnknownOptions.getUnknownOptionValue;
+import static io.spine.option.UnknownOptions.hasUnknownOption;
 import static io.spine.option.OptionsProto.VALIDATION_OF_FIELD_NUMBER;
 import static io.spine.validate.ValidationRules.getValRulesPropsFileName;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -122,7 +122,7 @@ public class ValidationRulesLookupPlugin extends SpinePlugin {
     }
 
     private static void writeProperties(String targetGeneratedResourcesDir,
-                                        Collection<MessageDeclaration> ruleDeclarations) {
+                                        Iterable<MessageDeclaration> ruleDeclarations) {
         final Map<String, String> propsMap = newHashMap();
         for (MessageDeclaration declaration : ruleDeclarations) {
             final TypeName typeName = declaration.getTypeName();

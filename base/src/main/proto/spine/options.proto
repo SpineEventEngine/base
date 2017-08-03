@@ -308,6 +308,7 @@ extend google.protobuf.MessageOptions {
     //
     // Target of a validation rule should be specified according to the pattern as follows:
     // `package.MessageName.field_name`.
+    // If the rule has multiple targets, they have to be separated with comma.
     //
     // In the following example a `StringChange` message defines a value object,
     // that is reused in other messages. However, in each of the use-cases we want

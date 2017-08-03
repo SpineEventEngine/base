@@ -162,7 +162,7 @@ abstract class Annotator<O extends ExtendableMessage, D extends GeneratedMessage
      * @param descriptor the descriptor to extract {@link #option} value.
      * @return the option value
      * @see #shouldAnnotate(GeneratedMessageV3)
-     * @see io.spine.gradle.compiler.option.UnknownOptions
+     * @see io.spine.option.UnknownOptions
      */
     protected abstract String getRawOptionValue(D descriptor);
 

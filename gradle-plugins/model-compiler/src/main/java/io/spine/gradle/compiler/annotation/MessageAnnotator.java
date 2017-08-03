@@ -31,7 +31,7 @@ import java.util.Collection;
 import java.util.List;
 
 import static io.spine.gradle.compiler.util.JavaSources.getFilePath;
-import static io.spine.gradle.compiler.option.UnknownOptions.getUnknownOptionValue;
+import static io.spine.option.UnknownOptions.getUnknownOptionValue;
 
 /**
  * A message annotator.
