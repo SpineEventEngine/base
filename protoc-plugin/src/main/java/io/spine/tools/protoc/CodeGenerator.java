@@ -50,8 +50,8 @@ import static java.lang.String.format;
  */
 public final class CodeGenerator {
 
-    private static final String EVERY_IS_OPTION_NAME = null;
-    private static final String IS_OPTION_NAME = null;
+    private static final String EVERY_IS_OPTION_NAME = "every_is";
+    private static final String IS_OPTION_NAME = "is";
 
     private static final String INSERTION_POINT_IMPLEMENTS =
             "@@protoc_insertion_point(message_implements:%s)";
