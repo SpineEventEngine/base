@@ -23,27 +23,20 @@ package io.spine.tools.protoc;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
 
-import java.io.InputStream;
-import java.io.OutputStream;
-
 /**
  * @author Dmytro Dashenkov
  */
 public class Plugin {
-
-    private static final InputStream IN = System.in;
-
-    @SuppressWarnings("UseOfSystemOutOrSystemErr")
-        // Used to write the plugin output to protoc.
-    private static final OutputStream OUT = System.out;
 
     private Plugin() {
         // Prevent instantiation.
     }
 
     public static void main(String[] args) {
-        final CodeGeneratorRequest request = MessageParser.readRequest(IN);
+        @SuppressWarnings("UseOfSystemOutOrSystemErr") // As part of the `protoc` API
+        final MessageParser parser = new MessageParser(System.in, System.out);
+        final CodeGeneratorRequest request = parser.readRequest();
         final CodeGeneratorResponse response = CodeGenerator.generate(request);
-        MessageParser.writeResponse(response, OUT);
+        parser.writeResponse(response);
     }
 }

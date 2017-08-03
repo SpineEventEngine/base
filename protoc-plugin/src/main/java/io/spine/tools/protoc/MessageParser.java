@@ -36,11 +36,15 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public final class MessageParser {
 
-    private MessageParser() {
-        // Prevent utility class instantiation.
+    private final InputStream in;
+    private final OutputStream out;
+
+    public MessageParser(InputStream in, OutputStream out) {
+        this.in = in;
+        this.out = out;
     }
 
-    public static CodeGeneratorRequest readRequest(InputStream in) {
+    public CodeGeneratorRequest readRequest() {
         checkNotNull(in);
         final CodedInputStream stream = CodedInputStream.newInstance(in);
         try {
@@ -51,7 +55,7 @@ public final class MessageParser {
         }
     }
 
-    public static void writeResponse(CodeGeneratorResponse response, OutputStream out) {
+    public void writeResponse(CodeGeneratorResponse response) {
         checkNotNull(response);
         checkNotNull(out);
         final CodedOutputStream stream = CodedOutputStream.newInstance(out);
