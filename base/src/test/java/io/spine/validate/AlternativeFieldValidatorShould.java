@@ -21,7 +21,6 @@
 package io.spine.validate;
 
 import com.google.protobuf.Descriptors.Descriptor;
-import io.spine.base.FieldPath;
 import io.spine.test.validate.msg.altfields.MessageWithMissingField;
 import io.spine.test.validate.msg.altfields.PersonName;
 import org.junit.Before;
@@ -34,14 +33,14 @@ import static org.junit.Assert.assertTrue;
 
 public class AlternativeFieldValidatorShould {
 
-    private final FieldPath rootFieldPath = FieldPath.getDefaultInstance();
+    private static final FieldContext EMPTY_CONTEXT = FieldContext.empty();
 
     private AlternativeFieldValidator validator;
 
     @Before
     public void setUp() {
         final Descriptor descriptor = PersonName.getDescriptor();
-        validator = new AlternativeFieldValidator(descriptor, rootFieldPath);
+        validator = new AlternativeFieldValidator(descriptor, EMPTY_CONTEXT);
     }
 
     @Test
@@ -83,7 +82,7 @@ public class AlternativeFieldValidatorShould {
     public void report_missing_field() {
         final AlternativeFieldValidator testee =
                 new AlternativeFieldValidator(MessageWithMissingField.getDescriptor(),
-                                              rootFieldPath);
+                                              EMPTY_CONTEXT);
         final MessageWithMissingField msg = MessageWithMissingField.newBuilder()
                                                                    .setPresent(true)
                                                                    .build();

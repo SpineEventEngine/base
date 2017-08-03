@@ -17,11 +17,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.gradle.compiler.lookup.enrichments;
+package io.spine.gradle.compiler.lookup.enrichment;
 
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.gradle.SpinePlugin;
-import io.spine.gradle.compiler.util.DescriptorSetUtil;
+import io.spine.gradle.compiler.util.DescriptorSetUtil.IsNotGoogleProto;
 import io.spine.gradle.compiler.util.PropertiesWriter;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
@@ -110,15 +110,12 @@ public class EnrichmentLookupPlugin extends SpinePlugin {
         };
     }
 
-    private static void findEnrichmentsAndWriteProps(
-            // It's important to have a self-explanatory name for this variable.
-            String targetGeneratedResourcesDir,
-            String descriptorSetPath) {
+    private static void findEnrichmentsAndWriteProps(String targetGeneratedResourcesDir,
+                                                     String descriptorSetPath) {
         log().debug("Enrichment lookup started");
 
         final Map<String, String> propsMap = newHashMap();
-        final DescriptorSetUtil.IsNotGoogleProto protoFilter =
-                new DescriptorSetUtil.IsNotGoogleProto();
+        final IsNotGoogleProto protoFilter = new IsNotGoogleProto();
         final Collection<FileDescriptorProto> files = getProtoFileDescriptors(descriptorSetPath,
                                                                               protoFilter);
         for (FileDescriptorProto file : files) {

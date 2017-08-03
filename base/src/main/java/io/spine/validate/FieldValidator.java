@@ -20,6 +20,7 @@
 
 package io.spine.validate;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.FieldOptions;
 import com.google.protobuf.Descriptors.FieldDescriptor;
@@ -55,7 +56,7 @@ abstract class FieldValidator<V> {
 
     private final FieldDescriptor fieldDescriptor;
     private final ImmutableList<V> values;
-    private final FieldPath fieldPath;
+    private final FieldContext fieldContext;
 
     private final List<ConstraintViolation> violations = newLinkedList();
 
@@ -75,21 +76,17 @@ abstract class FieldValidator<V> {
     /**
      * Creates a new validator instance.
      *
-     * @param descr         a descriptor of the field to validate
-     * @param values        values to validate
-     * @param rootFieldPath a path to the root field (if present)
-     * @param strict        if {@code true} the validator would assume that the field is required,
-     *                      even if corresponding field option is not present
+     * @param fieldContext the context of the field to validate
+     * @param values       values to validate
+     * @param strict       if {@code true} the validator would assume that the field
+     *                     is required, even if corresponding field option is not present
      */
-    protected FieldValidator(FieldDescriptor descr,
+    protected FieldValidator(FieldContext fieldContext,
                              ImmutableList<V> values,
-                             FieldPath rootFieldPath,
                              boolean strict) {
-        this.fieldDescriptor = descr;
+        this.fieldDescriptor = fieldContext.getTarget();
+        this.fieldContext = fieldContext;
         this.values = values;
-        this.fieldPath = rootFieldPath.toBuilder()
-                                      .addFieldName(fieldDescriptor.getName())
-                                      .build();
         this.strict = strict;
         final FileDescriptor file = fieldDescriptor.getFile();
         this.isCommandsFile = CodeLayout.isCommandsFile(file);
@@ -272,13 +269,19 @@ abstract class FieldValidator<V> {
     /**
      * Returns a field validation option.
      *
-     * @param <T>       the type of option
      * @param extension an extension key used to obtain a validation option
+     * @param <T>       the type of the option
      */
     protected final <T> T getFieldOption(GeneratedExtension<FieldOptions, T> extension) {
-        final T option = fieldDescriptor.getOptions()
-                                        .getExtension(extension);
-        return option;
+        final Optional<T> externalOption = ValidationRuleOptions.getOptionValue(fieldContext,
+                                                                                extension);
+        if (externalOption.isPresent()) {
+            return externalOption.get();
+        }
+
+        final T ownOption = fieldDescriptor.getOptions()
+                                           .getExtension(extension);
+        return ownOption;
     }
 
     protected final boolean shouldValidate() {
@@ -307,10 +310,18 @@ abstract class FieldValidator<V> {
                 || fieldDescriptor.isMapField();
     }
 
+    /**
+     * Obtains field context for the validator.
+     *
+     * @return the field context
+     */
+    protected FieldContext getFieldContext() {
+        return fieldContext;
+    }
 
     /** Returns a path to the current field. */
     protected FieldPath getFieldPath() {
-        return fieldPath;
+        return fieldContext.getFieldPath();
     }
 
     private enum LogSingleton {

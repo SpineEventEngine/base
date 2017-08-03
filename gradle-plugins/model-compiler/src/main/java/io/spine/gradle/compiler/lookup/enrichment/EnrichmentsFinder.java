@@ -17,7 +17,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.gradle.compiler.lookup.enrichments;
+package io.spine.gradle.compiler.lookup.enrichment;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.HashMultimap;
@@ -44,6 +44,9 @@ import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.Lists.newLinkedList;
 import static io.spine.gradle.compiler.util.UnknownOptions.getUnknownOptionValue;
 import static io.spine.gradle.compiler.util.UnknownOptions.hasUnknownOption;
+import static io.spine.option.OptionsProto.BY_FIELD_NUMBER;
+import static io.spine.option.OptionsProto.ENRICHMENT_FIELD_NUMBER;
+import static io.spine.option.OptionsProto.ENRICHMENT_FOR_FIELD_NUMBER;
 import static java.lang.String.format;
 import static java.util.regex.Pattern.compile;
 
@@ -54,21 +57,6 @@ import static java.util.regex.Pattern.compile;
  * @author Alex Tymchenko
  */
 class EnrichmentsFinder {
-
-    /**
-     * The field number of the field option `by` defined in `Spine/core-java`.
-     */
-    private static final Long OPTION_NUMBER_ENRICH_BY = 73900L;
-
-    /**
-     * The field number of the message option `enrichment_for` defined in `Spine/core-java`.
-     */
-    private static final Long OPTION_NUMBER_ENRICHMENT_FOR = 73922L;
-
-    /**
-     * The field number of the message option `enrichment` defined in `Spine/core-java`.
-     */
-    private static final Long OPTION_NUMBER_ENRICHMENT = 73923L;
 
     private static final String TARGET_NAME_SEPARATOR = ",";
     private static final String PROTO_TYPE_SEPARATOR = ".";
@@ -269,7 +257,7 @@ class EnrichmentsFinder {
     }
 
     private String parseEventNamesFromMsgOption(DescriptorProto msg) {
-        final String eventNamesStr = getUnknownOptionValue(msg, OPTION_NUMBER_ENRICHMENT_FOR);
+        final String eventNamesStr = getUnknownOptionValue(msg, ENRICHMENT_FOR_FIELD_NUMBER);
         if (eventNamesStr == null) {
             return null;
         }
@@ -281,7 +269,7 @@ class EnrichmentsFinder {
     @SuppressWarnings("InstanceMethodNamingConvention")
     // It's important to keep naming self-explanatory.
     private Collection<String> parseEnrichmentNamesFromMsgOption(DescriptorProto msg) {
-        final String enrichmentNames = getUnknownOptionValue(msg, OPTION_NUMBER_ENRICHMENT);
+        final String enrichmentNames = getUnknownOptionValue(msg, ENRICHMENT_FIELD_NUMBER);
         if (enrichmentNames == null) {
             return null;
         }
@@ -318,7 +306,7 @@ class EnrichmentsFinder {
     }
 
     private static boolean hasOptionEnrichBy(FieldDescriptorProto field) {
-        return hasUnknownOption(field, OPTION_NUMBER_ENRICH_BY);
+        return hasUnknownOption(field, BY_FIELD_NUMBER);
     }
 
     /**
@@ -327,7 +315,7 @@ class EnrichmentsFinder {
      */
     @SuppressWarnings("IndexOfReplaceableByContains") // On performance purposes
     private static Collection<String> parseEventNameFromOptBy(FieldDescriptorProto field) {
-        final String byArgument = getUnknownOptionValue(field, OPTION_NUMBER_ENRICH_BY);
+        final String byArgument = getUnknownOptionValue(field, BY_FIELD_NUMBER);
         final String[] fieldFqnsArray;
 
         if (byArgument.indexOf(PIPE_SEPARATOR) < 0) {

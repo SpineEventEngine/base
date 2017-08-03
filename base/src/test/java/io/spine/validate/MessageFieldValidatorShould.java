@@ -2,7 +2,6 @@ package io.spine.validate;
 
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
-import io.spine.base.FieldPath;
 import io.spine.test.validate.msg.InvalidMessage;
 import io.spine.test.validate.msg.MessageWithMapMessageField;
 import io.spine.test.validate.msg.MessageWithRepeatedRequiredValidatedMessageField;
@@ -79,11 +78,9 @@ public class MessageFieldValidatorShould extends FieldValidatorShould<Message> {
         return InvalidMessage.getDefaultInstance();
     }
 
-    private MessageFieldValidator getValidator(FieldDescriptor field,
-                                               List<? extends Message> values) {
-        return new MessageFieldValidator(field,
-                                         values,
-                                         FieldPath.getDefaultInstance(),
-                                         false);
+    private static MessageFieldValidator getValidator(FieldDescriptor field,
+                                                      List<? extends Message> values) {
+        final FieldContext context = FieldContext.create(field);
+        return new MessageFieldValidator(context, values, false);
     }
 }

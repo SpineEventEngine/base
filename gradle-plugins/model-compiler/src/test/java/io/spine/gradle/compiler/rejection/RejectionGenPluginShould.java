@@ -23,95 +23,54 @@ package io.spine.gradle.compiler.rejection;
 import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.ConstructorDoc;
 import com.sun.javadoc.RootDoc;
-import io.spine.gradle.compiler.Given.RejectionsGenerationConfigurator;
-import io.spine.gradle.compiler.Given.RejectionsJavadocConfigurator;
-import org.gradle.tooling.BuildLauncher;
-import org.gradle.tooling.GradleConnectionException;
-import org.gradle.tooling.ProjectConnection;
-import org.gradle.tooling.ResultHandler;
+import io.spine.gradle.compiler.GradleProject;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
+import java.util.Arrays;
+import java.util.Collection;
 
 import static io.spine.gradle.TaskName.COMPILE_JAVA;
-import static io.spine.gradle.compiler.Given.RejectionsJavadocConfigurator.TEST_SOURCE;
-import static io.spine.gradle.compiler.Given.RejectionsJavadocConfigurator.getExpectedClassComment;
-import static io.spine.gradle.compiler.Given.RejectionsJavadocConfigurator.getExpectedCtorComment;
+import static io.spine.gradle.compiler.rejection.given.Given.getExpectedClassComment;
+import static io.spine.gradle.compiler.rejection.given.Given.getExpectedCtorComment;
+import static io.spine.gradle.compiler.rejection.given.Given.newProjectWithRejectionsJavadoc;
+import static io.spine.gradle.compiler.rejection.given.Given.rejectionsJavadocSourceName;
 import static org.junit.Assert.assertEquals;
 
 /**
  * @author Dmytro Grankin
  */
-@SuppressWarnings("UseOfSystemOutOrSystemErr")  // It's OK: running a Gradle build inside.
 public class RejectionGenPluginShould {
 
-    @SuppressWarnings("PublicField") // Rules should be public.
     @Rule
     public final TemporaryFolder testProjectDir = new TemporaryFolder();
 
     @Test
     public void compile_generated_rejections() throws Exception {
-        final CountDownLatch countDownLatch = new CountDownLatch(1);
-
-        final ProjectConnection connection =
-                new RejectionsGenerationConfigurator(testProjectDir).configure();
-        final BuildLauncher launcher = connection.newBuild();
-
-        launcher.setStandardError(System.out)
-                .forTasks(COMPILE_JAVA.getValue());
-        try {
-            launcher.run(new ResultHandler<Void>() {
-                @Override
-                public void onComplete(Void aVoid) {
-                    // Test passed.
-                    countDownLatch.countDown();
-                }
-
-                @Override
-                public void onFailure(GradleConnectionException e) {
-                    throw e;
-                }
-            });
-        } finally {
-            connection.close();
-        }
-        countDownLatch.await(100, TimeUnit.MILLISECONDS);
+        final Collection<String> files = Arrays.asList("test_rejections.proto",
+                                                       "outer_class_by_file_name_rejections.proto",
+                                                       "outer_class_set_rejections.proto",
+                                                       "deps/deps.proto");
+        final GradleProject project = GradleProject.newBuilder()
+                                                   .setProjectName("rejections-gen-plugin-test")
+                                                   .setProjectFolder(testProjectDir)
+                                                   .addProtoFiles(files)
+                                                   .build();
+        project.executeTask(COMPILE_JAVA);
     }
 
     @Test
     public void generate_rejection_javadoc() throws Exception {
-        final CountDownLatch countDownLatch = new CountDownLatch(1);
+        final GradleProject project = newProjectWithRejectionsJavadoc(testProjectDir);
+        project.executeTask(COMPILE_JAVA);
 
-        final ProjectConnection connection
-                = new RejectionsJavadocConfigurator(testProjectDir).configure();
-        final BuildLauncher launcher = connection.newBuild();
+        final RootDoc root = RootDocReceiver.getRootDoc(testProjectDir,
+                                                        rejectionsJavadocSourceName());
+        final ClassDoc rejectionDoc = root.classes()[0];
+        final ConstructorDoc rejectionCtorDoc = rejectionDoc.constructors()[0];
 
-        launcher.setStandardError(System.out)
-                .forTasks(COMPILE_JAVA.getValue());
-        try {
-            launcher.run(new ResultHandler<Void>() {
-                @Override
-                public void onComplete(Void aVoid) {
-                    final RootDoc root = RootDocReceiver.getRootDoc(testProjectDir, TEST_SOURCE);
-                    final ClassDoc rejectionDoc = root.classes()[0];
-                    final ConstructorDoc rejectionCtorDoc = rejectionDoc.constructors()[0];
-
-                    assertEquals(getExpectedClassComment(), rejectionDoc.getRawCommentText());
-                    assertEquals(getExpectedCtorComment(), rejectionCtorDoc.getRawCommentText());
-                    countDownLatch.countDown();
-                }
-
-                @Override
-                public void onFailure(GradleConnectionException e) {
-                    throw e;
-                }
-            });
-        } finally {
-            connection.close();
-        }
-        countDownLatch.await(100, TimeUnit.MILLISECONDS);
+        assertEquals(getExpectedClassComment(), rejectionDoc.getRawCommentText());
+        assertEquals(getExpectedCtorComment(), rejectionCtorDoc.getRawCommentText());
     }
 }

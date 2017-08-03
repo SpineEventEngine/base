@@ -18,36 +18,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.validate;
-
-import static java.lang.Math.abs;
-
 /**
- * Validates fields of {@link Long} number types.
- *
- * @author Alexander Litus
+ * Plugins and utilities for validation rules processing.
  */
-class LongFieldValidator extends NumberFieldValidator<Long> {
 
-    /**
-     * Creates a new validator instance.
-     *
-     * @param fieldContext the context of the field to validate
-     * @param fieldValues  values to validate
-     */
-    LongFieldValidator(FieldContext fieldContext, Object fieldValues) {
-        super(fieldContext, FieldValidator.<Long>toValueList(fieldValues));
-    }
-
-    @Override
-    protected Long toNumber(String value) {
-        final Long number = Long.valueOf(value);
-        return number;
-    }
-
-    @Override
-    protected Long getAbs(Long value) {
-        final Long abs = abs(value);
-        return abs;
-    }
-}
+package io.spine.gradle.compiler.lookup.valrule;
