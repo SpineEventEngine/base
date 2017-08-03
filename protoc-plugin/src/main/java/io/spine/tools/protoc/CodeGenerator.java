@@ -30,16 +30,17 @@ import com.google.protobuf.DescriptorProtos.UninterpretedOption;
 import com.google.protobuf.DescriptorProtos.UninterpretedOption.NamePart;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import com.google.protobuf.compiler.PluginProtos.Version;
-import io.spine.type.TypeName;
 
 import javax.annotation.Nullable;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Iterables.any;
-import static com.google.common.collect.Iterables.find;
+import static com.google.common.collect.Lists.newLinkedList;
 import static com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import static com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
 import static java.lang.String.format;
@@ -54,6 +55,8 @@ public final class CodeGenerator {
 
     private static final String INSERTION_POINT_IMPLEMENTS =
             "@@protoc_insertion_point(message_implements:%s)";
+
+    private static final String PACKAGE_DELIMITER = ".";
 
     private CodeGenerator() {
         // Prevent utility class instantiation.
@@ -71,24 +74,57 @@ public final class CodeGenerator {
     }
 
     private static CodeGeneratorResponse scan(Iterable<FileDescriptorProto> descriptors,
-                                                        Iterable<String> filePaths) {
+                                              Iterable<String> filePaths) {
+        final Collection<File> result = newLinkedList();
         final Iterator<FileDescriptorProto> descriptorsIterator = descriptors.iterator();
-        for (Iterator<String> files = filePaths.iterator(); files.hasNext(); ) {
-            final String filePath = files.next();
+        for (final String filePath : filePaths) {
             final FileDescriptorProto descriptor = descriptorsIterator.next();
-            final Optional<String> value = getEveryIs(descriptor);
-            if (value.isPresent()) {
-                // ...
+            final File file = prepareFile(filePath);
+            final Optional<String> everyIsValue = getEveryIs(descriptor);
+            if (everyIsValue.isPresent()) {
+                result.addAll(collectMessages(descriptor, file, everyIsValue.get()));
             } else {
-                // ...
+                result.addAll(scanMessages(descriptor, file));
             }
         }
+        final CodeGeneratorResponse response = CodeGeneratorResponse.newBuilder()
+                                                                    .addAllFile(result)
+                                                                    .build();
+        return response;
+    }
+
+    private static Collection<File> scanMessages(FileDescriptorProto file,
+                                                 File srcFile) {
+        final Collection<File> result = newLinkedList();
+        for (DescriptorProto messageType : file.getMessageTypeList()) {
+            final Optional<String> isValue = getIs(messageType);
+            if (isValue.isPresent()) {
+                final String interfaceName = prepareInterfaceFqn(isValue.get(), file);
+                final File messageFile = implementInterface(srcFile,
+                                                            interfaceName,
+                                                            messageType.getName());
+                result.add(messageFile);
+            }
+        }
+        return result;
+    }
+
+    private static Collection<File> collectMessages(FileDescriptorProto descriptor,
+                                                    File file,
+                                                    String interfaceName) {
+        final Collection<File> result = newLinkedList();
+        for (DescriptorProto message : descriptor.getMessageTypeList()) {
+            final String interfaceTypeName = prepareInterfaceFqn(interfaceName, descriptor);
+            final File messageFile = implementInterface(file, interfaceTypeName, message.getName());
+            result.add(messageFile);
+        }
+        return result;
     }
 
     private static File implementInterface(File srcFile,
                                            String interfaceTypeName,
-                                           TypeName messageType) {
-        final String insertionPoint = format(INSERTION_POINT_IMPLEMENTS, messageType);
+                                           String messageTypeName) {
+        final String insertionPoint = format(INSERTION_POINT_IMPLEMENTS, messageTypeName);
         final File result = srcFile.toBuilder()
                                    .setInsertionPoint(insertionPoint)
                                    .setContent(interfaceTypeName + ',')
@@ -96,22 +132,25 @@ public final class CodeGenerator {
         return result;
     }
 
-    private static File carryOn(File srcFile, TypeName messageType) {
-        final String insertionPoint = format(INSERTION_POINT_IMPLEMENTS, messageType);
-        final File result = srcFile.toBuilder()
-                                   .setInsertionPoint(insertionPoint)
-                                   .build();
-        return result;
-    }
-
-    private static String prepareInterfaceFqn() {
-
+    private static String prepareInterfaceFqn(String optionValue, FileDescriptorProto srcFile) {
+        checkNotNull(optionValue);
+        final String interfaceFqn;
+        if (optionValue.contains(PACKAGE_DELIMITER)) {
+            interfaceFqn = optionValue;
+        } else {
+            String javaPackage = srcFile.getOptions()
+                                        .getJavaPackage();
+            if (isNullOrEmpty(javaPackage)) {
+                javaPackage = srcFile.getPackage();
+            }
+            interfaceFqn = javaPackage + PACKAGE_DELIMITER + optionValue;
+        }
+        return interfaceFqn;
     }
 
     private static File prepareFile(String path) {
         return File.newBuilder()
                    .setName(path)
-
                    .build();
     }
 
