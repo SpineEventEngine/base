@@ -442,6 +442,9 @@ extend google.protobuf.MessageOptions {
     // Otherwise, please use fully qualified names.
     //
     string rejections = 73940;
+
+    // todo: document
+    string is = 73941;
 }
 
 extend google.protobuf.FileOptions {
@@ -467,7 +470,10 @@ extend google.protobuf.FileOptions {
     // release.
     bool beta_all = 73945;
 
-    // reserved 73946 to 73970 for future use.
+    // todo: document; think of naming
+    string every_is = 73946;
+
+    // reserved 73947 to 73970 for future use.
 }
 
 extend google.protobuf.ServiceOptions {
