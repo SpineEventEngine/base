@@ -24,15 +24,31 @@ import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
+import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import com.google.protobuf.compiler.PluginProtos.Version;
 import org.junit.Test;
 
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static io.spine.tools.protoc.CodeGenerator.INSERTION_POINT_IMPLEMENTS;
+import static java.lang.String.format;
+import static java.util.regex.Pattern.compile;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Dmytro Dashenkov
  */
 public class CodeGeneratorShould {
+
+    private static final String PACKAGE_PATH = CodeGeneratorShould.class.getPackage()
+                                                                        .getName()
+                                                                        .replace('.', '/');
+    private static final Pattern CUSTOMER_EVENT_INTERFACE_PATTERN =
+            compile("^\\s*io\\.spine\\.tools\\.protoc\\.CustomerEvent\\s*,\\s*$");
 
     @Test
     public void not_accept_nulls() {
@@ -54,6 +70,20 @@ public class CodeGeneratorShould {
                                                                  .build();
         final CodeGeneratorResponse response = CodeGenerator.generate(request);
         assertNotNull(response);
+        final List<File> files = response.getFileList();
+        assertEquals(2, files.size());
+        for (File file : files) {
+            final String name = file.getName();
+            assertTrue(name.startsWith(PACKAGE_PATH));
+
+            final String insertionPoint = file.getInsertionPoint();
+            final String messageName = file.getName().replace('/', '.');
+            assertEquals(insertionPoint, format(INSERTION_POINT_IMPLEMENTS, messageName));
+
+            final String content = file.getContent();
+            final Matcher matcher = CUSTOMER_EVENT_INTERFACE_PATTERN.matcher(content);
+            assertTrue(format("Unexpected inserted content: %s", content), matcher.matches());
+        }
     }
 
     @Test(expected = IllegalArgumentException.class)
