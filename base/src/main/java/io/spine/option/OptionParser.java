@@ -21,20 +21,17 @@
 package io.spine.option;
 
 import com.google.protobuf.GeneratedMessageV3;
-import com.google.protobuf.GeneratedMessageV3.ExtendableMessage;
 
 import java.util.Collection;
-import java.util.Collections;
 
 /**
  * A parser of Protobuf options.
  *
- * @param <O> the type of the option handled by the parser
  * @param <D> the type of the descriptor to obtain the option
  * @param <R> the type of an element to be returned after parsing
  * @author Dmytro Grankin
  */
-public interface OptionParser<O extends ExtendableMessage, D extends GeneratedMessageV3, R> {
+public interface OptionParser<D extends GeneratedMessageV3, R> {
 
     /**
      * Obtains a collection of parsed items from the option.
@@ -44,7 +41,7 @@ public interface OptionParser<O extends ExtendableMessage, D extends GeneratedMe
      * <p>If the specified descriptor does not have the option, empty collection will be returned.
      *
      * @param descriptor the descriptor to obtain the option value
-     * @return the collection of parsed items
+     * @return the collection of parsed elements
      */
     Collection<R> parse(D descriptor);
 }

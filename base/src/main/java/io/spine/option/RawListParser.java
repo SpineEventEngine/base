@@ -37,13 +37,13 @@ import static java.util.regex.Pattern.compile;
  * <p>These options represent a list of values,
  * that are separated by the {@linkplain #VALUES_SEPARATOR separator}.
  *
- * @param <O> {@inheritDoc}
- * @param <D> {@inheritDoc}
- * @param <R> {@inheritDoc}
+ * @param <O> the type of the option handled by the parser
+ * @param <D> the type of the descriptor to obtain the option
+ * @param <R> the type of an element to be returned after parsing
  * @author Dmytro Grankin
  */
 public abstract class RawListParser<O extends ExtendableMessage, D extends GeneratedMessageV3, R>
-        implements OptionParser<O, D, R> {
+        implements OptionParser<D, R> {
 
     /**
      * The separator for the list values.
@@ -54,14 +54,14 @@ public abstract class RawListParser<O extends ExtendableMessage, D extends Gener
     private static final String VALUES_SEPARATOR = ",";
     private static final Pattern PATTERN_VALUES_SEPARATOR = compile(VALUES_SEPARATOR);
 
-    private final GeneratedExtension<O, String> option;
+    private final int optionNumber;
 
     protected RawListParser(GeneratedExtension<O, String> option) {
-        this.option = checkNotNull(option);
+        this.optionNumber = checkNotNull(option).getNumber();
     }
 
     /**
-     * Splits the specified value using {@link #VALUES_SEPARATOR}.
+     * Splits the specified value using the {@linkplain #VALUES_SEPARATOR values separator}.
      *
      * @param value the option value to split
      * @return the separated parts of the value
@@ -71,8 +71,13 @@ public abstract class RawListParser<O extends ExtendableMessage, D extends Gener
         return ImmutableList.copyOf(parts);
     }
 
+    /**
+     * Obtains the number of the option to parse.
+     *
+     * @return the option number
+     */
     protected int getOptionNumber() {
-        return option.getNumber();
+        return optionNumber;
     }
 
     public static String getValuesSeparator() {
