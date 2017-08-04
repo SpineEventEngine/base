@@ -150,6 +150,25 @@ public class FieldContext {
                                                 .equals(parentFromOther.get());
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        FieldContext that = (FieldContext) o;
+
+        return descriptors.equals(that.descriptors);
+    }
+
+    @Override
+    public int hashCode() {
+        return descriptors.hashCode();
+    }
+
     private static FieldPath fieldPathOf(Iterable<FieldDescriptor> descriptors) {
         final FieldPath.Builder builder = FieldPath.newBuilder();
         for (FieldDescriptor descriptor : descriptors) {
