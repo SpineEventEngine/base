@@ -20,6 +20,7 @@
 
 package io.spine.tools.protoc;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
@@ -50,12 +51,13 @@ import static java.lang.String.format;
  */
 public final class CodeGenerator {
 
-    private static final String EVERY_IS_OPTION_NAME = "every_is";
-    private static final String IS_OPTION_NAME = "is";
-
-    private static final String INSERTION_POINT_IMPLEMENTS =
+    @VisibleForTesting
+    static final String INSERTION_POINT_IMPLEMENTS =
             "@@protoc_insertion_point(message_implements:%s)";
-
+    @VisibleForTesting
+    static final String EVERY_IS_OPTION_NAME = "every_is";
+    @VisibleForTesting
+    static final String IS_OPTION_NAME = "is";
     private static final String PACKAGE_DELIMITER = ".";
 
     private CodeGenerator() {

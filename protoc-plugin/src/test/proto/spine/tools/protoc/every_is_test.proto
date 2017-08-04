@@ -17,37 +17,28 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
+syntax = "proto3";
 
-apply plugin: 'com.google.protobuf'
+package spine.tools.protoc;
 
-buildscript {
-    repositories {
-        mavenCentral()
-        maven {
-            url = googleMavenCentralMirror
-        }
-    }
-    dependencies {
-        classpath(group: 'com.google.protobuf',
-                name: 'protobuf-gradle-plugin',
-                version: protobufGradlePluginVerison) {
-            // exclude an old Guava version
-            exclude group: 'com.google.guava'
-        }
-    }
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.spine.io";
+option java_generate_equals_and_hash = true;
+option java_multiple_files = true;
+option java_outer_classname = "EveryIsTestProto";
+option java_package = "io.spine.tools.protoc";
+
+option (every_is) = "io.spine.tools.protoc.CustomerEvent";
+
+import "google/protobuf/descriptor.proto";
+
+message CustomerCreated {
+
+    string uid = 1;
 }
 
-group 'io.spine.tools'
+message CustomerDeleted {
 
-dependencies {
-    compile project(':base')
-
-    compile "com.google.protobuf:protobuf-java:${protobufVersion}"
-}
-
-protobuf {
-    generatedFilesBaseDir = generatedRootDir
-    protoc {
-        artifact = protobufDependency
-    }
+    string uid = 1;
 }
