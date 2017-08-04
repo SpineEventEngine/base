@@ -71,17 +71,23 @@ public final class CodeGenerator {
     private static CodeGeneratorResponse scan(Iterable<FileDescriptorProto> descriptors) {
         final Collection<File> result = newLinkedList();
         for (final FileDescriptorProto descriptor : descriptors) {
-            final Optional<String> everyIsValue = getEveryIs(descriptor);
-            if (everyIsValue.isPresent()) {
-                result.addAll(collectMessages(descriptor, everyIsValue.get()));
-            } else {
-                result.addAll(scanMessages(descriptor));
-            }
+            result.addAll(scanFile(descriptor));
         }
         final CodeGeneratorResponse response = CodeGeneratorResponse.newBuilder()
                                                                     .addAllFile(result)
                                                                     .build();
         return response;
+    }
+
+    private static Collection<File> scanFile(FileDescriptorProto descriptor) {
+        final Collection<File> result = newLinkedList();
+        final Optional<String> everyIsValue = getEveryIs(descriptor);
+        if (everyIsValue.isPresent()) {
+            result.addAll(collectMessages(descriptor, everyIsValue.get()));
+        } else {
+            result.addAll(scanMessages(descriptor));
+        }
+        return result;
     }
 
     private static Collection<File> scanMessages(FileDescriptorProto file) {
@@ -90,8 +96,10 @@ public final class CodeGenerator {
         for (DescriptorProto message : file.getMessageTypeList()) {
             final Optional<String> isValue = getIs(message);
             if (isValue.isPresent()) {
-                final String name = message.getName();
-                final File.Builder srcFile = prepareFile(name, javaPackage);
+                final String fileName = file.getOptions().getJavaMultipleFiles()
+                        ? message.getName()
+                        : resolveName(file);
+                final File.Builder srcFile = prepareFile(fileName, javaPackage);
                 final String interfaceName = prepareInterfaceFqn(isValue.get(), file);
                 final String messageFqn = file.getPackage() + PACKAGE_DELIMITER + message.getName();
                 final File messageFile = implementInterface(srcFile,
@@ -108,8 +116,10 @@ public final class CodeGenerator {
         final Collection<File> result = newLinkedList();
         final String javaPackage = resolvePackage(file);
         for (DescriptorProto message : file.getMessageTypeList()) {
-            final String name = message.getName();
-            final File.Builder srcFile = prepareFile(name, javaPackage);
+            final String fileName = file.getOptions().getJavaMultipleFiles()
+                    ? message.getName()
+                    : resolveName(file);
+            final File.Builder srcFile = prepareFile(fileName, javaPackage);
             final String interfaceTypeName = prepareInterfaceFqn(interfaceName, file);
             final String messageFqn = file.getPackage() + PACKAGE_DELIMITER + message.getName();
             final File messageFile = implementInterface(srcFile, interfaceTypeName, messageFqn);
@@ -146,6 +156,14 @@ public final class CodeGenerator {
             javaPackage = fileDescriptor.getPackage();
         }
         return javaPackage;
+    }
+
+    private static String resolveName(FileDescriptorProto fileDescriptor) {
+        String name = fileDescriptor.getOptions().getJavaOuterClassname();
+        if (isNullOrEmpty(name)) {
+            name = fileDescriptor.getName();
+        }
+        return name;
     }
 
     private static File.Builder prepareFile(String messageName, String javaPackage) {
