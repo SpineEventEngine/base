@@ -30,7 +30,7 @@ import static io.spine.option.UnknownOptions.getUnknownOptionValue;
 import static java.util.Collections.emptyList;
 
 /**
- * A parser for {@linkplain OptionsProto#validationOf validation rules}.
+ * A parser for {@linkplain OptionsProto#validationOf validation rule} targets.
  *
  * @author Dmytro Grankin
  */

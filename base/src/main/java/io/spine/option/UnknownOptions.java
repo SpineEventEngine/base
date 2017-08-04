@@ -25,7 +25,6 @@ import com.google.protobuf.DescriptorProtos.EnumDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.ServiceDescriptorProto;
-import io.spine.annotation.Internal;
 
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -56,7 +55,6 @@ import static java.util.Collections.emptyMap;
  *
  * @author Alexander Litus
  */
-@Internal
 public class UnknownOptions {
 
     @SuppressWarnings("HardcodedLineSeparator")

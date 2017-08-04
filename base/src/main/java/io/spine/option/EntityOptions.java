@@ -22,7 +22,6 @@ package io.spine.option;
 
 import com.google.protobuf.Descriptors;
 import com.google.protobuf.Message;
-import io.spine.annotation.Internal;
 import io.spine.option.EntityOption.Visibility;
 import io.spine.type.TypeName;
 
@@ -33,7 +32,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  * @author Alexander Yevsyukov
  */
-@Internal
 public class EntityOptions {
 
     private EntityOptions() {
