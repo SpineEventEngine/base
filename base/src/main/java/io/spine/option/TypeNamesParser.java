@@ -28,8 +28,10 @@ import io.spine.type.TypeName;
 import java.util.Collection;
 import java.util.regex.Pattern;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Lists.newLinkedList;
 import static io.spine.option.UnknownOptions.getUnknownOptionValue;
 import static java.util.Collections.emptyList;
@@ -57,11 +59,10 @@ public class TypeNamesParser extends RawListParser<MessageOptions, DescriptorPro
     }
 
     /**
-     * Obtains type names from the option and
-     * supply them with the package prefix if it is not present.
+     * Obtains the option value and {@linkplain #parse(String) parses it}.
      *
      * @param descriptor the descriptor to obtain the option value
-     * @return the type names
+     * @return the parsed value
      */
     @Override
     public Collection<TypeName> parse(DescriptorProto descriptor) {
@@ -70,6 +71,19 @@ public class TypeNamesParser extends RawListParser<MessageOptions, DescriptorPro
             return emptyList();
         }
 
+        return parse(optionValue);
+    }
+
+    /**
+     * Obtains type names from the specified option value and
+     * supplies them with the package prefix if it is not present.
+     *
+     * @param optionValue the option value to parse
+     * @return the type names
+     */
+    @Override
+    public Collection<TypeName> parse(String optionValue) {
+        checkArgument(!isNullOrEmpty(optionValue));
         final String optionValueWithoutSpaces = PATTERN_SPACE.matcher(optionValue)
                                                              .replaceAll("");
         final Collection<String> typeNames = splitOptionValue(optionValueWithoutSpaces);

@@ -44,4 +44,12 @@ public interface OptionParser<D extends GeneratedMessageV3, R> {
      * @return the collection of parsed elements
      */
     Collection<R> parse(D descriptor);
+
+    /**
+     * Obtains a collection of parsed items from the specified option value.
+     *
+     * @param optionValue the valid value of option to parse
+     * @return the collection of parsed elements
+     */
+    Collection<R> parse(String optionValue);
 }

@@ -20,11 +20,15 @@
 
 package io.spine.option;
 
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.MessageOptions;
 
 import java.util.Collection;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static io.spine.option.OptionsProto.validationOf;
 import static io.spine.option.UnknownOptions.getUnknownOptionValue;
 import static java.util.Collections.emptyList;
@@ -34,9 +38,9 @@ import static java.util.Collections.emptyList;
  *
  * @author Dmytro Grankin
  */
-public class ValidationRuleParser extends RawListParser<MessageOptions, DescriptorProto, String> {
+public class ValidationTargetsParser extends RawListParser<MessageOptions, DescriptorProto, String> {
 
-    private ValidationRuleParser() {
+    private ValidationTargetsParser() {
         super(validationOf);
     }
 
@@ -47,7 +51,13 @@ public class ValidationRuleParser extends RawListParser<MessageOptions, Descript
             return emptyList();
         }
 
-        return splitOptionValue(value);
+        return parse(value);
+    }
+
+    @Override
+    public Collection<String> parse(String optionValue) {
+        checkArgument(isNullOrEmpty(optionValue));
+        return splitOptionValue(optionValue);
     }
 
     /**
@@ -55,13 +65,13 @@ public class ValidationRuleParser extends RawListParser<MessageOptions, Descript
      *
      * @return the validation rule parser
      */
-    public static ValidationRuleParser getInstance() {
+    public static ValidationTargetsParser getInstance() {
         return Singleton.INSTANCE.value;
     }
 
     private enum Singleton {
         INSTANCE;
         @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final ValidationRuleParser value = new ValidationRuleParser();
+        private final ValidationTargetsParser value = new ValidationTargetsParser();
     }
 }
