@@ -51,9 +51,9 @@ import static io.spine.gradle.compiler.Extension.getTestDescriptorSetPath;
 import static io.spine.gradle.compiler.Extension.getTestTargetGenResourcesDir;
 import static io.spine.gradle.compiler.message.MessageDeclarations.find;
 import static io.spine.gradle.compiler.util.DescriptorSetUtil.getProtoFileDescriptors;
+import static io.spine.option.OptionsProto.VALIDATION_OF_FIELD_NUMBER;
 import static io.spine.option.UnknownOptions.getUnknownOptionValue;
 import static io.spine.option.UnknownOptions.hasUnknownOption;
-import static io.spine.option.OptionsProto.VALIDATION_OF_FIELD_NUMBER;
 import static io.spine.validate.ValidationRules.getValRulesPropsFileName;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -62,6 +62,10 @@ import static org.slf4j.LoggerFactory.getLogger;
  * which contains entries like:
  *
  * <p>{@code foo.bar.ValidationRule=alpha.beta.TargetMessage.name_of_field_for_rule}.
+ *
+ * <p>If a validation rule has more than one target, the entry will look like:
+ *
+ * <p>{@code foo.bar.ValidationRule=foo.bar.FirstMessage.field_name,foo.bar.SecondMessage.field_name}.
  *
  * @author Dmytro Grankin
  */
@@ -126,9 +130,9 @@ public class ValidationRulesLookupPlugin extends SpinePlugin {
         final Map<String, String> propsMap = newHashMap();
         for (MessageDeclaration declaration : ruleDeclarations) {
             final TypeName typeName = declaration.getTypeName();
-            final String ruleTarget = getUnknownOptionValue(declaration.getDescriptor(),
-                                                            VALIDATION_OF_FIELD_NUMBER);
-            propsMap.put(typeName.value(), ruleTarget);
+            final String ruleTargets = getUnknownOptionValue(declaration.getDescriptor(),
+                                                             VALIDATION_OF_FIELD_NUMBER);
+            propsMap.put(typeName.value(), ruleTargets);
         }
 
         log().trace("Writing the validation rules description to {}/{}.",
