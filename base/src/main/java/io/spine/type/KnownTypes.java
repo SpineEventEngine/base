@@ -253,8 +253,10 @@ public class KnownTypes {
      * @throws IllegalArgumentException if the name does not correspond to any known type
      */
     static GenericDescriptor getDescriptor(String typeName) {
+        checkNotNull(typeName);
+        checkArgument(!typeName.isEmpty(), "Type name cannot be empty");
         final TypeUrl typeUrl = getTypeUrl(typeName);
-        checkArgument(typeUrl != null, "Given type name is invalid");
+        checkArgument(typeUrl != null, "Cannot find TypeUrl for the type name: `%s`");
 
         final Class<?> cls = getJavaClass(typeUrl);
 
