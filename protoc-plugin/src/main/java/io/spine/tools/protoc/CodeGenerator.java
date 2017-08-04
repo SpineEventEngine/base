@@ -26,6 +26,8 @@ import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileOptions;
 import com.google.protobuf.DescriptorProtos.MessageOptions;
+import com.google.protobuf.GeneratedMessage.GeneratedExtension;
+import com.google.protobuf.GeneratedMessageV3.ExtendableMessage;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import com.google.protobuf.compiler.PluginProtos.Version;
 
@@ -155,13 +157,21 @@ public final class CodeGenerator {
 
     private static Optional<String> getEveryIs(FileDescriptorProto descriptor) {
         final FileOptions options = descriptor.getOptions();
-        final String value = options.getExtension(everyIs);
-        return Optional.of(value);
+        return getOption(options, everyIs);
     }
 
     private static Optional<String> getIs(DescriptorProto descriptor) {
         final MessageOptions options = descriptor.getOptions();
-        final String value = options.getExtension(is);
-        return Optional.of(value);
+        return getOption(options, is);
+    }
+
+    private static <T extends ExtendableMessage<T>> Optional<String>
+    getOption(T options, GeneratedExtension<T, String> extension) {
+        final String value = options.getExtension(extension);
+        if (isNullOrEmpty(value)) {
+            return Optional.absent();
+        } else {
+            return Optional.of(value);
+        }
     }
 }

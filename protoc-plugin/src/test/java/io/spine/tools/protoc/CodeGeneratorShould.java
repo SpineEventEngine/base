@@ -38,6 +38,7 @@ import static java.util.regex.Pattern.compile;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * @author Dmytro Dashenkov
@@ -83,6 +84,40 @@ public class CodeGeneratorShould {
             final String content = file.getContent();
             final Matcher matcher = CUSTOMER_EVENT_INTERFACE_PATTERN.matcher(content);
             assertTrue(format("Unexpected inserted content: %s", content), matcher.matches());
+        }
+    }
+
+    @Test
+    public void generate_insertion_point_contents_for_Is_option() {
+        // Sample path; never resolved
+        final String filePath = "./proto/spine/tools/protoc/is_test.proto";
+
+        final FileDescriptorProto descriptor = IsTestProto.getDescriptor().toProto();
+        final CodeGeneratorRequest request = CodeGeneratorRequest.newBuilder()
+                                                                 .setCompilerVersion(version())
+                                                                 .addFileToGenerate(filePath)
+                                                                 .addProtoFile(descriptor)
+                                                                 .build();
+        final CodeGeneratorResponse response = CodeGenerator.generate(request);
+        assertNotNull(response);
+        final List<File> files = response.getFileList();
+        assertEquals(2, files.size());
+        for (File file : files) {
+            final String name = file.getName();
+            assertTrue(name.startsWith(PACKAGE_PATH));
+
+            final String insertionPoint = file.getInsertionPoint();
+            final String messageName = file.getName().replace('/', '.');
+            assertEquals(insertionPoint, format(INSERTION_POINT_IMPLEMENTS, messageName));
+
+            final String content = file.getContent();
+            if (name.endsWith("NameUpdated")) {
+                assertTrue(content.contains("Event"));
+            } else if (name.endsWith("UpdateName")) {
+                assertTrue(content.contains("Command"));
+            } else {
+                fail(format("Unexpected message name: %s", name));
+            }
         }
     }
 
