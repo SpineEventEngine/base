@@ -304,7 +304,7 @@ extend google.protobuf.MessageOptions {
     // Validation rule limitations:
     // - applicable only for field declarations of a `Message` type;
     // - rule target should be marked as `valid`. Otherwise a rule will be ignored;
-    // - a field can have only one validation rule.
+    // - a field can be a target of only one validation rule.
     //
     // Target of a validation rule should be specified according to the pattern as follows:
     // `package.MessageName.field_name`.
