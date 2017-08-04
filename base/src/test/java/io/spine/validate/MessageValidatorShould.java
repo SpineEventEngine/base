@@ -52,6 +52,7 @@ import io.spine.test.validate.msg.EntityIdLongFieldValue;
 import io.spine.test.validate.msg.EntityIdMsgFieldValue;
 import io.spine.test.validate.msg.EntityIdRepeatedFieldValue;
 import io.spine.test.validate.msg.EntityIdStringFieldValue;
+import io.spine.test.validate.msg.FirstRuleTarget;
 import io.spine.test.validate.msg.InvalidMessage;
 import io.spine.test.validate.msg.MaxNumberFieldValue;
 import io.spine.test.validate.msg.MinNumberFieldValue;
@@ -62,12 +63,12 @@ import io.spine.test.validate.msg.RequiredByteStringFieldValue;
 import io.spine.test.validate.msg.RequiredEnumFieldValue;
 import io.spine.test.validate.msg.RequiredMsgFieldValue;
 import io.spine.test.validate.msg.RequiredStringFieldValue;
+import io.spine.test.validate.msg.RuleTargetAggregate;
+import io.spine.test.validate.msg.SecondRuleTarget;
 import io.spine.test.validate.msg.TimeInFutureFieldValue;
 import io.spine.test.validate.msg.TimeInPastFieldValue;
 import io.spine.test.validate.msg.TimeWithoutOptsFieldValue;
-import io.spine.test.validate.msg.ValidationRuleTarget;
 import io.spine.time.Durations2;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.List;
@@ -818,10 +819,17 @@ public class MessageValidatorShould {
         final InvalidMessage invalidMessage = InvalidMessage.newBuilder()
                                                             .setInvalidField(validValue)
                                                             .build();
-        final ValidationRuleTarget target = ValidationRuleTarget.newBuilder()
-                                                                .setCanBeValid(invalidMessage)
-                                                                .build();
-        validate(target);
+        final FirstRuleTarget first = FirstRuleTarget.newBuilder()
+                                                     .setCanBeValid(invalidMessage)
+                                                     .build();
+        final SecondRuleTarget second = SecondRuleTarget.newBuilder()
+                                                        .setCanBeValid(invalidMessage)
+                                                        .build();
+        final RuleTargetAggregate aggregate = RuleTargetAggregate.newBuilder()
+                                                                 .setFirst(first)
+                                                                 .setSecond(second)
+                                                                 .build();
+        validate(aggregate);
         assertIsValid(true);
     }
 
