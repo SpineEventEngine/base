@@ -34,7 +34,7 @@ public class Plugin {
 
     public static void main(String[] args) {
         @SuppressWarnings("UseOfSystemOutOrSystemErr") // As part of the `protoc` API
-        final MessageParser parser = new MessageParser(System.in, System.out);
+        final MessageIO parser = new MessageIO(System.in, System.out);
         final CodeGeneratorRequest request = parser.readRequest();
         final CodeGeneratorResponse response = CodeGenerator.generate(request);
         parser.writeResponse(response);

@@ -34,12 +34,12 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * @author Dmytro Dashenkov
  */
-public final class MessageParser {
+public final class MessageIO {
 
     private final InputStream in;
     private final OutputStream out;
 
-    public MessageParser(InputStream in, OutputStream out) {
+    public MessageIO(InputStream in, OutputStream out) {
         this.in = in;
         this.out = out;
     }
