@@ -43,6 +43,7 @@ dependencies {
     compile project(':base')
 
     compile "com.google.protobuf:protobuf-java:${protobufVersion}"
+    compile group: 'com.squareup', name: 'javapoet', version: javaPoetVersion
 }
 
 protobuf {
