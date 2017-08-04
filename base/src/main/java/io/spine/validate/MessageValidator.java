@@ -25,9 +25,10 @@ import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
-import io.spine.base.FieldPath;
 
 import java.util.List;
+
+import static io.spine.validate.FieldValidatorFactory.create;
 
 /**
  * Validates messages according to Spine custom protobuf options and provides constraint
@@ -38,11 +39,11 @@ import java.util.List;
 @Internal
 public class MessageValidator {
 
-    private final FieldPath rootFieldPath;
+    private final FieldContext rootContext;
 
     /** Creates a new validator instance. */
     public static MessageValidator newInstance() {
-        return new MessageValidator(FieldPath.getDefaultInstance());
+        return new MessageValidator(FieldContext.empty());
     }
 
     /**
@@ -51,14 +52,15 @@ public class MessageValidator {
      * <p>Use this constructor for inner messages
      * (which are marked with "valid" option in Protobuf).
      *
-     * @param rootFieldPath the path to the message field which is the root for this message
+     * @param rootContext the context of the message field,
+     *                    which is the root for the messages to validate
      */
-    static MessageValidator newInstance(FieldPath rootFieldPath) {
-        return new MessageValidator(rootFieldPath);
+    static MessageValidator newInstance(FieldContext rootContext) {
+        return new MessageValidator(rootContext);
     }
 
-    private MessageValidator(FieldPath rootFieldPath) {
-        this.rootFieldPath = rootFieldPath;
+    private MessageValidator(FieldContext rootContext) {
+        this.rootContext = rootContext;
     }
 
     /**
@@ -78,7 +80,7 @@ public class MessageValidator {
                                            ImmutableList.Builder<ConstraintViolation> result) {
         final Descriptor typeDescr = message.getDescriptorForType();
         final AlternativeFieldValidator altFieldValidator =
-                new AlternativeFieldValidator(typeDescr, rootFieldPath);
+                new AlternativeFieldValidator(typeDescr, rootContext);
         result.addAll(altFieldValidator.validate(message));
     }
 
@@ -87,9 +89,9 @@ public class MessageValidator {
         final Descriptor msgDescriptor = message.getDescriptorForType();
         final List<FieldDescriptor> fields = msgDescriptor.getFields();
         for (FieldDescriptor field : fields) {
+            final FieldContext fieldContext = rootContext.forChild(field);
             final Object value = message.getField(field);
-            final FieldValidator<?> fieldValidator =
-                    FieldValidatorFactory.create(field, value, rootFieldPath);
+            final FieldValidator<?> fieldValidator = create(fieldContext, value);
             final List<ConstraintViolation> violations = fieldValidator.validate();
             result.addAll(violations);
         }

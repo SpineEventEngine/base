@@ -23,4 +23,4 @@
  *
  * @author Alex Tymchenko
  */
-package io.spine.gradle.compiler.lookup.enrichments;
+package io.spine.gradle.compiler.lookup.enrichment;

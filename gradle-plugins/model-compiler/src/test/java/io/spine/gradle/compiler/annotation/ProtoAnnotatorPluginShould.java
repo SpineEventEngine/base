@@ -26,19 +26,16 @@ import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.ServiceDescriptorProto;
-import io.spine.gradle.compiler.annotation.Given.FieldAnnotationValidator;
-import io.spine.gradle.compiler.annotation.Given.MainDefinitionAnnotationValidator;
-import io.spine.gradle.compiler.annotation.Given.NestedTypeFieldsAnnotationValidator;
-import io.spine.gradle.compiler.annotation.Given.NestedTypesAnnotationValidator;
-import io.spine.gradle.compiler.annotation.Given.ProtoAnnotatorConfigurator;
+import io.spine.gradle.compiler.GradleProject;
+import io.spine.gradle.compiler.annotation.given.Given.FieldAnnotationValidator;
+import io.spine.gradle.compiler.annotation.given.Given.MainDefinitionAnnotationValidator;
+import io.spine.gradle.compiler.annotation.given.Given.NestedTypeFieldsAnnotationValidator;
+import io.spine.gradle.compiler.annotation.given.Given.NestedTypesAnnotationValidator;
+import io.spine.gradle.compiler.annotation.given.Given.SourceValidator;
 import io.spine.util.Exceptions;
-import org.gradle.tooling.BuildLauncher;
-import org.gradle.tooling.GradleConnectionException;
-import org.gradle.tooling.ProjectConnection;
-import org.gradle.tooling.ResultHandler;
 import org.jboss.forge.roaster.Roaster;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
-import org.jboss.forge.roaster.model.source.JavaSource;
+import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -48,8 +45,6 @@ import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.gradle.TaskName.ANNOTATE_PROTO;
@@ -57,9 +52,8 @@ import static io.spine.gradle.TaskName.COMPILE_JAVA;
 import static io.spine.gradle.compiler.Extension.getDefaultMainDescriptorsPath;
 import static io.spine.gradle.compiler.Extension.getDefaultMainGenDir;
 import static io.spine.gradle.compiler.Extension.getDefaultMainGenGrpcDir;
-import static io.spine.gradle.compiler.ProjectConfigurator.newEmptyResultHandler;
-import static io.spine.gradle.compiler.annotation.Given.NO_SPI_OPTIONS_FILENAME;
-import static io.spine.gradle.compiler.annotation.Given.NO_SPI_OPTIONS_MULTIPLE_FILENAME;
+import static io.spine.gradle.compiler.annotation.given.Given.NO_SPI_OPTIONS_FILENAME;
+import static io.spine.gradle.compiler.annotation.given.Given.NO_SPI_OPTIONS_MULTIPLE_FILENAME;
 import static io.spine.gradle.compiler.util.DescriptorSetUtil.getProtoFileDescriptors;
 import static io.spine.gradle.compiler.util.JavaSources.getFilePath;
 import static io.spine.util.Exceptions.newIllegalStateException;
@@ -68,14 +62,12 @@ import static java.nio.file.Paths.get;
 /**
  * @author Dmytro Grankin
  */
-@SuppressWarnings("UseOfSystemOutOrSystemErr")  // It's fine for a test, running a Gradle build.
 public class ProtoAnnotatorPluginShould {
 
-    @SuppressWarnings("PublicField") // Rules should be public.
+    private static final String PROJECT_NAME = "annotator-plugin-test";
+
     @Rule
     public final TemporaryFolder testProjectDir = new TemporaryFolder();
-
-    private final CountDownLatch countDownLatch = new CountDownLatch(1);
 
     @Test
     public void annotate_if_file_option_is_true() throws Exception {
@@ -168,227 +160,108 @@ public class ProtoAnnotatorPluginShould {
 
     @Test
     public void compile_generated_sources_with_potential_annotation_duplication() throws Exception {
-        final String testFile = "potential_annotation_duplication.proto";
-        final ProjectConnection connection =
-                new ProtoAnnotatorConfigurator(testProjectDir, testFile).configure();
-        final BuildLauncher launcher = connection.newBuild();
-
-        launcher.setStandardError(System.out)
-                .forTasks(COMPILE_JAVA.getValue());
-        try {
-            launcher.run(newEmptyResultHandler(countDownLatch));
-        } finally {
-            connection.close();
-        }
-        countDownLatch.await(100, TimeUnit.MILLISECONDS);
+        final String file = "potential_annotation_duplication.proto";
+        newProjectWithFile(file).executeTask(COMPILE_JAVA);
     }
 
     private void assertServiceAnnotations(final String testFile,
                                           final boolean shouldBeAnnotated) throws Exception {
-        final ProjectConnection connection =
-                new ProtoAnnotatorConfigurator(testProjectDir, testFile).configure();
-        final BuildLauncher launcher = connection.newBuild();
+        newProjectWithFile(testFile).executeTask(ANNOTATE_PROTO);
 
-        launcher.setStandardError(System.out)
-                .forTasks(ANNOTATE_PROTO.getValue());
-        try {
-            launcher.run(new ResultHandler<Void>() {
-                @Override
-                public void onComplete(Void aVoid) {
-                    final FileDescriptorProto fileDescriptor = getDescriptor(testFile);
-                    final List<ServiceDescriptorProto> services = fileDescriptor.getServiceList();
-                    for (ServiceDescriptorProto serviceDescriptor : services) {
-                        final Path messagePath =
-                                getFilePath(serviceDescriptor, fileDescriptor);
-                        validateGrpcService(messagePath,
-                                            new MainDefinitionAnnotationValidator(
-                                                    shouldBeAnnotated));
-                    }
-                    countDownLatch.countDown();
-                }
-
-                @Override
-                public void onFailure(GradleConnectionException e) {
-                    throw e;
-                }
-            });
-        } finally {
-            connection.close();
+        final FileDescriptorProto fileDescriptor = getDescriptor(testFile);
+        final List<ServiceDescriptorProto> services = fileDescriptor.getServiceList();
+        for (ServiceDescriptorProto serviceDescriptor : services) {
+            final Path messagePath = getFilePath(serviceDescriptor, fileDescriptor);
+            validateGrpcService(messagePath,
+                                new MainDefinitionAnnotationValidator(shouldBeAnnotated));
         }
-        countDownLatch.await(100, TimeUnit.MILLISECONDS);
     }
 
     private void assertFieldAnnotations(final String testFile,
                                         final boolean shouldBeAnnotated) throws Exception {
-        final ProjectConnection connection =
-                new ProtoAnnotatorConfigurator(testProjectDir, testFile).configure();
-        final BuildLauncher launcher = connection.newBuild();
+        newProjectWithFile(testFile).executeTask(ANNOTATE_PROTO);
 
-        launcher.setStandardError(System.out)
-                .forTasks(ANNOTATE_PROTO.getValue());
-        try {
-            launcher.run(new ResultHandler<Void>() {
-                @Override
-                public void onComplete(Void aVoid) {
-                    final FileDescriptorProto fileDescriptor = getDescriptor(testFile);
-                    final DescriptorProto messageDescriptor = fileDescriptor.getMessageType(0);
-                    final Path sourcePath = getFilePath(messageDescriptor, false,
-                                                        fileDescriptor);
-                    final NestedTypeFieldsAnnotationValidator validator =
-                            new NestedTypeFieldsAnnotationValidator(messageDescriptor,
-                                                                    shouldBeAnnotated);
-                    validate(sourcePath, validator);
-                    countDownLatch.countDown();
-                }
-
-                @Override
-                public void onFailure(GradleConnectionException e) {
-                    throw e;
-                }
-            });
-        } finally {
-            connection.close();
-        }
-        countDownLatch.await(100, TimeUnit.MILLISECONDS);
+        final FileDescriptorProto fileDescriptor = getDescriptor(testFile);
+        final DescriptorProto messageDescriptor = fileDescriptor.getMessageType(0);
+        final Path sourcePath = getFilePath(messageDescriptor, false,
+                                            fileDescriptor);
+        final NestedTypeFieldsAnnotationValidator validator =
+                new NestedTypeFieldsAnnotationValidator(messageDescriptor,
+                                                        shouldBeAnnotated);
+        validate(sourcePath, validator);
     }
 
     private void assertFieldAnnotationsMultiple(final String testFile,
                                                 final boolean shouldBeAnnotated) throws Exception {
-        final ProjectConnection connection =
-                new ProtoAnnotatorConfigurator(testProjectDir, testFile).configure();
-        final BuildLauncher launcher = connection.newBuild();
+        newProjectWithFile(testFile).executeTask(ANNOTATE_PROTO);
 
-        launcher.setStandardError(System.out)
-                .forTasks(ANNOTATE_PROTO.getValue());
-        try {
-            launcher.run(new ResultHandler<Void>() {
-                @Override
-                public void onComplete(Void aVoid) {
-                    final FileDescriptorProto fileDescriptor = getDescriptor(testFile);
-                    final DescriptorProto messageDescriptor = fileDescriptor.getMessageType(0);
-                    final FieldDescriptorProto experimentalField = messageDescriptor.getField(0);
-                    final Path sourcePath = getFilePath(messageDescriptor, false,
-                                                        fileDescriptor);
-                    validate(sourcePath, new FieldAnnotationValidator(experimentalField,
-                                                                      shouldBeAnnotated));
-                    countDownLatch.countDown();
-                }
-
-                @Override
-                public void onFailure(GradleConnectionException e) {
-                    throw e;
-                }
-            });
-        } finally {
-            connection.close();
-        }
-        countDownLatch.await(100, TimeUnit.MILLISECONDS);
+        final FileDescriptorProto fileDescriptor = getDescriptor(testFile);
+        final DescriptorProto messageDescriptor = fileDescriptor.getMessageType(0);
+        final FieldDescriptorProto experimentalField = messageDescriptor.getField(0);
+        final Path sourcePath = getFilePath(messageDescriptor, false, fileDescriptor);
+        validate(sourcePath, new FieldAnnotationValidator(experimentalField, shouldBeAnnotated));
     }
 
     private void assertMainDefinitionAnnotations(final String testFile,
                                                  final boolean shouldBeAnnotated) throws Exception {
-        final ProjectConnection connection =
-                new ProtoAnnotatorConfigurator(testProjectDir, testFile).configure();
-        final BuildLauncher launcher = connection.newBuild();
+        newProjectWithFile(testFile).executeTask(ANNOTATE_PROTO);
 
-        launcher.setStandardError(System.out)
-                .forTasks(ANNOTATE_PROTO.getValue());
-        try {
-            launcher.run(new ResultHandler<Void>() {
-                @Override
-                public void onComplete(Void aVoid) {
-                    final FileDescriptorProto fileDescriptor = getDescriptor(testFile);
-                    for (DescriptorProto messageDescriptor : fileDescriptor.getMessageTypeList()) {
-                        final Path messagePath =
-                                getFilePath(messageDescriptor, false, fileDescriptor);
-                        final Path messageOrBuilderPath =
-                                getFilePath(messageDescriptor, true, fileDescriptor);
-                        final SourceVisitor annotationValidator =
-                                new MainDefinitionAnnotationValidator(shouldBeAnnotated);
-                        validate(messagePath, annotationValidator);
-                        validate(messageOrBuilderPath, annotationValidator);
-                    }
-                    countDownLatch.countDown();
-                }
-
-                @Override
-                public void onFailure(GradleConnectionException e) {
-                    throw e;
-                }
-            });
-        } finally {
-            connection.close();
+        final FileDescriptorProto fileDescriptor = getDescriptor(testFile);
+        for (DescriptorProto messageDescriptor : fileDescriptor.getMessageTypeList()) {
+            final Path messagePath =
+                    getFilePath(messageDescriptor, false, fileDescriptor);
+            final Path messageOrBuilderPath =
+                    getFilePath(messageDescriptor, true, fileDescriptor);
+            final SourceValidator annotationValidator =
+                    new MainDefinitionAnnotationValidator(shouldBeAnnotated);
+            validate(messagePath, annotationValidator);
+            validate(messageOrBuilderPath, annotationValidator);
         }
-        countDownLatch.await(100, TimeUnit.MILLISECONDS);
     }
 
     private void assertNestedTypesAnnotations(final String testFile,
                                               final boolean shouldBeAnnotated) throws Exception {
-        final ProjectConnection connection =
-                new ProtoAnnotatorConfigurator(testProjectDir, testFile).configure();
-        final BuildLauncher launcher = connection.newBuild();
+        newProjectWithFile(testFile).executeTask(ANNOTATE_PROTO);
 
-        launcher.setStandardError(System.out)
-                .forTasks(ANNOTATE_PROTO.getValue());
-        try {
-            launcher.run(new ResultHandler<Void>() {
-                @Override
-                public void onComplete(Void aVoid) {
-                    final FileDescriptorProto fileDescriptor = getDescriptor(testFile);
-                    final Path sourcePath = getFilePath(fileDescriptor);
-                    validate(sourcePath, new NestedTypesAnnotationValidator(shouldBeAnnotated));
-                    countDownLatch.countDown();
-                }
-
-                @Override
-                public void onFailure(GradleConnectionException e) {
-                    throw e;
-                }
-            });
-        } finally {
-            connection.close();
-        }
-        countDownLatch.await(100, TimeUnit.MILLISECONDS);
+        final FileDescriptorProto fileDescriptor = getDescriptor(testFile);
+        final Path sourcePath = getFilePath(fileDescriptor);
+        validate(sourcePath, new NestedTypesAnnotationValidator(shouldBeAnnotated));
     }
 
     @SuppressWarnings("unchecked")
-    private <T extends JavaSource<T>> void validate(Path sourcePath,
-                                                    SourceVisitor<T> validationFunction) {
-        final Path fullSourcePath =
-                get(testProjectDir.getRoot()
-                                  .getAbsolutePath(), getDefaultMainGenDir(),
-                    sourcePath.toString());
+    private void validate(Path sourcePath, SourceValidator validator) {
+        final String projectPath = testProjectDir.getRoot()
+                                                 .getAbsolutePath();
+        final Path fullSourcePath = get(projectPath, getDefaultMainGenDir(), sourcePath.toString());
 
-        final AbstractJavaSource<T> javaSource;
+        final AbstractJavaSource<JavaClassSource> javaSource;
         try {
             javaSource = Roaster.parse(AbstractJavaSource.class, fullSourcePath.toFile());
         } catch (FileNotFoundException e) {
             throw Exceptions.illegalStateWithCauseOf(e);
         }
-        validationFunction.apply(javaSource);
+        validator.apply(javaSource);
     }
 
     @SuppressWarnings("unchecked")
-    private <T extends JavaSource<T>> void validateGrpcService(Path servicePath,
-                                                               SourceVisitor<T> validationFn) {
-        final Path fullSourcePath =
-                get(testProjectDir.getRoot()
-                                  .getAbsolutePath(), getDefaultMainGenGrpcDir(),
-                    servicePath.toString());
-
-        final AbstractJavaSource<T> javaSource;
+    private void validateGrpcService(Path servicePath, SourceValidator validator) {
+        final String projectPath = testProjectDir.getRoot()
+                                                 .getAbsolutePath();
+        final Path fullSourcePath = get(projectPath, getDefaultMainGenGrpcDir(),
+                                        servicePath.toString());
+        final AbstractJavaSource<JavaClassSource> javaSource;
         try {
             javaSource = Roaster.parse(AbstractJavaSource.class, fullSourcePath.toFile());
         } catch (FileNotFoundException e) {
             throw Exceptions.illegalStateWithCauseOf(e);
         }
-        validationFn.apply(javaSource);
+        validator.apply(javaSource);
     }
 
     private FileDescriptorProto getDescriptor(final String fileName) {
-        final String descriptorSetPath =
-                testProjectDir.getRoot()
-                              .getAbsolutePath() + getDefaultMainDescriptorsPath();
+        final String projectPath = testProjectDir.getRoot()
+                                                 .getAbsolutePath();
+        final String descriptorSetPath = projectPath + getDefaultMainDescriptorsPath();
         final Collection<FileDescriptorProto> descriptors =
                 getProtoFileDescriptors(descriptorSetPath, new Predicate<FileDescriptorProto>() {
                     @Override
@@ -404,5 +277,13 @@ public class ProtoAnnotatorPluginShould {
         }
 
         return Iterables.get(descriptors, 0);
+    }
+
+    private GradleProject newProjectWithFile(String protoFileName) {
+        return GradleProject.newBuilder()
+                            .setProjectName(PROJECT_NAME)
+                            .setProjectFolder(testProjectDir)
+                            .addProtoFile(protoFileName)
+                            .build();
     }
 }

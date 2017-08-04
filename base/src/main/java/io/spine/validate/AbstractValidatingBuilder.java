@@ -25,7 +25,6 @@ import com.google.protobuf.Message;
 import com.google.protobuf.ProtocolMessageEnum;
 import io.spine.annotation.Internal;
 import io.spine.base.ConversionException;
-import io.spine.base.FieldPath;
 import io.spine.protobuf.Messages;
 import io.spine.string.Stringifiers;
 
@@ -149,16 +148,14 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
     @Override
     public <V> void validate(FieldDescriptor descriptor, V fieldValue, String fieldName)
             throws ValidationException {
-        final FieldPath fieldPath = FieldPath.newBuilder()
-                                             .addFieldName(fieldName)
-                                             .build();
         final Object valueToValidate;
         if (fieldValue instanceof ProtocolMessageEnum) {
             valueToValidate = ((ProtocolMessageEnum) fieldValue).getValueDescriptor();
         } else {
             valueToValidate = fieldValue;
         }
-        final FieldValidator<?> validator = create(descriptor, valueToValidate, fieldPath);
+        final FieldContext fieldContext = FieldContext.create(descriptor);
+        final FieldValidator<?> validator = create(fieldContext, valueToValidate);
         final List<ConstraintViolation> violations = validator.validate();
         onViolations(violations);
     }

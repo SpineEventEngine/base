@@ -115,6 +115,20 @@ public enum TaskName {
     FIND_TEST_ENRICHMENTS("findTestEnrichments"),
 
     /**
+     * The name of the validation rules lookup task added to the Gradle lifecycle.
+     *
+     * <p>Relates to `main` classes and resources scope.
+     */
+    FIND_VALIDATION_RULES("findValidationRules"),
+
+    /**
+     * The name of the validation rules lookup task added to the Gradle lifecycle.
+     *
+     * <p>Relates to `test` classes and resources scope.
+     */
+    FIND_TEST_VALIDATION_RULES("findTestValidationRules"),
+
+    /**
      * The name of the {@code .proto}-to-Java mapping task added to the Gradle lifecycle.
      *
      * <p>Handles the {@code main} classes and resources scope.

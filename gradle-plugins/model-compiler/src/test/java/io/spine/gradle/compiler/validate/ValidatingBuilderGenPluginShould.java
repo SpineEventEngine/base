@@ -20,45 +20,37 @@
 
 package io.spine.gradle.compiler.validate;
 
-import io.spine.gradle.compiler.Given.ValidatorsGenerationConfigurator;
-import org.gradle.tooling.BuildLauncher;
-import org.gradle.tooling.ProjectConnection;
+import io.spine.gradle.compiler.GradleProject;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
+import java.util.Arrays;
+import java.util.List;
 
 import static io.spine.gradle.TaskName.COMPILE_JAVA;
-import static io.spine.gradle.compiler.ProjectConfigurator.newEmptyResultHandler;
 
 /**
  * @author Illia Shepilov
  */
 public class ValidatingBuilderGenPluginShould {
 
-    @SuppressWarnings("PublicField") // Rules should be public.
+    private static final String PROJECT_NAME = "validators-gen-plugin-test";
+    private static final List<String> PROTO_FILES = Arrays.asList("identifiers.proto",
+                                                                  "attributes.proto",
+                                                                  "changes.proto",
+                                                                  "c/test_commands.proto");
+
     @Rule
     public final TemporaryFolder testProjectDir = new TemporaryFolder();
 
-    @SuppressWarnings("UseOfSystemOutOrSystemErr")  // Required for a Gradle build is launched.
     @Test
     public void compile_generated_validators() throws Exception {
-        final CountDownLatch countDownLatch = new CountDownLatch(1);
-
-        final ProjectConnection connection =
-                new ValidatorsGenerationConfigurator(testProjectDir).configure();
-        final BuildLauncher launcher = connection.newBuild();
-
-        launcher.setStandardError(System.out)
-                .forTasks(COMPILE_JAVA.getValue());
-        try {
-            launcher.run(newEmptyResultHandler(countDownLatch));
-        } finally {
-            connection.close();
-        }
-
-        countDownLatch.await(100, TimeUnit.MILLISECONDS);
+        final GradleProject project = GradleProject.newBuilder()
+                                                   .setProjectName(PROJECT_NAME)
+                                                   .setProjectFolder(testProjectDir)
+                                                   .addProtoFiles(PROTO_FILES)
+                                                   .build();
+        project.executeTask(COMPILE_JAVA);
     }
 }

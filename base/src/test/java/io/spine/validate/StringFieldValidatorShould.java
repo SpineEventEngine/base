@@ -1,7 +1,6 @@
 package io.spine.validate;
 
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.base.FieldPath;
 import io.spine.test.validate.msg.MessageWithMapStringField;
 import io.spine.test.validate.msg.MessageWithRepeatedRequiredValidatedStringField;
 import io.spine.test.validate.msg.MessageWithRepeatedUnchekedStringField;
@@ -77,9 +76,8 @@ public class StringFieldValidatorShould extends FieldValidatorShould<String> {
 
     private StringFieldValidator getValidator(FieldDescriptor field,
                                               List<? extends String> values) {
-        return new StringFieldValidator(field,
+        return new StringFieldValidator(FieldContext.create(field),
                                         values,
-                                        FieldPath.getDefaultInstance(),
                                         false);
     }
 }

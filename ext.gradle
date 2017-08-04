@@ -41,7 +41,7 @@ ext {
 
     // We use Spine tools and model compiler in the build process.
     spineToolsVersion = '0.9.41-SNAPSHOT'
-    spineModelCompilerVersion = '0.9.41-SNAPSHOT'
+    spineModelCompilerVersion = '0.9.47-SNAPSHOT'
 
     protobufGradlePluginVerison = '0.8.1'
 }

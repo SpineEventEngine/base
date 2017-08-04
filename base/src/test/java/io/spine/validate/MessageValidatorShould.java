@@ -52,6 +52,7 @@ import io.spine.test.validate.msg.EntityIdLongFieldValue;
 import io.spine.test.validate.msg.EntityIdMsgFieldValue;
 import io.spine.test.validate.msg.EntityIdRepeatedFieldValue;
 import io.spine.test.validate.msg.EntityIdStringFieldValue;
+import io.spine.test.validate.msg.InvalidMessage;
 import io.spine.test.validate.msg.MaxNumberFieldValue;
 import io.spine.test.validate.msg.MinNumberFieldValue;
 import io.spine.test.validate.msg.PatternStringFieldValue;
@@ -64,7 +65,9 @@ import io.spine.test.validate.msg.RequiredStringFieldValue;
 import io.spine.test.validate.msg.TimeInFutureFieldValue;
 import io.spine.test.validate.msg.TimeInPastFieldValue;
 import io.spine.test.validate.msg.TimeWithoutOptsFieldValue;
+import io.spine.test.validate.msg.ValidationRuleTarget;
 import io.spine.time.Durations2;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.List;
@@ -802,6 +805,25 @@ public class MessageValidatorShould {
     @Test
     public void ignore_custom_invalid_field_message_if_validation_is_disabled() {
         validate(EnclosedMessageFieldValueWithoutAnnotationFieldValueWithCustomInvalidMessage.getDefaultInstance());
+        assertIsValid(true);
+    }
+
+    /*
+     * Validation rules tests.
+     */
+
+    @Ignore //TODO:2017-07-27:dmytro.grankin: enable this test if version of the model compiler
+            // used in this module is `0.9.48-SNAPSHOT` or higher.
+    @Test
+    public void validate_according_to_validation_rule() {
+        final String validValue = "any text";
+        final InvalidMessage invalidMessage = InvalidMessage.newBuilder()
+                                                            .setInvalidField(validValue)
+                                                            .build();
+        final ValidationRuleTarget target = ValidationRuleTarget.newBuilder()
+                                                                .setCanBeValid(invalidMessage)
+                                                                .build();
+        validate(target);
         assertIsValid(true);
     }
 

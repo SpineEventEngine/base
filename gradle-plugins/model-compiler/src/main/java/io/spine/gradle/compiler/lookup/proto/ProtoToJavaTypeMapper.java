@@ -37,6 +37,7 @@ import java.util.Map;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Lists.newLinkedList;
 import static io.spine.gradle.compiler.util.UnknownOptions.getUnknownOptionValue;
+import static io.spine.option.OptionsProto.TYPE_URL_PREFIX_FIELD_NUMBER;
 
 /**
  * Maps Protobuf message types from a {@code .proto} file to the corresponding Java classes.
@@ -45,12 +46,6 @@ import static io.spine.gradle.compiler.util.UnknownOptions.getUnknownOptionValue
  * @author Alex Tymchenko
  */
 public class ProtoToJavaTypeMapper {
-
-    /**
-     * The field number of the file option `type_url_prefix` defined
-     * in the `Spine/core-java` project.
-     */
-    private static final Long OPTION_NUMBER_TYPE_URL_PREFIX = 73941L;
 
     private static final String JAVA_INNER_CLASS_SEPARATOR = "$";
 
@@ -218,7 +213,7 @@ public class ProtoToJavaTypeMapper {
     }
 
     private static String getTypeUrlPrefix(FileDescriptorProto file) {
-        final String typeUrlPrefix = getUnknownOptionValue(file, OPTION_NUMBER_TYPE_URL_PREFIX);
+        final String typeUrlPrefix = getUnknownOptionValue(file, TYPE_URL_PREFIX_FIELD_NUMBER);
         final String prefix = isNullOrEmpty(typeUrlPrefix) ? GOOGLE_TYPE_URL_PREFIX : typeUrlPrefix;
         final String result = (prefix + PROTO_TYPE_URL_SEPARATOR);
         return result;

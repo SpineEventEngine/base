@@ -24,6 +24,32 @@ ext {
 
 group = 'io.spine.tools'
 
+buildscript {
+    apply from: "$rootDir/ext.gradle"
+
+    repositories {
+        mavenCentral()
+        mavenLocal()
+    }
+
+    //noinspection GroovyAssignabilityCheck
+    dependencies {
+        classpath(group: 'com.google.protobuf',
+                  name: 'protobuf-gradle-plugin',
+                  version: protobufGradlePluginVerison) {
+            // exclude an old Guava version
+            exclude group: 'com.google.guava'
+        }
+    }
+
+    configurations.all({
+        resolutionStrategy.cacheChangingModulesFor(0, 'seconds')
+    })
+}
+
+apply plugin: 'com.google.protobuf'
+apply from: generateDescriptorSetScript
+
 dependencies {
     compile project(':plugin-base')
     compile project(':base')
@@ -49,6 +75,13 @@ dependencies {
     // It is a local version bundled within the JDK installation.
     // "JAVA_HOME" environment variable must be set for correct work.
     testCompile files("${System.properties['java.home']}/../lib/tools.jar")
+}
+
+protobuf {
+    generatedFilesBaseDir = generatedRootDir
+    protoc {
+        artifact = protobufDependency
+    }
 }
 
 // Tests use the Protobuf plugin.

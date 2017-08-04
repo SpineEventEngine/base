@@ -21,10 +21,8 @@
 package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
-import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
-import io.spine.base.FieldPath;
 import io.spine.option.IfInvalidOption;
 import io.spine.option.OptionsProto;
 import io.spine.option.Time;
@@ -51,20 +49,16 @@ class MessageFieldValidator extends FieldValidator<Message> {
 
     /**
      * Creates a new validator instance.
-     * @param descriptor    a descriptor of the field to validate
-     * @param fieldValues   values to validate
-     * @param rootFieldPath a path to the root field (if present)
-     * @param strict        if {@code true} the validator would assume that the field is required
-     *                      even if the corresponding field option is not present
+     *
+     * @param fieldContext the context of the field to validate
+     * @param fieldValues  values to validate
+     * @param strict       if {@code true} the validator would assume that the field
+     *                     is required even if the corresponding field option is not present
      */
-    MessageFieldValidator(FieldDescriptor descriptor,
+    MessageFieldValidator(FieldContext fieldContext,
                           Object fieldValues,
-                          FieldPath rootFieldPath,
                           boolean strict) {
-        super(descriptor,
-              FieldValidator.<Message>toValueList(fieldValues),
-              rootFieldPath,
-              strict);
+        super(fieldContext, FieldValidator.<Message>toValueList(fieldValues), strict);
         this.timeConstraint = getFieldOption(OptionsProto.when);
         this.isFieldTimestamp = isTimestamp();
     }
@@ -95,7 +89,7 @@ class MessageFieldValidator extends FieldValidator<Message> {
 
     private void validateFields() {
         for (Message value : getValues()) {
-            final MessageValidator validator = MessageValidator.newInstance(getFieldPath());
+            final MessageValidator validator = MessageValidator.newInstance(getFieldContext());
             final List<ConstraintViolation> violations = validator.validate(value);
             if (!violations.isEmpty()) {
                 addViolation(newValidViolation(value, violations));
