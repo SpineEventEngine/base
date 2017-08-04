@@ -87,9 +87,22 @@ public class CodeGeneratorShould {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void no_accept_requests_from_old_compiler() {
+    public void not_accept_requests_from_old_compiler() {
         final Version version = Version.newBuilder()
                                        .setMajor(2)
+                                       .build();
+        final FileDescriptorProto stubFile = FileDescriptorProto.getDefaultInstance();
+        final CodeGeneratorRequest request = CodeGeneratorRequest.newBuilder()
+                                                                 .setCompilerVersion(version)
+                                                                 .addProtoFile(stubFile)
+                                                                 .build();
+        CodeGenerator.generate(request);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void not_accept_empty_requests() {
+        final Version version = Version.newBuilder()
+                                       .setMajor(3)
                                        .build();
         final CodeGeneratorRequest request = CodeGeneratorRequest.newBuilder()
                                                                  .setCompilerVersion(version)
