@@ -22,28 +22,24 @@ package io.spine.tools.protoc;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileOptions;
 import com.google.protobuf.DescriptorProtos.MessageOptions;
-import com.google.protobuf.DescriptorProtos.UninterpretedOption;
-import com.google.protobuf.DescriptorProtos.UninterpretedOption.NamePart;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import com.google.protobuf.compiler.PluginProtos.Version;
 
-import javax.annotation.Nullable;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.isNullOrEmpty;
-import static com.google.common.collect.Iterables.any;
 import static com.google.common.collect.Lists.newLinkedList;
 import static com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import static com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
+import static io.spine.option.OptionsProto.everyIs;
+import static io.spine.option.OptionsProto.is;
 import static java.lang.String.format;
 
 /**
@@ -52,12 +48,7 @@ import static java.lang.String.format;
 public final class CodeGenerator {
 
     @VisibleForTesting
-    static final String INSERTION_POINT_IMPLEMENTS =
-            "@@protoc_insertion_point(message_implements:%s)";
-    @VisibleForTesting
-    static final String EVERY_IS_OPTION_NAME = "every_is";
-    @VisibleForTesting
-    static final String IS_OPTION_NAME = "is";
+    static final String INSERTION_POINT_IMPLEMENTS = "message_implements:%s";
     private static final String PACKAGE_DELIMITER = ".";
 
     private CodeGenerator() {
@@ -69,24 +60,20 @@ public final class CodeGenerator {
         final Version protocVersion = request.getCompilerVersion();
         checkArgument(protocVersion.getMajor() >= 3,
                       "Use protoc of version 3.X.X or higher to generate the Spine sources.");
-        final List<String> requestedFiles = request.getFileToGenerateList();
-        checkArgument(!requestedFiles.isEmpty(), "No files to generate provided.");
-        final CodeGeneratorResponse response = scan(request.getProtoFileList(), requestedFiles);
+        final List<FileDescriptorProto> descriptors = request.getProtoFileList();
+        checkArgument(!descriptors.isEmpty(), "No files to generate provided.");
+        final CodeGeneratorResponse response = scan(descriptors);
         return response;
     }
 
-    private static CodeGeneratorResponse scan(Iterable<FileDescriptorProto> descriptors,
-                                              Iterable<String> filePaths) {
+    private static CodeGeneratorResponse scan(Iterable<FileDescriptorProto> descriptors) {
         final Collection<File> result = newLinkedList();
-        final Iterator<FileDescriptorProto> descriptorsIterator = descriptors.iterator();
-        for (final String filePath : filePaths) {
-            final FileDescriptorProto descriptor = descriptorsIterator.next();
-            final File file = prepareFile(filePath);
+        for (final FileDescriptorProto descriptor : descriptors) {
             final Optional<String> everyIsValue = getEveryIs(descriptor);
             if (everyIsValue.isPresent()) {
-                result.addAll(collectMessages(descriptor, file, everyIsValue.get()));
+                result.addAll(collectMessages(descriptor, everyIsValue.get()));
             } else {
-                result.addAll(scanMessages(descriptor, file));
+                result.addAll(scanMessages(descriptor));
             }
         }
         final CodeGeneratorResponse response = CodeGeneratorResponse.newBuilder()
@@ -95,16 +82,19 @@ public final class CodeGenerator {
         return response;
     }
 
-    private static Collection<File> scanMessages(FileDescriptorProto file,
-                                                 File srcFile) {
+    private static Collection<File> scanMessages(FileDescriptorProto file) {
         final Collection<File> result = newLinkedList();
-        for (DescriptorProto messageType : file.getMessageTypeList()) {
-            final Optional<String> isValue = getIs(messageType);
+        final String javaPackage = resolvePackage(file);
+        for (DescriptorProto message : file.getMessageTypeList()) {
+            final Optional<String> isValue = getIs(message);
             if (isValue.isPresent()) {
+                final String name = message.getName();
+                final File.Builder srcFile = prepareFile(name, javaPackage);
                 final String interfaceName = prepareInterfaceFqn(isValue.get(), file);
+                final String messageFqn = javaPackage + PACKAGE_DELIMITER + message.getName();
                 final File messageFile = implementInterface(srcFile,
                                                             interfaceName,
-                                                            messageType.getName());
+                                                            messageFqn);
                 result.add(messageFile);
             }
         }
@@ -112,23 +102,25 @@ public final class CodeGenerator {
     }
 
     private static Collection<File> collectMessages(FileDescriptorProto descriptor,
-                                                    File file,
                                                     String interfaceName) {
         final Collection<File> result = newLinkedList();
+        final String javaPackage = resolvePackage(descriptor);
         for (DescriptorProto message : descriptor.getMessageTypeList()) {
+            final String name = message.getName();
+            final File.Builder srcFile = prepareFile(name, javaPackage);
             final String interfaceTypeName = prepareInterfaceFqn(interfaceName, descriptor);
-            final File messageFile = implementInterface(file, interfaceTypeName, message.getName());
+            final String messageFqn = javaPackage + PACKAGE_DELIMITER + message.getName();
+            final File messageFile = implementInterface(srcFile, interfaceTypeName, messageFqn);
             result.add(messageFile);
         }
         return result;
     }
 
-    private static File implementInterface(File srcFile,
+    private static File implementInterface(File.Builder srcFile,
                                            String interfaceTypeName,
                                            String messageTypeName) {
         final String insertionPoint = format(INSERTION_POINT_IMPLEMENTS, messageTypeName);
-        final File result = srcFile.toBuilder()
-                                   .setInsertionPoint(insertionPoint)
+        final File result = srcFile.setInsertionPoint(insertionPoint)
                                    .setContent(interfaceTypeName + ',')
                                    .build();
         return result;
@@ -140,64 +132,36 @@ public final class CodeGenerator {
         if (optionValue.contains(PACKAGE_DELIMITER)) {
             interfaceFqn = optionValue;
         } else {
-            String javaPackage = srcFile.getOptions()
-                                        .getJavaPackage();
-            if (isNullOrEmpty(javaPackage)) {
-                javaPackage = srcFile.getPackage();
-            }
+            final String javaPackage = resolvePackage(srcFile);
             interfaceFqn = javaPackage + PACKAGE_DELIMITER + optionValue;
         }
         return interfaceFqn;
     }
 
-    private static File prepareFile(String path) {
-        return File.newBuilder()
-                   .setName(path)
-                   .build();
+    private static String resolvePackage(FileDescriptorProto fileDescriptor) {
+        String javaPackage = fileDescriptor.getOptions().getJavaPackage();
+        if (isNullOrEmpty(javaPackage)) {
+            javaPackage = fileDescriptor.getPackage();
+        }
+        return javaPackage;
+    }
+
+    private static File.Builder prepareFile(String messageName, String javaPackage) {
+        final String nameFqn = (javaPackage + PACKAGE_DELIMITER + messageName).replace('.', '/');
+        final File.Builder srcFile = File.newBuilder()
+                                         .setName(nameFqn);
+        return srcFile;
     }
 
     private static Optional<String> getEveryIs(FileDescriptorProto descriptor) {
         final FileOptions options = descriptor.getOptions();
-        final List<UninterpretedOption> unknownOptions = options.getUninterpretedOptionList();
-        return getOptionWithName(unknownOptions, EVERY_IS_OPTION_NAME);
+        final String value = options.getExtension(everyIs);
+        return Optional.of(value);
     }
 
     private static Optional<String> getIs(DescriptorProto descriptor) {
         final MessageOptions options = descriptor.getOptions();
-        final List<UninterpretedOption> unknownOptions = options.getUninterpretedOptionList();
-        return getOptionWithName(unknownOptions, IS_OPTION_NAME);
-    }
-
-    private static Optional<String> getOptionWithName(Iterable<UninterpretedOption> unknownOptions,
-                                                      String expectedName) {
-        for (UninterpretedOption option : unknownOptions) {
-            if (any(option.getNameList(), WithName.equalTo(expectedName))) {
-                final String value = option.getIdentifierValue();
-                return Optional.of(value);
-            }
-        }
-        return Optional.absent();
-    }
-
-    private static class WithName implements Predicate<NamePart> {
-
-        private final String name;
-
-        private static Predicate<NamePart> equalTo(String name) {
-            checkNotNull(name);
-            return new WithName(name);
-        }
-
-        private WithName(String name) {
-            this.name = name;
-        }
-
-        @Override
-        public boolean apply(@Nullable NamePart input) {
-            checkNotNull(input);
-            final boolean matches = input.getNamePart()
-                                         .equals(name);
-            return matches;
-        }
+        final String value = options.getExtension(is);
+        return Optional.of(value);
     }
 }
