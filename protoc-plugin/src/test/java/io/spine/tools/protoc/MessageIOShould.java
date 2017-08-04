@@ -20,6 +20,7 @@
 
 package io.spine.tools.protoc;
 
+import com.google.common.testing.NullPointerTester;
 import com.google.common.util.concurrent.SettableFuture;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
@@ -41,6 +42,16 @@ import static org.junit.Assert.fail;
  * @author Dmytro Dashenkov
  */
 public class MessageIOShould {
+
+    @Test
+    public void not_accept_nulls() {
+        final NullPointerTester tester = new NullPointerTester()
+                .setDefault(CodeGeneratorResponse.class, CodeGeneratorResponse.getDefaultInstance())
+                .setDefault(InputStream.class, new StubInputStream())
+                .setDefault(OutputStream.class, new StubOutputStream());
+        tester.testAllPublicConstructors(MessageIO.class);
+        tester.testAllPublicInstanceMethods(MessageIO.class);
+    }
 
     @Test
     public void read_message() {
@@ -115,8 +126,7 @@ public class MessageIOShould {
 
         @Override
         public void write(int b) throws IOException {
-            @SuppressWarnings("NumericCastThatLosesPrecision")
-            final byte dataPiece = (byte) b;
+            @SuppressWarnings("NumericCastThatLosesPrecision") final byte dataPiece = (byte) b;
             bytes.add(dataPiece);
         }
 
