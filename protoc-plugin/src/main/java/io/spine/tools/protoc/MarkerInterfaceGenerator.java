@@ -47,10 +47,10 @@ public final class MarkerInterfaceGenerator {
                                   .build();
     }
 
-    private final File outputFile;
+    private final File outputDirectory;
 
-    public MarkerInterfaceGenerator(File outputFile) {
-        this.outputFile = outputFile;
+    public MarkerInterfaceGenerator(File outputDirectory) {
+        this.outputDirectory = outputDirectory;
     }
 
     public void generate(String packageName, String typeName) {
@@ -62,7 +62,7 @@ public final class MarkerInterfaceGenerator {
         try {
             JavaFile.builder(packageName, spec)
                     .build()
-                    .writeTo(outputFile);
+                    .writeTo(outputDirectory);
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }

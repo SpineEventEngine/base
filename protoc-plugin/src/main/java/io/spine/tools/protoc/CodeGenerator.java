@@ -21,6 +21,7 @@
 package io.spine.tools.protoc;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Objects;
 import com.google.common.base.Optional;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
@@ -31,8 +32,11 @@ import com.google.protobuf.GeneratedMessageV3.ExtendableMessage;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import com.google.protobuf.compiler.PluginProtos.Version;
 
+import java.nio.file.Path;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -53,11 +57,13 @@ public final class CodeGenerator {
     static final String INSERTION_POINT_IMPLEMENTS = "message_implements:%s";
     private static final String PACKAGE_DELIMITER = ".";
 
+    private final Set<InterfaceSpec> markerInterfaces = new HashSet<>();
+
     private CodeGenerator() {
         // Prevent utility class instantiation.
     }
 
-    public static CodeGeneratorResponse generate(CodeGeneratorRequest request) {
+    public CodeGeneratorResponse generate(CodeGeneratorRequest request, Path genDir) {
         checkNotNull(request);
         final Version protocVersion = request.getCompilerVersion();
         checkArgument(protocVersion.getMajor() >= 3,
@@ -65,10 +71,11 @@ public final class CodeGenerator {
         final List<FileDescriptorProto> descriptors = request.getProtoFileList();
         checkArgument(!descriptors.isEmpty(), "No files to generate provided.");
         final CodeGeneratorResponse response = scan(descriptors);
+        writeMarkerInterfaces(genDir);
         return response;
     }
 
-    private static CodeGeneratorResponse scan(Iterable<FileDescriptorProto> descriptors) {
+    private CodeGeneratorResponse scan(Iterable<FileDescriptorProto> descriptors) {
         final Collection<File> result = newLinkedList();
         for (final FileDescriptorProto descriptor : descriptors) {
             result.addAll(scanFile(descriptor));
@@ -79,7 +86,7 @@ public final class CodeGenerator {
         return response;
     }
 
-    private static Collection<File> scanFile(FileDescriptorProto descriptor) {
+    private Collection<File> scanFile(FileDescriptorProto descriptor) {
         final Collection<File> result = newLinkedList();
         final Optional<String> everyIsValue = getEveryIs(descriptor);
         if (everyIsValue.isPresent()) {
@@ -90,7 +97,7 @@ public final class CodeGenerator {
         return result;
     }
 
-    private static Collection<File> scanMessages(FileDescriptorProto file) {
+    private Collection<File> scanMessages(FileDescriptorProto file) {
         final Collection<File> result = newLinkedList();
         final String javaPackage = resolvePackage(file);
         for (DescriptorProto message : file.getMessageTypeList()) {
@@ -111,7 +118,7 @@ public final class CodeGenerator {
         return result;
     }
 
-    private static Collection<File> collectMessages(FileDescriptorProto file,
+    private Collection<File> collectMessages(FileDescriptorProto file,
                                                     String interfaceName) {
         final Collection<File> result = newLinkedList();
         final String javaPackage = resolvePackage(file);
@@ -128,7 +135,7 @@ public final class CodeGenerator {
         return result;
     }
 
-    private static File implementInterface(File.Builder srcFile,
+    private File implementInterface(File.Builder srcFile,
                                            String interfaceTypeName,
                                            String messageTypeName) {
         final String insertionPoint = format(INSERTION_POINT_IMPLEMENTS, messageTypeName);
@@ -138,7 +145,7 @@ public final class CodeGenerator {
         return result;
     }
 
-    private static String prepareInterfaceFqn(String optionValue, FileDescriptorProto srcFile) {
+    private String prepareInterfaceFqn(String optionValue, FileDescriptorProto srcFile) {
         checkNotNull(optionValue);
         final String interfaceFqn;
         if (optionValue.contains(PACKAGE_DELIMITER)) {
@@ -150,7 +157,7 @@ public final class CodeGenerator {
         return interfaceFqn;
     }
 
-    private static String resolvePackage(FileDescriptorProto fileDescriptor) {
+    private String resolvePackage(FileDescriptorProto fileDescriptor) {
         String javaPackage = fileDescriptor.getOptions().getJavaPackage();
         if (isNullOrEmpty(javaPackage)) {
             javaPackage = fileDescriptor.getPackage();
@@ -158,7 +165,7 @@ public final class CodeGenerator {
         return javaPackage;
     }
 
-    private static String resolveName(FileDescriptorProto fileDescriptor) {
+    private String resolveName(FileDescriptorProto fileDescriptor) {
         String name = fileDescriptor.getOptions().getJavaOuterClassname();
         if (isNullOrEmpty(name)) {
             name = fileDescriptor.getName();
@@ -166,30 +173,85 @@ public final class CodeGenerator {
         return name;
     }
 
-    private static File.Builder prepareFile(String messageName, String javaPackage) {
+    private File.Builder prepareFile(String messageName, String javaPackage) {
         final String nameFqn = (javaPackage + PACKAGE_DELIMITER + messageName).replace('.', '/');
         final File.Builder srcFile = File.newBuilder()
                                          .setName(nameFqn);
         return srcFile;
     }
 
-    private static Optional<String> getEveryIs(FileDescriptorProto descriptor) {
+    private Optional<String> getEveryIs(FileDescriptorProto descriptor) {
         final FileOptions options = descriptor.getOptions();
         return getOption(options, everyIs);
     }
 
-    private static Optional<String> getIs(DescriptorProto descriptor) {
+    private Optional<String> getIs(DescriptorProto descriptor) {
         final MessageOptions options = descriptor.getOptions();
         return getOption(options, is);
     }
 
-    private static <T extends ExtendableMessage<T>> Optional<String>
+    private <T extends ExtendableMessage<T>> Optional<String>
     getOption(T options, GeneratedExtension<T, String> extension) {
         final String value = options.getExtension(extension);
         if (isNullOrEmpty(value)) {
             return Optional.absent();
         } else {
             return Optional.of(value);
+        }
+    }
+
+    private void writeMarkerInterfaces(Path genDir) {
+        final MarkerInterfaceGenerator generator = new MarkerInterfaceGenerator(genDir.toFile());
+        for (InterfaceSpec spec : markerInterfaces) {
+            generator.generate(spec.getPackageName(), spec.getName());
+        }
+    }
+
+    private static class InterfaceSpec {
+
+        private final String packageName;
+        private final String name;
+
+        private InterfaceSpec(String packageName, String name) {
+            this.packageName = packageName;
+            this.name = name;
+        }
+
+        private static InterfaceSpec newInstance(String packageName, String name) {
+            return new InterfaceSpec(packageName, name);
+        }
+
+        private static InterfaceSpec from(String fullName) {
+            final int index = fullName.lastIndexOf(PACKAGE_DELIMITER);
+            final String name = fullName.substring(index + 1);
+            final String packageName = fullName.substring(0, index);
+            return new InterfaceSpec(packageName, name);
+        }
+
+        public String getPackageName() {
+            return packageName;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            InterfaceSpec that = (InterfaceSpec) o;
+            return Objects.equal(getPackageName(), that.getPackageName()) &&
+                    Objects.equal(getName(), that.getName());
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hashCode(getPackageName(), getName());
         }
     }
 }
