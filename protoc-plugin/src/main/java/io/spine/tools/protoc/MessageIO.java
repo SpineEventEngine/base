@@ -40,12 +40,11 @@ public final class MessageIO {
     private final OutputStream out;
 
     public MessageIO(InputStream in, OutputStream out) {
-        this.in = in;
-        this.out = out;
+        this.in = checkNotNull(in);
+        this.out = checkNotNull(out);
     }
 
     public CodeGeneratorRequest readRequest() {
-        checkNotNull(in);
         final CodedInputStream stream = CodedInputStream.newInstance(in);
         try {
             final CodeGeneratorRequest request = CodeGeneratorRequest.parseFrom(stream);
@@ -57,7 +56,6 @@ public final class MessageIO {
 
     public void writeResponse(CodeGeneratorResponse response) {
         checkNotNull(response);
-        checkNotNull(out);
         final CodedOutputStream stream = CodedOutputStream.newInstance(out);
         try {
             response.writeTo(stream);
