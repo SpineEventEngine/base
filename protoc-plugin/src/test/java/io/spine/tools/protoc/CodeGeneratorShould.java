@@ -63,7 +63,7 @@ public class CodeGeneratorShould {
     @Test
     public void generate_insertion_point_contents_for_EveryIs_option() {
         // Sample path; never resolved
-        final String filePath = "./proto/spine/tools/protoc/every_is_test.proto";
+        final String filePath = "/proto/spine/tools/protoc/every_is_test.proto";
 
         final FileDescriptorProto descriptor = EveryIsTestProto.getDescriptor().toProto();
         final CodeGeneratorRequest request = CodeGeneratorRequest.newBuilder()
@@ -92,7 +92,7 @@ public class CodeGeneratorShould {
     @Test
     public void generate_insertion_point_contents_for_Is_option() {
         // Sample path; never resolved
-        final String filePath = "./proto/spine/tools/protoc/is_test.proto";
+        final String filePath = "/proto/spine/tools/protoc/is_test.proto";
 
         final FileDescriptorProto descriptor = IsTestProto.getDescriptor().toProto();
         final CodeGeneratorRequest request = CodeGeneratorRequest.newBuilder()
@@ -120,6 +120,62 @@ public class CodeGeneratorShould {
             } else {
                 fail(format("Unexpected message name: %s", name));
             }
+        }
+    }
+
+    @Test
+    public void generate_insertion_point_contents_for_EveryIs_in_single_file() {
+        // Sample path; never resolved
+        final String filePath = "/proto/spine/tools/protoc/every_is_in_one_file.proto";
+
+        final FileDescriptorProto descriptor = EveryIsInOneFileProto.getDescriptor().toProto();
+        final CodeGeneratorRequest request = CodeGeneratorRequest.newBuilder()
+                                                                 .setCompilerVersion(version())
+                                                                 .addFileToGenerate(filePath)
+                                                                 .addProtoFile(descriptor)
+                                                                 .build();
+        final CodeGeneratorResponse response = CodeGenerator.generate(request);
+        assertNotNull(response);
+        final List<File> files = response.getFileList();
+        assertEquals(2, files.size());
+        for (File file : files) {
+            final String name = file.getName();
+            assertEquals(PACKAGE_PATH + "/EveryIsInOneFileProto", name);
+
+            final String insertionPoint = file.getInsertionPoint();
+            assertTrue(insertionPoint.startsWith(format(INSERTION_POINT_IMPLEMENTS,
+                                                        PROTO_PACKAGE)));
+            final String content = file.getContent();
+            final Matcher matcher = CUSTOMER_EVENT_INTERFACE_PATTERN.matcher(content);
+            assertTrue(format("Unexpected inserted content: %s", content), matcher.matches());
+        }
+    }
+
+    @Test
+    public void generate_insertion_point_contents_for_Is_in_single_file() {
+        // Sample path; never resolved
+        final String filePath = "/proto/spine/tools/protoc/is_in_one_file.proto";
+
+        final FileDescriptorProto descriptor = IsInOneFileProto.getDescriptor().toProto();
+        final CodeGeneratorRequest request = CodeGeneratorRequest.newBuilder()
+                                                                 .setCompilerVersion(version())
+                                                                 .addFileToGenerate(filePath)
+                                                                 .addProtoFile(descriptor)
+                                                                 .build();
+        final CodeGeneratorResponse response = CodeGenerator.generate(request);
+        assertNotNull(response);
+        final List<File> files = response.getFileList();
+        assertEquals(2, files.size());
+        for (File file : files) {
+            final String name = file.getName();
+            assertEquals(PACKAGE_PATH + "/IsInOneFileProto", name);
+
+            final String insertionPoint = file.getInsertionPoint();
+            assertTrue(insertionPoint.startsWith(format(INSERTION_POINT_IMPLEMENTS,
+                                                        PROTO_PACKAGE)));
+            final String content = file.getContent();
+            final Matcher matcher = CUSTOMER_EVENT_INTERFACE_PATTERN.matcher(content);
+            assertTrue(format("Unexpected inserted content: %s", content), matcher.matches());
         }
     }
 
