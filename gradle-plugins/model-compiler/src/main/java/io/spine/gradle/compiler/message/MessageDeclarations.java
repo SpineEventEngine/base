@@ -48,8 +48,8 @@ public class MessageDeclarations {
      * @param predicate       the predicate to test a message
      * @return the message declarations
      */
-    public static Collection<MessageDeclaration> find(
-            Collection<FileDescriptorProto> fileDescriptors, Predicate<DescriptorProto> predicate) {
+    public static Collection<MessageDeclaration> find(Iterable<FileDescriptorProto> fileDescriptors,
+                                                      Predicate<DescriptorProto> predicate) {
         final List<MessageDeclaration> result = newLinkedList();
         for (FileDescriptorProto fileDescriptor : fileDescriptors) {
             final Collection<MessageDeclaration> declarationsFromFile = scanFile(fileDescriptor,
@@ -78,19 +78,18 @@ public class MessageDeclarations {
     private static Collection<MessageDeclaration> scanNestedTypesRecursively(
             MessageDeclaration declaration, Predicate<DescriptorProto> predicate) {
         final List<MessageDeclaration> result = newLinkedList();
-        final List<DescriptorProto> nestedTypes = declaration.getDescriptor()
-                                                             .getNestedTypeList();
-        final Deque<DescriptorProto> deque = newLinkedList(nestedTypes);
+        final Iterable<MessageDeclaration> nestedDeclarations = declaration.getNestedDeclarations();
+        final Deque<MessageDeclaration> deque = newLinkedList(nestedDeclarations);
 
         while (!deque.isEmpty()) {
-            final DescriptorProto nestedMessage = deque.pollFirst();
-            final MessageDeclaration nestedDeclaration = declaration.forNested(nestedMessage);
+            final MessageDeclaration nestedDeclaration = deque.pollFirst();
+            final DescriptorProto nestedDescriptor = nestedDeclaration.getDescriptor();
 
-            if (predicate.apply(nestedMessage)) {
+            if (predicate.apply(nestedDescriptor)) {
                 result.add(nestedDeclaration);
             }
 
-            deque.addAll(nestedMessage.getNestedTypeList());
+            deque.addAll(nestedDeclaration.getNestedDeclarations());
         }
         return result;
     }

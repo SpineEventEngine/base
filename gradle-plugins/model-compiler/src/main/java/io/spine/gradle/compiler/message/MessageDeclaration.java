@@ -24,6 +24,7 @@ import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.type.TypeName;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -89,12 +90,26 @@ public class MessageDeclaration {
     }
 
     /**
+     * Obtains declarations of nested types of this declaration.
+     *
+     * @return the collection of message declarations
+     */
+    public Collection<MessageDeclaration> getNestedDeclarations() {
+        final List<MessageDeclaration> nestedDeclarations = newLinkedList();
+        for (DescriptorProto nestedType : descriptor.getNestedTypeList()) {
+            final MessageDeclaration nestedDeclaration = forNested(nestedType);
+            nestedDeclarations.add(nestedDeclaration);
+        }
+        return nestedDeclarations;
+    }
+
+    /**
      * Obtains the declaration for the specified nested message of the declaration.
      *
      * @param nestedMessage the nested message from this declaration
      * @return the nested message declaration
      */
-    public MessageDeclaration forNested(DescriptorProto nestedMessage) {
+    private MessageDeclaration forNested(DescriptorProto nestedMessage) {
         final boolean isNestedForCurrentTarget = descriptor.getNestedTypeList()
                                                            .contains(nestedMessage);
         if (!isNestedForCurrentTarget) {
