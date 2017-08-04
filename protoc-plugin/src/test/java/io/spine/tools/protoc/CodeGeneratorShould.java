@@ -45,6 +45,8 @@ import static org.junit.Assert.fail;
  */
 public class CodeGeneratorShould {
 
+    private static final String PROTO_PACKAGE = "spine.tools.protoc.";
+
     private static final String PACKAGE_PATH = CodeGeneratorShould.class.getPackage()
                                                                         .getName()
                                                                         .replace('.', '/');
@@ -78,7 +80,7 @@ public class CodeGeneratorShould {
             assertTrue(name.startsWith(PACKAGE_PATH));
 
             final String insertionPoint = file.getInsertionPoint();
-            final String messageName = file.getName().replace('/', '.');
+            final String messageName = PROTO_PACKAGE + name.substring(name.lastIndexOf('/') + 1);
             assertEquals(insertionPoint, format(INSERTION_POINT_IMPLEMENTS, messageName));
 
             final String content = file.getContent();
@@ -107,7 +109,7 @@ public class CodeGeneratorShould {
             assertTrue(name.startsWith(PACKAGE_PATH));
 
             final String insertionPoint = file.getInsertionPoint();
-            final String messageName = file.getName().replace('/', '.');
+            final String messageName = PROTO_PACKAGE + name.substring(name.lastIndexOf('/') + 1);
             assertEquals(insertionPoint, format(INSERTION_POINT_IMPLEMENTS, messageName));
 
             final String content = file.getContent();

@@ -93,7 +93,7 @@ public final class CodeGenerator {
                 final String name = message.getName();
                 final File.Builder srcFile = prepareFile(name, javaPackage);
                 final String interfaceName = prepareInterfaceFqn(isValue.get(), file);
-                final String messageFqn = javaPackage + PACKAGE_DELIMITER + message.getName();
+                final String messageFqn = file.getPackage() + PACKAGE_DELIMITER + message.getName();
                 final File messageFile = implementInterface(srcFile,
                                                             interfaceName,
                                                             messageFqn);
@@ -103,15 +103,15 @@ public final class CodeGenerator {
         return result;
     }
 
-    private static Collection<File> collectMessages(FileDescriptorProto descriptor,
+    private static Collection<File> collectMessages(FileDescriptorProto file,
                                                     String interfaceName) {
         final Collection<File> result = newLinkedList();
-        final String javaPackage = resolvePackage(descriptor);
-        for (DescriptorProto message : descriptor.getMessageTypeList()) {
+        final String javaPackage = resolvePackage(file);
+        for (DescriptorProto message : file.getMessageTypeList()) {
             final String name = message.getName();
             final File.Builder srcFile = prepareFile(name, javaPackage);
-            final String interfaceTypeName = prepareInterfaceFqn(interfaceName, descriptor);
-            final String messageFqn = javaPackage + PACKAGE_DELIMITER + message.getName();
+            final String interfaceTypeName = prepareInterfaceFqn(interfaceName, file);
+            final String messageFqn = file.getPackage() + PACKAGE_DELIMITER + message.getName();
             final File messageFile = implementInterface(srcFile, interfaceTypeName, messageFqn);
             result.add(messageFile);
         }
