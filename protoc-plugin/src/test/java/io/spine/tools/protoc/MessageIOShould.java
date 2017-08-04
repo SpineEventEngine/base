@@ -44,13 +44,22 @@ import static org.junit.Assert.fail;
 public class MessageIOShould {
 
     @Test
-    public void not_accept_nulls() {
+    public void not_accept_nulls_to_ctor() {
+        nullTester().testAllPublicConstructors(MessageIO.class);
+    }
+
+    @Test
+    public void not_accept_nulls_to_instance_methods() {
+        final MessageIO io = new MessageIO(new StubInputStream(), new StubOutputStream());
+        nullTester().testAllPublicInstanceMethods(io);
+    }
+
+    private static NullPointerTester nullTester() {
         final NullPointerTester tester = new NullPointerTester()
                 .setDefault(CodeGeneratorResponse.class, CodeGeneratorResponse.getDefaultInstance())
                 .setDefault(InputStream.class, new StubInputStream())
                 .setDefault(OutputStream.class, new StubOutputStream());
-        tester.testAllPublicConstructors(MessageIO.class);
-        tester.testAllPublicInstanceMethods(MessageIO.class);
+        return tester;
     }
 
     @Test
@@ -126,7 +135,9 @@ public class MessageIOShould {
 
         @Override
         public void write(int b) throws IOException {
-            @SuppressWarnings("NumericCastThatLosesPrecision") final byte dataPiece = (byte) b;
+            @SuppressWarnings("NumericCastThatLosesPrecision")
+                // byte by convention
+            final byte dataPiece = (byte) b;
             bytes.add(dataPiece);
         }
 
