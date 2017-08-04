@@ -20,8 +20,6 @@
 
 package io.spine.option;
 
-import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.MessageOptions;
 
@@ -56,7 +54,7 @@ public class ValidationTargetsParser extends RawListParser<MessageOptions, Descr
 
     @Override
     public Collection<String> parse(String optionValue) {
-        checkArgument(isNullOrEmpty(optionValue));
+        checkArgument(!isNullOrEmpty(optionValue));
         return splitOptionValue(optionValue);
     }
 

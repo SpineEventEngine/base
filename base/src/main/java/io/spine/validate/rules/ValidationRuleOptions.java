@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.validate;
+package io.spine.validate.rules;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
@@ -26,7 +26,9 @@ import com.google.protobuf.DescriptorProtos.FieldOptions;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
+import io.spine.validate.FieldContext;
 
+import java.util.Collection;
 import java.util.Map;
 
 import static com.google.common.collect.ImmutableMap.builder;
@@ -36,7 +38,7 @@ import static com.google.common.collect.ImmutableMap.builder;
  *
  * @author Dmytro Grankin
  */
-class ValidationRuleOptions {
+public class ValidationRuleOptions {
 
     /**
      * A map from a field context to the options extracted from a validation rule.
@@ -56,8 +58,8 @@ class ValidationRuleOptions {
      * @return the {@code Optional} of option value
      *         or {@code Optional.absent()} if there is not option for the field descriptor
      */
-    static <T> Optional<T> getOptionValue(FieldContext fieldContext,
-                                          GeneratedExtension<FieldOptions, T> option) {
+    public static <T> Optional<T> getOptionValue(FieldContext fieldContext,
+                                                 GeneratedExtension<FieldOptions, T> option) {
         for (FieldContext context : options.keySet()) {
             if (fieldContext.hasSameTargetAndParent(context)) {
                 final FieldOptions fieldOptions = options.get(context);
@@ -73,26 +75,33 @@ class ValidationRuleOptions {
      * {@code Builder} assembles a map from a field context
      * to the options extracted from a validation rule.
      *
-     * <p>Keys of the resulting map are field contexts for the fields of a validation rule target.
+     * <p>Keys of the resulting map are field contexts for the fields of a validation rule targets.
      */
     private static class Builder {
 
         private final ImmutableMap.Builder<FieldContext, FieldOptions> state = builder();
 
         private ImmutableMap<FieldContext, FieldOptions> build() {
-            for (Descriptor rule : ValidationRules.getRules()) {
-                final FieldDescriptor target = ValidationRules.getTarget(rule);
-                put(rule, target);
+            for (ValidationRule rule : ValidationRules.getRules()) {
+                putAll(rule);
             }
             return state.build();
+        }
+
+        private void putAll(ValidationRule validationRule) {
+            final Descriptor ruleDescriptor = validationRule.getDescriptor();
+            final Collection<FieldDescriptor> targets = validationRule.getTargets();
+            for (FieldDescriptor target : targets) {
+                put(ruleDescriptor, target);
+            }
         }
 
         private void put(Descriptor rule, FieldDescriptor target) {
             final Descriptor targetType = target.getMessageType();
             for (FieldDescriptor ruleField : rule.getFields()) {
                 final FieldDescriptor subTarget = targetType.findFieldByName(ruleField.getName());
-                final FieldContext subTargetContext = FieldContext.create(target)
-                                                                  .forChild(subTarget);
+                final FieldContext targetContext = FieldContext.create(target);
+                final FieldContext subTargetContext = targetContext.forChild(subTarget);
                 state.put(subTargetContext, ruleField.getOptions());
             }
         }
