@@ -25,11 +25,8 @@ import com.google.protobuf.DescriptorProtos.MessageOptions;
 
 import java.util.Collection;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Strings.isNullOrEmpty;
 import static io.spine.option.OptionsProto.validationOf;
 import static io.spine.option.UnknownOptions.getUnknownOptionValue;
-import static java.util.Collections.emptyList;
 
 /**
  * A parser for {@linkplain OptionsProto#validationOf validation rule} targets.
@@ -43,19 +40,21 @@ public class ValidationTargetsParser extends RawListParser<MessageOptions, Descr
     }
 
     @Override
-    public Collection<String> parse(DescriptorProto descriptor) {
-        final String value = getUnknownOptionValue(descriptor, getOptionNumber());
-        if (value == null) {
-            return emptyList();
-        }
-
-        return parse(value);
+    protected String getOptionValue(DescriptorProto descriptor, int optionNumber) {
+        return getUnknownOptionValue(descriptor, optionNumber);
     }
 
+    /**
+     * Wraps the specified parts.
+     *
+     * <p>This class has not specific requirements, so the specified parameter will be returned.
+     *
+     * @param parts the parts to wrap
+     * @return the specified parts
+     */
     @Override
-    public Collection<String> parse(String optionValue) {
-        checkArgument(!isNullOrEmpty(optionValue));
-        return splitOptionValue(optionValue);
+    protected Collection<String> wrapParts(Collection<String> parts) {
+        return parts;
     }
 
     /**

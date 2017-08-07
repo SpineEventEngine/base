@@ -28,7 +28,11 @@ import com.google.protobuf.GeneratedMessageV3.ExtendableMessage;
 import java.util.Collection;
 import java.util.regex.Pattern;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Strings.isNullOrEmpty;
+import static io.spine.util.Exceptions.newIllegalStateException;
+import static java.util.Collections.emptyList;
 import static java.util.regex.Pattern.compile;
 
 /**
@@ -52,6 +56,7 @@ public abstract class RawListParser<O extends ExtendableMessage, D extends Gener
      */
     private static final String VALUE_SEPARATOR = ",";
     private static final Pattern PATTERN_VALUES_SEPARATOR = compile(VALUE_SEPARATOR);
+    private static final Pattern PATTERN_SPACE = compile(" ");
 
     private final int optionNumber;
 
@@ -59,24 +64,59 @@ public abstract class RawListParser<O extends ExtendableMessage, D extends Gener
         this.optionNumber = checkNotNull(option).getNumber();
     }
 
+    @Override
+    public Collection<R> parse(D descriptor) {
+        final String optionValue = getOptionValue(descriptor, optionNumber);
+        if (optionValue == null) {
+            return emptyList();
+        }
+
+        return parse(optionValue);
+    }
+
+    @Override
+    public Collection<R> parse(String optionValue) {
+        checkArgument(!isNullOrEmpty(optionValue));
+        final Collection<String> parts = splitOptionValue(optionValue);
+        return wrapParts(parts);
+    }
+
+    /**
+     * Obtains the option from the descriptor by the specified number.
+     *
+     * @param descriptor the descriptor to obtain the option
+     * @param optionNumber the number of the option
+     * @return the option value or {@code null} if there is no option with the number
+     */
+    protected abstract String getOptionValue(D descriptor, int optionNumber);
+
+    /**
+     * Wraps the {@linkplain #splitOptionValue(CharSequence) splitted} parts.
+     *
+     * <p>This method must perform actions specific to a concrete implementation.
+     *
+     * @param parts the parts to wrap
+     * @return the collection of wrapped parts
+     */
+    protected abstract Collection<R> wrapParts(Collection<String> parts);
+
     /**
      * Splits the specified value using the {@linkplain #VALUE_SEPARATOR values separator}.
      *
      * @param value the option value to split
      * @return the separated parts of the value
      */
-    protected static Collection<String> splitOptionValue(CharSequence value) {
-        final String[] parts = PATTERN_VALUES_SEPARATOR.split(value);
+    private static Collection<String> splitOptionValue(CharSequence value) {
+        final String valueWithoutSpaces = PATTERN_SPACE.matcher(value)
+                                                       .replaceAll("");
+        final String[] parts = PATTERN_VALUES_SEPARATOR.split(valueWithoutSpaces);
+        for (String part : parts) {
+            if (part.isEmpty()) {
+                final String errMsg = "A blank part was found in the option `%s`.";
+                throw newIllegalStateException(errMsg, value);
+            }
+        }
         return ImmutableList.copyOf(parts);
-    }
-
-    /**
-     * Obtains the number of the option to parse.
-     *
-     * @return the option number
-     */
-    protected int getOptionNumber() {
-        return optionNumber;
     }
 
     public static String getValueSeparator() {

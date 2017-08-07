@@ -26,16 +26,10 @@ import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import io.spine.type.TypeName;
 
 import java.util.Collection;
-import java.util.regex.Pattern;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
-import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Lists.newLinkedList;
 import static io.spine.option.UnknownOptions.getUnknownOptionValue;
-import static java.util.Collections.emptyList;
-import static java.util.regex.Pattern.compile;
 
 /**
  * A parser for the options, that represent {@linkplain RawListParser raw list} of type names.
@@ -45,7 +39,6 @@ import static java.util.regex.Pattern.compile;
 public class TypeNamesParser extends RawListParser<MessageOptions, DescriptorProto, TypeName> {
 
     private static final String PACKAGE_SEPARATOR = ".";
-    private static final Pattern PATTERN_SPACE = compile(" ");
 
     /**
      * A package prefix to supply unqualified type names.
@@ -58,49 +51,21 @@ public class TypeNamesParser extends RawListParser<MessageOptions, DescriptorPro
         this.packagePrefix = checkNotNull(packagePrefix);
     }
 
-    /**
-     * Obtains the option value and {@linkplain #parse(String) parses it}.
-     *
-     * @param descriptor the descriptor to obtain the option value
-     * @return the parsed value
-     */
     @Override
-    public Collection<TypeName> parse(DescriptorProto descriptor) {
-        final String optionValue = getUnknownOptionValue(descriptor, getOptionNumber());
-        if (optionValue == null) {
-            return emptyList();
-        }
-
-        return parse(optionValue);
-    }
-
-    /**
-     * Obtains type names from the specified option value and
-     * supplies them with the package prefix if it is not present.
-     *
-     * @param optionValue the option value to parse
-     * @return the type names
-     */
-    @Override
-    public Collection<TypeName> parse(String optionValue) {
-        checkArgument(!isNullOrEmpty(optionValue));
-        final String optionValueWithoutSpaces = PATTERN_SPACE.matcher(optionValue)
-                                                             .replaceAll("");
-        final Collection<String> typeNames = splitOptionValue(optionValueWithoutSpaces);
-        return normalizeTypeNames(typeNames);
+    protected String getOptionValue(DescriptorProto descriptor, int optionNumber) {
+        return getUnknownOptionValue(descriptor, optionNumber);
     }
 
     /**
      * Supplies and wraps the specified type names with the package prefix if it is not present.
      *
-     * @param rawTypeNames the raw type names to normalize
+     * @param parts the raw type names to normalize
      * @return a collection of normalized type names
      */
-    private Collection<TypeName> normalizeTypeNames(Iterable<String> rawTypeNames) {
+    @Override
+    protected Collection<TypeName> wrapParts(Collection<String> parts) {
         final Collection<TypeName> normalizedNames = newLinkedList();
-        for (String rawTypeName : rawTypeNames) {
-            checkState(!rawTypeName.trim()
-                                   .isEmpty(), "Empty type name");
+        for (String rawTypeName : parts) {
             final boolean isFqn = rawTypeName.contains(PACKAGE_SEPARATOR);
             final String typeNameValue = isFqn
                                          ? rawTypeName
