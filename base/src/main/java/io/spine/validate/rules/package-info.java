@@ -19,7 +19,7 @@
  */
 
 /**
- * Classes for working with validation rules.
+ * This package defines classes and interfaces for working with {@code Message} validation rules.
  */
 
 @Internal

@@ -34,7 +34,7 @@ import static io.spine.util.Exceptions.newIllegalStateException;
 /**
  * A {@linkplain io.spine.option.OptionsProto#validationOf validation rule}.
  *
- * <p>Aggregates descriptors related to the validation rule.
+ * <p>Aggregates descriptors related to a particular validation rule.
  *
  * @author Dmytro Grankin
  */

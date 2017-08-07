@@ -23,25 +23,24 @@ package io.spine.validate.rules;
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableSet;
 import io.spine.option.ValidationTargetsParser;
+import io.spine.util.PropertyFiles;
 
 import java.util.Collection;
 import java.util.Properties;
 
-import static io.spine.util.PropertyFiles.loadAllProperties;
-
 /**
- * Utilities for obtaining {@linkplain ValidationRule validation rules} known for the application.
+ * Utilities for obtaining {@linkplain ValidationRule validation rules} known to the application.
  *
  * <p>During initialization of this class, definitions of validation rules are
  * {@linkplain Builder#put(Properties) validated}. If an invalid validation rule was found,
- * a runtime exception will be raised.
+ * a runtime exception will be thrown.
  *
  * @author Dmytro Grankin
  */
 public class ValidationRules {
 
     /**
-     * A name of the file, which contains validation rules and their target fields paths.
+     * A name of the file, which contains validation rules and their target field paths.
      */
     private static final String VAL_RULES_PROPS_FILE_NAME = "validation_rules.properties";
 
@@ -56,7 +55,7 @@ public class ValidationRules {
      *
      * @return the immutable collection of validation rules
      */
-    @SuppressWarnings("ReturnOfCollectionOrArrayField") // It's ok to return
+    @SuppressWarnings("ReturnOfCollectionOrArrayField") // It's OK to return
                                                         // an immutable collection.
     static ImmutableCollection<ValidationRule> getRules() {
         return rules;
@@ -69,6 +68,8 @@ public class ValidationRules {
     /**
      * {@code Builder} assembles the validation rules from the
      * {@linkplain #VAL_RULES_PROPS_FILE_NAME properties} files.
+     *
+     * <p>Obtains the files, using {@link PropertyFiles#loadAllProperties(String) PropertyFiles}.
      */
     private static class Builder {
 
@@ -85,7 +86,7 @@ public class ValidationRules {
         private final ImmutableCollection.Builder<ValidationRule> rules;
 
         private Builder() {
-            this.properties = loadAllProperties(VAL_RULES_PROPS_FILE_NAME);
+            this.properties = PropertyFiles.loadAllProperties(VAL_RULES_PROPS_FILE_NAME);
             this.rules = ImmutableSet.builder();
         }
 
