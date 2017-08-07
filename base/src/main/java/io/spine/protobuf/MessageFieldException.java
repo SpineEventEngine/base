@@ -30,7 +30,7 @@ public class MessageFieldException extends RuntimeException {
                                  String errorMessageFormat,
                                  Object... params) {
         super(format(checkNotNull(errorMessageFormat), params));
-        this.protobufMessage = (GeneratedMessageV3)checkNotNull(protobufMessage);
+        this.protobufMessage = (GeneratedMessageV3) checkNotNull(protobufMessage);
     }
 
     /**
