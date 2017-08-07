@@ -39,10 +39,11 @@ public class Plugin {
         @SuppressWarnings("UseOfSystemOutOrSystemErr") // As part of the `protoc` API
         final MessageIO parser = new MessageIO(System.in, System.out);
         final CodeGeneratorRequest request = parser.readRequest();
-        final CodeGenerator generator = new CodeGenerator();
         final Path generatedClassesPath = FileSystems.getDefault()
                                                      .getPath("./generated/main/spine");
-        final CodeGeneratorResponse response = generator.generate(request, generatedClassesPath);
+        final SpineProtoOptionProcessor generator =
+                new NarrowMessageInterfaceGenerator(generatedClassesPath);
+        final CodeGeneratorResponse response = generator.process(request);
         parser.writeResponse(response);
     }
 }

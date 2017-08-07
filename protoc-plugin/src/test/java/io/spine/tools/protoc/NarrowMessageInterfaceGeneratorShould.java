@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static io.spine.tools.protoc.CodeGenerator.INSERTION_POINT_IMPLEMENTS;
+import static io.spine.tools.protoc.NarrowMessageInterfaceGenerator.INSERTION_POINT_IMPLEMENTS;
 import static java.lang.String.format;
 import static java.util.regex.Pattern.compile;
 import static org.junit.Assert.assertEquals;
@@ -46,31 +46,31 @@ import static org.junit.Assert.fail;
 /**
  * @author Dmytro Dashenkov
  */
-public class CodeGeneratorShould {
+public class NarrowMessageInterfaceGeneratorShould {
 
     private static final String PROTO_PACKAGE = "spine.tools.protoc.";
 
-    private static final String PACKAGE_PATH = CodeGeneratorShould.class.getPackage()
-                                                                        .getName()
-                                                                        .replace('.', '/');
+    private static final String PACKAGE_PATH = NarrowMessageInterfaceGeneratorShould.class.getPackage()
+                                                                                          .getName()
+                                                                                          .replace('.', '/');
     private static final Pattern CUSTOMER_EVENT_INTERFACE_PATTERN =
             compile("^\\s*io\\.spine\\.tools\\.protoc\\.CustomerEvent\\s*,\\s*$");
 
     private static final Path generatedSrcPath = Files.createTempDir().toPath();
 
-    private CodeGenerator codeGenerator;
+    private NarrowMessageInterfaceGenerator codeGenerator;
 
 
     @Before
     public void setUp() {
-        codeGenerator = new CodeGenerator();
+        codeGenerator = new NarrowMessageInterfaceGenerator(generatedSrcPath);
     }
 
     @Test
     public void not_accept_nulls() {
         new NullPointerTester()
                 .setDefault(CodeGeneratorRequest.class, CodeGeneratorRequest.getDefaultInstance())
-                .testAllPublicStaticMethods(CodeGenerator.class);
+                .testAllPublicStaticMethods(NarrowMessageInterfaceGenerator.class);
     }
 
     @Test
@@ -84,7 +84,7 @@ public class CodeGeneratorShould {
                                                                  .addFileToGenerate(filePath)
                                                                  .addProtoFile(descriptor)
                                                                  .build();
-        final CodeGeneratorResponse response = codeGenerator.generate(request, generatedSrcPath);
+        final CodeGeneratorResponse response = codeGenerator.process(request);
         assertNotNull(response);
         final List<File> files = response.getFileList();
         assertEquals(2, files.size());
@@ -113,7 +113,7 @@ public class CodeGeneratorShould {
                                                                  .addFileToGenerate(filePath)
                                                                  .addProtoFile(descriptor)
                                                                  .build();
-        final CodeGeneratorResponse response = codeGenerator.generate(request, generatedSrcPath);
+        final CodeGeneratorResponse response = codeGenerator.process(request);
         assertNotNull(response);
         final List<File> files = response.getFileList();
         assertEquals(2, files.size());
@@ -147,7 +147,7 @@ public class CodeGeneratorShould {
                                                                  .addFileToGenerate(filePath)
                                                                  .addProtoFile(descriptor)
                                                                  .build();
-        final CodeGeneratorResponse response = codeGenerator.generate(request, generatedSrcPath);
+        final CodeGeneratorResponse response = codeGenerator.process(request);
         assertNotNull(response);
         final List<File> files = response.getFileList();
         assertEquals(2, files.size());
@@ -175,7 +175,7 @@ public class CodeGeneratorShould {
                                                                  .addFileToGenerate(filePath)
                                                                  .addProtoFile(descriptor)
                                                                  .build();
-        final CodeGeneratorResponse response = codeGenerator.generate(request, generatedSrcPath);
+        final CodeGeneratorResponse response = codeGenerator.process(request);
         assertNotNull(response);
         final List<File> files = response.getFileList();
         assertEquals(2, files.size());
@@ -202,7 +202,7 @@ public class CodeGeneratorShould {
                                                                  .setCompilerVersion(version)
                                                                  .addProtoFile(stubFile)
                                                                  .build();
-        codeGenerator.generate(request, generatedSrcPath);
+        codeGenerator.process(request);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -213,7 +213,7 @@ public class CodeGeneratorShould {
         final CodeGeneratorRequest request = CodeGeneratorRequest.newBuilder()
                                                                  .setCompilerVersion(version)
                                                                  .build();
-        codeGenerator.generate(request, generatedSrcPath);
+        codeGenerator.process(request);
     }
 
     private static Version version() {

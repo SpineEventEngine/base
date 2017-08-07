@@ -29,6 +29,7 @@ import com.squareup.javapoet.TypeSpec;
 import javax.annotation.Generated;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 
 import static javax.lang.model.element.Modifier.PUBLIC;
 
@@ -49,8 +50,8 @@ public final class MarkerInterfaceGenerator {
 
     private final File outputDirectory;
 
-    public MarkerInterfaceGenerator(File outputDirectory) {
-        this.outputDirectory = outputDirectory;
+    public MarkerInterfaceGenerator(Path outputDirectory) {
+        this.outputDirectory = outputDirectory.toFile();
     }
 
     public void generate(String packageName, String typeName) {
