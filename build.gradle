@@ -75,7 +75,7 @@ ext {
 
     credentialsPropertyFile = 'credentials.properties'
     publishPlugin = "$rootDir/scripts/publish.gradle"
-    projectsToPublish = ["base", "model-compiler", "plugin-base", "testutil-base"]
+    projectsToPublish = ["base", "model-compiler", "plugin-base", "testutil-base", "protoc-plugin"]
 }
 
 allprojects {
