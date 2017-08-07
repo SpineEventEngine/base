@@ -46,8 +46,6 @@ import static org.jboss.forge.roaster.model.util.Strings.isBlank;
  * <p>{@code GradleProject} sets up {@linkplain TemporaryFolder test project directory}
  * and allows to execute Gradle tasks.
  *
- * <p>Code executed during a {@linkplain #executeTask(TaskName) Gradle task} is debuggable.
- *
  * @author Dmytro Grankin
  */
 public class GradleProject {
@@ -55,7 +53,13 @@ public class GradleProject {
     private static final String BUILD_GRADLE_NAME = "build.gradle";
     private static final String EXT_GRADLE_NAME = "ext.gradle";
     private static final String BASE_PROTO_LOCATION = "src/main/proto/";
-    private static final boolean DEBUGGABLE = true;
+
+    /**
+     * Determines whether the code can be debugged.
+     *
+     * <p>Affects the code executed during a {@linkplain #executeTask(TaskName) Gradle task}.
+     */
+    private static final boolean DEBUG_ENABLED = false;
 
     private final String name;
     private final GradleRunner gradleRunner;
@@ -64,7 +68,7 @@ public class GradleProject {
         this.name = builder.name;
         this.gradleRunner = GradleRunner.create()
                                         .withProjectDir(builder.folder.getRoot())
-                                        .withDebug(DEBUGGABLE);
+                                        .withDebug(DEBUG_ENABLED);
         writeBuildGradle();
         for (String protoFile : builder.protoFileNames) {
             writeProto(protoFile);
