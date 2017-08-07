@@ -42,7 +42,6 @@ import static org.junit.Assert.assertEquals;
 /**
  * @author Dmytro Grankin
  */
-@Ignore
 public class RejectionGenPluginShould {
 
     @Rule
