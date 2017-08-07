@@ -52,3 +52,9 @@ protobuf {
         artifact = protobufDependency
     }
 }
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'io.spine.tools.protoc.Plugin'
+    }
+}
