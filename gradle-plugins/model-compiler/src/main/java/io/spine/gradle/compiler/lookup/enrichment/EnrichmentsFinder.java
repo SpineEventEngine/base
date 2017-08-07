@@ -45,7 +45,7 @@ import static com.google.common.base.Preconditions.checkState;
 import static io.spine.option.OptionsProto.BY_FIELD_NUMBER;
 import static io.spine.option.OptionsProto.enrichment;
 import static io.spine.option.OptionsProto.enrichmentFor;
-import static io.spine.option.RawListParser.getValuesSeparator;
+import static io.spine.option.RawListParser.getValueSeparator;
 import static io.spine.option.UnknownOptions.getUnknownOptionValue;
 import static io.spine.option.UnknownOptions.hasUnknownOption;
 import static java.lang.String.format;
@@ -110,7 +110,7 @@ class EnrichmentsFinder {
      * Merge duplicate values into a single value for the same key.
      *
      * <p>The values are joined with the
-     * {@linkplain io.spine.option.RawListParser#VALUES_SEPARATOR values separator}.
+     * {@linkplain io.spine.option.RawListParser#VALUE_SEPARATOR value separator}.
      *
      * <p>Merging may be required when the wildcard `By` option values are handled,
      * i.e. when processing a single enrichment type as a map key, but multiple target
@@ -127,7 +127,7 @@ class EnrichmentsFinder {
 
             final String mergedValue;
             if (valuesPerKey.size() > 1) {
-                mergedValue = Joiner.on(getValuesSeparator())
+                mergedValue = Joiner.on(getValueSeparator())
                                     .join(valuesPerKey);
             } else {
                 mergedValue = valuesPerKey.iterator()
@@ -175,7 +175,7 @@ class EnrichmentsFinder {
         log().trace("Scanning message {} for the enrichment annotations", messageName);
         final Collection<TypeName> eventTypes = eventTypesParser.parse(msg);
         if (!eventTypes.isEmpty()) {
-            final String mergedValue = Joiner.on(getValuesSeparator())
+            final String mergedValue = Joiner.on(getValueSeparator())
                                              .join(eventTypes);
             log().trace("Found target events: {}", mergedValue);
             msgScanResultBuilder.put(messageName, mergedValue);
@@ -235,7 +235,7 @@ class EnrichmentsFinder {
             eventGroup.add(eventName);
         }
         final String enrichmentName = packagePrefix + enrichment;
-        final String eventGroupString = Joiner.on(getValuesSeparator())
+        final String eventGroupString = Joiner.on(getValueSeparator())
                                               .join(eventGroup);
         final Map.Entry<String, String> result =
                 new AbstractMap.SimpleEntry<>(enrichmentName, eventGroupString);

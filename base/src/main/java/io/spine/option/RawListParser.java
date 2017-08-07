@@ -35,7 +35,7 @@ import static java.util.regex.Pattern.compile;
  * A parser for the options of the {@code String} type.
  *
  * <p>These options represent a list of values,
- * that are separated by the {@linkplain #VALUES_SEPARATOR separator}.
+ * that are separated by the {@linkplain #VALUE_SEPARATOR separator}.
  *
  * @param <O> the type of the option handled by the parser
  * @param <D> the type of the descriptor to obtain the option
@@ -48,11 +48,10 @@ public abstract class RawListParser<O extends ExtendableMessage, D extends Gener
     /**
      * The separator for the list values.
      *
-     * <p>This class defines a concrete separator, because it used across
-     * all {@linkplain OptionsProto Spine options}.
+     * <p>This separator is used across the framework.
      */
-    private static final String VALUES_SEPARATOR = ",";
-    private static final Pattern PATTERN_VALUES_SEPARATOR = compile(VALUES_SEPARATOR);
+    private static final String VALUE_SEPARATOR = ",";
+    private static final Pattern PATTERN_VALUES_SEPARATOR = compile(VALUE_SEPARATOR);
 
     private final int optionNumber;
 
@@ -61,7 +60,7 @@ public abstract class RawListParser<O extends ExtendableMessage, D extends Gener
     }
 
     /**
-     * Splits the specified value using the {@linkplain #VALUES_SEPARATOR values separator}.
+     * Splits the specified value using the {@linkplain #VALUE_SEPARATOR values separator}.
      *
      * @param value the option value to split
      * @return the separated parts of the value
@@ -80,7 +79,7 @@ public abstract class RawListParser<O extends ExtendableMessage, D extends Gener
         return optionNumber;
     }
 
-    public static String getValuesSeparator() {
-        return VALUES_SEPARATOR;
+    public static String getValueSeparator() {
+        return VALUE_SEPARATOR;
     }
 }
