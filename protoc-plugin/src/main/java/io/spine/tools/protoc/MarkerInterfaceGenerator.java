@@ -31,6 +31,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static javax.lang.model.element.Modifier.PUBLIC;
 
 /**
@@ -55,6 +56,8 @@ public final class MarkerInterfaceGenerator {
     }
 
     public void generate(String packageName, String typeName) {
+        checkNotNull(packageName);
+        checkNotNull(typeName);
         final TypeSpec spec = TypeSpec.interfaceBuilder(typeName)
                                       .addSuperinterface(Message.class)
                                       .addModifiers(PUBLIC)
