@@ -20,21 +20,14 @@
 
 package io.spine.option;
 
-import com.google.common.base.Joiner;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
-import com.google.protobuf.StringValue;
 import io.spine.type.TypeName;
 import org.junit.Test;
 
 import java.util.Collection;
-import java.util.Iterator;
 
 import static io.spine.option.OptionsProto.enrichment;
-import static io.spine.option.RawListParser.getValueSeparator;
-import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 /**
  * @author Dmytro Grankin
@@ -46,35 +39,6 @@ public class TypeNamesParserShould {
 
     private final OptionParser<DescriptorProto, TypeName> parser = new TypeNamesParser(enrichment,
                                                                                        PACKAGE_PREFIX);
-
-    @Test
-    public void return_empty_collection_if_option_is_not_present() {
-        final DescriptorProto definitionWithoutOption = StringValue.getDescriptor()
-                                                                   .toProto();
-        final Collection<TypeName> parsedTypes = parser.parse(definitionWithoutOption);
-        assertTrue(parsedTypes.isEmpty());
-    }
-
-    @SuppressWarnings("ConstantConditions") // Purpose of the test.
-    @Test(expected = IllegalArgumentException.class)
-    public void not_allow_null_option_value() {
-        final String nullStr = null;
-        parser.parse(nullStr);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void not_allow_empty_option_value() {
-        parser.parse("");
-    }
-
-    @Test
-    public void split_option_value() {
-        final Collection<String> values = asList(MESSAGE_NAME, MESSAGE_NAME);
-        final String optionValue = Joiner.on(getValueSeparator())
-                                         .join(values);
-        final Collection<TypeName> parsedTypes = parser.parse(optionValue);
-        assertSimpleNames(values, parsedTypes);
-    }
 
     @Test
     public void add_package_prefix_to_unqualified_type() {
@@ -95,34 +59,5 @@ public class TypeNamesParserShould {
         final TypeName result = parsedTypes.iterator()
                                            .next();
         assertEquals(fqn, result.value());
-    }
-
-    @Test
-    public void remove_spaces_from_option_value() {
-        final Collection<String> values = asList("TypeOne", "TypeTwo");
-        final String spaceBeforeSeparator = ' ' + getValueSeparator();
-        final String optionValue = Joiner.on(spaceBeforeSeparator)
-                                         .join(values);
-        final Collection<TypeName> parsedTypes = parser.parse(optionValue);
-        assertSimpleNames(values, parsedTypes);
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void not_allow_type_name_consisting_from_spaces() {
-        final String invalidName = "   ";
-        parser.parse(invalidName);
-    }
-
-    private static void assertSimpleNames(Collection<String> expected,
-                                          Collection<TypeName> actual) {
-        final Iterator<String> expectedIterator = expected.iterator();
-        final Iterator<TypeName> actualIterator = actual.iterator();
-        while (expectedIterator.hasNext() && actualIterator.hasNext()) {
-            final String expectedValue = expectedIterator.next();
-            final String actualValue = actualIterator.next()
-                                                     .getSimpleName();
-            assertEquals(expectedValue, actualValue);
-        }
-        assertFalse(expectedIterator.hasNext() && actualIterator.hasNext());
     }
 }
