@@ -21,6 +21,7 @@
 package io.spine.gradle.compiler.validate;
 
 import io.spine.gradle.compiler.GradleProject;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -33,6 +34,7 @@ import static io.spine.gradle.TaskName.COMPILE_JAVA;
 /**
  * @author Illia Shepilov
  */
+@Ignore
 public class ValidatingBuilderGenPluginShould {
 
     private static final String PROJECT_NAME = "validators-gen-plugin-test";
