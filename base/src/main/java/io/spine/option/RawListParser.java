@@ -58,8 +58,18 @@ public abstract class RawListParser<O extends ExtendableMessage, D extends Gener
     private static final Pattern PATTERN_VALUES_SEPARATOR = compile(VALUE_SEPARATOR);
     private static final Pattern PATTERN_SPACE = compile(" ");
 
+    /**
+     * The tag number of the option.
+     *
+     * <p>This tag will be used to extract a value of the option.
+     */
     private final int optionNumber;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param option the option to be handled by the parser
+     */
     protected RawListParser(GeneratedExtension<O, String> option) {
         this.optionNumber = checkNotNull(option).getNumber();
     }
@@ -85,7 +95,7 @@ public abstract class RawListParser<O extends ExtendableMessage, D extends Gener
      * Obtains the option from the descriptor by the specified number.
      *
      * @param descriptor the descriptor to obtain the option
-     * @param optionNumber the number of the option
+     * @param optionNumber the tag number of the option
      * @return the option value or {@code null} if there is no option with the number
      */
     protected abstract String getOptionValue(D descriptor, int optionNumber);
