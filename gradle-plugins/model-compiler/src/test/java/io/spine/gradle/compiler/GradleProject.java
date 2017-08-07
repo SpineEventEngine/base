@@ -58,6 +58,9 @@ public class GradleProject {
      * Determines whether the code can be debugged.
      *
      * <p>Affects the code executed during a {@linkplain #executeTask(TaskName) Gradle task}.
+     *
+     * <p>NOTE: when the value is {@code true}, all code is executed in a single JVM.
+     * This leads to a high consumption of a memory.
      */
     private static final boolean DEBUG_ENABLED = false;
 
