@@ -48,16 +48,19 @@ protobuf {
     protoc {
         artifact = protobufDependency
     }
-    plugins {
-        spineProtoc {
-            artifact = "io.spine.tools:spine-protoc-plugin:$spineVersion"
-        }
-    }
+
+    // TODO: re-enable when the gradle plugin is ready
+//    plugins {
+//        spineProtoc {
+//            //artifact = "io.spine.tools:spine-protoc-plugin:$spineVersion"
+//            path = "/Users/ddashenkov/.m2/repository/io/spine/tools/spine-protoc-plugin/0.9.48-SNAPSHOT/runner.sh"
+//        }
+//    }
 
     generateProtoTasks {
         all().each { task ->
             task.plugins {
-                spineProtoc {}
+//                spineProtoc {}
             }
         }
     }
