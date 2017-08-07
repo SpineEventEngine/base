@@ -66,7 +66,7 @@ public class RawListParserShould {
     @Test(expected = IllegalStateException.class)
     public void not_allow_blank_value() {
         final String blank = "   ";
-        final Iterable<String> values = Arrays.asList("Non-blank", blank);
+        final Iterable<String> values = Arrays.asList(blank, "non-blank");
         final String optionValue = Joiner.on(getValueSeparator())
                                          .join(values);
         parser.parse(optionValue);
