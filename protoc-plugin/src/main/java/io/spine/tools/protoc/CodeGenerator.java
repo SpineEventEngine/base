@@ -59,10 +59,6 @@ public final class CodeGenerator {
 
     private final Set<InterfaceSpec> markerInterfaces = new HashSet<>();
 
-    private CodeGenerator() {
-        // Prevent utility class instantiation.
-    }
-
     public CodeGeneratorResponse generate(CodeGeneratorRequest request, Path genDir) {
         checkNotNull(request);
         final Version protocVersion = request.getCompilerVersion();

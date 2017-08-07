@@ -20,14 +20,17 @@
 
 package io.spine.tools.protoc;
 
+import com.google.common.io.Files;
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import com.google.protobuf.compiler.PluginProtos.Version;
+import org.junit.Before;
 import org.junit.Test;
 
+import java.nio.file.Path;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -53,6 +56,16 @@ public class CodeGeneratorShould {
     private static final Pattern CUSTOMER_EVENT_INTERFACE_PATTERN =
             compile("^\\s*io\\.spine\\.tools\\.protoc\\.CustomerEvent\\s*,\\s*$");
 
+    private static final Path generatedSrcPath = Files.createTempDir().toPath();
+
+    private CodeGenerator codeGenerator;
+
+
+    @Before
+    public void setUp() {
+        codeGenerator = new CodeGenerator();
+    }
+
     @Test
     public void not_accept_nulls() {
         new NullPointerTester()
@@ -71,7 +84,7 @@ public class CodeGeneratorShould {
                                                                  .addFileToGenerate(filePath)
                                                                  .addProtoFile(descriptor)
                                                                  .build();
-        final CodeGeneratorResponse response = CodeGenerator.generate(request);
+        final CodeGeneratorResponse response = codeGenerator.generate(request, generatedSrcPath);
         assertNotNull(response);
         final List<File> files = response.getFileList();
         assertEquals(2, files.size());
@@ -100,7 +113,7 @@ public class CodeGeneratorShould {
                                                                  .addFileToGenerate(filePath)
                                                                  .addProtoFile(descriptor)
                                                                  .build();
-        final CodeGeneratorResponse response = CodeGenerator.generate(request);
+        final CodeGeneratorResponse response = codeGenerator.generate(request, generatedSrcPath);
         assertNotNull(response);
         final List<File> files = response.getFileList();
         assertEquals(2, files.size());
@@ -134,7 +147,7 @@ public class CodeGeneratorShould {
                                                                  .addFileToGenerate(filePath)
                                                                  .addProtoFile(descriptor)
                                                                  .build();
-        final CodeGeneratorResponse response = CodeGenerator.generate(request);
+        final CodeGeneratorResponse response = codeGenerator.generate(request, generatedSrcPath);
         assertNotNull(response);
         final List<File> files = response.getFileList();
         assertEquals(2, files.size());
@@ -162,7 +175,7 @@ public class CodeGeneratorShould {
                                                                  .addFileToGenerate(filePath)
                                                                  .addProtoFile(descriptor)
                                                                  .build();
-        final CodeGeneratorResponse response = CodeGenerator.generate(request);
+        final CodeGeneratorResponse response = codeGenerator.generate(request, generatedSrcPath);
         assertNotNull(response);
         final List<File> files = response.getFileList();
         assertEquals(2, files.size());
@@ -189,7 +202,7 @@ public class CodeGeneratorShould {
                                                                  .setCompilerVersion(version)
                                                                  .addProtoFile(stubFile)
                                                                  .build();
-        CodeGenerator.generate(request);
+        codeGenerator.generate(request, generatedSrcPath);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -200,7 +213,7 @@ public class CodeGeneratorShould {
         final CodeGeneratorRequest request = CodeGeneratorRequest.newBuilder()
                                                                  .setCompilerVersion(version)
                                                                  .build();
-        CodeGenerator.generate(request);
+        codeGenerator.generate(request, generatedSrcPath);
     }
 
     private static Version version() {
