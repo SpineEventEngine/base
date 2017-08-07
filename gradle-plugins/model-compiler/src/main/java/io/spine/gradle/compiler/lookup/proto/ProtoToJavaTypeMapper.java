@@ -217,11 +217,16 @@ public class ProtoToJavaTypeMapper {
     }
 
     private static String getCommonOuterJavaClassPrefix(FileDescriptorProto file) {
-        final String commonOuterClass = getOuterClassName(file);
-        final String result = commonOuterClass.isEmpty()
-                              ? ""
-                              : (commonOuterClass + JAVA_INNER_CLASS_SEPARATOR);
-        return result;
+        final boolean inSeparateFiles = file.getOptions()
+                                            .getJavaMultipleFiles();
+        if (inSeparateFiles) {
+            return "";
+        }
+
+        final String outerClassName = getOuterClassName(file);
+        return outerClassName.isEmpty()
+                ? ""
+                : (outerClassName + JAVA_INNER_CLASS_SEPARATOR);
     }
 
     private static String getParentTypesPrefix(Collection<String> parentTypeNames,
