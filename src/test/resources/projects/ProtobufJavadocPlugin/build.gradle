@@ -1,9 +1,7 @@
 plugins {
     id 'java'
-    id 'io.spine.tools.protobuf-javadoc-plugin' apply false
+    id 'io.spine.tools.protobuf-javadoc-plugin'
 }
-
-apply plugin: 'io.spine.tools.protobuf-javadoc-plugin'
 
 codestyleChecker {
 
