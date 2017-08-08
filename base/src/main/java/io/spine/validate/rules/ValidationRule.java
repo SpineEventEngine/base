@@ -52,6 +52,14 @@ class ValidationRule {
      */
     private final Collection<FieldDescriptor> targets;
 
+    /**
+     * Creates a new instance.
+     *
+     * <p>Must be used only in {@link ValidationRules}.
+     *
+     * @param typeName    the type name of the validation rule
+     * @param targetPaths the paths to the validation rule targets
+     */
     ValidationRule(String typeName, Iterable<String> targetPaths) {
         this.descriptor = TypeName.of(typeName)
                                   .getDescriptor();
