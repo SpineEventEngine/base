@@ -142,4 +142,8 @@ public class MessageDeclaration {
     public DescriptorProto getDescriptor() {
         return descriptor;
     }
+
+    public FileDescriptorProto getFile() {
+        return fileDescriptor;
+    }
 }
