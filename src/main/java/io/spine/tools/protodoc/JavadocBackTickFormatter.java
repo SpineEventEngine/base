@@ -17,35 +17,29 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.tools.protobufjavadoc;
+package io.spine.tools.protodoc;
+
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author Alexander Aleksandrov
  */
-public class Given {
-    private static final String SOURCE_FOLDER = "generated/main/java";
-    private static final String DEBUG_OPTION = "--debug";
-    private static final String testFile = "GeneratedJavaFile.java";
-    private static final String COMPILE_LOG = ":compileJava";
-    private static final String buildGradleFile = "build.gradle";
+public class JavadocBackTickFormatter extends AbstractJavadocFileFormatter {
 
-    public static String buildGradleFile() {
-        return buildGradleFile;
+    JavadocBackTickFormatter() {
     }
 
-    public static String compileLog() {
-        return COMPILE_LOG;
-    }
-
-    public static String testFile() {
-        return testFile;
-    }
-
-    public static String debugOption() {
-        return DEBUG_OPTION;
-    }
-
-    public static String sourceFolder() {
-        return SOURCE_FOLDER;
+    @Override
+    public List<String> checkForCases(List<String> list) {
+        Pattern p = Pattern.compile("`[^`]+`");
+        for (int i = 0; i < list.size(); i++) {
+            Matcher matcher = p.matcher(list.get(i));
+            String withCode = matcher.toString();
+            withCode = "{@code" + withCode.substring(1, withCode.length()-1) + "}";
+            list.set(i, matcher.replaceAll(withCode));
+        }
+        return list;
     }
 }

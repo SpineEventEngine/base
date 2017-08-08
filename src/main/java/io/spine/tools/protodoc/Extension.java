@@ -17,39 +17,44 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.tools.protobufjavadoc;
 
-import java.nio.file.Path;
+package io.spine.tools.protodoc;
+
+import org.gradle.api.Project;
+
+import static io.spine.tools.protodoc.ProtoJavadocPlugin.PROTO_JAVADOC_EXTENSION_NAME;
 
 /**
- * A utility for working with the Java source files.
+ * The extension for {@link ProtoJavadocPlugin}.
  *
- * @author Alexander Aleksandrov
+ * @author Dmytro Grankin
  */
-public final class JavaSources {
-    private static final String JAVA_FILE_EXTENSION = ".java";
-
-    private JavaSources() {
-        // Prevent initialization of this utility class
-    }
+public class Extension {
 
     /**
-     * Returns the java file extension string constant.
+     * The path to the main Java sources directory, generated basing on Protobuf definitions.
      *
-     * @return ".java" string
+     * <p>The path is relative to a Gradle project.
      */
-    public static String javaExt() {
-        return JAVA_FILE_EXTENSION;
-    }
+    public String mainGenProtoDir;
 
     /**
-     * Checks the file path.
+     * The path to the test Java sources directory, generated basing on Protobuf definitions.
      *
-     * @param path  the target file path
-     * @return {@code true} in case if the file has the .java extension.
+     * <p>The path is relative to a Gradle project.
      */
-    public static boolean isJavaFile(Path path) {
-        return path.toString()
-                   .endsWith(javaExt());
+    public String testGenProtoDir;
+
+    public static String getMainGenProtoDir(Project project) {
+        return getExtension(project).mainGenProtoDir;
+    }
+
+    public static String getTestGenProtoDir(Project project) {
+        return getExtension(project).testGenProtoDir;
+    }
+
+    private static Extension getExtension(Project project) {
+        return (Extension) project.getExtensions()
+                                  .getByName(PROTO_JAVADOC_EXTENSION_NAME);
     }
 }

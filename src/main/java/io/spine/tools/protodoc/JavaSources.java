@@ -17,44 +17,39 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package io.spine.tools.protodoc;
 
-package io.spine.tools.protobufjavadoc;
-
-import org.gradle.api.Project;
-
-import static io.spine.tools.protobufjavadoc.ProtobufJavadocPlugin.PROTO_JAVADOC_EXTENSION_NAME;
+import java.nio.file.Path;
 
 /**
- * The extension for {@link ProtobufJavadocPlugin}.
+ * A utility for working with the Java source files.
  *
- * @author Dmytro Grankin
+ * @author Alexander Aleksandrov
  */
-public class Extension {
+public final class JavaSources {
+    private static final String JAVA_FILE_EXTENSION = ".java";
 
-    /**
-     * The path to the main Java sources directory, generated basing on Protobuf definitions.
-     *
-     * <p>The path is relative to a Gradle project.
-     */
-    public String mainGenProtoDir;
-
-    /**
-     * The path to the test Java sources directory, generated basing on Protobuf definitions.
-     *
-     * <p>The path is relative to a Gradle project.
-     */
-    public String testGenProtoDir;
-
-    public static String getMainGenProtoDir(Project project) {
-        return getExtension(project).mainGenProtoDir;
+    private JavaSources() {
+        // Prevent initialization of this utility class
     }
 
-    public static String getTestGenProtoDir(Project project) {
-        return getExtension(project).testGenProtoDir;
+    /**
+     * Returns the java file extension string constant.
+     *
+     * @return ".java" string
+     */
+    public static String javaExt() {
+        return JAVA_FILE_EXTENSION;
     }
 
-    private static Extension getExtension(Project project) {
-        return (Extension) project.getExtensions()
-                                  .getByName(PROTO_JAVADOC_EXTENSION_NAME);
+    /**
+     * Checks the file path.
+     *
+     * @param path  the target file path
+     * @return {@code true} in case if the file has the .java extension.
+     */
+    public static boolean isJavaFile(Path path) {
+        return path.toString()
+                   .endsWith(javaExt());
     }
 }

@@ -17,7 +17,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.tools.protobufjavadoc;
+package io.spine.tools.protodoc;
 
 import io.spine.gradle.SpinePlugin;
 import org.gradle.api.Action;
@@ -31,20 +31,18 @@ import static io.spine.gradle.TaskName.GENERATE_PROTO;
 import static io.spine.gradle.TaskName.PROCESS_RESOURCES;
 
 /**
- * The plugin that cleans javadoc from {@code <pre></pre>} tags in prtobuf generated files.
- *
- *  @author Alexander Aleksandrov
+ * @author Alexander Aleksandrov
  */
-public class JavadocTagPlugin extends SpinePlugin {
+public class JavadocBackTickPlugin extends SpinePlugin {
 
     @Override
     public void apply(Project project) {
-        final FileChecker checker = new FileChecker(new JavadocTagFormatter());
+        final FileChecker checker = new FileChecker(new JavadocBackTickFormatter());
         final Action<Task> action = checker.actionFor(project);
         newTask(CHECK_FQN, action).insertAfterTask(GENERATE_PROTO)
                                   .insertBeforeTask(PROCESS_RESOURCES)
                                   .applyNowTo(project);
-        log().debug("Starting to format Javadoc <pre> tags", action);
+        log().debug("Starting to format Javadoc back ticks.", action);
     }
 
     private static Logger log() {
@@ -54,6 +52,6 @@ public class JavadocTagPlugin extends SpinePlugin {
     private enum LogSingleton {
         INSTANCE;
         @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = LoggerFactory.getLogger(JavadocTagPlugin.class);
+        private final Logger value = LoggerFactory.getLogger(JavadocBackTickPlugin.class);
     }
 }

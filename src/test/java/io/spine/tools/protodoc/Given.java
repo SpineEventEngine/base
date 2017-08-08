@@ -17,21 +17,35 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.tools.protobufjavadoc;
-
-import java.nio.file.Path;
+package io.spine.tools.protodoc;
 
 /**
- * An interface to gather all common operations for validators.
- *
  * @author Alexander Aleksandrov
  */
-public interface JavadocFileFormatter {
+public class Given {
+    private static final String SOURCE_FOLDER = "generated/main/java";
+    private static final String DEBUG_OPTION = "--debug";
+    private static final String testFile = "GeneratedJavaFile.java";
+    private static final String COMPILE_LOG = ":compileJava";
+    private static final String buildGradleFile = "build.gradle";
 
-    /**
-     * Checks the file for the looked up code style violations.
-     *
-     * @param path Path to the target file
-     */
-    void format(Path path);
+    public static String buildGradleFile() {
+        return buildGradleFile;
+    }
+
+    public static String compileLog() {
+        return COMPILE_LOG;
+    }
+
+    public static String testFile() {
+        return testFile;
+    }
+
+    public static String debugOption() {
+        return DEBUG_OPTION;
+    }
+
+    public static String sourceFolder() {
+        return SOURCE_FOLDER;
+    }
 }

@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protobufjavadoc;
+package io.spine.tools.protodoc;
 
 import java.lang.annotation.AnnotationTypeMismatchException;
 import java.lang.invoke.WrongMethodTypeException;

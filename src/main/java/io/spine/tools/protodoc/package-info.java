@@ -17,7 +17,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 /**
- * This package provides classes for protobuf generated javadoc cleaner plugin.
+ * This package provides the Gradle plugin for
+ * Javadocs formatting in generated Protobuf declarations.
  */
-package io.spine.tools.protobufjavadoc;
+
+@ParametersAreNonnullByDefault
+package io.spine.tools.protodoc;
+
+import javax.annotation.ParametersAreNonnullByDefault;

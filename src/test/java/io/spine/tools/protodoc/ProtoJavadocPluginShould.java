@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protobufjavadoc;
+package io.spine.tools.protodoc;
 
 import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
@@ -42,15 +42,15 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 
-import static io.spine.tools.protobufjavadoc.Given.buildGradleFile;
-import static io.spine.tools.protobufjavadoc.Given.compileLog;
-import static io.spine.tools.protobufjavadoc.Given.debugOption;
-import static io.spine.tools.protobufjavadoc.Given.sourceFolder;
-import static io.spine.tools.protobufjavadoc.Given.testFile;
+import static io.spine.tools.protodoc.Given.buildGradleFile;
+import static io.spine.tools.protodoc.Given.compileLog;
+import static io.spine.tools.protodoc.Given.debugOption;
+import static io.spine.tools.protodoc.Given.sourceFolder;
+import static io.spine.tools.protodoc.Given.testFile;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.assertEquals;
 
-public class ProtobufJavadocPluginShould {
+public class ProtoJavadocPluginShould {
 
     private static final String CHECK_JAVADOC_LINK = TaskName.CHECK_FQN.getValue();
     private static final String CHECK_JAVADOC_LOG = ":checkJavadocLink";

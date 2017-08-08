@@ -17,7 +17,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.tools.protobufjavadoc;
+package io.spine.tools.protodoc;
 
 import io.spine.gradle.SpinePlugin;
 import org.gradle.api.Action;
@@ -32,8 +32,8 @@ import static io.spine.gradle.TaskName.FORMAT_PROTO_DOC;
 import static io.spine.gradle.TaskName.FORMAT_TEST_PROTO_DOC;
 import static io.spine.gradle.TaskName.GENERATE_PROTO;
 import static io.spine.gradle.TaskName.GENERATE_TEST_PROTO;
-import static io.spine.tools.protobufjavadoc.Extension.getMainGenProtoDir;
-import static io.spine.tools.protobufjavadoc.Extension.getTestGenProtoDir;
+import static io.spine.tools.protodoc.Extension.getMainGenProtoDir;
+import static io.spine.tools.protodoc.Extension.getTestGenProtoDir;
 
 /**
  * The plugin, that formats Javadocs in sources generated from {@code .proto} files.
@@ -47,7 +47,7 @@ import static io.spine.tools.protobufjavadoc.Extension.getTestGenProtoDir;
  *  @author Alexander Aleksandrov
  *  @author Dmytro Grankin
  */
-public class ProtobufJavadocPlugin extends SpinePlugin {
+public class ProtoJavadocPlugin extends SpinePlugin {
 
     static final String PROTO_JAVADOC_EXTENSION_NAME = "protoJavadoc";
 
@@ -91,6 +91,6 @@ public class ProtobufJavadocPlugin extends SpinePlugin {
     private enum LogSingleton {
         INSTANCE;
         @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = LoggerFactory.getLogger(ProtobufJavadocPlugin.class);
+        private final Logger value = LoggerFactory.getLogger(ProtoJavadocPlugin.class);
     }
 }
