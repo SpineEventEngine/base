@@ -92,6 +92,7 @@ import static com.google.protobuf.DescriptorProtos.SourceCodeInfo;
 import static com.google.protobuf.DescriptorProtos.UninterpretedOption;
 import static io.spine.util.Exceptions.newIllegalStateException;
 import static io.spine.util.PropertyFiles.loadAllProperties;
+import static io.spine.validate.Validate.checkNotEmptyOrBlank;
 
 /**
  * A map which contains all Protobuf types known to the application.
@@ -109,7 +110,7 @@ public class KnownTypes {
      *
      * <p>The file is generated during the build process of an application.
      */
-    private static final String PROPS_FILE_PATH = "known_types.properties";
+    public static final String PROPS_FILE_PATH = "known_types.properties";
 
     /**
      * The separator character for package names in a fully qualified proto type name.
@@ -253,13 +254,16 @@ public class KnownTypes {
      * @throws IllegalArgumentException if the name does not correspond to any known type
      */
     static GenericDescriptor getDescriptor(String typeName) {
+        checkNotEmptyOrBlank(typeName, "Type name cannot be empty or blank");
         final TypeUrl typeUrl = getTypeUrl(typeName);
-        checkArgument(typeUrl != null, "Given type name is invalid");
+        checkArgument(typeUrl != null, "Cannot find TypeUrl for the type name: `%s`", typeName);
 
         final Class<?> cls = getJavaClass(typeUrl);
 
         final GenericDescriptor descriptor;
         try {
+            @SuppressWarnings("JavaReflectionMemberAccess")
+                // The method is available in generated classes.
             final java.lang.reflect.Method descriptorGetter =
                     cls.getDeclaredMethod(METHOD_GET_DESCRIPTOR);
             descriptor = (GenericDescriptor) descriptorGetter.invoke(null);
