@@ -44,5 +44,5 @@ ext {
     spineToolsVersion = '0.9.41-SNAPSHOT'
     spineModelCompilerVersion = '0.9.49-SNAPSHOT'
 
-    protobufGradlePluginVerison = '0.8.1'
+    protobufGradlePluginVerison = '0.8.2'
 }
