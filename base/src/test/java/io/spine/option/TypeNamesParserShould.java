@@ -21,6 +21,7 @@
 package io.spine.option;
 
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
+import com.google.protobuf.StringValue;
 import io.spine.type.TypeName;
 import org.junit.Test;
 
@@ -28,6 +29,7 @@ import java.util.Collection;
 
 import static io.spine.option.OptionsProto.enrichment;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Dmytro Grankin
@@ -59,5 +61,13 @@ public class TypeNamesParserShould {
         final TypeName result = parsedTypes.iterator()
                                            .next();
         assertEquals(fqn, result.value());
+    }
+
+    @Test
+    public void return_empty_collection_if_option_is_not_present() {
+        final DescriptorProto definitionWithoutOption = StringValue.getDescriptor()
+                                                                   .toProto();
+        final Collection<TypeName> result = parser.parse(definitionWithoutOption);
+        assertTrue(result.isEmpty());
     }
 }

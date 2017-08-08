@@ -20,6 +20,8 @@
 
 package io.spine.option;
 
+import com.google.protobuf.DescriptorProtos;
+import com.google.protobuf.StringValue;
 import org.junit.Test;
 
 import java.util.Collection;
@@ -27,6 +29,7 @@ import java.util.Collection;
 import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Dmytro Grankin
@@ -44,5 +47,13 @@ public class ValidationTargetsParserShould {
     public void not_prepare_additional_wrapping() {
         final Collection<String> expectedResult = asList("first", "second");
         assertSame(expectedResult, parser.wrapParts(expectedResult));
+    }
+
+    @Test
+    public void return_empty_collection_if_option_is_not_present() {
+        final DescriptorProtos.DescriptorProto definitionWithoutOption = StringValue.getDescriptor()
+                                                                                    .toProto();
+        final Collection<String> result = parser.parse(definitionWithoutOption);
+        assertTrue(result.isEmpty());
     }
 }
