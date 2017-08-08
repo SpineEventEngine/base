@@ -68,7 +68,7 @@ public abstract class RawListParser<O extends ExtendableMessage, D extends Gener
     }
 
     /**
-     * Parses the {@linkplain #splitOptionValue(CharSequence) split} parts of an option value.
+     * Parses the {@linkplain #splitOptionValue(CharSequence) split} parts of the option value.
      *
      * @param optionParts the option parts to parse
      * @return the collection of parsed elements
@@ -83,7 +83,7 @@ public abstract class RawListParser<O extends ExtendableMessage, D extends Gener
     }
 
     /**
-     * Obtains the parsed element from the specified value.
+     * Obtains the parsed element from the specified item of the option.
      *
      * @param singleItemValue the item from the option value
      * @return the parsed element
