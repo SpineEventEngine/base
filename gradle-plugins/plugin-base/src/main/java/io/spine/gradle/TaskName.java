@@ -28,7 +28,6 @@ import com.google.common.base.MoreObjects;
  *
  * @author Alex Tymchenko
  */
-//@SuppressWarnings("unused") // These are used after deployment.
 public enum TaskName {
 
     /*
@@ -166,7 +165,11 @@ public enum TaskName {
      *
      * <p>Handles the {@code test} classes and resources scope.
      */
-    ANNOTATE_TEST_PROTO("annotateTestProto");
+    ANNOTATE_TEST_PROTO("annotateTestProto"),
+
+    ANALYZE_PROTO("analyzeProto"),
+
+    ANALYZE_TEST_PROTO("analyzeTestProto");
 
     private final String value;
 

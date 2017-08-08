@@ -174,13 +174,13 @@ public abstract class SpinePlugin implements Plugin<Project> {
                     throw new IllegalStateException(exceptionMsg);
                 }
 
-                final TaskContainer existingTasks = project.getTasks();
                 final Task newTask = project.task(name.getValue())
                                             .doLast(action);
                 if (previousTask != null) {
                     newTask.dependsOn(previousTask.getValue());
                 }
                 if (followingTask != null) {
+                    final TaskContainer existingTasks = project.getTasks();
                     existingTasks.getByPath(followingTask.getValue())
                                  .dependsOn(newTask);
 
