@@ -18,12 +18,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-print("protoc_config.gradle initialized")
-
 project.protobuf {
     generatedFilesBaseDir = "$projectDir/generated"
-
-    print("protoc_config.gradle project.protobuf { } section called")
 
     protoc {
         artifact = "com.google.protobuf:protoc:${protobufVersion}"
@@ -36,8 +32,6 @@ project.protobuf {
     }
 
     generateProtoTasks {
-        print("protoc_config.gradle project.protobuf.generateProtoTasks { } section called")
-
         all().each { task ->
 
             task.generateDescriptorSet = true
