@@ -21,7 +21,6 @@
 package io.spine.gradle.compiler.lookup.valrule;
 
 import io.spine.gradle.compiler.GradleProject;
-import io.spine.validate.ValidationRules;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -81,7 +80,7 @@ public class ValidationRulesLookupPluginShould {
                                    OUTER_MESSAGE_TYPE + DOT +
                                    VALIDATION_RULE_TYPE;
         final String value = (String) getProperties().get(expectedKey);
-        assertEquals(value, VALIDATION_TARGET);
+        assertEquals(VALIDATION_TARGET, value);
     }
 
     private Dictionary getProperties() {
