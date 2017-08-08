@@ -27,20 +27,19 @@ import org.junit.Test;
 import java.util.Collection;
 
 import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
-import static java.util.Arrays.asList;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 /**
  * @author Dmytro Grankin
  */
-public class ValidationTargetsParserShould {
+public class ValidationTargetParserShould {
 
-    private final ValidationTargetsParser parser = ValidationTargetsParser.getInstance();
+    private final ValidationTargetParser parser = ValidationTargetParser.getInstance();
 
     @Test
     public void have_the_private_ctor() {
-        assertHasPrivateParameterlessCtor(ValidationTargetsParser.class);
+        assertHasPrivateParameterlessCtor(ValidationTargetParser.class);
     }
 
     @Test

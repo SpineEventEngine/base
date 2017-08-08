@@ -34,12 +34,12 @@ import static org.junit.Assert.assertTrue;
 /**
  * @author Dmytro Grankin
  */
-public class TypeNamesParserShould {
+public class TypeNameParserShould {
 
     private static final String PACKAGE_PREFIX = "foo.bar.";
     private static final String MESSAGE_NAME = "AMessage";
 
-    private final TypeNamesParser parser = new TypeNamesParser(enrichment, PACKAGE_PREFIX);
+    private final TypeNameParser parser = new TypeNameParser(enrichment, PACKAGE_PREFIX);
 
     @Test
     public void add_package_prefix_to_unqualified_type() {

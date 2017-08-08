@@ -22,21 +22,29 @@ package io.spine.option;
 
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.MessageOptions;
+import com.google.protobuf.GeneratedMessage.GeneratedExtension;
+import io.spine.type.TypeName;
 
-import java.util.Collection;
-
-import static io.spine.option.OptionsProto.validationOf;
-import static io.spine.option.UnknownOptions.getUnknownOptionValue;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A parser for {@linkplain OptionsProto#validationOf validation rule} targets.
+ * A parser for the options, that represent {@linkplain RawListParser raw list} of type names.
  *
  * @author Dmytro Grankin
  */
-public class ValidationTargetsParser extends RawListParser<MessageOptions, DescriptorProto, String> {
+public class TypeNameParser extends RawListParser<MessageOptions, DescriptorProto, TypeName> {
 
-    private ValidationTargetsParser() {
-        super(validationOf);
+    private static final String PACKAGE_SEPARATOR = ".";
+
+    /**
+     * A package prefix to supply unqualified type names.
+     */
+    private final String packagePrefix;
+
+    public TypeNameParser(GeneratedExtension<MessageOptions, String> option,
+                          String packagePrefix) {
+        super(option);
+        this.packagePrefix = checkNotNull(packagePrefix);
     }
 
     @Override
@@ -45,30 +53,17 @@ public class ValidationTargetsParser extends RawListParser<MessageOptions, Descr
     }
 
     /**
-     * Obtains the parsed element from the specified value.
+     * Supplies and wraps the specified type name with the package prefix if it is not present.
      *
-     * <p>This class has not specific requirements, so the specified parameter will be returned.
-     *
-     * @param singleItemValue the item from the option value
-     * @return the parsed value
+     * @param rawTypeName the raw type name to normalize
+     * @return the normalized {@code TypeName}
      */
     @Override
-    protected String asElement(String singleItemValue) {
-        return singleItemValue;
-    }
-
-    /**
-     * Obtains the instance of the parser.
-     *
-     * @return the validation rule parser
-     */
-    public static ValidationTargetsParser getInstance() {
-        return Singleton.INSTANCE.value;
-    }
-
-    private enum Singleton {
-        INSTANCE;
-        @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final ValidationTargetsParser value = new ValidationTargetsParser();
+    protected TypeName asElement(String rawTypeName) {
+        final boolean isFqn = rawTypeName.contains(PACKAGE_SEPARATOR);
+        final String typeNameValue = isFqn
+                                     ? rawTypeName
+                                     : packagePrefix + rawTypeName;
+        return TypeName.of(typeNameValue);
     }
 }

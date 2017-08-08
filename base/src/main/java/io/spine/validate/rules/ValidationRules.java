@@ -22,7 +22,7 @@ package io.spine.validate.rules;
 
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableSet;
-import io.spine.option.ValidationTargetsParser;
+import io.spine.option.ValidationTargetParser;
 import io.spine.util.PropertyFiles;
 
 import java.util.Collection;
@@ -104,10 +104,10 @@ public class ValidationRules {
          * @throws IllegalStateException if an entry from the properties contains invalid data
          */
         private void put(Properties properties) {
-            final ValidationTargetsParser targetsParser = ValidationTargetsParser.getInstance();
+            final ValidationTargetParser targetParser = ValidationTargetParser.getInstance();
             for (String validationRuleType : properties.stringPropertyNames()) {
                 final String ruleTargetPaths = properties.getProperty(validationRuleType);
-                final Collection<String> parsedPaths = targetsParser.parse(ruleTargetPaths);
+                final Collection<String> parsedPaths = targetParser.parse(ruleTargetPaths);
                 final ValidationRule rule = new ValidationRule(validationRuleType, parsedPaths);
                 rules.add(rule);
             }

@@ -26,7 +26,7 @@ import com.google.common.collect.Multimap;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
-import io.spine.option.TypeNamesParser;
+import io.spine.option.TypeNameParser;
 import io.spine.type.TypeName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,8 +75,8 @@ class EnrichmentsFinder {
 
     private final FileDescriptorProto file;
     private final String packagePrefix;
-    private final TypeNamesParser eventTypesParser;
-    private final TypeNamesParser enrichmentTypesParser;
+    private final TypeNameParser eventTypeParser;
+    private final TypeNameParser enrichmentTypeParser;
 
     /**
      * Creates a new instance.
@@ -86,8 +86,8 @@ class EnrichmentsFinder {
     EnrichmentsFinder(FileDescriptorProto file) {
         this.file = file;
         this.packagePrefix = file.getPackage() + PROTO_TYPE_SEPARATOR;
-        this.eventTypesParser = new TypeNamesParser(enrichmentFor, packagePrefix);
-        this.enrichmentTypesParser = new TypeNamesParser(enrichment, packagePrefix);
+        this.eventTypeParser = new TypeNameParser(enrichmentFor, packagePrefix);
+        this.enrichmentTypeParser = new TypeNameParser(enrichment, packagePrefix);
     }
 
     /**
@@ -173,7 +173,7 @@ class EnrichmentsFinder {
 
         // Treating current {@code msg} as an enrichment object.
         log().trace("Scanning message {} for the enrichment annotations", messageName);
-        final Collection<TypeName> eventTypes = eventTypesParser.parseUnknownOption(msg);
+        final Collection<TypeName> eventTypes = eventTypeParser.parseUnknownOption(msg);
         if (!eventTypes.isEmpty()) {
             final String mergedValue = Joiner.on(getValueSeparator())
                                              .join(eventTypes);
@@ -185,7 +185,7 @@ class EnrichmentsFinder {
 
         // Treating current {@code msg} as a target for enrichment (e.g. Spine event).
         log().trace("Scanning message {} for the enrichment target annotations", messageName);
-        final Collection<TypeName> enrichmentTypes = enrichmentTypesParser.parseUnknownOption(msg);
+        final Collection<TypeName> enrichmentTypes = enrichmentTypeParser.parseUnknownOption(msg);
         if (!enrichmentTypes.isEmpty()) {
             log().debug("Found enrichments for event {}: {}", messageName, enrichmentTypes);
             for (TypeName enrichmentType : enrichmentTypes) {
