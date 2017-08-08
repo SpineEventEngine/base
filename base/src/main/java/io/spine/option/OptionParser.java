@@ -36,7 +36,8 @@ public interface OptionParser<D extends GeneratedMessageV3, R> {
     /**
      * Obtains a collection of parsed items from the option.
      *
-     * <p>The option value will be obtained from the specified descriptor.
+     * <p>Use this method, if you want to parse an {@linkplain UnknownOptions unknown option}
+     * obtained from the specified descriptor.
      *
      * <p>If the specified descriptor does not have the option, empty collection will be returned.
      *

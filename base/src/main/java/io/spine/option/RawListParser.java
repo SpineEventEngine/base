@@ -76,7 +76,7 @@ public abstract class RawListParser<O extends ExtendableMessage, D extends Gener
 
     @Override
     public Collection<R> parse(D descriptor) {
-        final String optionValue = getOptionValue(descriptor, optionNumber);
+        final String optionValue = getUnknownOptionValue(descriptor, optionNumber);
         if (optionValue == null) {
             return emptyList();
         }
@@ -92,16 +92,16 @@ public abstract class RawListParser<O extends ExtendableMessage, D extends Gener
     }
 
     /**
-     * Obtains the option from the descriptor by the specified number.
+     * Obtains the unknown option from the descriptor by the specified number.
      *
      * @param descriptor the descriptor to obtain the option
      * @param optionNumber the tag number of the option
      * @return the option value or {@code null} if there is no option with the number
      */
-    protected abstract String getOptionValue(D descriptor, int optionNumber);
+    protected abstract String getUnknownOptionValue(D descriptor, int optionNumber);
 
     /**
-     * Wraps the {@linkplain #splitOptionValue(CharSequence) splitted} parts.
+     * Wraps the {@linkplain #splitOptionValue(CharSequence) split} parts.
      *
      * <p>This method must perform actions specific to a concrete implementation.
      *

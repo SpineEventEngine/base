@@ -52,8 +52,8 @@ public class TypeNamesParser extends RawListParser<MessageOptions, DescriptorPro
     }
 
     @Override
-    protected String getOptionValue(DescriptorProto descriptor, int optionNumber) {
-        return getUnknownOptionValue(descriptor, optionNumber);
+    protected String getUnknownOptionValue(DescriptorProto descriptor, int optionNumber) {
+        return UnknownOptions.getUnknownOptionValue(descriptor, optionNumber);
     }
 
     /**

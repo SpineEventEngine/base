@@ -100,7 +100,7 @@ public class RawListParserShould {
 
         @SuppressWarnings("ReturnOfNull") // Contract of the method.
         @Override
-        protected String getOptionValue(DescriptorProto descriptor, int optionNumber) {
+        protected String getUnknownOptionValue(DescriptorProto descriptor, int optionNumber) {
             return descriptor.equals(MESSAGE_WITH_OPTION)
                     ? OPTION_VALUE_WITH_SPACES
                     : null;
