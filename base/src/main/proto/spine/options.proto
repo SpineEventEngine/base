@@ -302,7 +302,7 @@ extend google.protobuf.MessageOptions {
     // then options from the validation rule will be used.
     //
     // Validation rule limitations:
-    // - applicable only for field declarations of a `Message` type;
+    // - applicable only to field declarations of a `Message` type;
     // - rule target should be marked as `valid`. Otherwise a rule will be ignored;
     // - a field can be a target of only one validation rule.
     //
