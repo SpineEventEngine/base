@@ -21,18 +21,18 @@
 package io.spine.option;
 
 import com.google.common.base.Joiner;
+import com.google.protobuf.BoolValue;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.MessageOptions;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
+import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.StringValue;
 import org.junit.Test;
 
-import java.util.Arrays;
 import java.util.Collection;
 
 import static io.spine.option.OptionsProto.enrichment;
 import static io.spine.option.RawListParser.getValueSeparator;
-import static io.spine.option.UnknownOptions.getUnknownOptionValue;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -66,7 +66,7 @@ public class RawListParserShould {
     @Test(expected = IllegalStateException.class)
     public void not_allow_blank_value() {
         final String blank = "   ";
-        final Iterable<String> values = Arrays.asList(blank, "non-blank");
+        final Iterable<String> values = asList(blank, "non-blank");
         final String optionValue = Joiner.on(getValueSeparator())
                                          .join(values);
         parser.parse(optionValue);
@@ -74,23 +74,36 @@ public class RawListParserShould {
 
     @Test
     public void split_option_value_and_remove_spaces() {
-        final Collection<String> expectedValues = asList(OPTION_PART, OPTION_PART);
-        final String spaceBeforeSeparator = ' ' + getValueSeparator();
-        final String optionValue = Joiner.on(spaceBeforeSeparator)
-                                         .join(expectedValues);
-        final Collection<String> parsedValues = parser.parse(optionValue);
-        assertEquals(expectedValues, parsedValues);
+        final Collection<String> result = parser.parse(AListParser.MESSAGE_WITH_OPTION);
+        assertEquals(AListParser.EXPECTED_RESULT, result);
     }
 
     private static class AListParser extends RawListParser<MessageOptions, DescriptorProto, String> {
+
+        /**
+         * If this descriptor is passed to {@link RawListParser#parse(GeneratedMessageV3)},
+         * {@link #OPTION_VALUE_WITH_SPACES} will be returned.
+         */
+        private static final DescriptorProto MESSAGE_WITH_OPTION = BoolValue.getDescriptor()
+                                                                            .toProto();
+        private static final String OPTION_VALUE_WITH_SPACES =
+                "   " + OPTION_PART + "  , " + OPTION_PART + "    ";
+
+        /**
+         * The expected result for parsing {@link #MESSAGE_WITH_OPTION}.
+         */
+        private static final Iterable<String> EXPECTED_RESULT = asList(OPTION_PART, OPTION_PART);
 
         private AListParser(GeneratedExtension<MessageOptions, String> option) {
             super(option);
         }
 
+        @SuppressWarnings("ReturnOfNull") // Contract of the method.
         @Override
         protected String getOptionValue(DescriptorProto descriptor, int optionNumber) {
-            return getUnknownOptionValue(descriptor, optionNumber);
+            return descriptor.equals(MESSAGE_WITH_OPTION)
+                    ? OPTION_VALUE_WITH_SPACES
+                    : null;
         }
 
         @Override
