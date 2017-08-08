@@ -26,7 +26,9 @@ import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 
 import java.util.Collection;
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.google.common.collect.Lists.newLinkedList;
 
@@ -81,17 +83,30 @@ public class MessageDeclarations {
         final List<DescriptorProto> nestedTypes = declaration.getDescriptor()
                                                              .getNestedTypeList();
         final Deque<DescriptorProto> deque = newLinkedList(nestedTypes);
+        final Map<DescriptorProto, MessageDeclaration> typeHierarchy = new HashMap<>();
+        put(typeHierarchy, declaration, nestedTypes);
 
         while (!deque.isEmpty()) {
             final DescriptorProto nestedMessage = deque.pollFirst();
-            final MessageDeclaration nestedDeclaration = declaration.forNested(nestedMessage);
+            final MessageDeclaration parentDeclaration = typeHierarchy.get(nestedMessage);
+            final MessageDeclaration nestedDeclaration = parentDeclaration.forNested(nestedMessage);
 
             if (predicate.apply(nestedMessage)) {
                 result.add(nestedDeclaration);
             }
 
-            deque.addAll(nestedMessage.getNestedTypeList());
+            final Collection<DescriptorProto> subNestedTypes = nestedMessage.getNestedTypeList();
+            deque.addAll(subNestedTypes);
+            put(typeHierarchy, nestedDeclaration, subNestedTypes);
         }
         return result;
+    }
+
+    private static void put(Map<DescriptorProto, MessageDeclaration> map,
+                            MessageDeclaration declaration,
+                            Iterable<DescriptorProto> messages) {
+        for (DescriptorProto message : messages) {
+            map.put(message, declaration);
+        }
     }
 }
