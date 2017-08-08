@@ -20,9 +20,20 @@
 package io.spine.tools.protobufjavadoc;
 
 import io.spine.gradle.SpinePlugin;
+import org.gradle.api.Action;
 import org.gradle.api.Project;
+import org.gradle.api.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static io.spine.gradle.TaskName.COMPILE_JAVA;
+import static io.spine.gradle.TaskName.COMPILE_TEST_JAVA;
+import static io.spine.gradle.TaskName.FORMAT_PROTO_DOC;
+import static io.spine.gradle.TaskName.FORMAT_TEST_PROTO_DOC;
+import static io.spine.gradle.TaskName.GENERATE_PROTO;
+import static io.spine.gradle.TaskName.GENERATE_TEST_PROTO;
+import static io.spine.tools.protobufjavadoc.Extension.getMainGenProtoDir;
+import static io.spine.tools.protobufjavadoc.Extension.getTestGenProtoDir;
 
 /**
  * The plugin, that formats Javadocs in sources generated from {@code .proto} files.
@@ -30,7 +41,7 @@ import org.slf4j.LoggerFactory;
  * <p>Does the following formatting:
  * <ul>
  *     <li>removes all {@code <pre>} tags;</li>
- *     <li>replaces a text in backticks by the text in {@code code} tag.</li>
+ *     <li>replaces a text in back ticks by the text in {@code code} tag.</li>
  * </ul>
  *
  *  @author Alexander Aleksandrov
@@ -38,12 +49,39 @@ import org.slf4j.LoggerFactory;
  */
 public class ProtobufJavadocPlugin extends SpinePlugin {
 
+    static final String PROTO_JAVADOC_EXTENSION_NAME = "protoJavadoc";
+
     @Override
     public void apply(final Project project) {
-        log().debug("Applying Javadoc tag formatter plugin");
-        new JavadocTagPlugin().apply(project);
-        log().debug("Applying Javadoc backtick formatter plugin");
-        new JavadocBackTickPlugin().apply(project);
+        log().debug("Adding the ProtoJavadocPlugin extension to the project.");
+        project.getExtensions()
+               .create(PROTO_JAVADOC_EXTENSION_NAME, Extension.class);
+
+        final String mainGenProtoDir = getMainGenProtoDir(project);
+        final Action<Task> mainAction = createAction(mainGenProtoDir);
+        newTask(FORMAT_PROTO_DOC, mainAction).insertBeforeTask(COMPILE_JAVA)
+                                             .insertAfterTask(GENERATE_PROTO)
+                                             .applyNowTo(project);
+        logDependingTask(log(), FORMAT_PROTO_DOC, COMPILE_JAVA, GENERATE_PROTO);
+
+        final String testGenProtoDir = getTestGenProtoDir(project);
+        final Action<Task> testAction = createAction(testGenProtoDir);
+        newTask(FORMAT_TEST_PROTO_DOC, testAction).insertBeforeTask(COMPILE_TEST_JAVA)
+                                                  .insertAfterTask(GENERATE_TEST_PROTO)
+                                                  .applyNowTo(project);
+        logDependingTask(log(), FORMAT_TEST_PROTO_DOC, COMPILE_TEST_JAVA, GENERATE_TEST_PROTO);
+    }
+
+    private static Action<Task> createAction(final String javaSourcesPath) {
+        return new Action<Task>() {
+            @Override
+            public void execute(Task task) {
+                formatJavadocs(javaSourcesPath);
+            }
+        };
+    }
+
+    private static void formatJavadocs(String javaSourcesDir) {
     }
 
     private static Logger log() {
