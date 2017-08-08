@@ -173,7 +173,7 @@ class EnrichmentsFinder {
 
         // Treating current {@code msg} as an enrichment object.
         log().trace("Scanning message {} for the enrichment annotations", messageName);
-        final Collection<TypeName> eventTypes = eventTypesParser.parse(msg);
+        final Collection<TypeName> eventTypes = eventTypesParser.parseUnknownOption(msg);
         if (!eventTypes.isEmpty()) {
             final String mergedValue = Joiner.on(getValueSeparator())
                                              .join(eventTypes);
@@ -185,7 +185,7 @@ class EnrichmentsFinder {
 
         // Treating current {@code msg} as a target for enrichment (e.g. Spine event).
         log().trace("Scanning message {} for the enrichment target annotations", messageName);
-        final Collection<TypeName> enrichmentTypes = enrichmentTypesParser.parse(msg);
+        final Collection<TypeName> enrichmentTypes = enrichmentTypesParser.parseUnknownOption(msg);
         if (!enrichmentTypes.isEmpty()) {
             log().debug("Found enrichments for event {}: {}", messageName, enrichmentTypes);
             for (TypeName enrichmentType : enrichmentTypes) {

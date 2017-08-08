@@ -53,7 +53,7 @@ public class ValidationTargetsParserShould {
     public void return_empty_collection_if_option_is_not_present() {
         final DescriptorProtos.DescriptorProto definitionWithoutOption = StringValue.getDescriptor()
                                                                                     .toProto();
-        final Collection<String> result = parser.parse(definitionWithoutOption);
+        final Collection<String> result = parser.parseUnknownOption(definitionWithoutOption);
         assertTrue(result.isEmpty());
     }
 }

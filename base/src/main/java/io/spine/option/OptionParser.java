@@ -20,37 +20,22 @@
 
 package io.spine.option;
 
-import com.google.protobuf.GeneratedMessageV3;
-
 import java.util.Collection;
 
 /**
  * A parser of Protobuf options.
  *
- * @param <D> the type of the descriptor to obtain the option
  * @param <R> the type of an element to be returned after parsing
  * @author Dmytro Grankin
  */
-public interface OptionParser<D extends GeneratedMessageV3, R> {
-
-    /**
-     * Obtains a collection of parsed items from the option.
-     *
-     * <p>Use this method, if you want to parse an {@linkplain UnknownOptions unknown option}
-     * obtained from the specified descriptor.
-     *
-     * <p>If the specified descriptor does not have the option, empty collection will be returned.
-     *
-     * @param descriptor the descriptor to obtain the option value
-     * @return the collection of parsed elements
-     */
-    Collection<R> parse(D descriptor);
+public interface OptionParser<R> {
 
     /**
      * Obtains a collection of parsed items from the specified option value.
      *
-     * @param optionValue the valid value of option to parse
+     * @param optionValue the valid value of the option to parse
      * @return the collection of parsed elements
+     * @throws IllegalStateException if the option value is invalid
      */
     Collection<R> parse(String optionValue);
 }

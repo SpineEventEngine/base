@@ -29,10 +29,8 @@ import java.util.Collection;
 import java.util.regex.Pattern;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static io.spine.util.Exceptions.newIllegalStateException;
-import static java.util.Collections.emptyList;
 import static java.util.regex.Pattern.compile;
 
 /**
@@ -47,7 +45,7 @@ import static java.util.regex.Pattern.compile;
  * @author Dmytro Grankin
  */
 public abstract class RawListParser<O extends ExtendableMessage, D extends GeneratedMessageV3, R>
-        implements OptionParser<D, R> {
+        extends UnknownOptionParser<O, D, R> {
 
     /**
      * The separator for the list values.
@@ -58,30 +56,8 @@ public abstract class RawListParser<O extends ExtendableMessage, D extends Gener
     private static final Pattern PATTERN_VALUES_SEPARATOR = compile(VALUE_SEPARATOR);
     private static final Pattern PATTERN_SPACE = compile(" ");
 
-    /**
-     * The tag number of the option.
-     *
-     * <p>This tag will be used to extract a value of the option.
-     */
-    private final int optionNumber;
-
-    /**
-     * Creates a new instance.
-     *
-     * @param option the option to be handled by the parser
-     */
-    protected RawListParser(GeneratedExtension<O, String> option) {
-        this.optionNumber = checkNotNull(option).getNumber();
-    }
-
-    @Override
-    public Collection<R> parse(D descriptor) {
-        final String optionValue = getUnknownOptionValue(descriptor, optionNumber);
-        if (optionValue == null) {
-            return emptyList();
-        }
-
-        return parse(optionValue);
+    RawListParser(GeneratedExtension<O, String> option) {
+        super(option);
     }
 
     @Override
@@ -90,15 +66,6 @@ public abstract class RawListParser<O extends ExtendableMessage, D extends Gener
         final Collection<String> parts = splitOptionValue(optionValue);
         return wrapParts(parts);
     }
-
-    /**
-     * Obtains the unknown option from the descriptor by the specified number.
-     *
-     * @param descriptor the descriptor to obtain the option
-     * @param optionNumber the tag number of the option
-     * @return the option value or {@code null} if there is no option with the number
-     */
-    protected abstract String getUnknownOptionValue(D descriptor, int optionNumber);
 
     /**
      * Wraps the {@linkplain #splitOptionValue(CharSequence) split} parts.

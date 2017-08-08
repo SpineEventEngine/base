@@ -39,8 +39,7 @@ public class TypeNamesParserShould {
     private static final String PACKAGE_PREFIX = "foo.bar.";
     private static final String MESSAGE_NAME = "AMessage";
 
-    private final OptionParser<DescriptorProto, TypeName> parser = new TypeNamesParser(enrichment,
-                                                                                       PACKAGE_PREFIX);
+    private final TypeNamesParser parser = new TypeNamesParser(enrichment, PACKAGE_PREFIX);
 
     @Test
     public void add_package_prefix_to_unqualified_type() {
@@ -67,7 +66,7 @@ public class TypeNamesParserShould {
     public void return_empty_collection_if_option_is_not_present() {
         final DescriptorProto definitionWithoutOption = StringValue.getDescriptor()
                                                                    .toProto();
-        final Collection<TypeName> result = parser.parse(definitionWithoutOption);
+        final Collection<TypeName> result = parser.parseUnknownOption(definitionWithoutOption);
         assertTrue(result.isEmpty());
     }
 }
