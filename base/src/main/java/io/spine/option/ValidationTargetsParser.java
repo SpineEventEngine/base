@@ -45,16 +45,16 @@ public class ValidationTargetsParser extends RawListParser<MessageOptions, Descr
     }
 
     /**
-     * Wraps the specified parts.
+     * Obtains the parsed element from the specified value.
      *
      * <p>This class has not specific requirements, so the specified parameter will be returned.
      *
-     * @param parts the parts to wrap
-     * @return the specified parts
+     * @param singleItemValue the item from the option value
+     * @return the parsed value
      */
     @Override
-    protected Collection<String> wrapParts(Collection<String> parts) {
-        return parts;
+    protected String asElement(String singleItemValue) {
+        return singleItemValue;
     }
 
     /**

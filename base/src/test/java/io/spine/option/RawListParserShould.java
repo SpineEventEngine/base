@@ -40,7 +40,7 @@ public class RawListParserShould {
     private final OptionParser<String> parser = new AListParser(enrichment);
 
     @SuppressWarnings("ConstantConditions") // Purpose of the test.
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void not_allow_null_option_value() {
         final String nullStr = null;
         parser.parse(nullStr);
@@ -82,8 +82,8 @@ public class RawListParserShould {
         }
 
         @Override
-        protected Collection<String> wrapParts(Collection<String> parts) {
-            return parts;
+        protected String asElement(String singleItemValue) {
+            return singleItemValue;
         }
     }
 }

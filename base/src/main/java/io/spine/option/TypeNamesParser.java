@@ -57,22 +57,17 @@ public class TypeNamesParser extends RawListParser<MessageOptions, DescriptorPro
     }
 
     /**
-     * Supplies and wraps the specified type names with the package prefix if it is not present.
+     * Supplies and wraps the specified type name with the package prefix if it is not present.
      *
-     * @param parts the raw type names to normalize
-     * @return a collection of normalized type names
+     * @param rawTypeName the raw type name to normalize
+     * @return the normalized {@code TypeName}
      */
     @Override
-    protected Collection<TypeName> wrapParts(Collection<String> parts) {
-        final Collection<TypeName> normalizedNames = newLinkedList();
-        for (String rawTypeName : parts) {
-            final boolean isFqn = rawTypeName.contains(PACKAGE_SEPARATOR);
-            final String typeNameValue = isFqn
-                                         ? rawTypeName
-                                         : packagePrefix + rawTypeName;
-            final TypeName typeName = TypeName.of(typeNameValue);
-            normalizedNames.add(typeName);
-        }
-        return normalizedNames;
+    protected TypeName asElement(String rawTypeName) {
+        final boolean isFqn = rawTypeName.contains(PACKAGE_SEPARATOR);
+        final String typeNameValue = isFqn
+                                     ? rawTypeName
+                                     : packagePrefix + rawTypeName;
+        return TypeName.of(typeNameValue);
     }
 }

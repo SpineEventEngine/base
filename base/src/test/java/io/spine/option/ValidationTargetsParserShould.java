@@ -44,9 +44,9 @@ public class ValidationTargetsParserShould {
     }
 
     @Test
-    public void not_prepare_additional_wrapping() {
-        final Collection<String> expectedResult = asList("first", "second");
-        assertSame(expectedResult, parser.wrapParts(expectedResult));
+    public void not_prepare_additional_actions_with_option_part() {
+        final String value = "a value";
+        assertSame(value, parser.asElement(value));
     }
 
     @Test

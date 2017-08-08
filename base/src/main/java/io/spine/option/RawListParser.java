@@ -28,9 +28,9 @@ import com.google.protobuf.GeneratedMessageV3.ExtendableMessage;
 import java.util.Collection;
 import java.util.regex.Pattern;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Strings.isNullOrEmpty;
+import static com.google.common.collect.Lists.newLinkedList;
 import static io.spine.util.Exceptions.newIllegalStateException;
+import static io.spine.validate.Validate.checkNotEmptyOrBlank;
 import static java.util.regex.Pattern.compile;
 
 /**
@@ -62,20 +62,33 @@ public abstract class RawListParser<O extends ExtendableMessage, D extends Gener
 
     @Override
     public Collection<R> parse(String optionValue) {
-        checkArgument(!isNullOrEmpty(optionValue));
+        checkNotEmptyOrBlank(optionValue, "option value");
         final Collection<String> parts = splitOptionValue(optionValue);
-        return wrapParts(parts);
+        return parseElements(parts);
     }
 
     /**
-     * Wraps the {@linkplain #splitOptionValue(CharSequence) split} parts.
+     * Parses the {@linkplain #splitOptionValue(CharSequence) split} parts of an option value.
      *
-     * <p>This method must perform actions specific to a concrete implementation.
-     *
-     * @param parts the parts to wrap
-     * @return the collection of wrapped parts
+     * @param optionParts the option parts to parse
+     * @return the collection of parsed elements
      */
-    protected abstract Collection<R> wrapParts(Collection<String> parts);
+    private Collection<R> parseElements(Iterable<String> optionParts) {
+        final Collection<R> result = newLinkedList();
+        for (String part : optionParts) {
+            final R element = asElement(part);
+            result.add(element);
+        }
+        return result;
+    }
+
+    /**
+     * Obtains the parsed element from the specified value.
+     *
+     * @param singleItemValue the item from the option value
+     * @return the parsed element
+     */
+    protected abstract R asElement(String singleItemValue);
 
     /**
      * Splits the specified value using the {@linkplain #VALUE_SEPARATOR values separator}.

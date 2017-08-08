@@ -75,7 +75,7 @@ public abstract class UnknownOptionParser<O extends ExtendableMessage, D extends
     }
 
     /**
-     * Obtains the unknown option value from the descriptor by the specified number.
+     * Obtains the unknown option value from the descriptor by the specified option number.
      *
      * @param descriptor   the descriptor to obtain the option
      * @param optionNumber the tag number of the option
