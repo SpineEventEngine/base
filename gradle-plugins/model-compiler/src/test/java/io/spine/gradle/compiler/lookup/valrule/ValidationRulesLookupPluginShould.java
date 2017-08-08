@@ -80,7 +80,7 @@ public class ValidationRulesLookupPluginShould {
                                    OUTER_MESSAGE_TYPE + DOT +
                                    VALIDATION_RULE_TYPE;
         final String value = (String) getProperties().get(expectedKey);
-        assertEquals(value, VALIDATION_TARGET);
+        assertEquals(VALIDATION_TARGET, value);
     }
 
     private Dictionary getProperties() {
