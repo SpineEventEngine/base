@@ -25,9 +25,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The plugin that cleans javadoc from {@code <pre></pre>} tags in prtobuf generated files.
+ * The plugin, that formats Javadocs in sources generated from {@code .proto} files.
+ *
+ * <p>Does the following formatting:
+ * <ul>
+ *     <li>removes all {@code <pre>} tags;</li>
+ *     <li>replaces a text in backticks by the text in {@code code} tag.</li>
+ * </ul>
  *
  *  @author Alexander Aleksandrov
+ *  @author Dmytro Grankin
  */
 public class ProtobufJavadocPlugin extends SpinePlugin {
 
