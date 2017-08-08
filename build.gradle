@@ -18,21 +18,9 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-group 'io.spine.tools'
-version '0.9.41-SNAPSHOT'
-
-apply plugin: 'java'
 apply plugin: 'java-gradle-plugin'
-
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
-repositories {
-    mavenCentral()
-}
 
 dependencies {
     compile group: 'io.spine.tools', name: 'spine-plugin-base', version: spineVersion
-    compile gradleApi()
     compile group: 'com.google.guava', name: 'guava', version: guavaVersion
 }
