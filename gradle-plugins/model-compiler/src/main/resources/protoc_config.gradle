@@ -27,8 +27,8 @@ protobuf {
 
     plugins {
         grpc {
-            path = protoPluginPath
-//            artifact = "io.grpc:protoc-gen-grpc-java:$gRpcVersion"
+           // path = protoPluginPath
+            artifact = "io.grpc:protoc-gen-grpc-java:$gRpcVersion"
         }
     }
 
