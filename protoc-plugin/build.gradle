@@ -90,14 +90,10 @@ publishing {
 
 def injectVersion(File scriptFile) {
     def text = scriptFile.text
-    println(text)
     text = text.replace("{version}", project.version)
     final def tempFile = Files.createTempFile("build", scriptFile.name.endsWith(".sh") ? ".sh" : ".bat")
     tempFile.text = text
-    println(text)
-    println(tempFile.text)
     final result = file(tempFile.toAbsolutePath())
-    println(result.text)
     return result
 }
 
