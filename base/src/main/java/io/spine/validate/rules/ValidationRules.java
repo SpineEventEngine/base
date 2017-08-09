@@ -69,7 +69,10 @@ public class ValidationRules {
      * {@code Builder} assembles the validation rules from the
      * {@linkplain #VAL_RULES_PROPS_FILE_NAME properties} files.
      *
-     * <p>Obtains the files, using {@link PropertyFiles#loadAllProperties(String) PropertyFiles}.
+     * <p>All the files from the classpath will be taken into an account.
+     *
+     * <p>Duplicate keys from the files will be ignored,
+     * i.e. only the first duplicate element will be added to the result.
      */
     private static class Builder {
 
