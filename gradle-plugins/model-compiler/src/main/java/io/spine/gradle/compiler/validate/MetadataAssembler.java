@@ -54,6 +54,8 @@ import static io.spine.gradle.compiler.util.FieldTypes.trimTypeName;
 class MetadataAssembler {
 
     private static final String JAVA_CLASS_NAME_SUFFIX = "VBuilder";
+
+    @SuppressWarnings("DuplicateStringLiteralInspection") // The same string has different semantics
     private static final String PROTOBUF_PACKAGE_NAME = "com.google.protobuf";
 
     /** A map from Protobuf type name to Java class FQN. */

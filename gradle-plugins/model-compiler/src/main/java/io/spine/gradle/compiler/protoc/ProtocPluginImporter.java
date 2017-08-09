@@ -24,7 +24,6 @@ import com.google.common.io.Files;
 import io.spine.gradle.SpinePlugin;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
-import org.gradle.api.Task;
 import org.gradle.api.plugins.AppliedPlugin;
 import org.gradle.api.plugins.ExtensionContainer;
 import org.slf4j.Logger;
@@ -36,34 +35,34 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import static com.google.common.collect.ImmutableMap.of;
-import static io.spine.gradle.TaskName.ANALYZE_PROTO;
 
 /**
  * @author Dmytro Dashenkov
  */
 public class ProtocPluginImporter extends SpinePlugin {
 
+    private static final String PROTOC_CONFIG_FILE_NAME = "protoc_config.gradle";
+
+    @SuppressWarnings("DuplicateStringLiteralInspection") // The same string has different semantics
+    private static final String PROTOBUF_PLUGIN_ID = "com.google.protobuf";
+
     @Override
     public void apply(final Project project) {
-        log().debug("Appending task {}", ANALYZE_PROTO);
-        addExtension(project, "protoPluginPath",
-                     "/Users/ddashenkov/Documents/dev/java/examples/grpc-java/compiler/build/exe/java_plugin/protoc-gen-grpc-java");
+        // TODO:2017-08-09:dmytro.dashenkov: Add artifact extension.
         final File tempFolder = Files.createTempDir();
-        final File configFile = new File(tempFolder, "protoc_config.gradle");
+        final File configFile = new File(tempFolder, PROTOC_CONFIG_FILE_NAME);
         try (InputStream in = getClass().getClassLoader()
-                                        .getResourceAsStream("protoc_config.gradle");
+                                        .getResourceAsStream(PROTOC_CONFIG_FILE_NAME);
              FileOutputStream out = new FileOutputStream(configFile)) {
-            int aByte = in.read();
-            while (aByte >= 0) {
-                out.write(aByte);
-                aByte = in.read();
+            int readByte = in.read();
+            while (readByte >= 0) {
+                out.write(readByte);
+                readByte = in.read();
             }
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
-
-
-        project.getPluginManager().withPlugin("com.google.protobuf", new Action<AppliedPlugin>() {
+        project.getPluginManager().withPlugin(PROTOBUF_PLUGIN_ID, new Action<AppliedPlugin>() {
             @Override
             public void execute(AppliedPlugin appliedPlugin) {
                 log().debug("Applying protoc_config.gradle ({})", configFile.getAbsolutePath());
@@ -71,30 +70,6 @@ public class ProtocPluginImporter extends SpinePlugin {
                 log().debug("Applied protoc_config.gradle");
             }
         });
-//        project.afterEvaluate(new Action<Project>() {
-//            @Override
-//            public void execute(Project project) {
-////                log().debug("Appending task {} after evaluate", ANALYZE_PROTO);
-////                project.task(ANALYZE_PROTO.getValue())
-////                       .doLast(action());
-////                project.task(ANALYZE_TEST_PROTO.getValue())
-////                       .doLast(action());
-//////                newTask(ANALYZE_PROTO, action()).insertBeforeTask(GENERATE_PROTO)
-//////                                                .applyNowTo(project);
-//////                newTask(ANALYZE_TEST_PROTO, action()).insertBeforeTask(GENERATE_TEST_PROTO)
-//////                                                     .applyNowTo(project);
-//            }
-//        });
-
-    }
-
-    private static Action<Task> action() {
-        return new Action<Task>() {
-            @Override
-            public void execute(Task task) {
-
-            }
-        };
     }
 
     private static void addExtension(Project project, String key, Object value) {
