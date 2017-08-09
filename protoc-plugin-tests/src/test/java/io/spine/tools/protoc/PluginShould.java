@@ -26,17 +26,51 @@ import org.junit.Test;
 
 import java.lang.reflect.Method;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 /**
  * @author Dmytro Dashenkov
  */
+@Ignore // TODO:2017-08-07:dmytro.dashenkov: Re-enable when the Gradle plugin is functional.
 public class PluginShould {
 
-    @Ignore // TODO:2017-08-07:dmytro.dashenkov: Re-enable when the Gradle plugin is functional.
+    private static final String EVENT_INTERFACE_FQN = "io.spine.tools.protoc.CustomerEvent";
+    private static final String COMMAND_INTERFACE_FQN = "io.spine.tools.protoc.CustomerCommand";
+
     @Test
     public void generate_marker_interfaces() throws ClassNotFoundException {
-        final Class<?> cls = Class.forName("io.spine.tools.protoc.CustomerEvent");
+        checkMarkerInterface(EVENT_INTERFACE_FQN);
+    }
+
+    @Test
+    public void implement_marker_interfaces_in_generated_messages() {
+        assertTrue((Object) CustomerNotified.getDefaultInstance() instanceof CustomerEvent);
+        assertTrue((Object) CustomerEmailRecieved.getDefaultInstance() instanceof CustomerEvent);
+    }
+
+    @Test
+    public void generate_marker_interfaces_for_separate_messages() throws ClassNotFoundException {
+        checkMarkerInterface(COMMAND_INTERFACE_FQN);
+    }
+
+    @Test
+    public void implement_interface_in_generated_messages_with_IS_option() {
+        assertTrue((Object) CustomerCreated.getDefaultInstance() instanceof CustomerEvent);
+        assertTrue((Object) CreateCustomer.getDefaultInstance() instanceof CustomerCommand);
+    }
+
+    @Test
+    public void skip_non_specified_message_types() {
+        final Class<?> cls = CustomerName.class;
+        final Class[] interfaces = cls.getInterfaces();
+        assertEquals(1, interfaces.length);
+        assertSame(CustomerNameOrBuilder.class, interfaces[0]);
+    }
+
+    private static void checkMarkerInterface(String fqn) throws ClassNotFoundException {
+        final Class<?> cls = Class.forName(fqn);
         assertTrue(cls.isInterface());
         assertTrue(Message.class.isAssignableFrom(cls));
 
