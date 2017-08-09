@@ -165,11 +165,7 @@ public enum TaskName {
      *
      * <p>Handles the {@code test} classes and resources scope.
      */
-    ANNOTATE_TEST_PROTO("annotateTestProto"),
-
-    ANALYZE_PROTO("analyzeProto"),
-
-    ANALYZE_TEST_PROTO("analyzeTestProto");
+    ANNOTATE_TEST_PROTO("annotateTestProto");
 
     private final String value;
 
