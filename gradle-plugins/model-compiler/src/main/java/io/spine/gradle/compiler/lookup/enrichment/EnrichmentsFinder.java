@@ -21,12 +21,13 @@ package io.spine.gradle.compiler.lookup.enrichment;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.HashMultimap;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
+import io.spine.option.TypeNameParser;
+import io.spine.type.TypeName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,12 +42,12 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import static com.google.common.base.Preconditions.checkState;
-import static com.google.common.collect.Lists.newLinkedList;
-import static io.spine.gradle.compiler.util.UnknownOptions.getUnknownOptionValue;
-import static io.spine.gradle.compiler.util.UnknownOptions.hasUnknownOption;
 import static io.spine.option.OptionsProto.BY_FIELD_NUMBER;
-import static io.spine.option.OptionsProto.ENRICHMENT_FIELD_NUMBER;
-import static io.spine.option.OptionsProto.ENRICHMENT_FOR_FIELD_NUMBER;
+import static io.spine.option.OptionsProto.enrichment;
+import static io.spine.option.OptionsProto.enrichmentFor;
+import static io.spine.option.RawListParser.getValueSeparator;
+import static io.spine.option.UnknownOptions.getUnknownOptionValue;
+import static io.spine.option.UnknownOptions.hasUnknownOption;
 import static java.lang.String.format;
 import static java.util.regex.Pattern.compile;
 
@@ -58,7 +59,6 @@ import static java.util.regex.Pattern.compile;
  */
 class EnrichmentsFinder {
 
-    private static final String TARGET_NAME_SEPARATOR = ",";
     private static final String PROTO_TYPE_SEPARATOR = ".";
     private static final String EMPTY_TYPE_NAME = "";
 
@@ -71,12 +71,12 @@ class EnrichmentsFinder {
      */
     private static final String ANY_BY_OPTION_TARGET = "*";
     private static final String PIPE_SEPARATOR = "|";
-    private static final Pattern PATTERN_SPACE = compile(" ");
-    private static final Pattern PATTERN_TARGET_NAME_SEPARATOR = compile(TARGET_NAME_SEPARATOR);
     private static final Pattern PATTERN_PIPE_SEPARATOR = compile("\\|");
 
     private final FileDescriptorProto file;
     private final String packagePrefix;
+    private final TypeNameParser eventTypeParser;
+    private final TypeNameParser enrichmentTypeParser;
 
     /**
      * Creates a new instance.
@@ -86,6 +86,8 @@ class EnrichmentsFinder {
     EnrichmentsFinder(FileDescriptorProto file) {
         this.file = file;
         this.packagePrefix = file.getPackage() + PROTO_TYPE_SEPARATOR;
+        this.eventTypeParser = new TypeNameParser(enrichmentFor, packagePrefix);
+        this.enrichmentTypeParser = new TypeNameParser(enrichment, packagePrefix);
     }
 
     /**
@@ -107,7 +109,8 @@ class EnrichmentsFinder {
     /**
      * Merge duplicate values into a single value for the same key.
      *
-     * <p>The values are joined with {@link EnrichmentsFinder#TARGET_NAME_SEPARATOR}.
+     * <p>The values are joined with the
+     * {@linkplain io.spine.option.RawListParser#VALUE_SEPARATOR value separator}.
      *
      * <p>Merging may be required when the wildcard `By` option values are handled,
      * i.e. when processing a single enrichment type as a map key, but multiple target
@@ -124,7 +127,7 @@ class EnrichmentsFinder {
 
             final String mergedValue;
             if (valuesPerKey.size() > 1) {
-                mergedValue = Joiner.on(TARGET_NAME_SEPARATOR)
+                mergedValue = Joiner.on(getValueSeparator())
                                     .join(valuesPerKey);
             } else {
                 mergedValue = valuesPerKey.iterator()
@@ -170,21 +173,24 @@ class EnrichmentsFinder {
 
         // Treating current {@code msg} as an enrichment object.
         log().trace("Scanning message {} for the enrichment annotations", messageName);
-        final String eventNames = parseEventNamesFromMsgOption(msg);
-        if (eventNames != null && !eventNames.isEmpty()) {
-            log().trace("Found target events: {}", eventNames);
-            msgScanResultBuilder.put(messageName, eventNames);
+        final Collection<TypeName> eventTypes = eventTypeParser.parseUnknownOption(msg);
+        if (!eventTypes.isEmpty()) {
+            final String mergedValue = Joiner.on(getValueSeparator())
+                                             .join(eventTypes);
+            log().trace("Found target events: {}", mergedValue);
+            msgScanResultBuilder.put(messageName, mergedValue);
         } else {
             log().trace("No target events found");
         }
 
         // Treating current {@code msg} as a target for enrichment (e.g. Spine event).
         log().trace("Scanning message {} for the enrichment target annotations", messageName);
-        final Collection<String> enrichmentNames = parseEnrichmentNamesFromMsgOption(msg);
-        if (enrichmentNames != null && !enrichmentNames.isEmpty()) {
-            log().debug("Found enrichments for event {}: {}", messageName, enrichmentNames);
-            for (String enrichmentName : enrichmentNames) {
-                msgScanResultBuilder.put(enrichmentName, messageName);
+        final Collection<TypeName> enrichmentTypes = enrichmentTypeParser.parseUnknownOption(msg);
+        if (!enrichmentTypes.isEmpty()) {
+            log().debug("Found enrichments for event {}: {}", messageName, enrichmentTypes);
+            for (TypeName enrichmentType : enrichmentTypes) {
+                final String typeNameValue = enrichmentType.value();
+                msgScanResultBuilder.put(typeNameValue, messageName);
             }
         } else {
             log().trace("No enrichments for event {} found", messageName);
@@ -229,7 +235,7 @@ class EnrichmentsFinder {
             eventGroup.add(eventName);
         }
         final String enrichmentName = packagePrefix + enrichment;
-        final String eventGroupString = Joiner.on(TARGET_NAME_SEPARATOR)
+        final String eventGroupString = Joiner.on(getValueSeparator())
                                               .join(eventGroup);
         final Map.Entry<String, String> result =
                 new AbstractMap.SimpleEntry<>(enrichmentName, eventGroupString);
@@ -254,55 +260,6 @@ class EnrichmentsFinder {
             }
         }
         return null;
-    }
-
-    private String parseEventNamesFromMsgOption(DescriptorProto msg) {
-        final String eventNamesStr = getUnknownOptionValue(msg, ENRICHMENT_FOR_FIELD_NUMBER);
-        if (eventNamesStr == null) {
-            return null;
-        }
-        final Collection<String> eventNamesResult = normalizeTypeNames(eventNamesStr);
-        return Joiner.on(TARGET_NAME_SEPARATOR)
-                     .join(eventNamesResult);
-    }
-
-    @SuppressWarnings("InstanceMethodNamingConvention")
-    // It's important to keep naming self-explanatory.
-    private Collection<String> parseEnrichmentNamesFromMsgOption(DescriptorProto msg) {
-        final String enrichmentNames = getUnknownOptionValue(msg, ENRICHMENT_FIELD_NUMBER);
-        if (enrichmentNames == null) {
-            return null;
-        }
-        return normalizeTypeNames(enrichmentNames);
-    }
-
-    /**
-     * Parse type names from a String and supply them with the package prefix if it is not present.
-     *
-     * @param typeNamesAsString the type names as a single String
-     * @return a collection of normalized type names
-     */
-    private Collection<String> normalizeTypeNames(String typeNamesAsString) {
-        final Collection<String> targetNamesPrimary = parseTargetNames(typeNamesAsString);
-        final Collection<String> normalizedNames = newLinkedList();
-        for (String typeName : targetNamesPrimary) {
-            checkState(!typeName.trim()
-                                .isEmpty(), "Empty type name");
-            final boolean isFqn = typeName.contains(PROTO_TYPE_SEPARATOR);
-            if (isFqn) {
-                normalizedNames.add(typeName);
-            } else {
-                normalizedNames.add(packagePrefix + typeName);
-            }
-        }
-        return normalizedNames;
-    }
-
-    private static List<String> parseTargetNames(String targetNames) {
-        final String names = PATTERN_SPACE.matcher(targetNames)
-                                          .replaceAll("");
-        final String[] namesArray = PATTERN_TARGET_NAME_SEPARATOR.split(names);
-        return ImmutableList.copyOf(namesArray);
     }
 
     private static boolean hasOptionEnrichBy(FieldDescriptorProto field) {

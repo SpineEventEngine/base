@@ -20,33 +20,22 @@
 
 package io.spine.option;
 
-import com.google.protobuf.Descriptors;
-import com.google.protobuf.Message;
-import io.spine.option.EntityOption.Visibility;
-import io.spine.type.TypeName;
-
-import static com.google.common.base.Preconditions.checkNotNull;
+import java.util.Collection;
 
 /**
- * Utilities for working with {@link EntityOption}s.
+ * A parser of Protobuf options.
  *
- * @author Alexander Yevsyukov
+ * @param <R> the type of an element to be returned after parsing
+ * @author Dmytro Grankin
  */
-public class EntityOptions {
+public interface OptionParser<R> {
 
-    private EntityOptions() {
-        // Prevent instantiation of this utility class.
-    }
-
-    public static Visibility getVisibility(Class<? extends Message> stateClass) {
-        checkNotNull(stateClass);
-        final Descriptors.Descriptor descriptor = TypeName.of(stateClass).getDescriptor();
-        final EntityOption entityOption = descriptor.getOptions()
-                                                    .getExtension(OptionsProto.entity);
-        final Visibility definedVisibility = entityOption.getVisibility();
-        final Visibility result = (definedVisibility == Visibility.VISIBILITY_UNKNOWN)
-                ? Visibility.FULL
-                : definedVisibility;
-        return result;
-    }
+    /**
+     * Obtains a collection of parsed items from the specified option value.
+     *
+     * @param optionValue the valid value of the option to parse
+     * @return the collection of parsed elements
+     * @throws IllegalStateException if the option value is invalid
+     */
+    Collection<R> parse(String optionValue);
 }

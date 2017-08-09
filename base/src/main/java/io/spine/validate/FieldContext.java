@@ -22,6 +22,7 @@ package io.spine.validate;
 
 import com.google.common.base.Optional;
 import com.google.protobuf.Descriptors.FieldDescriptor;
+import io.spine.annotation.Internal;
 import io.spine.base.FieldPath;
 
 import java.util.Collections;
@@ -39,7 +40,8 @@ import static java.util.Collections.singleton;
  *
  * @author Dmytro Grankin
  */
-class FieldContext {
+@Internal
+public class FieldContext {
 
     /**
      * Parent descriptors and the target descriptor of this context at the end.
@@ -72,7 +74,7 @@ class FieldContext {
      * @param field the field of the context to create
      * @return the field context
      */
-    static FieldContext create(FieldDescriptor field) {
+    public static FieldContext create(FieldDescriptor field) {
         return new FieldContext(singleton(field));
     }
 
@@ -91,7 +93,7 @@ class FieldContext {
      * @param child the child descriptor
      * @return the child descriptor context
      */
-    FieldContext forChild(FieldDescriptor child) {
+    public FieldContext forChild(FieldDescriptor child) {
         final List<FieldDescriptor> newDescriptors = newLinkedList(descriptors);
         newDescriptors.add(child);
         return new FieldContext(newDescriptors);
@@ -135,7 +137,7 @@ class FieldContext {
      * @param other the context to check
      * @return {@code true} if this context has the same target and the same parent
      */
-    boolean hasSameTargetAndParent(FieldContext other) {
+    public boolean hasSameTargetAndParent(FieldContext other) {
         final boolean sameTarget = getTarget().equals(other.getTarget());
         if (!sameTarget) {
             return false;
@@ -146,6 +148,25 @@ class FieldContext {
         final boolean bothHaveParents = parentFromThis.isPresent() && parentFromOther.isPresent();
         return bothHaveParents && parentFromThis.get()
                                                 .equals(parentFromOther.get());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        FieldContext that = (FieldContext) o;
+
+        return descriptors.equals(that.descriptors);
+    }
+
+    @Override
+    public int hashCode() {
+        return descriptors.hashCode();
     }
 
     private static FieldPath fieldPathOf(Iterable<FieldDescriptor> descriptors) {
