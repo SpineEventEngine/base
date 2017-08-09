@@ -19,25 +19,14 @@
  */
 
 protobuf {
-
-    println("======!!!!=======")
-    println("protobuf")
-
     generatedFilesBaseDir = "$projectDir/generated"
 
     protoc {
-        println("======!!!!=======")
-        println("protoc")
-
         artifact = "com.google.protobuf:protoc:${protobufVersion}"
     }
 
     plugins {
-        println("======!!!!=======")
-        println("plugins")
         grpc {
-            println("======!!!!=======")
-            println("grpc")
             path = protoPluginPath
 //            artifact = "io.grpc:protoc-gen-grpc-java:$gRpcVersion"
         }
@@ -45,11 +34,7 @@ protobuf {
 
     generateProtoTasks {
         all().each { task ->
-            println("======!!!!=======")
-            println("apply plugins")
             task.plugins {
-                println("======!!!!=======")
-                println("task.plugins")
                 grpc { }
             }
 
