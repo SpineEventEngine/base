@@ -24,22 +24,22 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
+ * Javadoc comments checker that validates the links wrong execute usage.
+ * In case if any violation is found it will be logged as warning in build's
+ * stacktrace info or an error will be thrown. That depends on threshold and report type parameters
+ * stated in build file.
+ *
  * @author Alexander Aleksandrov
  */
-public class JavadocBackTickFormatter extends AbstractJavadocFileFormatter {
-
-    JavadocBackTickFormatter() {
-    }
+public class PreTagFormatting implements FormattingAction {
 
     @Override
-    public List<String> checkForCases(List<String> list) {
-        Pattern p = Pattern.compile("`[^`]+`");
-        for (int i = 0; i < list.size(); i++) {
-            Matcher matcher = p.matcher(list.get(i));
-            String withCode = matcher.toString();
-            withCode = "{@code" + withCode.substring(1, withCode.length()-1) + "}";
-            list.set(i, matcher.replaceAll(withCode));
+    public List<String> execute(List<String> lines) {
+        Pattern p = Pattern.compile("<pre>|<\\/pre>");
+        for (int i = 0; i < lines.size(); i++) {
+            Matcher matcher = p.matcher(lines.get(i));
+            lines.set(i, matcher.replaceAll(""));
         }
-        return list;
+        return lines;
     }
 }

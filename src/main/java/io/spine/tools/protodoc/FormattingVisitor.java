@@ -17,32 +17,43 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package io.spine.tools.protodoc;
 
-import io.spine.gradle.SpinePlugin;
-import org.gradle.api.Action;
-import org.gradle.api.Project;
-import org.gradle.api.Task;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import static io.spine.gradle.TaskName.CHECK_FQN;
-import static io.spine.gradle.TaskName.GENERATE_PROTO;
-import static io.spine.gradle.TaskName.PROCESS_RESOURCES;
+import java.io.IOException;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
+
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
- * @author Alexander Aleksandrov
+ * A {@code FileVisitor} for formatting files.
+ *
+ * @author Dmytro Grankin
  */
-public class JavadocBackTickPlugin extends SpinePlugin {
+class FormattingVisitor extends SimpleFileVisitor<Path> {
+
+    private final JavaFormatter formatter;
+
+    FormattingVisitor(JavaFormatter formatter) {
+        this.formatter = formatter;
+    }
 
     @Override
-    public void apply(Project project) {
-        final FileChecker checker = new FileChecker(new JavadocBackTickFormatter());
-        final Action<Task> action = checker.actionFor(project);
-        newTask(CHECK_FQN, action).insertAfterTask(GENERATE_PROTO)
-                                  .insertBeforeTask(PROCESS_RESOURCES)
-                                  .applyNowTo(project);
-        log().debug("Starting to format Javadoc back ticks.", action);
+    public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) throws IOException {
+        log().debug("Performing formatting for the file: {}", path);
+        formatter.format(path);
+        return FileVisitResult.CONTINUE;
+    }
+
+    @Override
+    public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
+        log().error("Error walking down the file tree for file: {}", file);
+        return FileVisitResult.TERMINATE;
     }
 
     private static Logger log() {
@@ -52,6 +63,6 @@ public class JavadocBackTickPlugin extends SpinePlugin {
     private enum LogSingleton {
         INSTANCE;
         @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = LoggerFactory.getLogger(JavadocBackTickPlugin.class);
+        private final Logger value = getLogger(FormattingVisitor.class);
     }
 }

@@ -23,26 +23,33 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static org.gradle.internal.impldep.com.google.common.collect.Lists.newLinkedList;
+
 /**
- * Javadoc comments checker that validates the links wrong format usage.
- * In case if any violation is found it will be logged as warning in build's
- * stacktrace info or an error will be thrown. That depends on threshold and report type parameters
- * stated in build file.
- *
  * @author Alexander Aleksandrov
  */
-public class JavadocTagFormatter extends AbstractJavadocFileFormatter {
+class BackTickFormatting implements FormattingAction {
 
-    JavadocTagFormatter() {
-    }
+    private static final Pattern PATTERN = Pattern.compile("`[^`]+`");
 
     @Override
-    public List<String> checkForCases(List<String> list) {
-        Pattern p = Pattern.compile("<pre>|<\\/pre>");
-        for (int i = 0; i < list.size(); i++) {
-            Matcher matcher = p.matcher(list.get(i));
-            list.set(i, matcher.replaceAll(""));
+    public List<String> execute(List<String> lines) {
+        final List<String> result = newLinkedList();
+        for (String line : lines) {
+            final String formattedLine = formatLine(line);
+            result.add(formattedLine);
         }
-        return list;
+        return result;
+    }
+
+    private static String formatLine(String line) {
+        final StringBuffer buffer = new StringBuffer();
+        final Matcher matcher = PATTERN.matcher(line);
+        while (matcher.find()) {
+            final String replacement = matcher.group(1);
+            matcher.appendReplacement(buffer, replacement);
+        }
+        matcher.appendTail(buffer);
+        return buffer.toString();
     }
 }

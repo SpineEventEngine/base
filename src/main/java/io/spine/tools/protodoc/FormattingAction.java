@@ -17,21 +17,15 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package io.spine.tools.protodoc;
 
-import java.nio.file.Path;
+import java.util.List;
 
 /**
- * An interface to gather all common operations for validators.
- *
- * @author Alexander Aleksandrov
+ * @author Dmytro Grankin
  */
-public interface JavadocFileFormatter {
+interface FormattingAction {
 
-    /**
-     * Checks the file for the looked up code style violations.
-     *
-     * @param path Path to the target file
-     */
-    void format(Path path);
+    List<String> execute(List<String> lines);
 }

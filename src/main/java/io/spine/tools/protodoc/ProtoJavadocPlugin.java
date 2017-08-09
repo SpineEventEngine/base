@@ -26,6 +26,10 @@ import org.gradle.api.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+
 import static io.spine.gradle.TaskName.COMPILE_JAVA;
 import static io.spine.gradle.TaskName.COMPILE_TEST_JAVA;
 import static io.spine.gradle.TaskName.FORMAT_PROTO_DOC;
@@ -34,6 +38,8 @@ import static io.spine.gradle.TaskName.GENERATE_PROTO;
 import static io.spine.gradle.TaskName.GENERATE_TEST_PROTO;
 import static io.spine.tools.protodoc.Extension.getAbsoluteMainGenProtoDir;
 import static io.spine.tools.protodoc.Extension.getAbsoluteTestGenProtoDir;
+import static java.lang.String.format;
+import static java.util.Arrays.asList;
 
 /**
  * The plugin, that formats Javadocs in sources generated from {@code .proto} files.
@@ -82,6 +88,21 @@ public class ProtoJavadocPlugin extends SpinePlugin {
     }
 
     private static void formatJavadocs(String javaSourcesDir) {
+        final File file = new File(javaSourcesDir);
+        if (!file.exists()) {
+            log().warn("Cannot perform formatting. Directory `{}` does not exist.", javaSourcesDir);
+            return;
+        }
+
+        final JavaFormatter formatter = new JavaFormatter(asList(new BackTickFormatting(),
+                                                                 new PreTagFormatting()));
+        try {
+            log().debug("Starting Javadocs formatting in `{}`.", javaSourcesDir);
+            Files.walkFileTree(file.toPath(), new FormattingVisitor(formatter));
+        } catch (IOException e) {
+            final String errMsg = format("Failed to format the sources in `%s`.", javaSourcesDir);
+            throw new IllegalStateException(errMsg, e);
+        }
     }
 
     private static Logger log() {
