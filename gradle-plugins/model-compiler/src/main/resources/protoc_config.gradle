@@ -18,30 +18,46 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-project.protobuf {
+protobuf {
+
+    println("======!!!!=======")
+    println("protobuf")
+
     generatedFilesBaseDir = "$projectDir/generated"
 
     protoc {
+        println("======!!!!=======")
+        println("protoc")
+
         artifact = "com.google.protobuf:protoc:${protobufVersion}"
     }
 
     plugins {
+        println("======!!!!=======")
+        println("plugins")
         grpc {
+            println("======!!!!=======")
+            println("grpc")
             path = protoPluginPath
+//            artifact = "io.grpc:protoc-gen-grpc-java:$gRpcVersion"
         }
     }
 
     generateProtoTasks {
         all().each { task ->
+            println("======!!!!=======")
+            println("apply plugins")
+            task.plugins {
+                println("======!!!!=======")
+                println("task.plugins")
+                grpc { }
+            }
 
             task.generateDescriptorSet = true
             task.descriptorSetOptions.path = "${projectDir}/build/descriptors/${task.sourceSet.name}.desc"
             task.descriptorSetOptions.includeImports = true
             task.descriptorSetOptions.includeSourceInfo = true
-
-            task.plugins {
-                grpc { }
-            }
         }
     }
 }
+
