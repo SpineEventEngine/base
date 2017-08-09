@@ -22,6 +22,8 @@ package io.spine.tools.protodoc;
 
 import org.gradle.api.Project;
 
+import java.io.File;
+
 import static io.spine.tools.protodoc.ProtoJavadocPlugin.PROTO_JAVADOC_EXTENSION_NAME;
 
 /**
@@ -45,12 +47,29 @@ public class Extension {
      */
     public String testGenProtoDir;
 
-    public static String getMainGenProtoDir(Project project) {
-        return getExtension(project).mainGenProtoDir;
+    /**
+     * Obtains absolute path to the {@link #mainGenProtoDir}.
+     *
+     * @param project the project to get the {@code mainGenProtoDir}
+     * @return the absolute path to the main directory
+     */
+    public static String getAbsoluteMainGenProtoDir(Project project) {
+        return rootPath(project) + File.separator + getExtension(project).mainGenProtoDir;
     }
 
-    public static String getTestGenProtoDir(Project project) {
-        return getExtension(project).testGenProtoDir;
+    /**
+     * Obtains absolute path to the {@link #testGenProtoDir}.
+     *
+     * @param project the project to get the {@code testGenProtoDir}
+     * @return the absolute path to the test directory
+     */
+    public static String getAbsoluteTestGenProtoDir(Project project) {
+        return rootPath(project) + File.separator + getExtension(project).testGenProtoDir;
+    }
+
+    private static String rootPath(Project project) {
+        return project.getProjectDir()
+                      .getAbsolutePath();
     }
 
     private static Extension getExtension(Project project) {

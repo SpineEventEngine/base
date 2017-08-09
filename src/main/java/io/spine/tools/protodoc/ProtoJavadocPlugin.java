@@ -32,8 +32,8 @@ import static io.spine.gradle.TaskName.FORMAT_PROTO_DOC;
 import static io.spine.gradle.TaskName.FORMAT_TEST_PROTO_DOC;
 import static io.spine.gradle.TaskName.GENERATE_PROTO;
 import static io.spine.gradle.TaskName.GENERATE_TEST_PROTO;
-import static io.spine.tools.protodoc.Extension.getMainGenProtoDir;
-import static io.spine.tools.protodoc.Extension.getTestGenProtoDir;
+import static io.spine.tools.protodoc.Extension.getAbsoluteMainGenProtoDir;
+import static io.spine.tools.protodoc.Extension.getAbsoluteTestGenProtoDir;
 
 /**
  * The plugin, that formats Javadocs in sources generated from {@code .proto} files.
@@ -57,14 +57,14 @@ public class ProtoJavadocPlugin extends SpinePlugin {
         project.getExtensions()
                .create(PROTO_JAVADOC_EXTENSION_NAME, Extension.class);
 
-        final String mainGenProtoDir = getMainGenProtoDir(project);
+        final String mainGenProtoDir = getAbsoluteMainGenProtoDir(project);
         final Action<Task> mainAction = createAction(mainGenProtoDir);
         newTask(FORMAT_PROTO_DOC, mainAction).insertBeforeTask(COMPILE_JAVA)
                                              .insertAfterTask(GENERATE_PROTO)
                                              .applyNowTo(project);
         logDependingTask(log(), FORMAT_PROTO_DOC, COMPILE_JAVA, GENERATE_PROTO);
 
-        final String testGenProtoDir = getTestGenProtoDir(project);
+        final String testGenProtoDir = getAbsoluteTestGenProtoDir(project);
         final Action<Task> testAction = createAction(testGenProtoDir);
         newTask(FORMAT_TEST_PROTO_DOC, testAction).insertBeforeTask(COMPILE_TEST_JAVA)
                                                   .insertAfterTask(GENERATE_TEST_PROTO)
