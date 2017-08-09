@@ -1,3 +1,3 @@
 @echo off
 
-java -jar spine-protoc-plugin.jar
+java -jar spine-protoc-plugin-{version}.jar
