@@ -53,8 +53,37 @@ protobuf {
     }
 }
 
-jar {
+sourceJar {
+    archiveName = "$baseName-$appendix-$classifier.$extension" // Cut out the version.
     manifest {
         attributes 'Main-Class': 'io.spine.tools.protoc.Plugin'
     }
 }
+
+final def shellRunner = file('plugin_runner.sh')
+final def batchRunner = file('plugin_runner.bat')
+
+artifacts {
+    archives shellRunner
+    archives batchRunner
+}
+
+publishing {
+    publications {
+        runnerScript(MavenPublication) {
+            [shellRunner, batchRunner].each { final script ->
+                groupId = "${group}"
+                artifactId = "spine-protoc-plugin"
+                version = "${version}"
+
+                final def path = script.path
+                final def ext = path.substring(path.lastIndexOf('.') + 1)
+                artifact(path) {
+                    classifier "script"
+                    extension ext
+                }
+            }
+        }
+    }
+}
+
