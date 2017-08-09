@@ -59,6 +59,11 @@ jar {
     manifest {
         attributes 'Main-Class': 'io.spine.tools.protoc.Plugin'
     }
+    from {
+        configurations.compile.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
 }
 
 final def shellRunner = injectVersion(file('plugin_runner.sh'))
@@ -72,11 +77,12 @@ artifacts {
 publishing {
     publications {
         runnerScript(MavenPublication) {
-            [shellRunner, batchRunner].each { final script ->
-                groupId = "${group}"
-                artifactId = "spine-protoc-plugin"
-                version = "${version}"
+            from components.java
+            groupId = "${group}"
+            artifactId = "spine-protoc-plugin"
+            version = "${version}"
 
+            [shellRunner, batchRunner].each { final script ->
                 final def path = script.getAbsolutePath()
                 final def ext = path.substring(path.lastIndexOf('.') + 1)
                 artifact(path) {
