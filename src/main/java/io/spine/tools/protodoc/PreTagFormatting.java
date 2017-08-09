@@ -23,23 +23,36 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.google.common.collect.Lists.newLinkedList;
+
 /**
- * Javadoc comments checker that validates the links wrong execute usage.
- * In case if any violation is found it will be logged as warning in build's
- * stacktrace info or an error will be thrown. That depends on threshold and report type parameters
- * stated in build file.
+ * A formatting action for {@code <pre>} tags.
  *
- * @author Alexander Aleksandrov
+ * <p>The action will remove all matches of the {@link #PATTERN_PRE_TAG}.
+ *
+ * @author Dmytro Grankin
  */
 public class PreTagFormatting implements FormattingAction {
 
+    /**
+     * A pattern to match a {@code <pre>} or {@code </pre>} tag.
+     */
+    private static final Pattern PATTERN_PRE_TAG = Pattern.compile("<pre>|<\\/pre>");
+
+    /**
+     * Obtains the formatted lines from the specified lines.
+     *
+     * @param lines the lines to format
+     * @return the lines without {@code <pre>} tags
+     */
     @Override
     public List<String> execute(List<String> lines) {
-        Pattern p = Pattern.compile("<pre>|<\\/pre>");
-        for (int i = 0; i < lines.size(); i++) {
-            Matcher matcher = p.matcher(lines.get(i));
-            lines.set(i, matcher.replaceAll(""));
+        final List<String> result = newLinkedList();
+        for (String line : lines) {
+            final Matcher matcher = PATTERN_PRE_TAG.matcher(line);
+            final String lineWithoutTags = matcher.replaceAll("");
+            result.add(lineWithoutTags);
         }
-        return lines;
+        return result;
     }
 }

@@ -37,9 +37,9 @@ import static org.slf4j.LoggerFactory.getLogger;
  */
 class FormattingVisitor extends SimpleFileVisitor<Path> {
 
-    private final JavaFormatter formatter;
+    private final JavadocFormatter formatter;
 
-    FormattingVisitor(JavaFormatter formatter) {
+    FormattingVisitor(JavadocFormatter formatter) {
         this.formatter = formatter;
     }
 

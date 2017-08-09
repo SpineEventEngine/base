@@ -30,7 +30,7 @@ import java.util.List;
 /**
  * @author Dmytro Grankin
  */
-class JavaFormatter {
+class JavadocFormatter {
 
     private static final String READ_FILE_ERR_MSG = "Cannot read the contents of the file: ";
     private static final String WRITE_FILE_ERR_MSG = "Cannot write the contents to the file: ";
@@ -38,7 +38,7 @@ class JavaFormatter {
 
     private final List<FormattingAction> actions;
 
-    JavaFormatter(List<FormattingAction> actions) {
+    JavadocFormatter(List<FormattingAction> actions) {
         this.actions = actions;
     }
 
@@ -60,7 +60,7 @@ class JavaFormatter {
         return currentState;
     }
 
-    private static void writeFile(Path path, List<String> updatedContent) {
+    private static void writeFile(Path path, Iterable<String> updatedContent) {
         try {
             Files.write(path, updatedContent, CHARSET);
         } catch (IOException e) {
