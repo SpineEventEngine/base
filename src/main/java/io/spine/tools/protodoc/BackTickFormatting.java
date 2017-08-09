@@ -19,18 +19,38 @@
  */
 package io.spine.tools.protodoc;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static java.lang.String.format;
 import static org.gradle.internal.impldep.com.google.common.collect.Lists.newLinkedList;
 
 /**
+ * A formatting action, which handles a text in back ticks.
+ *
+ * <p>The action will replace all entries like {@code `text`} by {@code {@code text}}.
+ *
+ * <p>The multi lined text is not supported, e.g a text as follows will not be handled:
+ * <pre>{@code
+ * `some multi
+ * lined text`
+ * }</pre>
+ *
  * @author Alexander Aleksandrov
  */
-class BackTickFormatting implements FormattingAction {
+public class BackTickFormatting implements FormattingAction {
 
-    private static final Pattern PATTERN = Pattern.compile("`[^`]+`");
+    private static final String BACK_TICK = "`";
+    private static final String CODE_TAG_FORMAT = "{@code %s}";
+    private static final Pattern PATTERN_BACK_TICK = Pattern.compile(BACK_TICK);
+
+    /**
+     * A pattern to match a text surrounded with back ticks.
+     */
+    private static final Pattern PATTERN = Pattern.compile("(`[^`]*?`)");
 
     @Override
     public List<String> execute(List<String> lines) {
@@ -42,14 +62,22 @@ class BackTickFormatting implements FormattingAction {
         return result;
     }
 
-    private static String formatLine(String line) {
-        final StringBuffer buffer = new StringBuffer();
-        final Matcher matcher = PATTERN.matcher(line);
+    private static String formatLine(CharSequence lineText) {
+        final StringBuffer buffer = new StringBuffer(lineText.length() * 2);
+        final Matcher matcher = PATTERN.matcher(lineText);
         while (matcher.find()) {
-            final String replacement = matcher.group(1);
+            final String partToFormat = matcher.group();
+            final String partWithoutBackTicks = PATTERN_BACK_TICK.matcher(partToFormat)
+                                                                 .replaceAll("");
+            final String replacement = putInCodeTag(partWithoutBackTicks);
             matcher.appendReplacement(buffer, replacement);
         }
         matcher.appendTail(buffer);
         return buffer.toString();
+    }
+
+    @VisibleForTesting
+    static String putInCodeTag(String value) {
+        return format(CODE_TAG_FORMAT, value);
     }
 }

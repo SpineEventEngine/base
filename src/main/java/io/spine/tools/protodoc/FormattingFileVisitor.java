@@ -35,11 +35,11 @@ import static org.slf4j.LoggerFactory.getLogger;
  *
  * @author Dmytro Grankin
  */
-class FormattingVisitor extends SimpleFileVisitor<Path> {
+class FormattingFileVisitor extends SimpleFileVisitor<Path> {
 
     private final JavadocFormatter formatter;
 
-    FormattingVisitor(JavadocFormatter formatter) {
+    FormattingFileVisitor(JavadocFormatter formatter) {
         this.formatter = formatter;
     }
 
@@ -63,6 +63,6 @@ class FormattingVisitor extends SimpleFileVisitor<Path> {
     private enum LogSingleton {
         INSTANCE;
         @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = getLogger(FormattingVisitor.class);
+        private final Logger value = getLogger(FormattingFileVisitor.class);
     }
 }

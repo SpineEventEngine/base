@@ -26,13 +26,13 @@ import java.util.regex.Pattern;
 import static com.google.common.collect.Lists.newLinkedList;
 
 /**
- * A formatting action for {@code <pre>} tags.
+ * A formatting action, which handles {@code <pre>} tags.
  *
- * <p>The action will remove all matches of the {@link #PATTERN_PRE_TAG}.
+ * <p>The action will remove all occurrence of the {@linkplain #PATTERN_PRE_TAG tags}.
  *
  * @author Dmytro Grankin
  */
-public class PreTagFormatting implements FormattingAction {
+class PreTagFormatting implements FormattingAction {
 
     /**
      * A pattern to match a {@code <pre>} or {@code </pre>} tag.

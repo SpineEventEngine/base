@@ -98,7 +98,7 @@ public class ProtoJavadocPlugin extends SpinePlugin {
                                                                        new PreTagFormatting()));
         try {
             log().debug("Starting Javadocs formatting in `{}`.", javaSourcesDir);
-            Files.walkFileTree(file.toPath(), new FormattingVisitor(formatter));
+            Files.walkFileTree(file.toPath(), new FormattingFileVisitor(formatter));
         } catch (IOException e) {
             final String errMsg = format("Failed to format the sources in `%s`.", javaSourcesDir);
             throw new IllegalStateException(errMsg, e);
