@@ -41,7 +41,7 @@ import static org.gradle.internal.impldep.com.google.common.collect.Lists.newLin
  *
  * @author Alexander Aleksandrov
  */
-public class BackTickFormatting implements FormattingAction {
+class BackTickFormatting implements FormattingAction {
 
     private static final String BACK_TICK = "`";
     private static final String CODE_TAG_FORMAT = "{@code %s}";
