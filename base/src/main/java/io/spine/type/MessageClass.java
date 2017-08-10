@@ -22,20 +22,16 @@ package io.spine.type;
 
 import com.google.protobuf.Message;
 
-import javax.annotation.Nullable;
-import java.util.Objects;
-
-import static com.google.common.base.Preconditions.checkNotNull;
-
 /**
  * A base class for value objects storing references to message classes.
  *
  * @author Alexander Yevsyukov
  */
-public abstract class MessageClass extends ClassValue<Message> {
+public abstract class MessageClass extends ClassTypeValue<Message> {
+
+    private static final long serialVersionUID = 0L;
 
     protected MessageClass(Class<? extends Message> value) {
         super(value);
-        checkNotNull(value);
     }
 }

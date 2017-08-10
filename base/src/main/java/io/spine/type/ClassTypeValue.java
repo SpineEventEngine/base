@@ -21,7 +21,10 @@
 package io.spine.type;
 
 import javax.annotation.Nullable;
+import java.io.Serializable;
 import java.util.Objects;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Abstract base for classes holding a value of a {@link Class}.
@@ -30,11 +33,17 @@ import java.util.Objects;
  *
  * @author Alexander Yevsyukov
  */
-public abstract class ClassValue<T> {
+public abstract class ClassTypeValue<T> implements Serializable {
+
+    /* NOTE: the class has the 'Type' infix in the name to prevent the name clash with
+       java.lang.ClassValue. */
+
+    private static final long serialVersionUID = 0L;
 
     private final Class<? extends T> value;
 
-    public ClassValue(Class<? extends T> value) {
+    protected ClassTypeValue(Class<? extends T> value) {
+        checkNotNull(value);
         this.value = value;
     }
 
@@ -53,7 +62,7 @@ public abstract class ClassValue<T> {
         return value.getName();
     }
 
-    /** Obtains the {@code ClassName} for this message class. */
+    /** Obtains the {@code ClassName} for the enclosed class value. */
     public ClassName getClassName() {
         return ClassName.of(value());
     }
@@ -74,7 +83,7 @@ public abstract class ClassValue<T> {
         if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        final ClassValue other = (ClassValue) obj;
+        final ClassTypeValue other = (ClassTypeValue) obj;
         return Objects.equals(this.value, other.value);
     }
 }
