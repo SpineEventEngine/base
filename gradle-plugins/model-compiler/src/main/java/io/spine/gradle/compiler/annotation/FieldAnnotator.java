@@ -44,7 +44,7 @@ import static io.spine.gradle.compiler.annotation.TypeDefinitionAnnotator.getNes
 import static io.spine.gradle.compiler.util.JavaCode.toJavaFieldName;
 import static io.spine.gradle.compiler.util.JavaSources.getBuilderClassName;
 import static io.spine.gradle.compiler.util.JavaSources.getFilePath;
-import static io.spine.option.UnknownOptions.getUnknownOptionValue;
+import static io.spine.protobuf.UnknownOptions.getUnknownOptionValue;
 import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.lang.String.format;
 
