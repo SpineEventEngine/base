@@ -49,12 +49,12 @@ class BackTickFormatting extends LineFormatting {
     /**
      * A pattern to match a text surrounded with back ticks.
      */
-    private static final Pattern PATTERN = Pattern.compile("(`[^`]*?`)");
+    private static final Pattern PATTERN_TEXT_IN_BACK_TICKS = Pattern.compile("(`[^`]*?`)");
 
     @Override
     String formatLine(String line) {
         final StringBuffer buffer = new StringBuffer(line.length() * 2);
-        final Matcher matcher = PATTERN.matcher(line);
+        final Matcher matcher = PATTERN_TEXT_IN_BACK_TICKS.matcher(line);
         while (matcher.find()) {
             final String partToFormat = matcher.group();
             final String partWithoutBackTicks = PATTERN_BACK_TICK.matcher(partToFormat)
