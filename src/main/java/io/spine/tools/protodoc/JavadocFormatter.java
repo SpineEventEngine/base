@@ -25,7 +25,6 @@ import com.google.common.io.Files;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -101,9 +100,8 @@ class JavadocFormatter {
      */
     private String formatText(String text) {
         String currentState = text;
-        for (FormattingAction action : actions) {
-            final List<String> lines = Collections.singletonList(currentState);
-            currentState = action.execute(lines).get(0);
+        for (FormattingAction formatting : actions) {
+            currentState = formatting.execute(currentState);
         }
         return currentState;
     }

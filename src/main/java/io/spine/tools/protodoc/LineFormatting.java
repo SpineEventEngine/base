@@ -17,35 +17,47 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package io.spine.tools.protodoc;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.google.common.base.Splitter;
+
+import java.util.List;
+
+import static java.lang.System.lineSeparator;
 
 /**
- * A formatting action, which handles {@code <pre>} tags.
- *
- * <p>The action will remove all occurrences of the {@linkplain #PATTERN_PRE_TAG tags}.
+ * A {@link FormattingAction}, that formats lines independently to each other.
  *
  * @author Dmytro Grankin
  */
-class PreTagFormatting implements FormattingAction {
-
-    /**
-     * A pattern to match a {@code <pre>} or {@code </pre>} tag.
-     */
-    private static final Pattern PATTERN_PRE_TAG = Pattern.compile("<pre>|<\\/pre>");
+abstract class LineFormatting implements FormattingAction {
 
     /**
      * Obtains the formatted representation of the specified text.
      *
+     * <p>The text will be split and lines will be formatted independently to each other.
+     *
      * @param text the text to format
-     * @return the text without {@code <pre>} tags
+     * @return the formatted text
      */
     @Override
     public String execute(String text) {
-        final Matcher matcher = PATTERN_PRE_TAG.matcher(text);
-        final String textWithoutTags = matcher.replaceAll("");
-        return textWithoutTags;
+        final List<String> textAsLines = Splitter.on(lineSeparator())
+                                                 .splitToList(text);
+        final StringBuilder resultBuilder = new StringBuilder(text.length() * 2);
+        for (String line : textAsLines) {
+            final String formattedLine = formatLine(line);
+            resultBuilder.append(formattedLine);
+        }
+        return resultBuilder.toString();
     }
+
+    /**
+     * Obtains the formatted representation of the specified line.
+     *
+     * @param line the single line without line separators
+     * @return the formatted representation
+     */
+    abstract String formatLine(String line);
 }

@@ -22,11 +22,8 @@ package io.spine.tools.protodoc;
 
 import org.junit.Test;
 
-import java.util.List;
-
 import static io.spine.tools.protodoc.BackTickFormatting.wrapWithCodeTag;
-import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
+import static java.lang.System.lineSeparator;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -43,7 +40,7 @@ public class BackTickFormattingShould {
 
     @Test
     public void surround_text_in_back_ticks_with_code_tag() {
-        final String result = format(TEXT_IN_BACK_TICKS);
+        final String result = formatting.execute(TEXT_IN_BACK_TICKS);
         assertEquals(TEXT_IN_CODE_TAG, result);
     }
 
@@ -51,21 +48,17 @@ public class BackTickFormattingShould {
     public void handle_multiple_entries_surrounded_with_back_ticks() {
         final String separatingPart = " some other text ";
         final String source = TEXT_IN_BACK_TICKS + separatingPart + TEXT_IN_BACK_TICKS;
-        final String expectedResult = TEXT_IN_CODE_TAG + separatingPart + TEXT_IN_CODE_TAG;
-        assertEquals(expectedResult, format(source));
+        final String expected = TEXT_IN_CODE_TAG + separatingPart + TEXT_IN_CODE_TAG;
+        assertEquals(expected, formatting.execute(source));
     }
 
     @Test
     public void not_handle_multi_lined_text_surrounded_with_back_ticks() {
         final String lineWithOpeningBackTick = BACK_TICK + TEXT;
         final String lineWithClosingBackTick = TEXT + BACK_TICK;
-        final List<String> source = asList(lineWithOpeningBackTick, lineWithClosingBackTick);
-        assertEquals(source, formatting.execute(source));
+        final String multiLinedText = lineWithOpeningBackTick + lineSeparator()
+                + lineWithClosingBackTick;
+        assertEquals(multiLinedText, formatting.execute(multiLinedText));
     }
 
-    private String format(String line) {
-        final List<String> lines = singletonList(line);
-        return formatting.execute(lines)
-                         .get(0);
-    }
 }

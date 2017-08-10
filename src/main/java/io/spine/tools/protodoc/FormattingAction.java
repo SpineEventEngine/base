@@ -20,20 +20,20 @@
 
 package io.spine.tools.protodoc;
 
-import java.util.List;
-
 /**
- * A formatting action for a Javadoc.
+ * A formatting action, that formats a {@code String}.
  *
  * @author Dmytro Grankin
  */
 interface FormattingAction {
 
     /**
-     * Obtains the formatted lines from the specified lines.
+     * Obtains the formatted representation of the specified text.
      *
-     * @param lines the lines to format
-     * @return the formatted lines
+     * <p>The specified text may contains line separators.
+     *
+     * @param text the text to format
+     * @return the formatted text
      */
-    List<String> execute(List<String> lines);
+    String execute(String text);
 }

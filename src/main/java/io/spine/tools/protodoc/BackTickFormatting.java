@@ -21,12 +21,10 @@ package io.spine.tools.protodoc;
 
 import com.google.common.annotations.VisibleForTesting;
 
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static java.lang.String.format;
-import static org.gradle.internal.impldep.com.google.common.collect.Lists.newLinkedList;
 
 /**
  * A formatting action, which handles a text in back ticks.
@@ -41,7 +39,7 @@ import static org.gradle.internal.impldep.com.google.common.collect.Lists.newLin
  *
  * @author Alexander Aleksandrov
  */
-class BackTickFormatting implements FormattingAction {
+class BackTickFormatting extends LineFormatting {
 
     private static final String BACK_TICK = "`";
     private static final String CODE_TAG_FORMAT = "{@code %s}";
@@ -53,18 +51,9 @@ class BackTickFormatting implements FormattingAction {
     private static final Pattern PATTERN = Pattern.compile("(`[^`]*?`)");
 
     @Override
-    public List<String> execute(List<String> lines) {
-        final List<String> result = newLinkedList();
-        for (String line : lines) {
-            final String formattedLine = formatLine(line);
-            result.add(formattedLine);
-        }
-        return result;
-    }
-
-    private static String formatLine(CharSequence lineText) {
-        final StringBuffer buffer = new StringBuffer(lineText.length() * 2);
-        final Matcher matcher = PATTERN.matcher(lineText);
+    String formatLine(String line) {
+        final StringBuffer buffer = new StringBuffer(line.length() * 2);
+        final Matcher matcher = PATTERN.matcher(line);
         while (matcher.find()) {
             final String partToFormat = matcher.group();
             final String partWithoutBackTicks = PATTERN_BACK_TICK.matcher(partToFormat)

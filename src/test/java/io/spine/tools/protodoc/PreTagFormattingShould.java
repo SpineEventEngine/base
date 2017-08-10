@@ -22,9 +22,6 @@ package io.spine.tools.protodoc;
 
 import org.junit.Test;
 
-import java.util.List;
-
-import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -41,20 +38,14 @@ public class PreTagFormattingShould {
     @Test
     public void remove_opening_pre_tags() {
         final String source = OPENING_PRE + TEXT + OPENING_PRE;
-        final String result = format(source);
+        final String result = formatting.execute(source);
         assertEquals(TEXT, result);
     }
 
     @Test
     public void remove_closing_pre_tags() {
         final String source = CLOSING_PRE + TEXT + CLOSING_PRE;
-        final String result = format(source);
+        final String result = formatting.execute(source);
         assertEquals(TEXT, result);
-    }
-
-    private String format(String line) {
-        final List<String> lines = singletonList(line);
-        return formatting.execute(lines)
-                         .get(0);
     }
 }
