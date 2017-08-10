@@ -17,7 +17,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.gradle.compiler.util;
+package io.spine.protobuf;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
@@ -25,6 +25,7 @@ import com.google.protobuf.DescriptorProtos.EnumDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.ServiceDescriptorProto;
+import io.spine.annotation.Internal;
 
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -55,6 +56,7 @@ import static java.util.Collections.emptyMap;
  *
  * @author Alexander Litus
  */
+@Internal
 public class UnknownOptions {
 
     @SuppressWarnings("HardcodedLineSeparator")
