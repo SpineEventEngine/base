@@ -44,7 +44,8 @@ group 'io.spine.tools'
 dependencies {
     compile project(':base')
 
-    compile "com.google.protobuf:protobuf-java:${protobufVersion}"
+    compile group: "com.google.protobuf", name: "protobuf-java", version: protobufVersion
+    compile group: 'org.slf4j', name: 'slf4j-jdk14', version: slf4JVersion
     compile group: 'com.squareup', name: 'javapoet', version: javaPoetVersion
 }
 
@@ -59,6 +60,7 @@ jar {
     manifest {
         attributes 'Main-Class': 'io.spine.tools.protoc.Plugin'
     }
+    // Assemble "Fat-JAR" artifact containing all the dependencies.
     from {
         configurations.compile.collect {
             it.isDirectory() ? it : zipTree(it)

@@ -21,7 +21,6 @@
 package io.spine.tools.protoc;
 
 import com.google.protobuf.Message;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.lang.reflect.Method;
@@ -33,7 +32,6 @@ import static org.junit.Assert.assertTrue;
 /**
  * @author Dmytro Dashenkov
  */
-@Ignore // TODO:2017-08-07:dmytro.dashenkov: Re-enable when the Gradle plugin is functional.
 public class PluginShould {
 
     private static final String EVENT_INTERFACE_FQN = "io.spine.tools.protoc.CustomerEvent";
@@ -44,6 +42,7 @@ public class PluginShould {
         checkMarkerInterface(EVENT_INTERFACE_FQN);
     }
 
+    @SuppressWarnings({"ConstantConditions", "RedundantCast"}) // Required by the test logic.
     @Test
     public void implement_marker_interfaces_in_generated_messages() {
         assertTrue((Object) CustomerNotified.getDefaultInstance() instanceof CustomerEvent);
@@ -55,6 +54,7 @@ public class PluginShould {
         checkMarkerInterface(COMMAND_INTERFACE_FQN);
     }
 
+    @SuppressWarnings({"ConstantConditions", "RedundantCast"}) // Required by the test logic.
     @Test
     public void implement_interface_in_generated_messages_with_IS_option() {
         assertTrue((Object) CustomerCreated.getDefaultInstance() instanceof CustomerEvent);
@@ -75,6 +75,6 @@ public class PluginShould {
         assertTrue(Message.class.isAssignableFrom(cls));
 
         final Method[] declaredMethods = cls.getDeclaredMethods();
-        assertTrue(declaredMethods.length == 0);
+        assertEquals(0, declaredMethods.length);
     }
 }

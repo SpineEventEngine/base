@@ -20,7 +20,6 @@
 
 package io.spine.tools.protoc;
 
-import com.google.common.io.Files;
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
@@ -30,7 +29,6 @@ import com.google.protobuf.compiler.PluginProtos.Version;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.nio.file.Path;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -39,9 +37,9 @@ import static io.spine.tools.protoc.NarrowMessageInterfaceGenerator.INSERTION_PO
 import static java.lang.String.format;
 import static java.util.regex.Pattern.compile;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 /**
  * @author Dmytro Dashenkov
@@ -50,20 +48,26 @@ public class NarrowMessageInterfaceGeneratorShould {
 
     private static final String PROTO_PACKAGE = "spine.tools.protoc.";
 
-    private static final String PACKAGE_PATH = NarrowMessageInterfaceGeneratorShould.class.getPackage()
-                                                                                          .getName()
-                                                                                          .replace('.', '/');
+    private static final String PACKAGE_PATH =
+            NarrowMessageInterfaceGeneratorShould.class.getPackage()
+                                                       .getName()
+                                                       .replace('.', '/');
     private static final Pattern CUSTOMER_EVENT_INTERFACE_PATTERN =
             compile("^\\s*io\\.spine\\.tools\\.protoc\\.CustomerEvent\\s*,\\s*$");
 
-    private static final Path generatedSrcPath = Files.createTempDir().toPath();
+    private static final Pattern CUSTOMER_EVENT_INTERFACE_DECL_PATTERN =
+            compile("public\\s+interface\\s+CustomerEvent\\s*extends\\s+Message\\s*\\{\\s*}");
 
-    private NarrowMessageInterfaceGenerator codeGenerator;
+
+    private static final Pattern CUSTOMER_EVENT_OR_COMMAND =
+            compile("Customer(Command|Event)");
+
+    private SpineProtoOptionProcessor codeGenerator;
 
 
     @Before
     public void setUp() {
-        codeGenerator = new NarrowMessageInterfaceGenerator(generatedSrcPath);
+        codeGenerator = NarrowMessageInterfaceGenerator.instance();
     }
 
     @Test
@@ -87,18 +91,25 @@ public class NarrowMessageInterfaceGeneratorShould {
         final CodeGeneratorResponse response = codeGenerator.process(request);
         assertNotNull(response);
         final List<File> files = response.getFileList();
-        assertEquals(2, files.size());
+        assertEquals(3, files.size());
         for (File file : files) {
             final String name = file.getName();
             assertTrue(name.startsWith(PACKAGE_PATH));
 
             final String insertionPoint = file.getInsertionPoint();
-            final String messageName = PROTO_PACKAGE + name.substring(name.lastIndexOf('/') + 1);
-            assertEquals(insertionPoint, format(INSERTION_POINT_IMPLEMENTS, messageName));
+            if (!insertionPoint.isEmpty()) {
+                final String messageName = PROTO_PACKAGE + name.substring(name.lastIndexOf('/') + 1,
+                                                                          name.lastIndexOf('.'));
+                assertEquals(insertionPoint, format(INSERTION_POINT_IMPLEMENTS, messageName));
 
-            final String content = file.getContent();
-            final Matcher matcher = CUSTOMER_EVENT_INTERFACE_PATTERN.matcher(content);
-            assertTrue(format("Unexpected inserted content: %s", content), matcher.matches());
+                final String content = file.getContent();
+                final Matcher matcher = CUSTOMER_EVENT_INTERFACE_PATTERN.matcher(content);
+                assertTrue(matcher.matches());
+            } else {
+                final String content = file.getContent();
+                final Matcher matcher = CUSTOMER_EVENT_INTERFACE_DECL_PATTERN.matcher(content);
+                assertTrue(matcher.find());
+            }
         }
     }
 
@@ -116,22 +127,24 @@ public class NarrowMessageInterfaceGeneratorShould {
         final CodeGeneratorResponse response = codeGenerator.process(request);
         assertNotNull(response);
         final List<File> files = response.getFileList();
-        assertEquals(2, files.size());
+        assertEquals(4, files.size());
         for (File file : files) {
             final String name = file.getName();
             assertTrue(name.startsWith(PACKAGE_PATH));
 
             final String insertionPoint = file.getInsertionPoint();
-            final String messageName = PROTO_PACKAGE + name.substring(name.lastIndexOf('/') + 1);
-            assertEquals(insertionPoint, format(INSERTION_POINT_IMPLEMENTS, messageName));
+            if (!insertionPoint.isEmpty()) {
+                final String messageName = PROTO_PACKAGE + name.substring(name.lastIndexOf('/') + 1, name.lastIndexOf('.'));
+                assertEquals(format(INSERTION_POINT_IMPLEMENTS, messageName), insertionPoint);
+            }
 
             final String content = file.getContent();
-            if (name.endsWith("NameUpdated")) {
-                assertTrue(content.contains("Event"));
-            } else if (name.endsWith("UpdateName")) {
-                assertTrue(content.contains("Command"));
+            if (name.endsWith("NameUpdated.java")) {
+                assertTrue(content.contains("Event,"));
+            } else if (name.endsWith("UpdateName.java")) {
+                assertTrue(content.contains("Command,"));
             } else {
-                fail(format("Unexpected message name: %s", name));
+                assertTrue(CUSTOMER_EVENT_OR_COMMAND.matcher(name).find());
             }
         }
     }
@@ -150,17 +163,19 @@ public class NarrowMessageInterfaceGeneratorShould {
         final CodeGeneratorResponse response = codeGenerator.process(request);
         assertNotNull(response);
         final List<File> files = response.getFileList();
-        assertEquals(2, files.size());
+        assertEquals(3, files.size());
         for (File file : files) {
-            final String name = file.getName();
-            assertEquals(PACKAGE_PATH + "/EveryIsInOneFileProto", name);
+            if (!file.getName().equals("io/spine/tools/protoc/CustomerEvent.java")) {
+                final String name = file.getName();
+                assertEquals(PACKAGE_PATH + "/EveryIsInOneFileProto.java", name);
 
-            final String insertionPoint = file.getInsertionPoint();
-            assertTrue(insertionPoint.startsWith(format(INSERTION_POINT_IMPLEMENTS,
-                                                        PROTO_PACKAGE)));
-            final String content = file.getContent();
-            final Matcher matcher = CUSTOMER_EVENT_INTERFACE_PATTERN.matcher(content);
-            assertTrue(format("Unexpected inserted content: %s", content), matcher.matches());
+                final String insertionPoint = file.getInsertionPoint();
+                assertTrue(insertionPoint.startsWith(format(INSERTION_POINT_IMPLEMENTS,
+                                                            PROTO_PACKAGE)));
+                final String content = file.getContent();
+                final Matcher matcher = CUSTOMER_EVENT_INTERFACE_PATTERN.matcher(content);
+                assertTrue(content, matcher.matches());
+            }
         }
     }
 
@@ -178,17 +193,21 @@ public class NarrowMessageInterfaceGeneratorShould {
         final CodeGeneratorResponse response = codeGenerator.process(request);
         assertNotNull(response);
         final List<File> files = response.getFileList();
-        assertEquals(2, files.size());
+        assertEquals(3, files.size());
         for (File file : files) {
-            final String name = file.getName();
-            assertEquals(PACKAGE_PATH + "/IsInOneFileProto", name);
+            if (file.getName().endsWith("Event.java")) {
+                assertFalse(file.hasInsertionPoint());
+            } else {
+                final String name = file.getName();
+                assertEquals(PACKAGE_PATH + "/IsInOneFileProto.java", name);
 
-            final String insertionPoint = file.getInsertionPoint();
-            assertTrue(insertionPoint.startsWith(format(INSERTION_POINT_IMPLEMENTS,
-                                                        PROTO_PACKAGE)));
-            final String content = file.getContent();
-            final Matcher matcher = CUSTOMER_EVENT_INTERFACE_PATTERN.matcher(content);
-            assertTrue(format("Unexpected inserted content: %s", content), matcher.matches());
+                final String insertionPoint = file.getInsertionPoint();
+                assertTrue(insertionPoint.startsWith(format(INSERTION_POINT_IMPLEMENTS,
+                                                            PROTO_PACKAGE)));
+                final String content = file.getContent();
+                final Matcher matcher = CUSTOMER_EVENT_INTERFACE_PATTERN.matcher(content);
+                assertTrue(format("Unexpected inserted content: %s", content), matcher.matches());
+            }
         }
     }
 

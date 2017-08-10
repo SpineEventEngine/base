@@ -27,9 +27,6 @@ import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
 
 import javax.annotation.Generated;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Path;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static javax.lang.model.element.Modifier.PUBLIC;
@@ -49,13 +46,11 @@ public final class MarkerInterfaceGenerator {
                                   .build();
     }
 
-    private final File outputDirectory;
-
-    public MarkerInterfaceGenerator(Path outputDirectory) {
-        this.outputDirectory = outputDirectory.toFile();
+    private MarkerInterfaceGenerator() {
+        // Prevent utility class instantiation.
     }
 
-    public void generate(String packageName, String typeName) {
+    public static JavaFile generate(String packageName, String typeName) {
         checkNotNull(packageName);
         checkNotNull(typeName);
         final TypeSpec spec = TypeSpec.interfaceBuilder(typeName)
@@ -63,12 +58,7 @@ public final class MarkerInterfaceGenerator {
                                       .addModifiers(PUBLIC)
                                       .addAnnotation(GENERATED)
                                       .build();
-        try {
-            JavaFile.builder(packageName, spec)
-                    .build()
-                    .writeTo(outputDirectory);
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
-        }
+        final JavaFile javaFile = JavaFile.builder(packageName, spec).build();
+        return javaFile;
     }
 }

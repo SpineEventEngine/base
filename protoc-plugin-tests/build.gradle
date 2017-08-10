@@ -37,31 +37,46 @@ buildscript {
     }
 }
 
+configurations {
+    fetch {
+        description = "Fetch the dependencies"
+        extendsFrom compile
+    }
+}
+
 dependencies {
     compile project(":base")
 
     compile "com.google.protobuf:protobuf-java:${protobufVersion}"
+    fetch "io.spine.tools:spine-protoc-plugin:$spineVersion@jar"
 }
 
 protobuf {
     generatedFilesBaseDir = generatedRootDir
+
     protoc {
         artifact = protobufDependency
     }
 
-    // TODO: re-enable when the gradle plugin is ready
-//    plugins {
-//        spineProtoc {
-//            //artifact = "io.spine.tools:spine-protoc-plugin:$spineVersion"
-//            path = "/Users/ddashenkov/.m2/repository/io/spine/tools/spine-protoc-plugin/0.9.48-SNAPSHOT/runner.sh"
-//        }
-//    }
+    plugins {
+        spineProtoc {
+            // TODO: switch between .sh and .bat respectively
+            artifact = "io.spine.tools:spine-protoc-plugin:$spineVersion:script@sh"
+        }
+    }
 
     generateProtoTasks {
         all().each { task ->
             task.plugins {
-//                spineProtoc {}
+                spineProtoc {
+                    outputSubDir = 'java'
+                }
             }
+
+            task.generateDescriptorSet = true
+            task.descriptorSetOptions.path = "${projectDir}/build/descriptors/${task.sourceSet.name}.desc"
+            task.descriptorSetOptions.includeImports = true
+            task.descriptorSetOptions.includeSourceInfo = true
         }
     }
 }

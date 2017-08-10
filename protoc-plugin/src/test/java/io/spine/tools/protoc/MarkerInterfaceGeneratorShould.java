@@ -20,21 +20,19 @@
 
 package io.spine.tools.protoc;
 
-import com.google.common.io.Files;
 import com.google.common.testing.NullPointerTester;
+import com.squareup.javapoet.AnnotationSpec;
+import com.squareup.javapoet.JavaFile;
 import org.junit.Test;
 
-import java.io.File;
-import java.nio.file.Path;
+import javax.annotation.Generated;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author Dmytro Dashenkov
  */
 public class MarkerInterfaceGeneratorShould {
-
-    private static final Path genFolder = Files.createTempDir().toPath();
 
     @Test
     public void not_accept_nulls_on_construction() {
@@ -43,19 +41,19 @@ public class MarkerInterfaceGeneratorShould {
 
     @Test
     public void not_accept_nulls() {
-        final MarkerInterfaceGenerator generator = new MarkerInterfaceGenerator(genFolder);
-        new NullPointerTester().testAllPublicInstanceMethods(generator);
+        new NullPointerTester().testAllPublicStaticMethods(MarkerInterfaceGenerator.class);
     }
 
     @Test
     public void generate_interfaces() {
         final String packageName = "io.spine.test";
         final String interfaceName = "CustomerEvent";
-        final MarkerInterfaceGenerator generator = new MarkerInterfaceGenerator(genFolder);
-        generator.generate(packageName, interfaceName);
-        final String generatedClassPath = packageName.replace('.', '/') + '/' + interfaceName + ".java";
-        final Path interfacePath = genFolder.resolve(generatedClassPath);
-        final File interfaceFile = interfacePath.toFile();
-        assertTrue(interfaceFile.exists());
+        final JavaFile javaFile = MarkerInterfaceGenerator.generate(packageName, interfaceName);
+
+        final AnnotationSpec generated = javaFile.typeSpec.annotations.get(0);
+        assertEquals(Generated.class.getName(), generated.type.toString());
+
+        assertEquals(packageName, javaFile.packageName);
+        assertEquals(interfaceName, javaFile.typeSpec.name);
     }
 }

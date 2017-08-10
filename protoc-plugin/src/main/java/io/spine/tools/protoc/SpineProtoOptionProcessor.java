@@ -20,7 +20,6 @@
 
 package io.spine.tools.protoc;
 
-import com.google.common.base.Optional;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
@@ -33,7 +32,7 @@ import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.Lists.newLinkedList;
+import static com.google.common.collect.Sets.newHashSet;
 
 /**
  * @author Dmytro Dashenkov
@@ -44,10 +43,8 @@ public abstract class SpineProtoOptionProcessor {
         super();
     }
 
-    protected abstract Optional<File> processMessage(FileDescriptorProto file,
-                                                     DescriptorProto message);
-
-    protected abstract void onProcessingFinished();
+    protected abstract Collection<File> processMessage(FileDescriptorProto file,
+                                                       DescriptorProto message);
 
     public final CodeGeneratorResponse process(CodeGeneratorRequest request) {
         checkNotNull(request);
@@ -58,12 +55,11 @@ public abstract class SpineProtoOptionProcessor {
         final List<FileDescriptorProto> descriptors = request.getProtoFileList();
         checkArgument(!descriptors.isEmpty(), "No files to generate provided.");
         final CodeGeneratorResponse response = scan(descriptors);
-        onProcessingFinished();
         return response;
     }
 
     private CodeGeneratorResponse scan(Iterable<FileDescriptorProto> files) {
-        final Collection<File> generatedFiles = newLinkedList();
+        final Collection<File> generatedFiles = newHashSet();
         for (FileDescriptorProto file : files) {
             generatedFiles.addAll(scanFile(file));
         }
@@ -74,12 +70,10 @@ public abstract class SpineProtoOptionProcessor {
     }
 
     private Collection<File> scanFile(FileDescriptorProto file) {
-        final Collection<File> result = newLinkedList();
+        final Collection<File> result = newHashSet();
         for (DescriptorProto message : file.getMessageTypeList()) {
-            final Optional<File> processedFile = processMessage(file, message);
-            if (processedFile.isPresent()) {
-                result.add(processedFile.get());
-            }
+            final Collection<File> processedFile = processMessage(file, message);
+            result.addAll(processedFile);
         }
         return result;
     }
