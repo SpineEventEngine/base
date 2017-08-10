@@ -33,7 +33,7 @@ import static org.gradle.internal.impldep.com.google.common.collect.Lists.newLin
  *
  * <p>The action will replace all entries like {@code `text`} by {@code {@code text}}.
  *
- * <p>The multi lined text is not supported, e.g a text as follows will not be handled:
+ * <p>The multi-lined text is not supported, e.g a text as follows will not be handled:
  * <pre>{@code
  * `some multi
  * lined text`

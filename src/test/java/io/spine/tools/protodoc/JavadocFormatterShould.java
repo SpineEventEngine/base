@@ -56,7 +56,7 @@ public class JavadocFormatterShould {
     private final JavadocFormatter backTickFormatter = new JavadocFormatter(actions);
 
     @Test
-    public void ignore_not_java_files() {
+    public void ignore_files_except_java() {
         final Path path = Paths.get("Non_existing_file.txt");
         backTickFormatter.format(path);
     }

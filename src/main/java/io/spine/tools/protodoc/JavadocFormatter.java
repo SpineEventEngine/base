@@ -20,10 +20,15 @@
 
 package io.spine.tools.protodoc;
 
+import com.google.common.io.Files;
+
+import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static io.spine.tools.protodoc.JavaSources.isJavaFile;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -37,6 +42,11 @@ import static java.nio.charset.StandardCharsets.UTF_8;
  * @author Dmytro Grankin
  */
 class JavadocFormatter {
+
+    /**
+     * A pattern for multi-lined Javadoc.
+     */
+    private static final Pattern PATTERN_JAVADOC = Pattern.compile("(?s)/\\*\\*.*?\\*/");
 
     /**
      * The formatting actions to perform.
@@ -59,33 +69,59 @@ class JavadocFormatter {
             return;
         }
 
-        final List<String> content = getFileContent(path);
-        final List<String> formattedContentContent = formatFileContent(content);
-        writeFile(path, formattedContentContent);
+        final File file = path.toFile();
+        final String content = readFileContent(file);
+        final String formattedContent = formatJavadocs(content);
+        writeToFile(file, formattedContent);
     }
 
-    private List<String> formatFileContent(List<String> lines) {
-        List<String> currentState = lines;
+    /**
+     * Formats Javadocs in the specified content of the file.
+     *
+     * @param sourceContent the content of a {@code .java} source
+     * @return the source content with formatted Javadocs
+     */
+    private String formatJavadocs(CharSequence sourceContent) {
+        final Matcher matcher = PATTERN_JAVADOC.matcher(sourceContent);
+        final StringBuffer buffer = new StringBuffer(sourceContent.length() * 2);
+        while (matcher.find()) {
+            final String partToFormat = matcher.group();
+            final String replacement = formatText(partToFormat);
+            matcher.appendReplacement(buffer, replacement);
+        }
+        matcher.appendTail(buffer);
+        return buffer.toString();
+    }
+
+    /**
+     * Obtains formatted representation of the specified text.
+     *
+     * @param text the text to format
+     * @return the formatted representation
+     */
+    private String formatText(String text) {
+        String currentState = text;
         for (FormattingAction action : actions) {
-            currentState = action.execute(currentState);
+            final List<String> lines = Collections.singletonList(currentState);
+            currentState = action.execute(lines).get(0);
         }
         return currentState;
     }
 
-    private static void writeFile(Path path, Iterable<String> updatedContent) {
+    private static void writeToFile(File file, CharSequence content) {
         try {
-            Files.write(path, updatedContent, UTF_8);
+            Files.write(content, file, UTF_8);
         } catch (IOException e) {
-            final String msg = String.format("Cannot write the content to the file `%s`.", path);
+            final String msg = String.format("Cannot write the content to the file `%s`.", file);
             throw new IllegalStateException(msg, e);
         }
     }
 
-    private static List<String> getFileContent(Path path) {
+    private static String readFileContent(File file) {
         try {
-            return Files.readAllLines(path, UTF_8);
+            return Files.toString(file, UTF_8);
         } catch (IOException e) {
-            final String msg = String.format("Cannot read the content of the file `%s`.", path);
+            final String msg = String.format("Cannot read the content of the file `%s`.", file);
             throw new IllegalStateException(msg, e);
         }
     }
