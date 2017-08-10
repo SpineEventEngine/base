@@ -27,5 +27,4 @@ apply plugin: 'com.google.protobuf'
 
 protoJavadoc {
     mainGenProtoDir = "generated/main/java"
-    testGenProtoDir = "generated/test/java"
 }

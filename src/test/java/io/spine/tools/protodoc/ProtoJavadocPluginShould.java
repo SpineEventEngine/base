@@ -39,6 +39,7 @@ import static io.spine.gradle.TaskName.FORMAT_PROTO_DOC;
 import static io.spine.gradle.TaskName.FORMAT_TEST_PROTO_DOC;
 import static io.spine.gradle.TaskName.GENERATE_PROTO;
 import static io.spine.gradle.TaskName.GENERATE_TEST_PROTO;
+import static io.spine.tools.protodoc.Given.formatAndAssert;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -90,9 +91,16 @@ public class ProtoJavadocPluginShould {
     }
 
     @Test
-    public void replace_tags_with_spaces() throws IOException {
-        final GradleProject project = new GradleProject(testProjectDir);
-        project.executeTask(FORMAT_PROTO_DOC);
+    public void format_generated_java_sources() throws IOException {
+        final String text = "any text";
+        final String preTag = "<pre>";
+        final String beforeFormatting = getJavadoc(text + preTag);
+        final String afterFormatting = getJavadoc(text);
+        formatAndAssert(afterFormatting, beforeFormatting, testProjectDir);
+    }
+
+    private static String getJavadoc(String javadocText) {
+        return "/** " + javadocText + " */";
     }
 
     private Task task(TaskName taskName) {

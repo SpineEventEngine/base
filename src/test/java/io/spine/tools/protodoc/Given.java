@@ -20,8 +20,7 @@
 
 package io.spine.tools.protodoc;
 
-import io.spine.gradle.TaskName;
-import org.gradle.testkit.runner.BuildResult;
+import com.google.common.base.Joiner;
 import org.gradle.testkit.runner.GradleRunner;
 import org.junit.rules.TemporaryFolder;
 
@@ -30,65 +29,79 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
+
+import static io.spine.gradle.TaskName.FORMAT_PROTO_DOC;
+import static java.lang.System.lineSeparator;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.junit.Assert.assertEquals;
 
 /**
- * {@code GradleProject} for the test needs.
- *
- * <p>{@code GradleProject} sets up {@linkplain TemporaryFolder test project directory}
- * and allows to execute Gradle tasks.
+ * A helper class for the {@link ProtoJavadocPlugin} testing.
  *
  * @author Dmytro Grankin
  */
-class GradleProject {
+class Given {
+
+    private static final ClassLoader CLASS_LOADER = Given.class.getClassLoader();
 
     /**
-     * This value must be similar to the value in the test {@code build.gradle}.
+     * The {@code protoJavadoc.mainGenProtoDir} value from the plugin configuration.
+     *
+     * <p>This value is located in the test {@code build.gradle}.
      */
     private static final String MAIN_GEN_PROTO_LOCATION = "generated/main/java";
-    private static final String TEST_SOURCE = "GeneratedJavaFile.java";
     private static final String BUILD_GRADLE_NAME = "build.gradle";
     private static final String EXT_GRADLE_NAME = "ext.gradle";
 
-    private final GradleRunner gradleRunner;
-
-    GradleProject(TemporaryFolder projectFolder) throws IOException {
-        this.gradleRunner = GradleRunner.create()
-                                        .withProjectDir(projectFolder.getRoot())
-                                        .withDebug(true)
-                                        .withPluginClasspath();
-        writeBuildGradle();
-        writeTestSource();
+    private Given() {
+        // Prevent instantiation of this utility class.
     }
 
-    BuildResult executeTask(TaskName taskName) {
-        return gradleRunner.withArguments(taskName.getValue(), "--stacktrace")
-                           .build();
+    static void formatAndAssert(String expectedContent, String contentToFormat,
+                                TemporaryFolder folder) throws IOException {
+        final Path formattedFilePath = format(contentToFormat, folder);
+        final List<String> formattedLines = Files.readAllLines(formattedFilePath, UTF_8);
+        final String mergedLines = Joiner.on(lineSeparator())
+                                         .join(formattedLines);
+        assertEquals(expectedContent, mergedLines);
     }
 
-    private void writeTestSource() throws IOException {
-        final String testSourceLocation = MAIN_GEN_PROTO_LOCATION + '/' + TEST_SOURCE;
+    private static Path format(String fileContent, TemporaryFolder folder) throws IOException {
+        final GradleRunner runner = GradleRunner.create()
+                                                .withProjectDir(folder.getRoot())
+                                                .withPluginClasspath()
+                                                .withDebug(true);
+        writeBuildGradle(runner);
+        final Path testSourcePath = writeTestSource(fileContent, runner);
+        runner.withArguments(FORMAT_PROTO_DOC.getValue(), "--stacktrace")
+              .build();
+        return testSourcePath;
+    }
+
+    private static Path writeTestSource(String content,
+                                        GradleRunner gradleRunner) throws IOException {
+        final String sourceRelativePath = MAIN_GEN_PROTO_LOCATION + '/' + "TestSource.java";
         final Path resultingPath = gradleRunner.getProjectDir()
                                                .toPath()
-                                               .resolve(testSourceLocation);
-        final InputStream fileContent = getClass().getClassLoader()
-                                                  .getResourceAsStream(TEST_SOURCE);
+                                               .resolve(sourceRelativePath);
         Files.createDirectories(resultingPath.getParent());
-        Files.copy(fileContent, resultingPath);
+        Files.write(resultingPath, content.getBytes());
+        return resultingPath;
     }
 
-    private void writeBuildGradle() throws IOException {
+    private static void writeBuildGradle(GradleRunner gradleRunner) throws IOException {
         final Path resultingPath = gradleRunner.getProjectDir()
                                                .toPath()
                                                .resolve(BUILD_GRADLE_NAME);
-        final InputStream fileContent = getClass().getClassLoader()
-                                                  .getResourceAsStream(BUILD_GRADLE_NAME);
+        final InputStream fileContent = CLASS_LOADER.getResourceAsStream(BUILD_GRADLE_NAME);
         Files.createDirectories(resultingPath.getParent());
         Files.copy(fileContent, resultingPath);
 
-        copyExtGradle();
+        copyExtGradle(gradleRunner);
     }
 
-    private void copyExtGradle() throws IOException {
+    private static void copyExtGradle(GradleRunner gradleRunner) throws IOException {
         final Path workingFolderPath = Paths.get(".")
                                             .toAbsolutePath();
         final Path extGradleSourcePath = workingFolderPath.getParent()
