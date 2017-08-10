@@ -26,11 +26,12 @@ import java.nio.file.Path;
  *
  * @author Alexander Aleksandrov
  */
-public final class JavaSources {
+class JavaSources {
+
     private static final String JAVA_FILE_EXTENSION = ".java";
 
     private JavaSources() {
-        // Prevent initialization of this utility class
+        // Prevent instantiation of this utility class.
     }
 
     /**
@@ -38,7 +39,7 @@ public final class JavaSources {
      *
      * @return ".java" string
      */
-    public static String javaExt() {
+    static String javaExt() {
         return JAVA_FILE_EXTENSION;
     }
 
@@ -48,7 +49,7 @@ public final class JavaSources {
      * @param path  the target file path
      * @return {@code true} in case if the file has the .java extension.
      */
-    public static boolean isJavaFile(Path path) {
+    static boolean isJavaFile(Path path) {
         return path.toString()
                    .endsWith(javaExt());
     }

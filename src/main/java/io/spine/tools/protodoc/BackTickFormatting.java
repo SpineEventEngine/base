@@ -69,7 +69,7 @@ class BackTickFormatting implements FormattingAction {
             final String partToFormat = matcher.group();
             final String partWithoutBackTicks = PATTERN_BACK_TICK.matcher(partToFormat)
                                                                  .replaceAll("");
-            final String replacement = putInCodeTag(partWithoutBackTicks);
+            final String replacement = wrapWithCodeTag(partWithoutBackTicks);
             matcher.appendReplacement(buffer, replacement);
         }
         matcher.appendTail(buffer);
@@ -77,7 +77,7 @@ class BackTickFormatting implements FormattingAction {
     }
 
     @VisibleForTesting
-    static String putInCodeTag(String value) {
+    static String wrapWithCodeTag(String value) {
         return format(CODE_TAG_FORMAT, value);
     }
 }

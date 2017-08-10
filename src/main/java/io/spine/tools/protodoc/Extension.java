@@ -67,6 +67,14 @@ public class Extension {
         return rootPath(project) + File.separator + getExtension(project).testGenProtoDir;
     }
 
+    public void setMainGenProtoDir(String mainGenProtoDir) {
+        this.mainGenProtoDir = mainGenProtoDir;
+    }
+
+    public void setTestGenProtoDir(String testGenProtoDir) {
+        this.testGenProtoDir = testGenProtoDir;
+    }
+
     private static String rootPath(Project project) {
         return project.getProjectDir()
                       .getAbsolutePath();

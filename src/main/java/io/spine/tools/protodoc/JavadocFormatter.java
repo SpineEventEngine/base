@@ -21,29 +21,41 @@
 package io.spine.tools.protodoc;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
+import static io.spine.tools.protodoc.JavaSources.isJavaFile;
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 /**
+ * A formatter for Javadocs.
+ *
+ * <p>The formatter executes {@linkplain FormattingAction formatting actions}
+ * for the Javadoc lines in a source file.
+ *
  * @author Dmytro Grankin
  */
 class JavadocFormatter {
 
-    private static final String READ_FILE_ERR_MSG = "Cannot read the contents of the file: ";
-    private static final String WRITE_FILE_ERR_MSG = "Cannot write the contents to the file: ";
-    private static final Charset CHARSET = StandardCharsets.UTF_8;
-
+    /**
+     * The formatting actions to perform.
+     */
     private final List<FormattingAction> actions;
 
     JavadocFormatter(List<FormattingAction> actions) {
         this.actions = actions;
     }
 
+    /**
+     * Formats the Javadocs in the file with the specified path.
+     *
+     * <p>If the file is not a {@code .java} source, does noting.
+     *
+     * @param path the path to the file
+     */
     void format(Path path) {
-        if (!JavaSources.isJavaFile(path)) {
+        if (!isJavaFile(path)) {
             return;
         }
 
@@ -62,17 +74,19 @@ class JavadocFormatter {
 
     private static void writeFile(Path path, Iterable<String> updatedContent) {
         try {
-            Files.write(path, updatedContent, CHARSET);
+            Files.write(path, updatedContent, UTF_8);
         } catch (IOException e) {
-            throw new IllegalStateException(WRITE_FILE_ERR_MSG + path, e);
+            final String msg = String.format("Cannot write the content to the file `%s`.", path);
+            throw new IllegalStateException(msg, e);
         }
     }
 
     private static List<String> getFileContent(Path path) {
         try {
-            return Files.readAllLines(path, CHARSET);
+            return Files.readAllLines(path, UTF_8);
         } catch (IOException e) {
-            throw new IllegalStateException(READ_FILE_ERR_MSG + path, e);
+            final String msg = String.format("Cannot read the content of the file `%s`.", path);
+            throw new IllegalStateException(msg, e);
         }
     }
 }

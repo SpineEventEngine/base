@@ -24,7 +24,7 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static io.spine.tools.protodoc.BackTickFormatting.putInCodeTag;
+import static io.spine.tools.protodoc.BackTickFormatting.wrapWithCodeTag;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
@@ -34,10 +34,10 @@ import static org.junit.Assert.assertEquals;
  */
 public class BackTickFormattingShould {
 
-    private static final String TEXT = "true";
     private static final char BACK_TICK = '`';
+    private static final String TEXT = "true";
+    private static final String TEXT_IN_CODE_TAG = wrapWithCodeTag(TEXT);
     private static final String TEXT_IN_BACK_TICKS = BACK_TICK + TEXT + BACK_TICK;
-    private static final String TEXT_IN_CODE_TAG = putInCodeTag(TEXT);
 
     private final FormattingAction formatting = new BackTickFormatting();
 
