@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.gradle.compiler.util;
+package io.spine.gradle.compiler.message.fieldtype;
 
 import com.google.common.testing.NullPointerTester;
 import org.junit.Test;

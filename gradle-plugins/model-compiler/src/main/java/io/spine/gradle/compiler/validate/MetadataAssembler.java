@@ -41,9 +41,9 @@ import java.util.Set;
 import static com.google.common.collect.Lists.newLinkedList;
 import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Sets.newHashSet;
-import static io.spine.gradle.compiler.util.FieldTypes.isMap;
-import static io.spine.gradle.compiler.util.FieldTypes.isMessage;
-import static io.spine.gradle.compiler.util.FieldTypes.trimTypeName;
+import static io.spine.gradle.compiler.message.fieldtype.FieldTypes.isMap;
+import static io.spine.gradle.compiler.message.fieldtype.FieldTypes.isMessage;
+import static io.spine.gradle.compiler.message.fieldtype.FieldTypes.trimTypeName;
 
 /**
  * Assembles the {@code VBMetadata}s from the Protobuf.

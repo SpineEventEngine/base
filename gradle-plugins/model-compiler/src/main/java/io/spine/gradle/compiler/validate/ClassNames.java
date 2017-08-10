@@ -24,13 +24,13 @@ import com.google.common.base.Optional;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.squareup.javapoet.ClassName;
 import io.spine.gradle.compiler.message.MessageTypeCache;
-import io.spine.gradle.compiler.util.FieldTypes;
 
 import java.util.Collection;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.gradle.compiler.message.fieldtype.ProtoScalarType.getBoxedScalarPrimitive;
 import static io.spine.gradle.compiler.message.fieldtype.ProtoScalarType.getJavaTypeName;
+import static io.spine.gradle.compiler.message.fieldtype.FieldTypes.trimTypeName;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 
 /**
@@ -61,7 +61,7 @@ final class ClassNames {
         if (typeName.isEmpty()) {
             return getJavaTypeForScalarType(fieldDescriptor);
         }
-        typeName = FieldTypes.trimTypeName(fieldDescriptor);
+        typeName = trimTypeName(fieldDescriptor);
         final String parameterType = messageTypeCache.getCachedTypes()
                                                      .get(typeName);
         return ClassName.bestGuess(parameterType);
