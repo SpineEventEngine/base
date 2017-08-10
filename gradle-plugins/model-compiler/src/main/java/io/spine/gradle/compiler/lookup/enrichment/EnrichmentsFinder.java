@@ -42,11 +42,11 @@ import java.util.regex.Pattern;
 
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.Lists.newLinkedList;
-import static io.spine.gradle.compiler.util.UnknownOptions.getUnknownOptionValue;
-import static io.spine.gradle.compiler.util.UnknownOptions.hasUnknownOption;
 import static io.spine.option.OptionsProto.BY_FIELD_NUMBER;
 import static io.spine.option.OptionsProto.ENRICHMENT_FIELD_NUMBER;
 import static io.spine.option.OptionsProto.ENRICHMENT_FOR_FIELD_NUMBER;
+import static io.spine.protobuf.UnknownOptions.getUnknownOptionValue;
+import static io.spine.protobuf.UnknownOptions.hasUnknownOption;
 import static java.lang.String.format;
 import static java.util.regex.Pattern.compile;
 
