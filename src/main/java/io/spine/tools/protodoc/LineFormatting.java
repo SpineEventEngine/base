@@ -20,10 +20,12 @@
 
 package io.spine.tools.protodoc;
 
+import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 
 import java.util.List;
 
+import static com.google.common.collect.Lists.newLinkedList;
 import static java.lang.System.lineSeparator;
 
 /**
@@ -45,12 +47,13 @@ abstract class LineFormatting implements FormattingAction {
     public String execute(String text) {
         final List<String> textAsLines = Splitter.on(lineSeparator())
                                                  .splitToList(text);
-        final StringBuilder resultBuilder = new StringBuilder(text.length() * 2);
+        final List<String> formattedLines = newLinkedList();
         for (String line : textAsLines) {
             final String formattedLine = formatLine(line);
-            resultBuilder.append(formattedLine);
+            formattedLines.add(formattedLine);
         }
-        return resultBuilder.toString();
+        return Joiner.on(lineSeparator())
+                     .join(formattedLines);
     }
 
     /**
