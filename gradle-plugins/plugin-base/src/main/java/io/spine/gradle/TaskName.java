@@ -28,7 +28,7 @@ import com.google.common.base.MoreObjects;
  *
  * @author Alex Tymchenko
  */
-//@SuppressWarnings("unused") // These are used after deployment.
+@SuppressWarnings("unused") // These are used after deployment.
 public enum TaskName {
 
     /*
@@ -166,7 +166,23 @@ public enum TaskName {
      *
      * <p>Handles the {@code test} classes and resources scope.
      */
-    ANNOTATE_TEST_PROTO("annotateTestProto");
+    ANNOTATE_TEST_PROTO("annotateTestProto"),
+
+    /**
+     * The name of the task, that formats Javadocs in sources generated from {@code .proto}
+     * files, added to the Gradle lifecycle.
+     *
+     * <p>Handles the {@code main} classes and resources scope.
+     */
+    FORMAT_PROTO_DOC("formatProtoDoc"),
+
+    /**
+     * The name of the task, that formats Javadocs in sources generated from {@code .proto}
+     * files, added to the Gradle lifecycle.
+     *
+     * <p>Handles the {@code test} classes and resources scope.
+     */
+    FORMAT_TEST_PROTO_DOC("formatTestProtoDoc");
 
     private final String value;
 

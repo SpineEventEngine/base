@@ -19,13 +19,12 @@
  */
 
 /**
- * This package provides generated classes and interfaces for Spine Options, and utilities for
- * working with these options.
+ * This package defines classes and interfaces for working with {@code Message} validation rules.
  */
 
 @Internal
 @ParametersAreNonnullByDefault
-package io.spine.option;
+package io.spine.validate.rules;
 
 import io.spine.annotation.Internal;
 

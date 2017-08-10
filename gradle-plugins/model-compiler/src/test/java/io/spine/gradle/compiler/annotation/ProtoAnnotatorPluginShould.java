@@ -63,7 +63,6 @@ import static java.nio.file.Paths.get;
 /**
  * @author Dmytro Grankin
  */
-@Ignore
 public class ProtoAnnotatorPluginShould {
 
     private static final String PROJECT_NAME = "annotator-plugin-test";

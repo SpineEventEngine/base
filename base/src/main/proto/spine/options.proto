@@ -255,8 +255,7 @@ extend google.protobuf.FieldOptions {
     // If using the FQN field names, the `enrichment_for` annotation may be omitted
     // (the same behavior as with a single-argument `by` annotation).
     //
-    string by = 73900; // NOTE: this field number is used in the `tools` project,
-                       // EnrichmentLookupPlugin (update it there on changing).
+    string by = 73900;
 }
 
 extend google.protobuf.MessageOptions {
@@ -302,12 +301,14 @@ extend google.protobuf.MessageOptions {
     // If a specified options is already defined in a target message,
     // then options from the validation rule will be used.
     //
-    // Validation rules are applicable only for field declarations of a `Message` type.
-    //
-    // Validation rule target should be marked as `valid`. Otherwise a rule will be ignored.
+    // Validation rule limitations:
+    // - applicable only to field declarations of a `Message` type;
+    // - rule target should be marked as `valid`. Otherwise a rule will be ignored;
+    // - a field can be a target of only one validation rule.
     //
     // Target of a validation rule should be specified according to the pattern as follows:
     // `package.MessageName.field_name`.
+    // If the rule has multiple targets, they have to be separated with comma.
     //
     // In the following example a `StringChange` message defines a value object,
     // that is reused in other messages. However, in each of the use-cases we want
@@ -391,8 +392,7 @@ extend google.protobuf.MessageOptions {
     // - all `by` options have the event name prefix ("example.events.MyEvent.user_id" instead of
     //   just "user_id").
     //
-    string enrichment_for = 73922;  // NOTE: this field number is used in `tools` project,
-                                    // EnrichmentLookupPlugin (update it there on changing).
+    string enrichment_for = 73922;
 
     // An instruction to enrich an event with one or more enrichments.
     //
@@ -419,8 +419,7 @@ extend google.protobuf.MessageOptions {
     //     string username = 1 [(by) = "*.user_id"];
     // }
     //
-    string enrichment = 73923; // NOTE: this field number is used in the `tools` project,
-                               // EnrichmentLookupPlugin (update it there on changing).
+    string enrichment = 73923;
 
     // reserved 73924 to 73939 for future options.
 
@@ -452,8 +451,7 @@ extend google.protobuf.FileOptions {
     // This type URL will be used when packing messages into `Any`.
     // See `any.proto` for more details.
     //
-    string type_url_prefix = 73941; // NOTE: this field number is used in `tools` project,
-                                    // ProtoToJavaMapperPlugin (update it there on changing).
+    string type_url_prefix = 73941;
 
     // Indicates a file which should not be used by users of the framework.
     bool internal_all = 73942;

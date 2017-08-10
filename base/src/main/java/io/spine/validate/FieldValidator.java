@@ -32,6 +32,7 @@ import io.spine.option.IfInvalidOption;
 import io.spine.option.IfMissingOption;
 import io.spine.option.OptionsProto;
 import io.spine.util.CodeLayout;
+import io.spine.validate.rules.ValidationRuleOptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
