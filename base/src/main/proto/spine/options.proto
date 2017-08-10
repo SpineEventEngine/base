@@ -454,26 +454,26 @@ extend google.protobuf.FileOptions {
     // This type URL will be used when packing messages into `Any`.
     // See `any.proto` for more details.
     //
-    string type_url_prefix = 73941;
+    string type_url_prefix = 73942;
 
     // Indicates a file which should not be used by users of the framework.
-    bool internal_all = 73942;
+    bool internal_all = 73943;
 
     // Indicates a file which contains elements of Service Provider Interface (SPI).
-    bool SPI_all = 73943;
+    bool SPI_all = 73944;
 
     // Indicates a public API that can change at any time, and has no guarantee of API stability and
     // backward-compatibility.
-    bool experimental_all = 73944;
+    bool experimental_all = 73945;
 
     // Signifies that a public API is subject to incompatible changes, or even removal, in a future
     // release.
-    bool beta_all = 73945;
+    bool beta_all = 73946;
 
-    // todo: document; think of naming
-    string every_is = 73946;
+    // todo: document
+    string every_is = 73947;
 
-    // reserved 73947 to 73970 for future use.
+    // reserved 73948 to 73970 for future use.
 }
 
 extend google.protobuf.ServiceOptions {
