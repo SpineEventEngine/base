@@ -21,16 +21,21 @@
 package io.spine.tools.protodoc;
 
 import org.gradle.api.Project;
+import org.slf4j.Logger;
 
+import javax.annotation.Nullable;
 import java.io.File;
 
 import static io.spine.tools.protodoc.ProtoJavadocPlugin.PROTO_JAVADOC_EXTENSION_NAME;
+import static java.lang.String.format;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * The extension for {@link ProtoJavadocPlugin}.
  *
  * @author Dmytro Grankin
  */
+@SuppressWarnings("unused") // Implicitly used during a Gradle build.
 public class Extension {
 
     /**
@@ -38,14 +43,14 @@ public class Extension {
      *
      * <p>The path is relative to a Gradle project.
      */
-    public String mainGenProtoDir;
+    private String mainGenProtoDir;
 
     /**
      * The path to the test Java sources directory, generated basing on Protobuf definitions.
      *
      * <p>The path is relative to a Gradle project.
      */
-    public String testGenProtoDir;
+    private String testGenProtoDir;
 
     /**
      * Obtains absolute path to the {@link #mainGenProtoDir}.
@@ -53,8 +58,10 @@ public class Extension {
      * @param project the project to get the {@code mainGenProtoDir}
      * @return the absolute path to the main directory
      */
-    public static String getAbsoluteMainGenProtoDir(Project project) {
-        return rootPath(project) + File.separator + getExtension(project).mainGenProtoDir;
+    static String getAbsoluteMainGenProtoDir(Project project) {
+        final String mainGenProtoDir = getExtension(project).mainGenProtoDir;
+        checkExtensionField(mainGenProtoDir, "mainGenProtoDir");
+        return rootPath(project) + File.separator + mainGenProtoDir;
     }
 
     /**
@@ -63,16 +70,27 @@ public class Extension {
      * @param project the project to get the {@code testGenProtoDir}
      * @return the absolute path to the test directory
      */
-    public static String getAbsoluteTestGenProtoDir(Project project) {
-        return rootPath(project) + File.separator + getExtension(project).testGenProtoDir;
+    static String getAbsoluteTestGenProtoDir(Project project) {
+        final String testGenProtoDir = getExtension(project).testGenProtoDir;
+        checkExtensionField(testGenProtoDir, "testGenProtoDir");
+        return rootPath(project) + File.separator + testGenProtoDir;
     }
 
-    public void setMainGenProtoDir(String mainGenProtoDir) {
+    void setMainGenProtoDir(String mainGenProtoDir) {
         this.mainGenProtoDir = mainGenProtoDir;
+        log().debug("Path to main generated Protobufs set up to {}.", mainGenProtoDir);
     }
 
-    public void setTestGenProtoDir(String testGenProtoDir) {
+    void setTestGenProtoDir(String testGenProtoDir) {
         this.testGenProtoDir = testGenProtoDir;
+        log().debug("Path to test generated Protobufs set up to {}.", testGenProtoDir);
+    }
+
+    private static void checkExtensionField(@Nullable String value, String name) {
+        if (value == null) {
+            final String errMSg = format("%s.%s was not set.", PROTO_JAVADOC_EXTENSION_NAME, name);
+            throw new IllegalStateException(errMSg);
+        }
     }
 
     private static String rootPath(Project project) {
@@ -83,5 +101,15 @@ public class Extension {
     private static Extension getExtension(Project project) {
         return (Extension) project.getExtensions()
                                   .getByName(PROTO_JAVADOC_EXTENSION_NAME);
+    }
+
+    private static Logger log() {
+        return LogSingleton.INSTANCE.value;
+    }
+
+    private enum LogSingleton {
+        INSTANCE;
+        @SuppressWarnings("NonSerializableFieldInSerializableClass")
+        private final Logger value = getLogger(Extension.class);
     }
 }

@@ -41,15 +41,20 @@ import java.nio.file.Paths;
  */
 class GradleProject {
 
+    /**
+     * This value must be similar to the value in the test {@code build.gradle}.
+     */
+    private static final String MAIN_GEN_PROTO_LOCATION = "generated/main/java";
+    private static final String TEST_SOURCE = "GeneratedJavaFile.java";
     private static final String BUILD_GRADLE_NAME = "build.gradle";
     private static final String EXT_GRADLE_NAME = "ext.gradle";
-    private static final String TEST_SOURCE = "GeneratedJavaFile.java";
 
     private final GradleRunner gradleRunner;
 
     GradleProject(TemporaryFolder projectFolder) throws IOException {
         this.gradleRunner = GradleRunner.create()
                                         .withProjectDir(projectFolder.getRoot())
+                                        .withDebug(true)
                                         .withPluginClasspath();
         writeBuildGradle();
         writeTestSource();
@@ -61,9 +66,10 @@ class GradleProject {
     }
 
     private void writeTestSource() throws IOException {
+        final String testSourceLocation = MAIN_GEN_PROTO_LOCATION + '/' + TEST_SOURCE;
         final Path resultingPath = gradleRunner.getProjectDir()
                                                .toPath()
-                                               .resolve(TEST_SOURCE);
+                                               .resolve(testSourceLocation);
         final InputStream fileContent = getClass().getClassLoader()
                                                   .getResourceAsStream(TEST_SOURCE);
         Files.createDirectories(resultingPath.getParent());

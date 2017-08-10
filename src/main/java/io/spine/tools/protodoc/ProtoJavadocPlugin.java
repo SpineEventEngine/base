@@ -63,46 +63,63 @@ public class ProtoJavadocPlugin extends SpinePlugin {
         project.getExtensions()
                .create(PROTO_JAVADOC_EXTENSION_NAME, Extension.class);
 
-        final String mainGenProtoDir = getAbsoluteMainGenProtoDir(project);
-        final Action<Task> mainAction = createAction(mainGenProtoDir);
+        final Action<Task> mainAction = createAction(project, TaskType.MAIN);
         newTask(FORMAT_PROTO_DOC, mainAction).insertBeforeTask(COMPILE_JAVA)
                                              .insertAfterTask(GENERATE_PROTO)
                                              .applyNowTo(project);
         logDependingTask(log(), FORMAT_PROTO_DOC, COMPILE_JAVA, GENERATE_PROTO);
 
-        final String testGenProtoDir = getAbsoluteTestGenProtoDir(project);
-        final Action<Task> testAction = createAction(testGenProtoDir);
+        final Action<Task> testAction = createAction(project, TaskType.TEST);
         newTask(FORMAT_TEST_PROTO_DOC, testAction).insertBeforeTask(COMPILE_TEST_JAVA)
                                                   .insertAfterTask(GENERATE_TEST_PROTO)
                                                   .applyNowTo(project);
         logDependingTask(log(), FORMAT_TEST_PROTO_DOC, COMPILE_TEST_JAVA, GENERATE_TEST_PROTO);
     }
 
-    private static Action<Task> createAction(final String javaSourcesPath) {
+    private static Action<Task> createAction(final Project project, final TaskType taskType) {
         return new Action<Task>() {
             @Override
             public void execute(Task task) {
-                formatJavadocs(javaSourcesPath);
+                formatJavadocs(project, taskType);
             }
         };
     }
 
-    private static void formatJavadocs(String javaSourcesDir) {
-        final File file = new File(javaSourcesDir);
+    private static void formatJavadocs(Project project, TaskType taskType) {
+        final String genProtoDir = taskType.getGenProtoDir(project);
+        final File file = new File(genProtoDir);
         if (!file.exists()) {
-            log().warn("Cannot perform formatting. Directory `{}` does not exist.", javaSourcesDir);
-            return;
+            final String msg = format("Cannot perform formatting. Directory `%s` does not exist.",
+                                      file);
+            throw new IllegalStateException(msg);
         }
 
         final JavadocFormatter formatter = new JavadocFormatter(asList(new BackTickFormatting(),
                                                                        new PreTagFormatting()));
         try {
-            log().debug("Starting Javadocs formatting in `{}`.", javaSourcesDir);
+            log().debug("Starting Javadocs formatting in `{}`.", genProtoDir);
             Files.walkFileTree(file.toPath(), new FormattingFileVisitor(formatter));
         } catch (IOException e) {
-            final String errMsg = format("Failed to format the sources in `%s`.", javaSourcesDir);
+            final String errMsg = format("Failed to format the sources in `%s`.", genProtoDir);
             throw new IllegalStateException(errMsg, e);
         }
+    }
+
+    private enum TaskType {
+        MAIN {
+            @Override
+            String getGenProtoDir(Project project) {
+                return getAbsoluteMainGenProtoDir(project);
+            }
+        },
+        TEST {
+            @Override
+            String getGenProtoDir(Project project) {
+                return getAbsoluteTestGenProtoDir(project);
+            }
+        };
+
+        abstract String getGenProtoDir(Project project);
     }
 
     private static Logger log() {
