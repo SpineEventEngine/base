@@ -25,19 +25,20 @@ import com.google.common.base.Objects;
 import com.google.common.base.Optional;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
-import com.google.protobuf.DescriptorProtos.FileOptions;
-import com.google.protobuf.DescriptorProtos.MessageOptions;
-import com.google.protobuf.GeneratedMessage.GeneratedExtension;
-import com.google.protobuf.GeneratedMessageV3.ExtendableMessage;
+import com.google.protobuf.Extension;
+import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
+import com.squareup.javapoet.JavaFile;
+import io.spine.protobuf.UnknownOptions;
 
-import java.nio.file.Path;
-import java.util.Set;
+import javax.annotation.Nullable;
+import java.util.Collection;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
-import static com.google.common.collect.Sets.newHashSet;
+import static com.google.common.collect.ImmutableSet.of;
 import static io.spine.option.OptionsProto.everyIs;
 import static io.spine.option.OptionsProto.is;
+import static io.spine.tools.protoc.MarkerInterfaceGenerator.generate;
 import static java.lang.String.format;
 
 /**
@@ -49,48 +50,52 @@ public class NarrowMessageInterfaceGenerator extends SpineProtoOptionProcessor {
     static final String INSERTION_POINT_IMPLEMENTS = "message_implements:%s";
     private static final String PACKAGE_DELIMITER = ".";
 
-    private final Set<MarkerInterfaceSpec> markerInterfaces = newHashSet();
-    private final Path generatedSrcPath;
+    private NarrowMessageInterfaceGenerator() {
+        // Prevent singleton class instantiation.
+    }
 
-    public NarrowMessageInterfaceGenerator(Path generatedSrcPath) {
-        this.generatedSrcPath = generatedSrcPath;
+    public static SpineProtoOptionProcessor instance() {
+        return Singleton.INSTANCE.value;
     }
 
     @Override
-    protected Optional<File> processMessage(FileDescriptorProto file, DescriptorProto message) {
-        final Optional<File> fromFileOption = scanFileOption(file, message);
+    protected Collection<File> processMessage(FileDescriptorProto file, DescriptorProto message) {
+        final Optional<MessageAndInterface> fromFileOption = scanFileOption(file, message);
         if (fromFileOption.isPresent()) {
-            return fromFileOption;
+            return fromFileOption.get().toSet();
         }
-        final Optional<File> fromMsgOption = scanMsgOption(file, message);
+        final Optional<MessageAndInterface> fromMsgOption = scanMsgOption(file, message);
         if (fromMsgOption.isPresent()) {
-            return fromMsgOption;
+            return fromMsgOption.get().toSet();
         }
-        return Optional.absent();
+        return of();
     }
 
-    private Optional<File> scanFileOption(FileDescriptorProto file, DescriptorProto msg) {
+    private static Optional<MessageAndInterface> scanFileOption(FileDescriptorProto file,
+                                                                DescriptorProto msg) {
         final Optional<String> everyIs = getEveryIs(file);
         if (everyIs.isPresent()) {
-            final File resultingFile = generateFile(file, msg, everyIs.get());
+            final MessageAndInterface resultingFile = generateFile(file, msg, everyIs.get());
             return Optional.of(resultingFile);
         } else {
             return Optional.absent();
         }
     }
 
-    private Optional<File> scanMsgOption(FileDescriptorProto file, DescriptorProto msg) {
+    private static Optional<MessageAndInterface> scanMsgOption(FileDescriptorProto file,
+                                                               DescriptorProto msg) {
         final Optional<String> everyIs = getIs(msg);
         if (everyIs.isPresent()) {
-            final File resultingFile = generateFile(file, msg, everyIs.get());
+            final MessageAndInterface resultingFile = generateFile(file, msg, everyIs.get());
             return Optional.of(resultingFile);
         } else {
             return Optional.absent();
         }
     }
 
-    private File generateFile(FileDescriptorProto file, DescriptorProto msg,
-                                     String optionValue) {
+    private static MessageAndInterface generateFile(FileDescriptorProto file,
+                                                    DescriptorProto msg,
+                                                    String optionValue) {
         final String fileName = file.getOptions()
                                     .getJavaMultipleFiles()
                 ? msg.getName()
@@ -102,31 +107,40 @@ public class NarrowMessageInterfaceGenerator extends SpineProtoOptionProcessor {
         final File messageFile = implementInterface(srcFile,
                                                     interfaceSpec.getFqn(),
                                                     messageFqn);
-        markerInterfaces.add(interfaceSpec);
-        return messageFile;
-    }
-
-    @Override
-    protected void onProcessingFinished() {
-        final MarkerInterfaceGenerator generator = new MarkerInterfaceGenerator(generatedSrcPath);
-        for (MarkerInterfaceSpec spec : markerInterfaces) {
-            generator.generate(spec.getPackageName(), spec.getName());
-        }
+        final JavaFile interfaceContent = generate(interfaceSpec.getPackageName(),
+                                                   interfaceSpec.getName());
+        final File interfaceFile = File.newBuilder()
+                                       .setName(toFileName(interfaceSpec.getPackageName(),
+                                                           interfaceSpec.getName()))
+                                       .setContent(interfaceContent.toString())
+                                       .build();
+        final MessageAndInterface result = new MessageAndInterface(messageFile, interfaceFile);
+        return result;
     }
 
     private static Optional<String> getEveryIs(FileDescriptorProto descriptor) {
-        final FileOptions options = descriptor.getOptions();
-        return getOption(options, everyIs);
+        final String value = UnknownOptions.getUnknownOptionValue(descriptor, everyIs.getNumber());
+        return getOptionalOption(value, descriptor.getOptions(), everyIs);
     }
 
     private static Optional<String> getIs(DescriptorProto descriptor) {
-        final MessageOptions options = descriptor.getOptions();
-        return getOption(options, is);
+        final String value = UnknownOptions.getUnknownOptionValue(descriptor, is.getNumber());
+        return getOptionalOption(value, descriptor.getOptions(), is);
     }
 
-    private static <T extends ExtendableMessage<T>> Optional<String>
-    getOption(T options, GeneratedExtension<T, String> extension) {
-        final String value = options.getExtension(extension);
+    // TODO:2017-08-10:dmytro.dashenkov: Document.
+    private static <O extends GeneratedMessageV3.ExtendableMessage<O>> Optional<String>
+    getOptionalOption(@Nullable String initialValue, O options, Extension<O, String> option) {
+        if (isNullOrEmpty(initialValue)) {
+            return getResolvedOption(options, option);
+        } else {
+            return Optional.of(initialValue);
+        }
+    }
+
+    private static <O extends GeneratedMessageV3.ExtendableMessage<O>> Optional<String>
+    getResolvedOption(O options, Extension<O, String> resolvedOption) {
+        final String value = options.getExtension(resolvedOption);
         if (isNullOrEmpty(value)) {
             return Optional.absent();
         } else {
@@ -175,13 +189,17 @@ public class NarrowMessageInterfaceGenerator extends SpineProtoOptionProcessor {
     }
 
     private static File.Builder prepareFile(String messageName, String javaPackage) {
-        final String nameFqn = (javaPackage + PACKAGE_DELIMITER + messageName).replace('.', '/');
+        final String nameFqn = toFileName(javaPackage, messageName);
         final File.Builder srcFile = File.newBuilder()
                                          .setName(nameFqn);
         return srcFile;
     }
 
-    private static class MarkerInterfaceSpec {
+    private static String toFileName(String javaPackage, String typename) {
+        return (javaPackage + PACKAGE_DELIMITER + typename).replace('.', '/') + ".java";
+    }
+
+    private static final class MarkerInterfaceSpec {
 
         private final String packageName;
         private final String name;
@@ -236,5 +254,45 @@ public class NarrowMessageInterfaceGenerator extends SpineProtoOptionProcessor {
         public String toString() {
             return getFqn();
         }
+    }
+
+    private static final class MessageAndInterface {
+
+        private final File messageFile;
+        private final File interfaceFile;
+
+        private MessageAndInterface(File messageFile, File interfaceFile) {
+            this.messageFile = messageFile;
+            this.interfaceFile = interfaceFile;
+        }
+
+        private Collection<File> toSet() {
+            return of(messageFile, interfaceFile);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            MessageAndInterface that = (MessageAndInterface) o;
+            return Objects.equal(messageFile, that.messageFile) &&
+                    Objects.equal(interfaceFile, that.interfaceFile);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hashCode(messageFile, interfaceFile);
+        }
+    }
+
+    private enum Singleton {
+        INSTANCE;
+
+        @SuppressWarnings("NonSerializableFieldInSerializableClass")
+        private final SpineProtoOptionProcessor value = new NarrowMessageInterfaceGenerator();
     }
 }

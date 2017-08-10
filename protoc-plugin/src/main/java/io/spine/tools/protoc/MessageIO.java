@@ -59,6 +59,7 @@ public final class MessageIO {
         final CodedOutputStream stream = CodedOutputStream.newInstance(out);
         try {
             response.writeTo(stream);
+            stream.flush();
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
