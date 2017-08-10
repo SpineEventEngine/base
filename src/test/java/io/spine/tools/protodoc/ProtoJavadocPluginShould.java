@@ -47,7 +47,7 @@ import static org.junit.Assert.assertTrue;
  */
 public class ProtoJavadocPluginShould {
 
-    private static final String PLUGIN_ID = "io.spine.tools.proto-javadoc-plugin";
+    private static final String PLUGIN_ID = "io.spine.tools.protobuf-javadoc-plugin";
 
     @Rule
     public final TemporaryFolder testProjectDir = new TemporaryFolder();

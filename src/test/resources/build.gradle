@@ -20,7 +20,7 @@ buildscript {
 
 plugins {
     id 'java'
-    id 'io.spine.tools.proto-javadoc-plugin'
+    id 'io.spine.tools.protobuf-javadoc-plugin'
 }
 
 apply plugin: 'com.google.protobuf'
