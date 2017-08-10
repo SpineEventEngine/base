@@ -20,25 +20,93 @@
 
 package io.spine.tools.protodoc;
 
+import io.spine.gradle.TaskName;
+import org.gradle.api.Project;
+import org.gradle.api.Task;
+import org.gradle.api.plugins.PluginContainer;
+import org.gradle.testfixtures.ProjectBuilder;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import java.io.IOException;
 
+import static io.spine.gradle.TaskDependencies.dependsOn;
+import static io.spine.gradle.TaskName.COMPILE_JAVA;
+import static io.spine.gradle.TaskName.COMPILE_TEST_JAVA;
 import static io.spine.gradle.TaskName.FORMAT_PROTO_DOC;
+import static io.spine.gradle.TaskName.FORMAT_TEST_PROTO_DOC;
+import static io.spine.gradle.TaskName.GENERATE_PROTO;
+import static io.spine.gradle.TaskName.GENERATE_TEST_PROTO;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Dmytro Grankin
  */
 public class ProtoJavadocPluginShould {
 
+    private static final String PLUGIN_ID = "io.spine.tools.proto-javadoc-plugin";
+
     @Rule
     public final TemporaryFolder testProjectDir = new TemporaryFolder();
+    private Project project;
+
+    @Before
+    public void setUp() throws Exception {
+        project = newProject();
+        project.getPluginManager()
+               .apply(PLUGIN_ID);
+    }
+
+    @Test
+    public void apply_to_project() {
+        final PluginContainer plugins = project.getPlugins();
+        assertTrue(plugins.hasPlugin(PLUGIN_ID));
+    }
+
+    @Test
+    public void have_extension() {
+        final Extension extension = project.getExtensions()
+                                           .getByType(Extension.class);
+        assertNotNull(extension);
+    }
+
+    @Test
+    public void add_task_formatProtoDoc() {
+        final Task formatProtoDoc = task(FORMAT_PROTO_DOC);
+        assertNotNull(formatProtoDoc);
+        assertTrue(dependsOn(formatProtoDoc, GENERATE_PROTO));
+        assertTrue(dependsOn(task(COMPILE_JAVA), formatProtoDoc));
+    }
+
+    @Test
+    public void add_task_formatTestProtoDoc() {
+        final Task formatTestProtoDoc = task(FORMAT_TEST_PROTO_DOC);
+        assertNotNull(formatTestProtoDoc);
+        assertTrue(dependsOn(formatTestProtoDoc, GENERATE_TEST_PROTO));
+        assertTrue(dependsOn(task(COMPILE_TEST_JAVA), formatTestProtoDoc));
+    }
 
     @Test
     public void replace_tags_with_spaces() throws IOException {
         final GradleProject project = new GradleProject(testProjectDir);
         project.executeTask(FORMAT_PROTO_DOC);
+    }
+
+    private Task task(TaskName taskName) {
+        return project.getTasks()
+                      .getByName(taskName.getValue());
+    }
+
+    private static Project newProject() {
+        final Project project = ProjectBuilder.builder()
+                                              .build();
+        project.task(COMPILE_JAVA.getValue());
+        project.task(COMPILE_TEST_JAVA.getValue());
+        project.task(GENERATE_PROTO.getValue());
+        project.task(GENERATE_TEST_PROTO.getValue());
+        return project;
     }
 }
