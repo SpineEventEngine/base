@@ -61,4 +61,9 @@ public class BackTickFormattingShould {
         assertEquals(multiLinedText, formatting.execute(multiLinedText));
     }
 
+    @Test
+    public void escape_replacement_for_matcher() {
+        final String dollarSign = BACK_TICK + "$" + BACK_TICK; // See Matcher.quoteReplacement().
+        formatting.execute(dollarSign);
+    }
 }

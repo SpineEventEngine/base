@@ -25,6 +25,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static java.lang.String.format;
+import static java.util.regex.Matcher.quoteReplacement;
 
 /**
  * A formatting action, which handles a text in back ticks.
@@ -59,7 +60,7 @@ class BackTickFormatting extends LineFormatting {
             final String partWithoutBackTicks = PATTERN_BACK_TICK.matcher(partToFormat)
                                                                  .replaceAll("");
             final String replacement = wrapWithCodeTag(partWithoutBackTicks);
-            matcher.appendReplacement(buffer, replacement);
+            matcher.appendReplacement(buffer, quoteReplacement(replacement));
         }
         matcher.appendTail(buffer);
         return buffer.toString();

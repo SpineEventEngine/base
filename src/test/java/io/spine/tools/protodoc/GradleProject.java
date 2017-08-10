@@ -61,7 +61,7 @@ class GradleProject {
     }
 
     BuildResult executeTask(TaskName taskName) {
-        return gradleRunner.withArguments(taskName.getValue())
+        return gradleRunner.withArguments(taskName.getValue(), "--stacktrace")
                            .build();
     }
 
