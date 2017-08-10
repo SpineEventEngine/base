@@ -70,8 +70,7 @@ class Given {
     private static Path format(String fileContent, TemporaryFolder folder) throws IOException {
         final GradleRunner runner = GradleRunner.create()
                                                 .withProjectDir(folder.getRoot())
-                                                .withPluginClasspath()
-                                                .withDebug(true);
+                                                .withPluginClasspath();
         writeBuildGradle(runner);
         final Path testSourcePath = writeTestSource(fileContent, runner);
         runner.withArguments(FORMAT_PROTO_DOC.getValue(), "--stacktrace")

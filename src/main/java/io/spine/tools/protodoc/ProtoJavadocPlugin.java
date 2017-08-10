@@ -50,6 +50,18 @@ import static java.util.Arrays.asList;
  *     <li>replaces a text in back ticks by the text in {@code code} tag.</li>
  * </ul>
  *
+ * <p>Configuration example:
+ * <pre>{@code
+ * protoJavadoc {
+ *     mainGenProtoDir = "directory_with_main_sources"
+ *     testGenProtoDir = "directory_with_test_sources"
+ * }
+ * }</pre>
+ *
+ * <p>All {@code .java} files in the specified directories (and subdirectories) will be formatted.
+ * So, if the folders contain not only the sources generated basing on Protobuf definitions,
+ * they will be formatted either.
+ *
  *  @author Alexander Aleksandrov
  *  @author Dmytro Grankin
  */
