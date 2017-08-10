@@ -52,8 +52,8 @@ import static io.spine.gradle.compiler.Extension.getTestTargetGenResourcesDir;
 import static io.spine.gradle.compiler.message.MessageDeclarations.find;
 import static io.spine.gradle.compiler.util.DescriptorSetUtil.getProtoFileDescriptors;
 import static io.spine.option.OptionsProto.VALIDATION_OF_FIELD_NUMBER;
-import static io.spine.option.UnknownOptions.getUnknownOptionValue;
-import static io.spine.option.UnknownOptions.hasUnknownOption;
+import static io.spine.protobuf.UnknownOptions.getUnknownOptionValue;
+import static io.spine.protobuf.UnknownOptions.hasUnknownOption;
 import static io.spine.validate.rules.ValidationRules.getValRulesPropsFileName;
 import static org.slf4j.LoggerFactory.getLogger;
 
