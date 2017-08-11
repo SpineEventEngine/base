@@ -25,7 +25,6 @@ import io.spine.gradle.SpinePlugin;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.AppliedPlugin;
-import org.gradle.api.plugins.ExtensionContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,7 +47,6 @@ public class ProtocPluginImporter extends SpinePlugin {
 
     @Override
     public void apply(final Project project) {
-        // TODO:2017-08-09:dmytro.dashenkov: Add artifact extension.
         final File tempFolder = Files.createTempDir();
         final File configFile = new File(tempFolder, PROTOC_CONFIG_FILE_NAME);
         try (InputStream in = getClass().getClassLoader()
@@ -70,14 +68,6 @@ public class ProtocPluginImporter extends SpinePlugin {
                 log().debug("Applied protoc_config.gradle");
             }
         });
-    }
-
-    private static void addExtension(Project project, String key, Object value) {
-        final ExtensionContainer ext = project.getExtensions();
-        if (ext.findByName(key) == null) {
-            project.getExtensions()
-                   .add(key, value);
-        }
     }
 
     private static Logger log() {
