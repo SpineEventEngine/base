@@ -48,7 +48,7 @@ dependencies {
     compile project(":base")
 
     compile "com.google.protobuf:protobuf-java:${protobufVersion}"
-    fetch "io.spine.tools:spine-protoc-plugin:$spineVersion@jar"
+    fetch "io.spine.tools:spine-protoc-plugin:$spineModelCompilerVersion@jar"
 }
 
 protobuf {
@@ -61,7 +61,7 @@ protobuf {
     plugins {
         spineProtoc {
             // TODO: switch between .sh and .bat respectively
-            artifact = "io.spine.tools:spine-protoc-plugin:$spineVersion:script@sh"
+            artifact = "io.spine.tools:spine-protoc-plugin:$spineModelCompilerVersion:script@sh"
         }
     }
 
