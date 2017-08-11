@@ -60,13 +60,13 @@ public class NarrowMessageInterfaceGenerator extends SpineProtoOptionProcessor {
 
     @Override
     protected Collection<File> processMessage(FileDescriptorProto file, DescriptorProto message) {
-        final Optional<MessageAndInterface> fromFileOption = scanFileOption(file, message);
-        if (fromFileOption.isPresent()) {
-            return fromFileOption.get().toSet();
-        }
         final Optional<MessageAndInterface> fromMsgOption = scanMsgOption(file, message);
         if (fromMsgOption.isPresent()) {
             return fromMsgOption.get().toSet();
+        }
+        final Optional<MessageAndInterface> fromFileOption = scanFileOption(file, message);
+        if (fromFileOption.isPresent()) {
+            return fromFileOption.get().toSet();
         }
         return of();
     }

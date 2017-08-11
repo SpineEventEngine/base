@@ -21,11 +21,14 @@
 package io.spine.tools.protoc;
 
 import com.google.protobuf.Message;
+import io.spine.tools.protoc.test.UserEvent;
+import io.spine.tools.protoc.test.UserInfo;
 import org.junit.Test;
 
 import java.lang.reflect.Method;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
@@ -59,6 +62,16 @@ public class PluginShould {
     public void implement_interface_in_generated_messages_with_IS_option() {
         assertTrue((Object) CustomerCreated.getDefaultInstance() instanceof CustomerEvent);
         assertTrue((Object) CreateCustomer.getDefaultInstance() instanceof CustomerCommand);
+    }
+
+    @SuppressWarnings({"ConstantConditions", "RedundantCast"}) // Required by the test logic.
+    @Test
+    public void use_IS_in_priority_to_EVERY_IS() {
+        assertTrue((Object) UserCreated.getDefaultInstance() instanceof UserEvent);
+        assertTrue((Object) UserNameUpdated.getDefaultInstance() instanceof UserEvent);
+
+        assertFalse((Object) UserName.getDefaultInstance() instanceof UserEvent);
+        assertTrue((Object) UserName.getDefaultInstance() instanceof UserInfo);
     }
 
     @Test
