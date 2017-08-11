@@ -20,17 +20,20 @@
 
 package io.spine.tools.protodoc;
 
-import com.google.common.io.Files;
+import com.google.common.base.Optional;
 
-import java.io.File;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static io.spine.tools.protodoc.JavaSources.isJavaFile;
+import static java.lang.System.lineSeparator;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.nio.file.Files.newBufferedReader;
+import static java.nio.file.Files.newBufferedWriter;
 
 /**
  * A formatter for Javadocs.
@@ -42,10 +45,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
  */
 class JavadocFormatter {
 
-    /**
-     * A pattern for multi-lined Javadoc.
-     */
-    private static final Pattern PATTERN_JAVADOC = Pattern.compile("(?s)/\\*\\*.*?\\*/");
+    private static final String TEMP_FILE_NAME = "temp_file_for_formatting.java";
 
     /**
      * The formatting actions to perform.
@@ -63,33 +63,66 @@ class JavadocFormatter {
      *
      * @param path the path to the file
      */
-    void format(Path path) {
+    void format(Path path) throws IOException {
         if (!isJavaFile(path)) {
             return;
         }
 
-        final File file = path.toFile();
-        final String content = readFileContent(file);
-        final String formattedContent = formatJavadocs(content);
-        writeToFile(file, formattedContent);
+        final Path folder = path.getParent();
+        final Path tempPath = folder.resolve(TEMP_FILE_NAME);
+
+        try (BufferedReader reader = newBufferedReader(path, UTF_8);
+             BufferedWriter writer = newBufferedWriter(tempPath, UTF_8)) {
+
+            Optional<String> resultPart = getNextPart(reader);
+            while (resultPart.isPresent()) {
+                writer.write(resultPart.get());
+                writer.newLine();
+                resultPart = getNextPart(reader);
+            }
+        }
+
+        Files.delete(path);
+        Files.move(tempPath, tempPath.resolveSibling(path));
     }
 
     /**
-     * Formats Javadocs in the specified content of the file.
+     * Obtains the next part, that should be written to the resulting file.
      *
-     * @param sourceContent the content of a {@code .java} source
-     * @return the source content with formatted Javadocs
+     * <p>If this part is a Javadoc, then the reformatted Javadoc will be returned.
+     *
+     * @param reader the reader for the file
+     * @return the {@code Optional} of the next part
+     *         or {@code Optional.absent()} if if the end of the stream has been reached
+     * @throws IOException if an I/O error occurred during reading
      */
-    private String formatJavadocs(CharSequence sourceContent) {
-        final Matcher matcher = PATTERN_JAVADOC.matcher(sourceContent);
-        final StringBuffer buffer = new StringBuffer(sourceContent.length() * 2);
-        while (matcher.find()) {
-            final String partToFormat = matcher.group();
-            final String replacement = formatText(partToFormat);
-            matcher.appendReplacement(buffer, replacement);
+    private Optional<String> getNextPart(BufferedReader reader) throws IOException {
+        final String firstLine = reader.readLine();
+        if (firstLine == null) {
+            return Optional.absent();
         }
-        matcher.appendTail(buffer);
-        return buffer.toString();
+
+        if (!isJavadocBeginning(firstLine)) {
+            return Optional.of(firstLine);
+        }
+
+        final String javadoc = getJavadoc(firstLine, reader);
+        final String formattedJavadoc = formatText(javadoc);
+        return Optional.of(formattedJavadoc);
+    }
+
+    private static String getJavadoc(String firstLine,
+                                     BufferedReader reader) throws IOException {
+        final StringBuilder javadoc = new StringBuilder();
+
+        String currentLine = firstLine;
+        while (!containsJavadocEnding(currentLine)) {
+            javadoc.append(currentLine)
+                   .append(lineSeparator());
+            currentLine = reader.readLine();
+        }
+        return javadoc.append(currentLine)
+                      .toString();
     }
 
     /**
@@ -106,21 +139,12 @@ class JavadocFormatter {
         return currentState;
     }
 
-    private static void writeToFile(File file, CharSequence content) {
-        try {
-            Files.write(content, file, UTF_8);
-        } catch (IOException e) {
-            final String msg = String.format("Cannot write the content to the file `%s`.", file);
-            throw new IllegalStateException(msg, e);
-        }
+    private static boolean isJavadocBeginning(String line) {
+        return line.trim()
+                   .contains("/**");
     }
 
-    private static String readFileContent(File file) {
-        try {
-            return Files.toString(file, UTF_8);
-        } catch (IOException e) {
-            final String msg = String.format("Cannot read the content of the file `%s`.", file);
-            throw new IllegalStateException(msg, e);
-        }
+    private static boolean containsJavadocEnding(String line) {
+        return line.contains("*/");
     }
 }
