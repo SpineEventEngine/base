@@ -21,6 +21,6 @@
 apply plugin: 'java-gradle-plugin'
 
 dependencies {
-    compile group: 'io.spine.tools', name: 'spine-plugin-base', version: spineVersion
+    compile group: 'io.spine.tools', name: 'spine-plugin-base', version: spineBaseVersion
     compile group: 'com.google.guava', name: 'guava', version: guavaVersion
 }
