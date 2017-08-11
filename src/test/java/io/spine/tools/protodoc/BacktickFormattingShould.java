@@ -22,48 +22,48 @@ package io.spine.tools.protodoc;
 
 import org.junit.Test;
 
-import static io.spine.tools.protodoc.BackTickFormatting.wrapWithCodeTag;
+import static io.spine.tools.protodoc.BacktickFormatting.wrapWithCodeTag;
 import static java.lang.System.lineSeparator;
 import static org.junit.Assert.assertEquals;
 
 /**
  * @author Dmytro Grankin
  */
-public class BackTickFormattingShould {
+public class BacktickFormattingShould {
 
-    private static final char BACK_TICK = '`';
+    private static final char BACKTICK = '`';
     private static final String TEXT = "true";
     private static final String TEXT_IN_CODE_TAG = wrapWithCodeTag(TEXT);
-    private static final String TEXT_IN_BACK_TICKS = BACK_TICK + TEXT + BACK_TICK;
+    private static final String TEXT_IN_BACKTICKS = BACKTICK + TEXT + BACKTICK;
 
-    private final FormattingAction formatting = new BackTickFormatting();
+    private final FormattingAction formatting = new BacktickFormatting();
 
     @Test
-    public void surround_text_in_back_ticks_with_code_tag() {
-        final String result = formatting.execute(TEXT_IN_BACK_TICKS);
+    public void surround_text_in_backticks_with_code_tag() {
+        final String result = formatting.execute(TEXT_IN_BACKTICKS);
         assertEquals(TEXT_IN_CODE_TAG, result);
     }
 
     @Test
-    public void handle_multiple_entries_surrounded_with_back_ticks() {
+    public void handle_multiple_entries_surrounded_with_backticks() {
         final String separatingPart = " some other text ";
-        final String source = TEXT_IN_BACK_TICKS + separatingPart + TEXT_IN_BACK_TICKS;
+        final String source = TEXT_IN_BACKTICKS + separatingPart + TEXT_IN_BACKTICKS;
         final String expected = TEXT_IN_CODE_TAG + separatingPart + TEXT_IN_CODE_TAG;
         assertEquals(expected, formatting.execute(source));
     }
 
     @Test
-    public void not_handle_multi_lined_text_surrounded_with_back_ticks() {
-        final String lineWithOpeningBackTick = BACK_TICK + TEXT;
-        final String lineWithClosingBackTick = TEXT + BACK_TICK;
-        final String multiLinedText = lineWithOpeningBackTick + lineSeparator()
-                + lineWithClosingBackTick;
+    public void not_handle_multi_lined_text_surrounded_with_backticks() {
+        final String lineWithOpeningBacktick = BACKTICK + TEXT;
+        final String lineWithClosingBacktick = TEXT + BACKTICK;
+        final String multiLinedText = lineWithOpeningBacktick + lineSeparator()
+                + lineWithClosingBacktick;
         assertEquals(multiLinedText, formatting.execute(multiLinedText));
     }
 
     @Test
-    public void escape_replacement_for_matcher() {
-        final String dollarSign = BACK_TICK + "$" + BACK_TICK; // See Matcher.quoteReplacement().
-        formatting.execute(dollarSign);
+    public void escape_replacement_for_matcher() { // See Matcher.quoteReplacement().
+        final String dollarInBackticks = BACKTICK + "$" + BACKTICK;
+        formatting.execute(dollarInBackticks);
     }
 }

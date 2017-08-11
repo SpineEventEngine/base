@@ -47,7 +47,7 @@ import static java.util.Arrays.asList;
  * <p>Does the following formatting:
  * <ul>
  *     <li>removes all {@code <pre>} tags;</li>
- *     <li>replaces a text in back ticks by the text in {@code code} tag.</li>
+ *     <li>replaces a text in backticks by the text in {@code code} tag.</li>
  * </ul>
  *
  * <p>Configuration example:
@@ -106,7 +106,7 @@ public class ProtoJavadocPlugin extends SpinePlugin {
             throw new IllegalStateException(msg);
         }
 
-        final JavadocFormatter formatter = new JavadocFormatter(asList(new BackTickFormatting(),
+        final JavadocFormatter formatter = new JavadocFormatter(asList(new BacktickFormatting(),
                                                                        new PreTagFormatting()));
         try {
             log().debug("Starting Javadocs formatting in `{}`.", genProtoDir);

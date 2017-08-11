@@ -29,7 +29,7 @@ import static com.google.common.collect.Lists.newLinkedList;
 import static java.lang.System.lineSeparator;
 
 /**
- * A {@link FormattingAction}, that formats lines independently to each other.
+ * A {@link FormattingAction}, that formats lines independently from each other.
  *
  * @author Dmytro Grankin
  */
@@ -38,7 +38,7 @@ abstract class LineFormatting implements FormattingAction {
     /**
      * Obtains the formatted representation of the specified text.
      *
-     * <p>The text will be split and lines will be formatted independently to each other.
+     * <p>The text will be split and lines will be formatted independently from each other.
      *
      * @param text the text to format
      * @return the formatted text

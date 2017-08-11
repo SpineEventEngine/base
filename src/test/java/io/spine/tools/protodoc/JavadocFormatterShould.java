@@ -32,7 +32,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import static io.spine.tools.protodoc.BackTickFormatting.wrapWithCodeTag;
+import static io.spine.tools.protodoc.BacktickFormatting.wrapWithCodeTag;
 import static io.spine.tools.protodoc.JavaSources.javaExt;
 import static java.lang.System.lineSeparator;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -44,33 +44,33 @@ import static org.junit.Assert.assertEquals;
  */
 public class JavadocFormatterShould {
 
-    private static final char BACK_TICK = '`';
+    private static final char BACKTICK = '`';
     private static final String TEXT = "plain text";
     private static final String TEXT_IN_CODE_TAG = wrapWithCodeTag(TEXT);
-    private static final String TEXT_IN_BACK_TICKS = BACK_TICK + TEXT + BACK_TICK;
+    private static final String TEXT_IN_BACKTICKS = BACKTICK + TEXT + BACKTICK;
 
     @Rule
     public final TemporaryFolder folder = new TemporaryFolder();
-    private final FormattingAction formatting = new BackTickFormatting();
+    private final FormattingAction formatting = new BacktickFormatting();
     private final List<FormattingAction> actions = singletonList(formatting);
-    private final JavadocFormatter backTickFormatter = new JavadocFormatter(actions);
+    private final JavadocFormatter backtickFormatter = new JavadocFormatter(actions);
 
     @Test
     public void ignore_files_except_java() {
         final Path path = Paths.get("Non_existing_file.txt");
-        backTickFormatter.format(path);
+        backtickFormatter.format(path);
     }
 
     @Test
     public void format_Javadocs() throws Exception {
-        final String javadoc = getJavadoc(TEXT_IN_BACK_TICKS);
+        final String javadoc = getJavadoc(TEXT_IN_BACKTICKS);
         final String expected = getJavadoc(TEXT_IN_CODE_TAG);
         assertEquals(expected, getFormattingResult(javadoc));
     }
 
     @Test
     public void not_format_text_which_is_not_Javadoc() throws Exception {
-        assertEquals(TEXT_IN_BACK_TICKS, getFormattingResult(TEXT_IN_BACK_TICKS));
+        assertEquals(TEXT_IN_BACKTICKS, getFormattingResult(TEXT_IN_BACKTICKS));
     }
 
     private static String getJavadoc(String javadocText) {
@@ -81,7 +81,7 @@ public class JavadocFormatterShould {
         final Path path = createJavaFile();
         Files.write(path, content.getBytes());
 
-        backTickFormatter.format(path);
+        backtickFormatter.format(path);
 
         final List<String> lines = Files.readAllLines(path, UTF_8);
         return Joiner.on(lineSeparator())

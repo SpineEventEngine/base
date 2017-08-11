@@ -28,7 +28,7 @@ import static java.lang.String.format;
 import static java.util.regex.Matcher.quoteReplacement;
 
 /**
- * A formatting action, which handles a text in back ticks.
+ * A formatting action, which handles a text in backticks.
  *
  * <p>The action will replace all entries like {@code `text`} by {@code {@code text}}.
  *
@@ -40,26 +40,26 @@ import static java.util.regex.Matcher.quoteReplacement;
  *
  * @author Alexander Aleksandrov
  */
-class BackTickFormatting extends LineFormatting {
+class BacktickFormatting extends LineFormatting {
 
-    private static final String BACK_TICK = "`";
+    private static final String BACKTICK = "`";
     private static final String CODE_TAG_FORMAT = "{@code %s}";
-    private static final Pattern PATTERN_BACK_TICK = Pattern.compile(BACK_TICK);
+    private static final Pattern PATTERN_BACKTICK = Pattern.compile(BACKTICK);
 
     /**
-     * A pattern to match a text surrounded with back ticks.
+     * A pattern to match a text surrounded with backticks.
      */
-    private static final Pattern PATTERN_TEXT_IN_BACK_TICKS = Pattern.compile("(`[^`]*?`)");
+    private static final Pattern PATTERN_TEXT_IN_BACKTICKS = Pattern.compile("(`[^`]*?`)");
 
     @Override
     String formatLine(String line) {
         final StringBuffer buffer = new StringBuffer(line.length() * 2);
-        final Matcher matcher = PATTERN_TEXT_IN_BACK_TICKS.matcher(line);
+        final Matcher matcher = PATTERN_TEXT_IN_BACKTICKS.matcher(line);
         while (matcher.find()) {
             final String partToFormat = matcher.group();
-            final String partWithoutBackTicks = PATTERN_BACK_TICK.matcher(partToFormat)
-                                                                 .replaceAll("");
-            final String replacement = wrapWithCodeTag(partWithoutBackTicks);
+            final String partWithoutBackticks = PATTERN_BACKTICK.matcher(partToFormat)
+                                                                .replaceAll("");
+            final String replacement = wrapWithCodeTag(partWithoutBackticks);
             matcher.appendReplacement(buffer, quoteReplacement(replacement));
         }
         matcher.appendTail(buffer);
