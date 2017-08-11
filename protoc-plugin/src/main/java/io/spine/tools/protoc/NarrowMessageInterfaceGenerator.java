@@ -29,7 +29,7 @@ import com.google.protobuf.Extension;
 import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import com.squareup.javapoet.JavaFile;
-import io.spine.protobuf.UnknownOptions;
+import io.spine.option.UnknownOptions;
 
 import javax.annotation.Nullable;
 import java.util.Collection;

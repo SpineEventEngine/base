@@ -37,7 +37,7 @@ import java.util.Collection;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.gradle.compiler.util.JavaSources.getFilePath;
-import static io.spine.protobuf.UnknownOptions.getUnknownOptionValue;
+import static io.spine.option.UnknownOptions.getUnknownOptionValue;
 
 /**
  * A file-level annotator.

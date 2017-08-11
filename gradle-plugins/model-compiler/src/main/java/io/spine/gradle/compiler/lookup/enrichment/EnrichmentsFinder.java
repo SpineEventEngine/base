@@ -46,8 +46,8 @@ import static io.spine.option.OptionsProto.BY_FIELD_NUMBER;
 import static io.spine.option.OptionsProto.enrichment;
 import static io.spine.option.OptionsProto.enrichmentFor;
 import static io.spine.option.RawListParser.getValueSeparator;
-import static io.spine.protobuf.UnknownOptions.getUnknownOptionValue;
-import static io.spine.protobuf.UnknownOptions.hasUnknownOption;
+import static io.spine.option.UnknownOptions.getUnknownOptionValue;
+import static io.spine.option.UnknownOptions.hasUnknownOption;
 import static java.lang.String.format;
 import static java.util.regex.Pattern.compile;
 

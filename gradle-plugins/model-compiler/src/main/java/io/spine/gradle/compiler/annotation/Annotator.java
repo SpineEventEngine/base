@@ -24,6 +24,7 @@ import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.GeneratedMessageV3.ExtendableMessage;
+import io.spine.option.UnknownOptions;
 import io.spine.util.Exceptions;
 import org.jboss.forge.roaster.Roaster;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
@@ -162,7 +163,7 @@ abstract class Annotator<O extends ExtendableMessage, D extends GeneratedMessage
      * @param descriptor the descriptor to extract {@link #option} value.
      * @return the option value
      * @see #shouldAnnotate(GeneratedMessageV3)
-     * @see io.spine.protobuf.UnknownOptions
+     * @see UnknownOptions
      */
     protected abstract String getRawOptionValue(D descriptor);
 
