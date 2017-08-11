@@ -18,6 +18,40 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+def protocPluginDependency = null
+
+configurations {
+    fetch {
+        description = "Fetches the required artifacts at compile time"
+    }
+}
+
+
+repositories {
+    maven {
+        url = 'http://maven.teamdev.com/repository/spine'
+    }
+    maven {
+        url = 'http://maven.teamdev.com/repository/spine-snapshots'
+    }
+    mavenCentral()
+    mavenLocal()
+}
+
+dependencies {
+    protocPluginDependency = fetch "io.spine.tools:spine-protoc-plugin:$spineModelCompilerVersion@jar"
+}
+
+ext {
+    runsOnWindows = org.gradle.internal.os.OperatingSystem.current().isWindows()
+    spineFolder = "../.spine" as File
+}
+
+task copyPluginJar(type: Copy) {
+    from configurations.fetch.fileCollection(protocPluginDependency).singleFile
+    into project.spineFolder
+}
+
 protobuf {
     generatedFilesBaseDir = "$projectDir/generated"
 
@@ -25,9 +59,14 @@ protobuf {
         artifact = "com.google.protobuf:protoc:${protobufVersion}"
     }
 
+    //noinspection GroovyAssignabilityCheck
     plugins {
         grpc {
             artifact = "io.grpc:protoc-gen-grpc-java:$gRpcVersion"
+        }
+        spineProtoc {
+            final def scriptExt = runsOnWindows ? 'bat' : 'sh'
+            artifact = "io.spine.tools:spine-protoc-plugin:$spineModelCompilerVersion:script@${scriptExt}"
         }
     }
 
@@ -35,13 +74,16 @@ protobuf {
         all().each { task ->
             task.plugins {
                 grpc { }
+                spineProtoc {
+                    outputSubDir = 'java'
+                }
             }
-
             task.generateDescriptorSet = true
             task.descriptorSetOptions.path = "${projectDir}/build/descriptors/${task.sourceSet.name}.desc"
             task.descriptorSetOptions.includeImports = true
             task.descriptorSetOptions.includeSourceInfo = true
+
+            task.dependsOn copyPluginJar
         }
     }
 }
-

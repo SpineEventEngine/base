@@ -19,6 +19,7 @@
  */
 
 apply plugin: 'com.google.protobuf'
+apply plugin: spineProtobufPluginId
 
 buildscript {
     repositories {
@@ -37,48 +38,10 @@ buildscript {
     }
 }
 
-configurations {
-    fetch {
-        description = "Fetch the dependencies"
-        extendsFrom compile
-    }
-}
-
 dependencies {
     compile project(":base")
 
     compile "com.google.protobuf:protobuf-java:${protobufVersion}"
-    fetch "io.spine.tools:spine-protoc-plugin:$spineModelCompilerVersion@jar"
-}
-
-protobuf {
-    generatedFilesBaseDir = generatedRootDir
-
-    protoc {
-        artifact = protobufDependency
-    }
-
-    plugins {
-        spineProtoc {
-            // TODO: switch between .sh and .bat respectively
-            artifact = "io.spine.tools:spine-protoc-plugin:$spineModelCompilerVersion:script@sh"
-        }
-    }
-
-    generateProtoTasks {
-        all().each { task ->
-            task.plugins {
-                spineProtoc {
-                    outputSubDir = 'java'
-                }
-            }
-
-            task.generateDescriptorSet = true
-            task.descriptorSetOptions.path = "${projectDir}/build/descriptors/${task.sourceSet.name}.desc"
-            task.descriptorSetOptions.includeImports = true
-            task.descriptorSetOptions.includeSourceInfo = true
-        }
-    }
 }
 
 build {
