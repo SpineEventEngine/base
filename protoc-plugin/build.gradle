@@ -45,7 +45,6 @@ dependencies {
     compile project(':base')
 
     compile group: "com.google.protobuf", name: "protobuf-java", version: protobufVersion
-    compile group: 'org.slf4j', name: 'slf4j-jdk14', version: slf4JVersion
     compile group: 'com.squareup', name: 'javapoet', version: javaPoetVersion
 }
 
