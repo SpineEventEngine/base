@@ -64,6 +64,7 @@ public class NarrowMessageInterfaceGenerator extends SpineProtoGenerator {
     private static final String PACKAGE_DELIMITER = ".";
 
     private NarrowMessageInterfaceGenerator() {
+        super();
         // Prevent singleton class instantiation.
     }
 
