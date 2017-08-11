@@ -53,7 +53,9 @@ class BacktickFormatting extends LineFormatting {
 
     @Override
     String formatLine(String line) {
+        // Double the line size to avoid possible memory reallocation.
         final StringBuffer buffer = new StringBuffer(line.length() * 2);
+
         final Matcher matcher = PATTERN_TEXT_IN_BACKTICKS.matcher(line);
         while (matcher.find()) {
             final String partToFormat = matcher.group();
