@@ -21,23 +21,21 @@ package io.spine.tools.codestyle.javadoc;
 
 import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
+import io.spine.gradle.TaskName;
+import io.spine.tools.codestyle.ReportType;
 import org.gradle.internal.impldep.org.apache.commons.io.FileUtils;
 import org.gradle.internal.impldep.org.apache.commons.io.IOUtils;
 import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.BuildTask;
 import org.gradle.testkit.runner.GradleRunner;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import io.spine.gradle.TaskName;
-import io.spine.tools.codestyle.ReportType;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -47,15 +45,15 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static java.lang.String.format;
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static io.spine.tools.codestyle.Given.buildGradleFile;
 import static io.spine.tools.codestyle.Given.compileLog;
 import static io.spine.tools.codestyle.Given.debugOption;
 import static io.spine.tools.codestyle.Given.sourceFolder;
 import static io.spine.tools.codestyle.Given.testFile;
+import static java.lang.String.format;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Alexander Aleksandrov
