@@ -40,6 +40,8 @@ import static io.spine.gradle.TaskName.FORMAT_TEST_PROTO_DOC;
 import static io.spine.gradle.TaskName.GENERATE_PROTO;
 import static io.spine.gradle.TaskName.GENERATE_TEST_PROTO;
 import static io.spine.tools.protodoc.Given.formatAndAssert;
+import static io.spine.tools.protodoc.PreTagFormatting.CLOSING_PRE;
+import static io.spine.tools.protodoc.PreTagFormatting.OPENING_PRE;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -92,11 +94,11 @@ public class ProtoJavadocPluginShould {
 
     @Test
     public void format_generated_java_sources() throws IOException {
-        final String text = "any text";
-        final String preTag = "<pre>";
-        final String beforeFormatting = getJavadoc(text + preTag);
-        final String afterFormatting = getJavadoc(text);
-        formatAndAssert(afterFormatting, beforeFormatting, testProjectDir);
+        final String text = "javadoc text";
+        final String textInPreTags = OPENING_PRE + text + CLOSING_PRE;
+        final String expected = getJavadoc(text);
+        final String javadocToFormat = getJavadoc(textInPreTags);
+        formatAndAssert(expected, javadocToFormat, testProjectDir);
     }
 
     private static String getJavadoc(String javadocText) {

@@ -22,6 +22,8 @@ package io.spine.tools.protodoc;
 
 import org.junit.Test;
 
+import static io.spine.tools.protodoc.PreTagFormatting.CLOSING_PRE;
+import static io.spine.tools.protodoc.PreTagFormatting.OPENING_PRE;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -29,23 +31,19 @@ import static org.junit.Assert.assertEquals;
  */
 public class PreTagFormattingShould {
 
-    private static final String OPENING_PRE = "<pre>";
-    private static final String CLOSING_PRE = "</pre>";
-    private static final String TEXT = "a text";
-
     private final FormattingAction formatting = new PreTagFormatting();
 
     @Test
-    public void remove_opening_pre_tags() {
-        final String source = OPENING_PRE + TEXT + OPENING_PRE;
+    public void remove_tags_generated_by_proto_compiler() {
+        final String tagsInsideGeneratedTags = OPENING_PRE + CLOSING_PRE;
+        final String source = OPENING_PRE + tagsInsideGeneratedTags + CLOSING_PRE;
         final String result = formatting.execute(source);
-        assertEquals(TEXT, result);
+        assertEquals(tagsInsideGeneratedTags, result);
     }
 
     @Test
-    public void remove_closing_pre_tags() {
-        final String source = CLOSING_PRE + TEXT + CLOSING_PRE;
-        final String result = formatting.execute(source);
-        assertEquals(TEXT, result);
+    public void not_format_javadoc_without_pre_tags() {
+        final String javadoc = "/** smth */";
+        assertEquals(javadoc, formatting.execute(javadoc));
     }
 }

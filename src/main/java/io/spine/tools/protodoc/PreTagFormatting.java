@@ -25,27 +25,51 @@ import java.util.regex.Pattern;
 /**
  * A formatting action, which handles {@code <pre>} tags.
  *
- * <p>The action will remove all occurrences of the {@linkplain #PATTERN_PRE_TAG tags}.
+ * <p>The action removes the tags inserted by the Protobuf compiler,
+ * i.e. the first opening tag and the last closing tag.
  *
  * @author Dmytro Grankin
  */
 class PreTagFormatting implements FormattingAction {
 
-    /**
-     * A pattern to match a {@code <pre>} or {@code </pre>} tag.
-     */
-    private static final Pattern PATTERN_PRE_TAG = Pattern.compile("<pre>|<\\/pre>");
+    static final String CLOSING_PRE = "</pre>";
+    static final String OPENING_PRE = "<pre>";
+    private static final Pattern PATTERN_OPENING_PRE = Pattern.compile(OPENING_PRE);
 
     /**
      * Obtains the formatted representation of the specified text.
      *
-     * @param text the text to format
-     * @return the text without {@code <pre>} tags
+     * @param javadoc the Javadoc to format
+     * @return the text without generated {@code <pre>} tags
      */
     @Override
-    public String execute(String text) {
-        final Matcher matcher = PATTERN_PRE_TAG.matcher(text);
-        final String textWithoutTags = matcher.replaceAll("");
-        return textWithoutTags;
+    public String execute(String javadoc) {
+        if (!shouldFormat(javadoc)) {
+            return javadoc;
+        }
+
+        final Matcher matcher = PATTERN_OPENING_PRE.matcher(javadoc);
+        final String withoutOpeningPre = matcher.replaceFirst("");
+        return removeLastClosingPre(withoutOpeningPre);
+    }
+
+    private static String removeLastClosingPre(String text) {
+        final int tagIndex = text.lastIndexOf(CLOSING_PRE);
+        final String beforeTag = text.substring(0, tagIndex);
+        final String afterTag = text.substring(tagIndex + CLOSING_PRE.length());
+        return beforeTag + afterTag;
+    }
+
+    /**
+     * Determines whether the specified Javadoc should be formatted.
+     *
+     * <p>For map getters, the compiler generates Javadocs without {@code pre} tags.
+     * So, Javadocs for such methods should not be formatted.
+     *
+     * @param javadoc the Javadoc to test
+     * @return {@code true} if the Javadoc contains opening and closing {@code pre} tag
+     */
+    private static boolean shouldFormat(String javadoc) {
+        return javadoc.contains(OPENING_PRE) && javadoc.contains(CLOSING_PRE);
     }
 }
