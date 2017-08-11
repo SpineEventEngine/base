@@ -39,6 +39,7 @@ public class PluginShould {
 
     private static final String EVENT_INTERFACE_FQN = "io.spine.tools.protoc.CustomerEvent";
     private static final String COMMAND_INTERFACE_FQN = "io.spine.tools.protoc.CustomerCommand";
+    private static final String USER_COMMAND_FQN = "io.spine.tools.protoc.UserCommand";
 
     @Test
     public void generate_marker_interfaces() throws ClassNotFoundException {
@@ -75,6 +76,12 @@ public class PluginShould {
     }
 
     @Test
+    public void resolve_packages_from_src_proto_if_not_specified() throws ClassNotFoundException {
+        final Class<?> cls = checkMarkerInterface(USER_COMMAND_FQN);
+        assertTrue(cls.isAssignableFrom(CreateUser.class));
+    }
+
+    @Test
     public void skip_non_specified_message_types() {
         final Class<?> cls = CustomerName.class;
         final Class[] interfaces = cls.getInterfaces();
@@ -82,12 +89,13 @@ public class PluginShould {
         assertSame(CustomerNameOrBuilder.class, interfaces[0]);
     }
 
-    private static void checkMarkerInterface(String fqn) throws ClassNotFoundException {
+    private static Class<?> checkMarkerInterface(String fqn) throws ClassNotFoundException {
         final Class<?> cls = Class.forName(fqn);
         assertTrue(cls.isInterface());
         assertTrue(Message.class.isAssignableFrom(cls));
 
         final Method[] declaredMethods = cls.getDeclaredMethods();
         assertEquals(0, declaredMethods.length);
+        return cls;
     }
 }
