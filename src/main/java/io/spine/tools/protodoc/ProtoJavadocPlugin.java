@@ -101,9 +101,8 @@ public class ProtoJavadocPlugin extends SpinePlugin {
         final String genProtoDir = taskType.getGenProtoDir(project);
         final File file = new File(genProtoDir);
         if (!file.exists()) {
-            final String msg = format("Cannot perform formatting. Directory `%s` does not exist.",
-                                      file);
-            throw new IllegalStateException(msg);
+            log().warn("Cannot perform formatting. Directory `{}` does not exist.", file);
+            return;
         }
 
         final JavadocFormatter formatter = new JavadocFormatter(asList(new BacktickFormatting(),
