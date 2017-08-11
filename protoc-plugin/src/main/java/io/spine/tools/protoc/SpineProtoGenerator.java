@@ -35,17 +35,58 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Sets.newHashSet;
 
 /**
+ * An abstract base for the Protobuf code generator.
+ *
+ * <p>A generator takes a {@link DescriptorProto} for a message and optionally generates some Java
+ * code in response for it.
+ *
  * @author Dmytro Dashenkov
  */
-public abstract class SpineProtoOptionProcessor {
+public abstract class SpineProtoGenerator {
 
-    protected SpineProtoOptionProcessor() {
+    protected SpineProtoGenerator() {
         super();
     }
 
+    /**
+     * Processes a single message type and generates from zero to many {@link File} instances in
+     * response to the message type.
+     *
+     * <p>The output {@linkplain File Files} may contain
+     * the {@linkplain File#getInsertionPoint() insertion points}.
+     *
+     * <p>The output {@link Collection} may be empty.
+     *
+     * <p>The output {@link Collection} may contain extra types to generate for the given message
+     * declaration.
+     *
+     * <p>If this method produces duplicate entries over a single or multiple invocations,
+     * the duplication will be excluded by the rules of {@link java.util.Set}. Though,
+     * the implementor should take care of excluding the duplicate entries which cannot be
+     * identified by the standard means. Such duplicates are e.g. the {@link File} instances that
+     * are not equal in terms of {@link Object#equals equals()} method, but target the same file to
+     * be generated (excluding the {@linkplain File files} which target insertion points).
+     *
+     * <p>Please see <a href="https://developers.google.com/protocol-buffers/docs/reference/cpp/google.protobuf.compiler.plugin.pb">
+     * the Google documentation page</a> for more detained description of what a {@link File}
+     * instance should and should not contain.
+     *
+     * @param file    the message type enclosing file
+     * @param message the message type to process
+     * @return optionally a {@link Collection} of {@linkplain File Files} to generate or an empty
+     * {@code Collection}
+     */
     protected abstract Collection<File> processMessage(FileDescriptorProto file,
                                                        DescriptorProto message);
 
+    /**
+     * Processes the given compiler request and generates the response to the compiler.
+     *
+     * @param request the compiler request
+     * @return the response to the compiler
+     * @see #processMessage(FileDescriptorProto, DescriptorProto) for more detaineed behavior
+     *                                                            description
+     */
     public final CodeGeneratorResponse process(CodeGeneratorRequest request) {
         checkNotNull(request);
         checkNotNull(request);

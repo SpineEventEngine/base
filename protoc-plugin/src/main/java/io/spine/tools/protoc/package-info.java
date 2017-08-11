@@ -18,6 +18,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/**
+ * This package contains the basic mechanism of building the {@code protoc} plugins.
+ *
+ * <p>See <a href="https://developers.google.com/protocol-buffers/docs/reference/cpp/google.protobuf.compiler.plugin.pb">
+ *    Google documentation</a> for more info about the {@code protoc} plugins
+ */
+
 @ParametersAreNonnullByDefault
 package io.spine.tools.protoc;
 

@@ -62,7 +62,7 @@ public class NarrowMessageInterfaceGeneratorShould {
     private static final Pattern CUSTOMER_EVENT_OR_COMMAND =
             compile("Customer(Command|Event)");
 
-    private SpineProtoOptionProcessor codeGenerator;
+    private SpineProtoGenerator codeGenerator;
 
 
     @Before

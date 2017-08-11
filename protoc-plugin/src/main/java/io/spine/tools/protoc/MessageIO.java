@@ -24,6 +24,7 @@ import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.CodedOutputStream;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
+import io.spine.annotation.Internal;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,19 +33,29 @@ import java.io.OutputStream;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
+ * A helper class for reading instances of {@link CodeGeneratorRequest} and writing instances of
+ * {@link CodeGeneratorResponse} from and into the given data streams.
+ *
+ * <p>Neither of the method of this class ever {@linkplain java.io.Closeable#close() close} or
+ * {@linkplain OutputStream#flush() flush} the underlying streams.
+ *
+ * <p>If any {@linkplain IOException I/O failure} happens, an {@link IllegalStateException} is
+ * thrown by any of the methods of this class.
+ *
  * @author Dmytro Dashenkov
  */
-public final class MessageIO {
+@Internal
+final class MessageIO {
 
     private final InputStream in;
     private final OutputStream out;
 
-    public MessageIO(InputStream in, OutputStream out) {
+    MessageIO(InputStream in, OutputStream out) {
         this.in = checkNotNull(in);
         this.out = checkNotNull(out);
     }
 
-    public CodeGeneratorRequest readRequest() {
+    final CodeGeneratorRequest readRequest() {
         final CodedInputStream stream = CodedInputStream.newInstance(in);
         try {
             final CodeGeneratorRequest request = CodeGeneratorRequest.parseFrom(stream);
@@ -54,7 +65,7 @@ public final class MessageIO {
         }
     }
 
-    public void writeResponse(CodeGeneratorResponse response) {
+    final void writeResponse(CodeGeneratorResponse response) {
         checkNotNull(response);
         final CodedOutputStream stream = CodedOutputStream.newInstance(out);
         try {

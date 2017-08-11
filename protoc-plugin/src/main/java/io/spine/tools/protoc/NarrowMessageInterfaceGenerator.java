@@ -26,13 +26,14 @@ import com.google.common.base.Optional;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Extension;
-import com.google.protobuf.GeneratedMessageV3;
+import com.google.protobuf.GeneratedMessageV3.ExtendableMessage;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import com.squareup.javapoet.JavaFile;
 import io.spine.option.UnknownOptions;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
+import java.util.Set;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.ImmutableSet.of;
@@ -42,9 +43,21 @@ import static io.spine.tools.protoc.MarkerInterfaceGenerator.generate;
 import static java.lang.String.format;
 
 /**
+ * The {@link SpineProtoGenerator} implementation generating the narrow interfaces implemented by
+ * the the message.
+ *
+ * <p>The generator produces two types of {@link File} instances representing:
+ * <ul>
+ *     <li>the marker interfaces derived from
+ *         {@link com.google.protobuf.Message com.google.protobuf.Message} (see
+ *         {@link MarkerInterfaceGenerator});
+ *     <li>the insertion entries to the existing messages (see
+ *         {@link File#getInsertionPoint() File.insertionPoint});
+ * </ul>
+ *
  * @author Dmytro Dashenkov
  */
-public class NarrowMessageInterfaceGenerator extends SpineProtoOptionProcessor {
+public class NarrowMessageInterfaceGenerator extends SpineProtoGenerator {
 
     @VisibleForTesting
     static final String INSERTION_POINT_IMPLEMENTS = "message_implements:%s";
@@ -54,7 +67,10 @@ public class NarrowMessageInterfaceGenerator extends SpineProtoOptionProcessor {
         // Prevent singleton class instantiation.
     }
 
-    public static SpineProtoOptionProcessor instance() {
+    /**
+     * Retrieves the single instance of the {@link NarrowMessageInterfaceGenerator} type.
+     */
+    public static SpineProtoGenerator instance() {
         return Singleton.INSTANCE.value;
     }
 
@@ -62,15 +78,18 @@ public class NarrowMessageInterfaceGenerator extends SpineProtoOptionProcessor {
     protected Collection<File> processMessage(FileDescriptorProto file, DescriptorProto message) {
         final Optional<MessageAndInterface> fromMsgOption = scanMsgOption(file, message);
         if (fromMsgOption.isPresent()) {
-            return fromMsgOption.get().toSet();
+            return fromMsgOption.get().asSet();
         }
         final Optional<MessageAndInterface> fromFileOption = scanFileOption(file, message);
         if (fromFileOption.isPresent()) {
-            return fromFileOption.get().toSet();
+            return fromFileOption.get().asSet();
         }
         return of();
     }
 
+    /**
+     * Scans the given {@linkplain FileDescriptorProto file} for the {@code (every_is)} option.
+     */
     private static Optional<MessageAndInterface> scanFileOption(FileDescriptorProto file,
                                                                 DescriptorProto msg) {
         final Optional<String> everyIs = getEveryIs(file);
@@ -82,6 +101,9 @@ public class NarrowMessageInterfaceGenerator extends SpineProtoOptionProcessor {
         }
     }
 
+    /**
+     * Scans the given {@linkplain DescriptorProto message} for the {@code (is)} option.
+     */
     private static Optional<MessageAndInterface> scanMsgOption(FileDescriptorProto file,
                                                                DescriptorProto msg) {
         final Optional<String> everyIs = getIs(msg);
@@ -128,8 +150,23 @@ public class NarrowMessageInterfaceGenerator extends SpineProtoOptionProcessor {
         return getOptionalOption(value, descriptor.getOptions(), is);
     }
 
-    // TODO:2017-08-10:dmytro.dashenkov: Document.
-    private static <O extends GeneratedMessageV3.ExtendableMessage<O>> Optional<String>
+    /**
+     * Retrieves the value of the specified extension option.
+     *
+     * <p>The {@linkplain com.google.protobuf.DescriptorProtos proto descriptor API} behaves
+     * differently at the Protobuf compile time and at runtime. Thus, the method receives the value
+     * retrieved by the {@link UnknownOptions} utility. If the value is absent, the method ties to
+     * get the option value as a value of a resolved extension option, which is the runtime way.
+     *
+     * @param initialValue the value parsed from the options unknown fields
+     * @param options      the container of the options to get the value from
+     * @param option       the desired option
+     * @param <O>          the type of the options container
+     * @return the value of the option
+     *         {@linkplain com.google.common.base.Strings#isNullOrEmpty if any} or
+     *         {@link Optional#absent() Optional.absent()} otherwise
+     */
+    private static <O extends ExtendableMessage<O>> Optional<String>
     getOptionalOption(@Nullable String initialValue, O options, Extension<O, String> option) {
         if (isNullOrEmpty(initialValue)) {
             return getResolvedOption(options, option);
@@ -138,7 +175,7 @@ public class NarrowMessageInterfaceGenerator extends SpineProtoOptionProcessor {
         }
     }
 
-    private static <O extends GeneratedMessageV3.ExtendableMessage<O>> Optional<String>
+    private static <O extends ExtendableMessage<O>> Optional<String>
     getResolvedOption(O options, Extension<O, String> resolvedOption) {
         final String value = options.getExtension(resolvedOption);
         if (isNullOrEmpty(value)) {
@@ -199,6 +236,11 @@ public class NarrowMessageInterfaceGenerator extends SpineProtoOptionProcessor {
         return (javaPackage + PACKAGE_DELIMITER + typename).replace('.', '/') + ".java";
     }
 
+    /**
+     * The specification of the marker interface to be produces by the generator.
+     *
+     * <p>The specification includes the package name and the type name.
+     */
     private static final class MarkerInterfaceSpec {
 
         private final String packageName;
@@ -213,6 +255,9 @@ public class NarrowMessageInterfaceGenerator extends SpineProtoOptionProcessor {
             return new MarkerInterfaceSpec(packageName, name);
         }
 
+        /**
+         * Parses a {@code MarkerInterfaceSpec} from the given type fully qualified name.
+         */
         private static MarkerInterfaceSpec from(String fullName) {
             final int index = fullName.lastIndexOf(PACKAGE_DELIMITER);
             final String name = fullName.substring(index + 1);
@@ -256,6 +301,10 @@ public class NarrowMessageInterfaceGenerator extends SpineProtoOptionProcessor {
         }
     }
 
+    /**
+     * A tuple of two {@link File} instances representing a message and the marker interface
+     * resolved for that message.
+     */
     private static final class MessageAndInterface {
 
         private final File messageFile;
@@ -266,7 +315,10 @@ public class NarrowMessageInterfaceGenerator extends SpineProtoOptionProcessor {
             this.interfaceFile = interfaceFile;
         }
 
-        private Collection<File> toSet() {
+        /**
+         * Produces an immutable {@link Set} from this tuple.
+         */
+        private Set<File> asSet() {
             return of(messageFile, interfaceFile);
         }
 
@@ -293,6 +345,6 @@ public class NarrowMessageInterfaceGenerator extends SpineProtoOptionProcessor {
         INSTANCE;
 
         @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final SpineProtoOptionProcessor value = new NarrowMessageInterfaceGenerator();
+        private final SpineProtoGenerator value = new NarrowMessageInterfaceGenerator();
     }
 }

@@ -24,6 +24,13 @@ import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
 
 /**
+ * A Protobuf Compiler (a.k.a. {@code protoc}) plugin.
+ *
+ * <p>The program reads a {@link CodeGeneratorRequest} from {@code System.in} and writes
+ * a {@link CodeGeneratorResponse} into the {@code System.out}.
+ *
+ * <p>For the description of the plugin behavior see {@link NarrowMessageInterfaceGenerator}.
+ *
  * @author Dmytro Dashenkov
  */
 public class Plugin {
@@ -32,11 +39,14 @@ public class Plugin {
         // Prevent instantiation.
     }
 
+    /**
+     * The entry point of the program.
+     */
     public static void main(String[] args) {
         @SuppressWarnings("UseOfSystemOutOrSystemErr") // As part of the `protoc` API
         final MessageIO parser = new MessageIO(System.in, System.out);
         final CodeGeneratorRequest request = parser.readRequest();
-        final SpineProtoOptionProcessor generator = NarrowMessageInterfaceGenerator.instance();
+        final SpineProtoGenerator generator = NarrowMessageInterfaceGenerator.instance();
         final CodeGeneratorResponse response = generator.process(request);
         parser.writeResponse(response);
     }
