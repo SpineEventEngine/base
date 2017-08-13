@@ -31,9 +31,8 @@ import java.util.Properties;
 /**
  * Utilities for obtaining {@linkplain ValidationRule validation rules} known to the application.
  *
- * <p>During initialization of this class, definitions of validation rules are
- * {@linkplain Builder#put(Properties) validated}. If an invalid validation rule was found,
- * a runtime exception will be thrown.
+ * <p>During initialization of this class, definitions of validation rules are validated.
+ * If an invalid validation rule was found, a runtime exception will be thrown.
  *
  * @author Dmytro Grankin
  */

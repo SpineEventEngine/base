@@ -25,6 +25,8 @@ import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.EnumDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
+import io.spine.gradle.compiler.util.FieldTypes;
+import io.spine.type.TypeUrl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,7 +54,7 @@ public class ProtoToJavaTypeMapper {
     /** A separator used in Protobuf type names and Java packages. */
     private static final String DOT = ".";
 
-    private static final String GOOGLE_TYPE_URL_PREFIX = "type.googleapis.com";
+    private static final String GOOGLE_TYPE_URL_PREFIX = TypeUrl.Prefix.GOOGLE_APIS.value();
     private static final String PROTO_TYPE_URL_SEPARATOR = "/";
 
     private final FileDescriptorProto file;
@@ -117,7 +119,7 @@ public class ProtoToJavaTypeMapper {
                                                   Collection<String> parentMsgNames) {
         final List<FieldDescriptorProto> fields = message.getFieldList();
         final boolean endWithEntry = message.getName()
-                                            .endsWith("Entry");
+                                            .endsWith(FieldTypes.ENTRY_SUFFIX);
         final boolean hasTwoFieldsKeyAndValue =
                 (fields.size() == 2) &&
                 firstIsKey(fields) &&

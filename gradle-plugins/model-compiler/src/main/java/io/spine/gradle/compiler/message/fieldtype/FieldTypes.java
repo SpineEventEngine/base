@@ -31,9 +31,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class FieldTypes {
 
-    private FieldTypes() {
-        // Prevent instantiation.
-    }
+    public static final String ENTRY_SUFFIX = "Entry";
+
+    /** Prevents instantiation of this utility class .*/
+    private FieldTypes() {}
 
     /**
      * Checks the Protobuf field and determines it is repeated field or not.
@@ -80,7 +81,7 @@ public class FieldTypes {
         final char capitalizedFirstSymbol = Character.toUpperCase(jsonName.charAt(0));
         final String remainingPart = jsonName.substring(1);
 
-        return capitalizedFirstSymbol + remainingPart + "Entry";
+        return capitalizedFirstSymbol + remainingPart + ENTRY_SUFFIX;
     }
 
     /**
