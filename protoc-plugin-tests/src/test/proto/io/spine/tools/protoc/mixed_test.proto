@@ -29,13 +29,13 @@ option java_multiple_files = true;
 option java_outer_classname = "MixedTestProto";
 option java_package = "io.spine.tools.protoc";
 
-option (every_is) = "io.spine.tools.protoc.test.UserEvent";
+option (every_is) = "io.spine.tools.protoc.test.ProtocPluginIntergrUserEvent";
 
-message UserCreated {
+message ProtocPluginIntergrUserCreated {
     string uid = 1;
 }
 
-message UserNameUpdated {
+message ProtocPluginIntergrUserNameUpdated {
 
     string uid = 1;
 

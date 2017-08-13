@@ -29,16 +29,16 @@ option java_multiple_files = true;
 option java_outer_classname = "EveryIsTestProto";
 option java_package = "io.spine.tools.protoc";
 
-option (every_is) = "io.spine.tools.protoc.CustomerEvent";
+option (every_is) = "io.spine.tools.protoc.ProtocPluginCustomerEvent";
 
 import "google/protobuf/descriptor.proto";
 
-message CustomerCreated {
+message ProtocPluginCustomerCreated {
 
     string uid = 1;
 }
 
-message CustomerDeleted {
+message ProtocPluginCustomerDeleted {
 
     string uid = 1;
 }

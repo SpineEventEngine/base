@@ -29,15 +29,15 @@ option java_multiple_files = true;
 option java_outer_classname = "EveryIsTestProto";
 option java_package = "io.spine.tools.protoc";
 
-option (every_is) = "io.spine.tools.protoc.CustomerEvent";
+option (every_is) = "io.spine.tools.protoc.ProtocPluginIntergrCustomerEvent";
 
-message CustomerNotified {
+message ProtocPluginIntergrCustomerNotified {
 
     string uid = 1;
     string email_content = 2;
 }
 
-message CustomerEmailRecieved {
+message ProtocPluginIntergrCustomerEmailRecieved {
 
     string uid = 1;
     string email_content = 2;

@@ -53,10 +53,10 @@ public class NarrowMessageInterfaceGeneratorShould {
                                                        .getName()
                                                        .replace('.', '/');
     private static final Pattern CUSTOMER_EVENT_INTERFACE_PATTERN =
-            compile("^\\s*io\\.spine\\.tools\\.protoc\\.CustomerEvent\\s*,\\s*$");
+            compile("^\\s*io\\.spine\\.tools\\.protoc\\.ProtocPluginCustomerEvent\\s*,\\s*$");
 
     private static final Pattern CUSTOMER_EVENT_INTERFACE_DECL_PATTERN =
-            compile("public\\s+interface\\s+CustomerEvent\\s*extends\\s+Message\\s*\\{\\s*}");
+            compile("public\\s+interface\\s+ProtocPluginCustomerEvent\\s*extends\\s+Message\\s*\\{\\s*}");
 
 
     private static final Pattern CUSTOMER_EVENT_OR_COMMAND =
@@ -139,9 +139,9 @@ public class NarrowMessageInterfaceGeneratorShould {
             }
 
             final String content = file.getContent();
-            if (name.endsWith("NameUpdated.java")) {
+            if (name.endsWith("ProtocPluginNameUpdated.java")) {
                 assertTrue(content.contains("Event,"));
-            } else if (name.endsWith("UpdateName.java")) {
+            } else if (name.endsWith("ProtocPluginUpdateName.java")) {
                 assertTrue(content.contains("Command,"));
             } else {
                 assertTrue(CUSTOMER_EVENT_OR_COMMAND.matcher(name).find());
@@ -165,7 +165,7 @@ public class NarrowMessageInterfaceGeneratorShould {
         final List<File> files = response.getFileList();
         assertEquals(3, files.size());
         for (File file : files) {
-            if (!file.getName().equals("io/spine/tools/protoc/CustomerEvent.java")) {
+            if (!file.getName().equals("io/spine/tools/protoc/ProtocPluginCustomerEvent.java")) {
                 final String name = file.getName();
                 assertEquals(PACKAGE_PATH + "/EveryIsInOneFileProto.java", name);
 

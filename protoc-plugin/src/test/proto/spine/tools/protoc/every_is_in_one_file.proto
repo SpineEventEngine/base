@@ -29,17 +29,17 @@ option java_multiple_files = false;
 option java_outer_classname = "EveryIsInOneFileProto";
 option java_package = "io.spine.tools.protoc";
 
-option (every_is) = "io.spine.tools.protoc.CustomerEvent";
+option (every_is) = "io.spine.tools.protoc.ProtocPluginCustomerEvent";
 
 import "google/protobuf/descriptor.proto";
 
-message CustomerNotified {
+message ProtocPluginCustomerNotified {
 
     string uid = 1;
     string email_content = 2;
 }
 
-message CustomerEmailRecieved {
+message ProtocPluginCustomerEmailRecieved {
 
     string uid = 1;
     string email_content = 2;

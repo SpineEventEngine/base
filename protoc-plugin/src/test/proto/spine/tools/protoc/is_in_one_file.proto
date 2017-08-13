@@ -29,15 +29,15 @@ option java_multiple_files = false;
 option java_outer_classname = "IsInOneFileProto";
 option java_package = "io.spine.tools.protoc";
 
-message AddressUpdated {
-    option (is) = "io.spine.tools.protoc.CustomerEvent";
+message ProtocPluginAddressUpdated {
+    option (is) = "io.spine.tools.protoc.ProtocPluginCustomerEvent";
 
     string uid = 1;
     string new_address = 2;
 }
 
-message PlanUpdated {
-    option (is) = "io.spine.tools.protoc.CustomerEvent";
+message ProtocPluginPlanUpdated {
+    option (is) = "io.spine.tools.protoc.ProtocPluginCustomerEvent";
 
     string uid = 1;
     Plan new_plan = 2;
