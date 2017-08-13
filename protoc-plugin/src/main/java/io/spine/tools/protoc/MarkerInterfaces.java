@@ -32,9 +32,14 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static javax.lang.model.element.Modifier.PUBLIC;
 
 /**
+ * A factory for {@link Message} derived marker interfaces extracted from {@code .proto} files.
+ *
+ * <p>Each interface is marked with {@link Generated @Generated} annotation. No more additional
+ * declarations are made.
+ *
  * @author Dmytro Dashenkov
  */
-public final class MarkerInterfaceGenerator {
+final class MarkerInterfaces {
 
     private static final AnnotationSpec GENERATED;
     private static final String GENERATED_FIELD_NAME = "value";
@@ -46,11 +51,18 @@ public final class MarkerInterfaceGenerator {
                                   .build();
     }
 
-    private MarkerInterfaceGenerator() {
+    private MarkerInterfaces() {
         // Prevent utility class instantiation.
     }
 
-    public static JavaFile generate(String packageName, String typeName) {
+    /**
+     * Generates a marker interface with the given name and package.
+     *
+     * @param packageName the name of the package of the required interface
+     * @param typeName    the name of the required interface
+     * @return {@link JavaFile} instance representing the desired interface
+     */
+    static JavaFile create(String packageName, String typeName) {
         checkNotNull(packageName);
         checkNotNull(typeName);
         final TypeSpec spec = TypeSpec.interfaceBuilder(typeName)
@@ -58,7 +70,8 @@ public final class MarkerInterfaceGenerator {
                                       .addModifiers(PUBLIC)
                                       .addAnnotation(GENERATED)
                                       .build();
-        final JavaFile javaFile = JavaFile.builder(packageName, spec).build();
+        final JavaFile javaFile = JavaFile.builder(packageName, spec)
+                                          .build();
         return javaFile;
     }
 }

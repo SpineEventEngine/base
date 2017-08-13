@@ -38,7 +38,7 @@ import static com.google.common.collect.Sets.newHashSet;
  * An abstract base for the Protobuf code generator.
  *
  * <p>A generator takes a {@link DescriptorProto} for a message and optionally generates some Java
- * code in response for it.
+ * code in response to it.
  *
  * @author Dmytro Dashenkov
  */
@@ -68,8 +68,8 @@ public abstract class SpineProtoGenerator {
      * be generated (excluding the {@linkplain File files} which target insertion points).
      *
      * <p>Please see <a href="https://developers.google.com/protocol-buffers/docs/reference/cpp/google.protobuf.compiler.plugin.pb">
-     * the Google documentation page</a> for more detained description of what a {@link File}
-     * instance should and should not contain.
+     * the Google documentation page</a> for more detained description of what
+     * a {@link File CodeGeneratorResponse.File} instance should and should not contain.
      *
      * @param file    the message type enclosing file
      * @param message the message type to process
@@ -81,6 +81,16 @@ public abstract class SpineProtoGenerator {
 
     /**
      * Processes the given compiler request and generates the response to the compiler.
+     *
+     * <p>Each {@linkplain FileDescriptorProto {@code .proto} file} may cause none, one or many
+     * generated {@link File CodeGeneratorResponse.File} instances.
+     *
+     * <p>Note: there are several preconditions for this method to run successfully:
+     * <ul>
+     *     <li>since Spine relies on 3-d version of Protobuf, the Proto compiler version should be
+     *         {@code 3.x.x} or greater;
+     *     <li>there must be at least one {@code .proto} file in the {@link CodeGeneratorRequest}.
+     * </ul>
      *
      * @param request the compiler request
      * @return the response to the compiler

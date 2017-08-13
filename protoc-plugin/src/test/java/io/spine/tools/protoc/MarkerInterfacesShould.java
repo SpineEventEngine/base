@@ -32,23 +32,23 @@ import static org.junit.Assert.assertEquals;
 /**
  * @author Dmytro Dashenkov
  */
-public class MarkerInterfaceGeneratorShould {
+public class MarkerInterfacesShould {
 
     @Test
     public void not_accept_nulls_on_construction() {
-        new NullPointerTester().testAllPublicConstructors(MarkerInterfaceGenerator.class);
+        new NullPointerTester().testAllPublicConstructors(MarkerInterfaces.class);
     }
 
     @Test
     public void not_accept_nulls() {
-        new NullPointerTester().testAllPublicStaticMethods(MarkerInterfaceGenerator.class);
+        new NullPointerTester().testAllPublicStaticMethods(MarkerInterfaces.class);
     }
 
     @Test
     public void generate_interfaces() {
         final String packageName = "io.spine.test";
         final String interfaceName = "CustomerEvent";
-        final JavaFile javaFile = MarkerInterfaceGenerator.generate(packageName, interfaceName);
+        final JavaFile javaFile = MarkerInterfaces.create(packageName, interfaceName);
 
         final AnnotationSpec generated = javaFile.typeSpec.annotations.get(0);
         assertEquals(Generated.class.getName(), generated.type.toString());

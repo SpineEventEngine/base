@@ -39,7 +39,7 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.ImmutableSet.of;
 import static io.spine.option.OptionsProto.everyIs;
 import static io.spine.option.OptionsProto.is;
-import static io.spine.tools.protoc.MarkerInterfaceGenerator.generate;
+import static io.spine.tools.protoc.MarkerInterfaces.create;
 import static java.lang.String.format;
 
 /**
@@ -50,7 +50,7 @@ import static java.lang.String.format;
  * <ul>
  *     <li>the marker interfaces derived from
  *         {@link com.google.protobuf.Message com.google.protobuf.Message} (see
- *         {@link MarkerInterfaceGenerator});
+ *         {@link MarkerInterfaces});
  *     <li>the insertion entries to the existing messages (see
  *         {@link File#getInsertionPoint() File.insertionPoint});
  * </ul>
@@ -130,8 +130,8 @@ public class NarrowMessageInterfaceGenerator extends SpineProtoGenerator {
         final File messageFile = implementInterface(srcFile,
                                                     interfaceSpec.getFqn(),
                                                     messageFqn);
-        final JavaFile interfaceContent = generate(interfaceSpec.getPackageName(),
-                                                   interfaceSpec.getName());
+        final JavaFile interfaceContent = create(interfaceSpec.getPackageName(),
+                                                 interfaceSpec.getName());
         final File interfaceFile = File.newBuilder()
                                        .setName(toFileName(interfaceSpec.getPackageName(),
                                                            interfaceSpec.getName()))
