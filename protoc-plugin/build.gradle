@@ -103,4 +103,3 @@ def injectVersion(File scriptFile) {
     final result = file(tempFile.toAbsolutePath())
     return result
 }
-
