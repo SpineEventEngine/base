@@ -36,6 +36,10 @@ import java.io.InputStream;
 import static com.google.common.collect.ImmutableMap.of;
 
 /**
+ * A Gradle plugin which imports the Spine {@code protoc} plugin into the project.
+ *
+ * <p>This plugin requires the {@code com.google.protobuf} to be applied to the project.
+ *
  * @author Dmytro Dashenkov
  */
 public class ProtocPluginImporter extends SpinePlugin {
