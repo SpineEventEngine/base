@@ -85,7 +85,7 @@ protobuf {
 }
 
 task copyProtocPluginTestArtifact(type: Copy) {
-    from project.rootDir.toPath().resolve(".spine").toFile().list().first()
+    from project.rootDir.toPath().resolve(".spine").toFile()
     into project.spineFolder
 }
 
