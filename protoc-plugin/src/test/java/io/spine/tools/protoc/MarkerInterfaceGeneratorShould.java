@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static io.spine.tools.protoc.NarrowMessageInterfaceGenerator.INSERTION_POINT_IMPLEMENTS;
+import static io.spine.tools.protoc.MarkerInterfaceGenerator.INSERTION_POINT_IMPLEMENTS;
 import static java.lang.String.format;
 import static java.util.regex.Pattern.compile;
 import static org.junit.Assert.assertEquals;
@@ -44,14 +44,14 @@ import static org.junit.Assert.assertTrue;
 /**
  * @author Dmytro Dashenkov
  */
-public class NarrowMessageInterfaceGeneratorShould {
+public class MarkerInterfaceGeneratorShould {
 
     private static final String PROTO_PACKAGE = "spine.tools.protoc.";
 
     private static final String PACKAGE_PATH =
-            NarrowMessageInterfaceGeneratorShould.class.getPackage()
-                                                       .getName()
-                                                       .replace('.', '/');
+            MarkerInterfaceGeneratorShould.class.getPackage()
+                                                .getName()
+                                                .replace('.', '/');
     private static final Pattern CUSTOMER_EVENT_INTERFACE_PATTERN =
             compile("^\\s*io\\.spine\\.tools\\.protoc\\.ProtocPluginCustomerEvent\\s*,\\s*$");
 
@@ -66,14 +66,14 @@ public class NarrowMessageInterfaceGeneratorShould {
 
     @Before
     public void setUp() {
-        codeGenerator = NarrowMessageInterfaceGenerator.instance();
+        codeGenerator = MarkerInterfaceGenerator.instance();
     }
 
     @Test
     public void not_accept_nulls() {
         new NullPointerTester()
                 .setDefault(CodeGeneratorRequest.class, CodeGeneratorRequest.getDefaultInstance())
-                .testAllPublicStaticMethods(NarrowMessageInterfaceGenerator.class);
+                .testAllPublicStaticMethods(MarkerInterfaceGenerator.class);
     }
 
     @Test

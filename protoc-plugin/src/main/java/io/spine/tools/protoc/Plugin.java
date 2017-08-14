@@ -20,8 +20,14 @@
 
 package io.spine.tools.protoc;
 
+import com.google.protobuf.CodedInputStream;
+import com.google.protobuf.CodedOutputStream;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
+
+import java.io.IOException;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * A Protobuf Compiler ({@literal a.k.a.} {@code protoc}) plugin.
@@ -29,7 +35,7 @@ import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
  * <p>The program reads a {@link CodeGeneratorRequest} from {@code System.in} and writes
  * a {@link CodeGeneratorResponse} into the {@code System.out}.
  *
- * <p>For the description of the plugin behavior see {@link NarrowMessageInterfaceGenerator}.
+ * <p>For the description of the plugin behavior see {@link MarkerInterfaceGenerator}.
  *
  * <p>For the plugin mechanism see <a href="SpineProtoGenerator.html#contract">{@code SpineProtoGenerator}</a>.
  *
@@ -45,11 +51,31 @@ public class Plugin {
      * The entry point of the program.
      */
     public static void main(String[] args) {
-        @SuppressWarnings("UseOfSystemOutOrSystemErr") // As part of the `protoc` API
-        final MessageIO parser = new MessageIO(System.in, System.out);
-        final CodeGeneratorRequest request = parser.readRequest();
-        final SpineProtoGenerator generator = NarrowMessageInterfaceGenerator.instance();
+        final CodeGeneratorRequest request = readRequest();
+        final SpineProtoGenerator generator = MarkerInterfaceGenerator.instance();
         final CodeGeneratorResponse response = generator.process(request);
-        parser.writeResponse(response);
+        writeResponse(response);
+    }
+
+    private static CodeGeneratorRequest readRequest() {
+        final CodedInputStream stream = CodedInputStream.newInstance(System.in);
+        try {
+            final CodeGeneratorRequest request = CodeGeneratorRequest.parseFrom(stream);
+            return request;
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    private static void writeResponse(CodeGeneratorResponse response) {
+        checkNotNull(response);
+        @SuppressWarnings("UseOfSystemOutOrSystemErr") // Required by the protoc API.
+        final CodedOutputStream stream = CodedOutputStream.newInstance(System.out);
+        try {
+            response.writeTo(stream);
+            stream.flush();
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
     }
 }

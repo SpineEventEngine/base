@@ -51,19 +51,7 @@ public class ProtocPluginImporter extends SpinePlugin {
 
     @Override
     public void apply(final Project project) {
-        final File tempFolder = Files.createTempDir();
-        final File configFile = new File(tempFolder, PROTOC_CONFIG_FILE_NAME);
-        try (InputStream in = getClass().getClassLoader()
-                                        .getResourceAsStream(PROTOC_CONFIG_FILE_NAME);
-             FileOutputStream out = new FileOutputStream(configFile)) {
-            int readByte = in.read();
-            while (readByte >= 0) {
-                out.write(readByte);
-                readByte = in.read();
-            }
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
-        }
+        final File configFile = generateSpineProtoc();
         project.getPluginManager().withPlugin(PROTOBUF_PLUGIN_ID, new Action<AppliedPlugin>() {
             @Override
             public void execute(AppliedPlugin appliedPlugin) {
@@ -74,6 +62,33 @@ public class ProtocPluginImporter extends SpinePlugin {
                 log().debug("Applied {}", PROTOC_CONFIG_FILE_NAME);
             }
         });
+    }
+
+    /**
+     * Generates the {@code spine_protoc.gradle} file in a temporary folder.
+     *
+     * <p>The file is copied from the module resources into a randomly-generated one-time
+     * location.
+     *
+     * @return the generated {@link File}
+     * @throws IllegalStateException upon an {@link IOException}
+     */
+    private static File generateSpineProtoc() throws IllegalStateException {
+        final File tempFolder = Files.createTempDir();
+        final File configFile = new File(tempFolder, PROTOC_CONFIG_FILE_NAME);
+        try (InputStream in = ProtocPluginImporter.class
+                                                  .getClassLoader()
+                                                  .getResourceAsStream(PROTOC_CONFIG_FILE_NAME);
+             FileOutputStream out = new FileOutputStream(configFile)) {
+            int readByte = in.read();
+            while (readByte >= 0) {
+                out.write(readByte);
+                readByte = in.read();
+            }
+            return configFile;
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     private static Logger log() {

@@ -58,19 +58,19 @@ import static java.lang.String.format;
  *
  * @author Dmytro Dashenkov
  */
-public class NarrowMessageInterfaceGenerator extends SpineProtoGenerator {
+public class MarkerInterfaceGenerator extends SpineProtoGenerator {
 
     @VisibleForTesting
     static final String INSERTION_POINT_IMPLEMENTS = "message_implements:%s";
     private static final String PACKAGE_DELIMITER = ".";
 
-    private NarrowMessageInterfaceGenerator() {
+    private MarkerInterfaceGenerator() {
         super();
         // Prevent singleton class instantiation.
     }
 
     /**
-     * Retrieves the single instance of the {@link NarrowMessageInterfaceGenerator} type.
+     * Retrieves the single instance of the {@link MarkerInterfaceGenerator} type.
      */
     public static SpineProtoGenerator instance() {
         return Singleton.INSTANCE.value;
@@ -79,7 +79,7 @@ public class NarrowMessageInterfaceGenerator extends SpineProtoGenerator {
     /**
      * {@inheritDoc}
      *
-     * <p>The {@code NarrowMessageInterfaceGenerator} implementation performs the message processing
+     * <p>The {@code MarkerInterfaceGenerator} implementation performs the message processing
      * as follows:
      * <ol>
      *     <li>Checks the message has {@code (is)} option. If it does, the marker interface name is
@@ -362,6 +362,6 @@ public class NarrowMessageInterfaceGenerator extends SpineProtoGenerator {
         INSTANCE;
 
         @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final SpineProtoGenerator value = new NarrowMessageInterfaceGenerator();
+        private final SpineProtoGenerator value = new MarkerInterfaceGenerator();
     }
 }
