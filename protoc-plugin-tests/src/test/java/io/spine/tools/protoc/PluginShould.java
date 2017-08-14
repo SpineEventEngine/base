@@ -37,9 +37,12 @@ import static org.junit.Assert.assertTrue;
  */
 public class PluginShould {
 
-    private static final String EVENT_INTERFACE_FQN = "io.spine.tools.protoc.ProtocPluginIntergrCustomerEvent";
-    private static final String COMMAND_INTERFACE_FQN = "io.spine.tools.protoc.ProtocPluginIntergrCustomerCommand";
-    private static final String USER_COMMAND_FQN = "io.spine.tools.protoc.ProtocPluginIntergrUserCommand";
+    private static final String EVENT_INTERFACE_FQN =
+            "io.spine.tools.protoc.ProtocPluginIntergrCustomerEvent";
+    private static final String COMMAND_INTERFACE_FQN =
+            "io.spine.tools.protoc.ProtocPluginIntergrCustomerCommand";
+    private static final String USER_COMMAND_FQN =
+            "io.spine.tools.protoc.ProtocPluginIntergrUserCommand";
 
     @Test
     public void generate_marker_interfaces() throws ClassNotFoundException {
@@ -49,8 +52,10 @@ public class PluginShould {
     @SuppressWarnings({"ConstantConditions", "RedundantCast"}) // Required by the test logic.
     @Test
     public void implement_marker_interfaces_in_generated_messages() {
-        assertTrue((Object) ProtocPluginIntergrCustomerNotified.getDefaultInstance() instanceof ProtocPluginIntergrCustomerEvent);
-        assertTrue((Object) ProtocPluginIntergrCustomerEmailRecieved.getDefaultInstance() instanceof ProtocPluginIntergrCustomerEvent);
+        assertTrue((Object) ProtocPluginIntergrCustomerNotified.getDefaultInstance()
+                           instanceof ProtocPluginIntergrCustomerEvent);
+        assertTrue((Object) ProtocPluginIntergrCustomerEmailRecieved.getDefaultInstance()
+                           instanceof ProtocPluginIntergrCustomerEvent);
     }
 
     @Test
@@ -61,15 +66,19 @@ public class PluginShould {
     @SuppressWarnings({"ConstantConditions", "RedundantCast"}) // Required by the test logic.
     @Test
     public void implement_interface_in_generated_messages_with_IS_option() {
-        assertTrue((Object) ProtocPluginIntergrCustomerCreated.getDefaultInstance() instanceof ProtocPluginIntergrCustomerEvent);
-        assertTrue((Object) ProtocPluginIntergrCreateCustomer.getDefaultInstance() instanceof ProtocPluginIntergrCustomerCommand);
+        assertTrue((Object) ProtocPluginIntergrCustomerCreated.getDefaultInstance()
+                           instanceof ProtocPluginIntergrCustomerEvent);
+        assertTrue((Object) ProtocPluginIntergrCreateCustomer.getDefaultInstance()
+                           instanceof ProtocPluginIntergrCustomerCommand);
     }
 
     @SuppressWarnings({"ConstantConditions", "RedundantCast"}) // Required by the test logic.
     @Test
     public void use_IS_in_priority_to_EVERY_IS() {
-        assertTrue((Object) ProtocPluginIntergrUserCreated.getDefaultInstance() instanceof ProtocPluginIntergrUserEvent);
-        assertTrue((Object) ProtocPluginIntergrUserNameUpdated.getDefaultInstance() instanceof ProtocPluginIntergrUserEvent);
+        assertTrue((Object) ProtocPluginIntergrUserCreated.getDefaultInstance()
+                           instanceof ProtocPluginIntergrUserEvent);
+        assertTrue((Object) ProtocPluginIntergrUserNameUpdated.getDefaultInstance()
+                           instanceof ProtocPluginIntergrUserEvent);
 
         assertFalse((Object) UserName.getDefaultInstance() instanceof ProtocPluginIntergrUserEvent);
         assertTrue((Object) UserName.getDefaultInstance() instanceof UserInfo);
