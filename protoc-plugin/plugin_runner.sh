@@ -1,3 +1,5 @@
 #!/usr/bin/env bash
 
-java -jar ../.spine/spine-protoc-plugin-{version}.jar
+CURRENT_DIR="$(pwd)"
+
+java -jar "${CURRENT_DIR}"/.spine/spine-protoc-plugin-{version}.jar

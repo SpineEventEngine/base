@@ -20,6 +20,7 @@
 
 ext {
     roasterVersion = '2.20.0.Final'
+    spineFolder = "${project.projectDir}/.spine" as File
 }
 
 group = 'io.spine.tools'
@@ -60,7 +61,6 @@ dependencies {
     compile group: 'com.google.protobuf', name: 'protobuf-java', version: protobufVersion
     compile group: 'com.google.protobuf', name: 'protobuf-java-util', version: protobufVersion
 
-
     // A library for parsing Java sources.
     // Used for parsing Java sources generated from Protobuf files
     // to make their annotation more convenient.
@@ -84,8 +84,14 @@ protobuf {
     }
 }
 
+task copyProtocPluginTestArtifact(type: Copy) {
+    from project.rootDir.toPath().resolve(".spine").toFile().list().first()
+    into project.spineFolder
+}
+
 // Tests use the Protobuf plugin.
 test {
+    dependsOn copyProtocPluginTestArtifact
     dependsOn publishToMavenLocal
     dependsOn project.project(':plugin-base').publishToMavenLocal
     dependsOn project.project(':base').publishToMavenLocal
