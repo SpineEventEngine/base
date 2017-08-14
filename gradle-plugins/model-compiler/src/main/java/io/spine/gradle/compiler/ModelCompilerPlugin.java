@@ -42,7 +42,7 @@ public class ModelCompilerPlugin implements Plugin<Project> {
 
     @Override
     public void apply(Project project) {
-        log().debug("Adding the extension to the project.?????????");
+        log().debug("Adding the extension to the project.");
         project.getExtensions()
                .create(SPINE_MODEL_COMPILER_EXTENSION_NAME, Extension.class);
 
