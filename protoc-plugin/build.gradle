@@ -95,6 +95,17 @@ publishing {
     }
 }
 
+/**
+ * Inserts the current Spine version into the given file replacing the {@code {@literal {version}}}
+ * string.
+ *
+ * <p>This insertion point is conventional for the runner scripts for the Spine protoc plugin.
+ *
+ * <p>Before the runner script is published, the version must be injected into it.
+ *
+ * @param scriptFile the script file to modify
+ * @return the new script file to publish
+ */
 def injectVersion(File scriptFile) {
     def text = scriptFile.text
     text = text.replace("{version}", project.version)

@@ -24,12 +24,14 @@ import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
 
 /**
- * A Protobuf Compiler (a.k.a. {@code protoc}) plugin.
+ * A Protobuf Compiler ({@literal a.k.a.} {@code protoc}) plugin.
  *
  * <p>The program reads a {@link CodeGeneratorRequest} from {@code System.in} and writes
  * a {@link CodeGeneratorResponse} into the {@code System.out}.
  *
  * <p>For the description of the plugin behavior see {@link NarrowMessageInterfaceGenerator}.
+ *
+ * <p>For the plugin mechanism see <a href="SpineProtoGenerator.html#contract">{@code SpineProtoGenerator}</a>.
  *
  * @author Dmytro Dashenkov
  */

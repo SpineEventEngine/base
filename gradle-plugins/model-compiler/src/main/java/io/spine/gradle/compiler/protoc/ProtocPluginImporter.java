@@ -44,7 +44,7 @@ import static com.google.common.collect.ImmutableMap.of;
  */
 public class ProtocPluginImporter extends SpinePlugin {
 
-    private static final String PROTOC_CONFIG_FILE_NAME = "protoc_config.gradle";
+    private static final String PROTOC_CONFIG_FILE_NAME = "spine_protoc.gradle";
 
     @SuppressWarnings("DuplicateStringLiteralInspection") // The same string has different semantics
     private static final String PROTOBUF_PLUGIN_ID = "com.google.protobuf";
@@ -67,9 +67,11 @@ public class ProtocPluginImporter extends SpinePlugin {
         project.getPluginManager().withPlugin(PROTOBUF_PLUGIN_ID, new Action<AppliedPlugin>() {
             @Override
             public void execute(AppliedPlugin appliedPlugin) {
-                log().debug("Applying protoc_config.gradle ({})", configFile.getAbsolutePath());
+                log().debug("Applying {} ({})",
+                            PROTOC_CONFIG_FILE_NAME,
+                            configFile.getAbsolutePath());
                 project.apply(of("from", configFile.getAbsolutePath()));
-                log().debug("Applied protoc_config.gradle");
+                log().debug("Applied {}", PROTOC_CONFIG_FILE_NAME);
             }
         });
     }

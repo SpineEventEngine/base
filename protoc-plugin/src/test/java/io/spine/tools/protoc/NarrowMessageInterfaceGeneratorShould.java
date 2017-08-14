@@ -64,7 +64,6 @@ public class NarrowMessageInterfaceGeneratorShould {
 
     private SpineProtoGenerator codeGenerator;
 
-
     @Before
     public void setUp() {
         codeGenerator = NarrowMessageInterfaceGenerator.instance();

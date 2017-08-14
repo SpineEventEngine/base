@@ -40,6 +40,32 @@ import static com.google.common.collect.Sets.newHashSet;
  * <p>A generator takes a {@link DescriptorProto} for a message and optionally generates some Java
  * code in response to it.
  *
+ * <a name="contract"></a>
+ * <p>Each message type is processed separately. As the result of processing, a generator may
+ * produce instances of {@link File CodeGeneratorResponse.File}.
+ *
+ * <p>The {@code CodeGeneratorResponse.File} has three fields: {@code name}, {@code insertionPoint}
+ * and {@code content}.
+ *
+ * <p>The {@code name} field represents the name of the file to generate. The name is relative to
+ * the output directory and should not contain {@code ./} or {@code ../} prefixes.
+ *
+ * <p>The {@code content} field represents the code snippet to write into the file. This field is
+ * required.
+ *
+ * <p>To make the {@code protoc} generate a new file from the scratch, the the generator should
+ * produce {@code CodeGeneratorResponse.File} instance with the {@code name} and {@code content}
+ * fields. The {@code insertionPoint} field is omitted in this case.
+ *
+ * <p>To extend an existing {@code protoc} plugin (e.g. built-in {@code java} plugin), use
+ * {@code insertionPoint} field. The value of the field must correspond to an existing insertion
+ * point declared by the extended plugin. The insertion points are declared in the generated code
+ * as follows:
+ * {@code @@protoc_insertion_point(NAME)}, where {@code NAME} is value to set into the field.
+ *
+ * <p>If the {@code insertionPoint} field is present, the {@code name} field must also be present. The
+ * {@code content} field contains the value to insert into the insertion point is this case.
+ *
  * @author Dmytro Dashenkov
  */
 public abstract class SpineProtoGenerator {
@@ -82,12 +108,12 @@ public abstract class SpineProtoGenerator {
     /**
      * Processes the given compiler request and generates the response to the compiler.
      *
-     * <p>Each {@linkplain FileDescriptorProto {@code .proto} file} may cause none, one or many
+     * <p>Each {@linkplain FileDescriptorProto .proto file} may cause none, one or many
      * generated {@link File CodeGeneratorResponse.File} instances.
      *
      * <p>Note: there are several preconditions for this method to run successfully:
      * <ul>
-     *     <li>since Spine relies on 3-d version of Protobuf, the Proto compiler version should be
+     *     <li>since Spine relies on 3rd version of Protobuf, the Proto compiler version should be
      *         {@code 3.x.x} or greater;
      *     <li>there must be at least one {@code .proto} file in the {@link CodeGeneratorRequest}.
      * </ul>

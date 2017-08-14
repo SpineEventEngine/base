@@ -43,8 +43,8 @@ import static io.spine.tools.protoc.MarkerInterfaces.create;
 import static java.lang.String.format;
 
 /**
- * The {@link SpineProtoGenerator} implementation generating the narrow interfaces implemented by
- * the the message.
+ * The {@link SpineProtoGenerator} implementation generating the specific interfaces implemented by
+ * some message types.
  *
  * <p>The generator produces two types of {@link File CodeGeneratorResponse.File} instances
  * representing:
@@ -76,6 +76,21 @@ public class NarrowMessageInterfaceGenerator extends SpineProtoGenerator {
         return Singleton.INSTANCE.value;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The {@code NarrowMessageInterfaceGenerator} implementation performs the message processing
+     * as follows:
+     * <ol>
+     *     <li>Checks the message has {@code (is)} option. If it does, the marker interface name is
+     *         extracted from it and both the marker interface and the message insertion point are
+     *         generated.
+     *     <li>Checks the message file has {@code (every_is)} option. If it does, the marker
+     *         interface name is extracted from it and both the marker interface and the message
+     *         insertion point are generated.
+     *     <li>Otherwise, no compiler response is generated for this message type.
+     * </ol>
+     */
     @Override
     protected Collection<File> processMessage(FileDescriptorProto file, DescriptorProto message) {
         final Optional<MessageAndInterface> fromMsgOption = scanMsgOption(file, message);
