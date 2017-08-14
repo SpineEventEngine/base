@@ -49,7 +49,6 @@ public class ModelCompilerPlugin implements Plugin<Project> {
         log().debug("Applying Spine cleaning plugin.");
         new CleaningPlugin().apply(project);
 
-
         log().debug("Applying Spine proto-to-java mapper plugin.");
         new ProtoToJavaMapperPlugin().apply(project);
 
