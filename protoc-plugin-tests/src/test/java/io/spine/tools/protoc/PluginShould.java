@@ -52,10 +52,8 @@ public class PluginShould {
     @SuppressWarnings({"ConstantConditions", "RedundantCast"}) // Required by the test logic.
     @Test
     public void implement_marker_interfaces_in_generated_messages() {
-        assertTrue((Object) PICustomerNotified.getDefaultInstance()
-                           instanceof PICustomerEvent);
-        assertTrue((Object) PICustomerEmailRecieved.getDefaultInstance()
-                           instanceof PICustomerEvent);
+        assertTrue((Object) PICustomerNotified.getDefaultInstance() instanceof PICustomerEvent);
+        assertTrue((Object) PICustomerEmailRecieved.getDefaultInstance() instanceof PICustomerEvent);
     }
 
     @Test
@@ -66,19 +64,15 @@ public class PluginShould {
     @SuppressWarnings({"ConstantConditions", "RedundantCast"}) // Required by the test logic.
     @Test
     public void implement_interface_in_generated_messages_with_IS_option() {
-        assertTrue((Object) PICustomerCreated.getDefaultInstance()
-                           instanceof PICustomerEvent);
-        assertTrue((Object) PICreateCustomer.getDefaultInstance()
-                           instanceof PICustomerCommand);
+        assertTrue((Object) PICustomerCreated.getDefaultInstance() instanceof PICustomerEvent);
+        assertTrue((Object) PICreateCustomer.getDefaultInstance() instanceof PICustomerCommand);
     }
 
     @SuppressWarnings({"ConstantConditions", "RedundantCast"}) // Required by the test logic.
     @Test
     public void use_IS_in_priority_to_EVERY_IS() {
-        assertTrue((Object) PIUserCreated.getDefaultInstance()
-                           instanceof PIUserEvent);
-        assertTrue((Object) PIUserNameUpdated.getDefaultInstance()
-                           instanceof PIUserEvent);
+        assertTrue((Object) PIUserCreated.getDefaultInstance() instanceof PIUserEvent);
+        assertTrue((Object) PIUserNameUpdated.getDefaultInstance() instanceof PIUserEvent);
 
         assertFalse((Object) UserName.getDefaultInstance() instanceof PIUserEvent);
         assertTrue((Object) UserName.getDefaultInstance() instanceof UserInfo);
