@@ -37,8 +37,8 @@ import static com.google.common.collect.Sets.newHashSet;
 /**
  * An abstract base for the Protobuf code generator.
  *
- * <p>A generator takes a {@link DescriptorProto} for a message and optionally generates some Java
- * code in response to it.
+ * <p>A generator consumes a {@link DescriptorProto} for each message type and optionally generates
+ * some Java code in response to it regarding {@linkplain FileDescriptorProto its file}.
  *
  * <a name="contract"></a>
  * <p>Each message type is processed separately. As the result of processing, a generator may
@@ -63,8 +63,8 @@ import static com.google.common.collect.Sets.newHashSet;
  * as follows:
  * {@code @@protoc_insertion_point(NAME)}, where {@code NAME} is value to set into the field.
  *
- * <p>If the {@code insertionPoint} field is present, the {@code name} field must also be present. The
- * {@code content} field contains the value to insert into the insertion point is this case.
+ * <p>If the {@code insertionPoint} field is present, the {@code name} field must also be present.
+ * The {@code content} field contains the value to insert into the insertion point is this case.
  *
  * @author Dmytro Dashenkov
  */
@@ -78,24 +78,18 @@ public abstract class SpineProtoGenerator {
      * Processes a single message type and generates from zero to many {@link File} instances in
      * response to the message type.
      *
-     * <p>The output {@linkplain File Files} may contain
-     * the {@linkplain File#getInsertionPoint() insertion points}.
+     * <p>The output {@linkplain File Files} may:
+     * <ul>
+     *     <li>contain the {@linkplain File#getInsertionPoint() insertion points};
+     *     <li>be empty;
+     *     <li>contain extra types to generate for the given message declaration.
+     * </ul>
      *
-     * <p>The output {@link Collection} may be empty.
-     *
-     * <p>The output {@link Collection} may contain extra types to generate for the given message
-     * declaration.
-     *
-     * <p>If this method produces duplicate entries over a single or multiple invocations,
-     * the duplication will be excluded by the rules of {@link java.util.Set}. Though,
-     * the implementor should take care of excluding the duplicate entries which cannot be
-     * identified by the standard means. Such duplicates are e.g. the {@link File} instances that
-     * are not equal in terms of {@link Object#equals equals()} method, but target the same file to
-     * be generated (excluding the {@linkplain File files} which target insertion points).
-     *
-     * <p>Please see <a href="https://developers.google.com/protocol-buffers/docs/reference/cpp/google.protobuf.compiler.plugin.pb">
-     * the Google documentation page</a> for more detained description of what
-     * a {@link File CodeGeneratorResponse.File} instance should and should not contain.
+     * <p>Note that this method may produce identical {@link File CodeGeneratorResponse.File}
+     * instances (i.e. equal in terms of {@link Object#equals(Object) equals()} method), but should
+     * not produce non-equal instances with the same value of
+     * {@code CodeGeneratorResponse.File.name} field. Such entries cause {@code protoc} to fail
+     * and should be filtered on the early stage.
      *
      * @param file    the message type enclosing file
      * @param message the message type to process
