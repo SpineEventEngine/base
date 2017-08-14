@@ -43,7 +43,7 @@ dependencies {
 
 ext {
     runsOnWindows = org.gradle.internal.os.OperatingSystem.current().isWindows()
-    spineFolder = "../.spine" as File
+    spineFolder = "$project.projectDir/.spine" as File
 }
 
 task copyPluginJar(type: Copy) {
