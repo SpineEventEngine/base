@@ -21,7 +21,7 @@
 package io.spine.tools.protoc;
 
 import com.google.protobuf.Message;
-import io.spine.tools.protoc.test.ProtocPluginIntergrUserEvent;
+import io.spine.tools.protoc.test.PIUserEvent;
 import io.spine.tools.protoc.test.UserInfo;
 import org.junit.Test;
 
@@ -38,11 +38,11 @@ import static org.junit.Assert.assertTrue;
 public class PluginShould {
 
     private static final String EVENT_INTERFACE_FQN =
-            "io.spine.tools.protoc.ProtocPluginIntergrCustomerEvent";
+            "io.spine.tools.protoc.PICustomerEvent";
     private static final String COMMAND_INTERFACE_FQN =
-            "io.spine.tools.protoc.ProtocPluginIntergrCustomerCommand";
+            "io.spine.tools.protoc.PICustomerCommand";
     private static final String USER_COMMAND_FQN =
-            "io.spine.tools.protoc.ProtocPluginIntergrUserCommand";
+            "io.spine.tools.protoc.PIUserCommand";
 
     @Test
     public void generate_marker_interfaces() throws ClassNotFoundException {
@@ -52,10 +52,10 @@ public class PluginShould {
     @SuppressWarnings({"ConstantConditions", "RedundantCast"}) // Required by the test logic.
     @Test
     public void implement_marker_interfaces_in_generated_messages() {
-        assertTrue((Object) ProtocPluginIntergrCustomerNotified.getDefaultInstance()
-                           instanceof ProtocPluginIntergrCustomerEvent);
-        assertTrue((Object) ProtocPluginIntergrCustomerEmailRecieved.getDefaultInstance()
-                           instanceof ProtocPluginIntergrCustomerEvent);
+        assertTrue((Object) PICustomerNotified.getDefaultInstance()
+                           instanceof PICustomerEvent);
+        assertTrue((Object) PICustomerEmailRecieved.getDefaultInstance()
+                           instanceof PICustomerEvent);
     }
 
     @Test
@@ -66,28 +66,28 @@ public class PluginShould {
     @SuppressWarnings({"ConstantConditions", "RedundantCast"}) // Required by the test logic.
     @Test
     public void implement_interface_in_generated_messages_with_IS_option() {
-        assertTrue((Object) ProtocPluginIntergrCustomerCreated.getDefaultInstance()
-                           instanceof ProtocPluginIntergrCustomerEvent);
-        assertTrue((Object) ProtocPluginIntergrCreateCustomer.getDefaultInstance()
-                           instanceof ProtocPluginIntergrCustomerCommand);
+        assertTrue((Object) PICustomerCreated.getDefaultInstance()
+                           instanceof PICustomerEvent);
+        assertTrue((Object) PICreateCustomer.getDefaultInstance()
+                           instanceof PICustomerCommand);
     }
 
     @SuppressWarnings({"ConstantConditions", "RedundantCast"}) // Required by the test logic.
     @Test
     public void use_IS_in_priority_to_EVERY_IS() {
-        assertTrue((Object) ProtocPluginIntergrUserCreated.getDefaultInstance()
-                           instanceof ProtocPluginIntergrUserEvent);
-        assertTrue((Object) ProtocPluginIntergrUserNameUpdated.getDefaultInstance()
-                           instanceof ProtocPluginIntergrUserEvent);
+        assertTrue((Object) PIUserCreated.getDefaultInstance()
+                           instanceof PIUserEvent);
+        assertTrue((Object) PIUserNameUpdated.getDefaultInstance()
+                           instanceof PIUserEvent);
 
-        assertFalse((Object) UserName.getDefaultInstance() instanceof ProtocPluginIntergrUserEvent);
+        assertFalse((Object) UserName.getDefaultInstance() instanceof PIUserEvent);
         assertTrue((Object) UserName.getDefaultInstance() instanceof UserInfo);
     }
 
     @Test
     public void resolve_packages_from_src_proto_if_not_specified() throws ClassNotFoundException {
         final Class<?> cls = checkMarkerInterface(USER_COMMAND_FQN);
-        assertTrue(cls.isAssignableFrom(ProtocPluginIntergrCreateUser.class));
+        assertTrue(cls.isAssignableFrom(PICreateUser.class));
     }
 
     @Test

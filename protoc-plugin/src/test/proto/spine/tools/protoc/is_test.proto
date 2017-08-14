@@ -31,15 +31,15 @@ option java_package = "io.spine.tools.protoc";
 
 import "google/protobuf/descriptor.proto";
 
-message ProtocPluginNameUpdated {
-    option (is) = "io.spine.tools.protoc.ProtocPluginCustomerEvent";
+message ProtocNameUpdated {
+    option (is) = "io.spine.tools.protoc.ProtocCustomerEvent";
 
     string uid = 1;
     Name new_name = 2;
 }
 
-message ProtocPluginUpdateName {
-    option (is) = "io.spine.tools.protoc.ProtocPluginCustomerCommand";
+message ProtocUpdateName {
+    option (is) = "io.spine.tools.protoc.ProtocCustomerCommand";
 
     string uid = 1;
     Name new_name = 2;

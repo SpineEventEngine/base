@@ -53,10 +53,10 @@ public class MarkerInterfaceGeneratorShould {
                                                 .getName()
                                                 .replace('.', '/');
     private static final Pattern CUSTOMER_EVENT_INTERFACE_PATTERN =
-            compile("^\\s*io\\.spine\\.tools\\.protoc\\.ProtocPluginCustomerEvent\\s*,\\s*$");
+            compile("^\\s*io\\.spine\\.tools\\.protoc\\.ProtocCustomerEvent\\s*,\\s*$");
 
     private static final Pattern CUSTOMER_EVENT_INTERFACE_DECL_PATTERN =
-            compile("public\\s+interface\\s+ProtocPluginCustomerEvent\\s*extends\\s+Message\\s*\\{\\s*}");
+            compile("public\\s+interface\\s+ProtocCustomerEvent\\s*extends\\s+Message\\s*\\{\\s*}");
 
 
     private static final Pattern CUSTOMER_EVENT_OR_COMMAND =
@@ -138,9 +138,9 @@ public class MarkerInterfaceGeneratorShould {
             }
 
             final String content = file.getContent();
-            if (name.endsWith("ProtocPluginNameUpdated.java")) {
+            if (name.endsWith("ProtocNameUpdated.java")) {
                 assertTrue(content.contains("Event,"));
-            } else if (name.endsWith("ProtocPluginUpdateName.java")) {
+            } else if (name.endsWith("ProtocUpdateName.java")) {
                 assertTrue(content.contains("Command,"));
             } else {
                 assertTrue(CUSTOMER_EVENT_OR_COMMAND.matcher(name).find());
@@ -164,7 +164,7 @@ public class MarkerInterfaceGeneratorShould {
         final List<File> files = response.getFileList();
         assertEquals(3, files.size());
         for (File file : files) {
-            if (!file.getName().equals("io/spine/tools/protoc/ProtocPluginCustomerEvent.java")) {
+            if (!file.getName().equals("io/spine/tools/protoc/ProtocCustomerEvent.java")) {
                 final String name = file.getName();
                 assertEquals(PACKAGE_PATH + "/EveryIsInOneFileProto.java", name);
 

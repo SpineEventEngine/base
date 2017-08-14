@@ -29,14 +29,14 @@ option java_multiple_files = true;
 option java_outer_classname = "IsTestProto";
 option java_package = "io.spine.tools.protoc";
 
-message ProtocPluginIntergrCustomerCreated {
-    option (is) = "io.spine.tools.protoc.ProtocPluginIntergrCustomerEvent";
+message PICustomerCreated {
+    option (is) = "io.spine.tools.protoc.PICustomerEvent";
 
     string uid = 1;
 }
 
-message ProtocPluginIntergrCreateCustomer {
-    option (is) = "io.spine.tools.protoc.ProtocPluginIntergrCustomerCommand";
+message PICreateCustomer {
+    option (is) = "io.spine.tools.protoc.PICustomerCommand";
 
     string uid = 1;
     CustomerName name = 2;
