@@ -46,13 +46,14 @@ import static java.lang.String.format;
  * The {@link SpineProtoGenerator} implementation generating the narrow interfaces implemented by
  * the the message.
  *
- * <p>The generator produces two types of {@link File} instances representing:
+ * <p>The generator produces two types of {@link File CodeGeneratorResponse.File} instances
+ * representing:
  * <ul>
  *     <li>the marker interfaces derived from
  *         {@link com.google.protobuf.Message com.google.protobuf.Message} (see
  *         {@link MarkerInterfaces});
  *     <li>the insertion entries to the existing messages (see
- *         {@link File#getInsertionPoint() File.insertionPoint});
+ *         {@link File#getInsertionPoint() CodeGeneratorResponse.File.insertionPoint}).
  * </ul>
  *
  * @author Dmytro Dashenkov
