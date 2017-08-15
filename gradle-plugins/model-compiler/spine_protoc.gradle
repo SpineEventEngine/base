@@ -83,6 +83,9 @@ def copy(final from, final to) {
     Files.copy(from, to, StandardCopyOption.REPLACE_EXISTING)
 }
 
+// We cannot use standard Copy task here as it resolves the `from` property not lazily.
+// Since we use use a dependency in the `from`, it may cause some issues with the Maven plugin
+// See https://discuss.gradle.org/t/right-way-to-copy-contents-from-dependency-archives/7449
 task copyPluginJar {
     description = "Spawns the Spine Protoc plugin artifact in the project directory"
 }
