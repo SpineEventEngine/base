@@ -20,9 +20,9 @@
 
 def protocPluginDependency = null
 
-final def spineModelCompilerVersion = '0.9.52-SNAPSHOT'
-final def protobufVersion = '3.3.0'
-final def gRpcVersion = '1.5.0'
+final def spineModelCompilerVersion = @baseVersion@
+final def protobufVersion = @pbVersion@
+final def gRpcVersion = @gRPCVersion@
 
 configurations {
     fetch {

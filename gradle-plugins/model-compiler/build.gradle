@@ -79,10 +79,20 @@ dependencies {
 
 protobuf {
     generatedFilesBaseDir = generatedRootDir
-    protoc {
-        artifact = protobufDependency
-    }
 }
+
+task prepareProtocConfig(type: Copy) {
+    from "./spine_protoc.gradle"
+    into "./src//main/resources"
+
+    filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: ['baseVersion': "'$project.spineVersion'".toString(),
+                                                                'pbVersion': "'$project.protobufVersion'".toString(),
+                                                                'gRPCVersion': "'$project.gRpcVersion'".toString()])
+
+    outputs.upToDateWhen { false }
+}
+
+processResources.dependsOn prepareProtocConfig
 
 task copyProtocPluginTestArtifact(type: Copy) {
     from project.rootDir.toPath().resolve(".spine").toFile()
