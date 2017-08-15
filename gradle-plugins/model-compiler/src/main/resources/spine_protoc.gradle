@@ -1,3 +1,6 @@
+import java.nio.file.Files
+import java.nio.file.StandardCopyOption
+
 /*
  * Copyright 2017, TeamDev Ltd. All rights reserved.
  *
@@ -18,11 +21,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-def protocPluginDependency = null
-
 final def spineModelCompilerVersion = '0.9.52-SNAPSHOT'
 final def protobufVersion = '3.3.0'
 final def gRpcVersion = '1.5.0'
+
+buildscript {
+    ext {
+        protocPluginDependency = null
+    }
+}
 
 configurations {
     fetch {
@@ -47,12 +54,30 @@ dependencies {
 
 ext {
     runsOnWindows = org.gradle.internal.os.OperatingSystem.current().isWindows()
-    spineFolder = "$project.projectDir/.spine" as File
+    spineFolder = ("$project.projectDir/.spine" as File).toPath()
+    rootSpineFolder = ("$project.rootDir/.spine" as File).toPath()
 }
 
-task copyPluginJar(type: Copy) {
-    from configurations.fetch.fileCollection(protocPluginDependency).singleFile
-    into project.spineFolder
+final def copyPluginJarAction = {
+    final def from = pluginJar()
+    final def dest = project.spineFolder.resolve(from.name)
+    final def rootDest = project.rootSpineFolder.resolve(from.name)
+    final def srcPath = from.toPath()
+    copy(srcPath, dest)
+    copy(srcPath, rootDest)
+}
+
+def copy(final from, final to) {
+    to.toFile().mkdirs()
+    Files.copy(from, to, StandardCopyOption.REPLACE_EXISTING)
+}
+
+task copyPluginJar { }
+
+copyPluginJar.doLast(copyPluginJarAction)
+
+def pluginJar() {
+    return configurations.fetch.fileCollection(protocPluginDependency).singleFile
 }
 
 protobuf {
