@@ -21,6 +21,7 @@ import java.nio.file.StandardCopyOption
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+// Template for the versions injection. See model-compiler:prepareProtocConfig.
 final def spineModelCompilerVersion = @baseVersion@
 final def protobufVersion = @pbVersion@
 final def gRpcVersion = @gRPCVersion@
@@ -63,16 +64,28 @@ final def copyPluginJarAction = {
     final def dest = project.spineFolder.resolve(from.name)
     final def rootDest = project.rootSpineFolder.resolve(from.name)
     final def srcPath = from.toPath()
+    // The artifact must be present in both root and project directories to make any kin of gradle
+    // build run successfully.
     copy(srcPath, dest)
     copy(srcPath, rootDest)
 }
 
+/**
+ * Copies the file under the given path into the given path.
+ *
+ * <p>See {@link Files#copy Files.copy()} for more detailed behavior description.
+ *
+ * @param from the file location
+ * @param to   the file destination
+ */
 def copy(final from, final to) {
     to.toFile().mkdirs()
     Files.copy(from, to, StandardCopyOption.REPLACE_EXISTING)
 }
 
-task copyPluginJar { }
+task copyPluginJar {
+    description = "Spawns the Spine Protoc plugin artifact in the project directory"
+}
 
 copyPluginJar.doLast(copyPluginJarAction)
 
