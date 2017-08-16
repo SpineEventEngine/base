@@ -22,6 +22,9 @@ package io.spine.tools.protodoc;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static java.util.regex.Pattern.DOTALL;
+import static java.util.regex.Pattern.compile;
+
 /**
  * A formatting action, which handles {@code <pre>} tags.
  *
@@ -34,8 +37,9 @@ class PreTagFormatting implements FormattingAction {
 
     static final String CLOSING_PRE = "</pre>";
     static final String OPENING_PRE = "<pre>";
-    private static final Pattern PATTERN_OPENING_PRE = Pattern.compile(OPENING_PRE);
-    private static final Pattern NOT_FORMATTED_DOC_PATTERN = Pattern.compile("^/\\*\\*[\\s*]*<pre>.*</pre>[\\s*]+<code>.*</code>[\\s*]*\\*/$", Pattern.DOTALL);
+    private static final Pattern PATTERN_OPENING_PRE = compile(OPENING_PRE);
+    private static final Pattern NOT_FORMATTED_DOC_PATTERN =
+            compile("^/\\*\\*[\\s*]*<pre>.*</pre>[\\s*]+<code>.*</code>[\\s*]*\\*/$", DOTALL);
 
     /**
      * Obtains the formatted representation of the specified text.
