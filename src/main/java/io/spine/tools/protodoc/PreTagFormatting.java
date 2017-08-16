@@ -35,6 +35,7 @@ class PreTagFormatting implements FormattingAction {
     static final String CLOSING_PRE = "</pre>";
     static final String OPENING_PRE = "<pre>";
     private static final Pattern PATTERN_OPENING_PRE = Pattern.compile(OPENING_PRE);
+    private static final Pattern NOT_FORMATTED_DOC_PATTERN = Pattern.compile("^/\\*\\*[\\s*]*<pre>.*</pre>[\\s*]+<code>.*</code>[\\s*]*\\*/$", Pattern.DOTALL);
 
     /**
      * Obtains the formatted representation of the specified text.
@@ -70,6 +71,6 @@ class PreTagFormatting implements FormattingAction {
      * @return {@code true} if the Javadoc contains opening and closing {@code pre} tag
      */
     private static boolean shouldFormat(String javadoc) {
-        return javadoc.contains(OPENING_PRE) && javadoc.contains(CLOSING_PRE);
+        return NOT_FORMATTED_DOC_PATTERN.matcher(javadoc).matches();
     }
 }
