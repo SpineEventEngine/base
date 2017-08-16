@@ -25,7 +25,7 @@ import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.EnumDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
-import io.spine.gradle.compiler.util.FieldTypes;
+import io.spine.gradle.compiler.message.fieldtype.FieldTypes;
 import io.spine.type.TypeUrl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,9 +37,9 @@ import java.util.Map;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Lists.newLinkedList;
-import static io.spine.option.UnknownOptions.getUnknownOptionValue;
 import static io.spine.gradle.compiler.util.JavaCode.getOuterClassName;
 import static io.spine.option.OptionsProto.TYPE_URL_PREFIX_FIELD_NUMBER;
+import static io.spine.option.UnknownOptions.getUnknownOptionValue;
 
 /**
  * Maps Protobuf message types from a {@code .proto} file to the corresponding Java classes.

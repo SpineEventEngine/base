@@ -367,10 +367,10 @@ extend google.protobuf.MessageOptions {
     //
     // The interface is generated into the Protobuf generation destination directory. The interface
     // itself is a marker interface derived from `com.google.protobuf.Message`. Unless the interface
-    // is specified by it's FQN, it will have the same Java package as the message.
+    // is specified by its FQN, it will have the same Java package as the message.
     //
     // To specify a marker interface for every message in a `.proto` file, use `(every_is)` file
-    // option. If both `(is)` and `(every_is)` options are found, `(is)` wins.
+    // option. If both `(is)` and `(every_is)` options are found, `(is)` value is taken.
     //
     string is = 73915;
 
@@ -482,10 +482,10 @@ extend google.protobuf.FileOptions {
     //
     // The interface is generated into the Protobuf generation destination directory. The interface
     // itself is a marker interface derived from `com.google.protobuf.Message`. Unless the interface
-    // is specified by it's FQN, it will have the same Java package as the message.
+    // is specified by its FQN, it will have the same Java package as the message.
     //
-    // To specify a marker interface a single message, use `(is)` message option. If both `(is)`
-    // and `(every_is)` options are found, `(is)` wins.
+    // To specify a marker interface for a single message, use `(is)` message option. If both `(is)`
+    // and `(every_is)` options are found, `(is)` value is taken.
     //
     string every_is = 73946;
 

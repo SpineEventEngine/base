@@ -55,29 +55,6 @@ dependencies {
 
 }
 
-protobuf {
-    generatedFilesBaseDir = "$projectDir/generated"
-    protoc {
-        artifact = "com.google.protobuf:protoc:${protobufVersion}"
-    }
-    plugins {
-        grpc {
-            artifact = "io.grpc:protoc-gen-grpc-java:${gRpcVersion}"
-        }
-    }
-    generateProtoTasks {
-        all().each { final task ->
-            task.generateDescriptorSet = true
-            task.descriptorSetOptions.path = "${projectDir}/build/descriptors/${task.sourceSet.name}.desc"
-            task.descriptorSetOptions.includeImports = true
-            task.descriptorSetOptions.includeSourceInfo = true
-            task.plugins {
-                grpc {}
-            }
-        }
-    }
-}
-
 sourceSets {
     main {
         proto.srcDirs = ["$projectDir/src/main/proto"]

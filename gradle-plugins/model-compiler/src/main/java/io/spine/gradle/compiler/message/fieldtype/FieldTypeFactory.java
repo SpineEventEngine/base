@@ -28,10 +28,10 @@ import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.protobuf.DescriptorProtos.DescriptorProto;
-import static io.spine.gradle.compiler.util.FieldTypes.getEntryNameFor;
-import static io.spine.gradle.compiler.util.FieldTypes.isMap;
-import static io.spine.gradle.compiler.util.FieldTypes.isRepeated;
-import static io.spine.gradle.compiler.util.FieldTypes.trimTypeName;
+import static io.spine.gradle.compiler.message.fieldtype.FieldTypes.getEntryNameFor;
+import static io.spine.gradle.compiler.message.fieldtype.FieldTypes.isMap;
+import static io.spine.gradle.compiler.message.fieldtype.FieldTypes.isRepeated;
+import static io.spine.gradle.compiler.message.fieldtype.FieldTypes.trimTypeName;
 
 /**
  * Factory for creation {@link FieldType} instances.

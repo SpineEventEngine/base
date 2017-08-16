@@ -18,26 +18,32 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.gradle.compiler.util;
+apply plugin: 'com.google.protobuf'
+apply plugin: spineProtobufPluginId
 
-import com.google.common.testing.NullPointerTester;
-import org.junit.Test;
-
-import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
-
-/**
- * @author Illia Shepilov
- */
-public class FieldTypesShould {
-
-    @Test
-    public void have_private_constructor() {
-        assertHasPrivateParameterlessCtor(FieldTypes.class);
+buildscript {
+    repositories {
+        mavenCentral()
+        maven {
+            url = googleMavenCentralMirror
+        }
     }
-
-    @Test
-    public void pass_null_tolerance_check() {
-        new NullPointerTester().testStaticMethods(FieldTypes.class,
-                                                  NullPointerTester.Visibility.PACKAGE);
+    dependencies {
+        classpath(group: 'com.google.protobuf',
+                name: 'protobuf-gradle-plugin',
+                version: protobufGradlePluginVerison) {
+            // exclude an old Guava version
+            exclude group: 'com.google.guava'
+        }
     }
+}
+
+dependencies {
+    compile project(":base")
+
+    compile "com.google.protobuf:protobuf-java:${protobufVersion}"
+}
+
+build {
+    dependsOn project(":protoc-plugin").publishToMavenLocal
 }
