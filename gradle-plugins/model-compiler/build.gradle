@@ -81,7 +81,15 @@ protobuf {
     generatedFilesBaseDir = generatedRootDir
 }
 
+/**
+ * Prepares the spine_protoc.gradle file by copying it to the `resources` directory and injecting
+ * the versions of the protoc plugin dependencies.
+ *
+ * <p>This task is executed each time `processResources` task is executed, i.e. upon each build.
+ */
 task prepareProtocConfig(type: Copy) {
+    description = "Prepares the spine_protoc.gradle file"
+    
     from "./spine_protoc.gradle"
     into "./src//main/resources"
 
