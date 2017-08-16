@@ -39,6 +39,7 @@ import static io.spine.gradle.TaskName.FORMAT_PROTO_DOC;
 import static io.spine.gradle.TaskName.FORMAT_TEST_PROTO_DOC;
 import static io.spine.gradle.TaskName.GENERATE_PROTO;
 import static io.spine.gradle.TaskName.GENERATE_TEST_PROTO;
+import static io.spine.tools.protodoc.BacktickFormatting.BACKTICK;
 import static io.spine.tools.protodoc.Given.formatAndAssert;
 import static io.spine.tools.protodoc.PreTagFormatting.CLOSING_PRE;
 import static io.spine.tools.protodoc.PreTagFormatting.OPENING_PRE;
@@ -99,6 +100,31 @@ public class ProtoJavadocPluginShould {
         final String expected = getJavadoc(text);
         final String javadocToFormat = getJavadoc(textInPreTags);
         formatAndAssert(expected, javadocToFormat, testProjectDir);
+    }
+
+    @Test
+    public void handle_multiline_code_snippets_properly() throws IOException {
+        final String protoDoc = multilineJavadoc(BACKTICK, BACKTICK);
+        final String javadoc = multilineJavadoc("{@code ", "}");
+
+        formatAndAssert(javadoc, protoDoc, testProjectDir);
+    }
+
+    private static String multilineJavadoc(String codeOpening, String codeClosing) {
+        final String text = new StringBuilder().append("/**")
+                                               .append(System.lineSeparator())
+                                               .append("Javadoc header")
+                                               .append(System.lineSeparator())
+                                               .append(OPENING_PRE)
+                                               .append(codeOpening)
+                                               .append("java snippet")
+                                               .append(codeClosing)
+                                               .append(CLOSING_PRE)
+                                               .append(System.lineSeparator())
+                                               .append("Javadoc footer")
+                                               .append("*/")
+                                               .toString();
+        return text;
     }
 
     private static String getJavadoc(String javadocText) {
