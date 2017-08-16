@@ -11,3 +11,4 @@ include 'testutil-base'
 include 'protoc-plugin'
 include 'protoc-plugin-tests'
 
+include 'protoc-plugin'
