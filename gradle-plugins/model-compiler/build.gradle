@@ -1,3 +1,6 @@
+import java.nio.file.Files
+import java.nio.file.StandardCopyOption
+
 //
 // Copyright 2017, TeamDev Ltd. All rights reserved.
 //
@@ -21,6 +24,7 @@
 ext {
     roasterVersion = '2.20.0.Final'
     spineFolder = "${project.projectDir}/.spine" as File
+    protocPluginDependency = null
 }
 
 group = 'io.spine.tools'
@@ -75,6 +79,9 @@ dependencies {
     // It is a local version bundled within the JDK installation.
     // "JAVA_HOME" environment variable must be set for correct work.
     testCompile files("${System.properties['java.home']}/../lib/tools.jar")
+
+    // The freshest version of the plugin required for tests
+    protocPluginDependency = testCompile "io.spine.tools:spine-protoc-plugin:$spineVersion@jar"
 }
 
 protobuf {
@@ -91,7 +98,7 @@ task prepareProtocConfig(type: Copy) {
     description = "Prepares the spine_protoc.gradle file"
     
     from "./spine_protoc.gradle"
-    into "./src//main/resources"
+    into "./src/main/resources"
 
     filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: ['baseVersion': "'$project.spineVersion'".toString(),
                                                                 'pbVersion': "'$project.protobufVersion'".toString(),
@@ -102,10 +109,23 @@ task prepareProtocConfig(type: Copy) {
 
 processResources.dependsOn prepareProtocConfig
 
-task copyProtocPluginTestArtifact(type: Copy) {
-    from project.rootDir.toPath().resolve(".spine").toFile()
-    into project.spineFolder
+final def copyPluginJarAction = {
+    final def from = configurations.testCompile.fileCollection(protocPluginDependency).singleFile
+    final def srcPath = from.toPath()
+    final def dest = project.spineFolder.toPath().resolve(from.name)
+    dest.toFile().mkdirs()
+    Files.copy(srcPath, dest, StandardCopyOption.REPLACE_EXISTING)
 }
+
+// We cannot use standard Copy task here as it resolves the `from` property not lazily.
+// Since we use use a dependency in the `from`, it may cause some issues with the Maven plugin
+// See https://discuss.gradle.org/t/right-way-to-copy-contents-from-dependency-archives/7449
+task copyProtocPluginTestArtifact {
+    description = "Spawns the Spine Protoc plugin artifact in the project directory for tests"
+}
+
+copyProtocPluginTestArtifact.doLast(copyPluginJarAction)
+copyProtocPluginTestArtifact.dependsOn project.project(':protoc-plugin').publishToMavenLocal
 
 // Tests use the Protobuf plugin.
 test {
