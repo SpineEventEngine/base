@@ -9,6 +9,4 @@ project(':model-compiler').projectDir = new File('./gradle-plugins/model-compile
 include 'base'
 include 'testutil-base'
 include 'protoc-plugin'
-
-// To be re-enabled in 0.9.54-SNAPSHOT
-//include 'protoc-plugin-tests'
+include 'protoc-plugin-tests'
