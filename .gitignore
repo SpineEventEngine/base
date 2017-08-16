@@ -23,6 +23,10 @@ build/*
 # Class files produced by the IDE
 classes/*
 
+# Spine internal directory for storing intermediate artifacts
+/.spine/
+*/.spine/
+
 # Login details to Maven repository.
 # Each workstation should have developer's login defined in this file.
 credentials.properties
