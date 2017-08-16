@@ -96,8 +96,13 @@ public class ProtoJavadocPluginShould {
     @Test
     public void format_generated_java_sources() throws IOException {
         final String text = "javadoc text";
-        final String textInPreTags = OPENING_PRE + text + CLOSING_PRE;
-        final String expected = getJavadoc(text);
+        final String autegeneratedFieldDescription = " <code>field description</code>";
+        final String textInPreTags = new StringBuilder().append(OPENING_PRE)
+                                                        .append(text)
+                                                        .append(CLOSING_PRE)
+                                                        .append(autegeneratedFieldDescription)
+                                                        .toString();
+        final String expected = getJavadoc(text + autegeneratedFieldDescription);
         final String javadocToFormat = getJavadoc(textInPreTags);
         formatAndAssert(expected, javadocToFormat, testProjectDir);
     }

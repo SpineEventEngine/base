@@ -22,8 +22,6 @@ package io.spine.tools.protodoc;
 
 import org.junit.Test;
 
-import static io.spine.tools.protodoc.PreTagFormatting.CLOSING_PRE;
-import static io.spine.tools.protodoc.PreTagFormatting.OPENING_PRE;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -31,14 +29,26 @@ import static org.junit.Assert.assertEquals;
  */
 public class PreTagFormattingShould {
 
+    private static final String RAW_PROTO_DOC =
+            "/** <pre> Doc goes here </pre> <code>string field = 1;</code> */";
+    private static final String PROCESSED_PROTO_DOC =
+            "/**  Doc goes here  <code>string field = 1;</code> */";
+
+    private static final String RAW_PROTO_DOC_WITH_PRE_TAG =
+            "/** Doc header <pre> Preformated doc </pre> <code>string field = 1;</code> */";
+
+
     private final FormattingAction formatting = new PreTagFormatting();
 
     @Test
     public void remove_tags_generated_by_proto_compiler() {
-        final String tagsInsideGeneratedTags = OPENING_PRE + CLOSING_PRE;
-        final String source = OPENING_PRE + tagsInsideGeneratedTags + CLOSING_PRE;
-        final String result = formatting.execute(source);
-        assertEquals(tagsInsideGeneratedTags, result);
+        final String result = formatting.execute(RAW_PROTO_DOC);
+        assertEquals(PROCESSED_PROTO_DOC, result);
+    }
+
+    @Test
+    public void not_remove_user_pre_tags_from_doc() {
+        assertEquals(RAW_PROTO_DOC_WITH_PRE_TAG, formatting.execute(RAW_PROTO_DOC_WITH_PRE_TAG));
     }
 
     @Test
