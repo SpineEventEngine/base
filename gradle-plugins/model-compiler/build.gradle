@@ -86,6 +86,10 @@ dependencies {
 
 protobuf {
     generatedFilesBaseDir = generatedRootDir
+
+    protoc {
+        artifact = "com.google.protobuf:protoc:${protobufVersion}"
+    }
 }
 
 /**
