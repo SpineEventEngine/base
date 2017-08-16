@@ -363,7 +363,18 @@ extend google.protobuf.MessageOptions {
     // release.
     bool beta_type = 73914;
 
-    // reserved 73915 to 73921 for future API annotation options.
+    // Specifies the name of a Java interface to be implemented by this message.
+    //
+    // The interface is generated into the Protobuf generation destination directory. The interface
+    // itself is a marker interface derived from `com.google.protobuf.Message`. Unless the interface
+    // is specified by it's FQN, it will have the same Java package as the message.
+    //
+    // To specify a marker interface for every message in a `.proto` file, use `(every_is)` file
+    // option. If both `(is)` and `(every_is)` options are found, `(is)` wins.
+    //
+    string is = 73915;
+
+    // reserved 73916 to 73921 for future API annotation options.
 
     // Enrichment Options
     //--------------------
@@ -467,7 +478,18 @@ extend google.protobuf.FileOptions {
     // release.
     bool beta_all = 73945;
 
-    // reserved 73946 to 73970 for future use.
+    // Specifies the name of a Java interface to be implemented by all the messages in this file.
+    //
+    // The interface is generated into the Protobuf generation destination directory. The interface
+    // itself is a marker interface derived from `com.google.protobuf.Message`. Unless the interface
+    // is specified by it's FQN, it will have the same Java package as the message.
+    //
+    // To specify a marker interface a single message, use `(is)` message option. If both `(is)`
+    // and `(every_is)` options are found, `(is)` wins.
+    //
+    string every_is = 73946;
+
+    // reserved 73947 to 73970 for future use.
 }
 
 extend google.protobuf.ServiceOptions {
