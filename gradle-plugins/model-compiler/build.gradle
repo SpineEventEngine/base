@@ -54,7 +54,7 @@ dependencies {
     compile project(':plugin-base')
     compile project(':base')
 
-    compile group: 'com.squareup', name: 'javapoet', version: '1.8.0'
+    compile group: 'com.squareup', name: 'javapoet', version: javaPoetVersion
     compile group: 'com.google.template', name: 'soy', version: '2017-02-01'
     compile group: 'com.google.guava', name: 'guava', version: guavaVersion
     compile group: 'com.google.protobuf', name: 'protobuf-java', version: protobufVersion
