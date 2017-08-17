@@ -39,7 +39,7 @@ class PreTagFormatting implements FormattingAction {
     static final String OPENING_PRE = "<pre>";
     private static final Pattern PATTERN_OPENING_PRE = compile(OPENING_PRE);
     private static final Pattern NOT_FORMATTED_DOC_PATTERN =
-            compile("^/\\*\\*[\\s*]*<pre>.*</pre>[\\s*]+<code>.*</code>[\\s*]*\\*/$", DOTALL);
+            compile("^/\\*\\*[\\s*]*<pre>.*</pre>[\\s*]+.*[\\s*]*\\*/$", DOTALL);
 
     /**
      * Obtains the formatted representation of the specified text.
