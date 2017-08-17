@@ -30,7 +30,7 @@ interface FormattingAction {
     /**
      * Obtains the formatted representation of the specified text.
      *
-     * <p>The specified text may contains line separators.
+     * <p>The specified text may contain line separators.
      *
      * @param text the text to format
      * @return the formatted text
