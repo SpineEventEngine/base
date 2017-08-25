@@ -24,10 +24,16 @@ import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
+import org.gradle.api.tasks.PathSensitivity;
 import org.gradle.api.tasks.TaskContainer;
 import org.slf4j.Logger;
 
+import java.nio.file.Path;
+import java.util.Collection;
+
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.collect.ImmutableSet.copyOf;
+import static com.google.common.collect.Lists.newLinkedList;
 
 /**
  * A base class for Spine plugins.
@@ -114,9 +120,12 @@ public abstract class SpinePlugin implements Plugin<Project> {
             private TaskName followingTask;
             private TaskName previousTask;
 
+            private final Collection<Path> inputs;
+
             private Builder(TaskName name, Action<Task> action) {
                 this.name = name;
                 this.action = action;
+                inputs = newLinkedList();
             }
 
             /**
@@ -157,6 +166,12 @@ public abstract class SpinePlugin implements Plugin<Project> {
                 return this;
             }
 
+            public Builder withInputFiles(Path... inputs) {
+                checkNotNull(inputs, "task inputs");
+                this.inputs.addAll(copyOf(inputs));
+                return this;
+            }
+
             /**
              * Builds an instance of {@link GradleTask} and inserts it to the project
              * build lifecycle according to the "before" and "after" tasks specified in the builder.
@@ -176,17 +191,32 @@ public abstract class SpinePlugin implements Plugin<Project> {
 
                 final Task newTask = project.task(name.getValue())
                                             .doLast(action);
+                dependTask(newTask, project);
+                addTaskIO(newTask);
+                final GradleTask result = new GradleTask(name, project);
+                return result;
+            }
+
+            private void dependTask(Task task, Project project) {
                 if (previousTask != null) {
-                    newTask.dependsOn(previousTask.getValue());
+                    task.dependsOn(previousTask.getValue());
                 }
                 if (followingTask != null) {
                     final TaskContainer existingTasks = project.getTasks();
                     existingTasks.getByPath(followingTask.getValue())
-                                 .dependsOn(newTask);
+                                 .dependsOn(task);
 
                 }
-                final GradleTask result = new GradleTask(name, project);
-                return result;
+            }
+
+            private void addTaskIO(Task task) {
+                if (!inputs.isEmpty()) {
+                    task.getInputs()
+                        .files(inputs.toArray())
+                        .skipWhenEmpty()
+                        .optional()
+                        .withPathSensitivity(PathSensitivity.RELATIVE);
+                }
             }
         }
 

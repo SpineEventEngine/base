@@ -181,7 +181,9 @@ public enum TaskName {
      *
      * <p>Handles the {@code test} classes and resources scope.
      */
-    FORMAT_TEST_PROTO_DOC("formatTestProtoDoc");
+    FORMAT_TEST_PROTO_DOC("formatTestProtoDoc"),
+
+    GENERATE_MODEL("generateModel");
 
     private final String value;
 
