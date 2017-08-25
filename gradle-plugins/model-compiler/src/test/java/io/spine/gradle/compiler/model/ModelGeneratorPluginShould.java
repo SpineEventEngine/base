@@ -20,12 +20,20 @@
 
 package io.spine.gradle.compiler.model;
 
+import io.spine.gradle.TaskName;
 import io.spine.gradle.compiler.GradleProject;
+import org.gradle.testkit.runner.BuildResult;
+import org.gradle.testkit.runner.BuildTask;
+import org.gradle.testkit.runner.TaskOutcome;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import static io.spine.gradle.TaskName.GENERATE_MODEL;
+import static org.gradle.testkit.runner.TaskOutcome.FAILED;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * @author Dmytro Dashenkov
@@ -38,15 +46,46 @@ public class ModelGeneratorPluginShould {
     public final TemporaryFolder testProjectDir = new TemporaryFolder();
 
     @Test
-    public void compile() {
-        newProjectWithJava("io/spine/tools/model/TestAggregate.java").executeTask(GENERATE_MODEL);
+    public void pass_valid_model_classes() {
+        newProjectWithJava("io/spine/tools/model/TestAggregate.java",
+                           "io/spine/tools/model/TestProcMan.java",
+                           "io/spine/tools/model/TestCommandHandler.java")
+                .executeTask(GENERATE_MODEL);
     }
 
-    private GradleProject newProjectWithJava(String fileName) {
+    @Test
+    public void halt_build_on_duplicate_command_handling_methods() {
+        final BuildResult result = newProjectWithJava(
+                "io/spine/tools/model/DuplicateAggregate.java",
+                "io/spine/tools/model/DuplicateCommandHandler.java")
+                .executeAndFail(GENERATE_MODEL);
+        final BuildTask task = result.task(toPath(GENERATE_MODEL));
+        assertNotNull(task);
+        final TaskOutcome generationResult = task.getOutcome();
+        assertEquals(FAILED, generationResult);
+    }
+
+    @Ignore // TODO:2017-08-25:dmytro.dashenkov: Re-enable when Model is capable of checking the handler methods.
+    @Test
+    public void halt_build_on_malformed_command_handling_methods() {
+        final BuildResult result =
+                newProjectWithJava("io/spine/tools/model/MalformedAggregate.java")
+                .executeAndFail(GENERATE_MODEL);
+        final BuildTask task = result.task(toPath(GENERATE_MODEL));
+        assertNotNull(task);
+        final TaskOutcome generationResult = task.getOutcome();
+        assertEquals(FAILED, generationResult);
+    }
+
+    private GradleProject newProjectWithJava(String... fileNames) {
         return GradleProject.newBuilder()
                             .setProjectName(PROJECT_NAME)
                             .setProjectFolder(testProjectDir)
-                            .addJavaFile(fileName)
+                            .addJavaFiles(fileNames)
                             .build();
+    }
+
+    private static String toPath(TaskName name) {
+        return ':' + name.getValue();
     }
 }

@@ -38,6 +38,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Lists.newLinkedList;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
+import static java.util.Arrays.asList;
 import static org.jboss.forge.roaster.model.util.Strings.isBlank;
 
 /**
@@ -54,6 +55,8 @@ public class GradleProject {
     private static final String EXT_GRADLE_NAME = "ext.gradle";
     private static final String BASE_PROTO_LOCATION = "src/main/proto/";
     private static final String BASE_JAVA_LOCATION = "src/main/java/";
+
+    private static final String STACKTRACE_CLI_OPTION = "--stacktrace";
 
     /**
      * Determines whether the code can be debugged.
@@ -91,8 +94,13 @@ public class GradleProject {
     }
 
     public BuildResult executeTask(TaskName taskName) {
-        return gradleRunner.withArguments(taskName.getValue(), "--stacktrace")
+        return gradleRunner.withArguments(taskName.getValue(), STACKTRACE_CLI_OPTION)
                            .build();
+    }
+
+    public BuildResult executeAndFail(TaskName taskName) {
+        return gradleRunner.withArguments(taskName.getValue(), STACKTRACE_CLI_OPTION)
+                           .buildAndFail();
     }
 
     private void writeProto(String fileName) throws IOException {
@@ -174,6 +182,11 @@ public class GradleProject {
         public Builder addJavaFile(String javaFileName) {
             checkArgument(!isBlank(javaFileName));
             javaFileNames.add(javaFileName);
+            return this;
+        }
+
+        public Builder addJavaFiles(String... fileNames) {
+            javaFileNames.addAll(asList(fileNames));
             return this;
         }
 
