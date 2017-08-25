@@ -179,12 +179,6 @@ public class GradleProject {
             return this;
         }
 
-        public Builder addJavaFile(String javaFileName) {
-            checkArgument(!isBlank(javaFileName));
-            javaFileNames.add(javaFileName);
-            return this;
-        }
-
         public Builder addJavaFiles(String... fileNames) {
             javaFileNames.addAll(asList(fileNames));
             return this;
