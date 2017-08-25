@@ -32,9 +32,9 @@ import java.util.List;
 /**
  * @author Dmytro Dashenkov
  */
-public class MalformedAggreagate extends Aggregate<String, Any, AnyVBuilder> {
+public class MalformedAggregate extends Aggregate<String, Any, AnyVBuilder> {
 
-    protected MalformedAggreagate(String id) {
+    protected MalformedAggregate(String id) {
         super(id);
     }
 
