@@ -53,6 +53,7 @@ public class GradleProject {
     private static final String BUILD_GRADLE_NAME = "build.gradle";
     private static final String EXT_GRADLE_NAME = "ext.gradle";
     private static final String BASE_PROTO_LOCATION = "src/main/proto/";
+    private static final String BASE_JAVA_LOCATION = "src/main/java/";
 
     /**
      * Determines whether the code can be debugged.
@@ -73,24 +74,43 @@ public class GradleProject {
                                         .withProjectDir(builder.folder.getRoot())
                                         .withDebug(DEBUG_ENABLED);
         writeBuildGradle();
-        for (String protoFile : builder.protoFileNames) {
+        writeProtoFiles(builder.protoFileNames);
+        writeJavaFiles(builder.javaFileNames);
+    }
+
+    private void writeProtoFiles(Iterable<String> fileNames) throws IOException {
+        for (String protoFile : fileNames) {
             writeProto(protoFile);
         }
     }
 
+    private void writeJavaFiles(Iterable<String> fileNames) throws IOException {
+        for (String javaFile : fileNames) {
+            writeJava(javaFile);
+        }
+    }
+
     public BuildResult executeTask(TaskName taskName) {
-        return gradleRunner.withArguments(taskName.getValue())
+        return gradleRunner.withArguments(taskName.getValue(), "--stacktrace")
                            .build();
     }
 
-    private void writeProto(String protoFile) throws IOException {
-        final String protoFilePath = BASE_PROTO_LOCATION + protoFile;
+    private void writeProto(String fileName) throws IOException {
+        writeFile(fileName, BASE_PROTO_LOCATION);
+    }
+
+    private void writeJava(String fileName) throws IOException {
+        writeFile(fileName, BASE_JAVA_LOCATION);
+    }
+
+    private void writeFile(String fileName, String dir) throws IOException {
+        final String filePath = dir + fileName;
         final Path resultingPath = gradleRunner.getProjectDir()
                                                .toPath()
-                                               .resolve(protoFilePath);
-        final String fqnProtoPath = name + '/' + protoFilePath;
+                                               .resolve(filePath);
+        final String fullyQualifiedPath = name + '/' + filePath;
         final InputStream fileContent = getClass().getClassLoader()
-                                                  .getResourceAsStream(fqnProtoPath);
+                                                  .getResourceAsStream(fullyQualifiedPath);
         Files.createDirectories(resultingPath.getParent());
         Files.copy(fileContent, resultingPath);
     }
@@ -129,6 +149,7 @@ public class GradleProject {
         private String name;
         private TemporaryFolder folder;
         private final List<String> protoFileNames = newLinkedList();
+        private final List<String> javaFileNames = newLinkedList();
 
         private Builder() {
             // Prevent direct instantiation of this class.
@@ -147,6 +168,12 @@ public class GradleProject {
         public Builder addProtoFile(String protoFileName) {
             checkArgument(!isBlank(protoFileName));
             protoFileNames.add(protoFileName);
+            return this;
+        }
+
+        public Builder addJavaFile(String javaFileName) {
+            checkArgument(!isBlank(javaFileName));
+            javaFileNames.add(javaFileName);
             return this;
         }
 

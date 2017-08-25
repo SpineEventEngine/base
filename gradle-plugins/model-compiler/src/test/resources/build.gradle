@@ -45,6 +45,11 @@ repositories {
     maven { url = 'http://maven.teamdev.com/repository/spine-snapshots' }
 }
 
+compileJava {
+    // TODO:2017-08-25:dmytro.dashenkov: Declare spineDirRoot as a constant.
+    options.compilerArgs += ["-processor", "io.spine.tools.model.ModelLookup", "-AspineDirRoot=${rootDir}"]
+}
+
 dependencies {
 
     compile "com.google.protobuf:protobuf-java:${protobufVersion}"
@@ -53,14 +58,15 @@ dependencies {
         exclude(group: 'com.google.protobuf')
     }
 
+    compile "io.spine.tools:model-verifier:${spineToolsVersion}"
+
 }
 
 sourceSets {
     main {
-        proto.srcDirs = ["$projectDir/src/main/proto"]
-        java.srcDirs = ["$projectDir/generated/main/java",
-                        "$projectDir/generated/main/spine",
-                        "$projectDir/src/main/java"]
-        resources.srcDirs = ["$projectDir/generated/main/resources"]
+        proto.srcDirs += ["$projectDir/src/main/proto"]
+        java.srcDirs += ["$projectDir/generated/main/java",
+                        "$projectDir/generated/main/spine"]
+        resources.srcDirs += ["$projectDir/generated/main/resources"]
     }
 }
