@@ -24,6 +24,7 @@ import io.spine.gradle.compiler.cleaning.CleaningPlugin;
 import io.spine.gradle.compiler.lookup.enrichment.EnrichmentLookupPlugin;
 import io.spine.gradle.compiler.lookup.proto.ProtoToJavaMapperPlugin;
 import io.spine.gradle.compiler.lookup.valrule.ValidationRulesLookupPlugin;
+import io.spine.gradle.compiler.model.ModelGeneratorPlugin;
 import io.spine.gradle.compiler.protoc.ProtocPluginImporter;
 import io.spine.gradle.compiler.rejection.RejectionGenPlugin;
 import io.spine.gradle.compiler.validate.ValidatingBuilderGenPlugin;
@@ -69,6 +70,9 @@ public class ModelCompilerPlugin implements Plugin<Project> {
 
         log().debug("Applying Spine protoc-plugin importer plugin.");
         new ProtocPluginImporter().apply(project);
+
+        log().debug("Applying Spine model generator plugin.");
+        new ModelGeneratorPlugin().apply(project);
     }
 
     private static Logger log() {
