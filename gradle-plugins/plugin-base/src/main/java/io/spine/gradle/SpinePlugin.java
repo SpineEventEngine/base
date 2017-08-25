@@ -218,8 +218,17 @@ public abstract class SpinePlugin implements Plugin<Project> {
                 }
                 if (previousTaskOfAllprojects != null) {
                     final Project root = project.getRootProject();
+                    dependTaskOnAllProjects(task, root);
+                }
+            }
+
+            private void dependTaskOnAllProjects(Task task, Project rootProject) {
+                final String prevTaskName = previousTaskOfAllprojects.getValue();
+                if (rootProject.getTasks().findByName(prevTaskName) != null) {
                     task.dependsOn(previousTaskOfAllprojects.getValue());
-                    for (Project proj : root.getSubprojects()) {
+                }
+                for (Project proj : rootProject.getSubprojects()) {
+                    if (proj.getTasks().findByName(prevTaskName) != null) {
                         task.dependsOn(proj.getName() + ':' + previousTaskOfAllprojects.getValue());
                     }
                 }

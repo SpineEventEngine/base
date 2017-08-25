@@ -25,8 +25,25 @@ import io.spine.server.command.CommandHandler;
 import io.spine.server.model.Model;
 import io.spine.server.procman.ProcessManager;
 import io.spine.tools.model.SpineModel;
+import org.gradle.api.Project;
+import org.gradle.api.tasks.compile.JavaCompile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.Collection;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.collect.Collections2.transform;
+import static com.google.common.collect.Lists.newLinkedList;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
+import static java.lang.String.format;
+import static java.util.Arrays.deepToString;
 
 /**
  * @author Dmytro Dashenkov
@@ -39,14 +56,18 @@ final class ProcessingStages {
         // Prevent utility class instantiation.
     }
 
-    static ProcessingStage validate() {
-        return ValidatingProcessingStage.Singleton.INSTANCE.value;
+    static ProcessingStage validate(Project project) {
+        return new ValidatingProcessingStage(project);
     }
 
     private static class ValidatingProcessingStage extends AbstractProcessingStage {
 
-        private ValidatingProcessingStage() {
-            // Prevent direct instantiation.
+        private static final URL[] EMPTY_URL_ARRAY = new URL[0];
+
+        private final URLClassLoader projectClassLoader;
+
+        private ValidatingProcessingStage(Project project) {
+            this.projectClassLoader = createClassLoaderForProject(project);
         }
 
         @SuppressWarnings("IfStatementWithTooManyBranches") // OK in this case.
@@ -55,25 +76,26 @@ final class ProcessingStages {
             for (String commandHandlingClass : rawModel.getCommandHandlingTypesList()) {
                 final Class<?> cls;
                 try {
-                    cls = Class.forName(commandHandlingClass);
+                    log().debug("Trying to load class \'{}\'", commandHandlingClass);
+                    cls = getModelClass(commandHandlingClass);
                 } catch (ClassNotFoundException e) {
                     throw new IllegalStateException(e);
                 }
                 if (Aggregate.class.isAssignableFrom(cls)) {
-                    @SuppressWarnings("unchecked")
-                    final Class<? extends Aggregate> aggregateClass =
+                    @SuppressWarnings("unchecked") final Class<? extends Aggregate> aggregateClass =
                             (Class<? extends Aggregate>) cls;
                     model.asAggregateClass(aggregateClass);
+                    log().debug("\'{}\' classified as Aggregate type.");
                 } else if (ProcessManager.class.isAssignableFrom(cls)) {
-                    @SuppressWarnings("unchecked")
-                    final Class<? extends ProcessManager> aggregateClass =
+                    @SuppressWarnings("unchecked") final Class<? extends ProcessManager> aggregateClass =
                             (Class<? extends ProcessManager>) cls;
                     model.asProcessManagerClass(aggregateClass);
+                    log().debug("\'{}\' classified as ProcessManages type.");
                 } else if (CommandHandler.class.isAssignableFrom(cls)) {
-                    @SuppressWarnings("unchecked")
-                    final Class<? extends CommandHandler> aggregateClass =
+                    @SuppressWarnings("unchecked") final Class<? extends CommandHandler> aggregateClass =
                             (Class<? extends CommandHandler>) cls;
                     model.asCommandHandlerClass(aggregateClass);
+                    log().debug("\'{}\' classified as CommandHandler type.");
                 } else {
                     throw newIllegalArgumentException("Class %s is not a command handling type.",
                                                       cls.getName());
@@ -81,10 +103,75 @@ final class ProcessingStages {
             }
         }
 
-        private enum Singleton {
-            INSTANCE;
-            @SuppressWarnings("NonSerializableFieldInSerializableClass")
-            private final ValidatingProcessingStage value = new ValidatingProcessingStage();
+        private Class<?> getModelClass(String fqn) throws ClassNotFoundException {
+            return Class.forName(fqn, false, projectClassLoader);
         }
+
+        private static URLClassLoader createClassLoaderForProject(Project project) {
+            final Collection<JavaCompile> tasks = allJavaCompile(project);
+            final URL[] compiledCodePath = extractDestinationDirs(tasks);
+            log().debug("Initializing ClassLoader for URLs: {}", deepToString(compiledCodePath));
+            try {
+                @SuppressWarnings("ClassLoaderInstantiation") // Caught exception.
+                final URLClassLoader result =
+                        new URLClassLoader(compiledCodePath,
+                                           ValidatingProcessingStage.class.getClassLoader());
+                return result;
+            } catch (SecurityException e) {
+                throw new IllegalStateException("Cannot analyze project source code.", e);
+            }
+        }
+
+        private static Collection<JavaCompile> allJavaCompile(Project project) {
+            final Project rootProject = project.getRootProject();
+            final Collection<JavaCompile> tasks = newLinkedList(javaCompile(rootProject));
+            for (Project subProject : rootProject.getSubprojects()) {
+                tasks.addAll(javaCompile(subProject));
+            }
+            return tasks;
+        }
+
+        private static Collection<JavaCompile> javaCompile(Project project) {
+            return project.getTasks().withType(JavaCompile.class);
+        }
+
+        private static URL[] extractDestinationDirs(Collection<JavaCompile> tasks) {
+            final Collection<URL> urls = transform(tasks, GetDestinationDir.FUNCTION);
+            final URL[] result = urls.toArray(EMPTY_URL_ARRAY);
+            return result;
+        }
+    }
+
+    private enum GetDestinationDir implements com.google.common.base.Function<JavaCompile, URL> {
+        FUNCTION;
+
+        @Nullable
+        @Override
+        public URL apply(@Nullable JavaCompile task) {
+            checkNotNull(task);
+            final File destDir = task.getDestinationDir();
+            if (destDir == null) {
+                return null;
+            }
+            final URI destUri = destDir.toURI();
+            try {
+                final URL destUrl = destUri.toURL();
+                return destUrl;
+            } catch (MalformedURLException e) {
+                throw new IllegalArgumentException(format(
+                        "Could not retrieve destination directory for task `%s`.",
+                        task.getName()), e);
+            }
+        }
+    }
+
+    private static Logger log() {
+        return LogSingleton.INSTANCE.value;
+    }
+
+    private enum LogSingleton {
+        INSTANCE;
+        @SuppressWarnings("NonSerializableFieldInSerializableClass")
+        private final Logger value = LoggerFactory.getLogger(ProcessingStages.class);
     }
 }

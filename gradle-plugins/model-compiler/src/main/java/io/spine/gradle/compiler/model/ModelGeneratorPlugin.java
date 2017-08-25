@@ -48,7 +48,7 @@ public class ModelGeneratorPlugin extends SpinePlugin {
         final Path rawModelStorage = rawModelPath(project);
         if (project.getTasks().findByPath(CLASSES.getValue()) != null) {
             newTask(GENERATE_MODEL, action(rawModelStorage)).insertBeforeTask(CLASSES)
-                                                            .insertAfterTask(COMPILE_JAVA)
+                                                            .insertAfterAllTasks(COMPILE_JAVA)
                                                             .withInputFiles(rawModelStorage)
                                                             .applyNowTo(project);
         }
@@ -64,8 +64,8 @@ public class ModelGeneratorPlugin extends SpinePlugin {
         return new GeneratorAction(path);
     }
 
-    private static void processModel(SpineModel model) {
-        final ProcessingStage validation = ProcessingStages.validate();
+    private static void processModel(SpineModel model, Project project) {
+        final ProcessingStage validation = ProcessingStages.validate(project);
         validation.process(model);
     }
 
@@ -85,7 +85,7 @@ public class ModelGeneratorPlugin extends SpinePlugin {
             } catch (IOException e) {
                 throw new IllegalStateException(e);
             }
-            processModel(model);
+            processModel(model, task.getProject());
         }
     }
 }
