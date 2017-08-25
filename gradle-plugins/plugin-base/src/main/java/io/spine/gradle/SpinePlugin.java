@@ -119,6 +119,7 @@ public abstract class SpinePlugin implements Plugin<Project> {
 
             private TaskName followingTask;
             private TaskName previousTask;
+            private TaskName previousTaskOfAllprojects;
 
             private final Collection<Path> inputs;
 
@@ -166,6 +167,12 @@ public abstract class SpinePlugin implements Plugin<Project> {
                 return this;
             }
 
+            public Builder insertAfterAllTasks(TaskName target) {
+                checkNotNull(target, "tasks before the new one");
+                this.previousTaskOfAllprojects = target;
+                return this;
+            }
+
             public Builder withInputFiles(Path... inputs) {
                 checkNotNull(inputs, "task inputs");
                 this.inputs.addAll(copyOf(inputs));
@@ -183,7 +190,9 @@ public abstract class SpinePlugin implements Plugin<Project> {
                 final String errMsg = "Project is not specified for the new Gradle task: ";
                 checkNotNull(project, errMsg + name);
 
-                if (followingTask == null && previousTask == null) {
+                if (followingTask == null
+                        && previousTask == null
+                        && previousTaskOfAllprojects == null) {
                     final String exceptionMsg =
                             "Either the previous or the following task must be set.";
                     throw new IllegalStateException(exceptionMsg);
@@ -206,6 +215,13 @@ public abstract class SpinePlugin implements Plugin<Project> {
                     existingTasks.getByPath(followingTask.getValue())
                                  .dependsOn(task);
 
+                }
+                if (previousTaskOfAllprojects != null) {
+                    final Project root = project.getRootProject();
+                    task.dependsOn(previousTaskOfAllprojects.getValue());
+                    for (Project proj : root.getSubprojects()) {
+                        task.dependsOn(proj.getName() + ':' + previousTaskOfAllprojects.getValue());
+                    }
                 }
             }
 
