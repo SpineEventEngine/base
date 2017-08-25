@@ -20,11 +20,13 @@
 
 package io.spine.gradle.compiler.model;
 
+import io.spine.gradle.ProjectHierarchy;
 import io.spine.server.aggregate.Aggregate;
 import io.spine.server.command.CommandHandler;
 import io.spine.server.model.Model;
 import io.spine.server.procman.ProcessManager;
 import io.spine.tools.model.SpineModel;
+import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.tasks.compile.JavaCompile;
 import org.slf4j.Logger;
@@ -123,11 +125,13 @@ final class ProcessingStages {
         }
 
         private static Collection<JavaCompile> allJavaCompile(Project project) {
-            final Project rootProject = project.getRootProject();
-            final Collection<JavaCompile> tasks = newLinkedList(javaCompile(rootProject));
-            for (Project subProject : rootProject.getSubprojects()) {
-                tasks.addAll(javaCompile(subProject));
-            }
+            final Collection<JavaCompile> tasks = newLinkedList();
+            ProjectHierarchy.applyToAll(project.getRootProject(), new Action<Project>() {
+                @Override
+                public void execute(Project project) {
+                    tasks.addAll(javaCompile(project));
+                }
+            });
             return tasks;
         }
 

@@ -222,16 +222,17 @@ public abstract class SpinePlugin implements Plugin<Project> {
                 }
             }
 
-            private void dependTaskOnAllProjects(Task task, Project rootProject) {
+            private void dependTaskOnAllProjects(final Task task, Project rootProject) {
                 final String prevTaskName = previousTaskOfAllprojects.getValue();
-                if (rootProject.getTasks().findByName(prevTaskName) != null) {
-                    task.dependsOn(previousTaskOfAllprojects.getValue());
-                }
-                for (Project proj : rootProject.getSubprojects()) {
-                    if (proj.getTasks().findByName(prevTaskName) != null) {
-                        task.dependsOn(proj.getName() + ':' + previousTaskOfAllprojects.getValue());
+                ProjectHierarchy.applyToAll(rootProject, new Action<Project>() {
+                    @Override
+                    public void execute(Project project) {
+                        final Task existingTask = project.getTasks().findByName(prevTaskName);
+                        if (existingTask != null) {
+                            task.dependsOn(existingTask);
+                        }
                     }
-                }
+                });
             }
 
             private void addTaskIO(Task task) {
