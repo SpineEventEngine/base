@@ -30,7 +30,6 @@ import java.util.regex.Pattern;
 
 import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Maps.newLinkedHashMap;
-import static io.spine.util.Exceptions.newIllegalArgumentException;
 
 /**
  * The stringifier for the {@code Map} classes.
@@ -169,7 +168,7 @@ final class MapStringifier<K, V> extends Stringifier<Map<K, V>> {
             }
             return resultMap;
         } catch (Throwable e) {
-            throw newIllegalArgumentException("The exception occurred during the conversion", e);
+            throw new IllegalArgumentException("The exception occurred during the conversion", e);
         }
     }
 }
