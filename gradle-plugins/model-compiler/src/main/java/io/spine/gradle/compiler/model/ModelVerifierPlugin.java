@@ -69,20 +69,18 @@ public class ModelVerifierPlugin extends SpinePlugin {
     }
 
     private static Action<Task> action(Path path) {
-        return new GeneratorAction(path);
+        return new VerifierAction(path);
     }
 
     /**
-     * Processes the {@link SpineModel} upon the {@linkplain Project Gradle project}.
-     *
-     * <p>Currently, performs only the model validation. The behavior may change in future.
+     * Verifies the {@link SpineModel} upon the {@linkplain Project Gradle project}.
      *
      * @param model   the Spine model to process
      * @param project the Gradle project to process the model upon
      */
-    private static void processModel(SpineModel model, Project project) {
-        final ProcessingStage validation = ProcessingStages.validate(project);
-        validation.process(model);
+    private static void verifyModel(SpineModel model, Project project) {
+        final ModelVerifier verifier = new ModelVerifier(project);
+        verifier.verify(model);
     }
 
     /**
@@ -90,14 +88,14 @@ public class ModelVerifierPlugin extends SpinePlugin {
      *
      * <p>The action is executed only if the passed {@code rawModelPath} is present.
      *
-     * <p>Reads the {@link SpineModel} from the given file and {@linkplain #processModel processes}
+     * <p>Reads the {@link SpineModel} from the given file and {@linkplain #verifyModel processes}
      * the model.
      */
-    private static class GeneratorAction implements Action<Task> {
+    private static class VerifierAction implements Action<Task> {
 
         private final Path rawModelPath;
 
-        private GeneratorAction(Path rawModelPath) {
+        private VerifierAction(Path rawModelPath) {
             this.rawModelPath = rawModelPath;
         }
 
@@ -114,7 +112,7 @@ public class ModelVerifierPlugin extends SpinePlugin {
             } catch (IOException e) {
                 throw new IllegalStateException(e);
             }
-            processModel(model, task.getProject());
+            verifyModel(model, task.getProject());
         }
     }
 
