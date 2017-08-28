@@ -46,7 +46,6 @@ repositories {
 }
 
 compileJava {
-    // TODO:2017-08-25:dmytro.dashenkov: Declare spineDirRoot as a constant.
     options.compilerArgs += ["-processor", "io.spine.tools.model.AssignLookup", "-AspineDirRoot=${rootDir}"]
 }
 
@@ -58,7 +57,7 @@ dependencies {
         exclude(group: 'com.google.protobuf')
     }
 
-    compile "io.spine.tools:model-verifier:${spineToolsVersion}"
+    compileOnly "io.spine.tools:model-verifier:${spineToolsVersion}"
 
 }
 
