@@ -20,6 +20,7 @@
 
 package io.spine.gradle.compiler.model;
 
+import io.spine.annotation.Experimental;
 import io.spine.gradle.SpinePlugin;
 import io.spine.tools.model.SpineModel;
 import org.gradle.api.Action;
@@ -44,6 +45,7 @@ import static java.nio.file.Files.newInputStream;
  *
  * @author Dmytro Dashenkov
  */
+@Experimental
 public class ModelGeneratorPlugin extends SpinePlugin {
 
     private static final String RELATIVE_RAW_MODEL_PATH = ".spine/spine_model.ser";
@@ -51,6 +53,7 @@ public class ModelGeneratorPlugin extends SpinePlugin {
     @Override
     public void apply(Project project) {
         final Path rawModelStorage = rawModelPath(project);
+        // Ensure right environment (`main` scope sources with the `java` plugin)
         if (project.getTasks().findByPath(CLASSES.getValue()) != null) {
             newTask(GENERATE_MODEL, action(rawModelStorage)).insertBeforeTask(CLASSES)
                                                             .insertAfterAllTasks(COMPILE_JAVA)
@@ -69,11 +72,27 @@ public class ModelGeneratorPlugin extends SpinePlugin {
         return new GeneratorAction(path);
     }
 
+    /**
+     * Processes the {@link SpineModel} upon the {@linkplain Project Gradle project}.
+     *
+     * <p>Currently, performs only the model validation. The behavior may change in future.
+     *
+     * @param model   the Spine model to process
+     * @param project the Gradle project to process the model upon
+     */
     private static void processModel(SpineModel model, Project project) {
         final ProcessingStage validation = ProcessingStages.validate(project);
         validation.process(model);
     }
 
+    /**
+     * The action performing the model processing.
+     *
+     * <p>The action is executed only is the passed {@code rawModelPath} is present.
+     *
+     * <p>Reads the {@link SpineModel} from the given file and {@linkplain #processModel processes}
+     * the model.
+     */
     private static class GeneratorAction implements Action<Task> {
 
         private final Path rawModelPath;
