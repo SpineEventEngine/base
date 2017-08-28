@@ -58,7 +58,6 @@ dependencies {
     }
 
     compileOnly group: 'io.spine.tools', name: 'model-assembler', version: spineToolsVersion
-
 }
 
 sourceSets {
