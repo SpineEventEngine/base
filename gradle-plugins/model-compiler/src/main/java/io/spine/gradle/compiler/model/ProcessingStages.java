@@ -87,7 +87,10 @@ final class ProcessingStages {
             this.projectClassLoader = createClassLoaderForProject(project);
         }
 
-        @SuppressWarnings("IfStatementWithTooManyBranches") // OK in this case.
+        @SuppressWarnings({
+                "IfStatementWithTooManyBranches", // OK in this case.
+                "unchecked" // Checked by the `if` statements
+        })
         @Override
         public void process(SpineModel rawModel) {
             for (String commandHandlingClass : rawModel.getCommandHandlingTypesList()) {
@@ -99,17 +102,17 @@ final class ProcessingStages {
                     throw new IllegalStateException(e);
                 }
                 if (Aggregate.class.isAssignableFrom(cls)) {
-                    @SuppressWarnings("unchecked") final Class<? extends Aggregate> aggregateClass =
+                    final Class<? extends Aggregate> aggregateClass =
                             (Class<? extends Aggregate>) cls;
                     model.asAggregateClass(aggregateClass);
                     log().debug("\'{}\' classified as Aggregate type.");
                 } else if (ProcessManager.class.isAssignableFrom(cls)) {
-                    @SuppressWarnings("unchecked") final Class<? extends ProcessManager> aggregateClass =
+                    final Class<? extends ProcessManager> aggregateClass =
                             (Class<? extends ProcessManager>) cls;
                     model.asProcessManagerClass(aggregateClass);
                     log().debug("\'{}\' classified as ProcessManages type.");
                 } else if (CommandHandler.class.isAssignableFrom(cls)) {
-                    @SuppressWarnings("unchecked") final Class<? extends CommandHandler> aggregateClass =
+                    final Class<? extends CommandHandler> aggregateClass =
                             (Class<? extends CommandHandler>) cls;
                     model.asCommandHandlerClass(aggregateClass);
                     log().debug("\'{}\' classified as CommandHandler type.");
