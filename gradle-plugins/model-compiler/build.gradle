@@ -59,7 +59,7 @@ dependencies {
     compile project(':plugin-base')
     compile project(':base')
 
-    compile group: 'io.spine.tools', name: 'model-verifier', version: spineToolsVersion
+    compile group: 'io.spine.tools', name: 'model-assembler', version: spineToolsVersion
     compile group: 'io.spine', name: 'spine-server', version: spineCoreVersion
 
     compile group: 'com.squareup', name: 'javapoet', version: javaPoetVersion

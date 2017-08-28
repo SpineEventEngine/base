@@ -51,13 +51,13 @@ compileJava {
 
 dependencies {
 
-    compile "com.google.protobuf:protobuf-java:${protobufVersion}"
+    compile group: 'com.google.protobuf', name:'protobuf-java', version: protobufVersion
 
     compile(group: 'io.spine', name: 'spine-base', version: spineVersion) {
         exclude(group: 'com.google.protobuf')
     }
 
-    compileOnly "io.spine.tools:model-verifier:${spineToolsVersion}"
+    compileOnly group: 'io.spine.tools', name: 'model-assembler', version: spineToolsVersion
 
 }
 
