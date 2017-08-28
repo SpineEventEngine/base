@@ -38,7 +38,7 @@ import static org.junit.Assert.assertNotNull;
 /**
  * @author Dmytro Dashenkov
  */
-public class ModelGeneratorPluginShould {
+public class ModelVerifierPluginShould {
 
     private static final String PROJECT_NAME = "model-generator-test";
 

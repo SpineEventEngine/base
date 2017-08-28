@@ -41,12 +41,12 @@ import static java.nio.file.Files.exists;
 import static java.nio.file.Files.newInputStream;
 
 /**
- * The plugin performing the Spine type model validation and generation.
+ * The plugin performing the Spine type model verification.
  *
  * @author Dmytro Dashenkov
  */
 @Experimental
-public class ModelGeneratorPlugin extends SpinePlugin {
+public class ModelVerifierPlugin extends SpinePlugin {
 
     private static final String RELATIVE_RAW_MODEL_PATH = ".spine/spine_model.ser";
 
@@ -88,7 +88,7 @@ public class ModelGeneratorPlugin extends SpinePlugin {
     /**
      * The action performing the model processing.
      *
-     * <p>The action is executed only is the passed {@code rawModelPath} is present.
+     * <p>The action is executed only if the passed {@code rawModelPath} is present.
      *
      * <p>Reads the {@link SpineModel} from the given file and {@linkplain #processModel processes}
      * the model.
@@ -125,6 +125,6 @@ public class ModelGeneratorPlugin extends SpinePlugin {
     private enum LogSingleton {
         INSTANCE;
         @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = LoggerFactory.getLogger(ModelGeneratorPlugin.class);
+        private final Logger value = LoggerFactory.getLogger(ModelVerifierPlugin.class);
     }
 }
