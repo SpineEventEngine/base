@@ -25,18 +25,23 @@ import io.spine.tools.model.SpineModel;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 
 import static io.spine.gradle.TaskName.CLASSES;
 import static io.spine.gradle.TaskName.COMPILE_JAVA;
 import static io.spine.gradle.TaskName.GENERATE_MODEL;
+import static java.nio.file.Files.exists;
+import static java.nio.file.Files.newInputStream;
 
 /**
+ * The plugin performing the Spine type model validation and generation.
+ *
  * @author Dmytro Dashenkov
  */
 public class ModelGeneratorPlugin extends SpinePlugin {
@@ -79,13 +84,28 @@ public class ModelGeneratorPlugin extends SpinePlugin {
 
         @Override
         public void execute(Task task) {
+            if (!exists(rawModelPath)) {
+                log().warn("No Spine model description found under {}. Completing the task.",
+                           rawModelPath);
+                return;
+            }
             final SpineModel model;
-            try (InputStream in = Files.newInputStream(rawModelPath, StandardOpenOption.READ)) {
+            try (InputStream in = newInputStream(rawModelPath, StandardOpenOption.READ)) {
                 model = SpineModel.parseFrom(in);
             } catch (IOException e) {
                 throw new IllegalStateException(e);
             }
             processModel(model, task.getProject());
         }
+    }
+
+    private static Logger log() {
+        return LogSingleton.INSTANCE.value;
+    }
+
+    private enum LogSingleton {
+        INSTANCE;
+        @SuppressWarnings("NonSerializableFieldInSerializableClass")
+        private final Logger value = LoggerFactory.getLogger(ModelGeneratorPlugin.class);
     }
 }

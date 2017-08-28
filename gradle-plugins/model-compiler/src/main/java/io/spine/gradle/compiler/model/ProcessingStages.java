@@ -20,6 +20,7 @@
 
 package io.spine.gradle.compiler.model;
 
+import com.google.common.base.Function;
 import io.spine.gradle.ProjectHierarchy;
 import io.spine.server.aggregate.Aggregate;
 import io.spine.server.command.CommandHandler;
@@ -48,6 +49,8 @@ import static java.lang.String.format;
 import static java.util.Arrays.deepToString;
 
 /**
+ * The factory for the {@link ProcessingStage} instances.
+ *
  * @author Dmytro Dashenkov
  */
 final class ProcessingStages {
@@ -58,10 +61,22 @@ final class ProcessingStages {
         // Prevent utility class instantiation.
     }
 
+    /**
+     * Retrieves the {@link ProcessingStage} which validates the given {@link SpineModel}.
+     *
+     * <p>The validation includes the command handler checks.
+     *
+     * @param project the Gradle project to get the compiled sources from
+     */
     static ProcessingStage validate(Project project) {
         return new ValidatingProcessingStage(project);
     }
 
+    /**
+     * The validating {@link ProcessingStage}.
+     *
+     * @see ProcessingStages#validate(Project)
+     */
     private static class ValidatingProcessingStage implements ProcessingStage {
 
         private static final URL[] EMPTY_URL_ARRAY = new URL[0];
@@ -146,7 +161,10 @@ final class ProcessingStages {
         }
     }
 
-    private enum GetDestinationDir implements com.google.common.base.Function<JavaCompile, URL> {
+    /**
+     * A function which retrieves the output directory from the passed Gradle task.
+     */
+    private enum GetDestinationDir implements Function<JavaCompile, URL> {
         FUNCTION;
 
         @Nullable

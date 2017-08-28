@@ -23,9 +23,18 @@ package io.spine.gradle.compiler.model;
 import io.spine.tools.model.SpineModel;
 
 /**
+ * The stage of processing of a {@link SpineModel}.
+ *
  * @author Dmytro Dashenkov
  */
 interface ProcessingStage {
 
+    /**
+     * Processes the {@link SpineModel} by certain rules.
+     *
+     * <p>The processing may include validation, code generation, etc.
+     *
+     * @param model the raw Spine type model to process
+     */
     void process(SpineModel model);
 }
