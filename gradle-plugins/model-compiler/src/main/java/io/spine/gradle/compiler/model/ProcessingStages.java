@@ -62,7 +62,7 @@ final class ProcessingStages {
         return new ValidatingProcessingStage(project);
     }
 
-    private static class ValidatingProcessingStage extends AbstractProcessingStage {
+    private static class ValidatingProcessingStage implements ProcessingStage {
 
         private static final URL[] EMPTY_URL_ARRAY = new URL[0];
 

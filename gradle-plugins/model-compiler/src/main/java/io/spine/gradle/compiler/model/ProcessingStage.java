@@ -28,6 +28,4 @@ import io.spine.tools.model.SpineModel;
 interface ProcessingStage {
 
     void process(SpineModel model);
-
-    ProcessingStage andThen(ProcessingStage next);
 }
