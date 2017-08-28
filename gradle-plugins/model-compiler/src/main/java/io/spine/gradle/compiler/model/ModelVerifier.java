@@ -91,17 +91,17 @@ final class ModelVerifier {
                 final Class<? extends Aggregate> aggregateClass =
                         (Class<? extends Aggregate>) cls;
                 model.asAggregateClass(aggregateClass);
-                log().debug("\'{}\' classified as Aggregate type.");
+                log().debug("\'{}\' classified as Aggregate type.", aggregateClass);
             } else if (ProcessManager.class.isAssignableFrom(cls)) {
-                final Class<? extends ProcessManager> aggregateClass =
+                final Class<? extends ProcessManager> procManClass =
                         (Class<? extends ProcessManager>) cls;
-                model.asProcessManagerClass(aggregateClass);
-                log().debug("\'{}\' classified as ProcessManages type.");
+                model.asProcessManagerClass(procManClass);
+                log().debug("\'{}\' classified as ProcessManager type.", procManClass);
             } else if (CommandHandler.class.isAssignableFrom(cls)) {
-                final Class<? extends CommandHandler> aggregateClass =
+                final Class<? extends CommandHandler> commandHandler =
                         (Class<? extends CommandHandler>) cls;
-                model.asCommandHandlerClass(aggregateClass);
-                log().debug("\'{}\' classified as CommandHandler type.");
+                model.asCommandHandlerClass(commandHandler);
+                log().debug("\'{}\' classified as CommandHandler type.", commandHandler);
             } else {
                 throw newIllegalArgumentException("Class %s is not a command handling type.",
                                                   cls.getName());
