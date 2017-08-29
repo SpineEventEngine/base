@@ -31,7 +31,7 @@ import org.gradle.api.tasks.TaskContainer;
 import org.gradle.api.tasks.compile.JavaCompile;
 import org.gradle.internal.impldep.com.google.common.collect.Iterators;
 import org.gradle.testfixtures.ProjectBuilder;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
@@ -56,7 +56,7 @@ public class ModelVerifierShould {
 
     private Project project = null;
 
-    @BeforeClass
+    @Before
     public void setUp() {
         project = mock(Project.class);
         when(project.getSubprojects()).thenReturn(Collections.<Project>emptySet());
