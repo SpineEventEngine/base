@@ -71,7 +71,7 @@ public class ModelCompilerPlugin implements Plugin<Project> {
         log().debug("Applying Spine protoc-plugin importer plugin.");
         new ProtocPluginImporter().apply(project);
 
-        log().debug("Applying Spine model generator plugin.");
+        log().debug("Applying Spine model verifier plugin.");
         new ModelVerifierPlugin().apply(project);
     }
 
