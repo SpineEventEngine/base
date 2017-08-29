@@ -20,6 +20,7 @@
 
 package io.spine.gradle.compiler.model;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
 import io.spine.gradle.ProjectHierarchy;
 import io.spine.server.aggregate.Aggregate;
@@ -151,7 +152,8 @@ final class ModelVerifier {
     /**
      * A function which retrieves the output directory from the passed Gradle task.
      */
-    private enum GetDestinationDir implements Function<JavaCompile, URL> {
+    @VisibleForTesting
+    enum GetDestinationDir implements Function<JavaCompile, URL> {
         FUNCTION;
 
         @Nullable
