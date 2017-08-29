@@ -93,12 +93,12 @@ public class GradleProject {
     }
 
     public BuildResult executeTask(TaskName taskName) {
-        return gradleRunner.withArguments(taskName.getValue(), STACKTRACE_CLI_OPTION, "--debug")
+        return gradleRunner.withArguments(taskName.getValue(), STACKTRACE_CLI_OPTION)
                            .build();
     }
 
     public BuildResult executeAndFail(TaskName taskName) {
-        return gradleRunner.withArguments(taskName.getValue(), STACKTRACE_CLI_OPTION, "--debug")
+        return gradleRunner.withArguments(taskName.getValue(), STACKTRACE_CLI_OPTION)
                            .buildAndFail();
     }
 
