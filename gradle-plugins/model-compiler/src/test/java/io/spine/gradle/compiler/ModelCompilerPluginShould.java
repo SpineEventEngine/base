@@ -29,6 +29,7 @@ import org.junit.Test;
 import static io.spine.gradle.TaskDependencies.dependsOn;
 import static io.spine.gradle.TaskName.ANNOTATE_PROTO;
 import static io.spine.gradle.TaskName.ANNOTATE_TEST_PROTO;
+import static io.spine.gradle.TaskName.CLASSES;
 import static io.spine.gradle.TaskName.CLEAN;
 import static io.spine.gradle.TaskName.COMPILE_JAVA;
 import static io.spine.gradle.TaskName.COMPILE_TEST_JAVA;
@@ -47,6 +48,7 @@ import static io.spine.gradle.TaskName.MAP_TEST_PROTO_TO_JAVA;
 import static io.spine.gradle.TaskName.PRE_CLEAN;
 import static io.spine.gradle.TaskName.PROCESS_RESOURCES;
 import static io.spine.gradle.TaskName.PROCESS_TEST_RESOURCES;
+import static io.spine.gradle.TaskName.VERIFY_MODEL;
 import static io.spine.gradle.compiler.given.Given.SPINE_PROTOBUF_PLUGIN_ID;
 import static io.spine.gradle.compiler.given.Given.newProject;
 import static org.junit.Assert.assertNotNull;
@@ -175,6 +177,14 @@ public class ModelCompilerPluginShould {
         assertNotNull(annotateTestProto);
         assertTrue(dependsOn(annotateTestProto, GENERATE_TEST_PROTO));
         assertTrue(dependsOn(task(COMPILE_TEST_JAVA), annotateTestProto));
+    }
+
+    @Test
+    public void add_task_verifyModel() {
+        final Task verifyModel = task(VERIFY_MODEL);
+        assertNotNull(verifyModel);
+        assertTrue(dependsOn(verifyModel, COMPILE_JAVA));
+        assertTrue(dependsOn(task(CLASSES), verifyModel));
     }
 
     private Task task(TaskName taskName) {
