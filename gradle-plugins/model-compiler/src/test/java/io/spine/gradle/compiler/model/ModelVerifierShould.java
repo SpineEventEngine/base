@@ -54,10 +54,10 @@ public class ModelVerifierShould {
 
     private static final Object[] EMPTY_ARRAY = new Object[0];
 
-    private static Project project = null;
+    private Project project = null;
 
     @BeforeClass
-    public static void setUp() {
+    public void setUp() {
         project = mock(Project.class);
         when(project.getSubprojects()).thenReturn(Collections.<Project>emptySet());
         when(project.getRootProject()).thenReturn(project);
