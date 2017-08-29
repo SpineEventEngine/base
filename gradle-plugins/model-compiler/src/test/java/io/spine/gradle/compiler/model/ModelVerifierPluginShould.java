@@ -30,7 +30,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-import static io.spine.gradle.TaskName.GENERATE_MODEL;
+import static io.spine.gradle.TaskName.VERIFY_MODEL;
 import static org.gradle.testkit.runner.TaskOutcome.FAILED;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -50,7 +50,7 @@ public class ModelVerifierPluginShould {
         newProjectWithJava("io/spine/tools/model/TestAggregate.java",
                            "io/spine/tools/model/TestProcMan.java",
                            "io/spine/tools/model/TestCommandHandler.java")
-                .executeTask(GENERATE_MODEL);
+                .executeTask(VERIFY_MODEL);
     }
 
     @Test
@@ -58,8 +58,8 @@ public class ModelVerifierPluginShould {
         final BuildResult result = newProjectWithJava(
                 "io/spine/tools/model/DuplicateAggregate.java",
                 "io/spine/tools/model/DuplicateCommandHandler.java")
-                .executeAndFail(GENERATE_MODEL);
-        final BuildTask task = result.task(toPath(GENERATE_MODEL));
+                .executeAndFail(VERIFY_MODEL);
+        final BuildTask task = result.task(toPath(VERIFY_MODEL));
         assertNotNull(task);
         final TaskOutcome generationResult = task.getOutcome();
         assertEquals(FAILED, generationResult);
@@ -71,8 +71,8 @@ public class ModelVerifierPluginShould {
     public void halt_build_on_malformed_command_handling_methods() {
         final BuildResult result =
                 newProjectWithJava("io/spine/tools/model/MalformedAggregate.java")
-                .executeAndFail(GENERATE_MODEL);
-        final BuildTask task = result.task(toPath(GENERATE_MODEL));
+                .executeAndFail(VERIFY_MODEL);
+        final BuildTask task = result.task(toPath(VERIFY_MODEL));
         assertNotNull(task);
         final TaskOutcome generationResult = task.getOutcome();
         assertEquals(FAILED, generationResult);

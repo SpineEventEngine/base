@@ -183,7 +183,7 @@ public enum TaskName {
      */
     FORMAT_TEST_PROTO_DOC("formatTestProtoDoc"),
 
-    GENERATE_MODEL("generateModel");
+    VERIFY_MODEL("verifyModel");
 
     private final String value;
 
