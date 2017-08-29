@@ -18,9 +18,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.gradle.compiler;
+package io.spine.gradle;
 
-import io.spine.gradle.TaskName;
 import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.GradleRunner;
 import org.junit.rules.TemporaryFolder;
@@ -36,10 +35,10 @@ import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Lists.newLinkedList;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 import static java.util.Arrays.asList;
-import static org.jboss.forge.roaster.model.util.Strings.isBlank;
 
 /**
  * {@code GradleProject} for the test needs.
@@ -94,12 +93,12 @@ public class GradleProject {
     }
 
     public BuildResult executeTask(TaskName taskName) {
-        return gradleRunner.withArguments(taskName.getValue(), STACKTRACE_CLI_OPTION)
+        return gradleRunner.withArguments(taskName.getValue(), STACKTRACE_CLI_OPTION, "--debug")
                            .build();
     }
 
     public BuildResult executeAndFail(TaskName taskName) {
-        return gradleRunner.withArguments(taskName.getValue(), STACKTRACE_CLI_OPTION)
+        return gradleRunner.withArguments(taskName.getValue(), STACKTRACE_CLI_OPTION, "--debug")
                            .buildAndFail();
     }
 
@@ -174,11 +173,12 @@ public class GradleProject {
         }
 
         public Builder addProtoFile(String protoFileName) {
-            checkArgument(!isBlank(protoFileName));
+            checkArgument(!isNullOrEmpty(protoFileName));
             protoFileNames.add(protoFileName);
             return this;
         }
 
+        @SuppressWarnings("unused") // Part of API (used in other Spine modules)
         public Builder addJavaFiles(String... fileNames) {
             javaFileNames.addAll(asList(fileNames));
             return this;
@@ -199,7 +199,7 @@ public class GradleProject {
 
         public Builder addProtoFiles(Collection<String> protoFileNames) {
             for (String protoFileName : protoFileNames) {
-                checkArgument(!isBlank(protoFileName));
+                checkArgument(!isNullOrEmpty(protoFileName));
             }
 
             this.protoFileNames.addAll(protoFileNames);

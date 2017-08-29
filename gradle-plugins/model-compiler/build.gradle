@@ -77,6 +77,7 @@ dependencies {
     compile project(':testutil-base')
     testCompile group: 'com.google.guava', name: 'guava-testlib', version: guavaVersion
     testCompile gradleTestKit()
+    testCompile project(':plugin-base').sourceSets.test.output // Test classes of `plugin-base`
 
     // "tools.jar" contains Javadoc classes used in the rejections Javadoc generation tests.
     // It is a local version bundled within the JDK installation.

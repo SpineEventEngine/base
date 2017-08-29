@@ -45,10 +45,6 @@ repositories {
     maven { url = 'http://maven.teamdev.com/repository/spine-snapshots' }
 }
 
-compileJava {
-    options.compilerArgs += ["-processor", "io.spine.tools.model.AssignLookup", "-AspineDirRoot=${rootDir}"]
-}
-
 dependencies {
 
     compile group: 'com.google.protobuf', name:'protobuf-java', version: protobufVersion
@@ -56,8 +52,6 @@ dependencies {
     compile(group: 'io.spine', name: 'spine-base', version: spineVersion) {
         exclude(group: 'com.google.protobuf')
     }
-
-    compileOnly group: 'io.spine.tools', name: 'model-assembler', version: spineToolsVersion
 }
 
 sourceSets {

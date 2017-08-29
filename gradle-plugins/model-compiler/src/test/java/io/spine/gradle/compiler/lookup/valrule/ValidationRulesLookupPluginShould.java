@@ -20,7 +20,7 @@
 
 package io.spine.gradle.compiler.lookup.valrule;
 
-import io.spine.gradle.compiler.GradleProject;
+import io.spine.gradle.GradleProject;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
