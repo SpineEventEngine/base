@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.Set;
 
 import static com.google.common.collect.Sets.newHashSet;
+import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -40,6 +41,11 @@ import static org.mockito.Mockito.when;
  * @author Dmytro Dashenkov
  */
 public class ProjectHierarchyShould {
+
+    @Test
+    public void have_private_util_ctor() {
+        assertHasPrivateParameterlessCtor(ProjectHierarchy.class);
+    }
 
     @Test
     public void not_accept_nulls() {
