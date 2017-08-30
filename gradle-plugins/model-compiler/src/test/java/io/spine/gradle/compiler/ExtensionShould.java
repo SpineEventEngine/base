@@ -21,17 +21,24 @@ package io.spine.gradle.compiler;
 
 import org.gradle.api.Project;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static io.spine.gradle.compiler.Extension.SPINE_BUILD_ARTIFACT_STORAGE_DIR;
 import static io.spine.gradle.compiler.ModelCompilerPlugin.SPINE_MODEL_COMPILER_EXTENSION_NAME;
 import static io.spine.gradle.compiler.given.Given.SPINE_PROTOBUF_PLUGIN_ID;
 import static io.spine.gradle.compiler.given.Given.newProject;
 import static io.spine.gradle.compiler.given.Given.newUuid;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -41,9 +48,12 @@ public class ExtensionShould {
 
     private Project project;
 
+    @Rule
+    public final TemporaryFolder projectDir = new TemporaryFolder();
+
     @Before
     public void setUp() {
-        project = newProject();
+        project = newProject(projectDir.getRoot());
         project.getPluginManager()
                .apply(SPINE_PROTOBUF_PLUGIN_ID);
     }
@@ -196,6 +206,17 @@ public class ExtensionShould {
         final List<String> actualDirs = Extension.getDirsToClean(project);
 
         assertEquals(spineProtobuf().dirsToClean, actualDirs);
+    }
+
+    @Test
+    public void include_spine_dir_in_dirsToClean_if_exists() throws IOException {
+        final File spineDir = new File(projectDir.getRoot(), SPINE_BUILD_ARTIFACT_STORAGE_DIR);
+        assertTrue(spineDir.mkdir());
+        final List<String> dirsToClean = Extension.getDirsToClean(project);
+        assertThat(dirsToClean, containsInAnyOrder(
+                spineDir.getCanonicalPath(),
+                new File(projectDir.getRoot(), "generated").getCanonicalPath())
+        );
     }
 
     private void assertNotEmptyAndIsInProjectDir(String path) {
