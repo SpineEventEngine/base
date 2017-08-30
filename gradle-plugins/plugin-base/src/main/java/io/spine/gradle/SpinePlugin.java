@@ -119,7 +119,7 @@ public abstract class SpinePlugin implements Plugin<Project> {
 
             private TaskName followingTask;
             private TaskName previousTask;
-            private TaskName previousTaskOfAllprojects;
+            private TaskName previousTaskOfAllProjects;
 
             private final Collection<Path> inputs;
 
@@ -190,7 +190,7 @@ public abstract class SpinePlugin implements Plugin<Project> {
              */
             public Builder insertAfterAllTasks(TaskName target) {
                 checkNotNull(target, "tasks before the new one");
-                this.previousTaskOfAllprojects = target;
+                this.previousTaskOfAllProjects = target;
                 return this;
             }
 
@@ -227,7 +227,7 @@ public abstract class SpinePlugin implements Plugin<Project> {
 
                 if (followingTask == null
                         && previousTask == null
-                        && previousTaskOfAllprojects == null) {
+                        && previousTaskOfAllProjects == null) {
                     final String exceptionMsg =
                             "Either the previous or the following task must be set.";
                     throw new IllegalStateException(exceptionMsg);
@@ -251,14 +251,14 @@ public abstract class SpinePlugin implements Plugin<Project> {
                                  .dependsOn(task);
 
                 }
-                if (previousTaskOfAllprojects != null) {
+                if (previousTaskOfAllProjects != null) {
                     final Project root = project.getRootProject();
                     dependTaskOnAllProjects(task, root);
                 }
             }
 
             private void dependTaskOnAllProjects(final Task task, Project rootProject) {
-                final String prevTaskName = previousTaskOfAllprojects.getValue();
+                final String prevTaskName = previousTaskOfAllProjects.getValue();
                 ProjectHierarchy.applyToAll(rootProject, new Action<Project>() {
                     @Override
                     public void execute(Project project) {
