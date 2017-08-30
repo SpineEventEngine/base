@@ -38,6 +38,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Lists.newLinkedList;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
+import static java.nio.file.Files.exists;
 import static java.util.Arrays.asList;
 
 /**
@@ -137,10 +138,16 @@ public class GradleProject {
     private void copyExtGradle() throws IOException {
         final Path workingFolderPath = Paths.get(".")
                                             .toAbsolutePath();
-        final Path extGradleSourcePath = workingFolderPath.getParent()
-                                                          .getParent()
-                                                          .getParent()
-                                                          .resolve(EXT_GRADLE_NAME);
+        // Find `ext.gradle` in the project dir or in the parent dirs.
+        Path extGradleDirPath = workingFolderPath;
+        while (extGradleDirPath != null
+                && !exists(extGradleDirPath.resolve(EXT_GRADLE_NAME))) {
+            extGradleDirPath = extGradleDirPath.getParent();
+        }
+        checkNotNull(extGradleDirPath,
+                     "ext.gradle file not found in %s or parent directories.",
+                     workingFolderPath);
+        final Path extGradleSourcePath = extGradleDirPath.resolve(EXT_GRADLE_NAME);
         final Path extGradleResultingPath = gradleRunner.getProjectDir()
                                                         .toPath()
                                                         .resolve(EXT_GRADLE_NAME);
@@ -178,7 +185,6 @@ public class GradleProject {
             return this;
         }
 
-        @SuppressWarnings("unused") // Part of API (used in other Spine modules)
         public Builder addJavaFiles(String... fileNames) {
             javaFileNames.addAll(asList(fileNames));
             return this;
