@@ -168,7 +168,7 @@ public abstract class SpinePlugin implements Plugin<Project> {
             }
 
             /**
-             * Specify tasks which will precede the new one.
+             * Inserts tasks which will precede the new one.
              *
              * <p>Unlike {@link #insertAfterTask insertAfterTask()}, this method will depend
              * the new task on <b>every</b> task with such name in the project (i.e. the tasks of
@@ -177,13 +177,13 @@ public abstract class SpinePlugin implements Plugin<Project> {
              * <p>If a certain project does not have a task with the specified name, no action is
              * performed for that project.
              *
-             * <p>This method does not guarantee that the task will be depended on either task.
+             * <p>This method does not guarantee that the task will become a build stage.
              *
              * <p>Invocation of this method may substitute the invocation of
              * {@link #insertAfterTask(TaskName)} or {@link #insertBeforeTask(TaskName)} if it's
-             * guaranteed that the task will receive at least one dependency. Though the fallback
-             * is never handled and there is no guarantee that the task will get into the Gradle
-             * task graph.
+             * guaranteed that the task will receive at least one task to execute after. Though
+             * the fallback is never handled and there is no guarantee that the task will get into
+             * the Gradle task graph.
              *
              * @param target the name of the tasks, serving as "after" anchor
              * @return the current instance of {@link Builder}
@@ -195,13 +195,10 @@ public abstract class SpinePlugin implements Plugin<Project> {
             }
 
             /**
-             * Specify the files or/and directories which are the input data for the new task.
+             * Adds the files and/or directories to the input dataset for the task being built.
              *
              * <p>If none of the specified file system elements are present before the task
              * execution, the task will be marked as {@code NO-SOURCE} and skipped.
-             *
-             * <p>Read more about the Gradle incremental builds
-             * <a href="https://blog.gradle.org/introducing-incremental-build-support">here</a>.
              *
              * <p>Multiple invocations appends the new files to the existing ones.
              *
