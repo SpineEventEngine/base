@@ -37,9 +37,13 @@ import static io.spine.gradle.TaskName.CLASSES;
 import static io.spine.gradle.TaskName.CLEAN;
 import static io.spine.gradle.TaskName.COMPILE_JAVA;
 import static io.spine.gradle.TaskName.FIND_VALIDATION_RULES;
+import static io.spine.gradle.TaskName.GENERATE_PROTO;
+import static io.spine.gradle.TaskName.GENERATE_TEST_PROTO;
 import static io.spine.gradle.TaskName.PRE_CLEAN;
 import static io.spine.gradle.TaskName.VERIFY_MODEL;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -101,6 +105,19 @@ public class SpinePluginBuilderShould {
         final Task compileJava = tasks.findByName(COMPILE_JAVA.getValue());
         final Task verifyModel = tasks.findByName(VERIFY_MODEL.getValue());
         assertTrue(verifyModel.getDependsOn().contains(compileJava.getName()));
+    }
+
+    @Test
+    public void ignore_tasK_dependency_if_no_such_task_found() {
+        final SpinePlugin plugin = TestPlugin.INSTANCE;
+        plugin.newTask(GENERATE_TEST_PROTO, NoOp.<Task>action())
+              .insertAfterAllTasks(GENERATE_PROTO)
+              .applyNowTo(project);
+        final TaskContainer tasks = project.getTasks();
+        final Task generateProto = tasks.findByName(GENERATE_PROTO.getValue());
+        assertNull(generateProto);
+        final Task generateTestProto = tasks.findByName(GENERATE_TEST_PROTO.getValue());
+        assertNotNull(generateTestProto);
     }
 
     @Test(expected = IllegalStateException.class)
