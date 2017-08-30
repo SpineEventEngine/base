@@ -135,6 +135,11 @@ public class SpinePluginBuilderShould {
         assertEquals(input.getCanonicalFile(), singleInput.getCanonicalFile());
     }
 
+    /**
+     * A NoOp implementation of {@link SpinePlugin} used for tests.
+     *
+     * <p>Applying this plugin to a project causes no result.
+     */
     private static class TestPlugin extends SpinePlugin {
 
         private static final SpinePlugin INSTANCE = new TestPlugin();
