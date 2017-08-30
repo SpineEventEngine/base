@@ -177,12 +177,13 @@ public abstract class SpinePlugin implements Plugin<Project> {
              * <p>If a certain project does not have a task with the specified name, no action is
              * performed for that project.
              *
-             * <p>This method does not guarantee that the task will become a build stage.
+             * <p>This method does not guarantee that the task will be included into a standard
+             * Gradle build.
              *
              * <p>Invocation of this method may substitute the invocation of
              * {@link #insertAfterTask(TaskName)} or {@link #insertBeforeTask(TaskName)} if it's
-             * guaranteed that the task will receive at least one task to execute after. Though
-             * the fallback is never handled and there is no guarantee that the task will get into
+             * guaranteed that at least one task with such name exists. Though the fallback is
+             * never handled and there is no guarantee that the task will get into
              * the Gradle task graph.
              *
              * @param target the name of the tasks, serving as "after" anchor
