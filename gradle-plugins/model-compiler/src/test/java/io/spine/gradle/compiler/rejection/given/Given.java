@@ -21,7 +21,7 @@
 package io.spine.gradle.compiler.rejection.given;
 
 import com.sun.javadoc.RootDoc;
-import io.spine.gradle.compiler.GradleProject;
+import io.spine.gradle.GradleProject;
 import org.junit.rules.TemporaryFolder;
 
 import java.util.Arrays;

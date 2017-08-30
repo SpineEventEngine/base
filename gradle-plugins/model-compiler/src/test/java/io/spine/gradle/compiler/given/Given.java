@@ -25,6 +25,7 @@ import org.gradle.testfixtures.ProjectBuilder;
 
 import java.util.UUID;
 
+import static io.spine.gradle.TaskName.CLASSES;
 import static io.spine.gradle.TaskName.CLEAN;
 import static io.spine.gradle.TaskName.COMPILE_JAVA;
 import static io.spine.gradle.TaskName.COMPILE_TEST_JAVA;
@@ -58,6 +59,7 @@ public class Given {
         project.task(COMPILE_TEST_JAVA.getValue());
         project.task(PROCESS_RESOURCES.getValue());
         project.task(PROCESS_TEST_RESOURCES.getValue());
+        project.task(CLASSES.getValue());
         return project;
     }
 

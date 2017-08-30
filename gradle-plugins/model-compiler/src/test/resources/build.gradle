@@ -47,20 +47,18 @@ repositories {
 
 dependencies {
 
-    compile "com.google.protobuf:protobuf-java:${protobufVersion}"
+    compile group: 'com.google.protobuf', name:'protobuf-java', version: protobufVersion
 
     compile(group: 'io.spine', name: 'spine-base', version: spineVersion) {
         exclude(group: 'com.google.protobuf')
     }
-
 }
 
 sourceSets {
     main {
-        proto.srcDirs = ["$projectDir/src/main/proto"]
-        java.srcDirs = ["$projectDir/generated/main/java",
-                        "$projectDir/generated/main/spine",
-                        "$projectDir/src/main/java"]
-        resources.srcDirs = ["$projectDir/generated/main/resources"]
+        proto.srcDirs += ["$projectDir/src/main/proto"]
+        java.srcDirs += ["$projectDir/generated/main/java",
+                        "$projectDir/generated/main/spine"]
+        resources.srcDirs += ["$projectDir/generated/main/resources"]
     }
 }

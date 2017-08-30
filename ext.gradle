@@ -25,10 +25,12 @@
  *  as we want to manage the versions in a single source.
  */
 
-def final SPINE_VERSION = '0.9.54-SNAPSHOT'
+def final SPINE_VERSION = '0.9.55-SNAPSHOT'
 
 ext {
     spineVersion = SPINE_VERSION
+
+    spineCoreVersion = '0.9.55-SNAPSHOT'
 
     guavaVersion = '20.0'
     findBugsVersion = '3.0.0'
@@ -41,8 +43,8 @@ ext {
     javaPoetVersion = '1.8.0'
 
     // We use Spine tools and model compiler in the build process.
-    spineToolsVersion = '0.9.41-SNAPSHOT'
-    spineModelCompilerVersion = '0.9.53-SNAPSHOT'
+    spineToolsVersion = '0.9.51-SNAPSHOT'
+    spineModelCompilerVersion = '0.9.54-SNAPSHOT'
 
     protobufGradlePluginVerison = '0.8.3'
 }

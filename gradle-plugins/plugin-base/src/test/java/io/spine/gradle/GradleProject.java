@@ -18,9 +18,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.gradle.compiler;
+package io.spine.gradle;
 
-import io.spine.gradle.TaskName;
 import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.GradleRunner;
 import org.junit.rules.TemporaryFolder;
@@ -36,9 +35,11 @@ import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Lists.newLinkedList;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
-import static org.jboss.forge.roaster.model.util.Strings.isBlank;
+import static java.nio.file.Files.exists;
+import static java.util.Arrays.asList;
 
 /**
  * {@code GradleProject} for the test needs.
@@ -53,6 +54,9 @@ public class GradleProject {
     private static final String BUILD_GRADLE_NAME = "build.gradle";
     private static final String EXT_GRADLE_NAME = "ext.gradle";
     private static final String BASE_PROTO_LOCATION = "src/main/proto/";
+    private static final String BASE_JAVA_LOCATION = "src/main/java/";
+
+    private static final String STACKTRACE_CLI_OPTION = "--stacktrace";
 
     /**
      * Determines whether the code can be debugged.
@@ -73,24 +77,48 @@ public class GradleProject {
                                         .withProjectDir(builder.folder.getRoot())
                                         .withDebug(DEBUG_ENABLED);
         writeBuildGradle();
-        for (String protoFile : builder.protoFileNames) {
+        writeProtoFiles(builder.protoFileNames);
+        writeJavaFiles(builder.javaFileNames);
+    }
+
+    private void writeProtoFiles(Iterable<String> fileNames) throws IOException {
+        for (String protoFile : fileNames) {
             writeProto(protoFile);
         }
     }
 
+    private void writeJavaFiles(Iterable<String> fileNames) throws IOException {
+        for (String javaFile : fileNames) {
+            writeJava(javaFile);
+        }
+    }
+
     public BuildResult executeTask(TaskName taskName) {
-        return gradleRunner.withArguments(taskName.getValue())
+        return gradleRunner.withArguments(taskName.getValue(), STACKTRACE_CLI_OPTION)
                            .build();
     }
 
-    private void writeProto(String protoFile) throws IOException {
-        final String protoFilePath = BASE_PROTO_LOCATION + protoFile;
+    public BuildResult executeAndFail(TaskName taskName) {
+        return gradleRunner.withArguments(taskName.getValue(), STACKTRACE_CLI_OPTION)
+                           .buildAndFail();
+    }
+
+    private void writeProto(String fileName) throws IOException {
+        writeFile(fileName, BASE_PROTO_LOCATION);
+    }
+
+    private void writeJava(String fileName) throws IOException {
+        writeFile(fileName, BASE_JAVA_LOCATION);
+    }
+
+    private void writeFile(String fileName, String dir) throws IOException {
+        final String filePath = dir + fileName;
         final Path resultingPath = gradleRunner.getProjectDir()
                                                .toPath()
-                                               .resolve(protoFilePath);
-        final String fqnProtoPath = name + '/' + protoFilePath;
+                                               .resolve(filePath);
+        final String fullyQualifiedPath = name + '/' + filePath;
         final InputStream fileContent = getClass().getClassLoader()
-                                                  .getResourceAsStream(fqnProtoPath);
+                                                  .getResourceAsStream(fullyQualifiedPath);
         Files.createDirectories(resultingPath.getParent());
         Files.copy(fileContent, resultingPath);
     }
@@ -110,10 +138,16 @@ public class GradleProject {
     private void copyExtGradle() throws IOException {
         final Path workingFolderPath = Paths.get(".")
                                             .toAbsolutePath();
-        final Path extGradleSourcePath = workingFolderPath.getParent()
-                                                          .getParent()
-                                                          .getParent()
-                                                          .resolve(EXT_GRADLE_NAME);
+        // Find `ext.gradle` in the project dir or in the parent dirs.
+        Path extGradleDirPath = workingFolderPath;
+        while (extGradleDirPath != null
+                && !exists(extGradleDirPath.resolve(EXT_GRADLE_NAME))) {
+            extGradleDirPath = extGradleDirPath.getParent();
+        }
+        checkNotNull(extGradleDirPath,
+                     "ext.gradle file not found in %s or parent directories.",
+                     workingFolderPath);
+        final Path extGradleSourcePath = extGradleDirPath.resolve(EXT_GRADLE_NAME);
         final Path extGradleResultingPath = gradleRunner.getProjectDir()
                                                         .toPath()
                                                         .resolve(EXT_GRADLE_NAME);
@@ -129,6 +163,7 @@ public class GradleProject {
         private String name;
         private TemporaryFolder folder;
         private final List<String> protoFileNames = newLinkedList();
+        private final List<String> javaFileNames = newLinkedList();
 
         private Builder() {
             // Prevent direct instantiation of this class.
@@ -145,8 +180,13 @@ public class GradleProject {
         }
 
         public Builder addProtoFile(String protoFileName) {
-            checkArgument(!isBlank(protoFileName));
+            checkArgument(!isNullOrEmpty(protoFileName));
             protoFileNames.add(protoFileName);
+            return this;
+        }
+
+        public Builder addJavaFiles(String... fileNames) {
+            javaFileNames.addAll(asList(fileNames));
             return this;
         }
 
@@ -165,7 +205,7 @@ public class GradleProject {
 
         public Builder addProtoFiles(Collection<String> protoFileNames) {
             for (String protoFileName : protoFileNames) {
-                checkArgument(!isBlank(protoFileName));
+                checkArgument(!isNullOrEmpty(protoFileName));
             }
 
             this.protoFileNames.addAll(protoFileNames);

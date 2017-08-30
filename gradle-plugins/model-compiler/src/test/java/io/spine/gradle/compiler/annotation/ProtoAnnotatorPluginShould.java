@@ -26,7 +26,7 @@ import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.ServiceDescriptorProto;
-import io.spine.gradle.compiler.GradleProject;
+import io.spine.gradle.GradleProject;
 import io.spine.gradle.compiler.annotation.given.Given.FieldAnnotationValidator;
 import io.spine.gradle.compiler.annotation.given.Given.MainDefinitionAnnotationValidator;
 import io.spine.gradle.compiler.annotation.given.Given.NestedTypeFieldsAnnotationValidator;
