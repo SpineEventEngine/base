@@ -1,3 +1,6 @@
+import io.spine.gradle.compiler.Extension
+import org.apache.tools.ant.filters.ReplaceTokens
+
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 
@@ -102,13 +105,14 @@ protobuf {
  */
 task prepareProtocConfig(type: Copy) {
     description = "Prepares the spine_protoc.gradle file"
-    
+
     from "./spine_protoc.gradle"
     into "./src/main/resources"
 
-    filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: ['baseVersion': "'$project.spineVersion'".toString(),
-                                                                'pbVersion': "'$project.protobufVersion'".toString(),
-                                                                'gRPCVersion': "'$project.gRpcVersion'".toString()])
+    filter(ReplaceTokens, tokens: ['baseVersion': "'$project.spineVersion'".toString(),
+                                   'pbVersion': "'$project.protobufVersion'".toString(),
+                                   'gRPCVersion': "'$project.gRpcVersion'".toString(),
+                                   'spineDir': "'${Extension.SPINE_BUILD_ARTIFACT_STORAGE_DIR}'".toString()])
 
     outputs.upToDateWhen { false }
 }
