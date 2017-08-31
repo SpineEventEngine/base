@@ -46,8 +46,7 @@ import static io.spine.gradle.compiler.ModelCompilerPlugin.SPINE_MODEL_COMPILER_
 // as this is a Gradle extension.
 public class Extension {
 
-    @VisibleForTesting
-    static final String SPINE_BUILD_ARTIFACT_STORAGE_DIR = ".spine";
+    public static final String SPINE_BUILD_ARTIFACT_STORAGE_DIR = ".spine";
     private static final String DEFAULT_GEN_ROOT_DIR = "/generated";
 
     private static final String DEFAULT_MAIN_PROTO_SRC_DIR = "/src/main/proto";
