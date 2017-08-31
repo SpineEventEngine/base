@@ -22,6 +22,7 @@ package io.spine.gradle.compiler;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
+import io.spine.annotation.Internal;
 import org.gradle.api.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,9 +47,17 @@ import static io.spine.gradle.compiler.ModelCompilerPlugin.SPINE_MODEL_COMPILER_
 // as this is a Gradle extension.
 public class Extension {
 
+    /**
+     * The Spine internal directory name for storing temporary build artifacts.
+     *
+     * <p>Spine Gradle tasks may write some temporary files into this directory.
+     *
+     * <p>The directory is deleted on {@code :pre-clean"}.
+     */
+    @Internal
     public static final String SPINE_BUILD_ARTIFACT_STORAGE_DIR = ".spine";
-    private static final String DEFAULT_GEN_ROOT_DIR = "/generated";
 
+    private static final String DEFAULT_GEN_ROOT_DIR = "/generated";
     private static final String DEFAULT_MAIN_PROTO_SRC_DIR = "/src/main/proto";
     private static final String DEFAULT_MAIN_GEN_RES_DIR = DEFAULT_GEN_ROOT_DIR + "/main/resources";
     private static final String DEFAULT_MAIN_GEN_DIR = DEFAULT_GEN_ROOT_DIR + "/main/java";
