@@ -1,6 +1,7 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
-
 //
 // Copyright 2017, TeamDev Ltd. All rights reserved.
 //
@@ -73,6 +74,7 @@ dependencies {
 
     compile project(':testutil-base')
     testCompile group: 'com.google.guava', name: 'guava-testlib', version: guavaVersion
+    testCompile group: 'org.hamcrest', name:'hamcrest-all', version: hamcrestVersion
     testCompile gradleTestKit()
     testCompile project(':plugin-base').sourceSets.test.output // Test classes of `plugin-base`
 
@@ -101,13 +103,16 @@ protobuf {
  */
 task prepareProtocConfig(type: Copy) {
     description = "Prepares the spine_protoc.gradle file"
-    
+
     from "./spine_protoc.gradle"
     into "./src/main/resources"
 
-    filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: ['baseVersion': "'$project.spineVersion'".toString(),
-                                                                'pbVersion': "'$project.protobufVersion'".toString(),
-                                                                'gRPCVersion': "'$project.gRpcVersion'".toString()])
+    filter(ReplaceTokens, tokens: ['baseVersion': "'$project.spineVersion'".toString(),
+                                   'pbVersion': "'$project.protobufVersion'".toString(),
+                                   'gRPCVersion': "'$project.gRpcVersion'".toString(),
+                                   'spineDir': "'.spine'".toString()])
+    // TODO:2017-08-31:dmytro.dashenkov: Replace ".spine" with "Extension.SPINE_BUILD_ARTIFACT_STORAGE_DIR".
+    // https://github.com/SpineEventEngine/base/issues/51
 
     outputs.upToDateWhen { false }
 }

@@ -20,9 +20,11 @@
 
 package io.spine.gradle.compiler.given;
 
+import com.google.common.io.Files;
 import org.gradle.api.Project;
 import org.gradle.testfixtures.ProjectBuilder;
 
+import java.io.File;
 import java.util.UUID;
 
 import static io.spine.gradle.TaskName.CLASSES;
@@ -50,7 +52,19 @@ public class Given {
 
     /** Creates a project with all required tasks. */
     public static Project newProject() {
+        return newProject(Files.createTempDir());
+    }
+
+    /**
+     * Creates a project with all required tasks.
+     *
+     * <p>The project will be placed into the given directory.
+     *
+     * @param projectDir {@link Project#getProjectDir() Project.getProjectDir()} of the project
+     */
+    public static Project newProject(File projectDir) {
         final Project project = ProjectBuilder.builder()
+                                              .withProjectDir(projectDir)
                                               .build();
         project.task(CLEAN.getValue());
         project.task(GENERATE_PROTO.getValue());

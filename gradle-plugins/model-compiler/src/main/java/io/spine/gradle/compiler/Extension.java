@@ -20,17 +20,23 @@
 package io.spine.gradle.compiler;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
+import io.spine.annotation.Internal;
 import org.gradle.api.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.LinkedList;
 import java.util.List;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static com.google.common.collect.Lists.newLinkedList;
 import static io.spine.gradle.compiler.ModelCompilerPlugin.SPINE_MODEL_COMPILER_EXTENSION_NAME;
-import static java.util.Collections.singletonList;
 
 /**
  * A configuration for the {@link ModelCompilerPlugin}.
@@ -41,8 +47,17 @@ import static java.util.Collections.singletonList;
 // as this is a Gradle extension.
 public class Extension {
 
-    private static final String DEFAULT_GEN_ROOT_DIR = "/generated";
+    /**
+     * The Spine internal directory name for storing temporary build artifacts.
+     *
+     * <p>Spine Gradle tasks may write some temporary files into this directory.
+     *
+     * <p>The directory is deleted on {@code :pre-clean"}.
+     */
+    @Internal
+    public static final String SPINE_BUILD_ARTIFACT_STORAGE_DIR = ".spine";
 
+    private static final String DEFAULT_GEN_ROOT_DIR = "/generated";
     private static final String DEFAULT_MAIN_PROTO_SRC_DIR = "/src/main/proto";
     private static final String DEFAULT_MAIN_GEN_RES_DIR = DEFAULT_GEN_ROOT_DIR + "/main/resources";
     private static final String DEFAULT_MAIN_GEN_DIR = DEFAULT_GEN_ROOT_DIR + "/main/java";
@@ -280,20 +295,51 @@ public class Extension {
     }
 
     public static List<String> getDirsToClean(Project project) {
+        final List<String> dirsToClean = newLinkedList(spineDirs(project));
         log().debug("Finding the directories to clean");
         final List<String> dirs = spineProtobuf(project).dirsToClean;
+        final String singleDir = spineProtobuf(project).dirToClean;
         if (dirs.size() > 0) {
             log().error("Found {} directories to clean: {}", dirs.size(), dirs);
-            return ImmutableList.copyOf(dirs);
-        }
-        final String singleDir = spineProtobuf(project).dirToClean;
-        if (singleDir != null && !singleDir.isEmpty()) {
+            dirsToClean.addAll(dirs);
+        } else if (singleDir != null && !singleDir.isEmpty()) {
             log().debug("Found directory to clean: {}", singleDir);
-            return singletonList(singleDir);
+            dirsToClean.add(singleDir);
+        } else {
+            final String defaultValue = root(project) + DEFAULT_GEN_ROOT_DIR;
+            log().debug("Default directory to clean: {}", defaultValue);
+            dirsToClean.add(defaultValue);
         }
-        final String defaultValue = root(project) + DEFAULT_GEN_ROOT_DIR;
-        log().debug("Default directory to clean: {}", defaultValue);
-        return singletonList(defaultValue);
+        return ImmutableList.copyOf(dirsToClean);
+    }
+
+    private static Iterable<String> spineDirs(Project project) {
+        final List<String> spineDirs = newLinkedList();
+        final Optional<String> spineDir = spineDir(project);
+        final Optional<String> rootSpineDir = spineDir(project.getRootProject());
+        if (spineDir.isPresent()) {
+            spineDirs.add(spineDir.get());
+            if (rootSpineDir.isPresent() && !spineDir.equals(rootSpineDir)) {
+                spineDirs.add(rootSpineDir.get());
+            }
+        }
+        return spineDirs;
+    }
+
+    private static Optional<String> spineDir(Project project) {
+        final File projectDir;
+        try {
+            projectDir = project.getProjectDir().getCanonicalFile();
+        } catch (IOException e) {
+            throw new IllegalStateException("Project directory is invalid!", e);
+        }
+        final Path projectPath = projectDir.toPath();
+        final Path spinePath = projectPath.resolve(SPINE_BUILD_ARTIFACT_STORAGE_DIR);
+        if (Files.exists(spinePath)) {
+            return Optional.of(spinePath.toString());
+        } else {
+            return Optional.absent();
+        }
     }
 
     private static String root(Project project) {

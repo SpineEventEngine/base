@@ -57,25 +57,18 @@ public class GradleProject {
     private static final String BASE_JAVA_LOCATION = "src/main/java/";
 
     private static final String STACKTRACE_CLI_OPTION = "--stacktrace";
-
-    /**
-     * Determines whether the code can be debugged.
-     *
-     * <p>Affects the code executed during a {@linkplain #executeTask(TaskName) Gradle task}.
-     *
-     * <p>NOTE: when the value is {@code true}, all code is executed in a single JVM.
-     * This leads to a high consumption of a memory.
-     */
-    private static final boolean DEBUG_ENABLED = false;
+    private static final String DEBUG_CLI_OPTION = "--debug";
 
     private final String name;
     private final GradleRunner gradleRunner;
+    private final boolean debug;
 
     private GradleProject(Builder builder) throws IOException {
         this.name = builder.name;
+        this.debug = builder.debug;
         this.gradleRunner = GradleRunner.create()
                                         .withProjectDir(builder.folder.getRoot())
-                                        .withDebug(DEBUG_ENABLED);
+                                        .withDebug(builder.debug);
         writeBuildGradle();
         writeProtoFiles(builder.protoFileNames);
         writeJavaFiles(builder.javaFileNames);
@@ -94,13 +87,18 @@ public class GradleProject {
     }
 
     public BuildResult executeTask(TaskName taskName) {
-        return gradleRunner.withArguments(taskName.getValue(), STACKTRACE_CLI_OPTION)
-                           .build();
+        return prepareRun(taskName).build();
     }
 
     public BuildResult executeAndFail(TaskName taskName) {
-        return gradleRunner.withArguments(taskName.getValue(), STACKTRACE_CLI_OPTION)
-                           .buildAndFail();
+        return prepareRun(taskName).buildAndFail();
+    }
+
+    private GradleRunner prepareRun(TaskName taskName) {
+        final String[] args = debug
+                ? new String[]{taskName.getValue(), STACKTRACE_CLI_OPTION, DEBUG_CLI_OPTION}
+                : new String[]{taskName.getValue(), STACKTRACE_CLI_OPTION};
+        return gradleRunner.withArguments(args);
     }
 
     private void writeProto(String fileName) throws IOException {
@@ -162,6 +160,16 @@ public class GradleProject {
 
         private String name;
         private TemporaryFolder folder;
+
+        /**
+         * Determines whether the code can be debugged.
+         *
+         * <p>Affects the code executed during a {@linkplain #executeTask(TaskName) Gradle task}.
+         *
+         * <p>NOTE: when the value is {@code true}, all code is executed in a single JVM.
+         * This leads to a high consumption of a memory.
+         */
+        private boolean debug;
         private final List<String> protoFileNames = newLinkedList();
         private final List<String> javaFileNames = newLinkedList();
 
@@ -187,6 +195,18 @@ public class GradleProject {
 
         public Builder addJavaFiles(String... fileNames) {
             javaFileNames.addAll(asList(fileNames));
+            return this;
+        }
+
+        /**
+         * Enables the debug mode of the GradleRunner.
+         *
+         * <p>Use debug mode only for temporary debug purposes.
+         */
+        @SuppressWarnings("unused") // Used only for debug purposes. Should never get
+                                    // to e.g. CLI server.
+        public Builder enableDebug() {
+            this.debug = true;
             return this;
         }
 
