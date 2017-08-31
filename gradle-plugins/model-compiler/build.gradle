@@ -112,6 +112,7 @@ task prepareProtocConfig(type: Copy) {
                                    'gRPCVersion': "'$project.gRpcVersion'".toString(),
                                    'spineDir': "'.spine'".toString()])
     // TODO:2017-08-31:dmytro.dashenkov: Replace ".spine" with "Extension.SPINE_BUILD_ARTIFACT_STORAGE_DIR".
+    // https://github.com/SpineEventEngine/base/issues/51
 
     outputs.upToDateWhen { false }
 }
