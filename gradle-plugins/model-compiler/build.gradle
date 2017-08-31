@@ -73,7 +73,7 @@ dependencies {
 
     compile project(':testutil-base')
     testCompile group: 'com.google.guava', name: 'guava-testlib', version: guavaVersion
-    compile group: 'org.hamcrest', name:'hamcrest-all', version: hamcrestVersion
+    testCompile group: 'org.hamcrest', name:'hamcrest-all', version: hamcrestVersion
     testCompile gradleTestKit()
     testCompile project(':plugin-base').sourceSets.test.output // Test classes of `plugin-base`
 
