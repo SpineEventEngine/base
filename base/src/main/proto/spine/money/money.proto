@@ -177,7 +177,7 @@ enum Currency {
         symbol: "R$",
         numeric_code: 986,
         exponent_digits: 2 }];
-    BSD = 21 [(currency) = {
+    BSD_ = 21 [(currency) = {
         name: "Bahamian Dollar",
         symbol: "B$",
 		numeric_code: 44,
