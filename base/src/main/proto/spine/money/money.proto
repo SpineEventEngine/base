@@ -177,6 +177,9 @@ enum Currency {
         symbol: "R$",
         numeric_code: 986,
         exponent_digits: 2 }];
+
+    // This identifier caused naming conflicts in C++ version of Spine client.
+    // Therefore it is now named with `_` suffix to avoid any confusion.
     BSD_ = 21 [(currency) = {
         name: "Bahamian Dollar",
         symbol: "B$",
