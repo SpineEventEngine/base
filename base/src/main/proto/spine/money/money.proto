@@ -178,8 +178,14 @@ enum Currency {
         numeric_code: 986,
         exponent_digits: 2 }];
 
-    // This identifier caused naming conflicts in C++ version of Spine client.
-    // Therefore it is now named with `_` suffix to avoid any confusion.
+    // This identifier previously caused naming conflict in C++ version of Spine client.
+    // Therefore it was renamed by appending `_` suffix to its name.
+    //
+    // In particular, in Unix-like operating systems a system header file `sys/param.h` often
+    // defines `BSD` as one of the system-specific constants.
+    //
+    // Therefore, the compilation of the C++ code, generated from the original `Currency.BSD`
+    // enum value, would always fail under these operating systems.
     BSD_ = 21 [(currency) = {
         name: "Bahamian Dollar",
         symbol: "B$",
