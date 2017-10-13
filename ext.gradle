@@ -25,12 +25,10 @@
  *  as we want to manage the versions in a single source.
  */
 
-def final SPINE_VERSION = '0.9.56-SNAPSHOT'
+def final SPINE_VERSION = '0.9.77-SNAPSHOT'
 
 ext {
     spineVersion = SPINE_VERSION
-
-    spineCoreVersion = '0.9.60-SNAPSHOT'
 
     guavaVersion = '20.0'
     findBugsVersion = '3.0.0'
