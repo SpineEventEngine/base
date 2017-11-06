@@ -27,6 +27,9 @@ import org.gradle.api.Action;
  */
 public class Given {
 
+    @SuppressWarnings("DuplicateStringLiteralInspection") // Different semantics.
+    public static final String JAVA_PLUGIN_ID = "java";
+
     public enum NoOp implements Action<Object> {
         ACTION;
 

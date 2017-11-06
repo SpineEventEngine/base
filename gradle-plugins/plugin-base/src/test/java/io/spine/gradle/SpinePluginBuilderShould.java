@@ -41,6 +41,7 @@ import static io.spine.gradle.TaskName.GENERATE_PROTO;
 import static io.spine.gradle.TaskName.GENERATE_TEST_PROTO;
 import static io.spine.gradle.TaskName.PRE_CLEAN;
 import static io.spine.gradle.TaskName.VERIFY_MODEL;
+import static io.spine.gradle.given.Given.JAVA_PLUGIN_ID;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -50,8 +51,6 @@ import static org.junit.Assert.assertTrue;
  * @author Dmytro Dashenkov
  */
 public class SpinePluginBuilderShould {
-
-    private static final String JAVA_PLUGIN_ID = "java";
 
     private Project project;
 

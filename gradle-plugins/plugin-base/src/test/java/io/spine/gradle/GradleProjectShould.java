@@ -53,6 +53,8 @@ public class GradleProjectShould {
                      .setProjectName(PROJECT_NAME)
                      .addJavaFiles(files)
                      .build();
+        @SuppressWarnings("DuplicateStringLiteralInspection")
+            // "java" literal is copied with different semantics.
         final Path root = temporaryFolder.getRoot()
                                          .toPath()
                                          .resolve("src")

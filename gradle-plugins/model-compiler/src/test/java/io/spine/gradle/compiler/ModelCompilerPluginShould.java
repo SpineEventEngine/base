@@ -82,7 +82,6 @@ public class ModelCompilerPluginShould {
 
     @Test
     public void add_task_generateRejections() {
-
         final Task genRejections = task(GENERATE_REJECTIONS);
         assertNotNull(genRejections);
         assertTrue(dependsOn(genRejections, GENERATE_PROTO));
