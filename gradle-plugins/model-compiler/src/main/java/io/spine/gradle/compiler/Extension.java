@@ -256,19 +256,19 @@ public class Extension {
 
     public static boolean isGenerateValidatingBuilders(Project project) {
         final boolean result = spineProtobuf(project).generateValidatingBuilders;
-        log().trace("The current validating builder generation setting is {}", result);
+        log().debug("The current validating builder generation setting is {}", result);
         return result;
     }
 
     public static Indent getIndent(Project project) {
         final Indent result = spineProtobuf(project).indent;
-        log().trace("The current indent is {}", result);
+        log().debug("The current indent is {}", result);
         return result;
     }
 
     public static boolean isGenerateValidatingBuildersFromClasspath(Project project) {
         final boolean result = spineProtobuf(project).generateBuildersFromClasspath;
-        log().trace("Validating builder are generated from  {}",
+        log().debug("Validating builder are generated from  {}",
                     (result ? "the classpath" : "this module only"));
         return result;
     }
@@ -277,7 +277,7 @@ public class Extension {
     @SuppressWarnings("InstanceMethodNamingConvention")
     public void setGenerateValidatingBuildersFromClasspath(boolean generateFromClasspath) {
         this.generateBuildersFromClasspath = generateFromClasspath;
-        log().trace("Validating builder are set to be generated from  {}",
+        log().debug("Validating builder are set to be generated from  {}",
                     (generateFromClasspath ? "the whole classpath" : "the current module only"));
     }
 
@@ -285,7 +285,7 @@ public class Extension {
     @SuppressWarnings("unused")
     public void setGenerateValidatingBuilders(boolean generateValidatingBuilders) {
         this.generateValidatingBuilders = generateValidatingBuilders;
-        log().trace("Validating builder generation has been {}",
+        log().debug("Validating builder generation has been {}",
                     (generateValidatingBuilders ? "enabled" : "disabled"));
     }
 
