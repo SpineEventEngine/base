@@ -56,8 +56,8 @@ dependencies {
 
 ext {
     runsOnWindows = org.gradle.internal.os.OperatingSystem.current().isWindows()
-    spineFolder = ("$project.projectDir/.$spineFolderName" as File).toPath()
-    rootSpineFolder = ("$project.rootDir/.$spineFolderName" as File).toPath()
+    spineFolder = ("$project.projectDir/$spineFolderName" as File).toPath()
+    rootSpineFolder = ("$project.rootDir/$spineFolderName" as File).toPath()
 }
 
 final def copyPluginJarAction = {
