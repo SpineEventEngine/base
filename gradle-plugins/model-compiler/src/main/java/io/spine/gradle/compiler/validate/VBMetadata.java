@@ -22,10 +22,7 @@ package io.spine.gradle.compiler.validate;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
-import com.google.common.base.Optional;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
-
-import javax.annotation.Nullable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -39,18 +36,21 @@ final class VBMetadata {
     private final String javaClass;
     private final String javaPackage;
     private final DescriptorProto msgDescriptor;
+    private final String sourceProtoFilePath;
 
-    @Nullable
-    private String sourceProtoFilePath;
-
-    VBMetadata(String javaPackage, String javaClass, DescriptorProto msgDescriptor) {
+    VBMetadata(String javaPackage,
+               String javaClass,
+               DescriptorProto msgDescriptor,
+               String sourceProtoFilePath) {
         checkNotNull(javaPackage);
         checkNotNull(javaClass);
         checkNotNull(msgDescriptor);
+        checkNotNull(sourceProtoFilePath);
 
         this.javaPackage = javaPackage;
         this.javaClass = javaClass;
         this.msgDescriptor = msgDescriptor;
+        this.sourceProtoFilePath = sourceProtoFilePath;
     }
 
     String getJavaPackage() {
@@ -65,13 +65,8 @@ final class VBMetadata {
         return msgDescriptor;
     }
 
-    Optional<String> getSourceProtoFilePath() {
-        return Optional.fromNullable(sourceProtoFilePath);
-    }
-
-    public void setSourceProtoFilePath(String sourceProtoFilePath) {
-        checkNotNull(sourceProtoFilePath);
-        this.sourceProtoFilePath = sourceProtoFilePath;
+    String getSourceProtoFilePath() {
+        return sourceProtoFilePath;
     }
 
     @Override
