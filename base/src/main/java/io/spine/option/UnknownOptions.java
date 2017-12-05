@@ -25,6 +25,8 @@ import com.google.protobuf.DescriptorProtos.EnumDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.ServiceDescriptorProto;
+import com.google.protobuf.UnknownFieldSet;
+import com.google.protobuf.UnknownFieldSet.Field;
 import io.spine.annotation.Internal;
 
 import java.util.Map;
@@ -75,11 +77,9 @@ public class UnknownOptions {
      * @return a file option number to an option value map
      */
     public static Map<Integer, String> getUnknownOptions(FileDescriptorProto file) {
-        final String optionsStr = file.getOptions()
-                                      .getUnknownFields()
-                                      .toString()
-                                      .trim();
-        final Map<Integer, String> result = parseOptions(optionsStr);
+        final UnknownFieldSet unknownFields = file.getOptions()
+                                                  .getUnknownFields();
+        final Map<Integer, String> result = extractOptions(unknownFields);
         return result;
     }
 
@@ -92,12 +92,9 @@ public class UnknownOptions {
      * @return {@code} true if the message has the option
      */
     public static boolean hasUnknownOption(DescriptorProto message, int messageOptionNumber) {
-        final String optionsStr = message.getOptions()
-                                         .getUnknownFields()
-                                         .toString()
-                                         .trim();
-        final String rawMessageOptionNumber = String.valueOf(messageOptionNumber);
-        return optionsStr.contains(rawMessageOptionNumber);
+        final UnknownFieldSet unknownFields = message.getOptions()
+                                                     .getUnknownFields();
+        return containsField(unknownFields, messageOptionNumber);
     }
 
     /**
@@ -121,11 +118,9 @@ public class UnknownOptions {
      * @return a message option number to an option value map
      */
     public static Map<Integer, String> getUnknownOptions(DescriptorProto message) {
-        final String optionsStr = message.getOptions()
-                                         .getUnknownFields()
-                                         .toString()
-                                         .trim();
-        final Map<Integer, String> result = parseOptions(optionsStr);
+        final UnknownFieldSet unknownFields = message.getOptions()
+                                                     .getUnknownFields();
+        final Map<Integer, String> result = extractOptions(unknownFields);
         return result;
     }
 
@@ -151,11 +146,9 @@ public class UnknownOptions {
      * @return an enum option number to an option value map
      */
     public static Map<Integer, String> getUnknownOptions(EnumDescriptorProto enumDescriptor) {
-        final String optionsStr = enumDescriptor.getOptions()
-                                                .getUnknownFields()
-                                                .toString()
-                                                .trim();
-        final Map<Integer, String> result = parseOptions(optionsStr);
+        final UnknownFieldSet unknownFields = enumDescriptor.getOptions()
+                                                            .getUnknownFields();
+        final Map<Integer, String> result = extractOptions(unknownFields);
         return result;
     }
 
@@ -180,11 +173,9 @@ public class UnknownOptions {
      * @return an field option number to an option value map
      */
     public static Map<Integer, String> getUnknownOptions(FieldDescriptorProto field) {
-        final String optionsStr = field.getOptions()
-                                       .getUnknownFields()
-                                       .toString()
-                                       .trim();
-        final Map<Integer, String> result = parseOptions(optionsStr);
+        final UnknownFieldSet unknownFields = field.getOptions()
+                                                   .getUnknownFields();
+        final Map<Integer, String> result = extractOptions(unknownFields);
         return result;
     }
 
@@ -210,11 +201,11 @@ public class UnknownOptions {
      * @return a service option number to an option value map
      */
     public static Map<Integer, String> getUnknownOptions(ServiceDescriptorProto service) {
-        final String optionsStr = service.getOptions()
-                                         .getUnknownFields()
-                                         .toString()
-                                         .trim();
-        return parseOptions(optionsStr);
+        final UnknownFieldSet unknownFields = service.getOptions()
+                                                     .getUnknownFields();
+
+        final Map<Integer, String> result = extractOptions(unknownFields);
+        return result;
     }
 
     /**
@@ -226,12 +217,9 @@ public class UnknownOptions {
      * @return {@code} true if the field has the option
      */
     public static boolean hasUnknownOption(FieldDescriptorProto field, int optionFieldNumber) {
-        final String optionsStr = field.getOptions()
-                                       .getUnknownFields()
-                                       .toString()
-                                       .trim();
-        final boolean result = optionsStr.contains(String.valueOf(optionFieldNumber));
-        return result;
+        final UnknownFieldSet unknownFields = field.getOptions()
+                                                   .getUnknownFields();
+        return containsField(unknownFields, optionFieldNumber);
     }
 
     /**
@@ -248,7 +236,49 @@ public class UnknownOptions {
         return result;
     }
 
-    private static Map<Integer, String> parseOptions(String optionsStr) {
+    /**
+     * Checks if there is a field with such {@code tag} in the given {@code unknownFields} set.
+     *
+     * @param unknownFields the {@link UnknownFieldSet} to check
+     * @param tag           the field number (tag) to look for
+     * @return {@code true} if the value is present in the "unknown" options set, {@code false}
+     *         otherwise
+     */
+    private static boolean containsField(UnknownFieldSet unknownFields, int tag) {
+        final Map<Integer, ?> fields = unknownFields.asMap();
+        final boolean result = fields.containsKey(tag);
+        return result;
+    }
+
+    /**
+     * Extracts the values of "unknown" options as a {@code Map} of the field number to the field
+     * string representation.
+     *
+     * @param unknownFields the {@link UnknownFieldSet} to extract the values from
+     * @return a map of the field numbers to the field values
+     */
+    private static Map<Integer, String> extractOptions(UnknownFieldSet unknownFields) {
+        final Map<Integer, Field> fields = unknownFields.asMap();
+        if (fields.isEmpty()) {
+            return emptyMap();
+        }
+        final String rawFields = unknownFields.toString();
+        final Map<Integer, String> result = unsafeParseOptions(rawFields);
+        return result;
+    }
+
+    /**
+     * Parses the given string representation of the Protobuf "unknown" options.
+     *
+     * <p>This method expects the passed string to adhere a certain protocol. It's not recommended
+     * to call it directly (even within {@code UnknownOptions} class).
+     *
+     * @param optionsStr the string to parse
+     * @return the map of the parsed "unknown" options
+     * @see #extractOptions(UnknownFieldSet) extractOptions(UnknownFieldSet) for a safer way
+     * to extract the options
+     */
+    private static Map<Integer, String> unsafeParseOptions(String optionsStr) {
         if (optionsStr.trim()
                       .isEmpty()) {
             return emptyMap();
@@ -256,7 +286,10 @@ public class UnknownOptions {
         final Map<Integer, String> map = newHashMap();
         final String[] options = PATTERN_NEW_LINE.split(optionsStr);
         for (String option : options) {
-            parseAndPutNumberAndValue(option, map);
+            if (PATTERN_COLON.matcher(option)
+                             .find()) {
+                parseAndPutNumberAndValue(option, map);
+            }
         }
         return ImmutableMap.copyOf(map);
     }
@@ -277,5 +310,4 @@ public class UnknownOptions {
             map.put(number, value);
         }
     }
-
 }

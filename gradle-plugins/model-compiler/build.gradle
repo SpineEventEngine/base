@@ -23,7 +23,7 @@ import java.nio.file.StandardCopyOption
 //
 
 ext {
-    roasterVersion = '2.20.0.Final'
+    roasterVersion = '2.20.1.Final'
     spineFolder = "${project.projectDir}/.spine" as File
     protocPluginDependency = null
 }
