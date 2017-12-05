@@ -237,11 +237,11 @@ public class UnknownOptions {
     }
 
     /**
-     * Checks if the is a field with such {@code tag} in the given {@code unknownFields} set.
+     * Checks if there is a field with such {@code tag} in the given {@code unknownFields} set.
      *
      * @param unknownFields the {@link UnknownFieldSet} to check
      * @param tag           the field number (tag) to look for
-     * @return {@code true} if the value is present in the unknown fields set, {@code false}
+     * @return {@code true} if the value is present in the "unknown" options set, {@code false}
      *         otherwise
      */
     private static boolean containsField(UnknownFieldSet unknownFields, int tag) {
@@ -251,8 +251,8 @@ public class UnknownOptions {
     }
 
     /**
-     * Extracts the values of unknown options of a message as a {@code Map} of the field number to
-     * it's string representation.
+     * Extracts the values of "unknown" options as a {@code Map} of the field number to the field
+     * string representation.
      *
      * @param unknownFields the {@link UnknownFieldSet} to extract the values from
      * @return a map of the field numbers to the field values
@@ -268,7 +268,7 @@ public class UnknownOptions {
     }
 
     /**
-     * Parses the given string representation of the Protobuf unknown options.
+     * Parses the given string representation of the Protobuf "unknown" options.
      *
      * <p>This method expects the passed string to adhere a certain protocol. It's not recommended
      * to call it directly (even within {@code UnknownOptions} class).
