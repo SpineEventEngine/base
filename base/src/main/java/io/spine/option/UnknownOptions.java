@@ -25,7 +25,11 @@ import com.google.protobuf.DescriptorProtos.EnumDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.ServiceDescriptorProto;
+import com.google.protobuf.UnknownFieldSet;
+import com.google.protobuf.UnknownFieldSet.Field;
 import io.spine.annotation.Internal;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -75,11 +79,9 @@ public class UnknownOptions {
      * @return a file option number to an option value map
      */
     public static Map<Integer, String> getUnknownOptions(FileDescriptorProto file) {
-        final String optionsStr = file.getOptions()
-                                      .getUnknownFields()
-                                      .toString()
-                                      .trim();
-        final Map<Integer, String> result = parseOptions(optionsStr);
+        final UnknownFieldSet unknownFields = file.getOptions()
+                                                  .getUnknownFields();
+        final Map<Integer, String> result = extractOptions(unknownFields);
         return result;
     }
 
@@ -92,12 +94,9 @@ public class UnknownOptions {
      * @return {@code} true if the message has the option
      */
     public static boolean hasUnknownOption(DescriptorProto message, int messageOptionNumber) {
-        final String optionsStr = message.getOptions()
-                                         .getUnknownFields()
-                                         .toString()
-                                         .trim();
-        final String rawMessageOptionNumber = String.valueOf(messageOptionNumber);
-        return optionsStr.contains(rawMessageOptionNumber);
+        final UnknownFieldSet unknownFields = message.getOptions()
+                                                     .getUnknownFields();
+        return containsField(unknownFields, messageOptionNumber);
     }
 
     /**
@@ -121,11 +120,9 @@ public class UnknownOptions {
      * @return a message option number to an option value map
      */
     public static Map<Integer, String> getUnknownOptions(DescriptorProto message) {
-        final String optionsStr = message.getOptions()
-                                         .getUnknownFields()
-                                         .toString()
-                                         .trim();
-        final Map<Integer, String> result = parseOptions(optionsStr);
+        final UnknownFieldSet unknownFields = message.getOptions()
+                                                     .getUnknownFields();
+        final Map<Integer, String> result = extractOptions(unknownFields);
         return result;
     }
 
@@ -151,11 +148,9 @@ public class UnknownOptions {
      * @return an enum option number to an option value map
      */
     public static Map<Integer, String> getUnknownOptions(EnumDescriptorProto enumDescriptor) {
-        final String optionsStr = enumDescriptor.getOptions()
-                                                .getUnknownFields()
-                                                .toString()
-                                                .trim();
-        final Map<Integer, String> result = parseOptions(optionsStr);
+        final UnknownFieldSet unknownFields = enumDescriptor.getOptions()
+                                                            .getUnknownFields();
+        final Map<Integer, String> result = extractOptions(unknownFields);
         return result;
     }
 
@@ -180,11 +175,9 @@ public class UnknownOptions {
      * @return an field option number to an option value map
      */
     public static Map<Integer, String> getUnknownOptions(FieldDescriptorProto field) {
-        final String optionsStr = field.getOptions()
-                                       .getUnknownFields()
-                                       .toString()
-                                       .trim();
-        final Map<Integer, String> result = parseOptions(optionsStr);
+        final UnknownFieldSet unknownFields = field.getOptions()
+                                                   .getUnknownFields();
+        final Map<Integer, String> result = extractOptions(unknownFields);
         return result;
     }
 
@@ -210,11 +203,11 @@ public class UnknownOptions {
      * @return a service option number to an option value map
      */
     public static Map<Integer, String> getUnknownOptions(ServiceDescriptorProto service) {
-        final String optionsStr = service.getOptions()
-                                         .getUnknownFields()
-                                         .toString()
-                                         .trim();
-        return parseOptions(optionsStr);
+        final UnknownFieldSet unknownFields = service.getOptions()
+                                                     .getUnknownFields();
+
+        final Map<Integer, String> result = extractOptions(unknownFields);
+        return result;
     }
 
     /**
@@ -226,12 +219,9 @@ public class UnknownOptions {
      * @return {@code} true if the field has the option
      */
     public static boolean hasUnknownOption(FieldDescriptorProto field, int optionFieldNumber) {
-        final String optionsStr = field.getOptions()
-                                       .getUnknownFields()
-                                       .toString()
-                                       .trim();
-        final boolean result = optionsStr.contains(String.valueOf(optionFieldNumber));
-        return result;
+        final UnknownFieldSet unknownFields = field.getOptions()
+                                                   .getUnknownFields();
+        return containsField(unknownFields, optionFieldNumber);
     }
 
     /**
@@ -248,15 +238,34 @@ public class UnknownOptions {
         return result;
     }
 
+    private static boolean containsField(UnknownFieldSet unknownFields, int tag) {
+        final Map<Integer, ?> fields = unknownFields.asMap();
+        final boolean result = fields.containsKey(tag);
+        return result;
+    }
+
+    private static Map<Integer, String> extractOptions(UnknownFieldSet unknownFields) {
+        final Map<Integer, Field> fields = unknownFields.asMap();
+        if (fields.isEmpty()) {
+            return emptyMap();
+        }
+        final String rawFields = unknownFields.toString();
+        final Map<Integer, String> result = parseOptions(rawFields);
+        return result;
+    }
+
     private static Map<Integer, String> parseOptions(String optionsStr) {
         if (optionsStr.trim()
                       .isEmpty()) {
             return emptyMap();
         }
+        log().debug("Parsing options: {}", optionsStr);
         final Map<Integer, String> map = newHashMap();
         final String[] options = PATTERN_NEW_LINE.split(optionsStr);
         for (String option : options) {
-            parseAndPutNumberAndValue(option, map);
+            if (PATTERN_COLON.matcher(option).find()) {
+                parseAndPutNumberAndValue(option, map);
+            }
         }
         return ImmutableMap.copyOf(map);
     }
@@ -278,4 +287,13 @@ public class UnknownOptions {
         }
     }
 
+    private static Logger log() {
+        return LogSingleton.INSTANCE.value;
+    }
+
+    private enum LogSingleton {
+        INSTANCE;
+        @SuppressWarnings("NonSerializableFieldInSerializableClass")
+        private final Logger value = LoggerFactory.getLogger(UnknownOptions.class);
+    }
 }
