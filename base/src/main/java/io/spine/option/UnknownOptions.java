@@ -28,8 +28,6 @@ import com.google.protobuf.DescriptorProtos.ServiceDescriptorProto;
 import com.google.protobuf.UnknownFieldSet;
 import com.google.protobuf.UnknownFieldSet.Field;
 import io.spine.annotation.Internal;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -238,32 +236,58 @@ public class UnknownOptions {
         return result;
     }
 
+    /**
+     * Checks if the is a field with such {@code tag} in the given {@code unknownFields} set.
+     *
+     * @param unknownFields the {@link UnknownFieldSet} to check
+     * @param tag           the field number (tag) to look for
+     * @return {@code true} if the value is present in the unknown fields set, {@code false}
+     *         otherwise
+     */
     private static boolean containsField(UnknownFieldSet unknownFields, int tag) {
         final Map<Integer, ?> fields = unknownFields.asMap();
         final boolean result = fields.containsKey(tag);
         return result;
     }
 
+    /**
+     * Extracts the values of unknown options of a message as a {@code Map} of the field number to
+     * it's string representation.
+     *
+     * @param unknownFields the {@link UnknownFieldSet} to extract the values from
+     * @return a map of the field numbers to the field values
+     */
     private static Map<Integer, String> extractOptions(UnknownFieldSet unknownFields) {
         final Map<Integer, Field> fields = unknownFields.asMap();
         if (fields.isEmpty()) {
             return emptyMap();
         }
         final String rawFields = unknownFields.toString();
-        final Map<Integer, String> result = parseOptions(rawFields);
+        final Map<Integer, String> result = unsafeParseOptions(rawFields);
         return result;
     }
 
-    private static Map<Integer, String> parseOptions(String optionsStr) {
+    /**
+     * Parses the given string representation of the Protobuf unknown options.
+     *
+     * <p>This method expects the passed string to adhere a certain protocol. It's not recommended
+     * to call it directly (even within {@code UnknownOptions} class).
+     *
+     * @param optionsStr the string to parse
+     * @return the map of the parsed "unknown" options
+     * @see #extractOptions(UnknownFieldSet) extractOptions(UnknownFieldSet) for a safer way
+     * to extract the options
+     */
+    private static Map<Integer, String> unsafeParseOptions(String optionsStr) {
         if (optionsStr.trim()
                       .isEmpty()) {
             return emptyMap();
         }
-        log().debug("Parsing options: {}", optionsStr);
         final Map<Integer, String> map = newHashMap();
         final String[] options = PATTERN_NEW_LINE.split(optionsStr);
         for (String option : options) {
-            if (PATTERN_COLON.matcher(option).find()) {
+            if (PATTERN_COLON.matcher(option)
+                             .find()) {
                 parseAndPutNumberAndValue(option, map);
             }
         }
@@ -285,15 +309,5 @@ public class UnknownOptions {
         if (!map.containsKey(number)) {
             map.put(number, value);
         }
-    }
-
-    private static Logger log() {
-        return LogSingleton.INSTANCE.value;
-    }
-
-    private enum LogSingleton {
-        INSTANCE;
-        @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = LoggerFactory.getLogger(UnknownOptions.class);
     }
 }
