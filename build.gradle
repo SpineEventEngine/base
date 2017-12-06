@@ -22,7 +22,7 @@ description = "Gradle port for Maven Reflections Plugin."
 
 ext {
     dom4jVersion = '1.6.1'
-    reflectionsVersion = '0.9.10'
+    reflectionsVersion = '0.9.11'
     testngVersion = '6.13.1'
 }
 
