@@ -18,14 +18,19 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
+ext {
+    gcsVersion = '1.12.0'
+    googleNioVersion = '0.30.0-alpha'
+}
+
 dependencies {
     compile group: 'io.spine.tools', name: 'spine-plugin-base', version: spineBaseVersion
-    compile group: 'com.google.cloud', name: 'google-cloud-storage', version: '1.0.0'
+    compile group: 'com.google.cloud', name: 'google-cloud-storage', version: gcsVersion
     compile gradleApi()
 
     // This artifact brings a local environment for Google Cloud Storage tests.
     // `-alpha` version is used for now, since any earlier artifact versions
     // do not provide the required API.
-    testCompile group: 'com.google.cloud', name: 'google-cloud-nio', version: '0.17.1-alpha'
-    testCompile group: 'org.mockito', name: 'mockito-core', version: '2.+'
+    testCompile group: 'com.google.cloud', name: 'google-cloud-nio', version: googleNioVersion
+    testCompile group: 'org.mockito', name: 'mockito-core', version: mockitoVersion
 }
