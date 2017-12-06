@@ -20,11 +20,17 @@
 
 description = "Gradle port for Maven Reflections Plugin."
 
+ext {
+    dom4jVersion = '1.6.1'
+    reflectionsVersion = '0.9.10'
+    testngVersion = '6.13.1'
+}
+
 dependencies {
     compile group: 'io.spine.tools', name: 'spine-plugin-base', version: spineBaseVersion
 
     compile gradleApi()
-    compile 'org.reflections:reflections:0.9.10'
-    compile 'dom4j:dom4j:1.6.1'
-    testCompile 'org.testng:testng:+'
+    compile "org.reflections:reflections:$reflectionsVersion"
+    compile "dom4j:dom4j:$dom4jVersion"
+    testCompile "org.testng:testng:$testngVersion"
 }
