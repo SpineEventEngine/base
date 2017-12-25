@@ -90,4 +90,4 @@ the directory `.spine` found under the project root, so that the artifact relati
 `<projectDir>/.spine/spine-protoc-plugin-X.X.X.jar`, where `X.X.X` is the version of the downloaded 
 artifact, which is equal to the version of the Spine Gradle plugin used.
 
-To integrate with `protoc`, the shell script [launchers](./plugin_runner.sh) are used.
+For the `protoc` integration the shell script [launchers](./plugin_runner.sh) are used.
