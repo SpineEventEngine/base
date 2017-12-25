@@ -19,7 +19,7 @@ import "spine/options.proto";
 message Cat {
     option (is) = "org.example.Pet";
     
-    // Remainder ommited
+    // Remainder omitted
 }
 ``` 
 After recompiling the definition with the Spine Protobuf plugin, a `.java` file declaring the 
@@ -37,15 +37,15 @@ import "spine/options.proto";
 option (every_is) = "org.example.Pet";
 
 message Cat {
-    // Remainder ommited.
+    // Remainder omitted.
 }
 
 message Dog {
-    // Remainder ommited.
+    // Remainder omitted.
 }
 
 message Hamster {
-    // Remainder ommited.
+    // Remainder omitted.
 }
 ```
 
@@ -64,7 +64,7 @@ option java_package = "org.example.pet";
 message Mouse {
     option (is) = "SmallPet";
     
-    // Remainder ommited.
+    // Remainder omitted.
 }
 ```
 
