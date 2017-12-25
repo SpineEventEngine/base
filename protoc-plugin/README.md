@@ -90,8 +90,6 @@ the directory `.spine` found under the project root, so that the artifact relati
 `<projectDir>/.spine/spine-protoc-plugin-X.X.X.jar`, where `X.X.X` is the version of the downloaded 
 artifact, which is equal to the version of the Spine Gradle plugin used.
 
-For the `protoc` integration the shell script [launchers](./plugin_runner.sh) are used.
-
 ## How it works
 
 #### Assembling
@@ -117,7 +115,7 @@ the [Protobuf compiler contract](https://developers.google.com/protocol-buffers/
 Spine Gradle plugin configures the project with the notation provided by the Protobuf Gradle plugin.
 This includes fetching the required artifacts and referencing them to the Protobuf plugin.
 
-The shell runner artifact is fetched by the Protobuf plugin. The artifact may or may not be cached.
+The shell runner artifact is fetched by the Protobuf plugin.
 The JAR executable is fetched together with all the declared project dependencies and placed in 
 the `.spine` directory by convention.
 
@@ -129,6 +127,13 @@ directory (which is by default set to `<projectDir>/generated`).
 Please also note, that the `.spine` directory is deleted upon the `:clean` Gradle task by default.
 
 #### Compilation
+
+`protoc` invokes the shell runner and passes a serialized message to it via standard I/O. The runner 
+starts the JAR executable with the same input and returns its output to `protoc` (again via 
+standard I/O).
+
+This level of indirectness is required since operating system does not treat JAR files as executables, 
+so a special CLI command is required to start a JAR. 
 
 On the Protobuf compile time, the plugin handles the code generation requests from `protoc`.
 The response contains the Java code to be written. For example, for generating marker interfaces, 
