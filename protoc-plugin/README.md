@@ -51,7 +51,7 @@ message Hamster {
 
 If both `(is)` and `(every_is)` options are found, `(is)` value is taken.
 
-Also, both `(is)` and `(every_is)` options allow shorter syntax with no explicit package 
+Also, both `(is)` and `(every_is)` options support shorter syntax with no explicit package 
 declaration. In this case, the package of the current file (either `java_package` or Protobuf
 `package`) is used.
 ```proto
@@ -68,8 +68,8 @@ message Mouse {
 }
 ```
 
-In the example above, the generated marker interface has Java FQN `org.example.pet.SmallPet`. If 
-`java_package` option is absent, the Protobuf package is used instead.
+In the example above, the Java FQN of the generated marker interface is `org.example.pet.SmallPet`.
+If `java_package` option is absent, the Protobuf package is used instead.
 
 ## Usage
 
