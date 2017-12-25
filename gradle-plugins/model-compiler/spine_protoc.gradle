@@ -21,6 +21,16 @@ import java.nio.file.StandardCopyOption
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/**
+ * This script is a plugin applied to all the Gradle projects, to which the Spine model compiler
+ * plugin is applied.
+ *
+ * <p>This file contains a template for the script itself. On
+ * {@code model-compiler:prepareProtocConfig} the file is copied to
+ * the {@code model-compiler/src/main/resources} folder with the insertion points filled with
+ * the required data. Thus, it is OK for this file to have compilation errors.
+ */
+
 // Template for the versions injection. See model-compiler:prepareProtocConfig.
 final def spineModelCompilerVersion = @baseVersion@
 final def protobufVersion = @pbVersion@

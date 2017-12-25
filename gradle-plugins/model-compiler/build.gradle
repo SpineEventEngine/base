@@ -1,3 +1,4 @@
+import io.spine.gradle.compiler.Extension
 import org.apache.tools.ant.filters.ReplaceTokens
 
 import java.nio.file.Files
@@ -110,10 +111,7 @@ task prepareProtocConfig(type: Copy) {
     filter(ReplaceTokens, tokens: ['baseVersion': "'$project.spineVersion'".toString(),
                                    'pbVersion': "'$project.protobufVersion'".toString(),
                                    'gRPCVersion': "'$project.gRpcVersion'".toString(),
-                                   'spineDir': "'.spine'".toString()])
-    // TODO:2017-08-31:dmytro.dashenkov: Replace ".spine" with "Extension.SPINE_BUILD_ARTIFACT_STORAGE_DIR".
-    // https://github.com/SpineEventEngine/base/issues/51
-
+                                   'spineDir': "'$Extension.SPINE_BUILD_ARTIFACT_STORAGE_DIR'".toString()])
     outputs.upToDateWhen { false }
 }
 
