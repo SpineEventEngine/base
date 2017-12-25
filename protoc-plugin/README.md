@@ -1,8 +1,8 @@
 # Spine Protobuf compiler plugin
 
-Spine uses Google Protobuf as a model definition language. Some of the framework features require 
-compile-time processing of the data model. For that a plugin into a Protobuf compiler 
-(a.k.a. `protoc`) is implemented.
+Spine uses [Google Protobuf](https://developers.google.com/protocol-buffers/) as a model definition
+language. Some of the framework features require compile-time processing of the data model. For that
+a plugin into a Protobuf compiler (a.k.a. `protoc`) is implemented.
 
 ## Features
 
@@ -141,3 +141,7 @@ plugin responds with the code of the marker interfaces themselves and the insert
 make the message types implement the requested interfaces.  
  
 If the passed code gen request is not interesting to the Spine plugin, the response is empty.
+
+---
+
+For the details on the `protoc` plugin development, see the official [doc](https://developers.google.com/protocol-buffers/docs/reference/other#plugins).
