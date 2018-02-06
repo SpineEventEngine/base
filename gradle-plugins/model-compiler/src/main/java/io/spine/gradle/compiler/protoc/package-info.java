@@ -19,11 +19,10 @@
  */
 
 /**
- * Plugins and utilities providing an additional cleanup required for Spine code generation routines.
- *
- * @author Alex Tymchenko
+ * This package provides {@link io.spine.gradle.compiler.annotation.ProtoAnnotatorPlugin
+ * ProtoAnnotatorPlugin}.
  */
 @ParametersAreNonnullByDefault
-package io.spine.gradle.compiler.cleaning;
+package io.spine.gradle.compiler.protoc;
 
 import javax.annotation.ParametersAreNonnullByDefault;
