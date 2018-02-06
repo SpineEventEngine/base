@@ -46,8 +46,8 @@ public class JavaSources {
     private static final String GRPC_CLASSNAME_SUFFIX = "Grpc";
     private static final String JAVA_EXTENSION = ".java";
 
+    /** Prevent instantiation of this utility class. */
     private JavaSources() {
-        // Prevent instantiation of this utility class.
     }
 
     /**

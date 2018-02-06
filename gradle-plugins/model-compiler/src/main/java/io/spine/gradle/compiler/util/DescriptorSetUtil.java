@@ -26,12 +26,14 @@ import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.LinkedList;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Collections.emptyList;
 
 /**
@@ -112,7 +114,8 @@ public class DescriptorSetUtil {
      */
     private static class IsNotGoogleProto implements Predicate<FileDescriptorProto> {
         @Override
-        public boolean apply(FileDescriptorProto file) {
+        public boolean apply(@Nullable FileDescriptorProto file) {
+            checkNotNull(file);
             final boolean result = !file.getPackage()
                                         .contains("google");
             return result;
