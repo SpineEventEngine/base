@@ -59,7 +59,7 @@ abstract class TypeDefinitionAnnotator<L extends ExtendableMessage, D extends Ge
 
     @Override
     final void annotate() {
-        for (FileDescriptorProto fileDescriptor : fileDescriptors) {
+        for (FileDescriptorProto fileDescriptor : fileDescriptors()) {
             annotate(fileDescriptor);
         }
     }

@@ -20,11 +20,11 @@
 
 package io.spine.gradle.compiler.annotation;
 
+import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.GeneratedMessageV3.ExtendableMessage;
-import io.spine.util.Exceptions;
 import org.jboss.forge.roaster.Roaster;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
 import org.jboss.forge.roaster.model.source.AnnotationSource;
@@ -78,7 +78,7 @@ abstract class Annotator<O extends ExtendableMessage, D extends GeneratedMessage
     /**
      * Protobuf file descriptors to process.
      */
-    protected final Collection<FileDescriptorProto> fileDescriptors;
+    private final ImmutableList<FileDescriptorProto> fileDescriptors;
 
     /**
      * An absolute path to the Java sources, generated basing on {@link #fileDescriptors}.
@@ -89,11 +89,15 @@ abstract class Annotator<O extends ExtendableMessage, D extends GeneratedMessage
                         GeneratedExtension<O, Boolean> option,
                         Collection<FileDescriptorProto> fileDescriptors,
                         String genProtoDir) {
-        checkArguments(annotation, option, fileDescriptors, genProtoDir);
-        this.annotation = annotation;
-        this.option = option;
-        this.fileDescriptors = fileDescriptors;
-        this.genProtoDir = genProtoDir;
+        this.annotation = checkNotNull(annotation);
+        this.option = checkNotNull(option);
+        this.fileDescriptors = ImmutableList.copyOf(checkNotNull(fileDescriptors));
+        this.genProtoDir = checkNotNull(genProtoDir);
+    }
+
+    @SuppressWarnings("AssignmentOrReturnOfFieldWithMutableType") // OK to return immutable impl.
+    protected Iterable<FileDescriptorProto> fileDescriptors() {
+        return fileDescriptors;
     }
 
     /**
@@ -255,15 +259,5 @@ abstract class Annotator<O extends ExtendableMessage, D extends GeneratedMessage
             addAnnotation(input);
             return null;
         }
-    }
-
-    private void checkArguments(Class<? extends Annotation> annotation,
-                                GeneratedExtension<O, Boolean> option,
-                                Collection<FileDescriptorProto> fileDescriptors,
-                                String genProtoDir) {
-        checkNotNull(annotation);
-        checkNotNull(option);
-        checkNotNull(fileDescriptors);
-        checkNotNull(genProtoDir);
     }
 }

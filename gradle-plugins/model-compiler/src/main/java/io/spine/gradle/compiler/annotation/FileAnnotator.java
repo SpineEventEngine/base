@@ -63,7 +63,7 @@ class FileAnnotator extends Annotator<FileOptions, FileDescriptorProto> {
 
     @Override
     void annotate() {
-        for (FileDescriptorProto fileDescriptor : fileDescriptors) {
+        for (FileDescriptorProto fileDescriptor : fileDescriptors()) {
             if (shouldAnnotate(fileDescriptor)) {
                 annotate(fileDescriptor);
             }

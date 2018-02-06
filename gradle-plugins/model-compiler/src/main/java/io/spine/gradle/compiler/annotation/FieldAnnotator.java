@@ -68,7 +68,7 @@ class FieldAnnotator extends Annotator<FieldOptions, FieldDescriptorProto> {
 
     @Override
     void annotate() {
-        for (FileDescriptorProto fileDescriptor : fileDescriptors) {
+        for (FileDescriptorProto fileDescriptor : fileDescriptors()) {
             annotate(fileDescriptor);
         }
     }

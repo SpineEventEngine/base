@@ -52,7 +52,7 @@ class ServiceAnnotator extends Annotator<ServiceOptions, ServiceDescriptorProto>
 
     @Override
     void annotate() {
-        for (FileDescriptorProto fileDescriptor : fileDescriptors) {
+        for (FileDescriptorProto fileDescriptor : fileDescriptors()) {
             annotate(fileDescriptor);
         }
     }
