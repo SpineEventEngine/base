@@ -66,10 +66,12 @@ public class JavaSources {
     /**
      * Obtains the generated file {@link Path} for the specified message descriptor.
      *
-     * @param messageDescriptor the message descriptor to get path
-     * @param messageOrBuilder  indicates if a {@code MessageOrBuilder} path
-     *                          for the message should be returned
-     * @param fileDescriptor    the file descriptor containing the message descriptor
+     * @param  messageDescriptor
+     *         the message descriptor to get path
+     * @param  messageOrBuilder
+     *         indicates if a {@code MessageOrBuilder} path for the message should be returned
+     * @param  fileDescriptor
+     *         the file descriptor containing the message descriptor
      * @return the relative file path
      */
     public static Path getFilePath(DescriptorProto messageDescriptor,
@@ -77,9 +79,10 @@ public class JavaSources {
                                    FileDescriptorProto fileDescriptor) {
         checkNotNull(fileDescriptor);
         checkNotNull(messageDescriptor);
+        final String typeName = messageDescriptor.getName();
         if (!fileDescriptor.getMessageTypeList()
                            .contains(messageDescriptor)) {
-            throw invalidNestedDefinition(fileDescriptor.getName(), messageDescriptor.getName());
+            throw invalidNestedDefinition(fileDescriptor.getName(), typeName);
         }
 
         if (!fileDescriptor.getOptions()
@@ -91,8 +94,8 @@ public class JavaSources {
 
         final String filename;
         filename = messageOrBuilder
-                   ? messageDescriptor.getName() + OR_BUILDER_SUFFIX + JAVA_EXTENSION
-                   : messageDescriptor.getName() + JAVA_EXTENSION;
+                   ? typeName + OR_BUILDER_SUFFIX + JAVA_EXTENSION
+                   : typeName + JAVA_EXTENSION;
         return folderPath.resolve(filename);
     }
 

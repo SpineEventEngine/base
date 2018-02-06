@@ -24,6 +24,7 @@ import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.gradle.SpinePlugin;
 import io.spine.gradle.compiler.message.MessageTypeCache;
+import io.spine.gradle.compiler.util.FileDescriptors;
 import io.spine.gradle.compiler.util.JavaCode;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
@@ -46,7 +47,6 @@ import static io.spine.gradle.compiler.Extension.getMainDescriptorSetPath;
 import static io.spine.gradle.compiler.Extension.getTargetGenRejectionsRootDir;
 import static io.spine.gradle.compiler.Extension.getTargetTestGenRejectionsRootDir;
 import static io.spine.gradle.compiler.Extension.getTestDescriptorSetPath;
-import static io.spine.gradle.compiler.util.DescriptorSetUtil.getProtoFileDescriptors;
 
 /**
  * Plugin which generates Rejections declared in {@code rejections.proto} files.
@@ -121,7 +121,7 @@ public class RejectionGenPlugin extends SpinePlugin {
     private List<FileDescriptorProto> collectRejectionFiles(String descFilePath) {
         final List<FileDescriptorProto> result = Lists.newLinkedList();
         final Collection<FileDescriptorProto> allDescriptors =
-                getProtoFileDescriptors(descFilePath);
+                FileDescriptors.parse(descFilePath);
         for (FileDescriptorProto file : allDescriptors) {
             if (file.getName()
                     .endsWith(REJECTIONS_FILE_SUFFIX)) {

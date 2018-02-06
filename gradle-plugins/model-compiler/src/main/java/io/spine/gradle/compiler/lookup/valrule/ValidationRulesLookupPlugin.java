@@ -25,6 +25,7 @@ import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.gradle.SpinePlugin;
 import io.spine.gradle.compiler.message.MessageDeclaration;
+import io.spine.gradle.compiler.util.FileDescriptors;
 import io.spine.gradle.compiler.util.PropertiesWriter;
 import io.spine.type.TypeName;
 import org.gradle.api.Action;
@@ -49,8 +50,7 @@ import static io.spine.gradle.compiler.Extension.getMainTargetGenResourcesDir;
 import static io.spine.gradle.compiler.Extension.getTestDescriptorSetPath;
 import static io.spine.gradle.compiler.Extension.getTestTargetGenResourcesDir;
 import static io.spine.gradle.compiler.message.MessageDeclarations.find;
-import static io.spine.gradle.compiler.util.DescriptorSetUtil.getProtoFileDescriptors;
-import static io.spine.gradle.compiler.util.DescriptorSetUtil.isNotGoogleProto;
+import static io.spine.gradle.compiler.util.FileDescriptors.isNotGoogleProto;
 import static io.spine.option.OptionsProto.VALIDATION_OF_FIELD_NUMBER;
 import static io.spine.option.UnknownOptions.getUnknownOptionValue;
 import static io.spine.option.UnknownOptions.hasUnknownOption;
@@ -118,7 +118,7 @@ public class ValidationRulesLookupPlugin extends SpinePlugin {
         log().debug("Validation rules lookup started.");
 
         final Collection<FileDescriptorProto> files =
-                getProtoFileDescriptors(descriptorSetPath, isNotGoogleProto());
+                FileDescriptors.parseAndFilter(descriptorSetPath, isNotGoogleProto());
         final Collection<MessageDeclaration> declarations = find(files, new IsValidationRule());
         writeProperties(targetGeneratedResourcesDir, declarations);
         log().debug("Validation rules lookup complete.");

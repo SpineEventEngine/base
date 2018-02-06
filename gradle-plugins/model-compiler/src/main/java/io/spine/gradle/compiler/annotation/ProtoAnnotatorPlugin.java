@@ -26,6 +26,7 @@ import io.spine.annotation.Experimental;
 import io.spine.annotation.Internal;
 import io.spine.annotation.SPI;
 import io.spine.gradle.SpinePlugin;
+import io.spine.gradle.compiler.util.FileDescriptors;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -45,7 +46,7 @@ import static io.spine.gradle.compiler.Extension.getMainGenProtoDir;
 import static io.spine.gradle.compiler.Extension.getTestDescriptorSetPath;
 import static io.spine.gradle.compiler.Extension.getTestGenGrpcDir;
 import static io.spine.gradle.compiler.Extension.getTestGenProtoDir;
-import static io.spine.gradle.compiler.util.DescriptorSetUtil.isNotGoogleProto;
+import static io.spine.gradle.compiler.util.FileDescriptors.isNotGoogleProto;
 import static io.spine.option.OptionsProto.beta;
 import static io.spine.option.OptionsProto.betaAll;
 import static io.spine.option.OptionsProto.betaType;
@@ -59,7 +60,6 @@ import static io.spine.option.OptionsProto.sPI;
 import static io.spine.option.OptionsProto.sPIAll;
 import static io.spine.option.OptionsProto.sPIService;
 import static io.spine.option.OptionsProto.sPIType;
-import static io.spine.gradle.compiler.util.DescriptorSetUtil.getProtoFileDescriptors;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -227,7 +227,7 @@ public class ProtoAnnotatorPlugin extends SpinePlugin {
             @Override
             public void execute(Task task) {
                 final Collection<FileDescriptorProto> descriptors =
-                        getProtoFileDescriptors(descriptorSetPath, isNotGoogleProto());
+                        FileDescriptors.parseAndFilter(descriptorSetPath, isNotGoogleProto());
                 final AnnotatorFactory factory =
                         new AnnotatorFactory(descriptors, generatedProtoDir, generatedGrpcDir);
 

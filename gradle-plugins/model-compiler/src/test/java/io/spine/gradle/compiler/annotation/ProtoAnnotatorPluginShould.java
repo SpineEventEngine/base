@@ -32,6 +32,7 @@ import io.spine.gradle.compiler.annotation.given.Given.MainDefinitionAnnotationV
 import io.spine.gradle.compiler.annotation.given.Given.NestedTypeFieldsAnnotationValidator;
 import io.spine.gradle.compiler.annotation.given.Given.NestedTypesAnnotationValidator;
 import io.spine.gradle.compiler.annotation.given.Given.SourceValidator;
+import io.spine.gradle.compiler.util.FileDescriptors;
 import io.spine.util.Exceptions;
 import org.jboss.forge.roaster.Roaster;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
@@ -54,7 +55,6 @@ import static io.spine.gradle.compiler.Extension.getDefaultMainGenDir;
 import static io.spine.gradle.compiler.Extension.getDefaultMainGenGrpcDir;
 import static io.spine.gradle.compiler.annotation.given.Given.NO_SPI_OPTIONS_FILENAME;
 import static io.spine.gradle.compiler.annotation.given.Given.NO_SPI_OPTIONS_MULTIPLE_FILENAME;
-import static io.spine.gradle.compiler.util.DescriptorSetUtil.getProtoFileDescriptors;
 import static io.spine.gradle.compiler.util.JavaSources.getFilePath;
 import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.nio.file.Paths.get;
@@ -262,7 +262,7 @@ public class ProtoAnnotatorPluginShould {
                                                  .getAbsolutePath();
         final String descriptorSetPath = projectPath + getDefaultMainDescriptorsPath();
         final Collection<FileDescriptorProto> descriptors =
-                getProtoFileDescriptors(descriptorSetPath, new Predicate<FileDescriptorProto>() {
+                FileDescriptors.parseAndFilter(descriptorSetPath, new Predicate<FileDescriptorProto>() {
                     @Override
                     public boolean apply(@Nullable FileDescriptorProto input) {
                         checkNotNull(input);
