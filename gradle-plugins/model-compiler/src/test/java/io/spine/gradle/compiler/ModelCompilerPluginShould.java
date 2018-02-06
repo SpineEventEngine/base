@@ -34,10 +34,12 @@ import static io.spine.gradle.TaskName.COMPILE_JAVA;
 import static io.spine.gradle.TaskName.COMPILE_TEST_JAVA;
 import static io.spine.gradle.TaskName.FIND_ENRICHMENTS;
 import static io.spine.gradle.TaskName.FIND_TEST_ENRICHMENTS;
-import static io.spine.gradle.TaskName.GENERATE_FAILURES;
+import static io.spine.gradle.TaskName.FIND_TEST_VALIDATION_RULES;
+import static io.spine.gradle.TaskName.FIND_VALIDATION_RULES;
 import static io.spine.gradle.TaskName.GENERATE_PROTO;
-import static io.spine.gradle.TaskName.GENERATE_TEST_FAILURES;
+import static io.spine.gradle.TaskName.GENERATE_REJECTIONS;
 import static io.spine.gradle.TaskName.GENERATE_TEST_PROTO;
+import static io.spine.gradle.TaskName.GENERATE_TEST_REJECTIONS;
 import static io.spine.gradle.TaskName.GENERATE_TEST_VALIDATING_BUILDERS;
 import static io.spine.gradle.TaskName.GENERATE_VALIDATING_BUILDERS;
 import static io.spine.gradle.TaskName.MAP_PROTO_TO_JAVA;
@@ -45,8 +47,8 @@ import static io.spine.gradle.TaskName.MAP_TEST_PROTO_TO_JAVA;
 import static io.spine.gradle.TaskName.PRE_CLEAN;
 import static io.spine.gradle.TaskName.PROCESS_RESOURCES;
 import static io.spine.gradle.TaskName.PROCESS_TEST_RESOURCES;
-import static io.spine.gradle.compiler.Given.SPINE_PROTOBUF_PLUGIN_ID;
-import static io.spine.gradle.compiler.Given.newProject;
+import static io.spine.gradle.compiler.given.Given.SPINE_PROTOBUF_PLUGIN_ID;
+import static io.spine.gradle.compiler.given.Given.newProject;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -79,20 +81,19 @@ public class ModelCompilerPluginShould {
     }
 
     @Test
-    public void add_task_generateFailures() {
-
-        final Task genFailures = task(GENERATE_FAILURES);
-        assertNotNull(genFailures);
-        assertTrue(dependsOn(genFailures, GENERATE_PROTO));
-        assertTrue(dependsOn(task(COMPILE_JAVA), genFailures));
+    public void add_task_generateRejections() {
+        final Task genRejections = task(GENERATE_REJECTIONS);
+        assertNotNull(genRejections);
+        assertTrue(dependsOn(genRejections, GENERATE_PROTO));
+        assertTrue(dependsOn(task(COMPILE_JAVA), genRejections));
     }
 
     @Test
-    public void add_task_generateTestFailures() {
-        final Task genTestFailures = task(GENERATE_TEST_FAILURES);
-        assertNotNull(genTestFailures);
-        assertTrue(dependsOn(genTestFailures, GENERATE_TEST_PROTO));
-        assertTrue(dependsOn(task(COMPILE_TEST_JAVA), genTestFailures));
+    public void add_task_generateTestRejections() {
+        final Task genTestRejections = task(GENERATE_TEST_REJECTIONS);
+        assertNotNull(genTestRejections);
+        assertTrue(dependsOn(genTestRejections, GENERATE_TEST_PROTO));
+        assertTrue(dependsOn(task(COMPILE_TEST_JAVA), genTestRejections));
     }
 
     @Test
@@ -108,6 +109,22 @@ public class ModelCompilerPluginShould {
         final Task find = task(FIND_TEST_ENRICHMENTS);
         assertNotNull(find);
         assertTrue(dependsOn(find, COMPILE_TEST_JAVA));
+        assertTrue(dependsOn(task(PROCESS_TEST_RESOURCES), find));
+    }
+
+    @Test
+    public void add_task_findValidationRules() {
+        final Task find = task(FIND_VALIDATION_RULES);
+        assertNotNull(find);
+        assertTrue(dependsOn(find, GENERATE_PROTO));
+        assertTrue(dependsOn(task(PROCESS_RESOURCES), find));
+    }
+
+    @Test
+    public void add_task_findTestValidationRules() {
+        final Task find = task(FIND_TEST_VALIDATION_RULES);
+        assertNotNull(find);
+        assertTrue(dependsOn(find, GENERATE_TEST_PROTO));
         assertTrue(dependsOn(task(PROCESS_TEST_RESOURCES), find));
     }
 

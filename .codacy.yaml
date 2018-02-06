@@ -5,3 +5,5 @@ exclude_paths:
   - "testutil-base/src/test/**/*.*"
   - "gradle-plugins/plugin-base/src/test/**/*.*"
   - "gradle-plugins/model-compiler/src/test/**/*.*"
+  - "protoc-plugin/src/test/**/*.*"
+  - "protoc-plugin-tests/src/test/**/*.*"

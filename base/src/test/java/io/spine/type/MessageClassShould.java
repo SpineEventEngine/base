@@ -25,11 +25,7 @@ import com.google.protobuf.StringValue;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Objects;
-
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
 
 public class MessageClassShould {
 
@@ -42,48 +38,18 @@ public class MessageClassShould {
         testMsgClass = new TestMessageClass(MSG_CLASS);
     }
 
-    @Test
-    public void return_enclosed_value() {
-        assertEquals(MSG_CLASS, testMsgClass.value());
-    }
-
-    @Test
-    public void return_java_class_name() {
-        assertEquals(ClassName.of(MSG_CLASS), testMsgClass.getClassName());
-    }
-
-    @Test
-    public void convert_value_to_string() {
-        assertEquals(String.valueOf(MSG_CLASS), testMsgClass.toString());
-    }
-
-    @Test
-    public void return_hash_code() {
-        assertEquals(Objects.hash(MSG_CLASS), testMsgClass.hashCode());
-    }
-
-    @Test
-    public void be_not_equal_to_null() {
-        assertNotNull(testMsgClass);
-    }
-
+    @SuppressWarnings("SerializableInnerClassWithNonSerializableOuterClass")
     @Test
     public void be_not_equal_to_object_of_another_class() {
         // Notice that we're creating a new object with the same value passed.
-        assertNotEquals(testMsgClass, new MessageClass(MSG_CLASS) {});
-    }
-
-    @Test
-    public void be_equal_to_object_with_the_same_value() {
-        assertEquals(testMsgClass, new TestMessageClass(MSG_CLASS));
-    }
-
-    @Test
-    public void be_equal_to_self() {
-        assertEquals(testMsgClass, testMsgClass);
+        assertNotEquals(testMsgClass, new MessageClass(MSG_CLASS) {
+            private static final long serialVersionUID = 0L;
+        });
     }
 
     private static class TestMessageClass extends MessageClass {
+
+        private static final long serialVersionUID = 0L;
 
         private TestMessageClass(Class<? extends Message> value) {
             super(value);

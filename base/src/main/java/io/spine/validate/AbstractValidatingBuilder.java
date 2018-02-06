@@ -22,18 +22,20 @@ package io.spine.validate;
 
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
+import com.google.protobuf.ProtocolMessageEnum;
 import io.spine.annotation.Internal;
 import io.spine.base.ConversionException;
-import io.spine.base.FieldPath;
 import io.spine.protobuf.Messages;
 import io.spine.string.Stringifiers;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Type;
 import java.util.List;
+import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Throwables.getRootCause;
+import static io.spine.validate.FieldValidatorFactory.create;
 
 /**
  * Serves as an abstract base for all {@linkplain ValidatingBuilder validating builders}.
@@ -104,14 +106,56 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
         }
     }
 
+    /**
+     * Converts the passed `raw` value to {@code Map}.
+     *
+     * <p>Acts as a shortcut to {@linkplain #convert(String, Type) convert(String, Map)}.
+     *
+     * @param <K>        the type of the {@code Map} keys
+     * @param <V>        the type of the {@code Map} values
+     * @param value      the value to convert
+     * @param keyClass   the {@code Class} of the key
+     * @param valueClass the {@code Class} of the value
+     * @return the converted value
+     * @throws ConversionException if passed value cannot be converted
+     */
+    public <K, V> Map<K, V> convertToMap(String value,
+                                         Class<K> keyClass,
+                                         Class<V> valueClass) throws ConversionException {
+        final Map<K, V> result = Stringifiers.newForMapOf(keyClass, valueClass)
+                                             .reverse()
+                                             .convert(value);
+        return result;
+    }
+
+    /**
+     * Converts the passed `raw` value to {@code List}.
+     *
+     * <p>Acts as a shortcut to {@linkplain #convert(String, Type) convert(String, List)}.
+     *
+     * @param <V>        the type of the {@code List} values
+     * @param value      the value to convert
+     * @param valueClass the {@code Class} of the list values
+     * @return the converted value
+     * @throws ConversionException if passed value cannot be converted
+     */
+    public <V> List<V> convertToList(String value,
+                                     Class<V> valueClass) throws ConversionException {
+        final List<V> result = Stringifiers.newForListOf(valueClass).reverse().convert(value);
+        return result;
+    }
+
     @Override
     public <V> void validate(FieldDescriptor descriptor, V fieldValue, String fieldName)
             throws ValidationException {
-        final FieldPath fieldPath = FieldPath.newBuilder()
-                                             .addFieldName(fieldName)
-                                             .build();
-        final FieldValidator<?> validator =
-                FieldValidatorFactory.create(descriptor, fieldValue, fieldPath);
+        final Object valueToValidate;
+        if (fieldValue instanceof ProtocolMessageEnum) {
+            valueToValidate = ((ProtocolMessageEnum) fieldValue).getValueDescriptor();
+        } else {
+            valueToValidate = fieldValue;
+        }
+        final FieldContext fieldContext = FieldContext.create(descriptor);
+        final FieldValidator<?> validator = create(fieldContext, valueToValidate);
         final List<ConstraintViolation> violations = validator.validate();
         onViolations(violations);
     }

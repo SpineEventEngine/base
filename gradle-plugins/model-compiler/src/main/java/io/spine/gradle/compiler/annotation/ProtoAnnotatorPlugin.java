@@ -46,7 +46,6 @@ import static io.spine.gradle.compiler.Extension.getMainGenProtoDir;
 import static io.spine.gradle.compiler.Extension.getTestDescriptorSetPath;
 import static io.spine.gradle.compiler.Extension.getTestGenGrpcDir;
 import static io.spine.gradle.compiler.Extension.getTestGenProtoDir;
-import static io.spine.gradle.compiler.util.DescriptorSetUtil.getProtoFileDescriptors;
 import static io.spine.option.OptionsProto.beta;
 import static io.spine.option.OptionsProto.betaAll;
 import static io.spine.option.OptionsProto.betaType;
@@ -60,6 +59,7 @@ import static io.spine.option.OptionsProto.sPI;
 import static io.spine.option.OptionsProto.sPIAll;
 import static io.spine.option.OptionsProto.sPIService;
 import static io.spine.option.OptionsProto.sPIType;
+import static io.spine.gradle.compiler.util.DescriptorSetUtil.getProtoFileDescriptors;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**

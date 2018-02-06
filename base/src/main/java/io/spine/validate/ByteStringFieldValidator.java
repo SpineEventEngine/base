@@ -21,10 +21,6 @@
 package io.spine.validate;
 
 import com.google.protobuf.ByteString;
-import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.base.FieldPath;
-
-import java.util.List;
 
 /**
  * Validates fields of type {@link ByteString}.
@@ -38,17 +34,11 @@ class ByteStringFieldValidator extends FieldValidator<ByteString> {
     /**
      * Creates a new validator instance.
      *
-     * @param descriptor    a descriptor of the field to validate
-     * @param fieldValues   values to validate
-     * @param rootFieldPath a path to the root field (if present)
+     * @param fieldContext the context of the field to validate
+     * @param fieldValues  values to validate
      */
-    ByteStringFieldValidator(FieldDescriptor descriptor,
-                             Object fieldValues,
-                             FieldPath rootFieldPath) {
-        super(descriptor,
-              FieldValidator.<ByteString>toValueList(fieldValues),
-              rootFieldPath,
-              false);
+    ByteStringFieldValidator(FieldContext fieldContext, Object fieldValues) {
+        super(fieldContext, FieldValidator.<ByteString>toValueList(fieldValues), false);
     }
 
     @Override
@@ -57,11 +47,15 @@ class ByteStringFieldValidator extends FieldValidator<ByteString> {
         return result;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>Performs no action since no special options are declared for the {@link ByteString}
+     * validation.
+     */
     @Override
-    protected List<ConstraintViolation> validate() {
-        checkIfRequiredAndNotSet();
-        final List<ConstraintViolation> violations = super.validate();
-        return violations;
+    protected void validateOwnRules() {
+        // NoOp
     }
 
     @Override

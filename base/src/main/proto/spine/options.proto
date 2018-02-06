@@ -109,7 +109,7 @@ extend google.protobuf.FieldOptions {
     // The option to indicate that the fields's internal field should be included into the
     // validation.
     //
-    // The target type of the option is Message.
+    // The target type of the option is a message, a map or a repeated field.
     //
     // Default value is false.
     //
@@ -255,8 +255,7 @@ extend google.protobuf.FieldOptions {
     // If using the FQN field names, the `enrichment_for` annotation may be omitted
     // (the same behavior as with a single-argument `by` annotation).
     //
-    string by = 73900; // NOTE: this field number is used in the `tools` project,
-                       // EnrichmentLookupPlugin (update it there on changing).
+    string by = 73900;
 }
 
 extend google.protobuf.MessageOptions {
@@ -296,7 +295,55 @@ extend google.protobuf.MessageOptions {
     // The option to mark a message as state of an entity.
     EntityOption entity = 73903;
 
-    // reserved 73904 to 73910 for future validation options
+    // A validation rule for a field declaration.
+    //
+    // Allows to define validation options for fields of the field declaration.
+    // If a specified options is already defined in a target message,
+    // then options from the validation rule will be used.
+    //
+    // Validation rule limitations:
+    // - applicable only to field declarations of a `Message` type;
+    // - rule target should be marked as `valid`. Otherwise a rule will be ignored;
+    // - a field can be a target of only one validation rule.
+    //
+    // Target of a validation rule should be specified according to the pattern as follows:
+    // `package.MessageName.field_name`.
+    // If the rule has multiple targets, they have to be separated with comma.
+    //
+    // In the following example a `StringChange` message defines a value object,
+    // that is reused in other messages. However, in each of the use-cases we want
+    // to apply different validation rules to the `StringChange` field values.
+    //
+    // package io.spine.example;
+    //
+    // // Definition of a change in a string field.
+    // message StringChange {
+    //
+    //      // The value of the field that's changing.
+    //      string previous_value = 1;
+    //
+    //      // The new value of the field.
+    //      string new_value = 2;
+    // }
+    //
+    // // The validation rule for `StringChange` defined in `UpdateDescription`.
+    // message DescriptionChangeRule {
+    //      option (validation_of) = "io.spine.example.UpdateDescription.change";
+    //
+    //      // A description should not be empty.
+    //      string new_value = 2 [(required) = true];
+    // }
+    //
+    // // A message that contains the validation rule target.
+    // message UpdateDescription {
+    //
+    //      // The validation rule target.
+    //      StringChange change = 1 [(valid) = true];
+    // }
+    //
+    string validation_of = 73904;
+
+    // reserved 73905 to 73910 for future validation options
 
     // API Annotations
     //-----------------
@@ -316,7 +363,18 @@ extend google.protobuf.MessageOptions {
     // release.
     bool beta_type = 73914;
 
-    // reserved 73915 to 73921 for future API annotation options.
+    // Specifies the name of a Java interface to be implemented by this message.
+    //
+    // The interface is generated into the Protobuf generation destination directory. The interface
+    // itself is a marker interface derived from `com.google.protobuf.Message`. Unless the interface
+    // is specified by its FQN, it will have the same Java package as the message.
+    //
+    // To specify a marker interface for every message in a `.proto` file, use `(every_is)` file
+    // option. If both `(is)` and `(every_is)` options are found, `(is)` value is taken.
+    //
+    string is = 73915;
+
+    // reserved 73916 to 73921 for future API annotation options.
 
     // Enrichment Options
     //--------------------
@@ -345,8 +403,7 @@ extend google.protobuf.MessageOptions {
     // - all `by` options have the event name prefix ("example.events.MyEvent.user_id" instead of
     //   just "user_id").
     //
-    string enrichment_for = 73922;  // NOTE: this field number is used in `tools` project,
-                                    // EnrichmentLookupPlugin (update it there on changing).
+    string enrichment_for = 73922;
 
     // An instruction to enrich an event with one or more enrichments.
     //
@@ -373,8 +430,7 @@ extend google.protobuf.MessageOptions {
     //     string username = 1 [(by) = "*.user_id"];
     // }
     //
-    string enrichment = 73923; // NOTE: this field number is used in the `tools` project,
-                               // EnrichmentLookupPlugin (update it there on changing).
+    string enrichment = 73923;
 
     // reserved 73924 to 73939 for future options.
 
@@ -389,14 +445,14 @@ extend google.protobuf.MessageOptions {
     //
     string events = 73939;
 
-    // Specifies Protobuf type names of the failures that can be returned to the attempt to handle
+    // Specifies Protobuf type names of the rejections that can be returned to the attempt to handle
     // a command if business conditions do not allow the command execution.
     //
     // The type names should be separated with commas. Space characters are allowed.
-    // If the failures are of the same aggregate with the command, non-qualified names can be used.
+    // If rejections are of the same aggregate with the command, non-qualified names can be used.
     // Otherwise, please use fully qualified names.
     //
-    string failures = 73940;
+    string rejections = 73940;
 }
 
 extend google.protobuf.FileOptions {
@@ -406,8 +462,7 @@ extend google.protobuf.FileOptions {
     // This type URL will be used when packing messages into `Any`.
     // See `any.proto` for more details.
     //
-    string type_url_prefix = 73941; // NOTE: this field number is used in `tools` project,
-                                    // ProtoToJavaMapperPlugin (update it there on changing).
+    string type_url_prefix = 73941;
 
     // Indicates a file which should not be used by users of the framework.
     bool internal_all = 73942;
@@ -423,7 +478,18 @@ extend google.protobuf.FileOptions {
     // release.
     bool beta_all = 73945;
 
-    // reserved 73946 to 73970 for future use.
+    // Specifies the name of a Java interface to be implemented by all the messages in this file.
+    //
+    // The interface is generated into the Protobuf generation destination directory. The interface
+    // itself is a marker interface derived from `com.google.protobuf.Message`. Unless the interface
+    // is specified by its FQN, it will have the same Java package as the message.
+    //
+    // To specify a marker interface for a single message, use `(is)` message option. If both `(is)`
+    // and `(every_is)` options are found, `(is)` value is taken.
+    //
+    string every_is = 73946;
+
+    // reserved 73947 to 73970 for future use.
 }
 
 extend google.protobuf.ServiceOptions {

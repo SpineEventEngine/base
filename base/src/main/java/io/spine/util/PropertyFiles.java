@@ -29,6 +29,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.Properties;
+import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.IoUtil.close;
@@ -50,13 +51,14 @@ public class PropertyFiles {
     }
 
     /**
-     * Loads all data from {@code .properties} file(s) into memory.
+     * Loads property file(s) at the passed path into memory.
      *
      * <p>Logs {@link IOException} if it occurs.
      *
      * @param propsFilePath the path of the {@code .properties} file to load
+     * @return immutable set with loaded data
      */
-    public static ImmutableSet<Properties> loadAllProperties(String propsFilePath) {
+    public static Set<Properties> loadAllProperties(String propsFilePath) {
         checkNotNull(propsFilePath);
 
         final ImmutableSet.Builder<Properties> result = ImmutableSet.builder();

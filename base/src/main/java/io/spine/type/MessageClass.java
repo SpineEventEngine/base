@@ -22,54 +22,16 @@ package io.spine.type;
 
 import com.google.protobuf.Message;
 
-import javax.annotation.Nullable;
-import java.util.Objects;
-
 /**
  * A base class for value objects storing references to message classes.
  *
  * @author Alexander Yevsyukov
  */
-public abstract class MessageClass {
+public abstract class MessageClass extends ClassTypeValue<Message> {
 
-    private final Class<? extends Message> value;
+    private static final long serialVersionUID = 0L;
 
     protected MessageClass(Class<? extends Message> value) {
-        this.value = value;
-    }
-
-    /** Returns value of the object. */
-    public Class<? extends Message> value() {
-        return this.value;
-    }
-
-    @Override
-    public String toString() {
-        return String.valueOf(value);
-    }
-
-    /** Obtains the {@code ClassName} for this message class. */
-    public ClassName getClassName() {
-        return ClassName.of(value());
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public int hashCode() {
-        return Objects.hash(value);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean equals(@Nullable Object obj) {
-        if (this == obj) {
-            return true;
-        }
-
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-        final MessageClass other = (MessageClass) obj;
-        return Objects.equals(this.value, other.value);
+        super(value);
     }
 }

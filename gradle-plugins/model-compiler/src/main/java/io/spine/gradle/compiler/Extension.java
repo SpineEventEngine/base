@@ -20,17 +20,23 @@
 package io.spine.gradle.compiler;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
+import io.spine.annotation.Internal;
 import org.gradle.api.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.LinkedList;
 import java.util.List;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static com.google.common.collect.Lists.newLinkedList;
 import static io.spine.gradle.compiler.ModelCompilerPlugin.SPINE_MODEL_COMPILER_EXTENSION_NAME;
-import static java.util.Collections.singletonList;
 
 /**
  * A configuration for the {@link ModelCompilerPlugin}.
@@ -41,8 +47,17 @@ import static java.util.Collections.singletonList;
 // as this is a Gradle extension.
 public class Extension {
 
-    private static final String DEFAULT_GEN_ROOT_DIR = "/generated";
+    /**
+     * The Spine internal directory name for storing temporary build artifacts.
+     *
+     * <p>Spine Gradle tasks may write some temporary files into this directory.
+     *
+     * <p>The directory is deleted on {@code :pre-clean"}.
+     */
+    @Internal
+    public static final String SPINE_BUILD_ARTIFACT_STORAGE_DIR = ".spine";
 
+    private static final String DEFAULT_GEN_ROOT_DIR = "/generated";
     private static final String DEFAULT_MAIN_PROTO_SRC_DIR = "/src/main/proto";
     private static final String DEFAULT_MAIN_GEN_RES_DIR = DEFAULT_GEN_ROOT_DIR + "/main/resources";
     private static final String DEFAULT_MAIN_GEN_DIR = DEFAULT_GEN_ROOT_DIR + "/main/java";
@@ -112,14 +127,14 @@ public class Extension {
     public String testDescriptorSetPath;
 
     /**
-     * The absolute path to the main target generated failures root directory.
+     * The absolute path to the main target generated rejections root directory.
      */
-    public String targetGenFailuresRootDir;
+    public String targetGenRejectionsRootDir;
 
     /**
-     * The absolute path to the test target generated failures root directory.
+     * The absolute path to the test target generated rejections root directory.
      */
-    public String targetTestGenFailuresRootDir;
+    public String targetTestGenRejectionsRootDir;
 
     /**
      * The absolute path to the main target generated validating builders root directory.
@@ -213,13 +228,13 @@ public class Extension {
                              root(project) + DEFAULT_TEST_DESCRIPTORS_PATH);
     }
 
-    public static String getTargetGenFailuresRootDir(Project project) {
-        return pathOrDefault(spineProtobuf(project).targetGenFailuresRootDir,
+    public static String getTargetGenRejectionsRootDir(Project project) {
+        return pathOrDefault(spineProtobuf(project).targetGenRejectionsRootDir,
                              root(project) + DEFAULT_MAIN_GEN_SPINE_DIR);
     }
 
-    public static String getTargetTestGenFailuresRootDir(Project project) {
-        return pathOrDefault(spineProtobuf(project).targetTestGenFailuresRootDir,
+    public static String getTargetTestGenRejectionsRootDir(Project project) {
+        return pathOrDefault(spineProtobuf(project).targetTestGenRejectionsRootDir,
                              root(project) + DEFAULT_TEST_GEN_SPINE_DIR);
     }
 
@@ -241,36 +256,36 @@ public class Extension {
 
     public static boolean isGenerateValidatingBuilders(Project project) {
         final boolean result = spineProtobuf(project).generateValidatingBuilders;
-        log().trace("The current validating builder generation setting is {}", result);
+        log().debug("The current validating builder generation setting is {}", result);
         return result;
     }
 
     public static Indent getIndent(Project project) {
         final Indent result = spineProtobuf(project).indent;
-        log().trace("The current indent is {}", result);
+        log().debug("The current indent is {}", result);
         return result;
     }
 
     public static boolean isGenerateValidatingBuildersFromClasspath(Project project) {
         final boolean result = spineProtobuf(project).generateBuildersFromClasspath;
-        log().trace("Validating builder are generated from  {}",
+        log().debug("Validating builder are generated from  {}",
                     (result ? "the classpath" : "this module only"));
         return result;
     }
 
     // The variable and its setter is named according to its meaning.
-    @SuppressWarnings({"InstanceMethodNamingConvention", "MethodParameterNamingConvention"})
+    @SuppressWarnings("InstanceMethodNamingConvention")
     public void setGenerateValidatingBuildersFromClasspath(boolean generateFromClasspath) {
         this.generateBuildersFromClasspath = generateFromClasspath;
-        log().trace("Validating builder are set to be generated from  {}",
+        log().debug("Validating builder are set to be generated from  {}",
                     (generateFromClasspath ? "the whole classpath" : "the current module only"));
     }
 
     // The variable and its setter is named according to its meaning.
-    @SuppressWarnings({"MethodParameterNamingConvention", "unused"})
+    @SuppressWarnings("unused")
     public void setGenerateValidatingBuilders(boolean generateValidatingBuilders) {
         this.generateValidatingBuilders = generateValidatingBuilders;
-        log().trace("Validating builder generation has been {}",
+        log().debug("Validating builder generation has been {}",
                     (generateValidatingBuilders ? "enabled" : "disabled"));
     }
 
@@ -280,20 +295,51 @@ public class Extension {
     }
 
     public static List<String> getDirsToClean(Project project) {
+        final List<String> dirsToClean = newLinkedList(spineDirs(project));
         log().debug("Finding the directories to clean");
         final List<String> dirs = spineProtobuf(project).dirsToClean;
+        final String singleDir = spineProtobuf(project).dirToClean;
         if (dirs.size() > 0) {
             log().error("Found {} directories to clean: {}", dirs.size(), dirs);
-            return ImmutableList.copyOf(dirs);
-        }
-        final String singleDir = spineProtobuf(project).dirToClean;
-        if (singleDir != null && !singleDir.isEmpty()) {
+            dirsToClean.addAll(dirs);
+        } else if (singleDir != null && !singleDir.isEmpty()) {
             log().debug("Found directory to clean: {}", singleDir);
-            return singletonList(singleDir);
+            dirsToClean.add(singleDir);
+        } else {
+            final String defaultValue = root(project) + DEFAULT_GEN_ROOT_DIR;
+            log().debug("Default directory to clean: {}", defaultValue);
+            dirsToClean.add(defaultValue);
         }
-        final String defaultValue = root(project) + DEFAULT_GEN_ROOT_DIR;
-        log().debug("Default directory to clean: {}", defaultValue);
-        return singletonList(defaultValue);
+        return ImmutableList.copyOf(dirsToClean);
+    }
+
+    private static Iterable<String> spineDirs(Project project) {
+        final List<String> spineDirs = newLinkedList();
+        final Optional<String> spineDir = spineDir(project);
+        final Optional<String> rootSpineDir = spineDir(project.getRootProject());
+        if (spineDir.isPresent()) {
+            spineDirs.add(spineDir.get());
+            if (rootSpineDir.isPresent() && !spineDir.equals(rootSpineDir)) {
+                spineDirs.add(rootSpineDir.get());
+            }
+        }
+        return spineDirs;
+    }
+
+    private static Optional<String> spineDir(Project project) {
+        final File projectDir;
+        try {
+            projectDir = project.getProjectDir().getCanonicalFile();
+        } catch (IOException e) {
+            throw new IllegalStateException("Project directory is invalid!", e);
+        }
+        final Path projectPath = projectDir.toPath();
+        final Path spinePath = projectPath.resolve(SPINE_BUILD_ARTIFACT_STORAGE_DIR);
+        if (Files.exists(spinePath)) {
+            return Optional.of(spinePath.toString());
+        } else {
+            return Optional.absent();
+        }
     }
 
     private static String root(Project project) {
@@ -319,6 +365,16 @@ public class Extension {
     @VisibleForTesting
     public static String getDefaultMainDescriptorsPath() {
         return DEFAULT_MAIN_DESCRIPTORS_PATH;
+    }
+
+    @VisibleForTesting
+    public static String getDefaultMainGenResDir() {
+        return DEFAULT_MAIN_GEN_RES_DIR;
+    }
+
+    @VisibleForTesting
+    public static String getDefaultMainGenSpineDir() {
+        return DEFAULT_MAIN_GEN_SPINE_DIR;
     }
 
     private static Logger log() {

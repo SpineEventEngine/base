@@ -21,6 +21,8 @@ syntax = "proto3";
 
 package spine.test.validate.msg;
 
+import "spine/options.proto";
+
 option (type_url_prefix) = "type.spine.io";
 option java_generate_equals_and_hash = true;
 option java_multiple_files = true;
@@ -29,8 +31,8 @@ option java_package = "io.spine.test.validate.msg";
 
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
+import "google/protobuf/any.proto";
 
-import "spine/options.proto";
 
 // Messages for general validation tests.
 
@@ -170,4 +172,102 @@ message EnclosedMessageFieldValueWithCustomInvalidMessage {
 
 message EnclosedMessageFieldValueWithoutAnnotationFieldValueWithCustomInvalidMessage {
     RequiredStringFieldValue outer_msg_field = 1 [(if_invalid).msg_format = "Custom error is redundant in this case"];
+}
+
+// Messages for testing validation of repeated fields.
+
+message MessageWithRepeatedUnchekedStringField {
+    repeated string unchecked = 1;
+}
+
+message MessageWithRepeatedValidatedStringField {
+    repeated string validated = 1 [(valid) = true, (pattern).regex = "\\w+"];
+}
+
+message MessegeWithRepeatedRequiredStringField {
+    repeated string required_field = 1 [(required) = true];
+}
+
+message MessageWithRepeatedRequiredValidatedStringField {
+    repeated string bound = 1 [(valid) = true, (required) = true, (pattern).regex = "\\w+"];
+}
+
+message MessageWithRepeatedUnchekedMessageField {
+    repeated InvalidMessage unchecked = 1;
+}
+
+message MessageWithRepeatedValidatedMessageField {
+    repeated InvalidMessage validated = 1 [(valid) = true];
+}
+
+message MessegeWithRepeatedRequiredMessageField {
+    repeated InvalidMessage required_field = 1 [(required) = true];
+}
+
+message MessageWithRepeatedRequiredValidatedMessageField {
+    repeated InvalidMessage bound = 1 [(valid) = true, (required) = true];
+}
+
+message MessageWithMapStringField {
+    map<string, string> map_field = 1;
+}
+
+message MessageWithMapMessageField {
+    map<string, google.protobuf.Any> map_field = 1;
+}
+
+message MessageWithMapByteStringField {
+    map<string, bytes> map_field = 1;
+}
+
+message MessageWithMapIntField {
+    map<string, int32> map_field = 1;
+}
+
+message MessageWithMapLongField {
+    map<string, int64> map_field = 1;
+}
+
+message MessageWithMapBoolField {
+    map<string, bool> map_field = 1;
+}
+
+message MessageWithMapFloatField {
+    map<string, float> map_field = 1;
+}
+
+message MessageWithMapDoubleField {
+    map<string, double> map_field = 1;
+}
+
+// Messages for testing validation rules.
+
+message AValidationRule {
+    option (validation_of) = "spine.test.validate.msg.FirstRuleTarget.can_be_valid,"
+                             "spine.test.validate.msg.SecondRuleTarget.can_be_valid";
+
+    // Redefines regex for invalid message, so it can be valid if has one more character.
+    string invalid_field = 1 [(pattern).regex = "^.{1,}$"];
+}
+
+message RuleTargetAggregate {
+
+    FirstRuleTarget first = 1 [(valid) = true];
+    SecondRuleTarget second = 2 [(valid) = true];
+}
+
+message FirstRuleTarget {
+    InvalidMessage can_be_valid = 1 [(valid) = true];
+}
+
+message SecondRuleTarget {
+    InvalidMessage can_be_valid = 1 [(valid) = true];
+}
+
+// A message which is used to violate its constraints in scope of `MessageFieldValidator` tests.
+//
+// The field `invalid_field` must contain a non-empty value, but it also must match "^$" regex,
+// which represents an empty string. Thus, any instance of this message type is invalid.
+message InvalidMessage {
+    string invalid_field = 1 [(required) = true, (pattern).regex = "^$"];
 }

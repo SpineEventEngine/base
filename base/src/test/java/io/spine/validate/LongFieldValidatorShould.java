@@ -22,8 +22,8 @@ package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Any;
+import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Int64Value;
-import io.spine.base.FieldPath;
 import io.spine.protobuf.AnyPacker;
 import org.junit.Test;
 
@@ -37,9 +37,10 @@ public class LongFieldValidatorShould {
     private static final Long VALUE = 2L;
     private static final Long NEGATIVE_VALUE = -2L;
 
+    private final FieldDescriptor fieldDescriptor = Any.getDescriptor().getFields().get(0);
     private final LongFieldValidator validator =
-            new LongFieldValidator(Any.getDescriptor().getFields().get(0),
-                                   ImmutableList.of(VALUE), FieldPath.getDefaultInstance());
+            new LongFieldValidator(FieldContext.create(fieldDescriptor),
+                                   ImmutableList.of(VALUE));
 
     @Test
     public void convert_string_to_number() {

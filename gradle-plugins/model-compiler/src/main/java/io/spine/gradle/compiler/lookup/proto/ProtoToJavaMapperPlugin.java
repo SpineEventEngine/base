@@ -22,6 +22,7 @@ package io.spine.gradle.compiler.lookup.proto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.gradle.SpinePlugin;
 import io.spine.gradle.compiler.util.PropertiesWriter;
+import io.spine.type.KnownTypes;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -63,7 +64,7 @@ public class ProtoToJavaMapperPlugin extends SpinePlugin {
      * The name of the file to populate. NOTE: also change its name used
      * in the `core-java` project on changing.
      */
-    private static final String PROPERTIES_FILE_NAME = "known_types.properties";
+    private static final String PROPERTIES_FILE_NAME = KnownTypes.PROPS_FILE_PATH;
 
     /**
      * Adds tasks to map Protobuf types to Java classes in the project.
@@ -112,7 +113,6 @@ public class ProtoToJavaMapperPlugin extends SpinePlugin {
         };
     }
 
-    @SuppressWarnings("MethodParameterNamingConvention")
     private static void mapProtoToJavaAndWriteProps(String targetGeneratedResourcesDir,
                                                     String descriptorSetPath) {
         final Map<String, String> propsMap = newHashMap();

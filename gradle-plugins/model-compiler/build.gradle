@@ -1,3 +1,8 @@
+import io.spine.gradle.compiler.Extension
+import org.apache.tools.ant.filters.ReplaceTokens
+
+import java.nio.file.Files
+import java.nio.file.StandardCopyOption
 //
 // Copyright 2017, TeamDev Ltd. All rights reserved.
 //
@@ -19,21 +24,48 @@
 //
 
 ext {
-    roasterVersion = '2.20.0.Final'
+    roasterVersion = '2.20.1.Final'
+    spineFolder = "${project.projectDir}/.spine" as File
+    protocPluginDependency = null
 }
 
 group = 'io.spine.tools'
+
+buildscript {
+    apply from: "$rootDir/ext.gradle"
+
+    repositories {
+        mavenCentral()
+        mavenLocal()
+    }
+
+    //noinspection GroovyAssignabilityCheck
+    dependencies {
+        classpath(group: 'com.google.protobuf',
+                  name: 'protobuf-gradle-plugin',
+                  version: protobufGradlePluginVerison) {
+            // exclude an old Guava version
+            exclude group: 'com.google.guava'
+        }
+    }
+
+    configurations.all({
+        resolutionStrategy.cacheChangingModulesFor(0, 'seconds')
+    })
+}
+
+apply plugin: 'com.google.protobuf'
+apply from: generateDescriptorSetScript
 
 dependencies {
     compile project(':plugin-base')
     compile project(':base')
 
-    compile group: 'com.squareup', name: 'javapoet', version: '1.8.0'
+    compile group: 'com.squareup', name: 'javapoet', version: javaPoetVersion
     compile group: 'com.google.template', name: 'soy', version: '2017-02-01'
     compile group: 'com.google.guava', name: 'guava', version: guavaVersion
     compile group: 'com.google.protobuf', name: 'protobuf-java', version: protobufVersion
     compile group: 'com.google.protobuf', name: 'protobuf-java-util', version: protobufVersion
-
 
     // A library for parsing Java sources.
     // Used for parsing Java sources generated from Protobuf files
@@ -43,16 +75,69 @@ dependencies {
 
     compile project(':testutil-base')
     testCompile group: 'com.google.guava', name: 'guava-testlib', version: guavaVersion
+    testCompile group: 'org.hamcrest', name:'hamcrest-all', version: hamcrestVersion
     testCompile gradleTestKit()
+    testCompile project(':plugin-base').sourceSets.test.output // Test classes of `plugin-base`
 
-    // "tools.jar" contains Javadoc classes used in the failures Javadoc generation tests.
+    // "tools.jar" contains Javadoc classes used in the rejections Javadoc generation tests.
     // It is a local version bundled within the JDK installation.
     // "JAVA_HOME" environment variable must be set for correct work.
     testCompile files("${System.properties['java.home']}/../lib/tools.jar")
+
+    // The freshest version of the plugin required for tests
+    protocPluginDependency = testCompile "io.spine.tools:spine-protoc-plugin:$spineVersion@jar"
 }
+
+protobuf {
+    generatedFilesBaseDir = generatedRootDir
+
+    protoc {
+        artifact = "com.google.protobuf:protoc:${protobufVersion}"
+    }
+}
+
+/**
+ * Prepares the spine_protoc.gradle file by copying it to the `resources` directory and injecting
+ * the versions of the protoc plugin dependencies.
+ *
+ * <p>This task is executed each time `processResources` task is executed, i.e. upon each build.
+ */
+task prepareProtocConfig(type: Copy) {
+    description = "Prepares the spine_protoc.gradle file"
+
+    from "./spine_protoc.gradle"
+    into "./src/main/resources"
+
+    filter(ReplaceTokens, tokens: ['baseVersion': "'$project.spineVersion'".toString(),
+                                   'pbVersion': "'$project.protobufVersion'".toString(),
+                                   'gRPCVersion': "'$project.gRpcVersion'".toString(),
+                                   'spineDir': "'$Extension.SPINE_BUILD_ARTIFACT_STORAGE_DIR'".toString()])
+    outputs.upToDateWhen { false }
+}
+
+processResources.dependsOn prepareProtocConfig
+
+final def copyPluginJarAction = {
+    final def from = configurations.testCompile.fileCollection(protocPluginDependency).singleFile
+    final def srcPath = from.toPath()
+    final def dest = project.spineFolder.toPath().resolve(from.name)
+    dest.toFile().mkdirs()
+    Files.copy(srcPath, dest, StandardCopyOption.REPLACE_EXISTING)
+}
+
+// We cannot use standard Copy task here as it resolves the `from` property not lazily.
+// Since we use use a dependency in the `from`, it may cause some issues with the Maven plugin
+// See https://discuss.gradle.org/t/right-way-to-copy-contents-from-dependency-archives/7449
+task copyProtocPluginTestArtifact {
+    description = "Spawns the Spine Protoc plugin artifact in the project directory for tests"
+}
+
+copyProtocPluginTestArtifact.doLast(copyPluginJarAction)
+copyProtocPluginTestArtifact.dependsOn project.project(':protoc-plugin').publishToMavenLocal
 
 // Tests use the Protobuf plugin.
 test {
+    dependsOn copyProtocPluginTestArtifact
     dependsOn publishToMavenLocal
     dependsOn project.project(':plugin-base').publishToMavenLocal
     dependsOn project.project(':base').publishToMavenLocal

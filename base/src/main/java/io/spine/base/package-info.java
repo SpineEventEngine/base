@@ -19,7 +19,7 @@
  */
 
 /**
- * This package provides base data classes for commands, events, errors, failures, and utilities
+ * This package provides base data classes for commands, events, errors, rejections, and utilities
  * for working with them.
  */
 @ParametersAreNonnullByDefault

@@ -23,7 +23,10 @@
  * working with these options.
  */
 
+@Internal
 @ParametersAreNonnullByDefault
 package io.spine.option;
+
+import io.spine.annotation.Internal;
 
 import javax.annotation.ParametersAreNonnullByDefault;

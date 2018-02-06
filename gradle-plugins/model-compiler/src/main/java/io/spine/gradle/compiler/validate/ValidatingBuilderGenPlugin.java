@@ -20,7 +20,6 @@
 
 package io.spine.gradle.compiler.validate;
 
-import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Iterables;
@@ -258,21 +257,8 @@ public class ValidatingBuilderGenPlugin extends SpinePlugin {
             public boolean apply(@Nullable VBMetadata input) {
                 checkNotNull(input);
 
-                final Optional<String> optionalPath = input.getSourceProtoFilePath();
-
-                /*
-                 * In case it's not possible to determine the origin for this metadata,
-                 * let's think it is originated from the proper module.
-                 *
-                 * <p>Such a gentle approach is required in order not to lose any builder metadata
-                 * items. It's better to generate something and let the end-user decide,
-                 * than silently filter out the suspicious data.
-                 */
-                if (!optionalPath.isPresent()) {
-                    return true;
-                }
-                final String relativeProtoPath = optionalPath.get();
-                final File protoFile = new File(rootPath + relativeProtoPath);
+                final String path = input.getSourceProtoFilePath();
+                final File protoFile = new File(rootPath + path);
                 final boolean belongsToModule = protoFile.exists();
                 return belongsToModule;
             }

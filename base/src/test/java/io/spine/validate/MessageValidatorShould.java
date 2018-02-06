@@ -52,6 +52,8 @@ import io.spine.test.validate.msg.EntityIdLongFieldValue;
 import io.spine.test.validate.msg.EntityIdMsgFieldValue;
 import io.spine.test.validate.msg.EntityIdRepeatedFieldValue;
 import io.spine.test.validate.msg.EntityIdStringFieldValue;
+import io.spine.test.validate.msg.FirstRuleTarget;
+import io.spine.test.validate.msg.InvalidMessage;
 import io.spine.test.validate.msg.MaxNumberFieldValue;
 import io.spine.test.validate.msg.MinNumberFieldValue;
 import io.spine.test.validate.msg.PatternStringFieldValue;
@@ -61,6 +63,8 @@ import io.spine.test.validate.msg.RequiredByteStringFieldValue;
 import io.spine.test.validate.msg.RequiredEnumFieldValue;
 import io.spine.test.validate.msg.RequiredMsgFieldValue;
 import io.spine.test.validate.msg.RequiredStringFieldValue;
+import io.spine.test.validate.msg.RuleTargetAggregate;
+import io.spine.test.validate.msg.SecondRuleTarget;
 import io.spine.test.validate.msg.TimeInFutureFieldValue;
 import io.spine.test.validate.msg.TimeInPastFieldValue;
 import io.spine.test.validate.msg.TimeWithoutOptsFieldValue;
@@ -200,14 +204,14 @@ public class MessageValidatorShould {
     }
 
     @Test
-    public void find_out_that_repeated_required_field_has_empty_value() {
-        final RepeatedRequiredMsgFieldValue invalidMsg =
+    public void ignore_repeated_required_field_with_empty_value() {
+        final RepeatedRequiredMsgFieldValue msg =
                 RepeatedRequiredMsgFieldValue.newBuilder()
                                              .addValue(newStringValue()) // valid value
-                                             .addValue(StringValue.getDefaultInstance()) // invalid value
+                                             .addValue(StringValue.getDefaultInstance()) // empty value
                                              .build();
-        validate(invalidMsg);
-        assertIsValid(false);
+        validate(msg);
+        assertIsValid(true);
     }
 
     @Test
@@ -802,6 +806,30 @@ public class MessageValidatorShould {
     @Test
     public void ignore_custom_invalid_field_message_if_validation_is_disabled() {
         validate(EnclosedMessageFieldValueWithoutAnnotationFieldValueWithCustomInvalidMessage.getDefaultInstance());
+        assertIsValid(true);
+    }
+
+    /*
+     * Validation rules tests.
+     */
+
+    @Test
+    public void validate_according_to_validation_rule() {
+        final String validValue = "any text";
+        final InvalidMessage invalidMessage = InvalidMessage.newBuilder()
+                                                            .setInvalidField(validValue)
+                                                            .build();
+        final FirstRuleTarget first = FirstRuleTarget.newBuilder()
+                                                     .setCanBeValid(invalidMessage)
+                                                     .build();
+        final SecondRuleTarget second = SecondRuleTarget.newBuilder()
+                                                        .setCanBeValid(invalidMessage)
+                                                        .build();
+        final RuleTargetAggregate aggregate = RuleTargetAggregate.newBuilder()
+                                                                 .setFirst(first)
+                                                                 .setSecond(second)
+                                                                 .build();
+        validate(aggregate);
         assertIsValid(true);
     }
 

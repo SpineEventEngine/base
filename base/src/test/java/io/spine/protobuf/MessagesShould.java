@@ -22,12 +22,15 @@ package io.spine.protobuf;
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Any;
 import com.google.protobuf.Message;
+import com.google.protobuf.StringValue;
 import com.google.protobuf.Timestamp;
+import io.spine.test.TestValues;
 import io.spine.test.messages.MessageWithStringValue;
 import io.spine.time.Time;
 import org.junit.Test;
 
 import static io.spine.protobuf.AnyPacker.unpack;
+import static io.spine.protobuf.Messages.ensureMessage;
 import static io.spine.protobuf.TypeConverter.toAny;
 import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
 import static org.junit.Assert.assertEquals;
@@ -81,5 +84,12 @@ public class MessagesShould {
     public void pass_the_null_tolerance_check() {
         final NullPointerTester tester = new NullPointerTester();
         tester.testStaticMethods(Messages.class, NullPointerTester.Visibility.PACKAGE);
+    }
+
+    @Test
+    public void ensure_Message() {
+        final StringValue value = TestValues.newUuidValue();
+        assertEquals(value, ensureMessage(AnyPacker.pack(value)));
+        assertSame(value, ensureMessage(value));
     }
 }

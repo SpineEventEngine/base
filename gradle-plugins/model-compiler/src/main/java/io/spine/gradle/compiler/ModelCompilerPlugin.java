@@ -21,9 +21,11 @@ package io.spine.gradle.compiler;
 
 import io.spine.gradle.compiler.annotation.ProtoAnnotatorPlugin;
 import io.spine.gradle.compiler.cleaning.CleaningPlugin;
-import io.spine.gradle.compiler.failure.FailuresGenPlugin;
-import io.spine.gradle.compiler.lookup.enrichments.EnrichmentLookupPlugin;
+import io.spine.gradle.compiler.lookup.enrichment.EnrichmentLookupPlugin;
 import io.spine.gradle.compiler.lookup.proto.ProtoToJavaMapperPlugin;
+import io.spine.gradle.compiler.lookup.valrule.ValidationRulesLookupPlugin;
+import io.spine.gradle.compiler.protoc.ProtocPluginImporter;
+import io.spine.gradle.compiler.rejection.RejectionGenPlugin;
 import io.spine.gradle.compiler.validate.ValidatingBuilderGenPlugin;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
@@ -53,14 +55,20 @@ public class ModelCompilerPlugin implements Plugin<Project> {
         log().debug("Applying Spine enrichment lookup plugin.");
         new EnrichmentLookupPlugin().apply(project);
 
-        log().debug("Applying Spine failure generation plugin.");
-        new FailuresGenPlugin().apply(project);
+        log().debug("Applying Spine rejection generation plugin.");
+        new RejectionGenPlugin().apply(project);
 
         log().debug("Applying Spine validating builder generation plugin.");
         new ValidatingBuilderGenPlugin().apply(project);
 
         log().debug("Applying Spine proto annotator plugin.");
         new ProtoAnnotatorPlugin().apply(project);
+
+        log().debug("Applying Spine validation rules lookup plugin.");
+        new ValidationRulesLookupPlugin().apply(project);
+
+        log().debug("Applying Spine protoc-plugin importer plugin.");
+        new ProtocPluginImporter().apply(project);
     }
 
     private static Logger log() {

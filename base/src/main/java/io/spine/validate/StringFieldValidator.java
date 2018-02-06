@@ -20,12 +20,8 @@
 
 package io.spine.validate;
 
-import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.base.FieldPath;
 import io.spine.option.OptionsProto;
 import io.spine.option.PatternOption;
-
-import java.util.List;
 
 import static io.spine.protobuf.TypeConverter.toAny;
 
@@ -41,27 +37,23 @@ class StringFieldValidator extends FieldValidator<String> {
 
     /**
      * Creates a new validator instance.
-     * @param descriptor   a descriptor of the field to validate
-     * @param fieldValues   values to validate
-     * @param rootFieldPath a path to the root field (if present)
-     * @param strict        if {@code true} the validator would assume that the field is required
-     *                      even if the corresponding option is not set
+     *
+     * @param fieldContext the context of the field to validate
+     * @param fieldValues  values to validate
+     * @param strict       if {@code true} the validator would assume that the field
+     *                     is required even if the corresponding option is not set
      */
-    StringFieldValidator(FieldDescriptor descriptor,
+    StringFieldValidator(FieldContext fieldContext,
                          Object fieldValues,
-                         FieldPath rootFieldPath,
                          boolean strict) {
-        super(descriptor, FieldValidator.<String>toValueList(fieldValues), rootFieldPath, strict);
+        super(fieldContext, FieldValidator.<String>toValueList(fieldValues), strict);
         this.patternOption = getFieldOption(OptionsProto.pattern);
         this.regex = patternOption.getRegex();
     }
 
     @Override
-    protected List<ConstraintViolation> validate() {
-        checkIfRequiredAndNotSet();
+    protected void validateOwnRules() {
         checkIfMatchesToRegexp();
-        final List<ConstraintViolation> violations = super.validate();
-        return violations;
     }
 
     private void checkIfMatchesToRegexp() {
