@@ -31,8 +31,8 @@ import com.google.common.base.MoreObjects;
 public enum TaskName {
 
     /*
-     * Gradle-own and 3rd-party task names.
-     **********************/
+     * Gradle-own and 3rd-party task names
+     **************************************/
 
     CLEAN("clean"),
 
@@ -49,8 +49,8 @@ public enum TaskName {
     PROCESS_TEST_RESOURCES("processTestResources"),
 
     /*
-     * Spine custom task names.
-     **********************/
+     * Spine custom task names
+     **************************/
 
     /**
      * The name of the additional cleanup task added to the Gradle lifecycle.
