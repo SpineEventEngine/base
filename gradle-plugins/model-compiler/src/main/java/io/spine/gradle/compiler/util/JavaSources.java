@@ -129,13 +129,14 @@ public class JavaSources {
                                    FileDescriptorProto fileDescriptor) {
         checkNotNull(serviceDescriptor);
         checkNotNull(fileDescriptor);
+        final String serviceType = serviceDescriptor.getName();
         if (!fileDescriptor.getServiceList()
                            .contains(serviceDescriptor)) {
-            throw invalidNestedDefinition(fileDescriptor.getName(), serviceDescriptor.getName());
+            throw invalidNestedDefinition(fileDescriptor.getName(), serviceType);
         }
 
         final Path folderPath = getFolderPath(fileDescriptor);
-        final String filename = serviceDescriptor.getName() + GRPC_CLASSNAME_SUFFIX + JAVA_EXTENSION;
+        final String filename = serviceType + GRPC_CLASSNAME_SUFFIX + JAVA_EXTENSION;
         return folderPath.resolve(filename);
     }
 

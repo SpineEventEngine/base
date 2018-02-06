@@ -65,7 +65,7 @@ abstract class TypeDefinitionAnnotator<L extends ExtendableMessage, D extends Ge
     }
 
     @Override
-    protected final void annotateSingularFile(final FileDescriptorProto fileDescriptor) {
+    protected final void annotateOneFile(final FileDescriptorProto fileDescriptor) {
         final Path relativeFilePath = getFilePath(fileDescriptor);
         rewriteSource(relativeFilePath, new SourceVisitor<JavaClassSource>() {
             @Nullable
@@ -75,12 +75,12 @@ abstract class TypeDefinitionAnnotator<L extends ExtendableMessage, D extends Ge
                 for (D definitionDescriptor : getDefinitions(fileDescriptor)) {
                     if (shouldAnnotate(definitionDescriptor)) {
                         final String messageName = getDefinitionName(definitionDescriptor);
-                        final JavaSource message = getNestedTypeByName(input, messageName);
+                        final JavaSource message = findNestedType(input, messageName);
                         addAnnotation(message);
 
                         final String messageOrBuilderName = messageName + getOrBuilderSuffix();
                         final JavaSource messageOrBuilder =
-                                getNestedTypeByName(input, messageOrBuilderName);
+                                findNestedType(input, messageOrBuilderName);
                         addAnnotation(messageOrBuilder);
                     }
                 }
@@ -127,9 +127,9 @@ abstract class TypeDefinitionAnnotator<L extends ExtendableMessage, D extends Ge
     protected abstract void annotateDefinition(D definitionDescriptor,
                                                FileDescriptorProto fileDescriptor);
 
-    static <T extends JavaSource<T>> JavaSource getNestedTypeByName(AbstractJavaSource<T> javaClass,
-                                                                    String typeName) {
-        for (JavaSource nestedType : javaClass.getNestedTypes()) {
+    static <T extends JavaSource<T>> JavaSource findNestedType(AbstractJavaSource<T> enclosingClass,
+                                                               String typeName) {
+        for (JavaSource nestedType : enclosingClass.getNestedTypes()) {
             if (nestedType.getName()
                           .equals(typeName)) {
                 return nestedType;
@@ -137,7 +137,7 @@ abstract class TypeDefinitionAnnotator<L extends ExtendableMessage, D extends Ge
         }
 
         final String errMsg = format("Nested type `%s` is not defined in `%s`.",
-                                     typeName, javaClass.getName());
+                                     typeName, enclosingClass.getName());
         throw new IllegalStateException(errMsg);
     }
 }

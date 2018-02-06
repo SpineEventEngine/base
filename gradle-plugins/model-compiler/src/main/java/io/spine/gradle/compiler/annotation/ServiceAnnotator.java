@@ -58,7 +58,7 @@ class ServiceAnnotator extends Annotator<ServiceOptions, ServiceDescriptorProto>
     }
 
     @Override
-    protected void annotateSingularFile(FileDescriptorProto fileDescriptor) {
+    protected void annotateOneFile(FileDescriptorProto fileDescriptor) {
         annotateServices(fileDescriptor);
     }
 

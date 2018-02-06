@@ -40,7 +40,7 @@ import java.util.Collection;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Lists.newLinkedList;
-import static io.spine.gradle.compiler.annotation.TypeDefinitionAnnotator.getNestedTypeByName;
+import static io.spine.gradle.compiler.annotation.TypeDefinitionAnnotator.findNestedType;
 import static io.spine.gradle.compiler.util.JavaCode.toJavaFieldName;
 import static io.spine.gradle.compiler.util.JavaSources.getBuilderClassName;
 import static io.spine.gradle.compiler.util.JavaSources.getFilePath;
@@ -74,7 +74,7 @@ class FieldAnnotator extends Annotator<FieldOptions, FieldDescriptorProto> {
     }
 
     @Override
-    protected void annotateSingularFile(FileDescriptorProto fileDescriptor) {
+    protected void annotateOneFile(FileDescriptorProto fileDescriptor) {
         if (!shouldAnnotate(fileDescriptor)) {
             return;
         }
@@ -165,8 +165,8 @@ class FieldAnnotator extends Annotator<FieldOptions, FieldDescriptorProto> {
                                               Iterable<String> unannotatableFields) {
             for (FieldDescriptorProto fieldDescriptor : messageDescriptor.getFieldList()) {
                 if (shouldAnnotate(fieldDescriptor)) {
-                    final JavaSource message = getNestedTypeByName(input,
-                                                                   messageDescriptor.getName());
+                    final JavaSource message = findNestedType(input,
+                                                              messageDescriptor.getName());
                     annotateMessageField(asClassSource(message), fieldDescriptor, unannotatableFields);
                 }
             }

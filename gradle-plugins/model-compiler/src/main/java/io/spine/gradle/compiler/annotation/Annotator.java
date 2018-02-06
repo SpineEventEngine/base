@@ -114,7 +114,7 @@ abstract class Annotator<O extends ExtendableMessage, D extends GeneratedMessage
                           .hasJavaMultipleFiles()) {
             annotateMultipleFiles(fileDescriptor);
         } else {
-            annotateSingularFile(fileDescriptor);
+            annotateOneFile(fileDescriptor);
         }
     }
 
@@ -125,7 +125,7 @@ abstract class Annotator<O extends ExtendableMessage, D extends GeneratedMessage
      *
      * @param fileDescriptor the file descriptor
      */
-    protected abstract void annotateSingularFile(FileDescriptorProto fileDescriptor);
+    protected abstract void annotateOneFile(FileDescriptorProto fileDescriptor);
 
     /**
      * Annotates the Java sources generated from the specified file descriptor
