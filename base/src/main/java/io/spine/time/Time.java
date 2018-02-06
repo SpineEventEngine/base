@@ -72,8 +72,9 @@ public class Time {
         }
     };
 
+
+    /** Prevents instantiation of this utility class. */
     private Time() {
-        // Prevent instantiation of this utility class.
     }
 
     /**
