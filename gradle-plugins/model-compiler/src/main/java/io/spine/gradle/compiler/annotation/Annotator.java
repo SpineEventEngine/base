@@ -42,6 +42,7 @@ import java.nio.file.Paths;
 import java.util.Collection;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 
 /**
@@ -212,7 +213,7 @@ abstract class Annotator<O extends ExtendableMessage, D extends GeneratedMessage
         try {
             javaSource = Roaster.parse(AbstractJavaSource.class, absoluteSourcePath.toFile());
         } catch (FileNotFoundException e) {
-            throw Exceptions.illegalStateWithCauseOf(e);
+            throw illegalStateWithCauseOf(e);
         }
 
         sourceVisitor.apply(javaSource);
@@ -220,7 +221,7 @@ abstract class Annotator<O extends ExtendableMessage, D extends GeneratedMessage
         try {
             Files.write(absoluteSourcePath, resultingSource.getBytes(), TRUNCATE_EXISTING);
         } catch (IOException e) {
-            throw Exceptions.illegalStateWithCauseOf(e);
+            throw illegalStateWithCauseOf(e);
         }
     }
 

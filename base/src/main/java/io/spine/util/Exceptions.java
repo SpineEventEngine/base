@@ -38,8 +38,8 @@ import static java.lang.String.format;
  */
 public final class Exceptions {
 
+    /** Prevent instantiation of this utility class. */
     private Exceptions() {
-        // Prevent instantiation of this utility class.
     }
 
     /**
