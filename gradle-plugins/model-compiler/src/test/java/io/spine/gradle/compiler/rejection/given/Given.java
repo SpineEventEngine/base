@@ -28,7 +28,6 @@ import java.util.Arrays;
 
 import static io.spine.gradle.compiler.Extension.getDefaultMainGenSpineDir;
 import static io.spine.gradle.compiler.util.JavaCode.toJavaFieldName;
-import static io.spine.gradle.compiler.util.JavaSources.getJavaExtension;
 
 /**
  * @author Dmytro Grankin
@@ -62,7 +61,7 @@ public class Given {
     public static String rejectionsJavadocSourceName() {
         final String packageAsDirectory = JAVA_PACKAGE.replace('.', '/');
         return getDefaultMainGenSpineDir() + '/' + packageAsDirectory + '/'
-                + REJECTION_NAME + getJavaExtension();
+                + REJECTION_NAME + ".java";
     }
 
     private static Iterable<String> rejectionWithJavadoc() {

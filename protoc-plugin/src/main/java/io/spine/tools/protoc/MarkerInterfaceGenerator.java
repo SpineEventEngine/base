@@ -64,9 +64,9 @@ public class MarkerInterfaceGenerator extends SpineProtoGenerator {
     static final String INSERTION_POINT_IMPLEMENTS = "message_implements:%s";
     private static final String PACKAGE_DELIMITER = ".";
 
+    /** Prevents singleton class instantiation. */
     private MarkerInterfaceGenerator() {
         super();
-        // Prevent singleton class instantiation.
     }
 
     /**

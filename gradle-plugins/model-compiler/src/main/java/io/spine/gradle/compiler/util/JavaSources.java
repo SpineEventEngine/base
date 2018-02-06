@@ -169,8 +169,4 @@ public class JavaSources {
     public static String getBuilderClassName() {
         return BUILDER_CLASS_NAME;
     }
-
-    public static String getJavaExtension() {
-        return JAVA_EXTENSION;
-    }
 }
