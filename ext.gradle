@@ -32,8 +32,8 @@ ext {
 
     guavaVersion = '20.0'
     findBugsVersion = '3.0.1'
-    protobufVersion = '3.5.0'
-    gRpcVersion = '1.8.0'
+    protobufVersion = '3.5.1'
+    gRpcVersion = '1.9.0'
     slf4JVersion = '1.7.25'
     jUnitVersion = '4.12'
     mockitoVersion = '2.12.0'
