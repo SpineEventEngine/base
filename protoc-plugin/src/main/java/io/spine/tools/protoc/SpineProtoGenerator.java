@@ -45,7 +45,7 @@ import static com.google.common.collect.Sets.newHashSet;
  * <p>Each message type is processed separately. As the result of processing, a generator may
  * produce instances of {@link File CodeGeneratorResponse.File}.
  *
- * <p>The {@code CodeGeneratorResponse.File} has three fields: {@code name}, {@code insertionPoint}
+ * <p>The {@code CodeGeneratorResponse.File} has three fields: {@code name}, {@code insertionPoint},
  * and {@code content}.
  *
  * <p>The {@code name} field represents the name of the file to generate. The name is relative to
