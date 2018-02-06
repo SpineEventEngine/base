@@ -26,7 +26,6 @@ import io.spine.annotation.Experimental;
 import io.spine.annotation.Internal;
 import io.spine.annotation.SPI;
 import io.spine.gradle.SpinePlugin;
-import io.spine.gradle.compiler.util.DescriptorSetUtil.IsNotGoogleProto;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -46,6 +45,7 @@ import static io.spine.gradle.compiler.Extension.getMainGenProtoDir;
 import static io.spine.gradle.compiler.Extension.getTestDescriptorSetPath;
 import static io.spine.gradle.compiler.Extension.getTestGenGrpcDir;
 import static io.spine.gradle.compiler.Extension.getTestGenProtoDir;
+import static io.spine.gradle.compiler.util.DescriptorSetUtil.isNotGoogleProto;
 import static io.spine.option.OptionsProto.beta;
 import static io.spine.option.OptionsProto.betaAll;
 import static io.spine.option.OptionsProto.betaType;
@@ -227,7 +227,7 @@ public class ProtoAnnotatorPlugin extends SpinePlugin {
             @Override
             public void execute(Task task) {
                 final Collection<FileDescriptorProto> descriptors =
-                        getProtoFileDescriptors(descriptorSetPath, new IsNotGoogleProto());
+                        getProtoFileDescriptors(descriptorSetPath, isNotGoogleProto());
                 final AnnotatorFactory factory =
                         new AnnotatorFactory(descriptors, generatedProtoDir, generatedGrpcDir);
 

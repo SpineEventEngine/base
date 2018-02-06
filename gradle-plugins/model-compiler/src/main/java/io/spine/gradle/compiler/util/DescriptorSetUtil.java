@@ -47,6 +47,9 @@ public class DescriptorSetUtil {
                     "https://github.com/google/protobuf-gradle-plugin/" +
                     "blob/master/README.md#customize-code-generation-tasks";
 
+    private static final Predicate<FileDescriptorProto> IS_NOT_GOOGLE = new IsNotGoogleProto();
+
+    /** Prevents instantiation of this utility class. */
     private DescriptorSetUtil() {
     }
 
@@ -100,7 +103,14 @@ public class DescriptorSetUtil {
         return fileDescriptors;
     }
 
-    public static class IsNotGoogleProto implements Predicate<FileDescriptorProto> {
+    public static Predicate<FileDescriptorProto> isNotGoogleProto() {
+        return IS_NOT_GOOGLE;
+    }
+
+    /**
+     * Verifies if a package of a file does not contain {@code "google"} in its path.
+     */
+    private static class IsNotGoogleProto implements Predicate<FileDescriptorProto> {
         @Override
         public boolean apply(FileDescriptorProto file) {
             final boolean result = !file.getPackage()

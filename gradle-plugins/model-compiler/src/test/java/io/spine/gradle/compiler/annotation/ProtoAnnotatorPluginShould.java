@@ -70,102 +70,101 @@ public class ProtoAnnotatorPluginShould {
     public final TemporaryFolder testProjectDir = new TemporaryFolder();
 
     @Test
-    public void annotate_if_file_option_is_true() throws Exception {
+    public void annotate_if_file_option_is_true() {
         final String testFile = "spi_all.proto";
         assertNestedTypesAnnotations(testFile, true);
     }
 
     @Test
-    public void annotate_service_if_file_option_is_true() throws Exception {
+    public void annotate_service_if_file_option_is_true() {
         final String testFile = "spi_all_service.proto";
         assertServiceAnnotations(testFile, true);
     }
 
     @Test
-    public void not_annotate_if_file_option_if_false() throws Exception {
+    public void not_annotate_if_file_option_if_false() {
         assertNestedTypesAnnotations(NO_SPI_OPTIONS_FILENAME, false);
     }
 
     @Test
-    public void not_annotate_service_if_file_option_if_false() throws Exception {
+    public void not_annotate_service_if_file_option_if_false() {
         assertNestedTypesAnnotations(NO_SPI_OPTIONS_FILENAME, false);
     }
 
     @Test
-    public void annotate_multiple_files_if_file_option_is_true() throws Exception {
+    public void annotate_multiple_files_if_file_option_is_true() {
         final String testFile = "spi_all_multiple.proto";
         assertMainDefinitionAnnotations(testFile, true);
     }
 
     @Test
-    public void not_annotate_multiple_files_if_file_option_is_false() throws Exception {
+    public void not_annotate_multiple_files_if_file_option_is_false() {
         assertMainDefinitionAnnotations(NO_SPI_OPTIONS_MULTIPLE_FILENAME, false);
     }
 
     @Test
-    public void annotate_if_message_option_is_true() throws Exception {
+    public void annotate_if_message_option_is_true() {
         final String testFile = "spi_message.proto";
         assertNestedTypesAnnotations(testFile, true);
     }
 
     @Test
-    public void not_annotate_if_message_option_is_false() throws Exception {
+    public void not_annotate_if_message_option_is_false() {
         assertNestedTypesAnnotations(NO_SPI_OPTIONS_FILENAME, false);
     }
 
     @Test
-    public void annotate_multiple_files_if_message_option_is_true() throws Exception {
+    public void annotate_multiple_files_if_message_option_is_true() {
         final String testFile = "spi_message_multiple.proto";
         assertMainDefinitionAnnotations(testFile, true);
     }
 
     @Test
-    public void not_annotate_multiple_files_if_message_option_is_false() throws Exception {
+    public void not_annotate_multiple_files_if_message_option_is_false() {
         assertMainDefinitionAnnotations(NO_SPI_OPTIONS_MULTIPLE_FILENAME, false);
     }
 
     @Test
-    public void annotate_accessors_if_field_option_is_true() throws Exception {
+    public void annotate_accessors_if_field_option_is_true() {
         final String testFile = "spi_field.proto";
         assertFieldAnnotations(testFile, true);
     }
 
     @Test
-    public void not_annotate_accessors_if_field_option_is_false() throws Exception {
+    public void not_annotate_accessors_if_field_option_is_false() {
         assertFieldAnnotations(NO_SPI_OPTIONS_FILENAME, false);
     }
 
     @Test
-    public void annotate_accessors_in_multiple_files_if_field_option_is_true() throws Exception {
+    public void annotate_accessors_in_multiple_files_if_field_option_is_true() {
         final String testFile = "spi_field_multiple.proto";
         assertFieldAnnotationsMultiple(testFile, true);
     }
 
     @Test
-    public void not_annotate_accessors_in_multiple_files_if_field_option_is_false() throws
-                                                                                    Exception {
+    public void not_annotate_accessors_in_multiple_files_if_field_option_is_false() {
         assertFieldAnnotationsMultiple(NO_SPI_OPTIONS_MULTIPLE_FILENAME, false);
     }
 
     @Test
-    public void annotate_grpc_services_if_service_option_is_true() throws Exception {
+    public void annotate_grpc_services_if_service_option_is_true() {
         final String testFile = "spi_service.proto";
         assertServiceAnnotations(testFile, true);
     }
 
     @Test
-    public void not_annotate_grpc_services_if_service_option_is_false() throws Exception {
+    public void not_annotate_grpc_services_if_service_option_is_false() {
         assertServiceAnnotations(NO_SPI_OPTIONS_FILENAME, false);
     }
 
     @Test
-    public void compile_generated_sources_with_potential_annotation_duplication() throws Exception {
+    public void compile_generated_sources_with_potential_annotation_duplication() {
         final String file = "potential_annotation_duplication.proto";
         newProjectWithFile(file).executeTask(COMPILE_JAVA);
     }
 
     private void assertServiceAnnotations(final String testFile,
-                                          final boolean shouldBeAnnotated) throws Exception {
+                                          final boolean shouldBeAnnotated) {
         newProjectWithFile(testFile).executeTask(ANNOTATE_PROTO);
 
         final FileDescriptorProto fileDescriptor = getDescriptor(testFile);
@@ -178,7 +177,7 @@ public class ProtoAnnotatorPluginShould {
     }
 
     private void assertFieldAnnotations(final String testFile,
-                                        final boolean shouldBeAnnotated) throws Exception {
+                                        final boolean shouldBeAnnotated) {
         newProjectWithFile(testFile).executeTask(ANNOTATE_PROTO);
 
         final FileDescriptorProto fileDescriptor = getDescriptor(testFile);
@@ -192,7 +191,7 @@ public class ProtoAnnotatorPluginShould {
     }
 
     private void assertFieldAnnotationsMultiple(final String testFile,
-                                                final boolean shouldBeAnnotated) throws Exception {
+                                                final boolean shouldBeAnnotated) {
         newProjectWithFile(testFile).executeTask(ANNOTATE_PROTO);
 
         final FileDescriptorProto fileDescriptor = getDescriptor(testFile);
@@ -203,7 +202,7 @@ public class ProtoAnnotatorPluginShould {
     }
 
     private void assertMainDefinitionAnnotations(final String testFile,
-                                                 final boolean shouldBeAnnotated) throws Exception {
+                                                 final boolean shouldBeAnnotated) {
         newProjectWithFile(testFile).executeTask(ANNOTATE_PROTO);
 
         final FileDescriptorProto fileDescriptor = getDescriptor(testFile);
@@ -220,7 +219,7 @@ public class ProtoAnnotatorPluginShould {
     }
 
     private void assertNestedTypesAnnotations(final String testFile,
-                                              final boolean shouldBeAnnotated) throws Exception {
+                                              final boolean shouldBeAnnotated) {
         newProjectWithFile(testFile).executeTask(ANNOTATE_PROTO);
 
         final FileDescriptorProto fileDescriptor = getDescriptor(testFile);
@@ -276,7 +275,8 @@ public class ProtoAnnotatorPluginShould {
                                            fileName);
         }
 
-        return Iterables.get(descriptors, 0);
+        final FileDescriptorProto result = Iterables.get(descriptors, 0);
+        return result;
     }
 
     private GradleProject newProjectWithFile(String protoFileName) {

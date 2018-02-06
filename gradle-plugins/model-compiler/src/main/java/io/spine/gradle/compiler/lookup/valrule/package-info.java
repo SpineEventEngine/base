@@ -21,5 +21,7 @@
 /**
  * Plugins and utilities for validation rules processing.
  */
-
+@ParametersAreNonnullByDefault
 package io.spine.gradle.compiler.lookup.valrule;
+
+import javax.annotation.ParametersAreNonnullByDefault;
