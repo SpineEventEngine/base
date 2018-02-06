@@ -37,8 +37,8 @@ public class CodeLayout {
     private static final char EXTENSION_SEPARATOR = '.';
     private static final char PATH_SEPARATOR = '/';
 
+    /** Prevents instantiation of this utility class. */
     private CodeLayout() {
-        // Prevent instantiation of this utility class.
     }
 
     /**
