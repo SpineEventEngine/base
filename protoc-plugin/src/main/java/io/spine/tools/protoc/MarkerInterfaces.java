@@ -51,8 +51,8 @@ final class MarkerInterfaces {
                                   .build();
     }
 
+    /** Prevent utility class instantiation. */
     private MarkerInterfaces() {
-        // Prevent utility class instantiation.
     }
 
     /**

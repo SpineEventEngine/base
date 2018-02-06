@@ -50,10 +50,10 @@ import static java.lang.String.format;
 abstract class TypeDefinitionAnnotator<L extends ExtendableMessage, D extends GeneratedMessageV3>
          extends Annotator<L, D> {
 
-    protected TypeDefinitionAnnotator(Class<? extends Annotation> annotation,
-                                      GeneratedExtension<L, Boolean> option,
-                                      Collection<FileDescriptorProto> fileDescriptors,
-                                      String genProtoDir) {
+    TypeDefinitionAnnotator(Class<? extends Annotation> annotation,
+                            GeneratedExtension<L, Boolean> option,
+                            Collection<FileDescriptorProto> fileDescriptors,
+                            String genProtoDir) {
         super(annotation, option, fileDescriptors, genProtoDir);
     }
 
