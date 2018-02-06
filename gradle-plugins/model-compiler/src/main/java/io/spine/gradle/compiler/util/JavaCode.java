@@ -19,7 +19,6 @@
  */
 package io.spine.gradle.compiler.util;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -33,6 +32,7 @@ public class JavaCode {
 
     private static final String UNDERSCORE = "_";
 
+    /** Prevents instantiation of this utility class. */
     private JavaCode() {
     }
 
@@ -71,7 +71,6 @@ public class JavaCode {
      * <a href="https://developers.google.com/protocol-buffers/docs/reference/java-generated#invocation">Protobuf
      * compiler conventions</a>.
      */
-    @VisibleForTesting // otherwise it would have been private
     public static String toCamelCase(String fileName) {
         checkNotNull(fileName);
         final StringBuilder result = new StringBuilder(fileName.length());
