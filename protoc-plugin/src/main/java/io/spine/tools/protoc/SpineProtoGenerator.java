@@ -37,8 +37,9 @@ import static com.google.common.collect.Sets.newHashSet;
 /**
  * An abstract base for the Protobuf code generator.
  *
- * <p>A generator consumes a {@link DescriptorProto} for each message type and optionally generates
- * some Java code in response to it regarding {@linkplain FileDescriptorProto its file}.
+ * <p>A generator consumes a {@link DescriptorProto DescriptorProto} for each message type and
+ * optionally generates some Java code in response to it regarding {@linkplain FileDescriptorProto
+ * its file}.
  *
  * <a name="contract"></a>
  * <p>Each message type is processed separately. As the result of processing, a generator may
