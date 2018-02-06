@@ -30,7 +30,7 @@ import com.squareup.javapoet.TypeSpec;
 import io.spine.base.ThrowableMessage;
 import io.spine.gradle.compiler.message.fieldtype.FieldType;
 import io.spine.gradle.compiler.message.fieldtype.FieldTypeFactory;
-import io.spine.gradle.compiler.util.GenerationUtils;
+import io.spine.gradle.compiler.util.JavaCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -90,7 +90,7 @@ public class RejectionWriter {
             final TypeSpec rejection =
                     TypeSpec.classBuilder(rejectionMetadata.getClassName())
                             .addJavadoc(javadocGenerator.generateClassJavadoc())
-                            .addAnnotation(GenerationUtils.constructGeneratedAnnotation())
+                            .addAnnotation(JavaCode.constructGeneratedAnnotation())
                             .addModifiers(PUBLIC)
                             .superclass(ThrowableMessage.class)
                             .addField(constructSerialVersionUID())
