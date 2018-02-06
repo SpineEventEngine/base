@@ -98,8 +98,8 @@ The plugin consists of two artifacts:
  - a shell runner;
  - the executable JAR with the actual `protoc` plugin.
  
-Both the plugins are published alongside with the Spine Gradle plugin. To update the `protoc` plugin, 
-the user should update the Gradle plugin.
+Both the plugins are published alongside with the Spine Gradle plugin. To update the `protoc` 
+plugin, the user should update the Gradle plugin.
 
 The shell runner artifact is OS-sensitive, thus when building on different systems 
 different artifacts (for [Windows](./plugin_runner.bat) or [Unix-like](./plugin_runner.sh)) are 
@@ -128,12 +128,12 @@ Please also note, that the `.spine` directory is deleted upon the `:clean` Gradl
 
 #### Compilation
 
-`protoc` invokes the shell runner and passes a serialized message to it via standard I/O. The runner 
-starts the JAR executable with the same input and returns its output to `protoc` (again via 
-standard I/O).
+`protoc` invokes the shell runner and passes a serialized message to it via standard I/O. 
+The runner starts the JAR executable with the same input and returns its output to `protoc` 
+(again via standard I/O).
 
-This level of indirectness is required since operating system does not treat JAR files as executables, 
-so a special CLI command is required to start a JAR. 
+This level of indirectness is required since operating system does not treat JAR files as 
+executables, so a special CLI command is required to start a JAR. 
 
 On the Protobuf compile time, the plugin handles the code generation requests from `protoc`.
 The response contains the Java code to be written. For example, for generating marker interfaces, 
@@ -144,4 +144,5 @@ If the passed code gen request is not interesting to the Spine plugin, the respo
 
 ---
 
-For the details on the `protoc` plugin development, see the official [doc](https://developers.google.com/protocol-buffers/docs/reference/other#plugins).
+For the details on the `protoc` plugin development, see the official 
+[doc](https://developers.google.com/protocol-buffers/docs/reference/other#plugins).
