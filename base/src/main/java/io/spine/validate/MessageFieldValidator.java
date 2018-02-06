@@ -45,7 +45,7 @@ import static io.spine.validate.Validate.isDefault;
 class MessageFieldValidator extends FieldValidator<Message> {
 
     private final TimeOption timeConstraint;
-    private final boolean isFieldTimestamp;
+    private final boolean fieldIsTimestamp;
 
     /**
      * Creates a new validator instance.
@@ -60,16 +60,16 @@ class MessageFieldValidator extends FieldValidator<Message> {
                           boolean strict) {
         super(fieldContext, FieldValidator.<Message>toValueList(fieldValues), strict);
         this.timeConstraint = getFieldOption(OptionsProto.when);
-        this.isFieldTimestamp = isTimestamp();
+        this.fieldIsTimestamp = isTimestamp();
     }
 
     @Override
     protected void validateOwnRules() {
-        final boolean recursiveValidationRequired = getValidateOption();
-        if (recursiveValidationRequired) {
+        final boolean validateFields = getValidateOption();
+        if (validateFields) {
             validateFields();
         }
-        if (isFieldTimestamp) {
+        if (fieldIsTimestamp) {
             validateTimestamps();
         }
     }
@@ -82,9 +82,11 @@ class MessageFieldValidator extends FieldValidator<Message> {
 
     private boolean isTimestamp() {
         final ImmutableList<Message> values = getValues();
-        final Message value = values.isEmpty() ? null : values.get(0);
-        final boolean isTimestamp = value instanceof Timestamp;
-        return isTimestamp;
+        final Message value = values.isEmpty()
+                ? null
+                : values.get(0);
+        final boolean result = value instanceof Timestamp;
+        return result;
     }
 
     private void validateFields() {
