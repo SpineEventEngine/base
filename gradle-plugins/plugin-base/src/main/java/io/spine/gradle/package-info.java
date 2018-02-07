@@ -16,10 +16,15 @@
  * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- *
+ */
+
+/**
  * Base classes and interfaces for Spine Gradle plugins.
  *
  * @author Alex Tymchenko
  */
+
+@ParametersAreNonnullByDefault
 package io.spine.gradle;
+
+import javax.annotation.ParametersAreNonnullByDefault;
