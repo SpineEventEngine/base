@@ -20,28 +20,39 @@
 
 package io.spine.gradle.compiler.annotation;
 
-import com.google.protobuf.DescriptorProtos;
+import com.google.protobuf.DescriptorProtos.EnumDescriptorProto;
+import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.annotation.Experimental;
+import io.spine.ui.Language;
 import org.junit.Test;
 
 import java.util.Collections;
-import java.util.Set;
 
 import static io.spine.test.compiler.annotation.EnumAnnotatorShouldProto.experimentalType;
+import static org.junit.Assert.assertFalse;
 
 /**
  * @author Dmytro Grankin
  */
 public class EnumAnnotatorShould {
 
+    private static final String INVALID_GEN_PROTO_DIR = "";
+
+    private final EnumAnnotator annotator = new EnumAnnotator(Experimental.class,
+                                                              experimentalType,
+                                                              Collections.<FileDescriptorProto>emptySet(),
+                                                              INVALID_GEN_PROTO_DIR);
+
     @Test
     public void do_nothing_if_no_descriptors_specified() {
-        final Set<DescriptorProtos.FileDescriptorProto> emptyDescriptors = Collections.emptySet();
-        final String invalidGenProtobufPath = "";
-        final EnumAnnotator enumAnnotator = new EnumAnnotator(Experimental.class,
-                                                              experimentalType,
-                                                              emptyDescriptors,
-                                                              invalidGenProtobufPath);
-        enumAnnotator.annotate();
+        annotator.annotate();
+    }
+
+    @Test
+    public void not_annotate_enum_without_option() {
+        final EnumDescriptorProto descriptorWithoutOption = Language.getDescriptor()
+                                                                    .toProto();
+        final boolean shouldAnnotate = annotator.shouldAnnotate(descriptorWithoutOption);
+        assertFalse(shouldAnnotate);
     }
 }
