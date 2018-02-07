@@ -363,14 +363,25 @@ extend google.protobuf.MessageOptions {
     // release.
     bool beta_type = 73914;
 
-    // Specifies the name of a Java interface to be implemented by this message.
+    // Marks that the given message type has the specified characteristic.
     //
-    // The interface is generated into the Protobuf generation destination directory. The interface
-    // itself is a marker interface derived from `com.google.protobuf.Message`. Unless the interface
-    // is specified by its FQN, it will have the same Java package as the message.
+    // Example:
+    // ```
+    // message CreateProject {
+    //     option (is) = "Command";
     //
-    // To specify a marker interface for every message in a `.proto` file, use `(every_is)` file
+    //     // Remainder omitted.
+    // }
+    // ```
+    //
+    // To specify a characteristic for every message in a `.proto` file, use `(every_is)` file
     // option. If both `(is)` and `(every_is)` options are found, `(is)` value is taken.
+    //
+    // When targeting Java, specifies the name of a Java interface to be implemented by this
+    // message. The interface is generated into the Protobuf generation destination directory.
+    // The interface itself is a marker interface derived from `com.google.protobuf.Message`.
+    // Unless the interface is specified by its FQN, it will have the same Java package as
+    // the message.
     //
     string is = 73915;
 
