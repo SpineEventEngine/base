@@ -368,13 +368,13 @@ extend google.protobuf.MessageOptions {
     // Example:
     // ```
     // message CreateProject {
-    //     option (is) = "CommandMessage";
+    //     option (is) = "ProjectCommand";
     //
     //     // Remainder omitted.
     // }
     // ```
     //
-    // In the example above, `CreateProject` message is a `CommandMessage`.
+    // In the example above, `CreateProject` message is a `ProjectCommand`.
     //
     // To specify a characteristic for every message in a `.proto` file, use `(every_is)` file
     // option. If both `(is)` and `(every_is)` options are found, `(is)` value is taken.
@@ -495,14 +495,14 @@ extend google.protobuf.FileOptions {
     //
     // Example:
     // ```
-    // option (is) = "CommandMessage";
+    // option (is) = "ProjectCommand";
     //
     // message CreateProject { /*...*/ }
     //
     // message DeleteProject { /*...*/ }
     // ```
     //
-    // In the example above, `CreateProject` and `DeleteProject` messages are `CommandMessage`-s.
+    // In the example above, `CreateProject` and `DeleteProject` messages are `ProjectCommand`-s.
     //
     // To specify a characteristic for a single message, use `(is)` message option. If both `(is)`
     // and `(every_is)` options are found, `(is)` value is taken.
