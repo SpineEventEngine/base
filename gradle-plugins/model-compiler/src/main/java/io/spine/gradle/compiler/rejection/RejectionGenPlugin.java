@@ -26,6 +26,7 @@ import io.spine.gradle.SpinePlugin;
 import io.spine.gradle.compiler.message.MessageTypeCache;
 import io.spine.gradle.compiler.util.FileDescriptors;
 import io.spine.gradle.compiler.util.JavaCode;
+import io.spine.type.RejectionMessage;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -61,10 +62,6 @@ import static io.spine.gradle.compiler.Extension.getTestDescriptorSetPath;
  * @author Alex Tymchenko
  */
 public class RejectionGenPlugin extends SpinePlugin {
-
-    /** The name suffix for proto files containing rejection declarations. */
-    private static final String REJECTIONS_FILE_SUFFIX = "rejections.proto";
-    private static final String OUTER_CLASS_NAME_SUFFIX = "Rejections";
 
     /** A map from Protobuf type name to Java class FQN. */
     private final MessageTypeCache messageTypeCache = new MessageTypeCache();
@@ -124,7 +121,7 @@ public class RejectionGenPlugin extends SpinePlugin {
                 FileDescriptors.parse(descFilePath);
         for (FileDescriptorProto file : allDescriptors) {
             if (file.getName()
-                    .endsWith(REJECTIONS_FILE_SUFFIX)) {
+                    .endsWith(RejectionMessage.PROTO_FILE_SUFFIX)) {
                 log().trace("Found rejections file: {}", file.getName());
                 result.add(file);
             }
@@ -161,7 +158,8 @@ public class RejectionGenPlugin extends SpinePlugin {
             return true;
         }
 
-        final boolean result = javaOuterClassName.endsWith(OUTER_CLASS_NAME_SUFFIX);
+        final boolean result =
+                javaOuterClassName.endsWith(RejectionMessage.OUTER_CLASS_NAME_SUFFIX);
         return result;
     }
 
