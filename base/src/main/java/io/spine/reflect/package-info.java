@@ -19,15 +19,10 @@
  */
 
 /**
- * Provides a Gradle plugin, which adds annotations for generated Java files
- * basing on options defined in {@code .proto} files.
- *
- * <p>Contains classes and interfaces for applying annotations on Java files,
- * which are generated from Protobuf definitions.
- *
- * @see io.spine.gradle.compiler.annotation.ProtoAnnotatorPlugin ProtoAnnotatorPlugin
+ * Utilities for working with classes from {@linkplain java.lang.reflect reflection package}.
  */
+
 @ParametersAreNonnullByDefault
-package io.spine.gradle.compiler.annotation;
+package io.spine.reflect;
 
 import javax.annotation.ParametersAreNonnullByDefault;
