@@ -141,7 +141,9 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
      */
     public <V> List<V> convertToList(String value,
                                      Class<V> valueClass) throws ConversionException {
-        final List<V> result = Stringifiers.newForListOf(valueClass).reverse().convert(value);
+        final List<V> result = Stringifiers.newForListOf(valueClass)
+                                           .reverse()
+                                           .convert(value);
         return result;
     }
 
