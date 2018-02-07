@@ -18,37 +18,30 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.util;
+package io.spine.type;
 
 import com.google.protobuf.Descriptors;
 import com.google.protobuf.StringValue;
 import io.spine.base.given.CommandFromCommands;
-import io.spine.test.Tests;
 import org.junit.Test;
 
-import static io.spine.util.CodeLayout.isCommandsFile;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
  * @author Alexander Yevsyukov
  */
-public class CodeLayoutShould {
-
-    @Test
-    public void have_utility_ctor() {
-        Tests.assertHasPrivateParameterlessCtor(CodeLayout.class);
-    }
+public class CommandMessageShould {
 
     @Test
     public void tell_commands_file_by_its_descriptor() {
         Descriptors.FileDescriptor file = CommandFromCommands.getDescriptor()
                                                              .getFile();
-        assertTrue(isCommandsFile(file));
+        assertTrue(CommandMessage.FILE_PREDICATE.apply(file));
 
         file = StringValue.getDescriptor()
                           .getFile();
 
-        assertFalse(isCommandsFile(file));
+        assertFalse(CommandMessage.FILE_PREDICATE.apply(file));
     }
 }

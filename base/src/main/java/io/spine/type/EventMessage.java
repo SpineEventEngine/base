@@ -34,6 +34,8 @@ import com.google.protobuf.Message;
 @SuppressWarnings({"unused", "InterfaceNeverImplemented"}) /* See Javadoc */
 public interface EventMessage extends Message {
 
-    /** The name suffix for proto files containing event message declarations. */
+    /**
+     * The name suffix for proto files containing event message declarations.
+     */
     String PROTO_FILE_SUFFIX = "events.proto";
 }

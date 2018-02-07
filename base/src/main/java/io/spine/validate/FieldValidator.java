@@ -31,7 +31,7 @@ import io.spine.base.FieldPath;
 import io.spine.option.IfInvalidOption;
 import io.spine.option.IfMissingOption;
 import io.spine.option.OptionsProto;
-import io.spine.util.CodeLayout;
+import io.spine.type.CommandMessage;
 import io.spine.validate.rules.ValidationRuleOptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -91,7 +91,7 @@ abstract class FieldValidator<V> {
         this.fieldDescriptor = fieldContext.getTarget();
         this.strict = strict;
         final FileDescriptor file = fieldDescriptor.getFile();
-        this.isCommandsFile = CodeLayout.isCommandsFile(file);
+        this.isCommandsFile = CommandMessage.FILE_PREDICATE.apply(file);
         this.isFirstField = fieldDescriptor.getIndex() == 0;
         this.required = getFieldOption(OptionsProto.required);
         this.ifMissingOption = getFieldOption(OptionsProto.ifMissing);

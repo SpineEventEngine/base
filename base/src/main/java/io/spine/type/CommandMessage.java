@@ -20,7 +20,13 @@
 
 package io.spine.type;
 
+import com.google.common.base.Predicate;
+import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Message;
+
+import javax.annotation.Nullable;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * A common interface for command messages.
@@ -34,6 +40,22 @@ import com.google.protobuf.Message;
 @SuppressWarnings({"unused", "InterfaceNeverImplemented"}) /* See Javadoc */
 public interface CommandMessage extends Message {
 
-    /** The name suffix for proto files containing command message declarations. */
+    /**
+     * The name suffix for proto files containing command message declarations.
+     */
     String PROTO_FILE_SUFFIX = "commands.proto";
+
+    /**
+     * Returns {@code true} if the passed file defines command messages, {@code false} otherwise.
+     */
+    Predicate<FileDescriptor> FILE_PREDICATE = new Predicate<FileDescriptor>() {
+        @Override
+        public boolean apply(@Nullable FileDescriptor file) {
+            checkNotNull(file);
+
+            final String fqn = file.getName();
+            final boolean result = fqn.endsWith(PROTO_FILE_SUFFIX);
+            return result;
+        }
+    };
 }

@@ -22,6 +22,7 @@ package io.spine.gradle.compiler.util;
 import com.google.common.testing.NullPointerTester;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.TypeName;
+import io.spine.type.RejectionMessage;
 import org.junit.Test;
 
 import javax.annotation.Generated;
@@ -41,7 +42,7 @@ public class JavaCodeShould {
     @SuppressWarnings("DuplicateStringLiteralInspection")
     @Test
     public void calculate_outer_class_name() {
-        assertEquals("Rejections", JavaCode.toCamelCase("rejections"));
+        assertEquals(RejectionMessage.OUTER_CLASS_NAME_SUFFIX, JavaCode.toCamelCase("rejections"));
         assertEquals("ManyRejections", JavaCode.toCamelCase("many_rejections"));
         assertEquals("ManyMoreRejections", JavaCode.toCamelCase("many_more_rejections"));
     }

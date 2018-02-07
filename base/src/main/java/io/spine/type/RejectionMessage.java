@@ -34,9 +34,13 @@ import com.google.protobuf.Message;
 @SuppressWarnings({"unused", "InterfaceNeverImplemented"}) /* See Javadoc */
 public interface RejectionMessage extends Message {
 
-    /** The name suffix for proto files containing rejection declarations. */
+    /**
+     * The name suffix for proto files containing rejection declarations.
+     */
     String PROTO_FILE_SUFFIX = "rejections.proto";
 
-    /** The suffix for the outer class name for the generated rejection messages. */
+    /**
+     * The suffix for the outer class name for the generated rejection messages.
+     */
     String OUTER_CLASS_NAME_SUFFIX = "Rejections";
 }
