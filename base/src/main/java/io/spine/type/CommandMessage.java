@@ -37,7 +37,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  * @author Alexander Yevsyukov
  */
-@SuppressWarnings({"unused", "InterfaceNeverImplemented"}) /* See Javadoc */
+@SuppressWarnings("InterfaceNeverImplemented") /* See Javadoc */
 public interface CommandMessage extends Message {
 
     /**

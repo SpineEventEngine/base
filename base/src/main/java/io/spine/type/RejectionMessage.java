@@ -31,7 +31,7 @@ import com.google.protobuf.Message;
  *
  * @author Alexander Yevsyukov
  */
-@SuppressWarnings({"unused", "InterfaceNeverImplemented"}) /* See Javadoc */
+@SuppressWarnings("InterfaceNeverImplemented") /* See Javadoc */
 public interface RejectionMessage extends Message {
 
     /**
