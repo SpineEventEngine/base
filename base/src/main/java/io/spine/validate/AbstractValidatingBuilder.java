@@ -159,7 +159,7 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
         final FieldContext fieldContext = FieldContext.create(descriptor);
         final FieldValidator<?> validator = create(fieldContext, valueToValidate);
         final List<ConstraintViolation> violations = validator.validate();
-        onViolations(violations);
+        checkViolations(violations);
     }
 
     /**
@@ -221,10 +221,10 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
     private void validateResult(T message) throws ValidationException {
         final List<ConstraintViolation> violations = MessageValidator.newInstance()
                                                                      .validate(message);
-        onViolations(violations);
+        checkViolations(violations);
     }
 
-    private static void onViolations(List<ConstraintViolation> violations)
+    private static void checkViolations(List<ConstraintViolation> violations)
             throws ValidationException {
         if (!violations.isEmpty()) {
             throw new ValidationException(violations);
