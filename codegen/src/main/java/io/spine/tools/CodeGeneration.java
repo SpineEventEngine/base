@@ -26,6 +26,8 @@ import com.squareup.javapoet.CodeBlock;
 import javax.annotation.Generated;
 
 /**
+ * A factory for the commonly used Java source specs.
+ *
  * @author Dmytro Dashenkov
  */
 public final class CodeGeneration {
@@ -46,6 +48,12 @@ public final class CodeGeneration {
     private CodeGeneration() {
     }
 
+    /**
+     * Generates {@code \@Generated("by Spine compiler")} annotation spec.
+     *
+     * @return an {@link AnnotationSpec} describing the {@link Generated javax.annotation.Generated}
+     *         annotation
+     */
     public static AnnotationSpec generatedAnnotation() {
         return GENERATED;
     }
