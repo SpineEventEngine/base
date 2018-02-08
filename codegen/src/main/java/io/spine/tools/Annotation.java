@@ -46,7 +46,7 @@ public final class Annotation {
     }
 
     /**
-     * The {@code private} constructor prevents the utility class instantiation.
+     * Constructor prevents the utility class instantiation.
      */
     private Annotation() {
     }
