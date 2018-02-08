@@ -26,12 +26,18 @@ import org.junit.Test;
 
 import javax.annotation.Generated;
 
+import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
 import static org.junit.Assert.assertEquals;
 
 /**
  * @author Dmytro Dashenkov
  */
 public class CodeGenerationShould {
+
+    @Test
+    public void have_util_ctor() {
+        assertHasPrivateParameterlessCtor(CodeGeneration.class);
+    }
 
     @Test
     public void return_generated_annotation_spec() {
