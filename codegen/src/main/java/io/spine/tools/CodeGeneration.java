@@ -33,6 +33,9 @@ import javax.annotation.Generated;
 public final class CodeGeneration {
 
     private static final AnnotationSpec GENERATED;
+
+    @SuppressWarnings("DuplicateStringLiteralInspection")
+        // Each occurrence has a different semantics.
     private static final String GENERATED_FIELD_NAME = "value";
 
     static {
