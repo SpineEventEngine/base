@@ -21,16 +21,13 @@
 package io.spine.tools.protoc;
 
 import com.google.protobuf.Message;
-import com.squareup.javapoet.AnnotationSpec;
-import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
-import io.spine.tools.CodeGeneration;
 
 import javax.annotation.Generated;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.CodeGeneration.generatedAnnotation;
+import static io.spine.tools.Annotation.generatedAnnotation;
 import static javax.lang.model.element.Modifier.PUBLIC;
 
 /**

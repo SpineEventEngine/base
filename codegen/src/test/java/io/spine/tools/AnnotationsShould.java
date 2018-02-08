@@ -32,16 +32,16 @@ import static org.junit.Assert.assertEquals;
 /**
  * @author Dmytro Dashenkov
  */
-public class CodeGenerationShould {
+public class AnnotationsShould {
 
     @Test
     public void have_util_ctor() {
-        assertHasPrivateParameterlessCtor(CodeGeneration.class);
+        assertHasPrivateParameterlessCtor(Annotation.class);
     }
 
     @Test
     public void return_generated_annotation_spec() {
-        final AnnotationSpec spec = CodeGeneration.generatedAnnotation();
+        final AnnotationSpec spec = Annotation.generatedAnnotation();
         assertEquals(spec.type, TypeName.get(Generated.class));
     }
 }

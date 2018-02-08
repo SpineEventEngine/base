@@ -30,7 +30,7 @@ import javax.annotation.Generated;
  *
  * @author Dmytro Dashenkov
  */
-public final class CodeGeneration {
+public final class Annotation {
 
     private static final AnnotationSpec GENERATED;
 
@@ -39,7 +39,7 @@ public final class CodeGeneration {
     private static final String GENERATED_FIELD_NAME = "value";
 
     static {
-        final CodeBlock generatedByDescription = CodeBlock.of("\"by Spine compiler\"");
+        final CodeBlock generatedByDescription = CodeBlock.of("\"by Spine Model Compiler\"");
         GENERATED = AnnotationSpec.builder(Generated.class)
                                   .addMember(GENERATED_FIELD_NAME, generatedByDescription)
                                   .build();
@@ -48,7 +48,7 @@ public final class CodeGeneration {
     /**
      * The {@code private} constructor prevents the utility class instantiation.
      */
-    private CodeGeneration() {
+    private Annotation() {
     }
 
     /**
