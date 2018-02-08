@@ -26,38 +26,35 @@ import com.squareup.javapoet.CodeBlock;
 import javax.annotation.Generated;
 
 /**
- * A factory for the commonly used Java source specs.
+ * A factory for Java annotation specs.
  *
  * @author Dmytro Dashenkov
  */
-public final class Annotation {
-
-    private static final AnnotationSpec GENERATED;
+public final class Annotations {
 
     @SuppressWarnings("DuplicateStringLiteralInspection")
         // Each occurrence has a different semantics.
     private static final String GENERATED_FIELD_NAME = "value";
 
-    static {
-        final CodeBlock generatedByDescription = CodeBlock.of("\"by Spine Model Compiler\"");
-        GENERATED = AnnotationSpec.builder(Generated.class)
-                                  .addMember(GENERATED_FIELD_NAME, generatedByDescription)
-                                  .build();
-    }
+    private static final AnnotationSpec GENERATED =
+            AnnotationSpec.builder(Generated.class)
+                          .addMember(GENERATED_FIELD_NAME,
+                                     CodeBlock.of("\"by Spine Model Compiler\""))
+                          .build();
 
     /**
-     * Constructor prevents the utility class instantiation.
+     * Prevents the utility class instantiation.
      */
-    private Annotation() {
+    private Annotations() {
     }
 
     /**
-     * Generates {@code \@Generated("by Spine compiler")} annotation spec.
+     * Generates {@code \@Generated("by Spine Model Compiler")} annotation spec.
      *
      * @return an {@link AnnotationSpec} describing the {@link Generated javax.annotation.Generated}
      *         annotation
      */
-    public static AnnotationSpec generatedAnnotation() {
+    public static AnnotationSpec generatedBySpineModelCompiler() {
         return GENERATED;
     }
 }

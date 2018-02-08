@@ -27,7 +27,7 @@ import com.squareup.javapoet.TypeSpec;
 import javax.annotation.Generated;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.Annotation.generatedAnnotation;
+import static io.spine.tools.Annotations.generatedBySpineModelCompiler;
 import static javax.lang.model.element.Modifier.PUBLIC;
 
 /**
@@ -57,7 +57,7 @@ final class MarkerInterfaces {
         final TypeSpec spec = TypeSpec.interfaceBuilder(typeName)
                                       .addSuperinterface(Message.class)
                                       .addModifiers(PUBLIC)
-                                      .addAnnotation(generatedAnnotation())
+                                      .addAnnotation(generatedBySpineModelCompiler())
                                       .build();
         final JavaFile javaFile = JavaFile.builder(packageName, spec)
                                           .build();

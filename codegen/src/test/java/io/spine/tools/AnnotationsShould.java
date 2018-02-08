@@ -36,12 +36,12 @@ public class AnnotationsShould {
 
     @Test
     public void have_util_ctor() {
-        assertHasPrivateParameterlessCtor(Annotation.class);
+        assertHasPrivateParameterlessCtor(Annotations.class);
     }
 
     @Test
     public void return_generated_annotation_spec() {
-        final AnnotationSpec spec = Annotation.generatedAnnotation();
+        final AnnotationSpec spec = Annotations.generatedBySpineModelCompiler();
         assertEquals(spec.type, TypeName.get(Generated.class));
     }
 }
