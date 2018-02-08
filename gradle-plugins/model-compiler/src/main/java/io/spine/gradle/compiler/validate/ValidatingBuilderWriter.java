@@ -28,7 +28,6 @@ import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeSpec;
 import io.spine.gradle.compiler.Indent;
 import io.spine.gradle.compiler.message.MessageTypeCache;
-import io.spine.tools.CodeGeneration;
 import io.spine.validate.AbstractValidatingBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +37,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
-import static io.spine.gradle.compiler.util.JavaCode.constructGeneratedAnnotation;
 import static io.spine.gradle.compiler.util.JavaSources.getBuilderClassName;
 import static io.spine.gradle.compiler.validate.ClassNames.getValidatorMessageClassName;
 import static io.spine.tools.CodeGeneration.generatedAnnotation;
