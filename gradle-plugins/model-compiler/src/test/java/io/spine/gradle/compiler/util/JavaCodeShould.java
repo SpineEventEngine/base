@@ -20,14 +20,9 @@
 package io.spine.gradle.compiler.util;
 
 import com.google.common.testing.NullPointerTester;
-import com.squareup.javapoet.AnnotationSpec;
-import com.squareup.javapoet.TypeName;
 import io.spine.type.RejectionMessage;
 import org.junit.Test;
 
-import javax.annotation.Generated;
-
-import static io.spine.gradle.compiler.util.JavaCode.constructGeneratedAnnotation;
 import static io.spine.gradle.compiler.util.JavaCode.toJavaFieldName;
 import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
 import static org.junit.Assert.assertEquals;
@@ -70,11 +65,5 @@ public class JavaCodeShould {
     public void pass_null_tolerance_check() {
         new NullPointerTester().testStaticMethods(JavaCode.class,
                                                   NullPointerTester.Visibility.PACKAGE);
-    }
-
-    @Test
-    public void return_generated_annotation_spec() {
-        final AnnotationSpec spec = constructGeneratedAnnotation();
-        assertEquals(spec.type, TypeName.get(Generated.class));
     }
 }

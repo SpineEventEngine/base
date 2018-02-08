@@ -37,9 +37,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
-import static io.spine.gradle.compiler.util.JavaCode.constructGeneratedAnnotation;
 import static io.spine.gradle.compiler.util.JavaSources.getBuilderClassName;
 import static io.spine.gradle.compiler.validate.ClassNames.getValidatorMessageClassName;
+import static io.spine.tools.Annotations.generatedBySpineModelCompiler;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 
 /**
@@ -85,7 +85,7 @@ class ValidatingBuilderWriter {
                                    messageClassName,
                                    messageBuilderClassName,
                                    methodsAssembler.createMethods())
-                        .addAnnotation(constructGeneratedAnnotation())
+                        .addAnnotation(generatedBySpineModelCompiler())
                         .build();
 
         log().debug("Writing the {} class under the {} package",

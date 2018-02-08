@@ -20,9 +20,6 @@
 package io.spine.gradle.compiler.util;
 
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
-import com.squareup.javapoet.AnnotationSpec;
-
-import javax.annotation.Generated;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -112,20 +109,5 @@ public class JavaCode {
             resultName = Character.toUpperCase(resultName.charAt(0)) + resultName.substring(1);
         }
         return resultName;
-    }
-
-    /**
-     * Constructs the {@code AnnotationSpec} for the {@code Generated} class.
-     *
-     * @return the constructed {@code AnnotationSpec} instance
-     */
-    @SuppressWarnings("DuplicateStringLiteralInspection")
-    /* The "value" string cannot be used as the constant across the project.
-       Although it has the equivalent literal they have the different meaning. */
-    public static AnnotationSpec constructGeneratedAnnotation() {
-        final AnnotationSpec result = AnnotationSpec.builder(Generated.class)
-                                                    .addMember("value", "$S", "by Spine compiler")
-                                                    .build();
-        return result;
     }
 }
