@@ -59,36 +59,33 @@ public final class CodePaths {
     /**
      * Obtains the generated file {@link Path} for the specified message descriptor.
      *
-     * @param  messageDescriptor
+     * @param  message
      *         the message descriptor to get path
-     * @param  messageOrBuilder
+     * @param  orBuilder
      *         indicates if a {@code MessageOrBuilder} path for the message should be returned
      * @param  file
      *         the file descriptor containing the message descriptor
      * @return the relative file path
      */
-    public static Path getFile(DescriptorProto messageDescriptor,
-                               boolean messageOrBuilder,
+    public static Path getFile(DescriptorProto message,
+                               boolean orBuilder,
                                FileDescriptorProto file) {
         checkNotNull(file);
-        checkNotNull(messageDescriptor);
-        final String typeName = messageDescriptor.getName();
+        checkNotNull(message);
+        final String typeName = message.getName();
         if (!file.getMessageTypeList()
-                           .contains(messageDescriptor)) {
+                           .contains(message)) {
             throw invalidNestedDefinition(file.getName(), typeName);
         }
 
         if (!file.getOptions()
-                           .hasJavaMultipleFiles()) {
+                 .hasJavaMultipleFiles()) {
             return getFile(file);
         }
 
         final Path folderPath = getFolder(file);
-
-        final String filename;
-        filename = messageOrBuilder
-                   ? typeName + SimpleClassName.OR_BUILDER_SUFFIX + FileName.EXTENSION
-                   : typeName + FileName.EXTENSION;
+        final String filename = FileName.forMessage(message, orBuilder)
+                                        .value();
         return folderPath.resolve(filename);
     }
 
@@ -103,7 +100,7 @@ public final class CodePaths {
         checkNotNull(file);
         checkNotNull(enumType);
         if (!file.getEnumTypeList()
-                           .contains(enumType)) {
+                 .contains(enumType)) {
             throw invalidNestedDefinition(file.getName(), enumType.getName());
         }
 

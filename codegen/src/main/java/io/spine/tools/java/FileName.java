@@ -20,6 +20,7 @@
 
 package io.spine.tools.java;
 
+import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.EnumDescriptorProto;
 import com.google.protobuf.DescriptorProtos.ServiceDescriptorProto;
 import io.spine.type.StringTypeValue;
@@ -48,12 +49,34 @@ public final class FileName extends StringTypeValue {
     }
 
     /**
+     * Obtains file name for the specified message.
+     *
+     * @param message
+     *        a descriptor of the message
+     * @param orBuilder
+     *        if {@code true} the file would represent a descendant of
+     *        {@link com.google.protobuf.MessageOrBuilder MessageOrBuilder}
+     * @return new instance
+     */
+    public static FileName forMessage(DescriptorProto message, boolean orBuilder) {
+        final String typeName = message.getName();
+        final String javaType = orBuilder
+                ? SimpleClassName.messageOrBuilder(typeName).value()
+                : typeName;
+        final FileName result = forType(javaType);
+        return result;
+    }
+
+    /**
      * Obtains file name for the passed enum.
      */
     public static FileName forEnum(EnumDescriptorProto enumType) {
         return forType(enumType.getName());
     }
 
+    /**
+     * Obtains file name for the specified service.
+     */
     public static FileName forService(ServiceDescriptorProto service) {
         return forType(service.getName() + GRPC_CLASSNAME_SUFFIX);
     }
