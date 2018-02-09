@@ -20,7 +20,10 @@
 
 package io.spine.tools.proto;
 
+import com.google.common.collect.ImmutableList;
 import io.spine.type.StringTypeValue;
+
+import java.util.List;
 
 import static io.spine.tools.CodePreconditions.checkNotEmptyOrBlank;
 
@@ -38,20 +41,35 @@ public final class FileName extends StringTypeValue {
     }
 
     /**
+     * Creates new proto file name with the passed value.
+     */
+    public static FileName of(String value) {
+        checkNotEmptyOrBlank(value);
+        return new FileName(value);
+    }
+
+    /**
+     * Obtains immutable list of words used in the name of the file.
+     */
+    public List<String> words() {
+        final String[] words = value().split(WORD_SEPARATOR);
+        final ImmutableList<String> result = ImmutableList.copyOf(words);
+        return result;
+    }
+
+    /**
      * Transforms the string with a file name with underscores into a camel-case name.
      */
     public static String toCamelCase(String fileName) {
         checkNotEmptyOrBlank(fileName);
         final StringBuilder result = new StringBuilder(fileName.length());
-
-        for (final String word : fileName.split(WORD_SEPARATOR)) {
+        for (final String word : of(fileName).words()) {
             if (!word.isEmpty()) {
                 result.append(Character.toUpperCase(word.charAt(0)));
                 result.append(word.substring(1)
                                   .toLowerCase());
             }
         }
-
         return result.toString();
     }
 }

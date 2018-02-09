@@ -20,9 +20,13 @@
 
 package io.spine.tools.proto;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.testing.NullPointerTester;
 import org.junit.Test;
 
+import java.util.List;
+
+import static io.spine.tools.proto.FileName.toCamelCase;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -36,11 +40,18 @@ public class FileNameShould {
                                                   NullPointerTester.Visibility.PACKAGE);
     }
 
+    @Test
+    public void return_words() {
+        final List<String> words = FieldName.of("some_proto_file_name").words();
+
+        assertEquals(ImmutableList.of("some", "proto", "file", "name"), words);
+    }
+
     @SuppressWarnings("DuplicateStringLiteralInspection")
     @Test
     public void calculate_outer_class_name() {
-        assertEquals("Rejections", FileName.toCamelCase("rejections"));
-        assertEquals("ManyRejections", FileName.toCamelCase("many_rejections"));
-        assertEquals("ManyMoreRejections", FileName.toCamelCase("many_more_rejections"));
+        assertEquals("Rejections", toCamelCase("rejections"));
+        assertEquals("ManyRejections", toCamelCase("many_rejections"));
+        assertEquals("ManyMoreRejections", toCamelCase("many_more_rejections"));
     }
 }
