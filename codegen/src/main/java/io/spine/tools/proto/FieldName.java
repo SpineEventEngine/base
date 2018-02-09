@@ -58,26 +58,6 @@ public final class FieldName extends StringTypeValue implements UnderscoredName 
         return new FieldName(field.getName());
     }
 
-    //TODO:2018-02-10:alexander.yevsyukov: Eliminate this method in favor of MethodName class.
-    /**
-     * Transforms Protobuf-style field name into a {@code CamelCase} name.
-     *
-     * <p>For example, "seat_assignment_id" becomes "SeatAssignmentId"
-     *
-     * @param protoFieldName  Protobuf field name
-     * @param capitalizeFirst indicates if the first letter should be capitalized
-     * @return a field name
-     */
-    public static String toCamelCase(String protoFieldName, boolean capitalizeFirst) {
-        checkNotEmptyOrBlank(protoFieldName);
-
-        String result = of(protoFieldName).toCamelCase();
-        if (!capitalizeFirst) {
-            result = Character.toLowerCase(result.charAt(0)) + result.substring(1);
-        }
-        return result;
-    }
-
     /**
      * Obtains immutable list of words used in the name of the field.
      */

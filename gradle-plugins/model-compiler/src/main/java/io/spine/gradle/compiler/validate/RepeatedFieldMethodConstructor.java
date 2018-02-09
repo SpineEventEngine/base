@@ -53,7 +53,6 @@ import static io.spine.gradle.compiler.validate.MethodConstructors.getMessageBui
 import static io.spine.gradle.compiler.validate.MethodConstructors.rawSuffix;
 import static io.spine.gradle.compiler.validate.MethodConstructors.removePrefix;
 import static io.spine.gradle.compiler.validate.MethodConstructors.returnThis;
-import static io.spine.tools.proto.FieldName.toCamelCase;
 import static java.lang.String.format;
 
 /**
@@ -259,8 +258,7 @@ class RepeatedFieldMethodConstructor implements MethodConstructor {
     }
 
     private MethodSpec createRawAddAllMethod() {
-        final String rawMethodName = fieldType.getSetterPrefix() + rawSuffix() + methodNamePart;
-        final String methodName = toCamelCase(rawMethodName, false);
+        final String methodName = fieldType.getSetterPrefix() + rawSuffix() + methodNamePart;
         final String descriptorCodeLine = createDescriptorStatement(fieldIndex,
                                                                     builderGenericClassName);
         final String addAllValues = getMessageBuilder()
