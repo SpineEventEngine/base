@@ -25,9 +25,7 @@ import com.google.protobuf.DescriptorProtos.EnumDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.ServiceDescriptorProto;
 
-import java.io.File;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
@@ -40,7 +38,6 @@ import static java.lang.String.format;
  */
 public final class CodePaths {
 
-    public static final String PACKAGE_DELIMITER = ".";
     private static final String OR_BUILDER_SUFFIX = "OrBuilder";
     private static final String GRPC_CLASSNAME_SUFFIX = "Grpc";
 
@@ -160,12 +157,17 @@ public final class CodePaths {
     private static Path getFolder(FileDescriptorProto file) {
         checkNotNull(file);
         final PackageName packageName = PackageName.resolve(file);
-        final String packageDir = packageName.value()
-                                             .replace('.', File.separatorChar);
-        return Paths.get(packageDir);
+        final Path result = packageName.toFolder();
+        return result;
     }
 
+    /**
+     * Obtains a file name for the source code file of the give type in the passed package.
+     */
     public static String toFileName(String javaPackage, String typename) {
-        return (javaPackage + PACKAGE_DELIMITER + typename).replace('.', '/') + FILE_EXTENSION;
+        final Path filePath = PackageName.of(javaPackage)
+                                         .toFolder()
+                                         .resolve(typename + FILE_EXTENSION);
+        return filePath.toString();
     }
 }

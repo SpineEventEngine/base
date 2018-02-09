@@ -23,7 +23,12 @@ package io.spine.tools.java;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.type.StringTypeValue;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static io.spine.tools.CodePreconditions.checkNotEmptyOrBlank;
 
 /**
  * A Java package name.
@@ -32,8 +37,23 @@ import static com.google.common.base.Strings.isNullOrEmpty;
  */
 public final class PackageName extends StringTypeValue {
 
+    private static final char DELIMITER_CHAR = '.';
+    public static final String DELIMITER = String.valueOf(DELIMITER_CHAR);
+
     private PackageName(String value) {
         super(value);
+    }
+
+    /**
+     * Creates instance for the passed package name.
+     *
+     * @param value package name, which cannot be empty or blank
+     * @return new instance
+     */
+    public static PackageName of(String value) {
+        checkNotEmptyOrBlank(value);
+        final PackageName result = new PackageName(value);
+        return result;
     }
 
     /**
@@ -52,5 +72,14 @@ public final class PackageName extends StringTypeValue {
             javaPackage = file.getPackage();
         }
         return javaPackage;
+    }
+
+    /**
+     * Obtains file system folder path for the package.
+     */
+    public Path toFolder() {
+        final String packageDir = value().replace(DELIMITER_CHAR, File.separatorChar);
+        final Path result = Paths.get(packageDir);
+        return result;
     }
 }

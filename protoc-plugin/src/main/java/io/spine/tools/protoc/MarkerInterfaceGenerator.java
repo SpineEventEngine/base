@@ -41,7 +41,7 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.ImmutableSet.of;
 import static io.spine.option.OptionsProto.everyIs;
 import static io.spine.option.OptionsProto.is;
-import static io.spine.tools.java.CodePaths.PACKAGE_DELIMITER;
+import static io.spine.tools.java.PackageName.DELIMITER;
 import static io.spine.tools.protoc.MarkerInterfaces.create;
 import static java.lang.String.format;
 
@@ -145,7 +145,7 @@ public class MarkerInterfaceGenerator extends SpineProtoGenerator {
                                               .value();
         final File.Builder srcFile = prepareFile(fileName, javaPackage);
         final MarkerInterfaceSpec interfaceSpec = prepareInterfaceFqn(optionValue, file);
-        final String messageFqn = file.getPackage() + PACKAGE_DELIMITER + msg.getName();
+        final String messageFqn = file.getPackage() + DELIMITER + msg.getName();
         final File messageFile = implementInterface(srcFile,
                                                     interfaceSpec.getFqn(),
                                                     messageFqn);
@@ -218,7 +218,7 @@ public class MarkerInterfaceGenerator extends SpineProtoGenerator {
     private static MarkerInterfaceSpec prepareInterfaceFqn(String optionValue,
                                                            FileDescriptorProto srcFile) {
         final MarkerInterfaceSpec spec;
-        if (optionValue.contains(PACKAGE_DELIMITER)) {
+        if (optionValue.contains(DELIMITER)) {
             spec = MarkerInterfaceSpec.from(optionValue);
         } else {
             final String javaPackage = PackageName.resolve(srcFile)
@@ -267,7 +267,7 @@ public class MarkerInterfaceGenerator extends SpineProtoGenerator {
          * Parses a {@code MarkerInterfaceSpec} from the given type fully qualified name.
          */
         private static MarkerInterfaceSpec from(String fullName) {
-            final int index = fullName.lastIndexOf(PACKAGE_DELIMITER);
+            final int index = fullName.lastIndexOf(DELIMITER);
             final String name = fullName.substring(index + 1);
             final String packageName = fullName.substring(0, index);
             return new MarkerInterfaceSpec(packageName, name);
@@ -282,7 +282,7 @@ public class MarkerInterfaceGenerator extends SpineProtoGenerator {
         }
 
         public String getFqn() {
-            return packageName + PACKAGE_DELIMITER + name;
+            return packageName + DELIMITER + name;
         }
 
         @Override
