@@ -130,7 +130,7 @@ public final class CodePaths {
         checkNotNull(file);
         final String serviceType = service.getName();
         if (!file.getServiceList()
-                           .contains(service)) {
+                 .contains(service)) {
             throw invalidNestedDefinition(file.getName(), serviceType);
         }
 
