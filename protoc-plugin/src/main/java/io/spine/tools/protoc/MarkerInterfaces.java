@@ -27,7 +27,7 @@ import com.squareup.javapoet.TypeSpec;
 import javax.annotation.Generated;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.Annotations.generatedBySpineModelCompiler;
+import static io.spine.tools.java.Annotations.generatedBySpineModelCompiler;
 import static javax.lang.model.element.Modifier.PUBLIC;
 
 /**

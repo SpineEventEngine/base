@@ -39,7 +39,7 @@ import java.nio.file.Files;
 
 import static io.spine.gradle.compiler.util.JavaSources.getBuilderClassName;
 import static io.spine.gradle.compiler.validate.ClassNames.getValidatorMessageClassName;
-import static io.spine.tools.Annotations.generatedBySpineModelCompiler;
+import static io.spine.tools.java.Annotations.generatedBySpineModelCompiler;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 
 /**
