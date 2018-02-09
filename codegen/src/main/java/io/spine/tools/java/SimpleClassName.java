@@ -25,6 +25,7 @@ import io.spine.tools.proto.FileName;
 import io.spine.type.StringTypeValue;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.tools.CodePreconditions.checkNotEmptyOrBlank;
 
 /**
  * A {@link Class#getSimpleName() simple name} of a class.
@@ -34,6 +35,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public final class SimpleClassName extends StringTypeValue {
 
     private static final SimpleClassName BUILDER_CLASS_NAME = new SimpleClassName("Builder");
+
+    static final String OR_BUILDER_SUFFIX = "OrBuilder";
 
     private SimpleClassName(String value) {
         super(value);
@@ -92,8 +95,18 @@ public final class SimpleClassName extends StringTypeValue {
         return BUILDER_CLASS_NAME;
     }
 
+    /**
+     * Obtains class name for {@link com.google.protobuf.MessageOrBuilder MessageOrBuilder}
+     * descendant for the passed message type.
+     */
+    public static SimpleClassName messageOrBuilder(String typeName) {
+         checkNotEmptyOrBlank(typeName);
+        final SimpleClassName result = new SimpleClassName(typeName + OR_BUILDER_SUFFIX);
+         return result;
+    }
+
     /** Obtains the name for a file of the class. */
     public String toFileName() {
-        return value() + CodePaths.FILE_EXTENSION;
+        return value() + io.spine.tools.java.FileName.EXTENSION;
     }
 }

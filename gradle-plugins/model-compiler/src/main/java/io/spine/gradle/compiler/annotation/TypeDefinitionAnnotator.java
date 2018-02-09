@@ -25,6 +25,7 @@ import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.GeneratedMessageV3.ExtendableMessage;
 import io.spine.tools.java.CodePaths;
+import io.spine.tools.java.SimpleClassName;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.jboss.forge.roaster.model.source.JavaSource;
@@ -36,7 +37,6 @@ import java.util.Collection;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.java.CodePaths.getOrBuilderSuffix;
 import static java.lang.String.format;
 
 /**
@@ -78,9 +78,9 @@ abstract class TypeDefinitionAnnotator<L extends ExtendableMessage, D extends Ge
                         final JavaSource message = findNestedType(input, messageName);
                         addAnnotation(message);
 
-                        final String messageOrBuilderName = messageName + getOrBuilderSuffix();
-                        final JavaSource messageOrBuilder =
-                                findNestedType(input, messageOrBuilderName);
+                        final String javaType = SimpleClassName.messageOrBuilder(messageName)
+                                                               .value();
+                        final JavaSource messageOrBuilder = findNestedType(input, javaType);
                         addAnnotation(messageOrBuilder);
                     }
                 }

@@ -38,11 +38,6 @@ import static java.lang.String.format;
  */
 public final class CodePaths {
 
-    private static final String OR_BUILDER_SUFFIX = "OrBuilder";
-    private static final String GRPC_CLASSNAME_SUFFIX = "Grpc";
-
-    static final String FILE_EXTENSION = ".java";
-
     /** Prevent instantiation of this utility class. */
     private CodePaths() {
     }
@@ -92,8 +87,8 @@ public final class CodePaths {
 
         final String filename;
         filename = messageOrBuilder
-                   ? typeName + OR_BUILDER_SUFFIX + FILE_EXTENSION
-                   : typeName + FILE_EXTENSION;
+                   ? typeName + SimpleClassName.OR_BUILDER_SUFFIX + FileName.EXTENSION
+                   : typeName + FileName.EXTENSION;
         return folderPath.resolve(filename);
     }
 
@@ -118,7 +113,8 @@ public final class CodePaths {
         }
 
         final Path folderPath = getFolder(file);
-        final String filename = enumType.getName() + FILE_EXTENSION;
+        final String filename = FileName.forEnum(enumType)
+                                        .value();
         return folderPath.resolve(filename);
     }
 
@@ -132,7 +128,8 @@ public final class CodePaths {
         }
 
         final Path folderPath = getFolder(file);
-        final String filename = serviceType + GRPC_CLASSNAME_SUFFIX + FILE_EXTENSION;
+        final String filename = FileName.forService(service)
+                                        .value();
         return folderPath.resolve(filename);
     }
 
@@ -141,10 +138,6 @@ public final class CodePaths {
         final String errMsg = format("`%s` does not contain nested definition `%s`.",
                                      filename, nestedDefinitionName);
         throw new IllegalStateException(errMsg);
-    }
-
-    public static String getOrBuilderSuffix() {
-        return OR_BUILDER_SUFFIX;
     }
 
     /**
@@ -167,7 +160,7 @@ public final class CodePaths {
     public static String toFileName(String javaPackage, String typename) {
         final Path filePath = PackageName.of(javaPackage)
                                          .toFolder()
-                                         .resolve(typename + FILE_EXTENSION);
+                                         .resolve(typename + FileName.EXTENSION);
         return filePath.toString();
     }
 }

@@ -25,6 +25,7 @@ import io.spine.type.StringTypeValue;
 import java.util.Iterator;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.tools.CodePreconditions.checkNotEmptyOrBlank;
 
 /**
  * A name of a field declared in a Java class.
@@ -70,7 +71,7 @@ public final class FieldName extends StringTypeValue {
      * @return a field name
      */
     public static String toJavaFieldName(String protoFieldName, boolean capitalizeFirst) {
-        checkNotNull(protoFieldName);
+        checkNotEmptyOrBlank(protoFieldName);
 
         final FieldName javaField = from(io.spine.tools.proto.FieldName.of(protoFieldName));
 
