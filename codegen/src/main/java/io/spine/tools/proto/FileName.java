@@ -21,10 +21,12 @@
 package io.spine.tools.proto;
 
 import com.google.common.collect.ImmutableList;
+import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.type.StringTypeValue;
 
 import java.util.List;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.CodePreconditions.checkNotEmptyOrBlank;
 
 /**
@@ -34,7 +36,14 @@ import static io.spine.tools.CodePreconditions.checkNotEmptyOrBlank;
  */
 public final class FileName extends StringTypeValue {
 
+    /** Proto file names use underscores to separate words. */
     private static final String WORD_SEPARATOR = "_";
+
+    /** The standard file extension. */
+    private static final String EXTENSION = ".proto";
+
+    /** The file system separator as defined by Protobuf. Not platform-dependant. */
+    private static final char PATH_SEPARATOR = '/';
 
     private FileName(String value) {
         super(value);
@@ -52,18 +61,37 @@ public final class FileName extends StringTypeValue {
      * Obtains immutable list of words used in the name of the file.
      */
     public List<String> words() {
-        final String[] words = value().split(WORD_SEPARATOR);
+        final String[] words = nameOnly().split(WORD_SEPARATOR);
         final ImmutableList<String> result = ImmutableList.copyOf(words);
         return result;
     }
 
     /**
-     * Transforms the string with a file name with underscores into a camel-case name.
+     * Obtains the file name from the passed descriptor.
      */
-    public static String toCamelCase(String fileName) {
-        checkNotEmptyOrBlank(fileName);
-        final StringBuilder result = new StringBuilder(fileName.length());
-        for (final String word : of(fileName).words()) {
+    public static FileName from(FileDescriptorProto descr) {
+        checkNotNull(descr);
+        final FileName result = of(descr.getName());
+        return result;
+    }
+
+    /**
+     * Obtains the file name without path and extension.
+     */
+    public String nameOnly() {
+        final String value = value();
+        final int lastBackslashIndex = value.lastIndexOf(PATH_SEPARATOR);
+        final int extensionIndex = value.lastIndexOf(EXTENSION);
+        final String result = value.substring(lastBackslashIndex + 1, extensionIndex);
+        return result;
+    }
+
+    /**
+     * Returns the file name without path and extension in the {@code CamelCase}.
+     */
+    public String nameOnlyCamelCase() {
+        final StringBuilder result = new StringBuilder(value().length());
+        for (final String word : words()) {
             if (!word.isEmpty()) {
                 result.append(Character.toUpperCase(word.charAt(0)));
                 result.append(word.substring(1)

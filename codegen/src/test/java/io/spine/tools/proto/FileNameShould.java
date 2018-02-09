@@ -26,7 +26,7 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static io.spine.tools.proto.FileName.toCamelCase;
+import static io.spine.tools.proto.FileName.of;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -50,8 +50,8 @@ public class FileNameShould {
     @SuppressWarnings("DuplicateStringLiteralInspection")
     @Test
     public void calculate_outer_class_name() {
-        assertEquals("Rejections", toCamelCase("rejections"));
-        assertEquals("ManyRejections", toCamelCase("many_rejections"));
-        assertEquals("ManyMoreRejections", toCamelCase("many_more_rejections"));
+        assertEquals("Rejections", of("rejections.proto").nameOnlyCamelCase());
+        assertEquals("ManyRejections", of("many_rejections.proto").nameOnlyCamelCase());
+        assertEquals("ManyMoreRejections", of("many_more_rejections.proto").nameOnlyCamelCase());
     }
 }

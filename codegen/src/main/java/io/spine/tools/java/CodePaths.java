@@ -51,8 +51,9 @@ public final class CodePaths {
     public static Path getFile(FileDescriptorProto file) {
         checkNotNull(file);
         final Path folderPath = getFolder(file);
-        final SimpleClassName className = SimpleClassName.outerOf(file);
-        final String filename = className.toFileName();
+        final String filename = SimpleClassName.outerOf(file)
+                                               .toFileName()
+                                               .value();
         return folderPath.resolve(filename);
     }
 
@@ -157,7 +158,8 @@ public final class CodePaths {
     public static String toFileName(String javaPackage, String typename) {
         final Path filePath = PackageName.of(javaPackage)
                                          .toFolder()
-                                         .resolve(typename + FileName.EXTENSION);
+                                         .resolve(FileName.forType(typename)
+                                                          .value());
         return filePath.toString();
     }
 }

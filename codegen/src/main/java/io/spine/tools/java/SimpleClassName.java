@@ -21,7 +21,6 @@
 package io.spine.tools.java;
 
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
-import io.spine.tools.proto.FileName;
 import io.spine.type.StringTypeValue;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -36,7 +35,7 @@ public final class SimpleClassName extends StringTypeValue {
 
     private static final SimpleClassName BUILDER_CLASS_NAME = new SimpleClassName("Builder");
 
-    static final String OR_BUILDER_SUFFIX = "OrBuilder";
+    private static final String OR_BUILDER_SUFFIX = "OrBuilder";
 
     private SimpleClassName(String value) {
         super(value);
@@ -61,12 +60,8 @@ public final class SimpleClassName extends StringTypeValue {
             return outerClassNameFromOptions;
         }
 
-        final String fullFileName = descriptor.getName();
-        final int lastBackslashIndex = fullFileName.lastIndexOf('/');
-        final int extensionIndex = descriptor.getName()
-                                             .lastIndexOf(".proto");
-        final String fileName = fullFileName.substring(lastBackslashIndex + 1, extensionIndex);
-        final String className = FileName.toCamelCase(fileName);
+        final String className = io.spine.tools.proto.FileName.from(descriptor)
+                                                              .nameOnlyCamelCase();
         return className;
     }
 
@@ -106,7 +101,8 @@ public final class SimpleClassName extends StringTypeValue {
     }
 
     /** Obtains the name for a file of the class. */
-    public String toFileName() {
-        return value() + io.spine.tools.java.FileName.EXTENSION;
+    public FileName toFileName() {
+        final FileName result = FileName.forType(value());
+        return result;
     }
 }
