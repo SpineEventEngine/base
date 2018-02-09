@@ -35,7 +35,7 @@ import static io.spine.tools.CodePreconditions.checkNotEmptyOrBlank;
 public final class FileName extends StringTypeValue {
 
     private static final String GRPC_CLASSNAME_SUFFIX = "Grpc";
-    static final String EXTENSION = ".java";
+    private static final String EXTENSION = ".java";
 
     private FileName(String value) {
         super(value);
