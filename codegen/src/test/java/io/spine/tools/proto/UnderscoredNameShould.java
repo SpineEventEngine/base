@@ -18,30 +18,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.java;
+package io.spine.tools.proto;
 
-import io.spine.type.StringTypeValue;
-
-import static com.google.common.base.Preconditions.checkNotNull;
+import io.spine.test.Tests;
+import org.junit.Test;
 
 /**
- * A name of a field declared in a Java class.
- * 
  * @author Alexander Yevsyukov
  */
-public final class FieldName extends StringTypeValue {
+public class UnderscoredNameShould {
 
-    private FieldName(String value) {
-        super(value);
+    @Test
+    public void have_utility_ctor_for_CamelCase() {
+        Tests.assertHasPrivateParameterlessCtor(UnderscoredName.CamelCase.class);
     }
 
-    /**
-     * Creates Java field name that corresponds to the passed Proto field name.
-     */
-    public static FieldName from(io.spine.tools.proto.FieldName protoField) {
-        checkNotNull(protoField);
-        final String fieldName = protoField.javaCase();
-        final FieldName result = new FieldName(fieldName);
-        return result;
-    }
 }

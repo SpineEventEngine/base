@@ -29,7 +29,7 @@ import java.net.URL;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
-import static io.spine.tools.java.FieldName.toJavaFieldName;
+import static io.spine.tools.proto.FieldName.toCamelCase;
 import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.lang.String.format;
 
@@ -84,7 +84,8 @@ class MethodConstructors {
      */
     static String createConvertSingularValue(String value) {
         checkNotNull(value);
-        final SoyMapData mapData = new SoyMapData("javaFieldName", toJavaFieldName(value, true),
+        //TODO:2018-02-10:alexander.yevsyukov: Why do we pass here `true`?
+        final SoyMapData mapData = new SoyMapData("javaFieldName", toCamelCase(value, true),
                                                   "valueToValidate", value);
         final String result = renderData(mapData, "io.spine.generation.convertedValueStatement");
         return result;

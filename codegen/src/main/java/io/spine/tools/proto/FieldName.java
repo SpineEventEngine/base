@@ -21,10 +21,12 @@
 package io.spine.tools.proto;
 
 import com.google.common.collect.ImmutableList;
+import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import io.spine.type.StringTypeValue;
 
 import java.util.List;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.CodePreconditions.checkNotEmptyOrBlank;
 
 /**
@@ -32,7 +34,7 @@ import static io.spine.tools.CodePreconditions.checkNotEmptyOrBlank;
  *
  * @author Alexander Yevsyukov
  */
-public final class FieldName extends StringTypeValue {
+public final class FieldName extends StringTypeValue implements UnderscoredName {
 
     private static final String WORD_SEPARATOR = "_";
 
@@ -49,11 +51,57 @@ public final class FieldName extends StringTypeValue {
     }
 
     /**
+     * Creates a field name for the passed descriptor.
+     */
+    public static FieldName of(FieldDescriptorProto field) {
+        checkNotNull(field);
+        return new FieldName(field.getName());
+    }
+
+    //TODO:2018-02-10:alexander.yevsyukov: Eliminate this method in favor of MethodName class.
+    /**
+     * Transforms Protobuf-style field name into a {@code CamelCase} name.
+     *
+     * <p>For example, "seat_assignment_id" becomes "SeatAssignmentId"
+     *
+     * @param protoFieldName  Protobuf field name
+     * @param capitalizeFirst indicates if the first letter should be capitalized
+     * @return a field name
+     */
+    public static String toCamelCase(String protoFieldName, boolean capitalizeFirst) {
+        checkNotEmptyOrBlank(protoFieldName);
+
+        String result = of(protoFieldName).toCamelCase();
+        if (!capitalizeFirst) {
+            result = Character.toLowerCase(result.charAt(0)) + result.substring(1);
+        }
+        return result;
+    }
+
+    /**
      * Obtains immutable list of words used in the name of the field.
      */
+    @Override
     public List<String> words() {
         final String[] words = value().split(WORD_SEPARATOR);
         final ImmutableList<String> result = ImmutableList.copyOf(words);
+        return result;
+    }
+
+    /**
+     * Obtains the field name in {@code CamelCase}.
+     */
+    public String toCamelCase() {
+        final String result = CamelCase.convert(this);
+        return result;
+    }
+
+    /**
+     * Obtains the field name in {@code javaCase}.
+     */
+    public String javaCase() {
+        final String camelCase = toCamelCase();
+        final String result = Character.toLowerCase(camelCase.charAt(0)) + camelCase.substring(1);
         return result;
     }
 }

@@ -31,6 +31,7 @@ import io.spine.base.ConversionException;
 import io.spine.gradle.compiler.message.MessageTypeCache;
 import io.spine.gradle.compiler.message.fieldtype.FieldType;
 import io.spine.gradle.compiler.message.fieldtype.ProtoScalarType;
+import io.spine.tools.proto.FieldName;
 import io.spine.validate.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,7 +53,7 @@ import static io.spine.gradle.compiler.validate.MethodConstructors.getMessageBui
 import static io.spine.gradle.compiler.validate.MethodConstructors.rawSuffix;
 import static io.spine.gradle.compiler.validate.MethodConstructors.removePrefix;
 import static io.spine.gradle.compiler.validate.MethodConstructors.returnThis;
-import static io.spine.tools.java.FieldName.toJavaFieldName;
+import static io.spine.tools.proto.FieldName.toCamelCase;
 import static java.lang.String.format;
 
 /**
@@ -99,8 +100,9 @@ class RepeatedFieldMethodConstructor implements MethodConstructor {
         this.fieldIndex = builder.getFieldIndex();
         this.fieldDescriptor = builder.getFieldDescriptor();
         this.builderGenericClassName = builder.getGenericClassName();
-        this.javaFieldName = toJavaFieldName(fieldDescriptor.getName(), false);
-        this.methodNamePart = toJavaFieldName(fieldDescriptor.getName(), true);
+        final FieldName fieldName = FieldName.of(fieldDescriptor);
+        this.javaFieldName = fieldName.javaCase();
+        this.methodNamePart = fieldName.toCamelCase();
         final String javaClass = builder.getJavaClass();
         final String javaPackage = builder.getJavaPackage();
         this.builderClassName = getClassName(javaPackage, javaClass);
@@ -258,7 +260,7 @@ class RepeatedFieldMethodConstructor implements MethodConstructor {
 
     private MethodSpec createRawAddAllMethod() {
         final String rawMethodName = fieldType.getSetterPrefix() + rawSuffix() + methodNamePart;
-        final String methodName = toJavaFieldName(rawMethodName, false);
+        final String methodName = toCamelCase(rawMethodName, false);
         final String descriptorCodeLine = createDescriptorStatement(fieldIndex,
                                                                     builderGenericClassName);
         final String addAllValues = getMessageBuilder()

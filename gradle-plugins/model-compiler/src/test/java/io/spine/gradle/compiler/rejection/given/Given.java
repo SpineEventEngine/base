@@ -27,7 +27,7 @@ import org.junit.rules.TemporaryFolder;
 import java.util.Arrays;
 
 import static io.spine.gradle.compiler.Extension.getDefaultMainGenSpineDir;
-import static io.spine.tools.java.FieldName.toJavaFieldName;
+import static io.spine.tools.proto.FieldName.toCamelCase;
 
 /**
  * @author Dmytro Grankin
@@ -95,8 +95,8 @@ public class Given {
 
     public static String getExpectedCtorComment() {
         final String param = " @param ";
-        final String firstFieldJavaName = toJavaFieldName(FIRST_FIELD_NAME, false);
-        final String secondFieldJavaName = toJavaFieldName(SECOND_FIELD_NAME, false);
+        final String firstFieldJavaName = toCamelCase(FIRST_FIELD_NAME, false);
+        final String secondFieldJavaName = toCamelCase(SECOND_FIELD_NAME, false);
         return " Creates a new instance." + JAVADOC_LINE_SEPARATOR + JAVADOC_LINE_SEPARATOR
                 + param + firstFieldJavaName + "                " + FIRST_FIELD_COMMENT
                 + JAVADOC_LINE_SEPARATOR

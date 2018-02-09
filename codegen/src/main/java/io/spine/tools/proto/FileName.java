@@ -34,10 +34,7 @@ import static io.spine.tools.CodePreconditions.checkNotEmptyOrBlank;
  *
  * @author Alexander Yevsyukov
  */
-public final class FileName extends StringTypeValue {
-
-    /** Proto file names use underscores to separate words. */
-    private static final String WORD_SEPARATOR = "_";
+public final class FileName extends StringTypeValue implements UnderscoredName {
 
     /** The standard file extension. */
     private static final String EXTENSION = ".proto";
@@ -60,6 +57,7 @@ public final class FileName extends StringTypeValue {
     /**
      * Obtains immutable list of words used in the name of the file.
      */
+    @Override
     public List<String> words() {
         final String[] words = nameOnly().split(WORD_SEPARATOR);
         final ImmutableList<String> result = ImmutableList.copyOf(words);
@@ -90,14 +88,7 @@ public final class FileName extends StringTypeValue {
      * Returns the file name without path and extension in the {@code CamelCase}.
      */
     public String nameOnlyCamelCase() {
-        final StringBuilder result = new StringBuilder(value().length());
-        for (final String word : words()) {
-            if (!word.isEmpty()) {
-                result.append(Character.toUpperCase(word.charAt(0)));
-                result.append(word.substring(1)
-                                  .toLowerCase());
-            }
-        }
-        return result.toString();
+        final String result = CamelCase.convert(this);
+        return result;
     }
 }

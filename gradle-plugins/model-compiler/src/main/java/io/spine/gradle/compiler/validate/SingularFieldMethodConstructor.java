@@ -28,6 +28,7 @@ import com.squareup.javapoet.ParameterSpec;
 import io.spine.base.ConversionException;
 import io.spine.gradle.compiler.message.MessageTypeCache;
 import io.spine.gradle.compiler.message.fieldtype.FieldType;
+import io.spine.tools.proto.FieldName;
 import io.spine.validate.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +45,6 @@ import static io.spine.gradle.compiler.validate.MethodConstructors.createValidat
 import static io.spine.gradle.compiler.validate.MethodConstructors.getMessageBuilder;
 import static io.spine.gradle.compiler.validate.MethodConstructors.rawSuffix;
 import static io.spine.gradle.compiler.validate.MethodConstructors.returnThis;
-import static io.spine.tools.java.FieldName.toJavaFieldName;
 import static java.lang.String.format;
 
 /**
@@ -87,14 +87,21 @@ class SingularFieldMethodConstructor implements MethodConstructor {
         final String javaClass = builder.getJavaClass();
         final String javaPackage = builder.getJavaPackage();
         this.builderClassName = ClassNames.getClassName(javaPackage, javaClass);
-        this.fieldName = toJavaFieldName(fieldDescriptor.getName(), false);
-        this.methodNamePart = toJavaFieldName(fieldName, true);
+        final FieldName fieldName = FieldName.of(fieldDescriptor);
+        this.fieldName = fieldName.javaCase();
+        this.methodNamePart = fieldName.toCamelCase();
     }
 
     @Override
     public Collection<MethodSpec> construct() {
-        final String javaFieldName = toJavaFieldName(fieldDescriptor.getName(), false);
-        log().trace("The method construction for the {} singular field is started.", javaFieldName);
+        final Logger log = log();
+        // The variable is used for tracing only.
+        final String javaFieldName = log.isTraceEnabled()
+                ? FieldName.of(fieldDescriptor)
+                           .javaCase()
+                : null;
+
+        log.trace("The method construction for the {} singular field is started.", javaFieldName);
         final List<MethodSpec> methods = newArrayList();
         methods.add(constructSetter());
 
@@ -104,8 +111,7 @@ class SingularFieldMethodConstructor implements MethodConstructor {
 
         methods.add(constructGetter());
         methods.add(constructClearMethods());
-        log().trace("The method construction for the {} singular field is finished.",
-                    javaFieldName);
+        log.trace("The method construction for the {} singular field is finished.", javaFieldName);
         return methods;
     }
 
@@ -199,9 +205,12 @@ class SingularFieldMethodConstructor implements MethodConstructor {
         return methodSpec;
     }
 
-    private ParameterSpec createParameterSpec(FieldDescriptorProto fieldDescriptor, boolean raw) {
-        final ClassName methodParamClass = raw ? ClassNames.getStringClassName() : fieldClassName;
-        final String paramName = toJavaFieldName(fieldDescriptor.getName(), false);
+    private ParameterSpec createParameterSpec(FieldDescriptorProto field, boolean raw) {
+        final ClassName methodParamClass = raw
+                ? ClassNames.getStringClassName()
+                : fieldClassName;
+        final String paramName = FieldName.of(field)
+                                          .javaCase();
         final ParameterSpec result = ParameterSpec.builder(methodParamClass, paramName)
                                                   .build();
         return result;

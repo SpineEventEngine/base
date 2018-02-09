@@ -18,30 +18,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.java;
+package io.spine.tools.proto;
 
-import io.spine.type.StringTypeValue;
+import org.junit.Test;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static org.junit.Assert.assertEquals;
 
 /**
- * A name of a field declared in a Java class.
- * 
  * @author Alexander Yevsyukov
  */
-public final class FieldName extends StringTypeValue {
+public class FieldNameShould {
 
-    private FieldName(String value) {
-        super(value);
+    private static final String PROTO_FIELD_NAME = "correct_java_name";
+
+    private final FieldName fieldName = FieldName.of(PROTO_FIELD_NAME);
+
+    @Test
+    public void return_correct_java_field_name() {
+        assertEquals("correctJavaName", fieldName.javaCase());
     }
 
-    /**
-     * Creates Java field name that corresponds to the passed Proto field name.
-     */
-    public static FieldName from(io.spine.tools.proto.FieldName protoField) {
-        checkNotNull(protoField);
-        final String fieldName = protoField.javaCase();
-        final FieldName result = new FieldName(fieldName);
-        return result;
+    @Test
+    public void return_correct_capitalized_java_name() {
+        assertEquals("CorrectJavaName", fieldName.toCamelCase());
     }
 }

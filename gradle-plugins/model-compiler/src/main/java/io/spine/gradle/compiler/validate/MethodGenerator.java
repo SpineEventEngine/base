@@ -27,6 +27,7 @@ import com.squareup.javapoet.MethodSpec;
 import io.spine.gradle.compiler.message.MessageTypeCache;
 import io.spine.gradle.compiler.message.fieldtype.FieldType;
 import io.spine.gradle.compiler.message.fieldtype.FieldTypeFactory;
+import io.spine.tools.proto.FieldName;
 
 import javax.lang.model.element.Modifier;
 import java.util.Collection;
@@ -35,7 +36,6 @@ import java.util.List;
 import static com.google.common.collect.Lists.newArrayList;
 import static io.spine.gradle.compiler.message.fieldtype.FieldTypes.isMap;
 import static io.spine.gradle.compiler.message.fieldtype.FieldTypes.isRepeated;
-import static io.spine.tools.java.FieldName.toJavaFieldName;
 
 /**
  * Serves as assembler for the generated methods based on the Protobuf message declaration.
@@ -55,7 +55,8 @@ class MethodGenerator {
         this.javaPackage = metadata.getJavaPackage();
         this.descriptor = metadata.getMsgDescriptor();
         this.messageTypeCache = messageTypeCache;
-        final String javaFieldName = toJavaFieldName(descriptor.getName(), false);
+        final String javaFieldName = FieldName.of(descriptor.getName())
+                                              .javaCase();
         builderGenericClassName = ClassNames.getValidatorMessageClassName(javaPackage,
                                                                           messageTypeCache,
                                                                           javaFieldName);

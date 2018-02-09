@@ -28,6 +28,7 @@ import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import io.spine.tools.java.CodePaths;
 import io.spine.tools.java.SimpleClassName;
+import io.spine.tools.proto.FieldName;
 import org.jboss.forge.roaster.model.JavaType;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
 import org.jboss.forge.roaster.model.source.FieldHolderSource;
@@ -44,7 +45,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Lists.newLinkedList;
 import static io.spine.gradle.compiler.annotation.TypeDefinitionAnnotator.findNestedType;
 import static io.spine.option.UnknownOptions.getUnknownOptionValue;
-import static io.spine.tools.java.FieldName.toJavaFieldName;
 import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.lang.String.format;
 
@@ -233,7 +233,8 @@ class FieldAnnotator extends Annotator<FieldOptions, FieldDescriptorProto> {
     private void annotateMessageField(JavaClassSource message,
                                       FieldDescriptorProto field,
                                       Iterable<String> skipFields) {
-        final String capitalizedFieldName = toJavaFieldName(field.getName(), true);
+        final String capitalizedFieldName = FieldName.of(field)
+                                                     .toCamelCase();
         final JavaClassSource messageBuilder = getBuilder(message);
 
         annotateAccessors(message, capitalizedFieldName, skipFields);
@@ -302,8 +303,8 @@ class FieldAnnotator extends Annotator<FieldOptions, FieldDescriptorProto> {
         final Collection<String> fieldNames = newLinkedList();
         for (FieldDescriptorProto fieldDescriptor : messageDescriptor.getFieldList()) {
             if (shouldAnnotate(fieldDescriptor)) {
-                final String capitalizedFieldName =
-                        toJavaFieldName(fieldDescriptor.getName(), true);
+                final String capitalizedFieldName = FieldName.of(fieldDescriptor)
+                                                             .toCamelCase();
                 fieldNames.add(capitalizedFieldName);
             }
         }

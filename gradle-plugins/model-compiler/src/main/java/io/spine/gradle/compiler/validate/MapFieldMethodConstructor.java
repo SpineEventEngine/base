@@ -46,7 +46,7 @@ import static io.spine.gradle.compiler.validate.MethodConstructors.getMessageBui
 import static io.spine.gradle.compiler.validate.MethodConstructors.rawSuffix;
 import static io.spine.gradle.compiler.validate.MethodConstructors.removePrefix;
 import static io.spine.gradle.compiler.validate.MethodConstructors.returnThis;
-import static io.spine.tools.java.FieldName.toJavaFieldName;
+import static io.spine.tools.proto.FieldName.toCamelCase;
 import static java.lang.String.format;
 
 /**
@@ -94,8 +94,8 @@ class MapFieldMethodConstructor implements MethodConstructor {
         this.fieldIndex = builder.getFieldIndex();
         final FieldDescriptorProto fieldDescriptor = builder.getFieldDescriptor();
         this.genericClassName = builder.getGenericClassName();
-        this.propertyName = toJavaFieldName(fieldDescriptor.getName(), true);
-        this.javaFieldName = toJavaFieldName(fieldDescriptor.getName(), false);
+        this.propertyName = toCamelCase(fieldDescriptor.getName(), true);
+        this.javaFieldName = toCamelCase(fieldDescriptor.getName(), false);
         final String javaClass = builder.getJavaClass();
         final String javaPackage = builder.getJavaPackage();
         this.builderClassName = ClassNames.getClassName(javaPackage, javaClass);
@@ -152,7 +152,7 @@ class MapFieldMethodConstructor implements MethodConstructor {
     }
 
     private MethodSpec createPutMethod() {
-        final String methodName = toJavaFieldName("put" + propertyName, false);
+        final String methodName = toCamelCase("put" + propertyName, false);
         final String descriptorCodeLine = createDescriptorStatement(fieldIndex, genericClassName);
         final String mapToValidate = MAP_TO_VALIDATE +
                 "$T.singletonMap(" + KEY + ", " + VALUE + ')';
@@ -177,7 +177,7 @@ class MapFieldMethodConstructor implements MethodConstructor {
     }
 
     private MethodSpec createPutRawMethod() {
-        final String methodName = toJavaFieldName("putRaw" + propertyName, false);
+        final String methodName = toCamelCase("putRaw" + propertyName, false);
         final String descriptorCodeLine = createDescriptorStatement(fieldIndex, genericClassName);
         final String mapToValidate = MAP_TO_VALIDATE +
                 "$T.singletonMap(convertedKey, convertedValue)";

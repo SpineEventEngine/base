@@ -23,35 +23,16 @@ package io.spine.tools.java;
 import com.google.common.testing.NullPointerTester;
 import org.junit.Test;
 
-import static io.spine.tools.java.FieldName.toJavaFieldName;
-import static org.junit.Assert.assertEquals;
-
 /**
  * @author Alexander Yevsyukov
  */
 public class FieldNameShould {
 
-    private static final String PROTO_FIELD_NAME = "correct_java_name";
-
     @Test
     public void pass_null_tolerance_check() {
         new NullPointerTester().setDefault(io.spine.tools.proto.FieldName.class,
                                            io.spine.tools.proto.FieldName.of("value"))
-                               .testStaticMethods(FieldName.class,
+                               .testStaticMethods(io.spine.tools.java.FieldName.class,
                                                   NullPointerTester.Visibility.PACKAGE);
-    }
-
-    @Test
-    public void return_correct_java_field_name() {
-        final String expected = "correctJavaName";
-        final String actual = toJavaFieldName(PROTO_FIELD_NAME, false);
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    public void return_correct_capitalized_java_name() {
-        final String expected = "CorrectJavaName";
-        final String actual = toJavaFieldName(PROTO_FIELD_NAME, true);
-        assertEquals(expected, actual);
     }
 }

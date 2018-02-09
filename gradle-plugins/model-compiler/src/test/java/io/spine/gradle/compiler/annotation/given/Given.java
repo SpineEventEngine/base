@@ -37,8 +37,8 @@ import javax.annotation.Nullable;
 import java.lang.annotation.Annotation;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.java.FieldName.toJavaFieldName;
 import static io.spine.tools.java.SimpleClassName.ofBuilder;
+import static io.spine.tools.proto.FieldName.toCamelCase;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
@@ -124,7 +124,7 @@ public class Given {
         }
 
         private void checkAccessorsAnnotation(JavaClassSource message) {
-            final String fieldName = toJavaFieldName(fieldDescriptor.getName(), true);
+            final String fieldName = toCamelCase(fieldDescriptor.getName(), true);
             for (MethodSource method : message.getMethods()) {
                 if (method.isPublic() && method.getName().contains(fieldName)) {
                     final AnnotationSource annotation = getAnnotation(method);
