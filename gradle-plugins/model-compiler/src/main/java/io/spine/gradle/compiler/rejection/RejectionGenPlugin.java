@@ -24,7 +24,7 @@ import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.gradle.SpinePlugin;
 import io.spine.gradle.compiler.message.MessageTypeCache;
-import io.spine.gradle.compiler.util.FileDescriptors;
+import io.spine.tools.FileDescriptors;
 import io.spine.tools.java.SimpleClassName;
 import org.gradle.api.Action;
 import org.gradle.api.Project;

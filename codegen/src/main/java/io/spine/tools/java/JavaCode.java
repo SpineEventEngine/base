@@ -19,8 +19,6 @@
  */
 package io.spine.tools.java;
 
-import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
-
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
