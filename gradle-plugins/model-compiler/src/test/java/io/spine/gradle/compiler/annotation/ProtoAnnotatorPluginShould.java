@@ -32,6 +32,7 @@ import io.spine.gradle.compiler.annotation.given.Given.MainDefinitionAnnotationV
 import io.spine.gradle.compiler.annotation.given.Given.NestedTypeFieldsAnnotationValidator;
 import io.spine.gradle.compiler.annotation.given.Given.NestedTypesAnnotationValidator;
 import io.spine.gradle.compiler.annotation.given.Given.SourceValidator;
+import io.spine.tools.java.JavaSources;
 import io.spine.tools.proto.FileDescriptors;
 import io.spine.util.Exceptions;
 import org.jboss.forge.roaster.Roaster;
@@ -55,7 +56,7 @@ import static io.spine.gradle.compiler.Extension.getDefaultMainGenDir;
 import static io.spine.gradle.compiler.Extension.getDefaultMainGenGrpcDir;
 import static io.spine.gradle.compiler.annotation.given.Given.NO_SPI_OPTIONS_FILENAME;
 import static io.spine.gradle.compiler.annotation.given.Given.NO_SPI_OPTIONS_MULTIPLE_FILENAME;
-import static io.spine.tools.java.JavaSources.getFilePath;
+import static io.spine.tools.java.JavaSources.getFile;
 import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.nio.file.Paths.get;
 
@@ -170,7 +171,7 @@ public class ProtoAnnotatorPluginShould {
         final FileDescriptorProto fileDescriptor = getDescriptor(testFile);
         final List<ServiceDescriptorProto> services = fileDescriptor.getServiceList();
         for (ServiceDescriptorProto serviceDescriptor : services) {
-            final Path messagePath = getFilePath(serviceDescriptor, fileDescriptor);
+            final Path messagePath = getFile(serviceDescriptor, fileDescriptor);
             validateGrpcService(messagePath,
                                 new MainDefinitionAnnotationValidator(shouldBeAnnotated));
         }
@@ -182,8 +183,8 @@ public class ProtoAnnotatorPluginShould {
 
         final FileDescriptorProto fileDescriptor = getDescriptor(testFile);
         final DescriptorProto messageDescriptor = fileDescriptor.getMessageType(0);
-        final Path sourcePath = getFilePath(messageDescriptor, false,
-                                            fileDescriptor);
+        final Path sourcePath = JavaSources.getFile(messageDescriptor, false,
+                                                    fileDescriptor);
         final NestedTypeFieldsAnnotationValidator validator =
                 new NestedTypeFieldsAnnotationValidator(messageDescriptor,
                                                         shouldBeAnnotated);
@@ -197,7 +198,7 @@ public class ProtoAnnotatorPluginShould {
         final FileDescriptorProto fileDescriptor = getDescriptor(testFile);
         final DescriptorProto messageDescriptor = fileDescriptor.getMessageType(0);
         final FieldDescriptorProto experimentalField = messageDescriptor.getField(0);
-        final Path sourcePath = getFilePath(messageDescriptor, false, fileDescriptor);
+        final Path sourcePath = JavaSources.getFile(messageDescriptor, false, fileDescriptor);
         validate(sourcePath, new FieldAnnotationValidator(experimentalField, shouldBeAnnotated));
     }
 
@@ -208,9 +209,9 @@ public class ProtoAnnotatorPluginShould {
         final FileDescriptorProto fileDescriptor = getDescriptor(testFile);
         for (DescriptorProto messageDescriptor : fileDescriptor.getMessageTypeList()) {
             final Path messagePath =
-                    getFilePath(messageDescriptor, false, fileDescriptor);
+                    JavaSources.getFile(messageDescriptor, false, fileDescriptor);
             final Path messageOrBuilderPath =
-                    getFilePath(messageDescriptor, true, fileDescriptor);
+                    JavaSources.getFile(messageDescriptor, true, fileDescriptor);
             final SourceValidator annotationValidator =
                     new MainDefinitionAnnotationValidator(shouldBeAnnotated);
             validate(messagePath, annotationValidator);
@@ -223,7 +224,7 @@ public class ProtoAnnotatorPluginShould {
         newProjectWithFile(testFile).executeTask(ANNOTATE_PROTO);
 
         final FileDescriptorProto fileDescriptor = getDescriptor(testFile);
-        final Path sourcePath = getFilePath(fileDescriptor);
+        final Path sourcePath = JavaSources.getFile(fileDescriptor);
         validate(sourcePath, new NestedTypesAnnotationValidator(shouldBeAnnotated));
     }
 

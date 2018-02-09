@@ -25,7 +25,9 @@ import com.google.protobuf.DescriptorProtos.EnumDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.ServiceDescriptorProto;
 
+import java.io.File;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
@@ -51,9 +53,9 @@ public class JavaSources {
      * @param file the proto file descriptor
      * @return the relative file path
      */
-    public static Path getFilePath(FileDescriptorProto file) {
+    public static Path getFile(FileDescriptorProto file) {
         checkNotNull(file);
-        final Path folderPath = JavaCode.getFolderPath(file);
+        final Path folderPath = getFolder(file);
         final SimpleClassName className = SimpleClassName.outerOf(file);
         final String filename = className.toFileName();
         return folderPath.resolve(filename);
@@ -66,27 +68,27 @@ public class JavaSources {
      *         the message descriptor to get path
      * @param  messageOrBuilder
      *         indicates if a {@code MessageOrBuilder} path for the message should be returned
-     * @param  fileDescriptor
+     * @param  file
      *         the file descriptor containing the message descriptor
      * @return the relative file path
      */
-    public static Path getFilePath(DescriptorProto messageDescriptor,
-                                   boolean messageOrBuilder,
-                                   FileDescriptorProto fileDescriptor) {
-        checkNotNull(fileDescriptor);
+    public static Path getFile(DescriptorProto messageDescriptor,
+                               boolean messageOrBuilder,
+                               FileDescriptorProto file) {
+        checkNotNull(file);
         checkNotNull(messageDescriptor);
         final String typeName = messageDescriptor.getName();
-        if (!fileDescriptor.getMessageTypeList()
+        if (!file.getMessageTypeList()
                            .contains(messageDescriptor)) {
-            throw invalidNestedDefinition(fileDescriptor.getName(), typeName);
+            throw invalidNestedDefinition(file.getName(), typeName);
         }
 
-        if (!fileDescriptor.getOptions()
+        if (!file.getOptions()
                            .hasJavaMultipleFiles()) {
-            return getFilePath(fileDescriptor);
+            return getFile(file);
         }
 
-        final Path folderPath = JavaCode.getFolderPath(fileDescriptor);
+        final Path folderPath = getFolder(file);
 
         final String filename;
         filename = messageOrBuilder
@@ -98,40 +100,38 @@ public class JavaSources {
     /**
      * Obtains the generated file {@link Path} for the specified enum descriptor.
      *
-     * @param enumDescriptor the enum descriptor to get path
-     * @param fileDescriptor the file descriptor containing the enum descriptor
+     * @param enumType the enum descriptor to get path
+     * @param file the file descriptor containing the enum descriptor
      * @return the relative file path
      */
-    public static Path getFilePath(EnumDescriptorProto enumDescriptor,
-                                   FileDescriptorProto fileDescriptor) {
-        checkNotNull(fileDescriptor);
-        checkNotNull(enumDescriptor);
-        if (!fileDescriptor.getEnumTypeList()
-                           .contains(enumDescriptor)) {
-            throw invalidNestedDefinition(fileDescriptor.getName(), enumDescriptor.getName());
+    public static Path getFile(EnumDescriptorProto enumType, FileDescriptorProto file) {
+        checkNotNull(file);
+        checkNotNull(enumType);
+        if (!file.getEnumTypeList()
+                           .contains(enumType)) {
+            throw invalidNestedDefinition(file.getName(), enumType.getName());
         }
 
-        if (!fileDescriptor.getOptions()
+        if (!file.getOptions()
                            .hasJavaMultipleFiles()) {
-            return getFilePath(fileDescriptor);
+            return getFile(file);
         }
 
-        final Path folderPath = JavaCode.getFolderPath(fileDescriptor);
-        final String filename = enumDescriptor.getName() + FILE_EXTENSION;
+        final Path folderPath = getFolder(file);
+        final String filename = enumType.getName() + FILE_EXTENSION;
         return folderPath.resolve(filename);
     }
 
-    public static Path getFilePath(ServiceDescriptorProto serviceDescriptor,
-                                   FileDescriptorProto fileDescriptor) {
-        checkNotNull(serviceDescriptor);
-        checkNotNull(fileDescriptor);
-        final String serviceType = serviceDescriptor.getName();
-        if (!fileDescriptor.getServiceList()
-                           .contains(serviceDescriptor)) {
-            throw invalidNestedDefinition(fileDescriptor.getName(), serviceType);
+    public static Path getFile(ServiceDescriptorProto service, FileDescriptorProto file) {
+        checkNotNull(service);
+        checkNotNull(file);
+        final String serviceType = service.getName();
+        if (!file.getServiceList()
+                           .contains(service)) {
+            throw invalidNestedDefinition(file.getName(), serviceType);
         }
 
-        final Path folderPath = JavaCode.getFolderPath(fileDescriptor);
+        final Path folderPath = getFolder(file);
         final String filename = serviceType + GRPC_CLASSNAME_SUFFIX + FILE_EXTENSION;
         return folderPath.resolve(filename);
     }
@@ -145,5 +145,20 @@ public class JavaSources {
 
     public static String getOrBuilderSuffix() {
         return OR_BUILDER_SUFFIX;
+    }
+
+    /**
+     * Obtains the {@link Path} to a folder, that contains
+     * a generated file from the file descriptor.
+     *
+     * @param file the proto file descriptor
+     * @return the relative folder path
+     */
+    public static Path getFolder(FileDescriptorProto file) {
+        checkNotNull(file);
+        final String javaPackage = file.getOptions()
+                                       .getJavaPackage();
+        final String packageDir = javaPackage.replace('.', File.separatorChar);
+        return Paths.get(packageDir);
     }
 }

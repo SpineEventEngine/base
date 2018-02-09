@@ -17,23 +17,24 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.gradle.compiler.util;
+
+package io.spine.tools.proto;
 
 import com.google.common.testing.NullPointerTester;
-import io.spine.tools.java.JavaCode;
-import io.spine.tools.proto.FileName;
 import org.junit.Test;
 
-import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
-import static io.spine.tools.java.FieldName.toJavaFieldName;
 import static org.junit.Assert.assertEquals;
 
 /**
  * @author Alexander Yevsyukov
  */
-public class JavaCodeShould {
+public class FileNameShould {
 
-    private static final String PROTO_FIELD_NAME = "correct_java_name";
+    @Test
+    public void pass_null_tolerance_check() {
+        new NullPointerTester().testStaticMethods(FileName.class,
+                                                  NullPointerTester.Visibility.PACKAGE);
+    }
 
     @SuppressWarnings("DuplicateStringLiteralInspection")
     @Test
@@ -41,30 +42,5 @@ public class JavaCodeShould {
         assertEquals("Rejections", FileName.toCamelCase("rejections"));
         assertEquals("ManyRejections", FileName.toCamelCase("many_rejections"));
         assertEquals("ManyMoreRejections", FileName.toCamelCase("many_more_rejections"));
-    }
-
-    @Test
-    public void return_correct_java_field_name() {
-        final String expected = "correctJavaName";
-        final String actual = toJavaFieldName(PROTO_FIELD_NAME, false);
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    public void return_correct_capitalized_java_name() {
-        final String expected = "CorrectJavaName";
-        final String actual = toJavaFieldName(PROTO_FIELD_NAME, true);
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    public void have_private_constructor() {
-        assertHasPrivateParameterlessCtor(JavaCode.class);
-    }
-
-    @Test
-    public void pass_null_tolerance_check() {
-        new NullPointerTester().testStaticMethods(JavaCode.class,
-                                                  NullPointerTester.Visibility.PACKAGE);
     }
 }

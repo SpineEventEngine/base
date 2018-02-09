@@ -26,6 +26,7 @@ import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileOptions;
 import com.google.protobuf.DescriptorProtos.ServiceDescriptorProto;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
+import io.spine.tools.java.JavaSources;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.jboss.forge.roaster.model.source.JavaSource;
@@ -36,8 +37,8 @@ import java.nio.file.Path;
 import java.util.Collection;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.java.JavaSources.getFilePath;
 import static io.spine.option.UnknownOptions.getUnknownOptionValue;
+import static io.spine.tools.java.JavaSources.getFile;
 
 /**
  * A file-level annotator.
@@ -91,7 +92,7 @@ class FileAnnotator extends Annotator<FileOptions, FileDescriptorProto> {
      * @see #annotateServices(FileDescriptorProto)
      */
     private void annotateNestedTypes(FileDescriptorProto fileDescriptor) {
-        final Path filePath = getFilePath(fileDescriptor);
+        final Path filePath = JavaSources.getFile(fileDescriptor);
         rewriteSource(filePath, new SourceVisitor<JavaClassSource>() {
             @Nullable
             @Override
@@ -115,12 +116,12 @@ class FileAnnotator extends Annotator<FileOptions, FileDescriptorProto> {
      */
     private void annotateMessages(FileDescriptorProto fileDescriptor) {
         for (DescriptorProto messageDescriptor : fileDescriptor.getMessageTypeList()) {
-            final Path messageFilePath = getFilePath(messageDescriptor, false,
-                                                     fileDescriptor);
+            final Path messageFilePath = JavaSources.getFile(messageDescriptor, false,
+                                                             fileDescriptor);
             rewriteSource(messageFilePath, new TypeDeclarationAnnotation());
 
-            final Path messageOrBuilderPath = getFilePath(messageDescriptor, true,
-                                                          fileDescriptor);
+            final Path messageOrBuilderPath = JavaSources.getFile(messageDescriptor, true,
+                                                                  fileDescriptor);
             rewriteSource(messageOrBuilderPath, new TypeDeclarationAnnotation());
         }
     }
@@ -135,7 +136,7 @@ class FileAnnotator extends Annotator<FileOptions, FileDescriptorProto> {
      */
     private void annotateEnums(FileDescriptorProto fileDescriptor) {
         for (EnumDescriptorProto enumDescriptor : fileDescriptor.getEnumTypeList()) {
-            final Path filePath = getFilePath(enumDescriptor, fileDescriptor);
+            final Path filePath = JavaSources.getFile(enumDescriptor, fileDescriptor);
             rewriteSource(filePath, new TypeDeclarationAnnotation());
         }
     }
@@ -151,7 +152,7 @@ class FileAnnotator extends Annotator<FileOptions, FileDescriptorProto> {
      */
     private void annotateServices(FileDescriptorProto fileDescriptor) {
         for (ServiceDescriptorProto serviceDescriptor : fileDescriptor.getServiceList()) {
-            final Path sourcePath = getFilePath(serviceDescriptor, fileDescriptor);
+            final Path sourcePath = getFile(serviceDescriptor, fileDescriptor);
             rewriteSource(genGrpcDir, sourcePath, new TypeDeclarationAnnotation());
         }
     }
