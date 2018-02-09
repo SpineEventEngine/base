@@ -28,6 +28,8 @@ import io.spine.type.StringTypeValue;
 import static io.spine.tools.CodePreconditions.checkNotEmptyOrBlank;
 
 /**
+ * A Java file name.
+ *
  * @author Alexander Yevsyukov
  */
 public final class FileName extends StringTypeValue {
