@@ -22,7 +22,6 @@ package io.spine.tools.java;
 
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.TypeName;
-import io.spine.tools.java.Annotations;
 import org.junit.Test;
 
 import javax.annotation.Generated;

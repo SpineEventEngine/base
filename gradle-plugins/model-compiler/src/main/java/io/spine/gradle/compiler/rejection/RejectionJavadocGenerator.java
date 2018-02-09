@@ -32,7 +32,7 @@ import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.SourceCodeInfo.Location;
 import io.spine.gradle.compiler.javadoc.JavadocEscaper;
 import io.spine.gradle.compiler.message.LocationPath;
-import io.spine.gradle.compiler.util.JavaCode;
+import io.spine.tools.java.JavaCode;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;

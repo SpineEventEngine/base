@@ -55,7 +55,7 @@ import static io.spine.gradle.compiler.Extension.getDefaultMainGenDir;
 import static io.spine.gradle.compiler.Extension.getDefaultMainGenGrpcDir;
 import static io.spine.gradle.compiler.annotation.given.Given.NO_SPI_OPTIONS_FILENAME;
 import static io.spine.gradle.compiler.annotation.given.Given.NO_SPI_OPTIONS_MULTIPLE_FILENAME;
-import static io.spine.gradle.compiler.util.JavaSources.getFilePath;
+import static io.spine.tools.java.JavaSources.getFilePath;
 import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.nio.file.Paths.get;
 

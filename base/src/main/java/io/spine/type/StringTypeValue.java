@@ -23,25 +23,35 @@ package io.spine.type;
 import javax.annotation.Nullable;
 import java.util.Objects;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * Abstract base for string value objects.
  *
  * @author Alexander Yevsyukov
  */
 @SuppressWarnings("AbstractClassWithoutAbstractMethods") // is OK for the value object base.
-abstract class StringTypeValue {
+public abstract class StringTypeValue {
     /* NOTE: the class has the 'Type' infix in the name to prevent the name clash with
        com.google.protobuf.StringValue. */
 
     private final String value;
 
-    StringTypeValue(String value) {
-        this.value = value;
+    protected StringTypeValue(String value) {
+        this.value = checkNotNull(value);
     }
 
     /** Returns the enclosed value. */
     public String value() {
         return value;
+    }
+
+    /**
+     * Returns {@code true} the length of the {@link #value() value} is zero,
+     * {@code false} otherwise.
+     */
+    public boolean isEmpty() {
+        return value.isEmpty();
     }
 
     @Override

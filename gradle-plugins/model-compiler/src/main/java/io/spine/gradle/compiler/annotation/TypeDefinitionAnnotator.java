@@ -35,8 +35,8 @@ import java.util.Collection;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.gradle.compiler.util.JavaSources.getFilePath;
-import static io.spine.gradle.compiler.util.JavaSources.getOrBuilderSuffix;
+import static io.spine.tools.java.JavaSources.getFilePath;
+import static io.spine.tools.java.JavaSources.getOrBuilderSuffix;
 import static java.lang.String.format;
 
 /**

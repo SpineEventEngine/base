@@ -20,9 +20,10 @@
 package io.spine.gradle.compiler.util;
 
 import com.google.common.testing.NullPointerTester;
+import io.spine.tools.java.JavaCode;
 import org.junit.Test;
 
-import static io.spine.gradle.compiler.util.JavaCode.toJavaFieldName;
+import static io.spine.tools.java.JavaCode.toJavaFieldName;
 import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
 import static org.junit.Assert.assertEquals;
 

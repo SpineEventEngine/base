@@ -25,7 +25,7 @@ import com.google.protobuf.DescriptorProtos.EnumDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileOptions;
 import io.spine.gradle.compiler.rejection.RejectionGenPlugin;
-import io.spine.gradle.compiler.util.JavaCode;
+import io.spine.tools.java.SimpleClassName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,7 +69,8 @@ public class MessageTypeCache {
                                           : "");
 
         if (!options.getJavaMultipleFiles()) {
-            final String singleFileSuffix = JavaCode.getOuterClassName(fileDescriptor);
+            final String singleFileSuffix = SimpleClassName.outerOf(fileDescriptor)
+                                                           .value();
             javaPackage.append(singleFileSuffix)
                        .append('.');
         }

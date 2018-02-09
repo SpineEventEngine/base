@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.gradle.compiler.util;
+package io.spine.tools.java;
 
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.EnumDescriptorProto;
@@ -30,7 +30,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.gradle.compiler.util.JavaCode.getOuterClassName;
 import static java.lang.String.format;
 
 /**
@@ -44,7 +43,7 @@ public class JavaSources {
     private static final String OR_BUILDER_SUFFIX = "OrBuilder";
     private static final String BUILDER_CLASS_NAME = "Builder";
     private static final String GRPC_CLASSNAME_SUFFIX = "Grpc";
-    private static final String JAVA_EXTENSION = ".java";
+    static final String FILE_EXTENSION = ".java";
 
     /** Prevent instantiation of this utility class. */
     private JavaSources() {
@@ -53,13 +52,14 @@ public class JavaSources {
     /**
      * Obtains the generated file {@link Path} for the specified file descriptor.
      *
-     * @param fileDescriptor the proto file descriptor
+     * @param file the proto file descriptor
      * @return the relative file path
      */
-    public static Path getFilePath(FileDescriptorProto fileDescriptor) {
-        checkNotNull(fileDescriptor);
-        final Path folderPath = getFolderPath(fileDescriptor);
-        final String filename = getOuterClassName(fileDescriptor) + JAVA_EXTENSION;
+    public static Path getFilePath(FileDescriptorProto file) {
+        checkNotNull(file);
+        final Path folderPath = getFolderPath(file);
+        final SimpleClassName className = SimpleClassName.outerOf(file);
+        final String filename = className.toFileName();
         return folderPath.resolve(filename);
     }
 
@@ -94,8 +94,8 @@ public class JavaSources {
 
         final String filename;
         filename = messageOrBuilder
-                   ? typeName + OR_BUILDER_SUFFIX + JAVA_EXTENSION
-                   : typeName + JAVA_EXTENSION;
+                   ? typeName + OR_BUILDER_SUFFIX + FILE_EXTENSION
+                   : typeName + FILE_EXTENSION;
         return folderPath.resolve(filename);
     }
 
@@ -121,7 +121,7 @@ public class JavaSources {
         }
 
         final Path folderPath = getFolderPath(fileDescriptor);
-        final String filename = enumDescriptor.getName() + JAVA_EXTENSION;
+        final String filename = enumDescriptor.getName() + FILE_EXTENSION;
         return folderPath.resolve(filename);
     }
 
@@ -136,7 +136,7 @@ public class JavaSources {
         }
 
         final Path folderPath = getFolderPath(fileDescriptor);
-        final String filename = serviceType + GRPC_CLASSNAME_SUFFIX + JAVA_EXTENSION;
+        final String filename = serviceType + GRPC_CLASSNAME_SUFFIX + FILE_EXTENSION;
         return folderPath.resolve(filename);
     }
 

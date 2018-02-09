@@ -41,7 +41,7 @@ import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type.TYPE_ENUM;
-import static io.spine.gradle.compiler.util.JavaCode.toJavaFieldName;
+import static io.spine.tools.java.JavaCode.toJavaFieldName;
 import static io.spine.gradle.compiler.validate.ClassNames.getClassName;
 import static io.spine.gradle.compiler.validate.ClassNames.getParameterClassName;
 import static io.spine.gradle.compiler.validate.MethodConstructors.clearPrefix;

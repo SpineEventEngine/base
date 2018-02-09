@@ -23,5 +23,7 @@ group 'io.spine.tools'
 dependencies {
     compile group: 'com.squareup', name: 'javapoet', version: javaPoetVersion
 
+    compile project(':base')
+    
     testCompile project(':testutil-base')
 }

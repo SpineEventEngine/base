@@ -25,7 +25,7 @@ import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.gradle.SpinePlugin;
 import io.spine.gradle.compiler.message.MessageTypeCache;
 import io.spine.gradle.compiler.util.FileDescriptors;
-import io.spine.gradle.compiler.util.JavaCode;
+import io.spine.tools.java.SimpleClassName;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -165,23 +165,27 @@ public class RejectionGenPlugin extends SpinePlugin {
         return result;
     }
 
-    private static void generateRejections(FileDescriptorProto descriptor,
+    private static void generateRejections(FileDescriptorProto file,
                                            Map<String, String> messageTypeMap,
                                            String rejectionsRootDir) {
-        log().debug("Generating rejections from file {}", descriptor.getName());
-        final String javaPackage = descriptor.getOptions()
-                                             .getJavaPackage();
-        final String javaOuterClassName = JavaCode.getOuterClassName(descriptor);
-        log().trace("Found options: javaPackage: {}, javaOuterClassName: {}",
-                    javaPackage,
-                    javaOuterClassName);
-        final List<DescriptorProto> rejections = descriptor.getMessageTypeList();
+        final Logger log = log();
+        log.debug("Generating rejections from file {}", file.getName());
+
+        if (log.isTraceEnabled()) {
+            final String javaPackage = file.getOptions()
+                                           .getJavaPackage();
+            log.trace("Found options: javaPackage: {}, javaOuterClassName: {}",
+                      javaPackage,
+                      SimpleClassName.outerOf(file));
+        }
+
+        final List<DescriptorProto> rejections = file.getMessageTypeList();
         for (DescriptorProto rejection : rejections) {
             // The name of the generated `ThrowableMessage` will be the same
             // as for the Protobuf message.
-            log().trace("Processing rejection '{}'", rejection.getName());
+            log.trace("Processing rejection '{}'", rejection.getName());
 
-            final RejectionMetadata metadata = new RejectionMetadata(rejection, descriptor);
+            final RejectionMetadata metadata = new RejectionMetadata(rejection, file);
             final File outputDir = new File(rejectionsRootDir);
             final RejectionWriter writer = new RejectionWriter(metadata, outputDir, messageTypeMap);
             writer.write();

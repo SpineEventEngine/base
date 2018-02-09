@@ -37,8 +37,8 @@ import javax.annotation.Nullable;
 import java.lang.annotation.Annotation;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.gradle.compiler.util.JavaCode.toJavaFieldName;
-import static io.spine.gradle.compiler.util.JavaSources.getBuilderClassName;
+import static io.spine.tools.java.JavaCode.toJavaFieldName;
+import static io.spine.tools.java.JavaSources.getBuilderClassName;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 

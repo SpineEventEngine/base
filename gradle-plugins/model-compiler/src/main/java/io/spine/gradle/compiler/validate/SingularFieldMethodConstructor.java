@@ -37,7 +37,7 @@ import java.util.Collection;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static io.spine.gradle.compiler.util.JavaCode.toJavaFieldName;
+import static io.spine.tools.java.JavaCode.toJavaFieldName;
 import static io.spine.gradle.compiler.validate.MethodConstructors.clearPrefix;
 import static io.spine.gradle.compiler.validate.MethodConstructors.clearProperty;
 import static io.spine.gradle.compiler.validate.MethodConstructors.createDescriptorStatement;
