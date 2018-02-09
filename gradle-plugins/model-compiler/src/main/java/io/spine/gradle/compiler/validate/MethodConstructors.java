@@ -44,8 +44,8 @@ class MethodConstructors {
 
     private static final SoyTofu soyTofu = getSoyTofu();
 
+    /** Prevents instantiation of this utility class. */
     private MethodConstructors() {
-        // Prevent instantiation.
     }
 
     /**
@@ -100,15 +100,6 @@ class MethodConstructors {
      */
     static String rawSuffix() {
         return "Raw";
-    }
-
-    /**
-     * Returns the pointer for the methods of the `ValidatingBuilder` classes.
-     *
-     * @return the {@code String} which represents the pointer
-     */
-    static String thisPointer() {
-        return "this.";
     }
 
     /**
