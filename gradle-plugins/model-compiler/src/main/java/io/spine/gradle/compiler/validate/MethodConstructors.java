@@ -24,12 +24,12 @@ import com.google.template.soy.SoyFileSet;
 import com.google.template.soy.data.SoyMapData;
 import com.google.template.soy.tofu.SoyTofu;
 import com.squareup.javapoet.ClassName;
+import io.spine.tools.proto.FieldName;
 
 import java.net.URL;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
-import static io.spine.tools.proto.FieldName.toCamelCase;
 import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.lang.String.format;
 
@@ -84,8 +84,10 @@ class MethodConstructors {
      */
     static String createConvertSingularValue(String value) {
         checkNotNull(value);
-        //TODO:2018-02-10:alexander.yevsyukov: Why do we pass here `true`?
-        final SoyMapData mapData = new SoyMapData("javaFieldName", toCamelCase(value, true),
+        // We pass capitalized name because this value is used with prefixes.
+        final String fieldName = FieldName.of(value)
+                                          .toCamelCase();
+        final SoyMapData mapData = new SoyMapData("javaFieldName", fieldName,
                                                   "valueToValidate", value);
         final String result = renderData(mapData, "io.spine.generation.convertedValueStatement");
         return result;
