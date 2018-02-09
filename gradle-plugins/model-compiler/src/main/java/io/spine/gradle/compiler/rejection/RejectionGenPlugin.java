@@ -27,8 +27,6 @@ import io.spine.gradle.compiler.message.MessageTypeCache;
 import io.spine.tools.java.PackageName;
 import io.spine.tools.java.SimpleClassName;
 import io.spine.tools.proto.FileDescriptors;
-import io.spine.gradle.compiler.util.FileDescriptors;
-import io.spine.gradle.compiler.util.JavaCode;
 import io.spine.type.RejectionMessage;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
