@@ -18,44 +18,44 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.util;
+package io.spine.type;
 
+import com.google.common.base.Predicate;
 import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.annotation.Internal;
+import com.google.protobuf.Message;
+
+import javax.annotation.Nullable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Utilities for Spine-specific files.
+ * A common interface for command messages.
+ *
+ * <p>This interface is used by the Model Compiler for marking command messages.
+ * By convention, command messages are defined in a proto file, which name ends
+ * with {@code commands.proto}.
  *
  * @author Alexander Yevsyukov
  */
-@Internal
-public class CodeLayout {
-
-    private static final String COMMANDS_FILE_SUFFIX = "commands";
-    private static final char EXTENSION_SEPARATOR = '.';
-    private static final char PATH_SEPARATOR = '/';
-
-    /** Prevents instantiation of this utility class. */
-    private CodeLayout() {
-    }
+@SuppressWarnings("InterfaceNeverImplemented") /* See Javadoc */
+public interface CommandMessage extends Message {
 
     /**
-     * Checks if the file is for commands.
-     *
-     * @param file a descriptor of a {@code .proto} file to check
-     * @return {@code true} if the file name ends with {@code "commands"},
-     * {@code false} otherwise
+     * The name suffix for proto files containing command message declarations.
      */
-    public static boolean isCommandsFile(FileDescriptor file) {
-        checkNotNull(file);
+    String PROTO_FILE_SUFFIX = "commands.proto";
 
-        final String fqn = file.getName();
-        final int startIndexOfFileName = fqn.lastIndexOf(PATH_SEPARATOR) + 1;
-        final int endIndexOfFileName = fqn.lastIndexOf(EXTENSION_SEPARATOR);
-        final String fileName = fqn.substring(startIndexOfFileName, endIndexOfFileName);
-        final boolean isCommandsFile = fileName.endsWith(COMMANDS_FILE_SUFFIX);
-        return isCommandsFile;
-    }
+    /**
+     * Returns {@code true} if the passed file defines command messages, {@code false} otherwise.
+     */
+    Predicate<FileDescriptor> FILE_PREDICATE = new Predicate<FileDescriptor>() {
+        @Override
+        public boolean apply(@Nullable FileDescriptor file) {
+            checkNotNull(file);
+
+            final String fqn = file.getName();
+            final boolean result = fqn.endsWith(PROTO_FILE_SUFFIX);
+            return result;
+        }
+    };
 }

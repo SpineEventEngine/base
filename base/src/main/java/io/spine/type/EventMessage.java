@@ -18,37 +18,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.util;
+package io.spine.type;
 
-import com.google.protobuf.Descriptors;
-import com.google.protobuf.StringValue;
-import io.spine.base.given.CommandFromCommands;
-import io.spine.test.Tests;
-import org.junit.Test;
-
-import static io.spine.util.CodeLayout.isCommandsFile;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import com.google.protobuf.Message;
 
 /**
+ * A common interface for event messages.
+ *
+ * <p>This interface is used by the Model Compiler for marking event messages.
+ * By convention, event messages are defined in a proto file, which name ends
+ * with {@code events.proto}.
+ *
  * @author Alexander Yevsyukov
  */
-public class CodeLayoutShould {
+@SuppressWarnings({"unused", "InterfaceNeverImplemented"}) /* See Javadoc */
+public interface EventMessage extends Message {
 
-    @Test
-    public void have_utility_ctor() {
-        Tests.assertHasPrivateParameterlessCtor(CodeLayout.class);
-    }
-
-    @Test
-    public void tell_commands_file_by_its_descriptor() {
-        Descriptors.FileDescriptor file = CommandFromCommands.getDescriptor()
-                                                             .getFile();
-        assertTrue(isCommandsFile(file));
-
-        file = StringValue.getDescriptor()
-                          .getFile();
-
-        assertFalse(isCommandsFile(file));
-    }
+    /**
+     * The name suffix for proto files containing event message declarations.
+     */
+    String PROTO_FILE_SUFFIX = "events.proto";
 }
