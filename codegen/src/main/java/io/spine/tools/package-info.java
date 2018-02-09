@@ -18,12 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-group 'io.spine.tools'
+/**
+ * This package contains language-neutral classes and interfaces for Spine tools.
+ */
+@ParametersAreNonnullByDefault
+package io.spine.tools;
 
-dependencies {
-    compile group: 'com.squareup', name: 'javapoet', version: javaPoetVersion
-
-    compile project(':base')
-    
-    testCompile project(':testutil-base')
-}
+import javax.annotation.ParametersAreNonnullByDefault;

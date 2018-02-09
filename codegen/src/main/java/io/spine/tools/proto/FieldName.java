@@ -18,12 +18,42 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-group 'io.spine.tools'
+package io.spine.tools.proto;
 
-dependencies {
-    compile group: 'com.squareup', name: 'javapoet', version: javaPoetVersion
+import com.google.common.collect.ImmutableList;
+import io.spine.type.StringTypeValue;
 
-    compile project(':base')
-    
-    testCompile project(':testutil-base')
+import java.util.List;
+
+import static io.spine.tools.CodePreconditions.checkNotEmptyOrBlank;
+
+/**
+ * A name of a message field.
+ *
+ * @author Alexander Yevsyukov
+ */
+public final class FieldName extends StringTypeValue {
+
+    private static final String WORD_SEPARATOR = "_";
+
+    private FieldName(String value) {
+        super(value);
+    }
+
+    /**
+     * Creates a field name with the passed value.
+     */
+    public static FieldName of(String value) {
+        checkNotEmptyOrBlank(value);
+        return new FieldName(value);
+    }
+
+    /**
+     * Obtains immutable list of words used in the name of the field.
+     */
+    public List<String> words() {
+        final String[] words = value().split(WORD_SEPARATOR);
+        final ImmutableList<String> result = ImmutableList.copyOf(words);
+        return result;
+    }
 }

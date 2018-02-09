@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.gradle.compiler.util;
+package io.spine.tools.java;
 
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.EnumDescriptorProto;
@@ -30,36 +30,37 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.gradle.compiler.util.JavaCode.getOuterClassName;
 import static java.lang.String.format;
 
 /**
  * Utilities for working with the Java sources, generated from {@code .proto} files.
  *
  * @author Dmytro Grankin
+ * @author Alexander Yevsyukov
  */
-public class JavaSources {
+public final class CodePaths {
 
-    private static final char FILE_SEPARATOR = File.separatorChar;
+    public static final String PACKAGE_DELIMITER = ".";
     private static final String OR_BUILDER_SUFFIX = "OrBuilder";
-    private static final String BUILDER_CLASS_NAME = "Builder";
     private static final String GRPC_CLASSNAME_SUFFIX = "Grpc";
-    private static final String JAVA_EXTENSION = ".java";
+
+    static final String FILE_EXTENSION = ".java";
 
     /** Prevent instantiation of this utility class. */
-    private JavaSources() {
+    private CodePaths() {
     }
 
     /**
      * Obtains the generated file {@link Path} for the specified file descriptor.
      *
-     * @param fileDescriptor the proto file descriptor
+     * @param file the proto file descriptor
      * @return the relative file path
      */
-    public static Path getFilePath(FileDescriptorProto fileDescriptor) {
-        checkNotNull(fileDescriptor);
-        final Path folderPath = getFolderPath(fileDescriptor);
-        final String filename = getOuterClassName(fileDescriptor) + JAVA_EXTENSION;
+    public static Path getFile(FileDescriptorProto file) {
+        checkNotNull(file);
+        final Path folderPath = getFolder(file);
+        final SimpleClassName className = SimpleClassName.outerOf(file);
+        final String filename = className.toFileName();
         return folderPath.resolve(filename);
     }
 
@@ -70,89 +71,72 @@ public class JavaSources {
      *         the message descriptor to get path
      * @param  messageOrBuilder
      *         indicates if a {@code MessageOrBuilder} path for the message should be returned
-     * @param  fileDescriptor
+     * @param  file
      *         the file descriptor containing the message descriptor
      * @return the relative file path
      */
-    public static Path getFilePath(DescriptorProto messageDescriptor,
-                                   boolean messageOrBuilder,
-                                   FileDescriptorProto fileDescriptor) {
-        checkNotNull(fileDescriptor);
+    public static Path getFile(DescriptorProto messageDescriptor,
+                               boolean messageOrBuilder,
+                               FileDescriptorProto file) {
+        checkNotNull(file);
         checkNotNull(messageDescriptor);
         final String typeName = messageDescriptor.getName();
-        if (!fileDescriptor.getMessageTypeList()
+        if (!file.getMessageTypeList()
                            .contains(messageDescriptor)) {
-            throw invalidNestedDefinition(fileDescriptor.getName(), typeName);
+            throw invalidNestedDefinition(file.getName(), typeName);
         }
 
-        if (!fileDescriptor.getOptions()
+        if (!file.getOptions()
                            .hasJavaMultipleFiles()) {
-            return getFilePath(fileDescriptor);
+            return getFile(file);
         }
 
-        final Path folderPath = getFolderPath(fileDescriptor);
+        final Path folderPath = getFolder(file);
 
         final String filename;
         filename = messageOrBuilder
-                   ? typeName + OR_BUILDER_SUFFIX + JAVA_EXTENSION
-                   : typeName + JAVA_EXTENSION;
+                   ? typeName + OR_BUILDER_SUFFIX + FILE_EXTENSION
+                   : typeName + FILE_EXTENSION;
         return folderPath.resolve(filename);
     }
 
     /**
      * Obtains the generated file {@link Path} for the specified enum descriptor.
      *
-     * @param enumDescriptor the enum descriptor to get path
-     * @param fileDescriptor the file descriptor containing the enum descriptor
+     * @param enumType the enum descriptor to get path
+     * @param file the file descriptor containing the enum descriptor
      * @return the relative file path
      */
-    public static Path getFilePath(EnumDescriptorProto enumDescriptor,
-                                   FileDescriptorProto fileDescriptor) {
-        checkNotNull(fileDescriptor);
-        checkNotNull(enumDescriptor);
-        if (!fileDescriptor.getEnumTypeList()
-                           .contains(enumDescriptor)) {
-            throw invalidNestedDefinition(fileDescriptor.getName(), enumDescriptor.getName());
+    public static Path getFile(EnumDescriptorProto enumType, FileDescriptorProto file) {
+        checkNotNull(file);
+        checkNotNull(enumType);
+        if (!file.getEnumTypeList()
+                           .contains(enumType)) {
+            throw invalidNestedDefinition(file.getName(), enumType.getName());
         }
 
-        if (!fileDescriptor.getOptions()
+        if (!file.getOptions()
                            .hasJavaMultipleFiles()) {
-            return getFilePath(fileDescriptor);
+            return getFile(file);
         }
 
-        final Path folderPath = getFolderPath(fileDescriptor);
-        final String filename = enumDescriptor.getName() + JAVA_EXTENSION;
+        final Path folderPath = getFolder(file);
+        final String filename = enumType.getName() + FILE_EXTENSION;
         return folderPath.resolve(filename);
     }
 
-    public static Path getFilePath(ServiceDescriptorProto serviceDescriptor,
-                                   FileDescriptorProto fileDescriptor) {
-        checkNotNull(serviceDescriptor);
-        checkNotNull(fileDescriptor);
-        final String serviceType = serviceDescriptor.getName();
-        if (!fileDescriptor.getServiceList()
-                           .contains(serviceDescriptor)) {
-            throw invalidNestedDefinition(fileDescriptor.getName(), serviceType);
+    public static Path getFile(ServiceDescriptorProto service, FileDescriptorProto file) {
+        checkNotNull(service);
+        checkNotNull(file);
+        final String serviceType = service.getName();
+        if (!file.getServiceList()
+                           .contains(service)) {
+            throw invalidNestedDefinition(file.getName(), serviceType);
         }
 
-        final Path folderPath = getFolderPath(fileDescriptor);
-        final String filename = serviceType + GRPC_CLASSNAME_SUFFIX + JAVA_EXTENSION;
+        final Path folderPath = getFolder(file);
+        final String filename = serviceType + GRPC_CLASSNAME_SUFFIX + FILE_EXTENSION;
         return folderPath.resolve(filename);
-    }
-
-    /**
-     * Obtains the {@link Path} to a folder, that contains
-     * a generated file from the file descriptor.
-     *
-     * @param fileDescriptor the proto file descriptor
-     * @return the relative folder path
-     */
-    public static Path getFolderPath(FileDescriptorProto fileDescriptor) {
-        checkNotNull(fileDescriptor);
-        final String javaPackage = fileDescriptor.getOptions()
-                                                 .getJavaPackage();
-        final String packageDir = javaPackage.replace('.', FILE_SEPARATOR);
-        return Paths.get(packageDir);
     }
 
     private static IllegalStateException invalidNestedDefinition(String filename,
@@ -166,7 +150,22 @@ public class JavaSources {
         return OR_BUILDER_SUFFIX;
     }
 
-    public static String getBuilderClassName() {
-        return BUILDER_CLASS_NAME;
+    /**
+     * Obtains the {@link Path} to a folder, that contains
+     * a generated file from the file descriptor.
+     *
+     * @param file the proto file descriptor
+     * @return the relative folder path
+     */
+    private static Path getFolder(FileDescriptorProto file) {
+        checkNotNull(file);
+        final PackageName packageName = PackageName.resolve(file);
+        final String packageDir = packageName.value()
+                                             .replace('.', File.separatorChar);
+        return Paths.get(packageDir);
+    }
+
+    public static String toFileName(String javaPackage, String typename) {
+        return (javaPackage + PACKAGE_DELIMITER + typename).replace('.', '/') + FILE_EXTENSION;
     }
 }

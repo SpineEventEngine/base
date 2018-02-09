@@ -18,30 +18,39 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools;
+package io.spine.tools.java;
 
-import com.squareup.javapoet.AnnotationSpec;
-import com.squareup.javapoet.TypeName;
-import org.junit.Test;
+import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
+import io.spine.type.StringTypeValue;
 
-import javax.annotation.Generated;
-
-import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
-import static org.junit.Assert.assertEquals;
+import static com.google.common.base.Strings.isNullOrEmpty;
 
 /**
- * @author Dmytro Dashenkov
+ * A Java package name.
+ *
+ * @author Alexander Yevsyukov
  */
-public class AnnotationsShould {
+public final class PackageName extends StringTypeValue {
 
-    @Test
-    public void have_util_ctor() {
-        assertHasPrivateParameterlessCtor(Annotations.class);
+    private PackageName(String value) {
+        super(value);
     }
 
-    @Test
-    public void return_generated_annotation_spec() {
-        final AnnotationSpec spec = Annotations.generatedBySpineModelCompiler();
-        assertEquals(spec.type, TypeName.get(Generated.class));
+    /**
+     * Obtains a Java package name by the passed file descriptor.
+     */
+    public static PackageName resolve(FileDescriptorProto file) {
+        final String javaPackage = resolveName(file);
+        final PackageName result = new PackageName(javaPackage.trim());
+        return result;
+    }
+
+    private static String resolveName(FileDescriptorProto file) {
+        String javaPackage = file.getOptions()
+                                 .getJavaPackage();
+        if (isNullOrEmpty(javaPackage)) {
+            javaPackage = file.getPackage();
+        }
+        return javaPackage;
     }
 }

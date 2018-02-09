@@ -18,12 +18,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-group 'io.spine.tools'
+package io.spine.tools;
 
-dependencies {
-    compile group: 'com.squareup', name: 'javapoet', version: javaPoetVersion
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
-    compile project(':base')
-    
-    testCompile project(':testutil-base')
+/**
+ * @author Alexander Yevsyukov
+ */
+public class CodePreconditions {
+
+    /** Prevents instantiation of this utility class. */
+    private CodePreconditions() {
+    }
+
+    /**
+     * Ensures that the passed string is not {@code null}, empty or blank string.
+     *
+     * @param stringToCheck the string to check
+     * @return the passed string
+     * @throws NullPointerException if the passed string is {@code null}
+     * @throws IllegalArgumentException if the string is empty or blank
+     */
+    public static String checkNotEmptyOrBlank(String stringToCheck) {
+        checkNotNull(stringToCheck);
+        checkArgument(!stringToCheck.isEmpty());
+        final String trimmed = stringToCheck.trim();
+        checkArgument(trimmed.length() > 0);
+        return stringToCheck;
+    }
 }

@@ -29,8 +29,8 @@ import java.lang.annotation.Annotation;
 import java.nio.file.Path;
 import java.util.Collection;
 
-import static io.spine.gradle.compiler.util.JavaSources.getFilePath;
 import static io.spine.option.UnknownOptions.getUnknownOptionValue;
+import static io.spine.tools.java.CodePaths.getFile;
 
 /**
  * An annotator for {@code gRPC} services.
@@ -70,7 +70,7 @@ class ServiceAnnotator extends Annotator<ServiceOptions, ServiceDescriptorProto>
     private void annotateServices(FileDescriptorProto fileDescriptor) {
         for (ServiceDescriptorProto serviceDescriptor : fileDescriptor.getServiceList()) {
             if (shouldAnnotate(serviceDescriptor)) {
-                final Path sourcePath = getFilePath(serviceDescriptor, fileDescriptor);
+                final Path sourcePath = getFile(serviceDescriptor, fileDescriptor);
                 rewriteSource(sourcePath, new TypeDeclarationAnnotation());
             }
         }

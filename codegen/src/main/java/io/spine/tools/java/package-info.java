@@ -18,12 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-group 'io.spine.tools'
+/**
+ * This package provides classes for generating and parsing Java code.
+ */
+@ParametersAreNonnullByDefault
+package io.spine.tools.java;
 
-dependencies {
-    compile group: 'com.squareup', name: 'javapoet', version: javaPoetVersion
-
-    compile project(':base')
-    
-    testCompile project(':testutil-base')
-}
+import javax.annotation.ParametersAreNonnullByDefault;

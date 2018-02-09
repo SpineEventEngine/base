@@ -17,23 +17,26 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.gradle.compiler.util;
+
+package io.spine.tools.java;
 
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
+import io.spine.tools.proto.FileName;
+import io.spine.type.StringTypeValue;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Utilities for working with Protobuf when generating Java code.
+ * A {@link Class#getSimpleName() simple name} of a class.
  *
  * @author Alexander Yevsyukov
  */
-public class JavaCode {
+public final class SimpleClassName extends StringTypeValue {
 
-    private static final String UNDERSCORE = "_";
+    private static final SimpleClassName BUILDER_CLASS_NAME = new SimpleClassName("Builder");
 
-    /** Prevents instantiation of this utility class. */
-    private JavaCode() {
+    private SimpleClassName(String value) {
+        super(value);
     }
 
     /**
@@ -47,7 +50,7 @@ public class JavaCode {
      * @param descriptor a descriptor for file for which outer class name will be generated
      * @return non-qualified outer class name
      */
-    public static String getOuterClassName(FileDescriptorProto descriptor) {
+    private static String getOuterClassName(FileDescriptorProto descriptor) {
         checkNotNull(descriptor);
         String outerClassNameFromOptions = descriptor.getOptions()
                                                      .getJavaOuterClassname();
@@ -60,54 +63,37 @@ public class JavaCode {
         final int extensionIndex = descriptor.getName()
                                              .lastIndexOf(".proto");
         final String fileName = fullFileName.substring(lastBackslashIndex + 1, extensionIndex);
-        final String className = toCamelCase(fileName);
+        final String className = FileName.toCamelCase(fileName);
         return className;
     }
 
     /**
-     * Transforms the string with a file name with underscores into a camel-case name.
+     * Creates an instance with the outer class name for the types declared in the file specified
+     * by the passed descriptor.
      *
-     * <p>The class name is calculated according to
+     * <p>The outer class name is calculated according to
      * <a href="https://developers.google.com/protocol-buffers/docs/reference/java-generated#invocation">Protobuf
      * compiler conventions</a>.
+     *
+     * @param file a descriptor for file for which outer class name will be generated
+     * @return outer class name
      */
-    public static String toCamelCase(String fileName) {
-        checkNotNull(fileName);
-        final StringBuilder result = new StringBuilder(fileName.length());
-
-        for (final String word : fileName.split(UNDERSCORE)) {
-            if (!word.isEmpty()) {
-                result.append(Character.toUpperCase(word.charAt(0)));
-                result.append(word.substring(1)
-                                  .toLowerCase());
-            }
-        }
-
-        return result.toString();
+    public static SimpleClassName outerOf(FileDescriptorProto file) {
+        checkNotNull(file);
+        final String value = getOuterClassName(file);
+        final SimpleClassName result = new SimpleClassName(value);
+        return result;
     }
 
     /**
-     * Transforms Protobuf-style field name into a corresponding Java-style field name.
-     *
-     * <p>For example, "seat_assignment_id" becomes "SeatAssignmentId"
-     *
-     * @param protoFieldName  Protobuf field name
-     * @param capitalizeFirst indicates if the first letter should be capitalized
-     * @return a field name
+     * Obtains default name for a builder class.
      */
-    public static String toJavaFieldName(String protoFieldName, boolean capitalizeFirst) {
-        checkNotNull(protoFieldName);
-        final String[] words = protoFieldName.split(UNDERSCORE);
-        final StringBuilder builder = new StringBuilder(words[0]);
-        for (int i = 1; i < words.length; i++) {
-            final String word = words[i];
-            builder.append(Character.toUpperCase(word.charAt(0)))
-                   .append(word.substring(1));
-        }
-        String resultName = builder.toString();
-        if (capitalizeFirst) {
-            resultName = Character.toUpperCase(resultName.charAt(0)) + resultName.substring(1);
-        }
-        return resultName;
+    public static SimpleClassName ofBuilder() {
+        return BUILDER_CLASS_NAME;
+    }
+
+    /** Obtains the name for a file of the class. */
+    public String toFileName() {
+        return value() + CodePaths.FILE_EXTENSION;
     }
 }

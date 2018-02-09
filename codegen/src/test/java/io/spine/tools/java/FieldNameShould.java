@@ -17,29 +17,28 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.gradle.compiler.util;
+
+package io.spine.tools.java;
 
 import com.google.common.testing.NullPointerTester;
-import io.spine.type.RejectionMessage;
 import org.junit.Test;
 
-import static io.spine.gradle.compiler.util.JavaCode.toJavaFieldName;
-import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
+import static io.spine.tools.java.FieldName.toJavaFieldName;
 import static org.junit.Assert.assertEquals;
 
 /**
  * @author Alexander Yevsyukov
  */
-public class JavaCodeShould {
+public class FieldNameShould {
 
     private static final String PROTO_FIELD_NAME = "correct_java_name";
 
-    @SuppressWarnings("DuplicateStringLiteralInspection")
     @Test
-    public void calculate_outer_class_name() {
-        assertEquals(RejectionMessage.OUTER_CLASS_NAME_SUFFIX, JavaCode.toCamelCase("rejections"));
-        assertEquals("ManyRejections", JavaCode.toCamelCase("many_rejections"));
-        assertEquals("ManyMoreRejections", JavaCode.toCamelCase("many_more_rejections"));
+    public void pass_null_tolerance_check() {
+        new NullPointerTester().setDefault(io.spine.tools.proto.FieldName.class,
+                                           io.spine.tools.proto.FieldName.of("value"))
+                               .testStaticMethods(FieldName.class,
+                                                  NullPointerTester.Visibility.PACKAGE);
     }
 
     @Test
@@ -54,16 +53,5 @@ public class JavaCodeShould {
         final String expected = "CorrectJavaName";
         final String actual = toJavaFieldName(PROTO_FIELD_NAME, true);
         assertEquals(expected, actual);
-    }
-
-    @Test
-    public void have_private_constructor() {
-        assertHasPrivateParameterlessCtor(JavaCode.class);
-    }
-
-    @Test
-    public void pass_null_tolerance_check() {
-        new NullPointerTester().testStaticMethods(JavaCode.class,
-                                                  NullPointerTester.Visibility.PACKAGE);
     }
 }

@@ -27,7 +27,7 @@ import org.junit.rules.TemporaryFolder;
 import java.util.Arrays;
 
 import static io.spine.gradle.compiler.Extension.getDefaultMainGenSpineDir;
-import static io.spine.gradle.compiler.util.JavaCode.toJavaFieldName;
+import static io.spine.tools.java.FieldName.toJavaFieldName;
 
 /**
  * @author Dmytro Grankin

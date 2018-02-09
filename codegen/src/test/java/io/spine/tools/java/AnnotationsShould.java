@@ -18,12 +18,30 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-group 'io.spine.tools'
+package io.spine.tools.java;
 
-dependencies {
-    compile group: 'com.squareup', name: 'javapoet', version: javaPoetVersion
+import com.squareup.javapoet.AnnotationSpec;
+import com.squareup.javapoet.TypeName;
+import org.junit.Test;
 
-    compile project(':base')
-    
-    testCompile project(':testutil-base')
+import javax.annotation.Generated;
+
+import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
+import static org.junit.Assert.assertEquals;
+
+/**
+ * @author Dmytro Dashenkov
+ */
+public class AnnotationsShould {
+
+    @Test
+    public void have_util_ctor() {
+        assertHasPrivateParameterlessCtor(Annotations.class);
+    }
+
+    @Test
+    public void return_generated_annotation_spec() {
+        final AnnotationSpec spec = Annotations.generatedBySpineModelCompiler();
+        assertEquals(spec.type, TypeName.get(Generated.class));
+    }
 }

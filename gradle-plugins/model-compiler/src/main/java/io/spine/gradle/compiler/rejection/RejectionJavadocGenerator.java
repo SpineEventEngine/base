@@ -32,7 +32,7 @@ import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.SourceCodeInfo.Location;
 import io.spine.gradle.compiler.javadoc.JavadocEscaper;
 import io.spine.gradle.compiler.message.LocationPath;
-import io.spine.gradle.compiler.util.JavaCode;
+import io.spine.tools.java.FieldName;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
@@ -121,8 +121,8 @@ public class RejectionJavadocGenerator {
             builder.append(LINE_SEPARATOR)
                    .append(LINE_SEPARATOR);
             for (Entry<FieldDescriptorProto, String> commentedField : commentedFields.entrySet()) {
-                final String fieldName = JavaCode.toJavaFieldName(commentedField.getKey()
-                                                                                .getName(), false);
+                final String fieldName = FieldName.toJavaFieldName(commentedField.getKey()
+                                                                                 .getName(), false);
                 final int commentOffset = maxFieldLength - fieldName.length() + 1;
                 builder.append("@param ")
                        .append(fieldName)
