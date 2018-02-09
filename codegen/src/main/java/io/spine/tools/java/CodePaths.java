@@ -28,7 +28,7 @@ import com.google.protobuf.DescriptorProtos.ServiceDescriptorProto;
 import java.nio.file.Path;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static java.lang.String.format;
+import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
  * Utilities for working with the Java sources, generated from {@code .proto} files.
@@ -106,7 +106,7 @@ public final class CodePaths {
         }
 
         if (!file.getOptions()
-                           .hasJavaMultipleFiles()) {
+                 .hasJavaMultipleFiles()) {
             return getFile(file);
         }
 
@@ -133,9 +133,8 @@ public final class CodePaths {
 
     private static IllegalStateException invalidNestedDefinition(String filename,
                                                                  String nestedDefinitionName) {
-        final String errMsg = format("`%s` does not contain nested definition `%s`.",
-                                     filename, nestedDefinitionName);
-        throw new IllegalStateException(errMsg);
+        throw newIllegalStateException("`%s` does not contain nested definition `%s`.",
+                                       filename, nestedDefinitionName);
     }
 
     /**
