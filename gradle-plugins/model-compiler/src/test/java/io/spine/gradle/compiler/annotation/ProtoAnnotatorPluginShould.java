@@ -32,7 +32,7 @@ import io.spine.gradle.compiler.annotation.given.Given.MainDefinitionAnnotationV
 import io.spine.gradle.compiler.annotation.given.Given.NestedTypeFieldsAnnotationValidator;
 import io.spine.gradle.compiler.annotation.given.Given.NestedTypesAnnotationValidator;
 import io.spine.gradle.compiler.annotation.given.Given.SourceValidator;
-import io.spine.tools.FileDescriptors;
+import io.spine.tools.proto.FileDescriptors;
 import io.spine.util.Exceptions;
 import org.jboss.forge.roaster.Roaster;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;

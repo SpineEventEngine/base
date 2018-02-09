@@ -17,39 +17,43 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.tools.java;
 
-import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
+package io.spine.tools.proto;
 
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import com.google.common.collect.ImmutableList;
+import io.spine.type.StringTypeValue;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import java.util.List;
+
+import static io.spine.tools.CodePreconditions.checkNotEmptyOrBlank;
 
 /**
- * Utilities for working with Protobuf when generating Java code.
+ * A name of a message field.
  *
  * @author Alexander Yevsyukov
  */
-public class JavaCode {
+public final class FieldName extends StringTypeValue {
 
-    /** Prevents instantiation of this utility class. */
-    private JavaCode() {
+    private static final String WORD_SEPARATOR = "_";
+
+    private FieldName(String value) {
+        super(value);
     }
 
     /**
-     * Obtains the {@link Path} to a folder, that contains
-     * a generated file from the file descriptor.
-     *
-     * @param file the proto file descriptor
-     * @return the relative folder path
+     * Creates a field name with the passed value.
      */
-    public static Path getFolderPath(FileDescriptorProto file) {
-        checkNotNull(file);
-        final String javaPackage = file.getOptions()
-                                       .getJavaPackage();
-        final String packageDir = javaPackage.replace('.', File.separatorChar);
-        return Paths.get(packageDir);
+    public static FieldName of(String value) {
+        checkNotEmptyOrBlank(value);
+        return new FieldName(value);
+    }
+
+    /**
+     * Obtains immutable list of words used in the name of the field.
+     */
+    public List<String> words() {
+        final String[] words = value().split(WORD_SEPARATOR);
+        final ImmutableList<String> result = ImmutableList.copyOf(words);
+        return result;
     }
 }

@@ -17,39 +17,34 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.tools.java;
 
-import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
+package io.spine.tools;
 
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Utilities for working with Protobuf when generating Java code.
- *
  * @author Alexander Yevsyukov
  */
-public class JavaCode {
+public class CodePreconditions {
 
     /** Prevents instantiation of this utility class. */
-    private JavaCode() {
+    private CodePreconditions() {
     }
 
     /**
-     * Obtains the {@link Path} to a folder, that contains
-     * a generated file from the file descriptor.
+     * Ensures that the passed string is not {@code null}, empty or blank string.
      *
-     * @param file the proto file descriptor
-     * @return the relative folder path
+     * @param stringToCheck the string to check
+     * @return the passed string
+     * @throws NullPointerException if the passed string is {@code null}
+     * @throws IllegalArgumentException if the string is empty or blank
      */
-    public static Path getFolderPath(FileDescriptorProto file) {
-        checkNotNull(file);
-        final String javaPackage = file.getOptions()
-                                       .getJavaPackage();
-        final String packageDir = javaPackage.replace('.', File.separatorChar);
-        return Paths.get(packageDir);
+    public static String checkNotEmptyOrBlank(String stringToCheck) {
+        checkNotNull(stringToCheck);
+        checkArgument(!stringToCheck.isEmpty());
+        final String trimmed = stringToCheck.trim();
+        checkArgument(trimmed.length() > 0);
+        return stringToCheck;
     }
 }

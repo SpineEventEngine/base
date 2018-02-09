@@ -21,6 +21,7 @@
 package io.spine.tools.java;
 
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
+import io.spine.tools.proto.FileName;
 import io.spine.type.StringTypeValue;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -62,7 +63,7 @@ public final class SimpleClassName extends StringTypeValue {
         final int extensionIndex = descriptor.getName()
                                              .lastIndexOf(".proto");
         final String fileName = fullFileName.substring(lastBackslashIndex + 1, extensionIndex);
-        final String className = JavaCode.toCamelCase(fileName);
+        final String className = FileName.toCamelCase(fileName);
         return className;
     }
 

@@ -22,7 +22,7 @@ package io.spine.gradle.compiler.lookup.proto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.gradle.SpinePlugin;
 import io.spine.gradle.compiler.util.PropertiesWriter;
-import io.spine.tools.FileDescriptors;
+import io.spine.tools.proto.FileDescriptors;
 import io.spine.type.KnownTypes;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
@@ -44,7 +44,7 @@ import static io.spine.gradle.compiler.Extension.getMainDescriptorSetPath;
 import static io.spine.gradle.compiler.Extension.getMainTargetGenResourcesDir;
 import static io.spine.gradle.compiler.Extension.getTestDescriptorSetPath;
 import static io.spine.gradle.compiler.Extension.getTestTargetGenResourcesDir;
-import static io.spine.tools.FileDescriptors.isNotGoogleProto;
+import static io.spine.tools.proto.FileDescriptors.isNotGoogleProto;
 
 /**
  * Plugin which maps all Protobuf types to the corresponding Java classes.

@@ -33,9 +33,9 @@ import java.util.Collection;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static io.spine.tools.java.JavaCode.toJavaFieldName;
 import static io.spine.gradle.compiler.message.fieldtype.FieldTypes.isMap;
 import static io.spine.gradle.compiler.message.fieldtype.FieldTypes.isRepeated;
+import static io.spine.tools.java.FieldName.toJavaFieldName;
 
 /**
  * Serves as assembler for the generated methods based on the Protobuf message declaration.

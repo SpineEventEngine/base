@@ -17,39 +17,41 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.tools.java;
 
-import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
+package io.spine.tools.proto;
 
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import io.spine.type.StringTypeValue;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.tools.CodePreconditions.checkNotEmptyOrBlank;
 
 /**
- * Utilities for working with Protobuf when generating Java code.
+ * A name of a Protobuf source code file.
  *
  * @author Alexander Yevsyukov
  */
-public class JavaCode {
+public final class FileName extends StringTypeValue {
 
-    /** Prevents instantiation of this utility class. */
-    private JavaCode() {
+    private static final String WORD_SEPARATOR = "_";
+
+    private FileName(String value) {
+        super(value);
     }
 
     /**
-     * Obtains the {@link Path} to a folder, that contains
-     * a generated file from the file descriptor.
-     *
-     * @param file the proto file descriptor
-     * @return the relative folder path
+     * Transforms the string with a file name with underscores into a camel-case name.
      */
-    public static Path getFolderPath(FileDescriptorProto file) {
-        checkNotNull(file);
-        final String javaPackage = file.getOptions()
-                                       .getJavaPackage();
-        final String packageDir = javaPackage.replace('.', File.separatorChar);
-        return Paths.get(packageDir);
+    public static String toCamelCase(String fileName) {
+        checkNotEmptyOrBlank(fileName);
+        final StringBuilder result = new StringBuilder(fileName.length());
+
+        for (final String word : fileName.split(WORD_SEPARATOR)) {
+            if (!word.isEmpty()) {
+                result.append(Character.toUpperCase(word.charAt(0)));
+                result.append(word.substring(1)
+                                  .toLowerCase());
+            }
+        }
+
+        return result.toString();
     }
 }

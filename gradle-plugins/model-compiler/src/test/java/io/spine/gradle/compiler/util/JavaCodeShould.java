@@ -21,10 +21,11 @@ package io.spine.gradle.compiler.util;
 
 import com.google.common.testing.NullPointerTester;
 import io.spine.tools.java.JavaCode;
+import io.spine.tools.proto.FileName;
 import org.junit.Test;
 
-import static io.spine.tools.java.JavaCode.toJavaFieldName;
 import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
+import static io.spine.tools.java.FieldName.toJavaFieldName;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -37,9 +38,9 @@ public class JavaCodeShould {
     @SuppressWarnings("DuplicateStringLiteralInspection")
     @Test
     public void calculate_outer_class_name() {
-        assertEquals("Rejections", JavaCode.toCamelCase("rejections"));
-        assertEquals("ManyRejections", JavaCode.toCamelCase("many_rejections"));
-        assertEquals("ManyMoreRejections", JavaCode.toCamelCase("many_more_rejections"));
+        assertEquals("Rejections", FileName.toCamelCase("rejections"));
+        assertEquals("ManyRejections", FileName.toCamelCase("many_rejections"));
+        assertEquals("ManyMoreRejections", FileName.toCamelCase("many_more_rejections"));
     }
 
     @Test

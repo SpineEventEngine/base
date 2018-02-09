@@ -17,39 +17,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.tools.java;
-
-import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
-
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Utilities for working with Protobuf when generating Java code.
- *
- * @author Alexander Yevsyukov
+ * This package provides classes for working with Protobuf code.
  */
-public class JavaCode {
+@ParametersAreNonnullByDefault
+package io.spine.tools.proto;
 
-    /** Prevents instantiation of this utility class. */
-    private JavaCode() {
-    }
-
-    /**
-     * Obtains the {@link Path} to a folder, that contains
-     * a generated file from the file descriptor.
-     *
-     * @param file the proto file descriptor
-     * @return the relative folder path
-     */
-    public static Path getFolderPath(FileDescriptorProto file) {
-        checkNotNull(file);
-        final String javaPackage = file.getOptions()
-                                       .getJavaPackage();
-        final String packageDir = javaPackage.replace('.', File.separatorChar);
-        return Paths.get(packageDir);
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;

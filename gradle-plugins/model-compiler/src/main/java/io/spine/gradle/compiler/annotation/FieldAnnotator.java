@@ -43,7 +43,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Lists.newLinkedList;
 import static io.spine.gradle.compiler.annotation.TypeDefinitionAnnotator.findNestedType;
 import static io.spine.option.UnknownOptions.getUnknownOptionValue;
-import static io.spine.tools.java.JavaCode.toJavaFieldName;
+import static io.spine.tools.java.FieldName.toJavaFieldName;
 import static io.spine.tools.java.JavaSources.getFilePath;
 import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.lang.String.format;
@@ -245,7 +245,8 @@ class FieldAnnotator extends Annotator<FieldOptions, FieldDescriptorProto> {
      * @param capitalizedFieldName the field name to get accessors
      * @param unannotatedFields    the field names that should not be annotated
      */
-    private void annotateAccessors(JavaClassSource classSource, String capitalizedFieldName,
+    private void annotateAccessors(JavaClassSource classSource,
+                                   String capitalizedFieldName,
                                    Iterable<String> unannotatedFields) {
         for (MethodSource method : classSource.getMethods()) {
             final boolean shouldAnnotate =
