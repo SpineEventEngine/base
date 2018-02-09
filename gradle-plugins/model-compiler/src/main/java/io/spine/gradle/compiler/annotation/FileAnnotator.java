@@ -26,7 +26,6 @@ import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileOptions;
 import com.google.protobuf.DescriptorProtos.ServiceDescriptorProto;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
-import io.spine.tools.java.CodePaths;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.jboss.forge.roaster.model.source.JavaSource;
@@ -92,7 +91,7 @@ class FileAnnotator extends Annotator<FileOptions, FileDescriptorProto> {
      * @see #annotateServices(FileDescriptorProto)
      */
     private void annotateNestedTypes(FileDescriptorProto fileDescriptor) {
-        final Path filePath = CodePaths.getFile(fileDescriptor);
+        final Path filePath = getFile(fileDescriptor);
         rewriteSource(filePath, new SourceVisitor<JavaClassSource>() {
             @Nullable
             @Override
@@ -116,13 +115,11 @@ class FileAnnotator extends Annotator<FileOptions, FileDescriptorProto> {
      */
     private void annotateMessages(FileDescriptorProto fileDescriptor) {
         for (DescriptorProto messageDescriptor : fileDescriptor.getMessageTypeList()) {
-            final Path messageFilePath = CodePaths.getFile(messageDescriptor, false,
-                                                           fileDescriptor);
-            rewriteSource(messageFilePath, new TypeDeclarationAnnotation());
+            final Path messageFile = getFile(messageDescriptor, false, fileDescriptor);
+            rewriteSource(messageFile, new TypeDeclarationAnnotation());
 
-            final Path messageOrBuilderPath = CodePaths.getFile(messageDescriptor, true,
-                                                                fileDescriptor);
-            rewriteSource(messageOrBuilderPath, new TypeDeclarationAnnotation());
+            final Path messageOrBuilderFile = getFile(messageDescriptor, true, fileDescriptor);
+            rewriteSource(messageOrBuilderFile, new TypeDeclarationAnnotation());
         }
     }
 
@@ -136,7 +133,7 @@ class FileAnnotator extends Annotator<FileOptions, FileDescriptorProto> {
      */
     private void annotateEnums(FileDescriptorProto fileDescriptor) {
         for (EnumDescriptorProto enumDescriptor : fileDescriptor.getEnumTypeList()) {
-            final Path filePath = CodePaths.getFile(enumDescriptor, fileDescriptor);
+            final Path filePath = getFile(enumDescriptor, fileDescriptor);
             rewriteSource(filePath, new TypeDeclarationAnnotation());
         }
     }
