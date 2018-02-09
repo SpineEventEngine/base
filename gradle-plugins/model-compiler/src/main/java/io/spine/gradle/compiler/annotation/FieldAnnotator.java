@@ -26,6 +26,7 @@ import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldOptions;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
+import io.spine.tools.java.SimpleClassName;
 import org.jboss.forge.roaster.model.JavaType;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
 import org.jboss.forge.roaster.model.source.FieldHolderSource;
@@ -41,10 +42,9 @@ import java.util.Collection;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Lists.newLinkedList;
 import static io.spine.gradle.compiler.annotation.TypeDefinitionAnnotator.findNestedType;
-import static io.spine.tools.java.JavaCode.toJavaFieldName;
-import static io.spine.tools.java.JavaSources.getBuilderClassName;
-import static io.spine.tools.java.JavaSources.getFilePath;
 import static io.spine.option.UnknownOptions.getUnknownOptionValue;
+import static io.spine.tools.java.JavaCode.toJavaFieldName;
+import static io.spine.tools.java.JavaSources.getFilePath;
 import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.lang.String.format;
 
@@ -104,7 +104,8 @@ class FieldAnnotator extends Annotator<FieldOptions, FieldDescriptorProto> {
     @VisibleForTesting
     static JavaClassSource getBuilder(JavaSource messageSource) {
         final JavaClassSource messageClass = asClassSource(messageSource);
-        final JavaSource builderSource = messageClass.getNestedType(getBuilderClassName());
+        final JavaSource builderSource = messageClass.getNestedType(SimpleClassName.ofBuilder()
+                                                                                   .value());
         return asClassSource(builderSource);
     }
 

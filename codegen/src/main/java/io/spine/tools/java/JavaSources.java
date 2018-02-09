@@ -25,9 +25,7 @@ import com.google.protobuf.DescriptorProtos.EnumDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.ServiceDescriptorProto;
 
-import java.io.File;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
@@ -39,9 +37,7 @@ import static java.lang.String.format;
  */
 public class JavaSources {
 
-    private static final char FILE_SEPARATOR = File.separatorChar;
     private static final String OR_BUILDER_SUFFIX = "OrBuilder";
-    private static final String BUILDER_CLASS_NAME = "Builder";
     private static final String GRPC_CLASSNAME_SUFFIX = "Grpc";
     static final String FILE_EXTENSION = ".java";
 
@@ -57,7 +53,7 @@ public class JavaSources {
      */
     public static Path getFilePath(FileDescriptorProto file) {
         checkNotNull(file);
-        final Path folderPath = getFolderPath(file);
+        final Path folderPath = JavaCode.getFolderPath(file);
         final SimpleClassName className = SimpleClassName.outerOf(file);
         final String filename = className.toFileName();
         return folderPath.resolve(filename);
@@ -90,7 +86,7 @@ public class JavaSources {
             return getFilePath(fileDescriptor);
         }
 
-        final Path folderPath = getFolderPath(fileDescriptor);
+        final Path folderPath = JavaCode.getFolderPath(fileDescriptor);
 
         final String filename;
         filename = messageOrBuilder
@@ -120,7 +116,7 @@ public class JavaSources {
             return getFilePath(fileDescriptor);
         }
 
-        final Path folderPath = getFolderPath(fileDescriptor);
+        final Path folderPath = JavaCode.getFolderPath(fileDescriptor);
         final String filename = enumDescriptor.getName() + FILE_EXTENSION;
         return folderPath.resolve(filename);
     }
@@ -135,24 +131,9 @@ public class JavaSources {
             throw invalidNestedDefinition(fileDescriptor.getName(), serviceType);
         }
 
-        final Path folderPath = getFolderPath(fileDescriptor);
+        final Path folderPath = JavaCode.getFolderPath(fileDescriptor);
         final String filename = serviceType + GRPC_CLASSNAME_SUFFIX + FILE_EXTENSION;
         return folderPath.resolve(filename);
-    }
-
-    /**
-     * Obtains the {@link Path} to a folder, that contains
-     * a generated file from the file descriptor.
-     *
-     * @param fileDescriptor the proto file descriptor
-     * @return the relative folder path
-     */
-    public static Path getFolderPath(FileDescriptorProto fileDescriptor) {
-        checkNotNull(fileDescriptor);
-        final String javaPackage = fileDescriptor.getOptions()
-                                                 .getJavaPackage();
-        final String packageDir = javaPackage.replace('.', FILE_SEPARATOR);
-        return Paths.get(packageDir);
     }
 
     private static IllegalStateException invalidNestedDefinition(String filename,
@@ -164,9 +145,5 @@ public class JavaSources {
 
     public static String getOrBuilderSuffix() {
         return OR_BUILDER_SUFFIX;
-    }
-
-    public static String getBuilderClassName() {
-        return BUILDER_CLASS_NAME;
     }
 }

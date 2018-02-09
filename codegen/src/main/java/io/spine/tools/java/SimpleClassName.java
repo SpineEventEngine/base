@@ -32,6 +32,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public final class SimpleClassName extends StringTypeValue {
 
+    private static final SimpleClassName BUILDER_CLASS_NAME = new SimpleClassName("Builder");
+
     private SimpleClassName(String value) {
         super(value);
     }
@@ -80,6 +82,13 @@ public final class SimpleClassName extends StringTypeValue {
         final String value = getOuterClassName(file);
         final SimpleClassName result = new SimpleClassName(value);
         return result;
+    }
+
+    /**
+     * Obtains default name for a builder class.
+     */
+    public static SimpleClassName ofBuilder() {
+        return BUILDER_CLASS_NAME;
     }
 
     /** Obtains the name for a file of the class. */

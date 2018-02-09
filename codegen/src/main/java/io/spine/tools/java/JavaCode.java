@@ -19,6 +19,12 @@
  */
 package io.spine.tools.java;
 
+import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
+
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
@@ -79,5 +85,20 @@ public class JavaCode {
             resultName = Character.toUpperCase(resultName.charAt(0)) + resultName.substring(1);
         }
         return resultName;
+    }
+
+    /**
+     * Obtains the {@link Path} to a folder, that contains
+     * a generated file from the file descriptor.
+     *
+     * @param file the proto file descriptor
+     * @return the relative folder path
+     */
+    public static Path getFolderPath(FileDescriptorProto file) {
+        checkNotNull(file);
+        final String javaPackage = file.getOptions()
+                                       .getJavaPackage();
+        final String packageDir = javaPackage.replace('.', File.separatorChar);
+        return Paths.get(packageDir);
     }
 }

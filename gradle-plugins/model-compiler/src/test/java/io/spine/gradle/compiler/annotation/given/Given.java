@@ -38,7 +38,7 @@ import java.lang.annotation.Annotation;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.java.JavaCode.toJavaFieldName;
-import static io.spine.tools.java.JavaSources.getBuilderClassName;
+import static io.spine.tools.java.SimpleClassName.ofBuilder;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
@@ -139,7 +139,7 @@ public class Given {
 
         private static JavaClassSource getBuilder(JavaSource messageSource) {
             final TypeHolder messageType = (TypeHolder) messageSource;
-            final JavaType builderType = messageType.getNestedType(getBuilderClassName());
+            final JavaType builderType = messageType.getNestedType(ofBuilder());
             return (JavaClassSource) builderType;
         }
     }
