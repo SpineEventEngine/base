@@ -24,6 +24,7 @@ import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.gradle.SpinePlugin;
 import io.spine.gradle.compiler.message.MessageTypeCache;
+import io.spine.tools.java.PackageName;
 import io.spine.tools.java.SimpleClassName;
 import io.spine.tools.proto.FileDescriptors;
 import org.gradle.api.Action;
@@ -172,10 +173,8 @@ public class RejectionGenPlugin extends SpinePlugin {
         log.debug("Generating rejections from file {}", file.getName());
 
         if (log.isTraceEnabled()) {
-            final String javaPackage = file.getOptions()
-                                           .getJavaPackage();
-            log.trace("Found options: javaPackage: {}, javaOuterClassName: {}",
-                      javaPackage,
+            log.trace("javaPackage: {}, javaOuterClassName: {}",
+                      PackageName.resolve(file),
                       SimpleClassName.outerOf(file));
         }
 

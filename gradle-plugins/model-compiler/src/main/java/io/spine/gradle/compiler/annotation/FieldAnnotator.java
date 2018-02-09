@@ -26,7 +26,7 @@ import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldOptions;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
-import io.spine.tools.java.JavaSources;
+import io.spine.tools.java.CodePaths;
 import io.spine.tools.java.SimpleClassName;
 import org.jboss.forge.roaster.model.JavaType;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
@@ -79,7 +79,7 @@ class FieldAnnotator extends Annotator<FieldOptions, FieldDescriptorProto> {
             return;
         }
 
-        final Path filePath = JavaSources.getFile(fileDescriptor);
+        final Path filePath = CodePaths.getFile(fileDescriptor);
         rewriteSource(filePath, new FileFieldAnnotation<JavaClassSource>(fileDescriptor));
     }
 
@@ -87,8 +87,8 @@ class FieldAnnotator extends Annotator<FieldOptions, FieldDescriptorProto> {
     protected void annotateMultipleFiles(FileDescriptorProto fileDescriptor) {
         for (DescriptorProto messageDescriptor : fileDescriptor.getMessageTypeList()) {
             if (shouldAnnotate(messageDescriptor)) {
-                final Path filePath = JavaSources.getFile(messageDescriptor, false,
-                                                          fileDescriptor);
+                final Path filePath = CodePaths.getFile(messageDescriptor, false,
+                                                        fileDescriptor);
                 rewriteSource(filePath,
                               new MessageFieldAnnotation<JavaClassSource>(fileDescriptor,
                                                                           messageDescriptor));

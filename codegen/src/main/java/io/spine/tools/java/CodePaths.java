@@ -36,15 +36,18 @@ import static java.lang.String.format;
  * Utilities for working with the Java sources, generated from {@code .proto} files.
  *
  * @author Dmytro Grankin
+ * @author Alexander Yevsyukov
  */
-public class JavaSources {
+public final class CodePaths {
 
+    public static final String PACKAGE_DELIMITER = ".";
     private static final String OR_BUILDER_SUFFIX = "OrBuilder";
     private static final String GRPC_CLASSNAME_SUFFIX = "Grpc";
+
     static final String FILE_EXTENSION = ".java";
 
     /** Prevent instantiation of this utility class. */
-    private JavaSources() {
+    private CodePaths() {
     }
 
     /**
@@ -154,11 +157,15 @@ public class JavaSources {
      * @param file the proto file descriptor
      * @return the relative folder path
      */
-    public static Path getFolder(FileDescriptorProto file) {
+    private static Path getFolder(FileDescriptorProto file) {
         checkNotNull(file);
-        final String javaPackage = file.getOptions()
-                                       .getJavaPackage();
-        final String packageDir = javaPackage.replace('.', File.separatorChar);
+        final PackageName packageName = PackageName.resolve(file);
+        final String packageDir = packageName.value()
+                                             .replace('.', File.separatorChar);
         return Paths.get(packageDir);
+    }
+
+    public static String toFileName(String javaPackage, String typename) {
+        return (javaPackage + PACKAGE_DELIMITER + typename).replace('.', '/') + FILE_EXTENSION;
     }
 }

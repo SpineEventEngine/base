@@ -24,7 +24,7 @@ import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.GeneratedMessageV3.ExtendableMessage;
-import io.spine.tools.java.JavaSources;
+import io.spine.tools.java.CodePaths;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.jboss.forge.roaster.model.source.JavaSource;
@@ -36,7 +36,7 @@ import java.util.Collection;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.java.JavaSources.getOrBuilderSuffix;
+import static io.spine.tools.java.CodePaths.getOrBuilderSuffix;
 import static java.lang.String.format;
 
 /**
@@ -66,7 +66,7 @@ abstract class TypeDefinitionAnnotator<L extends ExtendableMessage, D extends Ge
 
     @Override
     protected final void annotateOneFile(final FileDescriptorProto fileDescriptor) {
-        final Path relativeFilePath = JavaSources.getFile(fileDescriptor);
+        final Path relativeFilePath = CodePaths.getFile(fileDescriptor);
         rewriteSource(relativeFilePath, new SourceVisitor<JavaClassSource>() {
             @Nullable
             @Override

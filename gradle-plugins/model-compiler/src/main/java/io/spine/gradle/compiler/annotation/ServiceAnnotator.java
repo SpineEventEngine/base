@@ -30,7 +30,7 @@ import java.nio.file.Path;
 import java.util.Collection;
 
 import static io.spine.option.UnknownOptions.getUnknownOptionValue;
-import static io.spine.tools.java.JavaSources.getFile;
+import static io.spine.tools.java.CodePaths.getFile;
 
 /**
  * An annotator for {@code gRPC} services.

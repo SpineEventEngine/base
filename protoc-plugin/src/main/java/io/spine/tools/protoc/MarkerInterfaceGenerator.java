@@ -30,6 +30,8 @@ import com.google.protobuf.GeneratedMessageV3.ExtendableMessage;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import com.squareup.javapoet.JavaFile;
 import io.spine.option.UnknownOptions;
+import io.spine.tools.java.CodePaths;
+import io.spine.tools.java.PackageName;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
@@ -39,6 +41,7 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.ImmutableSet.of;
 import static io.spine.option.OptionsProto.everyIs;
 import static io.spine.option.OptionsProto.is;
+import static io.spine.tools.java.CodePaths.PACKAGE_DELIMITER;
 import static io.spine.tools.protoc.MarkerInterfaces.create;
 import static java.lang.String.format;
 
@@ -62,7 +65,6 @@ public class MarkerInterfaceGenerator extends SpineProtoGenerator {
 
     @VisibleForTesting
     static final String INSERTION_POINT_IMPLEMENTS = "message_implements:%s";
-    private static final String PACKAGE_DELIMITER = ".";
 
     /** Prevents singleton class instantiation. */
     private MarkerInterfaceGenerator() {
@@ -139,7 +141,8 @@ public class MarkerInterfaceGenerator extends SpineProtoGenerator {
                                     .getJavaMultipleFiles()
                 ? msg.getName()
                 : resolveName(file);
-        final String javaPackage = resolvePackage(file);
+        final String javaPackage = PackageName.resolve(file)
+                                              .value();
         final File.Builder srcFile = prepareFile(fileName, javaPackage);
         final MarkerInterfaceSpec interfaceSpec = prepareInterfaceFqn(optionValue, file);
         final String messageFqn = file.getPackage() + PACKAGE_DELIMITER + msg.getName();
@@ -149,8 +152,8 @@ public class MarkerInterfaceGenerator extends SpineProtoGenerator {
         final JavaFile interfaceContent = create(interfaceSpec.getPackageName(),
                                                  interfaceSpec.getName());
         final File interfaceFile = File.newBuilder()
-                                       .setName(toFileName(interfaceSpec.getPackageName(),
-                                                           interfaceSpec.getName()))
+                                       .setName(CodePaths.toFileName(interfaceSpec.getPackageName(),
+                                                                     interfaceSpec.getName()))
                                        .setContent(interfaceContent.toString())
                                        .build();
         final MessageAndInterface result = new MessageAndInterface(messageFile, interfaceFile);
@@ -218,19 +221,11 @@ public class MarkerInterfaceGenerator extends SpineProtoGenerator {
         if (optionValue.contains(PACKAGE_DELIMITER)) {
             spec = MarkerInterfaceSpec.from(optionValue);
         } else {
-            final String javaPackage = resolvePackage(srcFile);
+            final String javaPackage = PackageName.resolve(srcFile)
+                                                  .value();
             spec = MarkerInterfaceSpec.newInstance(javaPackage, optionValue);
         }
         return spec;
-    }
-
-    private static String resolvePackage(FileDescriptorProto fileDescriptor) {
-        String javaPackage = fileDescriptor.getOptions()
-                                           .getJavaPackage();
-        if (isNullOrEmpty(javaPackage)) {
-            javaPackage = fileDescriptor.getPackage();
-        }
-        return javaPackage;
     }
 
     private static String resolveName(FileDescriptorProto fileDescriptor) {
@@ -243,14 +238,10 @@ public class MarkerInterfaceGenerator extends SpineProtoGenerator {
     }
 
     private static File.Builder prepareFile(String messageName, String javaPackage) {
-        final String nameFqn = toFileName(javaPackage, messageName);
+        final String fileName = CodePaths.toFileName(javaPackage, messageName);
         final File.Builder srcFile = File.newBuilder()
-                                         .setName(nameFqn);
+                                         .setName(fileName);
         return srcFile;
-    }
-
-    private static String toFileName(String javaPackage, String typename) {
-        return (javaPackage + PACKAGE_DELIMITER + typename).replace('.', '/') + ".java";
     }
 
     /**

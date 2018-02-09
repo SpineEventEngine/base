@@ -94,6 +94,6 @@ public final class SimpleClassName extends StringTypeValue {
 
     /** Obtains the name for a file of the class. */
     public String toFileName() {
-        return value() + JavaSources.FILE_EXTENSION;
+        return value() + CodePaths.FILE_EXTENSION;
     }
 }
