@@ -79,7 +79,7 @@ class FieldAnnotator extends Annotator<FieldOptions, FieldDescriptorProto> {
             return;
         }
 
-        final Path filePath = CodePaths.getFile(fileDescriptor);
+        final Path filePath = CodePaths.forOuterClassOf(fileDescriptor);
         rewriteSource(filePath, new FileFieldAnnotation<JavaClassSource>(fileDescriptor));
     }
 
@@ -87,8 +87,8 @@ class FieldAnnotator extends Annotator<FieldOptions, FieldDescriptorProto> {
     protected void annotateMultipleFiles(FileDescriptorProto fileDescriptor) {
         for (DescriptorProto messageDescriptor : fileDescriptor.getMessageTypeList()) {
             if (shouldAnnotate(messageDescriptor)) {
-                final Path filePath = CodePaths.getFile(messageDescriptor, false,
-                                                        fileDescriptor);
+                final Path filePath = CodePaths.forMessage(messageDescriptor, false,
+                                                           fileDescriptor);
                 rewriteSource(filePath,
                               new MessageFieldAnnotation<JavaClassSource>(fileDescriptor,
                                                                           messageDescriptor));

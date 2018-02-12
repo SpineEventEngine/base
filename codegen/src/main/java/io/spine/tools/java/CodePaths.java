@@ -48,7 +48,7 @@ public final class CodePaths {
      * @param file the proto file descriptor
      * @return the relative file path
      */
-    public static Path getFile(FileDescriptorProto file) {
+    public static Path forOuterClassOf(FileDescriptorProto file) {
         checkNotNull(file);
         final Path folderPath = getFolder(file);
         final String filename = SimpleClassName.outerOf(file)
@@ -68,9 +68,9 @@ public final class CodePaths {
      *         the file descriptor containing the message descriptor
      * @return the relative file path
      */
-    public static Path getFile(DescriptorProto message,
-                               boolean orBuilder,
-                               FileDescriptorProto file) {
+    public static Path forMessage(DescriptorProto message,
+                                  boolean orBuilder,
+                                  FileDescriptorProto file) {
         checkNotNull(file);
         checkNotNull(message);
         final String typeName = message.getName();
@@ -81,7 +81,7 @@ public final class CodePaths {
 
         if (!file.getOptions()
                  .hasJavaMultipleFiles()) {
-            return getFile(file);
+            return forOuterClassOf(file);
         }
 
         final Path folderPath = getFolder(file);
@@ -97,7 +97,7 @@ public final class CodePaths {
      * @param file the file descriptor containing the enum descriptor
      * @return the relative file path
      */
-    public static Path getFile(EnumDescriptorProto enumType, FileDescriptorProto file) {
+    public static Path forEnum(EnumDescriptorProto enumType, FileDescriptorProto file) {
         checkNotNull(file);
         checkNotNull(enumType);
         if (!file.getEnumTypeList()
@@ -107,7 +107,7 @@ public final class CodePaths {
 
         if (!file.getOptions()
                  .hasJavaMultipleFiles()) {
-            return getFile(file);
+            return forOuterClassOf(file);
         }
 
         final Path folderPath = getFolder(file);
@@ -116,7 +116,7 @@ public final class CodePaths {
         return folderPath.resolve(filename);
     }
 
-    public static Path getFile(ServiceDescriptorProto service, FileDescriptorProto file) {
+    public static Path forService(ServiceDescriptorProto service, FileDescriptorProto file) {
         checkNotNull(service);
         checkNotNull(file);
         final String serviceType = service.getName();

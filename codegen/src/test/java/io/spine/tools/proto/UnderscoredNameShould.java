@@ -32,5 +32,4 @@ public class UnderscoredNameShould {
     public void have_utility_ctor_for_CamelCase() {
         Tests.assertHasPrivateParameterlessCtor(UnderscoredName.CamelCase.class);
     }
-
 }

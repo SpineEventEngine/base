@@ -64,10 +64,10 @@ class MessageAnnotator extends TypeDefinitionAnnotator<MessageOptions, Descripto
     @Override
     protected void annotateDefinition(DescriptorProto definition,
                                       FileDescriptorProto file) {
-        final Path messageFilePath = CodePaths.getFile(definition, false, file);
+        final Path messageFilePath = CodePaths.forMessage(definition, false, file);
         rewriteSource(messageFilePath, new TypeDeclarationAnnotation());
 
-        final Path messageOrBuilderPath = CodePaths.getFile(definition, true, file);
+        final Path messageOrBuilderPath = CodePaths.forMessage(definition, true, file);
         rewriteSource(messageOrBuilderPath, new TypeDeclarationAnnotation());
     }
 

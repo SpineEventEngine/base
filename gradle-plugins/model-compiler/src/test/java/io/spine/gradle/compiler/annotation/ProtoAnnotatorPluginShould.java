@@ -56,7 +56,7 @@ import static io.spine.gradle.compiler.Extension.getDefaultMainGenDir;
 import static io.spine.gradle.compiler.Extension.getDefaultMainGenGrpcDir;
 import static io.spine.gradle.compiler.annotation.given.Given.NO_SPI_OPTIONS_FILENAME;
 import static io.spine.gradle.compiler.annotation.given.Given.NO_SPI_OPTIONS_MULTIPLE_FILENAME;
-import static io.spine.tools.java.CodePaths.getFile;
+import static io.spine.tools.java.CodePaths.forService;
 import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.nio.file.Paths.get;
 
@@ -171,7 +171,7 @@ public class ProtoAnnotatorPluginShould {
         final FileDescriptorProto fileDescriptor = getDescriptor(testFile);
         final List<ServiceDescriptorProto> services = fileDescriptor.getServiceList();
         for (ServiceDescriptorProto serviceDescriptor : services) {
-            final Path messagePath = getFile(serviceDescriptor, fileDescriptor);
+            final Path messagePath = forService(serviceDescriptor, fileDescriptor);
             validateGrpcService(messagePath,
                                 new MainDefinitionAnnotationValidator(shouldBeAnnotated));
         }
@@ -183,8 +183,8 @@ public class ProtoAnnotatorPluginShould {
 
         final FileDescriptorProto fileDescriptor = getDescriptor(testFile);
         final DescriptorProto messageDescriptor = fileDescriptor.getMessageType(0);
-        final Path sourcePath = CodePaths.getFile(messageDescriptor, false,
-                                                  fileDescriptor);
+        final Path sourcePath = CodePaths.forMessage(messageDescriptor, false,
+                                                     fileDescriptor);
         final NestedTypeFieldsAnnotationValidator validator =
                 new NestedTypeFieldsAnnotationValidator(messageDescriptor,
                                                         shouldBeAnnotated);
@@ -198,7 +198,7 @@ public class ProtoAnnotatorPluginShould {
         final FileDescriptorProto fileDescriptor = getDescriptor(testFile);
         final DescriptorProto messageDescriptor = fileDescriptor.getMessageType(0);
         final FieldDescriptorProto experimentalField = messageDescriptor.getField(0);
-        final Path sourcePath = CodePaths.getFile(messageDescriptor, false, fileDescriptor);
+        final Path sourcePath = CodePaths.forMessage(messageDescriptor, false, fileDescriptor);
         validate(sourcePath, new FieldAnnotationValidator(experimentalField, shouldBeAnnotated));
     }
 
@@ -209,9 +209,9 @@ public class ProtoAnnotatorPluginShould {
         final FileDescriptorProto fileDescriptor = getDescriptor(testFile);
         for (DescriptorProto messageDescriptor : fileDescriptor.getMessageTypeList()) {
             final Path messagePath =
-                    CodePaths.getFile(messageDescriptor, false, fileDescriptor);
+                    CodePaths.forMessage(messageDescriptor, false, fileDescriptor);
             final Path messageOrBuilderPath =
-                    CodePaths.getFile(messageDescriptor, true, fileDescriptor);
+                    CodePaths.forMessage(messageDescriptor, true, fileDescriptor);
             final SourceValidator annotationValidator =
                     new MainDefinitionAnnotationValidator(shouldBeAnnotated);
             validate(messagePath, annotationValidator);
@@ -224,7 +224,7 @@ public class ProtoAnnotatorPluginShould {
         newProjectWithFile(testFile).executeTask(ANNOTATE_PROTO);
 
         final FileDescriptorProto fileDescriptor = getDescriptor(testFile);
-        final Path sourcePath = CodePaths.getFile(fileDescriptor);
+        final Path sourcePath = CodePaths.forOuterClassOf(fileDescriptor);
         validate(sourcePath, new NestedTypesAnnotationValidator(shouldBeAnnotated));
     }
 

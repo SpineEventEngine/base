@@ -66,7 +66,7 @@ abstract class TypeDefinitionAnnotator<L extends ExtendableMessage, D extends Ge
 
     @Override
     protected final void annotateOneFile(final FileDescriptorProto fileDescriptor) {
-        final Path relativeFilePath = CodePaths.getFile(fileDescriptor);
+        final Path relativeFilePath = CodePaths.forOuterClassOf(fileDescriptor);
         rewriteSource(relativeFilePath, new SourceVisitor<JavaClassSource>() {
             @Nullable
             @Override

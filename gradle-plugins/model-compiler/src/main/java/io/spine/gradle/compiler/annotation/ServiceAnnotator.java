@@ -30,7 +30,7 @@ import java.nio.file.Path;
 import java.util.Collection;
 
 import static io.spine.option.UnknownOptions.getUnknownOptionValue;
-import static io.spine.tools.java.CodePaths.getFile;
+import static io.spine.tools.java.CodePaths.forService;
 
 /**
  * An annotator for {@code gRPC} services.
@@ -70,7 +70,7 @@ class ServiceAnnotator extends Annotator<ServiceOptions, ServiceDescriptorProto>
     private void annotateServices(FileDescriptorProto fileDescriptor) {
         for (ServiceDescriptorProto serviceDescriptor : fileDescriptor.getServiceList()) {
             if (shouldAnnotate(serviceDescriptor)) {
-                final Path sourcePath = getFile(serviceDescriptor, fileDescriptor);
+                final Path sourcePath = forService(serviceDescriptor, fileDescriptor);
                 rewriteSource(sourcePath, new TypeDeclarationAnnotation());
             }
         }
