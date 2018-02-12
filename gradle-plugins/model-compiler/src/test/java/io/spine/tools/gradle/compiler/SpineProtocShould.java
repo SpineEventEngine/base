@@ -18,9 +18,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.gradle.compiler;
+package io.spine.tools.gradle.compiler;
 
-import io.spine.tools.gradle.GradleProject;
+import io.spine.tools.gradle.given.GradleProject;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;

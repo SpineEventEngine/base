@@ -34,16 +34,16 @@ import java.util.Collection;
 import java.util.Map;
 
 import static com.google.common.collect.Maps.newHashMap;
-import static io.spine.gradle.compiler.Extension.getMainDescriptorSetPath;
-import static io.spine.gradle.compiler.Extension.getMainTargetGenResourcesDir;
-import static io.spine.gradle.compiler.Extension.getTestDescriptorSetPath;
-import static io.spine.gradle.compiler.Extension.getTestTargetGenResourcesDir;
 import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
 import static io.spine.tools.gradle.TaskName.COMPILE_TEST_JAVA;
 import static io.spine.tools.gradle.TaskName.FIND_ENRICHMENTS;
 import static io.spine.tools.gradle.TaskName.FIND_TEST_ENRICHMENTS;
 import static io.spine.tools.gradle.TaskName.PROCESS_RESOURCES;
 import static io.spine.tools.gradle.TaskName.PROCESS_TEST_RESOURCES;
+import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSetPath;
+import static io.spine.tools.gradle.compiler.Extension.getMainTargetGenResourcesDir;
+import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSetPath;
+import static io.spine.tools.gradle.compiler.Extension.getTestTargetGenResourcesDir;
 import static io.spine.tools.proto.FileDescriptors.isNotGoogleProto;
 
 /**

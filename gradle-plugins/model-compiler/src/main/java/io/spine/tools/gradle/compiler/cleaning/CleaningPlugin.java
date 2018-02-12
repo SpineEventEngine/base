@@ -19,9 +19,9 @@
  */
 package io.spine.tools.gradle.compiler.cleaning;
 
-import io.spine.gradle.compiler.Extension;
 import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.SpinePlugin;
+import io.spine.tools.gradle.compiler.Extension;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;

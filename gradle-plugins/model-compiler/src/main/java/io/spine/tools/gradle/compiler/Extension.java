@@ -17,7 +17,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.gradle.compiler;
+package io.spine.tools.gradle.compiler;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
@@ -37,7 +37,7 @@ import java.util.List;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Lists.newLinkedList;
-import static io.spine.gradle.compiler.ModelCompilerPlugin.SPINE_MODEL_COMPILER_EXTENSION_NAME;
+import static io.spine.tools.gradle.compiler.ModelCompilerPlugin.SPINE_MODEL_COMPILER_EXTENSION_NAME;
 
 /**
  * A configuration for the {@link ModelCompilerPlugin}.

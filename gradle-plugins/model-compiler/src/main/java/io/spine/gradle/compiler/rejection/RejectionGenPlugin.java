@@ -39,16 +39,16 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 
-import static io.spine.gradle.compiler.Extension.getMainDescriptorSetPath;
-import static io.spine.gradle.compiler.Extension.getTargetGenRejectionsRootDir;
-import static io.spine.gradle.compiler.Extension.getTargetTestGenRejectionsRootDir;
-import static io.spine.gradle.compiler.Extension.getTestDescriptorSetPath;
 import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
 import static io.spine.tools.gradle.TaskName.COMPILE_TEST_JAVA;
 import static io.spine.tools.gradle.TaskName.GENERATE_PROTO;
 import static io.spine.tools.gradle.TaskName.GENERATE_REJECTIONS;
 import static io.spine.tools.gradle.TaskName.GENERATE_TEST_PROTO;
 import static io.spine.tools.gradle.TaskName.GENERATE_TEST_REJECTIONS;
+import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSetPath;
+import static io.spine.tools.gradle.compiler.Extension.getTargetGenRejectionsRootDir;
+import static io.spine.tools.gradle.compiler.Extension.getTargetTestGenRejectionsRootDir;
+import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSetPath;
 
 /**
  * Plugin which generates Rejections declared in {@code rejections.proto} files.

@@ -38,21 +38,21 @@ import java.io.File;
 import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.gradle.compiler.Extension.getIndent;
-import static io.spine.gradle.compiler.Extension.getMainDescriptorSetPath;
-import static io.spine.gradle.compiler.Extension.getMainProtoSrcDir;
-import static io.spine.gradle.compiler.Extension.getTargetGenValidatorsRootDir;
-import static io.spine.gradle.compiler.Extension.getTargetTestGenValidatorsRootDir;
-import static io.spine.gradle.compiler.Extension.getTestDescriptorSetPath;
-import static io.spine.gradle.compiler.Extension.getTestProtoSrcDir;
-import static io.spine.gradle.compiler.Extension.isGenerateValidatingBuilders;
-import static io.spine.gradle.compiler.Extension.isGenerateValidatingBuildersFromClasspath;
 import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
 import static io.spine.tools.gradle.TaskName.COMPILE_TEST_JAVA;
 import static io.spine.tools.gradle.TaskName.GENERATE_PROTO;
 import static io.spine.tools.gradle.TaskName.GENERATE_TEST_PROTO;
 import static io.spine.tools.gradle.TaskName.GENERATE_TEST_VALIDATING_BUILDERS;
 import static io.spine.tools.gradle.TaskName.GENERATE_VALIDATING_BUILDERS;
+import static io.spine.tools.gradle.compiler.Extension.getIndent;
+import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSetPath;
+import static io.spine.tools.gradle.compiler.Extension.getMainProtoSrcDir;
+import static io.spine.tools.gradle.compiler.Extension.getTargetGenValidatorsRootDir;
+import static io.spine.tools.gradle.compiler.Extension.getTargetTestGenValidatorsRootDir;
+import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSetPath;
+import static io.spine.tools.gradle.compiler.Extension.getTestProtoSrcDir;
+import static io.spine.tools.gradle.compiler.Extension.isGenerateValidatingBuilders;
+import static io.spine.tools.gradle.compiler.Extension.isGenerateValidatingBuildersFromClasspath;
 
 /**
  * Plugin which generates validating builders based on the Protobuf Message definitions.

@@ -35,16 +35,16 @@ import java.util.Collection;
 import java.util.Map;
 
 import static com.google.common.collect.Maps.newHashMap;
-import static io.spine.gradle.compiler.Extension.getMainDescriptorSetPath;
-import static io.spine.gradle.compiler.Extension.getMainTargetGenResourcesDir;
-import static io.spine.gradle.compiler.Extension.getTestDescriptorSetPath;
-import static io.spine.gradle.compiler.Extension.getTestTargetGenResourcesDir;
 import static io.spine.tools.gradle.TaskName.GENERATE_PROTO;
 import static io.spine.tools.gradle.TaskName.GENERATE_TEST_PROTO;
 import static io.spine.tools.gradle.TaskName.MAP_PROTO_TO_JAVA;
 import static io.spine.tools.gradle.TaskName.MAP_TEST_PROTO_TO_JAVA;
 import static io.spine.tools.gradle.TaskName.PROCESS_RESOURCES;
 import static io.spine.tools.gradle.TaskName.PROCESS_TEST_RESOURCES;
+import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSetPath;
+import static io.spine.tools.gradle.compiler.Extension.getMainTargetGenResourcesDir;
+import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSetPath;
+import static io.spine.tools.gradle.compiler.Extension.getTestTargetGenResourcesDir;
 import static io.spine.tools.proto.FileDescriptors.isNotGoogleProto;
 
 /**

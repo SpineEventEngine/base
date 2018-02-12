@@ -20,7 +20,7 @@
 
 package io.spine.gradle.compiler.validate;
 
-import io.spine.tools.gradle.GradleProject;
+import io.spine.tools.gradle.given.GradleProject;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;

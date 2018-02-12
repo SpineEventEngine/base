@@ -21,13 +21,13 @@
 package io.spine.gradle.compiler.rejection.given;
 
 import com.sun.javadoc.RootDoc;
-import io.spine.tools.gradle.GradleProject;
+import io.spine.tools.gradle.given.GradleProject;
 import io.spine.tools.proto.FieldName;
 import org.junit.rules.TemporaryFolder;
 
 import java.util.Arrays;
 
-import static io.spine.gradle.compiler.Extension.getDefaultMainGenSpineDir;
+import static io.spine.tools.gradle.compiler.Extension.getDefaultMainGenSpineDir;
 
 /**
  * @author Dmytro Grankin

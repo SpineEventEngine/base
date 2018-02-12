@@ -20,6 +20,7 @@
 
 package io.spine.tools.gradle;
 
+import io.spine.tools.gradle.given.GradleProject;
 import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.BuildTask;
 import org.junit.Rule;

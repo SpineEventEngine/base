@@ -35,12 +35,6 @@ import org.slf4j.Logger;
 
 import java.util.Collection;
 
-import static io.spine.gradle.compiler.Extension.getMainDescriptorSetPath;
-import static io.spine.gradle.compiler.Extension.getMainGenGrpcDir;
-import static io.spine.gradle.compiler.Extension.getMainGenProtoDir;
-import static io.spine.gradle.compiler.Extension.getTestDescriptorSetPath;
-import static io.spine.gradle.compiler.Extension.getTestGenGrpcDir;
-import static io.spine.gradle.compiler.Extension.getTestGenProtoDir;
 import static io.spine.option.OptionsProto.beta;
 import static io.spine.option.OptionsProto.betaAll;
 import static io.spine.option.OptionsProto.betaType;
@@ -60,6 +54,12 @@ import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
 import static io.spine.tools.gradle.TaskName.COMPILE_TEST_JAVA;
 import static io.spine.tools.gradle.TaskName.GENERATE_PROTO;
 import static io.spine.tools.gradle.TaskName.GENERATE_TEST_PROTO;
+import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSetPath;
+import static io.spine.tools.gradle.compiler.Extension.getMainGenGrpcDir;
+import static io.spine.tools.gradle.compiler.Extension.getMainGenProtoDir;
+import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSetPath;
+import static io.spine.tools.gradle.compiler.Extension.getTestGenGrpcDir;
+import static io.spine.tools.gradle.compiler.Extension.getTestGenProtoDir;
 import static io.spine.tools.proto.FileDescriptors.isNotGoogleProto;
 import static org.slf4j.LoggerFactory.getLogger;
 
