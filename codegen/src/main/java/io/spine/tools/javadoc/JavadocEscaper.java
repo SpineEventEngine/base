@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -18,10 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.gradle.compiler.javadoc;
+package io.spine.tools.javadoc;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.gradle.compiler.javadoc.JavadocEscaper.EscapeSequence.fromBeginningOf;
+import static io.spine.tools.javadoc.JavadocEscaper.EscapeSequence.fromBeginningOf;
 
 /**
  * Escaper for a Javadoc text.
@@ -35,10 +35,9 @@ import static io.spine.gradle.compiler.javadoc.JavadocEscaper.EscapeSequence.fro
  *
  * @author Dmytro Grankin
  */
-@SuppressWarnings("UtilityClass")
 public class JavadocEscaper {
 
-    // prevent instantiation of this utility class
+    /** Prevents instantiation of this utility class */
     private JavadocEscaper() {
     }
 

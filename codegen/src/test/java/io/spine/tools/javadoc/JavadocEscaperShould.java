@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -18,19 +18,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.gradle.compiler.javadoc;
+package io.spine.tools.javadoc;
 
 import com.google.common.testing.NullPointerTester;
+import io.spine.tools.javadoc.JavadocEscaper.EscapeSequence;
 import org.junit.Test;
 
-import static io.spine.gradle.compiler.javadoc.JavadocEscaper.EscapeSequence.AMPERSAND;
-import static io.spine.gradle.compiler.javadoc.JavadocEscaper.EscapeSequence.AT_MARK;
-import static io.spine.gradle.compiler.javadoc.JavadocEscaper.EscapeSequence.BACK_SLASH;
-import static io.spine.gradle.compiler.javadoc.JavadocEscaper.EscapeSequence.COMMENT_BEGINNING;
-import static io.spine.gradle.compiler.javadoc.JavadocEscaper.EscapeSequence.COMMENT_ENDING;
-import static io.spine.gradle.compiler.javadoc.JavadocEscaper.EscapeSequence.GREATER_THAN;
-import static io.spine.gradle.compiler.javadoc.JavadocEscaper.EscapeSequence.LESS_THAN;
-import static io.spine.gradle.compiler.javadoc.JavadocEscaper.escape;
+import static io.spine.tools.javadoc.JavadocEscaper.escape;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -40,9 +34,10 @@ public class JavadocEscaperShould {
 
     @Test
     public void escape_comment_beginning_and_ending() {
-        assertEquals(COMMENT_ENDING.getEscaped(), escape(COMMENT_ENDING.getUnescaped()));
-        assertEquals(' ' + COMMENT_BEGINNING.getEscaped(),
-                     escape(' ' + COMMENT_BEGINNING.getUnescaped()));
+        assertEquals(EscapeSequence.COMMENT_ENDING.getEscaped(),
+                     escape(EscapeSequence.COMMENT_ENDING.getUnescaped()));
+        assertEquals(' ' + EscapeSequence.COMMENT_BEGINNING.getEscaped(),
+                     escape(' ' + EscapeSequence.COMMENT_BEGINNING.getUnescaped()));
     }
 
     @Test
@@ -53,15 +48,20 @@ public class JavadocEscaperShould {
 
     @Test
     public void escape_html() {
-        assertEquals(LESS_THAN.getEscaped(), escape(LESS_THAN.getUnescaped()));
-        assertEquals(GREATER_THAN.getEscaped(), escape(GREATER_THAN.getUnescaped()));
-        assertEquals(AMPERSAND.getEscaped(), escape(AMPERSAND.getUnescaped()));
+        assertEquals(EscapeSequence.LESS_THAN.getEscaped(),
+                     escape(EscapeSequence.LESS_THAN.getUnescaped()));
+        assertEquals(EscapeSequence.GREATER_THAN.getEscaped(),
+                     escape(EscapeSequence.GREATER_THAN.getUnescaped()));
+        assertEquals(EscapeSequence.AMPERSAND.getEscaped(),
+                     escape(EscapeSequence.AMPERSAND.getUnescaped()));
     }
 
     @Test
     public void escape_at_and_back_slash() {
-        assertEquals(AT_MARK.getEscaped(), escape(AT_MARK.getUnescaped()));
-        assertEquals(BACK_SLASH.getEscaped(), escape(BACK_SLASH.getUnescaped()));
+        assertEquals(EscapeSequence.AT_MARK.getEscaped(),
+                     escape(EscapeSequence.AT_MARK.getUnescaped()));
+        assertEquals(EscapeSequence.BACK_SLASH.getEscaped(),
+                     escape(EscapeSequence.BACK_SLASH.getUnescaped()));
     }
 
     @Test
@@ -69,6 +69,6 @@ public class JavadocEscaperShould {
         final NullPointerTester nullPointerTester = new NullPointerTester();
 
         nullPointerTester.testAllPublicStaticMethods(JavadocEscaper.class);
-        nullPointerTester.testAllPublicStaticMethods(JavadocEscaper.EscapeSequence.class);
+        nullPointerTester.testAllPublicStaticMethods(EscapeSequence.class);
     }
 }

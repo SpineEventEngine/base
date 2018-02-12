@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -30,8 +30,8 @@ import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.SourceCodeInfo.Location;
-import io.spine.gradle.compiler.javadoc.JavadocEscaper;
 import io.spine.gradle.compiler.message.LocationPath;
+import io.spine.tools.javadoc.JavadocEscaper;
 import io.spine.tools.proto.FieldName;
 
 import javax.annotation.Nullable;

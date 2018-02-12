@@ -89,8 +89,8 @@ public class CleaningPlugin extends SpinePlugin {
     }
 
     /**
-     * Custom {@linkplain java.nio.file.FileVisitor FileVisitor} which recursively deletes the contents
-     * of the walked folder.
+     * Custom {@linkplain java.nio.file.FileVisitor FileVisitor} which recursively deletes
+     * the contents of the walked folder.
      */
     @SuppressWarnings("RefusedBequest")
     // As we define a completely different behavior for the visitor methods.
