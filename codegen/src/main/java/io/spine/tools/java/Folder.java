@@ -24,6 +24,8 @@ import io.spine.tools.AbstractFolder;
 
 import java.nio.file.Path;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * A folder with Java source files.
  *
@@ -31,8 +33,16 @@ import java.nio.file.Path;
  */
 public final class Folder extends AbstractFolder<FileName, SourceFile> {
 
-    Folder(Path path) {
+    private Folder(Path path) {
         super(path);
+    }
+
+    /**
+     * Creates a new instance.
+     */
+    static Folder at(Path path) {
+        checkNotNull(path);
+        return new Folder(path);
     }
 
     /**

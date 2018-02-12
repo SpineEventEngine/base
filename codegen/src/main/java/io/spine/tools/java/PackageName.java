@@ -78,7 +78,7 @@ public final class PackageName extends StringTypeValue {
      */
     public Folder toFolder() {
         final String packageDir = value().replace(DELIMITER_CHAR, File.separatorChar);
-        final Folder result = new Folder(Paths.get(packageDir));
+        final Folder result = Folder.at(Paths.get(packageDir));
         return result;
     }
 }
