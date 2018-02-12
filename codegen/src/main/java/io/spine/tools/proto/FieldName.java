@@ -22,7 +22,7 @@ package io.spine.tools.proto;
 
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
-import io.spine.type.StringTypeValue;
+import io.spine.tools.AbstractFieldName;
 
 import java.util.List;
 
@@ -34,7 +34,7 @@ import static io.spine.tools.CodePreconditions.checkNotEmptyOrBlank;
  *
  * @author Alexander Yevsyukov
  */
-public final class FieldName extends StringTypeValue implements UnderscoredName {
+public final class FieldName extends AbstractFieldName implements UnderscoredName {
 
     private static final String WORD_SEPARATOR = "_";
 

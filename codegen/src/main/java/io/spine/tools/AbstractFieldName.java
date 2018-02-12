@@ -18,30 +18,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.java;
+package io.spine.tools;
 
-import io.spine.tools.AbstractFieldName;
-
-import static com.google.common.base.Preconditions.checkNotNull;
+import io.spine.type.StringTypeValue;
 
 /**
- * A name of a field declared in a Java class.
- * 
+ * A field in a programming language.
+ *
  * @author Alexander Yevsyukov
  */
-public final class FieldName extends AbstractFieldName {
+public class AbstractFieldName extends StringTypeValue {
 
-    private FieldName(String value) {
+    protected AbstractFieldName(String value) {
         super(value);
-    }
-
-    /**
-     * Creates Java field name that corresponds to the passed Proto field name.
-     */
-    public static FieldName from(io.spine.tools.proto.FieldName protoField) {
-        checkNotNull(protoField);
-        final String fieldName = protoField.javaCase();
-        final FieldName result = new FieldName(fieldName);
-        return result;
     }
 }
