@@ -83,10 +83,9 @@ class RejectionJavadocGenerator {
      *
      * @return the class-level Javadoc content
      */
-    @SuppressWarnings("StringBufferWithoutInitialCapacity") // Cannot make valuable initialization
     public String generateClassJavadoc() {
         final Optional<String> leadingComments = getRejectionLeadingComments();
-        final StringBuilder builder = new StringBuilder();
+        final StringBuilder builder = new StringBuilder(256);
 
         if (leadingComments.isPresent()) {
             builder.append(OPENING_PRE)
