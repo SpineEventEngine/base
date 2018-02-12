@@ -20,8 +20,8 @@
 build/*
 */build/*
 
-# Class files produced by the IDE
-classes/*
+# Build files produced by the IDE
+out/*
 
 # Spine internal directory for storing intermediate artifacts
 /.spine/
