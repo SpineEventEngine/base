@@ -23,6 +23,6 @@
  * ProtoAnnotatorPlugin}.
  */
 @ParametersAreNonnullByDefault
-package io.spine.gradle.compiler.protoc;
+package io.spine.tools.gradle.compiler.protoc;
 
 import javax.annotation.ParametersAreNonnullByDefault;

@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.gradle.compiler.protoc;
+package io.spine.tools.gradle.compiler.protoc;
 
 import com.google.common.io.Files;
 import io.spine.tools.gradle.SpinePlugin;
