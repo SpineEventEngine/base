@@ -78,41 +78,46 @@ public class RejectionGenPlugin extends SpinePlugin {
      */
     @Override
     public void apply(final Project project) {
-        log().trace("Preparing to generate rejections");
+        final Logger log = log();
+
+        log.trace("Preparing to generate rejections");
         final Action<Task> mainScopeAction = new Action<Task>() {
             @Override
             public void execute(Task task) {
                 final String path = getMainDescriptorSetPath(project);
-                log().debug("Generating rejections from {}", path);
+                log.debug("Generating rejections from {}", path);
                 final List<FileDescriptorProto> filesWithRejections =
                         collectRejectionFiles(path);
                 processDescriptors(filesWithRejections, getTargetGenRejectionsRootDir(project));
             }
         };
 
-        logDependingTask(log(), GENERATE_REJECTIONS, COMPILE_JAVA, GENERATE_PROTO);
+        logDependingTask(log, GENERATE_REJECTIONS, COMPILE_JAVA, GENERATE_PROTO);
         final GradleTask generateRejections =
-                newTask(GENERATE_REJECTIONS, mainScopeAction).insertAfterTask(GENERATE_PROTO)
-                                                           .insertBeforeTask(COMPILE_JAVA)
-                                                           .applyNowTo(project);
-        log().trace("Preparing to generate test rejections");
+                newTask(GENERATE_REJECTIONS, mainScopeAction)
+                        .insertAfterTask(GENERATE_PROTO)
+                        .insertBeforeTask(COMPILE_JAVA)
+                        .applyNowTo(project);
+
+        log.trace("Preparing to generate test rejections");
         final Action<Task> testScopeAction = new Action<Task>() {
             @Override
             public void execute(Task task) {
                 final String path = getTestDescriptorSetPath(project);
-                log().debug("Generating test rejections from {}", path);
+                log.debug("Generating test rejections from {}", path);
                 final List<FileDescriptorProto> rejectionFiles = collectRejectionFiles(path);
                 processDescriptors(rejectionFiles, getTargetTestGenRejectionsRootDir(project));
             }
         };
 
-        logDependingTask(log(), GENERATE_TEST_REJECTIONS, COMPILE_TEST_JAVA, GENERATE_TEST_PROTO);
+        logDependingTask(log, GENERATE_TEST_REJECTIONS, COMPILE_TEST_JAVA, GENERATE_TEST_PROTO);
+
         final GradleTask generateTestRejections =
-                newTask(GENERATE_TEST_REJECTIONS,
-                        testScopeAction).insertAfterTask(GENERATE_TEST_PROTO)
-                                        .insertBeforeTask(COMPILE_TEST_JAVA)
-                                        .applyNowTo(project);
-        log().debug("Rejection generation phase initialized with tasks: {}, {}",
+                newTask(GENERATE_TEST_REJECTIONS, testScopeAction)
+                        .insertAfterTask(GENERATE_TEST_PROTO)
+                        .insertBeforeTask(COMPILE_TEST_JAVA)
+                        .applyNowTo(project);
+        log.debug("Rejection generation phase initialized with tasks: {}, {}",
                     generateRejections,
                     generateTestRejections);
     }
@@ -121,27 +126,29 @@ public class RejectionGenPlugin extends SpinePlugin {
         final List<FileDescriptorProto> result = Lists.newLinkedList();
         final Collection<FileDescriptorProto> allDescriptors =
                 FileDescriptors.parse(descFilePath);
+        final Logger log = log();
         for (FileDescriptorProto file : allDescriptors) {
             final FileName fn = FileName.from(file);
             if (fn.isRejections()) {
-                log().trace("Found rejections file: {}", fn.value());
+                log.trace("Found rejections file: {}", fn.value());
                 result.add(file);
             }
             messageTypeCache.cacheTypes(file);
         }
-        log().trace("Found rejections in files: {}", result);
+        log.trace("Found rejections in files: {}", result);
 
         return result;
     }
 
     private void processDescriptors(List<FileDescriptorProto> descriptors,
                                     String rejectionsRootDir) {
-        log().debug("Processing the file descriptors for the rejections {}", descriptors);
+        final Logger log = log();
+        log.debug("Processing the file descriptors for the rejections {}", descriptors);
         for (FileDescriptorProto file : descriptors) {
             if (isRejectionsFile(file)) {
                 generateRejections(file, messageTypeCache.getCachedTypes(), rejectionsRootDir);
             } else {
-                log().error("Invalid rejections file: {}", file.getName());
+                log.error("Invalid rejections file: {}", file.getName());
             }
         }
     }
