@@ -87,9 +87,8 @@ public class RejectionGenPlugin extends SpinePlugin {
                 log.debug("Generating rejections from {}", path);
                 final Collection<FileDescriptorProto> allFiles = FileDescriptors.parse(path);
                 collectAllMessageTypes(allFiles);
-                final List<FileDescriptorProto> filesWithRejections =
-                        Rejections.collect(allFiles);
-                processDescriptors(filesWithRejections, getTargetGenRejectionsRootDir(project));
+                final List<FileDescriptorProto> rejectionFiles = Rejections.collect(allFiles);
+                generate(rejectionFiles, getTargetGenRejectionsRootDir(project));
             }
         };
 
@@ -109,7 +108,7 @@ public class RejectionGenPlugin extends SpinePlugin {
                 final Collection<FileDescriptorProto> allFiles = FileDescriptors.parse(path);
                 collectAllMessageTypes(allFiles);
                 final List<FileDescriptorProto> rejectionFiles = Rejections.collect(allFiles);
-                processDescriptors(rejectionFiles, getTargetTestGenRejectionsRootDir(project));
+                generate(rejectionFiles, getTargetTestGenRejectionsRootDir(project));
             }
         };
 
@@ -131,7 +130,7 @@ public class RejectionGenPlugin extends SpinePlugin {
         }
     }
 
-    private void processDescriptors(List<FileDescriptorProto> files, String rejectionsRootDir) {
+    private void generate(List<FileDescriptorProto> files, String rejectionsRootDir) {
         final Logger log = log();
         log.debug("Processing the file descriptors for the rejections {}", files);
         for (FileDescriptorProto file : files) {
