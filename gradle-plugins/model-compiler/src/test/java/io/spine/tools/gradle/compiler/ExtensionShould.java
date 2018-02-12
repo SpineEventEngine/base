@@ -30,11 +30,11 @@ import java.io.IOException;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static io.spine.gradle.compiler.given.Given.SPINE_PROTOBUF_PLUGIN_ID;
-import static io.spine.gradle.compiler.given.Given.newProject;
-import static io.spine.gradle.compiler.given.Given.newUuid;
 import static io.spine.tools.gradle.compiler.Extension.SPINE_BUILD_ARTIFACT_STORAGE_DIR;
 import static io.spine.tools.gradle.compiler.ModelCompilerPlugin.SPINE_MODEL_COMPILER_EXTENSION_NAME;
+import static io.spine.tools.gradle.compiler.given.Given.SPINE_PROTOBUF_PLUGIN_ID;
+import static io.spine.tools.gradle.compiler.given.Given.newProject;
+import static io.spine.tools.gradle.compiler.given.Given.newUuid;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

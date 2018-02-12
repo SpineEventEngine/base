@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.gradle.compiler.given;
+package io.spine.tools.gradle.compiler.given;
 
 import com.google.common.io.Files;
 import org.gradle.api.Project;

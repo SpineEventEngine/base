@@ -26,8 +26,6 @@ import org.gradle.api.tasks.TaskContainer;
 import org.junit.Before;
 import org.junit.Test;
 
-import static io.spine.gradle.compiler.given.Given.SPINE_PROTOBUF_PLUGIN_ID;
-import static io.spine.gradle.compiler.given.Given.newProject;
 import static io.spine.tools.gradle.TaskDependencies.dependsOn;
 import static io.spine.tools.gradle.TaskName.ANNOTATE_PROTO;
 import static io.spine.tools.gradle.TaskName.ANNOTATE_TEST_PROTO;
@@ -49,6 +47,8 @@ import static io.spine.tools.gradle.TaskName.MAP_TEST_PROTO_TO_JAVA;
 import static io.spine.tools.gradle.TaskName.PRE_CLEAN;
 import static io.spine.tools.gradle.TaskName.PROCESS_RESOURCES;
 import static io.spine.tools.gradle.TaskName.PROCESS_TEST_RESOURCES;
+import static io.spine.tools.gradle.compiler.given.Given.SPINE_PROTOBUF_PLUGIN_ID;
+import static io.spine.tools.gradle.compiler.given.Given.newProject;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
