@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.gradle.compiler.annotation;
+package io.spine.tools.compiler.annotation;
 
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.FieldOptions;
@@ -40,7 +40,7 @@ import static com.google.common.base.Strings.isNullOrEmpty;
  *
  * @author Alex Tymchenko
  */
-class AnnotatorFactory {
+public class AnnotatorFactory {
 
     /**
      * Protobuf file descriptors to process.
@@ -59,7 +59,7 @@ class AnnotatorFactory {
      */
     private final String genGrpcDir;
 
-    AnnotatorFactory(Collection<FileDescriptorProto> fileDescriptors,
+    public AnnotatorFactory(Collection<FileDescriptorProto> fileDescriptors,
                      String genProtoDir,
                      String genGrpcDir) {
         checkNotNull(fileDescriptors);
@@ -70,23 +70,23 @@ class AnnotatorFactory {
         this.genGrpcDir = genGrpcDir;
     }
 
-    Annotator createFileAnnotator(Class<? extends Annotation> annotation,
-                                  GeneratedExtension<FileOptions, Boolean> option) {
+    public Annotator createFileAnnotator(Class<? extends Annotation> annotation,
+                                         GeneratedExtension<FileOptions, Boolean> option) {
         return new FileAnnotator(annotation, option, fileDescriptors, genProtoDir, genGrpcDir);
     }
 
-    Annotator createMessageAnnotator(Class<? extends Annotation> annotation,
-                                     GeneratedExtension<MessageOptions, Boolean> option) {
+    public Annotator createMessageAnnotator(Class<? extends Annotation> annotation,
+                                            GeneratedExtension<MessageOptions, Boolean> option) {
         return new MessageAnnotator(annotation, option, fileDescriptors, genProtoDir);
     }
 
-    Annotator createFieldAnnotator(Class<? extends Annotation> annotation,
-                                   GeneratedExtension<FieldOptions, Boolean> option) {
+    public Annotator createFieldAnnotator(Class<? extends Annotation> annotation,
+                                          GeneratedExtension<FieldOptions, Boolean> option) {
         return new FieldAnnotator(annotation, option, fileDescriptors, genProtoDir);
     }
 
-    Annotator createServiceAnnotator(Class<? extends Annotation> annotation,
-                                     GeneratedExtension<ServiceOptions, Boolean> option) {
+    public Annotator createServiceAnnotator(Class<? extends Annotation> annotation,
+                                            GeneratedExtension<ServiceOptions, Boolean> option) {
         return new ServiceAnnotator(annotation, option, fileDescriptors, genGrpcDir);
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.gradle.compiler.annotation;
+package io.spine.tools.compiler.annotation;
 
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
@@ -62,7 +62,7 @@ import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
  * @param <D> the proto descriptor type used to receive {@link #option} value
  * @author Dmytro Grankin
  */
-abstract class Annotator<O extends ExtendableMessage, D extends GeneratedMessageV3> {
+public abstract class Annotator<O extends ExtendableMessage, D extends GeneratedMessageV3> {
 
     /**
      * An annotation class.
@@ -105,7 +105,7 @@ abstract class Annotator<O extends ExtendableMessage, D extends GeneratedMessage
      * Annotates the Java sources generated from the passed
      * {@linkplain #fileDescriptors file descriptors}.
      */
-    abstract void annotate();
+    public abstract void annotate();
 
     /**
      * Annotates the Java sources generated from the specified file descriptor

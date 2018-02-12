@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -18,21 +18,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.gradle.compiler.annotation;
-
-import com.google.common.base.Function;
-import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
-import org.jboss.forge.roaster.model.source.JavaSource;
-
 /**
- * A {@link AbstractJavaSource} visitor.
- *
- * <p>Used to perform some actions with {@link AbstractJavaSource}.
- * A typical scenario is modification of the source or its validation.
- *
- * @param <T> the type of {@link JavaSource} to visit
- * @author Dmytro Grankin
+ * Contains classes and interfaces for applying annotations on Java files,
+ * which are generated from Protobuf definitions.
  */
-interface SourceVisitor<T extends JavaSource<T>> extends Function<AbstractJavaSource<T>,
-                                                                  Void> {
-}
+@ParametersAreNonnullByDefault
+package io.spine.tools.compiler.annotation;
+
+import javax.annotation.ParametersAreNonnullByDefault;

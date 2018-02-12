@@ -18,13 +18,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * Provides a Gradle plugin, which adds annotations for generated Java files
- * basing on options defined in {@code .proto} files.
- *
- * @see io.spine.gradle.compiler.annotation.ProtoAnnotatorPlugin ProtoAnnotatorPlugin
- */
-@ParametersAreNonnullByDefault
-package io.spine.gradle.compiler.annotation;
+package io.spine.tools.compiler.annotation;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import com.google.common.base.Function;
+import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
+import org.jboss.forge.roaster.model.source.JavaSource;
+
+/**
+ * A {@link AbstractJavaSource} visitor.
+ *
+ * <p>Used to perform some actions with {@link AbstractJavaSource}.
+ * A typical scenario is modification of the source or its validation.
+ *
+ * @param <T> the type of {@link JavaSource} to visit
+ * @author Dmytro Grankin
+ */
+interface SourceVisitor<T extends JavaSource<T>>
+        extends Function<AbstractJavaSource<T>, Void> {
+}

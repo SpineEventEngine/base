@@ -25,6 +25,7 @@ import io.spine.annotation.Beta;
 import io.spine.annotation.Experimental;
 import io.spine.annotation.Internal;
 import io.spine.annotation.SPI;
+import io.spine.tools.compiler.annotation.AnnotatorFactory;
 import io.spine.tools.gradle.SpinePlugin;
 import io.spine.tools.proto.FileDescriptors;
 import org.gradle.api.Action;

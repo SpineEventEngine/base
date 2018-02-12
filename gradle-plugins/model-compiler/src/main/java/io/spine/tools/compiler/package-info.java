@@ -19,12 +19,9 @@
  */
 
 /**
- * Provides a Gradle plugin, which adds annotations for generated Java files
- * basing on options defined in {@code .proto} files.
- *
- * @see io.spine.gradle.compiler.annotation.ProtoAnnotatorPlugin ProtoAnnotatorPlugin
+ * Contains Spine Model Compiler and associated utilities.
  */
 @ParametersAreNonnullByDefault
-package io.spine.gradle.compiler.annotation;
+package io.spine.tools.compiler;
 
 import javax.annotation.ParametersAreNonnullByDefault;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -18,13 +18,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.gradle.compiler.annotation;
+package io.spine.tools.compiler.annotation;
 
 import org.junit.Test;
 
 import java.util.Collections;
 
-import static io.spine.gradle.compiler.annotation.FieldAnnotator.shouldAnnotateMethod;
+import static io.spine.tools.compiler.annotation.FieldAnnotator.shouldAnnotateMethod;
 import static java.util.Collections.singleton;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;

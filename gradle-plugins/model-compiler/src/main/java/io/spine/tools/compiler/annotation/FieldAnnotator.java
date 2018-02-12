@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.gradle.compiler.annotation;
+package io.spine.tools.compiler.annotation;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
@@ -42,8 +42,8 @@ import java.util.Collection;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Lists.newLinkedList;
-import static io.spine.gradle.compiler.annotation.TypeDefinitionAnnotator.findNestedType;
 import static io.spine.option.UnknownOptions.getUnknownOptionValue;
+import static io.spine.tools.compiler.annotation.TypeDefinitionAnnotator.findNestedType;
 import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.lang.String.format;
 
@@ -66,7 +66,7 @@ class FieldAnnotator extends Annotator<FieldOptions, FieldDescriptorProto> {
     }
 
     @Override
-    void annotate() {
+    public void annotate() {
         for (FileDescriptorProto file : fileDescriptors()) {
             annotate(file);
         }
