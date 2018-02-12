@@ -62,5 +62,3 @@ public abstract class FsObject {
         return Objects.equals(this.path, other.path);
     }
 }
-
-
