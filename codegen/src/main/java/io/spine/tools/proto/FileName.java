@@ -22,7 +22,7 @@ package io.spine.tools.proto;
 
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
-import io.spine.type.StringTypeValue;
+import io.spine.tools.AbstractFileName;
 
 import java.util.List;
 
@@ -34,7 +34,7 @@ import static io.spine.tools.CodePreconditions.checkNotEmptyOrBlank;
  *
  * @author Alexander Yevsyukov
  */
-public final class FileName extends StringTypeValue implements UnderscoredName {
+public final class FileName extends AbstractFileName implements UnderscoredName {
 
     /** The standard file extension. */
     private static final String EXTENSION = ".proto";
@@ -76,7 +76,7 @@ public final class FileName extends StringTypeValue implements UnderscoredName {
     /**
      * Obtains the file name without path and extension.
      */
-    public String nameOnly() {
+    private String nameOnly() {
         final String value = value();
         final int lastBackslashIndex = value.lastIndexOf(PATH_SEPARATOR);
         final int extensionIndex = value.lastIndexOf(EXTENSION);

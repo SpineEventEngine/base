@@ -23,7 +23,7 @@ package io.spine.tools.java;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.EnumDescriptorProto;
 import com.google.protobuf.DescriptorProtos.ServiceDescriptorProto;
-import io.spine.type.StringTypeValue;
+import io.spine.tools.AbstractFileName;
 
 import static io.spine.tools.CodePreconditions.checkNotEmptyOrBlank;
 
@@ -32,7 +32,7 @@ import static io.spine.tools.CodePreconditions.checkNotEmptyOrBlank;
  *
  * @author Alexander Yevsyukov
  */
-public final class FileName extends StringTypeValue {
+public final class FileName extends AbstractFileName {
 
     private static final String GRPC_CLASSNAME_SUFFIX = "Grpc";
     private static final String EXTENSION = ".java";
