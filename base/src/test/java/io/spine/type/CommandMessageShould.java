@@ -23,6 +23,7 @@ package io.spine.type;
 import com.google.protobuf.Descriptors;
 import com.google.protobuf.StringValue;
 import io.spine.base.given.CommandFromCommands;
+import io.spine.test.Tests;
 import org.junit.Test;
 
 import static org.junit.Assert.assertFalse;
@@ -32,6 +33,11 @@ import static org.junit.Assert.assertTrue;
  * @author Alexander Yevsyukov
  */
 public class CommandMessageShould {
+
+    @Test
+    public void have_utility_ctor_for_File_class() {
+        Tests.assertHasPrivateParameterlessCtor(CommandMessage.File.class);
+    }
 
     @Test
     public void tell_commands_file_by_its_descriptor() {
