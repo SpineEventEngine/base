@@ -42,7 +42,7 @@ public final class SourceFile extends AbstractSourceFile {
         super(path);
     }
 
-    private static SourceFile of(Path path) {
+    static SourceFile of(Path path) {
         checkNotNull(path);
         final SourceFile result = new SourceFile(path);
         return result;
@@ -56,11 +56,9 @@ public final class SourceFile extends AbstractSourceFile {
      */
     public static SourceFile forOuterClassOf(FileDescriptorProto file) {
         checkNotNull(file);
-        final Path folderPath = getFolder(file);
-        final String filename = SimpleClassName.outerOf(file)
-                                               .toFileName()
-                                               .value();
-        final SourceFile result = of(folderPath.resolve(filename));
+        final FileName filename = SimpleClassName.outerOf(file)
+                                                 .toFileName();
+        final SourceFile result = getFolder(file).resolve(filename);
         return result;
     }
 
@@ -71,10 +69,10 @@ public final class SourceFile extends AbstractSourceFile {
      * @param file the proto file descriptor
      * @return the relative folder path
      */
-    static Path getFolder(FileDescriptorProto file) {
+    private static Folder getFolder(FileDescriptorProto file) {
         checkNotNull(file);
         final PackageName packageName = PackageName.resolve(file);
-        final Path result = packageName.toFolder();
+        final Folder result = packageName.toFolder();
         return result;
     }
 
@@ -105,10 +103,8 @@ public final class SourceFile extends AbstractSourceFile {
             return result;
         }
 
-        final Path folderPath = getFolder(file);
-        final String filename = FileName.forMessage(message, orBuilder)
-                                        .value();
-        final SourceFile result = of(folderPath.resolve(filename));
+        final FileName filename = FileName.forMessage(message, orBuilder);
+        final SourceFile result = getFolder(file).resolve(filename);
         return result;
     }
 
@@ -139,10 +135,8 @@ public final class SourceFile extends AbstractSourceFile {
             return result;
         }
 
-        final Path folderPath = getFolder(file);
-        final String filename = FileName.forEnum(enumType)
-                                        .value();
-        final SourceFile result = of(folderPath.resolve(filename));
+        final FileName filename = FileName.forEnum(enumType);
+        final SourceFile result = getFolder(file).resolve(filename);
         return result;
     }
 
@@ -155,10 +149,8 @@ public final class SourceFile extends AbstractSourceFile {
             throw invalidNestedDefinition(file.getName(), serviceType);
         }
 
-        final String filename = FileName.forService(service)
-                                        .value();
-        final Path folderPath = getFolder(file);
-        final SourceFile result = of(folderPath.resolve(filename));
+        final FileName filename = FileName.forService(service);
+        final SourceFile result = getFolder(file).resolve(filename);
         return result;
     }
 
@@ -166,11 +158,9 @@ public final class SourceFile extends AbstractSourceFile {
      * Obtains a file path for the source code file of the give type in the passed package.
      */
     public static SourceFile forType(String javaPackage, String typename) {
-        final Path filePath = PackageName.of(javaPackage)
-                                         .toFolder()
-                                         .resolve(FileName.forType(typename)
-                                                          .value());
-        final SourceFile result = of(filePath);
+        final SourceFile result = PackageName.of(javaPackage)
+                                             .toFolder()
+                                             .resolve(FileName.forType(typename));
         return result;
     }
 }

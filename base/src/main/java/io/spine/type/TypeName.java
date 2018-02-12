@@ -31,7 +31,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
 /**
- * Utility class for obtaining a type name from a {@code Message}.
+ * A fully-qualified Protobuf type name.
  *
  * @author Alexander Yevsyukov
  */

@@ -24,7 +24,6 @@ import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.type.StringTypeValue;
 
 import java.io.File;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
@@ -77,9 +76,9 @@ public final class PackageName extends StringTypeValue {
     /**
      * Obtains file system folder path for the package.
      */
-    public Path toFolder() {
+    public Folder toFolder() {
         final String packageDir = value().replace(DELIMITER_CHAR, File.separatorChar);
-        final Path result = Paths.get(packageDir);
+        final Folder result = new Folder(Paths.get(packageDir));
         return result;
     }
 }
