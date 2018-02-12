@@ -30,9 +30,9 @@ import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.SourceCodeInfo.Location;
-import io.spine.gradle.compiler.message.LocationPath;
 import io.spine.tools.javadoc.JavadocEscaper;
 import io.spine.tools.proto.FieldName;
+import io.spine.tools.proto.LocationPath;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
@@ -287,9 +287,11 @@ class RejectionJavadocGenerator {
                 checkNotNull(left);
                 checkNotNull(right);
 
-                return Ints.compare(left.getName()
-                                        .length(), right.getName()
-                                                        .length());
+                final int result = Ints.compare(left.getName()
+                                                    .length(),
+                                                right.getName()
+                                                     .length());
+                return result;
             }
         };
 
