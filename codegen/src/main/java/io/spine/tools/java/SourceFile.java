@@ -101,7 +101,7 @@ public final class SourceFile extends AbstractSourceFile {
 
         if (!file.getOptions()
                  .hasJavaMultipleFiles()) {
-            final SourceFile result = of(forOuterClassOf(file).getPath());
+            final SourceFile result = forOuterClassOf(file);
             return result;
         }
 
@@ -135,7 +135,7 @@ public final class SourceFile extends AbstractSourceFile {
 
         if (!file.getOptions()
                  .hasJavaMultipleFiles()) {
-            final SourceFile result = of(forOuterClassOf(file).getPath());
+            final SourceFile result = forOuterClassOf(file);
             return result;
         }
 
@@ -165,11 +165,12 @@ public final class SourceFile extends AbstractSourceFile {
     /**
      * Obtains a file path for the source code file of the give type in the passed package.
      */
-    public static Path forType(String javaPackage, String typename) {
+    public static SourceFile forType(String javaPackage, String typename) {
         final Path filePath = PackageName.of(javaPackage)
                                          .toFolder()
                                          .resolve(FileName.forType(typename)
                                                           .value());
-        return filePath;
+        final SourceFile result = of(filePath);
+        return result;
     }
 }

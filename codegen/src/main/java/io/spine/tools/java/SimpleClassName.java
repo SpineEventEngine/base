@@ -49,18 +49,18 @@ public final class SimpleClassName extends StringTypeValue {
      * <a href="https://developers.google.com/protocol-buffers/docs/reference/java-generated#invocation">Protobuf
      * compiler conventions</a>.
      *
-     * @param descriptor a descriptor for file for which outer class name will be generated
+     * @param file a descriptor for file for which outer class name will be generated
      * @return non-qualified outer class name
      */
-    private static String getOuterClassName(FileDescriptorProto descriptor) {
-        checkNotNull(descriptor);
-        String outerClassNameFromOptions = descriptor.getOptions()
-                                                     .getJavaOuterClassname();
+    private static String getOuterClassName(FileDescriptorProto file) {
+        checkNotNull(file);
+        String outerClassNameFromOptions = file.getOptions()
+                                               .getJavaOuterClassname();
         if (!outerClassNameFromOptions.isEmpty()) {
             return outerClassNameFromOptions;
         }
 
-        final String className = io.spine.tools.proto.FileName.from(descriptor)
+        final String className = io.spine.tools.proto.FileName.from(file)
                                                               .nameOnlyCamelCase();
         return className;
     }
