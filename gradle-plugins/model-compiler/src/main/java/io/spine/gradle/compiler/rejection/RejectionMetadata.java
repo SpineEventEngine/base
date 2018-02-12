@@ -22,6 +22,8 @@ package io.spine.gradle.compiler.rejection;
 
 import io.spine.tools.java.SimpleClassName;
 
+import java.util.Objects;
+
 import static com.google.protobuf.DescriptorProtos.DescriptorProto;
 import static com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 
@@ -69,5 +71,24 @@ class RejectionMetadata {
 
     public FileDescriptorProto getFileDescriptor() {
         return fileDescriptor;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(descriptor, outerClassName, fileDescriptor);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        final RejectionMetadata other = (RejectionMetadata) obj;
+        return Objects.equals(this.descriptor, other.descriptor)
+                && Objects.equals(this.outerClassName, other.outerClassName)
+                && Objects.equals(this.fileDescriptor, other.fileDescriptor);
     }
 }
