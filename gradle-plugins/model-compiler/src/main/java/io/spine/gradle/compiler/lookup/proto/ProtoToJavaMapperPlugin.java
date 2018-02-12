@@ -20,6 +20,7 @@
 package io.spine.gradle.compiler.lookup.proto;
 
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
+import io.spine.gradle.GradleTask;
 import io.spine.gradle.SpinePlugin;
 import io.spine.gradle.compiler.util.PropertiesWriter;
 import io.spine.tools.proto.FileDescriptors;

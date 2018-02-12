@@ -23,6 +23,7 @@ package io.spine.gradle.compiler.validate;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Iterables;
+import io.spine.gradle.GradleTask;
 import io.spine.gradle.SpinePlugin;
 import io.spine.gradle.compiler.Indent;
 import io.spine.gradle.compiler.message.MessageTypeCache;

@@ -21,6 +21,7 @@ package io.spine.gradle.compiler.rejection;
 
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
+import io.spine.gradle.GradleTask;
 import io.spine.gradle.SpinePlugin;
 import io.spine.gradle.compiler.message.MessageTypeCache;
 import io.spine.tools.java.PackageName;

@@ -70,9 +70,9 @@ public class SpinePluginBuilderShould {
         subProject.getPluginManager()
                   .apply(JAVA_PLUGIN_ID);
         final SpinePlugin plugin = TestPlugin.INSTANCE;
-        final SpinePlugin.GradleTask task = plugin.newTask(ANNOTATE_PROTO, NoOp.<Task>action())
-                                                  .insertAfterAllTasks(COMPILE_JAVA)
-                                                  .applyNowTo(subProject);
+        final GradleTask task = plugin.newTask(ANNOTATE_PROTO, NoOp.<Task>action())
+                                      .insertAfterAllTasks(COMPILE_JAVA)
+                                      .applyNowTo(subProject);
         final TaskContainer subProjectTasks = subProject.getTasks();
         final Task newTask = subProjectTasks.findByName(task.getName()
                                                             .getValue());
@@ -127,9 +127,9 @@ public class SpinePluginBuilderShould {
     @Test
     public void return_build_task_description() {
         final SpinePlugin plugin = TestPlugin.INSTANCE;
-        final SpinePlugin.GradleTask desc = plugin.newTask(PRE_CLEAN, NoOp.<Task>action())
-                                                  .insertBeforeTask(CLEAN)
-                                                  .applyNowTo(project);
+        final GradleTask desc = plugin.newTask(PRE_CLEAN, NoOp.<Task>action())
+                                      .insertBeforeTask(CLEAN)
+                                      .applyNowTo(project);
         assertEquals(PRE_CLEAN, desc.getName());
         assertEquals(project, desc.getProject());
     }
