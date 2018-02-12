@@ -19,7 +19,6 @@
  */
 package io.spine.gradle.compiler.rejection;
 
-import com.google.common.collect.Lists;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.gradle.SpinePlugin;
@@ -27,8 +26,8 @@ import io.spine.gradle.compiler.message.MessageTypeCache;
 import io.spine.tools.java.PackageName;
 import io.spine.tools.java.SimpleClassName;
 import io.spine.tools.proto.FileDescriptors;
-import io.spine.tools.proto.FileName;
-import io.spine.type.RejectionMessage;
+import io.spine.tools.proto.Rejections;
+import io.spine.tools.proto.SourceFile;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -86,8 +85,10 @@ public class RejectionGenPlugin extends SpinePlugin {
             public void execute(Task task) {
                 final String path = getMainDescriptorSetPath(project);
                 log.debug("Generating rejections from {}", path);
+                final Collection<FileDescriptorProto> allFiles = FileDescriptors.parse(path);
+                collectAllMessageTypes(allFiles);
                 final List<FileDescriptorProto> filesWithRejections =
-                        collectRejectionFiles(path);
+                        Rejections.collect(allFiles);
                 processDescriptors(filesWithRejections, getTargetGenRejectionsRootDir(project));
             }
         };
@@ -105,7 +106,9 @@ public class RejectionGenPlugin extends SpinePlugin {
             public void execute(Task task) {
                 final String path = getTestDescriptorSetPath(project);
                 log.debug("Generating test rejections from {}", path);
-                final List<FileDescriptorProto> rejectionFiles = collectRejectionFiles(path);
+                final Collection<FileDescriptorProto> allFiles = FileDescriptors.parse(path);
+                collectAllMessageTypes(allFiles);
+                final List<FileDescriptorProto> rejectionFiles = Rejections.collect(allFiles);
                 processDescriptors(rejectionFiles, getTargetTestGenRejectionsRootDir(project));
             }
         };
@@ -122,54 +125,22 @@ public class RejectionGenPlugin extends SpinePlugin {
                     generateTestRejections);
     }
 
-    private List<FileDescriptorProto> collectRejectionFiles(String descFilePath) {
-        final List<FileDescriptorProto> result = Lists.newLinkedList();
-        final Collection<FileDescriptorProto> allDescriptors =
-                FileDescriptors.parse(descFilePath);
-        final Logger log = log();
-        for (FileDescriptorProto file : allDescriptors) {
-            final FileName fn = FileName.from(file);
-            if (fn.isRejections()) {
-                log.trace("Found rejections file: {}", fn.value());
-                result.add(file);
-            }
+    private void collectAllMessageTypes(Iterable<FileDescriptorProto> files) {
+        for (FileDescriptorProto file : files) {
             messageTypeCache.cacheTypes(file);
         }
-        log.trace("Found rejections in files: {}", result);
-
-        return result;
     }
 
-    private void processDescriptors(List<FileDescriptorProto> descriptors,
-                                    String rejectionsRootDir) {
+    private void processDescriptors(List<FileDescriptorProto> files, String rejectionsRootDir) {
         final Logger log = log();
-        log.debug("Processing the file descriptors for the rejections {}", descriptors);
-        for (FileDescriptorProto file : descriptors) {
-            if (isRejectionsFile(file)) {
+        log.debug("Processing the file descriptors for the rejections {}", files);
+        for (FileDescriptorProto file : files) {
+            if (SourceFile.isRejectionsFile(file)) {
                 generateRejections(file, messageTypeCache.getCachedTypes(), rejectionsRootDir);
             } else {
                 log.error("Invalid rejections file: {}", file.getName());
             }
         }
-    }
-
-    private static boolean isRejectionsFile(FileDescriptorProto descriptor) {
-        // By convention rejections are generated into one file.
-        if (descriptor.getOptions()
-                      .getJavaMultipleFiles()) {
-            return false;
-        }
-        final String javaOuterClassName = descriptor.getOptions()
-                                                    .getJavaOuterClassname();
-        if (javaOuterClassName.isEmpty()) {
-            // There's no outer class name given in options.
-            // Assuming the file name ends with `rejections.proto`, it's a good rejections file.
-            return true;
-        }
-
-        final boolean result =
-                javaOuterClassName.endsWith(RejectionMessage.OUTER_CLASS_NAME_SUFFIX);
-        return result;
     }
 
     private static void generateRejections(FileDescriptorProto file,
