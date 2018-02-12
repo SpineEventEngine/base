@@ -35,7 +35,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -82,17 +81,15 @@ public class RejectionGenPlugin extends SpinePlugin {
         final Action<Task> mainScopeAction = new Action<Task>() {
             @Override
             public void execute(Task task) {
-                final String path = getMainDescriptorSetPath(project);
-                log.debug("Generating rejections from {}", path);
-                final Collection<FileDescriptorProto> allFiles = FileDescriptors.parse(path);
-                collectAllMessageTypes(allFiles);
-                final List<FileDescriptorProto> rejectionFiles = Rejections.collect(allFiles);
-                generate(rejectionFiles, getTargetGenRejectionsRootDir(project));
+                final String mainFile = getMainDescriptorSetPath(project);
+                final String targetFolder = getTargetGenRejectionsRootDir(project);
+
+                generateRejections(mainFile, targetFolder);
             }
         };
 
         logDependingTask(log, GENERATE_REJECTIONS, COMPILE_JAVA, GENERATE_PROTO);
-        final GradleTask generateRejections =
+        final GradleTask mainTask =
                 newTask(GENERATE_REJECTIONS, mainScopeAction)
                         .insertAfterTask(GENERATE_PROTO)
                         .insertBeforeTask(COMPILE_JAVA)
@@ -101,26 +98,42 @@ public class RejectionGenPlugin extends SpinePlugin {
         final Action<Task> testScopeAction = new Action<Task>() {
             @Override
             public void execute(Task task) {
-                final String path = getTestDescriptorSetPath(project);
-                log.debug("Generating test rejections from {}", path);
-                final Collection<FileDescriptorProto> allFiles = FileDescriptors.parse(path);
-                collectAllMessageTypes(allFiles);
-                final List<FileDescriptorProto> rejectionFiles = Rejections.collect(allFiles);
-                generate(rejectionFiles, getTargetTestGenRejectionsRootDir(project));
+                final String mainFile = getMainDescriptorSetPath(project);
+                final String testFile = getTestDescriptorSetPath(project);
+                final String targetFolder = getTargetTestGenRejectionsRootDir(project);
+
+                generateTestRejections(mainFile, targetFolder, testFile);
             }
         };
 
         logDependingTask(log, GENERATE_TEST_REJECTIONS, COMPILE_TEST_JAVA, GENERATE_TEST_PROTO);
 
-        final GradleTask generateTestRejections =
+        final GradleTask testTask =
                 newTask(GENERATE_TEST_REJECTIONS, testScopeAction)
                         .insertAfterTask(GENERATE_TEST_PROTO)
                         .insertBeforeTask(COMPILE_TEST_JAVA)
                         .applyNowTo(project);
 
-        log.debug("Rejection generation phase initialized with tasks: {}, {}",
-                    generateRejections,
-                    generateTestRejections);
+        log.debug("Rejection generation phase initialized with tasks: {}, {}", mainTask, testTask);
+    }
+
+    private void generateRejections(String mainFile, String targetFolder) {
+        log().debug("Generating rejections from {}", mainFile);
+        final List<FileDescriptorProto> mainFiles = FileDescriptors.parse(mainFile);
+        collectAllMessageTypes(mainFiles);
+        final List<FileDescriptorProto> rejectionFiles = Rejections.collect(mainFiles);
+        doGenerate(rejectionFiles, targetFolder);
+    }
+
+    private void generateTestRejections(String mainFile, String targetFolder, String testFile) {
+        log().debug("Generating test rejections from {}", testFile);
+        final List<FileDescriptorProto> mainFiles = FileDescriptors.parse(mainFile);
+        collectAllMessageTypes(mainFiles);
+
+        final List<FileDescriptorProto> testFiles = FileDescriptors.parse(testFile);
+        collectAllMessageTypes(testFiles);
+        final List<FileDescriptorProto> rejectionFiles = Rejections.collect(testFiles);
+        doGenerate(rejectionFiles, targetFolder);
     }
 
     private void collectAllMessageTypes(Iterable<FileDescriptorProto> files) {
@@ -129,7 +142,7 @@ public class RejectionGenPlugin extends SpinePlugin {
         }
     }
 
-    private void generate(List<FileDescriptorProto> files, String rejectionsRootDir) {
+    private void doGenerate(Iterable<FileDescriptorProto> files, String rejectionsRootDir) {
         final Logger log = log();
         log.debug("Processing the file descriptors for the rejections {}", files);
         for (FileDescriptorProto file : files) {

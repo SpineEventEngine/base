@@ -36,8 +36,8 @@ import static com.google.common.collect.Lists.newLinkedList;
  */
 public final class ProjectHierarchy {
 
+    /** Prevents instantiation of this utility class. */
     private ProjectHierarchy() {
-        // Prevent utility class instantiation.
     }
 
     /**
