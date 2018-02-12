@@ -79,7 +79,6 @@ public class RejectionGenPlugin extends SpinePlugin {
     public void apply(final Project project) {
         final Logger log = log();
 
-        log.trace("Preparing to generate rejections");
         final Action<Task> mainScopeAction = new Action<Task>() {
             @Override
             public void execute(Task task) {
@@ -99,7 +98,6 @@ public class RejectionGenPlugin extends SpinePlugin {
                         .insertBeforeTask(COMPILE_JAVA)
                         .applyNowTo(project);
 
-        log.trace("Preparing to generate test rejections");
         final Action<Task> testScopeAction = new Action<Task>() {
             @Override
             public void execute(Task task) {
@@ -119,6 +117,7 @@ public class RejectionGenPlugin extends SpinePlugin {
                         .insertAfterTask(GENERATE_TEST_PROTO)
                         .insertBeforeTask(COMPILE_TEST_JAVA)
                         .applyNowTo(project);
+
         log.debug("Rejection generation phase initialized with tasks: {}, {}",
                     generateRejections,
                     generateTestRejections);
