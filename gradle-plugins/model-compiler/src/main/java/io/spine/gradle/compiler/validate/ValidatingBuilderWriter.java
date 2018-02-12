@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -26,8 +26,8 @@ import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeSpec;
-import io.spine.gradle.compiler.Indent;
 import io.spine.gradle.compiler.message.MessageTypeCache;
+import io.spine.tools.Indent;
 import io.spine.tools.java.SimpleClassName;
 import io.spine.validate.AbstractValidatingBuilder;
 import org.slf4j.Logger;

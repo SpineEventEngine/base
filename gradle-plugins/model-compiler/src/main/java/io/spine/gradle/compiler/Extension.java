@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -23,6 +23,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import io.spine.annotation.Internal;
+import io.spine.tools.Indent;
 import org.gradle.api.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -161,7 +162,7 @@ public class Extension {
     /**
      * The indent for the generated code in the validating builders.
      */
-    public Indent indent = new Indent(4);
+    public Indent indent = Indent.of4();
 
     /**
      * The flag which enables the generation of validating builders for all Protobuf
@@ -273,15 +274,13 @@ public class Extension {
         return result;
     }
 
-    // The variable and its setter is named according to its meaning.
-    @SuppressWarnings("InstanceMethodNamingConvention")
+    @SuppressWarnings({"InstanceMethodNamingConvention", "unused"})
     public void setGenerateValidatingBuildersFromClasspath(boolean generateFromClasspath) {
         this.generateBuildersFromClasspath = generateFromClasspath;
         log().debug("Validating builder are set to be generated from  {}",
                     (generateFromClasspath ? "the whole classpath" : "the current module only"));
     }
 
-    // The variable and its setter is named according to its meaning.
     @SuppressWarnings("unused")
     public void setGenerateValidatingBuilders(boolean generateValidatingBuilders) {
         this.generateValidatingBuilders = generateValidatingBuilders;
@@ -289,8 +288,9 @@ public class Extension {
                     (generateValidatingBuilders ? "enabled" : "disabled"));
     }
 
+    @SuppressWarnings("unused")
     public void setIndent(int indent) {
-        this.indent = new Indent(indent);
+        this.indent = Indent.of(indent);
         log().trace("Indent has been set to {}", generateValidatingBuilders);
     }
 

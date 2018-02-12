@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -18,44 +18,53 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.gradle.compiler;
+package io.spine.tools;
 
-import com.google.common.base.Objects;
 import com.google.common.base.Strings;
+import io.spine.type.StringTypeValue;
 
 /**
- * A positive indent of generated code.
+ * A positive space-based indentation of generated code.
  *
  * @author Illia Shepilov
+ * @author Alexander Yevsyukov
  */
-public class Indent {
+public final class Indent extends StringTypeValue {
 
-    private final int indent;
+    private static final String SPACE = " ";
+    private static final Indent TWO = new Indent(2);
+    private static final Indent FOUR = new Indent(4);
 
-    public Indent(int indent) {
-        this.indent = indent;
+    private final int size;
+
+    private Indent(int indent) {
+        super(Strings.repeat(SPACE, indent));
+        this.size = indent;
     }
 
-    @Override
-    public String toString() {
-        final String result = Strings.repeat(" ", indent);
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
+    /**
+     * Creates an instance for non-negative indent.
+     */
+    public static Indent of(int indent) {
+        if (indent == 4) {
+            return of4();
         }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
+        if (indent == 2) {
+            return of2();
         }
-        Indent other = (Indent) o;
-        return indent == other.indent;
+
+        return new Indent(indent);
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(indent);
+    public static Indent of2() {
+        return TWO;
+    }
+
+    public static Indent of4() {
+        return FOUR;
+    }
+
+    public int getSize() {
+        return size;
     }
 }
