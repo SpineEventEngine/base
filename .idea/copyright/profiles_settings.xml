@@ -1,7 +1,7 @@
 <component name="CopyrightManager">
-  <settings default="TeamDev Open-Source">
+  <settings default="TeamDev_Open_Source">
     <module2copyright>
-      <element module="All" copyright="TeamDev Open-Source" />
+      <element module="All" copyright="TeamDev_Open_Source" />
     </module2copyright>
   </settings>
 </component>
