@@ -36,7 +36,7 @@ import static io.spine.tools.CodePreconditions.checkNotEmptyOrBlank;
  *
  * @author Alexander Yevsyukov
  */
-public final class FileName extends AbstractFileName implements UnderscoredName {
+public class FileName extends AbstractFileName implements UnderscoredName {
 
     /** The standard file extension. */
     private static final String EXTENSION = ".proto";
@@ -52,12 +52,12 @@ public final class FileName extends AbstractFileName implements UnderscoredName 
     /**
      * The name suffix for proto files containing event message declarations.
      */
-    public static final String EVENTS_FILE_SUFFIX = "events" + EXTENSION;
+    private static final String EVENTS_FILE_SUFFIX = "events" + EXTENSION;
 
     /**
      * The name suffix for proto files containing rejection declarations.
      */
-    public static final String REJECTIONS_FILE_SUFFIX = "rejections" + EXTENSION;
+    private static final String REJECTIONS_FILE_SUFFIX = "rejections" + EXTENSION;
 
     private FileName(String value) {
         super(value);

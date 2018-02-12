@@ -122,9 +122,9 @@ public class RejectionGenPlugin extends SpinePlugin {
         final Collection<FileDescriptorProto> allDescriptors =
                 FileDescriptors.parse(descFilePath);
         for (FileDescriptorProto file : allDescriptors) {
-            if (file.getName()
-                    .endsWith(FileName.REJECTIONS_FILE_SUFFIX)) {
-                log().trace("Found rejections file: {}", file.getName());
+            final FileName fn = FileName.from(file);
+            if (fn.isRejections()) {
+                log().trace("Found rejections file: {}", fn.value());
                 result.add(file);
             }
             messageTypeCache.cacheTypes(file);
