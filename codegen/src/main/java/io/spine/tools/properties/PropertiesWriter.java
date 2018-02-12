@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -17,7 +17,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.gradle.compiler.util;
+package io.spine.tools.properties;
 
 import com.google.common.io.Files;
 import org.slf4j.Logger;
@@ -28,11 +28,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.Enumeration;
 import java.util.Map;
 import java.util.Properties;
-import java.util.TreeSet;
 
 /**
  * A utility class for writing to {@code .properties} file.
@@ -42,19 +39,18 @@ import java.util.TreeSet;
  */
 public class PropertiesWriter {
 
-    private final String propsFilePath;
-    private final String rootDirPath;
+    private final String folder;
+    private final String fullPath;
 
     /**
      * Creates a new instance.
      *
-     * @param rootDirPath   a path to a directory where the {@code .properties} file is
-     *                      (or will be) located
-     * @param propsFileName a name of the {@code .properties} file to write to (can be non-existing)
+     * @param folder   a folder in which the file is (or will be) located
+     * @param fileName a name of the file to write to
      */
-    public PropertiesWriter(String rootDirPath, String propsFileName) {
-        this.rootDirPath = rootDirPath;
-        this.propsFilePath = rootDirPath + File.separator + propsFileName;
+    public PropertiesWriter(String folder, String fileName) {
+        this.folder = folder;
+        this.fullPath = folder + File.separator + fileName;
     }
 
     /**
@@ -63,17 +59,17 @@ public class PropertiesWriter {
      * @param propertiesMap a map containing properties to write to the file
      */
     public void write(Map<String, String> propertiesMap) {
-        log().debug("Preparing properties file {}", propsFilePath);
-        final File rootDir = new File(rootDirPath);
+        final Logger log = log();
+        log.debug("Preparing properties file {}", fullPath);
+        final File rootDir = new File(folder);
         createParentFolders(rootDir);
 
         final Properties props = new SortedProperties();
-        final File file = new File(propsFilePath);
+        final File file = new File(fullPath);
         prepareTargetFile(props, file);
 
-        log().debug(
-                "Preparing properties (size is {}). Enable more verbose logging for more info.",
-                propertiesMap.size());
+        log.debug("Preparing properties (size is {}). Enable more verbose logging for more info.",
+                  propertiesMap.size());
         for (Map.Entry<String, String> entry : propertiesMap.entrySet()) {
             final String key = entry.getKey();
             final String value = entry.getValue();
@@ -82,21 +78,21 @@ public class PropertiesWriter {
             } else {
                 final String currentValue = props.getProperty(key);
                 if (!currentValue.equals(value)) {
-                    log().warn("Entry with the key `{}` already exists. Value: `{}`." +
+                    log.warn("Entry with the key `{}` already exists. Value: `{}`." +
                                        " New value `{}` was not set.", key, currentValue, value);
                 }
             }
         }
-        log().debug("Preparing properties complete. Size is {}.", props.size());
-        log().debug("Prepared properties: {}", props);
+        log.debug("Preparing properties complete. Size is {}.", props.size());
+        log.debug("Prepared properties: {}", props);
 
         try {
-            log().debug("Writing properties file {}", propsFilePath);
+            log.debug("Writing properties file {}", fullPath);
             final FileWriter outFileWriter = new FileWriter(file);
             final BufferedWriter bufferedWriter = new BufferedWriter(outFileWriter);
             props.store(bufferedWriter, /*comments=*/null);
             bufferedWriter.close();
-            log().debug("Properties file written successfully");
+            log.debug("Properties file written successfully");
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
@@ -123,30 +119,6 @@ public class PropertiesWriter {
         } catch (IOException e) {
             final String errMsg = "Cannot create the parent folders at ";
             throw new IllegalStateException(errMsg + file.getAbsolutePath(), e);
-        }
-    }
-
-    /**
-     * Customized {@link Properties}, which key set is sorted.
-     *
-     * <p>The instance of this class is used to maintain the alphanumerical order
-     * in the {@code .properties} files generated out of the instance contents.
-     *
-     * <p>Such a trick simplifies the resulting {@code .properties} file navigation
-     * and makes any potential debugging easier.
-     */
-    @SuppressWarnings("ClassExtendsConcreteCollection")
-    // It's the best (and still readable) way for customization.
-    private static final class SortedProperties extends Properties {
-
-        // Generated automatically.
-        private static final long serialVersionUID = 0L;
-
-        @SuppressWarnings("RefusedBequest")
-        // as we replace `keys()` with a completely different behavior.
-        @Override
-        public synchronized Enumeration<Object> keys() {
-            return Collections.enumeration(new TreeSet<>(keySet()));
         }
     }
 

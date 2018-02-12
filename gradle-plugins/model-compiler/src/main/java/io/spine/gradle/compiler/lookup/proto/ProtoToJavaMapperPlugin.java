@@ -20,9 +20,9 @@
 package io.spine.gradle.compiler.lookup.proto;
 
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
-import io.spine.gradle.compiler.util.PropertiesWriter;
 import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.SpinePlugin;
+import io.spine.tools.properties.PropertiesWriter;
 import io.spine.tools.proto.FileDescriptors;
 import io.spine.type.KnownTypes;
 import org.gradle.api.Action;
