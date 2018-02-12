@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -27,14 +27,14 @@ import org.gradle.testfixtures.ProjectBuilder;
 import java.io.File;
 import java.util.UUID;
 
-import static io.spine.gradle.TaskName.CLASSES;
-import static io.spine.gradle.TaskName.CLEAN;
-import static io.spine.gradle.TaskName.COMPILE_JAVA;
-import static io.spine.gradle.TaskName.COMPILE_TEST_JAVA;
-import static io.spine.gradle.TaskName.GENERATE_PROTO;
-import static io.spine.gradle.TaskName.GENERATE_TEST_PROTO;
-import static io.spine.gradle.TaskName.PROCESS_RESOURCES;
-import static io.spine.gradle.TaskName.PROCESS_TEST_RESOURCES;
+import static io.spine.tools.gradle.TaskName.CLASSES;
+import static io.spine.tools.gradle.TaskName.CLEAN;
+import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
+import static io.spine.tools.gradle.TaskName.COMPILE_TEST_JAVA;
+import static io.spine.tools.gradle.TaskName.GENERATE_PROTO;
+import static io.spine.tools.gradle.TaskName.GENERATE_TEST_PROTO;
+import static io.spine.tools.gradle.TaskName.PROCESS_RESOURCES;
+import static io.spine.tools.gradle.TaskName.PROCESS_TEST_RESOURCES;
 
 /**
  * A helper class for the test data generation.

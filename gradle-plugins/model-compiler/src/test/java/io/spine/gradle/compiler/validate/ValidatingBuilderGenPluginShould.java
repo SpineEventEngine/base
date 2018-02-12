@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -20,7 +20,7 @@
 
 package io.spine.gradle.compiler.validate;
 
-import io.spine.gradle.GradleProject;
+import io.spine.tools.gradle.GradleProject;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -28,7 +28,7 @@ import org.junit.rules.TemporaryFolder;
 import java.util.Arrays;
 import java.util.List;
 
-import static io.spine.gradle.TaskName.COMPILE_JAVA;
+import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
 
 /**
  * @author Illia Shepilov
@@ -45,7 +45,7 @@ public class ValidatingBuilderGenPluginShould {
     public final TemporaryFolder testProjectDir = new TemporaryFolder();
 
     @Test
-    public void compile_generated_validators() throws Exception {
+    public void compile_generated_validators() {
         final GradleProject project = GradleProject.newBuilder()
                                                    .setProjectName(PROJECT_NAME)
                                                    .setProjectFolder(testProjectDir)

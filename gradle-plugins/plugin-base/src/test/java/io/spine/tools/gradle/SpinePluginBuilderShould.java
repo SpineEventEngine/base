@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -18,9 +18,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.gradle;
+package io.spine.tools.gradle;
 
-import io.spine.gradle.given.Given.NoOp;
+import io.spine.tools.gradle.given.Given;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.tasks.TaskContainer;
@@ -32,16 +32,15 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 
-import static io.spine.gradle.TaskName.ANNOTATE_PROTO;
-import static io.spine.gradle.TaskName.CLASSES;
-import static io.spine.gradle.TaskName.CLEAN;
-import static io.spine.gradle.TaskName.COMPILE_JAVA;
-import static io.spine.gradle.TaskName.FIND_VALIDATION_RULES;
-import static io.spine.gradle.TaskName.GENERATE_PROTO;
-import static io.spine.gradle.TaskName.GENERATE_TEST_PROTO;
-import static io.spine.gradle.TaskName.PRE_CLEAN;
-import static io.spine.gradle.TaskName.VERIFY_MODEL;
-import static io.spine.gradle.given.Given.JAVA_PLUGIN_ID;
+import static io.spine.tools.gradle.TaskName.ANNOTATE_PROTO;
+import static io.spine.tools.gradle.TaskName.CLASSES;
+import static io.spine.tools.gradle.TaskName.CLEAN;
+import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
+import static io.spine.tools.gradle.TaskName.FIND_VALIDATION_RULES;
+import static io.spine.tools.gradle.TaskName.GENERATE_PROTO;
+import static io.spine.tools.gradle.TaskName.GENERATE_TEST_PROTO;
+import static io.spine.tools.gradle.TaskName.PRE_CLEAN;
+import static io.spine.tools.gradle.TaskName.VERIFY_MODEL;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -59,7 +58,7 @@ public class SpinePluginBuilderShould {
         project = ProjectBuilder.builder()
                                 .build();
         project.getPluginManager()
-               .apply(JAVA_PLUGIN_ID);
+               .apply(Given.JAVA_PLUGIN_ID);
     }
 
     @Test
@@ -68,9 +67,9 @@ public class SpinePluginBuilderShould {
                                                  .withParent(project)
                                                  .build();
         subProject.getPluginManager()
-                  .apply(JAVA_PLUGIN_ID);
+                  .apply(Given.JAVA_PLUGIN_ID);
         final SpinePlugin plugin = TestPlugin.INSTANCE;
-        final GradleTask task = plugin.newTask(ANNOTATE_PROTO, NoOp.<Task>action())
+        final GradleTask task = plugin.newTask(ANNOTATE_PROTO, Given.NoOp.<Task>action())
                                       .insertAfterAllTasks(COMPILE_JAVA)
                                       .applyNowTo(subProject);
         final TaskContainer subProjectTasks = subProject.getTasks();
@@ -85,7 +84,7 @@ public class SpinePluginBuilderShould {
     @Test
     public void create_task_and_insert_before_other() {
         final SpinePlugin plugin = TestPlugin.INSTANCE;
-        plugin.newTask(VERIFY_MODEL, NoOp.<Task>action())
+        plugin.newTask(VERIFY_MODEL, Given.NoOp.<Task>action())
               .insertBeforeTask(CLASSES)
               .applyNowTo(project);
         final TaskContainer tasks = project.getTasks();
@@ -97,7 +96,7 @@ public class SpinePluginBuilderShould {
     @Test
     public void create_task_and_insert_after_other() {
         final SpinePlugin plugin = TestPlugin.INSTANCE;
-        plugin.newTask(VERIFY_MODEL, NoOp.<Task>action())
+        plugin.newTask(VERIFY_MODEL, Given.NoOp.<Task>action())
               .insertAfterTask(COMPILE_JAVA)
               .applyNowTo(project);
         final TaskContainer tasks = project.getTasks();
@@ -109,7 +108,7 @@ public class SpinePluginBuilderShould {
     @Test
     public void ignore_tasK_dependency_if_no_such_task_found() {
         final SpinePlugin plugin = TestPlugin.INSTANCE;
-        plugin.newTask(GENERATE_TEST_PROTO, NoOp.<Task>action())
+        plugin.newTask(GENERATE_TEST_PROTO, Given.NoOp.<Task>action())
               .insertAfterAllTasks(GENERATE_PROTO)
               .applyNowTo(project);
         final TaskContainer tasks = project.getTasks();
@@ -121,13 +120,13 @@ public class SpinePluginBuilderShould {
 
     @Test(expected = IllegalStateException.class)
     public void not_allow_tasks_without_any_connection_to_task_graph() {
-        TestPlugin.INSTANCE.newTask(FIND_VALIDATION_RULES, NoOp.<Task>action()).applyNowTo(project);
+        TestPlugin.INSTANCE.newTask(FIND_VALIDATION_RULES, Given.NoOp.<Task>action()).applyNowTo(project);
     }
 
     @Test
     public void return_build_task_description() {
         final SpinePlugin plugin = TestPlugin.INSTANCE;
-        final GradleTask desc = plugin.newTask(PRE_CLEAN, NoOp.<Task>action())
+        final GradleTask desc = plugin.newTask(PRE_CLEAN, Given.NoOp.<Task>action())
                                       .insertBeforeTask(CLEAN)
                                       .applyNowTo(project);
         assertEquals(PRE_CLEAN, desc.getName());
@@ -138,7 +137,7 @@ public class SpinePluginBuilderShould {
     public void create_task_with_given_inputs() throws IOException {
         final SpinePlugin plugin = TestPlugin.INSTANCE;
         final File input = new File(".").getAbsoluteFile();
-        plugin.newTask(PRE_CLEAN, NoOp.<Task>action())
+        plugin.newTask(PRE_CLEAN, Given.NoOp.<Task>action())
               .insertBeforeTask(CLEAN)
               .withInputFiles(input.toPath())
               .applyNowTo(project);

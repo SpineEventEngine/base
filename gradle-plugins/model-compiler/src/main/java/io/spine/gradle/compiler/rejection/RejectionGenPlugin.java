@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -21,9 +21,9 @@ package io.spine.gradle.compiler.rejection;
 
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
-import io.spine.gradle.GradleTask;
-import io.spine.gradle.SpinePlugin;
 import io.spine.gradle.compiler.message.MessageTypeCache;
+import io.spine.tools.gradle.GradleTask;
+import io.spine.tools.gradle.SpinePlugin;
 import io.spine.tools.java.PackageName;
 import io.spine.tools.java.SimpleClassName;
 import io.spine.tools.proto.FileDescriptors;
@@ -39,16 +39,16 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 
-import static io.spine.gradle.TaskName.COMPILE_JAVA;
-import static io.spine.gradle.TaskName.COMPILE_TEST_JAVA;
-import static io.spine.gradle.TaskName.GENERATE_PROTO;
-import static io.spine.gradle.TaskName.GENERATE_REJECTIONS;
-import static io.spine.gradle.TaskName.GENERATE_TEST_PROTO;
-import static io.spine.gradle.TaskName.GENERATE_TEST_REJECTIONS;
 import static io.spine.gradle.compiler.Extension.getMainDescriptorSetPath;
 import static io.spine.gradle.compiler.Extension.getTargetGenRejectionsRootDir;
 import static io.spine.gradle.compiler.Extension.getTargetTestGenRejectionsRootDir;
 import static io.spine.gradle.compiler.Extension.getTestDescriptorSetPath;
+import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
+import static io.spine.tools.gradle.TaskName.COMPILE_TEST_JAVA;
+import static io.spine.tools.gradle.TaskName.GENERATE_PROTO;
+import static io.spine.tools.gradle.TaskName.GENERATE_REJECTIONS;
+import static io.spine.tools.gradle.TaskName.GENERATE_TEST_PROTO;
+import static io.spine.tools.gradle.TaskName.GENERATE_TEST_REJECTIONS;
 
 /**
  * Plugin which generates Rejections declared in {@code rejections.proto} files.

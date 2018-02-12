@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -20,7 +20,7 @@
 
 package io.spine.gradle.compiler;
 
-import io.spine.gradle.GradleProject;
+import io.spine.tools.gradle.GradleProject;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -28,7 +28,7 @@ import org.junit.rules.TemporaryFolder;
 
 import java.nio.file.Path;
 
-import static io.spine.gradle.TaskName.BUILD;
+import static io.spine.tools.gradle.TaskName.BUILD;
 import static java.nio.file.Files.exists;
 import static org.junit.Assert.assertTrue;
 

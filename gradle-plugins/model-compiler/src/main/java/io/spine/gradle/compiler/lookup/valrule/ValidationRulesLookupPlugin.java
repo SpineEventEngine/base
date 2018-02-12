@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -23,10 +23,10 @@ package io.spine.gradle.compiler.lookup.valrule;
 import com.google.common.base.Predicate;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
-import io.spine.gradle.GradleTask;
-import io.spine.gradle.SpinePlugin;
 import io.spine.gradle.compiler.message.MessageDeclaration;
 import io.spine.gradle.compiler.util.PropertiesWriter;
+import io.spine.tools.gradle.GradleTask;
+import io.spine.tools.gradle.SpinePlugin;
 import io.spine.tools.proto.FileDescriptors;
 import io.spine.type.TypeName;
 import org.gradle.api.Action;
@@ -40,12 +40,6 @@ import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Maps.newHashMap;
-import static io.spine.gradle.TaskName.FIND_TEST_VALIDATION_RULES;
-import static io.spine.gradle.TaskName.FIND_VALIDATION_RULES;
-import static io.spine.gradle.TaskName.GENERATE_PROTO;
-import static io.spine.gradle.TaskName.GENERATE_TEST_PROTO;
-import static io.spine.gradle.TaskName.PROCESS_RESOURCES;
-import static io.spine.gradle.TaskName.PROCESS_TEST_RESOURCES;
 import static io.spine.gradle.compiler.Extension.getMainDescriptorSetPath;
 import static io.spine.gradle.compiler.Extension.getMainTargetGenResourcesDir;
 import static io.spine.gradle.compiler.Extension.getTestDescriptorSetPath;
@@ -54,6 +48,12 @@ import static io.spine.gradle.compiler.message.MessageDeclarations.find;
 import static io.spine.option.OptionsProto.VALIDATION_OF_FIELD_NUMBER;
 import static io.spine.option.UnknownOptions.getUnknownOptionValue;
 import static io.spine.option.UnknownOptions.hasUnknownOption;
+import static io.spine.tools.gradle.TaskName.FIND_TEST_VALIDATION_RULES;
+import static io.spine.tools.gradle.TaskName.FIND_VALIDATION_RULES;
+import static io.spine.tools.gradle.TaskName.GENERATE_PROTO;
+import static io.spine.tools.gradle.TaskName.GENERATE_TEST_PROTO;
+import static io.spine.tools.gradle.TaskName.PROCESS_RESOURCES;
+import static io.spine.tools.gradle.TaskName.PROCESS_TEST_RESOURCES;
 import static io.spine.tools.proto.FileDescriptors.isNotGoogleProto;
 import static io.spine.validate.rules.ValidationRules.getValRulesPropsFileName;
 import static org.slf4j.LoggerFactory.getLogger;

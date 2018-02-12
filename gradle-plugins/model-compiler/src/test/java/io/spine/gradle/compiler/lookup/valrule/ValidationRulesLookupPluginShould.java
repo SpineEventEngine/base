@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -20,7 +20,7 @@
 
 package io.spine.gradle.compiler.lookup.valrule;
 
-import io.spine.gradle.GradleProject;
+import io.spine.tools.gradle.GradleProject;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -35,8 +35,8 @@ import java.util.Dictionary;
 import java.util.List;
 import java.util.Properties;
 
-import static io.spine.gradle.TaskName.FIND_VALIDATION_RULES;
 import static io.spine.gradle.compiler.Extension.getDefaultMainGenResDir;
+import static io.spine.tools.gradle.TaskName.FIND_VALIDATION_RULES;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 import static io.spine.validate.rules.ValidationRules.getValRulesPropsFileName;
 import static org.junit.Assert.assertEquals;
@@ -71,7 +71,7 @@ public class ValidationRulesLookupPluginShould {
     public final TemporaryFolder testProjectDir = new TemporaryFolder();
 
     @Test
-    public void findNestedValidationRules() throws Exception {
+    public void findNestedValidationRules() {
         final String file = "nested_validation_rule.proto";
         final GradleProject project = newProjectWithFile(file, NESTED_VALIDATION_RULE_PROTO);
         project.executeTask(FIND_VALIDATION_RULES);

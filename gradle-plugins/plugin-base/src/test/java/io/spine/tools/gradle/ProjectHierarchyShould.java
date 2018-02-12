@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -18,10 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.gradle;
+package io.spine.tools.gradle;
 
 import com.google.common.testing.NullPointerTester;
-import io.spine.gradle.given.Given.NoOp;
+import io.spine.tools.gradle.given.Given.NoOp;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.junit.Test;

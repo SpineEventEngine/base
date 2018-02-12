@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -19,9 +19,9 @@
  */
 package io.spine.gradle.compiler.cleaning;
 
-import io.spine.gradle.GradleTask;
-import io.spine.gradle.SpinePlugin;
 import io.spine.gradle.compiler.Extension;
+import io.spine.tools.gradle.GradleTask;
+import io.spine.tools.gradle.SpinePlugin;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -37,8 +37,8 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.List;
 
-import static io.spine.gradle.TaskName.CLEAN;
-import static io.spine.gradle.TaskName.PRE_CLEAN;
+import static io.spine.tools.gradle.TaskName.CLEAN;
+import static io.spine.tools.gradle.TaskName.PRE_CLEAN;
 
 /**
  * Plugin which performs additional cleanup of the Spine-generated folders.

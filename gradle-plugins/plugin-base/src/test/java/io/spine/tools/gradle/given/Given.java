@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.gradle.given;
+package io.spine.tools.gradle.given;
 
 import org.gradle.api.Action;
 
@@ -29,6 +29,9 @@ public class Given {
 
     @SuppressWarnings("DuplicateStringLiteralInspection") // Different semantics.
     public static final String JAVA_PLUGIN_ID = "java";
+
+    private Given() {
+    }
 
     public enum NoOp implements Action<Object> {
         ACTION;

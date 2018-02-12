@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -19,36 +19,36 @@
  */
 package io.spine.gradle.compiler;
 
-import io.spine.gradle.TaskName;
+import io.spine.tools.gradle.TaskName;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.tasks.TaskContainer;
 import org.junit.Before;
 import org.junit.Test;
 
-import static io.spine.gradle.TaskDependencies.dependsOn;
-import static io.spine.gradle.TaskName.ANNOTATE_PROTO;
-import static io.spine.gradle.TaskName.ANNOTATE_TEST_PROTO;
-import static io.spine.gradle.TaskName.CLEAN;
-import static io.spine.gradle.TaskName.COMPILE_JAVA;
-import static io.spine.gradle.TaskName.COMPILE_TEST_JAVA;
-import static io.spine.gradle.TaskName.FIND_ENRICHMENTS;
-import static io.spine.gradle.TaskName.FIND_TEST_ENRICHMENTS;
-import static io.spine.gradle.TaskName.FIND_TEST_VALIDATION_RULES;
-import static io.spine.gradle.TaskName.FIND_VALIDATION_RULES;
-import static io.spine.gradle.TaskName.GENERATE_PROTO;
-import static io.spine.gradle.TaskName.GENERATE_REJECTIONS;
-import static io.spine.gradle.TaskName.GENERATE_TEST_PROTO;
-import static io.spine.gradle.TaskName.GENERATE_TEST_REJECTIONS;
-import static io.spine.gradle.TaskName.GENERATE_TEST_VALIDATING_BUILDERS;
-import static io.spine.gradle.TaskName.GENERATE_VALIDATING_BUILDERS;
-import static io.spine.gradle.TaskName.MAP_PROTO_TO_JAVA;
-import static io.spine.gradle.TaskName.MAP_TEST_PROTO_TO_JAVA;
-import static io.spine.gradle.TaskName.PRE_CLEAN;
-import static io.spine.gradle.TaskName.PROCESS_RESOURCES;
-import static io.spine.gradle.TaskName.PROCESS_TEST_RESOURCES;
 import static io.spine.gradle.compiler.given.Given.SPINE_PROTOBUF_PLUGIN_ID;
 import static io.spine.gradle.compiler.given.Given.newProject;
+import static io.spine.tools.gradle.TaskDependencies.dependsOn;
+import static io.spine.tools.gradle.TaskName.ANNOTATE_PROTO;
+import static io.spine.tools.gradle.TaskName.ANNOTATE_TEST_PROTO;
+import static io.spine.tools.gradle.TaskName.CLEAN;
+import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
+import static io.spine.tools.gradle.TaskName.COMPILE_TEST_JAVA;
+import static io.spine.tools.gradle.TaskName.FIND_ENRICHMENTS;
+import static io.spine.tools.gradle.TaskName.FIND_TEST_ENRICHMENTS;
+import static io.spine.tools.gradle.TaskName.FIND_TEST_VALIDATION_RULES;
+import static io.spine.tools.gradle.TaskName.FIND_VALIDATION_RULES;
+import static io.spine.tools.gradle.TaskName.GENERATE_PROTO;
+import static io.spine.tools.gradle.TaskName.GENERATE_REJECTIONS;
+import static io.spine.tools.gradle.TaskName.GENERATE_TEST_PROTO;
+import static io.spine.tools.gradle.TaskName.GENERATE_TEST_REJECTIONS;
+import static io.spine.tools.gradle.TaskName.GENERATE_TEST_VALIDATING_BUILDERS;
+import static io.spine.tools.gradle.TaskName.GENERATE_VALIDATING_BUILDERS;
+import static io.spine.tools.gradle.TaskName.MAP_PROTO_TO_JAVA;
+import static io.spine.tools.gradle.TaskName.MAP_TEST_PROTO_TO_JAVA;
+import static io.spine.tools.gradle.TaskName.PRE_CLEAN;
+import static io.spine.tools.gradle.TaskName.PROCESS_RESOURCES;
+import static io.spine.tools.gradle.TaskName.PROCESS_TEST_RESOURCES;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 

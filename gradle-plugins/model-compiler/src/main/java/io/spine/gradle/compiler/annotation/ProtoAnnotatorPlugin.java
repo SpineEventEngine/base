@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -25,7 +25,7 @@ import io.spine.annotation.Beta;
 import io.spine.annotation.Experimental;
 import io.spine.annotation.Internal;
 import io.spine.annotation.SPI;
-import io.spine.gradle.SpinePlugin;
+import io.spine.tools.gradle.SpinePlugin;
 import io.spine.tools.proto.FileDescriptors;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
@@ -34,12 +34,6 @@ import org.slf4j.Logger;
 
 import java.util.Collection;
 
-import static io.spine.gradle.TaskName.ANNOTATE_PROTO;
-import static io.spine.gradle.TaskName.ANNOTATE_TEST_PROTO;
-import static io.spine.gradle.TaskName.COMPILE_JAVA;
-import static io.spine.gradle.TaskName.COMPILE_TEST_JAVA;
-import static io.spine.gradle.TaskName.GENERATE_PROTO;
-import static io.spine.gradle.TaskName.GENERATE_TEST_PROTO;
 import static io.spine.gradle.compiler.Extension.getMainDescriptorSetPath;
 import static io.spine.gradle.compiler.Extension.getMainGenGrpcDir;
 import static io.spine.gradle.compiler.Extension.getMainGenProtoDir;
@@ -59,6 +53,12 @@ import static io.spine.option.OptionsProto.sPI;
 import static io.spine.option.OptionsProto.sPIAll;
 import static io.spine.option.OptionsProto.sPIService;
 import static io.spine.option.OptionsProto.sPIType;
+import static io.spine.tools.gradle.TaskName.ANNOTATE_PROTO;
+import static io.spine.tools.gradle.TaskName.ANNOTATE_TEST_PROTO;
+import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
+import static io.spine.tools.gradle.TaskName.COMPILE_TEST_JAVA;
+import static io.spine.tools.gradle.TaskName.GENERATE_PROTO;
+import static io.spine.tools.gradle.TaskName.GENERATE_TEST_PROTO;
 import static io.spine.tools.proto.FileDescriptors.isNotGoogleProto;
 import static org.slf4j.LoggerFactory.getLogger;
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -26,12 +26,12 @@ import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.ServiceDescriptorProto;
-import io.spine.gradle.GradleProject;
 import io.spine.gradle.compiler.annotation.given.Given.FieldAnnotationValidator;
 import io.spine.gradle.compiler.annotation.given.Given.MainDefinitionAnnotationValidator;
 import io.spine.gradle.compiler.annotation.given.Given.NestedTypeFieldsAnnotationValidator;
 import io.spine.gradle.compiler.annotation.given.Given.NestedTypesAnnotationValidator;
 import io.spine.gradle.compiler.annotation.given.Given.SourceValidator;
+import io.spine.tools.gradle.GradleProject;
 import io.spine.tools.java.SourceFile;
 import io.spine.tools.proto.FileDescriptors;
 import io.spine.util.Exceptions;
@@ -49,13 +49,13 @@ import java.util.Collection;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.gradle.TaskName.ANNOTATE_PROTO;
-import static io.spine.gradle.TaskName.COMPILE_JAVA;
 import static io.spine.gradle.compiler.Extension.getDefaultMainDescriptorsPath;
 import static io.spine.gradle.compiler.Extension.getDefaultMainGenDir;
 import static io.spine.gradle.compiler.Extension.getDefaultMainGenGrpcDir;
 import static io.spine.gradle.compiler.annotation.given.Given.NO_SPI_OPTIONS_FILENAME;
 import static io.spine.gradle.compiler.annotation.given.Given.NO_SPI_OPTIONS_MULTIPLE_FILENAME;
+import static io.spine.tools.gradle.TaskName.ANNOTATE_PROTO;
+import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
 import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.nio.file.Paths.get;
 

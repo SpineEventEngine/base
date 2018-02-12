@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -20,9 +20,9 @@
 package io.spine.gradle.compiler.lookup.enrichment;
 
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
-import io.spine.gradle.GradleTask;
-import io.spine.gradle.SpinePlugin;
 import io.spine.gradle.compiler.util.PropertiesWriter;
+import io.spine.tools.gradle.GradleTask;
+import io.spine.tools.gradle.SpinePlugin;
 import io.spine.tools.proto.FileDescriptors;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
@@ -34,16 +34,16 @@ import java.util.Collection;
 import java.util.Map;
 
 import static com.google.common.collect.Maps.newHashMap;
-import static io.spine.gradle.TaskName.COMPILE_JAVA;
-import static io.spine.gradle.TaskName.COMPILE_TEST_JAVA;
-import static io.spine.gradle.TaskName.FIND_ENRICHMENTS;
-import static io.spine.gradle.TaskName.FIND_TEST_ENRICHMENTS;
-import static io.spine.gradle.TaskName.PROCESS_RESOURCES;
-import static io.spine.gradle.TaskName.PROCESS_TEST_RESOURCES;
 import static io.spine.gradle.compiler.Extension.getMainDescriptorSetPath;
 import static io.spine.gradle.compiler.Extension.getMainTargetGenResourcesDir;
 import static io.spine.gradle.compiler.Extension.getTestDescriptorSetPath;
 import static io.spine.gradle.compiler.Extension.getTestTargetGenResourcesDir;
+import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
+import static io.spine.tools.gradle.TaskName.COMPILE_TEST_JAVA;
+import static io.spine.tools.gradle.TaskName.FIND_ENRICHMENTS;
+import static io.spine.tools.gradle.TaskName.FIND_TEST_ENRICHMENTS;
+import static io.spine.tools.gradle.TaskName.PROCESS_RESOURCES;
+import static io.spine.tools.gradle.TaskName.PROCESS_TEST_RESOURCES;
 import static io.spine.tools.proto.FileDescriptors.isNotGoogleProto;
 
 /**
