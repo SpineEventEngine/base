@@ -38,7 +38,6 @@ import org.jboss.forge.roaster.model.source.MethodSource;
 
 import javax.annotation.Nullable;
 import java.lang.annotation.Annotation;
-import java.nio.file.Path;
 import java.util.Collection;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -68,20 +67,19 @@ class FieldAnnotator extends Annotator<FieldOptions, FieldDescriptorProto> {
 
     @Override
     void annotate() {
-        for (FileDescriptorProto fileDescriptor : fileDescriptors()) {
-            annotate(fileDescriptor);
+        for (FileDescriptorProto file : fileDescriptors()) {
+            annotate(file);
         }
     }
 
     @Override
-    protected void annotateOneFile(FileDescriptorProto fileDescriptor) {
-        if (!shouldAnnotate(fileDescriptor)) {
+    protected void annotateOneFile(FileDescriptorProto file) {
+        if (!shouldAnnotate(file)) {
             return;
         }
 
-        final Path filePath = SourceFile.forOuterClassOf(fileDescriptor)
-                                        .getPath();
-        rewriteSource(filePath, new FileFieldAnnotation<JavaClassSource>(fileDescriptor));
+        final SourceFile outerClass = SourceFile.forOuterClassOf(file);
+        rewriteSource(outerClass, new FileFieldAnnotation<JavaClassSource>(file));
     }
 
     @Override
@@ -90,16 +88,15 @@ class FieldAnnotator extends Annotator<FieldOptions, FieldDescriptorProto> {
             if (shouldAnnotate(messageType)) {
                 final SourceVisitor<JavaClassSource> annotation =
                         new MessageFieldAnnotation<>(file, messageType);
-                final Path filePath = SourceFile.forMessage(messageType, false, file)
-                                                .getPath();
+                final SourceFile filePath = SourceFile.forMessage(messageType, false, file);
                 rewriteSource(filePath, annotation);
             }
         }
     }
 
     @Override
-    protected String getRawOptionValue(FieldDescriptorProto descriptor) {
-        return getUnknownOptionValue(descriptor, getOptionNumber());
+    protected String getRawOptionValue(FieldDescriptorProto field) {
+        return getUnknownOptionValue(field, getOptionNumber());
     }
 
     @VisibleForTesting
@@ -140,9 +137,9 @@ class FieldAnnotator extends Annotator<FieldOptions, FieldDescriptorProto> {
          */
         private final FileDescriptorProto fileDescriptor;
 
-        private FileFieldAnnotation(FileDescriptorProto fileDescriptor) {
-            checkMultipleFilesOption(fileDescriptor, false);
-            this.fileDescriptor = fileDescriptor;
+        private FileFieldAnnotation(FileDescriptorProto file) {
+            checkMultipleFilesOption(file, false);
+            this.fileDescriptor = file;
         }
 
         /**
@@ -163,12 +160,11 @@ class FieldAnnotator extends Annotator<FieldOptions, FieldDescriptorProto> {
         }
 
         private void processMessageDescriptor(AbstractJavaSource<T> input,
-                                              DescriptorProto messageDescriptor,
+                                              DescriptorProto messageType,
                                               Iterable<String> unannotatableFields) {
-            for (FieldDescriptorProto field : messageDescriptor.getFieldList()) {
+            for (FieldDescriptorProto field : messageType.getFieldList()) {
                 if (shouldAnnotate(field)) {
-                    final JavaSource message = findNestedType(input,
-                                                              messageDescriptor.getName());
+                    final JavaSource message = findNestedType(input, messageType.getName());
                     annotateMessageField(asClassSource(message), field, unannotatableFields);
                 }
             }
@@ -212,9 +208,9 @@ class FieldAnnotator extends Annotator<FieldOptions, FieldDescriptorProto> {
         public Void apply(@Nullable AbstractJavaSource<T> input) {
             checkNotNull(input);
             final Iterable<String> fieldsToSkip = getNotAnnotatableFields(message);
-            for (FieldDescriptorProto fieldDescriptor : message.getFieldList()) {
-                if (shouldAnnotate(fieldDescriptor)) {
-                    annotateMessageField(asClassSource(input), fieldDescriptor, fieldsToSkip);
+            for (FieldDescriptorProto field : message.getFieldList()) {
+                if (shouldAnnotate(field)) {
+                    annotateMessageField(asClassSource(input), field, fieldsToSkip);
                 }
             }
             return null;
@@ -316,11 +312,11 @@ class FieldAnnotator extends Annotator<FieldOptions, FieldDescriptorProto> {
      * Tells whether the specified file descriptor contains at least
      * a message descriptor with at least a field, that should be annotated.
      *
-     * @param fileDescriptor the file descriptor to scan
+     * @param file the file descriptor to scan
      * @return {@code true} if the file descriptor contains fields for annotation
      */
-    private boolean shouldAnnotate(FileDescriptorProto fileDescriptor) {
-        for (DescriptorProto messageDescriptor : fileDescriptor.getMessageTypeList()) {
+    private boolean shouldAnnotate(FileDescriptorProto file) {
+        for (DescriptorProto messageDescriptor : file.getMessageTypeList()) {
             if (shouldAnnotate(messageDescriptor)) {
                 return true;
             }

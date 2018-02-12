@@ -32,4 +32,9 @@ public abstract class AbstractSourceFile extends FsObject {
     protected AbstractSourceFile(Path path) {
         super(path);
     }
+
+    @Override
+    public String toString() {
+        return getPath().toString();
+    }
 }

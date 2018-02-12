@@ -32,7 +32,6 @@ import org.jboss.forge.roaster.model.source.JavaSource;
 
 import javax.annotation.Nullable;
 import java.lang.annotation.Annotation;
-import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
 
@@ -52,49 +51,29 @@ abstract class TypeDefinitionAnnotator<L extends ExtendableMessage, D extends Ge
 
     TypeDefinitionAnnotator(Class<? extends Annotation> annotation,
                             GeneratedExtension<L, Boolean> option,
-                            Collection<FileDescriptorProto> fileDescriptors,
+                            Collection<FileDescriptorProto> files,
                             String genProtoDir) {
-        super(annotation, option, fileDescriptors, genProtoDir);
+        super(annotation, option, files, genProtoDir);
     }
 
     @Override
     final void annotate() {
-        for (FileDescriptorProto fileDescriptor : fileDescriptors()) {
-            annotate(fileDescriptor);
+        for (FileDescriptorProto file : fileDescriptors()) {
+            annotate(file);
         }
     }
 
     @Override
-    protected final void annotateOneFile(final FileDescriptorProto fileDescriptor) {
-        final Path relativeFilePath = SourceFile.forOuterClassOf(fileDescriptor)
-                                                .getPath();
-        rewriteSource(relativeFilePath, new SourceVisitor<JavaClassSource>() {
-            @Nullable
-            @Override
-            public Void apply(@Nullable AbstractJavaSource<JavaClassSource> input) {
-                checkNotNull(input);
-                for (D definitionDescriptor : getDefinitions(fileDescriptor)) {
-                    if (shouldAnnotate(definitionDescriptor)) {
-                        final String messageName = getDefinitionName(definitionDescriptor);
-                        final JavaSource message = findNestedType(input, messageName);
-                        addAnnotation(message);
-
-                        final String javaType = SimpleClassName.messageOrBuilder(messageName)
-                                                               .value();
-                        final JavaSource messageOrBuilder = findNestedType(input, javaType);
-                        addAnnotation(messageOrBuilder);
-                    }
-                }
-                return null;
-            }
-        });
+    protected final void annotateOneFile(final FileDescriptorProto file) {
+        final SourceFile outerClass = SourceFile.forOuterClassOf(file);
+        rewriteSource(outerClass, new AnnotateNestedType(file));
     }
 
     @Override
-    protected final void annotateMultipleFiles(FileDescriptorProto fileDescriptor) {
-        for (D definitionDescriptor : getDefinitions(fileDescriptor)) {
+    protected final void annotateMultipleFiles(FileDescriptorProto file) {
+        for (D definitionDescriptor : getDefinitions(file)) {
             if (shouldAnnotate(definitionDescriptor)) {
-                annotateDefinition(definitionDescriptor, fileDescriptor);
+                annotateDefinition(definitionDescriptor, file);
             }
         }
     }
@@ -102,18 +81,18 @@ abstract class TypeDefinitionAnnotator<L extends ExtendableMessage, D extends Ge
     /**
      * Obtains all definitions of a particular type from the specified file descriptor.
      *
-     * @param fileDescriptor the file descriptor from which to get definition list
+     * @param file the file descriptor from which to get definition list
      * @return the definitions list
      */
-    protected abstract List<D> getDefinitions(FileDescriptorProto fileDescriptor);
+    protected abstract List<D> getDefinitions(FileDescriptorProto file);
 
     /**
      * Obtains a definition name for the specified descriptor.
      *
-     * @param definitionDescriptor the definition descriptor
+     * @param definition the definition descriptor
      * @return a definition name
      */
-    protected abstract String getDefinitionName(D definitionDescriptor);
+    protected abstract String getDefinitionName(D definition);
 
     /**
      * Annotates a Java source, generated basing on the specified definition descriptor.
@@ -122,11 +101,10 @@ abstract class TypeDefinitionAnnotator<L extends ExtendableMessage, D extends Ge
      * {@linkplain com.google.protobuf.DescriptorProtos.FileOptions#hasJavaMultipleFiles()
      * has multiple Java files}.
      *
-     * @param definitionDescriptor the definition descriptor
-     * @param fileDescriptor       the file descriptor, which contains the definition descriptor
+     * @param definition the definition descriptor
+     * @param file       the descriptor of the file containing the definition
      */
-    protected abstract void annotateDefinition(D definitionDescriptor,
-                                               FileDescriptorProto fileDescriptor);
+    protected abstract void annotateDefinition(D definition, FileDescriptorProto file);
 
     static <T extends JavaSource<T>> JavaSource findNestedType(AbstractJavaSource<T> enclosingClass,
                                                                String typeName) {
@@ -140,5 +118,36 @@ abstract class TypeDefinitionAnnotator<L extends ExtendableMessage, D extends Ge
         final String errMsg = format("Nested type `%s` is not defined in `%s`.",
                                      typeName, enclosingClass.getName());
         throw new IllegalStateException(errMsg);
+    }
+
+    /**
+     * Optionally annotates nested types in a file.
+     */
+    private class AnnotateNestedType implements SourceVisitor<JavaClassSource> {
+
+        private final FileDescriptorProto file;
+
+        private AnnotateNestedType(FileDescriptorProto file) {
+            this.file = file;
+        }
+
+        @Nullable
+        @Override
+        public Void apply(@Nullable AbstractJavaSource<JavaClassSource> input) {
+            checkNotNull(input);
+            for (D definition : getDefinitions(file)) {
+                if (shouldAnnotate(definition)) {
+                    final String messageName = getDefinitionName(definition);
+                    final JavaSource message = findNestedType(input, messageName);
+                    addAnnotation(message);
+
+                    final String javaType = SimpleClassName.messageOrBuilder(messageName)
+                                                           .value();
+                    final JavaSource messageOrBuilder = findNestedType(input, javaType);
+                    addAnnotation(messageOrBuilder);
+                }
+            }
+            return null;
+        }
     }
 }

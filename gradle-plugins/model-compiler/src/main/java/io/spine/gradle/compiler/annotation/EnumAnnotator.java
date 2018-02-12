@@ -27,7 +27,6 @@ import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import io.spine.tools.java.SourceFile;
 
 import java.lang.annotation.Annotation;
-import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
 
@@ -46,19 +45,19 @@ class EnumAnnotator extends TypeDefinitionAnnotator<EnumOptions, EnumDescriptorP
 
     EnumAnnotator(Class<? extends Annotation> annotation,
                   GeneratedExtension<EnumOptions, Boolean> option,
-                  Collection<FileDescriptorProto> fileDescriptors,
+                  Collection<FileDescriptorProto> files,
                   String genProtoDir) {
-        super(annotation, option, fileDescriptors, genProtoDir);
+        super(annotation, option, files, genProtoDir);
     }
 
     @Override
-    protected List<EnumDescriptorProto> getDefinitions(FileDescriptorProto fileDescriptor) {
-        return fileDescriptor.getEnumTypeList();
+    protected List<EnumDescriptorProto> getDefinitions(FileDescriptorProto file) {
+        return file.getEnumTypeList();
     }
 
     @Override
-    protected String getDefinitionName(EnumDescriptorProto definitionDescriptor) {
-        return definitionDescriptor.getName();
+    protected String getDefinitionName(EnumDescriptorProto enumType) {
+        return enumType.getName();
     }
 
     @Override
@@ -67,10 +66,8 @@ class EnumAnnotator extends TypeDefinitionAnnotator<EnumOptions, EnumDescriptorP
     }
 
     @Override
-    protected void annotateDefinition(EnumDescriptorProto definitionDescriptor,
-                                      FileDescriptorProto fileDescriptor) {
-        final Path filePath = SourceFile.forEnum(definitionDescriptor, fileDescriptor)
-                                        .getPath();
+    protected void annotateDefinition(EnumDescriptorProto enumType, FileDescriptorProto file) {
+        final SourceFile filePath = SourceFile.forEnum(enumType, file);
         rewriteSource(filePath, new TypeDeclarationAnnotation());
     }
 }

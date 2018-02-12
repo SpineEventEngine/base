@@ -25,6 +25,7 @@ import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.GeneratedMessageV3.ExtendableMessage;
+import io.spine.tools.java.SourceFile;
 import org.jboss.forge.roaster.Roaster;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
 import org.jboss.forge.roaster.model.source.AnnotationSource;
@@ -187,7 +188,7 @@ abstract class Annotator<O extends ExtendableMessage, D extends GeneratedMessage
      * @param relativeSourcePath the relative path to a source file
      * @param sourceVisitor      the source visitor
      */
-    protected <T extends JavaSource<T>> void rewriteSource(Path relativeSourcePath,
+    protected <T extends JavaSource<T>> void rewriteSource(SourceFile relativeSourcePath,
                                                            SourceVisitor<T> sourceVisitor) {
         rewriteSource(genProtoDir, relativeSourcePath, sourceVisitor);
     }
@@ -204,7 +205,7 @@ abstract class Annotator<O extends ExtendableMessage, D extends GeneratedMessage
     @SuppressWarnings("unchecked" /* There is no way to specify generic parameter
                                      for `AbstractJavaSource.class` value. */)
     protected static <T extends JavaSource<T>> void rewriteSource(String sourcePathPrefix,
-                                                                  Path sourcePath,
+                                                                  SourceFile sourcePath,
                                                                   SourceVisitor<T> sourceVisitor) {
         final AbstractJavaSource<T> javaSource;
         final Path absoluteSourcePath = Paths.get(sourcePathPrefix, sourcePath.toString());
