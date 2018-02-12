@@ -17,7 +17,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.gradle.compiler.cleaning;
+package io.spine.tools.gradle.compiler.cleaning;
 
 import io.spine.gradle.compiler.Extension;
 import io.spine.tools.gradle.GradleTask;
