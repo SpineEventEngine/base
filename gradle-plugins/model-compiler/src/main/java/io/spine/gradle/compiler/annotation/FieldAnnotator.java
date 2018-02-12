@@ -26,8 +26,8 @@ import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldOptions;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
-import io.spine.tools.java.CodePaths;
 import io.spine.tools.java.SimpleClassName;
+import io.spine.tools.java.SourceFile;
 import io.spine.tools.proto.FieldName;
 import org.jboss.forge.roaster.model.JavaType;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
@@ -79,19 +79,20 @@ class FieldAnnotator extends Annotator<FieldOptions, FieldDescriptorProto> {
             return;
         }
 
-        final Path filePath = CodePaths.forOuterClassOf(fileDescriptor);
+        final Path filePath = SourceFile.forOuterClassOf(fileDescriptor)
+                                        .getPath();
         rewriteSource(filePath, new FileFieldAnnotation<JavaClassSource>(fileDescriptor));
     }
 
     @Override
-    protected void annotateMultipleFiles(FileDescriptorProto fileDescriptor) {
-        for (DescriptorProto messageDescriptor : fileDescriptor.getMessageTypeList()) {
-            if (shouldAnnotate(messageDescriptor)) {
-                final Path filePath = CodePaths.forMessage(messageDescriptor, false,
-                                                           fileDescriptor);
-                rewriteSource(filePath,
-                              new MessageFieldAnnotation<JavaClassSource>(fileDescriptor,
-                                                                          messageDescriptor));
+    protected void annotateMultipleFiles(FileDescriptorProto file) {
+        for (DescriptorProto messageType : file.getMessageTypeList()) {
+            if (shouldAnnotate(messageType)) {
+                final SourceVisitor<JavaClassSource> annotation =
+                        new MessageFieldAnnotation<>(file, messageType);
+                final Path filePath = SourceFile.forMessage(messageType, false, file)
+                                                .getPath();
+                rewriteSource(filePath, annotation);
             }
         }
     }

@@ -24,8 +24,8 @@ import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.GeneratedMessageV3.ExtendableMessage;
-import io.spine.tools.java.CodePaths;
 import io.spine.tools.java.SimpleClassName;
+import io.spine.tools.java.SourceFile;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.jboss.forge.roaster.model.source.JavaSource;
@@ -66,7 +66,8 @@ abstract class TypeDefinitionAnnotator<L extends ExtendableMessage, D extends Ge
 
     @Override
     protected final void annotateOneFile(final FileDescriptorProto fileDescriptor) {
-        final Path relativeFilePath = CodePaths.forOuterClassOf(fileDescriptor);
+        final Path relativeFilePath = SourceFile.forOuterClassOf(fileDescriptor)
+                                                .getPath();
         rewriteSource(relativeFilePath, new SourceVisitor<JavaClassSource>() {
             @Nullable
             @Override

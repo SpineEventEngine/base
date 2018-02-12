@@ -24,7 +24,7 @@ import com.google.protobuf.DescriptorProtos.EnumDescriptorProto;
 import com.google.protobuf.DescriptorProtos.EnumOptions;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
-import io.spine.tools.java.CodePaths;
+import io.spine.tools.java.SourceFile;
 
 import java.lang.annotation.Annotation;
 import java.nio.file.Path;
@@ -69,7 +69,8 @@ class EnumAnnotator extends TypeDefinitionAnnotator<EnumOptions, EnumDescriptorP
     @Override
     protected void annotateDefinition(EnumDescriptorProto definitionDescriptor,
                                       FileDescriptorProto fileDescriptor) {
-        final Path filePath = CodePaths.forEnum(definitionDescriptor, fileDescriptor);
+        final Path filePath = SourceFile.forEnum(definitionDescriptor, fileDescriptor)
+                                        .getPath();
         rewriteSource(filePath, new TypeDeclarationAnnotation());
     }
 }

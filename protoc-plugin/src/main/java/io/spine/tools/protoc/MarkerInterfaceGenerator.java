@@ -30,8 +30,8 @@ import com.google.protobuf.GeneratedMessageV3.ExtendableMessage;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import com.squareup.javapoet.JavaFile;
 import io.spine.option.UnknownOptions;
-import io.spine.tools.java.CodePaths;
 import io.spine.tools.java.PackageName;
+import io.spine.tools.java.SourceFile;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
@@ -152,8 +152,9 @@ public class MarkerInterfaceGenerator extends SpineProtoGenerator {
         final JavaFile interfaceContent = create(interfaceSpec.getPackageName(),
                                                  interfaceSpec.getName());
         final File interfaceFile = File.newBuilder()
-                                       .setName(CodePaths.toFileName(interfaceSpec.getPackageName(),
-                                                                     interfaceSpec.getName()))
+                                       .setName(SourceFile.forType(interfaceSpec.getPackageName(),
+                                                                   interfaceSpec.getName())
+                                                          .toString())
                                        .setContent(interfaceContent.toString())
                                        .build();
         final MessageAndInterface result = new MessageAndInterface(messageFile, interfaceFile);
@@ -238,7 +239,8 @@ public class MarkerInterfaceGenerator extends SpineProtoGenerator {
     }
 
     private static File.Builder prepareFile(String messageName, String javaPackage) {
-        final String fileName = CodePaths.toFileName(javaPackage, messageName);
+        final String fileName = SourceFile.forType(javaPackage, messageName)
+                                          .toString();
         final File.Builder srcFile = File.newBuilder()
                                          .setName(fileName);
         return srcFile;

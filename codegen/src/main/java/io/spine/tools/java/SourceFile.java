@@ -20,10 +20,10 @@
 
 package io.spine.tools.java;
 
-import com.google.protobuf.DescriptorProtos.DescriptorProto;
-import com.google.protobuf.DescriptorProtos.EnumDescriptorProto;
+import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.ServiceDescriptorProto;
+import io.spine.tools.AbstractSourceFile;
 
 import java.nio.file.Path;
 
@@ -31,15 +31,20 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
- * Utilities for working with the Java sources, generated from {@code .proto} files.
+ * A Java source code file.
  *
- * @author Dmytro Grankin
  * @author Alexander Yevsyukov
  */
-public final class CodePaths {
+public final class SourceFile extends AbstractSourceFile {
 
-    /** Prevent instantiation of this utility class. */
-    private CodePaths() {
+    private SourceFile(Path path) {
+        super(path);
+    }
+
+    private static SourceFile of(Path path) {
+        checkNotNull(path);
+        final SourceFile result = new SourceFile(path);
+        return result;
     }
 
     /**
@@ -48,13 +53,28 @@ public final class CodePaths {
      * @param file the proto file descriptor
      * @return the relative file path
      */
-    public static Path forOuterClassOf(FileDescriptorProto file) {
+    public static SourceFile forOuterClassOf(FileDescriptorProto file) {
         checkNotNull(file);
         final Path folderPath = getFolder(file);
         final String filename = SimpleClassName.outerOf(file)
                                                .toFileName()
                                                .value();
-        return folderPath.resolve(filename);
+        final SourceFile result = of(folderPath.resolve(filename));
+        return result;
+    }
+
+    /**
+     * Obtains the {@link Path} to a folder, that contains
+     * a generated file from the file descriptor.
+     *
+     * @param file the proto file descriptor
+     * @return the relative folder path
+     */
+    static Path getFolder(FileDescriptorProto file) {
+        checkNotNull(file);
+        final PackageName packageName = PackageName.resolve(file);
+        final Path result = packageName.toFolder();
+        return result;
     }
 
     /**
@@ -68,26 +88,34 @@ public final class CodePaths {
      *         the file descriptor containing the message descriptor
      * @return the relative file path
      */
-    public static Path forMessage(DescriptorProto message,
-                                  boolean orBuilder,
-                                  FileDescriptorProto file) {
+    public static SourceFile forMessage(DescriptorProtos.DescriptorProto message,
+                                        boolean orBuilder,
+                                        FileDescriptorProto file) {
         checkNotNull(file);
         checkNotNull(message);
         final String typeName = message.getName();
         if (!file.getMessageTypeList()
-                           .contains(message)) {
+                 .contains(message)) {
             throw invalidNestedDefinition(file.getName(), typeName);
         }
 
         if (!file.getOptions()
                  .hasJavaMultipleFiles()) {
-            return forOuterClassOf(file);
+            final SourceFile result = of(forOuterClassOf(file).getPath());
+            return result;
         }
 
         final Path folderPath = getFolder(file);
         final String filename = FileName.forMessage(message, orBuilder)
                                         .value();
-        return folderPath.resolve(filename);
+        final SourceFile result = of(folderPath.resolve(filename));
+        return result;
+    }
+
+    static IllegalStateException invalidNestedDefinition(String filename,
+                                                         String nestedDefinitionName) {
+        throw newIllegalStateException("`%s` does not contain nested definition `%s`.",
+                                       filename, nestedDefinitionName);
     }
 
     /**
@@ -97,7 +125,7 @@ public final class CodePaths {
      * @param file the file descriptor containing the enum descriptor
      * @return the relative file path
      */
-    public static Path forEnum(EnumDescriptorProto enumType, FileDescriptorProto file) {
+    public static SourceFile forEnum(DescriptorProtos.EnumDescriptorProto enumType, FileDescriptorProto file) {
         checkNotNull(file);
         checkNotNull(enumType);
         if (!file.getEnumTypeList()
@@ -107,16 +135,18 @@ public final class CodePaths {
 
         if (!file.getOptions()
                  .hasJavaMultipleFiles()) {
-            return forOuterClassOf(file);
+            final SourceFile result = of(forOuterClassOf(file).getPath());
+            return result;
         }
 
         final Path folderPath = getFolder(file);
         final String filename = FileName.forEnum(enumType)
                                         .value();
-        return folderPath.resolve(filename);
+        final SourceFile result = of(folderPath.resolve(filename));
+        return result;
     }
 
-    public static Path forService(ServiceDescriptorProto service, FileDescriptorProto file) {
+    public static SourceFile forService(ServiceDescriptorProto service, FileDescriptorProto file) {
         checkNotNull(service);
         checkNotNull(file);
         final String serviceType = service.getName();
@@ -125,40 +155,21 @@ public final class CodePaths {
             throw invalidNestedDefinition(file.getName(), serviceType);
         }
 
-        final Path folderPath = getFolder(file);
         final String filename = FileName.forService(service)
                                         .value();
-        return folderPath.resolve(filename);
-    }
-
-    private static IllegalStateException invalidNestedDefinition(String filename,
-                                                                 String nestedDefinitionName) {
-        throw newIllegalStateException("`%s` does not contain nested definition `%s`.",
-                                       filename, nestedDefinitionName);
-    }
-
-    /**
-     * Obtains the {@link Path} to a folder, that contains
-     * a generated file from the file descriptor.
-     *
-     * @param file the proto file descriptor
-     * @return the relative folder path
-     */
-    private static Path getFolder(FileDescriptorProto file) {
-        checkNotNull(file);
-        final PackageName packageName = PackageName.resolve(file);
-        final Path result = packageName.toFolder();
+        final Path folderPath = getFolder(file);
+        final SourceFile result = of(folderPath.resolve(filename));
         return result;
     }
 
     /**
-     * Obtains a file name for the source code file of the give type in the passed package.
+     * Obtains a file path for the source code file of the give type in the passed package.
      */
-    public static String toFileName(String javaPackage, String typename) {
+    public static Path forType(String javaPackage, String typename) {
         final Path filePath = PackageName.of(javaPackage)
                                          .toFolder()
                                          .resolve(FileName.forType(typename)
                                                           .value());
-        return filePath.toString();
+        return filePath;
     }
 }

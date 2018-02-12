@@ -24,13 +24,13 @@ import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.ServiceDescriptorProto;
 import com.google.protobuf.DescriptorProtos.ServiceOptions;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
+import io.spine.tools.java.SourceFile;
 
 import java.lang.annotation.Annotation;
 import java.nio.file.Path;
 import java.util.Collection;
 
 import static io.spine.option.UnknownOptions.getUnknownOptionValue;
-import static io.spine.tools.java.CodePaths.forService;
 
 /**
  * An annotator for {@code gRPC} services.
@@ -70,7 +70,8 @@ class ServiceAnnotator extends Annotator<ServiceOptions, ServiceDescriptorProto>
     private void annotateServices(FileDescriptorProto fileDescriptor) {
         for (ServiceDescriptorProto serviceDescriptor : fileDescriptor.getServiceList()) {
             if (shouldAnnotate(serviceDescriptor)) {
-                final Path sourcePath = forService(serviceDescriptor, fileDescriptor);
+                final Path sourcePath = SourceFile.forService(serviceDescriptor, fileDescriptor)
+                                                  .getPath();
                 rewriteSource(sourcePath, new TypeDeclarationAnnotation());
             }
         }
