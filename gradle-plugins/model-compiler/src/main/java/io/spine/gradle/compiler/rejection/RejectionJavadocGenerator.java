@@ -62,7 +62,7 @@ import static java.lang.String.format;
  * @see <a href="https://github.com/google/protobuf-gradle-plugin/blob/master/README.md#generate-descriptor-set-files">
  * Protobuf plugin configuration</a>
  */
-public class RejectionJavadocGenerator {
+class RejectionJavadocGenerator {
 
     @VisibleForTesting
     protected static final String OPENING_PRE = "<pre>";
@@ -74,7 +74,7 @@ public class RejectionJavadocGenerator {
 
     private final RejectionMetadata rejectionMetadata;
 
-    public RejectionJavadocGenerator(RejectionMetadata rejectionMetadata) {
+    RejectionJavadocGenerator(RejectionMetadata rejectionMetadata) {
         this.rejectionMetadata = rejectionMetadata;
     }
 

@@ -54,7 +54,7 @@ import static javax.lang.model.element.Modifier.STATIC;
  * @author Alex Tymchenko
  */
 @SuppressWarnings("HardcodedLineSeparator")
-public class RejectionWriter {
+class RejectionWriter {
 
     private final RejectionMetadata rejectionMetadata;
     private final File outputDirectory;
@@ -69,9 +69,9 @@ public class RejectionWriter {
      * @param outputDirectory a {@linkplain File directory} to write a Rejection
      * @param messageTypeMap  pre-scanned map with proto types and their appropriate Java classes
      */
-    public RejectionWriter(RejectionMetadata metadata,
-                           File outputDirectory,
-                           Map<String, String> messageTypeMap) {
+    RejectionWriter(RejectionMetadata metadata,
+                    File outputDirectory,
+                    Map<String, String> messageTypeMap) {
         this.rejectionMetadata = metadata;
         this.outputDirectory = outputDirectory;
         this.fieldTypeFactory = new FieldTypeFactory(metadata.getDescriptor(), messageTypeMap);
@@ -83,10 +83,11 @@ public class RejectionWriter {
      */
     void write() {
         try {
-            log().debug("Creating the output directory {}", outputDirectory.getPath());
+            final Logger log = log();
+            log.debug("Creating the output directory {}", outputDirectory.getPath());
             Files.createDirectories(outputDirectory.toPath());
 
-            log().debug("Constructing {}", rejectionMetadata.getClassName());
+            log.debug("Constructing {}", rejectionMetadata.getClassName());
             final TypeSpec rejection =
                     TypeSpec.classBuilder(rejectionMetadata.getClassName())
                             .addJavadoc(javadocGenerator.generateClassJavadoc())
@@ -101,9 +102,9 @@ public class RejectionWriter {
                     JavaFile.builder(rejectionMetadata.getJavaPackage(), rejection)
                             .skipJavaLangImports(true)
                             .build();
-            log().debug("Writing {}", rejectionMetadata.getClassName());
+            log.debug("Writing {}", rejectionMetadata.getClassName());
             javaFile.writeTo(outputDirectory);
-            log().debug("Rejection {} written successfully", rejectionMetadata.getClassName());
+            log.debug("Rejection {} written successfully", rejectionMetadata.getClassName());
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }

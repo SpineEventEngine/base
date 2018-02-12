@@ -30,7 +30,7 @@ import static com.google.protobuf.DescriptorProtos.FileDescriptorProto;
  *
  * @author Dmytro Grankin
  */
-public class RejectionMetadata {
+class RejectionMetadata {
 
     private final DescriptorProto descriptor;
     private final String outerClassName;
@@ -42,8 +42,8 @@ public class RejectionMetadata {
      * @param rejectionDescriptor {@link DescriptorProto} of rejection's proto message
      * @param fileDescriptor      {@link FileDescriptorProto}, that contains the rejection
      */
-    public RejectionMetadata(DescriptorProto rejectionDescriptor,
-                             FileDescriptorProto fileDescriptor) {
+    RejectionMetadata(DescriptorProto rejectionDescriptor,
+                      FileDescriptorProto fileDescriptor) {
         this.descriptor = rejectionDescriptor;
         this.outerClassName = SimpleClassName.outerOf(fileDescriptor)
                                              .value();
