@@ -23,9 +23,11 @@ package io.spine.tools.proto;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.tools.AbstractFileName;
+import io.spine.type.CommandMessage;
 
 import java.util.List;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.CodePreconditions.checkNotEmptyOrBlank;
 
@@ -42,6 +44,21 @@ public final class FileName extends AbstractFileName implements UnderscoredName 
     /** The file system separator as defined by Protobuf. Not platform-dependant. */
     private static final char PATH_SEPARATOR = '/';
 
+    /**
+     * The name suffix for proto file containing command declarations.
+     */
+    private static final String COMMANDS_FILE_SUFFIX = CommandMessage.File.SUFFIX;
+
+    /**
+     * The name suffix for proto files containing event message declarations.
+     */
+    public static final String EVENTS_FILE_SUFFIX = "events" + EXTENSION;
+
+    /**
+     * The name suffix for proto files containing rejection declarations.
+     */
+    public static final String REJECTIONS_FILE_SUFFIX = "rejections" + EXTENSION;
+
     private FileName(String value) {
         super(value);
     }
@@ -51,6 +68,7 @@ public final class FileName extends AbstractFileName implements UnderscoredName 
      */
     public static FileName of(String value) {
         checkNotEmptyOrBlank(value);
+        checkArgument(value.endsWith(EXTENSION));
         return new FileName(value);
     }
 
@@ -89,6 +107,30 @@ public final class FileName extends AbstractFileName implements UnderscoredName 
      */
     public String nameOnlyCamelCase() {
         final String result = CamelCase.convert(this);
+        return result;
+    }
+
+    /**
+     * Returns {@code true} if the name of the file matches convention for command message files.
+     */
+    public boolean isCommands() {
+        final boolean result = value().endsWith(COMMANDS_FILE_SUFFIX);
+        return result;
+    }
+
+    /**
+     * Returns {@code true} if the name of the file matches convention for event message files.
+     */
+    public boolean isEvents() {
+        final boolean result = value().endsWith(EVENTS_FILE_SUFFIX);
+        return result;
+    }
+
+    /**
+     * Returns {@code true} if the name of the file matches convention for rejection message files.
+     */
+    public boolean isRejections() {
+        final boolean result = value().endsWith(REJECTIONS_FILE_SUFFIX);
         return result;
     }
 }

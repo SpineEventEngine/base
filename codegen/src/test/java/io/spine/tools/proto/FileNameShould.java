@@ -28,6 +28,8 @@ import java.util.List;
 
 import static io.spine.tools.proto.FileName.of;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Alexander Yevsyukov
@@ -40,9 +42,14 @@ public class FileNameShould {
                                                   NullPointerTester.Visibility.PACKAGE);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void require_standard_extension() {
+        FileName.of("some_thing");
+    }
+
     @Test
     public void return_words() {
-        final List<String> words = FieldName.of("some_proto_file_name").words();
+        final List<String> words = FileName.of("some_proto_file_name.proto").words();
 
         assertEquals(ImmutableList.of("some", "proto", "file", "name"), words);
     }
@@ -53,5 +60,32 @@ public class FileNameShould {
         assertEquals("Rejections", of("rejections.proto").nameOnlyCamelCase());
         assertEquals("ManyRejections", of("many_rejections.proto").nameOnlyCamelCase());
         assertEquals("ManyMoreRejections", of("many_more_rejections.proto").nameOnlyCamelCase());
+    }
+
+    @Test
+    public void tell_commands_file_kind() {
+        final FileName commandsFile = FileName.of("my_commands.proto");
+
+        assertTrue(commandsFile.isCommands());
+        assertFalse(commandsFile.isEvents());
+        assertFalse(commandsFile.isRejections());
+    }
+
+    @Test
+    public void tell_events_file_kind() {
+        final FileName eventsFile = FileName.of("project_events.proto");
+
+        assertTrue(eventsFile.isEvents());
+        assertFalse(eventsFile.isCommands());
+        assertFalse(eventsFile.isRejections());
+    }
+
+    @Test
+    public void tell_rejections_file_kind() {
+        final FileName rejectsionFile = FileName.of("rejections.proto");
+
+        assertTrue(rejectsionFile.isRejections());
+        assertFalse(rejectsionFile.isCommands());
+        assertFalse(rejectsionFile.isEvents());
     }
 }

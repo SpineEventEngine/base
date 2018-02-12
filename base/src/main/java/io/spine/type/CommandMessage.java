@@ -41,21 +41,34 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public interface CommandMessage extends Message {
 
     /**
-     * The name suffix for proto files containing command message declarations.
+     * Constants and utilities for working with proto command files.
      */
-    String PROTO_FILE_SUFFIX = "commands.proto";
+    class File {
 
-    /**
-     * Returns {@code true} if the passed file defines command messages, {@code false} otherwise.
-     */
-    Predicate<FileDescriptor> FILE_PREDICATE = new Predicate<FileDescriptor>() {
-        @Override
-        public boolean apply(@Nullable FileDescriptor file) {
-            checkNotNull(file);
-
-            final String fqn = file.getName();
-            final boolean result = fqn.endsWith(PROTO_FILE_SUFFIX);
-            return result;
+        /** Prevents instantiation of this utility class. */
+        private File() {
         }
-    };
+
+        /**
+         * The name suffix for proto files containing command message declarations.
+         */
+        public static final String SUFFIX = "commands.proto";
+
+        //TODO:2018-02-12:alexander.yevsyukov: Replace usages of this predicate with cast to `CommandMessage`
+        // after code generation is updated.
+        /**
+         * Returns {@code true} if the passed file defines command messages,
+         * {@code false} otherwise.
+         */
+        public static final Predicate<FileDescriptor> PREDICATE = new Predicate<FileDescriptor>() {
+            @Override
+            public boolean apply(@Nullable FileDescriptor file) {
+                checkNotNull(file);
+
+                final String fqn = file.getName();
+                final boolean result = fqn.endsWith(SUFFIX);
+                return result;
+            }
+        };
+    }
 }
