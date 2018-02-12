@@ -20,7 +20,8 @@
 
 package io.spine.tools.java;
 
-import com.google.protobuf.DescriptorProtos;
+import com.google.protobuf.DescriptorProtos.DescriptorProto;
+import com.google.protobuf.DescriptorProtos.EnumDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.ServiceDescriptorProto;
 import io.spine.tools.AbstractSourceFile;
@@ -80,15 +81,14 @@ public final class SourceFile extends AbstractSourceFile {
     /**
      * Obtains the generated file {@link Path} for the specified message descriptor.
      *
-     * @param  message
-     *         the message descriptor to get path
-     * @param  orBuilder
-     *         indicates if a {@code MessageOrBuilder} path for the message should be returned
-     * @param  file
-     *         the file descriptor containing the message descriptor
+     * @param  message   the descriptor of the message type for which we obtain the source code file
+     * @param  orBuilder indicates if a {@code MessageOrBuilder} path for the message should
+     *                   be returned
+     * @param  file      the descriptor of the proto file which contains the declaration of the
+     *                   message type
      * @return the relative file path
      */
-    public static SourceFile forMessage(DescriptorProtos.DescriptorProto message,
+    public static SourceFile forMessage(DescriptorProto message,
                                         boolean orBuilder,
                                         FileDescriptorProto file) {
         checkNotNull(file);
@@ -125,7 +125,7 @@ public final class SourceFile extends AbstractSourceFile {
      * @param file the file descriptor containing the enum descriptor
      * @return the relative file path
      */
-    public static SourceFile forEnum(DescriptorProtos.EnumDescriptorProto enumType, FileDescriptorProto file) {
+    public static SourceFile forEnum(EnumDescriptorProto enumType, FileDescriptorProto file) {
         checkNotNull(file);
         checkNotNull(enumType);
         if (!file.getEnumTypeList()
