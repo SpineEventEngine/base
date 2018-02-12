@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.compiler.annotation.given;
+package io.spine.tools.gradle.compiler.annotation.given;
 
 import com.google.common.base.Function;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
@@ -51,8 +51,8 @@ public class Given {
     public static final String NO_SPI_OPTIONS_MULTIPLE_FILENAME = "no_spi_options_multiple.proto";
     private static final Class<? extends Annotation> ANNOTATION_CLASS = SPI.class;
 
+    /** Prevent instantiation of this utility class. */
     private Given() {
-        // Prevent instantiation of this utility class.
     }
 
     public static class NestedTypesAnnotationValidator implements SourceValidator {

@@ -22,9 +22,9 @@
  * Provides a Gradle plugin, which adds annotations for generated Java files
  * basing on options defined in {@code .proto} files.
  *
- * @see io.spine.gradle.compiler.annotation.ProtoAnnotatorPlugin ProtoAnnotatorPlugin
+ * @see io.spine.tools.gradle.compiler.annotation.ProtoAnnotatorPlugin ProtoAnnotatorPlugin
  */
 @ParametersAreNonnullByDefault
-package io.spine.gradle.compiler.annotation;
+package io.spine.tools.gradle.compiler.annotation;
 
 import javax.annotation.ParametersAreNonnullByDefault;

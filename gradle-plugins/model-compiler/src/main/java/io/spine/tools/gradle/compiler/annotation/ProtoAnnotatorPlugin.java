@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.gradle.compiler.annotation;
+package io.spine.tools.gradle.compiler.annotation;
 
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.annotation.Beta;
