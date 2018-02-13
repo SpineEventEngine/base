@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -19,8 +19,8 @@
  */
 
 /**
- * This package provides {@link io.spine.gradle.compiler.annotation.ProtoAnnotatorPlugin
- * ProtoAnnotatorPlugin}.
+ * This package provides {@link io.spine.gradle.compiler.protoc.ProtocPluginImporter
+ * ProtocPluginImporter}.
  */
 @ParametersAreNonnullByDefault
 package io.spine.gradle.compiler.protoc;
