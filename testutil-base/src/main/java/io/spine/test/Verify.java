@@ -16,6 +16,7 @@ import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.Multimap;
 import org.junit.Assert;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -59,14 +60,28 @@ public final class Verify extends Assert {
     @SuppressWarnings("AccessOfSystemProperties")
     private static final String LINE_SEPARATOR = System.getProperty("line.separator");
 
+    /** Parameter name constants. */
     @VisibleForTesting
-    static final String PARAM_MAP = "map";
+    static class Param {
 
-    private static final String PARAM_MULTIMAP = "multimap";
-    private static final String PARAM_COLLECTION = "collection";
-    private static final String PARAM_ARRAY = "array";
-    private static final String PARAM_STRING = "string";
-    private static final String PARAM_LIST = "list";
+        static final String MAP = simpleLowerCaseOf(Map.class);
+        private static final String MULTIMAP = simpleLowerCaseOf(Multimap.class);
+        private static final String COLLECTION = simpleLowerCaseOf(Collection.class);
+        private static final String ARRAY = simpleLowerCaseOf(Array.class);
+        private static final String STRING = simpleLowerCaseOf(String.class);
+        private static final String LIST = simpleLowerCaseOf(List.class);
+        private static final String FLOAT = simpleLowerCaseOf(float.class);
+        private static final String BOOLEAN = simpleLowerCaseOf(boolean.class);
+
+        /** Prevents instantiation of this utility class. */
+        private Param() {
+        }
+
+        private static String simpleLowerCaseOf(Class<?> cls) {
+            return cls.getSimpleName()
+                      .toLowerCase();
+        }
+    }
 
     private static final String MSG_SHOULD_BE_EMPTY_ACTUAL_SIZE =
             " should be empty; actual size:<";
@@ -228,7 +243,7 @@ public final class Verify extends Assert {
      */
     public static void assertNotEquals(float expected, float actual, float delta) {
         try {
-            assertNotEquals("float", expected, actual, delta);
+            assertNotEquals(Param.FLOAT, expected, actual, delta);
         } catch (AssertionError e) {
             throw mangledException(e);
         }
@@ -248,7 +263,7 @@ public final class Verify extends Assert {
     /** Asserts that two booleans are not equal. */
     public static void assertNotEquals(boolean notExpected, boolean actual) {
         try {
-            assertNotEquals("boolean", notExpected, actual);
+            assertNotEquals(Param.BOOLEAN, notExpected, actual);
         } catch (AssertionError e) {
             throw mangledException(e);
         }
@@ -387,7 +402,7 @@ public final class Verify extends Assert {
     /** Assert that the given {@link Map} is empty. */
     public static void assertEmpty(Map<?, ?> actualMap) {
         try {
-            assertEmpty(PARAM_MAP, actualMap);
+            assertEmpty(Param.MAP, actualMap);
         } catch (AssertionError e) {
             throw mangledException(e);
         }
@@ -396,7 +411,7 @@ public final class Verify extends Assert {
     /** Assert that the given {@link Multimap} is empty. */
     public static void assertEmpty(Multimap<?, ?> actualMultimap) {
         try {
-            assertEmpty(PARAM_MULTIMAP, actualMultimap);
+            assertEmpty(Param.MULTIMAP, actualMultimap);
         } catch (AssertionError e) {
             throw mangledException(e);
         }
@@ -488,7 +503,7 @@ public final class Verify extends Assert {
     /** Assert that the given {@link Map} is <em>not</em> empty. */
     public static void assertNotEmpty(Map<?, ?> actualMap) {
         try {
-            assertNotEmpty(PARAM_MAP, actualMap);
+            assertNotEmpty(Param.MAP, actualMap);
         } catch (AssertionError e) {
             throw mangledException(e);
         }
@@ -518,7 +533,7 @@ public final class Verify extends Assert {
     /** Assert that the given {@link Multimap} is <em>not</em> empty. */
     public static void assertNotEmpty(Multimap<?, ?> actualMultimap) {
         try {
-            assertNotEmpty(PARAM_MULTIMAP, actualMultimap);
+            assertNotEmpty(Param.MULTIMAP, actualMultimap);
         } catch (AssertionError e) {
             throw mangledException(e);
         }
@@ -563,7 +578,7 @@ public final class Verify extends Assert {
     /** Assert the size of the given array. */
     public static void assertSize(int expectedSize, Object[] actualArray) {
         try {
-            assertSize(PARAM_ARRAY, expectedSize, actualArray);
+            assertSize(Param.ARRAY, expectedSize, actualArray);
         } catch (AssertionError e) {
             throw mangledException(e);
         }
@@ -619,7 +634,7 @@ public final class Verify extends Assert {
     /** Assert the size of the given {@link Map}. */
     public static void assertSize(int expectedSize, Map<?, ?> actualMap) {
         try {
-            assertSize(PARAM_MAP, expectedSize, actualMap);
+            assertSize(Param.MAP, expectedSize, actualMap);
         } catch (AssertionError e) {
             throw mangledException(e);
         }
@@ -628,7 +643,7 @@ public final class Verify extends Assert {
     /** Assert the size of the given {@link Multimap}. */
     public static void assertSize(int expectedSize, Multimap<?, ?> actualMultimap) {
         try {
-            assertSize(PARAM_MULTIMAP, expectedSize, actualMultimap);
+            assertSize(Param.MULTIMAP, expectedSize, actualMultimap);
         } catch (AssertionError e) {
             throw mangledException(e);
         }
@@ -701,7 +716,7 @@ public final class Verify extends Assert {
      */
     public static void assertContains(CharSequence stringToFind, String stringToSearch) {
         try {
-            assertContains(PARAM_STRING, stringToFind, stringToSearch);
+            assertContains(Param.STRING, stringToFind, stringToSearch);
         } catch (AssertionError e) {
             throw mangledException(e);
         }
@@ -713,7 +728,7 @@ public final class Verify extends Assert {
      */
     public static void assertNotContains(CharSequence unexpectedString, String stringToSearch) {
         try {
-            assertNotContains(PARAM_STRING, unexpectedString, stringToSearch);
+            assertNotContains(Param.STRING, unexpectedString, stringToSearch);
         } catch (AssertionError e) {
             throw mangledException(e);
         }
@@ -770,7 +785,7 @@ public final class Verify extends Assert {
     /** Assert that the given {@link Collection} contains the given item. */
     public static void assertContains(Object expectedItem, Collection<?> actualCollection) {
         try {
-            assertContains(PARAM_COLLECTION, expectedItem, actualCollection);
+            assertContains(Param.COLLECTION, expectedItem, actualCollection);
         } catch (AssertionError e) {
             throw mangledException(e);
         }
@@ -902,7 +917,7 @@ public final class Verify extends Assert {
             V expectedValue,
             Multimap<K, V> actualMultimap) {
         try {
-            assertContainsEntry(PARAM_MULTIMAP, expectedKey, expectedValue, actualMultimap);
+            assertContainsEntry(Param.MULTIMAP, expectedKey, expectedValue, actualMultimap);
         } catch (AssertionError e) {
             throw mangledException(e);
         }
@@ -929,7 +944,7 @@ public final class Verify extends Assert {
     /** Assert that the given {@link Map} contains an entry with the given key. */
     public static void assertContainsKey(Object expectedKey, Map<?, ?> actualMap) {
         try {
-            assertContainsKey(PARAM_MAP, expectedKey, actualMap);
+            assertContainsKey(Param.MAP, expectedKey, actualMap);
         } catch (AssertionError e) {
             throw mangledException(e);
         }
@@ -951,7 +966,7 @@ public final class Verify extends Assert {
     /** Deny that the given {@link Map} contains an entry with the given key. */
     public static void denyContainsKey(Object unexpectedKey, Map<?, ?> actualMap) {
         try {
-            denyContainsKey(PARAM_MAP, unexpectedKey, actualMap);
+            denyContainsKey(Param.MAP, unexpectedKey, actualMap);
         } catch (AssertionError e) {
             throw mangledException(e);
         }
@@ -976,7 +991,7 @@ public final class Verify extends Assert {
             Object expectedValue,
             Map<?, ?> actualMap) {
         try {
-            assertContainsKeyValue(PARAM_MAP, expectedKey, expectedValue, actualMap);
+            assertContainsKeyValue(Param.MAP, expectedKey, expectedValue, actualMap);
         } catch (AssertionError e) {
             throw mangledException(e);
         }
@@ -1013,7 +1028,7 @@ public final class Verify extends Assert {
     /** Assert that the given {@link Collection} does <em>not</em> contain the given item. */
     public static void assertNotContains(Object unexpectedItem, Collection<?> actualCollection) {
         try {
-            assertNotContains(PARAM_COLLECTION, unexpectedItem, actualCollection);
+            assertNotContains(Param.COLLECTION, unexpectedItem, actualCollection);
         } catch (AssertionError e) {
             throw mangledException(e);
         }
@@ -1066,7 +1081,7 @@ public final class Verify extends Assert {
     /** Assert that the given {@link Collection} does <em>not</em> contain the given item. */
     public static void assertNotContainsKey(Object unexpectedKey, Map<?, ?> actualMap) {
         try {
-            assertNotContainsKey(PARAM_MAP, unexpectedKey, actualMap);
+            assertNotContainsKey(Param.MAP, unexpectedKey, actualMap);
         } catch (AssertionError e) {
             throw mangledException(e);
         }
@@ -1094,7 +1109,7 @@ public final class Verify extends Assert {
      */
     public static <T> void assertBefore(T formerItem, T latterItem, List<T> actualList) {
         try {
-            assertBefore(PARAM_LIST, formerItem, latterItem, actualList);
+            assertBefore(Param.LIST, formerItem, latterItem, actualList);
         } catch (AssertionError e) {
             throw mangledException(e);
         }
@@ -1141,7 +1156,7 @@ public final class Verify extends Assert {
     /** Assert that the given {@code item} is at the {@code index} in the given {@link List}. */
     public static void assertItemAtIndex(Object expectedItem, int index, List<?> list) {
         try {
-            assertItemAtIndex(PARAM_LIST, expectedItem, index, list);
+            assertItemAtIndex(Param.LIST, expectedItem, index, list);
         } catch (AssertionError e) {
             throw mangledException(e);
         }
@@ -1150,7 +1165,7 @@ public final class Verify extends Assert {
     /** Assert that the given {@code item} is at the {@code index} in the given {@code array}. */
     public static void assertItemAtIndex(Object expectedItem, int index, Object[] array) {
         try {
-            assertItemAtIndex(PARAM_ARRAY, expectedItem, index, array);
+            assertItemAtIndex(Param.ARRAY, expectedItem, index, array);
         } catch (AssertionError e) {
             throw mangledException(e);
         }
@@ -1164,7 +1179,7 @@ public final class Verify extends Assert {
 
             for (int i = 0; i < items.length; i++) {
                 final T item = items[i];
-                assertItemAtIndex(PARAM_ARRAY, item, i, array);
+                assertItemAtIndex(Param.ARRAY, item, i, array);
             }
         } catch (AssertionError e) {
             throw mangledException(e);
@@ -1175,7 +1190,7 @@ public final class Verify extends Assert {
     @SafeVarargs
     public static <T> void assertStartsWith(List<T> list, T... items) {
         try {
-            assertStartsWith(PARAM_LIST, list, items);
+            assertStartsWith(Param.LIST, list, items);
         } catch (AssertionError e) {
             throw mangledException(e);
         }
@@ -1200,12 +1215,12 @@ public final class Verify extends Assert {
     @SuppressWarnings("OverloadedVarargsMethod")
     public static <T> void assertEndsWith(List<T> list, T... items) {
         try {
-            assertObjectNotNull(PARAM_LIST, list);
+            assertObjectNotNull(Param.LIST, list);
             assertNotEmpty(EXPECTED_ITEMS_IN_ASSERTION_MESSAGE, items);
 
             for (int i = 0; i < items.length; i++) {
                 final T item = items[i];
-                assertItemAtIndex(PARAM_LIST, item, list.size() - items.length + i, list);
+                assertItemAtIndex(Param.LIST, item, list.size() - items.length + i, list);
             }
         } catch (AssertionError e) {
             throw mangledException(e);
@@ -1216,12 +1231,12 @@ public final class Verify extends Assert {
     @SuppressWarnings("OverloadedVarargsMethod")
     public static <T> void assertEndsWith(T[] array, T... items) {
         try {
-            assertObjectNotNull(PARAM_ARRAY, array);
+            assertObjectNotNull(Param.ARRAY, array);
             assertNotEmpty(EXPECTED_ITEMS_IN_ASSERTION_MESSAGE, items);
 
             for (int i = 0; i < items.length; i++) {
                 final T item = items[i];
-                assertItemAtIndex(PARAM_ARRAY, item, array.length - items.length + i, array);
+                assertItemAtIndex(Param.ARRAY, item, array.length - items.length + i, array);
             }
         } catch (AssertionError e) {
             throw mangledException(e);

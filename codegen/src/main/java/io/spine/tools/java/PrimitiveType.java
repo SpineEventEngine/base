@@ -32,36 +32,41 @@ import static io.spine.tools.CodePreconditions.checkNotEmptyOrBlank;
  * @author Alexander Yevsyukov
  */
 public enum PrimitiveType {
-    INT("int", Integer.class),
-    LONG("long", Long.class),
-    FLOAT("float", Float.class),
-    DOUBLE("double", Double.class),
-    BOOLEAN("boolean", Boolean.class);
+    INT(int.class, Integer.class),
+    LONG(long.class, Long.class),
+    FLOAT(float.class, Float.class),
+    DOUBLE(double.class, Double.class),
+    BOOLEAN(boolean.class, Boolean.class);
 
     private final String name;
     private final Class<?> wrapperClass;
 
-    PrimitiveType(String name, Class<?> wrapperClass) {
-        this.name = name;
+    PrimitiveType(Class<?> primitiveType, Class<?> wrapperClass) {
+        this.name = primitiveType.getSimpleName();
         this.wrapperClass = wrapperClass;
     }
 
     /**
      * Returns the boxed {@link Class} for the Protobuf scalar primitive name.
      *
-     * @param scalarPrimitiveName the Protobuf scalar primitive name
-     * @return the boxed primitive class or empty {@code Optional}
+     * @param primitiveType the primitive type name
+     * @return the wrapper class or {@link Optional#absent() Optional.absent()}
      * if the specified primitive name does not belong to {@link ScalarType}.
      */
-    public static Optional<? extends Class<?>> getWrapperClass(String scalarPrimitiveName) {
-        checkNotEmptyOrBlank(scalarPrimitiveName);
+    public static Optional<? extends Class<?>> getWrapperClass(String primitiveType) {
+        checkNotEmptyOrBlank(primitiveType);
         for (PrimitiveType simpleType : values()) {
-            if (scalarPrimitiveName.equals(simpleType.getName())) {
+            if (simpleType.matchesName(primitiveType)) {
                 return Optional.of(simpleType.getWrapperClass());
             }
         }
 
         return Optional.absent();
+    }
+
+    boolean matchesName(String typeName) {
+        final boolean result = getName().equals(typeName);
+        return result;
     }
 
     public String getName() {
