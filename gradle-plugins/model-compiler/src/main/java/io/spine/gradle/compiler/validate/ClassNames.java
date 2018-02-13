@@ -29,8 +29,8 @@ import java.util.Collection;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.gradle.compiler.message.fieldtype.FieldTypes.trimTypeName;
-import static io.spine.gradle.compiler.message.fieldtype.ProtoScalarType.getBoxedScalarPrimitive;
-import static io.spine.gradle.compiler.message.fieldtype.ProtoScalarType.getJavaTypeName;
+import static io.spine.tools.proto.ScalarType.getBoxedScalarPrimitive;
+import static io.spine.tools.proto.ScalarType.getJavaTypeName;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 
 /**

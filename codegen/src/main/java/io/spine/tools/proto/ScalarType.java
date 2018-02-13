@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.gradle.compiler.message.fieldtype;
+package io.spine.tools.proto;
 
 import com.google.common.base.Optional;
 import com.google.protobuf.ByteString;
@@ -35,7 +35,7 @@ import static java.lang.String.format;
  * @see <a href="https://developers.google.com/protocol-buffers/docs/proto3#scalar">
  * Protobuf scalar types</a>
  */
-public enum ProtoScalarType {
+public enum ScalarType {
     DOUBLE(Type.TYPE_DOUBLE, double.class),
     FLOAT(Type.TYPE_FLOAT, float.class),
     INT32(Type.TYPE_INT32, int.class),
@@ -55,7 +55,7 @@ public enum ProtoScalarType {
     private final Type protoScalarType;
     private final Class<?> javaClass;
 
-    ProtoScalarType(Type protoScalarType, Class<?> javaClass) {
+    ScalarType(Type protoScalarType, Class<?> javaClass) {
         this.protoScalarType = protoScalarType;
         this.javaClass = javaClass;
     }
@@ -67,9 +67,9 @@ public enum ProtoScalarType {
      * @return the name of the corresponding Java type
      */
     public static String getJavaTypeName(Type protoScalar) {
-        for (ProtoScalarType protoScalarType : ProtoScalarType.values()) {
-            if (protoScalarType.protoScalarType == protoScalar) {
-                return protoScalarType.javaClass.getName();
+        for (ScalarType scalarType : ScalarType.values()) {
+            if (scalarType.protoScalarType == protoScalar) {
+                return scalarType.javaClass.getName();
             }
         }
 
@@ -82,7 +82,7 @@ public enum ProtoScalarType {
      *
      * @param scalarPrimitiveName the Protobuf scalar primitive name
      * @return the boxed primitive class or empty {@code Optional}
-     * if the specified primitive name does not belong to {@link ProtoScalarType}.
+     * if the specified primitive name does not belong to {@link ScalarType}.
      */
     public static Optional<? extends Class<?>> getBoxedScalarPrimitive(String scalarPrimitiveName) {
         for (ProtoScalarPrimitive primitive : ProtoScalarPrimitive.values()) {
@@ -96,7 +96,7 @@ public enum ProtoScalarType {
 
     /**
      * Enumeration of the Java primitives, which
-     * are {@linkplain ProtoScalarType Protobuf scalar types}.
+     * are {@linkplain ScalarType Protobuf scalar types}.
      */
     enum ProtoScalarPrimitive {
         INT("int", Integer.class),

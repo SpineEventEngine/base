@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -22,6 +22,7 @@ package io.spine.gradle.compiler.message.fieldtype;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 import com.squareup.javapoet.TypeName;
+import io.spine.tools.proto.ScalarType;
 
 import java.util.AbstractMap;
 import java.util.Map;
@@ -84,7 +85,7 @@ public class FieldTypeFactory {
                          typeName, field.getType());
             return result;
         } else {
-            return ProtoScalarType.getJavaTypeName(field.getType());
+            return ScalarType.getJavaTypeName(field.getType());
         }
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -30,8 +30,8 @@ import com.squareup.javapoet.TypeName;
 import io.spine.base.ConversionException;
 import io.spine.gradle.compiler.message.MessageTypeCache;
 import io.spine.gradle.compiler.message.fieldtype.FieldType;
-import io.spine.gradle.compiler.message.fieldtype.ProtoScalarType;
 import io.spine.tools.proto.FieldName;
+import io.spine.tools.proto.ScalarType;
 import io.spine.validate.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -181,7 +181,7 @@ class RepeatedFieldMethodConstructor implements MethodConstructor {
     private static boolean isScalarType(FieldDescriptorProto fieldDescriptor) {
         boolean isScalarType = false;
         final Type type = fieldDescriptor.getType();
-        for (ProtoScalarType scalarType : ProtoScalarType.values()) {
+        for (ScalarType scalarType : ScalarType.values()) {
             if (scalarType.getProtoScalarType() == type) {
                 isScalarType = true;
             }

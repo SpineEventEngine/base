@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -23,6 +23,7 @@ import com.google.common.base.Optional;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
+import io.spine.tools.proto.ScalarType;
 
 import java.util.List;
 
@@ -67,7 +68,7 @@ public class RepeatedFieldType implements FieldType {
 
     private static TypeName constructTypeNameFor(String componentTypeName) {
         final Optional<? extends Class<?>> boxedScalarPrimitive =
-                ProtoScalarType.getBoxedScalarPrimitive(componentTypeName);
+                ScalarType.getBoxedScalarPrimitive(componentTypeName);
 
         final TypeName componentType = boxedScalarPrimitive.isPresent()
                                        ? TypeName.get(boxedScalarPrimitive.get())
