@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.gradle.compiler.rejection;
+package io.spine.tools.proto;
 
 import io.spine.tools.java.SimpleClassName;
 
@@ -32,7 +32,7 @@ import static com.google.protobuf.DescriptorProtos.FileDescriptorProto;
  *
  * @author Dmytro Grankin
  */
-class RejectionMetadata {
+public class RejectionDeclaration {
 
     private final DescriptorProto descriptor;
     private final String outerClassName;
@@ -44,8 +44,8 @@ class RejectionMetadata {
      * @param rejectionDescriptor {@link DescriptorProto} of rejection's proto message
      * @param fileDescriptor      {@link FileDescriptorProto}, that contains the rejection
      */
-    RejectionMetadata(DescriptorProto rejectionDescriptor,
-                      FileDescriptorProto fileDescriptor) {
+    public RejectionDeclaration(DescriptorProto rejectionDescriptor,
+                                FileDescriptorProto fileDescriptor) {
         this.descriptor = rejectionDescriptor;
         this.outerClassName = SimpleClassName.outerOf(fileDescriptor)
                                              .value();
@@ -54,6 +54,10 @@ class RejectionMetadata {
 
     public DescriptorProto getDescriptor() {
         return descriptor;
+    }
+
+    public String getName() {
+        return descriptor.getName();
     }
 
     public String getJavaPackage() {
@@ -86,7 +90,7 @@ class RejectionMetadata {
         if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        final RejectionMetadata other = (RejectionMetadata) obj;
+        final RejectionDeclaration other = (RejectionDeclaration) obj;
         return Objects.equals(this.descriptor, other.descriptor)
                 && Objects.equals(this.outerClassName, other.outerClassName)
                 && Objects.equals(this.fileDescriptor, other.fileDescriptor);

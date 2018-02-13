@@ -40,11 +40,11 @@ import static io.spine.tools.proto.MessageDeclaration.create;
  *
  * @author Alexander Yevsyukov
  */
-public final class SourceFile extends AbstractSourceFile {
+public class SourceFile extends AbstractSourceFile {
 
     private final FileDescriptorProto descriptor;
 
-    private SourceFile(FileDescriptorProto descriptor) {
+    SourceFile(FileDescriptorProto descriptor) {
         super(toPath(descriptor));
         this.descriptor = descriptor;
     }
@@ -62,6 +62,15 @@ public final class SourceFile extends AbstractSourceFile {
 
     /**
      * Returns {@code true} if the source file matches conventions for rejection files.
+     *
+     * <p>A valid rejections file must have:
+     * <ul>
+     *     <li>Have the file name which ends on {@link FileName.Suffix#forRejections()}
+     *     “rejections.proto”}.
+     *     <li>The option {@code java_multiple_files} set to {@code false}.
+     *     <li>Do not have the option {@code java_outer_classname} or have the value, which
+     *     ends on {@linkplain RejectionMessage#OUTER_CLASS_NAME_SUFFIX “Rejections”}.
+     * </ul>
      */
     public boolean isRejections() {
         // By convention rejections are generated into one file.

@@ -19,7 +19,6 @@
  */
 package io.spine.gradle.compiler.rejection;
 
-import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.gradle.compiler.message.MessageTypeCache;
 import io.spine.tools.gradle.GradleTask;
@@ -27,7 +26,9 @@ import io.spine.tools.gradle.SpinePlugin;
 import io.spine.tools.java.PackageName;
 import io.spine.tools.java.SimpleClassName;
 import io.spine.tools.proto.FileDescriptors;
+import io.spine.tools.proto.RejectionDeclaration;
 import io.spine.tools.proto.Rejections;
+import io.spine.tools.proto.RejectionsFile;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -121,7 +122,7 @@ public class RejectionGenPlugin extends SpinePlugin {
         log().debug("Generating rejections from {}", mainFile);
         final List<FileDescriptorProto> mainFiles = FileDescriptors.parse(mainFile);
         collectAllMessageTypes(mainFiles);
-        final List<FileDescriptorProto> rejectionFiles = Rejections.collect(mainFiles);
+        final List<RejectionsFile> rejectionFiles = Rejections.collect(mainFiles);
         doGenerate(rejectionFiles, targetFolder);
     }
 
@@ -132,7 +133,7 @@ public class RejectionGenPlugin extends SpinePlugin {
 
         final List<FileDescriptorProto> testFiles = FileDescriptors.parse(testFile);
         collectAllMessageTypes(testFiles);
-        final List<FileDescriptorProto> rejectionFiles = Rejections.collect(testFiles);
+        final List<RejectionsFile> rejectionFiles = Rejections.collect(testFiles);
         doGenerate(rejectionFiles, targetFolder);
     }
 
@@ -142,36 +143,34 @@ public class RejectionGenPlugin extends SpinePlugin {
         }
     }
 
-    private void doGenerate(Iterable<FileDescriptorProto> files, String rejectionsRootDir) {
+    private void doGenerate(Iterable<RejectionsFile> files, String outDir) {
         final Logger log = log();
         log.debug("Processing the file descriptors for the rejections {}", files);
-        for (FileDescriptorProto file : files) {
+        for (RejectionsFile file : files) {
             // We are sure that this is a rejections file because we got them filtered.
-            generateRejections(file, messageTypeCache.getCachedTypes(), rejectionsRootDir);
+            generateRejections(file, messageTypeCache.getCachedTypes(), outDir);
         }
     }
 
-    private static void generateRejections(FileDescriptorProto file,
+    private static void generateRejections(RejectionsFile file,
                                            Map<String, String> messageTypeMap,
                                            String rejectionsRootDir) {
         final Logger log = log();
-        log.debug("Generating rejections from file {}", file.getName());
+        log.debug("Generating rejections from file {}", file.getPath());
 
         if (log.isTraceEnabled()) {
             log.trace("javaPackage: {}, javaOuterClassName: {}",
-                      PackageName.resolve(file),
-                      SimpleClassName.outerOf(file));
+                      PackageName.resolve(file.getDescriptor()),
+                      SimpleClassName.outerOf(file.getDescriptor()));
         }
 
-        final List<DescriptorProto> rejections = file.getMessageTypeList();
-        for (DescriptorProto rejection : rejections) {
+        final List<RejectionDeclaration> rejections = file.getRejectionDeclarations();
+        final File outDir = new File(rejectionsRootDir);
+        for (RejectionDeclaration rejection : rejections) {
             // The name of the generated `ThrowableMessage` will be the same
             // as for the Protobuf message.
             log.trace("Processing rejection '{}'", rejection.getName());
-
-            final RejectionMetadata metadata = new RejectionMetadata(rejection, file);
-            final File outputDir = new File(rejectionsRootDir);
-            final RejectionWriter writer = new RejectionWriter(metadata, outputDir, messageTypeMap);
+            final RejectionWriter writer = new RejectionWriter(rejection, outDir, messageTypeMap);
             writer.write();
         }
     }

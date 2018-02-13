@@ -36,8 +36,8 @@ public class Rejections {
     private Rejections() {
     }
 
-    public static List<FileDescriptorProto> collect(Iterable<FileDescriptorProto> files) {
-        final List<FileDescriptorProto> result = Lists.newLinkedList();
+    public static List<RejectionsFile> collect(Iterable<FileDescriptorProto> files) {
+        final List<RejectionsFile> result = Lists.newLinkedList();
         final Logger log = log();
         for (FileDescriptorProto file : files) {
             final FileName fn = FileName.from(file);
@@ -47,7 +47,8 @@ public class Rejections {
                 // See if the file content matches conventions.
                 final SourceFile sourceFile = SourceFile.from(file);
                 if (sourceFile.isRejections()) {
-                    result.add(file);
+                    final RejectionsFile rejectionsFile = RejectionsFile.from(sourceFile);
+                    result.add(rejectionsFile);
                 } else {
                     log.error("Invalid rejections file: {}", file.getName());
                 }

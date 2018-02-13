@@ -33,6 +33,7 @@ import com.google.protobuf.DescriptorProtos.SourceCodeInfo.Location;
 import io.spine.tools.javadoc.JavadocEscaper;
 import io.spine.tools.proto.FieldName;
 import io.spine.tools.proto.LocationPath;
+import io.spine.tools.proto.RejectionDeclaration;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
@@ -72,10 +73,10 @@ class RejectionJavadocGenerator {
     @SuppressWarnings("HardcodedLineSeparator")
     private static final String LINE_SEPARATOR = "\n";
 
-    private final RejectionMetadata rejectionMetadata;
+    private final RejectionDeclaration rejectionDeclaration;
 
-    RejectionJavadocGenerator(RejectionMetadata rejectionMetadata) {
-        this.rejectionMetadata = rejectionMetadata;
+    RejectionJavadocGenerator(RejectionDeclaration rejectionDeclaration) {
+        this.rejectionDeclaration = rejectionDeclaration;
     }
 
     /**
@@ -97,9 +98,9 @@ class RejectionJavadocGenerator {
         }
 
         builder.append("Rejection based on proto type {@code ")
-               .append(rejectionMetadata.getJavaPackage())
+               .append(rejectionDeclaration.getJavaPackage())
                .append('.')
-               .append(rejectionMetadata.getClassName())
+               .append(rejectionDeclaration.getClassName())
                .append('}')
                .append(LINE_SEPARATOR);
         return builder.toString();
@@ -162,8 +163,8 @@ class RejectionJavadocGenerator {
      * @return the leading comments or empty {@code Optional} if there are no such comments
      */
     private Optional<String> getLeadingComments(LocationPath locationPath) {
-        if (!rejectionMetadata.getFileDescriptor()
-                              .hasSourceCodeInfo()) {
+        if (!rejectionDeclaration.getFileDescriptor()
+                                 .hasSourceCodeInfo()) {
             final String errMsg = "To enable rejection generation, please configure the Gradle " +
                     "Protobuf plugin as follows: `task.descriptorSetOptions.includeSourceInfo = true`.";
             throw new IllegalStateException(errMsg);
@@ -206,26 +207,26 @@ class RejectionJavadocGenerator {
     }
 
     private int getTopLevelMessageIndex() {
-        final List<DescriptorProto> messages = rejectionMetadata.getFileDescriptor()
-                                                                .getMessageTypeList();
+        final List<DescriptorProto> messages = rejectionDeclaration.getFileDescriptor()
+                                                                   .getMessageTypeList();
         for (DescriptorProto currentMessage : messages) {
-            if (currentMessage.equals(rejectionMetadata.getDescriptor())) {
-                return messages.indexOf(rejectionMetadata.getDescriptor());
+            if (currentMessage.equals(rejectionDeclaration.getDescriptor())) {
+                return messages.indexOf(rejectionDeclaration.getDescriptor());
             }
         }
 
         final String msg = format("The rejection file \"%s\" should contain \"%s\" rejection.",
-                                  rejectionMetadata.getFileDescriptor()
-                                                   .getName(),
-                                  rejectionMetadata.getDescriptor()
-                                                   .getName());
+                                  rejectionDeclaration.getFileDescriptor()
+                                                      .getName(),
+                                  rejectionDeclaration.getDescriptor()
+                                                      .getName());
         throw new IllegalStateException(msg);
     }
 
     private int getFieldIndex(FieldDescriptorProto field) {
-        return rejectionMetadata.getDescriptor()
-                                .getFieldList()
-                                .indexOf(field);
+        return rejectionDeclaration.getDescriptor()
+                                   .getFieldList()
+                                   .indexOf(field);
     }
 
     /**
@@ -235,9 +236,9 @@ class RejectionJavadocGenerator {
      * @return the location for the path
      */
     private Location getLocation(LocationPath locationPath) {
-        for (Location location : rejectionMetadata.getFileDescriptor()
-                                                  .getSourceCodeInfo()
-                                                  .getLocationList()) {
+        for (Location location : rejectionDeclaration.getFileDescriptor()
+                                                     .getSourceCodeInfo()
+                                                     .getLocationList()) {
             if (location.getPathList()
                         .equals(locationPath.getPath())) {
                 return location;
@@ -246,8 +247,8 @@ class RejectionJavadocGenerator {
 
         final String msg = format("The location with %s path should be present in \"%s\".",
                                   locationPath,
-                                  rejectionMetadata.getFileDescriptor()
-                                                   .getName());
+                                  rejectionDeclaration.getFileDescriptor()
+                                                      .getName());
         throw new IllegalStateException(msg);
     }
 
@@ -260,8 +261,8 @@ class RejectionJavadocGenerator {
     private Map<FieldDescriptorProto, String> getCommentedFields() {
         final Map<FieldDescriptorProto, String> commentedFields = Maps.newLinkedHashMap();
 
-        for (FieldDescriptorProto field : rejectionMetadata.getDescriptor()
-                                                           .getFieldList()) {
+        for (FieldDescriptorProto field : rejectionDeclaration.getDescriptor()
+                                                              .getFieldList()) {
             final Optional<String> leadingComments = getFieldLeadingComments(field);
             if (leadingComments.isPresent()) {
                 commentedFields.put(field, leadingComments.get());

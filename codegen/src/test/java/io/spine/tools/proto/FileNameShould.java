@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -22,6 +22,7 @@ package io.spine.tools.proto;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.testing.NullPointerTester;
+import io.spine.test.Tests;
 import org.junit.Test;
 
 import java.util.List;
@@ -35,6 +36,11 @@ import static org.junit.Assert.assertTrue;
  * @author Alexander Yevsyukov
  */
 public class FileNameShould {
+
+    @Test
+    public void have_utility_ctor_for_Suffix() {
+        Tests.assertHasPrivateParameterlessCtor(FileName.Suffix.class);
+    }
 
     @Test
     public void pass_null_tolerance_check() {

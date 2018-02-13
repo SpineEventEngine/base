@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -30,6 +30,7 @@ import com.squareup.javapoet.TypeSpec;
 import io.spine.base.ThrowableMessage;
 import io.spine.gradle.compiler.message.fieldtype.FieldType;
 import io.spine.gradle.compiler.message.fieldtype.FieldTypeFactory;
+import io.spine.tools.proto.RejectionDeclaration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,7 +57,7 @@ import static javax.lang.model.element.Modifier.STATIC;
 @SuppressWarnings("HardcodedLineSeparator")
 class RejectionWriter {
 
-    private final RejectionMetadata rejectionMetadata;
+    private final RejectionDeclaration declaration;
     private final File outputDirectory;
 
     private final FieldTypeFactory fieldTypeFactory;
@@ -66,13 +67,13 @@ class RejectionWriter {
      * Creates a new instance.
      *
      * @param metadata        a rejection metadata
-     * @param outputDirectory a {@linkplain File directory} to write a Rejection
+     * @param outputDirectory a directory to write a Rejection
      * @param messageTypeMap  pre-scanned map with proto types and their appropriate Java classes
      */
-    RejectionWriter(RejectionMetadata metadata,
+    RejectionWriter(RejectionDeclaration metadata,
                     File outputDirectory,
                     Map<String, String> messageTypeMap) {
-        this.rejectionMetadata = metadata;
+        this.declaration = metadata;
         this.outputDirectory = outputDirectory;
         this.fieldTypeFactory = new FieldTypeFactory(metadata.getDescriptor(), messageTypeMap);
         this.javadocGenerator = new RejectionJavadocGenerator(metadata);
@@ -87,9 +88,10 @@ class RejectionWriter {
             log.debug("Creating the output directory {}", outputDirectory.getPath());
             Files.createDirectories(outputDirectory.toPath());
 
-            log.debug("Constructing {}", rejectionMetadata.getClassName());
+            final String className = declaration.getClassName();
+            log.debug("Constructing {}", className);
             final TypeSpec rejection =
-                    TypeSpec.classBuilder(rejectionMetadata.getClassName())
+                    TypeSpec.classBuilder(className)
                             .addJavadoc(javadocGenerator.generateClassJavadoc())
                             .addAnnotation(generatedBySpineModelCompiler())
                             .addModifiers(PUBLIC)
@@ -99,20 +101,20 @@ class RejectionWriter {
                             .addMethod(constructGetMessageThrown())
                             .build();
             final JavaFile javaFile =
-                    JavaFile.builder(rejectionMetadata.getJavaPackage(), rejection)
+                    JavaFile.builder(declaration.getJavaPackage(), rejection)
                             .skipJavaLangImports(true)
                             .build();
-            log.debug("Writing {}", rejectionMetadata.getClassName());
+            log.debug("Writing {}", className);
             javaFile.writeTo(outputDirectory);
-            log.debug("Rejection {} written successfully", rejectionMetadata.getClassName());
+            log.debug("Rejection {} written successfully", className);
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
     }
 
     private MethodSpec constructConstructor() {
-        log().trace("Constructing the constructor of type '{}'", rejectionMetadata.getDescriptor()
-                                                                                  .getName());
+        log().trace("Constructing the constructor of type '{}'", declaration.getDescriptor()
+                                                                            .getName());
         final MethodSpec.Builder builder = constructorBuilder()
                 .addJavadoc(javadocGenerator.generateConstructorJavadoc())
                 .addModifiers(PUBLIC);
@@ -129,9 +131,9 @@ class RejectionWriter {
 
     private String getSuperStatement() {
         final StringBuilder superStatement = new StringBuilder("super(");
-        superStatement.append(rejectionMetadata.getOuterClassName())
+        superStatement.append(declaration.getOuterClassName())
                       .append('.')
-                      .append(rejectionMetadata.getClassName())
+                      .append(declaration.getClassName())
                       .append(".newBuilder()");
 
         for (Map.Entry<String, FieldType> field : readFieldValues().entrySet()) {
@@ -152,8 +154,8 @@ class RejectionWriter {
     private MethodSpec constructGetMessageThrown() {
         log().trace("Constructing getMessageThrown()");
 
-        final TypeName returnTypeName = ClassName.get(rejectionMetadata.getOuterClassName(),
-                                                      rejectionMetadata.getClassName());
+        final TypeName returnTypeName = ClassName.get(declaration.getOuterClassName(),
+                                                      declaration.getClassName());
         return MethodSpec.methodBuilder("getMessageThrown")
                          .addAnnotation(Override.class)
                          .addModifiers(PUBLIC)
@@ -206,11 +208,11 @@ class RejectionWriter {
      */
     private Map<String, FieldType> readFieldValues() {
         log().trace("Reading all the field values from the descriptor: {}",
-                    rejectionMetadata.getDescriptor());
+                    declaration.getDescriptor());
 
         final Map<String, FieldType> result = Maps.newLinkedHashMap();
-        for (FieldDescriptorProto field : rejectionMetadata.getDescriptor()
-                                                           .getFieldList()) {
+        for (FieldDescriptorProto field : declaration.getDescriptor()
+                                                     .getFieldList()) {
             result.put(field.getName(), fieldTypeFactory.create(field));
         }
         log().trace("Read fields: {}", result);
