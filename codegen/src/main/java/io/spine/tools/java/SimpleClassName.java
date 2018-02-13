@@ -20,6 +20,7 @@
 
 package io.spine.tools.java;
 
+import com.google.common.base.Optional;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.type.StringTypeValue;
 
@@ -63,6 +64,17 @@ public final class SimpleClassName extends StringTypeValue {
         final String className = io.spine.tools.proto.FileName.from(file)
                                                               .nameOnlyCamelCase();
         return className;
+    }
+
+    public static Optional<SimpleClassName> declaredOuterClassName(FileDescriptorProto file) {
+        final String className = file.getOptions()
+                                     .getJavaOuterClassname();
+        if (className.isEmpty()) {
+            return Optional.absent();
+        }
+
+        final SimpleClassName result = outerOf(file);
+        return Optional.of(result);
     }
 
     /**

@@ -63,9 +63,12 @@ public class FileNameShould {
     @SuppressWarnings("DuplicateStringLiteralInspection")
     @Test
     public void calculate_outer_class_name() {
-        assertEquals("Rejections", of("rejections.proto").nameOnlyCamelCase());
-        assertEquals("ManyRejections", of("many_rejections.proto").nameOnlyCamelCase());
-        assertEquals("ManyMoreRejections", of("many_more_rejections.proto").nameOnlyCamelCase());
+        assertEquals(RejectionDeclaration.OUTER_CLASS_NAME_SUFFIX,
+                     of("rejections.proto").nameOnlyCamelCase());
+        assertEquals("ManyRejections",
+                     of("many_rejections.proto").nameOnlyCamelCase());
+        assertEquals("ManyMoreRejections",
+                     of("many_more_rejections.proto").nameOnlyCamelCase());
     }
 
     @Test

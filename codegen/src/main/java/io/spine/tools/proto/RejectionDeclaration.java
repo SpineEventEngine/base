@@ -20,6 +20,7 @@
 
 package io.spine.tools.proto;
 
+import com.google.common.annotations.VisibleForTesting;
 import io.spine.tools.java.SimpleClassName;
 
 import java.util.Objects;
@@ -33,6 +34,12 @@ import static com.google.protobuf.DescriptorProtos.FileDescriptorProto;
  * @author Dmytro Grankin
  */
 public class RejectionDeclaration {
+
+    /**
+     * The suffix for the outer class name for the generated rejection messages.
+     */
+    @VisibleForTesting
+    static final String OUTER_CLASS_NAME_SUFFIX = "Rejections";
 
     private final DescriptorProto descriptor;
     private final String outerClassName;
@@ -63,6 +70,16 @@ public class RejectionDeclaration {
     public String getJavaPackage() {
         return fileDescriptor.getOptions()
                              .getJavaPackage();
+    }
+
+    /**
+     * Returns {@code true} if the class name ends with {@code “Rejections”},
+     * {@code false} otherwise.
+     */
+    public static boolean isValidOuterClassName(SimpleClassName className) {
+        final boolean result = className.value()
+                                        .endsWith(OUTER_CLASS_NAME_SUFFIX);
+        return result;
     }
 
     public String getOuterClassName() {

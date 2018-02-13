@@ -20,12 +20,13 @@
 
 package io.spine.tools.proto;
 
+import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.tools.AbstractSourceFile;
-import io.spine.type.RejectionMessage;
+import io.spine.tools.java.SimpleClassName;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -33,6 +34,7 @@ import java.util.Collection;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.tools.java.SimpleClassName.declaredOuterClassName;
 import static io.spine.tools.proto.MessageDeclaration.create;
 
 /**
@@ -49,6 +51,9 @@ public class SourceFile extends AbstractSourceFile {
         this.descriptor = descriptor;
     }
 
+    /**
+     * Creates a new instance by the passed file descriptor.
+     */
     public static SourceFile from(FileDescriptorProto file) {
         final SourceFile result = new SourceFile(file);
         return result;
@@ -69,7 +74,8 @@ public class SourceFile extends AbstractSourceFile {
      *     “rejections.proto”}.
      *     <li>The option {@code java_multiple_files} set to {@code false}.
      *     <li>Do not have the option {@code java_outer_classname} or have the value, which
-     *     ends on {@linkplain RejectionMessage#OUTER_CLASS_NAME_SUFFIX “Rejections”}.
+     *     ends with {@linkplain RejectionDeclaration#isValidOuterClassName(SimpleClassName)}
+     *     “Rejections”}.
      * </ul>
      */
     public boolean isRejections() {
@@ -78,16 +84,15 @@ public class SourceFile extends AbstractSourceFile {
                       .getJavaMultipleFiles()) {
             return false;
         }
-        final String javaOuterClassName = descriptor.getOptions()
-                                                    .getJavaOuterClassname();
-        if (javaOuterClassName.isEmpty()) {
+        final Optional<SimpleClassName> outerClass = declaredOuterClassName(descriptor);
+
+        if (!outerClass.isPresent()) {
             // There's no outer class name given in options.
             // Assuming the file name ends with `rejections.proto`, it's a good rejections file.
             return true;
         }
 
-        final boolean result =
-                javaOuterClassName.endsWith(RejectionMessage.OUTER_CLASS_NAME_SUFFIX);
+        final boolean result = RejectionDeclaration.isValidOuterClassName(outerClass.get());
         return result;
     }
 
