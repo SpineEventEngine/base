@@ -20,14 +20,20 @@
 
 package io.spine.tools.proto;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.ImmutableList;
+import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.tools.AbstractSourceFile;
 import io.spine.type.RejectionMessage;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collection;
+import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.tools.proto.MessageDeclaration.create;
 
 /**
  * A Protobuf file which also gives access to its {@link FileDescriptorProto descriptor}.
@@ -73,7 +79,27 @@ public final class SourceFile extends AbstractSourceFile {
         return result;
     }
 
+    /**
+     * Obtains descriptor of the file.
+     */
     public FileDescriptorProto getDescriptor() {
         return file;
+    }
+
+    /**
+     * Obtains all message declarations that match the passed predicate.
+     */
+    public List<MessageDeclaration> allThat(Predicate<DescriptorProto> predicate) {
+        final ImmutableList.Builder<MessageDeclaration> result = ImmutableList.builder();
+        for (DescriptorProto messageType : file.getMessageTypeList()) {
+            final MessageDeclaration declaration = create(messageType, file);
+            if (predicate.apply(messageType)) {
+                result.add(declaration);
+            }
+            final Collection<MessageDeclaration> allNested =
+                    declaration.getAllNested(predicate);
+            result.addAll(allNested);
+        }
+        return result.build();
     }
 }

@@ -28,8 +28,6 @@ import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import java.util.Collection;
 import java.util.List;
 
-import static io.spine.tools.proto.MessageDeclaration.create;
-
 /**
  * Utilities for working with {@linkplain MessageDeclaration message declarations}.
  *
@@ -52,24 +50,9 @@ public class MessageDeclarations {
                                                 Predicate<DescriptorProto> predicate) {
         final ImmutableList.Builder<MessageDeclaration> result = ImmutableList.builder();
         for (FileDescriptorProto file : files) {
-            final Collection<MessageDeclaration> declarations =
-                    scanFile(file, predicate);
+            SourceFile sourceFile = SourceFile.from(file);
+            final Collection<MessageDeclaration> declarations = sourceFile.allThat(predicate);
             result.addAll(declarations);
-        }
-        return result.build();
-    }
-
-    private static List<MessageDeclaration> scanFile(FileDescriptorProto file,
-                                                     Predicate<DescriptorProto> predicate) {
-        final ImmutableList.Builder<MessageDeclaration> result = ImmutableList.builder();
-        for (DescriptorProto messageType : file.getMessageTypeList()) {
-            final MessageDeclaration declaration = create(messageType, file);
-            if (predicate.apply(messageType)) {
-                result.add(declaration);
-            }
-            final Collection<MessageDeclaration> allNested =
-                    declaration.getAllNested(predicate);
-            result.addAll(allNested);
         }
         return result.build();
     }
