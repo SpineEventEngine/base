@@ -28,7 +28,6 @@ import io.spine.tools.java.PackageName;
 import io.spine.tools.java.SimpleClassName;
 import io.spine.tools.proto.FileDescriptors;
 import io.spine.tools.proto.Rejections;
-import io.spine.tools.proto.SourceFile;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -147,11 +146,8 @@ public class RejectionGenPlugin extends SpinePlugin {
         final Logger log = log();
         log.debug("Processing the file descriptors for the rejections {}", files);
         for (FileDescriptorProto file : files) {
-            if (SourceFile.isRejectionsFile(file)) {
-                generateRejections(file, messageTypeCache.getCachedTypes(), rejectionsRootDir);
-            } else {
-                log.error("Invalid rejections file: {}", file.getName());
-            }
+            // We are sure that this is a rejections file because we got them filtered.
+            generateRejections(file, messageTypeCache.getCachedTypes(), rejectionsRootDir);
         }
     }
 

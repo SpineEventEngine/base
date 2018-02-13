@@ -43,7 +43,14 @@ public class Rejections {
             final FileName fn = FileName.from(file);
             if (fn.isRejections()) {
                 log.trace("Found rejections file: {}", fn.value());
-                result.add(file);
+
+                // See if the file content matches conventions.
+                final SourceFile sourceFile = SourceFile.from(file);
+                if (sourceFile.isRejections()) {
+                    result.add(file);
+                } else {
+                    log.error("Invalid rejections file: {}", file.getName());
+                }
             }
         }
         log.trace("Found rejections in files: {}", result);

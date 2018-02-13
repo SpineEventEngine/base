@@ -42,11 +42,11 @@ import static io.spine.tools.proto.MessageDeclaration.create;
  */
 public final class SourceFile extends AbstractSourceFile {
 
-    private final FileDescriptorProto file;
+    private final FileDescriptorProto descriptor;
 
-    private SourceFile(FileDescriptorProto file) {
-        super(toPath(file));
-        this.file = file;
+    private SourceFile(FileDescriptorProto descriptor) {
+        super(toPath(descriptor));
+        this.descriptor = descriptor;
     }
 
     public static SourceFile from(FileDescriptorProto file) {
@@ -60,7 +60,10 @@ public final class SourceFile extends AbstractSourceFile {
         return result;
     }
 
-    public static boolean isRejectionsFile(FileDescriptorProto descriptor) {
+    /**
+     * Returns {@code true} if the source file matches conventions for rejection files.
+     */
+    public boolean isRejections() {
         // By convention rejections are generated into one file.
         if (descriptor.getOptions()
                       .getJavaMultipleFiles()) {
@@ -83,7 +86,7 @@ public final class SourceFile extends AbstractSourceFile {
      * Obtains descriptor of the file.
      */
     public FileDescriptorProto getDescriptor() {
-        return file;
+        return descriptor;
     }
 
     /**
@@ -91,8 +94,8 @@ public final class SourceFile extends AbstractSourceFile {
      */
     public List<MessageDeclaration> allThat(Predicate<DescriptorProto> predicate) {
         final ImmutableList.Builder<MessageDeclaration> result = ImmutableList.builder();
-        for (DescriptorProto messageType : file.getMessageTypeList()) {
-            final MessageDeclaration declaration = create(messageType, file);
+        for (DescriptorProto messageType : descriptor.getMessageTypeList()) {
+            final MessageDeclaration declaration = create(messageType, descriptor);
             if (predicate.apply(messageType)) {
                 result.add(declaration);
             }
