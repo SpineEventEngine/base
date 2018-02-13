@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -21,14 +21,14 @@
 package io.spine.gradle.compiler.message;
 
 import com.google.common.base.Predicate;
+import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 
 import java.util.Collection;
-import java.util.Deque;
 import java.util.List;
 
-import static com.google.common.collect.Lists.newLinkedList;
+import static io.spine.gradle.compiler.message.MessageDeclaration.create;
 
 /**
  * Utilities for working with {@linkplain MessageDeclaration message declarations}.
@@ -37,60 +37,40 @@ import static com.google.common.collect.Lists.newLinkedList;
  */
 public class MessageDeclarations {
 
+    /** Prevent instantiation of this utility class. */
     private MessageDeclarations() {
-        // Prevent instantiation of this utility class.
     }
 
     /**
      * Obtains message declarations, that match the specified {@link Predicate}.
      *
-     * @param fileDescriptors the file descriptors to scan
-     * @param predicate       the predicate to test a message
+     * @param files     the file descriptors to scan
+     * @param predicate the predicate to test a message
      * @return the message declarations
      */
-    public static Collection<MessageDeclaration> find(Iterable<FileDescriptorProto> fileDescriptors,
-                                                      Predicate<DescriptorProto> predicate) {
-        final List<MessageDeclaration> result = newLinkedList();
-        for (FileDescriptorProto fileDescriptor : fileDescriptors) {
-            final Collection<MessageDeclaration> declarationsFromFile = scanFile(fileDescriptor,
-                                                                                 predicate);
-            result.addAll(declarationsFromFile);
+    public static List<MessageDeclaration> find(Iterable<FileDescriptorProto> files,
+                                                Predicate<DescriptorProto> predicate) {
+        final ImmutableList.Builder<MessageDeclaration> result = ImmutableList.builder();
+        for (FileDescriptorProto file : files) {
+            final Collection<MessageDeclaration> declarations =
+                    scanFile(file, predicate);
+            result.addAll(declarations);
         }
-        return result;
+        return result.build();
     }
 
-    private static Collection<MessageDeclaration> scanFile(FileDescriptorProto fileDescriptor,
-                                                           Predicate<DescriptorProto> predicate) {
-        final List<MessageDeclaration> result = newLinkedList();
-        for (DescriptorProto messageDescriptor : fileDescriptor.getMessageTypeList()) {
-            final MessageDeclaration declaration = MessageDeclaration.create(messageDescriptor,
-                                                                             fileDescriptor);
-            if (predicate.apply(messageDescriptor)) {
+    private static List<MessageDeclaration> scanFile(FileDescriptorProto file,
+                                                     Predicate<DescriptorProto> predicate) {
+        final ImmutableList.Builder<MessageDeclaration> result = ImmutableList.builder();
+        for (DescriptorProto messageType : file.getMessageTypeList()) {
+            final MessageDeclaration declaration = create(messageType, file);
+            if (predicate.apply(messageType)) {
                 result.add(declaration);
             }
-            final Collection<MessageDeclaration> nestedDeclarations =
-                    scanNestedTypesRecursively(declaration, predicate);
-            result.addAll(nestedDeclarations);
+            final Collection<MessageDeclaration> allNested =
+                    declaration.getAllNested(predicate);
+            result.addAll(allNested);
         }
-        return result;
-    }
-
-    private static Collection<MessageDeclaration> scanNestedTypesRecursively(
-            MessageDeclaration declaration, Predicate<DescriptorProto> predicate) {
-        final List<MessageDeclaration> result = newLinkedList();
-        final Iterable<MessageDeclaration> nestedDeclarations = declaration.getNestedDeclarations();
-        final Deque<MessageDeclaration> deque = newLinkedList(nestedDeclarations);
-
-        while (!deque.isEmpty()) {
-            final MessageDeclaration nestedDeclaration = deque.pollFirst();
-            final DescriptorProto nestedDescriptor = nestedDeclaration.getDescriptor();
-
-            if (predicate.apply(nestedDescriptor)) {
-                result.add(nestedDeclaration);
-            }
-
-            deque.addAll(nestedDeclaration.getNestedDeclarations());
-        }
-        return result;
+        return result.build();
     }
 }

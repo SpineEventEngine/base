@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -20,12 +20,14 @@
 
 package io.spine.gradle.compiler.message;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.type.TypeName;
 
-import java.util.Collection;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newLinkedList;
@@ -90,17 +92,38 @@ public class MessageDeclaration {
     }
 
     /**
-     * Obtains declarations of nested types of this declaration.
+     * Obtains immediate declarations of nested types of this declaration.
      *
-     * @return the collection of message declarations
+     * @return immutable list with message declarations or empty list if no nested types declared
      */
-    public Collection<MessageDeclaration> getNestedDeclarations() {
-        final List<MessageDeclaration> nestedDeclarations = newLinkedList();
+    public List<MessageDeclaration> getImmediateNested() {
+        final ImmutableList.Builder<MessageDeclaration> result = ImmutableList.builder();
         for (DescriptorProto nestedType : descriptor.getNestedTypeList()) {
             final MessageDeclaration nestedDeclaration = forNested(nestedType);
-            nestedDeclarations.add(nestedDeclaration);
+            result.add(nestedDeclaration);
         }
-        return nestedDeclarations;
+        return result.build();
+    }
+
+    /**
+     * Obtains all nested declarations that match the passed predicate.
+     */
+    public List<MessageDeclaration> getAllNested(Predicate<DescriptorProto> predicate) {
+        final ImmutableList.Builder<MessageDeclaration> result = ImmutableList.builder();
+        final Iterable<MessageDeclaration> nestedDeclarations = getImmediateNested();
+        final Deque<MessageDeclaration> deque = newLinkedList(nestedDeclarations);
+
+        while (!deque.isEmpty()) {
+            final MessageDeclaration nestedDeclaration = deque.pollFirst();
+            final DescriptorProto nestedDescriptor = nestedDeclaration.getDescriptor();
+
+            if (predicate.apply(nestedDescriptor)) {
+                result.add(nestedDeclaration);
+            }
+
+            deque.addAll(nestedDeclaration.getImmediateNested());
+        }
+        return result.build();
     }
 
     /**
