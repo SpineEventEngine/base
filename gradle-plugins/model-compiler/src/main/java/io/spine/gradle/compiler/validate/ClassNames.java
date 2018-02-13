@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -28,9 +28,9 @@ import io.spine.gradle.compiler.message.MessageTypeCache;
 import java.util.Collection;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.gradle.compiler.message.fieldtype.FieldTypes.trimTypeName;
 import static io.spine.gradle.compiler.message.fieldtype.ProtoScalarType.getBoxedScalarPrimitive;
 import static io.spine.gradle.compiler.message.fieldtype.ProtoScalarType.getJavaTypeName;
-import static io.spine.gradle.compiler.message.fieldtype.FieldTypes.trimTypeName;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 
 /**
@@ -40,8 +40,10 @@ import static io.spine.util.Exceptions.newIllegalArgumentException;
  */
 final class ClassNames {
 
+    private static final ClassName STRING_CLASS_NAME = ClassName.get(String.class);
+
+    /** Prevents instantiation of this utility class. */
     private ClassNames() {
-        // To prevent initialization.
     }
 
     /**
@@ -131,6 +133,6 @@ final class ClassNames {
      * @return the constructed {@code ClassName}
      */
     static ClassName getStringClassName() {
-        return ClassName.get(String.class);
+        return STRING_CLASS_NAME;
     }
 }
