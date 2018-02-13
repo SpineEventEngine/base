@@ -24,6 +24,7 @@ import com.google.common.base.Function;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import io.spine.annotation.SPI;
+import io.spine.tools.proto.FieldName;
 import org.jboss.forge.roaster.model.JavaType;
 import org.jboss.forge.roaster.model.TypeHolder;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
@@ -37,8 +38,7 @@ import javax.annotation.Nullable;
 import java.lang.annotation.Annotation;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.gradle.compiler.util.JavaCode.toJavaFieldName;
-import static io.spine.gradle.compiler.util.JavaSources.getBuilderClassName;
+import static io.spine.tools.java.SimpleClassName.ofBuilder;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
@@ -124,7 +124,8 @@ public class Given {
         }
 
         private void checkAccessorsAnnotation(JavaClassSource message) {
-            final String fieldName = toJavaFieldName(fieldDescriptor.getName(), true);
+            final String fieldName = FieldName.of(fieldDescriptor)
+                                              .toCamelCase();
             for (MethodSource method : message.getMethods()) {
                 if (method.isPublic() && method.getName().contains(fieldName)) {
                     final AnnotationSource annotation = getAnnotation(method);
@@ -139,7 +140,7 @@ public class Given {
 
         private static JavaClassSource getBuilder(JavaSource messageSource) {
             final TypeHolder messageType = (TypeHolder) messageSource;
-            final JavaType builderType = messageType.getNestedType(getBuilderClassName());
+            final JavaType builderType = messageType.getNestedType(ofBuilder().value());
             return (JavaClassSource) builderType;
         }
     }

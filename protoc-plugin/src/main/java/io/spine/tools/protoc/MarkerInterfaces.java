@@ -21,14 +21,13 @@
 package io.spine.tools.protoc;
 
 import com.google.protobuf.Message;
-import com.squareup.javapoet.AnnotationSpec;
-import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
 
 import javax.annotation.Generated;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.tools.java.Annotations.generatedBySpineModelCompiler;
 import static javax.lang.model.element.Modifier.PUBLIC;
 
 /**
@@ -41,18 +40,8 @@ import static javax.lang.model.element.Modifier.PUBLIC;
  */
 final class MarkerInterfaces {
 
-    private static final AnnotationSpec GENERATED;
-    private static final String GENERATED_FIELD_NAME = "value";
-
-    static {
-        final CodeBlock generatedByDescription = CodeBlock.of("\"by Spine protoc plugin\"");
-        GENERATED = AnnotationSpec.builder(Generated.class)
-                                  .addMember(GENERATED_FIELD_NAME, generatedByDescription)
-                                  .build();
-    }
-
+    /** Prevent utility class instantiation. */
     private MarkerInterfaces() {
-        // Prevent utility class instantiation.
     }
 
     /**
@@ -68,7 +57,7 @@ final class MarkerInterfaces {
         final TypeSpec spec = TypeSpec.interfaceBuilder(typeName)
                                       .addSuperinterface(Message.class)
                                       .addModifiers(PUBLIC)
-                                      .addAnnotation(GENERATED)
+                                      .addAnnotation(generatedBySpineModelCompiler())
                                       .build();
         final JavaFile javaFile = JavaFile.builder(packageName, spec)
                                           .build();

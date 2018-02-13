@@ -24,7 +24,7 @@ import com.google.common.base.Predicate;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.gradle.compiler.message.MessageTypeCache;
-import io.spine.gradle.compiler.util.DescriptorSetUtil;
+import io.spine.tools.proto.FileDescriptors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -139,7 +139,7 @@ class MetadataAssembler {
         log().trace("Obtaining the file descriptors by {} path.", descFilePath);
         final Set<FileDescriptorProto> result = newHashSet();
         final Collection<FileDescriptorProto> allDescriptors =
-                DescriptorSetUtil.getProtoFileDescriptors(descFilePath);
+                FileDescriptors.parse(descFilePath);
 
         for (FileDescriptorProto fileDescriptor : allDescriptors) {
             cacheFileDescriptors(fileDescriptor);

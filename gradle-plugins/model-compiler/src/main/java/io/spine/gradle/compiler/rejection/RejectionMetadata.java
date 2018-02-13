@@ -20,7 +20,7 @@
 
 package io.spine.gradle.compiler.rejection;
 
-import io.spine.gradle.compiler.util.JavaCode;
+import io.spine.tools.java.SimpleClassName;
 
 import static com.google.protobuf.DescriptorProtos.DescriptorProto;
 import static com.google.protobuf.DescriptorProtos.FileDescriptorProto;
@@ -45,7 +45,8 @@ public class RejectionMetadata {
     public RejectionMetadata(DescriptorProto rejectionDescriptor,
                              FileDescriptorProto fileDescriptor) {
         this.descriptor = rejectionDescriptor;
-        this.outerClassName = JavaCode.getOuterClassName(fileDescriptor);
+        this.outerClassName = SimpleClassName.outerOf(fileDescriptor)
+                                             .value();
         this.fileDescriptor = fileDescriptor;
     }
 

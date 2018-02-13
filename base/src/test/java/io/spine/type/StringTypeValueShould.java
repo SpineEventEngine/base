@@ -20,11 +20,16 @@
 
 package io.spine.type;
 
+import com.google.common.testing.EqualsTester;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
+/**
+ * @author Alexander Yevsyukov
+ */
 public class StringTypeValueShould {
 
     @Test
@@ -35,18 +40,23 @@ public class StringTypeValueShould {
     }
 
     @Test
-    public void be_equal_to_itself() {
-        final StringTypeValue test = new StringTypeValue("be_equal_to_itself") {};
-        assertEquals(test, test);
+    public void have_equals() {
+        new EqualsTester().addEqualityGroup(new StrVal("uno"), new StrVal("uno"))
+                          .addEqualityGroup(new StrVal("dos"))
+                          .testEquals();
     }
 
     @Test
-    public void be_not_equal_to_null_or_another_type() {
-        final String value = "be_not_equal_to_null_or_another_type";
-        final StringTypeValue test = new StringTypeValue(value) {};
-        //noinspection RedundantCast
-        assertFalse(test.equals((StringTypeValue)null));
-        //noinspection EqualsBetweenInconvertibleTypes
-        assertFalse(test.equals(value));
+    public void see_if_empty() {
+        assertTrue(new StrVal("").isEmpty());
+        assertFalse(new StrVal(" ").isEmpty());
+    }
+
+    /** Simple descendant for testing. */
+    private static class StrVal extends StringTypeValue {
+
+        StrVal(String value) {
+            super(value);
+        }
     }
 }

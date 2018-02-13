@@ -30,6 +30,8 @@ import com.google.protobuf.GeneratedMessageV3.ExtendableMessage;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import com.squareup.javapoet.JavaFile;
 import io.spine.option.UnknownOptions;
+import io.spine.tools.java.PackageName;
+import io.spine.tools.java.SourceFile;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
@@ -39,6 +41,7 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.ImmutableSet.of;
 import static io.spine.option.OptionsProto.everyIs;
 import static io.spine.option.OptionsProto.is;
+import static io.spine.tools.java.PackageName.DELIMITER;
 import static io.spine.tools.protoc.MarkerInterfaces.create;
 import static java.lang.String.format;
 
@@ -62,11 +65,10 @@ public class MarkerInterfaceGenerator extends SpineProtoGenerator {
 
     @VisibleForTesting
     static final String INSERTION_POINT_IMPLEMENTS = "message_implements:%s";
-    private static final String PACKAGE_DELIMITER = ".";
 
+    /** Prevents singleton class instantiation. */
     private MarkerInterfaceGenerator() {
         super();
-        // Prevent singleton class instantiation.
     }
 
     /**
@@ -139,18 +141,20 @@ public class MarkerInterfaceGenerator extends SpineProtoGenerator {
                                     .getJavaMultipleFiles()
                 ? msg.getName()
                 : resolveName(file);
-        final String javaPackage = resolvePackage(file);
+        final String javaPackage = PackageName.resolve(file)
+                                              .value();
         final File.Builder srcFile = prepareFile(fileName, javaPackage);
         final MarkerInterfaceSpec interfaceSpec = prepareInterfaceFqn(optionValue, file);
-        final String messageFqn = file.getPackage() + PACKAGE_DELIMITER + msg.getName();
+        final String messageFqn = file.getPackage() + DELIMITER + msg.getName();
         final File messageFile = implementInterface(srcFile,
                                                     interfaceSpec.getFqn(),
                                                     messageFqn);
         final JavaFile interfaceContent = create(interfaceSpec.getPackageName(),
                                                  interfaceSpec.getName());
         final File interfaceFile = File.newBuilder()
-                                       .setName(toFileName(interfaceSpec.getPackageName(),
-                                                           interfaceSpec.getName()))
+                                       .setName(SourceFile.forType(interfaceSpec.getPackageName(),
+                                                                   interfaceSpec.getName())
+                                                          .toString())
                                        .setContent(interfaceContent.toString())
                                        .build();
         final MessageAndInterface result = new MessageAndInterface(messageFile, interfaceFile);
@@ -215,22 +219,14 @@ public class MarkerInterfaceGenerator extends SpineProtoGenerator {
     private static MarkerInterfaceSpec prepareInterfaceFqn(String optionValue,
                                                            FileDescriptorProto srcFile) {
         final MarkerInterfaceSpec spec;
-        if (optionValue.contains(PACKAGE_DELIMITER)) {
+        if (optionValue.contains(DELIMITER)) {
             spec = MarkerInterfaceSpec.from(optionValue);
         } else {
-            final String javaPackage = resolvePackage(srcFile);
+            final String javaPackage = PackageName.resolve(srcFile)
+                                                  .value();
             spec = MarkerInterfaceSpec.newInstance(javaPackage, optionValue);
         }
         return spec;
-    }
-
-    private static String resolvePackage(FileDescriptorProto fileDescriptor) {
-        String javaPackage = fileDescriptor.getOptions()
-                                           .getJavaPackage();
-        if (isNullOrEmpty(javaPackage)) {
-            javaPackage = fileDescriptor.getPackage();
-        }
-        return javaPackage;
     }
 
     private static String resolveName(FileDescriptorProto fileDescriptor) {
@@ -243,14 +239,11 @@ public class MarkerInterfaceGenerator extends SpineProtoGenerator {
     }
 
     private static File.Builder prepareFile(String messageName, String javaPackage) {
-        final String nameFqn = toFileName(javaPackage, messageName);
+        final String fileName = SourceFile.forType(javaPackage, messageName)
+                                          .toString();
         final File.Builder srcFile = File.newBuilder()
-                                         .setName(nameFqn);
+                                         .setName(fileName);
         return srcFile;
-    }
-
-    private static String toFileName(String javaPackage, String typename) {
-        return (javaPackage + PACKAGE_DELIMITER + typename).replace('.', '/') + ".java";
     }
 
     /**
@@ -276,7 +269,7 @@ public class MarkerInterfaceGenerator extends SpineProtoGenerator {
          * Parses a {@code MarkerInterfaceSpec} from the given type fully qualified name.
          */
         private static MarkerInterfaceSpec from(String fullName) {
-            final int index = fullName.lastIndexOf(PACKAGE_DELIMITER);
+            final int index = fullName.lastIndexOf(DELIMITER);
             final String name = fullName.substring(index + 1);
             final String packageName = fullName.substring(0, index);
             return new MarkerInterfaceSpec(packageName, name);
@@ -291,7 +284,7 @@ public class MarkerInterfaceGenerator extends SpineProtoGenerator {
         }
 
         public String getFqn() {
-            return packageName + PACKAGE_DELIMITER + name;
+            return packageName + DELIMITER + name;
         }
 
         @Override

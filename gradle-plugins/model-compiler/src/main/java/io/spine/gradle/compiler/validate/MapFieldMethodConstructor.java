@@ -27,6 +27,7 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
 import io.spine.base.ConversionException;
 import io.spine.gradle.compiler.message.fieldtype.MapFieldType;
+import io.spine.tools.proto.FieldName;
 import io.spine.validate.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +39,6 @@ import java.util.List;
 import java.util.Map;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static io.spine.gradle.compiler.util.JavaCode.toJavaFieldName;
 import static io.spine.gradle.compiler.validate.MethodConstructors.clearPrefix;
 import static io.spine.gradle.compiler.validate.MethodConstructors.createConvertSingularValue;
 import static io.spine.gradle.compiler.validate.MethodConstructors.createDescriptorStatement;
@@ -94,8 +94,9 @@ class MapFieldMethodConstructor implements MethodConstructor {
         this.fieldIndex = builder.getFieldIndex();
         final FieldDescriptorProto fieldDescriptor = builder.getFieldDescriptor();
         this.genericClassName = builder.getGenericClassName();
-        this.propertyName = toJavaFieldName(fieldDescriptor.getName(), true);
-        this.javaFieldName = toJavaFieldName(fieldDescriptor.getName(), false);
+        final FieldName fieldName = FieldName.of(fieldDescriptor);
+        this.propertyName = fieldName.toCamelCase();
+        this.javaFieldName = fieldName.javaCase();
         final String javaClass = builder.getJavaClass();
         final String javaPackage = builder.getJavaPackage();
         this.builderClassName = ClassNames.getClassName(javaPackage, javaClass);
@@ -152,7 +153,7 @@ class MapFieldMethodConstructor implements MethodConstructor {
     }
 
     private MethodSpec createPutMethod() {
-        final String methodName = toJavaFieldName("put" + propertyName, false);
+        final String methodName = "put" + propertyName;
         final String descriptorCodeLine = createDescriptorStatement(fieldIndex, genericClassName);
         final String mapToValidate = MAP_TO_VALIDATE +
                 "$T.singletonMap(" + KEY + ", " + VALUE + ')';
@@ -177,7 +178,7 @@ class MapFieldMethodConstructor implements MethodConstructor {
     }
 
     private MethodSpec createPutRawMethod() {
-        final String methodName = toJavaFieldName("putRaw" + propertyName, false);
+        final String methodName = "putRaw" + propertyName;
         final String descriptorCodeLine = createDescriptorStatement(fieldIndex, genericClassName);
         final String mapToValidate = MAP_TO_VALIDATE +
                 "$T.singletonMap(convertedKey, convertedValue)";

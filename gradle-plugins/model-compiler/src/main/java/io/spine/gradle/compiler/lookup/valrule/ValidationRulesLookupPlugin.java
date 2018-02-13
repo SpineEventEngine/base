@@ -25,8 +25,8 @@ import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.gradle.SpinePlugin;
 import io.spine.gradle.compiler.message.MessageDeclaration;
-import io.spine.gradle.compiler.util.DescriptorSetUtil.IsNotGoogleProto;
 import io.spine.gradle.compiler.util.PropertiesWriter;
+import io.spine.tools.proto.FileDescriptors;
 import io.spine.type.TypeName;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
@@ -50,10 +50,10 @@ import static io.spine.gradle.compiler.Extension.getMainTargetGenResourcesDir;
 import static io.spine.gradle.compiler.Extension.getTestDescriptorSetPath;
 import static io.spine.gradle.compiler.Extension.getTestTargetGenResourcesDir;
 import static io.spine.gradle.compiler.message.MessageDeclarations.find;
-import static io.spine.gradle.compiler.util.DescriptorSetUtil.getProtoFileDescriptors;
 import static io.spine.option.OptionsProto.VALIDATION_OF_FIELD_NUMBER;
 import static io.spine.option.UnknownOptions.getUnknownOptionValue;
 import static io.spine.option.UnknownOptions.hasUnknownOption;
+import static io.spine.tools.proto.FileDescriptors.isNotGoogleProto;
 import static io.spine.validate.rules.ValidationRules.getValRulesPropsFileName;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -117,9 +117,8 @@ public class ValidationRulesLookupPlugin extends SpinePlugin {
                                                          String descriptorSetPath) {
         log().debug("Validation rules lookup started.");
 
-        final IsNotGoogleProto fileFilter = new IsNotGoogleProto();
-        final Collection<FileDescriptorProto> files = getProtoFileDescriptors(descriptorSetPath,
-                                                                              fileFilter);
+        final Collection<FileDescriptorProto> files =
+                FileDescriptors.parseAndFilter(descriptorSetPath, isNotGoogleProto());
         final Collection<MessageDeclaration> declarations = find(files, new IsValidationRule());
         writeProperties(targetGeneratedResourcesDir, declarations);
         log().debug("Validation rules lookup complete.");

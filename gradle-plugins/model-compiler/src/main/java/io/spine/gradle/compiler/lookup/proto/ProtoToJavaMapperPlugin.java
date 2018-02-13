@@ -22,6 +22,7 @@ package io.spine.gradle.compiler.lookup.proto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.gradle.SpinePlugin;
 import io.spine.gradle.compiler.util.PropertiesWriter;
+import io.spine.tools.proto.FileDescriptors;
 import io.spine.type.KnownTypes;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
@@ -43,8 +44,7 @@ import static io.spine.gradle.compiler.Extension.getMainDescriptorSetPath;
 import static io.spine.gradle.compiler.Extension.getMainTargetGenResourcesDir;
 import static io.spine.gradle.compiler.Extension.getTestDescriptorSetPath;
 import static io.spine.gradle.compiler.Extension.getTestTargetGenResourcesDir;
-import static io.spine.gradle.compiler.util.DescriptorSetUtil.IsNotGoogleProto;
-import static io.spine.gradle.compiler.util.DescriptorSetUtil.getProtoFileDescriptors;
+import static io.spine.tools.proto.FileDescriptors.isNotGoogleProto;
 
 /**
  * Plugin which maps all Protobuf types to the corresponding Java classes.
@@ -117,7 +117,7 @@ public class ProtoToJavaMapperPlugin extends SpinePlugin {
                                                     String descriptorSetPath) {
         final Map<String, String> propsMap = newHashMap();
         final Collection<FileDescriptorProto> files =
-                getProtoFileDescriptors(descriptorSetPath, new IsNotGoogleProto());
+                FileDescriptors.parseAndFilter(descriptorSetPath, isNotGoogleProto());
         log().trace("Starting mapping files under: {}", files);
         for (FileDescriptorProto file : files) {
             log().debug("Looking up file {}", file.getName());

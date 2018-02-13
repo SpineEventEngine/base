@@ -24,13 +24,12 @@ import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.MessageOptions;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
+import io.spine.tools.java.SourceFile;
 
 import java.lang.annotation.Annotation;
-import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
 
-import static io.spine.gradle.compiler.util.JavaSources.getFilePath;
 import static io.spine.option.UnknownOptions.getUnknownOptionValue;
 
 /**
@@ -46,35 +45,33 @@ class MessageAnnotator extends TypeDefinitionAnnotator<MessageOptions, Descripto
 
     MessageAnnotator(Class<? extends Annotation> annotation,
                      GeneratedExtension<MessageOptions, Boolean> option,
-                     Collection<FileDescriptorProto> fileDescriptors,
+                     Collection<FileDescriptorProto> files,
                      String genProtoDir) {
-        super(annotation, option, fileDescriptors, genProtoDir);
+        super(annotation, option, files, genProtoDir);
     }
 
     @Override
-    protected List<DescriptorProto> getDefinitions(FileDescriptorProto fileDescriptor) {
-        return fileDescriptor.getMessageTypeList();
+    protected List<DescriptorProto> getDefinitions(FileDescriptorProto file) {
+        return file.getMessageTypeList();
     }
 
     @Override
-    protected String getDefinitionName(DescriptorProto definitionDescriptor) {
-        return definitionDescriptor.getName();
+    protected String getDefinitionName(DescriptorProto definition) {
+        return definition.getName();
     }
 
     @Override
-    protected void annotateDefinition(DescriptorProto definitionDescriptor,
-                                      FileDescriptorProto fileDescriptor) {
-        final Path messageFilePath = getFilePath(definitionDescriptor, false,
-                                                 fileDescriptor);
-        rewriteSource(messageFilePath, new TypeDeclarationAnnotation());
+    protected void annotateDefinition(DescriptorProto definition,
+                                      FileDescriptorProto file) {
+        final SourceFile messageClass = SourceFile.forMessage(definition, false, file);
+        rewriteSource(messageClass, new TypeDeclarationAnnotation());
 
-        final Path messageOrBuilderPath = getFilePath(definitionDescriptor, true,
-                                                      fileDescriptor);
-        rewriteSource(messageOrBuilderPath, new TypeDeclarationAnnotation());
+        final SourceFile messageOrBuilderClass = SourceFile.forMessage(definition, true, file);
+        rewriteSource(messageOrBuilderClass, new TypeDeclarationAnnotation());
     }
 
     @Override
-    protected String getRawOptionValue(DescriptorProto descriptor) {
-        return getUnknownOptionValue(descriptor, getOptionNumber());
+    protected String getRawOptionValue(DescriptorProto definition) {
+        return getUnknownOptionValue(definition, getOptionNumber());
     }
 }

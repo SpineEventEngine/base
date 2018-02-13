@@ -22,6 +22,7 @@ package io.spine.validate;
 import com.google.common.base.Function;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.MoreObjects.ToStringHelper;
+import com.google.common.collect.ImmutableList;
 import io.spine.string.Stringifiers;
 
 import javax.annotation.Nullable;
@@ -30,7 +31,6 @@ import java.util.List;
 import static com.google.common.base.Joiner.on;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Iterables.transform;
-import static java.util.Collections.unmodifiableList;
 
 /**
  * An exception, thrown if a {@code Message} does not pass the validation.
@@ -49,13 +49,15 @@ public class ValidationException extends RuntimeException {
      */
     private final List<ConstraintViolation> constraintViolations;
 
-    public ValidationException(List<ConstraintViolation> constraintViolations) {
+    public ValidationException(Iterable<ConstraintViolation> violations) {
         super();
-        this.constraintViolations = constraintViolations;
+        this.constraintViolations = ImmutableList.copyOf(violations);
     }
 
+    @SuppressWarnings({"AssignmentOrReturnOfFieldWithMutableType" /* returns immutable impl. */,
+                       "unused" /* part of public API of the exception. */})
     public List<ConstraintViolation> getConstraintViolations() {
-        return unmodifiableList(constraintViolations);
+        return constraintViolations;
     }
 
     @Override

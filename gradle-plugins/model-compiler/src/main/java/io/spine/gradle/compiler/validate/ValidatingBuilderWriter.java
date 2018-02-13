@@ -28,6 +28,7 @@ import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeSpec;
 import io.spine.gradle.compiler.Indent;
 import io.spine.gradle.compiler.message.MessageTypeCache;
+import io.spine.tools.java.SimpleClassName;
 import io.spine.validate.AbstractValidatingBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,9 +38,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
-import static io.spine.gradle.compiler.util.GenerationUtils.constructGeneratedAnnotation;
-import static io.spine.gradle.compiler.util.JavaSources.getBuilderClassName;
 import static io.spine.gradle.compiler.validate.ClassNames.getValidatorMessageClassName;
+import static io.spine.tools.java.Annotations.generatedBySpineModelCompiler;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 
 /**
@@ -76,7 +76,8 @@ class ValidatingBuilderWriter {
                                              messageTypeCache,
                                              descriptor.getName());
         final ClassName messageBuilderClassName =
-                messageClassName.nestedClass(getBuilderClassName());
+                messageClassName.nestedClass(SimpleClassName.ofBuilder()
+                                                            .value());
 
         final File rootDirectory = new File(targetDir);
         final TypeSpec.Builder classBuilder = TypeSpec.classBuilder(javaClass);
@@ -85,7 +86,7 @@ class ValidatingBuilderWriter {
                                    messageClassName,
                                    messageBuilderClassName,
                                    methodsAssembler.createMethods())
-                        .addAnnotation(constructGeneratedAnnotation())
+                        .addAnnotation(generatedBySpineModelCompiler())
                         .build();
 
         log().debug("Writing the {} class under the {} package",

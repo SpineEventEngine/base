@@ -23,4 +23,7 @@
  *
  * @author Illia Shepilov
  */
+@ParametersAreNonnullByDefault
 package io.spine.gradle.compiler.message;
+
+import javax.annotation.ParametersAreNonnullByDefault;

@@ -24,12 +24,11 @@ import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.ServiceDescriptorProto;
 import com.google.protobuf.DescriptorProtos.ServiceOptions;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
+import io.spine.tools.java.SourceFile;
 
 import java.lang.annotation.Annotation;
-import java.nio.file.Path;
 import java.util.Collection;
 
-import static io.spine.gradle.compiler.util.JavaSources.getFilePath;
 import static io.spine.option.UnknownOptions.getUnknownOptionValue;
 
 /**
@@ -52,13 +51,13 @@ class ServiceAnnotator extends Annotator<ServiceOptions, ServiceDescriptorProto>
 
     @Override
     void annotate() {
-        for (FileDescriptorProto fileDescriptor : fileDescriptors) {
+        for (FileDescriptorProto fileDescriptor : fileDescriptors()) {
             annotate(fileDescriptor);
         }
     }
 
     @Override
-    protected void annotateSingularFile(FileDescriptorProto fileDescriptor) {
+    protected void annotateOneFile(FileDescriptorProto fileDescriptor) {
         annotateServices(fileDescriptor);
     }
 
@@ -67,11 +66,11 @@ class ServiceAnnotator extends Annotator<ServiceOptions, ServiceDescriptorProto>
         annotateServices(fileDescriptor);
     }
 
-    private void annotateServices(FileDescriptorProto fileDescriptor) {
-        for (ServiceDescriptorProto serviceDescriptor : fileDescriptor.getServiceList()) {
+    private void annotateServices(FileDescriptorProto file) {
+        for (ServiceDescriptorProto serviceDescriptor : file.getServiceList()) {
             if (shouldAnnotate(serviceDescriptor)) {
-                final Path sourcePath = getFilePath(serviceDescriptor, fileDescriptor);
-                rewriteSource(sourcePath, new TypeDeclarationAnnotation());
+                final SourceFile serviceClass = SourceFile.forService(serviceDescriptor, file);
+                rewriteSource(serviceClass, new TypeDeclarationAnnotation());
             }
         }
     }

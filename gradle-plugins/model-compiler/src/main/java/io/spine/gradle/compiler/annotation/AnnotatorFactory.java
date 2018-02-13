@@ -20,6 +20,7 @@
 
 package io.spine.gradle.compiler.annotation;
 
+import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.FieldOptions;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileOptions;
@@ -36,13 +37,15 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 
 /**
  * A factory for {@linkplain Annotator Annotators}.
+ *
+ * @author Alex Tymchenko
  */
 class AnnotatorFactory {
 
     /**
      * Protobuf file descriptors to process.
      */
-    private final Collection<FileDescriptorProto> fileDescriptors;
+    private final ImmutableList<FileDescriptorProto> fileDescriptors;
 
     /**
      * An absolute path to the Java sources directory,
@@ -56,10 +59,13 @@ class AnnotatorFactory {
      */
     private final String genGrpcDir;
 
-    AnnotatorFactory(Collection<FileDescriptorProto> fileDescriptors, String genProtoDir,
+    AnnotatorFactory(Collection<FileDescriptorProto> fileDescriptors,
+                     String genProtoDir,
                      String genGrpcDir) {
-        checkArguments(fileDescriptors, genProtoDir, genGrpcDir);
-        this.fileDescriptors = fileDescriptors;
+        checkNotNull(fileDescriptors);
+        checkArgument(!isNullOrEmpty(genProtoDir));
+        checkArgument(!isNullOrEmpty(genGrpcDir));
+        this.fileDescriptors = ImmutableList.copyOf(fileDescriptors);
         this.genProtoDir = genProtoDir;
         this.genGrpcDir = genGrpcDir;
     }
@@ -82,12 +88,5 @@ class AnnotatorFactory {
     Annotator createServiceAnnotator(Class<? extends Annotation> annotation,
                                      GeneratedExtension<ServiceOptions, Boolean> option) {
         return new ServiceAnnotator(annotation, option, fileDescriptors, genGrpcDir);
-    }
-
-    private static void checkArguments(Collection<FileDescriptorProto> fileDescriptors,
-                                       String genProtoDir, String genGrpcDir) {
-        checkNotNull(fileDescriptors);
-        checkArgument(!isNullOrEmpty(genProtoDir));
-        checkArgument(!isNullOrEmpty(genGrpcDir));
     }
 }

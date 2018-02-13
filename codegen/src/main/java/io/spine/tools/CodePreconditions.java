@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -18,44 +18,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.util;
+package io.spine.tools;
 
-import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.annotation.Internal;
-
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Utilities for Spine-specific files.
- *
  * @author Alexander Yevsyukov
  */
-@Internal
-public class CodeLayout {
-
-    private static final String COMMANDS_FILE_SUFFIX = "commands";
-    private static final char EXTENSION_SEPARATOR = '.';
-    private static final char PATH_SEPARATOR = '/';
+public class CodePreconditions {
 
     /** Prevents instantiation of this utility class. */
-    private CodeLayout() {
+    private CodePreconditions() {
     }
 
     /**
-     * Checks if the file is for commands.
+     * Ensures that the passed string is not {@code null}, empty or blank string.
      *
-     * @param file a descriptor of a {@code .proto} file to check
-     * @return {@code true} if the file name ends with {@code "commands"},
-     * {@code false} otherwise
+     * @param stringToCheck the string to check
+     * @return the passed string
+     * @throws NullPointerException if the passed string is {@code null}
+     * @throws IllegalArgumentException if the string is empty or blank
      */
-    public static boolean isCommandsFile(FileDescriptor file) {
-        checkNotNull(file);
-
-        final String fqn = file.getName();
-        final int startIndexOfFileName = fqn.lastIndexOf(PATH_SEPARATOR) + 1;
-        final int endIndexOfFileName = fqn.lastIndexOf(EXTENSION_SEPARATOR);
-        final String fileName = fqn.substring(startIndexOfFileName, endIndexOfFileName);
-        final boolean isCommandsFile = fileName.endsWith(COMMANDS_FILE_SUFFIX);
-        return isCommandsFile;
+    public static String checkNotEmptyOrBlank(String stringToCheck) {
+        checkNotNull(stringToCheck);
+        checkArgument(!stringToCheck.isEmpty());
+        final String trimmed = stringToCheck.trim();
+        checkArgument(trimmed.length() > 0);
+        return stringToCheck;
     }
 }

@@ -30,7 +30,6 @@ import com.squareup.javapoet.TypeSpec;
 import io.spine.base.ThrowableMessage;
 import io.spine.gradle.compiler.message.fieldtype.FieldType;
 import io.spine.gradle.compiler.message.fieldtype.FieldTypeFactory;
-import io.spine.gradle.compiler.util.GenerationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,6 +39,7 @@ import java.nio.file.Files;
 import java.util.Map;
 
 import static com.squareup.javapoet.MethodSpec.constructorBuilder;
+import static io.spine.tools.java.Annotations.generatedBySpineModelCompiler;
 import static javax.lang.model.element.Modifier.FINAL;
 import static javax.lang.model.element.Modifier.PRIVATE;
 import static javax.lang.model.element.Modifier.PUBLIC;
@@ -90,7 +90,7 @@ public class RejectionWriter {
             final TypeSpec rejection =
                     TypeSpec.classBuilder(rejectionMetadata.getClassName())
                             .addJavadoc(javadocGenerator.generateClassJavadoc())
-                            .addAnnotation(GenerationUtils.constructGeneratedAnnotation())
+                            .addAnnotation(generatedBySpineModelCompiler())
                             .addModifiers(PUBLIC)
                             .superclass(ThrowableMessage.class)
                             .addField(constructSerialVersionUID())

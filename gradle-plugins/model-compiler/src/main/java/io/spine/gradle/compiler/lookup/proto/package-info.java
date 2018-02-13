@@ -23,4 +23,7 @@
  *
  * @author Alex Tymchenko
  */
+@ParametersAreNonnullByDefault
 package io.spine.gradle.compiler.lookup.proto;
+
+import javax.annotation.ParametersAreNonnullByDefault;

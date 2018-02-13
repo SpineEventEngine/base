@@ -43,9 +43,9 @@ group 'io.spine.tools'
 
 dependencies {
     compile project(':base')
+    compile project(':codegen')
 
     compile group: "com.google.protobuf", name: "protobuf-java", version: protobufVersion
-    compile group: 'com.squareup', name: 'javapoet', version: javaPoetVersion
 }
 
 protobuf {

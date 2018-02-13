@@ -20,11 +20,12 @@
 
 package io.spine.gradle.compiler.annotation;
 
+import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.GeneratedMessageV3.ExtendableMessage;
-import io.spine.util.Exceptions;
+import io.spine.tools.java.SourceFile;
 import org.jboss.forge.roaster.Roaster;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
 import org.jboss.forge.roaster.model.source.AnnotationSource;
@@ -42,6 +43,7 @@ import java.nio.file.Paths;
 import java.util.Collection;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 
 /**
@@ -77,7 +79,7 @@ abstract class Annotator<O extends ExtendableMessage, D extends GeneratedMessage
     /**
      * Protobuf file descriptors to process.
      */
-    protected final Collection<FileDescriptorProto> fileDescriptors;
+    private final ImmutableList<FileDescriptorProto> fileDescriptors;
 
     /**
      * An absolute path to the Java sources, generated basing on {@link #fileDescriptors}.
@@ -88,11 +90,15 @@ abstract class Annotator<O extends ExtendableMessage, D extends GeneratedMessage
                         GeneratedExtension<O, Boolean> option,
                         Collection<FileDescriptorProto> fileDescriptors,
                         String genProtoDir) {
-        checkArguments(annotation, option, fileDescriptors, genProtoDir);
-        this.annotation = annotation;
-        this.option = option;
-        this.fileDescriptors = fileDescriptors;
-        this.genProtoDir = genProtoDir;
+        this.annotation = checkNotNull(annotation);
+        this.option = checkNotNull(option);
+        this.fileDescriptors = ImmutableList.copyOf(checkNotNull(fileDescriptors));
+        this.genProtoDir = checkNotNull(genProtoDir);
+    }
+
+    @SuppressWarnings("AssignmentOrReturnOfFieldWithMutableType") // OK to return immutable impl.
+    protected Iterable<FileDescriptorProto> fileDescriptors() {
+        return fileDescriptors;
     }
 
     /**
@@ -109,7 +115,7 @@ abstract class Annotator<O extends ExtendableMessage, D extends GeneratedMessage
                           .hasJavaMultipleFiles()) {
             annotateMultipleFiles(fileDescriptor);
         } else {
-            annotateSingularFile(fileDescriptor);
+            annotateOneFile(fileDescriptor);
         }
     }
 
@@ -120,7 +126,7 @@ abstract class Annotator<O extends ExtendableMessage, D extends GeneratedMessage
      *
      * @param fileDescriptor the file descriptor
      */
-    protected abstract void annotateSingularFile(FileDescriptorProto fileDescriptor);
+    protected abstract void annotateOneFile(FileDescriptorProto fileDescriptor);
 
     /**
      * Annotates the Java sources generated from the specified file descriptor
@@ -182,7 +188,7 @@ abstract class Annotator<O extends ExtendableMessage, D extends GeneratedMessage
      * @param relativeSourcePath the relative path to a source file
      * @param sourceVisitor      the source visitor
      */
-    protected <T extends JavaSource<T>> void rewriteSource(Path relativeSourcePath,
+    protected <T extends JavaSource<T>> void rewriteSource(SourceFile relativeSourcePath,
                                                            SourceVisitor<T> sourceVisitor) {
         rewriteSource(genProtoDir, relativeSourcePath, sourceVisitor);
     }
@@ -199,7 +205,7 @@ abstract class Annotator<O extends ExtendableMessage, D extends GeneratedMessage
     @SuppressWarnings("unchecked" /* There is no way to specify generic parameter
                                      for `AbstractJavaSource.class` value. */)
     protected static <T extends JavaSource<T>> void rewriteSource(String sourcePathPrefix,
-                                                                  Path sourcePath,
+                                                                  SourceFile sourcePath,
                                                                   SourceVisitor<T> sourceVisitor) {
         final AbstractJavaSource<T> javaSource;
         final Path absoluteSourcePath = Paths.get(sourcePathPrefix, sourcePath.toString());
@@ -212,7 +218,7 @@ abstract class Annotator<O extends ExtendableMessage, D extends GeneratedMessage
         try {
             javaSource = Roaster.parse(AbstractJavaSource.class, absoluteSourcePath.toFile());
         } catch (FileNotFoundException e) {
-            throw Exceptions.illegalStateWithCauseOf(e);
+            throw illegalStateWithCauseOf(e);
         }
 
         sourceVisitor.apply(javaSource);
@@ -220,7 +226,7 @@ abstract class Annotator<O extends ExtendableMessage, D extends GeneratedMessage
         try {
             Files.write(absoluteSourcePath, resultingSource.getBytes(), TRUNCATE_EXISTING);
         } catch (IOException e) {
-            throw Exceptions.illegalStateWithCauseOf(e);
+            throw illegalStateWithCauseOf(e);
         }
     }
 
@@ -254,15 +260,5 @@ abstract class Annotator<O extends ExtendableMessage, D extends GeneratedMessage
             addAnnotation(input);
             return null;
         }
-    }
-
-    private void checkArguments(Class<? extends Annotation> annotation,
-                                GeneratedExtension<O, Boolean> option,
-                                Collection<FileDescriptorProto> fileDescriptors,
-                                String genProtoDir) {
-        checkNotNull(annotation);
-        checkNotNull(option);
-        checkNotNull(fileDescriptors);
-        checkNotNull(genProtoDir);
     }
 }

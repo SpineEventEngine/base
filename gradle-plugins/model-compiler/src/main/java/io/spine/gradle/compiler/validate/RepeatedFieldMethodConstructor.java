@@ -31,6 +31,7 @@ import io.spine.base.ConversionException;
 import io.spine.gradle.compiler.message.MessageTypeCache;
 import io.spine.gradle.compiler.message.fieldtype.FieldType;
 import io.spine.gradle.compiler.message.fieldtype.ProtoScalarType;
+import io.spine.tools.proto.FieldName;
 import io.spine.validate.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +42,6 @@ import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type.TYPE_ENUM;
-import static io.spine.gradle.compiler.util.JavaCode.toJavaFieldName;
 import static io.spine.gradle.compiler.validate.ClassNames.getClassName;
 import static io.spine.gradle.compiler.validate.ClassNames.getParameterClassName;
 import static io.spine.gradle.compiler.validate.MethodConstructors.clearPrefix;
@@ -99,8 +99,9 @@ class RepeatedFieldMethodConstructor implements MethodConstructor {
         this.fieldIndex = builder.getFieldIndex();
         this.fieldDescriptor = builder.getFieldDescriptor();
         this.builderGenericClassName = builder.getGenericClassName();
-        this.javaFieldName = toJavaFieldName(fieldDescriptor.getName(), false);
-        this.methodNamePart = toJavaFieldName(fieldDescriptor.getName(), true);
+        final FieldName fieldName = FieldName.of(fieldDescriptor);
+        this.javaFieldName = fieldName.javaCase();
+        this.methodNamePart = fieldName.toCamelCase();
         final String javaClass = builder.getJavaClass();
         final String javaPackage = builder.getJavaPackage();
         this.builderClassName = getClassName(javaPackage, javaClass);
@@ -257,8 +258,7 @@ class RepeatedFieldMethodConstructor implements MethodConstructor {
     }
 
     private MethodSpec createRawAddAllMethod() {
-        final String rawMethodName = fieldType.getSetterPrefix() + rawSuffix() + methodNamePart;
-        final String methodName = toJavaFieldName(rawMethodName, false);
+        final String methodName = fieldType.getSetterPrefix() + rawSuffix() + methodNamePart;
         final String descriptorCodeLine = createDescriptorStatement(fieldIndex,
                                                                     builderGenericClassName);
         final String addAllValues = getMessageBuilder()

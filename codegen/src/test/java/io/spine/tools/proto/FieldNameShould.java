@@ -18,38 +18,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.gradle.compiler.util;
+package io.spine.tools.proto;
 
-import com.google.common.testing.NullPointerTester;
-import com.squareup.javapoet.AnnotationSpec;
-import com.squareup.javapoet.TypeName;
 import org.junit.Test;
 
-import javax.annotation.Generated;
-
-import static io.spine.gradle.compiler.util.GenerationUtils.constructGeneratedAnnotation;
-import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
 import static org.junit.Assert.assertEquals;
 
 /**
- * @author Illia Shepilov
+ * @author Alexander Yevsyukov
  */
-public class GenerationUtilsShould {
+public class FieldNameShould {
+
+    private static final String PROTO_FIELD_NAME = "correct_java_name";
+
+    private final FieldName fieldName = FieldName.of(PROTO_FIELD_NAME);
 
     @Test
-    public void return_generated_annotation_spec() {
-        final AnnotationSpec spec = constructGeneratedAnnotation();
-        assertEquals(spec.type, TypeName.get(Generated.class));
+    public void return_correct_java_field_name() {
+        assertEquals("correctJavaName", fieldName.javaCase());
     }
 
     @Test
-    public void have_private_constructor() {
-        assertHasPrivateParameterlessCtor(GenerationUtils.class);
-    }
-
-    @Test
-    public void pass_null_tolerance_check() {
-        new NullPointerTester().testStaticMethods(GenerationUtils.class,
-                                                  NullPointerTester.Visibility.PACKAGE);
+    public void return_correct_capitalized_java_name() {
+        assertEquals("CorrectJavaName", fieldName.toCamelCase());
     }
 }

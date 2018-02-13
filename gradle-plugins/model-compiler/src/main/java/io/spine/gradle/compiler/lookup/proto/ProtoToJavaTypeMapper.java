@@ -26,6 +26,7 @@ import com.google.protobuf.DescriptorProtos.EnumDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.gradle.compiler.message.fieldtype.FieldTypes;
+import io.spine.tools.java.SimpleClassName;
 import io.spine.type.TypeUrl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +38,6 @@ import java.util.Map;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Lists.newLinkedList;
-import static io.spine.gradle.compiler.util.JavaCode.getOuterClassName;
 import static io.spine.option.OptionsProto.TYPE_URL_PREFIX_FIELD_NUMBER;
 import static io.spine.option.UnknownOptions.getUnknownOptionValue;
 
@@ -129,13 +129,13 @@ public class ProtoToJavaTypeMapper {
     }
 
     private static boolean secondIsValue(List<FieldDescriptorProto> fields) {
-        return "value".equals(fields.get(1)
-                                    .getName());
+        final FieldDescriptorProto secondField = fields.get(1);
+        return "value".equals(secondField.getName());
     }
 
     private static boolean firstIsKey(List<FieldDescriptorProto> fields) {
-        return "key".equals(fields.get(0)
-                                  .getName());
+        final FieldDescriptorProto firstField = fields.get(0);
+        return "key".equals(firstField.getName());
     }
 
     /**
@@ -225,7 +225,8 @@ public class ProtoToJavaTypeMapper {
             return "";
         }
 
-        final String outerClassName = getOuterClassName(file);
+        final String outerClassName = SimpleClassName.outerOf(file)
+                                                     .value();
         return outerClassName.isEmpty()
                 ? ""
                 : (outerClassName + JAVA_INNER_CLASS_SEPARATOR);

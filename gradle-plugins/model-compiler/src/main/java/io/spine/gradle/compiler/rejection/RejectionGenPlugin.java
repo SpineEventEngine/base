@@ -24,7 +24,11 @@ import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.gradle.SpinePlugin;
 import io.spine.gradle.compiler.message.MessageTypeCache;
-import io.spine.gradle.compiler.util.JavaCode;
+import io.spine.tools.java.PackageName;
+import io.spine.tools.java.SimpleClassName;
+import io.spine.tools.proto.FileDescriptors;
+import io.spine.tools.proto.FileName;
+import io.spine.type.RejectionMessage;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -46,7 +50,6 @@ import static io.spine.gradle.compiler.Extension.getMainDescriptorSetPath;
 import static io.spine.gradle.compiler.Extension.getTargetGenRejectionsRootDir;
 import static io.spine.gradle.compiler.Extension.getTargetTestGenRejectionsRootDir;
 import static io.spine.gradle.compiler.Extension.getTestDescriptorSetPath;
-import static io.spine.gradle.compiler.util.DescriptorSetUtil.getProtoFileDescriptors;
 
 /**
  * Plugin which generates Rejections declared in {@code rejections.proto} files.
@@ -61,10 +64,6 @@ import static io.spine.gradle.compiler.util.DescriptorSetUtil.getProtoFileDescri
  * @author Alex Tymchenko
  */
 public class RejectionGenPlugin extends SpinePlugin {
-
-    /** The name suffix for proto files containing rejection declarations. */
-    private static final String REJECTIONS_FILE_SUFFIX = "rejections.proto";
-    private static final String OUTER_CLASS_NAME_SUFFIX = "Rejections";
 
     /** A map from Protobuf type name to Java class FQN. */
     private final MessageTypeCache messageTypeCache = new MessageTypeCache();
@@ -121,11 +120,11 @@ public class RejectionGenPlugin extends SpinePlugin {
     private List<FileDescriptorProto> collectRejectionFiles(String descFilePath) {
         final List<FileDescriptorProto> result = Lists.newLinkedList();
         final Collection<FileDescriptorProto> allDescriptors =
-                getProtoFileDescriptors(descFilePath);
+                FileDescriptors.parse(descFilePath);
         for (FileDescriptorProto file : allDescriptors) {
-            if (file.getName()
-                    .endsWith(REJECTIONS_FILE_SUFFIX)) {
-                log().trace("Found rejections file: {}", file.getName());
+            final FileName fn = FileName.from(file);
+            if (fn.isRejections()) {
+                log().trace("Found rejections file: {}", fn.value());
                 result.add(file);
             }
             messageTypeCache.cacheTypes(file);
@@ -161,27 +160,30 @@ public class RejectionGenPlugin extends SpinePlugin {
             return true;
         }
 
-        final boolean result = javaOuterClassName.endsWith(OUTER_CLASS_NAME_SUFFIX);
+        final boolean result =
+                javaOuterClassName.endsWith(RejectionMessage.OUTER_CLASS_NAME_SUFFIX);
         return result;
     }
 
-    private static void generateRejections(FileDescriptorProto descriptor,
+    private static void generateRejections(FileDescriptorProto file,
                                            Map<String, String> messageTypeMap,
                                            String rejectionsRootDir) {
-        log().debug("Generating rejections from file {}", descriptor.getName());
-        final String javaPackage = descriptor.getOptions()
-                                             .getJavaPackage();
-        final String javaOuterClassName = JavaCode.getOuterClassName(descriptor);
-        log().trace("Found options: javaPackage: {}, javaOuterClassName: {}",
-                    javaPackage,
-                    javaOuterClassName);
-        final List<DescriptorProto> rejections = descriptor.getMessageTypeList();
+        final Logger log = log();
+        log.debug("Generating rejections from file {}", file.getName());
+
+        if (log.isTraceEnabled()) {
+            log.trace("javaPackage: {}, javaOuterClassName: {}",
+                      PackageName.resolve(file),
+                      SimpleClassName.outerOf(file));
+        }
+
+        final List<DescriptorProto> rejections = file.getMessageTypeList();
         for (DescriptorProto rejection : rejections) {
             // The name of the generated `ThrowableMessage` will be the same
             // as for the Protobuf message.
-            log().trace("Processing rejection '{}'", rejection.getName());
+            log.trace("Processing rejection '{}'", rejection.getName());
 
-            final RejectionMetadata metadata = new RejectionMetadata(rejection, descriptor);
+            final RejectionMetadata metadata = new RejectionMetadata(rejection, file);
             final File outputDir = new File(rejectionsRootDir);
             final RejectionWriter writer = new RejectionWriter(metadata, outputDir, messageTypeMap);
             writer.write();

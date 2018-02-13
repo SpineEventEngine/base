@@ -22,13 +22,12 @@ package io.spine.gradle.compiler.rejection.given;
 
 import com.sun.javadoc.RootDoc;
 import io.spine.gradle.GradleProject;
+import io.spine.tools.proto.FieldName;
 import org.junit.rules.TemporaryFolder;
 
 import java.util.Arrays;
 
 import static io.spine.gradle.compiler.Extension.getDefaultMainGenSpineDir;
-import static io.spine.gradle.compiler.util.JavaCode.toJavaFieldName;
-import static io.spine.gradle.compiler.util.JavaSources.getJavaExtension;
 
 /**
  * @author Dmytro Grankin
@@ -62,7 +61,7 @@ public class Given {
     public static String rejectionsJavadocSourceName() {
         final String packageAsDirectory = JAVA_PACKAGE.replace('.', '/');
         return getDefaultMainGenSpineDir() + '/' + packageAsDirectory + '/'
-                + REJECTION_NAME + getJavaExtension();
+                + REJECTION_NAME + ".java";
     }
 
     private static Iterable<String> rejectionWithJavadoc() {
@@ -96,8 +95,10 @@ public class Given {
 
     public static String getExpectedCtorComment() {
         final String param = " @param ";
-        final String firstFieldJavaName = toJavaFieldName(FIRST_FIELD_NAME, false);
-        final String secondFieldJavaName = toJavaFieldName(SECOND_FIELD_NAME, false);
+        final String firstFieldJavaName = FieldName.of(FIRST_FIELD_NAME)
+                                                   .javaCase();
+        final String secondFieldJavaName = FieldName.of(SECOND_FIELD_NAME)
+                                                    .javaCase();
         return " Creates a new instance." + JAVADOC_LINE_SEPARATOR + JAVADOC_LINE_SEPARATOR
                 + param + firstFieldJavaName + "                " + FIRST_FIELD_COMMENT
                 + JAVADOC_LINE_SEPARATOR

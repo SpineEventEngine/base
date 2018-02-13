@@ -27,13 +27,14 @@ import com.squareup.javapoet.MethodSpec;
 import io.spine.gradle.compiler.message.MessageTypeCache;
 import io.spine.gradle.compiler.message.fieldtype.FieldType;
 import io.spine.gradle.compiler.message.fieldtype.FieldTypeFactory;
+import io.spine.protobuf.Messages;
+import io.spine.tools.proto.FieldName;
 
 import javax.lang.model.element.Modifier;
 import java.util.Collection;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static io.spine.gradle.compiler.util.JavaCode.toJavaFieldName;
 import static io.spine.gradle.compiler.message.fieldtype.FieldTypes.isMap;
 import static io.spine.gradle.compiler.message.fieldtype.FieldTypes.isRepeated;
 
@@ -55,7 +56,8 @@ class MethodGenerator {
         this.javaPackage = metadata.getJavaPackage();
         this.descriptor = metadata.getMsgDescriptor();
         this.messageTypeCache = messageTypeCache;
-        final String javaFieldName = toJavaFieldName(descriptor.getName(), false);
+        final String javaFieldName = FieldName.of(descriptor.getName())
+                                              .javaCase();
         builderGenericClassName = ClassNames.getValidatorMessageClassName(javaPackage,
                                                                           messageTypeCache,
                                                                           javaFieldName);
@@ -85,7 +87,7 @@ class MethodGenerator {
 
     private MethodSpec createNewBuilderMethod() {
         final ClassName builderClass = ClassNames.getClassName(javaPackage, javaClass);
-        final MethodSpec buildMethod = MethodSpec.methodBuilder("newBuilder")
+        final MethodSpec buildMethod = MethodSpec.methodBuilder(Messages.METHOD_NEW_BUILDER)
                                                  .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                                                  .returns(builderClass)
                                                  .addStatement("return new $T()", builderClass)
@@ -157,5 +159,4 @@ class MethodGenerator {
             return methodConstructor;
         }
     }
-
 }

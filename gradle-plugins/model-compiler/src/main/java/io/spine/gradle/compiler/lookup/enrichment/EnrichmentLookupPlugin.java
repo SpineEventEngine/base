@@ -21,8 +21,8 @@ package io.spine.gradle.compiler.lookup.enrichment;
 
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.gradle.SpinePlugin;
-import io.spine.gradle.compiler.util.DescriptorSetUtil.IsNotGoogleProto;
 import io.spine.gradle.compiler.util.PropertiesWriter;
+import io.spine.tools.proto.FileDescriptors;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -43,7 +43,7 @@ import static io.spine.gradle.compiler.Extension.getMainDescriptorSetPath;
 import static io.spine.gradle.compiler.Extension.getMainTargetGenResourcesDir;
 import static io.spine.gradle.compiler.Extension.getTestDescriptorSetPath;
 import static io.spine.gradle.compiler.Extension.getTestTargetGenResourcesDir;
-import static io.spine.gradle.compiler.util.DescriptorSetUtil.getProtoFileDescriptors;
+import static io.spine.tools.proto.FileDescriptors.isNotGoogleProto;
 
 /**
  * Finds event enrichment Protobuf definitions and creates a {@code .properties} file,
@@ -115,9 +115,8 @@ public class EnrichmentLookupPlugin extends SpinePlugin {
         log().debug("Enrichment lookup started");
 
         final Map<String, String> propsMap = newHashMap();
-        final IsNotGoogleProto protoFilter = new IsNotGoogleProto();
-        final Collection<FileDescriptorProto> files = getProtoFileDescriptors(descriptorSetPath,
-                                                                              protoFilter);
+        final Collection<FileDescriptorProto> files =
+                FileDescriptors.parseAndFilter(descriptorSetPath, isNotGoogleProto());
         for (FileDescriptorProto file : files) {
             final Map<String, String> enrichments = new EnrichmentsFinder(file).findEnrichments();
             propsMap.putAll(enrichments);

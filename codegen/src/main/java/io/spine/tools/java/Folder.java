@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -18,33 +18,40 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.gradle.compiler.util;
+package io.spine.tools.java;
 
-import com.squareup.javapoet.AnnotationSpec;
+import io.spine.tools.AbstractFolder;
 
-import javax.annotation.Generated;
+import java.nio.file.Path;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Utility class for working with classes which generate the Java code.
+ * A folder with Java source files.
+ *
+ * @author Alexander Yevsyukov
  */
-public class GenerationUtils {
+public final class Folder extends AbstractFolder<FileName, SourceFile> {
 
-    private GenerationUtils() {
-        // Prevent instantiation.
+    private Folder(Path path) {
+        super(path);
     }
 
     /**
-     * Constructs the {@code AnnotationSpec} for the {@code Generated} class.
-     *
-     * @return the constructed {@code AnnotationSpec} instance
+     * Creates a new instance.
      */
-    @SuppressWarnings("DuplicateStringLiteralInspection")
-    // It cannot be used as the constant across the project.
-    // Although it has the equivalent literal they have the different meaning.
-    public static AnnotationSpec constructGeneratedAnnotation() {
-        final AnnotationSpec result = AnnotationSpec.builder(Generated.class)
-                                                    .addMember("value", "$S", "by Spine compiler")
-                                                    .build();
+    static Folder at(Path path) {
+        checkNotNull(path);
+        return new Folder(path);
+    }
+
+    /**
+     * Obtains the source code file for the passed name.
+     */
+    @Override
+    public SourceFile resolve(FileName fileName) {
+        final Path filePath = getPath().resolve(fileName.value());
+        final SourceFile result = SourceFile.of(filePath);
         return result;
     }
 }

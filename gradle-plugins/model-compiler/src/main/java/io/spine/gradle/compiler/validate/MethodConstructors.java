@@ -24,12 +24,12 @@ import com.google.template.soy.SoyFileSet;
 import com.google.template.soy.data.SoyMapData;
 import com.google.template.soy.tofu.SoyTofu;
 import com.squareup.javapoet.ClassName;
+import io.spine.tools.proto.FieldName;
 
 import java.net.URL;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
-import static io.spine.gradle.compiler.util.JavaCode.toJavaFieldName;
 import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.lang.String.format;
 
@@ -44,8 +44,8 @@ class MethodConstructors {
 
     private static final SoyTofu soyTofu = getSoyTofu();
 
+    /** Prevents instantiation of this utility class. */
     private MethodConstructors() {
-        // Prevent instantiation.
     }
 
     /**
@@ -84,7 +84,10 @@ class MethodConstructors {
      */
     static String createConvertSingularValue(String value) {
         checkNotNull(value);
-        final SoyMapData mapData = new SoyMapData("javaFieldName", toJavaFieldName(value, true),
+        // We pass capitalized name because this value is used with prefixes.
+        final String fieldName = FieldName.of(value)
+                                          .toCamelCase();
+        final SoyMapData mapData = new SoyMapData("javaFieldName", fieldName,
                                                   "valueToValidate", value);
         final String result = renderData(mapData, "io.spine.generation.convertedValueStatement");
         return result;
@@ -97,15 +100,6 @@ class MethodConstructors {
      */
     static String rawSuffix() {
         return "Raw";
-    }
-
-    /**
-     * Returns the pointer for the methods of the `ValidatingBuilder` classes.
-     *
-     * @return the {@code String} which represents the pointer
-     */
-    static String thisPointer() {
-        return "this.";
     }
 
     /**
