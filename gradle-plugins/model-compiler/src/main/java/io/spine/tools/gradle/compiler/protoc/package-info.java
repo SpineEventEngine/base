@@ -19,8 +19,8 @@
  */
 
 /**
- * This package provides {@link io.spine.tools.gradle.compiler.annotation.ProtoAnnotatorPlugin
- * ProtoAnnotatorPlugin}.
+ * This package provides {@link io.spine.tools.gradle.compiler.protoc.ProtocPluginImporter
+ * ProtocPluginImporter}.
  */
 @ParametersAreNonnullByDefault
 package io.spine.tools.gradle.compiler.protoc;
