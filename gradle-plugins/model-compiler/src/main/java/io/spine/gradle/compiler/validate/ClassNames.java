@@ -29,7 +29,7 @@ import java.util.Collection;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.gradle.compiler.message.fieldtype.FieldTypes.trimTypeName;
-import static io.spine.tools.proto.ScalarType.getBoxedScalarPrimitive;
+import static io.spine.tools.java.PrimitiveType.getWrapperClass;
 import static io.spine.tools.proto.ScalarType.getJavaTypeName;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 
@@ -73,7 +73,7 @@ final class ClassNames {
         final FieldDescriptorProto.Type fieldType = fieldDescriptor.getType();
         final String scalarType = getJavaTypeName(fieldType);
         try {
-            final Optional<? extends Class<?>> scalarPrimitive = getBoxedScalarPrimitive(scalarType);
+            final Optional<? extends Class<?>> scalarPrimitive = getWrapperClass(scalarType);
             if (scalarPrimitive.isPresent()) {
                 return ClassName.get(scalarPrimitive.get());
             }

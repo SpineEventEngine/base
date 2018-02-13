@@ -20,7 +20,6 @@
 
 package io.spine.tools.proto;
 
-import com.google.common.base.Optional;
 import com.google.protobuf.ByteString;
 
 import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
@@ -75,43 +74,6 @@ public enum ScalarType {
 
         final String msg = format("Protobuf type \"%s\" is not a scalar value type.", protoScalar);
         throw new IllegalStateException(msg);
-    }
-
-    /**
-     * Returns the boxed {@link Class} for the Protobuf scalar primitive name.
-     *
-     * @param scalarPrimitiveName the Protobuf scalar primitive name
-     * @return the boxed primitive class or empty {@code Optional}
-     * if the specified primitive name does not belong to {@link ScalarType}.
-     */
-    public static Optional<? extends Class<?>> getBoxedScalarPrimitive(String scalarPrimitiveName) {
-        for (ProtoScalarPrimitive primitive : ProtoScalarPrimitive.values()) {
-            if (scalarPrimitiveName.equals(primitive.primitiveName)) {
-                return Optional.of(primitive.boxedPrimitive);
-            }
-        }
-
-        return Optional.absent();
-    }
-
-    /**
-     * Enumeration of the Java primitives, which
-     * are {@linkplain ScalarType Protobuf scalar types}.
-     */
-    enum ProtoScalarPrimitive {
-        INT("int", Integer.class),
-        LONG("long", Long.class),
-        FLOAT("float", Float.class),
-        DOUBLE("double", Double.class),
-        BOOLEAN("boolean", Boolean.class);
-
-        private final String primitiveName;
-        private final Class<?> boxedPrimitive;
-
-        ProtoScalarPrimitive(String primitiveName, Class<?> boxedPrimitive) {
-            this.primitiveName = primitiveName;
-            this.boxedPrimitive = boxedPrimitive;
-        }
     }
 
     public Type getProtoScalarType() {

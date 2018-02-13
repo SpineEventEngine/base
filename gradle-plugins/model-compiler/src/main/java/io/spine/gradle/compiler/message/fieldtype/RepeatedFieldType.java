@@ -23,7 +23,7 @@ import com.google.common.base.Optional;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
-import io.spine.tools.proto.ScalarType;
+import io.spine.tools.java.PrimitiveType;
 
 import java.util.List;
 
@@ -67,13 +67,15 @@ public class RepeatedFieldType implements FieldType {
     }
 
     private static TypeName constructTypeNameFor(String componentTypeName) {
-        final Optional<? extends Class<?>> boxedScalarPrimitive =
-                ScalarType.getBoxedScalarPrimitive(componentTypeName);
+        final Optional<? extends Class<?>> wrapperClass =
+                PrimitiveType.getWrapperClass(componentTypeName);
 
-        final TypeName componentType = boxedScalarPrimitive.isPresent()
-                                       ? TypeName.get(boxedScalarPrimitive.get())
+        final TypeName componentType = wrapperClass.isPresent()
+                                       ? TypeName.get(wrapperClass.get())
                                        : ClassName.bestGuess(componentTypeName);
-        return ParameterizedTypeName.get(ClassName.get(List.class), componentType);
+        final ParameterizedTypeName result =
+                ParameterizedTypeName.get(ClassName.get(List.class), componentType);
+        return result;
     }
 
     @Override

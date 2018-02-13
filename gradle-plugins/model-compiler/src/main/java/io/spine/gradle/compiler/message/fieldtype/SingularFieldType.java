@@ -22,7 +22,7 @@ package io.spine.gradle.compiler.message.fieldtype;
 import com.google.common.base.Optional;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
-import io.spine.tools.proto.ScalarType;
+import io.spine.tools.java.PrimitiveType;
 
 /**
  * Represents singular {@linkplain FieldType field type}.
@@ -67,7 +67,7 @@ public class SingularFieldType implements FieldType {
 
     private static TypeName constructTypeNameFor(String name) {
         final Optional<? extends Class<?>> boxedScalarPrimitive =
-                ScalarType.getBoxedScalarPrimitive(name);
+                PrimitiveType.getWrapperClass(name);
 
         return boxedScalarPrimitive.isPresent()
                ? TypeName.get(boxedScalarPrimitive.get())
