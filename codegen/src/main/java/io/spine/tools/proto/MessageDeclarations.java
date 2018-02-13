@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.gradle.compiler.message;
+package io.spine.tools.proto;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
@@ -28,7 +28,7 @@ import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import java.util.Collection;
 import java.util.List;
 
-import static io.spine.gradle.compiler.message.MessageDeclaration.create;
+import static io.spine.tools.proto.MessageDeclaration.create;
 
 /**
  * Utilities for working with {@linkplain MessageDeclaration message declarations}.

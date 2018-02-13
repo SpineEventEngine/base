@@ -23,11 +23,11 @@ package io.spine.gradle.compiler.lookup.valrule;
 import com.google.common.base.Predicate;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
-import io.spine.gradle.compiler.message.MessageDeclaration;
 import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.SpinePlugin;
 import io.spine.tools.properties.PropertiesWriter;
 import io.spine.tools.proto.FileDescriptors;
+import io.spine.tools.proto.MessageDeclaration;
 import io.spine.type.TypeName;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
@@ -40,7 +40,6 @@ import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Maps.newHashMap;
-import static io.spine.gradle.compiler.message.MessageDeclarations.find;
 import static io.spine.option.OptionsProto.VALIDATION_OF_FIELD_NUMBER;
 import static io.spine.option.UnknownOptions.getUnknownOptionValue;
 import static io.spine.option.UnknownOptions.hasUnknownOption;
@@ -55,6 +54,7 @@ import static io.spine.tools.gradle.compiler.Extension.getMainTargetGenResources
 import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSetPath;
 import static io.spine.tools.gradle.compiler.Extension.getTestTargetGenResourcesDir;
 import static io.spine.tools.proto.FileDescriptors.isNotGoogleProto;
+import static io.spine.tools.proto.MessageDeclarations.find;
 import static io.spine.validate.rules.ValidationRules.getValRulesPropsFileName;
 import static org.slf4j.LoggerFactory.getLogger;
 

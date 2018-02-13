@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -25,6 +25,7 @@ import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.Descriptor;
 import io.spine.test.compiler.message.Top;
+import io.spine.tools.proto.MessageDeclaration;
 import io.spine.type.TypeName;
 import org.junit.Test;
 
@@ -32,7 +33,7 @@ import javax.annotation.Nullable;
 import java.util.Collection;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.gradle.compiler.message.MessageDeclarations.find;
+import static io.spine.tools.proto.MessageDeclarations.find;
 import static java.util.Collections.singleton;
 import static org.junit.Assert.assertEquals;
 
