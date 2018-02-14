@@ -20,7 +20,7 @@
 
 package io.spine.tools.protodoc;
 
-import io.spine.gradle.TaskName;
+import io.spine.tools.gradle.TaskName;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.plugins.PluginContainer;
@@ -32,13 +32,13 @@ import org.junit.rules.TemporaryFolder;
 
 import java.io.IOException;
 
-import static io.spine.gradle.TaskDependencies.dependsOn;
-import static io.spine.gradle.TaskName.COMPILE_JAVA;
-import static io.spine.gradle.TaskName.COMPILE_TEST_JAVA;
-import static io.spine.gradle.TaskName.FORMAT_PROTO_DOC;
-import static io.spine.gradle.TaskName.FORMAT_TEST_PROTO_DOC;
-import static io.spine.gradle.TaskName.GENERATE_PROTO;
-import static io.spine.gradle.TaskName.GENERATE_TEST_PROTO;
+import static io.spine.tools.gradle.TaskDependencies.dependsOn;
+import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
+import static io.spine.tools.gradle.TaskName.COMPILE_TEST_JAVA;
+import static io.spine.tools.gradle.TaskName.FORMAT_PROTO_DOC;
+import static io.spine.tools.gradle.TaskName.FORMAT_TEST_PROTO_DOC;
+import static io.spine.tools.gradle.TaskName.GENERATE_PROTO;
+import static io.spine.tools.gradle.TaskName.GENERATE_TEST_PROTO;
 import static io.spine.tools.protodoc.BacktickFormatting.BACKTICK;
 import static io.spine.tools.protodoc.Given.formatAndAssert;
 import static io.spine.tools.protodoc.PreTagFormatting.CLOSING_PRE;
@@ -58,7 +58,7 @@ public class ProtoJavadocPluginShould {
     private Project project;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         project = newProject();
         project.getPluginManager()
                .apply(PLUGIN_ID);

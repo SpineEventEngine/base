@@ -19,7 +19,7 @@
  */
 package io.spine.tools.protodoc;
 
-import io.spine.gradle.SpinePlugin;
+import io.spine.tools.gradle.SpinePlugin;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -30,12 +30,12 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
-import static io.spine.gradle.TaskName.COMPILE_JAVA;
-import static io.spine.gradle.TaskName.COMPILE_TEST_JAVA;
-import static io.spine.gradle.TaskName.FORMAT_PROTO_DOC;
-import static io.spine.gradle.TaskName.FORMAT_TEST_PROTO_DOC;
-import static io.spine.gradle.TaskName.GENERATE_PROTO;
-import static io.spine.gradle.TaskName.GENERATE_TEST_PROTO;
+import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
+import static io.spine.tools.gradle.TaskName.COMPILE_TEST_JAVA;
+import static io.spine.tools.gradle.TaskName.FORMAT_PROTO_DOC;
+import static io.spine.tools.gradle.TaskName.FORMAT_TEST_PROTO_DOC;
+import static io.spine.tools.gradle.TaskName.GENERATE_PROTO;
+import static io.spine.tools.gradle.TaskName.GENERATE_TEST_PROTO;
 import static io.spine.tools.protodoc.Extension.getAbsoluteMainGenProtoDir;
 import static io.spine.tools.protodoc.Extension.getAbsoluteTestGenProtoDir;
 import static java.lang.String.format;

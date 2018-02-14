@@ -31,7 +31,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import static io.spine.gradle.TaskName.FORMAT_PROTO_DOC;
+import static io.spine.tools.gradle.TaskName.FORMAT_PROTO_DOC;
 import static java.lang.System.lineSeparator;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.assertEquals;
