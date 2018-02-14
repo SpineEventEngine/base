@@ -209,7 +209,7 @@ public class ValidatingBuilderGenPlugin extends SpinePlugin {
                     final String message =
                             "Cannot generate the validating builder for " + metadata + ". ";
                     log().warn(message);
-                    log().trace(message, e);
+                    log().debug(message, e);
                 }
             }
             log().debug("The validating builder generation is finished.");

@@ -1,22 +1,22 @@
-//
-// Copyright 2017, TeamDev Ltd. All rights reserved.
-//
-// Redistribution and use in source and/or binary forms, with or without
-// modification, must retain the above copyright notice and the following
-// disclaimer.
-//
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//
+/*
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
+ *
+ * Redistribution and use in source and/or binary forms, with or without
+ * modification, must retain the above copyright notice and the following
+ * disclaimer.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
 
 import groovy.time.TimeCategory
 
@@ -121,7 +121,7 @@ subprojects {
     }
 
     apply plugin: 'java'
-    apply plugin: spineCodestyleCheckerId
+//    apply plugin: spineCodestyleCheckerId
     apply plugin: 'maven-publish'
 
     // Verifies code style.
@@ -133,23 +133,23 @@ subprojects {
     //              * "error" - build will fail and its report will contain the violations.
     //
     //      For more details please see io.spine.tools.codestyle.CodestyleCheckerPlugin
-    codestyleChecker {
-
-        // Javadoc @link/@linkplain format checker.
-        //
-        // Finds and reports FQNs used in links in the wrong format.
-        javadocLinkChecker {
-            threshold = 0
-            reportType = "warn"
-        }
-
-        // Right margin line checker.
-        //
-        // Finds and reports about the lines of a code with length above threshold.
-        rightMarginWrappingChecker {
-            maxTextWidth = 100
-        }
-    }
+//    codestyleChecker {
+//
+//        // Javadoc @link/@linkplain format checker.
+//        //
+//        // Finds and reports FQNs used in links in the wrong format.
+//        javadocLinkChecker {
+//            threshold = 0
+//            reportType = "warn"
+//        }
+//
+//        // Right margin line checker.
+//        //
+//        // Finds and reports about the lines of a code with length above threshold.
+//        rightMarginWrappingChecker {
+//            maxTextWidth = 100
+//        }
+//    }
 
     sourceCompatibility = 1.7
     targetCompatibility = 1.7
@@ -202,7 +202,7 @@ subprojects {
             // events 'standard_out', 'standard_error'
 
             // Or set property events:
-            // events = ['standard_out', 'standard_error']
+             events = ['standard_out', 'standard_error']
 
             // Instead of string values we can
             // use enum values:
@@ -273,15 +273,15 @@ apply from: spineJacocoScript
 
 apply from: publishPlugin
 
-apply plugin: spineGcsPlugin
-
-cleanGCS {
-    final Properties properties = new Properties()
-    final File gcsProperties = project.file("${rootDir}/config/gcs.properties")
-    properties.load(gcsProperties.newDataInputStream())
-
-    authKeyPath = "gcs-auth-key.json"
-    bucketName = properties.getProperty("artifacts.bucket")
-    targetFolder = properties.getProperty("artifacts.folder")
-    threshold = TimeCategory.getDays(10)
-}
+//apply plugin: spineGcsPlugin
+//
+//cleanGCS {
+//    final Properties properties = new Properties()
+//    final File gcsProperties = project.file("${rootDir}/config/gcs.properties")
+//    properties.load(gcsProperties.newDataInputStream())
+//
+//    authKeyPath = "gcs-auth-key.json"
+//    bucketName = properties.getProperty("artifacts.bucket")
+//    targetFolder = properties.getProperty("artifacts.folder")
+//    threshold = TimeCategory.getDays(10)
+//}

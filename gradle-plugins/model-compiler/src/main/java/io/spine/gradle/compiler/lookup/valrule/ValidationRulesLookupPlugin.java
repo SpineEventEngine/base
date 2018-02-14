@@ -35,7 +35,7 @@ import org.gradle.api.Task;
 import org.slf4j.Logger;
 
 import javax.annotation.Nullable;
-import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -54,7 +54,7 @@ import static io.spine.tools.gradle.compiler.Extension.getMainTargetGenResources
 import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSetPath;
 import static io.spine.tools.gradle.compiler.Extension.getTestTargetGenResourcesDir;
 import static io.spine.tools.proto.FileDescriptors.isNotGoogleProto;
-import static io.spine.tools.proto.MessageDeclarations.find;
+import static io.spine.tools.proto.SourceFile.allThat;
 import static io.spine.validate.rules.ValidationRules.getValRulesPropsFileName;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -116,13 +116,14 @@ public class ValidationRulesLookupPlugin extends SpinePlugin {
 
     private static void findValidationRulesAndWriteProps(String targetGeneratedResourcesDir,
                                                          String descriptorSetPath) {
-        log().debug("Validation rules lookup started.");
+        final Logger log = log();
+        log.debug("Validation rules lookup started.");
 
-        final Collection<FileDescriptorProto> files =
+        final List<FileDescriptorProto> files =
                 FileDescriptors.parseAndFilter(descriptorSetPath, isNotGoogleProto());
-        final Collection<MessageDeclaration> declarations = find(files, new IsValidationRule());
+        final List<MessageDeclaration> declarations = allThat(files, new IsValidationRule());
         writeProperties(targetGeneratedResourcesDir, declarations);
-        log().debug("Validation rules lookup complete.");
+        log.debug("Validation rules lookup complete.");
     }
 
     private static void writeProperties(String targetGeneratedResourcesDir,

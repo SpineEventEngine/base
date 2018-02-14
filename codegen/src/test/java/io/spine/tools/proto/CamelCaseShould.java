@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -20,16 +20,48 @@
 
 package io.spine.tools.proto;
 
+import com.google.common.collect.ImmutableList;
 import io.spine.test.Tests;
+import io.spine.type.StringTypeValue;
 import org.junit.Test;
+
+import java.util.List;
+
+import static io.spine.tools.proto.CamelCase.convert;
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author Alexander Yevsyukov
  */
-public class UnderscoredNameShould {
+public class CamelCaseShould {
 
     @Test
-    public void have_utility_ctor_for_CamelCase() {
-        Tests.assertHasPrivateParameterlessCtor(UnderscoredName.CamelCase.class);
+    public void have_utility_ctor() {
+        Tests.assertHasPrivateParameterlessCtor(CamelCase.class);
+    }
+
+    @Test
+    public void capitalize_words() {
+        assertEquals("CapitalizeWords", convert(new UnderName("capitalize_words")));
+    }
+
+    @Test
+    public void do_not_lowercase_words() {
+        assertEquals("TestHTTPRequest", convert(new UnderName("test_HTTP_request")));
+    }
+
+    /**
+     * A test value object.
+     */
+    private static class UnderName extends StringTypeValue implements UnderscoredName {
+
+        protected UnderName(String value) {
+            super(value);
+        }
+
+        @Override
+        public List<String> words() {
+            return ImmutableList.copyOf(value().split(WORD_SEPARATOR));
+        }
     }
 }

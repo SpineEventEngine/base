@@ -18,33 +18,37 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.gradle.compiler.message;
+package io.spine.tools.proto;
 
 import com.google.common.base.Predicate;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.Descriptor;
 import io.spine.test.compiler.message.Top;
-import io.spine.tools.proto.MessageDeclaration;
 import io.spine.type.TypeName;
+import org.junit.Before;
 import org.junit.Test;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.proto.MessageDeclarations.find;
-import static java.util.Collections.singleton;
 import static org.junit.Assert.assertEquals;
 
 /**
  * @author Dmytro Grankin
  */
-public class MessageDeclarationsShould {
+public class SourceFileShould {
 
     private static final FileDescriptorProto TEST_FILE_DESCRIPTOR = Top.getDescriptor()
                                                                        .getFile()
                                                                        .toProto();
+    private SourceFile sourceFile;
+
+    @Before
+    public void setUp() {
+        sourceFile = SourceFile.from(TEST_FILE_DESCRIPTOR);
+    }
 
     @Test
     public void search_nested_declarations_recursively() {
@@ -54,15 +58,17 @@ public class MessageDeclarationsShould {
         assertEquals(expectedTypeName, result.getTypeName());
     }
 
-    private static MessageDeclaration findDeclaration(String name) {
+    private MessageDeclaration findDeclaration(String name) {
         final Predicate<DescriptorProto> predicate = new MessageWithName(name);
-        final Collection<MessageDeclaration> searchResult = find(singleton(TEST_FILE_DESCRIPTOR),
-                                                                 predicate);
+        final Collection<MessageDeclaration> searchResult = sourceFile.allThat(predicate);
         assertEquals(searchResult.size(), 1);
         return searchResult.iterator()
                            .next();
     }
 
+    /**
+     * Test predicate that matches a message declaration by its name.
+     */
     private static class MessageWithName implements Predicate<DescriptorProto> {
 
         private final String name;

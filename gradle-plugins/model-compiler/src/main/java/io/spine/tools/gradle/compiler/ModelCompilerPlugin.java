@@ -42,32 +42,33 @@ public class ModelCompilerPlugin implements Plugin<Project> {
 
     @Override
     public void apply(Project project) {
-        log().debug("Adding the extension to the project.");
+        final Logger log = log();
+        log.debug("Adding the extension to the project.");
         project.getExtensions()
                .create(SPINE_MODEL_COMPILER_EXTENSION_NAME, Extension.class);
 
-        log().debug("Applying Spine cleaning plugin.");
+        log.debug("Applying Spine cleaning plugin.");
         new CleaningPlugin().apply(project);
 
-        log().debug("Applying Spine proto-to-java mapper plugin.");
+        log.debug("Applying Spine proto-to-java mapper plugin.");
         new ProtoToJavaMapperPlugin().apply(project);
 
-        log().debug("Applying Spine enrichment lookup plugin.");
+        log.debug("Applying Spine enrichment lookup plugin.");
         new EnrichmentLookupPlugin().apply(project);
 
-        log().debug("Applying Spine rejection generation plugin.");
+        log.debug("Applying Spine rejection generation plugin.");
         new RejectionGenPlugin().apply(project);
 
-        log().debug("Applying Spine validating builder generation plugin.");
+        log.debug("Applying Spine validating builder generation plugin.");
         new ValidatingBuilderGenPlugin().apply(project);
 
-        log().debug("Applying Spine proto annotator plugin.");
+        log.debug("Applying Spine proto annotator plugin.");
         new ProtoAnnotatorPlugin().apply(project);
 
-        log().debug("Applying Spine validation rules lookup plugin.");
+        log.debug("Applying Spine validation rules lookup plugin.");
         new ValidationRulesLookupPlugin().apply(project);
 
-        log().debug("Applying Spine protoc-plugin importer plugin.");
+        log.debug("Applying Spine protoc-plugin importer plugin.");
         new ProtocPluginImporter().apply(project);
     }
 

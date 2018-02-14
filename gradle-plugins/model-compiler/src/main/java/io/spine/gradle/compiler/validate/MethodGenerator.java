@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -28,7 +28,6 @@ import io.spine.gradle.compiler.message.MessageTypeCache;
 import io.spine.gradle.compiler.message.fieldtype.FieldType;
 import io.spine.gradle.compiler.message.fieldtype.FieldTypeFactory;
 import io.spine.protobuf.Messages;
-import io.spine.tools.proto.FieldName;
 
 import javax.lang.model.element.Modifier;
 import java.util.Collection;
@@ -56,11 +55,10 @@ class MethodGenerator {
         this.javaPackage = metadata.getJavaPackage();
         this.descriptor = metadata.getMsgDescriptor();
         this.messageTypeCache = messageTypeCache;
-        final String javaFieldName = FieldName.of(descriptor.getName())
-                                              .javaCase();
+        final String className = descriptor.getName();
         builderGenericClassName = ClassNames.getValidatorMessageClassName(javaPackage,
                                                                           messageTypeCache,
-                                                                          javaFieldName);
+                                                                          className);
     }
 
     /**
