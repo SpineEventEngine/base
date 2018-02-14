@@ -22,8 +22,8 @@ package io.spine.tools.reflections;
 import org.gradle.api.Project;
 import org.gradle.testfixtures.ProjectBuilder;
 
-import static io.spine.gradle.TaskName.BUILD;
-import static io.spine.gradle.TaskName.CLASSES;
+import static io.spine.tools.gradle.TaskName.BUILD;
+import static io.spine.tools.gradle.TaskName.CLASSES;
 
 /**
  * @author Alex Tymchenko

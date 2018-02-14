@@ -20,6 +20,8 @@
 package io.spine.tools.reflections;
 
 import com.google.common.io.Files;
+import io.spine.tools.gradle.GradleTask;
+import io.spine.tools.gradle.SpinePlugin;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -31,7 +33,6 @@ import org.reflections.serializers.XmlSerializer;
 import org.reflections.util.ConfigurationBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import io.spine.gradle.SpinePlugin;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,11 +41,11 @@ import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
 
-import static java.io.File.separatorChar;
-import static io.spine.gradle.TaskName.BUILD;
-import static io.spine.gradle.TaskName.CLASSES;
-import static io.spine.gradle.TaskName.SCAN_CLASS_PATH;
+import static io.spine.tools.gradle.TaskName.BUILD;
+import static io.spine.tools.gradle.TaskName.CLASSES;
+import static io.spine.tools.gradle.TaskName.SCAN_CLASS_PATH;
 import static io.spine.tools.reflections.Extension.REFLECTIONS_PLUGIN_EXTENSION;
+import static java.io.File.separatorChar;
 
 /**
  * Gradle port for Maven Reflections Plugin.

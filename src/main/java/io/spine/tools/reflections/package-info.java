@@ -23,4 +23,7 @@
  *
  * @author Alex Tymchenko
  */
+@ParametersAreNonnullByDefault
 package io.spine.tools.reflections;
+
+import javax.annotation.ParametersAreNonnullByDefault;

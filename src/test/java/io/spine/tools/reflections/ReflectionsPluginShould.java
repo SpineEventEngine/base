@@ -24,14 +24,14 @@ import org.gradle.api.Task;
 import org.gradle.api.tasks.TaskContainer;
 import org.junit.Test;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static io.spine.gradle.TaskDependencies.dependsOn;
-import static io.spine.gradle.TaskName.BUILD;
-import static io.spine.gradle.TaskName.CLASSES;
-import static io.spine.gradle.TaskName.SCAN_CLASS_PATH;
+import static io.spine.tools.gradle.TaskDependencies.dependsOn;
+import static io.spine.tools.gradle.TaskName.BUILD;
+import static io.spine.tools.gradle.TaskName.CLASSES;
+import static io.spine.tools.gradle.TaskName.SCAN_CLASS_PATH;
 import static io.spine.tools.reflections.Given.REFLECTIONS_PLUGIN_ID;
 import static io.spine.tools.reflections.Given.newProject;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Alex Tymchenko
