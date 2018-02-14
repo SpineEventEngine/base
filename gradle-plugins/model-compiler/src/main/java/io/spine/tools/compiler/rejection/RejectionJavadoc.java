@@ -20,7 +20,6 @@
 
 package io.spine.tools.compiler.rejection;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
@@ -60,22 +59,24 @@ import static java.lang.String.format;
  * }</pre>
  *
  * @author Dmytro Grankin
+ * @author Alexander Yevsyukov
  * @see <a href="https://github.com/google/protobuf-gradle-plugin/blob/master/README.md#generate-descriptor-set-files">
  * Protobuf plugin configuration</a>
  */
-public class RejectionJavadocGenerator {
+public class RejectionJavadoc {
 
-    @VisibleForTesting
-    protected static final String OPENING_PRE = "<pre>";
+    private static final String OPENING_PRE = "<pre>";
 
-    //TODO:2017-03-24:dmytro.grankin: Replace hardcoded line separator by system-independent
-    // after https://github.com/square/javapoet/issues/552 fix.
+    /*
+      TODO:2017-03-24:dmytro.grankin: Replace hardcoded line separator by system-independent
+      after https://github.com/square/javapoet/issues/552 is fixed.
+    */
     @SuppressWarnings("HardcodedLineSeparator")
     private static final String LINE_SEPARATOR = "\n";
 
     private final RejectionDeclaration declaration;
 
-    RejectionJavadocGenerator(RejectionDeclaration declaration) {
+    RejectionJavadoc(RejectionDeclaration declaration) {
         this.declaration = declaration;
     }
 
@@ -84,7 +85,7 @@ public class RejectionJavadocGenerator {
      *
      * @return the class-level Javadoc content
      */
-    public String generateClassJavadoc() {
+    public String forClass() {
         final Optional<String> leadingComments = getRejectionLeadingComments();
         final StringBuilder builder = new StringBuilder(256);
 
@@ -111,7 +112,7 @@ public class RejectionJavadocGenerator {
      *
      * @return the constructor Javadoc content
      */
-    public String generateConstructorJavadoc() {
+    public String forConstructor() {
         final StringBuilder builder = new StringBuilder("Creates a new instance.");
         final Map<FieldDescriptorProto, String> commentedFields = getCommentedFields();
 

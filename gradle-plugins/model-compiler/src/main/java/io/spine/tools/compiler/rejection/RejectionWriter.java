@@ -61,7 +61,7 @@ public class RejectionWriter {
     private final File outputDirectory;
 
     private final FieldTypeFactory fieldTypeFactory;
-    private final RejectionJavadocGenerator javadocGenerator;
+    private final RejectionJavadoc javadoc;
 
     /**
      * Creates a new instance.
@@ -76,7 +76,7 @@ public class RejectionWriter {
         this.declaration = metadata;
         this.outputDirectory = outputDirectory;
         this.fieldTypeFactory = new FieldTypeFactory(metadata.getDescriptor(), messageTypeMap);
-        this.javadocGenerator = new RejectionJavadocGenerator(metadata);
+        this.javadoc = new RejectionJavadoc(metadata);
     }
 
     /**
@@ -92,7 +92,7 @@ public class RejectionWriter {
             log.debug("Constructing {}", className);
             final TypeSpec rejection =
                     TypeSpec.classBuilder(className)
-                            .addJavadoc(javadocGenerator.generateClassJavadoc())
+                            .addJavadoc(javadoc.forClass())
                             .addAnnotation(generatedBySpineModelCompiler())
                             .addModifiers(PUBLIC)
                             .superclass(ThrowableMessage.class)
@@ -116,7 +116,7 @@ public class RejectionWriter {
         log().trace("Constructing the constructor of type '{}'", declaration.getDescriptor()
                                                                             .getName());
         final MethodSpec.Builder builder = constructorBuilder()
-                .addJavadoc(javadocGenerator.generateConstructorJavadoc())
+                .addJavadoc(javadoc.forConstructor())
                 .addModifiers(PUBLIC);
         for (Map.Entry<String, FieldType> field : readFieldValues().entrySet()) {
             final TypeName parameterTypeName = field.getValue()
