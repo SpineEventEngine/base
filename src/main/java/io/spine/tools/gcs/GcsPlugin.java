@@ -22,15 +22,15 @@ package io.spine.tools.gcs;
 
 import com.google.api.client.http.HttpTransport;
 import com.google.common.annotations.VisibleForTesting;
+import io.spine.tools.gradle.SpinePlugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.slf4j.Logger;
-import io.spine.gradle.SpinePlugin;
 
 import java.util.logging.Level;
 
+import static io.spine.tools.gradle.TaskName.CLEAN_GCS;
 import static org.slf4j.LoggerFactory.getLogger;
-import static io.spine.gradle.TaskName.CLEAN_GCS;
 
 /**
  * The plugin for working with Google Cloud Storage via Gradle tasks.

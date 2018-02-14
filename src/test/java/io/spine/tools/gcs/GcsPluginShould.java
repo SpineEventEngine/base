@@ -21,19 +21,19 @@
 package io.spine.tools.gcs;
 
 import com.google.api.client.http.HttpTransport;
+import io.spine.tools.gradle.TaskName;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.tasks.TaskContainer;
 import org.junit.Before;
 import org.junit.Test;
-import io.spine.gradle.TaskName;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static io.spine.tools.gradle.TaskName.CLEAN_GCS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static io.spine.gradle.TaskName.CLEAN_GCS;
 
 /**
  * @author Dmytro Grankin

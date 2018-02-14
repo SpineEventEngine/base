@@ -23,8 +23,8 @@ package io.spine.tools.gcs;
 import org.gradle.api.Project;
 import org.gradle.testfixtures.ProjectBuilder;
 
-import static io.spine.gradle.TaskName.BUILD;
-import static io.spine.gradle.TaskName.CLEAN_GCS;
+import static io.spine.tools.gradle.TaskName.BUILD;
+import static io.spine.tools.gradle.TaskName.CLEAN_GCS;
 
 /**
  * @author Dmytro Grankin
