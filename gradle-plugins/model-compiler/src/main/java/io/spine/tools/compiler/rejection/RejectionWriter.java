@@ -17,7 +17,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.gradle.compiler.rejection;
+package io.spine.tools.compiler.rejection;
 
 import com.google.common.collect.Maps;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
@@ -55,7 +55,7 @@ import static javax.lang.model.element.Modifier.STATIC;
  * @author Alex Tymchenko
  */
 @SuppressWarnings("HardcodedLineSeparator")
-class RejectionWriter {
+public class RejectionWriter {
 
     private final RejectionDeclaration declaration;
     private final File outputDirectory;
@@ -70,7 +70,7 @@ class RejectionWriter {
      * @param outputDirectory a directory to write a Rejection
      * @param messageTypeMap  pre-scanned map with proto types and their appropriate Java classes
      */
-    RejectionWriter(RejectionDeclaration metadata,
+    public RejectionWriter(RejectionDeclaration metadata,
                     File outputDirectory,
                     Map<String, String> messageTypeMap) {
         this.declaration = metadata;
@@ -82,7 +82,7 @@ class RejectionWriter {
     /**
      * Initiates writing.
      */
-    void write() {
+    public void write() {
         try {
             final Logger log = log();
             log.debug("Creating the output directory {}", outputDirectory.getPath());

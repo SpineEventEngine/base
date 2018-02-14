@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -24,7 +24,7 @@ import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.EnumDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileOptions;
-import io.spine.gradle.compiler.rejection.RejectionGenPlugin;
+import io.spine.tools.gradle.compiler.rejection.RejectionGenPlugin;
 import io.spine.tools.java.SimpleClassName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

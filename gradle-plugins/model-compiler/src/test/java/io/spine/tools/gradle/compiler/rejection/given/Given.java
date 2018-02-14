@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.gradle.compiler.rejection.given;
+package io.spine.tools.gradle.compiler.rejection.given;
 
 import com.sun.javadoc.RootDoc;
 import io.spine.tools.gradle.given.GradleProject;
@@ -46,8 +46,8 @@ public class Given {
     private static final String SECOND_FIELD_COMMENT = "The rejection message.";
     private static final String SECOND_FIELD_NAME = "rejection_message";
 
+    /** Prevents instantiation of this utility class. */
     private Given() {
-        // Prevent instantiation of this utility class.
     }
 
     public static GradleProject newProjectWithRejectionsJavadoc(TemporaryFolder projectFolder) {
