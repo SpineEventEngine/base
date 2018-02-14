@@ -19,13 +19,13 @@
  */
 package io.spine.tools.codestyle;
 
+import io.spine.tools.codestyle.javadoc.JavadocLinkCheckerPlugin;
+import io.spine.tools.codestyle.rightmargin.RightMarginCheckerPlugin;
+import io.spine.tools.gradle.SpinePlugin;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.ExtensionAware;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import io.spine.gradle.SpinePlugin;
-import io.spine.tools.codestyle.javadoc.JavadocLinkCheckerPlugin;
-import io.spine.tools.codestyle.rightmargin.RightMarginCheckerPlugin;
 
 /**
  * The plugin that verifies code style.

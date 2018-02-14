@@ -19,19 +19,19 @@
  */
 package io.spine.tools.codestyle.javadoc;
 
+import io.spine.tools.codestyle.FileChecker;
+import io.spine.tools.codestyle.StepConfiguration;
+import io.spine.tools.gradle.SpinePlugin;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import io.spine.gradle.SpinePlugin;
-import io.spine.tools.codestyle.FileChecker;
-import io.spine.tools.codestyle.StepConfiguration;
 
-import static io.spine.gradle.TaskName.CHECK_FQN;
-import static io.spine.gradle.TaskName.COMPILE_JAVA;
-import static io.spine.gradle.TaskName.PROCESS_RESOURCES;
 import static io.spine.tools.codestyle.CodeStyleCheckerPlugin.createStepExtension;
+import static io.spine.tools.gradle.TaskName.CHECK_FQN;
+import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
+import static io.spine.tools.gradle.TaskName.PROCESS_RESOURCES;
 
 /**
  * The plugin that checks the target project Javadocs for broken links that

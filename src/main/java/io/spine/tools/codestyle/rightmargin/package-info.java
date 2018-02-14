@@ -21,4 +21,7 @@
 /**
  * This package provides classes for plugins and utilities to validate the code style.
  */
+@ParametersAreNonnullByDefault
 package io.spine.tools.codestyle.rightmargin;
+
+import javax.annotation.ParametersAreNonnullByDefault;

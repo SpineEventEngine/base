@@ -21,4 +21,7 @@
 /**
  * The Gradle plugins for the code style validation.
  */
+@ParametersAreNonnullByDefault
 package io.spine.tools.codestyle;
+
+import javax.annotation.ParametersAreNonnullByDefault;

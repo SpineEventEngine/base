@@ -21,5 +21,7 @@
 /**
  * This package provides plugins and utilities to validate Javadoc style.
  */
+@ParametersAreNonnullByDefault
 package io.spine.tools.codestyle.javadoc;
 
+import javax.annotation.ParametersAreNonnullByDefault;

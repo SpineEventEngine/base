@@ -19,15 +19,24 @@
  */
 package io.spine.tools.codestyle;
 
+import java.net.URL;
+
+import static org.junit.Assert.assertNotNull;
+
 /**
  * @author Alexander Aleksandrov
  */
 public class Given {
+    
     private static final String SOURCE_FOLDER = "src/main/java";
     private static final String DEBUG_OPTION = "--debug";
     private static final String testFile = "AllowedFqnFormats.java";
     private static final String COMPILE_LOG = ":compileJava";
     private static final String buildGradleFile = "build.gradle";
+
+    /** Prevents instantiation of this utility class. */
+    private Given() {
+    }
 
     public static String buildGradleFile() {
         return buildGradleFile;
@@ -47,5 +56,19 @@ public class Given {
 
     public static String sourceFolder() {
         return SOURCE_FOLDER;
+    }
+
+    public static String resourceFilePath() {
+        final URL resource = Given.class.getClassLoader()
+                                        .getResource(testFile());
+        assertNotNull(resource);
+        return resource.getPath();
+    }
+
+    public static String resourceFolder() {
+        final String resourceFilePath = resourceFilePath();
+        final int endIndex = resourceFilePath.length() - testFile().length();
+        final String resourceFolder = resourceFilePath.substring(0, endIndex);
+        return resourceFolder;
     }
 }

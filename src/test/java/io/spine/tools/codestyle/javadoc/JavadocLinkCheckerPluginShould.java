@@ -21,8 +21,9 @@ package io.spine.tools.codestyle.javadoc;
 
 import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
-import io.spine.gradle.TaskName;
+import io.spine.tools.codestyle.Given;
 import io.spine.tools.codestyle.ReportType;
+import io.spine.tools.gradle.TaskName;
 import org.gradle.internal.impldep.org.apache.commons.io.FileUtils;
 import org.gradle.internal.impldep.org.apache.commons.io.IOUtils;
 import org.gradle.testkit.runner.BuildResult;
@@ -49,7 +50,6 @@ import static io.spine.tools.codestyle.Given.buildGradleFile;
 import static io.spine.tools.codestyle.Given.compileLog;
 import static io.spine.tools.codestyle.Given.debugOption;
 import static io.spine.tools.codestyle.Given.sourceFolder;
-import static io.spine.tools.codestyle.Given.testFile;
 import static java.lang.String.format;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.assertEquals;
@@ -84,12 +84,7 @@ public class JavadocLinkCheckerPluginShould {
         Files.copy(input, buildGradleFile);
         Files.createDirectories(testSources);
 
-        ClassLoader classLoader = getClass().getClassLoader();
-        final String testFile = testFile();
-        final String resourceFilePath = classLoader.getResource(testFile)
-                                                   .getPath();
-        final int endIndex = resourceFilePath.length() - testFile.length();
-        resourceFolder = resourceFilePath.substring(0, endIndex);
+        resourceFolder = Given.resourceFolder();
     }
 
     @Test
@@ -115,16 +110,19 @@ public class JavadocLinkCheckerPluginShould {
         final Path testSources = testProjectDir.getRoot()
                                                .toPath()
                                                .resolve(sourceFolder());
-        final Path wrongFqnFormat = Paths.get(testSources.toString() + "/WrongFQNformat.java");
-        final Path wrongMultipleFqnFormat = Paths.get(testSources.toString() + "/MultipleWrongFqnLinks.java");
+        final Path wrongFqnFormat =
+                Paths.get(testSources.toString() + "/WrongFQNformat.java");
+        final Path wrongMultipleFqnFormat =
+                Paths.get(testSources.toString() + "/MultipleWrongFqnLinks.java");
         FileUtils.copyDirectory(new File(resourceFolder), new File(testSources.toString()));
         Files.deleteIfExists(wrongFqnFormat);
         Files.deleteIfExists(wrongMultipleFqnFormat);
 
-        final GradleRunner gradleRunner = GradleRunner.create()
-                                                      .withProjectDir(testProjectDir.getRoot())
-                                                      .withPluginClasspath()
-                                                      .withArguments(CHECK_JAVADOC_LINK, debugOption());
+        final GradleRunner gradleRunner =
+                GradleRunner.create()
+                            .withProjectDir(testProjectDir.getRoot())
+                            .withPluginClasspath()
+                            .withArguments(CHECK_JAVADOC_LINK, debugOption());
         BuildResult buildResult = gradleRunner.build();
 
         final List<String> expected = Arrays.asList(compileLog(), CHECK_JAVADOC_LOG);
