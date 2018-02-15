@@ -66,7 +66,7 @@ import static java.lang.String.format;
 public class RejectionJavadoc {
 
     private static final String OPENING_PRE = "<pre>";
-
+    private static final String CLOSING_PRE = "</pre>";
     /*
       TODO:2017-03-24:dmytro.grankin: Replace hardcoded line separator by system-independent
       after https://github.com/square/javapoet/issues/552 is fixed.
@@ -93,7 +93,7 @@ public class RejectionJavadoc {
             builder.append(OPENING_PRE)
                    .append(LINE_SEPARATOR)
                    .append(JavadocEscaper.escape(leadingComments.get()))
-                   .append("</pre>")
+                   .append(CLOSING_PRE)
                    .append(LINE_SEPARATOR)
                    .append(LINE_SEPARATOR);
         }
