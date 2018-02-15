@@ -23,6 +23,7 @@ package io.spine.tools.proto;
 import com.google.common.annotations.VisibleForTesting;
 import io.spine.tools.java.SimpleClassName;
 
+import javax.annotation.Nullable;
 import java.util.Objects;
 
 import static com.google.protobuf.DescriptorProtos.DescriptorProto;
@@ -33,7 +34,7 @@ import static com.google.protobuf.DescriptorProtos.FileDescriptorProto;
  *
  * @author Dmytro Grankin
  */
-public class RejectionDeclaration {
+public class RejectionDeclaration extends AbstractMessageDeclaration {
 
     /**
      * The suffix for the outer class name for the generated rejection messages.
@@ -41,9 +42,7 @@ public class RejectionDeclaration {
     @VisibleForTesting
     static final String OUTER_CLASS_NAME_SUFFIX = "Rejections";
 
-    private final DescriptorProto descriptor;
     private final String outerClassName;
-    private final FileDescriptorProto fileDescriptor;
 
     /**
      * Creates a new instance.
@@ -51,25 +50,11 @@ public class RejectionDeclaration {
      * @param rejectionDescriptor {@link DescriptorProto} of rejection's proto message
      * @param fileDescriptor      {@link FileDescriptorProto}, that contains the rejection
      */
-    public RejectionDeclaration(DescriptorProto rejectionDescriptor,
-                                FileDescriptorProto fileDescriptor) {
-        this.descriptor = rejectionDescriptor;
+    RejectionDeclaration(DescriptorProto rejectionDescriptor,
+                         FileDescriptorProto fileDescriptor) {
+        super(rejectionDescriptor, fileDescriptor);
         this.outerClassName = SimpleClassName.outerOf(fileDescriptor)
                                              .value();
-        this.fileDescriptor = fileDescriptor;
-    }
-
-    public DescriptorProto getDescriptor() {
-        return descriptor;
-    }
-
-    public String getName() {
-        return descriptor.getName();
-    }
-
-    public String getJavaPackage() {
-        return fileDescriptor.getOptions()
-                             .getJavaPackage();
     }
 
     /**
@@ -86,30 +71,23 @@ public class RejectionDeclaration {
         return outerClassName;
     }
 
-    public String getClassName() {
-        return descriptor.getName();
-    }
-
-    public FileDescriptorProto getFileDescriptor() {
-        return fileDescriptor;
-    }
-
     @Override
     public int hashCode() {
-        return Objects.hash(descriptor, outerClassName, fileDescriptor);
+        return 31 * super.hashCode() + Objects.hash(outerClassName);
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(@Nullable Object obj) {
         if (this == obj) {
             return true;
         }
         if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
+        if (!super.equals(obj)) {
+            return false;
+        }
         final RejectionDeclaration other = (RejectionDeclaration) obj;
-        return Objects.equals(this.descriptor, other.descriptor)
-                && Objects.equals(this.outerClassName, other.outerClassName)
-                && Objects.equals(this.fileDescriptor, other.fileDescriptor);
+        return Objects.equals(this.outerClassName, other.outerClassName);
     }
 }

@@ -31,6 +31,7 @@ import java.util.Deque;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newLinkedList;
+import static io.spine.util.Exceptions.newIllegalArgumentException;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
@@ -41,14 +42,9 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  *
  * @author Dmytro Grankin
  */
-public class MessageDeclaration {
+public class MessageDeclaration extends AbstractMessageDeclaration {
 
     private static final String PROTO_TYPE_SEPARATOR = ".";
-
-    /**
-     * The descriptor of the declaration.
-     */
-    private final DescriptorProto descriptor;
 
     /**
      * Descriptors for the outer messages of the declaration.
@@ -58,37 +54,31 @@ public class MessageDeclaration {
      */
     private final List<DescriptorProto> outerMessages;
 
-    /**
-     * A file descriptors, that contains the declaration
-     */
-    private final FileDescriptorProto fileDescriptor;
-
     private MessageDeclaration(DescriptorProto descriptor,
                                List<DescriptorProto> outerMessages,
                                FileDescriptorProto fileDescriptor) {
-        this.descriptor = descriptor;
+        super(descriptor, fileDescriptor);
         this.outerMessages = outerMessages;
-        this.fileDescriptor = fileDescriptor;
     }
 
     /**
      * Creates the declaration for the specified message.
      *
-     * @param message        the top-level definition from the file descriptor
-     * @param fileDescriptor the file descriptor containing the message
+     * @param message the descriptor of the top-level declaration of the message type
+     * @param file    the descriptor of the file containing the message
      * @return the message declaration
      */
     public static MessageDeclaration create(DescriptorProto message,
-                                            FileDescriptorProto fileDescriptor) {
-        final boolean fileContainsTarget = fileDescriptor.getMessageTypeList()
-                                                         .contains(message);
+                                            FileDescriptorProto file) {
+        final boolean fileContainsTarget = file.getMessageTypeList()
+                                               .contains(message);
         if (!fileContainsTarget) {
             final String errMsg = "Top-level message `%s` was not found in `%s`.";
-            throw newIllegalStateException(errMsg, message.getName(), fileDescriptor.getName());
+            throw newIllegalArgumentException(errMsg, message.getName(), file.getName());
         }
 
         final List<DescriptorProto> outerMessages = Collections.emptyList();
-        return new MessageDeclaration(message, outerMessages, fileDescriptor);
+        return new MessageDeclaration(message, outerMessages, file);
     }
 
     /**
@@ -98,7 +88,7 @@ public class MessageDeclaration {
      */
     public List<MessageDeclaration> getImmediateNested() {
         final ImmutableList.Builder<MessageDeclaration> result = ImmutableList.builder();
-        for (DescriptorProto nestedType : descriptor.getNestedTypeList()) {
+        for (DescriptorProto nestedType : getDescriptor().getNestedTypeList()) {
             final MessageDeclaration nestedDeclaration = forNested(nestedType);
             result.add(nestedDeclaration);
         }
@@ -133,16 +123,17 @@ public class MessageDeclaration {
      * @return the nested message declaration
      */
     private MessageDeclaration forNested(DescriptorProto nestedMessage) {
-        final boolean isNestedForCurrentTarget = descriptor.getNestedTypeList()
-                                                           .contains(nestedMessage);
+        final boolean isNestedForCurrentTarget = getDescriptor().getNestedTypeList()
+                                                                .contains(nestedMessage);
         if (!isNestedForCurrentTarget) {
             final String errMsg = "Nested message `%s` was not found in `%s`.";
-            throw newIllegalStateException(errMsg, nestedMessage.getName(), descriptor.getName());
+            throw newIllegalStateException(errMsg, nestedMessage.getName(),
+                                           getDescriptor().getName());
         }
 
         final List<DescriptorProto> outerMessagesForNested = newLinkedList(outerMessages);
-        outerMessagesForNested.add(descriptor);
-        return new MessageDeclaration(nestedMessage, outerMessagesForNested, fileDescriptor);
+        outerMessagesForNested.add(getDescriptor());
+        return new MessageDeclaration(nestedMessage, outerMessagesForNested, getFileDescriptor());
     }
 
     /**
@@ -151,22 +142,14 @@ public class MessageDeclaration {
      * @return the type name
      */
     public TypeName getTypeName() {
-        final String packagePrefix = fileDescriptor.getPackage() + PROTO_TYPE_SEPARATOR;
+        final String packagePrefix = getFileDescriptor().getPackage() + PROTO_TYPE_SEPARATOR;
         final StringBuilder typeBuilder = new StringBuilder(packagePrefix);
         for (DescriptorProto outerMessage : outerMessages) {
             typeBuilder.append(outerMessage.getName())
                        .append(PROTO_TYPE_SEPARATOR);
         }
-        typeBuilder.append(descriptor.getName());
+        typeBuilder.append(getDescriptor().getName());
         final String value = typeBuilder.toString();
         return TypeName.of(value);
-    }
-
-    public DescriptorProto getDescriptor() {
-        return descriptor;
-    }
-
-    public FileDescriptorProto getFile() {
-        return fileDescriptor;
     }
 }
