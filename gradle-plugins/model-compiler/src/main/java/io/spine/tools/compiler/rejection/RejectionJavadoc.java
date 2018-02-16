@@ -101,7 +101,7 @@ public class RejectionJavadoc {
         builder.append("Rejection based on proto type {@code ")
                .append(declaration.getJavaPackage())
                .append('.')
-               .append(declaration.getClassName())
+               .append(declaration.getSimpleJavaClassName())
                .append('}')
                .append(LINE_SEPARATOR);
         return builder.toString();

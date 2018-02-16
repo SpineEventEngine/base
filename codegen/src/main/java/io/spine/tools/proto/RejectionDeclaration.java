@@ -33,8 +33,9 @@ import static com.google.protobuf.DescriptorProtos.FileDescriptorProto;
  * A code generation metadata on a rejection.
  *
  * @author Dmytro Grankin
+ * @author Alexander Yevsyukov
  */
-public class RejectionDeclaration extends AbstractMessageDeclaration {
+public final class RejectionDeclaration extends AbstractMessageDeclaration {
 
     /**
      * The suffix for the outer class name for the generated rejection messages.

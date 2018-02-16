@@ -170,7 +170,7 @@ public class RejectionGenPlugin extends SpinePlugin {
         for (RejectionDeclaration rejection : rejections) {
             // The name of the generated `ThrowableMessage` will be the same
             // as for the Protobuf message.
-            log.trace("Processing rejection '{}'", rejection.getName());
+            log.trace("Processing rejection '{}'", rejection.getSimpleTypeName());
             final RejectionWriter writer = new RejectionWriter(rejection, outDir, messageTypeMap);
             writer.write();
         }

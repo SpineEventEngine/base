@@ -21,6 +21,7 @@
 package io.spine.tools.java;
 
 import com.google.common.base.Optional;
+import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.type.StringTypeValue;
 
@@ -47,8 +48,8 @@ public final class SimpleClassName extends StringTypeValue {
      * by the passed descriptor.
      *
      * <p>The outer class name is calculated according to
-     * <a href="https://developers.google.com/protocol-buffers/docs/reference/java-generated#invocation">Protobuf
-     * compiler conventions</a>.
+     * <a href="https://developers.google.com/protocol-buffers/docs/reference/java-generated#invocation">
+     * Protobuf compiler conventions</a>.
      *
      * @param file a descriptor for file for which outer class name will be generated
      * @return non-qualified outer class name
@@ -66,6 +67,13 @@ public final class SimpleClassName extends StringTypeValue {
         return className;
     }
 
+    /**
+     * Obtains an outer class name declared in the passed file.
+     *
+     * @param  file the descriptor of the proto file
+     * @return the value declared in the file options, or
+     *         {@linkplain Optional#absent() empty Optional} if the option is not set
+     */
     public static Optional<SimpleClassName> declaredOuterClassName(FileDescriptorProto file) {
         final String className = file.getOptions()
                                      .getJavaOuterClassname();
@@ -82,8 +90,8 @@ public final class SimpleClassName extends StringTypeValue {
      * by the passed descriptor.
      *
      * <p>The outer class name is calculated according to
-     * <a href="https://developers.google.com/protocol-buffers/docs/reference/java-generated#invocation">Protobuf
-     * compiler conventions</a>.
+     * <a href="https://developers.google.com/protocol-buffers/docs/reference/java-generated#invocation">
+     * Protobuf compiler conventions</a>.
      *
      * @param file a descriptor for file for which outer class name will be generated
      * @return outer class name
@@ -107,9 +115,18 @@ public final class SimpleClassName extends StringTypeValue {
      * descendant for the passed message type.
      */
     public static SimpleClassName messageOrBuilder(String typeName) {
-         checkNotEmptyOrBlank(typeName);
+        checkNotEmptyOrBlank(typeName);
         final SimpleClassName result = new SimpleClassName(typeName + OR_BUILDER_SUFFIX);
-         return result;
+        return result;
+    }
+
+    /**
+     * Obtains a Java class name corresponding the proto message declaration.
+     */
+    public static SimpleClassName ofMessage(DescriptorProto descriptor) {
+        checkNotNull(descriptor);
+        final SimpleClassName result = new SimpleClassName(descriptor.getName());
+        return result;
     }
 
     /**

@@ -88,7 +88,8 @@ public class RejectionWriter {
             log.debug("Creating the output directory {}", outputDirectory.getPath());
             Files.createDirectories(outputDirectory.toPath());
 
-            final String className = declaration.getClassName();
+            final String className = declaration.getSimpleJavaClassName()
+                                                .value();
             log.debug("Constructing {}", className);
             final TypeSpec rejection =
                     TypeSpec.classBuilder(className)
@@ -134,7 +135,7 @@ public class RejectionWriter {
         final StringBuilder superStatement = new StringBuilder("super(");
         superStatement.append(declaration.getOuterClassName())
                       .append('.')
-                      .append(declaration.getClassName())
+                      .append(declaration.getSimpleJavaClassName())
                       .append(".newBuilder()");
 
         for (Map.Entry<String, FieldType> field : readFieldValues().entrySet()) {
@@ -156,7 +157,8 @@ public class RejectionWriter {
         log().trace("Constructing getMessageThrown()");
 
         final TypeName returnTypeName = ClassName.get(declaration.getOuterClassName(),
-                                                      declaration.getClassName());
+                                                      declaration.getSimpleJavaClassName()
+                                                                 .toString());
         return MethodSpec.methodBuilder("getMessageThrown")
                          .addAnnotation(Override.class)
                          .addModifiers(PUBLIC)
