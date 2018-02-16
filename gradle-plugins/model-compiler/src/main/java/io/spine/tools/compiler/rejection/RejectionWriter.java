@@ -55,8 +55,11 @@ import static javax.lang.model.element.Modifier.STATIC;
  * @author Alexander Litus
  * @author Alex Tymchenko
  */
-@SuppressWarnings("HardcodedLineSeparator")
 public class RejectionWriter {
+
+    private static final String METHOD_GET_MESSAGE_THROWN = "getMessageThrown";
+    private static final String METHOD_GET_MESSAGE_THROWN_SIGNATURE =
+            METHOD_GET_MESSAGE_THROWN + "()";
 
     private final RejectionDeclaration declaration;
     private final File outputDirectory;
@@ -108,7 +111,7 @@ public class RejectionWriter {
                                      rejection)
                             .skipJavaLangImports(true)
                             .build();
-            log.debug("Writing {}", className);
+            log.trace("Writing {}", className);
             javaFile.writeTo(outputDirectory);
             log.debug("Rejection {} written successfully", className);
         } catch (IOException e) {
@@ -117,8 +120,8 @@ public class RejectionWriter {
     }
 
     private MethodSpec constructor() {
-        log().trace("Constructing the constructor of type '{}'", declaration.getDescriptor()
-                                                                            .getName());
+        log().trace("Creating the constructor for the type '{}'",
+                    declaration.getSimpleJavaClassName());
         final MethodSpec.Builder builder = constructorBuilder()
                 .addJavadoc(javadoc.forConstructor())
                 .addModifiers(PUBLIC);
@@ -157,7 +160,7 @@ public class RejectionWriter {
     }
 
     private MethodSpec getMessageThrown() {
-        log().trace("Constructing getMessageThrown()");
+        log().trace("Constructing " + METHOD_GET_MESSAGE_THROWN_SIGNATURE);
 
         final TypeName returnType =
                 ClassName.get(declaration.getJavaPackage()
@@ -166,16 +169,20 @@ public class RejectionWriter {
                                          .value())
                          .nestedClass(declaration.getSimpleJavaClassName()
                                                  .value());
-        return MethodSpec.methodBuilder("getMessageThrown")
+        return MethodSpec.methodBuilder(METHOD_GET_MESSAGE_THROWN)
                          .addAnnotation(Override.class)
                          .addModifiers(PUBLIC)
                          .returns(returnType)
-                         .addStatement("return (" + returnType + ") super.getMessageThrown()")
+                         .addStatement("return (" + returnType + ") super." +
+                                               METHOD_GET_MESSAGE_THROWN_SIGNATURE)
                          .build();
     }
 
     private static FieldSpec serialVersionUID() {
-        return FieldSpec.builder(long.class, "serialVersionUID", PRIVATE, STATIC, FINAL)
+        return FieldSpec.builder(long.class,
+                                 io.spine.tools.java.FieldName.serialVersionUID()
+                                                              .value(),
+                                 PRIVATE, STATIC, FINAL)
                         .initializer("0L")
                         .build();
     }
