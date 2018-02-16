@@ -37,41 +37,41 @@ public abstract class AbstractMessageDeclaration {
     /**
      * The message declaration.
      */
-    private final DescriptorProto descriptor;
+    private final DescriptorProto message;
 
     /**
      * The file which contains the declaration.
      */
-    private final FileDescriptorProto fileDescriptor;
+    private final FileDescriptorProto file;
 
-    AbstractMessageDeclaration(DescriptorProto descriptor, FileDescriptorProto file) {
-        this.descriptor = descriptor;
-        this.fileDescriptor = file;
+    AbstractMessageDeclaration(DescriptorProto message, FileDescriptorProto file) {
+        this.message = message;
+        this.file = file;
     }
 
-    public DescriptorProto getDescriptor() {
-        return descriptor;
+    public DescriptorProto getMessage() {
+        return message;
     }
 
     public String getSimpleTypeName() {
-        return descriptor.getName();
+        return message.getName();
     }
 
     public PackageName getJavaPackage() {
-        return PackageName.resolve(fileDescriptor);
+        return PackageName.resolve(file);
     }
 
     public SimpleClassName getSimpleJavaClassName() {
-        return SimpleClassName.ofMessage(descriptor);
+        return SimpleClassName.ofMessage(message);
     }
 
-    public FileDescriptorProto getFileDescriptor() {
-        return fileDescriptor;
+    public FileDescriptorProto getFile() {
+        return file;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(descriptor, fileDescriptor);
+        return Objects.hash(message, file);
     }
 
     @Override
@@ -83,7 +83,7 @@ public abstract class AbstractMessageDeclaration {
             return false;
         }
         final AbstractMessageDeclaration other = (AbstractMessageDeclaration) obj;
-        return Objects.equals(this.descriptor, other.descriptor)
-                && Objects.equals(this.fileDescriptor, other.fileDescriptor);
+        return Objects.equals(this.message, other.message)
+                && Objects.equals(this.file, other.file);
     }
 }

@@ -164,7 +164,7 @@ public class RejectionJavadoc {
      * @return the leading comments or empty {@code Optional} if there are no such comments
      */
     private Optional<String> getLeadingComments(LocationPath locationPath) {
-        if (!declaration.getFileDescriptor()
+        if (!declaration.getFile()
                         .hasSourceCodeInfo()) {
             final String errMsg =
                     "To enable rejection generation, please configure the Gradle " +
@@ -210,24 +210,24 @@ public class RejectionJavadoc {
     }
 
     private int getTopLevelMessageIndex() {
-        final List<DescriptorProto> messages = declaration.getFileDescriptor()
+        final List<DescriptorProto> messages = declaration.getFile()
                                                           .getMessageTypeList();
         for (DescriptorProto currentMessage : messages) {
-            if (currentMessage.equals(declaration.getDescriptor())) {
-                return messages.indexOf(declaration.getDescriptor());
+            if (currentMessage.equals(declaration.getMessage())) {
+                return messages.indexOf(declaration.getMessage());
             }
         }
 
         final String msg = format("The rejection file \"%s\" should contain \"%s\" rejection.",
-                                  declaration.getFileDescriptor()
+                                  declaration.getFile()
                                              .getName(),
-                                  declaration.getDescriptor()
+                                  declaration.getMessage()
                                              .getName());
         throw new IllegalStateException(msg);
     }
 
     private int getFieldIndex(FieldDescriptorProto field) {
-        return declaration.getDescriptor()
+        return declaration.getMessage()
                           .getFieldList()
                           .indexOf(field);
     }
@@ -239,7 +239,7 @@ public class RejectionJavadoc {
      * @return the location for the path
      */
     private Location getLocation(LocationPath locationPath) {
-        for (Location location : declaration.getFileDescriptor()
+        for (Location location : declaration.getFile()
                                             .getSourceCodeInfo()
                                             .getLocationList()) {
             if (location.getPathList()
@@ -250,7 +250,7 @@ public class RejectionJavadoc {
 
         final String msg = format("The location with %s path should be present in \"%s\".",
                                   locationPath,
-                                  declaration.getFileDescriptor()
+                                  declaration.getFile()
                                              .getName());
         throw new IllegalStateException(msg);
     }
@@ -264,7 +264,7 @@ public class RejectionJavadoc {
     private Map<FieldDescriptorProto, String> getCommentedFields() {
         final Map<FieldDescriptorProto, String> commentedFields = Maps.newLinkedHashMap();
 
-        for (FieldDescriptorProto field : declaration.getDescriptor()
+        for (FieldDescriptorProto field : declaration.getMessage()
                                                      .getFieldList()) {
             final Optional<String> leadingComments = getFieldLeadingComments(field);
             if (leadingComments.isPresent()) {

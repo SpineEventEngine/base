@@ -48,13 +48,12 @@ public final class RejectionDeclaration extends AbstractMessageDeclaration {
     /**
      * Creates a new instance.
      *
-     * @param rejectionDescriptor {@link DescriptorProto} of rejection's proto message
-     * @param fileDescriptor      {@link FileDescriptorProto}, that contains the rejection
+     * @param message the declaration of the rejection message
+     * @param file    the file that contains the rejection
      */
-    RejectionDeclaration(DescriptorProto rejectionDescriptor,
-                         FileDescriptorProto fileDescriptor) {
-        super(rejectionDescriptor, fileDescriptor);
-        this.outerJavaClass = SimpleClassName.outerOf(fileDescriptor);
+    RejectionDeclaration(DescriptorProto message, FileDescriptorProto file) {
+        super(message, file);
+        this.outerJavaClass = SimpleClassName.outerOf(file);
     }
 
     /**

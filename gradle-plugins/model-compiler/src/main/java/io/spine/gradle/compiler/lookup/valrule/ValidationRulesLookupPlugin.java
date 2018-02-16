@@ -131,7 +131,7 @@ public class ValidationRulesLookupPlugin extends SpinePlugin {
         final Map<String, String> propsMap = newHashMap();
         for (MessageDeclaration declaration : ruleDeclarations) {
             final TypeName typeName = declaration.getTypeName();
-            final String ruleTargets = getUnknownOptionValue(declaration.getDescriptor(),
+            final String ruleTargets = getUnknownOptionValue(declaration.getMessage(),
                                                              VALIDATION_OF_FIELD_NUMBER);
             propsMap.put(typeName.value(), ruleTargets);
         }

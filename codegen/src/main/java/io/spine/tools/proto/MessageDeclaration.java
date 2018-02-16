@@ -88,7 +88,7 @@ public class MessageDeclaration extends AbstractMessageDeclaration {
      */
     public List<MessageDeclaration> getImmediateNested() {
         final ImmutableList.Builder<MessageDeclaration> result = ImmutableList.builder();
-        for (DescriptorProto nestedType : getDescriptor().getNestedTypeList()) {
+        for (DescriptorProto nestedType : getMessage().getNestedTypeList()) {
             final MessageDeclaration nestedDeclaration = forNested(nestedType);
             result.add(nestedDeclaration);
         }
@@ -105,7 +105,7 @@ public class MessageDeclaration extends AbstractMessageDeclaration {
 
         while (!deque.isEmpty()) {
             final MessageDeclaration nestedDeclaration = deque.pollFirst();
-            final DescriptorProto nestedDescriptor = nestedDeclaration.getDescriptor();
+            final DescriptorProto nestedDescriptor = nestedDeclaration.getMessage();
 
             if (predicate.apply(nestedDescriptor)) {
                 result.add(nestedDeclaration);
@@ -123,17 +123,17 @@ public class MessageDeclaration extends AbstractMessageDeclaration {
      * @return the nested message declaration
      */
     private MessageDeclaration forNested(DescriptorProto nestedMessage) {
-        final boolean isNestedForCurrentTarget = getDescriptor().getNestedTypeList()
-                                                                .contains(nestedMessage);
+        final boolean isNestedForCurrentTarget = getMessage().getNestedTypeList()
+                                                             .contains(nestedMessage);
         if (!isNestedForCurrentTarget) {
             final String errMsg = "Nested message `%s` was not found in `%s`.";
             throw newIllegalStateException(errMsg, nestedMessage.getName(),
-                                           getDescriptor().getName());
+                                           getMessage().getName());
         }
 
         final List<DescriptorProto> outerMessagesForNested = newLinkedList(outerMessages);
-        outerMessagesForNested.add(getDescriptor());
-        return new MessageDeclaration(outerMessagesForNested, nestedMessage, getFileDescriptor());
+        outerMessagesForNested.add(getMessage());
+        return new MessageDeclaration(outerMessagesForNested, nestedMessage, getFile());
     }
 
     /**
@@ -142,13 +142,13 @@ public class MessageDeclaration extends AbstractMessageDeclaration {
      * @return the type name
      */
     public TypeName getTypeName() {
-        final StringBuilder typeBuilder = new StringBuilder(getFileDescriptor().getPackage());
+        final StringBuilder typeBuilder = new StringBuilder(getFile().getPackage());
         typeBuilder.append(PROTO_TYPE_SEPARATOR);
         for (DescriptorProto outerMessage : outerMessages) {
             typeBuilder.append(outerMessage.getName())
                        .append(PROTO_TYPE_SEPARATOR);
         }
-        typeBuilder.append(getDescriptor().getName());
+        typeBuilder.append(getMessage().getName());
         final String value = typeBuilder.toString();
         return TypeName.of(value);
     }

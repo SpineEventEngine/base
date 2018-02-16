@@ -79,7 +79,7 @@ public class RejectionWriter {
                     Map<String, String> messageTypeMap) {
         this.declaration = metadata;
         this.outputDirectory = outputDirectory;
-        this.fieldTypeFactory = new FieldTypeFactory(metadata.getDescriptor(), messageTypeMap);
+        this.fieldTypeFactory = new FieldTypeFactory(metadata.getMessage(), messageTypeMap);
         this.javadoc = new RejectionJavadoc(metadata);
     }
 
@@ -194,10 +194,10 @@ public class RejectionWriter {
      */
     private Map<String, FieldType> fieldDeclarations() {
         log().trace("Reading all the field values from the descriptor: {}",
-                    declaration.getDescriptor());
+                    declaration.getMessage());
 
         final Map<String, FieldType> result = Maps.newLinkedHashMap();
-        for (FieldDescriptorProto field : declaration.getDescriptor()
+        for (FieldDescriptorProto field : declaration.getMessage()
                                                      .getFieldList()) {
             result.put(field.getName(), fieldTypeFactory.create(field));
         }
