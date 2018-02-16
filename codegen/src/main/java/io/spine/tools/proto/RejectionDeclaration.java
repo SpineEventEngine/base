@@ -43,7 +43,7 @@ public final class RejectionDeclaration extends AbstractMessageDeclaration {
     @VisibleForTesting
     static final String OUTER_CLASS_NAME_SUFFIX = "Rejections";
 
-    private final String outerClassName;
+    private final SimpleClassName outerJavaClass;
 
     /**
      * Creates a new instance.
@@ -54,8 +54,7 @@ public final class RejectionDeclaration extends AbstractMessageDeclaration {
     RejectionDeclaration(DescriptorProto rejectionDescriptor,
                          FileDescriptorProto fileDescriptor) {
         super(rejectionDescriptor, fileDescriptor);
-        this.outerClassName = SimpleClassName.outerOf(fileDescriptor)
-                                             .value();
+        this.outerJavaClass = SimpleClassName.outerOf(fileDescriptor);
     }
 
     /**
@@ -68,13 +67,13 @@ public final class RejectionDeclaration extends AbstractMessageDeclaration {
         return result;
     }
 
-    public String getOuterClassName() {
-        return outerClassName;
+    public SimpleClassName getOuterJavaClass() {
+        return outerJavaClass;
     }
 
     @Override
     public int hashCode() {
-        return 31 * super.hashCode() + Objects.hash(outerClassName);
+        return 31 * super.hashCode() + Objects.hash(outerJavaClass);
     }
 
     @Override
@@ -89,6 +88,6 @@ public final class RejectionDeclaration extends AbstractMessageDeclaration {
             return false;
         }
         final RejectionDeclaration other = (RejectionDeclaration) obj;
-        return Objects.equals(this.outerClassName, other.outerClassName);
+        return Objects.equals(this.outerJavaClass, other.outerJavaClass);
     }
 }

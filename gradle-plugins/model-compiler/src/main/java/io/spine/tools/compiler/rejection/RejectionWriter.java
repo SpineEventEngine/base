@@ -133,7 +133,7 @@ public class RejectionWriter {
 
     private String getSuperStatement() {
         final StringBuilder superStatement = new StringBuilder("super(");
-        superStatement.append(declaration.getOuterClassName())
+        superStatement.append(declaration.getOuterJavaClass())
                       .append('.')
                       .append(declaration.getSimpleJavaClassName())
                       .append(".newBuilder()");
@@ -156,14 +156,18 @@ public class RejectionWriter {
     private MethodSpec constructGetMessageThrown() {
         log().trace("Constructing getMessageThrown()");
 
-        final TypeName returnTypeName = ClassName.get(declaration.getOuterClassName(),
-                                                      declaration.getSimpleJavaClassName()
-                                                                 .toString());
+        final TypeName returnType =
+                ClassName.get(declaration.getJavaPackage()
+                                         .value(),
+                              declaration.getOuterJavaClass()
+                                         .value())
+                         .nestedClass(declaration.getSimpleJavaClassName()
+                                                 .value());
         return MethodSpec.methodBuilder("getMessageThrown")
                          .addAnnotation(Override.class)
                          .addModifiers(PUBLIC)
-                         .returns(returnTypeName)
-                         .addStatement("return (" + returnTypeName + ") super.getMessageThrown()")
+                         .returns(returnType)
+                         .addStatement("return (" + returnType + ") super.getMessageThrown()")
                          .build();
     }
 
