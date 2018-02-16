@@ -101,7 +101,8 @@ public class RejectionWriter {
                             .addMethod(constructGetMessageThrown())
                             .build();
             final JavaFile javaFile =
-                    JavaFile.builder(declaration.getJavaPackage(), rejection)
+                    JavaFile.builder(declaration.getJavaPackage()
+                                                .toString(), rejection)
                             .skipJavaLangImports(true)
                             .build();
             log.debug("Writing {}", className);

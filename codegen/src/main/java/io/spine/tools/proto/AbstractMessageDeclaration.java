@@ -22,6 +22,7 @@ package io.spine.tools.proto;
 
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
+import io.spine.tools.java.PackageName;
 
 import java.util.Objects;
 
@@ -42,10 +43,9 @@ public abstract class AbstractMessageDeclaration {
      */
     private final FileDescriptorProto fileDescriptor;
 
-    AbstractMessageDeclaration(DescriptorProto descriptor,
-                               FileDescriptorProto fileDescriptor) {
+    AbstractMessageDeclaration(DescriptorProto descriptor, FileDescriptorProto file) {
         this.descriptor = descriptor;
-        this.fileDescriptor = fileDescriptor;
+        this.fileDescriptor = file;
     }
 
     public DescriptorProto getDescriptor() {
@@ -56,9 +56,8 @@ public abstract class AbstractMessageDeclaration {
         return descriptor.getName();
     }
 
-    public String getJavaPackage() {
-        return fileDescriptor.getOptions()
-                             .getJavaPackage();
+    public PackageName getJavaPackage() {
+        return PackageName.resolve(fileDescriptor);
     }
 
     public String getClassName() {

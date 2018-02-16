@@ -54,11 +54,11 @@ public class MessageDeclaration extends AbstractMessageDeclaration {
      */
     private final List<DescriptorProto> outerMessages;
 
-    private MessageDeclaration(DescriptorProto descriptor,
-                               List<DescriptorProto> outerMessages,
-                               FileDescriptorProto fileDescriptor) {
-        super(descriptor, fileDescriptor);
-        this.outerMessages = outerMessages;
+    private MessageDeclaration(List<DescriptorProto> outerTypes,
+                               DescriptorProto declaration,
+                               FileDescriptorProto file) {
+        super(declaration, file);
+        this.outerMessages = outerTypes;
     }
 
     /**
@@ -78,7 +78,7 @@ public class MessageDeclaration extends AbstractMessageDeclaration {
         }
 
         final List<DescriptorProto> outerMessages = Collections.emptyList();
-        return new MessageDeclaration(message, outerMessages, file);
+        return new MessageDeclaration(outerMessages, message, file);
     }
 
     /**
@@ -133,7 +133,7 @@ public class MessageDeclaration extends AbstractMessageDeclaration {
 
         final List<DescriptorProto> outerMessagesForNested = newLinkedList(outerMessages);
         outerMessagesForNested.add(getDescriptor());
-        return new MessageDeclaration(nestedMessage, outerMessagesForNested, getFileDescriptor());
+        return new MessageDeclaration(outerMessagesForNested, nestedMessage, getFileDescriptor());
     }
 
     /**
@@ -142,8 +142,8 @@ public class MessageDeclaration extends AbstractMessageDeclaration {
      * @return the type name
      */
     public TypeName getTypeName() {
-        final String packagePrefix = getFileDescriptor().getPackage() + PROTO_TYPE_SEPARATOR;
-        final StringBuilder typeBuilder = new StringBuilder(packagePrefix);
+        final StringBuilder typeBuilder = new StringBuilder(getFileDescriptor().getPackage());
+        typeBuilder.append(PROTO_TYPE_SEPARATOR);
         for (DescriptorProto outerMessage : outerMessages) {
             typeBuilder.append(outerMessage.getName())
                        .append(PROTO_TYPE_SEPARATOR);
