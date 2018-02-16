@@ -30,6 +30,7 @@ import com.squareup.javapoet.TypeSpec;
 import io.spine.base.ThrowableMessage;
 import io.spine.gradle.compiler.message.fieldtype.FieldType;
 import io.spine.gradle.compiler.message.fieldtype.FieldTypeFactory;
+import io.spine.tools.proto.FieldName;
 import io.spine.tools.proto.RejectionDeclaration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -97,13 +98,14 @@ public class RejectionWriter {
                             .addAnnotation(generatedBySpineModelCompiler())
                             .addModifiers(PUBLIC)
                             .superclass(ThrowableMessage.class)
-                            .addField(constructSerialVersionUID())
-                            .addMethod(constructConstructor())
-                            .addMethod(constructGetMessageThrown())
+                            .addField(serialVersionUID())
+                            .addMethod(constructor())
+                            .addMethod(getMessageThrown())
                             .build();
             final JavaFile javaFile =
                     JavaFile.builder(declaration.getJavaPackage()
-                                                .toString(), rejection)
+                                                .toString(),
+                                     rejection)
                             .skipJavaLangImports(true)
                             .build();
             log.debug("Writing {}", className);
@@ -114,38 +116,39 @@ public class RejectionWriter {
         }
     }
 
-    private MethodSpec constructConstructor() {
+    private MethodSpec constructor() {
         log().trace("Constructing the constructor of type '{}'", declaration.getDescriptor()
                                                                             .getName());
         final MethodSpec.Builder builder = constructorBuilder()
                 .addJavadoc(javadoc.forConstructor())
                 .addModifiers(PUBLIC);
-        for (Map.Entry<String, FieldType> field : readFieldValues().entrySet()) {
-            final TypeName parameterTypeName = field.getValue()
-                                                    .getTypeName();
-            final String parameterName = getJavaFieldName(field.getKey());
-            builder.addParameter(parameterTypeName, parameterName);
+        for (Map.Entry<String, FieldType> field : fieldDeclarations().entrySet()) {
+            final TypeName parameterType = field.getValue()
+                                                .getTypeName();
+            final String parameterName = FieldName.of(field.getKey())
+                                                  .javaCase();
+            builder.addParameter(parameterType, parameterName);
         }
 
-        return builder.addStatement(getSuperStatement())
+        return builder.addStatement(superStatement())
                       .build();
     }
 
-    private String getSuperStatement() {
+    private String superStatement() {
         final StringBuilder superStatement = new StringBuilder("super(");
         superStatement.append(declaration.getOuterJavaClass())
                       .append('.')
                       .append(declaration.getSimpleJavaClassName())
                       .append(".newBuilder()");
 
-        for (Map.Entry<String, FieldType> field : readFieldValues().entrySet()) {
-            final String upperCaseName = getJavaFieldCapitalizedName(field.getKey());
+        for (Map.Entry<String, FieldType> field : fieldDeclarations().entrySet()) {
+            final FieldName fieldName = FieldName.of(field.getKey());
             superStatement.append('.')
                           .append(field.getValue()
                                        .getSetterPrefix())
-                          .append(upperCaseName)
+                          .append(fieldName.toCamelCase())
                           .append('(')
-                          .append(getJavaFieldName(field.getKey()))
+                          .append(fieldName.javaCase())
                           .append(')');
         }
         superStatement.append(".build())");
@@ -153,7 +156,7 @@ public class RejectionWriter {
         return superStatement.toString();
     }
 
-    private MethodSpec constructGetMessageThrown() {
+    private MethodSpec getMessageThrown() {
         log().trace("Constructing getMessageThrown()");
 
         final TypeName returnType =
@@ -171,41 +174,10 @@ public class RejectionWriter {
                          .build();
     }
 
-    private static FieldSpec constructSerialVersionUID() {
+    private static FieldSpec serialVersionUID() {
         return FieldSpec.builder(long.class, "serialVersionUID", PRIVATE, STATIC, FINAL)
                         .initializer("0L")
                         .build();
-    }
-
-    /**
-     * Transforms Protobuf-style field name into corresponding Java-style field name.
-     *
-     * <p>For example, seat_assignment_id -> seatAssignmentId
-     *
-     * @param protoFieldName Protobuf field name.
-     * @return a field name
-     */
-    private static String getJavaFieldName(String protoFieldName) {
-        final String[] words = protoFieldName.split("_");
-        final StringBuilder builder = new StringBuilder(words[0]);
-        for (int i = 1; i < words.length; i++) {
-            final String word = words[i];
-            builder.append(Character.toUpperCase(word.charAt(0)))
-                   .append(word.substring(1));
-        }
-        return builder.toString();
-    }
-
-    /**
-     * Works like {@link #getJavaFieldName(String)}, but
-     * additionally capitalizes the first letter.
-     *
-     * @param protoFieldName Protobuf field name.
-     * @return a field name
-     */
-    private static String getJavaFieldCapitalizedName(String protoFieldName) {
-        final String javaFieldName = getJavaFieldName(protoFieldName);
-        return Character.toUpperCase(javaFieldName.charAt(0)) + javaFieldName.substring(1);
     }
 
     /**
@@ -213,7 +185,7 @@ public class RejectionWriter {
      *
      * @return name-to-{@link FieldType} map
      */
-    private Map<String, FieldType> readFieldValues() {
+    private Map<String, FieldType> fieldDeclarations() {
         log().trace("Reading all the field values from the descriptor: {}",
                     declaration.getDescriptor());
 
