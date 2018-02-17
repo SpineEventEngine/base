@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -23,7 +23,7 @@ package io.spine.gradle.compiler.validate;
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.DescriptorProtos;
 import com.squareup.javapoet.ClassName;
-import io.spine.gradle.compiler.message.MessageTypeCache;
+import io.spine.tools.compiler.MessageTypeCache;
 import org.junit.Test;
 
 import static io.spine.gradle.compiler.validate.ClassNames.getClassName;

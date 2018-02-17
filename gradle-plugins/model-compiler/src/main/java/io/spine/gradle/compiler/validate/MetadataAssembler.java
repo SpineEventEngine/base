@@ -23,7 +23,7 @@ package io.spine.gradle.compiler.validate;
 import com.google.common.base.Predicate;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
-import io.spine.gradle.compiler.message.MessageTypeCache;
+import io.spine.tools.compiler.MessageTypeCache;
 import io.spine.tools.proto.FileDescriptors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -20,7 +20,7 @@
 package io.spine.tools.gradle.compiler.rejection;
 
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
-import io.spine.gradle.compiler.message.MessageTypeCache;
+import io.spine.tools.compiler.MessageTypeCache;
 import io.spine.tools.compiler.rejection.RejectionWriter;
 import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.SpinePlugin;

@@ -23,7 +23,7 @@ package io.spine.gradle.compiler.validate;
 import com.google.common.base.Optional;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.squareup.javapoet.ClassName;
-import io.spine.gradle.compiler.message.MessageTypeCache;
+import io.spine.tools.compiler.MessageTypeCache;
 
 import java.util.Collection;
 

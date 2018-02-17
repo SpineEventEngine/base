@@ -24,10 +24,10 @@ import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
-import io.spine.gradle.compiler.message.MessageTypeCache;
 import io.spine.gradle.compiler.message.fieldtype.FieldType;
 import io.spine.gradle.compiler.message.fieldtype.FieldTypeFactory;
 import io.spine.protobuf.Messages;
+import io.spine.tools.compiler.MessageTypeCache;
 
 import javax.lang.model.element.Modifier;
 import java.util.Collection;
