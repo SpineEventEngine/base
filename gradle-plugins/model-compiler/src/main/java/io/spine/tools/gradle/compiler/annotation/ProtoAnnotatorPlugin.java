@@ -60,7 +60,6 @@ import static io.spine.tools.gradle.compiler.Extension.getMainGenProtoDir;
 import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSetPath;
 import static io.spine.tools.gradle.compiler.Extension.getTestGenGrpcDir;
 import static io.spine.tools.gradle.compiler.Extension.getTestGenProtoDir;
-import static io.spine.tools.proto.FileDescriptors.isNotGoogleProto;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -228,7 +227,7 @@ public class ProtoAnnotatorPlugin extends SpinePlugin {
             @Override
             public void execute(Task task) {
                 final Collection<FileDescriptorProto> descriptors =
-                        FileDescriptors.parseAndFilter(descriptorSetPath, isNotGoogleProto());
+                        FileDescriptors.parseSkipStandard(descriptorSetPath);
                 final AnnotatorFactory factory =
                         new AnnotatorFactory(descriptors, generatedProtoDir, generatedGrpcDir);
 

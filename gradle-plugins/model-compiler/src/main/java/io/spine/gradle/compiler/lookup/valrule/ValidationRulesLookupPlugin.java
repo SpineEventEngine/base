@@ -53,7 +53,6 @@ import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSetPath;
 import static io.spine.tools.gradle.compiler.Extension.getMainTargetGenResourcesDir;
 import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSetPath;
 import static io.spine.tools.gradle.compiler.Extension.getTestTargetGenResourcesDir;
-import static io.spine.tools.proto.FileDescriptors.isNotGoogleProto;
 import static io.spine.tools.proto.SourceFile.allThat;
 import static io.spine.validate.rules.ValidationRules.getValRulesPropsFileName;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -120,7 +119,7 @@ public class ValidationRulesLookupPlugin extends SpinePlugin {
         log.debug("Validation rules lookup started.");
 
         final List<FileDescriptorProto> files =
-                FileDescriptors.parseAndFilter(descriptorSetPath, isNotGoogleProto());
+                FileDescriptors.parseSkipStandard(descriptorSetPath);
         final List<MessageDeclaration> declarations = allThat(files, new IsValidationRule());
         writeProperties(targetGeneratedResourcesDir, declarations);
         log.debug("Validation rules lookup complete.");

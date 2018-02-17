@@ -19,6 +19,7 @@
  */
 package io.spine.tools.proto;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableList;
@@ -64,6 +65,14 @@ public class FileDescriptors {
     }
 
     /**
+     * Obtains the list of files from the passed descriptor set file, skipping files provided
+     * by Google Protobuf.
+     */
+    public static List<FileDescriptorProto> parseSkipStandard(String descriptorSetFile) {
+        return parseAndFilter(descriptorSetFile, isNotGoogleProto());
+    }
+
+    /**
      * Returns descriptors of `.proto` files described in the descriptor set file
      * which match the filter predicate.
      *
@@ -74,6 +83,7 @@ public class FileDescriptors {
      *         a filter predicate to apply to the files
      * @return a list of descriptors
      */
+    @VisibleForTesting
     public static List<FileDescriptorProto> parseAndFilter(String descriptorSetFile,
                                                            Predicate<FileDescriptorProto> filter) {
         final File descriptorsFile = new File(descriptorSetFile);
@@ -117,7 +127,7 @@ public class FileDescriptors {
      * Obtains the predicate that filters out file descriptors for types with {@code "google"}
      * in the package name.
      */
-    public static Predicate<FileDescriptorProto> isNotGoogleProto() {
+    private static Predicate<FileDescriptorProto> isNotGoogleProto() {
         return IS_NOT_GOOGLE;
     }
 

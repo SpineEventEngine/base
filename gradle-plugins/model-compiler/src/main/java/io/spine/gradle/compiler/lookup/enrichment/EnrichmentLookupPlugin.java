@@ -44,7 +44,6 @@ import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSetPath;
 import static io.spine.tools.gradle.compiler.Extension.getMainTargetGenResourcesDir;
 import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSetPath;
 import static io.spine.tools.gradle.compiler.Extension.getTestTargetGenResourcesDir;
-import static io.spine.tools.proto.FileDescriptors.isNotGoogleProto;
 
 /**
  * Finds event enrichment Protobuf definitions and creates a {@code .properties} file,
@@ -117,7 +116,7 @@ public class EnrichmentLookupPlugin extends SpinePlugin {
 
         final Map<String, String> propsMap = newHashMap();
         final Collection<FileDescriptorProto> files =
-                FileDescriptors.parseAndFilter(descriptorSetPath, isNotGoogleProto());
+                FileDescriptors.parseSkipStandard(descriptorSetPath);
         for (FileDescriptorProto file : files) {
             final Map<String, String> enrichments = new EnrichmentsFinder(file).findEnrichments();
             propsMap.putAll(enrichments);
