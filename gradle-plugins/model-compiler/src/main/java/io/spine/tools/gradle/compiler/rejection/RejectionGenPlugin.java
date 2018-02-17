@@ -104,7 +104,7 @@ public class RejectionGenPlugin extends SpinePlugin {
                 final String testFile = getTestDescriptorSetPath(project);
                 final String targetFolder = getTargetTestGenRejectionsRootDir(project);
 
-                generateTestRejections(mainFile, targetFolder, testFile);
+                generateTestRejections(mainFile, testFile, targetFolder);
             }
         };
 
@@ -120,15 +120,36 @@ public class RejectionGenPlugin extends SpinePlugin {
     }
 
     private void generateRejections(String mainFile, String targetFolder) {
-        log().debug("Generating rejections from {}", mainFile);
+        final Logger log = log();
+        final File setFile = new File(mainFile);
+        if (!setFile.exists()) {
+            logMissingDescriptorSetFile(log, setFile);
+            return;
+        }
+
+        log.debug("Generating rejections from {}", mainFile);
         final List<FileDescriptorProto> mainFiles = FileDescriptors.parse(mainFile);
         collectAllMessageTypes(mainFiles);
         final List<RejectionsFile> rejectionFiles = Rejections.collect(mainFiles);
         doGenerate(rejectionFiles, targetFolder);
     }
 
-    private void generateTestRejections(String mainFile, String targetFolder, String testFile) {
-        log().debug("Generating test rejections from {}", testFile);
+    private void generateTestRejections(String mainFile, String testFile, String targetFolder) {
+        final Logger log = log();
+        final File setFile = new File(mainFile);
+        if (!setFile.exists()) {
+            logMissingDescriptorSetFile(log, setFile);
+            return;
+        }
+
+        final File testSetFile = new File(testFile);
+        if (!testSetFile.exists()) {
+            logMissingDescriptorSetFile(log, testSetFile);
+            return;
+        }
+
+        log.debug("Generating test rejections from {}", testFile);
+
         final List<FileDescriptorProto> mainFiles = FileDescriptors.parse(mainFile);
         collectAllMessageTypes(mainFiles);
 

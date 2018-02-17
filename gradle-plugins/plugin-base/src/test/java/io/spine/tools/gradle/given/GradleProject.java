@@ -96,9 +96,10 @@ public class GradleProject {
     }
 
     private GradleRunner prepareRun(TaskName taskName) {
+        final String task = taskName.getValue();
         final String[] args = debug
-                ? new String[]{taskName.getValue(), STACKTRACE_CLI_OPTION, DEBUG_CLI_OPTION}
-                : new String[]{taskName.getValue(), STACKTRACE_CLI_OPTION};
+                ? new String[]{task, STACKTRACE_CLI_OPTION, DEBUG_CLI_OPTION}
+                : new String[]{task, STACKTRACE_CLI_OPTION};
         return gradleRunner.withArguments(args);
     }
 

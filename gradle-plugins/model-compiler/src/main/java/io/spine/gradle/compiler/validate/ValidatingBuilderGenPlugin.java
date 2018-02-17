@@ -187,20 +187,31 @@ public class ValidatingBuilderGenPlugin extends SpinePlugin {
             if (!isGenerateValidatingBuilders(project)) {
                 return;
             }
-            log().debug("Generating the validating builders from {}.", descriptorPath);
+            final File setFile = new File(descriptorPath);
+            if (!setFile.exists()) {
+                logMissingDescriptorSetFile(log(), setFile);
+            } else {
+                final Indent indent = getIndent(project);
+                processDescriptorSetFile(setFile, indent);
+            }
+        }
 
-            final Indent indent = getIndent(project);
+        private void processDescriptorSetFile(File setFile, Indent indent) {
+            final Logger log = log();
+            log.debug("Generating the validating builders from {}.", setFile);
+
             final boolean classpathGenEnabled =
                     isGenerateValidatingBuildersFromClasspath(project);
 
-            final MetadataAssembler assembler = new MetadataAssembler(descriptorPath);
+            final MetadataAssembler assembler = new MetadataAssembler(setFile.getPath());
             final Set<VBMetadata> metadataItems = assembler.assemble();
 
             final MessageTypeCache messageTypeCache = assembler.getAssembledMessageTypeCache();
             final ValidatingBuilderWriter writer =
                     new ValidatingBuilderWriter(targetDirPath, indent, messageTypeCache);
 
-            final Iterable<VBMetadata> metadataToWrite = filter(classpathGenEnabled, metadataItems);
+            final Iterable<VBMetadata> metadataToWrite = filter(classpathGenEnabled,
+                                                                metadataItems);
 
             for (VBMetadata metadata : metadataToWrite) {
                 try {
@@ -208,11 +219,11 @@ public class ValidatingBuilderGenPlugin extends SpinePlugin {
                 } catch (RuntimeException e) {
                     final String message =
                             "Cannot generate the validating builder for " + metadata + ". ";
-                    log().warn(message);
-                    log().debug(message, e);
+                    log.warn(message);
+                    log.debug(message, e);
                 }
             }
-            log().debug("The validating builder generation is finished.");
+            log.debug("The validating builder generation is finished.");
         }
 
         private Iterable<VBMetadata> filter(boolean classpathGenEnabled,

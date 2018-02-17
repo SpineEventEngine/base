@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -82,12 +82,13 @@ class MetadataAssembler {
      * @return the {@code Set} of the assembled metadata for the validating builders.
      */
     Set<VBMetadata> assemble() {
-        log().debug("Assembling the metadata for all validating builders.");
+        final Logger log = log();
+        log.debug("Assembling the metadata for all validating builders.");
         final Set<VBMetadata> result = newHashSet();
         final Set<FileDescriptorProto> fileDescriptors = getProtoFileDescriptors(descriptorPath);
         final Set<VBMetadata> metadataItems = obtainFileMetadata(fileDescriptors);
         result.addAll(metadataItems);
-        log().debug("The metadata is obtained, {} validating builder(s) will be generated.",
+        log.debug("The metadata is obtained, {} validating builder(s) will be generated.",
                     result.size());
         return result;
     }
@@ -136,7 +137,8 @@ class MetadataAssembler {
     }
 
     private Set<FileDescriptorProto> getProtoFileDescriptors(String descFilePath) {
-        log().trace("Obtaining the file descriptors by {} path.", descFilePath);
+        final Logger log = log();
+        log.debug("Obtaining the file descriptors by {} path.", descFilePath);
         final Set<FileDescriptorProto> result = newHashSet();
         final Collection<FileDescriptorProto> allDescriptors =
                 FileDescriptors.parse(descFilePath);
@@ -145,10 +147,10 @@ class MetadataAssembler {
             cacheFileDescriptors(fileDescriptor);
             messageTypeCache.cacheTypes(fileDescriptor);
 
-            log().info("Found Protobuf file: {}", fileDescriptor.getName());
+            log.debug("Found Protobuf file: {}", fileDescriptor.getName());
             result.add(fileDescriptor);
         }
-        log().trace("Found Message in files: {}", result);
+        log.debug("Found Message in files: {}", result);
         return result;
     }
 

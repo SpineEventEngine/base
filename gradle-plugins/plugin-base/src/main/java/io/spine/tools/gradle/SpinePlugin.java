@@ -25,6 +25,8 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.slf4j.Logger;
 
+import java.io.File;
+
 /**
  * Abstract base for Spine plugins.
  *
@@ -33,6 +35,17 @@ import org.slf4j.Logger;
  * @author Alex Tymchenko
  */
 public abstract class SpinePlugin implements Plugin<Project> {
+
+    @SuppressWarnings("HardcodedLineSeparator") // handled by Slf4J
+    protected static void logMissingDescriptorSetFile(Logger log, File setFile) {
+        log.warn(
+            "Missing descriptor set file {}.\n" +
+            "Please enable descriptor set generation. See: " +
+            "https://github.com/google/protobuf-gradle-plugin/blob/master/README.md" +
+                "#generate-descriptor-set-files",
+            setFile.getPath()
+        );
+    }
 
     /**
      * Create a new instance of {@link GradleTask.Builder}.

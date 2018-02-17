@@ -17,23 +17,19 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.gradle.compiler.lookup.enrichment;
+package io.spine.tools.gradle.compiler.enrichment;
 
-import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
+import io.spine.tools.compiler.enrichment.EnrichmentFinder;
 import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.SpinePlugin;
-import io.spine.tools.properties.PropertiesWriter;
-import io.spine.tools.proto.FileDescriptors;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collection;
-import java.util.Map;
+import java.io.File;
 
-import static com.google.common.collect.Maps.newHashMap;
 import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
 import static io.spine.tools.gradle.TaskName.COMPILE_TEST_JAVA;
 import static io.spine.tools.gradle.TaskName.FIND_ENRICHMENTS;
@@ -59,13 +55,6 @@ import static io.spine.tools.gradle.compiler.Extension.getTestTargetGenResources
  * @author Alex Tymchenko
  */
 public class EnrichmentLookupPlugin extends SpinePlugin {
-    /**
-     * The name of the file to populate.
-     *
-     * <p>NOTE: the filename is referenced by `core-java` as well,
-     * make sure to update `core-java` project upon changing this value.
-     */
-    private static final String PROPS_FILE_NAME = "enrichments.properties";
 
     @Override
     public void apply(final Project project) {
@@ -93,8 +82,9 @@ public class EnrichmentLookupPlugin extends SpinePlugin {
         return new Action<Task>() {
             @Override
             public void execute(Task task) {
-                findEnrichmentsAndWriteProps(getTestTargetGenResourcesDir(project),
-                                             getTestDescriptorSetPath(project));
+                findEnrichmentsAndWriteProps(getTestDescriptorSetPath(project),
+                                             getTestTargetGenResourcesDir(project)
+                );
             }
         };
     }
@@ -104,35 +94,28 @@ public class EnrichmentLookupPlugin extends SpinePlugin {
         return new Action<Task>() {
             @Override
             public void execute(Task task) {
-                findEnrichmentsAndWriteProps(getMainTargetGenResourcesDir(project),
-                                             getMainDescriptorSetPath(project));
+                findEnrichmentsAndWriteProps(getMainDescriptorSetPath(project),
+                                             getMainTargetGenResourcesDir(project)
+                );
             }
         };
     }
 
-    private static void findEnrichmentsAndWriteProps(String targetGeneratedResourcesDir,
-                                                     String descriptorSetPath) {
-        log().debug("Enrichment lookup started");
+    private static void findEnrichmentsAndWriteProps(String descriptorSetFile, String targetDir) {
+        final Logger log = log();
+        log.debug("Enrichment lookup started");
 
-        final Map<String, String> propsMap = newHashMap();
-        final Collection<FileDescriptorProto> files =
-                FileDescriptors.parseSkipStandard(descriptorSetPath);
-        for (FileDescriptorProto file : files) {
-            final Map<String, String> enrichments = new EnrichmentsFinder(file).findEnrichments();
-            propsMap.putAll(enrichments);
-        }
-        if (propsMap.isEmpty()) {
-            log().debug("Enrichment lookup complete. No enrichments found.");
-            return;
+        final File file = new File(descriptorSetFile);
+
+        if (file.exists()) {
+            if (EnrichmentFinder.processDescriptorSetFile(file, targetDir)) {
+                return;
+            }
+        } else {
+            logMissingDescriptorSetFile(log, file);
         }
 
-        log().trace("Writing the enrichment description to {}/{}",
-                    targetGeneratedResourcesDir, PROPS_FILE_NAME);
-        final PropertiesWriter writer =
-                new PropertiesWriter(targetGeneratedResourcesDir, PROPS_FILE_NAME);
-        writer.write(propsMap);
-
-        log().debug("Enrichment lookup complete");
+        log.debug("Enrichment lookup complete");
     }
 
     private static Logger log() {

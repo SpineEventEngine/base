@@ -33,6 +33,7 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.slf4j.Logger;
 
+import java.io.File;
 import java.util.Collection;
 
 import static io.spine.option.OptionsProto.beta;
@@ -211,6 +212,7 @@ public class ProtoAnnotatorPlugin extends SpinePlugin {
     private static Action<Task> newAction(final String descriptorSetPath,
                                           final Project project,
                                           final boolean isTestTask) {
+
         final String generatedProtoDir;
         final String generatedGrpcDir;
 
@@ -226,42 +228,53 @@ public class ProtoAnnotatorPlugin extends SpinePlugin {
         return new Action<Task>() {
             @Override
             public void execute(Task task) {
-                final Collection<FileDescriptorProto> descriptors =
-                        FileDescriptors.parseSkipStandard(descriptorSetPath);
-                final AnnotatorFactory factory =
-                        new AnnotatorFactory(descriptors, generatedProtoDir, generatedGrpcDir);
-
-                factory.createFileAnnotator(Experimental.class, experimentalAll)
-                       .annotate();
-                factory.createMessageAnnotator(Experimental.class, experimentalType)
-                       .annotate();
-                factory.createFieldAnnotator(Experimental.class, experimental)
-                       .annotate();
-
-                factory.createFileAnnotator(Beta.class, betaAll)
-                       .annotate();
-                factory.createMessageAnnotator(Beta.class, betaType)
-                       .annotate();
-                factory.createFieldAnnotator(Beta.class, beta)
-                       .annotate();
-
-                factory.createFileAnnotator(SPI.class, sPIAll)
-                       .annotate();
-                factory.createMessageAnnotator(SPI.class, sPIType)
-                       .annotate();
-                factory.createServiceAnnotator(SPI.class, sPIService)
-                       .annotate();
-                factory.createFieldAnnotator(SPI.class, sPI)
-                       .annotate();
-
-                factory.createFileAnnotator(Internal.class, internalAll)
-                       .annotate();
-                factory.createMessageAnnotator(Internal.class, internalType)
-                       .annotate();
-                factory.createFieldAnnotator(Internal.class, internal)
-                       .annotate();
+                final File setFile = new File(descriptorSetPath);
+                if (!setFile.exists()) {
+                    logMissingDescriptorSetFile(log(), setFile);
+                } else {
+                    processDescriptorSetFile(setFile, generatedProtoDir, generatedGrpcDir);
+                }
             }
         };
+    }
+
+    private static void processDescriptorSetFile(File setFile,
+                                                 String generatedProtoDir,
+                                                 String generatedGrpcDir) {
+        final Collection<FileDescriptorProto> descriptors =
+                FileDescriptors.parseSkipStandard(setFile.getPath());
+        final AnnotatorFactory factory =
+                new AnnotatorFactory(descriptors, generatedProtoDir, generatedGrpcDir);
+
+        factory.createFileAnnotator(Experimental.class, experimentalAll)
+               .annotate();
+        factory.createMessageAnnotator(Experimental.class, experimentalType)
+               .annotate();
+        factory.createFieldAnnotator(Experimental.class, experimental)
+               .annotate();
+
+        factory.createFileAnnotator(Beta.class, betaAll)
+               .annotate();
+        factory.createMessageAnnotator(Beta.class, betaType)
+               .annotate();
+        factory.createFieldAnnotator(Beta.class, beta)
+               .annotate();
+
+        factory.createFileAnnotator(SPI.class, sPIAll)
+               .annotate();
+        factory.createMessageAnnotator(SPI.class, sPIType)
+               .annotate();
+        factory.createServiceAnnotator(SPI.class, sPIService)
+               .annotate();
+        factory.createFieldAnnotator(SPI.class, sPI)
+               .annotate();
+
+        factory.createFileAnnotator(Internal.class, internalAll)
+               .annotate();
+        factory.createMessageAnnotator(Internal.class, internalType)
+               .annotate();
+        factory.createFieldAnnotator(Internal.class, internal)
+               .annotate();
     }
 
     private static Logger log() {

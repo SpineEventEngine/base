@@ -38,6 +38,7 @@ import java.util.List;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Lists.newLinkedList;
 import static io.spine.tools.gradle.compiler.ModelCompilerPlugin.SPINE_MODEL_COMPILER_EXTENSION_NAME;
+import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
  * A configuration for the {@link ModelCompilerPlugin}.
@@ -329,9 +330,12 @@ public class Extension {
     private static Optional<String> spineDir(Project project) {
         final File projectDir;
         try {
-            projectDir = project.getProjectDir().getCanonicalFile();
+            projectDir = project.getProjectDir()
+                                .getCanonicalFile();
         } catch (IOException e) {
-            throw new IllegalStateException("Project directory is invalid!", e);
+            throw newIllegalStateException(
+                    e, "Project directory %s is invalid!", project.getProjectDir()
+            );
         }
         final Path projectPath = projectDir.toPath();
         final Path spinePath = projectPath.resolve(SPINE_BUILD_ARTIFACT_STORAGE_DIR);

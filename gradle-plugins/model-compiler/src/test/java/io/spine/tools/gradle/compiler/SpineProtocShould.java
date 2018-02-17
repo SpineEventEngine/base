@@ -22,6 +22,7 @@ package io.spine.tools.gradle.compiler;
 
 import io.spine.tools.gradle.given.GradleProject;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -54,6 +55,10 @@ public class SpineProtocShould {
                                .build();
     }
 
+    @Ignore(
+        "Turned off because it tests the side effect. " +
+        "In a project which does not have descriptor set file the directory should not be created."
+    )
     @Test
     public void create_spine_directory() {
         project.executeTask(BUILD);

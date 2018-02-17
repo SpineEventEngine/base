@@ -26,7 +26,6 @@ import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.SpinePlugin;
 import io.spine.tools.properties.PropertiesWriter;
-import io.spine.tools.proto.FileDescriptors;
 import io.spine.tools.proto.MessageDeclaration;
 import io.spine.type.TypeName;
 import org.gradle.api.Action;
@@ -35,6 +34,7 @@ import org.gradle.api.Task;
 import org.slf4j.Logger;
 
 import javax.annotation.Nullable;
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -53,6 +53,7 @@ import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSetPath;
 import static io.spine.tools.gradle.compiler.Extension.getMainTargetGenResourcesDir;
 import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSetPath;
 import static io.spine.tools.gradle.compiler.Extension.getTestTargetGenResourcesDir;
+import static io.spine.tools.proto.FileDescriptors.parseSkipStandard;
 import static io.spine.tools.proto.SourceFile.allThat;
 import static io.spine.validate.rules.ValidationRules.getValRulesPropsFileName;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -96,8 +97,9 @@ public class ValidationRulesLookupPlugin extends SpinePlugin {
         return new Action<Task>() {
             @Override
             public void execute(Task task) {
-                findValidationRulesAndWriteProps(getMainTargetGenResourcesDir(project),
-                                                 getMainDescriptorSetPath(project));
+                processDescriptorSetFile(getMainDescriptorSetPath(project),
+                                         getMainTargetGenResourcesDir(project)
+                );
             }
         };
     }
@@ -107,26 +109,34 @@ public class ValidationRulesLookupPlugin extends SpinePlugin {
         return new Action<Task>() {
             @Override
             public void execute(Task task) {
-                findValidationRulesAndWriteProps(getTestTargetGenResourcesDir(project),
-                                                 getTestDescriptorSetPath(project));
+                processDescriptorSetFile(getTestDescriptorSetPath(project),
+                                         getTestTargetGenResourcesDir(project)
+                );
             }
         };
     }
 
-    private static void findValidationRulesAndWriteProps(String targetGeneratedResourcesDir,
-                                                         String descriptorSetPath) {
+    private static void processDescriptorSetFile(String descriptorSetFile, String targetDir) {
         final Logger log = log();
-        log.debug("Validation rules lookup started.");
+        final File setFile = new File(descriptorSetFile);
+        if (!setFile.exists()) {
+            logMissingDescriptorSetFile(log, setFile);
+            return;
+        }
 
-        final List<FileDescriptorProto> files =
-                FileDescriptors.parseSkipStandard(descriptorSetPath);
-        final List<MessageDeclaration> declarations = allThat(files, new IsValidationRule());
-        writeProperties(targetGeneratedResourcesDir, declarations);
+        log.debug("Validation rules lookup started.");
+        findRulesAndWriteProperties(setFile, targetDir);
         log.debug("Validation rules lookup complete.");
     }
 
-    private static void writeProperties(String targetGeneratedResourcesDir,
-                                        Iterable<MessageDeclaration> ruleDeclarations) {
+    private static void findRulesAndWriteProperties(File setFile, String targetDir) {
+        final List<FileDescriptorProto> files = parseSkipStandard(setFile.getPath());
+        final List<MessageDeclaration> declarations = allThat(files, new IsValidationRule());
+        writeProperties(declarations, targetDir);
+    }
+
+    private static void writeProperties(Iterable<MessageDeclaration> ruleDeclarations,
+                                        String targetDir) {
         final Map<String, String> propsMap = newHashMap();
         for (MessageDeclaration declaration : ruleDeclarations) {
             final TypeName typeName = declaration.getTypeName();
@@ -136,9 +146,8 @@ public class ValidationRulesLookupPlugin extends SpinePlugin {
         }
 
         log().trace("Writing the validation rules description to {}/{}.",
-                    targetGeneratedResourcesDir, getValRulesPropsFileName());
-        final PropertiesWriter writer = new PropertiesWriter(targetGeneratedResourcesDir,
-                                                             getValRulesPropsFileName());
+                    targetDir, getValRulesPropsFileName());
+        final PropertiesWriter writer = new PropertiesWriter(targetDir, getValRulesPropsFileName());
         writer.write(propsMap);
     }
 

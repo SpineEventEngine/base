@@ -34,9 +34,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Exceptions.newIllegalStateException;
-import static java.util.Collections.emptyList;
 
 /**
  * A utility class which allows to obtain Protobuf file descriptors.
@@ -87,10 +87,7 @@ public class FileDescriptors {
     public static List<FileDescriptorProto> parseAndFilter(String descriptorSetFile,
                                                            Predicate<FileDescriptorProto> filter) {
         final File descriptorsFile = new File(descriptorSetFile);
-        if (!descriptorsFile.exists()) {
-            warnOnEnablingDescriptorSetGeneration();
-            return emptyList();
-        }
+        checkArgument(descriptorsFile.exists(), "File %s does not exist", descriptorSetFile);
 
         final Logger log = log();
         if (log.isTraceEnabled()) {
@@ -116,11 +113,6 @@ public class FileDescriptors {
         final ImmutableList<FileDescriptorProto> result = files.build();
         log.trace("Found {} files: {}", result.size(), files);
         return result;
-    }
-
-    private static void warnOnEnablingDescriptorSetGeneration() {
-        log().warn("Please enable descriptor set generation. See: " +
-            "https://github.com/google/protobuf-gradle-plugin/blob/master/README.md#generate-descriptor-set-files");
     }
 
     /**

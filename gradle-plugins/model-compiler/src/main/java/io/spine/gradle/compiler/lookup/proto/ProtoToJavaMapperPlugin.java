@@ -23,7 +23,6 @@ import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.SpinePlugin;
 import io.spine.tools.properties.PropertiesWriter;
-import io.spine.tools.proto.FileDescriptors;
 import io.spine.type.KnownTypes;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
@@ -31,6 +30,7 @@ import org.gradle.api.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.Map;
 
@@ -45,6 +45,7 @@ import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSetPath;
 import static io.spine.tools.gradle.compiler.Extension.getMainTargetGenResourcesDir;
 import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSetPath;
 import static io.spine.tools.gradle.compiler.Extension.getTestTargetGenResourcesDir;
+import static io.spine.tools.proto.FileDescriptors.parseSkipStandard;
 
 /**
  * Plugin which maps all Protobuf types to the corresponding Java classes.
@@ -96,8 +97,9 @@ public class ProtoToJavaMapperPlugin extends SpinePlugin {
         return new Action<Task>() {
             @Override
             public void execute(Task task) {
-                mapProtoToJavaAndWriteProps(getTestTargetGenResourcesDir(project),
-                                            getTestDescriptorSetPath(project));
+                mapProtoToJavaAndWriteProps(getTestDescriptorSetPath(project),
+                                            getTestTargetGenResourcesDir(project)
+                );
             }
         };
     }
@@ -107,18 +109,23 @@ public class ProtoToJavaMapperPlugin extends SpinePlugin {
         return new Action<Task>() {
             @Override
             public void execute(Task task) {
-                mapProtoToJavaAndWriteProps(getMainTargetGenResourcesDir(project),
-                                            getMainDescriptorSetPath(project));
+                mapProtoToJavaAndWriteProps(getMainDescriptorSetPath(project),
+                                            getMainTargetGenResourcesDir(project)
+                );
             }
         };
     }
 
-    private static void mapProtoToJavaAndWriteProps(String targetGeneratedResourcesDir,
-                                                    String descriptorSetPath) {
-        final Map<String, String> propsMap = newHashMap();
-        final Collection<FileDescriptorProto> files =
-                FileDescriptors.parseSkipStandard(descriptorSetPath);
+    private static void mapProtoToJavaAndWriteProps(String descriptorSetFile, String targetDir) {
         final Logger log = log();
+        final File setFile = new File(descriptorSetFile);
+        if (!setFile.exists()) {
+            logMissingDescriptorSetFile(log, setFile);
+            return;
+        }
+
+        final Map<String, String> propsMap = newHashMap();
+        final Collection<FileDescriptorProto> files = parseSkipStandard(setFile.getPath());
         log.trace("Starting mapping files under: {}", files);
         for (FileDescriptorProto file : files) {
             log.debug("Looking up file {}", file.getName());
@@ -133,8 +140,7 @@ public class ProtoToJavaMapperPlugin extends SpinePlugin {
         log.debug("{} types found", files.size());
         log.trace("Saving proto-to-java mapping: {}", files);
 
-        final PropertiesWriter writer = new PropertiesWriter(targetGeneratedResourcesDir,
-                                                             PROPERTIES_FILE_NAME);
+        final PropertiesWriter writer = new PropertiesWriter(targetDir, PROPERTIES_FILE_NAME);
         writer.write(propsMap);
     }
 
