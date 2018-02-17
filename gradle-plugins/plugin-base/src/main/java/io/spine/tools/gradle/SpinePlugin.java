@@ -26,7 +26,7 @@ import org.gradle.api.Task;
 import org.slf4j.Logger;
 
 /**
- * A base class for Spine plugins.
+ * Abstract base for Spine plugins.
  *
  * <p>Brings helper functionality to operate the Gradle build lifecycle.
  *

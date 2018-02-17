@@ -23,6 +23,7 @@ import io.spine.gradle.compiler.lookup.enrichment.EnrichmentLookupPlugin;
 import io.spine.gradle.compiler.lookup.proto.ProtoToJavaMapperPlugin;
 import io.spine.gradle.compiler.lookup.valrule.ValidationRulesLookupPlugin;
 import io.spine.gradle.compiler.validate.ValidatingBuilderGenPlugin;
+import io.spine.tools.gradle.SpinePlugin;
 import io.spine.tools.gradle.compiler.annotation.ProtoAnnotatorPlugin;
 import io.spine.tools.gradle.compiler.cleaning.CleaningPlugin;
 import io.spine.tools.gradle.compiler.protoc.ProtocPluginImporter;
@@ -33,6 +34,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Spine Model Compiler Gradle plugin.
+ *
+ * <p>Applies dependent plugins
+ *
  * @author Alexander Litus
  * @author Mikhail Mikhaylov
  */
@@ -42,34 +47,24 @@ public class ModelCompilerPlugin implements Plugin<Project> {
 
     @Override
     public void apply(Project project) {
-        final Logger log = log();
-        log.debug("Adding the extension to the project.");
+        log().debug("Adding the extension to the project.");
         project.getExtensions()
                .create(SPINE_MODEL_COMPILER_EXTENSION_NAME, Extension.class);
 
-        log.debug("Applying Spine cleaning plugin.");
-        new CleaningPlugin().apply(project);
+        apply(new CleaningPlugin(), project);
+        apply(new ProtoToJavaMapperPlugin(), project);
+        apply(new EnrichmentLookupPlugin(), project);
+        apply(new RejectionGenPlugin(), project);
+        apply(new ValidatingBuilderGenPlugin(), project);
+        apply(new ProtoAnnotatorPlugin(), project);
+        apply(new ValidationRulesLookupPlugin(), project);
+        apply(new ProtocPluginImporter(), project);
+    }
 
-        log.debug("Applying Spine proto-to-java mapper plugin.");
-        new ProtoToJavaMapperPlugin().apply(project);
-
-        log.debug("Applying Spine enrichment lookup plugin.");
-        new EnrichmentLookupPlugin().apply(project);
-
-        log.debug("Applying Spine rejection generation plugin.");
-        new RejectionGenPlugin().apply(project);
-
-        log.debug("Applying Spine validating builder generation plugin.");
-        new ValidatingBuilderGenPlugin().apply(project);
-
-        log.debug("Applying Spine proto annotator plugin.");
-        new ProtoAnnotatorPlugin().apply(project);
-
-        log.debug("Applying Spine validation rules lookup plugin.");
-        new ValidationRulesLookupPlugin().apply(project);
-
-        log.debug("Applying Spine protoc-plugin importer plugin.");
-        new ProtocPluginImporter().apply(project);
+    private static void apply(SpinePlugin plugin, Project project) {
+        log().debug("Applying {}", plugin.getClass()
+                                         .getName());
+        plugin.apply(project);
     }
 
     private static Logger log() {
