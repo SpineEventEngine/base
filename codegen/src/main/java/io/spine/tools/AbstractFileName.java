@@ -25,11 +25,22 @@ import io.spine.type.StringTypeValue;
 /**
  * A name of a source code file.
  *
+ * @param <F> the type of the file name for comparison type covariance
  * @author Alexander Yevsyukov
  */
-public abstract class AbstractFileName extends StringTypeValue {
+@SuppressWarnings("ComparableImplementedButEqualsNotOverridden")
+    // Sufficient equals() is provided by the parent class
+public abstract class AbstractFileName<F extends AbstractFileName>
+        extends StringTypeValue
+        implements Comparable<F> {
 
     protected AbstractFileName(String value) {
         super(value);
+    }
+
+    @Override
+    public int compareTo(F o) {
+        final int result = value().compareTo(o.value());
+        return result;
     }
 }

@@ -36,7 +36,7 @@ import static io.spine.tools.CodePreconditions.checkNotEmptyOrBlank;
  *
  * @author Alexander Yevsyukov
  */
-public class FileName extends AbstractFileName implements UnderscoredName {
+public class FileName extends AbstractFileName<FileName> implements UnderscoredName {
 
     /** The file system separator as defined by Protobuf. Not platform-dependant. */
     private static final char PATH_SEPARATOR = '/';
