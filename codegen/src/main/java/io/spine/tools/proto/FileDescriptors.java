@@ -109,9 +109,8 @@ public class FileDescriptors {
     }
 
     private static void warnOnEnablingDescriptorSetGeneration() {
-        log().warn("Please enable descriptor set generation. See an appropriate section at " +
-                "https://github.com/google/protobuf-gradle-plugin/" +
-                "blob/master/README.md#customize-code-generation-tasks");
+        log().warn("Please enable descriptor set generation. See: " +
+            "https://github.com/google/protobuf-gradle-plugin/blob/master/README.md#generate-descriptor-set-files");
     }
 
     /**
