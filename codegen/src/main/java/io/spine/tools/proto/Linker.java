@@ -50,7 +50,7 @@ class Linker {
     private final FileSet partiallyResolved;
     private final FileSet unresolved;
 
-    Linker(List<FileDescriptorProto> input) {
+    Linker(Iterable<FileDescriptorProto> input) {
         this.input = ImmutableList.copyOf(input);
         this.remaining = Lists.newArrayList(input);
         this.resolved = FileSet.empty();
