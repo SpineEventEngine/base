@@ -53,9 +53,9 @@ class Linker {
     Linker(Iterable<FileDescriptorProto> input) {
         this.input = ImmutableList.copyOf(input);
         this.remaining = Lists.newArrayList(input);
-        this.resolved = FileSet.empty();
-        this.partiallyResolved = FileSet.empty();
-        this.unresolved = FileSet.empty();
+        this.resolved = FileSet.newInstance();
+        this.partiallyResolved = FileSet.newInstance();
+        this.unresolved = FileSet.newInstance();
     }
 
     void resolve() throws DescriptorValidationException {

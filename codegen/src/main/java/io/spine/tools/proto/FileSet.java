@@ -61,7 +61,7 @@ public final class FileSet {
     /**
      * Creates an empty set.
      */
-    static FileSet empty() {
+    static FileSet newInstance() {
         return new FileSet();
     }
 
