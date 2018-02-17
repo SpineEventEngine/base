@@ -26,11 +26,11 @@ import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.ServiceDescriptorProto;
-import io.spine.tools.gradle.compiler.annotation.given.Given.FieldAnnotationValidator;
-import io.spine.tools.gradle.compiler.annotation.given.Given.MainDefinitionAnnotationValidator;
-import io.spine.tools.gradle.compiler.annotation.given.Given.NestedTypeFieldsAnnotationValidator;
-import io.spine.tools.gradle.compiler.annotation.given.Given.NestedTypesAnnotationValidator;
-import io.spine.tools.gradle.compiler.annotation.given.Given.SourceValidator;
+import io.spine.tools.compiler.annotation.check.FieldAnnotationCheck;
+import io.spine.tools.compiler.annotation.check.MainDefinitionAnnotationCheck;
+import io.spine.tools.compiler.annotation.check.NestedTypeFieldsAnnotationCheck;
+import io.spine.tools.compiler.annotation.check.NestedTypesAnnotationCheck;
+import io.spine.tools.compiler.annotation.check.SourceCheck;
 import io.spine.tools.gradle.given.GradleProject;
 import io.spine.tools.java.SourceFile;
 import io.spine.tools.proto.FileDescriptors;
@@ -49,13 +49,22 @@ import java.util.Collection;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.tools.compiler.annotation.given.GivenProtoFile.NO_SPI_OPTIONS;
+import static io.spine.tools.compiler.annotation.given.GivenProtoFile.NO_SPI_OPTIONS_MULTIPLE;
+import static io.spine.tools.compiler.annotation.given.GivenProtoFile.POTENTIAL_ANNOTATION_DUP;
+import static io.spine.tools.compiler.annotation.given.GivenProtoFile.SPI_ALL;
+import static io.spine.tools.compiler.annotation.given.GivenProtoFile.SPI_ALL_MULTIPLE;
+import static io.spine.tools.compiler.annotation.given.GivenProtoFile.SPI_ALL_SERVICE;
+import static io.spine.tools.compiler.annotation.given.GivenProtoFile.SPI_FIELD;
+import static io.spine.tools.compiler.annotation.given.GivenProtoFile.SPI_FIELD_MULTIPLE;
+import static io.spine.tools.compiler.annotation.given.GivenProtoFile.SPI_MESSAGE;
+import static io.spine.tools.compiler.annotation.given.GivenProtoFile.SPI_MESSAGE_MULTIPLE;
+import static io.spine.tools.compiler.annotation.given.GivenProtoFile.SPI_SERVICE;
 import static io.spine.tools.gradle.TaskName.ANNOTATE_PROTO;
 import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
 import static io.spine.tools.gradle.compiler.Extension.getDefaultMainDescriptorsPath;
 import static io.spine.tools.gradle.compiler.Extension.getDefaultMainGenDir;
 import static io.spine.tools.gradle.compiler.Extension.getDefaultMainGenGrpcDir;
-import static io.spine.tools.gradle.compiler.annotation.given.Given.NO_SPI_OPTIONS_FILENAME;
-import static io.spine.tools.gradle.compiler.annotation.given.Given.NO_SPI_OPTIONS_MULTIPLE_FILENAME;
 import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.nio.file.Paths.get;
 
@@ -71,100 +80,90 @@ public class ProtoAnnotatorPluginShould {
 
     @Test
     public void annotate_if_file_option_is_true() {
-        final String testFile = "spi_all.proto";
-        assertNestedTypesAnnotations(testFile, true);
+        assertNestedTypesAnnotations(SPI_ALL, true);
     }
 
     @Test
     public void annotate_service_if_file_option_is_true() {
-        final String testFile = "spi_all_service.proto";
-        assertServiceAnnotations(testFile, true);
+        assertServiceAnnotations(SPI_ALL_SERVICE, true);
     }
 
     @Test
     public void not_annotate_if_file_option_if_false() {
-        assertNestedTypesAnnotations(NO_SPI_OPTIONS_FILENAME, false);
+        assertNestedTypesAnnotations(NO_SPI_OPTIONS, false);
     }
 
     @Test
     public void not_annotate_service_if_file_option_if_false() {
-        assertNestedTypesAnnotations(NO_SPI_OPTIONS_FILENAME, false);
+        assertNestedTypesAnnotations(NO_SPI_OPTIONS, false);
     }
 
     @Test
     public void annotate_multiple_files_if_file_option_is_true() {
-        final String testFile = "spi_all_multiple.proto";
-        assertMainDefinitionAnnotations(testFile, true);
+        assertMainDefinitionAnnotations(SPI_ALL_MULTIPLE, true);
     }
 
     @Test
     public void not_annotate_multiple_files_if_file_option_is_false() {
-        assertMainDefinitionAnnotations(NO_SPI_OPTIONS_MULTIPLE_FILENAME, false);
+        assertMainDefinitionAnnotations(NO_SPI_OPTIONS_MULTIPLE, false);
     }
 
     @Test
     public void annotate_if_message_option_is_true() {
-        final String testFile = "spi_message.proto";
-        assertNestedTypesAnnotations(testFile, true);
+        assertNestedTypesAnnotations(SPI_MESSAGE, true);
     }
 
     @Test
     public void not_annotate_if_message_option_is_false() {
-        assertNestedTypesAnnotations(NO_SPI_OPTIONS_FILENAME, false);
+        assertNestedTypesAnnotations(NO_SPI_OPTIONS, false);
     }
 
     @Test
     public void annotate_multiple_files_if_message_option_is_true() {
-        final String testFile = "spi_message_multiple.proto";
-        assertMainDefinitionAnnotations(testFile, true);
+        assertMainDefinitionAnnotations(SPI_MESSAGE_MULTIPLE, true);
     }
 
     @Test
     public void not_annotate_multiple_files_if_message_option_is_false() {
-        assertMainDefinitionAnnotations(NO_SPI_OPTIONS_MULTIPLE_FILENAME, false);
+        assertMainDefinitionAnnotations(NO_SPI_OPTIONS_MULTIPLE, false);
     }
 
     @Test
     public void annotate_accessors_if_field_option_is_true() {
-        final String testFile = "spi_field.proto";
-        assertFieldAnnotations(testFile, true);
+        assertFieldAnnotations(SPI_FIELD, true);
     }
 
     @Test
     public void not_annotate_accessors_if_field_option_is_false() {
-        assertFieldAnnotations(NO_SPI_OPTIONS_FILENAME, false);
+        assertFieldAnnotations(NO_SPI_OPTIONS, false);
     }
 
     @Test
     public void annotate_accessors_in_multiple_files_if_field_option_is_true() {
-        final String testFile = "spi_field_multiple.proto";
-        assertFieldAnnotationsMultiple(testFile, true);
+        assertFieldAnnotationsMultiple(SPI_FIELD_MULTIPLE, true);
     }
 
     @Test
     public void not_annotate_accessors_in_multiple_files_if_field_option_is_false() {
-        assertFieldAnnotationsMultiple(NO_SPI_OPTIONS_MULTIPLE_FILENAME, false);
+        assertFieldAnnotationsMultiple(NO_SPI_OPTIONS_MULTIPLE, false);
     }
 
     @Test
     public void annotate_grpc_services_if_service_option_is_true() {
-        final String testFile = "spi_service.proto";
-        assertServiceAnnotations(testFile, true);
+        assertServiceAnnotations(SPI_SERVICE, true);
     }
 
     @Test
     public void not_annotate_grpc_services_if_service_option_is_false() {
-        assertServiceAnnotations(NO_SPI_OPTIONS_FILENAME, false);
+        assertServiceAnnotations(NO_SPI_OPTIONS, false);
     }
 
     @Test
     public void compile_generated_sources_with_potential_annotation_duplication() {
-        final String file = "potential_annotation_duplication.proto";
-        newProjectWithFile(file).executeTask(COMPILE_JAVA);
+        newProjectWithFile(POTENTIAL_ANNOTATION_DUP).executeTask(COMPILE_JAVA);
     }
 
-    private void assertServiceAnnotations(final String testFile,
-                                          final boolean shouldBeAnnotated) {
+    private void assertServiceAnnotations(String testFile, boolean shouldBeAnnotated) {
         newProjectWithFile(testFile).executeTask(ANNOTATE_PROTO);
 
         final FileDescriptorProto fileDescriptor = getDescriptor(testFile);
@@ -173,26 +172,24 @@ public class ProtoAnnotatorPluginShould {
             final Path messagePath = SourceFile.forService(serviceDescriptor, fileDescriptor)
                                                .getPath();
             validateGrpcService(messagePath,
-                                new MainDefinitionAnnotationValidator(shouldBeAnnotated));
+                                new MainDefinitionAnnotationCheck(shouldBeAnnotated));
         }
     }
 
-    private void assertFieldAnnotations(final String testFile,
-                                        final boolean shouldBeAnnotated) {
+    private void assertFieldAnnotations(String testFile, boolean shouldBeAnnotated) {
         newProjectWithFile(testFile).executeTask(ANNOTATE_PROTO);
 
         final FileDescriptorProto fileDescriptor = getDescriptor(testFile);
         final DescriptorProto messageDescriptor = fileDescriptor.getMessageType(0);
         final Path sourcePath = SourceFile.forMessage(messageDescriptor, false, fileDescriptor)
                                           .getPath();
-        final NestedTypeFieldsAnnotationValidator validator =
-                new NestedTypeFieldsAnnotationValidator(messageDescriptor,
-                                                        shouldBeAnnotated);
+        final NestedTypeFieldsAnnotationCheck validator =
+                new NestedTypeFieldsAnnotationCheck(messageDescriptor,
+                                                    shouldBeAnnotated);
         validate(sourcePath, validator);
     }
 
-    private void assertFieldAnnotationsMultiple(final String testFile,
-                                                final boolean shouldBeAnnotated) {
+    private void assertFieldAnnotationsMultiple(String testFile, boolean shouldBeAnnotated) {
         newProjectWithFile(testFile).executeTask(ANNOTATE_PROTO);
 
         final FileDescriptorProto fileDescriptor = getDescriptor(testFile);
@@ -200,11 +197,10 @@ public class ProtoAnnotatorPluginShould {
         final FieldDescriptorProto experimentalField = messageDescriptor.getField(0);
         final Path sourcePath = SourceFile.forMessage(messageDescriptor, false, fileDescriptor)
                                           .getPath();
-        validate(sourcePath, new FieldAnnotationValidator(experimentalField, shouldBeAnnotated));
+        validate(sourcePath, new FieldAnnotationCheck(experimentalField, shouldBeAnnotated));
     }
 
-    private void assertMainDefinitionAnnotations(final String testFile,
-                                                 final boolean shouldBeAnnotated) {
+    private void assertMainDefinitionAnnotations(String testFile, boolean shouldBeAnnotated) {
         newProjectWithFile(testFile).executeTask(ANNOTATE_PROTO);
 
         final FileDescriptorProto fileDescriptor = getDescriptor(testFile);
@@ -215,25 +211,24 @@ public class ProtoAnnotatorPluginShould {
             final Path messageOrBuilderPath =
                     SourceFile.forMessage(messageDescriptor, true, fileDescriptor)
                               .getPath();
-            final SourceValidator annotationValidator =
-                    new MainDefinitionAnnotationValidator(shouldBeAnnotated);
+            final SourceCheck annotationValidator =
+                    new MainDefinitionAnnotationCheck(shouldBeAnnotated);
             validate(messagePath, annotationValidator);
             validate(messageOrBuilderPath, annotationValidator);
         }
     }
 
-    private void assertNestedTypesAnnotations(final String testFile,
-                                              final boolean shouldBeAnnotated) {
+    private void assertNestedTypesAnnotations(String testFile, boolean shouldBeAnnotated) {
         newProjectWithFile(testFile).executeTask(ANNOTATE_PROTO);
 
         final FileDescriptorProto fileDescriptor = getDescriptor(testFile);
         final Path sourcePath = SourceFile.forOuterClassOf(fileDescriptor)
                                           .getPath();
-        validate(sourcePath, new NestedTypesAnnotationValidator(shouldBeAnnotated));
+        validate(sourcePath, new NestedTypesAnnotationCheck(shouldBeAnnotated));
     }
 
     @SuppressWarnings("unchecked")
-    private void validate(Path sourcePath, SourceValidator validator) {
+    private void validate(Path sourcePath, SourceCheck validator) {
         final String projectPath = testProjectDir.getRoot()
                                                  .getAbsolutePath();
         final Path fullSourcePath = get(projectPath, getDefaultMainGenDir(), sourcePath.toString());
@@ -248,7 +243,7 @@ public class ProtoAnnotatorPluginShould {
     }
 
     @SuppressWarnings("unchecked")
-    private void validateGrpcService(Path servicePath, SourceValidator validator) {
+    private void validateGrpcService(Path servicePath, SourceCheck validator) {
         final String projectPath = testProjectDir.getRoot()
                                                  .getAbsolutePath();
         final Path fullSourcePath = get(projectPath, getDefaultMainGenGrpcDir(),
@@ -266,6 +261,7 @@ public class ProtoAnnotatorPluginShould {
         final String projectPath = testProjectDir.getRoot()
                                                  .getAbsolutePath();
         final String descriptorSetPath = projectPath + getDefaultMainDescriptorsPath();
+
         final Collection<FileDescriptorProto> descriptors =
                 FileDescriptors.parseAndFilter(descriptorSetPath, new Predicate<FileDescriptorProto>() {
                     @Override
