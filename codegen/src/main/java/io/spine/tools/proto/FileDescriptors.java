@@ -89,12 +89,12 @@ public class FileDescriptors {
                       descriptorSetFile);
         }
 
-        final ImmutableList.Builder<FileDescriptorProto> fileDescriptors = ImmutableList.builder();
+        final ImmutableList.Builder<FileDescriptorProto> files = ImmutableList.builder();
         try (final FileInputStream fis = new FileInputStream(descriptorsFile)) {
-            final FileDescriptorSet fileDescriptorSet = FileDescriptorSet.parseFrom(fis);
-            for (FileDescriptorProto file : fileDescriptorSet.getFileList()) {
+            final FileDescriptorSet fileSet = FileDescriptorSet.parseFrom(fis);
+            for (FileDescriptorProto file : fileSet.getFileList()) {
                 if (filter.apply(file)) {
-                    fileDescriptors.add(file);
+                    files.add(file);
                 }
             }
         } catch (IOException e) {
@@ -103,8 +103,8 @@ public class FileDescriptors {
             );
         }
 
-        final ImmutableList<FileDescriptorProto> result = fileDescriptors.build();
-        log.trace("Found {} files: {}", result.size(), fileDescriptors);
+        final ImmutableList<FileDescriptorProto> result = files.build();
+        log.trace("Found {} files: {}", result.size(), files);
         return result;
     }
 
