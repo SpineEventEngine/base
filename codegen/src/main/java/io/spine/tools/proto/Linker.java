@@ -40,6 +40,8 @@ import static com.google.protobuf.Descriptors.FileDescriptor.buildFrom;
  */
 class Linker {
 
+    private static final FileDescriptor[] NO_DEPENDENCIES = {};
+
     private final List<FileDescriptorProto> input;
 
     private final List<FileDescriptorProto> remaining;
@@ -70,7 +72,7 @@ class Linker {
         while (iterator.hasNext()) {
             FileDescriptorProto next = iterator.next();
             if (next.getDependencyCount() == 0) {
-                FileDescriptor fd = buildFrom(next, FileSet.NO_DEPENDENCIES, true);
+                FileDescriptor fd = buildFrom(next, NO_DEPENDENCIES, true);
                 resolved.add(fd);
                 iterator.remove();
             }
@@ -141,7 +143,7 @@ class Linker {
     private void addUnresolved() throws DescriptorValidationException {
         while (!remaining.isEmpty()) {
             final FileDescriptorProto first = remaining.get(0);
-            final FileDescriptor fd = buildFrom(first, FileSet.NO_DEPENDENCIES, true);
+            final FileDescriptor fd = buildFrom(first, NO_DEPENDENCIES, true);
             unresolved.add(fd);
             remaining.remove(first);
         }

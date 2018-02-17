@@ -32,7 +32,6 @@ import com.google.common.collect.Sets;
 import com.google.protobuf.Descriptors.FileDescriptor;
 
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -47,7 +46,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public final class FileSet {
 
-    static final FileDescriptor[] NO_DEPENDENCIES = {};
+    private static final FileDescriptor[] EMPTY = {};
 
     private final Set<FileDescriptor> files;
 
@@ -55,10 +54,20 @@ public final class FileSet {
         this.files = Sets.newHashSet(files);
     }
 
-    static FileSet empty() {
-        return new FileSet(Arrays.asList(NO_DEPENDENCIES));
+    private FileSet() {
+        this.files = Sets.newHashSet();
     }
 
+    /**
+     * Creates an empty set.
+     */
+    static FileSet empty() {
+        return new FileSet();
+    }
+
+    /**
+     * Creates a new set which is a union of this and the passed one.
+     */
     FileSet union(FileSet another) {
         if (another.isEmpty()) {
             return this;
@@ -72,56 +81,62 @@ public final class FileSet {
         return result;
     }
 
+    /**
+     * Obtains array with the files of this set.
+     */
     FileDescriptor[] toArray() {
-        return files.toArray(NO_DEPENDENCIES);
+        return files.toArray(EMPTY);
     }
 
+    /**
+     * Returns {@code true} if the set contains a file with the passed name,
+     * {@code false} otherwise.
+     */
     public boolean contains(String fileName) {
         final Optional<FileDescriptor> found = Iterables.tryFind(files, new MatchesName(fileName));
         return found.isPresent();
     }
 
+    /**
+     * Returns {@code true} if the set contains all the files with the passed names,
+     * {@code false} otherwise.
+     */
     public boolean containsAll(Collection<String> fileNames) {
         final FileSet found = find(fileNames);
         final boolean result = found.size() == fileNames.size();
         return result;
     }
 
+    /**
+     * Obtains the set of the files that match passed names.
+     */
     public FileSet find(Iterable<String> fileNames) {
         final Iterable<FileDescriptor> filter = Iterables.filter(files, new IsOneOf(fileNames));
         return new FileSet(filter);
     }
 
+    /**
+     * Adds file to the set.
+     */
     public boolean add(FileDescriptor file) {
         final boolean isNew = files.add(file);
         return isNew;
     }
 
+    /**
+     * Obtains the size of the set.
+     */
     public int size() {
         final int result = files.size();
         return result;
     }
 
+    /**
+     * Verifies if the set is empty.
+     */
     public boolean isEmpty() {
         final boolean result = size() == 0;
         return result;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(files);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-        final FileSet other = (FileSet) obj;
-        return Objects.equals(this.files, other.files);
     }
 
     /**
@@ -145,6 +160,9 @@ public final class FileSet {
         return result;
     }
 
+    /**
+     * Returns a string with alphabetically sorted list of files of this set.
+     */
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
@@ -152,7 +170,28 @@ public final class FileSet {
                           .toString();
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(files);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        final FileSet other = (FileSet) obj;
+        return Objects.equals(this.files, other.files);
+    }
+
+    /**
+     * Returns {@code true} a file has one of the passed names, {@code false} otherwise.
+     */
     private static final class IsOneOf implements Predicate<FileDescriptor> {
+
         private final Set<String> fileNames;
 
         private IsOneOf(Iterable<String> fileNames) {
@@ -167,6 +206,9 @@ public final class FileSet {
         }
     }
 
+    /**
+     * Returns {@code true} a file has the passed name, {@code false} otherwise.
+     */
     private static final class MatchesName implements Predicate<FileDescriptor> {
 
         private final String fileName;
