@@ -104,6 +104,13 @@ public final class FileSet {
     }
 
     /**
+     * Obtains immutable view of the files in this set.
+     */
+    Iterable<FileDescriptor> files() {
+        return ImmutableSet.copyOf(files);
+    }
+
+    /**
      * Obtains array with the files of this set.
      */
     FileDescriptor[] toArray() {
@@ -165,7 +172,7 @@ public final class FileSet {
      * Verifies if the set is empty.
      */
     public boolean isEmpty() {
-        final boolean result = size() == 0;
+        final boolean result = files.isEmpty();
         return result;
     }
 
