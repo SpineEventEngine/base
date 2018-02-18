@@ -29,6 +29,8 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
+import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
+import com.google.protobuf.Descriptors.DescriptorValidationException;
 import com.google.protobuf.Descriptors.FileDescriptor;
 
 import javax.annotation.Nullable;
@@ -38,6 +40,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
  * A set of proto files.
@@ -63,6 +66,25 @@ public final class FileSet {
      */
     static FileSet newInstance() {
         return new FileSet();
+    }
+
+    /**
+     * Creates a new file set by parsing the passed descriptor set file.
+     */
+    public static FileSet parse(String descriptorSetFileName) {
+        final List<FileDescriptorProto> files = FileDescriptors.parse(descriptorSetFileName);
+        final Linker linker = new Linker(files);
+        try {
+            linker.resolve();
+        } catch (DescriptorValidationException e) {
+            throw newIllegalStateException(
+                    e, "Unable to parse descriptor set file %s", descriptorSetFileName
+            );
+        }
+        final FileSet result = linker.getResolved()
+                                     .union(linker.getPartiallyResolved())
+                                     .union(linker.getUnresolved());
+        return result;
     }
 
     /**
@@ -93,7 +115,7 @@ public final class FileSet {
      * {@code false} otherwise.
      */
     public boolean contains(String fileName) {
-        final Optional<FileDescriptor> found = Iterables.tryFind(files, new MatchesName(fileName));
+        final Optional<FileDescriptor> found = tryFind(fileName);
         return found.isPresent();
     }
 
@@ -113,6 +135,14 @@ public final class FileSet {
     public FileSet find(Iterable<String> fileNames) {
         final Iterable<FileDescriptor> filter = Iterables.filter(files, new IsOneOf(fileNames));
         return new FileSet(filter);
+    }
+
+    /**
+     * Returns an Optional containing the first file that matches the name, if such an file exists.
+     */
+    public Optional<FileDescriptor> tryFind(String fileName) {
+        final Optional<FileDescriptor> found = Iterables.tryFind(files, new MatchesName(fileName));
+        return found;
     }
 
     /**

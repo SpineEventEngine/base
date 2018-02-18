@@ -19,7 +19,6 @@
  */
 package io.spine.tools.proto;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableList;
@@ -83,9 +82,8 @@ public class FileDescriptors {
      *         a filter predicate to apply to the files
      * @return a list of descriptors
      */
-    @VisibleForTesting
-    public static List<FileDescriptorProto> parseAndFilter(String descriptorSetFile,
-                                                           Predicate<FileDescriptorProto> filter) {
+    private static List<FileDescriptorProto> parseAndFilter(String descriptorSetFile,
+                                                            Predicate<FileDescriptorProto> filter) {
         final File descriptorsFile = new File(descriptorSetFile);
         checkArgument(descriptorsFile.exists(), "File %s does not exist", descriptorSetFile);
 
