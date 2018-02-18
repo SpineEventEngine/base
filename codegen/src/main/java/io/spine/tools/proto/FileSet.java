@@ -43,7 +43,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
- * A set of proto files.
+ * A set of proto files represented by their {@linkplain FileDescriptor descriptors}.
  *
  * @author Alexander Yevsyukov
  */
