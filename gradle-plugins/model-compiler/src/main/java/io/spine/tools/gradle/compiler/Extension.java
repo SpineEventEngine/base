@@ -60,7 +60,17 @@ public class Extension {
      * <p>The directory is deleted on {@code :pre-clean"}.
      */
     @Internal
-    public static final String SPINE_BUILD_ARTIFACT_STORAGE_DIR = ".spine";
+    public static final String SPINE_BUILD_ARTIFACT_DIR = ".spine";
+
+    /**
+     * Retained for compatibility reasons with earlier versions that use this constant.
+     * Remove after migration is complete.
+     * @deprecated use {@link #SPINE_BUILD_ARTIFACT_DIR}
+     */
+    @Deprecated
+    @Internal
+    public static final String SPINE_BUILD_ARTIFACT_STORAGE_DIR = SPINE_BUILD_ARTIFACT_DIR;
+
 
     private static final String DEFAULT_GEN_ROOT_DIR = "/generated";
     private static final String DEFAULT_MAIN_PROTO_SRC_DIR = "/src/main/proto";
@@ -343,7 +353,7 @@ public class Extension {
             );
         }
         final Path projectPath = projectDir.toPath();
-        final Path spinePath = projectPath.resolve(SPINE_BUILD_ARTIFACT_STORAGE_DIR);
+        final Path spinePath = projectPath.resolve(SPINE_BUILD_ARTIFACT_DIR);
         if (Files.exists(spinePath)) {
             return Optional.of(spinePath.toString());
         } else {

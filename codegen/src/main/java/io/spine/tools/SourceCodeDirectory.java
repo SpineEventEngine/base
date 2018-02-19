@@ -18,52 +18,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.java;
-
-import io.spine.tools.AbstractDirectory;
-import io.spine.tools.SourceCodeDirectory;
+package io.spine.tools;
 
 import java.nio.file.Path;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 /**
- * A folder with Java source files.
+ * A directory with source code files.
  *
  * @author Alexander Yevsyukov
  */
-public final class Directory extends SourceCodeDirectory {
+public abstract
+class SourceCodeDirectory extends AbstractDirectory {
 
-    public static final String ROOT_NAME = "java";
-
-    private Directory(Path path) {
+    protected SourceCodeDirectory(Path path) {
         super(path);
-    }
-
-    /**
-     * Creates a new instance.
-     */
-    static Directory at(Path path) {
-        checkNotNull(path);
-        return new Directory(path);
-    }
-
-    /**
-     * Creates an instance of the root directory named {@code "java"}.
-     */
-    public static Directory rootIn(AbstractDirectory parent) {
-        checkNotNull(parent);
-        final Path path = parent.getPath()
-                                .resolve(ROOT_NAME);
-        return at(path);
-    }
-
-    /**
-     * Obtains the source code file for the passed name.
-     */
-    public SourceFile resolve(FileName fileName) {
-        final Path filePath = getPath().resolve(fileName.value());
-        final SourceFile result = SourceFile.of(filePath);
-        return result;
     }
 }

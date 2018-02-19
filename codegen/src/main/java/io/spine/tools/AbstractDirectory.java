@@ -23,21 +23,13 @@ package io.spine.tools;
 import java.nio.file.Path;
 
 /**
- * A folder with source code files.
+ * A directory in a programming project.
  *
- * @param <F> the type of the file names that can be in the folder
- * @param <S> the type of source code files
  * @author Alexander Yevsyukov
  */
-public abstract class AbstractDirectory<F extends AbstractFileName, S extends AbstractSourceFile>
-        extends FsObject {
+public abstract class AbstractDirectory extends FsObject {
 
     protected AbstractDirectory(Path path) {
         super(path);
     }
-
-    /**
-     * Obtains the source code file which corresponds to the passed file name.
-     */
-    public abstract S resolve(F fileName);
 }

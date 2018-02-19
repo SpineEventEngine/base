@@ -266,6 +266,9 @@ public class ProtoAnnotatorPluginShould {
                                                  .getAbsolutePath();
         final String descriptorSetPath = projectPath + getDefaultMainDescriptorsPath();
 
+//        final String descriptorSetPath = DefaultProject.at(testProjectDir.getRoot())
+//                                                       .mainDescriptors()
+//                                                       .getAbsolutePath();
         final FileSet fileSet = FileSet.parse(descriptorSetPath);
         Optional<FileDescriptor> file = fileSet.tryFind(fileName);
         checkState(file.isPresent(), "Unable to get file descriptor for %s", fileName);

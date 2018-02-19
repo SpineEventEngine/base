@@ -129,7 +129,7 @@ public class FileDescriptors {
      * Obtains the predicate that filters out file descriptors for types with {@code "google"}
      * in the package name.
      */
-    private static Predicate<FileDescriptorProto> isNotGoogleProto() {
+    public static Predicate<FileDescriptorProto> isNotGoogleProto() {
         return IS_NOT_GOOGLE;
     }
 

@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.java;
+package io.spine.tools.proto;
 
 import io.spine.tools.AbstractDirectory;
 import io.spine.tools.SourceCodeDirectory;
@@ -28,13 +28,11 @@ import java.nio.file.Path;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A folder with Java source files.
- *
  * @author Alexander Yevsyukov
  */
 public final class Directory extends SourceCodeDirectory {
 
-    public static final String ROOT_NAME = "java";
+    public static final String ROOT_NAME = "proto";
 
     private Directory(Path path) {
         super(path);
@@ -56,14 +54,5 @@ public final class Directory extends SourceCodeDirectory {
         final Path path = parent.getPath()
                                 .resolve(ROOT_NAME);
         return at(path);
-    }
-
-    /**
-     * Obtains the source code file for the passed name.
-     */
-    public SourceFile resolve(FileName fileName) {
-        final Path filePath = getPath().resolve(fileName.value());
-        final SourceFile result = SourceFile.of(filePath);
-        return result;
     }
 }

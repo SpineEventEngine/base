@@ -55,9 +55,9 @@ public class FileNameShould {
 
     @Test
     public void return_words() {
-        final List<String> words = FileName.of("some_proto_file_name.proto").words();
+        final List<String> words = FileName.of("some_file_name.proto").words();
 
-        assertEquals(ImmutableList.of("some", "proto", "file", "name"), words);
+        assertEquals(ImmutableList.of("some", "file", "name"), words);
     }
 
     @SuppressWarnings("DuplicateStringLiteralInspection")
