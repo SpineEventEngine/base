@@ -24,6 +24,7 @@ import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import io.spine.annotation.Internal;
 import io.spine.tools.Indent;
+import io.spine.tools.proto.FileDescriptors;
 import org.gradle.api.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,8 +46,10 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  *
  * @author Alex Tymchenko
  */
-@SuppressWarnings({"PublicField", "ClassWithTooManyMethods", "WeakerAccess"})
-// as this is a Gradle extension.
+@SuppressWarnings({
+        "PublicField" /* Expose fields as a Gradle extension */,
+        "ClassWithTooManyMethods" /* The methods are needed for handing default values. */,
+})
 public class Extension {
 
     /**
@@ -65,14 +68,16 @@ public class Extension {
     private static final String DEFAULT_MAIN_GEN_DIR = DEFAULT_GEN_ROOT_DIR + "/main/java";
     private static final String DEFAULT_MAIN_GEN_GRPC_DIR = DEFAULT_GEN_ROOT_DIR + "/main/grpc";
     private static final String DEFAULT_MAIN_GEN_SPINE_DIR = DEFAULT_GEN_ROOT_DIR + "/main/spine";
-    private static final String DEFAULT_MAIN_DESCRIPTORS_PATH = "/build/descriptors/main.desc";
-
+    private static final String DEFAULT_DESCRIPTORS_DIR = "/build/descriptors/";
+    private static final String DEFAULT_MAIN_DESCRIPTORS_PATH = DEFAULT_DESCRIPTORS_DIR +
+            FileDescriptors.MAIN_FILE;
     private static final String DEFAULT_TEST_PROTO_SRC_DIR = "/src/test/proto";
     private static final String DEFAULT_TEST_GEN_RES_DIR = DEFAULT_GEN_ROOT_DIR + "/test/resources";
     private static final String DEFAULT_TEST_GEN_DIR = DEFAULT_GEN_ROOT_DIR + "/test/java";
     private static final String DEFAULT_TEST_GEN_GRPC_DIR = DEFAULT_GEN_ROOT_DIR + "/test/grpc";
     private static final String DEFAULT_TEST_GEN_SPINE_DIR = DEFAULT_GEN_ROOT_DIR + "/test/spine";
-    private static final String DEFAULT_TEST_DESCRIPTORS_PATH = "/build/descriptors/test.desc";
+    private static final String DEFAULT_TEST_DESCRIPTORS_PATH = DEFAULT_DESCRIPTORS_DIR +
+            FileDescriptors.TEST_FILE;
 
     /**
      * The absolute path to the main target generated resources directory.

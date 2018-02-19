@@ -46,7 +46,7 @@ public class LinkerShould {
     @Before
     public void setUp() throws DescriptorValidationException, IOException {
         final InputStream in = LinkerShould.class.getClassLoader()
-                                                 .getResourceAsStream("main.desc");
+                                                 .getResourceAsStream(FileDescriptors.MAIN_FILE);
         FileDescriptorSet fileSet = FileDescriptorSet.parseFrom(in);
 
         linker = new Linker(fileSet.getFileList());

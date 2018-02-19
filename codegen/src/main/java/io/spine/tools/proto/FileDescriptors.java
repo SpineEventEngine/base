@@ -47,6 +47,18 @@ public class FileDescriptors {
 
     private static final Predicate<FileDescriptorProto> IS_NOT_GOOGLE = new IsNotGoogleProto();
 
+    /**
+     * Default file name for descriptor set generated from the proto files under
+     * the {@code main/proto} project directory.
+     */
+    public static final String MAIN_FILE = "main.desc";
+
+    /**
+     * Default file name for the descriptor set generated from the proto files under
+     * the {@code test/proto} project directory.
+     */
+    public static final String TEST_FILE = "test.desc";
+
     /** Prevents instantiation of this utility class. */
     private FileDescriptors() {
     }
