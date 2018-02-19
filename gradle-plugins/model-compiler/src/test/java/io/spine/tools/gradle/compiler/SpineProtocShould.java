@@ -64,7 +64,7 @@ public class SpineProtocShould {
         project.executeTask(BUILD);
         final Path spineDirPath = projectDir.getRoot()
                                             .toPath()
-                                            .resolve(Extension.SPINE_BUILD_ARTIFACT_STORAGE_DIR);
+                                            .resolve(Extension.SPINE_BUILD_ARTIFACT_DIR);
         assertTrue(exists(spineDirPath));
     }
 }
