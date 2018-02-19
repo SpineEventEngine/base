@@ -20,25 +20,19 @@
 
 package io.spine.gradle.compiler.lookup.valrule;
 
+import io.spine.tools.DefaultProject;
 import io.spine.tools.gradle.given.GradleProject;
+import io.spine.tools.properties.PropertyFile;
+import io.spine.validate.rules.ValidationRules;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.List;
-import java.util.Properties;
 
 import static io.spine.tools.gradle.TaskName.FIND_VALIDATION_RULES;
-import static io.spine.tools.gradle.compiler.Extension.getDefaultMainGenResDir;
-import static io.spine.util.Exceptions.illegalStateWithCauseOf;
-import static io.spine.validate.rules.ValidationRules.getValRulesPropsFileName;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -79,23 +73,17 @@ public class ValidationRulesLookupPluginShould {
         final String expectedKey = PROTO_FILE_PACKAGE + DOT +
                                    OUTER_MESSAGE_TYPE + DOT +
                                    VALIDATION_RULE_TYPE;
-        final String value = (String) getProperties().get(expectedKey);
+        final String value = (String) loadProperties().get(expectedKey);
         assertEquals(VALIDATION_TARGET, value);
     }
 
-    private Dictionary getProperties() {
-        final String projectPath = testProjectDir.getRoot()
-                                                 .getAbsolutePath();
-        final Path path = Paths.get(projectPath, getDefaultMainGenResDir(),
-                                    getValRulesPropsFileName());
-        try {
-            final InputStream inputStream = new FileInputStream(path.toFile());
-            final Properties properties = new Properties();
-            properties.load(inputStream);
-            return properties;
-        } catch (IOException e) {
-            throw illegalStateWithCauseOf(e);
-        }
+    private Dictionary loadProperties() {
+        final PropertyFile propFile = PropertyFile.of(ValidationRules.fileName())
+                                                  .at(DefaultProject.at(testProjectDir.getRoot())
+                                                                    .generated()
+                                                                    .mainResources());
+        final Dictionary result = propFile.load();
+        return result;
     }
 
     private GradleProject newProjectWithFile(String protoFileName, List<String> protoFileLines) {

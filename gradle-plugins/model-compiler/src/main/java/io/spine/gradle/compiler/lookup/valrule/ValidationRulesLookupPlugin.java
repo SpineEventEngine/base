@@ -28,6 +28,7 @@ import io.spine.tools.gradle.SpinePlugin;
 import io.spine.tools.properties.PropertiesWriter;
 import io.spine.tools.proto.MessageDeclaration;
 import io.spine.type.TypeName;
+import io.spine.validate.rules.ValidationRules;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -55,7 +56,6 @@ import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSetPath;
 import static io.spine.tools.gradle.compiler.Extension.getTestTargetGenResourcesDir;
 import static io.spine.tools.proto.FileDescriptors.parseSkipStandard;
 import static io.spine.tools.proto.SourceFile.allThat;
-import static io.spine.validate.rules.ValidationRules.getValRulesPropsFileName;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -145,9 +145,10 @@ public class ValidationRulesLookupPlugin extends SpinePlugin {
             propsMap.put(typeName.value(), ruleTargets);
         }
 
+        final String fileName = ValidationRules.fileName();
         log().trace("Writing the validation rules description to {}/{}.",
-                    targetDir, getValRulesPropsFileName());
-        final PropertiesWriter writer = new PropertiesWriter(targetDir, getValRulesPropsFileName());
+                    targetDir, fileName);
+        final PropertiesWriter writer = new PropertiesWriter(targetDir, fileName);
         writer.write(propsMap);
     }
 

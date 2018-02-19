@@ -22,15 +22,28 @@ package io.spine.tools;
 
 import java.nio.file.Path;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * A directory with source code files.
  *
  * @author Alexander Yevsyukov
  */
-public abstract
-class SourceCodeDirectory extends AbstractDirectory {
+public abstract class SourceCodeDirectory extends AbstractDirectory {
 
     protected SourceCodeDirectory(Path path) {
         super(path);
+    }
+
+    public Path resolve(SourceCodeDirectory dir) {
+        checkNotNull(dir);
+        final Path result = getPath().resolve(dir.getPath());
+        return result;
+    }
+
+    public Path resolve(AbstractSourceFile file) {
+        checkNotNull(file);
+        final Path result = getPath().resolve(file.getPath());
+        return result;
     }
 }

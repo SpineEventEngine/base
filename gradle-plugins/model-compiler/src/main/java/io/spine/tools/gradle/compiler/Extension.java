@@ -19,7 +19,6 @@
  */
 package io.spine.tools.gradle.compiler;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import io.spine.annotation.Internal;
@@ -369,16 +368,6 @@ public class Extension {
     private static Extension spineProtobuf(Project project) {
         return (Extension) project.getExtensions()
                                   .getByName(SPINE_MODEL_COMPILER_EXTENSION_NAME);
-    }
-
-    @VisibleForTesting
-    public static String getDefaultMainGenGrpcDir() {
-        return DEFAULT_MAIN_GEN_GRPC_DIR;
-    }
-
-    @VisibleForTesting
-    public static String getDefaultMainGenResDir() {
-        return DEFAULT_MAIN_GEN_RES_DIR;
     }
 
     private static Logger log() {

@@ -79,7 +79,7 @@ public final class FileSet {
     /**
      * Creates a new file set by parsing the passed descriptor set file.
      */
-    public static FileSet parse(String descriptorSetFileName) {
+    private static FileSet parse(String descriptorSetFileName) {
         final List<FileDescriptorProto> files = FileDescriptors.parse(descriptorSetFileName);
         final Linker linker = new Linker(files);
         try {

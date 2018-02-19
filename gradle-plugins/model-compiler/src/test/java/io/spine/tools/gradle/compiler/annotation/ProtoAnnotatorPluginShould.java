@@ -61,8 +61,6 @@ import static io.spine.tools.compiler.annotation.given.GivenProtoFile.SPI_MESSAG
 import static io.spine.tools.compiler.annotation.given.GivenProtoFile.SPI_SERVICE;
 import static io.spine.tools.gradle.TaskName.ANNOTATE_PROTO;
 import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
-import static io.spine.tools.gradle.compiler.Extension.getDefaultMainGenGrpcDir;
-import static java.nio.file.Paths.get;
 
 /**
  * @author Dmytro Grankin
@@ -168,9 +166,8 @@ public class ProtoAnnotatorPluginShould {
         final FileDescriptorProto fileDescriptor = compileAndAnnotate(testFile);
         final List<ServiceDescriptorProto> services = fileDescriptor.getServiceList();
         for (ServiceDescriptorProto serviceDescriptor : services) {
-            final Path messagePath = SourceFile.forService(serviceDescriptor, fileDescriptor)
-                                               .getPath();
-            checkGrpcService(messagePath, new MainDefinitionAnnotationCheck(shouldBeAnnotated));
+            final SourceFile serviceFile = SourceFile.forService(serviceDescriptor, fileDescriptor);
+            checkGrpcService(serviceFile, new MainDefinitionAnnotationCheck(shouldBeAnnotated));
         }
     }
 
@@ -231,15 +228,15 @@ public class ProtoAnnotatorPluginShould {
         check.apply(javaSource);
     }
 
-    private void checkGrpcService(Path servicePath, SourceCheck check)
+    private void checkGrpcService(SourceFile serviceFile, SourceCheck check)
             throws FileNotFoundException {
-        final String projectPath = testProjectDir.getRoot()
-                                                 .getAbsolutePath();
-        final Path fullSourcePath = get(projectPath, getDefaultMainGenGrpcDir(),
-                                        servicePath.toString());
+        final Path fullPath = DefaultProject.at(testProjectDir.getRoot())
+                                            .generated()
+                                            .mainGrpc()
+                                            .resolve(serviceFile);
         @SuppressWarnings("unchecked")
         final AbstractJavaSource<JavaClassSource> javaSource =
-                Roaster.parse(AbstractJavaSource.class, fullSourcePath.toFile());
+                Roaster.parse(AbstractJavaSource.class, fullPath.toFile());
         check.apply(javaSource);
     }
 

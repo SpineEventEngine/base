@@ -76,17 +76,11 @@ public final class DefaultProject extends AbstractDirectory {
 
      */
 
-    public static class SourceDir extends AbstractDirectory {
+    static class SourceDir extends SourceCodeDirectory {
 
         SourceDir(AbstractDirectory parent, String name) {
             super(parent.getPath()
                         .resolve(name));
-        }
-
-        public Path resolve(SourceCodeDirectory dir) {
-            checkNotNull(dir);
-            final Path result = getPath().resolve(dir.getPath());
-            return result;
         }
     }
 
@@ -147,18 +141,32 @@ public final class DefaultProject extends AbstractDirectory {
 
     public static final class GeneratedRoot extends SourceRoot {
 
-        public static final String SPINE_DIR = "spine";
+        private static final String SPINE_DIR = "spine";
+        private static final String GRPC_DIR = "grpc";
+        private static final String RESOURCES_DIR = "resources";
 
         private GeneratedRoot(DefaultProject parent) {
             super(parent, "generated");
         }
 
-        public SourceDir mainSpine() {
+        public SourceCodeDirectory mainSpine() {
             return new SourceDir(this.getMain(), SPINE_DIR);
         }
 
-        public SourceDir testSpine() {
+        public SourceCodeDirectory testSpine() {
             return new SourceDir(this.getTest(), SPINE_DIR);
+        }
+
+        public SourceCodeDirectory mainGrpc() {
+            return new SourceDir(this.getMain(), GRPC_DIR);
+        }
+
+        public SourceCodeDirectory mainResources() {
+            return new SourceDir(this.getMain(), RESOURCES_DIR);
+        }
+
+        public SourceCodeDirectory testResources() {
+            return new SourceDir(this.getTest(), RESOURCES_DIR);
         }
     }
 
