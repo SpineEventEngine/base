@@ -34,7 +34,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public final class Directory extends SourceCodeDirectory {
 
-    public static final String ROOT_NAME = "proto";
+    private static final String ROOT_NAME = "proto";
 
     private Directory(Path path) {
         super(path);
