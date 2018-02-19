@@ -29,10 +29,10 @@ import java.nio.file.Path;
  * @param <S> the type of source code files
  * @author Alexander Yevsyukov
  */
-public abstract class AbstractFolder<F extends AbstractFileName, S extends AbstractSourceFile>
+public abstract class AbstractDirectory<F extends AbstractFileName, S extends AbstractSourceFile>
         extends FsObject {
 
-    protected AbstractFolder(Path path) {
+    protected AbstractDirectory(Path path) {
         super(path);
     }
 

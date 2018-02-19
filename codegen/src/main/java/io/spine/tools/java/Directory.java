@@ -20,7 +20,7 @@
 
 package io.spine.tools.java;
 
-import io.spine.tools.AbstractFolder;
+import io.spine.tools.AbstractDirectory;
 
 import java.nio.file.Path;
 
@@ -31,18 +31,18 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  * @author Alexander Yevsyukov
  */
-public final class Folder extends AbstractFolder<FileName, SourceFile> {
+public final class Directory extends AbstractDirectory<FileName, SourceFile> {
 
-    private Folder(Path path) {
+    private Directory(Path path) {
         super(path);
     }
 
     /**
      * Creates a new instance.
      */
-    static Folder at(Path path) {
+    static Directory at(Path path) {
         checkNotNull(path);
-        return new Folder(path);
+        return new Directory(path);
     }
 
     /**
