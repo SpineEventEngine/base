@@ -26,6 +26,7 @@ import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.ServiceDescriptorProto;
 import com.google.protobuf.Descriptors.FileDescriptor;
+import io.spine.tools.DefaultProject;
 import io.spine.tools.compiler.annotation.check.FieldAnnotationCheck;
 import io.spine.tools.compiler.annotation.check.MainDefinitionAnnotationCheck;
 import io.spine.tools.compiler.annotation.check.NestedTypeFieldsAnnotationCheck;
@@ -41,6 +42,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.util.List;
@@ -59,8 +61,6 @@ import static io.spine.tools.compiler.annotation.given.GivenProtoFile.SPI_MESSAG
 import static io.spine.tools.compiler.annotation.given.GivenProtoFile.SPI_SERVICE;
 import static io.spine.tools.gradle.TaskName.ANNOTATE_PROTO;
 import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
-import static io.spine.tools.gradle.compiler.Extension.getDefaultMainDescriptorsPath;
-import static io.spine.tools.gradle.compiler.Extension.getDefaultMainGenDir;
 import static io.spine.tools.gradle.compiler.Extension.getDefaultMainGenGrpcDir;
 import static java.nio.file.Paths.get;
 
@@ -221,12 +221,13 @@ public class ProtoAnnotatorPluginShould {
     }
 
     private void check(Path sourcePath, SourceCheck check) throws FileNotFoundException {
-        final String projectPath = testProjectDir.getRoot()
-                                                 .getAbsolutePath();
-        final Path fullSourcePath = get(projectPath, getDefaultMainGenDir(), sourcePath.toString());
+        final Path filePath = DefaultProject.at(testProjectDir.getRoot())
+                                            .generated()
+                                            .mainJava()
+                                            .resolve(sourcePath);
         @SuppressWarnings("unchecked")
         final AbstractJavaSource<JavaClassSource> javaSource =
-                Roaster.parse(AbstractJavaSource.class, fullSourcePath.toFile());
+                Roaster.parse(AbstractJavaSource.class, filePath.toFile());
         check.apply(javaSource);
     }
 
@@ -262,14 +263,9 @@ public class ProtoAnnotatorPluginShould {
     }
 
     private FileDescriptorProto getDescriptor(final String fileName) {
-        final String projectPath = testProjectDir.getRoot()
-                                                 .getAbsolutePath();
-        final String descriptorSetPath = projectPath + getDefaultMainDescriptorsPath();
-
-//        final String descriptorSetPath = DefaultProject.at(testProjectDir.getRoot())
-//                                                       .mainDescriptors()
-//                                                       .getAbsolutePath();
-        final FileSet fileSet = FileSet.parse(descriptorSetPath);
+        final File descriptorSet = DefaultProject.at(testProjectDir.getRoot())
+                                                 .mainDescriptors();
+        final FileSet fileSet = FileSet.parse(descriptorSet);
         Optional<FileDescriptor> file = fileSet.tryFind(fileName);
         checkState(file.isPresent(), "Unable to get file descriptor for %s", fileName);
         return file.get()

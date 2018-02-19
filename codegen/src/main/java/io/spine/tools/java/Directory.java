@@ -66,4 +66,12 @@ public final class Directory extends SourceCodeDirectory {
         final SourceFile result = SourceFile.of(filePath);
         return result;
     }
+
+    /**
+     * Obtains the source code path for the passed file.
+     */
+    public Path resolve(Path file) {
+        final Path result = getPath().resolve(file);
+        return result;
+    }
 }

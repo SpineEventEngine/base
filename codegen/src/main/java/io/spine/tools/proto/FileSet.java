@@ -34,6 +34,7 @@ import com.google.protobuf.Descriptors.DescriptorValidationException;
 import com.google.protobuf.Descriptors.FileDescriptor;
 
 import javax.annotation.Nullable;
+import java.io.File;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -66,6 +67,13 @@ public final class FileSet {
      */
     static FileSet newInstance() {
         return new FileSet();
+    }
+
+    /**
+     * Creates a new file set by parsing the passed descriptor set file.
+     */
+    public static FileSet parse(File descriptorSet) {
+        return parse(descriptorSet.getAbsolutePath());
     }
 
     /**

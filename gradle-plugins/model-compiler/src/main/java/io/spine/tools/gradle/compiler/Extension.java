@@ -372,18 +372,8 @@ public class Extension {
     }
 
     @VisibleForTesting
-    public static String getDefaultMainGenDir() {
-        return DEFAULT_MAIN_GEN_DIR;
-    }
-
-    @VisibleForTesting
     public static String getDefaultMainGenGrpcDir() {
         return DEFAULT_MAIN_GEN_GRPC_DIR;
-    }
-
-    @VisibleForTesting
-    public static String getDefaultMainDescriptorsPath() {
-        return DEFAULT_MAIN_DESCRIPTORS_PATH;
     }
 
     @VisibleForTesting

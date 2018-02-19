@@ -28,6 +28,8 @@ import java.nio.file.Path;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
+ * Default project paths.
+ *
  * @author Alexander Yevsyukov
  */
 public final class DefaultProject extends AbstractDirectory {
@@ -47,8 +49,8 @@ public final class DefaultProject extends AbstractDirectory {
         return at(rootDir.toPath());
     }
 
-    public static GeneratedRoot generated(ModuleDir module) {
-        return new GeneratedRoot(module);
+    public GeneratedRoot generated() {
+        return new GeneratedRoot(this);
     }
 
     public File mainDescriptors() {
@@ -74,20 +76,9 @@ public final class DefaultProject extends AbstractDirectory {
 
      */
 
-    public static class ModuleDir extends AbstractDirectory {
-
-        ModuleDir(Path directory) {
-            super(directory);
-        }
-
-        public static ModuleDir at(Path directory) {
-            return new ModuleDir(directory);
-        }
-    }
-
     static class SourceDir extends AbstractDirectory {
 
-        SourceDir(ModuleDir parent, String name) {
+        SourceDir(AbstractDirectory parent, String name) {
             super(parent.getPath()
                         .resolve(name));
         }
@@ -95,15 +86,34 @@ public final class DefaultProject extends AbstractDirectory {
 
     static class SourceRoot extends SourceDir {
 
-        SourceRoot(ModuleDir parent, String name) {
+        private final SourceDir main;
+        private final SourceDir test;
+
+        private final io.spine.tools.java.Directory mainJava;
+        private final io.spine.tools.java.Directory testJava;
+
+        @SuppressWarnings("ThisEscapedInObjectConstruction")
+            // safe as the path is already calculated
+        SourceRoot(DefaultProject parent, String name) {
             super(parent, name);
+            this.main = new SourceDir(this, "main");
+            this.test = new SourceDir(this, "test");
+            this.mainJava = io.spine.tools.java.Directory.rootIn(this.main);
+            this.testJava = io.spine.tools.java.Directory.rootIn(this.test);
         }
 
         /**
-         * A root directory for Java code.
+         * A root directory for main Java code.
          */
-        public io.spine.tools.java.Directory java() {
-            return io.spine.tools.java.Directory.rootIn(this);
+        public io.spine.tools.java.Directory mainJava() {
+            return this.mainJava;
+        }
+
+        /**
+         * A root directory for test Java code.
+         */
+        public io.spine.tools.java.Directory testJava() {
+            return this.testJava;
         }
     }
 
@@ -112,7 +122,7 @@ public final class DefaultProject extends AbstractDirectory {
      */
     static class HandmadeCodeRoot extends SourceRoot {
 
-        HandmadeCodeRoot(ModuleDir parent, String name) {
+        HandmadeCodeRoot(DefaultProject parent, String name) {
             super(parent, name);
         }
 
@@ -121,23 +131,9 @@ public final class DefaultProject extends AbstractDirectory {
         }
     }
 
-    public static final class MainRoot extends HandmadeCodeRoot {
+    public static final class GeneratedRoot extends SourceRoot {
 
-        private MainRoot(ModuleDir parent) {
-            super(parent, "main");
-        }
-    }
-
-    public static final class TestRoot extends HandmadeCodeRoot {
-
-        private TestRoot(ModuleDir parent) {
-            super(parent, "test");
-        }
-    }
-
-    public static final class GeneratedRoot extends SourceDir {
-
-        private GeneratedRoot(ModuleDir parent) {
+        private GeneratedRoot(DefaultProject parent) {
             super(parent, "generated");
         }
     }
