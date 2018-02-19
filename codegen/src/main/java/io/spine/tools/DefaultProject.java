@@ -66,6 +66,10 @@ public final class DefaultProject extends AbstractDirectory {
         return new HandmadeCodeRoot(this, "src");
     }
 
+    public HandmadeCodeRoot test() {
+        return new HandmadeCodeRoot(this, "test");
+    }
+
     static class SourceDir extends SourceCodeDirectory {
 
         SourceDir(AbstractDirectory parent, String name) {
@@ -76,42 +80,30 @@ public final class DefaultProject extends AbstractDirectory {
 
     static class SourceRoot extends SourceDir {
 
-        private final SourceDir main;
-        private final SourceDir test;
-
-        private final io.spine.tools.java.Directory mainJava;
-        private final io.spine.tools.java.Directory testJava;
-
-        @SuppressWarnings("ThisEscapedInObjectConstruction")
-            // safe as the path is already calculated
         SourceRoot(DefaultProject parent, String name) {
             super(parent, name);
-            this.main = new SourceDir(this, "main");
-            this.test = new SourceDir(this, "test");
-            this.mainJava = io.spine.tools.java.Directory.rootIn(this.main);
-            this.testJava = io.spine.tools.java.Directory.rootIn(this.test);
         }
 
         protected SourceDir getMain() {
-            return this.main;
+            return new SourceDir(this, "main");
         }
 
         protected SourceDir getTest() {
-            return this.test;
+            return new SourceDir(this, "test");
         }
 
         /**
          * A root directory for main Java code.
          */
         public io.spine.tools.java.Directory mainJava() {
-            return this.mainJava;
+            return io.spine.tools.java.Directory.rootIn(getMain());
         }
 
         /**
          * A root directory for test Java code.
          */
         public io.spine.tools.java.Directory testJava() {
-            return this.testJava;
+            return io.spine.tools.java.Directory.rootIn(getTest());
         }
     }
 

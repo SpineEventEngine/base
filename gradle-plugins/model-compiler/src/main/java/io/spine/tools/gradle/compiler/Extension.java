@@ -76,8 +76,6 @@ public class Extension {
     private static final String DEFAULT_DESCRIPTORS_DIR = "/build/descriptors/";
     private static final String DEFAULT_MAIN_DESCRIPTORS_PATH =
             DEFAULT_DESCRIPTORS_DIR + FileDescriptors.MAIN_FILE;
-    private static final String DEFAULT_TEST_PROTO_SRC_DIR = "/src/test/proto";
-    private static final String DEFAULT_TEST_GEN_RES_DIR = DEFAULT_GEN_ROOT_DIR + "/test/resources";
     private static final String DEFAULT_TEST_GEN_DIR = DEFAULT_GEN_ROOT_DIR + "/test/java";
     private static final String DEFAULT_TEST_GEN_GRPC_DIR = DEFAULT_GEN_ROOT_DIR + "/test/grpc";
     private static final String DEFAULT_TEST_GEN_SPINE_DIR = DEFAULT_GEN_ROOT_DIR + "/test/spine";
@@ -221,12 +219,16 @@ public class Extension {
 
     public static String getTestTargetGenResourcesDir(Project project) {
         return pathOrDefault(spineProtobuf(project).testTargetGenResourcesDir,
-                             root(project) + DEFAULT_TEST_GEN_RES_DIR);
+                             def(project).generated()
+                                         .mainResources()
+        );
     }
 
     public static String getTestProtoSrcDir(Project project) {
         return pathOrDefault(spineProtobuf(project).testProtoSrcDir,
-                             root(project) + DEFAULT_TEST_PROTO_SRC_DIR);
+                             def(project).test()
+                                         .proto()
+        );
     }
 
     public static String getTestGenGrpcDir(Project project) {
