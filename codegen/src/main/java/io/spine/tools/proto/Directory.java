@@ -28,6 +28,8 @@ import java.nio.file.Path;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
+ * A proto source code directory.
+ *
  * @author Alexander Yevsyukov
  */
 public final class Directory extends SourceCodeDirectory {

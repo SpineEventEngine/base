@@ -76,11 +76,17 @@ public final class DefaultProject extends AbstractDirectory {
 
      */
 
-    static class SourceDir extends AbstractDirectory {
+    public static class SourceDir extends AbstractDirectory {
 
         SourceDir(AbstractDirectory parent, String name) {
             super(parent.getPath()
                         .resolve(name));
+        }
+
+        public Path resolve(SourceCodeDirectory dir) {
+            checkNotNull(dir);
+            final Path result = getPath().resolve(dir.getPath());
+            return result;
         }
     }
 
@@ -100,6 +106,14 @@ public final class DefaultProject extends AbstractDirectory {
             this.test = new SourceDir(this, "test");
             this.mainJava = io.spine.tools.java.Directory.rootIn(this.main);
             this.testJava = io.spine.tools.java.Directory.rootIn(this.test);
+        }
+
+        protected SourceDir getMain() {
+            return this.main;
+        }
+
+        protected SourceDir getTest() {
+            return this.test;
         }
 
         /**
@@ -133,8 +147,18 @@ public final class DefaultProject extends AbstractDirectory {
 
     public static final class GeneratedRoot extends SourceRoot {
 
+        public static final String SPINE_DIR = "spine";
+
         private GeneratedRoot(DefaultProject parent) {
             super(parent, "generated");
+        }
+
+        public SourceDir mainSpine() {
+            return new SourceDir(this.getMain(), SPINE_DIR);
+        }
+
+        public SourceDir testSpine() {
+            return new SourceDir(this.getTest(), SPINE_DIR);
         }
     }
 

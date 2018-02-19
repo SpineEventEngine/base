@@ -21,13 +21,16 @@
 package io.spine.tools.gradle.compiler.rejection.given;
 
 import com.sun.javadoc.RootDoc;
+import io.spine.tools.DefaultProject;
 import io.spine.tools.gradle.given.GradleProject;
+import io.spine.tools.java.FileName;
+import io.spine.tools.java.PackageName;
 import io.spine.tools.proto.FieldName;
 import org.junit.rules.TemporaryFolder;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
-
-import static io.spine.tools.gradle.compiler.Extension.getDefaultMainGenSpineDir;
 
 /**
  * @author Dmytro Grankin
@@ -37,7 +40,6 @@ public class Given {
     /** Javadocs received from {@link RootDoc} contain "\n" line separator. */
     @SuppressWarnings("HardcodedLineSeparator")
     private static final String JAVADOC_LINE_SEPARATOR = "\n";
-    private static final String JAVA_PACKAGE = "io.spine.sample.rejections";
     private static final String CLASS_COMMENT =
             "The rejection definition to test Javadoc generation.";
     private static final String REJECTION_NAME = "Rejection";
@@ -45,6 +47,9 @@ public class Given {
     private static final String FIRST_FIELD_NAME = "id";
     private static final String SECOND_FIELD_COMMENT = "The rejection message.";
     private static final String SECOND_FIELD_NAME = "rejection_message";
+
+    private static final PackageName JAVA_PACKAGE = PackageName.of("io.spine.sample.rejections");
+    private static final FileName REJECTION_FILE_NAME = FileName.forType(REJECTION_NAME);
 
     /** Prevents instantiation of this utility class. */
     private Given() {
@@ -59,9 +64,12 @@ public class Given {
     }
 
     public static String rejectionsJavadocSourceName() {
-        final String packageAsDirectory = JAVA_PACKAGE.replace('.', '/');
-        return getDefaultMainGenSpineDir() + '/' + packageAsDirectory + '/'
-                + REJECTION_NAME + ".java";
+        final Path fileName = DefaultProject.at(Paths.get("/"))
+                                            .generated()
+                                            .mainSpine()
+                                            .resolve(JAVA_PACKAGE.toDirectory())
+                                            .resolve(REJECTION_FILE_NAME.value());
+        return fileName.toString();
     }
 
     private static Iterable<String> rejectionWithJavadoc() {

@@ -64,8 +64,7 @@ public class RejectionGenPluginShould {
     @Test
     public void generate_rejection_javadoc() {
 
-        final GradleProject project =
-                Given.newProjectWithRejectionsJavadoc(testProjectDir);
+        final GradleProject project = Given.newProjectWithRejectionsJavadoc(testProjectDir);
         project.executeTask(COMPILE_JAVA);
 
         final RootDoc root = RootDocReceiver.getRootDoc(testProjectDir,

@@ -72,7 +72,7 @@ public final class SourceFile extends AbstractSourceFile {
     private static Directory getFolder(FileDescriptorProto file) {
         checkNotNull(file);
         final PackageName packageName = PackageName.resolve(file);
-        final Directory result = packageName.toFolder();
+        final Directory result = packageName.toDirectory();
         return result;
     }
 
@@ -159,7 +159,7 @@ public final class SourceFile extends AbstractSourceFile {
      */
     public static SourceFile forType(String javaPackage, String typename) {
         final SourceFile result = PackageName.of(javaPackage)
-                                             .toFolder()
+                                             .toDirectory()
                                              .resolve(FileName.forType(typename));
         return result;
     }
