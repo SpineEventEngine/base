@@ -132,23 +132,27 @@ public final class DefaultProject extends AbstractDirectory {
         }
 
         public SourceCodeDirectory mainSpine() {
-            return new SourceDir(this.getMain(), SPINE_DIR);
+            return new SourceDir(getMain(), SPINE_DIR);
         }
 
         public SourceCodeDirectory testSpine() {
-            return new SourceDir(this.getTest(), SPINE_DIR);
+            return new SourceDir(getTest(), SPINE_DIR);
         }
 
         public SourceCodeDirectory mainGrpc() {
-            return new SourceDir(this.getMain(), GRPC_DIR);
+            return new SourceDir(getMain(), GRPC_DIR);
+        }
+
+        public SourceCodeDirectory testGrpc() {
+            return new SourceDir(getMain(), GRPC_DIR);
         }
 
         public SourceCodeDirectory mainResources() {
-            return new SourceDir(this.getMain(), RESOURCES_DIR);
+            return new SourceDir(getMain(), RESOURCES_DIR);
         }
 
         public SourceCodeDirectory testResources() {
-            return new SourceDir(this.getTest(), RESOURCES_DIR);
+            return new SourceDir(getTest(), RESOURCES_DIR);
         }
     }
 

@@ -220,25 +220,25 @@ public class Extension {
     public static String getTestTargetGenResourcesDir(Project project) {
         return pathOrDefault(spineProtobuf(project).testTargetGenResourcesDir,
                              def(project).generated()
-                                         .mainResources()
-        );
+                                         .mainResources());
     }
 
     public static String getTestProtoSrcDir(Project project) {
         return pathOrDefault(spineProtobuf(project).testProtoSrcDir,
                              def(project).test()
-                                         .proto()
-        );
+                                         .proto());
     }
 
     public static String getTestGenGrpcDir(Project project) {
         return pathOrDefault(spineProtobuf(project).testGenGrpcDir,
-                             root(project) + DEFAULT_TEST_GEN_GRPC_DIR);
+                             def(project).generated()
+                                         .testGrpc());
     }
 
     public static String getTestGenProtoDir(Project project) {
         return pathOrDefault(spineProtobuf(project).testGenProtoDir,
-                             root(project) + DEFAULT_TEST_GEN_DIR);
+                             def(project).generated()
+                                         .testJava());
     }
 
     public static String getMainDescriptorSetPath(Project project) {
