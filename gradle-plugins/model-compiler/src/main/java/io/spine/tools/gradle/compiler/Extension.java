@@ -22,6 +22,7 @@ package io.spine.tools.gradle.compiler;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import io.spine.annotation.Internal;
+import io.spine.tools.DefaultProject;
 import io.spine.tools.Indent;
 import io.spine.tools.proto.FileDescriptors;
 import org.gradle.api.Project;
@@ -70,23 +71,18 @@ public class Extension {
     @Internal
     public static final String SPINE_BUILD_ARTIFACT_STORAGE_DIR = SPINE_BUILD_ARTIFACT_DIR;
 
-
     private static final String DEFAULT_GEN_ROOT_DIR = "/generated";
-    private static final String DEFAULT_MAIN_PROTO_SRC_DIR = "/src/main/proto";
-    private static final String DEFAULT_MAIN_GEN_RES_DIR = DEFAULT_GEN_ROOT_DIR + "/main/resources";
-    private static final String DEFAULT_MAIN_GEN_DIR = DEFAULT_GEN_ROOT_DIR + "/main/java";
-    private static final String DEFAULT_MAIN_GEN_GRPC_DIR = DEFAULT_GEN_ROOT_DIR + "/main/grpc";
     private static final String DEFAULT_MAIN_GEN_SPINE_DIR = DEFAULT_GEN_ROOT_DIR + "/main/spine";
     private static final String DEFAULT_DESCRIPTORS_DIR = "/build/descriptors/";
-    private static final String DEFAULT_MAIN_DESCRIPTORS_PATH = DEFAULT_DESCRIPTORS_DIR +
-            FileDescriptors.MAIN_FILE;
+    private static final String DEFAULT_MAIN_DESCRIPTORS_PATH =
+            DEFAULT_DESCRIPTORS_DIR + FileDescriptors.MAIN_FILE;
     private static final String DEFAULT_TEST_PROTO_SRC_DIR = "/src/test/proto";
     private static final String DEFAULT_TEST_GEN_RES_DIR = DEFAULT_GEN_ROOT_DIR + "/test/resources";
     private static final String DEFAULT_TEST_GEN_DIR = DEFAULT_GEN_ROOT_DIR + "/test/java";
     private static final String DEFAULT_TEST_GEN_GRPC_DIR = DEFAULT_GEN_ROOT_DIR + "/test/grpc";
     private static final String DEFAULT_TEST_GEN_SPINE_DIR = DEFAULT_GEN_ROOT_DIR + "/test/spine";
-    private static final String DEFAULT_TEST_DESCRIPTORS_PATH = DEFAULT_DESCRIPTORS_DIR +
-            FileDescriptors.TEST_FILE;
+    private static final String DEFAULT_TEST_DESCRIPTORS_PATH =
+            DEFAULT_DESCRIPTORS_DIR + FileDescriptors.TEST_FILE;
 
     /**
      * The absolute path to the main target generated resources directory.
@@ -194,24 +190,33 @@ public class Extension {
      */
     public List<String> dirsToClean = new LinkedList<>();
 
+    private static DefaultProject def(Project project) {
+        return DefaultProject.at(project.getRootDir());
+    }
+
     public static String getMainProtoSrcDir(Project project) {
+
         return pathOrDefault(spineProtobuf(project).mainProtoSrcDir,
-                             root(project) + DEFAULT_MAIN_PROTO_SRC_DIR);
+                             def(project).src()
+                                         .proto());
     }
 
     public static String getMainTargetGenResourcesDir(Project project) {
         return pathOrDefault(spineProtobuf(project).mainTargetGenResourcesDir,
-                             root(project) + DEFAULT_MAIN_GEN_RES_DIR);
+                             def(project).generated()
+                                         .mainResources());
     }
 
     public static String getMainGenGrpcDir(Project project) {
         return pathOrDefault(spineProtobuf(project).mainGenGrpcDir,
-                             root(project) + DEFAULT_MAIN_GEN_GRPC_DIR);
+                             def(project).generated()
+                                         .mainGrpc());
     }
 
     public static String getMainGenProtoDir(Project project) {
         return pathOrDefault(spineProtobuf(project).mainGenProtoDir,
-                             root(project) + DEFAULT_MAIN_GEN_DIR);
+                             def(project).generated()
+                                         .mainJava());
     }
 
     public static String getTestTargetGenResourcesDir(Project project) {
@@ -264,9 +269,9 @@ public class Extension {
                              root(project) + DEFAULT_TEST_GEN_SPINE_DIR);
     }
 
-    private static String pathOrDefault(String path, String defaultValue) {
+    private static String pathOrDefault(String path, Object defaultValue) {
         return isNullOrEmpty(path)
-                ? defaultValue
+                ? defaultValue.toString()
                 : path;
     }
 

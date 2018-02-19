@@ -62,19 +62,9 @@ public final class DefaultProject extends AbstractDirectory {
         return result;
     }
 
-    /*
-        DefaultProject.generated()
-        DefaultProject.generated().resources()
-        DefaultProject.generated().mainJava()
-        DefaultProject.generated().mainGrpc()
-        DefaultProject.generated().mainSpine()
-
-        DefaultProject.mainProto()
-        DefaultProject.testProto()
-
-        DefaultProject.generated().testSpine()
-
-     */
+    public HandmadeCodeRoot src() {
+        return new HandmadeCodeRoot(this, "src");
+    }
 
     static class SourceDir extends SourceCodeDirectory {
 
@@ -128,7 +118,7 @@ public final class DefaultProject extends AbstractDirectory {
     /**
      * A root source code directory for manually written code.
      */
-    static class HandmadeCodeRoot extends SourceRoot {
+    public static class HandmadeCodeRoot extends SourceRoot {
 
         HandmadeCodeRoot(DefaultProject parent, String name) {
             super(parent, name);
@@ -172,9 +162,12 @@ public final class DefaultProject extends AbstractDirectory {
 
     public static final class BuildRoot extends AbstractDirectory {
 
+        @SuppressWarnings("DuplicateStringLiteralInspection") // different meanings around the code.
+        private static final String DIR_NAME = "build";
+
         BuildRoot(DefaultProject module) {
             super(module.getPath()
-                        .resolve("build"));
+                        .resolve(DIR_NAME));
         }
 
         public static BuildRoot of(DefaultProject project) {
