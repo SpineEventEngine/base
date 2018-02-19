@@ -70,6 +70,15 @@ public final class DefaultProject extends AbstractDirectory {
         return new HandmadeCodeRoot(this, "test");
     }
 
+    public File testDescriptors() {
+        final BuildRoot build = BuildRoot.of(this);
+        final File result = build.descriptors()
+                                 .getPath()
+                                 .resolve(FileDescriptors.TEST_FILE)
+                                 .toFile();
+        return result;
+    }
+
     static class SourceDir extends SourceCodeDirectory {
 
         SourceDir(AbstractDirectory parent, String name) {

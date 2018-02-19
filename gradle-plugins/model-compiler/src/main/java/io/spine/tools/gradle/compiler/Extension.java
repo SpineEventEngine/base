@@ -24,7 +24,6 @@ import com.google.common.collect.ImmutableList;
 import io.spine.annotation.Internal;
 import io.spine.tools.DefaultProject;
 import io.spine.tools.Indent;
-import io.spine.tools.proto.FileDescriptors;
 import org.gradle.api.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,14 +72,7 @@ public class Extension {
 
     private static final String DEFAULT_GEN_ROOT_DIR = "/generated";
     private static final String DEFAULT_MAIN_GEN_SPINE_DIR = DEFAULT_GEN_ROOT_DIR + "/main/spine";
-    private static final String DEFAULT_DESCRIPTORS_DIR = "/build/descriptors/";
-    private static final String DEFAULT_MAIN_DESCRIPTORS_PATH =
-            DEFAULT_DESCRIPTORS_DIR + FileDescriptors.MAIN_FILE;
-    private static final String DEFAULT_TEST_GEN_DIR = DEFAULT_GEN_ROOT_DIR + "/test/java";
-    private static final String DEFAULT_TEST_GEN_GRPC_DIR = DEFAULT_GEN_ROOT_DIR + "/test/grpc";
     private static final String DEFAULT_TEST_GEN_SPINE_DIR = DEFAULT_GEN_ROOT_DIR + "/test/spine";
-    private static final String DEFAULT_TEST_DESCRIPTORS_PATH =
-            DEFAULT_DESCRIPTORS_DIR + FileDescriptors.TEST_FILE;
 
     /**
      * The absolute path to the main target generated resources directory.
@@ -243,12 +235,12 @@ public class Extension {
 
     public static String getMainDescriptorSetPath(Project project) {
         return pathOrDefault(spineProtobuf(project).mainDescriptorSetPath,
-                             root(project) + DEFAULT_MAIN_DESCRIPTORS_PATH);
+                             def(project).mainDescriptors());
     }
 
     public static String getTestDescriptorSetPath(Project project) {
         return pathOrDefault(spineProtobuf(project).testDescriptorSetPath,
-                             root(project) + DEFAULT_TEST_DESCRIPTORS_PATH);
+                             def(project).testDescriptors());
     }
 
     public static String getTargetGenRejectionsRootDir(Project project) {
