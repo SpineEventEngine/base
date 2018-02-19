@@ -70,10 +70,6 @@ public class Extension {
     @Internal
     public static final String SPINE_BUILD_ARTIFACT_STORAGE_DIR = SPINE_BUILD_ARTIFACT_DIR;
 
-    private static final String DEFAULT_GEN_ROOT_DIR = "/generated";
-    private static final String DEFAULT_MAIN_GEN_SPINE_DIR = DEFAULT_GEN_ROOT_DIR + "/main/spine";
-    private static final String DEFAULT_TEST_GEN_SPINE_DIR = DEFAULT_GEN_ROOT_DIR + "/test/spine";
-
     /**
      * The absolute path to the main target generated resources directory.
      */
@@ -245,22 +241,26 @@ public class Extension {
 
     public static String getTargetGenRejectionsRootDir(Project project) {
         return pathOrDefault(spineProtobuf(project).targetGenRejectionsRootDir,
-                             root(project) + DEFAULT_MAIN_GEN_SPINE_DIR);
+                             def(project).generated()
+                                         .mainSpine());
     }
 
     public static String getTargetTestGenRejectionsRootDir(Project project) {
         return pathOrDefault(spineProtobuf(project).targetTestGenRejectionsRootDir,
-                             root(project) + DEFAULT_TEST_GEN_SPINE_DIR);
+                             def(project).generated()
+                                         .testSpine());
     }
 
     public static String getTargetGenValidatorsRootDir(Project project) {
         return pathOrDefault(spineProtobuf(project).targetGenVBuildersRootDir,
-                             root(project) + DEFAULT_MAIN_GEN_SPINE_DIR);
+                             def(project).generated()
+                                         .mainSpine());
     }
 
     public static String getTargetTestGenValidatorsRootDir(Project project) {
         return pathOrDefault(spineProtobuf(project).targetTestGenVBuildersRootDir,
-                             root(project) + DEFAULT_TEST_GEN_SPINE_DIR);
+                             def(project).generated()
+                                         .testSpine());
     }
 
     private static String pathOrDefault(String path, Object defaultValue) {
@@ -320,7 +320,8 @@ public class Extension {
             log().debug("Found directory to clean: {}", singleDir);
             dirsToClean.add(singleDir);
         } else {
-            final String defaultValue = root(project) + DEFAULT_GEN_ROOT_DIR;
+            final String defaultValue = def(project).generated()
+                                                    .toString();
             log().debug("Default directory to clean: {}", defaultValue);
             dirsToClean.add(defaultValue);
         }
@@ -357,11 +358,6 @@ public class Extension {
         } else {
             return Optional.absent();
         }
-    }
-
-    private static String root(Project project) {
-        return project.getProjectDir()
-                      .getAbsolutePath();
     }
 
     private static Extension spineProtobuf(Project project) {
