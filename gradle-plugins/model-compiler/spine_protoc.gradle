@@ -1,8 +1,5 @@
-import java.nio.file.Files
-import java.nio.file.StandardCopyOption
-
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -21,6 +18,9 @@ import java.nio.file.StandardCopyOption
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import java.nio.file.Files
+import java.nio.file.StandardCopyOption
+
 /**
  * This script is a plugin applied to all the Gradle projects, to which the Spine model compiler
  * plugin is applied.
@@ -31,7 +31,7 @@ import java.nio.file.StandardCopyOption
  * the required data. Thus, it is OK for this file to have compilation errors.
  */
 
-// Template for the versions injection. See model-compiler:prepareProtocConfig.
+// Injected version variables. See model-compiler:prepareProtocConfig.
 final def spineModelCompilerVersion = @baseVersion@
 final def protobufVersion = @pbVersion@
 final def gRpcVersion = @gRPCVersion@
