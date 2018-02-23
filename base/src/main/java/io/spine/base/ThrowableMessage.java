@@ -31,7 +31,7 @@ import io.spine.string.Stringifiers;
 import javax.annotation.Nullable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.time.Time.getCurrentTime;
+import static com.google.protobuf.util.Timestamps.fromMillis;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
@@ -63,7 +63,7 @@ public abstract class ThrowableMessage extends Throwable {
     protected ThrowableMessage(GeneratedMessageV3 message) {
         super();
         this.message = checkNotNull(message);
-        this.timestamp = getCurrentTime();
+        this.timestamp = fromMillis(System.currentTimeMillis());
     }
 
     public Message getMessageThrown() {

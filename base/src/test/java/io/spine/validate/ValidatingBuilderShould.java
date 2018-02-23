@@ -11,8 +11,8 @@ import org.junit.Test;
 import static com.google.protobuf.ByteString.copyFrom;
 import static com.google.protobuf.util.Durations.fromSeconds;
 import static com.google.protobuf.util.Timestamps.add;
+import static com.google.protobuf.util.Timestamps.fromMillis;
 import static io.spine.Identifier.newUuid;
-import static io.spine.time.Time.getCurrentTime;
 
 /**
  * A test suite covering the {@link ValidatingBuilder} behavior.
@@ -136,11 +136,15 @@ public class ValidatingBuilderShould {
     }
 
     private static Timestamp timeInPast() {
-        return add(getCurrentTime(), fromSeconds(-1000L));
+        return add(currentTime(), fromSeconds(-1000L));
     }
 
     private static Timestamp timeInFuture() {
-        return add(getCurrentTime(), fromSeconds(1000L));
+        return add(currentTime(), fromSeconds(1000L));
+    }
+
+    private static Timestamp currentTime() {
+        return fromMillis(System.currentTimeMillis());
     }
 
     private static Task task() {

@@ -30,12 +30,12 @@ import io.spine.option.TimeOption;
 
 import java.util.List;
 
+import static com.google.protobuf.util.Timestamps.fromMillis;
 import static io.spine.option.Time.FUTURE;
 import static io.spine.option.Time.TIME_UNDEFINED;
 import static io.spine.protobuf.AnyPacker.pack;
-import static io.spine.time.Time.getCurrentTime;
-import static io.spine.time.Timestamps2.isLaterThan;
 import static io.spine.validate.Validate.isDefault;
+import static java.lang.System.currentTimeMillis;
 
 /**
  * Validates fields of type {@link Message}.
@@ -104,7 +104,7 @@ class MessageFieldValidator extends FieldValidator<Message> {
         if (when == TIME_UNDEFINED) {
             return;
         }
-        final Timestamp now = getCurrentTime();
+        final Timestamp now = fromMillis(currentTimeMillis());
         for (Message value : getValues()) {
             final Timestamp time = (Timestamp) value;
             if (isTimeInvalid(time, when, now)) {
@@ -129,6 +129,14 @@ class MessageFieldValidator extends FieldValidator<Message> {
                                 : isLaterThan(now, /*than*/ timeToCheck);
         final boolean isInvalid = !isValid;
         return isInvalid;
+    }
+
+    private static boolean isLaterThan(Timestamp t1, Timestamp t2) {
+        int result = Long.compare(t1.getSeconds(), t2.getSeconds());
+        result = (result == 0)
+                ? Integer.compare(t1.getNanos(), t2.getNanos())
+                : result;
+        return result > 0;
     }
 
     private ConstraintViolation newTimeViolation(Timestamp fieldValue) {
