@@ -34,7 +34,7 @@ import static java.nio.file.Files.exists;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Tests the {@code spine_protoc.gradle} plugin.
+ * Tests the {@code spine-protoc.gradle} plugin.
  *
  * @author Dmytro Dashenkov
  */

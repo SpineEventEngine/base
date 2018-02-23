@@ -44,7 +44,7 @@ import static com.google.common.collect.ImmutableMap.of;
  */
 public class ProtocPluginImporter extends SpinePlugin {
 
-    private static final String PROTOC_CONFIG_FILE_NAME = "spine_protoc.gradle";
+    private static final String PROTOC_CONFIG_FILE_NAME = "spine-protoc.gradle";
 
     @SuppressWarnings("DuplicateStringLiteralInspection") // The same string has different semantics
     private static final String PROTOBUF_PLUGIN_ID = "com.google.protobuf";
@@ -65,7 +65,7 @@ public class ProtocPluginImporter extends SpinePlugin {
     }
 
     /**
-     * Generates the {@code spine_protoc.gradle} file in a temporary folder.
+     * Generates the {@code spine-protoc.gradle} file in a temporary folder.
      *
      * <p>The file is copied from the module resources into a randomly-generated one-time
      * location.
