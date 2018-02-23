@@ -24,6 +24,7 @@ import com.google.common.escape.Escaper;
 import com.google.common.escape.Escapers;
 import com.google.protobuf.Timestamp;
 import com.google.protobuf.util.Timestamps;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.junit.Test;
 
 import java.text.ParseException;
@@ -41,17 +42,16 @@ import static org.junit.Assert.assertEquals;
 public class MapStringifierShould {
 
     @Test
-    public void convert_string_to_map() throws ParseException {
-        final String rawMap = "\"1\":\"1972-01-01T10\\:00\\:20.021-05\\:00\"," +
-                              "\"2\":\"1972-01-01T10\\:00\\:20.021-05\\:00\"";
-        final Stringifier<Map<Long, Timestamp>> stringifier =
-                Stringifiers.newForMapOf(Long.class, Timestamp.class);
-        final Map<Long, Timestamp> actualMap = stringifier.fromString(rawMap);
-        final Map<Long, Timestamp> expectedMap = newHashMap();
+    public void convert_string_to_map() {
+        final String rawMap = "\"1\":\"true\"," +
+                              "\"2\":\"false\"";
+        final Stringifier<Map<Long, Boolean>> stringifier =
+                Stringifiers.newForMapOf(Long.class, Boolean.class);
+        final Map<Long, Boolean> actualMap = stringifier.fromString(rawMap);
+        final Map<Long, Boolean> expectedMap = newHashMap();
 
-        final String timeToParse = "1972-01-01T10:00:20.021-05:00";
-        expectedMap.put(1L, Timestamps.parse(timeToParse));
-        expectedMap.put(2L, Timestamps.parse(timeToParse));
+        expectedMap.put(1L, true);
+        expectedMap.put(2L, false);
         assertThat(actualMap, is(expectedMap));
     }
 

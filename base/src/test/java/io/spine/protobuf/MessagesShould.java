@@ -26,9 +26,9 @@ import com.google.protobuf.StringValue;
 import com.google.protobuf.Timestamp;
 import io.spine.test.TestValues;
 import io.spine.test.messages.MessageWithStringValue;
-import io.spine.time.Time;
 import org.junit.Test;
 
+import static com.google.protobuf.util.Timestamps.fromMillis;
 import static io.spine.protobuf.AnyPacker.unpack;
 import static io.spine.protobuf.Messages.ensureMessage;
 import static io.spine.protobuf.TypeConverter.toAny;
@@ -54,7 +54,7 @@ public class MessagesShould {
 
     @Test
     public void pack_to_Any() {
-        final Timestamp timestamp = Time.getCurrentTime();
+        final Timestamp timestamp = fromMillis(System.currentTimeMillis());
         assertEquals(timestamp, unpack(AnyPacker.pack(timestamp)));
     }
 

@@ -4,9 +4,9 @@ import com.google.protobuf.Empty;
 import com.google.protobuf.StringValue;
 import com.google.protobuf.Timestamp;
 import io.spine.test.Tests;
-import io.spine.time.Time;
 import org.junit.Test;
 
+import static com.google.protobuf.util.Timestamps.fromMillis;
 import static io.spine.test.TestValues.newUuidValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -34,7 +34,7 @@ public class MessageFieldExceptionShould {
 
     @Test
     public void contains_instance_without_text() {
-        final Timestamp protobufMessage = Time.getCurrentTime();
+        final Timestamp protobufMessage = fromMillis(System.currentTimeMillis());
         final MessageFieldException exception = new MessageFieldException(protobufMessage);
 
         assertEquals(protobufMessage, exception.getProtobufMessage());
