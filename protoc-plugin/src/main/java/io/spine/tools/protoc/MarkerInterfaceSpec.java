@@ -52,18 +52,8 @@ final class MarkerInterfaceSpec {
         this.name = name;
     }
 
-    /**
-     * Parses a {@code MarkerInterfaceSpec} from the given type fully qualified name.
-     */
-    private static MarkerInterfaceSpec from(String fullName) {
-        final int index = fullName.lastIndexOf(DELIMITER);
-        final String name = fullName.substring(index + 1);
-        final String packageName = fullName.substring(0, index);
-        return new MarkerInterfaceSpec(packageName, name);
-    }
-
-    static MarkerInterfaceSpec prepareInterfaceFqn(String optionValue,
-                                                   FileDescriptorProto srcFile) {
+    static MarkerInterfaceSpec prepareInterface(String optionValue,
+                                                FileDescriptorProto srcFile) {
         final MarkerInterfaceSpec spec;
         if (optionValue.contains(DELIMITER)) {
             spec = from(optionValue);
@@ -73,6 +63,16 @@ final class MarkerInterfaceSpec {
             spec = new MarkerInterfaceSpec(javaPackage, optionValue);
         }
         return spec;
+    }
+
+    /**
+     * Parses a {@code MarkerInterfaceSpec} from the given type fully qualified name.
+     */
+    private static MarkerInterfaceSpec from(String fullName) {
+        final int index = fullName.lastIndexOf(DELIMITER);
+        final String name = fullName.substring(index + 1);
+        final String packageName = fullName.substring(0, index);
+        return new MarkerInterfaceSpec(packageName, name);
     }
 
     /**

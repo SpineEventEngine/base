@@ -42,7 +42,7 @@ import static com.google.common.collect.ImmutableSet.of;
 import static io.spine.option.OptionsProto.everyIs;
 import static io.spine.option.OptionsProto.is;
 import static io.spine.tools.java.PackageName.DELIMITER;
-import static io.spine.tools.protoc.MarkerInterfaceSpec.prepareInterfaceFqn;
+import static io.spine.tools.protoc.MarkerInterfaceSpec.prepareInterface;
 import static java.lang.String.format;
 
 /**
@@ -81,14 +81,8 @@ final class MessageAndInterface {
     private static MessageAndInterface generateFile(FileDescriptorProto file,
                                                     DescriptorProto msg,
                                                     String optionValue) {
-        final String fileName = file.getOptions()
-                                    .getJavaMultipleFiles()
-                ? msg.getName()
-                : resolveName(file);
-        final String javaPackage = PackageName.resolve(file)
-                                              .value();
-        final File.Builder srcFile = prepareFile(fileName, javaPackage);
-        final MarkerInterfaceSpec interfaceSpec = prepareInterfaceFqn(optionValue, file);
+        final MarkerInterfaceSpec interfaceSpec = prepareInterface(optionValue, file);
+        final File.Builder srcFile = prepareFile(file, msg);
         final String messageFqn = file.getPackage() + DELIMITER + msg.getName();
         final File messageFile = implementInterface(srcFile,
                                                     interfaceSpec.getFqn(),
@@ -101,6 +95,14 @@ final class MessageAndInterface {
                                        .build();
         final MessageAndInterface result = new MessageAndInterface(messageFile, interfaceFile);
         return result;
+    }
+
+    private static String toTypeName(FileDescriptorProto file, DescriptorProto msg) {
+        final boolean multipleFiles = file.getOptions()
+                                              .getJavaMultipleFiles();
+        return multipleFiles
+                ? msg.getName()
+                : resolveName(file);
     }
 
     private static Optional<String> getEveryIs(FileDescriptorProto descriptor) {
@@ -162,7 +164,11 @@ final class MessageAndInterface {
         return name;
     }
 
-    private static File.Builder prepareFile(String messageName, String javaPackage) {
+    private static File.Builder prepareFile(FileDescriptorProto file, DescriptorProto msg) {
+        final String javaPackage = PackageName.resolve(file)
+                                              .value();
+        final String messageName = toTypeName(file, msg);
+
         final String fileName = SourceFile.forType(javaPackage, messageName)
                                           .toString();
         final File.Builder srcFile = File.newBuilder()

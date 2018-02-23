@@ -79,7 +79,8 @@ public class MarkerInterfaceGenerator extends SpineProtoGenerator {
     protected Collection<File> processMessage(FileDescriptorProto file, DescriptorProto message) {
         final Optional<MessageAndInterface> fromMsgOption = scanMsgOption(file, message);
         if (fromMsgOption.isPresent()) {
-            return fromMsgOption.get().asSet();
+            return fromMsgOption.get()
+                                .asSet();
         }
 
         final Optional<MessageAndInterface> fromFileOption = scanFileOption(file, message);
@@ -87,6 +88,7 @@ public class MarkerInterfaceGenerator extends SpineProtoGenerator {
             return fromFileOption.get()
                                  .asSet();
         }
+
         return of();
     }
 
