@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -26,8 +26,6 @@ import io.spine.annotation.Internal;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.protobuf.util.Timestamps.fromMillis;
-import static io.spine.validate.Validate.checkPositive;
-import static java.lang.String.format;
 
 /**
  * Utilities for working with time information.
@@ -51,20 +49,6 @@ public class Time {
     /** The count of microseconds in one second. */
     public static final int MICROS_PER_SECOND = 1_000_000;
 
-    /** The count of seconds in one minute. */
-    public static final int SECONDS_PER_MINUTE = 60;
-
-    /** The count of seconds in one minute. */
-    public static final int SECONDS_PER_HOUR = 3600;
-
-    /** The count of minutes in one hour. */
-    public static final int MINUTES_PER_HOUR = 60;
-
-    /** The count of hours per day. */
-    public static final int HOURS_PER_DAY = 24;
-
-    private static final int FEBRUARY_MIN = 28;
-
     private static final ThreadLocal<Provider> timeProvider = new ThreadLocal<Provider>() {
         @Override
         protected Provider initialValue() {
@@ -72,58 +56,9 @@ public class Time {
         }
     };
 
-
     /** Prevents instantiation of this utility class. */
     private Time() {
-    }
-
-    /**
-     * Obtains a number of days in the passed month of the year.
-     */
-    public static int daysInMonth(int year, MonthOfYear month) {
-        final int monthNumber = month.getNumber();
-        final int days;
-        if (isLeapYear(year) && monthNumber == 2){
-            return FEBRUARY_MIN + 1;
-        }
-        days = FEBRUARY_MIN + ((0x3bbeecc >> (monthNumber * 2)) & 3);
-        return days;
-    }
-
-    /**
-     * Ensures that the passed date is valid.
-     *
-     * @throws IllegalArgumentException if
-     * <ul>
-     *     <li>the year is less or equal zero,
-     *     <li>the month is {@code UNDEFINED},
-     *     <li>the day is less or equal zero or greater than can be in the month.
-     * </ul>
-     */
-    public static void checkDate(int year, MonthOfYear month, int day) {
-        checkPositive(year);
-        checkNotNull(month);
-        checkPositive(month.getNumber());
-        checkPositive(day);
-
-        final int daysInMonth = daysInMonth(year, month);
-
-        if (day > daysInMonth) {
-            final String errMsg = format(
-                    "A number of days cannot be more than %d, for this month and year.",
-                    daysInMonth);
-            throw new IllegalArgumentException(errMsg);
-        }
-    }
-
-    /**
-     * Tests whether the passed year is a leap one.
-     *
-     * @return {@code true} for a leap year, {@code false} otherwise
-     */
-    @SuppressWarnings("MagicNumber") // The number is part of leap year calc.
-    public static boolean isLeapYear(int year) {
-        return year % 4 == 0 && year % 100 != 0 || year % 400 == 0;
+        // Do nothing.
     }
 
     /**
