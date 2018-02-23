@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -30,11 +30,10 @@ import io.spine.option.TimeOption;
 
 import java.util.List;
 
+import static io.spine.time.Time.getCurrentTime;
 import static io.spine.option.Time.FUTURE;
 import static io.spine.option.Time.TIME_UNDEFINED;
 import static io.spine.protobuf.AnyPacker.pack;
-import static io.spine.time.Time.getCurrentTime;
-import static io.spine.time.Timestamps2.isLaterThan;
 import static io.spine.validate.Validate.isDefault;
 
 /**
@@ -129,6 +128,14 @@ class MessageFieldValidator extends FieldValidator<Message> {
                                 : isLaterThan(now, /*than*/ timeToCheck);
         final boolean isInvalid = !isValid;
         return isInvalid;
+    }
+
+    private static boolean isLaterThan(Timestamp t1, Timestamp t2) {
+        int result = Long.compare(t1.getSeconds(), t2.getSeconds());
+        result = (result == 0)
+                ? Integer.compare(t1.getNanos(), t2.getNanos())
+                : result;
+        return result > 0;
     }
 
     private ConstraintViolation newTimeViolation(Timestamp fieldValue) {
