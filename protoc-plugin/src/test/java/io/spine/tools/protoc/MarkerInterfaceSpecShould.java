@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -20,7 +20,6 @@
 
 package io.spine.tools.protoc;
 
-import com.google.common.testing.NullPointerTester;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.JavaFile;
 import org.junit.Test;
@@ -32,23 +31,13 @@ import static org.junit.Assert.assertEquals;
 /**
  * @author Dmytro Dashenkov
  */
-public class MarkerInterfacesShould {
-
-    @Test
-    public void not_accept_nulls_on_construction() {
-        new NullPointerTester().testAllPublicConstructors(MarkerInterfaces.class);
-    }
-
-    @Test
-    public void not_accept_nulls() {
-        new NullPointerTester().testAllPublicStaticMethods(MarkerInterfaces.class);
-    }
+public class MarkerInterfaceSpecShould {
 
     @Test
     public void generate_interfaces() {
         final String packageName = "io.spine.test";
         final String interfaceName = "CustomerEvent";
-        final JavaFile javaFile = MarkerInterfaces.create(packageName, interfaceName);
+        final JavaFile javaFile = new MarkerInterfaceSpec(packageName, interfaceName).toJavaCode();
 
         final AnnotationSpec generated = javaFile.typeSpec.annotations.get(0);
         assertEquals(Generated.class.getName(), generated.type.toString());

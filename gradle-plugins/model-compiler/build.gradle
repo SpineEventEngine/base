@@ -97,21 +97,21 @@ protobuf {
 }
 
 /**
- * Prepares the `spine_protoc.gradle` file by copying its template to the `resources` directory and
+ * Prepares the `spine-protoc.gradle` file by copying its template to the `resources` directory and
  * injecting the versions of the protoc plugin dependencies.
  *
  * <p>This task is executed each time `processResources` task is executed, i.e. upon each build.
  */
 task prepareProtocConfig(type: Copy) {
-    description = "Prepares the spine_protoc.gradle.template file"
+    description = "Prepares the spine-protoc.gradle.template file"
 
-    from "./spine_protoc.gradle.template"
+    from "./spine-protoc.gradle.template"
     into "./src/main/resources/"
 
-    rename "./src/main/resources/spine_protoc.gradle.template",
-            "./src/main/resources/spine_protoc.gradle"
+    rename "./src/main/resources/spine-protoc.gradle.template",
+            "./src/main/resources/spine-protoc.gradle"
 
-    delete "./src/main/resources/spine_protoc.gradle.template"
+    delete "./src/main/resources/spine-protoc.gradle.template"
     
     filter(ReplaceTokens,
             tokens: ['baseVersion': "'$project.spineVersion'".toString(),
