@@ -26,7 +26,7 @@ import com.google.protobuf.StringValue;
 import com.google.protobuf.Timestamp;
 import io.spine.test.TestValues;
 import io.spine.test.messages.MessageWithStringValue;
-import io.spine.time.Time;
+import io.spine.base.Time;
 import org.junit.Test;
 
 import static io.spine.protobuf.AnyPacker.unpack;
