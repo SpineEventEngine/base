@@ -7,7 +7,6 @@ gem instal dpl
 # Prepare the test and coverage reports for the upload.
 mkdir reports
 zip -r reports/test-reports.zip **/build/reports
-zip -r reports/model-compiler-reports.zip gradle-plugins/model-compiler/build/reports
 zip -r reports/jacoco-reports.zip **/build/jacoco
 
 # Returns the value for the specified key.
