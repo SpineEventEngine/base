@@ -20,35 +20,14 @@
 
 package io.spine.tools.gradle.compiler.annotation;
 
-import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
-import io.spine.annotation.Beta;
-import io.spine.annotation.Experimental;
-import io.spine.annotation.Internal;
-import io.spine.annotation.SPI;
 import io.spine.tools.compiler.annotation.AnnotatorFactory;
 import io.spine.tools.gradle.SpinePlugin;
-import io.spine.tools.proto.FileDescriptors;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
-import org.slf4j.Logger;
 
 import java.io.File;
-import java.util.Collection;
 
-import static io.spine.option.OptionsProto.beta;
-import static io.spine.option.OptionsProto.betaAll;
-import static io.spine.option.OptionsProto.betaType;
-import static io.spine.option.OptionsProto.experimental;
-import static io.spine.option.OptionsProto.experimentalAll;
-import static io.spine.option.OptionsProto.experimentalType;
-import static io.spine.option.OptionsProto.internal;
-import static io.spine.option.OptionsProto.internalAll;
-import static io.spine.option.OptionsProto.internalType;
-import static io.spine.option.OptionsProto.sPI;
-import static io.spine.option.OptionsProto.sPIAll;
-import static io.spine.option.OptionsProto.sPIService;
-import static io.spine.option.OptionsProto.sPIType;
 import static io.spine.tools.gradle.TaskName.ANNOTATE_PROTO;
 import static io.spine.tools.gradle.TaskName.ANNOTATE_TEST_PROTO;
 import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
@@ -61,7 +40,6 @@ import static io.spine.tools.gradle.compiler.Extension.getMainGenProtoDir;
 import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSetPath;
 import static io.spine.tools.gradle.compiler.Extension.getTestGenGrpcDir;
 import static io.spine.tools.gradle.compiler.Extension.getTestGenProtoDir;
-import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * A plugin that annotates generated Java sources from {@code .proto} files.
@@ -200,18 +178,18 @@ public class ProtoAnnotatorPlugin extends SpinePlugin {
         newTask(ANNOTATE_PROTO, task).insertBeforeTask(COMPILE_JAVA)
                                      .insertAfterTask(GENERATE_PROTO)
                                      .applyNowTo(project);
-        logDependingTask(log(), ANNOTATE_PROTO, COMPILE_JAVA, GENERATE_PROTO);
+        logDependingTask(ANNOTATE_PROTO, COMPILE_JAVA, GENERATE_PROTO);
 
         final Action<Task> testTask = newAction(getTestDescriptorSetPath(project), project, true);
         newTask(ANNOTATE_TEST_PROTO, testTask).insertBeforeTask(COMPILE_TEST_JAVA)
                                               .insertAfterTask(GENERATE_TEST_PROTO)
                                               .applyNowTo(project);
-        logDependingTask(log(), ANNOTATE_TEST_PROTO, COMPILE_TEST_JAVA, GENERATE_TEST_PROTO);
+        logDependingTask(ANNOTATE_TEST_PROTO, COMPILE_TEST_JAVA, GENERATE_TEST_PROTO);
     }
 
-    private static Action<Task> newAction(final String descriptorSetPath,
-                                          final Project project,
-                                          final boolean isTestTask) {
+    private Action<Task> newAction(final String descriptorSetPath,
+                                   final Project project,
+                                   final boolean isTestTask) {
 
         final String generatedProtoDir;
         final String generatedGrpcDir;
@@ -230,60 +208,13 @@ public class ProtoAnnotatorPlugin extends SpinePlugin {
             public void execute(Task task) {
                 final File setFile = new File(descriptorSetPath);
                 if (!setFile.exists()) {
-                    logMissingDescriptorSetFile(log(), setFile);
+                    logMissingDescriptorSetFile(setFile);
                 } else {
-                    processDescriptorSetFile(setFile, generatedProtoDir, generatedGrpcDir);
+                    AnnotatorFactory.processDescriptorSetFile(setFile,
+                                                              generatedProtoDir,
+                                                              generatedGrpcDir);
                 }
             }
         };
-    }
-
-    private static void processDescriptorSetFile(File setFile,
-                                                 String generatedProtoDir,
-                                                 String generatedGrpcDir) {
-        final Collection<FileDescriptorProto> descriptors =
-                FileDescriptors.parseSkipStandard(setFile.getPath());
-        final AnnotatorFactory factory =
-                new AnnotatorFactory(descriptors, generatedProtoDir, generatedGrpcDir);
-
-        factory.createFileAnnotator(Experimental.class, experimentalAll)
-               .annotate();
-        factory.createMessageAnnotator(Experimental.class, experimentalType)
-               .annotate();
-        factory.createFieldAnnotator(Experimental.class, experimental)
-               .annotate();
-
-        factory.createFileAnnotator(Beta.class, betaAll)
-               .annotate();
-        factory.createMessageAnnotator(Beta.class, betaType)
-               .annotate();
-        factory.createFieldAnnotator(Beta.class, beta)
-               .annotate();
-
-        factory.createFileAnnotator(SPI.class, sPIAll)
-               .annotate();
-        factory.createMessageAnnotator(SPI.class, sPIType)
-               .annotate();
-        factory.createServiceAnnotator(SPI.class, sPIService)
-               .annotate();
-        factory.createFieldAnnotator(SPI.class, sPI)
-               .annotate();
-
-        factory.createFileAnnotator(Internal.class, internalAll)
-               .annotate();
-        factory.createMessageAnnotator(Internal.class, internalType)
-               .annotate();
-        factory.createFieldAnnotator(Internal.class, internal)
-               .annotate();
-    }
-
-    private static Logger log() {
-        return LogSingleton.INSTANCE.value;
-    }
-
-    private enum LogSingleton {
-        INSTANCE;
-        @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = getLogger(ProtoAnnotatorPlugin.class);
     }
 }

@@ -26,7 +26,6 @@ import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.AppliedPlugin;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -55,11 +54,12 @@ public class ProtocPluginImporter extends SpinePlugin {
         project.getPluginManager().withPlugin(PROTOBUF_PLUGIN_ID, new Action<AppliedPlugin>() {
             @Override
             public void execute(AppliedPlugin appliedPlugin) {
-                log().debug("Applying {} ({})",
-                            PROTOC_CONFIG_FILE_NAME,
-                            configFile.getAbsolutePath());
+                final Logger log = log();
+                log.debug("Applying {} ({})",
+                          PROTOC_CONFIG_FILE_NAME,
+                          configFile.getAbsolutePath());
                 project.apply(of("from", configFile.getAbsolutePath()));
-                log().debug("Applied {}", PROTOC_CONFIG_FILE_NAME);
+                log.debug("Applied {}", PROTOC_CONFIG_FILE_NAME);
             }
         });
     }
@@ -77,8 +77,8 @@ public class ProtocPluginImporter extends SpinePlugin {
         final File tempFolder = Files.createTempDir();
         final File configFile = new File(tempFolder, PROTOC_CONFIG_FILE_NAME);
         try (InputStream in = ProtocPluginImporter.class
-                                                  .getClassLoader()
-                                                  .getResourceAsStream(PROTOC_CONFIG_FILE_NAME);
+                .getClassLoader()
+                .getResourceAsStream(PROTOC_CONFIG_FILE_NAME);
              FileOutputStream out = new FileOutputStream(configFile)) {
             int readByte = in.read();
             while (readByte >= 0) {
@@ -89,15 +89,5 @@ public class ProtocPluginImporter extends SpinePlugin {
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
-    }
-
-    private static Logger log() {
-        return LogSingleton.INSTANCE.value;
-    }
-
-    private enum LogSingleton {
-        INSTANCE;
-        @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = LoggerFactory.getLogger(ProtocPluginImporter.class);
     }
 }

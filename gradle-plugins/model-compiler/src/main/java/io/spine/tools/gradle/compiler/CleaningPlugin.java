@@ -26,7 +26,6 @@ import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static io.spine.tools.gradle.TaskName.CLEAN;
 import static io.spine.tools.gradle.TaskName.PRE_CLEAN;
@@ -43,26 +42,19 @@ public class CleaningPlugin extends SpinePlugin {
 
     @Override
     public void apply(final Project project) {
+        final Logger log = log();
         final Action<Task> preCleanAction = new Action<Task>() {
             @Override
             public void execute(Task task) {
-                log().debug("Pre-clean: deleting the directories");
+                log.debug("Pre-clean: deleting the directories");
                 DirectoryCleaner.deleteDirs(Extension.getDirsToClean(project));
             }
         };
-        logDependingTask(log(), PRE_CLEAN, CLEAN);
-        final GradleTask preCleanTask = newTask(PRE_CLEAN, preCleanAction).insertBeforeTask(CLEAN)
-                                                                          .applyNowTo(project);
-        log().debug("Pre-clean phase initialized: {}", preCleanTask);
-    }
-
-    private static Logger log() {
-        return LogSingleton.INSTANCE.value;
-    }
-
-    private enum LogSingleton {
-        INSTANCE;
-        @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = LoggerFactory.getLogger(CleaningPlugin.class);
+        logDependingTask(PRE_CLEAN, CLEAN);
+        final GradleTask preCleanTask =
+                newTask(PRE_CLEAN, preCleanAction)
+                        .insertBeforeTask(CLEAN)
+                        .applyNowTo(project);
+        log.debug("Pre-clean phase initialized: {}", preCleanTask);
     }
 }

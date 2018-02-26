@@ -34,7 +34,6 @@ import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.List;
@@ -90,7 +89,7 @@ public class RejectionGenPlugin extends SpinePlugin {
             }
         };
 
-        logDependingTask(log, GENERATE_REJECTIONS, COMPILE_JAVA, GENERATE_PROTO);
+        logDependingTask(GENERATE_REJECTIONS, COMPILE_JAVA, GENERATE_PROTO);
         final GradleTask mainTask =
                 newTask(GENERATE_REJECTIONS, mainScopeAction)
                         .insertAfterTask(GENERATE_PROTO)
@@ -108,7 +107,7 @@ public class RejectionGenPlugin extends SpinePlugin {
             }
         };
 
-        logDependingTask(log, GENERATE_TEST_REJECTIONS, COMPILE_TEST_JAVA, GENERATE_TEST_PROTO);
+        logDependingTask(GENERATE_TEST_REJECTIONS, COMPILE_TEST_JAVA, GENERATE_TEST_PROTO);
 
         final GradleTask testTask =
                 newTask(GENERATE_TEST_REJECTIONS, testScopeAction)
@@ -123,7 +122,7 @@ public class RejectionGenPlugin extends SpinePlugin {
         final Logger log = log();
         final File setFile = new File(mainFile);
         if (!setFile.exists()) {
-            logMissingDescriptorSetFile(log, setFile);
+            logMissingDescriptorSetFile(setFile);
             return;
         }
 
@@ -138,13 +137,13 @@ public class RejectionGenPlugin extends SpinePlugin {
         final Logger log = log();
         final File setFile = new File(mainFile);
         if (!setFile.exists()) {
-            logMissingDescriptorSetFile(log, setFile);
+            logMissingDescriptorSetFile(setFile);
             return;
         }
 
         final File testSetFile = new File(testFile);
         if (!testSetFile.exists()) {
-            logMissingDescriptorSetFile(log, testSetFile);
+            logMissingDescriptorSetFile(testSetFile);
             return;
         }
 
@@ -174,7 +173,7 @@ public class RejectionGenPlugin extends SpinePlugin {
         }
     }
 
-    private static void generateRejections(RejectionsFile file,
+    private void generateRejections(RejectionsFile file,
                                            Map<String, String> messageTypeMap,
                                            String rejectionsRootDir) {
         final Logger log = log();
@@ -195,15 +194,5 @@ public class RejectionGenPlugin extends SpinePlugin {
             final RejectionWriter writer = new RejectionWriter(rejection, outDir, messageTypeMap);
             writer.write();
         }
-    }
-
-    private static Logger log() {
-        return LogSingleton.INSTANCE.value;
-    }
-
-    private enum LogSingleton {
-        INSTANCE;
-        @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = LoggerFactory.getLogger(RejectionGenPlugin.class);
     }
 }

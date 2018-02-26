@@ -24,6 +24,7 @@ import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 
@@ -35,17 +36,6 @@ import java.io.File;
  * @author Alex Tymchenko
  */
 public abstract class SpinePlugin implements Plugin<Project> {
-
-    @SuppressWarnings("HardcodedLineSeparator") // handled by Slf4J
-    protected static void logMissingDescriptorSetFile(Logger log, File setFile) {
-        log.warn(
-            "Missing descriptor set file {}.\n" +
-            "Please enable descriptor set generation. See: " +
-            "https://github.com/google/protobuf-gradle-plugin/blob/master/README.md" +
-                "#generate-descriptor-set-files",
-            setFile.getPath()
-        );
-    }
 
     /**
      * Create a new instance of {@link GradleTask.Builder}.
@@ -63,19 +53,35 @@ public abstract class SpinePlugin implements Plugin<Project> {
         return result;
     }
 
-    protected static void logDependingTask(Logger log,
-                                           TaskName taskName,
-                                           TaskName beforeTask,
-                                           TaskName afterTask) {
-        log.debug(
+    /**
+     * Instance method for obtaining class-specific logger.
+     */
+    protected Logger log() {
+        return LoggerFactory.getLogger(getClass());
+    }
+
+    @SuppressWarnings("HardcodedLineSeparator") // handled by Slf4J
+    protected void logMissingDescriptorSetFile(File setFile) {
+        log().warn(
+                "Missing descriptor set file {}.\n" +
+                        "Please enable descriptor set generation. See: " +
+                        "https://github.com/google/protobuf-gradle-plugin/blob/master/README.md" +
+                        "#generate-descriptor-set-files",
+                setFile.getPath()
+        );
+    }
+
+    protected void logDependingTask(TaskName taskName, TaskName beforeTask, TaskName afterTask) {
+        log().debug(
                 "Adding the Gradle task {} to the lifecycle: after {}, before {}",
                 taskName.getValue(),
                 beforeTask.getValue(),
-                afterTask.getValue());
+                afterTask.getValue()
+        );
     }
 
-    protected static void logDependingTask(Logger log, TaskName taskName, TaskName beforeTask) {
-        log.debug(
+    protected void logDependingTask(TaskName taskName, TaskName beforeTask) {
+        log().debug(
                 "Adding the Gradle task {} to the lifecycle: before {}",
                 taskName.getValue(),
                 beforeTask.getValue()

@@ -28,7 +28,6 @@ import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.Collection;
@@ -73,26 +72,30 @@ public class ProtoToJavaMapperPlugin extends SpinePlugin {
     @Override
     public void apply(final Project project) {
         final Action<Task> mainScopeAction = mainScopeActionFor(project);
-        logDependingTask(log(), MAP_PROTO_TO_JAVA, PROCESS_RESOURCES, GENERATE_PROTO);
+
+        logDependingTask(MAP_PROTO_TO_JAVA, PROCESS_RESOURCES, GENERATE_PROTO);
+
         final GradleTask mainScopeTask =
-                newTask(MAP_PROTO_TO_JAVA, mainScopeAction).insertAfterTask(GENERATE_PROTO)
-                                                           .insertBeforeTask(PROCESS_RESOURCES)
-                                                           .applyNowTo(project);
+                newTask(MAP_PROTO_TO_JAVA, mainScopeAction)
+                        .insertAfterTask(GENERATE_PROTO)
+                        .insertBeforeTask(PROCESS_RESOURCES)
+                        .applyNowTo(project);
 
         final Action<Task> testScopeAction = testScopeActionFor(project);
-        logDependingTask(log(), MAP_TEST_PROTO_TO_JAVA, PROCESS_TEST_RESOURCES,
-                         GENERATE_TEST_PROTO);
+
+        logDependingTask(MAP_TEST_PROTO_TO_JAVA, PROCESS_TEST_RESOURCES, GENERATE_TEST_PROTO);
+
         final GradleTask testScopeTask =
-                newTask(MAP_TEST_PROTO_TO_JAVA,
-                        testScopeAction).insertAfterTask(GENERATE_TEST_PROTO)
-                                        .insertBeforeTask(PROCESS_TEST_RESOURCES)
-                                        .applyNowTo(project);
+                newTask(MAP_TEST_PROTO_TO_JAVA, testScopeAction)
+                        .insertAfterTask(GENERATE_TEST_PROTO)
+                        .insertBeforeTask(PROCESS_TEST_RESOURCES)
+                        .applyNowTo(project);
 
         log().debug("Proto-to-Java mapping phase initialized with tasks: {}, {}",
                     mainScopeTask, testScopeTask);
     }
 
-    private static Action<Task> testScopeActionFor(final Project project) {
+    private Action<Task> testScopeActionFor(final Project project) {
         log().debug("Initializing the proto to java mapping for the \"test\" source code");
         return new Action<Task>() {
             @Override
@@ -104,7 +107,7 @@ public class ProtoToJavaMapperPlugin extends SpinePlugin {
         };
     }
 
-    private static Action<Task> mainScopeActionFor(final Project project) {
+    private Action<Task> mainScopeActionFor(final Project project) {
         log().debug("Initializing the proto to java mapping for the \"main\" source code.");
         return new Action<Task>() {
             @Override
@@ -116,11 +119,11 @@ public class ProtoToJavaMapperPlugin extends SpinePlugin {
         };
     }
 
-    private static void mapProtoToJavaAndWriteProps(String descriptorSetFile, String targetDir) {
+    private void mapProtoToJavaAndWriteProps(String descriptorSetFile, String targetDir) {
         final Logger log = log();
         final File setFile = new File(descriptorSetFile);
         if (!setFile.exists()) {
-            logMissingDescriptorSetFile(log, setFile);
+            logMissingDescriptorSetFile(setFile);
             return;
         }
 
@@ -142,15 +145,5 @@ public class ProtoToJavaMapperPlugin extends SpinePlugin {
 
         final PropertiesWriter writer = new PropertiesWriter(targetDir, PROPERTIES_FILE_NAME);
         writer.write(propsMap);
-    }
-
-    private static Logger log() {
-        return LogSingleton.INSTANCE.value;
-    }
-
-    private enum LogSingleton {
-        INSTANCE;
-        @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = LoggerFactory.getLogger(ProtoToJavaMapperPlugin.class);
     }
 }

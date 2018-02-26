@@ -26,7 +26,6 @@ import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 
@@ -59,14 +58,14 @@ public class EnrichmentLookupPlugin extends SpinePlugin {
     @Override
     public void apply(final Project project) {
         final Action<Task> mainScopeAction = mainScopeActionFor(project);
-        logDependingTask(log(), FIND_ENRICHMENTS, PROCESS_RESOURCES, COMPILE_JAVA);
+        logDependingTask(FIND_ENRICHMENTS, PROCESS_RESOURCES, COMPILE_JAVA);
         final GradleTask findEnrichments =
                 newTask(FIND_ENRICHMENTS,
                         mainScopeAction).insertAfterTask(COMPILE_JAVA)
                                         .insertBeforeTask(PROCESS_RESOURCES)
                                         .applyNowTo(project);
         final Action<Task> testScopeAction = testScopeActionFor(project);
-        logDependingTask(log(), FIND_TEST_ENRICHMENTS, PROCESS_TEST_RESOURCES, COMPILE_TEST_JAVA);
+        logDependingTask(FIND_TEST_ENRICHMENTS, PROCESS_TEST_RESOURCES, COMPILE_TEST_JAVA);
         final GradleTask findTestEnrichments =
                 newTask(FIND_TEST_ENRICHMENTS,
                         testScopeAction).insertAfterTask(COMPILE_TEST_JAVA)
@@ -77,7 +76,7 @@ public class EnrichmentLookupPlugin extends SpinePlugin {
         log().debug(msg, findEnrichments, findTestEnrichments);
     }
 
-    private static Action<Task> testScopeActionFor(final Project project) {
+    private Action<Task> testScopeActionFor(final Project project) {
         log().debug("Initializing the enrichment lookup for the \"test\" source code");
         return new Action<Task>() {
             @Override
@@ -89,7 +88,7 @@ public class EnrichmentLookupPlugin extends SpinePlugin {
         };
     }
 
-    private static Action<Task> mainScopeActionFor(final Project project) {
+    private Action<Task> mainScopeActionFor(final Project project) {
         log().debug("Initializing the enrichment lookup for the \"main\" source code");
         return new Action<Task>() {
             @Override
@@ -101,7 +100,7 @@ public class EnrichmentLookupPlugin extends SpinePlugin {
         };
     }
 
-    private static void findEnrichmentsAndWriteProps(String descriptorSetFile, String targetDir) {
+    private void findEnrichmentsAndWriteProps(String descriptorSetFile, String targetDir) {
         final Logger log = log();
         log.debug("Enrichment lookup started");
 
@@ -112,19 +111,9 @@ public class EnrichmentLookupPlugin extends SpinePlugin {
                 return;
             }
         } else {
-            logMissingDescriptorSetFile(log, file);
+            logMissingDescriptorSetFile(file);
         }
 
         log.debug("Enrichment lookup complete");
-    }
-
-    private static Logger log() {
-        return LogSingleton.INSTANCE.value;
-    }
-
-    private enum LogSingleton {
-        INSTANCE;
-        @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = LoggerFactory.getLogger(EnrichmentLookupPlugin.class);
     }
 }

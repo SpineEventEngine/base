@@ -20,39 +20,27 @@
 
 package io.spine.gradle.compiler.validate;
 
-import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
-import com.google.common.collect.Iterables;
-import io.spine.tools.Indent;
-import io.spine.tools.compiler.MessageTypeCache;
 import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.SpinePlugin;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nullable;
 import java.io.File;
-import java.util.Set;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
 import static io.spine.tools.gradle.TaskName.COMPILE_TEST_JAVA;
 import static io.spine.tools.gradle.TaskName.GENERATE_PROTO;
 import static io.spine.tools.gradle.TaskName.GENERATE_TEST_PROTO;
 import static io.spine.tools.gradle.TaskName.GENERATE_TEST_VALIDATING_BUILDERS;
 import static io.spine.tools.gradle.TaskName.GENERATE_VALIDATING_BUILDERS;
-import static io.spine.tools.gradle.compiler.Extension.getIndent;
 import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSetPath;
 import static io.spine.tools.gradle.compiler.Extension.getMainProtoSrcDir;
 import static io.spine.tools.gradle.compiler.Extension.getTargetGenValidatorsRootDir;
 import static io.spine.tools.gradle.compiler.Extension.getTargetTestGenValidatorsRootDir;
 import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSetPath;
 import static io.spine.tools.gradle.compiler.Extension.getTestProtoSrcDir;
-import static io.spine.tools.gradle.compiler.Extension.isGenerateValidatingBuilders;
-import static io.spine.tools.gradle.compiler.Extension.isGenerateValidatingBuildersFromClasspath;
 
 /**
  * Plugin which generates validating builders based on the Protobuf Message definitions.
@@ -102,16 +90,16 @@ public class ValidatingBuilderGenPlugin extends SpinePlugin {
                              getTargetGenValidatorsRootDir(project),
                              getMainProtoSrcDir(project));
 
-        logDependingTask(log(),
-                         GENERATE_VALIDATING_BUILDERS,
+        logDependingTask(
+                GENERATE_VALIDATING_BUILDERS,
                          COMPILE_JAVA,
                          GENERATE_PROTO);
 
         final GradleTask generateValidator =
-                newTask(GENERATE_VALIDATING_BUILDERS,
-                        mainScopeAction).insertAfterTask(GENERATE_PROTO)
-                                        .insertBeforeTask(COMPILE_JAVA)
-                                        .applyNowTo(project);
+                newTask(GENERATE_VALIDATING_BUILDERS, mainScopeAction)
+                        .insertAfterTask(GENERATE_PROTO)
+                        .insertBeforeTask(COMPILE_JAVA)
+                        .applyNowTo(project);
         log().debug("Preparing to generate test validating builders.");
         final Action<Task> testScopeAction =
                 createAction(project,
@@ -119,8 +107,7 @@ public class ValidatingBuilderGenPlugin extends SpinePlugin {
                              getTargetTestGenValidatorsRootDir(project),
                              getTestProtoSrcDir(project));
 
-        logDependingTask(log(),
-                         GENERATE_TEST_VALIDATING_BUILDERS,
+        logDependingTask(GENERATE_TEST_VALIDATING_BUILDERS,
                          COMPILE_TEST_JAVA,
                          GENERATE_TEST_PROTO);
 
@@ -133,154 +120,23 @@ public class ValidatingBuilderGenPlugin extends SpinePlugin {
                     generateValidator, generateTestValidator);
     }
 
-    private static Action<Task> createAction(final Project project,
-                                             final String descriptorPath,
-                                             final String targetDirPath,
-                                             final String protoSrcDirPath) {
-        return new GenerationAction(project, descriptorPath, targetDirPath, protoSrcDirPath);
+    /** Opens the method for the package. */
+    @Override
+    protected Logger log() {
+        return super.log();
     }
 
-    private enum LogSingleton {
-        INSTANCE;
-
-        @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = LoggerFactory.getLogger(ValidatingBuilderGenPlugin.class);
+    private Action<Task> createAction(Project project,
+                                      String descriptorPath,
+                                      String targetDirPath,
+                                      String protoSrcDirPath) {
+        return new GenerationAction(this, descriptorPath, targetDirPath, protoSrcDirPath, project);
     }
 
-    private static Logger log() {
-        return LogSingleton.INSTANCE.value;
-    }
-
-    /**
-     * Gradle {@code Action} for validating builder generation.
-     *
-     * <p>An instance-per-scope is usually created. E.g. test sources and main source are
-     * generated with different instances of this class.
-     */
-    private static class GenerationAction implements Action<Task> {
-        /**
-         * Source Gradle project.
-         */
-        private final Project project;
-
-        /**
-         * Path to the generated Protobuf descriptor {@code .desc} file.
-         */
-        private final String descriptorPath;
-
-        /**
-         * An absolute path to the folder, serving as a target
-         * for the generation for the given scope.
-         */
-        private final String targetDirPath;
-
-        /**
-         * An absolute path to the folder, containing the {@code .proto} files for the given scope.
-         */
-        private final String protoSrcDirPath;
-
-        private GenerationAction(Project project,
-                                 String descriptorPath,
-                                 String targetDirPath,
-                                 String protoSrcDirPath) {
-            this.project = project;
-            this.descriptorPath = descriptorPath;
-            this.targetDirPath = targetDirPath;
-            this.protoSrcDirPath = protoSrcDirPath;
-        }
-
-        @Override
-        public void execute(Task task) {
-            if (!isGenerateValidatingBuilders(project)) {
-                return;
-            }
-            final File setFile = new File(descriptorPath);
-            if (!setFile.exists()) {
-                logMissingDescriptorSetFile(log(), setFile);
-            } else {
-                final Indent indent = getIndent(project);
-                processDescriptorSetFile(setFile, indent);
-            }
-        }
-
-        private void processDescriptorSetFile(File setFile, Indent indent) {
-            final Logger log = log();
-            log.debug("Generating the validating builders from {}.", setFile);
-
-            final boolean classpathGenEnabled =
-                    isGenerateValidatingBuildersFromClasspath(project);
-
-            final MetadataAssembler assembler = new MetadataAssembler(setFile.getPath());
-            final Set<VBMetadata> metadataItems = assembler.assemble();
-
-            final MessageTypeCache messageTypeCache = assembler.getAssembledMessageTypeCache();
-            final ValidatingBuilderWriter writer =
-                    new ValidatingBuilderWriter(targetDirPath, indent, messageTypeCache);
-
-            final Iterable<VBMetadata> metadataToWrite = filter(classpathGenEnabled,
-                                                                metadataItems);
-
-            for (VBMetadata metadata : metadataToWrite) {
-                try {
-                    writer.write(metadata);
-                } catch (RuntimeException e) {
-                    final String message =
-                            "Cannot generate the validating builder for " + metadata + ". ";
-                    log.warn(message);
-                    log.debug(message, e);
-                }
-            }
-            log.debug("The validating builder generation is finished.");
-        }
-
-        private Iterable<VBMetadata> filter(boolean classpathGenEnabled,
-                                            Set<VBMetadata> metadataItems) {
-            final Predicate<VBMetadata> shouldWritePredicate = getPredicate(classpathGenEnabled);
-            final Iterable<VBMetadata> result =
-                    Iterables.filter(metadataItems, shouldWritePredicate);
-            return result;
-        }
-
-        private Predicate<VBMetadata> getPredicate(final boolean classpathGenEnabled) {
-            final Predicate<VBMetadata> result;
-            if (classpathGenEnabled) {
-                result = Predicates.alwaysTrue();
-            } else {
-                final String rootPath = protoSrcDirPath.endsWith(File.separator)
-                                        ? protoSrcDirPath
-                                        : protoSrcDirPath + File.separator;
-                result = new SourceProtoBelongsToModule(rootPath);
-            }
-            return result;
-        }
-
-        /**
-         * A predicate determining if the given {@linkplain VBMetadata validating builder metadata}
-         * has been collected from the source file in the specified module.
-         *
-         * <p>Each predicate instance requires to specify the root folder of Protobuf definitions
-         * for the module. This value is used to match the given {@code VBMetadata}.
-         */
-        private static class SourceProtoBelongsToModule implements Predicate<VBMetadata> {
-
-            /**
-             *  An absolute path to the root folder for the {@code .proto} files in the module.
-             */
-            private final String rootPath;
-
-            private SourceProtoBelongsToModule(String rootPath) {
-                this.rootPath = rootPath;
-            }
-
-            @Override
-            public boolean apply(@Nullable VBMetadata input) {
-                checkNotNull(input);
-
-                final String path = input.getSourceProtoFilePath();
-                final File protoFile = new File(rootPath + path);
-                final boolean belongsToModule = protoFile.exists();
-                return belongsToModule;
-            }
-        }
+    /** Opens the method to the helper class. */
+    @SuppressWarnings("RedundantMethodOverride")
+    @Override
+    protected void logMissingDescriptorSetFile(File setFile) {
+        super.logMissingDescriptorSetFile(setFile);
     }
 }

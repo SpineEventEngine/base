@@ -143,10 +143,10 @@ public class SpinePluginBuilderShould {
               .applyNowTo(project);
         final Task task = project.getTasks().findByPath(PRE_CLEAN.getValue());
         final File singleInput = task.getInputs()
-                                      .getFiles()
-                                      .getFiles()
-                                      .iterator()
-                                      .next();
+                                     .getFiles()
+                                     .getFiles()
+                                     .iterator()
+                                     .next();
         assertEquals(input.getCanonicalFile(), singleInput.getCanonicalFile());
     }
 
@@ -159,8 +159,8 @@ public class SpinePluginBuilderShould {
 
         private static final SpinePlugin INSTANCE = new TestPlugin();
 
+        /** Prevent direct instantiation. */
         private TestPlugin() {
-            // Prevent direct instantiation.
         }
 
         @Override
