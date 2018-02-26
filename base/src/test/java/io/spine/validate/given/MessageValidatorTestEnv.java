@@ -74,6 +74,9 @@ public class MessageValidatorTestEnv {
         setProvider(frozenTimeProvider);
     }
 
+    /**
+     * The provider of the current time with value that does not change.
+     */
     private static class ConstantTimeProvider implements Time.Provider {
         private final Timestamp timestamp;
 
