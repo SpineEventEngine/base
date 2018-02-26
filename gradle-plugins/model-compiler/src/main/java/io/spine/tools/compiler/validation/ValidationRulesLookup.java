@@ -55,7 +55,7 @@ import static io.spine.tools.proto.SourceFile.allThat;
  * @author Dmytro Grankin
  * @author Alexander Yevsyukov
  */
-public class ValidationRulesLookup {
+public final class ValidationRulesLookup {
 
     /** Prevents instantiation of this utility class. */
     private ValidationRulesLookup() {

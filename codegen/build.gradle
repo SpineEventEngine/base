@@ -23,9 +23,14 @@ group 'io.spine.tools'
 buildscript {
     apply from: "$rootDir/ext.gradle"
 
+    ext {
+        googleMavenCentralMirror = 'https://maven-central.storage.googleapis.com'
+    }
+
     repositories {
+        jcenter()
+        maven { url = googleMavenCentralMirror }
         mavenCentral()
-        mavenLocal()
     }
 
     //noinspection GroovyAssignabilityCheck
