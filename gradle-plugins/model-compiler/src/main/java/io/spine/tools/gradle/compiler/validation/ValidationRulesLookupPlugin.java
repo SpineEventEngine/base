@@ -18,32 +18,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.gradle.compiler.lookup.valrule;
+package io.spine.tools.gradle.compiler.validation;
 
-import com.google.common.base.Predicate;
-import com.google.protobuf.DescriptorProtos.DescriptorProto;
-import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
+import io.spine.tools.compiler.validation.ValidationRulesLookup;
 import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.SpinePlugin;
-import io.spine.tools.properties.PropertiesWriter;
-import io.spine.tools.proto.MessageDeclaration;
-import io.spine.type.TypeName;
-import io.spine.validate.rules.ValidationRules;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.slf4j.Logger;
 
-import javax.annotation.Nullable;
 import java.io.File;
-import java.util.List;
-import java.util.Map;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.Maps.newHashMap;
-import static io.spine.option.OptionsProto.VALIDATION_OF_FIELD_NUMBER;
-import static io.spine.option.UnknownOptions.getUnknownOptionValue;
-import static io.spine.option.UnknownOptions.hasUnknownOption;
 import static io.spine.tools.gradle.TaskName.FIND_TEST_VALIDATION_RULES;
 import static io.spine.tools.gradle.TaskName.FIND_VALIDATION_RULES;
 import static io.spine.tools.gradle.TaskName.GENERATE_PROTO;
@@ -54,21 +40,15 @@ import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSetPath;
 import static io.spine.tools.gradle.compiler.Extension.getMainTargetGenResourcesDir;
 import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSetPath;
 import static io.spine.tools.gradle.compiler.Extension.getTestTargetGenResourcesDir;
-import static io.spine.tools.proto.FileDescriptors.parseSkipStandard;
-import static io.spine.tools.proto.SourceFile.allThat;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
- * Finds Protobuf definitions of validation rules and creates a {@code .properties} file,
- * which contains entries like:
+ * Finds Protobuf definitions of validation rules and creates a {@code .properties} file.
  *
- * <p>{@code foo.bar.ValidationRule=alpha.beta.TargetMessage.name_of_field_for_rule}.
- *
- * <p>If a validation rule has more than one target, the entry will look like:
- *
- * <p>{@code foo.bar.ValidationRule=foo.bar.FirstMessage.field_name,foo.bar.SecondMessage.field_name}.
+ * <p>For the syntax of generated properties file please see {@link ValidationRulesLookup}.
  *
  * @author Dmytro Grankin
+ * @see ValidationRulesLookup
  */
 public class ValidationRulesLookupPlugin extends SpinePlugin {
 
@@ -97,9 +77,9 @@ public class ValidationRulesLookupPlugin extends SpinePlugin {
         return new Action<Task>() {
             @Override
             public void execute(Task task) {
-                processDescriptorSetFile(getMainDescriptorSetPath(project),
-                                         getMainTargetGenResourcesDir(project)
-                );
+                final String descriptorSetFile = getMainDescriptorSetPath(project);
+                final String targetResourcesDir = getMainTargetGenResourcesDir(project);
+                processDescriptorSet(descriptorSetFile, targetResourcesDir);
             }
         };
     }
@@ -109,55 +89,20 @@ public class ValidationRulesLookupPlugin extends SpinePlugin {
         return new Action<Task>() {
             @Override
             public void execute(Task task) {
-                processDescriptorSetFile(getTestDescriptorSetPath(project),
-                                         getTestTargetGenResourcesDir(project)
-                );
+                final String descriptorSetPath = getTestDescriptorSetPath(project);
+                final String targetGenResourcesDir = getTestTargetGenResourcesDir(project);
+                processDescriptorSet(descriptorSetPath, targetGenResourcesDir);
             }
         };
     }
 
-    private static void processDescriptorSetFile(String descriptorSetFile, String targetDir) {
-        final Logger log = log();
+    private static void processDescriptorSet(String descriptorSetFile, String targetDirectory) {
         final File setFile = new File(descriptorSetFile);
         if (!setFile.exists()) {
-            logMissingDescriptorSetFile(log, setFile);
-            return;
-        }
-
-        log.debug("Validation rules lookup started.");
-        findRulesAndWriteProperties(setFile, targetDir);
-        log.debug("Validation rules lookup complete.");
-    }
-
-    private static void findRulesAndWriteProperties(File setFile, String targetDir) {
-        final List<FileDescriptorProto> files = parseSkipStandard(setFile.getPath());
-        final List<MessageDeclaration> declarations = allThat(files, new IsValidationRule());
-        writeProperties(declarations, targetDir);
-    }
-
-    private static void writeProperties(Iterable<MessageDeclaration> ruleDeclarations,
-                                        String targetDir) {
-        final Map<String, String> propsMap = newHashMap();
-        for (MessageDeclaration declaration : ruleDeclarations) {
-            final TypeName typeName = declaration.getTypeName();
-            final String ruleTargets = getUnknownOptionValue(declaration.getMessage(),
-                                                             VALIDATION_OF_FIELD_NUMBER);
-            propsMap.put(typeName.value(), ruleTargets);
-        }
-
-        final String fileName = ValidationRules.fileName();
-        log().trace("Writing the validation rules description to {}/{}.",
-                    targetDir, fileName);
-        final PropertiesWriter writer = new PropertiesWriter(targetDir, fileName);
-        writer.write(propsMap);
-    }
-
-    private static class IsValidationRule implements Predicate<DescriptorProto> {
-
-        @Override
-        public boolean apply(@Nullable DescriptorProto input) {
-            checkNotNull(input);
-            return hasUnknownOption(input, VALIDATION_OF_FIELD_NUMBER);
+            logMissingDescriptorSetFile(log(), setFile);
+        } else {
+            final File targetDir = new File(targetDirectory);
+            ValidationRulesLookup.processDescriptorSetFile(setFile, targetDir);
         }
     }
 

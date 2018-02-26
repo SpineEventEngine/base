@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -19,9 +19,11 @@
  */
 
 /**
- * Plugins and utilities for validation rules processing.
+ * Classes for generating code in relation to validation rules specified in a domain model.
+ *
+ * @author Alexander Yevsyukov
  */
 @ParametersAreNonnullByDefault
-package io.spine.gradle.compiler.lookup.valrule;
+package io.spine.tools.compiler.validation;
 
 import javax.annotation.ParametersAreNonnullByDefault;

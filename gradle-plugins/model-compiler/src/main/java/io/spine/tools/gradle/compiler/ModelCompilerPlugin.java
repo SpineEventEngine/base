@@ -20,7 +20,6 @@
 package io.spine.tools.gradle.compiler;
 
 import io.spine.gradle.compiler.lookup.proto.ProtoToJavaMapperPlugin;
-import io.spine.gradle.compiler.lookup.valrule.ValidationRulesLookupPlugin;
 import io.spine.gradle.compiler.validate.ValidatingBuilderGenPlugin;
 import io.spine.tools.gradle.SpinePlugin;
 import io.spine.tools.gradle.compiler.annotation.ProtoAnnotatorPlugin;
@@ -28,6 +27,7 @@ import io.spine.tools.gradle.compiler.cleaning.CleaningPlugin;
 import io.spine.tools.gradle.compiler.enrichment.EnrichmentLookupPlugin;
 import io.spine.tools.gradle.compiler.protoc.ProtocPluginImporter;
 import io.spine.tools.gradle.compiler.rejection.RejectionGenPlugin;
+import io.spine.tools.gradle.compiler.validation.ValidationRulesLookupPlugin;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.slf4j.Logger;
