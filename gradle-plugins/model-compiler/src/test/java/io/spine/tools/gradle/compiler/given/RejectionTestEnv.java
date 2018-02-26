@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.gradle.compiler.rejection.given;
+package io.spine.tools.gradle.compiler.given;
 
 import com.sun.javadoc.RootDoc;
 import io.spine.tools.DefaultProject;
@@ -35,7 +35,7 @@ import java.util.Arrays;
 /**
  * @author Dmytro Grankin
  */
-public class Given {
+public class RejectionTestEnv {
 
     /** Javadocs received from {@link RootDoc} contain "\n" line separator. */
     @SuppressWarnings("HardcodedLineSeparator")
@@ -52,7 +52,7 @@ public class Given {
     private static final FileName REJECTION_FILE_NAME = FileName.forType(REJECTION_NAME);
 
     /** Prevents instantiation of this utility class. */
-    private Given() {
+    private RejectionTestEnv() {
     }
 
     public static GradleProject newProjectWithRejectionsJavadoc(TemporaryFolder projectFolder) {

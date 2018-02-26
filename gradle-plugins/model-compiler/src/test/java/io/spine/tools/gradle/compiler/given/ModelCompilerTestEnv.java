@@ -42,12 +42,12 @@ import static io.spine.tools.gradle.TaskName.PROCESS_TEST_RESOURCES;
  * @author Dmytro Grankin
  */
 @SuppressWarnings("UtilityClass")
-public class Given {
+public class ModelCompilerTestEnv {
 
     public static final String SPINE_PROTOBUF_PLUGIN_ID = "io.spine.tools.spine-model-compiler";
 
-    private Given() {
-        // Prevent instantiation of this utility class.
+    /** Prevent instantiation of this utility class. */
+    private ModelCompilerTestEnv() {
     }
 
     /** Creates a project with all required tasks. */
