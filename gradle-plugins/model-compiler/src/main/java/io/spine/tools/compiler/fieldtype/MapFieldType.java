@@ -17,31 +17,38 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.gradle.compiler.message.fieldtype;
 
-import com.google.common.base.Optional;
+package io.spine.tools.compiler.fieldtype;
+
 import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
-import io.spine.tools.java.PrimitiveType;
+
+import java.util.Map;
 
 /**
- * Represents singular {@linkplain FieldType field type}.
- *
- * @author Dmytro Grankin
+ * Represents map {@linkplain FieldType field type}.
  */
-public class SingularFieldType implements FieldType {
+public class MapFieldType implements FieldType {
 
-    private static final String SETTER_PREFIX = "set";
+    private static final String SETTER_PREFIX = "putAll";
 
     private final TypeName typeName;
+    private final TypeName keyTypeName;
+    private final TypeName valueTypeName;
 
     /**
-     * Constructs the {@link SingularFieldType} based on field type name.
+     * Constructs the {@link MapFieldType} based on
+     * the key and the value type names.
      *
-     * @param name the field type name
+     * @param entryTypeNames the entry containing the key and the value type names.
      */
-    SingularFieldType(String name) {
-        this.typeName = constructTypeNameFor(name);
+    MapFieldType(Map.Entry<TypeName, TypeName> entryTypeNames) {
+        this.keyTypeName = boxIfPrimitive(entryTypeNames.getKey());
+        this.valueTypeName = boxIfPrimitive(entryTypeNames.getValue());
+        this.typeName = ParameterizedTypeName.get(ClassName.get(Map.class),
+                                                  keyTypeName,
+                                                  valueTypeName);
     }
 
     /**
@@ -52,11 +59,19 @@ public class SingularFieldType implements FieldType {
         return typeName;
     }
 
+    public TypeName getKeyTypeName() {
+        return keyTypeName;
+    }
+
+    public TypeName getValueTypeName() {
+        return valueTypeName;
+    }
+
     /**
-     * Returns "set" setter prefix,
-     * used to initialize a singular field using a protobuf message builder.
+     * Returns "putAll" setter prefix,
+     * used to initialize a map field using a protobuf message builder.
      *
-     * Call should be like `builder.setFieldName(FieldType)`.
+     * <p>Call should be like `builder.putAllFieldName({@link Map})`.
      *
      * @return {@inheritDoc}
      */
@@ -65,14 +80,12 @@ public class SingularFieldType implements FieldType {
         return SETTER_PREFIX;
     }
 
-    private static TypeName constructTypeNameFor(String name) {
-        final Optional<? extends Class<?>> boxedScalarPrimitive =
-                PrimitiveType.getWrapperClass(name);
+    private static TypeName boxIfPrimitive(TypeName typeName) {
+        if (typeName.isPrimitive()) {
+            return typeName.box();
+        }
 
-        return boxedScalarPrimitive.isPresent()
-               ? TypeName.get(boxedScalarPrimitive.get())
-                         .unbox()
-               : ClassName.bestGuess(name);
+        return typeName;
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -17,38 +17,34 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package io.spine.tools.compiler.fieldtype;
 
-package io.spine.gradle.compiler.message.fieldtype;
-
+import com.google.common.base.Optional;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
+import io.spine.tools.java.PrimitiveType;
 
-import java.util.Map;
+import java.util.List;
 
 /**
- * Represents map {@linkplain FieldType field type}.
+ * Represents repeated {@linkplain FieldType field type}.
+ *
+ * @author Dmytro Grankin
  */
-public class MapFieldType implements FieldType {
+public class RepeatedFieldType implements FieldType {
 
-    private static final String SETTER_PREFIX = "putAll";
+    private static final String SETTER_PREFIX = "addAll";
 
     private final TypeName typeName;
-    private final TypeName keyTypeName;
-    private final TypeName valueTypeName;
 
     /**
-     * Constructs the {@link MapFieldType} based on
-     * the key and the value type names.
+     * Constructs the {@link RepeatedFieldType} based on component type.
      *
-     * @param entryTypeNames the entry containing the key and the value type names.
+     * @param componentTypeName the component type name
      */
-    MapFieldType(Map.Entry<TypeName, TypeName> entryTypeNames) {
-        this.keyTypeName = boxIfPrimitive(entryTypeNames.getKey());
-        this.valueTypeName = boxIfPrimitive(entryTypeNames.getValue());
-        this.typeName = ParameterizedTypeName.get(ClassName.get(Map.class),
-                                                  keyTypeName,
-                                                  valueTypeName);
+    RepeatedFieldType(String componentTypeName) {
+        this.typeName = constructTypeNameFor(componentTypeName);
     }
 
     /**
@@ -59,19 +55,9 @@ public class MapFieldType implements FieldType {
         return typeName;
     }
 
-    public TypeName getKeyTypeName() {
-        return keyTypeName;
-    }
-
-    public TypeName getValueTypeName() {
-        return valueTypeName;
-    }
-
     /**
-     * Returns "putAll" setter prefix,
-     * used to initialize a map field using a protobuf message builder.
-     *
-     * <p>Call should be like `builder.putAllFieldName({@link Map})`.
+     * Returns "addAll" setter prefix,
+     * used to initialize a repeated field using with a call to Protobuf message builder.
      *
      * @return {@inheritDoc}
      */
@@ -80,12 +66,16 @@ public class MapFieldType implements FieldType {
         return SETTER_PREFIX;
     }
 
-    private static TypeName boxIfPrimitive(TypeName typeName) {
-        if (typeName.isPrimitive()) {
-            return typeName.box();
-        }
+    private static TypeName constructTypeNameFor(String componentTypeName) {
+        final Optional<? extends Class<?>> wrapperClass =
+                PrimitiveType.getWrapperClass(componentTypeName);
 
-        return typeName;
+        final TypeName componentType = wrapperClass.isPresent()
+                                       ? TypeName.get(wrapperClass.get())
+                                       : ClassName.bestGuess(componentTypeName);
+        final ParameterizedTypeName result =
+                ParameterizedTypeName.get(ClassName.get(List.class), componentType);
+        return result;
     }
 
     @Override

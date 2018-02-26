@@ -22,8 +22,8 @@ package io.spine.tools.compiler.validation;
 
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.squareup.javapoet.ClassName;
-import io.spine.gradle.compiler.message.fieldtype.FieldType;
 import io.spine.tools.compiler.MessageTypeCache;
+import io.spine.tools.compiler.fieldtype.FieldType;
 
 import javax.annotation.Nullable;
 

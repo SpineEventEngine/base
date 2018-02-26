@@ -25,7 +25,7 @@ import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.EnumDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
-import io.spine.gradle.compiler.message.fieldtype.FieldTypes;
+import io.spine.tools.compiler.fieldtype.FieldTypes;
 import io.spine.tools.java.SimpleClassName;
 import io.spine.tools.properties.PropertiesWriter;
 import io.spine.type.KnownTypes;

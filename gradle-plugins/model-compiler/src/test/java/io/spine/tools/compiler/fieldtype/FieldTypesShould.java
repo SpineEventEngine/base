@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -18,12 +18,26 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.tools.compiler.fieldtype;
+
+import com.google.common.testing.NullPointerTester;
+import org.junit.Test;
+
+import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
+
 /**
- * Classes for working with Protobuf messages for Spine Gradle Plugin.
- *
  * @author Illia Shepilov
  */
-@ParametersAreNonnullByDefault
-package io.spine.gradle.compiler.message;
+public class FieldTypesShould {
 
-import javax.annotation.ParametersAreNonnullByDefault;
+    @Test
+    public void have_private_constructor() {
+        assertHasPrivateParameterlessCtor(FieldTypes.class);
+    }
+
+    @Test
+    public void pass_null_tolerance_check() {
+        new NullPointerTester().testStaticMethods(FieldTypes.class,
+                                                  NullPointerTester.Visibility.PACKAGE);
+    }
+}

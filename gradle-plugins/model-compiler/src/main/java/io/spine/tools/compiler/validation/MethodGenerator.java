@@ -24,18 +24,18 @@ import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
-import io.spine.gradle.compiler.message.fieldtype.FieldType;
-import io.spine.gradle.compiler.message.fieldtype.FieldTypeFactory;
 import io.spine.protobuf.Messages;
 import io.spine.tools.compiler.MessageTypeCache;
+import io.spine.tools.compiler.fieldtype.FieldType;
+import io.spine.tools.compiler.fieldtype.FieldTypeFactory;
 
 import javax.lang.model.element.Modifier;
 import java.util.Collection;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static io.spine.gradle.compiler.message.fieldtype.FieldTypes.isMap;
-import static io.spine.gradle.compiler.message.fieldtype.FieldTypes.isRepeated;
+import static io.spine.tools.compiler.fieldtype.FieldTypes.isMap;
+import static io.spine.tools.compiler.fieldtype.FieldTypes.isRepeated;
 
 /**
  * Serves as assembler for the generated methods based on the Protobuf message declaration.

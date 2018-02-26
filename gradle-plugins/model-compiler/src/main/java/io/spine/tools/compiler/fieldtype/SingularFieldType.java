@@ -17,34 +17,31 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.gradle.compiler.message.fieldtype;
+package io.spine.tools.compiler.fieldtype;
 
 import com.google.common.base.Optional;
 import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import io.spine.tools.java.PrimitiveType;
 
-import java.util.List;
-
 /**
- * Represents repeated {@linkplain FieldType field type}.
+ * Represents singular {@linkplain FieldType field type}.
  *
  * @author Dmytro Grankin
  */
-public class RepeatedFieldType implements FieldType {
+public class SingularFieldType implements FieldType {
 
-    private static final String SETTER_PREFIX = "addAll";
+    private static final String SETTER_PREFIX = "set";
 
     private final TypeName typeName;
 
     /**
-     * Constructs the {@link RepeatedFieldType} based on component type.
+     * Constructs the {@link SingularFieldType} based on field type name.
      *
-     * @param componentTypeName the component type name
+     * @param name the field type name
      */
-    RepeatedFieldType(String componentTypeName) {
-        this.typeName = constructTypeNameFor(componentTypeName);
+    SingularFieldType(String name) {
+        this.typeName = constructTypeNameFor(name);
     }
 
     /**
@@ -56,8 +53,10 @@ public class RepeatedFieldType implements FieldType {
     }
 
     /**
-     * Returns "addAll" setter prefix,
-     * used to initialize a repeated field using with a call to Protobuf message builder.
+     * Returns "set" setter prefix,
+     * used to initialize a singular field using a protobuf message builder.
+     *
+     * Call should be like `builder.setFieldName(FieldType)`.
      *
      * @return {@inheritDoc}
      */
@@ -66,16 +65,14 @@ public class RepeatedFieldType implements FieldType {
         return SETTER_PREFIX;
     }
 
-    private static TypeName constructTypeNameFor(String componentTypeName) {
-        final Optional<? extends Class<?>> wrapperClass =
-                PrimitiveType.getWrapperClass(componentTypeName);
+    private static TypeName constructTypeNameFor(String name) {
+        final Optional<? extends Class<?>> boxedScalarPrimitive =
+                PrimitiveType.getWrapperClass(name);
 
-        final TypeName componentType = wrapperClass.isPresent()
-                                       ? TypeName.get(wrapperClass.get())
-                                       : ClassName.bestGuess(componentTypeName);
-        final ParameterizedTypeName result =
-                ParameterizedTypeName.get(ClassName.get(List.class), componentType);
-        return result;
+        return boxedScalarPrimitive.isPresent()
+               ? TypeName.get(boxedScalarPrimitive.get())
+                         .unbox()
+               : ClassName.bestGuess(name);
     }
 
     @Override
