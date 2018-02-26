@@ -8,8 +8,8 @@ gem instal dpl
 mkdir reports
 
 # Find all directories matching path to add to archive. 
-BUILD_REPORTS=`find . -type d -path "*build/reports*"`
-JACOCO_REPORTS=`find . -type d -path "*build/jacoco*"`
+BUILD_REPORTS=$(find . -type d -path "*build/reports*")
+JACOCO_REPORTS=$(find . -type d -path "*build/jacoco*")
 
 zip -r reports/test-reports.zip $BUILD_REPORTS
 zip -r reports/jacoco-reports.zip $JACOCO_REPORTS
