@@ -15,6 +15,9 @@ function getProp() {
     grep "${1}" config/gcs.properties | cut -d'=' -f2
 }
 
+echo `ls gradle-plugins/model-compiler/build/reports`
+echo `ls reports`
+
 # Upload the prepared reports to GCS.
 dpl --provider=gcs \
     --access-key-id=GOOGX66ER6DXLZH7IKQF \
