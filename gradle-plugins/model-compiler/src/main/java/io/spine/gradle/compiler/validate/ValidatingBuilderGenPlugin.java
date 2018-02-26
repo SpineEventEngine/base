@@ -102,7 +102,11 @@ public class ValidatingBuilderGenPlugin extends SpinePlugin {
                              getTargetGenValidatorsRootDir(project),
                              getMainProtoSrcDir(project));
 
-        logDependingTask(log(), GENERATE_VALIDATING_BUILDERS, COMPILE_JAVA, GENERATE_PROTO);
+        logDependingTask(log(),
+                         GENERATE_VALIDATING_BUILDERS,
+                         COMPILE_JAVA,
+                         GENERATE_PROTO);
+
         final GradleTask generateValidator =
                 newTask(GENERATE_VALIDATING_BUILDERS,
                         mainScopeAction).insertAfterTask(GENERATE_PROTO)
@@ -115,13 +119,16 @@ public class ValidatingBuilderGenPlugin extends SpinePlugin {
                              getTargetTestGenValidatorsRootDir(project),
                              getTestProtoSrcDir(project));
 
-        logDependingTask(log(), GENERATE_TEST_VALIDATING_BUILDERS,
-                         COMPILE_TEST_JAVA, GENERATE_TEST_PROTO);
+        logDependingTask(log(),
+                         GENERATE_TEST_VALIDATING_BUILDERS,
+                         COMPILE_TEST_JAVA,
+                         GENERATE_TEST_PROTO);
+
         final GradleTask generateTestValidator =
-                newTask(GENERATE_TEST_VALIDATING_BUILDERS,
-                        testScopeAction).insertAfterTask(GENERATE_TEST_PROTO)
-                                        .insertBeforeTask(COMPILE_TEST_JAVA)
-                                        .applyNowTo(project);
+                newTask(GENERATE_TEST_VALIDATING_BUILDERS, testScopeAction)
+                        .insertAfterTask(GENERATE_TEST_PROTO)
+                        .insertBeforeTask(COMPILE_TEST_JAVA)
+                        .applyNowTo(project);
         log().debug("Validating builders generation phase initialized with tasks: {}, {}.",
                     generateValidator, generateTestValidator);
     }
