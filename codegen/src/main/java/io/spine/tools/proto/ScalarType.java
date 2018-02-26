@@ -22,7 +22,7 @@ package io.spine.tools.proto;
 
 import com.google.protobuf.ByteString;
 
-import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
+import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 import static java.lang.String.format;
 
 /**
