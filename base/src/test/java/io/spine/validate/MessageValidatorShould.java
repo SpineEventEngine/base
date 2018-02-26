@@ -358,11 +358,11 @@ public class MessageValidatorShould {
     @Test
     public void find_out_that_time_is_in_in_NOT_past_by_nanos() {
         final Timestamp currentTime = currentTimeWithNanos(ZERO_NANOSECONDS);
-        final Timestamp timeInPast = timeWithNanos(currentTime, FIFTY_NANOSECONDS);
+        final Timestamp timeInFuture = timeWithNanos(currentTime, FIFTY_NANOSECONDS);
         freezeTime(currentTime);
         final TimeInPastFieldValue invalidMsg =
                 TimeInPastFieldValue.newBuilder()
-                                    .setValue(timeInPast)
+                                    .setValue(timeInFuture)
                                     .build();
         validate(invalidMsg);
         assertIsValid(false);
