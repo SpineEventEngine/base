@@ -35,4 +35,5 @@ after_success:
   - ./scripts/report-coverage.sh
 
 after_script:
-  - bash ./scripts/upload-artifacts.sh
+  - chmod +x ./scripts/upload-artifacts.sh
+  - ./scripts/upload-artifacts.sh
