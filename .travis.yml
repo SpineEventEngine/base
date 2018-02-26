@@ -35,8 +35,4 @@ after_success:
   - ./scripts/report-coverage.sh
 
 after_script:
-  - shopt -s globstar
-  - echo $SHELL
-  - bash --version
-  - chmod +x ./scripts/upload-artifacts.sh
   - bash ./scripts/upload-artifacts.sh
