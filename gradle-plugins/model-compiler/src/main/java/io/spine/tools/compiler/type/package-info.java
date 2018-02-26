@@ -19,12 +19,10 @@
  */
 
 /**
- * Provides a Gradle plugin, which adds annotations for generated Java files
- * basing on options defined in {@code .proto} files.
- *
- * @see io.spine.tools.gradle.compiler.annotation.ProtoAnnotatorPlugin ProtoAnnotatorPlugin
+ * This package provides classes for gathering proto types declared in a domain model
+ * and mapping them to generated Java classes.
  */
 @ParametersAreNonnullByDefault
-package io.spine.tools.gradle.compiler.annotation;
+package io.spine.tools.compiler.type;
 
 import javax.annotation.ParametersAreNonnullByDefault;

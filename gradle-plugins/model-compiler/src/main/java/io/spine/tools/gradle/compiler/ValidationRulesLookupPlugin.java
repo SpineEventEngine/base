@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.gradle.compiler.validation;
+package io.spine.tools.gradle.compiler;
 
 import io.spine.tools.compiler.validation.ValidationRulesLookup;
 import io.spine.tools.gradle.GradleTask;

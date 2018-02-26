@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -17,7 +17,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.gradle.compiler.lookup.proto;
+package io.spine.tools.compiler.type;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableMap;
@@ -27,10 +27,13 @@ import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.gradle.compiler.message.fieldtype.FieldTypes;
 import io.spine.tools.java.SimpleClassName;
+import io.spine.tools.properties.PropertiesWriter;
+import io.spine.type.KnownTypes;
 import io.spine.type.TypeUrl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -38,8 +41,10 @@ import java.util.Map;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Lists.newLinkedList;
+import static com.google.common.collect.Maps.newHashMap;
 import static io.spine.option.OptionsProto.TYPE_URL_PREFIX_FIELD_NUMBER;
 import static io.spine.option.UnknownOptions.getUnknownOptionValue;
+import static io.spine.tools.proto.FileDescriptors.parseSkipStandard;
 
 /**
  * Maps Protobuf message types from a {@code .proto} file to the corresponding Java classes.
@@ -56,6 +61,11 @@ public class ProtoToJavaTypeMapper {
 
     private static final String GOOGLE_TYPE_URL_PREFIX = TypeUrl.Prefix.GOOGLE_APIS.value();
     private static final String PROTO_TYPE_URL_SEPARATOR = "/";
+    /**
+     * The name of the file to populate. NOTE: also change its name used
+     * in the `core-java` project on changing.
+     */
+    private static final String PROPERTIES_FILE_NAME = KnownTypes.PROPS_FILE_PATH;
 
     private final FileDescriptorProto file;
 
@@ -64,7 +74,7 @@ public class ProtoToJavaTypeMapper {
     private final String typeUrlPrefix;
     private final String commonOuterClassPrefix;
 
-    ProtoToJavaTypeMapper(FileDescriptorProto file) {
+    private ProtoToJavaTypeMapper(FileDescriptorProto file) {
         this.file = file;
         this.protoPackagePrefix = getProtoPackagePrefix(file);
         this.javaPackagePrefix = getJavaPackagePrefix(file);
@@ -72,11 +82,33 @@ public class ProtoToJavaTypeMapper {
         this.commonOuterClassPrefix = getCommonOuterJavaClassPrefix(file);
     }
 
+    public static void processDescriptorSet(File setFile, String targetDir) {
+        final Logger log = log();
+        final Map<String, String> propsMap = newHashMap();
+        final Collection<FileDescriptorProto> files = parseSkipStandard(setFile.getPath());
+        log.trace("Starting mapping files under: {}", files);
+        for (FileDescriptorProto file : files) {
+            log.debug("Looking up file {}", file.getName());
+            final Map<String, String> types = new ProtoToJavaTypeMapper(file).mapTypes();
+            propsMap.putAll(types);
+        }
+        if (propsMap.isEmpty()) {
+            log.debug("No proto types found. Searched under: {}", files);
+            return;
+        }
+
+        log.debug("{} types found", files.size());
+        log.trace("Saving proto-to-java mapping: {}", files);
+
+        final PropertiesWriter writer = new PropertiesWriter(targetDir, PROPERTIES_FILE_NAME);
+        writer.write(propsMap);
+    }
+
     /**
      * Returns a map from Protobuf type url to the corresponding
      * fully-qualified Java class name.
      */
-    public Map<String, String> mapTypes() {
+    private Map<String, String> mapTypes() {
         log().debug("Mapping file {}", file.getName());
         final ImmutableMap.Builder<String, String> builder = ImmutableMap.builder();
         putMessageEntries(file.getMessageTypeList(), builder, new LinkedList<String>());
