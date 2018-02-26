@@ -18,26 +18,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.gradle.compiler.validate;
+package io.spine.tools.compiler.validation;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Iterables;
 import io.spine.tools.Indent;
 import io.spine.tools.compiler.MessageTypeCache;
-import org.gradle.api.Action;
-import org.gradle.api.Project;
-import org.gradle.api.Task;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;
 import java.io.File;
 import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.gradle.compiler.Extension.getIndent;
-import static io.spine.tools.gradle.compiler.Extension.isGenerateValidatingBuilders;
-import static io.spine.tools.gradle.compiler.Extension.isGenerateValidatingBuildersFromClasspath;
 
 /**
  * Gradle {@code Action} for validating builder generation.
@@ -47,62 +42,42 @@ import static io.spine.tools.gradle.compiler.Extension.isGenerateValidatingBuild
  *
  * @author Illia Shepilov
  */
-class GenerationAction implements Action<Task> {
+public class VBuilderGenerator {
 
-    private final ValidatingBuilderGenPlugin plugin;
-
-    /**
-     * Source Gradle project.
-     */
-    private final Project project;
-
-    /**
-     * Path to the generated Protobuf descriptor {@code .desc} file.
-     */
-    private final String descriptorPath;
-
-    /**
-     * An absolute path to the folder, serving as a target
-     * for the generation for the given scope.
-     */
+    /** Code will be generated into this directory. */
     private final String targetDirPath;
 
-    /**
-     * An absolute path to the folder, containing the {@code .proto} files for the given scope.
-     */
+    /** Source directory with proto files. */
     private final String protoSrcDirPath;
 
-    GenerationAction(ValidatingBuilderGenPlugin parent,
-                     String descriptorPath,
-                     String targetDirPath,
-                     String protoSrcDirPath, Project project) {
-        this.plugin = parent;
-        this.project = project;
-        this.descriptorPath = descriptorPath;
+    /** Controls the scope of validating builder generation. */
+    private final boolean classpathGenEnabled;
+
+    /**
+     * Creates new instance of the generator.
+     *
+     * @param targetDirPath
+     *        an absolute path to the folder, serving as a target for the generation for
+     *        the given scope
+     * @param protoSrcDirPath
+     *        an absolute path to the folder, containing the {@code .proto} files for
+     *        the given scope
+     * @param classpathGenEnabled
+     *        If {@code true}, validating builders will be generated for all types from the
+     *        classpath. If {@code false}, validating builders will be generated only to the
+     *        classes from the module.
+     */
+    public VBuilderGenerator(String targetDirPath,
+                      String protoSrcDirPath,
+                      boolean classpathGenEnabled) {
         this.targetDirPath = targetDirPath;
         this.protoSrcDirPath = protoSrcDirPath;
+        this.classpathGenEnabled = classpathGenEnabled;
     }
 
-    @Override
-    public void execute(Task task) {
-        if (!isGenerateValidatingBuilders(project)) {
-            return;
-        }
-        final File setFile = new File(descriptorPath);
-        if (!setFile.exists()) {
-            plugin.logMissingDescriptorSetFile(setFile);
-        } else {
-            final Indent indent = getIndent(project);
-            processDescriptorSetFile(setFile, indent);
-        }
-    }
-
-    private void processDescriptorSetFile(File setFile, Indent indent) {
-        final Logger log = plugin.log();
+    public void processDescriptorSetFile(File setFile, Indent indent) {
+        final Logger log = log();
         log.debug("Generating the validating builders from {}.", setFile);
-
-        final boolean classpathGenEnabled =
-                isGenerateValidatingBuildersFromClasspath(project);
 
         final MetadataAssembler assembler = new MetadataAssembler(setFile.getPath());
         final Set<VBMetadata> metadataItems = assembler.assemble();
@@ -111,8 +86,7 @@ class GenerationAction implements Action<Task> {
         final ValidatingBuilderWriter writer =
                 new ValidatingBuilderWriter(targetDirPath, indent, messageTypeCache);
 
-        final Iterable<VBMetadata> metadataToWrite = filter(classpathGenEnabled,
-                                                            metadataItems);
+        final Iterable<VBMetadata> metadataToWrite = filter(classpathGenEnabled, metadataItems);
 
         for (VBMetadata metadata : metadataToWrite) {
             try {
@@ -175,5 +149,16 @@ class GenerationAction implements Action<Task> {
             final boolean belongsToModule = protoFile.exists();
             return belongsToModule;
         }
+    }
+
+    private enum LogSingleton {
+        INSTANCE;
+
+        @SuppressWarnings("NonSerializableFieldInSerializableClass")
+        private final Logger value = LoggerFactory.getLogger(VBuilderGenerator.class);
+    }
+
+    private static Logger log() {
+        return LogSingleton.INSTANCE.value;
     }
 }

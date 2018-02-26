@@ -19,7 +19,6 @@
  */
 package io.spine.tools.gradle.compiler;
 
-import io.spine.gradle.compiler.validate.ValidatingBuilderGenPlugin;
 import io.spine.tools.gradle.SpinePlugin;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;

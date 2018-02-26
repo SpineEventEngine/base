@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.gradle.compiler.validate;
+package io.spine.tools.compiler.validation;
 
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.Descriptors.FieldDescriptor;
@@ -39,14 +39,14 @@ import java.util.List;
 import java.util.Map;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static io.spine.gradle.compiler.validate.MethodConstructors.clearPrefix;
-import static io.spine.gradle.compiler.validate.MethodConstructors.createConvertSingularValue;
-import static io.spine.gradle.compiler.validate.MethodConstructors.createDescriptorStatement;
-import static io.spine.gradle.compiler.validate.MethodConstructors.createValidateStatement;
-import static io.spine.gradle.compiler.validate.MethodConstructors.getMessageBuilder;
-import static io.spine.gradle.compiler.validate.MethodConstructors.rawSuffix;
-import static io.spine.gradle.compiler.validate.MethodConstructors.removePrefix;
-import static io.spine.gradle.compiler.validate.MethodConstructors.returnThis;
+import static io.spine.tools.compiler.validation.MethodConstructors.clearPrefix;
+import static io.spine.tools.compiler.validation.MethodConstructors.createConvertSingularValue;
+import static io.spine.tools.compiler.validation.MethodConstructors.createDescriptorStatement;
+import static io.spine.tools.compiler.validation.MethodConstructors.createValidateStatement;
+import static io.spine.tools.compiler.validation.MethodConstructors.getMessageBuilder;
+import static io.spine.tools.compiler.validation.MethodConstructors.rawSuffix;
+import static io.spine.tools.compiler.validation.MethodConstructors.removePrefix;
+import static io.spine.tools.compiler.validation.MethodConstructors.returnThis;
 import static java.lang.String.format;
 
 /**

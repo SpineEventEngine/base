@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.gradle.compiler.validate;
+package io.spine.tools.compiler.validation;
 
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.squareup.javapoet.ClassName;
@@ -38,7 +38,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
-import static io.spine.gradle.compiler.validate.ClassNames.getValidatorMessageClassName;
+import static io.spine.tools.compiler.validation.ClassNames.getValidatorMessageClassName;
 import static io.spine.tools.java.Annotations.generatedBySpineModelCompiler;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 

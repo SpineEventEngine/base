@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.gradle.compiler.validate;
+package io.spine.tools.compiler.validation;
 
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.DescriptorProtos;
@@ -26,18 +26,20 @@ import com.squareup.javapoet.ClassName;
 import io.spine.tools.compiler.MessageTypeCache;
 import org.junit.Test;
 
-import static io.spine.gradle.compiler.validate.ClassNames.getClassName;
-import static io.spine.gradle.compiler.validate.ClassNames.getStringClassName;
-import static io.spine.gradle.compiler.validate.ClassNames.getValidatorMessageClassName;
 import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
+import static io.spine.tools.compiler.validation.ClassNames.getClassName;
+import static io.spine.tools.compiler.validation.ClassNames.getStringClassName;
+import static io.spine.tools.compiler.validation.ClassNames.getValidatorMessageClassName;
 import static org.junit.Assert.assertEquals;
 
 /**
  * @author Illia Shepilov
+ * @author Alexander Yevsyukov
  */
 public class ClassNamesShould {
 
-    public static final String TEST_PACKAGE = "io.spine.gradle.compiler.validate";
+    private static final String TEST_PACKAGE = ClassNamesShould.class.getPackage()
+                                                                     .getName();
 
     @Test
     public void return_string_class_name() {
@@ -53,20 +55,20 @@ public class ClassNamesShould {
 
     @Test
     public void return_constructed_class_name() {
-        final ClassName actual = getClassName(TEST_PACKAGE, "ClassNamesShould");
+        final ClassName actual = getClassName(TEST_PACKAGE, getClass().getSimpleName());
         assertEquals(ClassName.get(getClass()), actual);
     }
 
     @Test
-    public void have_private_constructor() {
+    public void have_utility_constructor() {
         assertHasPrivateParameterlessCtor(ClassNames.class);
     }
 
     @Test
     public void pass_null_tolerance_check() {
-        final NullPointerTester nullPointerTester = new NullPointerTester();
-        nullPointerTester.setDefault(DescriptorProtos.FieldDescriptorProto.class,
-                                     DescriptorProtos.FieldDescriptorProto.getDefaultInstance());
-        nullPointerTester.testStaticMethods(ClassNames.class, NullPointerTester.Visibility.PACKAGE);
+        new NullPointerTester()
+                .setDefault(DescriptorProtos.FieldDescriptorProto.class,
+                            DescriptorProtos.FieldDescriptorProto.getDefaultInstance())
+                .testStaticMethods(ClassNames.class, NullPointerTester.Visibility.PACKAGE);
     }
 }

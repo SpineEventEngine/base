@@ -18,8 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.gradle.compiler.validate;
+package io.spine.tools.gradle.compiler;
 
+import io.spine.tools.Indent;
+import io.spine.tools.compiler.validation.VBuilderGenerator;
 import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.SpinePlugin;
 import org.gradle.api.Action;
@@ -35,12 +37,15 @@ import static io.spine.tools.gradle.TaskName.GENERATE_PROTO;
 import static io.spine.tools.gradle.TaskName.GENERATE_TEST_PROTO;
 import static io.spine.tools.gradle.TaskName.GENERATE_TEST_VALIDATING_BUILDERS;
 import static io.spine.tools.gradle.TaskName.GENERATE_VALIDATING_BUILDERS;
+import static io.spine.tools.gradle.compiler.Extension.getIndent;
 import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSetPath;
 import static io.spine.tools.gradle.compiler.Extension.getMainProtoSrcDir;
 import static io.spine.tools.gradle.compiler.Extension.getTargetGenValidatorsRootDir;
 import static io.spine.tools.gradle.compiler.Extension.getTargetTestGenValidatorsRootDir;
 import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSetPath;
 import static io.spine.tools.gradle.compiler.Extension.getTestProtoSrcDir;
+import static io.spine.tools.gradle.compiler.Extension.isGenerateValidatingBuilders;
+import static io.spine.tools.gradle.compiler.Extension.isGenerateValidatingBuildersFromClasspath;
 
 /**
  * Plugin which generates validating builders based on the Protobuf Message definitions.
@@ -83,7 +88,8 @@ public class ValidatingBuilderGenPlugin extends SpinePlugin {
 
     @Override
     public void apply(Project project) {
-        log().debug("Preparing to generate validating builders.");
+        final Logger log = log();
+        log.debug("Preparing to generate validating builders.");
         final Action<Task> mainScopeAction =
                 createAction(project,
                              getMainDescriptorSetPath(project),
@@ -100,7 +106,7 @@ public class ValidatingBuilderGenPlugin extends SpinePlugin {
                         .insertAfterTask(GENERATE_PROTO)
                         .insertBeforeTask(COMPILE_JAVA)
                         .applyNowTo(project);
-        log().debug("Preparing to generate test validating builders.");
+        log.debug("Preparing to generate test validating builders.");
         final Action<Task> testScopeAction =
                 createAction(project,
                              getTestDescriptorSetPath(project),
@@ -116,21 +122,70 @@ public class ValidatingBuilderGenPlugin extends SpinePlugin {
                         .insertAfterTask(GENERATE_TEST_PROTO)
                         .insertBeforeTask(COMPILE_TEST_JAVA)
                         .applyNowTo(project);
-        log().debug("Validating builders generation phase initialized with tasks: {}, {}.",
+        log.debug("Validating builders generation phase initialized with tasks: {}, {}.",
                     generateValidator, generateTestValidator);
-    }
-
-    /** Opens the method for the package. */
-    @Override
-    protected Logger log() {
-        return super.log();
     }
 
     private Action<Task> createAction(Project project,
                                       String descriptorPath,
                                       String targetDirPath,
                                       String protoSrcDirPath) {
-        return new GenerationAction(this, descriptorPath, targetDirPath, protoSrcDirPath, project);
+        return new GenAction(this, project, descriptorPath, targetDirPath, protoSrcDirPath);
+    }
+
+    private static class GenAction implements Action<Task> {
+
+        private final ValidatingBuilderGenPlugin plugin;
+
+        /**
+         * Source Gradle project.
+         */
+        private final Project project;
+
+        /**
+         * Path to the generated Protobuf descriptor {@code .desc} file.
+         */
+        private final String descriptorPath;
+
+        /**
+         * An absolute path to the folder, serving as a target
+         * for the generation for the given scope.
+         */
+        private final String targetDirPath;
+
+        /**
+         * An absolute path to the folder, containing the {@code .proto} files for the given scope.
+         */
+        private final String protoSrcDirPath;
+
+        private GenAction(ValidatingBuilderGenPlugin plugin,
+                          Project project,
+                          String descriptorPath,
+                          String targetDirPath,
+                          String protoSrcDirPath) {
+            this.plugin = plugin;
+            this.project = project;
+            this.descriptorPath = descriptorPath;
+            this.targetDirPath = targetDirPath;
+            this.protoSrcDirPath = protoSrcDirPath;
+        }
+
+        @Override
+        public void execute(Task task) {
+            if (!isGenerateValidatingBuilders(project)) {
+                return;
+            }
+            final File setFile = new File(descriptorPath);
+            if (!setFile.exists()) {
+                plugin.logMissingDescriptorSetFile(setFile);
+            } else {
+                final Indent indent = getIndent(project);
+                final boolean genFromClasspath = isGenerateValidatingBuildersFromClasspath(project);
+                final VBuilderGenerator generator =
+                        new VBuilderGenerator(targetDirPath, protoSrcDirPath, genFromClasspath);
+                generator.processDescriptorSetFile(setFile, indent);
+            }
+        }
     }
 
     /** Opens the method to the helper class. */

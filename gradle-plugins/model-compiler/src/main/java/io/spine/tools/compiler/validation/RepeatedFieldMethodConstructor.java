@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.gradle.compiler.validate;
+package io.spine.tools.compiler.validation;
 
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
@@ -42,17 +42,17 @@ import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type.TYPE_ENUM;
-import static io.spine.gradle.compiler.validate.ClassNames.getClassName;
-import static io.spine.gradle.compiler.validate.ClassNames.getParameterClassName;
-import static io.spine.gradle.compiler.validate.MethodConstructors.clearPrefix;
-import static io.spine.gradle.compiler.validate.MethodConstructors.clearProperty;
-import static io.spine.gradle.compiler.validate.MethodConstructors.createConvertSingularValue;
-import static io.spine.gradle.compiler.validate.MethodConstructors.createDescriptorStatement;
-import static io.spine.gradle.compiler.validate.MethodConstructors.createValidateStatement;
-import static io.spine.gradle.compiler.validate.MethodConstructors.getMessageBuilder;
-import static io.spine.gradle.compiler.validate.MethodConstructors.rawSuffix;
-import static io.spine.gradle.compiler.validate.MethodConstructors.removePrefix;
-import static io.spine.gradle.compiler.validate.MethodConstructors.returnThis;
+import static io.spine.tools.compiler.validation.ClassNames.getClassName;
+import static io.spine.tools.compiler.validation.ClassNames.getParameterClassName;
+import static io.spine.tools.compiler.validation.MethodConstructors.clearPrefix;
+import static io.spine.tools.compiler.validation.MethodConstructors.clearProperty;
+import static io.spine.tools.compiler.validation.MethodConstructors.createConvertSingularValue;
+import static io.spine.tools.compiler.validation.MethodConstructors.createDescriptorStatement;
+import static io.spine.tools.compiler.validation.MethodConstructors.createValidateStatement;
+import static io.spine.tools.compiler.validation.MethodConstructors.getMessageBuilder;
+import static io.spine.tools.compiler.validation.MethodConstructors.rawSuffix;
+import static io.spine.tools.compiler.validation.MethodConstructors.removePrefix;
+import static io.spine.tools.compiler.validation.MethodConstructors.returnThis;
 import static java.lang.String.format;
 
 /**
