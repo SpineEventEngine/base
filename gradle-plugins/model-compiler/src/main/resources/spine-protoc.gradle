@@ -32,7 +32,7 @@ import java.nio.file.StandardCopyOption
  */
 
 // Template for the versions injection. See model-compiler:prepareProtocConfig.
-final def spineModelCompilerVersion = '0.10.26-SNAPSHOT'
+final def spineModelCompilerVersion = spineVersion
 final def protobufVersion = '3.5.1'
 final def gRpcVersion = '1.9.0'
 final def spineFolderName = '.spine'
