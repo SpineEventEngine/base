@@ -59,30 +59,6 @@ public final class Verify extends Assert {
 
     @SuppressWarnings("AccessOfSystemProperties")
     private static final String LINE_SEPARATOR = System.getProperty("line.separator");
-
-    /** Parameter name constants. */
-    @VisibleForTesting
-    static class Param {
-
-        static final String MAP = simpleLowerCaseOf(Map.class);
-        private static final String MULTIMAP = simpleLowerCaseOf(Multimap.class);
-        private static final String COLLECTION = simpleLowerCaseOf(Collection.class);
-        private static final String ARRAY = simpleLowerCaseOf(Array.class);
-        private static final String STRING = simpleLowerCaseOf(String.class);
-        private static final String LIST = simpleLowerCaseOf(List.class);
-        private static final String FLOAT = simpleLowerCaseOf(float.class);
-        private static final String BOOLEAN = simpleLowerCaseOf(boolean.class);
-
-        /** Prevents instantiation of this utility class. */
-        private Param() {
-        }
-
-        private static String simpleLowerCaseOf(Class<?> cls) {
-            return cls.getSimpleName()
-                      .toLowerCase();
-        }
-    }
-
     private static final String MSG_SHOULD_BE_EMPTY_ACTUAL_SIZE =
             " should be empty; actual size:<";
     private static final String MSG_IN_STRING_TO_SEARCH =
@@ -94,7 +70,6 @@ public final class Verify extends Assert {
     private static final String MSG_SHOULD_NOT_CONTAIN_UNEXPECTED_ITEM =
             " should not contain unexpectedItem:<";
     private static final String MSG_SHOULD_NOT_BE_NULL = " should not be null";
-
     private Verify() {
         super();
     }
@@ -219,8 +194,8 @@ public final class Verify extends Assert {
             // handle infinity specially since subtracting to infinite values gives NaN and the
             // the following test fails
             if (areNaNs(notExpected, actual)
-                || areSameKindOfInfinity(notExpected, actual)
-                || Math.abs(notExpected - actual) <= delta) {
+                    || areSameKindOfInfinity(notExpected, actual)
+                    || Math.abs(notExpected - actual) <= delta) {
                 fail(itemName + SHOULD_NOT_BE_EQUAL + notExpected + '>');
             }
         } catch (AssertionError e) {
@@ -346,7 +321,7 @@ public final class Verify extends Assert {
             final FluentIterable<?> fluentIterable = FluentIterable.from(iterable);
             if (!fluentIterable.isEmpty()) {
                 fail(iterableName + " must be empty; actual size:<" +
-                     fluentIterable.size() + '>');
+                             fluentIterable.size() + '>');
             }
         } catch (AssertionError e) {
             throw mangledException(e);
@@ -424,7 +399,7 @@ public final class Verify extends Assert {
 
             if (!actualMultimap.isEmpty()) {
                 fail(multimapName + MSG_SHOULD_BE_EMPTY_ACTUAL_SIZE +
-                     actualMultimap.size() + '>');
+                             actualMultimap.size() + '>');
             }
         } catch (AssertionError e) {
             throw mangledException(e);
@@ -680,12 +655,12 @@ public final class Verify extends Assert {
                                            int actualSize) {
         if (actualSize != expectedSize) {
             fail("Incorrect size for "
-                 + collectionName
-                 + "; expected:<"
-                 + expectedSize
-                 + "> but was:<"
-                 + actualSize
-                 + '>');
+                         + collectionName
+                         + "; expected:<"
+                         + expectedSize
+                         + "> but was:<"
+                         + actualSize
+                         + '>');
         }
     }
 
@@ -747,11 +722,11 @@ public final class Verify extends Assert {
 
             if (!stringToSearch.contains(stringToFind)) {
                 fail(stringName
-                     + " did not contain stringToFind:<"
-                     + stringToFind
-                     + MSG_IN_STRING_TO_SEARCH
-                     + stringToSearch
-                     + '>');
+                             + " did not contain stringToFind:<"
+                             + stringToFind
+                             + MSG_IN_STRING_TO_SEARCH
+                             + stringToSearch
+                             + '>');
             }
         } catch (AssertionError e) {
             throw mangledException(e);
@@ -771,11 +746,11 @@ public final class Verify extends Assert {
 
             if (stringToSearch.contains(unexpectedString)) {
                 fail(stringName
-                     + " contains unexpectedString:<"
-                     + unexpectedString
-                     + MSG_IN_STRING_TO_SEARCH
-                     + stringToSearch
-                     + '>');
+                             + " contains unexpectedString:<"
+                             + unexpectedString
+                             + MSG_IN_STRING_TO_SEARCH
+                             + stringToSearch
+                             + '>');
             }
         } catch (AssertionError e) {
             throw mangledException(e);
@@ -825,7 +800,7 @@ public final class Verify extends Assert {
 
             if (!actualCollection.contains(expectedItem)) {
                 fail(collectionName + " did not contain expectedItem:<" +
-                     expectedItem + '>');
+                             expectedItem + '>');
             }
         } catch (AssertionError e) {
             throw mangledException(e);
@@ -869,7 +844,7 @@ public final class Verify extends Assert {
                 final V actualValue = actualMap.get(expectedKey);
                 if (!Objects.equals(actualValue, expectedValue)) {
                     fail("Values differ at key " + expectedKey + " expected " +
-                         expectedValue + " but was " + actualValue);
+                                 expectedValue + " but was " + actualValue);
                 }
             }
             assertSetsEqual(expectedMap.keySet(), actualMap.keySet());
@@ -934,7 +909,7 @@ public final class Verify extends Assert {
 
             if (!actualMultimap.containsEntry(expectedKey, expectedValue)) {
                 fail(multimapName + " did not contain entry: <" + expectedKey + ", "
-                     + expectedValue + '>');
+                             + expectedValue + '>');
             }
         } catch (AssertionError e) {
             throw mangledException(e);
@@ -1010,15 +985,15 @@ public final class Verify extends Assert {
             if (!Objects.equals(actualValue, expectedValue)) {
                 fail(
                         mapName
-                        + " entry with expectedKey:<"
-                        + expectedKey
-                        + '>'
-                        + " did not contain expectedValue:<"
-                        + expectedValue
-                        + ">, "
-                        + "but had actualValue:<"
-                        + actualValue
-                        + '>');
+                                + " entry with expectedKey:<"
+                                + expectedKey
+                                + '>'
+                                + " did not contain expectedValue:<"
+                                + expectedValue
+                                + ">, "
+                                + "but had actualValue:<"
+                                + actualValue
+                                + '>');
             }
         } catch (AssertionError e) {
             throw mangledException(e);
@@ -1044,7 +1019,7 @@ public final class Verify extends Assert {
 
             if (actualCollection.contains(unexpectedItem)) {
                 fail(collectionName + MSG_SHOULD_NOT_CONTAIN_UNEXPECTED_ITEM +
-                     unexpectedItem + '>');
+                             unexpectedItem + '>');
             }
         } catch (AssertionError e) {
             throw mangledException(e);
@@ -1071,7 +1046,7 @@ public final class Verify extends Assert {
             final FluentIterable<?> fluentIterable = FluentIterable.from(iterable);
             if (fluentIterable.contains(unexpectedItem)) {
                 fail(collectionName + MSG_SHOULD_NOT_CONTAIN_UNEXPECTED_ITEM +
-                     unexpectedItem + '>');
+                             unexpectedItem + '>');
             }
         } catch (AssertionError e) {
             throw mangledException(e);
@@ -1129,7 +1104,7 @@ public final class Verify extends Assert {
             assertObjectNotNull(listName, actualList);
             assertNotEquals(
                     "Bad test, formerItem and latterItem are equal, listName:<" +
-                    listName + '>',
+                            listName + '>',
                     formerItem,
                     latterItem);
             assertContainsAll(actualList, formerItem, latterItem);
@@ -1137,8 +1112,8 @@ public final class Verify extends Assert {
             final int latterPosition = actualList.indexOf(latterItem);
             if (latterPosition < formerPosition) {
                 fail("Items in " + listName + " are in incorrect order; " +
-                     "expected formerItem:<" + formerItem + '>' +
-                     " to appear before latterItem:<" + latterItem + ">, but didn't");
+                             "expected formerItem:<" + formerItem + '>' +
+                             " to appear before latterItem:<" + latterItem + ">, but didn't");
             }
         } catch (AssertionError e) {
             throw mangledException(e);
@@ -1389,7 +1364,7 @@ public final class Verify extends Assert {
             } catch (IllegalAccessException ignored) {
                 if (canInstantiateThroughReflection(aClass)) {
                     fail("Expected constructor of non-instantiable class '" + aClass +
-                         "' to throw an exception, but didn't");
+                                 "' to throw an exception, but didn't");
                 }
             }
         } catch (AssertionError e) {
@@ -1419,11 +1394,11 @@ public final class Verify extends Assert {
             try {
                 assertSame(
                         "Caught error of type <"
-                        + ex.getClass()
-                            .getName()
-                        + ">, expected one error of type <"
-                        + expectedErrorClass.getName()
-                        + '>',
+                                + ex.getClass()
+                                    .getName()
+                                + ">, expected one error of type <"
+                                + expectedErrorClass.getName()
+                                + '>',
                         expectedErrorClass,
                         ex.getClass());
                 return;
@@ -1488,9 +1463,9 @@ public final class Verify extends Assert {
     private static String msgCaughtButExpectedWithMessage(Exception actual,
                                                           Class<? extends Exception> expected) {
         return msgCaughtButExpected(actual, expected)
-               + LINE_SEPARATOR
-               + "Exception Message: " + actual.getMessage()
-               + LINE_SEPARATOR;
+                + LINE_SEPARATOR
+                + "Exception Message: " + actual.getMessage()
+                + LINE_SEPARATOR;
     }
 
     /**
@@ -1667,16 +1642,16 @@ public final class Verify extends Assert {
         final Throwable actualCauseClass = actual.getCause();
         assertNotNull(
                 "Caught exception with null cause, expected cause of type <"
-                + expectedCauseClass.getName()
-                + '>',
+                        + expectedCauseClass.getName()
+                        + '>',
                 actualCauseClass);
         assertSame(
                 "Caught exception with cause of type<"
-                + actualCauseClass.getClass()
-                                  .getName()
-                + ">, expected cause of type <"
-                + expectedCauseClass.getName()
-                + '>',
+                        + actualCauseClass.getClass()
+                                          .getName()
+                        + ">, expected cause of type <"
+                        + expectedCauseClass.getName()
+                        + '>',
                 expectedCauseClass,
                 actualCauseClass.getClass());
     }
@@ -1685,6 +1660,29 @@ public final class Verify extends Assert {
                                                Class<? extends Exception> expectedClass) {
         return "Caught exception of type <" + actual.getClass()
                                                     .getName() +
-               ">, expected one of type <" + expectedClass.getName() + '>';
+                ">, expected one of type <" + expectedClass.getName() + '>';
+    }
+
+    /** Parameter name constants. */
+    @VisibleForTesting
+    static class Param {
+
+        static final String MAP = simpleLowerCaseOf(Map.class);
+        private static final String MULTIMAP = simpleLowerCaseOf(Multimap.class);
+        private static final String COLLECTION = simpleLowerCaseOf(Collection.class);
+        private static final String ARRAY = simpleLowerCaseOf(Array.class);
+        private static final String STRING = simpleLowerCaseOf(String.class);
+        private static final String LIST = simpleLowerCaseOf(List.class);
+        private static final String FLOAT = simpleLowerCaseOf(float.class);
+        private static final String BOOLEAN = simpleLowerCaseOf(boolean.class);
+
+        /** Prevents instantiation of this utility class. */
+        private Param() {
+        }
+
+        private static String simpleLowerCaseOf(Class<?> cls) {
+            return cls.getSimpleName()
+                      .toLowerCase();
+        }
     }
 }
