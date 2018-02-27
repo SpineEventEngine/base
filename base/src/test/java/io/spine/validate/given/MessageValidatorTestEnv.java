@@ -65,7 +65,8 @@ public class MessageValidatorTestEnv {
     }
     
     /**
-     * Freezes time for current thread by setting a time provider with a constant.
+     * Freezes time for current thread by setting the time provider to a 
+     * {@link ConstantTimeProvider}.
      *
      * @param time time to be returned upon {@link Time#getCurrentTime()} call. 
      */
