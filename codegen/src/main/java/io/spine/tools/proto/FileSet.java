@@ -20,6 +20,7 @@
 
 package io.spine.tools.proto;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Optional;
@@ -30,7 +31,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
-import com.google.protobuf.Descriptors.DescriptorValidationException;
+import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
 import com.google.protobuf.Descriptors.FileDescriptor;
 
 import javax.annotation.Nullable;
@@ -41,7 +42,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.util.Exceptions.newIllegalStateException;
+import static io.spine.tools.proto.Linker.link;
 
 /**
  * A set of proto files represented by their {@linkplain FileDescriptor descriptors}.
@@ -79,19 +80,28 @@ public final class FileSet {
     /**
      * Creates a new file set by parsing the passed descriptor set file.
      */
-    private static FileSet parse(String descriptorSetFileName) {
-        final List<FileDescriptorProto> files = FileDescriptors.parse(descriptorSetFileName);
-        final Linker linker = new Linker(files);
-        try {
-            linker.resolve();
-        } catch (DescriptorValidationException e) {
-            throw newIllegalStateException(
-                    e, "Unable to parse descriptor set file %s", descriptorSetFileName
-            );
-        }
-        final FileSet result = linker.getResolved()
-                                     .union(linker.getPartiallyResolved())
-                                     .union(linker.getUnresolved());
+    private static FileSet parse(String descriptorSetFile) {
+        final List<FileDescriptorProto> files = FileDescriptors.parse(descriptorSetFile);
+        final FileSet result = link(files);
+        return result;
+    }
+
+    /**
+     * Loads main file set from resources.
+     */
+    public static FileSet loadMain() {
+        final FileDescriptorSet files = FileDescriptors.loadMain();
+        final FileSet result = link(files.getFileList());
+        return result;
+    }
+
+    /**
+     * Loads test file set from resources.
+     */
+    @VisibleForTesting
+    public static FileSet loadTest() {
+        final FileDescriptorSet files = FileDescriptors.loadTest();
+        final FileSet result = link(files.getFileList());
         return result;
     }
 
