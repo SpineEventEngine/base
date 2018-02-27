@@ -18,20 +18,29 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools;
-
-import io.spine.type.ComparableStringValue;
+package io.spine.type;
 
 /**
- * A name of a source code file.
+ * A string-based value which can be alphabetically sorted.
  *
- * @param <F> the type of the file name for comparison type covariance
+ * @param <T> the type of the value provided for the comparison type covariance
  * @author Alexander Yevsyukov
  */
-public abstract class AbstractFileName<F extends AbstractFileName>
-        extends ComparableStringValue<F> {
+@SuppressWarnings(
+        "ComparableImplementedButEqualsNotOverridden" /* Sufficient equals() is provided by
+                                                         the parent class */
+)
+public abstract class ComparableStringValue<T extends ComparableStringValue>
+        extends StringTypeValue
+        implements Comparable<T> {
 
-    protected AbstractFileName(String value) {
+    protected ComparableStringValue(String value) {
         super(value);
+    }
+
+    @Override
+    public int compareTo(T o) {
+        final int result = value().compareTo(o.value());
+        return result;
     }
 }

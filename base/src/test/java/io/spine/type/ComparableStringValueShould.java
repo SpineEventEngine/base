@@ -18,20 +18,35 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools;
+package io.spine.type;
 
-import io.spine.type.ComparableStringValue;
+import org.junit.Test;
+
+import static org.junit.Assert.assertTrue;
 
 /**
- * A name of a source code file.
- *
- * @param <F> the type of the file name for comparison type covariance
  * @author Alexander Yevsyukov
  */
-public abstract class AbstractFileName<F extends AbstractFileName>
-        extends ComparableStringValue<F> {
+public class ComparableStringValueShould {
 
-    protected AbstractFileName(String value) {
-        super(value);
+    @SuppressWarnings({
+            "EqualsWithItself" /* is part of the test*/,
+            "LocalVariableNamingConvention" /* shorter names are meaningful for this test */
+    })
+    @Test
+    public void compare() {
+        final TestVal a = new TestVal("a");
+        final TestVal b = new TestVal("b");
+
+        assertTrue(a.compareTo(b) < 0);
+        assertTrue(b.compareTo(a) > 0);
+        assertTrue(a.compareTo(a) == 0);
+    }
+
+    private static class TestVal extends ComparableStringValue<TestVal> {
+
+        private TestVal(String value) {
+            super(value);
+        }
     }
 }
