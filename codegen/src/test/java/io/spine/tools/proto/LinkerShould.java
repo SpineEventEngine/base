@@ -26,9 +26,6 @@ import com.google.protobuf.Descriptors.DescriptorValidationException;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -44,10 +41,8 @@ public class LinkerShould {
     private Linker linker;
 
     @Before
-    public void setUp() throws DescriptorValidationException, IOException {
-        final InputStream in = LinkerShould.class.getClassLoader()
-                                                 .getResourceAsStream(FileDescriptors.MAIN_FILE);
-        FileDescriptorSet fileSet = FileDescriptorSet.parseFrom(in);
+    public void setUp() throws DescriptorValidationException {
+        FileDescriptorSet fileSet = FileDescriptors.loadMain();
 
         linker = new Linker(fileSet.getFileList());
         linker.resolve();
@@ -57,9 +52,11 @@ public class LinkerShould {
     public void resolve_files() {
         final FileSet resolved = linker.getResolved();
         assertTrue(resolved.size() > 0);
-        assertTrue(resolved.containsAll(ImmutableList.of("google/protobuf/any.proto")));
-        assertTrue(resolved.containsAll(ImmutableList.of("google/protobuf/descriptor.proto")));
-        assertTrue(resolved.containsAll(ImmutableList.of("google/protobuf/timestamp.proto")));
+        assertTrue(resolved.containsAll(ImmutableList.of(
+                "google/protobuf/any.proto",
+                "google/protobuf/descriptor.proto",
+                "google/protobuf/timestamp.proto")
+        ));
     }
 
     @Test

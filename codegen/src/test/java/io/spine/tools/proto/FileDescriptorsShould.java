@@ -18,21 +18,29 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.java;
+package io.spine.tools.proto;
 
-import com.google.common.testing.NullPointerTester;
+import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
 import org.junit.Test;
+
+import static org.junit.Assert.assertFalse;
 
 /**
  * @author Alexander Yevsyukov
  */
-public class FieldNameShould {
+public class FileDescriptorsShould {
 
     @Test
-    public void pass_null_tolerance_check() {
-        new NullPointerTester()
-                .setDefault(io.spine.tools.proto.FieldName.class,
-                            io.spine.tools.proto.FieldName.of("value"))
-                .testStaticMethods(FieldName.class, NullPointerTester.Visibility.PACKAGE);
+    public void load_main_set() {
+        final FileDescriptorSet fileSet = FileDescriptors.loadMain();
+        assertFalse(fileSet.getFileList()
+                           .isEmpty());
+    }
+
+    @Test
+    public void load_test_set() {
+        final FileDescriptorSet fileSet = FileDescriptors.loadTest();
+        assertFalse(fileSet.getFileList()
+                           .isEmpty());
     }
 }

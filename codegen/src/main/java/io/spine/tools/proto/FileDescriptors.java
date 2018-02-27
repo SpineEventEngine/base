@@ -19,6 +19,7 @@
  */
 package io.spine.tools.proto;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableList;
@@ -31,6 +32,7 @@ import javax.annotation.Nullable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -123,6 +125,35 @@ public class FileDescriptors {
         final ImmutableList<FileDescriptorProto> result = files.build();
         log.trace("Found {} files: {}", result.size(), files);
         return result;
+    }
+
+    /**
+     * Loads main file descriptor set from resources.
+     */
+    public static FileDescriptorSet loadMain() {
+        final FileDescriptorSet result = loadFrom(MAIN_FILE);
+        return result;
+    }
+
+    /**
+     * Loads test file descriptor set from resources.
+     */
+    @VisibleForTesting
+    public static FileDescriptorSet loadTest() {
+        final FileDescriptorSet result = loadFrom(TEST_FILE);
+        return result;
+    }
+
+    private static FileDescriptorSet loadFrom(String resourceName) {
+        final ClassLoader classLoader = FileDescriptors.class.getClassLoader();
+        try(final InputStream in = classLoader.getResourceAsStream(resourceName)) {
+            final FileDescriptorSet fileSet = FileDescriptorSet.parseFrom(in);
+            return fileSet;
+        } catch (IOException e) {
+            throw newIllegalStateException(
+                    e, "Unable to load descriptor file set from %s", resourceName
+            );
+        }
     }
 
     /**
