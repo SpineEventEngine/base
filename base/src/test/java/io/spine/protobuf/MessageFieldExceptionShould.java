@@ -4,7 +4,7 @@ import com.google.protobuf.Empty;
 import com.google.protobuf.StringValue;
 import com.google.protobuf.Timestamp;
 import io.spine.test.Tests;
-import io.spine.time.Time;
+import io.spine.base.Time;
 import org.junit.Test;
 
 import static io.spine.test.TestValues.newUuidValue;

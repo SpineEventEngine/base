@@ -68,7 +68,7 @@ import io.spine.test.validate.msg.SecondRuleTarget;
 import io.spine.test.validate.msg.TimeInFutureFieldValue;
 import io.spine.test.validate.msg.TimeInPastFieldValue;
 import io.spine.test.validate.msg.TimeWithoutOptsFieldValue;
-import io.spine.time.Durations2;
+import io.spine.validate.given.MessageValidatorTestEnv;
 import org.junit.Test;
 
 import java.util.List;
@@ -77,9 +77,15 @@ import static com.google.common.collect.ImmutableList.copyOf;
 import static com.google.protobuf.util.Timestamps.add;
 import static com.google.protobuf.util.Timestamps.subtract;
 import static io.spine.Identifier.newUuid;
+import static io.spine.base.Time.getCurrentTime;
 import static io.spine.protobuf.TypeConverter.toMessage;
 import static io.spine.test.Verify.assertSize;
-import static io.spine.time.Time.getCurrentTime;
+import static io.spine.validate.given.MessageValidatorTestEnv.FIFTY_NANOSECONDS;
+import static io.spine.validate.given.MessageValidatorTestEnv.SECONDS_IN_5_MINUTES;
+import static io.spine.validate.given.MessageValidatorTestEnv.ZERO_NANOSECONDS;
+import static io.spine.validate.given.MessageValidatorTestEnv.currentTimeWithNanos;
+import static io.spine.validate.given.MessageValidatorTestEnv.freezeTime;
+import static io.spine.validate.given.MessageValidatorTestEnv.timeWithNanos;
 import static java.lang.String.format;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -347,6 +353,32 @@ public class MessageValidatorShould {
         final TimeInPastFieldValue invalidMsg = TimeInPastFieldValue.newBuilder().setValue(getFuture()).build();
         validate(invalidMsg);
         assertIsValid(false);
+    }
+
+    @Test
+    public void find_out_that_time_is_in_in_NOT_past_by_nanos() {
+        final Timestamp currentTime = currentTimeWithNanos(ZERO_NANOSECONDS);
+        final Timestamp timeInFuture = timeWithNanos(currentTime, FIFTY_NANOSECONDS);
+        freezeTime(currentTime);
+        final TimeInPastFieldValue invalidMsg =
+                TimeInPastFieldValue.newBuilder()
+                                    .setValue(timeInFuture)
+                                    .build();
+        validate(invalidMsg);
+        assertIsValid(false);
+    }
+
+    @Test
+    public void find_out_that_time_is_in_in_past_by_nanos() {
+        final Timestamp currentTime = currentTimeWithNanos(FIFTY_NANOSECONDS);
+        final Timestamp timeInPast = timeWithNanos(currentTime, ZERO_NANOSECONDS);
+        freezeTime(currentTime);
+        final TimeInPastFieldValue invalidMsg =
+                TimeInPastFieldValue.newBuilder()
+                                    .setValue(timeInPast)
+                                    .build();
+        validate(invalidMsg);
+        assertIsValid(true);
     }
 
     @Test
@@ -894,12 +926,12 @@ public class MessageValidatorShould {
     }
 
     private static Timestamp getFuture() {
-        final Timestamp future = add(getCurrentTime(), Durations2.fromMinutes(5));
+        final Timestamp future = add(getCurrentTime(), MessageValidatorTestEnv.newDuration(SECONDS_IN_5_MINUTES));
         return future;
     }
 
     private static Timestamp getPast() {
-        final Timestamp past = subtract(getCurrentTime(), Durations2.fromMinutes(5));
+        final Timestamp past = subtract(getCurrentTime(), MessageValidatorTestEnv.newDuration(SECONDS_IN_5_MINUTES));
         return past;
     }
 
