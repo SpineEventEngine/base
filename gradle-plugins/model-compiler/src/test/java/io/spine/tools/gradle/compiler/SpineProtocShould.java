@@ -20,6 +20,7 @@
 
 package io.spine.tools.gradle.compiler;
 
+import io.spine.tools.DefaultProject;
 import io.spine.tools.gradle.given.GradleProject;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -27,10 +28,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-import java.nio.file.Path;
+import java.io.File;
 
 import static io.spine.tools.gradle.TaskName.BUILD;
-import static java.nio.file.Files.exists;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -62,9 +62,8 @@ public class SpineProtocShould {
     @Test
     public void create_spine_directory() {
         project.executeTask(BUILD);
-        final Path spineDirPath = projectDir.getRoot()
-                                            .toPath()
-                                            .resolve(Extension.SPINE_BUILD_ARTIFACT_DIR);
-        assertTrue(exists(spineDirPath));
+        final File spineDirPath = DefaultProject.at(projectDir.getRoot())
+                                                .tempArtifacts();
+        assertTrue(spineDirPath.exists());
     }
 }

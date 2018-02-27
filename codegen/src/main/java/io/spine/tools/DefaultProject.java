@@ -34,6 +34,13 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public final class DefaultProject extends AbstractDirectory {
 
+    /**
+     * The Spine internal directory name for storing temporary build artifacts.
+     *
+     * @see #tempArtifacts()
+     */
+    private static final String TEMP_ARTIFACT_DIR = ".spine";
+
     private DefaultProject(Path path) {
         super(path);
     }
@@ -62,10 +69,13 @@ public final class DefaultProject extends AbstractDirectory {
         return result;
     }
 
+    @SuppressWarnings("DuplicateStringLiteralInspection") /* Tests use directory names. */
     public HandmadeCodeRoot src() {
         return new HandmadeCodeRoot(this, "src");
     }
 
+
+    @SuppressWarnings("DuplicateStringLiteralInspection") /* Tests use directory names. */
     public HandmadeCodeRoot test() {
         return new HandmadeCodeRoot(this, "test");
     }
@@ -76,6 +86,18 @@ public final class DefaultProject extends AbstractDirectory {
                                  .getPath()
                                  .resolve(FileDescriptors.TEST_FILE)
                                  .toFile();
+        return result;
+    }
+
+    /**
+     * Obtains the directory for temporary Spine build artifacts.
+     *
+     * <p>Spine Gradle tasks may write some temporary files into this directory.
+     *
+     * <p>The directory is deleted on {@code :pre-clean"}.
+     */
+    public File tempArtifacts() {
+        final File result = new File(getPath().toFile(), TEMP_ARTIFACT_DIR);
         return result;
     }
 
@@ -90,6 +112,7 @@ public final class DefaultProject extends AbstractDirectory {
     /**
      * A root source code directory in a project or a module.
      */
+    @SuppressWarnings("DuplicateStringLiteralInspection") /* Tests use directory names. */
     public static class SourceRoot extends SourceDir {
 
         SourceRoot(DefaultProject parent, String name) {

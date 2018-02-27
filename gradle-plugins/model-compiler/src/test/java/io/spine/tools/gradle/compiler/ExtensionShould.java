@@ -19,6 +19,7 @@
  */
 package io.spine.tools.gradle.compiler;
 
+import io.spine.tools.DefaultProject;
 import org.gradle.api.Project;
 import org.junit.Before;
 import org.junit.Rule;
@@ -30,8 +31,6 @@ import java.io.IOException;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static io.spine.tools.gradle.compiler.Extension.SPINE_BUILD_ARTIFACT_STORAGE_DIR;
-import static io.spine.tools.gradle.compiler.ModelCompilerPlugin.SPINE_MODEL_COMPILER_EXTENSION_NAME;
 import static io.spine.tools.gradle.compiler.given.ModelCompilerTestEnv.SPINE_PROTOBUF_PLUGIN_ID;
 import static io.spine.tools.gradle.compiler.given.ModelCompilerTestEnv.newProject;
 import static io.spine.tools.gradle.compiler.given.ModelCompilerTestEnv.newUuid;
@@ -210,12 +209,18 @@ public class ExtensionShould {
 
     @Test
     public void include_spine_dir_in_dirsToClean_if_exists() throws IOException {
-        final File spineDir = new File(projectDir.getRoot(), SPINE_BUILD_ARTIFACT_STORAGE_DIR);
+        final DefaultProject defaultProject = DefaultProject.at(projectDir.getRoot());
+        final File spineDir = defaultProject.tempArtifacts();
         assertTrue(spineDir.mkdir());
+        final String generatedDir = defaultProject.generated()
+                                                  .getPath()
+                                                  .toFile()
+                                                  .getCanonicalPath();
+
         final List<String> dirsToClean = Extension.getDirsToClean(project);
-        assertThat(dirsToClean, containsInAnyOrder(
-                spineDir.getCanonicalPath(),
-                new File(projectDir.getRoot(), "generated").getCanonicalPath())
+
+        assertThat(dirsToClean,
+                   containsInAnyOrder(spineDir.getCanonicalPath(), generatedDir)
         );
     }
 
@@ -228,6 +233,6 @@ public class ExtensionShould {
 
     private Extension spineProtobuf() {
         return (Extension) project.getExtensions()
-                                  .getByName(SPINE_MODEL_COMPILER_EXTENSION_NAME);
+                                  .getByName(ModelCompilerPlugin.extensionName());
     }
 }

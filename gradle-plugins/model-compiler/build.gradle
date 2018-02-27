@@ -18,7 +18,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import io.spine.tools.gradle.compiler.*
 import org.apache.tools.ant.filters.ReplaceTokens
 
 import java.nio.file.Files
@@ -117,7 +116,8 @@ task prepareProtocConfig(type: Copy) {
             tokens: ['baseVersion': "'$project.spineVersion'".toString(),
                      'pbVersion'  : "'$project.protobufVersion'".toString(),
                      'gRPCVersion': "'$project.gRpcVersion'".toString(),
-                     'spineDir'   : "'$Extension.SPINE_BUILD_ARTIFACT_STORAGE_DIR'".toString()])
+                     // See `io.spine.tools.DefaultProject.tempArtifacts()`
+                     'spineDir'   : '.spine'])
     outputs.upToDateWhen { false }
 }
 

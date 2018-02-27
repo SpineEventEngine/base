@@ -35,13 +35,20 @@ import org.slf4j.LoggerFactory;
  */
 public class ModelCompilerPlugin implements Plugin<Project> {
 
-    static final String SPINE_MODEL_COMPILER_EXTENSION_NAME = "modelCompiler";
+    private static final String EXTENSION_NAME = "modelCompiler";
+
+    /**
+     * Obtains the extension name of the plugin.
+     */
+    public static String extensionName() {
+        return EXTENSION_NAME;
+    }
 
     @Override
     public void apply(Project project) {
         log().debug("Adding the extension to the project.");
         project.getExtensions()
-               .create(SPINE_MODEL_COMPILER_EXTENSION_NAME, Extension.class);
+               .create(extensionName(), Extension.class);
 
         apply(new CleaningPlugin(), project);
         apply(new ProtoToJavaMapperPlugin(), project);

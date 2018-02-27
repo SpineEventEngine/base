@@ -21,7 +21,6 @@ package io.spine.tools.gradle.compiler;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
-import io.spine.annotation.Internal;
 import io.spine.tools.DefaultProject;
 import io.spine.tools.Indent;
 import org.gradle.api.Project;
@@ -30,14 +29,11 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.LinkedList;
 import java.util.List;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Lists.newLinkedList;
-import static io.spine.tools.gradle.compiler.ModelCompilerPlugin.SPINE_MODEL_COMPILER_EXTENSION_NAME;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
@@ -46,29 +42,10 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  * @author Alex Tymchenko
  */
 @SuppressWarnings({
-        "PublicField" /* Expose fields as a Gradle extension */,
+        "PublicField", "WeakerAccess" /* Expose fields as a Gradle extension */,
         "ClassWithTooManyMethods" /* The methods are needed for handing default values. */,
-})
+        })
 public class Extension {
-
-    /**
-     * The Spine internal directory name for storing temporary build artifacts.
-     *
-     * <p>Spine Gradle tasks may write some temporary files into this directory.
-     *
-     * <p>The directory is deleted on {@code :pre-clean"}.
-     */
-    @Internal
-    public static final String SPINE_BUILD_ARTIFACT_DIR = ".spine";
-
-    /**
-     * Retained for compatibility reasons with earlier versions that use this constant.
-     * Remove after migration is complete.
-     * @deprecated use {@link #SPINE_BUILD_ARTIFACT_DIR}
-     */
-    @Deprecated
-    @Internal
-    public static final String SPINE_BUILD_ARTIFACT_STORAGE_DIR = SPINE_BUILD_ARTIFACT_DIR;
 
     /**
      * The absolute path to the main target generated resources directory.
@@ -351,9 +328,9 @@ public class Extension {
                     e, "Project directory %s is invalid!", project.getProjectDir()
             );
         }
-        final Path projectPath = projectDir.toPath();
-        final Path spinePath = projectPath.resolve(SPINE_BUILD_ARTIFACT_DIR);
-        if (Files.exists(spinePath)) {
+        final File spinePath = DefaultProject.at(projectDir)
+                                             .tempArtifacts();
+        if (spinePath.exists()) {
             return Optional.of(spinePath.toString());
         } else {
             return Optional.absent();
@@ -361,8 +338,9 @@ public class Extension {
     }
 
     private static Extension spineProtobuf(Project project) {
-        return (Extension) project.getExtensions()
-                                  .getByName(SPINE_MODEL_COMPILER_EXTENSION_NAME);
+        return (Extension)
+                project.getExtensions()
+                       .getByName(ModelCompilerPlugin.extensionName());
     }
 
     private static Logger log() {
