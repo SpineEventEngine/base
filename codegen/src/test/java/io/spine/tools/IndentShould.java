@@ -23,6 +23,7 @@ package io.spine.tools;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -56,5 +57,11 @@ public class IndentShould {
                               .getSize());
         assertEquals(4, Indent.of4()
                               .getSize());
+    }
+
+    @Test
+    public void return_constants_by_popular_values() {
+        assertSame(Indent.of2(), Indent.of(2));
+        assertSame(Indent.of4(), Indent.of(4));
     }
 }
