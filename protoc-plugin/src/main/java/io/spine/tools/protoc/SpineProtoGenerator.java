@@ -109,7 +109,7 @@ public abstract class SpineProtoGenerator {
      * <p>Note: there are several preconditions for this method to run successfully:
      * <ul>
      *     <li>since Spine relies on 3rd version of Protobuf, the Proto compiler version should be
-     *         {@code 3.x.x} or greater;
+     *         {@code 3.*} or greater;
      *     <li>there must be at least one {@code .proto} file in the {@link CodeGeneratorRequest}.
      * </ul>
      *
