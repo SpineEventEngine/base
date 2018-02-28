@@ -79,8 +79,8 @@ public class EnrichmentFinder {
     /**
      * The name of the file to populate.
      *
-     * <p>NOTE: the filename is referenced by `core-java` as well,
-     * make sure to update `core-java` project upon changing this value.
+     * <p>NOTE: the filename is referenced by {@code core-java} as well,
+     * make sure to update {@code core-java} project upon changing this value.
      */
     private static final String PROPS_FILE_NAME = "enrichments.properties";
 
@@ -148,7 +148,7 @@ public class EnrichmentFinder {
      * <p>The values are joined with the
      * {@linkplain io.spine.option.RawListParser#VALUE_SEPARATOR value separator}.
      *
-     * <p>Merging may be required when the wildcard `By` option values are handled,
+     * <p>Merging may be required when the wildcard {@code by} option values are handled,
      * i.e. when processing a single enrichment type as a map key, but multiple target
      * event types as values.
      */
