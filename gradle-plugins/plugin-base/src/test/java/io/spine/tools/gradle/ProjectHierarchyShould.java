@@ -21,7 +21,7 @@
 package io.spine.tools.gradle;
 
 import com.google.common.testing.NullPointerTester;
-import io.spine.tools.gradle.given.Given.NoOp;
+import io.spine.tools.gradle.given.GradleProject;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.junit.Test;
@@ -92,7 +92,7 @@ public class ProjectHierarchyShould {
     public void not_accept_non_root_projects() {
         final Project project = mock(Project.class);
         when(project.getRootProject()).thenReturn(mock(Project.class)); // other instance
-        ProjectHierarchy.applyToAll(project, NoOp.<Project>action());
+        ProjectHierarchy.applyToAll(project, GradleProject.NoOp.<Project>action());
     }
 
 }

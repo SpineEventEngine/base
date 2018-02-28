@@ -21,6 +21,7 @@
 package io.spine.tools.gradle.given;
 
 import io.spine.tools.gradle.TaskName;
+import org.gradle.api.Action;
 import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.GradleRunner;
 import org.junit.rules.TemporaryFolder;
@@ -51,6 +52,9 @@ import static java.util.Arrays.asList;
  * @author Dmytro Grankin
  */
 public class GradleProject {
+
+    @SuppressWarnings("DuplicateStringLiteralInspection") // Different semantics.
+    public static final String JAVA_PLUGIN_ID = "java";
 
     private static final String BUILD_GRADLE_NAME = "build.gradle";
     private static final String EXT_GRADLE_NAME = "ext.gradle";
@@ -156,6 +160,20 @@ public class GradleProject {
 
     public static Builder newBuilder() {
         return new Builder();
+    }
+
+    public enum NoOp implements Action<Object> {
+        ACTION;
+
+        @Override
+        public void execute(Object ignored) {
+            // NoOp
+        }
+
+        @SuppressWarnings("unchecked") // No matter, as the action is NoOp.
+        public static <T> Action<T> action() {
+            return ((Action<T>) ACTION);
+        }
     }
 
     public static class Builder {

@@ -20,7 +20,7 @@
 
 package io.spine.tools.gradle;
 
-import io.spine.tools.gradle.given.Given;
+import io.spine.tools.gradle.given.GradleProject;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.tasks.TaskContainer;
@@ -58,7 +58,7 @@ public class SpinePluginBuilderShould {
         project = ProjectBuilder.builder()
                                 .build();
         project.getPluginManager()
-               .apply(Given.JAVA_PLUGIN_ID);
+               .apply(GradleProject.JAVA_PLUGIN_ID);
     }
 
     @Test
@@ -67,9 +67,9 @@ public class SpinePluginBuilderShould {
                                                  .withParent(project)
                                                  .build();
         subProject.getPluginManager()
-                  .apply(Given.JAVA_PLUGIN_ID);
+                  .apply(GradleProject.JAVA_PLUGIN_ID);
         final SpinePlugin plugin = TestPlugin.INSTANCE;
-        final GradleTask task = plugin.newTask(ANNOTATE_PROTO, Given.NoOp.<Task>action())
+        final GradleTask task = plugin.newTask(ANNOTATE_PROTO, GradleProject.NoOp.<Task>action())
                                       .insertAfterAllTasks(COMPILE_JAVA)
                                       .applyNowTo(subProject);
         final TaskContainer subProjectTasks = subProject.getTasks();
@@ -84,7 +84,7 @@ public class SpinePluginBuilderShould {
     @Test
     public void create_task_and_insert_before_other() {
         final SpinePlugin plugin = TestPlugin.INSTANCE;
-        plugin.newTask(VERIFY_MODEL, Given.NoOp.<Task>action())
+        plugin.newTask(VERIFY_MODEL, GradleProject.NoOp.<Task>action())
               .insertBeforeTask(CLASSES)
               .applyNowTo(project);
         final TaskContainer tasks = project.getTasks();
@@ -96,7 +96,7 @@ public class SpinePluginBuilderShould {
     @Test
     public void create_task_and_insert_after_other() {
         final SpinePlugin plugin = TestPlugin.INSTANCE;
-        plugin.newTask(VERIFY_MODEL, Given.NoOp.<Task>action())
+        plugin.newTask(VERIFY_MODEL, GradleProject.NoOp.<Task>action())
               .insertAfterTask(COMPILE_JAVA)
               .applyNowTo(project);
         final TaskContainer tasks = project.getTasks();
@@ -108,7 +108,7 @@ public class SpinePluginBuilderShould {
     @Test
     public void ignore_tasK_dependency_if_no_such_task_found() {
         final SpinePlugin plugin = TestPlugin.INSTANCE;
-        plugin.newTask(GENERATE_TEST_PROTO, Given.NoOp.<Task>action())
+        plugin.newTask(GENERATE_TEST_PROTO, GradleProject.NoOp.<Task>action())
               .insertAfterAllTasks(GENERATE_PROTO)
               .applyNowTo(project);
         final TaskContainer tasks = project.getTasks();
@@ -120,13 +120,13 @@ public class SpinePluginBuilderShould {
 
     @Test(expected = IllegalStateException.class)
     public void not_allow_tasks_without_any_connection_to_task_graph() {
-        TestPlugin.INSTANCE.newTask(FIND_VALIDATION_RULES, Given.NoOp.<Task>action()).applyNowTo(project);
+        TestPlugin.INSTANCE.newTask(FIND_VALIDATION_RULES, GradleProject.NoOp.<Task>action()).applyNowTo(project);
     }
 
     @Test
     public void return_build_task_description() {
         final SpinePlugin plugin = TestPlugin.INSTANCE;
-        final GradleTask desc = plugin.newTask(PRE_CLEAN, Given.NoOp.<Task>action())
+        final GradleTask desc = plugin.newTask(PRE_CLEAN, GradleProject.NoOp.<Task>action())
                                       .insertBeforeTask(CLEAN)
                                       .applyNowTo(project);
         assertEquals(PRE_CLEAN, desc.getName());
@@ -137,7 +137,7 @@ public class SpinePluginBuilderShould {
     public void create_task_with_given_inputs() throws IOException {
         final SpinePlugin plugin = TestPlugin.INSTANCE;
         final File input = new File(".").getAbsoluteFile();
-        plugin.newTask(PRE_CLEAN, Given.NoOp.<Task>action())
+        plugin.newTask(PRE_CLEAN, GradleProject.NoOp.<Task>action())
               .insertBeforeTask(CLEAN)
               .withInputFiles(input.toPath())
               .applyNowTo(project);
