@@ -23,11 +23,12 @@ package io.spine.tools.protoc;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Objects;
 import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Extension;
-import com.google.protobuf.GeneratedMessageV3;
+import com.google.protobuf.GeneratedMessageV3.ExtendableMessage;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import com.squareup.javapoet.JavaFile;
 import io.spine.option.UnknownOptions;
@@ -38,7 +39,6 @@ import javax.annotation.Nullable;
 import java.util.Set;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
-import static com.google.common.collect.ImmutableSet.of;
 import static io.spine.option.OptionsProto.everyIs;
 import static io.spine.option.OptionsProto.is;
 import static io.spine.tools.java.PackageName.DELIMITER;
@@ -126,7 +126,7 @@ final class MessageAndInterface {
      *         {@linkplain com.google.common.base.Strings#isNullOrEmpty if any} or
      *         {@link Optional#absent() Optional.absent()} otherwise
      */
-    static <O extends GeneratedMessageV3.ExtendableMessage<O>> Optional<String>
+    static <O extends ExtendableMessage<O>> Optional<String>
     getOptionalOption(@Nullable String initialValue, O options, Extension<O, String> option) {
         final Optional<String> result = isNullOrEmpty(initialValue)
                 ? getResolvedOption(options, option)
@@ -134,7 +134,7 @@ final class MessageAndInterface {
         return result;
     }
 
-    private static <O extends GeneratedMessageV3.ExtendableMessage<O>> Optional<String>
+    private static <O extends ExtendableMessage<O>> Optional<String>
     getResolvedOption(O options, Extension<O, String> resolvedOption) {
         final String value = options.getExtension(resolvedOption);
         if (isNullOrEmpty(value)) {
@@ -195,10 +195,10 @@ final class MessageAndInterface {
     }
 
     /**
-     * Produces an immutable {@link Set} from this tuple.
+     * Converts the instance into the pair containing a message file and an interface file.
      */
     Set<File> asSet() {
-        return of(messageFile, interfaceFile);
+        return ImmutableSet.of(messageFile, interfaceFile);
     }
 
     @Override
