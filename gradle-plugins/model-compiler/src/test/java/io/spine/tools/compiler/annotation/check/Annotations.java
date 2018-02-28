@@ -28,6 +28,8 @@ import javax.annotation.Nullable;
 import java.lang.annotation.Annotation;
 
 /**
+ * Utilities for working with annotations in the generated code.
+ * 
  * @author Dmytro Grankin
  * @author Alexander Yevsyukov
  */
