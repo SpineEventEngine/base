@@ -158,7 +158,7 @@ public final class FileSet {
      * Obtains the set of the files that match passed names.
      */
     public FileSet find(Iterable<String> fileNames) {
-        final Iterable<FileDescriptor> filter = Iterables.filter(files, new IsOneOf(fileNames));
+        final Iterable<FileDescriptor> filter = Iterables.filter(files, new HasOneOfNames(fileNames));
         return new FileSet(filter);
     }
 
@@ -245,11 +245,11 @@ public final class FileSet {
     /**
      * Returns {@code true} a file has one of the passed names, {@code false} otherwise.
      */
-    private static final class IsOneOf implements Predicate<FileDescriptor> {
+    private static final class HasOneOfNames implements Predicate<FileDescriptor> {
 
         private final Set<String> fileNames;
 
-        private IsOneOf(Iterable<String> fileNames) {
+        private HasOneOfNames(Iterable<String> fileNames) {
             this.fileNames = ImmutableSet.copyOf(fileNames);
         }
 
