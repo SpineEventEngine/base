@@ -40,7 +40,6 @@ public class MessageValidatorTestEnv {
     
     /** Prevent instantiation of this test environment. */
     private MessageValidatorTestEnv() {
-        // Does nothing.
     }
 
     public static Timestamp currentTimeWithNanos(int nanos) {

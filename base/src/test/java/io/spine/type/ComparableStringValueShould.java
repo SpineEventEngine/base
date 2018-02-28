@@ -30,7 +30,7 @@ import static org.junit.Assert.assertTrue;
 public class ComparableStringValueShould {
 
     @SuppressWarnings({
-            "EqualsWithItself" /* is part of the test*/,
+            "EqualsWithItself" /* is part of the test */,
             "LocalVariableNamingConvention" /* shorter names are meaningful for this test */
     })
     @Test

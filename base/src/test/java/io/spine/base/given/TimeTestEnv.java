@@ -43,7 +43,6 @@ public class TimeTestEnv {
 
     /** Prevent instantiation of this test environment. */
     private TimeTestEnv() {
-        // Does nothing.
     }
 
     /**

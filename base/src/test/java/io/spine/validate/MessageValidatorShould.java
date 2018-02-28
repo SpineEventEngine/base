@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -356,7 +356,7 @@ public class MessageValidatorShould {
     }
 
     @Test
-    public void find_out_that_time_is_in_in_NOT_past_by_nanos() {
+    public void find_out_that_time_is_NOT_in_the_past_by_nanos() {
         final Timestamp currentTime = currentTimeWithNanos(ZERO_NANOSECONDS);
         final Timestamp timeInFuture = timeWithNanos(currentTime, FIFTY_NANOSECONDS);
         freezeTime(currentTime);
@@ -369,7 +369,7 @@ public class MessageValidatorShould {
     }
 
     @Test
-    public void find_out_that_time_is_in_in_past_by_nanos() {
+    public void find_out_that_time_is_in_the_past_by_nanos() {
         final Timestamp currentTime = currentTimeWithNanos(FIFTY_NANOSECONDS);
         final Timestamp timeInPast = timeWithNanos(currentTime, ZERO_NANOSECONDS);
         freezeTime(currentTime);

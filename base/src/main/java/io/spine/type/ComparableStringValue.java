@@ -27,8 +27,8 @@ package io.spine.type;
  * @author Alexander Yevsyukov
  */
 @SuppressWarnings(
-        "ComparableImplementedButEqualsNotOverridden" /* Sufficient equals() is provided by
-                                                         the parent class */
+        "ComparableImplementedButEqualsNotOverridden"
+        /* Sufficient {@link StringTypeValue#equals() equals()} is provided by the parent class. */
 )
 public abstract class ComparableStringValue<T extends ComparableStringValue>
         extends StringTypeValue
