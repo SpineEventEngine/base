@@ -46,6 +46,9 @@ public class TypeSet {
         this.types = newHashSet(types);
     }
 
+    /**
+     * Creates a new empty instance.
+     */
     static TypeSet newInstance() {
         return new TypeSet();
     }
@@ -60,6 +63,9 @@ public class TypeSet {
         return result;
     }
 
+    /**
+     * Obtains message and enum types declared in the files represented by the passed set.
+     */
     public static TypeSet messagesAndEnums(FileSet fileSet) {
         TypeSet result = newInstance();
         for (FileDescriptor file : fileSet.files()) {
@@ -83,6 +89,9 @@ public class TypeSet {
         return types.isEmpty();
     }
 
+    /**
+     * Adds the passed type to the set.
+     */
     boolean add(Type type) {
         final boolean result = types.add(type);
         return result;
@@ -104,11 +113,13 @@ public class TypeSet {
         return result;
     }
 
+    /** {@inheritDoc} */
     @Override
     public int hashCode() {
         return Objects.hash(types);
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
