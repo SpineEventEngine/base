@@ -115,7 +115,7 @@ final class MessageAndInterface {
      *
      * <p>The {@linkplain DescriptorProtos proto descriptor API} behaves
      * differently at the Protobuf compile time and at runtime. Thus, the method receives the value
-     * retrieved by the {@link UnknownOptions} utility. If the value is absent, the method ties to
+     * retrieved by the {@link UnknownOptions} utility. If the value is absent, the method tries to
      * get the option value as a value of a resolved extension option, which is the runtime way.
      *
      * @param initialValue the value parsed from the options unknown fields
@@ -128,11 +128,10 @@ final class MessageAndInterface {
      */
     static <O extends GeneratedMessageV3.ExtendableMessage<O>> Optional<String>
     getOptionalOption(@Nullable String initialValue, O options, Extension<O, String> option) {
-        if (isNullOrEmpty(initialValue)) {
-            return getResolvedOption(options, option);
-        } else {
-            return Optional.of(initialValue);
-        }
+        final Optional<String> result = isNullOrEmpty(initialValue)
+                ? getResolvedOption(options, option)
+                : Optional.of(initialValue);
+        return result;
     }
 
     private static <O extends GeneratedMessageV3.ExtendableMessage<O>> Optional<String>
