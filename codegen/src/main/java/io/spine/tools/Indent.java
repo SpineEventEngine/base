@@ -56,14 +56,23 @@ public final class Indent extends StringTypeValue {
         return new Indent(indent);
     }
 
+    /**
+     * Obtains the indent with two spaces.
+     */
     public static Indent of2() {
         return TWO;
     }
 
+    /**
+     * Obtains the indent with four spaces.
+     */
     public static Indent of4() {
         return FOUR;
     }
 
+    /**
+     * Obtains the size of the indentation.
+     */
     public int getSize() {
         return size;
     }
