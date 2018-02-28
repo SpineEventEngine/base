@@ -70,7 +70,7 @@ public class SourceFile extends AbstractSourceFile {
      *
      * <p>A valid rejections file must have:
      * <ul>
-     *     <li>Have the file name which ends on {@link FileName.Suffix#forRejections()}
+     *     <li>The file name which ends on {@link FileName.Suffix#forRejections()}
      *     “rejections.proto”}.
      *     <li>The option {@code java_multiple_files} set to {@code false}.
      *     <li>Do not have the option {@code java_outer_classname} or have the value, which
