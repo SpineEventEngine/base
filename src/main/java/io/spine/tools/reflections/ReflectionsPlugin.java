@@ -31,8 +31,6 @@ import org.reflections.scanners.TypeAnnotationsScanner;
 import org.reflections.serializers.Serializer;
 import org.reflections.serializers.XmlSerializer;
 import org.reflections.util.ConfigurationBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -84,7 +82,7 @@ public class ReflectionsPlugin extends SpinePlugin {
         log().debug("Reflection Gradle plugin initialized with the Gradle task: {}", task);
     }
 
-    private static void scanClassPath(Project project) {
+    private void scanClassPath(Project project) {
         log().debug("Scanning the classpath");
 
         final String outputDirPath = project.getProjectDir() + "/build";
@@ -129,15 +127,5 @@ public class ReflectionsPlugin extends SpinePlugin {
         } catch (IOException e) {
             throw new RuntimeException("Cannot create a folder: " + folder.getAbsolutePath(), e);
         }
-    }
-
-    private static Logger log() {
-        return LogSingleton.INSTANCE.value;
-    }
-
-    private enum LogSingleton {
-        INSTANCE;
-        @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = LoggerFactory.getLogger(ReflectionsPlugin.class);
     }
 }
