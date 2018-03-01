@@ -20,9 +20,9 @@
 package io.spine.tools.codestyle.javadoc;
 
 import io.spine.tools.codestyle.AbstractStorage;
+import io.spine.tools.codestyle.CodeStyleViolation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import io.spine.tools.codestyle.CodeStyleViolation;
 
 import java.nio.file.Path;
 import java.util.Map;
@@ -47,8 +47,8 @@ class InvalidResultStorage extends AbstractStorage {
         final String msg = format(
                 " Wrong link format found: %s on %s line in %s",
                 entry.getValue()
-                     .getActualUsage(),
-                entry.getValue().getIndex(),
+                     .getCodeLine(),
+                entry.getValue().getLineNumber(),
                 entry.getKey());
         log().error(msg);
     }

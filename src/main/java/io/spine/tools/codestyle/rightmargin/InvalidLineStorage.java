@@ -41,7 +41,7 @@ public class InvalidLineStorage extends AbstractStorage {
         for (Map.Entry<Path, CodeStyleViolation> entry : getContent().entries()) {
             final String msg = format(
                     "Right margin trespassing found on line %s in %s",
-                    entry.getValue().getIndex(),
+                    entry.getValue().getLineNumber(),
                     entry.getKey());
             log().error(msg);
         }

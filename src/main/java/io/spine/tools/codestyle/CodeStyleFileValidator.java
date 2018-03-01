@@ -22,17 +22,18 @@ package io.spine.tools.codestyle;
 import java.nio.file.Path;
 
 /**
- * An interface to gather all common operations for validators.
+ * An common interface for code style checks.
  *
  * @author Alexander Aleksandrov
+ * @author Alexander Yevsyukov
  */
 public interface CodeStyleFileValidator {
 
     /**
-     * Checks the file for the looked up code style violations.
+     * Checks the file for compliance with the code style.
      *
-     * @param path Path to the target file
+     * @param file a file to check
      * @throws CodeStyleException in case of any violations found
      */
-    void validate(Path path) throws CodeStyleException;
+    void validate(Path file) throws CodeStyleException;
 }

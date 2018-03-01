@@ -20,49 +20,49 @@
 
 package io.spine.tools.codestyle.javadoc;
 
-import org.junit.Test;
 import io.spine.tools.codestyle.CodeStyleViolation;
+import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Alexander Aleksandrov
  */
 public class InvalidFqnUsageShould {
 
-    public static final String expectedLink = "invalidFqnLink";
+    private static final String expectedLink = "invalidFqnLink";
+
     private CodeStyleViolation codeStyleViolation;
 
-    public CodeStyleViolation setUpInvalidFqnUsage(String actualUsage, int index){
-        final CodeStyleViolation codeStyleViolation = new CodeStyleViolation(actualUsage);
-        codeStyleViolation.setIndex(index);
+    public CodeStyleViolation setUpInvalidFqnUsage(String actualUsage, int index) {
+        final CodeStyleViolation codeStyleViolation =
+                new CodeStyleViolation(actualUsage).withLineNumber(index);
         return codeStyleViolation;
     }
 
     @Test
-    public void get_actual_usage() throws Exception {
+    public void get_actual_usage() {
         codeStyleViolation = setUpInvalidFqnUsage(expectedLink, 1);
-        assertEquals(expectedLink, codeStyleViolation.getActualUsage());
+        assertEquals(expectedLink, codeStyleViolation.getCodeLine());
     }
 
     @Test
-    public void get_index() throws Exception {
+    public void get_index() {
         codeStyleViolation = setUpInvalidFqnUsage(expectedLink, 1);
-        assertEquals(1, codeStyleViolation.getIndex());
+        assertEquals(1, codeStyleViolation.getLineNumber());
     }
 
     @Test
-    public void set_index() throws Exception {
-        codeStyleViolation = setUpInvalidFqnUsage(expectedLink, 2);
-        codeStyleViolation.setIndex(3);
-        assertEquals(3, codeStyleViolation.getIndex());
+    public void set_index() {
+        codeStyleViolation = setUpInvalidFqnUsage(expectedLink, 2).withLineNumber(3);
+        assertEquals(3, codeStyleViolation.getLineNumber());
     }
 
     @Test
-    public void override_toString() throws Exception {
+    public void override_toString() {
         codeStyleViolation = setUpInvalidFqnUsage(expectedLink, 1);
-        final String result = "CodeStyleViolation{actualUsage=invalidFqnLink}";
-        assertEquals(result, codeStyleViolation.toString());
+        assertTrue(codeStyleViolation.toString()
+                                     .contains(expectedLink));
     }
-
 }

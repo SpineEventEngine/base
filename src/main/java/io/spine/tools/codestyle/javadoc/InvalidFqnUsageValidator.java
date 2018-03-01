@@ -26,10 +26,8 @@ import io.spine.tools.codestyle.StepConfiguration;
 
 import java.util.List;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static java.util.regex.Pattern.compile;
 
 /**
  * Javadoc comments checker that validates the links wrong format usage.
@@ -79,8 +77,8 @@ public class InvalidFqnUsageValidator extends AbstractCodeStyleFileValidator {
             final Optional<CodeStyleViolation> result = checkSingleComment(line);
             lineNumber++;
             if (result.isPresent()) {
-                final CodeStyleViolation codeStyleViolation = result.get();
-                codeStyleViolation.setIndex(lineNumber);
+                final CodeStyleViolation codeStyleViolation = result.get()
+                                                                    .withLineNumber(lineNumber);
                 invalidLinks.add(codeStyleViolation);
             }
         }
@@ -88,8 +86,8 @@ public class InvalidFqnUsageValidator extends AbstractCodeStyleFileValidator {
     }
 
     private static Optional<CodeStyleViolation> checkSingleComment(String comment) {
-        final Matcher matcher = InvalidFqnUsageValidator.JavadocPattern.LINK.getPattern()
-                                                                            .matcher(comment);
+        final Matcher matcher = JavadocPattern.LINK.getPattern()
+                                                   .matcher(comment);
         final boolean found = matcher.find();
         if (found) {
             final String improperUsage = matcher.group(0);
@@ -99,67 +97,4 @@ public class InvalidFqnUsageValidator extends AbstractCodeStyleFileValidator {
         return Optional.absent();
     }
 
-    private enum JavadocPattern {
-
-        /*
-         * This regexp matches every link or linkplain in javadoc that is not in the format of
-         * {@link <FQN> <text>} or {@linkplain <FQN> <text>}.
-         *
-         * Wrong links: {@link io.spine.base.Client} or {@linkplain com.guava.AnyClass }
-         * Correct links: {@link Class.InternalClass}, {@link io.spine.base.Client Client},
-         * {@linkplain io.spine.base.Client some client class}
-         *
-         * 1st Capturing Group "(\{@link|\{@linkplain)"
-         * 1st Alternative "\{@link"
-         * "\{" matches the character "{" literally (case sensitive)
-         * "@link" matches the characters "@link" literally (case sensitive)
-         * 2nd Alternative "\{@linkplain"
-         * "\{" matches the character "{" literally (case sensitive)
-         * "@linkplain" matches the characters "@linkplain" literally (case sensitive)
-         * " *" matches the character " " literally (case sensitive)
-         * "*" Quantifier — Matches between zero and unlimited times, as many times as possible,
-         * giving back as needed (greedy)
-
-         * 2nd Capturing Group "((?!-)[a-z0-9-]{1,63}\.)"
-         * Negative Lookahead "(?!-)"
-         * Assert that the Regex below does not match
-         * "-"matches the character "-" literally (case sensitive)
-         * Match a single character present in the list below "[a-z0-9-]{1,63}"
-         * "{1,63}" Quantifier — Matches between 1 and 63 times, as many times as possible,
-         * giving back as needed (greedy)
-         * "a-z" a single character in the range between "a" (ASCII 97) and "z" (ASCII 122)
-         * (case sensitive)
-         * "0-9" a single character in the range between "0" (ASCII 48) and "9" (ASCII 57)
-         * (case sensitive)
-         * "-" matches the character "-" literally (case sensitive)
-         * "\." matches the character "." literally (case sensitive)
-
-         * 3rd Capturing Group "((?!-)[a-zA-Z0-9-]{1,63}[a-zA-Z0-9-]\.)+"
-         * "+" Quantifier — Matches between one and unlimited times, as many times as possible,
-         * giving back as needed (greedy)
-         * A repeated capturing group will only capture the last iteration.
-         * Put a capturing group around the repeated group to capture all iterations or use a
-         * non-capturing group instead if you're not interested in the data.
-
-         * 4th Capturing Group "(\}|\ *\})"
-         * 1st Alternative "\}"
-         * "\}" matches the character "}" literally (case sensitive)
-         * 2nd Alternative "\ *\}"
-         * "\ *" matches the character " " literally (case sensitive)
-         *  "*" Quantifier — Matches between zero and unlimited times, as many times as possible,
-         *  giving back as needed (greedy)
-         * "\}" matches the character "}" literally (case sensitive)
-         */
-        LINK(compile("(\\{@link|\\{@linkplain) *((?!-)[a-z0-9-]{1,63}\\.)((?!-)[a-zA-Z0-9-]{1,63}[a-zA-Z0-9-]\\.)+[a-zA-Z]{2,63}(\\}|\\ *\\})"));
-
-        private final Pattern pattern;
-
-        JavadocPattern(Pattern pattern) {
-            this.pattern = pattern;
-        }
-
-        Pattern getPattern() {
-            return pattern;
-        }
-    }
 }

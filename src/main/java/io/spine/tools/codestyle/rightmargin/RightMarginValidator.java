@@ -60,8 +60,8 @@ public class RightMarginValidator extends AbstractCodeStyleFileValidator {
             final Optional<CodeStyleViolation> result = checkSingleLine(line);
             lineNumber++;
             if (result.isPresent()) {
-                final CodeStyleViolation codeStyleViolation = result.get();
-                codeStyleViolation.setIndex(lineNumber);
+                final CodeStyleViolation codeStyleViolation = result.get()
+                                                                    .withLineNumber(lineNumber);
                 invalidLines.add(codeStyleViolation);
             }
         }

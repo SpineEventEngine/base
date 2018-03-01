@@ -20,37 +20,65 @@
 package io.spine.tools.codestyle;
 
 import com.google.common.base.MoreObjects;
+import io.spine.tools.CodePreconditions;
+
+import static com.google.common.base.Preconditions.checkArgument;
 
 /**
- * This class describes any code style violation. It has actual founded violation and it's
- * position in code.
+ * Provides information a code style violation with the code line and its number.
  *
  * @author Alexander Aleksandrov
+ * @author Alexander Yevsyukov
  */
 public class CodeStyleViolation {
-    private final String actualUsage;
-    private int index = 0;
 
-    public CodeStyleViolation(String actualUsage) {
-        this.actualUsage = actualUsage;
+    private static final int LINE_NUMBER_UNKNOWN = -1;
+
+    private final String codeLine;
+    private final int lineNumber;
+
+    public CodeStyleViolation(String codeLine) {
+        this.codeLine = CodePreconditions.checkNotEmptyOrBlank(codeLine);
+        this.lineNumber = LINE_NUMBER_UNKNOWN;
     }
 
-    public String getActualUsage() {
-        return actualUsage;
+    private CodeStyleViolation(String codeLine, int lineNumber) {
+        CodePreconditions.checkNotEmptyOrBlank(codeLine);
+        checkArgument(lineNumber >= 0, "Line number must be non-negative");
+
+        this.codeLine = codeLine;
+        this.lineNumber = lineNumber;
     }
 
-    public int getIndex() {
-        return index;
+    /**
+     * Obtains the line of code with the violation.
+     */
+    public String getCodeLine() {
+        return codeLine;
     }
 
-    public void setIndex(int index) {
-        this.index = index;
+    /**
+     * Obtains the line number.
+     *
+     * @return a non-negative value or -1 if the line number is not available.
+     */
+    public int getLineNumber() {
+        return lineNumber;
+    }
+
+    /**
+     * Creates a new instance with the same code line value and the passed line number.
+     */
+    public CodeStyleViolation withLineNumber(int lineNumber) {
+        final CodeStyleViolation result = new CodeStyleViolation(this.codeLine, lineNumber);
+        return result;
     }
 
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                          .add("actualUsage", actualUsage)
+                          .add("codeLine", codeLine)
+                          .add("lineNumber", lineNumber)
                           .toString();
     }
 }

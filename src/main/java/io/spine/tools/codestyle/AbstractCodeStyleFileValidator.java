@@ -50,18 +50,18 @@ public abstract class AbstractCodeStyleFileValidator implements CodeStyleFileVal
     }
 
     @Override
-    public void validate(Path path) throws InvalidLineLengthException {
+    public void validate(Path file) throws InvalidLineLengthException {
         final List<String> content;
-        if (!JavaSources.isJavaFile(path)) {
+        if (!JavaSources.isJavaFile(file)) {
             return;
         }
         try {
-            content = Files.readAllLines(path, StandardCharsets.UTF_8);
+            content = Files.readAllLines(file, StandardCharsets.UTF_8);
         } catch (IOException e) {
-            throw new IllegalStateException(READ_FILE_ERR_MSG + path, e);
+            throw new IllegalStateException(READ_FILE_ERR_MSG + file, e);
         }
         final List<CodeStyleViolation> violations = checkForViolations(content);
-        saveToStorage(path, violations);
+        saveToStorage(file, violations);
         processValidationResult();
         storage.clear();
     }
