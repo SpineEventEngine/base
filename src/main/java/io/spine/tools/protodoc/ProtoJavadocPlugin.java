@@ -23,8 +23,6 @@ import io.spine.tools.gradle.SpinePlugin;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -76,19 +74,21 @@ public class ProtoJavadocPlugin extends SpinePlugin {
                .create(PROTO_JAVADOC_EXTENSION_NAME, Extension.class);
 
         final Action<Task> mainAction = createAction(project, TaskType.MAIN);
-        newTask(FORMAT_PROTO_DOC, mainAction).insertBeforeTask(COMPILE_JAVA)
-                                             .insertAfterTask(GENERATE_PROTO)
-                                             .applyNowTo(project);
-        logDependingTask(log(), FORMAT_PROTO_DOC, COMPILE_JAVA, GENERATE_PROTO);
+        newTask(FORMAT_PROTO_DOC, mainAction)
+                .insertBeforeTask(COMPILE_JAVA)
+                .insertAfterTask(GENERATE_PROTO)
+                .applyNowTo(project);
+        logDependingTask(FORMAT_PROTO_DOC, COMPILE_JAVA, GENERATE_PROTO);
 
         final Action<Task> testAction = createAction(project, TaskType.TEST);
-        newTask(FORMAT_TEST_PROTO_DOC, testAction).insertBeforeTask(COMPILE_TEST_JAVA)
-                                                  .insertAfterTask(GENERATE_TEST_PROTO)
-                                                  .applyNowTo(project);
-        logDependingTask(log(), FORMAT_TEST_PROTO_DOC, COMPILE_TEST_JAVA, GENERATE_TEST_PROTO);
+        newTask(FORMAT_TEST_PROTO_DOC, testAction)
+                .insertBeforeTask(COMPILE_TEST_JAVA)
+                .insertAfterTask(GENERATE_TEST_PROTO)
+                .applyNowTo(project);
+        logDependingTask(FORMAT_TEST_PROTO_DOC, COMPILE_TEST_JAVA, GENERATE_TEST_PROTO);
     }
 
-    private static Action<Task> createAction(final Project project, final TaskType taskType) {
+    private Action<Task> createAction(final Project project, final TaskType taskType) {
         return new Action<Task>() {
             @Override
             public void execute(Task task) {
@@ -97,7 +97,7 @@ public class ProtoJavadocPlugin extends SpinePlugin {
         };
     }
 
-    private static void formatJavadocs(Project project, TaskType taskType) {
+    private void formatJavadocs(Project project, TaskType taskType) {
         final String genProtoDir = taskType.getGenProtoDir(project);
         final File file = new File(genProtoDir);
         if (!file.exists()) {
@@ -131,15 +131,5 @@ public class ProtoJavadocPlugin extends SpinePlugin {
         };
 
         abstract String getGenProtoDir(Project project);
-    }
-
-    private static Logger log() {
-        return LogSingleton.INSTANCE.value;
-    }
-
-    private enum LogSingleton {
-        INSTANCE;
-        @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = LoggerFactory.getLogger(ProtoJavadocPlugin.class);
     }
 }
