@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -33,9 +33,4 @@ import com.google.protobuf.Message;
  */
 @SuppressWarnings("InterfaceNeverImplemented") /* See Javadoc */
 public interface RejectionMessage extends Message {
-
-    /**
-     * The suffix for the outer class name for the generated rejection messages.
-     */
-    String OUTER_CLASS_NAME_SUFFIX = "Rejections";
 }

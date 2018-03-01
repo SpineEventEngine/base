@@ -20,14 +20,16 @@
 
 package io.spine.tools;
 
-import io.spine.type.StringTypeValue;
+import io.spine.type.ComparableStringValue;
 
 /**
  * A name of a source code file.
  *
+ * @param <F> the type of the file name for comparison type covariance
  * @author Alexander Yevsyukov
  */
-public abstract class AbstractFileName extends StringTypeValue {
+public abstract class AbstractFileName<F extends AbstractFileName>
+        extends ComparableStringValue<F> {
 
     protected AbstractFileName(String value) {
         super(value);

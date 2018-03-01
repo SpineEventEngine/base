@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -202,8 +202,10 @@ public class TypeUrlShould {
 
     @Test
     public void have_prefix_enumeration() {
-        assertTrue(TypeUrl.Prefix.SPINE.toString()
-                                       .contains("spine"));
+        final TypeUrl.Prefix spinePrefix = TypeUrl.Prefix.SPINE;
+        assertTrue(spinePrefix.toString()
+                              .contains(spinePrefix.name()
+                                                   .toLowerCase()));
     }
 
     @Test

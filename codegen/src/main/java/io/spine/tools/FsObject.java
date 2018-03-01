@@ -46,6 +46,11 @@ public abstract class FsObject {
     }
 
     @Override
+    public String toString() {
+        return getPath().toString();
+    }
+
+    @Override
     public int hashCode() {
         return Objects.hash(path);
     }

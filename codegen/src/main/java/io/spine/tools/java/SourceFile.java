@@ -69,10 +69,10 @@ public final class SourceFile extends AbstractSourceFile {
      * @param file the proto file descriptor
      * @return the relative folder path
      */
-    private static Folder getFolder(FileDescriptorProto file) {
+    private static Directory getFolder(FileDescriptorProto file) {
         checkNotNull(file);
         final PackageName packageName = PackageName.resolve(file);
-        final Folder result = packageName.toFolder();
+        final Directory result = packageName.toDirectory();
         return result;
     }
 
@@ -159,7 +159,7 @@ public final class SourceFile extends AbstractSourceFile {
      */
     public static SourceFile forType(String javaPackage, String typename) {
         final SourceFile result = PackageName.of(javaPackage)
-                                             .toFolder()
+                                             .toDirectory()
                                              .resolve(FileName.forType(typename));
         return result;
     }

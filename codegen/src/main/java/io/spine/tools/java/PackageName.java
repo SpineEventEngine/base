@@ -76,9 +76,9 @@ public final class PackageName extends StringTypeValue {
     /**
      * Obtains file system folder path for the package.
      */
-    public Folder toFolder() {
+    public Directory toDirectory() {
         final String packageDir = value().replace(DELIMITER_CHAR, File.separatorChar);
-        final Folder result = Folder.at(Paths.get(packageDir));
+        final Directory result = Directory.at(Paths.get(packageDir));
         return result;
     }
 }

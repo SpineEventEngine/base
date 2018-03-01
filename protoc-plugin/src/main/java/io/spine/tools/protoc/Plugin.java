@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -37,14 +37,15 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  * <p>For the description of the plugin behavior see {@link MarkerInterfaceGenerator}.
  *
- * <p>For the plugin mechanism see <a href="SpineProtoGenerator.html#contract">{@code SpineProtoGenerator}</a>.
+ * <p>For the plugin mechanism see <a href="SpineProtoGenerator.html#contract">
+ * {@code SpineProtoGenerator}</a>.
  *
  * @author Dmytro Dashenkov
  */
 public class Plugin {
 
+    /** Prevents instantiation from outside. */
     private Plugin() {
-        // Prevent instantiation.
     }
 
     /**

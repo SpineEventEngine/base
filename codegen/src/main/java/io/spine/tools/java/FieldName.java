@@ -31,6 +31,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public final class FieldName extends AbstractFieldName {
 
+    private static final FieldName SERIAL_VERSION_UID = new FieldName("serialVersionUID");
+
     private FieldName(String value) {
         super(value);
     }
@@ -43,5 +45,9 @@ public final class FieldName extends AbstractFieldName {
         final String fieldName = protoField.javaCase();
         final FieldName result = new FieldName(fieldName);
         return result;
+    }
+
+    public static FieldName serialVersionUID() {
+        return SERIAL_VERSION_UID;
     }
 }

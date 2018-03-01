@@ -19,6 +19,7 @@
  */
 package io.spine.tools.proto;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableList;
@@ -31,11 +32,12 @@ import javax.annotation.Nullable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Exceptions.newIllegalStateException;
-import static java.util.Collections.emptyList;
 
 /**
  * A utility class which allows to obtain Protobuf file descriptors.
@@ -46,6 +48,18 @@ import static java.util.Collections.emptyList;
 public class FileDescriptors {
 
     private static final Predicate<FileDescriptorProto> IS_NOT_GOOGLE = new IsNotGoogleProto();
+
+    /**
+     * Default file name for descriptor set generated from the proto files under
+     * the {@code main/proto} project directory.
+     */
+    public static final String MAIN_FILE = "main.desc";
+
+    /**
+     * Default file name for the descriptor set generated from the proto files under
+     * the {@code test/proto} project directory.
+     */
+    public static final String TEST_FILE = "test.desc";
 
     /** Prevents instantiation of this utility class. */
     private FileDescriptors() {
@@ -64,6 +78,14 @@ public class FileDescriptors {
     }
 
     /**
+     * Obtains the list of files from the passed descriptor set file, skipping files provided
+     * by Google Protobuf.
+     */
+    public static List<FileDescriptorProto> parseSkipStandard(String descriptorSetFile) {
+        return parseAndFilter(descriptorSetFile, isNotGoogleProto());
+    }
+
+    /**
      * Returns descriptors of `.proto` files described in the descriptor set file
      * which match the filter predicate.
      *
@@ -74,13 +96,10 @@ public class FileDescriptors {
      *         a filter predicate to apply to the files
      * @return a list of descriptors
      */
-    public static List<FileDescriptorProto> parseAndFilter(String descriptorSetFile,
-                                                           Predicate<FileDescriptorProto> filter) {
+    private static List<FileDescriptorProto> parseAndFilter(String descriptorSetFile,
+                                                            Predicate<FileDescriptorProto> filter) {
         final File descriptorsFile = new File(descriptorSetFile);
-        if (!descriptorsFile.exists()) {
-            warnOnEnablingDescriptorSetGeneration();
-            return emptyList();
-        }
+        checkArgument(descriptorsFile.exists(), "File %s does not exist", descriptorSetFile);
 
         final Logger log = log();
         if (log.isTraceEnabled()) {
@@ -89,12 +108,12 @@ public class FileDescriptors {
                       descriptorSetFile);
         }
 
-        final ImmutableList.Builder<FileDescriptorProto> fileDescriptors = ImmutableList.builder();
+        final ImmutableList.Builder<FileDescriptorProto> files = ImmutableList.builder();
         try (final FileInputStream fis = new FileInputStream(descriptorsFile)) {
-            final FileDescriptorSet fileDescriptorSet = FileDescriptorSet.parseFrom(fis);
-            for (FileDescriptorProto file : fileDescriptorSet.getFileList()) {
+            final FileDescriptorSet fileSet = FileDescriptorSet.parseFrom(fis);
+            for (FileDescriptorProto file : fileSet.getFileList()) {
                 if (filter.apply(file)) {
-                    fileDescriptors.add(file);
+                    files.add(file);
                 }
             }
         } catch (IOException e) {
@@ -103,15 +122,38 @@ public class FileDescriptors {
             );
         }
 
-        final ImmutableList<FileDescriptorProto> result = fileDescriptors.build();
-        log.trace("Found {} files: {}", result.size(), fileDescriptors);
+        final ImmutableList<FileDescriptorProto> result = files.build();
+        log.trace("Found {} files: {}", result.size(), files);
         return result;
     }
 
-    private static void warnOnEnablingDescriptorSetGeneration() {
-        log().warn("Please enable descriptor set generation. See an appropriate section at " +
-                "https://github.com/google/protobuf-gradle-plugin/" +
-                "blob/master/README.md#customize-code-generation-tasks");
+    /**
+     * Loads main file descriptor set from resources.
+     */
+    public static FileDescriptorSet loadMain() {
+        final FileDescriptorSet result = loadFrom(MAIN_FILE);
+        return result;
+    }
+
+    /**
+     * Loads test file descriptor set from resources.
+     */
+    @VisibleForTesting
+    public static FileDescriptorSet loadTest() {
+        final FileDescriptorSet result = loadFrom(TEST_FILE);
+        return result;
+    }
+
+    private static FileDescriptorSet loadFrom(String resourceName) {
+        final ClassLoader classLoader = FileDescriptors.class.getClassLoader();
+        try(final InputStream in = classLoader.getResourceAsStream(resourceName)) {
+            final FileDescriptorSet fileSet = FileDescriptorSet.parseFrom(in);
+            return fileSet;
+        } catch (IOException e) {
+            throw newIllegalStateException(
+                    e, "Unable to load descriptor file set from %s", resourceName
+            );
+        }
     }
 
     /**

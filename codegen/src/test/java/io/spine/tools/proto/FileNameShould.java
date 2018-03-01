@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -22,6 +22,7 @@ package io.spine.tools.proto;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.testing.NullPointerTester;
+import io.spine.test.Tests;
 import org.junit.Test;
 
 import java.util.List;
@@ -37,6 +38,11 @@ import static org.junit.Assert.assertTrue;
 public class FileNameShould {
 
     @Test
+    public void have_utility_ctor_for_Suffix() {
+        Tests.assertHasPrivateParameterlessCtor(FileName.Suffix.class);
+    }
+
+    @Test
     public void pass_null_tolerance_check() {
         new NullPointerTester().testStaticMethods(FileName.class,
                                                   NullPointerTester.Visibility.PACKAGE);
@@ -49,17 +55,20 @@ public class FileNameShould {
 
     @Test
     public void return_words() {
-        final List<String> words = FileName.of("some_proto_file_name.proto").words();
+        final List<String> words = FileName.of("some_file_name.proto").words();
 
-        assertEquals(ImmutableList.of("some", "proto", "file", "name"), words);
+        assertEquals(ImmutableList.of("some", "file", "name"), words);
     }
 
     @SuppressWarnings("DuplicateStringLiteralInspection")
     @Test
     public void calculate_outer_class_name() {
-        assertEquals("Rejections", of("rejections.proto").nameOnlyCamelCase());
-        assertEquals("ManyRejections", of("many_rejections.proto").nameOnlyCamelCase());
-        assertEquals("ManyMoreRejections", of("many_more_rejections.proto").nameOnlyCamelCase());
+        assertEquals(RejectionDeclaration.OUTER_CLASS_NAME_SUFFIX,
+                     of("rejections.proto").nameOnlyCamelCase());
+        assertEquals("ManyRejections",
+                     of("many_rejections.proto").nameOnlyCamelCase());
+        assertEquals("ManyMoreRejections",
+                     of("many_more_rejections.proto").nameOnlyCamelCase());
     }
 
     @Test
