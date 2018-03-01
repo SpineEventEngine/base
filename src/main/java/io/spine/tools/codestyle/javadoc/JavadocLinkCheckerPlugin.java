@@ -25,8 +25,6 @@ import io.spine.tools.gradle.SpinePlugin;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static io.spine.tools.codestyle.CodeStyleCheckerPlugin.createStepExtension;
 import static io.spine.tools.gradle.TaskName.CHECK_FQN;
@@ -41,13 +39,12 @@ import static io.spine.tools.gradle.TaskName.PROCESS_RESOURCES;
  */
 public class JavadocLinkCheckerPlugin extends SpinePlugin {
 
-    public static final String JAVADOC_LINK_CHECKER_EXTENSION_NAME = "javadocLinkChecker";
-
+    private static final String EXTENSION_NAME = "javadocLinkChecker";
 
     @Override
     public void apply(Project project) {
         final StepConfiguration configuration =
-                createStepExtension(JAVADOC_LINK_CHECKER_EXTENSION_NAME, project);
+                createStepExtension(EXTENSION_NAME, project);
         final FileChecker checker = new FileChecker(new InvalidFqnUsageValidator(configuration));
         final Action<Task> action = checker.actionFor(project);
         newTask(CHECK_FQN, action).insertAfterTask(COMPILE_JAVA)
@@ -55,15 +52,4 @@ public class JavadocLinkCheckerPlugin extends SpinePlugin {
                                   .applyNowTo(project);
         log().debug("Starting to validate Javadoc links {}", action);
     }
-
-    private static Logger log() {
-        return JavadocLinkCheckerPlugin.LogSingleton.INSTANCE.value;
-    }
-
-    private enum LogSingleton {
-        INSTANCE;
-        @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = LoggerFactory.getLogger(JavadocLinkCheckerPlugin.class);
-    }
-
 }

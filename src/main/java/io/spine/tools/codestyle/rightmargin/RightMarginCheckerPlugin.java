@@ -25,8 +25,6 @@ import io.spine.tools.gradle.SpinePlugin;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static io.spine.tools.codestyle.CodeStyleCheckerPlugin.createStepExtension;
 import static io.spine.tools.gradle.TaskName.CHECK_RIGHT_MARGIN_WRAPPING;
@@ -40,27 +38,19 @@ import static io.spine.tools.gradle.TaskName.PROCESS_RESOURCES;
  * @author Alexander Aleksandrov
  */
 public class RightMarginCheckerPlugin extends SpinePlugin {
-    public static final String RIGHT_MARGIN_CHECKER_EXTENSION_NAME = "rightMarginWrappingChecker";
+
+    private static final String EXTENSION_NAME = "rightMarginWrappingChecker";
 
     @Override
     public void apply(Project project) {
         final StepConfiguration configuration =
-                createStepExtension(RIGHT_MARGIN_CHECKER_EXTENSION_NAME, project);
+                createStepExtension(EXTENSION_NAME, project);
         final FileChecker checker = new FileChecker(new RightMarginValidator(configuration));
         final Action<Task> action = checker.actionFor(project);
-        newTask(CHECK_RIGHT_MARGIN_WRAPPING, action).insertAfterTask(COMPILE_JAVA)
-                                                    .insertBeforeTask(PROCESS_RESOURCES)
-                                                    .applyNowTo(project);
+        newTask(CHECK_RIGHT_MARGIN_WRAPPING, action)
+                .insertAfterTask(COMPILE_JAVA)
+                .insertBeforeTask(PROCESS_RESOURCES)
+                .applyNowTo(project);
         log().debug("Starting to validate right margin wrapping {}", action);
-    }
-
-    private static Logger log() {
-        return RightMarginCheckerPlugin.LogSingleton.INSTANCE.value;
-    }
-
-    private enum LogSingleton {
-        INSTANCE;
-        @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = LoggerFactory.getLogger(RightMarginCheckerPlugin.class);
     }
 }

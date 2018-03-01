@@ -24,8 +24,6 @@ import io.spine.tools.codestyle.rightmargin.RightMarginCheckerPlugin;
 import io.spine.tools.gradle.SpinePlugin;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.ExtensionAware;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The plugin that verifies code style.
@@ -98,15 +96,5 @@ public class CodeStyleCheckerPlugin extends SpinePlugin {
                                         .getByName(CODESTYLE_CHECKER_EXTENSION_NAME);
         return codeStyleExtension.getExtensions()
                                  .create(extensionName, StepConfiguration.class);
-    }
-
-    private static Logger log() {
-        return LogSingleton.INSTANCE.value;
-    }
-
-    private enum LogSingleton {
-        INSTANCE;
-        @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = LoggerFactory.getLogger(CodeStyleCheckerPlugin.class);
     }
 }
