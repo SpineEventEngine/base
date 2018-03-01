@@ -25,12 +25,10 @@ import com.google.common.annotations.VisibleForTesting;
 import io.spine.tools.gradle.SpinePlugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
-import org.slf4j.Logger;
 
 import java.util.logging.Level;
 
 import static io.spine.tools.gradle.TaskName.CLEAN_GCS;
-import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * The plugin for working with Google Cloud Storage via Gradle tasks.
@@ -60,15 +58,5 @@ public class GcsPlugin extends SpinePlugin {
         final String name = HttpTransport.class.getName();
         final java.util.logging.Logger log = java.util.logging.Logger.getLogger(name);
         log.setLevel(Level.WARNING);
-    }
-
-    private static Logger log() {
-        return LogSingleton.INSTANCE.value;
-    }
-
-    private enum LogSingleton {
-        INSTANCE;
-        @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = getLogger(GcsPlugin.class);
     }
 }
