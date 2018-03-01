@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -83,7 +83,7 @@ public class VerifyShould {
     private static final String EMPTY_STRING = "";
     private static final String NON_EMPTY_STRING = "Non-empty string";
 
-    private static final String MAP_NAME = Verify.PARAM_MAP;
+    private static final String MAP_NAME = Verify.Param.MAP;
 
     @Test
     public void extend_Assert_class() {
