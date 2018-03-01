@@ -28,6 +28,7 @@ ext {
 
 dependencies {
     compile group: 'io.spine.tools', name: 'spine-plugin-base', version: spineBaseVersion
+    compile group: 'io.spine.tools', name: 'spine-codegen', version: spineBaseVersion
 
     compile gradleApi()
     compile "org.reflections:reflections:$reflectionsVersion"
