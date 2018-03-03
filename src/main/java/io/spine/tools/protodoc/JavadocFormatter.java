@@ -29,7 +29,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
-import static io.spine.tools.protodoc.JavaSources.isJavaFile;
 import static java.lang.System.lineSeparator;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.newBufferedReader;
@@ -54,6 +53,17 @@ class JavadocFormatter {
 
     JavadocFormatter(List<FormattingAction> actions) {
         this.actions = actions;
+    }
+
+    /**
+     * Checks the file path.
+     *
+     * @param path  the target file path
+     * @return {@code true} in case if the file has the .java extension.
+     */
+    private static boolean isJavaFile(Path path) {
+        return path.toString()
+                   .endsWith(".java");
     }
 
     /**
