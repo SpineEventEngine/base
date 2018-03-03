@@ -35,5 +35,5 @@ public interface CodeStyleCheck {
      * @param file a file to check
      * @throws CodeStyleException in case of any violations found
      */
-    void validate(Path file) throws CodeStyleException;
+    void process(Path file) throws CodeStyleException;
 }

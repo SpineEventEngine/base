@@ -58,7 +58,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * @author Alexander Aleksandrov
  */
-public class JavadocLinkCheckerPluginShould {
+public class JavadocLinkCheckPluginShould {
     private static final String WRONG_LINK_FORMAT_MSG = "Wrong link format found";
     private static final String CHECK_JAVADOC_LINK = TaskName.CHECK_FQN.getValue();
     private static final String CHECK_JAVADOC_LOG = ":checkJavadocLink";

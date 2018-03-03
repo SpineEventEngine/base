@@ -19,7 +19,7 @@
  */
 package io.spine.tools.codestyle.rightmargin;
 
-import io.spine.tools.codestyle.FileChecker;
+import io.spine.tools.codestyle.FileCheck;
 import io.spine.tools.codestyle.StepConfiguration;
 import io.spine.tools.gradle.SpinePlugin;
 import org.gradle.api.Action;
@@ -45,7 +45,7 @@ public class RightMarginCheckerPlugin extends SpinePlugin {
     public void apply(Project project) {
         final StepConfiguration configuration =
                 createStepExtension(EXTENSION_NAME, project);
-        final FileChecker checker = new FileChecker(new RightMarginCheck(configuration));
+        final FileCheck checker = new FileCheck(new RightMarginCheck(configuration));
         final Action<Task> action = checker.actionFor(project);
         newTask(CHECK_RIGHT_MARGIN_WRAPPING, action)
                 .insertAfterTask(COMPILE_JAVA)

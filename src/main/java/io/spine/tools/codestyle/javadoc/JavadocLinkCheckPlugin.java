@@ -19,7 +19,7 @@
  */
 package io.spine.tools.codestyle.javadoc;
 
-import io.spine.tools.codestyle.FileChecker;
+import io.spine.tools.codestyle.FileCheck;
 import io.spine.tools.codestyle.StepConfiguration;
 import io.spine.tools.gradle.SpinePlugin;
 import org.gradle.api.Action;
@@ -37,7 +37,7 @@ import static io.spine.tools.gradle.TaskName.PROCESS_RESOURCES;
  *
  * @author Alexander Aleksandrov
  */
-public class JavadocLinkCheckerPlugin extends SpinePlugin {
+public class JavadocLinkCheckPlugin extends SpinePlugin {
 
     private static final String EXTENSION_NAME = "javadocLinkChecker";
 
@@ -45,11 +45,12 @@ public class JavadocLinkCheckerPlugin extends SpinePlugin {
     public void apply(Project project) {
         final StepConfiguration configuration =
                 createStepExtension(EXTENSION_NAME, project);
-        final FileChecker checker = new FileChecker(new JavadocLinkCheck(configuration));
+        final FileCheck checker = new FileCheck(new JavadocLinkCheck(configuration));
         final Action<Task> action = checker.actionFor(project);
-        newTask(CHECK_FQN, action).insertAfterTask(COMPILE_JAVA)
-                                  .insertBeforeTask(PROCESS_RESOURCES)
-                                  .applyNowTo(project);
+        newTask(CHECK_FQN, action)
+                .insertAfterTask(COMPILE_JAVA)
+                .insertBeforeTask(PROCESS_RESOURCES)
+                .applyNowTo(project);
         log().debug("Starting to validate Javadoc links {}", action);
     }
 }

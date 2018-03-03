@@ -23,6 +23,7 @@ package io.spine.tools.codestyle.rightmargin;
 import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
+import io.spine.tools.codestyle.CodeStyleCheck;
 import io.spine.tools.codestyle.Given;
 import io.spine.tools.codestyle.ReportType;
 import io.spine.tools.codestyle.StepConfiguration;
@@ -124,8 +125,8 @@ public class RightMarginCheckerPluginShould {
         final StepConfiguration configuration = new StepConfiguration();
         configuration.setThreshold(100);
         configuration.setReportType("warn");
-        RightMarginCheck validator = new RightMarginCheck(configuration);
-        validator.validate(path);
+        CodeStyleCheck check = new RightMarginCheck(configuration);
+        check.process(path);
     }
 
     private InputStream getBuildFileContent(int threshold, ReportType reportType)

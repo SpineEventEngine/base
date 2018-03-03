@@ -28,7 +28,6 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
-import java.nio.file.FileVisitor;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
@@ -36,19 +35,17 @@ import java.nio.file.attribute.BasicFileAttributes;
 
 /**
  * A utility that walks recursively through all files from project directory and
- * validates them depending on {@link CodeStyleCheck} implementation passed to constructor.
+ * applies associated {@link CodeStyleCheck}.
  *
  * @author Alexander Aleksandrov
  */
-public class FileChecker {
+public class FileCheck {
 
     private static final String DIRECTORY_TO_CHECK = "/src/main/java";
-    private final FileVisitor<Path> visitor;
-    private final CodeStyleCheck validator;
+    private final Visitor visitor;
 
-    public FileChecker(CodeStyleCheck validator) {
-        this.visitor = new RecursiveFileChecker(validator);
-        this.validator = validator;
+    public FileCheck(CodeStyleCheck check) {
+        this.visitor = new Visitor(check);
     }
 
     /**
@@ -58,9 +55,9 @@ public class FileChecker {
      * @return {@code Action<Task>} for gradle.
      */
     public Action<Task> actionFor(final Project project) {
-        log().debug("Preparing an action for the {} validator", validator.getClass()
-                                                                         .getCanonicalName());
-
+        log().debug("Preparing an action for the {}", visitor.getCheck()
+                                                             .getClass()
+                                                             .getCanonicalName());
         return new CheckAction(project);
     }
 
@@ -102,41 +99,43 @@ public class FileChecker {
     }
 
     /**
-     * Custom {@linkplain java.nio.file.FileVisitor visitor} which checks the contents of
-     * the walked folder recursively.
+     * Custom {@linkplain java.nio.file.FileVisitor visitor} that checks style in a visited file.
      */
-    private static class RecursiveFileChecker extends SimpleFileVisitor<Path> {
+    private static class Visitor extends SimpleFileVisitor<Path> {
 
-        private final CodeStyleCheck validator;
+        private final CodeStyleCheck check;
 
-        private RecursiveFileChecker(CodeStyleCheck validator) {
+        private Visitor(CodeStyleCheck check) {
             super();
-            this.validator = validator;
+            this.check = check;
         }
 
         @Override
         public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) throws IOException {
             super.visitFile(path, attrs);
             log().debug("Performing validation for the file: {}", path);
-            validator.validate(path);
+            check.process(path);
             return FileVisitResult.CONTINUE;
         }
 
-        @SuppressWarnings("MethodDoesntCallSuperMethod")
         @Override
-        public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
-            log().error("Error walking down the file tree for file: {}", file);
+        public FileVisitResult visitFileFailed(Path file, IOException exc) {
+            log().error("Unable to check style for the file: {}", file);
             return FileVisitResult.TERMINATE;
+        }
+
+        private CodeStyleCheck getCheck() {
+            return check;
         }
     }
 
     private static Logger log() {
-        return FileChecker.LogSingleton.INSTANCE.value;
+        return FileCheck.LogSingleton.INSTANCE.value;
     }
 
     private enum LogSingleton {
         INSTANCE;
         @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = LoggerFactory.getLogger(FileChecker.class);
+        private final Logger value = LoggerFactory.getLogger(FileCheck.class);
     }
 }

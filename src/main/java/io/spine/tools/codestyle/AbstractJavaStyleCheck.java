@@ -60,7 +60,7 @@ public abstract class AbstractJavaStyleCheck implements CodeStyleCheck {
     }
 
     @Override
-    public void validate(Path file) throws InvalidLineLengthException {
+    public void process(Path file) throws InvalidLineLengthException {
         final List<String> content;
         if (!isJavaFile(file)) {
             return;

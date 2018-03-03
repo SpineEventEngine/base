@@ -40,21 +40,21 @@ import static org.mockito.Mockito.verify;
  */
 public class JavadocLinkCheckShould {
 
-    private JavadocLinkCheck validator;
+    private JavadocLinkCheck check;
     private static final String MULTIPLE_WRONG_FQN_LINKS_JAVA = "MultipleWrongFqnLinks.java";
     private static final String errorReportType = "error";
     private static final String warnReportType = "warn";
 
     @Test(expected = RuntimeException.class)
     public void throw_exception_for_invalid_fqn_links_over_threshold() throws InvalidFqnUsageException {
-        validator = setUpValidator(2, errorReportType);
-        validator.validate(getPath(MULTIPLE_WRONG_FQN_LINKS_JAVA));
+        check = setUpValidator(2, errorReportType);
+        check.process(getPath(MULTIPLE_WRONG_FQN_LINKS_JAVA));
     }
 
     @Test(expected = RuntimeException.class)
     public void throw_exception_file_format_is_not_utf8() throws InvalidFqnUsageException {
-        validator = setUpValidator(2, errorReportType);
-        validator.validate(getPath(MULTIPLE_WRONG_FQN_LINKS_JAVA));
+        check = setUpValidator(2, errorReportType);
+        check.process(getPath(MULTIPLE_WRONG_FQN_LINKS_JAVA));
     }
 
     @Test
@@ -62,8 +62,8 @@ public class JavadocLinkCheckShould {
         JavadocLinkCheck mockedObject = mock(JavadocLinkCheck.class);
         final Path path = getPath(".hidden_file");
         final List<String> list = new ArrayList<>();
-        mockedObject.validate(path);
-        verify(mockedObject).validate(path);
+        mockedObject.process(path);
+        verify(mockedObject).process(path);
         verify(mockedObject, never()).checkForViolations(list);
     }
 
@@ -72,8 +72,8 @@ public class JavadocLinkCheckShould {
         JavadocLinkCheck impl = spy(
                 new JavadocLinkCheck(setStepConfiguration(0, warnReportType)));
         final Path path = getPath(MULTIPLE_WRONG_FQN_LINKS_JAVA);
-        impl.validate(path);
-        verify(impl).validate(path);
+        impl.process(path);
+        verify(impl).process(path);
     }
 
     @Test
@@ -81,8 +81,8 @@ public class JavadocLinkCheckShould {
         JavadocLinkCheck impl = spy(
                 new JavadocLinkCheck(setStepConfiguration(0, warnReportType)));
         final Path path = getPath(Given.testFile());
-        impl.validate(path);
-        verify(impl).validate(path);
+        impl.process(path);
+        verify(impl).process(path);
     }
 
     private static JavadocLinkCheck setUpValidator(int threshold, String reportType) {

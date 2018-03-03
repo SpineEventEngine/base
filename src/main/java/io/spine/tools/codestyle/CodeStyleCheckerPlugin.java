@@ -19,7 +19,7 @@
  */
 package io.spine.tools.codestyle;
 
-import io.spine.tools.codestyle.javadoc.JavadocLinkCheckerPlugin;
+import io.spine.tools.codestyle.javadoc.JavadocLinkCheckPlugin;
 import io.spine.tools.codestyle.rightmargin.RightMarginCheckerPlugin;
 import io.spine.tools.gradle.SpinePlugin;
 import org.gradle.api.Project;
@@ -77,7 +77,7 @@ public class CodeStyleCheckerPlugin extends SpinePlugin {
                .create(CODESTYLE_CHECKER_EXTENSION_NAME, CodeStylePluginConfiguration.class);
 
         log().debug("Applying Spine Javadoc link checker plugin");
-        new JavadocLinkCheckerPlugin().apply(project);
+        new JavadocLinkCheckPlugin().apply(project);
         log().debug("Applying Spine Right margin wrapping checker plugin");
         new RightMarginCheckerPlugin().apply(project);
     }
