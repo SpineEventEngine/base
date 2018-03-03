@@ -74,15 +74,15 @@ public abstract class AbstractJavaStyleCheck implements CodeStyleCheck {
         } catch (IOException e) {
             throw new IllegalStateException("Cannot read the contents of the file: " + file, e);
         }
-        final List<CodeStyleViolation> violations = checkForViolations(content);
-        saveToStorage(file, violations);
-        processValidationResult();
+        final List<CodeStyleViolation> violations = findViolations(content);
+        save(file, violations);
+        processResult();
         storage.clear();
     }
 
-    private void saveToStorage(Path path, List<CodeStyleViolation> violations) {
+    private void save(Path file, List<CodeStyleViolation> violations) {
         if (!violations.isEmpty()) {
-            storage.save(path, violations);
+            storage.save(file, violations);
         }
     }
 
@@ -97,10 +97,10 @@ public abstract class AbstractJavaStyleCheck implements CodeStyleCheck {
      * @param fileContent Content of the file under validation.
      * @return List of {@link CodeStyleViolation} from that file.
      */
-    protected abstract List<CodeStyleViolation> checkForViolations(List<String> fileContent);
+    protected abstract List<CodeStyleViolation> findViolations(List<String> fileContent);
 
     /**
-     * Compares the number of founded violations with threshold amount.
+     * Processes the found violations.
      */
-    protected abstract void processValidationResult();
+    protected abstract void processResult();
 }

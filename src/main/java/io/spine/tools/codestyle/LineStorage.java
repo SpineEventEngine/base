@@ -26,13 +26,13 @@ import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 /**
  * An abstract code style violations storage.
  *
  * @author Alexander Aleksandrov
+ * @author Alexander Yevsyukov
  */
 public abstract class LineStorage {
 
@@ -60,8 +60,8 @@ public abstract class LineStorage {
     /**
      * Saves violations found in a file.
      */
-    void save(Path file, List<CodeStyleViolation> list) {
-        content.putAll(file, list);
+    void save(Path file, Iterable<CodeStyleViolation> violations) {
+        content.putAll(file, violations);
     }
 
     /**

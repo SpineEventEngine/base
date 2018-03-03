@@ -64,7 +64,7 @@ public class JavadocLinkCheckShould {
         final List<String> list = new ArrayList<>();
         mockedObject.process(path);
         verify(mockedObject).process(path);
-        verify(mockedObject, never()).checkForViolations(list);
+        verify(mockedObject, never()).findViolations(list);
     }
 
     @Test

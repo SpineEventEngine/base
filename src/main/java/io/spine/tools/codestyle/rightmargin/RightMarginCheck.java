@@ -29,16 +29,18 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static java.util.regex.Pattern.compile;
 
 /**
  * It checks files for the lines that are going out of the right margin value, specified by
- * threshold. In case if any violation is found it will be logged as warning in build's
+ * threshold. In case if any violation is found it will be logged as warning in the build
  * stacktrace info.
  *
  * @author Alexander Aleksandrov
+ * @author Alexander Yevsyukov
  */
 public class RightMarginCheck extends AbstractJavaStyleCheck {
+
+    private static final Pattern IMPORT_OR_LINK = Pattern.compile("import|<a href");
 
     private final StepConfiguration configuration;
 
@@ -53,11 +55,11 @@ public class RightMarginCheck extends AbstractJavaStyleCheck {
     }
 
     @Override
-    public List<CodeStyleViolation> checkForViolations(List<String> fileContent) {
+    public List<CodeStyleViolation> findViolations(List<String> fileContent) {
         int lineNumber = 0;
         final List<CodeStyleViolation> invalidLines = newArrayList();
         for (String line : fileContent) {
-            final Optional<CodeStyleViolation> result = checkSingleLine(line);
+            final Optional<CodeStyleViolation> result = checkLine(line);
             lineNumber++;
             if (result.isPresent()) {
                 final CodeStyleViolation codeStyleViolation = result.get()
@@ -69,13 +71,12 @@ public class RightMarginCheck extends AbstractJavaStyleCheck {
     }
 
     @Override
-    protected void processValidationResult() {
+    protected void processResult() {
         getStorage().logViolations();
     }
 
-    private Optional<CodeStyleViolation> checkSingleLine(String line) {
-        final Matcher matcher = JavadocPattern.LINK.getPattern()
-                                                   .matcher(line);
+    private Optional<CodeStyleViolation> checkLine(String line) {
+        final Matcher matcher = IMPORT_OR_LINK.matcher(line);
         final boolean found = matcher.find();
         if (found) {
             return Optional.absent();
@@ -86,20 +87,5 @@ public class RightMarginCheck extends AbstractJavaStyleCheck {
             return Optional.of(result);
         }
         return Optional.absent();
-    }
-
-    private enum JavadocPattern {
-
-        LINK(compile("import|<a href"));
-
-        private final Pattern pattern;
-
-        JavadocPattern(Pattern pattern) {
-            this.pattern = pattern;
-        }
-
-        Pattern getPattern() {
-            return pattern;
-        }
     }
 }

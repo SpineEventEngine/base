@@ -53,7 +53,7 @@ public class JavadocLinkCheck extends AbstractJavaStyleCheck {
     }
 
     @Override
-    protected void processValidationResult() {
+    protected void processResult() {
         if (numberOfViolations() > configuration.getThreshold()
                                                 .getValue()) {
             onAboveThreshold();
@@ -70,7 +70,7 @@ public class JavadocLinkCheck extends AbstractJavaStyleCheck {
     }
 
     @Override
-    public List<CodeStyleViolation> checkForViolations(List<String> fileContent) {
+    public List<CodeStyleViolation> findViolations(List<String> fileContent) {
         int lineNumber = 0;
         final List<CodeStyleViolation> invalidLinks = newArrayList();
         for (String line : fileContent) {
