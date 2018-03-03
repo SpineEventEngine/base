@@ -20,8 +20,6 @@
 
 package io.spine.gradle.compiler.lookup.enrichments;
 
-import org.hamcrest.BaseMatcher;
-import org.hamcrest.Description;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -56,29 +54,5 @@ public class EnrichmentLookupPluginShould {
     @Test
     public void find_enrichments() {
         assertFalse(prop.isEmpty());
-    }
-
-    private static class IsContainedIn extends BaseMatcher<String> {
-
-        private final String container;
-        private String item;
-
-        private IsContainedIn(String container) {
-            this.container = container;
-        }
-
-        @Override
-        public boolean matches(Object item) {
-            final String value = (String) item;
-            this.item = value;
-            final boolean result = container.contains(value);
-            return result;
-        }
-
-        @Override
-        public void describeTo(Description description) {
-            description.appendText(" given string does not contain ")
-                       .appendText(item);
-        }
     }
 }
