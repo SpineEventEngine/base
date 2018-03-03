@@ -21,21 +21,35 @@ package io.spine.tools.codestyle;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * An abstract code style violations storage.
  *
  * @author Alexander Aleksandrov
  */
-public abstract class AbstractStorage {
+public abstract class LineStorage {
 
     private final Multimap<Path, CodeStyleViolation> content = HashMultimap.create();
 
-    public Multimap<Path, CodeStyleViolation> getContent() {
-        return content;
+    /**
+     * Obtains a number of stored violations.
+     */
+    public int size() {
+        return content.size();
+    }
+
+    /**
+     * Obtains file-to-violation entries.
+     */
+    protected Collection<Map.Entry<Path, CodeStyleViolation>> entries() {
+        return content.entries();
     }
 
     /**
@@ -44,13 +58,10 @@ public abstract class AbstractStorage {
     public abstract void logViolations();
 
     /**
-     * Add a new record to storage if it is already exist or creates a new one in case if it's not.
-     *
-     * @param path file path that contain violations
-     * @param list list of violations
+     * Saves violations found in a file.
      */
-    void save(Path path, List<CodeStyleViolation> list) {
-        getContent().putAll(path, list);
+    void save(Path file, List<CodeStyleViolation> list) {
+        content.putAll(file, list);
     }
 
     /**
@@ -58,5 +69,9 @@ public abstract class AbstractStorage {
      */
     void clear() {
         content.clear();
+    }
+
+    protected Logger log() {
+        return LoggerFactory.getLogger(getClass());
     }
 }

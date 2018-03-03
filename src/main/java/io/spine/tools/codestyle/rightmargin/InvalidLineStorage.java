@@ -19,10 +19,8 @@
  */
 package io.spine.tools.codestyle.rightmargin;
 
-import io.spine.tools.codestyle.AbstractStorage;
 import io.spine.tools.codestyle.CodeStyleViolation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import io.spine.tools.codestyle.LineStorage;
 
 import java.nio.file.Path;
 import java.util.Map;
@@ -34,11 +32,11 @@ import static java.lang.String.format;
  *
  * @author Alexander Aleksandrov
  */
-public class InvalidLineStorage extends AbstractStorage {
+public class InvalidLineStorage extends LineStorage {
 
     @Override
     public void logViolations() {
-        for (Map.Entry<Path, CodeStyleViolation> entry : getContent().entries()) {
+        for (Map.Entry<Path, CodeStyleViolation> entry : entries()) {
             final String msg = format(
                     "Right margin trespassing found on line %s in %s",
                     entry.getValue().getLineNumber(),
@@ -46,15 +44,4 @@ public class InvalidLineStorage extends AbstractStorage {
             log().error(msg);
         }
     }
-
-    private static Logger log() {
-        return InvalidLineStorage.LogSingleton.INSTANCE.value;
-    }
-
-    private enum LogSingleton {
-        INSTANCE;
-        @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = LoggerFactory.getLogger(InvalidLineStorage.class);
-    }
-
 }

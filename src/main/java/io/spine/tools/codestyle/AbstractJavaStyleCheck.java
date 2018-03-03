@@ -34,7 +34,7 @@ import java.util.List;
  */
 public abstract class AbstractJavaStyleCheck implements CodeStyleCheck {
 
-    private final AbstractStorage storage;
+    private final LineStorage storage;
 
     @SuppressWarnings({"AbstractMethodCallInConstructor",
             "OverridableMethodCallDuringObjectConstruction",
@@ -55,8 +55,12 @@ public abstract class AbstractJavaStyleCheck implements CodeStyleCheck {
                    .endsWith(".java");
     }
 
-    protected AbstractStorage getStorage() {
+    protected LineStorage getStorage() {
         return storage;
+    }
+
+    protected int numberOfViolations() {
+        return getStorage().size();
     }
 
     @Override
@@ -85,15 +89,15 @@ public abstract class AbstractJavaStyleCheck implements CodeStyleCheck {
     /**
      * Creates storage for violations.
      */
-    protected abstract AbstractStorage createStorage();
+    protected abstract LineStorage createStorage();
 
     /**
      * Goes through the file content represented as list of strings.
      *
-     * @param list Content of the file under validation.
+     * @param fileContent Content of the file under validation.
      * @return List of {@link CodeStyleViolation} from that file.
      */
-    protected abstract List<CodeStyleViolation> checkForViolations(List<String> list);
+    protected abstract List<CodeStyleViolation> checkForViolations(List<String> fileContent);
 
     /**
      * Compares the number of founded violations with threshold amount.

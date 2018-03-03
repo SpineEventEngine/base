@@ -54,9 +54,8 @@ public class JavadocLinkCheck extends AbstractJavaStyleCheck {
 
     @Override
     protected void processValidationResult() {
-        if (getStorage().getContent()
-                        .size() > configuration.getThreshold()
-                                               .getValue()) {
+        if (numberOfViolations() > configuration.getThreshold()
+                                                .getValue()) {
             onAboveThreshold();
         }
     }
@@ -71,10 +70,10 @@ public class JavadocLinkCheck extends AbstractJavaStyleCheck {
     }
 
     @Override
-    public List<CodeStyleViolation> checkForViolations(List<String> list) {
+    public List<CodeStyleViolation> checkForViolations(List<String> fileContent) {
         int lineNumber = 0;
         final List<CodeStyleViolation> invalidLinks = newArrayList();
-        for (String line : list) {
+        for (String line : fileContent) {
             final Optional<CodeStyleViolation> result = checkSingleComment(line);
             lineNumber++;
             if (result.isPresent()) {
@@ -97,5 +96,4 @@ public class JavadocLinkCheck extends AbstractJavaStyleCheck {
         }
         return Optional.absent();
     }
-
 }

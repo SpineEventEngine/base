@@ -19,10 +19,8 @@
  */
 package io.spine.tools.codestyle.javadoc;
 
-import io.spine.tools.codestyle.AbstractStorage;
 import io.spine.tools.codestyle.CodeStyleViolation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import io.spine.tools.codestyle.LineStorage;
 
 import java.nio.file.Path;
 import java.util.Map;
@@ -34,32 +32,22 @@ import static java.lang.String.format;
  *
  * @author Alexander Aleksandrov
  */
-class InvalidResultStorage extends AbstractStorage {
+class InvalidResultStorage extends LineStorage {
 
     @Override
     public void logViolations() {
-        for (Map.Entry<Path, CodeStyleViolation> entry : getContent().entries()) {
-            logInvalidFqnUsages(entry);
+        for (Map.Entry<Path, CodeStyleViolation> entry : entries()) {
+            log(entry);
         }
     }
 
-    private static void logInvalidFqnUsages(Map.Entry<Path, CodeStyleViolation> entry) {
+    private void log(Map.Entry<Path, CodeStyleViolation> entry) {
+        final CodeStyleViolation v = entry.getValue();
+        final Path file = entry.getKey();
         final String msg = format(
                 " Wrong link format found: %s on %s line in %s",
-                entry.getValue()
-                     .getCodeLine(),
-                entry.getValue().getLineNumber(),
-                entry.getKey());
+                v.getCodeLine(), v.getLineNumber(), file
+        );
         log().error(msg);
-    }
-
-    private static Logger log() {
-        return InvalidResultStorage.LogSingleton.INSTANCE.value;
-    }
-
-    private enum LogSingleton {
-        INSTANCE;
-        @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = LoggerFactory.getLogger(InvalidResultStorage.class);
     }
 }

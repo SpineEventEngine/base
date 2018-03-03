@@ -53,10 +53,10 @@ public class RightMarginCheck extends AbstractJavaStyleCheck {
     }
 
     @Override
-    public List<CodeStyleViolation> checkForViolations(List<String> list) {
+    public List<CodeStyleViolation> checkForViolations(List<String> fileContent) {
         int lineNumber = 0;
         final List<CodeStyleViolation> invalidLines = newArrayList();
-        for (String line : list) {
+        for (String line : fileContent) {
             final Optional<CodeStyleViolation> result = checkSingleLine(line);
             lineNumber++;
             if (result.isPresent()) {
@@ -75,7 +75,7 @@ public class RightMarginCheck extends AbstractJavaStyleCheck {
 
     private Optional<CodeStyleViolation> checkSingleLine(String line) {
         final Matcher matcher = JavadocPattern.LINK.getPattern()
-                                                                        .matcher(line);
+                                                   .matcher(line);
         final boolean found = matcher.find();
         if (found) {
             return Optional.absent();
