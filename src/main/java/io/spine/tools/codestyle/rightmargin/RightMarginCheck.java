@@ -17,84 +17,89 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.tools.codestyle.javadoc;
+package io.spine.tools.codestyle.rightmargin;
 
 import com.google.common.base.Optional;
-import io.spine.tools.codestyle.AbstractCodeStyleFileValidator;
+import io.spine.tools.codestyle.AbstractJavaStyleCheck;
 import io.spine.tools.codestyle.CodeStyleViolation;
 import io.spine.tools.codestyle.StepConfiguration;
 
 import java.util.List;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static java.util.regex.Pattern.compile;
 
 /**
- * Javadoc comments checker that validates the links wrong format usage.
- * In case if any violation is found it will be logged as warning in build's
- * stacktrace info or an error will be thrown. That depends on threshold and report type parameters
- * stated in build file.
+ * It checks files for the lines that are going out of the right margin value, specified by
+ * threshold. In case if any violation is found it will be logged as warning in build's
+ * stacktrace info.
  *
  * @author Alexander Aleksandrov
  */
-public class InvalidFqnUsageValidator extends AbstractCodeStyleFileValidator {
+public class RightMarginCheck extends AbstractJavaStyleCheck {
 
     private final StepConfiguration configuration;
 
-    public InvalidFqnUsageValidator(StepConfiguration configuration) {
+    RightMarginCheck(StepConfiguration configuration) {
         super();
         this.configuration = configuration;
     }
 
     @Override
-    protected InvalidResultStorage createStorage() {
-        return new InvalidResultStorage();
-    }
-
-    @Override
-    protected void processValidationResult() {
-        if (getStorage().getContent()
-                        .size() > configuration.getThreshold()
-                                               .getValue()) {
-            onAboveThreshold();
-        }
-    }
-
-    /**
-     * Describes the behavior in case if threshold is exceeded.
-     */
-    private void onAboveThreshold() {
-        getStorage().logViolations();
-        configuration.getReportType()
-                     .logOrFail(new InvalidFqnUsageException());
+    protected InvalidLineStorage createStorage(){
+         return new InvalidLineStorage();
     }
 
     @Override
     public List<CodeStyleViolation> checkForViolations(List<String> list) {
         int lineNumber = 0;
-        final List<CodeStyleViolation> invalidLinks = newArrayList();
+        final List<CodeStyleViolation> invalidLines = newArrayList();
         for (String line : list) {
-            final Optional<CodeStyleViolation> result = checkSingleComment(line);
+            final Optional<CodeStyleViolation> result = checkSingleLine(line);
             lineNumber++;
             if (result.isPresent()) {
                 final CodeStyleViolation codeStyleViolation = result.get()
                                                                     .withLineNumber(lineNumber);
-                invalidLinks.add(codeStyleViolation);
+                invalidLines.add(codeStyleViolation);
             }
         }
-        return invalidLinks;
+        return invalidLines;
     }
 
-    private static Optional<CodeStyleViolation> checkSingleComment(String comment) {
+    @Override
+    protected void processValidationResult() {
+        getStorage().logViolations();
+    }
+
+    private Optional<CodeStyleViolation> checkSingleLine(String line) {
         final Matcher matcher = JavadocPattern.LINK.getPattern()
-                                                   .matcher(comment);
+                                                                        .matcher(line);
         final boolean found = matcher.find();
         if (found) {
-            final String improperUsage = matcher.group(0);
-            final CodeStyleViolation result = new CodeStyleViolation(improperUsage);
+            return Optional.absent();
+        }
+        final int maxTextWidth = configuration.getMaxTextWidth();
+        if (line.length() > maxTextWidth) {
+            final CodeStyleViolation result = new CodeStyleViolation(line);
             return Optional.of(result);
         }
         return Optional.absent();
     }
 
+    private enum JavadocPattern {
+
+        LINK(compile("import|<a href"));
+
+        private final Pattern pattern;
+
+        JavadocPattern(Pattern pattern) {
+            this.pattern = pattern;
+        }
+
+        Pattern getPattern() {
+            return pattern;
+        }
+    }
 }

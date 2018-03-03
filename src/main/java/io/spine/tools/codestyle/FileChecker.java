@@ -36,7 +36,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 
 /**
  * A utility that walks recursively through all files from project directory and
- * validates them depending on {@link CodeStyleFileValidator} implementation passed to constructor.
+ * validates them depending on {@link CodeStyleCheck} implementation passed to constructor.
  *
  * @author Alexander Aleksandrov
  */
@@ -44,9 +44,9 @@ public class FileChecker {
 
     private static final String DIRECTORY_TO_CHECK = "/src/main/java";
     private final FileVisitor<Path> visitor;
-    private final CodeStyleFileValidator validator;
+    private final CodeStyleCheck validator;
 
-    public FileChecker(CodeStyleFileValidator validator) {
+    public FileChecker(CodeStyleCheck validator) {
         this.visitor = new RecursiveFileChecker(validator);
         this.validator = validator;
     }
@@ -61,14 +61,14 @@ public class FileChecker {
         log().debug("Preparing an action for the {} validator", validator.getClass()
                                                                          .getCanonicalName());
 
-        return new ValidatorAction(project);
+        return new CheckAction(project);
     }
 
-    private class ValidatorAction implements Action<Task> {
+    private class CheckAction implements Action<Task> {
 
         private final Project project;
 
-        private ValidatorAction(Project project) {
+        private CheckAction(Project project) {
             this.project = project;
         }
 
@@ -107,9 +107,9 @@ public class FileChecker {
      */
     private static class RecursiveFileChecker extends SimpleFileVisitor<Path> {
 
-        private final CodeStyleFileValidator validator;
+        private final CodeStyleCheck validator;
 
-        private RecursiveFileChecker(CodeStyleFileValidator validator) {
+        private RecursiveFileChecker(CodeStyleCheck validator) {
             super();
             this.validator = validator;
         }

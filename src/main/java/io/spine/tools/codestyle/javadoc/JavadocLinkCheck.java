@@ -17,89 +17,85 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.tools.codestyle.rightmargin;
+package io.spine.tools.codestyle.javadoc;
 
 import com.google.common.base.Optional;
-import io.spine.tools.codestyle.AbstractCodeStyleFileValidator;
+import io.spine.tools.codestyle.AbstractJavaStyleCheck;
 import io.spine.tools.codestyle.CodeStyleViolation;
 import io.spine.tools.codestyle.StepConfiguration;
 
 import java.util.List;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static java.util.regex.Pattern.compile;
 
 /**
- * It checks files for the lines that are going out of the right margin value, specified by
- * threshold. In case if any violation is found it will be logged as warning in build's
- * stacktrace info.
+ * Checks that Javadoc links correctly reference fully-qualified class names.
+ *
+ * <p>In case if any violation is found it will be logged as warning in build's
+ * stacktrace info or an error will be thrown. That depends on threshold and report type parameters
+ * stated in build file.
  *
  * @author Alexander Aleksandrov
  */
-public class RightMarginValidator extends AbstractCodeStyleFileValidator {
+public class JavadocLinkCheck extends AbstractJavaStyleCheck {
 
     private final StepConfiguration configuration;
 
-    public RightMarginValidator(StepConfiguration configuration) {
+    JavadocLinkCheck(StepConfiguration configuration) {
         super();
         this.configuration = configuration;
     }
 
     @Override
-    protected InvalidLineStorage createStorage(){
-         return new InvalidLineStorage();
+    protected InvalidResultStorage createStorage() {
+        return new InvalidResultStorage();
+    }
+
+    @Override
+    protected void processValidationResult() {
+        if (getStorage().getContent()
+                        .size() > configuration.getThreshold()
+                                               .getValue()) {
+            onAboveThreshold();
+        }
+    }
+
+    /**
+     * Describes the behavior in case if threshold is exceeded.
+     */
+    private void onAboveThreshold() {
+        getStorage().logViolations();
+        configuration.getReportType()
+                     .logOrFail(new InvalidFqnUsageException());
     }
 
     @Override
     public List<CodeStyleViolation> checkForViolations(List<String> list) {
         int lineNumber = 0;
-        final List<CodeStyleViolation> invalidLines = newArrayList();
+        final List<CodeStyleViolation> invalidLinks = newArrayList();
         for (String line : list) {
-            final Optional<CodeStyleViolation> result = checkSingleLine(line);
+            final Optional<CodeStyleViolation> result = checkSingleComment(line);
             lineNumber++;
             if (result.isPresent()) {
                 final CodeStyleViolation codeStyleViolation = result.get()
                                                                     .withLineNumber(lineNumber);
-                invalidLines.add(codeStyleViolation);
+                invalidLinks.add(codeStyleViolation);
             }
         }
-        return invalidLines;
+        return invalidLinks;
     }
 
-    @Override
-    protected void processValidationResult() {
-        getStorage().logViolations();
-    }
-
-    private Optional<CodeStyleViolation> checkSingleLine(String line) {
+    private static Optional<CodeStyleViolation> checkSingleComment(String comment) {
         final Matcher matcher = JavadocPattern.LINK.getPattern()
-                                                                        .matcher(line);
+                                                   .matcher(comment);
         final boolean found = matcher.find();
         if (found) {
-            return Optional.absent();
-        }
-        final int maxTextWidth = configuration.getMaxTextWidth();
-        if (line.length() > maxTextWidth) {
-            final CodeStyleViolation result = new CodeStyleViolation(line);
+            final String improperUsage = matcher.group(0);
+            final CodeStyleViolation result = new CodeStyleViolation(improperUsage);
             return Optional.of(result);
         }
         return Optional.absent();
     }
 
-    private enum JavadocPattern {
-
-        LINK(compile("import|<a href"));
-
-        private final Pattern pattern;
-
-        JavadocPattern(Pattern pattern) {
-            this.pattern = pattern;
-        }
-
-        Pattern getPattern() {
-            return pattern;
-        }
-    }
 }

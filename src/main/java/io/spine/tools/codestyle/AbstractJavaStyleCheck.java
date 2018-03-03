@@ -28,21 +28,31 @@ import java.nio.file.Path;
 import java.util.List;
 
 /**
- * Abstract class to gather not public common methods for validators.
+ * Abstract base for code style checks.
  *
  * @author Alexander Aleksandrov
  */
-public abstract class AbstractCodeStyleFileValidator implements CodeStyleFileValidator {
+public abstract class AbstractJavaStyleCheck implements CodeStyleCheck {
 
-    private static final String READ_FILE_ERR_MSG = "Cannot read the contents of the file: ";
     private final AbstractStorage storage;
 
     @SuppressWarnings({"AbstractMethodCallInConstructor",
             "OverridableMethodCallDuringObjectConstruction",
             "OverriddenMethodCallDuringObjectConstruction"})
             //Because we need to create storage only once for the whole project validation process.
-    protected AbstractCodeStyleFileValidator() {
+    protected AbstractJavaStyleCheck() {
         this.storage = createStorage();
+    }
+
+    /**
+     * Checks the file path.
+     *
+     * @param path  the target file path
+     * @return {@code true} in case if the file has the .java extension.
+     */
+    private static boolean isJavaFile(Path path) {
+        return path.toString()
+                   .endsWith(".java");
     }
 
     protected AbstractStorage getStorage() {
@@ -52,13 +62,13 @@ public abstract class AbstractCodeStyleFileValidator implements CodeStyleFileVal
     @Override
     public void validate(Path file) throws InvalidLineLengthException {
         final List<String> content;
-        if (!JavaSources.isJavaFile(file)) {
+        if (!isJavaFile(file)) {
             return;
         }
         try {
             content = Files.readAllLines(file, StandardCharsets.UTF_8);
         } catch (IOException e) {
-            throw new IllegalStateException(READ_FILE_ERR_MSG + file, e);
+            throw new IllegalStateException("Cannot read the contents of the file: " + file, e);
         }
         final List<CodeStyleViolation> violations = checkForViolations(content);
         saveToStorage(file, violations);

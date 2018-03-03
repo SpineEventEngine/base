@@ -124,7 +124,7 @@ public class RightMarginCheckerPluginShould {
         final StepConfiguration configuration = new StepConfiguration();
         configuration.setThreshold(100);
         configuration.setReportType("warn");
-        RightMarginValidator validator = new RightMarginValidator(configuration);
+        RightMarginCheck validator = new RightMarginCheck(configuration);
         validator.validate(path);
     }
 

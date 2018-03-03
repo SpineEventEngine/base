@@ -22,34 +22,18 @@ package io.spine.tools.codestyle;
 import java.nio.file.Path;
 
 /**
- * A utility for working with the Java source files.
+ * An common interface for code style checks.
  *
  * @author Alexander Aleksandrov
+ * @author Alexander Yevsyukov
  */
-public final class JavaSources {
-    private static final String JAVA_FILE_EXTENSION = ".java";
-
-    private JavaSources() {
-        // Prevent initialization of this utility class
-    }
+public interface CodeStyleCheck {
 
     /**
-     * Returns the java file extension string constant.
+     * Checks the file for compliance with the code style.
      *
-     * @return ".java" string
+     * @param file a file to check
+     * @throws CodeStyleException in case of any violations found
      */
-    public static String javaExt() {
-        return JAVA_FILE_EXTENSION;
-    }
-
-    /**
-     * Checks the file path.
-     *
-     * @param path  the target file path
-     * @return {@code true} in case if the file has the .java extension.
-     */
-    public static boolean isJavaFile(Path path) {
-        return path.toString()
-                   .endsWith(javaExt());
-    }
+    void validate(Path file) throws CodeStyleException;
 }

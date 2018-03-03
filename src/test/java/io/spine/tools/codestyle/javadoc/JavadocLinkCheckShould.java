@@ -21,8 +21,8 @@
 package io.spine.tools.codestyle.javadoc;
 
 import io.spine.tools.codestyle.Given;
-import org.junit.Test;
 import io.spine.tools.codestyle.StepConfiguration;
+import org.junit.Test;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -38,9 +38,9 @@ import static org.mockito.Mockito.verify;
 /**
  * @author Alexander Aleksandrov
  */
-public class InvalidFqnUsageValidatorShould {
+public class JavadocLinkCheckShould {
 
-    private InvalidFqnUsageValidator validator;
+    private JavadocLinkCheck validator;
     private static final String MULTIPLE_WRONG_FQN_LINKS_JAVA = "MultipleWrongFqnLinks.java";
     private static final String errorReportType = "error";
     private static final String warnReportType = "warn";
@@ -59,7 +59,7 @@ public class InvalidFqnUsageValidatorShould {
 
     @Test
     public void check_only_files_with_java_extension() {
-        InvalidFqnUsageValidator mockedObject = mock(InvalidFqnUsageValidator.class);
+        JavadocLinkCheck mockedObject = mock(JavadocLinkCheck.class);
         final Path path = getPath(".hidden_file");
         final List<String> list = new ArrayList<>();
         mockedObject.validate(path);
@@ -69,8 +69,8 @@ public class InvalidFqnUsageValidatorShould {
 
     @Test
     public void throw_warning_for_invalid_fqn_links_over_threshold() {
-        InvalidFqnUsageValidator impl = spy(
-                new InvalidFqnUsageValidator(setStepConfiguration(0, warnReportType)));
+        JavadocLinkCheck impl = spy(
+                new JavadocLinkCheck(setStepConfiguration(0, warnReportType)));
         final Path path = getPath(MULTIPLE_WRONG_FQN_LINKS_JAVA);
         impl.validate(path);
         verify(impl).validate(path);
@@ -78,15 +78,15 @@ public class InvalidFqnUsageValidatorShould {
 
     @Test
     public void allow_correct_fqn_links() throws RuntimeException {
-        InvalidFqnUsageValidator impl = spy(
-                new InvalidFqnUsageValidator(setStepConfiguration(0, warnReportType)));
+        JavadocLinkCheck impl = spy(
+                new JavadocLinkCheck(setStepConfiguration(0, warnReportType)));
         final Path path = getPath(Given.testFile());
         impl.validate(path);
         verify(impl).validate(path);
     }
 
-    private static InvalidFqnUsageValidator setUpValidator(int threshold, String reportType) {
-        InvalidFqnUsageValidator validator = new InvalidFqnUsageValidator(
+    private static JavadocLinkCheck setUpValidator(int threshold, String reportType) {
+        JavadocLinkCheck validator = new JavadocLinkCheck(
                 setStepConfiguration(threshold, reportType));
         return validator;
     }

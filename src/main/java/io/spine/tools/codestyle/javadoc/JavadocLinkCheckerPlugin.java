@@ -45,7 +45,7 @@ public class JavadocLinkCheckerPlugin extends SpinePlugin {
     public void apply(Project project) {
         final StepConfiguration configuration =
                 createStepExtension(EXTENSION_NAME, project);
-        final FileChecker checker = new FileChecker(new InvalidFqnUsageValidator(configuration));
+        final FileChecker checker = new FileChecker(new JavadocLinkCheck(configuration));
         final Action<Task> action = checker.actionFor(project);
         newTask(CHECK_FQN, action).insertAfterTask(COMPILE_JAVA)
                                   .insertBeforeTask(PROCESS_RESOURCES)
