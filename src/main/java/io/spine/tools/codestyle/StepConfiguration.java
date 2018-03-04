@@ -32,16 +32,16 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class StepConfiguration {
 
     /**
-     * A bearable threshold of code style violations.
+     * A number of violations that can be ignored per file.
      *
-     * Zero is default.
+     * <p>The default value is zero.
      */
     private Threshold threshold = new Threshold(0);
 
     /**
-     * A bearable code line length.
+     * A maximum line length permitted.
      *
-     * Hundred is default.
+     * <p>The default value is 100.
      */
     private int maxTextWidth = 100;
 

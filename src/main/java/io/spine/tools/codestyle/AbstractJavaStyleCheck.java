@@ -74,22 +74,26 @@ public abstract class AbstractJavaStyleCheck implements CodeStyleCheck {
 
     @Override
     public void process(Path file) throws CodeStyleException {
-        final List<String> content;
         if (!isJavaFile(file)) {
             return;
         }
 
         this.violations = new FileViolations(file);
+        final List<String> content = loadFile(file);
+        final List<CodeStyleViolation> found = findViolations(content);
+        this.violations.save(found);
+        processResult();
+        this.violations = null;
+    }
 
+    private static List<String> loadFile(Path file) {
+        final List<String> content;
         try {
             content = Files.readAllLines(file, StandardCharsets.UTF_8);
         } catch (IOException e) {
             throw new IllegalStateException("Cannot read the contents of the file: " + file, e);
         }
-        final List<CodeStyleViolation> violations = findViolations(content);
-        this.violations.save(violations);
-        processResult();
-        this.violations = null;
+        return content;
     }
 
     /**
