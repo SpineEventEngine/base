@@ -23,11 +23,15 @@ import com.google.common.base.Optional;
 import io.spine.tools.codestyle.AbstractJavaStyleCheck;
 import io.spine.tools.codestyle.CodeStyleViolation;
 import io.spine.tools.codestyle.StepConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.nio.file.Path;
 import java.util.List;
 import java.util.regex.Matcher;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static java.lang.String.format;
 
 /**
  * Checks that Javadoc links correctly reference fully-qualified class names.
@@ -48,11 +52,6 @@ public class JavadocLinkCheck extends AbstractJavaStyleCheck {
     }
 
     @Override
-    protected InvalidResultStorage createStorage() {
-        return new InvalidResultStorage();
-    }
-
-    @Override
     protected void processResult() {
         if (numberOfViolations() > configuration.getThreshold()
                                                 .getValue()) {
@@ -64,7 +63,7 @@ public class JavadocLinkCheck extends AbstractJavaStyleCheck {
      * Describes the behavior in case if threshold is exceeded.
      */
     private void onAboveThreshold() {
-        getStorage().logViolations();
+        getStorage().reportViolations(this);
         configuration.getReportType()
                      .logOrFail(new InvalidFqnUsageException());
     }
@@ -95,5 +94,25 @@ public class JavadocLinkCheck extends AbstractJavaStyleCheck {
             return Optional.of(result);
         }
         return Optional.absent();
+    }
+
+    @Override
+    public void onViolation(Path file, CodeStyleViolation v) {
+        final String msg = format(
+                " Wrong link format found: %s on %s line in %s",
+                v.getCodeLine(), v.getLineNumber(), file
+        );
+        log().error(msg);
+    }
+
+    private enum LogSingleton {
+        INSTANCE;
+
+        @SuppressWarnings("NonSerializableFieldInSerializableClass")
+        private final Logger value = LoggerFactory.getLogger(JavadocLinkCheck.class);
+    }
+
+    private static Logger log() {
+        return LogSingleton.INSTANCE.value;
     }
 }

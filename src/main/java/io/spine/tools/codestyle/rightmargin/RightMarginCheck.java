@@ -23,12 +23,16 @@ import com.google.common.base.Optional;
 import io.spine.tools.codestyle.AbstractJavaStyleCheck;
 import io.spine.tools.codestyle.CodeStyleViolation;
 import io.spine.tools.codestyle.StepConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.nio.file.Path;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static java.lang.String.format;
 
 /**
  * It checks files for the lines that are going out of the right margin value, specified by
@@ -50,11 +54,6 @@ public class RightMarginCheck extends AbstractJavaStyleCheck {
     }
 
     @Override
-    protected InvalidLineStorage createStorage(){
-         return new InvalidLineStorage();
-    }
-
-    @Override
     public List<CodeStyleViolation> findViolations(List<String> fileContent) {
         int lineNumber = 0;
         final List<CodeStyleViolation> invalidLines = newArrayList();
@@ -72,7 +71,7 @@ public class RightMarginCheck extends AbstractJavaStyleCheck {
 
     @Override
     protected void processResult() {
-        getStorage().logViolations();
+        getStorage().reportViolations(this);
     }
 
     private Optional<CodeStyleViolation> checkLine(String line) {
@@ -88,4 +87,25 @@ public class RightMarginCheck extends AbstractJavaStyleCheck {
         }
         return Optional.absent();
     }
+
+    @Override
+    public void onViolation(Path file, CodeStyleViolation v) {
+        final String msg = format(
+                "Line #%d in %s is longer configured limit (%d)",
+                v.getLineNumber(), file, configuration.getMaxTextWidth()
+        );
+        log().error(msg);
+    }
+
+    private enum LogSingleton {
+        INSTANCE;
+
+        @SuppressWarnings("NonSerializableFieldInSerializableClass")
+        private final Logger value = LoggerFactory.getLogger(RightMarginCheck.class);
+    }
+
+    private static Logger log() {
+        return LogSingleton.INSTANCE.value;
+    }
+
 }

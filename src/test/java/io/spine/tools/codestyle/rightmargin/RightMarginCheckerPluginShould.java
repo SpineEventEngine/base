@@ -24,6 +24,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import io.spine.tools.codestyle.CodeStyleCheck;
+import io.spine.tools.codestyle.CodeStyleViolation;
 import io.spine.tools.codestyle.Given;
 import io.spine.tools.codestyle.ReportType;
 import io.spine.tools.codestyle.StepConfiguration;
@@ -56,9 +57,16 @@ import static org.junit.Assert.assertTrue;
  * @author Alexander Aleksandrov
  */
 public class RightMarginCheckerPluginShould {
-    private static final String LONG_LINE_MSG = "Right margin trespassing found";
+
+    /**
+     * A fragment of log error message {@linkplain
+     * RightMarginCheck#onViolation(Path, CodeStyleViolation) issued by the check}.
+     */
+    private static final String LONG_LINE_MSG_FRAGMENT = "is longer configured limit";
+
     private static final String CHECK_RIGHT_MARGIN_WRAPPING =
             TaskName.CHECK_RIGHT_MARGIN_WRAPPING.getValue();
+    
     private static final int THRESHOLD = 100;
 
     @Rule
@@ -115,7 +123,7 @@ public class RightMarginCheckerPluginShould {
 
         assertEquals(expected, extractTasks(buildResult));
         assertTrue(buildResult.getOutput()
-                              .contains(LONG_LINE_MSG));
+                              .contains(LONG_LINE_MSG_FRAGMENT));
     }
 
     @Test

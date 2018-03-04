@@ -21,11 +21,8 @@ package io.spine.tools.codestyle;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
-import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -34,9 +31,13 @@ import java.util.Map;
  * @author Alexander Aleksandrov
  * @author Alexander Yevsyukov
  */
-public abstract class LineStorage {
+public class LineStorage {
 
     private final Multimap<Path, CodeStyleViolation> content = HashMultimap.create();
+
+    LineStorage() {
+        super();
+    }
 
     /**
      * Obtains a number of stored violations.
@@ -46,16 +47,17 @@ public abstract class LineStorage {
     }
 
     /**
-     * Obtains file-to-violation entries.
-     */
-    protected Collection<Map.Entry<Path, CodeStyleViolation>> entries() {
-        return content.entries();
-    }
-
-    /**
      * Logs all violations from storage.
+     *
+     * @param parent the parent check
      */
-    public abstract void logViolations();
+    public void reportViolations(CodeStyleCheck parent) {
+        for (Map.Entry<Path, CodeStyleViolation> entry : content.entries()) {
+            final CodeStyleViolation v = entry.getValue();
+            final Path file = entry.getKey();
+            parent.onViolation(file, v);
+        }
+    }
 
     /**
      * Saves violations found in a file.
@@ -69,9 +71,5 @@ public abstract class LineStorage {
      */
     void clear() {
         content.clear();
-    }
-
-    protected Logger log() {
-        return LoggerFactory.getLogger(getClass());
     }
 }

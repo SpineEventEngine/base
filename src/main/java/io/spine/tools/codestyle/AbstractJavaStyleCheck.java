@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -36,12 +37,8 @@ public abstract class AbstractJavaStyleCheck implements CodeStyleCheck {
 
     private final LineStorage storage;
 
-    @SuppressWarnings({"AbstractMethodCallInConstructor",
-            "OverridableMethodCallDuringObjectConstruction",
-            "OverriddenMethodCallDuringObjectConstruction"})
-            //Because we need to create storage only once for the whole project validation process.
     protected AbstractJavaStyleCheck() {
-        this.storage = createStorage();
+        this.storage = new LineStorage();
     }
 
     /**
@@ -80,16 +77,11 @@ public abstract class AbstractJavaStyleCheck implements CodeStyleCheck {
         storage.clear();
     }
 
-    private void save(Path file, List<CodeStyleViolation> violations) {
+    private void save(Path file, Collection<CodeStyleViolation> violations) {
         if (!violations.isEmpty()) {
             storage.save(file, violations);
         }
     }
-
-    /**
-     * Creates storage for violations.
-     */
-    protected abstract LineStorage createStorage();
 
     /**
      * Goes through the file content represented as list of strings.

@@ -36,4 +36,9 @@ public interface CodeStyleCheck {
      * @throws CodeStyleException in case of any violations found
      */
     void process(Path file) throws CodeStyleException;
+
+    /**
+     * Processes a violation found in a file.
+     */
+    void onViolation(Path file, CodeStyleViolation v);
 }

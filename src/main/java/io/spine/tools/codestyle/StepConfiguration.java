@@ -64,6 +64,7 @@ public class StepConfiguration {
         return maxTextWidth;
     }
 
+    @SuppressWarnings("unused")
     public void setMaxTextWidth(int value) {
         this.maxTextWidth = value;
         log().debug("Right margin set up to {}", maxTextWidth);
