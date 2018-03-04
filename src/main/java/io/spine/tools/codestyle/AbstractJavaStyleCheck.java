@@ -19,15 +19,14 @@
  */
 package io.spine.tools.codestyle;
 
-import io.spine.tools.codestyle.rightmargin.InvalidLineLengthException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -38,10 +37,15 @@ import java.util.List;
  */
 public abstract class AbstractJavaStyleCheck implements CodeStyleCheck {
 
-    private final LineStorage storage;
+    /**
+     * Violations found in the currently processed file.
+     *
+     * <p>Is {@code null} before or after a file is processed.
+     */
+    @Nullable
+    private FileViolations violations;
 
     protected AbstractJavaStyleCheck() {
-        this.storage = new LineStorage();
     }
 
     /**
@@ -56,34 +60,36 @@ public abstract class AbstractJavaStyleCheck implements CodeStyleCheck {
     }
 
     protected int numberOfViolations() {
-        return storage.size();
+        if (violations != null) {
+            return violations.size();
+        }
+        return 0;
     }
 
     protected void reportViolations() {
-        storage.reportViolations(this);
+        if (violations != null) {
+            violations.reportViolations(this);
+        }
     }
 
     @Override
-    public void process(Path file) throws InvalidLineLengthException {
+    public void process(Path file) throws CodeStyleException {
         final List<String> content;
         if (!isJavaFile(file)) {
             return;
         }
+
+        this.violations = new FileViolations(file);
+
         try {
             content = Files.readAllLines(file, StandardCharsets.UTF_8);
         } catch (IOException e) {
             throw new IllegalStateException("Cannot read the contents of the file: " + file, e);
         }
         final List<CodeStyleViolation> violations = findViolations(content);
-        save(file, violations);
+        this.violations.save(violations);
         processResult();
-        storage.clear();
-    }
-
-    private void save(Path file, Collection<CodeStyleViolation> violations) {
-        if (!violations.isEmpty()) {
-            storage.save(file, violations);
-        }
+        this.violations = null;
     }
 
     /**

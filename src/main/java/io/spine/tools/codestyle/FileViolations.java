@@ -19,24 +19,26 @@
  */
 package io.spine.tools.codestyle;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
+import com.google.common.collect.Lists;
 
 import java.nio.file.Path;
-import java.util.Map;
+import java.util.Collection;
+import java.util.List;
 
 /**
- * An abstract code style violations storage.
+ * Violations found in a file.
  *
  * @author Alexander Aleksandrov
  * @author Alexander Yevsyukov
  */
-class LineStorage {
+class FileViolations {
 
-    private final Multimap<Path, CodeStyleViolation> content = HashMultimap.create();
+    private final Path file;
+    private final List<CodeStyleViolation> content = Lists.newArrayList();
 
-    LineStorage() {
+    FileViolations(Path file) {
         super();
+        this.file = file;
     }
 
     /**
@@ -47,14 +49,10 @@ class LineStorage {
     }
 
     /**
-     * Logs all violations from storage.
-     *
-     * @param parent the parent check
+     * Logs all violations by invoking the parent check callback.
      */
     void reportViolations(CodeStyleCheck parent) {
-        for (Map.Entry<Path, CodeStyleViolation> entry : content.entries()) {
-            final CodeStyleViolation v = entry.getValue();
-            final Path file = entry.getKey();
+        for (CodeStyleViolation v : content) {
             parent.onViolation(file, v);
         }
     }
@@ -62,14 +60,7 @@ class LineStorage {
     /**
      * Saves violations found in a file.
      */
-    void save(Path file, Iterable<CodeStyleViolation> violations) {
-        content.putAll(file, violations);
-    }
-
-    /**
-     * Clears the content of the storage.
-     */
-    void clear() {
-        content.clear();
+    void save(Collection<CodeStyleViolation> violations) {
+        content.addAll(violations);
     }
 }
