@@ -46,13 +46,13 @@ public class JavadocLinkCheckShould {
     private static final String warnReportType = "warn";
 
     @Test(expected = RuntimeException.class)
-    public void throw_exception_for_invalid_fqn_links_over_threshold() throws InvalidFqnUsageException {
+    public void throw_exception_for_invalid_fqn_links_over_threshold() throws InvalidJavadocLinkException {
         check = setUpValidator(2, errorReportType);
         check.process(getPath(MULTIPLE_WRONG_FQN_LINKS_JAVA));
     }
 
     @Test(expected = RuntimeException.class)
-    public void throw_exception_file_format_is_not_utf8() throws InvalidFqnUsageException {
+    public void throw_exception_file_format_is_not_utf8() throws InvalidJavadocLinkException {
         check = setUpValidator(2, errorReportType);
         check.process(getPath(MULTIPLE_WRONG_FQN_LINKS_JAVA));
     }

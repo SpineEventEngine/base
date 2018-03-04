@@ -20,6 +20,8 @@
 package io.spine.tools.codestyle;
 
 import io.spine.tools.codestyle.rightmargin.InvalidLineLengthException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -32,6 +34,7 @@ import java.util.List;
  * Abstract base for code style checks.
  *
  * @author Alexander Aleksandrov
+ * @author Alexander Yevsyukov
  */
 public abstract class AbstractJavaStyleCheck implements CodeStyleCheck {
 
@@ -52,12 +55,12 @@ public abstract class AbstractJavaStyleCheck implements CodeStyleCheck {
                    .endsWith(".java");
     }
 
-    protected LineStorage getStorage() {
-        return storage;
+    protected int numberOfViolations() {
+        return storage.size();
     }
 
-    protected int numberOfViolations() {
-        return getStorage().size();
+    protected void reportViolations() {
+        storage.reportViolations(this);
     }
 
     @Override
@@ -95,4 +98,11 @@ public abstract class AbstractJavaStyleCheck implements CodeStyleCheck {
      * Processes the found violations.
      */
     protected abstract void processResult();
+
+    /**
+     * Obtains class-specific logger instance.
+     */
+    protected Logger log() {
+        return LoggerFactory.getLogger(getClass());
+    }
 }

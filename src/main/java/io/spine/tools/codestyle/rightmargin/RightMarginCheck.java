@@ -23,8 +23,6 @@ import com.google.common.base.Optional;
 import io.spine.tools.codestyle.AbstractJavaStyleCheck;
 import io.spine.tools.codestyle.CodeStyleViolation;
 import io.spine.tools.codestyle.StepConfiguration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -71,7 +69,7 @@ public class RightMarginCheck extends AbstractJavaStyleCheck {
 
     @Override
     protected void processResult() {
-        getStorage().reportViolations(this);
+        reportViolations();
     }
 
     private Optional<CodeStyleViolation> checkLine(String line) {
@@ -96,16 +94,4 @@ public class RightMarginCheck extends AbstractJavaStyleCheck {
         );
         log().error(msg);
     }
-
-    private enum LogSingleton {
-        INSTANCE;
-
-        @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = LoggerFactory.getLogger(RightMarginCheck.class);
-    }
-
-    private static Logger log() {
-        return LogSingleton.INSTANCE.value;
-    }
-
 }

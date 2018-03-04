@@ -31,7 +31,7 @@ import java.util.Map;
  * @author Alexander Aleksandrov
  * @author Alexander Yevsyukov
  */
-public class LineStorage {
+class LineStorage {
 
     private final Multimap<Path, CodeStyleViolation> content = HashMultimap.create();
 
@@ -42,7 +42,7 @@ public class LineStorage {
     /**
      * Obtains a number of stored violations.
      */
-    public int size() {
+    int size() {
         return content.size();
     }
 
@@ -51,7 +51,7 @@ public class LineStorage {
      *
      * @param parent the parent check
      */
-    public void reportViolations(CodeStyleCheck parent) {
+    void reportViolations(CodeStyleCheck parent) {
         for (Map.Entry<Path, CodeStyleViolation> entry : content.entries()) {
             final CodeStyleViolation v = entry.getValue();
             final Path file = entry.getKey();

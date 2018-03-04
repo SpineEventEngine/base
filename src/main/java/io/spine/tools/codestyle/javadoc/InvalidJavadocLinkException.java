@@ -22,16 +22,16 @@ package io.spine.tools.codestyle.javadoc;
 import io.spine.tools.codestyle.CodeStyleException;
 
 /**
- * Thrown to indicate that invalid FQN usage was found in javadoc.
+ * Thrown to indicate that a Javadoc link does not use a fully-qualified class name reference.
  *
  * @author Alexander Aleksandrov
  */
-public class InvalidFqnUsageException extends CodeStyleException {
+class InvalidJavadocLinkException extends CodeStyleException {
 
     private static final long serialVersionUID = 0L;
 
-    public InvalidFqnUsageException() {
-        super("Links with FQN should be in format {@link <FQN> <text>}"
+    InvalidJavadocLinkException() {
+        super("Javadoc links should reference fully-qualified classes: {@link <FQN> <text>}"
                       + " or {@linkplain <FQN> <text>}.");
     }
 }

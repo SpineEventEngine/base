@@ -23,8 +23,6 @@ import com.google.common.base.Optional;
 import io.spine.tools.codestyle.AbstractJavaStyleCheck;
 import io.spine.tools.codestyle.CodeStyleViolation;
 import io.spine.tools.codestyle.StepConfiguration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -63,9 +61,9 @@ public class JavadocLinkCheck extends AbstractJavaStyleCheck {
      * Describes the behavior in case if threshold is exceeded.
      */
     private void onAboveThreshold() {
-        getStorage().reportViolations(this);
+        reportViolations();
         configuration.getReportType()
-                     .logOrFail(new InvalidFqnUsageException());
+                     .logOrFail(new InvalidJavadocLinkException());
     }
 
     @Override
@@ -103,16 +101,5 @@ public class JavadocLinkCheck extends AbstractJavaStyleCheck {
                 v.getCodeLine(), v.getLineNumber(), file
         );
         log().error(msg);
-    }
-
-    private enum LogSingleton {
-        INSTANCE;
-
-        @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = LoggerFactory.getLogger(JavadocLinkCheck.class);
-    }
-
-    private static Logger log() {
-        return LogSingleton.INSTANCE.value;
     }
 }
