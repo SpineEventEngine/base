@@ -27,6 +27,7 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static io.spine.tools.gradle.TaskName.CLEAN_GCS;
 
@@ -56,7 +57,7 @@ public class GcsPlugin extends SpinePlugin {
     @VisibleForTesting
     static void limitHttpLogging() {
         final String name = HttpTransport.class.getName();
-        final java.util.logging.Logger log = java.util.logging.Logger.getLogger(name);
+        final Logger log = Logger.getLogger(name);
         log.setLevel(Level.WARNING);
     }
 }
