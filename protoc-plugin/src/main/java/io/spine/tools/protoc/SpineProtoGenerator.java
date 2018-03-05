@@ -115,7 +115,9 @@ public abstract class SpineProtoGenerator {
      *
      * @param request the compiler request
      * @return the response to the compiler
-     * @see #processMessage(FileDescriptorProto, DescriptorProto) for more detailed description
+     * @see #processMessage(com.google.protobuf.DescriptorProtos.FileDescriptorProto,
+     *                      com.google.protobuf.DescriptorProtos.DescriptorProto)
+     *                     Javadoc for processMessage() for more detailed description
      */
     public final CodeGeneratorResponse process(CodeGeneratorRequest request) {
         checkNotNull(request);
@@ -138,8 +140,6 @@ public abstract class SpineProtoGenerator {
 
     /**
      * Processes all passed proto files.
-     *
-     * @see #processMessage(FileDescriptorProto, DescriptorProto)
      */
     private CodeGeneratorResponse process(Iterable<FileDescriptorProto> files) {
         final Collection<File> generatedFiles = newHashSet();
@@ -156,8 +156,6 @@ public abstract class SpineProtoGenerator {
 
     /**
      * Processes the passed proto file.
-     *
-     * @see #processMessage(FileDescriptorProto, DescriptorProto)
      */
     private Collection<File> generateForTypesIn(FileDescriptorProto file) {
         final Collection<File> result = newHashSet();

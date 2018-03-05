@@ -34,6 +34,7 @@ import java.io.File;
 import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.lang.String.format;
 
 /**
  * Gradle {@code Action} for validating builder generation.
@@ -107,9 +108,10 @@ public class VBuilderGenerator {
                 writer.write(vb);
             } catch (RuntimeException e) {
                 final String message =
-                        "Cannot generate the validating builder for " + vb + ". ";
-                log.warn(message);
+                        format("Cannot generate the validating builder for %s. %n" +
+                               "Error: %s", vb, e.toString());
                 log.debug(message, e);
+                log.warn(message);
             }
         }
         log.debug("The validating builder generation is finished.");
