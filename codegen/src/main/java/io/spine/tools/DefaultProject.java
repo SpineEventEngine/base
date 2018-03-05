@@ -20,7 +20,6 @@
 
 package io.spine.tools;
 
-import io.spine.tools.proto.Directory;
 import io.spine.tools.proto.FileDescriptors;
 
 import java.io.File;
@@ -183,7 +182,7 @@ public final class DefaultProject extends AbstractDirectory {
         /**
          * A root for the test proto code.
          */
-        public Directory testProto() {
+        public io.spine.tools.proto.Directory testProto() {
             return io.spine.tools.proto.Directory.rootIn(getTest());
         }
     }
