@@ -154,7 +154,7 @@ public class Extension {
     public List<String> dirsToClean = new LinkedList<>();
 
     private static DefaultProject def(Project project) {
-        return DefaultProject.at(project.getRootDir());
+        return DefaultProject.at(project.getProjectDir());
     }
 
     public static String getMainProtoSrcDir(Project project) {

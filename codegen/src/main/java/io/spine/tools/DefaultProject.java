@@ -74,9 +74,9 @@ public final class DefaultProject extends AbstractDirectory {
         return result;
     }
 
-    public static DefaultProject at(File rootDir) {
-        checkNotNull(rootDir);
-        return at(rootDir.toPath());
+    public static DefaultProject at(File projectDir) {
+        checkNotNull(projectDir);
+        return at(projectDir.toPath());
     }
 
     public GeneratedRoot generated() {
