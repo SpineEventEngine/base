@@ -50,10 +50,10 @@ class MethodGenerator {
     private final MessageTypeCache messageTypeCache;
     private final DescriptorProto descriptor;
 
-    MethodGenerator(VBMetadata metadata, MessageTypeCache messageTypeCache) {
+    MethodGenerator(VBType metadata, MessageTypeCache messageTypeCache) {
         this.javaClass = metadata.getJavaClass();
         this.javaPackage = metadata.getJavaPackage();
-        this.descriptor = metadata.getMsgDescriptor();
+        this.descriptor = metadata.getDescriptor();
         this.messageTypeCache = messageTypeCache;
         final String className = descriptor.getName();
         builderGenericClassName = ClassNames.getValidatorMessageClassName(javaPackage,

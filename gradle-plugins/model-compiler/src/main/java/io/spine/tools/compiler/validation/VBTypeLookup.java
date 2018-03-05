@@ -21,6 +21,7 @@
 package io.spine.tools.compiler.validation;
 
 import com.google.common.base.Predicate;
+import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.tools.compiler.MessageTypeCache;
@@ -38,12 +39,12 @@ import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Sets.newHashSet;
 
 /**
- * Assembles the {@code VBMetadata}s from the Protobuf.
+ * Collects type for which generated validating builders.
  *
  * @author Illia Shepilov
  * @author Alex Tymchenko
  */
-class MetadataAssembler {
+class VBTypeLookup {
 
     private static final String JAVA_CLASS_NAME_SUFFIX = "VBuilder";
 
@@ -72,7 +73,7 @@ class MetadataAssembler {
                 }
             };
 
-    MetadataAssembler(String descriptorPath) {
+    VBTypeLookup(String descriptorPath) {
         this.descriptorPath = descriptorPath;
     }
 
@@ -81,24 +82,28 @@ class MetadataAssembler {
      *
      * @return the {@code Set} of the assembled metadata for the validating builders.
      */
-    Set<VBMetadata> assemble() {
+    Set<VBType> collect() {
         final Logger log = log();
-        log.debug("Assembling the metadata for all validating builders.");
-        final Set<VBMetadata> result = newHashSet();
+        log.debug("Collecting types for all validating builders.");
         final Set<FileDescriptorProto> fileDescriptors = getProtoFileDescriptors(descriptorPath);
-        final Set<VBMetadata> metadataItems = obtainFileMetadata(fileDescriptors);
-        result.addAll(metadataItems);
-        log.debug("The metadata is obtained, {} validating builder(s) will be generated.",
-                    result.size());
-        return result;
+        final Set<VBType> result = newHashSet();
+        final Set<VBType> allTypes = fromAllFiles(fileDescriptors);
+        result.addAll(allTypes);
+        if (result.size() == 1) {
+            final VBType found = allTypes.iterator().next();
+            log.debug("One type found for generating validating builder: {}", found);
+        } else {
+            log.debug("Types collected, {} validating builders will be generated.", result.size());
+        }
+        return ImmutableSet.copyOf(result);
     }
 
-    private Set<VBMetadata> obtainFileMetadata(Iterable<FileDescriptorProto> fileDescriptors) {
+    private Set<VBType> fromAllFiles(Iterable<FileDescriptorProto> files) {
         log().trace("Obtaining the file-level metadata for the validating builders.");
-        final Set<VBMetadata> result = newHashSet();
-        for (FileDescriptorProto fileDescriptor : fileDescriptors) {
+        final Set<VBType> result = newHashSet();
+        for (FileDescriptorProto fileDescriptor : files) {
             final List<DescriptorProto> messageDescriptors = fileDescriptor.getMessageTypeList();
-            final Set<VBMetadata> metadataSet = createMetadata(messageDescriptors, fileDescriptor);
+            final Set<VBType> metadataSet = createMetadata(messageDescriptors, fileDescriptor);
             result.addAll(metadataSet);
 
         }
@@ -106,26 +111,22 @@ class MetadataAssembler {
         return result;
     }
 
-    private Set<VBMetadata> createMetadata(Iterable<DescriptorProto> descriptors,
-                                           FileDescriptorProto fileDescriptor) {
-        final Set<VBMetadata> result = newHashSet();
+    private Set<VBType> createMetadata(Iterable<DescriptorProto> descriptors,
+                                       FileDescriptorProto file) {
+        final Set<VBType> result = newHashSet();
         for (DescriptorProto descriptorMsg : descriptors) {
             if (isNotProtoLangMessage.apply(descriptorMsg)) {
-                final VBMetadata metadata = createMetadata(descriptorMsg, fileDescriptor);
+                final VBType metadata = createMetadata(descriptorMsg, file);
                 result.add(metadata);
             }
         }
         return result;
     }
 
-    private VBMetadata createMetadata(DescriptorProto msgDescriptor,
-                                      FileDescriptorProto fileDescriptor) {
-        final String className = msgDescriptor.getName() + JAVA_CLASS_NAME_SUFFIX;
-        final String javaPackage = getJavaPackage(msgDescriptor);
-        final VBMetadata result = new VBMetadata(javaPackage,
-                                                 className,
-                                                 msgDescriptor,
-                                                 fileDescriptor.getName());
+    private VBType createMetadata(DescriptorProto message, FileDescriptorProto file) {
+        final String className = message.getName() + JAVA_CLASS_NAME_SUFFIX;
+        final String javaPackage = getJavaPackage(message);
+        final VBType result = new VBType(javaPackage, className, message, file.getName());
         return result;
     }
 
@@ -168,7 +169,7 @@ class MetadataAssembler {
         INSTANCE;
 
         @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = LoggerFactory.getLogger(MetadataAssembler.class);
+        private final Logger value = LoggerFactory.getLogger(VBTypeLookup.class);
     }
 
     private static Logger log() {

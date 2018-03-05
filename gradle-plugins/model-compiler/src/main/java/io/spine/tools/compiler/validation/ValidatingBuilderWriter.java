@@ -62,15 +62,15 @@ class ValidatingBuilderWriter {
     /**
      * Writes the generated validating builders to Java file.
      */
-    void write(VBMetadata metadata) {
+    void write(VBType type) {
         log().debug("Preparing to writing the {} class under the {} package",
-                    metadata.getJavaClass(), metadata.getJavaPackage());
+                    type.getJavaClass(), type.getJavaPackage());
 
         final MethodGenerator methodsAssembler =
-                new MethodGenerator(metadata, messageTypeCache);
-        final String javaClass = metadata.getJavaClass();
-        final String javaPackage = metadata.getJavaPackage();
-        final DescriptorProto descriptor = metadata.getMsgDescriptor();
+                new MethodGenerator(type, messageTypeCache);
+        final String javaClass = type.getJavaClass();
+        final String javaPackage = type.getJavaPackage();
+        final DescriptorProto descriptor = type.getDescriptor();
         final ClassName messageClassName =
                 getValidatorMessageClassName(javaPackage,
                                              messageTypeCache,
@@ -90,7 +90,7 @@ class ValidatingBuilderWriter {
                         .build();
 
         log().debug("Writing the {} class under the {} package",
-                    metadata.getJavaClass(), metadata.getJavaPackage());
+                    type.getJavaClass(), type.getJavaPackage());
         writeClass(rootDirectory, javaClassToWrite, javaPackage, indent);
 
         log().debug("The {} class  was written under the {} package.", javaClass, javaPackage);
