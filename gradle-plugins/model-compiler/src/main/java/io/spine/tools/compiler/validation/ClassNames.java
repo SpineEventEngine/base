@@ -32,6 +32,7 @@ import static io.spine.tools.compiler.fieldtype.FieldTypes.trimTypeName;
 import static io.spine.tools.java.PrimitiveType.getWrapperClass;
 import static io.spine.tools.proto.ScalarType.getJavaTypeName;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
+import static java.lang.String.format;
 
 /**
  * Utility class for working with the {@code ClassName}s.
@@ -50,27 +51,26 @@ final class ClassNames {
      * Returns the {@code ClassName} for the Protobuf field
      * based on the passed {@code FieldDescriptorProto}.
      *
-     * @param fieldDescriptor  the field descriptor of the Protobuf field
-     * @param messageTypeCache the cache of the message types
+     * @param field  the field descriptor of the Protobuf field
+     * @param typeCache the cache of the message types
      * @return the obtained {@code ClassName}
      */
-    static ClassName getParameterClassName(FieldDescriptorProto fieldDescriptor,
-                                           MessageTypeCache messageTypeCache) {
-        checkNotNull(fieldDescriptor);
-        checkNotNull(messageTypeCache);
+    static ClassName getParameterClassName(FieldDescriptorProto field, MessageTypeCache typeCache) {
+        checkNotNull(field);
+        checkNotNull(typeCache);
 
-        String typeName = fieldDescriptor.getTypeName();
+        String typeName = field.getTypeName();
         if (typeName.isEmpty()) {
-            return getJavaTypeForScalarType(fieldDescriptor);
+            return getJavaTypeForScalarType(field);
         }
-        typeName = trimTypeName(fieldDescriptor);
-        final String parameterType = messageTypeCache.getCachedTypes()
-                                                     .get(typeName);
+        typeName = trimTypeName(field);
+        final String parameterType = typeCache.getCachedTypes()
+                                              .get(typeName);
         return ClassName.bestGuess(parameterType);
     }
 
-    private static ClassName getJavaTypeForScalarType(FieldDescriptorProto fieldDescriptor) {
-        final FieldDescriptorProto.Type fieldType = fieldDescriptor.getType();
+    private static ClassName getJavaTypeForScalarType(FieldDescriptorProto field) {
+        final FieldDescriptorProto.Type fieldType = field.getType();
         final String scalarType = getJavaTypeName(fieldType);
         try {
             final Optional<? extends Class<?>> scalarPrimitive = getWrapperClass(scalarType);
@@ -79,9 +79,9 @@ final class ClassNames {
             }
             return ClassName.get(Class.forName(scalarType));
         } catch (ClassNotFoundException ex) {
-            final String exMessage = String.format("The class for the type: %s was not found.",
-                                                   fieldDescriptor.getType());
-            throw newIllegalArgumentException(exMessage, ex);
+            throw newIllegalArgumentException(
+                    ex, "The class for the type: %s was not found.", field.getType()
+            );
         }
     }
 
@@ -102,28 +102,28 @@ final class ClassNames {
     /**
      * Returns the {@code ClassName} for the generic parameter of the validating builder.
      *
-     * @param javaPackage      the package of the class
-     * @param messageTypeCache the cache of the message types
-     * @param fieldName        the name of the field
+     * @param javaPackage the package of the class
+     * @param typeCache   the cache of the message types
+     * @param typeName    the name of the type
      * @return the constructed {@code ClassName}
      * @throws IllegalArgumentException if the class of the validating builder is not found
      */
     static ClassName getValidatorMessageClassName(String javaPackage,
-                                                  MessageTypeCache messageTypeCache,
-                                                  String fieldName) {
+                                                  MessageTypeCache typeCache,
+                                                  String typeName) {
         checkNotNull(javaPackage);
-        checkNotNull(messageTypeCache);
-        checkNotNull(fieldName);
+        checkNotNull(typeCache);
+        checkNotNull(typeName);
 
-        final Collection<String> values = messageTypeCache.getCachedTypes()
-                                                          .values();
-        final String expectedClassName = javaPackage + '.' + fieldName;
+        final Collection<String> values = typeCache.getCachedTypes()
+                                                   .values();
+        final String expectedClassName = javaPackage + '.' + typeName;
         for (String value : values) {
             if (value.equals(expectedClassName)) {
-                return ClassName.get(javaPackage, fieldName);
+                return ClassName.get(javaPackage, typeName);
             }
         }
-        final String exMessage = String.format("The %s class is not found.", expectedClassName);
+        final String exMessage = format("The %s class is not found.", expectedClassName);
         throw newIllegalArgumentException(exMessage);
     }
 

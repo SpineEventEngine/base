@@ -30,6 +30,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Type information for generating a validating builder.
  *
  * @author Illia Shepilov
+ * @author Alexander Yevsyukov
  */
 final class VBType {
 
