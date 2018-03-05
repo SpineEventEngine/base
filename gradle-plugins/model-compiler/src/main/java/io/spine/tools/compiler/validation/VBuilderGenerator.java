@@ -86,15 +86,15 @@ public class VBuilderGenerator {
         final Logger log = log();
         log.debug("Generating the validating builders from {}.", setFile);
 
-        final VBTypeLookup assembler = new VBTypeLookup(setFile.getPath());
-        final Set<VBType> allFound = assembler.collect();
-        final MessageTypeCache messageTypeCache = assembler.getAssembledMessageTypeCache();
+        final VBTypeLookup lookup = new VBTypeLookup(setFile.getPath());
+        final Set<VBType> allFound = lookup.collect();
+        final MessageTypeCache typeCache = lookup.getTypeCache();
 
         final Set<VBType> filtered = filter(classpathGenEnabled, allFound);
         if (filtered.isEmpty()) {
             log.warn("No validating builders will be generated.");
         } else {
-            writeVBuilders(filtered, messageTypeCache);
+            writeVBuilders(filtered, typeCache);
         }
     }
 
@@ -110,8 +110,12 @@ public class VBuilderGenerator {
                 final String message =
                         format("Cannot generate the validating builder for %s. %n" +
                                "Error: %s", vb, e.toString());
-                log.debug(message, e);
-                log.warn(message);
+                // If debug level is enabled give it under this lever, otherwise WARN.
+                if (log.isDebugEnabled()) {
+                    log.debug(message, e);
+                } else {
+                    log.warn(message);
+                }
             }
         }
         log.debug("The validating builder generation is finished.");
@@ -124,7 +128,7 @@ public class VBuilderGenerator {
         return result;
     }
 
-    private Predicate<VBType> getPredicate(final boolean classpathGenEnabled) {
+    private Predicate<VBType> getPredicate(boolean classpathGenEnabled) {
         final Predicate<VBType> result;
         if (classpathGenEnabled) {
             result = Predicates.alwaysTrue();
