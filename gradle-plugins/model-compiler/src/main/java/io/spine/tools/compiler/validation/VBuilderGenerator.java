@@ -22,6 +22,7 @@ package io.spine.tools.compiler.validation;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import io.spine.tools.Indent;
 import io.spine.tools.compiler.MessageTypeCache;
@@ -33,6 +34,7 @@ import java.io.File;
 import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.lang.String.format;
 
 /**
  * Gradle {@code Action} for validating builder generation.
@@ -53,10 +55,12 @@ public class VBuilderGenerator {
     /** Controls the scope of validating builder generation. */
     private final boolean classpathGenEnabled;
 
+    /** Indentation for the generated code. */
+    private final Indent indent;
+
     /**
      * Creates new instance of the generator.
-     *
-     * @param targetDirPath
+     *  @param targetDirPath
      *        an absolute path to the folder, serving as a target for the generation for
      *        the given scope
      * @param protoSrcDirPath
@@ -65,47 +69,59 @@ public class VBuilderGenerator {
      * @param classpathGenEnabled
      *        If {@code true}, validating builders will be generated for all types from the
      *        classpath. If {@code false}, validating builders will be generated only to the
-     *        classes from the module.
+     * @param indent
+     *        indentation for the generated code
      */
     public VBuilderGenerator(String targetDirPath,
-                      String protoSrcDirPath,
-                      boolean classpathGenEnabled) {
+                             String protoSrcDirPath,
+                             boolean classpathGenEnabled,
+                             Indent indent) {
         this.targetDirPath = targetDirPath;
         this.protoSrcDirPath = protoSrcDirPath;
         this.classpathGenEnabled = classpathGenEnabled;
+        this.indent = indent;
     }
 
-    public void processDescriptorSetFile(File setFile, Indent indent) {
+    public void processDescriptorSetFile(File setFile) {
         final Logger log = log();
         log.debug("Generating the validating builders from {}.", setFile);
 
         final MetadataAssembler assembler = new MetadataAssembler(setFile.getPath());
-        final Set<VBMetadata> metadataItems = assembler.assemble();
-
+        final Set<VBMetadata> allFound = assembler.assemble();
         final MessageTypeCache messageTypeCache = assembler.getAssembledMessageTypeCache();
+
+        final Set<VBMetadata> filtered = filter(classpathGenEnabled, allFound);
+        if (filtered.isEmpty()) {
+            log.warn("No validating builders will be generated.");
+        } else {
+            writeVBuilders(filtered, messageTypeCache);
+        }
+    }
+
+    private void writeVBuilders(Set<VBMetadata> builders, MessageTypeCache cache) {
+        final Logger log = log();
         final ValidatingBuilderWriter writer =
-                new ValidatingBuilderWriter(targetDirPath, indent, messageTypeCache);
+                new ValidatingBuilderWriter(targetDirPath, indent, cache);
 
-        final Iterable<VBMetadata> metadataToWrite = filter(classpathGenEnabled, metadataItems);
-
-        for (VBMetadata metadata : metadataToWrite) {
+        for (VBMetadata vb : builders) {
             try {
-                writer.write(metadata);
+                writer.write(vb);
             } catch (RuntimeException e) {
                 final String message =
-                        "Cannot generate the validating builder for " + metadata + ". ";
-                log.warn(message);
+                        format("Cannot generate the validating builder for %s. %n" +
+                               "Error: %s", vb, e.toString());
                 log.debug(message, e);
+                log.warn(message);
             }
         }
         log.debug("The validating builder generation is finished.");
     }
 
-    private Iterable<VBMetadata> filter(boolean classpathGenEnabled,
-                                        Set<VBMetadata> metadataItems) {
-        final Predicate<VBMetadata> shouldWritePredicate = getPredicate(classpathGenEnabled);
-        final Iterable<VBMetadata> result =
-                Iterables.filter(metadataItems, shouldWritePredicate);
+    private Set<VBMetadata> filter(boolean classpathGenEnabled,
+                                   Set<VBMetadata> metadataItems) {
+        final Predicate<VBMetadata> shouldWrite = getPredicate(classpathGenEnabled);
+        final Iterable<VBMetadata> filtered = Iterables.filter(metadataItems, shouldWrite);
+        final Set<VBMetadata> result = ImmutableSet.copyOf(filtered);
         return result;
     }
 

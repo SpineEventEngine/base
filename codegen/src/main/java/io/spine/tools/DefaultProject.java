@@ -74,9 +74,9 @@ public final class DefaultProject extends AbstractDirectory {
         return result;
     }
 
-    public static DefaultProject at(File rootDir) {
-        checkNotNull(rootDir);
-        return at(rootDir.toPath());
+    public static DefaultProject at(File projectDir) {
+        checkNotNull(projectDir);
+        return at(projectDir.toPath());
     }
 
     public GeneratedRoot generated() {
@@ -97,11 +97,6 @@ public final class DefaultProject extends AbstractDirectory {
         return new HandmadeCodeRoot(this, "src");
     }
 
-
-    @SuppressWarnings("DuplicateStringLiteralInspection") /* Tests use directory names. */
-    public HandmadeCodeRoot test() {
-        return new HandmadeCodeRoot(this, "test");
-    }
 
     public File testDescriptors() {
         final BuildRoot build = BuildRoot.of(this);
@@ -177,8 +172,18 @@ public final class DefaultProject extends AbstractDirectory {
             super(parent, name);
         }
 
-        public io.spine.tools.proto.Directory proto() {
-            return io.spine.tools.proto.Directory.rootIn(this);
+        /**
+         * A root for the main proto code.
+         */
+        public io.spine.tools.proto.Directory mainProto() {
+            return io.spine.tools.proto.Directory.rootIn(getMain());
+        }
+
+        /**
+         * A root for the test proto code.
+         */
+        public io.spine.tools.proto.Directory testProto() {
+            return io.spine.tools.proto.Directory.rootIn(getTest());
         }
     }
 

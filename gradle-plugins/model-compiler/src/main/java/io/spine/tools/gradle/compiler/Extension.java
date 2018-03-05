@@ -154,14 +154,14 @@ public class Extension {
     public List<String> dirsToClean = new LinkedList<>();
 
     private static DefaultProject def(Project project) {
-        return DefaultProject.at(project.getRootDir());
+        return DefaultProject.at(project.getProjectDir());
     }
 
     public static String getMainProtoSrcDir(Project project) {
 
         return pathOrDefault(spineProtobuf(project).mainProtoSrcDir,
                              def(project).src()
-                                         .proto());
+                                         .mainProto());
     }
 
     public static String getMainTargetGenResourcesDir(Project project) {
@@ -185,13 +185,13 @@ public class Extension {
     public static String getTestTargetGenResourcesDir(Project project) {
         return pathOrDefault(spineProtobuf(project).testTargetGenResourcesDir,
                              def(project).generated()
-                                         .mainResources());
+                                         .testResources());
     }
 
     public static String getTestProtoSrcDir(Project project) {
         return pathOrDefault(spineProtobuf(project).testProtoSrcDir,
-                             def(project).test()
-                                         .proto());
+                             def(project).src()
+                                         .testProto());
     }
 
     public static String getTestGenGrpcDir(Project project) {
@@ -254,7 +254,7 @@ public class Extension {
 
     public static Indent getIndent(Project project) {
         final Indent result = spineProtobuf(project).indent;
-        log().debug("The current indent is {}", result);
+        log().debug("The current indent is {}", result.getSize());
         return result;
     }
 

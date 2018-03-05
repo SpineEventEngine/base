@@ -54,8 +54,8 @@ public interface CommandMessage extends Message {
          */
         public static final String SUFFIX = "commands.proto";
 
-        //TODO:2018-02-12:alexander.yevsyukov: Replace usages of this predicate with cast to `CommandMessage`
-        // after code generation is updated.
+        //TODO:2018-02-12:alexander.yevsyukov: Replace usages of this predicate with cast to
+        // `CommandMessage` after code generation is updated.
         /**
          * Returns {@code true} if the passed file defines command messages,
          * {@code false} otherwise.

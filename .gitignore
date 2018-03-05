@@ -14,11 +14,10 @@
 /core-java/target
 
 # Generated source code
-*/generated/*
+**/generated/*
 
 # Gradle build files
-build/*
-*/build/*
+**/build/*
 
 # Build files produced by the IDE
 out/*
