@@ -29,9 +29,12 @@ import javax.annotation.Nullable;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 
 /**
  * An abstract base for the method constructor builders.
+ *
+ * @author Illia Shepilov
  */
 abstract class AbstractMethodConstructorBuilder<T extends MethodConstructor> {
 
@@ -39,24 +42,19 @@ abstract class AbstractMethodConstructorBuilder<T extends MethodConstructor> {
     private String javaClass;
     private String javaPackage;
     private ClassName genericClassName;
-    private MessageTypeCache messageTypeCache;
-    private FieldDescriptorProto fieldDescriptor;
+    private MessageTypeCache typeCache;
+    private FieldDescriptorProto field;
     private FieldType fieldType;
 
     /**
      * Builds a method constructor for the specified field.
      *
-     * <p>Each successor should override that method and call
-     * it via `super` as the first code line.
+     * <p>Implementations must {@linkplain #checkFields() validate the state} of the builder
+     * before producing the result.
      *
      * @return built method constructor
      */
-    @SuppressWarnings("ReturnOfNull")
-    // It is OK because it does not serve as the complete method implementation.
-    T build() {
-        checkFields();
-        return null;
-    }
+    abstract T build();
 
     AbstractMethodConstructorBuilder setFieldIndex(int fieldIndex) {
         checkArgument(fieldIndex >= 0);
@@ -76,15 +74,15 @@ abstract class AbstractMethodConstructorBuilder<T extends MethodConstructor> {
         return this;
     }
 
-    AbstractMethodConstructorBuilder setMessageTypeCache(MessageTypeCache messageTypeCache) {
-        checkNotNull(messageTypeCache);
-        this.messageTypeCache = messageTypeCache;
+    AbstractMethodConstructorBuilder setTypeCache(MessageTypeCache typeCache) {
+        checkNotNull(typeCache);
+        this.typeCache = typeCache;
         return this;
     }
 
-    AbstractMethodConstructorBuilder setFieldDescriptor(FieldDescriptorProto fieldDescriptor) {
-        checkNotNull(fieldDescriptor);
-        this.fieldDescriptor = fieldDescriptor;
+    AbstractMethodConstructorBuilder setField(FieldDescriptorProto field) {
+        checkNotNull(field);
+        this.field = field;
         return this;
     }
 
@@ -120,13 +118,13 @@ abstract class AbstractMethodConstructorBuilder<T extends MethodConstructor> {
     }
 
     @Nullable
-    MessageTypeCache getMessageTypeCache() {
-        return messageTypeCache;
+    MessageTypeCache getTypeCache() {
+        return typeCache;
     }
 
     @Nullable
-    FieldDescriptorProto getFieldDescriptor() {
-        return fieldDescriptor;
+    FieldDescriptorProto getField() {
+        return field;
     }
 
     @Nullable
@@ -137,13 +135,13 @@ abstract class AbstractMethodConstructorBuilder<T extends MethodConstructor> {
     /**
      * Checks the builder fields.
      */
-    private void checkFields() {
+    final void checkFields() {
         checkNotNull(javaClass);
         checkNotNull(javaPackage);
-        checkNotNull(messageTypeCache);
-        checkNotNull(fieldDescriptor);
+        checkNotNull(typeCache);
+        checkNotNull(field);
         checkNotNull(genericClassName);
         checkNotNull(fieldType);
-        checkArgument(fieldIndex >= 0);
+        checkState(fieldIndex >= 0);
     }
 }

@@ -139,13 +139,13 @@ class MethodGenerator {
                     new FieldTypeFactory(message, typeCache.getCachedTypes());
             final FieldType fieldType = factory.create(field);
             final MethodConstructor methodConstructor =
-                    builder.setFieldDescriptor(field)
+                    builder.setField(field)
                            .setFieldType(fieldType)
                            .setFieldIndex(fieldIndex)
                            .setJavaClass(javaClass)
                            .setJavaPackage(javaPackage)
                            .setBuilderGenericClassName(builderGenericClassName)
-                           .setMessageTypeCache(typeCache)
+                           .setTypeCache(typeCache)
                            .build();
             return methodConstructor;
         }
