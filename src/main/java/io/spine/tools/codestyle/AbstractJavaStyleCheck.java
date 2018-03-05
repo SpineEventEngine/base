@@ -77,7 +77,6 @@ public abstract class AbstractJavaStyleCheck implements CodeStyleCheck {
         if (!isJavaFile(file)) {
             return;
         }
-
         this.violations = new FileViolations(file);
         final List<String> content = loadFile(file);
         final List<CodeStyleViolation> found = findViolations(content);
