@@ -185,7 +185,7 @@ public class Extension {
     public static String getTestTargetGenResourcesDir(Project project) {
         return pathOrDefault(spineProtobuf(project).testTargetGenResourcesDir,
                              def(project).generated()
-                                         .mainResources());
+                                         .testResources());
     }
 
     public static String getTestProtoSrcDir(Project project) {
