@@ -50,7 +50,7 @@ import static io.spine.tools.proto.SourceFile.allThat;
  *
  * <p>If a validation rule has more than one target, the entry will look like:
  *
- * <p>{@code foo.bar.ValidationRule=foo.bar.FirstMessage.field_name,foo.bar.SecondMessage.field_name}.
+ * <p>{@code foo.bar.ValidationRule=foo.bar.MessageOne.field_name,foo.bar.MessageTwo.field_name}.
  *
  * @author Dmytro Grankin
  * @author Alexander Yevsyukov

@@ -21,14 +21,15 @@
 package io.spine.tools.proto;
 
 import com.google.protobuf.ByteString;
-
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
+
 import static java.lang.String.format;
 
 /**
  * Enumeration of the Protobuf scalar value types and corresponding Java types.
  *
- * <p>{@link Type#TYPE_GROUP} are NOT supported, so do not create an associated Java type for it.
+ * <p>{@link com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type#TYPE_GROUP
+ * Type.TYPE_GROUP} are NOT supported, so do not create an associated Java type for it.
  *
  * @author Dmytro Grankin
  * @see <a href="https://developers.google.com/protocol-buffers/docs/proto3#scalar">

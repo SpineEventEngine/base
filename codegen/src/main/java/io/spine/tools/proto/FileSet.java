@@ -42,6 +42,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.collect.Iterables.filter;
 import static io.spine.tools.proto.Linker.link;
 
 /**
@@ -158,7 +159,7 @@ public final class FileSet {
      * Obtains the set of the files that match passed names.
      */
     public FileSet find(Iterable<String> fileNames) {
-        final Iterable<FileDescriptor> filter = Iterables.filter(files, new HasOneOfNames(fileNames));
+        final Iterable<FileDescriptor> filter = filter(files, new HasOneOfNames(fileNames));
         return new FileSet(filter);
     }
 
