@@ -62,7 +62,7 @@ public class RightMarginCheckerPluginShould {
      * A fragment of log error message {@linkplain
      * RightMarginCheck#onViolation(Path, CodeStyleViolation) issued by the check}.
      */
-    private static final String LONG_LINE_MSG_FRAGMENT = "is longer configured limit";
+    private static final String LONG_LINE_MSG_FRAGMENT = "is longer than configured limit";
 
     private static final String CHECK_RIGHT_MARGIN_WRAPPING =
             TaskName.CHECK_RIGHT_MARGIN_WRAPPING.getValue();

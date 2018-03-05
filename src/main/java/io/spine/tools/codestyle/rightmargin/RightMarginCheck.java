@@ -89,7 +89,7 @@ public class RightMarginCheck extends AbstractJavaStyleCheck {
     @Override
     public void onViolation(Path file, CodeStyleViolation v) {
         final String msg = format(
-                "Line #%d in %s is longer configured limit (%d)",
+                "Line #%d in %s is longer than configured limit (%d)",
                 v.getLineNumber(), file, configuration.getMaxTextWidth()
         );
         log().error(msg);
