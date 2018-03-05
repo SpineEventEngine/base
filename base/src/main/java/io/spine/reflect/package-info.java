@@ -19,7 +19,7 @@
  */
 
 /**
- * Utilities for working with classes from {@linkplain java.lang.reflect reflection package}.
+ * Utilities for working with classes from the Java Reflection package.
  */
 
 @ParametersAreNonnullByDefault

@@ -20,6 +20,7 @@
 
 package io.spine.tools;
 
+import io.spine.tools.proto.Directory;
 import io.spine.tools.proto.FileDescriptors;
 
 import java.io.File;
@@ -98,11 +99,6 @@ public final class DefaultProject extends AbstractDirectory {
     }
 
 
-    @SuppressWarnings("DuplicateStringLiteralInspection") /* Tests use directory names. */
-    public HandmadeCodeRoot test() {
-        return new HandmadeCodeRoot(this, "test");
-    }
-
     public File testDescriptors() {
         final BuildRoot build = BuildRoot.of(this);
         final File result = build.descriptors()
@@ -177,8 +173,18 @@ public final class DefaultProject extends AbstractDirectory {
             super(parent, name);
         }
 
-        public io.spine.tools.proto.Directory proto() {
-            return io.spine.tools.proto.Directory.rootIn(this);
+        /**
+         * A root for the main proto code.
+         */
+        public io.spine.tools.proto.Directory mainProto() {
+            return io.spine.tools.proto.Directory.rootIn(getMain());
+        }
+
+        /**
+         * A root for the test proto code.
+         */
+        public Directory testProto() {
+            return io.spine.tools.proto.Directory.rootIn(getTest());
         }
     }
 

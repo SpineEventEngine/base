@@ -161,7 +161,7 @@ public class Extension {
 
         return pathOrDefault(spineProtobuf(project).mainProtoSrcDir,
                              def(project).src()
-                                         .proto());
+                                         .mainProto());
     }
 
     public static String getMainTargetGenResourcesDir(Project project) {
@@ -190,8 +190,8 @@ public class Extension {
 
     public static String getTestProtoSrcDir(Project project) {
         return pathOrDefault(spineProtobuf(project).testProtoSrcDir,
-                             def(project).test()
-                                         .proto());
+                             def(project).src()
+                                         .testProto());
     }
 
     public static String getTestGenGrpcDir(Project project) {
@@ -254,7 +254,7 @@ public class Extension {
 
     public static Indent getIndent(Project project) {
         final Indent result = spineProtobuf(project).indent;
-        log().debug("The current indent is {}", result);
+        log().debug("The current indent is {}", result.getSize());
         return result;
     }
 
