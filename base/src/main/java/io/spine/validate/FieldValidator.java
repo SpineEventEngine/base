@@ -31,7 +31,7 @@ import io.spine.base.FieldPath;
 import io.spine.option.IfInvalidOption;
 import io.spine.option.IfMissingOption;
 import io.spine.option.OptionsProto;
-import io.spine.util.CodeLayout;
+import io.spine.type.CommandMessage;
 import io.spine.validate.rules.ValidationRuleOptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +39,7 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Map;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.copyOf;
 import static com.google.common.collect.ImmutableList.of;
 import static com.google.common.collect.Lists.newLinkedList;
@@ -85,12 +86,12 @@ abstract class FieldValidator<V> {
     protected FieldValidator(FieldContext fieldContext,
                              ImmutableList<V> values,
                              boolean strict) {
+        this.fieldContext = checkNotNull(fieldContext);
+        this.values = checkNotNull(values);
         this.fieldDescriptor = fieldContext.getTarget();
-        this.fieldContext = fieldContext;
-        this.values = values;
         this.strict = strict;
         final FileDescriptor file = fieldDescriptor.getFile();
-        this.isCommandsFile = CodeLayout.isCommandsFile(file);
+        this.isCommandsFile = CommandMessage.File.PREDICATE.apply(file);
         this.isFirstField = fieldDescriptor.getIndex() == 0;
         this.required = getFieldOption(OptionsProto.required);
         this.ifMissingOption = getFieldOption(OptionsProto.ifMissing);
@@ -98,15 +99,20 @@ abstract class FieldValidator<V> {
         this.ifInvalid = getFieldOption(OptionsProto.ifInvalid);
     }
 
-    @SuppressWarnings({"unchecked", "IfMayBeConditional"})
+    @SuppressWarnings({
+            "unchecked"               /* specific validator must call with its type */,
+            "ChainOfInstanceofChecks" /* because fields do not have common parent class */
+    })
     static <T> ImmutableList<T> toValueList(Object fieldValue) {
         if (fieldValue instanceof List) {
-            return copyOf((List<T>) fieldValue);
+            final List<T> value = (List<T>) fieldValue;
+            return copyOf(value);
         } else if (fieldValue instanceof Map) {
             final Map<?, T> map = (Map<?, T>) fieldValue;
             return copyOf(map.values());
         } else {
-            return of((T) fieldValue);
+            final T value = (T) fieldValue;
+            return of(value);
         }
     }
 

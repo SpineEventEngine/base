@@ -1,28 +1,27 @@
-import io.spine.gradle.compiler.Extension
+/*
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
+ *
+ * Redistribution and use in source and/or binary forms, with or without
+ * modification, must retain the above copyright notice and the following
+ * disclaimer.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
 import org.apache.tools.ant.filters.ReplaceTokens
 
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
-//
-// Copyright 2017, TeamDev Ltd. All rights reserved.
-//
-// Redistribution and use in source and/or binary forms, with or without
-// modification, must retain the above copyright notice and the following
-// disclaimer.
-//
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//
-
 ext {
     roasterVersion = '2.20.1.Final'
     spineFolder = "${project.projectDir}/.spine" as File
@@ -60,8 +59,8 @@ apply from: generateDescriptorSetScript
 dependencies {
     compile project(':plugin-base')
     compile project(':base')
+    compile project(':codegen')
 
-    compile group: 'com.squareup', name: 'javapoet', version: javaPoetVersion
     compile group: 'com.google.template', name: 'soy', version: '2017-02-01'
     compile group: 'com.google.guava', name: 'guava', version: guavaVersion
     compile group: 'com.google.protobuf', name: 'protobuf-java', version: protobufVersion
@@ -97,21 +96,28 @@ protobuf {
 }
 
 /**
- * Prepares the spine_protoc.gradle file by copying it to the `resources` directory and injecting
- * the versions of the protoc plugin dependencies.
+ * Prepares the `spine-protoc.gradle` file by copying its template to the `resources` directory and
+ * injecting the versions of the protoc plugin dependencies.
  *
  * <p>This task is executed each time `processResources` task is executed, i.e. upon each build.
  */
 task prepareProtocConfig(type: Copy) {
-    description = "Prepares the spine_protoc.gradle file"
+    description = "Prepares the spine-protoc.gradle.template file"
 
-    from "./spine_protoc.gradle"
-    into "./src/main/resources"
+    from "./spine-protoc.gradle.template"
+    into "./src/main/resources/"
 
-    filter(ReplaceTokens, tokens: ['baseVersion': "'$project.spineVersion'".toString(),
-                                   'pbVersion': "'$project.protobufVersion'".toString(),
-                                   'gRPCVersion': "'$project.gRpcVersion'".toString(),
-                                   'spineDir': "'$Extension.SPINE_BUILD_ARTIFACT_STORAGE_DIR'".toString()])
+    rename "./src/main/resources/spine-protoc.gradle.template",
+            "./src/main/resources/spine-protoc.gradle"
+
+    delete "./src/main/resources/spine-protoc.gradle.template"
+    
+    filter(ReplaceTokens,
+            tokens: ['baseVersion': "'$project.spineVersion'".toString(),
+                     'pbVersion'  : "'$project.protobufVersion'".toString(),
+                     'gRPCVersion': "'$project.gRpcVersion'".toString(),
+                     // See `io.spine.tools.DefaultProject.tempArtifacts()`
+                     'spineDir'   : '.spine'])
     outputs.upToDateWhen { false }
 }
 
@@ -140,6 +146,7 @@ test {
     dependsOn copyProtocPluginTestArtifact
     dependsOn publishToMavenLocal
     dependsOn project.project(':plugin-base').publishToMavenLocal
+    dependsOn project.project(':codegen').publishToMavenLocal
     dependsOn project.project(':base').publishToMavenLocal
     dependsOn project.project(':testutil-base').publishToMavenLocal
 }

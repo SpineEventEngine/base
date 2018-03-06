@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -37,14 +37,15 @@ import static com.google.common.collect.Sets.newHashSet;
 /**
  * An abstract base for the Protobuf code generator.
  *
- * <p>A generator consumes a {@link DescriptorProto} for each message type and optionally generates
- * some Java code in response to it regarding {@linkplain FileDescriptorProto its file}.
+ * <p>A generator consumes a {@link DescriptorProto DescriptorProto} for each message type and
+ * optionally generates some Java code in response to it regarding {@linkplain FileDescriptorProto
+ * its file}.
  *
  * <a name="contract"></a>
  * <p>Each message type is processed separately. As the result of processing, a generator may
  * produce instances of {@link File CodeGeneratorResponse.File}.
  *
- * <p>The {@code CodeGeneratorResponse.File} has three fields: {@code name}, {@code insertionPoint}
+ * <p>The {@code CodeGeneratorResponse.File} has three fields: {@code name}, {@code insertionPoint},
  * and {@code content}.
  *
  * <p>The {@code name} field represents the name of the file to generate. The name is relative to
@@ -108,39 +109,55 @@ public abstract class SpineProtoGenerator {
      * <p>Note: there are several preconditions for this method to run successfully:
      * <ul>
      *     <li>since Spine relies on 3rd version of Protobuf, the Proto compiler version should be
-     *         {@code 3.x.x} or greater;
+     *         {@code 3.*} or greater;
      *     <li>there must be at least one {@code .proto} file in the {@link CodeGeneratorRequest}.
      * </ul>
      *
      * @param request the compiler request
      * @return the response to the compiler
-     * @see #processMessage(FileDescriptorProto, DescriptorProto) for more detaineed behavior
-     *                                                            description
+     * @see #processMessage(com.google.protobuf.DescriptorProtos.FileDescriptorProto,
+     *                      com.google.protobuf.DescriptorProtos.DescriptorProto)
+     *                     Javadoc for processMessage() for more detailed description
      */
     public final CodeGeneratorResponse process(CodeGeneratorRequest request) {
         checkNotNull(request);
-        checkNotNull(request);
-        final Version protocVersion = request.getCompilerVersion();
-        checkArgument(protocVersion.getMajor() >= 3,
-                      "Use protoc of version 3.X.X or higher to generate the Spine sources.");
-        final List<FileDescriptorProto> descriptors = request.getProtoFileList();
-        checkArgument(!descriptors.isEmpty(), "No files to generate provided.");
-        final CodeGeneratorResponse response = scan(descriptors);
+        checkCompilerVersion(request);
+        final List<FileDescriptorProto> protoFiles = request.getProtoFileList();
+        checkArgument(!protoFiles.isEmpty(), "No files to generate provided.");
+        final CodeGeneratorResponse response = process(protoFiles);
         return response;
     }
 
-    private CodeGeneratorResponse scan(Iterable<FileDescriptorProto> files) {
+    /**
+     * Ensures that the version of the Google Protobuf Compiler is 3.* or higher.
+     */
+    private void checkCompilerVersion(CodeGeneratorRequest request) {
+        final Version version = request.getCompilerVersion();
+        checkArgument(version.getMajor() >= 3,
+                      "Use protoc of version 3.* or higher to run %s",
+                      getClass().getName());
+    }
+
+    /**
+     * Processes all passed proto files.
+     */
+    private CodeGeneratorResponse process(Iterable<FileDescriptorProto> files) {
         final Collection<File> generatedFiles = newHashSet();
         for (FileDescriptorProto file : files) {
-            generatedFiles.addAll(scanFile(file));
+            final Collection<File> newFiles = generateForTypesIn(file);
+            generatedFiles.addAll(newFiles);
         }
-        final CodeGeneratorResponse response = CodeGeneratorResponse.newBuilder()
-                                                                    .addAllFile(generatedFiles)
-                                                                    .build();
+        final CodeGeneratorResponse response =
+                CodeGeneratorResponse.newBuilder()
+                                     .addAllFile(generatedFiles)
+                                     .build();
         return response;
     }
 
-    private Collection<File> scanFile(FileDescriptorProto file) {
+    /**
+     * Processes the passed proto file.
+     */
+    private Collection<File> generateForTypesIn(FileDescriptorProto file) {
         final Collection<File> result = newHashSet();
         for (DescriptorProto message : file.getMessageTypeList()) {
             final Collection<File> processedFile = processMessage(file, message);

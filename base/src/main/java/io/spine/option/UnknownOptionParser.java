@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -36,7 +36,8 @@ import static java.util.Collections.emptyList;
  * @param <R> the type of an element to be returned after parsing
  * @author Dmytro Grankin
  */
-public abstract class UnknownOptionParser<O extends ExtendableMessage, D extends GeneratedMessageV3, R>
+public abstract
+class UnknownOptionParser<O extends ExtendableMessage, D extends GeneratedMessageV3, R>
         implements OptionParser<R> {
 
     /**

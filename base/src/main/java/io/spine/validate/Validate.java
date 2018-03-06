@@ -40,8 +40,8 @@ public final class Validate {
 
     private static final String MUST_BE_A_POSITIVE_VALUE = "%s must be a positive value";
 
+    /** Prevents instantiation of this utility class. */
     private Validate() {
-        // Prevent instantiation of this utility class.
     }
 
     /**

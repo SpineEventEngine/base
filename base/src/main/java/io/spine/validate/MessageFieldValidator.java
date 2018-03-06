@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -30,11 +30,10 @@ import io.spine.option.TimeOption;
 
 import java.util.List;
 
+import static io.spine.base.Time.getCurrentTime;
 import static io.spine.option.Time.FUTURE;
 import static io.spine.option.Time.TIME_UNDEFINED;
 import static io.spine.protobuf.AnyPacker.pack;
-import static io.spine.time.Time.getCurrentTime;
-import static io.spine.time.Timestamps2.isLaterThan;
 import static io.spine.validate.Validate.isDefault;
 
 /**
@@ -45,7 +44,7 @@ import static io.spine.validate.Validate.isDefault;
 class MessageFieldValidator extends FieldValidator<Message> {
 
     private final TimeOption timeConstraint;
-    private final boolean isFieldTimestamp;
+    private final boolean fieldIsTimestamp;
 
     /**
      * Creates a new validator instance.
@@ -60,16 +59,16 @@ class MessageFieldValidator extends FieldValidator<Message> {
                           boolean strict) {
         super(fieldContext, FieldValidator.<Message>toValueList(fieldValues), strict);
         this.timeConstraint = getFieldOption(OptionsProto.when);
-        this.isFieldTimestamp = isTimestamp();
+        this.fieldIsTimestamp = isTimestamp();
     }
 
     @Override
     protected void validateOwnRules() {
-        final boolean recursiveValidationRequired = getValidateOption();
-        if (recursiveValidationRequired) {
+        final boolean validateFields = getValidateOption();
+        if (validateFields) {
             validateFields();
         }
-        if (isFieldTimestamp) {
+        if (fieldIsTimestamp) {
             validateTimestamps();
         }
     }
@@ -82,9 +81,11 @@ class MessageFieldValidator extends FieldValidator<Message> {
 
     private boolean isTimestamp() {
         final ImmutableList<Message> values = getValues();
-        final Message value = values.isEmpty() ? null : values.get(0);
-        final boolean isTimestamp = value instanceof Timestamp;
-        return isTimestamp;
+        final Message value = values.isEmpty()
+                ? null
+                : values.get(0);
+        final boolean result = value instanceof Timestamp;
+        return result;
     }
 
     private void validateFields() {
@@ -127,6 +128,14 @@ class MessageFieldValidator extends FieldValidator<Message> {
                                 : isLaterThan(now, /*than*/ timeToCheck);
         final boolean isInvalid = !isValid;
         return isInvalid;
+    }
+
+    private static boolean isLaterThan(Timestamp t1, Timestamp t2) {
+        int result = Long.compare(t1.getSeconds(), t2.getSeconds());
+        result = (result == 0)
+                ? Integer.compare(t1.getNanos(), t2.getNanos())
+                : result;
+        return result > 0;
     }
 
     private ConstraintViolation newTimeViolation(Timestamp fieldValue) {

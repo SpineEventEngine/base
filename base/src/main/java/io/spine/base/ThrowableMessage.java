@@ -31,7 +31,7 @@ import io.spine.string.Stringifiers;
 import javax.annotation.Nullable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.time.Time.getCurrentTime;
+import static io.spine.base.Time.getCurrentTime;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**

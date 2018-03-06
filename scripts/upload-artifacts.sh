@@ -6,8 +6,13 @@
 gem instal dpl
 # Prepare the test and coverage reports for the upload.
 mkdir reports
-zip -r reports/test-reports.zip **/build/reports
-zip -r reports/jacoco-reports.zip **/build/jacoco
+
+# Find all directories matching path to add to archive. 
+BUILD_REPORTS=$(find . -type d -path "*build/reports*")
+JACOCO_REPORTS=$(find . -type d -path "*build/jacoco*")
+
+zip -r reports/test-reports.zip $BUILD_REPORTS
+zip -r reports/jacoco-reports.zip $JACOCO_REPORTS
 
 # Returns the value for the specified key.
 function getProp() {

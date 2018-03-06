@@ -363,14 +363,27 @@ extend google.protobuf.MessageOptions {
     // release.
     bool beta_type = 73914;
 
-    // Specifies the name of a Java interface to be implemented by this message.
+    // Specifies a characteristic inherent in the the given message type.
     //
-    // The interface is generated into the Protobuf generation destination directory. The interface
-    // itself is a marker interface derived from `com.google.protobuf.Message`. Unless the interface
-    // is specified by its FQN, it will have the same Java package as the message.
+    // Example:
+    // ```
+    // message CreateProject {
+    //     option (is) = "ProjectCommand";
     //
-    // To specify a marker interface for every message in a `.proto` file, use `(every_is)` file
+    //     // Remainder omitted.
+    // }
+    // ```
+    //
+    // In the example above, `CreateProject` message is a `ProjectCommand`.
+    //
+    // To specify a characteristic for every message in a `.proto` file, use `(every_is)` file
     // option. If both `(is)` and `(every_is)` options are found, `(is)` value is taken.
+    //
+    // When targeting Java, specifies the name of a Java interface to be implemented by this
+    // message. The interface is generated into the Protobuf generation destination directory.
+    // The interface itself is a marker interface derived from `com.google.protobuf.Message`.
+    // Unless the interface is specified by its FQN, it will have the same Java package as
+    // the message.
     //
     string is = 73915;
 
@@ -478,14 +491,27 @@ extend google.protobuf.FileOptions {
     // release.
     bool beta_all = 73945;
 
-    // Specifies the name of a Java interface to be implemented by all the messages in this file.
+    // Specifies a characteristic common for all the message types in the given file.
     //
-    // The interface is generated into the Protobuf generation destination directory. The interface
-    // itself is a marker interface derived from `com.google.protobuf.Message`. Unless the interface
-    // is specified by its FQN, it will have the same Java package as the message.
+    // Example:
+    // ```
+    // option (is) = "ProjectCommand";
     //
-    // To specify a marker interface for a single message, use `(is)` message option. If both `(is)`
+    // message CreateProject { /*...*/ }
+    //
+    // message DeleteProject { /*...*/ }
+    // ```
+    //
+    // In the example above, `CreateProject` and `DeleteProject` messages are `ProjectCommand`-s.
+    //
+    // To specify a characteristic for a single message, use `(is)` message option. If both `(is)`
     // and `(every_is)` options are found, `(is)` value is taken.
+    //
+    // When targeting Java, specifies the name of a Java interface to be implemented by these
+    // message types. The interface is generated into the Protobuf generation destination directory.
+    // The interface itself is a marker interface derived from `com.google.protobuf.Message`.
+    // Unless the interface is specified by its FQN, it will have the same Java package as
+    // the message.
     //
     string every_is = 73946;
 

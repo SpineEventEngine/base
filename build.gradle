@@ -1,22 +1,22 @@
-//
-// Copyright 2017, TeamDev Ltd. All rights reserved.
-//
-// Redistribution and use in source and/or binary forms, with or without
-// modification, must retain the above copyright notice and the following
-// disclaimer.
-//
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//
+/*
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
+ *
+ * Redistribution and use in source and/or binary forms, with or without
+ * modification, must retain the above copyright notice and the following
+ * disclaimer.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
 
 import groovy.time.TimeCategory
 
@@ -58,8 +58,14 @@ buildscript {
         classpath group: 'io.spine.tools',
                   name: 'spine-model-compiler',
                   version: spineModelCompilerVersion
-        classpath group: 'io.spine.tools', name: 'spine-codestyle-checker', version: spineToolsVersion
-        classpath group: 'io.spine.tools', name: 'gcs-plugin', version: spineToolsVersion
+        
+        classpath group: 'io.spine.tools',
+                  name: 'spine-codestyle-checker',
+                  version: spineToolsVersion
+        
+        classpath group: 'io.spine.tools',
+                  name: 'gcs-plugin',
+                  version: spineToolsVersion
     }
     configurations.all({
         resolutionStrategy.cacheChangingModulesFor(0, 'seconds')
@@ -75,7 +81,12 @@ ext {
 
     credentialsPropertyFile = 'credentials.properties'
     publishPlugin = "$rootDir/scripts/publish.gradle"
-    projectsToPublish = ["base", "model-compiler", "plugin-base", "testutil-base", "protoc-plugin"]
+    projectsToPublish = ["base",
+                         "model-compiler",
+                         "plugin-base",
+                         "testutil-base",
+                         "protoc-plugin",
+                         "codegen"]
 }
 
 allprojects {
@@ -197,7 +208,7 @@ subprojects {
             // events 'standard_out', 'standard_error'
 
             // Or set property events:
-            // events = ['standard_out', 'standard_error']
+             events = ['standard_out', 'standard_error']
 
             // Instead of string values we can
             // use enum values:
