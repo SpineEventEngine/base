@@ -97,7 +97,7 @@ class RepeatedFieldMethodConstructor implements MethodConstructor {
         super();
         this.fieldType = builder.getFieldType();
         this.fieldIndex = builder.getFieldIndex();
-        this.fieldDescriptor = builder.getFieldDescriptor();
+        this.fieldDescriptor = builder.getField();
         this.builderGenericClassName = builder.getGenericClassName();
         final FieldName fieldName = FieldName.of(fieldDescriptor);
         this.javaFieldName = fieldName.javaCase();
@@ -105,7 +105,7 @@ class RepeatedFieldMethodConstructor implements MethodConstructor {
         final String javaClass = builder.getJavaClass();
         final String javaPackage = builder.getJavaPackage();
         this.builderClassName = getClassName(javaPackage, javaClass);
-        final MessageTypeCache messageTypeCache = builder.getMessageTypeCache();
+        final MessageTypeCache messageTypeCache = builder.getTypeCache();
         this.listElementClassName = getParameterClassName(fieldDescriptor, messageTypeCache);
         this.isScalarOrEnum = isScalarType(fieldDescriptor) || isEnumType(fieldDescriptor);
     }
@@ -403,7 +403,7 @@ class RepeatedFieldMethodConstructor implements MethodConstructor {
 
         @Override
         RepeatedFieldMethodConstructor build() {
-            super.build();
+            checkFields();
             return new RepeatedFieldMethodConstructor(this);
         }
     }

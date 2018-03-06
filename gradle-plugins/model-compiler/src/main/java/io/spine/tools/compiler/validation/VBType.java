@@ -27,30 +27,31 @@ import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A metadata for the validator builders.
+ * Type information for generating a validating builder.
  *
  * @author Illia Shepilov
+ * @author Alexander Yevsyukov
  */
-final class VBMetadata {
+final class VBType {
 
     private final String javaClass;
     private final String javaPackage;
-    private final DescriptorProto msgDescriptor;
-    private final String sourceProtoFilePath;
+    private final DescriptorProto descriptor;
+    private final String sourceProtoFile;
 
-    VBMetadata(String javaPackage,
-               String javaClass,
-               DescriptorProto msgDescriptor,
-               String sourceProtoFilePath) {
+    VBType(String javaPackage,
+           String javaClass,
+           DescriptorProto descriptor,
+           String sourceProtoFile) {
         checkNotNull(javaPackage);
         checkNotNull(javaClass);
-        checkNotNull(msgDescriptor);
-        checkNotNull(sourceProtoFilePath);
+        checkNotNull(descriptor);
+        checkNotNull(sourceProtoFile);
 
         this.javaPackage = javaPackage;
         this.javaClass = javaClass;
-        this.msgDescriptor = msgDescriptor;
-        this.sourceProtoFilePath = sourceProtoFilePath;
+        this.descriptor = descriptor;
+        this.sourceProtoFile = sourceProtoFile;
     }
 
     String getJavaPackage() {
@@ -61,12 +62,12 @@ final class VBMetadata {
         return javaClass;
     }
 
-    DescriptorProto getMsgDescriptor() {
-        return msgDescriptor;
+    DescriptorProto getDescriptor() {
+        return descriptor;
     }
 
-    String getSourceProtoFilePath() {
-        return sourceProtoFilePath;
+    String getSourceProtoFile() {
+        return sourceProtoFile;
     }
 
     @Override
@@ -74,18 +75,18 @@ final class VBMetadata {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof VBMetadata)) {
+        if (!(o instanceof VBType)) {
             return false;
         }
-        VBMetadata that = (VBMetadata) o;
+        VBType that = (VBType) o;
         return Objects.equal(javaClass, that.javaClass) &&
                 Objects.equal(javaPackage, that.javaPackage) &&
-                Objects.equal(msgDescriptor, that.msgDescriptor);
+                Objects.equal(descriptor, that.descriptor);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(javaClass, javaPackage, msgDescriptor);
+        return Objects.hashCode(javaClass, javaPackage, descriptor);
     }
 
     @Override
@@ -93,7 +94,7 @@ final class VBMetadata {
         return MoreObjects.toStringHelper(this)
                           .add("javaClass", javaClass)
                           .add("javaPackage", javaPackage)
-                          .add("sourceProtoFilePath", sourceProtoFilePath)
+                          .add("sourceProtoFile", sourceProtoFile)
                           .toString();
     }
 }

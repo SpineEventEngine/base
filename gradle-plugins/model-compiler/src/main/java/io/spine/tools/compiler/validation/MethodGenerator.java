@@ -20,6 +20,7 @@
 
 package io.spine.tools.compiler.validation;
 
+import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.squareup.javapoet.ClassName;
@@ -36,6 +37,7 @@ import java.util.List;
 import static com.google.common.collect.Lists.newArrayList;
 import static io.spine.tools.compiler.fieldtype.FieldTypes.isMap;
 import static io.spine.tools.compiler.fieldtype.FieldTypes.isRepeated;
+import static io.spine.tools.compiler.validation.ClassNames.getValidatorMessageClassName;
 
 /**
  * Serves as assembler for the generated methods based on the Protobuf message declaration.
@@ -47,18 +49,17 @@ class MethodGenerator {
     private final String javaClass;
     private final String javaPackage;
     private final ClassName builderGenericClassName;
-    private final MessageTypeCache messageTypeCache;
-    private final DescriptorProto descriptor;
+    private final MessageTypeCache typeCache;
+    private final DescriptorProto message;
 
-    MethodGenerator(VBMetadata metadata, MessageTypeCache messageTypeCache) {
-        this.javaClass = metadata.getJavaClass();
-        this.javaPackage = metadata.getJavaPackage();
-        this.descriptor = metadata.getMsgDescriptor();
-        this.messageTypeCache = messageTypeCache;
-        final String className = descriptor.getName();
-        builderGenericClassName = ClassNames.getValidatorMessageClassName(javaPackage,
-                                                                          messageTypeCache,
-                                                                          className);
+    MethodGenerator(VBType type, MessageTypeCache typeCache) {
+        this.javaClass = type.getJavaClass();
+        this.javaPackage = type.getJavaPackage();
+        this.message = type.getDescriptor();
+        this.typeCache = typeCache;
+        final String className = message.getName();
+        this.builderGenericClassName =
+                getValidatorMessageClassName(javaPackage, typeCache, className);
     }
 
     /**
@@ -71,7 +72,7 @@ class MethodGenerator {
 
         methods.add(createPrivateConstructor());
         methods.add(createNewBuilderMethod());
-        methods.addAll(createGeneratedSettersAndGetters());
+        methods.addAll(createFieldMethods());
 
         return methods;
     }
@@ -93,66 +94,58 @@ class MethodGenerator {
         return buildMethod;
     }
 
-    private Collection<MethodSpec> createGeneratedSettersAndGetters() {
-        final MethodConstructorFactory methodConstructorFactory = new MethodConstructorFactory();
-        final List<MethodSpec> setters = newArrayList();
+    private List<MethodSpec> createFieldMethods() {
+        final Factory factory = new Factory();
+        final ImmutableList.Builder<MethodSpec> result = ImmutableList.builder();
         int index = 0;
-        for (FieldDescriptorProto fieldDescriptor : descriptor.getFieldList()) {
-            final MethodConstructor methodConstructor =
-                    methodConstructorFactory.getMethodConstructor(fieldDescriptor, index);
-            final Collection<MethodSpec> methods = methodConstructor.construct();
-            setters.addAll(methods);
+        for (FieldDescriptorProto field : message.getFieldList()) {
+            final MethodConstructor method = factory.create(field, index);
+            final Collection<MethodSpec> methods = method.construct();
+            result.addAll(methods);
 
             ++index;
         }
 
-        return setters;
+        return result.build();
     }
 
     /**
      * A factory for the method constructors.
      */
-    private class MethodConstructorFactory {
+    private class Factory {
 
         /**
          * Returns the concrete method constructor according to
          * the passed {@code FieldDescriptorProto}
          *
-         * @param fieldDescriptor the descriptor for the field
-         * @param fieldIndex      the index of the field
+         * @param field the descriptor for the field
+         * @param index the index of the field
          * @return the method constructor instance
          */
-        private MethodConstructor getMethodConstructor(FieldDescriptorProto fieldDescriptor,
-                                                       int fieldIndex) {
-            if (isMap(fieldDescriptor)) {
-                return createMethodConstructor(MapFieldMethodConstructor.newBuilder(),
-                                               fieldDescriptor,
-                                               fieldIndex);
+        private MethodConstructor create(FieldDescriptorProto field, int index) {
+            if (isMap(field)) {
+                return doCreate(MapFieldMethodConstructor.newBuilder(), field, index);
             }
-            if (isRepeated(fieldDescriptor)) {
-                return createMethodConstructor(RepeatedFieldMethodConstructor.newBuilder(),
-                                               fieldDescriptor,
-                                               fieldIndex);
+            if (isRepeated(field)) {
+                return doCreate(RepeatedFieldMethodConstructor.newBuilder(), field, index);
             }
-            return createMethodConstructor(SingularFieldMethodConstructor.newBuilder(),
-                                           fieldDescriptor,
-                                           fieldIndex);
+            return doCreate(SingularFieldMethodConstructor.newBuilder(), field, index);
         }
 
-        private MethodConstructor createMethodConstructor(AbstractMethodConstructorBuilder builder,
-                                                          FieldDescriptorProto dscr,
-                                                          int fieldIndex) {
+        private MethodConstructor doCreate(AbstractMethodConstructorBuilder builder,
+                                           FieldDescriptorProto field,
+                                           int fieldIndex) {
             final FieldTypeFactory factory =
-                    new FieldTypeFactory(descriptor, messageTypeCache.getCachedTypes());
-            final FieldType fieldType = factory.create(dscr);
+                    new FieldTypeFactory(message, typeCache.getCachedTypes());
+            final FieldType fieldType = factory.create(field);
             final MethodConstructor methodConstructor =
-                    builder.setFieldDescriptor(dscr)
+                    builder.setField(field)
                            .setFieldType(fieldType)
                            .setFieldIndex(fieldIndex)
                            .setJavaClass(javaClass)
                            .setJavaPackage(javaPackage)
                            .setBuilderGenericClassName(builderGenericClassName)
-                           .setMessageTypeCache(messageTypeCache)
+                           .setTypeCache(typeCache)
                            .build();
             return methodConstructor;
         }

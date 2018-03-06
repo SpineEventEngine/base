@@ -86,47 +86,50 @@ public class VBuilderGenerator {
         final Logger log = log();
         log.debug("Generating the validating builders from {}.", setFile);
 
-        final MetadataAssembler assembler = new MetadataAssembler(setFile.getPath());
-        final Set<VBMetadata> allFound = assembler.assemble();
-        final MessageTypeCache messageTypeCache = assembler.getAssembledMessageTypeCache();
+        final VBTypeLookup lookup = new VBTypeLookup(setFile.getPath());
+        final Set<VBType> allFound = lookup.collect();
+        final MessageTypeCache typeCache = lookup.getTypeCache();
 
-        final Set<VBMetadata> filtered = filter(classpathGenEnabled, allFound);
+        final Set<VBType> filtered = filter(classpathGenEnabled, allFound);
         if (filtered.isEmpty()) {
             log.warn("No validating builders will be generated.");
         } else {
-            writeVBuilders(filtered, messageTypeCache);
+            writeVBuilders(filtered, typeCache);
         }
     }
 
-    private void writeVBuilders(Set<VBMetadata> builders, MessageTypeCache cache) {
+    private void writeVBuilders(Set<VBType> builders, MessageTypeCache cache) {
         final Logger log = log();
         final ValidatingBuilderWriter writer =
                 new ValidatingBuilderWriter(targetDirPath, indent, cache);
 
-        for (VBMetadata vb : builders) {
+        for (VBType vb : builders) {
             try {
                 writer.write(vb);
             } catch (RuntimeException e) {
                 final String message =
                         format("Cannot generate the validating builder for %s. %n" +
                                "Error: %s", vb, e.toString());
-                log.debug(message, e);
-                log.warn(message);
+                // If debug level is enabled give it under this lever, otherwise WARN.
+                if (log.isDebugEnabled()) {
+                    log.debug(message, e);
+                } else {
+                    log.warn(message);
+                }
             }
         }
         log.debug("The validating builder generation is finished.");
     }
 
-    private Set<VBMetadata> filter(boolean classpathGenEnabled,
-                                   Set<VBMetadata> metadataItems) {
-        final Predicate<VBMetadata> shouldWrite = getPredicate(classpathGenEnabled);
-        final Iterable<VBMetadata> filtered = Iterables.filter(metadataItems, shouldWrite);
-        final Set<VBMetadata> result = ImmutableSet.copyOf(filtered);
+    private Set<VBType> filter(boolean classpathGenEnabled, Set<VBType> types) {
+        final Predicate<VBType> shouldWrite = getPredicate(classpathGenEnabled);
+        final Iterable<VBType> filtered = Iterables.filter(types, shouldWrite);
+        final Set<VBType> result = ImmutableSet.copyOf(filtered);
         return result;
     }
 
-    private Predicate<VBMetadata> getPredicate(final boolean classpathGenEnabled) {
-        final Predicate<VBMetadata> result;
+    private Predicate<VBType> getPredicate(boolean classpathGenEnabled) {
+        final Predicate<VBType> result;
         if (classpathGenEnabled) {
             result = Predicates.alwaysTrue();
         } else {
@@ -139,13 +142,13 @@ public class VBuilderGenerator {
     }
 
     /**
-     * A predicate determining if the given {@linkplain VBMetadata validating builder metadata}
+     * A predicate determining if the given {@linkplain VBType validating builder metadata}
      * has been collected from the source file in the specified module.
      *
      * <p>Each predicate instance requires to specify the root folder of Protobuf definitions
      * for the module. This value is used to match the given {@code VBMetadata}.
      */
-    private static class SourceProtoBelongsToModule implements Predicate<VBMetadata> {
+    private static class SourceProtoBelongsToModule implements Predicate<VBType> {
 
         /**
          *  An absolute path to the root folder for the {@code .proto} files in the module.
@@ -157,10 +160,10 @@ public class VBuilderGenerator {
         }
 
         @Override
-        public boolean apply(@Nullable VBMetadata input) {
+        public boolean apply(@Nullable VBType input) {
             checkNotNull(input);
 
-            final String path = input.getSourceProtoFilePath();
+            final String path = input.getSourceProtoFile();
             final File protoFile = new File(rootPath + path);
             final boolean belongsToModule = protoFile.exists();
             return belongsToModule;

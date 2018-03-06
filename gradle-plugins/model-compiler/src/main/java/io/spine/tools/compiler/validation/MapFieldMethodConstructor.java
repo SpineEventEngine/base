@@ -92,7 +92,7 @@ class MapFieldMethodConstructor implements MethodConstructor {
         super();
         this.fieldType = (MapFieldType) builder.getFieldType();
         this.fieldIndex = builder.getFieldIndex();
-        final FieldDescriptorProto fieldDescriptor = builder.getFieldDescriptor();
+        final FieldDescriptorProto fieldDescriptor = builder.getField();
         this.genericClassName = builder.getGenericClassName();
         final FieldName fieldName = FieldName.of(fieldDescriptor);
         this.propertyName = fieldName.toCamelCase();
@@ -297,7 +297,7 @@ class MapFieldMethodConstructor implements MethodConstructor {
             extends AbstractMethodConstructorBuilder<MapFieldMethodConstructor> {
         @Override
         MapFieldMethodConstructor build() {
-            super.build();
+            checkFields();
             return new MapFieldMethodConstructor(this);
         }
     }
