@@ -40,7 +40,7 @@ import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Sets.newHashSet;
 
 /**
- * Collects type for which generated validating builders.
+ * Collects types for which validating builders are generated.
  *
  * @author Illia Shepilov
  * @author Alex Tymchenko

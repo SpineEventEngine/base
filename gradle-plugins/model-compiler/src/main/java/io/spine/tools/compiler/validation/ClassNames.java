@@ -48,24 +48,23 @@ final class ClassNames {
     }
 
     /**
-     * Returns the {@code ClassName} for the Protobuf field
-     * based on the passed {@code FieldDescriptorProto}.
+     * Returns the {@code ClassName} for the Protobuf field.
      *
-     * @param field  the field descriptor of the Protobuf field
-     * @param typeCache the cache of the message types
+     * @param field the field descriptor of the Protobuf field
+     * @param cache the cache of the message types
      * @return the obtained {@code ClassName}
      */
-    static ClassName getParameterClassName(FieldDescriptorProto field, MessageTypeCache typeCache) {
+    static ClassName getParameterClassName(FieldDescriptorProto field, MessageTypeCache cache) {
         checkNotNull(field);
-        checkNotNull(typeCache);
+        checkNotNull(cache);
 
         String typeName = field.getTypeName();
         if (typeName.isEmpty()) {
             return getJavaTypeForScalarType(field);
         }
         typeName = trimTypeName(field);
-        final String parameterType = typeCache.getCachedTypes()
-                                              .get(typeName);
+        final String parameterType = cache.getCachedTypes()
+                                          .get(typeName);
         return ClassName.bestGuess(parameterType);
     }
 
