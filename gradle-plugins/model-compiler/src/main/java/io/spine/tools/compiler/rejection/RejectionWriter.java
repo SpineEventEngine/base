@@ -111,7 +111,7 @@ public class RejectionWriter {
                                      rejection)
                             .skipJavaLangImports(true)
                             .build();
-            log.trace("Writing {}", className);
+            log.debug("Writing {}", className);
             javaFile.writeTo(outputDirectory);
             log.debug("Rejection {} written successfully", className);
         } catch (IOException e) {
@@ -120,7 +120,7 @@ public class RejectionWriter {
     }
 
     private MethodSpec constructor() {
-        log().trace("Creating the constructor for the type '{}'",
+        log().debug("Creating the constructor for the type '{}'",
                     declaration.getSimpleJavaClassName());
         final MethodSpec.Builder builder = constructorBuilder()
                 .addJavadoc(javadoc.forConstructor())
@@ -160,7 +160,7 @@ public class RejectionWriter {
     }
 
     private MethodSpec getMessageThrown() {
-        log().trace("Constructing " + METHOD_GET_MESSAGE_THROWN_SIGNATURE);
+        log().debug("Constructing " + METHOD_GET_MESSAGE_THROWN_SIGNATURE);
 
         final TypeName returnType =
                 ClassName.get(declaration.getJavaPackage()
@@ -193,7 +193,7 @@ public class RejectionWriter {
      * @return name-to-{@link FieldType} map
      */
     private Map<String, FieldType> fieldDeclarations() {
-        log().trace("Reading all the field values from the descriptor: {}",
+        log().debug("Reading all the field values from the descriptor: {}",
                     declaration.getMessage());
 
         final Map<String, FieldType> result = Maps.newLinkedHashMap();
@@ -201,7 +201,7 @@ public class RejectionWriter {
                                                      .getFieldList()) {
             result.put(field.getName(), fieldTypeFactory.create(field));
         }
-        log().trace("Read fields: {}", result);
+        log().debug("Read fields: {}", result);
 
         return result;
     }

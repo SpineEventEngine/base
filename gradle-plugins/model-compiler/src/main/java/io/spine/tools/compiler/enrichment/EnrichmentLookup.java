@@ -63,7 +63,7 @@ import static java.util.regex.Pattern.compile;
  * @author Alexander Litus
  * @author Alex Tymchenko
  */
-public class EnrichmentFinder {
+public class EnrichmentLookup {
 
     private static final String PROTO_TYPE_SEPARATOR = ".";
     private static final String EMPTY_TYPE_NAME = "";
@@ -91,35 +91,43 @@ public class EnrichmentFinder {
      *
      * @param file a file to search enrichments in
      */
-    private EnrichmentFinder(FileDescriptorProto file) {
+    private EnrichmentLookup(FileDescriptorProto file) {
         this.file = file;
         this.packagePrefix = file.getPackage() + PROTO_TYPE_SEPARATOR;
         this.eventTypeParser = new TypeNameParser(enrichmentFor, packagePrefix);
         this.enrichmentTypeParser = new TypeNameParser(enrichment, packagePrefix);
     }
 
-    public static boolean processDescriptorSetFile(File setFile, String targetDir) {
-        final Logger log = log();
+    public static void processDescriptorSetFile(File setFile, String targetDir) {
         final Collection<FileDescriptorProto> files = parseSkipStandard(setFile.getPath());
-        final Map<String, String> propsMap = newHashMap();
 
+        final Map<String, String> propsMap = findEnrichments(files);
+
+        if (propsMap.isEmpty()) {
+            log().debug("Enrichment lookup complete. No enrichments found.");
+            return;
+        }
+
+        writeFile(propsMap, targetDir);
+    }
+
+    private static Map<String, String> findEnrichments(Collection<FileDescriptorProto> files) {
+        final Map<String, String> propsMap = newHashMap();
         for (FileDescriptorProto file : files) {
-            final Map<String, String> enrichments =
-                    new EnrichmentFinder(file).findEnrichments();
+            final EnrichmentLookup lookup = new EnrichmentLookup(file);
+            final Map<String, String> enrichments = lookup.findEnrichments();
             propsMap.putAll(enrichments);
         }
-        if (propsMap.isEmpty()) {
-            log.debug("Enrichment lookup complete. No enrichments found.");
-            return true;
-        }
+        return propsMap;
+    }
 
-        log.trace("Writing the enrichment description to {}/{}",
-                  targetDir, Resources.ENRICHMENTS);
+    private static void writeFile(Map<String, String> propsMap, String targetDir) {
+        log().debug("Writing the enrichment description to {}/{}",
+                    targetDir, Resources.ENRICHMENTS);
 
         final PropertiesWriter writer =
                 new PropertiesWriter(targetDir, Resources.ENRICHMENTS);
         writer.write(propsMap);
-        return false;
     }
 
     /**
@@ -191,11 +199,11 @@ public class EnrichmentFinder {
         final Map.Entry<String, String> entryFromInnerMsg = scanInnerMessages(msg);
         if (entryFromInnerMsg != null) {
             put(entryFromInnerMsg, targetMap);
-            log().trace("Found enrichment: {} -> {}",
+            log().debug("Found enrichment: {} -> {}",
                         entryFromInnerMsg.getKey(),
                         entryFromInnerMsg.getValue());
         } else {
-            log().trace("No enrichment or event annotations found for message {}", msg.getName());
+            log().debug("No enrichment or event annotations found for message {}", msg.getName());
         }
     }
 
@@ -206,19 +214,19 @@ public class EnrichmentFinder {
 
         final Logger log = log();
         // Treating current {@code msg} as an enrichment object.
-        log.trace("Scanning message {} for the enrichment annotations", messageName);
+        log.debug("Scanning message {} for the enrichment annotations", messageName);
         final Collection<TypeName> eventTypes = eventTypeParser.parseUnknownOption(msg);
         if (!eventTypes.isEmpty()) {
             final String mergedValue = Joiner.on(getValueSeparator())
                                              .join(eventTypes);
-            log.trace("Found target events: {}", mergedValue);
+            log.debug("Found target events: {}", mergedValue);
             msgScanResultBuilder.put(messageName, mergedValue);
         } else {
-            log.trace("No target events found");
+            log.debug("No target events found");
         }
 
         // Treating current {@code msg} as a target for enrichment (e.g. Spine event).
-        log.trace("Scanning message {} for the enrichment target annotations", messageName);
+        log.debug("Scanning message {} for the enrichment target annotations", messageName);
         final Collection<TypeName> enrichmentTypes = enrichmentTypeParser.parseUnknownOption(msg);
         if (!enrichmentTypes.isEmpty()) {
             log.debug("Found enrichments for event {}: {}", messageName, enrichmentTypes);
@@ -227,7 +235,7 @@ public class EnrichmentFinder {
                 msgScanResultBuilder.put(typeNameValue, messageName);
             }
         } else {
-            log.trace("No enrichments for event {} found", messageName);
+            log.debug("No enrichments for event {} found", messageName);
         }
 
         return msgScanResultBuilder.build();
@@ -235,7 +243,7 @@ public class EnrichmentFinder {
 
     private Map<String, String> scanFields(DescriptorProto msg) {
         final String msgName = msg.getName();
-        log().trace("Scanning fields of message {} for the enrichment annotations", msgName);
+        log().debug("Scanning fields of message {} for the enrichment annotations", msgName);
         final Map<String, String> enrichmentsMap = new HashMap<>();
         for (FieldDescriptorProto field : msg.getFieldList()) {
             if (hasOptionEnrichBy(field)) {
@@ -259,10 +267,10 @@ public class EnrichmentFinder {
                                               .isEmpty()) {
                 throw invalidByOptionValue(enrichment);
             }
-            log.trace("'by' option found on field {} targeting {}", fieldName, eventName);
+            log.debug("'by' option found on field {} targeting {}", fieldName, eventName);
 
             if (ANY_BY_OPTION_TARGET.equals(eventName)) {
-                log.trace("Skipping a wildcard event");
+                log.debug("Skipping a wildcard event");
                 // Ignore the wildcard By options, as we don't know
                 // the target event type in this case.
                 continue;
@@ -280,14 +288,14 @@ public class EnrichmentFinder {
 
     @SuppressWarnings("MethodWithMultipleLoops")    // It's fine in this case.
     private Map.Entry<String, String> scanInnerMessages(DescriptorProto msg) {
-        log().trace("Scanning inner messages of {} message for the annotations", msg.getName());
+        log().debug("Scanning inner messages of {} message for the annotations", msg.getName());
         for (DescriptorProto innerMsg : msg.getNestedTypeList()) {
             for (FieldDescriptorProto field : innerMsg.getFieldList()) {
                 if (hasOptionEnrichBy(field)) {
                     final String outerEventName = packagePrefix + msg.getName();
                     final String enrichmentName = outerEventName +
                             PROTO_TYPE_SEPARATOR + innerMsg.getName();
-                    log().trace("'by' option found on field {} targeting outer event {}",
+                    log().debug("'by' option found on field {} targeting outer event {}",
                                 field.getName(),
                                 outerEventName);
                     return new AbstractMap.SimpleEntry<>(enrichmentName, outerEventName);
@@ -369,6 +377,6 @@ public class EnrichmentFinder {
     private enum LoggerSingleton {
         INSTANCE;
         @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger logger = LoggerFactory.getLogger(EnrichmentFinder.class);
+        private final Logger logger = LoggerFactory.getLogger(EnrichmentLookup.class);
     }
 }

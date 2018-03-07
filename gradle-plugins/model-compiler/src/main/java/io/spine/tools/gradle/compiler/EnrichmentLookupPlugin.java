@@ -19,13 +19,12 @@
  */
 package io.spine.tools.gradle.compiler;
 
-import io.spine.tools.compiler.enrichment.EnrichmentFinder;
+import io.spine.tools.compiler.enrichment.EnrichmentLookup;
 import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.SpinePlugin;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
-import org.slf4j.Logger;
 
 import java.io.File;
 
@@ -101,19 +100,13 @@ public class EnrichmentLookupPlugin extends SpinePlugin {
     }
 
     private void findEnrichmentsAndWriteProps(String descriptorSetFile, String targetDir) {
-        final Logger log = log();
-        log.debug("Enrichment lookup started");
-
         final File file = new File(descriptorSetFile);
 
-        if (file.exists()) {
-            if (EnrichmentFinder.processDescriptorSetFile(file, targetDir)) {
-                return;
-            }
-        } else {
+        if (!file.exists()) {
             logMissingDescriptorSetFile(file);
+            return;
         }
 
-        log.debug("Enrichment lookup complete");
+        EnrichmentLookup.processDescriptorSetFile(file, targetDir);
     }
 }

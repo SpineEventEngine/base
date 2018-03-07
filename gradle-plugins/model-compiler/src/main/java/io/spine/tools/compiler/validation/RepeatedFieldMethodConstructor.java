@@ -112,7 +112,7 @@ class RepeatedFieldMethodConstructor implements MethodConstructor {
 
     @Override
     public Collection<MethodSpec> construct() {
-        log().trace("The methods construction for the {} repeated field is started.",
+        log().debug("The methods construction for the {} repeated field is started.",
                     javaFieldName);
 
         final List<MethodSpec> methods = newArrayList();
@@ -120,13 +120,13 @@ class RepeatedFieldMethodConstructor implements MethodConstructor {
         methods.addAll(createRepeatedMethods());
         methods.addAll(createRepeatedRawMethods());
 
-        log().trace("The methods construction for the {} repeated field is finished.",
+        log().debug("The methods construction for the {} repeated field is finished.",
                     javaFieldName);
         return methods;
     }
 
     private MethodSpec createGetter() {
-        log().trace("The getter construction for the repeated field is started.");
+        log().debug("The getter construction for the repeated field is started.");
 
         final String methodName = "get" + methodNamePart;
         final ClassName rawType = ClassName.get(List.class);
@@ -141,12 +141,12 @@ class RepeatedFieldMethodConstructor implements MethodConstructor {
                           .addStatement(returnStatement)
                           .build();
 
-        log().trace("The getter construction for the repeated field is finished.");
+        log().debug("The getter construction for the repeated field is finished.");
         return methodSpec;
     }
 
     private Collection<MethodSpec> createRepeatedRawMethods() {
-        log().trace("The raw methods construction for the repeated field is is started.");
+        log().debug("The raw methods construction for the repeated field is is started.");
 
         final List<MethodSpec> methods = newArrayList();
         methods.add(createRawAddObjectMethod());
@@ -158,7 +158,7 @@ class RepeatedFieldMethodConstructor implements MethodConstructor {
             methods.add(createRawAddObjectByIndexMethod());
         }
 
-        log().trace("The raw methods construction for the repeated field is is finished.");
+        log().debug("The raw methods construction for the repeated field is is finished.");
         return methods;
     }
 

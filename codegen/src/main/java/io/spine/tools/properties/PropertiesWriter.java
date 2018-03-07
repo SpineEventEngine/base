@@ -104,7 +104,7 @@ public class PropertiesWriter {
     }
 
     private static void prepareTargetFile(Properties props, File file) {
-        log().trace("Preparing the target file");
+        log().debug("Preparing the target file");
         if (file.exists()) {
             try {
                 final FileInputStream fis = new FileInputStream(file);

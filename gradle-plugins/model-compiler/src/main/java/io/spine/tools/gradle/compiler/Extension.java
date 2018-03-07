@@ -282,7 +282,7 @@ public class Extension {
     @SuppressWarnings("unused")
     public void setIndent(int indent) {
         this.indent = Indent.of(indent);
-        log().trace("Indent has been set to {}", generateValidatingBuilders);
+        log().debug("Indent has been set to {}", generateValidatingBuilders);
     }
 
     public static List<String> getDirsToClean(Project project) {

@@ -92,7 +92,7 @@ public class DirectoryCleaner extends SimpleFileVisitor<Path> {
     }
 
     private static void logDeletionOf(Path file) {
-        log().trace("Deleting file {}", file.toString());
+        log().debug("Deleting file {}", file.toString());
     }
 
     private enum LogSingleton {

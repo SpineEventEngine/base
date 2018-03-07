@@ -42,7 +42,7 @@ public class Rejections {
         for (FileDescriptorProto file : files) {
             final FileName fn = FileName.from(file);
             if (fn.isRejections()) {
-                log.trace("Found rejections file: {}", fn.value());
+                log.debug("Found rejections file: {}", fn.value());
 
                 // See if the file content matches conventions.
                 final SourceFile sourceFile = SourceFile.from(file);
@@ -54,7 +54,7 @@ public class Rejections {
                 }
             }
         }
-        log.trace("Found rejections in files: {}", result);
+        log.debug("Found rejections in files: {}", result);
 
         return result;
     }

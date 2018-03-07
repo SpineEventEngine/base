@@ -87,7 +87,7 @@ public class ProtoToJavaTypeMapper {
         final Logger log = log();
         final Map<String, String> propsMap = newHashMap();
         final Collection<FileDescriptorProto> files = parseSkipStandard(setFile.getPath());
-        log.trace("Starting mapping files under: {}", files);
+        log.debug("Starting mapping files under: {}", files);
         for (FileDescriptorProto file : files) {
             log.debug("Looking up file {}", file.getName());
             final Map<String, String> types = new ProtoToJavaTypeMapper(file).mapTypes();
@@ -99,7 +99,7 @@ public class ProtoToJavaTypeMapper {
         }
 
         log.debug("{} types found", files.size());
-        log.trace("Saving proto-to-java mapping: {}", files);
+        log.debug("Saving proto-to-java mapping: {}", files);
 
         final PropertiesWriter writer = new PropertiesWriter(targetDir, PROPERTIES_FILE_NAME);
         writer.write(propsMap);

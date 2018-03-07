@@ -86,7 +86,7 @@ public final class ValidationRulesLookup {
         }
 
         final String fileName = io.spine.validate.rules.ValidationRules.fileName();
-        log().trace("Writing the validation rules description to {}/{}.",
+        log().debug("Writing the validation rules description to {}/{}.",
                                                 targetDir, fileName);
         final PropertiesWriter writer = new PropertiesWriter(targetDir.getAbsolutePath(), fileName);
         writer.write(propsMap);
