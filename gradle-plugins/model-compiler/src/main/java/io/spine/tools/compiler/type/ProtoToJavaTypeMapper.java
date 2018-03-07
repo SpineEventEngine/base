@@ -25,10 +25,10 @@ import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.EnumDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
+import io.spine.Resources;
 import io.spine.tools.compiler.fieldtype.FieldTypes;
 import io.spine.tools.java.SimpleClassName;
 import io.spine.tools.properties.PropertiesWriter;
-import io.spine.type.KnownTypes;
 import io.spine.type.TypeUrl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,11 +61,12 @@ public class ProtoToJavaTypeMapper {
 
     private static final String GOOGLE_TYPE_URL_PREFIX = TypeUrl.Prefix.GOOGLE_APIS.value();
     private static final String PROTO_TYPE_URL_SEPARATOR = "/";
+
     /**
      * The name of the file to populate. NOTE: also change its name used
      * in the `core-java` project on changing.
      */
-    private static final String PROPERTIES_FILE_NAME = KnownTypes.PROPS_FILE_PATH;
+    private static final String PROPERTIES_FILE_NAME = Resources.KNOWN_TYPES;
 
     private final FileDescriptorProto file;
 

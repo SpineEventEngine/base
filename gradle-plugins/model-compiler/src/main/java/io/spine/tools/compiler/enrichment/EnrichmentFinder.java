@@ -26,8 +26,10 @@ import com.google.common.collect.Multimap;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
+import io.spine.Resources;
 import io.spine.option.TypeNameParser;
 import io.spine.tools.properties.PropertiesWriter;
+import io.spine.tools.properties.PropertyFile;
 import io.spine.type.TypeName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,13 +78,8 @@ public class EnrichmentFinder {
     private static final String ANY_BY_OPTION_TARGET = "*";
     private static final String PIPE_SEPARATOR = "|";
     private static final Pattern PATTERN_PIPE_SEPARATOR = compile("\\|");
-    /**
-     * The name of the file to populate.
-     *
-     * <p>NOTE: the filename is referenced by {@code core-java} as well,
-     * make sure to update {@code core-java} project upon changing this value.
-     */
-    private static final String PROPS_FILE_NAME = "enrichments.properties";
+
+    private static final PropertyFile enrichments = PropertyFile.of(Resources.ENRICHMENTS);
 
     private final FileDescriptorProto file;
     private final String packagePrefix;
@@ -117,10 +114,10 @@ public class EnrichmentFinder {
         }
 
         log.trace("Writing the enrichment description to {}/{}",
-                    targetDir, PROPS_FILE_NAME);
+                  targetDir, Resources.ENRICHMENTS);
 
         final PropertiesWriter writer =
-                new PropertiesWriter(targetDir, PROPS_FILE_NAME);
+                new PropertiesWriter(targetDir, Resources.ENRICHMENTS);
         writer.write(propsMap);
         return false;
     }

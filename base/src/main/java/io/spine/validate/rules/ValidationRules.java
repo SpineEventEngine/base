@@ -22,6 +22,7 @@ package io.spine.validate.rules;
 
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableSet;
+import io.spine.Resources;
 import io.spine.option.ValidationTargetParser;
 import io.spine.util.PropertyFiles;
 
@@ -37,11 +38,6 @@ import java.util.Properties;
  * @author Dmytro Grankin
  */
 public class ValidationRules {
-
-    /**
-     * A name of the file, which contains validation rules and their target field paths.
-     */
-    private static final String VAL_RULES_PROPS_FILE_NAME = "validation_rules.properties";
 
     private static final ImmutableCollection<ValidationRule> rules = new Builder().build();
 
@@ -61,12 +57,12 @@ public class ValidationRules {
     }
 
     public static String fileName() {
-        return VAL_RULES_PROPS_FILE_NAME;
+        return Resources.VALIDATION_RULES;
     }
 
     /**
-     * {@code Builder} assembles the validation rules from the
-     * {@linkplain #VAL_RULES_PROPS_FILE_NAME properties} files.
+     * {@code Builder} assembles the validation rules from the {@linkplain #fileName() properties}
+     * files.
      *
      * <p>All the files from the classpath will be taken into an account.
      *
@@ -88,7 +84,7 @@ public class ValidationRules {
         private final ImmutableCollection.Builder<ValidationRule> rules;
 
         private Builder() {
-            this.properties = PropertyFiles.loadAllProperties(VAL_RULES_PROPS_FILE_NAME);
+            this.properties = PropertyFiles.loadAllProperties(Resources.VALIDATION_RULES);
             this.rules = ImmutableSet.builder();
         }
 
