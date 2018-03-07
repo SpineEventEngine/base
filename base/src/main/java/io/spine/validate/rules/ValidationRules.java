@@ -45,8 +45,8 @@ public class ValidationRules {
 
     private static final ImmutableCollection<ValidationRule> rules = new Builder().build();
 
+    /** Prevent instantiation of this class. */
     private ValidationRules() {
-        // Prevent instantiation of this class.
     }
 
     /**

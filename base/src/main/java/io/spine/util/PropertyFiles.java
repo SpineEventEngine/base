@@ -33,6 +33,7 @@ import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.IoUtil.close;
+import static java.lang.String.format;
 
 /**
  * Utilities for working with property files.
@@ -42,12 +43,8 @@ import static io.spine.util.IoUtil.close;
  */
 public class PropertyFiles {
 
+    /** Prevents instantiation of this utility class. */
     private PropertyFiles() {
-        // Prevent instantiation of this utility class.
-    }
-
-    private static Logger log() {
-        return LogSingleton.INSTANCE.value;
     }
 
     /**
@@ -80,9 +77,7 @@ public class PropertyFiles {
         try {
             resources = classLoader.getResources(propsFilePath);
         } catch (IOException e) {
-            if (log().isWarnEnabled()) {
-                log().warn("Failed to load resources: " + propsFilePath, e);
-            }
+            warn(e, "Failed to load resources: %s", propsFilePath);
         }
         return resources;
     }
@@ -94,9 +89,7 @@ public class PropertyFiles {
             inputStream = resourceUrl.openStream();
             properties.load(inputStream);
         } catch (IOException e) {
-            if (log().isWarnEnabled()) {
-                log().warn("Failed to load properties file from: " + resourceUrl, e);
-            }
+            warn(e, "Failed to load properties file from: %s", resourceUrl);
         } finally {
             close(inputStream);
         }
@@ -104,7 +97,20 @@ public class PropertyFiles {
     }
 
     private static ClassLoader getContextClassLoader() {
-        return Thread.currentThread().getContextClassLoader();
+        return Thread.currentThread()
+                     .getContextClassLoader();
+    }
+
+    private static void warn(Throwable e, String errorFormat, Object... params) {
+        final Logger log = log();
+        if (log.isWarnEnabled()) {
+            final String msg = format(errorFormat, params);
+            log.warn(msg, e);
+        }
+    }
+
+    private static Logger log() {
+        return LogSingleton.INSTANCE.value;
     }
 
     private enum LogSingleton {
