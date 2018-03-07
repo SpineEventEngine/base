@@ -20,6 +20,7 @@
 
 package io.spine.tools.properties;
 
+import com.google.common.collect.ImmutableMap;
 import io.spine.tools.AbstractSourceFile;
 import io.spine.tools.SourceCodeDirectory;
 
@@ -28,6 +29,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Map;
 import java.util.Properties;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -71,12 +73,19 @@ public class PropertyFile extends AbstractSourceFile {
     /**
      * Loads properties stored in the file.
      */
-    public Properties load() {
+    public Map<String, String> load() {
         try {
             final InputStream inputStream = new FileInputStream(getPath().toFile());
             final Properties properties = new Properties();
             properties.load(inputStream);
-            return properties;
+
+            // Convert `Properties` to `Map`.
+            final ImmutableMap.Builder<String, String> result = ImmutableMap.builder();
+            for (final String name: properties.stringPropertyNames()) {
+                result.put(name, properties.getProperty(name));
+            }
+
+            return result.build();
         } catch (IOException e) {
             throw illegalStateWithCauseOf(e);
         }
