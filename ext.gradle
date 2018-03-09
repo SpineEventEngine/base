@@ -58,14 +58,14 @@ ext {
      *
      * This version is independent from the version of both `base` and `model-compiler`.
      */
-    spineToolsVersion = '0.10.29-SNAPSHOT'
+    spineToolsVersion = '0.9.52-SNAPSHOT'
 
     /**
      * The version of the Spine `model-compiler` plugin which is used to build `base`.
      *
      * Use the latest currently published version here.
      */
-    spineModelCompilerVersion = '0.10.26-SNAPSHOT'
+    spineModelCompilerVersion = '0.10.1-SNAPSHOT'
 
     protobufGradlePluginVerison = '0.8.4'
 }
