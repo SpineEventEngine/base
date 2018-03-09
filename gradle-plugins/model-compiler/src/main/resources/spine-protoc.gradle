@@ -31,8 +31,8 @@ import java.nio.file.StandardCopyOption
  * the required data. Thus, it is OK for this file to have compilation errors.
  */
 
-// Template for the versions injection. See model-compiler:prepareProtocConfig.
-final def spineModelCompilerVersion = spineVersion
+// Injected version variables. See model-compiler:prepareProtocConfig.
+final def spineModelCompilerVersion = '0.10.29-SNAPSHOT'
 final def protobufVersion = '3.5.1'
 final def gRpcVersion = '1.9.0'
 final def spineFolderName = '.spine'
