@@ -107,17 +107,14 @@ task prepareProtocConfig(type: Copy) {
     from "./spine-protoc.gradle.template"
     into "./src/main/resources/"
 
-    rename "./src/main/resources/spine-protoc.gradle.template",
-            "./src/main/resources/spine-protoc.gradle"
-
-    delete "./src/main/resources/spine-protoc.gradle.template"
+    rename { "./spine-protoc.gradle" }
     
     filter(ReplaceTokens,
             tokens: ['baseVersion': "'$project.spineVersion'".toString(),
                      'pbVersion'  : "'$project.protobufVersion'".toString(),
                      'gRPCVersion': "'$project.gRpcVersion'".toString(),
                      // See `io.spine.tools.DefaultProject.tempArtifacts()`
-                     'spineDir'   : '.spine'])
+                     'spineDir'   : "'.spine'"])
     outputs.upToDateWhen { false }
 }
 
