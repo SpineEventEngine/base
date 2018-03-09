@@ -65,7 +65,7 @@ ext {
      *
      * Use the latest currently published version here.
      */
-    spineModelCompilerVersion = '0.10.29-SNAPSHOT'
+    spineModelCompilerVersion = '0.10.26-SNAPSHOT'
 
     protobufGradlePluginVerison = '0.8.4'
 }
