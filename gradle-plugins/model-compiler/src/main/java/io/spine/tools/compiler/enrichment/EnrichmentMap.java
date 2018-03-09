@@ -63,7 +63,7 @@ class EnrichmentMap {
         this.enrichmentTypeParser = new TypeNameParser(enrichment, packagePrefix);
     }
 
-    Map<String, String> findEnrichments(Iterable<DescriptorProto> messages) {
+    Map<String, String> allOf(Iterable<DescriptorProto> messages) {
         final HashMultimap<String, String> multimap = HashMultimap.create();
         for (DescriptorProto msg : messages) {
             handleMessage(multimap, msg);

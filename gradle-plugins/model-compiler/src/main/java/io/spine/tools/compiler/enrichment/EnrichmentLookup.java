@@ -62,7 +62,7 @@ public class EnrichmentLookup {
         final Map<String, String> propsMap = newHashMap();
         for (FileDescriptorProto file : files) {
             final EnrichmentFinder lookup = new EnrichmentFinder(file);
-            final Map<String, String> enrichments = lookup.findEnrichments();
+            final Map<String, String> enrichments = lookup.findAll();
             propsMap.putAll(enrichments);
         }
         return propsMap;
