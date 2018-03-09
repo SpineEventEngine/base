@@ -32,15 +32,13 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import static com.google.common.base.Preconditions.checkState;
 import static io.spine.option.OptionsProto.BY_FIELD_NUMBER;
 import static io.spine.option.RawListParser.getValueSeparator;
-import static io.spine.option.UnknownOptions.getUnknownOptionValue;
 import static io.spine.option.UnknownOptions.hasUnknownOption;
+import static io.spine.tools.compiler.enrichment.EnrichmentFinder.PROTO_TYPE_SEPARATOR;
 import static io.spine.util.Exceptions.newIllegalStateException;
-import static java.util.regex.Pattern.compile;
 
 /**
  * Obtains event names from the {@code "by"} field option of a message.
@@ -59,9 +57,6 @@ class ByOption {
      */
     private static final String ANY_BY_OPTION_TARGET = "*";
 
-    private static final String PIPE_SEPARATOR = "|";
-    private static final Pattern PATTERN_PIPE_SEPARATOR = compile("\\|");
-
     private final String packagePrefix;
     private final DescriptorProto message;
     private final FieldDescriptorProto field;
@@ -78,8 +73,7 @@ class ByOption {
 
     Map.Entry<String, String> collect() {
         final Collection<String> eventNamesFromBy = parse();
-        final Map.Entry<String, String> result =
-                group(eventNamesFromBy);
+        final Map.Entry<String, String> result = group(eventNamesFromBy);
         return result;
     }
 
@@ -88,7 +82,7 @@ class ByOption {
      * the given field.
      */
     private List<String> parse() {
-        final String[] fieldRefs = fieldReferences(field);
+        final String[] fieldRefs = FieldReference.allFrom(field);
 
         final ImmutableList.Builder<String> result = ImmutableList.builder();
 
@@ -101,32 +95,19 @@ class ByOption {
                 // the event type if the type was not specified with a `enrichment_for` annotation
                 throw invalidByOptionUsage(field.getName());
             }
-            final int index = fieldRef.lastIndexOf(EnrichmentFinder.PROTO_TYPE_SEPARATOR);
+            final int index = fieldRef.lastIndexOf(PROTO_TYPE_SEPARATOR);
             if (index < 0) {
                 // The short form type names are handled as inner types
                 continue;
             }
-            final String typeFqn = fieldRef.substring(0, index)
-                                           .trim();
-            checkState(!typeFqn.isEmpty(),
+            final String fullTypeName = fieldRef.substring(0, index)
+                                                .trim();
+            checkState(!fullTypeName.isEmpty(),
                        "Error parsing `by` annotation for field %s", field.getName());
-            result.add(typeFqn);
+            result.add(fullTypeName);
         }
 
         return result.build();
-    }
-
-    @SuppressWarnings("IndexOfReplaceableByContains") // On performance purposes
-    private static String[] fieldReferences(FieldDescriptorProto field) {
-        final String byArgument = getUnknownOptionValue(field, BY_FIELD_NUMBER);
-        final String[] fieldFqnsArray;
-
-        if (byArgument.indexOf(PIPE_SEPARATOR) < 0) {
-            fieldFqnsArray = new String[]{byArgument};
-        } else {
-            fieldFqnsArray = PATTERN_PIPE_SEPARATOR.split(byArgument);
-        }
-        return fieldFqnsArray;
     }
 
     private Map.Entry<String, String> group(Collection<String> events) {
