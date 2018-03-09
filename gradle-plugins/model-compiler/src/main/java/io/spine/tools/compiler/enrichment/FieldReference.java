@@ -20,13 +20,18 @@
 
 package io.spine.tools.compiler.enrichment;
 
+import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import io.spine.type.StringTypeValue;
 
+import java.util.List;
 import java.util.regex.Pattern;
 
+import static com.google.common.base.Preconditions.checkState;
 import static io.spine.option.OptionsProto.BY_FIELD_NUMBER;
 import static io.spine.option.UnknownOptions.getUnknownOptionValue;
+import static io.spine.tools.compiler.enrichment.EnrichmentFinder.PROTO_TYPE_SEPARATOR;
+import static io.spine.util.Exceptions.newIllegalArgumentException;
 import static java.util.regex.Pattern.compile;
 
 /**
@@ -36,19 +41,65 @@ import static java.util.regex.Pattern.compile;
  */
 class FieldReference extends StringTypeValue {
 
+    /**
+     * Wildcard option used in {@code "by"} field option.
+     *
+     * <p>{@code string enrichment_value [(by) = "*.my_event_id"];} tells that this enrichment
+     * may have any target event types. That's why an FQN of the target type is replaced by
+     * this wildcard option.
+     */
+    static final String ANY_BY_OPTION_TARGET = "*";
+
     private static final String PIPE_SEPARATOR = "|";
     private static final Pattern PATTERN_PIPE_SEPARATOR = compile("\\|");
 
-    FieldReference(String value) {
+    private FieldReference(String value) {
         super(value);
     }
 
-    static String[] allFrom(FieldDescriptorProto field) {
+    static List<FieldReference> allFrom(FieldDescriptorProto field) {
+        final String[] found = parse(field);
+
+        final ImmutableList.Builder<FieldReference> result = ImmutableList.builder();
+        for (String ref : found) {
+            result.add(new FieldReference(ref));
+        }
+        return result.build();
+    }
+
+    private static String[] parse(FieldDescriptorProto field) {
         final String byArgument = getUnknownOptionValue(field, BY_FIELD_NUMBER);
+        if (byArgument == null) {
+            throw newIllegalArgumentException("There is no `by` option in the passed field %s",
+                                              field.getName());
+        }
+
         final String[] result;
         result = byArgument.contains(PIPE_SEPARATOR)
                 ? PATTERN_PIPE_SEPARATOR.split(byArgument)
                 : new String[]{byArgument};
+        return result;
+    }
+
+    boolean isWildcard() {
+        final boolean result = value().startsWith(ANY_BY_OPTION_TARGET);
+        return result;
+    }
+
+    boolean isInner() {
+        final boolean result = !value().contains(PROTO_TYPE_SEPARATOR);
+        return result;
+    }
+
+    /**
+     * Obtains the type name from the reference.
+     */
+    String getType() {
+        final String value = value();
+        final int index = value.lastIndexOf(PROTO_TYPE_SEPARATOR);
+        checkState(index > 0, "The field reference does not have the type (`%s`)", value);
+        final String result = value.substring(0, index)
+                                   .trim();
         return result;
     }
 }

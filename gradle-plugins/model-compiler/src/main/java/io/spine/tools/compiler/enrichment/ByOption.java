@@ -33,11 +33,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import static com.google.common.base.Preconditions.checkState;
 import static io.spine.option.OptionsProto.BY_FIELD_NUMBER;
 import static io.spine.option.RawListParser.getValueSeparator;
 import static io.spine.option.UnknownOptions.hasUnknownOption;
-import static io.spine.tools.compiler.enrichment.EnrichmentFinder.PROTO_TYPE_SEPARATOR;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
@@ -47,15 +45,6 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  * @author Alexander Yevsyukov
  */
 class ByOption {
-
-    /**
-     * Wildcard option used in {@code "by"} field option.
-     *
-     * <p>{@code string enrichment_value [(by) = "*.my_event_id"];} tells that this enrichment
-     * may have any target event types. That's why an FQN of the target type is replaced by
-     * this wildcard option.
-     */
-    private static final String ANY_BY_OPTION_TARGET = "*";
 
     private final String packagePrefix;
     private final DescriptorProto message;
@@ -82,28 +71,22 @@ class ByOption {
      * the given field.
      */
     private List<String> parse() {
-        final String[] fieldRefs = FieldReference.allFrom(field);
+        final List<FieldReference> fieldRefs = FieldReference.allFrom(field);
 
         final ImmutableList.Builder<String> result = ImmutableList.builder();
-
-        for (String fieldRef : fieldRefs) {
-            if (fieldRef == null) {
-                throw invalidByOptionValue(field.getName());
-            }
-            if (fieldRef.startsWith(ANY_BY_OPTION_TARGET) && fieldRefs.length > 1) {
+        for (FieldReference fieldRef : fieldRefs) {
+            if (fieldRef.isWildcard() && fieldRefs.size() > 1) {
                 // Multiple argument `by` annotation can not contain wildcard reference onto
                 // the event type if the type was not specified with a `enrichment_for` annotation
                 throw invalidByOptionUsage(field.getName());
             }
-            final int index = fieldRef.lastIndexOf(PROTO_TYPE_SEPARATOR);
-            if (index < 0) {
-                // The short form type names are handled as inner types
+
+            if (fieldRef.isInner()) {
+                // The short form type names are handled as inner types.
                 continue;
             }
-            final String fullTypeName = fieldRef.substring(0, index)
-                                                .trim();
-            checkState(!fullTypeName.isEmpty(),
-                       "Error parsing `by` annotation for field %s", field.getName());
+
+            final String fullTypeName = fieldRef.getType();
             result.add(fullTypeName);
         }
 
@@ -122,7 +105,7 @@ class ByOption {
             }
             log.debug("'by' option found on field {} targeting {}", fieldName, eventName);
 
-            if (ANY_BY_OPTION_TARGET.equals(eventName)) {
+            if (FieldReference.ANY_BY_OPTION_TARGET.equals(eventName)) {
                 log.warn("Skipping a wildcard event");
                 /* Ignore the wildcard `by` options, as we don't know
                    the target event type in this case. */
