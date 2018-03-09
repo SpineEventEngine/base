@@ -23,7 +23,6 @@ package io.spine.tools.compiler.enrichment;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.Resources;
 import io.spine.tools.properties.PropertiesWriter;
-import io.spine.tools.properties.PropertyFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,8 +41,6 @@ import static io.spine.tools.proto.FileDescriptors.parseSkipStandard;
  */
 public class EnrichmentLookup {
 
-    private static final PropertyFile enrichments = PropertyFile.of(Resources.ENRICHMENTS);
-
     /** Prevents instantiation of this utility class. */
     private EnrichmentLookup() {
     }
@@ -51,7 +48,7 @@ public class EnrichmentLookup {
     public static void processDescriptorSetFile(File setFile, String targetDir) {
         final Collection<FileDescriptorProto> files = parseSkipStandard(setFile.getPath());
 
-        final Map<String, String> propsMap = findEnrichments(files);
+        final Map<String, String> propsMap = findAll(files);
 
         if (propsMap.isEmpty()) {
             log().debug("Enrichment lookup complete. No enrichments found.");
@@ -61,7 +58,7 @@ public class EnrichmentLookup {
         writeTo(propsMap, targetDir);
     }
 
-    private static Map<String, String> findEnrichments(Iterable<FileDescriptorProto> files) {
+    private static Map<String, String> findAll(Iterable<FileDescriptorProto> files) {
         final Map<String, String> propsMap = newHashMap();
         for (FileDescriptorProto file : files) {
             final EnrichmentFinder lookup = new EnrichmentFinder(file);

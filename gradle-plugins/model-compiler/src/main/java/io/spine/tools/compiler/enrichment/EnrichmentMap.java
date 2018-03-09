@@ -24,8 +24,8 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
-import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
+import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import io.spine.option.TypeNameParser;
 import io.spine.type.TypeName;
 import org.slf4j.Logger;
@@ -178,7 +178,7 @@ class EnrichmentMap {
         final String msgName = msg.getName();
         log().debug("Scanning fields of message {} for the enrichment annotations", msgName);
         final Map<String, String> enrichmentsMap = new HashMap<>();
-        for (DescriptorProtos.FieldDescriptorProto field : msg.getFieldList()) {
+        for (FieldDescriptorProto field : msg.getFieldList()) {
             if (ByOption.isSetFor(field)) {
                 final ByOption by = new ByOption(packagePrefix, msg, field);
                 final Map.Entry<String, String> foundEvents = by.collect();
@@ -194,7 +194,7 @@ class EnrichmentMap {
         final Logger log = log();
         log.debug("Scanning inner messages of {} message for the annotations", msg.getName());
         for (DescriptorProto innerMsg : msg.getNestedTypeList()) {
-            for (DescriptorProtos.FieldDescriptorProto field : innerMsg.getFieldList()) {
+            for (FieldDescriptorProto field : innerMsg.getFieldList()) {
                 if (ByOption.isSetFor(field)) {
                     final String outerEventName = packagePrefix + msg.getName();
                     final String enrichmentName =
