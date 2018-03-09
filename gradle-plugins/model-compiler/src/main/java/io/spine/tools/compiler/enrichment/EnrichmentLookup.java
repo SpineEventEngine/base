@@ -37,6 +37,8 @@ import static io.spine.tools.proto.FileDescriptors.parseSkipStandard;
  * Parses descriptor set file and creates enrichments map for discovered enrichment
  * definitions.
  *
+ * @author Alexander Litus
+ * @author Alex Tymchenko
  * @author Alexander Yevsyukov
  */
 public class EnrichmentLookup {
@@ -45,6 +47,11 @@ public class EnrichmentLookup {
     private EnrichmentLookup() {
     }
 
+    /**
+     * Takes enrichment information from all the proto types found in the passed descriptor
+     * set file and generates the {@linkplain Resources#ENRICHMENTS resource file} in the
+     * specified directory.
+     */
     public static void processDescriptorSetFile(File setFile, String targetDir) {
         final Collection<FileDescriptorProto> files = parseSkipStandard(setFile.getPath());
 
@@ -70,10 +77,8 @@ public class EnrichmentLookup {
 
     private static void writeTo(Map<String, String> propsMap, String targetDir) {
         log().debug("Writing the enrichment description to {}/{}",
-                                     targetDir, Resources.ENRICHMENTS);
-
-        final PropertiesWriter writer =
-                new PropertiesWriter(targetDir, Resources.ENRICHMENTS);
+                    targetDir, Resources.ENRICHMENTS);
+        final PropertiesWriter writer = new PropertiesWriter(targetDir, Resources.ENRICHMENTS);
         writer.write(propsMap);
     }
 
