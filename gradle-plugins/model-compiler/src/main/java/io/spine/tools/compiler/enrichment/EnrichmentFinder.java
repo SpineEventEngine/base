@@ -33,7 +33,7 @@ import java.util.Map;
  * @author Alexander Litus
  * @author Alex Tymchenko
  */
-public class EnrichmentFinder {
+class EnrichmentFinder {
 
     static final String PROTO_TYPE_SEPARATOR = ".";
 
