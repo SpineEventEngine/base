@@ -32,6 +32,7 @@ import static java.util.Collections.emptyList;
 /**
  * A parser for {@linkplain UnknownOptions unknown options}.
  *
+ * @param <O> the type of the options
  * @param <D> the type of the descriptor to obtain the option
  * @param <R> the type of an element to be returned after parsing
  * @author Dmytro Grankin
