@@ -18,10 +18,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.option;
+package io.spine.validate.rules;
 
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.MessageOptions;
+import io.spine.option.OptionsProto;
+import io.spine.option.RawListParser;
+import io.spine.option.UnknownOptions;
 
 import static io.spine.option.OptionsProto.validationOf;
 
@@ -30,7 +33,7 @@ import static io.spine.option.OptionsProto.validationOf;
  *
  * @author Dmytro Grankin
  */
-public class ValidationTargetParser extends RawListParser<MessageOptions, DescriptorProto, String> {
+class ValidationTargetParser extends RawListParser<MessageOptions, DescriptorProto, String> {
 
     private ValidationTargetParser() {
         super(validationOf);

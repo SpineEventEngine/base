@@ -23,7 +23,6 @@ package io.spine.validate.rules;
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableSet;
 import io.spine.Resources;
-import io.spine.option.ValidationTargetParser;
 import io.spine.util.PropertyFiles;
 
 import java.util.Collection;

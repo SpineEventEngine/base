@@ -18,11 +18,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.option;
+package io.spine.tools.compiler.enrichment;
 
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.MessageOptions;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
+import io.spine.option.RawListParser;
+import io.spine.option.UnknownOptions;
 import io.spine.type.TypeName;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -32,7 +34,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  * @author Dmytro Grankin
  */
-public class TypeNameParser extends RawListParser<MessageOptions, DescriptorProto, TypeName> {
+class TypeNameParser extends RawListParser<MessageOptions, DescriptorProto, TypeName> {
 
     private static final String PACKAGE_SEPARATOR = ".";
 
