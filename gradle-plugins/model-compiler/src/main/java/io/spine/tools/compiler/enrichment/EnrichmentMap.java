@@ -63,6 +63,9 @@ class EnrichmentMap {
         this.enrichmentType = new TypeNameValue(enrichment, packagePrefix);
     }
 
+    /**
+     * Obtains enrichment information found in the passed messages.
+     */
     Map<String, String> allOf(Iterable<DescriptorProto> messages) {
         final HashMultimap<String, String> multimap = HashMultimap.create();
         for (DescriptorProto msg : messages) {
