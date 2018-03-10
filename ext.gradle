@@ -38,7 +38,7 @@
  *
  * This is also the version which the artifacts are published with.
  */
-def final SPINE_VERSION = '0.10.29-SNAPSHOT'
+def final SPINE_VERSION = '0.10.30-SNAPSHOT'
 
 ext {
     spineVersion = SPINE_VERSION
@@ -65,7 +65,7 @@ ext {
      *
      * Use the latest currently published version here.
      */
-    spineModelCompilerVersion = '0.10.29-SNAPSHOT'
+    spineModelCompilerVersion = '0.10.30-SNAPSHOT'
 
     protobufGradlePluginVerison = '0.8.4'
 }
