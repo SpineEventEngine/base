@@ -54,13 +54,13 @@ class EnrichmentMap {
     private static final String EMPTY_TYPE_NAME = "";
 
     private final String packagePrefix;
-    private final TypeNameValue eventTypeParser;
-    private final TypeNameValue enrichmentTypeParser;
+    private final TypeNameValue eventType;
+    private final TypeNameValue enrichmentType;
 
     EnrichmentMap(String packagePrefix) {
         this.packagePrefix = packagePrefix;
-        this.eventTypeParser = new TypeNameValue(enrichmentFor, packagePrefix);
-        this.enrichmentTypeParser = new TypeNameValue(enrichment, packagePrefix);
+        this.eventType = new TypeNameValue(enrichmentFor, packagePrefix);
+        this.enrichmentType = new TypeNameValue(enrichment, packagePrefix);
     }
 
     Map<String, String> allOf(Iterable<DescriptorProto> messages) {
@@ -148,7 +148,7 @@ class EnrichmentMap {
         final Logger log = log();
         // Treating current {@code msg} as an enrichment object.
         log.debug("Scanning message {} for the enrichment annotations", messageName);
-        final Collection<TypeName> eventTypes = eventTypeParser.parseUnknownOption(msg);
+        final Collection<TypeName> eventTypes = eventType.parse(msg);
         if (!eventTypes.isEmpty()) {
             final String mergedValue = Joiner.on(getValueSeparator())
                                              .join(eventTypes);
@@ -160,7 +160,7 @@ class EnrichmentMap {
 
         // Treating current {@code msg} as a target for enrichment (e.g. Spine event).
         log.debug("Scanning message {} for the enrichment target annotations", messageName);
-        final Collection<TypeName> enrichmentTypes = enrichmentTypeParser.parseUnknownOption(msg);
+        final Collection<TypeName> enrichmentTypes = enrichmentType.parse(msg);
         if (!enrichmentTypes.isEmpty()) {
             log.debug("Found enrichments for event {}: {}", messageName, enrichmentTypes);
             for (TypeName enrichmentType : enrichmentTypes) {

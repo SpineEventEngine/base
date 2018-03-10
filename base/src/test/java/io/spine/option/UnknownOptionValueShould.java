@@ -46,14 +46,14 @@ public class UnknownOptionValueShould {
     public void return_empty_collection_if_option_is_not_present() {
         final DescriptorProto definitionWithoutOption = StringValue.getDescriptor()
                                                                    .toProto();
-        final Collection<String> result = parser.parseUnknownOption(definitionWithoutOption);
+        final Collection<String> result = parser.parse(definitionWithoutOption);
         assertTrue(result.isEmpty());
     }
 
     @Test
     public void parse_unknown_option_if_option_is_present() {
         final DescriptorProto descriptor = AnUnknownOptionValue.MESSAGE_WITH_OPTION;
-        final Collection<String> result = parser.parseUnknownOption(descriptor);
+        final Collection<String> result = parser.parse(descriptor);
         assertFalse(result.isEmpty());
     }
 
@@ -74,7 +74,7 @@ public class UnknownOptionValueShould {
 
         @SuppressWarnings("ReturnOfNull") // Contract of the method.
         @Override
-        protected String getUnknownOptionValue(DescriptorProto descriptor, int optionNumber) {
+        protected String get(DescriptorProto descriptor) {
             return descriptor.equals(MESSAGE_WITH_OPTION)
                     ? UNKNOWN_OPTION_VALUE
                     : null;

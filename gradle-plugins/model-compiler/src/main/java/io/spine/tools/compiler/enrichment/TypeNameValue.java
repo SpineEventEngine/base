@@ -43,15 +43,14 @@ class TypeNameValue extends RawListValue<MessageOptions, DescriptorProto, TypeNa
      */
     private final String packagePrefix;
 
-    public TypeNameValue(GeneratedExtension<MessageOptions, String> option,
-                         String packagePrefix) {
+    TypeNameValue(GeneratedExtension<MessageOptions, String> option, String packagePrefix) {
         super(option);
         this.packagePrefix = checkNotNull(packagePrefix);
     }
 
     @Override
-    protected String getUnknownOptionValue(DescriptorProto descriptor, int optionNumber) {
-        return UnknownOptions.get(descriptor, optionNumber);
+    protected String get(DescriptorProto descriptor) {
+        return UnknownOptions.get(descriptor, getOptionNumber());
     }
 
     /**

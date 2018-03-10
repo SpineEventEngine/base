@@ -18,55 +18,35 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.compiler.enrichment;
+package io.spine.validate.rules;
 
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.StringValue;
-import io.spine.type.TypeName;
 import org.junit.Test;
 
 import java.util.Collection;
 
-import static io.spine.option.OptionsProto.enrichment;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 /**
  * @author Dmytro Grankin
  */
-public class TypeNameParserShould {
+public class ValidationTargetValueShould {
 
-    private static final String PACKAGE_PREFIX = "foo.bar.";
-    private static final String MESSAGE_NAME = "AMessage";
-
-    private final TypeNameValue parser = new TypeNameValue(enrichment, PACKAGE_PREFIX);
+    private final ValidationTargetValue value = ValidationTargetValue.getInstance();
 
     @Test
-    public void add_package_prefix_to_unqualified_type() {
-        final Collection<TypeName> parsedTypes = parser.parse(MESSAGE_NAME);
-        assertEquals(1, parsedTypes.size());
-
-        final TypeName result = parsedTypes.iterator()
-                                           .next();
-        assertEquals(PACKAGE_PREFIX + MESSAGE_NAME, result.value());
-    }
-
-    @Test
-    public void not_add_package_prefix_to_fully_qualified_type() {
-        final String fqn = PACKAGE_PREFIX + MESSAGE_NAME;
-        final Collection<TypeName> parsedTypes = parser.parse(fqn);
-        assertEquals(1, parsedTypes.size());
-
-        final TypeName result = parsedTypes.iterator()
-                                           .next();
-        assertEquals(fqn, result.value());
+    public void not_prepare_additional_actions_with_option_part() {
+        final String value = "a value";
+        assertSame(value, this.value.asElement(value));
     }
 
     @Test
     public void return_empty_collection_if_option_is_not_present() {
         final DescriptorProto definitionWithoutOption = StringValue.getDescriptor()
-                                                                   .toProto();
-        final Collection<TypeName> result = parser.parseUnknownOption(definitionWithoutOption);
+                                                                                    .toProto();
+        final Collection<String> result = value.parse(definitionWithoutOption);
         assertTrue(result.isEmpty());
     }
 }

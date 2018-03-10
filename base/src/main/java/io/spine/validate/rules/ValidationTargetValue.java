@@ -40,8 +40,8 @@ class ValidationTargetValue extends RawListValue<MessageOptions, DescriptorProto
     }
 
     @Override
-    protected String getUnknownOptionValue(DescriptorProto descriptor, int optionNumber) {
-        return UnknownOptions.get(descriptor, optionNumber);
+    protected String get(DescriptorProto descriptor) {
+        return UnknownOptions.get(descriptor, getOptionNumber());
     }
 
     /**
