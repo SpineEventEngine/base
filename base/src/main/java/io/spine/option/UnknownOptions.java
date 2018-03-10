@@ -36,18 +36,10 @@ import static com.google.common.collect.Maps.newHashMap;
 import static java.util.Collections.emptyMap;
 
 /**
- * A utility class which helps to get "unknown" Protobuf option field numbers
- * (as in option type declaration) and option values.
+ * A utility class for obtaining "unknown" Protobuf option values.
  *
- * <p>For example, a map with pairs:
- *
- * <p>{@code 50123 -> "option_string_value_1"}
- * <p>{@code 50124 -> "option_string_value_2"}
- *
- * <p>An option is "unknown" and serialized if there is no dependency on the artifact
+ * <p>An option is "unknown" if there is no dependency on the artifact
  * which contains the needed option definition.
- * For example, we should not depend on "Spine/core-java" project artifacts to avoid
- * circular dependency.
  *
  * <p>There can be several option properties, and several same numbers in the options string:
  *
@@ -73,10 +65,16 @@ public class UnknownOptions {
     /**
      * Obtains a map from "unknown" Protobuf option field numbers to option values.
      *
+     * <p>For example:
+     * <ul>
+     *     <li>{@code 50123 -> "option_string_value_1"}
+     *     <li>{@code 50124 -> "option_string_value_2"}
+     * </ul>
+     *
      * @param file the file descriptor, from which to get options
      * @return a file option number to an option value map
      */
-    private static Map<Integer, String> getUnknownOptions(FileDescriptorProto file) {
+    private static Map<Integer, String> getAll(FileDescriptorProto file) {
         final UnknownFieldSet unknownFields = file.getOptions()
                                                   .getUnknownFields();
         final Map<Integer, String> result = extractOptions(unknownFields);
@@ -91,7 +89,7 @@ public class UnknownOptions {
      * @param messageOptionNumber the option number for the option to check
      * @return {@code} true if the message has the option
      */
-    public static boolean hasUnknownOption(DescriptorProto message, int messageOptionNumber) {
+    public static boolean hasOption(DescriptorProto message, int messageOptionNumber) {
         final UnknownFieldSet unknownFields = message.getOptions()
                                                      .getUnknownFields();
         return containsField(unknownFields, messageOptionNumber);
@@ -105,8 +103,8 @@ public class UnknownOptions {
      * @param optionFieldNumber the requested option field number
      * @return a string representation of the option
      */
-    public static String getUnknownOptionValue(FileDescriptorProto file, int optionFieldNumber) {
-        final Map<Integer, String> options = getUnknownOptions(file);
+    public static String get(FileDescriptorProto file, int optionFieldNumber) {
+        final Map<Integer, String> options = getAll(file);
         final String result = options.get(optionFieldNumber);
         return result;
     }
@@ -117,7 +115,7 @@ public class UnknownOptions {
      * @param message the message descriptor, from which to get options
      * @return a message option number to an option value map
      */
-    private static Map<Integer, String> getUnknownOptions(DescriptorProto message) {
+    private static Map<Integer, String> getAll(DescriptorProto message) {
         final UnknownFieldSet unknownFields = message.getOptions()
                                                      .getUnknownFields();
         final Map<Integer, String> result = extractOptions(unknownFields);
@@ -132,9 +130,8 @@ public class UnknownOptions {
      * @param optionFieldNumber the requested option field number
      * @return a string representation of the option
      */
-    public static String getUnknownOptionValue(EnumDescriptorProto enumDescriptor,
-                                               int optionFieldNumber) {
-        final Map<Integer, String> options = getUnknownOptions(enumDescriptor);
+    public static String get(EnumDescriptorProto enumDescriptor, int optionFieldNumber) {
+        final Map<Integer, String> options = getAll(enumDescriptor);
         final String result = options.get(optionFieldNumber);
         return result;
     }
@@ -145,7 +142,7 @@ public class UnknownOptions {
      * @param enumDescriptor the enum descriptor, from which to get options
      * @return an enum option number to an option value map
      */
-    private static Map<Integer, String> getUnknownOptions(EnumDescriptorProto enumDescriptor) {
+    private static Map<Integer, String> getAll(EnumDescriptorProto enumDescriptor) {
         final UnknownFieldSet unknownFields = enumDescriptor.getOptions()
                                                             .getUnknownFields();
         final Map<Integer, String> result = extractOptions(unknownFields);
@@ -160,8 +157,8 @@ public class UnknownOptions {
      * @param optionFieldNumber the requested option field number
      * @return a string representation of the option
      */
-    public static String getUnknownOptionValue(DescriptorProto msg, int optionFieldNumber) {
-        final Map<Integer, String> options = getUnknownOptions(msg);
+    public static String get(DescriptorProto msg, int optionFieldNumber) {
+        final Map<Integer, String> options = getAll(msg);
         final String result = options.get(optionFieldNumber);
         return result;
     }
@@ -172,7 +169,7 @@ public class UnknownOptions {
      * @param field the field descriptor, from which to get options
      * @return an field option number to an option value map
      */
-    private static Map<Integer, String> getUnknownOptions(FieldDescriptorProto field) {
+    private static Map<Integer, String> getAll(FieldDescriptorProto field) {
         final UnknownFieldSet unknownFields = field.getOptions()
                                                    .getUnknownFields();
         final Map<Integer, String> result = extractOptions(unknownFields);
@@ -187,9 +184,8 @@ public class UnknownOptions {
      * @param optionFieldNumber the requested option field number
      * @return a string representation of option
      */
-    public static String getUnknownOptionValue(ServiceDescriptorProto service,
-                                               int optionFieldNumber) {
-        final Map<Integer, String> options = getUnknownOptions(service);
+    public static String get(ServiceDescriptorProto service, int optionFieldNumber) {
+        final Map<Integer, String> options = getAll(service);
         final String result = options.get(optionFieldNumber);
         return result;
     }
@@ -200,7 +196,7 @@ public class UnknownOptions {
      * @param service the service descriptor, from which to get options
      * @return a service option number to an option value map
      */
-    private static Map<Integer, String> getUnknownOptions(ServiceDescriptorProto service) {
+    private static Map<Integer, String> getAll(ServiceDescriptorProto service) {
         final UnknownFieldSet unknownFields = service.getOptions()
                                                      .getUnknownFields();
 
@@ -216,7 +212,7 @@ public class UnknownOptions {
      * @param optionFieldNumber the option number for the option to check
      * @return {@code} true if the field has the option
      */
-    public static boolean hasUnknownOption(FieldDescriptorProto field, int optionFieldNumber) {
+    public static boolean hasOption(FieldDescriptorProto field, int optionFieldNumber) {
         final UnknownFieldSet unknownFields = field.getOptions()
                                                    .getUnknownFields();
         return containsField(unknownFields, optionFieldNumber);
@@ -230,8 +226,8 @@ public class UnknownOptions {
      * @param optionFieldNumber the requested option field number
      * @return a string representation of the option
      */
-    public static String getUnknownOptionValue(FieldDescriptorProto field, int optionFieldNumber) {
-        final Map<Integer, String> options = getUnknownOptions(field);
+    public static String get(FieldDescriptorProto field, int optionFieldNumber) {
+        final Map<Integer, String> options = getAll(field);
         final String result = options.get(optionFieldNumber);
         return result;
     }

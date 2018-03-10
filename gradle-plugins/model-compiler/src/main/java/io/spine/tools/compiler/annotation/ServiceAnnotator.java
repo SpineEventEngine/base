@@ -24,12 +24,11 @@ import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.ServiceDescriptorProto;
 import com.google.protobuf.DescriptorProtos.ServiceOptions;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
+import io.spine.option.UnknownOptions;
 import io.spine.tools.java.SourceFile;
 
 import java.lang.annotation.Annotation;
 import java.util.Collection;
-
-import static io.spine.option.UnknownOptions.getUnknownOptionValue;
 
 /**
  * An annotator for {@code gRPC} services.
@@ -77,6 +76,6 @@ class ServiceAnnotator extends Annotator<ServiceOptions, ServiceDescriptorProto>
 
     @Override
     protected String getRawOptionValue(ServiceDescriptorProto descriptor) {
-        return getUnknownOptionValue(descriptor, getOptionNumber());
+        return UnknownOptions.get(descriptor, getOptionNumber());
     }
 }

@@ -35,7 +35,7 @@ import java.util.Map;
 
 import static io.spine.option.OptionsProto.BY_FIELD_NUMBER;
 import static io.spine.option.RawListParser.getValueSeparator;
-import static io.spine.option.UnknownOptions.hasUnknownOption;
+import static io.spine.option.UnknownOptions.hasOption;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
@@ -57,7 +57,7 @@ class ByOption {
     }
 
     static boolean isSetFor(FieldDescriptorProto field) {
-        return hasUnknownOption(field, BY_FIELD_NUMBER);
+        return hasOption(field, BY_FIELD_NUMBER);
     }
 
     Map.Entry<String, String> collect() {

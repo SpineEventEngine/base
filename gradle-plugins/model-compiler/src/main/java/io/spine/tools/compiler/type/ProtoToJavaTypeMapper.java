@@ -26,6 +26,7 @@ import com.google.protobuf.DescriptorProtos.EnumDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.Resources;
+import io.spine.option.UnknownOptions;
 import io.spine.tools.compiler.fieldtype.FieldTypes;
 import io.spine.tools.java.SimpleClassName;
 import io.spine.tools.properties.PropertiesWriter;
@@ -43,7 +44,6 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Lists.newLinkedList;
 import static com.google.common.collect.Maps.newHashMap;
 import static io.spine.option.OptionsProto.TYPE_URL_PREFIX_FIELD_NUMBER;
-import static io.spine.option.UnknownOptions.getUnknownOptionValue;
 import static io.spine.tools.proto.FileDescriptors.parseSkipStandard;
 
 /**
@@ -245,7 +245,7 @@ public class ProtoToJavaTypeMapper {
     }
 
     private static String getTypeUrlPrefix(FileDescriptorProto file) {
-        final String typeUrlPrefix = getUnknownOptionValue(file, TYPE_URL_PREFIX_FIELD_NUMBER);
+        final String typeUrlPrefix = UnknownOptions.get(file, TYPE_URL_PREFIX_FIELD_NUMBER);
         final String prefix = isNullOrEmpty(typeUrlPrefix) ? GOOGLE_TYPE_URL_PREFIX : typeUrlPrefix;
         final String result = (prefix + PROTO_TYPE_URL_SEPARATOR);
         return result;

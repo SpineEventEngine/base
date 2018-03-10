@@ -24,13 +24,12 @@ import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.MessageOptions;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
+import io.spine.option.UnknownOptions;
 import io.spine.tools.java.SourceFile;
 
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.List;
-
-import static io.spine.option.UnknownOptions.getUnknownOptionValue;
 
 /**
  * A message annotator.
@@ -72,6 +71,6 @@ class MessageAnnotator extends TypeDefinitionAnnotator<MessageOptions, Descripto
 
     @Override
     protected String getRawOptionValue(DescriptorProto definition) {
-        return getUnknownOptionValue(definition, getOptionNumber());
+        return UnknownOptions.get(definition, getOptionNumber());
     }
 }

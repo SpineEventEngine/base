@@ -42,7 +42,7 @@ import java.util.Collection;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Lists.newLinkedList;
-import static io.spine.option.UnknownOptions.getUnknownOptionValue;
+import static io.spine.option.UnknownOptions.get;
 import static io.spine.tools.compiler.annotation.TypeDefinitionAnnotator.findNestedType;
 import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.lang.String.format;
@@ -96,7 +96,7 @@ class FieldAnnotator extends Annotator<FieldOptions, FieldDescriptorProto> {
 
     @Override
     protected String getRawOptionValue(FieldDescriptorProto field) {
-        return getUnknownOptionValue(field, getOptionNumber());
+        return get(field, getOptionNumber());
     }
 
     @VisibleForTesting

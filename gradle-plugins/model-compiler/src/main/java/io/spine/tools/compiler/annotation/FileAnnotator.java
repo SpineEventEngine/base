@@ -26,6 +26,7 @@ import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileOptions;
 import com.google.protobuf.DescriptorProtos.ServiceDescriptorProto;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
+import io.spine.option.UnknownOptions;
 import io.spine.tools.java.SourceFile;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
@@ -36,7 +37,6 @@ import java.lang.annotation.Annotation;
 import java.util.Collection;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.option.UnknownOptions.getUnknownOptionValue;
 
 /**
  * A file-level annotator.
@@ -157,6 +157,6 @@ class FileAnnotator extends Annotator<FileOptions, FileDescriptorProto> {
 
     @Override
     protected String getRawOptionValue(FileDescriptorProto file) {
-        return getUnknownOptionValue(file, getOptionNumber());
+        return UnknownOptions.get(file, getOptionNumber());
     }
 }
