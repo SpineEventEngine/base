@@ -26,6 +26,7 @@ import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.GeneratedMessageV3.ExtendableMessage;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import static com.google.common.collect.Lists.newLinkedList;
@@ -44,8 +45,8 @@ import static java.util.regex.Pattern.compile;
  * @param <R> the type of an element to be returned after parsing
  * @author Dmytro Grankin
  */
-public abstract class RawListParser<O extends ExtendableMessage, D extends GeneratedMessageV3, R>
-        extends UnknownOptionParser<O, D, R> {
+public abstract class RawListValue<O extends ExtendableMessage, D extends GeneratedMessageV3, R>
+        extends UnknownOptionValue<O, D, R> {
 
     /**
      * The separator for the list values.
@@ -56,12 +57,12 @@ public abstract class RawListParser<O extends ExtendableMessage, D extends Gener
     private static final Pattern PATTERN_VALUES_SEPARATOR = compile(VALUE_SEPARATOR);
     private static final Pattern PATTERN_SPACE = compile(" ");
 
-    protected RawListParser(GeneratedExtension<O, String> option) {
+    protected RawListValue(GeneratedExtension<O, String> option) {
         super(option);
     }
 
     @Override
-    public Collection<R> parse(String optionValue) {
+    public List<R> parse(String optionValue) {
         checkNotEmptyOrBlank(optionValue, "option value");
         final Collection<String> parts = splitOptionValue(optionValue);
         return parseElements(parts);
@@ -73,8 +74,8 @@ public abstract class RawListParser<O extends ExtendableMessage, D extends Gener
      * @param optionParts the option parts to parse
      * @return the collection of parsed elements
      */
-    private Collection<R> parseElements(Iterable<String> optionParts) {
-        final Collection<R> result = newLinkedList();
+    private List<R> parseElements(Iterable<String> optionParts) {
+        final List<R> result = newLinkedList();
         for (String part : optionParts) {
             final R element = asElement(part);
             result.add(element);

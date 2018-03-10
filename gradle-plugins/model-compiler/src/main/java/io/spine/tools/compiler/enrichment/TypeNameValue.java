@@ -23,18 +23,18 @@ package io.spine.tools.compiler.enrichment;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.MessageOptions;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
-import io.spine.option.RawListParser;
+import io.spine.option.RawListValue;
 import io.spine.option.UnknownOptions;
 import io.spine.type.TypeName;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A parser for the options, that represent {@linkplain RawListParser raw list} of type names.
+ * A parser for the options, that represent {@linkplain RawListValue raw list} of type names.
  *
  * @author Dmytro Grankin
  */
-class TypeNameParser extends RawListParser<MessageOptions, DescriptorProto, TypeName> {
+class TypeNameValue extends RawListValue<MessageOptions, DescriptorProto, TypeName> {
 
     private static final String PACKAGE_SEPARATOR = ".";
 
@@ -43,8 +43,8 @@ class TypeNameParser extends RawListParser<MessageOptions, DescriptorProto, Type
      */
     private final String packagePrefix;
 
-    public TypeNameParser(GeneratedExtension<MessageOptions, String> option,
-                          String packagePrefix) {
+    public TypeNameValue(GeneratedExtension<MessageOptions, String> option,
+                         String packagePrefix) {
         super(option);
         this.packagePrefix = checkNotNull(packagePrefix);
     }

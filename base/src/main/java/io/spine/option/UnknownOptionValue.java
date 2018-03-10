@@ -38,8 +38,8 @@ import static java.util.Collections.emptyList;
  * @author Dmytro Grankin
  */
 public abstract
-class UnknownOptionParser<O extends ExtendableMessage, D extends GeneratedMessageV3, R>
-        implements OptionParser<R> {
+class UnknownOptionValue<O extends ExtendableMessage, D extends GeneratedMessageV3, R>
+        implements OptionValue<R> {
 
     /**
      * The tag number of the option.
@@ -53,7 +53,7 @@ class UnknownOptionParser<O extends ExtendableMessage, D extends GeneratedMessag
      *
      * @param option the option to be handled by the parser
      */
-    UnknownOptionParser(GeneratedExtension<O, String> option) {
+    UnknownOptionValue(GeneratedExtension<O, String> option) {
         this.optionNumber = checkNotNull(option).getNumber();
     }
 

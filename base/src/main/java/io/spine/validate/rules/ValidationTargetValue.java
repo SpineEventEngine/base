@@ -23,7 +23,7 @@ package io.spine.validate.rules;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.MessageOptions;
 import io.spine.option.OptionsProto;
-import io.spine.option.RawListParser;
+import io.spine.option.RawListValue;
 import io.spine.option.UnknownOptions;
 
 import static io.spine.option.OptionsProto.validationOf;
@@ -33,9 +33,9 @@ import static io.spine.option.OptionsProto.validationOf;
  *
  * @author Dmytro Grankin
  */
-class ValidationTargetParser extends RawListParser<MessageOptions, DescriptorProto, String> {
+class ValidationTargetValue extends RawListValue<MessageOptions, DescriptorProto, String> {
 
-    private ValidationTargetParser() {
+    private ValidationTargetValue() {
         super(validationOf);
     }
 
@@ -62,13 +62,13 @@ class ValidationTargetParser extends RawListParser<MessageOptions, DescriptorPro
      *
      * @return the validation rule parser
      */
-    public static ValidationTargetParser getInstance() {
+    public static ValidationTargetValue getInstance() {
         return Singleton.INSTANCE.value;
     }
 
     private enum Singleton {
         INSTANCE;
         @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final ValidationTargetParser value = new ValidationTargetParser();
+        private final ValidationTargetValue value = new ValidationTargetValue();
     }
 }

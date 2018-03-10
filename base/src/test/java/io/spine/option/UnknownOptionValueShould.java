@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -20,6 +20,7 @@
 
 package io.spine.option;
 
+import com.google.common.collect.ImmutableList;
 import com.google.protobuf.BoolValue;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.MessageOptions;
@@ -28,18 +29,18 @@ import com.google.protobuf.StringValue;
 import org.junit.Test;
 
 import java.util.Collection;
+import java.util.List;
 
 import static io.spine.option.OptionsProto.enrichment;
-import static java.util.Collections.singleton;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
  * @author Dmytro Grankin
  */
-public class UnknownOptionParserShould {
+public class UnknownOptionValueShould {
 
-    private final AnUnknownOptionParser parser = new AnUnknownOptionParser(enrichment);
+    private final AnUnknownOptionValue parser = new AnUnknownOptionValue(enrichment);
 
     @Test
     public void return_empty_collection_if_option_is_not_present() {
@@ -51,14 +52,13 @@ public class UnknownOptionParserShould {
 
     @Test
     public void parse_unknown_option_if_option_is_present() {
-        final DescriptorProto descriptor = AnUnknownOptionParser.MESSAGE_WITH_OPTION;
+        final DescriptorProto descriptor = AnUnknownOptionValue.MESSAGE_WITH_OPTION;
         final Collection<String> result = parser.parseUnknownOption(descriptor);
         assertFalse(result.isEmpty());
     }
 
-    private static class AnUnknownOptionParser extends UnknownOptionParser<MessageOptions,
-                                                                           DescriptorProto,
-                                                                           String> {
+    private static class AnUnknownOptionValue
+            extends UnknownOptionValue<MessageOptions, DescriptorProto, String> {
 
         /**
          * If this descriptor is used to parse an unknown option,
@@ -68,7 +68,7 @@ public class UnknownOptionParserShould {
                                                                             .toProto();
         private static final String UNKNOWN_OPTION_VALUE = "An unknown option.";
 
-        private AnUnknownOptionParser(GeneratedExtension<MessageOptions, String> option) {
+        private AnUnknownOptionValue(GeneratedExtension<MessageOptions, String> option) {
             super(option);
         }
 
@@ -81,8 +81,8 @@ public class UnknownOptionParserShould {
         }
 
         @Override
-        public Collection<String> parse(String optionValue) {
-            return singleton(UNKNOWN_OPTION_VALUE);
+        public List<String> parse(String optionValue) {
+            return ImmutableList.of(UNKNOWN_OPTION_VALUE);
         }
     }
 }

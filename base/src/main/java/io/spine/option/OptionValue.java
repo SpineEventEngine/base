@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -20,22 +20,23 @@
 
 package io.spine.option;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
- * A parser of Protobuf options.
+ * A value of a protobuf option.
  *
  * @param <R> the type of an element to be returned after parsing
  * @author Dmytro Grankin
+ * @author Alexander Yevsyukov
  */
-public interface OptionParser<R> {
+public interface OptionValue<R> {
 
     /**
-     * Obtains a collection of parsed items from the specified option value.
+     * Obtains a list of parsed items from the specified option value.
      *
      * @param optionValue the valid value of the option to parse
-     * @return the collection of parsed elements
+     * @return the list of parsed elements
      * @throws IllegalStateException if the option value is invalid
      */
-    Collection<R> parse(String optionValue);
+    List<R> parse(String optionValue);
 }

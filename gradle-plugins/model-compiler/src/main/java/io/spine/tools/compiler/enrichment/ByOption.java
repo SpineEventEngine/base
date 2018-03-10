@@ -34,7 +34,7 @@ import java.util.List;
 import java.util.Map;
 
 import static io.spine.option.OptionsProto.BY_FIELD_NUMBER;
-import static io.spine.option.RawListParser.getValueSeparator;
+import static io.spine.option.RawListValue.getValueSeparator;
 import static io.spine.option.UnknownOptions.hasOption;
 import static io.spine.util.Exceptions.newIllegalStateException;
 

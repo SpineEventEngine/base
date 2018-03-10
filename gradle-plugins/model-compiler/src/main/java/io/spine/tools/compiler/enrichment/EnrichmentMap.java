@@ -26,6 +26,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
+import io.spine.option.RawListValue;
 import io.spine.type.TypeName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +39,7 @@ import java.util.Set;
 
 import static io.spine.option.OptionsProto.enrichment;
 import static io.spine.option.OptionsProto.enrichmentFor;
-import static io.spine.option.RawListParser.getValueSeparator;
+import static io.spine.option.RawListValue.getValueSeparator;
 import static io.spine.tools.compiler.enrichment.EnrichmentFinder.PROTO_TYPE_SEPARATOR;
 
 /**
@@ -53,13 +54,13 @@ class EnrichmentMap {
     private static final String EMPTY_TYPE_NAME = "";
 
     private final String packagePrefix;
-    private final TypeNameParser eventTypeParser;
-    private final TypeNameParser enrichmentTypeParser;
+    private final TypeNameValue eventTypeParser;
+    private final TypeNameValue enrichmentTypeParser;
 
     EnrichmentMap(String packagePrefix) {
         this.packagePrefix = packagePrefix;
-        this.eventTypeParser = new TypeNameParser(enrichmentFor, packagePrefix);
-        this.enrichmentTypeParser = new TypeNameParser(enrichment, packagePrefix);
+        this.eventTypeParser = new TypeNameValue(enrichmentFor, packagePrefix);
+        this.enrichmentTypeParser = new TypeNameValue(enrichment, packagePrefix);
     }
 
     Map<String, String> allOf(Iterable<DescriptorProto> messages) {
@@ -78,7 +79,7 @@ class EnrichmentMap {
      * a single value.
      *
      * <p>The values are joined with the
-     * {@linkplain io.spine.option.RawListParser#VALUE_SEPARATOR value separator}.
+     * {@linkplain RawListValue#VALUE_SEPARATOR value separator}.
      *
      * <p>Merging may be required when the wildcard {@code by} option values are handled,
      * i.e. when processing a single enrichment type as a map key, but multiple target

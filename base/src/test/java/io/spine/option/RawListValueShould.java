@@ -29,15 +29,15 @@ import org.junit.Test;
 import java.util.Collection;
 
 import static io.spine.option.OptionsProto.enrichment;
-import static io.spine.option.RawListParser.getValueSeparator;
+import static io.spine.option.RawListValue.getValueSeparator;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 
-public class RawListParserShould {
+public class RawListValueShould {
 
     private static final String OPTION_PART = "PART";
 
-    private final OptionParser<String> parser = new AListParser(enrichment);
+    private final OptionValue<String> parser = new AListValue(enrichment);
 
     @SuppressWarnings("ConstantConditions") // Purpose of the test.
     @Test(expected = NullPointerException.class)
@@ -70,9 +70,9 @@ public class RawListParserShould {
         assertEquals(expectedValues, parsedValues);
     }
 
-    private static class AListParser extends RawListParser<MessageOptions, DescriptorProto, String> {
+    private static class AListValue extends RawListValue<MessageOptions, DescriptorProto, String> {
 
-        private AListParser(GeneratedExtension<MessageOptions, String> option) {
+        private AListValue(GeneratedExtension<MessageOptions, String> option) {
             super(option);
         }
 

@@ -34,7 +34,7 @@ import static org.junit.Assert.assertTrue;
  */
 public class ValidationTargetParserShould {
 
-    private final ValidationTargetParser parser = ValidationTargetParser.getInstance();
+    private final ValidationTargetValue parser = ValidationTargetValue.getInstance();
 
     @Test
     public void not_prepare_additional_actions_with_option_part() {

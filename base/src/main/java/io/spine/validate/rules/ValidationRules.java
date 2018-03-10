@@ -101,7 +101,7 @@ public class ValidationRules {
          * @throws IllegalStateException if an entry from the properties contains invalid data
          */
         private void put(Properties properties) {
-            final ValidationTargetParser targetParser = ValidationTargetParser.getInstance();
+            final ValidationTargetValue targetParser = ValidationTargetValue.getInstance();
             for (String validationRuleType : properties.stringPropertyNames()) {
                 final String ruleTargetPaths = properties.getProperty(validationRuleType);
                 final Collection<String> parsedPaths = targetParser.parse(ruleTargetPaths);
