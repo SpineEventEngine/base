@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -66,8 +66,8 @@ public class UnknownOptions {
     private static final Pattern PATTERN_COLON = Pattern.compile(":");
     private static final String QUOTE = "\"";
 
+    /** Prevents instantiation of this utility class. */
     private UnknownOptions() {
-        // Prevent instantiation of this utility class.
     }
 
     /**
@@ -76,7 +76,7 @@ public class UnknownOptions {
      * @param file the file descriptor, from which to get options
      * @return a file option number to an option value map
      */
-    public static Map<Integer, String> getUnknownOptions(FileDescriptorProto file) {
+    private static Map<Integer, String> getUnknownOptions(FileDescriptorProto file) {
         final UnknownFieldSet unknownFields = file.getOptions()
                                                   .getUnknownFields();
         final Map<Integer, String> result = extractOptions(unknownFields);
@@ -117,7 +117,7 @@ public class UnknownOptions {
      * @param message the message descriptor, from which to get options
      * @return a message option number to an option value map
      */
-    public static Map<Integer, String> getUnknownOptions(DescriptorProto message) {
+    private static Map<Integer, String> getUnknownOptions(DescriptorProto message) {
         final UnknownFieldSet unknownFields = message.getOptions()
                                                      .getUnknownFields();
         final Map<Integer, String> result = extractOptions(unknownFields);
@@ -145,7 +145,7 @@ public class UnknownOptions {
      * @param enumDescriptor the enum descriptor, from which to get options
      * @return an enum option number to an option value map
      */
-    public static Map<Integer, String> getUnknownOptions(EnumDescriptorProto enumDescriptor) {
+    private static Map<Integer, String> getUnknownOptions(EnumDescriptorProto enumDescriptor) {
         final UnknownFieldSet unknownFields = enumDescriptor.getOptions()
                                                             .getUnknownFields();
         final Map<Integer, String> result = extractOptions(unknownFields);
@@ -172,7 +172,7 @@ public class UnknownOptions {
      * @param field the field descriptor, from which to get options
      * @return an field option number to an option value map
      */
-    public static Map<Integer, String> getUnknownOptions(FieldDescriptorProto field) {
+    private static Map<Integer, String> getUnknownOptions(FieldDescriptorProto field) {
         final UnknownFieldSet unknownFields = field.getOptions()
                                                    .getUnknownFields();
         final Map<Integer, String> result = extractOptions(unknownFields);
@@ -200,7 +200,7 @@ public class UnknownOptions {
      * @param service the service descriptor, from which to get options
      * @return a service option number to an option value map
      */
-    public static Map<Integer, String> getUnknownOptions(ServiceDescriptorProto service) {
+    private static Map<Integer, String> getUnknownOptions(ServiceDescriptorProto service) {
         final UnknownFieldSet unknownFields = service.getOptions()
                                                      .getUnknownFields();
 
