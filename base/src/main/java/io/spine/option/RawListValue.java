@@ -31,7 +31,7 @@ import java.util.regex.Pattern;
 
 import static com.google.common.collect.Lists.newLinkedList;
 import static io.spine.util.Exceptions.newIllegalStateException;
-import static io.spine.validate.Validate.checkNotEmptyOrBlank;
+import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 import static java.util.regex.Pattern.compile;
 
 /**
@@ -63,7 +63,7 @@ public abstract class RawListValue<O extends ExtendableMessage, D extends Genera
 
     @Override
     public List<R> parse(String optionValue) {
-        checkNotEmptyOrBlank(optionValue, "option value");
+        checkNotEmptyOrBlank(optionValue);
         final Collection<String> parts = splitOptionValue(optionValue);
         return parseElements(parts);
     }

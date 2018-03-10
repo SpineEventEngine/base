@@ -27,7 +27,7 @@ import java.io.File;
 import java.nio.file.Paths;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
-import static io.spine.tools.CodePreconditions.checkNotEmptyOrBlank;
+import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
  * A Java package name.

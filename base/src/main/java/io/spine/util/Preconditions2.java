@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -18,36 +18,35 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools;
+package io.spine.util;
 
-import com.google.common.testing.NullPointerTester;
-import io.spine.test.Tests;
-import org.junit.Test;
-
-import static io.spine.tools.CodePreconditions.checkNotEmptyOrBlank;
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
+ * Utilities for checking preconditions.
+ *
  * @author Alexander Yevsyukov
  */
-public class CodePreconditionsShould {
+public class Preconditions2 {
 
-    @Test
-    public void have_utility_ctor() {
-        Tests.assertHasPrivateParameterlessCtor(CodePreconditions.class);
+    /** Prevents instantiation of this utility class. */
+    private Preconditions2() {
     }
 
-    @Test
-    public void check_nullity() {
-        new NullPointerTester().testAllPublicStaticMethods(CodePreconditions.class);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void prohibit_empty_string() {
-        checkNotEmptyOrBlank("");
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void prohibit_blank_string() {
-        checkNotEmptyOrBlank(" ");
+    /**
+     * Ensures that the passed string is not {@code null}, empty or blank string.
+     *
+     * @param stringToCheck the string to check
+     * @return the passed string
+     * @throws NullPointerException if the passed string is {@code null}
+     * @throws IllegalArgumentException if the string is empty or blank
+     */
+    public static String checkNotEmptyOrBlank(String stringToCheck) {
+        checkNotNull(stringToCheck);
+        checkArgument(!stringToCheck.isEmpty());
+        final String trimmed = stringToCheck.trim();
+        checkArgument(trimmed.length() > 0);
+        return stringToCheck;
     }
 }

@@ -22,6 +22,7 @@ package io.spine.tools.compiler.enrichment;
 
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
+import io.spine.tools.proto.FieldName;
 import io.spine.type.StringTypeValue;
 
 import java.util.List;
@@ -48,9 +49,6 @@ class FieldReference extends StringTypeValue {
      * this wildcard option.
      */
     static final String ANY_BY_OPTION_TARGET = "*";
-
-    /** A delimiter between a type name and a field name. */
-    private static final String FIELD_NAME_SEPARATOR = ".";
 
     private static final String PIPE_SEPARATOR = "|";
     private static final Pattern PATTERN_PIPE_SEPARATOR = compile("\\|");
@@ -89,7 +87,7 @@ class FieldReference extends StringTypeValue {
     }
 
     boolean isInner() {
-        final boolean result = !value().contains(FIELD_NAME_SEPARATOR);
+        final boolean result = !value().contains(FieldName.TYPE_SEPARATOR);
         return result;
     }
 
@@ -98,7 +96,7 @@ class FieldReference extends StringTypeValue {
      */
     String getType() {
         final String value = value();
-        final int index = value.lastIndexOf(FIELD_NAME_SEPARATOR);
+        final int index = value.lastIndexOf(FieldName.TYPE_SEPARATOR);
         checkState(index > 0, "The field reference does not have the type (`%s`)", value);
         final String result = value.substring(0, index)
                                    .trim();

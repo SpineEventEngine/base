@@ -33,7 +33,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static io.spine.util.Exceptions.newIllegalStateException;
-import static io.spine.validate.Validate.checkNotEmptyOrBlank;
+import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
  * A fully-qualified Protobuf type name.
@@ -159,7 +159,7 @@ public class TypeName extends StringTypeValue {
      * @throws IllegalArgumentException if the name does not correspond to any known type
      */
     static GenericDescriptor getDescriptor(String typeName) {
-        checkNotEmptyOrBlank(typeName, "Type name cannot be empty or blank");
+        checkNotEmptyOrBlank(typeName);
         final TypeUrl typeUrl = KnownTypes.getTypeUrl(typeName);
         checkArgument(typeUrl != null, "Cannot find TypeUrl for the type name: `%s`", typeName);
 

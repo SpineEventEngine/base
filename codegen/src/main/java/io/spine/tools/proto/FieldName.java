@@ -27,7 +27,7 @@ import io.spine.tools.AbstractFieldName;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.CodePreconditions.checkNotEmptyOrBlank;
+import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
  * A name of a message field.
@@ -35,6 +35,9 @@ import static io.spine.tools.CodePreconditions.checkNotEmptyOrBlank;
  * @author Alexander Yevsyukov
  */
 public final class FieldName extends AbstractFieldName implements UnderscoredName {
+
+    /** A delimiter between a type name and a field name. */
+    public static final String TYPE_SEPARATOR = ".";
 
     private static final String WORD_SEPARATOR = "_";
 
