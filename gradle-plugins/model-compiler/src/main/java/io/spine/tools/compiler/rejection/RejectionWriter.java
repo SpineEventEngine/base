@@ -57,9 +57,7 @@ import static javax.lang.model.element.Modifier.STATIC;
  */
 public class RejectionWriter {
 
-    private static final String METHOD_GET_MESSAGE_THROWN = "getMessageThrown";
-    private static final String METHOD_GET_MESSAGE_THROWN_SIGNATURE =
-            METHOD_GET_MESSAGE_THROWN + "()";
+    private static final NoArgMethod getMessageThrown = new NoArgMethod("getMessageThrown");
 
     private final RejectionDeclaration declaration;
     private final File outputDirectory;
@@ -75,8 +73,8 @@ public class RejectionWriter {
      * @param messageTypeMap  pre-scanned map with proto types and their appropriate Java classes
      */
     public RejectionWriter(RejectionDeclaration metadata,
-                    File outputDirectory,
-                    Map<String, String> messageTypeMap) {
+                           File outputDirectory,
+                           Map<String, String> messageTypeMap) {
         this.declaration = metadata;
         this.outputDirectory = outputDirectory;
         this.fieldTypeFactory = new FieldTypeFactory(metadata.getMessage(), messageTypeMap);
@@ -94,7 +92,7 @@ public class RejectionWriter {
 
             final String className = declaration.getSimpleJavaClassName()
                                                 .value();
-            log.debug("Constructing {}", className);
+            log.debug("Constructing class {}", className);
             final TypeSpec rejection =
                     TypeSpec.classBuilder(className)
                             .addJavadoc(javadoc.forClass())
@@ -160,7 +158,8 @@ public class RejectionWriter {
     }
 
     private MethodSpec getMessageThrown() {
-        log().debug("Constructing " + METHOD_GET_MESSAGE_THROWN_SIGNATURE);
+        final String methodSignature = getMessageThrown.signature();
+        log().debug("Constructing method {}", methodSignature);
 
         final TypeName returnType =
                 ClassName.get(declaration.getJavaPackage()
@@ -169,12 +168,11 @@ public class RejectionWriter {
                                          .value())
                          .nestedClass(declaration.getSimpleJavaClassName()
                                                  .value());
-        return MethodSpec.methodBuilder(METHOD_GET_MESSAGE_THROWN)
+        return MethodSpec.methodBuilder(getMessageThrown.name())
                          .addAnnotation(Override.class)
                          .addModifiers(PUBLIC)
                          .returns(returnType)
-                         .addStatement("return (" + returnType + ") super." +
-                                               METHOD_GET_MESSAGE_THROWN_SIGNATURE)
+                         .addStatement("return (" + returnType + ") super." + methodSignature)
                          .build();
     }
 
@@ -193,15 +191,15 @@ public class RejectionWriter {
      * @return name-to-{@link FieldType} map
      */
     private Map<String, FieldType> fieldDeclarations() {
-        log().debug("Reading all the field values from the descriptor: {}",
-                    declaration.getMessage());
+        final Logger log = log();
+        log.debug("Reading all the field values from the descriptor: {}", declaration.getMessage());
 
         final Map<String, FieldType> result = Maps.newLinkedHashMap();
         for (FieldDescriptorProto field : declaration.getMessage()
                                                      .getFieldList()) {
             result.put(field.getName(), fieldTypeFactory.create(field));
         }
-        log().debug("Read fields: {}", result);
+        log.debug("Read fields: {}", result);
 
         return result;
     }
