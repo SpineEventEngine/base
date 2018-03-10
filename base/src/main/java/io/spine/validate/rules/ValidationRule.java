@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -40,7 +40,10 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  */
 class ValidationRule {
 
-    private static final String PROTO_TYPE_SEPARATOR = ".";
+    /**
+     * The delimiter in a full field name reference.
+     */
+    private static final String FIELD_NAME_SEPARATOR = ".";
 
     /**
      * The descriptor for the validation rule message.
@@ -99,7 +102,7 @@ class ValidationRule {
      * @return the field descriptor
      */
     private static FieldDescriptor getTargetDescriptor(String targetPath) {
-        final int typeAndFieldNameBound = targetPath.lastIndexOf(PROTO_TYPE_SEPARATOR);
+        final int typeAndFieldNameBound = targetPath.lastIndexOf(FIELD_NAME_SEPARATOR);
         if (typeAndFieldNameBound == -1) {
             final String msg = "Invalid validation rule target `%s`. " +
                     "Proper format is `package.TargetMessage.target_field`.";

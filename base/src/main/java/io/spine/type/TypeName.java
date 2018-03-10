@@ -53,6 +53,11 @@ public class TypeName extends StringTypeValue {
     private static final Splitter packageSplitter = Splitter.on(PACKAGE_SEPARATOR);
 
     /**
+     * The character to separate a nested type from the outer type name.
+     */
+    public static final char NESTED_TYPE_SEPARATOR = '.';
+
+    /**
      * The method name for obtaining a type descriptor from a Java message class.
      */
     private static final String METHOD_GET_DESCRIPTOR = "getDescriptor";

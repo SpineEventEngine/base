@@ -30,7 +30,6 @@ import java.util.regex.Pattern;
 import static com.google.common.base.Preconditions.checkState;
 import static io.spine.option.OptionsProto.BY_FIELD_NUMBER;
 import static io.spine.option.UnknownOptions.get;
-import static io.spine.tools.compiler.enrichment.EnrichmentFinder.PROTO_TYPE_SEPARATOR;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 import static java.util.regex.Pattern.compile;
 
@@ -49,6 +48,9 @@ class FieldReference extends StringTypeValue {
      * this wildcard option.
      */
     static final String ANY_BY_OPTION_TARGET = "*";
+
+    /** A delimiter between a type name and a field name. */
+    private static final String FIELD_NAME_SEPARATOR = ".";
 
     private static final String PIPE_SEPARATOR = "|";
     private static final Pattern PATTERN_PIPE_SEPARATOR = compile("\\|");
@@ -87,7 +89,7 @@ class FieldReference extends StringTypeValue {
     }
 
     boolean isInner() {
-        final boolean result = !value().contains(PROTO_TYPE_SEPARATOR);
+        final boolean result = !value().contains(FIELD_NAME_SEPARATOR);
         return result;
     }
 
@@ -96,7 +98,7 @@ class FieldReference extends StringTypeValue {
      */
     String getType() {
         final String value = value();
-        final int index = value.lastIndexOf(PROTO_TYPE_SEPARATOR);
+        final int index = value.lastIndexOf(FIELD_NAME_SEPARATOR);
         checkState(index > 0, "The field reference does not have the type (`%s`)", value);
         final String result = value.substring(0, index)
                                    .trim();

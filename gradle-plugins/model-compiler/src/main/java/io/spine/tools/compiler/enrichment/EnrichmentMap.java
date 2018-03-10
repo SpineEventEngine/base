@@ -40,7 +40,6 @@ import java.util.Set;
 import static io.spine.option.OptionsProto.enrichment;
 import static io.spine.option.OptionsProto.enrichmentFor;
 import static io.spine.option.RawListValue.getValueSeparator;
-import static io.spine.tools.compiler.enrichment.EnrichmentFinder.PROTO_TYPE_SEPARATOR;
 
 /**
  * Composes enrichment map for multiple message declarations.
@@ -202,7 +201,7 @@ class EnrichmentMap {
                     final String outerEventName = packagePrefix + msg.getName();
                     final String enrichmentName =
                             outerEventName +
-                                    PROTO_TYPE_SEPARATOR +
+                                    TypeName.NESTED_TYPE_SEPARATOR +
                                     innerMsg.getName();
                     log.debug("'by' option found on field {} targeting outer event {}",
                               field.getName(),

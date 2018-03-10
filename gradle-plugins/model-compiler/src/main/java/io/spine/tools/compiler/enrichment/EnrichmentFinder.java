@@ -21,6 +21,7 @@ package io.spine.tools.compiler.enrichment;
 
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
+import io.spine.type.TypeName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,8 +35,6 @@ import java.util.Map;
  * @author Alex Tymchenko
  */
 class EnrichmentFinder {
-
-    static final String PROTO_TYPE_SEPARATOR = ".";
 
     private final FileDescriptorProto file;
 
@@ -58,7 +57,7 @@ class EnrichmentFinder {
         log.debug("Looking up for the enrichments in {}", file.getName());
 
         final List<DescriptorProto> messages = file.getMessageTypeList();
-        final String packagePrefix = file.getPackage() + PROTO_TYPE_SEPARATOR;
+        final String packagePrefix = file.getPackage() + TypeName.PACKAGE_SEPARATOR;
         final EnrichmentMap map = new EnrichmentMap(packagePrefix);
         final Map<String, String> result = map.allOf(messages);
 
