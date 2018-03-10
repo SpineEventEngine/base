@@ -52,7 +52,7 @@ class UnknownOptionParser<O extends ExtendableMessage, D extends GeneratedMessag
      *
      * @param option the option to be handled by the parser
      */
-    protected UnknownOptionParser(GeneratedExtension<O, String> option) {
+    UnknownOptionParser(GeneratedExtension<O, String> option) {
         this.optionNumber = checkNotNull(option).getNumber();
     }
 
