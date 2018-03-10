@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -21,14 +21,19 @@
 package io.spine.type;
 
 import com.google.common.base.Splitter;
+import com.google.protobuf.Descriptors;
 import com.google.protobuf.Descriptors.Descriptor;
+import com.google.protobuf.Descriptors.GenericDescriptor;
 import com.google.protobuf.Message;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
+import static io.spine.util.Exceptions.newIllegalStateException;
+import static io.spine.validate.Validate.checkNotEmptyOrBlank;
 
 /**
  * A fully-qualified Protobuf type name.
@@ -37,8 +42,21 @@ import static com.google.common.base.Preconditions.checkState;
  */
 public class TypeName extends StringTypeValue {
 
-    private static final Splitter packageSplitter = Splitter.on('.');
-    
+    /**
+     * The separator character for package names in a fully qualified proto type name.
+     */
+    public static final char PACKAGE_SEPARATOR = '.';
+
+    /**
+     * The splitter to separate package and type names in fully-qualified type names.
+     */
+    private static final Splitter packageSplitter = Splitter.on(PACKAGE_SEPARATOR);
+
+    /**
+     * The method name for obtaining a type descriptor from a Java message class.
+     */
+    private static final String METHOD_GET_DESCRIPTOR = "getDescriptor";
+
     private TypeName(String value) {
         super(value);
     }
@@ -124,6 +142,36 @@ public class TypeName extends StringTypeValue {
      * Obtains descriptor for the type.
      */
     public Descriptor getDescriptor() {
-        return (Descriptor) KnownTypes.getDescriptor(value());
+        return (Descriptor) getDescriptor(value());
+    }
+
+    /**
+     * Retrieve {@link Descriptors proto descriptor} from the type name.
+     *
+     * @param typeName <b>valid</b> name of the desired type
+     * @return {@link Descriptors proto descriptor} for given type
+     * @see TypeName
+     * @throws IllegalArgumentException if the name does not correspond to any known type
+     */
+    static GenericDescriptor getDescriptor(String typeName) {
+        checkNotEmptyOrBlank(typeName, "Type name cannot be empty or blank");
+        final TypeUrl typeUrl = KnownTypes.getTypeUrl(typeName);
+        checkArgument(typeUrl != null, "Cannot find TypeUrl for the type name: `%s`", typeName);
+
+        final Class<?> cls = KnownTypes.getJavaClass(typeUrl);
+
+        final GenericDescriptor descriptor;
+        try {
+            @SuppressWarnings("JavaReflectionMemberAccess")
+            // The method is available in generated classes.
+            final java.lang.reflect.Method descriptorGetter =
+                    cls.getDeclaredMethod(METHOD_GET_DESCRIPTOR);
+            descriptor = (GenericDescriptor) descriptorGetter.invoke(null);
+        } catch (NoSuchMethodException
+                | IllegalAccessException
+                | InvocationTargetException e) {
+            throw newIllegalStateException(e, "Unable to get descriptor for the type %s", typeName);
+        }
+        return descriptor;
     }
 }

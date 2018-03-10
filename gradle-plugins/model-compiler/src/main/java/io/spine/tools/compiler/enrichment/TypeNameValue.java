@@ -36,8 +36,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 class TypeNameValue extends RawListValue<MessageOptions, DescriptorProto, TypeName> {
 
-    private static final String PACKAGE_SEPARATOR = ".";
-
     /**
      * A package prefix to supply unqualified type names.
      */
@@ -61,7 +59,7 @@ class TypeNameValue extends RawListValue<MessageOptions, DescriptorProto, TypeNa
      */
     @Override
     protected TypeName asElement(String rawTypeName) {
-        final boolean isFqn = rawTypeName.contains(PACKAGE_SEPARATOR);
+        final boolean isFqn = rawTypeName.contains(String.valueOf(TypeName.PACKAGE_SEPARATOR));
         final String typeNameValue = isFqn
                                      ? rawTypeName
                                      : packagePrefix + rawTypeName;

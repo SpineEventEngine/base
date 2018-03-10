@@ -30,9 +30,7 @@ import com.google.protobuf.Any;
 import com.google.protobuf.Api;
 import com.google.protobuf.BoolValue;
 import com.google.protobuf.BytesValue;
-import com.google.protobuf.Descriptors;
 import com.google.protobuf.Descriptors.EnumDescriptor;
-import com.google.protobuf.Descriptors.GenericDescriptor;
 import com.google.protobuf.DoubleValue;
 import com.google.protobuf.Duration;
 import com.google.protobuf.Empty;
@@ -63,13 +61,11 @@ import io.spine.Resources;
 import io.spine.annotation.Internal;
 
 import javax.annotation.Nullable;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Maps.newHashMap;
 import static com.google.protobuf.DescriptorProtos.DescriptorProto;
@@ -93,7 +89,6 @@ import static com.google.protobuf.DescriptorProtos.SourceCodeInfo;
 import static com.google.protobuf.DescriptorProtos.UninterpretedOption;
 import static io.spine.util.Exceptions.newIllegalStateException;
 import static io.spine.util.PropertyFiles.loadAllProperties;
-import static io.spine.validate.Validate.checkNotEmptyOrBlank;
 
 /**
  * A map which contains all Protobuf types known to the application.
@@ -104,11 +99,6 @@ import static io.spine.validate.Validate.checkNotEmptyOrBlank;
  */
 @Internal
 public class KnownTypes {
-
-    /**
-     * The separator character for package names in a fully qualified proto type name.
-     */
-    private static final char PACKAGE_SEPARATOR = '.';
 
     /**
      * A map from Protobuf type URL to Java class name.
@@ -127,11 +117,6 @@ public class KnownTypes {
      * @see TypeUrl
      */
     private static final ImmutableMap<String, TypeUrl> typeUrls = buildTypeToUrlMap(knownTypes);
-
-    /**
-     * The method name for obtaining a type descriptor from a Java message class.
-     */
-    private static final String METHOD_GET_DESCRIPTOR = "getDescriptor";
 
     private KnownTypes() {
         // Prevent instantiation of this utility class.
@@ -203,7 +188,7 @@ public class KnownTypes {
 
                 final String typeName = input.getTypeName();
                 final boolean inPackage = typeName.startsWith(packageName)
-                        && typeName.charAt(packageName.length()) == PACKAGE_SEPARATOR;
+                        && typeName.charAt(packageName.length()) == TypeName.PACKAGE_SEPARATOR;
                 return inPackage;
             }
         });
@@ -236,36 +221,6 @@ public class KnownTypes {
         } catch (ClassNotFoundException e) {
             throw new UnknownTypeException(typeUrl.getTypeName(), e);
         }
-    }
-
-    /**
-     * Retrieve {@link Descriptors proto descriptor} from the type name.
-     *
-     * @param typeName <b>valid</b> name of the desired type
-     * @return {@link Descriptors proto descriptor} for given type
-     * @see TypeName
-     * @throws IllegalArgumentException if the name does not correspond to any known type
-     */
-    static GenericDescriptor getDescriptor(String typeName) {
-        checkNotEmptyOrBlank(typeName, "Type name cannot be empty or blank");
-        final TypeUrl typeUrl = getTypeUrl(typeName);
-        checkArgument(typeUrl != null, "Cannot find TypeUrl for the type name: `%s`", typeName);
-
-        final Class<?> cls = getJavaClass(typeUrl);
-
-        final GenericDescriptor descriptor;
-        try {
-            @SuppressWarnings("JavaReflectionMemberAccess")
-                // The method is available in generated classes.
-            final java.lang.reflect.Method descriptorGetter =
-                    cls.getDeclaredMethod(METHOD_GET_DESCRIPTOR);
-            descriptor = (GenericDescriptor) descriptorGetter.invoke(null);
-        } catch (NoSuchMethodException
-                | IllegalAccessException
-                | InvocationTargetException e) {
-            throw newIllegalStateException(e, "Unable to get descriptor for the type %s", typeName);
-        }
-        return descriptor;
     }
 
     /** The helper class for building internal immutable typeUrl-to-JavaClass map. */
