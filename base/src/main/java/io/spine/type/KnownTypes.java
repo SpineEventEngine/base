@@ -118,8 +118,8 @@ public class KnownTypes {
      */
     private static final ImmutableMap<String, TypeUrl> typeUrls = buildTypeToUrlMap(knownTypes);
 
+    /** Prevents instantiation of this utility class. */
     private KnownTypes() {
-        // Prevent instantiation of this utility class.
     }
 
     /**
