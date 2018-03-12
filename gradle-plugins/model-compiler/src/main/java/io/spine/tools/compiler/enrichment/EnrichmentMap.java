@@ -52,6 +52,9 @@ class EnrichmentMap {
 
     private static final String EMPTY_TYPE_NAME = "";
 
+    /** Joins several values into one delimited string. */
+    private static final Joiner joiner = Joiner.on(getValueSeparator());
+
     private final String packagePrefix;
     private final TypeNameValue eventType;
     private final TypeNameValue enrichmentType;
@@ -64,6 +67,11 @@ class EnrichmentMap {
 
     /**
      * Obtains enrichment information found in the passed messages.
+     *
+     * <p>A key in the returned map is a type name of an enrichment.
+     *
+     * <p>A value, is a string with one or more event types that are enriched with the
+     * type from the key.
      */
     Map<String, String> allOf(Iterable<DescriptorProto> messages) {
         final HashMultimap<String, String> multimap = HashMultimap.create();
@@ -98,8 +106,7 @@ class EnrichmentMap {
 
             final String mergedValue;
             if (valuesPerKey.size() > 1) {
-                mergedValue = Joiner.on(getValueSeparator())
-                                    .join(valuesPerKey);
+                mergedValue = joiner.join(valuesPerKey);
             } else {
                 mergedValue = valuesPerKey.iterator()
                                           .next();
@@ -152,8 +159,7 @@ class EnrichmentMap {
         log.debug("Scanning message {} for the enrichment annotations", messageName);
         final Collection<TypeName> eventTypes = eventType.parse(msg);
         if (!eventTypes.isEmpty()) {
-            final String mergedValue = Joiner.on(getValueSeparator())
-                                             .join(eventTypes);
+            final String mergedValue = joiner.join(eventTypes);
             log.debug("Found target events: {}", mergedValue);
             result.put(messageName, mergedValue);
         } else {
