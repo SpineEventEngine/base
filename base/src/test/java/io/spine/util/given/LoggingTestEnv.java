@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -29,6 +29,7 @@ public class LoggingTestEnv {
     /** Prevents instantiation of this utility class. */
     private LoggingTestEnv() {}
 
+    /** The root of the class hierarchy with the logger supplier. */
     public static class Base {
 
         private final Supplier<Logger> loggerSupplier = Logging.supplyFor(getClass());
@@ -38,10 +39,11 @@ public class LoggingTestEnv {
         }
     }
 
+    @SuppressWarnings("EmptyClass") // We need the class only to build the hierarchy.
     public static class ChildOne extends Base {
     }
 
+    @SuppressWarnings("EmptyClass") // Same as for `ChildOne`.
     public static class ChildTwo extends Base {
-
     }
 }

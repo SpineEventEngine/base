@@ -33,7 +33,7 @@ import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.IoUtil.close;
-import static java.lang.String.format;
+import static io.spine.util.Logging.warn;
 
 /**
  * Utilities for working with property files.
@@ -77,7 +77,7 @@ public class PropertyFiles {
         try {
             resources = classLoader.getResources(propsFilePath);
         } catch (IOException e) {
-            warn(e, "Failed to load resources: %s", propsFilePath);
+            warn(log(), e, "Failed to load resources: %s", propsFilePath);
         }
         return resources;
     }
@@ -89,7 +89,7 @@ public class PropertyFiles {
             inputStream = resourceUrl.openStream();
             properties.load(inputStream);
         } catch (IOException e) {
-            warn(e, "Failed to load properties file from: %s", resourceUrl);
+            warn(log(), e, "Failed to load properties file from: %s", resourceUrl);
         } finally {
             close(inputStream);
         }
@@ -99,14 +99,6 @@ public class PropertyFiles {
     private static ClassLoader getContextClassLoader() {
         return Thread.currentThread()
                      .getContextClassLoader();
-    }
-
-    private static void warn(Throwable e, String errorFormat, Object... params) {
-        final Logger log = log();
-        if (log.isWarnEnabled()) {
-            final String msg = format(errorFormat, params);
-            log.warn(msg, e);
-        }
     }
 
     private static Logger log() {
