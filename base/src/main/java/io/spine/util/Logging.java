@@ -27,6 +27,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.helpers.SubstituteLogger;
 
+import javax.annotation.Nullable;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
 
@@ -114,7 +116,8 @@ public class Logging {
      * @param errorFormat the format string for the error message
      * @param params      the arguments for the formatted string
      */
-    public static void warn(Logger log, Throwable th, String errorFormat, Object... params) {
+    public static
+    void warn(Logger log, Throwable th, String errorFormat, @Nullable Object... params) {
         checkNotNull(log);
         checkNotNull(th);
         checkNotNull(errorFormat);
