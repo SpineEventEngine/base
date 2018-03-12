@@ -29,7 +29,7 @@ import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.CodePreconditions.checkNotEmptyOrBlank;
+import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
  * A name of a Protobuf source code file.

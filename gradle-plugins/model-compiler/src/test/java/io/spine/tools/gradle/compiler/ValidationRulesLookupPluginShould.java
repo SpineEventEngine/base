@@ -29,8 +29,8 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import java.util.Arrays;
-import java.util.Dictionary;
 import java.util.List;
+import java.util.Map;
 
 import static io.spine.tools.gradle.TaskName.FIND_VALIDATION_RULES;
 import static org.junit.Assert.assertEquals;
@@ -73,16 +73,16 @@ public class ValidationRulesLookupPluginShould {
         final String expectedKey = PROTO_FILE_PACKAGE + DOT +
                                    OUTER_MESSAGE_TYPE + DOT +
                                    VALIDATION_RULE_TYPE;
-        final String value = (String) loadProperties().get(expectedKey);
+        final String value = loadProperties().get(expectedKey);
         assertEquals(VALIDATION_TARGET, value);
     }
 
-    private Dictionary loadProperties() {
+    private Map<String, String> loadProperties() {
         final PropertyFile propFile = PropertyFile.of(ValidationRules.fileName())
                                                   .at(DefaultProject.at(testProjectDir.getRoot())
                                                                     .generated()
                                                                     .mainResources());
-        final Dictionary result = propFile.load();
+        final Map<String, String> result = propFile.load();
         return result;
     }
 

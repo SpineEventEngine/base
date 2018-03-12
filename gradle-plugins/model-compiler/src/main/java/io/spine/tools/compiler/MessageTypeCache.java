@@ -113,7 +113,7 @@ public class MessageTypeCache {
         final String msgName = msg.getName();
         final String key = protoPrefix + msgName;
         final String value = javaPrefix + msgName;
-        log().trace("Caching message type {}", msgName);
+        log().debug("Caching message type {}", msgName);
         cachedMessageTypes.put(key, value);
         if (msg.getNestedTypeCount() > 0 || msg.getEnumTypeCount() > 0) {
             final String nestedProtoPrefix = protoPrefix + msgName + '.';
@@ -131,7 +131,7 @@ public class MessageTypeCache {
                                String protoPrefix,
                                String javaPrefix) {
         final String name = descriptor.getName();
-        log().trace("Caching enum type {}", name);
+        log().debug("Caching enum type {}", name);
         final String key = protoPrefix + name;
         final String value = javaPrefix + name;
         cachedMessageTypes.put(key, value);

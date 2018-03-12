@@ -106,17 +106,17 @@ class MapFieldMethodConstructor implements MethodConstructor {
 
     @Override
     public Collection<MethodSpec> construct() {
-        log().trace("The methods construction for the map field {} is started.", javaFieldName);
+        log().debug("The methods construction for the map field {} is started.", javaFieldName);
         final List<MethodSpec> methods = newArrayList();
         methods.add(createGetter());
         methods.addAll(createMapMethods());
         methods.addAll(createRawMapMethods());
-        log().trace("The methods construction for the map field {} is finished.", javaFieldName);
+        log().debug("The methods construction for the map field {} is finished.", javaFieldName);
         return methods;
     }
 
     private MethodSpec createGetter() {
-        log().trace("The getter construction for the map field is started.");
+        log().debug("The getter construction for the map field is started.");
         final String methodName = "get" + propertyName;
 
         final String returnStatement = format("return %s.get%s()",
@@ -127,28 +127,28 @@ class MapFieldMethodConstructor implements MethodConstructor {
                           .returns(fieldType.getTypeName())
                           .addStatement(returnStatement)
                           .build();
-        log().trace("The getter construction for the map field is finished.");
+        log().debug("The getter construction for the map field is finished.");
         return methodSpec;
     }
 
 
     private List<MethodSpec> createRawMapMethods() {
-        log().trace("The raw methods construction for the map field is started.");
+        log().debug("The raw methods construction for the map field is started.");
         final List<MethodSpec> methods = newArrayList();
         methods.add(createPutRawMethod());
         methods.add(createPutAllRawMethod());
-        log().trace("The raw methods construction for the map field is finished.");
+        log().debug("The raw methods construction for the map field is finished.");
         return methods;
     }
 
     private List<MethodSpec> createMapMethods() {
-        log().trace("The methods construction for the map field is started.");
+        log().debug("The methods construction for the map field is started.");
         final List<MethodSpec> methods = newArrayList();
         methods.add(createPutMethod());
         methods.add(createClearMethod());
         methods.add(createPutAllMethod());
         methods.add(createRemoveMethod());
-        log().trace("The methods construction for the map field is finished.");
+        log().debug("The methods construction for the map field is finished.");
         return methods;
     }
 

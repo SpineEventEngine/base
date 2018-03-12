@@ -24,26 +24,26 @@ import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.GeneratedMessageV3.ExtendableMessage;
 
+import javax.annotation.Nullable;
 import java.util.Collection;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Collections.emptyList;
 
 /**
  * A parser for {@linkplain UnknownOptions unknown options}.
  *
+ * @param <O> the type of the options
  * @param <D> the type of the descriptor to obtain the option
  * @param <R> the type of an element to be returned after parsing
  * @author Dmytro Grankin
+ * @author Alexander Yevsyukov
  */
 public abstract
-class UnknownOptionParser<O extends ExtendableMessage, D extends GeneratedMessageV3, R>
-        implements OptionParser<R> {
+class UnknownOptionValue<O extends ExtendableMessage, D extends GeneratedMessageV3, R>
+        implements OptionValue<R> {
 
     /**
-     * The tag number of the option.
-     *
-     * <p>This tag will be used to extract a value of the option.
+     * The tag number of the option for extracting values.
      */
     private final int optionNumber;
 
@@ -52,8 +52,15 @@ class UnknownOptionParser<O extends ExtendableMessage, D extends GeneratedMessag
      *
      * @param option the option to be handled by the parser
      */
-    protected UnknownOptionParser(GeneratedExtension<O, String> option) {
-        this.optionNumber = checkNotNull(option).getNumber();
+    UnknownOptionValue(GeneratedExtension<O, String> option) {
+        this.optionNumber = option.getNumber();
+    }
+
+    /**
+     * Obtains the option number.
+     */
+    protected final int getOptionNumber() {
+        return optionNumber;
     }
 
     /**
@@ -66,8 +73,8 @@ class UnknownOptionParser<O extends ExtendableMessage, D extends GeneratedMessag
      * @param descriptor the descriptor to obtain the option value
      * @return the collection of parsed elements
      */
-    public Collection<R> parseUnknownOption(D descriptor) {
-        final String optionValue = getUnknownOptionValue(descriptor, optionNumber);
+    public final Collection<R> parse(D descriptor) {
+        final String optionValue = get(descriptor);
         if (optionValue == null) {
             return emptyList();
         }
@@ -76,11 +83,11 @@ class UnknownOptionParser<O extends ExtendableMessage, D extends GeneratedMessag
     }
 
     /**
-     * Obtains the unknown option value from the descriptor by the specified option number.
+     * Obtains the option value from the descriptor by the specified option number.
      *
      * @param descriptor   the descriptor to obtain the option
-     * @param optionNumber the tag number of the option
      * @return the option value or {@code null} if there is no option with the number
      */
-    protected abstract String getUnknownOptionValue(D descriptor, int optionNumber);
+    @Nullable
+    protected abstract String get(D descriptor);
 }

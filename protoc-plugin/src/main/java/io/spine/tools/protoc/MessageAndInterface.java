@@ -106,7 +106,7 @@ final class MessageAndInterface {
     }
 
     private static Optional<String> getEveryIs(FileDescriptorProto descriptor) {
-        final String value = UnknownOptions.getUnknownOptionValue(descriptor, everyIs.getNumber());
+        final String value = UnknownOptions.get(descriptor, everyIs.getNumber());
         return getOptionalOption(value, descriptor.getOptions(), everyIs);
     }
 
@@ -190,7 +190,7 @@ final class MessageAndInterface {
     }
 
     private static Optional<String> getIs(DescriptorProto descriptor) {
-        final String value = UnknownOptions.getUnknownOptionValue(descriptor, is.getNumber());
+        final String value = UnknownOptions.get(descriptor, is.getNumber());
         return getOptionalOption(value, descriptor.getOptions(), is);
     }
 

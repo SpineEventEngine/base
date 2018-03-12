@@ -101,7 +101,7 @@ class SingularFieldMethodConstructor implements MethodConstructor {
                            .javaCase()
                 : null;
 
-        log.trace("The method construction for the {} singular field is started.", javaFieldName);
+        log.debug("The method construction for the {} singular field is started.", javaFieldName);
         final List<MethodSpec> methods = newArrayList();
         methods.add(constructSetter());
 
@@ -111,12 +111,12 @@ class SingularFieldMethodConstructor implements MethodConstructor {
 
         methods.add(constructGetter());
         methods.add(constructClearMethods());
-        log.trace("The method construction for the {} singular field is finished.", javaFieldName);
+        log.debug("The method construction for the {} singular field is finished.", javaFieldName);
         return methods;
     }
 
     private MethodSpec constructSetter() {
-        log().trace("The setters construction for the singular field is started.");
+        log().debug("The setters construction for the singular field is started.");
         final String methodName = fieldType.getSetterPrefix() + methodNamePart;
         final String descriptorCodeLine = createDescriptorStatement(fieldIndex,
                                                                     builderGenericClassName);
@@ -135,12 +135,12 @@ class SingularFieldMethodConstructor implements MethodConstructor {
                           .addStatement(setStatement)
                           .addStatement(returnThis())
                           .build();
-        log().trace("The setters construction for the singular field is finished.");
+        log().debug("The setters construction for the singular field is finished.");
         return methodSpec;
     }
 
     private MethodSpec constructGetter() {
-        log().trace("The getter construction for the singular field is started.");
+        log().debug("The getter construction for the singular field is started.");
         final String methodName = GETTER_PREFIX + methodNamePart;
 
         final MethodSpec methodSpec =
@@ -149,12 +149,12 @@ class SingularFieldMethodConstructor implements MethodConstructor {
                           .returns(fieldClassName)
                           .addStatement("return " + getMessageBuilder() + '.' + methodName + "()")
                           .build();
-        log().trace("The getter construction for the singular method is finished.");
+        log().debug("The getter construction for the singular method is finished.");
         return methodSpec;
     }
 
     private MethodSpec constructClearMethods() {
-        log().trace("The 'clear..()' method construction for the singular field is started.");
+        log().debug("The 'clear..()' method construction for the singular field is started.");
         final String methodBody = getMessageBuilder() + clearProperty(methodNamePart);
 
         final MethodSpec methodSpec =
@@ -164,7 +164,7 @@ class SingularFieldMethodConstructor implements MethodConstructor {
                           .addStatement(methodBody)
                           .addStatement(returnThis())
                           .build();
-        log().trace("The 'clear..()' method construction for the singular method is finished.");
+        log().debug("The 'clear..()' method construction for the singular method is finished.");
         return methodSpec;
     }
 
@@ -172,7 +172,7 @@ class SingularFieldMethodConstructor implements MethodConstructor {
     // It cannot be used as the constant across the project.
     // Although it has the equivalent literal they have the different meaning.
     private MethodSpec constructRawSetter() {
-        log().trace("The raw setters construction is started.");
+        log().debug("The raw setters construction is started.");
         final String messageBuilderSetter = fieldType.getSetterPrefix() + methodNamePart;
         final String methodName = messageBuilderSetter + rawSuffix();
         final String descriptorCodeLine = createDescriptorStatement(fieldIndex,
@@ -201,7 +201,7 @@ class SingularFieldMethodConstructor implements MethodConstructor {
                           .addStatement(setStatement)
                           .addStatement(returnThis())
                           .build();
-        log().trace("The raw setters construction is finished.");
+        log().debug("The raw setters construction is finished.");
         return methodSpec;
     }
 

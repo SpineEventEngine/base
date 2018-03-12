@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -21,13 +21,14 @@
 package io.spine.type;
 
 import com.google.common.testing.NullPointerTester;
-import com.google.protobuf.Descriptors;
+import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.StringValue;
 import com.google.protobuf.UInt64Value;
 import io.spine.option.EntityOption;
 import io.spine.option.IfMissingOption;
 import org.junit.Test;
 
+import static io.spine.type.TypeName.getDescriptor;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -42,7 +43,7 @@ public class TypeNameShould {
     @Test
     public void pass_the_null_tolerance_check() {
         new NullPointerTester()
-                .setDefault(Descriptors.Descriptor.class, EntityOption.getDefaultInstance()
+                .setDefault(Descriptor.class, EntityOption.getDefaultInstance()
                                                                       .getDescriptorForType())
                 .testAllPublicStaticMethods(TypeName.class);
     }
@@ -90,5 +91,19 @@ public class TypeNameShould {
         final TypeName typeName = TypeName.from(UInt64Value.getDescriptor());
         assertNotNull(typeName);
         assertEquals(UInt64Value.class.getSimpleName(), typeName.getSimpleName());
+    }
+
+    @Test
+    public void provide_proto_descriptor_by_type_name() {
+        final String typeName = "spine.test.types.Task";
+        final Descriptor typeDescriptor = (Descriptor) getDescriptor(typeName);
+        assertNotNull(typeDescriptor);
+        assertEquals(typeName, typeDescriptor.getFullName());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void fail_to_find_invalid_type_descriptor() {
+        final String invalidTypeName = "no.such.package.InvalidType";
+        getDescriptor(invalidTypeName);
     }
 }

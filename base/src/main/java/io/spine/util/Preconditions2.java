@@ -18,32 +18,35 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.util.given;
+package io.spine.util;
 
-import com.google.common.base.Supplier;
-import io.spine.util.Logging;
-import org.slf4j.Logger;
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
-public class LoggingTestEnv {
+/**
+ * Utilities for checking preconditions.
+ *
+ * @author Alexander Yevsyukov
+ */
+public class Preconditions2 {
 
     /** Prevents instantiation of this utility class. */
-    private LoggingTestEnv() {}
-
-    /** The root of the class hierarchy with the logger supplier. */
-    public static class Base {
-
-        private final Supplier<Logger> loggerSupplier = Logging.supplyFor(getClass());
-
-        public Logger log() {
-            return loggerSupplier.get();
-        }
+    private Preconditions2() {
     }
 
-    @SuppressWarnings("EmptyClass") // We need the class only to build the hierarchy.
-    public static class ChildOne extends Base {
-    }
-
-    @SuppressWarnings("EmptyClass") // Same as for `ChildOne`.
-    public static class ChildTwo extends Base {
+    /**
+     * Ensures that the passed string is not {@code null}, empty or blank string.
+     *
+     * @param stringToCheck the string to check
+     * @return the passed string
+     * @throws NullPointerException if the passed string is {@code null}
+     * @throws IllegalArgumentException if the string is empty or blank
+     */
+    public static String checkNotEmptyOrBlank(String stringToCheck) {
+        checkNotNull(stringToCheck);
+        checkArgument(!stringToCheck.isEmpty());
+        final String trimmed = stringToCheck.trim();
+        checkArgument(trimmed.length() > 0);
+        return stringToCheck;
     }
 }

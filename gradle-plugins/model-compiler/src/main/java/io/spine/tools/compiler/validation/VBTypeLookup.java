@@ -102,7 +102,7 @@ class VBTypeLookup {
     }
 
     private Set<VBType> fromAllFiles(Iterable<FileDescriptorProto> files) {
-        log().trace("Obtaining the file-level metadata for the validating builders.");
+        log().debug("Obtaining the file-level metadata for the validating builders.");
         final Set<VBType> result = newHashSet();
         for (FileDescriptorProto file : files) {
             final List<DescriptorProto> messageDescriptors = file.getMessageTypeList();
@@ -110,7 +110,7 @@ class VBTypeLookup {
             result.addAll(metadataSet);
 
         }
-        log().trace("The file-level metadata is obtained.");
+        log().debug("The file-level metadata is obtained.");
         return result;
     }
 

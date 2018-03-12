@@ -27,7 +27,7 @@ import com.google.protobuf.Descriptors.Descriptor;
 import io.spine.type.StringTypeValue;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.CodePreconditions.checkNotEmptyOrBlank;
+import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
  * A {@link Class#getSimpleName() simple name} of a class.

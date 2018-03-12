@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -18,10 +18,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.option;
+package io.spine.validate.rules;
 
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.MessageOptions;
+import io.spine.option.OptionsProto;
+import io.spine.option.RawListValue;
+import io.spine.option.UnknownOptions;
 
 import static io.spine.option.OptionsProto.validationOf;
 
@@ -30,15 +33,15 @@ import static io.spine.option.OptionsProto.validationOf;
  *
  * @author Dmytro Grankin
  */
-public class ValidationTargetParser extends RawListParser<MessageOptions, DescriptorProto, String> {
+class ValidationTargetValue extends RawListValue<MessageOptions, DescriptorProto, String> {
 
-    private ValidationTargetParser() {
+    private ValidationTargetValue() {
         super(validationOf);
     }
 
     @Override
-    protected String getUnknownOptionValue(DescriptorProto descriptor, int optionNumber) {
-        return UnknownOptions.getUnknownOptionValue(descriptor, optionNumber);
+    protected String get(DescriptorProto descriptor) {
+        return UnknownOptions.get(descriptor, getOptionNumber());
     }
 
     /**
@@ -59,13 +62,13 @@ public class ValidationTargetParser extends RawListParser<MessageOptions, Descri
      *
      * @return the validation rule parser
      */
-    public static ValidationTargetParser getInstance() {
+    public static ValidationTargetValue getInstance() {
         return Singleton.INSTANCE.value;
     }
 
     private enum Singleton {
         INSTANCE;
         @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final ValidationTargetParser value = new ValidationTargetParser();
+        private final ValidationTargetValue value = new ValidationTargetValue();
     }
 }

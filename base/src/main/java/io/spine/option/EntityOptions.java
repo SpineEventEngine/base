@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -20,7 +20,7 @@
 
 package io.spine.option;
 
-import com.google.protobuf.Descriptors;
+import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Message;
 import io.spine.option.EntityOption.Visibility;
 import io.spine.type.TypeName;
@@ -34,13 +34,19 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class EntityOptions {
 
+    /**
+     * Prevents instantiation of this utility class.
+     */
     private EntityOptions() {
-        // Prevent instantiation of this utility class.
     }
 
+    /**
+     * Obtains visibility of the entity with the passed state class.
+     */
     public static Visibility getVisibility(Class<? extends Message> stateClass) {
         checkNotNull(stateClass);
-        final Descriptors.Descriptor descriptor = TypeName.of(stateClass).getDescriptor();
+        final Descriptor descriptor = TypeName.of(stateClass)
+                                              .getDescriptor();
         final EntityOption entityOption = descriptor.getOptions()
                                                     .getExtension(OptionsProto.entity);
         final Visibility definedVisibility = entityOption.getVisibility();

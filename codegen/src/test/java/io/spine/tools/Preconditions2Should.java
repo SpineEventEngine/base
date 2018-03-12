@@ -20,31 +20,35 @@
 
 package io.spine.tools;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
+import com.google.common.testing.NullPointerTester;
+import io.spine.test.Tests;
+import io.spine.util.Preconditions2;
+import org.junit.Test;
+
+import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
  * @author Alexander Yevsyukov
  */
-public class CodePreconditions {
+public class Preconditions2Should {
 
-    /** Prevents instantiation of this utility class. */
-    private CodePreconditions() {
+    @Test
+    public void have_utility_ctor() {
+        Tests.assertHasPrivateParameterlessCtor(Preconditions2.class);
     }
 
-    /**
-     * Ensures that the passed string is not {@code null}, empty or blank string.
-     *
-     * @param stringToCheck the string to check
-     * @return the passed string
-     * @throws NullPointerException if the passed string is {@code null}
-     * @throws IllegalArgumentException if the string is empty or blank
-     */
-    public static String checkNotEmptyOrBlank(String stringToCheck) {
-        checkNotNull(stringToCheck);
-        checkArgument(!stringToCheck.isEmpty());
-        final String trimmed = stringToCheck.trim();
-        checkArgument(trimmed.length() > 0);
-        return stringToCheck;
+    @Test
+    public void check_nullity() {
+        new NullPointerTester().testAllPublicStaticMethods(Preconditions2.class);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void prohibit_empty_string() {
+        checkNotEmptyOrBlank("");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void prohibit_blank_string() {
+        checkNotEmptyOrBlank(" ");
     }
 }

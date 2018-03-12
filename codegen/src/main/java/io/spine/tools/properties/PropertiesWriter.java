@@ -54,11 +54,17 @@ public class PropertiesWriter {
     }
 
     /**
-     * Updates the {@code .properties} file rewriting its contents if it already exists.
+     * Updates the content of the file with the passed map.
      *
-     * @param propertiesMap a map containing properties to write to the file
+     * <p>If the file already exists, the passed entries will be merged with the file content.
+     * If the file already has an key from the passed map, its value will <em>NOT</em>
+     * be added, and warning will be logged.
+     *
+     * {@code .properties} file rewriting its contents if it already exists.
+     *
+     * @param map a map containing properties to write to the file
      */
-    public void write(Map<String, String> propertiesMap) {
+    public void write(Map<String, String> map) {
         final Logger log = log();
         log.debug("Preparing properties file {}", fullPath);
         final File rootDir = new File(folder);
@@ -68,9 +74,8 @@ public class PropertiesWriter {
         final File file = new File(fullPath);
         prepareTargetFile(props, file);
 
-        log.debug("Preparing properties (size is {}). Enable more verbose logging for more info.",
-                  propertiesMap.size());
-        for (Map.Entry<String, String> entry : propertiesMap.entrySet()) {
+        log.debug("Preparing properties (size: {})", map.size());
+        for (Map.Entry<String, String> entry : map.entrySet()) {
             final String key = entry.getKey();
             final String value = entry.getValue();
             if (!props.containsKey(key)) {
@@ -99,7 +104,7 @@ public class PropertiesWriter {
     }
 
     private static void prepareTargetFile(Properties props, File file) {
-        log().trace("Preparing the target file");
+        log().debug("Preparing the target file");
         if (file.exists()) {
             try {
                 final FileInputStream fis = new FileInputStream(file);

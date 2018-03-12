@@ -25,7 +25,7 @@ import com.google.protobuf.DescriptorProtos.EnumDescriptorProto;
 import com.google.protobuf.DescriptorProtos.ServiceDescriptorProto;
 import io.spine.tools.AbstractFileName;
 
-import static io.spine.tools.CodePreconditions.checkNotEmptyOrBlank;
+import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
  * A Java file name.

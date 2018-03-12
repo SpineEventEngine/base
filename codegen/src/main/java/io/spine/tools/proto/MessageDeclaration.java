@@ -44,8 +44,6 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  */
 public class MessageDeclaration extends AbstractMessageDeclaration {
 
-    private static final String PROTO_TYPE_SEPARATOR = ".";
-
     /**
      * Descriptors for the outer messages of the declaration.
      *
@@ -143,10 +141,10 @@ public class MessageDeclaration extends AbstractMessageDeclaration {
      */
     public TypeName getTypeName() {
         final StringBuilder typeBuilder = new StringBuilder(getFile().getPackage());
-        typeBuilder.append(PROTO_TYPE_SEPARATOR);
+        typeBuilder.append(TypeName.PACKAGE_SEPARATOR);
         for (DescriptorProto outerMessage : outerMessages) {
             typeBuilder.append(outerMessage.getName())
-                       .append(PROTO_TYPE_SEPARATOR);
+                       .append(TypeName.NESTED_TYPE_SEPARATOR);
         }
         typeBuilder.append(getMessage().getName());
         final String value = typeBuilder.toString();

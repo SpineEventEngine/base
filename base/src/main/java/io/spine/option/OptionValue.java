@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -18,36 +18,25 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools;
+package io.spine.option;
 
-import com.google.common.testing.NullPointerTester;
-import io.spine.test.Tests;
-import org.junit.Test;
-
-import static io.spine.tools.CodePreconditions.checkNotEmptyOrBlank;
+import java.util.List;
 
 /**
+ * A value of a protobuf option.
+ *
+ * @param <R> the type of an element to be returned after parsing
+ * @author Dmytro Grankin
  * @author Alexander Yevsyukov
  */
-public class CodePreconditionsShould {
+public interface OptionValue<R> {
 
-    @Test
-    public void have_utility_ctor() {
-        Tests.assertHasPrivateParameterlessCtor(CodePreconditions.class);
-    }
-
-    @Test
-    public void check_nullity() {
-        new NullPointerTester().testAllPublicStaticMethods(CodePreconditions.class);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void prohibit_empty_string() {
-        checkNotEmptyOrBlank("");
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void prohibit_blank_string() {
-        checkNotEmptyOrBlank(" ");
-    }
+    /**
+     * Obtains a list of parsed items from the specified option value.
+     *
+     * @param optionValue the valid value of the option to parse
+     * @return the list of parsed elements
+     * @throws IllegalStateException if the option value is invalid
+     */
+    List<R> parse(String optionValue);
 }

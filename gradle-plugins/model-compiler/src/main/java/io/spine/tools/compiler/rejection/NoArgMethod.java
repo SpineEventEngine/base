@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -18,24 +18,26 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.option;
+package io.spine.tools.compiler.rejection;
 
-import java.util.Collection;
+import io.spine.type.StringTypeValue;
 
 /**
- * A parser of Protobuf options.
+ * A reference to a method with no arguments.
  *
- * @param <R> the type of an element to be returned after parsing
- * @author Dmytro Grankin
+ * @author Alexander Yevsyukov
  */
-public interface OptionParser<R> {
+class NoArgMethod extends StringTypeValue {
 
-    /**
-     * Obtains a collection of parsed items from the specified option value.
-     *
-     * @param optionValue the valid value of the option to parse
-     * @return the collection of parsed elements
-     * @throws IllegalStateException if the option value is invalid
-     */
-    Collection<R> parse(String optionValue);
+    NoArgMethod(String methodName) {
+        super(methodName);
+    }
+
+    String name() {
+        return value();
+    }
+
+    String signature() {
+        return value() + "()";
+    }
 }

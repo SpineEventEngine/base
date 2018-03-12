@@ -1,3 +1,23 @@
+/*
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
+ *
+ * Redistribution and use in source and/or binary forms, with or without
+ * modification, must retain the above copyright notice and the following
+ * disclaimer.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
 package io.spine.util;
 
 import com.google.common.base.Supplier;
@@ -7,7 +27,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.helpers.SubstituteLogger;
 
+import javax.annotation.Nullable;
+
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.lang.String.format;
 
 /**
  * Utilities for working with logging.
@@ -17,7 +40,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class Logging {
 
     /** Prevents instantiation of this utility class. */
-    private Logging() {}
+    private Logging() {
+    }
 
     /**
      * Creates a supplier for logger of the passed class.
@@ -25,7 +49,7 @@ public class Logging {
      * <p>A logger instance will be lazily {@linkplain #getLogger(Class) created}
      * when {@linkplain Supplier#get() requested} for the first time.
      *
-     * <p>Such an arrangement may be convenient for arranging separate loggers in a class
+     * <p>Such an arrangement may be convenient for having separate loggers in a class
      * hierarchy.
      *
      * <h3>Typical usage pattern:</h3>
@@ -81,6 +105,25 @@ public class Logging {
             return substLogger;
         } else {
             return logger;
+        }
+    }
+
+    /**
+     * Logs {@linkplain Logger#warn(String, Throwable) warning} with the formatted string.
+     *
+     * @param log         the logger for placing the warning
+     * @param th          the {@code Throwable} to log
+     * @param errorFormat the format string for the error message
+     * @param params      the arguments for the formatted string
+     */
+    public static
+    void warn(Logger log, Throwable th, String errorFormat, @Nullable Object... params) {
+        checkNotNull(log);
+        checkNotNull(th);
+        checkNotNull(errorFormat);
+        if (log.isWarnEnabled()) {
+            final String msg = format(errorFormat, params);
+            log.warn(msg, th);
         }
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.option;
+package io.spine.tools.compiler.enrichment;
 
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.StringValue;
@@ -34,12 +34,12 @@ import static org.junit.Assert.assertTrue;
 /**
  * @author Dmytro Grankin
  */
-public class TypeNameParserShould {
+public class TypeNameValueShould {
 
     private static final String PACKAGE_PREFIX = "foo.bar.";
     private static final String MESSAGE_NAME = "AMessage";
 
-    private final TypeNameParser parser = new TypeNameParser(enrichment, PACKAGE_PREFIX);
+    private final TypeNameValue parser = new TypeNameValue(enrichment, PACKAGE_PREFIX);
 
     @Test
     public void add_package_prefix_to_unqualified_type() {
@@ -66,7 +66,7 @@ public class TypeNameParserShould {
     public void return_empty_collection_if_option_is_not_present() {
         final DescriptorProto definitionWithoutOption = StringValue.getDescriptor()
                                                                    .toProto();
-        final Collection<TypeName> result = parser.parseUnknownOption(definitionWithoutOption);
+        final Collection<TypeName> result = parser.parse(definitionWithoutOption);
         assertTrue(result.isEmpty());
     }
 }

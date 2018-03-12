@@ -103,7 +103,7 @@ public class FileDescriptors {
 
         final Logger log = log();
         if (log.isTraceEnabled()) {
-            log.trace("Looking up for the proto files matching predicate {} under {}",
+            log.debug("Looking up for the proto files matching predicate {} under {}",
                       filter,
                       descriptorSetFile);
         }
@@ -123,7 +123,7 @@ public class FileDescriptors {
         }
 
         final ImmutableList<FileDescriptorProto> result = files.build();
-        log.trace("Found {} files: {}", result.size(), files);
+        log.debug("Found {} files: {}", result.size(), files);
         return result;
     }
 

@@ -23,6 +23,7 @@ package io.spine.tools.compiler.validation;
 import com.google.common.base.Predicate;
 import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
+import io.spine.option.UnknownOptions;
 import io.spine.tools.properties.PropertiesWriter;
 import io.spine.tools.proto.MessageDeclaration;
 import io.spine.type.TypeName;
@@ -37,8 +38,6 @@ import java.util.Map;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Maps.newHashMap;
 import static io.spine.option.OptionsProto.VALIDATION_OF_FIELD_NUMBER;
-import static io.spine.option.UnknownOptions.getUnknownOptionValue;
-import static io.spine.option.UnknownOptions.hasUnknownOption;
 import static io.spine.tools.proto.FileDescriptors.parseSkipStandard;
 import static io.spine.tools.proto.SourceFile.allThat;
 
@@ -80,13 +79,13 @@ public final class ValidationRulesLookup {
         final Map<String, String> propsMap = newHashMap();
         for (MessageDeclaration declaration : ruleDeclarations) {
             final TypeName typeName = declaration.getTypeName();
-            final String ruleTargets = getUnknownOptionValue(declaration.getMessage(),
-                                                             VALIDATION_OF_FIELD_NUMBER);
+            final String ruleTargets = UnknownOptions.get(declaration.getMessage(),
+                                                          VALIDATION_OF_FIELD_NUMBER);
             propsMap.put(typeName.value(), ruleTargets);
         }
 
         final String fileName = io.spine.validate.rules.ValidationRules.fileName();
-        log().trace("Writing the validation rules description to {}/{}.",
+        log().debug("Writing the validation rules description to {}/{}.",
                                                 targetDir, fileName);
         final PropertiesWriter writer = new PropertiesWriter(targetDir.getAbsolutePath(), fileName);
         writer.write(propsMap);
@@ -97,7 +96,7 @@ public final class ValidationRulesLookup {
         @Override
         public boolean apply(@Nullable DescriptorProtos.DescriptorProto input) {
             checkNotNull(input);
-            return hasUnknownOption(input, VALIDATION_OF_FIELD_NUMBER);
+            return UnknownOptions.hasOption(input, VALIDATION_OF_FIELD_NUMBER);
         }
     }
 

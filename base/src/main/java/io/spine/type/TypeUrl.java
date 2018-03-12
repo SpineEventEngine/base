@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -40,7 +40,7 @@ import java.util.Objects;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.protobuf.Internal.getDefaultInstance;
-import static io.spine.validate.Validate.checkNotEmptyOrBlank;
+import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 import static java.lang.String.format;
 
 /**
@@ -68,8 +68,8 @@ public final class TypeUrl implements Serializable {
     private final String typeName;
 
     private TypeUrl(String prefix, String typeName) {
-        this.prefix = checkNotEmptyOrBlank(prefix, "typeUrlPrefix");
-        this.typeName = checkNotEmptyOrBlank(typeName, "typeName");
+        this.prefix = checkNotEmptyOrBlank(prefix);
+        this.typeName = checkNotEmptyOrBlank(typeName);
     }
 
     /**
@@ -196,7 +196,7 @@ public final class TypeUrl implements Serializable {
      */
     @Internal
     public GenericDescriptor getDescriptor() {
-        return KnownTypes.getDescriptor(typeName);
+        return TypeName.getDescriptor(typeName);
     }
 
     /**
