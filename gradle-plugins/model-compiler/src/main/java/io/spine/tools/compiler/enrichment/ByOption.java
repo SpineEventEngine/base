@@ -77,7 +77,7 @@ class ByOption {
         for (FieldReference fieldRef : fieldRefs) {
             if (fieldRef.isWildcard() && fieldRefs.size() > 1) {
                 // Multiple argument `by` annotation can not contain wildcard reference onto
-                // the event type if the type was not specified with a `enrichment_for` annotation
+                // the event type if the type was not specified with a `enrichment_for` annotation.
                 throw invalidByOptionUsage(field.getName());
             }
 
