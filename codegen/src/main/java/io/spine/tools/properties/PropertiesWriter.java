@@ -57,7 +57,7 @@ public class PropertiesWriter {
      * Updates the content of the file with the passed map.
      *
      * <p>If the file already exists, the passed entries will be merged with the file content.
-     * If the file already has an key from the passed map, its value will <strong>NOT</strong>
+     * If the file already has an key from the passed map, its value will <em>NOT</em>
      * be added, and warning will be logged.
      *
      * {@code .properties} file rewriting its contents if it already exists.
