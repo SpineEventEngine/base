@@ -66,8 +66,8 @@ public class MessageDeclaration extends AbstractMessageDeclaration {
      * @param file    the descriptor of the file containing the message
      * @return the message declaration
      */
-    public static MessageDeclaration create(DescriptorProto message,
-                                            FileDescriptorProto file) {
+    static MessageDeclaration create(DescriptorProto message,
+                                     FileDescriptorProto file) {
         final boolean fileContainsTarget = file.getMessageTypeList()
                                                .contains(message);
         if (!fileContainsTarget) {
@@ -84,7 +84,7 @@ public class MessageDeclaration extends AbstractMessageDeclaration {
      *
      * @return immutable list with message declarations or empty list if no nested types declared
      */
-    public List<MessageDeclaration> getImmediateNested() {
+    private List<MessageDeclaration> getImmediateNested() {
         final ImmutableList.Builder<MessageDeclaration> result = ImmutableList.builder();
         for (DescriptorProto nestedType : getMessage().getNestedTypeList()) {
             final MessageDeclaration nestedDeclaration = forNested(nestedType);
@@ -96,13 +96,15 @@ public class MessageDeclaration extends AbstractMessageDeclaration {
     /**
      * Obtains all nested declarations that match the passed predicate.
      */
-    public List<MessageDeclaration> getAllNested(Predicate<DescriptorProto> predicate) {
+    List<MessageDeclaration> getAllNested(Predicate<DescriptorProto> predicate) {
         final ImmutableList.Builder<MessageDeclaration> result = ImmutableList.builder();
         final Iterable<MessageDeclaration> nestedDeclarations = getImmediateNested();
         final Deque<MessageDeclaration> deque = newLinkedList(nestedDeclarations);
 
         while (!deque.isEmpty()) {
             final MessageDeclaration nestedDeclaration = deque.pollFirst();
+
+            assert nestedDeclaration != null; // Cannot be null since the queue is not empty.
             final DescriptorProto nestedDescriptor = nestedDeclaration.getMessage();
 
             if (predicate.apply(nestedDescriptor)) {
