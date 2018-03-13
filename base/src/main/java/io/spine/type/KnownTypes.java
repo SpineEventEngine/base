@@ -23,72 +23,18 @@ package io.spine.type;
 import com.google.common.base.Predicate;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.Collections2;
-import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Any;
-import com.google.protobuf.Api;
-import com.google.protobuf.BoolValue;
-import com.google.protobuf.BytesValue;
-import com.google.protobuf.Descriptors.EnumDescriptor;
-import com.google.protobuf.DoubleValue;
-import com.google.protobuf.Duration;
-import com.google.protobuf.Empty;
-import com.google.protobuf.EnumValue;
-import com.google.protobuf.Field;
-import com.google.protobuf.FieldMask;
-import com.google.protobuf.FloatValue;
-import com.google.protobuf.GeneratedMessageV3;
-import com.google.protobuf.Int32Value;
-import com.google.protobuf.Int64Value;
-import com.google.protobuf.Internal.EnumLite;
-import com.google.protobuf.ListValue;
 import com.google.protobuf.Message;
-import com.google.protobuf.Method;
-import com.google.protobuf.Mixin;
-import com.google.protobuf.NullValue;
-import com.google.protobuf.Option;
-import com.google.protobuf.SourceContext;
-import com.google.protobuf.StringValue;
-import com.google.protobuf.Struct;
-import com.google.protobuf.Syntax;
-import com.google.protobuf.Timestamp;
-import com.google.protobuf.Type;
-import com.google.protobuf.UInt32Value;
-import com.google.protobuf.UInt64Value;
-import com.google.protobuf.Value;
-import io.spine.Resources;
 import io.spine.annotation.Internal;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
-import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.Maps.newHashMap;
-import static com.google.protobuf.DescriptorProtos.DescriptorProto;
-import static com.google.protobuf.DescriptorProtos.EnumDescriptorProto;
-import static com.google.protobuf.DescriptorProtos.EnumOptions;
-import static com.google.protobuf.DescriptorProtos.EnumValueDescriptorProto;
-import static com.google.protobuf.DescriptorProtos.EnumValueOptions;
-import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
-import static com.google.protobuf.DescriptorProtos.FieldOptions;
-import static com.google.protobuf.DescriptorProtos.FileDescriptorProto;
-import static com.google.protobuf.DescriptorProtos.FileDescriptorSet;
-import static com.google.protobuf.DescriptorProtos.FileOptions;
-import static com.google.protobuf.DescriptorProtos.GeneratedCodeInfo;
-import static com.google.protobuf.DescriptorProtos.MessageOptions;
-import static com.google.protobuf.DescriptorProtos.MethodDescriptorProto;
-import static com.google.protobuf.DescriptorProtos.MethodOptions;
-import static com.google.protobuf.DescriptorProtos.OneofDescriptorProto;
-import static com.google.protobuf.DescriptorProtos.ServiceDescriptorProto;
-import static com.google.protobuf.DescriptorProtos.ServiceOptions;
-import static com.google.protobuf.DescriptorProtos.SourceCodeInfo;
-import static com.google.protobuf.DescriptorProtos.UninterpretedOption;
 import static io.spine.util.Exceptions.newIllegalStateException;
-import static io.spine.util.PropertyFiles.loadAllProperties;
 
 /**
  * A map which contains all Protobuf types known to the application.
@@ -106,7 +52,7 @@ public class KnownTypes {
      * <p>For example, for a key {@code type.spine.io/spine.base.EventId},
      * there will be the value {@code EventId}.
      */
-    private static final BiMap<TypeUrl, ClassName> knownTypes = Builder.build();
+    private static final BiMap<TypeUrl, ClassName> knownTypes = Loader.load();
 
     /**
      * A map from Protobuf type name to type URL.
@@ -220,162 +166,6 @@ public class KnownTypes {
             return result;
         } catch (ClassNotFoundException e) {
             throw new UnknownTypeException(typeUrl.getTypeName(), e);
-        }
-    }
-
-    /** The helper class for building internal immutable typeUrl-to-JavaClass map. */
-    private static class Builder {
-
-        private final Map<TypeUrl, ClassName> resultMap = newHashMap();
-
-        private static ImmutableBiMap<TypeUrl, ClassName> build() {
-            final Builder builder = new Builder()
-                    .addStandardProtobufTypes()
-                    .loadNamesFromProperties();
-            final ImmutableBiMap<TypeUrl, ClassName> result =
-                    ImmutableBiMap.copyOf(builder.resultMap);
-            return result;
-        }
-
-        private Builder loadNamesFromProperties() {
-            final Set<Properties> propertiesSet = loadAllProperties(Resources.KNOWN_TYPES);
-            for (Properties properties : propertiesSet) {
-                putProperties(properties);
-            }
-            return this;
-        }
-
-        private void putProperties(Properties properties) {
-            final Set<String> typeUrls = properties.stringPropertyNames();
-            for (String typeUrlStr : typeUrls) {
-                final TypeUrl typeUrl = TypeUrl.parse(typeUrlStr);
-                final ClassName className = ClassName.of(properties.getProperty(typeUrlStr));
-                put(typeUrl, className);
-            }
-        }
-
-        /**
-         * Returns classes from the {@code com.google.protobuf} package that need to be present
-         * in the result map.
-         *
-         * <p>This method needs to be updated with introduction of new Google Protobuf types
-         * after they are used in the framework.
-         */
-        @SuppressWarnings("OverlyLongMethod")
-        // OK as there are many types in Protobuf and we want to keep this code in one place.
-        private Builder addStandardProtobufTypes() {
-            // Types from `any.proto`.
-            put(Any.class);
-
-            // Types from `api.proto`
-            put(Api.class);
-            put(Method.class);
-            put(Mixin.class);
-
-            // Types from `descriptor.proto`
-            put(FileDescriptorSet.class);
-            put(FileDescriptorProto.class);
-            put(DescriptorProto.class);
-            // Inner types of `DescriptorProto`
-            put(DescriptorProto.ExtensionRange.class);
-            put(DescriptorProto.ReservedRange.class);
-
-            put(FieldDescriptorProto.class);
-            putEnum(FieldDescriptorProto.Type.getDescriptor(),
-                    FieldDescriptorProto.Type.class);
-            putEnum(FieldDescriptorProto.Label.getDescriptor(),
-                    FieldDescriptorProto.Label.class);
-
-            put(OneofDescriptorProto.class);
-            put(EnumDescriptorProto.class);
-            put(EnumValueDescriptorProto.class);
-            put(ServiceDescriptorProto.class);
-            put(MethodDescriptorProto.class);
-            put(FileOptions.class);
-            putEnum(FileOptions.OptimizeMode.getDescriptor(),
-                    FileOptions.OptimizeMode.class);
-            put(MessageOptions.class);
-            put(FieldOptions.class);
-            putEnum(FieldOptions.CType.getDescriptor(),
-                    FieldOptions.CType.class);
-            putEnum(FieldOptions.JSType.getDescriptor(),
-                    FieldOptions.JSType.class);
-            put(EnumOptions.class);
-            put(EnumValueOptions.class);
-            put(ServiceOptions.class);
-            put(MethodOptions.class);
-            put(UninterpretedOption.class);
-            put(SourceCodeInfo.class);
-            // Inner types of `SourceCodeInfo`.
-            put(SourceCodeInfo.Location.class);
-            put(GeneratedCodeInfo.class);
-            // Inner types of `GeneratedCodeInfo`.
-            put(GeneratedCodeInfo.Annotation.class);
-
-            // Types from `duration.proto`.
-            put(Duration.class);
-
-            // Types from `empty.proto`.
-            put(Empty.class);
-
-            // Types from `field_mask.proto`.
-            put(FieldMask.class);
-
-            // Types from `source_context.proto`.
-            put(SourceContext.class);
-
-            // Types from `struct.proto`.
-            put(Struct.class);
-            put(Value.class);
-            putEnum(NullValue.getDescriptor(), NullValue.class);
-            put(ListValue.class);
-
-            // Types from `timestamp.proto`.
-            put(Timestamp.class);
-
-            // Types from `type.proto`.
-            put(Type.class);
-            put(Field.class);
-            putEnum(Field.Kind.getDescriptor(), Field.Kind.class);
-            putEnum(Field.Cardinality.getDescriptor(), Field.Cardinality.class);
-            put(com.google.protobuf.Enum.class);
-            put(EnumValue.class);
-            put(Option.class);
-            putEnum(Syntax.getDescriptor(), Syntax.class);
-
-            // Types from `wrappers.proto`.
-            put(DoubleValue.class);
-            put(FloatValue.class);
-            put(Int64Value.class);
-            put(UInt64Value.class);
-            put(Int32Value.class);
-            put(UInt32Value.class);
-            put(BoolValue.class);
-            put(StringValue.class);
-            put(BytesValue.class);
-
-            return this;
-        }
-
-        private void put(Class<? extends GeneratedMessageV3> clazz) {
-            final TypeUrl typeUrl = TypeUrl.of(clazz);
-            final ClassName className = ClassName.of(clazz);
-            put(typeUrl, className);
-        }
-
-        private void putEnum(EnumDescriptor desc, Class<? extends EnumLite> enumClass) {
-            final TypeUrl typeUrl = TypeUrl.from(desc);
-            final ClassName className = ClassName.of(enumClass);
-            put(typeUrl, className);
-        }
-
-        private void put(TypeUrl typeUrl, ClassName className) {
-            if (resultMap.containsKey(typeUrl)) {
-                // No worries;
-                // probably `task.descriptorSetOptions.includeImports` is set to `true`.
-                return;
-            }
-            resultMap.put(typeUrl, className);
         }
     }
 }
