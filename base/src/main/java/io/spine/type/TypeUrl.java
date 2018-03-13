@@ -227,6 +227,9 @@ public final class TypeUrl implements Serializable {
         return TypeName.of(typeName);
     }
 
+    /**
+     * Obtains string representation of the URL.
+     */
     public String value() {
         final String result = composeTypeUrl(prefix, typeName);
         return result;
