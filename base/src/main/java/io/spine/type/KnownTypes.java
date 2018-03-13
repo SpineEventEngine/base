@@ -20,20 +20,17 @@
 
 package io.spine.type;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.BiMap;
-import com.google.common.collect.Collections2;
+import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Any;
 import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
 
-import javax.annotation.Nullable;
-import java.util.Collection;
 import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.collect.Sets.filter;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
@@ -47,8 +44,8 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  * </ul>
  *
  * @author Mikhail Mikhaylov
- * @author Alexander Yevsyukov
  * @author Alexander Litus
+ * @author Alexander Yevsyukov
  */
 @Internal
 public class KnownTypes {
@@ -59,28 +56,30 @@ public class KnownTypes {
      * <p>For example, for a key {@code type.spine.io/spine.base.EventId},
      * there will be the value {@code EventId}.
      */
-    private static final BiMap<TypeUrl, ClassName> names = Loader.load();
+    private final ImmutableBiMap<TypeUrl, ClassName> names;
 
     /**
      * A map from Protobuf type name to type URL.
      *
-     * <p>For example, for a key {@code spine.base.EventId},
-     * there will be the value {@code type.spine.io/spine.base.EventId}.
+     * <p>For example, for a key {@code "spine.base.EventId"},
+     * there will be {@link TypeUrl} with the value {@code "type.spine.io/spine.base.EventId"}.
      *
      * @see TypeUrl
      */
-    private static final ImmutableMap<String, TypeUrl> urls = buildUrlMap();
-
-    /** Prevents instantiation of this utility class. */
-    private KnownTypes() {
-    }
+    private final ImmutableMap<String, TypeUrl> urls;
 
     /**
-     * Retrieves Protobuf type URLs known to the application.
+     * Builds the instance by loading known types and composing lookup map for type URLs.
      */
-    public static Set<TypeUrl> getAllUrls() {
-        final Set<TypeUrl> result = names.keySet();
-        return ImmutableSet.copyOf(result);
+    private KnownTypes() {
+        final ImmutableBiMap<TypeUrl, ClassName> names = Loader.load();
+        this.names = names;
+
+        final ImmutableMap.Builder<String, TypeUrl> builder = ImmutableMap.builder();
+        for (TypeUrl typeUrl : names.keySet()) {
+            builder.put(typeUrl.getTypeName(), typeUrl);
+        }
+        this.urls = builder.build();
     }
 
     /**
@@ -92,10 +91,10 @@ public class KnownTypes {
      * @throws UnknownTypeException if there is no such type known to the application
      */
     public static ClassName getClassName(TypeUrl typeUrl) throws UnknownTypeException {
-        if (!names.containsKey(typeUrl)) {
+        if (!instance().contains(typeUrl)) {
             throw new UnknownTypeException(typeUrl.getTypeName());
         }
-        final ClassName result = names.get(typeUrl);
+        final ClassName result = instance().get(typeUrl);
         return result;
     }
 
@@ -107,20 +106,59 @@ public class KnownTypes {
      * @throws IllegalStateException if there is no Protobuf type for the specified class
      */
     public static TypeUrl getTypeUrl(ClassName className) {
-        final TypeUrl result = names.inverse()
-                                    .get(className);
+        final TypeUrl result = instance().get(className);
         if (result == null) {
             throw newIllegalStateException("No Protobuf type URL found for the Java class %s",
-                                            className);
+                                           className);
         }
         return result;
     }
 
-    /** Returns a Protobuf type URL by Protobuf type name. */
-    @Nullable
-    static TypeUrl getTypeUrl(String typeName) {
+    /**
+     * Retrieves Protobuf type URLs known to the application.
+     */
+    public static Set<TypeUrl> getAllUrls() {
+        return instance().types();
+    }
+
+    private Set<TypeUrl> types() {
+        return names.keySet();
+    }
+
+    private ClassName get(TypeUrl typeUrl) {
+        return names.get(typeUrl);
+    }
+
+    private TypeUrl get(ClassName className) {
+        return names.inverse()
+                    .get(className);
+    }
+
+    private boolean contains(TypeUrl typeUrl) {
+        final boolean result = names.containsKey(typeUrl);
+        return result;
+    }
+
+    private Optional<TypeUrl> find(String typeName) {
         final TypeUrl typeUrl = urls.get(typeName);
-        return typeUrl;
+        return Optional.fromNullable(typeUrl);
+    }
+
+    /**
+     * Obtains URL for a type type by its full name.
+     *
+     * @return URL of the type or {@code null} if the type with this name is not known.
+     */
+    static Optional<TypeUrl> tryFind(String typeName) {
+        return instance().find(typeName);
+    }
+
+    /**
+     * Obtains immutable set of URLs of types belonging to the passed package.
+     */
+    private Set<TypeUrl> fromPackage(final String packageName) {
+        final Set<TypeUrl> result = filter(types(), TypeUrl.inPackage(packageName));
+        return result;
     }
 
     /**
@@ -129,36 +167,8 @@ public class KnownTypes {
      * @param packageName proto package name
      * @return set of {@link TypeUrl TypeUrl}s of types that belong to the given package
      */
-    public static Set<TypeUrl> getAllFromPackage(final String packageName) {
-        final Collection<TypeUrl> knownTypeUrls = names.keySet();
-        final Collection<TypeUrl> resultCollection = Collections2.filter(
-                knownTypeUrls, new Predicate<TypeUrl>() {
-            @Override
-            public boolean apply(@Nullable TypeUrl input) {
-                if (input == null) {
-                    return false;
-                }
-
-                final String typeName = input.getTypeName();
-                final boolean inPackage = typeName.startsWith(packageName)
-                        && typeName.charAt(packageName.length()) == TypeName.PACKAGE_SEPARATOR;
-                return inPackage;
-            }
-        });
-
-        final Set<TypeUrl> resultSet = ImmutableSet.copyOf(resultCollection);
-        return resultSet;
-    }
-
-    /**
-     * Converts the known types map into the map from a type name to its {@code TypeUrl}.
-     */
-    private static ImmutableMap<String, TypeUrl> buildUrlMap() {
-        final ImmutableMap.Builder<String, TypeUrl> builder = ImmutableMap.builder();
-        for (TypeUrl typeUrl : names.keySet()) {
-            builder.put(typeUrl.getTypeName(), typeUrl);
-        }
-        return builder.build();
+    public static Set<TypeUrl> getAllFromPackage(String packageName) {
+        return instance().fromPackage(packageName);
     }
 
     /**
@@ -176,5 +186,16 @@ public class KnownTypes {
         } catch (ClassNotFoundException e) {
             throw new UnknownTypeException(typeUrl.getTypeName(), e);
         }
+    }
+
+    private static KnownTypes instance() {
+        return  Singleton.INSTANCE.value;
+    }
+
+    @SuppressWarnings("NonSerializableFieldInSerializableClass")
+    private enum Singleton {
+        INSTANCE;
+
+        private final KnownTypes value = new KnownTypes();
     }
 }

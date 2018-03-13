@@ -21,6 +21,7 @@
 package io.spine.type;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Predicate;
 import com.google.common.base.Splitter;
 import com.google.protobuf.Any;
 import com.google.protobuf.AnyOrBuilder;
@@ -33,6 +34,7 @@ import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
 import io.spine.option.OptionsProto;
 
+import javax.annotation.Nullable;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
@@ -218,6 +220,13 @@ public final class TypeUrl implements Serializable {
         return value();
     }
 
+    /**
+     * Converts the instance to {@code TypeName}.
+     */
+    public TypeName toName() {
+        return TypeName.of(typeName);
+    }
+
     public String value() {
         final String result = composeTypeUrl(prefix, typeName);
         return result;
@@ -239,6 +248,10 @@ public final class TypeUrl implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(prefix, typeName);
+    }
+
+    static Predicate<TypeUrl> inPackage(String packageName) {
+        return new InPackage(packageName);
     }
 
     /**
@@ -275,6 +288,28 @@ public final class TypeUrl implements Serializable {
         @Override
         public String toString() {
             return value();
+        }
+    }
+
+    /**
+     * Verifies if a type belongs to a package.
+     */
+    private static class InPackage implements Predicate<TypeUrl> {
+
+        private final String packageName;
+
+        private InPackage(String packageName) {
+            this.packageName = packageName;
+        }
+
+        @Override
+        public boolean apply(@Nullable TypeUrl input) {
+            checkNotNull(input);
+            final String typeName = input.getTypeName();
+            final boolean inPackage =
+                    typeName.startsWith(packageName)
+                            && typeName.charAt(packageName.length()) == TypeName.PACKAGE_SEPARATOR;
+            return inPackage;
         }
     }
 }
