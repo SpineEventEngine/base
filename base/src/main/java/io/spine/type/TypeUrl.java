@@ -25,9 +25,9 @@ import com.google.common.base.Predicate;
 import com.google.common.base.Splitter;
 import com.google.protobuf.Any;
 import com.google.protobuf.AnyOrBuilder;
-import com.google.protobuf.Descriptors;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.EnumDescriptor;
+import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Descriptors.GenericDescriptor;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
@@ -102,8 +102,8 @@ public final class TypeUrl implements Serializable {
      * @param descriptor the descriptor of the type
      */
     public static TypeUrl from(Descriptor descriptor) {
-        final String typeUrlPrefix = getTypeUrlPrefix(descriptor);
-        return create(typeUrlPrefix, descriptor.getFullName());
+        final String prefix = prefixFor(descriptor);
+        return create(prefix, descriptor.getFullName());
     }
 
     /**
@@ -112,8 +112,8 @@ public final class TypeUrl implements Serializable {
      * @param descriptor the descriptor of the type
      */
     public static TypeUrl from(EnumDescriptor descriptor) {
-        final String typeUrlPrefix = getTypeUrlPrefix(descriptor);
-        return create(typeUrlPrefix, descriptor.getFullName());
+        final String prefix = prefixFor(descriptor);
+        return create(prefix, descriptor.getFullName());
     }
 
     /**
@@ -161,15 +161,26 @@ public final class TypeUrl implements Serializable {
         return typeUrl;
     }
 
-    /** Obtains the type URL for the passed message class. */
+    /**
+     * Obtains the type URL for the passed message class.
+     */
     public static TypeUrl of(Class<? extends Message> cls) {
         final Message defaultInstance = getDefaultInstance(cls);
         final TypeUrl result = of(defaultInstance);
         return result;
     }
 
-    private static String getTypeUrlPrefix(GenericDescriptor descriptor) {
-        final Descriptors.FileDescriptor file = descriptor.getFile();
+    /**
+     * Obtains the prefix for the passed proto type.
+     *
+     * <p>If the type is a standard proto type, the {@linkplain Prefix#GOOGLE_APIS standard prefix}
+     * is returned.
+     *
+     * <p>For custom times, returns the value specified in the {@linkplain
+     * OptionsProto#typeUrlPrefix file option}.
+     */
+    private static String prefixFor(GenericDescriptor descriptor) {
+        final FileDescriptor file = descriptor.getFile();
         if (file.getPackage().equals(GOOGLE_PROTOBUF_PACKAGE)) {
             return Prefix.GOOGLE_APIS.value();
         }
@@ -308,11 +319,8 @@ public final class TypeUrl implements Serializable {
         @Override
         public boolean apply(@Nullable TypeUrl input) {
             checkNotNull(input);
-            final String typeName = input.getTypeName();
-            final boolean inPackage =
-                    typeName.startsWith(packageName)
-                            && typeName.charAt(packageName.length()) == TypeName.PACKAGE_SEPARATOR;
-            return inPackage;
+            final TypeName typeName = input.toName();
+            return typeName.belongsTo(packageName);
         }
     }
 }

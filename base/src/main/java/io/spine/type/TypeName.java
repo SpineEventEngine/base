@@ -180,4 +180,15 @@ public class TypeName extends StringTypeValue {
         }
         return descriptor;
     }
+
+    /**
+     * Verifies if the type belongs to the passed package.
+     */
+    boolean belongsTo(String packageName) {
+        final String typeName = value();
+        final boolean inPackage =
+                typeName.startsWith(packageName)
+                        && typeName.charAt(packageName.length()) == PACKAGE_SEPARATOR;
+        return inPackage;
+    }
 }
