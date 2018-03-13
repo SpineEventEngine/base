@@ -62,35 +62,40 @@ import static com.google.common.collect.Maps.newHashMap;
 import static io.spine.util.PropertyFiles.loadAllProperties;
 
 /**
- * The helper class for building internal immutable typeUrl-to-JavaClass map.
+ * The helper class for building a map from proto type URL to Java class name.
  *
  * @author Mikhail Mikhaylov
  * @author Alexander Yevsyukov
+ * @see KnownTypes
  */
 final class Loader {
 
-    private final Map<TypeUrl, ClassName> resultMap = newHashMap();
+    private final Map<TypeUrl, ClassName> result = newHashMap();
 
     /** Prevents construction from outside. */
     private Loader() {
     }
 
+    /**
+     * Builds a bi-map by adding standard Protobuf types and loading types from
+     * the {@linkplain io.spine.Resources#KNOWN_TYPES resource file}.
+     */
     static ImmutableBiMap<TypeUrl, ClassName> load() {
         final Loader loader = new Loader().addStandardProtobufTypes()
                                           .loadResourceFile();
-        final ImmutableBiMap<TypeUrl, ClassName> result = ImmutableBiMap.copyOf(loader.resultMap);
+        final ImmutableBiMap<TypeUrl, ClassName> result = ImmutableBiMap.copyOf(loader.result);
         return result;
     }
 
     private Loader loadResourceFile() {
         final Set<Properties> propertiesSet = loadAllProperties(Resources.KNOWN_TYPES);
         for (Properties properties : propertiesSet) {
-            putProperties(properties);
+            putAll(properties);
         }
         return this;
     }
 
-    private void putProperties(Properties properties) {
+    private void putAll(Properties properties) {
         final Set<String> typeUrls = properties.stringPropertyNames();
         for (String typeUrlStr : typeUrls) {
             final TypeUrl typeUrl = TypeUrl.parse(typeUrlStr);
@@ -216,11 +221,11 @@ final class Loader {
     }
 
     private void put(TypeUrl typeUrl, ClassName className) {
-        if (resultMap.containsKey(typeUrl)) {
+        if (result.containsKey(typeUrl)) {
             // No worries;
             // probably `task.descriptorSetOptions.includeImports` is set to `true`.
             return;
         }
-        resultMap.put(typeUrl, className);
+        result.put(typeUrl, className);
     }
 }
