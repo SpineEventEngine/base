@@ -67,9 +67,13 @@ import static io.spine.util.PropertyFiles.loadAllProperties;
  * @author Mikhail Mikhaylov
  * @author Alexander Yevsyukov
  */
-class Loader {
+final class Loader {
 
     private final Map<TypeUrl, ClassName> resultMap = newHashMap();
+
+    /** Prevents construction from outside. */
+    private Loader() {
+    }
 
     static ImmutableBiMap<TypeUrl, ClassName> load() {
         final Loader loader = new Loader().addStandardProtobufTypes()
@@ -204,7 +208,8 @@ class Loader {
         put(typeUrl, className);
     }
 
-    private void putEnum(Descriptors.EnumDescriptor desc, Class<? extends Internal.EnumLite> enumClass) {
+    private void putEnum(Descriptors.EnumDescriptor desc,
+                         Class<? extends Internal.EnumLite> enumClass) {
         final TypeUrl typeUrl = TypeUrl.from(desc);
         final ClassName className = ClassName.of(enumClass);
         put(typeUrl, className);
