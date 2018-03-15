@@ -147,7 +147,7 @@ public class KnownTypes {
     /**
      * Obtains URL for a type type by its full name.
      *
-     * @return URL of the type or {@code null} if the type with this name is not known.
+     * @return URL of the type or {@code Optional.absent()} if the type with this name is not known
      */
     static Optional<TypeUrl> tryFind(String typeName) {
         return instance().find(typeName);
