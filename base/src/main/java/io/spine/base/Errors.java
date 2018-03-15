@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -20,10 +20,10 @@
 
 package io.spine.base;
 
-import com.google.common.base.Strings;
-import com.google.common.base.Throwables;
-
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Strings.nullToEmpty;
+import static com.google.common.base.Throwables.getRootCause;
+import static com.google.common.base.Throwables.getStackTraceAsString;
 
 /**
  * Utility class for working with {@link Error}s.
@@ -32,33 +32,58 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public final class Errors {
 
+    /** Prevent instantiation of this utility class. */
     private Errors() {
-        // Prevent instantiation of this utility class.
     }
 
-    /** Creates new instance of {@link Error} by the passed exception. */
-    public static Error fromException(Exception exception) {
-        checkNotNull(exception);
-        final String message = exception.getMessage();
-        final Error result = Error.newBuilder()
-                                  .setType(exception.getClass()
-                                                    .getName())
-                                  .setMessage(message)
-                                  .setStacktrace(Throwables.getStackTraceAsString(exception))
-                                  .build();
-        return result;
-    }
-
-    /** Creates new instance of {@link Error} by the passed {@code Throwable}. */
-    public static Error fromThrowable(Throwable throwable) {
+    private static Error.Builder toErrorBuilder(Throwable throwable) {
         checkNotNull(throwable);
-        final String message = Strings.nullToEmpty(throwable.getMessage());
-        final Error result = Error.newBuilder()
-                                  .setType(throwable.getClass()
-                                                    .getName())
-                                  .setMessage(message)
-                                  .setStacktrace(Throwables.getStackTraceAsString(throwable))
-                                  .build();
-        return result;
+        final String type = throwable.getClass()
+                                     .getName();
+        final String message = nullToEmpty(throwable.getMessage());
+        final String stacktrace = getStackTraceAsString(throwable);
+        return Error.newBuilder()
+                    .setType(type)
+                    .setMessage(message)
+                    .setStacktrace(stacktrace);
+    }
+
+    /**
+     * Creates new instance of {@link Error} by the passed {@code Throwable}.
+     */
+    public static Error fromThrowable(Throwable throwable) {
+        final Error.Builder result = toErrorBuilder(throwable);
+        return result.build();
+    }
+
+    /**
+     * Creates an instance by the root cause of the passed {@link Throwable}.
+     *
+     * @param throwable the {@code Throwable} to convert
+     * @return new instance of {@link Error}
+     */
+    public static Error causeOf(Throwable throwable) {
+        final Error.Builder error = toBuilderCauseOf(throwable);
+        return error.build();
+    }
+
+    private static Error.Builder toBuilderCauseOf(Throwable throwable) {
+        return toErrorBuilder(getRootCause(throwable));
+    }
+
+    /**
+     * Creates an instance by the root cause of the given {@link Throwable} with
+     * the given error code.
+     *
+     * <p>The error code may represent a number in an enum or a native error number
+     *
+     * @param throwable the {@code Throwable} to convert
+     * @param errorCode the error code to include in the resulting {@link Error}
+     * @return new instance of {@link Error}
+     * @see #causeOf(Throwable) as the recommended overload
+     */
+    public static Error causeOf(Throwable throwable, int errorCode) {
+        final Error.Builder error = toBuilderCauseOf(throwable).setCode(errorCode);
+        return error.build();
     }
 }

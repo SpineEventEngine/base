@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -27,9 +27,7 @@ import static io.spine.Identifier.newUuid;
 import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 import static io.spine.util.Exceptions.newIllegalStateException;
-import static io.spine.util.Exceptions.toError;
 import static io.spine.util.Exceptions.unsupported;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -96,15 +94,5 @@ public class ExceptionsShould {
     public void throw_formatted_ISE_with_cause() {
         newIllegalStateException(new RuntimeException(getClass().getSimpleName()),
                                             "%s %s", "taram", "param");
-    }
-
-    @Test
-    public void convert_throwable_to_Error() {
-        final int errorCode = 404;
-        final String errorMessage = newUuid();
-        io.spine.base.Error error = toError(new RuntimeException(errorMessage), errorCode);
-
-        assertEquals(errorCode, error.getCode());
-        assertEquals(errorMessage, error.getMessage());
     }
 }
