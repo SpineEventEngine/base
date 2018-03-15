@@ -20,6 +20,7 @@
 
 package io.spine.type;
 
+import com.google.common.base.Optional;
 import com.google.protobuf.Any;
 import com.google.protobuf.Duration;
 import com.google.protobuf.Empty;
@@ -108,9 +109,10 @@ public class KnownTypesShould {
     public void return_proto_type_url_by_proto_type_name() {
         final TypeUrl typeUrlExpected = TypeUrl.from(StringValue.getDescriptor());
 
-        final TypeUrl typeUrlActual = KnownTypes.getTypeUrl(typeUrlExpected.getTypeName());
+        final Optional<TypeUrl> typeUrlActual = KnownTypes.tryFind(typeUrlExpected.getTypeName());
 
-        assertEquals(typeUrlExpected, typeUrlActual);
+        assertTrue(typeUrlActual.isPresent());
+        assertEquals(typeUrlExpected, typeUrlActual.get());
     }
 
     @Test

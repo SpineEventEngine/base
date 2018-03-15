@@ -105,6 +105,11 @@ public class TypeUrlShould {
     }
 
     @Test
+    public void convert_to_TypeName() {
+        assertEquals(TypeName.of(STRING_VALUE_TYPE_NAME), stringValueTypeUrl.toName());
+    }
+
+    @Test
     public void create_by_descriptor_of_google_msg() {
         final TypeUrl typeUrl = TypeUrl.from(StringValue.getDescriptor());
 

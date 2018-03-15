@@ -20,6 +20,7 @@
 
 package io.spine.type;
 
+import com.google.common.base.Optional;
 import com.google.common.base.Splitter;
 import com.google.protobuf.Descriptors;
 import com.google.protobuf.Descriptors.Descriptor;
@@ -126,9 +127,9 @@ public class TypeName extends StringTypeValue {
      */
     public TypeUrl toUrl() {
         final String typeName = value();
-        final TypeUrl typeUrl = KnownTypes.getTypeUrl(typeName);
-        checkState(typeUrl != null, "Unable to find URL for type: %s", typeName);
-        return typeUrl;
+        final Optional<TypeUrl> typeUrl = KnownTypes.tryFind(typeName);
+        checkState(typeUrl.isPresent(), "Unable to find URL for type: %s", typeName);
+        return typeUrl.get();
     }
 
     /**
@@ -160,10 +161,10 @@ public class TypeName extends StringTypeValue {
      */
     static GenericDescriptor getDescriptor(String typeName) {
         checkNotEmptyOrBlank(typeName);
-        final TypeUrl typeUrl = KnownTypes.getTypeUrl(typeName);
-        checkArgument(typeUrl != null, "Cannot find TypeUrl for the type name: `%s`", typeName);
+        final Optional<TypeUrl> typeUrl = KnownTypes.tryFind(typeName);
+        checkArgument(typeUrl.isPresent(), "Cannot find TypeUrl for the type name: `%s`", typeName);
 
-        final Class<?> cls = KnownTypes.getJavaClass(typeUrl);
+        final Class<?> cls = KnownTypes.getJavaClass(typeUrl.get());
 
         final GenericDescriptor descriptor;
         try {
@@ -178,5 +179,16 @@ public class TypeName extends StringTypeValue {
             throw newIllegalStateException(e, "Unable to get descriptor for the type %s", typeName);
         }
         return descriptor;
+    }
+
+    /**
+     * Verifies if the type belongs to the passed package.
+     */
+    boolean belongsTo(String packageName) {
+        final String typeName = value();
+        final boolean inPackage =
+                typeName.startsWith(packageName)
+                        && typeName.charAt(packageName.length()) == PACKAGE_SEPARATOR;
+        return inPackage;
     }
 }
