@@ -22,8 +22,8 @@ package io.spine.tools.proto;
 
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
+import io.spine.base.CommandMessage;
 import io.spine.tools.AbstractFileName;
-import io.spine.type.CommandMessage;
 
 import java.util.List;
 

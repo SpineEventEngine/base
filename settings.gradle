@@ -26,9 +26,9 @@ project(':plugin-base').projectDir = new File('./gradle-plugins/plugin-base')
 include ':model-compiler'
 project(':model-compiler').projectDir = new File('./gradle-plugins/model-compiler')
 
-include 'util'
-include 'base'
 include 'testutil-base'
+
+include 'base'
 include 'protoc-plugin'
 include 'protoc-plugin-tests'
 include 'codegen'

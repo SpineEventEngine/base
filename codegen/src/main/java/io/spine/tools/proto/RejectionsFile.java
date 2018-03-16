@@ -30,7 +30,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A proto file with declarations of {@linkplain io.spine.type.RejectionMessage rejections}.
+ * A proto file with declarations of {@linkplain io.spine.base.RejectionMessage rejections}.
  *
  * @author Alexander Yevsyukov
  */

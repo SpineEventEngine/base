@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -24,7 +24,7 @@ import org.mockito.Mockito;
 
 import java.lang.reflect.Field;
 
-import static io.spine.util.Exceptions.illegalArgumentWithCauseOf;
+import static com.google.common.base.Throwables.getRootCause;
 
 /**
  * Utility for injecting a Mockito spy in a private field of an object.
@@ -66,5 +66,10 @@ public class Spy<T> {
         } catch (NoSuchFieldException | IllegalAccessException | ClassCastException e) {
             throw illegalArgumentWithCauseOf(e);
         }
+    }
+
+    private static IllegalArgumentException illegalArgumentWithCauseOf(Throwable throwable) {
+        final Throwable rootCause = getRootCause(throwable);
+        throw new IllegalArgumentException(rootCause);
     }
 }

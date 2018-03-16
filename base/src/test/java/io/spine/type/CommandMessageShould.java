@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -22,6 +22,7 @@ package io.spine.type;
 
 import com.google.protobuf.Descriptors;
 import com.google.protobuf.StringValue;
+import io.spine.base.CommandMessage;
 import io.spine.base.given.CommandFromCommands;
 import io.spine.test.Tests;
 import org.junit.Test;

@@ -72,8 +72,6 @@ dependencies {
     compile group: 'com.google.protobuf', name: 'protobuf-java', version: protobufVersion
     compile group: 'com.google.protobuf', name: 'protobuf-java-util', version: protobufVersion
 
-    compile project(':util')
-    
     // Use jdk14 bindings for test purposes only.
     testCompile group: 'org.slf4j', name: 'slf4j-jdk14', version: slf4JVersion
     testCompile(group: 'junit', name: 'junit', version: jUnitVersion) {

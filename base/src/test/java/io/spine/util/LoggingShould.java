@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -26,10 +26,10 @@ import io.spine.test.Tests;
 import io.spine.util.given.LoggingTestEnv.Base;
 import io.spine.util.given.LoggingTestEnv.ChildOne;
 import io.spine.util.given.LoggingTestEnv.ChildTwo;
+import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
@@ -64,9 +64,9 @@ public class LoggingShould {
         assertNotSame(baseLogger, childTwoLogger);
         assertNotSame(childOneLogger, childTwoLogger);
 
-        assertNotEquals(baseLogger, childOneLogger);
-        assertNotEquals(baseLogger, childTwoLogger);
-        assertNotEquals(childOneLogger, childTwoLogger);
+        Assert.assertNotEquals(baseLogger, childOneLogger);
+        Assert.assertNotEquals(baseLogger, childTwoLogger);
+        Assert.assertNotEquals(childOneLogger, childTwoLogger);
 
         assertTrue(baseLogger.getName().contains(Base.class.getName()));
         assertTrue(childOneLogger.getName().contains(ChildOne.class.getName()));

@@ -1,5 +1,5 @@
 //
-// Copyright 2017, TeamDev Ltd. All rights reserved.
+// Copyright 2018, TeamDev Ltd. All rights reserved.
 //
 // Redistribution and use in source and/or binary forms, with or without
 // modification, must retain the above copyright notice and the following
@@ -18,14 +18,14 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 dependencies {
-    // Depend on JUnit in the production part of the code, as this module exposes testing utilities
-    // that are based on JUnit.
+    compile group: 'com.google.protobuf', name: 'protobuf-java', version: protobufVersion
+    compile group: 'com.google.protobuf', name: 'protobuf-java-util', version: protobufVersion
+
+    // Depend on JUnit, Mockito, Hamcrest, and Guava Testlib in the production part of the code,
+    // as this module would exposes these libraries along with the testing utilities.
+    
     compile group: 'junit', name: 'junit', version: jUnitVersion
-
-    // Depend on Mockito in the production code because this module exposes testing utilities
-    // based on this library.
     compile group: 'org.mockito', name: 'mockito-core', version: mockitoVersion
-
-    // Depend on the base module that contains `Timestamps` and other utility classes.
-    compile project(path: ':base')
+    compile group: 'org.hamcrest', name: 'hamcrest-all', version: hamcrestVersion
+    compile group: 'com.google.guava', name: 'guava-testlib', version: guavaVersion
 }

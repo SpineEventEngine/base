@@ -21,10 +21,10 @@
 package io.spine.util;
 
 import com.google.common.testing.NullPointerTester;
+import io.spine.test.TestValues;
+import io.spine.test.Tests;
 import org.junit.Test;
 
-import static io.spine.Identifier.newUuid;
-import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 import static io.spine.util.Exceptions.newIllegalStateException;
 import static io.spine.util.Exceptions.unsupported;
@@ -40,7 +40,7 @@ public class ExceptionsShould {
 
     @Test
     public void have_private_ctor() {
-        assertHasPrivateParameterlessCtor(Exceptions.class);
+        Tests.assertHasPrivateParameterlessCtor(Exceptions.class);
     }
 
     @Test(expected = UnsupportedOperationException.class)
@@ -50,7 +50,7 @@ public class ExceptionsShould {
 
     @Test(expected = UnsupportedOperationException.class)
     public void create_and_throw_unsupported_operation_exception_with_message() {
-        unsupported(newUuid());
+        unsupported(TestValues.randomString());
     }
 
     @Test

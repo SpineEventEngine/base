@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -21,7 +21,6 @@
 package io.spine.util;
 
 import com.google.common.collect.FluentIterable;
-import io.spine.annotation.Internal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,11 +34,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  * @author Alexander Litus
  */
-@Internal
 public class IoUtil {
 
+    /** Prevent instantiation of this utility class. */
     private IoUtil() {
-        // Prevent instantiation of this utility class.
     }
 
     /**

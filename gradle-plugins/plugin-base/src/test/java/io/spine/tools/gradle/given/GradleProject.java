@@ -38,8 +38,8 @@ import java.util.List;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static com.google.common.base.Throwables.getRootCause;
 import static com.google.common.collect.Lists.newLinkedList;
-import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 import static java.nio.file.Files.exists;
 import static java.util.Arrays.asList;
 
@@ -261,5 +261,10 @@ public class GradleProject {
                 throw illegalStateWithCauseOf(e);
             }
         }
+    }
+
+    private static IllegalStateException illegalStateWithCauseOf(Throwable throwable) {
+        final Throwable rootCause = getRootCause(throwable);
+        throw new IllegalStateException(rootCause);
     }
 }

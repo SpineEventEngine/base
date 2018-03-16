@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -18,19 +18,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.type;
+package io.spine.base;
 
 import com.google.protobuf.Message;
 
 /**
- * A common interface for event messages.
+ * A common interface for rejection messages.
  *
- * <p>This interface is used by the Model Compiler for marking event messages.
- * By convention, event messages are defined in a proto file, which name ends
- * with {@code events.proto}.
+ * <p>This interface is used by the Model Compiler for marking rejection messages.
+ * By convention, rejection messages are defined in a proto file, which name ends
+ * with {@code rejections.proto}.
  *
  * @author Alexander Yevsyukov
  */
-@SuppressWarnings({"unused", "InterfaceNeverImplemented"}) /* See Javadoc */
-public interface EventMessage extends Message {
+@SuppressWarnings("InterfaceNeverImplemented") /* See Javadoc */
+public interface RejectionMessage extends Message {
 }

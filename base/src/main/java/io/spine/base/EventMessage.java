@@ -18,19 +18,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.type;
+package io.spine.base;
 
 import com.google.protobuf.Message;
 
 /**
- * A common interface for rejection messages.
+ * A common interface for event messages.
  *
- * <p>This interface is used by the Model Compiler for marking rejection messages.
- * By convention, rejection messages are defined in a proto file, which name ends
- * with {@code rejections.proto}.
+ * <p>This interface is used by the Model Compiler for marking event messages.
+ * By convention, event messages are defined in a proto file, which name ends
+ * with {@code events.proto}.
  *
  * @author Alexander Yevsyukov
  */
-@SuppressWarnings("InterfaceNeverImplemented") /* See Javadoc */
-public interface RejectionMessage extends Message {
+@SuppressWarnings({"unused", "InterfaceNeverImplemented"}) /* See Javadoc */
+public interface EventMessage extends Message {
 }

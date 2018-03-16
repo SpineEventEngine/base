@@ -22,10 +22,8 @@ package io.spine.test;
 
 import com.google.protobuf.StringValue;
 
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
-
-import static io.spine.Identifier.newUuid;
-import static io.spine.protobuf.TypeConverter.toMessage;
 
 /**
  * Utility factories for test values.
@@ -39,13 +37,24 @@ public class TestValues {
     }
 
     /**
+     * Generates a string value based on {@linkplain java.util.UUID#randomUUID() generated UUID}.
+     */
+    public static String randomString() {
+        return UUID.randomUUID()
+                   .toString();
+    }
+
+    /**
      * Generates a {@code StringValue} with generated UUID.
      *
      * <p>Use this method when you need to generate a test {@code Message} value
      * but do not want to resort to {@code Timestamp} via {@code Timestamps#getCurrentTime()}.
      */
     public static StringValue newUuidValue() {
-        return toMessage(newUuid());
+        final String id = randomString();
+        return StringValue.newBuilder()
+                          .setValue(id)
+                          .build();
     }
 
     /**

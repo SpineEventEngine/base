@@ -16,6 +16,7 @@ import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.Multimap;
 import org.junit.Assert;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -51,7 +52,7 @@ import static com.google.common.collect.Sets.newHashSet;
         "ErrorNotRethrown", "unused"})
 public final class Verify extends Assert {
 
-    private static final String SHOULD_NOT_BE_EQUAL = " should not be equal:<";
+    private static final String SHOULD_NOT_BE_EQUAL = "ns should not be equal:<";
 
     private static final String EXPECTED_ITEMS_IN_ASSERTION_MESSAGE = "Expected items in assertion";
     private static final String ITERABLE = "iterable";
@@ -407,7 +408,11 @@ public final class Verify extends Assert {
     }
 
     /** Assert that the given {@link Map} is empty. */
-    @SuppressWarnings("MethodWithMoreThanThreeNegations")
+    @SuppressWarnings({
+            "MethodWithMoreThanThreeNegations",
+            "ConstantConditions" /* IDEA reports the {@code actualMap.size() != 0} as always false.
+            It can be true for some flawed custom Map impl. which this method tests. */
+    })
     public static void assertEmpty(String mapName, Map<?, ?> actualMap) {
         try {
             assertObjectNotNull(mapName, actualMap);
@@ -416,19 +421,23 @@ public final class Verify extends Assert {
             if (!actualMap.isEmpty()) {
                 fail(mapName + errorMessage + actualMap.size() + '>');
             }
+
             if (actualMap.size() != 0) {
                 fail(mapName + errorMessage + actualMap.size() + '>');
             }
+
             if (actualMap.keySet()
                          .size() != 0) {
                 fail(mapName + errorMessage + actualMap.keySet()
                                                        .size() + '>');
             }
+
             if (actualMap.values()
                          .size() != 0) {
                 fail(mapName + errorMessage + actualMap.values()
                                                        .size() + '>');
             }
+
             if (actualMap.entrySet()
                          .size() != 0) {
                 fail(mapName + errorMessage + actualMap.entrySet()
@@ -854,14 +863,15 @@ public final class Verify extends Assert {
         }
     }
 
-    public static <T> void assertSetsEqual(Collection<T> expectedSet, Collection<T> actualSet) {
+    public static <T> void assertSetsEqual(@Nullable Collection<T> expectedSet,
+                                           @Nullable Collection<T> actualSet) {
         try {
-            //noinspection ConstantConditions
             if (expectedSet == null) {
                 assertNull("Actual set should be null", actualSet);
                 return;
             }
 
+            //noinspection ConstantConditions
             assertObjectNotNull("actual set", actualSet);
             assertSize(expectedSet.size(), actualSet);
 
@@ -875,9 +885,6 @@ public final class Verify extends Assert {
                 if (numberDifferences > maxDifferences) {
                     fail("Actual set: " + numberDifferences + " elements different.");
                 }
-
-                final Set<T> inActualOnlySet = newHashSet(actualSet);
-                inActualOnlySet.removeAll(expectedSet);
 
                 fail("Sets are not equal.");
             }

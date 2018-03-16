@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -18,25 +18,26 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base;
+package io.spine.util;
 
 import com.google.common.reflect.TypeToken;
 import com.google.common.testing.NullPointerTester;
-import io.spine.reflect.Types;
+import io.spine.test.Tests;
 import org.junit.Test;
 
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 
-import static io.spine.reflect.Types.listTypeOf;
-import static io.spine.reflect.Types.mapTypeOf;
-import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
+import static io.spine.util.Types.listTypeOf;
+import static io.spine.util.Types.mapTypeOf;
 import static org.junit.Assert.assertEquals;
 
 /**
  * @author Illia Shepilov
  */
+@SuppressWarnings({"SerializableNonStaticInnerClassWithoutSerialVersionUID",
+        "SerializableInnerClassWithNonSerializableOuterClass"}) // It is OK for test methods.
 public class TypesShould {
 
     @Test
@@ -47,13 +48,10 @@ public class TypesShould {
 
     @Test
     public void have_private_constructor() {
-        assertHasPrivateParameterlessCtor(Types.class);
+        Tests.assertHasPrivateParameterlessCtor(Types.class);
     }
 
     @Test
-    @SuppressWarnings({"SerializableNonStaticInnerClassWithoutSerialVersionUID",
-                       "SerializableInnerClassWithNonSerializableOuterClass"})
-                        // It is OK for test method.
     public void create_map_type() {
         final Type type = mapTypeOf(String.class, Integer.class);
         final Type expectedType = new TypeToken<Map<String, Integer>>(){}.getType();
@@ -61,9 +59,6 @@ public class TypesShould {
     }
 
     @Test
-    @SuppressWarnings({"SerializableNonStaticInnerClassWithoutSerialVersionUID",
-                       "SerializableInnerClassWithNonSerializableOuterClass"})
-                        // It is OK for test method.
     public void create_list_type() {
         final Type type = listTypeOf(String.class);
         final Type expectedType = new TypeToken<List<String>>(){}.getType();
