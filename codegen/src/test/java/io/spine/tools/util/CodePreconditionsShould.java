@@ -18,20 +18,36 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools;
+package io.spine.tools.util;
 
-import io.spine.tools.util.ComparableStringValue;
+import com.google.common.testing.NullPointerTester;
+import io.spine.test.Tests;
+import org.junit.Test;
+
+import static io.spine.tools.util.CodePreconditions.checkNotEmptyOrBlank;
 
 /**
- * A name of a source code file.
- *
- * @param <F> the type of the file name for comparison type covariance
  * @author Alexander Yevsyukov
  */
-public abstract class AbstractFileName<F extends AbstractFileName>
-        extends ComparableStringValue<F> {
+public class CodePreconditionsShould {
 
-    protected AbstractFileName(String value) {
-        super(value);
+    @Test
+    public void have_utility_ctor() {
+        Tests.assertHasPrivateParameterlessCtor(CodePreconditions.class);
+    }
+
+    @Test
+    public void check_nullity() {
+        new NullPointerTester().testAllPublicStaticMethods(CodePreconditions.class);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void prohibit_empty_string() {
+        checkNotEmptyOrBlank("");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void prohibit_blank_string() {
+        checkNotEmptyOrBlank(" ");
     }
 }

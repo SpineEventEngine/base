@@ -29,7 +29,7 @@ import io.spine.tools.AbstractSourceFile;
 import java.nio.file.Path;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.util.Exceptions.newIllegalStateException;
+import static io.spine.tools.util.Exceptions.newIllegalStateException;
 
 /**
  * A Java source code file.

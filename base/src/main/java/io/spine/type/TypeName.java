@@ -109,7 +109,7 @@ public class TypeName extends StringTypeValue {
      */
     public static TypeName from(Descriptor descriptor) {
         checkNotNull(descriptor);
-        return from(TypeUrl.from(descriptor));
+        return of(descriptor.getFullName());
     }
 
     /**

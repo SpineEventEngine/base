@@ -20,7 +20,7 @@
 
 package io.spine.tools;
 
-import io.spine.type.StringTypeValue;
+import io.spine.tools.util.StringTypeValue;
 
 /**
  * A field in a programming language.

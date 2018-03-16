@@ -25,7 +25,6 @@ import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.Descriptor;
 import io.spine.test.compiler.message.Top;
-import io.spine.type.TypeName;
 import org.junit.Before;
 import org.junit.Test;
 

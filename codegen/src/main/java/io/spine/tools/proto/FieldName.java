@@ -27,7 +27,7 @@ import io.spine.tools.AbstractFieldName;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
+import static io.spine.tools.util.CodePreconditions.checkNotEmptyOrBlank;
 
 /**
  * A name of a message field.

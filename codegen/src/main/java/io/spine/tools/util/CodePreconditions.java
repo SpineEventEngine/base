@@ -18,20 +18,35 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools;
+package io.spine.tools.util;
 
-import io.spine.tools.util.ComparableStringValue;
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A name of a source code file.
+ * Utilities for checking preconditions related to source code.
  *
- * @param <F> the type of the file name for comparison type covariance
  * @author Alexander Yevsyukov
  */
-public abstract class AbstractFileName<F extends AbstractFileName>
-        extends ComparableStringValue<F> {
+public class CodePreconditions {
 
-    protected AbstractFileName(String value) {
-        super(value);
+    /** Prevents instantiation of this utility class. */
+    private CodePreconditions() {
+    }
+
+    /**
+     * Ensures that the passed string is not {@code null}, empty or blank string.
+     *
+     * @param stringToCheck the string to check
+     * @return the passed string
+     * @throws NullPointerException if the passed string is {@code null}
+     * @throws IllegalArgumentException if the string is empty or blank
+     */
+    public static String checkNotEmptyOrBlank(String stringToCheck) {
+        checkNotNull(stringToCheck);
+        checkArgument(!stringToCheck.isEmpty());
+        final String trimmed = stringToCheck.trim();
+        checkArgument(trimmed.length() > 0);
+        return stringToCheck;
     }
 }

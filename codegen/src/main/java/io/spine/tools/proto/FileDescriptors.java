@@ -37,7 +37,7 @@ import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.util.Exceptions.newIllegalStateException;
+import static io.spine.tools.util.Exceptions.newIllegalStateException;
 
 /**
  * A utility class which allows to obtain Protobuf file descriptors.
@@ -102,7 +102,7 @@ public class FileDescriptors {
         checkArgument(descriptorsFile.exists(), "File %s does not exist", descriptorSetFile);
 
         final Logger log = log();
-        if (log.isTraceEnabled()) {
+        if (log.isDebugEnabled()) {
             log.debug("Looking up for the proto files matching predicate {} under {}",
                       filter,
                       descriptorSetFile);

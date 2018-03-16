@@ -23,7 +23,7 @@ package io.spine.tools.java;
 import com.google.common.base.Optional;
 import io.spine.tools.proto.ScalarType;
 
-import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
+import static io.spine.tools.util.CodePreconditions.checkNotEmptyOrBlank;
 
 /**
  * Enumeration of the Java primitives used for representing Proto scalar types.

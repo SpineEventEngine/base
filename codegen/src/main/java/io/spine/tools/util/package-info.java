@@ -18,37 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools;
-
-import com.google.common.testing.NullPointerTester;
-import io.spine.test.Tests;
-import io.spine.util.Preconditions2;
-import org.junit.Test;
-
-import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
-
 /**
- * @author Alexander Yevsyukov
+ * Utilities for programming tools.
  */
-public class Preconditions2Should {
+@ParametersAreNonnullByDefault
+package io.spine.tools.util;
 
-    @Test
-    public void have_utility_ctor() {
-        Tests.assertHasPrivateParameterlessCtor(Preconditions2.class);
-    }
-
-    @Test
-    public void check_nullity() {
-        new NullPointerTester().testAllPublicStaticMethods(Preconditions2.class);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void prohibit_empty_string() {
-        checkNotEmptyOrBlank("");
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void prohibit_blank_string() {
-        checkNotEmptyOrBlank(" ");
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;

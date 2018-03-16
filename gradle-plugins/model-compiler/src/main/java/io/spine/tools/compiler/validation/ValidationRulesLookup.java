@@ -78,7 +78,9 @@ public final class ValidationRulesLookup {
                                         File targetDir) {
         final Map<String, String> propsMap = newHashMap();
         for (MessageDeclaration declaration : ruleDeclarations) {
-            final TypeName typeName = declaration.getTypeName();
+            // Convert the type since `tools` uses own `TypeName` for avoiding circular dependency.
+            final TypeName typeName = TypeName.of(declaration.getTypeName()
+                                                             .value());
             final String ruleTargets = UnknownOptions.get(declaration.getMessage(),
                                                           VALIDATION_OF_FIELD_NUMBER);
             propsMap.put(typeName.value(), ruleTargets);

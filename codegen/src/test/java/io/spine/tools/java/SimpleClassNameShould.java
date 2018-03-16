@@ -23,8 +23,8 @@ package io.spine.tools.java;
 import com.google.common.base.Optional;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Message;
-import io.spine.base.Error;
-import io.spine.base.ErrorOrBuilder;
+import com.google.protobuf.Timestamp;
+import com.google.protobuf.TimestampOrBuilder;
 import io.spine.tools.proto.FileSet;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,6 +33,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
+ * Tests {@link SimpleClassName}.
+ *
+ * <p>Even though the code where {@link SimpleClassName} resides no longer depends on the
+ * {@code base} module, this test uses descriptors copied from the {@code base} stored in
+ * resources. That's why the {@code ErrorProto} descriptor is available for these tests.
+ *
  * @author Alexander Yevsyukov
  */
 public class SimpleClassNameShould {
@@ -74,22 +80,22 @@ public class SimpleClassNameShould {
 
     @Test
     public void obtains_name_for_message_or_builder() {
-        assertEquals(ErrorOrBuilder.class.getSimpleName(),
-                     SimpleClassName.messageOrBuilder(Error.class.getSimpleName()).value());
+        assertEquals(TimestampOrBuilder.class.getSimpleName(),
+                     SimpleClassName.messageOrBuilder(Timestamp.class.getSimpleName()).value());
     }
 
     @Test
     public void obtains_value_by_descriptor() {
-        assertEquals(Error.class.getSimpleName(),
-                     SimpleClassName.ofMessage(Error.getDescriptor())
+        assertEquals(Timestamp.class.getSimpleName(),
+                     SimpleClassName.ofMessage(Timestamp.getDescriptor())
                                     .value());
     }
 
     @Test
     public void convert_to_file_name() {
-        final SimpleClassName className = SimpleClassName.ofMessage(Error.getDescriptor());
+        final SimpleClassName className = SimpleClassName.ofMessage(Timestamp.getDescriptor());
         assertTrue(className.toFileName()
                             .value()
-                            .contains(Error.class.getSimpleName()));
+                            .contains(Timestamp.class.getSimpleName()));
     }
 }

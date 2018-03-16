@@ -21,13 +21,13 @@
 package io.spine.tools.java;
 
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
-import io.spine.type.StringTypeValue;
+import io.spine.tools.util.StringTypeValue;
 
 import java.io.File;
 import java.nio.file.Paths;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
-import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
+import static io.spine.tools.util.CodePreconditions.checkNotEmptyOrBlank;
 
 /**
  * A Java package name.

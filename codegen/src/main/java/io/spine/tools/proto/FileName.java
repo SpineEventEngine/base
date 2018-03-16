@@ -22,14 +22,13 @@ package io.spine.tools.proto;
 
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
-import io.spine.base.CommandMessage;
 import io.spine.tools.AbstractFileName;
 
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
+import static io.spine.tools.util.CodePreconditions.checkNotEmptyOrBlank;
 
 /**
  * A name of a Protobuf source code file.
@@ -124,7 +123,7 @@ public class FileName extends AbstractFileName<FileName> implements UnderscoredN
         /** The standard file extension. */
         private static final String EXTENSION = ".proto";
 
-        private static final String FOR_COMMANDS = CommandMessage.File.SUFFIX;
+        private static final String FOR_COMMANDS = "commands.proto";
         private static final String FOR_EVENTS = "events" + EXTENSION;
         private static final String FOR_REJECTIONS = "rejections" + EXTENSION;
 

@@ -24,15 +24,14 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
-import io.spine.type.TypeName;
 
 import java.util.Collections;
 import java.util.Deque;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newLinkedList;
-import static io.spine.util.Exceptions.newIllegalArgumentException;
-import static io.spine.util.Exceptions.newIllegalStateException;
+import static io.spine.tools.util.Exceptions.newIllegalArgumentException;
+import static io.spine.tools.util.Exceptions.newIllegalStateException;
 
 /**
  * A declaration of a Protobuf message.
