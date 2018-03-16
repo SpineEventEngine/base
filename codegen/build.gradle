@@ -52,10 +52,13 @@ apply plugin: 'com.google.protobuf'
 apply from: generateDescriptorSetScript
 
 dependencies {
+    compile group: 'org.slf4j', name: 'slf4j-api', version: slf4JVersion
+
+    compile group: 'com.google.protobuf', name: 'protobuf-java', version: protobufVersion
+    compile group: 'com.google.protobuf', name: 'protobuf-java-util', version: protobufVersion
+
     compile group: 'com.squareup', name: 'javapoet', version: javaPoetVersion
 
-    compile project(':base')
-    
     testCompile project(':testutil-base')
 }
 
