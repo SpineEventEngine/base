@@ -57,11 +57,12 @@ public final class ProjectHierarchy {
                       "Passed project %s is not the root project. ",
                       rootProject.getPath());
         action.execute(rootProject);
-        final Deque<Project> applicationQueue = newLinkedList(rootProject.getSubprojects());
-        while (!applicationQueue.isEmpty()) {
-            final Project current = applicationQueue.poll();
+        final Deque<Project> subprojects = newLinkedList(rootProject.getSubprojects());
+        while (!subprojects.isEmpty()) {
+            final Project current = subprojects.poll();
+            checkNotNull(current);
             action.execute(current);
-            applicationQueue.addAll(current.getSubprojects());
+            subprojects.addAll(current.getSubprojects());
         }
     }
 }
