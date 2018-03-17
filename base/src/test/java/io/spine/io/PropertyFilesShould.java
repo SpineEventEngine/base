@@ -18,21 +18,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.type;
+package io.spine.io;
 
-import com.google.protobuf.Message;
-import io.spine.value.ClassTypeValue;
+import io.spine.test.Tests;
+import org.junit.Test;
 
 /**
- * A base class for value objects storing references to message classes.
- *
  * @author Alexander Yevsyukov
  */
-public abstract class MessageClass extends ClassTypeValue<Message> {
+public class PropertyFilesShould {
 
-    private static final long serialVersionUID = 0L;
-
-    protected MessageClass(Class<? extends Message> value) {
-        super(value);
+    @Test
+    public void have_utility_ctor() {
+        Tests.assertHasPrivateParameterlessCtor(PropertyFiles.class);
     }
 }

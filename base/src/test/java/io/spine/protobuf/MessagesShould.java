@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -24,9 +24,9 @@ import com.google.protobuf.Any;
 import com.google.protobuf.Message;
 import com.google.protobuf.StringValue;
 import com.google.protobuf.Timestamp;
+import io.spine.environment.Time;
 import io.spine.test.TestValues;
 import io.spine.test.messages.MessageWithStringValue;
-import io.spine.base.Time;
 import org.junit.Test;
 
 import static io.spine.protobuf.AnyPacker.unpack;

@@ -20,7 +20,7 @@
 
 package io.spine.tools.compiler.rejection;
 
-import io.spine.type.StringTypeValue;
+import io.spine.value.StringTypeValue;
 
 /**
  * A reference to a method with no arguments.

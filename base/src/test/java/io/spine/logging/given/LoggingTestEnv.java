@@ -18,21 +18,32 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.type;
+package io.spine.logging.given;
 
-import com.google.protobuf.Message;
-import io.spine.value.ClassTypeValue;
+import com.google.common.base.Supplier;
+import io.spine.logging.Logging;
+import org.slf4j.Logger;
 
-/**
- * A base class for value objects storing references to message classes.
- *
- * @author Alexander Yevsyukov
- */
-public abstract class MessageClass extends ClassTypeValue<Message> {
+public class LoggingTestEnv {
 
-    private static final long serialVersionUID = 0L;
+    /** Prevents instantiation of this utility class. */
+    private LoggingTestEnv() {}
 
-    protected MessageClass(Class<? extends Message> value) {
-        super(value);
+    /** The root of the class hierarchy with the logger supplier. */
+    public static class Base {
+
+        private final Supplier<Logger> loggerSupplier = Logging.supplyFor(getClass());
+
+        public Logger log() {
+            return loggerSupplier.get();
+        }
+    }
+
+    @SuppressWarnings("EmptyClass") // We need the class only to build the hierarchy.
+    public static class ChildOne extends Base {
+    }
+
+    @SuppressWarnings("EmptyClass") // Same as for `ChildOne`.
+    public static class ChildTwo extends Base {
     }
 }

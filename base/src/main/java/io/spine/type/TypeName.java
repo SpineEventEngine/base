@@ -26,6 +26,7 @@ import com.google.protobuf.Descriptors;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.GenericDescriptor;
 import com.google.protobuf.Message;
+import io.spine.value.StringTypeValue;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -24,14 +24,13 @@ import com.google.protobuf.Any;
 import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
-import io.spine.Identifier;
 import io.spine.annotation.Internal;
 import io.spine.string.Stringifiers;
 
 import javax.annotation.Nullable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.base.Time.getCurrentTime;
+import static io.spine.environment.Time.getCurrentTime;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**

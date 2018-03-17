@@ -18,55 +18,47 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base;
+package io.spine.reflect;
 
 import com.google.common.testing.NullPointerTester;
 import io.spine.test.Tests;
 import org.junit.Test;
 
-import static io.spine.base.Errors.causeOf;
-import static io.spine.base.Errors.fromThrowable;
-import static io.spine.base.Identifier.newUuid;
 import static org.junit.Assert.assertEquals;
 
 /**
  * @author Alexander Yevsyukov
  */
-public class ErrorsShould {
+public class GenericTypeIndexShould {
 
     @Test
-    public void have_utility_ctor() {
-        Tests.assertHasPrivateParameterlessCtor(Errors.class);
+    public void have_utility_ctor_in_the_Default_class() {
+        Tests.assertHasPrivateParameterlessCtor(GenericTypeIndex.Default.class);
+    }
+
+    @Test
+    public void obtain_generic_argument_assuming_generic_superclass() {
+        final Parametrized<Long, String> val = new Parametrized<Long, String>() {};
+        assertEquals(Long.class, GenericTypeIndex.Default.getArgument(val.getClass(), Base.class, 0));
+        assertEquals(String.class, GenericTypeIndex.Default.getArgument(val.getClass(), Base.class, 1));
+    }
+
+    @Test
+    public void obtain_generic_argument_via_superclass() {
+        assertEquals(String.class, GenericTypeIndex.Default.getArgument(Leaf.class, Base.class, 0));
+        assertEquals(Float.class, GenericTypeIndex.Default.getArgument(Leaf.class, Base.class, 1));
     }
 
     @Test
     public void pass_null_tolerance_check() {
-        new NullPointerTester().testAllPublicStaticMethods(Errors.class);
+        new NullPointerTester()
+                .testAllPublicStaticMethods(GenericTypeIndex.Default.class);
     }
 
-    @Test
-    public void convert_cause_of_throwable_to_Error() {
-        final int errorCode = 404;
-        final String errorMessage = newUuid();
+    @SuppressWarnings({"EmptyClass", "unused"})
+    private static class Base<T, K> {}
 
-        // A Throwable with cause.
-        final RuntimeException throwable = new IllegalStateException(
-                new RuntimeException(errorMessage)
-        );
+    private static class Parametrized<T, K> extends Base<T, K> {}
 
-        Error error = causeOf(throwable, errorCode);
-
-        assertEquals(errorCode, error.getCode());
-        assertEquals(errorMessage, error.getMessage());
-    }
-
-    @Test
-    public void convert_throwable_to_Error() {
-        final String errorMessage = newUuid();
-        final RuntimeException throwable = new RuntimeException(errorMessage);
-
-        Error error = fromThrowable(throwable);
-
-        assertEquals(errorMessage, error.getMessage());
-    }
+    private static class Leaf extends Base<String, Float> {}
 }

@@ -30,7 +30,7 @@ import io.spine.option.TimeOption;
 
 import java.util.List;
 
-import static io.spine.base.Time.getCurrentTime;
+import static io.spine.environment.Time.getCurrentTime;
 import static io.spine.option.Time.FUTURE;
 import static io.spine.option.Time.TIME_UNDEFINED;
 import static io.spine.protobuf.AnyPacker.pack;

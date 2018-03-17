@@ -18,21 +18,35 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.type;
+package io.spine.value;
 
-import com.google.protobuf.Message;
-import io.spine.value.ClassTypeValue;
+import org.junit.Test;
+
+import static org.junit.Assert.assertTrue;
 
 /**
- * A base class for value objects storing references to message classes.
- *
  * @author Alexander Yevsyukov
  */
-public abstract class MessageClass extends ClassTypeValue<Message> {
+public class ComparableStringValueShould {
 
-    private static final long serialVersionUID = 0L;
+    @SuppressWarnings({
+            "EqualsWithItself" /* is part of the test */,
+            "LocalVariableNamingConvention" /* shorter names are meaningful for this test */
+    })
+    @Test
+    public void compare() {
+        final TestVal a = new TestVal("a");
+        final TestVal b = new TestVal("b");
 
-    protected MessageClass(Class<? extends Message> value) {
-        super(value);
+        assertTrue(a.compareTo(b) < 0);
+        assertTrue(b.compareTo(a) > 0);
+        assertTrue(a.compareTo(a) == 0);
+    }
+
+    private static class TestVal extends ComparableStringValue<TestVal> {
+
+        private TestVal(String value) {
+            super(value);
+        }
     }
 }

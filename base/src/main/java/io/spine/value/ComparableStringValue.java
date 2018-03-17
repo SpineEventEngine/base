@@ -18,21 +18,29 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.type;
-
-import com.google.protobuf.Message;
-import io.spine.value.ClassTypeValue;
+package io.spine.value;
 
 /**
- * A base class for value objects storing references to message classes.
+ * A string-based value which can be alphabetically sorted.
  *
+ * @param <T> the type of the value provided for the comparison type covariance
  * @author Alexander Yevsyukov
  */
-public abstract class MessageClass extends ClassTypeValue<Message> {
+@SuppressWarnings(
+        "ComparableImplementedButEqualsNotOverridden"
+        /* Sufficient {@link StringTypeValue#equals() equals()} is provided by the parent class. */
+)
+public abstract class ComparableStringValue<T extends ComparableStringValue>
+        extends StringTypeValue
+        implements Comparable<T> {
 
-    private static final long serialVersionUID = 0L;
-
-    protected MessageClass(Class<? extends Message> value) {
+    protected ComparableStringValue(String value) {
         super(value);
+    }
+
+    @Override
+    public int compareTo(T o) {
+        final int result = value().compareTo(o.value());
+        return result;
     }
 }

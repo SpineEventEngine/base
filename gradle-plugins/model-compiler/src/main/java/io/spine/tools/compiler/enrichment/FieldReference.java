@@ -23,7 +23,7 @@ package io.spine.tools.compiler.enrichment;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import io.spine.tools.proto.FieldName;
-import io.spine.type.StringTypeValue;
+import io.spine.value.StringTypeValue;
 
 import java.util.List;
 import java.util.regex.Pattern;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -34,7 +34,7 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static io.spine.Identifier.newUuid;
+import static io.spine.base.Identifier.newUuid;
 import static io.spine.json.Json.fromJson;
 import static io.spine.json.Json.toCompactJson;
 import static io.spine.json.Json.toJson;

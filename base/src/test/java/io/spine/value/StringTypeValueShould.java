@@ -18,21 +18,45 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.type;
+package io.spine.value;
 
-import com.google.protobuf.Message;
-import io.spine.value.ClassTypeValue;
+import com.google.common.testing.EqualsTester;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
- * A base class for value objects storing references to message classes.
- *
  * @author Alexander Yevsyukov
  */
-public abstract class MessageClass extends ClassTypeValue<Message> {
+public class StringTypeValueShould {
 
-    private static final long serialVersionUID = 0L;
+    @Test
+    public void return_value_in_toString() {
+        final String expected = "return_value_in_toString";
 
-    protected MessageClass(Class<? extends Message> value) {
-        super(value);
+        assertEquals(expected, new StringTypeValue(expected) {}.toString());
+    }
+
+    @Test
+    public void have_equals() {
+        new EqualsTester().addEqualityGroup(new StrVal("uno"), new StrVal("uno"))
+                          .addEqualityGroup(new StrVal("dos"))
+                          .testEquals();
+    }
+
+    @Test
+    public void see_if_empty() {
+        assertTrue(new StrVal("").isEmpty());
+        assertFalse(new StrVal(" ").isEmpty());
+    }
+
+    /** Simple descendant for testing. */
+    private static class StrVal extends StringTypeValue {
+
+        StrVal(String value) {
+            super(value);
+        }
     }
 }

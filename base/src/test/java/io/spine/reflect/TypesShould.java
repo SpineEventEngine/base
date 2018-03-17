@@ -18,55 +18,50 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base;
+package io.spine.reflect;
 
+import com.google.common.reflect.TypeToken;
 import com.google.common.testing.NullPointerTester;
 import io.spine.test.Tests;
 import org.junit.Test;
 
-import static io.spine.base.Errors.causeOf;
-import static io.spine.base.Errors.fromThrowable;
-import static io.spine.base.Identifier.newUuid;
+import java.lang.reflect.Type;
+import java.util.List;
+import java.util.Map;
+
+import static io.spine.reflect.Types.listTypeOf;
+import static io.spine.reflect.Types.mapTypeOf;
 import static org.junit.Assert.assertEquals;
 
 /**
- * @author Alexander Yevsyukov
+ * @author Illia Shepilov
  */
-public class ErrorsShould {
+@SuppressWarnings({"SerializableNonStaticInnerClassWithoutSerialVersionUID",
+        "SerializableInnerClassWithNonSerializableOuterClass"}) // It is OK for test methods.
+public class TypesShould {
 
     @Test
-    public void have_utility_ctor() {
-        Tests.assertHasPrivateParameterlessCtor(Errors.class);
+    public void pass_the_null_tolerance_check() {
+        final NullPointerTester tester = new NullPointerTester();
+        tester.testStaticMethods(Types.class, NullPointerTester.Visibility.PACKAGE);
     }
 
     @Test
-    public void pass_null_tolerance_check() {
-        new NullPointerTester().testAllPublicStaticMethods(Errors.class);
+    public void have_private_constructor() {
+        Tests.assertHasPrivateParameterlessCtor(Types.class);
     }
 
     @Test
-    public void convert_cause_of_throwable_to_Error() {
-        final int errorCode = 404;
-        final String errorMessage = newUuid();
-
-        // A Throwable with cause.
-        final RuntimeException throwable = new IllegalStateException(
-                new RuntimeException(errorMessage)
-        );
-
-        Error error = causeOf(throwable, errorCode);
-
-        assertEquals(errorCode, error.getCode());
-        assertEquals(errorMessage, error.getMessage());
+    public void create_map_type() {
+        final Type type = mapTypeOf(String.class, Integer.class);
+        final Type expectedType = new TypeToken<Map<String, Integer>>(){}.getType();
+        assertEquals(expectedType, type);
     }
 
     @Test
-    public void convert_throwable_to_Error() {
-        final String errorMessage = newUuid();
-        final RuntimeException throwable = new RuntimeException(errorMessage);
-
-        Error error = fromThrowable(throwable);
-
-        assertEquals(errorMessage, error.getMessage());
+    public void create_list_type() {
+        final Type type = listTypeOf(String.class);
+        final Type expectedType = new TypeToken<List<String>>(){}.getType();
+        assertEquals(expectedType, type);
     }
 }

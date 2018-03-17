@@ -18,21 +18,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.type;
-
-import com.google.protobuf.Message;
-import io.spine.value.ClassTypeValue;
-
 /**
- * A base class for value objects storing references to message classes.
- *
- * @author Alexander Yevsyukov
+ * Test environments for the {@code io.spine.util} package.
  */
-public abstract class MessageClass extends ClassTypeValue<Message> {
 
-    private static final long serialVersionUID = 0L;
+@ParametersAreNonnullByDefault
+package io.spine.logging.given;
 
-    protected MessageClass(Class<? extends Message> value) {
-        super(value);
-    }
-}
+
+import javax.annotation.ParametersAreNonnullByDefault;
