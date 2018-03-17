@@ -20,7 +20,7 @@
 package io.spine.tools.codestyle;
 
 import com.google.common.base.MoreObjects;
-import io.spine.tools.CodePreconditions;
+import io.spine.util.Preconditions2;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -38,12 +38,12 @@ public class CodeStyleViolation {
     private final int lineNumber;
 
     public CodeStyleViolation(String codeLine) {
-        this.codeLine = CodePreconditions.checkNotEmptyOrBlank(codeLine);
+        this.codeLine = Preconditions2.checkNotEmptyOrBlank(codeLine);
         this.lineNumber = LINE_NUMBER_UNKNOWN;
     }
 
     private CodeStyleViolation(String codeLine, int lineNumber) {
-        CodePreconditions.checkNotEmptyOrBlank(codeLine);
+        Preconditions2.checkNotEmptyOrBlank(codeLine);
         checkArgument(lineNumber >= 0, "Line number must be non-negative");
 
         this.codeLine = codeLine;
