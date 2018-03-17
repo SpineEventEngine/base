@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -52,8 +52,8 @@ public final class StringifierRegistry {
             )
     );
 
+    /** Prevents external instantiation of this singleton class. */
     private StringifierRegistry() {
-        // Prevent external instantiation of this singleton class.
     }
 
     static <T> Stringifier<T> getStringifier(Type typeOfT) {
@@ -122,17 +122,6 @@ public final class StringifierRegistry {
 
         final Stringifier<T> result = cast(func);
         return Optional.fromNullable(result);
-    }
-
-    /**
-     * Tells whether there is a Stringifier registered for the passed type.
-     *
-     * @param type the type for which to find a stringifier
-     * @return {@code true} if there is a registered stringifier, {@code false} otherwise
-     */
-    synchronized boolean hasStringifierFor(Type type) {
-        final boolean contains = stringifiers.containsKey(type);
-        return contains;
     }
 
     private enum Singleton {
