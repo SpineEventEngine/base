@@ -1,7 +1,0 @@
-syntax = "proto3";
-
-import "spine/options.proto";
-
-message ExperimentalFieldMessage {
-    string value = 1 [(SPI) = true];
-}

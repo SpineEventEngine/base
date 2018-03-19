@@ -20,16 +20,22 @@
 
 rootProject.name = 'spine-base'
 
-include ':plugin-base'
-project(':plugin-base').projectDir = new File('./gradle-plugins/plugin-base')
-
-include ':model-compiler'
-project(':model-compiler').projectDir = new File('./gradle-plugins/model-compiler')
-
 include 'testutil-base'
 
 include 'base'
-include 'protoc-plugin'
-include 'protoc-plugin-tests'
+
 include 'codegen'
+project(':codegen').projectDir = new File('./tools/codegen')
+
+include ':plugin-base'
+project(':plugin-base').projectDir = new File('./tools/gradle-plugins/plugin-base')
+
+include ':model-compiler'
+project(':model-compiler').projectDir = new File('./tools/gradle-plugins/model-compiler')
+
+include 'protoc-plugin'
+project(':protoc-plugin').projectDir = new File('./tools/protoc-plugin')
+
+include 'protoc-plugin-tests'
+project(':protoc-plugin-tests').projectDir = new File('./tools/protoc-plugin-tests')
 

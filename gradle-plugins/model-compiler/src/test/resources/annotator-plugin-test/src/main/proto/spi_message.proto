@@ -1,7 +1,0 @@
-syntax = "proto3";
-
-import "spine/options.proto";
-
-message Experimental {
-    option (SPI_type) = true;
-}

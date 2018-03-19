@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+import "spine/options.proto";
+
+message First {
+    string value = 1;
+}
+
+service Service {
+}
