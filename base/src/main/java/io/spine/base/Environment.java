@@ -44,9 +44,6 @@ public final class Environment {
      */
     public static final String ENV_KEY_TESTS = "io.spine.tests";
 
-    private static final String VAL_TRUE = "true";
-    private static final String VAL_FALSE = "false";
-
     /** If set, tells if the code runs from a testing framework. */
     @Nullable
     private Boolean tests;
@@ -109,7 +106,8 @@ public final class Environment {
         String testProp = System.getProperty(ENV_KEY_TESTS);
         if (testProp != null) {
             testProp = testProp.replaceAll("\"' ", "");
-            this.tests = (VAL_TRUE.equalsIgnoreCase(testProp)
+            this.tests = (String.valueOf(true)
+                                .equalsIgnoreCase(testProp)
                     || "1".equals(testProp));
             return this.tests;
         }
@@ -145,7 +143,7 @@ public final class Environment {
     @VisibleForTesting
     public void setToTests() {
         this.tests = true;
-        System.setProperty(ENV_KEY_TESTS, VAL_TRUE);
+        System.setProperty(ENV_KEY_TESTS, String.valueOf(true));
     }
 
     /**
@@ -156,7 +154,7 @@ public final class Environment {
     @VisibleForTesting
     public void setToProduction() {
         this.tests = false;
-        System.setProperty(ENV_KEY_TESTS, VAL_FALSE);
+        System.setProperty(ENV_KEY_TESTS, String.valueOf(false));
     }
 
     /**
