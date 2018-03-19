@@ -20,15 +20,14 @@
 **/build/*
 
 # Build files produced by the IDE
-out/*
+**/out/*
 
 # Spine internal directory for storing intermediate artifacts
 /.spine/
-*/.spine/
+**/.spine/
 
 # Spine model compiler auto-generated resources
-/gradle-plugins/model-compiler/.spine/
-/gradle-plugins/model-compiler/src/main/resources/spine-protoc.gradle
+/tools/gradle-plugins/model-compiler/src/main/resources/spine-protoc.gradle
 
 # Login details to Maven repository.
 # Each workstation should have developer's login defined in this file.
