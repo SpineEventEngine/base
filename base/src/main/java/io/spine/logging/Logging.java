@@ -22,7 +22,7 @@ package io.spine.logging;
 
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
-import io.spine.environment.Environment;
+import io.spine.base.Environment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.helpers.SubstituteLogger;

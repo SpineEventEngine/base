@@ -24,10 +24,10 @@ import com.google.protobuf.Timestamp;
 import org.junit.Test;
 
 import static com.google.protobuf.util.Timestamps.subtract;
-import static io.spine.environment.Time.getCurrentTime;
-import static io.spine.environment.Time.resetProvider;
-import static io.spine.environment.Time.setProvider;
-import static io.spine.environment.Time.systemTime;
+import static io.spine.base.Time.getCurrentTime;
+import static io.spine.base.Time.resetProvider;
+import static io.spine.base.Time.setProvider;
+import static io.spine.base.Time.systemTime;
 import static io.spine.environment.given.TimeTestEnv.ConstantTimeProvider;
 import static io.spine.environment.given.TimeTestEnv.DURATION_1_MINUTE;
 import static io.spine.environment.given.TimeTestEnv.DURATION_5_MINUTES;

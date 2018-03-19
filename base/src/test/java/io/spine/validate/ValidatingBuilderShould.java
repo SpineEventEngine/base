@@ -32,7 +32,7 @@ import static com.google.protobuf.ByteString.copyFrom;
 import static com.google.protobuf.util.Durations.fromSeconds;
 import static com.google.protobuf.util.Timestamps.add;
 import static io.spine.base.Identifier.newUuid;
-import static io.spine.environment.Time.getCurrentTime;
+import static io.spine.base.Time.getCurrentTime;
 
 /**
  * A test suite covering the {@link ValidatingBuilder} behavior.

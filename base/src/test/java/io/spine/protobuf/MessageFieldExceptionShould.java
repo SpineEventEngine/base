@@ -23,7 +23,7 @@ package io.spine.protobuf;
 import com.google.protobuf.Empty;
 import com.google.protobuf.StringValue;
 import com.google.protobuf.Timestamp;
-import io.spine.environment.Time;
+import io.spine.base.Time;
 import io.spine.test.Tests;
 import org.junit.Test;
 

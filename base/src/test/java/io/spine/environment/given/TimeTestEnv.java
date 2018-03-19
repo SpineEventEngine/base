@@ -22,7 +22,7 @@ package io.spine.environment.given;
 
 import com.google.protobuf.Duration;
 import com.google.protobuf.Timestamp;
-import io.spine.environment.Time;
+import io.spine.base.Time;
 
 /**
  * @author Mykhailo Drachuk

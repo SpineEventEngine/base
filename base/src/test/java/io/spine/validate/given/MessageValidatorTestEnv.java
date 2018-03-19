@@ -22,10 +22,10 @@ package io.spine.validate.given;
 
 import com.google.protobuf.Duration;
 import com.google.protobuf.Timestamp;
-import io.spine.environment.Time;
+import io.spine.base.Time;
 
-import static io.spine.environment.Time.getCurrentTime;
-import static io.spine.environment.Time.setProvider;
+import static io.spine.base.Time.getCurrentTime;
+import static io.spine.base.Time.setProvider;
 
 /**
  * @author Mykhailo Drachuk

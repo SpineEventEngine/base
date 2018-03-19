@@ -20,6 +20,7 @@
 
 package io.spine.environment;
 
+import io.spine.base.Environment;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
