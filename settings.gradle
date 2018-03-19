@@ -33,6 +33,9 @@ project(':plugin-base').projectDir = new File('./tools/gradle-plugins/plugin-bas
 include ':gcs-plugin'
 project (':gcs-plugin').projectDir = new File('./tools/gradle-plugins/gcs-plugin')
 
+include ':protobuf-javadoc-plugin'
+project (':protobuf-javadoc-plugin').projectDir = new File('./tools/gradle-plugins/protobuf-javadoc-plugin')
+
 include ':model-compiler'
 project(':model-compiler').projectDir = new File('./tools/gradle-plugins/model-compiler')
 
