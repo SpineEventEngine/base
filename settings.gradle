@@ -42,6 +42,9 @@ project (':reflections-plugin').projectDir = new File('./tools/gradle-plugins/re
 include ':enrichment-lookup-sample'
 project (':enrichment-lookup-sample').projectDir = new File('./tools/gradle-plugins/smoke-tests/enrichment-lookup-sample')
 
+include ':map-proto-to-java-sample'
+project (':map-proto-to-java-sample').projectDir = new File('./tools/gradle-plugins/smoke-tests/map-proto-to-java-sample')
+
 include ':model-compiler'
 project(':model-compiler').projectDir = new File('./tools/gradle-plugins/model-compiler')
 

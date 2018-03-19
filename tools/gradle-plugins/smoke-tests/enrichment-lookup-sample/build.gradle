@@ -45,9 +45,6 @@ buildscript {
         }
         classpath group: "io.spine.tools", name: "spine-model-compiler", version: spineBaseVersion
     }
-    configurations.all({
-        resolutionStrategy.cacheChangingModulesFor(0, 'seconds')
-    })
 }
 
 apply plugin: 'com.google.protobuf'
