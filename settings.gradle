@@ -30,6 +30,9 @@ project(':codegen').projectDir = new File('./tools/codegen')
 include ':plugin-base'
 project(':plugin-base').projectDir = new File('./tools/gradle-plugins/plugin-base')
 
+include ':gcs-plugin'
+project (':gcs-plugin').projectDir = new File('./tools/gradle-plugins/gcs-plugin')
+
 include ':model-compiler'
 project(':model-compiler').projectDir = new File('./tools/gradle-plugins/model-compiler')
 
