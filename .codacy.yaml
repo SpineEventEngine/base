@@ -8,5 +8,8 @@ exclude_paths:
   - "tools/gradle-plugins/plugin-base/src/test/**/*.*"
   - "tools/gradle-plugins/model-compiler/src/test/**/*.*"
   - "tools/gradle-plugins/protobuf-javadoc-plugin/src/test/**/*.*"
+  - "tools/gradle-plugins/smoke-tests/enrichment-lookup-sample/src/test/**/*.*"
+  - "tools/gradle-plugins/smoke-tests/map-proto-to-java-sample/src/test/**/*.*"
+  - "tools/gradle-plugins/smoke-tests/validators-gen-sample/src/test/**/*.*"
   - "tools/protoc-plugin/src/test/**/*.*"
   - "tools/protoc-plugin-tests/src/test/**/*.*"
