@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -40,6 +40,7 @@ class FormattingFileVisitor extends SimpleFileVisitor<Path> {
     private final JavadocFormatter formatter;
 
     FormattingFileVisitor(JavadocFormatter formatter) {
+        super();
         this.formatter = formatter;
     }
 
@@ -51,7 +52,7 @@ class FormattingFileVisitor extends SimpleFileVisitor<Path> {
     }
 
     @Override
-    public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
+    public FileVisitResult visitFileFailed(Path file, IOException exc) {
         log().error("Error walking down the file tree for file: {}", file);
         return FileVisitResult.TERMINATE;
     }
