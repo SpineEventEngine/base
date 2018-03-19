@@ -39,7 +39,7 @@ buildscript {
         classpath group: 'com.google.guava', name: 'guava', version: guavaVersion
         classpath(group: 'com.google.protobuf',
                   name: 'protobuf-gradle-plugin',
-                  version: protobufGradlePluginVerison) {
+                  version: protobufGradlePluginVersion) {
             // exclude an old Guava version
             exclude group: 'com.google.guava'
         }

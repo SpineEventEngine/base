@@ -39,6 +39,9 @@ project (':protobuf-javadoc-plugin').projectDir = new File('./tools/gradle-plugi
 include ':reflections-plugin'
 project (':reflections-plugin').projectDir = new File('./tools/gradle-plugins/reflections-plugin')
 
+include ':enrichment-lookup-sample'
+project (':enrichment-lookup-sample').projectDir = new File('./tools/gradle-plugins/smoke-tests/enrichment-lookup-sample')
+
 include ':model-compiler'
 project(':model-compiler').projectDir = new File('./tools/gradle-plugins/model-compiler')
 

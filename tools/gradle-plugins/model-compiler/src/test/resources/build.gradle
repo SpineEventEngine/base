@@ -40,7 +40,7 @@ buildscript {
 
     dependencies {
         classpath "com.google.protobuf:protobuf-java:${protobufVersion}"
-        classpath "com.google.protobuf:protobuf-gradle-plugin:${protobufGradlePluginVerison}"
+        classpath "com.google.protobuf:protobuf-gradle-plugin:${protobufGradlePluginVersion}"
         classpath "io.spine.tools:spine-model-compiler:${spineVersion}"
     }
 

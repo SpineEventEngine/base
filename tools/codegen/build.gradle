@@ -37,7 +37,7 @@ buildscript {
     dependencies {
         classpath(group: 'com.google.protobuf',
                 name: 'protobuf-gradle-plugin',
-                version: protobufGradlePluginVerison) {
+                version: protobufGradlePluginVersion) {
             // exclude an old Guava version
             exclude group: 'com.google.guava'
         }
