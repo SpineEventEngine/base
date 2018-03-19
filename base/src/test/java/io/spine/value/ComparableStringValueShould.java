@@ -22,6 +22,7 @@ package io.spine.value;
 
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -40,7 +41,7 @@ public class ComparableStringValueShould {
 
         assertTrue(a.compareTo(b) < 0);
         assertTrue(b.compareTo(a) > 0);
-        assertTrue(a.compareTo(a) == 0);
+        assertEquals(0, a.compareTo(a));
     }
 
     private static class TestVal extends ComparableStringValue<TestVal> {
