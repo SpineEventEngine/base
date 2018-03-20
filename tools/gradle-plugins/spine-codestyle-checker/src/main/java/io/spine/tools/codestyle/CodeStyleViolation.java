@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -20,9 +20,9 @@
 package io.spine.tools.codestyle;
 
 import com.google.common.base.MoreObjects;
-import io.spine.util.Preconditions2;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static io.spine.tools.util.CodePreconditions.checkNotEmptyOrBlank;
 
 /**
  * Provides information a code style violation with the code line and its number.
@@ -38,12 +38,12 @@ public class CodeStyleViolation {
     private final int lineNumber;
 
     public CodeStyleViolation(String codeLine) {
-        this.codeLine = Preconditions2.checkNotEmptyOrBlank(codeLine);
+        this.codeLine = checkNotEmptyOrBlank(codeLine);
         this.lineNumber = LINE_NUMBER_UNKNOWN;
     }
 
     private CodeStyleViolation(String codeLine, int lineNumber) {
-        Preconditions2.checkNotEmptyOrBlank(codeLine);
+        checkNotEmptyOrBlank(codeLine);
         checkArgument(lineNumber >= 0, "Line number must be non-negative");
 
         this.codeLine = codeLine;

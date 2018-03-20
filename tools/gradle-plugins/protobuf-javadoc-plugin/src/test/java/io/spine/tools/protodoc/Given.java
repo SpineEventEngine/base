@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -24,6 +24,7 @@ import com.google.common.base.Joiner;
 import org.gradle.testkit.runner.GradleRunner;
 import org.junit.rules.TemporaryFolder;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -101,14 +102,19 @@ class Given {
     }
 
     private static void copyExtGradle(GradleRunner gradleRunner) throws IOException {
-        final Path workingFolderPath = Paths.get(".")
-                                            .toAbsolutePath();
-        final Path extGradleSourcePath = workingFolderPath.getParent()
-                                                          .getParent()
-                                                          .resolve(EXT_GRADLE_NAME);
-        final Path extGradleResultingPath = gradleRunner.getProjectDir()
-                                                        .toPath()
-                                                        .resolve(EXT_GRADLE_NAME);
+        // Find "ext.gradle" climbing up in the directory structure from the current directory.
+        Path dir = Paths.get(".")
+                        .toAbsolutePath();
+        File extGradle;
+        do {
+            dir = dir.getParent();
+            extGradle = new File(dir.toFile(), EXT_GRADLE_NAME);
+        } while (!extGradle.exists());
+
+        final Path extGradleSourcePath = extGradle.toPath();
+        final File projectDir = gradleRunner.getProjectDir();
+        final Path extGradleResultingPath = projectDir.toPath()
+                                                      .resolve(EXT_GRADLE_NAME);
         Files.copy(extGradleSourcePath, extGradleResultingPath);
     }
 }
