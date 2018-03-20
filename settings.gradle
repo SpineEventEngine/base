@@ -25,35 +25,52 @@ include 'testutil-base'
 include 'base'
 
 include 'codegen'
-project(':codegen').projectDir = new File('./tools/codegen')
-
-include ':plugin-base'
-project(':plugin-base').projectDir = new File('./tools/gradle-plugins/plugin-base')
+project(':codegen').projectDir =
+        new File('./tools/codegen')
 
 include ':gcs-plugin'
-project (':gcs-plugin').projectDir = new File('./tools/gradle-plugins/gcs-plugin')
-
-include ':protobuf-javadoc-plugin'
-project (':protobuf-javadoc-plugin').projectDir = new File('./tools/gradle-plugins/protobuf-javadoc-plugin')
-
-include ':reflections-plugin'
-project (':reflections-plugin').projectDir = new File('./tools/gradle-plugins/reflections-plugin')
-
-include ':enrichment-lookup-sample'
-project (':enrichment-lookup-sample').projectDir = new File('./tools/gradle-plugins/smoke-tests/enrichment-lookup-sample')
-
-include ':map-proto-to-java-sample'
-project (':map-proto-to-java-sample').projectDir = new File('./tools/gradle-plugins/smoke-tests/map-proto-to-java-sample')
-
-include ':validators-gen-sample'
-project (':validators-gen-sample').projectDir = new File('./tools/gradle-plugins/smoke-tests/validators-gen-sample')
+project (':gcs-plugin').projectDir =
+        new File('./tools/gradle-plugins/gcs-plugin')
 
 include ':model-compiler'
-project(':model-compiler').projectDir = new File('./tools/gradle-plugins/model-compiler')
+project(':model-compiler').projectDir =
+        new File('./tools/gradle-plugins/model-compiler')
+
+include ':plugin-base'
+project(':plugin-base').projectDir =
+        new File('./tools/gradle-plugins/plugin-base')
+
+include ':protobuf-javadoc-plugin'
+project (':protobuf-javadoc-plugin').projectDir =
+        new File('./tools/gradle-plugins/protobuf-javadoc-plugin')
+
+include ':reflections-plugin'
+project (':reflections-plugin').projectDir =
+        new File('./tools/gradle-plugins/reflections-plugin')
+
+// Smoke Tests BEGIN
+include ':enrichment-lookup-sample'
+project (':enrichment-lookup-sample').projectDir =
+        new File('./tools/gradle-plugins/smoke-tests/enrichment-lookup-sample')
+
+include ':map-proto-to-java-sample'
+project (':map-proto-to-java-sample').projectDir =
+        new File('./tools/gradle-plugins/smoke-tests/map-proto-to-java-sample')
+
+include ':validators-gen-sample'
+project (':validators-gen-sample').projectDir =
+        new File('./tools/gradle-plugins/smoke-tests/validators-gen-sample')
+// Smoke Tests END
+
+include ':spine-codestyle-checker'
+project (':spine-codestyle-checker').projectDir =
+        new File('./tools/gradle-plugins/spine-codestyle-checker')
 
 include 'protoc-plugin'
-project(':protoc-plugin').projectDir = new File('./tools/protoc-plugin')
+project(':protoc-plugin').projectDir =
+        new File('./tools/protoc-plugin')
 
 include 'protoc-plugin-tests'
-project(':protoc-plugin-tests').projectDir = new File('./tools/protoc-plugin-tests')
+project(':protoc-plugin-tests').projectDir =
+        new File('./tools/protoc-plugin-tests')
 

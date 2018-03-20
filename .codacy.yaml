@@ -11,5 +11,6 @@ exclude_paths:
   - "tools/gradle-plugins/smoke-tests/enrichment-lookup-sample/src/test/**/*.*"
   - "tools/gradle-plugins/smoke-tests/map-proto-to-java-sample/src/test/**/*.*"
   - "tools/gradle-plugins/smoke-tests/validators-gen-sample/src/test/**/*.*"
+  - "tools/gradle-plugins/spine-codestyle-checker/src/test/**/*.*"
   - "tools/protoc-plugin/src/test/**/*.*"
   - "tools/protoc-plugin-tests/src/test/**/*.*"
