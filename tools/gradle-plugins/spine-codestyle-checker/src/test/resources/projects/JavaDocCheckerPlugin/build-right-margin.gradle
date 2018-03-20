@@ -1,0 +1,11 @@
+plugins {
+    id 'java'
+    id 'io.spine.tools.spine-codestyle-checker'
+}
+
+codestyleChecker {
+
+    rightMarginWrappingChecker {
+        maxTextWidth = thresholdValue
+    }
+}
