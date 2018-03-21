@@ -22,7 +22,7 @@ package io.spine.tools.proto;
 
 import com.google.common.base.Splitter;
 import com.google.protobuf.Descriptors.Descriptor;
-import io.spine.tools.util.StringTypeValue;
+import io.spine.value.StringTypeValue;
 
 import java.util.List;
 

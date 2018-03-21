@@ -30,8 +30,8 @@ import java.util.Deque;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newLinkedList;
-import static io.spine.tools.util.Exceptions.newIllegalArgumentException;
-import static io.spine.tools.util.Exceptions.newIllegalStateException;
+import static io.spine.util.Exceptions.newIllegalArgumentException;
+import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
  * A declaration of a Protobuf message.

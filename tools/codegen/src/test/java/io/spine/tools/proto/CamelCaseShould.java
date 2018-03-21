@@ -22,7 +22,7 @@ package io.spine.tools.proto;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.test.Tests;
-import io.spine.tools.util.StringTypeValue;
+import io.spine.value.StringTypeValue;
 import org.junit.Test;
 
 import java.util.List;

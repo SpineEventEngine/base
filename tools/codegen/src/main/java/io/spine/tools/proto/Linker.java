@@ -32,7 +32,7 @@ import java.util.List;
 
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.protobuf.Descriptors.FileDescriptor.buildFrom;
-import static io.spine.tools.util.Exceptions.newIllegalStateException;
+import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
  * Builds a set of {@link FileDescriptor}s from a list of {@link FileDescriptorProto}.

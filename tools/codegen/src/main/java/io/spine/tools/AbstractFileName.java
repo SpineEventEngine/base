@@ -20,7 +20,7 @@
 
 package io.spine.tools;
 
-import io.spine.tools.util.ComparableStringValue;
+import io.spine.value.ComparableStringValue;
 
 /**
  * A name of a source code file.

@@ -21,7 +21,7 @@
 package io.spine.tools;
 
 import com.google.common.base.Strings;
-import io.spine.tools.util.StringTypeValue;
+import io.spine.value.StringTypeValue;
 
 /**
  * A positive space-based indentation of generated code.

@@ -37,7 +37,7 @@ import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.util.Exceptions.newIllegalStateException;
+import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
  * A utility class which allows to obtain Protobuf file descriptors.

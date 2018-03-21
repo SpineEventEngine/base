@@ -21,7 +21,7 @@
 package io.spine.tools.java;
 
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
-import io.spine.tools.util.StringTypeValue;
+import io.spine.value.StringTypeValue;
 
 import java.io.File;
 import java.nio.file.Paths;
