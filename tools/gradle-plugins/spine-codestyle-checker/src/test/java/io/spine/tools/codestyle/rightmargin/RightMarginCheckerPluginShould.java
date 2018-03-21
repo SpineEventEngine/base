@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -132,7 +132,7 @@ public class RightMarginCheckerPluginShould {
         final Path path = Paths.get(file.getAbsolutePath());
         final StepConfiguration configuration = new StepConfiguration();
         configuration.setThreshold(100);
-        configuration.setReportType("warn");
+        configuration.setReportType(ReportType.WARN.getValue());
         CodeStyleCheck check = new RightMarginCheck(configuration);
         check.process(path);
     }

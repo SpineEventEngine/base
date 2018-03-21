@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -21,15 +21,18 @@
 package io.spine.tools.codestyle.javadoc;
 
 import io.spine.tools.codestyle.Given;
+import io.spine.tools.codestyle.ReportType;
 import io.spine.tools.codestyle.StepConfiguration;
 import org.junit.Test;
 
 import java.io.File;
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -42,8 +45,9 @@ public class JavadocLinkCheckShould {
 
     private JavadocLinkCheck check;
     private static final String MULTIPLE_WRONG_FQN_LINKS_JAVA = "MultipleWrongFqnLinks.java";
-    private static final String errorReportType = "error";
-    private static final String warnReportType = "warn";
+
+    private static final String warnReportType = ReportType.WARN.getValue();
+    private static final String errorReportType = ReportType.ERROR.getValue();
 
     @Test(expected = RuntimeException.class)
     public void throw_exception_for_invalid_fqn_links_over_threshold() throws InvalidJavadocLinkException {
@@ -100,8 +104,9 @@ public class JavadocLinkCheckShould {
 
     private Path getPath(String fileName) {
         final ClassLoader classLoader = getClass().getClassLoader();
-        final String pathname = classLoader.getResource(fileName)
-                                           .getFile();
+        final URL resource = classLoader.getResource(fileName);
+        checkNotNull(resource);
+        final String pathname = resource.getFile();
         final File file = new File(pathname);
         final Path path = Paths.get(file.getAbsolutePath());
         return path;

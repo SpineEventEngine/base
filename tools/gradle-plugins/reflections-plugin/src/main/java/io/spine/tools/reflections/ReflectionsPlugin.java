@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -31,6 +31,7 @@ import org.reflections.scanners.TypeAnnotationsScanner;
 import org.reflections.serializers.Serializer;
 import org.reflections.serializers.XmlSerializer;
 import org.reflections.util.ConfigurationBuilder;
+import org.slf4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,6 +44,8 @@ import static io.spine.tools.gradle.TaskName.BUILD;
 import static io.spine.tools.gradle.TaskName.CLASSES;
 import static io.spine.tools.gradle.TaskName.SCAN_CLASS_PATH;
 import static io.spine.tools.reflections.Extension.REFLECTIONS_PLUGIN_EXTENSION;
+import static io.spine.util.Exceptions.newIllegalArgumentException;
+import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.io.File.separatorChar;
 
 /**
@@ -64,7 +67,8 @@ public class ReflectionsPlugin extends SpinePlugin {
      */
     @Override
     public void apply(final Project project) {
-        log().debug("Applying the Reflections plugin");
+        final Logger log = log();
+        log.debug("Applying the Reflections plugin");
         project.getExtensions()
                .create(REFLECTIONS_PLUGIN_EXTENSION, Extension.class);
 
@@ -79,7 +83,7 @@ public class ReflectionsPlugin extends SpinePlugin {
                                                              .insertBeforeTask(BUILD)
                                                              .applyNowTo(project);
 
-        log().debug("Reflection Gradle plugin initialized with the Gradle task: {}", task);
+        log.debug("Reflection Gradle plugin initialized with the Gradle task: {}", task);
     }
 
     private void scanClassPath(Project project) {
@@ -114,9 +118,9 @@ public class ReflectionsPlugin extends SpinePlugin {
             urls.add(outputDir.toURI()
                               .toURL());
         } catch (MalformedURLException e) {
-            final String message = "Cannot parse an output directory: "
-                    + outputDir.getAbsolutePath();
-            throw new IllegalArgumentException(message, e);
+            throw newIllegalArgumentException(
+                    e, "Cannot parse an output directory: %s", outputDir.getAbsolutePath()
+            );
         }
         return urls;
     }
@@ -125,7 +129,9 @@ public class ReflectionsPlugin extends SpinePlugin {
         try {
             Files.createParentDirs(folder);
         } catch (IOException e) {
-            throw new RuntimeException("Cannot create a folder: " + folder.getAbsolutePath(), e);
+            throw newIllegalStateException(
+                    e, "Cannot create a folder: %s", folder.getAbsolutePath()
+            );
         }
     }
 }
