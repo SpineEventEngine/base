@@ -22,7 +22,7 @@ package io.spine.tools.codestyle;
 import com.google.common.base.MoreObjects;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static io.spine.tools.util.CodePreconditions.checkNotEmptyOrBlank;
+import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
  * Provides information a code style violation with the code line and its number.

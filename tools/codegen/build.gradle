@@ -36,8 +36,8 @@ buildscript {
     //noinspection GroovyAssignabilityCheck
     dependencies {
         classpath(group: 'com.google.protobuf',
-                name: 'protobuf-gradle-plugin',
-                version: protobufGradlePluginVersion) {
+                  name: 'protobuf-gradle-plugin',
+                  version: protobufGradlePluginVersion) {
             // exclude an old Guava version
             exclude group: 'com.google.guava'
         }
@@ -52,11 +52,8 @@ apply plugin: 'com.google.protobuf'
 apply from: generateDescriptorSetScript
 
 dependencies {
-    compile group: 'org.slf4j', name: 'slf4j-api', version: slf4JVersion
-
-    compile group: 'com.google.protobuf', name: 'protobuf-java', version: protobufVersion
-    compile group: 'com.google.protobuf', name: 'protobuf-java-util', version: protobufVersion
-
+    compile project(':base')
+    
     compile group: 'com.squareup', name: 'javapoet', version: javaPoetVersion
 
     testCompile project(':testutil-base')

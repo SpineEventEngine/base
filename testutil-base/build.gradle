@@ -18,13 +18,21 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 dependencies {
+    // Depend on Protobuf as we use its type in test utils.
     compile group: 'com.google.protobuf', name: 'protobuf-java', version: protobufVersion
     compile group: 'com.google.protobuf', name: 'protobuf-java-util', version: protobufVersion
 
+    // Depend on Slf4J JDK binding so that we can log during debug.
+    compile group: 'org.slf4j', name: 'slf4j-jdk14', version: slf4JVersion
+
     // Depend on JUnit, Mockito, Hamcrest, and Guava Testlib in the production part of the code,
     // as this module would exposes these libraries along with the testing utilities.
+
+    // Exclude older version of Hamcrest core. We depend on Hamcrest directly below.
+    compile (group: 'junit', name: 'junit', version: jUnitVersion) {
+        exclude(module: 'hamcrest-core')
+    }
     
-    compile group: 'junit', name: 'junit', version: jUnitVersion
     compile group: 'org.mockito', name: 'mockito-core', version: mockitoVersion
     compile group: 'org.hamcrest', name: 'hamcrest-all', version: hamcrestVersion
     compile group: 'com.google.guava', name: 'guava-testlib', version: guavaVersion

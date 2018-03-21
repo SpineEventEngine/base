@@ -33,8 +33,8 @@ import java.util.Map;
 import java.util.Properties;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static io.spine.tools.util.CodePreconditions.checkNotEmptyOrBlank;
 import static io.spine.tools.util.Exceptions.illegalStateWithCauseOf;
+import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
  * A name of a {@code .properties} file.
