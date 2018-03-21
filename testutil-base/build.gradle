@@ -17,13 +17,12 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
+group = 'io.spine'
+
 dependencies {
     // Depend on Protobuf as we use its type in test utils.
     compile group: 'com.google.protobuf', name: 'protobuf-java', version: protobufVersion
     compile group: 'com.google.protobuf', name: 'protobuf-java-util', version: protobufVersion
-
-    // Depend on Slf4J JDK binding so that we can log during debug.
-    compile group: 'org.slf4j', name: 'slf4j-jdk14', version: slf4JVersion
 
     // Depend on JUnit, Mockito, Hamcrest, and Guava Testlib in the production part of the code,
     // as this module would exposes these libraries along with the testing utilities.

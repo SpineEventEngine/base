@@ -20,6 +20,8 @@
 
 import java.nio.file.Files
 
+group 'io.spine.tools'
+
 apply plugin: 'com.google.protobuf'
 
 buildscript {

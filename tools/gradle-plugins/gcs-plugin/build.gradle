@@ -18,6 +18,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+group 'io.spine.tools'
+
 ext {
     gcsVersion = '1.12.0'
     googleNioVersion = '0.30.0-alpha'
