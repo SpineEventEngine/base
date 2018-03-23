@@ -24,6 +24,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
+import io.spine.type.TypeName;
 
 import java.util.Collections;
 import java.util.Deque;
