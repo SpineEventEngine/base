@@ -22,7 +22,6 @@ package io.spine.reflect;
 
 import com.google.common.reflect.TypeToken;
 import com.google.common.testing.NullPointerTester;
-import io.spine.test.Tests;
 import org.junit.Test;
 
 import java.lang.reflect.Type;
@@ -31,6 +30,7 @@ import java.util.Map;
 
 import static io.spine.reflect.Types.listTypeOf;
 import static io.spine.reflect.Types.mapTypeOf;
+import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -48,7 +48,7 @@ public class TypesShould {
 
     @Test
     public void have_private_constructor() {
-        Tests.assertHasPrivateParameterlessCtor(Types.class);
+        assertHasPrivateParameterlessCtor(Types.class);
     }
 
     @Test
