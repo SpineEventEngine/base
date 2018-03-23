@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -22,10 +22,10 @@ package io.spine.tools.javadoc;
 
 import com.sun.javadoc.MethodDoc;
 import com.sun.javadoc.ProgramElementDoc;
-import com.sun.tools.javadoc.MethodDocImpl;
 import com.sun.javadoc.RootDoc;
 import com.sun.tools.doclets.standard.Standard;
 import com.sun.tools.javadoc.Main;
+import com.sun.tools.javadoc.MethodDocImpl;
 import io.spine.annotation.Internal;
 import io.spine.util.Exceptions;
 
