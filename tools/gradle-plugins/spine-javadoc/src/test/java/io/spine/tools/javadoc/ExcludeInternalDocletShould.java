@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -23,9 +23,9 @@ package io.spine.tools.javadoc;
 import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.MethodDoc;
 import com.sun.javadoc.RootDoc;
+import io.spine.util.Exceptions;
 import org.junit.After;
 import org.junit.Test;
-import io.spine.util.Exceptions;
 
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
@@ -35,10 +35,10 @@ import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 
+import static io.spine.tools.javadoc.RootDocProxyReceiver.rootDocFor;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static io.spine.tools.javadoc.RootDocProxyReceiver.rootDocFor;
 
 public class ExcludeInternalDocletShould {
 
