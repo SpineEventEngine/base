@@ -17,57 +17,55 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 group 'io.spine.tools'
 
 buildscript {
-    apply from: "$rootDir/ext.gradle"
 
-    ext {
-        googleMavenCentralMirror = 'https://maven-central.storage.googleapis.com'
-    }
+    // Applying from `ext.gradle` inside the `buildscript` section to reuse the properties.
+    //
+    // As long as `buildscript` section is always evaluated first, we need to apply
+    // `ext.gradle` explicitly here.
+    apply from: "$rootDir/ext.gradle"
 
     repositories {
         jcenter()
-        maven { url = googleMavenCentralMirror }
         mavenCentral()
+        mavenLocal()
+
+        // Spine releases repository.
+        maven { url = spineRepository }
+        // Spine snapshots repository.
+        maven { url = spineSnapshotsRepository }
     }
 
-    //noinspection GroovyAssignabilityCheck
     dependencies {
-        classpath(group: 'com.google.protobuf',
-                  name: 'protobuf-gradle-plugin',
-                  version: protobufGradlePluginVersion) {
-            // exclude an old Guava version
+        classpath group: 'com.google.guava', name: 'guava', version: guavaVersion
+        classpath ("com.google.protobuf:protobuf-gradle-plugin:${protobufGradlePluginVersion}") {
+            // exclude old Guava version
             exclude group: 'com.google.guava'
         }
+        classpath group: "io.spine.tools", name: "spine-model-compiler", version: spineBaseVersion
     }
-
-    configurations.all({
-        resolutionStrategy.cacheChangingModulesFor(0, 'seconds')
-    })
 }
 
 apply plugin: 'com.google.protobuf'
+apply plugin: 'io.spine.tools.spine-model-compiler'
 apply from: generateDescriptorSetScript
 
 dependencies {
     compile project(':base')
-    
-    compile group: 'com.squareup', name: 'javapoet', version: javaPoetVersion
 
     testCompile project(':testlib')
 }
 
-protobuf {
-    generatedFilesBaseDir = generatedRootDir
-    protoc {
-        artifact = protobufDependency
-    }
+idea.module {
+    generatedSourceDirs += file("${projectDir}/generated/test/java")
+}
 
-    generateProtoTasks {
-        all().each { final task ->
-            task.descriptorSetOptions.includeSourceInfo = true
-        }
+sourceSets {
+    test {
+        java.srcDirs = ["${projectDir}/src/test/java", "${projectDir}/generated/test/java"]
+        proto.srcDirs = ["${projectDir}/src/test/proto"]
+        resources.srcDirs = ["${projectDir}/generated/test/resources"]
     }
 }

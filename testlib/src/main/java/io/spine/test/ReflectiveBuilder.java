@@ -18,27 +18,46 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-group = 'io.spine.tools'
+package io.spine.test;
 
-dependencies {
+import java.lang.reflect.Constructor;
 
-    compile gradleApi()
+/**
+ * The abstract base for test object builders.
+ *
+ * @author Alexander Yevsyukov
+ */
+public abstract class ReflectiveBuilder<T> {
 
-    /* Enforce JUnit version to prevent this Gradle-IDEA integration warning:
+    /** The class of the object we create. */
+    private Class<T> resultClass;
 
-       Details: org.gradle.api.internal.artifacts.ivyservice.DefaultLenientConfiguration$ArtifactResolveException: Could not resolve all files for configuration ':plugin-base:testCompileClasspath'.
-       Caused by: org.gradle.internal.resolve.ArtifactResolveException: Could not download junit.jar (junit:junit:4.8.2): No cached version available for offline mode</i>
-    */
-
-    testCompile project(':testlib')
-
-    testCompile group: 'junit', name: 'junit', version: jUnitVersion
-    testCompile group: 'org.mockito', name: 'mockito-core', version: mockitoVersion
-    testCompile gradleTestKit()
-}
-
-sourceSets {
-    test {
-        resources.srcDirs += "$sourcesRootDir/test/resources"
+    /** Constructor for use by subclasses. */
+    protected ReflectiveBuilder() {
     }
+
+    /**
+     * Obtains constructor for the result object.
+     */
+    protected abstract Constructor<T> getConstructor();
+
+    /**
+     * Obtains the class of the object to build.
+     */
+    public Class<T> getResultClass() {
+        return this.resultClass;
+    }
+
+    /**
+     * Sets the class of the object to build.
+     */
+    protected ReflectiveBuilder<T> setResultClass(Class<T> resultClass) {
+        this.resultClass = resultClass;
+        return this;
+    }
+
+    /**
+     * Creates the object being built.
+     */
+    public abstract T build();
 }

@@ -24,5 +24,5 @@ apply plugin: 'java-gradle-plugin'
 dependencies {
     compile project(':plugin-base')
     compile project(':codegen')
-    testCompile project(':testutil-base')
+    testCompile project(':testlib')
 }

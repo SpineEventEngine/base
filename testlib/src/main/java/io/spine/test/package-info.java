@@ -18,27 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-group = 'io.spine.tools'
+/**
+ * Utility classes for framework testing.
+ */
+@ParametersAreNonnullByDefault
+package io.spine.test;
 
-dependencies {
-
-    compile gradleApi()
-
-    /* Enforce JUnit version to prevent this Gradle-IDEA integration warning:
-
-       Details: org.gradle.api.internal.artifacts.ivyservice.DefaultLenientConfiguration$ArtifactResolveException: Could not resolve all files for configuration ':plugin-base:testCompileClasspath'.
-       Caused by: org.gradle.internal.resolve.ArtifactResolveException: Could not download junit.jar (junit:junit:4.8.2): No cached version available for offline mode</i>
-    */
-
-    testCompile project(':testlib')
-
-    testCompile group: 'junit', name: 'junit', version: jUnitVersion
-    testCompile group: 'org.mockito', name: 'mockito-core', version: mockitoVersion
-    testCompile gradleTestKit()
-}
-
-sourceSets {
-    test {
-        resources.srcDirs += "$sourcesRootDir/test/resources"
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;

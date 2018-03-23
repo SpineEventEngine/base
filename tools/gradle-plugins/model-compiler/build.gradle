@@ -72,7 +72,7 @@ dependencies {
     compile group: 'org.jboss.forge.roaster', name: 'roaster-api', version: roasterVersion
     compile group: 'org.jboss.forge.roaster', name: 'roaster-jdt', version: roasterVersion
 
-    compile project(':testutil-base')
+    compile project(':testlib')
     testCompile group: 'com.google.guava', name: 'guava-testlib', version: guavaVersion
     testCompile group: 'org.hamcrest', name:'hamcrest-all', version: hamcrestVersion
     testCompile gradleTestKit()
@@ -145,5 +145,5 @@ test {
     dependsOn project.project(':plugin-base').publishToMavenLocal
     dependsOn project.project(':codegen').publishToMavenLocal
     dependsOn project.project(':base').publishToMavenLocal
-    dependsOn project.project(':testutil-base').publishToMavenLocal
+    dependsOn project.project(':testlib').publishToMavenLocal
 }

@@ -74,7 +74,7 @@ dependencies {
     compile group: 'com.google.protobuf', name: 'protobuf-java', version: protobufVersion
     compile group: 'com.google.protobuf', name: 'protobuf-java-util', version: protobufVersion
 
-    testCompile project(path: ":testutil-base")
+    testCompile project(path: ":testlib")
 }
 
 protobuf {
