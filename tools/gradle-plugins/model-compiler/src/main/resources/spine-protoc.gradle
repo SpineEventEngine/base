@@ -75,8 +75,8 @@ final def copyPluginJarAction = {
     final def dest = project.spineFolder.resolve(from.name)
     final def rootDest = project.rootSpineFolder.resolve(from.name)
     final def srcPath = from.toPath()
-    /* The artifact must be present in both root and project directories to make any
-       kind of gradle build run successfully. */
+    // The artifact must be present in both root and project directories to make any kin of gradle
+    // build run successfully.
     copy(srcPath, dest)
     copy(srcPath, rootDest)
 }
