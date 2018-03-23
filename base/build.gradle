@@ -17,6 +17,8 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+group = 'io.spine'
+
 buildscript {
     apply from: "$rootDir/ext.gradle"
     
@@ -39,7 +41,7 @@ buildscript {
         classpath group: 'com.google.guava', name: 'guava', version: guavaVersion
         classpath(group: 'com.google.protobuf',
                   name: 'protobuf-gradle-plugin',
-                  version: protobufGradlePluginVerison) {
+                  version: protobufGradlePluginVersion) {
             // exclude an old Guava version
             exclude group: 'com.google.guava'
         }
@@ -72,16 +74,8 @@ dependencies {
     compile group: 'com.google.protobuf', name: 'protobuf-java', version: protobufVersion
     compile group: 'com.google.protobuf', name: 'protobuf-java-util', version: protobufVersion
 
-    // Use jdk14 bindings for test purposes only.
     testCompile group: 'org.slf4j', name: 'slf4j-jdk14', version: slf4JVersion
-    testCompile(group: 'junit', name: 'junit', version: jUnitVersion) {
-        exclude(module: 'hamcrest-core')
-    }
-    testCompile group: 'org.hamcrest', name: 'hamcrest-all', version: hamcrestVersion
-    testCompile group: 'org.mockito', name: 'mockito-core', version: mockitoVersion
-    testCompile group: 'com.google.guava', name: 'guava-testlib', version: guavaVersion
-
-    testCompile project(path: ":testutil-base")
+    testCompile project(path: ":testlib")
 }
 
 protobuf {

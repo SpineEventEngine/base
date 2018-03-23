@@ -59,7 +59,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import static com.google.common.collect.Maps.newHashMap;
-import static io.spine.util.PropertyFiles.loadAllProperties;
+import static io.spine.io.PropertyFiles.loadAllProperties;
 
 /**
  * The helper class for building a map from proto type URL to Java class name.

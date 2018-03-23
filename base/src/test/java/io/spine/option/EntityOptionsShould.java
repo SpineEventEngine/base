@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -22,12 +22,12 @@ package io.spine.option;
 
 import com.google.common.testing.NullPointerTester;
 import io.spine.option.EntityOption.Visibility;
-import io.spine.test.Tests;
 import io.spine.test.options.FullAccessAggregate;
 import io.spine.test.options.SubscribableAggregate;
 import org.junit.Test;
 
 import static io.spine.option.EntityOptions.getVisibility;
+import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -39,7 +39,7 @@ public class EntityOptionsShould {
 
     @Test
     public void have_utility_ctor() {
-        Tests.assertHasPrivateParameterlessCtor(EntityOptions.class);
+        assertHasPrivateParameterlessCtor(EntityOptions.class);
     }
 
     @Test

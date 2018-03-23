@@ -28,7 +28,9 @@ import static io.spine.base.Time.getCurrentTime;
 import static io.spine.base.Time.resetProvider;
 import static io.spine.base.Time.setProvider;
 import static io.spine.base.Time.systemTime;
-import static io.spine.base.given.TimeTestEnv.*;
+import static io.spine.base.given.TimeTestEnv.ConstantTimeProvider;
+import static io.spine.base.given.TimeTestEnv.DURATION_1_MINUTE;
+import static io.spine.base.given.TimeTestEnv.DURATION_5_MINUTES;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 

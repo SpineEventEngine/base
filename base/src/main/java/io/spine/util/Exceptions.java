@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -20,14 +20,10 @@
 
 package io.spine.util;
 
-import io.spine.annotation.Internal;
-import io.spine.base.Error;
-
 import java.util.Locale;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Throwables.getRootCause;
-import static com.google.common.base.Throwables.getStackTraceAsString;
 import static java.lang.String.format;
 
 /**
@@ -214,40 +210,5 @@ public final class Exceptions {
         checkNotNull(cause);
         final String errMsg = formatMessage(format, args);
         throw new IllegalStateException(errMsg, cause);
-    }
-
-    /**
-     * Creates a Protobuf error from the given {@link Throwable}.
-     *
-     * @param throwable the {@code Throwable} to convert
-     * @return new instance of {@link Error}
-     */
-    public static Error toError(Throwable throwable) {
-        checkNotNull(throwable);
-        final Throwable cause = getRootCause(throwable);
-        final Error error = Error.newBuilder()
-                                 .setType(cause.getClass().getCanonicalName())
-                                 .setMessage(cause.getMessage())
-                                 .setStacktrace(getStackTraceAsString(cause))
-                                 .build();
-        return error;
-    }
-
-    /**
-     * Creates a Protobuf error from the given {@link Throwable} with the given error code.
-     *
-     * <p>The error code may represent a number in an enum or a native error number (ERRNO).
-     *
-     * @param throwable the {@code Throwable} to convert
-     * @param errorCode the error code to include in the resulting {@link Error}
-     * @return new instance of {@link Error}
-     * @see #toError(Throwable) as the recommended overload
-     */
-    @Internal
-    public static Error toError(Throwable throwable, int errorCode) {
-        final Error error = toError(throwable).toBuilder()
-                                              .setCode(errorCode)
-                                              .build();
-        return error;
     }
 }

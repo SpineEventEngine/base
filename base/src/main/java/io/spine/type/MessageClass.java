@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -21,6 +21,7 @@
 package io.spine.type;
 
 import com.google.protobuf.Message;
+import io.spine.value.ClassTypeValue;
 
 /**
  * A base class for value objects storing references to message classes.

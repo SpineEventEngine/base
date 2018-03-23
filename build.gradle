@@ -81,12 +81,23 @@ ext {
 
     credentialsPropertyFile = 'credentials.properties'
     publishPlugin = "$rootDir/scripts/publish.gradle"
-    projectsToPublish = ["base",
-                         "model-compiler",
-                         "plugin-base",
-                         "testutil-base",
-                         "protoc-plugin",
-                         "codegen"]
+    projectsToPublish = [
+            "base",
+            "testlib",
+
+            "codegen",
+
+            'reflections-plugin',
+            'spine-codestyle-checker',
+            'spine-javadoc',
+            'gcs-plugin',
+            'protobuf-javadoc-plugin',
+
+            "plugin-base",
+            "model-compiler",
+
+            "protoc-plugin"
+    ]
 }
 
 allprojects {
@@ -94,8 +105,6 @@ allprojects {
     apply plugin: 'jacoco'
     apply plugin: 'idea'
     apply plugin: 'project-report'
-
-    group = 'io.spine'
 
     // Use the same version numbering for the Spine Base library.
     version = spineVersion
@@ -139,6 +148,7 @@ subprojects {
     //              * "error" - build will fail and its report will contain the violations.
     //
     //      For more details please see io.spine.tools.codestyle.CodestyleCheckerPlugin
+    //
     codestyleChecker {
 
         // Javadoc @link/@linkplain format checker.

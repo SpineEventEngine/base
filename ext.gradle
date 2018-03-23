@@ -38,7 +38,7 @@
  *
  * This is also the version which the artifacts are published with.
  */
-def final SPINE_VERSION = '0.10.32-SNAPSHOT'
+def final SPINE_VERSION = '0.10.34-SNAPSHOT'
 
 ext {
     spineVersion = SPINE_VERSION
@@ -53,6 +53,13 @@ ext {
     hamcrestVersion = '1.3'
     javaPoetVersion = '1.9.0'
 
+    protobufGradlePluginVersion = '0.8.4'
+
+    //TODO:2018-03-19:alexander.yevsyukov: Remove the below versions
+
+    // The version to be used until we resolve dependencies inside the project.
+    spineBaseVersion = '0.10.29-SNAPSHOT'
+
     /**
      * The version of Spine tools.
      *
@@ -66,6 +73,4 @@ ext {
      * Use the latest currently published version here.
      */
     spineModelCompilerVersion = '0.10.30-SNAPSHOT'
-
-    protobufGradlePluginVerison = '0.8.4'
 }
