@@ -83,7 +83,7 @@ ext {
     publishPlugin = "$rootDir/scripts/publish.gradle"
     projectsToPublish = [
             "base",
-            "testutil-base",
+            "testlib",
 
             "codegen",
 

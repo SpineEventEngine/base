@@ -55,7 +55,7 @@ apply from: generateDescriptorSetScript
 dependencies {
     compile project(':base')
 
-    testCompile project(':testutil-base')
+    testCompile project(':testlib')
 }
 
 idea.module {

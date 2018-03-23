@@ -30,7 +30,7 @@ dependencies {
        Caused by: org.gradle.internal.resolve.ArtifactResolveException: Could not download junit.jar (junit:junit:4.8.2): No cached version available for offline mode</i>
     */
 
-    testCompile project(':testutil-base')
+    testCompile project(':testlib')
 
     testCompile group: 'junit', name: 'junit', version: jUnitVersion
     testCompile group: 'org.mockito', name: 'mockito-core', version: mockitoVersion

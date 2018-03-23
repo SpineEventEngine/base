@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -18,46 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/**
+ * Utility classes for framework testing.
+ */
+@ParametersAreNonnullByDefault
 package io.spine.test;
 
-import java.lang.reflect.Constructor;
-
-/**
- * The abstract base for test object builders.
- *
- * @author Alexander Yevsyukov
- */
-public abstract class ReflectiveBuilder<T> {
-
-    /** The class of the object we create. */
-    private Class<T> resultClass;
-
-    /** Constructor for use by subclasses. */
-    protected ReflectiveBuilder() {
-    }
-
-    /**
-     * Obtains constructor for the result object.
-     */
-    protected abstract Constructor<T> getConstructor();
-
-    /**
-     * Obtains the class of the object to build.
-     */
-    public Class<T> getResultClass() {
-        return this.resultClass;
-    }
-
-    /**
-     * Sets the class of the object to build.
-     */
-    protected ReflectiveBuilder<T> setResultClass(Class<T> resultClass) {
-        this.resultClass = resultClass;
-        return this;
-    }
-
-    /**
-     * Creates the object being built.
-     */
-    public abstract T build();
-}
+import javax.annotation.ParametersAreNonnullByDefault;

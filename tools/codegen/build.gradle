@@ -56,7 +56,7 @@ dependencies {
     
     compile group: 'com.squareup', name: 'javapoet', version: javaPoetVersion
 
-    testCompile project(':testutil-base')
+    testCompile project(':testlib')
 }
 
 protobuf {

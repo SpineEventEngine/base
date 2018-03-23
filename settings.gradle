@@ -20,7 +20,7 @@
 
 rootProject.name = 'spine-base'
 
-include 'testutil-base'
+include 'testlib'
 
 include 'base'
 

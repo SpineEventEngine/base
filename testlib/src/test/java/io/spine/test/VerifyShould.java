@@ -371,7 +371,7 @@ public class VerifyShould {
         assertSize(0, new Object[1]);
     }
 
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "OverlyStrongTypeCast"})
     @Test(expected = AssertionError.class)
     public void fail_assertSize_if_array_is_null_in_assert_size() {
         assertSize(0, (Integer[]) null);
@@ -1067,7 +1067,7 @@ public class VerifyShould {
     public void fail_assertThrows_if_callable_not_throws_exception() {
         final Callable notThrowsException = new Callable() {
             @Override
-            public Object call() throws Exception {
+            public Object call() {
                 return null;
             }
         };
@@ -1079,7 +1079,7 @@ public class VerifyShould {
     public void fail_assertThrows_if_callable_not_throws_specified_exception() {
         final Callable throwsEmptyStackException = new Callable() {
             @Override
-            public Object call() throws Exception {
+            public Object call() throws EmptyStackException {
                 throw new EmptyStackException();
             }
         };
@@ -1091,7 +1091,7 @@ public class VerifyShould {
     public void pass_assertThrows_if_callable_throws_specified_exception() {
         final Callable throwsEmptyStackException = new Callable() {
             @Override
-            public Object call() throws Exception {
+            public Object call() throws EmptyStackException {
                 throw new EmptyStackException();
             }
         };
@@ -1138,7 +1138,7 @@ public class VerifyShould {
     public void fail_assertThrowsWithCause_if_callable_not_throws_exception_with_cause() {
         final Callable notThrowsException = new Callable() {
             @Override
-            public Object call() throws Exception {
+            public Object call() {
                 return null;
             }
         };
@@ -1270,7 +1270,7 @@ public class VerifyShould {
             return value == that.value;
         }
 
-        @SuppressWarnings("MethodDoesntCallSuperMethod")
+        @SuppressWarnings({"MethodDoesntCallSuperMethod", "RedundantThrows"})
         @Override
         protected Object clone() throws CloneNotSupportedException {
             return this;
@@ -1330,6 +1330,7 @@ public class VerifyShould {
             return value;
         }
 
+        @SuppressWarnings({"RedundantThrows", "MethodDoesntCallSuperMethod"})
         @Override
         protected Object clone() throws CloneNotSupportedException {
             return new ClassThatImplementCloneableIncorrectly(value + 1);
