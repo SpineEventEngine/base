@@ -23,13 +23,14 @@ package io.spine.test;
 import com.google.common.testing.NullPointerTester;
 import org.junit.Test;
 
+import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
 import static org.junit.Assert.assertTrue;
 
 public class TestValuesShould {
 
     @Test
     public void have_utility_ctor() {
-        Tests.assertHasPrivateParameterlessCtor(TestValues.class);
+        assertHasPrivateParameterlessCtor(TestValues.class);
     }
 
     @Test

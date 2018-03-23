@@ -20,8 +20,9 @@
 
 package io.spine.io;
 
-import io.spine.test.Tests;
 import org.junit.Test;
+
+import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
 
 /**
  * @author Alexander Yevsyukov
@@ -30,6 +31,6 @@ public class PropertyFilesShould {
 
     @Test
     public void have_utility_ctor() {
-        Tests.assertHasPrivateParameterlessCtor(PropertyFiles.class);
+        assertHasPrivateParameterlessCtor(PropertyFiles.class);
     }
 }

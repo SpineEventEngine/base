@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.environment;
+package io.spine.base;
 
 import com.google.protobuf.Timestamp;
 import org.junit.Test;
@@ -28,9 +28,9 @@ import static io.spine.base.Time.getCurrentTime;
 import static io.spine.base.Time.resetProvider;
 import static io.spine.base.Time.setProvider;
 import static io.spine.base.Time.systemTime;
-import static io.spine.environment.given.TimeTestEnv.ConstantTimeProvider;
-import static io.spine.environment.given.TimeTestEnv.DURATION_1_MINUTE;
-import static io.spine.environment.given.TimeTestEnv.DURATION_5_MINUTES;
+import static io.spine.base.given.TimeTestEnv.ConstantTimeProvider;
+import static io.spine.base.given.TimeTestEnv.DURATION_1_MINUTE;
+import static io.spine.base.given.TimeTestEnv.DURATION_5_MINUTES;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 

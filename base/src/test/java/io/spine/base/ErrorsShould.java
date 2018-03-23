@@ -21,12 +21,12 @@
 package io.spine.base;
 
 import com.google.common.testing.NullPointerTester;
-import io.spine.test.Tests;
 import org.junit.Test;
 
 import static io.spine.base.Errors.causeOf;
 import static io.spine.base.Errors.fromThrowable;
 import static io.spine.base.Identifier.newUuid;
+import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -36,7 +36,7 @@ public class ErrorsShould {
 
     @Test
     public void have_utility_ctor() {
-        Tests.assertHasPrivateParameterlessCtor(Errors.class);
+        assertHasPrivateParameterlessCtor(Errors.class);
     }
 
     @Test

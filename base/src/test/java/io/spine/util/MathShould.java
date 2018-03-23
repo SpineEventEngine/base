@@ -20,9 +20,9 @@
 
 package io.spine.util;
 
-import io.spine.test.Tests;
 import org.junit.Test;
 
+import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
 import static io.spine.util.Math.floorDiv;
 import static io.spine.util.Math.safeMultiply;
 import static org.junit.Assert.assertEquals;
@@ -31,7 +31,7 @@ public class MathShould {
 
     @Test
     public void have_private_constructor() {
-        Tests.assertHasPrivateParameterlessCtor(io.spine.util.Math.class);
+        assertHasPrivateParameterlessCtor(io.spine.util.Math.class);
     }
 
     @Test(expected = ArithmeticException.class)

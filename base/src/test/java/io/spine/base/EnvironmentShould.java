@@ -18,9 +18,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.environment;
+package io.spine.base;
 
-import io.spine.base.Environment;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

@@ -22,9 +22,9 @@ package io.spine.util;
 
 import com.google.common.testing.NullPointerTester;
 import io.spine.test.TestValues;
-import io.spine.test.Tests;
 import org.junit.Test;
 
+import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 import static io.spine.util.Exceptions.newIllegalStateException;
 import static io.spine.util.Exceptions.unsupported;
@@ -40,7 +40,7 @@ public class ExceptionsShould {
 
     @Test
     public void have_private_ctor() {
-        Tests.assertHasPrivateParameterlessCtor(Exceptions.class);
+        assertHasPrivateParameterlessCtor(Exceptions.class);
     }
 
     @Test(expected = UnsupportedOperationException.class)

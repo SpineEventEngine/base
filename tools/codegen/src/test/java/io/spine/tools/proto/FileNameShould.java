@@ -22,11 +22,11 @@ package io.spine.tools.proto;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.testing.NullPointerTester;
-import io.spine.test.Tests;
 import org.junit.Test;
 
 import java.util.List;
 
+import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
 import static io.spine.tools.proto.FileName.of;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -39,7 +39,7 @@ public class FileNameShould {
 
     @Test
     public void have_utility_ctor_for_Suffix() {
-        Tests.assertHasPrivateParameterlessCtor(FileName.Suffix.class);
+        assertHasPrivateParameterlessCtor(FileName.Suffix.class);
     }
 
     @Test

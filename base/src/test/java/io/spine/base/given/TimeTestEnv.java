@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.environment.given;
+package io.spine.base.given;
 
 import com.google.protobuf.Duration;
 import com.google.protobuf.Timestamp;

@@ -25,11 +25,11 @@ import com.google.common.testing.NullPointerTester;
 import io.spine.logging.given.LoggingTestEnv.Base;
 import io.spine.logging.given.LoggingTestEnv.ChildOne;
 import io.spine.logging.given.LoggingTestEnv.ChildTwo;
-import io.spine.test.Tests;
 import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 
+import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
@@ -42,7 +42,7 @@ public class LoggingShould {
 
     @Test
     public void have_utility_ctor() {
-        Tests.assertHasPrivateParameterlessCtor(Logging.class);
+        assertHasPrivateParameterlessCtor(Logging.class);
     }
     
     @Test

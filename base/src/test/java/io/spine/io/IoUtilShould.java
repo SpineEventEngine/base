@@ -21,8 +21,9 @@
 package io.spine.io;
 
 import com.google.common.testing.NullPointerTester;
-import io.spine.test.Tests;
 import org.junit.Test;
+
+import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
 
 /**
  * @author Alexander Litus
@@ -31,7 +32,7 @@ public class IoUtilShould {
 
     @Test
     public void have_private_constructor() {
-        Tests.assertHasPrivateParameterlessCtor(IoUtil.class);
+        assertHasPrivateParameterlessCtor(IoUtil.class);
     }
 
     @Test
