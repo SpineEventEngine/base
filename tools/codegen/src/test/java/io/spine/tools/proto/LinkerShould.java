@@ -54,8 +54,7 @@ public class LinkerShould {
         assertTrue(resolved.size() > 0);
         assertTrue(resolved.containsAll(ImmutableList.of(
                 "google/protobuf/any.proto",
-                "google/protobuf/descriptor.proto",
-                "google/protobuf/timestamp.proto")
+                "google/protobuf/descriptor.proto")
         ));
     }
 
