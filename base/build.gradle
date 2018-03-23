@@ -74,6 +74,7 @@ dependencies {
     compile group: 'com.google.protobuf', name: 'protobuf-java', version: protobufVersion
     compile group: 'com.google.protobuf', name: 'protobuf-java-util', version: protobufVersion
 
+    testCompile group: 'org.slf4j', name: 'slf4j-jdk14', version: slf4JVersion
     testCompile project(path: ":testlib")
 }
 
