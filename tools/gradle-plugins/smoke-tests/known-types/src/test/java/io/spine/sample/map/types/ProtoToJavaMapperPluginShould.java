@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -22,10 +22,10 @@ package io.spine.sample.map.types;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.FluentIterable;
-import org.junit.Test;
 import io.spine.type.ClassName;
 import io.spine.type.KnownTypes;
 import io.spine.type.TypeUrl;
+import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
