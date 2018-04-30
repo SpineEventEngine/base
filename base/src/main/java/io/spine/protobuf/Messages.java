@@ -19,7 +19,9 @@
  */
 package io.spine.protobuf;
 
+import com.google.common.base.Predicate;
 import com.google.protobuf.Any;
+import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
 
@@ -123,5 +125,33 @@ public final class Messages {
             commandMessage = msgOrAny;
         }
         return commandMessage;
+    }
+
+    /**
+     * @return an instance of an {@linkplain NonEmpty non-empty predicate}
+     */
+    public static Predicate<Message> nonEmpty() {
+        return NonEmpty.INSTANCE;
+    }
+
+    /**
+     * A predicate checking that message is not {@linkplain Empty empty}.
+     */
+    private enum NonEmpty implements Predicate<Message> {
+
+        INSTANCE;
+
+        private static final Empty EMPTY = Empty.getDefaultInstance();
+
+        /**
+         * Checks that message is not {@linkplain Empty empty}.
+         *
+         * @param  message the message being checked
+         * @return {@code true} if the message is not empty, {@code false} otherwise 
+         */
+        @Override
+        public boolean apply(Message message) {
+            return !message.equals(EMPTY);
+        }
     }
 }
