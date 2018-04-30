@@ -21,6 +21,8 @@ package io.spine.protobuf;
 
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Any;
+import com.google.protobuf.Duration;
+import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import com.google.protobuf.StringValue;
 import com.google.protobuf.Timestamp;
@@ -31,6 +33,7 @@ import org.junit.Test;
 
 import static io.spine.protobuf.AnyPacker.unpack;
 import static io.spine.protobuf.Messages.ensureMessage;
+import static io.spine.protobuf.Messages.nonEmpty;
 import static io.spine.protobuf.TypeConverter.toAny;
 import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
 import static org.junit.Assert.assertEquals;
@@ -62,7 +65,8 @@ public class MessagesShould {
     public void return_builder_for_the_message() {
         final Message.Builder messageBuilder = Messages.builderFor(MessageWithStringValue.class);
         assertNotNull(messageBuilder);
-        assertEquals(MessageWithStringValue.class, messageBuilder.build().getClass());
+        assertEquals(MessageWithStringValue.class, messageBuilder.build()
+                                                                 .getClass());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -71,12 +75,12 @@ public class MessagesShould {
     }
 
     @Test
-    public void return_true_when_message_is_checked(){
+    public void return_true_when_message_is_checked() {
         assertTrue(Messages.isMessage(MessageWithStringValue.class));
     }
 
     @Test
-    public void return_false_when_not_message_is_checked(){
+    public void return_false_when_not_message_is_checked() {
         assertFalse(Messages.isMessage(getClass()));
     }
 
@@ -91,5 +95,23 @@ public class MessagesShould {
         final StringValue value = TestValues.newUuidValue();
         assertEquals(value, ensureMessage(AnyPacker.pack(value)));
         assertSame(value, ensureMessage(value));
+    }
+
+    @Test
+    public void return_true_for_an_empty_checked_using_predicate() {
+        final Message empty = Empty.getDefaultInstance();
+        assertFalse(nonEmpty().apply(empty));
+    }
+
+    @Test
+    public void return_false_for_a_non_empty_message_checked_using_predicate() {
+        final Message timestamp = Timestamp.getDefaultInstance();
+        assertTrue(nonEmpty().apply(timestamp));
+
+        final Message any = Any.getDefaultInstance();
+        assertTrue(nonEmpty().apply(any));
+
+        final Message duration = Duration.getDefaultInstance();
+        assertTrue(nonEmpty().apply(duration));
     }
 }
