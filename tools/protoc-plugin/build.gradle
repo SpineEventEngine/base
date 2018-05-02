@@ -45,7 +45,7 @@ group 'io.spine.tools'
 
 dependencies {
     compile project(':base')
-    compile project(':codegen')
+    compile project(':base')
 
     compile group: "com.google.protobuf", name: "protobuf-java", version: protobufVersion
 }

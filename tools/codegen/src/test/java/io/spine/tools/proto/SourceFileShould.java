@@ -25,7 +25,6 @@ import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.Descriptor;
 import io.spine.test.compiler.message.Top;
-import io.spine.type.TypeName;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -53,8 +52,9 @@ public class SourceFileShould {
     @Test
     public void search_nested_declarations_recursively() {
         final Descriptor nestedForNested = Top.NestedForTop.NestedForNested.getDescriptor();
-        final TypeName expectedTypeName = TypeName.from(nestedForNested);
-        final MessageDeclaration result = findDeclaration(expectedTypeName.getSimpleName());
+        final String expectedTypeName = nestedForNested.getFullName();
+        final String simpleTypeName = nestedForNested.getName();
+        final MessageDeclaration result = findDeclaration(simpleTypeName);
         assertEquals(expectedTypeName, result.getTypeName());
     }
 

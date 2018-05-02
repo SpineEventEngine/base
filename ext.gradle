@@ -58,19 +58,19 @@ ext {
     //TODO:2018-03-19:alexander.yevsyukov: Remove the below versions
 
     // The version to be used until we resolve dependencies inside the project.
-    spineBaseVersion = '0.10.29-SNAPSHOT'
+    spineBaseVersion = '0.10.34-SNAPSHOT'
 
     /**
      * The version of Spine tools.
      *
      * This version is independent from the version of both `base` and `model-compiler`.
      */
-    spineToolsVersion = '0.10.29-SNAPSHOT'
+    spineToolsVersion = '0.10.32-SNAPSHOT'
 
     /**
      * The version of the Spine `model-compiler` plugin which is used to build `base`.
      *
      * Use the latest currently published version here.
      */
-    spineModelCompilerVersion = '0.10.30-SNAPSHOT'
+    spineModelCompilerVersion = '0.10.34-SNAPSHOT'
 }

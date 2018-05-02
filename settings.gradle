@@ -20,34 +20,35 @@
 
 rootProject.name = 'spine-base'
 
-include 'testlib'
-
 include 'base'
+
+include 'testlib'
 
 /**
  * Includes a module and sets custom project directory to it.
  */
 final def module = { final String name, final String path ->
     include name
-    project(":$name").projectDir = new File("$path")
+    project(":$name").projectDir = new File("$rootDir/$path")
 }
 
-module ('codegen',                 './tools/codegen')
-module ('gcs-plugin',              './tools/gradle-plugins/gcs-plugin')
-module ('model-compiler',          './tools/gradle-plugins/model-compiler')
+module 'codegen',                 'tools/codegen'
+module 'gcs-plugin',              'tools/gradle-plugins/gcs-plugin'
+module 'model-compiler',          'tools/gradle-plugins/model-compiler'
 
-module ('plugin-base',             './tools/gradle-plugins/plugin-base')
-module ('protobuf-javadoc-plugin', './tools/gradle-plugins/protobuf-javadoc-plugin')
-module ('reflections-plugin',      './tools/gradle-plugins/reflections-plugin')
+module 'protobuf-javadoc-plugin', 'tools/gradle-plugins/protobuf-javadoc-plugin'
+module 'plugin-base',             'tools/gradle-plugins/plugin-base'
+module 'reflections-plugin',      'tools/gradle-plugins/reflections-plugin'
 
-module ('spine-codestyle-checker', './tools/gradle-plugins/spine-codestyle-checker')
-module ('spine-javadoc',           './tools/gradle-plugins/spine-javadoc')
+module 'spine-codestyle-checker', 'tools/gradle-plugins/spine-codestyle-checker'
+module 'spine-javadoc',           'tools/gradle-plugins/spine-javadoc'
 
-module ('enrichment-lookup',       './tools/gradle-plugins/smoke-tests/enrichment-lookup')
-module ('known-types',             './tools/gradle-plugins/smoke-tests/known-types')
-module ('validators-gen',          './tools/gradle-plugins/smoke-tests/validators-gen')
+module 'enrichment-lookup',       'tools/gradle-plugins/smoke-tests/enrichment-lookup'
+module 'known-types',             'tools/gradle-plugins/smoke-tests/known-types'
+module 'validators-gen',          'tools/gradle-plugins/smoke-tests/validators-gen'
 
 // Protoc plugin and tests
-module ('protoc-plugin',           './tools/protoc-plugin')
-module ('protoc-plugin-tests',     './tools/protoc-plugin-tests')
+module 'protoc-plugin',           'tools/protoc-plugin'
+module 'protoc-plugin-tests',     'tools/protoc-plugin-tests'
+
 

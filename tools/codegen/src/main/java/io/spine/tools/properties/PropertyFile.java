@@ -33,7 +33,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static io.spine.util.Exceptions.illegalStateWithCauseOf;
+import static com.google.common.base.Throwables.getRootCause;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
@@ -87,7 +87,7 @@ public class PropertyFile extends AbstractSourceFile {
 
             return result.build();
         } catch (IOException e) {
-            throw illegalStateWithCauseOf(e);
+            throw new IllegalStateException(getRootCause(e));
         }
     }
 }

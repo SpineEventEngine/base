@@ -109,7 +109,7 @@ public final class FileSet {
     /**
      * Creates a new set which is a union of this and the passed one.
      */
-    FileSet union(FileSet another) {
+    public FileSet union(FileSet another) {
         if (another.isEmpty()) {
             return this;
         }

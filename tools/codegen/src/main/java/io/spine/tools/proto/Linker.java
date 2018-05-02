@@ -32,7 +32,6 @@ import java.util.List;
 
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.protobuf.Descriptors.FileDescriptor.buildFrom;
-import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
  * Builds a set of {@link FileDescriptor}s from a list of {@link FileDescriptorProto}.
@@ -64,7 +63,7 @@ class Linker {
         try {
             linker.resolve();
         } catch (DescriptorValidationException e) {
-            throw newIllegalStateException(e, "Unable to link descriptor set files");
+            throw new IllegalStateException("Unable to link descriptor set files", e);
         }
         final FileSet result = linker.getResolved()
                                      .union(linker.getPartiallyResolved())

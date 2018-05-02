@@ -67,9 +67,6 @@ buildscript {
                   name: 'gcs-plugin',
                   version: spineToolsVersion
     }
-    configurations.all({
-        resolutionStrategy.cacheChangingModulesFor(0, 'seconds')
-    })
 }
 
 apply from: 'ext.gradle'

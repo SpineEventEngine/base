@@ -17,13 +17,35 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-group 'io.spine.tools'
 
-apply plugin: 'java-gradle-plugin'
+package io.spine.json;
 
-dependencies {
-    compile group: 'com.google.guava', name: 'guava', version: guavaVersion
+import com.google.protobuf.util.JsonFormat;
+import com.google.protobuf.util.JsonFormat.TypeRegistry;
+import io.spine.base.Environment;
+import io.spine.tools.proto.FileSet;
+import io.spine.tools.proto.TypeSet;
 
-    compile project(':plugin-base')
-    compile project(':base')
+/**
+ * @author Dmytro Dashenkov
+ */
+final class TypeRegistries {
+
+    /**
+     * Prevents the utility class instantiation.
+     */
+    private TypeRegistries() {
+    }
+
+    static TypeRegistry forKnownTypes() {
+        FileSet files = FileSet.loadMain();
+        if (Environment.getInstance().isTests()) {
+            @SuppressWarnings("TestOnlyProblems")
+            final FileSet testFiles = FileSet.loadTest();
+            files = files.union(testFiles);
+        }
+        final TypeSet types = TypeSet.messagesAndEnums(files);
+        final JsonFormat.TypeRegistry typeRegistry = types.toJsonPrinterRegistry();
+        return typeRegistry;
+    }
 }

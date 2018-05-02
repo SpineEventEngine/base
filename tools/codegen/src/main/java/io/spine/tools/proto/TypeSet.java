@@ -20,12 +20,17 @@
 
 package io.spine.tools.proto;
 
+import com.google.common.base.Function;
 import com.google.common.collect.Sets;
+import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
+import com.google.protobuf.util.JsonFormat;
 
+import javax.annotation.Nullable;
 import java.util.Objects;
 import java.util.Set;
 
+import static com.google.common.collect.FluentIterable.from;
 import static com.google.common.collect.Sets.newHashSet;
 
 /**
@@ -89,6 +94,14 @@ public class TypeSet {
         return types.isEmpty();
     }
 
+    public JsonFormat.TypeRegistry toJsonPrinterRegistry() {
+        final Iterable<Descriptor> messageTypes = getMessageTypes();
+        final JsonFormat.TypeRegistry registry = JsonFormat.TypeRegistry.newBuilder()
+                                                                        .add(messageTypes)
+                                                                        .build();
+        return registry;
+    }
+
     /**
      * Adds the passed type to the set.
      */
@@ -113,6 +126,13 @@ public class TypeSet {
         return result;
     }
 
+    private Iterable<Descriptor> getMessageTypes() {
+        final Iterable<Descriptor> descriptors = from(types)
+                .filter(MessageType.class)
+                .transform(TypeToDescriptor.INSTANCE);
+        return descriptors;
+    }
+
     /** {@inheritDoc} */
     @Override
     public int hashCode() {
@@ -130,5 +150,19 @@ public class TypeSet {
         }
         final TypeSet other = (TypeSet) obj;
         return Objects.equals(this.types, other.types);
+    }
+
+    private enum TypeToDescriptor implements Function<Type, Descriptor> {
+
+        INSTANCE;
+
+        @Nullable
+        @Override
+        public Descriptor apply(@Nullable Type input) {
+            if (input == null) {
+                return null;
+            }
+            return (Descriptor) input.getType();
+        }
     }
 }

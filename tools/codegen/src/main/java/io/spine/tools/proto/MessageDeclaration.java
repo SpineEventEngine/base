@@ -24,15 +24,13 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
-import io.spine.type.TypeName;
 
 import java.util.Collections;
 import java.util.Deque;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newLinkedList;
-import static io.spine.util.Exceptions.newIllegalArgumentException;
-import static io.spine.util.Exceptions.newIllegalStateException;
+import static java.lang.String.format;
 
 /**
  * A declaration of a Protobuf message.
@@ -44,12 +42,8 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  */
 public class MessageDeclaration extends AbstractMessageDeclaration {
 
-    /**
-     * Descriptors for the outer messages of the declaration.
-     *
-     * <p>The descriptors ordered from a top-level definition of a file
-     * to the outer message for the declaration.
-     */
+    private static final char TYPE_PART_SEPARATOR = '.';
+
     private final List<DescriptorProto> outerMessages;
 
     private MessageDeclaration(List<DescriptorProto> outerTypes,
@@ -71,8 +65,9 @@ public class MessageDeclaration extends AbstractMessageDeclaration {
         final boolean fileContainsTarget = file.getMessageTypeList()
                                                .contains(message);
         if (!fileContainsTarget) {
-            final String errMsg = "Top-level message `%s` was not found in `%s`.";
-            throw newIllegalArgumentException(errMsg, message.getName(), file.getName());
+            final String errMsg = format("Top-level message `%s` was not found in `%s`.",
+                                         message.getName(), file.getName());
+            throw new IllegalArgumentException(errMsg);
         }
 
         final List<DescriptorProto> outerMessages = Collections.emptyList();
@@ -126,9 +121,9 @@ public class MessageDeclaration extends AbstractMessageDeclaration {
         final boolean isNestedForCurrentTarget = getMessage().getNestedTypeList()
                                                              .contains(nestedMessage);
         if (!isNestedForCurrentTarget) {
-            final String errMsg = "Nested message `%s` was not found in `%s`.";
-            throw newIllegalStateException(errMsg, nestedMessage.getName(),
-                                           getMessage().getName());
+            final String errMsg = format("Nested message `%s` was not found in `%s`.",
+                                         nestedMessage.getName(), getMessage().getName());
+            throw new IllegalStateException(errMsg);
         }
 
         final List<DescriptorProto> outerMessagesForNested = newLinkedList(outerMessages);
@@ -141,15 +136,15 @@ public class MessageDeclaration extends AbstractMessageDeclaration {
      *
      * @return the type name
      */
-    public TypeName getTypeName() {
+    public String getTypeName() {
         final StringBuilder typeBuilder = new StringBuilder(getFile().getPackage());
-        typeBuilder.append(TypeName.PACKAGE_SEPARATOR);
+        typeBuilder.append(TYPE_PART_SEPARATOR);
         for (DescriptorProto outerMessage : outerMessages) {
             typeBuilder.append(outerMessage.getName())
-                       .append(TypeName.NESTED_TYPE_SEPARATOR);
+                       .append(TYPE_PART_SEPARATOR);
         }
         typeBuilder.append(getMessage().getName());
         final String value = typeBuilder.toString();
-        return TypeName.of(value);
+        return value;
     }
 }

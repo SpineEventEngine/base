@@ -33,7 +33,7 @@ dependencies {
     compile "dom4j:dom4j:$dom4jVersion"
 
     compile project(':plugin-base')
-    compile project(':codegen')
+    compile project(':base')
 
     testCompile "org.testng:testng:$testngVersion"
 }

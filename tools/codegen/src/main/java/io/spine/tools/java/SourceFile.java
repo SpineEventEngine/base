@@ -29,7 +29,7 @@ import io.spine.tools.AbstractSourceFile;
 import java.nio.file.Path;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.util.Exceptions.newIllegalStateException;
+import static java.lang.String.format;
 
 /**
  * A Java source code file.
@@ -110,8 +110,9 @@ public final class SourceFile extends AbstractSourceFile {
 
     static IllegalStateException invalidNestedDefinition(String filename,
                                                          String nestedDefinitionName) {
-        throw newIllegalStateException("`%s` does not contain nested definition `%s`.",
-                                       filename, nestedDefinitionName);
+        final String message = format("`%s` does not contain nested definition `%s`.",
+                                      filename, nestedDefinitionName);
+        throw new IllegalStateException(message);
     }
 
     /**
