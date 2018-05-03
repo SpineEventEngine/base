@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.Properties;
 import java.util.Set;
 
@@ -57,29 +57,23 @@ public class PropertyFiles {
      */
     public static Set<Properties> loadAllProperties(String propsFilePath) {
         checkNotNull(propsFilePath);
-
         final ImmutableSet.Builder<Properties> result = ImmutableSet.builder();
-        final Enumeration<URL> resources = getResources(propsFilePath);
-        if (resources == null) {
-            return result.build();
-        }
-        while (resources.hasMoreElements()) {
-            final URL resourceUrl = resources.nextElement();
-            final Properties properties = loadPropertiesFile(resourceUrl);
-            result.add(properties);
+        try {
+            loadInto(result, propsFilePath);
+        } catch (IOException e) {
+            warn(log(), e, "Failed to load resources: %s", propsFilePath);
         }
         return result.build();
     }
 
-    private static Enumeration<URL> getResources(String propsFilePath) {
-        final ClassLoader classLoader = getContextClassLoader();
-        Enumeration<URL> resources = null;
-        try {
-            resources = classLoader.getResources(propsFilePath);
-        } catch (IOException e) {
-            warn(log(), e, "Failed to load resources: %s", propsFilePath);
+    private static void loadInto(ImmutableSet.Builder<Properties> destination, String filePath)
+            throws IOException {
+        final Iterator<URL> resources = ResourceFiles.tryLoadAll(filePath);
+        while (resources.hasNext()) {
+            final URL resourceUrl = resources.next();
+            final Properties properties = loadPropertiesFile(resourceUrl);
+            destination.add(properties);
         }
-        return resources;
     }
 
     private static Properties loadPropertiesFile(URL resourceUrl) {
@@ -94,11 +88,6 @@ public class PropertyFiles {
             close(inputStream);
         }
         return properties;
-    }
-
-    private static ClassLoader getContextClassLoader() {
-        return Thread.currentThread()
-                     .getContextClassLoader();
     }
 
     private static Logger log() {

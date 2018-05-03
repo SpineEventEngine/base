@@ -20,7 +20,7 @@
 package io.spine.tools.proto;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Optional;
+import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableList;
@@ -34,10 +34,17 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.collect.Iterators.transform;
+import static com.google.common.collect.Sets.newHashSet;
+import static io.spine.io.ResourceFiles.loadAll;
 import static java.lang.String.format;
 
 /**
@@ -47,8 +54,6 @@ import static java.lang.String.format;
  * @author Alex Tymchenko
  */
 public class FileDescriptors {
-
-    private static final Predicate<FileDescriptorProto> IS_NOT_GOOGLE = new IsNotGoogleProto();
 
     /**
      * Default file name for descriptor set generated from the proto files under
@@ -125,11 +130,21 @@ public class FileDescriptors {
         return result;
     }
 
+    public static Collection<FileDescriptorProto>
+    flatMap(Iterator<FileDescriptorSet> fileDescriptorSets) {
+        final Set<FileDescriptorProto> files = newHashSet();
+        while (fileDescriptorSets.hasNext()) {
+            final FileDescriptorSet descriptorSet = fileDescriptorSets.next();
+            files.addAll(descriptorSet.getFileList());
+        }
+        return files;
+    }
+
     /**
      * Loads main file descriptor set from resources.
      */
-    public static FileDescriptorSet loadMain() {
-        final FileDescriptorSet result = loadFrom(MAIN_FILE);
+    public static Iterator<FileDescriptorSet> loadMain() {
+        final Iterator<FileDescriptorSet> result = loadFrom(MAIN_FILE);
         return result;
     }
 
@@ -137,34 +152,16 @@ public class FileDescriptors {
      * Loads test file descriptor set from resources.
      */
     @VisibleForTesting
-    public static FileDescriptorSet loadTest() {
-        final FileDescriptorSet result = loadFrom(TEST_FILE);
+    public static Iterator<FileDescriptorSet> loadTest() {
+        final Iterator<FileDescriptorSet> result = loadFrom(TEST_FILE);
         return result;
     }
 
-    private static FileDescriptorSet loadFrom(String resourceName) {
-        final ClassLoader classLoader = FileDescriptors.class.getClassLoader();
-        try (final InputStream in = classLoader.getResourceAsStream(resourceName)) {
-            final Optional<FileDescriptorSet> result = parseFrom(in);
-            if (!result.isPresent()) {
-                log().debug("Descriptor set file `{}` is absent.", resourceName);
-            }
-            return result.or(FileDescriptorSet.getDefaultInstance());
-        } catch (IOException e) {
-            throw new IllegalStateException(
-                    format("Unable to load descriptor file set from %s", resourceName), e
-            );
-        }
-    }
-
-    private static Optional<FileDescriptorSet> parseFrom(@Nullable InputStream inputStream)
-            throws IOException {
-        if (inputStream == null) {
-            return Optional.absent();
-        } else {
-            final FileDescriptorSet fileSet = FileDescriptorSet.parseFrom(inputStream);
-            return Optional.of(fileSet);
-        }
+    private static Iterator<FileDescriptorSet> loadFrom(String resourceName) {
+        final Iterator<URL> descriptorFiles = loadAll(resourceName);
+        final Iterator<FileDescriptorSet> result = transform(descriptorFiles,
+                                                             FileDescriptorLoader.FUNCTION);
+        return result;
     }
 
     /**
@@ -172,13 +169,14 @@ public class FileDescriptors {
      * in the package name.
      */
     public static Predicate<FileDescriptorProto> isNotGoogleProto() {
-        return IS_NOT_GOOGLE;
+        return IsNotGoogleProto.PREDICATE;
     }
 
     /**
      * Verifies if a package of a file does not contain {@code "google"} in its path.
      */
-    private static class IsNotGoogleProto implements Predicate<FileDescriptorProto> {
+    private enum IsNotGoogleProto implements Predicate<FileDescriptorProto> {
+        PREDICATE;
 
         private static final String GOOGLE_PACKAGE = "google";
 
@@ -193,6 +191,28 @@ public class FileDescriptors {
         @Override
         public String toString() {
             return getClass().getSimpleName();
+        }
+    }
+
+    /**
+     * Loads the {@link FileDescriptorSet} from a given resource file.
+     */
+    private enum FileDescriptorLoader implements Function<URL, FileDescriptorSet> {
+        FUNCTION;
+
+        @Override
+        public FileDescriptorSet apply(@Nullable URL file) {
+            checkNotNull(file);
+            try {
+                final InputStream stream = file.openStream();
+                final FileDescriptorSet parsed = FileDescriptorSet.parseFrom(stream);
+                return parsed;
+            } catch (IOException e) {
+                throw new IllegalStateException(
+                        format("Unable to load descriptor file set from %s.", file),
+                        e
+                );
+            }
         }
     }
 

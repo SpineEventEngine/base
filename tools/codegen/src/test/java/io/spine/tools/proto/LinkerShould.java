@@ -26,6 +26,9 @@ import com.google.protobuf.Descriptors.DescriptorValidationException;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Iterator;
+
+import static io.spine.tools.proto.FileDescriptors.flatMap;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -42,9 +45,8 @@ public class LinkerShould {
 
     @Before
     public void setUp() throws DescriptorValidationException {
-        FileDescriptorSet fileSet = FileDescriptors.loadMain();
-
-        linker = new Linker(fileSet.getFileList());
+        final Iterator<FileDescriptorSet> fileSet = FileDescriptors.loadMain();
+        linker = new Linker(flatMap(fileSet));
         linker.resolve();
     }
 
