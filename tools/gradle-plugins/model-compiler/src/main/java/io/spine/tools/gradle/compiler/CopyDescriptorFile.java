@@ -51,12 +51,11 @@ final class CopyDescriptorFile {
     private CopyDescriptorFile() {
     }
 
-
     /**
      * Adds tasks {@code copyDescriptorSet} and {@code copyTestDescriptorSet} of type {@link Copy}
      * to the given project.
      *
-     * <p>The tasks copy a descriptor file for the main and test scopes respectively.
+     * <p>The tasks copy descriptor files for the main and test scopes respectively.
      *
      * <p>The tasks are executed before the {@code processResources} task (and
      * {@code processTestResources} in case of the test scope task).
