@@ -24,7 +24,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.Sets;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
-import com.google.protobuf.util.JsonFormat;
+import com.google.protobuf.util.JsonFormat.TypeRegistry;
 
 import javax.annotation.Nullable;
 import java.util.Objects;
@@ -94,11 +94,10 @@ public class TypeSet {
         return types.isEmpty();
     }
 
-    public JsonFormat.TypeRegistry toJsonPrinterRegistry() {
+    public TypeRegistry.Builder toJsonPrinterRegistry() {
         final Iterable<Descriptor> messageTypes = getMessageTypes();
-        final JsonFormat.TypeRegistry registry = JsonFormat.TypeRegistry.newBuilder()
-                                                                        .add(messageTypes)
-                                                                        .build();
+        final TypeRegistry.Builder registry = TypeRegistry.newBuilder()
+                                                          .add(messageTypes);
         return registry;
     }
 

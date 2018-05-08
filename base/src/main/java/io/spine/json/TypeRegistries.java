@@ -20,14 +20,20 @@
 
 package io.spine.json;
 
-import com.google.protobuf.util.JsonFormat;
+import com.google.common.collect.ImmutableSet;
+import com.google.protobuf.Descriptors.Descriptor;
+import com.google.protobuf.Descriptors.GenericDescriptor;
 import com.google.protobuf.util.JsonFormat.TypeRegistry;
 import io.spine.base.Environment;
 import io.spine.tools.proto.FileSet;
 import io.spine.tools.proto.TypeSet;
+import io.spine.type.KnownTypes;
+import io.spine.type.TypeUrl;
+
+import java.util.Set;
 
 /**
- * A factory of {@link JsonFormat.TypeRegistry} instances.
+ * A factory of {@link TypeRegistry} instances.
  *
  * @author Dmytro Dashenkov
  */
@@ -45,7 +51,7 @@ final class TypeRegistries {
      * <p>The registry is built from the <a href="https://github.com/google/protobuf-gradle-plugin/blob/master/README.md#generate-descriptor-set-files">
      * descriptor set files</a> found in the classpath.
      *
-     * @return a {@link JsonFormat.TypeRegistry} of all the known types
+     * @return a {@link TypeRegistry} of all the known types
      */
     static TypeRegistry ofKnownTypes() {
         FileSet files = FileSet.loadMain();
@@ -55,7 +61,19 @@ final class TypeRegistries {
             files = files.union(testFiles);
         }
         final TypeSet types = TypeSet.messagesAndEnums(files);
-        final JsonFormat.TypeRegistry typeRegistry = types.toJsonPrinterRegistry();
-        return typeRegistry;
+        final TypeRegistry.Builder typeRegistry = types.toJsonPrinterRegistry();
+        typeRegistry.add(googleProtobufDescriptors());
+        return typeRegistry.build();
+    }
+
+    private static Set<Descriptor> googleProtobufDescriptors() {
+        final Set<TypeUrl> googleTypes = KnownTypes.getGoogleTypeUrls();
+        final ImmutableSet.Builder<Descriptor> googleDescriptors = ImmutableSet.builder();
+        for (TypeUrl type : googleTypes) {
+            final GenericDescriptor descriptor = type.getDescriptor();
+            if (descriptor instanceof Descriptor)
+            googleDescriptors.add((Descriptor) descriptor);
+        }
+        return googleDescriptors.build();
     }
 }
