@@ -22,6 +22,15 @@ package io.spine.sample.map.types;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.FluentIterable;
+import com.google.protobuf.Any;
+import com.google.protobuf.Message;
+import com.google.protobuf.Timestamp;
+import io.spine.base.Error;
+import io.spine.base.Identifier;
+import io.spine.base.Time;
+import io.spine.json.Json;
+import io.spine.protobuf.AnyPacker;
+import io.spine.samples.TaskId;
 import io.spine.type.ClassName;
 import io.spine.type.KnownTypes;
 import io.spine.type.TypeUrl;
@@ -118,6 +127,21 @@ public class ProtoToJavaMapperPluginShould {
         assertIsKnownType(compose(FIRST_MSG, SECOND_MSG, THIRD_MSG, FOURTH_ENUM));
     }
 
+    @Test
+    public void include_descriptor_sets() {
+        final Timestamp wellKnownTypeInstance = Time.getCurrentTime();
+        final Error spineTypeInstance = Error.newBuilder()
+                                             .setCode(42)
+                                             .setMessage("test error")
+                                             .build();
+        final TaskId customDomainTypeInstance = TaskId.newBuilder()
+                                                      .setValue(Identifier.newUuid())
+                                                      .build();
+        assertDescriptorFor(spineTypeInstance);
+        assertDescriptorFor(customDomainTypeInstance);
+        assertDescriptorFor(wellKnownTypeInstance);
+    }
+
     private static void assertIsKnownType(String protoTypeName, String javaClassName) {
         final TypeUrl url = TypeUrl.parse(PROTO_TYPE_PREFIX + protoTypeName);
         final ClassName className = KnownTypes.getClassName(url);
@@ -141,5 +165,12 @@ public class ProtoToJavaMapperPluginShould {
 
     private static FluentIterable<String> compose(String... elems) {
         return FluentIterable.from(elems);
+    }
+
+    private static void assertDescriptorFor(Message message) {
+        final Any any = AnyPacker.pack(message);
+        final String serialized = Json.toJson(any);
+        final Any restored = Json.fromJson(serialized, Any.class);
+        assertEquals(message, AnyPacker.unpack(restored));
     }
 }
