@@ -42,6 +42,15 @@ public final class ResourceFiles {
     private ResourceFiles() {
     }
 
+    /**
+     * Loads all the resource files with the given path.
+     *
+     * @param filePath the path to the resource file to load
+     * @return an {@code Iterator} of {@link URL}s; each of the URLs represents a single resource
+     *         file
+     * @throws IllegalStateException upon an I/O error
+     * @see ClassLoader#getResources(String)
+     */
     public static Iterator<URL> loadAll(String filePath) {
         try {
             return tryLoadAll(filePath);
@@ -50,6 +59,19 @@ public final class ResourceFiles {
         }
     }
 
+    /**
+     * Loads all the resource files with the given path or throws an {@link IOException} if
+     * an I/O error occurs.
+     *
+     * <p>Use {@link #loadAll(String)} in order to ignore any {@code IOException}.
+     *
+     * @param filePath the path to the resource file to load
+     * @return an {@code Iterator} of {@link URL}s; each of the URLs represents a single resource
+     *         file
+     * @throws IOException upon an I/O error
+     * @see ClassLoader#getResources(String)
+     * @see #loadAll(String)
+     */
     static Iterator<URL> tryLoadAll(String filePath) throws IOException {
         checkNotEmptyOrBlank(filePath);
         final ClassLoader contextClassLoader = Thread.currentThread()
@@ -58,6 +80,4 @@ public final class ResourceFiles {
         final Iterator<URL> result = Iterators.forEnumeration(resources);
         return result;
     }
-
-
 }

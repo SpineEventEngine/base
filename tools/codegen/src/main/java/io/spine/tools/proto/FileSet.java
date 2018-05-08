@@ -45,7 +45,7 @@ import java.util.Set;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Iterables.filter;
 import static com.google.common.collect.Lists.newArrayList;
-import static io.spine.tools.proto.FileDescriptors.flatMap;
+import static io.spine.tools.proto.FileDescriptors.extractFiles;
 import static io.spine.tools.proto.Linker.link;
 
 /**
@@ -108,7 +108,7 @@ public final class FileSet {
     }
 
     private static FileSet linkSets(Iterator<FileDescriptorSet> descriptorSets) {
-        final Collection<FileDescriptorProto> files = flatMap(descriptorSets);
+        final Collection<FileDescriptorProto> files = extractFiles(descriptorSets);
         final FileSet result = link(newArrayList(files));
         return result;
     }

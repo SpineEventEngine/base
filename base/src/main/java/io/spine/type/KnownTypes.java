@@ -122,7 +122,13 @@ public class KnownTypes {
         return instance().types();
     }
 
-    public static Set<TypeUrl> getGoogleTypeUrls() {
+    /**
+     * Retrieves Protobuf type URLs of all the standard Protobuf types.
+     *
+     * <p>All the resulting URLs have the {@code type.googleapis.com} prefix.
+     */
+    @Internal
+    public static Set<TypeUrl> getStandardTypeUrls() {
         final Set<TypeUrl> allTypes = instance().types();
         final ImmutableSet.Builder<TypeUrl> googleTypes = ImmutableSet.builder();
         final String googleApiPrefix = TypeUrl.Prefix.GOOGLE_APIS.value();

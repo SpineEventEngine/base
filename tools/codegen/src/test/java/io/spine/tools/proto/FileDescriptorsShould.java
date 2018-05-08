@@ -38,8 +38,8 @@ public class FileDescriptorsShould {
         final Iterator<FileDescriptorSet> fileSets = FileDescriptors.loadMain();
         assertTrue(fileSets.hasNext());
         assertFalse(fileSets.next()
-                           .getFileList()
-                           .isEmpty());
+                            .getFileList()
+                            .isEmpty());
     }
 
     @Test

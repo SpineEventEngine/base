@@ -32,7 +32,6 @@ import java.util.Properties;
 import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.io.IoUtil.close;
 import static io.spine.logging.Logging.warn;
 
 /**
@@ -40,8 +39,9 @@ import static io.spine.logging.Logging.warn;
  *
  * @author Alexander Litus
  * @author Alexander Yevsyukov
+ * @author Dmytro Dashenkov
  */
-public class PropertyFiles {
+public final class PropertyFiles {
 
     /** Prevents instantiation of this utility class. */
     private PropertyFiles() {
@@ -57,35 +57,32 @@ public class PropertyFiles {
      */
     public static Set<Properties> loadAllProperties(String propsFilePath) {
         checkNotNull(propsFilePath);
-        final ImmutableSet.Builder<Properties> result = ImmutableSet.builder();
         try {
-            loadInto(result, propsFilePath);
+            return doLoad(propsFilePath);
         } catch (IOException e) {
             warn(log(), e, "Failed to load resources: %s", propsFilePath);
+            return ImmutableSet.of();
+        }
+    }
+
+    private static Set<Properties> doLoad(String filePath)
+            throws IOException {
+        final Iterator<URL> resources = ResourceFiles.tryLoadAll(filePath);
+        final ImmutableSet.Builder<Properties> result = ImmutableSet.builder();
+        while (resources.hasNext()) {
+            final URL resourceUrl = resources.next();
+            final Properties properties = loadPropertiesFile(resourceUrl);
+            result.add(properties);
         }
         return result.build();
     }
 
-    private static void loadInto(ImmutableSet.Builder<Properties> destination, String filePath)
-            throws IOException {
-        final Iterator<URL> resources = ResourceFiles.tryLoadAll(filePath);
-        while (resources.hasNext()) {
-            final URL resourceUrl = resources.next();
-            final Properties properties = loadPropertiesFile(resourceUrl);
-            destination.add(properties);
-        }
-    }
-
     private static Properties loadPropertiesFile(URL resourceUrl) {
         final Properties properties = new Properties();
-        InputStream inputStream = null;
-        try {
-            inputStream = resourceUrl.openStream();
+        try (InputStream inputStream = resourceUrl.openStream()) {
             properties.load(inputStream);
         } catch (IOException e) {
             warn(log(), e, "Failed to load properties file from: %s", resourceUrl);
-        } finally {
-            close(inputStream);
         }
         return properties;
     }

@@ -67,7 +67,7 @@ final class TypeRegistries {
     }
 
     private static Set<Descriptor> googleProtobufDescriptors() {
-        final Set<TypeUrl> googleTypes = KnownTypes.getGoogleTypeUrls();
+        final Set<TypeUrl> googleTypes = KnownTypes.getStandardTypeUrls();
         final ImmutableSet.Builder<Descriptor> googleDescriptors = ImmutableSet.builder();
         for (TypeUrl type : googleTypes) {
             final GenericDescriptor descriptor = type.getDescriptor();

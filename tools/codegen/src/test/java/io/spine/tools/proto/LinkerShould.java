@@ -28,7 +28,7 @@ import org.junit.Test;
 
 import java.util.Iterator;
 
-import static io.spine.tools.proto.FileDescriptors.flatMap;
+import static io.spine.tools.proto.FileDescriptors.extractFiles;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -46,7 +46,7 @@ public class LinkerShould {
     @Before
     public void setUp() throws DescriptorValidationException {
         final Iterator<FileDescriptorSet> fileSet = FileDescriptors.loadMain();
-        linker = new Linker(flatMap(fileSet));
+        linker = new Linker(extractFiles(fileSet));
         linker.resolve();
     }
 

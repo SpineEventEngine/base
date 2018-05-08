@@ -130,16 +130,6 @@ public class FileDescriptors {
         return result;
     }
 
-    public static Collection<FileDescriptorProto>
-    flatMap(Iterator<FileDescriptorSet> fileDescriptorSets) {
-        final Set<FileDescriptorProto> files = newHashSet();
-        while (fileDescriptorSets.hasNext()) {
-            final FileDescriptorSet descriptorSet = fileDescriptorSets.next();
-            files.addAll(descriptorSet.getFileList());
-        }
-        return files;
-    }
-
     /**
      * Loads main file descriptor set from resources.
      */
@@ -155,6 +145,19 @@ public class FileDescriptors {
     public static Iterator<FileDescriptorSet> loadTest() {
         final Iterator<FileDescriptorSet> result = loadFrom(TEST_FILE);
         return result;
+    }
+
+    /**
+     * Extracts all instances of {@link FileDescriptorProto} from the given descriptor sets.
+     */
+    static Collection<FileDescriptorProto>
+    extractFiles(Iterator<FileDescriptorSet> fileDescriptorSets) {
+        final Set<FileDescriptorProto> files = newHashSet();
+        while (fileDescriptorSets.hasNext()) {
+            final FileDescriptorSet descriptorSet = fileDescriptorSets.next();
+            files.addAll(descriptorSet.getFileList());
+        }
+        return files;
     }
 
     private static Iterator<FileDescriptorSet> loadFrom(String resourceName) {

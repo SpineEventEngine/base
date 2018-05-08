@@ -94,6 +94,13 @@ public class TypeSet {
         return types.isEmpty();
     }
 
+    /**
+     * Writes all the types in this set into
+     * a {@link com.google.protobuf.util.JsonFormat.TypeRegistry JsonFormat.TypeRegistry}.
+     *
+     * <p>Retrieves an instance of {@link TypeRegistry.Builder} which can be appended with more
+     * types if necessary.
+     */
     public TypeRegistry.Builder toJsonPrinterRegistry() {
         final Iterable<Descriptor> messageTypes = getMessageTypes();
         final TypeRegistry.Builder registry = TypeRegistry.newBuilder()
@@ -128,7 +135,7 @@ public class TypeSet {
     private Iterable<Descriptor> getMessageTypes() {
         final Iterable<Descriptor> descriptors = from(types)
                 .filter(MessageType.class)
-                .transform(TypeToDescriptor.INSTANCE);
+                .transform(TypeToDescriptor.FUNCTION);
         return descriptors;
     }
 
@@ -151,9 +158,13 @@ public class TypeSet {
         return Objects.equals(this.types, other.types);
     }
 
+    /**
+     * A function which extracts the {@link Descriptor} from the given {@link Type}.
+     *
+     * @see Type#getType()
+     */
     private enum TypeToDescriptor implements Function<Type, Descriptor> {
-
-        INSTANCE;
+        FUNCTION;
 
         @Nullable
         @Override
