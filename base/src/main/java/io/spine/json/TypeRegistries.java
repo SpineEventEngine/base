@@ -27,6 +27,8 @@ import io.spine.tools.proto.FileSet;
 import io.spine.tools.proto.TypeSet;
 
 /**
+ * A factory of {@link JsonFormat.TypeRegistry} instances.
+ *
  * @author Dmytro Dashenkov
  */
 final class TypeRegistries {
@@ -37,7 +39,15 @@ final class TypeRegistries {
     private TypeRegistries() {
     }
 
-    static TypeRegistry forKnownTypes() {
+    /**
+     * Creates a type registry of all known types.
+     *
+     * <p>The registry is built from the <a href="https://github.com/google/protobuf-gradle-plugin/blob/master/README.md#generate-descriptor-set-files">
+     * descriptor set files</a> found in the classpath.
+     *
+     * @return a {@link JsonFormat.TypeRegistry} of all the known types
+     */
+    static TypeRegistry ofKnownTypes() {
         FileSet files = FileSet.loadMain();
         if (Environment.getInstance().isTests()) {
             @SuppressWarnings("TestOnlyProblems")
