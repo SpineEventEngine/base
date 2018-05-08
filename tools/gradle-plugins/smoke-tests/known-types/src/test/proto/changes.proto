@@ -24,6 +24,7 @@ package spine.samples;
 
 import "spine/options.proto";
 
+option (type_url_prefix) = "type.spine.io";
 option java_package = "io.spine.samples";
 option java_outer_classname = "ChangesProto";
 option java_multiple_files = true;
