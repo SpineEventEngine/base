@@ -59,7 +59,7 @@ ext {
 
     // TODO:2018-05-08:dmytro.dashenkov: Bootstrap version 0.10.37-SNAPSHOT.
     // The version to be used until we resolve dependencies inside the project.
-    spineBaseVersion = '0.10.37-SNAPSHOT'
+    spineBaseVersion = '0.10.34-SNAPSHOT'
 
     /**
      * The version of Spine tools.
