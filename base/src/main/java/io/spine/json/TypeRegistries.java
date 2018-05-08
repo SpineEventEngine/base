@@ -71,8 +71,9 @@ final class TypeRegistries {
         final ImmutableSet.Builder<Descriptor> googleDescriptors = ImmutableSet.builder();
         for (TypeUrl type : googleTypes) {
             final GenericDescriptor descriptor = type.getDescriptor();
-            if (descriptor instanceof Descriptor)
-            googleDescriptors.add((Descriptor) descriptor);
+            if (descriptor instanceof Descriptor) {
+                googleDescriptors.add((Descriptor) descriptor);
+            }
         }
         return googleDescriptors.build();
     }

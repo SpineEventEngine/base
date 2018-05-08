@@ -67,7 +67,16 @@ apply from: generateDescriptorSetScript
 apply from: testArtifactsScript
 
 dependencies {
-    compile project(':codegen')
+    compile(project(':codegen')) {
+        transitive = false
+    }
+
+    /* As a Library, we provide logging facade API, not specific logger bindings.
+       Target apps are free to use any binding they need. */
+    compile group: 'org.slf4j', name: 'slf4j-api', version: slf4JVersion
+
+    compile group: 'com.google.protobuf', name: 'protobuf-java', version: protobufVersion
+    compile group: 'com.google.protobuf', name: 'protobuf-java-util', version: protobufVersion
 
     testCompile group: 'org.slf4j', name: 'slf4j-jdk14', version: slf4JVersion
     testCompile project(':testlib')

@@ -54,6 +54,7 @@ apply from: generateDescriptorSetScript
 
 dependencies {
     compile project(':base')
+    compile project(':codegen')
 
     testCompile project(':testlib')
 }
