@@ -179,6 +179,7 @@ public final class TypeConverter {
         private final Class<? extends Enum> type;
 
         EnumCaster(Class<? extends Enum> type) {
+            super();
             this.type = type;
         }
 
