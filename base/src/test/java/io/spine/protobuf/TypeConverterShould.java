@@ -27,6 +27,7 @@ import com.google.protobuf.BoolValue;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.BytesValue;
 import com.google.protobuf.DoubleValue;
+import com.google.protobuf.EnumValue;
 import com.google.protobuf.FloatValue;
 import com.google.protobuf.Int32Value;
 import com.google.protobuf.Int64Value;
@@ -37,6 +38,7 @@ import com.google.protobuf.UInt64Value;
 import io.spine.test.commands.TestCommand;
 import org.junit.Test;
 
+import static io.spine.protobuf.given.TypeConverterTestEnv.TaskStatus.SUCCESS;
 import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
 import static org.junit.Assert.assertEquals;
 
@@ -127,6 +129,14 @@ public class TypeConverterShould {
                                         .setValue(rowValue)
                                         .build();
         checkMapping(rowValue, value);
+    }
+
+    @Test
+    public void map_EnumValue_to_Enum() {
+        final Message value = EnumValue.newBuilder()
+                                       .setName(SUCCESS.name())
+                                       .build();
+        checkMapping(SUCCESS, value);
     }
 
     @Test
