@@ -29,6 +29,6 @@ public class TypeConverterTestEnv {
         QUEUED,
         EXECUTING,
         FAILED,
-        SUCCESS;
+        SUCCESS
     }
 }
