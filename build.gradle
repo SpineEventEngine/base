@@ -58,7 +58,7 @@ buildscript {
            Please note that offline builds will not be available then. */
                                                           //, changing: true
 
-        classpath "net.ltgt.gradle:gradle-errorprone-plugin:$errorproneVersion"
+        classpath "net.ltgt.gradle:gradle-errorprone-plugin:$errorPronePluginVersion"
         
         classpath "io.spine.tools:spine-model-compiler:$spineModelCompilerVersion"
         classpath "io.spine.tools:spine-codestyle-checker:$spineToolsVersion"
@@ -79,21 +79,21 @@ ext {
     credentialsPropertyFile = 'credentials.properties'
     publishPlugin = "$rootDir/scripts/publish.gradle"
     projectsToPublish = [
-            "base",
-            "testlib",
+        "base",
+        "testlib",
 
-            "codegen",
+        "codegen",
 
-            'reflections-plugin',
-            'spine-codestyle-checker',
-            'spine-javadoc',
-            'gcs-plugin',
-            'protobuf-javadoc-plugin',
+        'reflections-plugin',
+        'spine-codestyle-checker',
+        'spine-javadoc',
+        'gcs-plugin',
+        'protobuf-javadoc-plugin',
 
-            "plugin-base",
-            "model-compiler",
+        "plugin-base",
+        "model-compiler",
 
-            "protoc-plugin"
+        "protoc-plugin"
     ]
 }
 
@@ -164,8 +164,8 @@ subprojects {
         }
     }
 
-    sourceCompatibility = 1.7
-    targetCompatibility = 1.7
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
 
     // Set Java home to point to JDK7 in gradle.properties file.
     //
@@ -180,6 +180,10 @@ subprojects {
         mavenCentral()
         mavenLocal()
 
+        // Snapshots of Error Prone.
+        maven {
+            url "https://oss.sonatype.org/content/repositories/snapshots/"
+        }
         // Spine releases repository.
         maven { url = spineRepository }
 
@@ -187,21 +191,47 @@ subprojects {
         maven { url = spineSnapshotsRepository }
     }
 
+    /*
+     <dependency>
+        <groupId>org.checkerframework</groupId>
+        <artifactId>checker-qual</artifactId>
+        <version>2.0.0</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.errorprone</groupId>
+        <artifactId>error_prone_annotations</artifactId>
+        <version>2.1.3</version>
+     */
+    
     dependencies {
-        compile group: 'com.google.guava', name: 'guava', version: guavaVersion
-        compile group: 'com.google.code.findbugs', name: 'jsr305', version: findBugsVersion
+        compile "org.checkerframework:checker-qual:$checkerFrameworkVersion"
+        compile "com.google.guava:guava:$guavaVersion"
 
-        testCompile group: 'com.google.guava', name: 'guava-testlib', version: guavaVersion
+        //TODO:2018-05-11:alexander.yevsyukov: Replace the below with Checker Framework
+        compile "com.google.code.findbugs:jsr305:$findBugsVersion"
+
+        compile "org.checkerframework:checker-qual:$checkerFrameworkVersion"
+        compile "com.google.errorprone:error_prone_annotations:$errorProneVersion"
+        
+        testCompile "com.google.guava:guava-testlib:$guavaVersion"
     }
 
     sourceSets {
         main {
-            java.srcDirs = [generatedJavaDir, "$sourcesRootDir/main/java", generatedSpineDir]
-            resources.srcDirs = ["$sourcesRootDir/main/resources", "$generatedRootDir/main/resources"]
+            java.srcDirs = [generatedJavaDir,
+                            "$sourcesRootDir/main/java",
+                            generatedSpineDir]
+            
+            resources.srcDirs = ["$sourcesRootDir/main/resources",
+                                 "$generatedRootDir/main/resources"]
         }
         test {
-            java.srcDirs = [generatedTestJavaDir, "$sourcesRootDir/test/java", generatedTestSpineDir]
-            resources.srcDirs = ["$sourcesRootDir/test/resources", "$generatedRootDir/test/resources"]
+            java.srcDirs = [generatedTestJavaDir,
+                            "$sourcesRootDir/test/java",
+                            generatedTestSpineDir]
+            
+            resources.srcDirs = ["$sourcesRootDir/test/resources",
+                                 "$generatedRootDir/test/resources"]
         }
     }
 
