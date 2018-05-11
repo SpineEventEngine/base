@@ -38,6 +38,9 @@ buildscript {
         jcenter()
         maven { url = googleMavenCentralMirror }
 
+        // Repository for error-prone plugin.
+        maven { url "https://plugins.gradle.org/m2/" }
+        
         mavenCentral()
         mavenLocal()
 
@@ -55,17 +58,11 @@ buildscript {
            Please note that offline builds will not be available then. */
                                                           //, changing: true
 
-        classpath group: 'io.spine.tools',
-                  name: 'spine-model-compiler',
-                  version: spineModelCompilerVersion
+        classpath "net.ltgt.gradle:gradle-errorprone-plugin:$errorproneVersion"
         
-        classpath group: 'io.spine.tools',
-                  name: 'spine-codestyle-checker',
-                  version: spineToolsVersion
-        
-        classpath group: 'io.spine.tools',
-                  name: 'gcs-plugin',
-                  version: spineToolsVersion
+        classpath "io.spine.tools:spine-model-compiler:$spineModelCompilerVersion"
+        classpath "io.spine.tools:spine-codestyle-checker:$spineToolsVersion"
+        classpath "io.spine.tools:gcs-plugin:$spineToolsVersion"
     }
     configurations.all({
         resolutionStrategy.cacheChangingModulesFor(0, 'seconds')
