@@ -20,10 +20,10 @@
 
 package io.spine.tools.protodoc;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.gradle.api.Project;
 import org.slf4j.Logger;
 
-import javax.annotation.Nullable;
 import java.io.File;
 
 import static io.spine.tools.protodoc.ProtoJavadocPlugin.PROTO_JAVADOC_EXTENSION_NAME;

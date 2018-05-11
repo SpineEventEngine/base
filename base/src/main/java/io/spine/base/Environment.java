@@ -23,8 +23,7 @@ package io.spine.base;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Throwables;
 import io.spine.annotation.SPI;
-
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Provides information about the environment (current platform used, etc).

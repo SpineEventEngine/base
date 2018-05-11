@@ -20,12 +20,11 @@
 
 package io.spine.tools.compiler.annotation.check;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
 import org.jboss.forge.roaster.model.source.AnnotationSource;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.jboss.forge.roaster.model.source.JavaSource;
-
-import javax.annotation.Nullable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.compiler.annotation.check.Annotations.findSpiAnnotation;

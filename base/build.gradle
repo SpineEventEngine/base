@@ -23,6 +23,9 @@ buildscript {
     apply from: "$rootDir/ext.gradle"
     
     repositories {
+        // Snapshots of Error Prone and Guava.
+        maven { url = sonatypeSnapshots }
+
         jcenter()
         maven { url = googleMavenCentralMirror }
 
@@ -69,8 +72,13 @@ dependencies {
        Target apps are free to use any binding they need. */
     compile "org.slf4j:slf4j-api:$slf4JVersion"
 
-    compile "com.google.protobuf:protobuf-java:$protobufVersion"
-    compile "com.google.protobuf:protobuf-java-util:$protobufVersion"
+    compile ("com.google.protobuf:protobuf-java:$protobufVersion") {
+        exclude group: 'com.google.guava'
+    }
+    
+    compile ("com.google.protobuf:protobuf-java-util:$protobufVersion") {
+        exclude group: 'com.google.guava'
+    }
 
     testCompile "org.slf4j:slf4j-jdk14:$slf4JVersion"
     testCompile project(path: ":testlib")

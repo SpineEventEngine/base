@@ -22,8 +22,8 @@ package io.spine.tools.proto;
 
 import com.google.common.annotations.VisibleForTesting;
 import io.spine.tools.java.SimpleClassName;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.Objects;
 
 import static com.google.protobuf.DescriptorProtos.DescriptorProto;

@@ -28,11 +28,11 @@ import com.google.protobuf.DescriptorProtos.ServiceDescriptorProto;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import io.spine.option.UnknownOptions;
 import io.spine.tools.java.SourceFile;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.jboss.forge.roaster.model.source.JavaSource;
 
-import javax.annotation.Nullable;
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 

@@ -21,10 +21,10 @@
 package io.spine.tools.compiler.annotation.check;
 
 import io.spine.annotation.SPI;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jboss.forge.roaster.model.source.AnnotationSource;
 import org.jboss.forge.roaster.model.source.AnnotationTargetSource;
 
-import javax.annotation.Nullable;
 import java.lang.annotation.Annotation;
 
 /**

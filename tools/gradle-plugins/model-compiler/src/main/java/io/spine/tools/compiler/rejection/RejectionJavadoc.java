@@ -33,8 +33,8 @@ import io.spine.tools.javadoc.JavadocEscaper;
 import io.spine.tools.proto.FieldName;
 import io.spine.tools.proto.LocationPath;
 import io.spine.tools.proto.RejectionDeclaration;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;

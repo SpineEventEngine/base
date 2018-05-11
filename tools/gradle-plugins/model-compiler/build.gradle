@@ -34,12 +34,16 @@ buildscript {
     apply from: "$rootDir/ext.gradle"
 
     repositories {
+        // Snapshots of Error Prone and Guava.
+        maven { url = sonatypeSnapshots }
+
         mavenCentral()
         mavenLocal()
     }
 
     //noinspection GroovyAssignabilityCheck
     dependencies {
+        classpath "com.google.guava:guava:$guavaVersion"
         classpath(group: 'com.google.protobuf',
                   name: 'protobuf-gradle-plugin',
                   version: protobufGradlePluginVersion) {
@@ -49,8 +53,18 @@ buildscript {
     }
 
     configurations.all({
-        resolutionStrategy.cacheChangingModulesFor(0, 'seconds')
+        resolutionStrategy {
+            cacheChangingModulesFor(0, 'seconds')
+            force "com.google.guava:guava:$guavaVersion"
+            force "com.google.guava:guava-testlib:$guavaVersion"
+        }
     })
+}
+
+configurations {
+    // Avoid collisions of Java classes defined both in `protobuf-lite` and `protobuf-java`
+    runtime.exclude group: "com.google.protobuf", module: "protobuf-lite"
+    testRuntime.exclude group: "com.google.protobuf", module: "protobuf-lite"
 }
 
 apply plugin: 'com.google.protobuf'
@@ -61,16 +75,28 @@ dependencies {
     compile project(':base')
     compile project(':codegen')
 
-    compile group: 'com.google.template', name: 'soy', version: '2017-02-01'
     compile group: 'com.google.guava', name: 'guava', version: guavaVersion
-    compile group: 'com.google.protobuf', name: 'protobuf-java', version: protobufVersion
-    compile group: 'com.google.protobuf', name: 'protobuf-java-util', version: protobufVersion
+
+    compile (group: 'com.google.template', name: 'soy', version: '2017-02-01') {
+        exclude group: 'com.google.guava'
+    }
+    compile (group: 'com.google.protobuf', name: 'protobuf-java', version: protobufVersion) {
+        exclude group: 'com.google.guava'
+    }
+    compile (group: 'com.google.protobuf', name: 'protobuf-java-util', version: protobufVersion) {
+        exclude group: 'com.google.guava'
+    }
 
     // A library for parsing Java sources.
     // Used for parsing Java sources generated from Protobuf files
     // to make their annotation more convenient.
-    compile group: 'org.jboss.forge.roaster', name: 'roaster-api', version: roasterVersion
-    compile group: 'org.jboss.forge.roaster', name: 'roaster-jdt', version: roasterVersion
+    compile (group: 'org.jboss.forge.roaster', name: 'roaster-api', version: roasterVersion) {
+        exclude group: 'com.google.guava'
+    }
+    
+    compile (group: 'org.jboss.forge.roaster', name: 'roaster-jdt', version: roasterVersion) {
+        exclude group: 'com.google.guava'
+    }
 
     compile project(':testlib')
     testCompile group: 'com.google.guava', name: 'guava-testlib', version: guavaVersion

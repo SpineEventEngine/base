@@ -21,10 +21,9 @@
 package io.spine.tools.compiler.annotation.check;
 
 import com.google.protobuf.DescriptorProtos;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
-
-import javax.annotation.Nullable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 

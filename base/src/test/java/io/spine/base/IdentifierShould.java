@@ -87,6 +87,7 @@ public class IdentifierShould {
         Identifier.pack(Boolean.valueOf(false));
     }
 
+    @SuppressWarnings("ConstantConditions") // Passing null is the purpose of the test.
     @Test
     public void return_NULL_ID_if_convert_null_to_string() {
         assertEquals(NULL_ID, Identifier.toString(null));

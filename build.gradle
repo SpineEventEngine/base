@@ -28,19 +28,17 @@ buildscript {
     // `ext.gradle` explicitly here.
     apply from: 'ext.gradle'
 
-    ext {
-        googleMavenCentralMirror = 'https://maven-central.storage.googleapis.com'
-        spineRepository = 'http://maven.teamdev.com/repository/spine'
-        spineSnapshotsRepository = 'http://maven.teamdev.com/repository/spine-snapshots'
-    }
-
     repositories {
+        // Snapshots of Error Prone and Guava.
+        maven { url = sonatypeSnapshots }
+
         jcenter()
+
         maven { url = googleMavenCentralMirror }
 
         // Repository for error-prone plugin.
-        maven { url "https://plugins.gradle.org/m2/" }
-        
+        maven { url = gradlePlugins }
+
         mavenCentral()
         mavenLocal()
 
@@ -53,19 +51,33 @@ buildscript {
 
     //noinspection GroovyAssignabilityCheck
     dependencies {
-        classpath group: 'com.google.guava', name: 'guava', version: guavaVersion
-        /* Uncomment the below statement if you want the dependency to be fetched on each build.
-           Please note that offline builds will not be available then. */
-                                                          //, changing: true
+        classpath group: 'com.google.guava', name: 'guava', version: guavaVersion, changing: true
+        /* Comment `changing: true` statement if you do not want the dependency to be fetched
+           on each build. That will enable offline builds. */
 
-        classpath "net.ltgt.gradle:gradle-errorprone-plugin:$errorPronePluginVersion"
+        classpath ("net.ltgt.gradle:gradle-errorprone-plugin:$errorPronePluginVersion") {
+            exclude group: 'com.google.guava'
+        }
         
-        classpath "io.spine.tools:spine-model-compiler:$spineModelCompilerVersion"
-        classpath "io.spine.tools:spine-codestyle-checker:$spineToolsVersion"
-        classpath "io.spine.tools:gcs-plugin:$spineToolsVersion"
+        classpath ("io.spine.tools:spine-model-compiler:$spineModelCompilerVersion") {
+            exclude group: 'com.google.guava'
+        }
+        
+        classpath ("io.spine.tools:spine-codestyle-checker:$spineToolsVersion") {
+            exclude group: 'com.google.guava'
+        }
+
+        classpath ("io.spine.tools:gcs-plugin:$spineToolsVersion") {
+            exclude group: 'com.google.guava'
+        }
     }
+    
     configurations.all({
-        resolutionStrategy.cacheChangingModulesFor(0, 'seconds')
+        resolutionStrategy {
+            cacheChangingModulesFor(0, 'seconds')
+            force "com.google.guava:guava:$guavaVersion"
+            force "com.google.guava:guava-testlib:$guavaVersion"
+        }
     })
 }
 
@@ -106,7 +118,6 @@ allprojects {
     // Use the same version numbering for the Spine Base library.
     version = spineVersion
 }
-
 
 subprojects {
 
@@ -175,15 +186,16 @@ subprojects {
     // org.gradle.java.home=/Library/Java/JavaVirtualMachines/jdk1.7.0_80.jdk/Contents/Home/
 
     repositories {
+        // Snapshots of Error Prone and Guava TestLib.
+        maven { url = sonatypeSnapshots }
+
         jcenter()
+
         maven { url = googleMavenCentralMirror }
+
         mavenCentral()
         mavenLocal()
 
-        // Snapshots of Error Prone.
-        maven {
-            url "https://oss.sonatype.org/content/repositories/snapshots/"
-        }
         // Spine releases repository.
         maven { url = spineRepository }
 
@@ -191,29 +203,24 @@ subprojects {
         maven { url = spineSnapshotsRepository }
     }
 
-    /*
-     <dependency>
-        <groupId>org.checkerframework</groupId>
-        <artifactId>checker-qual</artifactId>
-        <version>2.0.0</version>
-      </dependency>
-      <dependency>
-        <groupId>com.google.errorprone</groupId>
-        <artifactId>error_prone_annotations</artifactId>
-        <version>2.1.3</version>
-     */
-    
     dependencies {
         compile "org.checkerframework:checker-qual:$checkerFrameworkVersion"
-        compile "com.google.guava:guava:$guavaVersion"
+
+        compile group: 'com.google.guava',
+                name:  'guava',
+                version: guavaVersion,
+                changing: true
 
         //TODO:2018-05-11:alexander.yevsyukov: Replace the below with Checker Framework
         compile "com.google.code.findbugs:jsr305:$findBugsVersion"
 
         compile "org.checkerframework:checker-qual:$checkerFrameworkVersion"
         compile "com.google.errorprone:error_prone_annotations:$errorProneVersion"
-        
-        testCompile "com.google.guava:guava-testlib:$guavaVersion"
+
+        testCompile group:   'com.google.guava',
+                    name:    'guava-testlib',
+                    version:  guavaVersion,
+                    changing: true
     }
 
     sourceSets {

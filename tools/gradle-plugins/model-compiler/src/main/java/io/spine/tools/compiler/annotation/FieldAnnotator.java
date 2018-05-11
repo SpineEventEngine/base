@@ -29,6 +29,7 @@ import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import io.spine.tools.java.SimpleClassName;
 import io.spine.tools.java.SourceFile;
 import io.spine.tools.proto.FieldName;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jboss.forge.roaster.model.JavaType;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
 import org.jboss.forge.roaster.model.source.FieldHolderSource;
@@ -36,7 +37,6 @@ import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.jboss.forge.roaster.model.source.JavaSource;
 import org.jboss.forge.roaster.model.source.MethodSource;
 
-import javax.annotation.Nullable;
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 

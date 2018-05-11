@@ -28,8 +28,8 @@ import com.sun.tools.javadoc.Main;
 import com.sun.tools.javadoc.MethodDocImpl;
 import io.spine.annotation.Internal;
 import io.spine.util.Exceptions;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-import javax.annotation.Nullable;
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;

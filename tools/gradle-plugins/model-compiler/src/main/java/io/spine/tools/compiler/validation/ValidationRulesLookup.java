@@ -21,16 +21,16 @@
 package io.spine.tools.compiler.validation;
 
 import com.google.common.base.Predicate;
-import com.google.protobuf.DescriptorProtos;
+import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.option.UnknownOptions;
 import io.spine.tools.properties.PropertiesWriter;
 import io.spine.tools.proto.MessageDeclaration;
 import io.spine.type.TypeName;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nullable;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
@@ -93,10 +93,10 @@ public final class ValidationRulesLookup {
         writer.write(propsMap);
     }
 
-    private static class IsValidationRule implements Predicate<DescriptorProtos.DescriptorProto> {
+    private static class IsValidationRule implements Predicate<DescriptorProto> {
 
         @Override
-        public boolean apply(@Nullable DescriptorProtos.DescriptorProto input) {
+        public boolean apply(@Nullable DescriptorProto input) {
             checkNotNull(input);
             return UnknownOptions.hasOption(input, VALIDATION_OF_FIELD_NUMBER);
         }
