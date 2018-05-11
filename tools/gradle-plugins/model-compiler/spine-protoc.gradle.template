@@ -38,6 +38,13 @@ final def gRpcVersion = @gRPCVersion@
 final def spineFolderName = @spineDir@
 
 buildscript {
+    repositories {
+        maven {
+            url = 'https://oss.sonatype.org/content/repositories/snapshots'
+        }
+        mavenCentral()
+    }
+
     ext {
         protocPluginDependency = null
     }
@@ -50,6 +57,9 @@ configurations {
 }
 
 repositories {
+    maven {
+        url = 'https://oss.sonatype.org/content/repositories/snapshots'
+    }
     maven {
         url = 'http://maven.teamdev.com/repository/spine'
     }

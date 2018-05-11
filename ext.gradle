@@ -45,7 +45,7 @@ ext {
     googleMavenCentralMirror = 'https://maven-central.storage.googleapis.com'
     spineRepository = 'http://maven.teamdev.com/repository/spine'
     spineSnapshotsRepository = 'http://maven.teamdev.com/repository/spine-snapshots'
-    sonatypeSnapshots = 'https://oss.sonatype.org/content/repositories/snapshots/'
+    sonatypeSnapshots = 'https://oss.sonatype.org/content/repositories/snapshots'
     gradlePlugins = 'https://plugins.gradle.org/m2/'
 
     spineVersion = SPINE_VERSION
