@@ -71,7 +71,7 @@ ext {
     //TODO:2018-03-19:alexander.yevsyukov: Remove the below versions
 
     // The version to be used until we resolve dependencies inside the project.
-    spineBaseVersion = '0.10.29-SNAPSHOT'
+    spineBaseVersion = '0.10.35-SNAPSHOT'
 
     /**
      * The version of Spine tools.
