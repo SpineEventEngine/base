@@ -144,7 +144,10 @@ subprojects {
     }
 
     apply plugin: 'java'
-    apply plugin: spineCodestyleCheckerId
+
+    //TODO:2018-05-12:alexander.yevsyukov: Uncomment after migration to Java 8
+    //apply plugin: spineCodestyleCheckerId
+
     apply plugin: 'maven-publish'
 
     // Verifies code style.
@@ -157,6 +160,8 @@ subprojects {
     //
     //      For more details please see io.spine.tools.codestyle.CodestyleCheckerPlugin
     //
+    //TODO:2018-05-12:alexander.yevsyukov: Uncomment after migration to Java 8
+    /*
     codestyleChecker {
 
         // Javadoc @link/@linkplain format checker.
@@ -174,7 +179,8 @@ subprojects {
             maxTextWidth = 100
         }
     }
-
+    */
+    
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
 
@@ -280,7 +286,13 @@ subprojects {
         classifier "javadoc"
     }
 
-    apply from: filterInternalJavadocsScript
+    //TODO:2018-05-12:alexander.yevsyukov: enable after migration to Java 8.
+    // 
+    // * What went wrong:
+    //  Execution failed for task ':spine-codestyle-checker:checkJavadocLink'.
+    //>    io/spine/tools/CodePreconditions
+    //
+    //apply from: filterInternalJavadocsScript
 
     // Apply the same IDEA module configuration for each of sub-projects.
     idea {

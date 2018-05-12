@@ -32,12 +32,19 @@ import java.nio.file.StandardCopyOption
  */
 
 // Injected version variables. See model-compiler:prepareProtocConfig.
-final def spineModelCompilerVersion = '0.10.34-SNAPSHOT'
+final def spineModelCompilerVersion = '0.10.35-SNAPSHOT'
 final def protobufVersion = '3.5.1'
 final def gRpcVersion = '1.10.0'
 final def spineFolderName = '.spine'
 
 buildscript {
+    repositories {
+        maven {
+            url = 'https://oss.sonatype.org/content/repositories/snapshots'
+        }
+        mavenCentral()
+    }
+
     ext {
         protocPluginDependency = null
     }
@@ -50,6 +57,9 @@ configurations {
 }
 
 repositories {
+    maven {
+        url = 'https://oss.sonatype.org/content/repositories/snapshots'
+    }
     maven {
         url = 'http://maven.teamdev.com/repository/spine'
     }
