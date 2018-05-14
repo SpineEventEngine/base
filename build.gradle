@@ -90,16 +90,18 @@ ext {
         "base",
         "testlib",
 
+        // Code generation common codebase.
         "codegen",
 
-        'reflections-plugin',
+        // Gradle plugins
+        'gcloud-storage',
         'javadoc-filter',
-        'gcs-plugin',
         'javadoc-prettifier',
-
         "plugin-base",
+        'reflections-plugin',
         "model-compiler",
 
+        // Protoc compiler plugin
         "protoc-plugin"
     ]
 }

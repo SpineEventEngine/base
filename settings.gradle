@@ -33,15 +33,17 @@ final def module = { final String name, final String path ->
 }
 
 module ('codegen',             './tools/codegen')
-module ('gcs-plugin',          './tools/gradle-plugins/gcs-plugin')
+
+module ('gcloud-storage',      './tools/gradle-plugins/gcloud-storage')
+module ('javadoc-prettifier',  './tools/gradle-plugins/javadoc-prettifier')
+module ('javadoc-filter',      './tools/gradle-plugins/javadoc-filter')
+
 module ('model-compiler',      './tools/gradle-plugins/model-compiler')
 
 module ('plugin-base',         './tools/gradle-plugins/plugin-base')
-module ('javadoc-prettifier',  './tools/gradle-plugins/javadoc-prettifier')
 module ('reflections-plugin',  './tools/gradle-plugins/reflections-plugin')
 
-module ('javadoc-filter',      './tools/gradle-plugins/javadoc-filter')
-
+// Smoke tests for Spine Model Compiler
 module ('enrichment-lookup',   './tools/gradle-plugins/smoke-tests/enrichment-lookup')
 module ('known-types',         './tools/gradle-plugins/smoke-tests/known-types')
 module ('validators-gen',      './tools/gradle-plugins/smoke-tests/validators-gen')
