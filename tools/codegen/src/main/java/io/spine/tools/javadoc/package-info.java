@@ -21,7 +21,10 @@
 /**
  * Utilities for working with Javadoc.
  */
+@CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.tools.javadoc;
+
+import com.google.errorprone.annotations.CheckReturnValue;
 
 import javax.annotation.ParametersAreNonnullByDefault;

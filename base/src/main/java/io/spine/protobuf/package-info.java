@@ -21,7 +21,10 @@
 /**
  * This package provides utility classes for working with Google Protobuf implementation in Java.
  */
+@CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.protobuf;
+
+import com.google.errorprone.annotations.CheckReturnValue;
 
 import javax.annotation.ParametersAreNonnullByDefault;

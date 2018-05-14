@@ -24,9 +24,11 @@
  */
 
 @Internal
+@CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.option;
 
+import com.google.errorprone.annotations.CheckReturnValue;
 import io.spine.annotation.Internal;
 
 import javax.annotation.ParametersAreNonnullByDefault;

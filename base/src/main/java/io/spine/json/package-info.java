@@ -22,7 +22,10 @@
  * This package provides utility classes for working with Json.
  */
 
+@CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.json;
+
+import com.google.errorprone.annotations.CheckReturnValue;
 
 import javax.annotation.ParametersAreNonnullByDefault;

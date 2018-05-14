@@ -21,7 +21,10 @@
 /**
  * Test environment classes for testing {@code io.spine.protobuf} package.
  */
+@CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.protobuf.given;
+
+import com.google.errorprone.annotations.CheckReturnValue;
 
 import javax.annotation.ParametersAreNonnullByDefault;

@@ -21,7 +21,10 @@
 /**
  * Base classes for value objects.
  */
+@CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.value;
+
+import com.google.errorprone.annotations.CheckReturnValue;
 
 import javax.annotation.ParametersAreNonnullByDefault;

@@ -23,9 +23,11 @@
  */
 
 @Experimental
+@CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.money;
 
+import com.google.errorprone.annotations.CheckReturnValue;
 import io.spine.annotation.Experimental;
 
 import javax.annotation.ParametersAreNonnullByDefault;

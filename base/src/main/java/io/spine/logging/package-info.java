@@ -21,7 +21,10 @@
 /**
  * This package provides utilities for logging based on Slf4J.
  */
+@CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.logging;
+
+import com.google.errorprone.annotations.CheckReturnValue;
 
 import javax.annotation.ParametersAreNonnullByDefault;
