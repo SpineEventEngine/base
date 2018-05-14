@@ -34,7 +34,7 @@ final def module = { final String name, final String path ->
 
 module ('codegen',             './tools/codegen')
 
-module ('gcloud-storage',      './tools/gradle-plugins/gcloud-storage')
+module ('gcloud-storage',      './tools/gcloud-storage')
 module ('javadoc-prettifier',  './tools/gradle-plugins/javadoc-prettifier')
 module ('javadoc-filter',      './tools/gradle-plugins/javadoc-filter')
 
