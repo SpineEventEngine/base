@@ -40,7 +40,7 @@ module ('plugin-base',             './tools/gradle-plugins/plugin-base')
 module ('protobuf-javadoc-plugin', './tools/gradle-plugins/protobuf-javadoc-plugin')
 module ('reflections-plugin',      './tools/gradle-plugins/reflections-plugin')
 
-module ('spine-codestyle-checker', './tools/gradle-plugins/spine-codestyle-checker')
+module ('codestyle-checker',       './tools/gradle-plugins/codestyle-checker')
 module ('spine-javadoc',           './tools/gradle-plugins/spine-javadoc')
 
 module ('enrichment-lookup',       './tools/gradle-plugins/smoke-tests/enrichment-lookup')

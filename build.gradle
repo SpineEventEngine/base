@@ -140,20 +140,17 @@ subprojects {
 
     apply plugin: 'java'
 
-    //TODO:2018-05-12:alexander.yevsyukov: Uncomment after migration to Java 8
-    //apply plugin: spineCodestyleCheckerId
-
     apply plugin: 'maven-publish'
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
 
-    // Set Java home to point to JDK7 in gradle.properties file.
+    // Set Java home to point to JDK8 in gradle.properties file.
     //
     // For Mac OS X, it looks like this:
     //
     // # suppress inspection "UnusedProperty"
-    // org.gradle.java.home=/Library/Java/JavaVirtualMachines/jdk1.7.0_80.jdk/Contents/Home/
+    // org.gradle.java.home=/Library/Java/JavaVirtualMachines/jdk1.8.0_51.jdk/Contents/Home/
 
     repositories {
         // Snapshots of Error Prone and Guava TestLib.
