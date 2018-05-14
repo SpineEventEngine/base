@@ -33,7 +33,9 @@ import io.spine.option.IfMissingOption;
 import io.spine.test.types.Task;
 import io.spine.test.types.TaskId;
 import io.spine.test.types.TaskName;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -42,6 +44,8 @@ import java.util.Set;
 import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
 import static io.spine.test.Verify.assertSize;
 import static io.spine.type.KnownTypes.getAllFromPackage;
+import static io.spine.type.KnownTypes.getClassName;
+import static io.spine.type.KnownTypes.getTypeUrl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -51,6 +55,9 @@ import static org.junit.Assert.assertTrue;
  * @author Alexander Litus
  */
 public class KnownTypesShould {
+
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
     @Test
     public void have_private_constructor() {
@@ -82,7 +89,7 @@ public class KnownTypesShould {
     private static void assertHasClassNameByTypeUrlOf(Class<? extends Message> msgClass) {
         final TypeUrl typeUrl = TypeUrl.of(msgClass);
 
-        final ClassName className = KnownTypes.getClassName(typeUrl);
+        final ClassName className = getClassName(typeUrl);
 
         assertEquals(ClassName.of(msgClass), className);
     }
@@ -91,7 +98,7 @@ public class KnownTypesShould {
     public void return_java_inner_class_name_by_proto_type_url() {
         final TypeUrl typeUrl = TypeUrl.from(EntityOption.Kind.getDescriptor());
 
-        final ClassName className = KnownTypes.getClassName(typeUrl);
+        final ClassName className = getClassName(typeUrl);
 
         assertEquals(ClassName.of(EntityOption.Kind.class), className);
     }
@@ -100,7 +107,7 @@ public class KnownTypesShould {
     public void return_proto_type_url_by_java_class_name() {
         final ClassName className = ClassName.of(EntityOption.class);
 
-        final TypeUrl typeUrl = KnownTypes.getTypeUrl(className);
+        final TypeUrl typeUrl = getTypeUrl(className);
 
         assertEquals(TypeUrl.from(EntityOption.getDescriptor()), typeUrl);
     }
@@ -144,14 +151,16 @@ public class KnownTypesShould {
         assertTrue(packageTypes.isEmpty());
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void throw_exception_if_no_proto_type_url_by_java_class_name() {
-        KnownTypes.getTypeUrl(ClassName.of(Exception.class));
+        thrown.expect(IllegalStateException.class);
+        getTypeUrl(ClassName.of(Exception.class));
     }
 
-    @Test(expected = UnknownTypeException.class)
+    @Test
     public void throw_exception_if_no_java_class_name_by_type_url() {
         final TypeUrl unexpectedUrl = TypeUrl.parse("prefix/unexpected.type");
-        KnownTypes.getClassName(unexpectedUrl);
+        thrown.expect(UnexpectedTypeException.class);
+        getClassName(unexpectedUrl);
     }
 }

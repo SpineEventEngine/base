@@ -69,6 +69,7 @@ public class InternetDomainsShould {
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @SuppressWarnings("CheckReturnValue")
     public void reject_invalid_name() {
         valueOf("1.0");
     }

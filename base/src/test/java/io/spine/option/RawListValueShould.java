@@ -24,7 +24,9 @@ import com.google.common.base.Joiner;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.MessageOptions;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import java.util.Collection;
 
@@ -37,26 +39,32 @@ public class RawListValueShould {
 
     private static final String OPTION_PART = "PART";
 
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
+
     private final OptionValue<String> parser = new AListValue(enrichment);
 
-    @SuppressWarnings("ConstantConditions") // Purpose of the test.
-    @Test(expected = NullPointerException.class)
+    @SuppressWarnings("ConstantConditions") // Passing null is the purpose of the test.
+    @Test
     public void not_allow_null_option_value() {
         final String nullStr = null;
+        thrown.expect(NullPointerException.class);
         parser.parse(nullStr);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void not_allow_empty_option_value() {
+        thrown.expect(IllegalArgumentException.class);
         parser.parse("");
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void not_allow_blank_value() {
         final String blank = "   ";
         final Iterable<String> values = asList(blank, "non-blank");
         final String optionValue = Joiner.on(getValueSeparator())
                                          .join(values);
+        thrown.expect(IllegalStateException.class);
         parser.parse(optionValue);
     }
 

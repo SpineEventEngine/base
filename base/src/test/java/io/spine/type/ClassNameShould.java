@@ -21,21 +21,26 @@
 package io.spine.type;
 
 import com.google.common.testing.NullPointerTester;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 /**
  * @author Alexander Yevsyukov
  */
 public class ClassNameShould {
 
-    @Test(expected = IllegalArgumentException.class)
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
+
+    @Test
     public void reject_empty_value() {
+        thrown.expect(IllegalArgumentException.class);
         ClassName.of("");
     }
 
     @Test
-    public void pass_null_tolerance_check() throws Exception {
-        new NullPointerTester()
-                .testAllPublicStaticMethods(ClassName.class);
+    public void pass_null_tolerance_check() {
+        new NullPointerTester().testAllPublicStaticMethods(ClassName.class);
     }
 }

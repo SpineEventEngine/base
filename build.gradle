@@ -141,7 +141,8 @@ subprojects {
     }
 
     apply plugin: 'java'
-
+    apply plugin: 'net.ltgt.errorprone'
+    
     apply plugin: 'maven-publish'
 
     sourceCompatibility = 1.8
@@ -234,6 +235,12 @@ subprojects {
         source = sourceSets.main.allJava
     }
 
+    tasks.withType(JavaCompile) {
+        options.compilerArgs += [
+                '-XepExcludedPaths:.*/generated/.*'
+        ]
+    }
+    
     task sourceJar(type: Jar) {
         from sourceSets.main.allJava
         classifier "sources"
@@ -248,15 +255,7 @@ subprojects {
         from ("$projectDir/build/docs/javadoc")
         classifier "javadoc"
     }
-
-    //TODO:2018-05-12:alexander.yevsyukov: enable after migration to Java 8.
-    // 
-    // * What went wrong:
-    //  Execution failed for task ':spine-codestyle-checker:checkJavadocLink'.
-    //>    io/spine/tools/CodePreconditions
-    //
-    //apply from: filterInternalJavadocsScript
-
+    
     // Apply the same IDEA module configuration for each of sub-projects.
     idea {
         module {

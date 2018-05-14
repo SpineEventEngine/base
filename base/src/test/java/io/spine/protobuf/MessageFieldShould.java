@@ -24,7 +24,9 @@ import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import com.google.protobuf.StringValue;
 import com.google.protobuf.Timestamp;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import static com.google.protobuf.Descriptors.FieldDescriptor;
 import static com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
@@ -45,6 +47,9 @@ public class MessageFieldShould {
 
     private final StringValue stringValue = toMessage(newUuid());
 
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
+
     @Test
     public void accept_positive_index() {
         final int index = 5;
@@ -63,24 +68,24 @@ public class MessageFieldShould {
         assertEquals(index, field.getIndex());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void throw_exception_if_field_index_is_negative() {
-        // noinspection ResultOfObjectAllocationIgnored
+        thrown.expect(IllegalArgumentException.class);
         new TestMessageField(-5);
     }
 
-    @Test(expected = MessageFieldException.class)
+    @Test
     public void throw_exception_if_field_is_not_available() {
         final TestMessageField field = new TestMessageField(STR_VALUE_FIELD_INDEX);
         field.setIsFieldAvailable(false);
-
+        thrown.expect(MessageFieldException.class);
         field.getValue(stringValue);
     }
 
-    @Test(expected = ArrayIndexOutOfBoundsException.class)
+    @Test
     public void throw_exception_if_no_field_by_given_index() {
         final TestMessageField field = new TestMessageField(Integer.MAX_VALUE);
-
+        thrown.expect(ArrayIndexOutOfBoundsException.class);
         field.getValue(stringValue);
     }
 
@@ -123,13 +128,15 @@ public class MessageFieldShould {
 
     private static class TestMessageField extends MessageField {
 
+        private static final long serialVersionUID = 0L;
         private boolean isFieldAvailable = true;
 
-        TestMessageField(int index) {
+        private TestMessageField(int index) {
             super(index);
         }
 
-        @SuppressWarnings("SameParameterValue") // Now is used only once to overwrite default value.
+        @SuppressWarnings("SameParameterValue")
+        private // Now is used only once to overwrite default value.
         void setIsFieldAvailable(boolean isFieldAvailable) {
             this.isFieldAvailable = isFieldAvailable;
         }

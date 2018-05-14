@@ -20,6 +20,8 @@
 
 package io.spine.util;
 
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
+
 import java.util.Locale;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -59,6 +61,7 @@ public final class Exceptions {
      * @return nothing ever
      * @throws UnsupportedOperationException always
      */
+    @CanIgnoreReturnValue
     public static UnsupportedOperationException unsupported(String message) {
         checkNotNull(message);
         throw new UnsupportedOperationException(message);
@@ -87,6 +90,7 @@ public final class Exceptions {
      * @return nothing ever
      * @throws UnsupportedOperationException always
      */
+    @CanIgnoreReturnValue
     public static UnsupportedOperationException unsupported(String format, Object... args) {
         checkNotNull(format);
         checkNotNull(args);
@@ -114,6 +118,7 @@ public final class Exceptions {
      * @throws UnsupportedOperationException always
      */
     @SuppressWarnings("NewExceptionWithoutArguments") // No message necessary for this case.
+    @CanIgnoreReturnValue
     public static UnsupportedOperationException unsupported() {
         throw new UnsupportedOperationException();
     }
@@ -125,6 +130,7 @@ public final class Exceptions {
      * @return nothing ever, always throws an exception, the return type is for convenience
      * @throws IllegalStateException always
      */
+    @CanIgnoreReturnValue
     public static IllegalStateException illegalStateWithCauseOf(Throwable throwable) {
         checkNotNull(throwable);
         final Throwable rootCause = getRootCause(throwable);
@@ -158,6 +164,7 @@ public final class Exceptions {
      * @return nothing ever, always throws an exception. The return type is given for convenience.
      * @throws IllegalArgumentException always
      */
+    @CanIgnoreReturnValue
     public static IllegalArgumentException newIllegalArgumentException(String format,
                                                                        Object... args) {
         final String errMsg = formatMessage(format, args);
@@ -173,6 +180,7 @@ public final class Exceptions {
      * @return nothing ever, always throws an exception. The return type is given for convenience.
      * @throws IllegalArgumentException always
      */
+    @CanIgnoreReturnValue
     public static IllegalArgumentException newIllegalArgumentException(Throwable cause,
                                                                        String format,
                                                                        Object... args) {
@@ -189,6 +197,7 @@ public final class Exceptions {
      * @return nothing ever, always throws an exception. The return type is given for convenience.
      * @throws IllegalStateException always
      */
+    @CanIgnoreReturnValue
     public static IllegalStateException newIllegalStateException(String format,
                                                                  Object... args) {
         final String errMsg = formatMessage(format, args);
@@ -204,6 +213,7 @@ public final class Exceptions {
      * @return nothing ever, always throws an exception. The return type is given for convenience.
      * @throws IllegalStateException always
      */
+    @CanIgnoreReturnValue
     public static IllegalStateException newIllegalStateException(Throwable cause,
                                                                  String format,
                                                                  Object... args) {

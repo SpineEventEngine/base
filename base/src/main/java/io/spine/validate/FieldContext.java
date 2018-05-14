@@ -170,10 +170,10 @@ public class FieldContext {
     }
 
     private static FieldPath fieldPathOf(Iterable<FieldDescriptor> descriptors) {
-        final FieldPath.Builder builder = FieldPath.newBuilder();
+        FieldPath.Builder builder = FieldPath.newBuilder();
         for (FieldDescriptor descriptor : descriptors) {
             final String fieldName = descriptor.getName();
-            builder.addFieldName(fieldName);
+            builder = builder.addFieldName(fieldName);
         }
         return builder.build();
     }

@@ -21,7 +21,6 @@
 package io.spine.type;
 
 import com.google.common.testing.EqualsTester;
-import com.google.common.testing.SerializableTester;
 import com.google.protobuf.Any;
 import com.google.protobuf.BoolValue;
 import com.google.protobuf.Descriptors;
@@ -34,8 +33,11 @@ import com.google.protobuf.Timestamp;
 import com.google.protobuf.UInt32Value;
 import io.spine.option.EntityOption;
 import io.spine.test.Tests;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
+import static com.google.common.testing.SerializableTester.reserializeAndAssert;
 import static io.spine.base.Identifier.newUuid;
 import static io.spine.protobuf.TypeConverter.toMessage;
 import static io.spine.type.TypeUrl.composeTypeUrl;
@@ -47,19 +49,24 @@ public class TypeUrlShould {
     private static final String STRING_VALUE_TYPE_NAME = StringValue.getDescriptor()
                                                                     .getFullName();
 
-    private static final String STRING_VALUE_TYPE_URL_STR = composeTypeUrl(
-            TypeUrl.Prefix.GOOGLE_APIS.value(),
-            STRING_VALUE_TYPE_NAME);
+    private static final String STRING_VALUE_TYPE_URL_STR =
+            composeTypeUrl(TypeUrl.Prefix.GOOGLE_APIS.value(),
+                           STRING_VALUE_TYPE_NAME);
 
     private final TypeUrl stringValueTypeUrl = TypeUrl.from(StringValue.getDescriptor());
 
-    @Test(expected = NullPointerException.class)
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
+
+    @Test
     public void not_accept_null_value() {
+        thrown.expect(NullPointerException.class);
         TypeUrl.parse(Tests.nullRef());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void not_accept_empty_string() {
+        thrown.expect(IllegalArgumentException.class);
         TypeUrl.parse("");
     }
 
@@ -87,6 +94,7 @@ public class TypeUrlShould {
     }
 
     @Test
+    @SuppressWarnings("CheckReturnValue") // we test exception cause, not the output
     public void do_not_accept_Any_with_malformed_type_url() {
         Any any = Any.newBuilder().setTypeUrl("invalid_type_url").build();
         try {
@@ -174,29 +182,34 @@ public class TypeUrlShould {
                 .testEquals();
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void do_not_accept_value_without_prefix_separator() {
+        thrown.expect(IllegalArgumentException.class);
         TypeUrl.parse("prefix:Type");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void do_not_accept_empty_prefix() {
+        thrown.expect(IllegalArgumentException.class);
         TypeUrl.parse("/package.Type");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void do_not_accept_empty_name() {
+        thrown.expect(IllegalArgumentException.class);
         TypeUrl.parse("type.prefix/");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void do_not_accept_malformed_type_URL() {
+        thrown.expect(IllegalArgumentException.class);
         TypeUrl.parse("prefix/prefix/type.Name");
     }
 
-    @Test(expected = UnknownTypeException.class)
+    @Test
     public void throw_exception_for_unknown_Java_class() {
         TypeUrl url = TypeUrl.parse("unknown/JavaClass");
+        thrown.expect(UnknownTypeException.class);
         url.getJavaClass();
     }
 
@@ -217,6 +230,6 @@ public class TypeUrlShould {
 
     @Test
     public void serialize() {
-        SerializableTester.reserializeAndAssert(TypeUrl.of(Timestamp.class));
+        reserializeAndAssert(TypeUrl.of(Timestamp.class));
     }
 }
