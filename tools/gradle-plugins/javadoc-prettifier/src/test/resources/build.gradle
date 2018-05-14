@@ -1,0 +1,50 @@
+/*
+ * Copyright 2018, TeamDev Ltd. All rights reserved.
+ *
+ * Redistribution and use in source and/or binary forms, with or without
+ * modification, must retain the above copyright notice and the following
+ * disclaimer.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+buildscript {
+
+    // Applying from `ext.gradle` inside the `buildscript` section to reuse the properties.
+    //
+    // As long as `buildscript` section is always evaluated first, we need to apply
+    // `ext.gradle` explicitly here.
+    //
+    // NOTE: this file is copied from the root project in the test setup.
+    apply from: 'ext.gradle'
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath "com.google.protobuf:protobuf-gradle-plugin:${protobufGradlePluginVersion}"
+    }
+}
+
+plugins {
+    id 'java'
+    id 'io.spine.tools.protobuf-javadoc-plugin'
+}
+
+apply plugin: 'com.google.protobuf'
+
+protoJavadoc {
+    mainGenProtoDir = "generated/main/java"
+}

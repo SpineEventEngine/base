@@ -95,7 +95,7 @@ ext {
         'reflections-plugin',
         'javadoc-filter',
         'gcs-plugin',
-        'protobuf-javadoc-plugin',
+        'javadoc-prettifier',
 
         "plugin-base",
         "model-compiler",
