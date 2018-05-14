@@ -74,14 +74,15 @@ ext {
     spineBaseVersion = '0.10.35-SNAPSHOT'
 
     /**
-     * The version of Spine tools.
+     * The version of Spine tools which is used to build the {@code base} module.
      *
      * This version is independent from the version of both `base` and `model-compiler`.
      */
     spineToolsVersion = '0.10.29-SNAPSHOT'
 
     /**
-     * The version of the Spine `model-compiler` plugin which is used to build `base`.
+     * The version of the Spine `model-compiler` plugin which is used to
+     * build the {@code base} module.
      *
      * Use the latest currently published version here.
      */
