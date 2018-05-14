@@ -93,7 +93,7 @@ ext {
         "codegen",
 
         'reflections-plugin',
-        'spine-javadoc',
+        'javadoc-filter',
         'gcs-plugin',
         'protobuf-javadoc-plugin',
 

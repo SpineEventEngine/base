@@ -41,7 +41,7 @@ module ('protobuf-javadoc-plugin', './tools/gradle-plugins/protobuf-javadoc-plug
 module ('reflections-plugin',      './tools/gradle-plugins/reflections-plugin')
 
 module ('codestyle-checker',       './tools/gradle-plugins/codestyle-checker')
-module ('spine-javadoc',           './tools/gradle-plugins/spine-javadoc')
+module ('javadoc-filter',          './tools/gradle-plugins/javadoc-filter')
 
 module ('enrichment-lookup',       './tools/gradle-plugins/smoke-tests/enrichment-lookup')
 module ('known-types',             './tools/gradle-plugins/smoke-tests/known-types')
