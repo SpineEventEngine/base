@@ -25,7 +25,7 @@
  * as we want to manage the versions in a single source.
  *
  * How to increment the version:
- *   1) Copy the current value of `SPINE_VERSION` to `spineModelCompilerVersion`;
+ *   1) Copy the current value of `SPINE_VERSION` to `spineToolsVersion`;
  *   2) Change the value of `SPINE_VERSION` to the desired one;
  *   3) Publish the artifacts.
  *
@@ -38,7 +38,7 @@
  *
  * This is also the version which the artifacts are published with.
  */
-def final SPINE_VERSION = '0.10.35-SNAPSHOT'
+def final SPINE_VERSION = '0.10.36-SNAPSHOT'
 
 ext {
     // Repositories for specific purposes.
@@ -76,15 +76,10 @@ ext {
     /**
      * The version of Spine tools which is used to build the {@code base} module.
      *
-     * This version is independent from the version of both `base` and `model-compiler`.
-     */
-    spineToolsVersion = '0.10.34-SNAPSHOT'
-
-    /**
-     * The version of the Spine `model-compiler` plugin which is used to
+     * <p>It is the version of the {@code model-compiler} plugin which is used to
      * build the {@code base} module.
      *
      * Use the latest currently published version here.
      */
-    spineModelCompilerVersion = '0.10.34-SNAPSHOT'
+    spineToolsVersion = '0.10.35-SNAPSHOT'
 }

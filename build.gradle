@@ -59,15 +59,11 @@ buildscript {
             exclude group: 'com.google.guava'
         }
         
-        classpath ("io.spine.tools:spine-model-compiler:$spineModelCompilerVersion") {
+        classpath ("io.spine.tools:spine-model-compiler:$spineToolsVersion") {
             exclude group: 'com.google.guava'
         }
         
-        classpath ("io.spine.tools:spine-codestyle-checker:$spineToolsVersion") {
-            exclude group: 'com.google.guava'
-        }
-
-        classpath ("io.spine.tools:gcs-plugin:$spineToolsVersion") {
+        classpath ("io.spine.tools:spine-gcs-plugin:$spineToolsVersion") {
             exclude group: 'com.google.guava'
         }
     }
@@ -97,7 +93,6 @@ ext {
         "codegen",
 
         'reflections-plugin',
-        'spine-codestyle-checker',
         'spine-javadoc',
         'gcs-plugin',
         'protobuf-javadoc-plugin',
