@@ -68,18 +68,13 @@ ext {
 
     protobufGradlePluginVersion = '0.8.4'
 
-    //TODO:2018-03-19:alexander.yevsyukov: Remove the below versions
-
-    // The version to be used until we resolve dependencies inside the project.
-    spineBaseVersion = '0.10.35-SNAPSHOT'
-
     /**
      * The version of Spine tools which is used to build the {@code base} module.
      *
      * <p>It is the version of the {@code model-compiler} plugin which is used to
      * build the {@code base} module.
      *
-     * Use the latest currently published version here.
+     * <p>Use the latest currently published version here.
      */
     spineToolsVersion = '0.10.35-SNAPSHOT'
 }

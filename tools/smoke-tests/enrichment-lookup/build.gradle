@@ -45,7 +45,7 @@ buildscript {
             // exclude old Guava version
             exclude group: 'com.google.guava'
         }
-        classpath group: "io.spine.tools", name: "spine-model-compiler", version: spineBaseVersion
+        classpath group: "io.spine.tools", name: "spine-model-compiler", version: spineToolsVersion
     }
 }
 
