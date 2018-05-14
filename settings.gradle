@@ -35,18 +35,18 @@ final def module = { final String name, final String path ->
 module ('codegen',             './tools/codegen')
 
 module ('gcloud-storage',      './tools/gcloud-storage')
-module ('javadoc-prettifier',  './tools/gradle-plugins/javadoc-prettifier')
-module ('javadoc-filter',      './tools/gradle-plugins/javadoc-filter')
+module ('javadoc-filter',      './tools/javadoc-filter')
+module ('javadoc-prettifier',  './tools/javadoc-prettifier')
 
-module ('model-compiler',      './tools/gradle-plugins/model-compiler')
+module ('model-compiler',      './tools/model-compiler')
 
-module ('plugin-base',         './tools/gradle-plugins/plugin-base')
-module ('reflections-plugin',  './tools/gradle-plugins/reflections-plugin')
+module ('plugin-base',         './tools/plugin-base')
+module ('reflections-plugin',  './tools/reflections-plugin')
 
 // Smoke tests for Spine Model Compiler
-module ('enrichment-lookup',   './tools/gradle-plugins/smoke-tests/enrichment-lookup')
-module ('known-types',         './tools/gradle-plugins/smoke-tests/known-types')
-module ('validators-gen',      './tools/gradle-plugins/smoke-tests/validators-gen')
+module ('enrichment-lookup',   './tools/smoke-tests/enrichment-lookup')
+module ('known-types',         './tools/smoke-tests/known-types')
+module ('validators-gen',      './tools/smoke-tests/validators-gen')
 
 // Protoc plugin and tests
 module ('protoc-plugin',       './tools/protoc-plugin')
