@@ -171,13 +171,6 @@ subprojects {
             threshold = 0
             reportType = "warn"
         }
-
-        // Right margin line checker.
-        //
-        // Finds and reports about the lines of a code with length above threshold.
-        rightMarginWrappingChecker {
-            maxTextWidth = 100
-        }
     }
     */
     
