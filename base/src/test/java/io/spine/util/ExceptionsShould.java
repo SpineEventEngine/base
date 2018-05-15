@@ -90,7 +90,7 @@ public class ExceptionsShould {
 
     @Test
     public void throw_formatted_IAE_with_cause() {
-        thrown.expect(IllegalAccessException.class);
+        thrown.expect(IllegalArgumentException.class);
         newIllegalArgumentException(new RuntimeException("checking"), "%s", "stuff");
     }
 
