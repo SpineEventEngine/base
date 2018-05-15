@@ -28,6 +28,7 @@ import com.google.protobuf.Descriptors;
 import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.Field;
 import com.google.protobuf.InvalidProtocolBufferException;
+import com.google.protobuf.Message;
 import com.google.protobuf.StringValue;
 import com.google.protobuf.Timestamp;
 import com.google.protobuf.UInt32Value;
@@ -54,7 +55,7 @@ public class TypeUrlShould {
 
     @Test(expected = NullPointerException.class)
     public void not_accept_null_value() {
-        TypeUrl.parse(Tests.<String>nullRef());
+        TypeUrl.parse(Tests.nullRef());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -64,14 +65,15 @@ public class TypeUrlShould {
 
     @Test
     public void create_from_message() {
-        final TypeUrl typeUrl = TypeUrl.of(toMessage(newUuid()));
+        Message msg = toMessage(newUuid());
+        TypeUrl typeUrl = TypeUrl.of(msg);
 
         assertIsStringValueUrl(typeUrl);
     }
 
     @Test
     public void create_from_type_name() {
-        final TypeUrl typeUrl = TypeName.of(STRING_VALUE_TYPE_NAME)
+        TypeUrl typeUrl = TypeName.of(STRING_VALUE_TYPE_NAME)
                                         .toUrl();
 
         assertIsStringValueUrl(typeUrl);
@@ -79,14 +81,14 @@ public class TypeUrlShould {
 
     @Test
     public void create_from_type_url_string() {
-        final TypeUrl typeUrl = TypeUrl.parse(STRING_VALUE_TYPE_URL_STR);
+        TypeUrl typeUrl = TypeUrl.parse(STRING_VALUE_TYPE_URL_STR);
 
         assertIsStringValueUrl(typeUrl);
     }
 
     @Test
     public void do_not_accept_Any_with_malformed_type_url() {
-        final Any any = Any.newBuilder().setTypeUrl("invalid_type_url").build();
+        Any any = Any.newBuilder().setTypeUrl("invalid_type_url").build();
         try {
             TypeUrl.ofEnclosed(any);
         } catch (RuntimeException e) {
@@ -111,18 +113,18 @@ public class TypeUrlShould {
 
     @Test
     public void create_by_descriptor_of_google_msg() {
-        final TypeUrl typeUrl = TypeUrl.from(StringValue.getDescriptor());
+        TypeUrl typeUrl = TypeUrl.from(StringValue.getDescriptor());
 
         assertIsStringValueUrl(typeUrl);
     }
 
     @Test
     public void create_by_descriptor_of_spine_msg() {
-        final Descriptors.Descriptor descriptor = EntityOption.getDescriptor();
-        final String expectedUrl = composeTypeUrl(TypeUrl.Prefix.SPINE.value(),
+        Descriptors.Descriptor descriptor = EntityOption.getDescriptor();
+        String expectedUrl = composeTypeUrl(TypeUrl.Prefix.SPINE.value(),
                                                   descriptor.getFullName());
 
-        final TypeUrl typeUrl = TypeUrl.from(descriptor);
+        TypeUrl typeUrl = TypeUrl.from(descriptor);
 
         assertEquals(expectedUrl, typeUrl.value());
     }
@@ -141,16 +143,16 @@ public class TypeUrlShould {
 
     private static void assertCreatesTypeUrlFromEnum(String typeUrlPrefix,
                                                      EnumDescriptor enumDescriptor) {
-        final String expected = composeTypeUrl(typeUrlPrefix, enumDescriptor.getFullName());
+        String expected = composeTypeUrl(typeUrlPrefix, enumDescriptor.getFullName());
 
-        final TypeUrl typeUrl = TypeUrl.from(enumDescriptor);
+        TypeUrl typeUrl = TypeUrl.from(enumDescriptor);
 
         assertEquals(expected, typeUrl.value());
     }
 
     @Test
     public void create_instance_by_class() {
-        final TypeUrl typeUrl = TypeUrl.of(StringValue.class);
+        TypeUrl typeUrl = TypeUrl.of(StringValue.class);
 
         assertIsStringValueUrl(typeUrl);
     }
@@ -194,7 +196,7 @@ public class TypeUrlShould {
 
     @Test(expected = UnknownTypeException.class)
     public void throw_exception_for_unknown_Java_class() {
-        final TypeUrl url = TypeUrl.parse("unknown/JavaClass");
+        TypeUrl url = TypeUrl.parse("unknown/JavaClass");
         url.getJavaClass();
     }
 
@@ -207,7 +209,7 @@ public class TypeUrlShould {
 
     @Test
     public void have_prefix_enumeration() {
-        final TypeUrl.Prefix spinePrefix = TypeUrl.Prefix.SPINE;
+        TypeUrl.Prefix spinePrefix = TypeUrl.Prefix.SPINE;
         assertTrue(spinePrefix.toString()
                               .contains(spinePrefix.name()
                                                    .toLowerCase()));

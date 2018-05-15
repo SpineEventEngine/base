@@ -23,8 +23,7 @@ package io.spine.base;
 import com.google.common.base.Predicate;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Message;
-
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 

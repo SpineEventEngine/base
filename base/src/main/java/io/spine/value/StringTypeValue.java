@@ -20,7 +20,8 @@
 
 package io.spine.value;
 
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkNotNull;

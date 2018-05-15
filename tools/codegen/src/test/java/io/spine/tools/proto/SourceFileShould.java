@@ -26,10 +26,10 @@ import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.Descriptor;
 import io.spine.test.compiler.message.Top;
 import io.spine.type.TypeName;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.annotation.Nullable;
 import java.util.Collection;
 
 import static com.google.common.base.Preconditions.checkNotNull;

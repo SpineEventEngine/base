@@ -27,8 +27,8 @@ import io.spine.annotation.Internal;
 import io.spine.base.ConversionException;
 import io.spine.protobuf.Messages;
 import io.spine.string.Stringifiers;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-import javax.annotation.Nullable;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;

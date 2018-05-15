@@ -20,7 +20,8 @@
 
 package io.spine.value;
 
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import java.io.Serializable;
 import java.util.Objects;
 

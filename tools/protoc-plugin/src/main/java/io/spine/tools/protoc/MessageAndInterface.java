@@ -34,8 +34,8 @@ import com.squareup.javapoet.JavaFile;
 import io.spine.option.UnknownOptions;
 import io.spine.tools.java.PackageName;
 import io.spine.tools.java.SourceFile;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.Set;
 
 import static com.google.common.base.Strings.isNullOrEmpty;

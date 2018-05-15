@@ -34,8 +34,8 @@ import io.spine.protobuf.Messages;
 import io.spine.protobuf.TypeConverter;
 import io.spine.string.Stringifier;
 import io.spine.string.StringifierRegistry;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.UUID;
 import java.util.regex.Pattern;
