@@ -160,7 +160,7 @@ public class KnownTypesShould {
     @Test
     public void throw_exception_if_no_java_class_name_by_type_url() {
         final TypeUrl unexpectedUrl = TypeUrl.parse("prefix/unexpected.type");
-        thrown.expect(UnexpectedTypeException.class);
+        thrown.expect(UnknownTypeException.class);
         getClassName(unexpectedUrl);
     }
 }

@@ -25,7 +25,9 @@ import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.util.Timestamps;
 import io.spine.test.Tests;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import static io.spine.test.TestValues.newUuidValue;
 import static org.junit.Assert.assertEquals;
@@ -42,6 +44,9 @@ public class ThrowableMessageShould {
     private GeneratedMessageV3 message;
     private ThrowableMessage throwableMessage;
     private Any producer;
+
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
     @Before
     public void setUp() {
@@ -73,20 +78,23 @@ public class ThrowableMessageShould {
         assertEquals(producer, optional.get());
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void not_allow_repeated_producer_initialization() {
+        thrown.expect(IllegalStateException.class);
         throwableMessage.initProducer(producer)
                         .initProducer(producer);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void not_allow_null_producer() {
-        throwableMessage.initProducer(Tests.<Any>nullRef());
+        thrown.expect(NullPointerException.class);
+        throwableMessage.initProducer(Tests.nullRef());
     }
 
     @SuppressWarnings("ThrowableNotThrown")
-    @Test(expected = NullPointerException.class)
+    @Test
     public void prohibit_null_message() {
+        thrown.expect(NullPointerException.class);
         new TestThrowableMessage(Tests.<GeneratedMessageV3>nullRef());
     }
 
