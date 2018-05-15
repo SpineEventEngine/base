@@ -249,14 +249,6 @@ subprojects {
         classifier "javadoc"
     }
 
-    //TODO:2018-05-12:alexander.yevsyukov: enable after migration to Java 8.
-    // 
-    // * What went wrong:
-    //  Execution failed for task ':spine-codestyle-checker:checkJavadocLink'.
-    //>    io/spine/tools/CodePreconditions
-    //
-    //apply from: filterInternalJavadocsScript
-
     // Apply the same IDEA module configuration for each of sub-projects.
     idea {
         module {
