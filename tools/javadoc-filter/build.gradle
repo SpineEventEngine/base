@@ -28,6 +28,7 @@ dependencies {
     compile "javax.annotation:javax.annotation-api:$javaxAnnotationsVersion"
 
     compile project(':base')
+    testCompile project(':testlib')
 }
 
 // We need to include module dependencies to JAR.
