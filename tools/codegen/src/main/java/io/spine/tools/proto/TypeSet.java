@@ -21,6 +21,7 @@
 package io.spine.tools.proto;
 
 import com.google.common.collect.Sets;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.Descriptors.FileDescriptor;
 
 import java.util.Objects;
@@ -57,9 +58,9 @@ public class TypeSet {
      * Obtains message and enum types declared in the passed file.
      */
     public static TypeSet messagesAndEnums(FileDescriptor file) {
-        final TypeSet messages = MessageType.allFrom(file);
-        final TypeSet enums = EnumType.allFrom(file);
-        final TypeSet result = messages.union(enums);
+        TypeSet messages = MessageType.allFrom(file);
+        TypeSet enums = EnumType.allFrom(file);
+        TypeSet result = messages.union(enums);
         return result;
     }
 
@@ -92,6 +93,7 @@ public class TypeSet {
     /**
      * Adds the passed type to the set.
      */
+    @CanIgnoreReturnValue
     boolean add(Type type) {
         final boolean result = types.add(type);
         return result;

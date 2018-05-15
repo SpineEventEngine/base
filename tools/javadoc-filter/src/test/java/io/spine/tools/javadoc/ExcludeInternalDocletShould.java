@@ -23,6 +23,7 @@ package io.spine.tools.javadoc;
 import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.MethodDoc;
 import com.sun.javadoc.RootDoc;
+import io.spine.test.Tests;
 import io.spine.util.Exceptions;
 import org.junit.After;
 import org.junit.Test;
@@ -50,7 +51,7 @@ public class ExcludeInternalDocletShould {
     private static final String NOT_INTERNAL_CLASS_FILENAME = "/notinternal/NotInternalClass.java";
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         cleanUpGeneratedJavadocs();
     }
 
@@ -78,13 +79,13 @@ public class ExcludeInternalDocletShould {
 
     @Test
     public void exclude_internal_ctors() {
-        final String[] args = new JavadocArgsBuilder()
-                .addSource("InternalCtorClass.java")
-                .build();
+        final String[] args = new JavadocArgsBuilder().addSource("InternalCtorClass.java")
+                                                      .build();
 
         final RootDoc rootDoc = rootDocFor(args);
 
-        assertEquals(0, rootDoc.specifiedClasses()[0].constructors().length);
+        final ClassDoc classDoc = rootDoc.specifiedClasses()[0];
+        assertEquals(0, classDoc.constructors().length);
     }
 
     @Test
@@ -95,7 +96,8 @@ public class ExcludeInternalDocletShould {
 
         final RootDoc rootDoc = rootDocFor(args);
 
-        assertEquals(0, rootDoc.specifiedClasses()[0].fields().length);
+        final ClassDoc classDoc = rootDoc.specifiedClasses()[0];
+        assertEquals(0, classDoc.fields().length);
     }
 
     @Test
@@ -106,7 +108,8 @@ public class ExcludeInternalDocletShould {
 
         final RootDoc rootDoc = rootDocFor(args);
 
-        assertEquals(0, rootDoc.specifiedClasses()[0].methods().length);
+        final ClassDoc classDoc = rootDoc.specifiedClasses()[0];
+        assertEquals(0, classDoc.methods().length);
     }
 
     @Test
@@ -189,8 +192,9 @@ public class ExcludeInternalDocletShould {
 
         // invoke compareTo to be sure, that proxy unwrapping
         // doest not expose object passed to compareTo method
-        final ClassDoc anotherClassDoc = rootDoc.specifiedClasses()[0].superclass();
-        rootDoc.specifiedClasses()[0].compareTo(anotherClassDoc);
+        final ClassDoc classDoc = rootDoc.specifiedClasses()[0];
+        final ClassDoc anotherClassDoc = classDoc.superclass();
+        classDoc.compareTo(anotherClassDoc);
 
         assertEquals(1, rootDoc.specifiedClasses().length);
     }
@@ -206,9 +210,11 @@ public class ExcludeInternalDocletShould {
 
         // invoke overrides to be sure, that proxy unwrapping
         // doest not expose overridden method
-        final ClassDoc overridesInternalMethod = rootDoc.classNamed(TEST_SOURCES_PACKAGE + ".OverridesInternalMethod");
-        final MethodDoc overriddenMethod = overridesInternalMethod.methods()[0].overriddenMethod();
-        overridesInternalMethod.methods()[0].overrides(overriddenMethod);
+        final ClassDoc overridesInternalMethod =
+                rootDoc.classNamed(TEST_SOURCES_PACKAGE + ".OverridesInternalMethod");
+        final MethodDoc methodDoc = overridesInternalMethod.methods()[0];
+        final MethodDoc overriddenMethod = methodDoc.overriddenMethod();
+        methodDoc.overrides(overriddenMethod);
 
         assertEquals(0, rootDoc.classNamed(TEST_SOURCES_PACKAGE + ".InternalMethodClass")
                                .methods().length);
@@ -225,19 +231,23 @@ public class ExcludeInternalDocletShould {
 
         // invoke subclassOf to be sure, that proxy unwrapping
         // doest not expose parent internal class
-        final ClassDoc superclass = rootDoc.specifiedClasses()[0].superclass();
-        rootDoc.specifiedClasses()[0].subclassOf(superclass);
+        final ClassDoc classDoc = rootDoc.specifiedClasses()[0];
+        final ClassDoc superclass = classDoc.superclass();
+        classDoc.subclassOf(superclass);
 
         assertEquals(1, rootDoc.specifiedClasses().length);
     }
 
-    @SuppressWarnings("ProhibitedExceptionCaught") // Need to catch NPE to fail test.
+    @SuppressWarnings({
+            "ProhibitedExceptionCaught" /* Need to catch NPE to fail test. */,
+            "CheckReturnValue"
+    })
     @Test
     public void not_throw_NPE_processing_null_values() {
         final ExcludeInternalDoclet doclet = new NullProcessingTestDoclet();
 
         try {
-            doclet.process(null, void.class);
+            doclet.process(Tests.nullRef(), void.class);
         } catch (NullPointerException e) {
             fail("Should process null values without throwing NPE.");
         }
@@ -252,26 +262,31 @@ public class ExcludeInternalDocletShould {
     }
 
     private static void cleanUpGeneratedJavadocs() {
-        Path rootPath = Paths.get(JavadocArgsBuilder.getJavadocDir());
+        Path javadocRoot = Paths.get(JavadocArgsBuilder.getJavadocDir());
 
-        if (Files.exists(rootPath)) {
+        if (Files.exists(javadocRoot)) {
             try {
-                Files.walkFileTree(rootPath, new SimpleFileVisitor<Path>() {
-                    @Override
-                    public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                        Files.delete(file);
-                        return FileVisitResult.CONTINUE;
-                    }
-
-                    @Override
-                    public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-                        Files.delete(dir);
-                        return FileVisitResult.CONTINUE;
-                    }
-                });
+                Files.walkFileTree(javadocRoot, new FileRemover());
             } catch (IOException e) {
                 throw Exceptions.illegalStateWithCauseOf(e);
             }
+        }
+    }
+
+    /**
+     * Deletes files and directories.
+     */
+    private static class FileRemover extends SimpleFileVisitor<Path> {
+        @Override
+        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+            Files.delete(file);
+            return FileVisitResult.CONTINUE;
+        }
+
+        @Override
+        public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+            Files.delete(dir);
+            return FileVisitResult.CONTINUE;
         }
     }
 }

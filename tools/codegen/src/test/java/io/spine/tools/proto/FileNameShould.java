@@ -22,7 +22,9 @@ package io.spine.tools.proto;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.testing.NullPointerTester;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import java.util.List;
 
@@ -37,6 +39,9 @@ import static org.junit.Assert.assertTrue;
  */
 public class FileNameShould {
 
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
+
     @Test
     public void have_utility_ctor_for_Suffix() {
         assertHasPrivateParameterlessCtor(FileName.Suffix.class);
@@ -48,8 +53,9 @@ public class FileNameShould {
                                                   NullPointerTester.Visibility.PACKAGE);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void require_standard_extension() {
+        thrown.expect(IllegalArgumentException.class);
         FileName.of("some_thing");
     }
 
