@@ -67,6 +67,7 @@ public class ProtoJavadocPlugin extends SpinePlugin {
 
     static final String PROTO_JAVADOC_EXTENSION_NAME = "protoJavadoc";
 
+    @SuppressWarnings("CheckReturnValue") // builder methods
     @Override
     public void apply(final Project project) {
         log().debug("Adding the ProtoJavadocPlugin extension to the project.");
@@ -89,12 +90,7 @@ public class ProtoJavadocPlugin extends SpinePlugin {
     }
 
     private Action<Task> createAction(final Project project, final TaskType taskType) {
-        return new Action<Task>() {
-            @Override
-            public void execute(Task task) {
-                formatJavadocs(project, taskType);
-            }
-        };
+        return task -> formatJavadocs(project, taskType);
     }
 
     private void formatJavadocs(Project project, TaskType taskType) {
