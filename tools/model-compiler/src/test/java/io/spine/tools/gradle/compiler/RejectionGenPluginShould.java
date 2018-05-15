@@ -24,9 +24,7 @@ import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.ConstructorDoc;
 import com.sun.javadoc.RootDoc;
 import io.spine.tools.compiler.rejection.RootDocReceiver;
-import io.spine.tools.gradle.compiler.given.RejectionTestEnv;
 import io.spine.tools.gradle.given.GradleProject;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -37,14 +35,13 @@ import java.util.Collection;
 import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
 import static io.spine.tools.gradle.compiler.given.RejectionTestEnv.getExpectedClassComment;
 import static io.spine.tools.gradle.compiler.given.RejectionTestEnv.getExpectedCtorComment;
+import static io.spine.tools.gradle.compiler.given.RejectionTestEnv.newProjectWithRejectionsJavadoc;
 import static io.spine.tools.gradle.compiler.given.RejectionTestEnv.rejectionsJavadocSourceName;
 import static org.junit.Assert.assertEquals;
 
-//TODO:2018-05-12:alexander.yevsyukov: Resume when new version of plugins are built.
 /**
  * @author Dmytro Grankin
  */
-@Ignore
 public class RejectionGenPluginShould {
 
     @Rule
@@ -67,7 +64,7 @@ public class RejectionGenPluginShould {
     @Test
     public void generate_rejection_javadoc() {
 
-        final GradleProject project = RejectionTestEnv.newProjectWithRejectionsJavadoc(testProjectDir);
+        final GradleProject project = newProjectWithRejectionsJavadoc(testProjectDir);
         project.executeTask(COMPILE_JAVA);
 
         final RootDoc root = RootDocReceiver.getRootDoc(testProjectDir,
