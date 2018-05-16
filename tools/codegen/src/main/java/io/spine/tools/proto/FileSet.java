@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -21,7 +21,6 @@
 package io.spine.tools.proto;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Function;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
@@ -30,16 +29,18 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
 import com.google.protobuf.Descriptors.FileDescriptor;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-import javax.annotation.Nullable;
 import java.io.File;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Iterables.filter;
@@ -174,6 +175,7 @@ public final class FileSet {
     /**
      * Adds file to the set.
      */
+    @CanIgnoreReturnValue
     public boolean add(FileDescriptor file) {
         final boolean isNew = files.add(file);
         return isNew;
@@ -200,16 +202,13 @@ public final class FileSet {
      */
     public List<FileName> getFileNames() {
         final Iterable<FileName> fileNames =
-                Iterables.transform(files,
-                                    new Function<FileDescriptor, FileName>() {
-                                        @Nullable
-                                        @Override
-                                        public FileName apply(@Nullable FileDescriptor input) {
-                                            checkNotNull(input);
-                                            final FileName result = FileName.from(input.toProto());
-                                            return result;
-                                        }
-                                    });
+                files.stream()
+                     .map(input -> {
+                         checkNotNull(input);
+                         final FileName result = FileName.from(input.toProto());
+                         return result;
+                     })
+                     .collect(Collectors.toList());
         final List<FileName> sorted = Ordering.natural()
                                               .sortedCopy(fileNames);
         final List<FileName> result = ImmutableList.copyOf(sorted);

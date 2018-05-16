@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -25,7 +25,7 @@
  * as we want to manage the versions in a single source.
  *
  * How to increment the version:
- *   1) Copy the current value of `SPINE_VERSION` to `spineModelCompilerVersion`;
+ *   1) Copy the current value of `SPINE_VERSION` to `spineToolsVersion`;
  *   2) Change the value of `SPINE_VERSION` to the desired one;
  *   3) Publish the artifacts.
  *
@@ -38,12 +38,22 @@
  *
  * This is also the version which the artifacts are published with.
  */
-def final SPINE_VERSION = '0.10.34-SNAPSHOT'
+def final SPINE_VERSION = '0.10.36-SNAPSHOT'
 
 ext {
+    // Repositories for specific purposes.
+    googleMavenCentralMirror = 'https://maven-central.storage.googleapis.com'
+    spineRepository = 'http://maven.teamdev.com/repository/spine'
+    spineSnapshotsRepository = 'http://maven.teamdev.com/repository/spine-snapshots'
+    sonatypeSnapshots = 'https://oss.sonatype.org/content/repositories/snapshots'
+    gradlePlugins = 'https://plugins.gradle.org/m2/'
+
     spineVersion = SPINE_VERSION
 
-    guavaVersion = '20.0'
+    // Use Guava snapshot version until this commit gets into the release:
+    // https://github.com/google/guava/commit/0a2258e6691a22aa7ff2604871b520d44bbac01f
+    // We use it for using @Nullable instead of @NullableDecl in NullPointerTester.
+    guavaVersion = 'HEAD-jre-SNAPSHOT'
     findBugsVersion = '3.0.1'
     protobufVersion = '3.5.1'
     gRpcVersion = '1.10.0'
@@ -52,25 +62,19 @@ ext {
     mockitoVersion = '2.12.0'
     hamcrestVersion = '1.3'
     javaPoetVersion = '1.9.0'
+    errorPronePluginVersion = '0.0.14'
+    checkerFrameworkVersion = '2.5.1'
+    errorProneVersion = '2.3.1'
 
-    protobufGradlePluginVersion = '0.8.4'
-
-    //TODO:2018-03-19:alexander.yevsyukov: Remove the below versions
-
-    // The version to be used until we resolve dependencies inside the project.
-    spineBaseVersion = '0.10.29-SNAPSHOT'
+    protobufGradlePluginVersion = '0.8.5'
 
     /**
-     * The version of Spine tools.
+     * The version of Spine tools which is used to build the {@code base} module.
      *
-     * This version is independent from the version of both `base` and `model-compiler`.
-     */
-    spineToolsVersion = '0.10.29-SNAPSHOT'
-
-    /**
-     * The version of the Spine `model-compiler` plugin which is used to build `base`.
+     * <p>It is the version of the {@code model-compiler} plugin which is used to
+     * build the {@code base} module.
      *
-     * Use the latest currently published version here.
+     * <p>Use the latest currently published version here.
      */
-    spineModelCompilerVersion = '0.10.30-SNAPSHOT'
+    spineToolsVersion = '0.10.35-SNAPSHOT'
 }

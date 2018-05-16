@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -38,8 +38,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public final class Stringifiers {
 
+    /** Prevents instantiation of this utility class. */
     private Stringifiers() {
-        // Disable instantiation of this utility class.
     }
 
     /**
@@ -129,7 +129,6 @@ public final class Stringifiers {
                                                             char delimiter) {
         checkNotNull(keyClass);
         checkNotNull(valueClass);
-        checkNotNull(delimiter);
         final Stringifier<Map<K, V>> mapStringifier =
                 new MapStringifier<>(keyClass, valueClass, delimiter);
         return mapStringifier;
@@ -188,7 +187,6 @@ public final class Stringifiers {
      */
     public static <T> Stringifier<List<T>> newForListOf(Class<T> elementClass, char delimiter) {
         checkNotNull(elementClass);
-        checkNotNull(delimiter);
         final Stringifier<List<T>> listStringifier =
                 new ListStringifier<>(elementClass, delimiter);
         return listStringifier;
