@@ -68,6 +68,8 @@ apply from: generateDescriptorSetScript
 apply from: testArtifactsScript
 
 dependencies {
+    compile "com.google.guava:guava:$guavaVersion"
+
     /* As a Library, we provide logging facade API, not specific logger bindings.
        Target apps are free to use any binding they need. */
     compile "org.slf4j:slf4j-api:$slf4JVersion"
