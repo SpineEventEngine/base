@@ -87,22 +87,22 @@ ext {
     credentialsPropertyFile = 'credentials.properties'
     publishPlugin = "$rootDir/scripts/publish.gradle"
     projectsToPublish = [
-        "base",
-        "testlib",
+        'base',
+        'testlib',
 
         // Code generation common codebase.
-        "codegen",
+        'codegen',
 
         // Gradle plugins
         'gcloud-storage',
         'javadoc-filter',
         'javadoc-prettifier',
-        "plugin-base",
+        'plugin-base',
         'reflections-plugin',
-        "model-compiler",
+        'model-compiler',
 
         // Protoc compiler plugin
-        "protoc-plugin"
+        'protoc-plugin'
     ]
 }
 
@@ -142,7 +142,7 @@ subprojects {
 
     apply plugin: 'java'
     apply plugin: 'net.ltgt.errorprone'
-    
+
     apply plugin: 'maven-publish'
 
     sourceCompatibility = 1.8
@@ -242,7 +242,7 @@ subprojects {
                 '-XepExcludedPaths:.*/generated/.*'
         ]
     }
-    
+
     task sourceJar(type: Jar) {
         from sourceSets.main.allJava
         classifier "sources"
@@ -257,7 +257,7 @@ subprojects {
         from ("$projectDir/build/docs/javadoc")
         classifier "javadoc"
     }
-    
+
     // Apply the same IDEA module configuration for each of sub-projects.
     idea {
         module {
