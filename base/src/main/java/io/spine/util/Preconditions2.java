@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -19,6 +19,8 @@
  */
 
 package io.spine.util;
+
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -42,6 +44,7 @@ public class Preconditions2 {
      * @throws NullPointerException if the passed string is {@code null}
      * @throws IllegalArgumentException if the string is empty or blank
      */
+    @CanIgnoreReturnValue
     public static String checkNotEmptyOrBlank(String stringToCheck) {
         checkNotNull(stringToCheck);
         checkArgument(!stringToCheck.isEmpty());

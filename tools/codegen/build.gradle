@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -23,11 +23,9 @@ group 'io.spine.tools'
 buildscript {
     apply from: "$rootDir/ext.gradle"
 
-    ext {
-        googleMavenCentralMirror = 'https://maven-central.storage.googleapis.com'
-    }
-
     repositories {
+        maven { url = sonatypeSnapshots }
+
         jcenter()
         maven { url = googleMavenCentralMirror }
         mavenCentral()
@@ -36,15 +34,19 @@ buildscript {
     //noinspection GroovyAssignabilityCheck
     dependencies {
         classpath(group: 'com.google.protobuf',
-                name: 'protobuf-gradle-plugin',
-                version: protobufGradlePluginVersion) {
+                  name: 'protobuf-gradle-plugin',
+                  version: protobufGradlePluginVersion) {
             // exclude an old Guava version
             exclude group: 'com.google.guava'
         }
     }
 
     configurations.all({
-        resolutionStrategy.cacheChangingModulesFor(0, 'seconds')
+        resolutionStrategy {
+            cacheChangingModulesFor(0, 'seconds')
+            force "com.google.guava:guava:$guavaVersion"
+            force "com.google.guava:guava-testlib:$guavaVersion"
+        }
     })
 }
 
@@ -52,14 +54,11 @@ apply plugin: 'com.google.protobuf'
 apply from: generateDescriptorSetScript
 
 dependencies {
-    compile group: 'org.slf4j', name: 'slf4j-api', version: slf4JVersion
-
-    compile group: 'com.google.protobuf', name: 'protobuf-java', version: protobufVersion
-    compile group: 'com.google.protobuf', name: 'protobuf-java-util', version: protobufVersion
-
+    compile project(':base')
+    
     compile group: 'com.squareup', name: 'javapoet', version: javaPoetVersion
 
-    testCompile project(':testutil-base')
+    testCompile project(':testlib')
 }
 
 protobuf {

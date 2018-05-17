@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -22,11 +22,13 @@ package io.spine.tools.proto;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.testing.NullPointerTester;
-import io.spine.test.Tests;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import java.util.List;
 
+import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
 import static io.spine.tools.proto.FileName.of;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -37,9 +39,12 @@ import static org.junit.Assert.assertTrue;
  */
 public class FileNameShould {
 
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
+
     @Test
     public void have_utility_ctor_for_Suffix() {
-        Tests.assertHasPrivateParameterlessCtor(FileName.Suffix.class);
+        assertHasPrivateParameterlessCtor(FileName.Suffix.class);
     }
 
     @Test
@@ -48,8 +53,9 @@ public class FileNameShould {
                                                   NullPointerTester.Visibility.PACKAGE);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void require_standard_extension() {
+        thrown.expect(IllegalArgumentException.class);
         FileName.of("some_thing");
     }
 

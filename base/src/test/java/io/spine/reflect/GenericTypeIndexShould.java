@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -21,9 +21,11 @@
 package io.spine.reflect;
 
 import com.google.common.testing.NullPointerTester;
-import io.spine.test.Tests;
+import io.spine.reflect.GenericTypeIndex.Default;
 import org.junit.Test;
 
+import static io.spine.reflect.GenericTypeIndex.Default.getArgument;
+import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -33,26 +35,26 @@ public class GenericTypeIndexShould {
 
     @Test
     public void have_utility_ctor_in_the_Default_class() {
-        Tests.assertHasPrivateParameterlessCtor(GenericTypeIndex.Default.class);
+        assertHasPrivateParameterlessCtor(Default.class);
     }
 
     @Test
     public void obtain_generic_argument_assuming_generic_superclass() {
         final Parametrized<Long, String> val = new Parametrized<Long, String>() {};
-        assertEquals(Long.class, GenericTypeIndex.Default.getArgument(val.getClass(), Base.class, 0));
-        assertEquals(String.class, GenericTypeIndex.Default.getArgument(val.getClass(), Base.class, 1));
+        assertEquals(Long.class, getArgument(val.getClass(), Base.class, 0));
+        assertEquals(String.class, getArgument(val.getClass(), Base.class, 1));
     }
 
     @Test
     public void obtain_generic_argument_via_superclass() {
-        assertEquals(String.class, GenericTypeIndex.Default.getArgument(Leaf.class, Base.class, 0));
-        assertEquals(Float.class, GenericTypeIndex.Default.getArgument(Leaf.class, Base.class, 1));
+        assertEquals(String.class, getArgument(Leaf.class, Base.class, 0));
+        assertEquals(Float.class, getArgument(Leaf.class, Base.class, 1));
     }
 
     @Test
     public void pass_null_tolerance_check() {
         new NullPointerTester()
-                .testAllPublicStaticMethods(GenericTypeIndex.Default.class);
+                .testAllPublicStaticMethods(Default.class);
     }
 
     @SuppressWarnings({"EmptyClass", "unused"})

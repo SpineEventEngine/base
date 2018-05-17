@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -32,7 +32,11 @@ import static org.junit.Assert.fail;
 /**
  * @author Mikhail Mikhaylov
  */
-@SuppressWarnings({"DuplicateStringLiteralInspection", "LocalVariableNamingConvention"})
+@SuppressWarnings({
+        "DuplicateStringLiteralInspection",
+        "LocalVariableNamingConvention",
+        "CheckReturnValue" /* when we call the builder methods. */}
+)
 public class UrlsShould {
 
     @Test

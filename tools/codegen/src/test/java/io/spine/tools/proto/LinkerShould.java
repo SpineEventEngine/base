@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -54,8 +54,7 @@ public class LinkerShould {
         assertTrue(resolved.size() > 0);
         assertTrue(resolved.containsAll(ImmutableList.of(
                 "google/protobuf/any.proto",
-                "google/protobuf/descriptor.proto",
-                "google/protobuf/timestamp.proto")
+                "google/protobuf/descriptor.proto")
         ));
     }
 

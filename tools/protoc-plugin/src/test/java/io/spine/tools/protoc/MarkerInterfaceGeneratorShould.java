@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -27,7 +27,9 @@ import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import com.google.protobuf.compiler.PluginProtos.Version;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -58,11 +60,21 @@ public class MarkerInterfaceGeneratorShould {
     private static final Pattern CUSTOMER_EVENT_INTERFACE_DECL_PATTERN =
             compile("public\\s+interface\\s+ProtocCustomerEvent\\s*extends\\s+Message\\s*\\{\\s*}");
 
-
     private static final Pattern CUSTOMER_EVENT_OR_COMMAND =
             compile("Customer(Command|Event)");
 
     private SpineProtoGenerator codeGenerator;
+
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
+
+    private static Version version() {
+        return Version.newBuilder()
+                      .setMajor(3)
+                      .setMinor(3)
+                      .setPatch(0)
+                      .build();
+    }
 
     @Before
     public void setUp() {
@@ -79,34 +91,35 @@ public class MarkerInterfaceGeneratorShould {
     @Test
     public void generate_insertion_point_contents_for_EveryIs_option() {
         // Sample path; never resolved
-        final String filePath = "/proto/spine/tools/protoc/every_is_test.proto";
+        String filePath = "/proto/spine/tools/protoc/every_is_test.proto";
 
-        final FileDescriptorProto descriptor = EveryIsTestProto.getDescriptor().toProto();
-        final CodeGeneratorRequest request = CodeGeneratorRequest.newBuilder()
-                                                                 .setCompilerVersion(version())
-                                                                 .addFileToGenerate(filePath)
-                                                                 .addProtoFile(descriptor)
-                                                                 .build();
-        final CodeGeneratorResponse response = codeGenerator.process(request);
+        FileDescriptorProto descriptor = EveryIsTestProto.getDescriptor()
+                                                         .toProto();
+        CodeGeneratorRequest request = CodeGeneratorRequest.newBuilder()
+                                                           .setCompilerVersion(version())
+                                                           .addFileToGenerate(filePath)
+                                                           .addProtoFile(descriptor)
+                                                           .build();
+        CodeGeneratorResponse response = codeGenerator.process(request);
         assertNotNull(response);
-        final List<File> files = response.getFileList();
+        List<File> files = response.getFileList();
         assertEquals(3, files.size());
         for (File file : files) {
-            final String name = file.getName();
+            String name = file.getName();
             assertTrue(name.startsWith(PACKAGE_PATH));
 
-            final String insertionPoint = file.getInsertionPoint();
+            String insertionPoint = file.getInsertionPoint();
             if (!insertionPoint.isEmpty()) {
-                final String messageName = PROTO_PACKAGE + name.substring(name.lastIndexOf('/') + 1,
-                                                                          name.lastIndexOf('.'));
+                String messageName = PROTO_PACKAGE + name.substring(name.lastIndexOf('/') + 1,
+                                                                    name.lastIndexOf('.'));
                 assertEquals(insertionPoint, format(INSERTION_POINT_IMPLEMENTS, messageName));
 
-                final String content = file.getContent();
-                final Matcher matcher = CUSTOMER_EVENT_INTERFACE_PATTERN.matcher(content);
+                String content = file.getContent();
+                Matcher matcher = CUSTOMER_EVENT_INTERFACE_PATTERN.matcher(content);
                 assertTrue(matcher.matches());
             } else {
-                final String content = file.getContent();
-                final Matcher matcher = CUSTOMER_EVENT_INTERFACE_DECL_PATTERN.matcher(content);
+                String content = file.getContent();
+                Matcher matcher = CUSTOMER_EVENT_INTERFACE_DECL_PATTERN.matcher(content);
                 assertTrue(matcher.find());
             }
         }
@@ -115,35 +128,39 @@ public class MarkerInterfaceGeneratorShould {
     @Test
     public void generate_insertion_point_contents_for_Is_option() {
         // Sample path; never resolved
-        final String filePath = "/proto/spine/tools/protoc/is_test.proto";
+        String filePath = "/proto/spine/tools/protoc/is_test.proto";
 
-        final FileDescriptorProto descriptor = IsTestProto.getDescriptor().toProto();
-        final CodeGeneratorRequest request = CodeGeneratorRequest.newBuilder()
-                                                                 .setCompilerVersion(version())
-                                                                 .addFileToGenerate(filePath)
-                                                                 .addProtoFile(descriptor)
-                                                                 .build();
-        final CodeGeneratorResponse response = codeGenerator.process(request);
+        FileDescriptorProto descriptor = IsTestProto.getDescriptor()
+                                                    .toProto();
+        CodeGeneratorRequest request =
+                CodeGeneratorRequest.newBuilder()
+                                    .setCompilerVersion(version())
+                                    .addFileToGenerate(filePath)
+                                    .addProtoFile(descriptor)
+                                    .build();
+        CodeGeneratorResponse response = codeGenerator.process(request);
         assertNotNull(response);
-        final List<File> files = response.getFileList();
+        List<File> files = response.getFileList();
         assertEquals(4, files.size());
         for (File file : files) {
-            final String name = file.getName();
+            String name = file.getName();
             assertTrue(name.startsWith(PACKAGE_PATH));
 
-            final String insertionPoint = file.getInsertionPoint();
+            String insertionPoint = file.getInsertionPoint();
             if (!insertionPoint.isEmpty()) {
-                final String messageName = PROTO_PACKAGE + name.substring(name.lastIndexOf('/') + 1, name.lastIndexOf('.'));
+                String messageName = PROTO_PACKAGE +
+                        name.substring(name.lastIndexOf('/') + 1, name.lastIndexOf('.'));
                 assertEquals(format(INSERTION_POINT_IMPLEMENTS, messageName), insertionPoint);
             }
 
-            final String content = file.getContent();
+            String content = file.getContent();
             if (name.endsWith("ProtocNameUpdated.java")) {
                 assertTrue(content.contains("Event,"));
             } else if (name.endsWith("ProtocUpdateName.java")) {
                 assertTrue(content.contains("Command,"));
             } else {
-                assertTrue(CUSTOMER_EVENT_OR_COMMAND.matcher(name).find());
+                assertTrue(CUSTOMER_EVENT_OR_COMMAND.matcher(name)
+                                                    .find());
             }
         }
     }
@@ -151,28 +168,31 @@ public class MarkerInterfaceGeneratorShould {
     @Test
     public void generate_insertion_point_contents_for_EveryIs_in_single_file() {
         // Sample path; never resolved
-        final String filePath = "/proto/spine/tools/protoc/every_is_in_one_file.proto";
+        String filePath = "/proto/spine/tools/protoc/every_is_in_one_file.proto";
 
-        final FileDescriptorProto descriptor = EveryIsInOneFileProto.getDescriptor().toProto();
-        final CodeGeneratorRequest request = CodeGeneratorRequest.newBuilder()
-                                                                 .setCompilerVersion(version())
-                                                                 .addFileToGenerate(filePath)
-                                                                 .addProtoFile(descriptor)
-                                                                 .build();
-        final CodeGeneratorResponse response = codeGenerator.process(request);
+        FileDescriptorProto descriptor = EveryIsInOneFileProto.getDescriptor()
+                                                              .toProto();
+        CodeGeneratorRequest request =
+                CodeGeneratorRequest.newBuilder()
+                                    .setCompilerVersion(version())
+                                    .addFileToGenerate(filePath)
+                                    .addProtoFile(descriptor)
+                                    .build();
+        CodeGeneratorResponse response = codeGenerator.process(request);
         assertNotNull(response);
-        final List<File> files = response.getFileList();
+        List<File> files = response.getFileList();
         assertEquals(3, files.size());
         for (File file : files) {
-            if (!file.getName().equals("io/spine/tools/protoc/ProtocCustomerEvent.java")) {
-                final String name = file.getName();
+            if (!file.getName()
+                     .equals("io/spine/tools/protoc/ProtocCustomerEvent.java")) {
+                String name = file.getName();
                 assertEquals(PACKAGE_PATH + "/EveryIsInOneFileProto.java", name);
 
-                final String insertionPoint = file.getInsertionPoint();
+                String insertionPoint = file.getInsertionPoint();
                 assertTrue(insertionPoint.startsWith(format(INSERTION_POINT_IMPLEMENTS,
                                                             PROTO_PACKAGE)));
-                final String content = file.getContent();
-                final Matcher matcher = CUSTOMER_EVENT_INTERFACE_PATTERN.matcher(content);
+                String content = file.getContent();
+                Matcher matcher = CUSTOMER_EVENT_INTERFACE_PATTERN.matcher(content);
                 assertTrue(content, matcher.matches());
             }
         }
@@ -181,20 +201,23 @@ public class MarkerInterfaceGeneratorShould {
     @Test
     public void generate_insertion_point_contents_for_Is_in_single_file() {
         // Sample path; never resolved
-        final String filePath = "/proto/spine/tools/protoc/is_in_one_file.proto";
+        String filePath = "/proto/spine/tools/protoc/is_in_one_file.proto";
 
-        final FileDescriptorProto descriptor = IsInOneFileProto.getDescriptor().toProto();
-        final CodeGeneratorRequest request = CodeGeneratorRequest.newBuilder()
-                                                                 .setCompilerVersion(version())
-                                                                 .addFileToGenerate(filePath)
-                                                                 .addProtoFile(descriptor)
-                                                                 .build();
+        FileDescriptorProto descriptor = IsInOneFileProto.getDescriptor()
+                                                         .toProto();
+        CodeGeneratorRequest request =
+                CodeGeneratorRequest.newBuilder()
+                                    .setCompilerVersion(version())
+                                    .addFileToGenerate(filePath)
+                                    .addProtoFile(descriptor)
+                                    .build();
         final CodeGeneratorResponse response = codeGenerator.process(request);
         assertNotNull(response);
-        final List<File> files = response.getFileList();
+        List<File> files = response.getFileList();
         assertEquals(3, files.size());
         for (File file : files) {
-            if (file.getName().endsWith("Event.java")) {
+            if (file.getName()
+                    .endsWith("Event.java")) {
                 assertFalse(file.hasInsertionPoint());
             } else {
                 final String name = file.getName();
@@ -210,35 +233,31 @@ public class MarkerInterfaceGeneratorShould {
         }
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void not_accept_requests_from_old_compiler() {
-        final Version version = Version.newBuilder()
-                                       .setMajor(2)
-                                       .build();
-        final FileDescriptorProto stubFile = FileDescriptorProto.getDefaultInstance();
-        final CodeGeneratorRequest request = CodeGeneratorRequest.newBuilder()
-                                                                 .setCompilerVersion(version)
-                                                                 .addProtoFile(stubFile)
-                                                                 .build();
+        Version version = Version.newBuilder()
+                                 .setMajor(2)
+                                 .build();
+        FileDescriptorProto stubFile = FileDescriptorProto.getDefaultInstance();
+        CodeGeneratorRequest request =
+                CodeGeneratorRequest.newBuilder()
+                                    .setCompilerVersion(version)
+                                    .addProtoFile(stubFile)
+                                    .build();
+        thrown.expect(IllegalArgumentException.class);
         codeGenerator.process(request);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void not_accept_empty_requests() {
-        final Version version = Version.newBuilder()
-                                       .setMajor(3)
-                                       .build();
-        final CodeGeneratorRequest request = CodeGeneratorRequest.newBuilder()
-                                                                 .setCompilerVersion(version)
-                                                                 .build();
+        Version version = Version.newBuilder()
+                                 .setMajor(3)
+                                 .build();
+        CodeGeneratorRequest request =
+                CodeGeneratorRequest.newBuilder()
+                                    .setCompilerVersion(version)
+                                    .build();
+        thrown.expect(IllegalArgumentException.class);
         codeGenerator.process(request);
-    }
-
-    private static Version version() {
-        return Version.newBuilder()
-                      .setMajor(3)
-                      .setMinor(3)
-                      .setPatch(0)
-                      .build();
     }
 }

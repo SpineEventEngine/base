@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -42,7 +42,7 @@ import static java.lang.String.format;
  */
 class FieldValidatorFactory {
 
-    private static final Map<Class<?>, JavaType> SCALAR_FIELD_TYPES =
+    private static final ImmutableMap<Class<?>, JavaType> SCALAR_FIELD_TYPES =
             ImmutableMap.<Class<?>, JavaType>builder().put(Integer.class, JavaType.INT)
                                                       .put(Long.class, JavaType.LONG)
                                                       .put(Float.class, JavaType.FLOAT)

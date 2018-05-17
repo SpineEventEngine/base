@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -24,9 +24,9 @@ import com.google.protobuf.Descriptors;
 import com.google.protobuf.StringValue;
 import io.spine.base.CommandMessage;
 import io.spine.base.given.CommandFromCommands;
-import io.spine.test.Tests;
 import org.junit.Test;
 
+import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -37,7 +37,7 @@ public class CommandMessageShould {
 
     @Test
     public void have_utility_ctor_for_File_class() {
-        Tests.assertHasPrivateParameterlessCtor(CommandMessage.File.class);
+        assertHasPrivateParameterlessCtor(CommandMessage.File.class);
     }
 
     @Test

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -21,20 +21,23 @@
 package io.spine.type;
 
 import com.google.common.testing.EqualsTester;
-import com.google.common.testing.SerializableTester;
 import com.google.protobuf.Any;
 import com.google.protobuf.BoolValue;
 import com.google.protobuf.Descriptors;
 import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.Field;
 import com.google.protobuf.InvalidProtocolBufferException;
+import com.google.protobuf.Message;
 import com.google.protobuf.StringValue;
 import com.google.protobuf.Timestamp;
 import com.google.protobuf.UInt32Value;
 import io.spine.option.EntityOption;
 import io.spine.test.Tests;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
+import static com.google.common.testing.SerializableTester.reserializeAndAssert;
 import static io.spine.base.Identifier.newUuid;
 import static io.spine.protobuf.TypeConverter.toMessage;
 import static io.spine.type.TypeUrl.composeTypeUrl;
@@ -46,32 +49,38 @@ public class TypeUrlShould {
     private static final String STRING_VALUE_TYPE_NAME = StringValue.getDescriptor()
                                                                     .getFullName();
 
-    private static final String STRING_VALUE_TYPE_URL_STR = composeTypeUrl(
-            TypeUrl.Prefix.GOOGLE_APIS.value(),
-            STRING_VALUE_TYPE_NAME);
+    private static final String STRING_VALUE_TYPE_URL_STR =
+            composeTypeUrl(TypeUrl.Prefix.GOOGLE_APIS.value(),
+                           STRING_VALUE_TYPE_NAME);
 
     private final TypeUrl stringValueTypeUrl = TypeUrl.from(StringValue.getDescriptor());
 
-    @Test(expected = NullPointerException.class)
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
+
+    @Test
     public void not_accept_null_value() {
-        TypeUrl.parse(Tests.<String>nullRef());
+        thrown.expect(NullPointerException.class);
+        TypeUrl.parse(Tests.nullRef());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void not_accept_empty_string() {
+        thrown.expect(IllegalArgumentException.class);
         TypeUrl.parse("");
     }
 
     @Test
     public void create_from_message() {
-        final TypeUrl typeUrl = TypeUrl.of(toMessage(newUuid()));
+        Message msg = toMessage(newUuid());
+        TypeUrl typeUrl = TypeUrl.of(msg);
 
         assertIsStringValueUrl(typeUrl);
     }
 
     @Test
     public void create_from_type_name() {
-        final TypeUrl typeUrl = TypeName.of(STRING_VALUE_TYPE_NAME)
+        TypeUrl typeUrl = TypeName.of(STRING_VALUE_TYPE_NAME)
                                         .toUrl();
 
         assertIsStringValueUrl(typeUrl);
@@ -79,14 +88,15 @@ public class TypeUrlShould {
 
     @Test
     public void create_from_type_url_string() {
-        final TypeUrl typeUrl = TypeUrl.parse(STRING_VALUE_TYPE_URL_STR);
+        TypeUrl typeUrl = TypeUrl.parse(STRING_VALUE_TYPE_URL_STR);
 
         assertIsStringValueUrl(typeUrl);
     }
 
     @Test
+    @SuppressWarnings("CheckReturnValue") // we test exception cause, not the output
     public void do_not_accept_Any_with_malformed_type_url() {
-        final Any any = Any.newBuilder().setTypeUrl("invalid_type_url").build();
+        Any any = Any.newBuilder().setTypeUrl("invalid_type_url").build();
         try {
             TypeUrl.ofEnclosed(any);
         } catch (RuntimeException e) {
@@ -111,18 +121,18 @@ public class TypeUrlShould {
 
     @Test
     public void create_by_descriptor_of_google_msg() {
-        final TypeUrl typeUrl = TypeUrl.from(StringValue.getDescriptor());
+        TypeUrl typeUrl = TypeUrl.from(StringValue.getDescriptor());
 
         assertIsStringValueUrl(typeUrl);
     }
 
     @Test
     public void create_by_descriptor_of_spine_msg() {
-        final Descriptors.Descriptor descriptor = EntityOption.getDescriptor();
-        final String expectedUrl = composeTypeUrl(TypeUrl.Prefix.SPINE.value(),
+        Descriptors.Descriptor descriptor = EntityOption.getDescriptor();
+        String expectedUrl = composeTypeUrl(TypeUrl.Prefix.SPINE.value(),
                                                   descriptor.getFullName());
 
-        final TypeUrl typeUrl = TypeUrl.from(descriptor);
+        TypeUrl typeUrl = TypeUrl.from(descriptor);
 
         assertEquals(expectedUrl, typeUrl.value());
     }
@@ -141,16 +151,16 @@ public class TypeUrlShould {
 
     private static void assertCreatesTypeUrlFromEnum(String typeUrlPrefix,
                                                      EnumDescriptor enumDescriptor) {
-        final String expected = composeTypeUrl(typeUrlPrefix, enumDescriptor.getFullName());
+        String expected = composeTypeUrl(typeUrlPrefix, enumDescriptor.getFullName());
 
-        final TypeUrl typeUrl = TypeUrl.from(enumDescriptor);
+        TypeUrl typeUrl = TypeUrl.from(enumDescriptor);
 
         assertEquals(expected, typeUrl.value());
     }
 
     @Test
     public void create_instance_by_class() {
-        final TypeUrl typeUrl = TypeUrl.of(StringValue.class);
+        TypeUrl typeUrl = TypeUrl.of(StringValue.class);
 
         assertIsStringValueUrl(typeUrl);
     }
@@ -172,29 +182,34 @@ public class TypeUrlShould {
                 .testEquals();
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void do_not_accept_value_without_prefix_separator() {
+        thrown.expect(IllegalArgumentException.class);
         TypeUrl.parse("prefix:Type");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void do_not_accept_empty_prefix() {
+        thrown.expect(IllegalArgumentException.class);
         TypeUrl.parse("/package.Type");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void do_not_accept_empty_name() {
+        thrown.expect(IllegalArgumentException.class);
         TypeUrl.parse("type.prefix/");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void do_not_accept_malformed_type_URL() {
+        thrown.expect(IllegalArgumentException.class);
         TypeUrl.parse("prefix/prefix/type.Name");
     }
 
-    @Test(expected = UnknownTypeException.class)
+    @Test
     public void throw_exception_for_unknown_Java_class() {
-        final TypeUrl url = TypeUrl.parse("unknown/JavaClass");
+        TypeUrl url = TypeUrl.parse("unknown/JavaClass");
+        thrown.expect(UnknownTypeException.class);
         url.getJavaClass();
     }
 
@@ -207,7 +222,7 @@ public class TypeUrlShould {
 
     @Test
     public void have_prefix_enumeration() {
-        final TypeUrl.Prefix spinePrefix = TypeUrl.Prefix.SPINE;
+        TypeUrl.Prefix spinePrefix = TypeUrl.Prefix.SPINE;
         assertTrue(spinePrefix.toString()
                               .contains(spinePrefix.name()
                                                    .toLowerCase()));
@@ -215,6 +230,6 @@ public class TypeUrlShould {
 
     @Test
     public void serialize() {
-        SerializableTester.reserializeAndAssert(TypeUrl.of(Timestamp.class));
+        reserializeAndAssert(TypeUrl.of(Timestamp.class));
     }
 }

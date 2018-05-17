@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -27,7 +27,9 @@ import com.google.protobuf.StringValue;
 import io.spine.test.Tests;
 import io.spine.test.protobuf.MessageToPack;
 import io.spine.type.TypeUrl;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import java.util.Iterator;
 
@@ -52,6 +54,9 @@ public class AnyPackerShould {
     private final MessageToPack spineMsg = MessageToPack.newBuilder()
                                                         .setValue(newUuidValue())
                                                         .build();
+
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
     @Test
     public void have_private_constructor() {
@@ -102,14 +107,16 @@ public class AnyPackerShould {
         assertSame(any, pack(any));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void fail_on_attempt_to_pack_null() {
+        thrown.expect(NullPointerException.class);
         pack(Tests.<Message>nullRef());
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void fail_on_attempt_to_unpack_null() {
-        unpack(Tests.<Any>nullRef());
+        thrown.expect(NullPointerException.class);
+        unpack(Tests.nullRef());
     }
 
     @Test

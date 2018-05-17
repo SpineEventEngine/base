@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -21,12 +21,12 @@
 package io.spine.tools.proto;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.test.Tests;
-import io.spine.tools.util.StringTypeValue;
+import io.spine.value.StringTypeValue;
 import org.junit.Test;
 
 import java.util.List;
 
+import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
 import static io.spine.tools.proto.CamelCase.convert;
 import static org.junit.Assert.assertEquals;
 
@@ -37,7 +37,7 @@ public class CamelCaseShould {
 
     @Test
     public void have_utility_ctor() {
-        Tests.assertHasPrivateParameterlessCtor(CamelCase.class);
+        assertHasPrivateParameterlessCtor(CamelCase.class);
     }
 
     @Test

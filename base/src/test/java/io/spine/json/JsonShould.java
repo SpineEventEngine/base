@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -22,7 +22,6 @@ package io.spine.json;
 
 import com.google.common.collect.Lists;
 import com.google.protobuf.Descriptors;
-import com.google.protobuf.Message;
 import com.google.protobuf.StringValue;
 import com.google.protobuf.util.JsonFormat;
 import io.spine.json.given.Node;
@@ -30,7 +29,9 @@ import io.spine.json.given.WrappedString;
 import io.spine.test.Tests;
 import io.spine.type.KnownTypes;
 import io.spine.type.TypeUrl;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import java.util.List;
 
@@ -48,6 +49,9 @@ import static org.junit.Assert.assertNotNull;
  * @author Alexander Yevsyukov
  */
 public class JsonShould {
+
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
     @Test
     public void have_utility_ctor() {
@@ -69,9 +73,10 @@ public class JsonShould {
         assertFalse(found.isEmpty());
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void toJson_fail_on_null() {
-        toJson(Tests.<Message>nullRef());
+        thrown.expect(NullPointerException.class);
+        toJson(Tests.nullRef());
     }
 
     @Test

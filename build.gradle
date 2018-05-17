@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -28,15 +28,16 @@ buildscript {
     // `ext.gradle` explicitly here.
     apply from: 'ext.gradle'
 
-    ext {
-        googleMavenCentralMirror = 'https://maven-central.storage.googleapis.com'
-        spineRepository = 'http://maven.teamdev.com/repository/spine'
-        spineSnapshotsRepository = 'http://maven.teamdev.com/repository/spine-snapshots'
-    }
-
     repositories {
+        // Snapshots of Error Prone and Guava.
+        maven { url = sonatypeSnapshots }
+
         jcenter()
+
         maven { url = googleMavenCentralMirror }
+
+        // Repository for error-prone plugin.
+        maven { url = gradlePlugins }
 
         mavenCentral()
         mavenLocal()
@@ -50,25 +51,29 @@ buildscript {
 
     //noinspection GroovyAssignabilityCheck
     dependencies {
-        classpath group: 'com.google.guava', name: 'guava', version: guavaVersion
-        /* Uncomment the below statement if you want the dependency to be fetched on each build.
-           Please note that offline builds will not be available then. */
-                                                          //, changing: true
+        classpath group: 'com.google.guava', name: 'guava', version: guavaVersion, changing: true
+        /* Comment `changing: true` statement if you do not want the dependency to be fetched
+           on each build. That will enable offline builds. */
 
-        classpath group: 'io.spine.tools',
-                  name: 'spine-model-compiler',
-                  version: spineModelCompilerVersion
+        classpath ("net.ltgt.gradle:gradle-errorprone-plugin:$errorPronePluginVersion") {
+            exclude group: 'com.google.guava'
+        }
         
-        classpath group: 'io.spine.tools',
-                  name: 'spine-codestyle-checker',
-                  version: spineToolsVersion
+        classpath ("io.spine.tools:spine-model-compiler:$spineToolsVersion") {
+            exclude group: 'com.google.guava'
+        }
         
-        classpath group: 'io.spine.tools',
-                  name: 'gcs-plugin',
-                  version: spineToolsVersion
+        classpath ("io.spine.tools:spine-gcs-plugin:$spineToolsVersion") {
+            exclude group: 'com.google.guava'
+        }
     }
+    
     configurations.all({
-        resolutionStrategy.cacheChangingModulesFor(0, 'seconds')
+        resolutionStrategy {
+            cacheChangingModulesFor(0, 'seconds')
+            force "com.google.guava:guava:$guavaVersion"
+            force "com.google.guava:guava-testlib:$guavaVersion"
+        }
     })
 }
 
@@ -81,12 +86,24 @@ ext {
 
     credentialsPropertyFile = 'credentials.properties'
     publishPlugin = "$rootDir/scripts/publish.gradle"
-    projectsToPublish = ["base",
-                         "model-compiler",
-                         "plugin-base",
-                         "testutil-base",
-                         "protoc-plugin",
-                         "codegen"]
+    projectsToPublish = [
+        'base',
+        'testlib',
+
+        // Code generation common codebase.
+        'codegen',
+
+        // Gradle plugins
+        'gcloud-storage',
+        'javadoc-filter',
+        'javadoc-prettifier',
+        'plugin-base',
+        'reflections-plugin',
+        'model-compiler',
+
+        // Protoc compiler plugin
+        'protoc-plugin'
+    ]
 }
 
 allprojects {
@@ -95,12 +112,9 @@ allprojects {
     apply plugin: 'idea'
     apply plugin: 'project-report'
 
-    group = 'io.spine'
-
     // Use the same version numbering for the Spine Base library.
     version = spineVersion
 }
-
 
 subprojects {
 
@@ -127,49 +141,28 @@ subprojects {
     }
 
     apply plugin: 'java'
-    apply plugin: spineCodestyleCheckerId
+    apply plugin: 'net.ltgt.errorprone'
+
     apply plugin: 'maven-publish'
 
-    // Verifies code style.
-    // The parameters are same for any kind of verification:
-    //
-    //      - "threshold" - is a number of code style violations to consider check passed.
-    //      - "reportType" - report type if a check is not passed. Can be either "error" or "warn".
-    //              * "warn" - the violations are logged to the build report.
-    //              * "error" - build will fail and its report will contain the violations.
-    //
-    //      For more details please see io.spine.tools.codestyle.CodestyleCheckerPlugin
-    codestyleChecker {
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
 
-        // Javadoc @link/@linkplain format checker.
-        //
-        // Finds and reports FQNs used in links in the wrong format.
-        javadocLinkChecker {
-            threshold = 0
-            reportType = "warn"
-        }
-
-        // Right margin line checker.
-        //
-        // Finds and reports about the lines of a code with length above threshold.
-        rightMarginWrappingChecker {
-            maxTextWidth = 100
-        }
-    }
-
-    sourceCompatibility = 1.7
-    targetCompatibility = 1.7
-
-    // Set Java home to point to JDK7 in gradle.properties file.
+    // Set Java home to point to JDK8 in gradle.properties file.
     //
     // For Mac OS X, it looks like this:
     //
     // # suppress inspection "UnusedProperty"
-    // org.gradle.java.home=/Library/Java/JavaVirtualMachines/jdk1.7.0_80.jdk/Contents/Home/
+    // org.gradle.java.home=/Library/Java/JavaVirtualMachines/jdk1.8.0_51.jdk/Contents/Home/
 
     repositories {
+        // Snapshots of Error Prone and Guava TestLib.
+        maven { url = sonatypeSnapshots }
+
         jcenter()
+
         maven { url = googleMavenCentralMirror }
+
         mavenCentral()
         mavenLocal()
 
@@ -181,20 +174,42 @@ subprojects {
     }
 
     dependencies {
-        compile group: 'com.google.guava', name: 'guava', version: guavaVersion
-        compile group: 'com.google.code.findbugs', name: 'jsr305', version: findBugsVersion
+        compile "org.checkerframework:checker-qual:$checkerFrameworkVersion"
 
-        testCompile group: 'com.google.guava', name: 'guava-testlib', version: guavaVersion
+        compile group: 'com.google.guava',
+                name:  'guava',
+                version: guavaVersion,
+                changing: true
+
+        //TODO:2018-05-11:alexander.yevsyukov: Replace the below with Checker Framework
+        // after Guava fully migrates from it too.
+        compile "com.google.code.findbugs:jsr305:$findBugsVersion"
+
+        compile "org.checkerframework:checker-qual:$checkerFrameworkVersion"
+        compile "com.google.errorprone:error_prone_annotations:$errorProneVersion"
+
+        testCompile group:   'com.google.guava',
+                    name:    'guava-testlib',
+                    version:  guavaVersion,
+                    changing: true
     }
 
     sourceSets {
         main {
-            java.srcDirs = [generatedJavaDir, "$sourcesRootDir/main/java", generatedSpineDir]
-            resources.srcDirs = ["$sourcesRootDir/main/resources", "$generatedRootDir/main/resources"]
+            java.srcDirs = [generatedJavaDir,
+                            "$sourcesRootDir/main/java",
+                            generatedSpineDir]
+            
+            resources.srcDirs = ["$sourcesRootDir/main/resources",
+                                 "$generatedRootDir/main/resources"]
         }
         test {
-            java.srcDirs = [generatedTestJavaDir, "$sourcesRootDir/test/java", generatedTestSpineDir]
-            resources.srcDirs = ["$sourcesRootDir/test/resources", "$generatedRootDir/test/resources"]
+            java.srcDirs = [generatedTestJavaDir,
+                            "$sourcesRootDir/test/java",
+                            generatedTestSpineDir]
+            
+            resources.srcDirs = ["$sourcesRootDir/test/resources",
+                                 "$generatedRootDir/test/resources"]
         }
     }
 
@@ -221,6 +236,13 @@ subprojects {
         source = sourceSets.main.allJava
     }
 
+    tasks.withType(JavaCompile) {
+        // Exclude generated sources from being analyzed by Error Prone.
+        options.compilerArgs += [
+                '-XepExcludedPaths:.*/generated/.*'
+        ]
+    }
+
     task sourceJar(type: Jar) {
         from sourceSets.main.allJava
         classifier "sources"
@@ -235,8 +257,6 @@ subprojects {
         from ("$projectDir/build/docs/javadoc")
         classifier "javadoc"
     }
-
-    apply from: filterInternalJavadocsScript
 
     // Apply the same IDEA module configuration for each of sub-projects.
     idea {

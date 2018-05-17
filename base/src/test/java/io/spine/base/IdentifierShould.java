@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -32,7 +32,9 @@ import io.spine.protobuf.AnyPacker;
 import io.spine.test.identifiers.NestedMessageId;
 import io.spine.test.identifiers.SeveralFieldsId;
 import io.spine.test.identifiers.TimestampFieldId;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import static io.spine.base.Identifier.EMPTY_ID;
 import static io.spine.base.Identifier.NULL_ID;
@@ -48,14 +50,19 @@ public class IdentifierShould {
 
     private static final String TEST_ID = "someTestId 1234567890 !@#$%^&()[]{}-+=_";
 
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
+
     @SuppressWarnings("UnnecessaryBoxing") // We want to make the unsupported type obvious.
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void reject_objects_of_unsupported_class_passed() {
+        thrown.expect(IllegalArgumentException.class);
         Identifier.toString(Boolean.valueOf(true));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void reject_unsupported_classes() {
+        thrown.expect(IllegalArgumentException.class);
         Identifier.getType(Float.class);
     }
 
@@ -82,11 +89,13 @@ public class IdentifierShould {
     }
 
     @SuppressWarnings("UnnecessaryBoxing") // We want to make the unsupported type obvious.
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void do_not_convert_unsupported_ID_type_to_Any() {
+        thrown.expect(IllegalArgumentException.class);
         Identifier.pack(Boolean.valueOf(false));
     }
 
+    @SuppressWarnings("ConstantConditions") // Passing null is the purpose of the test.
     @Test
     public void return_NULL_ID_if_convert_null_to_string() {
         assertEquals(NULL_ID, Identifier.toString(null));
@@ -247,8 +256,9 @@ public class IdentifierShould {
         assertEquals(value, Type.STRING.fromMessage(toMessage(value)));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void not_unpack_empty_Any() {
+        thrown.expect(IllegalArgumentException.class);
         Identifier.unpack(Any.getDefaultInstance());
     }
 
