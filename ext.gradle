@@ -72,5 +72,5 @@ ext {
      *
      * Use the latest currently published version here.z
      */
-    spineModelCompilerVersion = '0.10.32.1-SNAPSHOT'
+    spineModelCompilerVersion = '0.10.32-SNAPSHOT'
 }
