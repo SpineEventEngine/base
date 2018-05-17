@@ -26,7 +26,6 @@ import org.gradle.api.Task;
 import org.gradle.api.plugins.PluginContainer;
 import org.gradle.testfixtures.ProjectBuilder;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -94,7 +93,6 @@ public class ProtoJavadocPluginShould {
         assertTrue(dependsOn(task(COMPILE_TEST_JAVA), formatTestProtoDoc));
     }
 
-    @Ignore
     @Test
     public void format_generated_java_sources() throws IOException {
         final String text = "javadoc text";
@@ -109,7 +107,6 @@ public class ProtoJavadocPluginShould {
         formatAndAssert(expected, javadocToFormat, testProjectDir);
     }
 
-    @Ignore
     @Test
     public void handle_multiline_code_snippets_properly() throws IOException {
         final String protoDoc = multilineJavadoc(BACKTICK, BACKTICK);
