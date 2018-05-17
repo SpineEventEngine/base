@@ -70,7 +70,7 @@ ext {
     /**
      * The version of the Spine `model-compiler` plugin which is used to build `base`.
      *
-     * Use the latest currently published version here.z
+     * Use the latest currently published version here.
      */
     spineModelCompilerVersion = '0.10.32-SNAPSHOT'
 }
