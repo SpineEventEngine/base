@@ -32,7 +32,6 @@ import java.util.Objects;
 
 import static io.spine.tools.java.Annotations.generatedBySpineModelCompiler;
 import static io.spine.tools.java.PackageName.DELIMITER;
-import static io.spine.tools.protoc.Logger.log;
 import static javax.lang.model.element.Modifier.PUBLIC;
 
 /**
@@ -63,8 +62,6 @@ final class MarkerInterfaceSpec {
                                                   .value();
             spec = new MarkerInterfaceSpec(javaPackage, optionValue);
         }
-        log(" > Preparing interface spec %s for file %s",
-            spec.getFqn(), srcFile.getName());
         return spec;
     }
 

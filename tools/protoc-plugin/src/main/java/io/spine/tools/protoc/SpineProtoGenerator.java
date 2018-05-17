@@ -20,7 +20,6 @@
 
 package io.spine.tools.protoc;
 
-import com.google.common.base.Function;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
@@ -28,19 +27,12 @@ import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import com.google.protobuf.compiler.PluginProtos.Version;
 
-import javax.annotation.Nullable;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
 import java.util.Collection;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.Collections2.transform;
 import static com.google.common.collect.Sets.newHashSet;
-import static io.spine.tools.protoc.Logger.log;
-import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 
 /**
  * An abstract base for the Protobuf code generator.
@@ -155,7 +147,6 @@ public abstract class SpineProtoGenerator {
             final Collection<File> newFiles = generateForTypesIn(file);
             generatedFiles.addAll(newFiles);
         }
-        writeLog();
         final CodeGeneratorResponse response =
                 CodeGeneratorResponse.newBuilder()
                                      .addAllFile(generatedFiles)
@@ -163,35 +154,16 @@ public abstract class SpineProtoGenerator {
         return response;
     }
 
-    private static void writeLog() {
-        final java.io.File file =
-                new java.io.File(SpineProtoGenerator.class.getSimpleName() + "-log.txt");
-        try (Writer writer = new FileWriter(file)) {
-            writer.append(Logger.compiled());
-        } catch (IOException e) {
-            throw illegalStateWithCauseOf(e);
-        }
-    }
 
     /**
      * Processes the passed proto file.
      */
     private Collection<File> generateForTypesIn(FileDescriptorProto file) {
         final Collection<File> result = newHashSet();
-        log("Processing file %s", file.getName());
         for (DescriptorProto message : file.getMessageTypeList()) {
-            log(" > Processing message %s", message.getName());
             final Collection<File> processedFile = processMessage(file, message);
-            log(" > Resulted into files: %s",
-                transform(processedFile, new Function<File, String>() {
-                    @Override
-                    public String apply(@Nullable File input) {
-                        return input == null ? "" : input.getName();
-                    }
-                }));
             result.addAll(processedFile);
         }
-        log("Done processing file %s %n", file.getName());
         return result;
     }
 }
