@@ -23,7 +23,10 @@
  * Javadocs formatting in generated Protobuf declarations.
  */
 
+@CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.tools.protodoc;
+
+import com.google.errorprone.annotations.CheckReturnValue;
 
 import javax.annotation.ParametersAreNonnullByDefault;

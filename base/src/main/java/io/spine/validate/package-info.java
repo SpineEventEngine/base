@@ -21,7 +21,10 @@
 /**
  * This package provides validation classes and interfaces.
  */
+@CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.validate;
+
+import com.google.errorprone.annotations.CheckReturnValue;
 
 import javax.annotation.ParametersAreNonnullByDefault;

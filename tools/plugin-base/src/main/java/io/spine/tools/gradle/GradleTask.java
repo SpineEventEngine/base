@@ -21,6 +21,7 @@
 package io.spine.tools.gradle;
 
 import com.google.common.base.MoreObjects;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -177,6 +178,7 @@ public final class GradleTask {
          * @param project the target Gradle project
          * @return the newly created Gradle task
          */
+        @CanIgnoreReturnValue
         public GradleTask applyNowTo(Project project) {
             final String errMsg = "Project is not specified for the new Gradle task: ";
             checkNotNull(project, errMsg + name);
@@ -215,13 +217,10 @@ public final class GradleTask {
 
         private void dependTaskOnAllProjects(final Task task, Project rootProject) {
             final String prevTaskName = previousTaskOfAllProjects.getValue();
-            ProjectHierarchy.applyToAll(rootProject, new Action<Project>() {
-                @Override
-                public void execute(Project project) {
-                    final Task existingTask = project.getTasks().findByName(prevTaskName);
-                    if (existingTask != null) {
-                        task.dependsOn(existingTask);
-                    }
+            ProjectHierarchy.applyToAll(rootProject, project -> {
+                final Task existingTask = project.getTasks().findByName(prevTaskName);
+                if (existingTask != null) {
+                    task.dependsOn(existingTask);
                 }
             });
         }
@@ -250,6 +249,7 @@ public final class GradleTask {
         return Objects.hash(name, project);
     }
 
+    @SuppressWarnings("EqualsCalledOnEnumConstant") // for consistency
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {

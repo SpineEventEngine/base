@@ -22,7 +22,10 @@
  * This package provides base data classes for commands, events, errors, rejections, and utilities
  * for working with them.
  */
+@CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.base;
+
+import com.google.errorprone.annotations.CheckReturnValue;
 
 import javax.annotation.ParametersAreNonnullByDefault;

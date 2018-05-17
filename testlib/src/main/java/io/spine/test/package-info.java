@@ -21,7 +21,10 @@
 /**
  * Utility classes for framework testing.
  */
+@CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.test;
+
+import com.google.errorprone.annotations.CheckReturnValue;
 
 import javax.annotation.ParametersAreNonnullByDefault;

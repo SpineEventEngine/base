@@ -46,11 +46,12 @@ public class ValidatingBuilderGenPluginShould {
 
     @Test
     public void compile_generated_validators() {
-        final GradleProject project = GradleProject.newBuilder()
-                                                   .setProjectName(PROJECT_NAME)
-                                                   .setProjectFolder(testProjectDir)
-                                                   .addProtoFiles(PROTO_FILES)
-                                                   .build();
+        GradleProject project =
+                GradleProject.newBuilder()
+                             .setProjectName(PROJECT_NAME)
+                             .setProjectFolder(testProjectDir)
+                             .addProtoFiles(PROTO_FILES)
+                             .build();
         project.executeTask(COMPILE_JAVA);
     }
 }

@@ -21,11 +21,15 @@
 package io.spine.tools.compiler.validation;
 
 import com.google.common.testing.NullPointerTester;
-import com.google.protobuf.DescriptorProtos;
+import com.google.common.testing.NullPointerTester.Visibility;
+import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.squareup.javapoet.ClassName;
 import io.spine.tools.compiler.MessageTypeCache;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
+import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.getDefaultInstance;
 import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
 import static io.spine.tools.compiler.validation.ClassNames.getClassName;
 import static io.spine.tools.compiler.validation.ClassNames.getStringClassName;
@@ -41,21 +45,25 @@ public class ClassNamesShould {
     private static final String TEST_PACKAGE = ClassNamesShould.class.getPackage()
                                                                      .getName();
 
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
+
     @Test
     public void return_string_class_name() {
-        final ClassName actual = getStringClassName();
+        ClassName actual = getStringClassName();
         assertEquals(ClassName.get(String.class), actual);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void throw_exception_when_generic_class_name_is_not_found() {
-        final MessageTypeCache messageTypeCache = new MessageTypeCache();
+        MessageTypeCache messageTypeCache = new MessageTypeCache();
+        thrown.expect(IllegalArgumentException.class);
         getValidatorMessageClassName(TEST_PACKAGE, messageTypeCache, "field");
     }
 
     @Test
     public void return_constructed_class_name() {
-        final ClassName actual = getClassName(TEST_PACKAGE, getClass().getSimpleName());
+        ClassName actual = getClassName(TEST_PACKAGE, getClass().getSimpleName());
         assertEquals(ClassName.get(getClass()), actual);
     }
 
@@ -67,8 +75,7 @@ public class ClassNamesShould {
     @Test
     public void pass_null_tolerance_check() {
         new NullPointerTester()
-                .setDefault(DescriptorProtos.FieldDescriptorProto.class,
-                            DescriptorProtos.FieldDescriptorProto.getDefaultInstance())
-                .testStaticMethods(ClassNames.class, NullPointerTester.Visibility.PACKAGE);
+                .setDefault(FieldDescriptorProto.class, getDefaultInstance())
+                .testStaticMethods(ClassNames.class, Visibility.PACKAGE);
     }
 }

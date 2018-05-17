@@ -67,7 +67,6 @@ public class ProtoJavadocPlugin extends SpinePlugin {
 
     static final String PROTO_JAVADOC_EXTENSION_NAME = "protoJavadoc";
 
-    @SuppressWarnings("CheckReturnValue") // builder methods
     @Override
     public void apply(final Project project) {
         log().debug("Adding the ProtoJavadocPlugin extension to the project.");

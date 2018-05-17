@@ -42,7 +42,7 @@ import static java.lang.String.format;
  */
 class FieldValidatorFactory {
 
-    private static final Map<Class<?>, JavaType> SCALAR_FIELD_TYPES =
+    private static final ImmutableMap<Class<?>, JavaType> SCALAR_FIELD_TYPES =
             ImmutableMap.<Class<?>, JavaType>builder().put(Integer.class, JavaType.INT)
                                                       .put(Long.class, JavaType.LONG)
                                                       .put(Float.class, JavaType.FLOAT)

@@ -21,7 +21,10 @@
 /**
  * Classes for generating code for rejections.
  */
+@CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.tools.compiler.rejection;
+
+import com.google.errorprone.annotations.CheckReturnValue;
 
 import javax.annotation.ParametersAreNonnullByDefault;

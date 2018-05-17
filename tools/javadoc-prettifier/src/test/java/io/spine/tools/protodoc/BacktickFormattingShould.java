@@ -61,9 +61,13 @@ public class BacktickFormattingShould {
         assertEquals(multiLinedText, formatting.execute(multiLinedText));
     }
 
+    /**
+     * @see java.util.regex.Matcher#quoteReplacement(String)
+     */
     @Test
-    public void escape_replacement_for_matcher() { // See Matcher.quoteReplacement().
+    public void escape_replacement_for_matcher() {
         final String dollarInBackticks = BACKTICK + "$" + BACKTICK;
-        formatting.execute(dollarInBackticks);
+        final String result = formatting.execute(dollarInBackticks);
+        assertEquals("{@code $}", result);
     }
 }

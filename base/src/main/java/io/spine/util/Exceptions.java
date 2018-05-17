@@ -20,6 +20,8 @@
 
 package io.spine.util;
 
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
+
 import java.util.Locale;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -204,6 +206,7 @@ public final class Exceptions {
      * @return nothing ever, always throws an exception. The return type is given for convenience.
      * @throws IllegalStateException always
      */
+    @CanIgnoreReturnValue
     public static IllegalStateException newIllegalStateException(Throwable cause,
                                                                  String format,
                                                                  Object... args) {

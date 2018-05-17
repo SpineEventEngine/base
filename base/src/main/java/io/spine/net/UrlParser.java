@@ -30,6 +30,7 @@ import io.spine.net.Url.Record.Schema;
  *
  * @author Mikhail Mikhaylov
  */
+@SuppressWarnings("CheckReturnValue") // of calls to methods of fields that are builders
 class UrlParser {
 
     private static final char SEMICOLON = ':';
@@ -204,7 +205,6 @@ class UrlParser {
         if (unProcessedInput.isEmpty()) {
             return;
         }
-
         record.setPath(unProcessedInput);
         unProcessedInput = "";
     }

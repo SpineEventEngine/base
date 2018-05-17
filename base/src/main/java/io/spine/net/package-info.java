@@ -22,7 +22,10 @@
  * This package contains classes and interfaces for Internet data types.
  */
 
+@CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.net;
+
+import com.google.errorprone.annotations.CheckReturnValue;
 
 import javax.annotation.ParametersAreNonnullByDefault;

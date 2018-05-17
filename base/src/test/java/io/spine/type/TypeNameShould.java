@@ -26,7 +26,9 @@ import com.google.protobuf.StringValue;
 import com.google.protobuf.UInt64Value;
 import io.spine.option.EntityOption;
 import io.spine.option.IfMissingOption;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import static io.spine.type.TypeName.getDescriptor;
 import static org.junit.Assert.assertEquals;
@@ -40,6 +42,9 @@ import static org.junit.Assert.assertNotNull;
  */
 public class TypeNameShould {
 
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
+
     @Test
     public void pass_the_null_tolerance_check() {
         new NullPointerTester()
@@ -48,8 +53,9 @@ public class TypeNameShould {
                 .testAllPublicStaticMethods(TypeName.class);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void reject_empty_name() {
+        thrown.expect(IllegalArgumentException.class);
         TypeName.of("");
     }
 
@@ -101,9 +107,10 @@ public class TypeNameShould {
         assertEquals(typeName, typeDescriptor.getFullName());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void fail_to_find_invalid_type_descriptor() {
         final String invalidTypeName = "no.such.package.InvalidType";
+        thrown.expect(IllegalArgumentException.class);
         getDescriptor(invalidTypeName);
     }
 }

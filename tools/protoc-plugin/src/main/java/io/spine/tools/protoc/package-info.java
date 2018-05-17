@@ -25,7 +25,10 @@
  *    Google documentation</a> for more info about the {@code protoc} plugins
  */
 
+@CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.tools.protoc;
+
+import com.google.errorprone.annotations.CheckReturnValue;
 
 import javax.annotation.ParametersAreNonnullByDefault;

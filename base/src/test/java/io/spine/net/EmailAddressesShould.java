@@ -67,6 +67,7 @@ public class EmailAddressesShould {
         assertEquals(email, valueOf(email).getValue());
     }
 
+    @SuppressWarnings("CheckReturnValue")
     @Test(expected = IllegalArgumentException.class)
     public void reject_invalid_email() {
         valueOf("fiz baz");

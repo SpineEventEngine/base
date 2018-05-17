@@ -75,8 +75,6 @@ dependencies {
     compile project(':base')
     compile project(':codegen')
 
-    compile group: 'com.google.guava', name: 'guava', version: guavaVersion
-
     compile (group: 'com.google.template', name: 'soy', version: '2017-02-01') {
         exclude group: 'com.google.guava'
     }
@@ -98,8 +96,7 @@ dependencies {
         exclude group: 'com.google.guava'
     }
 
-    compile project(':testlib')
-    testCompile group: 'com.google.guava', name: 'guava-testlib', version: guavaVersion
+    testCompile project(':testlib')
     testCompile group: 'org.hamcrest', name:'hamcrest-all', version: hamcrestVersion
     testCompile gradleTestKit()
     testCompile project(':plugin-base').sourceSets.test.output // Test classes of `plugin-base`

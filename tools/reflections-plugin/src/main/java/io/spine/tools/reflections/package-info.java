@@ -23,7 +23,10 @@
  *
  * @author Alex Tymchenko
  */
+@CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.tools.reflections;
+
+import com.google.errorprone.annotations.CheckReturnValue;
 
 import javax.annotation.ParametersAreNonnullByDefault;

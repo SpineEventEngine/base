@@ -22,7 +22,10 @@
  * This package contains utilities that can be used by the client code, server code,
  * and business model compiler.
  */
+@CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.util;
+
+import com.google.errorprone.annotations.CheckReturnValue;
 
 import javax.annotation.ParametersAreNonnullByDefault;

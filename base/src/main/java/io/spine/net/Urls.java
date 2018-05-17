@@ -76,8 +76,8 @@ public class Urls {
      */
     public static Url create(String rawUrlString) {
         checkNotNull(rawUrlString);
-        final Url.Builder builder = Url.newBuilder();
-        builder.setRaw(rawUrlString);
+        final Url.Builder builder = Url.newBuilder()
+                                       .setRaw(rawUrlString);
         final Url rawUrl = structurize(builder.build());
         return rawUrl;
     }

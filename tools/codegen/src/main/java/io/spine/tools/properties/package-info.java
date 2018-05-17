@@ -21,7 +21,10 @@
 /**
  * Utilities for working with {@code .properties} files.
  */
+@CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.tools.properties;
+
+import com.google.errorprone.annotations.CheckReturnValue;
 
 import javax.annotation.ParametersAreNonnullByDefault;

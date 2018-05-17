@@ -30,7 +30,10 @@ import static org.junit.Assert.assertEquals;
 /**
  * @author Mikhail Mikhaylov
  */
-@SuppressWarnings("DuplicateStringLiteralInspection")
+@SuppressWarnings({
+        "DuplicateStringLiteralInspection",
+        "CheckReturnValue" /* when we call the builder methods. */
+})
 public class UrlPrinterShould {
 
     private static final Authorization AUTH =

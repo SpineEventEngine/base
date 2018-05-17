@@ -21,7 +21,10 @@
 /**
  * Base classes and interfaces for Spine Gradle plugins.
  */
+@CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.tools.gradle;
+
+import com.google.errorprone.annotations.CheckReturnValue;
 
 import javax.annotation.ParametersAreNonnullByDefault;

@@ -141,6 +141,7 @@ subprojects {
     }
 
     apply plugin: 'java'
+    apply plugin: 'net.ltgt.errorprone'
 
     apply plugin: 'maven-publish'
 
@@ -181,6 +182,7 @@ subprojects {
                 changing: true
 
         //TODO:2018-05-11:alexander.yevsyukov: Replace the below with Checker Framework
+        // after Guava fully migrates from it too.
         compile "com.google.code.findbugs:jsr305:$findBugsVersion"
 
         compile "org.checkerframework:checker-qual:$checkerFrameworkVersion"
@@ -232,6 +234,13 @@ subprojects {
 
     javadoc {
         source = sourceSets.main.allJava
+    }
+
+    tasks.withType(JavaCompile) {
+        // Exclude generated sources from being analyzed by Error Prone.
+        options.compilerArgs += [
+                '-XepExcludedPaths:.*/generated/.*'
+        ]
     }
 
     task sourceJar(type: Jar) {

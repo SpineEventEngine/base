@@ -21,7 +21,10 @@
 /**
  * Utility classes for I/O operations.
  */
+@CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.io;
+
+import com.google.errorprone.annotations.CheckReturnValue;
 
 import javax.annotation.ParametersAreNonnullByDefault;

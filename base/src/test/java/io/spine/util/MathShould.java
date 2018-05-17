@@ -20,7 +20,9 @@
 
 package io.spine.util;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
 import static io.spine.util.Math.floorDiv;
@@ -29,13 +31,17 @@ import static org.junit.Assert.assertEquals;
 
 public class MathShould {
 
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
+
     @Test
     public void have_private_constructor() {
         assertHasPrivateParameterlessCtor(io.spine.util.Math.class);
     }
 
-    @Test(expected = ArithmeticException.class)
+    @Test
     public void throw_ArithmethicException_multiply_MIN_VALUE_by_minus_one() {
+        thrown.expect(ArithmeticException.class);
         safeMultiply(Long.MIN_VALUE, -1);
     }
 
@@ -54,13 +60,15 @@ public class MathShould {
         assertEquals(8, safeMultiply(8, 1));
     }
 
-    @Test(expected = ArithmeticException.class)
+    @Test
     public void not_allow_multiply_LongMinValue_by_negative_amount() {
+        thrown.expect(ArithmeticException.class);
         safeMultiply(Long.MIN_VALUE, -1);
     }
 
-    @Test(expected = ArithmeticException.class)
+    @Test
     public void not_allow_multiply_LongMaxValue_by_any_amount_except_zero_one_and_minus_one() {
+        thrown.expect(ArithmeticException.class);
         safeMultiply(Long.MAX_VALUE, -2);
     }
 
