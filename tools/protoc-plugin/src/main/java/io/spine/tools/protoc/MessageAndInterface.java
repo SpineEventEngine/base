@@ -171,7 +171,7 @@ final class MessageAndInterface {
         final String fileName = SourceFile.forType(javaPackage, messageName)
                                           .toString();
         final File.Builder srcFile = File.newBuilder()
-                                         .setName(fileName);
+                                         .setName(fileName.replace('\\', '/'));
         return srcFile;
     }
 

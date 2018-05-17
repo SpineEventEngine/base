@@ -155,25 +155,19 @@ public abstract class SpineProtoGenerator {
             final Collection<File> newFiles = generateForTypesIn(file);
             generatedFiles.addAll(newFiles);
         }
-        final String writtenLog = Logger.compiled();
-        final File logFile = File.newBuilder()
-                                 .setContent(writtenLog)
-                                 .setName("build-log.txt")
-                                 .build();
-        writeLog(writtenLog);
+        writeLog();
         final CodeGeneratorResponse response =
                 CodeGeneratorResponse.newBuilder()
                                      .addAllFile(generatedFiles)
-                                     .addFile(logFile)
                                      .build();
         return response;
     }
 
-    private static void writeLog(String log) {
+    private static void writeLog() {
         final java.io.File file =
                 new java.io.File(SpineProtoGenerator.class.getSimpleName() + "-log.txt");
         try (Writer writer = new FileWriter(file)) {
-            writer.append(log);
+            writer.append(Logger.compiled());
         } catch (IOException e) {
             throw illegalStateWithCauseOf(e);
         }
