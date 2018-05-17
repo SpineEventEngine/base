@@ -154,7 +154,6 @@ public abstract class SpineProtoGenerator {
         return response;
     }
 
-
     /**
      * Processes the passed proto file.
      */
