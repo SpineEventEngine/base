@@ -95,8 +95,8 @@ public final class Identifier<I> {
     @Internal
     public static <I> I getDefaultValue(Class<I> idClass) {
         checkNotNull(idClass);
-        final Type type1 = getType(idClass);
-        final I result = type1.getDefaultValue(idClass);
+        final Type type = getType(idClass);
+        final I result = type.getDefaultValue(idClass);
         return result;
     }
 
@@ -149,7 +149,9 @@ public final class Identifier<I> {
      */
     public static <I> void checkSupported(Class<I> idClass) {
         checkNotNull(idClass);
-        getType(idClass);
+        // Even through `getType()` can never return null, we use its return value here
+        // instead of allowing ignoring just because of this one usage.
+        checkNotNull(getType(idClass));
     }
 
     /**

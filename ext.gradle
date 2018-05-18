@@ -38,7 +38,7 @@
  *
  * This is also the version which the artifacts are published with.
  */
-def final SPINE_VERSION = '0.10.36-SNAPSHOT'
+def final SPINE_VERSION = '0.10.37-SNAPSHOT'
 
 ext {
     // Repositories for specific purposes.
@@ -62,9 +62,9 @@ ext {
     mockitoVersion = '2.12.0'
     hamcrestVersion = '1.3'
     javaPoetVersion = '1.9.0'
-    errorPronePluginVersion = '0.0.14'
     checkerFrameworkVersion = '2.5.1'
     errorProneVersion = '2.3.1'
+    errorPronePluginVersion = '0.0.14'
 
     protobufGradlePluginVersion = '0.8.5'
 

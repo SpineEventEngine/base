@@ -22,7 +22,10 @@
  * Contains classes and interfaces for applying annotations on Java files,
  * which are generated from Protobuf definitions.
  */
+@CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.tools.compiler.annotation;
+
+import com.google.errorprone.annotations.CheckReturnValue;
 
 import javax.annotation.ParametersAreNonnullByDefault;

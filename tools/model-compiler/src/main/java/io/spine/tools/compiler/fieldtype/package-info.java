@@ -21,7 +21,10 @@
 /**
  * Classes for working with different proto field types.
  */
+@CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.tools.compiler.fieldtype;
+
+import com.google.errorprone.annotations.CheckReturnValue;
 
 import javax.annotation.ParametersAreNonnullByDefault;

@@ -32,7 +32,11 @@ import static org.junit.Assert.fail;
 /**
  * @author Mikhail Mikhaylov
  */
-@SuppressWarnings({"DuplicateStringLiteralInspection", "LocalVariableNamingConvention"})
+@SuppressWarnings({
+        "DuplicateStringLiteralInspection",
+        "LocalVariableNamingConvention",
+        "CheckReturnValue" /* when we call the builder methods. */}
+)
 public class UrlsShould {
 
     @Test

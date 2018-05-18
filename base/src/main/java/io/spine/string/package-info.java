@@ -23,7 +23,10 @@
  * into a string form and back.
  */
 
+@CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.string;
+
+import com.google.errorprone.annotations.CheckReturnValue;
 
 import javax.annotation.ParametersAreNonnullByDefault;

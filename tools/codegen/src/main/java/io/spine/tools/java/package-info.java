@@ -21,7 +21,10 @@
 /**
  * This package provides classes for generating and parsing Java code.
  */
+@CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.tools.java;
+
+import com.google.errorprone.annotations.CheckReturnValue;
 
 import javax.annotation.ParametersAreNonnullByDefault;

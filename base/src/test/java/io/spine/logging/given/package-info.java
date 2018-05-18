@@ -22,8 +22,10 @@
  * Test environments for the {@code io.spine.util} package.
  */
 
+@CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.logging.given;
 
+import com.google.errorprone.annotations.CheckReturnValue;
 
 import javax.annotation.ParametersAreNonnullByDefault;

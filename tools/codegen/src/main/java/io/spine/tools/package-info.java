@@ -21,7 +21,10 @@
 /**
  * This package contains language-neutral classes and interfaces for Spine tools.
  */
+@CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.tools;
+
+import com.google.errorprone.annotations.CheckReturnValue;
 
 import javax.annotation.ParametersAreNonnullByDefault;

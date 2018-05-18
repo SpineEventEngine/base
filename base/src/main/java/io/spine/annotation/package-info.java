@@ -23,7 +23,10 @@
  * generated classes for annotations of Proto types.
  */
 
+@CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.annotation;
+
+import com.google.errorprone.annotations.CheckReturnValue;
 
 import javax.annotation.ParametersAreNonnullByDefault;

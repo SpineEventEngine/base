@@ -174,47 +174,38 @@ public class ProtoAnnotatorPlugin extends SpinePlugin {
 
     @Override
     public void apply(Project project) {
-        final Action<Task> task = newAction(getMainDescriptorSetPath(project), project, false);
-        newTask(ANNOTATE_PROTO, task).insertBeforeTask(COMPILE_JAVA)
-                                     .insertAfterTask(GENERATE_PROTO)
-                                     .applyNowTo(project);
+        Action<Task> task = newAction(getMainDescriptorSetPath(project), project, false);
+        newTask(ANNOTATE_PROTO, task)
+                .insertBeforeTask(COMPILE_JAVA)
+                .insertAfterTask(GENERATE_PROTO)
+                .applyNowTo(project);
         logDependingTask(ANNOTATE_PROTO, COMPILE_JAVA, GENERATE_PROTO);
 
-        final Action<Task> testTask = newAction(getTestDescriptorSetPath(project), project, true);
-        newTask(ANNOTATE_TEST_PROTO, testTask).insertBeforeTask(COMPILE_TEST_JAVA)
-                                              .insertAfterTask(GENERATE_TEST_PROTO)
-                                              .applyNowTo(project);
+        Action<Task> testTask = newAction(getTestDescriptorSetPath(project), project, true);
+        newTask(ANNOTATE_TEST_PROTO, testTask)
+                .insertBeforeTask(COMPILE_TEST_JAVA)
+                .insertAfterTask(GENERATE_TEST_PROTO)
+                .applyNowTo(project);
         logDependingTask(ANNOTATE_TEST_PROTO, COMPILE_TEST_JAVA, GENERATE_TEST_PROTO);
     }
 
-    private Action<Task> newAction(final String descriptorSetPath,
-                                   final Project project,
-                                   final boolean isTestTask) {
+    private Action<Task> newAction(String descriptorSetPath, Project project, boolean isTestTask) {
 
-        final String generatedProtoDir;
-        final String generatedGrpcDir;
+        String generatedProtoDir = isTestTask
+                ? getTestGenProtoDir(project)
+                : getMainGenProtoDir(project);
 
-        if (isTestTask) {
-            generatedProtoDir = getTestGenProtoDir(project);
-            generatedGrpcDir = getTestGenGrpcDir(project);
+        String generatedGrpcDir = isTestTask
+                ? getTestGenGrpcDir(project)
+                : getMainGenGrpcDir(project);
 
-        } else {
-            generatedProtoDir = getMainGenProtoDir(project);
-            generatedGrpcDir = getMainGenGrpcDir(project);
-        }
-
-        return new Action<Task>() {
-            @Override
-            public void execute(Task task) {
-                final File setFile = new File(descriptorSetPath);
-                if (!setFile.exists()) {
-                    logMissingDescriptorSetFile(setFile);
-                } else {
-                    AnnotatorFactory.processDescriptorSetFile(setFile,
-                                                              generatedProtoDir,
-                                                              generatedGrpcDir);
-                }
+        return task -> {
+            File setFile = new File(descriptorSetPath);
+            if (!setFile.exists()) {
+                logMissingDescriptorSetFile(setFile);
+                return;
             }
+            AnnotatorFactory.processDescriptorSetFile(setFile, generatedProtoDir, generatedGrpcDir);
         };
     }
 }

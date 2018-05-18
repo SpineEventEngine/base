@@ -21,7 +21,10 @@
 /**
  * Checker classes for testing annotations added to the generated code.
  */
+@CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.tools.compiler.annotation.check;
+
+import com.google.errorprone.annotations.CheckReturnValue;
 
 import javax.annotation.ParametersAreNonnullByDefault;

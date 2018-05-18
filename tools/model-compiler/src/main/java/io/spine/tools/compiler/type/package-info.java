@@ -22,7 +22,10 @@
  * This package provides classes for gathering proto types declared in a domain model
  * and mapping them to generated Java classes.
  */
+@CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.tools.compiler.type;
+
+import com.google.errorprone.annotations.CheckReturnValue;
 
 import javax.annotation.ParametersAreNonnullByDefault;

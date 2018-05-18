@@ -331,6 +331,7 @@ abstract class FieldValidator<V> {
         return fieldContext.getFieldPath();
     }
 
+    @SuppressWarnings("ImmutableEnumChecker")
     private enum LogSingleton {
         INSTANCE;
         @SuppressWarnings("NonSerializableFieldInSerializableClass")

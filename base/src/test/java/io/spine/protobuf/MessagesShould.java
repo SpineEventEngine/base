@@ -27,9 +27,12 @@ import com.google.protobuf.Timestamp;
 import io.spine.base.Time;
 import io.spine.test.TestValues;
 import io.spine.test.messages.MessageWithStringValue;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import static io.spine.protobuf.AnyPacker.unpack;
+import static io.spine.protobuf.Messages.builderFor;
 import static io.spine.protobuf.Messages.ensureMessage;
 import static io.spine.protobuf.TypeConverter.toAny;
 import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
@@ -40,6 +43,9 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 public class MessagesShould {
+
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
     @Test
     public void have_private_utility_ctor() {
@@ -60,14 +66,17 @@ public class MessagesShould {
 
     @Test
     public void return_builder_for_the_message() {
-        final Message.Builder messageBuilder = Messages.builderFor(MessageWithStringValue.class);
+        final Message.Builder messageBuilder = builderFor(MessageWithStringValue.class);
         assertNotNull(messageBuilder);
-        assertEquals(MessageWithStringValue.class, messageBuilder.build().getClass());
+        assertEquals(MessageWithStringValue.class,
+                     messageBuilder.build()
+                                   .getClass());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void throw_exception_when_try_to_get_builder_for_not_the_generated_message() {
-        Messages.builderFor(Message.class);
+        thrown.expect(IllegalArgumentException.class);
+        builderFor(Message.class);
     }
 
     @Test

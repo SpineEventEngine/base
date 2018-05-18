@@ -23,7 +23,10 @@
  *
  * @author Dmytro Grankin
  */
+@CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.tools.gcs;
+
+import com.google.errorprone.annotations.CheckReturnValue;
 
 import javax.annotation.ParametersAreNonnullByDefault;
