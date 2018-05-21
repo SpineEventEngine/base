@@ -54,16 +54,8 @@ apply plugin: 'com.google.protobuf'
 apply from: generateDescriptorSetScript
 
 dependencies {
-    /* As a Library, we provide logging facade API, not specific logger bindings.
-       Target apps are free to use any binding they need. */
-    compile group: 'org.slf4j', name: 'slf4j-api', version: slf4JVersion
-
-    compile group: 'com.google.protobuf', name: 'protobuf-java', version: protobufVersion
-    compile group: 'com.google.protobuf', name: 'protobuf-java-util', version: protobufVersion
-
-    compile group: 'com.squareup', name: 'javapoet', version: javaPoetVersion
-
-    testCompile group: 'org.slf4j', name: 'slf4j-jdk14', version: slf4JVersion
+    compile project(':base')
+    compile "com.squareup:javapoet:$javaPoetVersion"
 
     testCompile project(':testlib')
 }
