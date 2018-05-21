@@ -20,36 +20,37 @@
 
 package io.spine.codegen.proto;
 
-import com.google.common.base.Function;
+import com.google.common.base.Objects;
 import com.google.common.collect.Sets;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.util.JsonFormat.TypeRegistry;
 
-import javax.annotation.Nullable;
-import java.util.Objects;
 import java.util.Set;
 
-import static com.google.common.collect.FluentIterable.from;
 import static com.google.common.collect.Sets.newHashSet;
+import static java.util.stream.Collectors.toList;
 
 /**
  * A set of proto types.
  *
  * @author Alexander Yevsyukov
+ * @author Dmytro Dashenkov
  */
 public class TypeSet {
 
-    private final Set<Type> types;
+    private final Set<MessageType> messageTypes;
+    private final Set<EnumType> enumTypes;
 
     /** Creates a new empty set. */
     private TypeSet() {
-        this.types = newHashSet();
+        this(newHashSet(), newHashSet());
     }
 
-    private TypeSet(Iterable<Type> types) {
-        this.types = newHashSet(types);
+    private TypeSet(Iterable<MessageType> messageTypes, Iterable<EnumType> enumTypes) {
+        this.messageTypes = newHashSet(messageTypes);
+        this.enumTypes = newHashSet(enumTypes);
     }
 
     /**
@@ -84,7 +85,9 @@ public class TypeSet {
      * Obtains the size of the set.
      */
     public int size() {
-        final int result = types.size();
+        final int messagesCount = messageTypes.size();
+        final int enumsCount = enumTypes.size();
+        final int result = messagesCount + enumsCount;
         return result;
     }
 
@@ -92,7 +95,8 @@ public class TypeSet {
      * Verifies if the set is empty.
      */
     public boolean isEmpty() {
-        return types.isEmpty();
+        final boolean empty = size() == 0;
+        return empty;
     }
 
     /**
@@ -110,71 +114,63 @@ public class TypeSet {
     }
 
     /**
-     * Adds the passed type to the set.
+     * Adds the passed message type to the set.
      */
     @CanIgnoreReturnValue
-    boolean add(Type type) {
-        final boolean result = types.add(type);
+    boolean add(MessageType type) {
+        final boolean result = messageTypes.add(type);
+        return result;
+    }
+
+    /**
+     * Adds the passed enum type to the set.
+     */
+    @CanIgnoreReturnValue
+    boolean add(EnumType type) {
+        final boolean result = enumTypes.add(type);
         return result;
     }
 
     /**
      * Creates a new set which is a union of this and the passed one.
      */
-    TypeSet union(TypeSet another) {
+    private TypeSet union(TypeSet another) {
         if (another.isEmpty()) {
             return this;
         }
-
         if (this.isEmpty()) {
             return another;
         }
-
-        final TypeSet result = new TypeSet(Sets.union(this.types, another.types));
+        final Set<MessageType> messages = Sets.union(this.messageTypes, another.messageTypes);
+        final Set<EnumType> enums = Sets.union(this.enumTypes, another.enumTypes);
+        final TypeSet result = new TypeSet(messages, enums);
         return result;
     }
 
     private Iterable<Descriptor> getMessageTypes() {
-        final Iterable<Descriptor> descriptors = from(types)
-                .filter(MessageType.class)
-                .transform(TypeToDescriptor.FUNCTION);
+        final Iterable<Descriptor> descriptors = messageTypes.stream()
+                                                             .map(MessageType::getType)
+                                                             .collect(toList());
         return descriptors;
     }
 
     /** {@inheritDoc} */
     @Override
-    public int hashCode() {
-        return Objects.hash(types);
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        TypeSet typeSet = (TypeSet) o;
+        return Objects.equal(messageTypes, typeSet.messageTypes) &&
+                Objects.equal(enumTypes, typeSet.enumTypes);
     }
 
     /** {@inheritDoc} */
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-        final TypeSet other = (TypeSet) obj;
-        return Objects.equals(this.types, other.types);
-    }
-
-    /**
-     * A function which extracts the {@link Descriptor} from the given {@link Type}.
-     *
-     * @see Type#getType()
-     */
-    private enum TypeToDescriptor implements Function<Type, Descriptor> {
-        FUNCTION;
-
-        @Nullable
-        @Override
-        public Descriptor apply(@Nullable Type input) {
-            if (input == null) {
-                return null;
-            }
-            return (Descriptor) input.getType();
-        }
+    public int hashCode() {
+        return Objects.hashCode(messageTypes, enumTypes);
     }
 }

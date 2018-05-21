@@ -24,12 +24,14 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
+import io.spine.type.TypeName;
 
 import java.util.Collections;
 import java.util.Deque;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newLinkedList;
+import static io.spine.util.Exceptions.newIllegalArgumentException;
 import static java.lang.String.format;
 
 /**
@@ -65,9 +67,8 @@ public class MessageDeclaration extends AbstractMessageDeclaration {
         final boolean fileContainsTarget = file.getMessageTypeList()
                                                .contains(message);
         if (!fileContainsTarget) {
-            final String errMsg = format("Top-level message `%s` was not found in `%s`.",
-                                         message.getName(), file.getName());
-            throw new IllegalArgumentException(errMsg);
+            final String errMsg = "Top-level message `%s` was not found in `%s`.";
+            throw newIllegalArgumentException(errMsg, message.getName(), file.getName());
         }
 
         final List<DescriptorProto> outerMessages = Collections.emptyList();
@@ -136,15 +137,15 @@ public class MessageDeclaration extends AbstractMessageDeclaration {
      *
      * @return the type name
      */
-    public String getTypeName() {
-        final StringBuilder typeBuilder = new StringBuilder(getFile().getPackage());
-        typeBuilder.append(TYPE_PART_SEPARATOR);
+    public TypeName getTypeName() {
+        final StringBuilder name = new StringBuilder(getFile().getPackage());
+        name.append(TYPE_PART_SEPARATOR);
         for (DescriptorProto outerMessage : outerMessages) {
-            typeBuilder.append(outerMessage.getName())
+            name.append(outerMessage.getName())
                        .append(TYPE_PART_SEPARATOR);
         }
-        typeBuilder.append(getMessage().getName());
-        final String value = typeBuilder.toString();
-        return value;
+        name.append(getMessage().getName());
+        final String value = name.toString();
+        return TypeName.of(value);
     }
 }

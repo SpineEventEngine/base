@@ -21,12 +21,12 @@
 package io.spine.sample.map.types;
 
 import com.google.common.base.Joiner;
-import com.google.common.collect.Lists;
 import io.spine.type.ClassName;
 import io.spine.type.KnownTypes;
 import io.spine.type.TypeUrl;
 import org.junit.Test;
 
+import static com.google.common.collect.ImmutableList.copyOf;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -140,6 +140,6 @@ public class ProtoToJavaMapperPluginShould {
     }
 
     private static Iterable<String> compose(String... elems) {
-        return Lists.newArrayList(elems);
+        return copyOf(elems);
     }
 }

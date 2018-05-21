@@ -20,11 +20,10 @@
 package io.spine.codegen.proto;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Streams;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,13 +36,14 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.Iterators.transform;
 import static com.google.common.collect.Sets.newHashSet;
 import static io.spine.io.ResourceFiles.loadAll;
+import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.lang.String.format;
 
 /**
@@ -161,8 +161,9 @@ public class FileDescriptors {
 
     private static Iterator<FileDescriptorSet> loadFrom(String resourceName) {
         final Iterator<URL> descriptorFiles = loadAll(resourceName);
-        final Iterator<FileDescriptorSet> result = transform(descriptorFiles,
-                                                             FileDescriptorLoader.FUNCTION);
+        final Iterator<FileDescriptorSet> result = Streams.stream(descriptorFiles)
+                                                          .map(FileDescriptorLoader.FUNCTION)
+                                                          .iterator();
         return result;
     }
 
@@ -203,16 +204,17 @@ public class FileDescriptors {
         FUNCTION;
 
         @Override
-        public FileDescriptorSet apply(@Nullable URL file) {
+        public FileDescriptorSet apply(URL file) {
             checkNotNull(file);
             try {
                 final InputStream stream = file.openStream();
                 final FileDescriptorSet parsed = FileDescriptorSet.parseFrom(stream);
                 return parsed;
             } catch (IOException e) {
-                throw new IllegalStateException(
-                        format("Unable to load descriptor file set from %s.", file),
-                        e
+                throw newIllegalStateException(
+                        e,
+                        "Unable to load descriptor file set from %s.",
+                        file
                 );
             }
         }

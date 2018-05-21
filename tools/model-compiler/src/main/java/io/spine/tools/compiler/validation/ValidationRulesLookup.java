@@ -78,8 +78,7 @@ public final class ValidationRulesLookup {
                                         File targetDir) {
         final Map<String, String> propsMap = newHashMap();
         for (MessageDeclaration declaration : ruleDeclarations) {
-            // Convert the type since `codegen` uses strings to avoid circular dependency.
-            final TypeName typeName = TypeName.of(declaration.getTypeName());
+            final TypeName typeName = declaration.getTypeName();
             final String ruleTargets = UnknownOptions.get(declaration.getMessage(),
                                                           VALIDATION_OF_FIELD_NUMBER);
             propsMap.put(typeName.value(), ruleTargets);
@@ -87,7 +86,7 @@ public final class ValidationRulesLookup {
 
         final String fileName = io.spine.validate.rules.ValidationRules.fileName();
         log().debug("Writing the validation rules description to {}/{}.",
-                                                targetDir, fileName);
+                    targetDir, fileName);
         final PropertiesWriter writer = new PropertiesWriter(targetDir.getAbsolutePath(), fileName);
         writer.write(propsMap);
     }

@@ -20,8 +20,6 @@
 
 package io.spine.logging;
 
-import com.google.common.base.Supplier;
-import com.google.common.base.Suppliers;
 import com.google.errorprone.annotations.FormatMethod;
 import com.google.errorprone.annotations.FormatString;
 import io.spine.base.Environment;
@@ -29,6 +27,8 @@ import org.checkerframework.checker.nullness.compatqual.NullableDecl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.helpers.SubstituteLogger;
+
+import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
@@ -75,20 +75,16 @@ public class Logging {
      */
     public static Supplier<Logger> supplyFor(final Class<?> cls) {
         checkNotNull(cls);
-        final Supplier<Logger> defaultSupplier = new Supplier<Logger>() {
-            @Override
-            public Logger get() {
-                return getLogger(cls);
-            }
-        };
-        return Suppliers.memoize(defaultSupplier);
+        final Logger instance = getLogger(cls);
+        final Supplier<Logger> defaultSupplier = () -> instance;
+        return defaultSupplier;
     }
 
     /**
      * Obtains a logger for the passed class depending on the state of the {@link Environment}.
      *
      * <p>In {@linkplain Environment#isTests() tests mode}, the returned logger is a <em>new</em>
-     * instance of {@link org.slf4j.helpers.SubstituteLogger SubstituteLogger} delegating to
+     * instance of {@link SubstituteLogger SubstituteLogger} delegating to
      * a logger obtained from the {@link LoggerFactory#getLogger(Class) LoggerFactory}.
      *
      * <p>In {@linkplain Environment#isProduction() production mode}, returns the instance obtained

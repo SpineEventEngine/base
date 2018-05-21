@@ -162,11 +162,11 @@ public final class FileSet {
      * Obtains the set of the files that match passed names.
      */
     public FileSet find(Collection<String> fileNames) {
-        final Iterable<FileDescriptor> filter =
+        final Iterable<FileDescriptor> filtered =
                 files.stream()
                      .filter(file -> fileNames.contains(file.getName()))
                      .collect(toSet());
-        return new FileSet(filter);
+        return new FileSet(filtered);
     }
 
     /**
