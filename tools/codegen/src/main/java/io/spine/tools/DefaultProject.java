@@ -20,7 +20,7 @@
 
 package io.spine.tools;
 
-import io.spine.tools.proto.FileDescriptors;
+import io.spine.codegen.proto.FileDescriptors;
 
 import java.io.File;
 import java.nio.file.Path;

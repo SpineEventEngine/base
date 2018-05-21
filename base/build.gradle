@@ -72,15 +72,6 @@ dependencies {
 
     /* As a Library, we provide logging facade API, not specific logger bindings.
        Target apps are free to use any binding they need. */
-
-    compile group: 'org.slf4j', name: 'slf4j-api', version: slf4JVersion
-
-    compile group: 'com.google.protobuf', name: 'protobuf-java', version: protobufVersion
-    compile group: 'com.google.protobuf', name: 'protobuf-java-util', version: protobufVersion
-
-
-    /* As a Library, we provide logging facade API, not specific logger bindings.
-       Target apps are free to use any binding they need. */
     compile "org.slf4j:slf4j-api:$slf4JVersion"
 
     compile ("com.google.protobuf:protobuf-java:$protobufVersion") {
@@ -91,7 +82,7 @@ dependencies {
         exclude group: 'com.google.guava'
     }
 
-    testCompile 'org.slf4j:slf4j-jdk14:$slf4JVersion'
+    testCompile "org.slf4j:slf4j-jdk14:$slf4JVersion"
     testCompile project(':testlib')
 }
 
@@ -135,4 +126,3 @@ protobuf {
         }
     }
 }
-

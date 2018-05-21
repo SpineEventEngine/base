@@ -99,8 +99,8 @@ public final class SimpleClassName extends StringTypeValue {
             return outerClassNameFromOptions;
         }
 
-        final String className = io.spine.tools.proto.FileName.from(file)
-                                                              .nameOnlyCamelCase();
+        final String className = io.spine.codegen.proto.FileName.from(file)
+                                                                .nameOnlyCamelCase();
         return className;
     }
 

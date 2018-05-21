@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.proto;
+package io.spine.codegen.proto;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.testing.NullPointerTester;
@@ -28,8 +28,8 @@ import org.junit.rules.ExpectedException;
 
 import java.util.List;
 
+import static io.spine.codegen.proto.FileName.of;
 import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
-import static io.spine.tools.proto.FileName.of;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -56,12 +56,12 @@ public class FileNameShould {
     @Test
     public void require_standard_extension() {
         thrown.expect(IllegalArgumentException.class);
-        FileName.of("some_thing");
+        of("some_thing");
     }
 
     @Test
     public void return_words() {
-        final List<String> words = FileName.of("some_file_name.proto").words();
+        final List<String> words = of("some_file_name.proto").words();
 
         assertEquals(ImmutableList.of("some", "file", "name"), words);
     }
@@ -69,17 +69,14 @@ public class FileNameShould {
     @SuppressWarnings("DuplicateStringLiteralInspection")
     @Test
     public void calculate_outer_class_name() {
-        assertEquals(RejectionDeclaration.OUTER_CLASS_NAME_SUFFIX,
-                     of("rejections.proto").nameOnlyCamelCase());
-        assertEquals("ManyRejections",
-                     of("many_rejections.proto").nameOnlyCamelCase());
-        assertEquals("ManyMoreRejections",
-                     of("many_more_rejections.proto").nameOnlyCamelCase());
+        assertEquals("Rejections", of("rejections.proto").nameOnlyCamelCase());
+        assertEquals("ManyRejections", of("many_rejections.proto").nameOnlyCamelCase());
+        assertEquals("ManyMoreRejections", of("many_more_rejections.proto").nameOnlyCamelCase());
     }
 
     @Test
     public void tell_commands_file_kind() {
-        final FileName commandsFile = FileName.of("my_commands.proto");
+        final FileName commandsFile = of("my_commands.proto");
 
         assertTrue(commandsFile.isCommands());
         assertFalse(commandsFile.isEvents());
@@ -88,7 +85,7 @@ public class FileNameShould {
 
     @Test
     public void tell_events_file_kind() {
-        final FileName eventsFile = FileName.of("project_events.proto");
+        final FileName eventsFile = of("project_events.proto");
 
         assertTrue(eventsFile.isEvents());
         assertFalse(eventsFile.isCommands());
@@ -97,7 +94,7 @@ public class FileNameShould {
 
     @Test
     public void tell_rejections_file_kind() {
-        final FileName rejectsionFile = FileName.of("rejections.proto");
+        final FileName rejectsionFile = of("rejections.proto");
 
         assertTrue(rejectsionFile.isRejections());
         assertFalse(rejectsionFile.isCommands());

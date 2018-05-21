@@ -26,7 +26,6 @@ import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Message;
 import io.spine.tools.compiler.MessageTypeCache;
-import io.spine.tools.proto.FileDescriptors;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +37,7 @@ import java.util.Set;
 
 import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Sets.newHashSet;
+import static io.spine.codegen.proto.FileDescriptors.parse;
 
 /**
  * Collects types for which validating builders are generated.
@@ -144,8 +144,7 @@ class VBTypeLookup {
         final Logger log = log();
         log.debug("Obtaining the file descriptors by {} path.", descFilePath);
         final ImmutableSet.Builder<FileDescriptorProto> result = ImmutableSet.builder();
-        final Collection<FileDescriptorProto> allDescriptors =
-                FileDescriptors.parse(descFilePath);
+        final Collection<FileDescriptorProto> allDescriptors = parse(descFilePath);
 
         for (FileDescriptorProto file : allDescriptors) {
             cacheTypesFromFile(file);

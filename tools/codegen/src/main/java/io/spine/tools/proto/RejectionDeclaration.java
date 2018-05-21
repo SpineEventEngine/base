@@ -20,7 +20,6 @@
 
 package io.spine.tools.proto;
 
-import com.google.common.annotations.VisibleForTesting;
 import io.spine.tools.java.SimpleClassName;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -40,8 +39,7 @@ public final class RejectionDeclaration extends AbstractMessageDeclaration {
     /**
      * The suffix for the outer class name for the generated rejection messages.
      */
-    @VisibleForTesting
-    static final String OUTER_CLASS_NAME_SUFFIX = "Rejections";
+    private static final String OUTER_CLASS_NAME_SUFFIX = "Rejections";
 
     private final SimpleClassName outerJavaClass;
 

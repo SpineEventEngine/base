@@ -22,6 +22,7 @@ package io.spine.tools.proto;
 
 import com.google.common.collect.Lists;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
+import io.spine.codegen.proto.FileName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -17,12 +17,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.tools.proto;
+package io.spine.codegen.proto;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
-import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
@@ -39,6 +37,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -79,7 +78,7 @@ public class FileDescriptors {
      * @return a list of descriptors
      */
     public static List<FileDescriptorProto> parse(String descriptorSetFile) {
-        return parseAndFilter(descriptorSetFile, Predicates.<FileDescriptorProto>alwaysTrue());
+        return parseAndFilter(descriptorSetFile, descriptor -> true);
     }
 
     /**
@@ -115,7 +114,7 @@ public class FileDescriptors {
         try (final FileInputStream fis = new FileInputStream(descriptorsFile)) {
             final FileDescriptorSet fileSet = FileDescriptorSet.parseFrom(fis);
             for (FileDescriptorProto file : fileSet.getFileList()) {
-                if (filter.apply(file)) {
+                if (filter.test(file)) {
                     files.add(file);
                 }
             }
@@ -184,7 +183,7 @@ public class FileDescriptors {
         private static final String GOOGLE_PACKAGE = "google";
 
         @Override
-        public boolean apply(@Nullable FileDescriptorProto file) {
+        public boolean test(FileDescriptorProto file) {
             checkNotNull(file);
             final boolean result = !file.getPackage()
                                         .contains(GOOGLE_PACKAGE);

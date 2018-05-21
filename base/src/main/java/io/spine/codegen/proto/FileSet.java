@@ -18,36 +18,31 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.proto;
+package io.spine.codegen.proto;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
 import com.google.protobuf.Descriptors.FileDescriptor;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.io.File;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.Iterables.filter;
+import static com.google.common.collect.ImmutableList.copyOf;
 import static com.google.common.collect.Lists.newArrayList;
-import static io.spine.tools.proto.FileDescriptors.extractFiles;
-import static io.spine.tools.proto.Linker.link;
+import static io.spine.codegen.proto.FileDescriptors.extractFiles;
+import static io.spine.codegen.proto.Linker.link;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 
 /**
  * A set of proto files represented by their {@linkplain FileDescriptor descriptors}.
@@ -166,8 +161,11 @@ public final class FileSet {
     /**
      * Obtains the set of the files that match passed names.
      */
-    public FileSet find(Iterable<String> fileNames) {
-        final Iterable<FileDescriptor> filter = filter(files, new HasOneOfNames(fileNames));
+    public FileSet find(Collection<String> fileNames) {
+        final Iterable<FileDescriptor> filter =
+                files.stream()
+                     .filter(file -> fileNames.contains(file.getName()))
+                     .collect(toSet());
         return new FileSet(filter);
     }
 
@@ -175,7 +173,9 @@ public final class FileSet {
      * Returns an Optional containing the first file that matches the name, if such an file exists.
      */
     public Optional<FileDescriptor> tryFind(String fileName) {
-        final Optional<FileDescriptor> found = Iterables.tryFind(files, new MatchesName(fileName));
+        final Optional<FileDescriptor> found = files.stream()
+                                                    .filter(file -> fileName.equals(file.getName()))
+                                                    .findAny();
         return found;
     }
 
@@ -210,15 +210,11 @@ public final class FileSet {
     public List<FileName> getFileNames() {
         final Iterable<FileName> fileNames =
                 files.stream()
-                     .map(input -> {
-                         checkNotNull(input);
-                         final FileName result = FileName.from(input.toProto());
-                         return result;
-                     })
-                     .collect(Collectors.toList());
-        final List<FileName> sorted = Ordering.natural()
-                                              .sortedCopy(fileNames);
-        final List<FileName> result = ImmutableList.copyOf(sorted);
+                     .map(FileDescriptor::toProto)
+                     .map(FileName::from)
+                     .sorted()
+                     .collect(toList());
+        final List<FileName> result = copyOf(fileNames);
         return result;
     }
 
@@ -247,43 +243,5 @@ public final class FileSet {
         }
         final FileSet other = (FileSet) obj;
         return Objects.equals(this.files, other.files);
-    }
-
-    /**
-     * Returns {@code true} a file has one of the passed names, {@code false} otherwise.
-     */
-    private static final class HasOneOfNames implements Predicate<FileDescriptor> {
-
-        private final Set<String> fileNames;
-
-        private HasOneOfNames(Iterable<String> fileNames) {
-            this.fileNames = ImmutableSet.copyOf(fileNames);
-        }
-
-        @Override
-        public boolean apply(@Nullable FileDescriptor input) {
-            checkNotNull(input);
-            final boolean result = fileNames.contains(input.getName());
-            return result;
-        }
-    }
-
-    /**
-     * Returns {@code true} a file has the passed name, {@code false} otherwise.
-     */
-    private static final class MatchesName implements Predicate<FileDescriptor> {
-
-        private final String fileName;
-
-        private MatchesName(String fileName) {
-            this.fileName = fileName;
-        }
-
-        @Override
-        public boolean apply(@Nullable FileDescriptor input) {
-            checkNotNull(input);
-            final boolean result = fileName.equals(input.getName());
-            return result;
-        }
     }
 }

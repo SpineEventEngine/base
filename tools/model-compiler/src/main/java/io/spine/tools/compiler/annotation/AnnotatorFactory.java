@@ -31,7 +31,7 @@ import io.spine.annotation.Beta;
 import io.spine.annotation.Experimental;
 import io.spine.annotation.Internal;
 import io.spine.annotation.SPI;
-import io.spine.tools.proto.FileDescriptors;
+import io.spine.codegen.proto.FileDescriptors;
 
 import java.io.File;
 import java.lang.annotation.Annotation;

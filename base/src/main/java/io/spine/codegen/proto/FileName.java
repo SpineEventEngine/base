@@ -18,11 +18,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.proto;
+package io.spine.codegen.proto;
 
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
-import io.spine.tools.AbstractFileName;
+import io.spine.codegen.AbstractFileName;
+import io.spine.codegen.UnderscoredName;
 
 import java.util.List;
 

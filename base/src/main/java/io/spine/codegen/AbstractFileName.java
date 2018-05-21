@@ -18,20 +18,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.proto;
+package io.spine.codegen;
 
-import java.util.List;
+import io.spine.value.ComparableStringValue;
 
 /**
- * A common interface for Protobuf names done with underscores.
+ * A name of a source code file.
  *
+ * @param <F> the type of the file name for comparison type covariance
  * @author Alexander Yevsyukov
  */
-public interface UnderscoredName {
+public abstract class AbstractFileName<F extends AbstractFileName>
+        extends ComparableStringValue<F> {
 
-    String WORD_SEPARATOR = "_";
-
-    List<String> words();
-
-    String value();
+    protected AbstractFileName(String value) {
+        super(value);
+    }
 }

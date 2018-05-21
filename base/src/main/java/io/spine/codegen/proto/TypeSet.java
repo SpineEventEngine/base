@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.proto;
+package io.spine.codegen.proto;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Sets;
@@ -97,7 +97,7 @@ public class TypeSet {
 
     /**
      * Writes all the types in this set into
-     * a {@link com.google.protobuf.util.JsonFormat.TypeRegistry JsonFormat.TypeRegistry}.
+     * a {@link TypeRegistry JsonFormat.TypeRegistry}.
      *
      * <p>Retrieves an instance of {@link TypeRegistry.Builder} which can be appended with more
      * types if necessary.

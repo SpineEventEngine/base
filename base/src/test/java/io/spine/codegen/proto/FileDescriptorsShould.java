@@ -18,26 +18,36 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.proto;
+package io.spine.codegen.proto;
 
+import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
 import org.junit.Test;
 
+import java.util.Iterator;
+
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Alexander Yevsyukov
  */
-public class FileSetShould {
+public class FileDescriptorsShould {
 
     @Test
-    public void load_main_resources() {
-        assertFalse(FileSet.loadMain()
-                           .isEmpty());
+    public void load_main_set() {
+        final Iterator<FileDescriptorSet> fileSets = FileDescriptors.loadMain();
+        assertTrue(fileSets.hasNext());
+        assertFalse(fileSets.next()
+                            .getFileList()
+                            .isEmpty());
     }
 
     @Test
-    public void load_test_resources() {
-        assertFalse(FileSet.loadTest()
-                           .isEmpty());
+    public void load_test_set() {
+        final Iterator<FileDescriptorSet> fileSets = FileDescriptors.loadTest();
+        assertTrue(fileSets.hasNext());
+        assertFalse(fileSets.next()
+                            .getFileList()
+                            .isEmpty());
     }
 }

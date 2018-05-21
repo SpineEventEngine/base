@@ -93,17 +93,14 @@ public class ProtoToJavaMapperPlugin extends SpinePlugin {
         final Logger log = log();
         log.debug("Initializing the proto to java mapping for the \"main\" source code " +
                             "for project {}.", project);
-        return new Action<Task>() {
-            @Override
-            public void execute(Task task) {
-                final String mainDescriptorSetPath = getMainDescriptorSetPath(project);
-                log.debug("Main descriptor set path: {}", mainDescriptorSetPath);
+        return task -> {
+            final String mainDescriptorSetPath = getMainDescriptorSetPath(project);
+            log.debug("Main descriptor set path: {}", mainDescriptorSetPath);
 
-                final String mainTargetGenResourcesDir = getMainTargetGenResourcesDir(project);
-                log.debug("Main target generated resources dir: {}", mainTargetGenResourcesDir);
+            final String mainTargetGenResourcesDir = getMainTargetGenResourcesDir(project);
+            log.debug("Main target generated resources dir: {}", mainTargetGenResourcesDir);
 
-                processDescriptorSet(mainDescriptorSetPath, mainTargetGenResourcesDir);
-            }
+            processDescriptorSet(mainDescriptorSetPath, mainTargetGenResourcesDir);
         };
     }
 
@@ -111,17 +108,14 @@ public class ProtoToJavaMapperPlugin extends SpinePlugin {
         final Logger log = log();
         log.debug("Initializing the proto to java mapping for the \"test\" source code " +
                           "for project {}", project);
-        return new Action<Task>() {
-            @Override
-            public void execute(Task task) {
-                final String testDescriptorSetPath = getTestDescriptorSetPath(project);
-                log.debug("Test descriptor set path: {}", testDescriptorSetPath);
+        return task -> {
+            final String testDescriptorSetPath = getTestDescriptorSetPath(project);
+            log.debug("Test descriptor set path: {}", testDescriptorSetPath);
 
-                final String testTargetGenResourcesDir = getTestTargetGenResourcesDir(project);
-                log.debug("Test target generated resources dir: {}", testTargetGenResourcesDir);
+            final String testTargetGenResourcesDir = getTestTargetGenResourcesDir(project);
+            log.debug("Test target generated resources dir: {}", testTargetGenResourcesDir);
 
-                processDescriptorSet(testDescriptorSetPath, testTargetGenResourcesDir);
-            }
+            processDescriptorSet(testDescriptorSetPath, testTargetGenResourcesDir);
         };
     }
 

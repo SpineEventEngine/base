@@ -38,7 +38,7 @@
  *
  * This is also the version which the artifacts are published with.
  */
-def final SPINE_VERSION = '0.10.37-SNAPSHOT'
+def final SPINE_VERSION = '0.10.38-SNAPSHOT'
 
 ext {
     // Repositories for specific purposes.
@@ -70,9 +70,9 @@ ext {
 
     //TODO:2018-03-19:alexander.yevsyukov: Remove the below versions
 
-    // TODO:2018-05-08:dmytro.dashenkov: Bootstrap version 0.10.37-SNAPSHOT.
+    // TODO:2018-05-08:dmytro.dashenkov: Bootstrap version 0.10.38-SNAPSHOT.
     // The version to be used until we resolve dependencies inside the project.
-    spineBaseVersion = '0.10.34-SNAPSHOT'
+    spineBaseVersion = '0.10.37-SNAPSHOT'
 
     /**
      * The version of Spine tools which is used to build the {@code base} module.

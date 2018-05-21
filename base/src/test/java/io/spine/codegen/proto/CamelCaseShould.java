@@ -18,36 +18,51 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.proto;
+package io.spine.codegen.proto;
 
-import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
+import com.google.common.collect.ImmutableList;
+import io.spine.codegen.UnderscoredName;
+import io.spine.value.StringTypeValue;
 import org.junit.Test;
 
-import java.util.Iterator;
+import java.util.List;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static io.spine.codegen.proto.CamelCase.convert;
+import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author Alexander Yevsyukov
  */
-public class FileDescriptorsShould {
+public class CamelCaseShould {
 
     @Test
-    public void load_main_set() {
-        final Iterator<FileDescriptorSet> fileSets = FileDescriptors.loadMain();
-        assertTrue(fileSets.hasNext());
-        assertFalse(fileSets.next()
-                            .getFileList()
-                            .isEmpty());
+    public void have_utility_ctor() {
+        assertHasPrivateParameterlessCtor(CamelCase.class);
     }
 
     @Test
-    public void load_test_set() {
-        final Iterator<FileDescriptorSet> fileSets = FileDescriptors.loadTest();
-        assertTrue(fileSets.hasNext());
-        assertFalse(fileSets.next()
-                            .getFileList()
-                            .isEmpty());
+    public void capitalize_words() {
+        assertEquals("CapitalizeWords", convert(new UnderName("capitalize_words")));
+    }
+
+    @Test
+    public void do_not_lowercase_words() {
+        assertEquals("TestHTTPRequest", convert(new UnderName("test_HTTP_request")));
+    }
+
+    /**
+     * A test value object.
+     */
+    private static class UnderName extends StringTypeValue implements UnderscoredName {
+
+        protected UnderName(String value) {
+            super(value);
+        }
+
+        @Override
+        public List<String> words() {
+            return ImmutableList.copyOf(value().split(WORD_SEPARATOR));
+        }
     }
 }

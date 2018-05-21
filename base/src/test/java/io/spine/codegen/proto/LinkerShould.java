@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.proto;
+package io.spine.codegen.proto;
 
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
@@ -28,7 +28,7 @@ import org.junit.Test;
 
 import java.util.Iterator;
 
-import static io.spine.tools.proto.FileDescriptors.extractFiles;
+import static io.spine.codegen.proto.FileDescriptors.extractFiles;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -45,8 +45,8 @@ public class LinkerShould {
 
     @Before
     public void setUp() throws DescriptorValidationException {
-        final Iterator<FileDescriptorSet> fileSet = FileDescriptors.loadMain();
-        linker = new Linker(extractFiles(fileSet));
+        final Iterator<FileDescriptorSet> fileSets = FileDescriptors.loadMain();
+        linker = new Linker(extractFiles(fileSets));
         linker.resolve();
     }
 
