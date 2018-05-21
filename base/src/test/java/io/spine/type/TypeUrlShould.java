@@ -43,6 +43,7 @@ import static io.spine.protobuf.TypeConverter.toMessage;
 import static io.spine.type.TypeUrl.composeTypeUrl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class TypeUrlShould {
 
@@ -99,6 +100,7 @@ public class TypeUrlShould {
         Any any = Any.newBuilder().setTypeUrl("invalid_type_url").build();
         try {
             TypeUrl.ofEnclosed(any);
+            fail("Invalid type URL accepted.");
         } catch (RuntimeException e) {
             assertTrue(e.getCause() instanceof InvalidProtocolBufferException);
         }

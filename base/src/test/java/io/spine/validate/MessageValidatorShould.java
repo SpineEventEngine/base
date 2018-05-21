@@ -417,37 +417,37 @@ public class MessageValidatorShould {
 
     @Test
     public void find_out_that_number_is_greater_than_decimal_min_inclusive() {
-        minDecimalNumberTest(GREATER_THAN_MIN, /*inclusive=*/true, /*valid=*/true);
+        minDecimalNumberTest(GREATER_THAN_MIN, true, true);
     }
 
     @Test
     public void find_out_that_number_is_equal_to_decimal_min_inclusive() {
-        minDecimalNumberTest(EQUAL_MIN, /*inclusive=*/true, /*valid=*/true);
+        minDecimalNumberTest(EQUAL_MIN, true, true);
     }
 
     @Test
     public void find_out_that_number_is_less_than_decimal_min_inclusive() {
-        minDecimalNumberTest(LESS_THAN_MIN, /*inclusive=*/true, /*valid=*/false);
+        minDecimalNumberTest(LESS_THAN_MIN, true, false);
     }
 
     @Test
     public void find_out_that_number_is_greater_than_decimal_min_NOT_inclusive() {
-        minDecimalNumberTest(GREATER_THAN_MIN, /*inclusive=*/false, /*valid=*/true);
+        minDecimalNumberTest(GREATER_THAN_MIN, false, true);
     }
 
     @Test
     public void find_out_that_number_is_equal_to_decimal_min_NOT_inclusive() {
-        minDecimalNumberTest(EQUAL_MIN, /*inclusive=*/false, /*valid=*/false);
+        minDecimalNumberTest(EQUAL_MIN, false, false);
     }
 
     @Test
     public void find_out_that_number_is_less_than_decimal_min_NOT_inclusive() {
-        minDecimalNumberTest(LESS_THAN_MIN, /*inclusive=*/false, /*valid=*/false);
+        minDecimalNumberTest(LESS_THAN_MIN, false, false);
     }
 
     @Test
     public void provide_one_valid_violation_if_number_is_less_than_decimal_min() {
-        minDecimalNumberTest(LESS_THAN_MIN, /*inclusive=*/true, /*valid=*/false);
+        minDecimalNumberTest(LESS_THAN_MIN, true, false);
 
         assertEquals(1, violations.size());
         final ConstraintViolation violation = firstViolation();
@@ -463,37 +463,37 @@ public class MessageValidatorShould {
 
     @Test
     public void find_out_that_number_is_greater_than_decimal_max_inclusive() {
-        maxDecimalNumberTest(GREATER_THAN_MAX, /*inclusive=*/true, /*valid=*/false);
+        maxDecimalNumberTest(GREATER_THAN_MAX, true, false);
     }
 
     @Test
     public void find_out_that_number_is_equal_to_decimal_max_inclusive() {
-        maxDecimalNumberTest(EQUAL_MAX, /*inclusive=*/true, /*valid=*/true);
+        maxDecimalNumberTest(EQUAL_MAX, true, true);
     }
 
     @Test
     public void find_out_that_number_is_less_than_decimal_max_inclusive() {
-        maxDecimalNumberTest(LESS_THAN_MAX, /*inclusive=*/true, /*valid=*/true);
+        maxDecimalNumberTest(LESS_THAN_MAX, true, true);
     }
 
     @Test
     public void find_out_that_number_is_greater_than_decimal_max_NOT_inclusive() {
-        maxDecimalNumberTest(GREATER_THAN_MAX, /*inclusive=*/false, /*valid=*/false);
+        maxDecimalNumberTest(GREATER_THAN_MAX, false, false);
     }
 
     @Test
     public void find_out_that_number_is_equal_to_decimal_max_NOT_inclusive() {
-        maxDecimalNumberTest(EQUAL_MAX, /*inclusive=*/false, /*valid=*/false);
+        maxDecimalNumberTest(EQUAL_MAX, false, false);
     }
 
     @Test
     public void find_out_that_number_is_less_than_decimal_max_NOT_inclusive() {
-        maxDecimalNumberTest(LESS_THAN_MAX, /*inclusive=*/false, /*valid=*/true);
+        maxDecimalNumberTest(LESS_THAN_MAX, false, true);
     }
 
     @Test
     public void provide_one_valid_violation_if_number_is_greater_than_decimal_max() {
-        maxDecimalNumberTest(GREATER_THAN_MAX, /*inclusive=*/true, /*valid=*/false);
+        maxDecimalNumberTest(GREATER_THAN_MAX, true, false);
 
         assertEquals(1, violations.size());
         final ConstraintViolation violation = firstViolation();
@@ -587,37 +587,37 @@ public class MessageValidatorShould {
 
     @Test
     public void find_out_that_integral_digit_count_is_greater_than_max() {
-        digitsCountTest(INT_DIGIT_COUNT_GREATER_THAN_MAX, /*valid=*/false);
+        digitsCountTest(INT_DIGIT_COUNT_GREATER_THAN_MAX, false);
     }
 
     @Test
     public void find_out_that_integral_digits_count_is_equal_to_max() {
-        digitsCountTest(INT_DIGIT_COUNT_EQUAL_MAX, /*valid=*/true);
+        digitsCountTest(INT_DIGIT_COUNT_EQUAL_MAX, true);
     }
 
     @Test
     public void find_out_that_integral_digit_count_is_less_than_max() {
-        digitsCountTest(INT_DIGIT_COUNT_LESS_THAN_MAX, /*valid=*/true);
+        digitsCountTest(INT_DIGIT_COUNT_LESS_THAN_MAX, true);
     }
 
     @Test
     public void find_out_that_fractional_digit_count_is_greater_than_max() {
-        digitsCountTest(FRACTIONAL_DIGIT_COUNT_GREATER_THAN_MAX, /*valid=*/false);
+        digitsCountTest(FRACTIONAL_DIGIT_COUNT_GREATER_THAN_MAX, false);
     }
 
     @Test
     public void find_out_that_fractional_digit_count_is_equal_to_max() {
-        digitsCountTest(FRACTIONAL_DIGIT_COUNT_EQUAL_MAX, /*valid=*/true);
+        digitsCountTest(FRACTIONAL_DIGIT_COUNT_EQUAL_MAX, true);
     }
 
     @Test
     public void find_out_that_fractional_digit_count_is_less_than_max() {
-        digitsCountTest(FRACTIONAL_DIGIT_COUNT_LESS_THAN_MAX, /*valid=*/true);
+        digitsCountTest(FRACTIONAL_DIGIT_COUNT_LESS_THAN_MAX, true);
     }
 
     @Test
     public void provide_one_valid_violation_if_integral_digit_count_is_greater_than_max() {
-        digitsCountTest(INT_DIGIT_COUNT_GREATER_THAN_MAX, /*valid=*/false);
+        digitsCountTest(INT_DIGIT_COUNT_GREATER_THAN_MAX, false);
 
         assertEquals(1, violations.size());
         final ConstraintViolation violation = firstViolation();
