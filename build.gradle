@@ -188,10 +188,12 @@ subprojects {
         compile "org.checkerframework:checker-qual:$checkerFrameworkVersion"
         compile "com.google.errorprone:error_prone_annotations:$errorProneVersion"
 
-        testCompile group:   'com.google.guava',
+        testCompile(group:   'com.google.guava',
                     name:    'guava-testlib',
                     version:  guavaVersion,
-                    changing: true
+                    changing: true) {
+            exclude module: 'guava'
+        }
     }
 
     sourceSets {

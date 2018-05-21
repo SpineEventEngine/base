@@ -70,9 +70,14 @@ apply from: testArtifactsScript
 dependencies {
     compile "com.google.guava:guava:$guavaVersion"
 
-    compile(project(':codegen')) {
-        transitive = false
-    }
+    /* As a Library, we provide logging facade API, not specific logger bindings.
+       Target apps are free to use any binding they need. */
+
+    compile group: 'org.slf4j', name: 'slf4j-api', version: slf4JVersion
+
+    compile group: 'com.google.protobuf', name: 'protobuf-java', version: protobufVersion
+    compile group: 'com.google.protobuf', name: 'protobuf-java-util', version: protobufVersion
+
 
     /* As a Library, we provide logging facade API, not specific logger bindings.
        Target apps are free to use any binding they need. */
@@ -86,9 +91,16 @@ dependencies {
         exclude group: 'com.google.guava'
     }
 
-    testCompile "org.slf4j:slf4j-jdk14:$slf4JVersion"
-    testCompile project(path: ":testlib")
+    testCompile 'org.slf4j:slf4j-jdk14:$slf4JVersion'
+    testCompile project(':testlib')
 }
+
+configurations.all({
+    resolutionStrategy {
+        force "com.google.guava:guava:$guavaVersion"
+        force "com.google.guava:guava-testlib:$guavaVersion"
+    }
+})
 
 protobuf {
     generatedFilesBaseDir = generatedRootDir

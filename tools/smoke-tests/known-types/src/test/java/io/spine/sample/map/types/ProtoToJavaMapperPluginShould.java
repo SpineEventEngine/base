@@ -21,7 +21,7 @@
 package io.spine.sample.map.types;
 
 import com.google.common.base.Joiner;
-import com.google.common.collect.FluentIterable;
+import com.google.common.collect.Lists;
 import io.spine.type.ClassName;
 import io.spine.type.KnownTypes;
 import io.spine.type.TypeUrl;
@@ -139,7 +139,7 @@ public class ProtoToJavaMapperPluginShould {
         assertEquals(JAVA_PACKAGE_PREFIX + javaName, className.value());
     }
 
-    private static FluentIterable<String> compose(String... elems) {
-        return FluentIterable.from(elems);
+    private static Iterable<String> compose(String... elems) {
+        return Lists.newArrayList(elems);
     }
 }
