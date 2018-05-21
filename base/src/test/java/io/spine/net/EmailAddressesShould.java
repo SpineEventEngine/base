@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -67,6 +67,7 @@ public class EmailAddressesShould {
         assertEquals(email, valueOf(email).getValue());
     }
 
+    @SuppressWarnings("CheckReturnValue")
     @Test(expected = IllegalArgumentException.class)
     public void reject_invalid_email() {
         valueOf("fiz baz");

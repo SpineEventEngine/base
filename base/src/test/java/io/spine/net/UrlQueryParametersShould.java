@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -21,7 +21,9 @@
 package io.spine.net;
 
 import io.spine.net.Url.Record.QueryParameter;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
 import static org.junit.Assert.assertEquals;
@@ -32,18 +34,24 @@ import static org.junit.Assert.assertEquals;
 @SuppressWarnings("DuplicateStringLiteralInspection")
 public class UrlQueryParametersShould {
 
-    @Test(expected = IllegalArgumentException.class)
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
+
+    @Test
     public void fail_on_parsing_wrong_query() {
+        thrown.expect(IllegalArgumentException.class);
         UrlQueryParameters.parse("123");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void fail_on_missing_key() {
+        thrown.expect(IllegalArgumentException.class);
         UrlQueryParameters.from("", "123");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void fail_on_missing_value() {
+        thrown.expect(IllegalArgumentException.class);
         UrlQueryParameters.from("123", "");
     }
 

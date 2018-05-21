@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -20,10 +20,11 @@
 
 package io.spine.validate;
 
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.Message;
 import io.spine.type.TypeName;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -77,6 +78,7 @@ public final class Validate {
      *                     will be converted to a string using {@link String#valueOf(Object)}
      * @throws IllegalStateException if the object is in its default state
      */
+    @CanIgnoreReturnValue
     public static <M extends Message> M checkNotDefault(M object, @Nullable Object errorMessage) {
         checkNotNull(object);
         checkState(isNotDefault(object), errorMessage);
@@ -91,6 +93,7 @@ public final class Validate {
      * @param errorMessageArgs     the arguments to be substituted into the message template
      * @throws IllegalStateException if the object is in its default state
      */
+    @CanIgnoreReturnValue
     @SuppressWarnings("OverloadedVarargsMethod")
     public static <M extends Message> M checkNotDefault(M object,
                                                         String errorMessageTemplate,
@@ -108,6 +111,7 @@ public final class Validate {
      * @param object the {@code Message} instance to check
      * @throws IllegalStateException if the object is in its default state
      */
+    @CanIgnoreReturnValue
     public static <M extends Message> M checkNotDefault(M object) {
         checkNotNull(object);
         checkNotDefault(object,
@@ -124,6 +128,7 @@ public final class Validate {
      *                     will be converted to a string using {@link String#valueOf(Object)}
      * @throws IllegalStateException if the object is not in its default state
      */
+    @CanIgnoreReturnValue
     public static <M extends Message> M checkDefault(M object, @Nullable Object errorMessage) {
         checkNotNull(object);
         checkState(isDefault(object), errorMessage);
@@ -138,6 +143,7 @@ public final class Validate {
      * @param errorMessageArgs     the arguments to be substituted into the message template
      * @throws IllegalStateException if the object is not in its default state
      */
+    @CanIgnoreReturnValue
     @SuppressWarnings("OverloadedVarargsMethod")
     public static <M extends Message> M checkDefault(M object,
                                                      String errorMessageTemplate,
@@ -155,6 +161,7 @@ public final class Validate {
      * @param object the {@code Message} instance to check
      * @throws IllegalStateException if the object is not in its default state
      */
+    @CanIgnoreReturnValue
     public static <M extends Message> M checkDefault(M object) {
         checkNotNull(object);
         if (!isDefault(object)) {
@@ -192,6 +199,7 @@ public final class Validate {
      * @return the passed string
      * @throws IllegalArgumentException if the string is empty or blank
      */
+    @CanIgnoreReturnValue
     public static String checkNotEmptyOrBlank(String stringToCheck, String fieldName) {
         checkNotNull(stringToCheck);
         checkNotNull(fieldName);

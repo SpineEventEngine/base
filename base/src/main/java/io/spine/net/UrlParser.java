@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -30,6 +30,7 @@ import io.spine.net.Url.Record.Schema;
  *
  * @author Mikhail Mikhaylov
  */
+@SuppressWarnings("CheckReturnValue") // of calls to methods of fields that are builders
 class UrlParser {
 
     private static final char SEMICOLON = ':';
@@ -204,7 +205,6 @@ class UrlParser {
         if (unProcessedInput.isEmpty()) {
             return;
         }
-
         record.setPath(unProcessedInput);
         unProcessedInput = "";
     }

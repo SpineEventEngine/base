@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -34,6 +34,7 @@ import static io.spine.validate.Validate.checkBounds;
 import static io.spine.validate.Validate.checkDefault;
 import static io.spine.validate.Validate.checkNotDefault;
 import static io.spine.validate.Validate.checkNotEmptyOrBlank;
+import static io.spine.validate.Validate.checkPositive;
 import static io.spine.validate.Validate.isDefault;
 import static io.spine.validate.Validate.isNotDefault;
 import static org.junit.Assert.assertEquals;
@@ -48,13 +49,23 @@ public class ValidateShould {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void throw_exception_if_int_value_is_not_positive() {
-        Validate.checkPositive(-1, "negativeInteger");
+    public void check_positive_if_zero() {
+        checkPositive(0);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void check_positive_if_negative() {
+        checkPositive(-1);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void check_positive_with_message() {
+        checkPositive(-1, "negativeInteger");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void throw_exception_if_long_value_is_not_positive() {
-        Validate.checkPositive(-2L, "negativeLong");
+        checkPositive(-2L, "negativeLong");
     }
 
     @Test

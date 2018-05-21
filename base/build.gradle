@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -23,6 +23,9 @@ buildscript {
     apply from: "$rootDir/ext.gradle"
     
     repositories {
+        // Snapshots of Error Prone and Guava.
+        maven { url = sonatypeSnapshots }
+
         jcenter()
         maven { url = googleMavenCentralMirror }
 
@@ -38,10 +41,8 @@ buildscript {
 
     //noinspection GroovyAssignabilityCheck
     dependencies {
-        classpath group: 'com.google.guava', name: 'guava', version: guavaVersion
-        classpath(group: 'com.google.protobuf',
-                  name: 'protobuf-gradle-plugin',
-                  version: protobufGradlePluginVersion) {
+        classpath "com.google.guava:guava:$guavaVersion"
+        classpath("com.google.protobuf:protobuf-gradle-plugin:$protobufGradlePluginVersion") {
             // exclude an old Guava version
             exclude group: 'com.google.guava'
         }
@@ -67,19 +68,26 @@ apply from: generateDescriptorSetScript
 apply from: testArtifactsScript
 
 dependencies {
+    compile "com.google.guava:guava:$guavaVersion"
+
     compile(project(':codegen')) {
         transitive = false
     }
 
     /* As a Library, we provide logging facade API, not specific logger bindings.
        Target apps are free to use any binding they need. */
-    compile group: 'org.slf4j', name: 'slf4j-api', version: slf4JVersion
+    compile "org.slf4j:slf4j-api:$slf4JVersion"
 
-    compile group: 'com.google.protobuf', name: 'protobuf-java', version: protobufVersion
-    compile group: 'com.google.protobuf', name: 'protobuf-java-util', version: protobufVersion
+    compile ("com.google.protobuf:protobuf-java:$protobufVersion") {
+        exclude group: 'com.google.guava'
+    }
 
-    testCompile group: 'org.slf4j', name: 'slf4j-jdk14', version: slf4JVersion
-    testCompile project(':testlib')
+    compile ("com.google.protobuf:protobuf-java-util:$protobufVersion") {
+        exclude group: 'com.google.guava'
+    }
+
+    testCompile "org.slf4j:slf4j-jdk14:$slf4JVersion"
+    testCompile project(path: ":testlib")
 }
 
 protobuf {

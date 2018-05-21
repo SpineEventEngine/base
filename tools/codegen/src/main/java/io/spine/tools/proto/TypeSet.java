@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -22,6 +22,7 @@ package io.spine.tools.proto;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Sets;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.util.JsonFormat.TypeRegistry;
@@ -111,6 +112,7 @@ public class TypeSet {
     /**
      * Adds the passed type to the set.
      */
+    @CanIgnoreReturnValue
     boolean add(Type type) {
         final boolean result = types.add(type);
         return result;

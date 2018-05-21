@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -170,10 +170,10 @@ public class FieldContext {
     }
 
     private static FieldPath fieldPathOf(Iterable<FieldDescriptor> descriptors) {
-        final FieldPath.Builder builder = FieldPath.newBuilder();
+        FieldPath.Builder builder = FieldPath.newBuilder();
         for (FieldDescriptor descriptor : descriptors) {
             final String fieldName = descriptor.getName();
-            builder.addFieldName(fieldName);
+            builder = builder.addFieldName(fieldName);
         }
         return builder.build();
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -30,10 +30,8 @@ import static org.junit.Assert.assertTrue;
  */
 public class ComparableStringValueShould {
 
-    @SuppressWarnings({
-            "EqualsWithItself" /* is part of the test */,
-            "LocalVariableNamingConvention" /* shorter names are meaningful for this test */
-    })
+    /* shorter names are meaningful for this test */
+    @SuppressWarnings("LocalVariableNamingConvention")
     @Test
     public void compare() {
         final TestVal a = new TestVal("a");
@@ -41,7 +39,7 @@ public class ComparableStringValueShould {
 
         assertTrue(a.compareTo(b) < 0);
         assertTrue(b.compareTo(a) > 0);
-        assertEquals(0, a.compareTo(a));
+        assertEquals(0, a.compareTo(new TestVal("a")));
     }
 
     private static class TestVal extends ComparableStringValue<TestVal> {

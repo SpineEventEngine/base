@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -22,7 +22,9 @@ package io.spine.util;
 
 import com.google.common.testing.NullPointerTester;
 import io.spine.test.TestValues;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
@@ -38,18 +40,23 @@ import static org.junit.Assert.fail;
 @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
 public class ExceptionsShould {
 
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
+
     @Test
     public void have_private_ctor() {
         assertHasPrivateParameterlessCtor(Exceptions.class);
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void create_and_throw_unsupported_operation_exception() {
+        thrown.expect(UnsupportedOperationException.class);
         unsupported();
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void create_and_throw_unsupported_operation_exception_with_message() {
+        thrown.expect(UnsupportedOperationException.class);
         unsupported(TestValues.randomString());
     }
 
@@ -75,23 +82,27 @@ public class ExceptionsShould {
                 .testAllPublicStaticMethods(Exceptions.class);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void throw_formatted_IAE() {
+        thrown.expect(IllegalArgumentException.class);
         newIllegalArgumentException("%d, %d, %s kaboom", 1, 2, "three");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void throw_formatted_IAE_with_cause() {
+        thrown.expect(IllegalArgumentException.class);
         newIllegalArgumentException(new RuntimeException("checking"), "%s", "stuff");
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void throw_formatted_ISE() {
+        thrown.expect(IllegalStateException.class);
         newIllegalStateException("%s check %s", "state", "failed");
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void throw_formatted_ISE_with_cause() {
+        thrown.expect(IllegalStateException.class);
         newIllegalStateException(new RuntimeException(getClass().getSimpleName()),
                                             "%s %s", "taram", "param");
     }

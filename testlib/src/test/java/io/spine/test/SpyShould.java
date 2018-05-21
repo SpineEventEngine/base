@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -23,7 +23,9 @@ package io.spine.test;
 import com.google.common.collect.Lists;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import java.util.List;
 
@@ -41,6 +43,9 @@ public class SpyShould {
     private static final String FIELD_NAME = "list";
 
     private List<String> list;
+
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
     @Before
     public void setUp() {
@@ -61,8 +66,8 @@ public class SpyShould {
 
     @Test
     public void inject_by_name() {
-        final List spy = Spy.ofClass(List.class)
-                            .on(this, FIELD_NAME);
+        List spy = Spy.ofClass(List.class)
+                      .on(this, FIELD_NAME);
         assertSpy(spy);
     }
 
@@ -77,8 +82,9 @@ public class SpyShould {
         verify(spy, times(1)).size();
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void propagate_exception() {
+        thrown.expect(IllegalArgumentException.class);
         Spy.ofClass(Number.class)
            .on(this, FIELD_NAME);
     }

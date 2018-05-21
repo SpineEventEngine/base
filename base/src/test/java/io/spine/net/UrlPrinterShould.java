@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -30,7 +30,10 @@ import static org.junit.Assert.assertEquals;
 /**
  * @author Mikhail Mikhaylov
  */
-@SuppressWarnings("DuplicateStringLiteralInspection")
+@SuppressWarnings({
+        "DuplicateStringLiteralInspection",
+        "CheckReturnValue" /* when we call the builder methods. */
+})
 public class UrlPrinterShould {
 
     private static final Authorization AUTH =

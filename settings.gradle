@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, TeamDev Ltd. All rights reserved.
+ * Copyright 2018, TeamDev. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -32,23 +32,23 @@ final def module = { final String name, final String path ->
     project(":$name").projectDir = new File("$rootDir/$path")
 }
 
-module 'codegen',                 'tools/codegen'
-module 'gcs-plugin',              'tools/gradle-plugins/gcs-plugin'
-module 'model-compiler',          'tools/gradle-plugins/model-compiler'
+module 'codegen',             './tools/codegen'
 
-module 'protobuf-javadoc-plugin', 'tools/gradle-plugins/protobuf-javadoc-plugin'
-module 'plugin-base',             'tools/gradle-plugins/plugin-base'
-module 'reflections-plugin',      'tools/gradle-plugins/reflections-plugin'
+module 'gcloud-storage',      './tools/gcloud-storage'
+module 'javadoc-filter',      './tools/javadoc-filter'
+module 'javadoc-prettifier',  './tools/javadoc-prettifier'
 
-module 'spine-codestyle-checker', 'tools/gradle-plugins/spine-codestyle-checker'
-module 'spine-javadoc',           'tools/gradle-plugins/spine-javadoc'
+module 'model-compiler',      './tools/model-compiler'
 
-module 'enrichment-lookup',       'tools/gradle-plugins/smoke-tests/enrichment-lookup'
-module 'known-types',             'tools/gradle-plugins/smoke-tests/known-types'
-module 'validators-gen',          'tools/gradle-plugins/smoke-tests/validators-gen'
+module 'plugin-base',         './tools/plugin-base'
+module 'reflections-plugin',  './tools/reflections-plugin'
+
+// Smoke tests for Spine Model Compiler
+module 'enrichment-lookup',   'tools/smoke-tests/enrichment-lookup'
+module 'known-types',         'tools/smoke-tests/known-types'
+module 'validators-gen',      'tools/smoke-tests/validators-gen'
 
 // Protoc plugin and tests
-module 'protoc-plugin',           'tools/protoc-plugin'
-module 'protoc-plugin-tests',     'tools/protoc-plugin-tests'
-
+module 'protoc-plugin',       'tools/protoc-plugin'
+module 'protoc-plugin-tests', 'tools/protoc-plugin-tests'
 
