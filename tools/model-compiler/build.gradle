@@ -107,7 +107,7 @@ dependencies {
     testCompile files("${System.properties['java.home']}/../lib/tools.jar")
 
     // The freshest version of the plugin required for tests
-    protocPluginDependency = testCompile "io.spine.tools:spine-protoc-plugin:$spineVersion@jar"
+    protocPluginDependency = testCompile "io.spine.tools:spine-protoc-plugin:$spineBaseVersion@jar"
 }
 
 protobuf {
