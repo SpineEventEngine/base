@@ -17,6 +17,8 @@ protobuf {
                     from descriptorPath
                     into "$buildDir/resources/${name}"
                 }
+
+                logger.info("Copied descriptor into $buildDir/resources/${name}")
             }
         }
     }
