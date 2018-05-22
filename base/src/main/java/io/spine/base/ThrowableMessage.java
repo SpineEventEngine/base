@@ -20,6 +20,7 @@
 package io.spine.base;
 
 import com.google.common.base.Optional;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.Any;
 import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.Message;
@@ -55,8 +56,7 @@ public abstract class ThrowableMessage extends Throwable {
     private final Timestamp timestamp;
 
     /** Optional ID of the entity which thrown the message. */
-    @Nullable
-    private Any producerId;
+    private @Nullable Any producerId;
 
     protected ThrowableMessage(GeneratedMessageV3 message) {
         super();
@@ -85,6 +85,7 @@ public abstract class ThrowableMessage extends Throwable {
      * @return a reference to this {@code ThrowableMessage} instance
      */
     @Internal
+    @CanIgnoreReturnValue
     public synchronized ThrowableMessage initProducer(Any producerId) {
         checkNotNull(producerId);
         if (this.producerId != null) {
@@ -99,7 +100,7 @@ public abstract class ThrowableMessage extends Throwable {
     /**
      * Obtains ID of the entity which thrown the message.
      */
-    public Optional<Any> producerId() {
+    public synchronized Optional<Any> producerId() {
         return Optional.fromNullable(producerId);
     }
 }
