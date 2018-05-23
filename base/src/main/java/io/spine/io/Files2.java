@@ -20,6 +20,8 @@
 
 package io.spine.io;
 
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -56,6 +58,7 @@ public class Files2 {
      * @return {@code true} if the named file does not exist and was successfully created;
      *         {@code false} if the named file already exists
      */
+    @CanIgnoreReturnValue
     public static boolean ensureFile(File file) {
         try {
             if (!file.exists()) {
