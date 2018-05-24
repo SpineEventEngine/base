@@ -25,7 +25,7 @@ import com.google.common.base.Suppliers;
 import com.google.errorprone.annotations.FormatMethod;
 import com.google.errorprone.annotations.FormatString;
 import io.spine.base.Environment;
-import org.checkerframework.checker.nullness.compatqual.NullableDecl;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.helpers.SubstituteLogger;
@@ -75,12 +75,7 @@ public class Logging {
      */
     public static Supplier<Logger> supplyFor(final Class<?> cls) {
         checkNotNull(cls);
-        final Supplier<Logger> defaultSupplier = new Supplier<Logger>() {
-            @Override
-            public Logger get() {
-                return getLogger(cls);
-            }
-        };
+        final Supplier<Logger> defaultSupplier = () -> getLogger(cls);
         return Suppliers.memoize(defaultSupplier);
     }
 
@@ -121,10 +116,11 @@ public class Logging {
     public static void warn(Logger log,
                             Throwable th,
                             @FormatString String errorFormat,
-                            @NullableDecl Object... params) {
+                            Object @Nullable ... params) {
         checkNotNull(log);
         checkNotNull(th);
         checkNotNull(errorFormat);
+        checkNotNull(params);
         if (log.isWarnEnabled()) {
             final String msg = format(errorFormat, params);
             log.warn(msg, th);
