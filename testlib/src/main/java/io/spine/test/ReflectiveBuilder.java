@@ -24,26 +24,18 @@ import com.google.errorprone.annotations.CanIgnoreReturnValue;
 
 import java.lang.reflect.Constructor;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 /**
  * The abstract base for test object builders.
  *
- * @param <T> the type of the object to build
  * @author Alexander Yevsyukov
  */
 public abstract class ReflectiveBuilder<T> {
 
     /** The class of the object we create. */
-    private final Class<T> resultClass;
+    private Class<T> resultClass;
 
-    /**
-     * Constructor for use by subclasses.
-     *
-     * @param resultClass the class of the objects to build
-     */
-    protected ReflectiveBuilder(Class<T> resultClass) {
-        this.resultClass = checkNotNull(resultClass);
+    /** Constructor for use by subclasses. */
+    protected ReflectiveBuilder() {
     }
 
     /**
@@ -56,6 +48,15 @@ public abstract class ReflectiveBuilder<T> {
      */
     public Class<T> getResultClass() {
         return this.resultClass;
+    }
+
+    /**
+     * Sets the class of the object to build.
+     */
+    @CanIgnoreReturnValue
+    protected ReflectiveBuilder<T> setResultClass(Class<T> resultClass) {
+        this.resultClass = resultClass;
+        return this;
     }
 
     /**

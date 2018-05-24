@@ -26,47 +26,38 @@ import org.junit.Test;
 import java.lang.reflect.Constructor;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class ReflectiveBuilderShould {
 
     @Test
     public void has_result_class() {
-        ReflectiveBuilder<Any> builder = new DummyBuilder();
+        ReflectiveBuilder<Any> builder =
+                new DummyBuilder().setResultClass(Any.class);
         assertEquals(Any.class, builder.getResultClass());
     }
 
-    @SuppressWarnings("ConstantConditions")
-    @Test(expected = NullPointerException.class)
-    public void prohibit_null_arg() {
-        new ReflectiveBuilder<Void>((null)) {
-            @SuppressWarnings("ReturnOfNull")
-            @Override
-            protected Constructor<Void> getConstructor() {
-                return null;
-            }
-
-            @Override
-            public Void build() {
-                return null;
-            }
-        };
+    @Test
+    public void obtain_ctor() {
+        assertNotNull(new DummyBuilder().getConstructor());
     }
 
-    @SuppressWarnings("ReturnOfNull") // OK for this test harness.
     private static class DummyBuilder extends ReflectiveBuilder<Any> {
-
-        private DummyBuilder() {
-            super(Any.class);
-        }
 
         @Override
         protected Constructor<Any> getConstructor() {
-            return null;
+            final Constructor<Any> ctor;
+            try {
+                ctor = Any.class.getDeclaredConstructor();
+            } catch (NoSuchMethodException e) {
+                throw new IllegalStateException(e);
+            }
+            return ctor;
         }
 
         @Override
         public Any build() {
-            return null;
+            return Any.getDefaultInstance();
         }
     }
 }
