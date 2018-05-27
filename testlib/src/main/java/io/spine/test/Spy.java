@@ -39,32 +39,33 @@ public class Spy<T> {
 
     private final Class<T> classOfSpy;
 
-    public static <T> Spy<T> ofClass(Class<T> spyClass) {
-        return new Spy<>(spyClass);
-    }
-
     private Spy(Class<T> classOfSpy) {
         this.classOfSpy = classOfSpy;
     }
 
+    public static <T> Spy<T> ofClass(Class<T> spyClass) {
+        return new Spy<>(spyClass);
+    }
+
     @CanIgnoreReturnValue
     public T on(Object obj) {
-         String className = classOfSpy.getSimpleName();
-         String fieldName = className.substring(0, 1).toLowerCase() + className.substring(1);
+        String className = classOfSpy.getSimpleName();
+        String fieldName = className.substring(0, 1)
+                                    .toLowerCase() + className.substring(1);
         return on(obj, fieldName);
     }
 
     @CanIgnoreReturnValue
     public T on(Object obj, String fieldName) {
-         Class<?> cls = obj.getClass();
-         Object spy;
+        Class<?> cls = obj.getClass();
+        Object spy;
         try {
-             Field field = cls.getDeclaredField(fieldName);
+            Field field = cls.getDeclaredField(fieldName);
             field.setAccessible(true);
-             Object fieldValue = field.get(obj);
+            Object fieldValue = field.get(obj);
             spy = Mockito.spy(fieldValue);
             field.set(obj, spy);
-             T result = classOfSpy.cast(spy);
+            T result = classOfSpy.cast(spy);
             return result;
         } catch (NoSuchFieldException | IllegalAccessException | ClassCastException e) {
             throw illegalArgumentWithCauseOf(e);
@@ -72,7 +73,7 @@ public class Spy<T> {
     }
 
     private static IllegalArgumentException illegalArgumentWithCauseOf(Throwable throwable) {
-         Throwable rootCause = getRootCause(throwable);
+        Throwable rootCause = getRootCause(throwable);
         throw new IllegalArgumentException(rootCause);
     }
 }
