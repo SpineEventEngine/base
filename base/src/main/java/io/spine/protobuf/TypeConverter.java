@@ -28,6 +28,7 @@ import com.google.protobuf.BoolValue;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.BytesValue;
 import com.google.protobuf.DoubleValue;
+import com.google.protobuf.EnumValue;
 import com.google.protobuf.FloatValue;
 import com.google.protobuf.Int32Value;
 import com.google.protobuf.Int64Value;
@@ -53,7 +54,10 @@ import static io.spine.protobuf.AnyPacker.unpack;
  *         BoolValue, StringValue, BytesValue} and then transformed into the corresponding Java
  *         type, either a primitive value, or {@code String} of {@link ByteString}. For more info
  *         see <a href="https://developers.google.com/protocol-buffers/docs/proto3#scalar">
- *         the official doc</a>.
+ *         the official doc</a>;
+ *     <li>{@linkplain Enum Java Enum} types - the passed {@link Any} is unpacked into the {@link
+ *         EnumValue} type and then is converted to the Java Enum through the value {@linkplain
+ *         EnumValue#getName() name}.
  * </ul>
  *
  * @author Dmytro Dashenkov
@@ -126,6 +130,10 @@ public final class TypeConverter {
                 caster = new MessageTypeCaster();
             } else if (ByteString.class.isAssignableFrom(cls)) {
                 caster = new BytesCaster();
+            } else if (Enum.class.isAssignableFrom(cls)) {
+                @SuppressWarnings("unchecked") // Checked at runtime.
+                final Class<? extends Enum> enumCls = (Class<? extends Enum>) cls;
+                caster = new EnumCaster(enumCls);
             } else {
                 caster = new PrimitiveTypeCaster<>();
             }
@@ -163,6 +171,33 @@ public final class TypeConverter {
                                                .setValue(input)
                                                .build();
             return bytes;
+        }
+    }
+
+    private static class EnumCaster extends MessageCaster<EnumValue, Enum> {
+
+        private final Class<? extends Enum> type;
+
+        EnumCaster(Class<? extends Enum> type) {
+            super();
+            this.type = type;
+        }
+
+        @Override
+        protected Enum toObject(EnumValue input) {
+            final String name = input.getName();
+            @SuppressWarnings("unchecked") // Checked at runtime.
+            final Enum value = Enum.valueOf(type, name);
+            return value;
+        }
+
+        @Override
+        protected EnumValue toMessage(Enum input) {
+            final String name = input.name();
+            final EnumValue value = EnumValue.newBuilder()
+                                             .setName(name)
+                                             .build();
+            return value;
         }
     }
 
