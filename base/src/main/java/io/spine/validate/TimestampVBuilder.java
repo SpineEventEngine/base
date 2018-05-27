@@ -19,6 +19,7 @@
  */
 package io.spine.validate;
 
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.Timestamp;
 
 /**
@@ -29,7 +30,7 @@ import com.google.protobuf.Timestamp;
 public final class TimestampVBuilder
         extends AbstractValidatingBuilder<Timestamp, Timestamp.Builder> {
 
-    // Prevent instantiation from the outside.
+    /** Prevents instantiation from the outside. */
     private TimestampVBuilder() {
         super();
     }
@@ -38,11 +39,13 @@ public final class TimestampVBuilder
         return new TimestampVBuilder();
     }
 
+    @CanIgnoreReturnValue
     public TimestampVBuilder setSeconds(long value) {
         getMessageBuilder().setSeconds(value);
         return this;
     }
 
+    @CanIgnoreReturnValue
     public TimestampVBuilder setNanos(int value) {
         getMessageBuilder().setNanos(value);
         return this;

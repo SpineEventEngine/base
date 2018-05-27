@@ -29,7 +29,7 @@ import com.google.protobuf.Empty;
 public final class EmptyVBuilder
         extends AbstractValidatingBuilder<Empty, Empty.Builder> {
 
-    // Prevent instantiation from the outside.
+    /** Prevents instantiation from the outside. */
     private EmptyVBuilder() {
         super();
     }

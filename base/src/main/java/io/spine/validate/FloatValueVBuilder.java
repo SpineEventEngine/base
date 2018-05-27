@@ -29,7 +29,7 @@ import com.google.protobuf.FloatValue;
 public final class FloatValueVBuilder
         extends AbstractValidatingBuilder<FloatValue, FloatValue.Builder> {
 
-    // Prevent instantiation from the outside.
+    /** Prevents instantiation from the outside. */
     private FloatValueVBuilder() {
         super();
     }

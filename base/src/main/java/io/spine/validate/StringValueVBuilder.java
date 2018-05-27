@@ -19,6 +19,7 @@
  */
 package io.spine.validate;
 
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.StringValue;
 
 /**
@@ -29,7 +30,7 @@ import com.google.protobuf.StringValue;
 public final class StringValueVBuilder
         extends AbstractValidatingBuilder<StringValue, StringValue.Builder> {
 
-    // Prevent instantiation from the outside.
+    /** Prevents instantiation from the outside. */
     private StringValueVBuilder() {
         super();
     }
@@ -38,6 +39,7 @@ public final class StringValueVBuilder
         return new StringValueVBuilder();
     }
 
+    @CanIgnoreReturnValue
     public StringValueVBuilder setValue(String value) {
         getMessageBuilder().setValue(value);
         return this;
