@@ -20,6 +20,7 @@
 
 package io.spine.validate;
 
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
@@ -74,6 +75,7 @@ public interface ValidatingBuilder<T extends Message, B extends Message.Builder>
      * @param message the message to merge into the state this builder
      * @return the builder instance
      */
+    @CanIgnoreReturnValue
     ValidatingBuilder<T, B> mergeFrom(T message);
 
     /**
