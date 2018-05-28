@@ -20,12 +20,12 @@
 
 package io.spine.io;
 
-import com.google.common.collect.FluentIterable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.Arrays;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -47,8 +47,7 @@ public class IoUtil {
      */
     public static void close(Closeable... closeables) {
         checkNotNull(closeables);
-
-        close(FluentIterable.from(closeables));
+        close(Arrays.asList(closeables));
     }
 
     /**

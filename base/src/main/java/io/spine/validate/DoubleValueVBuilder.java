@@ -19,6 +19,7 @@
  */
 package io.spine.validate;
 
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.DoubleValue;
 
 /**
@@ -29,7 +30,7 @@ import com.google.protobuf.DoubleValue;
 public final class DoubleValueVBuilder
         extends AbstractValidatingBuilder<DoubleValue, DoubleValue.Builder> {
 
-    // Prevent instantiation from the outside.
+    /** Prevents instantiation from the outside. */
     private DoubleValueVBuilder() {
         super();
     }
@@ -38,6 +39,7 @@ public final class DoubleValueVBuilder
         return new DoubleValueVBuilder();
     }
 
+    @CanIgnoreReturnValue
     public DoubleValueVBuilder setValue(double value) {
         getMessageBuilder().setValue(value);
         return this;

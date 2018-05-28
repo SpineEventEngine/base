@@ -20,47 +20,44 @@
 
 package io.spine.test;
 
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import com.google.protobuf.Any;
+import org.junit.Test;
 
 import java.lang.reflect.Constructor;
 
-/**
- * The abstract base for test object builders.
- *
- * @author Alexander Yevsyukov
- */
-public abstract class ReflectiveBuilder<T> {
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
-    /** The class of the object we create. */
-    private Class<T> resultClass;
+public class ReflectiveBuilderShould {
 
-    /** Constructor for use by subclasses. */
-    protected ReflectiveBuilder() {
+    @Test
+    public void has_result_class() {
+        ReflectiveBuilder<Any> builder =
+                new DummyBuilder().setResultClass(Any.class);
+        assertEquals(Any.class, builder.getResultClass());
     }
 
-    /**
-     * Obtains constructor for the result object.
-     */
-    protected abstract Constructor<T> getConstructor();
-
-    /**
-     * Obtains the class of the object to build.
-     */
-    public Class<T> getResultClass() {
-        return this.resultClass;
+    @Test
+    public void obtain_ctor() {
+        assertNotNull(new DummyBuilder().getConstructor());
     }
 
-    /**
-     * Sets the class of the object to build.
-     */
-    @CanIgnoreReturnValue
-    protected ReflectiveBuilder<T> setResultClass(Class<T> resultClass) {
-        this.resultClass = resultClass;
-        return this;
-    }
+    private static class DummyBuilder extends ReflectiveBuilder<Any> {
 
-    /**
-     * Creates the object being built.
-     */
-    public abstract T build();
+        @Override
+        protected Constructor<Any> getConstructor() {
+            final Constructor<Any> ctor;
+            try {
+                ctor = Any.class.getDeclaredConstructor();
+            } catch (NoSuchMethodException e) {
+                throw new IllegalStateException(e);
+            }
+            return ctor;
+        }
+
+        @Override
+        public Any build() {
+            return Any.getDefaultInstance();
+        }
+    }
 }

@@ -29,7 +29,7 @@ import com.google.protobuf.Any;
 public final class AnyVBuilder
         extends AbstractValidatingBuilder<Any, Any.Builder> {
 
-    // Prevent instantiation from the outside.
+    /** Prevents instantiation from the outside. */
     private AnyVBuilder() {
         super();
     }
