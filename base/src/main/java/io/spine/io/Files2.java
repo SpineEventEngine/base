@@ -31,6 +31,9 @@ import static com.google.common.io.Files.createParentDirs;
 /**
  * Additional utilities for working with files.
  *
+ * <p>These utilities are specific to Spine work with code files in code generation, project
+ * structure analysis, and other tasks that are not covered by well-known file management libraries.
+ *
  * <p>For more file-related utilities please see:
  * <ul>
  *     <li>{@link java.nio.file.Files Files} from NIO
