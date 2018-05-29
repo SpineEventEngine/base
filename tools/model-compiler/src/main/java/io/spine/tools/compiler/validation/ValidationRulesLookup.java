@@ -37,7 +37,7 @@ import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Maps.newHashMap;
-import static io.spine.codegen.proto.FileDescriptors.parseSkipStandard;
+import static io.spine.tools.proto.FileDescriptors.parseSkipStandard;
 import static io.spine.option.OptionsProto.VALIDATION_OF_FIELD_NUMBER;
 import static io.spine.tools.proto.SourceFile.allThat;
 

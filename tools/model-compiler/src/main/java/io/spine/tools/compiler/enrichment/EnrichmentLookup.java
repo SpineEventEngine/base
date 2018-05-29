@@ -31,7 +31,7 @@ import java.util.Collection;
 import java.util.Map;
 
 import static com.google.common.collect.Maps.newHashMap;
-import static io.spine.codegen.proto.FileDescriptors.parseSkipStandard;
+import static io.spine.tools.proto.FileDescriptors.parseSkipStandard;
 
 /**
  * Parses descriptor set file and creates enrichments map for discovered enrichment

@@ -23,7 +23,7 @@ package io.spine.logging;
 import com.google.errorprone.annotations.FormatMethod;
 import com.google.errorprone.annotations.FormatString;
 import io.spine.base.Environment;
-import org.checkerframework.checker.nullness.compatqual.NullableDecl;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.helpers.SubstituteLogger;
@@ -117,7 +117,7 @@ public class Logging {
     public static void warn(Logger log,
                             Throwable th,
                             @FormatString String errorFormat,
-                            @NullableDecl Object... params) {
+                            Object @Nullable ... params) {
         checkNotNull(log);
         checkNotNull(th);
         checkNotNull(errorFormat);

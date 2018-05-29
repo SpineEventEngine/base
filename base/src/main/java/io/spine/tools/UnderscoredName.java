@@ -18,35 +18,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = 'spine-base'
+package io.spine.tools;
 
-include 'base'
-
-include 'testlib'
+import java.util.List;
 
 /**
- * Includes a module and sets custom project directory to it.
+ * A common interface for Protobuf names done with underscores.
+ *
+ * @author Alexander Yevsyukov
  */
-final def module = { final String name, final String path ->
-    include name
-    project(":$name").projectDir = new File("$rootDir/$path")
+public interface UnderscoredName {
+
+    String WORD_SEPARATOR = "_";
+
+    List<String> words();
+
+    String value();
 }
-
-module 'gcloud-storage',      './tools/gcloud-storage'
-module 'javadoc-filter',      './tools/javadoc-filter'
-module 'javadoc-prettifier',  './tools/javadoc-prettifier'
-
-module 'model-compiler',      './tools/model-compiler'
-
-module 'plugin-base',         './tools/plugin-base'
-module 'reflections-plugin',  './tools/reflections-plugin'
-
-// Smoke tests for Spine Model Compiler
-module 'enrichment-lookup',   'tools/smoke-tests/enrichment-lookup'
-module 'known-types',         'tools/smoke-tests/known-types'
-module 'validators-gen',      'tools/smoke-tests/validators-gen'
-
-// Protoc plugin and tests
-module 'protoc-plugin',       'tools/protoc-plugin'
-module 'protoc-plugin-tests', 'tools/protoc-plugin-tests'
-

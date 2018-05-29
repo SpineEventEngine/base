@@ -18,35 +18,26 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = 'spine-base'
+package io.spine.tools.proto;
 
-include 'base'
+import org.junit.Test;
 
-include 'testlib'
+import static org.junit.Assert.assertFalse;
 
 /**
- * Includes a module and sets custom project directory to it.
+ * @author Alexander Yevsyukov
  */
-final def module = { final String name, final String path ->
-    include name
-    project(":$name").projectDir = new File("$rootDir/$path")
+public class FileSetShould {
+
+    @Test
+    public void load_main_resources() {
+        assertFalse(FileSet.loadMain()
+                           .isEmpty());
+    }
+
+    @Test
+    public void load_test_resources() {
+        assertFalse(FileSet.loadTest()
+                           .isEmpty());
+    }
 }
-
-module 'gcloud-storage',      './tools/gcloud-storage'
-module 'javadoc-filter',      './tools/javadoc-filter'
-module 'javadoc-prettifier',  './tools/javadoc-prettifier'
-
-module 'model-compiler',      './tools/model-compiler'
-
-module 'plugin-base',         './tools/plugin-base'
-module 'reflections-plugin',  './tools/reflections-plugin'
-
-// Smoke tests for Spine Model Compiler
-module 'enrichment-lookup',   'tools/smoke-tests/enrichment-lookup'
-module 'known-types',         'tools/smoke-tests/known-types'
-module 'validators-gen',      'tools/smoke-tests/validators-gen'
-
-// Protoc plugin and tests
-module 'protoc-plugin',       'tools/protoc-plugin'
-module 'protoc-plugin-tests', 'tools/protoc-plugin-tests'
-

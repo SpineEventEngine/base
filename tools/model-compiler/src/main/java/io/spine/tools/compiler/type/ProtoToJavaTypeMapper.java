@@ -43,7 +43,7 @@ import java.util.Map;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Lists.newLinkedList;
 import static com.google.common.collect.Maps.newHashMap;
-import static io.spine.codegen.proto.FileDescriptors.parseSkipStandard;
+import static io.spine.tools.proto.FileDescriptors.parseSkipStandard;
 import static io.spine.option.OptionsProto.TYPE_URL_PREFIX_FIELD_NUMBER;
 
 /**

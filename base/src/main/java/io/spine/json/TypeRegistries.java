@@ -25,8 +25,8 @@ import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.GenericDescriptor;
 import com.google.protobuf.util.JsonFormat.TypeRegistry;
 import io.spine.base.Environment;
-import io.spine.codegen.proto.FileSet;
-import io.spine.codegen.proto.TypeSet;
+import io.spine.tools.proto.FileSet;
+import io.spine.tools.proto.TypeSet;
 import io.spine.type.KnownTypes;
 import io.spine.type.TypeUrl;
 

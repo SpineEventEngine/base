@@ -25,7 +25,7 @@ import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.ServiceDescriptorProto;
 import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.codegen.proto.FileSet;
+import io.spine.tools.proto.FileSet;
 import io.spine.tools.DefaultProject;
 import io.spine.tools.compiler.annotation.check.FieldAnnotationCheck;
 import io.spine.tools.compiler.annotation.check.MainDefinitionAnnotationCheck;

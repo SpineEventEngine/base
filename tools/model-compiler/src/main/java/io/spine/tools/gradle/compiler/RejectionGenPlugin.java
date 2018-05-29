@@ -37,7 +37,7 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 
-import static io.spine.codegen.proto.FileDescriptors.parse;
+import static io.spine.tools.proto.FileDescriptors.parse;
 import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
 import static io.spine.tools.gradle.TaskName.COMPILE_TEST_JAVA;
 import static io.spine.tools.gradle.TaskName.GENERATE_PROTO;

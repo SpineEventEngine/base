@@ -90,9 +90,6 @@ ext {
         'base',
         'testlib',
 
-        // Code generation common codebase.
-        'codegen',
-
         // Gradle plugins
         'gcloud-storage',
         'javadoc-filter',

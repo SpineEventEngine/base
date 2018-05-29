@@ -80,15 +80,15 @@ public class RejectionTestEnv {
                 "option java_multiple_files = false;",
 
                 "//" + CLASS_COMMENT,
-                "message " + REJECTION_NAME + " {",
+                "spine/message " + REJECTION_NAME + " {",
 
-                    "//" + FIRST_FIELD_COMMENT,
-                    "int32 " + FIRST_FIELD_NAME + " = 1; // Is not a part of Javadoc.",
+                "//" + FIRST_FIELD_COMMENT,
+                "int32 " + FIRST_FIELD_NAME + " = 1; // Is not a part of Javadoc.",
 
-                    "//" + SECOND_FIELD_COMMENT,
-                    "string " + SECOND_FIELD_NAME + " = 2;",
+                "//" + SECOND_FIELD_COMMENT,
+                "string " + SECOND_FIELD_NAME + " = 2;",
 
-                    "bool hasNoComment = 3;",
+                "bool hasNoComment = 3;",
                 "}"
         );
     }
