@@ -51,4 +51,3 @@ public class DisplayNames {
     private DisplayNames() {
     }
 }
-
