@@ -37,7 +37,7 @@ task checkPublishingCredentials {
             throw new InvalidUserDataException("Please set up valid credentials. " +
                     "Credentials must be set in '${credentialsPropertyFile}' file in the project\'s root.")
         }
-        println "Publishing build as ${repositoryUserName}"
+        logger.info "Publishing build as ${repositoryUserName}"
     }
 }
 

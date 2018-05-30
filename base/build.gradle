@@ -77,14 +77,23 @@ dependencies {
     compile ("com.google.protobuf:protobuf-java:$protobufVersion") {
         exclude group: 'com.google.guava'
     }
-    
+
     compile ("com.google.protobuf:protobuf-java-util:$protobufVersion") {
         exclude group: 'com.google.guava'
     }
 
+    compile "com.squareup:javapoet:$javaPoetVersion"
+
     testCompile "org.slf4j:slf4j-jdk14:$slf4JVersion"
-    testCompile project(path: ":testlib")
+    testCompile project(':testlib')
 }
+
+configurations.all({
+    resolutionStrategy {
+        force "com.google.guava:guava:$guavaVersion"
+        force "com.google.guava:guava-testlib:$guavaVersion"
+    }
+})
 
 protobuf {
     generatedFilesBaseDir = generatedRootDir
@@ -119,4 +128,3 @@ protobuf {
         }
     }
 }
-

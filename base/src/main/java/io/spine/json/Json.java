@@ -20,13 +20,10 @@
 
 package io.spine.json;
 
-import com.google.protobuf.Descriptors;
-import com.google.protobuf.Descriptors.Descriptor;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 import com.google.protobuf.util.JsonFormat;
-import io.spine.type.KnownTypes;
-import io.spine.type.TypeUrl;
 import io.spine.type.UnknownTypeException;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -40,12 +37,14 @@ import static io.spine.util.Exceptions.newIllegalArgumentException;
  *
  * @author Alexander Yevsyukov
  */
-public class Json {
+public final class Json {
 
-    private static final JsonFormat.TypeRegistry typeRegistry = buildForKnownTypes();
+    private static final JsonFormat.TypeRegistry typeRegistry = TypeRegistries.ofKnownTypes();
 
+    /**
+     * Prevents the utility class instantiation.
+     */
     private Json() {
-        // Prevent instantiation of this utility class.
     }
 
     /**
@@ -103,21 +102,7 @@ public class Json {
         }
     }
 
-    /**
-     * Builds the registry of types known in the application.
-     */
-    private static JsonFormat.TypeRegistry buildForKnownTypes() {
-        final JsonFormat.TypeRegistry.Builder builder = JsonFormat.TypeRegistry.newBuilder();
-        for (TypeUrl typeUrl : KnownTypes.getAllUrls()) {
-            final Descriptors.GenericDescriptor genericDescriptor = typeUrl.getDescriptor();
-            if (genericDescriptor instanceof Descriptor) {
-                final Descriptor descriptor = (Descriptor) genericDescriptor;
-                builder.add(descriptor);
-            }
-        }
-        return builder.build();
-    }
-
+    @VisibleForTesting
     static JsonFormat.TypeRegistry typeRegistry() {
         return typeRegistry;
     }

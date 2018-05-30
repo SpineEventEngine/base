@@ -60,14 +60,14 @@ public enum TaskName {
     /**
      * The name of the task that checks for wrong FQN naming in javadocs.
      *
-     * <p>Relates only to `main` classes.
+     * <p>Relates only to {@code main} classes and resources scope.
      */
     CHECK_FQN("checkJavadocLink"),
 
     /**
      * The name of the task that checks for allowed line length.
      *
-     * <p>Relates only to `main` classes.
+     * <p>Relates only to {@code main} classes and resources scope.
      */
     CHECK_RIGHT_MARGIN_WRAPPING("checkRightMarginWrapping"),
 
@@ -116,14 +116,14 @@ public enum TaskName {
     /**
      * The name of the validation rules lookup task added to the Gradle lifecycle.
      *
-     * <p>Relates to `main` classes and resources scope.
+     * <p>Relates to {@code main} classes and resources scope.
      */
     FIND_VALIDATION_RULES("findValidationRules"),
 
     /**
      * The name of the validation rules lookup task added to the Gradle lifecycle.
      *
-     * <p>Relates to `test` classes and resources scope.
+     * <p>Relates to {@code test} classes and resources scope.
      */
     FIND_TEST_VALIDATION_RULES("findTestValidationRules"),
 
@@ -183,7 +183,28 @@ public enum TaskName {
      */
     FORMAT_TEST_PROTO_DOC("formatTestProtoDoc"),
 
-    VERIFY_MODEL("verifyModel");
+    /**
+     * The name of the task, that checks if the defined model matches the rules of Spine.
+     *
+     * <p>Handles the {@code main} classes and resources scope.
+     */
+    VERIFY_MODEL("verifyModel"),
+
+    /**
+     * The name of the task, that copies the descriptor set file from the temporary build directory,
+     * where it's accessed during the build, to the project runtime classpath.
+     *
+     * <p>Handles the {@code main} classes and resources scope.
+     */
+    COPY_DESCRIPTOR_SET("copyDescriptorSet"),
+
+    /**
+     * The name of the task, that copies the descriptor set file from the temporary build directory,
+     * where it's accessed during the build, to the project runtime classpath.
+     *
+     * <p>Handles the {@code test} classes and resources scope.
+     */
+    COPY_TEST_DESCRIPTOR_SET("copyTestDescriptorSet");
 
     private final String value;
 

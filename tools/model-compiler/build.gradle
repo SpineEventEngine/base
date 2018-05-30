@@ -73,7 +73,6 @@ apply from: generateDescriptorSetScript
 dependencies {
     compile project(':plugin-base')
     compile project(':base')
-    compile project(':codegen')
 
     compile (group: 'com.google.template', name: 'soy', version: '2017-02-01') {
         exclude group: 'com.google.guava'
@@ -133,9 +132,9 @@ task prepareProtocConfig(type: Copy) {
     rename { "./spine-protoc.gradle" }
     
     filter(ReplaceTokens,
-            tokens: ['baseVersion': "'$project.spineVersion'".toString(),
-                     'pbVersion'  : "'$project.protobufVersion'".toString(),
-                     'gRPCVersion': "'$project.gRpcVersion'".toString(),
+            tokens: ['baseVersion': "'$spineVersion'".toString(),
+                     'pbVersion'  : "'$protobufVersion'".toString(),
+                     'gRPCVersion': "'$gRpcVersion'".toString(),
                      // See `io.spine.tools.DefaultProject.tempArtifacts()`
                      'spineDir'   : "'.spine'"])
     outputs.upToDateWhen { false }
@@ -166,7 +165,6 @@ test {
     dependsOn copyProtocPluginTestArtifact
     dependsOn publishToMavenLocal
     dependsOn project.project(':plugin-base').publishToMavenLocal
-    dependsOn project.project(':codegen').publishToMavenLocal
     dependsOn project.project(':base').publishToMavenLocal
     dependsOn project.project(':testlib').publishToMavenLocal
 }

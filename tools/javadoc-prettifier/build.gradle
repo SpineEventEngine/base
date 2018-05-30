@@ -25,5 +25,5 @@ dependencies {
     compile group: 'com.google.guava', name: 'guava', version: guavaVersion
 
     compile project(':plugin-base')
-    compile project(':codegen')
+    compile project(':base')
 }

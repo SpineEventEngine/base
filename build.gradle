@@ -67,7 +67,7 @@ buildscript {
             exclude group: 'com.google.guava'
         }
     }
-    
+
     configurations.all({
         resolutionStrategy {
             cacheChangingModulesFor(0, 'seconds')
@@ -89,9 +89,6 @@ ext {
     projectsToPublish = [
         'base',
         'testlib',
-
-        // Code generation common codebase.
-        'codegen',
 
         // Gradle plugins
         'gcloud-storage',
@@ -188,10 +185,12 @@ subprojects {
         compile "org.checkerframework:checker-qual:$checkerFrameworkVersion"
         compile "com.google.errorprone:error_prone_annotations:$errorProneVersion"
 
-        testCompile group:   'com.google.guava',
+        testCompile(group:   'com.google.guava',
                     name:    'guava-testlib',
                     version:  guavaVersion,
-                    changing: true
+                    changing: true) {
+            exclude module: 'guava'
+        }
     }
 
     sourceSets {
@@ -199,7 +198,7 @@ subprojects {
             java.srcDirs = [generatedJavaDir,
                             "$sourcesRootDir/main/java",
                             generatedSpineDir]
-            
+
             resources.srcDirs = ["$sourcesRootDir/main/resources",
                                  "$generatedRootDir/main/resources"]
         }
@@ -207,7 +206,7 @@ subprojects {
             java.srcDirs = [generatedTestJavaDir,
                             "$sourcesRootDir/test/java",
                             generatedTestSpineDir]
-            
+
             resources.srcDirs = ["$sourcesRootDir/test/resources",
                                  "$generatedRootDir/test/resources"]
         }

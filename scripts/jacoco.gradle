@@ -127,15 +127,15 @@ class CodebaseFilter {
 
     @SuppressWarnings("GroovyAssignabilityCheck")  // a workaround for https://youtrack.jetbrains.com/issue/IDEA-141744
     List<FileTree> findNonGeneratedCompiledFiles() {
-        println(" - Available source dirs: ")
+        project.logger.debug " - Available source dirs: "
         final def srcDirs = project.files(javaSrcDirs)
         srcDirs.each {
-            println " --- ${it}"
+            project.logger.debug " --- ${it}"
         }
 
         final def generatedClassNames = getGeneratedClassNames()
         final def nonGeneratedClassTree = outputDirs.collect {
-            println("Filtering out the generated classes for ${it.getClassesDir()}")
+            project.logger.debug "Filtering out the generated classes for ${it.getClassesDir()}"
 
             // return the filtered `fileTree`s as a collected result.
             project.fileTree(dir: it.getClassesDir(), exclude: { final details ->
@@ -179,7 +179,7 @@ task jacocoRootReport(dependsOn: subprojects.test, type: JacocoReport) {
             it.exists()
         })
 
-        println("Starting to compose an aggregate coverage report across modules.")
+        project.logger.debug "Starting to compose an aggregate coverage report across modules."
 
         final def filter = new CodebaseFilter(project,
                 subprojects.sourceSets.main.java.srcDirs,

@@ -20,9 +20,10 @@
 
 package io.spine.logging.given;
 
-import com.google.common.base.Supplier;
 import io.spine.logging.Logging;
 import org.slf4j.Logger;
+
+import java.util.function.Supplier;
 
 public class LoggingTestEnv {
 

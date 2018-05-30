@@ -20,12 +20,12 @@
 
 package io.spine.tools.gradle.compiler;
 
-import com.google.common.base.Optional;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.ServiceDescriptorProto;
 import com.google.protobuf.Descriptors.FileDescriptor;
+import io.spine.tools.proto.FileSet;
 import io.spine.tools.DefaultProject;
 import io.spine.tools.compiler.annotation.check.FieldAnnotationCheck;
 import io.spine.tools.compiler.annotation.check.MainDefinitionAnnotationCheck;
@@ -34,7 +34,6 @@ import io.spine.tools.compiler.annotation.check.NestedTypesAnnotationCheck;
 import io.spine.tools.compiler.annotation.check.SourceCheck;
 import io.spine.tools.gradle.given.GradleProject;
 import io.spine.tools.java.SourceFile;
-import io.spine.tools.proto.FileSet;
 import org.jboss.forge.roaster.Roaster;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
@@ -46,6 +45,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkState;
 import static io.spine.tools.compiler.annotation.given.GivenProtoFile.NO_SPI_OPTIONS;
@@ -263,7 +263,7 @@ public class ProtoAnnotatorPluginShould {
         final File descriptorSet = DefaultProject.at(testProjectDir.getRoot())
                                                  .mainDescriptors();
         final FileSet fileSet = FileSet.parse(descriptorSet);
-        Optional<FileDescriptor> file = fileSet.tryFind(fileName);
+        final Optional<FileDescriptor> file = fileSet.tryFind(fileName);
         checkState(file.isPresent(), "Unable to get file descriptor for %s", fileName);
         return file.get()
                    .toProto();

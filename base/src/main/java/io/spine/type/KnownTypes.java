@@ -23,6 +23,7 @@ package io.spine.type;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Any;
 import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
@@ -119,6 +120,24 @@ public class KnownTypes {
      */
     public static Set<TypeUrl> getAllUrls() {
         return instance().types();
+    }
+
+    /**
+     * Retrieves Protobuf type URLs of all the standard Protobuf types.
+     *
+     * <p>All the resulting URLs have the {@code type.googleapis.com} prefix.
+     */
+    @Internal
+    public static Set<TypeUrl> getStandardTypeUrls() {
+        final Set<TypeUrl> allTypes = instance().types();
+        final ImmutableSet.Builder<TypeUrl> googleTypes = ImmutableSet.builder();
+        final String googleApiPrefix = TypeUrl.Prefix.GOOGLE_APIS.value();
+        for (TypeUrl type : allTypes) {
+            if (type.getPrefix().equals(googleApiPrefix)) {
+                googleTypes.add(type);
+            }
+        }
+        return googleTypes.build();
     }
 
     private Set<TypeUrl> types() {

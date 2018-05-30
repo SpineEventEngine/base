@@ -37,8 +37,8 @@ import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Maps.newHashMap;
-import static io.spine.option.OptionsProto.VALIDATION_OF_FIELD_NUMBER;
 import static io.spine.tools.proto.FileDescriptors.parseSkipStandard;
+import static io.spine.option.OptionsProto.VALIDATION_OF_FIELD_NUMBER;
 import static io.spine.tools.proto.SourceFile.allThat;
 
 /**
@@ -78,9 +78,7 @@ public final class ValidationRulesLookup {
                                         File targetDir) {
         final Map<String, String> propsMap = newHashMap();
         for (MessageDeclaration declaration : ruleDeclarations) {
-            // Convert the type since `tools` uses own `TypeName` for avoiding circular dependency.
-            final TypeName typeName = TypeName.of(declaration.getTypeName()
-                                                             .value());
+            final TypeName typeName = declaration.getTypeName();
             final String ruleTargets = UnknownOptions.get(declaration.getMessage(),
                                                           VALIDATION_OF_FIELD_NUMBER);
             propsMap.put(typeName.value(), ruleTargets);
@@ -88,7 +86,7 @@ public final class ValidationRulesLookup {
 
         final String fileName = io.spine.validate.rules.ValidationRules.fileName();
         log().debug("Writing the validation rules description to {}/{}.",
-                                                targetDir, fileName);
+                    targetDir, fileName);
         final PropertiesWriter writer = new PropertiesWriter(targetDir.getAbsolutePath(), fileName);
         writer.write(propsMap);
     }

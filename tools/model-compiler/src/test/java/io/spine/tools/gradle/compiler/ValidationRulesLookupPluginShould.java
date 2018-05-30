@@ -55,9 +55,9 @@ public class ValidationRulesLookupPluginShould {
 
                           "message " + OUTER_MESSAGE_TYPE + " {",
 
-                                "message " + VALIDATION_RULE_TYPE + " {",
-                                    "option (validation_of) = \"" + VALIDATION_TARGET + "\";",
-                                "}",
+                              "message " + VALIDATION_RULE_TYPE + " {",
+                                  "option (validation_of) = \"" + VALIDATION_TARGET + "\";",
+                              "}",
                           "}"
             );
 

@@ -18,35 +18,36 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = 'spine-base'
+package io.spine.tools.proto;
 
-include 'base'
+import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
+import org.junit.Test;
 
-include 'testlib'
+import java.util.Iterator;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
- * Includes a module and sets custom project directory to it.
+ * @author Alexander Yevsyukov
  */
-final def module = { final String name, final String path ->
-    include name
-    project(":$name").projectDir = new File("$rootDir/$path")
+public class FileDescriptorsShould {
+
+    @Test
+    public void load_main_set() {
+        final Iterator<FileDescriptorSet> fileSets = FileDescriptors.loadMain();
+        assertTrue(fileSets.hasNext());
+        assertFalse(fileSets.next()
+                            .getFileList()
+                            .isEmpty());
+    }
+
+    @Test
+    public void load_test_set() {
+        final Iterator<FileDescriptorSet> fileSets = FileDescriptors.loadTest();
+        assertTrue(fileSets.hasNext());
+        assertFalse(fileSets.next()
+                            .getFileList()
+                            .isEmpty());
+    }
 }
-
-module 'gcloud-storage',      './tools/gcloud-storage'
-module 'javadoc-filter',      './tools/javadoc-filter'
-module 'javadoc-prettifier',  './tools/javadoc-prettifier'
-
-module 'model-compiler',      './tools/model-compiler'
-
-module 'plugin-base',         './tools/plugin-base'
-module 'reflections-plugin',  './tools/reflections-plugin'
-
-// Smoke tests for Spine Model Compiler
-module 'enrichment-lookup',   'tools/smoke-tests/enrichment-lookup'
-module 'known-types',         'tools/smoke-tests/known-types'
-module 'validators-gen',      'tools/smoke-tests/validators-gen'
-
-// Protoc plugin and tests
-module 'protoc-plugin',       'tools/protoc-plugin'
-module 'protoc-plugin-tests', 'tools/protoc-plugin-tests'
-
