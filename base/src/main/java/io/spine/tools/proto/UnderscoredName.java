@@ -18,40 +18,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools;
+package io.spine.tools.proto;
 
-import java.util.Iterator;
+import java.util.List;
 
 /**
- * Utilities for working with {@code CamelCapitalization}.
+ * A common interface for Protobuf names done with underscores.
  *
  * @author Alexander Yevsyukov
  */
-public class CamelCase {
+public interface UnderscoredName {
 
-    /** Prevent instantiation of this utility class. */
-    private CamelCase() {
-    }
+    String WORD_SEPARATOR = "_";
 
-    /**
-     * Converts an underscored name to {@code CamelCase} string.
-     *
-     * <p>Does not force lowercase conversion so that {@code "test_HTTP_request"} would become
-     * {@code "TestHTTPRequest"}.
-     */
-    public static String convert(UnderscoredName name) {
-        final Iterator<String> iterator = name.words()
-                                              .iterator();
-        final StringBuilder builder = new StringBuilder(name.value()
-                                                            .length());
-        while (iterator.hasNext()) {
-            final String word = iterator.next();
-            if (!word.isEmpty()) {
-                builder.append(Character.toUpperCase(word.charAt(0)))
-                       .append(word.substring(1));
-            }
-        }
+    List<String> words();
 
-        return builder.toString();
-    }
+    String value();
 }

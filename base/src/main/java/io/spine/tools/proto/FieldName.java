@@ -22,8 +22,6 @@ package io.spine.tools.proto;
 
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
-import io.spine.tools.UnderscoredName;
-import io.spine.tools.CamelCase;
 import io.spine.tools.AbstractFieldName;
 
 import java.util.List;

@@ -20,48 +20,38 @@
 
 package io.spine.tools.proto;
 
-import com.google.common.collect.ImmutableList;
-import io.spine.value.StringTypeValue;
-import org.junit.Test;
-
-import java.util.List;
-
-import static io.spine.tools.proto.CamelCase.convert;
-import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
-import static org.junit.Assert.assertEquals;
+import java.util.Iterator;
 
 /**
+ * Utilities for working with {@code CamelCapitalization}.
+ *
  * @author Alexander Yevsyukov
  */
-public class CamelCaseShould {
+public class CamelCase {
 
-    @Test
-    public void have_utility_ctor() {
-        assertHasPrivateParameterlessCtor(CamelCase.class);
-    }
-
-    @Test
-    public void capitalize_words() {
-        assertEquals("CapitalizeWords", convert(new UnderName("capitalize_words")));
-    }
-
-    @Test
-    public void do_not_lowercase_words() {
-        assertEquals("TestHTTPRequest", convert(new UnderName("test_HTTP_request")));
+    /** Prevent instantiation of this utility class. */
+    private CamelCase() {
     }
 
     /**
-     * A test value object.
+     * Converts an underscored name to {@code CamelCase} string.
+     *
+     * <p>Does not force lowercase conversion so that {@code "test_HTTP_request"} would become
+     * {@code "TestHTTPRequest"}.
      */
-    private static class UnderName extends StringTypeValue implements UnderscoredName {
-
-        protected UnderName(String value) {
-            super(value);
+    public static String convert(UnderscoredName name) {
+        final Iterator<String> iterator = name.words()
+                                              .iterator();
+        final StringBuilder builder = new StringBuilder(name.value()
+                                                            .length());
+        while (iterator.hasNext()) {
+            final String word = iterator.next();
+            if (!word.isEmpty()) {
+                builder.append(Character.toUpperCase(word.charAt(0)))
+                       .append(word.substring(1));
+            }
         }
 
-        @Override
-        public List<String> words() {
-            return ImmutableList.copyOf(value().split(WORD_SEPARATOR));
-        }
+        return builder.toString();
     }
 }

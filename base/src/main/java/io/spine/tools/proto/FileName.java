@@ -23,8 +23,6 @@ package io.spine.tools.proto;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.tools.AbstractFileName;
-import io.spine.tools.CamelCase;
-import io.spine.tools.UnderscoredName;
 
 import java.util.List;
 
