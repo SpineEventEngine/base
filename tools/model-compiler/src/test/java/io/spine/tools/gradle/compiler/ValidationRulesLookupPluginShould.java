@@ -53,11 +53,11 @@ public class ValidationRulesLookupPluginShould {
                           "package " + PROTO_FILE_PACKAGE + ';',
                           "import \"spine/options.proto\";",
 
-                          "spine/message " + OUTER_MESSAGE_TYPE + " {",
+                          "message " + OUTER_MESSAGE_TYPE + " {",
 
-                          "spine/message " + VALIDATION_RULE_TYPE + " {",
-                          "option (validation_of) = \"" + VALIDATION_TARGET + "\";",
-                          "}",
+                              "message " + VALIDATION_RULE_TYPE + " {",
+                                  "option (validation_of) = \"" + VALIDATION_TARGET + "\";",
+                              "}",
                           "}"
             );
 
