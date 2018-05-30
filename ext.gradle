@@ -50,7 +50,7 @@ ext {
 
     spineVersion = SPINE_VERSION
 
-    guavaVersion = '25.1-jre'
+    guavaVersion = '25.1-jre'`
     findBugsVersion = '3.0.1'
     protobufVersion = '3.5.1'
     gRpcVersion = '1.10.0'
@@ -67,9 +67,8 @@ ext {
 
     //TODO:2018-03-19:alexander.yevsyukov: Remove the below versions
 
-    // TODO:2018-05-08:dmytro.dashenkov: Bootstrap version 0.10.38-SNAPSHOT.
     // The version to be used until we resolve dependencies inside the project.
-    spineBaseVersion = '0.10.37-SNAPSHOT'
+    spineBaseVersion = '0.10.40-SNAPSHOT'
 
     /**
      * The version of Spine tools which is used to build the {@code base} module.
