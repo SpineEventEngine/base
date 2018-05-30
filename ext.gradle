@@ -64,4 +64,14 @@ ext {
     errorPronePluginVersion = '0.0.14'
 
     protobufGradlePluginVersion = '0.8.5'
+
+    /**
+     * The version of Spine tools which is used to build the {@code base} module.
+     *
+     * <p>It is the version of the {@code model-compiler} plugin which is used to
+     * build the {@code base} module.
+     *
+     * <p>Use the latest currently published version here.
+     */
+    spineToolsVersion = '0.10.35-SNAPSHOT'
 }
