@@ -84,7 +84,7 @@ public class Logging {
      * Obtains a logger for the passed class depending on the state of the {@link Environment}.
      *
      * <p>In {@linkplain Environment#isTests() tests mode}, the returned logger is a <em>new</em>
-     * instance of {@link SubstituteLogger SubstituteLogger} delegating to
+     * instance of {@link org.slf4j.helpers.SubstituteLogger SubstituteLogger} delegating to
      * a logger obtained from the {@link LoggerFactory#getLogger(Class) LoggerFactory}.
      *
      * <p>In {@linkplain Environment#isProduction() production mode}, returns the instance obtained
@@ -121,6 +121,7 @@ public class Logging {
         checkNotNull(log);
         checkNotNull(th);
         checkNotNull(errorFormat);
+        checkNotNull(params);
         if (log.isWarnEnabled()) {
             final String msg = format(errorFormat, params);
             log.warn(msg, th);

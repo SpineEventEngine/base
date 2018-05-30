@@ -17,31 +17,20 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.validate;
 
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
-import com.google.protobuf.UInt64Value;
+package io.spine.test;
+
+import org.junit.Test;
+
+import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
 
 /**
- * Validating builder for {@linkplain UInt64Value} messages.
- *
- * @author Alex Tymchenko
+ * @author Dmytro Kuzmin
  */
-public final class UInt64ValueVBuilder
-        extends AbstractValidatingBuilder<UInt64Value, UInt64Value.Builder> {
+public class DisplayNamesShould {
 
-    /** Prevents instantiation from the outside. */
-    private UInt64ValueVBuilder() {
-        super();
-    }
-
-    public static UInt64ValueVBuilder newBuilder() {
-        return new UInt64ValueVBuilder();
-    }
-
-    @CanIgnoreReturnValue
-    public UInt64ValueVBuilder setValue(long value) {
-        getMessageBuilder().setValue(value);
-        return this;
+    @Test
+    public void have_utility_ctor() {
+        assertHasPrivateParameterlessCtor(DisplayNames.class);
     }
 }

@@ -19,6 +19,7 @@
  */
 package io.spine.validate;
 
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.UInt32Value;
 
 /**
@@ -29,7 +30,7 @@ import com.google.protobuf.UInt32Value;
 public final class UInt32ValueVBuilder
         extends AbstractValidatingBuilder<UInt32Value, UInt32Value.Builder> {
 
-    // Prevent instantiation from the outside.
+    /** Prevents instantiation from the outside. */
     private UInt32ValueVBuilder() {
         super();
     }
@@ -38,6 +39,7 @@ public final class UInt32ValueVBuilder
         return new UInt32ValueVBuilder();
     }
 
+    @CanIgnoreReturnValue
     public UInt32ValueVBuilder setValue(int value) {
         getMessageBuilder().setValue(value);
         return this;

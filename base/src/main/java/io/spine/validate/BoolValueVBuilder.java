@@ -19,6 +19,7 @@
  */
 package io.spine.validate;
 
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.BoolValue;
 
 /**
@@ -29,7 +30,7 @@ import com.google.protobuf.BoolValue;
 public final class BoolValueVBuilder
         extends AbstractValidatingBuilder<BoolValue, BoolValue.Builder> {
 
-    // Prevent instantiation from the outside.
+    /** Prevents instantiation from the outside. */
     private BoolValueVBuilder() {
         super();
     }
@@ -38,6 +39,7 @@ public final class BoolValueVBuilder
         return new BoolValueVBuilder();
     }
 
+    @CanIgnoreReturnValue
     public BoolValueVBuilder setValue(boolean value) {
         getMessageBuilder().setValue(value);
         return this;

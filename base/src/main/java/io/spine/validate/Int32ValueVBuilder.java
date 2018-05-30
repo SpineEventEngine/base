@@ -29,7 +29,7 @@ import com.google.protobuf.Int32Value;
 public final class Int32ValueVBuilder
         extends AbstractValidatingBuilder<Int32Value, Int32Value.Builder> {
 
-    // Prevent instantiation from the outside.
+    /** Prevents instantiation from the outside. */
     private Int32ValueVBuilder() {
         super();
     }

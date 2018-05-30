@@ -29,7 +29,7 @@ import com.google.protobuf.Int64Value;
 public final class Int64ValueVBuilder
         extends AbstractValidatingBuilder<Int64Value, Int64Value.Builder> {
 
-    // Prevent instantiation from the outside.
+    /** Prevents instantiation from the outside. */
     private Int64ValueVBuilder() {
         super();
     }

@@ -17,31 +17,37 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.validate;
 
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
-import com.google.protobuf.UInt64Value;
+package io.spine.test;
 
 /**
- * Validating builder for {@linkplain UInt64Value} messages.
+ * A storage for the common JUnit 5 test
+ * <a href="https://junit.org/junit5/docs/5.0.3/api/org/junit/jupiter/api/DisplayName.html">
+ * display names</a>.
  *
- * @author Alex Tymchenko
+ * <p>This class can be used to avoid string literal duplication when assigning {@code DisplayName}
+ * to the common test cases.
+ *
+ * @author Dmytro Kuzmin
  */
-public final class UInt64ValueVBuilder
-        extends AbstractValidatingBuilder<UInt64Value, UInt64Value.Builder> {
+public class DisplayNames {
 
-    /** Prevents instantiation from the outside. */
-    private UInt64ValueVBuilder() {
-        super();
-    }
+    /**
+     * A name for the test cases checking that a class has private parameterless (aka "utility")
+     * constructor.
+     */
+    public static final String HAVE_PARAMETERLESS_CTOR = "have private parameterless constructor";
 
-    public static UInt64ValueVBuilder newBuilder() {
-        return new UInt64ValueVBuilder();
-    }
+    /**
+     * A name for the test cases checking that class methods do not accept {@code null} for their
+     * non-{@linkplain javax.annotation.Nullable nullable} arguments.
+     */
+    public static final String NOT_ACCEPT_NULLS =
+            "not accept nulls for non-Nullable method arguments";
 
-    @CanIgnoreReturnValue
-    public UInt64ValueVBuilder setValue(long value) {
-        getMessageBuilder().setValue(value);
-        return this;
+    /**
+     * Prevents instantiation of this class.
+     */
+    private DisplayNames() {
     }
 }

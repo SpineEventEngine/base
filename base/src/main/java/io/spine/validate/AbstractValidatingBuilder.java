@@ -20,6 +20,7 @@
 
 package io.spine.validate;
 
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
 import com.google.protobuf.ProtocolMessageEnum;
@@ -65,8 +66,7 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
      * <p>Has {@code null} value if not set via {@linkplain #setOriginalState(Message)
      * setOriginalState(..)}.
      */
-    @Nullable
-    private T originalState;
+    private @Nullable T originalState;
 
     protected AbstractValidatingBuilder() {
         this.messageClass = TypeInfo.getMessageClass(getClass());
@@ -191,6 +191,7 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
     }
 
     @Override
+    @CanIgnoreReturnValue
     public ValidatingBuilder<T, B> mergeFrom(T message) {
         messageBuilder.mergeFrom(message);
         return this;
