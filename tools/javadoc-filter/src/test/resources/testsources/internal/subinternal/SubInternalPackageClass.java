@@ -17,12 +17,8 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-group = 'io.spine.tools'
 
-apply plugin: 'java-gradle-plugin'
+package testsources.internal.subinternal;
 
-dependencies {
-    compile project(':plugin-base')
-    compile project(':base')
-    testCompile project(':testlib')
+public class SubInternalPackageClass {
 }
