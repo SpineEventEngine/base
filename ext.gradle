@@ -50,7 +50,7 @@ ext {
 
     spineVersion = SPINE_VERSION
 
-    guavaVersion = '25.1-jre'`
+    guavaVersion = '25.1-jre'
     findBugsVersion = '3.0.1'
     protobufVersion = '3.5.1'
     gRpcVersion = '1.10.0'
@@ -64,19 +64,4 @@ ext {
     errorPronePluginVersion = '0.0.14'
 
     protobufGradlePluginVersion = '0.8.5'
-
-    //TODO:2018-03-19:alexander.yevsyukov: Remove the below versions
-
-    // The version to be used until we resolve dependencies inside the project.
-    spineBaseVersion = '0.10.40-SNAPSHOT'
-
-    /**
-     * The version of Spine tools which is used to build the {@code base} module.
-     *
-     * <p>It is the version of the {@code model-compiler} plugin which is used to
-     * build the {@code base} module.
-     *
-     * <p>Use the latest currently published version here.
-     */
-    spineToolsVersion = '0.10.35-SNAPSHOT'
 }
