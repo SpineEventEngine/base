@@ -32,7 +32,7 @@ import java.util.List;
 
 import static com.google.common.collect.Lists.newLinkedList;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
-import static java.lang.String.format;
+import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
  * A declaration of a Protobuf message.
@@ -122,9 +122,10 @@ public class MessageDeclaration extends AbstractMessageDeclaration {
         final boolean isNestedForCurrentTarget = getMessage().getNestedTypeList()
                                                              .contains(nestedMessage);
         if (!isNestedForCurrentTarget) {
-            final String errMsg = format("Nested message `%s` was not found in `%s`.",
-                                         nestedMessage.getName(), getMessage().getName());
-            throw new IllegalStateException(errMsg);
+            final String errMsg = "Nested message `%s` was not found in `%s`.";
+            throw newIllegalStateException(errMsg,
+                                           nestedMessage.getName(),
+                                           getMessage().getName());
         }
 
         final List<DescriptorProto> outerMessagesForNested = newLinkedList(outerMessages);

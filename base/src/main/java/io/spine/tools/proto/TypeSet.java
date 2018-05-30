@@ -64,9 +64,9 @@ public class TypeSet {
      * Obtains message and enum types declared in the passed file.
      */
     public static TypeSet messagesAndEnums(FileDescriptor file) {
-        final TypeSet messages = MessageType.allFrom(file);
-        final TypeSet enums = EnumType.allFrom(file);
-        final TypeSet result = messages.union(enums);
+        TypeSet messages = MessageType.allFrom(file);
+        TypeSet enums = EnumType.allFrom(file);
+        TypeSet result = messages.union(enums);
         return result;
     }
 
@@ -85,9 +85,9 @@ public class TypeSet {
      * Obtains the size of the set.
      */
     public int size() {
-        final int messagesCount = messageTypes.size();
-        final int enumsCount = enumTypes.size();
-        final int result = messagesCount + enumsCount;
+        int messagesCount = messageTypes.size();
+        int enumsCount = enumTypes.size();
+        int result = messagesCount + enumsCount;
         return result;
     }
 
@@ -95,7 +95,7 @@ public class TypeSet {
      * Verifies if the set is empty.
      */
     public boolean isEmpty() {
-        final boolean empty = size() == 0;
+        boolean empty = size() == 0;
         return empty;
     }
 
@@ -107,9 +107,10 @@ public class TypeSet {
      * types if necessary.
      */
     public TypeRegistry.Builder toJsonPrinterRegistry() {
-        final Iterable<Descriptor> messageTypes = getMessageTypes();
-        final TypeRegistry.Builder registry = TypeRegistry.newBuilder()
-                                                          .add(messageTypes);
+        Iterable<Descriptor> messageTypes = getMessageTypes();
+        TypeRegistry.Builder registry = TypeRegistry
+                .newBuilder()
+                .add(messageTypes);
         return registry;
     }
 
@@ -118,7 +119,7 @@ public class TypeSet {
      */
     @CanIgnoreReturnValue
     boolean add(MessageType type) {
-        final boolean result = messageTypes.add(type);
+        boolean result = messageTypes.add(type);
         return result;
     }
 
@@ -127,7 +128,7 @@ public class TypeSet {
      */
     @CanIgnoreReturnValue
     boolean add(EnumType type) {
-        final boolean result = enumTypes.add(type);
+        boolean result = enumTypes.add(type);
         return result;
     }
 
@@ -141,9 +142,9 @@ public class TypeSet {
         if (this.isEmpty()) {
             return another;
         }
-        final Set<MessageType> messages = Sets.union(this.messageTypes, another.messageTypes);
-        final Set<EnumType> enums = Sets.union(this.enumTypes, another.enumTypes);
-        final TypeSet result = new TypeSet(messages, enums);
+        Set<MessageType> messages = Sets.union(this.messageTypes, another.messageTypes);
+        Set<EnumType> enums = Sets.union(this.enumTypes, another.enumTypes);
+        TypeSet result = new TypeSet(messages, enums);
         return result;
     }
 

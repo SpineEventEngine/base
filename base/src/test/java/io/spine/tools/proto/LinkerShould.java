@@ -45,14 +45,14 @@ public class LinkerShould {
 
     @Before
     public void setUp() throws DescriptorValidationException {
-        final Iterator<FileDescriptorSet> fileSets = FileDescriptors.loadMain();
+        Iterator<FileDescriptorSet> fileSets = FileDescriptors.loadMain();
         linker = new Linker(extractFiles(fileSets));
         linker.resolve();
     }
 
     @Test
     public void resolve_files() {
-        final FileSet resolved = linker.getResolved();
+        FileSet resolved = linker.getResolved();
         assertTrue(resolved.size() > 0);
         assertTrue(resolved.containsAll(ImmutableList.of(
                 "google/protobuf/any.proto",

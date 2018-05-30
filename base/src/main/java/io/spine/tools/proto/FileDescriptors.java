@@ -44,7 +44,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Sets.newHashSet;
 import static io.spine.io.ResourceFiles.loadAll;
 import static io.spine.util.Exceptions.newIllegalStateException;
-import static java.lang.String.format;
 
 /**
  * A utility class which allows to obtain Protobuf file descriptors.
@@ -119,8 +118,8 @@ public class FileDescriptors {
                 }
             }
         } catch (IOException e) {
-            throw new IllegalStateException(
-                    format("Cannot get proto file descriptors. Path: %s", descriptorSetFile), e
+            throw newIllegalStateException(
+                    e, "Cannot get proto file descriptors. Path: %s", descriptorSetFile
             );
         }
 

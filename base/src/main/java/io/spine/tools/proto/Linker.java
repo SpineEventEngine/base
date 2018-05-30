@@ -64,7 +64,7 @@ class Linker {
         try {
             linker.resolve();
         } catch (DescriptorValidationException e) {
-            throw newIllegalStateException("Unable to link descriptor set files", e);
+            throw newIllegalStateException(e, "Unable to link descriptor set files");
         }
         final FileSet result = linker.getResolved()
                                      .union(linker.getPartiallyResolved())
