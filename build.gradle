@@ -90,7 +90,6 @@ ext {
         'codegen',
 
         // Gradle plugins
-        'gcloud-storage',
         'javadoc-filter',
         'javadoc-prettifier',
         'plugin-base',
