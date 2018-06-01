@@ -36,15 +36,14 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Lists.newLinkedList;
 import static com.google.common.collect.Maps.newHashMap;
-import static io.spine.tools.proto.FileDescriptors.parseSkipStandard;
 import static io.spine.option.OptionsProto.TYPE_URL_PREFIX_FIELD_NUMBER;
+import static io.spine.tools.proto.FileDescriptors.parseSkipStandard;
 
 /**
  * Maps Protobuf message types from a {@code .proto} file to the corresponding Java classes.
@@ -112,8 +111,8 @@ public class ProtoToJavaTypeMapper {
     private Map<String, String> mapTypes() {
         log().debug("Mapping file {}", file.getName());
         final ImmutableMap.Builder<String, String> builder = ImmutableMap.builder();
-        putMessageEntries(file.getMessageTypeList(), builder, new LinkedList<String>());
-        putEnumEntries(file.getEnumTypeList(), builder, new LinkedList<String>());
+        putMessageEntries(file.getMessageTypeList(), builder, newLinkedList());
+        putEnumEntries(file.getEnumTypeList(), builder, newLinkedList());
         return builder.build();
     }
 
