@@ -23,11 +23,8 @@ buildscript {
     apply from: "$rootDir/ext.gradle"
     
     repositories {
-        // Snapshots of Error Prone and Guava.
-        maven { url = sonatypeSnapshots }
-
         jcenter()
-        maven { url = googleMavenCentralMirror }
+        google()
 
         mavenCentral()
         mavenLocal()
