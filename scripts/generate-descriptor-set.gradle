@@ -11,17 +11,6 @@ protobuf {
                 task.descriptorSetOptions.path = descriptorPath
                 task.descriptorSetOptions.includeImports = true
             }
-            task.doLast {
-                // TODO:2018-05-21:dmytro.dashenkov: Delete this action after migrating on 0.10.38
-                copy {
-                    from descriptorPath
-                    into "$buildDir/resources/${name}"
-                }
-
-                final def resultFile = "$buildDir/resources/$name/${name}.desc" as File
-
-                logger.info("Copied descriptor into file $resultFile, ${resultFile.exists()}")
-            }
         }
     }
 }
