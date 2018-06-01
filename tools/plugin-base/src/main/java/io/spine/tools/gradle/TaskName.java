@@ -147,11 +147,6 @@ public enum TaskName {
     SCAN_CLASS_PATH("scanClassPath"),
 
     /**
-     * The name of the GCS cleanup task added to the Gradle lifecycle.
-     */
-    CLEAN_GCS("cleanGCS"),
-
-    /**
      * The name of the task, that annotates the Java sources generated from {@code .proto} files,
      * added to the Gradle lifecycle.
      *

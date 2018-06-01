@@ -21,8 +21,6 @@ script:
   - openssl aes-256-cbc -K $encrypted_88ad5eb2de44_key -iv $encrypted_88ad5eb2de44_iv -in credentials.tar.enc -out credentials.tar -d
   - tar xvf credentials.tar
 
-  - ./gradlew cleanGCS --info
-
   # The publishing script should be executed in `script` section in order to
   # fail the Travis build if execution of this script is failed.
   - chmod +x ./scripts/publish-artifacts.sh
