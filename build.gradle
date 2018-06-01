@@ -17,9 +17,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-import groovy.time.TimeCategory
-
 buildscript {
 
     // Applying from `ext.gradle` inside the `buildscript` section to reuse the properties.
@@ -81,7 +78,6 @@ apply from: 'ext.gradle'
 
 ext {
     spineCodestyleCheckerId = 'io.spine.tools.spine-codestyle-checker'
-    spineGcsPlugin = 'io.spine.tools.gcs-plugin'
     spineJacocoScript = "${rootDir}/scripts/jacoco.gradle"
 
     credentialsPropertyFile = 'credentials.properties'
@@ -91,7 +87,6 @@ ext {
         'testlib',
 
         // Gradle plugins
-        'gcloud-storage',
         'javadoc-filter',
         'javadoc-prettifier',
         'plugin-base',
@@ -297,16 +292,3 @@ idea {
 apply from: spineJacocoScript
 
 apply from: publishPlugin
-
-apply plugin: spineGcsPlugin
-
-cleanGCS {
-    final Properties properties = new Properties()
-    final File gcsProperties = project.file("${rootDir}/config/gcs.properties")
-    properties.load(gcsProperties.newDataInputStream())
-
-    authKeyPath = "gcs-auth-key.json"
-    bucketName = properties.getProperty("artifacts.bucket")
-    targetFolder = properties.getProperty("artifacts.folder")
-    threshold = TimeCategory.getDays(10)
-}
