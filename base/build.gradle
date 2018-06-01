@@ -75,6 +75,8 @@ dependencies {
         exclude group: 'com.google.guava'
     }
 
+    protobuf "com.google.protobuf:protobuf-java:$protobufVersion"
+
     compile ("com.google.protobuf:protobuf-java-util:$protobufVersion") {
         exclude group: 'com.google.guava'
     }
