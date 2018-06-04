@@ -20,10 +20,18 @@
 
 package io.spine.type;
 
+import com.google.protobuf.Descriptors.Descriptor;
+import com.google.protobuf.Descriptors.EnumDescriptor;
+import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.value.StringTypeValue;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+import java.util.Deque;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.collect.Lists.newLinkedList;
+import static java.util.stream.Collectors.joining;
 
 /**
  * A value object holding a fully-qualified Java class name.
@@ -60,5 +68,52 @@ public final class ClassName extends StringTypeValue {
         checkNotNull(className);
         checkArgument(className.length() > 0, "Class name cannot me empty");
         return new ClassName(className);
+    }
+
+    public static ClassName from(Descriptor descriptor) {
+        return construct(descriptor.getName(),
+                         descriptor.getFile(),
+                         descriptor.getContainingType());
+    }
+
+    public static ClassName from(EnumDescriptor descriptor) {
+        return construct(descriptor.getName(),
+                         descriptor.getFile(),
+                         descriptor.getContainingType());
+    }
+
+    private static ClassName construct(String typeName, FileDescriptor file, Descriptor parent) {
+        String packageName = javaPackageName(file);
+        String parentTypes = parentClassPrefix(parent);
+        String result = packageName + parentTypes + typeName;
+        return of(result);
+    }
+
+    private static String javaPackageName(FileDescriptor file) {
+        String javaPackage = file.getOptions()
+                                 .getJavaPackage()
+                                 .trim();
+        String packageName = javaPackage.isEmpty()
+                           ? file.getPackage()
+                           : javaPackage;
+        String result = packageName.isEmpty()
+                      ? ""
+                      : packageName + '.';
+        return result;
+    }
+
+    private static String parentClassPrefix(@Nullable Descriptor parent) {
+        if (parent == null) {
+            return "";
+        }
+        Deque<String> parentClassNames = newLinkedList();
+        Descriptor current = parent;
+        while (current != null) {
+            parentClassNames.addFirst(current.getName() + '$');
+            current = current.getContainingType();
+        }
+        String result = parentClassNames.stream()
+                                        .collect(joining());
+        return result;
     }
 }

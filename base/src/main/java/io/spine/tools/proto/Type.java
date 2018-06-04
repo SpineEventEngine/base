@@ -25,6 +25,7 @@ import com.google.protobuf.Message;
 import io.spine.type.ClassName;
 import io.spine.type.TypeName;
 import io.spine.type.TypeUrl;
+import io.spine.type.UnknownTypeException;
 
 import java.util.Objects;
 
@@ -41,14 +42,14 @@ public abstract class Type<T extends GenericDescriptor, P extends Message> {
 
     private final T type;
     private final P proto;
-    private final Class<?> javaClass;
+    private final ClassName className;
     private final TypeUrl url;
 
-    protected Type(T type, P proto, Class<?> javaClass, TypeUrl url) {
+    protected Type(T type, P proto, ClassName javaClassName, TypeUrl url) {
         this.type = checkNotNull(type);
         this.proto = checkNotNull(proto);
-        this.javaClass = checkNotNull(javaClass);
         this.url = url;
+        this.className = javaClassName;
     }
 
     /**
@@ -74,12 +75,15 @@ public abstract class Type<T extends GenericDescriptor, P extends Message> {
     }
 
     public Class<?> toJavaClass() {
-        return javaClass;
+        try {
+            return Class.forName(className.value());
+        } catch (ClassNotFoundException e) {
+            throw new UnknownTypeException(className.value(), e);
+        }
     }
 
     public ClassName javaClassName() {
-        // TODO:2018-06-04:dmytro.dashenkov: Check if I can do better.
-        return ClassName.of(this.toJavaClass());
+        return className;
     }
 
     @Override
