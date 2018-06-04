@@ -43,6 +43,8 @@ import static org.gradle.api.Task.TASK_TYPE;
  *
  * @author Dmytro Dashenkov
  */
+
+// TODO:2018-06-04:dmytro.dashenkov: Add to plugin application.
 final class CopyDescriptorFile {
 
     /**

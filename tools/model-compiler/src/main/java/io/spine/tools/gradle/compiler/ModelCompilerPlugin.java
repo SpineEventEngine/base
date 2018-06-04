@@ -51,7 +51,6 @@ public class ModelCompilerPlugin implements Plugin<Project> {
                .create(extensionName(), Extension.class);
 
         apply(new CleaningPlugin(), project);
-        apply(new ProtoToJavaMapperPlugin(), project);
         apply(new EnrichmentLookupPlugin(), project);
         apply(new RejectionGenPlugin(), project);
         apply(new ValidatingBuilderGenPlugin(), project);
