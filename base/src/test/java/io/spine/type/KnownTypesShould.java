@@ -20,7 +20,6 @@
 
 package io.spine.type;
 
-import com.google.common.base.Optional;
 import com.google.protobuf.Any;
 import com.google.protobuf.Duration;
 import com.google.protobuf.Empty;
@@ -39,13 +38,13 @@ import org.junit.rules.ExpectedException;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.Set;
 
 import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
 import static io.spine.test.Verify.assertSize;
 import static io.spine.type.KnownTypes.getAllFromPackage;
 import static io.spine.type.KnownTypes.getClassName;
-import static io.spine.type.KnownTypes.getTypeUrl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -104,15 +103,6 @@ public class KnownTypesShould {
     }
 
     @Test
-    public void return_proto_type_url_by_java_class_name() {
-        final ClassName className = ClassName.of(EntityOption.class);
-
-        final TypeUrl typeUrl = getTypeUrl(className);
-
-        assertEquals(TypeUrl.from(EntityOption.getDescriptor()), typeUrl);
-    }
-
-    @Test
     public void return_proto_type_url_by_proto_type_name() {
         final TypeUrl typeUrlExpected = TypeUrl.from(StringValue.getDescriptor());
 
@@ -149,12 +139,6 @@ public class KnownTypesShould {
 
         final Collection<TypeUrl> packageTypes = getAllFromPackage(prefix);
         assertTrue(packageTypes.isEmpty());
-    }
-
-    @Test
-    public void throw_exception_if_no_proto_type_url_by_java_class_name() {
-        thrown.expect(IllegalStateException.class);
-        getTypeUrl(ClassName.of(Exception.class));
     }
 
     @Test

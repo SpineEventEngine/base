@@ -20,17 +20,10 @@
 
 package io.spine.json;
 
-import com.google.common.collect.ImmutableSet;
-import com.google.protobuf.Descriptors.Descriptor;
-import com.google.protobuf.Descriptors.GenericDescriptor;
 import com.google.protobuf.util.JsonFormat.TypeRegistry;
 import io.spine.base.Environment;
 import io.spine.tools.proto.FileSet;
 import io.spine.tools.proto.TypeSet;
-import io.spine.type.KnownTypes;
-import io.spine.type.TypeUrl;
-
-import java.util.Set;
 
 /**
  * A factory of {@link TypeRegistry} instances.
@@ -54,6 +47,7 @@ final class TypeRegistries {
      * @return a {@link TypeRegistry} of all the known types
      */
     static TypeRegistry ofKnownTypes() {
+        // TODO:2018-06-04:dmytro.dashenkov: Move to KnownTypes.
         FileSet files = FileSet.loadMain();
         if (Environment.getInstance().isTests()) {
             @SuppressWarnings("TestOnlyProblems")
@@ -61,20 +55,7 @@ final class TypeRegistries {
             files = files.union(testFiles);
         }
         final TypeSet types = TypeSet.messagesAndEnums(files);
-        final TypeRegistry.Builder typeRegistry = types.toJsonPrinterRegistry();
-        typeRegistry.add(googleProtobufDescriptors());
-        return typeRegistry.build();
-    }
-
-    private static Set<Descriptor> googleProtobufDescriptors() {
-        final Set<TypeUrl> googleTypes = KnownTypes.getStandardTypeUrls();
-        final ImmutableSet.Builder<Descriptor> googleDescriptors = ImmutableSet.builder();
-        for (TypeUrl type : googleTypes) {
-            final GenericDescriptor descriptor = type.getDescriptor();
-            if (descriptor instanceof Descriptor) {
-                googleDescriptors.add((Descriptor) descriptor);
-            }
-        }
-        return googleDescriptors.build();
+        final TypeRegistry typeRegistry = types.toJsonPrinterRegistry();
+        return typeRegistry;
     }
 }

@@ -20,7 +20,6 @@
 
 package io.spine.type;
 
-import com.google.common.base.Optional;
 import com.google.common.base.Splitter;
 import com.google.protobuf.Descriptors;
 import com.google.protobuf.Descriptors.Descriptor;
@@ -30,6 +29,7 @@ import io.spine.value.StringTypeValue;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -142,6 +142,7 @@ public class TypeName extends StringTypeValue {
      *         there is no corresponding Java class
      */
     public <T extends Message> Class<T> getJavaClass() throws UnknownTypeException {
+
         return KnownTypes.getJavaClass(toUrl());
     }
 

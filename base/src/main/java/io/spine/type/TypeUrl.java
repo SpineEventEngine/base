@@ -21,7 +21,6 @@
 package io.spine.type;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Predicate;
 import com.google.common.base.Splitter;
 import com.google.protobuf.Any;
 import com.google.protobuf.AnyOrBuilder;
@@ -33,11 +32,11 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
 import io.spine.option.OptionsProto;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -50,7 +49,7 @@ import static java.lang.String.format;
  *
  * <p>Consists of the two parts separated with a slash.
  * The first part is the type URL prefix (for example, {@code "type.googleapis.com"}).
- * The second part is a {@linkplain com.google.protobuf.Descriptors.Descriptor#getFullName()
+ * The second part is a {@linkplain Descriptor#getFullName()
  * fully-qualified Protobuf type name}.
  *
  * @author Alexander Yevsyukov
@@ -264,10 +263,6 @@ public final class TypeUrl implements Serializable {
         return Objects.hash(prefix, typeName);
     }
 
-    static Predicate<TypeUrl> inPackage(String packageName) {
-        return new InPackage(packageName);
-    }
-
     /**
      * Enumeration of known type URL prefixes.
      */
@@ -305,6 +300,10 @@ public final class TypeUrl implements Serializable {
         }
     }
 
+    static Predicate<TypeUrl> inPackage(String packageName) {
+        return new InPackage(packageName);
+    }
+
     /**
      * Verifies if a type belongs to a package.
      */
@@ -317,7 +316,7 @@ public final class TypeUrl implements Serializable {
         }
 
         @Override
-        public boolean apply(@Nullable TypeUrl input) {
+        public boolean test(TypeUrl input) {
             checkNotNull(input);
             final TypeName typeName = input.toName();
             return typeName.belongsTo(packageName);

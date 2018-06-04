@@ -21,15 +21,22 @@
 package io.spine.tools.proto;
 
 import com.google.common.base.Objects;
-import com.google.common.collect.Sets;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.util.JsonFormat.TypeRegistry;
+import io.spine.type.TypeName;
 
-import java.util.Set;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Optional;
 
-import static com.google.common.collect.Sets.newHashSet;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.collect.ImmutableMap.copyOf;
+import static com.google.common.collect.ImmutableMap.of;
+import static com.google.common.collect.Maps.newHashMap;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -40,17 +47,22 @@ import static java.util.stream.Collectors.toList;
  */
 public class TypeSet {
 
-    private final Set<MessageType> messageTypes;
-    private final Set<EnumType> enumTypes;
+    private final Map<TypeName, MessageType> messageTypes;
+    private final Map<TypeName, EnumType> enumTypes;
 
     /** Creates a new empty set. */
     private TypeSet() {
-        this(newHashSet(), newHashSet());
+        this(of(), of());
     }
 
-    private TypeSet(Iterable<MessageType> messageTypes, Iterable<EnumType> enumTypes) {
-        this.messageTypes = newHashSet(messageTypes);
-        this.enumTypes = newHashSet(enumTypes);
+    private TypeSet(Map<TypeName, MessageType> messageTypes, Map<TypeName, EnumType> enumTypes) {
+        this.messageTypes = copyOf(messageTypes);
+        this.enumTypes = copyOf(enumTypes);
+    }
+
+    private TypeSet(Builder builder) {
+        this(copyOf(builder.messageTypes),
+             copyOf(builder.enumTypes));
     }
 
     /**
@@ -91,6 +103,22 @@ public class TypeSet {
         return result;
     }
 
+    public Optional<Type> find(TypeName name) {
+        checkNotNull(name);
+        Type messageType = messageTypes.get(name);
+        if (messageType != null) {
+            return Optional.of(messageType);
+        } else {
+            Type enumType = enumTypes.get(name);
+            return Optional.ofNullable(enumType);
+        }
+    }
+
+    public boolean contains(TypeName typeName) {
+        boolean result = find(typeName).isPresent();
+        return result;
+    }
+
     /**
      * Verifies if the set is empty.
      */
@@ -106,30 +134,13 @@ public class TypeSet {
      * <p>Retrieves an instance of {@link TypeRegistry.Builder} which can be appended with more
      * types if necessary.
      */
-    public TypeRegistry.Builder toJsonPrinterRegistry() {
+    public TypeRegistry toJsonPrinterRegistry() {
         Iterable<Descriptor> messageTypes = getMessageTypes();
-        TypeRegistry.Builder registry = TypeRegistry
+        TypeRegistry registry = TypeRegistry
                 .newBuilder()
-                .add(messageTypes);
+                .add(messageTypes)
+                .build();
         return registry;
-    }
-
-    /**
-     * Adds the passed message type to the set.
-     */
-    @CanIgnoreReturnValue
-    boolean add(MessageType type) {
-        boolean result = messageTypes.add(type);
-        return result;
-    }
-
-    /**
-     * Adds the passed enum type to the set.
-     */
-    @CanIgnoreReturnValue
-    boolean add(EnumType type) {
-        boolean result = enumTypes.add(type);
-        return result;
     }
 
     /**
@@ -142,17 +153,35 @@ public class TypeSet {
         if (this.isEmpty()) {
             return another;
         }
-        Set<MessageType> messages = Sets.union(this.messageTypes, another.messageTypes);
-        Set<EnumType> enums = Sets.union(this.enumTypes, another.enumTypes);
+        Map<TypeName, MessageType> messages = ImmutableMap
+                .<TypeName, MessageType>builder()
+                .putAll(this.messageTypes)
+                .putAll(another.messageTypes)
+                .build();
+        Map<TypeName, EnumType> enums = ImmutableMap
+                .<TypeName, EnumType>builder()
+                .putAll(this.enumTypes)
+                .putAll(another.enumTypes)
+                .build();
         TypeSet result = new TypeSet(messages, enums);
         return result;
     }
 
     private Iterable<Descriptor> getMessageTypes() {
-        final Iterable<Descriptor> descriptors = messageTypes.stream()
+        final Iterable<Descriptor> descriptors = messageTypes.values()
+                                                             .stream()
                                                              .map(MessageType::getType)
                                                              .collect(toList());
         return descriptors;
+    }
+
+    public Collection<Type> types() {
+        ImmutableList<Type> types = ImmutableList
+                .<Type>builder()
+                .addAll(messageTypes.values())
+                .addAll(enumTypes.values())
+                .build();
+        return types;
     }
 
     /** {@inheritDoc} */
@@ -174,4 +203,52 @@ public class TypeSet {
     public int hashCode() {
         return Objects.hashCode(messageTypes, enumTypes);
     }
+
+    /**
+     * Creates a new instance of {@code Builder} for {@code TypeSet} instances.
+     *
+     * @return new instance of {@code Builder}
+     */
+    public static Builder newBuilder() {
+        return new Builder();
+    }
+
+    /**
+     * A builder for the {@code TypeSet} instances.
+     */
+    public static final class Builder {
+
+        private final Map<TypeName, MessageType> messageTypes = newHashMap();
+        private final Map<TypeName, EnumType> enumTypes = newHashMap();
+
+        /**
+         * Prevents direct instantiation.
+         */
+        private Builder() {
+        }
+
+        @CanIgnoreReturnValue
+        public Builder add(MessageType type) {
+            TypeName name = type.name();
+            messageTypes.put(name, type);
+            return this;
+        }
+
+        @CanIgnoreReturnValue
+        public Builder add(EnumType type) {
+            TypeName name = type.name();
+            enumTypes.put(name, type);
+            return this;
+        }
+
+        /**
+         * Creates a new instance of {@code TypeSet}.
+         *
+         * @return new instance of {@code TypeSet}
+         */
+        public TypeSet build() {
+            return new TypeSet(this);
+        }
+    }
+
 }

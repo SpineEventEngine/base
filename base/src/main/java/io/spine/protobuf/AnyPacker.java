@@ -26,7 +26,6 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 import io.spine.type.TypeUrl;
 import io.spine.type.UnexpectedTypeException;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.Iterator;
 
@@ -47,16 +46,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public final class AnyPacker {
 
-    private static final Function<Any, Message> ANY_UNPACKER = new Function<Any, Message>() {
-        @Nullable
-        @Override
-        public Message apply(@Nullable Any input) {
-            if (input == null) {
-                return null;
-            }
-            return unpack(input);
-        }
-    };
+    private static final Function<Any, Message> ANY_UNPACKER =
+            any -> any == null ? null : unpack(any);
 
     private AnyPacker() {
         // Prevent instantiation of this utility class.

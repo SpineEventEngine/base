@@ -22,6 +22,9 @@ package io.spine.tools.proto;
 
 import com.google.protobuf.Descriptors.GenericDescriptor;
 import com.google.protobuf.Message;
+import io.spine.type.ClassName;
+import io.spine.type.TypeName;
+import io.spine.type.TypeUrl;
 
 import java.util.Objects;
 
@@ -38,10 +41,14 @@ public abstract class Type<T extends GenericDescriptor, P extends Message> {
 
     private final T type;
     private final P proto;
+    private final Class<?> javaClass;
+    private final TypeUrl url;
 
-    protected Type(T type, P proto) {
+    protected Type(T type, P proto, Class<?> javaClass, TypeUrl url) {
         this.type = checkNotNull(type);
         this.proto = checkNotNull(proto);
+        this.javaClass = checkNotNull(javaClass);
+        this.url = url;
     }
 
     /**
@@ -56,6 +63,23 @@ public abstract class Type<T extends GenericDescriptor, P extends Message> {
      */
     public P toProto() {
         return this.proto;
+    }
+
+    public TypeName name() {
+        return url.toName();
+    }
+
+    public TypeUrl url() {
+        return url;
+    }
+
+    public Class<?> toJavaClass() {
+        return javaClass;
+    }
+
+    public ClassName javaClassName() {
+        // TODO:2018-06-04:dmytro.dashenkov: Check if I can do better.
+        return ClassName.of(this.toJavaClass());
     }
 
     @Override

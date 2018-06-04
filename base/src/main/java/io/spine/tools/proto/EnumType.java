@@ -24,6 +24,7 @@ import com.google.protobuf.DescriptorProtos.EnumDescriptorProto;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
+import io.spine.type.TypeUrl;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -35,14 +36,17 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public final class EnumType extends Type<EnumDescriptor, EnumDescriptorProto> {
 
     private EnumType(EnumDescriptor descriptor) {
-        super(descriptor, descriptor.toProto());
+        super(descriptor,
+              descriptor.toProto(),
+              null,
+              TypeUrl.from(descriptor));
     }
 
     @SuppressWarnings("MethodWithMultipleLoops")
         // Need to go through top level enums and those nested messages.
     static TypeSet allFrom(FileDescriptor file) {
         checkNotNull(file);
-        final TypeSet result = TypeSet.newInstance();
+        final TypeSet.Builder result = TypeSet.newBuilder();
 
         for (EnumDescriptor enumDescriptor : file.getEnumTypes()) {
             result.add(new EnumType(enumDescriptor));
@@ -51,11 +55,11 @@ public final class EnumType extends Type<EnumDescriptor, EnumDescriptorProto> {
         for (Descriptor messageType : file.getMessageTypes()) {
             addNested(messageType, result);
         }
-        return result;
+        return result.build();
     }
 
     @SuppressWarnings("MethodWithMultipleLoops") // Need to go through enums and nested messages.
-    private static void addNested(Descriptor messageType, TypeSet set) {
+    private static void addNested(Descriptor messageType, TypeSet.Builder set) {
         for (EnumDescriptor enumDescriptor : messageType.getEnumTypes()) {
             set.add(new EnumType(enumDescriptor));
         }

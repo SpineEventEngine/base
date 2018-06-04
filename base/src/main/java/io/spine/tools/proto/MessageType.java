@@ -23,6 +23,7 @@ package io.spine.tools.proto;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
+import io.spine.type.TypeUrl;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -33,8 +34,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class MessageType extends Type<Descriptor, DescriptorProto> {
 
-    protected MessageType(Descriptor type) {
-        super(type, type.toProto());
+    protected MessageType(Descriptor descriptor) {
+        super(descriptor,
+              descriptor.toProto(),
+              null,
+              TypeUrl.from(descriptor));
     }
 
     /**
@@ -42,14 +46,14 @@ public class MessageType extends Type<Descriptor, DescriptorProto> {
      */
     public static TypeSet allFrom(FileDescriptor file) {
         checkNotNull(file);
-        final TypeSet result = TypeSet.newInstance();
+        final TypeSet.Builder result = TypeSet.newBuilder();
         for (Descriptor messageType : file.getMessageTypes()) {
             addType(messageType, result);
         }
-        return result;
+        return result.build();
     }
 
-    private static void addType(Descriptor type, TypeSet set) {
+    private static void addType(Descriptor type, TypeSet.Builder set) {
         set.add(new MessageType(type));
         for (Descriptor nestedType : type.getNestedTypes()) {
             addType(nestedType, set);
