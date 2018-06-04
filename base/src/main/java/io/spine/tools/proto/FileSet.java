@@ -121,7 +121,8 @@ public final class FileSet {
             return another;
         }
 
-        final FileSet result = new FileSet(Sets.union(this.files, another.files));
+        Set<FileDescriptor> files = Sets.union(this.files, another.files);
+        FileSet result = new FileSet(files);
         return result;
     }
 
