@@ -31,13 +31,7 @@ public class FileSetShould {
 
     @Test
     public void load_main_resources() {
-        assertFalse(FileSet.loadMain()
-                           .isEmpty());
-    }
-
-    @Test
-    public void load_test_resources() {
-        assertFalse(FileSet.loadTest()
+        assertFalse(FileSet.load()
                            .isEmpty());
     }
 }

@@ -38,7 +38,7 @@ final class Loader {
     }
 
     static TypeSet load() {
-        final FileSet protoDefinitions = FileSet.loadMain();
+        final FileSet protoDefinitions = FileSet.load();
         final TypeSet types = TypeSet.messagesAndEnums(protoDefinitions);
         return types;
     }

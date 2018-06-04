@@ -19,11 +19,13 @@
  */
 package io.spine.tools.proto;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterators;
 import com.google.common.collect.Streams;
+import com.google.common.io.CharStreams;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
+import io.spine.io.ResourceFiles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,6 +33,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Iterator;
@@ -43,7 +47,9 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Sets.newHashSet;
 import static io.spine.io.ResourceFiles.loadAll;
+import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 import static io.spine.util.Exceptions.newIllegalStateException;
+import static java.util.stream.Collectors.toSet;
 
 /**
  * A utility class which allows to obtain Protobuf file descriptors.
@@ -52,6 +58,9 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  * @author Alex Tymchenko
  */
 public class FileDescriptors {
+
+
+    public static final String KNOWN_TYPE_PROVIDERS = "known_type_providers";
 
     /**
      * Default file name for descriptor set generated from the proto files under
@@ -131,18 +140,13 @@ public class FileDescriptors {
     /**
      * Loads main file descriptor set from resources.
      */
-    public static Iterator<FileDescriptorSet> loadMain() {
-        final Iterator<FileDescriptorSet> result = loadFrom(MAIN_FILE);
-        return result;
-    }
-
-    /**
-     * Loads test file descriptor set from resources.
-     */
-    @VisibleForTesting
-    public static Iterator<FileDescriptorSet> loadTest() {
-        final Iterator<FileDescriptorSet> result = loadFrom(TEST_FILE);
-        return result;
+    public static Iterator<FileDescriptorSet> load() {
+        final Iterator<FileDescriptorSet> sets = readAllTypeProviders()
+                .stream()
+                .map(FileDescriptors::loadFrom)
+                .reduce(Iterators::concat)
+                .orElseThrow(() -> newIllegalStateException("Known types cannot be loaded."));
+        return sets;
     }
 
     /**
@@ -156,6 +160,20 @@ public class FileDescriptors {
             files.addAll(descriptorSet.getFileList());
         }
         return files;
+    }
+
+    private static Collection<String> readAllTypeProviders() {
+        return Streams.stream(ResourceFiles.loadAll(KNOWN_TYPE_PROVIDERS))
+                      .flatMap(file -> readTypeProviders(file).stream())
+                      .collect(toSet());
+    }
+
+    private static Collection<String> readTypeProviders(URL url) {
+        try (Reader reader = new InputStreamReader(url.openStream())) {
+            return CharStreams.readLines(reader);
+        } catch (IOException e) {
+            throw illegalStateWithCauseOf(e);
+        }
     }
 
     private static Iterator<FileDescriptorSet> loadFrom(String resourceName) {

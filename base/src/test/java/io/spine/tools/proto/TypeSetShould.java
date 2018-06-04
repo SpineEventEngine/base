@@ -30,7 +30,7 @@ import static org.junit.Assert.assertFalse;
  */
 public class TypeSetShould {
 
-    private static final FileSet fileSet = FileSet.loadMain();
+    private static final FileSet fileSet = FileSet.load();
 
     @Test
     public void obtain_messages_and_enums_from_a_file() {

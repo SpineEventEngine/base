@@ -35,16 +35,7 @@ public class FileDescriptorsShould {
 
     @Test
     public void load_main_set() {
-        final Iterator<FileDescriptorSet> fileSets = FileDescriptors.loadMain();
-        assertTrue(fileSets.hasNext());
-        assertFalse(fileSets.next()
-                            .getFileList()
-                            .isEmpty());
-    }
-
-    @Test
-    public void load_test_set() {
-        final Iterator<FileDescriptorSet> fileSets = FileDescriptors.loadTest();
+        final Iterator<FileDescriptorSet> fileSets = FileDescriptors.load();
         assertTrue(fileSets.hasNext());
         assertFalse(fileSets.next()
                             .getFileList()

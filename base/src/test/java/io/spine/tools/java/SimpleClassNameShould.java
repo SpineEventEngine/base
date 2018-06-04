@@ -43,7 +43,7 @@ import static org.junit.Assert.assertTrue;
  */
 public class SimpleClassNameShould {
 
-    private static final FileSet mainSet = FileSet.loadMain();
+    private static final FileSet mainSet = FileSet.load();
     private static final String ERROR_PROTO = "ErrorProto";
 
     private FileDescriptor errorProto;

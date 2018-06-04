@@ -21,7 +21,6 @@
 package io.spine.json;
 
 import com.google.protobuf.util.JsonFormat.TypeRegistry;
-import io.spine.base.Environment;
 import io.spine.tools.proto.FileSet;
 import io.spine.tools.proto.TypeSet;
 
@@ -48,12 +47,7 @@ final class TypeRegistries {
      */
     static TypeRegistry ofKnownTypes() {
         // TODO:2018-06-04:dmytro.dashenkov: Move to KnownTypes.
-        FileSet files = FileSet.loadMain();
-        if (Environment.getInstance().isTests()) {
-            @SuppressWarnings("TestOnlyProblems")
-            final FileSet testFiles = FileSet.loadTest();
-            files = files.union(testFiles);
-        }
+        FileSet files = FileSet.load();
         final TypeSet types = TypeSet.messagesAndEnums(files);
         final TypeRegistry typeRegistry = types.toJsonPrinterRegistry();
         return typeRegistry;

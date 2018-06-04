@@ -45,7 +45,7 @@ public class LinkerShould {
 
     @Before
     public void setUp() throws DescriptorValidationException {
-        Iterator<FileDescriptorSet> fileSets = FileDescriptors.loadMain();
+        Iterator<FileDescriptorSet> fileSets = FileDescriptors.load();
         linker = new Linker(extractFiles(fileSets));
         linker.resolve();
     }

@@ -20,7 +20,6 @@
 
 package io.spine.tools.proto;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
@@ -89,17 +88,8 @@ public final class FileSet {
     /**
      * Loads main file set from resources.
      */
-    public static FileSet loadMain() {
-        final Iterator<FileDescriptorSet> fileSets = FileDescriptors.loadMain();
-        return linkSets(fileSets);
-    }
-
-    /**
-     * Loads test file set from resources.
-     */
-    @VisibleForTesting
-    public static FileSet loadTest() {
-        final Iterator<FileDescriptorSet> fileSets = FileDescriptors.loadTest();
+    public static FileSet load() {
+        final Iterator<FileDescriptorSet> fileSets = FileDescriptors.load();
         return linkSets(fileSets);
     }
 
