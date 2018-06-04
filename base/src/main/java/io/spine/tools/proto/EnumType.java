@@ -36,11 +36,18 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public final class EnumType extends Type<EnumDescriptor, EnumDescriptorProto> {
 
-    private EnumType(EnumDescriptor descriptor) {
-        super(descriptor,
-              descriptor.toProto(),
-              ClassName.from(descriptor),
-              TypeUrl.from(descriptor));
+    private EnumType(EnumDescriptor descriptor,
+                     EnumDescriptorProto descriptorProto,
+                     ClassName className,
+                     TypeUrl typeUrl) {
+        super(descriptor, descriptorProto, className, typeUrl);
+    }
+
+    private static EnumType create(EnumDescriptor descriptor) {
+        EnumDescriptorProto descriptorProto = descriptor.toProto();
+        ClassName className = ClassName.from(descriptor);
+        TypeUrl typeUrl = TypeUrl.from(descriptor);
+        return new EnumType(descriptor, descriptorProto, className, typeUrl);
     }
 
     @SuppressWarnings("MethodWithMultipleLoops")
@@ -50,7 +57,7 @@ public final class EnumType extends Type<EnumDescriptor, EnumDescriptorProto> {
         final TypeSet.Builder result = TypeSet.newBuilder();
 
         for (EnumDescriptor enumDescriptor : file.getEnumTypes()) {
-            result.add(new EnumType(enumDescriptor));
+            result.add(create(enumDescriptor));
         }
 
         for (Descriptor messageType : file.getMessageTypes()) {
@@ -62,7 +69,7 @@ public final class EnumType extends Type<EnumDescriptor, EnumDescriptorProto> {
     @SuppressWarnings("MethodWithMultipleLoops") // Need to go through enums and nested messages.
     private static void addNested(Descriptor messageType, TypeSet.Builder set) {
         for (EnumDescriptor enumDescriptor : messageType.getEnumTypes()) {
-            set.add(new EnumType(enumDescriptor));
+            set.add(create(enumDescriptor));
         }
 
         for (Descriptor nestedType : messageType.getNestedTypes()) {

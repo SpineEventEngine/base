@@ -35,11 +35,18 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class MessageType extends Type<Descriptor, DescriptorProto> {
 
-    protected MessageType(Descriptor descriptor) {
-        super(descriptor,
-              descriptor.toProto(),
-              ClassName.from(descriptor),
-              TypeUrl.from(descriptor));
+    protected MessageType(Descriptor descriptor,
+                          DescriptorProto descriptorProto,
+                          ClassName className,
+                          TypeUrl typeUrl) {
+        super(descriptor, descriptorProto, className, typeUrl);
+    }
+
+    private static MessageType create(Descriptor descriptor) {
+        DescriptorProto descriptorProto = descriptor.toProto();
+        ClassName className = ClassName.from(descriptor);
+        TypeUrl typeUrl = TypeUrl.from(descriptor);
+        return new MessageType(descriptor, descriptorProto, className, typeUrl);
     }
 
     /**
@@ -55,7 +62,7 @@ public class MessageType extends Type<Descriptor, DescriptorProto> {
     }
 
     private static void addType(Descriptor type, TypeSet.Builder set) {
-        set.add(new MessageType(type));
+        set.add(create(type));
         for (Descriptor nestedType : type.getNestedTypes()) {
             addType(nestedType, set);
         }
