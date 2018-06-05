@@ -21,14 +21,14 @@
 package io.spine.code.proto;
 
 import com.google.common.collect.ImmutableList;
-import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
+import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.DescriptorValidationException;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Iterator;
 
-import static io.spine.code.proto.FileDescriptors.extractFiles;
+import static com.google.common.collect.Lists.newArrayList;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -45,8 +45,8 @@ public class LinkerShould {
 
     @Before
     public void setUp() throws DescriptorValidationException {
-        Iterator<FileDescriptorSet> fileSets = FileDescriptors.load();
-        linker = new Linker(extractFiles(fileSets));
+        Iterator<FileDescriptorProto> fileSets = FileDescriptors.load();
+        linker = new Linker(newArrayList(fileSets));
         linker.resolve();
     }
 
