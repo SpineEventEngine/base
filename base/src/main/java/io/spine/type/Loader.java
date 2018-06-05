@@ -20,8 +20,8 @@
 
 package io.spine.type;
 
-import io.spine.tools.proto.FileSet;
-import io.spine.tools.proto.TypeSet;
+import io.spine.code.proto.FileSet;
+import io.spine.code.proto.TypeSet;
 
 /**
  * The helper class for building a map from proto type URL to Java class name.

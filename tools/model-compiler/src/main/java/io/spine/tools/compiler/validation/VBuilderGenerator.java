@@ -24,7 +24,7 @@ import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
-import io.spine.tools.Indent;
+import io.spine.code.Indent;
 import io.spine.tools.compiler.MessageTypeCache;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;

@@ -25,13 +25,13 @@ import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Message;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
-import io.spine.tools.java.PackageName;
-import io.spine.tools.java.SourceFile;
+import io.spine.code.java.PackageName;
+import io.spine.code.java.SourceFile;
 
 import java.util.Objects;
 
-import static io.spine.tools.java.Annotations.generatedBySpineModelCompiler;
-import static io.spine.tools.java.PackageName.DELIMITER;
+import static io.spine.code.java.Annotations.generatedBySpineModelCompiler;
+import static io.spine.code.java.PackageName.DELIMITER;
 import static javax.lang.model.element.Modifier.PUBLIC;
 
 /**

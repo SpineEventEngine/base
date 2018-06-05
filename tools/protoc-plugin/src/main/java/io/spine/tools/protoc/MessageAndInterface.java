@@ -32,8 +32,8 @@ import com.google.protobuf.GeneratedMessageV3.ExtendableMessage;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import com.squareup.javapoet.JavaFile;
 import io.spine.option.UnknownOptions;
-import io.spine.tools.java.PackageName;
-import io.spine.tools.java.SourceFile;
+import io.spine.code.java.PackageName;
+import io.spine.code.java.SourceFile;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.Set;
@@ -41,7 +41,7 @@ import java.util.Set;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static io.spine.option.OptionsProto.everyIs;
 import static io.spine.option.OptionsProto.is;
-import static io.spine.tools.java.PackageName.DELIMITER;
+import static io.spine.code.java.PackageName.DELIMITER;
 import static io.spine.tools.protoc.MarkerInterfaceSpec.prepareInterface;
 import static java.lang.String.format;
 

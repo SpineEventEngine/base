@@ -152,3 +152,7 @@ protobuf {
         }
     }
 }
+
+clean {
+    delete "$projectDir/generated"
+}

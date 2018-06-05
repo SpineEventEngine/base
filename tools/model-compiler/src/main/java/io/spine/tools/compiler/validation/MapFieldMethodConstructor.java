@@ -27,7 +27,7 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
 import io.spine.base.ConversionException;
 import io.spine.tools.compiler.fieldtype.MapFieldType;
-import io.spine.tools.proto.FieldName;
+import io.spine.code.proto.FieldName;
 import io.spine.validate.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -24,8 +24,8 @@ import com.google.common.base.Predicate;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.option.UnknownOptions;
-import io.spine.tools.properties.PropertiesWriter;
-import io.spine.tools.proto.MessageDeclaration;
+import io.spine.code.properties.PropertiesWriter;
+import io.spine.code.proto.MessageDeclaration;
 import io.spine.type.TypeName;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
@@ -37,9 +37,9 @@ import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Maps.newHashMap;
-import static io.spine.tools.proto.FileDescriptors.parseSkipStandard;
+import static io.spine.code.proto.FileDescriptors.parseSkipStandard;
 import static io.spine.option.OptionsProto.VALIDATION_OF_FIELD_NUMBER;
-import static io.spine.tools.proto.SourceFile.allThat;
+import static io.spine.code.proto.SourceFile.allThat;
 
 /**
  * Finds Protobuf definitions of validation rules and creates a {@code .properties} file,

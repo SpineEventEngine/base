@@ -19,7 +19,7 @@
  */
 package io.spine.tools.gradle.compiler;
 
-import io.spine.tools.DefaultProject;
+import io.spine.code.DefaultProject;
 import org.gradle.api.Project;
 import org.junit.Before;
 import org.junit.Rule;

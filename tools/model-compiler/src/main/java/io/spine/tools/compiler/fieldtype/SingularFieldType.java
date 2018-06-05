@@ -22,7 +22,7 @@ package io.spine.tools.compiler.fieldtype;
 import com.google.common.base.Optional;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
-import io.spine.tools.java.PrimitiveType;
+import io.spine.code.java.PrimitiveType;
 
 /**
  * Represents singular {@linkplain FieldType field type}.

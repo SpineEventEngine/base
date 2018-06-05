@@ -25,7 +25,7 @@ import com.google.protobuf.DescriptorProtos.ServiceDescriptorProto;
 import com.google.protobuf.DescriptorProtos.ServiceOptions;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import io.spine.option.UnknownOptions;
-import io.spine.tools.java.SourceFile;
+import io.spine.code.java.SourceFile;
 
 import java.lang.annotation.Annotation;
 import java.util.Collection;

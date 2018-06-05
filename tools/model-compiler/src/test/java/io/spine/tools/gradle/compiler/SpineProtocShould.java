@@ -20,7 +20,7 @@
 
 package io.spine.tools.gradle.compiler;
 
-import io.spine.tools.DefaultProject;
+import io.spine.code.DefaultProject;
 import io.spine.tools.gradle.given.GradleProject;
 import org.junit.Before;
 import org.junit.Ignore;

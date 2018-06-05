@@ -27,7 +27,7 @@ import com.google.protobuf.DescriptorProtos.FileOptions;
 import com.google.protobuf.DescriptorProtos.ServiceDescriptorProto;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import io.spine.option.UnknownOptions;
-import io.spine.tools.java.SourceFile;
+import io.spine.code.java.SourceFile;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
 import org.jboss.forge.roaster.model.source.JavaClassSource;

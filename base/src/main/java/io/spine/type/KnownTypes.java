@@ -24,8 +24,8 @@ import com.google.protobuf.Any;
 import com.google.protobuf.Message;
 import io.spine.Resources;
 import io.spine.annotation.Internal;
-import io.spine.tools.proto.Type;
-import io.spine.tools.proto.TypeSet;
+import io.spine.code.proto.Type;
+import io.spine.code.proto.TypeSet;
 
 import java.util.Optional;
 import java.util.Set;

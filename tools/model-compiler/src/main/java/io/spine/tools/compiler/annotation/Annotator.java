@@ -25,7 +25,7 @@ import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.GeneratedMessageV3.ExtendableMessage;
-import io.spine.tools.java.SourceFile;
+import io.spine.code.java.SourceFile;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jboss.forge.roaster.Roaster;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;

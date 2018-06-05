@@ -135,7 +135,7 @@ task prepareProtocConfig(type: Copy) {
             tokens: ['baseVersion': "'$spineVersion'".toString(),
                      'pbVersion'  : "'$protobufVersion'".toString(),
                      'gRPCVersion': "'$gRpcVersion'".toString(),
-                     // See `io.spine.tools.DefaultProject.tempArtifacts()`
+                     // See `DefaultProject.tempArtifacts()`
                      'spineDir'   : "'.spine'"])
     outputs.upToDateWhen { false }
 }

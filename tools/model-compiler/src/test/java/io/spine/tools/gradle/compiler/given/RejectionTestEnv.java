@@ -21,11 +21,11 @@
 package io.spine.tools.gradle.compiler.given;
 
 import com.sun.javadoc.RootDoc;
-import io.spine.tools.DefaultProject;
+import io.spine.code.DefaultProject;
 import io.spine.tools.gradle.given.GradleProject;
-import io.spine.tools.java.FileName;
-import io.spine.tools.java.PackageName;
-import io.spine.tools.proto.FieldName;
+import io.spine.code.java.FileName;
+import io.spine.code.java.PackageName;
+import io.spine.code.proto.FieldName;
 import org.junit.rules.TemporaryFolder;
 
 import java.nio.file.Path;

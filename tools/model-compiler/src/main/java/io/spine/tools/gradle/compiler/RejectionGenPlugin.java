@@ -24,10 +24,10 @@ import io.spine.tools.compiler.MessageTypeCache;
 import io.spine.tools.compiler.rejection.RejectionWriter;
 import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.SpinePlugin;
-import io.spine.tools.java.PackageName;
-import io.spine.tools.java.SimpleClassName;
-import io.spine.tools.proto.RejectionDeclaration;
-import io.spine.tools.proto.RejectionsFile;
+import io.spine.code.java.PackageName;
+import io.spine.code.java.SimpleClassName;
+import io.spine.code.proto.RejectionDeclaration;
+import io.spine.code.proto.RejectionsFile;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -37,7 +37,7 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 
-import static io.spine.tools.proto.FileDescriptors.parse;
+import static io.spine.code.proto.FileDescriptors.parse;
 import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
 import static io.spine.tools.gradle.TaskName.COMPILE_TEST_JAVA;
 import static io.spine.tools.gradle.TaskName.GENERATE_PROTO;
@@ -48,7 +48,7 @@ import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSetPath;
 import static io.spine.tools.gradle.compiler.Extension.getTargetGenRejectionsRootDir;
 import static io.spine.tools.gradle.compiler.Extension.getTargetTestGenRejectionsRootDir;
 import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSetPath;
-import static io.spine.tools.proto.Rejections.collect;
+import static io.spine.code.proto.Rejections.collect;
 
 /**
  * Plugin which generates Rejections declared in {@code rejections.proto} files.

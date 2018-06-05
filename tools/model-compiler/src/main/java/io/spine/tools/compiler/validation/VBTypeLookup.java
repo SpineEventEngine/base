@@ -37,7 +37,7 @@ import java.util.Set;
 
 import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Sets.newHashSet;
-import static io.spine.tools.proto.FileDescriptors.parse;
+import static io.spine.code.proto.FileDescriptors.parse;
 
 /**
  * Collects types for which validating builders are generated.

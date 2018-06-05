@@ -29,10 +29,10 @@ import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.SourceCodeInfo.Location;
-import io.spine.tools.javadoc.JavadocEscaper;
-import io.spine.tools.proto.FieldName;
-import io.spine.tools.proto.LocationPath;
-import io.spine.tools.proto.RejectionDeclaration;
+import io.spine.code.javadoc.JavadocEscaper;
+import io.spine.code.proto.FieldName;
+import io.spine.code.proto.LocationPath;
+import io.spine.code.proto.RejectionDeclaration;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.Arrays;

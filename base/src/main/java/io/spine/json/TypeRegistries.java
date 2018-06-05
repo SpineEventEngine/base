@@ -21,8 +21,8 @@
 package io.spine.json;
 
 import com.google.protobuf.util.JsonFormat.TypeRegistry;
-import io.spine.tools.proto.FileSet;
-import io.spine.tools.proto.TypeSet;
+import io.spine.code.proto.FileSet;
+import io.spine.code.proto.TypeSet;
 
 /**
  * A factory of {@link TypeRegistry} instances.

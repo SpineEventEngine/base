@@ -22,7 +22,7 @@ package io.spine.tools.compiler.fieldtype;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 import com.squareup.javapoet.TypeName;
-import io.spine.tools.proto.ScalarType;
+import io.spine.code.proto.ScalarType;
 
 import java.util.AbstractMap;
 import java.util.Map;

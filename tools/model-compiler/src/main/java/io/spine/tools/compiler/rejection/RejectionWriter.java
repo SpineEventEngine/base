@@ -30,8 +30,8 @@ import com.squareup.javapoet.TypeSpec;
 import io.spine.base.ThrowableMessage;
 import io.spine.tools.compiler.fieldtype.FieldType;
 import io.spine.tools.compiler.fieldtype.FieldTypeFactory;
-import io.spine.tools.proto.FieldName;
-import io.spine.tools.proto.RejectionDeclaration;
+import io.spine.code.proto.FieldName;
+import io.spine.code.proto.RejectionDeclaration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +41,7 @@ import java.nio.file.Files;
 import java.util.Map;
 
 import static com.squareup.javapoet.MethodSpec.constructorBuilder;
-import static io.spine.tools.java.Annotations.generatedBySpineModelCompiler;
+import static io.spine.code.java.Annotations.generatedBySpineModelCompiler;
 import static javax.lang.model.element.Modifier.FINAL;
 import static javax.lang.model.element.Modifier.PRIVATE;
 import static javax.lang.model.element.Modifier.PUBLIC;
@@ -178,8 +178,8 @@ public class RejectionWriter {
 
     private static FieldSpec serialVersionUID() {
         return FieldSpec.builder(long.class,
-                                 io.spine.tools.java.FieldName.serialVersionUID()
-                                                              .value(),
+                                 io.spine.code.java.FieldName.serialVersionUID()
+                                                             .value(),
                                  PRIVATE, STATIC, FINAL)
                         .initializer("0L")
                         .build();

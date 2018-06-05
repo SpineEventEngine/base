@@ -21,8 +21,8 @@ package io.spine.tools.gradle.compiler;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
-import io.spine.tools.DefaultProject;
-import io.spine.tools.Indent;
+import io.spine.code.DefaultProject;
+import io.spine.code.Indent;
 import org.gradle.api.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
