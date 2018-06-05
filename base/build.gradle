@@ -97,7 +97,7 @@ task copyDescriptor(type: Copy) {
     from "$buildDir/descriptors/main.desc"
     into "$buildDir/resources/main"
 
-    rename { "${project.name}.main.desc" }
+    rename { 'known_types.desc' }
 }
 
 
@@ -105,7 +105,7 @@ task copyTestDescriptor(type: Copy) {
     from "$buildDir/descriptors/test.desc"
     into "$buildDir/resources/test"
 
-    rename { "${project.name}.test.desc" }
+    rename { 'known_types.desc' }
 }
 
 processResources.dependsOn copyDescriptor

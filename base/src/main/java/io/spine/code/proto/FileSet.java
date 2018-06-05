@@ -25,7 +25,6 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
-import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
 import com.google.protobuf.Descriptors.FileDescriptor;
 
 import java.io.File;
@@ -38,7 +37,6 @@ import java.util.Set;
 
 import static com.google.common.collect.ImmutableList.copyOf;
 import static com.google.common.collect.Lists.newArrayList;
-import static io.spine.code.proto.FileDescriptors.extractFiles;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
@@ -88,14 +86,9 @@ public final class FileSet {
      * Loads main file set from resources.
      */
     public static FileSet load() {
-        final Iterator<FileDescriptorSet> fileSets = FileDescriptors.load();
-        return linkSets(fileSets);
-    }
-
-    private static FileSet linkSets(Iterator<FileDescriptorSet> descriptorSets) {
-        final Collection<FileDescriptorProto> files = extractFiles(descriptorSets);
-        final FileSet result = Linker.link(newArrayList(files));
-        return result;
+        final Iterator<FileDescriptorProto> fileSets = FileDescriptors.load();
+        final FileSet fileSet = Linker.link(newArrayList(fileSets));
+        return fileSet;
     }
 
     /**
