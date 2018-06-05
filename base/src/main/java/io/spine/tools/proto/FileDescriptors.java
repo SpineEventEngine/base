@@ -45,6 +45,7 @@ import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Sets.newHashSet;
 import static io.spine.io.ResourceFiles.loadAll;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
@@ -165,6 +166,8 @@ public class FileDescriptors {
     private static Collection<String> readAllTypeProviders() {
         return Streams.stream(ResourceFiles.loadAll(KNOWN_TYPE_PROVIDERS))
                       .flatMap(file -> readTypeProviders(file).stream())
+                      .map(String::trim)
+                      .filter(name -> !isNullOrEmpty(name))
                       .collect(toSet());
     }
 

@@ -58,7 +58,6 @@ configurations {
 
 apply plugin: 'java'
 apply plugin: 'com.google.protobuf'
-apply plugin: spineProtobufPluginId
 
 apply from: generateDescriptorSetScript
 
@@ -94,6 +93,24 @@ configurations.all({
     }
 })
 
+task copyDescriptor(type: Copy) {
+    from "$buildDir/descriptors/main.desc"
+    into "$buildDir/resources/main"
+
+    rename { "${project.name}.main.desc" }
+}
+
+
+task copyTestDescriptor(type: Copy) {
+    from "$buildDir/descriptors/test.desc"
+    into "$buildDir/resources/test"
+
+    rename { "${project.name}.test.desc" }
+}
+
+processResources.dependsOn copyDescriptor
+processTestResources.dependsOn copyTestDescriptor
+
 protobuf {
     generatedFilesBaseDir = generatedRootDir
     protoc {
@@ -124,6 +141,14 @@ protobuf {
                     }
                 }
             }
+        }
+
+        ofSourceSet('main').each {
+            copyDescriptor.mustRunAfter it
+        }
+
+        ofSourceSet('test').each {
+            copyTestDescriptor.mustRunAfter it
         }
     }
 }
