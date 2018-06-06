@@ -180,7 +180,7 @@ public final class TypeUrl implements Serializable {
      */
     private static String prefixFor(GenericDescriptor descriptor) {
         final FileDescriptor file = descriptor.getFile();
-        if (file.getPackage().equals(GOOGLE_PROTOBUF_PACKAGE)) {
+        if (file.getPackage().startsWith(GOOGLE_PROTOBUF_PACKAGE)) {
             return Prefix.GOOGLE_APIS.value();
         }
         final String result = file.getOptions()
@@ -271,6 +271,8 @@ public final class TypeUrl implements Serializable {
         /**
          * Type prefix for standard Protobuf types.
          */
+        @SuppressWarnings("DuplicateStringLiteralInspection")
+            // Used in the generated code as a literal.
         GOOGLE_APIS("type.googleapis.com"),
 
         /**

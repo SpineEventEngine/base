@@ -21,6 +21,7 @@
 package io.spine.io;
 
 import com.google.common.collect.Iterators;
+import com.google.common.collect.Lists;
 
 import java.io.IOException;
 import java.net.URL;
@@ -77,6 +78,7 @@ public final class ResourceFiles {
         final ClassLoader contextClassLoader = Thread.currentThread()
                                                      .getContextClassLoader();
         final Enumeration<URL> resources = contextClassLoader.getResources(filePath);
+        System.out.println(Lists.newArrayList(Iterators.forEnumeration(contextClassLoader.getResources(filePath))));
         final Iterator<URL> result = Iterators.forEnumeration(resources);
         return result;
     }

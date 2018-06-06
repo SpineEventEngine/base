@@ -22,12 +22,8 @@ syntax = "proto3";
 
 package spine.test.validate.msg;
 
-// The below two lines are commented out to avoid the dependency on the `base`.
-// Normally, a Spine proto file should have the import of `options.proto` and
-// `type_url_prefix` option defined in a file.
-
-//import "spine/options.proto";
-//option (type_url_prefix) = "type.spine.io";
+import "spine/options.proto";
+option (type_url_prefix) = "type.spine.io";
 
 option java_multiple_files = true;
 option java_outer_classname = "MessageDeclarationsShouldProto";

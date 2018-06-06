@@ -23,8 +23,10 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Streams;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
+import com.google.protobuf.ExtensionRegistry;
 import io.spine.Resources;
 import io.spine.io.ResourceFiles;
+import io.spine.option.OptionsProto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,6 +62,8 @@ public class FileDescriptors {
      * the {@code test/proto} project directory.
      */
     public static final String TEST_FILE = "test.desc";
+
+    private static final ExtensionRegistry EXTENSIONS = registerExtensions();
 
     /** Prevents instantiation of this utility class. */
     private FileDescriptors() {
@@ -149,7 +153,7 @@ public class FileDescriptors {
         checkNotNull(file);
         try {
             final InputStream stream = file.openStream();
-            final FileDescriptorSet parsed = FileDescriptorSet.parseFrom(stream);
+            final FileDescriptorSet parsed = FileDescriptorSet.parseFrom(stream, EXTENSIONS);
             return parsed;
         } catch (IOException e) {
             throw newIllegalStateException(
@@ -158,6 +162,12 @@ public class FileDescriptors {
                     file
             );
         }
+    }
+
+    private static ExtensionRegistry registerExtensions() {
+        ExtensionRegistry registry = ExtensionRegistry.newInstance();
+        OptionsProto.registerAllExtensions(registry);
+        return registry;
     }
 
     /**
