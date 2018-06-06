@@ -41,7 +41,6 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
 
-import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
 import static io.spine.test.Verify.assertSize;
 import static io.spine.type.KnownTypes.getAllFromPackage;
 import static io.spine.type.KnownTypes.getClassName;
@@ -57,11 +56,6 @@ public class KnownTypesShould {
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
-
-    @Test
-    public void have_private_constructor() {
-        assertHasPrivateParameterlessCtor(KnownTypes.class);
-    }
 
     @Test
     public void return_known_proto_message_type_urls() {

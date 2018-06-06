@@ -44,6 +44,7 @@ module 'reflections-plugin',  './tools/reflections-plugin'
 module 'enrichment-lookup',   'tools/smoke-tests/enrichment-lookup'
 module 'known-types',         'tools/smoke-tests/known-types'
 module 'validators-gen',      'tools/smoke-tests/validators-gen'
+module 'validation-rules',    'tools/smoke-tests/validation-rules'
 
 // Protoc plugin and tests
 module 'protoc-plugin',       'tools/protoc-plugin'

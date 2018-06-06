@@ -901,7 +901,7 @@ public class MessageValidatorShould {
 
     private void assertIsValid(boolean isValid) {
         if (isValid) {
-            assertTrue(violations.isEmpty());
+            assertTrue(violations.toString(), violations.isEmpty());
         } else {
             assertFalse(violations.isEmpty());
             for (ConstraintViolation violation : violations) {
