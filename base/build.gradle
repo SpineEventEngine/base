@@ -94,19 +94,9 @@ configurations.all({
     }
 })
 
-task copyDescriptor(type: Copy) {
-    from "$buildDir/descriptors/main.desc"
-    into "$buildDir/resources/main"
-
-    rename { 'known_types.desc' }
-}
-
-
-task copyTestDescriptor(type: Copy) {
-    from "$buildDir/descriptors/test.desc"
-    into "$buildDir/resources/test"
-
-    rename { 'known_types.desc' }
+sourceSets {
+    main.resources.srcDirs "$buildDir/descriptors/main"
+    test.resources.srcDirs "$buildDir/descriptors/test"
 }
 
 protobuf {
@@ -139,14 +129,6 @@ protobuf {
                     }
                 }
             }
-        }
-
-        ofSourceSet('main').each {
-            copyDescriptor.mustRunAfter it
-        }
-
-        ofSourceSet('test').each {
-            copyTestDescriptor.mustRunAfter it
         }
     }
 }
