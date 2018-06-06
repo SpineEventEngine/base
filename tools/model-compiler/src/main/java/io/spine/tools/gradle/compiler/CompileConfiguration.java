@@ -23,12 +23,13 @@ package io.spine.tools.gradle.compiler;
 import io.spine.tools.gradle.SpinePlugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
-import org.gradle.api.file.FileCollection;
 import org.gradle.api.file.FileTreeElement;
+import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.specs.Spec;
 import org.gradle.api.tasks.SourceSet;
-import org.gradle.api.tasks.SourceSetContainer;
 import org.gradle.api.tasks.compile.JavaCompile;
+
+import java.io.File;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableMap.of;
@@ -54,16 +55,21 @@ public class CompileConfiguration extends SpinePlugin {
         JavaCompile task = (JavaCompile) project.task(of("type", JavaCompile.class),
                                                       "compileGeneratedJava");
         task.dependsOn(GENERATE_PROTO.getValue());
-        SourceSet mainJava = project.getExtensions()
-                                    .getByType(SourceSetContainer.class)
-                                    .findByName("main");
+
+        JavaPluginConvention convention =
+                (JavaPluginConvention) project.getConvention()
+                                              .getPlugins()
+                                              .get("java");
+        SourceSet mainJava = convention.getSourceSets()
+                                       .findByName("main");
         checkNotNull(mainJava);
-        task.source(mainJava);
+        Object[] source = mainJava.getAllJava()
+                                  .getFiles()
+                                  .toArray();
+        task.source(source);
         task.include(GeneratedJavaFile.in(project));
-        task.setDestinationDir(project.getBuildDir()
-                                      .toPath()
-                                      .resolve("generatedClasses")
-                                      .toFile());
+        File generatedClasses = generatedClassesRoot(project);
+        task.setDestinationDir(generatedClasses);
         return task;
     }
 
@@ -75,10 +81,17 @@ public class CompileConfiguration extends SpinePlugin {
 
         JavaCompile standardJavaCompile = (JavaCompile) standardCompile;
         standardJavaCompile.exclude(GeneratedJavaFile.in(project));
-        FileCollection generatedClasses = compileGenerated.getOutputs()
-                                                          .getFiles();
-        standardJavaCompile.getClasspath()
-                           .add(generatedClasses);
+        File generatedClasses = generatedClassesRoot(project);
+        project.getDependencies()
+               .add("compile", project.fileTree(of("dir", generatedClasses)));
+    }
+
+    private static File generatedClassesRoot(Project project) {
+        File result = project.getBuildDir()
+                             .toPath()
+                             .resolve("generatedClasses")
+                             .toFile();
+        return result;
     }
 
     private static final class GeneratedJavaFile implements Spec<FileTreeElement> {
