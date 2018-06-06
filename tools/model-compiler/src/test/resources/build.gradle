@@ -31,9 +31,6 @@ buildscript {
     apply from: 'ext.gradle'
 
     repositories {
-        // Snapshots of Error Prone and Guava.
-        maven { url = sonatypeSnapshots }
-
         mavenLocal()
         mavenCentral()
 
@@ -65,9 +62,6 @@ apply from: 'ext.gradle'
 
 
 repositories {
-    // Snapshots of Error Prone and Guava.
-    maven { url = sonatypeSnapshots }
-
     mavenLocal()
     mavenCentral()
 

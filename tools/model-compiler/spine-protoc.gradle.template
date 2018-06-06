@@ -39,9 +39,6 @@ final def spineFolderName = @spineDir@
 
 buildscript {
     repositories {
-        maven {
-            url = 'https://oss.sonatype.org/content/repositories/snapshots'
-        }
         mavenCentral()
     }
 
@@ -57,9 +54,6 @@ configurations {
 }
 
 repositories {
-    maven {
-        url = 'https://oss.sonatype.org/content/repositories/snapshots'
-    }
     maven {
         url = 'http://maven.teamdev.com/repository/spine'
     }
@@ -147,7 +141,7 @@ protobuf {
             final def descPath = (task.sourceSet.name.contains("test")
                                         ? project.extensions.getByName("modelCompiler").testDescriptorSetPath
                                         : project.extensions.getByName("modelCompiler").mainDescriptorSetPath) ?:
-                                 "${projectDir}/build/descriptors/${task.sourceSet.name}.desc"
+                                 "${buildDir}/descriptors/${task.sourceSet.name}/known_types.desc"
             task.descriptorSetOptions.path = descPath
             task.descriptorSetOptions.includeImports = true
             task.descriptorSetOptions.includeSourceInfo = true

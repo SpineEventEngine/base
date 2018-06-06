@@ -26,12 +26,9 @@ buildscript {
     apply from: 'ext.gradle'
 
     repositories {
-        // Snapshots of Error Prone and Guava.
-        maven { url = sonatypeSnapshots }
-
         jcenter()
 
-        maven { url = googleMavenCentralMirror }
+        google()
 
         // Repository for error-prone plugin.
         maven { url = gradlePlugins }
@@ -48,19 +45,15 @@ buildscript {
 
     //noinspection GroovyAssignabilityCheck
     dependencies {
-        classpath group: 'com.google.guava', name: 'guava', version: guavaVersion, changing: true
+        classpath group: 'com.google.guava', name: 'guava', version: guavaVersion
         /* Comment `changing: true` statement if you do not want the dependency to be fetched
            on each build. That will enable offline builds. */
 
         classpath ("net.ltgt.gradle:gradle-errorprone-plugin:$errorPronePluginVersion") {
             exclude group: 'com.google.guava'
         }
-        
+
         classpath ("io.spine.tools:spine-model-compiler:$spineToolsVersion") {
-            exclude group: 'com.google.guava'
-        }
-        
-        classpath ("io.spine.tools:spine-gcs-plugin:$spineToolsVersion") {
             exclude group: 'com.google.guava'
         }
     }
@@ -148,12 +141,9 @@ subprojects {
     // org.gradle.java.home=/Library/Java/JavaVirtualMachines/jdk1.8.0_51.jdk/Contents/Home/
 
     repositories {
-        // Snapshots of Error Prone and Guava TestLib.
-        maven { url = sonatypeSnapshots }
-
         jcenter()
 
-        maven { url = googleMavenCentralMirror }
+        google()
 
         mavenCentral()
         mavenLocal()
@@ -168,10 +158,7 @@ subprojects {
     dependencies {
         compile "org.checkerframework:checker-qual:$checkerFrameworkVersion"
 
-        compile group: 'com.google.guava',
-                name:  'guava',
-                version: guavaVersion,
-                changing: true
+        compile "com.google.guava:guava:$guavaVersion"
 
         //TODO:2018-05-11:alexander.yevsyukov: Replace the below with Checker Framework
         // after Guava fully migrates from it too.
@@ -180,30 +167,17 @@ subprojects {
         compile "org.checkerframework:checker-qual:$checkerFrameworkVersion"
         compile "com.google.errorprone:error_prone_annotations:$errorProneVersion"
 
-        testCompile(group:   'com.google.guava',
-                    name:    'guava-testlib',
-                    version:  guavaVersion,
-                    changing: true) {
-            exclude module: 'guava'
-        }
+        testCompile "com.google.guava:guava-testlib:$guavaVersion"
     }
 
     sourceSets {
         main {
-            java.srcDirs = [generatedJavaDir,
-                            "$sourcesRootDir/main/java",
-                            generatedSpineDir]
-
-            resources.srcDirs = ["$sourcesRootDir/main/resources",
-                                 "$generatedRootDir/main/resources"]
+            java.srcDirs generatedJavaDir, "$sourcesRootDir/main/java", generatedSpineDir
+            resources.srcDirs "$sourcesRootDir/main/resources", "$generatedRootDir/main/resources"
         }
         test {
-            java.srcDirs = [generatedTestJavaDir,
-                            "$sourcesRootDir/test/java",
-                            generatedTestSpineDir]
-
-            resources.srcDirs = ["$sourcesRootDir/test/resources",
-                                 "$generatedRootDir/test/resources"]
+            java.srcDirs generatedTestJavaDir, "$sourcesRootDir/test/java", generatedTestSpineDir
+            resources.srcDirs "$sourcesRootDir/test/resources", "$generatedRootDir/test/resources"
         }
     }
 

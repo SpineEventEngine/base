@@ -17,6 +17,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 group = 'io.spine'
 
 buildscript {
@@ -108,9 +109,6 @@ task copyTestDescriptor(type: Copy) {
     rename { 'known_types.desc' }
 }
 
-processResources.dependsOn copyDescriptor
-processTestResources.dependsOn copyTestDescriptor
-
 protobuf {
     generatedFilesBaseDir = generatedRootDir
     protoc {
@@ -128,10 +126,10 @@ protobuf {
              */
             task.doLast {
                 ant.replaceregexp(
-                        match:'@java.lang.Deprecated|@deprecated',
-                        replace:'',
-                        flags:'g',
-                        byline:true
+                        match:   '@java.lang.Deprecated|@deprecated',
+                        replace: '',
+                        flags:   'g',
+                        byline:  true
                 ) {
                     fileset(dir: "$protobuf.generatedFilesBaseDir/main/java")
 

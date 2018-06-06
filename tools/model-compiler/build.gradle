@@ -34,9 +34,6 @@ buildscript {
     apply from: "$rootDir/ext.gradle"
 
     repositories {
-        // Snapshots of Error Prone and Guava.
-        maven { url = sonatypeSnapshots }
-
         mavenCentral()
         mavenLocal()
     }
@@ -96,7 +93,7 @@ dependencies {
     }
 
     testCompile project(':testlib')
-    testCompile group: 'org.hamcrest', name:'hamcrest-all', version: hamcrestVersion
+    testCompile group: 'org.hamcrest', name: 'hamcrest-all', version: hamcrestVersion
     testCompile gradleTestKit()
     testCompile project(':plugin-base').sourceSets.test.output // Test classes of `plugin-base`
 

@@ -26,9 +26,7 @@ apply from: generateDescriptorSetScript
 buildscript {
     repositories {
         mavenCentral()
-        maven {
-            url = googleMavenCentralMirror
-        }
+        google()
     }
     dependencies {
         classpath(group: 'com.google.protobuf',

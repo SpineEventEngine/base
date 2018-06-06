@@ -28,7 +28,6 @@ buildscript {
     apply from: "$rootDir/ext.gradle"
 
     repositories {
-        maven { url = sonatypeSnapshots }
         jcenter()
         mavenCentral()
         mavenLocal()

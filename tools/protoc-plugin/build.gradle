@@ -27,9 +27,7 @@ apply plugin: 'com.google.protobuf'
 buildscript {
     repositories {
         mavenCentral()
-        maven {
-            url = googleMavenCentralMirror
-        }
+        google()
     }
     dependencies {
         classpath(group: 'com.google.protobuf',
