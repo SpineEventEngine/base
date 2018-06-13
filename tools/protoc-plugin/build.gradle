@@ -47,7 +47,8 @@ dependencies {
     compile project(':base')
     compile project(':codegen')
 
-    compile group: "com.google.protobuf", name: "protobuf-java", version: protobufVersion
+    implementation deps.build.protobuf
+    implementation deps.gen.javaPoet
 }
 
 protobuf {

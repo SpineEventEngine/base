@@ -73,5 +73,7 @@ ext {
      *
      * <p>Use the latest currently published version here.
      */
-    spineToolsVersion = '0.10.35-SNAPSHOT'
+    spineToolsVersion = '0.10.40-SNAPSHOT'
+
+    versionToPublish = SPINE_VERSION
 }

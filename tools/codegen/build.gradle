@@ -33,9 +33,7 @@ buildscript {
 
     //noinspection GroovyAssignabilityCheck
     dependencies {
-        classpath(group: 'com.google.protobuf',
-                  name: 'protobuf-gradle-plugin',
-                  version: protobufGradlePluginVersion) {
+        classpath(deps.build.gradlePlugins.protobuf) {
             // exclude an old Guava version
             exclude group: 'com.google.guava'
         }
@@ -51,12 +49,12 @@ buildscript {
 }
 
 apply plugin: 'com.google.protobuf'
-apply from: generateDescriptorSetScript
+apply from: deps.scripts.generateDescriptorSet
 
 dependencies {
     compile project(':base')
-    
-    compile group: 'com.squareup', name: 'javapoet', version: javaPoetVersion
+
+    implementation deps.gen.javaPoet
 
     testCompile project(':testlib')
 }
@@ -64,7 +62,7 @@ dependencies {
 protobuf {
     generatedFilesBaseDir = generatedRootDir
     protoc {
-        artifact = protobufDependency
+        artifact = deps.build.protoc
     }
 
     generateProtoTasks {
