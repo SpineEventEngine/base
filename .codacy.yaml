@@ -1,4 +1,3 @@
 ---
 exclude_paths:
-  - "base/src/main/java/io/spine/net/Patterns.java"
   - "**/src/test/**/*.*"
