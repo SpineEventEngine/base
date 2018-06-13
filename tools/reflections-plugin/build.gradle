@@ -28,7 +28,7 @@ ext {
 }
 
 dependencies {
-    compile "com.google.guava:guava:$guavaVersion"
+    compile deps.build.guava
     compile gradleApi()
     compile ("org.reflections:reflections:$reflectionsVersion") {
         exclude group: 'com.google.guava'

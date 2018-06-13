@@ -20,24 +20,14 @@
 group = 'io.spine'
 
 dependencies {
-    // Depend on Protobuf as we use its type in test utils.
-    compile (group: 'com.google.protobuf', name: 'protobuf-java', version: protobufVersion) {
-        exclude group: 'com.google.guava'
-    }
-
-    compile (group: 'com.google.protobuf', name: 'protobuf-java-util', version: protobufVersion) {
-        exclude group: 'com.google.guava'
-    }
-
-    // Depend on JUnit, Mockito, Hamcrest, and Guava Testlib in the production part of the code,
-    // as this module would exposes these libraries along with the testing utilities.
-
-    // Exclude older version of Hamcrest core. We depend on Hamcrest directly below.
-    compile (group: 'junit', name: 'junit', version: jUnitVersion) {
-        exclude(module: 'hamcrest-core')
-    }
-    
-    compile group: 'org.mockito', name: 'mockito-core', version: mockitoVersion
-    compile group: 'org.hamcrest', name: 'hamcrest-all', version: hamcrestVersion
-    compile group: 'com.google.guava', name: 'guava-testlib', version: guavaVersion
+    /*
+        Expose tools we use as transitive dependencies to simplify dependency management in
+        sub-projects.
+    */
+    api deps.build.protobuf
+    api deps.test.junit4
+    api deps.test.junit5Api
+    api deps.test.mockito
+    api deps.test.hamcrest
+    api deps.test.guavaTestlib
 }

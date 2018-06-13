@@ -22,27 +22,6 @@ import java.nio.file.Files
 
 group 'io.spine.tools'
 
-apply plugin: 'com.google.protobuf'
-
-buildscript {
-    repositories {
-        mavenCentral()
-        maven {
-            url = googleMavenCentralMirror
-        }
-    }
-    dependencies {
-        classpath(group: 'com.google.protobuf',
-                name: 'protobuf-gradle-plugin',
-                version: protobufGradlePluginVersion) {
-            // exclude an old Guava version
-            exclude group: 'com.google.guava'
-        }
-    }
-}
-
-group 'io.spine.tools'
-
 dependencies {
     compile project(':base')
     compile project(':codegen')

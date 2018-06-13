@@ -50,8 +50,8 @@ buildscript {
     configurations.all({
         resolutionStrategy {
             cacheChangingModulesFor(0, 'seconds')
-            force "com.google.guava:guava:$guavaVersion"
-            force "com.google.guava:guava-testlib:$guavaVersion"
+            force deps.build.guava
+            force deps.test.guavaTestlib
         }
     })
 }

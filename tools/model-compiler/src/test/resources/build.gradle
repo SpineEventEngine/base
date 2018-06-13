@@ -28,17 +28,15 @@ buildscript {
     // `ext.gradle` explicitly here.
     //
     // NOTE: this file is copied from the root project in the test setup.
-    apply from: 'ext.gradle'
+    apply from: "$rootDir/config/gradle/dependencies.gradle"
+    apply from: "$rootDir/ext.gradle"
 
     repositories {
-        // Snapshots of Error Prone and Guava.
-        maven { url = sonatypeSnapshots }
-
+        maven { url = repos.sonatypeSnapshots }
         mavenLocal()
         mavenCentral()
-
-        maven { url = spineRepository }
-        maven { url = spineSnapshotsRepository }
+        maven { url = repos.spine }
+        maven { url = repos.spineSnapshots }
     }
 
     dependencies {
@@ -65,18 +63,16 @@ apply from: 'ext.gradle'
 
 
 repositories {
-    // Snapshots of Error Prone and Guava.
-    maven { url = sonatypeSnapshots }
-
+    maven { url = repos.sonatypeSnapshots }
     mavenLocal()
     mavenCentral()
-
-    maven { url = spineRepository }
-    maven { url = spineSnapshotsRepository }
+    maven { url = repos.spine }
+    maven { url = repos.spineSnapshots }
 }
 
 dependencies {
-    compile group: 'com.google.guava', name: 'guava', version: guavaVersion
+    compile deps.build.guava
+    compile deps.build.protobuf
 
     compile (group: 'com.google.protobuf', name:'protobuf-java', version: protobufVersion) {
         exclude(group: 'com.google.protobuf')

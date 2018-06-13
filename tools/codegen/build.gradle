@@ -20,35 +20,6 @@
 
 group 'io.spine.tools'
 
-buildscript {
-    apply from: "$rootDir/ext.gradle"
-
-    repositories {
-        maven { url = sonatypeSnapshots }
-
-        jcenter()
-        maven { url = googleMavenCentralMirror }
-        mavenCentral()
-    }
-
-    //noinspection GroovyAssignabilityCheck
-    dependencies {
-        classpath(deps.build.gradlePlugins.protobuf) {
-            // exclude an old Guava version
-            exclude group: 'com.google.guava'
-        }
-    }
-
-    configurations.all({
-        resolutionStrategy {
-            cacheChangingModulesFor(0, 'seconds')
-            force "com.google.guava:guava:$guavaVersion"
-            force "com.google.guava:guava-testlib:$guavaVersion"
-        }
-    })
-}
-
-apply plugin: 'com.google.protobuf'
 apply from: deps.scripts.generateDescriptorSet
 
 dependencies {
