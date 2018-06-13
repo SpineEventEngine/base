@@ -22,7 +22,6 @@ package io.spine.base;
 
 import com.google.protobuf.Timestamp;
 import io.spine.base.Time.SystemTimeProvider;
-import io.spine.test.Tests;
 import org.junit.Test;
 
 import static com.google.protobuf.util.Timestamps.subtract;
