@@ -126,7 +126,6 @@ subprojects {
     }
 
     project.ext {
-        protobufDependency = "com.google.protobuf:protoc:${protobufVersion}"
         spineProtobufPluginId = 'io.spine.tools.spine-model-compiler'
 
         sourcesRootDir = "$projectDir/src"

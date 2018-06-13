@@ -40,10 +40,10 @@ buildscript {
     }
 
     dependencies {
-        classpath "com.google.protobuf:protobuf-java:${protobufVersion}"
+        classpath deps.build.protobuf
 
         // Exclude `guava:18.0` as a transitive dependency by Protobuf Gradle plugin.
-        classpath ("com.google.protobuf:protobuf-gradle-plugin:${protobufGradlePluginVersion}") {
+        classpath (deps.build.gradlePlugins.protobuf) {
             exclude group: 'com.google.guava'
         }
         classpath "io.spine.tools:spine-model-compiler:${spineVersion}"
@@ -73,10 +73,6 @@ repositories {
 dependencies {
     compile deps.build.guava
     compile deps.build.protobuf
-
-    compile (group: 'com.google.protobuf', name:'protobuf-java', version: protobufVersion) {
-        exclude(group: 'com.google.protobuf')
-    }
 
     compile(group: 'io.spine', name: 'spine-base', version: spineVersion) {
         exclude(group: 'com.google.protobuf')
