@@ -138,8 +138,8 @@ protobuf {
                 }
             }
             task.generateDescriptorSet = true
-            final def descPath = (task.sourceSet.name.contains("test")
-                                        ? project.extensions.getByName("modelCompiler").testDescriptorSetPath
+            final def tests = task.sourceSet.name.contains("test")
+            final def descPath = (tests ? project.extensions.getByName("modelCompiler").testDescriptorSetPath
                                         : project.extensions.getByName("modelCompiler").mainDescriptorSetPath) ?:
                                  "${buildDir}/descriptors/${task.sourceSet.name}/known_types.desc"
             task.descriptorSetOptions.path = descPath
@@ -147,6 +147,10 @@ protobuf {
             task.descriptorSetOptions.includeSourceInfo = true
 
             task.dependsOn copyPluginJar
+
+            final def sourceSet = tests ? project.sourceSets.test
+                                        : project.sourceSets.main
+            sourceSet.resources.srcDirs((descPath as File).parent)
         }
     }
 }

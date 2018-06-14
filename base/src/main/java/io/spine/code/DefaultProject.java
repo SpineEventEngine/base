@@ -21,12 +21,12 @@
 package io.spine.code;
 
 import io.spine.code.proto.Directory;
-import io.spine.code.proto.FileDescriptors;
 
 import java.io.File;
 import java.nio.file.Path;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.code.proto.FileDescriptors.KNOWN_TYPES;
 
 /**
  * This class represents a default directory structure for a Spine-based project.
@@ -59,6 +59,18 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public final class DefaultProject extends AbstractDirectory {
 
     /**
+     * Default file name for descriptor set generated from the proto files under
+     * the {@code main/proto} project directory.
+     */
+    private static final String MAIN_FILE = "main/" + KNOWN_TYPES;
+
+    /**
+     * Default file name for the descriptor set generated from the proto files under
+     * the {@code test/proto} project directory.
+     */
+    private static final String TEST_FILE = "test/" + KNOWN_TYPES;
+
+    /**
      * The Spine internal directory name for storing temporary build artifacts.
      *
      * @see #tempArtifacts()
@@ -88,7 +100,7 @@ public final class DefaultProject extends AbstractDirectory {
         final BuildRoot build = BuildRoot.of(this);
         final File result = build.descriptors()
                                  .getPath()
-                                 .resolve(FileDescriptors.MAIN_FILE)
+                                 .resolve(MAIN_FILE)
                                  .toFile();
         return result;
     }
@@ -103,7 +115,7 @@ public final class DefaultProject extends AbstractDirectory {
         final BuildRoot build = BuildRoot.of(this);
         final File result = build.descriptors()
                                  .getPath()
-                                 .resolve(FileDescriptors.TEST_FILE)
+                                 .resolve(TEST_FILE)
                                  .toFile();
         return result;
     }

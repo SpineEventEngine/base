@@ -65,10 +65,10 @@ idea.module {
 
 sourceSets {
     main {
-        proto.srcDirs = ["$projectDir/src/main/proto"]
-        java.srcDirs = ["$projectDir/generated/main/java",
-                        "$projectDir/generated/main/spine",
-                        "$projectDir/src/main/java"]
-        resources.srcDirs = ["$projectDir/generated/main/resources"]
+        proto.srcDirs "$projectDir/src/main/proto"
+        java.srcDirs "$projectDir/generated/main/java",
+                     "$projectDir/generated/main/spine",
+                     "$projectDir/src/main/java"
+        resources.srcDirs "$projectDir/generated/main/resources"
     }
 }

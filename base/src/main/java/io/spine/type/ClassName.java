@@ -82,7 +82,9 @@ public final class ClassName extends StringTypeValue {
                          descriptor.getContainingType());
     }
 
-    private static ClassName construct(String typeName, FileDescriptor file, Descriptor parent) {
+    private static ClassName construct(String typeName,
+                                       FileDescriptor file,
+                                       @Nullable Descriptor parent) {
         String packageName = javaPackageName(file);
         String parentTypes = parentClassPrefix(parent);
         String result = packageName + parentTypes + typeName;

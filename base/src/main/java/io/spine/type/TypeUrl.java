@@ -69,7 +69,7 @@ public final class TypeUrl implements Serializable {
     private final String typeName;
 
     private TypeUrl(String prefix, String typeName) {
-        this.prefix = checkNotEmptyOrBlank(prefix);
+        this.prefix = checkNotEmptyOrBlank(prefix, typeName);
         this.typeName = checkNotEmptyOrBlank(typeName);
     }
 

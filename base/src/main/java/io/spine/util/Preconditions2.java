@@ -46,10 +46,23 @@ public class Preconditions2 {
      */
     @CanIgnoreReturnValue
     public static String checkNotEmptyOrBlank(String stringToCheck) {
-        checkNotNull(stringToCheck);
-        checkArgument(!stringToCheck.isEmpty());
+        return checkNotEmptyOrBlank(stringToCheck, "");
+    }
+
+    /**
+     * Ensures that the passed string is not {@code null}, empty or blank string.
+     *
+     * @param stringToCheck the string to check
+     * @return the passed string
+     * @throws NullPointerException if the passed string is {@code null}
+     * @throws IllegalArgumentException if the string is empty or blank
+     */
+    @CanIgnoreReturnValue
+    public static String checkNotEmptyOrBlank(String stringToCheck, String message) {
+        checkNotNull(stringToCheck, message);
+        checkArgument(!stringToCheck.isEmpty(), message);
         final String trimmed = stringToCheck.trim();
-        checkArgument(trimmed.length() > 0);
+        checkArgument(trimmed.length() > 0, message);
         return stringToCheck;
     }
 }

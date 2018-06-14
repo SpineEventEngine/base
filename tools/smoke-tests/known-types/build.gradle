@@ -49,8 +49,7 @@ buildscript {
 }
 
 apply plugin: 'com.google.protobuf'
-apply plugin: 'io.spine.tools.spine-model-compiler'
-apply from: generateDescriptorSetScript
+apply plugin: spineProtobufPluginId
 
 dependencies {
     compile project(':base')
@@ -64,8 +63,8 @@ idea.module {
 
 sourceSets {
     test {
-        java.srcDirs = ["${projectDir}/src/test/java", "${projectDir}/generated/test/java"]
-        proto.srcDirs = ["${projectDir}/src/test/proto"]
-        resources.srcDirs = ["${projectDir}/generated/test/resources"]
+        java.srcDirs "${projectDir}/src/test/java", "${projectDir}/generated/test/java"
+        proto.srcDirs "${projectDir}/src/test/proto"
+        resources.srcDirs "${projectDir}/generated/test/resources"
     }
 }
