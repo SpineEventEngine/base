@@ -23,6 +23,7 @@ package io.spine.type;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
+import io.spine.code.java.SimpleClassName;
 import io.spine.value.StringTypeValue;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -86,8 +87,9 @@ public final class ClassName extends StringTypeValue {
                                        FileDescriptor file,
                                        @Nullable Descriptor parent) {
         String packageName = javaPackageName(file);
+        String outerClass = outerClassPrefix(file);
         String parentTypes = parentClassPrefix(parent);
-        String result = packageName + parentTypes + typeName;
+        String result = packageName + outerClass + parentTypes + typeName;
         return of(result);
     }
 
@@ -117,5 +119,17 @@ public final class ClassName extends StringTypeValue {
         String result = parentClassNames.stream()
                                         .collect(joining());
         return result;
+    }
+
+    private static String outerClassPrefix(FileDescriptor file) {
+        boolean multipleFiles = file.getOptions()
+                                    .getJavaMultipleFiles();
+        if (multipleFiles) {
+            return "";
+        } else {
+            String className = SimpleClassName.outerOf(file.toProto())
+                                              .value();
+            return className + '$';
+        }
     }
 }
