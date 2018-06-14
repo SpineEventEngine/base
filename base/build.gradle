@@ -19,40 +19,6 @@
  */
 group = 'io.spine'
 
-buildscript {
-    apply from: "$rootDir/ext.gradle"
-    
-    repositories {
-        // Snapshots of Error Prone and Guava.
-        maven { url = sonatypeSnapshots }
-
-        jcenter()
-        maven { url = googleMavenCentralMirror }
-
-        mavenCentral()
-        mavenLocal()
-
-        // Spine releases repository.
-        maven { url = spineRepository }
-
-        // Spine snapshots repository.
-        maven { url = spineSnapshotsRepository }
-    }
-
-    //noinspection GroovyAssignabilityCheck
-    dependencies {
-        classpath "com.google.guava:guava:$guavaVersion"
-        classpath("com.google.protobuf:protobuf-gradle-plugin:$protobufGradlePluginVersion") {
-            // exclude an old Guava version
-            exclude group: 'com.google.guava'
-        }
-    }
-    
-    configurations.all({
-        resolutionStrategy.cacheChangingModulesFor(0, 'seconds')
-    })
-}
-
 configurations {
     // Avoid collisions of Java classes defined both in `protobuf-lite` and `protobuf-java`
     runtime.exclude group: "com.google.protobuf", module: "protobuf-lite"
@@ -63,33 +29,17 @@ apply plugin: 'java'
 apply plugin: 'com.google.protobuf'
 apply plugin: spineProtobufPluginId
 
-apply from: generateDescriptorSetScript
-
-apply from: testArtifactsScript
+apply from: deps.scripts.generateDescriptorSet
+apply from: deps.scripts.testArtifacts
 
 dependencies {
-    compile "com.google.guava:guava:$guavaVersion"
-
-    /* As a Library, we provide logging facade API, not specific logger bindings.
-       Target apps are free to use any binding they need. */
-    compile "org.slf4j:slf4j-api:$slf4JVersion"
-
-    compile ("com.google.protobuf:protobuf-java:$protobufVersion") {
-        exclude group: 'com.google.guava'
-    }
-    
-    compile ("com.google.protobuf:protobuf-java-util:$protobufVersion") {
-        exclude group: 'com.google.guava'
-    }
-
-    testCompile "org.slf4j:slf4j-jdk14:$slf4JVersion"
     testCompile project(path: ":testlib")
 }
 
 protobuf {
     generatedFilesBaseDir = generatedRootDir
     protoc {
-        artifact = protobufDependency
+        artifact = deps.build.protoc
     }
 
     generateProtoTasks {

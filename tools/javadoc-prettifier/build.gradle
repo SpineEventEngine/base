@@ -22,7 +22,7 @@ group 'io.spine.tools'
 apply plugin: 'java-gradle-plugin'
 
 dependencies {
-    compile group: 'com.google.guava', name: 'guava', version: guavaVersion
+    compile deps.build.guava
 
     compile project(':plugin-base')
     compile project(':codegen')

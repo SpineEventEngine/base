@@ -21,24 +21,7 @@ group 'io.spine.tools'
 
 apply plugin: 'com.google.protobuf'
 apply plugin: spineProtobufPluginId
-apply from: generateDescriptorSetScript
-
-buildscript {
-    repositories {
-        mavenCentral()
-        maven {
-            url = googleMavenCentralMirror
-        }
-    }
-    dependencies {
-        classpath(group: 'com.google.protobuf',
-                name: 'protobuf-gradle-plugin',
-                version: protobufGradlePluginVersion) {
-            // exclude an old Guava version
-            exclude group: 'com.google.guava'
-        }
-    }
-}
+apply from: deps.scripts.generateDescriptorSet
 
 dependencies {
     compile project(":base")

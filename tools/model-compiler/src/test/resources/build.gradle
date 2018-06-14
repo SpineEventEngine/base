@@ -28,24 +28,22 @@ buildscript {
     // `ext.gradle` explicitly here.
     //
     // NOTE: this file is copied from the root project in the test setup.
-    apply from: 'ext.gradle'
+    apply from: "$rootDir/config/gradle/dependencies.gradle"
+    apply from: "$rootDir/ext.gradle"
 
     repositories {
-        // Snapshots of Error Prone and Guava.
-        maven { url = sonatypeSnapshots }
-
+        maven { url = repos.sonatypeSnapshots }
         mavenLocal()
         mavenCentral()
-
-        maven { url = spineRepository }
-        maven { url = spineSnapshotsRepository }
+        maven { url = repos.spine }
+        maven { url = repos.spineSnapshots }
     }
 
     dependencies {
-        classpath "com.google.protobuf:protobuf-java:${protobufVersion}"
+        classpath deps.build.protobuf
 
         // Exclude `guava:18.0` as a transitive dependency by Protobuf Gradle plugin.
-        classpath ("com.google.protobuf:protobuf-gradle-plugin:${protobufGradlePluginVersion}") {
+        classpath (deps.build.gradlePlugins.protobuf) {
             exclude group: 'com.google.guava'
         }
         classpath "io.spine.tools:spine-model-compiler:${spineVersion}"
@@ -65,22 +63,16 @@ apply from: 'ext.gradle'
 
 
 repositories {
-    // Snapshots of Error Prone and Guava.
-    maven { url = sonatypeSnapshots }
-
+    maven { url = repos.sonatypeSnapshots }
     mavenLocal()
     mavenCentral()
-
-    maven { url = spineRepository }
-    maven { url = spineSnapshotsRepository }
+    maven { url = repos.spine }
+    maven { url = repos.spineSnapshots }
 }
 
 dependencies {
-    compile group: 'com.google.guava', name: 'guava', version: guavaVersion
-
-    compile (group: 'com.google.protobuf', name:'protobuf-java', version: protobufVersion) {
-        exclude(group: 'com.google.protobuf')
-    }
+    compile deps.build.guava
+    compile deps.build.protobuf
 
     compile(group: 'io.spine', name: 'spine-base', version: spineVersion) {
         exclude(group: 'com.google.protobuf')

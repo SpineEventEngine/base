@@ -19,39 +19,8 @@
  */
 group 'io.spine.tools'
 
-buildscript {
-
-    // Applying from `ext.gradle` inside the `buildscript` section to reuse the properties.
-    //
-    // As long as `buildscript` section is always evaluated first, we need to apply
-    // `ext.gradle` explicitly here.
-    apply from: "$rootDir/ext.gradle"
-
-    repositories {
-        maven { url = sonatypeSnapshots }
-        jcenter()
-        mavenCentral()
-        mavenLocal()
-
-        // Spine releases repository.
-        maven { url = spineRepository }
-        // Spine snapshots repository.
-        maven { url = spineSnapshotsRepository }
-    }
-
-    dependencies {
-        classpath group: 'com.google.guava', name: 'guava', version: guavaVersion
-        classpath ("com.google.protobuf:protobuf-gradle-plugin:${protobufGradlePluginVersion}") {
-            // exclude old Guava version
-            exclude group: 'com.google.guava'
-        }
-        classpath group: "io.spine.tools", name: "spine-model-compiler", version: spineToolsVersion
-    }
-}
-
-apply plugin: 'com.google.protobuf'
 apply plugin: 'io.spine.tools.spine-model-compiler'
-apply from: generateDescriptorSetScript
+apply from: deps.scripts.generateDescriptorSet
 
 dependencies {
     compile project(':base')

@@ -34,9 +34,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Throwables.getRootCause;
 import static com.google.common.collect.Lists.newLinkedList;
@@ -63,6 +65,7 @@ public class GradleProject {
 
     private static final String STACKTRACE_CLI_OPTION = "--stacktrace";
     private static final String DEBUG_CLI_OPTION = "--debug";
+    private static final String CONFIG_DIR_NAME = "config";
 
     private final String name;
     private final GradleRunner gradleRunner;
@@ -136,26 +139,76 @@ public class GradleProject {
         Files.createDirectories(resultingPath.getParent());
         Files.copy(fileContent, resultingPath);
 
-        copyExtGradle();
+        Path projectRoot = findRoot();
+        copyExtGradle(projectRoot);
+        copyConfig(projectRoot);
     }
 
-    private void copyExtGradle() throws IOException {
-        final Path workingFolderPath = Paths.get(".")
+    /**
+     * Copies the {@code ext.gradle} file from the root of the project
+     * into the root of the test project.
+     */
+    private void copyExtGradle(Path projectRoot) throws IOException {
+        Path sourcePath = projectRoot.resolve(EXT_GRADLE_NAME);
+        Path targetPath = gradleRunner.getProjectDir()
+                                      .toPath()
+                                      .resolve(EXT_GRADLE_NAME);
+        Files.copy(sourcePath, targetPath);
+    }
+
+    /**
+     * Copies the content of the {@code config} directory from the root of
+     * this project into the root of the test project.
+     */
+    private void copyConfig(Path projectRoot) {
+        Path sourcePath = projectRoot.resolve(CONFIG_DIR_NAME);
+        Path targetPath = gradleRunner.getProjectDir()
+                                      .toPath()
+                                      .resolve(CONFIG_DIR_NAME);
+        copyFolder(sourcePath, targetPath);
+    }
+
+    /**
+     * Copies the content of the {@code src} directory into {@code dest} directory.
+     */
+    private static void copyFolder(Path src, Path dest) {
+        try (Stream<Path> stream = Files.walk(src)) {
+            stream.forEach(sourcePath -> {
+                try {
+                    Path destPath = dest.resolve(src.relativize(sourcePath));
+                    Files.copy(sourcePath, destPath);
+                } catch (IOException e) {
+                    throw illegalStateWithCauseOf(e);
+                }
+
+            });
+        } catch (IOException e) {
+            throw illegalStateWithCauseOf(e);
+        }
+    }
+
+    /**
+     * Finds a root directory of the project by searching for the file
+     * named {@link #EXT_GRADLE_NAME ext.gradle}.
+     *
+     * <p>Starts from the current directory, climbing up, if the file is not found.
+     *
+     * @throws IllegalStateException if the file is not found
+     */
+    private static Path findRoot() {
+        Path workingFolderPath = Paths.get(".")
                                             .toAbsolutePath();
-        // Find `ext.gradle` in the project dir or in the parent dirs.
         Path extGradleDirPath = workingFolderPath;
         while (extGradleDirPath != null
                 && !exists(extGradleDirPath.resolve(EXT_GRADLE_NAME))) {
             extGradleDirPath = extGradleDirPath.getParent();
         }
-        checkNotNull(extGradleDirPath,
+
+        checkState(extGradleDirPath != null,
                      "ext.gradle file not found in %s or parent directories.",
                      workingFolderPath);
-        final Path extGradleSourcePath = extGradleDirPath.resolve(EXT_GRADLE_NAME);
-        final Path extGradleResultingPath = gradleRunner.getProjectDir()
-                                                        .toPath()
-                                                        .resolve(EXT_GRADLE_NAME);
-        Files.copy(extGradleSourcePath, extGradleResultingPath);
+
+        return extGradleDirPath;
     }
 
     public static Builder newBuilder() {
