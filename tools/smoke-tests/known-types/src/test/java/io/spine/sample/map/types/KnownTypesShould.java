@@ -32,7 +32,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * @author Alexander Litus
  */
-public class ProtoToJavaMapperPluginShould {
+public class KnownTypesShould {
 
     private static final String PROTO_TYPE_PREFIX = "type.spine.io/spine.sample.map.types.";
     private static final String JAVA_PACKAGE_PREFIX = "io.spine.sample.map.types.";
