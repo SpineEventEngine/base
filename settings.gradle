@@ -45,8 +45,8 @@ module 'enrichment-lookup',   'tools/smoke-tests/enrichment-lookup'
 module 'known-types',         'tools/smoke-tests/known-types'
 module 'validators-gen',      'tools/smoke-tests/validators-gen'
 module 'validation-rules',    'tools/smoke-tests/validation-rules'
+module 'protoc-plugin-tests', 'tools/smoke-tests/protoc-plugin'
 
 // Protoc plugin and tests
 module 'protoc-plugin',       'tools/protoc-plugin'
-module 'protoc-plugin-tests', 'tools/protoc-plugin-tests'
 
