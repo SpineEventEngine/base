@@ -148,14 +148,13 @@ public class FileDescriptors {
 
     private static FileDescriptorSet loadFrom(URL file) {
         checkNotNull(file);
-        try {
-            final InputStream stream = file.openStream();
+        try (InputStream stream = file.openStream()) {
             final FileDescriptorSet parsed = FileDescriptorSet.parseFrom(stream, EXTENSIONS);
             return parsed;
         } catch (IOException e) {
             throw newIllegalStateException(
                     e,
-                    "Unable to load descriptor file set from %s.",
+                    "Unable to load file descriptor set from %s.",
                     file
             );
         }
