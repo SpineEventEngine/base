@@ -52,10 +52,6 @@ buildscript {
         classpath ("net.ltgt.gradle:gradle-errorprone-plugin:$errorPronePluginVersion") {
             exclude group: 'com.google.guava'
         }
-
-        classpath ("io.spine.tools:spine-model-compiler:$spineToolsVersion") {
-            exclude group: 'com.google.guava'
-        }
     }
 
     configurations.all({

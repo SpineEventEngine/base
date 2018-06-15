@@ -25,6 +25,7 @@ apply from: generateDescriptorSetScript
 
 buildscript {
     repositories {
+        mavenLocal()
         mavenCentral()
         google()
     }
@@ -35,6 +36,7 @@ buildscript {
             // exclude an old Guava version
             exclude group: 'com.google.guava'
         }
+        classpath group: "io.spine.tools", name: "spine-model-compiler", version: spineToolsVersion
     }
 }
 

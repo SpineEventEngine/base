@@ -71,5 +71,5 @@ ext {
      *
      * <p>Use the latest currently published version here.
      */
-    spineToolsVersion = '0.10.40-SNAPSHOT'
+    spineToolsVersion = '0.10.41-SNAPSHOT'
 }
