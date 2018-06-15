@@ -18,28 +18,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = 'spine-base'
+include 'enrichment-lookup'
+include 'known-types'
+include 'validators-gen'
+include 'validation-rules'
+include 'protoc-plugin'
 
-include 'base'
+final def links = [
+        'io.spine.tools:spine-model-compiler': ':model-compiler',
+        'io.spine:spine-base'                : ':base',
+        'io.spine:spine-base-testlib'        : ':testlib'
+]
 
-include 'testlib'
-
-/**
- * Includes a module and sets custom project directory to it.
- */
-final def module = { final String name, final String path ->
-    include name
-    project(":$name").projectDir = new File("$rootDir/$path")
+// :base root project
+includeBuild("$rootDir/../../") {
+    dependencySubstitution {
+        links.each {
+            substitute module(it.key) with project(it.value)
+        }
+    }
 }
-
-module 'javadoc-filter',      './tools/javadoc-filter'
-module 'javadoc-prettifier',  './tools/javadoc-prettifier'
-
-module 'model-compiler',      './tools/model-compiler'
-
-module 'plugin-base',         './tools/plugin-base'
-module 'reflections-plugin',  './tools/reflections-plugin'
-
-// Protoc plugin and tests
-module 'protoc-plugin',       'tools/protoc-plugin'
-

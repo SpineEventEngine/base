@@ -23,22 +23,9 @@
  *
  * This file is used in both module `build.gradle` scripts and in the integration tests,
  * as we want to manage the versions in a single source.
- *
- * How to increment the version:
- *   1) Copy the current value of `SPINE_VERSION` to `spineToolsVersion`;
- *   2) Change the value of `SPINE_VERSION` to the desired one;
- *   3) Publish the artifacts.
- *
- * This ensures that the required `model-compiler` version is already published when we try to fetch
- * it to build `base`.
  */
 
-/**
- * The currently used version of Spine.
- *
- * This is also the version which the artifacts are published with.
- */
-def final SPINE_VERSION = '0.10.41-SNAPSHOT'
+final def SPINE_VERSION = '0.10.41-SNAPSHOT'
 
 ext {
     // Repositories for specific purposes.
@@ -62,14 +49,4 @@ ext {
     errorPronePluginVersion = '0.0.14'
 
     protobufGradlePluginVersion = '0.8.5'
-
-    /**
-     * The version of Spine tools which is used to build the {@code base} module.
-     *
-     * <p>It is the version of the {@code model-compiler} plugin which is used to
-     * build the {@code base} module.
-     *
-     * <p>Use the latest currently published version here.
-     */
-    spineToolsVersion = '0.10.41-SNAPSHOT'
 }

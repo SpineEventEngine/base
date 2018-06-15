@@ -17,35 +17,4 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-group 'io.spine.tools'
 
-apply plugin: 'com.google.protobuf'
-apply plugin: spineProtobufPluginId
-apply from: generateDescriptorSetScript
-
-buildscript {
-    repositories {
-        mavenLocal()
-        mavenCentral()
-        google()
-    }
-    dependencies {
-        classpath(group: 'com.google.protobuf',
-                name: 'protobuf-gradle-plugin',
-                version: protobufGradlePluginVersion) {
-            // exclude an old Guava version
-            exclude group: 'com.google.guava'
-        }
-        classpath group: "io.spine.tools", name: "spine-model-compiler", version: spineToolsVersion
-    }
-}
-
-dependencies {
-    compile project(":base")
-
-    compile "com.google.protobuf:protobuf-java:${protobufVersion}"
-}
-
-build {
-    dependsOn project(":protoc-plugin").publishToMavenLocal
-}
