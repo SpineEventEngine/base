@@ -131,7 +131,6 @@ public class FileDescriptors {
     public static Iterator<FileDescriptorProto> load() {
         Iterator<URL> resources = ResourceFiles.loadAll(KNOWN_TYPES);
         Iterator<FileDescriptorProto> files = Streams.stream(resources)
-                                                     .peek(System.out::println) // TODO:2018-06-14:dmytro.dashenkov: Remove.
                                                      .map(FileDescriptors::loadFrom)
                                                      .flatMap(set -> set.getFileList().stream())
                                                      .distinct()

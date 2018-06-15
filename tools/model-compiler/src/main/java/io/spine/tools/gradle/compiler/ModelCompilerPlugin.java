@@ -58,8 +58,7 @@ public class ModelCompilerPlugin implements Plugin<Project> {
                   new ValidatingBuilderGenPlugin(),
                   new ProtoAnnotatorPlugin(),
                   new ValidationRulesLookupPlugin(),
-                  new ProtocPluginImporter(),
-                  new CompileConfiguration())
+                  new ProtocPluginImporter())
               .forEach(plugin -> apply(plugin, project));
     }
 

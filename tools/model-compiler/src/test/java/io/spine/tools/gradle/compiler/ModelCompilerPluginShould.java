@@ -42,8 +42,6 @@ import static io.spine.tools.gradle.TaskName.GENERATE_TEST_PROTO;
 import static io.spine.tools.gradle.TaskName.GENERATE_TEST_REJECTIONS;
 import static io.spine.tools.gradle.TaskName.GENERATE_TEST_VALIDATING_BUILDERS;
 import static io.spine.tools.gradle.TaskName.GENERATE_VALIDATING_BUILDERS;
-import static io.spine.tools.gradle.TaskName.MAP_PROTO_TO_JAVA;
-import static io.spine.tools.gradle.TaskName.MAP_TEST_PROTO_TO_JAVA;
 import static io.spine.tools.gradle.TaskName.PRE_CLEAN;
 import static io.spine.tools.gradle.TaskName.PROCESS_RESOURCES;
 import static io.spine.tools.gradle.TaskName.PROCESS_TEST_RESOURCES;
@@ -126,22 +124,6 @@ public class ModelCompilerPluginShould {
         assertNotNull(find);
         assertTrue(dependsOn(find, GENERATE_TEST_PROTO));
         assertTrue(dependsOn(task(PROCESS_TEST_RESOURCES), find));
-    }
-
-    @Test
-    public void add_task_mapProtoToJava() {
-        final Task mapProto = task(MAP_PROTO_TO_JAVA);
-        assertNotNull(mapProto);
-        assertTrue(dependsOn(mapProto, GENERATE_PROTO));
-        assertTrue(dependsOn(task(PROCESS_RESOURCES), mapProto));
-    }
-
-    @Test
-    public void add_task_mapTestProtoToJava() {
-        final Task mapProto = task(MAP_TEST_PROTO_TO_JAVA);
-        assertNotNull(mapProto);
-        assertTrue(dependsOn(mapProto, GENERATE_TEST_PROTO));
-        assertTrue(dependsOn(task(PROCESS_TEST_RESOURCES), mapProto));
     }
 
     @Test
