@@ -185,21 +185,9 @@ public enum TaskName {
      */
     VERIFY_MODEL("verifyModel"),
 
-    /**
-     * The name of the task, that copies the descriptor set file from the temporary build directory,
-     * where it's accessed during the build, to the project runtime classpath.
-     *
-     * <p>Handles the {@code main} classes and resources scope.
-     */
-    COPY_DESCRIPTOR_SET("copyDescriptorSet"),
+    MERGE_DESCRIPTOR_SET("mergeDescriptorSet"),
 
-    /**
-     * The name of the task, that copies the descriptor set file from the temporary build directory,
-     * where it's accessed during the build, to the project runtime classpath.
-     *
-     * <p>Handles the {@code test} classes and resources scope.
-     */
-    COPY_TEST_DESCRIPTOR_SET("copyTestDescriptorSet");
+    MERGE_TEST_DESCRIPTOR_SET("mergeTestDescriptorSet");
 
     private final String value;
 
