@@ -109,9 +109,7 @@ task jacocoRootReport(dependsOn: subprojects.test, type: JacocoReport) {
         xml.enabled = true
         csv.enabled = false
     }
-    onlyIf = {
-        true
-    }
+    onlyIf = { true }
     doFirst {
         // In case some modules do not have the JaCoCo execution data files.
         executionData = files(executionData.findAll {
