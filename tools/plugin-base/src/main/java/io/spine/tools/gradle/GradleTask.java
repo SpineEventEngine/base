@@ -26,6 +26,7 @@ import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.tasks.PathSensitivity;
+import org.gradle.api.tasks.TaskContainer;
 
 import java.nio.file.Path;
 import java.util.Collection;
@@ -203,7 +204,9 @@ public final class GradleTask {
                 task.dependsOn(previousTask.getValue());
             }
             if (followingTask != null) {
-                task.finalizedBy(followingTask.getValue());
+                final TaskContainer existingTasks = project.getTasks();
+                existingTasks.getByPath(followingTask.getValue())
+                             .dependsOn(task);
             }
             if (previousTaskOfAllProjects != null) {
                 final Project root = project.getRootProject();
