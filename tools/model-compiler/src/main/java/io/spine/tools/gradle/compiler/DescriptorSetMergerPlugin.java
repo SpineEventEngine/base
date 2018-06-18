@@ -21,14 +21,19 @@
 package io.spine.tools.gradle.compiler;
 
 import com.google.common.collect.ImmutableSet;
+import io.spine.code.proto.FileDescriptors;
 import io.spine.tools.compiler.type.DescriptorSetFiles;
 import io.spine.tools.gradle.SpinePlugin;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
+import org.gradle.jvm.tasks.Jar;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collection;
 
 import static io.spine.code.proto.FileDescriptors.KNOWN_TYPES;
@@ -40,6 +45,8 @@ import static io.spine.tools.gradle.TaskName.PROCESS_RESOURCES;
 import static io.spine.tools.gradle.TaskName.PROCESS_TEST_RESOURCES;
 import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSetPath;
 import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSetPath;
+import static io.spine.util.Exceptions.illegalStateWithCauseOf;
+import static java.nio.file.Files.isSameFile;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -51,6 +58,31 @@ public class DescriptorSetMergerPlugin extends SpinePlugin {
     public void apply(Project project) {
         createMainTask(project);
         createTestTask(project);
+
+        project.getTasks()
+               .withType(Jar.class)
+               .forEach(task -> stripOffKnownTypes(project, task));
+    }
+
+    private static void stripOffKnownTypes(Project project, Jar jarTask) {
+        Path ownMainFile = Paths.get(getTestDescriptorSetPath(project));
+        Path ownTestFile = Paths.get(getMainDescriptorSetPath(project));
+
+        jarTask.exclude(file -> {
+            boolean knownTypes = FileDescriptors.KNOWN_TYPES.equals(file.getName());
+            if (!knownTypes) {
+                return false;
+            }
+            boolean domesticFile;
+            try {
+                Path path = file.getFile().toPath();
+                domesticFile = isSameFile(path, ownMainFile)
+                            || isSameFile(path, ownTestFile);
+            } catch (IOException e) {
+                throw illegalStateWithCauseOf(e);
+            }
+            return !domesticFile;
+        });
     }
 
     private void createMainTask(Project project) {
