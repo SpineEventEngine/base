@@ -34,7 +34,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.io.Files.createParentDirs;
 import static io.spine.util.Exceptions.illegalArgumentWithCauseOf;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
-import static java.nio.file.Files.delete;
 
 /**
  * @author Dmytro Dashenkov
@@ -82,7 +81,7 @@ public final class DescriptorSetFiles {
 
         private static void prepareFile(File destination) {
             try {
-                delete(destination.toPath());
+                destination.delete();
                 createParentDirs(destination);
                 destination.createNewFile();
             } catch (IOException e) {

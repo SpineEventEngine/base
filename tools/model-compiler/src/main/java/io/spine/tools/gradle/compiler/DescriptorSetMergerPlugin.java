@@ -58,8 +58,8 @@ public class DescriptorSetMergerPlugin extends SpinePlugin {
         newTask(MERGE_DESCRIPTOR_SET,
                 createMergingAction(configuration(project, "runtime"),
                                     getMainDescriptorSetPath(project)))
-                .insertAfterTask(PROCESS_RESOURCES)
-                .insertBeforeTask(GENERATE_PROTO)
+                .insertAfterTask(GENERATE_PROTO)
+                .insertBeforeTask(PROCESS_RESOURCES)
                 .applyNowTo(project);
     }
 
@@ -68,8 +68,8 @@ public class DescriptorSetMergerPlugin extends SpinePlugin {
         newTask(MERGE_TEST_DESCRIPTOR_SET,
                 createMergingAction(configuration(project, "testRuntime"),
                                     getTestDescriptorSetPath(project)))
-                .insertAfterTask(PROCESS_TEST_RESOURCES)
-                .insertBeforeTask(GENERATE_TEST_PROTO)
+                .insertAfterTask(GENERATE_TEST_PROTO)
+                .insertBeforeTask(PROCESS_TEST_RESOURCES)
                 .applyNowTo(project);
     }
 
@@ -82,12 +82,13 @@ public class DescriptorSetMergerPlugin extends SpinePlugin {
                                  .stream()
                                  .filter(file -> KNOWN_TYPES.equals(file.getName()))
                                  .collect(toList());
-            Collection<File> files = ImmutableSet
+            ImmutableSet.Builder<File> files = ImmutableSet
                     .<File>builder()
-                    .addAll(descriptors)
-                    .add(descriptorSet)
-                    .build();
-            DescriptorSetFiles.merge(files)
+                    .addAll(descriptors);
+            if (descriptorSet.exists()) {
+                files.add(descriptorSet);
+            }
+            DescriptorSetFiles.merge(files.build())
                               .writeTo(descriptorSet);
         };
     }
