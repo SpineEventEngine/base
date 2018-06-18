@@ -74,8 +74,9 @@ public class DescriptorSetMergerPlugin extends SpinePlugin {
                 return false;
             }
             boolean domesticFile;
+            Path path = file.getFile()
+                            .toPath();
             try {
-                Path path = file.getFile().toPath();
                 domesticFile = isSameFile(path, ownMainFile)
                             || isSameFile(path, ownTestFile);
             } catch (IOException e) {
