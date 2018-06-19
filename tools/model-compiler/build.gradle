@@ -31,11 +31,9 @@ ext {
 
 group = 'io.spine.tools'
 
-apply from: deps.scripts.generateDescriptorSet
-
 dependencies {
-    compile project(':plugin-base')
-    compile project(':base')
+    implementation project(':plugin-base')
+    implementation project(':base')
 
     implementation (group: 'com.google.template', name: 'soy', version: '2017-02-01') {
         exclude group: 'com.google.guava'
@@ -47,26 +45,26 @@ dependencies {
     // A library for parsing Java sources.
     // Used for parsing Java sources generated from Protobuf files
     // to make their annotation more convenient.
-    compile (group: 'org.jboss.forge.roaster', name: 'roaster-api', version: roasterVersion) {
+    implementation (group: 'org.jboss.forge.roaster', name: 'roaster-api', version: roasterVersion) {
         exclude group: 'com.google.guava'
     }
     
-    compile (group: 'org.jboss.forge.roaster', name: 'roaster-jdt', version: roasterVersion) {
+    implementation (group: 'org.jboss.forge.roaster', name: 'roaster-jdt', version: roasterVersion) {
         exclude group: 'com.google.guava'
     }
 
-    testCompile project(':testlib')
-    testCompile group: 'org.hamcrest', name: 'hamcrest-all', version: hamcrestVersion
-    testCompile gradleTestKit()
-    testCompile project(':plugin-base').sourceSets.test.output // Test classes of `plugin-base`
+    testImplementation project(':testlib')
+    testImplementation deps.test.hamcrest
+    testImplementation gradleTestKit()
+    testImplementation project(':plugin-base').sourceSets.test.output // Test classes of `plugin-base`
 
     // "tools.jar" contains Javadoc classes used in the rejections Javadoc generation tests.
     // It is a local version bundled within the JDK installation.
     // "JAVA_HOME" environment variable must be set for correct work.
-    testCompile files("${System.properties['java.home']}/../lib/tools.jar")
+    testImplementation files("${System.properties['java.home']}/../lib/tools.jar")
 
     // The freshest version of the plugin required for tests
-    protocPluginDependency = testCompile "io.spine.tools:spine-protoc-plugin:$spineVersion@jar"
+    protocPluginDependency = testImplementation "io.spine.tools:spine-protoc-plugin:$spineVersion@jar"
 }
 
 protobuf {

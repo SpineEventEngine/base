@@ -22,25 +22,29 @@ buildscript {
     ext.EXT = "$rootDir/../../ext.gradle"
 
     apply from: EXT
+    apply from: "$rootDir/../../config/gradle/dependencies.gradle"
 
     repositories {
         jcenter()
+        google()
         mavenCentral()
         mavenLocal()
-
-        // Spine releases repository.
-        maven { url = spineRepository }
-        // Spine snapshots repository.
-        maven { url = spineSnapshotsRepository }
+        maven { url = repos.gradlePlugins }
+        maven { url = repos.spine }
+        maven { url = repos.spineSnapshots }
     }
 
 
     dependencies {
-        classpath "com.google.guava:guava:$guavaVersion"
-        classpath ("com.google.protobuf:protobuf-gradle-plugin:${protobufGradlePluginVersion}") {
-            // exclude old Guava version
+        classpath deps.build.guava
+        classpath (deps.build.gradlePlugins.protobuf) {
             exclude group: 'com.google.guava'
         }
+        classpath (deps.build.gradlePlugins.errorProne) {
+            exclude group: 'com.google.guava'
+        }
+        // Always use the latest (current) version of model compiler no matter
+        // the global configuration.
         classpath "io.spine.tools:spine-model-compiler:$spineVersion"
     }
 }

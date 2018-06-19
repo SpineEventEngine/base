@@ -33,4 +33,6 @@ ext {
     protobufVersion = '3.5.1'
     gRpcVersion = '1.12.0'
     protobufGradlePluginVersion = '0.8.5'
+
+    versionToPublish = SPINE_VERSION
 }

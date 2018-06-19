@@ -41,8 +41,7 @@ class Annotations {
     private Annotations() {
     }
 
-    @Nullable
-    static AnnotationSource findSpiAnnotation(AnnotationTargetSource<?, ?> javaSource) {
+    static @Nullable AnnotationSource findSpiAnnotation(AnnotationTargetSource<?, ?> javaSource) {
         for (AnnotationSource annotationSource : javaSource.getAnnotations()) {
             if (annotationSource.getQualifiedName()
                                 .equals(ANNOTATION_CLASS.getName())) {
