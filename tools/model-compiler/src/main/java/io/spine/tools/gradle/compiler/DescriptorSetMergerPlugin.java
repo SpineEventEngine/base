@@ -28,24 +28,27 @@ import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
-import org.gradle.jvm.tasks.Jar;
+import org.gradle.api.tasks.bundling.AbstractArchiveTask;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.Optional;
 
 import static io.spine.code.proto.FileDescriptors.KNOWN_TYPES;
 import static io.spine.tools.gradle.TaskName.GENERATE_PROTO;
 import static io.spine.tools.gradle.TaskName.GENERATE_TEST_PROTO;
+import static io.spine.tools.gradle.TaskName.GENERATE_TEST_VALIDATING_BUILDERS;
+import static io.spine.tools.gradle.TaskName.GENERATE_VALIDATING_BUILDERS;
 import static io.spine.tools.gradle.TaskName.MERGE_DESCRIPTOR_SET;
 import static io.spine.tools.gradle.TaskName.MERGE_TEST_DESCRIPTOR_SET;
-import static io.spine.tools.gradle.TaskName.PROCESS_RESOURCES;
-import static io.spine.tools.gradle.TaskName.PROCESS_TEST_RESOURCES;
+import static io.spine.tools.gradle.compiler.Extension.getFatArchive;
 import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSetPath;
 import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSetPath;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
+import static java.nio.file.Files.exists;
 import static java.nio.file.Files.isSameFile;
 import static java.util.stream.Collectors.toList;
 
@@ -59,61 +62,78 @@ public class DescriptorSetMergerPlugin extends SpinePlugin {
         createMainTask(project);
         createTestTask(project);
 
-        project.getTasks()
-               .withType(Jar.class)
-               .forEach(task -> stripOffKnownTypes(project, task));
+        stripOffKnownTypes(project);
     }
 
-    private static void stripOffKnownTypes(Project project, Jar jarTask) {
+    private void stripOffKnownTypes(Project project) {
+        project.afterEvaluate(evaluatedProject -> {
+            Optional<AbstractArchiveTask> task = getFatArchive(evaluatedProject);
+            task.ifPresent(archiveTask -> stripOffKnownTypes(evaluatedProject, archiveTask));
+        });
+    }
+
+    private void stripOffKnownTypes(Project project, AbstractArchiveTask archiveTask) {
         Path ownMainFile = Paths.get(getTestDescriptorSetPath(project));
         Path ownTestFile = Paths.get(getMainDescriptorSetPath(project));
+        boolean mainFileExists = exists(ownMainFile);
+        boolean testFileExists = exists(ownTestFile);
 
-        jarTask.exclude(file -> {
+        archiveTask.exclude(file -> {
             boolean knownTypes = FileDescriptors.KNOWN_TYPES.equals(file.getName());
             if (!knownTypes) {
                 return false;
             }
-            boolean domesticFile;
             Path path = file.getFile()
                             .toPath();
+            boolean domesticFile;
             try {
-                domesticFile = isSameFile(path, ownMainFile)
-                            || isSameFile(path, ownTestFile);
+                domesticFile = mainFileExists && isSameFile(path, ownMainFile);
+                domesticFile = domesticFile || (testFileExists && isSameFile(path, ownTestFile));
             } catch (IOException e) {
                 throw illegalStateWithCauseOf(e);
+            }
+            if (!domesticFile) {
+                log().debug("Excluding descriptor file {} from the module artifacts.", path);
             }
             return !domesticFile;
         });
     }
 
     private void createMainTask(Project project) {
-        logDependingTask(MERGE_DESCRIPTOR_SET, PROCESS_RESOURCES, GENERATE_PROTO);
+        logDependingTask(MERGE_DESCRIPTOR_SET,
+                         GENERATE_VALIDATING_BUILDERS,
+                         GENERATE_PROTO);
         newTask(MERGE_DESCRIPTOR_SET,
                 createMergingAction(configuration(project, "runtime"),
                                     getMainDescriptorSetPath(project)))
                 .insertAfterTask(GENERATE_PROTO)
-                .insertBeforeTask(PROCESS_RESOURCES)
+                .insertBeforeTask(GENERATE_VALIDATING_BUILDERS)
                 .applyNowTo(project);
     }
 
     private void createTestTask(Project project) {
-        logDependingTask(MERGE_TEST_DESCRIPTOR_SET, PROCESS_TEST_RESOURCES, GENERATE_TEST_PROTO);
+        logDependingTask(MERGE_TEST_DESCRIPTOR_SET,
+                         GENERATE_TEST_VALIDATING_BUILDERS,
+                         GENERATE_TEST_PROTO);
         newTask(MERGE_TEST_DESCRIPTOR_SET,
                 createMergingAction(configuration(project, "testRuntime"),
                                     getTestDescriptorSetPath(project)))
                 .insertAfterTask(GENERATE_TEST_PROTO)
-                .insertBeforeTask(PROCESS_TEST_RESOURCES)
+                .insertBeforeTask(GENERATE_TEST_VALIDATING_BUILDERS)
                 .applyNowTo(project);
     }
 
-    private static Action<Task> createMergingAction(Configuration configuration,
-                                                    String descriptorSetPath) {
+    private Action<Task> createMergingAction(Configuration configuration,
+                                             String descriptorSetPath) {
         return task -> {
             File descriptorSet = new File(descriptorSetPath);
             Collection<File> descriptors =
                     configuration.getFiles()
                                  .stream()
+                                 .map(task.getProject()::zipTree)
+                                 .flatMap(fileTree -> fileTree.getFiles().stream())
                                  .filter(file -> KNOWN_TYPES.equals(file.getName()))
+                                 .peek(file -> log().debug("Merging descriptors from {}", file))
                                  .collect(toList());
             ImmutableSet.Builder<File> files = ImmutableSet
                     .<File>builder()

@@ -19,11 +19,12 @@
  */
 package io.spine.tools.gradle.compiler;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import io.spine.code.DefaultProject;
 import io.spine.code.Indent;
 import org.gradle.api.Project;
+import org.gradle.api.Task;
+import org.gradle.api.tasks.bundling.AbstractArchiveTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,6 +32,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Lists.newLinkedList;
@@ -153,6 +155,8 @@ public class Extension {
      */
     public List<String> dirsToClean = new LinkedList<>();
 
+    public AbstractArchiveTask fatArchive;
+
     private static DefaultProject def(Project project) {
         return DefaultProject.at(project.getProjectDir());
     }
@@ -238,6 +242,15 @@ public class Extension {
         return pathOrDefault(spineProtobuf(project).targetTestGenVBuildersRootDir,
                              def(project).generated()
                                          .testSpine());
+    }
+
+    public static Optional<AbstractArchiveTask> getFatArchive(Project project) {
+        Optional<AbstractArchiveTask> task = Optional.ofNullable(
+                spineProtobuf(project).fatArchive
+        );
+        log().debug("Fat archive task is {}.", task.map(Task::getName)
+                                                   .orElse("absent"));
+        return task;
     }
 
     private static String pathOrDefault(String path, Object defaultValue) {
@@ -333,7 +346,7 @@ public class Extension {
         if (spinePath.exists()) {
             return Optional.of(spinePath.toString());
         } else {
-            return Optional.absent();
+            return Optional.empty();
         }
     }
 
