@@ -22,35 +22,17 @@ import java.nio.file.Files
 
 group 'io.spine.tools'
 
-apply plugin: 'com.google.protobuf'
-
-buildscript {
-    repositories {
-        mavenCentral()
-        google()
-    }
-    dependencies {
-        classpath(group: 'com.google.protobuf',
-                name: 'protobuf-gradle-plugin',
-                version: protobufGradlePluginVersion) {
-            // exclude an old Guava version
-            exclude group: 'com.google.guava'
-        }
-    }
-}
-
-group 'io.spine.tools'
-
 dependencies {
     compile project(':base')
 
-    compile group: "com.google.protobuf", name: "protobuf-java", version: protobufVersion
+    implementation deps.build.protobuf
+    implementation deps.gen.javaPoet
 }
 
 protobuf {
     generatedFilesBaseDir = generatedRootDir
     protoc {
-        artifact = protobufDependency
+        artifact = deps.build.protoc
     }
 }
 

@@ -24,8 +24,9 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Timestamp;
 import io.spine.annotation.Internal;
 
+import java.time.Instant;
+
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.protobuf.util.Timestamps.fromMillis;
 
 /**
  * Utilities for working with time information.
@@ -34,16 +35,12 @@ import static com.google.protobuf.util.Timestamps.fromMillis;
  */
 public class Time {
 
-    private static final ThreadLocal<Provider> timeProvider = new ThreadLocal<Provider>() {
-        @Override
-        protected Provider initialValue() {
-            return new SystemTimeProvider();
-        }
-    };
+    private static final ThreadLocal<Provider> timeProvider = ThreadLocal.withInitial(
+            () -> SystemTimeProvider.INSTANCE
+    );
 
     /** Prevents instantiation of this utility class. */
     private Time() {
-        // Do nothing.
     }
 
     /**
@@ -52,8 +49,8 @@ public class Time {
      * @return current time
      */
     public static Timestamp getCurrentTime() {
-        final Timestamp result = timeProvider.get()
-                                             .getCurrentTime();
+        Timestamp result = timeProvider.get()
+                                       .getCurrentTime();
         return result;
     }
 
@@ -66,7 +63,7 @@ public class Time {
      * @return current system time
      */
     public static Timestamp systemTime() {
-        return fromMillis(System.currentTimeMillis());
+        return SystemTimeProvider.INSTANCE.getCurrentTime();
     }
 
     /**
@@ -87,7 +84,7 @@ public class Time {
      * Sets the default current time provider that obtains current time from system millis.
      */
     public static void resetProvider() {
-        timeProvider.set(new SystemTimeProvider());
+        timeProvider.set(SystemTimeProvider.INSTANCE);
     }
 
     /**
@@ -101,14 +98,25 @@ public class Time {
     }
 
     /**
-     * Default implementation of current time provider based on {@link System#currentTimeMillis()}.
-     *
-     * <p>This is the only place, which should invoke obtaining current time from the system millis.
+     * Default implementation of current time provider based on {@link Instant#now()}.
      */
-    private static class SystemTimeProvider implements Provider {
+    @VisibleForTesting
+    static class SystemTimeProvider implements Provider {
+
+        @VisibleForTesting
+        static final Provider INSTANCE = new SystemTimeProvider();
+
+        /** Prevent instantiation from outside. */
+        private SystemTimeProvider() {
+        }
+
         @Override
         public Timestamp getCurrentTime() {
-            final Timestamp result = fromMillis(System.currentTimeMillis());
+            Instant now = Instant.now();
+            Timestamp result = Timestamp.newBuilder()
+                    .setSeconds(now.getEpochSecond())
+                    .setNanos(now.getNano())
+                    .build();
             return result;
         }
     }

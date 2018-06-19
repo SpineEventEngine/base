@@ -20,37 +20,6 @@
 
 group = 'io.spine'
 
-buildscript {
-    apply from: "$rootDir/ext.gradle"
-    
-    repositories {
-        jcenter()
-        google()
-
-        mavenCentral()
-        mavenLocal()
-
-        // Spine releases repository.
-        maven { url = spineRepository }
-
-        // Spine snapshots repository.
-        maven { url = spineSnapshotsRepository }
-    }
-
-    //noinspection GroovyAssignabilityCheck
-    dependencies {
-        classpath "com.google.guava:guava:$guavaVersion"
-        classpath("com.google.protobuf:protobuf-gradle-plugin:$protobufGradlePluginVersion") {
-            // exclude an old Guava version
-            exclude group: 'com.google.guava'
-        }
-    }
-    
-    configurations.all({
-        resolutionStrategy.cacheChangingModulesFor(0, 'seconds')
-    })
-}
-
 configurations {
     // Avoid collisions of Java classes defined both in `protobuf-lite` and `protobuf-java`
     runtime.exclude group: "com.google.protobuf", module: "protobuf-lite"
@@ -60,49 +29,17 @@ configurations {
 apply plugin: 'java'
 apply plugin: 'com.google.protobuf'
 
-apply from: generateDescriptorSetScript
-
-apply from: testArtifactsScript
+apply from: deps.scripts.generateDescriptorSet
+apply from: deps.scripts.testArtifacts
 
 dependencies {
-    compile "com.google.guava:guava:$guavaVersion"
-
-    /* As a Library, we provide logging facade API, not specific logger bindings.
-       Target apps are free to use any binding they need. */
-    compile "org.slf4j:slf4j-api:$slf4JVersion"
-
-    compile ("com.google.protobuf:protobuf-java:$protobufVersion") {
-        exclude group: 'com.google.guava'
-    }
-
-    protobuf "com.google.protobuf:protobuf-java:$protobufVersion"
-
-    compile ("com.google.protobuf:protobuf-java-util:$protobufVersion") {
-        exclude group: 'com.google.guava'
-    }
-
-    compile "com.squareup:javapoet:$javaPoetVersion"
-
-    testCompile "org.slf4j:slf4j-jdk14:$slf4JVersion"
-    testCompile project(':testlib')
-}
-
-configurations.all({
-    resolutionStrategy {
-        force "com.google.guava:guava:$guavaVersion"
-        force "com.google.guava:guava-testlib:$guavaVersion"
-    }
-})
-
-sourceSets {
-    main.resources.srcDirs "$buildDir/descriptors/main"
-    test.resources.srcDirs "$buildDir/descriptors/test"
+    testCompile project(path: ":testlib")
 }
 
 protobuf {
     generatedFilesBaseDir = generatedRootDir
     protoc {
-        artifact = protobufDependency
+        artifact = deps.build.protoc
     }
 
     generateProtoTasks {

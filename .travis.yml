@@ -26,15 +26,15 @@ script:
 
   # The publishing script should be executed in `script` section in order to
   # fail the Travis build if execution of this script is failed.
-  - chmod +x ./scripts/publish-artifacts.sh
-  - ./scripts/publish-artifacts.sh
+  - chmod +x ./config/scripts/publish-artifacts.sh
+  - ./config/scripts/publish-artifacts.sh
 
 after_success:
   # See: https://github.com/codecov/example-java/blob/master/.travis.yml
   - bash <(curl -s https://codecov.io/bash)
-  - chmod +x ./scripts/report-coverage.sh
-  - ./scripts/report-coverage.sh
+  - chmod +x ./config/scripts/report-coverage.sh
+  - ./config/scripts/report-coverage.sh
 
 after_script:
-  - chmod +x ./scripts/upload-artifacts.sh
-  - ./scripts/upload-artifacts.sh
+  - chmod +x ./config/scripts/upload-artifacts.sh
+  - ./config/scripts/upload-artifacts.sh

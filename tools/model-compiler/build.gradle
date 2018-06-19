@@ -22,6 +22,7 @@ import org.apache.tools.ant.filters.ReplaceTokens
 
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
+
 ext {
     roasterVersion = '2.20.1.Final'
     spineFolder = "${project.projectDir}/.spine" as File
@@ -30,56 +31,18 @@ ext {
 
 group = 'io.spine.tools'
 
-buildscript {
-    apply from: "$rootDir/ext.gradle"
-
-    repositories {
-        mavenCentral()
-        mavenLocal()
-    }
-
-    //noinspection GroovyAssignabilityCheck
-    dependencies {
-        classpath "com.google.guava:guava:$guavaVersion"
-        classpath(group: 'com.google.protobuf',
-                  name: 'protobuf-gradle-plugin',
-                  version: protobufGradlePluginVersion) {
-            // exclude an old Guava version
-            exclude group: 'com.google.guava'
-        }
-    }
-
-    configurations.all({
-        resolutionStrategy {
-            cacheChangingModulesFor(0, 'seconds')
-            force "com.google.guava:guava:$guavaVersion"
-            force "com.google.guava:guava-testlib:$guavaVersion"
-        }
-    })
-}
-
-configurations {
-    // Avoid collisions of Java classes defined both in `protobuf-lite` and `protobuf-java`
-    runtime.exclude group: "com.google.protobuf", module: "protobuf-lite"
-    testRuntime.exclude group: "com.google.protobuf", module: "protobuf-lite"
-}
-
-apply plugin: 'com.google.protobuf'
-apply from: generateDescriptorSetScript
+apply from: deps.scripts.generateDescriptorSet
 
 dependencies {
     compile project(':plugin-base')
     compile project(':base')
 
-    compile (group: 'com.google.template', name: 'soy', version: '2017-02-01') {
+    implementation (group: 'com.google.template', name: 'soy', version: '2017-02-01') {
         exclude group: 'com.google.guava'
     }
-    compile (group: 'com.google.protobuf', name: 'protobuf-java', version: protobufVersion) {
-        exclude group: 'com.google.guava'
-    }
-    compile (group: 'com.google.protobuf', name: 'protobuf-java-util', version: protobufVersion) {
-        exclude group: 'com.google.guava'
-    }
+
+    implementation deps.build.protobuf
+    implementation deps.gen.javaPoet
 
     // A library for parsing Java sources.
     // Used for parsing Java sources generated from Protobuf files
@@ -110,7 +73,7 @@ protobuf {
     generatedFilesBaseDir = generatedRootDir
 
     protoc {
-        artifact = "com.google.protobuf:protoc:${protobufVersion}"
+        artifact = deps.build.protoc
     }
 }
 

@@ -21,6 +21,7 @@
 package io.spine.base;
 
 import com.google.protobuf.Timestamp;
+import io.spine.base.Time.SystemTimeProvider;
 import org.junit.Test;
 
 import static com.google.protobuf.util.Timestamps.subtract;
@@ -31,8 +32,10 @@ import static io.spine.base.Time.systemTime;
 import static io.spine.base.given.TimeTestEnv.ConstantTimeProvider;
 import static io.spine.base.given.TimeTestEnv.DURATION_1_MINUTE;
 import static io.spine.base.given.TimeTestEnv.DURATION_5_MINUTES;
+import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * @author Mykhailo Drachuk
@@ -61,5 +64,11 @@ public class TimeShould {
     @Test
     public void obtain_system_time_millis() {
         assertNotEquals(0, systemTime());
+    }
+
+    @Test
+    public void have_singleton_system_time_provider() {
+        assertNotNull(SystemTimeProvider.INSTANCE);
+        assertHasPrivateParameterlessCtor(SystemTimeProvider.class);
     }
 }

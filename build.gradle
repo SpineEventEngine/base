@@ -19,37 +19,28 @@
  */
 buildscript {
 
-    // Applying from `ext.gradle` inside the `buildscript` section to reuse the properties.
-    //
-    // As long as `buildscript` section is always evaluated first, we need to apply
-    // `ext.gradle` explicitly here.
-    apply from: 'ext.gradle'
+    // As long as `buildscript` section is always evaluated first,
+    // we need to apply explicitly here.
+    apply from: "$rootDir/config/gradle/dependencies.gradle"
+    apply from: "$rootDir/ext.gradle"
 
     repositories {
         jcenter()
-
         google()
-
-        // Repository for error-prone plugin.
-        maven { url = gradlePlugins }
-
         mavenCentral()
         mavenLocal()
-
-        // Spine releases repository.
-        maven { url = spineRepository }
-
-        // Spine snapshots repository.
-        maven { url = spineSnapshotsRepository }
+        maven { url = repos.gradlePlugins }
+        maven { url = repos.spine }
+        maven { url = repos.spineSnapshots }
     }
 
     //noinspection GroovyAssignabilityCheck
     dependencies {
-        classpath group: 'com.google.guava', name: 'guava', version: guavaVersion
-        /* Comment `changing: true` statement if you do not want the dependency to be fetched
-           on each build. That will enable offline builds. */
-
-        classpath ("net.ltgt.gradle:gradle-errorprone-plugin:$errorPronePluginVersion") {
+        classpath deps.build.guava
+        classpath (deps.build.gradlePlugins.protobuf) {
+            exclude group: 'com.google.guava'
+        }
+        classpath (deps.build.gradlePlugins.errorProne) {
             exclude group: 'com.google.guava'
         }
     }
@@ -57,8 +48,8 @@ buildscript {
     configurations.all({
         resolutionStrategy {
             cacheChangingModulesFor(0, 'seconds')
-            force "com.google.guava:guava:$guavaVersion"
-            force "com.google.guava:guava-testlib:$guavaVersion"
+            force deps.build.guava
+            force deps.test.guavaTestlib
         }
     })
 }
@@ -66,11 +57,8 @@ buildscript {
 apply from: 'ext.gradle'
 
 ext {
-    spineCodestyleCheckerId = 'io.spine.tools.spine-codestyle-checker'
-    spineJacocoScript = "${rootDir}/scripts/jacoco.gradle"
-
     credentialsPropertyFile = 'credentials.properties'
-    publishPlugin = "$rootDir/scripts/publish.gradle"
+
     projectsToPublish = [
         'base',
         'testlib',
@@ -94,13 +82,45 @@ allprojects {
     apply plugin: 'project-report'
 
     // Use the same version numbering for the Spine Base library.
-    version = spineVersion
+    version = versionToPublish
 }
 
 subprojects {
 
+    buildscript {
+        apply from: "$rootDir/ext.gradle"
+
+        repositories {
+            jcenter()
+            google()
+            mavenCentral()
+            mavenLocal()
+            maven { url = repos.gradlePlugins }
+            maven { url = repos.spine }
+            maven { url = repos.spineSnapshots }
+        }
+
+        //noinspection GroovyAssignabilityCheck
+        dependencies {
+            classpath deps.build.guava
+            classpath(deps.build.gradlePlugins.protobuf) {
+                // exclude an old Guava version
+                exclude group: 'com.google.guava'
+            }
+        }
+
+        configurations.all({
+            resolutionStrategy.cacheChangingModulesFor(0, 'seconds')
+        })
+    }
+
+    configurations {
+        // Avoid collisions of Java classes defined both in `protobuf-lite` and `protobuf-java`
+        runtime.exclude group: "com.google.protobuf", module: "protobuf-lite"
+        testRuntime.exclude group: "com.google.protobuf", module: "protobuf-lite"
+    }
+
     project.ext {
-        protobufDependency = "com.google.protobuf:protoc:${protobufVersion}"
         spineProtobufPluginId = 'io.spine.tools.spine-model-compiler'
 
         sourcesRootDir = "$projectDir/src"
@@ -114,14 +134,10 @@ subprojects {
 
         generatedSpineDir = "$generatedRootDir/main/spine"
         generatedTestSpineDir = "$generatedRootDir/test/spine"
-
-        testArtifactsScript = "$rootDir/scripts/test-artifacts.gradle"
-        generateDescriptorSetScript = "$rootDir/scripts/generate-descriptor-set.gradle"
-        filterInternalJavadocsScript = "$rootDir/scripts/no-internal-javadoc.gradle"
-        gRpcScript = "$rootDir/scripts/grpc.gradle"
     }
 
-    apply plugin: 'java'
+    apply plugin: 'java-library'
+    apply plugin: 'com.google.protobuf'
     apply plugin: 'net.ltgt.errorprone'
 
     apply plugin: 'maven-publish'
@@ -140,30 +156,24 @@ subprojects {
         jcenter()
 
         google()
-
         mavenCentral()
         mavenLocal()
-
-        // Spine releases repository.
-        maven { url = spineRepository }
-
-        // Spine snapshots repository.
-        maven { url = spineSnapshotsRepository }
+        maven { url = repos.gradlePlugins }
+        maven { url = repos.spine }
+        maven { url = repos.spineSnapshots }
     }
 
     dependencies {
-        compile "org.checkerframework:checker-qual:$checkerFrameworkVersion"
+        api deps.build.protobuf
 
-        compile "com.google.guava:guava:$guavaVersion"
+        implementation deps.build.guava
+        implementation deps.build.slf4j
+        implementation deps.build.checkerAnnotations
+        implementation deps.build.errorProneAnnotations
+        implementation deps.build.jsr305Annotations
 
-        //TODO:2018-05-11:alexander.yevsyukov: Replace the below with Checker Framework
-        // after Guava fully migrates from it too.
-        compile "com.google.code.findbugs:jsr305:$findBugsVersion"
-
-        compile "org.checkerframework:checker-qual:$checkerFrameworkVersion"
-        compile "com.google.errorprone:error_prone_annotations:$errorProneVersion"
-
-        testCompile "com.google.guava:guava-testlib:$guavaVersion"
+        testCompile deps.test.slf4j
+        testCompile deps.test.guavaTestlib
     }
 
     sourceSets {
@@ -258,7 +268,5 @@ idea {
     }
 }
 
-// Aggregated coverage report across all subprojects.
-apply from: spineJacocoScript
-
-apply from: publishPlugin
+apply from: deps.scripts.jacoco
+apply from: deps.scripts.publish
