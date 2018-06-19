@@ -64,7 +64,7 @@ dependencies {
     testImplementation files("${System.properties['java.home']}/../lib/tools.jar")
 
     // The freshest version of the plugin required for tests
-    protocPluginDependency = testImplementation "io.spine.tools:spine-protoc-plugin:$spineVersion@jar"
+    protocPluginDependency = testCompileOnly "io.spine.tools:spine-protoc-plugin:$spineVersion@jar"
 }
 
 protobuf {
@@ -101,7 +101,7 @@ task prepareProtocConfig(type: Copy) {
 processResources.dependsOn prepareProtocConfig
 
 final def copyPluginJarAction = {
-    final def from = configurations.testCompile.fileCollection(protocPluginDependency).singleFile
+    final def from = configurations.testCompileOnly.fileCollection(protocPluginDependency).singleFile
     final def srcPath = from.toPath()
     final def dest = project.spineFolder.toPath().resolve(from.name)
     dest.toFile().mkdirs()
@@ -121,8 +121,5 @@ copyProtocPluginTestArtifact.dependsOn project.project(':protoc-plugin').publish
 // Tests use the Protobuf plugin.
 test {
     dependsOn copyProtocPluginTestArtifact
-    dependsOn publishToMavenLocal
-    dependsOn project.project(':plugin-base').publishToMavenLocal
-    dependsOn project.project(':base').publishToMavenLocal
-    dependsOn project.project(':testlib').publishToMavenLocal
+    dependsOn rootProject.subprojects*.publishToMavenLocal
 }
