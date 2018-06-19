@@ -38,7 +38,7 @@ dependencies {
 }
 
 protobuf {
-    generatedFilesBaseDir = generatedRootDir
+    generatedFilesBaseDir = "$projectDir/generated"
     protoc {
         artifact = deps.build.protoc
     }

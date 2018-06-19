@@ -20,7 +20,6 @@
 
 include 'enrichment-lookup'
 include 'known-types'
-include 'validators-gen'
 include 'validation-rules'
 include 'protoc-plugin'
 
