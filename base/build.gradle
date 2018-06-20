@@ -34,6 +34,8 @@ apply from: deps.scripts.testArtifacts
 dependencies {
     implementation deps.gen.javaPoet
 
+    protobuf deps.build.protobuf
+
     testImplementation project(path: ":testlib")
 }
 
@@ -46,7 +48,7 @@ protobuf {
     generateProtoTasks {
         all().each { final task ->
             task.generateDescriptorSet = true
-            task.descriptorSetOptions.path = "$projectDir/build/descriptors/${task.sourceSet.name}/known_types.desc"
+            task.descriptorSetOptions.path = "$buildDir/descriptors/${task.sourceSet.name}/known_types.desc"
             task.descriptorSetOptions.includeImports = true
 
             /*
@@ -70,6 +72,15 @@ protobuf {
                 }
             }
         }
+    }
+}
+
+sourceSets {
+    main {
+        resources.srcDirs "$buildDir/descriptors/main"
+    }
+    test {
+        resources.srcDirs "$buildDir/descriptors/test"
     }
 }
 
