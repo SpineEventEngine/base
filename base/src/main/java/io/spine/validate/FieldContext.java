@@ -20,13 +20,13 @@
 
 package io.spine.validate;
 
-import com.google.common.base.Optional;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.annotation.Internal;
 import io.spine.base.FieldPath;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static com.google.common.collect.Lists.newLinkedList;
 import static io.spine.util.Exceptions.newIllegalStateException;
@@ -41,7 +41,7 @@ import static java.util.Collections.singleton;
  * @author Dmytro Grankin
  */
 @Internal
-public class FieldContext {
+public final class FieldContext {
 
     /**
      * Parent descriptors and the target descriptor of this context at the end.
@@ -84,7 +84,7 @@ public class FieldContext {
      * @return the descriptor context
      */
     static FieldContext empty() {
-        return new FieldContext(Collections.<FieldDescriptor>emptyList());
+        return new FieldContext(Collections.emptyList());
     }
 
     /**
@@ -118,7 +118,7 @@ public class FieldContext {
         final boolean parentExists = targetParentIndex > -1;
         return parentExists
                 ? Optional.of(descriptors.get(targetParentIndex))
-                : Optional.<FieldDescriptor>absent();
+                : Optional.empty();
     }
 
     /**
@@ -138,13 +138,17 @@ public class FieldContext {
      * @return {@code true} if this context has the same target and the same parent
      */
     public boolean hasSameTargetAndParent(FieldContext other) {
-        final boolean sameTarget = getTarget().equals(other.getTarget());
+        String thisTargetName = getTarget().getFullName();
+        String otherTargetName = other.getTarget().getFullName();
+        boolean sameTarget = thisTargetName.equals(otherTargetName);
         if (!sameTarget) {
             return false;
         }
-
-        final Optional<FieldDescriptor> parentFromThis = getTargetParent();
-        final Optional<FieldDescriptor> parentFromOther = other.getTargetParent();
+        final Optional<String> parentFromThis = getTargetParent()
+                .map(FieldDescriptor::getFullName);
+        final Optional<String> parentFromOther = other
+                .getTargetParent()
+                .map(FieldDescriptor::getFullName);
         final boolean bothHaveParents = parentFromThis.isPresent() && parentFromOther.isPresent();
         return bothHaveParents && parentFromThis.get()
                                                 .equals(parentFromOther.get());
