@@ -27,6 +27,7 @@ import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.DescriptorValidationException;
 import com.google.protobuf.Descriptors.FileDescriptor;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -59,7 +60,7 @@ class Linker {
         this.unresolved = FileSet.newInstance();
     }
 
-    static FileSet link(List<FileDescriptorProto> files) {
+    static FileSet link(Collection<FileDescriptorProto> files) {
         final Linker linker = new Linker(files);
         try {
             linker.resolve();

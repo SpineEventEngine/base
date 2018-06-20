@@ -22,7 +22,6 @@ package io.spine.code.proto;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.FileDescriptor;
@@ -30,13 +29,13 @@ import com.google.protobuf.Descriptors.FileDescriptor;
 import java.io.File;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 
-import static com.google.common.collect.ImmutableList.copyOf;
+import static com.google.common.collect.Maps.newHashMap;
+import static com.google.common.collect.Maps.newHashMapWithExpectedSize;
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toSet;
 
 /**
  * A set of proto files represented by their {@linkplain FileDescriptor descriptors}.
@@ -47,14 +46,14 @@ public final class FileSet {
 
     private static final FileDescriptor[] EMPTY = {};
 
-    private final Set<FileDescriptor> files;
+    private final Map<String, FileDescriptor> files;
 
-    private FileSet(Iterable<FileDescriptor> files) {
-        this.files = Sets.newHashSet(files);
+    private FileSet(Map<String, FileDescriptor> files) {
+        this.files = newHashMap(files);
     }
 
     private FileSet() {
-        this.files = Sets.newHashSet();
+        this.files = newHashMap();
     }
 
     /**
@@ -75,7 +74,7 @@ public final class FileSet {
      * Creates a new file set by parsing the passed descriptor set file.
      */
     private static FileSet parse(String descriptorSetFile) {
-        final List<FileDescriptorProto> files = FileDescriptors.parse(descriptorSetFile);
+        final Collection<FileDescriptorProto> files = FileDescriptors.parse(descriptorSetFile);
         final FileSet result = Linker.link(files);
         return result;
     }
@@ -84,7 +83,7 @@ public final class FileSet {
      * Loads main file set from resources.
      */
     public static FileSet load() {
-        final List<FileDescriptorProto> fileSets = FileDescriptors.load();
+        final Collection<FileDescriptorProto> fileSets = FileDescriptors.load();
         final FileSet fileSet = Linker.link(fileSets);
         return fileSet;
     }
@@ -99,7 +98,11 @@ public final class FileSet {
         if (this.isEmpty()) {
             return another;
         }
-        Set<FileDescriptor> files = Sets.union(this.files, another.files);
+        Map<String, FileDescriptor> files = newHashMapWithExpectedSize(
+                this.files.size() + another.files.size()
+        );
+        files.putAll(this.files);
+        files.putAll(another.files);
         FileSet result = new FileSet(files);
         return result;
     }
@@ -107,15 +110,15 @@ public final class FileSet {
     /**
      * Obtains immutable view of the files in this set.
      */
-    Iterable<FileDescriptor> files() {
-        return ImmutableSet.copyOf(files);
+    Collection<FileDescriptor> files() {
+        return ImmutableSet.copyOf(files.values());
     }
 
     /**
      * Obtains array with the files of this set.
      */
     FileDescriptor[] toArray() {
-        return files.toArray(EMPTY);
+        return files().toArray(EMPTY);
     }
 
     /**
@@ -141,21 +144,23 @@ public final class FileSet {
      * Obtains the set of the files that match passed names.
      */
     public FileSet find(Collection<String> fileNames) {
-        final Iterable<FileDescriptor> filtered =
-                files.stream()
-                     .filter(file -> fileNames.contains(file.getName()))
-                     .collect(toSet());
-        return new FileSet(filtered);
+        Map<String, FileDescriptor> found = newHashMapWithExpectedSize(fileNames.size());
+        for (String name : fileNames) {
+            Optional<FileDescriptor> file = tryFind(name);
+            file.ifPresent(descriptor -> found.put(name, descriptor));
+        }
+        return new FileSet(found);
     }
 
     /**
      * Returns an Optional containing the first file that matches the name, if such an file exists.
      */
     public Optional<FileDescriptor> tryFind(String fileName) {
-        final Optional<FileDescriptor> found = files.stream()
-                                                    .filter(file -> fileName.equals(file.getName()))
-                                                    .findAny();
-        return found;
+        if (files.containsKey(fileName)) {
+            return Optional.of(files.get(fileName));
+        } else {
+            return Optional.empty();
+        }
     }
 
     /**
@@ -163,7 +168,8 @@ public final class FileSet {
      */
     @CanIgnoreReturnValue
     public boolean add(FileDescriptor file) {
-        final boolean isNew = files.add(file);
+        Object previous = files.put(file.getName(), file);
+        boolean isNew = previous == null;
         return isNew;
     }
 
@@ -187,14 +193,13 @@ public final class FileSet {
      * Obtains alphabetically sorted list of names of files of this set.
      */
     public List<FileName> getFileNames() {
-        final Iterable<FileName> fileNames =
-                files.stream()
-                     .map(FileDescriptor::toProto)
-                     .map(FileName::from)
+        final List<FileName> fileNames =
+                files.keySet()
+                     .stream()
+                     .map(FileName::of)
                      .sorted()
                      .collect(toList());
-        final List<FileName> result = copyOf(fileNames);
-        return result;
+        return fileNames;
     }
 
     /**

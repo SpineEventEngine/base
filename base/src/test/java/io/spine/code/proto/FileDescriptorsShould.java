@@ -23,7 +23,7 @@ package io.spine.code.proto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import org.junit.Test;
 
-import java.util.List;
+import java.util.Collection;
 
 import static org.junit.Assert.assertFalse;
 
@@ -34,7 +34,7 @@ public class FileDescriptorsShould {
 
     @Test
     public void load_main_set() {
-        final List<FileDescriptorProto> fileSets = FileDescriptors.load();
+        final Collection<FileDescriptorProto> fileSets = FileDescriptors.load();
         assertFalse(fileSets.isEmpty());
     }
 }

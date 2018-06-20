@@ -26,7 +26,7 @@ import com.google.protobuf.Descriptors.DescriptorValidationException;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.List;
+import java.util.Collection;
 
 import static org.junit.Assert.assertTrue;
 
@@ -44,7 +44,7 @@ public class LinkerShould {
 
     @Before
     public void setUp() throws DescriptorValidationException {
-        List<FileDescriptorProto> fileSets = FileDescriptors.load();
+        Collection<FileDescriptorProto> fileSets = FileDescriptors.load();
         linker = new Linker(fileSets);
         linker.resolve();
     }
