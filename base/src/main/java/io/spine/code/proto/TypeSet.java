@@ -64,13 +64,6 @@ public class TypeSet {
     }
 
     /**
-     * Creates a new empty instance.
-     */
-    static TypeSet newInstance() {
-        return new TypeSet();
-    }
-
-    /**
      * Obtains message and enum types declared in the passed file.
      */
     public static TypeSet messagesAndEnums(FileDescriptor file) {
@@ -84,7 +77,7 @@ public class TypeSet {
      * Obtains message and enum types declared in the files represented by the passed set.
      */
     public static TypeSet messagesAndEnums(FileSet fileSet) {
-        TypeSet result = newInstance();
+        TypeSet result = new TypeSet();
         for (FileDescriptor file : fileSet.files()) {
             result = result.union(messagesAndEnums(file));
         }
@@ -101,6 +94,14 @@ public class TypeSet {
         return result;
     }
 
+    /**
+     * Obtains a type by its name.
+     *
+     * @param name the name of the type to find
+     * @return the type with the given name or {@code Optional.empty()} if there is no such type in
+     *         this set
+     * @see #contains(TypeName)
+     */
     public Optional<Type<?, ?>> find(TypeName name) {
         checkNotNull(name);
         Type<?, ?> messageType = messageTypes.get(name);
@@ -112,6 +113,18 @@ public class TypeSet {
         }
     }
 
+    /**
+     * Checks if a type with the given name is present in this set.
+     *
+     * <p>It is guaranteed that if this method returns {@code true}, then {@link #find(TypeName)}
+     * will successfully find the type by the same name, and otherwise, if
+     * {@code contains(TypeName)} returns {@code false}, then {@code find(TypeName)} will return
+     * an empty value.
+     *
+     * @param typeName the name to look by
+     * @return {@code true} if the set contains a type with the given name, {@code false} otherwise
+     * @see #find(TypeName)
+     */
     public boolean contains(TypeName typeName) {
         boolean result = find(typeName).isPresent();
         return result;
@@ -126,11 +139,7 @@ public class TypeSet {
     }
 
     /**
-     * Writes all the types in this set into
-     * a {@link TypeRegistry JsonFormat.TypeRegistry}.
-     *
-     * <p>Retrieves an instance of {@link TypeRegistry.Builder} which can be appended with more
-     * types if necessary.
+     * Writes all the types in this set into a {@link TypeRegistry JsonFormat.TypeRegistry}.
      */
     public TypeRegistry toJsonPrinterRegistry() {
         TypeRegistry.Builder registry = TypeRegistry.newBuilder();
@@ -165,9 +174,12 @@ public class TypeSet {
         return result;
     }
 
-    public Collection<Type> types() {
-        ImmutableList<Type> types = ImmutableList
-                .<Type>builder()
+    /**
+     * Obtains all the types contained in this set.
+     */
+    public Collection<Type<?, ?>> types() {
+        ImmutableList<Type<?, ?>> types = ImmutableList
+                .<Type<?, ?>>builder()
                 .addAll(messageTypes.values())
                 .addAll(enumTypes.values())
                 .build();

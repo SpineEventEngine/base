@@ -76,7 +76,8 @@ public class KnownTypes {
      */
     public Set<TypeUrl> getAllUrls() {
         return types.types()
-                    .stream().map(Type::url)
+                    .stream()
+                    .map(Type::url)
                     .collect(toSet());
     }
 

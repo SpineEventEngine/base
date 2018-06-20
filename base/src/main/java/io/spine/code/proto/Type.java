@@ -20,14 +20,13 @@
 
 package io.spine.code.proto;
 
+import com.google.common.base.Objects;
 import com.google.protobuf.Descriptors.GenericDescriptor;
 import com.google.protobuf.Message;
 import io.spine.type.ClassName;
 import io.spine.type.TypeName;
 import io.spine.type.TypeUrl;
 import io.spine.type.UnknownTypeException;
-
-import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -66,14 +65,23 @@ public abstract class Type<T extends GenericDescriptor, P extends Message> {
         return this.proto;
     }
 
+    /**
+     * Obtains the {@linkplain TypeName name} of this type.
+     */
     public TypeName name() {
         return url.toName();
     }
 
+    /**
+     * Obtains the {@link TypeUrl} of this type.
+     */
     public TypeUrl url() {
         return url;
     }
 
+    /**
+     * Loads the Java class representing this Protobuf type.
+     */
     public Class<?> javaClass() {
         try {
             return Class.forName(className.value());
@@ -82,25 +90,27 @@ public abstract class Type<T extends GenericDescriptor, P extends Message> {
         }
     }
 
+    /**
+     * Obtains the name of the Java class representing this Protobuf type.
+     */
     public ClassName javaClassName() {
         return className;
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(descriptor, proto);
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Type<?, ?> type = (Type<?, ?>) o;
+        return Objects.equal(proto, type.proto);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-        final Type other = (Type) obj;
-        return Objects.equals(this.descriptor, other.descriptor)
-                && Objects.equals(this.proto, other.proto);
+    public int hashCode() {
+        return Objects.hashCode(proto);
     }
 }
