@@ -81,6 +81,11 @@ public class KnownTypes {
                     .collect(toSet());
     }
 
+    /**
+     * Assembles the known types into a {@link JsonFormat.TypeRegistry}.
+     *
+     * <p>The resulting registry contains all the known Protobuf message types.
+     */
     public JsonFormat.TypeRegistry typeRegistry() {
         return types.toJsonPrinterRegistry();
     }
@@ -99,6 +104,11 @@ public class KnownTypes {
         return result;
     }
 
+    /**
+     * Finds a {@link Type} by its name.
+     *
+     * @see TypeSet#find(TypeName)
+     */
     Optional<Type<?, ?>> find(TypeName typeName) {
         Optional<Type<?, ?>> type = types.find(typeName);
         return type;

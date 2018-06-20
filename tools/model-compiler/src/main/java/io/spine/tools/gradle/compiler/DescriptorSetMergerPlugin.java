@@ -53,6 +53,9 @@ import static java.nio.file.Files.isSameFile;
 import static java.util.stream.Collectors.toList;
 
 /**
+ * A Gradle plugin which merges the descriptor file with all the descriptor files from
+ * the project runtime classpath.
+ *
  * @author Dmytro Dashenkov
  */
 public class DescriptorSetMergerPlugin extends SpinePlugin {

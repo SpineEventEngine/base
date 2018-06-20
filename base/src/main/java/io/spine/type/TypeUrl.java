@@ -40,6 +40,7 @@ import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 import static com.google.protobuf.Internal.getDefaultInstance;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 import static java.lang.String.format;
@@ -199,9 +200,20 @@ public final class TypeUrl implements Serializable {
         return type().javaClass();
     }
 
+    /**
+     * Returns a message {@link Class} corresponding to the Protobuf message type represented
+     * by this type URL.
+     *
+     * <p>This is a convenience method. Use it only when sure that the {@link TypeUrl} represents
+     * a message (i.e. not an enum).
+     *
+     * @throws IllegalStateException if the type URL represents an enum
+     */
     public <T extends Message> Class<T> getMessageClass() throws UnknownTypeException {
+        Class<?> cls = getJavaClass();
+        checkState(Message.class.isAssignableFrom(cls));
         @SuppressWarnings("unchecked")
-        Class<T> result = (Class<T>) getJavaClass();
+        Class<T> result = (Class<T>) cls;
         return result;
     }
 

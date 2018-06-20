@@ -37,6 +37,9 @@ final class Loader {
     private Loader() {
     }
 
+    /**
+     * Loads known types from the classpath.
+     */
     static TypeSet load() {
         final FileSet protoDefinitions = FileSet.load();
         final TypeSet types = TypeSet.messagesAndEnums(protoDefinitions);

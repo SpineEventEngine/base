@@ -36,6 +36,8 @@ import static io.spine.util.Exceptions.illegalArgumentWithCauseOf;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 
 /**
+ * A utility class for working with {@link FileDescriptorSet}s.
+ *
  * @author Dmytro Dashenkov
  */
 public final class DescriptorSetFiles {
@@ -46,6 +48,15 @@ public final class DescriptorSetFiles {
     private DescriptorSetFiles() {
     }
 
+    /**
+     * Merges the contents of the given files into a single descriptor set.
+     *
+     * <p>This method assumes that all the given files exist and contain instances of
+     * {@link FileDescriptorSet} Protobuf message.
+     *
+     * @param files the file to merge
+     * @return the {@link MergedDescriptorSet}
+     */
     public static MergedDescriptorSet merge(Collection<File> files) {
         FileDescriptorSet merged = files
                 .stream()
@@ -61,6 +72,9 @@ public final class DescriptorSetFiles {
         return result;
     }
 
+    /**
+     * A view on a {@link FileDescriptorSet} after merging.
+     */
     public static final class MergedDescriptorSet {
 
         private final FileDescriptorSet descriptorSet;
@@ -69,6 +83,14 @@ public final class DescriptorSetFiles {
             this.descriptorSet = descriptorSet;
         }
 
+        /**
+         * Writes this descriptor set into the given file.
+         *
+         * <p>If the file exists, it will be overridden. Otherwise, the file (and all its parent
+         * directories if necessary) will be created.
+         *
+         * @param destination the file to write this descriptor set into
+         */
         public void writeTo(File destination) {
             checkNotNull(destination);
             prepareFile(destination);

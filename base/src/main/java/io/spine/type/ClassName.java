@@ -71,12 +71,30 @@ public final class ClassName extends StringTypeValue {
         return new ClassName(className);
     }
 
+    /**
+     * Creates an instance of {@code ClassName} from the given Protobuf message type descriptor.
+     *
+     * <p>The resulting class name is the name of the Java class which represents the given Protobuf
+     * type.
+     *
+     * @param descriptor the Protobuf message type descriptor
+     * @return new instance of {@code ClassName}
+     */
     public static ClassName from(Descriptor descriptor) {
         return construct(descriptor.getName(),
                          descriptor.getFile(),
                          descriptor.getContainingType());
     }
 
+    /**
+     * Creates an instance of {@code ClassName} from the given Protobuf enum type descriptor.
+     *
+     * <p>The resulting class name is the name of the Java enum which represents the given Protobuf
+     * type.
+     *
+     * @param descriptor the Protobuf enum type descriptor
+     * @return new instance of {@code ClassName}
+     */
     public static ClassName from(EnumDescriptor descriptor) {
         return construct(descriptor.getName(),
                          descriptor.getFile(),

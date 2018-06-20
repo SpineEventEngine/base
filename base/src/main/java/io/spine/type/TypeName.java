@@ -133,12 +133,16 @@ public class TypeName extends StringTypeValue {
     }
 
     /**
-     * Obtains descriptor for the type.
+     * Obtains the descriptor for the type.
      */
     public GenericDescriptor getDescriptor() {
         return type().descriptor();
     }
 
+    /**
+     * Obtains the message descriptor for the type or throws an exception if this type is name
+     * represents an enum.
+     */
     public Descriptor getMessageDescriptor() {
         Descriptor result = (Descriptor) getDescriptor();
         return result;
