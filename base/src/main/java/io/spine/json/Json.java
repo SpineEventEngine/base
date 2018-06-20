@@ -24,6 +24,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 import com.google.protobuf.util.JsonFormat;
+import io.spine.type.KnownTypes;
 import io.spine.type.UnknownTypeException;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -39,7 +40,7 @@ import static io.spine.util.Exceptions.newIllegalArgumentException;
  */
 public final class Json {
 
-    private static final JsonFormat.TypeRegistry typeRegistry = TypeRegistries.ofKnownTypes();
+    private static final JsonFormat.TypeRegistry typeRegistry = KnownTypes.typeRegistry();
 
     /**
      * Prevents the utility class instantiation.

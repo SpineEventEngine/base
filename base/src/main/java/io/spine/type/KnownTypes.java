@@ -22,6 +22,7 @@ package io.spine.type;
 
 import com.google.protobuf.Any;
 import com.google.protobuf.Message;
+import com.google.protobuf.util.JsonFormat;
 import io.spine.annotation.Internal;
 import io.spine.code.proto.Type;
 import io.spine.code.proto.TypeSet;
@@ -76,6 +77,10 @@ public class KnownTypes {
      */
     public static Set<TypeUrl> getAllUrls() {
         return instance().types();
+    }
+
+    public static JsonFormat.TypeRegistry typeRegistry() {
+        return instance().types.toJsonPrinterRegistry();
     }
 
     private Set<TypeUrl> types() {

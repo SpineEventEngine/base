@@ -24,7 +24,6 @@ import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
-import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.util.JsonFormat.TypeRegistry;
 import io.spine.type.TypeName;
@@ -37,7 +36,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableMap.copyOf;
 import static com.google.common.collect.ImmutableMap.of;
 import static com.google.common.collect.Maps.newHashMap;
-import static java.util.stream.Collectors.toList;
 
 /**
  * A set of proto types.
@@ -135,12 +133,12 @@ public class TypeSet {
      * types if necessary.
      */
     public TypeRegistry toJsonPrinterRegistry() {
-        Iterable<Descriptor> messageTypes = getMessageTypes();
-        TypeRegistry registry = TypeRegistry
-                .newBuilder()
-                .add(messageTypes)
-                .build();
-        return registry;
+        TypeRegistry.Builder registry = TypeRegistry.newBuilder();
+        messageTypes.values()
+                    .stream()
+                    .map(Type::getType)
+                    .forEach(registry::add);
+        return registry.build();
     }
 
     /**
@@ -165,14 +163,6 @@ public class TypeSet {
                 .build();
         TypeSet result = new TypeSet(messages, enums);
         return result;
-    }
-
-    private Iterable<Descriptor> getMessageTypes() {
-        final Iterable<Descriptor> descriptors = messageTypes.values()
-                                                             .stream()
-                                                             .map(MessageType::getType)
-                                                             .collect(toList());
-        return descriptors;
     }
 
     public Collection<Type> types() {
