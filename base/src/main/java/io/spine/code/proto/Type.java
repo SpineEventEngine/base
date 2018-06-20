@@ -40,14 +40,14 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public abstract class Type<T extends GenericDescriptor, P extends Message> {
 
-    private final T type;
+    private final T descriptor;
     private final P proto;
     private final ClassName className;
     private final TypeUrl url;
 
-    protected Type(T type, P proto, ClassName javaClassName, TypeUrl url) {
-        this.type = checkNotNull(type);
-        this.proto = checkNotNull(proto);
+    protected Type(T descriptor, P descriptorProto, ClassName javaClassName, TypeUrl url) {
+        this.descriptor = checkNotNull(descriptor);
+        this.proto = checkNotNull(descriptorProto);
         this.url = url;
         this.className = javaClassName;
     }
@@ -55,8 +55,8 @@ public abstract class Type<T extends GenericDescriptor, P extends Message> {
     /**
      * Obtains the descriptor of the type.
      */
-    public T getType() {
-        return this.type;
+    public T descriptor() {
+        return this.descriptor;
     }
 
     /**
@@ -74,7 +74,7 @@ public abstract class Type<T extends GenericDescriptor, P extends Message> {
         return url;
     }
 
-    public Class<?> toJavaClass() {
+    public Class<?> javaClass() {
         try {
             return Class.forName(className.value());
         } catch (ClassNotFoundException e) {
@@ -88,7 +88,7 @@ public abstract class Type<T extends GenericDescriptor, P extends Message> {
 
     @Override
     public int hashCode() {
-        return Objects.hash(type, proto);
+        return Objects.hash(descriptor, proto);
     }
 
     @Override
@@ -100,7 +100,7 @@ public abstract class Type<T extends GenericDescriptor, P extends Message> {
             return false;
         }
         final Type other = (Type) obj;
-        return Objects.equals(this.type, other.type)
+        return Objects.equals(this.descriptor, other.descriptor)
                 && Objects.equals(this.proto, other.proto);
     }
 }

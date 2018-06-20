@@ -101,13 +101,13 @@ public class TypeSet {
         return result;
     }
 
-    public Optional<Type> find(TypeName name) {
+    public Optional<Type<?, ?>> find(TypeName name) {
         checkNotNull(name);
-        Type messageType = messageTypes.get(name);
+        Type<?, ?> messageType = messageTypes.get(name);
         if (messageType != null) {
             return Optional.of(messageType);
         } else {
-            Type enumType = enumTypes.get(name);
+            Type<?, ?> enumType = enumTypes.get(name);
             return Optional.ofNullable(enumType);
         }
     }
@@ -136,7 +136,7 @@ public class TypeSet {
         TypeRegistry.Builder registry = TypeRegistry.newBuilder();
         messageTypes.values()
                     .stream()
-                    .map(Type::getType)
+                    .map(Type::descriptor)
                     .forEach(registry::add);
         return registry.build();
     }

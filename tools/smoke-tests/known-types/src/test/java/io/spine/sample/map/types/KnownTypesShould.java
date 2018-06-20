@@ -24,6 +24,7 @@ import com.google.common.base.Joiner;
 import io.spine.type.ClassName;
 import io.spine.type.KnownTypes;
 import io.spine.type.TypeUrl;
+import org.junit.Before;
 import org.junit.Test;
 
 import static com.google.common.collect.ImmutableList.copyOf;
@@ -49,6 +50,13 @@ public class KnownTypesShould {
     private static final String MSG_ONE = "Msg1";
     private static final String MSG_TWO = "Msg2";
     private static final String ENUM_TWO = "Enum2";
+
+    private KnownTypes knownTypes;
+
+    @Before
+    public void setUp() {
+        knownTypes = KnownTypes.instance();
+    }
 
     @Test
     public void put_entry_for_simple_message() {
@@ -118,23 +126,23 @@ public class KnownTypesShould {
         assertIsKnownType(compose(FIRST_MSG, SECOND_MSG, THIRD_MSG, FOURTH_ENUM));
     }
 
-    private static void assertIsKnownType(String protoTypeName, String javaClassName) {
+    private void assertIsKnownType(String protoTypeName, String javaClassName) {
         final TypeUrl url = TypeUrl.parse(PROTO_TYPE_PREFIX + protoTypeName);
-        final ClassName className = KnownTypes.getClassName(url);
+        final ClassName className = knownTypes.getClassName(url);
 
         assertEquals(JAVA_PACKAGE_PREFIX + javaClassName, className.value());
     }
 
-    private static void assertIsKnownType(String typeName) {
+    private void assertIsKnownType(String typeName) {
         assertIsKnownType(typeName, typeName);
     }
 
-    private static void assertIsKnownType(Iterable<String> parentsAndTypeName) {
+    private void assertIsKnownType(Iterable<String> parentsAndTypeName) {
         final String protoName = Joiner.on(".").join(parentsAndTypeName);
         final String javaName = Joiner.on("$").join(parentsAndTypeName);
         final TypeUrl url = TypeUrl.parse(PROTO_TYPE_PREFIX + protoName);
 
-        final ClassName className = KnownTypes.getClassName(url);
+        final ClassName className = knownTypes.getClassName(url);
 
         assertEquals(JAVA_PACKAGE_PREFIX + javaName, className.value());
     }

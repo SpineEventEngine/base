@@ -23,9 +23,9 @@ package io.spine.code.proto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import org.junit.Test;
 
-import java.util.Iterator;
+import java.util.List;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 /**
  * @author Alexander Yevsyukov
@@ -34,7 +34,7 @@ public class FileDescriptorsShould {
 
     @Test
     public void load_main_set() {
-        final Iterator<FileDescriptorProto> fileSets = FileDescriptors.load();
-        assertTrue(fileSets.hasNext());
+        final List<FileDescriptorProto> fileSets = FileDescriptors.load();
+        assertFalse(fileSets.isEmpty());
     }
 }

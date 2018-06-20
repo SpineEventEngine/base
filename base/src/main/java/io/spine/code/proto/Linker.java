@@ -130,15 +130,16 @@ class Linker {
 
     private boolean doFindPartiallyResolved() throws DescriptorValidationException {
         boolean result = false;
-        final FileSet partialAndResolved = resolved.union(partiallyResolved);
-        final Iterator<FileDescriptorProto> iterator = remaining.iterator();
+        FileSet partialAndResolved = resolved.union(partiallyResolved);
+        Iterator<FileDescriptorProto> iterator = remaining.iterator();
         while (iterator.hasNext()) {
-            final FileDescriptorProto next = iterator.next();
-            final List<String> dependencyList = next.getDependencyList();
-            final FileSet dependencies = partialAndResolved.find(dependencyList);
+            FileDescriptorProto next = iterator.next();
+            List<String> dependencyList = next.getDependencyList();
+            FileSet dependencies = partialAndResolved.find(dependencyList);
             if (dependencies.isEmpty()) {
-                final FileDescriptor fd = buildFrom(next, dependencies.toArray(), true);
-                partiallyResolved.add(fd);
+                FileDescriptor newPartial = buildFrom(next, dependencies.toArray(), true);
+                partiallyResolved.add(newPartial);
+                partialAndResolved.add(newPartial);
                 result = true;
             }
             iterator.remove();

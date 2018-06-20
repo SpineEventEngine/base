@@ -30,7 +30,6 @@ import io.spine.code.proto.TypeSet;
 import java.util.Optional;
 import java.util.Set;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.stream.Collectors.toSet;
 
 /**
@@ -64,7 +63,7 @@ public class KnownTypes {
      * @return Java class name
      * @throws UnknownTypeException if there is no such type known to the application
      */
-    public static ClassName getClassName(TypeUrl typeUrl) throws UnknownTypeException {
+    public ClassName getClassName(TypeUrl typeUrl) throws UnknownTypeException {
         if (!instance().contains(typeUrl)) {
             throw new UnknownTypeException(typeUrl.getTypeName());
         }
@@ -75,21 +74,36 @@ public class KnownTypes {
     /**
      * Retrieves Protobuf type URLs known to the application.
      */
-    public static Set<TypeUrl> getAllUrls() {
-        return instance().types();
-    }
-
-    public static JsonFormat.TypeRegistry typeRegistry() {
-        return instance().types.toJsonPrinterRegistry();
-    }
-
-    private Set<TypeUrl> types() {
+    public Set<TypeUrl> getAllUrls() {
         return types.types()
-                .stream().map(Type::url)
-                .collect(toSet());
+                    .stream().map(Type::url)
+                    .collect(toSet());
     }
 
-    private Type get(TypeName name) {
+    public JsonFormat.TypeRegistry typeRegistry() {
+        return types.toJsonPrinterRegistry();
+    }
+
+    /**
+     * Retrieves all the types that belong to the given package or its subpackages.
+     *
+     * @param packageName proto package name
+     * @return set of {@link TypeUrl TypeUrl}s of types that belong to the given package
+     */
+    public Set<TypeUrl> getAllFromPackage(String packageName) {
+        final Set<TypeUrl> result = getAllUrls().stream()
+                                                .filter(url -> url.toName()
+                                                                  .belongsTo(packageName))
+                                                .collect(toSet());
+        return result;
+    }
+
+    Optional<Type<?, ?>> find(TypeName typeName) {
+        Optional<Type<?, ?>> type = types.find(typeName);
+        return type;
+    }
+
+    private Type get(TypeName name) throws UnknownTypeException {
         Type result = types.find(name)
                            .orElseThrow(() -> new UnknownTypeException(name.value()));
         return result;
@@ -107,58 +121,10 @@ public class KnownTypes {
         return result;
     }
 
-    private Optional<TypeUrl> find(String typeName) {
-        TypeName name = TypeName.of(typeName);
-        Optional<TypeUrl> type = types.find(name)
-                                      .map(Type::url);
-
-        return type;
-    }
-
     /**
-     * Obtains URL for a type type by its full name.
-     *
-     * @return URL of the type or {@code Optional.absent()} if the type with this name is not known
+     * Retrieves the singleton instance of {@code KnownTypes}.
      */
-    static Optional<TypeUrl> tryFind(String typeName) {
-        return instance().find(typeName);
-    }
-
-    /**
-     * Obtains immutable set of URLs of types belonging to the passed package.
-     */
-    private Set<TypeUrl> fromPackage(String packageName) {
-        final Set<TypeUrl> result = types().stream()
-                                           .filter(TypeUrl.inPackage(packageName))
-                                           .collect(toSet());
-        return result;
-    }
-
-    /**
-     * Retrieves all the types that belong to the given package or its subpackages.
-     *
-     * @param packageName proto package name
-     * @return set of {@link TypeUrl TypeUrl}s of types that belong to the given package
-     */
-    public static Set<TypeUrl> getAllFromPackage(String packageName) {
-        return instance().fromPackage(packageName);
-    }
-
-    /**
-     * Obtains a Java class for the passed type URL.
-     *
-     * @throws UnknownTypeException if there is no Java class for the passed type URL
-     */
-    static <T extends Message> Class<T> getJavaClass(TypeUrl typeUrl) throws UnknownTypeException {
-        checkNotNull(typeUrl);
-        TypeName name = typeUrl.toName();
-        Class<?> result = instance().get(name)
-                                    .toJavaClass();
-        // TODO:2018-06-04:dmytro.dashenkov: Check the enum case.
-        return (Class<T>) result;
-    }
-
-    private static KnownTypes instance() {
+    public static KnownTypes instance() {
         return Singleton.INSTANCE.value;
     }
 

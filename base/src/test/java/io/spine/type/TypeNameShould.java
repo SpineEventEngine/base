@@ -30,7 +30,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import static io.spine.type.TypeName.getDescriptor;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -49,7 +48,7 @@ public class TypeNameShould {
     public void pass_the_null_tolerance_check() {
         new NullPointerTester()
                 .setDefault(Descriptor.class, EntityOption.getDefaultInstance()
-                                                                      .getDescriptorForType())
+                                                          .getDescriptorForType())
                 .testAllPublicStaticMethods(TypeName.class);
     }
 
@@ -101,16 +100,16 @@ public class TypeNameShould {
 
     @Test
     public void provide_proto_descriptor_by_type_name() {
-        final String typeName = "spine.test.types.Task";
-        final Descriptor typeDescriptor = (Descriptor) getDescriptor(typeName);
+        final TypeName typeName = TypeName.of("spine.test.types.Task");
+        final Descriptor typeDescriptor = typeName.getMessageDescriptor();
         assertNotNull(typeDescriptor);
-        assertEquals(typeName, typeDescriptor.getFullName());
+        assertEquals(typeName.value(), typeDescriptor.getFullName());
     }
 
     @Test
     public void fail_to_find_invalid_type_descriptor() {
-        final String invalidTypeName = "no.such.package.InvalidType";
-        thrown.expect(IllegalArgumentException.class);
-        getDescriptor(invalidTypeName);
+        final TypeName invalidTypeName = TypeName.of("no.such.package.InvalidType");
+        thrown.expect(UnknownTypeException.class);
+        invalidTypeName.getDescriptor();
     }
 }

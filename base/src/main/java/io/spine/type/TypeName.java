@@ -21,21 +21,16 @@
 package io.spine.type;
 
 import com.google.common.base.Splitter;
-import com.google.protobuf.Descriptors;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.GenericDescriptor;
 import com.google.protobuf.Message;
+import io.spine.code.proto.Type;
 import io.spine.value.StringTypeValue;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
-import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
-import static io.spine.util.Exceptions.newIllegalStateException;
-import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
  * A fully-qualified Protobuf type name.
@@ -58,11 +53,6 @@ public class TypeName extends StringTypeValue {
      * The character to separate a nested type from the outer type name.
      */
     public static final char NESTED_TYPE_SEPARATOR = '.';
-
-    /**
-     * The method name for obtaining a type descriptor from a Java message class.
-     */
-    private static final String METHOD_GET_DESCRIPTOR = "getDescriptor";
 
     private TypeName(String value) {
         super(value);
@@ -127,10 +117,7 @@ public class TypeName extends StringTypeValue {
      * Creates URL instance corresponding to this type name.
      */
     public TypeUrl toUrl() {
-        final String typeName = value();
-        final Optional<TypeUrl> typeUrl = KnownTypes.tryFind(typeName);
-        checkState(typeUrl.isPresent(), "Unable to find URL for type: %s", typeName);
-        return typeUrl.get();
+        return type().url();
     }
 
     /**
@@ -141,46 +128,20 @@ public class TypeName extends StringTypeValue {
      * @throws UnknownTypeException wrapping {@link ClassNotFoundException} if
      *         there is no corresponding Java class
      */
-    public <T extends Message> Class<T> getJavaClass() throws UnknownTypeException {
-
-        return KnownTypes.getJavaClass(toUrl());
+    public Class<?> getJavaClass() throws UnknownTypeException {
+        return type().javaClass();
     }
 
     /**
      * Obtains descriptor for the type.
      */
-    public Descriptor getDescriptor() {
-        return (Descriptor) getDescriptor(value());
+    public GenericDescriptor getDescriptor() {
+        return type().descriptor();
     }
 
-    /**
-     * Retrieve {@link Descriptors proto descriptor} from the type name.
-     *
-     * @param typeName <b>valid</b> name of the desired type
-     * @return {@link Descriptors proto descriptor} for given type
-     * @see TypeName
-     * @throws IllegalArgumentException if the name does not correspond to any known type
-     */
-    static GenericDescriptor getDescriptor(String typeName) {
-        checkNotEmptyOrBlank(typeName);
-        final Optional<TypeUrl> typeUrl = KnownTypes.tryFind(typeName);
-        checkArgument(typeUrl.isPresent(), "Cannot find TypeUrl for the type name: `%s`", typeName);
-
-        final Class<?> cls = KnownTypes.getJavaClass(typeUrl.get());
-
-        final GenericDescriptor descriptor;
-        try {
-            @SuppressWarnings("JavaReflectionMemberAccess")
-            // The method is available in generated classes.
-            final java.lang.reflect.Method descriptorGetter =
-                    cls.getDeclaredMethod(METHOD_GET_DESCRIPTOR);
-            descriptor = (GenericDescriptor) descriptorGetter.invoke(null);
-        } catch (NoSuchMethodException
-                | IllegalAccessException
-                | InvocationTargetException e) {
-            throw newIllegalStateException(e, "Unable to get descriptor for the type %s", typeName);
-        }
-        return descriptor;
+    public Descriptor getMessageDescriptor() {
+        Descriptor result = (Descriptor) getDescriptor();
+        return result;
     }
 
     /**
@@ -192,5 +153,12 @@ public class TypeName extends StringTypeValue {
                 typeName.startsWith(packageName)
                         && typeName.charAt(packageName.length()) == PACKAGE_SEPARATOR;
         return inPackage;
+    }
+
+    private Type<?, ?> type() {
+        Type<?, ?> result = KnownTypes.instance()
+                                      .find(this)
+                                      .orElseThrow(() -> new UnknownTypeException(value()));
+        return result;
     }
 }

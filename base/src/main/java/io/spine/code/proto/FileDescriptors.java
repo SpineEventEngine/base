@@ -20,7 +20,6 @@
 package io.spine.code.proto;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Streams;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
 import com.google.protobuf.ExtensionRegistry;
@@ -36,11 +35,16 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.collect.Sets.newHashSet;
+import static com.google.common.collect.Streams.stream;
 import static io.spine.util.Exceptions.newIllegalStateException;
+import static java.util.stream.Collectors.toList;
 
 /**
  * A utility class which allows to obtain Protobuf file descriptors.
@@ -129,14 +133,36 @@ public class FileDescriptors {
     /**
      * Loads main file descriptor set from resources.
      */
-    public static Iterator<FileDescriptorProto> load() {
+    public static List<FileDescriptorProto> load() {
         Iterator<URL> resources = ResourceFiles.loadAll(KNOWN_TYPES);
-        Iterator<FileDescriptorProto> files = Streams.stream(resources)
-                                                     .map(FileDescriptors::loadFrom)
-                                                     .flatMap(set -> set.getFileList().stream())
-                                                     .distinct()
-                                                     .iterator();
+        List<FileDescriptorProto> files = stream(resources)
+                .map(FileDescriptors::loadFrom)
+                .flatMap(set -> set.getFileList().stream())
+                .filter(distinctBy(FileDescriptorProto::getName))
+                .collect(toList());
         return files;
+    }
+
+    /**
+     * Retrieves a {@link Predicate} on a given type {@code T}.
+     *
+     * <p>The predicate is satisfied (returns {@code true}) iff the result of applying the given
+     * {@code selector} function to the predicate argument is not seen before by this function.
+     * Therefore, the predicate is stateful and should not be used in parallel streams.
+     *
+     * @param selector the key selector function; takes the predicate parameter as an argument and
+     *                 returns the property to distinct by
+     * @param <T>      the predicate type
+     * @param <K>      the type of the key
+     * @return a predicate on {@code T}
+     */
+    private static <T, K> Predicate<T> distinctBy(Function<T, K> selector) {
+        Set<? super K> seen = newHashSet();
+        return element -> {
+            K key = selector.apply(element);
+            boolean newKey = seen.add(key);
+            return newKey;
+        };
     }
 
     /**

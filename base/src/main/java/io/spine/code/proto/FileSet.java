@@ -29,14 +29,12 @@ import com.google.protobuf.Descriptors.FileDescriptor;
 
 import java.io.File;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
 import static com.google.common.collect.ImmutableList.copyOf;
-import static com.google.common.collect.Lists.newArrayList;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
@@ -86,8 +84,8 @@ public final class FileSet {
      * Loads main file set from resources.
      */
     public static FileSet load() {
-        final Iterator<FileDescriptorProto> fileSets = FileDescriptors.load();
-        final FileSet fileSet = Linker.link(newArrayList(fileSets));
+        final List<FileDescriptorProto> fileSets = FileDescriptors.load();
+        final FileSet fileSet = Linker.link(fileSets);
         return fileSet;
     }
 
@@ -98,11 +96,9 @@ public final class FileSet {
         if (another.isEmpty()) {
             return this;
         }
-
         if (this.isEmpty()) {
             return another;
         }
-
         Set<FileDescriptor> files = Sets.union(this.files, another.files);
         FileSet result = new FileSet(files);
         return result;

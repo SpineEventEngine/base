@@ -46,7 +46,7 @@ public class EntityOptions {
     public static Visibility getVisibility(Class<? extends Message> stateClass) {
         checkNotNull(stateClass);
         final Descriptor descriptor = TypeName.of(stateClass)
-                                              .getDescriptor();
+                                              .getMessageDescriptor();
         final EntityOption entityOption = descriptor.getOptions()
                                                     .getExtension(OptionsProto.entity);
         final Visibility definedVisibility = entityOption.getVisibility();

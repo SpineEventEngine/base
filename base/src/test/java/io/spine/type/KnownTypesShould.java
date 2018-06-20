@@ -27,11 +27,13 @@ import com.google.protobuf.Message;
 import com.google.protobuf.StringValue;
 import com.google.protobuf.Timestamp;
 import io.spine.base.Error;
+import io.spine.code.proto.Type;
 import io.spine.option.EntityOption;
 import io.spine.option.IfMissingOption;
 import io.spine.test.types.Task;
 import io.spine.test.types.TaskId;
 import io.spine.test.types.TaskName;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -42,8 +44,6 @@ import java.util.Optional;
 import java.util.Set;
 
 import static io.spine.test.Verify.assertSize;
-import static io.spine.type.KnownTypes.getAllFromPackage;
-import static io.spine.type.KnownTypes.getClassName;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -54,12 +54,19 @@ import static org.junit.Assert.assertTrue;
  */
 public class KnownTypesShould {
 
+    private KnownTypes knownTypes;
+
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
+    @Before
+    public void setUp() {
+        knownTypes = KnownTypes.instance();
+    }
+
     @Test
     public void return_known_proto_message_type_urls() {
-        final Set<TypeUrl> typeUrls = KnownTypes.getAllUrls();
+        final Set<TypeUrl> typeUrls = knownTypes.getAllUrls();
 
         assertFalse(typeUrls.isEmpty());
     }
@@ -79,10 +86,10 @@ public class KnownTypesShould {
         assertHasClassNameByTypeUrlOf(Empty.class);
     }
 
-    private static void assertHasClassNameByTypeUrlOf(Class<? extends Message> msgClass) {
+    private void assertHasClassNameByTypeUrlOf(Class<? extends Message> msgClass) {
         final TypeUrl typeUrl = TypeUrl.of(msgClass);
 
-        final ClassName className = getClassName(typeUrl);
+        final ClassName className = knownTypes.getClassName(typeUrl);
 
         assertEquals(ClassName.of(msgClass), className);
     }
@@ -91,7 +98,7 @@ public class KnownTypesShould {
     public void return_java_inner_class_name_by_proto_type_url() {
         final TypeUrl typeUrl = TypeUrl.from(EntityOption.Kind.getDescriptor());
 
-        final ClassName className = getClassName(typeUrl);
+        final ClassName className = knownTypes.getClassName(typeUrl);
 
         assertEquals(ClassName.of(EntityOption.Kind.class), className);
     }
@@ -100,8 +107,8 @@ public class KnownTypesShould {
     public void return_proto_type_url_by_proto_type_name() {
         final TypeUrl typeUrlExpected = TypeUrl.from(StringValue.getDescriptor());
 
-        final Optional<TypeUrl> typeUrlActual = KnownTypes.tryFind(typeUrlExpected.getTypeName());
-
+        final Optional<TypeUrl> typeUrlActual = knownTypes.find(typeUrlExpected.toName())
+                                                          .map(Type::url);
         assertTrue(typeUrlActual.isPresent());
         assertEquals(typeUrlExpected, typeUrlActual.get());
     }
@@ -114,7 +121,7 @@ public class KnownTypesShould {
 
         final String packageName = "spine.test.types";
 
-        final Collection<TypeUrl> packageTypes = getAllFromPackage(packageName);
+        final Collection<TypeUrl> packageTypes = knownTypes.getAllFromPackage(packageName);
         assertSize(3, packageTypes);
         assertTrue(packageTypes.containsAll(Arrays.asList(taskId, taskName, task)));
     }
@@ -122,7 +129,7 @@ public class KnownTypesShould {
     @Test
     public void return_empty_collection_if_package_is_empty_or_invalid() {
         final String packageName = "com.foo.invalid.package";
-        final Collection<?> emptyTypesCollection = getAllFromPackage(packageName);
+        final Collection<?> emptyTypesCollection = knownTypes.getAllFromPackage(packageName);
         assertNotNull(emptyTypesCollection);
         assertTrue(emptyTypesCollection.isEmpty());
     }
@@ -131,7 +138,7 @@ public class KnownTypesShould {
     public void do_not_return_types_of_package_by_package_prefix() {
         final String prefix = "spine.test.ty"; // "spine.test.types" is a valid package
 
-        final Collection<TypeUrl> packageTypes = getAllFromPackage(prefix);
+        final Collection<TypeUrl> packageTypes = knownTypes.getAllFromPackage(prefix);
         assertTrue(packageTypes.isEmpty());
     }
 
@@ -139,6 +146,6 @@ public class KnownTypesShould {
     public void throw_exception_if_no_java_class_name_by_type_url() {
         final TypeUrl unexpectedUrl = TypeUrl.parse("prefix/unexpected.type");
         thrown.expect(UnknownTypeException.class);
-        getClassName(unexpectedUrl);
+        knownTypes.getClassName(unexpectedUrl);
     }
 }

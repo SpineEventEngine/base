@@ -40,7 +40,9 @@ import static io.spine.util.Exceptions.newIllegalArgumentException;
  */
 public final class Json {
 
-    private static final JsonFormat.TypeRegistry typeRegistry = KnownTypes.typeRegistry();
+    private static final JsonFormat.TypeRegistry typeRegistry = KnownTypes
+            .instance()
+            .typeRegistry();
 
     /**
      * Prevents the utility class instantiation.

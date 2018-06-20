@@ -31,12 +31,12 @@ import com.google.protobuf.Descriptors.GenericDescriptor;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
+import io.spine.code.proto.Type;
 import io.spine.option.OptionsProto;
 
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -192,12 +192,17 @@ public final class TypeUrl implements Serializable {
      * Returns a message {@link Class} corresponding to the Protobuf type represented
      * by this type URL.
      *
-     * @return the message class
-     * @throws UnknownTypeException wrapping {@link ClassNotFoundException} if
-     *         there is no corresponding Java class
+     * @return the Java class representing the Protobuf type
+     * @throws UnknownTypeException if there is no corresponding Java class
      */
-    public <T extends Message> Class<T> getJavaClass() throws UnknownTypeException {
-        return KnownTypes.getJavaClass(this);
+    public Class<?> getJavaClass() throws UnknownTypeException {
+        return type().javaClass();
+    }
+
+    public <T extends Message> Class<T> getMessageClass() throws UnknownTypeException {
+        @SuppressWarnings("unchecked")
+        Class<T> result = (Class<T>) getJavaClass();
+        return result;
     }
 
     /**
@@ -208,7 +213,7 @@ public final class TypeUrl implements Serializable {
      */
     @Internal
     public GenericDescriptor getDescriptor() {
-        return TypeName.getDescriptor(typeName);
+        return type().descriptor();
     }
 
     /**
@@ -243,6 +248,12 @@ public final class TypeUrl implements Serializable {
     public String value() {
         final String result = composeTypeUrl(prefix, typeName);
         return result;
+    }
+
+    private Type<?, ?> type() throws UnknownTypeException {
+        return KnownTypes.instance()
+                         .find(toName())
+                         .orElseThrow(() -> new UnknownTypeException(toName().value()));
     }
 
     @Override
@@ -299,29 +310,6 @@ public final class TypeUrl implements Serializable {
         @Override
         public String toString() {
             return value();
-        }
-    }
-
-    static Predicate<TypeUrl> inPackage(String packageName) {
-        return new InPackage(packageName);
-    }
-
-    /**
-     * Verifies if a type belongs to a package.
-     */
-    private static class InPackage implements Predicate<TypeUrl> {
-
-        private final String packageName;
-
-        private InPackage(String packageName) {
-            this.packageName = packageName;
-        }
-
-        @Override
-        public boolean test(TypeUrl input) {
-            checkNotNull(input);
-            final TypeName typeName = input.toName();
-            return typeName.belongsTo(packageName);
         }
     }
 }
