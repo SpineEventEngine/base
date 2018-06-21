@@ -21,21 +21,15 @@
 package io.spine.tools.gradle.compiler;
 
 import com.google.common.collect.ImmutableSet;
-import io.spine.code.proto.FileDescriptors;
 import io.spine.tools.compiler.type.DescriptorSetFiles;
 import io.spine.tools.gradle.SpinePlugin;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
-import org.gradle.api.tasks.bundling.AbstractArchiveTask;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collection;
-import java.util.Optional;
 
 import static io.spine.code.proto.FileDescriptors.KNOWN_TYPES;
 import static io.spine.tools.gradle.TaskName.GENERATE_PROTO;
@@ -44,12 +38,8 @@ import static io.spine.tools.gradle.TaskName.GENERATE_TEST_VALIDATING_BUILDERS;
 import static io.spine.tools.gradle.TaskName.GENERATE_VALIDATING_BUILDERS;
 import static io.spine.tools.gradle.TaskName.MERGE_DESCRIPTOR_SET;
 import static io.spine.tools.gradle.TaskName.MERGE_TEST_DESCRIPTOR_SET;
-import static io.spine.tools.gradle.compiler.Extension.getFatArchive;
 import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSetPath;
 import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSetPath;
-import static io.spine.util.Exceptions.illegalStateWithCauseOf;
-import static java.nio.file.Files.exists;
-import static java.nio.file.Files.isSameFile;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -64,42 +54,6 @@ public class DescriptorSetMergerPlugin extends SpinePlugin {
     public void apply(Project project) {
         createMainTask(project);
         createTestTask(project);
-
-        stripOffKnownTypes(project);
-    }
-
-    private void stripOffKnownTypes(Project project) {
-        project.afterEvaluate(evaluatedProject -> {
-            Optional<AbstractArchiveTask> task = getFatArchive(evaluatedProject);
-            task.ifPresent(archiveTask -> stripOffKnownTypes(evaluatedProject, archiveTask));
-        });
-    }
-
-    private void stripOffKnownTypes(Project project, AbstractArchiveTask archiveTask) {
-        Path ownMainFile = Paths.get(getTestDescriptorSetPath(project));
-        Path ownTestFile = Paths.get(getMainDescriptorSetPath(project));
-        boolean mainFileExists = exists(ownMainFile);
-        boolean testFileExists = exists(ownTestFile);
-
-        archiveTask.exclude(file -> {
-            boolean knownTypes = FileDescriptors.KNOWN_TYPES.equals(file.getName());
-            if (!knownTypes) {
-                return false;
-            }
-            Path path = file.getFile()
-                            .toPath();
-            boolean domesticFile;
-            try {
-                domesticFile = mainFileExists && isSameFile(path, ownMainFile);
-                domesticFile = domesticFile || (testFileExists && isSameFile(path, ownTestFile));
-            } catch (IOException e) {
-                throw illegalStateWithCauseOf(e);
-            }
-            if (!domesticFile) {
-                log().debug("Excluding descriptor file {} from the module artifacts.", path);
-            }
-            return !domesticFile;
-        });
     }
 
     private void createMainTask(Project project) {
