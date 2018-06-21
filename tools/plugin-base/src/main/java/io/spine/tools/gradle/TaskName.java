@@ -185,8 +185,18 @@ public enum TaskName {
      */
     VERIFY_MODEL("verifyModel"),
 
+    /**
+     * The name of the task, that merges all the module known type descriptors into one.
+     *
+     * <p>Handles the {@code main} classes and resources scope.
+     */
     MERGE_DESCRIPTOR_SET("mergeDescriptorSet"),
 
+    /**
+     * The name of the task, that merges all the module known type descriptors into one.
+     *
+     * <p>Handles the {@code test} classes and resources scope.
+     */
     MERGE_TEST_DESCRIPTOR_SET("mergeTestDescriptorSet");
 
     private final String value;
