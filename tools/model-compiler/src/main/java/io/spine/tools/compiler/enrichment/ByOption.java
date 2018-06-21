@@ -20,10 +20,10 @@
 
 package io.spine.tools.compiler.enrichment;
 
-import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
+import io.spine.option.Options;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,9 +33,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import static io.spine.option.OptionsProto.BY_FIELD_NUMBER;
-import static io.spine.option.RawListValue.getValueSeparator;
-import static io.spine.option.UnknownOptions.hasOption;
+import static io.spine.option.OptionsProto.by;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
@@ -57,7 +55,7 @@ class ByOption {
     }
 
     static boolean isSetFor(FieldDescriptorProto field) {
-        return hasOption(field, BY_FIELD_NUMBER);
+        return Options.option(field, by).isPresent();
     }
 
     Map.Entry<String, String> collect() {
@@ -114,8 +112,7 @@ class ByOption {
             eventGroup.add(eventName);
         }
         final String enrichmentName = packagePrefix + enrichment;
-        final String eventGroupString = Joiner.on(getValueSeparator())
-                                              .join(eventGroup);
+        final String eventGroupString = TypeNameParser.joiner.join(eventGroup);
         final Map.Entry<String, String> result =
                 new AbstractMap.SimpleEntry<>(enrichmentName, eventGroupString);
 

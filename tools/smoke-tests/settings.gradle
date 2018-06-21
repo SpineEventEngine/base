@@ -22,6 +22,7 @@ include 'enrichment-lookup'
 include 'known-types'
 include 'validation-rules'
 include 'protoc-plugin'
+include 'external-known-types'
 
 final def links = [
         'io.spine.tools:spine-model-compiler': ':model-compiler',

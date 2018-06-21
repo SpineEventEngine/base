@@ -26,8 +26,8 @@ import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileOptions;
 import com.google.protobuf.DescriptorProtos.ServiceDescriptorProto;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
-import io.spine.option.UnknownOptions;
 import io.spine.code.java.SourceFile;
+import io.spine.option.Options;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
@@ -35,6 +35,7 @@ import org.jboss.forge.roaster.model.source.JavaSource;
 
 import java.lang.annotation.Annotation;
 import java.util.Collection;
+import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -156,7 +157,7 @@ class FileAnnotator extends Annotator<FileOptions, FileDescriptorProto> {
     }
 
     @Override
-    protected String getRawOptionValue(FileDescriptorProto file) {
-        return UnknownOptions.get(file, getOptionNumber());
+    protected Optional<Boolean> getOptionValue(FileDescriptorProto file) {
+        return Options.option(file, getOption());
     }
 }

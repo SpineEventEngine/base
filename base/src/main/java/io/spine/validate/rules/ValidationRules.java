@@ -20,6 +20,7 @@
 
 package io.spine.validate.rules;
 
+import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableSet;
 import io.spine.Resources;
@@ -37,6 +38,8 @@ import java.util.Properties;
  * @author Dmytro Grankin
  */
 public class ValidationRules {
+
+    private static final Splitter OPTION_SPLITTER = Splitter.on(',');
 
     private static final ImmutableCollection<ValidationRule> rules = new Builder().build();
 
@@ -101,10 +104,9 @@ public class ValidationRules {
          * @throws IllegalStateException if an entry from the properties contains invalid data
          */
         private void put(Properties properties) {
-            final ValidationTargetValue targetParser = ValidationTargetValue.getInstance();
             for (String validationRuleType : properties.stringPropertyNames()) {
                 final String ruleTargetPaths = properties.getProperty(validationRuleType);
-                final Collection<String> parsedPaths = targetParser.parse(ruleTargetPaths);
+                final Collection<String> parsedPaths = OPTION_SPLITTER.splitToList(ruleTargetPaths);
                 final ValidationRule rule = new ValidationRule(validationRuleType, parsedPaths);
                 rules.add(rule);
             }

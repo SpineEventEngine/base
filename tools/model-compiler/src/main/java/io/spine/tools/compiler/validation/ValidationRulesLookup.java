@@ -23,9 +23,9 @@ package io.spine.tools.compiler.validation;
 import com.google.common.base.Predicate;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
-import io.spine.option.UnknownOptions;
 import io.spine.code.properties.PropertiesWriter;
 import io.spine.code.proto.MessageDeclaration;
+import io.spine.option.Options;
 import io.spine.type.TypeName;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
@@ -38,8 +38,9 @@ import java.util.Map;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Maps.newHashMap;
 import static io.spine.code.proto.FileDescriptors.parseSkipStandard;
-import static io.spine.option.OptionsProto.VALIDATION_OF_FIELD_NUMBER;
 import static io.spine.code.proto.SourceFile.allThat;
+import static io.spine.option.OptionsProto.validationOf;
+import static io.spine.util.Exceptions.newIllegalArgumentException;
 
 /**
  * Finds Protobuf definitions of validation rules and creates a {@code .properties} file,
@@ -79,8 +80,10 @@ public final class ValidationRulesLookup {
         final Map<String, String> propsMap = newHashMap();
         for (MessageDeclaration declaration : ruleDeclarations) {
             final TypeName typeName = declaration.getTypeName();
-            final String ruleTargets = UnknownOptions.get(declaration.getMessage(),
-                                                          VALIDATION_OF_FIELD_NUMBER);
+            final String ruleTargets =
+                    Options.option(declaration.getMessage(), validationOf)
+                           .orElseThrow(() -> newIllegalArgumentException(declaration.getTypeName()
+                                                                                     .value()));
             propsMap.put(typeName.value(), ruleTargets);
         }
 
@@ -96,7 +99,8 @@ public final class ValidationRulesLookup {
         @Override
         public boolean apply(@Nullable DescriptorProto input) {
             checkNotNull(input);
-            return UnknownOptions.hasOption(input, VALIDATION_OF_FIELD_NUMBER);
+            return Options.option(input, validationOf)
+                          .isPresent();
         }
     }
 

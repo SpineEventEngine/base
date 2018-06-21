@@ -29,8 +29,8 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import static com.google.common.base.Preconditions.checkState;
-import static io.spine.option.OptionsProto.BY_FIELD_NUMBER;
-import static io.spine.option.UnknownOptions.get;
+import static com.google.common.base.Strings.isNullOrEmpty;
+import static io.spine.option.OptionsProto.by;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 import static java.util.regex.Pattern.compile;
 
@@ -68,8 +68,9 @@ class FieldReference extends StringTypeValue {
     }
 
     private static String[] parse(FieldDescriptorProto field) {
-        final String byArgument = get(field, BY_FIELD_NUMBER);
-        if (byArgument == null) {
+        final String byArgument = field.getOptions()
+                                       .getExtension(by);
+        if (isNullOrEmpty(byArgument)) {
             throw newIllegalArgumentException("There is no `by` option in the passed field %s",
                                               field.getName());
         }

@@ -18,25 +18,3 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.option;
-
-import java.util.List;
-
-/**
- * A value of a protobuf option.
- *
- * @param <R> the type of an element to be returned after parsing
- * @author Dmytro Grankin
- * @author Alexander Yevsyukov
- */
-public interface OptionValue<R> {
-
-    /**
-     * Obtains a list of parsed items from the specified option value.
-     *
-     * @param optionValue the valid value of the option to parse
-     * @return the list of parsed elements
-     * @throws IllegalStateException if the option value is invalid
-     */
-    List<R> parse(String optionValue);
-}

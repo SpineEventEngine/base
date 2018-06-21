@@ -24,12 +24,13 @@ import com.google.protobuf.DescriptorProtos.EnumDescriptorProto;
 import com.google.protobuf.DescriptorProtos.EnumOptions;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
-import io.spine.option.UnknownOptions;
 import io.spine.code.java.SourceFile;
+import io.spine.option.Options;
 
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * An enum annotator.
@@ -60,8 +61,8 @@ class EnumAnnotator extends TypeDefinitionAnnotator<EnumOptions, EnumDescriptorP
     }
 
     @Override
-    protected String getRawOptionValue(EnumDescriptorProto descriptor) {
-        return UnknownOptions.get(descriptor, getOptionNumber());
+    protected Optional<Boolean> getOptionValue(EnumDescriptorProto descriptor) {
+        return Options.option(descriptor, getOption());
     }
 
     @Override

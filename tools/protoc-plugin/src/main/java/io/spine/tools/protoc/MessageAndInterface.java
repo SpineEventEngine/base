@@ -22,26 +22,22 @@ package io.spine.tools.protoc;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Objects;
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSet;
-import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
-import com.google.protobuf.Extension;
-import com.google.protobuf.GeneratedMessageV3.ExtendableMessage;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import com.squareup.javapoet.JavaFile;
-import io.spine.option.UnknownOptions;
 import io.spine.code.java.PackageName;
 import io.spine.code.java.SourceFile;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import io.spine.option.Options;
 
+import java.util.Optional;
 import java.util.Set;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static io.spine.code.java.PackageName.DELIMITER;
 import static io.spine.option.OptionsProto.everyIs;
 import static io.spine.option.OptionsProto.is;
-import static io.spine.code.java.PackageName.DELIMITER;
 import static io.spine.tools.protoc.MarkerInterfaceSpec.prepareInterface;
 import static java.lang.String.format;
 
@@ -74,7 +70,7 @@ final class MessageAndInterface {
             final MessageAndInterface resultingFile = generateFile(file, msg, everyIs.get());
             return Optional.of(resultingFile);
         } else {
-            return Optional.absent();
+            return Optional.empty();
         }
     }
 
@@ -106,42 +102,8 @@ final class MessageAndInterface {
     }
 
     private static Optional<String> getEveryIs(FileDescriptorProto descriptor) {
-        final String value = UnknownOptions.get(descriptor, everyIs.getNumber());
-        return getOptionalOption(value, descriptor.getOptions(), everyIs);
-    }
-
-    /**
-     * Retrieves the value of the specified extension option.
-     *
-     * <p>The {@linkplain DescriptorProtos proto descriptor API} behaves
-     * differently at the Protobuf compile time and at runtime. Thus, the method receives the value
-     * retrieved by the {@link UnknownOptions} utility. If the value is absent, the method tries to
-     * get the option value as a value of a resolved extension option, which is the runtime way.
-     *
-     * @param initialValue the value parsed from the options unknown fields
-     * @param options      the container of the options to get the value from
-     * @param option       the desired option
-     * @param <O>          the type of the options container
-     * @return the value of the option
-     *         {@linkplain com.google.common.base.Strings#isNullOrEmpty if any} or
-     *         {@link Optional#absent() Optional.absent()} otherwise
-     */
-    static <O extends ExtendableMessage<O>> Optional<String>
-    getOptionalOption(@Nullable String initialValue, O options, Extension<O, String> option) {
-        final Optional<String> result = isNullOrEmpty(initialValue)
-                ? getResolvedOption(options, option)
-                : Optional.of(initialValue);
-        return result;
-    }
-
-    private static <O extends ExtendableMessage<O>> Optional<String>
-    getResolvedOption(O options, Extension<O, String> resolvedOption) {
-        final String value = options.getExtension(resolvedOption);
-        if (isNullOrEmpty(value)) {
-            return Optional.absent();
-        } else {
-            return Optional.of(value);
-        }
+        final Optional<String> value = Options.option(descriptor, everyIs);
+        return value;
     }
 
     private static File implementInterface(File.Builder srcFile,
@@ -185,13 +147,13 @@ final class MessageAndInterface {
             final MessageAndInterface resultingFile = generateFile(file, msg, everyIs.get());
             return Optional.of(resultingFile);
         } else {
-            return Optional.absent();
+            return Optional.empty();
         }
     }
 
     private static Optional<String> getIs(DescriptorProto descriptor) {
-        final String value = UnknownOptions.get(descriptor, is.getNumber());
-        return getOptionalOption(value, descriptor.getOptions(), is);
+        Optional<String> value = Options.option(descriptor, is);
+        return value;
     }
 
     /**

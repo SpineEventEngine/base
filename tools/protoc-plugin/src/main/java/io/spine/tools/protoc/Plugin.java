@@ -20,10 +20,10 @@
 
 package io.spine.tools.protoc;
 
-import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.CodedOutputStream;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
+import io.spine.option.Options;
 
 import java.io.IOException;
 
@@ -59,9 +59,10 @@ public class Plugin {
     }
 
     private static CodeGeneratorRequest readRequest() {
-        final CodedInputStream stream = CodedInputStream.newInstance(System.in);
         try {
-            final CodeGeneratorRequest request = CodeGeneratorRequest.parseFrom(stream);
+            CodeGeneratorRequest request = CodeGeneratorRequest.parseFrom(
+                    System.in, Options.registry()
+            );
             return request;
         } catch (IOException e) {
             throw new IllegalStateException(e);

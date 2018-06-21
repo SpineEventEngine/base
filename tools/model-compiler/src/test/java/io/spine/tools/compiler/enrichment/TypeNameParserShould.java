@@ -18,35 +18,47 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.validate.rules;
+package io.spine.tools.compiler.enrichment;
 
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.StringValue;
+import io.spine.type.TypeName;
 import org.junit.Test;
 
 import java.util.Collection;
 
-import static org.junit.Assert.assertSame;
+import static io.spine.option.OptionsProto.enrichment;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
  * @author Dmytro Grankin
  */
-public class ValidationTargetValueShould {
+public class TypeNameParserShould {
 
-    private final ValidationTargetValue value = ValidationTargetValue.getInstance();
+    private static final String PACKAGE_PREFIX = "foo.bar.";
+    private static final String MESSAGE_NAME = "AMessage";
+
+    private final TypeNameParser parser = new TypeNameParser(enrichment, PACKAGE_PREFIX);
 
     @Test
-    public void not_prepare_additional_actions_with_option_part() {
-        final String value = "a value";
-        assertSame(value, this.value.asElement(value));
+    public void add_package_prefix_to_unqualified_type() {
+        final TypeName parsedTypes = parser.parseTypeName(MESSAGE_NAME);
+        assertEquals(PACKAGE_PREFIX + MESSAGE_NAME, parsedTypes.value());
+    }
+
+    @Test
+    public void not_add_package_prefix_to_fully_qualified_type() {
+        final String fqn = PACKAGE_PREFIX + MESSAGE_NAME;
+        final TypeName parsedType = parser.parseTypeName(fqn);
+        assertEquals(fqn, parsedType.value());
     }
 
     @Test
     public void return_empty_collection_if_option_is_not_present() {
         final DescriptorProto definitionWithoutOption = StringValue.getDescriptor()
-                                                                                    .toProto();
-        final Collection<String> result = value.parse(definitionWithoutOption);
+                                                                   .toProto();
+        final Collection<TypeName> result = parser.parse(definitionWithoutOption);
         assertTrue(result.isEmpty());
     }
 }

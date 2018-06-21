@@ -22,6 +22,7 @@ package io.spine.option;
 
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Message;
+import io.spine.annotation.Internal;
 import io.spine.option.EntityOption.Visibility;
 import io.spine.type.TypeName;
 
@@ -32,7 +33,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  * @author Alexander Yevsyukov
  */
-public class EntityOptions {
+@Internal
+public final class EntityOptions {
 
     /**
      * Prevents instantiation of this utility class.
