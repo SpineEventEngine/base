@@ -118,7 +118,8 @@ public final class FileSet {
      * Obtains array with the files of this set.
      */
     FileDescriptor[] toArray() {
-        return files().toArray(EMPTY);
+        return files.values()
+                    .toArray(EMPTY);
     }
 
     /**
