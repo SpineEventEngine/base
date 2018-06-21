@@ -31,6 +31,7 @@ import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 
 /**
  * A fully-qualified Protobuf type name.
@@ -130,6 +131,23 @@ public class TypeName extends StringTypeValue {
      */
     public Class<?> getJavaClass() throws UnknownTypeException {
         return type().javaClass();
+    }
+
+    /**
+     * Returns a message {@link Class} corresponding to the Protobuf message type represented
+     * by this type URL.
+     *
+     * <p>This is a convenience method. Use it only when sure that the {@link TypeUrl} represents
+     * a message (i.e. not an enum).
+     *
+     * @throws IllegalStateException if the type URL represents an enum
+     */
+    public <T extends Message> Class<T> getMessageClass() throws UnknownTypeException {
+        Class<?> cls = getJavaClass();
+        checkState(Message.class.isAssignableFrom(cls));
+        @SuppressWarnings("unchecked")
+        Class<T> result = (Class<T>) cls;
+        return result;
     }
 
     /**

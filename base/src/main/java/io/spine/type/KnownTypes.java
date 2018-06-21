@@ -105,6 +105,18 @@ public class KnownTypes {
     }
 
     /**
+     * Shows if the given {@link TypeUrl} is known the system.
+     *
+     * @param typeUrl the {@link TypeUrl} to look up
+     * @return {@code true} if the given type is known, {@code false} otherwise
+     */
+    public boolean contains(TypeUrl typeUrl) {
+        TypeName name = typeUrl.toName();
+        boolean result = types.contains(name);
+        return result;
+    }
+
+    /**
      * Finds a {@link Type} by its name.
      *
      * @see TypeSet#find(TypeName)
@@ -123,12 +135,6 @@ public class KnownTypes {
     private ClassName get(TypeUrl typeUrl) {
         Type type = get(typeUrl.toName());
         ClassName result = type.javaClassName();
-        return result;
-    }
-
-    private boolean contains(TypeUrl typeUrl) {
-        TypeName name = typeUrl.toName();
-        boolean result = types.contains(name);
         return result;
     }
 

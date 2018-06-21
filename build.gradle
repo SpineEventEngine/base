@@ -197,7 +197,7 @@ subprojects {
             // events 'standard_out', 'standard_error'
 
             // Or set property events:
-             events = ['standard_out', 'standard_error']
+            events = ['standard_out', 'standard_error']
 
             // Instead of string values we can
             // use enum values:
