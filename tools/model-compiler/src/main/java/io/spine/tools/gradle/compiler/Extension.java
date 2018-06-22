@@ -23,8 +23,6 @@ import com.google.common.collect.ImmutableList;
 import io.spine.code.DefaultProject;
 import io.spine.code.Indent;
 import org.gradle.api.Project;
-import org.gradle.api.Task;
-import org.gradle.api.tasks.bundling.AbstractArchiveTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -155,8 +153,6 @@ public class Extension {
      */
     public List<String> dirsToClean = new LinkedList<>();
 
-    public AbstractArchiveTask fatArchive;
-
     private static DefaultProject def(Project project) {
         return DefaultProject.at(project.getProjectDir());
     }
@@ -242,15 +238,6 @@ public class Extension {
         return pathOrDefault(spineProtobuf(project).targetTestGenVBuildersRootDir,
                              def(project).generated()
                                          .testSpine());
-    }
-
-    public static Optional<AbstractArchiveTask> getFatArchive(Project project) {
-        Optional<AbstractArchiveTask> task = Optional.ofNullable(
-                spineProtobuf(project).fatArchive
-        );
-        log().debug("Fat archive task is {}.", task.map(Task::getName)
-                                                   .orElse("absent"));
-        return task;
     }
 
     private static String pathOrDefault(String path, Object defaultValue) {

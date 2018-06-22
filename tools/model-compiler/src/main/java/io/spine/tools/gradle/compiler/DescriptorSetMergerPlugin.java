@@ -21,7 +21,7 @@
 package io.spine.tools.gradle.compiler;
 
 import com.google.common.collect.ImmutableSet;
-import io.spine.tools.compiler.type.DescriptorSetFiles;
+import io.spine.code.proto.FileDescriptors;
 import io.spine.tools.gradle.SpinePlugin;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
@@ -98,8 +98,8 @@ public class DescriptorSetMergerPlugin extends SpinePlugin {
             if (descriptorSet.exists()) {
                 files.add(descriptorSet);
             }
-            DescriptorSetFiles.merge(files.build())
-                              .writeTo(descriptorSet);
+            FileDescriptors.merge(files.build())
+                           .writeTo(descriptorSet);
         };
     }
 

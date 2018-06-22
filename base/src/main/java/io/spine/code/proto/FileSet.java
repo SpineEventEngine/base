@@ -25,6 +25,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.FileDescriptor;
+import io.spine.annotation.Internal;
 
 import java.io.File;
 import java.util.Collection;
@@ -42,6 +43,7 @@ import static java.util.stream.Collectors.toList;
  *
  * @author Alexander Yevsyukov
  */
+@Internal
 public final class FileSet {
 
     private static final FileDescriptor[] EMPTY = {};

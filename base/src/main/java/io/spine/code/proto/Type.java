@@ -23,6 +23,7 @@ package io.spine.code.proto;
 import com.google.common.base.Objects;
 import com.google.protobuf.Descriptors.GenericDescriptor;
 import com.google.protobuf.Message;
+import io.spine.annotation.Internal;
 import io.spine.type.ClassName;
 import io.spine.type.TypeName;
 import io.spine.type.TypeUrl;
@@ -37,6 +38,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * @param <P> the type of the proto message of the descriptor
  * @author Alexander Yevsyukov
  */
+@Internal
 public abstract class Type<T extends GenericDescriptor, P extends Message> {
 
     private final T descriptor;

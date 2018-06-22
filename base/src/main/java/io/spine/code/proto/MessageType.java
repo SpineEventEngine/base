@@ -23,6 +23,7 @@ package io.spine.code.proto;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
+import io.spine.annotation.Internal;
 import io.spine.type.ClassName;
 import io.spine.type.TypeUrl;
 
@@ -33,6 +34,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  * @author Alexander Yevsyukov
  */
+@Internal
 public class MessageType extends Type<Descriptor, DescriptorProto> {
 
     protected MessageType(Descriptor descriptor,

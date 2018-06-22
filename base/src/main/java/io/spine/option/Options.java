@@ -50,9 +50,6 @@ import java.util.Optional;
 @Internal
 public final class Options {
 
-    /**
-     * The {@link ExtensionRegistry} with all the {@code spine/options.proto} extensions.
-     */
     private static final ExtensionRegistry EXTENSIONS = optionExtensions();
 
     /**
@@ -61,6 +58,9 @@ public final class Options {
     private Options() {
     }
 
+    /**
+     * Obtains the {@link ExtensionRegistry} with all the {@code spine/options.proto} extensions.
+     */
     public static ExtensionRegistry registry() {
         return EXTENSIONS;
     }

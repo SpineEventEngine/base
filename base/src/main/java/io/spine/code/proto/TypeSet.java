@@ -26,6 +26,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.util.JsonFormat.TypeRegistry;
+import io.spine.annotation.Internal;
 import io.spine.type.TypeName;
 
 import java.util.Collection;
@@ -43,6 +44,7 @@ import static com.google.common.collect.Maps.newHashMap;
  * @author Alexander Yevsyukov
  * @author Dmytro Dashenkov
  */
+@Internal
 public class TypeSet {
 
     private final Map<TypeName, MessageType> messageTypes;

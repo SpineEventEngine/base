@@ -24,6 +24,7 @@ import com.google.protobuf.DescriptorProtos.EnumDescriptorProto;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
+import io.spine.annotation.Internal;
 import io.spine.type.ClassName;
 import io.spine.type.TypeUrl;
 
@@ -34,6 +35,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  * @author Alexander Yevsyukov
  */
+@Internal
 public final class EnumType extends Type<EnumDescriptor, EnumDescriptorProto> {
 
     private EnumType(EnumDescriptor descriptor,
