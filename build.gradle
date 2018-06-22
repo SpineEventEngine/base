@@ -172,8 +172,8 @@ subprojects {
         implementation deps.build.errorProneAnnotations
         implementation deps.build.jsr305Annotations
 
-        testCompile deps.test.slf4j
-        testCompile deps.test.guavaTestlib
+        testImplementation deps.test.slf4j
+        testImplementation deps.test.guavaTestlib
     }
 
     sourceSets {
