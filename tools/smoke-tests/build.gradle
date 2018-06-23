@@ -68,9 +68,12 @@ subprojects {
     apply plugin: 'idea'
 
     dependencies {
+        // TODO:2018-06-23:dmytro.dashenkov: Migrate to the `implementation` config when resolved:
+        // todo https://github.com/google/protobuf-gradle-plugin/issues/242
+        // todo Spine issue:
         compile "io.spine:spine-base:$spineVersion"
 
-        testCompile "io.spine:spine-base-testlib:$spineVersion"
+        testImplementation "io.spine:spine-base-testlib:$spineVersion"
     }
 
     idea.module {

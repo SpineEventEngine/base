@@ -22,8 +22,8 @@ group 'io.spine.tools'
 apply plugin: 'java-gradle-plugin'
 
 dependencies {
-    compile deps.build.guava
+    implementation deps.build.guava
 
-    compile project(':plugin-base')
-    compile project(':base')
+    implementation project(':plugin-base')
+    implementation project(':base')
 }

@@ -29,10 +29,10 @@ final def SPINE_VERSION = '0.10.43-SNAPSHOT'
 
 ext {
     spineVersion = SPINE_VERSION
+    versionToPublish = SPINE_VERSION
 
     protobufVersion = '3.5.1'
     gRpcVersion = '1.12.0'
     protobufGradlePluginVersion = '0.8.5'
-
-    versionToPublish = SPINE_VERSION
+    shadowJarVersion = '2.0.4'
 }

@@ -23,10 +23,10 @@ import java.nio.file.Files
 group 'io.spine.tools'
 
 dependencies {
-    compile project(':base')
+    implementation project(':base')
 
-    implementation deps.build.protobuf
     implementation deps.gen.javaPoet
+    testProtobuf project(':base')
 }
 
 protobuf {
@@ -42,7 +42,8 @@ jar {
     }
     // Assemble "Fat-JAR" artifact containing all the dependencies.
     from {
-        configurations.compile.collect {
+        configurations.runtimeClasspath.collect {
+            println it
             it.isDirectory() ? it : zipTree(it)
         }
     }

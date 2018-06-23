@@ -71,12 +71,7 @@ repositories {
 }
 
 dependencies {
-    compile deps.build.guava
-    compile deps.build.protobuf
-
-    compile(group: 'io.spine', name: 'spine-base', version: spineVersion) {
-        exclude(group: 'com.google.protobuf')
-    }
+    implementation "io.spine:spine-base:$spineVersion"
 }
 
 dependencies()

@@ -53,6 +53,7 @@ dependencies {
         exclude group: 'com.google.guava'
     }
 
+    testProtobuf project(':base')
     testImplementation project(':testlib')
     testImplementation deps.test.hamcrest
     testImplementation gradleTestKit()
