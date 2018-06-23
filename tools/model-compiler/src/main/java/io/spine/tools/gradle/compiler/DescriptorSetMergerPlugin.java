@@ -22,6 +22,7 @@ package io.spine.tools.gradle.compiler;
 
 import com.google.common.collect.ImmutableSet;
 import io.spine.code.proto.FileDescriptors;
+import io.spine.tools.gradle.ConfigurationName;
 import io.spine.tools.gradle.SpinePlugin;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
@@ -32,6 +33,8 @@ import java.io.File;
 import java.util.Collection;
 
 import static io.spine.code.proto.FileDescriptors.KNOWN_TYPES;
+import static io.spine.tools.gradle.ConfigurationName.RUNTIME;
+import static io.spine.tools.gradle.ConfigurationName.TEST_RUNTIME;
 import static io.spine.tools.gradle.TaskName.GENERATE_PROTO;
 import static io.spine.tools.gradle.TaskName.GENERATE_TEST_PROTO;
 import static io.spine.tools.gradle.TaskName.GENERATE_TEST_VALIDATING_BUILDERS;
@@ -61,7 +64,7 @@ public class DescriptorSetMergerPlugin extends SpinePlugin {
                          GENERATE_VALIDATING_BUILDERS,
                          GENERATE_PROTO);
         newTask(MERGE_DESCRIPTOR_SET,
-                createMergingAction(configuration(project, "runtime"),
+                createMergingAction(configuration(project, RUNTIME),
                                     getMainDescriptorSetPath(project)))
                 .insertAfterTask(GENERATE_PROTO)
                 .insertBeforeTask(GENERATE_VALIDATING_BUILDERS)
@@ -73,7 +76,7 @@ public class DescriptorSetMergerPlugin extends SpinePlugin {
                          GENERATE_TEST_VALIDATING_BUILDERS,
                          GENERATE_TEST_PROTO);
         newTask(MERGE_TEST_DESCRIPTOR_SET,
-                createMergingAction(configuration(project, "testRuntime"),
+                createMergingAction(configuration(project, TEST_RUNTIME),
                                     getTestDescriptorSetPath(project)))
                 .insertAfterTask(GENERATE_TEST_PROTO)
                 .insertBeforeTask(GENERATE_TEST_VALIDATING_BUILDERS)
@@ -103,8 +106,8 @@ public class DescriptorSetMergerPlugin extends SpinePlugin {
         };
     }
 
-    private static Configuration configuration(Project project, String name) {
+    private static Configuration configuration(Project project, ConfigurationName name) {
         return project.getConfigurations()
-                      .getByName(name);
+                      .getByName(name.getValue());
     }
 }
