@@ -56,7 +56,7 @@ public class KnownTypes {
     }
 
     /**
-     * Retrieves a Java class name generated for the Protobuf type by its type url
+     * Retrieves a Java class name generated for the Protobuf type by its type URL
      * to be used to parse {@link Message Message} from {@link Any}.
      *
      * @param typeUrl {@link Any} type url
