@@ -44,6 +44,11 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  */
 public class MessageDeclaration extends AbstractMessageDeclaration {
 
+    /**
+     * The delimiter between parts of a type name.
+     *
+     * <p>Literal {@code .}.
+     */
     private static final char TYPE_PART_SEPARATOR = '.';
 
     private final List<DescriptorProto> outerMessages;

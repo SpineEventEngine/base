@@ -39,7 +39,13 @@ import java.util.Properties;
  */
 public class ValidationRules {
 
-    private static final Splitter OPTION_SPLITTER = Splitter.on(',');
+    /**
+     * An instance of {@link Splitter} for the string option values.
+     *
+     * <p>Targets the string options which list multiple values separated with a {@code ,} (comma)
+     * symbol.
+     */
+    private static final Splitter optionSplitter = Splitter.on(',');
 
     private static final ImmutableCollection<ValidationRule> rules = new Builder().build();
 
@@ -106,7 +112,7 @@ public class ValidationRules {
         private void put(Properties properties) {
             for (String validationRuleType : properties.stringPropertyNames()) {
                 final String ruleTargetPaths = properties.getProperty(validationRuleType);
-                final Collection<String> parsedPaths = OPTION_SPLITTER.splitToList(ruleTargetPaths);
+                final Collection<String> parsedPaths = optionSplitter.splitToList(ruleTargetPaths);
                 final ValidationRule rule = new ValidationRule(validationRuleType, parsedPaths);
                 rules.add(rule);
             }

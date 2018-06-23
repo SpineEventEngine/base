@@ -138,7 +138,7 @@ public class TypeName extends StringTypeValue {
      * by this type URL.
      *
      * <p>This is a convenience method. Use it only when sure that the {@link TypeUrl} represents
-     * a message (i.e. not an enum).
+     * a {@code Message} and not an enum.
      *
      * @throws IllegalStateException if the type URL represents an enum
      */
