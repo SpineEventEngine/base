@@ -20,14 +20,15 @@
 
 package io.spine.protobuf;
 
-import com.google.common.base.Function;
 import com.google.protobuf.Any;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 import io.spine.type.TypeUrl;
 import io.spine.type.UnexpectedTypeException;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.Iterator;
+import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -46,8 +47,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public final class AnyPacker {
 
-    private static final Function<Any, Message> ANY_UNPACKER =
-            any -> any == null ? null : unpack(any);
+    private static final Function<@Nullable Any, @Nullable Message> ANY_UNPACKER =
+            (@Nullable Any any) -> any == null ? null : unpack(any);
 
     private AnyPacker() {
         // Prevent instantiation of this utility class.
@@ -123,7 +124,7 @@ public final class AnyPacker {
      *
      * <p>The function returns {@code null} for {@code null} input.
      */
-    public static Function<Any, Message> unpackFunc() {
+    public static Function<Any, @Nullable Message> unpackFunc() {
         return ANY_UNPACKER;
     }
 }
