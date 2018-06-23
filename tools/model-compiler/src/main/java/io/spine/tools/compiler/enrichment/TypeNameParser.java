@@ -43,23 +43,25 @@ import static java.util.stream.Collectors.toList;
  */
 final class TypeNameParser {
 
-    /**
-     * A splitter for message types.
-     *
-     * <p>Splits strings by the {@code ,} (comma) character.
-     *
-     * @see #joiner
-     */
-    static final Splitter splitter = Splitter.on(',');
+    private static final char TYPE_NAME_SEPARATOR = ',';
 
     /**
-     * A joiner for message types.
+     * A joiner for Protobuf types.
      *
      * <p>Joins strings with the {@code ,} (comma) character.
      *
      * @see #splitter
      */
-    static final Joiner joiner = Joiner.on(',');
+    static final Joiner joiner = Joiner.on(TYPE_NAME_SEPARATOR);
+
+    /**
+     * A splitter for Protobuf types.
+     *
+     * <p>Splits strings by the {@code ,} (comma) character.
+     *
+     * @see #joiner
+     */
+    private static final Splitter splitter = Splitter.on(TYPE_NAME_SEPARATOR);
 
     private final Extension<DescriptorProtos.MessageOptions, String> option;
     private final String packagePrefix;

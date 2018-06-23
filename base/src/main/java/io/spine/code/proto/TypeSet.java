@@ -254,5 +254,4 @@ public class TypeSet {
             return new TypeSet(this);
         }
     }
-
 }

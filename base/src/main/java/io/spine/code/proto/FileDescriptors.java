@@ -94,7 +94,7 @@ public final class FileDescriptors {
      * @see #parse(String)
      */
     public static List<FileDescriptorProto> parseSkipStandard(String descriptorSetFile) {
-        return parseAndFilter(descriptorSetFile, isNotGoogleProto());
+        return parseAndFilter(descriptorSetFile, IsNotGoogleProto.PREDICATE);
     }
 
     /**
@@ -213,14 +213,6 @@ public final class FileDescriptors {
                     file
             );
         }
-    }
-
-    /**
-     * Obtains the predicate that filters out file descriptors for types with {@code "google"}
-     * in the package name.
-     */
-    public static Predicate<FileDescriptorProto> isNotGoogleProto() {
-        return IsNotGoogleProto.PREDICATE;
     }
 
     /**
