@@ -62,10 +62,10 @@ public class GradleProject {
     private static final String EXT_GRADLE_NAME = "ext.gradle";
     private static final String BASE_PROTO_LOCATION = "src/main/proto/";
     private static final String BASE_JAVA_LOCATION = "src/main/java/";
+    private static final String CONFIG_DIR_NAME = "config";
 
     private static final String STACKTRACE_CLI_OPTION = "--stacktrace";
     private static final String DEBUG_CLI_OPTION = "--debug";
-    private static final String CONFIG_DIR_NAME = "config";
 
     private final String name;
     private final GradleRunner gradleRunner;
@@ -77,7 +77,7 @@ public class GradleProject {
         this.gradleRunner = GradleRunner.create()
                                         .withProjectDir(builder.folder.getRoot())
                                         .withDebug(builder.debug);
-        writeBuildGradle();
+        writeGradleScripts();
         writeProtoFiles(builder.protoFileNames);
         writeJavaFiles(builder.javaFileNames);
     }
@@ -130,6 +130,13 @@ public class GradleProject {
         Files.copy(fileContent, resultingPath);
     }
 
+    private void writeGradleScripts() throws IOException {
+        writeBuildGradle();
+        Path projectRoot = findRoot();
+        copyExtGradle(projectRoot);
+        copyConfig(projectRoot);
+    }
+
     private void writeBuildGradle() throws IOException {
         final Path resultingPath = gradleRunner.getProjectDir()
                                                .toPath()
@@ -138,10 +145,6 @@ public class GradleProject {
                                                   .getResourceAsStream(BUILD_GRADLE_NAME);
         Files.createDirectories(resultingPath.getParent());
         Files.copy(fileContent, resultingPath);
-
-        Path projectRoot = findRoot();
-        copyExtGradle(projectRoot);
-        copyConfig(projectRoot);
     }
 
     /**
@@ -324,8 +327,8 @@ public class GradleProject {
 
         public GradleProject build() {
             try {
-                checkNotNull(name);
-                checkNotNull(folder);
+                checkNotNull(name, "Project name");
+                checkNotNull(folder, "Project folder");
                 return new GradleProject(this);
             } catch (IOException e) {
                 throw illegalStateWithCauseOf(e);

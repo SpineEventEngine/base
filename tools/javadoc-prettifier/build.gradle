@@ -24,6 +24,8 @@ apply plugin: 'java-gradle-plugin'
 dependencies {
     implementation deps.build.guava
 
-    implementation project(':plugin-base')
     implementation project(':base')
+    implementation project(':plugin-base')
+
+    testImplementation project(':plugin-base').sourceSets.test.output // Test classes of `plugin-base`
 }

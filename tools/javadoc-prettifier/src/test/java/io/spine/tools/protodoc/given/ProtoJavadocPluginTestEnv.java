@@ -23,8 +23,6 @@ package io.spine.tools.protodoc.given;
 import com.google.common.base.Joiner;
 import io.spine.tools.gradle.given.GradleProject;
 import io.spine.tools.protodoc.ProtoJavadocPlugin;
-import org.gradle.testkit.runner.BuildResult;
-import org.gradle.testkit.runner.BuildTask;
 import org.junit.rules.TemporaryFolder;
 
 import java.io.IOException;
@@ -36,9 +34,7 @@ import static com.google.common.collect.ImmutableList.of;
 import static io.spine.tools.gradle.TaskName.FORMAT_PROTO_DOC;
 import static java.lang.System.lineSeparator;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.gradle.testkit.runner.TaskOutcome.SUCCESS;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 /**
  * A helper class for the {@link ProtoJavadocPlugin} testing.
@@ -72,9 +68,7 @@ public final class ProtoJavadocPluginTestEnv {
     private static Path format(String fileContent, TemporaryFolder folder) {
         String sourceFile = MAIN_GEN_PROTO_LOCATION + "/TestSource.java";
 
-        BuildTask taskResult = executeTask(sourceFile, folder, fileContent);
-        assertNotNull(taskResult);
-        assertEquals(SUCCESS, taskResult.getOutcome());
+        executeTask(sourceFile, folder, fileContent);
 
         Path result = folder.getRoot()
                             .toPath()
@@ -82,16 +76,15 @@ public final class ProtoJavadocPluginTestEnv {
         return result;
     }
 
-    private static BuildTask executeTask(String filePath,
+    private static void executeTask(String filePath,
                                          TemporaryFolder folder,
                                          String fileContent) {
         GradleProject project = GradleProject
                 .newBuilder()
+                .setProjectName("proto-javadoc-test")
                 .setProjectFolder(folder)
                 .createFile(filePath, of(fileContent))
                 .build();
-        BuildResult buildResult = project.executeTask(FORMAT_PROTO_DOC);
-        BuildTask result = buildResult.task(FORMAT_PROTO_DOC.getValue());
-        return result;
+        project.executeTask(FORMAT_PROTO_DOC);
     }
 }

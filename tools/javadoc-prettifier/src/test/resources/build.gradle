@@ -27,7 +27,8 @@ buildscript {
     // `dependencies.gradle` explicitly here.
     //
     // NOTE: this file is copied from the root project in the test setup.
-    apply from: 'config/dependencies.gradle'
+    apply from: "$projectDir/config/gradle/dependencies.gradle"
+    apply from: "$projectDir/ext.gradle"
 
     repositories {
         mavenLocal()
@@ -35,15 +36,14 @@ buildscript {
     }
 
     dependencies {
-        classpath deps.build.gradlePlugins
+        classpath "io.spine.tools:spine-javadoc-prettifier:$spineVersion"
+        classpath deps.build.gradlePlugins.protobuf
     }
 }
 
-plugins {
-    id 'java'
-    id 'io.spine.tools.protobuf-javadoc-plugin'
-    id 'com.google.protobuf'
-}
+apply plugin: 'java'
+apply plugin: 'io.spine.tools.protobuf-javadoc-plugin'
+apply plugin: 'com.google.protobuf'
 
 protoJavadoc {
     mainGenProtoDir = "generated/main/java"
