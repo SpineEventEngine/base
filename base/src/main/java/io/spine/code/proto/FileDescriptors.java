@@ -256,24 +256,24 @@ public final class FileDescriptors {
     }
 
     /**
-     * Verifies if a package of a file does not contain {@code "google"} in its path.
+     * Verifies if a package of a file does not start with {@code "google"}.
      */
     private enum IsNotGoogleProto implements Predicate<FileDescriptorProto> {
         PREDICATE;
 
-        private static final String GOOGLE_PACKAGE = "google";
+        private static final String GOOGLE_PACKAGE = "com.google";
 
         @Override
         public boolean test(FileDescriptorProto file) {
             checkNotNull(file);
             final boolean result = !file.getPackage()
-                                        .contains(GOOGLE_PACKAGE);
+                                        .startsWith(GOOGLE_PACKAGE);
             return result;
         }
 
         @Override
         public String toString() {
-            return getClass().getSimpleName();
+            return IsNotGoogleProto.class.getSimpleName();
         }
     }
 
