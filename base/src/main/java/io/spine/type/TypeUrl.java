@@ -40,7 +40,6 @@ import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
 import static com.google.protobuf.Internal.getDefaultInstance;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 import static java.lang.String.format;
@@ -210,11 +209,7 @@ public final class TypeUrl implements Serializable {
      * @throws IllegalStateException if the type URL represents an enum
      */
     public <T extends Message> Class<T> getMessageClass() throws UnknownTypeException {
-        Class<?> cls = getJavaClass();
-        checkState(Message.class.isAssignableFrom(cls));
-        @SuppressWarnings("unchecked")
-        Class<T> result = (Class<T>) cls;
-        return result;
+        return toName().getMessageClass();
     }
 
     /**
