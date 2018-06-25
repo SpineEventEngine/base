@@ -42,6 +42,7 @@ import static java.util.stream.Collectors.toList;
  * A set of proto files represented by their {@linkplain FileDescriptor descriptors}.
  *
  * @author Alexander Yevsyukov
+ * @author Dmytro Dashenkov
  */
 @Internal
 public final class FileSet {

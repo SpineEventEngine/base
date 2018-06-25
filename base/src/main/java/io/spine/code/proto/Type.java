@@ -37,6 +37,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * @param <T> the type of the type descriptor
  * @param <P> the type of the proto message of the descriptor
  * @author Alexander Yevsyukov
+ * @author Dmytro Dashenkov
  */
 @Internal
 public abstract class Type<T extends GenericDescriptor, P extends Message> {
