@@ -51,7 +51,8 @@ public final class FileSet {
     /**
      * All the files of this set.
      *
-     * <p>Each file is identified by its {@linkplain FileDescriptor#getFullName() full name}.
+     * <p>Each file is identified by its {@linkplain FileDescriptor#getFullName() full name}
+     * (otherwise, the Protobuf imports would not work).
      */
     private final Map<FileName, FileDescriptor> files;
 
