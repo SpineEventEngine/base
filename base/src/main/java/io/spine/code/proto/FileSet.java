@@ -21,7 +21,6 @@
 package io.spine.code.proto;
 
 import com.google.common.base.MoreObjects;
-import com.google.common.collect.ImmutableSet;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.FileDescriptor;
@@ -34,6 +33,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
+import static com.google.common.collect.ImmutableSet.copyOf;
 import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Maps.newHashMapWithExpectedSize;
 import static java.util.stream.Collectors.toList;
@@ -113,7 +113,7 @@ public final class FileSet {
      * Obtains immutable view of the files in this set.
      */
     Collection<FileDescriptor> files() {
-        return ImmutableSet.copyOf(files.values());
+        return copyOf(files.values());
     }
 
     /**
@@ -171,7 +171,7 @@ public final class FileSet {
      */
     @CanIgnoreReturnValue
     public boolean add(FileDescriptor file) {
-        Object previous = files.put(file.getName(), file);
+        Object previous = files.put(file.getFullName(), file);
         boolean isNew = previous == null;
         return isNew;
     }
