@@ -25,21 +25,20 @@ import com.google.common.base.MoreObjects;
 /**
  * The names of Gradle configurations used by the Spine model compiler plugin.
  *
+ * <p>See <a href="https://docs.gradle.org/current/userguide/managing_dependency_configurations.html">
+ * the Gradle doc</a> on dependency configurations for more info.
+ *
  * @author Dmytro Dashenkov
  */
 public enum ConfigurationName {
 
     /**
      * The {@code runtime} configuration.
-     *
-     * <p>Contains the runtime classpath of the {@code main} scope of the project.
      */
     RUNTIME("runtime"),
 
     /**
      * The {@code testRuntime} configuration.
-     *
-     * <p>Contains the runtime classpath of the {@code test} scope of the project.
      */
     TEST_RUNTIME("testRuntime");
 
