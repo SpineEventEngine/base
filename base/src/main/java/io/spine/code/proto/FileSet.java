@@ -48,9 +48,9 @@ public final class FileSet {
 
     private static final FileDescriptor[] EMPTY = {};
 
-    private final Map<String, FileDescriptor> files;
+    private final Map<FileName, FileDescriptor> files;
 
-    private FileSet(Map<String, FileDescriptor> files) {
+    private FileSet(Map<FileName, FileDescriptor> files) {
         this.files = newHashMap(files);
     }
 
@@ -100,9 +100,8 @@ public final class FileSet {
         if (this.isEmpty()) {
             return another;
         }
-        Map<String, FileDescriptor> files = newHashMapWithExpectedSize(
-                this.files.size() + another.files.size()
-        );
+        int expectedSize = this.files.size() + another.files.size();
+        Map<FileName, FileDescriptor> files = newHashMapWithExpectedSize(expectedSize);
         files.putAll(this.files);
         files.putAll(another.files);
         FileSet result = new FileSet(files);
@@ -128,7 +127,7 @@ public final class FileSet {
      * Returns {@code true} if the set contains a file with the passed name,
      * {@code false} otherwise.
      */
-    public boolean contains(String fileName) {
+    public boolean contains(FileName fileName) {
         final Optional<FileDescriptor> found = tryFind(fileName);
         return found.isPresent();
     }
@@ -137,7 +136,7 @@ public final class FileSet {
      * Returns {@code true} if the set contains all the files with the passed names,
      * {@code false} otherwise.
      */
-    public boolean containsAll(Collection<String> fileNames) {
+    public boolean containsAll(Collection<FileName> fileNames) {
         final FileSet found = find(fileNames);
         final boolean result = found.size() == fileNames.size();
         return result;
@@ -146,9 +145,9 @@ public final class FileSet {
     /**
      * Obtains the set of the files that match passed names.
      */
-    public FileSet find(Collection<String> fileNames) {
-        Map<String, FileDescriptor> found = newHashMapWithExpectedSize(fileNames.size());
-        for (String name : fileNames) {
+    public FileSet find(Collection<FileName> fileNames) {
+        Map<FileName, FileDescriptor> found = newHashMapWithExpectedSize(fileNames.size());
+        for (FileName name : fileNames) {
             Optional<FileDescriptor> file = tryFind(name);
             file.ifPresent(descriptor -> found.put(name, descriptor));
         }
@@ -158,7 +157,7 @@ public final class FileSet {
     /**
      * Returns an Optional containing the first file that matches the name, if such an file exists.
      */
-    public Optional<FileDescriptor> tryFind(String fileName) {
+    public Optional<FileDescriptor> tryFind(FileName fileName) {
         if (files.containsKey(fileName)) {
             return Optional.of(files.get(fileName));
         } else {
@@ -171,7 +170,8 @@ public final class FileSet {
      */
     @CanIgnoreReturnValue
     public boolean add(FileDescriptor file) {
-        Object previous = files.put(file.getFullName(), file);
+        FileName name = FileName.of(file.getFullName());
+        Object previous = files.put(name, file);
         boolean isNew = previous == null;
         return isNew;
     }
@@ -199,7 +199,6 @@ public final class FileSet {
         final List<FileName> fileNames =
                 files.keySet()
                      .stream()
-                     .map(FileName::of)
                      .sorted()
                      .collect(toList());
         return fileNames;

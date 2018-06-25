@@ -34,6 +34,7 @@ import java.util.List;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.protobuf.Descriptors.FileDescriptor.buildFrom;
 import static io.spine.util.Exceptions.newIllegalStateException;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Builds a set of {@link FileDescriptor}s from a list of {@link FileDescriptorProto}.
@@ -109,8 +110,8 @@ class Linker {
         boolean result = false;
         final Iterator<FileDescriptorProto> iterator = remaining.iterator();
         while (iterator.hasNext()) {
-            final FileDescriptorProto next = iterator.next();
-            final List<String> dependencyList = next.getDependencyList();
+            FileDescriptorProto next = iterator.next();
+            Collection<FileName> dependencyList = dependencies(next);
             if (resolved.containsAll(dependencyList)) {
                 final FileSet dependencies = resolved.find(dependencyList);
                 final FileDescriptor newResolved = buildFrom(next, dependencies.toArray(), true);
@@ -135,7 +136,7 @@ class Linker {
         Iterator<FileDescriptorProto> iterator = remaining.iterator();
         while (iterator.hasNext()) {
             FileDescriptorProto next = iterator.next();
-            List<String> dependencyList = next.getDependencyList();
+            Collection<FileName> dependencyList = dependencies(next);
             FileSet dependencies = partialAndResolved.find(dependencyList);
             if (dependencies.isEmpty()) {
                 FileDescriptor newPartial = buildFrom(next, dependencies.toArray(), true);
@@ -163,6 +164,13 @@ class Linker {
             unresolved.add(fd);
             remaining.remove(first);
         }
+    }
+
+    private static Collection<FileName> dependencies(FileDescriptorProto file) {
+        return file.getDependencyList()
+                   .stream()
+                   .map(FileName::of)
+                   .collect(toList());
     }
 
     @VisibleForTesting

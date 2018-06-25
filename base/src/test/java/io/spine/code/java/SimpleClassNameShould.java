@@ -25,6 +25,8 @@ import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
 import com.google.protobuf.TimestampOrBuilder;
+import io.spine.base.Error;
+import io.spine.code.proto.FileName;
 import io.spine.code.proto.FileSet;
 import org.junit.Before;
 import org.junit.Test;
@@ -51,7 +53,10 @@ public class SimpleClassNameShould {
     @SuppressWarnings("ConstantConditions") /* The file is present in resources. */
     @Before
     public void setUp() {
-        errorProto = mainSet.tryFind("spine/base/error.proto")
+        FileName errorFileName = FileName.from(Error.getDescriptor()
+                                                    .getFile()
+                                                    .toProto());
+        errorProto = mainSet.tryFind(errorFileName)
                             .get();
     }
 

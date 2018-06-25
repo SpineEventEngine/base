@@ -20,7 +20,6 @@
 
 package io.spine.code.proto;
 
-import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.DescriptorValidationException;
 import org.junit.Before;
@@ -28,6 +27,7 @@ import org.junit.Test;
 
 import java.util.Collection;
 
+import static com.google.common.collect.ImmutableList.of;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -53,10 +53,10 @@ public class LinkerShould {
     public void resolve_files() {
         FileSet resolved = linker.getResolved();
         assertTrue(resolved.size() > 0);
-        assertTrue(resolved.containsAll(ImmutableList.of(
-                "google/protobuf/any.proto",
-                "google/protobuf/descriptor.proto")
-        ));
+        assertTrue(resolved.containsAll(of(
+                FileName.of("google/protobuf/any.proto"),
+                FileName.of("google/protobuf/descriptor.proto")
+        )));
     }
 
     @Test
