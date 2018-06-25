@@ -45,6 +45,8 @@ import java.util.Optional;
 /**
  * A utility class for working with custom Protobuf options.
  *
+ * // TODO:2018-06-25:dmytro.dashenkov: Refactor https://github.com/SpineEventEngine/base/issues/127
+ *
  * @author Dmytro Dashenkov
  */
 @Internal
