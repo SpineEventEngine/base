@@ -22,6 +22,7 @@ package io.spine.code.proto;
 
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
+import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.AbstractFileName;
 
 import java.util.List;
@@ -54,12 +55,19 @@ public class FileName extends AbstractFileName<FileName> implements UnderscoredN
     }
 
     /**
+     * Obtains the file name from the passed descriptor message.
+     */
+    public static FileName from(FileDescriptorProto descriptor) {
+        checkNotNull(descriptor);
+        final FileName result = of(descriptor.getName());
+        return result;
+    }
+
+    /**
      * Obtains the file name from the passed descriptor.
      */
-    public static FileName from(FileDescriptorProto descr) {
-        checkNotNull(descr);
-        final FileName result = of(descr.getName());
-        return result;
+    public static FileName from(FileDescriptor descriptor) {
+        return from(descriptor.toProto());
     }
 
     /**

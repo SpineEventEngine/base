@@ -48,6 +48,11 @@ public final class FileSet {
 
     private static final FileDescriptor[] EMPTY = {};
 
+    /**
+     * All the files of this set.
+     *
+     * <p>Each file is identified by its {@linkplain FileDescriptor#getFullName() full name}.
+     */
     private final Map<FileName, FileDescriptor> files;
 
     private FileSet(Map<FileName, FileDescriptor> files) {
@@ -170,7 +175,7 @@ public final class FileSet {
      */
     @CanIgnoreReturnValue
     public boolean add(FileDescriptor file) {
-        FileName name = FileName.of(file.getFullName());
+        FileName name = FileName.from(file);
         Object previous = files.put(name, file);
         boolean isNew = previous == null;
         return isNew;
