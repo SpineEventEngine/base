@@ -40,7 +40,7 @@ import static io.spine.tools.gradle.TaskName.FORMAT_TEST_PROTO_DOC;
 import static io.spine.tools.gradle.TaskName.GENERATE_PROTO;
 import static io.spine.tools.gradle.TaskName.GENERATE_TEST_PROTO;
 import static io.spine.tools.protodoc.BacktickFormatting.BACKTICK;
-import static io.spine.tools.protodoc.Given.formatAndAssert;
+import static io.spine.tools.protodoc.given.ProtoJavadocPluginTestEnv.formatAndAssert;
 import static io.spine.tools.protodoc.PreTagFormatting.CLOSING_PRE;
 import static io.spine.tools.protodoc.PreTagFormatting.OPENING_PRE;
 import static org.junit.Assert.assertNotNull;
