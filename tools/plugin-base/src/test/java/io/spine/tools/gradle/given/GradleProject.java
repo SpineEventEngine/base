@@ -283,10 +283,27 @@ public class GradleProject {
             return this;
         }
 
+        /**
+         * Creates a {@code .proto} source file with the given name and content.
+         *
+         * @param fileName the name of the file
+         * @param lines    the content of the file
+         */
         public Builder createProto(String fileName, Iterable<String> lines) {
+            String path = BASE_PROTO_LOCATION + fileName;
+            return createFile(path, lines);
+        }
+
+        /**
+         * Creates a file in the project directory under the given path and with the given content.
+         *
+         * @param path  the path to the file relative to the project dir
+         * @param lines the content of the file
+         */
+        public Builder createFile(String path, Iterable<String> lines) {
             final Path sourcePath = folder.getRoot()
                                           .toPath()
-                                          .resolve(BASE_PROTO_LOCATION + fileName);
+                                          .resolve(path);
             try {
                 Files.createDirectories(sourcePath.getParent());
                 Files.write(sourcePath, lines, Charset.forName("UTF-8"));

@@ -20,13 +20,14 @@
 
 buildscript {
 
-    // Applying from `ext.gradle` inside the `buildscript` section to reuse the properties.
+    // Applying from `config/dependencies.gradle` inside the `buildscript` section to reuse
+    // the properties.
     //
     // As long as `buildscript` section is always evaluated first, we need to apply
-    // `ext.gradle` explicitly here.
+    // `dependencies.gradle` explicitly here.
     //
     // NOTE: this file is copied from the root project in the test setup.
-    apply from: 'ext.gradle'
+    apply from: 'config/dependencies.gradle'
 
     repositories {
         mavenLocal()
@@ -34,16 +35,15 @@ buildscript {
     }
 
     dependencies {
-        classpath "com.google.protobuf:protobuf-gradle-plugin:${protobufGradlePluginVersion}"
+        classpath deps.build.gradlePlugins
     }
 }
 
 plugins {
     id 'java'
     id 'io.spine.tools.protobuf-javadoc-plugin'
+    id 'com.google.protobuf'
 }
-
-apply plugin: 'com.google.protobuf'
 
 protoJavadoc {
     mainGenProtoDir = "generated/main/java"

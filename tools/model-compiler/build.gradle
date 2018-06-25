@@ -91,9 +91,9 @@ task prepareProtocConfig(type: Copy) {
     rename { "./spine-protoc.gradle" }
     
     filter(ReplaceTokens,
-            tokens: ['baseVersion': "'$spineVersion'".toString(),
-                     'pbVersion'  : "'$protobufVersion'".toString(),
-                     'gRPCVersion': "'$gRpcVersion'".toString(),
+            tokens: ['baseVersion': "'${spineVersion}'".toString(),
+                     'pbVersion'  : "'${deps.versions.protobuf}'".toString(),
+                     'gRPCVersion': "'${deps.versions.grpc}'".toString(),
                      // See `DefaultProject.tempArtifacts()`
                      'spineDir'   : "'.spine'"])
     outputs.upToDateWhen { false }
