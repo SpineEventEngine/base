@@ -21,7 +21,7 @@
 package io.spine.tools.gradle.compiler;
 
 import io.spine.code.DefaultProject;
-import io.spine.tools.gradle.given.GradleProject;
+import io.spine.tools.gradle.GradleProject;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Rule;

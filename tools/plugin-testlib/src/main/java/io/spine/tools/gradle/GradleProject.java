@@ -18,9 +18,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.gradle.given;
+package io.spine.tools.gradle;
 
-import io.spine.tools.gradle.TaskName;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import org.gradle.api.Action;
 import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.GradleRunner;
@@ -52,8 +52,9 @@ import static java.util.Arrays.asList;
  * and allows to execute Gradle tasks.
  *
  * @author Dmytro Grankin
+ * @author Dmytro Dashenkov
  */
-public class GradleProject {
+public final class GradleProject {
 
     @SuppressWarnings("DuplicateStringLiteralInspection") // Different semantics.
     public static final String JAVA_PLUGIN_ID = "java";
@@ -94,10 +95,12 @@ public class GradleProject {
         }
     }
 
+    @CanIgnoreReturnValue
     public BuildResult executeTask(TaskName taskName) {
         return prepareRun(taskName).build();
     }
 
+    @CanIgnoreReturnValue
     public BuildResult executeAndFail(TaskName taskName) {
         return prepareRun(taskName).buildAndFail();
     }
@@ -200,17 +203,15 @@ public class GradleProject {
      */
     private static Path findRoot() {
         Path workingFolderPath = Paths.get(".")
-                                            .toAbsolutePath();
+                                      .toAbsolutePath();
         Path extGradleDirPath = workingFolderPath;
         while (extGradleDirPath != null
                 && !exists(extGradleDirPath.resolve(EXT_GRADLE_NAME))) {
             extGradleDirPath = extGradleDirPath.getParent();
         }
-
         checkState(extGradleDirPath != null,
-                     "ext.gradle file not found in %s or parent directories.",
-                     workingFolderPath);
-
+                   "ext.gradle file not found in %s or parent directories.",
+                   workingFolderPath);
         return extGradleDirPath;
     }
 

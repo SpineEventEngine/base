@@ -57,7 +57,7 @@ dependencies {
     testImplementation project(':testlib')
     testImplementation deps.test.hamcrest
     testImplementation gradleTestKit()
-    testImplementation project(':plugin-base').sourceSets.test.output // Test classes of `plugin-base`
+    testImplementation project(':plugin-testlib')
 
     // "tools.jar" contains Javadoc classes used in the rejections Javadoc generation tests.
     // It is a local version bundled within the JDK installation.

@@ -24,7 +24,7 @@ import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.ConstructorDoc;
 import com.sun.javadoc.RootDoc;
 import io.spine.tools.compiler.rejection.RootDocReceiver;
-import io.spine.tools.gradle.given.GradleProject;
+import io.spine.tools.gradle.GradleProject;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;

@@ -18,18 +18,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-group = 'io.spine.tools'
-
 dependencies {
-    api gradleApi()
-
-    testImplementation project(':testlib')
-    testImplementation project(':plugin-testlib')
-    testImplementation deps.test.mockito
-}
-
-sourceSets {
-    test {
-        resources.srcDirs += "$sourcesRootDir/test/resources"
-    }
+    implementation project(':plugin-base')
+    implementation project(':testlib')
+    implementation gradleApi()
+    implementation gradleTestKit()
 }

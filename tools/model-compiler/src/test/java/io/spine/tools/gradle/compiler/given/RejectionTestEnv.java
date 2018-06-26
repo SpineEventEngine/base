@@ -22,7 +22,7 @@ package io.spine.tools.gradle.compiler.given;
 
 import com.sun.javadoc.RootDoc;
 import io.spine.code.DefaultProject;
-import io.spine.tools.gradle.given.GradleProject;
+import io.spine.tools.gradle.GradleProject;
 import io.spine.code.java.FileName;
 import io.spine.code.java.PackageName;
 import io.spine.code.proto.FieldName;

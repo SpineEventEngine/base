@@ -21,7 +21,7 @@
 package io.spine.tools.protodoc.given;
 
 import com.google.common.base.Joiner;
-import io.spine.tools.gradle.given.GradleProject;
+import io.spine.tools.gradle.GradleProject;
 import io.spine.tools.protodoc.ProtoJavadocPlugin;
 import org.junit.rules.TemporaryFolder;
 
@@ -77,8 +77,8 @@ public final class ProtoJavadocPluginTestEnv {
     }
 
     private static void executeTask(String filePath,
-                                         TemporaryFolder folder,
-                                         String fileContent) {
+                                    TemporaryFolder folder,
+                                    String fileContent) {
         GradleProject project = GradleProject
                 .newBuilder()
                 .setProjectName("proto-javadoc-test")

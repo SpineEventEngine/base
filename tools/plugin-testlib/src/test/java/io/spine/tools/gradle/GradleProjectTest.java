@@ -20,7 +20,6 @@
 
 package io.spine.tools.gradle;
 
-import io.spine.tools.gradle.given.GradleProject;
 import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.BuildTask;
 import org.junit.Rule;
@@ -39,13 +38,15 @@ import static org.junit.Assert.assertTrue;
 /**
  * @author Dmytro Dashenkov
  */
-public class GradleProjectShould {
+public class GradleProjectTest {
 
     private static final String PROJECT_NAME = "gradle_project_test";
 
     @Rule
     public final TemporaryFolder temporaryFolder = new TemporaryFolder();
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+        // OK for this test case; result of `build` it ignored.
     @Test
     public void write_given_java_files() {
         final String[] files = {"Foo.java", "Bar.java"};
