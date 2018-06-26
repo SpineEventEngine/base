@@ -25,6 +25,8 @@ import org.gradle.api.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.stream.Stream;
+
 /**
  * Spine Model Compiler Gradle plugin.
  *
@@ -50,14 +52,15 @@ public class ModelCompilerPlugin implements Plugin<Project> {
         project.getExtensions()
                .create(extensionName(), Extension.class);
 
-        apply(new CleaningPlugin(), project);
-        apply(new ProtoToJavaMapperPlugin(), project);
-        apply(new EnrichmentLookupPlugin(), project);
-        apply(new RejectionGenPlugin(), project);
-        apply(new ValidatingBuilderGenPlugin(), project);
-        apply(new ProtoAnnotatorPlugin(), project);
-        apply(new ValidationRulesLookupPlugin(), project);
-        apply(new ProtocPluginImporter(), project);
+        Stream.of(new CleaningPlugin(),
+                  new EnrichmentLookupPlugin(),
+                  new RejectionGenPlugin(),
+                  new ValidatingBuilderGenPlugin(),
+                  new ProtoAnnotatorPlugin(),
+                  new ValidationRulesLookupPlugin(),
+                  new ProtocPluginImporter(),
+                  new DescriptorSetMergerPlugin())
+              .forEach(plugin -> apply(plugin, project));
     }
 
     private static void apply(SpinePlugin plugin, Project project) {

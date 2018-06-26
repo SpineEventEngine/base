@@ -24,17 +24,17 @@ ext {
 }
 
 dependencies {
-    compile files("${System.properties['java.home']}/../lib/tools.jar")
-    compile "javax.annotation:javax.annotation-api:$javaxAnnotationsVersion"
+    implementation files("${System.properties['java.home']}/../lib/tools.jar")
+    implementation project(':base')
+    implementation "javax.annotation:javax.annotation-api:$javaxAnnotationsVersion"
 
-    compile project(':base')
-    testCompile project(':testlib')
+    testImplementation project(':testlib')
 }
 
 // We need to include module dependencies to JAR.
 // In particular, we need @Internal Spine annotation.
 jar {
     from {
-        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+        configurations.runtime.collect { it.isDirectory() ? it : zipTree(it) }
     }
 }

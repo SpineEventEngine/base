@@ -43,10 +43,8 @@ buildscript {
         classpath (deps.build.gradlePlugins.errorProne) {
             exclude group: 'com.google.guava'
         }
-
-        classpath "io.spine.tools:spine-model-compiler:$spineToolsVersion"
     }
-    
+
     configurations.all({
         resolutionStrategy {
             cacheChangingModulesFor(0, 'seconds')
@@ -60,13 +58,10 @@ apply from: 'ext.gradle'
 
 ext {
     credentialsPropertyFile = 'credentials.properties'
-    
+
     projectsToPublish = [
         'base',
         'testlib',
-
-        // Code generation common codebase.
-        'codegen',
 
         // Gradle plugins
         'javadoc-filter',
@@ -159,6 +154,7 @@ subprojects {
 
     repositories {
         jcenter()
+
         google()
         mavenCentral()
         mavenLocal()
@@ -176,26 +172,18 @@ subprojects {
         implementation deps.build.errorProneAnnotations
         implementation deps.build.jsr305Annotations
 
-        testCompile deps.test.slf4j
-        testCompile deps.test.guavaTestlib
+        testImplementation deps.test.slf4j
+        testImplementation deps.test.guavaTestlib
     }
 
     sourceSets {
         main {
-            java.srcDirs = [generatedJavaDir,
-                            "$sourcesRootDir/main/java",
-                            generatedSpineDir]
-            
-            resources.srcDirs = ["$sourcesRootDir/main/resources",
-                                 "$generatedRootDir/main/resources"]
+            java.srcDirs generatedJavaDir, "$sourcesRootDir/main/java", generatedSpineDir
+            resources.srcDirs "$sourcesRootDir/main/resources", "$generatedRootDir/main/resources"
         }
         test {
-            java.srcDirs = [generatedTestJavaDir,
-                            "$sourcesRootDir/test/java",
-                            generatedTestSpineDir]
-            
-            resources.srcDirs = ["$sourcesRootDir/test/resources",
-                                 "$generatedRootDir/test/resources"]
+            java.srcDirs generatedTestJavaDir, "$sourcesRootDir/test/java", generatedTestSpineDir
+            resources.srcDirs "$sourcesRootDir/test/resources", "$generatedRootDir/test/resources"
         }
     }
 
@@ -209,7 +197,7 @@ subprojects {
             // events 'standard_out', 'standard_error'
 
             // Or set property events:
-             events = ['standard_out', 'standard_error']
+            events = ['standard_out', 'standard_error']
 
             // Instead of string values we can
             // use enum values:
@@ -240,7 +228,7 @@ subprojects {
     }
 
     task javadocJar(type: Jar, dependsOn: 'javadoc') {
-        from ("$projectDir/build/docs/javadoc")
+        from "$projectDir/build/docs/javadoc"
         classifier "javadoc"
     }
 

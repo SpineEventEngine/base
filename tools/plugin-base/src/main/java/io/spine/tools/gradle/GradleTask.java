@@ -207,7 +207,6 @@ public final class GradleTask {
                 final TaskContainer existingTasks = project.getTasks();
                 existingTasks.getByPath(followingTask.getValue())
                              .dependsOn(task);
-
             }
             if (previousTaskOfAllProjects != null) {
                 final Project root = project.getRootProject();

@@ -29,8 +29,8 @@ import java.util.Collection;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.compiler.fieldtype.FieldTypes.trimTypeName;
-import static io.spine.tools.java.PrimitiveType.getWrapperClass;
-import static io.spine.tools.proto.ScalarType.getJavaTypeName;
+import static io.spine.code.java.PrimitiveType.getWrapperClass;
+import static io.spine.code.proto.ScalarType.getJavaTypeName;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 import static java.lang.String.format;
 

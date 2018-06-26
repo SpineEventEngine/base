@@ -23,8 +23,9 @@ group = 'io.spine.tools'
 dependencies {
     api gradleApi()
 
-    testCompile project(':testlib')
-    testCompile gradleTestKit()
+    testImplementation project(':testlib')
+    testImplementation project(':plugin-testlib')
+    testImplementation deps.test.mockito
 }
 
 sourceSets {

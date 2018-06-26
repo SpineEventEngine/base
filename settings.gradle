@@ -20,34 +20,25 @@
 
 rootProject.name = 'spine-base'
 
-include 'testlib'
-
 include 'base'
+
+include 'testlib'
 
 /**
  * Includes a module and sets custom project directory to it.
  */
 final def module = { final String name, final String path ->
     include name
-    project(":$name").projectDir = new File("$path")
+    project(":$name").projectDir = new File("$rootDir/$path")
 }
 
-module ('codegen',             './tools/codegen')
+module 'javadoc-filter',      'tools/javadoc-filter'
+module 'javadoc-prettifier',  'tools/javadoc-prettifier'
 
-module ('javadoc-filter',      './tools/javadoc-filter')
-module ('javadoc-prettifier',  './tools/javadoc-prettifier')
+module 'model-compiler',      'tools/model-compiler'
+module 'plugin-base',         'tools/plugin-base'
+module 'reflections-plugin',  'tools/reflections-plugin'
 
-module ('model-compiler',      './tools/model-compiler')
+module 'protoc-plugin',       'tools/protoc-plugin'
 
-module ('plugin-base',         './tools/plugin-base')
-module ('reflections-plugin',  './tools/reflections-plugin')
-
-// Smoke tests for Spine Model Compiler
-module ('enrichment-lookup',   './tools/smoke-tests/enrichment-lookup')
-module ('known-types',         './tools/smoke-tests/known-types')
-module ('validators-gen',      './tools/smoke-tests/validators-gen')
-
-// Protoc plugin and tests
-module ('protoc-plugin',       './tools/protoc-plugin')
-module ('protoc-plugin-tests', './tools/protoc-plugin-tests')
-
+module 'plugin-testlib' ,     'tools/plugin-testlib'

@@ -26,7 +26,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
-import io.spine.option.RawListValue;
 import io.spine.type.TypeName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,7 +38,6 @@ import java.util.Set;
 
 import static io.spine.option.OptionsProto.enrichment;
 import static io.spine.option.OptionsProto.enrichmentFor;
-import static io.spine.option.RawListValue.getValueSeparator;
 
 /**
  * Composes enrichment map for multiple message declarations.
@@ -53,16 +51,16 @@ class EnrichmentMap {
     private static final String EMPTY_TYPE_NAME = "";
 
     /** Joins several values into one delimited string. */
-    private static final Joiner joiner = Joiner.on(getValueSeparator());
+    private static final Joiner joiner = Joiner.on(',');
 
     private final String packagePrefix;
-    private final TypeNameValue eventType;
-    private final TypeNameValue enrichmentType;
+    private final TypeNameParser eventType;
+    private final TypeNameParser enrichmentType;
 
     EnrichmentMap(String packagePrefix) {
         this.packagePrefix = packagePrefix;
-        this.eventType = new TypeNameValue(enrichmentFor, packagePrefix);
-        this.enrichmentType = new TypeNameValue(enrichment, packagePrefix);
+        this.eventType = new TypeNameParser(enrichmentFor, packagePrefix);
+        this.enrichmentType = new TypeNameParser(enrichment, packagePrefix);
     }
 
     /**
@@ -87,9 +85,6 @@ class EnrichmentMap {
      * Transforms the passed multimap with possible several entries per key, into
      * a map where several values from the passed multimap are joined into
      * a single value.
-     *
-     * <p>The values are joined with the
-     * {@linkplain RawListValue#VALUE_SEPARATOR value separator}.
      *
      * <p>Merging may be required when the wildcard {@code by} option values are handled,
      * i.e. when processing a single enrichment type as a map key, but multiple target

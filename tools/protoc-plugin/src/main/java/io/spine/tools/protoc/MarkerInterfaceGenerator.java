@@ -20,12 +20,12 @@
 
 package io.spine.tools.protoc;
 
-import com.google.common.base.Optional;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 
 import java.util.Collection;
+import java.util.Optional;
 
 import static com.google.common.collect.ImmutableSet.of;
 import static io.spine.tools.protoc.MessageAndInterface.scanFileOption;

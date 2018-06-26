@@ -27,14 +27,8 @@ import org.gradle.testfixtures.ProjectBuilder;
 import java.io.File;
 import java.util.UUID;
 
-import static io.spine.tools.gradle.TaskName.CLASSES;
-import static io.spine.tools.gradle.TaskName.CLEAN;
-import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
-import static io.spine.tools.gradle.TaskName.COMPILE_TEST_JAVA;
 import static io.spine.tools.gradle.TaskName.GENERATE_PROTO;
 import static io.spine.tools.gradle.TaskName.GENERATE_TEST_PROTO;
-import static io.spine.tools.gradle.TaskName.PROCESS_RESOURCES;
-import static io.spine.tools.gradle.TaskName.PROCESS_TEST_RESOURCES;
 
 /**
  * A helper class for the test data generation.
@@ -66,14 +60,10 @@ public class ModelCompilerTestEnv {
         final Project project = ProjectBuilder.builder()
                                               .withProjectDir(projectDir)
                                               .build();
-        project.task(CLEAN.getValue());
+        project.getPluginManager()
+               .apply("java");
         project.task(GENERATE_PROTO.getValue());
         project.task(GENERATE_TEST_PROTO.getValue());
-        project.task(COMPILE_JAVA.getValue());
-        project.task(COMPILE_TEST_JAVA.getValue());
-        project.task(PROCESS_RESOURCES.getValue());
-        project.task(PROCESS_TEST_RESOURCES.getValue());
-        project.task(CLASSES.getValue());
         return project;
     }
 

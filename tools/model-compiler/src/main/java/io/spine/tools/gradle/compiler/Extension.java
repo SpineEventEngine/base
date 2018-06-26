@@ -19,10 +19,9 @@
  */
 package io.spine.tools.gradle.compiler;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
-import io.spine.tools.DefaultProject;
-import io.spine.tools.Indent;
+import io.spine.code.DefaultProject;
+import io.spine.code.Indent;
 import org.gradle.api.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +30,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Lists.newLinkedList;
@@ -333,7 +333,7 @@ public class Extension {
         if (spinePath.exists()) {
             return Optional.of(spinePath.toString());
         } else {
-            return Optional.absent();
+            return Optional.empty();
         }
     }
 

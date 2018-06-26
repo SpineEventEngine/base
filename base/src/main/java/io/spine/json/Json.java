@@ -20,18 +20,20 @@
 
 package io.spine.json;
 
-import com.google.protobuf.Descriptors;
-import com.google.protobuf.Descriptors.Descriptor;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
-import com.google.protobuf.util.JsonFormat;
 import io.spine.type.KnownTypes;
-import io.spine.type.TypeUrl;
 import io.spine.type.UnknownTypeException;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.base.Throwables.getRootCause;
+import static com.google.protobuf.util.JsonFormat.Parser;
+import static com.google.protobuf.util.JsonFormat.Printer;
+import static com.google.protobuf.util.JsonFormat.TypeRegistry;
+import static com.google.protobuf.util.JsonFormat.parser;
+import static com.google.protobuf.util.JsonFormat.printer;
 import static io.spine.protobuf.Messages.builderFor;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 
@@ -40,12 +42,15 @@ import static io.spine.util.Exceptions.newIllegalArgumentException;
  *
  * @author Alexander Yevsyukov
  */
-public class Json {
+public final class Json {
 
-    private static final JsonFormat.TypeRegistry typeRegistry = buildForKnownTypes();
+    private static final TypeRegistry typeRegistry = KnownTypes.instance()
+                                                               .typeRegistry();
 
+    /**
+     * Prevents the utility class instantiation.
+     */
     private Json() {
-        // Prevent instantiation of this utility class.
     }
 
     /**
@@ -68,13 +73,13 @@ public class Json {
      * @return the converted message to Json
      */
     public static String toCompactJson(Message message) {
-        final JsonFormat.Printer compactPrinter = JsonPrinter.getInstance()
-                                                             .omittingInsignificantWhitespace();
+        final Printer compactPrinter = JsonPrinter.getInstance()
+                                                  .omittingInsignificantWhitespace();
         final String result = toJson(message, compactPrinter);
         return result;
     }
 
-    private static String toJson(Message message, JsonFormat.Printer printer) {
+    private static String toJson(Message message, Printer printer) {
         checkNotNull(message);
         String result;
         try {
@@ -103,22 +108,8 @@ public class Json {
         }
     }
 
-    /**
-     * Builds the registry of types known in the application.
-     */
-    private static JsonFormat.TypeRegistry buildForKnownTypes() {
-        final JsonFormat.TypeRegistry.Builder builder = JsonFormat.TypeRegistry.newBuilder();
-        for (TypeUrl typeUrl : KnownTypes.getAllUrls()) {
-            final Descriptors.GenericDescriptor genericDescriptor = typeUrl.getDescriptor();
-            if (genericDescriptor instanceof Descriptor) {
-                final Descriptor descriptor = (Descriptor) genericDescriptor;
-                builder.add(descriptor);
-            }
-        }
-        return builder.build();
-    }
-
-    static JsonFormat.TypeRegistry typeRegistry() {
+    @VisibleForTesting
+    static TypeRegistry typeRegistry() {
         return typeRegistry;
     }
 
@@ -126,10 +117,9 @@ public class Json {
         INSTANCE;
 
         @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final JsonFormat.Printer value = JsonFormat.printer()
-                                                           .usingTypeRegistry(typeRegistry);
+        private final Printer value = printer().usingTypeRegistry(typeRegistry);
 
-        private static JsonFormat.Printer getInstance() {
+        private static Printer getInstance() {
             return INSTANCE.value;
         }
     }
@@ -138,10 +128,9 @@ public class Json {
         INSTANCE;
 
         @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final JsonFormat.Parser value = JsonFormat.parser()
-                                                          .usingTypeRegistry(typeRegistry);
+        private final Parser value = parser().usingTypeRegistry(typeRegistry);
 
-        private static JsonFormat.Parser getInstance() {
+        private static Parser getInstance() {
             return INSTANCE.value;
         }
     }

@@ -20,13 +20,14 @@
 
 package io.spine.logging;
 
-import com.google.common.base.Supplier;
 import com.google.common.testing.NullPointerTester;
 import io.spine.logging.given.LoggingTestEnv.Base;
 import io.spine.logging.given.LoggingTestEnv.ChildOne;
 import io.spine.logging.given.LoggingTestEnv.ChildTwo;
 import org.junit.Test;
 import org.slf4j.Logger;
+
+import java.util.function.Supplier;
 
 import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
 import static org.junit.Assert.assertNotEquals;

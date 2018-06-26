@@ -20,6 +20,7 @@
 
 package io.spine.value;
 
+import io.spine.type.ClassName;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.io.Serializable;
@@ -51,6 +52,14 @@ public abstract class ClassTypeValue<T> implements Serializable {
     /** Returns value of the object. */
     public Class<? extends T> value() {
         return this.value;
+    }
+
+    /**
+     * Returns the name of the enclosed Java class.
+     */
+    public ClassName getName() {
+        final ClassName result = ClassName.of(value);
+        return result;
     }
 
     /**

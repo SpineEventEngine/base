@@ -26,9 +26,10 @@ import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldOptions;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
-import io.spine.tools.java.SimpleClassName;
-import io.spine.tools.java.SourceFile;
-import io.spine.tools.proto.FieldName;
+import io.spine.code.java.SimpleClassName;
+import io.spine.code.java.SourceFile;
+import io.spine.code.proto.FieldName;
+import io.spine.option.Options;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jboss.forge.roaster.model.JavaType;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
@@ -39,10 +40,10 @@ import org.jboss.forge.roaster.model.source.MethodSource;
 
 import java.lang.annotation.Annotation;
 import java.util.Collection;
+import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Lists.newLinkedList;
-import static io.spine.option.UnknownOptions.get;
 import static io.spine.tools.compiler.annotation.TypeDefinitionAnnotator.findNestedType;
 import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.lang.String.format;
@@ -95,8 +96,8 @@ class FieldAnnotator extends Annotator<FieldOptions, FieldDescriptorProto> {
     }
 
     @Override
-    protected String getRawOptionValue(FieldDescriptorProto field) {
-        return get(field, getOptionNumber());
+    protected Optional<Boolean> getOptionValue(FieldDescriptorProto file) {
+        return Options.option(file, getOption());
     }
 
     @VisibleForTesting
@@ -148,9 +149,8 @@ class FieldAnnotator extends Annotator<FieldOptions, FieldDescriptorProto> {
          * @param input the {@link AbstractJavaSource} for the {@link #fileDescriptor}
          * @return {@code Void}
          */
-        @Nullable
         @Override
-        public Void apply(@Nullable AbstractJavaSource<T> input) {
+        public @Nullable Void apply(@Nullable AbstractJavaSource<T> input) {
             checkNotNull(input);
             for (DescriptorProto messageType : fileDescriptor.getMessageTypeList()) {
                 final Iterable<String> unannotatableFields = getNotAnnotatableFields(messageType);
@@ -203,9 +203,8 @@ class FieldAnnotator extends Annotator<FieldOptions, FieldDescriptorProto> {
          * @param input the {@link AbstractJavaSource} for the {@link #message}
          * @return {@code Void}
          */
-        @Nullable
         @Override
-        public Void apply(@Nullable AbstractJavaSource<T> input) {
+        public @Nullable Void apply(@Nullable AbstractJavaSource<T> input) {
             checkNotNull(input);
             final Iterable<String> fieldsToSkip = getNotAnnotatableFields(message);
             for (FieldDescriptorProto field : message.getFieldList()) {

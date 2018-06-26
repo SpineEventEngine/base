@@ -25,7 +25,7 @@ import com.google.protobuf.DescriptorProtos.EnumDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileOptions;
 import io.spine.tools.gradle.compiler.RejectionGenPlugin;
-import io.spine.tools.java.SimpleClassName;
+import io.spine.code.java.SimpleClassName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

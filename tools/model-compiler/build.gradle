@@ -31,12 +31,9 @@ ext {
 
 group = 'io.spine.tools'
 
-apply from: deps.scripts.generateDescriptorSet
-
 dependencies {
-    compile project(':plugin-base')
-    compile project(':base')
-    compile project(':codegen')
+    implementation project(':plugin-base')
+    implementation project(':base')
 
     implementation (group: 'com.google.template', name: 'soy', version: '2017-02-01') {
         exclude group: 'com.google.guava'
@@ -44,29 +41,31 @@ dependencies {
 
     implementation deps.build.protobuf
     implementation deps.gen.javaPoet
-    
+
     // A library for parsing Java sources.
     // Used for parsing Java sources generated from Protobuf files
     // to make their annotation more convenient.
-    compile (group: 'org.jboss.forge.roaster', name: 'roaster-api', version: roasterVersion) {
+    implementation (group: 'org.jboss.forge.roaster', name: 'roaster-api', version: roasterVersion) {
         exclude group: 'com.google.guava'
     }
     
-    compile (group: 'org.jboss.forge.roaster', name: 'roaster-jdt', version: roasterVersion) {
+    implementation (group: 'org.jboss.forge.roaster', name: 'roaster-jdt', version: roasterVersion) {
         exclude group: 'com.google.guava'
     }
 
-    testCompile project(':testlib')
-    testCompile gradleTestKit()
-    testCompile project(':plugin-base').sourceSets.test.output // Test classes of `plugin-base`
+    testProtobuf project(':base')
+    testImplementation project(':testlib')
+    testImplementation deps.test.hamcrest
+    testImplementation gradleTestKit()
+    testImplementation project(':plugin-testlib')
 
     // "tools.jar" contains Javadoc classes used in the rejections Javadoc generation tests.
     // It is a local version bundled within the JDK installation.
     // "JAVA_HOME" environment variable must be set for correct work.
-    testCompile files("${System.properties['java.home']}/../lib/tools.jar")
+    testImplementation files("${System.properties['java.home']}/../lib/tools.jar")
 
     // The freshest version of the plugin required for tests
-    protocPluginDependency = testCompile "io.spine.tools:spine-protoc-plugin:$spineVersion@jar"
+    protocPluginDependency = testCompileOnly "io.spine.tools:spine-protoc-plugin:$spineVersion@jar"
 }
 
 protobuf {
@@ -92,10 +91,10 @@ task prepareProtocConfig(type: Copy) {
     rename { "./spine-protoc.gradle" }
     
     filter(ReplaceTokens,
-            tokens: ['baseVersion': "'$project.spineVersion'".toString(),
-                     'pbVersion'  : "'$project.protobufVersion'".toString(),
-                     'gRPCVersion': "'$project.gRpcVersion'".toString(),
-                     // See `io.spine.tools.DefaultProject.tempArtifacts()`
+            tokens: ['baseVersion': "'${spineVersion}'".toString(),
+                     'pbVersion'  : "'${deps.versions.protobuf}'".toString(),
+                     'gRPCVersion': "'${deps.versions.grpc}'".toString(),
+                     // See `DefaultProject.tempArtifacts()`
                      'spineDir'   : "'.spine'"])
     outputs.upToDateWhen { false }
 }
@@ -103,7 +102,7 @@ task prepareProtocConfig(type: Copy) {
 processResources.dependsOn prepareProtocConfig
 
 final def copyPluginJarAction = {
-    final def from = configurations.testCompile.fileCollection(protocPluginDependency).singleFile
+    final def from = configurations.testCompileOnly.fileCollection(protocPluginDependency).singleFile
     final def srcPath = from.toPath()
     final def dest = project.spineFolder.toPath().resolve(from.name)
     dest.toFile().mkdirs()
@@ -123,9 +122,5 @@ copyProtocPluginTestArtifact.dependsOn project.project(':protoc-plugin').publish
 // Tests use the Protobuf plugin.
 test {
     dependsOn copyProtocPluginTestArtifact
-    dependsOn publishToMavenLocal
-    dependsOn project.project(':plugin-base').publishToMavenLocal
-    dependsOn project.project(':codegen').publishToMavenLocal
-    dependsOn project.project(':base').publishToMavenLocal
-    dependsOn project.project(':testlib').publishToMavenLocal
+    dependsOn rootProject.subprojects*.publishToMavenLocal
 }

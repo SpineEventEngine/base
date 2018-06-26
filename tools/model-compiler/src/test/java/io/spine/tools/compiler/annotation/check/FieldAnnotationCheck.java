@@ -21,7 +21,7 @@
 package io.spine.tools.compiler.annotation.check;
 
 import com.google.protobuf.DescriptorProtos;
-import io.spine.tools.proto.FieldName;
+import io.spine.code.proto.FieldName;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jboss.forge.roaster.model.JavaType;
 import org.jboss.forge.roaster.model.TypeHolder;
@@ -33,7 +33,7 @@ import org.jboss.forge.roaster.model.source.MethodSource;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.compiler.annotation.check.Annotations.findSpiAnnotation;
-import static io.spine.tools.java.SimpleClassName.ofBuilder;
+import static io.spine.code.java.SimpleClassName.ofBuilder;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 

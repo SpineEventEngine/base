@@ -41,6 +41,7 @@ import static io.spine.json.Json.toCompactJson;
 import static io.spine.json.Json.toJson;
 import static io.spine.protobuf.TypeConverter.toMessage;
 import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
+import static java.lang.String.format;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -63,7 +64,7 @@ public class JsonShould {
         final JsonFormat.TypeRegistry typeRegistry = Json.typeRegistry();
 
         final List<Descriptors.Descriptor> found = Lists.newLinkedList();
-        for (TypeUrl typeUrl : KnownTypes.getAllUrls()) {
+        for (TypeUrl typeUrl : KnownTypes.instance().getAllUrls()) {
             final Descriptors.Descriptor descriptor = typeRegistry.find(typeUrl.getTypeName());
             if (descriptor != null) {
                 found.add(descriptor);
@@ -100,7 +101,7 @@ public class JsonShould {
     @Test
     public void parse_from_json() {
         final String idValue = newUuid();
-        final String jsonMessage = String.format("{value:%s}", idValue);
+        final String jsonMessage = format("{value:%s}", idValue);
         final WrappedString parsedValue = fromJson(jsonMessage, WrappedString.class);
         assertNotNull(parsedValue);
         assertEquals(idValue, parsedValue.getValue());

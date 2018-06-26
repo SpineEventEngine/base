@@ -20,21 +20,21 @@
 
 package io.spine.tools.gradle.compiler;
 
-import com.google.common.base.Optional;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.ServiceDescriptorProto;
 import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.tools.DefaultProject;
+import io.spine.code.DefaultProject;
+import io.spine.code.java.SourceFile;
+import io.spine.code.proto.FileName;
+import io.spine.code.proto.FileSet;
 import io.spine.tools.compiler.annotation.check.FieldAnnotationCheck;
 import io.spine.tools.compiler.annotation.check.MainDefinitionAnnotationCheck;
 import io.spine.tools.compiler.annotation.check.NestedTypeFieldsAnnotationCheck;
 import io.spine.tools.compiler.annotation.check.NestedTypesAnnotationCheck;
 import io.spine.tools.compiler.annotation.check.SourceCheck;
-import io.spine.tools.gradle.given.GradleProject;
-import io.spine.tools.java.SourceFile;
-import io.spine.tools.proto.FileSet;
+import io.spine.tools.gradle.GradleProject;
 import org.jboss.forge.roaster.Roaster;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
@@ -46,6 +46,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkState;
 import static io.spine.tools.compiler.annotation.given.GivenProtoFile.NO_SPI_OPTIONS;
@@ -161,7 +162,7 @@ public class ProtoAnnotatorPluginShould {
         newProjectWithFile(POTENTIAL_ANNOTATION_DUP).executeTask(COMPILE_JAVA);
     }
 
-    private void assertServiceAnnotations(String testFile, boolean shouldBeAnnotated)
+    private void assertServiceAnnotations(FileName testFile, boolean shouldBeAnnotated)
             throws FileNotFoundException {
         FileDescriptorProto fileDescriptor = compileAndAnnotate(testFile);
         List<ServiceDescriptorProto> services = fileDescriptor.getServiceList();
@@ -171,7 +172,7 @@ public class ProtoAnnotatorPluginShould {
         }
     }
 
-    private void assertFieldAnnotations(String testFile, boolean shouldBeAnnotated)
+    private void assertFieldAnnotations(FileName testFile, boolean shouldBeAnnotated)
             throws FileNotFoundException {
         FileDescriptorProto fileDescriptor = compileAndAnnotate(testFile);
         DescriptorProto messageDescriptor = fileDescriptor.getMessageType(0);
@@ -182,7 +183,7 @@ public class ProtoAnnotatorPluginShould {
         check(sourcePath, check);
     }
 
-    private void assertFieldAnnotationsMultiple(String testFile, boolean shouldBeAnnotated)
+    private void assertFieldAnnotationsMultiple(FileName testFile, boolean shouldBeAnnotated)
             throws FileNotFoundException {
         FileDescriptorProto fileDescriptor = compileAndAnnotate(testFile);
         DescriptorProto messageDescriptor = fileDescriptor.getMessageType(0);
@@ -192,7 +193,7 @@ public class ProtoAnnotatorPluginShould {
         check(sourcePath, new FieldAnnotationCheck(experimentalField, shouldBeAnnotated));
     }
 
-    private void assertMainDefinitionAnnotations(String testFile, boolean shouldBeAnnotated)
+    private void assertMainDefinitionAnnotations(FileName testFile, boolean shouldBeAnnotated)
             throws FileNotFoundException {
         FileDescriptorProto fileDescriptor = compileAndAnnotate(testFile);
         for (DescriptorProto messageDescriptor : fileDescriptor.getMessageTypeList()) {
@@ -209,7 +210,7 @@ public class ProtoAnnotatorPluginShould {
         }
     }
 
-    private void assertNestedTypesAnnotations(String testFile, boolean shouldBeAnnotated)
+    private void assertNestedTypesAnnotations(FileName testFile, boolean shouldBeAnnotated)
             throws FileNotFoundException {
         FileDescriptorProto fileDescriptor = compileAndAnnotate(testFile);
         Path sourcePath = SourceFile.forOuterClassOf(fileDescriptor)
@@ -244,22 +245,22 @@ public class ProtoAnnotatorPluginShould {
      * Test environment setup
      ************************************/
 
-    private GradleProject newProjectWithFile(String protoFileName) {
+    private GradleProject newProjectWithFile(FileName protoFileName) {
         return GradleProject.newBuilder()
                             .setProjectName(PROJECT_NAME)
                             .setProjectFolder(testProjectDir)
-                            .addProtoFile(protoFileName)
+                            .addProtoFile(protoFileName.value())
                             .build();
     }
 
-    private FileDescriptorProto compileAndAnnotate(String testFile) {
+    private FileDescriptorProto compileAndAnnotate(FileName testFile) {
         GradleProject gradleProject = newProjectWithFile(testFile);
         gradleProject.executeTask(ANNOTATE_PROTO);
         FileDescriptorProto result = getDescriptor(testFile);
         return result;
     }
 
-    private FileDescriptorProto getDescriptor(String fileName) {
+    private FileDescriptorProto getDescriptor(FileName fileName) {
         File descriptorSet = DefaultProject.at(testProjectDir.getRoot())
                                            .mainDescriptors();
         FileSet fileSet = FileSet.parse(descriptorSet);

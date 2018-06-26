@@ -21,17 +21,16 @@
 package io.spine.tools.gradle;
 
 import com.google.common.testing.NullPointerTester;
-import io.spine.tools.gradle.given.GradleProject;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.junit.Test;
 
-import java.util.Collections;
 import java.util.Set;
 
 import static com.google.common.collect.Sets.newHashSet;
 import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptySet;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -66,22 +65,19 @@ public class ProjectHierarchyShould {
 
         when(root.getSubprojects()).thenReturn(newHashSet(sub1, sub2));
         when(sub1.getSubprojects()).thenReturn(newHashSet(subsub1, subsub2));
-        when(sub2.getSubprojects()).thenReturn(Collections.<Project>emptySet());
-        when(subsub1.getSubprojects()).thenReturn(Collections.<Project>emptySet());
-        when(subsub2.getSubprojects()).thenReturn(Collections.<Project>emptySet());
+        when(sub2.getSubprojects()).thenReturn(emptySet());
+        when(subsub1.getSubprojects()).thenReturn(emptySet());
+        when(subsub2.getSubprojects()).thenReturn(emptySet());
 
         when(root.getRootProject()).thenReturn(root);
 
         final Set<Project> visited = newHashSet();
-        ProjectHierarchy.applyToAll(root, new Action<Project>() {
-            @Override
-            public void execute(Project project) {
-                assertFalse(visited.contains(project));
-                for (Project child : project.getSubprojects()) {
-                    assertFalse(visited.contains(child));
-                }
-                visited.add(project);
+        ProjectHierarchy.applyToAll(root, project -> {
+            assertFalse(visited.contains(project));
+            for (Project child : project.getSubprojects()) {
+                assertFalse(visited.contains(child));
             }
+            visited.add(project);
         });
 
         assertTrue(visited.containsAll(asList(root, sub1, sub2, subsub1, subsub2)));

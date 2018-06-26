@@ -24,7 +24,7 @@ import com.google.template.soy.SoyFileSet;
 import com.google.template.soy.data.SoyMapData;
 import com.google.template.soy.tofu.SoyTofu;
 import com.squareup.javapoet.ClassName;
-import io.spine.tools.proto.FieldName;
+import io.spine.code.proto.FieldName;
 
 import java.net.URL;
 

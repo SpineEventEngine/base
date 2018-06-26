@@ -77,26 +77,14 @@ public class EnrichmentLookupPlugin extends SpinePlugin {
 
     private Action<Task> testScopeActionFor(final Project project) {
         log().debug("Initializing the enrichment lookup for the \"test\" source code");
-        return new Action<Task>() {
-            @Override
-            public void execute(Task task) {
-                findEnrichmentsAndWriteProps(getTestDescriptorSetPath(project),
-                                             getTestTargetGenResourcesDir(project)
-                );
-            }
-        };
+        return task -> findEnrichmentsAndWriteProps(getTestDescriptorSetPath(project),
+                                                    getTestTargetGenResourcesDir(project));
     }
 
     private Action<Task> mainScopeActionFor(final Project project) {
         log().debug("Initializing the enrichment lookup for the \"main\" source code");
-        return new Action<Task>() {
-            @Override
-            public void execute(Task task) {
-                findEnrichmentsAndWriteProps(getMainDescriptorSetPath(project),
-                                             getMainTargetGenResourcesDir(project)
-                );
-            }
-        };
+        return task -> findEnrichmentsAndWriteProps(getMainDescriptorSetPath(project),
+                                                    getMainTargetGenResourcesDir(project));
     }
 
     private void findEnrichmentsAndWriteProps(String descriptorSetFile, String targetDir) {

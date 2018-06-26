@@ -20,6 +20,8 @@
 
 package io.spine.tools.compiler.annotation.given;
 
+import io.spine.code.proto.FileName;
+
 /**
  * Test proto file names.
  *
@@ -29,17 +31,17 @@ package io.spine.tools.compiler.annotation.given;
  */
 public class GivenProtoFile {
 
-    public static final String NO_SPI_OPTIONS = "no_spi_options.proto";
-    public static final String NO_SPI_OPTIONS_MULTIPLE = "no_spi_options_multiple.proto";
-    public static final String SPI_ALL = "spi_all.proto";
-    public static final String SPI_ALL_SERVICE = "spi_all_service.proto";
-    public static final String SPI_ALL_MULTIPLE = "spi_all_multiple.proto";
-    public static final String SPI_MESSAGE = "spi_message.proto";
-    public static final String SPI_MESSAGE_MULTIPLE = "spi_message_multiple.proto";
-    public static final String SPI_FIELD = "spi_field.proto";
-    public static final String SPI_FIELD_MULTIPLE = "spi_field_multiple.proto";
-    public static final String SPI_SERVICE = "spi_service.proto";
-    public static final String POTENTIAL_ANNOTATION_DUP = "potential_annotation_duplication.proto";
+    public static final FileName NO_SPI_OPTIONS = FileName.of("no_spi_options.proto");
+    public static final FileName NO_SPI_OPTIONS_MULTIPLE = FileName.of("no_spi_options_multiple.proto");
+    public static final FileName SPI_ALL = FileName.of("spi_all.proto");
+    public static final FileName SPI_ALL_SERVICE = FileName.of("spi_all_service.proto");
+    public static final FileName SPI_ALL_MULTIPLE = FileName.of("spi_all_multiple.proto");
+    public static final FileName SPI_MESSAGE = FileName.of("spi_message.proto");
+    public static final FileName SPI_MESSAGE_MULTIPLE = FileName.of("spi_message_multiple.proto");
+    public static final FileName SPI_FIELD = FileName.of("spi_field.proto");
+    public static final FileName SPI_FIELD_MULTIPLE = FileName.of("spi_field_multiple.proto");
+    public static final FileName SPI_SERVICE = FileName.of("spi_service.proto");
+    public static final FileName POTENTIAL_ANNOTATION_DUP = FileName.of("potential_annotation_duplication.proto");
 
     /** Prevent instantiation of this utility class. */
     private GivenProtoFile() {

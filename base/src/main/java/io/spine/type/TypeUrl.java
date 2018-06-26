@@ -21,7 +21,6 @@
 package io.spine.type;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Predicate;
 import com.google.common.base.Splitter;
 import com.google.protobuf.Any;
 import com.google.protobuf.AnyOrBuilder;
@@ -32,8 +31,8 @@ import com.google.protobuf.Descriptors.GenericDescriptor;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
+import io.spine.code.proto.Type;
 import io.spine.option.OptionsProto;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.io.Serializable;
 import java.util.List;
@@ -50,7 +49,7 @@ import static java.lang.String.format;
  *
  * <p>Consists of the two parts separated with a slash.
  * The first part is the type URL prefix (for example, {@code "type.googleapis.com"}).
- * The second part is a {@linkplain com.google.protobuf.Descriptors.Descriptor#getFullName()
+ * The second part is a {@linkplain Descriptor#getFullName()
  * fully-qualified Protobuf type name}.
  *
  * @author Alexander Yevsyukov
@@ -70,7 +69,7 @@ public final class TypeUrl implements Serializable {
     private final String typeName;
 
     private TypeUrl(String prefix, String typeName) {
-        this.prefix = checkNotEmptyOrBlank(prefix);
+        this.prefix = checkNotEmptyOrBlank(prefix, typeName);
         this.typeName = checkNotEmptyOrBlank(typeName);
     }
 
@@ -181,7 +180,7 @@ public final class TypeUrl implements Serializable {
      */
     private static String prefixFor(GenericDescriptor descriptor) {
         final FileDescriptor file = descriptor.getFile();
-        if (file.getPackage().equals(GOOGLE_PROTOBUF_PACKAGE)) {
+        if (file.getPackage().startsWith(GOOGLE_PROTOBUF_PACKAGE)) {
             return Prefix.GOOGLE_APIS.value();
         }
         final String result = file.getOptions()
@@ -193,12 +192,24 @@ public final class TypeUrl implements Serializable {
      * Returns a message {@link Class} corresponding to the Protobuf type represented
      * by this type URL.
      *
-     * @return the message class
-     * @throws UnknownTypeException wrapping {@link ClassNotFoundException} if
-     *         there is no corresponding Java class
+     * @return the Java class representing the Protobuf type
+     * @throws UnknownTypeException if there is no corresponding Java class
      */
-    public <T extends Message> Class<T> getJavaClass() throws UnknownTypeException {
-        return KnownTypes.getJavaClass(this);
+    public Class<?> getJavaClass() throws UnknownTypeException {
+        return type().javaClass();
+    }
+
+    /**
+     * Returns a message {@link Class} corresponding to the Protobuf message type represented
+     * by this type URL.
+     *
+     * <p>This is a convenience method. Use it only when sure that the {@link TypeUrl} represents
+     * a message (i.e. not an enum).
+     *
+     * @throws IllegalStateException if the type URL represents an enum
+     */
+    public <T extends Message> Class<T> getMessageClass() throws UnknownTypeException {
+        return toName().getMessageClass();
     }
 
     /**
@@ -209,7 +220,7 @@ public final class TypeUrl implements Serializable {
      */
     @Internal
     public GenericDescriptor getDescriptor() {
-        return TypeName.getDescriptor(typeName);
+        return type().descriptor();
     }
 
     /**
@@ -246,6 +257,12 @@ public final class TypeUrl implements Serializable {
         return result;
     }
 
+    private Type<?, ?> type() throws UnknownTypeException {
+        return KnownTypes.instance()
+                         .find(toName())
+                         .orElseThrow(() -> new UnknownTypeException(toName().value()));
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -264,10 +281,6 @@ public final class TypeUrl implements Serializable {
         return Objects.hash(prefix, typeName);
     }
 
-    static Predicate<TypeUrl> inPackage(String packageName) {
-        return new InPackage(packageName);
-    }
-
     /**
      * Enumeration of known type URL prefixes.
      */
@@ -276,6 +289,8 @@ public final class TypeUrl implements Serializable {
         /**
          * Type prefix for standard Protobuf types.
          */
+        @SuppressWarnings("DuplicateStringLiteralInspection")
+            // Used in the generated code as a literal.
         GOOGLE_APIS("type.googleapis.com"),
 
         /**
@@ -302,25 +317,6 @@ public final class TypeUrl implements Serializable {
         @Override
         public String toString() {
             return value();
-        }
-    }
-
-    /**
-     * Verifies if a type belongs to a package.
-     */
-    private static class InPackage implements Predicate<TypeUrl> {
-
-        private final String packageName;
-
-        private InPackage(String packageName) {
-            this.packageName = packageName;
-        }
-
-        @Override
-        public boolean apply(@Nullable TypeUrl input) {
-            checkNotNull(input);
-            final TypeName typeName = input.toName();
-            return typeName.belongsTo(packageName);
         }
     }
 }

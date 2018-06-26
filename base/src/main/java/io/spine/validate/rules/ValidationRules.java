@@ -20,6 +20,7 @@
 
 package io.spine.validate.rules;
 
+import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableSet;
 import io.spine.Resources;
@@ -37,6 +38,14 @@ import java.util.Properties;
  * @author Dmytro Grankin
  */
 public class ValidationRules {
+
+    /**
+     * An instance of {@link Splitter} for the string option values.
+     *
+     * <p>Targets the string options which list multiple values separated with a {@code ,} (comma)
+     * symbol.
+     */
+    private static final Splitter optionSplitter = Splitter.on(',');
 
     private static final ImmutableCollection<ValidationRule> rules = new Builder().build();
 
@@ -101,10 +110,9 @@ public class ValidationRules {
          * @throws IllegalStateException if an entry from the properties contains invalid data
          */
         private void put(Properties properties) {
-            final ValidationTargetValue targetParser = ValidationTargetValue.getInstance();
             for (String validationRuleType : properties.stringPropertyNames()) {
                 final String ruleTargetPaths = properties.getProperty(validationRuleType);
-                final Collection<String> parsedPaths = targetParser.parse(ruleTargetPaths);
+                final Collection<String> parsedPaths = optionSplitter.splitToList(ruleTargetPaths);
                 final ValidationRule rule = new ValidationRule(validationRuleType, parsedPaths);
                 rules.add(rule);
             }

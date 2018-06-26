@@ -28,15 +28,15 @@ ext {
 }
 
 dependencies {
-    compile deps.build.guava
-    compile gradleApi()
-    compile ("org.reflections:reflections:$reflectionsVersion") {
+    implementation deps.build.guava
+    implementation gradleApi()
+    implementation ("org.reflections:reflections:$reflectionsVersion") {
         exclude group: 'com.google.guava'
     }
-    compile "dom4j:dom4j:$dom4jVersion"
+    implementation "dom4j:dom4j:$dom4jVersion"
 
-    compile project(':plugin-base')
-    compile project(':codegen')
+    implementation project(':plugin-base')
+    implementation project(':base')
 
-    testCompile ("org.testng:testng:$testngVersion")
+    testImplementation "org.testng:testng:$testngVersion"
 }

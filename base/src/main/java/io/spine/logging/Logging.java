@@ -20,8 +20,6 @@
 
 package io.spine.logging;
 
-import com.google.common.base.Supplier;
-import com.google.common.base.Suppliers;
 import com.google.errorprone.annotations.FormatMethod;
 import com.google.errorprone.annotations.FormatString;
 import io.spine.base.Environment;
@@ -29,6 +27,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.helpers.SubstituteLogger;
+
+import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
@@ -75,8 +75,9 @@ public class Logging {
      */
     public static Supplier<Logger> supplyFor(final Class<?> cls) {
         checkNotNull(cls);
-        final Supplier<Logger> defaultSupplier = () -> getLogger(cls);
-        return Suppliers.memoize(defaultSupplier);
+        final Logger instance = getLogger(cls);
+        final Supplier<Logger> defaultSupplier = () -> instance;
+        return defaultSupplier;
     }
 
     /**

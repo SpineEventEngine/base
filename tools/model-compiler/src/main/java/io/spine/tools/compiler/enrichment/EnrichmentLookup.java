@@ -22,7 +22,7 @@ package io.spine.tools.compiler.enrichment;
 
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.Resources;
-import io.spine.tools.properties.PropertiesWriter;
+import io.spine.code.properties.PropertiesWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +31,7 @@ import java.util.Collection;
 import java.util.Map;
 
 import static com.google.common.collect.Maps.newHashMap;
-import static io.spine.tools.proto.FileDescriptors.parseSkipStandard;
+import static io.spine.code.proto.FileDescriptors.parseSkipStandard;
 
 /**
  * Parses descriptor set file and creates enrichments map for discovered enrichment

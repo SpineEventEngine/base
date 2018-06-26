@@ -25,7 +25,7 @@ import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.GeneratedMessageV3.ExtendableMessage;
-import io.spine.tools.java.SourceFile;
+import io.spine.code.java.SourceFile;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jboss.forge.roaster.Roaster;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
@@ -41,6 +41,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
@@ -145,40 +146,25 @@ public abstract class Annotator<O extends ExtendableMessage, D extends Generated
      * @return {@code true} if generated element should be annotated, {@code false} otherwise
      */
     protected final boolean shouldAnnotate(D descriptor) {
-        final String rawValue = getRawOptionValue(descriptor);
-
-        if (rawValue == null) {
-            return false;
-        }
-
-        final boolean optionValue = Integer.parseInt(rawValue) != 0;
-        return optionValue;
+        return getOptionValue(descriptor).orElse(false);
     }
 
     /**
-     * Obtains a raw value of {@link #option} in the specified descriptor.
-     *
-     * <p>The value is a string representation of {@link #option}
-     * (either {@code 0} or {@code 1}, as its type is {@code boolean}),
-     * that is extracted from {@code descriptor.getOptions.getUnknownFields()}.
-     *
-     * <p>As the value is a part parsed from a string representation of an
-     * {@linkplain com.google.protobuf.UnknownFieldSet UnknownFieldSet}, it is a {@code String}.
+     * Obtains the value of {@link #option} in the specified descriptor.
      *
      * @param descriptor the descriptor to extract {@link #option} value.
      * @return the option value
      * @see #shouldAnnotate(GeneratedMessageV3)
-     * @see io.spine.option.UnknownOptions
      */
-    protected abstract String getRawOptionValue(D descriptor);
+    protected abstract Optional<Boolean> getOptionValue(D descriptor);
 
     /**
      * Obtains the {@link #option} number.
      *
      * @return the option number
      */
-    protected final int getOptionNumber() {
-        return option.getNumber();
+    protected final GeneratedExtension<O, Boolean> getOption() {
+        return option;
     }
 
     /**
@@ -253,9 +239,9 @@ public abstract class Annotator<O extends ExtendableMessage, D extends Generated
      * which is represented by {@link AbstractJavaSource}.
      */
     protected class TypeDeclarationAnnotation implements SourceVisitor<JavaClassSource> {
-        @Nullable
+
         @Override
-        public Void apply(@Nullable AbstractJavaSource<JavaClassSource> input) {
+        public @Nullable Void apply(@Nullable AbstractJavaSource<JavaClassSource> input) {
             checkNotNull(input);
             addAnnotation(input);
             return null;

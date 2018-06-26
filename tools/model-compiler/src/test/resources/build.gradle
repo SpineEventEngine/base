@@ -71,21 +71,15 @@ repositories {
 }
 
 dependencies {
-    compile deps.build.guava
-    compile deps.build.protobuf
-
-    compile(group: 'io.spine', name: 'spine-base', version: spineVersion) {
-        exclude(group: 'com.google.protobuf')
-    }
+    implementation "io.spine:spine-base:$spineVersion"
 }
 
 dependencies()
 
 sourceSets {
     main {
-        proto.srcDirs += ["$projectDir/src/main/proto"]
-        java.srcDirs += ["$projectDir/generated/main/java",
-                        "$projectDir/generated/main/spine"]
-        resources.srcDirs += ["$projectDir/generated/main/resources"]
+        proto.srcDirs     "$projectDir/src/main/proto"
+        java.srcDirs      "$projectDir/generated/main/java", "$projectDir/generated/main/spine"
+        resources.srcDirs "$projectDir/generated/main/resources"
     }
 }
