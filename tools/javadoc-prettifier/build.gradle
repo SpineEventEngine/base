@@ -29,3 +29,7 @@ dependencies {
 
     testImplementation project(':plugin-base').sourceSets.test.output // Test classes of `plugin-base`
 }
+
+test.dependsOn(publishToMavenLocal,
+               project(':base').publishToMavenLocal,
+               project(':plugin-base').publishToMavenLocal)
