@@ -55,8 +55,7 @@ modelCompiler {
 }
 
 sourceSets {
-    final def generated = "$projectDir/generated/main"
-    main.java.srcDirs "$generated/spine"
+    main.java.srcDirs "$projectDir/generated/main/spine"
 }
 
 protobuf {
