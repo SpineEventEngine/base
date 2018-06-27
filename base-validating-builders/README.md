@@ -2,8 +2,8 @@
 
 This module assembles the `ValidatingBuilder`s for the `base` Protobuf definitions.
 
-Since `model-compiler` requires `base` in order to work, `base` cannot be assembled by 
-the `model-compiler` seamlessly.
+Since `model-compiler` requires `base`, `base` cannot be assembled by the `model-compiler`
+seamlessly.
 
 In order to include the `ValidatingBuilder`s into the `base` artifact, the builders are assembled 
 separately in this module and put under the `base-validating-builders/builders` directory.
