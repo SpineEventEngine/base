@@ -20,6 +20,12 @@ script:
   - ./gradlew check --stacktrace
   - cd ../../
 
+  # Assemble published artifact. See `base-validating-builders/README.md`
+  - cd ./base-validating-builders
+  - ./gradlew build
+  - cd ../
+  - ./gradlew :base:cleanJar :base:jar
+
   # Decrypt and unarchive Maven and Google Cloud Storage credentials.
   - openssl aes-256-cbc -K $encrypted_88ad5eb2de44_key -iv $encrypted_88ad5eb2de44_iv -in credentials.tar.enc -out credentials.tar -d
   - tar xvf credentials.tar

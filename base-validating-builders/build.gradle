@@ -17,7 +17,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 buildscript {
     apply from: "$projectDir/../ext.gradle"
     apply from: "$projectDir/../config/gradle/dependencies.gradle"
@@ -36,6 +35,7 @@ buildscript {
 apply plugin: 'java'
 apply plugin: 'com.google.protobuf'
 apply plugin: 'io.spine.tools.spine-model-compiler'
+apply plugin: 'idea'
 
 repositories {
     mavenLocal()
@@ -72,4 +72,27 @@ protobuf {
             }
         }
     }
+}
+
+ext.buildersDir = "$projectDir/builders"
+
+task copyCompiledClasses(type: Copy) {
+    from sourceSets.main.java.outputDir
+    into buildersDir
+
+    include {
+        it.isDirectory() || it.name.endsWith('VBuilder.class')
+    }
+
+    dependsOn compileJava
+}
+
+assemble.dependsOn copyCompiledClasses
+
+clean {
+    delete buildersDir
+}
+
+idea.module {
+    generatedSourceDirs += buildersDir
 }
