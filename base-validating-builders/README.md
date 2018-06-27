@@ -12,20 +12,9 @@ When assembling the JAR archive, `base` includes the classes under this path.
 
 ## Assembling Artifacts
 
-In order to assemble the final artifact for `base`, execute the following commands:
-
-In the root project:
-```bash
-./gradlew clean build publishToMavenLocal
-```
-In `base-validating-builders`:
-```bash
-./gradlew clean build
-```
-Again in the root project:
-```bash
-./gradlew :base:cleanJar :base:jar
-```
+In order to assemble the final artifact for `base`, execute the `:base:build` task. It triggers 
+the build of `base-validating-builders` project via the Java process API, which then triggers 
+the JAR archive rebuild the same way.
 
 ## References
 
