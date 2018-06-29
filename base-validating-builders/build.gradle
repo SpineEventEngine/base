@@ -1,0 +1,109 @@
+/*
+ * Copyright 2018, TeamDev. All rights reserved.
+ *
+ * Redistribution and use in source and/or binary forms, with or without
+ * modification, must retain the above copyright notice and the following
+ * disclaimer.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+buildscript {
+    apply from: "$projectDir/../ext.gradle"
+    apply from: "$projectDir/../config/gradle/dependencies.gradle"
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        jcenter()
+    }
+    dependencies {
+        classpath "io.spine.tools:spine-model-compiler:$spineVersion"
+        classpath deps.build.gradlePlugins.protobuf
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'com.google.protobuf'
+apply plugin: 'io.spine.tools.spine-model-compiler'
+apply plugin: 'idea'
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    jcenter()
+    google()
+}
+
+dependencies {
+    final def spineBase = "io.spine:spine-base:$spineVersion"
+
+    protobuf spineBase
+
+    compileClasspath deps.build.protobuf
+    compileClasspath spineBase
+}
+
+modelCompiler {
+    generateBuildersFromClasspath = true
+}
+
+sourceSets {
+    main.java.srcDirs "$projectDir/generated/main/spine"
+}
+
+protobuf {
+    generateProtoTasks {
+        all().each {
+            it.builtins {
+                remove java
+            }
+            it.plugins {
+                remove grpc
+            }
+        }
+    }
+}
+
+ext.buildersDir = "$projectDir/builders"
+
+task copyCompiledClasses(type: Copy) {
+    from sourceSets.main.java.outputDir
+    into buildersDir
+
+    include {
+        it.isDirectory() || it.name.endsWith('VBuilder.class')
+    }
+
+    dependsOn compileJava
+}
+
+assemble.dependsOn copyCompiledClasses
+
+build.doLast {
+    final def directory = "$projectDir/../"
+    final def process = new ProcessBuilder()
+            .command("$directory/gradlew".toString(), ':base:cleanJar', ':base:jar', '--console=plain')
+            .directory(file(directory))
+            .start()
+    if (process.waitFor() != 0) {
+        throw new GradleException("Unable to rebuild JAR for :base.")
+    }
+}
+
+clean {
+    delete buildersDir
+}
+
+idea.module {
+    generatedSourceDirs += buildersDir
+}

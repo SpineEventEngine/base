@@ -119,7 +119,7 @@ class MapFieldMethodConstructor implements MethodConstructor {
         log().debug("The getter construction for the map field is started.");
         final String methodName = "get" + propertyName;
 
-        final String returnStatement = format("return %s.get%s()",
+        final String returnStatement = format("return %s.get%sMap()",
                                               getMessageBuilder(), propertyName);
         final MethodSpec methodSpec =
                 MethodSpec.methodBuilder(methodName)

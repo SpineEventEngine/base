@@ -62,7 +62,7 @@ public abstract class SpinePlugin implements Plugin<Project> {
 
     @SuppressWarnings("HardcodedLineSeparator") // handled by Slf4J
     protected void logMissingDescriptorSetFile(File setFile) {
-        log().warn(
+        log().debug(
                 "Missing descriptor set file {}.\n" +
                         "Please enable descriptor set generation. See: " +
                         "https://github.com/google/protobuf-gradle-plugin/blob/master/README.md" +
