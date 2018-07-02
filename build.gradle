@@ -70,6 +70,8 @@ ext {
         'reflections-plugin',
         'model-compiler',
 
+        'plugin-testlib',
+
         // Protoc compiler plugin
         'protoc-plugin'
     ]
