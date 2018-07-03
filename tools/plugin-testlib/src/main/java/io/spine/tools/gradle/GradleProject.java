@@ -24,7 +24,6 @@ import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import org.gradle.api.Action;
 import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.GradleRunner;
-import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
 import java.io.IOException;
@@ -49,8 +48,8 @@ import static java.util.Arrays.asList;
 /**
  * {@code GradleProject} for the test needs.
  *
- * <p>{@code GradleProject} sets up {@linkplain TemporaryFolder test project directory}
- * and allows to execute Gradle tasks.
+ * <p>{@code GradleProject} operates in the given {@linkplain File test project directory} and
+ * allows to execute Gradle tasks.
  *
  * @author Dmytro Grankin
  * @author Dmytro Dashenkov
