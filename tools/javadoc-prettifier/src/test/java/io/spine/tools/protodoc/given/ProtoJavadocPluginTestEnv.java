@@ -82,7 +82,7 @@ public final class ProtoJavadocPluginTestEnv {
         GradleProject project = GradleProject
                 .newBuilder()
                 .setProjectName("proto-javadoc-test")
-                .setProjectFolder(folder)
+                .setProjectFolder(folder.getRoot())
                 .createFile(filePath, of(fileContent))
                 .build();
         project.executeTask(FORMAT_PROTO_DOC);

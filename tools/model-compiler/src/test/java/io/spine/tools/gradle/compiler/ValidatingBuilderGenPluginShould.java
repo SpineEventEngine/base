@@ -49,7 +49,7 @@ public class ValidatingBuilderGenPluginShould {
         GradleProject project =
                 GradleProject.newBuilder()
                              .setProjectName(PROJECT_NAME)
-                             .setProjectFolder(testProjectDir)
+                             .setProjectFolder(testProjectDir.getRoot())
                              .addProtoFiles(PROTO_FILES)
                              .build();
         project.executeTask(COMPILE_JAVA);

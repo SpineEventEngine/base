@@ -248,7 +248,7 @@ public class ProtoAnnotatorPluginShould {
     private GradleProject newProjectWithFile(FileName protoFileName) {
         return GradleProject.newBuilder()
                             .setProjectName(PROJECT_NAME)
-                            .setProjectFolder(testProjectDir)
+                            .setProjectFolder(testProjectDir.getRoot())
                             .addProtoFile(protoFileName.value())
                             .build();
     }

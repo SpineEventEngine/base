@@ -58,7 +58,7 @@ public class RejectionTestEnv {
     public static GradleProject newProjectWithRejectionsJavadoc(TemporaryFolder projectFolder) {
         return GradleProject.newBuilder()
                             .setProjectName("rejections-javadoc")
-                            .setProjectFolder(projectFolder)
+                            .setProjectFolder(projectFolder.getRoot())
                             .createProto("javadoc_rejections.proto", rejectionWithJavadoc())
                             .build();
     }

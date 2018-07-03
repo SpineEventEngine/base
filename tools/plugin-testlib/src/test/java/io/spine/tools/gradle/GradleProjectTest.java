@@ -45,13 +45,22 @@ public class GradleProjectTest {
     @Rule
     public final TemporaryFolder temporaryFolder = new TemporaryFolder();
 
+    @Test
+    public void build_from_project_folder_and_project_name() {
+        final GradleProject project = GradleProject.newBuilder()
+                                                   .setProjectFolder(temporaryFolder.getRoot())
+                                                   .setProjectName(PROJECT_NAME)
+                                                   .build();
+        assertNotNull(project);
+    }
+
     @SuppressWarnings("ResultOfMethodCallIgnored")
         // OK for this test case; result of `build` it ignored.
     @Test
     public void write_given_java_files() {
         final String[] files = {"Foo.java", "Bar.java"};
         GradleProject.newBuilder()
-                     .setProjectFolder(temporaryFolder)
+                     .setProjectFolder(temporaryFolder.getRoot())
                      .setProjectName(PROJECT_NAME)
                      .addJavaFiles(files)
                      .build();
@@ -71,7 +80,7 @@ public class GradleProjectTest {
     public void execute_faulty_build() {
         final GradleProject project = GradleProject.newBuilder()
                                                    .setProjectName(PROJECT_NAME)
-                                                   .setProjectFolder(temporaryFolder)
+                                                   .setProjectFolder(temporaryFolder.getRoot())
                                                    .addJavaFiles("Faulty.java")
                                                    .build();
         final BuildResult buildResult = project.executeAndFail(COMPILE_JAVA);

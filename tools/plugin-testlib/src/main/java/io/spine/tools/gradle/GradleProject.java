@@ -24,8 +24,8 @@ import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import org.gradle.api.Action;
 import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.GradleRunner;
-import org.junit.rules.TemporaryFolder;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -48,8 +48,8 @@ import static java.util.Arrays.asList;
 /**
  * {@code GradleProject} for the test needs.
  *
- * <p>{@code GradleProject} sets up {@linkplain TemporaryFolder test project directory}
- * and allows to execute Gradle tasks.
+ * <p>{@code GradleProject} operates in the given {@linkplain File test project directory} and
+ * allows to execute Gradle tasks.
  *
  * @author Dmytro Grankin
  * @author Dmytro Dashenkov
@@ -76,7 +76,7 @@ public final class GradleProject {
         this.name = builder.name;
         this.debug = builder.debug;
         this.gradleRunner = GradleRunner.create()
-                                        .withProjectDir(builder.folder.getRoot())
+                                        .withProjectDir(builder.folder)
                                         .withDebug(builder.debug);
         writeGradleScripts();
         writeProtoFiles(builder.protoFileNames);
@@ -236,7 +236,7 @@ public final class GradleProject {
     public static class Builder {
 
         private String name;
-        private TemporaryFolder folder;
+        private File folder;
 
         /**
          * Determines whether the code can be debugged.
@@ -259,7 +259,7 @@ public final class GradleProject {
             return this;
         }
 
-        public Builder setProjectFolder(TemporaryFolder folder) {
+        public Builder setProjectFolder(File folder) {
             this.folder = checkNotNull(folder);
             return this;
         }
@@ -305,8 +305,7 @@ public final class GradleProject {
          * @param lines the content of the file
          */
         public Builder createFile(String path, Iterable<String> lines) {
-            final Path sourcePath = folder.getRoot()
-                                          .toPath()
+            final Path sourcePath = folder.toPath()
                                           .resolve(path);
             try {
                 Files.createDirectories(sourcePath.getParent());

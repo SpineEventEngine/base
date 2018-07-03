@@ -50,7 +50,7 @@ public class SpineProtocShould {
     @Before
     public void setUp() {
         project = GradleProject.newBuilder()
-                               .setProjectFolder(projectDir)
+                               .setProjectFolder(projectDir.getRoot())
                                .setProjectName(PROJECT_NAME)
                                .build();
     }
