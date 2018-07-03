@@ -55,7 +55,7 @@ public class RejectionGenPluginShould {
                                                        "deps/deps.proto");
         final GradleProject project = GradleProject.newBuilder()
                                                    .setProjectName("rejections-gen-plugin-test")
-                                                   .setProjectFolder(testProjectDir)
+                                                   .setProjectFolder(testProjectDir.getRoot())
                                                    .addProtoFiles(files)
                                                    .build();
         project.executeTask(COMPILE_JAVA);

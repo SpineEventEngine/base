@@ -89,7 +89,7 @@ public class ValidationRulesLookupPluginShould {
     private GradleProject newProjectWithFile(String protoFileName, List<String> protoFileLines) {
         return GradleProject.newBuilder()
                             .setProjectName(PROJECT_NAME)
-                            .setProjectFolder(testProjectDir)
+                            .setProjectFolder(testProjectDir.getRoot())
                             .createProto(protoFileName, protoFileLines)
                             .build();
     }
