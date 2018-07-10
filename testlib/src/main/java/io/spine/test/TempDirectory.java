@@ -215,7 +215,7 @@ public class TempDirectory implements ParameterResolver {
      * can also provide a custom file system by using the {@link ParentDirProvider}. An instance of
      * {@code TempDirProvider} executes these (and possibly other) strategies.
      *
-     * @see TempDirectory.ParentDirProvider
+     * @see ParentDirProvider
      */
     @FunctionalInterface
     private interface TempDirProvider {
@@ -257,11 +257,11 @@ public class TempDirectory implements ParameterResolver {
 
         private final Path dir;
 
-        CloseablePath(Path dir) {
+        private CloseablePath(Path dir) {
             this.dir = dir;
         }
 
-        Path get() {
+        private Path get() {
             return dir;
         }
 
