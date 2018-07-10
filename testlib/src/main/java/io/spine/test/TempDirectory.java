@@ -18,7 +18,7 @@ package io.spine.test;
 // library has not reached its release, we should use this fork instead of depending on the whole
 // project because its API changes swiftly and unpredictably.
 //
-// Once it is released, we should switch to using JUnit Pioneer dependency instead of forking the
+// Once it is released, we should switch to using JUnit Pioneer dependency instead of copying the
 // file.
 
 import org.junit.jupiter.api.extension.ExtensionConfigurationException;
