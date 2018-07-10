@@ -19,8 +19,13 @@ package io.spine.test;
  * The file is taken without any changes (except this comment and package).
  */
 
-import static java.nio.file.FileVisitResult.CONTINUE;
-import static java.util.Objects.requireNonNull;
+import org.junit.jupiter.api.extension.ExtensionConfigurationException;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.ExtensionContext.Namespace;
+import org.junit.jupiter.api.extension.ExtensionContext.Store.CloseableResource;
+import org.junit.jupiter.api.extension.ParameterContext;
+import org.junit.jupiter.api.extension.ParameterResolutionException;
+import org.junit.jupiter.api.extension.ParameterResolver;
 
 import java.io.IOException;
 import java.lang.annotation.Documented;
@@ -35,16 +40,10 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.concurrent.Callable;
 
-import org.junit.jupiter.api.extension.ExtensionConfigurationException;
-import org.junit.jupiter.api.extension.ExtensionContext;
-import org.junit.jupiter.api.extension.ExtensionContext.Namespace;
-import org.junit.jupiter.api.extension.ExtensionContext.Store.CloseableResource;
-import org.junit.jupiter.api.extension.ParameterContext;
-import org.junit.jupiter.api.extension.ParameterResolutionException;
-import org.junit.jupiter.api.extension.ParameterResolver;
+import static java.nio.file.FileVisitResult.CONTINUE;
+import static java.util.Objects.requireNonNull;
 
- /**
- *
+/**
  * {@code TempDirectory} is a JUnit Jupiter extension to create and clean up a
  * temporary directory.
  *
@@ -82,10 +81,10 @@ import org.junit.jupiter.api.extension.ParameterResolver;
  * with any third-party {@code FileSystem} implementation, e.g.
  * <a href="https://github.com/google/jimfs">Jimfs</a>.
  *
- * @since 0.1
  * @see TempDir
  * @see ParentDirProvider
  * @see Files#createTempDirectory
+ * @since 0.1
  */
 public class TempDirectory implements ParameterResolver {
 
@@ -137,13 +136,14 @@ public class TempDirectory implements ParameterResolver {
      * {@link org.junit.jupiter.api.extension.RegisterExtension @RegisterExtension}.
      *
      * @param parentDirProvider used to configure the parent directory for the
-     * temporary directories created by this extension
+     *                          temporary directories created by this extension
      */
     public static TempDirectory createInCustomDirectory(ParentDirProvider parentDirProvider) {
         requireNonNull(parentDirProvider);
         // @formatter:off
         return new TempDirectory((parameterContext, extensionContext, dirPrefix) ->
-                                         createCustomTempDir(parentDirProvider, parameterContext, extensionContext, dirPrefix));
+                                         createCustomTempDir(parentDirProvider, parameterContext,
+                                                             extensionContext, dirPrefix));
         // @formatter:on
     }
 
@@ -156,103 +156,113 @@ public class TempDirectory implements ParameterResolver {
      * {@link org.junit.jupiter.api.extension.RegisterExtension @RegisterExtension}.
      *
      * @param parentDirProvider used to configure the parent directory for the
-     * temporary directories created by this extension
+     *                          temporary directories created by this extension
      */
     public static TempDirectory createInCustomDirectory(Callable<Path> parentDirProvider) {
         requireNonNull(parentDirProvider);
-        return createInCustomDirectory((parameterContext, extensionContext) -> parentDirProvider.call());
+        return createInCustomDirectory(
+                (parameterContext, extensionContext) -> parentDirProvider.call());
     }
 
     @Override
-    public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) {
+    public boolean supportsParameter(ParameterContext parameterContext,
+                                     ExtensionContext extensionContext) {
         return parameterContext.isAnnotated(TempDir.class);
     }
 
     @Override
-    public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) {
-        Class<?> parameterType = parameterContext.getParameter().getType();
+    public Object resolveParameter(ParameterContext parameterContext,
+                                   ExtensionContext extensionContext) {
+        Class<?> parameterType = parameterContext.getParameter()
+                                                 .getType();
         if (parameterType != Path.class) {
             throw new ParameterResolutionException(
-                    "Can only resolve parameter of type " + Path.class.getName() + " but was: " + parameterType.getName());
+                    "Can only resolve parameter of type " + Path.class.getName() + " but was: " +
+                            parameterType.getName());
         }
         return extensionContext.getStore(NAMESPACE) //
                                .getOrComputeIfAbsent(KEY,
-                                                     key -> tempDirProvider.get(parameterContext, extensionContext, TEMP_DIR_PREFIX),
+                                                     key -> tempDirProvider.get(parameterContext,
+                                                                                extensionContext,
+                                                                                TEMP_DIR_PREFIX),
                                                      CloseablePath.class) //
                                .get();
     }
 
-     /**
-      * {@code TempDir} can be used to annotate a test or lifecycle method or
-      * test class constructor parameter of type {@link Path} that should be
-      * resolved into a temporary directory.
-      *
-      * @see TempDirectory
-      */
-     @Target(ElementType.PARAMETER)
-     @Retention(RetentionPolicy.RUNTIME)
-     @Documented
-     public @interface TempDir {
-     }
+    /**
+     * {@code TempDir} can be used to annotate a test or lifecycle method or
+     * test class constructor parameter of type {@link Path} that should be
+     * resolved into a temporary directory.
+     *
+     * @see TempDirectory
+     */
+    @Target(ElementType.PARAMETER)
+    @Retention(RetentionPolicy.RUNTIME)
+    @Documented
+    public @interface TempDir {
+    }
 
-     /**
-      * {@code ParentDirProvider} can be used to configure a custom parent
-      * directory for all temporary directories created by the
-      * {@link TempDirectory} extension this is used with.
-      *
-      * @see org.junit.jupiter.api.extension.RegisterExtension
-      * @see TempDirectory#createInCustomDirectory(ParentDirProvider)
-      */
-     @FunctionalInterface
-     public interface ParentDirProvider {
-         /**
-          * Get the parent directory for all temporary directories created by the
-          * {@link TempDirectory} extension this is used with.
-          *
-          * @return the parent directory for all temporary directories
-          */
-         Path get(ParameterContext parameterContext, ExtensionContext extensionContext) throws Exception;
-     }
+    /**
+     * {@code ParentDirProvider} can be used to configure a custom parent
+     * directory for all temporary directories created by the
+     * {@link TempDirectory} extension this is used with.
+     *
+     * @see org.junit.jupiter.api.extension.RegisterExtension
+     * @see TempDirectory#createInCustomDirectory(ParentDirProvider)
+     */
+    @FunctionalInterface
+    public interface ParentDirProvider {
+        /**
+         * Get the parent directory for all temporary directories created by the
+         * {@link TempDirectory} extension this is used with.
+         *
+         * @return the parent directory for all temporary directories
+         */
+        Path get(ParameterContext parameterContext, ExtensionContext extensionContext) throws
+                                                                                       Exception;
+    }
 
-     /**
-      * {@code TempDirProvider} is used internally to define how the temporary
-      * directory is created.
-      *
-      * <p>The temporary directory is by default created on the regular
-      * file system, but the user can also provide a custom file system
-      * by using the {@link ParentDirProvider}. An instance of
-      * {@code TempDirProvider} executes these (and possibly other) strategies.
-      *
-      * @see TempDirectory.ParentDirProvider
-      */
-     @FunctionalInterface
-     private interface TempDirProvider {
-         CloseablePath get(ParameterContext parameterContext, ExtensionContext extensionContext, String dirPrefix);
-     }
+    /**
+     * {@code TempDirProvider} is used internally to define how the temporary
+     * directory is created.
+     *
+     * <p>The temporary directory is by default created on the regular
+     * file system, but the user can also provide a custom file system
+     * by using the {@link ParentDirProvider}. An instance of
+     * {@code TempDirProvider} executes these (and possibly other) strategies.
+     *
+     * @see TempDirectory.ParentDirProvider
+     */
+    @FunctionalInterface
+    private interface TempDirProvider {
+        CloseablePath get(ParameterContext parameterContext, ExtensionContext extensionContext,
+                          String dirPrefix);
+    }
 
     private static CloseablePath createDefaultTempDir(String dirPrefix) {
         try {
             return new CloseablePath(Files.createTempDirectory(dirPrefix));
-        }
-        catch (Exception ex) {
-            throw new ExtensionConfigurationException("Failed to create default temp directory", ex);
+        } catch (Exception ex) {
+            throw new ExtensionConfigurationException("Failed to create default temp directory",
+                                                      ex);
         }
     }
 
     private static CloseablePath createCustomTempDir(ParentDirProvider parentDirProvider,
-                                                     ParameterContext parameterContext, ExtensionContext extensionContext, String dirPrefix) {
+                                                     ParameterContext parameterContext,
+                                                     ExtensionContext extensionContext,
+                                                     String dirPrefix) {
         Path parentDir;
         try {
             parentDir = parentDirProvider.get(parameterContext, extensionContext);
             requireNonNull(parentDir);
-        }
-        catch (Exception ex) {
-            throw new ParameterResolutionException("Failed to get parent directory from provider", ex);
+        } catch (Exception ex) {
+            throw new ParameterResolutionException("Failed to get parent directory from provider",
+                                                   ex);
         }
         try {
             return new CloseablePath(Files.createTempDirectory(parentDir, dirPrefix));
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             throw new ParameterResolutionException("Failed to create custom temp directory", ex);
         }
     }
@@ -274,22 +284,24 @@ public class TempDirectory implements ParameterResolver {
             Files.walkFileTree(dir, new SimpleFileVisitor<Path>() {
 
                 @Override
-                public FileVisitResult visitFile(Path file, BasicFileAttributes attributes) throws IOException {
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attributes) throws
+                                                                                            IOException {
                     return deleteAndContinue(file);
                 }
 
                 @Override
-                public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws
+                                                                                     IOException {
                     return deleteAndContinue(dir);
                 }
 
                 private FileVisitResult deleteAndContinue(Path path) throws IOException {
                     try {
                         Files.delete(path);
-                    }
-                    catch (IOException ex) {
+                    } catch (IOException ex) {
                         throw new IOException(
-                                "Failed to delete temp directory " + dir.toAbsolutePath() + " at: " + path.toAbsolutePath(),
+                                "Failed to delete temp directory " + dir.toAbsolutePath() +
+                                        " at: " + path.toAbsolutePath(),
                                 ex);
                     }
                     return CONTINUE;
