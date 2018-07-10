@@ -140,11 +140,9 @@ public class TempDirectory implements ParameterResolver {
      */
     public static TempDirectory createInCustomDirectory(ParentDirProvider parentDirProvider) {
         requireNonNull(parentDirProvider);
-        // @formatter:off
         return new TempDirectory((parameterContext, extensionContext, dirPrefix) ->
                                          createCustomTempDir(parentDirProvider, parameterContext,
                                                              extensionContext, dirPrefix));
-        // @formatter:on
     }
 
     /**
