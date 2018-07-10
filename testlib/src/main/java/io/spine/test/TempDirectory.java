@@ -79,6 +79,7 @@ import static java.util.Objects.requireNonNull;
  * @see Files#createTempDirectory
  * @since 0.1
  */
+@SuppressWarnings({"unused", "WeakerAccess"}) // Used in other projects.
 public class TempDirectory implements ParameterResolver {
 
     private static final Namespace NAMESPACE = Namespace.create(TempDirectory.class);
