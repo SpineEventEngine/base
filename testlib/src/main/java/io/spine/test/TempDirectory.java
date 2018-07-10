@@ -10,14 +10,16 @@
 
 package io.spine.test;
 
-/*
- * This file is taken from the
- * <a href="https://github.com/junit-pioneer/junit-pioneer">JUnit Pioneer project</a>. While the
- * library has not reached its release, we should use this fork instead of depending on the whole
- * project because its API changes swiftly and unpredictably.
- *
- * The file is taken without any changes (except this comment and package).
- */
+//TODO:2018-07-10:dmytro.kuzmin: Remove this file and use the one from the JUnit Pioneer when it
+// is released.
+//
+// This file is taken from the
+// <a href="https://github.com/junit-pioneer/junit-pioneer">JUnit Pioneer project</a>. While the
+// library has not reached its release, we should use this fork instead of depending on the whole
+// project because its API changes swiftly and unpredictably.
+//
+// Once it is released, we should switch to using JUnit Pioneer dependency instead of forking the
+// file.
 
 import org.junit.jupiter.api.extension.ExtensionConfigurationException;
 import org.junit.jupiter.api.extension.ExtensionContext;
