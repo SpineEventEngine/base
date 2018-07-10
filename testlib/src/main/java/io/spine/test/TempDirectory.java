@@ -223,6 +223,7 @@ public class TempDirectory implements ParameterResolver {
         get(ParameterContext parameterContext, ExtensionContext extensionContext, String dirPrefix);
     }
 
+    @SuppressWarnings("OverlyBroadCatchBlock") // OK as we want to catch all exceptions.
     private static CloseablePath createDefaultTempDir(String dirPrefix) {
         try {
             return new CloseablePath(Files.createTempDirectory(dirPrefix));
@@ -232,6 +233,7 @@ public class TempDirectory implements ParameterResolver {
         }
     }
 
+    @SuppressWarnings("OverlyBroadCatchBlock") // OK as we want to catch all exceptions.
     private static CloseablePath createCustomTempDir(ParentDirProvider parentDirProvider,
                                                      ParameterContext parameterContext,
                                                      ExtensionContext extensionContext,
@@ -265,32 +267,33 @@ public class TempDirectory implements ParameterResolver {
 
         @Override
         public void close() throws IOException {
-            Files.walkFileTree(dir, new SimpleFileVisitor<Path>() {
+            Files.walkFileTree(dir, new PathSimpleFileVisitor());
+        }
 
-                @Override
-                public FileVisitResult
-                visitFile(Path file, BasicFileAttributes attributes) throws IOException {
-                    return deleteAndContinue(file);
-                }
+        private class PathSimpleFileVisitor extends SimpleFileVisitor<Path> {
 
-                @Override
-                public FileVisitResult
-                postVisitDirectory(Path dir, IOException exc) throws IOException {
-                    return deleteAndContinue(dir);
-                }
+            @Override
+            public FileVisitResult
+            visitFile(Path file, BasicFileAttributes attributes) throws IOException {
+                return deleteAndContinue(file);
+            }
 
-                private FileVisitResult deleteAndContinue(Path path) throws IOException {
-                    try {
-                        Files.delete(path);
-                    } catch (IOException ex) {
-                        throw new IOException(
-                                "Failed to delete temp directory " + dir.toAbsolutePath() +
-                                        " at: " + path.toAbsolutePath(),
-                                ex);
-                    }
-                    return CONTINUE;
+            @Override
+            public FileVisitResult
+            postVisitDirectory(Path dir, IOException exc) throws IOException {
+                return deleteAndContinue(dir);
+            }
+
+            private FileVisitResult deleteAndContinue(Path path) throws IOException {
+                try {
+                    Files.delete(path);
+                } catch (IOException ex) {
+                    throw new IOException(
+                            "Failed to delete temp directory " + dir.toAbsolutePath() + " at: " +
+                                    path.toAbsolutePath(), ex);
                 }
-            });
+                return CONTINUE;
+            }
         }
     }
 }
