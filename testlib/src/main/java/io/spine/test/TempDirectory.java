@@ -89,54 +89,6 @@ import org.junit.jupiter.api.extension.ParameterResolver;
  */
 public class TempDirectory implements ParameterResolver {
 
-    /**
-     * {@code TempDir} can be used to annotate a test or lifecycle method or
-     * test class constructor parameter of type {@link Path} that should be
-     * resolved into a temporary directory.
-     *
-     * @see TempDirectory
-     */
-    @Target(ElementType.PARAMETER)
-    @Retention(RetentionPolicy.RUNTIME)
-    @Documented
-    public @interface TempDir {
-    }
-
-    /**
-     * {@code ParentDirProvider} can be used to configure a custom parent
-     * directory for all temporary directories created by the
-     * {@link TempDirectory} extension this is used with.
-     *
-     * @see org.junit.jupiter.api.extension.RegisterExtension
-     * @see TempDirectory#createInCustomDirectory(ParentDirProvider)
-     */
-    @FunctionalInterface
-    public interface ParentDirProvider {
-        /**
-         * Get the parent directory for all temporary directories created by the
-         * {@link TempDirectory} extension this is used with.
-         *
-         * @return the parent directory for all temporary directories
-         */
-        Path get(ParameterContext parameterContext, ExtensionContext extensionContext) throws Exception;
-    }
-
-    /**
-     * {@code TempDirProvider} is used internally to define how the temporary
-     * directory is created.
-     *
-     * <p>The temporary directory is by default created on the regular
-     * file system, but the user can also provide a custom file system
-     * by using the {@link ParentDirProvider}. An instance of
-     * {@code TempDirProvider} executes these (and possibly other) strategies.
-     *
-     * @see TempDirectory.ParentDirProvider
-     */
-    @FunctionalInterface
-    private interface TempDirProvider {
-        CloseablePath get(ParameterContext parameterContext, ExtensionContext extensionContext, String dirPrefix);
-    }
-
     private static final Namespace NAMESPACE = Namespace.create(TempDirectory.class);
     private static final String KEY = "temp.dir";
     private static final String TEMP_DIR_PREFIX = "junit";
@@ -229,6 +181,54 @@ public class TempDirectory implements ParameterResolver {
                                                      CloseablePath.class) //
                                .get();
     }
+
+     /**
+      * {@code TempDir} can be used to annotate a test or lifecycle method or
+      * test class constructor parameter of type {@link Path} that should be
+      * resolved into a temporary directory.
+      *
+      * @see TempDirectory
+      */
+     @Target(ElementType.PARAMETER)
+     @Retention(RetentionPolicy.RUNTIME)
+     @Documented
+     public @interface TempDir {
+     }
+
+     /**
+      * {@code ParentDirProvider} can be used to configure a custom parent
+      * directory for all temporary directories created by the
+      * {@link TempDirectory} extension this is used with.
+      *
+      * @see org.junit.jupiter.api.extension.RegisterExtension
+      * @see TempDirectory#createInCustomDirectory(ParentDirProvider)
+      */
+     @FunctionalInterface
+     public interface ParentDirProvider {
+         /**
+          * Get the parent directory for all temporary directories created by the
+          * {@link TempDirectory} extension this is used with.
+          *
+          * @return the parent directory for all temporary directories
+          */
+         Path get(ParameterContext parameterContext, ExtensionContext extensionContext) throws Exception;
+     }
+
+     /**
+      * {@code TempDirProvider} is used internally to define how the temporary
+      * directory is created.
+      *
+      * <p>The temporary directory is by default created on the regular
+      * file system, but the user can also provide a custom file system
+      * by using the {@link ParentDirProvider}. An instance of
+      * {@code TempDirProvider} executes these (and possibly other) strategies.
+      *
+      * @see TempDirectory.ParentDirProvider
+      */
+     @FunctionalInterface
+     private interface TempDirProvider {
+         CloseablePath get(ParameterContext parameterContext, ExtensionContext extensionContext, String dirPrefix);
+     }
 
     private static CloseablePath createDefaultTempDir(String dirPrefix) {
         try {
