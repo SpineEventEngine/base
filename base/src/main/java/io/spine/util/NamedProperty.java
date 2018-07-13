@@ -20,8 +20,9 @@
 
 package io.spine.util;
 
-import com.google.common.base.Optional;
 import io.spine.reflect.GenericTypeIndex;
+
+import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;

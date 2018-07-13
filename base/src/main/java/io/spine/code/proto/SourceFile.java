@@ -20,7 +20,6 @@
 
 package io.spine.code.proto;
 
-import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
@@ -28,6 +27,7 @@ import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.code.AbstractSourceFile;
 import io.spine.code.java.SimpleClassName;
 
+import java.util.Optional;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;

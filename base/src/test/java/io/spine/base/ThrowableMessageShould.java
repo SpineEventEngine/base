@@ -19,7 +19,6 @@
  */
 package io.spine.base;
 
-import com.google.common.base.Optional;
 import com.google.protobuf.Any;
 import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.util.Timestamps;
@@ -28,6 +27,8 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+
+import java.util.Optional;
 
 import static io.spine.test.TestValues.newUuidValue;
 import static org.junit.Assert.assertEquals;

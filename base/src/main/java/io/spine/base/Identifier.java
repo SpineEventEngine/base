@@ -20,7 +20,6 @@
 
 package io.spine.base;
 
-import com.google.common.base.Optional;
 import com.google.common.reflect.TypeToken;
 import com.google.protobuf.Any;
 import com.google.protobuf.Int32Value;
@@ -37,6 +36,7 @@ import io.spine.string.StringifierRegistry;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
