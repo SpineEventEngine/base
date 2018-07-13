@@ -108,8 +108,8 @@ public final class GradleProject {
     private GradleRunner prepareRun(TaskName taskName) {
         String task = taskName.getValue();
         String[] args = debug
-                ? new String[]{task, STACKTRACE_CLI_OPTION, DEBUG_CLI_OPTION}
-                : new String[]{task, STACKTRACE_CLI_OPTION};
+                        ? new String[]{task, STACKTRACE_CLI_OPTION, DEBUG_CLI_OPTION}
+                        : new String[]{task, STACKTRACE_CLI_OPTION};
         return gradleRunner.withArguments(args);
     }
 
@@ -124,11 +124,11 @@ public final class GradleProject {
     private void writeFile(String fileName, String dir) throws IOException {
         String filePath = dir + fileName;
         Path resultingPath = gradleRunner.getProjectDir()
-                                               .toPath()
-                                               .resolve(filePath);
+                                         .toPath()
+                                         .resolve(filePath);
         String fullyQualifiedPath = name + '/' + filePath;
         InputStream fileContent = getClass().getClassLoader()
-                                                  .getResourceAsStream(fullyQualifiedPath);
+                                            .getResourceAsStream(fullyQualifiedPath);
         Files.createDirectories(resultingPath.getParent());
         Files.copy(fileContent, resultingPath);
     }
@@ -142,10 +142,10 @@ public final class GradleProject {
 
     private void writeBuildGradle() throws IOException {
         Path resultingPath = gradleRunner.getProjectDir()
-                                               .toPath()
-                                               .resolve(BUILD_GRADLE_NAME);
+                                         .toPath()
+                                         .resolve(BUILD_GRADLE_NAME);
         InputStream fileContent = getClass().getClassLoader()
-                                                  .getResourceAsStream(BUILD_GRADLE_NAME);
+                                            .getResourceAsStream(BUILD_GRADLE_NAME);
         Files.createDirectories(resultingPath.getParent());
         Files.copy(fileContent, resultingPath);
     }
@@ -306,7 +306,7 @@ public final class GradleProject {
          */
         public Builder createFile(String path, Iterable<String> lines) {
             Path sourcePath = folder.toPath()
-                                          .resolve(path);
+                                    .resolve(path);
             try {
                 Files.createDirectories(sourcePath.getParent());
                 Files.write(sourcePath, lines, Charset.forName("UTF-8"));
