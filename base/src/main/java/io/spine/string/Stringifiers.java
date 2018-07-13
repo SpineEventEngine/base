@@ -73,8 +73,8 @@ public final class Stringifiers {
         checkNotNull(object);
         checkNotNull(typeOfT);
 
-        final Stringifier<T> stringifier = StringifierRegistry.getStringifier(typeOfT);
-        final String result = stringifier.convert(object);
+        Stringifier<T> stringifier = StringifierRegistry.getStringifier(typeOfT);
+        String result = stringifier.convert(object);
         return result;
     }
 
@@ -91,8 +91,8 @@ public final class Stringifiers {
         checkNotNull(str);
         checkNotNull(typeOfT);
 
-        final Stringifier<T> stringifier = StringifierRegistry.getStringifier(typeOfT);
-        final T result = stringifier.reverse()
+        Stringifier<T> stringifier = StringifierRegistry.getStringifier(typeOfT);
+        T result = stringifier.reverse()
                                     .convert(str);
         return result;
     }
@@ -110,7 +110,7 @@ public final class Stringifiers {
                                                             Class<V> valueClass) {
         checkNotNull(keyClass);
         checkNotNull(valueClass);
-        final Stringifier<Map<K, V>> mapStringifier = new MapStringifier<>(keyClass, valueClass);
+        Stringifier<Map<K, V>> mapStringifier = new MapStringifier<>(keyClass, valueClass);
         return mapStringifier;
     }
 
@@ -129,7 +129,7 @@ public final class Stringifiers {
                                                             char delimiter) {
         checkNotNull(keyClass);
         checkNotNull(valueClass);
-        final Stringifier<Map<K, V>> mapStringifier =
+        Stringifier<Map<K, V>> mapStringifier =
                 new MapStringifier<>(keyClass, valueClass, delimiter);
         return mapStringifier;
     }
@@ -173,7 +173,7 @@ public final class Stringifiers {
      */
     public static <T> Stringifier<List<T>> newForListOf(Class<T> elementClass) {
         checkNotNull(elementClass);
-        final Stringifier<List<T>> listStringifier = new ListStringifier<>(elementClass);
+        Stringifier<List<T>> listStringifier = new ListStringifier<>(elementClass);
         return listStringifier;
     }
 
@@ -187,7 +187,7 @@ public final class Stringifiers {
      */
     public static <T> Stringifier<List<T>> newForListOf(Class<T> elementClass, char delimiter) {
         checkNotNull(elementClass);
-        final Stringifier<List<T>> listStringifier =
+        Stringifier<List<T>> listStringifier =
                 new ListStringifier<>(elementClass, delimiter);
         return listStringifier;
     }
@@ -201,7 +201,7 @@ public final class Stringifiers {
      */
     static <T extends Message> Stringifier<T> newForMessage(Class<T> messageClass) {
         checkNotNull(messageClass);
-        final DefaultMessageStringifier<T> defaultStringifier =
+        DefaultMessageStringifier<T> defaultStringifier =
                 new DefaultMessageStringifier<>(messageClass);
         return defaultStringifier;
     }
@@ -213,8 +213,8 @@ public final class Stringifiers {
      * @return the constructed escaper
      */
     static Escaper createEscaper(char charToEscape) {
-        final String escapedChar = "\\" + charToEscape;
-        final Escaper result = Escapers.builder()
+        String escapedChar = "\\" + charToEscape;
+        Escaper result = Escapers.builder()
                                        .addEscape('\"', "\\\"")
                                        .addEscape(charToEscape, escapedChar)
                                        .build();

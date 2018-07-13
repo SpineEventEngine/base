@@ -52,9 +52,9 @@ public class Plugin {
      * The entry point of the program.
      */
     public static void main(String[] args) {
-        final CodeGeneratorRequest request = readRequest();
-        final SpineProtoGenerator generator = MarkerInterfaceGenerator.instance();
-        final CodeGeneratorResponse response = generator.process(request);
+        CodeGeneratorRequest request = readRequest();
+        SpineProtoGenerator generator = MarkerInterfaceGenerator.instance();
+        CodeGeneratorResponse response = generator.process(request);
         writeResponse(response);
     }
 
@@ -71,7 +71,7 @@ public class Plugin {
     private static void writeResponse(CodeGeneratorResponse response) {
         checkNotNull(response);
         @SuppressWarnings("UseOfSystemOutOrSystemErr") // Required by the protoc API.
-        final CodedOutputStream stream = CodedOutputStream.newInstance(System.out);
+        CodedOutputStream stream = CodedOutputStream.newInstance(System.out);
         try {
             response.writeTo(stream);
             stream.flush();

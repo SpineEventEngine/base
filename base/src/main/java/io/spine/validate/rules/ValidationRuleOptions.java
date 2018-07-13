@@ -62,8 +62,8 @@ public class ValidationRuleOptions {
                                                  GeneratedExtension<FieldOptions, T> option) {
         for (FieldContext context : options.keySet()) {
             if (fieldContext.hasSameTargetAndParent(context)) {
-                final FieldOptions fieldOptions = options.get(context);
-                final T optionValue = fieldOptions.getExtension(option);
+                FieldOptions fieldOptions = options.get(context);
+                T optionValue = fieldOptions.getExtension(option);
                 return Optional.of(optionValue);
             }
         }
@@ -89,19 +89,19 @@ public class ValidationRuleOptions {
         }
 
         private void putAll(ValidationRule validationRule) {
-            final Descriptor ruleDescriptor = validationRule.getDescriptor();
-            final Collection<FieldDescriptor> targets = validationRule.getTargets();
+            Descriptor ruleDescriptor = validationRule.getDescriptor();
+            Collection<FieldDescriptor> targets = validationRule.getTargets();
             for (FieldDescriptor target : targets) {
                 put(ruleDescriptor, target);
             }
         }
 
         private void put(Descriptor rule, FieldDescriptor target) {
-            final Descriptor targetType = target.getMessageType();
+            Descriptor targetType = target.getMessageType();
             for (FieldDescriptor ruleField : rule.getFields()) {
-                final FieldDescriptor subTarget = targetType.findFieldByName(ruleField.getName());
-                final FieldContext targetContext = FieldContext.create(target);
-                final FieldContext subTargetContext = targetContext.forChild(subTarget);
+                FieldDescriptor subTarget = targetType.findFieldByName(ruleField.getName());
+                FieldContext targetContext = FieldContext.create(target);
+                FieldContext subTargetContext = targetContext.forChild(subTarget);
                 state.put(subTargetContext, ruleField.getOptions());
             }
         }

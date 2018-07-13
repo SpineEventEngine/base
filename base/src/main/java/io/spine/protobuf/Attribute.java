@@ -64,19 +64,19 @@ public abstract class Attribute<T, M extends Message, B extends Message.Builder>
      */
     @Override
     public final Optional<T> getValue(M obj) {
-        final Map<String, Any> map = getMap(obj);
-        final Optional<T> result = getFromMap(map);
+        Map<String, Any> map = getMap(obj);
+        Optional<T> result = getFromMap(map);
         return result;
     }
 
     private Optional<T> getFromMap(Map<String, Any> map) {
-        final Any any = map.get(getName());
+        Any any = map.get(getName());
         if (any == null || Any.getDefaultInstance()
                               .equals(any)) {
             return Optional.absent();
         }
 
-        final T result = toObject(any, getValueClass());
+        T result = toObject(any, getValueClass());
         return Optional.of(result);
     }
 
@@ -84,8 +84,8 @@ public abstract class Attribute<T, M extends Message, B extends Message.Builder>
      * Sets the value of the attribute in the passed builder.
      */
     public final void setValue(B builder, T value) {
-        final Map<String, Any> map = getMutableMap(builder);
-        final Any packed = toAny(value);
+        Map<String, Any> map = getMutableMap(builder);
+        Any packed = toAny(value);
         map.put(getName(), packed);
     }
 }

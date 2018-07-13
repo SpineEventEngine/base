@@ -86,8 +86,8 @@ public class RejectionJavadoc {
      * @return the class-level Javadoc content
      */
     public String forClass() {
-        final Optional<String> leadingComments = getRejectionLeadingComments();
-        final StringBuilder builder = new StringBuilder(256);
+        Optional<String> leadingComments = getRejectionLeadingComments();
+        StringBuilder builder = new StringBuilder(256);
 
         if (leadingComments.isPresent()) {
             builder.append(OPENING_PRE)
@@ -113,8 +113,8 @@ public class RejectionJavadoc {
      * @return the constructor Javadoc content
      */
     public String forConstructor() {
-        final StringBuilder builder = new StringBuilder("Creates a new instance.");
-        final Map<FieldDescriptorProto, String> commentedFields = getCommentedFields();
+        StringBuilder builder = new StringBuilder("Creates a new instance.");
+        Map<FieldDescriptorProto, String> commentedFields = getCommentedFields();
 
         if (!commentedFields.isEmpty()) {
             int maxFieldLength = getMaxFieldNameLength(commentedFields.keySet());
@@ -122,10 +122,10 @@ public class RejectionJavadoc {
             builder.append(LINE_SEPARATOR)
                    .append(LINE_SEPARATOR);
             for (Entry<FieldDescriptorProto, String> commentedField : commentedFields.entrySet()) {
-                final String fieldName = FieldName.of(commentedField.getKey()
+                String fieldName = FieldName.of(commentedField.getKey()
                                                                     .getName())
                                                   .javaCase();
-                final int commentOffset = maxFieldLength - fieldName.length() + 1;
+                int commentOffset = maxFieldLength - fieldName.length() + 1;
                 builder.append("@param ")
                        .append(fieldName)
                        .append(Strings.repeat(" ", commentOffset))
@@ -143,7 +143,7 @@ public class RejectionJavadoc {
      * @return the field leading comments or empty {@code Optional} if there are no such comments
      */
     private Optional<String> getFieldLeadingComments(FieldDescriptorProto field) {
-        final LocationPath fieldPath = getFieldLocationPath(field);
+        LocationPath fieldPath = getFieldLocationPath(field);
         return getLeadingComments(fieldPath);
     }
 
@@ -153,7 +153,7 @@ public class RejectionJavadoc {
      * @return the comments text or empty {@code Optional} if there are no such comments
      */
     private Optional<String> getRejectionLeadingComments() {
-        final LocationPath messagePath = getMessageLocationPath();
+        LocationPath messagePath = getMessageLocationPath();
         return getLeadingComments(messagePath);
     }
 
@@ -166,14 +166,14 @@ public class RejectionJavadoc {
     private Optional<String> getLeadingComments(LocationPath locationPath) {
         if (!declaration.getFile()
                         .hasSourceCodeInfo()) {
-            final String errMsg =
+            String errMsg =
                     "To enable rejection generation, please configure the Gradle " +
                     "Protobuf plugin as follows: " +
                             "`task.descriptorSetOptions.includeSourceInfo = true`.";
             throw new IllegalStateException(errMsg);
         }
 
-        final Location location = getLocation(locationPath);
+        Location location = getLocation(locationPath);
         return location.hasLeadingComments()
                ? Optional.of(location.getLeadingComments())
                : Optional.<String>absent();
@@ -201,7 +201,7 @@ public class RejectionJavadoc {
      * @return the field location path
      */
     private LocationPath getFieldLocationPath(FieldDescriptorProto field) {
-        final LocationPath locationPath = new LocationPath();
+        LocationPath locationPath = new LocationPath();
 
         locationPath.addAll(getMessageLocationPath());
         locationPath.add(DescriptorProto.FIELD_FIELD_NUMBER);
@@ -210,7 +210,7 @@ public class RejectionJavadoc {
     }
 
     private int getTopLevelMessageIndex() {
-        final List<DescriptorProto> messages = declaration.getFile()
+        List<DescriptorProto> messages = declaration.getFile()
                                                           .getMessageTypeList();
         for (DescriptorProto currentMessage : messages) {
             if (currentMessage.equals(declaration.getMessage())) {
@@ -218,7 +218,7 @@ public class RejectionJavadoc {
             }
         }
 
-        final String msg = format("The rejection file \"%s\" should contain \"%s\" rejection.",
+        String msg = format("The rejection file \"%s\" should contain \"%s\" rejection.",
                                   declaration.getFile()
                                              .getName(),
                                   declaration.getMessage()
@@ -248,7 +248,7 @@ public class RejectionJavadoc {
             }
         }
 
-        final String msg = format("The location with %s path should be present in \"%s\".",
+        String msg = format("The location with %s path should be present in \"%s\".",
                                   locationPath,
                                   declaration.getFile()
                                              .getName());
@@ -262,11 +262,11 @@ public class RejectionJavadoc {
      * @return the commented fields
      */
     private Map<FieldDescriptorProto, String> getCommentedFields() {
-        final Map<FieldDescriptorProto, String> commentedFields = Maps.newLinkedHashMap();
+        Map<FieldDescriptorProto, String> commentedFields = Maps.newLinkedHashMap();
 
         for (FieldDescriptorProto field : declaration.getMessage()
                                                      .getFieldList()) {
-            final Optional<String> leadingComments = getFieldLeadingComments(field);
+            Optional<String> leadingComments = getFieldLeadingComments(field);
             if (leadingComments.isPresent()) {
                 commentedFields.put(field, leadingComments.get());
             }
@@ -283,14 +283,14 @@ public class RejectionJavadoc {
      * @return the max name length
      */
     private static int getMaxFieldNameLength(Iterable<FieldDescriptorProto> fields) {
-        final Ordering<FieldDescriptorProto> ordering = new Ordering<FieldDescriptorProto>() {
+        Ordering<FieldDescriptorProto> ordering = new Ordering<FieldDescriptorProto>() {
             @Override
             public int compare(@Nullable FieldDescriptorProto left,
                                @Nullable FieldDescriptorProto right) {
                 checkNotNull(left);
                 checkNotNull(right);
 
-                final int result = Ints.compare(left.getName()
+                int result = Ints.compare(left.getName()
                                                     .length(),
                                                 right.getName()
                                                      .length());
@@ -298,7 +298,7 @@ public class RejectionJavadoc {
             }
         };
 
-        final FieldDescriptorProto longestNameField = ordering.max(fields);
+        FieldDescriptorProto longestNameField = ordering.max(fields);
         return longestNameField.getName()
                                .length();
     }

@@ -37,17 +37,17 @@ public class Rejections {
     }
 
     public static List<RejectionsFile> collect(Iterable<FileDescriptorProto> files) {
-        final List<RejectionsFile> result = Lists.newLinkedList();
-        final Logger log = log();
+        List<RejectionsFile> result = Lists.newLinkedList();
+        Logger log = log();
         for (FileDescriptorProto file : files) {
-            final FileName fn = FileName.from(file);
+            FileName fn = FileName.from(file);
             if (fn.isRejections()) {
                 log.debug("Found rejections file: {}", fn.value());
 
                 // See if the file content matches conventions.
-                final SourceFile sourceFile = SourceFile.from(file);
+                SourceFile sourceFile = SourceFile.from(file);
                 if (sourceFile.isRejections()) {
-                    final RejectionsFile rejectionsFile = RejectionsFile.from(sourceFile);
+                    RejectionsFile rejectionsFile = RejectionsFile.from(sourceFile);
                     result.add(rejectionsFile);
                 } else {
                     log.error("Invalid rejections file: {}", file.getName());

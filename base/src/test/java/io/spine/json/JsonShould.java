@@ -61,11 +61,11 @@ public class JsonShould {
 
     @Test
     public void build_JsonFormat_registry_for_known_types() {
-        final JsonFormat.TypeRegistry typeRegistry = Json.typeRegistry();
+        JsonFormat.TypeRegistry typeRegistry = Json.typeRegistry();
 
-        final List<Descriptors.Descriptor> found = Lists.newLinkedList();
+        List<Descriptors.Descriptor> found = Lists.newLinkedList();
         for (TypeUrl typeUrl : KnownTypes.instance().getAllUrls()) {
-            final Descriptors.Descriptor descriptor = typeRegistry.find(typeUrl.getTypeName());
+            Descriptors.Descriptor descriptor = typeRegistry.find(typeUrl.getTypeName());
             if (descriptor != null) {
                 found.add(descriptor);
             }
@@ -82,27 +82,27 @@ public class JsonShould {
 
     @Test
     public void print_to_json() {
-        final StringValue value = toMessage("print_to_json");
+        StringValue value = toMessage("print_to_json");
         assertFalse(toJson(value).isEmpty());
     }
 
     @Test
     public void print_to_compact_json() {
-        final String idValue = newUuid();
-        final Node node = Node.newBuilder()
+        String idValue = newUuid();
+        Node node = Node.newBuilder()
                               .setName(idValue)
                               .setRight(Node.getDefaultInstance())
                               .build();
-        final String result = toCompactJson(node);
+        String result = toCompactJson(node);
         assertFalse(result.isEmpty());
         assertFalse(result.contains(System.lineSeparator()));
     }
 
     @Test
     public void parse_from_json() {
-        final String idValue = newUuid();
-        final String jsonMessage = format("{value:%s}", idValue);
-        final WrappedString parsedValue = fromJson(jsonMessage, WrappedString.class);
+        String idValue = newUuid();
+        String jsonMessage = format("{value:%s}", idValue);
+        WrappedString parsedValue = fromJson(jsonMessage, WrappedString.class);
         assertNotNull(parsedValue);
         assertEquals(idValue, parsedValue.getValue());
     }

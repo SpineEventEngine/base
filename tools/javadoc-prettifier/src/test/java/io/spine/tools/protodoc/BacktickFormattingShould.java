@@ -40,23 +40,23 @@ public class BacktickFormattingShould {
 
     @Test
     public void surround_text_in_backticks_with_code_tag() {
-        final String result = formatting.execute(TEXT_IN_BACKTICKS);
+        String result = formatting.execute(TEXT_IN_BACKTICKS);
         assertEquals(TEXT_IN_CODE_TAG, result);
     }
 
     @Test
     public void handle_multiple_entries_surrounded_with_backticks() {
-        final String separatingPart = " some other text ";
-        final String source = TEXT_IN_BACKTICKS + separatingPart + TEXT_IN_BACKTICKS;
-        final String expected = TEXT_IN_CODE_TAG + separatingPart + TEXT_IN_CODE_TAG;
+        String separatingPart = " some other text ";
+        String source = TEXT_IN_BACKTICKS + separatingPart + TEXT_IN_BACKTICKS;
+        String expected = TEXT_IN_CODE_TAG + separatingPart + TEXT_IN_CODE_TAG;
         assertEquals(expected, formatting.execute(source));
     }
 
     @Test
     public void not_handle_multi_lined_text_surrounded_with_backticks() {
-        final String lineWithOpeningBacktick = BACKTICK + TEXT;
-        final String lineWithClosingBacktick = TEXT + BACKTICK;
-        final String multiLinedText = lineWithOpeningBacktick + lineSeparator()
+        String lineWithOpeningBacktick = BACKTICK + TEXT;
+        String lineWithClosingBacktick = TEXT + BACKTICK;
+        String multiLinedText = lineWithOpeningBacktick + lineSeparator()
                 + lineWithClosingBacktick;
         assertEquals(multiLinedText, formatting.execute(multiLinedText));
     }
@@ -66,8 +66,8 @@ public class BacktickFormattingShould {
      */
     @Test
     public void escape_replacement_for_matcher() {
-        final String dollarInBackticks = BACKTICK + "$" + BACKTICK;
-        final String result = formatting.execute(dollarInBackticks);
+        String dollarInBackticks = BACKTICK + "$" + BACKTICK;
+        String result = formatting.execute(dollarInBackticks);
         assertEquals("{@code $}", result);
     }
 }

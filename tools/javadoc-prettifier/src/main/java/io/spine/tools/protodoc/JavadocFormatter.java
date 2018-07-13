@@ -78,8 +78,8 @@ class JavadocFormatter {
             return;
         }
 
-        final Path folder = path.getParent();
-        final Path tempPath = folder.resolve(TEMP_FILE_NAME);
+        Path folder = path.getParent();
+        Path tempPath = folder.resolve(TEMP_FILE_NAME);
 
         try (BufferedReader reader = newBufferedReader(path, UTF_8);
              BufferedWriter writer = newBufferedWriter(tempPath, UTF_8)) {
@@ -107,7 +107,7 @@ class JavadocFormatter {
      * @throws IOException if an I/O error occurred during reading
      */
     private Optional<String> getNextPart(BufferedReader reader) throws IOException {
-        final String firstLine = reader.readLine();
+        String firstLine = reader.readLine();
         if (firstLine == null) {
             return Optional.absent();
         }
@@ -116,14 +116,14 @@ class JavadocFormatter {
             return Optional.of(firstLine);
         }
 
-        final String javadoc = getJavadoc(firstLine, reader);
-        final String formattedJavadoc = formatText(javadoc);
+        String javadoc = getJavadoc(firstLine, reader);
+        String formattedJavadoc = formatText(javadoc);
         return Optional.of(formattedJavadoc);
     }
 
     private static String getJavadoc(String firstLine,
                                      BufferedReader reader) throws IOException {
-        final StringBuilder javadoc = new StringBuilder();
+        StringBuilder javadoc = new StringBuilder();
 
         String currentLine = firstLine;
         while (!containsJavadocEnding(currentLine)) {

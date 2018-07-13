@@ -68,7 +68,7 @@ public class SimpleClassNameShould {
 
     @Test
     public void obtain_declared_outer_class_name() {
-        final Optional<SimpleClassName> className =
+        Optional<SimpleClassName> className =
                 SimpleClassName.declaredOuterClassName(errorProto.toProto());
 
         assertTrue(className.isPresent());
@@ -98,7 +98,7 @@ public class SimpleClassNameShould {
 
     @Test
     public void convert_to_file_name() {
-        final SimpleClassName className = SimpleClassName.ofMessage(Timestamp.getDescriptor());
+        SimpleClassName className = SimpleClassName.ofMessage(Timestamp.getDescriptor());
         assertTrue(className.toFileName()
                             .value()
                             .contains(Timestamp.class.getSimpleName()));

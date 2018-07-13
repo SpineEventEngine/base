@@ -89,8 +89,8 @@ public abstract class ThrowableMessage extends Throwable {
     public synchronized ThrowableMessage initProducer(Any producerId) {
         checkNotNull(producerId);
         if (this.producerId != null) {
-            final Object unpackedId = Identifier.unpack(producerId);
-            final String stringId = Stringifiers.toString(unpackedId);
+            Object unpackedId = Identifier.unpack(producerId);
+            String stringId = Stringifiers.toString(unpackedId);
             throw newIllegalStateException("Producer already initialized: %s", stringId);
         }
         this.producerId = producerId;

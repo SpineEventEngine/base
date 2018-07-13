@@ -59,7 +59,7 @@ public class UrlPrinterShould {
 
     @Test
     public void print_valid_url() {
-        final Url.Builder url = Url.newBuilder();
+        Url.Builder url = Url.newBuilder();
         url.setRecord(FULL_RECORD);
 
         assertEquals("http://admin:root@spine.io:80/index?key=value&key2=value2#frag1",
@@ -68,7 +68,7 @@ public class UrlPrinterShould {
 
     @Test
     public void print_raw_url() {
-        final Url.Builder url = Url.newBuilder();
+        Url.Builder url = Url.newBuilder();
 
         url.setRaw(HOST);
 
@@ -77,7 +77,7 @@ public class UrlPrinterShould {
 
     @Test
     public void print_empty_url() {
-        final Url.Builder url = Url.newBuilder();
+        Url.Builder url = Url.newBuilder();
 
         url.setRecord(Record.newBuilder()
                             .setHost(HOST)
@@ -89,13 +89,13 @@ public class UrlPrinterShould {
     @Test
     public void print_url_without_password() {
 
-        final Record record = Record.newBuilder(FULL_RECORD)
+        Record record = Record.newBuilder(FULL_RECORD)
                                     .setAuth(Authorization.newBuilder(AUTH)
                                                           .setPassword("")
                                                           .build())
                                     .build();
 
-        final Url url = Url.newBuilder()
+        Url url = Url.newBuilder()
                            .setRecord(record)
                            .build();
 
@@ -105,13 +105,13 @@ public class UrlPrinterShould {
 
     @Test
     public void print_url_with_broken_auth() {
-        final Record record = Record.newBuilder(FULL_RECORD)
+        Record record = Record.newBuilder(FULL_RECORD)
                                     .setAuth(Authorization.newBuilder(AUTH)
                                                           .setUserName("")
                                                           .build())
                                     .build();
 
-        final Url url = Url.newBuilder()
+        Url url = Url.newBuilder()
                            .setRecord(record)
                            .build();
 
@@ -123,7 +123,7 @@ public class UrlPrinterShould {
 
     @Test
     public void print_url_with_custom_protocol() {
-        final Url.Builder url = Url.newBuilder();
+        Url.Builder url = Url.newBuilder();
 
         url.setRecord(Record.newBuilder()
                             .setHost(HOST)

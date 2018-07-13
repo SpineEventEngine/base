@@ -55,19 +55,19 @@ public class FieldAnnotationCheck implements SourceCheck {
     @Override
     public Void apply(@Nullable AbstractJavaSource<JavaClassSource> input) {
         checkNotNull(input);
-        final JavaClassSource message = (JavaClassSource) input;
-        final JavaClassSource messageBuilder = getBuilder(message);
+        JavaClassSource message = (JavaClassSource) input;
+        JavaClassSource messageBuilder = getBuilder(message);
         checkAccessorsAnnotation(message);
         checkAccessorsAnnotation(messageBuilder);
         return null;
     }
 
     private void checkAccessorsAnnotation(JavaClassSource message) {
-        final String fieldName = FieldName.of(fieldDescriptor)
+        String fieldName = FieldName.of(fieldDescriptor)
                                           .toCamelCase();
         for (MethodSource method : message.getMethods()) {
             if (method.isPublic() && method.getName().contains(fieldName)) {
-                final AnnotationSource annotation = findSpiAnnotation(method);
+                AnnotationSource annotation = findSpiAnnotation(method);
                 if (shouldBeAnnotated) {
                     assertNotNull(annotation);
                 } else {
@@ -78,8 +78,8 @@ public class FieldAnnotationCheck implements SourceCheck {
     }
 
     private static JavaClassSource getBuilder(JavaSource messageSource) {
-        final TypeHolder messageType = (TypeHolder) messageSource;
-        final JavaType builderType = messageType.getNestedType(ofBuilder().value());
+        TypeHolder messageType = (TypeHolder) messageSource;
+        JavaType builderType = messageType.getNestedType(ofBuilder().value());
         return (JavaClassSource) builderType;
     }
 }

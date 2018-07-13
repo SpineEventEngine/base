@@ -54,9 +54,9 @@ public class Urls {
             throw newIllegalArgumentException("Given url is already built (%s)", rawUrl);
         }
 
-        final String rawUrlString = rawUrl.getRaw();
+        String rawUrlString = rawUrl.getRaw();
 
-        final Url url = new UrlParser(rawUrlString).parse();
+        Url url = new UrlParser(rawUrlString).parse();
 
         validate(url);
 
@@ -76,9 +76,9 @@ public class Urls {
      */
     public static Url create(String rawUrlString) {
         checkNotNull(rawUrlString);
-        final Url.Builder builder = Url.newBuilder()
+        Url.Builder builder = Url.newBuilder()
                                        .setRaw(rawUrlString);
-        final Url rawUrl = structurize(builder.build());
+        Url rawUrl = structurize(builder.build());
         return rawUrl;
     }
 
@@ -92,7 +92,7 @@ public class Urls {
     public static String toString(Url url) {
         checkNotNull(url);
         validate(url);
-        final String stringUrl = UrlPrinter.printToString(url);
+        String stringUrl = UrlPrinter.printToString(url);
         return stringUrl;
     }
 
@@ -121,15 +121,15 @@ public class Urls {
             return;
         }
 
-        final Url.Record record = url.getRecord();
-        final String host = record.getHost();
+        Url.Record record = url.getRecord();
+        String host = record.getHost();
         if (host.isEmpty()) {
             throw newIllegalArgumentException("Url host can not be empty (%s)", url);
         }
 
-        final Url.Record.Authorization auth = record.getAuth();
-        final String user = auth.getUserName();
-        final String password = auth.getPassword();
+        Url.Record.Authorization auth = record.getAuth();
+        String user = auth.getUserName();
+        String password = auth.getPassword();
 
         if (user.isEmpty() && !password.isEmpty()) {
             throw new IllegalArgumentException("Url can't have password without having user name");

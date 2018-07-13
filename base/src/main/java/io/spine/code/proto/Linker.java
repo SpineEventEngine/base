@@ -62,13 +62,13 @@ class Linker {
     }
 
     static FileSet link(Collection<FileDescriptorProto> files) {
-        final Linker linker = new Linker(files);
+        Linker linker = new Linker(files);
         try {
             linker.resolve();
         } catch (DescriptorValidationException e) {
             throw newIllegalStateException(e, "Unable to link descriptor set files");
         }
-        final FileSet result = linker.getResolved()
+        FileSet result = linker.getResolved()
                                      .union(linker.getPartiallyResolved())
                                      .union(linker.getUnresolved());
         return result;
@@ -84,7 +84,7 @@ class Linker {
     }
 
     private void findNoDependencies() throws DescriptorValidationException {
-        final Iterator<FileDescriptorProto> iterator = remaining.iterator();
+        Iterator<FileDescriptorProto> iterator = remaining.iterator();
         while (iterator.hasNext()) {
             FileDescriptorProto next = iterator.next();
             if (next.getDependencyCount() == 0) {
@@ -108,13 +108,13 @@ class Linker {
 
     private boolean doFindResolved() throws DescriptorValidationException {
         boolean result = false;
-        final Iterator<FileDescriptorProto> iterator = remaining.iterator();
+        Iterator<FileDescriptorProto> iterator = remaining.iterator();
         while (iterator.hasNext()) {
             FileDescriptorProto next = iterator.next();
             Collection<FileName> dependencyList = dependencies(next);
             if (resolved.containsAll(dependencyList)) {
-                final FileSet dependencies = resolved.find(dependencyList);
-                final FileDescriptor newResolved = buildFrom(next, dependencies.toArray(), true);
+                FileSet dependencies = resolved.find(dependencyList);
+                FileDescriptor newResolved = buildFrom(next, dependencies.toArray(), true);
                 resolved.add(newResolved);
                 result = true;
                 iterator.remove();
@@ -159,8 +159,8 @@ class Linker {
      */
     private void addUnresolved() throws DescriptorValidationException {
         while (!remaining.isEmpty()) {
-            final FileDescriptorProto first = remaining.get(0);
-            final FileDescriptor fd = buildFrom(first, NO_DEPENDENCIES, true);
+            FileDescriptorProto first = remaining.get(0);
+            FileDescriptor fd = buildFrom(first, NO_DEPENDENCIES, true);
             unresolved.add(fd);
             remaining.remove(first);
         }

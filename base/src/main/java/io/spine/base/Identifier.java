@@ -74,14 +74,14 @@ public final class Identifier<I> {
 
     static <I> Identifier<I> from(I value) {
         checkNotNull(value);
-        final Type type = Type.getType(value);
-        final Identifier<I> result = create(type, value);
+        Type type = Type.getType(value);
+        Identifier<I> result = create(type, value);
         return result;
     }
 
     private static Identifier<Message> fromMessage(Message value) {
         checkNotNull(value);
-        final Identifier<Message> result = create(Type.MESSAGE, value);
+        Identifier<Message> result = create(Type.MESSAGE, value);
         return result;
     }
 
@@ -95,8 +95,8 @@ public final class Identifier<I> {
     @Internal
     public static <I> I getDefaultValue(Class<I> idClass) {
         checkNotNull(idClass);
-        final Type type = getType(idClass);
-        final I result = type.getDefaultValue(idClass);
+        Type type = getType(idClass);
+        I result = type.getDefaultValue(idClass);
         return result;
     }
 
@@ -174,8 +174,8 @@ public final class Identifier<I> {
      */
     public static <I> Any pack(I id) {
         checkNotNull(id);
-        final Identifier<I> identifier = from(id);
-        final Any anyId = identifier.pack();
+        Identifier<I> identifier = from(id);
+        Any anyId = identifier.pack();
         return anyId;
     }
 
@@ -195,14 +195,13 @@ public final class Identifier<I> {
      */
     public static <I> I unpack(Any any) {
         checkNotNull(any);
-        final Message unpacked = AnyPacker.unpack(any);
+        Message unpacked = AnyPacker.unpack(any);
 
         for (Type type : Type.values()) {
             if (type.matchMessage(unpacked)) {
                 // Expect the client to know the desired type.
                 // If the client fails to predict it in compile time, fail fast.
-                @SuppressWarnings("unchecked")
-                final I result = (I) type.fromMessage(unpacked);
+                @SuppressWarnings("unchecked") I result = (I) type.fromMessage(unpacked);
                 return result;
             }
         }
@@ -217,7 +216,7 @@ public final class Identifier<I> {
      * @see UUID#randomUUID()
      */
     public static String newUuid() {
-        final String id = UUID.randomUUID()
+        String id = UUID.randomUUID()
                               .toString();
         return id;
     }
@@ -243,29 +242,29 @@ public final class Identifier<I> {
             return NULL_ID;
         }
 
-        final Identifier<?> identifier;
+        Identifier<?> identifier;
         if (id instanceof Any) {
-            final Message unpacked = AnyPacker.unpack((Any) id);
+            Message unpacked = AnyPacker.unpack((Any) id);
             identifier = fromMessage(unpacked);
         } else {
             identifier = from(id);
         }
 
-        final String result = identifier.toString();
+        String result = identifier.toString();
         return result;
     }
 
     @SuppressWarnings("unchecked") // OK to cast to String as output type of Stringifier.
     private static String idMessageToString(Message message) {
         checkNotNull(message);
-        final String result;
-        final StringifierRegistry registry = StringifierRegistry.getInstance();
-        final Class<? extends Message> msgClass = message.getClass();
-        final TypeToken<? extends Message> msgToken = TypeToken.of(msgClass);
-        final java.lang.reflect.Type msgType = msgToken.getType();
-        final Optional<Stringifier<Object>> optional = registry.get(msgType);
+        String result;
+        StringifierRegistry registry = StringifierRegistry.getInstance();
+        Class<? extends Message> msgClass = message.getClass();
+        TypeToken<? extends Message> msgToken = TypeToken.of(msgClass);
+        java.lang.reflect.Type msgType = msgToken.getType();
+        Optional<Stringifier<Object>> optional = registry.get(msgType);
         if (optional.isPresent()) {
-            final Stringifier converter = optional.get();
+            Stringifier converter = optional.get();
             result = (String) converter.convert(message);
         } else {
             result = convert(message);
@@ -274,13 +273,13 @@ public final class Identifier<I> {
     }
 
     private static String convert(Message message) {
-        final Collection<Object> values = message.getAllFields()
+        Collection<Object> values = message.getAllFields()
                                                  .values();
-        final String result;
+        String result;
         if (values.isEmpty()) {
             result = EMPTY_ID;
         } else if (values.size() == 1) {
-            final Object object = values.iterator()
+            Object object = values.iterator()
                                         .next();
             result = object instanceof Message
                     ? idMessageToString((Message) object)
@@ -315,7 +314,7 @@ public final class Identifier<I> {
     }
 
     private Any pack() {
-        final Any result = type.pack(value);
+        Any result = type.pack(value);
         return result;
     }
 
@@ -472,8 +471,8 @@ public final class Identifier<I> {
 
             @Override
             <I> I getDefaultValue(Class<I> idClass) {
-                final Class<? extends Message> msgClass = (Class<? extends Message>) idClass;
-                final Message result = Messages.newInstance(msgClass);
+                Class<? extends Message> msgClass = (Class<? extends Message>) idClass;
+                Message result = Messages.newInstance(msgClass);
                 return (I) result;
             }
         };
@@ -494,7 +493,7 @@ public final class Identifier<I> {
         abstract <I> boolean matchClass(Class<I> idClass);
 
         <I> Message toMessage(I id) {
-            final Message message = TypeConverter.toMessage(id);
+            Message message = TypeConverter.toMessage(id);
             return message;
         }
 
@@ -503,8 +502,8 @@ public final class Identifier<I> {
         abstract <I> I getDefaultValue(Class<I> idClass);
 
         <I> Any pack(I id) {
-            final Message msg = toMessage(id);
-            final Any result = AnyPacker.pack(msg);
+            Message msg = toMessage(id);
+            Any result = AnyPacker.pack(msg);
             return result;
         }
     }

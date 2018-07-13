@@ -86,14 +86,14 @@ public class RejectionWriter {
      */
     public void write() {
         try {
-            final Logger log = log();
+            Logger log = log();
             log.debug("Creating the output directory {}", outputDirectory.getPath());
             Files.createDirectories(outputDirectory.toPath());
 
-            final String className = declaration.getSimpleJavaClassName()
+            String className = declaration.getSimpleJavaClassName()
                                                 .value();
             log.debug("Constructing class {}", className);
-            final TypeSpec rejection =
+            TypeSpec rejection =
                     TypeSpec.classBuilder(className)
                             .addJavadoc(javadoc.forClass())
                             .addAnnotation(generatedBySpineModelCompiler())
@@ -103,7 +103,7 @@ public class RejectionWriter {
                             .addMethod(constructor())
                             .addMethod(getMessageThrown())
                             .build();
-            final JavaFile javaFile =
+            JavaFile javaFile =
                     JavaFile.builder(declaration.getJavaPackage()
                                                 .toString(),
                                      rejection)
@@ -120,13 +120,13 @@ public class RejectionWriter {
     private MethodSpec constructor() {
         log().debug("Creating the constructor for the type '{}'",
                     declaration.getSimpleJavaClassName());
-        final MethodSpec.Builder builder = constructorBuilder()
+        MethodSpec.Builder builder = constructorBuilder()
                 .addJavadoc(javadoc.forConstructor())
                 .addModifiers(PUBLIC);
         for (Map.Entry<String, FieldType> field : fieldDeclarations().entrySet()) {
-            final TypeName parameterType = field.getValue()
+            TypeName parameterType = field.getValue()
                                                 .getTypeName();
-            final String parameterName = FieldName.of(field.getKey())
+            String parameterName = FieldName.of(field.getKey())
                                                   .javaCase();
             builder.addParameter(parameterType, parameterName);
         }
@@ -136,14 +136,14 @@ public class RejectionWriter {
     }
 
     private String superStatement() {
-        final StringBuilder superStatement = new StringBuilder("super(");
+        StringBuilder superStatement = new StringBuilder("super(");
         superStatement.append(declaration.getOuterJavaClass())
                       .append('.')
                       .append(declaration.getSimpleJavaClassName())
                       .append(".newBuilder()");
 
         for (Map.Entry<String, FieldType> field : fieldDeclarations().entrySet()) {
-            final FieldName fieldName = FieldName.of(field.getKey());
+            FieldName fieldName = FieldName.of(field.getKey());
             superStatement.append('.')
                           .append(field.getValue()
                                        .getSetterPrefix())
@@ -158,10 +158,10 @@ public class RejectionWriter {
     }
 
     private MethodSpec getMessageThrown() {
-        final String methodSignature = getMessageThrown.signature();
+        String methodSignature = getMessageThrown.signature();
         log().debug("Constructing method {}", methodSignature);
 
-        final TypeName returnType =
+        TypeName returnType =
                 ClassName.get(declaration.getJavaPackage()
                                          .value(),
                               declaration.getOuterJavaClass()
@@ -191,10 +191,10 @@ public class RejectionWriter {
      * @return name-to-{@link FieldType} map
      */
     private Map<String, FieldType> fieldDeclarations() {
-        final Logger log = log();
+        Logger log = log();
         log.debug("Reading all the field values from the descriptor: {}", declaration.getMessage());
 
-        final Map<String, FieldType> result = Maps.newLinkedHashMap();
+        Map<String, FieldType> result = Maps.newLinkedHashMap();
         for (FieldDescriptorProto field : declaration.getMessage()
                                                      .getFieldList()) {
             result.put(field.getName(), fieldTypeFactory.create(field));

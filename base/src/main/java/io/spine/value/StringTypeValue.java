@@ -73,7 +73,7 @@ public abstract class StringTypeValue {
         if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        final StringTypeValue other = (StringTypeValue) obj;
+        StringTypeValue other = (StringTypeValue) obj;
         return Objects.equals(this.value(), other.value());
     }
 }

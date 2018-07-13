@@ -68,8 +68,8 @@ class StringFieldValidator extends FieldValidator<String> {
     }
 
     private ConstraintViolation newViolation(String fieldValue) {
-        final String msg = getErrorMsgFormat(patternOption, patternOption.getMsgFormat());
-        final ConstraintViolation violation =
+        String msg = getErrorMsgFormat(patternOption, patternOption.getMsgFormat());
+        ConstraintViolation violation =
                 ConstraintViolation.newBuilder()
                                    .setMsgFormat(msg)
                                    .addParam(regex)
@@ -81,7 +81,7 @@ class StringFieldValidator extends FieldValidator<String> {
 
     @Override
     protected boolean isValueNotSet(String value) {
-        final boolean result = value.isEmpty();
+        boolean result = value.isEmpty();
         return result;
     }
 }

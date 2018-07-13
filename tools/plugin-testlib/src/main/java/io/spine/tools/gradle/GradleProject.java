@@ -106,8 +106,8 @@ public final class GradleProject {
     }
 
     private GradleRunner prepareRun(TaskName taskName) {
-        final String task = taskName.getValue();
-        final String[] args = debug
+        String task = taskName.getValue();
+        String[] args = debug
                 ? new String[]{task, STACKTRACE_CLI_OPTION, DEBUG_CLI_OPTION}
                 : new String[]{task, STACKTRACE_CLI_OPTION};
         return gradleRunner.withArguments(args);
@@ -122,12 +122,12 @@ public final class GradleProject {
     }
 
     private void writeFile(String fileName, String dir) throws IOException {
-        final String filePath = dir + fileName;
-        final Path resultingPath = gradleRunner.getProjectDir()
+        String filePath = dir + fileName;
+        Path resultingPath = gradleRunner.getProjectDir()
                                                .toPath()
                                                .resolve(filePath);
-        final String fullyQualifiedPath = name + '/' + filePath;
-        final InputStream fileContent = getClass().getClassLoader()
+        String fullyQualifiedPath = name + '/' + filePath;
+        InputStream fileContent = getClass().getClassLoader()
                                                   .getResourceAsStream(fullyQualifiedPath);
         Files.createDirectories(resultingPath.getParent());
         Files.copy(fileContent, resultingPath);
@@ -141,10 +141,10 @@ public final class GradleProject {
     }
 
     private void writeBuildGradle() throws IOException {
-        final Path resultingPath = gradleRunner.getProjectDir()
+        Path resultingPath = gradleRunner.getProjectDir()
                                                .toPath()
                                                .resolve(BUILD_GRADLE_NAME);
-        final InputStream fileContent = getClass().getClassLoader()
+        InputStream fileContent = getClass().getClassLoader()
                                                   .getResourceAsStream(BUILD_GRADLE_NAME);
         Files.createDirectories(resultingPath.getParent());
         Files.copy(fileContent, resultingPath);
@@ -305,7 +305,7 @@ public final class GradleProject {
          * @param lines the content of the file
          */
         public Builder createFile(String path, Iterable<String> lines) {
-            final Path sourcePath = folder.toPath()
+            Path sourcePath = folder.toPath()
                                           .resolve(path);
             try {
                 Files.createDirectories(sourcePath.getParent());
@@ -337,7 +337,7 @@ public final class GradleProject {
     }
 
     private static IllegalStateException illegalStateWithCauseOf(Throwable throwable) {
-        final Throwable rootCause = getRootCause(throwable);
+        Throwable rootCause = getRootCause(throwable);
         throw new IllegalStateException(rootCause);
     }
 }

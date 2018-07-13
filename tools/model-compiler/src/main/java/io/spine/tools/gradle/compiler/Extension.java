@@ -247,19 +247,19 @@ public class Extension {
     }
 
     public static boolean isGenerateValidatingBuilders(Project project) {
-        final boolean result = spineProtobuf(project).generateValidatingBuilders;
+        boolean result = spineProtobuf(project).generateValidatingBuilders;
         log().debug("The current validating builder generation setting is {}", result);
         return result;
     }
 
     public static Indent getIndent(Project project) {
-        final Indent result = spineProtobuf(project).indent;
+        Indent result = spineProtobuf(project).indent;
         log().debug("The current indent is {}", result.getSize());
         return result;
     }
 
     public static boolean isGenerateValidatingBuildersFromClasspath(Project project) {
-        final boolean result = spineProtobuf(project).generateBuildersFromClasspath;
+        boolean result = spineProtobuf(project).generateBuildersFromClasspath;
         log().debug("Validating builder are generated from  {}",
                     (result ? "the classpath" : "this module only"));
         return result;
@@ -286,10 +286,10 @@ public class Extension {
     }
 
     public static List<String> getDirsToClean(Project project) {
-        final List<String> dirsToClean = newLinkedList(spineDirs(project));
+        List<String> dirsToClean = newLinkedList(spineDirs(project));
         log().debug("Finding the directories to clean");
-        final List<String> dirs = spineProtobuf(project).dirsToClean;
-        final String singleDir = spineProtobuf(project).dirToClean;
+        List<String> dirs = spineProtobuf(project).dirsToClean;
+        String singleDir = spineProtobuf(project).dirToClean;
         if (dirs.size() > 0) {
             log().error("Found {} directories to clean: {}", dirs.size(), dirs);
             dirsToClean.addAll(dirs);
@@ -297,7 +297,7 @@ public class Extension {
             log().debug("Found directory to clean: {}", singleDir);
             dirsToClean.add(singleDir);
         } else {
-            final String defaultValue = def(project).generated()
+            String defaultValue = def(project).generated()
                                                     .toString();
             log().debug("Default directory to clean: {}", defaultValue);
             dirsToClean.add(defaultValue);
@@ -306,9 +306,9 @@ public class Extension {
     }
 
     private static Iterable<String> spineDirs(Project project) {
-        final List<String> spineDirs = newLinkedList();
-        final Optional<String> spineDir = spineDir(project);
-        final Optional<String> rootSpineDir = spineDir(project.getRootProject());
+        List<String> spineDirs = newLinkedList();
+        Optional<String> spineDir = spineDir(project);
+        Optional<String> rootSpineDir = spineDir(project.getRootProject());
         if (spineDir.isPresent()) {
             spineDirs.add(spineDir.get());
             if (rootSpineDir.isPresent() && !spineDir.equals(rootSpineDir)) {
@@ -319,7 +319,7 @@ public class Extension {
     }
 
     private static Optional<String> spineDir(Project project) {
-        final File projectDir;
+        File projectDir;
         try {
             projectDir = project.getProjectDir()
                                 .getCanonicalFile();
@@ -328,7 +328,7 @@ public class Extension {
                     e, "Project directory %s is invalid!", project.getProjectDir()
             );
         }
-        final File spinePath = DefaultProject.at(projectDir)
+        File spinePath = DefaultProject.at(projectDir)
                                              .tempArtifacts();
         if (spinePath.exists()) {
             return Optional.of(spinePath.toString());

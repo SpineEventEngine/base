@@ -59,7 +59,7 @@ public class Extension {
      * @return the absolute path to the main directory
      */
     static String getAbsoluteMainGenProtoDir(Project project) {
-        final String mainGenProtoDir = getExtension(project).mainGenProtoDir;
+        String mainGenProtoDir = getExtension(project).mainGenProtoDir;
         checkExtensionField(mainGenProtoDir, "mainGenProtoDir");
         return rootPath(project) + File.separator + mainGenProtoDir;
     }
@@ -71,7 +71,7 @@ public class Extension {
      * @return the absolute path to the test directory
      */
     static String getAbsoluteTestGenProtoDir(Project project) {
-        final String testGenProtoDir = getExtension(project).testGenProtoDir;
+        String testGenProtoDir = getExtension(project).testGenProtoDir;
         checkExtensionField(testGenProtoDir, "testGenProtoDir");
         return rootPath(project) + File.separator + testGenProtoDir;
     }
@@ -88,7 +88,7 @@ public class Extension {
 
     private static void checkExtensionField(@Nullable String value, String name) {
         if (value == null) {
-            final String errMSg = format("%s.%s was not set.", PROTO_JAVADOC_EXTENSION_NAME, name);
+            String errMSg = format("%s.%s was not set.", PROTO_JAVADOC_EXTENSION_NAME, name);
             throw new IllegalStateException(errMSg);
         }
     }

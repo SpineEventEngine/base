@@ -36,25 +36,25 @@ public class FieldAnnotatorShould {
 
     @Test
     public void annotate_accessor_for_field() {
-        final String fieldName = "FieldName";
-        final String methodName = getAccessorName(fieldName);
+        String fieldName = "FieldName";
+        String methodName = getAccessorName(fieldName);
         assertTrue(shouldAnnotateMethod(methodName, fieldName, Collections.<String>emptyList()));
     }
 
     @Test
     public void not_annotate_accessor_for_field_that_does_not_require_it() {
-        final String requiresAnnotation = "GoodBoy";
-        final String notRequiresAnnotation = requiresAnnotation + "AdditionalPart";
-        final String methodName = getAccessorName(notRequiresAnnotation);
+        String requiresAnnotation = "GoodBoy";
+        String notRequiresAnnotation = requiresAnnotation + "AdditionalPart";
+        String methodName = getAccessorName(notRequiresAnnotation);
         assertFalse(shouldAnnotateMethod(methodName, requiresAnnotation,
                                          singleton(notRequiresAnnotation)));
     }
 
     @Test
     public void filter_fields_that_does_not_require_annotation_by_name_length() {
-        final String requiresAnnotation = "FriendList";
-        final String notRequiresAnnotation = requiresAnnotation.substring(0, 4);
-        final String methodName = getAccessorName(requiresAnnotation);
+        String requiresAnnotation = "FriendList";
+        String notRequiresAnnotation = requiresAnnotation.substring(0, 4);
+        String methodName = getAccessorName(requiresAnnotation);
         assertTrue(shouldAnnotateMethod(methodName, requiresAnnotation,
                                         singleton(notRequiresAnnotation)));
     }

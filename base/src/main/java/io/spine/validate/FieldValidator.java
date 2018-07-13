@@ -90,7 +90,7 @@ abstract class FieldValidator<V> {
         this.values = checkNotNull(values);
         this.fieldDescriptor = fieldContext.getTarget();
         this.strict = strict;
-        final FileDescriptor file = fieldDescriptor.getFile();
+        FileDescriptor file = fieldDescriptor.getFile();
         this.isCommandsFile = CommandMessage.File.PREDICATE.apply(file);
         this.isFirstField = fieldDescriptor.getIndex() == 0;
         this.required = getFieldOption(OptionsProto.required);
@@ -105,13 +105,13 @@ abstract class FieldValidator<V> {
     })
     static <T> ImmutableList<T> toValueList(Object fieldValue) {
         if (fieldValue instanceof List) {
-            final List<T> value = (List<T>) fieldValue;
+            List<T> value = (List<T>) fieldValue;
             return copyOf(value);
         } else if (fieldValue instanceof Map) {
-            final Map<?, T> map = (Map<?, T>) fieldValue;
+            Map<?, T> map = (Map<?, T>) fieldValue;
             return copyOf(map.values());
         } else {
-            final T value = (T) fieldValue;
+            T value = (T) fieldValue;
             return of(value);
         }
     }
@@ -152,7 +152,7 @@ abstract class FieldValidator<V> {
         if (shouldValidate()) {
             validateOwnRules();
         }
-        final List<ConstraintViolation> result = assembleViolations();
+        List<ConstraintViolation> result = assembleViolations();
         return result;
     }
 
@@ -178,7 +178,7 @@ abstract class FieldValidator<V> {
      */
     protected void validateEntityId() {
         if (fieldDescriptor.isRepeated()) {
-            final ConstraintViolation violation =
+            ConstraintViolation violation =
                     ConstraintViolation.newBuilder()
                                        .setMsgFormat(ENTITY_ID_REPEATED_FIELD_MSG)
                                        .setFieldPath(getFieldPath())
@@ -186,7 +186,7 @@ abstract class FieldValidator<V> {
             addViolation(violation);
             return;
         }
-        final V value = getValues().get(0);
+        V value = getValues().get(0);
         if (isValueNotSet(value)) {
             addViolation(newViolation(ifMissingOption));
         }
@@ -196,7 +196,7 @@ abstract class FieldValidator<V> {
      * Returns {@code true} if the field has required attribute or validation is strict.
      */
     protected boolean isRequiredField() {
-        final boolean result = required || strict;
+        boolean result = required || strict;
         return result;
     }
 
@@ -204,7 +204,7 @@ abstract class FieldValidator<V> {
      * Returns {@code true} in case `if_missing` option is set with a non-default error message.
      */
     private boolean hasCustomMissingMessage() {
-        final boolean result = !ifMissingOption.equals(IfMissingOption.getDefaultInstance());
+        boolean result = !ifMissingOption.equals(IfMissingOption.getDefaultInstance());
         return result;
     }
 
@@ -228,7 +228,7 @@ abstract class FieldValidator<V> {
             return;
         }
         if (!isRepeatedOrMap()) {
-            final V value = values.get(0);
+            V value = values.get(0);
             if (isValueNotSet(value)) {
                 addViolation(newViolation(ifMissingOption));
             }
@@ -251,8 +251,8 @@ abstract class FieldValidator<V> {
     }
 
     private ConstraintViolation newViolation(IfMissingOption option) {
-        final String msg = getErrorMsgFormat(option, option.getMsgFormat());
-        final ConstraintViolation violation = ConstraintViolation.newBuilder()
+        String msg = getErrorMsgFormat(option, option.getMsgFormat());
+        ConstraintViolation violation = ConstraintViolation.newBuilder()
                                                                  .setMsgFormat(msg)
                                                                  .setFieldPath(getFieldPath())
                                                                  .build();
@@ -266,10 +266,10 @@ abstract class FieldValidator<V> {
      * @param customMsg a user-defined error message
      */
     protected String getErrorMsgFormat(Message option, String customMsg) {
-        final String defaultMsg = option.getDescriptorForType()
+        String defaultMsg = option.getDescriptorForType()
                                         .getOptions()
                                         .getExtension(OptionsProto.defaultMessage);
-        final String msg = customMsg.isEmpty() ? defaultMsg : customMsg;
+        String msg = customMsg.isEmpty() ? defaultMsg : customMsg;
         return msg;
     }
 
@@ -280,13 +280,13 @@ abstract class FieldValidator<V> {
      * @param <T>       the type of the option
      */
     protected final <T> T getFieldOption(GeneratedExtension<FieldOptions, T> extension) {
-        final Optional<T> externalOption = ValidationRuleOptions.getOptionValue(fieldContext,
+        Optional<T> externalOption = ValidationRuleOptions.getOptionValue(fieldContext,
                                                                                 extension);
         if (externalOption.isPresent()) {
             return externalOption.get();
         }
 
-        final T ownOption = fieldDescriptor.getOptions()
+        T ownOption = fieldDescriptor.getOptions()
                                            .getExtension(extension);
         return ownOption;
     }
@@ -308,7 +308,7 @@ abstract class FieldValidator<V> {
      * (if the field is the first in a command message), {@code false} otherwise.
      */
     private boolean isRequiredEntityIdField() {
-        final boolean result = isCommandsFile && isFirstField;
+        boolean result = isCommandsFile && isFirstField;
         return result;
     }
 

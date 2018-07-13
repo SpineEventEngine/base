@@ -72,12 +72,12 @@ class EnrichmentMap {
      * type from the key.
      */
     Map<String, String> allOf(Iterable<DescriptorProto> messages) {
-        final HashMultimap<String, String> multimap = HashMultimap.create();
+        HashMultimap<String, String> multimap = HashMultimap.create();
         for (DescriptorProto msg : messages) {
             handleMessage(multimap, msg);
         }
         log().debug("Found enrichments: {}", multimap.toString());
-        final Map<String, String> merged = merge(multimap);
+        Map<String, String> merged = merge(multimap);
         return merged;
     }
 
@@ -92,14 +92,14 @@ class EnrichmentMap {
      */
     private static Map<String, String> merge(HashMultimap<String, String> source) {
         log().debug("Merging duplicating entries");
-        final ImmutableMap.Builder<String, String> mergedResult = ImmutableMap.builder();
+        ImmutableMap.Builder<String, String> mergedResult = ImmutableMap.builder();
         for (String key : source.keySet()) {
-            final Set<String> valuesPerKey = source.get(key);
+            Set<String> valuesPerKey = source.get(key);
             /* Empty type name might be present in the values.
                If so, remove it from the set */
             valuesPerKey.remove(EMPTY_TYPE_NAME);
 
-            final String mergedValue;
+            String mergedValue;
             if (valuesPerKey.size() > 1) {
                 mergedValue = joiner.join(valuesPerKey);
             } else {
@@ -119,21 +119,21 @@ class EnrichmentMap {
 
     @SuppressWarnings("MethodWithMultipleLoops")  // It's fine as we don't expect too many items.
     private void handleMessage(Multimap<String, String> targetMap, DescriptorProto msg) {
-        final Map<String, String> entries = scanMsg(msg);
+        Map<String, String> entries = scanMsg(msg);
         for (Map.Entry<String, String> entry : entries.entrySet()) {
             put(entry, targetMap);
         }
         if (!entries.isEmpty()) {
             return;
         }
-        final Map<String, String> entryFromField = scanFields(msg);
+        Map<String, String> entryFromField = scanFields(msg);
         if (entryFromField.size() > 0) {
             for (Map.Entry<String, String> entry : entryFromField.entrySet()) {
                 put(entry, targetMap);
             }
             return;
         }
-        final Map.Entry<String, String> entryFromInnerMsg = scanInnerMessages(msg);
+        Map.Entry<String, String> entryFromInnerMsg = scanInnerMessages(msg);
         if (entryFromInnerMsg != null) {
             put(entryFromInnerMsg, targetMap);
             log().debug("Found enrichment: {} -> {}",
@@ -146,15 +146,15 @@ class EnrichmentMap {
 
     @SuppressWarnings("MethodWithMoreThanThreeNegations")
     private Map<String, String> scanMsg(DescriptorProto msg) {
-        final ImmutableMap.Builder<String, String> result = ImmutableMap.builder();
-        final String messageName = packagePrefix + msg.getName();
+        ImmutableMap.Builder<String, String> result = ImmutableMap.builder();
+        String messageName = packagePrefix + msg.getName();
 
-        final Logger log = log();
+        Logger log = log();
         // Treating current {@code msg} as an enrichment object.
         log.debug("Scanning message {} for the enrichment annotations", messageName);
-        final Collection<TypeName> eventTypes = eventType.parse(msg);
+        Collection<TypeName> eventTypes = eventType.parse(msg);
         if (!eventTypes.isEmpty()) {
-            final String mergedValue = joiner.join(eventTypes);
+            String mergedValue = joiner.join(eventTypes);
             log.debug("Found target events: {}", mergedValue);
             result.put(messageName, mergedValue);
         } else {
@@ -163,11 +163,11 @@ class EnrichmentMap {
 
         // Treating current {@code msg} as a target for enrichment (e.g. Spine event).
         log.debug("Scanning message {} for the enrichment target annotations", messageName);
-        final Collection<TypeName> enrichmentTypes = enrichmentType.parse(msg);
+        Collection<TypeName> enrichmentTypes = enrichmentType.parse(msg);
         if (!enrichmentTypes.isEmpty()) {
             log.debug("Found enrichments for event {}: {}", messageName, enrichmentTypes);
             for (TypeName enrichmentType : enrichmentTypes) {
-                final String typeNameValue = enrichmentType.value();
+                String typeNameValue = enrichmentType.value();
                 result.put(typeNameValue, messageName);
             }
         } else {
@@ -178,13 +178,13 @@ class EnrichmentMap {
     }
 
     private Map<String, String> scanFields(DescriptorProto msg) {
-        final String msgName = msg.getName();
+        String msgName = msg.getName();
         log().debug("Scanning fields of message {} for the enrichment annotations", msgName);
-        final Map<String, String> enrichmentsMap = new HashMap<>();
+        Map<String, String> enrichmentsMap = new HashMap<>();
         for (FieldDescriptorProto field : msg.getFieldList()) {
             if (ByOption.isSetFor(field)) {
-                final ByOption by = new ByOption(packagePrefix, msg, field);
-                final Map.Entry<String, String> foundEvents = by.collect();
+                ByOption by = new ByOption(packagePrefix, msg, field);
+                Map.Entry<String, String> foundEvents = by.collect();
                 enrichmentsMap.put(foundEvents.getKey(), foundEvents.getValue());
             }
         }
@@ -194,13 +194,13 @@ class EnrichmentMap {
 
     @SuppressWarnings("MethodWithMultipleLoops")    // It's fine in this case.
     private Map.Entry<String, String> scanInnerMessages(DescriptorProto msg) {
-        final Logger log = log();
+        Logger log = log();
         log.debug("Scanning inner messages of {} message for the annotations", msg.getName());
         for (DescriptorProto innerMsg : msg.getNestedTypeList()) {
             for (FieldDescriptorProto field : innerMsg.getFieldList()) {
                 if (ByOption.isSetFor(field)) {
-                    final String outerEventName = packagePrefix + msg.getName();
-                    final String enrichmentName =
+                    String outerEventName = packagePrefix + msg.getName();
+                    String enrichmentName =
                             outerEventName +
                                     TypeName.NESTED_TYPE_SEPARATOR +
                                     innerMsg.getName();

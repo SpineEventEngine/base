@@ -37,7 +37,7 @@ class Given {
 
     /** Creates a project with all required tasks. */
     public static Project newProject() {
-        final Project project = ProjectBuilder.builder()
+        Project project = ProjectBuilder.builder()
                                               .build();
         project.task(CLASSES.getValue());
         project.task(BUILD.getValue());

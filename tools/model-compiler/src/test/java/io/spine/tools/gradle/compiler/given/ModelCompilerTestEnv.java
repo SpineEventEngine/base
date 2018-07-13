@@ -57,7 +57,7 @@ public class ModelCompilerTestEnv {
      * @param projectDir {@link Project#getProjectDir() Project.getProjectDir()} of the project
      */
     public static Project newProject(File projectDir) {
-        final Project project = ProjectBuilder.builder()
+        Project project = ProjectBuilder.builder()
                                               .withProjectDir(projectDir)
                                               .build();
         project.getPluginManager()
@@ -68,7 +68,7 @@ public class ModelCompilerTestEnv {
     }
 
     public static String newUuid() {
-        final String result = UUID.randomUUID()
+        String result = UUID.randomUUID()
                                   .toString();
         return result;
     }

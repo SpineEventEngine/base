@@ -46,7 +46,7 @@ public class TestValuesShould {
 
     @Test
     public void provide_randome_number_in_range() {
-        final int value = TestValues.random(-100, 100);
+        int value = TestValues.random(-100, 100);
         assertTrue(value >= -100);
         assertTrue(value <= 100);
     }
