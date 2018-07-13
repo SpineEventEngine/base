@@ -62,7 +62,7 @@ public class SpineProtocShould {
     @Test
     public void create_spine_directory() {
         project.executeTask(BUILD);
-        final File spineDirPath = DefaultProject.at(projectDir.getRoot())
+        File spineDirPath = DefaultProject.at(projectDir.getRoot())
                                                 .tempArtifacts();
         assertTrue(spineDirPath.exists());
     }

@@ -67,13 +67,13 @@ public class RepeatedFieldType implements FieldType {
     }
 
     private static TypeName constructTypeNameFor(String componentTypeName) {
-        final Optional<? extends Class<?>> wrapperClass =
+        Optional<? extends Class<?>> wrapperClass =
                 PrimitiveType.getWrapperClass(componentTypeName);
 
-        final TypeName componentType = wrapperClass.isPresent()
+        TypeName componentType = wrapperClass.isPresent()
                                        ? TypeName.get(wrapperClass.get())
                                        : ClassName.bestGuess(componentTypeName);
-        final ParameterizedTypeName result =
+        ParameterizedTypeName result =
                 ParameterizedTypeName.get(ClassName.get(List.class), componentType);
         return result;
     }

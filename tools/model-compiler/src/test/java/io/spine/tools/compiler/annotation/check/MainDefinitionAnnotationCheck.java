@@ -45,7 +45,7 @@ public class MainDefinitionAnnotationCheck implements SourceCheck {
     @Override
     public Void apply(@Nullable AbstractJavaSource<JavaClassSource> input) {
         checkNotNull(input);
-        final AnnotationSource annotationSource = findSpiAnnotation(input);
+        AnnotationSource annotationSource = findSpiAnnotation(input);
         if (shouldBeAnnotated) {
             assertNotNull(annotationSource);
         } else {

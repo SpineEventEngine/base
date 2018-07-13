@@ -193,8 +193,8 @@ public abstract class Annotator<O extends ExtendableMessage, D extends Generated
     protected static <T extends JavaSource<T>> void rewriteSource(String sourcePathPrefix,
                                                                   SourceFile sourcePath,
                                                                   SourceVisitor<T> sourceVisitor) {
-        final AbstractJavaSource<T> javaSource;
-        final Path absoluteSourcePath = Paths.get(sourcePathPrefix, sourcePath.toString());
+        AbstractJavaSource<T> javaSource;
+        Path absoluteSourcePath = Paths.get(sourcePathPrefix, sourcePath.toString());
 
         if (!Files.exists(absoluteSourcePath)) {
             // Do nothing.
@@ -208,7 +208,7 @@ public abstract class Annotator<O extends ExtendableMessage, D extends Generated
         }
 
         sourceVisitor.apply(javaSource);
-        final String resultingSource = javaSource.toString();
+        String resultingSource = javaSource.toString();
         try {
             Files.write(absoluteSourcePath, resultingSource.getBytes(), TRUNCATE_EXISTING);
         } catch (IOException e) {
@@ -229,8 +229,8 @@ public abstract class Annotator<O extends ExtendableMessage, D extends Generated
             return;
         }
 
-        final String annotationFQN = annotation.getCanonicalName();
-        final AnnotationSource newAnnotation = source.addAnnotation();
+        String annotationFQN = annotation.getCanonicalName();
+        AnnotationSource newAnnotation = source.addAnnotation();
         newAnnotation.setName(annotationFQN);
     }
 

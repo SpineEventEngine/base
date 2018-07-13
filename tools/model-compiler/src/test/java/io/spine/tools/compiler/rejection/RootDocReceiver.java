@@ -65,7 +65,7 @@ public class RootDocReceiver extends Standard {
     }
 
     public static void main(String[] args) {
-        final String name = RootDocReceiver.class.getName();
+        String name = RootDocReceiver.class.getName();
         Main.execute(name, name, args);
     }
 

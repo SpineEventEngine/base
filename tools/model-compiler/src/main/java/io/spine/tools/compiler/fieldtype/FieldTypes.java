@@ -44,7 +44,7 @@ public class FieldTypes {
      */
     public static boolean isRepeated(FieldDescriptorProto field) {
         checkNotNull(field);
-        final boolean result = field.getLabel() == FieldDescriptorProto.Label.LABEL_REPEATED;
+        boolean result = field.getLabel() == FieldDescriptorProto.Label.LABEL_REPEATED;
         return result;
     }
 
@@ -56,7 +56,7 @@ public class FieldTypes {
      */
     public static boolean isMap(FieldDescriptorProto field) {
         checkNotNull(field);
-        final boolean result = field.getTypeName()
+        boolean result = field.getTypeName()
                                     .endsWith('.' + getEntryNameFor(field));
         return result;
     }
@@ -77,9 +77,9 @@ public class FieldTypes {
     public static String getEntryNameFor(FieldDescriptorProto mapField) {
         checkNotNull(mapField);
 
-        final String jsonName = mapField.getJsonName();
-        final char capitalizedFirstSymbol = Character.toUpperCase(jsonName.charAt(0));
-        final String remainingPart = jsonName.substring(1);
+        String jsonName = mapField.getJsonName();
+        char capitalizedFirstSymbol = Character.toUpperCase(jsonName.charAt(0));
+        String remainingPart = jsonName.substring(1);
 
         return capitalizedFirstSymbol + remainingPart + ENTRY_SUFFIX;
     }
@@ -104,7 +104,7 @@ public class FieldTypes {
      * @return the type name without leading dot
      */
     public static String trimTypeName(FieldDescriptorProto fieldDescriptor) {
-        final String typeName = fieldDescriptor.getTypeName();
+        String typeName = fieldDescriptor.getTypeName();
         checkNotNull(typeName);
 
         if (typeName.isEmpty()) {

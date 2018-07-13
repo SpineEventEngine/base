@@ -57,9 +57,9 @@ class MethodConstructors {
      */
     static String createDescriptorStatement(int index, ClassName messageClassName) {
         checkNotNull(messageClassName);
-        final SoyMapData mapData = new SoyMapData("fieldIndex", index,
+        SoyMapData mapData = new SoyMapData("fieldIndex", index,
                                                   "messageClassName", messageClassName.toString());
-        final String result = renderData(mapData, "io.spine.generation.descriptorStatement");
+        String result = renderData(mapData, "io.spine.generation.descriptorStatement");
         return result;
     }
 
@@ -71,8 +71,8 @@ class MethodConstructors {
      */
     static String createValidateStatement(String fieldValue) {
         checkNotNull(fieldValue);
-        final SoyMapData mapData = new SoyMapData("fieldValue", fieldValue);
-        final String result = renderData(mapData, "io.spine.generation.validateStatement");
+        SoyMapData mapData = new SoyMapData("fieldValue", fieldValue);
+        String result = renderData(mapData, "io.spine.generation.validateStatement");
         return result;
     }
 
@@ -85,11 +85,11 @@ class MethodConstructors {
     static String createConvertSingularValue(String value) {
         checkNotNull(value);
         // We pass capitalized name because this value is used with prefixes.
-        final String fieldName = FieldName.of(value)
+        String fieldName = FieldName.of(value)
                                           .toCamelCase();
-        final SoyMapData mapData = new SoyMapData("javaFieldName", fieldName,
+        SoyMapData mapData = new SoyMapData("javaFieldName", fieldName,
                                                   "valueToValidate", value);
-        final String result = renderData(mapData, "io.spine.generation.convertedValueStatement");
+        String result = renderData(mapData, "io.spine.generation.convertedValueStatement");
         return result;
     }
 
@@ -152,21 +152,21 @@ class MethodConstructors {
     }
 
     private static String renderData(SoyMapData mapData, String templateName) {
-        final String result = soyTofu.newRenderer(templateName)
+        String result = soyTofu.newRenderer(templateName)
                                      .setData(mapData)
                                      .render();
         return result;
     }
 
     private static SoyTofu getSoyTofu() {
-        final URL resource = MethodConstructors.class.getClassLoader()
+        URL resource = MethodConstructors.class.getClassLoader()
                                                      .getResource(TEMPLATE_PATH);
         if (resource == null) {
-            final String exMessage = format("The template file %s is not found.", TEMPLATE_PATH);
+            String exMessage = format("The template file %s is not found.", TEMPLATE_PATH);
             throw newIllegalStateException(exMessage);
         }
 
-        final SoyFileSet sfs = SoyFileSet.builder()
+        SoyFileSet sfs = SoyFileSet.builder()
                                          .add(resource)
                                          .build();
         return sfs.compileToTofu();

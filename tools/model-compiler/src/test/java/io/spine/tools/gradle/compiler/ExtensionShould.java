@@ -59,7 +59,7 @@ public class ExtensionShould {
 
     @Test
     public void return_default_mainTargetGenResourcesDir_if_not_set() {
-        final String dir = Extension.getMainTargetGenResourcesDir(project);
+        String dir = Extension.getMainTargetGenResourcesDir(project);
 
         assertNotEmptyAndIsInProjectDir(dir);
     }
@@ -69,14 +69,14 @@ public class ExtensionShould {
 
         spineProtobuf().mainTargetGenResourcesDir = newUuid();
 
-        final String dir = Extension.getMainTargetGenResourcesDir(project);
+        String dir = Extension.getMainTargetGenResourcesDir(project);
 
         assertEquals(spineProtobuf().mainTargetGenResourcesDir, dir);
     }
 
     @Test
     public void return_default_testTargetGenResourcesDir_if_not_set() {
-        final String dir = Extension.getTestTargetGenResourcesDir(project);
+        String dir = Extension.getTestTargetGenResourcesDir(project);
 
         assertNotEmptyAndIsInProjectDir(dir);
     }
@@ -85,14 +85,14 @@ public class ExtensionShould {
     public void return_testTargetGenResourcesDir_if_set() {
         spineProtobuf().testTargetGenResourcesDir = newUuid();
 
-        final String dir = Extension.getTestTargetGenResourcesDir(project);
+        String dir = Extension.getTestTargetGenResourcesDir(project);
 
         assertEquals(spineProtobuf().testTargetGenResourcesDir, dir);
     }
 
     @Test
     public void return_default_mainDescriptorSetPath_if_not_set() {
-        final String dir = Extension.getMainDescriptorSetPath(project);
+        String dir = Extension.getMainDescriptorSetPath(project);
 
         assertNotEmptyAndIsInProjectDir(dir);
     }
@@ -101,14 +101,14 @@ public class ExtensionShould {
     public void return_mainDescriptorSetPath_if_set() {
         spineProtobuf().mainDescriptorSetPath = newUuid();
 
-        final String dir = Extension.getMainDescriptorSetPath(project);
+        String dir = Extension.getMainDescriptorSetPath(project);
 
         assertEquals(spineProtobuf().mainDescriptorSetPath, dir);
     }
 
     @Test
     public void return_default_testDescriptorSetPath_if_not_set() {
-        final String dir = Extension.getTestDescriptorSetPath(project);
+        String dir = Extension.getTestDescriptorSetPath(project);
 
         assertNotEmptyAndIsInProjectDir(dir);
     }
@@ -117,14 +117,14 @@ public class ExtensionShould {
     public void return_testDescriptorSetPath_if_set() {
         spineProtobuf().testDescriptorSetPath = newUuid();
 
-        final String dir = Extension.getTestDescriptorSetPath(project);
+        String dir = Extension.getTestDescriptorSetPath(project);
 
         assertEquals(spineProtobuf().testDescriptorSetPath, dir);
     }
 
     @Test
     public void return_default_targetGenRejectionsRootDir_if_not_set() {
-        final String dir = Extension.getTargetGenRejectionsRootDir(project);
+        String dir = Extension.getTargetGenRejectionsRootDir(project);
 
         assertNotEmptyAndIsInProjectDir(dir);
     }
@@ -133,14 +133,14 @@ public class ExtensionShould {
     public void return_targetGenRejectionsRootDir_if_set() {
         spineProtobuf().targetGenRejectionsRootDir = newUuid();
 
-        final String dir = Extension.getTargetGenRejectionsRootDir(project);
+        String dir = Extension.getTargetGenRejectionsRootDir(project);
 
         assertEquals(spineProtobuf().targetGenRejectionsRootDir, dir);
     }
 
     @Test
     public void return_targetGenValidatorsRootDir_if_not_set(){
-        final String dir = Extension.getTargetGenValidatorsRootDir(project);
+        String dir = Extension.getTargetGenValidatorsRootDir(project);
 
         assertNotEmptyAndIsInProjectDir(dir);
     }
@@ -149,14 +149,14 @@ public class ExtensionShould {
     public void return_targetTestGenValidatorsRootDir_if_set() {
         spineProtobuf().targetTestGenVBuildersRootDir = newUuid();
 
-        final String dir = Extension.getTargetTestGenValidatorsRootDir(project);
+        String dir = Extension.getTargetTestGenValidatorsRootDir(project);
 
         assertEquals(spineProtobuf().targetTestGenVBuildersRootDir, dir);
     }
 
     @Test
     public void return_targetTestGenValidatorsRootDir_if_not_set(){
-        final String dir = Extension.getTargetTestGenValidatorsRootDir(project);
+        String dir = Extension.getTargetTestGenValidatorsRootDir(project);
 
         assertNotEmptyAndIsInProjectDir(dir);
     }
@@ -165,14 +165,14 @@ public class ExtensionShould {
     public void return_targetGenValidatorsRootDir_if_set() {
         spineProtobuf().targetGenVBuildersRootDir = newUuid();
 
-        final String dir = Extension.getTargetGenValidatorsRootDir(project);
+        String dir = Extension.getTargetGenValidatorsRootDir(project);
 
         assertEquals(spineProtobuf().targetGenVBuildersRootDir, dir);
     }
 
     @Test
     public void return_default_dirsToClean_if_not_set() {
-        final List<String> actualDirs = Extension.getDirsToClean(project);
+        List<String> actualDirs = Extension.getDirsToClean(project);
 
         assertEquals(1, actualDirs.size());
         assertNotEmptyAndIsInProjectDir(actualDirs.get(0));
@@ -182,7 +182,7 @@ public class ExtensionShould {
     public void return_single_dirToClean_if_set() {
         spineProtobuf().dirToClean = newUuid();
 
-        final List<String> actualDirs = Extension.getDirsToClean(project);
+        List<String> actualDirs = Extension.getDirsToClean(project);
 
         assertEquals(1, actualDirs.size());
         assertEquals(spineProtobuf().dirToClean, actualDirs.get(0));
@@ -192,7 +192,7 @@ public class ExtensionShould {
     public void return_dirsToClean_list_if_array_is_set() {
         spineProtobuf().dirsToClean = newArrayList(newUuid(), newUuid());
 
-        final List<String> actualDirs = Extension.getDirsToClean(project);
+        List<String> actualDirs = Extension.getDirsToClean(project);
 
         assertEquals(spineProtobuf().dirsToClean, actualDirs);
     }
@@ -202,22 +202,22 @@ public class ExtensionShould {
         spineProtobuf().dirsToClean = newArrayList(newUuid(), newUuid());
         spineProtobuf().dirToClean = newUuid();
 
-        final List<String> actualDirs = Extension.getDirsToClean(project);
+        List<String> actualDirs = Extension.getDirsToClean(project);
 
         assertEquals(spineProtobuf().dirsToClean, actualDirs);
     }
 
     @Test
     public void include_spine_dir_in_dirsToClean_if_exists() throws IOException {
-        final DefaultProject defaultProject = DefaultProject.at(projectDir.getRoot());
-        final File spineDir = defaultProject.tempArtifacts();
+        DefaultProject defaultProject = DefaultProject.at(projectDir.getRoot());
+        File spineDir = defaultProject.tempArtifacts();
         assertTrue(spineDir.mkdir());
-        final String generatedDir = defaultProject.generated()
+        String generatedDir = defaultProject.generated()
                                                   .getPath()
                                                   .toFile()
                                                   .getCanonicalPath();
 
-        final List<String> dirsToClean = Extension.getDirsToClean(project);
+        List<String> dirsToClean = Extension.getDirsToClean(project);
 
         assertThat(dirsToClean,
                    containsInAnyOrder(spineDir.getCanonicalPath(), generatedDir)
