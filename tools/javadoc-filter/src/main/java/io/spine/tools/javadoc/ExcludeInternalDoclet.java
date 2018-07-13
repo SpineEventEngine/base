@@ -80,7 +80,7 @@ public class ExcludeInternalDoclet extends Standard {
      * @param args the command-line parameters
      */
     public static void main(String[] args) {
-        final String name = ExcludeInternalDoclet.class.getName();
+        String name = ExcludeInternalDoclet.class.getName();
         Main.execute(name, name, args);
     }
 
@@ -93,8 +93,8 @@ public class ExcludeInternalDoclet extends Standard {
      */
     @SuppressWarnings("unused") // called by com.sun.tools.javadoc.Main
     public static boolean start(RootDoc root) {
-        final ExcludePrinciple excludePrinciple = new ExcludeInternalPrinciple(root);
-        final ExcludeInternalDoclet doclet = new ExcludeInternalDoclet(excludePrinciple);
+        ExcludePrinciple excludePrinciple = new ExcludeInternalPrinciple(root);
+        ExcludeInternalDoclet doclet = new ExcludeInternalDoclet(excludePrinciple);
         return Standard.start((RootDoc) doclet.process(root, RootDoc.class));
     }
 
@@ -113,14 +113,14 @@ public class ExcludeInternalDoclet extends Standard {
         }
 
         if (returnValue.getClass().getName().startsWith("com.sun.")) {
-            final Class cls = returnValue.getClass();
+            Class cls = returnValue.getClass();
             return Proxy.newProxyInstance(cls.getClassLoader(),
                                           cls.getInterfaces(),
                                           new ExcludeHandler(returnValue));
         } else if (returnValue instanceof Object[] && returnValueType.getComponentType() != null) {
-            final Class componentType = returnValueType.getComponentType();
-            final Object[] array = (Object[]) returnValue;
-            final List<Object> list = new ArrayList<>();
+            Class componentType = returnValueType.getComponentType();
+            Object[] array = (Object[]) returnValue;
+            List<Object> list = new ArrayList<>();
             for (Object entry : array) {
                 if (!(entry instanceof ProgramElementDoc && excludePrinciple.shouldExclude(
                         (ProgramElementDoc) entry))) {

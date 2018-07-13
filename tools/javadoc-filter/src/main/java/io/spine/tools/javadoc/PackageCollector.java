@@ -50,7 +50,7 @@ class PackageCollector {
      * @return collected {@linkplain PackageDoc}s
      */
     Collection<PackageDoc> collect(RootDoc root) {
-        final Collection<PackageDoc> packages = new TreeSet<>(new PackageDocComparator());
+        Collection<PackageDoc> packages = new TreeSet<>(new PackageDocComparator());
 
         packages.addAll(collect(root.specifiedPackages()));
         packages.addAll(collect(root.specifiedClasses()));
@@ -59,8 +59,8 @@ class PackageCollector {
     }
 
     private Collection<PackageDoc> collect(ClassDoc[] forClasses) {
-        final Collection<PackageDoc> allPackages = getPackages(forClasses);
-        final Collection<PackageDoc> basePackages = getPackages(forClasses);
+        Collection<PackageDoc> allPackages = getPackages(forClasses);
+        Collection<PackageDoc> basePackages = getPackages(forClasses);
 
         for (ClassDoc classDoc : forClasses) {
             if (isSubpackage(classDoc.containingPackage(), basePackages)) {
@@ -72,8 +72,8 @@ class PackageCollector {
     }
 
     private Collection<PackageDoc> collect(PackageDoc[] forPackages) {
-        final Collection<PackageDoc> allPackages = getBasePackages(forPackages);
-        final Collection<PackageDoc> basePackages = getBasePackages(forPackages);
+        Collection<PackageDoc> allPackages = getBasePackages(forPackages);
+        Collection<PackageDoc> basePackages = getBasePackages(forPackages);
 
         for (PackageDoc packageDoc : forPackages) {
             if (isSubpackage(packageDoc, basePackages)) {
@@ -85,7 +85,7 @@ class PackageCollector {
     }
 
     private Collection<PackageDoc> getBasePackages(PackageDoc[] forPackages) {
-        final Collection<PackageDoc> packages = new TreeSet<>(new PackageDocComparator());
+        Collection<PackageDoc> packages = new TreeSet<>(new PackageDocComparator());
 
         for (PackageDoc packageDoc : forPackages) {
             if (analyst.isAnnotationPresent(packageDoc.annotations())) {
@@ -97,7 +97,7 @@ class PackageCollector {
     }
 
     private Collection<PackageDoc> getPackages(ClassDoc[] forClasses) {
-        final Collection<PackageDoc> packages = new TreeSet<>(new PackageDocComparator());
+        Collection<PackageDoc> packages = new TreeSet<>(new PackageDocComparator());
 
         for (ClassDoc classDoc : forClasses) {
             if (analyst.isAnnotationPresent(classDoc.containingPackage().annotations())) {

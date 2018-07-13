@@ -46,7 +46,7 @@ class JavadocArgsBuilder {
     }
 
     String[] build() {
-        final List<String> allArguments = new ArrayList<>();
+        List<String> allArguments = new ArrayList<>();
 
         addDestination(allArguments);
         addSourcePath(allArguments);
