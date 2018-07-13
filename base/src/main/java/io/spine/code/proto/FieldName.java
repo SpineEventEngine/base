@@ -66,8 +66,8 @@ public final class FieldName extends AbstractFieldName implements UnderscoredNam
      */
     @Override
     public List<String> words() {
-        final String[] words = value().split(WORD_SEPARATOR);
-        final ImmutableList<String> result = ImmutableList.copyOf(words);
+        String[] words = value().split(WORD_SEPARATOR);
+        ImmutableList<String> result = ImmutableList.copyOf(words);
         return result;
     }
 
@@ -75,7 +75,7 @@ public final class FieldName extends AbstractFieldName implements UnderscoredNam
      * Obtains the field name in {@code CamelCase}.
      */
     public String toCamelCase() {
-        final String result = CamelCase.convert(this);
+        String result = CamelCase.convert(this);
         return result;
     }
 
@@ -83,8 +83,8 @@ public final class FieldName extends AbstractFieldName implements UnderscoredNam
      * Obtains the field name in {@code javaCase}.
      */
     public String javaCase() {
-        final String camelCase = toCamelCase();
-        final String result = Character.toLowerCase(camelCase.charAt(0)) + camelCase.substring(1);
+        String camelCase = toCamelCase();
+        String result = Character.toLowerCase(camelCase.charAt(0)) + camelCase.substring(1);
         return result;
     }
 }

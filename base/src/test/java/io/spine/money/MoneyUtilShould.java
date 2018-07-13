@@ -34,9 +34,9 @@ public class MoneyUtilShould {
 
     @Test
     public void create_new_Money_instance() {
-        final long amount = 100500L;
+        long amount = 100500L;
 
-        final Money money = MoneyUtil.newMoney(amount, Currency.USD);
+        Money money = MoneyUtil.newMoney(amount, Currency.USD);
 
         assertEquals(amount, money.getAmount());
         assertEquals(Currency.USD, money.getCurrency());

@@ -46,7 +46,7 @@ public class ReflectiveBuilderShould {
 
         @Override
         protected Constructor<Any> getConstructor() {
-            final Constructor<Any> ctor;
+            Constructor<Any> ctor;
             try {
                 ctor = Any.class.getDeclaredConstructor();
             } catch (NoSuchMethodException e) {

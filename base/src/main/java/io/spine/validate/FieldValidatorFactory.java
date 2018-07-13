@@ -69,7 +69,7 @@ class FieldValidatorFactory {
     private static FieldValidator<?> createForLinear(FieldContext fieldContext,
                                                      Object fieldValue,
                                                      boolean strict) {
-        final JavaType fieldType = fieldContext.getTarget()
+        JavaType fieldType = fieldContext.getTarget()
                                                .getJavaType();
         return createForLinear(fieldType,
                                fieldContext,
@@ -129,16 +129,16 @@ class FieldValidatorFactory {
     private static FieldValidator<?> createForMap(FieldContext fieldContext,
                                                   Map<?, ?> value,
                                                   boolean strict) {
-        final FieldDescriptor descriptor = fieldContext.getTarget();
+        FieldDescriptor descriptor = fieldContext.getTarget();
         checkArgument(descriptor.isMapField(),
                       "Field %s is not a map field.",
                       descriptor.getFullName());
         if (value.isEmpty()) {
             return new EmptyMapFieldValidator(fieldContext, strict);
         }
-        final Object firstValue = find(value.values(), notNull());
-        final Class<?> valueClass = firstValue.getClass();
-        final Class<?> wrappedValueClass = Primitives.wrap(valueClass);
+        Object firstValue = find(value.values(), notNull());
+        Class<?> valueClass = firstValue.getClass();
+        Class<?> wrappedValueClass = Primitives.wrap(valueClass);
         JavaType type = SCALAR_FIELD_TYPES.get(wrappedValueClass);
         if (type == null) {
             if (ByteString.class.isAssignableFrom(valueClass)) {
@@ -151,7 +151,7 @@ class FieldValidatorFactory {
                 throw fieldTypeIsNotSupported(descriptor);
             }
         }
-        final FieldValidator<?> validator = createForLinear(type,
+        FieldValidator<?> validator = createForLinear(type,
                                                             fieldContext,
                                                             value,
                                                             strict);
@@ -173,7 +173,7 @@ class FieldValidatorFactory {
     }
 
     private static IllegalArgumentException fieldTypeIsNotSupported(FieldDescriptor descriptor) {
-        final String msg = format("The field type is not supported for validation: %s",
+        String msg = format("The field type is not supported for validation: %s",
                                   descriptor.getType());
         throw new IllegalArgumentException(msg);
     }

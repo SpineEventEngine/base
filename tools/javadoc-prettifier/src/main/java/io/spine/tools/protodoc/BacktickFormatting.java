@@ -55,14 +55,14 @@ class BacktickFormatting extends LineFormatting {
     @Override
     String formatLine(String line) {
         // Double the line size to avoid possible memory reallocation.
-        final StringBuffer buffer = new StringBuffer(line.length() * 2);
+        StringBuffer buffer = new StringBuffer(line.length() * 2);
 
-        final Matcher matcher = PATTERN_TEXT_IN_BACKTICKS.matcher(line);
+        Matcher matcher = PATTERN_TEXT_IN_BACKTICKS.matcher(line);
         while (matcher.find()) {
-            final String partToFormat = matcher.group();
-            final String partWithoutBackticks = PATTERN_BACKTICK.matcher(partToFormat)
+            String partToFormat = matcher.group();
+            String partWithoutBackticks = PATTERN_BACKTICK.matcher(partToFormat)
                                                                 .replaceAll("");
-            final String replacement = wrapWithCodeTag(partWithoutBackticks);
+            String replacement = wrapWithCodeTag(partWithoutBackticks);
             matcher.appendReplacement(buffer, quoteReplacement(replacement));
         }
         matcher.appendTail(buffer);

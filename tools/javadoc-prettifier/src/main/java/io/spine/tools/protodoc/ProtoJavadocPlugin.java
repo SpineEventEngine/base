@@ -68,19 +68,19 @@ public class ProtoJavadocPlugin extends SpinePlugin {
     static final String PROTO_JAVADOC_EXTENSION_NAME = "protoJavadoc";
 
     @Override
-    public void apply(final Project project) {
+    public void apply(Project project) {
         log().debug("Adding the ProtoJavadocPlugin extension to the project.");
         project.getExtensions()
                .create(PROTO_JAVADOC_EXTENSION_NAME, Extension.class);
 
-        final Action<Task> mainAction = createAction(project, TaskType.MAIN);
+        Action<Task> mainAction = createAction(project, TaskType.MAIN);
         newTask(FORMAT_PROTO_DOC, mainAction)
                 .insertBeforeTask(COMPILE_JAVA)
                 .insertAfterTask(GENERATE_PROTO)
                 .applyNowTo(project);
         logDependingTask(FORMAT_PROTO_DOC, COMPILE_JAVA, GENERATE_PROTO);
 
-        final Action<Task> testAction = createAction(project, TaskType.TEST);
+        Action<Task> testAction = createAction(project, TaskType.TEST);
         newTask(FORMAT_TEST_PROTO_DOC, testAction)
                 .insertBeforeTask(COMPILE_TEST_JAVA)
                 .insertAfterTask(GENERATE_TEST_PROTO)
@@ -88,25 +88,25 @@ public class ProtoJavadocPlugin extends SpinePlugin {
         logDependingTask(FORMAT_TEST_PROTO_DOC, COMPILE_TEST_JAVA, GENERATE_TEST_PROTO);
     }
 
-    private Action<Task> createAction(final Project project, final TaskType taskType) {
+    private Action<Task> createAction(Project project, TaskType taskType) {
         return task -> formatJavadocs(project, taskType);
     }
 
     private void formatJavadocs(Project project, TaskType taskType) {
-        final String genProtoDir = taskType.getGenProtoDir(project);
-        final File file = new File(genProtoDir);
+        String genProtoDir = taskType.getGenProtoDir(project);
+        File file = new File(genProtoDir);
         if (!file.exists()) {
             log().warn("Cannot perform formatting. Directory `{}` does not exist.", file);
             return;
         }
 
-        final JavadocFormatter formatter = new JavadocFormatter(asList(new BacktickFormatting(),
+        JavadocFormatter formatter = new JavadocFormatter(asList(new BacktickFormatting(),
                                                                        new PreTagFormatting()));
         try {
             log().debug("Starting Javadocs formatting in `{}`.", genProtoDir);
             Files.walkFileTree(file.toPath(), new FormattingFileVisitor(formatter));
         } catch (IOException e) {
-            final String errMsg = format("Failed to format the sources in `%s`.", genProtoDir);
+            String errMsg = format("Failed to format the sources in `%s`.", genProtoDir);
             throw new IllegalStateException(errMsg, e);
         }
     }

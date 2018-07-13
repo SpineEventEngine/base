@@ -62,13 +62,13 @@ public class ExceptionsShould {
 
     @Test
     public void throw_formatted_unsupported_exception() {
-        final String arg1 = getClass().getCanonicalName();
-        final long arg2 = 100500L;
+        String arg1 = getClass().getCanonicalName();
+        long arg2 = 100500L;
         try {
             unsupported("%s %d", arg1, arg2);
             fail();
         } catch (UnsupportedOperationException e) {
-            final String exceptionMessage = e.getMessage();
+            String exceptionMessage = e.getMessage();
             assertTrue(exceptionMessage.contains(arg1));
             assertTrue(exceptionMessage.contains(String.valueOf(arg2)));
         }

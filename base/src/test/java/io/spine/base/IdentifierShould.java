@@ -75,7 +75,7 @@ public class IdentifierShould {
 
     @Test
     public void unpack_passed_Any() {
-        final StringValue id = newUuidValue();
+        StringValue id = newUuidValue();
         assertEquals(id.getValue(), Identifier.toString(AnyPacker.pack(id)));
     }
 
@@ -124,85 +124,85 @@ public class IdentifierShould {
     @Test
     public void return_same_string_when_convert_string_wrapped_into_message() {
 
-        final StringValue id = toMessage(TEST_ID);
+        StringValue id = toMessage(TEST_ID);
 
-        final String result = Identifier.toString(id);
+        String result = Identifier.toString(id);
 
         assertEquals(TEST_ID, result);
     }
 
     @Test
     public void convert_to_string_integer_id_wrapped_into_message() {
-        final Integer value = 1024;
-        final Int32Value id = toMessage(value);
-        final String expected = value.toString();
+        Integer value = 1024;
+        Int32Value id = toMessage(value);
+        String expected = value.toString();
 
-        final String actual = Identifier.toString(id);
+        String actual = Identifier.toString(id);
 
         assertEquals(expected, actual);
     }
 
     @Test
     public void convert_to_string_long_id_wrapped_into_message() {
-        final Long value = 100500L;
-        final Int64Value id = toMessage(value);
-        final String expected = value.toString();
+        Long value = 100500L;
+        Int64Value id = toMessage(value);
+        String expected = value.toString();
 
-        final String actual = Identifier.toString(id);
+        String actual = Identifier.toString(id);
 
         assertEquals(expected, actual);
     }
 
     @Test
     public void convert_to_string_message_id_with_string_field() {
-        final StringValue id = toMessage(TEST_ID);
+        StringValue id = toMessage(TEST_ID);
 
-        final String result = Identifier.toString(id);
+        String result = Identifier.toString(id);
 
         assertEquals(TEST_ID, result);
     }
 
     @Test
     public void convert_to_string_message_id_with_message_field() {
-        final StringValue value = toMessage(TEST_ID);
-        final NestedMessageId idToConvert = NestedMessageId.newBuilder()
+        StringValue value = toMessage(TEST_ID);
+        NestedMessageId idToConvert = NestedMessageId.newBuilder()
                                                            .setId(value)
                                                            .build();
 
-        final String result = Identifier.toString(idToConvert);
+        String result = Identifier.toString(idToConvert);
 
         assertEquals(TEST_ID, result);
     }
 
     @Test
     public void have_default_to_string_conversion_of_message_id_with_several_fields() {
-        final String nestedString = "nested_string";
-        final String outerString = "outer_string";
-        final Integer number = 256;
+        String nestedString = "nested_string";
+        String outerString = "outer_string";
+        Integer number = 256;
 
-        final StringValue nestedMessageString = toMessage(nestedString);
-        final SeveralFieldsId idToConvert = SeveralFieldsId.newBuilder()
+        StringValue nestedMessageString = toMessage(nestedString);
+        SeveralFieldsId idToConvert = SeveralFieldsId.newBuilder()
                                                            .setString(outerString)
                                                            .setNumber(number)
                                                            .setMessage(nestedMessageString)
                                                            .build();
 
-        final String expected =
+        String expected =
                 "string=\"" + outerString + '\"' +
                         " number=" + number +
                         " message { value=\"" + nestedString + "\" }";
 
-        final String actual = Identifier.toString(idToConvert);
+        String actual = Identifier.toString(idToConvert);
 
         assertEquals(expected, actual);
     }
 
     @Test
     public void convert_to_string_message_id_wrapped_in_Any() {
-        final StringValue messageToWrap = toMessage(TEST_ID);
-        final Any any = AnyPacker.pack(messageToWrap);
+        StringValue messageToWrap = toMessage(TEST_ID);
+        Any any = AnyPacker.pack(messageToWrap);
 
-        final String result = Identifier.toString(any);
+        String result = Identifier.toString(any);
 
         assertEquals(TEST_ID, result);
     }
@@ -252,7 +252,7 @@ public class IdentifierShould {
         assertEquals(10, Type.INTEGER.fromMessage(toMessage(10)));
         assertEquals(1024L, Type.LONG.fromMessage(toMessage(1024L)));
 
-        final String value = getClass().getSimpleName();
+        String value = getClass().getSimpleName();
         assertEquals(value, Type.STRING.fromMessage(toMessage(value)));
     }
 
@@ -264,10 +264,10 @@ public class IdentifierShould {
 
     @Test(expected = ClassCastException.class)
     public void fail_to_unpack_ID_of_wrong_type() {
-        final String id = "abcdef";
-        final Any packed = Identifier.pack(id);
+        String id = "abcdef";
+        Any packed = Identifier.pack(id);
 
         @SuppressWarnings("unused") // Required to invoke the cast.
-        final Message wrong = Identifier.unpack(packed);
+        Message wrong = Identifier.unpack(packed);
     }
 }

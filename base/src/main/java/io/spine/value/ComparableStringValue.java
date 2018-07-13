@@ -40,7 +40,7 @@ public abstract class ComparableStringValue<T extends ComparableStringValue>
 
     @Override
     public int compareTo(T o) {
-        final int result = value().compareTo(o.value());
+        int result = value().compareTo(o.value());
         return result;
     }
 }

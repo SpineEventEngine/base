@@ -39,25 +39,25 @@ public class MethodConstructorsShould {
 
     @Test
     public void return_constructed_descriptor_statement() {
-        final String result = createDescriptorStatement(0, ClassName.get(getClass()));
+        String result = createDescriptorStatement(0, ClassName.get(getClass()));
         assertNotNull(result);
     }
 
     @Test
     public void return_constructed_validate_statement(){
-        final String result = createValidateStatement(TEST_VALUE);
+        String result = createValidateStatement(TEST_VALUE);
         assertNotNull(result);
     }
 
     @Test
     public void return_constructed_converted_value_statement() {
-        final String result = createConvertSingularValue(TEST_VALUE);
+        String result = createConvertSingularValue(TEST_VALUE);
         assertNotNull(result);
     }
 
     @Test
     public void return_validate_statement() {
-        final String result = createConvertSingularValue(TEST_VALUE);
+        String result = createConvertSingularValue(TEST_VALUE);
         assertNotNull(result);
     }
 

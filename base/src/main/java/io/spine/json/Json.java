@@ -60,7 +60,7 @@ public final class Json {
      * @return Json string
      */
     public static String toJson(Message message) {
-        final String result = toJson(message, JsonPrinter.getInstance());
+        String result = toJson(message, JsonPrinter.getInstance());
         return result;
     }
 
@@ -73,9 +73,9 @@ public final class Json {
      * @return the converted message to Json
      */
     public static String toCompactJson(Message message) {
-        final Printer compactPrinter = JsonPrinter.getInstance()
+        Printer compactPrinter = JsonPrinter.getInstance()
                                                   .omittingInsignificantWhitespace();
-        final String result = toJson(message, compactPrinter);
+        String result = toJson(message, compactPrinter);
         return result;
     }
 
@@ -85,7 +85,7 @@ public final class Json {
         try {
             result = printer.print(message);
         } catch (InvalidProtocolBufferException e) {
-            final Throwable rootCause = getRootCause(e);
+            Throwable rootCause = getRootCause(e);
             throw new UnknownTypeException(rootCause);
         }
         checkState(result != null);
@@ -96,10 +96,10 @@ public final class Json {
     public static <T extends Message> T fromJson(String json, Class<T> messageClass) {
         checkNotNull(json);
         try {
-            final Message.Builder messageBuilder = builderFor(messageClass);
+            Message.Builder messageBuilder = builderFor(messageClass);
             JsonParser.getInstance()
                       .merge(json, messageBuilder);
-            final T result = (T) messageBuilder.build();
+            T result = (T) messageBuilder.build();
             return result;
         } catch (InvalidProtocolBufferException e) {
             throw newIllegalArgumentException(e,

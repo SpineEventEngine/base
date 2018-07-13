@@ -51,16 +51,16 @@ public class SourceFileShould {
 
     @Test
     public void search_nested_declarations_recursively() {
-        final Descriptor nestedForNested = Top.NestedForTop.NestedForNested.getDescriptor();
-        final String expectedTypeName = nestedForNested.getFullName();
-        final String simpleTypeName = nestedForNested.getName();
-        final MessageDeclaration result = findDeclaration(simpleTypeName);
+        Descriptor nestedForNested = Top.NestedForTop.NestedForNested.getDescriptor();
+        String expectedTypeName = nestedForNested.getFullName();
+        String simpleTypeName = nestedForNested.getName();
+        MessageDeclaration result = findDeclaration(simpleTypeName);
         assertEquals(expectedTypeName, result.getTypeName().value());
     }
 
     private MessageDeclaration findDeclaration(String name) {
-        final Predicate<DescriptorProto> predicate = new MessageWithName(name);
-        final Collection<MessageDeclaration> searchResult = sourceFile.allThat(predicate);
+        Predicate<DescriptorProto> predicate = new MessageWithName(name);
+        Collection<MessageDeclaration> searchResult = sourceFile.allThat(predicate);
         assertEquals(searchResult.size(), 1);
         return searchResult.iterator()
                            .next();
@@ -80,7 +80,7 @@ public class SourceFileShould {
         @Override
         public boolean apply(@Nullable DescriptorProto input) {
             checkNotNull(input);
-            final String messageName = input.getName();
+            String messageName = input.getName();
             return messageName.equals(name);
         }
     }

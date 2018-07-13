@@ -86,17 +86,17 @@ class AlternativeFieldValidator {
     }
 
     List<? extends ConstraintViolation> validate(Message message) {
-        final Map<FieldDescriptor, Object> options = messageDescriptor.getOptions()
+        Map<FieldDescriptor, Object> options = messageDescriptor.getOptions()
                                                                       .getAllFields();
         for (FieldDescriptor optionDescriptor : options.keySet()) {
             if (OPTION_REQUIRED_FIELD.equals(optionDescriptor.getName())) {
-                final JavaType optionType = optionDescriptor.getJavaType();
+                JavaType optionType = optionDescriptor.getJavaType();
                 if (optionType == JavaType.STRING) {
-                    final String requiredFieldExpression = (String) options.get(optionDescriptor);
-                    final ImmutableList<RequiredFieldOption> fieldOptions =
+                    String requiredFieldExpression = (String) options.get(optionDescriptor);
+                    ImmutableList<RequiredFieldOption> fieldOptions =
                             parse(requiredFieldExpression);
                     if (!alternativeFound(message, fieldOptions)) {
-                        final String msgFormat =
+                        String msgFormat =
                                 "None of the fields match the `required_field` definition: %s";
                         ConstraintViolation requiredFieldNotFound =
                                 ConstraintViolation.newBuilder()
@@ -115,10 +115,10 @@ class AlternativeFieldValidator {
     }
 
     private static ImmutableList<RequiredFieldOption> parse(String optionsDefinition) {
-        final ImmutableList.Builder<RequiredFieldOption> alternatives = ImmutableList.builder();
-        final String whiteSpaceRemoved = WHITESPACE.matcher(optionsDefinition)
+        ImmutableList.Builder<RequiredFieldOption> alternatives = ImmutableList.builder();
+        String whiteSpaceRemoved = WHITESPACE.matcher(optionsDefinition)
                                                    .replaceAll("");
-        final Iterable<String> parts = Splitter.on(OPTION_SEPARATOR)
+        Iterable<String> parts = Splitter.on(OPTION_SEPARATOR)
                                                .split(whiteSpaceRemoved);
         for (String part : parts) {
             if (part.indexOf(AMPERSAND) > 0) {
@@ -143,7 +143,7 @@ class AlternativeFieldValidator {
     }
 
     private boolean checkField(Message message, String fieldName) {
-        final FieldDescriptor field = messageDescriptor.findFieldByName(fieldName);
+        FieldDescriptor field = messageDescriptor.findFieldByName(fieldName);
         if (field == null) {
             ConstraintViolation notFound = ConstraintViolation.newBuilder()
                                                               .setMsgFormat("Field %s not found")
@@ -153,10 +153,10 @@ class AlternativeFieldValidator {
             return false;
         }
 
-        final FieldContext fieldContext = rootContext.forChild(field);
+        FieldContext fieldContext = rootContext.forChild(field);
         Object fieldValue = message.getField(field);
-        final FieldValidator<?> fieldValidator = createStrict(fieldContext, fieldValue);
-        final List<ConstraintViolation> violations = fieldValidator.validate();
+        FieldValidator<?> fieldValidator = createStrict(fieldContext, fieldValue);
+        List<ConstraintViolation> violations = fieldValidator.validate();
 
         // Do not add violations to the results because we have options.
         // The violation would be that none of the field or combinations is defined.
@@ -204,7 +204,7 @@ class AlternativeFieldValidator {
         }
 
         static RequiredFieldOption ofCombination(CharSequence expression) {
-            final Iterable<String> parts = Splitter.on(AMPERSAND)
+            Iterable<String> parts = Splitter.on(AMPERSAND)
                                                    .split(expression);
             return ofCombination(parts);
         }
@@ -219,7 +219,7 @@ class AlternativeFieldValidator {
 
         String getFieldName() {
             if (fieldName == null) {
-                final String msg = "The option is not a field but a combination of fields.";
+                String msg = "The option is not a field but a combination of fields.";
                 throw new IllegalStateException(msg);
             }
             return fieldName;
@@ -229,7 +229,7 @@ class AlternativeFieldValidator {
             // It is OK to suppress as we're using ImmutableList.
         ImmutableList<String> getFieldNames() {
             if (fieldNames == null) {
-                final String msg = "The option is not a combination, but a single field.";
+                String msg = "The option is not a combination, but a single field.";
                 throw new IllegalStateException(msg);
             }
 

@@ -20,7 +20,6 @@
 
 package io.spine.code.proto;
 
-import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
@@ -28,6 +27,7 @@ import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.code.AbstractSourceFile;
 import io.spine.code.java.SimpleClassName;
 
+import java.util.Optional;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
@@ -54,13 +54,13 @@ public class SourceFile extends AbstractSourceFile {
      * Creates a new instance by the passed file descriptor.
      */
     public static SourceFile from(FileDescriptorProto file) {
-        final SourceFile result = new SourceFile(file);
+        SourceFile result = new SourceFile(file);
         return result;
     }
 
     private static Path toPath(FileDescriptorProto file) {
         checkNotNull(file);
-        final Path result = Paths.get(file.getName());
+        Path result = Paths.get(file.getName());
         return result;
     }
 
@@ -83,7 +83,7 @@ public class SourceFile extends AbstractSourceFile {
                       .getJavaMultipleFiles()) {
             return false;
         }
-        final Optional<SimpleClassName> outerClass = SimpleClassName.declaredOuterClassName(descriptor);
+        Optional<SimpleClassName> outerClass = SimpleClassName.declaredOuterClassName(descriptor);
 
         if (!outerClass.isPresent()) {
             // There's no outer class name given in options.
@@ -91,7 +91,7 @@ public class SourceFile extends AbstractSourceFile {
             return true;
         }
 
-        final boolean result = RejectionDeclaration.isValidOuterClassName(outerClass.get());
+        boolean result = RejectionDeclaration.isValidOuterClassName(outerClass.get());
         return result;
     }
 
@@ -106,13 +106,13 @@ public class SourceFile extends AbstractSourceFile {
      * Obtains all message declarations that match the passed predicate.
      */
     public List<MessageDeclaration> allThat(Predicate<DescriptorProto> predicate) {
-        final ImmutableList.Builder<MessageDeclaration> result = ImmutableList.builder();
+        ImmutableList.Builder<MessageDeclaration> result = ImmutableList.builder();
         for (DescriptorProto messageType : descriptor.getMessageTypeList()) {
-            final MessageDeclaration declaration = create(messageType, descriptor);
+            MessageDeclaration declaration = create(messageType, descriptor);
             if (predicate.apply(messageType)) {
                 result.add(declaration);
             }
-            final Collection<MessageDeclaration> allNested =
+            Collection<MessageDeclaration> allNested =
                     declaration.getAllNested(predicate);
             result.addAll(allNested);
         }
@@ -129,10 +129,10 @@ public class SourceFile extends AbstractSourceFile {
      */
     public static List<MessageDeclaration> allThat(Iterable<FileDescriptorProto> files,
                                                    Predicate<DescriptorProto> predicate) {
-        final ImmutableList.Builder<MessageDeclaration> result = ImmutableList.builder();
+        ImmutableList.Builder<MessageDeclaration> result = ImmutableList.builder();
         for (FileDescriptorProto file : files) {
             SourceFile sourceFile = from(file);
-            final Collection<MessageDeclaration> declarations = sourceFile.allThat(predicate);
+            Collection<MessageDeclaration> declarations = sourceFile.allThat(predicate);
             result.addAll(declarations);
         }
         return result.build();

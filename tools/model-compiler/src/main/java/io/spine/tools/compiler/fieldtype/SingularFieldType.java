@@ -66,7 +66,7 @@ public class SingularFieldType implements FieldType {
     }
 
     private static TypeName constructTypeNameFor(String name) {
-        final Optional<? extends Class<?>> boxedScalarPrimitive =
+        Optional<? extends Class<?>> boxedScalarPrimitive =
                 PrimitiveType.getWrapperClass(name);
 
         return boxedScalarPrimitive.isPresent()

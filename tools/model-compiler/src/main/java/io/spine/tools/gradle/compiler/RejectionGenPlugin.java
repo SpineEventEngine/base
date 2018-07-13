@@ -76,32 +76,32 @@ public class RejectionGenPlugin extends SpinePlugin {
      * before corresponding {@code :compileJava} tasks.
      */
     @Override
-    public void apply(final Project project) {
-        final Logger log = log();
+    public void apply(Project project) {
+        Logger log = log();
 
-        final Action<Task> mainScopeAction = new Action<Task>() {
+        Action<Task> mainScopeAction = new Action<Task>() {
             @Override
             public void execute(Task task) {
-                final String mainFile = getMainDescriptorSetPath(project);
-                final String targetFolder = getTargetGenRejectionsRootDir(project);
+                String mainFile = getMainDescriptorSetPath(project);
+                String targetFolder = getTargetGenRejectionsRootDir(project);
 
                 generateRejections(mainFile, targetFolder);
             }
         };
 
         logDependingTask(GENERATE_REJECTIONS, COMPILE_JAVA, GENERATE_PROTO);
-        final GradleTask mainTask =
+        GradleTask mainTask =
                 newTask(GENERATE_REJECTIONS, mainScopeAction)
                         .insertAfterTask(GENERATE_PROTO)
                         .insertBeforeTask(COMPILE_JAVA)
                         .applyNowTo(project);
 
-        final Action<Task> testScopeAction = new Action<Task>() {
+        Action<Task> testScopeAction = new Action<Task>() {
             @Override
             public void execute(Task task) {
-                final String mainFile = getMainDescriptorSetPath(project);
-                final String testFile = getTestDescriptorSetPath(project);
-                final String targetFolder = getTargetTestGenRejectionsRootDir(project);
+                String mainFile = getMainDescriptorSetPath(project);
+                String testFile = getTestDescriptorSetPath(project);
+                String targetFolder = getTargetTestGenRejectionsRootDir(project);
 
                 generateTestRejections(mainFile, testFile, targetFolder);
             }
@@ -109,7 +109,7 @@ public class RejectionGenPlugin extends SpinePlugin {
 
         logDependingTask(GENERATE_TEST_REJECTIONS, COMPILE_TEST_JAVA, GENERATE_TEST_PROTO);
 
-        final GradleTask testTask =
+        GradleTask testTask =
                 newTask(GENERATE_TEST_REJECTIONS, testScopeAction)
                         .insertAfterTask(GENERATE_TEST_PROTO)
                         .insertBeforeTask(COMPILE_TEST_JAVA)
@@ -119,29 +119,29 @@ public class RejectionGenPlugin extends SpinePlugin {
     }
 
     private void generateRejections(String mainFile, String targetFolder) {
-        final Logger log = log();
-        final File setFile = new File(mainFile);
+        Logger log = log();
+        File setFile = new File(mainFile);
         if (!setFile.exists()) {
             logMissingDescriptorSetFile(setFile);
             return;
         }
 
         log.debug("Generating rejections from {}", mainFile);
-        final List<FileDescriptorProto> mainFiles = parse(mainFile);
+        List<FileDescriptorProto> mainFiles = parse(mainFile);
         collectAllMessageTypes(mainFiles);
-        final List<RejectionsFile> rejectionFiles = collect(mainFiles);
+        List<RejectionsFile> rejectionFiles = collect(mainFiles);
         doGenerate(rejectionFiles, targetFolder);
     }
 
     private void generateTestRejections(String mainFile, String testFile, String targetFolder) {
-        final Logger log = log();
-        final File setFile = new File(mainFile);
+        Logger log = log();
+        File setFile = new File(mainFile);
         if (!setFile.exists()) {
             logMissingDescriptorSetFile(setFile);
             return;
         }
 
-        final File testSetFile = new File(testFile);
+        File testSetFile = new File(testFile);
         if (!testSetFile.exists()) {
             logMissingDescriptorSetFile(testSetFile);
             return;
@@ -149,12 +149,12 @@ public class RejectionGenPlugin extends SpinePlugin {
 
         log.debug("Generating test rejections from {}", testFile);
 
-        final List<FileDescriptorProto> mainFiles = parse(mainFile);
+        List<FileDescriptorProto> mainFiles = parse(mainFile);
         collectAllMessageTypes(mainFiles);
 
-        final List<FileDescriptorProto> testFiles = parse(testFile);
+        List<FileDescriptorProto> testFiles = parse(testFile);
         collectAllMessageTypes(testFiles);
-        final List<RejectionsFile> rejectionFiles = collect(testFiles);
+        List<RejectionsFile> rejectionFiles = collect(testFiles);
         doGenerate(rejectionFiles, targetFolder);
     }
 
@@ -165,7 +165,7 @@ public class RejectionGenPlugin extends SpinePlugin {
     }
 
     private void doGenerate(Iterable<RejectionsFile> files, String outDir) {
-        final Logger log = log();
+        Logger log = log();
         log.debug("Processing the file descriptors for the rejections {}", files);
         for (RejectionsFile file : files) {
             // We are sure that this is a rejections file because we got them filtered.
@@ -176,7 +176,7 @@ public class RejectionGenPlugin extends SpinePlugin {
     private void generateRejections(RejectionsFile file,
                                            Map<String, String> messageTypeMap,
                                            String rejectionsRootDir) {
-        final Logger log = log();
+        Logger log = log();
         log.debug("Generating rejections from file {}", file.getPath());
 
         if (log.isTraceEnabled()) {
@@ -185,13 +185,13 @@ public class RejectionGenPlugin extends SpinePlugin {
                       SimpleClassName.outerOf(file.getDescriptor()));
         }
 
-        final List<RejectionDeclaration> rejections = file.getRejectionDeclarations();
-        final File outDir = new File(rejectionsRootDir);
+        List<RejectionDeclaration> rejections = file.getRejectionDeclarations();
+        File outDir = new File(rejectionsRootDir);
         for (RejectionDeclaration rejection : rejections) {
             // The name of the generated `ThrowableMessage` will be the same
             // as for the Protobuf message.
             log.debug("Processing rejection '{}'", rejection.getSimpleTypeName());
-            final RejectionWriter writer = new RejectionWriter(rejection, outDir, messageTypeMap);
+            RejectionWriter writer = new RejectionWriter(rejection, outDir, messageTypeMap);
             writer.write();
         }
     }

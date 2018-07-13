@@ -20,8 +20,9 @@
 
 package io.spine.util;
 
-import com.google.common.base.Optional;
 import io.spine.reflect.GenericTypeIndex;
+
+import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -53,8 +54,7 @@ public abstract class NamedProperty<T, O> {
      */
     protected Class<T> getValueClass() {
         @SuppressWarnings("unchecked") /* The type is ensured by the first generic param
-                                          of this class declaration. */
-        final Class<T> cls = (Class<T>) GenericParameter.PROPERTY_TYPE.getArgumentIn(getClass());
+                                          of this class declaration. */ Class<T> cls = (Class<T>) GenericParameter.PROPERTY_TYPE.getArgumentIn(getClass());
         return cls;
     }
 

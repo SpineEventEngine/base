@@ -36,17 +36,17 @@ public class MessageFieldExceptionShould {
 
     @Test
     public void construct_instance_with_formatted_message() {
-        final String param1 = "Букварь";
-        final String param2 = "blue";
-        final String param3 = String.valueOf(3);
-        final StringValue protobufMessage = newUuidValue();
-        final MessageFieldException exception =
+        String param1 = "Букварь";
+        String param2 = "blue";
+        String param3 = String.valueOf(3);
+        StringValue protobufMessage = newUuidValue();
+        MessageFieldException exception =
                 new MessageFieldException(protobufMessage,
                                           "Reading log is: %s %s %s",
                                           param1, param2, param3);
 
         assertEquals(protobufMessage, exception.getProtobufMessage());
-        final String exceptionMessage = exception.getMessage();
+        String exceptionMessage = exception.getMessage();
         assertTrue(exceptionMessage.contains(param1));
         assertTrue(exceptionMessage.contains(param2));
         assertTrue(exceptionMessage.contains(param3));
@@ -54,8 +54,8 @@ public class MessageFieldExceptionShould {
 
     @Test
     public void contains_instance_without_text() {
-        final Timestamp protobufMessage = Time.getCurrentTime();
-        final MessageFieldException exception = new MessageFieldException(protobufMessage);
+        Timestamp protobufMessage = Time.getCurrentTime();
+        MessageFieldException exception = new MessageFieldException(protobufMessage);
 
         assertEquals(protobufMessage, exception.getProtobufMessage());
         assertTrue(exception.getMessage().isEmpty());

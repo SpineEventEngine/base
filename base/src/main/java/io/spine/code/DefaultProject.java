@@ -83,7 +83,7 @@ public final class DefaultProject extends AbstractDirectory {
 
     public static DefaultProject at(Path root) {
         checkNotNull(root);
-        final DefaultProject result = new DefaultProject(root);
+        DefaultProject result = new DefaultProject(root);
         return result;
     }
 
@@ -97,8 +97,8 @@ public final class DefaultProject extends AbstractDirectory {
     }
 
     public File mainDescriptors() {
-        final BuildRoot build = BuildRoot.of(this);
-        final File result = build.descriptors()
+        BuildRoot build = BuildRoot.of(this);
+        File result = build.descriptors()
                                  .getPath()
                                  .resolve(MAIN_FILE)
                                  .toFile();
@@ -112,8 +112,8 @@ public final class DefaultProject extends AbstractDirectory {
 
 
     public File testDescriptors() {
-        final BuildRoot build = BuildRoot.of(this);
-        final File result = build.descriptors()
+        BuildRoot build = BuildRoot.of(this);
+        File result = build.descriptors()
                                  .getPath()
                                  .resolve(TEST_FILE)
                                  .toFile();
@@ -128,7 +128,7 @@ public final class DefaultProject extends AbstractDirectory {
      * <p>The directory is deleted on {@code :pre-clean"}.
      */
     public File tempArtifacts() {
-        final File result = new File(getPath().toFile(), TEMP_ARTIFACT_DIR);
+        File result = new File(getPath().toFile(), TEMP_ARTIFACT_DIR);
         return result;
     }
 

@@ -99,13 +99,13 @@ class RepeatedFieldMethodConstructor implements MethodConstructor {
         this.fieldIndex = builder.getFieldIndex();
         this.fieldDescriptor = builder.getField();
         this.builderGenericClassName = builder.getGenericClassName();
-        final FieldName fieldName = FieldName.of(fieldDescriptor);
+        FieldName fieldName = FieldName.of(fieldDescriptor);
         this.javaFieldName = fieldName.javaCase();
         this.methodNamePart = fieldName.toCamelCase();
-        final String javaClass = builder.getJavaClass();
-        final String javaPackage = builder.getJavaPackage();
+        String javaClass = builder.getJavaClass();
+        String javaPackage = builder.getJavaPackage();
         this.builderClassName = getClassName(javaPackage, javaClass);
-        final MessageTypeCache messageTypeCache = builder.getTypeCache();
+        MessageTypeCache messageTypeCache = builder.getTypeCache();
         this.listElementClassName = getParameterClassName(fieldDescriptor, messageTypeCache);
         this.isScalarOrEnum = isScalarType(fieldDescriptor) || isEnumType(fieldDescriptor);
     }
@@ -115,7 +115,7 @@ class RepeatedFieldMethodConstructor implements MethodConstructor {
         log().debug("The methods construction for the {} repeated field is started.",
                     javaFieldName);
 
-        final List<MethodSpec> methods = newArrayList();
+        List<MethodSpec> methods = newArrayList();
         methods.add(createGetter());
         methods.addAll(createRepeatedMethods());
         methods.addAll(createRepeatedRawMethods());
@@ -128,13 +128,13 @@ class RepeatedFieldMethodConstructor implements MethodConstructor {
     private MethodSpec createGetter() {
         log().debug("The getter construction for the repeated field is started.");
 
-        final String methodName = "get" + methodNamePart;
-        final ClassName rawType = ClassName.get(List.class);
-        final ParameterizedTypeName returnType = ParameterizedTypeName.get(rawType,
+        String methodName = "get" + methodNamePart;
+        ClassName rawType = ClassName.get(List.class);
+        ParameterizedTypeName returnType = ParameterizedTypeName.get(rawType,
                                                                            listElementClassName);
-        final String returnStatement = format("return %s.get%sList()",
+        String returnStatement = format("return %s.get%sList()",
                                               getMessageBuilder(), methodNamePart);
-        final MethodSpec methodSpec =
+        MethodSpec methodSpec =
                 MethodSpec.methodBuilder(methodName)
                           .addModifiers(Modifier.PUBLIC)
                           .returns(returnType)
@@ -148,7 +148,7 @@ class RepeatedFieldMethodConstructor implements MethodConstructor {
     private Collection<MethodSpec> createRepeatedRawMethods() {
         log().debug("The raw methods construction for the repeated field is is started.");
 
-        final List<MethodSpec> methods = newArrayList();
+        List<MethodSpec> methods = newArrayList();
         methods.add(createRawAddObjectMethod());
         methods.add(createRawSetObjectByIndexMethod());
         methods.add(createRawAddAllMethod());
@@ -163,7 +163,7 @@ class RepeatedFieldMethodConstructor implements MethodConstructor {
     }
 
     private Collection<MethodSpec> createRepeatedMethods() {
-        final List<MethodSpec> methods = newArrayList();
+        List<MethodSpec> methods = newArrayList();
 
         methods.add(createClearMethod());
         methods.add(createAddObjectMethod());
@@ -180,7 +180,7 @@ class RepeatedFieldMethodConstructor implements MethodConstructor {
 
     private static boolean isScalarType(FieldDescriptorProto fieldDescriptor) {
         boolean isScalarType = false;
-        final Type type = fieldDescriptor.getType();
+        Type type = fieldDescriptor.getType();
         for (ScalarType scalarType : ScalarType.values()) {
             if (scalarType.getProtoScalarType() == type) {
                 isScalarType = true;
@@ -190,19 +190,19 @@ class RepeatedFieldMethodConstructor implements MethodConstructor {
     }
 
     private static boolean isEnumType(FieldDescriptorProto fieldDescriptor) {
-        final Type type = fieldDescriptor.getType();
-        final boolean result = type == TYPE_ENUM;
+        Type type = fieldDescriptor.getType();
+        boolean result = type == TYPE_ENUM;
         return result;
     }
 
     private MethodSpec createRawAddObjectMethod() {
-        final String methodName = ADD_RAW_PREFIX + methodNamePart;
-        final String descriptorCodeLine = createDescriptorStatement(fieldIndex,
+        String methodName = ADD_RAW_PREFIX + methodNamePart;
+        String descriptorCodeLine = createDescriptorStatement(fieldIndex,
                                                                     builderGenericClassName);
-        final String addValueStatement = getMessageBuilder() + '.'
+        String addValueStatement = getMessageBuilder() + '.'
                 + ADD_PREFIX + methodNamePart + "(convertedValue)";
-        final String convertStatement = createValidateStatement(CONVERTED_VALUE);
-        final MethodSpec result = MethodSpec.methodBuilder(methodName)
+        String convertStatement = createValidateStatement(CONVERTED_VALUE);
+        MethodSpec result = MethodSpec.methodBuilder(methodName)
                                             .returns(builderClassName)
                                             .addModifiers(Modifier.PUBLIC)
                                             .addParameter(String.class, VALUE)
@@ -221,7 +221,7 @@ class RepeatedFieldMethodConstructor implements MethodConstructor {
     }
 
     private MethodSpec createRawAddObjectByIndexMethod() {
-        final MethodSpec result = modifyCollectionByIndexWithRaw(ADD_RAW_PREFIX, ADD_PREFIX);
+        MethodSpec result = modifyCollectionByIndexWithRaw(ADD_RAW_PREFIX, ADD_PREFIX);
         return result;
     }
 
@@ -231,14 +231,14 @@ class RepeatedFieldMethodConstructor implements MethodConstructor {
 
     private MethodSpec modifyCollectionByIndexWithRaw(String methodNamePrefix,
                                                       String realBuilderCallPrefix) {
-        final String methodName = methodNamePrefix + methodNamePart;
-        final String descriptorCodeLine = createDescriptorStatement(fieldIndex,
+        String methodName = methodNamePrefix + methodNamePart;
+        String descriptorCodeLine = createDescriptorStatement(fieldIndex,
                                                                     builderGenericClassName);
-        final String modificationStatement =
+        String modificationStatement =
                 format("%s.%s%s(%s, convertedValue)",
                        getMessageBuilder(), realBuilderCallPrefix, methodNamePart, INDEX);
-        final String convertStatement = createValidateStatement(CONVERTED_VALUE);
-        final MethodSpec result = MethodSpec.methodBuilder(methodName)
+        String convertStatement = createValidateStatement(CONVERTED_VALUE);
+        MethodSpec result = MethodSpec.methodBuilder(methodName)
                                             .returns(builderClassName)
                                             .addModifiers(Modifier.PUBLIC)
                                             .addParameter(TypeName.INT, INDEX)
@@ -258,12 +258,12 @@ class RepeatedFieldMethodConstructor implements MethodConstructor {
     }
 
     private MethodSpec createRawAddAllMethod() {
-        final String methodName = fieldType.getSetterPrefix() + rawSuffix() + methodNamePart;
-        final String descriptorCodeLine = createDescriptorStatement(fieldIndex,
+        String methodName = fieldType.getSetterPrefix() + rawSuffix() + methodNamePart;
+        String descriptorCodeLine = createDescriptorStatement(fieldIndex,
                                                                     builderGenericClassName);
-        final String addAllValues = getMessageBuilder()
+        String addAllValues = getMessageBuilder()
                 + format(".addAll%s(%s)", methodNamePart, CONVERTED_VALUE);
-        final MethodSpec result = MethodSpec.methodBuilder(methodName)
+        MethodSpec result = MethodSpec.methodBuilder(methodName)
                                             .returns(builderClassName)
                                             .addModifiers(Modifier.PUBLIC)
                                             .addParameter(String.class, VALUE)
@@ -283,16 +283,16 @@ class RepeatedFieldMethodConstructor implements MethodConstructor {
     }
 
     private MethodSpec createAddAllMethod() {
-        final String methodName = fieldType.getSetterPrefix() + methodNamePart;
-        final String descriptorCodeLine = createDescriptorStatement(fieldIndex,
+        String methodName = fieldType.getSetterPrefix() + methodNamePart;
+        String descriptorCodeLine = createDescriptorStatement(fieldIndex,
                                                                     builderGenericClassName);
-        final ClassName rawType = ClassName.get(List.class);
-        final ParameterizedTypeName parameter = ParameterizedTypeName.get(rawType,
+        ClassName rawType = ClassName.get(List.class);
+        ParameterizedTypeName parameter = ParameterizedTypeName.get(rawType,
                                                                           listElementClassName);
-        final String fieldName = fieldDescriptor.getName();
-        final String addAllValues = getMessageBuilder()
+        String fieldName = fieldDescriptor.getName();
+        String addAllValues = getMessageBuilder()
                 + format(".addAll%s(%s)", methodNamePart, VALUE);
-        final MethodSpec result = MethodSpec.methodBuilder(methodName)
+        MethodSpec result = MethodSpec.methodBuilder(methodName)
                                             .returns(builderClassName)
                                             .addModifiers(Modifier.PUBLIC)
                                             .addParameter(parameter, VALUE)
@@ -308,12 +308,12 @@ class RepeatedFieldMethodConstructor implements MethodConstructor {
     }
 
     private MethodSpec createAddObjectMethod() {
-        final String methodName = ADD_PREFIX + methodNamePart;
-        final String descriptorCodeLine = createDescriptorStatement(fieldIndex,
+        String methodName = ADD_PREFIX + methodNamePart;
+        String descriptorCodeLine = createDescriptorStatement(fieldIndex,
                                                                     builderGenericClassName);
-        final String addValue = format("%s.%s%s(%s)",
+        String addValue = format("%s.%s%s(%s)",
                                        getMessageBuilder(), ADD_PREFIX, methodNamePart, VALUE);
-        final MethodSpec result = MethodSpec.methodBuilder(methodName)
+        MethodSpec result = MethodSpec.methodBuilder(methodName)
                                             .returns(builderClassName)
                                             .addModifiers(Modifier.PUBLIC)
                                             .addParameter(listElementClassName, VALUE)
@@ -336,10 +336,10 @@ class RepeatedFieldMethodConstructor implements MethodConstructor {
     }
 
     private MethodSpec createRemoveObjectByIndexMethod() {
-        final String methodName = removePrefix() + methodNamePart;
-        final String addValue = format("%s.%s%s(%s)", getMessageBuilder(),
+        String methodName = removePrefix() + methodNamePart;
+        String addValue = format("%s.%s%s(%s)", getMessageBuilder(),
                                        removePrefix(), methodNamePart, INDEX);
-        final MethodSpec result = MethodSpec.methodBuilder(methodName)
+        MethodSpec result = MethodSpec.methodBuilder(methodName)
                                             .returns(builderClassName)
                                             .addModifiers(Modifier.PUBLIC)
                                             .addParameter(TypeName.INT, INDEX)
@@ -350,12 +350,12 @@ class RepeatedFieldMethodConstructor implements MethodConstructor {
     }
 
     private MethodSpec modifyCollectionByIndex(String methodPrefix) {
-        final String methodName = methodPrefix + methodNamePart;
-        final String descriptorCodeLine = createDescriptorStatement(fieldIndex,
+        String methodName = methodPrefix + methodNamePart;
+        String descriptorCodeLine = createDescriptorStatement(fieldIndex,
                                                                     builderGenericClassName);
-        final String modificationStatement = format("%s.%s%s(%s, %s)", getMessageBuilder(),
+        String modificationStatement = format("%s.%s%s(%s, %s)", getMessageBuilder(),
                                                     methodPrefix, methodNamePart, INDEX, VALUE);
-        final MethodSpec result = MethodSpec.methodBuilder(methodName)
+        MethodSpec result = MethodSpec.methodBuilder(methodName)
                                             .returns(builderClassName)
                                             .addModifiers(Modifier.PUBLIC)
                                             .addParameter(TypeName.INT, INDEX)
@@ -371,8 +371,8 @@ class RepeatedFieldMethodConstructor implements MethodConstructor {
     }
 
     private MethodSpec createClearMethod() {
-        final String clearField = getMessageBuilder() + clearProperty(methodNamePart);
-        final MethodSpec result = MethodSpec.methodBuilder(clearPrefix() + methodNamePart)
+        String clearField = getMessageBuilder() + clearProperty(methodNamePart);
+        MethodSpec result = MethodSpec.methodBuilder(clearPrefix() + methodNamePart)
                                             .addModifiers(Modifier.PUBLIC)
                                             .returns(builderClassName)
                                             .addStatement(clearField)
@@ -382,7 +382,7 @@ class RepeatedFieldMethodConstructor implements MethodConstructor {
     }
 
     private static String createGetConvertedCollectionValue() {
-        final String result = "final $T<$T> convertedValue = convertToList(value, $T.class)";
+        String result = "final $T<$T> convertedValue = convertToList(value, $T.class)";
         return result;
     }
 

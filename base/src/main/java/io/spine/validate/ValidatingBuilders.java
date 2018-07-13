@@ -48,14 +48,13 @@ public class ValidatingBuilders {
         checkNotNull(builderClass);
 
         try {
-            final Method newBuilderMethod =
+            Method newBuilderMethod =
                     ValidatingBuilder.TypeInfo.getNewBuilderMethod(
                             builderClass);
-            final Object raw = newBuilderMethod.invoke(null);
+            Object raw = newBuilderMethod.invoke(null);
 
             // By convention, `newBuilder()` always returns instances of `B`.
-            @SuppressWarnings("unchecked")
-            final B builder = (B) raw;
+            @SuppressWarnings("unchecked") B builder = (B) raw;
             return builder;
         } catch (Exception e) {
             throw illegalStateWithCauseOf(e);

@@ -64,20 +64,20 @@ public class SpinePluginBuilderShould {
 
     @Test
     public void create_task_dependant_on_all_tasks_of_given_name() {
-        final Project subProject = ProjectBuilder.builder()
+        Project subProject = ProjectBuilder.builder()
                                                  .withParent(project)
                                                  .build();
         subProject.getPluginManager()
                   .apply(GradleProject.JAVA_PLUGIN_ID);
-        final SpinePlugin plugin = TestPlugin.INSTANCE;
-        final GradleTask task = plugin.newTask(ANNOTATE_PROTO, NoOp.action())
+        SpinePlugin plugin = TestPlugin.INSTANCE;
+        GradleTask task = plugin.newTask(ANNOTATE_PROTO, NoOp.action())
                                       .insertAfterAllTasks(COMPILE_JAVA)
                                       .applyNowTo(subProject);
-        final TaskContainer subProjectTasks = subProject.getTasks();
-        final Task newTask = subProjectTasks.findByName(task.getName()
+        TaskContainer subProjectTasks = subProject.getTasks();
+        Task newTask = subProjectTasks.findByName(task.getName()
                                                             .getValue());
         assertNotNull(newTask);
-        final Collection<?> dependencies = newTask.getDependsOn();
+        Collection<?> dependencies = newTask.getDependsOn();
         assertTrue(dependencies.contains(subProjectTasks.findByName(COMPILE_JAVA.getValue())));
         assertTrue(dependencies.contains(project.getTasks()
                                                 .findByName(COMPILE_JAVA.getValue())));
@@ -85,14 +85,14 @@ public class SpinePluginBuilderShould {
 
     @Test
     public void create_task_and_insert_before_other() {
-        final SpinePlugin plugin = TestPlugin.INSTANCE;
+        SpinePlugin plugin = TestPlugin.INSTANCE;
         plugin.newTask(VERIFY_MODEL, NoOp.action())
               .insertBeforeTask(CLASSES)
               .applyNowTo(project);
-        final TaskContainer tasks = project.getTasks();
-        final Task classes = tasks.findByName(CLASSES.getValue());
+        TaskContainer tasks = project.getTasks();
+        Task classes = tasks.findByName(CLASSES.getValue());
         assertNotNull(classes);
-        final Task verifyModel = tasks.findByName(VERIFY_MODEL.getValue());
+        Task verifyModel = tasks.findByName(VERIFY_MODEL.getValue());
         assertTrue(classes.getDependsOn()
                           .contains(verifyModel));
     }

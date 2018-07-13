@@ -57,7 +57,7 @@ public class PropertyFile extends AbstractSourceFile {
     public static PropertyFile of(String name) {
         checkNotEmptyOrBlank(name);
         checkArgument(name.endsWith(EXTENSION));
-        final PropertyFile result = new PropertyFile(Paths.get(name));
+        PropertyFile result = new PropertyFile(Paths.get(name));
         return result;
     }
 
@@ -65,8 +65,8 @@ public class PropertyFile extends AbstractSourceFile {
      * Obtains the instance relative to the passed parent directory.
      */
     public PropertyFile at(SourceCodeDirectory parent) {
-        final Path newPath = parent.resolve(this);
-        final PropertyFile result = new PropertyFile(newPath);
+        Path newPath = parent.resolve(this);
+        PropertyFile result = new PropertyFile(newPath);
         return result;
     }
 
@@ -75,13 +75,13 @@ public class PropertyFile extends AbstractSourceFile {
      */
     public Map<String, String> load() {
         try {
-            final InputStream inputStream = new FileInputStream(getPath().toFile());
-            final Properties properties = new Properties();
+            InputStream inputStream = new FileInputStream(getPath().toFile());
+            Properties properties = new Properties();
             properties.load(inputStream);
 
             // Convert `Properties` to `Map`.
-            final ImmutableMap.Builder<String, String> result = ImmutableMap.builder();
-            for (final String name: properties.stringPropertyNames()) {
+            ImmutableMap.Builder<String, String> result = ImmutableMap.builder();
+            for (String name: properties.stringPropertyNames()) {
                 result.put(name, properties.getProperty(name));
             }
             return result.build();

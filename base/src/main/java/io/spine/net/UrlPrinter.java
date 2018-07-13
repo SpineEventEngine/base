@@ -49,10 +49,9 @@ class UrlPrinter {
         }
 
         // We don't know the capacity at this point
-        @SuppressWarnings("StringBufferWithoutInitialCapacity")
-        final StringBuilder sb = new StringBuilder();
+        @SuppressWarnings("StringBufferWithoutInitialCapacity") StringBuilder sb = new StringBuilder();
 
-        final Url.Record record = url.getRecord();
+        Url.Record record = url.getRecord();
         appendProtocol(record, sb);
         appendAuth(record, sb);
         appendHost(record, sb);
@@ -69,7 +68,7 @@ class UrlPrinter {
             return;
         }
 
-        final Url.Record.Protocol protocol = record.getProtocol();
+        Url.Record.Protocol protocol = record.getProtocol();
         if (protocol.getProtocolCase() == Url.Record.Protocol.ProtocolCase.NAME) {
             sb.append(protocol.getName())
               .append(UrlParser.PROTOCOL_ENDING);
@@ -86,9 +85,9 @@ class UrlPrinter {
             return;
         }
 
-        final Url.Record.Authorization auth = record.getAuth();
-        final String userName = auth.getUserName();
-        final String password = auth.getPassword();
+        Url.Record.Authorization auth = record.getAuth();
+        String userName = auth.getUserName();
+        String password = auth.getPassword();
 
         if (userName.isEmpty()) {
             return;
@@ -108,7 +107,7 @@ class UrlPrinter {
     }
 
     private static void appendPort(Url.Record record, StringBuilder sb) {
-        final String port = record.getPort();
+        String port = record.getPort();
         if (port.isEmpty()) {
             return;
         }
@@ -118,7 +117,7 @@ class UrlPrinter {
     }
 
     private static void appendPath(Url.Record record, StringBuilder sb) {
-        final String path = record.getPath();
+        String path = record.getPath();
         if (path.isEmpty()) {
             return;
         }
@@ -128,7 +127,7 @@ class UrlPrinter {
     }
 
     private static void appendQueries(Url.Record record, StringBuilder sb) {
-        final List<QueryParameter> queryList = record.getQueryList();
+        List<QueryParameter> queryList = record.getQueryList();
 
         if (queryList.isEmpty()) {
             return;
@@ -136,9 +135,9 @@ class UrlPrinter {
 
         sb.append(UrlParser.QUERIES_START);
 
-        final int queriesSize = queryList.size();
+        int queriesSize = queryList.size();
         for (int i = 0; i < queriesSize; i++) {
-            final String stringQuery = UrlQueryParameters.toString(queryList.get(i));
+            String stringQuery = UrlQueryParameters.toString(queryList.get(i));
             sb.append(stringQuery);
             if (i != queriesSize - 1) {
                 sb.append(UrlParser.QUERY_SEPARATOR);
@@ -147,7 +146,7 @@ class UrlPrinter {
     }
 
     private static void appendFragment(Url.Record record, StringBuilder sb) {
-        final String fragment = record.getFragment();
+        String fragment = record.getFragment();
         if (fragment.isEmpty()) {
             return;
         }

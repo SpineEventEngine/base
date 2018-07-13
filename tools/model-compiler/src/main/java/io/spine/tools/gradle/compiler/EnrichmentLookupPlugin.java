@@ -55,40 +55,40 @@ import static io.spine.tools.gradle.compiler.Extension.getTestTargetGenResources
 public class EnrichmentLookupPlugin extends SpinePlugin {
 
     @Override
-    public void apply(final Project project) {
-        final Action<Task> mainScopeAction = mainScopeActionFor(project);
+    public void apply(Project project) {
+        Action<Task> mainScopeAction = mainScopeActionFor(project);
         logDependingTask(FIND_ENRICHMENTS, PROCESS_RESOURCES, COMPILE_JAVA);
-        final GradleTask findEnrichments =
+        GradleTask findEnrichments =
                 newTask(FIND_ENRICHMENTS,
                         mainScopeAction).insertAfterTask(COMPILE_JAVA)
                                         .insertBeforeTask(PROCESS_RESOURCES)
                                         .applyNowTo(project);
-        final Action<Task> testScopeAction = testScopeActionFor(project);
+        Action<Task> testScopeAction = testScopeActionFor(project);
         logDependingTask(FIND_TEST_ENRICHMENTS, PROCESS_TEST_RESOURCES, COMPILE_TEST_JAVA);
-        final GradleTask findTestEnrichments =
+        GradleTask findTestEnrichments =
                 newTask(FIND_TEST_ENRICHMENTS,
                         testScopeAction).insertAfterTask(COMPILE_TEST_JAVA)
                                         .insertBeforeTask(PROCESS_TEST_RESOURCES)
                                         .applyNowTo(project);
 
-        final String msg = "Enrichment lookup phase initialized with tasks: {}, {}";
+        String msg = "Enrichment lookup phase initialized with tasks: {}, {}";
         log().debug(msg, findEnrichments, findTestEnrichments);
     }
 
-    private Action<Task> testScopeActionFor(final Project project) {
+    private Action<Task> testScopeActionFor(Project project) {
         log().debug("Initializing the enrichment lookup for the \"test\" source code");
         return task -> findEnrichmentsAndWriteProps(getTestDescriptorSetPath(project),
                                                     getTestTargetGenResourcesDir(project));
     }
 
-    private Action<Task> mainScopeActionFor(final Project project) {
+    private Action<Task> mainScopeActionFor(Project project) {
         log().debug("Initializing the enrichment lookup for the \"main\" source code");
         return task -> findEnrichmentsAndWriteProps(getMainDescriptorSetPath(project),
                                                     getMainTargetGenResourcesDir(project));
     }
 
     private void findEnrichmentsAndWriteProps(String descriptorSetFile, String targetDir) {
-        final File file = new File(descriptorSetFile);
+        File file = new File(descriptorSetFile);
 
         if (!file.exists()) {
             logMissingDescriptorSetFile(file);

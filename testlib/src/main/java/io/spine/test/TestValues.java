@@ -51,7 +51,7 @@ public class TestValues {
      * but do not want to resort to {@code Timestamp} via {@code Timestamps#getCurrentTime()}.
      */
     public static StringValue newUuidValue() {
-        final String id = randomString();
+        String id = randomString();
         return StringValue.newBuilder()
                           .setValue(id)
                           .build();

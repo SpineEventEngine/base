@@ -58,7 +58,7 @@ public abstract class ClassTypeValue<T> implements Serializable {
      * Returns the name of the enclosed Java class.
      */
     public ClassName getName() {
-        final ClassName result = ClassName.of(value);
+        ClassName result = ClassName.of(value);
         return result;
     }
 
@@ -88,7 +88,7 @@ public abstract class ClassTypeValue<T> implements Serializable {
         if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        final ClassTypeValue other = (ClassTypeValue) obj;
+        ClassTypeValue other = (ClassTypeValue) obj;
         return Objects.equals(this.value, other.value);
     }
 }

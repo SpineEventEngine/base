@@ -58,9 +58,9 @@ public final class Messages {
     public static <M extends Message> M newInstance(Class<M> messageClass) {
         checkNotNull(messageClass);
         try {
-            final Constructor<M> constructor = messageClass.getDeclaredConstructor();
+            Constructor<M> constructor = messageClass.getDeclaredConstructor();
             constructor.setAccessible(true);
-            final M state = constructor.newInstance();
+            M state = constructor.newInstance();
             return state;
         } catch (NoSuchMethodException
                 | InstantiationException
@@ -81,12 +81,11 @@ public final class Messages {
     public static <B extends Message.Builder> B builderFor(Class<? extends Message> clazz) {
         checkNotNull(clazz);
         try {
-            final Method factoryMethod = clazz.getDeclaredMethod(METHOD_NEW_BUILDER);
-            @SuppressWarnings("unchecked")
-            final B result = (B) factoryMethod.invoke(null);
+            Method factoryMethod = clazz.getDeclaredMethod(METHOD_NEW_BUILDER);
+            @SuppressWarnings("unchecked") B result = (B) factoryMethod.invoke(null);
             return result;
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            final String errMsg = format("Class %s must be a generated proto message",
+            String errMsg = format("Class %s must be a generated proto message",
                                          clazz.getCanonicalName());
             throw new IllegalArgumentException(errMsg, e);
         }
@@ -102,8 +101,8 @@ public final class Messages {
     public static boolean isMessage(Type typeToCheck) {
         checkNotNull(typeToCheck);
         if (typeToCheck instanceof Class) {
-            final Class<?> aClass = (Class) typeToCheck;
-            final boolean isMessage = Message.class.isAssignableFrom(aClass);
+            Class<?> aClass = (Class) typeToCheck;
+            boolean isMessage = Message.class.isAssignableFrom(aClass);
             return isMessage;
         }
         return false;
@@ -117,7 +116,7 @@ public final class Messages {
         checkNotNull(msgOrAny);
         Message commandMessage;
         if (msgOrAny instanceof Any) {
-            final Any any = (Any) msgOrAny;
+            Any any = (Any) msgOrAny;
             commandMessage = AnyPacker.unpack(any);
         } else {
             commandMessage = msgOrAny;

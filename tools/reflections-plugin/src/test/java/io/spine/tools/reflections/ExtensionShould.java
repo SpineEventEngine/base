@@ -43,7 +43,7 @@ public class ExtensionShould {
 
     @Test
     public void return_default_targetDir_if_not_set() {
-        final String dir = Extension.getTargetDir(project);
+        String dir = Extension.getTargetDir(project);
 
         assertFalse(dir.trim()
                        .isEmpty());
@@ -53,10 +53,10 @@ public class ExtensionShould {
 
     @Test
     public void return_targetDir_if_set() {
-        final Extension extension = Extension.reflectionsPlugin(project);
+        Extension extension = Extension.reflectionsPlugin(project);
         extension.targetDir = "some target dir value";
 
-        final String dir = Extension.getTargetDir(project);
+        String dir = Extension.getTargetDir(project);
 
         assertEquals(extension.targetDir, dir);
     }

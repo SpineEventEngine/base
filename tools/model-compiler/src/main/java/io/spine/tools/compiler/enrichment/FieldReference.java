@@ -58,9 +58,9 @@ class FieldReference extends StringTypeValue {
     }
 
     static List<FieldReference> allFrom(FieldDescriptorProto field) {
-        final String[] found = parse(field);
+        String[] found = parse(field);
 
-        final ImmutableList.Builder<FieldReference> result = ImmutableList.builder();
+        ImmutableList.Builder<FieldReference> result = ImmutableList.builder();
         for (String ref : found) {
             result.add(new FieldReference(ref));
         }
@@ -68,14 +68,14 @@ class FieldReference extends StringTypeValue {
     }
 
     private static String[] parse(FieldDescriptorProto field) {
-        final String byArgument = field.getOptions()
+        String byArgument = field.getOptions()
                                        .getExtension(by);
         if (isNullOrEmpty(byArgument)) {
             throw newIllegalArgumentException("There is no `by` option in the passed field %s",
                                               field.getName());
         }
 
-        final String[] result;
+        String[] result;
         result = byArgument.contains(PIPE_SEPARATOR)
                 ? PATTERN_PIPE_SEPARATOR.split(byArgument)
                 : new String[]{byArgument};
@@ -83,12 +83,12 @@ class FieldReference extends StringTypeValue {
     }
 
     boolean isWildcard() {
-        final boolean result = value().startsWith(ANY_BY_OPTION_TARGET);
+        boolean result = value().startsWith(ANY_BY_OPTION_TARGET);
         return result;
     }
 
     boolean isInner() {
-        final boolean result = !value().contains(FieldName.TYPE_SEPARATOR);
+        boolean result = !value().contains(FieldName.TYPE_SEPARATOR);
         return result;
     }
 
@@ -96,10 +96,10 @@ class FieldReference extends StringTypeValue {
      * Obtains the type name from the reference.
      */
     String getType() {
-        final String value = value();
-        final int index = value.lastIndexOf(FieldName.TYPE_SEPARATOR);
+        String value = value();
+        int index = value.lastIndexOf(FieldName.TYPE_SEPARATOR);
         checkState(index > 0, "The field reference does not have the type (`%s`)", value);
-        final String result = value.substring(0, index)
+        String result = value.substring(0, index)
                                    .trim();
         return result;
     }
