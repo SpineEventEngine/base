@@ -47,7 +47,7 @@ public class GradleProjectTest {
 
     @Test
     public void build_from_project_folder_and_project_name() {
-        final GradleProject project = GradleProject.newBuilder()
+        GradleProject project = GradleProject.newBuilder()
                                                    .setProjectFolder(temporaryFolder.getRoot())
                                                    .setProjectName(PROJECT_NAME)
                                                    .build();
@@ -58,7 +58,7 @@ public class GradleProjectTest {
         // OK for this test case; result of `build` it ignored.
     @Test
     public void write_given_java_files() {
-        final String[] files = {"Foo.java", "Bar.java"};
+        String[] files = {"Foo.java", "Bar.java"};
         GradleProject.newBuilder()
                      .setProjectFolder(temporaryFolder.getRoot())
                      .setProjectName(PROJECT_NAME)
@@ -66,7 +66,7 @@ public class GradleProjectTest {
                      .build();
         @SuppressWarnings("DuplicateStringLiteralInspection")
             // "java" literal is copied with different semantics.
-        final Path root = temporaryFolder.getRoot()
+        Path root = temporaryFolder.getRoot()
                                          .toPath()
                                          .resolve("src")
                                          .resolve("main")
@@ -78,14 +78,14 @@ public class GradleProjectTest {
 
     @Test
     public void execute_faulty_build() {
-        final GradleProject project = GradleProject.newBuilder()
+        GradleProject project = GradleProject.newBuilder()
                                                    .setProjectName(PROJECT_NAME)
                                                    .setProjectFolder(temporaryFolder.getRoot())
                                                    .addJavaFiles("Faulty.java")
                                                    .build();
-        final BuildResult buildResult = project.executeAndFail(COMPILE_JAVA);
+        BuildResult buildResult = project.executeAndFail(COMPILE_JAVA);
         assertNotNull(buildResult);
-        final BuildTask compileTask = buildResult.task(':' + COMPILE_JAVA.getValue());
+        BuildTask compileTask = buildResult.task(':' + COMPILE_JAVA.getValue());
         assertNotNull(compileTask);
         assertEquals(FAILED, compileTask.getOutcome());
     }
