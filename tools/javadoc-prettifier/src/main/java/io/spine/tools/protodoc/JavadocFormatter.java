@@ -20,14 +20,13 @@
 
 package io.spine.tools.protodoc;
 
-import com.google.common.base.Optional;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 
 import static java.lang.System.lineSeparator;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -103,13 +102,13 @@ class JavadocFormatter {
      *
      * @param reader the reader for the file
      * @return the {@code Optional} of the next part
-     *         or {@code Optional.absent()} if if the end of the stream has been reached
+     *         or {@code Optional.empty()} if if the end of the stream has been reached
      * @throws IOException if an I/O error occurred during reading
      */
     private Optional<String> getNextPart(BufferedReader reader) throws IOException {
         String firstLine = reader.readLine();
         if (firstLine == null) {
-            return Optional.absent();
+            return Optional.empty();
         }
 
         if (!isJavadocBeginning(firstLine)) {
