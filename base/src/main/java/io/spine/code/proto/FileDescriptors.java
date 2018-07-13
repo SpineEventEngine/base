@@ -146,7 +146,8 @@ public final class FileDescriptors {
         Iterator<URL> resources = ResourceFiles.loadAll(KNOWN_TYPES);
         Set<FileDescriptorProto> files = stream(resources)
                 .map(FileDescriptors::loadFrom)
-                .flatMap(set -> set.getFileList().stream())
+                .flatMap(set -> set.getFileList()
+                                   .stream())
                 .filter(distinctBy(FileDescriptorProto::getName))
                 .collect(toSet());
         return files;
@@ -267,7 +268,7 @@ public final class FileDescriptors {
         public boolean test(FileDescriptorProto file) {
             checkNotNull(file);
             boolean result = !file.getPackage()
-                                        .startsWith(GOOGLE_PACKAGE);
+                                  .startsWith(GOOGLE_PACKAGE);
             return result;
         }
 

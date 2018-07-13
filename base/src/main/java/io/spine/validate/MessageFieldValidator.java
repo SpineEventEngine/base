@@ -82,8 +82,8 @@ class MessageFieldValidator extends FieldValidator<Message> {
     private boolean isTimestamp() {
         ImmutableList<Message> values = getValues();
         Message value = values.isEmpty()
-                ? null
-                : values.get(0);
+                        ? null
+                        : values.get(0);
         boolean result = value instanceof Timestamp;
         return result;
     }
@@ -124,8 +124,8 @@ class MessageFieldValidator extends FieldValidator<Message> {
      */
     private static boolean isTimeInvalid(Timestamp timeToCheck, Time whenExpected, Timestamp now) {
         boolean isValid = (whenExpected == FUTURE)
-                                ? isLaterThan(timeToCheck, /*than*/ now)
-                                : isLaterThan(now, /*than*/ timeToCheck);
+                          ? isLaterThan(timeToCheck, /*than*/ now)
+                          : isLaterThan(now, /*than*/ timeToCheck);
         boolean isInvalid = !isValid;
         return isInvalid;
     }
@@ -133,22 +133,22 @@ class MessageFieldValidator extends FieldValidator<Message> {
     private static boolean isLaterThan(Timestamp t1, Timestamp t2) {
         int result = Long.compare(t1.getSeconds(), t2.getSeconds());
         result = (result == 0)
-                ? Integer.compare(t1.getNanos(), t2.getNanos())
-                : result;
+                 ? Integer.compare(t1.getNanos(), t2.getNanos())
+                 : result;
         return result > 0;
     }
 
     private ConstraintViolation newTimeViolation(Timestamp fieldValue) {
         String msg = getErrorMsgFormat(timeConstraint, timeConstraint.getMsgFormat());
         String when = timeConstraint.getIn()
-                                          .toString()
-                                          .toLowerCase();
+                                    .toString()
+                                    .toLowerCase();
         ConstraintViolation violation = ConstraintViolation.newBuilder()
-                                                                 .setMsgFormat(msg)
-                                                                 .addParam(when)
-                                                                 .setFieldPath(getFieldPath())
-                                                                 .setFieldValue(pack(fieldValue))
-                                                                 .build();
+                                                           .setMsgFormat(msg)
+                                                           .addParam(when)
+                                                           .setFieldPath(getFieldPath())
+                                                           .setFieldValue(pack(fieldValue))
+                                                           .build();
         return violation;
     }
 
@@ -157,11 +157,11 @@ class MessageFieldValidator extends FieldValidator<Message> {
         IfInvalidOption ifInvalid = ifInvalid();
         String msg = getErrorMsgFormat(ifInvalid, ifInvalid.getMsgFormat());
         ConstraintViolation violation = ConstraintViolation.newBuilder()
-                                                                 .setMsgFormat(msg)
-                                                                 .setFieldPath(getFieldPath())
-                                                                 .setFieldValue(pack(fieldValue))
-                                                                 .addAllViolation(violations)
-                                                                 .build();
+                                                           .setMsgFormat(msg)
+                                                           .setFieldPath(getFieldPath())
+                                                           .setFieldValue(pack(fieldValue))
+                                                           .addAllViolation(violations)
+                                                           .build();
         return violation;
     }
 }

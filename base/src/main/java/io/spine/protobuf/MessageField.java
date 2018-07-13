@@ -145,8 +145,8 @@ public abstract class MessageField implements Serializable {
      */
     public static FieldDescriptor getFieldDescriptor(Message msg, int fieldIndex) {
         FieldDescriptor result = msg.getDescriptorForType()
-                                          .getFields()
-                                          .get(fieldIndex);
+                                    .getFields()
+                                    .get(fieldIndex);
         return result;
     }
 

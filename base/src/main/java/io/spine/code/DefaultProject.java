@@ -99,9 +99,9 @@ public final class DefaultProject extends AbstractDirectory {
     public File mainDescriptors() {
         BuildRoot build = BuildRoot.of(this);
         File result = build.descriptors()
-                                 .getPath()
-                                 .resolve(MAIN_FILE)
-                                 .toFile();
+                           .getPath()
+                           .resolve(MAIN_FILE)
+                           .toFile();
         return result;
     }
 
@@ -110,13 +110,12 @@ public final class DefaultProject extends AbstractDirectory {
         return new HandmadeCodeRoot(this, "src");
     }
 
-
     public File testDescriptors() {
         BuildRoot build = BuildRoot.of(this);
         File result = build.descriptors()
-                                 .getPath()
-                                 .resolve(TEST_FILE)
-                                 .toFile();
+                           .getPath()
+                           .resolve(TEST_FILE)
+                           .toFile();
         return result;
     }
 

@@ -70,7 +70,7 @@ public class MessageDeclaration extends AbstractMessageDeclaration {
     static MessageDeclaration create(DescriptorProto message,
                                      FileDescriptorProto file) {
         boolean fileContainsTarget = file.getMessageTypeList()
-                                               .contains(message);
+                                         .contains(message);
         if (!fileContainsTarget) {
             String errMsg = "Top-level message `%s` was not found in `%s`.";
             throw newIllegalArgumentException(errMsg, message.getName(), file.getName());
@@ -125,7 +125,7 @@ public class MessageDeclaration extends AbstractMessageDeclaration {
      */
     private MessageDeclaration forNested(DescriptorProto nestedMessage) {
         boolean isNestedForCurrentTarget = getMessage().getNestedTypeList()
-                                                             .contains(nestedMessage);
+                                                       .contains(nestedMessage);
         if (!isNestedForCurrentTarget) {
             String errMsg = "Nested message `%s` was not found in `%s`.";
             throw newIllegalStateException(errMsg,
@@ -148,7 +148,7 @@ public class MessageDeclaration extends AbstractMessageDeclaration {
         name.append(TYPE_PART_SEPARATOR);
         for (DescriptorProto outerMessage : outerMessages) {
             name.append(outerMessage.getName())
-                       .append(TYPE_PART_SEPARATOR);
+                .append(TYPE_PART_SEPARATOR);
         }
         name.append(getMessage().getName());
         String value = name.toString();

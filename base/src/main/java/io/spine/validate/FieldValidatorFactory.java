@@ -70,7 +70,7 @@ class FieldValidatorFactory {
                                                      Object fieldValue,
                                                      boolean strict) {
         JavaType fieldType = fieldContext.getTarget()
-                                               .getJavaType();
+                                         .getJavaType();
         return createForLinear(fieldType,
                                fieldContext,
                                fieldValue,
@@ -152,29 +152,29 @@ class FieldValidatorFactory {
             }
         }
         FieldValidator<?> validator = createForLinear(type,
-                                                            fieldContext,
-                                                            value,
-                                                            strict);
+                                                      fieldContext,
+                                                      value,
+                                                      strict);
         return validator;
     }
 
     static FieldValidator<?> create(FieldContext fieldContext,
                                     Object fieldValue) {
         return fieldValue instanceof Map
-                ? createForMap(fieldContext, (Map<?, ?>) fieldValue, false)
-                : createForLinear(fieldContext, fieldValue, false);
+               ? createForMap(fieldContext, (Map<?, ?>) fieldValue, false)
+               : createForLinear(fieldContext, fieldValue, false);
     }
 
     static FieldValidator<?> createStrict(FieldContext fieldContext,
                                           Object fieldValue) {
         return fieldValue instanceof Map
-                ? createForMap(fieldContext, (Map<?, ?>) fieldValue, true)
-                : createForLinear(fieldContext, fieldValue, true);
+               ? createForMap(fieldContext, (Map<?, ?>) fieldValue, true)
+               : createForLinear(fieldContext, fieldValue, true);
     }
 
     private static IllegalArgumentException fieldTypeIsNotSupported(FieldDescriptor descriptor) {
         String msg = format("The field type is not supported for validation: %s",
-                                  descriptor.getType());
+                            descriptor.getType());
         throw new IllegalArgumentException(msg);
     }
 }

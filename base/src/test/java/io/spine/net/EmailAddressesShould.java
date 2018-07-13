@@ -57,7 +57,9 @@ public class EmailAddressesShould {
     }
 
     private static boolean patternMatches(CharSequence input) {
-        return EmailAddresses.pattern().matcher(input).matches();
+        return EmailAddresses.pattern()
+                             .matcher(input)
+                             .matches();
     }
 
     @Test

@@ -60,7 +60,7 @@ public final class RejectionDeclaration extends AbstractMessageDeclaration {
      */
     public static boolean isValidOuterClassName(SimpleClassName className) {
         boolean result = className.value()
-                                        .endsWith(OUTER_CLASS_NAME_SUFFIX);
+                                  .endsWith(OUTER_CLASS_NAME_SUFFIX);
         return result;
     }
 

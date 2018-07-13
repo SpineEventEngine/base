@@ -57,7 +57,7 @@ public final class SourceFile extends AbstractSourceFile {
     public static SourceFile forOuterClassOf(FileDescriptorProto file) {
         checkNotNull(file);
         FileName filename = SimpleClassName.outerOf(file)
-                                                 .toFileName();
+                                           .toFileName();
         SourceFile result = getFolder(file).resolve(filename);
         return result;
     }
@@ -159,8 +159,8 @@ public final class SourceFile extends AbstractSourceFile {
      */
     public static SourceFile forType(String javaPackage, String typename) {
         SourceFile result = PackageName.of(javaPackage)
-                                             .toDirectory()
-                                             .resolve(FileName.forType(typename));
+                                       .toDirectory()
+                                       .resolve(FileName.forType(typename));
         return result;
     }
 }

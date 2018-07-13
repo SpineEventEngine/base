@@ -117,8 +117,8 @@ public final class FieldContext {
         int targetParentIndex = descriptors.size() - 2;
         boolean parentExists = targetParentIndex > -1;
         return parentExists
-                ? Optional.of(descriptors.get(targetParentIndex))
-                : Optional.empty();
+               ? Optional.of(descriptors.get(targetParentIndex))
+               : Optional.empty();
     }
 
     /**
@@ -139,7 +139,8 @@ public final class FieldContext {
      */
     public boolean hasSameTargetAndParent(FieldContext other) {
         String thisTargetName = getTarget().getFullName();
-        String otherTargetName = other.getTarget().getFullName();
+        String otherTargetName = other.getTarget()
+                                      .getFullName();
         boolean sameTarget = thisTargetName.equals(otherTargetName);
         if (!sameTarget) {
             return false;

@@ -123,8 +123,8 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
                                          Class<K> keyClass,
                                          Class<V> valueClass) throws ConversionException {
         Map<K, V> result = Stringifiers.newForMapOf(keyClass, valueClass)
-                                             .reverse()
-                                             .convert(value);
+                                       .reverse()
+                                       .convert(value);
         return result;
     }
 
@@ -142,8 +142,8 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
     public <V> List<V> convertToList(String value,
                                      Class<V> valueClass) throws ConversionException {
         List<V> result = Stringifiers.newForListOf(valueClass)
-                                           .reverse()
-                                           .convert(value);
+                                     .reverse()
+                                     .convert(value);
         return result;
     }
 
@@ -172,8 +172,8 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
         T message = internalBuild();
 
         boolean result = originalState != null
-                ? !originalState.equals(message)
-                : Validate.isNotDefault(message);
+                         ? !originalState.equals(message)
+                         : Validate.isNotDefault(message);
         return result;
     }
 
@@ -206,8 +206,8 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
      */
     @Internal
     public T internalBuild() {
-        @SuppressWarnings("unchecked")  // OK, as real types of `B`
-                     // are always generated to be compatible with `T`.
+        @SuppressWarnings("unchecked")
+        // OK, as real types of `B` are always generated to be compatible with `T`.
         T result = (T) getMessageBuilder().build();
         return result;
     }
@@ -215,13 +215,13 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
     private B createBuilder() {
         @SuppressWarnings("unchecked")  // OK, since it is guaranteed by the class declaration.
         B result = (B) Messages.newInstance(messageClass)
-                                     .newBuilderForType();
+                               .newBuilderForType();
         return result;
     }
 
     private void validateResult(T message) throws ValidationException {
         List<ConstraintViolation> violations = MessageValidator.newInstance()
-                                                                     .validate(message);
+                                                               .validate(message);
         checkViolations(violations);
     }
 

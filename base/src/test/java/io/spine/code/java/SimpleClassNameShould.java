@@ -87,7 +87,8 @@ public class SimpleClassNameShould {
     @Test
     public void obtains_name_for_message_or_builder() {
         assertEquals(TimestampOrBuilder.class.getSimpleName(),
-                     SimpleClassName.messageOrBuilder(Timestamp.class.getSimpleName()).value());
+                     SimpleClassName.messageOrBuilder(Timestamp.class.getSimpleName())
+                                    .value());
     }
 
     @Test

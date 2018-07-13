@@ -90,14 +90,14 @@ public class UrlPrinterShould {
     public void print_url_without_password() {
 
         Record record = Record.newBuilder(FULL_RECORD)
-                                    .setAuth(Authorization.newBuilder(AUTH)
-                                                          .setPassword("")
-                                                          .build())
-                                    .build();
+                              .setAuth(Authorization.newBuilder(AUTH)
+                                                    .setPassword("")
+                                                    .build())
+                              .build();
 
         Url url = Url.newBuilder()
-                           .setRecord(record)
-                           .build();
+                     .setRecord(record)
+                     .build();
 
         assertEquals("http://admin@spine.io:80/index?key=value&key2=value2#frag1",
                      UrlPrinter.printToString(url));
@@ -106,14 +106,14 @@ public class UrlPrinterShould {
     @Test
     public void print_url_with_broken_auth() {
         Record record = Record.newBuilder(FULL_RECORD)
-                                    .setAuth(Authorization.newBuilder(AUTH)
-                                                          .setUserName("")
-                                                          .build())
-                                    .build();
+                              .setAuth(Authorization.newBuilder(AUTH)
+                                                    .setUserName("")
+                                                    .build())
+                              .build();
 
         Url url = Url.newBuilder()
-                           .setRecord(record)
-                           .build();
+                     .setRecord(record)
+                     .build();
 
         // As UrlPrinter assumes that we have already validated url, it just ignores password
         // if user is not set

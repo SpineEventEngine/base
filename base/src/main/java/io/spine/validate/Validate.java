@@ -54,7 +54,7 @@ public final class Validate {
     public static boolean isDefault(Message object) {
         checkNotNull(object);
         boolean result = object.getDefaultInstanceForType()
-                                     .equals(object);
+                               .equals(object);
         return result;
     }
 
@@ -166,7 +166,7 @@ public final class Validate {
         checkNotNull(object);
         if (!isDefault(object)) {
             String typeName = TypeName.of(object)
-                                            .value();
+                                      .value();
             throw newIllegalStateException("The message is not in the default state: %s", typeName);
         }
         return object;
@@ -280,7 +280,7 @@ public final class Validate {
         checkNotNull(message);
 
         List<ConstraintViolation> violations = MessageValidator.newInstance()
-                                                                     .validate(message);
+                                                               .validate(message);
         if (!violations.isEmpty()) {
             throw new ValidationException(violations);
         }

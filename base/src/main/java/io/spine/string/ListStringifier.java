@@ -112,11 +112,11 @@ final class ListStringifier<T> extends Stringifier<List<T>> {
         List<String> convertedItems = newArrayList();
         for (T item : list) {
             String convertedItem = elementStringifier.andThen(quoter)
-                                                           .convert(item);
+                                                     .convert(item);
             convertedItems.add(convertedItem);
         }
         String result = Joiner.on(delimiter)
-                                    .join(convertedItems);
+                              .join(convertedItems);
         return result;
     }
 
@@ -126,7 +126,7 @@ final class ListStringifier<T> extends Stringifier<List<T>> {
         List<String> items = newArrayList(splitter.split(escapedString));
         Converter<String, String> quoter = Quoter.forLists();
         Converter<String, T> converter = quoter.reverse()
-                                                     .andThen(elementStringifier.reverse());
+                                               .andThen(elementStringifier.reverse());
         List<T> result = newArrayList();
         for (String item : items) {
             T convertedItem = converter.convert(item);

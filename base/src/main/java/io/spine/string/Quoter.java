@@ -113,8 +113,8 @@ abstract class Quoter extends Converter<String, String> {
             checkNotNull(stringToQuote);
             Matcher matcher = compile(QUOTE_PATTERN).matcher(stringToQuote);
             String unslashed = matcher.find() ?
-                                     matcher.replaceAll(BACKSLASH + matcher.group()) :
-                                     stringToQuote;
+                               matcher.replaceAll(BACKSLASH + matcher.group()) :
+                               stringToQuote;
             String result = QUOTE_CHAR + unslashed + QUOTE_CHAR;
             return result;
         }
@@ -140,7 +140,7 @@ abstract class Quoter extends Converter<String, String> {
         String quote(String stringToQuote) {
             checkNotNull(stringToQuote);
             String escaped = QUOTE_PATTERN.matcher(stringToQuote)
-                                                .replaceAll(ESCAPED_QUOTE);
+                                          .replaceAll(ESCAPED_QUOTE);
             String result = QUOTE_CHAR + escaped + QUOTE_CHAR;
             return result;
         }
@@ -155,7 +155,7 @@ abstract class Quoter extends Converter<String, String> {
         checkQuoted(value);
         String unquoted = value.substring(2, value.length() - 2);
         String unescaped = pattern.matcher(unquoted)
-                                        .replaceAll("");
+                                  .replaceAll("");
         return unescaped;
     }
 

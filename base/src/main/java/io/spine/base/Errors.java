@@ -39,7 +39,7 @@ public final class Errors {
     private static Error.Builder toErrorBuilder(Throwable throwable) {
         checkNotNull(throwable);
         String type = throwable.getClass()
-                                     .getName();
+                               .getName();
         String message = nullToEmpty(throwable.getMessage());
         String stacktrace = getStackTraceAsString(throwable);
         return Error.newBuilder()

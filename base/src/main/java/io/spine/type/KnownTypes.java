@@ -98,9 +98,9 @@ public class KnownTypes {
      */
     public Set<TypeUrl> getAllFromPackage(String packageName) {
         Set<TypeUrl> result = getAllUrls().stream()
-                                                .filter(url -> url.toName()
-                                                                  .belongsTo(packageName))
-                                                .collect(toSet());
+                                          .filter(url -> url.toName()
+                                                            .belongsTo(packageName))
+                                          .collect(toSet());
         return result;
     }
 

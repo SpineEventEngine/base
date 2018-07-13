@@ -58,7 +58,8 @@ public class MessageFieldExceptionShould {
         MessageFieldException exception = new MessageFieldException(protobufMessage);
 
         assertEquals(protobufMessage, exception.getProtobufMessage());
-        assertTrue(exception.getMessage().isEmpty());
+        assertTrue(exception.getMessage()
+                            .isEmpty());
     }
 
     @Test(expected = NullPointerException.class)

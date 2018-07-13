@@ -63,7 +63,8 @@ class Schemas {
      */
     static String getLowerCaseName(Schema schema) {
         checkNotNull(schema);
-        return schema.name().toLowerCase();
+        return schema.name()
+                     .toLowerCase();
     }
 
     private static Map<String, Schema> buildSchemasMap() {

@@ -59,9 +59,9 @@ public class UrlQueryParameters {
         String value = queryParameter.substring(separatorIndex + 1);
 
         QueryParameter result = QueryParameter.newBuilder()
-                                                    .setKey(key)
-                                                    .setValue(value)
-                                                    .build();
+                                              .setKey(key)
+                                              .setValue(value)
+                                              .build();
         return result;
     }
 
@@ -81,9 +81,9 @@ public class UrlQueryParameters {
         checkArgument(!value.isEmpty(), "Query parameter value cannot be empty.");
 
         QueryParameter result = QueryParameter.newBuilder()
-                                                    .setKey(key)
-                                                    .setValue(value)
-                                                    .build();
+                                              .setKey(key)
+                                              .setValue(value)
+                                              .build();
         return result;
     }
 

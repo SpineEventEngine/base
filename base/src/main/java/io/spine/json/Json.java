@@ -74,7 +74,7 @@ public final class Json {
      */
     public static String toCompactJson(Message message) {
         Printer compactPrinter = JsonPrinter.getInstance()
-                                                  .omittingInsignificantWhitespace();
+                                            .omittingInsignificantWhitespace();
         String result = toJson(message, compactPrinter);
         return result;
     }

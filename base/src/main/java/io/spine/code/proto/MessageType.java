@@ -65,7 +65,8 @@ public class MessageType extends Type<Descriptor, DescriptorProto> {
     }
 
     private static void addType(Descriptor type, TypeSet.Builder set) {
-        if (type.getOptions().getMapEntry()) {
+        if (type.getOptions()
+                .getMapEntry()) {
             return;
         }
         set.add(create(type));

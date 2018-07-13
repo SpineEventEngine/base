@@ -61,8 +61,8 @@ public final class EmailAddresses {
         checkArgumentIsEmailAddress(value);
 
         EmailAddress result = EmailAddress.newBuilder()
-                                                .setValue(value.toString())
-                                                .build();
+                                          .setValue(value.toString())
+                                          .build();
         return result;
     }
 }

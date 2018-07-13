@@ -69,8 +69,8 @@ class Linker {
             throw newIllegalStateException(e, "Unable to link descriptor set files");
         }
         FileSet result = linker.getResolved()
-                                     .union(linker.getPartiallyResolved())
-                                     .union(linker.getUnresolved());
+                               .union(linker.getPartiallyResolved())
+                               .union(linker.getUnresolved());
         return result;
     }
 

@@ -71,7 +71,7 @@ public final class Types {
 
         Type type =
                 new TypeToken<List<T>>() {}.where(new TypeParameter<T>() {}, elementClass)
-                                                      .getType();
+                                                 .getType();
         return type;
     }
 }

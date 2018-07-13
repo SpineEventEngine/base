@@ -133,8 +133,8 @@ abstract class NumberFieldValidator<V extends Number & Comparable<V>> extends Fi
         V min = toNumber(minAsString);
         int comparisonResult = value.compareTo(min);
         boolean fits = isMinDecimalInclusive
-                             ? comparisonResult >= 0
-                             : comparisonResult > 0;
+                       ? comparisonResult >= 0
+                       : comparisonResult > 0;
         boolean notFit = !fits;
         return notFit;
     }
@@ -146,8 +146,8 @@ abstract class NumberFieldValidator<V extends Number & Comparable<V>> extends Fi
         }
         V max = toNumber(maxAsString);
         boolean fits = isMaxDecimalInclusive
-                             ? value.compareTo(max) <= 0
-                             : value.compareTo(max) < 0;
+                       ? value.compareTo(max) <= 0
+                       : value.compareTo(max) < 0;
         boolean notFit = !fits;
         return notFit;
     }
@@ -185,7 +185,7 @@ abstract class NumberFieldValidator<V extends Number & Comparable<V>> extends Fi
         int intDigitsCount = parts[0].length();
         int fractionDigitsCount = parts[1].length();
         boolean isInvalid = (intDigitsCount > intDigitsMax) ||
-                                  (fractionDigitsCount > fractionDigitsMax);
+                (fractionDigitsCount > fractionDigitsMax);
         if (isInvalid) {
             addViolation(newDigitsViolation(value));
         }
@@ -198,11 +198,12 @@ abstract class NumberFieldValidator<V extends Number & Comparable<V>> extends Fi
                                                     String minOrMax) {
         String msg = getErrorMsgFormat(option, customMsg);
         ConstraintViolation.Builder violation = ConstraintViolation.newBuilder()
-                .setMsgFormat(msg)
-                .addParam(isInclusive ? "or equal to " : "")
-                .addParam(minOrMax)
-                .setFieldPath(getFieldPath())
-                .setFieldValue(wrap(value));
+                                                                   .setMsgFormat(msg)
+                                                                   .addParam(
+                                                                           isInclusive ? "or equal to " : "")
+                                                                   .addParam(minOrMax)
+                                                                   .setFieldPath(getFieldPath())
+                                                                   .setFieldValue(wrap(value));
         return violation.build();
     }
 
@@ -210,10 +211,10 @@ abstract class NumberFieldValidator<V extends Number & Comparable<V>> extends Fi
                                                      String customMsg, String minOrMax) {
         String msg = getErrorMsgFormat(option, customMsg);
         ConstraintViolation.Builder violation = ConstraintViolation.newBuilder()
-                .setMsgFormat(msg)
-                .addParam(minOrMax)
-                .setFieldPath(getFieldPath())
-                .setFieldValue(wrap(value));
+                                                                   .setMsgFormat(msg)
+                                                                   .addParam(minOrMax)
+                                                                   .setFieldPath(getFieldPath())
+                                                                   .setFieldValue(wrap(value));
         return violation.build();
     }
 
@@ -222,11 +223,11 @@ abstract class NumberFieldValidator<V extends Number & Comparable<V>> extends Fi
         String intMax = String.valueOf(digitsOption.getIntegerMax());
         String fractionMax = String.valueOf(digitsOption.getFractionMax());
         ConstraintViolation.Builder violation = ConstraintViolation.newBuilder()
-                .setMsgFormat(msg)
-                .addParam(intMax)
-                .addParam(fractionMax)
-                .setFieldPath(getFieldPath())
-                .setFieldValue(wrap(value));
+                                                                   .setMsgFormat(msg)
+                                                                   .addParam(intMax)
+                                                                   .addParam(fractionMax)
+                                                                   .setFieldPath(getFieldPath())
+                                                                   .setFieldValue(wrap(value));
         return violation.build();
     }
 }

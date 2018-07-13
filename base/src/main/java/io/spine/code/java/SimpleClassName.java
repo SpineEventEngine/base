@@ -72,7 +72,7 @@ public final class SimpleClassName extends StringTypeValue {
      */
     public static Optional<SimpleClassName> declaredOuterClassName(FileDescriptorProto file) {
         String className = file.getOptions()
-                                     .getJavaOuterClassname();
+                               .getJavaOuterClassname();
         if (className.isEmpty()) {
             return Optional.empty();
         }
@@ -101,7 +101,7 @@ public final class SimpleClassName extends StringTypeValue {
         }
 
         String className = io.spine.code.proto.FileName.from(file)
-                                                             .nameOnlyCamelCase();
+                                                       .nameOnlyCamelCase();
         return className;
     }
 

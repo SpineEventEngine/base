@@ -70,8 +70,8 @@ public class UrlsShould {
     @Test
     public void validate_raw_urls() {
         Url url1 = Url.newBuilder()
-                            .setRaw("validate-raw.com")
-                            .build();
+                      .setRaw("validate-raw.com")
+                      .build();
         Urls.validate(url1);
     }
 
@@ -79,7 +79,7 @@ public class UrlsShould {
     @Test
     public void fail_on_wrong_urls_validation() {
         Url emptyUrl = Url.newBuilder()
-                                .build();
+                          .build();
         try {
             Urls.toString(emptyUrl);
             fail();
@@ -87,8 +87,8 @@ public class UrlsShould {
         }
 
         Url urlWithoutHost = Url.newBuilder()
-                                      .setRecord(Record.getDefaultInstance())
-                                      .build();
+                                .setRecord(Record.getDefaultInstance())
+                                .build();
         try {
             Urls.toString(urlWithoutHost);
             fail();

@@ -87,7 +87,7 @@ class AlternativeFieldValidator {
 
     List<? extends ConstraintViolation> validate(Message message) {
         Map<FieldDescriptor, Object> options = messageDescriptor.getOptions()
-                                                                      .getAllFields();
+                                                                .getAllFields();
         for (FieldDescriptor optionDescriptor : options.keySet()) {
             if (OPTION_REQUIRED_FIELD.equals(optionDescriptor.getName())) {
                 JavaType optionType = optionDescriptor.getJavaType();
@@ -117,9 +117,9 @@ class AlternativeFieldValidator {
     private static ImmutableList<RequiredFieldOption> parse(String optionsDefinition) {
         ImmutableList.Builder<RequiredFieldOption> alternatives = ImmutableList.builder();
         String whiteSpaceRemoved = WHITESPACE.matcher(optionsDefinition)
-                                                   .replaceAll("");
+                                             .replaceAll("");
         Iterable<String> parts = Splitter.on(OPTION_SEPARATOR)
-                                               .split(whiteSpaceRemoved);
+                                         .split(whiteSpaceRemoved);
         for (String part : parts) {
             if (part.indexOf(AMPERSAND) > 0) {
                 alternatives.add(RequiredFieldOption.ofCombination(part));
@@ -205,7 +205,7 @@ class AlternativeFieldValidator {
 
         static RequiredFieldOption ofCombination(CharSequence expression) {
             Iterable<String> parts = Splitter.on(AMPERSAND)
-                                                   .split(expression);
+                                             .split(expression);
             return ofCombination(parts);
         }
 

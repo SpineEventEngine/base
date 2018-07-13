@@ -180,11 +180,12 @@ public final class TypeUrl implements Serializable {
      */
     private static String prefixFor(GenericDescriptor descriptor) {
         FileDescriptor file = descriptor.getFile();
-        if (file.getPackage().startsWith(GOOGLE_PROTOBUF_PACKAGE)) {
+        if (file.getPackage()
+                .startsWith(GOOGLE_PROTOBUF_PACKAGE)) {
             return Prefix.GOOGLE_APIS.value();
         }
         String result = file.getOptions()
-                                  .getExtension(OptionsProto.typeUrlPrefix);
+                            .getExtension(OptionsProto.typeUrlPrefix);
         return result;
     }
 

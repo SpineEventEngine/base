@@ -55,7 +55,8 @@ public class SourceFileShould {
         String expectedTypeName = nestedForNested.getFullName();
         String simpleTypeName = nestedForNested.getName();
         MessageDeclaration result = findDeclaration(simpleTypeName);
-        assertEquals(expectedTypeName, result.getTypeName().value());
+        assertEquals(expectedTypeName, result.getTypeName()
+                                             .value());
     }
 
     private MessageDeclaration findDeclaration(String name) {

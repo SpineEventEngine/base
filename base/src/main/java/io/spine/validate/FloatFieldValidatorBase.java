@@ -49,10 +49,10 @@ abstract class FloatFieldValidatorBase<V extends Number & Comparable<V>>
     protected void validateEntityId() {
         V value = getValues().get(0);
         ConstraintViolation violation = ConstraintViolation.newBuilder()
-                                                                 .setMsgFormat(INVALID_ID_TYPE_MSG)
-                                                                 .setFieldPath(getFieldPath())
-                                                                 .setFieldValue(wrap(value))
-                                                                 .build();
+                                                           .setMsgFormat(INVALID_ID_TYPE_MSG)
+                                                           .setFieldPath(getFieldPath())
+                                                           .setFieldValue(wrap(value))
+                                                           .build();
         addViolation(violation);
     }
 }

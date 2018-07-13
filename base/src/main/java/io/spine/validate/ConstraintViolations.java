@@ -164,7 +164,7 @@ public class ConstraintViolations {
          * @param constraintViolations constraint violations for the event message
          */
         protected ExceptionFactory(M message,
-                Iterable<ConstraintViolation> constraintViolations) {
+                                   Iterable<ConstraintViolation> constraintViolations) {
             this.constraintViolations = constraintViolations;
             this.message = message;
         }
@@ -210,18 +210,18 @@ public class ConstraintViolations {
                                    .build();
             R errorCode = getErrorCode();
             String typeName = errorCode.getDescriptorForType()
-                                             .getFullName();
+                                       .getFullName();
             String errorTextTemplate = getErrorText();
             String errorText = format("%s %s",
-                                            errorTextTemplate,
-                                            toText(constraintViolations));
+                                      errorTextTemplate,
+                                      toText(constraintViolations));
 
             Error.Builder error = Error.newBuilder()
-                                             .setType(typeName)
-                                             .setCode(errorCode.getNumber())
-                                             .setValidationError(validationError)
-                                             .setMessage(errorText)
-                                             .putAllAttributes(getMessageTypeAttribute(message));
+                                       .setType(typeName)
+                                       .setCode(errorCode.getNumber())
+                                       .setValidationError(validationError)
+                                       .setMessage(errorText)
+                                       .putAllAttributes(getMessageTypeAttribute(message));
             return error.build();
         }
 

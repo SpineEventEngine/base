@@ -41,9 +41,9 @@ public class CamelCase {
      */
     public static String convert(UnderscoredName name) {
         Iterator<String> iterator = name.words()
-                                              .iterator();
+                                        .iterator();
         StringBuilder builder = new StringBuilder(name.value()
-                                                            .length());
+                                                      .length());
         while (iterator.hasNext()) {
             String word = iterator.next();
             if (!word.isEmpty()) {

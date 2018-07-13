@@ -46,8 +46,8 @@ public class MoneyUtil {
      */
     public static Money newMoney(long amount, Currency currency) {
         Money.Builder result = Money.newBuilder()
-                                          .setAmount(amount)
-                                          .setCurrency(currency);
+                                    .setAmount(amount)
+                                    .setCurrency(currency);
         return result.build();
     }
 }

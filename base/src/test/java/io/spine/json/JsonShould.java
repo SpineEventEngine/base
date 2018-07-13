@@ -64,7 +64,8 @@ public class JsonShould {
         JsonFormat.TypeRegistry typeRegistry = Json.typeRegistry();
 
         List<Descriptors.Descriptor> found = Lists.newLinkedList();
-        for (TypeUrl typeUrl : KnownTypes.instance().getAllUrls()) {
+        for (TypeUrl typeUrl : KnownTypes.instance()
+                                         .getAllUrls()) {
             Descriptors.Descriptor descriptor = typeRegistry.find(typeUrl.getTypeName());
             if (descriptor != null) {
                 found.add(descriptor);
@@ -90,9 +91,9 @@ public class JsonShould {
     public void print_to_compact_json() {
         String idValue = newUuid();
         Node node = Node.newBuilder()
-                              .setName(idValue)
-                              .setRight(Node.getDefaultInstance())
-                              .build();
+                        .setName(idValue)
+                        .setRight(Node.getDefaultInstance())
+                        .build();
         String result = toCompactJson(node);
         assertFalse(result.isEmpty());
         assertFalse(result.contains(System.lineSeparator()));

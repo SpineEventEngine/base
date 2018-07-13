@@ -76,16 +76,16 @@ public class UrlParserShould {
 
         String userUrl = HTTP_PROTOCOL + "://" + userName + '@' + HOST;
         String userPasswordUrl = HTTP_PROTOCOL + "://" + userName + ':' +
-                                       password + '@' + HOST;
+                                 password + '@' + HOST;
 
         Url.Record record1 = new UrlParser(userUrl).parse()
-                                                         .getRecord();
+                                                   .getRecord();
         String user1 = record1.getAuth()
-                                    .getUserName();
+                              .getUserName();
         assertEquals(userName, user1);
 
         Url.Record record2 = new UrlParser(userPasswordUrl).parse()
-                                                                 .getRecord();
+                                                           .getRecord();
         Url.Record.Authorization auth2 = record2.getAuth();
         String user2 = auth2.getUserName();
         assertEquals(userName, user2);
@@ -140,7 +140,7 @@ public class UrlParserShould {
         Url url = new UrlParser(rawUrl).parse();
 
         List<Url.Record.QueryParameter> queries = url.getRecord()
-                                                           .getQueryList();
+                                                     .getQueryList();
 
         assertEquals(2, queries.size());
 
@@ -158,7 +158,8 @@ public class UrlParserShould {
         String rawUrl =
                 "https://user:password@spine.io/index?auth=none&locale=us#fragment9";
 
-        Url.Record record = new UrlParser(rawUrl).parse().getRecord();
+        Url.Record record = new UrlParser(rawUrl).parse()
+                                                 .getRecord();
 
         assertEquals(Url.Record.Schema.HTTPS, record.getProtocol().getSchema());
         assertEquals("user", record.getAuth().getUserName());

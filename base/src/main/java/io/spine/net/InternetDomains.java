@@ -63,8 +63,8 @@ public final class InternetDomains {
         checkArgumentIsDomainName(name);
 
         InternetDomain result = InternetDomain.newBuilder()
-                                                    .setValue(name.toString())
-                                                    .build();
+                                              .setValue(name.toString())
+                                              .build();
         return result;
     }
 }

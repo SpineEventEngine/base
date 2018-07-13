@@ -217,7 +217,7 @@ public final class Identifier<I> {
      */
     public static String newUuid() {
         String id = UUID.randomUUID()
-                              .toString();
+                        .toString();
         return id;
     }
 
@@ -274,16 +274,16 @@ public final class Identifier<I> {
 
     private static String convert(Message message) {
         Collection<Object> values = message.getAllFields()
-                                                 .values();
+                                           .values();
         String result;
         if (values.isEmpty()) {
             result = EMPTY_ID;
         } else if (values.size() == 1) {
             Object object = values.iterator()
-                                        .next();
+                                  .next();
             result = object instanceof Message
-                    ? idMessageToString((Message) object)
-                    : object.toString();
+                     ? idMessageToString((Message) object)
+                     : object.toString();
         } else {
             result = messageWithMultipleFieldsToString(message);
         }

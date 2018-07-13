@@ -65,8 +65,8 @@ public class ValidationException extends RuntimeException {
         ToStringHelper helper = MoreObjects.toStringHelper(this);
 
         String violationContent = constraintViolations.isEmpty()
-                ? "[]"
-                : on(", ").join(transform(constraintViolations, TO_STRING_FN));
+                                  ? "[]"
+                                  : on(", ").join(transform(constraintViolations, TO_STRING_FN));
 
         return helper.add("constraintViolations", violationContent)
                      .toString();

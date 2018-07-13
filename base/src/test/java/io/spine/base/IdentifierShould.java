@@ -166,8 +166,8 @@ public class IdentifierShould {
     public void convert_to_string_message_id_with_message_field() {
         StringValue value = toMessage(TEST_ID);
         NestedMessageId idToConvert = NestedMessageId.newBuilder()
-                                                           .setId(value)
-                                                           .build();
+                                                     .setId(value)
+                                                     .build();
 
         String result = Identifier.toString(idToConvert);
 
@@ -182,10 +182,10 @@ public class IdentifierShould {
 
         StringValue nestedMessageString = toMessage(nestedString);
         SeveralFieldsId idToConvert = SeveralFieldsId.newBuilder()
-                                                           .setString(outerString)
-                                                           .setNumber(number)
-                                                           .setMessage(nestedMessageString)
-                                                           .build();
+                                                     .setString(outerString)
+                                                     .setNumber(number)
+                                                     .setMessage(nestedMessageString)
+                                                     .build();
 
         String expected =
                 "string=\"" + outerString + '\"' +

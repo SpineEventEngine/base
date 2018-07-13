@@ -113,7 +113,8 @@ public final class TypeConverter {
         @SuppressWarnings("unchecked") // Must be checked at runtime
         Class<T> srcClass = (Class<T>) value.getClass();
         MessageCaster<M, T> caster = MessageCaster.forType(srcClass);
-        M message = caster.reverse().convert(value);
+        M message = caster.reverse()
+                          .convert(value);
         checkNotNull(message);
         return message;
     }
@@ -168,8 +169,8 @@ public final class TypeConverter {
         @Override
         protected BytesValue toMessage(ByteString input) {
             BytesValue bytes = BytesValue.newBuilder()
-                                               .setValue(input)
-                                               .build();
+                                         .setValue(input)
+                                         .build();
             return bytes;
         }
     }
@@ -195,8 +196,8 @@ public final class TypeConverter {
         protected EnumValue toMessage(Enum input) {
             String name = input.name();
             EnumValue value = EnumValue.newBuilder()
-                                             .setName(name)
-                                             .build();
+                                       .setName(name)
+                                       .build();
             return value;
         }
     }
@@ -259,7 +260,8 @@ public final class TypeConverter {
             checkArgument(converter != null,
                           "Could not find a wrapper type for %s.",
                           cls.getCanonicalName());
-            M result = converter.reverse().convert(input);
+            M result = converter.reverse()
+                                .convert(input);
             return result;
         }
     }

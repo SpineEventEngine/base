@@ -35,7 +35,7 @@ public class TypeSetShould {
     @Test
     public void obtain_messages_and_enums_from_a_file() {
         FileDescriptor file = fileSet.tryFind(FileName.of("google/protobuf/descriptor.proto"))
-                                           .get();
+                                     .get();
         TypeSet typeSet = TypeSet.messagesAndEnums(file);
         assertFalse(typeSet.isEmpty());
     }

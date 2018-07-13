@@ -93,7 +93,7 @@ public final class Stringifiers {
 
         Stringifier<T> stringifier = StringifierRegistry.getStringifier(typeOfT);
         T result = stringifier.reverse()
-                                    .convert(str);
+                              .convert(str);
         return result;
     }
 
@@ -215,9 +215,9 @@ public final class Stringifiers {
     static Escaper createEscaper(char charToEscape) {
         String escapedChar = "\\" + charToEscape;
         Escaper result = Escapers.builder()
-                                       .addEscape('\"', "\\\"")
-                                       .addEscape(charToEscape, escapedChar)
-                                       .build();
+                                 .addEscape('\"', "\\\"")
+                                 .addEscape(charToEscape, escapedChar)
+                                 .build();
         return result;
     }
 }

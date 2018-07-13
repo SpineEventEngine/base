@@ -253,9 +253,9 @@ abstract class FieldValidator<V> {
     private ConstraintViolation newViolation(IfMissingOption option) {
         String msg = getErrorMsgFormat(option, option.getMsgFormat());
         ConstraintViolation violation = ConstraintViolation.newBuilder()
-                                                                 .setMsgFormat(msg)
-                                                                 .setFieldPath(getFieldPath())
-                                                                 .build();
+                                                           .setMsgFormat(msg)
+                                                           .setFieldPath(getFieldPath())
+                                                           .build();
         return violation;
     }
 
@@ -267,8 +267,8 @@ abstract class FieldValidator<V> {
      */
     protected String getErrorMsgFormat(Message option, String customMsg) {
         String defaultMsg = option.getDescriptorForType()
-                                        .getOptions()
-                                        .getExtension(OptionsProto.defaultMessage);
+                                  .getOptions()
+                                  .getExtension(OptionsProto.defaultMessage);
         String msg = customMsg.isEmpty() ? defaultMsg : customMsg;
         return msg;
     }
@@ -287,7 +287,7 @@ abstract class FieldValidator<V> {
         }
 
         T ownOption = fieldDescriptor.getOptions()
-                                           .getExtension(extension);
+                                     .getExtension(extension);
         return ownOption;
     }
 

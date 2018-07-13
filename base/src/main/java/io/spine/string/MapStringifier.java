@@ -140,8 +140,8 @@ final class MapStringifier<K, V> extends Stringifier<Map<K, V>> {
             resultMap.put(convertedKey, convertedValue);
         }
         String result = Joiner.on(delimiter)
-                                    .withKeyValueSeparator(KEY_VALUE_DELIMITER)
-                                    .join(resultMap);
+                              .withKeyValueSeparator(KEY_VALUE_DELIMITER)
+                              .join(resultMap);
         return result;
     }
 
@@ -156,9 +156,9 @@ final class MapStringifier<K, V> extends Stringifier<Map<K, V>> {
     private Map<K, V> convert(Map<String, String> buckets) {
         Converter<String, String> quoter = Quoter.forMaps();
         Converter<String, K> keyConverter = quoter.reverse()
-                                                        .andThen(keyStringifier.reverse());
+                                                  .andThen(keyStringifier.reverse());
         Converter<String, V> valueConverter = quoter.reverse()
-                                                          .andThen(valueStringifier.reverse());
+                                                    .andThen(valueStringifier.reverse());
         Map<K, V> resultMap = newHashMap();
         try {
             for (Map.Entry<String, String> bucket : buckets.entrySet()) {

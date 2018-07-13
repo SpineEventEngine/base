@@ -112,7 +112,7 @@ class ValidationRule {
         String fieldName = targetPath.substring(typeAndFieldNameBound + 1);
         String targetMessageType = targetPath.substring(0, typeAndFieldNameBound);
         Descriptor message = TypeName.of(targetMessageType)
-                                           .getMessageDescriptor();
+                                     .getMessageDescriptor();
         FieldDescriptor field = message.findFieldByName(fieldName);
         if (field == null) {
             throw newIllegalStateException("The field '%s' is not found in the '%s' message.",

@@ -128,7 +128,7 @@ public interface GenericTypeIndex<C> {
             checkNotNull(genericSuperclass);
 
             TypeToken<?> supertypeToken = TypeToken.of(cls)
-                                                         .getSupertype(genericSuperclass);
+                                                   .getSupertype(genericSuperclass);
             ParameterizedType genericSupertype =
                     (ParameterizedType) supertypeToken.getType();
             Type[] typeArguments = genericSupertype.getActualTypeArguments();

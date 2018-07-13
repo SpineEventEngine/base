@@ -104,6 +104,6 @@ public class ExceptionsShould {
     public void throw_formatted_ISE_with_cause() {
         thrown.expect(IllegalStateException.class);
         newIllegalStateException(new RuntimeException(getClass().getSimpleName()),
-                                            "%s %s", "taram", "param");
+                                 "%s %s", "taram", "param");
     }
 }

@@ -75,7 +75,7 @@ public final class ResourceFiles {
     static Iterator<URL> tryLoadAll(String filePath) throws IOException {
         checkNotEmptyOrBlank(filePath);
         ClassLoader contextClassLoader = Thread.currentThread()
-                                                     .getContextClassLoader();
+                                               .getContextClassLoader();
         Enumeration<URL> resources = contextClassLoader.getResources(filePath);
         Iterator<URL> result = Iterators.forEnumeration(resources);
         return result;

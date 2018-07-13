@@ -69,10 +69,10 @@ public class TypeNameShould {
         // A msg type without Protobuf package
         String name = IfMissingOption.class.getSimpleName();
         TypeUrl typeUrl = TypeName.of(name)
-                                        .toUrl();
+                                  .toUrl();
 
         String actual = TypeName.from(typeUrl)
-                                      .getSimpleName();
+                                .getSimpleName();
 
         assertEquals(name, actual);
     }

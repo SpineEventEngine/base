@@ -63,8 +63,9 @@ public final class FileName extends AbstractFileName<FileName> {
     public static FileName forMessage(DescriptorProto message, boolean orBuilder) {
         String typeName = message.getName();
         String javaType = orBuilder
-                ? SimpleClassName.messageOrBuilder(typeName).value()
-                : typeName;
+                          ? SimpleClassName.messageOrBuilder(typeName)
+                                           .value()
+                          : typeName;
         FileName result = forType(javaType);
         return result;
     }
