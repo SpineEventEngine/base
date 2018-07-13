@@ -20,7 +20,6 @@
 
 package io.spine.tools.compiler.rejection;
 
-import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Ordering;
@@ -39,6 +38,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
@@ -176,7 +176,7 @@ public class RejectionJavadoc {
         Location location = getLocation(locationPath);
         return location.hasLeadingComments()
                ? Optional.of(location.getLeadingComments())
-               : Optional.<String>absent();
+               : Optional.<String>empty();
     }
 
     /**

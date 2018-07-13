@@ -19,12 +19,12 @@
  */
 package io.spine.tools.compiler.fieldtype;
 
-import com.google.common.base.Optional;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import io.spine.code.java.PrimitiveType;
 
+import java.util.Optional;
 import java.util.List;
 
 /**
