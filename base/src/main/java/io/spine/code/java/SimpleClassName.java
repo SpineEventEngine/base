@@ -20,11 +20,12 @@
 
 package io.spine.code.java;
 
-import com.google.common.base.Optional;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.Descriptor;
 import io.spine.value.StringTypeValue;
+
+import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
@@ -67,13 +68,13 @@ public final class SimpleClassName extends StringTypeValue {
      *
      * @param  file the descriptor of the proto file
      * @return the value declared in the file options, or
-     *         {@linkplain Optional#absent() empty Optional} if the option is not set
+     *         {@linkplain Optional#empty() empty Optional} if the option is not set
      */
     public static Optional<SimpleClassName> declaredOuterClassName(FileDescriptorProto file) {
         String className = file.getOptions()
                                      .getJavaOuterClassname();
         if (className.isEmpty()) {
-            return Optional.absent();
+            return Optional.empty();
         }
 
         SimpleClassName result = outerOf(file);

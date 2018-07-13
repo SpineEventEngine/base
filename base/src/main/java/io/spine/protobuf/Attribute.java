@@ -20,12 +20,12 @@
 
 package io.spine.protobuf;
 
-import com.google.common.base.Optional;
 import com.google.protobuf.Any;
 import com.google.protobuf.Message;
 import io.spine.util.NamedProperty;
 
 import java.util.Map;
+import java.util.Optional;
 
 import static io.spine.protobuf.TypeConverter.toAny;
 import static io.spine.protobuf.TypeConverter.toObject;
@@ -60,7 +60,7 @@ public abstract class Attribute<T, M extends Message, B extends Message.Builder>
     protected abstract Map<String, Any> getMutableMap(B builder);
 
     /**
-     * Returns the attribute value or {@code Optional.absent()} if the attribute is not set.
+     * Returns the attribute value or {@code Optional.empty()} if the attribute is not set.
      */
     @Override
     public final Optional<T> getValue(M obj) {
@@ -73,7 +73,7 @@ public abstract class Attribute<T, M extends Message, B extends Message.Builder>
         Any any = map.get(getName());
         if (any == null || Any.getDefaultInstance()
                               .equals(any)) {
-            return Optional.absent();
+            return Optional.empty();
         }
 
         T result = toObject(any, getValueClass());

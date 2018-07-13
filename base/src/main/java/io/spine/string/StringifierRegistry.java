@@ -20,12 +20,12 @@
 
 package io.spine.string;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Message;
 
 import java.lang.reflect.Type;
 import java.util.Map;
+import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Maps.newHashMap;
@@ -121,7 +121,7 @@ public final class StringifierRegistry {
         Stringifier<?> func = stringifiers.get(typeOfT);
 
         Stringifier<T> result = cast(func);
-        return Optional.fromNullable(result);
+        return Optional.ofNullable(result);
     }
 
     private enum Singleton {

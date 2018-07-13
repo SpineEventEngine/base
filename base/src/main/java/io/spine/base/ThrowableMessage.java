@@ -19,7 +19,6 @@
  */
 package io.spine.base;
 
-import com.google.common.base.Optional;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.Any;
 import com.google.protobuf.GeneratedMessageV3;
@@ -28,6 +27,8 @@ import com.google.protobuf.Timestamp;
 import io.spine.annotation.Internal;
 import io.spine.string.Stringifiers;
 import org.checkerframework.checker.nullness.qual.Nullable;
+
+import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.base.Time.getCurrentTime;
@@ -101,6 +102,6 @@ public abstract class ThrowableMessage extends Throwable {
      * Obtains ID of the entity which thrown the message.
      */
     public synchronized Optional<Any> producerId() {
-        return Optional.fromNullable(producerId);
+        return Optional.ofNullable(producerId);
     }
 }

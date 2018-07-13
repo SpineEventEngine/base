@@ -20,7 +20,6 @@
 
 package io.spine.validate.rules;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.DescriptorProtos.FieldOptions;
 import com.google.protobuf.Descriptors.Descriptor;
@@ -30,6 +29,7 @@ import io.spine.validate.FieldContext;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
 
 import static com.google.common.collect.ImmutableMap.builder;
 
@@ -56,7 +56,7 @@ public class ValidationRuleOptions {
      * @param option       the option to obtain
      * @param <T>          the type of the option
      * @return the {@code Optional} of option value
-     *         or {@code Optional.absent()} if there is not option for the field descriptor
+     *         or {@code Optional.empty()} if there is not option for the field descriptor
      */
     public static <T> Optional<T> getOptionValue(FieldContext fieldContext,
                                                  GeneratedExtension<FieldOptions, T> option) {
@@ -68,7 +68,7 @@ public class ValidationRuleOptions {
             }
         }
 
-        return Optional.absent();
+        return Optional.empty();
     }
 
     /**

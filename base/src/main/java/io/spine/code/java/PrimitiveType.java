@@ -20,8 +20,9 @@
 
 package io.spine.code.java;
 
-import com.google.common.base.Optional;
 import io.spine.code.proto.ScalarType;
+
+import java.util.Optional;
 
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
@@ -50,7 +51,7 @@ public enum PrimitiveType {
      * Returns the boxed {@link Class} for the Protobuf scalar primitive name.
      *
      * @param primitiveType the primitive type name
-     * @return the wrapper class or {@link Optional#absent() Optional.absent()}
+     * @return the wrapper class or {@link Optional#empty() Optional.empty()}
      * if the specified primitive name does not belong to {@link ScalarType}.
      */
     public static Optional<? extends Class<?>> getWrapperClass(String primitiveType) {
@@ -61,7 +62,7 @@ public enum PrimitiveType {
             }
         }
 
-        return Optional.absent();
+        return Optional.empty();
     }
 
     boolean matchesName(String typeName) {
