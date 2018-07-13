@@ -77,13 +77,13 @@ public class MarkerInterfaceGenerator extends SpineProtoGenerator {
      */
     @Override
     protected Collection<File> processMessage(FileDescriptorProto file, DescriptorProto message) {
-        final Optional<MessageAndInterface> fromMsgOption = scanMsgOption(file, message);
+        Optional<MessageAndInterface> fromMsgOption = scanMsgOption(file, message);
         if (fromMsgOption.isPresent()) {
             return fromMsgOption.get()
                                 .asSet();
         }
 
-        final Optional<MessageAndInterface> fromFileOption = scanFileOption(file, message);
+        Optional<MessageAndInterface> fromFileOption = scanFileOption(file, message);
         if (fromFileOption.isPresent()) {
             return fromFileOption.get()
                                  .asSet();

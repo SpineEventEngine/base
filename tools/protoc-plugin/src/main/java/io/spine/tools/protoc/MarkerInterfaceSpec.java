@@ -54,11 +54,11 @@ final class MarkerInterfaceSpec {
 
     static MarkerInterfaceSpec prepareInterface(String optionValue,
                                                 FileDescriptorProto srcFile) {
-        final MarkerInterfaceSpec spec;
+        MarkerInterfaceSpec spec;
         if (optionValue.contains(DELIMITER)) {
             spec = from(optionValue);
         } else {
-            final String javaPackage = PackageName.resolve(srcFile)
+            String javaPackage = PackageName.resolve(srcFile)
                                                   .value();
             spec = new MarkerInterfaceSpec(javaPackage, optionValue);
         }
@@ -69,9 +69,9 @@ final class MarkerInterfaceSpec {
      * Parses a {@code MarkerInterfaceSpec} from the given type fully qualified name.
      */
     private static MarkerInterfaceSpec from(String fullName) {
-        final int index = fullName.lastIndexOf(DELIMITER);
-        final String name = fullName.substring(index + 1);
-        final String packageName = fullName.substring(0, index);
+        int index = fullName.lastIndexOf(DELIMITER);
+        String name = fullName.substring(index + 1);
+        String packageName = fullName.substring(0, index);
         return new MarkerInterfaceSpec(packageName, name);
     }
 
@@ -79,18 +79,18 @@ final class MarkerInterfaceSpec {
      * Converts the instance to {@link JavaFile}.
      */
     JavaFile toJavaCode() {
-        final TypeSpec spec = TypeSpec.interfaceBuilder(getName())
+        TypeSpec spec = TypeSpec.interfaceBuilder(getName())
                                       .addSuperinterface(Message.class)
                                       .addModifiers(PUBLIC)
                                       .addAnnotation(generatedBySpineModelCompiler())
                                       .build();
-        final JavaFile javaFile = JavaFile.builder(packageName, spec)
+        JavaFile javaFile = JavaFile.builder(packageName, spec)
                                           .build();
         return javaFile;
     }
 
     SourceFile toSourceFile() {
-        final SourceFile result = SourceFile.forType(packageName, name);
+        SourceFile result = SourceFile.forType(packageName, name);
         return result;
     }
 
@@ -120,7 +120,7 @@ final class MarkerInterfaceSpec {
         if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        final MarkerInterfaceSpec other = (MarkerInterfaceSpec) obj;
+        MarkerInterfaceSpec other = (MarkerInterfaceSpec) obj;
         return Objects.equals(this.packageName, other.packageName)
                 && Objects.equals(this.name, other.name);
     }
