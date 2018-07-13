@@ -81,24 +81,24 @@ final class MessageAndInterface {
         File.Builder srcFile = prepareFile(file, msg);
         String messageFqn = file.getPackage() + DELIMITER + msg.getName();
         File messageFile = implementInterface(srcFile,
-                                                    interfaceSpec.getFqn(),
-                                                    messageFqn);
+                                              interfaceSpec.getFqn(),
+                                              messageFqn);
         JavaFile interfaceContent = interfaceSpec.toJavaCode();
         File interfaceFile = File.newBuilder()
-                                       .setName(interfaceSpec.toSourceFile()
-                                                             .toString())
-                                       .setContent(interfaceContent.toString())
-                                       .build();
+                                 .setName(interfaceSpec.toSourceFile()
+                                                       .toString())
+                                 .setContent(interfaceContent.toString())
+                                 .build();
         MessageAndInterface result = new MessageAndInterface(messageFile, interfaceFile);
         return result;
     }
 
     private static String toTypeName(FileDescriptorProto file, DescriptorProto msg) {
         boolean multipleFiles = file.getOptions()
-                                              .getJavaMultipleFiles();
+                                    .getJavaMultipleFiles();
         return multipleFiles
-                ? msg.getName()
-                : resolveName(file);
+               ? msg.getName()
+               : resolveName(file);
     }
 
     private static Optional<String> getEveryIs(FileDescriptorProto descriptor) {
@@ -111,8 +111,8 @@ final class MessageAndInterface {
                                            String messageTypeName) {
         String insertionPoint = format(INSERTION_POINT_IMPLEMENTS, messageTypeName);
         File result = srcFile.setInsertionPoint(insertionPoint)
-                                   .setContent(interfaceTypeName + ',')
-                                   .build();
+                             .setContent(interfaceTypeName + ',')
+                             .build();
         return result;
     }
 
@@ -127,13 +127,13 @@ final class MessageAndInterface {
 
     private static File.Builder prepareFile(FileDescriptorProto file, DescriptorProto msg) {
         String javaPackage = PackageName.resolve(file)
-                                              .value();
+                                        .value();
         String messageName = toTypeName(file, msg);
         String fileName = SourceFile.forType(javaPackage, messageName)
-                                          .toString();
+                                    .toString();
         String uriStyleName = fileName.replace('\\', '/');
         File.Builder srcFile = File.newBuilder()
-                                         .setName(uriStyleName);
+                                   .setName(uriStyleName);
         return srcFile;
     }
 

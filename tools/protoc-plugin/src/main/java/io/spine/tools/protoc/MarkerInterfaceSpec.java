@@ -59,7 +59,7 @@ final class MarkerInterfaceSpec {
             spec = from(optionValue);
         } else {
             String javaPackage = PackageName.resolve(srcFile)
-                                                  .value();
+                                            .value();
             spec = new MarkerInterfaceSpec(javaPackage, optionValue);
         }
         return spec;
@@ -80,12 +80,12 @@ final class MarkerInterfaceSpec {
      */
     JavaFile toJavaCode() {
         TypeSpec spec = TypeSpec.interfaceBuilder(getName())
-                                      .addSuperinterface(Message.class)
-                                      .addModifiers(PUBLIC)
-                                      .addAnnotation(generatedBySpineModelCompiler())
-                                      .build();
+                                .addSuperinterface(Message.class)
+                                .addModifiers(PUBLIC)
+                                .addAnnotation(generatedBySpineModelCompiler())
+                                .build();
         JavaFile javaFile = JavaFile.builder(packageName, spec)
-                                          .build();
+                                    .build();
         return javaFile;
     }
 
