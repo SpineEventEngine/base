@@ -69,14 +69,14 @@ public class MessageDeclaration extends AbstractMessageDeclaration {
      */
     static MessageDeclaration create(DescriptorProto message,
                                      FileDescriptorProto file) {
-        final boolean fileContainsTarget = file.getMessageTypeList()
+        boolean fileContainsTarget = file.getMessageTypeList()
                                                .contains(message);
         if (!fileContainsTarget) {
-            final String errMsg = "Top-level message `%s` was not found in `%s`.";
+            String errMsg = "Top-level message `%s` was not found in `%s`.";
             throw newIllegalArgumentException(errMsg, message.getName(), file.getName());
         }
 
-        final List<DescriptorProto> outerMessages = Collections.emptyList();
+        List<DescriptorProto> outerMessages = Collections.emptyList();
         return new MessageDeclaration(outerMessages, message, file);
     }
 
@@ -86,9 +86,9 @@ public class MessageDeclaration extends AbstractMessageDeclaration {
      * @return immutable list with message declarations or empty list if no nested types declared
      */
     private List<MessageDeclaration> getImmediateNested() {
-        final ImmutableList.Builder<MessageDeclaration> result = ImmutableList.builder();
+        ImmutableList.Builder<MessageDeclaration> result = ImmutableList.builder();
         for (DescriptorProto nestedType : getMessage().getNestedTypeList()) {
-            final MessageDeclaration nestedDeclaration = forNested(nestedType);
+            MessageDeclaration nestedDeclaration = forNested(nestedType);
             result.add(nestedDeclaration);
         }
         return result.build();
@@ -98,15 +98,15 @@ public class MessageDeclaration extends AbstractMessageDeclaration {
      * Obtains all nested declarations that match the passed predicate.
      */
     List<MessageDeclaration> getAllNested(Predicate<DescriptorProto> predicate) {
-        final ImmutableList.Builder<MessageDeclaration> result = ImmutableList.builder();
-        final Iterable<MessageDeclaration> nestedDeclarations = getImmediateNested();
-        final Deque<MessageDeclaration> deque = newLinkedList(nestedDeclarations);
+        ImmutableList.Builder<MessageDeclaration> result = ImmutableList.builder();
+        Iterable<MessageDeclaration> nestedDeclarations = getImmediateNested();
+        Deque<MessageDeclaration> deque = newLinkedList(nestedDeclarations);
 
         while (!deque.isEmpty()) {
-            final MessageDeclaration nestedDeclaration = deque.pollFirst();
+            MessageDeclaration nestedDeclaration = deque.pollFirst();
 
             assert nestedDeclaration != null; // Cannot be null since the queue is not empty.
-            final DescriptorProto nestedDescriptor = nestedDeclaration.getMessage();
+            DescriptorProto nestedDescriptor = nestedDeclaration.getMessage();
 
             if (predicate.apply(nestedDescriptor)) {
                 result.add(nestedDeclaration);
@@ -124,16 +124,16 @@ public class MessageDeclaration extends AbstractMessageDeclaration {
      * @return the nested message declaration
      */
     private MessageDeclaration forNested(DescriptorProto nestedMessage) {
-        final boolean isNestedForCurrentTarget = getMessage().getNestedTypeList()
+        boolean isNestedForCurrentTarget = getMessage().getNestedTypeList()
                                                              .contains(nestedMessage);
         if (!isNestedForCurrentTarget) {
-            final String errMsg = "Nested message `%s` was not found in `%s`.";
+            String errMsg = "Nested message `%s` was not found in `%s`.";
             throw newIllegalStateException(errMsg,
                                            nestedMessage.getName(),
                                            getMessage().getName());
         }
 
-        final List<DescriptorProto> outerMessagesForNested = newLinkedList(outerMessages);
+        List<DescriptorProto> outerMessagesForNested = newLinkedList(outerMessages);
         outerMessagesForNested.add(getMessage());
         return new MessageDeclaration(outerMessagesForNested, nestedMessage, getFile());
     }
@@ -144,14 +144,14 @@ public class MessageDeclaration extends AbstractMessageDeclaration {
      * @return the type name
      */
     public TypeName getTypeName() {
-        final StringBuilder name = new StringBuilder(getFile().getPackage());
+        StringBuilder name = new StringBuilder(getFile().getPackage());
         name.append(TYPE_PART_SEPARATOR);
         for (DescriptorProto outerMessage : outerMessages) {
             name.append(outerMessage.getName())
                        .append(TYPE_PART_SEPARATOR);
         }
         name.append(getMessage().getName());
-        final String value = name.toString();
+        String value = name.toString();
         return TypeName.of(value);
     }
 }

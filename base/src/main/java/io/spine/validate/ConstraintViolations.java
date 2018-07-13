@@ -56,11 +56,11 @@ public class ConstraintViolations {
     public static String toText(ConstraintViolation violation) {
         checkNotNull(violation);
 
-        final String format = violation.getMsgFormat();
-        final List<String> params = violation.getParamList();
-        final String parentViolationFormatted = format(format, params.toArray());
+        String format = violation.getMsgFormat();
+        List<String> params = violation.getParamList();
+        String parentViolationFormatted = format(format, params.toArray());
 
-        final StringBuilder resultBuilder = new StringBuilder(parentViolationFormatted);
+        StringBuilder resultBuilder = new StringBuilder(parentViolationFormatted);
         if (violation.getViolationCount() > 0) {
             resultBuilder.append(toText(violation.getViolationList()));
         }
@@ -79,10 +79,10 @@ public class ConstraintViolations {
     public static String toText(Iterable<ConstraintViolation> violations) {
         checkNotNull(violations);
 
-        final StringBuilder resultBuilder = new StringBuilder("Violation list:");
+        StringBuilder resultBuilder = new StringBuilder("Violation list:");
 
         for (ConstraintViolation childViolation : violations) {
-            final String childViolationFormatted = toText(childViolation);
+            String childViolationFormatted = toText(childViolation);
             resultBuilder.append(lineSeparator())
                          .append(childViolationFormatted);
         }
@@ -103,10 +103,10 @@ public class ConstraintViolations {
         checkNotNull(format);
         checkNotNull(violation);
 
-        final List<String> params = violation.getParamList();
-        final String parentViolationFormatted = format(format, params.toArray());
+        List<String> params = violation.getParamList();
+        String parentViolationFormatted = format(format, params.toArray());
 
-        final StringBuilder resultBuilder = new StringBuilder(parentViolationFormatted);
+        StringBuilder resultBuilder = new StringBuilder(parentViolationFormatted);
         if (violation.getViolationCount() > 0) {
             resultBuilder.append(toText(format, violation.getViolationList()));
         }
@@ -128,10 +128,10 @@ public class ConstraintViolations {
         checkNotNull(format);
         checkNotNull(violations);
 
-        final StringBuilder resultBuilder = new StringBuilder("Violations:");
+        StringBuilder resultBuilder = new StringBuilder("Violations:");
 
         for (ConstraintViolation childViolation : violations) {
-            final String childViolationFormatted = toText(format, childViolation);
+            String childViolationFormatted = toText(format, childViolation);
             resultBuilder.append(lineSeparator())
                          .append(childViolationFormatted);
         }
@@ -204,19 +204,19 @@ public class ConstraintViolations {
         }
 
         private Error createError() {
-            final ValidationError validationError =
+            ValidationError validationError =
                     ValidationError.newBuilder()
                                    .addAllConstraintViolation(constraintViolations)
                                    .build();
-            final R errorCode = getErrorCode();
-            final String typeName = errorCode.getDescriptorForType()
+            R errorCode = getErrorCode();
+            String typeName = errorCode.getDescriptorForType()
                                              .getFullName();
-            final String errorTextTemplate = getErrorText();
-            final String errorText = format("%s %s",
+            String errorTextTemplate = getErrorText();
+            String errorText = format("%s %s",
                                             errorTextTemplate,
                                             toText(constraintViolations));
 
-            final Error.Builder error = Error.newBuilder()
+            Error.Builder error = Error.newBuilder()
                                              .setType(typeName)
                                              .setCode(errorCode.getNumber())
                                              .setValidationError(validationError)

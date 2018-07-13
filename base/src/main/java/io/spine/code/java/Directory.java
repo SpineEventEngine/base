@@ -53,7 +53,7 @@ public final class Directory extends SourceCodeDirectory {
      */
     public static Directory rootIn(AbstractDirectory parent) {
         checkNotNull(parent);
-        final Path path = parent.getPath()
+        Path path = parent.getPath()
                                 .resolve(ROOT_NAME);
         return at(path);
     }
@@ -62,8 +62,8 @@ public final class Directory extends SourceCodeDirectory {
      * Obtains the source code file for the passed name.
      */
     public SourceFile resolve(FileName fileName) {
-        final Path filePath = getPath().resolve(fileName.value());
-        final SourceFile result = SourceFile.of(filePath);
+        Path filePath = getPath().resolve(fileName.value());
+        SourceFile result = SourceFile.of(filePath);
         return result;
     }
 
@@ -71,7 +71,7 @@ public final class Directory extends SourceCodeDirectory {
      * Obtains the source code path for the passed file.
      */
     public Path resolve(Path file) {
-        final Path result = getPath().resolve(file);
+        Path result = getPath().resolve(file);
         return result;
     }
 }

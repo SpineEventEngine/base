@@ -61,7 +61,7 @@ public class Preconditions2 {
     public static String checkNotEmptyOrBlank(String stringToCheck, String message) {
         checkNotNull(stringToCheck, message);
         checkArgument(!stringToCheck.isEmpty(), message);
-        final String trimmed = stringToCheck.trim();
+        String trimmed = stringToCheck.trim();
         checkArgument(trimmed.length() > 0, message);
         return stringToCheck;
     }

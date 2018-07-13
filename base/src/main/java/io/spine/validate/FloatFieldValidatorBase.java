@@ -47,8 +47,8 @@ abstract class FloatFieldValidatorBase<V extends Number & Comparable<V>>
     @Override
     @SuppressWarnings("RefusedBequest")
     protected void validateEntityId() {
-        final V value = getValues().get(0);
-        final ConstraintViolation violation = ConstraintViolation.newBuilder()
+        V value = getValues().get(0);
+        ConstraintViolation violation = ConstraintViolation.newBuilder()
                                                                  .setMsgFormat(INVALID_ID_TYPE_MSG)
                                                                  .setFieldPath(getFieldPath())
                                                                  .setFieldValue(wrap(value))

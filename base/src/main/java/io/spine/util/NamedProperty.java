@@ -53,8 +53,7 @@ public abstract class NamedProperty<T, O> {
      */
     protected Class<T> getValueClass() {
         @SuppressWarnings("unchecked") /* The type is ensured by the first generic param
-                                          of this class declaration. */
-        final Class<T> cls = (Class<T>) GenericParameter.PROPERTY_TYPE.getArgumentIn(getClass());
+                                          of this class declaration. */ Class<T> cls = (Class<T>) GenericParameter.PROPERTY_TYPE.getArgumentIn(getClass());
         return cls;
     }
 

@@ -72,8 +72,8 @@ abstract class Quoter extends Converter<String, String> {
      * @return the created pattern
      */
     static String createDelimiterPattern(char delimiter) {
-        final String quotedDelimiter = Pattern.quote(String.valueOf(delimiter));
-        final String result = compile(DELIMITER_PATTERN_PREFIX + quotedDelimiter)
+        String quotedDelimiter = Pattern.quote(String.valueOf(delimiter));
+        String result = compile(DELIMITER_PATTERN_PREFIX + quotedDelimiter)
                 .pattern();
         return result;
     }
@@ -111,11 +111,11 @@ abstract class Quoter extends Converter<String, String> {
         @Override
         String quote(String stringToQuote) {
             checkNotNull(stringToQuote);
-            final Matcher matcher = compile(QUOTE_PATTERN).matcher(stringToQuote);
-            final String unslashed = matcher.find() ?
+            Matcher matcher = compile(QUOTE_PATTERN).matcher(stringToQuote);
+            String unslashed = matcher.find() ?
                                      matcher.replaceAll(BACKSLASH + matcher.group()) :
                                      stringToQuote;
-            final String result = QUOTE_CHAR + unslashed + QUOTE_CHAR;
+            String result = QUOTE_CHAR + unslashed + QUOTE_CHAR;
             return result;
         }
 
@@ -139,9 +139,9 @@ abstract class Quoter extends Converter<String, String> {
         @Override
         String quote(String stringToQuote) {
             checkNotNull(stringToQuote);
-            final String escaped = QUOTE_PATTERN.matcher(stringToQuote)
+            String escaped = QUOTE_PATTERN.matcher(stringToQuote)
                                                 .replaceAll(ESCAPED_QUOTE);
-            final String result = QUOTE_CHAR + escaped + QUOTE_CHAR;
+            String result = QUOTE_CHAR + escaped + QUOTE_CHAR;
             return result;
         }
 
@@ -153,8 +153,8 @@ abstract class Quoter extends Converter<String, String> {
 
     private static String unquoteValue(String value, Pattern pattern) {
         checkQuoted(value);
-        final String unquoted = value.substring(2, value.length() - 2);
-        final String unescaped = pattern.matcher(unquoted)
+        String unquoted = value.substring(2, value.length() - 2);
+        String unescaped = pattern.matcher(unquoted)
                                         .replaceAll("");
         return unescaped;
     }

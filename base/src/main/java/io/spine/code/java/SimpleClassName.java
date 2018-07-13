@@ -57,8 +57,8 @@ public final class SimpleClassName extends StringTypeValue {
      */
     public static SimpleClassName outerOf(FileDescriptorProto file) {
         checkNotNull(file);
-        final String value = getOuterClassName(file);
-        final SimpleClassName result = new SimpleClassName(value);
+        String value = getOuterClassName(file);
+        SimpleClassName result = new SimpleClassName(value);
         return result;
     }
 
@@ -70,13 +70,13 @@ public final class SimpleClassName extends StringTypeValue {
      *         {@linkplain Optional#absent() empty Optional} if the option is not set
      */
     public static Optional<SimpleClassName> declaredOuterClassName(FileDescriptorProto file) {
-        final String className = file.getOptions()
+        String className = file.getOptions()
                                      .getJavaOuterClassname();
         if (className.isEmpty()) {
             return Optional.absent();
         }
 
-        final SimpleClassName result = outerOf(file);
+        SimpleClassName result = outerOf(file);
         return Optional.of(result);
     }
 
@@ -99,7 +99,7 @@ public final class SimpleClassName extends StringTypeValue {
             return outerClassNameFromOptions;
         }
 
-        final String className = io.spine.code.proto.FileName.from(file)
+        String className = io.spine.code.proto.FileName.from(file)
                                                              .nameOnlyCamelCase();
         return className;
     }
@@ -117,7 +117,7 @@ public final class SimpleClassName extends StringTypeValue {
      */
     public static SimpleClassName messageOrBuilder(String typeName) {
         checkNotEmptyOrBlank(typeName);
-        final SimpleClassName result = new SimpleClassName(typeName + OR_BUILDER_SUFFIX);
+        SimpleClassName result = new SimpleClassName(typeName + OR_BUILDER_SUFFIX);
         return result;
     }
 
@@ -126,7 +126,7 @@ public final class SimpleClassName extends StringTypeValue {
      */
     public static SimpleClassName ofMessage(DescriptorProto descriptor) {
         checkNotNull(descriptor);
-        final SimpleClassName result = new SimpleClassName(descriptor.getName());
+        SimpleClassName result = new SimpleClassName(descriptor.getName());
         return result;
     }
 
@@ -141,7 +141,7 @@ public final class SimpleClassName extends StringTypeValue {
      * Obtains the name for a file of the class.
      */
     public FileName toFileName() {
-        final FileName result = FileName.forType(value());
+        FileName result = FileName.forType(value());
         return result;
     }
 }

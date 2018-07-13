@@ -62,7 +62,7 @@ public class TypeConverterShould {
 
     @Test
     public void map_arbitrary_message_to_itself() {
-        final Message message = TestCommand.newBuilder()
+        Message message = TestCommand.newBuilder()
                                            .setValue("my-command-message")
                                            .build();
         checkMapping(message, message);
@@ -70,8 +70,8 @@ public class TypeConverterShould {
 
     @Test
     public void map_Int32Value_to_int() {
-        final int rowValue = 42;
-        final Message value = Int32Value.newBuilder()
+        int rowValue = 42;
+        Message value = Int32Value.newBuilder()
                                         .setValue(rowValue)
                                         .build();
         checkMapping(rowValue, value);
@@ -79,8 +79,8 @@ public class TypeConverterShould {
 
     @Test
     public void map_Int64Value_to_long() {
-        final long rowValue = 42;
-        final Message value = Int64Value.newBuilder()
+        long rowValue = 42;
+        Message value = Int64Value.newBuilder()
                                         .setValue(rowValue)
                                         .build();
         checkMapping(rowValue, value);
@@ -88,8 +88,8 @@ public class TypeConverterShould {
 
     @Test
     public void map_FloatValue_to_float() {
-        final float rowValue = 42.0f;
-        final Message value = FloatValue.newBuilder()
+        float rowValue = 42.0f;
+        Message value = FloatValue.newBuilder()
                                         .setValue(rowValue)
                                         .build();
         checkMapping(rowValue, value);
@@ -97,8 +97,8 @@ public class TypeConverterShould {
 
     @Test
     public void map_DoubleValue_to_double() {
-        final double rowValue = 42.0;
-        final Message value = DoubleValue.newBuilder()
+        double rowValue = 42.0;
+        Message value = DoubleValue.newBuilder()
                                          .setValue(rowValue)
                                          .build();
         checkMapping(rowValue, value);
@@ -106,8 +106,8 @@ public class TypeConverterShould {
 
     @Test
     public void map_BoolValue_to_boolean() {
-        final boolean rowValue = true;
-        final Message value = BoolValue.newBuilder()
+        boolean rowValue = true;
+        Message value = BoolValue.newBuilder()
                                        .setValue(rowValue)
                                        .build();
         checkMapping(rowValue, value);
@@ -115,8 +115,8 @@ public class TypeConverterShould {
 
     @Test
     public void map_StringValue_to_String() {
-        final String rowValue = "Hello";
-        final Message value = StringValue.newBuilder()
+        String rowValue = "Hello";
+        Message value = StringValue.newBuilder()
                                          .setValue(rowValue)
                                          .build();
         checkMapping(rowValue, value);
@@ -124,8 +124,8 @@ public class TypeConverterShould {
 
     @Test
     public void map_BytesValue_to_ByteString() {
-        final ByteString rowValue = ByteString.copyFrom("Hello!", Charsets.UTF_8);
-        final Message value = BytesValue.newBuilder()
+        ByteString rowValue = ByteString.copyFrom("Hello!", Charsets.UTF_8);
+        Message value = BytesValue.newBuilder()
                                         .setValue(rowValue)
                                         .build();
         checkMapping(rowValue, value);
@@ -133,7 +133,7 @@ public class TypeConverterShould {
 
     @Test
     public void map_EnumValue_to_Enum() {
-        final Message value = EnumValue.newBuilder()
+        Message value = EnumValue.newBuilder()
                                        .setName(SUCCESS.name())
                                        .build();
         checkMapping(SUCCESS, value);
@@ -141,33 +141,33 @@ public class TypeConverterShould {
 
     @Test
     public void map_uint32_to_int() {
-        final int value = 42;
-        final UInt32Value wrapped = UInt32Value.newBuilder()
+        int value = 42;
+        UInt32Value wrapped = UInt32Value.newBuilder()
                                               .setValue(value)
                                               .build();
-        final Any packed = AnyPacker.pack(wrapped);
-        final int mapped = TypeConverter.toObject(packed, Integer.class);
+        Any packed = AnyPacker.pack(wrapped);
+        int mapped = TypeConverter.toObject(packed, Integer.class);
         assertEquals(value, mapped);
     }
 
     @Test
     public void map_uint64_to_long() {
-        final long value = 42L;
-        final UInt64Value wrapped = UInt64Value.newBuilder()
+        long value = 42L;
+        UInt64Value wrapped = UInt64Value.newBuilder()
                                                .setValue(value)
                                                .build();
-        final Any packed = AnyPacker.pack(wrapped);
-        final long mapped = TypeConverter.toObject(packed, Long.class);
+        Any packed = AnyPacker.pack(wrapped);
+        long mapped = TypeConverter.toObject(packed, Long.class);
         assertEquals(value, mapped);
     }
 
     private static void checkMapping(Object javaObject,
                                      Message protoObject) {
-        final Any wrapped = AnyPacker.pack(protoObject);
-        final Object mappedJavaObject = TypeConverter.toObject(wrapped, javaObject.getClass());
+        Any wrapped = AnyPacker.pack(protoObject);
+        Object mappedJavaObject = TypeConverter.toObject(wrapped, javaObject.getClass());
         assertEquals(javaObject, mappedJavaObject);
-        final Any restoredWrapped = TypeConverter.toAny(mappedJavaObject);
-        final Message restored = AnyPacker.unpack(restoredWrapped);
+        Any restoredWrapped = TypeConverter.toAny(mappedJavaObject);
+        Message restored = AnyPacker.unpack(restoredWrapped);
         assertEquals(protoObject, restored);
     }
 }

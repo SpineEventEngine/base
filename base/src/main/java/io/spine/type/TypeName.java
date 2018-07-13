@@ -108,9 +108,9 @@ public class TypeName extends StringTypeValue {
      * Returns the unqualified name of the Protobuf type, for example: {@code StringValue}.
      */
     public String getSimpleName() {
-        final String typeName = value();
-        final List<String> tokens = packageSplitter.splitToList(typeName);
-        final String result = tokens.get(tokens.size() - 1);
+        String typeName = value();
+        List<String> tokens = packageSplitter.splitToList(typeName);
+        String result = tokens.get(tokens.size() - 1);
         return result;
     }
 
@@ -170,8 +170,8 @@ public class TypeName extends StringTypeValue {
      * Verifies if the type belongs to the passed package.
      */
     boolean belongsTo(String packageName) {
-        final String typeName = value();
-        final boolean inPackage =
+        String typeName = value();
+        boolean inPackage =
                 typeName.startsWith(packageName)
                         && typeName.charAt(packageName.length()) == PACKAGE_SEPARATOR;
         return inPackage;

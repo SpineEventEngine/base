@@ -42,7 +42,7 @@ public class TypesShould {
 
     @Test
     public void pass_the_null_tolerance_check() {
-        final NullPointerTester tester = new NullPointerTester();
+        NullPointerTester tester = new NullPointerTester();
         tester.testStaticMethods(Types.class, NullPointerTester.Visibility.PACKAGE);
     }
 
@@ -53,15 +53,15 @@ public class TypesShould {
 
     @Test
     public void create_map_type() {
-        final Type type = mapTypeOf(String.class, Integer.class);
-        final Type expectedType = new TypeToken<Map<String, Integer>>(){}.getType();
+        Type type = mapTypeOf(String.class, Integer.class);
+        Type expectedType = new TypeToken<Map<String, Integer>>(){}.getType();
         assertEquals(expectedType, type);
     }
 
     @Test
     public void create_list_type() {
-        final Type type = listTypeOf(String.class);
-        final Type expectedType = new TypeToken<List<String>>(){}.getType();
+        Type type = listTypeOf(String.class);
+        Type expectedType = new TypeToken<List<String>>(){}.getType();
         assertEquals(expectedType, type);
     }
 }

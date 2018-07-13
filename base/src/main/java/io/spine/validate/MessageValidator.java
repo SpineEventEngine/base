@@ -70,7 +70,7 @@ public class MessageValidator {
      * @param message a message to validate
      */
     public List<ConstraintViolation> validate(Message message) {
-        final ImmutableList.Builder<ConstraintViolation> result = ImmutableList.builder();
+        ImmutableList.Builder<ConstraintViolation> result = ImmutableList.builder();
         validateAlternativeFields(message, result);
         validateFields(message, result);
         return result.build();
@@ -78,21 +78,21 @@ public class MessageValidator {
 
     private void validateAlternativeFields(Message message,
                                            ImmutableList.Builder<ConstraintViolation> result) {
-        final Descriptor typeDescr = message.getDescriptorForType();
-        final AlternativeFieldValidator altFieldValidator =
+        Descriptor typeDescr = message.getDescriptorForType();
+        AlternativeFieldValidator altFieldValidator =
                 new AlternativeFieldValidator(typeDescr, rootContext);
         result.addAll(altFieldValidator.validate(message));
     }
 
     private void validateFields(Message message,
                                 ImmutableList.Builder<ConstraintViolation> result) {
-        final Descriptor msgDescriptor = message.getDescriptorForType();
-        final List<FieldDescriptor> fields = msgDescriptor.getFields();
+        Descriptor msgDescriptor = message.getDescriptorForType();
+        List<FieldDescriptor> fields = msgDescriptor.getFields();
         for (FieldDescriptor field : fields) {
-            final FieldContext fieldContext = rootContext.forChild(field);
-            final Object value = message.getField(field);
-            final FieldValidator<?> fieldValidator = create(fieldContext, value);
-            final List<ConstraintViolation> violations = fieldValidator.validate();
+            FieldContext fieldContext = rootContext.forChild(field);
+            Object value = message.getField(field);
+            FieldValidator<?> fieldValidator = create(fieldContext, value);
+            List<ConstraintViolation> violations = fieldValidator.validate();
             result.addAll(violations);
         }
     }

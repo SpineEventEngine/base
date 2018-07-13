@@ -60,7 +60,7 @@ public final class EmailAddresses {
     public static EmailAddress valueOf(CharSequence value) {
         checkArgumentIsEmailAddress(value);
 
-        final EmailAddress result = EmailAddress.newBuilder()
+        EmailAddress result = EmailAddress.newBuilder()
                                                 .setValue(value.toString())
                                                 .build();
         return result;

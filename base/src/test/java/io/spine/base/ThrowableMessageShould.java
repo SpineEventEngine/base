@@ -70,10 +70,10 @@ public class ThrowableMessageShould {
         assertFalse(throwableMessage.producerId()
                                     .isPresent());
 
-        final ThrowableMessage retVal = throwableMessage.initProducer(producer);
+        ThrowableMessage retVal = throwableMessage.initProducer(producer);
 
         assertSame(throwableMessage, retVal);
-        final Optional<Any> optional = throwableMessage.producerId();
+        Optional<Any> optional = throwableMessage.producerId();
         assertTrue(optional.isPresent());
         assertEquals(producer, optional.get());
     }

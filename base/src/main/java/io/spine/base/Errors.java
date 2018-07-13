@@ -38,10 +38,10 @@ public final class Errors {
 
     private static Error.Builder toErrorBuilder(Throwable throwable) {
         checkNotNull(throwable);
-        final String type = throwable.getClass()
+        String type = throwable.getClass()
                                      .getName();
-        final String message = nullToEmpty(throwable.getMessage());
-        final String stacktrace = getStackTraceAsString(throwable);
+        String message = nullToEmpty(throwable.getMessage());
+        String stacktrace = getStackTraceAsString(throwable);
         return Error.newBuilder()
                     .setType(type)
                     .setMessage(message)
@@ -52,7 +52,7 @@ public final class Errors {
      * Creates new instance of {@link Error} by the passed {@code Throwable}.
      */
     public static Error fromThrowable(Throwable throwable) {
-        final Error.Builder result = toErrorBuilder(throwable);
+        Error.Builder result = toErrorBuilder(throwable);
         return result.build();
     }
 
@@ -63,7 +63,7 @@ public final class Errors {
      * @return new instance of {@link Error}
      */
     public static Error causeOf(Throwable throwable) {
-        final Error.Builder error = toBuilderCauseOf(throwable);
+        Error.Builder error = toBuilderCauseOf(throwable);
         return error.build();
     }
 
@@ -83,7 +83,7 @@ public final class Errors {
      * @see #causeOf(Throwable) as the recommended overload
      */
     public static Error causeOf(Throwable throwable, int errorCode) {
-        final Error.Builder error = toBuilderCauseOf(throwable).setCode(errorCode);
+        Error.Builder error = toBuilderCauseOf(throwable).setCode(errorCode);
         return error.build();
     }
 }

@@ -34,7 +34,7 @@ public class StringTypeValueShould {
 
     @Test
     public void return_value_in_toString() {
-        final String expected = "return_value_in_toString";
+        String expected = "return_value_in_toString";
 
         assertEquals(expected, new StringTypeValue(expected) {}.toString());
     }

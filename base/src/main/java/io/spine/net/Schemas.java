@@ -48,7 +48,7 @@ class Schemas {
      */
     static Schema parse(String value) {
         checkNotNull(value);
-        final String lowercaseValue = value.toLowerCase();
+        String lowercaseValue = value.toLowerCase();
         if (!stringSchemas.containsKey(lowercaseValue)) {
             return Schema.UNDEFINED;
         }
@@ -67,7 +67,7 @@ class Schemas {
     }
 
     private static Map<String, Schema> buildSchemasMap() {
-        final ImmutableMap.Builder<String, Schema> schemas = new ImmutableMap.Builder<>();
+        ImmutableMap.Builder<String, Schema> schemas = new ImmutableMap.Builder<>();
 
         for (Schema schema : Schema.values()) {
             schemas.put(getLowerCaseName(schema), schema);
