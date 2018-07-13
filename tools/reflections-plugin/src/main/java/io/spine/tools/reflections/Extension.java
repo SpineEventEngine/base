@@ -42,7 +42,7 @@ public class Extension {
     public String targetDir;
 
     static String getTargetDir(Project project) {
-        final String path = reflectionsPlugin(project).targetDir;
+        String path = reflectionsPlugin(project).targetDir;
         if (path == null || path.isEmpty()) {
             return project.getProjectDir() + separator +
                     Joiner.on(separator)
