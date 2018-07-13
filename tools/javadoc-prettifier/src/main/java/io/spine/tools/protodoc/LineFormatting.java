@@ -45,11 +45,11 @@ abstract class LineFormatting implements FormattingAction {
      */
     @Override
     public String execute(String text) {
-        final List<String> textAsLines = Splitter.on(lineSeparator())
+        List<String> textAsLines = Splitter.on(lineSeparator())
                                                  .splitToList(text);
-        final List<String> formattedLines = newLinkedList();
+        List<String> formattedLines = newLinkedList();
         for (String line : textAsLines) {
-            final String formattedLine = formatLine(line);
+            String formattedLine = formatLine(line);
             formattedLines.add(formattedLine);
         }
         return Joiner.on(lineSeparator())

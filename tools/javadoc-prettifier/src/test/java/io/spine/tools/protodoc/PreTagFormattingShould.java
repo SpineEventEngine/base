@@ -42,7 +42,7 @@ public class PreTagFormattingShould {
 
     @Test
     public void remove_tags_generated_by_proto_compiler() {
-        final String result = formatting.execute(RAW_PROTO_DOC);
+        String result = formatting.execute(RAW_PROTO_DOC);
         assertEquals(PROCESSED_PROTO_DOC, result);
     }
 
@@ -53,7 +53,7 @@ public class PreTagFormattingShould {
 
     @Test
     public void not_format_javadoc_without_pre_tags() {
-        final String javadoc = "/** smth */";
+        String javadoc = "/** smth */";
         assertEquals(javadoc, formatting.execute(javadoc));
     }
 }

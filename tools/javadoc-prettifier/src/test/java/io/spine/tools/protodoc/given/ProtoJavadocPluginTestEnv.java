@@ -58,9 +58,9 @@ public final class ProtoJavadocPluginTestEnv {
 
     public static void formatAndAssert(String expectedContent, String contentToFormat,
                                 TemporaryFolder folder) throws IOException {
-        final Path formattedFilePath = format(contentToFormat, folder);
-        final List<String> formattedLines = Files.readAllLines(formattedFilePath, UTF_8);
-        final String mergedLines = Joiner.on(lineSeparator())
+        Path formattedFilePath = format(contentToFormat, folder);
+        List<String> formattedLines = Files.readAllLines(formattedFilePath, UTF_8);
+        String mergedLines = Joiner.on(lineSeparator())
                                          .join(formattedLines);
         assertEquals(expectedContent, mergedLines);
     }
