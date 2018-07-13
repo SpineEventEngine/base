@@ -54,8 +54,8 @@ public class LongFieldValidatorShould {
 
     @Test
     public void wrap_to_any() {
-        final Any any = validator.wrap(VALUE);
-        final Int64Value msg = AnyPacker.unpack(any);
+        Any any = validator.wrap(VALUE);
+        Int64Value msg = AnyPacker.unpack(any);
         assertEquals(VALUE, (Long) msg.getValue());
     }
 }

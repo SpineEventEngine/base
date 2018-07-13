@@ -147,7 +147,7 @@ public class ValidatingBuilderShould {
      * Creates a valid {@link ProjectVBuilder} instance.
      */
     private static ProjectVBuilder fill() {
-        final ProjectVBuilder builder = ProjectVBuilder.newBuilder()
+        ProjectVBuilder builder = ProjectVBuilder.newBuilder()
                                                        .addTask(task())
                                                        .addMember(member())
                                                        .putRole("Ownner", member())
@@ -165,14 +165,14 @@ public class ValidatingBuilderShould {
     }
 
     private static Task task() {
-        final Task.Builder task = Task.newBuilder()
+        Task.Builder task = Task.newBuilder()
                                       .setId(newUuid());
         task.setName("Task name" + task.getId());
         return task.build();
     }
 
     private static Member member() {
-        final Member.Builder member = Member.newBuilder()
+        Member.Builder member = Member.newBuilder()
                                             .setId(newUuid())
                                             .setName("John Smith")
                                             .setAvatarImage(copyFrom(new byte[] {1, 2, 3}));

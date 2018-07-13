@@ -80,24 +80,24 @@ public class PluginShould {
 
     @Test
     public void resolve_packages_from_src_proto_if_not_specified() throws ClassNotFoundException {
-        final Class<?> cls = checkMarkerInterface(USER_COMMAND_FQN);
+        Class<?> cls = checkMarkerInterface(USER_COMMAND_FQN);
         assertTrue(cls.isAssignableFrom(PICreateUser.class));
     }
 
     @Test
     public void skip_non_specified_message_types() {
-        final Class<?> cls = CustomerName.class;
-        final Class[] interfaces = cls.getInterfaces();
+        Class<?> cls = CustomerName.class;
+        Class[] interfaces = cls.getInterfaces();
         assertEquals(1, interfaces.length);
         assertSame(CustomerNameOrBuilder.class, interfaces[0]);
     }
 
     private static Class<?> checkMarkerInterface(String fqn) throws ClassNotFoundException {
-        final Class<?> cls = Class.forName(fqn);
+        Class<?> cls = Class.forName(fqn);
         assertTrue(cls.isInterface());
         assertTrue(Message.class.isAssignableFrom(cls));
 
-        final Method[] declaredMethods = cls.getDeclaredMethods();
+        Method[] declaredMethods = cls.getDeclaredMethods();
         assertEquals(0, declaredMethods.length);
         return cls;
     }

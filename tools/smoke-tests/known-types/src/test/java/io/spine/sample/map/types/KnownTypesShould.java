@@ -127,8 +127,8 @@ public class KnownTypesShould {
     }
 
     private void assertIsKnownType(String protoTypeName, String javaClassName) {
-        final TypeUrl url = TypeUrl.parse(PROTO_TYPE_PREFIX + protoTypeName);
-        final ClassName className = knownTypes.getClassName(url);
+        TypeUrl url = TypeUrl.parse(PROTO_TYPE_PREFIX + protoTypeName);
+        ClassName className = knownTypes.getClassName(url);
 
         assertEquals(JAVA_PACKAGE_PREFIX + javaClassName, className.value());
     }
@@ -138,11 +138,11 @@ public class KnownTypesShould {
     }
 
     private void assertIsKnownType(Iterable<String> parentsAndTypeName) {
-        final String protoName = Joiner.on(".").join(parentsAndTypeName);
-        final String javaName = Joiner.on("$").join(parentsAndTypeName);
-        final TypeUrl url = TypeUrl.parse(PROTO_TYPE_PREFIX + protoName);
+        String protoName = Joiner.on(".").join(parentsAndTypeName);
+        String javaName = Joiner.on("$").join(parentsAndTypeName);
+        TypeUrl url = TypeUrl.parse(PROTO_TYPE_PREFIX + protoName);
 
-        final ClassName className = knownTypes.getClassName(url);
+        ClassName className = knownTypes.getClassName(url);
 
         assertEquals(JAVA_PACKAGE_PREFIX + javaName, className.value());
     }

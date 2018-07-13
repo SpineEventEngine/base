@@ -35,14 +35,14 @@ public class AbstractValidatingBuilderShould {
 
     @Test
     public void convert_to_map() throws Exception {
-        final String key1 = "key1";
-        final UInt32Value value = UInt32Value.newBuilder()
+        String key1 = "key1";
+        UInt32Value value = UInt32Value.newBuilder()
                                              .setValue(123)
                                              .build();
-        final String mapStr = "\"key1\":\"123\",\"key2\":\"234\"";
+        String mapStr = "\"key1\":\"123\",\"key2\":\"234\"";
 
-        final UInt32ValueVBuilder uInt32ValueVBuilder = UInt32ValueVBuilder.newBuilder();
-        final Map<String, UInt32Value> convertedValue =
+        UInt32ValueVBuilder uInt32ValueVBuilder = UInt32ValueVBuilder.newBuilder();
+        Map<String, UInt32Value> convertedValue =
                 uInt32ValueVBuilder.convertToMap(mapStr,
                                                  String.class,
                                                  UInt32Value.class);
@@ -53,12 +53,12 @@ public class AbstractValidatingBuilderShould {
 
     @Test
     public void convert_to_list() throws Exception {
-        final String key1 = "key1";
-        final String value = "123";
-        final String listStr = "\"key1\",\"123\",\"key2\",\"234\"";
+        String key1 = "key1";
+        String value = "123";
+        String listStr = "\"key1\",\"123\",\"key2\",\"234\"";
 
-        final StringValueVBuilder stringValueVBuilder = StringValueVBuilder.newBuilder();
-        final List<String> convertedValue = stringValueVBuilder.convertToList(listStr,
+        StringValueVBuilder stringValueVBuilder = StringValueVBuilder.newBuilder();
+        List<String> convertedValue = stringValueVBuilder.convertToList(listStr,
                                                                               String.class);
 
         assertTrue(convertedValue.contains(key1));

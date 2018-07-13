@@ -54,8 +54,8 @@ public class FloatFieldValidatorShould {
 
     @Test
     public void wrap_to_any() {
-        final Any any = validator.wrap(VALUE);
-        final FloatValue msg = AnyPacker.unpack(any);
+        Any any = validator.wrap(VALUE);
+        FloatValue msg = AnyPacker.unpack(any);
         assertEquals(VALUE, (Float) msg.getValue());
     }
 }

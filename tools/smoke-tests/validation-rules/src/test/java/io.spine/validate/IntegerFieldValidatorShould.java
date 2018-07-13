@@ -54,8 +54,8 @@ public class IntegerFieldValidatorShould {
 
     @Test
     public void wrap_to_any() {
-        final Any any = validator.wrap(VALUE);
-        final Int32Value msg = AnyPacker.unpack(any);
+        Any any = validator.wrap(VALUE);
+        Int32Value msg = AnyPacker.unpack(any);
         assertEquals(VALUE, (Integer) msg.getValue());
     }
 }

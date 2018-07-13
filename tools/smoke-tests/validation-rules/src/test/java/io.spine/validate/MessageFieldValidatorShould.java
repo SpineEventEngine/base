@@ -80,7 +80,7 @@ public class MessageFieldValidatorShould extends FieldValidatorShould<Message> {
 
     private static MessageFieldValidator getValidator(FieldDescriptor field,
                                                       List<? extends Message> values) {
-        final FieldContext context = FieldContext.create(field);
+        FieldContext context = FieldContext.create(field);
         return new MessageFieldValidator(context, values, false);
     }
 }

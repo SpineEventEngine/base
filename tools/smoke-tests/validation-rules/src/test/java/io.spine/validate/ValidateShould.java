@@ -70,7 +70,7 @@ public class ValidateShould {
 
     @Test
     public void verify_that_message_is_not_in_default_state() {
-        final Message msg = toMessage("check_if_message_is_not_in_default_state");
+        Message msg = toMessage("check_if_message_is_not_in_default_state");
 
         assertTrue(isNotDefault(msg));
         assertFalse(isNotDefault(StringValue.getDefaultInstance()));
@@ -83,7 +83,7 @@ public class ValidateShould {
 
     @Test
     public void verify_that_message_is_in_default_state() {
-        final Message nonDefault = newUuidValue();
+        Message nonDefault = newUuidValue();
 
         assertTrue(isDefault(StringValue.getDefaultInstance()));
         assertFalse(isDefault(nonDefault));
@@ -91,13 +91,13 @@ public class ValidateShould {
 
     @Test(expected = IllegalStateException.class)
     public void check_if_message_is_in_default() {
-        final StringValue nonDefault = newUuidValue();
+        StringValue nonDefault = newUuidValue();
         checkDefault(nonDefault);
     }
 
     @Test(expected = IllegalStateException.class)
     public void check_a_message_is_default_with_parametrized_error_message() {
-        final StringValue nonDefault = newUuidValue();
+        StringValue nonDefault = newUuidValue();
         checkDefault(nonDefault,
                      "Message value: %s, Type name: %s",
                      nonDefault,
@@ -106,7 +106,7 @@ public class ValidateShould {
 
     @Test
     public void return_default_value_on_check() {
-        final Message defaultValue = StringValue.getDefaultInstance();
+        Message defaultValue = StringValue.getDefaultInstance();
         assertEquals(defaultValue, checkDefault(defaultValue));
         assertEquals(defaultValue, checkDefault(defaultValue, "error message"));
     }
@@ -118,7 +118,7 @@ public class ValidateShould {
 
     @Test
     public void return_non_default_value_on_check() {
-        final StringValue nonDefault = newUuidValue();
+        StringValue nonDefault = newUuidValue();
         assertEquals(nonDefault, checkNotDefault(nonDefault));
         assertEquals(nonDefault, checkNotDefault(nonDefault, "with error message"));
     }
@@ -145,23 +145,23 @@ public class ValidateShould {
 
     @Test
     public void format_message_from_constraint_violation() {
-        final ConstraintViolation violation = ConstraintViolation.newBuilder()
+        ConstraintViolation violation = ConstraintViolation.newBuilder()
                                                                  .setMsgFormat("test %s test %s")
                                                                  .addParam("1")
                                                                  .addParam("2")
                                                                  .build();
-        final String formatted = ConstraintViolations.toText(violation);
+        String formatted = ConstraintViolations.toText(violation);
 
         assertEquals("test 1 test 2", formatted);
     }
 
     @Test
     public void format_message_using_params_from_constraint_violation() {
-        final ConstraintViolation violation = ConstraintViolation.newBuilder()
+        ConstraintViolation violation = ConstraintViolation.newBuilder()
                                                                  .addParam("1")
                                                                  .addParam("2")
                                                                  .build();
-        final String formatted = ConstraintViolations.toText("abc %s abc %s", violation);
+        String formatted = ConstraintViolations.toText("abc %s abc %s", violation);
 
         assertEquals("abc 1 abc 2", formatted);
     }
