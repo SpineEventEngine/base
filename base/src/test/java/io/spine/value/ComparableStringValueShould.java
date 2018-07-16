@@ -34,8 +34,8 @@ public class ComparableStringValueShould {
     @SuppressWarnings("LocalVariableNamingConvention")
     @Test
     public void compare() {
-        final TestVal a = new TestVal("a");
-        final TestVal b = new TestVal("b");
+        TestVal a = new TestVal("a");
+        TestVal b = new TestVal("b");
 
         assertTrue(a.compareTo(b) < 0);
         assertTrue(b.compareTo(a) > 0);

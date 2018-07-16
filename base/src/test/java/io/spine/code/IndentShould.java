@@ -44,7 +44,7 @@ public class IndentShould {
 
     @Test
     public void allow_zero_indent() {
-        final Indent zeroIndent = Indent.of(0);
+        Indent zeroIndent = Indent.of(0);
         assertEquals(0, zeroIndent.getSize());
         assertTrue(zeroIndent.toString()
                              .isEmpty());
@@ -52,7 +52,7 @@ public class IndentShould {
 
     @Test
     public void allow_custom_size() {
-        final Indent ofThree = Indent.of(3);
+        Indent ofThree = Indent.of(3);
         assertEquals(3, ofThree.getSize());
         assertEquals("   ", ofThree.toString());
     }

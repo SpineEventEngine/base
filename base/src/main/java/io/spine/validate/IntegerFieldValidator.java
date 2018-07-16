@@ -41,13 +41,13 @@ class IntegerFieldValidator extends NumberFieldValidator<Integer> {
 
     @Override
     protected Integer toNumber(String value) {
-        final Integer number = Integer.valueOf(value);
+        Integer number = Integer.valueOf(value);
         return number;
     }
 
     @Override
     protected Integer getAbs(Integer value) {
-        final Integer abs = abs(value);
+        Integer abs = abs(value);
         return abs;
     }
 }

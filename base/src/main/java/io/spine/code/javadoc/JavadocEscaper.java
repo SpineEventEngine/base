@@ -52,11 +52,11 @@ public class JavadocEscaper {
      */
     public static String escape(String javadocText) {
         checkNotNull(javadocText);
-        final StringBuilder escapedJavadocBuilder = new StringBuilder(javadocText.length() * 2);
+        StringBuilder escapedJavadocBuilder = new StringBuilder(javadocText.length() * 2);
 
-        final StringBuilder unescapedPartBuilder = new StringBuilder('*' + javadocText);
+        StringBuilder unescapedPartBuilder = new StringBuilder('*' + javadocText);
         while (unescapedPartBuilder.length() != 0) {
-            final EscapeSequence escapedString = fromBeginningOf(unescapedPartBuilder.toString());
+            EscapeSequence escapedString = fromBeginningOf(unescapedPartBuilder.toString());
 
             if (escapedString != null) {
                 escapedJavadocBuilder.append(escapedString.getEscaped());

@@ -74,10 +74,10 @@ public final class ResourceFiles {
      */
     static Iterator<URL> tryLoadAll(String filePath) throws IOException {
         checkNotEmptyOrBlank(filePath);
-        final ClassLoader contextClassLoader = Thread.currentThread()
-                                                     .getContextClassLoader();
-        final Enumeration<URL> resources = contextClassLoader.getResources(filePath);
-        final Iterator<URL> result = Iterators.forEnumeration(resources);
+        ClassLoader contextClassLoader = Thread.currentThread()
+                                               .getContextClassLoader();
+        Enumeration<URL> resources = contextClassLoader.getResources(filePath);
+        Iterator<URL> result = Iterators.forEnumeration(resources);
         return result;
     }
 }

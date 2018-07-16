@@ -66,7 +66,7 @@ public class KnownTypesShould {
 
     @Test
     public void return_known_proto_message_type_urls() {
-        final Set<TypeUrl> typeUrls = knownTypes.getAllUrls();
+        Set<TypeUrl> typeUrls = knownTypes.getAllUrls();
 
         assertFalse(typeUrls.isEmpty());
     }
@@ -87,64 +87,64 @@ public class KnownTypesShould {
     }
 
     private void assertHasClassNameByTypeUrlOf(Class<? extends Message> msgClass) {
-        final TypeUrl typeUrl = TypeUrl.of(msgClass);
+        TypeUrl typeUrl = TypeUrl.of(msgClass);
 
-        final ClassName className = knownTypes.getClassName(typeUrl);
+        ClassName className = knownTypes.getClassName(typeUrl);
 
         assertEquals(ClassName.of(msgClass), className);
     }
 
     @Test
     public void return_java_inner_class_name_by_proto_type_url() {
-        final TypeUrl typeUrl = TypeUrl.from(EntityOption.Kind.getDescriptor());
+        TypeUrl typeUrl = TypeUrl.from(EntityOption.Kind.getDescriptor());
 
-        final ClassName className = knownTypes.getClassName(typeUrl);
+        ClassName className = knownTypes.getClassName(typeUrl);
 
         assertEquals(ClassName.of(EntityOption.Kind.class), className);
     }
 
     @Test
     public void return_proto_type_url_by_proto_type_name() {
-        final TypeUrl typeUrlExpected = TypeUrl.from(StringValue.getDescriptor());
+        TypeUrl typeUrlExpected = TypeUrl.from(StringValue.getDescriptor());
 
-        final Optional<TypeUrl> typeUrlActual = knownTypes.find(typeUrlExpected.toName())
-                                                          .map(Type::url);
+        Optional<TypeUrl> typeUrlActual = knownTypes.find(typeUrlExpected.toName())
+                                                    .map(Type::url);
         assertTrue(typeUrlActual.isPresent());
         assertEquals(typeUrlExpected, typeUrlActual.get());
     }
 
     @Test
     public void return_all_types_under_certain_package() {
-        final TypeUrl taskId = TypeUrl.from(TaskId.getDescriptor());
-        final TypeUrl taskName = TypeUrl.from(TaskName.getDescriptor());
-        final TypeUrl task = TypeUrl.from(Task.getDescriptor());
+        TypeUrl taskId = TypeUrl.from(TaskId.getDescriptor());
+        TypeUrl taskName = TypeUrl.from(TaskName.getDescriptor());
+        TypeUrl task = TypeUrl.from(Task.getDescriptor());
 
-        final String packageName = "spine.test.types";
+        String packageName = "spine.test.types";
 
-        final Collection<TypeUrl> packageTypes = knownTypes.getAllFromPackage(packageName);
+        Collection<TypeUrl> packageTypes = knownTypes.getAllFromPackage(packageName);
         assertSize(3, packageTypes);
         assertTrue(packageTypes.containsAll(Arrays.asList(taskId, taskName, task)));
     }
 
     @Test
     public void return_empty_collection_if_package_is_empty_or_invalid() {
-        final String packageName = "com.foo.invalid.package";
-        final Collection<?> emptyTypesCollection = knownTypes.getAllFromPackage(packageName);
+        String packageName = "com.foo.invalid.package";
+        Collection<?> emptyTypesCollection = knownTypes.getAllFromPackage(packageName);
         assertNotNull(emptyTypesCollection);
         assertTrue(emptyTypesCollection.isEmpty());
     }
 
     @Test
     public void do_not_return_types_of_package_by_package_prefix() {
-        final String prefix = "spine.test.ty"; // "spine.test.types" is a valid package
+        String prefix = "spine.test.ty"; // "spine.test.types" is a valid package
 
-        final Collection<TypeUrl> packageTypes = knownTypes.getAllFromPackage(prefix);
+        Collection<TypeUrl> packageTypes = knownTypes.getAllFromPackage(prefix);
         assertTrue(packageTypes.isEmpty());
     }
 
     @Test
     public void throw_exception_if_no_java_class_name_by_type_url() {
-        final TypeUrl unexpectedUrl = TypeUrl.parse("prefix/unexpected.type");
+        TypeUrl unexpectedUrl = TypeUrl.parse("prefix/unexpected.type");
         thrown.expect(UnknownTypeException.class);
         knownTypes.getClassName(unexpectedUrl);
     }

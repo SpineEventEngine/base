@@ -85,7 +85,7 @@ abstract class NumberFieldValidator<V extends Number & Comparable<V>> extends Fi
      * {@link com.google.protobuf.Int32Value Int32Value}, etc) and {@link Any}.
      */
     protected Any wrap(V value) {
-        final Any result = toAny(value);
+        Any result = toAny(value);
         return result;
     }
 
@@ -99,8 +99,8 @@ abstract class NumberFieldValidator<V extends Number & Comparable<V>> extends Fi
 
     @Override
     protected boolean isValueNotSet(V value) {
-        final int intValue = value.intValue();
-        final boolean result = intValue == 0;
+        int intValue = value.intValue();
+        boolean result = intValue == 0;
         return result;
     }
 
@@ -126,66 +126,66 @@ abstract class NumberFieldValidator<V extends Number & Comparable<V>> extends Fi
     }
 
     private boolean notFitToDecimalMin(V value) {
-        final String minAsString = minDecimalOpt.getValue();
+        String minAsString = minDecimalOpt.getValue();
         if (minAsString.isEmpty()) {
             return false;
         }
-        final V min = toNumber(minAsString);
-        final int comparisonResult = value.compareTo(min);
-        final boolean fits = isMinDecimalInclusive
-                             ? comparisonResult >= 0
-                             : comparisonResult > 0;
-        final boolean notFit = !fits;
+        V min = toNumber(minAsString);
+        int comparisonResult = value.compareTo(min);
+        boolean fits = isMinDecimalInclusive
+                       ? comparisonResult >= 0
+                       : comparisonResult > 0;
+        boolean notFit = !fits;
         return notFit;
     }
 
     private boolean notFitToDecimalMax(V value) {
-        final String maxAsString = maxDecimalOpt.getValue();
+        String maxAsString = maxDecimalOpt.getValue();
         if (maxAsString.isEmpty()) {
             return false;
         }
-        final V max = toNumber(maxAsString);
-        final boolean fits = isMaxDecimalInclusive
-                             ? value.compareTo(max) <= 0
-                             : value.compareTo(max) < 0;
-        final boolean notFit = !fits;
+        V max = toNumber(maxAsString);
+        boolean fits = isMaxDecimalInclusive
+                       ? value.compareTo(max) <= 0
+                       : value.compareTo(max) < 0;
+        boolean notFit = !fits;
         return notFit;
     }
 
     private boolean notFitToMin(V value) {
-        final String minAsString = minOption.getValue();
+        String minAsString = minOption.getValue();
         if (minAsString.isEmpty()) {
             return false;
         }
-        final V min = toNumber(minAsString);
-        final boolean isGreaterThanOrEqualToMin = value.compareTo(min) >= 0;
-        final boolean notFits = !isGreaterThanOrEqualToMin;
+        V min = toNumber(minAsString);
+        boolean isGreaterThanOrEqualToMin = value.compareTo(min) >= 0;
+        boolean notFits = !isGreaterThanOrEqualToMin;
         return notFits;
     }
 
     private boolean notFitToMax(V value) {
-        final String maxAsString = maxOption.getValue();
+        String maxAsString = maxOption.getValue();
         if (maxAsString.isEmpty()) {
             return false;
         }
-        final V max = toNumber(maxAsString);
-        final boolean isLessThanOrEqualToMax = value.compareTo(max) <= 0;
-        final boolean notFit = !isLessThanOrEqualToMax;
+        V max = toNumber(maxAsString);
+        boolean isLessThanOrEqualToMax = value.compareTo(max) <= 0;
+        boolean notFit = !isLessThanOrEqualToMax;
         return notFit;
     }
 
     private void validateDigitsOption(V value) {
-        final int intDigitsMax = digitsOption.getIntegerMax();
-        final int fractionDigitsMax = digitsOption.getFractionMax();
+        int intDigitsMax = digitsOption.getIntegerMax();
+        int fractionDigitsMax = digitsOption.getFractionMax();
         if (intDigitsMax < 1 || fractionDigitsMax < 1) {
             return;
         }
-        final V abs = getAbs(value);
-        final String[] parts = PATTERN_DOT.split(String.valueOf(abs));
-        final int intDigitsCount = parts[0].length();
-        final int fractionDigitsCount = parts[1].length();
-        final boolean isInvalid = (intDigitsCount > intDigitsMax) ||
-                                  (fractionDigitsCount > fractionDigitsMax);
+        V abs = getAbs(value);
+        String[] parts = PATTERN_DOT.split(String.valueOf(abs));
+        int intDigitsCount = parts[0].length();
+        int fractionDigitsCount = parts[1].length();
+        boolean isInvalid = (intDigitsCount > intDigitsMax) ||
+                (fractionDigitsCount > fractionDigitsMax);
         if (isInvalid) {
             addViolation(newDigitsViolation(value));
         }
@@ -196,37 +196,40 @@ abstract class NumberFieldValidator<V extends Number & Comparable<V>> extends Fi
                                                     String customMsg,
                                                     boolean isInclusive,
                                                     String minOrMax) {
-        final String msg = getErrorMsgFormat(option, customMsg);
-        final ConstraintViolation.Builder violation = ConstraintViolation.newBuilder()
-                .setMsgFormat(msg)
-                .addParam(isInclusive ? "or equal to " : "")
-                .addParam(minOrMax)
-                .setFieldPath(getFieldPath())
-                .setFieldValue(wrap(value));
+        String msg = getErrorMsgFormat(option, customMsg);
+        ConstraintViolation.Builder violation =
+                ConstraintViolation.newBuilder()
+                                   .setMsgFormat(msg)
+                                   .addParam(
+                                           isInclusive ? "or equal to " : "")
+                                   .addParam(minOrMax)
+                                   .setFieldPath(getFieldPath())
+                                   .setFieldValue(wrap(value));
         return violation.build();
     }
 
     private ConstraintViolation newMinOrMaxViolation(V value, Message option,
                                                      String customMsg, String minOrMax) {
-        final String msg = getErrorMsgFormat(option, customMsg);
-        final ConstraintViolation.Builder violation = ConstraintViolation.newBuilder()
-                .setMsgFormat(msg)
-                .addParam(minOrMax)
-                .setFieldPath(getFieldPath())
-                .setFieldValue(wrap(value));
+        String msg = getErrorMsgFormat(option, customMsg);
+        ConstraintViolation.Builder violation = ConstraintViolation.newBuilder()
+                                                                   .setMsgFormat(msg)
+                                                                   .addParam(minOrMax)
+                                                                   .setFieldPath(getFieldPath())
+                                                                   .setFieldValue(wrap(value));
         return violation.build();
     }
 
     private ConstraintViolation newDigitsViolation(V value) {
-        final String msg = getErrorMsgFormat(digitsOption, digitsOption.getMsgFormat());
-        final String intMax = String.valueOf(digitsOption.getIntegerMax());
-        final String fractionMax = String.valueOf(digitsOption.getFractionMax());
-        final ConstraintViolation.Builder violation = ConstraintViolation.newBuilder()
-                .setMsgFormat(msg)
-                .addParam(intMax)
-                .addParam(fractionMax)
-                .setFieldPath(getFieldPath())
-                .setFieldValue(wrap(value));
+        String msg = getErrorMsgFormat(digitsOption, digitsOption.getMsgFormat());
+        String intMax = String.valueOf(digitsOption.getIntegerMax());
+        String fractionMax = String.valueOf(digitsOption.getFractionMax());
+        ConstraintViolation.Builder violation =
+                ConstraintViolation.newBuilder()
+                                   .setMsgFormat(msg)
+                                   .addParam(intMax)
+                                   .addParam(fractionMax)
+                                   .setFieldPath(getFieldPath())
+                                   .setFieldValue(wrap(value));
         return violation.build();
     }
 }

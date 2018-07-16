@@ -103,10 +103,9 @@ public interface GenericTypeIndex<C> {
             checkNotNull(index);
             checkNotNull(cls);
             @SuppressWarnings("unchecked") /* The type is ensured by the declaration of
-                                              the GenericTypeIndex interface. */
-            final Class<C> superclass = (Class<C>)
+                                              the GenericTypeIndex interface. */ Class<C> superclass = (Class<C>)
                     getArgument(index.getClass(), GenericTypeIndex.class, 0);
-            final Class<?> result =
+            Class<?> result =
                     getArgument(cls, superclass, index.getIndex());
             return result;
         }
@@ -128,14 +127,14 @@ public interface GenericTypeIndex<C> {
             checkNotNull(cls);
             checkNotNull(genericSuperclass);
 
-            final TypeToken<?> supertypeToken = TypeToken.of(cls)
-                                                         .getSupertype(genericSuperclass);
-            final ParameterizedType genericSupertype =
+            TypeToken<?> supertypeToken = TypeToken.of(cls)
+                                                   .getSupertype(genericSuperclass);
+            ParameterizedType genericSupertype =
                     (ParameterizedType) supertypeToken.getType();
-            final Type[] typeArguments = genericSupertype.getActualTypeArguments();
-            final Type typeArgument = typeArguments[argNumber];
+            Type[] typeArguments = genericSupertype.getActualTypeArguments();
+            Type typeArgument = typeArguments[argNumber];
             @SuppressWarnings("unchecked") // The type is ensured by the calling code.
-            final Class<?> result = (Class<?>) typeArgument;
+            Class<?> result = (Class<?>) typeArgument;
             return result;
         }
     }

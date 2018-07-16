@@ -53,7 +53,7 @@ public final class Types {
         checkNotNull(keyClass);
         checkNotNull(valueClass);
 
-        final Type type = new TypeToken<Map<K, V>>() {}.where(new TypeParameter<K>() {}, keyClass)
+        Type type = new TypeToken<Map<K, V>>() {}.where(new TypeParameter<K>() {}, keyClass)
                                                        .where(new TypeParameter<V>() {}, valueClass)
                                                        .getType();
         return type;
@@ -69,9 +69,9 @@ public final class Types {
     public static <T> Type listTypeOf(Class<T> elementClass) {
         checkNotNull(elementClass);
 
-        final Type type =
+        Type type =
                 new TypeToken<List<T>>() {}.where(new TypeParameter<T>() {}, elementClass)
-                                                      .getType();
+                                                 .getType();
         return type;
     }
 }
