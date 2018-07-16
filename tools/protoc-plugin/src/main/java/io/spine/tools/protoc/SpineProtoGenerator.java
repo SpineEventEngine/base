@@ -122,9 +122,9 @@ public abstract class SpineProtoGenerator {
     public final CodeGeneratorResponse process(CodeGeneratorRequest request) {
         checkNotNull(request);
         checkCompilerVersion(request);
-        final List<FileDescriptorProto> protoFiles = request.getProtoFileList();
+        List<FileDescriptorProto> protoFiles = request.getProtoFileList();
         checkArgument(!protoFiles.isEmpty(), "No files to generate provided.");
-        final CodeGeneratorResponse response = process(protoFiles);
+        CodeGeneratorResponse response = process(protoFiles);
         return response;
     }
 
@@ -132,7 +132,7 @@ public abstract class SpineProtoGenerator {
      * Ensures that the version of the Google Protobuf Compiler is 3.* or higher.
      */
     private void checkCompilerVersion(CodeGeneratorRequest request) {
-        final Version version = request.getCompilerVersion();
+        Version version = request.getCompilerVersion();
         checkArgument(version.getMajor() >= 3,
                       "Use protoc of version 3.* or higher to run %s",
                       getClass().getName());
@@ -142,12 +142,12 @@ public abstract class SpineProtoGenerator {
      * Processes all passed proto files.
      */
     private CodeGeneratorResponse process(Iterable<FileDescriptorProto> files) {
-        final Collection<File> generatedFiles = newHashSet();
+        Collection<File> generatedFiles = newHashSet();
         for (FileDescriptorProto file : files) {
-            final Collection<File> newFiles = generateForTypesIn(file);
+            Collection<File> newFiles = generateForTypesIn(file);
             generatedFiles.addAll(newFiles);
         }
-        final CodeGeneratorResponse response =
+        CodeGeneratorResponse response =
                 CodeGeneratorResponse.newBuilder()
                                      .addAllFile(generatedFiles)
                                      .build();
@@ -158,9 +158,9 @@ public abstract class SpineProtoGenerator {
      * Processes the passed proto file.
      */
     private Collection<File> generateForTypesIn(FileDescriptorProto file) {
-        final Collection<File> result = newHashSet();
+        Collection<File> result = newHashSet();
         for (DescriptorProto message : file.getMessageTypeList()) {
-            final Collection<File> processedFile = processMessage(file, message);
+            Collection<File> processedFile = processMessage(file, message);
             result.addAll(processedFile);
         }
         return result;
