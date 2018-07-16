@@ -33,5 +33,5 @@ import "google/protobuf/any.proto";
 // A message with a map to test `io.spine.protobuf.Attribute` class.
 message Associations {
 
-    map<string, google.protobuf.Any> entries = 1;
+    map<string, google.protobuf.Any> entry = 1;
 }

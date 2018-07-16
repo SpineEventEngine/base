@@ -122,12 +122,12 @@ class AttributeTest {
 
         @Override
         protected Map<String, Any> getMap(Associations obj) {
-            return obj.getEntriesMap();
+            return obj.getEntryMap();
         }
 
         @Override
         protected Map<String, Any> getMutableMap(Associations.Builder builder) {
-            return builder.getMutableEntries();
+            return builder.getMutableEntry();
         }
     }
 
