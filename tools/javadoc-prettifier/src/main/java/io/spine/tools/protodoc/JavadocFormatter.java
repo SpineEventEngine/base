@@ -20,14 +20,13 @@
 
 package io.spine.tools.protodoc;
 
-import com.google.common.base.Optional;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 
 import static java.lang.System.lineSeparator;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -78,8 +77,8 @@ class JavadocFormatter {
             return;
         }
 
-        final Path folder = path.getParent();
-        final Path tempPath = folder.resolve(TEMP_FILE_NAME);
+        Path folder = path.getParent();
+        Path tempPath = folder.resolve(TEMP_FILE_NAME);
 
         try (BufferedReader reader = newBufferedReader(path, UTF_8);
              BufferedWriter writer = newBufferedWriter(tempPath, UTF_8)) {
@@ -103,27 +102,27 @@ class JavadocFormatter {
      *
      * @param reader the reader for the file
      * @return the {@code Optional} of the next part
-     *         or {@code Optional.absent()} if if the end of the stream has been reached
+     *         or {@code Optional.empty()} if if the end of the stream has been reached
      * @throws IOException if an I/O error occurred during reading
      */
     private Optional<String> getNextPart(BufferedReader reader) throws IOException {
-        final String firstLine = reader.readLine();
+        String firstLine = reader.readLine();
         if (firstLine == null) {
-            return Optional.absent();
+            return Optional.empty();
         }
 
         if (!isJavadocBeginning(firstLine)) {
             return Optional.of(firstLine);
         }
 
-        final String javadoc = getJavadoc(firstLine, reader);
-        final String formattedJavadoc = formatText(javadoc);
+        String javadoc = getJavadoc(firstLine, reader);
+        String formattedJavadoc = formatText(javadoc);
         return Optional.of(formattedJavadoc);
     }
 
     private static String getJavadoc(String firstLine,
                                      BufferedReader reader) throws IOException {
-        final StringBuilder javadoc = new StringBuilder();
+        StringBuilder javadoc = new StringBuilder();
 
         String currentLine = firstLine;
         while (!containsJavadocEnding(currentLine)) {
