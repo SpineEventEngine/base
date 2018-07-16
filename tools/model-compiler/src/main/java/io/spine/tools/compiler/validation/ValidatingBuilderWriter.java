@@ -87,8 +87,8 @@ class ValidatingBuilderWriter {
                                    messageClassName,
                                    messageBuilderClassName,
                                    methodsAssembler.createMethods())
-                        .addAnnotation(canIgnoreReturnValue())
                         .addAnnotation(generatedBySpineModelCompiler())
+                        .addAnnotation(canIgnoreReturnValue())
                         .build();
 
         log().debug("Writing the {} class under the {} package",
