@@ -40,20 +40,20 @@ public class ReflectionsPluginShould {
 
     @Test
     public void apply_to_project() {
-        final Project project = newProject();
+        Project project = newProject();
         project.getPluginManager()
                .apply(REFLECTIONS_PLUGIN_ID);
     }
 
     @Test
     public void add_task_scanClassPath() {
-        final Project project = newProject();
+        Project project = newProject();
         project.getPluginManager()
                .apply(REFLECTIONS_PLUGIN_ID);
 
-        final TaskContainer tasks = project.getTasks();
-        final Task scanClassPathTask = tasks.getByName(SCAN_CLASS_PATH.getValue());
-        final Task buildTask = tasks.getByName(BUILD.getValue());
+        TaskContainer tasks = project.getTasks();
+        Task scanClassPathTask = tasks.getByName(SCAN_CLASS_PATH.getValue());
+        Task buildTask = tasks.getByName(BUILD.getValue());
 
         assertNotNull(scanClassPathTask);
         assertTrue(dependsOn(scanClassPathTask, CLASSES));

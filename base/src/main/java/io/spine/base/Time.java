@@ -114,9 +114,9 @@ public class Time {
         public Timestamp getCurrentTime() {
             Instant now = Instant.now();
             Timestamp result = Timestamp.newBuilder()
-                    .setSeconds(now.getEpochSecond())
-                    .setNanos(now.getNano())
-                    .build();
+                                        .setSeconds(now.getEpochSecond())
+                                        .setNanos(now.getNano())
+                                        .build();
             return result;
         }
     }

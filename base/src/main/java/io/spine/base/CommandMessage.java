@@ -64,8 +64,8 @@ public interface CommandMessage extends Message {
             public boolean apply(@Nullable FileDescriptor file) {
                 checkNotNull(file);
 
-                final String fqn = file.getName();
-                final boolean result = fqn.endsWith(SUFFIX);
+                String fqn = file.getName();
+                boolean result = fqn.endsWith(SUFFIX);
                 return result;
             }
         };

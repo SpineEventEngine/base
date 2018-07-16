@@ -62,11 +62,11 @@ public class ValidationException extends RuntimeException {
 
     @Override
     public String toString() {
-        final ToStringHelper helper = MoreObjects.toStringHelper(this);
+        ToStringHelper helper = MoreObjects.toStringHelper(this);
 
-        final String violationContent = constraintViolations.isEmpty()
-                ? "[]"
-                : on(", ").join(transform(constraintViolations, TO_STRING_FN));
+        String violationContent = constraintViolations.isEmpty()
+                                  ? "[]"
+                                  : on(", ").join(transform(constraintViolations, TO_STRING_FN));
 
         return helper.add("constraintViolations", violationContent)
                      .toString();

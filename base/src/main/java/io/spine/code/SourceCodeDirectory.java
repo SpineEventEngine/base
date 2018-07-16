@@ -37,13 +37,13 @@ public abstract class SourceCodeDirectory extends AbstractDirectory {
 
     public Path resolve(SourceCodeDirectory dir) {
         checkNotNull(dir);
-        final Path result = getPath().resolve(dir.getPath());
+        Path result = getPath().resolve(dir.getPath());
         return result;
     }
 
     public Path resolve(AbstractSourceFile file) {
         checkNotNull(file);
-        final Path result = getPath().resolve(file.getPath());
+        Path result = getPath().resolve(file.getPath());
         return result;
     }
 }

@@ -59,7 +59,7 @@ public abstract class Attribute<T, M extends Message, B extends Message.Builder>
     protected abstract Map<String, Any> getMap(M obj);
 
     /**
-     * Returns the attribute value or {@code Optional.absent()} if the attribute is not set.
+     * Returns the attribute value or {@code Optional.empty()} if the attribute is not set.
      */
     @Override
     public final Optional<T> getValue(M obj) {

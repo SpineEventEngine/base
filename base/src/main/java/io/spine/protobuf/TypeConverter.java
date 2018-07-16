@@ -113,7 +113,8 @@ public final class TypeConverter {
         @SuppressWarnings("unchecked") // Must be checked at runtime
         Class<T> srcClass = (Class<T>) value.getClass();
         MessageCaster<M, T> caster = MessageCaster.forType(srcClass);
-        M message = caster.reverse().convert(value);
+        M message = caster.reverse()
+                          .convert(value);
         checkNotNull(message);
         return message;
     }
@@ -132,7 +133,7 @@ public final class TypeConverter {
                 caster = new BytesCaster();
             } else if (Enum.class.isAssignableFrom(cls)) {
                 @SuppressWarnings("unchecked") // Checked at runtime.
-                final Class<? extends Enum> enumCls = (Class<? extends Enum>) cls;
+                Class<? extends Enum> enumCls = (Class<? extends Enum>) cls;
                 caster = new EnumCaster(enumCls);
             } else {
                 caster = new PrimitiveTypeCaster<>();
@@ -243,27 +244,26 @@ public final class TypeConverter {
 
         @Override
         protected T toObject(M input) {
-            final Class<?> boxedType = input.getClass();
-            @SuppressWarnings("unchecked")
-            final Converter<M, T> typeUnpacker =
+            Class<?> boxedType = input.getClass();
+            @SuppressWarnings("unchecked") Converter<M, T> typeUnpacker =
                     (Converter<M, T>) PROTO_WRAPPER_TO_HANDLER.get(boxedType);
             checkArgument(typeUnpacker != null,
                           "Could not find a primitive type for %s.",
                           boxedType.getCanonicalName());
-            final T result = typeUnpacker.convert(input);
+            T result = typeUnpacker.convert(input);
             return result;
         }
 
         @Override
         protected M toMessage(T input) {
-            final Class<?> cls = input.getClass();
-            @SuppressWarnings("unchecked")
-            final Converter<M, T> converter =
+            Class<?> cls = input.getClass();
+            @SuppressWarnings("unchecked") Converter<M, T> converter =
                     (Converter<M, T>) PRIMITIVE_TO_HANDLER.get(cls);
             checkArgument(converter != null,
                           "Could not find a wrapper type for %s.",
                           cls.getCanonicalName());
-            final M result = converter.reverse().convert(input);
+            M result = converter.reverse()
+                                .convert(input);
             return result;
         }
     }

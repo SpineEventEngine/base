@@ -65,8 +65,8 @@ public class AnyPackerShould {
 
     @Test
     public void pack_spine_message_to_Any() {
-        final Any actual = pack(spineMsg);
-        final TypeUrl typeUrl = TypeUrl.of(spineMsg);
+        Any actual = pack(spineMsg);
+        TypeUrl typeUrl = TypeUrl.of(spineMsg);
 
 
         assertEquals(Any.pack(spineMsg).getValue(), actual.getValue());
@@ -75,34 +75,34 @@ public class AnyPackerShould {
 
     @Test
     public void unpack_spine_message_from_Any() {
-        final Any any = pack(spineMsg);
+        Any any = pack(spineMsg);
 
-        final MessageToPack actual = unpack(any);
+        MessageToPack actual = unpack(any);
 
         assertEquals(spineMsg, actual);
     }
 
     @Test
     public void pack_google_message_to_Any() {
-        final Any expected = Any.pack(googleMsg);
+        Any expected = Any.pack(googleMsg);
 
-        final Any actual = pack(googleMsg);
+        Any actual = pack(googleMsg);
 
         assertEquals(expected, actual);
     }
 
     @Test
     public void unpack_google_message_from_Any() {
-        final Any any = Any.pack(googleMsg);
+        Any any = Any.pack(googleMsg);
 
-        final StringValue actual = unpack(any);
+        StringValue actual = unpack(any);
 
         assertEquals(googleMsg, actual);
     }
 
     @Test
     public void return_Any_if_it_is_passed_to_pack() {
-        final Any any = Any.pack(googleMsg);
+        Any any = Any.pack(googleMsg);
 
         assertSame(any, pack(any));
     }
@@ -121,7 +121,7 @@ public class AnyPackerShould {
 
     @Test
     public void create_packing_iterator() {
-        final Iterator<Message> iterator = Lists.<Message>newArrayList(newUuidValue()).iterator();
+        Iterator<Message> iterator = Lists.<Message>newArrayList(newUuidValue()).iterator();
         assertNotNull(pack(iterator));
     }
 
@@ -132,7 +132,7 @@ public class AnyPackerShould {
 
     @Test
     public void have_unpacking_func() {
-        final StringValue value = newUuidValue();
+        StringValue value = newUuidValue();
 
         assertEquals(value, unpackFunc().apply(Any.pack(value)));
     }

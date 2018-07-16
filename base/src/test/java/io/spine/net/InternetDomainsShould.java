@@ -63,7 +63,7 @@ public class InternetDomainsShould {
 
     @Test
     public void create_InternetDomain_instance() {
-        final String domainName = "example.org";
+        String domainName = "example.org";
 
         assertEquals(domainName, valueOf(domainName).getValue());
     }
