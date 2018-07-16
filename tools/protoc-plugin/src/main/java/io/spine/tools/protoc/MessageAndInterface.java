@@ -65,9 +65,9 @@ final class MessageAndInterface {
      */
     static Optional<MessageAndInterface> scanFileOption(FileDescriptorProto file,
                                                         DescriptorProto msg) {
-        final Optional<String> everyIs = getEveryIs(file);
+        Optional<String> everyIs = getEveryIs(file);
         if (everyIs.isPresent()) {
-            final MessageAndInterface resultingFile = generateFile(file, msg, everyIs.get());
+            MessageAndInterface resultingFile = generateFile(file, msg, everyIs.get());
             return Optional.of(resultingFile);
         } else {
             return Optional.empty();
@@ -77,42 +77,42 @@ final class MessageAndInterface {
     private static MessageAndInterface generateFile(FileDescriptorProto file,
                                                     DescriptorProto msg,
                                                     String optionValue) {
-        final MarkerInterfaceSpec interfaceSpec = prepareInterface(optionValue, file);
-        final File.Builder srcFile = prepareFile(file, msg);
-        final String messageFqn = file.getPackage() + DELIMITER + msg.getName();
-        final File messageFile = implementInterface(srcFile,
-                                                    interfaceSpec.getFqn(),
-                                                    messageFqn);
-        final JavaFile interfaceContent = interfaceSpec.toJavaCode();
-        final File interfaceFile = File.newBuilder()
-                                       .setName(interfaceSpec.toSourceFile()
-                                                             .toString())
-                                       .setContent(interfaceContent.toString())
-                                       .build();
-        final MessageAndInterface result = new MessageAndInterface(messageFile, interfaceFile);
+        MarkerInterfaceSpec interfaceSpec = prepareInterface(optionValue, file);
+        File.Builder srcFile = prepareFile(file, msg);
+        String messageFqn = file.getPackage() + DELIMITER + msg.getName();
+        File messageFile = implementInterface(srcFile,
+                                              interfaceSpec.getFqn(),
+                                              messageFqn);
+        JavaFile interfaceContent = interfaceSpec.toJavaCode();
+        File interfaceFile = File.newBuilder()
+                                 .setName(interfaceSpec.toSourceFile()
+                                                       .toString())
+                                 .setContent(interfaceContent.toString())
+                                 .build();
+        MessageAndInterface result = new MessageAndInterface(messageFile, interfaceFile);
         return result;
     }
 
     private static String toTypeName(FileDescriptorProto file, DescriptorProto msg) {
-        final boolean multipleFiles = file.getOptions()
-                                              .getJavaMultipleFiles();
+        boolean multipleFiles = file.getOptions()
+                                    .getJavaMultipleFiles();
         return multipleFiles
-                ? msg.getName()
-                : resolveName(file);
+               ? msg.getName()
+               : resolveName(file);
     }
 
     private static Optional<String> getEveryIs(FileDescriptorProto descriptor) {
-        final Optional<String> value = Options.option(descriptor, everyIs);
+        Optional<String> value = Options.option(descriptor, everyIs);
         return value;
     }
 
     private static File implementInterface(File.Builder srcFile,
                                            String interfaceTypeName,
                                            String messageTypeName) {
-        final String insertionPoint = format(INSERTION_POINT_IMPLEMENTS, messageTypeName);
-        final File result = srcFile.setInsertionPoint(insertionPoint)
-                                   .setContent(interfaceTypeName + ',')
-                                   .build();
+        String insertionPoint = format(INSERTION_POINT_IMPLEMENTS, messageTypeName);
+        File result = srcFile.setInsertionPoint(insertionPoint)
+                             .setContent(interfaceTypeName + ',')
+                             .build();
         return result;
     }
 
@@ -126,14 +126,14 @@ final class MessageAndInterface {
     }
 
     private static File.Builder prepareFile(FileDescriptorProto file, DescriptorProto msg) {
-        final String javaPackage = PackageName.resolve(file)
-                                              .value();
-        final String messageName = toTypeName(file, msg);
-        final String fileName = SourceFile.forType(javaPackage, messageName)
-                                          .toString();
-        final String uriStyleName = fileName.replace('\\', '/');
-        final File.Builder srcFile = File.newBuilder()
-                                         .setName(uriStyleName);
+        String javaPackage = PackageName.resolve(file)
+                                        .value();
+        String messageName = toTypeName(file, msg);
+        String fileName = SourceFile.forType(javaPackage, messageName)
+                                    .toString();
+        String uriStyleName = fileName.replace('\\', '/');
+        File.Builder srcFile = File.newBuilder()
+                                   .setName(uriStyleName);
         return srcFile;
     }
 
@@ -142,9 +142,9 @@ final class MessageAndInterface {
      */
     static Optional<MessageAndInterface> scanMsgOption(FileDescriptorProto file,
                                                        DescriptorProto msg) {
-        final Optional<String> everyIs = getIs(msg);
+        Optional<String> everyIs = getIs(msg);
         if (everyIs.isPresent()) {
-            final MessageAndInterface resultingFile = generateFile(file, msg, everyIs.get());
+            MessageAndInterface resultingFile = generateFile(file, msg, everyIs.get());
             return Optional.of(resultingFile);
         } else {
             return Optional.empty();
