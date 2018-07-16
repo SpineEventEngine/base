@@ -55,7 +55,8 @@ class ExcludeInternalPrinciple implements ExcludePrinciple {
     }
 
     private boolean inExclusions(ProgramElementDoc doc) {
-        String docPackageName = doc.containingPackage().name();
+        String docPackageName = doc.containingPackage()
+                                   .name();
 
         for (PackageDoc exclusion : exclusions) {
             if (docPackageName.startsWith(exclusion.name())) {

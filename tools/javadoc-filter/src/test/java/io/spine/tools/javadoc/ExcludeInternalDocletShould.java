@@ -80,7 +80,7 @@ public class ExcludeInternalDocletShould {
     @Test
     public void exclude_internal_ctors() {
         String[] args = new JavadocArgsBuilder().addSource("InternalCtorClass.java")
-                                                      .build();
+                                                .build();
 
         RootDoc rootDoc = rootDocFor(args);
 

@@ -112,7 +112,9 @@ public class ExcludeInternalDoclet extends Standard {
             return null;
         }
 
-        if (returnValue.getClass().getName().startsWith("com.sun.")) {
+        if (returnValue.getClass()
+                       .getName()
+                       .startsWith("com.sun.")) {
             Class cls = returnValue.getClass();
             return Proxy.newProxyInstance(cls.getClassLoader(),
                                           cls.getInterfaces(),

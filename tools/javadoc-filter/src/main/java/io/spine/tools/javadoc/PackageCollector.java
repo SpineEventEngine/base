@@ -124,7 +124,8 @@ class PackageCollector {
 
         @Override
         public int compare(PackageDoc o1, PackageDoc o2) {
-            return o1.name().compareTo(o2.name());
+            return o1.name()
+                     .compareTo(o2.name());
         }
     }
 }

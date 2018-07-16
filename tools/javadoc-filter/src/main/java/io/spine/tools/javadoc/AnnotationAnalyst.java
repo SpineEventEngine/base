@@ -55,6 +55,8 @@ public class AnnotationAnalyst<C extends Class<? extends Annotation>> {
     }
 
     private boolean isQualifiedAnnotation(AnnotationDesc annotation) {
-        return annotation.annotationType().qualifiedTypeName().equals(annotationClass.getName());
+        return annotation.annotationType()
+                         .qualifiedTypeName()
+                         .equals(annotationClass.getName());
     }
 }
