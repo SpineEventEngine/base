@@ -180,22 +180,22 @@ public final class GradleTask {
          */
         @CanIgnoreReturnValue
         public GradleTask applyNowTo(Project project) {
-            final String errMsg = "Project is not specified for the new Gradle task: ";
+            String errMsg = "Project is not specified for the new Gradle task: ";
             checkNotNull(project, errMsg + name);
 
             if (followingTask == null
                     && previousTask == null
                     && previousTaskOfAllProjects == null) {
-                final String exceptionMsg =
+                String exceptionMsg =
                         "Either the previous or the following task must be set.";
                 throw new IllegalStateException(exceptionMsg);
             }
 
-            final Task newTask = project.task(name.getValue())
-                                        .doLast(action);
+            Task newTask = project.task(name.getValue())
+                                  .doLast(action);
             dependTask(newTask, project);
             addTaskIO(newTask);
-            final GradleTask result = new GradleTask(name, project);
+            GradleTask result = new GradleTask(name, project);
             return result;
         }
 
@@ -204,20 +204,21 @@ public final class GradleTask {
                 task.dependsOn(previousTask.getValue());
             }
             if (followingTask != null) {
-                final TaskContainer existingTasks = project.getTasks();
+                TaskContainer existingTasks = project.getTasks();
                 existingTasks.getByPath(followingTask.getValue())
                              .dependsOn(task);
             }
             if (previousTaskOfAllProjects != null) {
-                final Project root = project.getRootProject();
+                Project root = project.getRootProject();
                 dependTaskOnAllProjects(task, root);
             }
         }
 
-        private void dependTaskOnAllProjects(final Task task, Project rootProject) {
-            final String prevTaskName = previousTaskOfAllProjects.getValue();
+        private void dependTaskOnAllProjects(Task task, Project rootProject) {
+            String prevTaskName = previousTaskOfAllProjects.getValue();
             ProjectHierarchy.applyToAll(rootProject, project -> {
-                final Task existingTask = project.getTasks().findByName(prevTaskName);
+                Task existingTask = project.getTasks()
+                                           .findByName(prevTaskName);
                 if (existingTask != null) {
                     task.dependsOn(existingTask);
                 }
@@ -257,7 +258,7 @@ public final class GradleTask {
         if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        final GradleTask other = (GradleTask) obj;
+        GradleTask other = (GradleTask) obj;
         return Objects.equals(this.name, other.name)
                 && Objects.equals(this.project, other.project);
     }
