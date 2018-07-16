@@ -39,13 +39,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @DisplayName("Attribute should")
 class AttributeTest {
 
-    public static final long LONG_VAL = 10_001L;
-    private Associations msg;
+    private static final long LONG_VAL = 10_001L;
 
     private final StrAttribute strAttr = new StrAttribute();
     private final BoolAttribute boolAttr = new BoolAttribute();
     private final LongAttribute longAttr = new LongAttribute();
     private final TimestampAttribute timestampAttr = new TimestampAttribute();
+
+    private Associations msg;
 
     @BeforeEach
     void setUp() {
@@ -154,7 +155,7 @@ class AttributeTest {
     static final class TimestampAttribute extends AssociationAttribute<Timestamp> {
 
         TimestampAttribute() {
-            super("somethingBorrowed");
+            super("timestamp-value");
         }
     }
 }
