@@ -61,7 +61,7 @@ public class FileNameShould {
 
     @Test
     public void return_words() {
-        final List<String> words = of("some_file_name.proto").words();
+        List<String> words = of("some_file_name.proto").words();
 
         assertEquals(ImmutableList.of("some", "file", "name"), words);
     }
@@ -76,7 +76,7 @@ public class FileNameShould {
 
     @Test
     public void tell_commands_file_kind() {
-        final FileName commandsFile = of("my_commands.proto");
+        FileName commandsFile = of("my_commands.proto");
 
         assertTrue(commandsFile.isCommands());
         assertFalse(commandsFile.isEvents());
@@ -85,7 +85,7 @@ public class FileNameShould {
 
     @Test
     public void tell_events_file_kind() {
-        final FileName eventsFile = of("project_events.proto");
+        FileName eventsFile = of("project_events.proto");
 
         assertTrue(eventsFile.isEvents());
         assertFalse(eventsFile.isCommands());
@@ -94,7 +94,7 @@ public class FileNameShould {
 
     @Test
     public void tell_rejections_file_kind() {
-        final FileName rejectsionFile = of("rejections.proto");
+        FileName rejectsionFile = of("rejections.proto");
 
         assertTrue(rejectsionFile.isRejections());
         assertFalse(rejectsionFile.isCommands());

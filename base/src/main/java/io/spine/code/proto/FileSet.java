@@ -83,8 +83,8 @@ public final class FileSet {
      * Creates a new file set by parsing the passed descriptor set file.
      */
     private static FileSet parse(String descriptorSetFile) {
-        final Collection<FileDescriptorProto> files = FileDescriptors.parse(descriptorSetFile);
-        final FileSet result = Linker.link(files);
+        Collection<FileDescriptorProto> files = FileDescriptors.parse(descriptorSetFile);
+        FileSet result = Linker.link(files);
         return result;
     }
 
@@ -92,8 +92,8 @@ public final class FileSet {
      * Loads main file set from resources.
      */
     public static FileSet load() {
-        final Collection<FileDescriptorProto> fileSets = FileDescriptors.load();
-        final FileSet fileSet = Linker.link(fileSets);
+        Collection<FileDescriptorProto> fileSets = FileDescriptors.load();
+        FileSet fileSet = Linker.link(fileSets);
         return fileSet;
     }
 
@@ -135,7 +135,7 @@ public final class FileSet {
      * {@code false} otherwise.
      */
     public boolean contains(FileName fileName) {
-        final Optional<FileDescriptor> found = tryFind(fileName);
+        Optional<FileDescriptor> found = tryFind(fileName);
         return found.isPresent();
     }
 
@@ -144,8 +144,8 @@ public final class FileSet {
      * {@code false} otherwise.
      */
     public boolean containsAll(Collection<FileName> fileNames) {
-        final FileSet found = find(fileNames);
-        final boolean result = found.size() == fileNames.size();
+        FileSet found = find(fileNames);
+        boolean result = found.size() == fileNames.size();
         return result;
     }
 
@@ -187,7 +187,7 @@ public final class FileSet {
      * Obtains the size of the set.
      */
     public int size() {
-        final int result = files.size();
+        int result = files.size();
         return result;
     }
 
@@ -195,7 +195,7 @@ public final class FileSet {
      * Verifies if the set is empty.
      */
     public boolean isEmpty() {
-        final boolean result = files.isEmpty();
+        boolean result = files.isEmpty();
         return result;
     }
 
@@ -203,7 +203,7 @@ public final class FileSet {
      * Obtains alphabetically sorted list of names of files of this set.
      */
     public List<FileName> getFileNames() {
-        final List<FileName> fileNames =
+        List<FileName> fileNames =
                 files.keySet()
                      .stream()
                      .sorted()
@@ -234,7 +234,7 @@ public final class FileSet {
         if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        final FileSet other = (FileSet) obj;
+        FileSet other = (FileSet) obj;
         return Objects.equals(this.files, other.files);
     }
 }

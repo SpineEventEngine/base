@@ -44,7 +44,7 @@ public class TimeShould {
 
     @Test
     public void accept_time_provider() {
-        final Timestamp fiveMinutesAgo = subtract(getCurrentTime(), DURATION_5_MINUTES);
+        Timestamp fiveMinutesAgo = subtract(getCurrentTime(), DURATION_5_MINUTES);
 
         setProvider(new ConstantTimeProvider(fiveMinutesAgo));
 
@@ -53,7 +53,7 @@ public class TimeShould {
 
     @Test
     public void reset_time_provider_to_default() {
-        final Timestamp aMinuteAgo = subtract(systemTime(), DURATION_1_MINUTE);
+        Timestamp aMinuteAgo = subtract(systemTime(), DURATION_1_MINUTE);
 
         setProvider(new ConstantTimeProvider(aMinuteAgo));
         resetProvider();

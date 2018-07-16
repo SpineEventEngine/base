@@ -73,7 +73,7 @@ public enum ScalarType {
             }
         }
 
-        final String msg = format("Protobuf type \"%s\" is not a scalar value type.", protoScalar);
+        String msg = format("Protobuf type \"%s\" is not a scalar value type.", protoScalar);
         throw new IllegalStateException(msg);
     }
 

@@ -64,7 +64,7 @@ class MessageFieldValidator extends FieldValidator<Message> {
 
     @Override
     protected void validateOwnRules() {
-        final boolean validateFields = getValidateOption();
+        boolean validateFields = getValidateOption();
         if (validateFields) {
             validateFields();
         }
@@ -75,23 +75,23 @@ class MessageFieldValidator extends FieldValidator<Message> {
 
     @Override
     protected boolean isValueNotSet(Message value) {
-        final boolean result = isDefault(value);
+        boolean result = isDefault(value);
         return result;
     }
 
     private boolean isTimestamp() {
-        final ImmutableList<Message> values = getValues();
-        final Message value = values.isEmpty()
-                ? null
-                : values.get(0);
-        final boolean result = value instanceof Timestamp;
+        ImmutableList<Message> values = getValues();
+        Message value = values.isEmpty()
+                        ? null
+                        : values.get(0);
+        boolean result = value instanceof Timestamp;
         return result;
     }
 
     private void validateFields() {
         for (Message value : getValues()) {
-            final MessageValidator validator = MessageValidator.newInstance(getFieldContext());
-            final List<ConstraintViolation> violations = validator.validate(value);
+            MessageValidator validator = MessageValidator.newInstance(getFieldContext());
+            List<ConstraintViolation> violations = validator.validate(value);
             if (!violations.isEmpty()) {
                 addViolation(newValidViolation(value, violations));
             }
@@ -99,13 +99,13 @@ class MessageFieldValidator extends FieldValidator<Message> {
     }
 
     private void validateTimestamps() {
-        final Time when = timeConstraint.getIn();
+        Time when = timeConstraint.getIn();
         if (when == TIME_UNDEFINED) {
             return;
         }
-        final Timestamp now = getCurrentTime();
+        Timestamp now = getCurrentTime();
         for (Message value : getValues()) {
-            final Timestamp time = (Timestamp) value;
+            Timestamp time = (Timestamp) value;
             if (isTimeInvalid(time, when, now)) {
                 addViolation(newTimeViolation(time));
                 return; // return because one error message is enough for the "time" option
@@ -123,45 +123,45 @@ class MessageFieldValidator extends FieldValidator<Message> {
      * {@code false} otherwise
      */
     private static boolean isTimeInvalid(Timestamp timeToCheck, Time whenExpected, Timestamp now) {
-        final boolean isValid = (whenExpected == FUTURE)
-                                ? isLaterThan(timeToCheck, /*than*/ now)
-                                : isLaterThan(now, /*than*/ timeToCheck);
-        final boolean isInvalid = !isValid;
+        boolean isValid = (whenExpected == FUTURE)
+                          ? isLaterThan(timeToCheck, /*than*/ now)
+                          : isLaterThan(now, /*than*/ timeToCheck);
+        boolean isInvalid = !isValid;
         return isInvalid;
     }
 
     private static boolean isLaterThan(Timestamp t1, Timestamp t2) {
         int result = Long.compare(t1.getSeconds(), t2.getSeconds());
         result = (result == 0)
-                ? Integer.compare(t1.getNanos(), t2.getNanos())
-                : result;
+                 ? Integer.compare(t1.getNanos(), t2.getNanos())
+                 : result;
         return result > 0;
     }
 
     private ConstraintViolation newTimeViolation(Timestamp fieldValue) {
-        final String msg = getErrorMsgFormat(timeConstraint, timeConstraint.getMsgFormat());
-        final String when = timeConstraint.getIn()
-                                          .toString()
-                                          .toLowerCase();
-        final ConstraintViolation violation = ConstraintViolation.newBuilder()
-                                                                 .setMsgFormat(msg)
-                                                                 .addParam(when)
-                                                                 .setFieldPath(getFieldPath())
-                                                                 .setFieldValue(pack(fieldValue))
-                                                                 .build();
+        String msg = getErrorMsgFormat(timeConstraint, timeConstraint.getMsgFormat());
+        String when = timeConstraint.getIn()
+                                    .toString()
+                                    .toLowerCase();
+        ConstraintViolation violation = ConstraintViolation.newBuilder()
+                                                           .setMsgFormat(msg)
+                                                           .addParam(when)
+                                                           .setFieldPath(getFieldPath())
+                                                           .setFieldValue(pack(fieldValue))
+                                                           .build();
         return violation;
     }
 
     private ConstraintViolation newValidViolation(Message fieldValue,
                                                   Iterable<ConstraintViolation> violations) {
-        final IfInvalidOption ifInvalid = ifInvalid();
-        final String msg = getErrorMsgFormat(ifInvalid, ifInvalid.getMsgFormat());
-        final ConstraintViolation violation = ConstraintViolation.newBuilder()
-                                                                 .setMsgFormat(msg)
-                                                                 .setFieldPath(getFieldPath())
-                                                                 .setFieldValue(pack(fieldValue))
-                                                                 .addAllViolation(violations)
-                                                                 .build();
+        IfInvalidOption ifInvalid = ifInvalid();
+        String msg = getErrorMsgFormat(ifInvalid, ifInvalid.getMsgFormat());
+        ConstraintViolation violation = ConstraintViolation.newBuilder()
+                                                           .setMsgFormat(msg)
+                                                           .setFieldPath(getFieldPath())
+                                                           .setFieldValue(pack(fieldValue))
+                                                           .addAllViolation(violations)
+                                                           .build();
         return violation;
     }
 }

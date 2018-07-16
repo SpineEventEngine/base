@@ -48,7 +48,7 @@ final class BooleanStringifier extends Stringifier<Boolean> implements Serializa
     @Override
     protected Boolean fromString(String s) {
         checkNotNull(s);
-        final Boolean result = Boolean.parseBoolean(s);
+        Boolean result = Boolean.parseBoolean(s);
         return result;
     }
 
