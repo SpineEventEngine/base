@@ -53,15 +53,15 @@ class PreTagFormatting implements FormattingAction {
             return javadoc;
         }
 
-        final Matcher matcher = PATTERN_OPENING_PRE.matcher(javadoc);
-        final String withoutOpeningPre = matcher.replaceFirst("");
+        Matcher matcher = PATTERN_OPENING_PRE.matcher(javadoc);
+        String withoutOpeningPre = matcher.replaceFirst("");
         return removeLastClosingPre(withoutOpeningPre);
     }
 
     private static String removeLastClosingPre(String text) {
-        final int tagIndex = text.lastIndexOf(CLOSING_PRE);
-        final String beforeTag = text.substring(0, tagIndex);
-        final String afterTag = text.substring(tagIndex + CLOSING_PRE.length());
+        int tagIndex = text.lastIndexOf(CLOSING_PRE);
+        String beforeTag = text.substring(0, tagIndex);
+        String afterTag = text.substring(tagIndex + CLOSING_PRE.length());
         return beforeTag + afterTag;
     }
 
@@ -75,6 +75,7 @@ class PreTagFormatting implements FormattingAction {
      * @return {@code true} if the Javadoc contains opening and closing {@code pre} tag
      */
     private static boolean shouldFormat(String javadoc) {
-        return NOT_FORMATTED_DOC_PATTERN.matcher(javadoc).matches();
+        return NOT_FORMATTED_DOC_PATTERN.matcher(javadoc)
+                                        .matches();
     }
 }
