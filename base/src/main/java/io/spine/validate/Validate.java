@@ -53,8 +53,8 @@ public final class Validate {
      */
     public static boolean isDefault(Message object) {
         checkNotNull(object);
-        final boolean result = object.getDefaultInstanceForType()
-                                     .equals(object);
+        boolean result = object.getDefaultInstanceForType()
+                               .equals(object);
         return result;
     }
 
@@ -66,7 +66,7 @@ public final class Validate {
      */
     public static boolean isNotDefault(Message object) {
         checkNotNull(object);
-        final boolean result = !isDefault(object);
+        boolean result = !isDefault(object);
         return result;
     }
 
@@ -165,8 +165,8 @@ public final class Validate {
     public static <M extends Message> M checkDefault(M object) {
         checkNotNull(object);
         if (!isDefault(object)) {
-            final String typeName = TypeName.of(object)
-                                            .value();
+            String typeName = TypeName.of(object)
+                                      .value();
             throw newIllegalStateException("The message is not in the default state: %s", typeName);
         }
         return object;
@@ -206,7 +206,7 @@ public final class Validate {
         checkParameter(!stringToCheck.isEmpty(),
                        "Field %s must not be an empty string.", fieldName
         );
-        final String trimmed = stringToCheck.trim();
+        String trimmed = stringToCheck.trim();
         checkParameter(trimmed.length() > 0,
                        "Field %s must not be a blank string.", fieldName
         );
@@ -279,8 +279,8 @@ public final class Validate {
     public static void checkValid(Message message) throws ValidationException {
         checkNotNull(message);
 
-        final List<ConstraintViolation> violations = MessageValidator.newInstance()
-                                                                     .validate(message);
+        List<ConstraintViolation> violations = MessageValidator.newInstance()
+                                                               .validate(message);
         if (!violations.isEmpty()) {
             throw new ValidationException(violations);
         }

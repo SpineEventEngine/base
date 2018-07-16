@@ -57,13 +57,13 @@ public class UrlQueryParametersShould {
 
     @Test
     public void convert_proper_parameters() {
-        final String key = "keyOne";
-        final String value = "valueTwo";
+        String key = "keyOne";
+        String value = "valueTwo";
 
-        final String query = key + '=' + value;
+        String query = key + '=' + value;
 
-        final QueryParameter parameter1 = UrlQueryParameters.parse(query);
-        final QueryParameter parameter2 = UrlQueryParameters.from(key, value);
+        QueryParameter parameter1 = UrlQueryParameters.parse(query);
+        QueryParameter parameter2 = UrlQueryParameters.from(key, value);
 
         assertEquals(key, parameter1.getKey());
         assertEquals(value, parameter1.getValue());

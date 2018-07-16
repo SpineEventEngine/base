@@ -48,7 +48,8 @@ public class Files2Should {
 
     @Test
     public void ensure_file() {
-        File expected = new File(testFolder.getRoot().getAbsolutePath(), "with/sub/dirs/file.txt");
+        File expected = new File(testFolder.getRoot()
+                                           .getAbsolutePath(), "with/sub/dirs/file.txt");
 
         boolean result = ensureFile(expected);
 

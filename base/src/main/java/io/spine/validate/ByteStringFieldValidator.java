@@ -43,7 +43,7 @@ class ByteStringFieldValidator extends FieldValidator<ByteString> {
 
     @Override
     protected boolean isValueNotSet(ByteString value) {
-        final boolean result = value.isEmpty();
+        boolean result = value.isEmpty();
         return result;
     }
 
@@ -61,10 +61,10 @@ class ByteStringFieldValidator extends FieldValidator<ByteString> {
     @Override
     @SuppressWarnings("RefusedBequest")
     protected void validateEntityId() {
-        final ConstraintViolation violation = ConstraintViolation.newBuilder()
-                                                                 .setMsgFormat(INVALID_ID_TYPE_MSG)
-                                                                 .setFieldPath(getFieldPath())
-                                                                 .build();
+        ConstraintViolation violation = ConstraintViolation.newBuilder()
+                                                           .setMsgFormat(INVALID_ID_TYPE_MSG)
+                                                           .setFieldPath(getFieldPath())
+                                                           .build();
         addViolation(violation);
     }
 }
