@@ -20,7 +20,6 @@
 
 package io.spine.tools.gradle;
 
-import io.spine.tools.gradle.GradleProject;
 import io.spine.tools.gradle.GradleProject.NoOp;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -65,17 +64,17 @@ public class SpinePluginBuilderShould {
     @Test
     public void create_task_dependant_on_all_tasks_of_given_name() {
         Project subProject = ProjectBuilder.builder()
-                                                 .withParent(project)
-                                                 .build();
+                                           .withParent(project)
+                                           .build();
         subProject.getPluginManager()
                   .apply(GradleProject.JAVA_PLUGIN_ID);
         SpinePlugin plugin = TestPlugin.INSTANCE;
         GradleTask task = plugin.newTask(ANNOTATE_PROTO, NoOp.action())
-                                      .insertAfterAllTasks(COMPILE_JAVA)
-                                      .applyNowTo(subProject);
+                                .insertAfterAllTasks(COMPILE_JAVA)
+                                .applyNowTo(subProject);
         TaskContainer subProjectTasks = subProject.getTasks();
         Task newTask = subProjectTasks.findByName(task.getName()
-                                                            .getValue());
+                                                      .getValue());
         assertNotNull(newTask);
         Collection<?> dependencies = newTask.getDependsOn();
         assertTrue(dependencies.contains(subProjectTasks.findByName(COMPILE_JAVA.getValue())));

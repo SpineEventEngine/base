@@ -192,7 +192,7 @@ public final class GradleTask {
             }
 
             Task newTask = project.task(name.getValue())
-                                        .doLast(action);
+                                  .doLast(action);
             dependTask(newTask, project);
             addTaskIO(newTask);
             GradleTask result = new GradleTask(name, project);
@@ -217,7 +217,8 @@ public final class GradleTask {
         private void dependTaskOnAllProjects(Task task, Project rootProject) {
             String prevTaskName = previousTaskOfAllProjects.getValue();
             ProjectHierarchy.applyToAll(rootProject, project -> {
-                Task existingTask = project.getTasks().findByName(prevTaskName);
+                Task existingTask = project.getTasks()
+                                           .findByName(prevTaskName);
                 if (existingTask != null) {
                     task.dependsOn(existingTask);
                 }
