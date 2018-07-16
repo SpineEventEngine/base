@@ -49,7 +49,7 @@ public abstract class SpinePlugin implements Plugin<Project> {
      * @see GradleTask.Builder#applyNowTo(Project)
      */
     protected GradleTask.Builder newTask(TaskName name, Action<Task> action) {
-        final GradleTask.Builder result = new GradleTask.Builder(name, action);
+        GradleTask.Builder result = new GradleTask.Builder(name, action);
         return result;
     }
 
