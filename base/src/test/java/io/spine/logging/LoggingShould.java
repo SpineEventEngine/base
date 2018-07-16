@@ -45,11 +45,11 @@ public class LoggingShould {
     public void have_utility_ctor() {
         assertHasPrivateParameterlessCtor(Logging.class);
     }
-    
+
     @Test
     public void supply_logger_for_class() {
         Supplier<Logger> supplier = Logging.supplyFor(getClass());
-        final Logger logger = supplier.get();
+        Logger logger = supplier.get();
 
         assertNotNull(logger);
         assertSame(logger, supplier.get());
@@ -57,9 +57,9 @@ public class LoggingShould {
 
     @Test
     public void create_logger_for_each_class_in_hierarchy() {
-        final Logger baseLogger = new Base().log();
-        final Logger childOneLogger = new ChildOne().log();
-        final Logger childTwoLogger = new ChildTwo().log();
+        Logger baseLogger = new Base().log();
+        Logger childOneLogger = new ChildOne().log();
+        Logger childTwoLogger = new ChildTwo().log();
 
         assertNotSame(baseLogger, childOneLogger);
         assertNotSame(baseLogger, childTwoLogger);
@@ -69,9 +69,12 @@ public class LoggingShould {
         assertNotEquals(baseLogger, childTwoLogger);
         assertNotEquals(childOneLogger, childTwoLogger);
 
-        assertTrue(baseLogger.getName().contains(Base.class.getName()));
-        assertTrue(childOneLogger.getName().contains(ChildOne.class.getName()));
-        assertTrue(childTwoLogger.getName().contains(ChildTwo.class.getName()));
+        assertTrue(baseLogger.getName()
+                             .contains(Base.class.getName()));
+        assertTrue(childOneLogger.getName()
+                                 .contains(ChildOne.class.getName()));
+        assertTrue(childTwoLogger.getName()
+                                 .contains(ChildTwo.class.getName()));
     }
 
     @Test

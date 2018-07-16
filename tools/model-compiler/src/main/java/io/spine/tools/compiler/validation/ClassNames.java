@@ -20,12 +20,12 @@
 
 package io.spine.tools.compiler.validation;
 
-import com.google.common.base.Optional;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.squareup.javapoet.ClassName;
 import io.spine.tools.compiler.MessageTypeCache;
 
 import java.util.Collection;
+import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.compiler.fieldtype.FieldTypes.trimTypeName;

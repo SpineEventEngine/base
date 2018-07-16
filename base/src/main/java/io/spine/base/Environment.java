@@ -112,7 +112,7 @@ public final class Environment {
         }
 
         // Check stacktrace for known frameworks.
-        final String stacktrace = Throwables.getStackTraceAsString(new RuntimeException(""));
+        String stacktrace = Throwables.getStackTraceAsString(new RuntimeException(""));
         if (stacktrace.contains("org.junit")
                 || stacktrace.contains("org.testng")) {
             this.tests = true;

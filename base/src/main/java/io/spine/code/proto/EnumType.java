@@ -57,7 +57,7 @@ public final class EnumType extends Type<EnumDescriptor, EnumDescriptorProto> {
         // Need to go through top level enums and those nested messages.
     static TypeSet allFrom(FileDescriptor file) {
         checkNotNull(file);
-        final TypeSet.Builder result = TypeSet.newBuilder();
+        TypeSet.Builder result = TypeSet.newBuilder();
 
         for (EnumDescriptor enumDescriptor : file.getEnumTypes()) {
             result.add(create(enumDescriptor));

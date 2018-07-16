@@ -40,12 +40,12 @@ public class CamelCase {
      * {@code "TestHTTPRequest"}.
      */
     public static String convert(UnderscoredName name) {
-        final Iterator<String> iterator = name.words()
-                                              .iterator();
-        final StringBuilder builder = new StringBuilder(name.value()
-                                                            .length());
+        Iterator<String> iterator = name.words()
+                                        .iterator();
+        StringBuilder builder = new StringBuilder(name.value()
+                                                      .length());
         while (iterator.hasNext()) {
-            final String word = iterator.next();
+            String word = iterator.next();
             if (!word.isEmpty()) {
                 builder.append(Character.toUpperCase(word.charAt(0)))
                        .append(word.substring(1));

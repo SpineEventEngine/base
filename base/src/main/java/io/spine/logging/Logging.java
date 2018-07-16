@@ -73,10 +73,10 @@ public class Logging {
      * @param cls the class for which to supply a logger
      * @return new supplier
      */
-    public static Supplier<Logger> supplyFor(final Class<?> cls) {
+    public static Supplier<Logger> supplyFor(Class<?> cls) {
         checkNotNull(cls);
-        final Logger instance = getLogger(cls);
-        final Supplier<Logger> defaultSupplier = () -> instance;
+        Logger instance = getLogger(cls);
+        Supplier<Logger> defaultSupplier = () -> instance;
         return defaultSupplier;
     }
 
@@ -94,10 +94,10 @@ public class Logging {
      * @return the logger instance
      */
     public static Logger getLogger(Class<?> cls) {
-        final Logger logger = LoggerFactory.getLogger(cls);
+        Logger logger = LoggerFactory.getLogger(cls);
         if (Environment.getInstance()
                        .isTests()) {
-            final SubstituteLogger substLogger = new SubstituteLogger(cls.getName(), null, true);
+            SubstituteLogger substLogger = new SubstituteLogger(cls.getName(), null, true);
             substLogger.setDelegate(logger);
             return substLogger;
         } else {
@@ -123,7 +123,7 @@ public class Logging {
         checkNotNull(errorFormat);
         checkNotNull(params);
         if (log.isWarnEnabled()) {
-            final String msg = format(errorFormat, params);
+            String msg = format(errorFormat, params);
             log.warn(msg, th);
         }
     }

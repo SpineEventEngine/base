@@ -160,7 +160,7 @@ public interface ValidatingBuilder<T extends Message, B extends Message.Builder>
         public static <T extends Message> Class<T> getMessageClass(
                 Class<? extends ValidatingBuilder> builderClass) {
             @SuppressWarnings("unchecked") // The type is ensured by the class declaration.
-            final Class<T> result = (Class<T>)MESSAGE.getArgumentIn(builderClass);
+            Class<T> result = (Class<T>)MESSAGE.getArgumentIn(builderClass);
             return result;
         }
 

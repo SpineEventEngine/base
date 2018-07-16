@@ -86,9 +86,9 @@ class ValidationRule {
 
     private static Collection<FieldDescriptor> constructTargets(Descriptor ruleDescriptor,
                                                                 Iterable<String> targetPaths) {
-        final ImmutableCollection.Builder<FieldDescriptor> targets = ImmutableSet.builder();
+        ImmutableCollection.Builder<FieldDescriptor> targets = ImmutableSet.builder();
         for (String targetPath : targetPaths) {
-            final FieldDescriptor target = getTargetDescriptor(targetPath);
+            FieldDescriptor target = getTargetDescriptor(targetPath);
             checkRuleFields(ruleDescriptor, target);
             targets.add(target);
         }
@@ -102,18 +102,18 @@ class ValidationRule {
      * @return the field descriptor
      */
     private static FieldDescriptor getTargetDescriptor(String targetPath) {
-        final int typeAndFieldNameBound = targetPath.lastIndexOf(FIELD_NAME_SEPARATOR);
+        int typeAndFieldNameBound = targetPath.lastIndexOf(FIELD_NAME_SEPARATOR);
         if (typeAndFieldNameBound == -1) {
-            final String msg = "Invalid validation rule target `%s`. " +
+            String msg = "Invalid validation rule target `%s`. " +
                     "Proper format is `package.TargetMessage.target_field`.";
             throw newIllegalStateException(msg, targetPath);
         }
 
-        final String fieldName = targetPath.substring(typeAndFieldNameBound + 1);
-        final String targetMessageType = targetPath.substring(0, typeAndFieldNameBound);
-        final Descriptor message = TypeName.of(targetMessageType)
-                                           .getMessageDescriptor();
-        final FieldDescriptor field = message.findFieldByName(fieldName);
+        String fieldName = targetPath.substring(typeAndFieldNameBound + 1);
+        String targetMessageType = targetPath.substring(0, typeAndFieldNameBound);
+        Descriptor message = TypeName.of(targetMessageType)
+                                     .getMessageDescriptor();
+        FieldDescriptor field = message.findFieldByName(fieldName);
         if (field == null) {
             throw newIllegalStateException("The field '%s' is not found in the '%s' message.",
                                            fieldName, message.getName());
@@ -123,7 +123,7 @@ class ValidationRule {
 
     private static FieldDescriptor checkTargetType(FieldDescriptor targetDescriptor) {
         if (targetDescriptor.getJavaType() != MESSAGE) {
-            final String errMsg = "Validation rule target must be a Message." +
+            String errMsg = "Validation rule target must be a Message." +
                     " Specified type is `%s`.";
             throw newIllegalStateException(errMsg, targetDescriptor.getJavaType());
         }
@@ -140,19 +140,19 @@ class ValidationRule {
      */
     private static void checkRuleFields(Descriptor rule, FieldDescriptor target) {
         for (FieldDescriptor ruleField : rule.getFields()) {
-            final Descriptor targetType = target.getMessageType();
-            final String ruleFieldName = ruleField.getName();
-            final FieldDescriptor targetField = targetType.findFieldByName(ruleFieldName);
+            Descriptor targetType = target.getMessageType();
+            String ruleFieldName = ruleField.getName();
+            FieldDescriptor targetField = targetType.findFieldByName(ruleFieldName);
             if (targetField == null) {
-                final String msg = "The validation rule '%s' declares the field `%s`, " +
+                String msg = "The validation rule '%s' declares the field `%s`, " +
                         "which was not found in the `%s` message.";
                 throw newIllegalStateException(msg, rule.getFullName(),
                                                ruleFieldName, targetType.getName());
             }
 
-            final boolean isCorrectType = ruleField.getJavaType() == targetField.getJavaType();
+            boolean isCorrectType = ruleField.getJavaType() == targetField.getJavaType();
             if (!isCorrectType) {
-                final String errMsg = "`%s` must be of type `%s`.";
+                String errMsg = "`%s` must be of type `%s`.";
                 throw newIllegalStateException(errMsg, ruleField.getFullName(),
                                                targetField.getJavaType());
             }
@@ -168,7 +168,7 @@ class ValidationRule {
             return false;
         }
 
-        final ValidationRule other = (ValidationRule) o;
+        ValidationRule other = (ValidationRule) o;
 
         return descriptor.equals(other.descriptor);
     }

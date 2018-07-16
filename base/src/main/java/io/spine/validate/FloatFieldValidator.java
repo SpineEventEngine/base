@@ -41,13 +41,13 @@ class FloatFieldValidator extends FloatFieldValidatorBase<Float> {
 
     @Override
     protected Float toNumber(String value) {
-        final Float min = Float.valueOf(value);
+        Float min = Float.valueOf(value);
         return min;
     }
 
     @Override
     protected Float getAbs(Float value) {
-        final Float abs = abs(value);
+        Float abs = abs(value);
         return abs;
     }
 }
