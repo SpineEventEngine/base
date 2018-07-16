@@ -66,7 +66,7 @@ public class PackingIteratorShould {
     @Test
     public void implement_next() throws Exception {
         while (packer.hasNext()) {
-            final Any packed = packer.next();
+            Any packed = packer.next();
             assertNotNull(packed);
             assertFalse(isDefault(unpack(packed)));
         }

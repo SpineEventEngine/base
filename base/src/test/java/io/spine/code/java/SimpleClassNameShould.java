@@ -20,7 +20,6 @@
 
 package io.spine.code.java;
 
-import com.google.common.base.Optional;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
@@ -30,6 +29,8 @@ import io.spine.code.proto.FileName;
 import io.spine.code.proto.FileSet;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -68,7 +69,7 @@ public class SimpleClassNameShould {
 
     @Test
     public void obtain_declared_outer_class_name() {
-        final Optional<SimpleClassName> className =
+        Optional<SimpleClassName> className =
                 SimpleClassName.declaredOuterClassName(errorProto.toProto());
 
         assertTrue(className.isPresent());
@@ -86,7 +87,8 @@ public class SimpleClassNameShould {
     @Test
     public void obtains_name_for_message_or_builder() {
         assertEquals(TimestampOrBuilder.class.getSimpleName(),
-                     SimpleClassName.messageOrBuilder(Timestamp.class.getSimpleName()).value());
+                     SimpleClassName.messageOrBuilder(Timestamp.class.getSimpleName())
+                                    .value());
     }
 
     @Test
@@ -98,7 +100,7 @@ public class SimpleClassNameShould {
 
     @Test
     public void convert_to_file_name() {
-        final SimpleClassName className = SimpleClassName.ofMessage(Timestamp.getDescriptor());
+        SimpleClassName className = SimpleClassName.ofMessage(Timestamp.getDescriptor());
         assertTrue(className.toFileName()
                             .value()
                             .contains(Timestamp.class.getSimpleName()));

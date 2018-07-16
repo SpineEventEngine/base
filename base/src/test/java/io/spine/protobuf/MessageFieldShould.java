@@ -52,18 +52,18 @@ public class MessageFieldShould {
 
     @Test
     public void accept_positive_index() {
-        final int index = 5;
+        int index = 5;
 
-        final MessageField field = new TestMessageField(index);
+        MessageField field = new TestMessageField(index);
 
         assertEquals(index, field.getIndex());
     }
 
     @Test
     public void accept_zero_index() {
-        final int index = 0;
+        int index = 0;
 
-        final MessageField field = new TestMessageField(index);
+        MessageField field = new TestMessageField(index);
 
         assertEquals(index, field.getIndex());
     }
@@ -76,7 +76,7 @@ public class MessageFieldShould {
 
     @Test
     public void throw_exception_if_field_is_not_available() {
-        final TestMessageField field = new TestMessageField(STR_VALUE_FIELD_INDEX);
+        TestMessageField field = new TestMessageField(STR_VALUE_FIELD_INDEX);
         field.setIsFieldAvailable(false);
         thrown.expect(MessageFieldException.class);
         field.getValue(stringValue);
@@ -84,30 +84,30 @@ public class MessageFieldShould {
 
     @Test
     public void throw_exception_if_no_field_by_given_index() {
-        final TestMessageField field = new TestMessageField(Integer.MAX_VALUE);
+        TestMessageField field = new TestMessageField(Integer.MAX_VALUE);
         thrown.expect(ArrayIndexOutOfBoundsException.class);
         field.getValue(stringValue);
     }
 
     @Test
     public void return_field_value() {
-        final TestMessageField field = new TestMessageField(STR_VALUE_FIELD_INDEX);
+        TestMessageField field = new TestMessageField(STR_VALUE_FIELD_INDEX);
 
-        final Object value = field.getValue(stringValue);
+        Object value = field.getValue(stringValue);
 
         assertEquals(stringValue.getValue(), value);
     }
 
     @Test
     public void return_field_descriptor() {
-        final FieldDescriptor descriptor = getFieldDescriptor(stringValue, STR_VALUE_FIELD_INDEX);
+        FieldDescriptor descriptor = getFieldDescriptor(stringValue, STR_VALUE_FIELD_INDEX);
 
         assertEquals(JavaType.STRING, descriptor.getJavaType());
     }
 
     @Test
     public void return_field_name() {
-        final String fieldName = getFieldName(stringValue, STR_VALUE_FIELD_INDEX);
+        String fieldName = getFieldName(stringValue, STR_VALUE_FIELD_INDEX);
 
         assertEquals(STR_VALUE_FIELD_NAME, fieldName);
     }

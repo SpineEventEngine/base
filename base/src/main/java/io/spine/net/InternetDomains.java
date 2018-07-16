@@ -62,9 +62,9 @@ public final class InternetDomains {
         checkNotNull(name);
         checkArgumentIsDomainName(name);
 
-        final InternetDomain result = InternetDomain.newBuilder()
-                                                    .setValue(name.toString())
-                                                    .build();
+        InternetDomain result = InternetDomain.newBuilder()
+                                              .setValue(name.toString())
+                                              .build();
         return result;
     }
 }

@@ -46,11 +46,11 @@ public class ErrorsShould {
 
     @Test
     public void convert_cause_of_throwable_to_Error() {
-        final int errorCode = 404;
-        final String errorMessage = newUuid();
+        int errorCode = 404;
+        String errorMessage = newUuid();
 
         // A Throwable with cause.
-        final RuntimeException throwable = new IllegalStateException(
+        RuntimeException throwable = new IllegalStateException(
                 new RuntimeException(errorMessage)
         );
 
@@ -62,8 +62,8 @@ public class ErrorsShould {
 
     @Test
     public void convert_throwable_to_Error() {
-        final String errorMessage = newUuid();
-        final RuntimeException throwable = new RuntimeException(errorMessage);
+        String errorMessage = newUuid();
+        RuntimeException throwable = new RuntimeException(errorMessage);
 
         Error error = fromThrowable(throwable);
 
