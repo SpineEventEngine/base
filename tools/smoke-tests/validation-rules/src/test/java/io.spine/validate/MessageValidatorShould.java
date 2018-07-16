@@ -163,10 +163,10 @@ public class MessageValidatorShould {
 
     @Test
     public void find_out_that_required_ByteString_field_is_set() {
-        RequiredByteStringFieldValue validMsg = RequiredByteStringFieldValue.newBuilder()
-                                                                            .setValue(
-                                                                                    newByteString())
-                                                                            .build();
+        RequiredByteStringFieldValue validMsg =
+                RequiredByteStringFieldValue.newBuilder()
+                                            .setValue(newByteString())
+                                            .build();
         validate(validMsg);
         assertIsValid(true);
     }
@@ -202,12 +202,11 @@ public class MessageValidatorShould {
 
     @Test
     public void find_out_that_repeated_required_field_has_valid_values() {
-        RepeatedRequiredMsgFieldValue invalidMsg = RepeatedRequiredMsgFieldValue.newBuilder()
-                                                                                .addValue(
-                                                                                        newStringValue())
-                                                                                .addValue(
-                                                                                        newStringValue())
-                                                                                .build();
+        RepeatedRequiredMsgFieldValue invalidMsg =
+                RepeatedRequiredMsgFieldValue.newBuilder()
+                                             .addValue(newStringValue())
+                                             .addValue(newStringValue())
+                                             .build();
         validate(invalidMsg);
         assertIsValid(true);
     }
@@ -223,8 +222,7 @@ public class MessageValidatorShould {
         RepeatedRequiredMsgFieldValue msg =
                 RepeatedRequiredMsgFieldValue.newBuilder()
                                              .addValue(newStringValue()) // valid value
-                                             .addValue(
-                                                     StringValue.getDefaultInstance()) // empty value
+                                             .addValue(StringValue.getDefaultInstance()) // empty value
                                              .build();
         validate(msg);
         assertIsValid(true);
