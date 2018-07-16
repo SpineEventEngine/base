@@ -197,13 +197,14 @@ abstract class NumberFieldValidator<V extends Number & Comparable<V>> extends Fi
                                                     boolean isInclusive,
                                                     String minOrMax) {
         String msg = getErrorMsgFormat(option, customMsg);
-        ConstraintViolation.Builder violation = ConstraintViolation.newBuilder()
-                                                                   .setMsgFormat(msg)
-                                                                   .addParam(
-                                                                           isInclusive ? "or equal to " : "")
-                                                                   .addParam(minOrMax)
-                                                                   .setFieldPath(getFieldPath())
-                                                                   .setFieldValue(wrap(value));
+        ConstraintViolation.Builder violation =
+                ConstraintViolation.newBuilder()
+                                   .setMsgFormat(msg)
+                                   .addParam(
+                                           isInclusive ? "or equal to " : "")
+                                   .addParam(minOrMax)
+                                   .setFieldPath(getFieldPath())
+                                   .setFieldValue(wrap(value));
         return violation.build();
     }
 
@@ -222,12 +223,13 @@ abstract class NumberFieldValidator<V extends Number & Comparable<V>> extends Fi
         String msg = getErrorMsgFormat(digitsOption, digitsOption.getMsgFormat());
         String intMax = String.valueOf(digitsOption.getIntegerMax());
         String fractionMax = String.valueOf(digitsOption.getFractionMax());
-        ConstraintViolation.Builder violation = ConstraintViolation.newBuilder()
-                                                                   .setMsgFormat(msg)
-                                                                   .addParam(intMax)
-                                                                   .addParam(fractionMax)
-                                                                   .setFieldPath(getFieldPath())
-                                                                   .setFieldValue(wrap(value));
+        ConstraintViolation.Builder violation =
+                ConstraintViolation.newBuilder()
+                                   .setMsgFormat(msg)
+                                   .addParam(intMax)
+                                   .addParam(fractionMax)
+                                   .setFieldPath(getFieldPath())
+                                   .setFieldValue(wrap(value));
         return violation.build();
     }
 }
