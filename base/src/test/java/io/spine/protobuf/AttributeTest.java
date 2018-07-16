@@ -20,7 +20,6 @@
 
 package io.spine.protobuf;
 
-import com.google.common.base.Optional;
 import com.google.protobuf.Any;
 import com.google.protobuf.Timestamp;
 import io.spine.base.Time;
@@ -30,6 +29,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;

@@ -20,12 +20,12 @@
 
 package io.spine.protobuf;
 
-import com.google.common.base.Optional;
 import com.google.protobuf.Any;
 import com.google.protobuf.Message;
 import io.spine.util.NamedProperty;
 
 import java.util.Map;
+import java.util.Optional;
 
 import static io.spine.protobuf.TypeConverter.toAny;
 import static io.spine.protobuf.TypeConverter.toObject;
@@ -34,10 +34,10 @@ import static io.spine.protobuf.TypeConverter.toObject;
  * An attribute stored in a protobuf {@code map<string, Any>}.
  *
  * @param <T> the type of the attribute value, which can be {@code Integer}, {@code Long},
- *            {@code Float}, {@code Double}, {@code Boolean}, or a class implementing {@code Message}
+ *            {@code Float}, {@code Double}, {@code Boolean}, {@code String}, or a class
+ *            implementing {@code Message}
  * @param <M> the type of the message object to which the attribute belongs
  * @param <B> the type of the message builder
- *
  * @author Alexander Yevsyukov
  */
 public abstract class Attribute<T, M extends Message, B extends Message.Builder>
@@ -73,7 +73,7 @@ public abstract class Attribute<T, M extends Message, B extends Message.Builder>
         Any any = map.get(getName());
         if (any == null || Any.getDefaultInstance()
                               .equals(any)) {
-            return Optional.absent();
+            return Optional.empty();
         }
 
         T result = toObject(any, getValueClass());
