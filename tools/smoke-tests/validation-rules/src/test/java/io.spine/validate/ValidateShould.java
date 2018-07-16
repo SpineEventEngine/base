@@ -146,10 +146,10 @@ public class ValidateShould {
     @Test
     public void format_message_from_constraint_violation() {
         ConstraintViolation violation = ConstraintViolation.newBuilder()
-                                                                 .setMsgFormat("test %s test %s")
-                                                                 .addParam("1")
-                                                                 .addParam("2")
-                                                                 .build();
+                                                           .setMsgFormat("test %s test %s")
+                                                           .addParam("1")
+                                                           .addParam("2")
+                                                           .build();
         String formatted = ConstraintViolations.toText(violation);
 
         assertEquals("test 1 test 2", formatted);
@@ -158,9 +158,9 @@ public class ValidateShould {
     @Test
     public void format_message_using_params_from_constraint_violation() {
         ConstraintViolation violation = ConstraintViolation.newBuilder()
-                                                                 .addParam("1")
-                                                                 .addParam("2")
-                                                                 .build();
+                                                           .addParam("1")
+                                                           .addParam("2")
+                                                           .build();
         String formatted = ConstraintViolations.toText("abc %s abc %s", violation);
 
         assertEquals("abc 1 abc 2", formatted);

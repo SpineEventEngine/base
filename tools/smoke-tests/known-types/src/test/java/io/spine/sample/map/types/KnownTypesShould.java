@@ -138,8 +138,10 @@ public class KnownTypesShould {
     }
 
     private void assertIsKnownType(Iterable<String> parentsAndTypeName) {
-        String protoName = Joiner.on(".").join(parentsAndTypeName);
-        String javaName = Joiner.on("$").join(parentsAndTypeName);
+        String protoName = Joiner.on(".")
+                                 .join(parentsAndTypeName);
+        String javaName = Joiner.on("$")
+                                .join(parentsAndTypeName);
         TypeUrl url = TypeUrl.parse(PROTO_TYPE_PREFIX + protoName);
 
         ClassName className = knownTypes.getClassName(url);

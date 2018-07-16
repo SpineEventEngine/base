@@ -46,8 +46,8 @@ public class AlternativeFieldValidatorShould {
     @Test
     public void pass_if_one_field_populated() {
         PersonName fieldPopulated = PersonName.newBuilder()
-                                                    .setFirstName("Alexander")
-                                                    .build();
+                                              .setFirstName("Alexander")
+                                              .build();
         List<? extends ConstraintViolation> violations = validator.validate(fieldPopulated);
         assertTrue(violations.isEmpty());
     }
@@ -55,9 +55,9 @@ public class AlternativeFieldValidatorShould {
     @Test
     public void pass_if_combination_defined() {
         PersonName combinationDefined = PersonName.newBuilder()
-                                                        .setHonorificPrefix("Mr.")
-                                                        .setLastName("Yevsyukov")
-                                                        .build();
+                                                  .setHonorificPrefix("Mr.")
+                                                  .setLastName("Yevsyukov")
+                                                  .build();
         List<? extends ConstraintViolation> violations = validator.validate(combinationDefined);
         assertTrue(violations.isEmpty());
     }
@@ -72,8 +72,8 @@ public class AlternativeFieldValidatorShould {
     @Test
     public void fail_if_defined_not_required() {
         PersonName notRequiredPopulated = PersonName.newBuilder()
-                                                          .setHonorificSuffix("I")
-                                                          .build();
+                                                    .setHonorificSuffix("I")
+                                                    .build();
         List<? extends ConstraintViolation> violations = validator.validate(notRequiredPopulated);
         assertFalse(violations.isEmpty());
     }
@@ -84,8 +84,8 @@ public class AlternativeFieldValidatorShould {
                 new AlternativeFieldValidator(MessageWithMissingField.getDescriptor(),
                                               EMPTY_CONTEXT);
         MessageWithMissingField msg = MessageWithMissingField.newBuilder()
-                                                                   .setPresent(true)
-                                                                   .build();
+                                                             .setPresent(true)
+                                                             .build();
         List<? extends ConstraintViolation> violations = testee.validate(msg);
         assertFalse(violations.isEmpty());
     }

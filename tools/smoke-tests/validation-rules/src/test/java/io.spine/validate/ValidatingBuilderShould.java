@@ -148,10 +148,10 @@ public class ValidatingBuilderShould {
      */
     private static ProjectVBuilder fill() {
         ProjectVBuilder builder = ProjectVBuilder.newBuilder()
-                                                       .addTask(task())
-                                                       .addMember(member())
-                                                       .putRole("Ownner", member())
-                                                       .putDeletedTask(newUuid(), timeInPast());
+                                                 .addTask(task())
+                                                 .addMember(member())
+                                                 .putRole("Ownner", member())
+                                                 .putDeletedTask(newUuid(), timeInPast());
         builder.build(); // Ensure no ValidationException is thrown.
         return builder;
     }
@@ -166,16 +166,16 @@ public class ValidatingBuilderShould {
 
     private static Task task() {
         Task.Builder task = Task.newBuilder()
-                                      .setId(newUuid());
+                                .setId(newUuid());
         task.setName("Task name" + task.getId());
         return task.build();
     }
 
     private static Member member() {
         Member.Builder member = Member.newBuilder()
-                                            .setId(newUuid())
-                                            .setName("John Smith")
-                                            .setAvatarImage(copyFrom(new byte[] {1, 2, 3}));
+                                      .setId(newUuid())
+                                      .setName("John Smith")
+                                      .setAvatarImage(copyFrom(new byte[]{1, 2, 3}));
         return member.build();
     }
 }

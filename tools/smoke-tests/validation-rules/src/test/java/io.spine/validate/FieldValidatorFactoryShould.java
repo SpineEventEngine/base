@@ -56,17 +56,21 @@ public class FieldValidatorFactoryShould {
 
     @Test
     public void create_message_field_validator() {
-        FieldDescriptor field = RequiredMsgFieldValue.getDescriptor().getFields().get(0);
+        FieldDescriptor field = RequiredMsgFieldValue.getDescriptor()
+                                                     .getFields()
+                                                     .get(0);
 
         FieldValidator validator = create(field,
-                                                StringValue.getDefaultInstance());
+                                          StringValue.getDefaultInstance());
 
         assertThat(validator, instanceOf(MessageFieldValidator.class));
     }
 
     @Test
     public void create_integer_field_validator() {
-        FieldDescriptor field = Int32Value.getDescriptor().getFields().get(0);
+        FieldDescriptor field = Int32Value.getDescriptor()
+                                          .getFields()
+                                          .get(0);
 
         FieldValidator validator = create(field, 0);
 
@@ -75,7 +79,9 @@ public class FieldValidatorFactoryShould {
 
     @Test
     public void create_long_field_validator() {
-        FieldDescriptor field = Int64Value.getDescriptor().getFields().get(0);
+        FieldDescriptor field = Int64Value.getDescriptor()
+                                          .getFields()
+                                          .get(0);
 
         FieldValidator validator = create(field, 0);
 
@@ -84,7 +90,9 @@ public class FieldValidatorFactoryShould {
 
     @Test
     public void create_float_field_validator() {
-        FieldDescriptor field = FloatValue.getDescriptor().getFields().get(0);
+        FieldDescriptor field = FloatValue.getDescriptor()
+                                          .getFields()
+                                          .get(0);
 
         FieldValidator validator = create(field, 0);
 
@@ -93,7 +101,9 @@ public class FieldValidatorFactoryShould {
 
     @Test
     public void create_double_field_validator() {
-        FieldDescriptor field = DoubleValue.getDescriptor().getFields().get(0);
+        FieldDescriptor field = DoubleValue.getDescriptor()
+                                           .getFields()
+                                           .get(0);
 
         FieldValidator validator = create(field, 0);
 
@@ -102,7 +112,9 @@ public class FieldValidatorFactoryShould {
 
     @Test
     public void create_String_field_validator() {
-        FieldDescriptor field = StringValue.getDescriptor().getFields().get(0);
+        FieldDescriptor field = StringValue.getDescriptor()
+                                           .getFields()
+                                           .get(0);
 
         FieldValidator validator = create(field, "");
 
@@ -112,8 +124,8 @@ public class FieldValidatorFactoryShould {
     @Test
     public void create_ByteString_field_validator() {
         FieldDescriptor field = RequiredByteStringFieldValue.getDescriptor()
-                                                                  .getFields()
-                                                                  .get(0);
+                                                            .getFields()
+                                                            .get(0);
 
         FieldValidator validator = create(field, new Object());
 
@@ -122,7 +134,9 @@ public class FieldValidatorFactoryShould {
 
     @Test
     public void create_Enum_field_validator() {
-        FieldDescriptor field = RequiredEnumFieldValue.getDescriptor().getFields().get(0);
+        FieldDescriptor field = RequiredEnumFieldValue.getDescriptor()
+                                                      .getFields()
+                                                      .get(0);
 
         FieldValidator validator = create(field, new Object());
 
@@ -131,7 +145,9 @@ public class FieldValidatorFactoryShould {
 
     @Test
     public void create_Boolean_field_validator() {
-        FieldDescriptor field = BoolValue.getDescriptor().getFields().get(0);
+        FieldDescriptor field = BoolValue.getDescriptor()
+                                         .getFields()
+                                         .get(0);
 
         FieldValidator validator = create(field, new Object());
 
@@ -140,7 +156,9 @@ public class FieldValidatorFactoryShould {
 
     @Test
     public void create_field_validator_for_repeated_field() {
-        FieldDescriptor field = FieldMask.getDescriptor().getFields().get(0);
+        FieldDescriptor field = FieldMask.getDescriptor()
+                                         .getFields()
+                                         .get(0);
 
         FieldValidator<?> validator = create(field, emptyList());
 
@@ -150,10 +168,10 @@ public class FieldValidatorFactoryShould {
     @Test
     public void create_field_validator_for_map_String_field() {
         FieldDescriptor field = MessageWithMapStringField.getDescriptor()
-                                                               .getFields()
-                                                               .get(0);
+                                                         .getFields()
+                                                         .get(0);
         FieldValidator<?> validator = create(field,
-                                                   of("key", "value"));
+                                             of("key", "value"));
 
         assertThat(validator, instanceOf(StringFieldValidator.class));
     }
@@ -161,8 +179,8 @@ public class FieldValidatorFactoryShould {
     @Test
     public void create_field_validator_for_empty_map_field() {
         FieldDescriptor field = MessageWithMapStringField.getDescriptor()
-                                                               .getFields()
-                                                               .get(0);
+                                                         .getFields()
+                                                         .get(0);
         FieldValidator<?> validator = create(field, emptyMap());
 
         assertThat(validator, instanceOf(EmptyMapFieldValidator.class));
@@ -171,10 +189,10 @@ public class FieldValidatorFactoryShould {
     @Test
     public void create_field_validator_for_bytes_map_field() {
         FieldDescriptor field = MessageWithMapByteStringField.getDescriptor()
-                                                                   .getFields()
-                                                                   .get(0);
+                                                             .getFields()
+                                                             .get(0);
         FieldValidator<?> validator = create(field,
-                                                   of("key", ByteString.EMPTY));
+                                             of("key", ByteString.EMPTY));
 
         assertThat(validator, instanceOf(ByteStringFieldValidator.class));
     }
@@ -182,10 +200,10 @@ public class FieldValidatorFactoryShould {
     @Test
     public void create_field_validator_for_Message_map_field() {
         FieldDescriptor field = MessageWithMapMessageField.getDescriptor()
-                                                                .getFields()
-                                                                .get(0);
+                                                          .getFields()
+                                                          .get(0);
         FieldValidator<?> validator = create(field,
-                                                   of("key", Any.getDefaultInstance()));
+                                             of("key", Any.getDefaultInstance()));
 
         assertThat(validator, instanceOf(MessageFieldValidator.class));
     }
@@ -193,10 +211,10 @@ public class FieldValidatorFactoryShould {
     @Test
     public void create_field_validator_for_int_map_field() {
         FieldDescriptor field = MessageWithMapIntField.getDescriptor()
-                                                            .getFields()
-                                                            .get(0);
+                                                      .getFields()
+                                                      .get(0);
         FieldValidator<?> validator = create(field,
-                                                   of("key", 0));
+                                             of("key", 0));
 
         assertThat(validator, instanceOf(IntegerFieldValidator.class));
     }
@@ -204,10 +222,10 @@ public class FieldValidatorFactoryShould {
     @Test
     public void create_field_validator_for_long_map_field() {
         FieldDescriptor field = MessageWithMapLongField.getDescriptor()
-                                                             .getFields()
-                                                             .get(0);
+                                                       .getFields()
+                                                       .get(0);
         FieldValidator<?> validator = create(field,
-                                                   of("key", 1L));
+                                             of("key", 1L));
 
         assertThat(validator, instanceOf(LongFieldValidator.class));
     }
@@ -215,10 +233,10 @@ public class FieldValidatorFactoryShould {
     @Test
     public void create_field_validator_for_float_map_field() {
         FieldDescriptor field = MessageWithMapFloatField.getDescriptor()
-                                                              .getFields()
-                                                              .get(0);
+                                                        .getFields()
+                                                        .get(0);
         FieldValidator<?> validator = create(field,
-                                                   of("key", 0.0f));
+                                             of("key", 0.0f));
 
         assertThat(validator, instanceOf(FloatFieldValidator.class));
     }
@@ -226,10 +244,10 @@ public class FieldValidatorFactoryShould {
     @Test
     public void create_field_validator_for_double_map_field() {
         FieldDescriptor field = MessageWithMapDoubleField.getDescriptor()
-                                                               .getFields()
-                                                               .get(0);
+                                                         .getFields()
+                                                         .get(0);
         FieldValidator<?> validator = create(field,
-                                                   of("key", 0.0));
+                                             of("key", 0.0));
 
         assertThat(validator, instanceOf(DoubleFieldValidator.class));
     }
@@ -237,10 +255,10 @@ public class FieldValidatorFactoryShould {
     @Test
     public void create_field_validator_for_bool_map_field() {
         FieldDescriptor field = MessageWithMapBoolField.getDescriptor()
-                                                             .getFields()
-                                                             .get(0);
+                                                       .getFields()
+                                                       .get(0);
         FieldValidator<?> validator = create(field,
-                                                   of("key", true));
+                                             of("key", true));
 
         assertThat(validator, instanceOf(BooleanFieldValidator.class));
     }

@@ -37,7 +37,9 @@ public class LongFieldValidatorShould {
     private static final Long VALUE = 2L;
     private static final Long NEGATIVE_VALUE = -2L;
 
-    private final FieldDescriptor fieldDescriptor = Any.getDescriptor().getFields().get(0);
+    private final FieldDescriptor fieldDescriptor = Any.getDescriptor()
+                                                       .getFields()
+                                                       .get(0);
     private final LongFieldValidator validator =
             new LongFieldValidator(FieldContext.create(fieldDescriptor),
                                    ImmutableList.of(VALUE));

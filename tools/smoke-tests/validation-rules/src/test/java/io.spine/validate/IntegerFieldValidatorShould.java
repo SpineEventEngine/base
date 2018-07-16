@@ -37,7 +37,9 @@ public class IntegerFieldValidatorShould {
     private static final Integer VALUE = 2;
     private static final Integer NEGATIVE_VALUE = -2;
 
-    private final FieldDescriptor fieldDescriptor = Any.getDescriptor().getFields().get(0);
+    private final FieldDescriptor fieldDescriptor = Any.getDescriptor()
+                                                       .getFields()
+                                                       .get(0);
     private final IntegerFieldValidator validator =
             new IntegerFieldValidator(FieldContext.create(fieldDescriptor),
                                       ImmutableList.of(VALUE));

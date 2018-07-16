@@ -131,7 +131,9 @@ public class MessageValidatorShould {
 
     @Test
     public void find_out_that_required_Message_field_is_set() {
-        RequiredMsgFieldValue validMsg = RequiredMsgFieldValue.newBuilder().setValue(newStringValue()).build();
+        RequiredMsgFieldValue validMsg = RequiredMsgFieldValue.newBuilder()
+                                                              .setValue(newStringValue())
+                                                              .build();
         validate(validMsg);
         assertIsValid(true);
     }
@@ -145,7 +147,9 @@ public class MessageValidatorShould {
 
     @Test
     public void find_out_that_required_String_field_is_set() {
-        RequiredStringFieldValue validMsg = RequiredStringFieldValue.newBuilder().setValue(newUuid()).build();
+        RequiredStringFieldValue validMsg = RequiredStringFieldValue.newBuilder()
+                                                                    .setValue(newUuid())
+                                                                    .build();
         validate(validMsg);
         assertIsValid(true);
     }
@@ -159,7 +163,10 @@ public class MessageValidatorShould {
 
     @Test
     public void find_out_that_required_ByteString_field_is_set() {
-        RequiredByteStringFieldValue validMsg = RequiredByteStringFieldValue.newBuilder().setValue(newByteString()).build();
+        RequiredByteStringFieldValue validMsg = RequiredByteStringFieldValue.newBuilder()
+                                                                            .setValue(
+                                                                                    newByteString())
+                                                                            .build();
         validate(validMsg);
         assertIsValid(true);
     }
@@ -181,8 +188,8 @@ public class MessageValidatorShould {
     @Test
     public void find_out_that_required_Enum_field_is_set() {
         RequiredEnumFieldValue invalidMsg = RequiredEnumFieldValue.newBuilder()
-                                                                        .setValue(Time.FUTURE)
-                                                                        .build();
+                                                                  .setValue(Time.FUTURE)
+                                                                  .build();
         validate(invalidMsg);
         assertIsValid(true);
     }
@@ -196,9 +203,11 @@ public class MessageValidatorShould {
     @Test
     public void find_out_that_repeated_required_field_has_valid_values() {
         RepeatedRequiredMsgFieldValue invalidMsg = RepeatedRequiredMsgFieldValue.newBuilder()
-                                                                                      .addValue(newStringValue())
-                                                                                      .addValue(newStringValue())
-                                                                                      .build();
+                                                                                .addValue(
+                                                                                        newStringValue())
+                                                                                .addValue(
+                                                                                        newStringValue())
+                                                                                .build();
         validate(invalidMsg);
         assertIsValid(true);
     }
@@ -214,7 +223,8 @@ public class MessageValidatorShould {
         RepeatedRequiredMsgFieldValue msg =
                 RepeatedRequiredMsgFieldValue.newBuilder()
                                              .addValue(newStringValue()) // valid value
-                                             .addValue(StringValue.getDefaultInstance()) // empty value
+                                             .addValue(
+                                                     StringValue.getDefaultInstance()) // empty value
                                              .build();
         validate(msg);
         assertIsValid(true);
@@ -242,8 +252,10 @@ public class MessageValidatorShould {
 
     @Test
     public void propagate_proper_error_message_if_custom_message_set_and_required_Message_field_is_NOT_set() {
-        CustomMessageRequiredMsgFieldValue invalidMsg = CustomMessageRequiredMsgFieldValue.getDefaultInstance();
-        String expectedMessage = getCustomErrorMessage(CustomMessageRequiredMsgFieldValue.getDescriptor());
+        CustomMessageRequiredMsgFieldValue invalidMsg =
+                CustomMessageRequiredMsgFieldValue.getDefaultInstance();
+        String expectedMessage =
+                getCustomErrorMessage(CustomMessageRequiredMsgFieldValue.getDescriptor());
 
         validate(invalidMsg);
         assertIsValid(false);
@@ -255,7 +267,8 @@ public class MessageValidatorShould {
     public void propagate_proper_error_message_if_custom_message_set_and_required_String_field_is_NOT_set() {
         CustomMessageRequiredStringFieldValue invalidMsg =
                 CustomMessageRequiredStringFieldValue.getDefaultInstance();
-        String expectedMessage = getCustomErrorMessage(CustomMessageRequiredStringFieldValue.getDescriptor());
+        String expectedMessage = getCustomErrorMessage(
+                CustomMessageRequiredStringFieldValue.getDescriptor());
 
         validate(invalidMsg);
         assertIsValid(false);
@@ -267,7 +280,8 @@ public class MessageValidatorShould {
     public void propagate_proper_error_message_if_custom_message_set_and_required_ByteString_field_is_NOT_set() {
         CustomMessageRequiredByteStringFieldValue invalidMsg =
                 CustomMessageRequiredByteStringFieldValue.getDefaultInstance();
-        String expectedMessage = getCustomErrorMessage(CustomMessageRequiredByteStringFieldValue.getDescriptor());
+        String expectedMessage =
+                getCustomErrorMessage(CustomMessageRequiredByteStringFieldValue.getDescriptor());
 
         validate(invalidMsg);
         assertIsValid(false);
@@ -279,7 +293,8 @@ public class MessageValidatorShould {
     public void propagate_proper_error_message_if_custom_message_set_and_required_RepeatedMsg_field_is_NOT_set() {
         CustomMessageRequiredRepeatedMsgFieldValue invalidMsg =
                 CustomMessageRequiredRepeatedMsgFieldValue.getDefaultInstance();
-        String expectedMessage = getCustomErrorMessage(CustomMessageRequiredRepeatedMsgFieldValue.getDescriptor());
+        String expectedMessage =
+                getCustomErrorMessage(CustomMessageRequiredRepeatedMsgFieldValue.getDescriptor());
 
         validate(invalidMsg);
         assertIsValid(false);
@@ -291,7 +306,8 @@ public class MessageValidatorShould {
     public void propagate_proper_error_message_if_custom_message_set_and_required_Enum_field_is_NOT_set() {
         CustomMessageRequiredEnumFieldValue invalidMsg =
                 CustomMessageRequiredEnumFieldValue.getDefaultInstance();
-        String expectedMessage = getCustomErrorMessage(CustomMessageRequiredEnumFieldValue.getDescriptor());
+        String expectedMessage =
+                getCustomErrorMessage(CustomMessageRequiredEnumFieldValue.getDescriptor());
 
         validate(invalidMsg);
         assertIsValid(false);
@@ -317,7 +333,7 @@ public class MessageValidatorShould {
 
     private static String getCustomErrorMessage(Descriptors.Descriptor descriptor) {
         Descriptors.FieldDescriptor firstFieldDescriptor = descriptor.getFields()
-                                                                           .get(0);
+                                                                     .get(0);
         return firstFieldDescriptor.getOptions()
                                    .getExtension(OptionsProto.ifMissing)
                                    .getMsgFormat();
@@ -329,28 +345,36 @@ public class MessageValidatorShould {
 
     @Test
     public void find_out_that_time_is_in_future() {
-        TimeInFutureFieldValue validMsg = TimeInFutureFieldValue.newBuilder().setValue(getFuture()).build();
+        TimeInFutureFieldValue validMsg = TimeInFutureFieldValue.newBuilder()
+                                                                .setValue(getFuture())
+                                                                .build();
         validate(validMsg);
         assertIsValid(true);
     }
 
     @Test
     public void find_out_that_time_is_NOT_in_future() {
-        TimeInFutureFieldValue invalidMsg = TimeInFutureFieldValue.newBuilder().setValue(getPast()).build();
+        TimeInFutureFieldValue invalidMsg = TimeInFutureFieldValue.newBuilder()
+                                                                  .setValue(getPast())
+                                                                  .build();
         validate(invalidMsg);
         assertIsValid(false);
     }
 
     @Test
     public void find_out_that_time_is_in_past() {
-        TimeInPastFieldValue validMsg = TimeInPastFieldValue.newBuilder().setValue(getPast()).build();
+        TimeInPastFieldValue validMsg = TimeInPastFieldValue.newBuilder()
+                                                            .setValue(getPast())
+                                                            .build();
         validate(validMsg);
         assertIsValid(true);
     }
 
     @Test
     public void find_out_that_time_is_NOT_in_past() {
-        TimeInPastFieldValue invalidMsg = TimeInPastFieldValue.newBuilder().setValue(getFuture()).build();
+        TimeInPastFieldValue invalidMsg = TimeInPastFieldValue.newBuilder()
+                                                              .setValue(getFuture())
+                                                              .build();
         validate(invalidMsg);
         assertIsValid(false);
     }
@@ -389,7 +413,9 @@ public class MessageValidatorShould {
 
     @Test
     public void provide_one_valid_violation_if_time_is_invalid() {
-        TimeInFutureFieldValue invalidMsg = TimeInFutureFieldValue.newBuilder().setValue(getPast()).build();
+        TimeInFutureFieldValue invalidMsg = TimeInFutureFieldValue.newBuilder()
+                                                                  .setValue(getPast())
+                                                                  .build();
 
         validate(invalidMsg);
 
@@ -410,7 +436,9 @@ public class MessageValidatorShould {
 
     @Test
     public void consider_number_field_is_valid_if_no_number_options_set() {
-        Message nonZeroValue = DoubleValue.newBuilder().setValue(5).build();
+        Message nonZeroValue = DoubleValue.newBuilder()
+                                          .setValue(5)
+                                          .build();
         validate(nonZeroValue);
         assertIsValid(true);
     }
@@ -451,7 +479,8 @@ public class MessageValidatorShould {
 
         assertEquals(1, violations.size());
         ConstraintViolation violation = firstViolation();
-        assertEquals(LESS_THAN_MIN_MSG, format(violation.getMsgFormat(), violation.getParam(0), violation.getParam(1)));
+        assertEquals(LESS_THAN_MIN_MSG, format(violation.getMsgFormat(), violation.getParam(0),
+                                               violation.getParam(1)));
         assertFieldPathIs(violation, VALUE);
         assertTrue(violation.getViolationList()
                             .isEmpty());
@@ -497,7 +526,8 @@ public class MessageValidatorShould {
 
         assertEquals(1, violations.size());
         ConstraintViolation violation = firstViolation();
-        assertEquals(GREATER_MAX_MSG, format(violation.getMsgFormat(), violation.getParam(0), violation.getParam(1)));
+        assertEquals(GREATER_MAX_MSG, format(violation.getMsgFormat(), violation.getParam(0),
+                                             violation.getParam(1)));
         assertFieldPathIs(violation, VALUE);
         assertTrue(violation.getViolationList()
                             .isEmpty());
@@ -509,28 +539,36 @@ public class MessageValidatorShould {
 
     @Test
     public void find_out_that_number_is_greater_than_min() {
-        MinNumberFieldValue msg = MinNumberFieldValue.newBuilder().setValue(GREATER_THAN_MIN).build();
+        MinNumberFieldValue msg = MinNumberFieldValue.newBuilder()
+                                                     .setValue(GREATER_THAN_MIN)
+                                                     .build();
         validate(msg);
         assertIsValid(true);
     }
 
     @Test
     public void find_out_that_number_is_equal_to_min() {
-        MinNumberFieldValue msg = MinNumberFieldValue.newBuilder().setValue(EQUAL_MIN).build();
+        MinNumberFieldValue msg = MinNumberFieldValue.newBuilder()
+                                                     .setValue(EQUAL_MIN)
+                                                     .build();
         validate(msg);
         assertIsValid(true);
     }
 
     @Test
     public void find_out_that_number_is_less_than_min() {
-        MinNumberFieldValue msg = MinNumberFieldValue.newBuilder().setValue(LESS_THAN_MIN).build();
+        MinNumberFieldValue msg = MinNumberFieldValue.newBuilder()
+                                                     .setValue(LESS_THAN_MIN)
+                                                     .build();
         validate(msg);
         assertIsValid(false);
     }
 
     @Test
     public void provide_one_valid_violation_if_number_is_less_than_min() {
-        MinNumberFieldValue msg = MinNumberFieldValue.newBuilder().setValue(LESS_THAN_MIN).build();
+        MinNumberFieldValue msg = MinNumberFieldValue.newBuilder()
+                                                     .setValue(LESS_THAN_MIN)
+                                                     .build();
 
         validate(msg);
 
@@ -548,28 +586,36 @@ public class MessageValidatorShould {
 
     @Test
     public void find_out_that_number_is_greater_than_max_inclusive() {
-        MaxNumberFieldValue msg = MaxNumberFieldValue.newBuilder().setValue(GREATER_THAN_MAX).build();
+        MaxNumberFieldValue msg = MaxNumberFieldValue.newBuilder()
+                                                     .setValue(GREATER_THAN_MAX)
+                                                     .build();
         validate(msg);
         assertIsValid(false);
     }
 
     @Test
     public void find_out_that_number_is_equal_to_max_inclusive() {
-        MaxNumberFieldValue msg = MaxNumberFieldValue.newBuilder().setValue(EQUAL_MAX).build();
+        MaxNumberFieldValue msg = MaxNumberFieldValue.newBuilder()
+                                                     .setValue(EQUAL_MAX)
+                                                     .build();
         validate(msg);
         assertIsValid(true);
     }
 
     @Test
     public void find_out_that_number_is_less_than_max_inclusive() {
-        MaxNumberFieldValue msg = MaxNumberFieldValue.newBuilder().setValue(LESS_THAN_MAX).build();
+        MaxNumberFieldValue msg = MaxNumberFieldValue.newBuilder()
+                                                     .setValue(LESS_THAN_MAX)
+                                                     .build();
         validate(msg);
         assertIsValid(true);
     }
 
     @Test
     public void provide_one_valid_violation_if_number_is_greater_than_max() {
-        MaxNumberFieldValue msg = MaxNumberFieldValue.newBuilder().setValue(GREATER_THAN_MAX).build();
+        MaxNumberFieldValue msg = MaxNumberFieldValue.newBuilder()
+                                                     .setValue(GREATER_THAN_MAX)
+                                                     .build();
 
         validate(msg);
 
@@ -637,15 +683,17 @@ public class MessageValidatorShould {
     @Test
     public void find_out_that_string_matches_to_regex_pattern() {
         PatternStringFieldValue msg = PatternStringFieldValue.newBuilder()
-                                                                   .setEmail("valid.email@mail.com")
-                                                                   .build();
+                                                             .setEmail("valid.email@mail.com")
+                                                             .build();
         validate(msg);
         assertIsValid(true);
     }
 
     @Test
     public void find_out_that_string_does_not_match_to_regex_pattern() {
-        PatternStringFieldValue msg = PatternStringFieldValue.newBuilder().setEmail("invalid email").build();
+        PatternStringFieldValue msg = PatternStringFieldValue.newBuilder()
+                                                             .setEmail("invalid email")
+                                                             .build();
         validate(msg);
         assertIsValid(false);
     }
@@ -658,7 +706,9 @@ public class MessageValidatorShould {
 
     @Test
     public void provide_one_valid_violation_if_string_does_not_match_to_regex_pattern() {
-        PatternStringFieldValue msg = PatternStringFieldValue.newBuilder().setEmail("invalid.email").build();
+        PatternStringFieldValue msg = PatternStringFieldValue.newBuilder()
+                                                             .setEmail("invalid.email")
+                                                             .build();
 
         validate(msg);
 
@@ -680,11 +730,11 @@ public class MessageValidatorShould {
     @Test
     public void find_out_that_enclosed_message_field_is_valid() {
         RequiredStringFieldValue enclosedMsg = RequiredStringFieldValue.newBuilder()
-                                                                             .setValue(newUuid())
-                                                                             .build();
-        EnclosedMessageFieldValue msg = EnclosedMessageFieldValue.newBuilder()
-                                                                       .setOuterMsgField(enclosedMsg)
+                                                                       .setValue(newUuid())
                                                                        .build();
+        EnclosedMessageFieldValue msg = EnclosedMessageFieldValue.newBuilder()
+                                                                 .setOuterMsgField(enclosedMsg)
+                                                                 .build();
         validate(msg);
 
         assertIsValid(true);
@@ -694,8 +744,8 @@ public class MessageValidatorShould {
     public void find_out_that_enclosed_message_field_is_NOT_valid() {
         RequiredStringFieldValue enclosedMsg = RequiredStringFieldValue.getDefaultInstance();
         EnclosedMessageFieldValue msg = EnclosedMessageFieldValue.newBuilder()
-                                                                       .setOuterMsgField(enclosedMsg)
-                                                                       .build();
+                                                                 .setOuterMsgField(enclosedMsg)
+                                                                 .build();
         validate(msg);
 
         assertIsValid(false);
@@ -717,8 +767,8 @@ public class MessageValidatorShould {
     public void provide_valid_violations_if_enclosed_message_field_is_not_valid() {
         RequiredStringFieldValue enclosedMsg = RequiredStringFieldValue.getDefaultInstance();
         EnclosedMessageFieldValue msg = EnclosedMessageFieldValue.newBuilder()
-                                                                       .setOuterMsgField(enclosedMsg)
-                                                                       .build();
+                                                                 .setOuterMsgField(enclosedMsg)
+                                                                 .build();
         validate(msg);
 
         assertEquals(1, violations.size());
@@ -741,7 +791,9 @@ public class MessageValidatorShould {
 
     @Test
     public void find_out_that_Message_entity_id_in_command_is_valid() {
-        EntityIdMsgFieldValue msg = EntityIdMsgFieldValue.newBuilder().setValue(newStringValue()).build();
+        EntityIdMsgFieldValue msg = EntityIdMsgFieldValue.newBuilder()
+                                                         .setValue(newStringValue())
+                                                         .build();
         validate(msg);
         assertIsValid(true);
     }
@@ -754,7 +806,9 @@ public class MessageValidatorShould {
 
     @Test
     public void find_out_that_String_entity_id_in_command_is_valid() {
-        EntityIdStringFieldValue msg = EntityIdStringFieldValue.newBuilder().setValue(newUuid()).build();
+        EntityIdStringFieldValue msg = EntityIdStringFieldValue.newBuilder()
+                                                               .setValue(newUuid())
+                                                               .build();
         validate(msg);
         assertIsValid(true);
     }
@@ -768,22 +822,28 @@ public class MessageValidatorShould {
     @Test
     public void find_out_that_entity_id_in_command_cannot_be_ByteString() {
         EntityIdByteStringFieldValue msg = EntityIdByteStringFieldValue.newBuilder()
-                                                                             .setValue(newByteString())
-                                                                             .build();
+                                                                       .setValue(newByteString())
+                                                                       .build();
         validate(msg);
         assertIsValid(false);
     }
 
     @Test
     public void find_out_that_entity_id_in_command_cannot_be_float_number() {
-        @SuppressWarnings("MagicNumber") EntityIdDoubleFieldValue msg = EntityIdDoubleFieldValue.newBuilder().setValue(1.1).build();
+        @SuppressWarnings("MagicNumber") EntityIdDoubleFieldValue msg =
+                EntityIdDoubleFieldValue.newBuilder()
+                                        .setValue(
+                                                1.1)
+                                        .build();
         validate(msg);
         assertIsValid(false);
     }
 
     @Test
     public void find_out_that_Integer_entity_id_in_command_is_valid() {
-        EntityIdIntFieldValue msg = EntityIdIntFieldValue.newBuilder().setValue(5).build();
+        EntityIdIntFieldValue msg = EntityIdIntFieldValue.newBuilder()
+                                                         .setValue(5)
+                                                         .build();
         validate(msg);
         assertIsValid(true);
     }
@@ -796,7 +856,9 @@ public class MessageValidatorShould {
 
     @Test
     public void find_out_that_Long_entity_id_in_command_is_valid() {
-        EntityIdLongFieldValue msg = EntityIdLongFieldValue.newBuilder().setValue(5).build();
+        EntityIdLongFieldValue msg = EntityIdLongFieldValue.newBuilder()
+                                                           .setValue(5)
+                                                           .build();
         validate(msg);
         assertIsValid(true);
     }
@@ -809,7 +871,9 @@ public class MessageValidatorShould {
 
     @Test
     public void find_out_that_repeated_entity_id_in_command_is_not_valid() {
-        EntityIdRepeatedFieldValue msg = EntityIdRepeatedFieldValue.newBuilder().addValue(newUuid()).build();
+        EntityIdRepeatedFieldValue msg = EntityIdRepeatedFieldValue.newBuilder()
+                                                                   .addValue(newUuid())
+                                                                   .build();
         validate(msg);
         assertIsValid(false);
     }
@@ -822,7 +886,8 @@ public class MessageValidatorShould {
         ConstraintViolation violation = firstViolation();
         assertEquals(NO_VALUE_MSG, violation.getMsgFormat());
         assertFieldPathIs(violation, VALUE);
-        assertTrue(violation.getViolationList().isEmpty());
+        assertTrue(violation.getViolationList()
+                            .isEmpty());
     }
 
     @Test
@@ -836,7 +901,8 @@ public class MessageValidatorShould {
 
     @Test
     public void ignore_custom_invalid_field_message_if_validation_is_disabled() {
-        validate(EnclosedMessageFieldValueWithoutAnnotationFieldValueWithCustomInvalidMessage.getDefaultInstance());
+        validate(
+                EnclosedMessageFieldValueWithoutAnnotationFieldValueWithCustomInvalidMessage.getDefaultInstance());
         assertIsValid(true);
     }
 
@@ -848,18 +914,18 @@ public class MessageValidatorShould {
     public void validate_according_to_validation_rule() {
         String validValue = "any text";
         InvalidMessage invalidMessage = InvalidMessage.newBuilder()
-                                                            .setInvalidField(validValue)
-                                                            .build();
+                                                      .setInvalidField(validValue)
+                                                      .build();
         FirstRuleTarget first = FirstRuleTarget.newBuilder()
-                                                     .setCanBeValid(invalidMessage)
-                                                     .build();
+                                               .setCanBeValid(invalidMessage)
+                                               .build();
         SecondRuleTarget second = SecondRuleTarget.newBuilder()
-                                                        .setCanBeValid(invalidMessage)
-                                                        .build();
+                                                  .setCanBeValid(invalidMessage)
+                                                  .build();
         RuleTargetAggregate aggregate = RuleTargetAggregate.newBuilder()
-                                                                 .setFirst(first)
-                                                                 .setSecond(second)
-                                                                 .build();
+                                                           .setFirst(first)
+                                                           .setSecond(second)
+                                                           .build();
         validate(aggregate);
         assertIsValid(true);
     }
@@ -870,22 +936,32 @@ public class MessageValidatorShould {
 
     private void minDecimalNumberTest(double value, boolean inclusive, boolean isValid) {
         Message msg = inclusive ?
-                            DecimalMinIncNumberFieldValue.newBuilder().setValue(value).build() :
-                            DecimalMinNotIncNumberFieldValue.newBuilder().setValue(value).build();
+                      DecimalMinIncNumberFieldValue.newBuilder()
+                                                   .setValue(value)
+                                                   .build() :
+                      DecimalMinNotIncNumberFieldValue.newBuilder()
+                                                      .setValue(value)
+                                                      .build();
         validate(msg);
         assertIsValid(isValid);
     }
 
     private void maxDecimalNumberTest(double value, boolean inclusive, boolean isValid) {
         Message msg = inclusive ?
-                            DecimalMaxIncNumberFieldValue.newBuilder().setValue(value).build() :
-                            DecimalMaxNotIncNumberFieldValue.newBuilder().setValue(value).build();
+                      DecimalMaxIncNumberFieldValue.newBuilder()
+                                                   .setValue(value)
+                                                   .build() :
+                      DecimalMaxNotIncNumberFieldValue.newBuilder()
+                                                      .setValue(value)
+                                                      .build();
         validate(msg);
         assertIsValid(isValid);
     }
 
     private void digitsCountTest(double value, boolean isValid) {
-        Message msg = DigitsCountNumberFieldValue.newBuilder().setValue(value).build();
+        Message msg = DigitsCountNumberFieldValue.newBuilder()
+                                                 .setValue(value)
+                                                 .build();
         validate(msg);
         assertIsValid(isValid);
     }
@@ -906,13 +982,16 @@ public class MessageValidatorShould {
             for (ConstraintViolation violation : violations) {
                 String format = violation.getMsgFormat();
                 assertTrue(!format.isEmpty());
-                boolean noParams = violation.getParamList().isEmpty();
+                boolean noParams = violation.getParamList()
+                                            .isEmpty();
                 if (format.contains("%s")) {
                     assertFalse(noParams);
                 } else {
                     assertTrue(noParams);
                 }
-                assertFalse(violation.getFieldPath().getFieldNameList().isEmpty());
+                assertFalse(violation.getFieldPath()
+                                     .getFieldNameList()
+                                     .isEmpty());
             }
         }
     }
@@ -925,12 +1004,14 @@ public class MessageValidatorShould {
     }
 
     private static Timestamp getFuture() {
-        Timestamp future = add(getCurrentTime(), MessageValidatorTestEnv.newDuration(SECONDS_IN_5_MINUTES));
+        Timestamp future = add(getCurrentTime(),
+                               MessageValidatorTestEnv.newDuration(SECONDS_IN_5_MINUTES));
         return future;
     }
 
     private static Timestamp getPast() {
-        Timestamp past = subtract(getCurrentTime(), MessageValidatorTestEnv.newDuration(SECONDS_IN_5_MINUTES));
+        Timestamp past = subtract(getCurrentTime(),
+                                  MessageValidatorTestEnv.newDuration(SECONDS_IN_5_MINUTES));
         return past;
     }
 
