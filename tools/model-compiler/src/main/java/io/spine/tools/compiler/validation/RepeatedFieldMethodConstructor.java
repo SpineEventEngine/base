@@ -28,10 +28,10 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import io.spine.base.ConversionException;
-import io.spine.tools.compiler.MessageTypeCache;
-import io.spine.tools.compiler.fieldtype.FieldType;
 import io.spine.code.proto.FieldName;
 import io.spine.code.proto.ScalarType;
+import io.spine.tools.compiler.MessageTypeCache;
+import io.spine.tools.compiler.fieldtype.FieldType;
 import io.spine.validate.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,6 +42,7 @@ import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type.TYPE_ENUM;
+import static io.spine.code.java.Annotations.canIgnoreReturnValue;
 import static io.spine.tools.compiler.validation.ClassNames.getClassName;
 import static io.spine.tools.compiler.validation.ClassNames.getParameterClassName;
 import static io.spine.tools.compiler.validation.MethodConstructors.clearPrefix;
@@ -203,6 +204,7 @@ class RepeatedFieldMethodConstructor implements MethodConstructor {
                 + ADD_PREFIX + methodNamePart + "(convertedValue)";
         final String convertStatement = createValidateStatement(CONVERTED_VALUE);
         final MethodSpec result = MethodSpec.methodBuilder(methodName)
+                                            .addAnnotation(canIgnoreReturnValue())
                                             .returns(builderClassName)
                                             .addModifiers(Modifier.PUBLIC)
                                             .addParameter(String.class, VALUE)
@@ -239,6 +241,7 @@ class RepeatedFieldMethodConstructor implements MethodConstructor {
                        getMessageBuilder(), realBuilderCallPrefix, methodNamePart, INDEX);
         final String convertStatement = createValidateStatement(CONVERTED_VALUE);
         final MethodSpec result = MethodSpec.methodBuilder(methodName)
+                                            .addAnnotation(canIgnoreReturnValue())
                                             .returns(builderClassName)
                                             .addModifiers(Modifier.PUBLIC)
                                             .addParameter(TypeName.INT, INDEX)
@@ -264,6 +267,7 @@ class RepeatedFieldMethodConstructor implements MethodConstructor {
         final String addAllValues = getMessageBuilder()
                 + format(".addAll%s(%s)", methodNamePart, CONVERTED_VALUE);
         final MethodSpec result = MethodSpec.methodBuilder(methodName)
+                                            .addAnnotation(canIgnoreReturnValue())
                                             .returns(builderClassName)
                                             .addModifiers(Modifier.PUBLIC)
                                             .addParameter(String.class, VALUE)
@@ -293,6 +297,7 @@ class RepeatedFieldMethodConstructor implements MethodConstructor {
         final String addAllValues = getMessageBuilder()
                 + format(".addAll%s(%s)", methodNamePart, VALUE);
         final MethodSpec result = MethodSpec.methodBuilder(methodName)
+                                            .addAnnotation(canIgnoreReturnValue())
                                             .returns(builderClassName)
                                             .addModifiers(Modifier.PUBLIC)
                                             .addParameter(parameter, VALUE)
@@ -314,6 +319,7 @@ class RepeatedFieldMethodConstructor implements MethodConstructor {
         final String addValue = format("%s.%s%s(%s)",
                                        getMessageBuilder(), ADD_PREFIX, methodNamePart, VALUE);
         final MethodSpec result = MethodSpec.methodBuilder(methodName)
+                                            .addAnnotation(canIgnoreReturnValue())
                                             .returns(builderClassName)
                                             .addModifiers(Modifier.PUBLIC)
                                             .addParameter(listElementClassName, VALUE)
@@ -340,6 +346,7 @@ class RepeatedFieldMethodConstructor implements MethodConstructor {
         final String addValue = format("%s.%s%s(%s)", getMessageBuilder(),
                                        removePrefix(), methodNamePart, INDEX);
         final MethodSpec result = MethodSpec.methodBuilder(methodName)
+                                            .addAnnotation(canIgnoreReturnValue())
                                             .returns(builderClassName)
                                             .addModifiers(Modifier.PUBLIC)
                                             .addParameter(TypeName.INT, INDEX)
@@ -356,6 +363,7 @@ class RepeatedFieldMethodConstructor implements MethodConstructor {
         final String modificationStatement = format("%s.%s%s(%s, %s)", getMessageBuilder(),
                                                     methodPrefix, methodNamePart, INDEX, VALUE);
         final MethodSpec result = MethodSpec.methodBuilder(methodName)
+                                            .addAnnotation(canIgnoreReturnValue())
                                             .returns(builderClassName)
                                             .addModifiers(Modifier.PUBLIC)
                                             .addParameter(TypeName.INT, INDEX)
@@ -373,6 +381,7 @@ class RepeatedFieldMethodConstructor implements MethodConstructor {
     private MethodSpec createClearMethod() {
         final String clearField = getMessageBuilder() + clearProperty(methodNamePart);
         final MethodSpec result = MethodSpec.methodBuilder(clearPrefix() + methodNamePart)
+                                            .addAnnotation(canIgnoreReturnValue())
                                             .addModifiers(Modifier.PUBLIC)
                                             .returns(builderClassName)
                                             .addStatement(clearField)

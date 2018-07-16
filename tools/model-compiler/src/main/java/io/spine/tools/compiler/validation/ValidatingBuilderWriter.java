@@ -38,7 +38,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
-import static io.spine.code.java.Annotations.canIgnoreReturnValue;
 import static io.spine.code.java.Annotations.generatedBySpineModelCompiler;
 import static io.spine.tools.compiler.validation.ClassNames.getValidatorMessageClassName;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
@@ -88,7 +87,6 @@ class ValidatingBuilderWriter {
                                    messageBuilderClassName,
                                    methodsAssembler.createMethods())
                         .addAnnotation(generatedBySpineModelCompiler())
-                        .addAnnotation(canIgnoreReturnValue())
                         .build();
 
         log().debug("Writing the {} class under the {} package",
