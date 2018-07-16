@@ -50,13 +50,15 @@ public class EnvironmentShould {
 
     @BeforeClass
     public static void storeEnvironment() {
-        storedEnvironment = Environment.getInstance().createCopy();
+        storedEnvironment = Environment.getInstance()
+                                       .createCopy();
     }
 
     @SuppressWarnings("StaticVariableUsedBeforeInitialization")
     @AfterClass
     public static void restoreEnvironment() {
-        Environment.getInstance().restoreFrom(storedEnvironment);
+        Environment.getInstance()
+                   .restoreFrom(storedEnvironment);
     }
 
     /* Environment protection END */
@@ -68,7 +70,8 @@ public class EnvironmentShould {
 
     @After
     public void cleanUp() throws NoSuchFieldException, IllegalAccessException {
-        Environment.getInstance().reset();
+        Environment.getInstance()
+                   .reset();
     }
 
     @Test
@@ -78,7 +81,8 @@ public class EnvironmentShould {
 
     @Test
     public void tell_that_we_are_under_tests_if_env_var_set_to_true() throws Exception {
-        Environment.getInstance().setToTests();
+        Environment.getInstance()
+                   .setToTests();
 
         assertTrue(environment.isTests());
         assertFalse(environment.isProduction());

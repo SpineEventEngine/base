@@ -31,17 +31,17 @@ public class UnknownTypeExceptionShould {
 
     @Test
     public void have_ctor_with_type_name() {
-        final String str = newUuid();
-        final UnknownTypeException exception = new UnknownTypeException(str);
+        String str = newUuid();
+        UnknownTypeException exception = new UnknownTypeException(str);
 
         assertTrue(exception.getMessage().contains(str));
     }
 
     @Test
     public void have_ctor_with_type_name_and_cause() {
-        final String str = newUuid();
+        String str = newUuid();
         RuntimeException cause = new RuntimeException("");
-        final UnknownTypeException exception = new UnknownTypeException(str, cause);
+        UnknownTypeException exception = new UnknownTypeException(str, cause);
 
         assertTrue(exception.getMessage().contains(str));
         assertEquals(cause, exception.getCause());

@@ -80,9 +80,9 @@ public final class TypeConverter {
     public static <T> T toObject(Any message, Class<T> target) {
         checkNotNull(message);
         checkNotNull(target);
-        final MessageCaster<? super Message, T> caster = MessageCaster.forType(target);
-        final Message genericMessage = unpack(message);
-        final T result = caster.convert(genericMessage);
+        MessageCaster<? super Message, T> caster = MessageCaster.forType(target);
+        Message genericMessage = unpack(message);
+        T result = caster.convert(genericMessage);
         return result;
     }
 
@@ -96,8 +96,8 @@ public final class TypeConverter {
      */
     public static <T> Any toAny(T value) {
         checkNotNull(value);
-        final Message message = toMessage(value);
-        final Any result = AnyPacker.pack(message);
+        Message message = toMessage(value);
+        Any result = AnyPacker.pack(message);
         return result;
     }
 
@@ -111,9 +111,10 @@ public final class TypeConverter {
      */
     public static <T, M extends Message> M toMessage(T value) {
         @SuppressWarnings("unchecked") // Must be checked at runtime
-        final Class<T> srcClass = (Class<T>) value.getClass();
-        final MessageCaster<M, T> caster = MessageCaster.forType(srcClass);
-        final M message = caster.reverse().convert(value);
+        Class<T> srcClass = (Class<T>) value.getClass();
+        MessageCaster<M, T> caster = MessageCaster.forType(srcClass);
+        M message = caster.reverse()
+                          .convert(value);
         checkNotNull(message);
         return message;
     }
@@ -125,20 +126,20 @@ public final class TypeConverter {
 
         private static <M extends Message, T> MessageCaster<M, T> forType(Class<T> cls) {
             checkNotNull(cls);
-            final MessageCaster<?, ?> caster;
+            MessageCaster<?, ?> caster;
             if (Message.class.isAssignableFrom(cls)) {
                 caster = new MessageTypeCaster();
             } else if (ByteString.class.isAssignableFrom(cls)) {
                 caster = new BytesCaster();
             } else if (Enum.class.isAssignableFrom(cls)) {
                 @SuppressWarnings("unchecked") // Checked at runtime.
-                final Class<? extends Enum> enumCls = (Class<? extends Enum>) cls;
+                Class<? extends Enum> enumCls = (Class<? extends Enum>) cls;
                 caster = new EnumCaster(enumCls);
             } else {
                 caster = new PrimitiveTypeCaster<>();
             }
             @SuppressWarnings("unchecked") // Logically checked.
-            final MessageCaster<M, T> result = (MessageCaster<M, T>) caster;
+            MessageCaster<M, T> result = (MessageCaster<M, T>) caster;
             return result;
         }
 
@@ -161,15 +162,15 @@ public final class TypeConverter {
 
         @Override
         protected ByteString toObject(BytesValue input) {
-            final ByteString result = input.getValue();
+            ByteString result = input.getValue();
             return result;
         }
 
         @Override
         protected BytesValue toMessage(ByteString input) {
-            final BytesValue bytes = BytesValue.newBuilder()
-                                               .setValue(input)
-                                               .build();
+            BytesValue bytes = BytesValue.newBuilder()
+                                         .setValue(input)
+                                         .build();
             return bytes;
         }
     }
@@ -185,18 +186,18 @@ public final class TypeConverter {
 
         @Override
         protected Enum toObject(EnumValue input) {
-            final String name = input.getName();
+            String name = input.getName();
             @SuppressWarnings("unchecked") // Checked at runtime.
-            final Enum value = Enum.valueOf(type, name);
+            Enum value = Enum.valueOf(type, name);
             return value;
         }
 
         @Override
         protected EnumValue toMessage(Enum input) {
-            final String name = input.name();
-            final EnumValue value = EnumValue.newBuilder()
-                                             .setName(name)
-                                             .build();
+            String name = input.name();
+            EnumValue value = EnumValue.newBuilder()
+                                       .setName(name)
+                                       .build();
             return value;
         }
     }
@@ -241,27 +242,26 @@ public final class TypeConverter {
 
         @Override
         protected T toObject(M input) {
-            final Class<?> boxedType = input.getClass();
-            @SuppressWarnings("unchecked")
-            final Converter<M, T> typeUnpacker =
+            Class<?> boxedType = input.getClass();
+            @SuppressWarnings("unchecked") Converter<M, T> typeUnpacker =
                     (Converter<M, T>) PROTO_WRAPPER_TO_HANDLER.get(boxedType);
             checkArgument(typeUnpacker != null,
                           "Could not find a primitive type for %s.",
                           boxedType.getCanonicalName());
-            final T result = typeUnpacker.convert(input);
+            T result = typeUnpacker.convert(input);
             return result;
         }
 
         @Override
         protected M toMessage(T input) {
-            final Class<?> cls = input.getClass();
-            @SuppressWarnings("unchecked")
-            final Converter<M, T> converter =
+            Class<?> cls = input.getClass();
+            @SuppressWarnings("unchecked") Converter<M, T> converter =
                     (Converter<M, T>) PRIMITIVE_TO_HANDLER.get(cls);
             checkArgument(converter != null,
                           "Could not find a wrapper type for %s.",
                           cls.getCanonicalName());
-            final M result = converter.reverse().convert(input);
+            M result = converter.reverse()
+                                .convert(input);
             return result;
         }
     }

@@ -82,7 +82,7 @@ public class TypeUrlShould {
     @Test
     public void create_from_type_name() {
         TypeUrl typeUrl = TypeName.of(STRING_VALUE_TYPE_NAME)
-                                        .toUrl();
+                                  .toUrl();
 
         assertIsStringValueUrl(typeUrl);
     }
@@ -97,7 +97,9 @@ public class TypeUrlShould {
     @Test
     @SuppressWarnings("CheckReturnValue") // we test exception cause, not the output
     public void do_not_accept_Any_with_malformed_type_url() {
-        Any any = Any.newBuilder().setTypeUrl("invalid_type_url").build();
+        Any any = Any.newBuilder()
+                     .setTypeUrl("invalid_type_url")
+                     .build();
         try {
             TypeUrl.ofEnclosed(any);
             fail("Invalid type URL accepted.");
@@ -132,7 +134,7 @@ public class TypeUrlShould {
     public void create_by_descriptor_of_spine_msg() {
         Descriptors.Descriptor descriptor = EntityOption.getDescriptor();
         String expectedUrl = composeTypeUrl(TypeUrl.Prefix.SPINE.value(),
-                                                  descriptor.getFullName());
+                                            descriptor.getFullName());
 
         TypeUrl typeUrl = TypeUrl.from(descriptor);
 

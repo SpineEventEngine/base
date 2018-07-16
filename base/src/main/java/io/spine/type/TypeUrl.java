@@ -82,7 +82,7 @@ public final class TypeUrl implements Serializable {
 
     @VisibleForTesting
     static String composeTypeUrl(String prefix, String typeName) {
-        final String url = prefix + SEPARATOR + typeName;
+        String url = prefix + SEPARATOR + typeName;
         return url;
     }
 
@@ -101,7 +101,7 @@ public final class TypeUrl implements Serializable {
      * @param descriptor the descriptor of the type
      */
     public static TypeUrl from(Descriptor descriptor) {
-        final String prefix = prefixFor(descriptor);
+        String prefix = prefixFor(descriptor);
         return create(prefix, descriptor.getFullName());
     }
 
@@ -111,7 +111,7 @@ public final class TypeUrl implements Serializable {
      * @param descriptor the descriptor of the type
      */
     public static TypeUrl from(EnumDescriptor descriptor) {
-        final String prefix = prefixFor(descriptor);
+        String prefix = prefixFor(descriptor);
         return create(prefix, descriptor.getFullName());
     }
 
@@ -126,7 +126,7 @@ public final class TypeUrl implements Serializable {
         checkArgument(!typeUrl.isEmpty());
         checkArgument(isTypeUrl(typeUrl), "Malformed type URL: %s", typeUrl);
 
-        final TypeUrl result = doParse(typeUrl);
+        TypeUrl result = doParse(typeUrl);
         return result;
     }
 
@@ -135,17 +135,17 @@ public final class TypeUrl implements Serializable {
     }
 
     private static TypeUrl doParse(String typeUrl) {
-        final List<String> strings = splitter.splitToList(typeUrl);
+        List<String> strings = splitter.splitToList(typeUrl);
         if (strings.size() != 2) {
             throw malformedTypeUrl(typeUrl);
         }
-        final String prefix = strings.get(0);
-        final String typeName = strings.get(1);
+        String prefix = strings.get(0);
+        String typeName = strings.get(1);
         return create(prefix, typeName);
     }
 
     private static IllegalArgumentException malformedTypeUrl(String typeUrl) {
-        final String errMsg = format("Invalid Protobuf type URL encountered: %s", typeUrl);
+        String errMsg = format("Invalid Protobuf type URL encountered: %s", typeUrl);
         throw new IllegalArgumentException(new InvalidProtocolBufferException(errMsg));
     }
 
@@ -156,7 +156,7 @@ public final class TypeUrl implements Serializable {
      * @return a type URL
      */
     public static TypeUrl ofEnclosed(AnyOrBuilder any) {
-        final TypeUrl typeUrl = doParse(any.getTypeUrl());
+        TypeUrl typeUrl = doParse(any.getTypeUrl());
         return typeUrl;
     }
 
@@ -164,8 +164,8 @@ public final class TypeUrl implements Serializable {
      * Obtains the type URL for the passed message class.
      */
     public static TypeUrl of(Class<? extends Message> cls) {
-        final Message defaultInstance = getDefaultInstance(cls);
-        final TypeUrl result = of(defaultInstance);
+        Message defaultInstance = getDefaultInstance(cls);
+        TypeUrl result = of(defaultInstance);
         return result;
     }
 
@@ -179,12 +179,13 @@ public final class TypeUrl implements Serializable {
      * OptionsProto#typeUrlPrefix file option}.
      */
     private static String prefixFor(GenericDescriptor descriptor) {
-        final FileDescriptor file = descriptor.getFile();
-        if (file.getPackage().startsWith(GOOGLE_PROTOBUF_PACKAGE)) {
+        FileDescriptor file = descriptor.getFile();
+        if (file.getPackage()
+                .startsWith(GOOGLE_PROTOBUF_PACKAGE)) {
             return Prefix.GOOGLE_APIS.value();
         }
-        final String result = file.getOptions()
-                                  .getExtension(OptionsProto.typeUrlPrefix);
+        String result = file.getOptions()
+                            .getExtension(OptionsProto.typeUrlPrefix);
         return result;
     }
 
@@ -253,7 +254,7 @@ public final class TypeUrl implements Serializable {
      * Obtains string representation of the URL.
      */
     public String value() {
-        final String result = composeTypeUrl(prefix, typeName);
+        String result = composeTypeUrl(prefix, typeName);
         return result;
     }
 

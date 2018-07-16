@@ -52,7 +52,7 @@ public class UrlsShould {
 
     @Test
     public void convert_proper_urls() {
-        final Url url = Urls.create("http://convert-proper-url.com");
+        Url url = Urls.create("http://convert-proper-url.com");
 
         assertEquals("convert-proper-url.com", url.getRecord()
                                                   .getHost());
@@ -63,49 +63,49 @@ public class UrlsShould {
 
     @Test(expected = IllegalArgumentException.class)
     public void fail_on_already_formed_url() {
-        final Url url = Urls.create("http://already-formed-url.com");
+        Url url = Urls.create("http://already-formed-url.com");
         Urls.structurize(url);
     }
 
     @Test
     public void validate_raw_urls() {
-        final Url url1 = Url.newBuilder()
-                            .setRaw("validate-raw.com")
-                            .build();
+        Url url1 = Url.newBuilder()
+                      .setRaw("validate-raw.com")
+                      .build();
         Urls.validate(url1);
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void fail_on_wrong_urls_validation() {
-        final Url emptyUrl = Url.newBuilder()
-                                .build();
+        Url emptyUrl = Url.newBuilder()
+                          .build();
         try {
             Urls.toString(emptyUrl);
             fail();
         } catch (IllegalArgumentException ignored) {
         }
 
-        final Url urlWithoutHost = Url.newBuilder()
-                                      .setRecord(Record.getDefaultInstance())
-                                      .build();
+        Url urlWithoutHost = Url.newBuilder()
+                                .setRecord(Record.getDefaultInstance())
+                                .build();
         try {
             Urls.toString(urlWithoutHost);
             fail();
         } catch (IllegalArgumentException ignored) {
         }
 
-        final Authorization authWithPasswordWithoutUser =
+        Authorization authWithPasswordWithoutUser =
                 Authorization.newBuilder()
                              .setPassword("password")
                              .build();
-        final Record recordWithPasswordWithoutUser =
+        Record recordWithPasswordWithoutUser =
                 Record.newBuilder()
                       .setHost("some-url.com")
                       .setAuth(authWithPasswordWithoutUser)
                       .build();
 
-        final Url urlWithPasswordWithoutUser =
+        Url urlWithPasswordWithoutUser =
                 Url.newBuilder()
                    .setRecord(recordWithPasswordWithoutUser)
                    .build();
@@ -118,7 +118,7 @@ public class UrlsShould {
 
     @Test
     public void convert_to_string_properly() {
-        final String rawUrl = "http://foo-bar.com/index";
+        String rawUrl = "http://foo-bar.com/index";
 
         assertEquals(rawUrl, Urls.toString(Urls.create(rawUrl)));
     }

@@ -41,13 +41,13 @@ class LongFieldValidator extends NumberFieldValidator<Long> {
 
     @Override
     protected Long toNumber(String value) {
-        final Long number = Long.valueOf(value);
+        Long number = Long.valueOf(value);
         return number;
     }
 
     @Override
     protected Long getAbs(Long value) {
-        final Long abs = abs(value);
+        Long abs = abs(value);
         return abs;
     }
 }

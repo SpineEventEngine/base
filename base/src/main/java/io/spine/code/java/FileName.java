@@ -46,7 +46,7 @@ public final class FileName extends AbstractFileName<FileName> {
      */
     public static FileName forType(String typeName) {
         checkNotEmptyOrBlank(typeName);
-        final FileName result = new FileName(typeName + EXTENSION);
+        FileName result = new FileName(typeName + EXTENSION);
         return result;
     }
 
@@ -61,11 +61,12 @@ public final class FileName extends AbstractFileName<FileName> {
      * @return new instance
      */
     public static FileName forMessage(DescriptorProto message, boolean orBuilder) {
-        final String typeName = message.getName();
-        final String javaType = orBuilder
-                ? SimpleClassName.messageOrBuilder(typeName).value()
-                : typeName;
-        final FileName result = forType(javaType);
+        String typeName = message.getName();
+        String javaType = orBuilder
+                          ? SimpleClassName.messageOrBuilder(typeName)
+                                           .value()
+                          : typeName;
+        FileName result = forType(javaType);
         return result;
     }
 

@@ -42,7 +42,7 @@ public class JavadocEscaperShould {
 
     @Test
     public void escape_slash_in_beginning() {
-        final String remainingJavadoc = "ABC";
+        String remainingJavadoc = "ABC";
         assertEquals("&#47;" + remainingJavadoc, escape('/' + remainingJavadoc));
     }
 
@@ -66,7 +66,7 @@ public class JavadocEscaperShould {
 
     @Test
     public void pass_the_null_tolerance_check() {
-        final NullPointerTester nullPointerTester = new NullPointerTester();
+        NullPointerTester nullPointerTester = new NullPointerTester();
 
         nullPointerTester.testAllPublicStaticMethods(JavadocEscaper.class);
         nullPointerTester.testAllPublicStaticMethods(EscapeSequence.class);

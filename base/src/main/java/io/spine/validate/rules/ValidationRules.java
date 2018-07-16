@@ -111,9 +111,9 @@ public class ValidationRules {
          */
         private void put(Properties properties) {
             for (String validationRuleType : properties.stringPropertyNames()) {
-                final String ruleTargetPaths = properties.getProperty(validationRuleType);
-                final Collection<String> parsedPaths = optionSplitter.splitToList(ruleTargetPaths);
-                final ValidationRule rule = new ValidationRule(validationRuleType, parsedPaths);
+                String ruleTargetPaths = properties.getProperty(validationRuleType);
+                Collection<String> parsedPaths = optionSplitter.splitToList(ruleTargetPaths);
+                ValidationRule rule = new ValidationRule(validationRuleType, parsedPaths);
                 rules.add(rule);
             }
         }
