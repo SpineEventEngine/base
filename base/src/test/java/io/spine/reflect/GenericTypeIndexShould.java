@@ -40,7 +40,7 @@ public class GenericTypeIndexShould {
 
     @Test
     public void obtain_generic_argument_assuming_generic_superclass() {
-        final Parametrized<Long, String> val = new Parametrized<Long, String>() {};
+        Parametrized<Long, String> val = new Parametrized<Long, String>() {};
         assertEquals(Long.class, getArgument(val.getClass(), Base.class, 0));
         assertEquals(String.class, getArgument(val.getClass(), Base.class, 1));
     }

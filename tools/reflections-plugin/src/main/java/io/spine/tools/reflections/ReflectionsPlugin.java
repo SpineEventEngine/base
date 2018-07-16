@@ -66,19 +66,19 @@ public class ReflectionsPlugin extends SpinePlugin {
      * <p>The plugin runs after `:classes` task and before `:processResources`.
      */
     @Override
-    public void apply(final Project project) {
-        final Logger log = log();
+    public void apply(Project project) {
+        Logger log = log();
         log.debug("Applying the Reflections plugin");
         project.getExtensions()
                .create(REFLECTIONS_PLUGIN_EXTENSION, Extension.class);
 
-        final Action<Task> scanClassPathAction = new Action<Task>() {
+        Action<Task> scanClassPathAction = new Action<Task>() {
             @Override
             public void execute(Task task) {
                 scanClassPath(project);
             }
         };
-        final GradleTask task =
+        GradleTask task =
                 newTask(SCAN_CLASS_PATH, scanClassPathAction).insertAfterTask(CLASSES)
                                                              .insertBeforeTask(BUILD)
                                                              .applyNowTo(project);
@@ -89,31 +89,30 @@ public class ReflectionsPlugin extends SpinePlugin {
     private void scanClassPath(Project project) {
         log().debug("Scanning the classpath");
 
-        final String outputDirPath = project.getProjectDir() + "/build";
-        final File outputDir = new File(outputDirPath);
+        String outputDirPath = project.getProjectDir() + "/build";
+        File outputDir = new File(outputDirPath);
         ensureFolderCreated(outputDir);
 
-        final String targetDirPath = Extension.getTargetDir(project);
-        final File reflectionsOutputDir = new File(targetDirPath);
+        String targetDirPath = Extension.getTargetDir(project);
+        File reflectionsOutputDir = new File(targetDirPath);
         ensureFolderCreated(reflectionsOutputDir);
 
-        final ConfigurationBuilder config = new ConfigurationBuilder();
+        ConfigurationBuilder config = new ConfigurationBuilder();
         config.setUrls(toUrls(outputDir));
         config.setScanners(new SubTypesScanner(), new TypeAnnotationsScanner());
 
-        final Serializer serializerInstance = new XmlSerializer();
+        Serializer serializerInstance = new XmlSerializer();
         config.setSerializer(serializerInstance);
 
-        final Reflections reflections = new Reflections(config);
-        final String reflectionsOutputFilePath =
+        Reflections reflections = new Reflections(config);
+        String reflectionsOutputFilePath =
                 targetDirPath + separatorChar + project.getName() + "-reflections.xml";
         reflections.save(reflectionsOutputFilePath);
     }
 
     private static Set<URL> toUrls(File outputDir) {
         // because they are file URIs, they will not cause any network-related issues.
-        @SuppressWarnings("CollectionContainsUrl")
-        final Set<URL> urls = new HashSet<>();
+        @SuppressWarnings("CollectionContainsUrl") Set<URL> urls = new HashSet<>();
         try {
             urls.add(outputDir.toURI()
                               .toURL());

@@ -57,7 +57,7 @@ public final class Math {
             default:
                 // fall through.
         }
-        final long total = a * b;
+        long total = a * b;
         if (total / b != a) {
             throwOverflow(a, b);
         }

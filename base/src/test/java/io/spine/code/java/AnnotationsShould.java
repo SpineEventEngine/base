@@ -41,7 +41,7 @@ public class AnnotationsShould {
 
     @Test
     public void return_generated_annotation_spec() {
-        final AnnotationSpec spec = Annotations.generatedBySpineModelCompiler();
+        AnnotationSpec spec = Annotations.generatedBySpineModelCompiler();
         assertEquals(spec.type, TypeName.get(Generated.class));
     }
 }

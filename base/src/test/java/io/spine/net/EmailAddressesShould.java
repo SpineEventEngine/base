@@ -57,12 +57,14 @@ public class EmailAddressesShould {
     }
 
     private static boolean patternMatches(CharSequence input) {
-        return EmailAddresses.pattern().matcher(input).matches();
+        return EmailAddresses.pattern()
+                             .matcher(input)
+                             .matches();
     }
 
     @Test
     public void create_EmailAddress_instance() {
-        final String email = "jdoe@spine.org";
+        String email = "jdoe@spine.org";
 
         assertEquals(email, valueOf(email).getValue());
     }
