@@ -37,8 +37,8 @@ public class AbstractValidatingBuilderShould {
     public void convert_to_map() throws Exception {
         String key1 = "key1";
         UInt32Value value = UInt32Value.newBuilder()
-                                             .setValue(123)
-                                             .build();
+                                       .setValue(123)
+                                       .build();
         String mapStr = "\"key1\":\"123\",\"key2\":\"234\"";
 
         UInt32ValueVBuilder uInt32ValueVBuilder = UInt32ValueVBuilder.newBuilder();
@@ -59,7 +59,7 @@ public class AbstractValidatingBuilderShould {
 
         StringValueVBuilder stringValueVBuilder = StringValueVBuilder.newBuilder();
         List<String> convertedValue = stringValueVBuilder.convertToList(listStr,
-                                                                              String.class);
+                                                                        String.class);
 
         assertTrue(convertedValue.contains(key1));
         assertTrue(convertedValue.contains(value));
