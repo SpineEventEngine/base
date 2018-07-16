@@ -34,7 +34,7 @@ import static io.spine.protobuf.TypeConverter.toObject;
  * An attribute stored in a protobuf {@code map<string, Any>}.
  *
  * @param <T> the type of the attribute value, which can be {@code Integer}, {@code Long},
- *            {@code Float}, {@code Double}, {@code Double}, or a class implementing {@code Message}
+ *            {@code Float}, {@code Double}, {@code Boolean}, or a class implementing {@code Message}
  * @param <M> the type of the message object to which the attribute belongs
  * @param <B> the type of the message builder
  *
@@ -64,28 +64,28 @@ public abstract class Attribute<T, M extends Message, B extends Message.Builder>
      */
     @Override
     public final Optional<T> getValue(M obj) {
-        final Map<String, Any> map = getMap(obj);
-        final Optional<T> result = getFromMap(map);
+        Map<String, Any> map = getMap(obj);
+        Optional<T> result = getFromMap(map);
         return result;
     }
 
     private Optional<T> getFromMap(Map<String, Any> map) {
-        final Any any = map.get(getName());
+        Any any = map.get(getName());
         if (any == null || Any.getDefaultInstance()
                               .equals(any)) {
             return Optional.absent();
         }
 
-        final T result = toObject(any, getValueClass());
+        T result = toObject(any, getValueClass());
         return Optional.of(result);
     }
 
     /**
      * Sets the value of the attribute in the passed builder.
      */
-    public final void setValue(B builder, T value) {
-        final Map<String, Any> map = getMutableMap(builder);
-        final Any packed = toAny(value);
+    public void setValue(B builder, T value) {
+        Map<String, Any> map = getMutableMap(builder);
+        Any packed = toAny(value);
         map.put(getName(), packed);
     }
 }

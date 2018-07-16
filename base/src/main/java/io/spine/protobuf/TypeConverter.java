@@ -65,8 +65,8 @@ import static io.spine.protobuf.AnyPacker.unpack;
 @Internal
 public final class TypeConverter {
 
+    /** Prevents instantiation of this utility class. */
     private TypeConverter() {
-        // Prevent utility class initialization.
     }
 
     /**
@@ -80,9 +80,9 @@ public final class TypeConverter {
     public static <T> T toObject(Any message, Class<T> target) {
         checkNotNull(message);
         checkNotNull(target);
-        final MessageCaster<? super Message, T> caster = MessageCaster.forType(target);
-        final Message genericMessage = unpack(message);
-        final T result = caster.convert(genericMessage);
+        MessageCaster<? super Message, T> caster = MessageCaster.forType(target);
+        Message genericMessage = unpack(message);
+        T result = caster.convert(genericMessage);
         return result;
     }
 
@@ -96,8 +96,8 @@ public final class TypeConverter {
      */
     public static <T> Any toAny(T value) {
         checkNotNull(value);
-        final Message message = toMessage(value);
-        final Any result = AnyPacker.pack(message);
+        Message message = toMessage(value);
+        Any result = AnyPacker.pack(message);
         return result;
     }
 
@@ -111,9 +111,9 @@ public final class TypeConverter {
      */
     public static <T, M extends Message> M toMessage(T value) {
         @SuppressWarnings("unchecked") // Must be checked at runtime
-        final Class<T> srcClass = (Class<T>) value.getClass();
-        final MessageCaster<M, T> caster = MessageCaster.forType(srcClass);
-        final M message = caster.reverse().convert(value);
+        Class<T> srcClass = (Class<T>) value.getClass();
+        MessageCaster<M, T> caster = MessageCaster.forType(srcClass);
+        M message = caster.reverse().convert(value);
         checkNotNull(message);
         return message;
     }
@@ -125,7 +125,7 @@ public final class TypeConverter {
 
         private static <M extends Message, T> MessageCaster<M, T> forType(Class<T> cls) {
             checkNotNull(cls);
-            final MessageCaster<?, ?> caster;
+            MessageCaster<?, ?> caster;
             if (Message.class.isAssignableFrom(cls)) {
                 caster = new MessageTypeCaster();
             } else if (ByteString.class.isAssignableFrom(cls)) {
@@ -138,7 +138,7 @@ public final class TypeConverter {
                 caster = new PrimitiveTypeCaster<>();
             }
             @SuppressWarnings("unchecked") // Logically checked.
-            final MessageCaster<M, T> result = (MessageCaster<M, T>) caster;
+            MessageCaster<M, T> result = (MessageCaster<M, T>) caster;
             return result;
         }
 
@@ -161,15 +161,16 @@ public final class TypeConverter {
 
         @Override
         protected ByteString toObject(BytesValue input) {
-            final ByteString result = input.getValue();
+            ByteString result = input.getValue();
             return result;
         }
 
         @Override
         protected BytesValue toMessage(ByteString input) {
-            final BytesValue bytes = BytesValue.newBuilder()
-                                               .setValue(input)
-                                               .build();
+            BytesValue bytes = BytesValue
+                    .newBuilder()
+                    .setValue(input)
+                    .build();
             return bytes;
         }
     }
@@ -185,18 +186,19 @@ public final class TypeConverter {
 
         @Override
         protected Enum toObject(EnumValue input) {
-            final String name = input.getName();
+            String name = input.getName();
             @SuppressWarnings("unchecked") // Checked at runtime.
-            final Enum value = Enum.valueOf(type, name);
+            Enum value = Enum.valueOf(type, name);
             return value;
         }
 
         @Override
         protected EnumValue toMessage(Enum input) {
-            final String name = input.name();
-            final EnumValue value = EnumValue.newBuilder()
-                                             .setName(name)
-                                             .build();
+            String name = input.name();
+            EnumValue value = EnumValue
+                    .newBuilder()
+                    .setName(name)
+                    .build();
             return value;
         }
     }
