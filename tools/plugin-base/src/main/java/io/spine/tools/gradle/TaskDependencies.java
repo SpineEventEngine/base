@@ -44,7 +44,7 @@ public class TaskDependencies {
      * Checks whether a given Gradle task depends on another Gradle task with the specified name.
      */
     public static boolean dependsOn(Task task, TaskName ontoTaskWithName) {
-        final String taskName = ontoTaskWithName.getValue();
+        String taskName = ontoTaskWithName.getValue();
         return dependsOn(task, taskName);
     }
 
@@ -54,7 +54,7 @@ public class TaskDependencies {
      */
     @SuppressWarnings("ChainOfInstanceofChecks")
     private static boolean dependsOn(Task task, String ontoTaskWithName) {
-        final Set<Object> dependsOn = task.getDependsOn();
+        Set<Object> dependsOn = task.getDependsOn();
 
         boolean contains = false;
         for (Object anObject : dependsOn) {
@@ -62,7 +62,7 @@ public class TaskDependencies {
                 contains = contains || ontoTaskWithName.equals(anObject);
             }
             if (anObject instanceof Task) {
-                final Task objectAsTask = (Task) anObject;
+                Task objectAsTask = (Task) anObject;
                 contains = contains || ontoTaskWithName.equals(objectAsTask.getName());
             }
         }
