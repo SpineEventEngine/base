@@ -57,11 +57,11 @@ public class ProjectHierarchyShould {
 
     @Test
     public void traverse_hierarchy_in_bf_ordering() {
-        final Project root = mock(Project.class);
-        final Project sub1 = mock(Project.class);
-        final Project sub2 = mock(Project.class);
-        final Project subsub1 = mock(Project.class);
-        final Project subsub2 = mock(Project.class);
+        Project root = mock(Project.class);
+        Project sub1 = mock(Project.class);
+        Project sub2 = mock(Project.class);
+        Project subsub1 = mock(Project.class);
+        Project subsub2 = mock(Project.class);
 
         when(root.getSubprojects()).thenReturn(newHashSet(sub1, sub2));
         when(sub1.getSubprojects()).thenReturn(newHashSet(subsub1, subsub2));
@@ -71,7 +71,7 @@ public class ProjectHierarchyShould {
 
         when(root.getRootProject()).thenReturn(root);
 
-        final Set<Project> visited = newHashSet();
+        Set<Project> visited = newHashSet();
         ProjectHierarchy.applyToAll(root, project -> {
             assertFalse(visited.contains(project));
             for (Project child : project.getSubprojects()) {
@@ -86,7 +86,7 @@ public class ProjectHierarchyShould {
 
     @Test(expected = IllegalArgumentException.class)
     public void not_accept_non_root_projects() {
-        final Project project = mock(Project.class);
+        Project project = mock(Project.class);
         when(project.getRootProject()).thenReturn(mock(Project.class)); // other instance
         ProjectHierarchy.applyToAll(project, GradleProject.NoOp.<Project>action());
     }
