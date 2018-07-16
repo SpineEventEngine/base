@@ -91,7 +91,8 @@ public class DescriptorSetMergerPlugin extends SpinePlugin {
                     configuration.getFiles()
                                  .stream()
                                  .map(task.getProject()::zipTree)
-                                 .flatMap(fileTree -> fileTree.getFiles().stream())
+                                 .flatMap(fileTree -> fileTree.getFiles()
+                                                              .stream())
                                  .filter(file -> KNOWN_TYPES.equals(file.getName()))
                                  .peek(file -> log().debug("Merging descriptors from {}", file))
                                  .collect(toList());

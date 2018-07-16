@@ -123,8 +123,8 @@ public class RejectionJavadoc {
                    .append(LINE_SEPARATOR);
             for (Entry<FieldDescriptorProto, String> commentedField : commentedFields.entrySet()) {
                 String fieldName = FieldName.of(commentedField.getKey()
-                                                                    .getName())
-                                                  .javaCase();
+                                                              .getName())
+                                            .javaCase();
                 int commentOffset = maxFieldLength - fieldName.length() + 1;
                 builder.append("@param ")
                        .append(fieldName)
@@ -169,7 +169,7 @@ public class RejectionJavadoc {
             String errMsg =
                     "To enable rejection generation, please configure the Gradle " +
                     "Protobuf plugin as follows: " +
-                            "`task.descriptorSetOptions.includeSourceInfo = true`.";
+                    "`task.descriptorSetOptions.includeSourceInfo = true`.";
             throw new IllegalStateException(errMsg);
         }
 
@@ -211,7 +211,7 @@ public class RejectionJavadoc {
 
     private int getTopLevelMessageIndex() {
         List<DescriptorProto> messages = declaration.getFile()
-                                                          .getMessageTypeList();
+                                                    .getMessageTypeList();
         for (DescriptorProto currentMessage : messages) {
             if (currentMessage.equals(declaration.getMessage())) {
                 return messages.indexOf(declaration.getMessage());
@@ -219,10 +219,10 @@ public class RejectionJavadoc {
         }
 
         String msg = format("The rejection file \"%s\" should contain \"%s\" rejection.",
-                                  declaration.getFile()
-                                             .getName(),
-                                  declaration.getMessage()
-                                             .getName());
+                            declaration.getFile()
+                                       .getName(),
+                            declaration.getMessage()
+                                       .getName());
         throw new IllegalStateException(msg);
     }
 
@@ -249,9 +249,9 @@ public class RejectionJavadoc {
         }
 
         String msg = format("The location with %s path should be present in \"%s\".",
-                                  locationPath,
-                                  declaration.getFile()
-                                             .getName());
+                            locationPath,
+                            declaration.getFile()
+                                       .getName());
         throw new IllegalStateException(msg);
     }
 
@@ -291,9 +291,9 @@ public class RejectionJavadoc {
                 checkNotNull(right);
 
                 int result = Ints.compare(left.getName()
-                                                    .length(),
-                                                right.getName()
-                                                     .length());
+                                              .length(),
+                                          right.getName()
+                                               .length());
                 return result;
             }
         };

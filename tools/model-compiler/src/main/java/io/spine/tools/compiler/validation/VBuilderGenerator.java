@@ -134,8 +134,8 @@ public class VBuilderGenerator {
             result = Predicates.alwaysTrue();
         } else {
             String rootPath = protoSrcDirPath.endsWith(File.separator)
-                                    ? protoSrcDirPath
-                                    : protoSrcDirPath + File.separator;
+                              ? protoSrcDirPath
+                              : protoSrcDirPath + File.separator;
             result = new SourceProtoBelongsToModule(rootPath);
         }
         return result;

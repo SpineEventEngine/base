@@ -242,8 +242,8 @@ public class Extension {
 
     private static String pathOrDefault(String path, Object defaultValue) {
         return isNullOrEmpty(path)
-                ? defaultValue.toString()
-                : path;
+               ? defaultValue.toString()
+               : path;
     }
 
     public static boolean isGenerateValidatingBuilders(Project project) {
@@ -298,7 +298,7 @@ public class Extension {
             dirsToClean.add(singleDir);
         } else {
             String defaultValue = def(project).generated()
-                                                    .toString();
+                                              .toString();
             log().debug("Default directory to clean: {}", defaultValue);
             dirsToClean.add(defaultValue);
         }
@@ -329,7 +329,7 @@ public class Extension {
             );
         }
         File spinePath = DefaultProject.at(projectDir)
-                                             .tempArtifacts();
+                                       .tempArtifacts();
         if (spinePath.exists()) {
             return Optional.of(spinePath.toString());
         } else {

@@ -58,7 +58,6 @@ class VBTypeLookup {
     /** A map from Protobuf type name to Protobuf FileDescriptorProto. */
     private final Map<DescriptorProto, FileDescriptorProto> descriptorCache = newHashMap();
 
-
     /** Verifies if a message is not one provided by the Protobuf library. */
     private final Predicate<DescriptorProto> isNotStandardType =
             new Predicate<DescriptorProto>() {
@@ -70,7 +69,7 @@ class VBTypeLookup {
                     }
                     String javaPackage = getJavaPackage(message);
                     boolean isGoogleMsg = javaPackage.contains(Message.class.getPackage()
-                                                                                  .getName());
+                                                                            .getName());
                     return !isGoogleMsg;
                 }
             };
@@ -93,7 +92,7 @@ class VBTypeLookup {
         result.addAll(allTypes);
         if (result.size() == 1) {
             VBType found = allTypes.iterator()
-                                         .next();
+                                   .next();
             log.debug("One type found for generating validating builder: {}", found);
         } else {
             log.debug("Types collected, {} validating builders will be generated.", result.size());
@@ -135,8 +134,8 @@ class VBTypeLookup {
 
     private String getJavaPackage(DescriptorProto msgDescriptor) {
         String result = descriptorCache.get(msgDescriptor)
-                                             .getOptions()
-                                             .getJavaPackage();
+                                       .getOptions()
+                                       .getJavaPackage();
         return result;
     }
 

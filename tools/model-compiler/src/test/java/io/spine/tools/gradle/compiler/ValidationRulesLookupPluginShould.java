@@ -79,9 +79,9 @@ public class ValidationRulesLookupPluginShould {
 
     private Map<String, String> loadProperties() {
         PropertyFile propFile = PropertyFile.of(ValidationRules.fileName())
-                                                  .at(DefaultProject.at(testProjectDir.getRoot())
-                                                                    .generated()
-                                                                    .mainResources());
+                                            .at(DefaultProject.at(testProjectDir.getRoot())
+                                                              .generated()
+                                                              .mainResources());
         Map<String, String> result = propFile.load();
         return result;
     }

@@ -50,14 +50,14 @@ public class RejectionGenPluginShould {
     @Test
     public void compile_generated_rejections() {
         Collection<String> files = Arrays.asList("test_rejections.proto",
-                                                       "outer_class_by_file_name_rejections.proto",
-                                                       "outer_class_set_rejections.proto",
-                                                       "deps/deps.proto");
+                                                 "outer_class_by_file_name_rejections.proto",
+                                                 "outer_class_set_rejections.proto",
+                                                 "deps/deps.proto");
         GradleProject project = GradleProject.newBuilder()
-                                                   .setProjectName("rejections-gen-plugin-test")
-                                                   .setProjectFolder(testProjectDir.getRoot())
-                                                   .addProtoFiles(files)
-                                                   .build();
+                                             .setProjectName("rejections-gen-plugin-test")
+                                             .setProjectFolder(testProjectDir.getRoot())
+                                             .addProtoFiles(files)
+                                             .build();
         project.executeTask(COMPILE_JAVA);
     }
 
@@ -68,7 +68,7 @@ public class RejectionGenPluginShould {
         project.executeTask(COMPILE_JAVA);
 
         RootDoc root = RootDocReceiver.getRootDoc(testProjectDir,
-                                                        rejectionsJavadocSourceName());
+                                                  rejectionsJavadocSourceName());
         ClassDoc rejectionDoc = root.classes()[0];
         ConstructorDoc rejectionCtorDoc = rejectionDoc.constructors()[0];
 

@@ -191,7 +191,6 @@ class EnrichmentMap {
         return enrichmentsMap;
     }
 
-
     @SuppressWarnings("MethodWithMultipleLoops")    // It's fine in this case.
     private Map.Entry<String, String> scanInnerMessages(DescriptorProto msg) {
         Logger log = log();

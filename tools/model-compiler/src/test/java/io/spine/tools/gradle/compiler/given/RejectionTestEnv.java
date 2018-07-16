@@ -65,10 +65,10 @@ public class RejectionTestEnv {
 
     public static String rejectionsJavadocSourceName() {
         Path fileName = DefaultProject.at(Paths.get("/"))
-                                            .generated()
-                                            .mainSpine()
-                                            .resolve(JAVA_PACKAGE.toDirectory())
-                                            .resolve(REJECTION_FILE_NAME.value());
+                                      .generated()
+                                      .mainSpine()
+                                      .resolve(JAVA_PACKAGE.toDirectory())
+                                      .resolve(REJECTION_FILE_NAME.value());
         return fileName.toString();
     }
 
@@ -104,9 +104,9 @@ public class RejectionTestEnv {
     public static String getExpectedCtorComment() {
         String param = " @param ";
         String firstFieldJavaName = FieldName.of(FIRST_FIELD_NAME)
-                                                   .javaCase();
+                                             .javaCase();
         String secondFieldJavaName = FieldName.of(SECOND_FIELD_NAME)
-                                                    .javaCase();
+                                              .javaCase();
         return " Creates a new instance." + JAVADOC_LINE_SEPARATOR + JAVADOC_LINE_SEPARATOR
                 + param + firstFieldJavaName + "                " + FIRST_FIELD_COMMENT
                 + JAVADOC_LINE_SEPARATOR

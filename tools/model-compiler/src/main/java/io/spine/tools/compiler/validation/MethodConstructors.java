@@ -58,7 +58,7 @@ class MethodConstructors {
     static String createDescriptorStatement(int index, ClassName messageClassName) {
         checkNotNull(messageClassName);
         SoyMapData mapData = new SoyMapData("fieldIndex", index,
-                                                  "messageClassName", messageClassName.toString());
+                                            "messageClassName", messageClassName.toString());
         String result = renderData(mapData, "io.spine.generation.descriptorStatement");
         return result;
     }
@@ -86,9 +86,9 @@ class MethodConstructors {
         checkNotNull(value);
         // We pass capitalized name because this value is used with prefixes.
         String fieldName = FieldName.of(value)
-                                          .toCamelCase();
+                                    .toCamelCase();
         SoyMapData mapData = new SoyMapData("javaFieldName", fieldName,
-                                                  "valueToValidate", value);
+                                            "valueToValidate", value);
         String result = renderData(mapData, "io.spine.generation.convertedValueStatement");
         return result;
     }
@@ -153,22 +153,22 @@ class MethodConstructors {
 
     private static String renderData(SoyMapData mapData, String templateName) {
         String result = soyTofu.newRenderer(templateName)
-                                     .setData(mapData)
-                                     .render();
+                               .setData(mapData)
+                               .render();
         return result;
     }
 
     private static SoyTofu getSoyTofu() {
         URL resource = MethodConstructors.class.getClassLoader()
-                                                     .getResource(TEMPLATE_PATH);
+                                               .getResource(TEMPLATE_PATH);
         if (resource == null) {
             String exMessage = format("The template file %s is not found.", TEMPLATE_PATH);
             throw newIllegalStateException(exMessage);
         }
 
         SoyFileSet sfs = SoyFileSet.builder()
-                                         .add(resource)
-                                         .build();
+                                   .add(resource)
+                                   .build();
         return sfs.compileToTofu();
     }
 }

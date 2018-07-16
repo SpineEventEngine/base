@@ -60,17 +60,17 @@ public class MessageTypeCache {
 
         String sourceProtoPackage = fileDescriptor.getPackage();
         String protoPackage = !sourceProtoPackage.isEmpty()
-                                    ? (sourceProtoPackage + '.')
-                                    : "";
+                              ? (sourceProtoPackage + '.')
+                              : "";
         String sourceJavaPackage = options.getJavaPackage();
         StringBuilder javaPackage =
                 new StringBuilder(!sourceJavaPackage.isEmpty()
-                                          ? sourceJavaPackage + '.'
-                                          : "");
+                                  ? sourceJavaPackage + '.'
+                                  : "");
 
         if (!options.getJavaMultipleFiles()) {
             String singleFileSuffix = SimpleClassName.outerOf(fileDescriptor)
-                                                           .value();
+                                                     .value();
             javaPackage.append(singleFileSuffix)
                        .append('.');
         }

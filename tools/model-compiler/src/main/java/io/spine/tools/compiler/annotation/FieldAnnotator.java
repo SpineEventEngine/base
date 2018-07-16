@@ -104,7 +104,7 @@ class FieldAnnotator extends Annotator<FieldOptions, FieldDescriptorProto> {
     static JavaClassSource getBuilder(JavaSource messageSource) {
         JavaClassSource messageClass = asClassSource(messageSource);
         JavaSource builderSource = messageClass.getNestedType(SimpleClassName.ofBuilder()
-                                                                                   .value());
+                                                                             .value());
         return asClassSource(builderSource);
     }
 
@@ -118,7 +118,7 @@ class FieldAnnotator extends Annotator<FieldOptions, FieldDescriptorProto> {
     private static JavaClassSource asClassSource(JavaType<?> javaType) {
         if (!javaType.isClass()) {
             String errMsg = format("`%s expected to be a class.",
-                                         javaType.getQualifiedName());
+                                   javaType.getQualifiedName());
             throw new IllegalStateException(errMsg);
         }
 
@@ -187,7 +187,7 @@ class FieldAnnotator extends Annotator<FieldOptions, FieldDescriptorProto> {
 
         private MessageFieldAnnotation(FileDescriptorProto file, DescriptorProto message) {
             if (!file.getMessageTypeList()
-                               .contains(message)) {
+                     .contains(message)) {
                 throw newIllegalStateException(
                         "Specified message `%s` does not belong to the file `%s`.",
                         message, file);
@@ -230,7 +230,7 @@ class FieldAnnotator extends Annotator<FieldOptions, FieldDescriptorProto> {
                                       FieldDescriptorProto field,
                                       Iterable<String> skipFields) {
         String capitalizedFieldName = FieldName.of(field)
-                                                     .toCamelCase();
+                                               .toCamelCase();
         JavaClassSource messageBuilder = getBuilder(message);
 
         annotateAccessors(message, capitalizedFieldName, skipFields);
@@ -300,7 +300,7 @@ class FieldAnnotator extends Annotator<FieldOptions, FieldDescriptorProto> {
         for (FieldDescriptorProto fieldDescriptor : messageDescriptor.getFieldList()) {
             if (shouldAnnotate(fieldDescriptor)) {
                 String capitalizedFieldName = FieldName.of(fieldDescriptor)
-                                                             .toCamelCase();
+                                                       .toCamelCase();
                 fieldNames.add(capitalizedFieldName);
             }
         }
@@ -348,7 +348,7 @@ class FieldAnnotator extends Annotator<FieldOptions, FieldDescriptorProto> {
      */
     private static void checkMultipleFilesOption(FileDescriptorProto file, boolean expectedValue) {
         boolean actualValue = file.getOptions()
-                                        .hasJavaMultipleFiles();
+                                  .hasJavaMultipleFiles();
         if (actualValue != expectedValue) {
             throw newIllegalStateException("`java_multiple_files` should be `%s`, but was `%s`.",
                                            expectedValue, actualValue);

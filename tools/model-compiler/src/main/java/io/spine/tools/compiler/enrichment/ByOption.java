@@ -55,7 +55,8 @@ class ByOption {
     }
 
     static boolean isSetFor(FieldDescriptorProto field) {
-        return Options.option(field, by).isPresent();
+        return Options.option(field, by)
+                      .isPresent();
     }
 
     Map.Entry<String, String> collect() {

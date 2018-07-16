@@ -58,8 +58,8 @@ public class ModelCompilerTestEnv {
      */
     public static Project newProject(File projectDir) {
         Project project = ProjectBuilder.builder()
-                                              .withProjectDir(projectDir)
-                                              .build();
+                                        .withProjectDir(projectDir)
+                                        .build();
         project.getPluginManager()
                .apply("java");
         project.task(GENERATE_PROTO.getValue());
@@ -69,7 +69,7 @@ public class ModelCompilerTestEnv {
 
     public static String newUuid() {
         String result = UUID.randomUUID()
-                                  .toString();
+                            .toString();
         return result;
     }
 }

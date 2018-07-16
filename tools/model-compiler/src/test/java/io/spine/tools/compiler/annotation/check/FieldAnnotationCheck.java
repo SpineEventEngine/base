@@ -64,9 +64,10 @@ public class FieldAnnotationCheck implements SourceCheck {
 
     private void checkAccessorsAnnotation(JavaClassSource message) {
         String fieldName = FieldName.of(fieldDescriptor)
-                                          .toCamelCase();
+                                    .toCamelCase();
         for (MethodSource method : message.getMethods()) {
-            if (method.isPublic() && method.getName().contains(fieldName)) {
+            if (method.isPublic() && method.getName()
+                                           .contains(fieldName)) {
                 AnnotationSource annotation = findSpiAnnotation(method);
                 if (shouldBeAnnotated) {
                     assertNotNull(annotation);

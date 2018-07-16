@@ -79,18 +79,18 @@ class MethodGenerator {
 
     private static MethodSpec createPrivateConstructor() {
         MethodSpec result = MethodSpec.constructorBuilder()
-                                            .addModifiers(Modifier.PRIVATE)
-                                            .build();
+                                      .addModifiers(Modifier.PRIVATE)
+                                      .build();
         return result;
     }
 
     private MethodSpec createNewBuilderMethod() {
         ClassName builderClass = ClassNames.getClassName(javaPackage, javaClass);
         MethodSpec buildMethod = MethodSpec.methodBuilder(Messages.METHOD_NEW_BUILDER)
-                                                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-                                                 .returns(builderClass)
-                                                 .addStatement("return new $T()", builderClass)
-                                                 .build();
+                                           .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+                                           .returns(builderClass)
+                                           .addStatement("return new $T()", builderClass)
+                                           .build();
         return buildMethod;
     }
 

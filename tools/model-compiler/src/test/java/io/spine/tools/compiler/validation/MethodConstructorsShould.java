@@ -44,7 +44,7 @@ public class MethodConstructorsShould {
     }
 
     @Test
-    public void return_constructed_validate_statement(){
+    public void return_constructed_validate_statement() {
         String result = createValidateStatement(TEST_VALUE);
         assertNotNull(result);
     }

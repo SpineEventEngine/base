@@ -139,7 +139,7 @@ public class ExtensionShould {
     }
 
     @Test
-    public void return_targetGenValidatorsRootDir_if_not_set(){
+    public void return_targetGenValidatorsRootDir_if_not_set() {
         String dir = Extension.getTargetGenValidatorsRootDir(project);
 
         assertNotEmptyAndIsInProjectDir(dir);
@@ -155,7 +155,7 @@ public class ExtensionShould {
     }
 
     @Test
-    public void return_targetTestGenValidatorsRootDir_if_not_set(){
+    public void return_targetTestGenValidatorsRootDir_if_not_set() {
         String dir = Extension.getTargetTestGenValidatorsRootDir(project);
 
         assertNotEmptyAndIsInProjectDir(dir);
@@ -213,9 +213,9 @@ public class ExtensionShould {
         File spineDir = defaultProject.tempArtifacts();
         assertTrue(spineDir.mkdir());
         String generatedDir = defaultProject.generated()
-                                                  .getPath()
-                                                  .toFile()
-                                                  .getCanonicalPath();
+                                            .getPath()
+                                            .toFile()
+                                            .getCanonicalPath();
 
         List<String> dirsToClean = Extension.getDirsToClean(project);
 

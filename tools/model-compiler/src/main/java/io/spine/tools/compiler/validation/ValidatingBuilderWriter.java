@@ -107,8 +107,8 @@ class ValidatingBuilderWriter {
                                           messageClassParam,
                                           messageBuilderParam);
         typeBuilder.addModifiers(Modifier.PUBLIC, Modifier.FINAL)
-               .superclass(superClass)
-               .addMethods(methodSpecs);
+                   .superclass(superClass)
+                   .addMethods(methodSpecs);
         return typeBuilder;
     }
 

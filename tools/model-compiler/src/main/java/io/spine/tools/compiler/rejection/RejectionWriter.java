@@ -91,7 +91,7 @@ public class RejectionWriter {
             Files.createDirectories(outputDirectory.toPath());
 
             String className = declaration.getSimpleJavaClassName()
-                                                .value();
+                                          .value();
             log.debug("Constructing class {}", className);
             TypeSpec rejection =
                     TypeSpec.classBuilder(className)
@@ -125,9 +125,9 @@ public class RejectionWriter {
                 .addModifiers(PUBLIC);
         for (Map.Entry<String, FieldType> field : fieldDeclarations().entrySet()) {
             TypeName parameterType = field.getValue()
-                                                .getTypeName();
+                                          .getTypeName();
             String parameterName = FieldName.of(field.getKey())
-                                                  .javaCase();
+                                            .javaCase();
             builder.addParameter(parameterType, parameterName);
         }
 

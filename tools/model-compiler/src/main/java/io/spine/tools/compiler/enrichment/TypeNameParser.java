@@ -94,8 +94,8 @@ final class TypeNameParser {
     TypeName parseTypeName(String value) {
         boolean isFqn = value.contains(valueOf(TypeName.PACKAGE_SEPARATOR));
         String typeNameValue = isFqn
-                                     ? value
-                                     : packagePrefix + value;
+                               ? value
+                               : packagePrefix + value;
         return TypeName.of(typeNameValue);
     }
 }

@@ -69,7 +69,7 @@ class FieldReference extends StringTypeValue {
 
     private static String[] parse(FieldDescriptorProto field) {
         String byArgument = field.getOptions()
-                                       .getExtension(by);
+                                 .getExtension(by);
         if (isNullOrEmpty(byArgument)) {
             throw newIllegalArgumentException("There is no `by` option in the passed field %s",
                                               field.getName());
@@ -77,8 +77,8 @@ class FieldReference extends StringTypeValue {
 
         String[] result;
         result = byArgument.contains(PIPE_SEPARATOR)
-                ? PATTERN_PIPE_SEPARATOR.split(byArgument)
-                : new String[]{byArgument};
+                 ? PATTERN_PIPE_SEPARATOR.split(byArgument)
+                 : new String[]{byArgument};
         return result;
     }
 
@@ -100,7 +100,7 @@ class FieldReference extends StringTypeValue {
         int index = value.lastIndexOf(FieldName.TYPE_SEPARATOR);
         checkState(index > 0, "The field reference does not have the type (`%s`)", value);
         String result = value.substring(0, index)
-                                   .trim();
+                             .trim();
         return result;
     }
 }

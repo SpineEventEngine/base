@@ -57,7 +57,7 @@ public class FieldTypes {
     public static boolean isMap(FieldDescriptorProto field) {
         checkNotNull(field);
         boolean result = field.getTypeName()
-                                    .endsWith('.' + getEntryNameFor(field));
+                              .endsWith('.' + getEntryNameFor(field));
         return result;
     }
 

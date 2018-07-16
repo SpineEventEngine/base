@@ -174,8 +174,8 @@ public class RejectionGenPlugin extends SpinePlugin {
     }
 
     private void generateRejections(RejectionsFile file,
-                                           Map<String, String> messageTypeMap,
-                                           String rejectionsRootDir) {
+                                    Map<String, String> messageTypeMap,
+                                    String rejectionsRootDir) {
         Logger log = log();
         log.debug("Generating rejections from file {}", file.getPath());
 

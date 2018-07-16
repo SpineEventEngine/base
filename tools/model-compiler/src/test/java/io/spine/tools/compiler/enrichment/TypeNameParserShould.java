@@ -57,7 +57,7 @@ public class TypeNameParserShould {
     @Test
     public void return_empty_collection_if_option_is_not_present() {
         DescriptorProto definitionWithoutOption = StringValue.getDescriptor()
-                                                                   .toProto();
+                                                             .toProto();
         Collection<TypeName> result = parser.parse(definitionWithoutOption);
         assertTrue(result.isEmpty());
     }

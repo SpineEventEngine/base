@@ -116,7 +116,7 @@ abstract class TypeDefinitionAnnotator<L extends ExtendableMessage, D extends Ge
         }
 
         String errMsg = format("Nested type `%s` is not defined in `%s`.",
-                                     typeName, enclosingClass.getName());
+                               typeName, enclosingClass.getName());
         throw new IllegalStateException(errMsg);
     }
 
@@ -142,7 +142,7 @@ abstract class TypeDefinitionAnnotator<L extends ExtendableMessage, D extends Ge
                     addAnnotation(message);
 
                     String javaType = SimpleClassName.messageOrBuilder(messageName)
-                                                           .value();
+                                                     .value();
                     JavaSource messageOrBuilder = findNestedType(input, javaType);
                     addAnnotation(messageOrBuilder);
                 }

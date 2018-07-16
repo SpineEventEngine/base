@@ -51,7 +51,7 @@ public class EnumAnnotatorShould {
     @Test
     public void not_annotate_enum_without_option() {
         EnumDescriptorProto descriptorWithoutOption = Language.getDescriptor()
-                                                                    .toProto();
+                                                              .toProto();
         boolean shouldAnnotate = annotator.shouldAnnotate(descriptorWithoutOption);
         assertFalse(shouldAnnotate);
     }
