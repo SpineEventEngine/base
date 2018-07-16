@@ -20,6 +20,7 @@
 
 package io.spine.protobuf;
 
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.Any;
 import com.google.protobuf.Message;
 import io.spine.util.NamedProperty;
@@ -34,10 +35,10 @@ import static io.spine.protobuf.TypeConverter.toObject;
  * An attribute stored in a protobuf {@code map<string, Any>}.
  *
  * @param <T> the type of the attribute value, which can be {@code Integer}, {@code Long},
- *            {@code Float}, {@code Double}, {@code Double}, or a class implementing {@code Message}
+ *            {@code Float}, {@code Double}, {@code Boolean}, {@code String}, or a class
+ *            implementing {@code Message}
  * @param <M> the type of the message object to which the attribute belongs
  * @param <B> the type of the message builder
- *
  * @author Alexander Yevsyukov
  */
 public abstract class Attribute<T, M extends Message, B extends Message.Builder>
@@ -56,8 +57,6 @@ public abstract class Attribute<T, M extends Message, B extends Message.Builder>
      * Obtains attribute map from the enclosing object.
      */
     protected abstract Map<String, Any> getMap(M obj);
-
-    protected abstract Map<String, Any> getMutableMap(B builder);
 
     /**
      * Returns the attribute value or {@code Optional.empty()} if the attribute is not set.
@@ -83,9 +82,33 @@ public abstract class Attribute<T, M extends Message, B extends Message.Builder>
     /**
      * Sets the value of the attribute in the passed builder.
      */
-    public final void setValue(B builder, T value) {
-        Map<String, Any> map = getMutableMap(builder);
+    public void setValue(B builder, T value) {
         Any packed = toAny(value);
-        map.put(getName(), packed);
+        getMapModifier(builder).putEntry(getName(), packed);
+    }
+
+    /**
+     * Implementation should return a reference for a builder method that
+     * puts an entry into a map.
+     *
+     * <p>If a proto map is declared:
+     * <pre>{@code
+     *     map<string, google.protobuf.Any> item = 5;
+     * }</pre>
+     * the method reference would be {@code builder::putItem}.
+     */
+    protected abstract MapModifier<B> getMapModifier(B builder);
+
+    /**
+     * A functional interface for obtaining map mutation method reference.
+     *
+     * @param <B> the type of the builder of a message which contains a map with attributes
+     */
+    @FunctionalInterface
+    public interface MapModifier<B extends Message.Builder> {
+
+        @SuppressWarnings("UnusedReturnValue") // returned builder instance can be ignored
+        @CanIgnoreReturnValue
+        B putEntry(String key, Any value);
     }
 }
