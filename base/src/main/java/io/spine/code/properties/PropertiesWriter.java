@@ -65,23 +65,23 @@ public class PropertiesWriter {
      * @param map a map containing properties to write to the file
      */
     public void write(Map<String, String> map) {
-        final Logger log = log();
+        Logger log = log();
         log.debug("Preparing properties file {}", fullPath);
-        final File rootDir = new File(folder);
+        File rootDir = new File(folder);
         createParentFolders(rootDir);
 
-        final Properties props = new SortedProperties();
-        final File file = new File(fullPath);
+        Properties props = new SortedProperties();
+        File file = new File(fullPath);
         prepareTargetFile(props, file);
 
         log.debug("Preparing properties (size: {})", map.size());
         for (Map.Entry<String, String> entry : map.entrySet()) {
-            final String key = entry.getKey();
-            final String value = entry.getValue();
+            String key = entry.getKey();
+            String value = entry.getValue();
             if (!props.containsKey(key)) {
                 props.setProperty(key, value);
             } else {
-                final String currentValue = props.getProperty(key);
+                String currentValue = props.getProperty(key);
                 if (!currentValue.equals(value)) {
                     log.warn("Entry with the key `{}` already exists. Value: `{}`." +
                                        " New value `{}` was not set.", key, currentValue, value);
@@ -93,8 +93,8 @@ public class PropertiesWriter {
 
         try {
             log.debug("Writing properties file {}", fullPath);
-            final FileWriter outFileWriter = new FileWriter(file);
-            final BufferedWriter bufferedWriter = new BufferedWriter(outFileWriter);
+            FileWriter outFileWriter = new FileWriter(file);
+            BufferedWriter bufferedWriter = new BufferedWriter(outFileWriter);
             props.store(bufferedWriter, /*comments=*/null);
             bufferedWriter.close();
             log.debug("Properties file written successfully");
@@ -107,10 +107,10 @@ public class PropertiesWriter {
         log().debug("Preparing the target file");
         if (file.exists()) {
             try {
-                final FileInputStream fis = new FileInputStream(file);
+                FileInputStream fis = new FileInputStream(file);
                 props.load(fis);
             } catch (@SuppressWarnings("OverlyBroadCatchBlock") IOException e) {
-                final String errMsg = "Error loading the properties from the file: ";
+                String errMsg = "Error loading the properties from the file: ";
                 throw new IllegalStateException(errMsg + file.getAbsolutePath(), e);
             }
         } else {
@@ -122,7 +122,7 @@ public class PropertiesWriter {
         try {
             Files.createParentDirs(file);
         } catch (IOException e) {
-            final String errMsg = "Cannot create the parent folders at ";
+            String errMsg = "Cannot create the parent folders at ";
             throw new IllegalStateException(errMsg + file.getAbsolutePath(), e);
         }
     }

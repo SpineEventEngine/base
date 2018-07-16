@@ -67,48 +67,48 @@ public class TypeNameShould {
     @Test
     public void return_simple_name_if_no_package() {
         // A msg type without Protobuf package
-        final String name = IfMissingOption.class.getSimpleName();
-        final TypeUrl typeUrl = TypeName.of(name)
-                                        .toUrl();
+        String name = IfMissingOption.class.getSimpleName();
+        TypeUrl typeUrl = TypeName.of(name)
+                                  .toUrl();
 
-        final String actual = TypeName.from(typeUrl)
-                                      .getSimpleName();
+        String actual = TypeName.from(typeUrl)
+                                .getSimpleName();
 
         assertEquals(name, actual);
     }
 
     @Test
     public void obtain_instance_for_message() {
-        final TypeName typeName = TypeName.of(StringValue.getDefaultInstance());
+        TypeName typeName = TypeName.of(StringValue.getDefaultInstance());
         assertNotNull(typeName);
         assertEquals(StringValue.class.getSimpleName(), typeName.getSimpleName());
     }
 
     @Test
     public void obtain_instance_for_Java_class() {
-        final TypeName typeName = TypeName.of(StringValue.class);
+        TypeName typeName = TypeName.of(StringValue.class);
         assertNotNull(typeName);
         assertEquals(StringValue.class.getSimpleName(), typeName.getSimpleName());
     }
 
     @Test
     public void obtain_instance_by_descriptor() {
-        final TypeName typeName = TypeName.from(UInt64Value.getDescriptor());
+        TypeName typeName = TypeName.from(UInt64Value.getDescriptor());
         assertNotNull(typeName);
         assertEquals(UInt64Value.class.getSimpleName(), typeName.getSimpleName());
     }
 
     @Test
     public void provide_proto_descriptor_by_type_name() {
-        final TypeName typeName = TypeName.of("spine.test.types.Task");
-        final Descriptor typeDescriptor = typeName.getMessageDescriptor();
+        TypeName typeName = TypeName.of("spine.test.types.Task");
+        Descriptor typeDescriptor = typeName.getMessageDescriptor();
         assertNotNull(typeDescriptor);
         assertEquals(typeName.value(), typeDescriptor.getFullName());
     }
 
     @Test
     public void fail_to_find_invalid_type_descriptor() {
-        final TypeName invalidTypeName = TypeName.of("no.such.package.InvalidType");
+        TypeName invalidTypeName = TypeName.of("no.such.package.InvalidType");
         thrown.expect(UnknownTypeException.class);
         invalidTypeName.getDescriptor();
     }

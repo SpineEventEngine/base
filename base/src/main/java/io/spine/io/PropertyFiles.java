@@ -67,18 +67,18 @@ public final class PropertyFiles {
 
     private static Set<Properties> doLoad(String filePath)
             throws IOException {
-        final Iterator<URL> resources = ResourceFiles.tryLoadAll(filePath);
-        final ImmutableSet.Builder<Properties> result = ImmutableSet.builder();
+        Iterator<URL> resources = ResourceFiles.tryLoadAll(filePath);
+        ImmutableSet.Builder<Properties> result = ImmutableSet.builder();
         while (resources.hasNext()) {
-            final URL resourceUrl = resources.next();
-            final Properties properties = loadPropertiesFile(resourceUrl);
+            URL resourceUrl = resources.next();
+            Properties properties = loadPropertiesFile(resourceUrl);
             result.add(properties);
         }
         return result.build();
     }
 
     private static Properties loadPropertiesFile(URL resourceUrl) {
-        final Properties properties = new Properties();
+        Properties properties = new Properties();
         try (InputStream inputStream = resourceUrl.openStream()) {
             properties.load(inputStream);
         } catch (IOException e) {

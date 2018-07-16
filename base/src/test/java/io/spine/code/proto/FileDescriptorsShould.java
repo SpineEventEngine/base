@@ -34,7 +34,7 @@ public class FileDescriptorsShould {
 
     @Test
     public void load_main_set() {
-        final Collection<FileDescriptorProto> fileSets = FileDescriptors.load();
+        Collection<FileDescriptorProto> fileSets = FileDescriptors.load();
         assertFalse(fileSets.isEmpty());
     }
 }

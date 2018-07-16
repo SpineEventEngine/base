@@ -41,13 +41,13 @@ class DoubleFieldValidator extends FloatFieldValidatorBase<Double> {
 
     @Override
     protected Double toNumber(String value) {
-        final Double min = Double.valueOf(value);
+        Double min = Double.valueOf(value);
         return min;
     }
 
     @Override
     protected Double getAbs(Double value) {
-        final Double abs = abs(value);
+        Double abs = abs(value);
         return abs;
     }
 }

@@ -44,7 +44,7 @@ public final class SourceFile extends AbstractSourceFile {
 
     static SourceFile of(Path path) {
         checkNotNull(path);
-        final SourceFile result = new SourceFile(path);
+        SourceFile result = new SourceFile(path);
         return result;
     }
 
@@ -56,9 +56,9 @@ public final class SourceFile extends AbstractSourceFile {
      */
     public static SourceFile forOuterClassOf(FileDescriptorProto file) {
         checkNotNull(file);
-        final FileName filename = SimpleClassName.outerOf(file)
-                                                 .toFileName();
-        final SourceFile result = getFolder(file).resolve(filename);
+        FileName filename = SimpleClassName.outerOf(file)
+                                           .toFileName();
+        SourceFile result = getFolder(file).resolve(filename);
         return result;
     }
 
@@ -71,8 +71,8 @@ public final class SourceFile extends AbstractSourceFile {
      */
     private static Directory getFolder(FileDescriptorProto file) {
         checkNotNull(file);
-        final PackageName packageName = PackageName.resolve(file);
-        final Directory result = packageName.toDirectory();
+        PackageName packageName = PackageName.resolve(file);
+        Directory result = packageName.toDirectory();
         return result;
     }
 
@@ -91,7 +91,7 @@ public final class SourceFile extends AbstractSourceFile {
                                         FileDescriptorProto file) {
         checkNotNull(file);
         checkNotNull(message);
-        final String typeName = message.getName();
+        String typeName = message.getName();
         if (!file.getMessageTypeList()
                  .contains(message)) {
             throw invalidNestedDefinition(file.getName(), typeName);
@@ -99,12 +99,12 @@ public final class SourceFile extends AbstractSourceFile {
 
         if (!file.getOptions()
                  .hasJavaMultipleFiles()) {
-            final SourceFile result = forOuterClassOf(file);
+            SourceFile result = forOuterClassOf(file);
             return result;
         }
 
-        final FileName filename = FileName.forMessage(message, orBuilder);
-        final SourceFile result = getFolder(file).resolve(filename);
+        FileName filename = FileName.forMessage(message, orBuilder);
+        SourceFile result = getFolder(file).resolve(filename);
         return result;
     }
 
@@ -131,26 +131,26 @@ public final class SourceFile extends AbstractSourceFile {
 
         if (!file.getOptions()
                  .hasJavaMultipleFiles()) {
-            final SourceFile result = forOuterClassOf(file);
+            SourceFile result = forOuterClassOf(file);
             return result;
         }
 
-        final FileName filename = FileName.forEnum(enumType);
-        final SourceFile result = getFolder(file).resolve(filename);
+        FileName filename = FileName.forEnum(enumType);
+        SourceFile result = getFolder(file).resolve(filename);
         return result;
     }
 
     public static SourceFile forService(ServiceDescriptorProto service, FileDescriptorProto file) {
         checkNotNull(service);
         checkNotNull(file);
-        final String serviceType = service.getName();
+        String serviceType = service.getName();
         if (!file.getServiceList()
                  .contains(service)) {
             throw invalidNestedDefinition(file.getName(), serviceType);
         }
 
-        final FileName filename = FileName.forService(service);
-        final SourceFile result = getFolder(file).resolve(filename);
+        FileName filename = FileName.forService(service);
+        SourceFile result = getFolder(file).resolve(filename);
         return result;
     }
 
@@ -158,9 +158,9 @@ public final class SourceFile extends AbstractSourceFile {
      * Obtains a file path for the source code file of the give type in the passed package.
      */
     public static SourceFile forType(String javaPackage, String typename) {
-        final SourceFile result = PackageName.of(javaPackage)
-                                             .toDirectory()
-                                             .resolve(FileName.forType(typename));
+        SourceFile result = PackageName.of(javaPackage)
+                                       .toDirectory()
+                                       .resolve(FileName.forType(typename));
         return result;
     }
 }

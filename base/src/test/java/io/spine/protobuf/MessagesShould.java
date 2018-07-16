@@ -54,19 +54,19 @@ public class MessagesShould {
 
     @Test
     public void return_the_same_any_from_toAny() {
-        final Any any = toAny(getClass().getSimpleName());
+        Any any = toAny(getClass().getSimpleName());
         assertSame(any, AnyPacker.pack(any));
     }
 
     @Test
     public void pack_to_Any() {
-        final Timestamp timestamp = Time.getCurrentTime();
+        Timestamp timestamp = Time.getCurrentTime();
         assertEquals(timestamp, unpack(AnyPacker.pack(timestamp)));
     }
 
     @Test
     public void return_builder_for_the_message() {
-        final Message.Builder messageBuilder = builderFor(MessageWithStringValue.class);
+        Message.Builder messageBuilder = builderFor(MessageWithStringValue.class);
         assertNotNull(messageBuilder);
         assertEquals(MessageWithStringValue.class,
                      messageBuilder.build()
@@ -91,13 +91,13 @@ public class MessagesShould {
 
     @Test
     public void pass_the_null_tolerance_check() {
-        final NullPointerTester tester = new NullPointerTester();
+        NullPointerTester tester = new NullPointerTester();
         tester.testStaticMethods(Messages.class, NullPointerTester.Visibility.PACKAGE);
     }
 
     @Test
     public void ensure_Message() {
-        final StringValue value = TestValues.newUuidValue();
+        StringValue value = TestValues.newUuidValue();
         assertEquals(value, ensureMessage(AnyPacker.pack(value)));
         assertSame(value, ensureMessage(value));
     }

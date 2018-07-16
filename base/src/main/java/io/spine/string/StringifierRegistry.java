@@ -20,12 +20,12 @@
 
 package io.spine.string;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Message;
 
 import java.lang.reflect.Type;
 import java.util.Map;
+import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Maps.newHashMap;
@@ -58,10 +58,10 @@ public final class StringifierRegistry {
 
     static <T> Stringifier<T> getStringifier(Type typeOfT) {
         checkNotNull(typeOfT);
-        final Optional<Stringifier<T>> stringifierOptional = getInstance().get(typeOfT);
+        Optional<Stringifier<T>> stringifierOptional = getInstance().get(typeOfT);
 
         if (stringifierOptional.isPresent()) {
-            final Stringifier<T> stringifier = stringifierOptional.get();
+            Stringifier<T> stringifier = stringifierOptional.get();
             return stringifier;
         }
 
@@ -69,13 +69,13 @@ public final class StringifierRegistry {
             return getDefaultStringifier(typeOfT);
         }
 
-        final String errMsg = format("No stringifier registered for the type: %s", typeOfT);
+        String errMsg = format("No stringifier registered for the type: %s", typeOfT);
         throw new MissingStringifierException(errMsg);
     }
 
     @SuppressWarnings("unchecked") // It is OK because the class is checked before the cast.
     private static <T> Stringifier<T> getDefaultStringifier(Type typeOfT) {
-        final Stringifier<T> result =
+        Stringifier<T> result =
                 (Stringifier<T>) Stringifiers.newForMessage((Class<Message>) typeOfT);
         return result;
     }
@@ -118,10 +118,10 @@ public final class StringifierRegistry {
     public <T> Optional<Stringifier<T>> get(Type typeOfT) {
         checkNotNull(typeOfT);
 
-        final Stringifier<?> func = stringifiers.get(typeOfT);
+        Stringifier<?> func = stringifiers.get(typeOfT);
 
-        final Stringifier<T> result = cast(func);
-        return Optional.fromNullable(result);
+        Stringifier<T> result = cast(func);
+        return Optional.ofNullable(result);
     }
 
     private enum Singleton {
