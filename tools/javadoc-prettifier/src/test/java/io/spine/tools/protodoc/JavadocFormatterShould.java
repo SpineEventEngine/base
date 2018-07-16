@@ -56,14 +56,14 @@ public class JavadocFormatterShould {
 
     @Test
     public void ignore_files_except_java() throws IOException {
-        final Path path = Paths.get("Non_existing_file.txt");
+        Path path = Paths.get("Non_existing_file.txt");
         backtickFormatter.format(path);
     }
 
     @Test
     public void format_Javadocs() throws Exception {
-        final String javadoc = getJavadoc(TEXT_IN_BACKTICKS);
-        final String expected = getJavadoc(TEXT_IN_CODE_TAG);
+        String javadoc = getJavadoc(TEXT_IN_BACKTICKS);
+        String expected = getJavadoc(TEXT_IN_CODE_TAG);
         assertEquals(expected, getFormattingResult(javadoc));
     }
 
@@ -77,19 +77,19 @@ public class JavadocFormatterShould {
     }
 
     private String getFormattingResult(String content) throws IOException {
-        final Path path = createJavaFile();
+        Path path = createJavaFile();
         Files.write(path, content.getBytes());
 
         backtickFormatter.format(path);
 
-        final List<String> lines = Files.readAllLines(path, UTF_8);
+        List<String> lines = Files.readAllLines(path, UTF_8);
         return Joiner.on(lineSeparator())
                      .join(lines);
     }
 
     private Path createJavaFile() throws IOException {
-        final String fileName = "JavadocFormatter_test_file.java";
-        final File file = folder.newFile(fileName);
+        String fileName = "JavadocFormatter_test_file.java";
+        File file = folder.newFile(fileName);
         return file.toPath();
     }
 }

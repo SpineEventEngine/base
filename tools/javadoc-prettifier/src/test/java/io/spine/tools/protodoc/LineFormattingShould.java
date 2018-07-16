@@ -37,11 +37,11 @@ public class LineFormattingShould {
 
     @Test
     public void merge_lines_correctly() {
-        final String lineText = "a text in a single line";
-        final int lineCount = 5;
-        final Iterable<String> lines = Collections.nCopies(lineCount, lineText);
-        final String linesAsString = Joiner.on(lineSeparator())
-                                           .join(lines);
+        String lineText = "a text in a single line";
+        int lineCount = 5;
+        Iterable<String> lines = Collections.nCopies(lineCount, lineText);
+        String linesAsString = Joiner.on(lineSeparator())
+                                     .join(lines);
         assertEquals(linesAsString, formatting.execute(linesAsString));
     }
 
