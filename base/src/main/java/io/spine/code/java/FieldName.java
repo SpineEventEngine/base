@@ -42,8 +42,8 @@ public final class FieldName extends AbstractFieldName {
      */
     public static FieldName from(io.spine.code.proto.FieldName protoField) {
         checkNotNull(protoField);
-        final String fieldName = protoField.javaCase();
-        final FieldName result = new FieldName(fieldName);
+        String fieldName = protoField.javaCase();
+        FieldName result = new FieldName(fieldName);
         return result;
     }
 

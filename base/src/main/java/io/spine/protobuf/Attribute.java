@@ -20,12 +20,12 @@
 
 package io.spine.protobuf;
 
-import com.google.common.base.Optional;
 import com.google.protobuf.Any;
 import com.google.protobuf.Message;
 import io.spine.util.NamedProperty;
 
 import java.util.Map;
+import java.util.Optional;
 
 import static io.spine.protobuf.TypeConverter.toAny;
 import static io.spine.protobuf.TypeConverter.toObject;
@@ -60,23 +60,23 @@ public abstract class Attribute<T, M extends Message, B extends Message.Builder>
     protected abstract Map<String, Any> getMutableMap(B builder);
 
     /**
-     * Returns the attribute value or {@code Optional.absent()} if the attribute is not set.
+     * Returns the attribute value or {@code Optional.empty()} if the attribute is not set.
      */
     @Override
     public final Optional<T> getValue(M obj) {
-        final Map<String, Any> map = getMap(obj);
-        final Optional<T> result = getFromMap(map);
+        Map<String, Any> map = getMap(obj);
+        Optional<T> result = getFromMap(map);
         return result;
     }
 
     private Optional<T> getFromMap(Map<String, Any> map) {
-        final Any any = map.get(getName());
+        Any any = map.get(getName());
         if (any == null || Any.getDefaultInstance()
                               .equals(any)) {
-            return Optional.absent();
+            return Optional.empty();
         }
 
-        final T result = toObject(any, getValueClass());
+        T result = toObject(any, getValueClass());
         return Optional.of(result);
     }
 
@@ -84,8 +84,8 @@ public abstract class Attribute<T, M extends Message, B extends Message.Builder>
      * Sets the value of the attribute in the passed builder.
      */
     public final void setValue(B builder, T value) {
-        final Map<String, Any> map = getMutableMap(builder);
-        final Any packed = toAny(value);
+        Map<String, Any> map = getMutableMap(builder);
+        Any packed = toAny(value);
         map.put(getName(), packed);
     }
 }

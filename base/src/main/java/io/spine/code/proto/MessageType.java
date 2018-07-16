@@ -57,7 +57,7 @@ public class MessageType extends Type<Descriptor, DescriptorProto> {
      */
     public static TypeSet allFrom(FileDescriptor file) {
         checkNotNull(file);
-        final TypeSet.Builder result = TypeSet.newBuilder();
+        TypeSet.Builder result = TypeSet.newBuilder();
         for (Descriptor messageType : file.getMessageTypes()) {
             addType(messageType, result);
         }
@@ -65,7 +65,8 @@ public class MessageType extends Type<Descriptor, DescriptorProto> {
     }
 
     private static void addType(Descriptor type, TypeSet.Builder set) {
-        if (type.getOptions().getMapEntry()) {
+        if (type.getOptions()
+                .getMapEntry()) {
             return;
         }
         set.add(create(type));

@@ -66,7 +66,7 @@ public enum PrimitiveType {
     }
 
     boolean matchesName(String typeName) {
-        final boolean result = getName().equals(typeName);
+        boolean result = getName().equals(typeName);
         return result;
     }
 

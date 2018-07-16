@@ -35,11 +35,11 @@ public class MarkerInterfaceSpecShould {
 
     @Test
     public void generate_interfaces() {
-        final String packageName = "io.spine.test";
-        final String interfaceName = "CustomerEvent";
-        final JavaFile javaFile = new MarkerInterfaceSpec(packageName, interfaceName).toJavaCode();
+        String packageName = "io.spine.test";
+        String interfaceName = "CustomerEvent";
+        JavaFile javaFile = new MarkerInterfaceSpec(packageName, interfaceName).toJavaCode();
 
-        final AnnotationSpec generated = javaFile.typeSpec.annotations.get(0);
+        AnnotationSpec generated = javaFile.typeSpec.annotations.get(0);
         assertEquals(Generated.class.getName(), generated.type.toString());
 
         assertEquals(packageName, javaFile.packageName);

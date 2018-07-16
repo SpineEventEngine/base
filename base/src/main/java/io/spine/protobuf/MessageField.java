@@ -66,7 +66,7 @@ public abstract class MessageField implements Serializable {
      * @param index the zero-based index of the field
      */
     protected MessageField(int index) {
-        final String message = "Message field index must be a positive value, encountered: ";
+        String message = "Message field index must be a positive value, encountered: ";
         checkArgument(index >= 0, message + index);
         this.index = index;
     }
@@ -90,9 +90,9 @@ public abstract class MessageField implements Serializable {
             throw createUnavailableFieldException(message);
         }
 
-        final Method method = getAccessor(message);
+        Method method = getAccessor(message);
         try {
-            final Object result = method.invoke(message);
+            Object result = method.invoke(message);
             return result;
         } catch (InvocationTargetException | IllegalAccessException e) {
             throw (MessageFieldException) (new MessageFieldException(message).initCause(e));
@@ -116,13 +116,13 @@ public abstract class MessageField implements Serializable {
     protected abstract boolean isFieldAvailable(Message message);
 
     private Method getAccessor(Message message) {
-        final Class<? extends Message> messageClass = message.getClass();
+        Class<? extends Message> messageClass = message.getClass();
         Method method = accessors.get(messageClass);
 
         if (method == null) {
-            final FieldDescriptor fieldDescriptor = getFieldDescriptor(message, this.index);
-            final String fieldName = fieldDescriptor.getName();
-            final String methodName = toAccessorMethodName(fieldName);
+            FieldDescriptor fieldDescriptor = getFieldDescriptor(message, this.index);
+            String fieldName = fieldDescriptor.getName();
+            String methodName = toAccessorMethodName(fieldName);
 
             try {
                 method = messageClass.getMethod(methodName);
@@ -144,23 +144,23 @@ public abstract class MessageField implements Serializable {
      * @return field descriptor
      */
     public static FieldDescriptor getFieldDescriptor(Message msg, int fieldIndex) {
-        final FieldDescriptor result = msg.getDescriptorForType()
-                                          .getFields()
-                                          .get(fieldIndex);
+        FieldDescriptor result = msg.getDescriptorForType()
+                                    .getFields()
+                                    .get(fieldIndex);
         return result;
     }
 
     /** Converts Protobuf field name into Java accessor method name. */
     @VisibleForTesting
     static String toAccessorMethodName(CharSequence fieldName) {
-        final StringBuilder out = new StringBuilder(checkNotNull(fieldName).length() + 3);
+        StringBuilder out = new StringBuilder(checkNotNull(fieldName).length() + 3);
         out.append(GETTER_METHOD_PREFIX);
-        final char uppercaseFirstChar = Character.toUpperCase(fieldName.charAt(0));
+        char uppercaseFirstChar = Character.toUpperCase(fieldName.charAt(0));
         out.append(uppercaseFirstChar);
 
         boolean nextUpperCase = false;
         for (int i = 1; i < fieldName.length(); i++) {
-            final char ch = fieldName.charAt(i);
+            char ch = fieldName.charAt(i);
             if (PROPERTY_NAME_SEPARATOR == ch) {
                 nextUpperCase = true;
                 continue;
@@ -182,8 +182,8 @@ public abstract class MessageField implements Serializable {
      * @return name of the field
      */
     public static String getFieldName(Message msg, int index) {
-        final FieldDescriptor fieldDescriptor = getFieldDescriptor(msg, index);
-        final String fieldName = fieldDescriptor.getName();
+        FieldDescriptor fieldDescriptor = getFieldDescriptor(msg, index);
+        String fieldName = fieldDescriptor.getName();
         return fieldName;
     }
 
@@ -195,8 +195,8 @@ public abstract class MessageField implements Serializable {
      */
     public static int getFieldCount(Message msg) {
         checkNotNull(msg);
-        final Descriptors.Descriptor descriptor = msg.getDescriptorForType();
-        final List<FieldDescriptor> fields = descriptor.getFields();
+        Descriptors.Descriptor descriptor = msg.getDescriptorForType();
+        List<FieldDescriptor> fields = descriptor.getFields();
         return fields.size();
 
     }

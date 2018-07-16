@@ -62,17 +62,20 @@ public class LinkerShould {
     @Test
     public void obtain_partial() {
         // No such in the given test data.
-        assertTrue(linker.getPartiallyResolved().isEmpty());
+        assertTrue(linker.getPartiallyResolved()
+                         .isEmpty());
     }
 
     @Test
     public void obtain_unresolved() {
         // No such in the given test data.
-        assertTrue(linker.getUnresolved().isEmpty());
+        assertTrue(linker.getUnresolved()
+                         .isEmpty());
     }
 
     @Test
     public void do_not_leave_remaining() {
-        assertTrue(linker.getRemaining().isEmpty());
+        assertTrue(linker.getRemaining()
+                         .isEmpty());
     }
 }

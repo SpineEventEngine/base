@@ -59,7 +59,7 @@ public class FileName extends AbstractFileName<FileName> implements UnderscoredN
      */
     public static FileName from(FileDescriptorProto descriptor) {
         checkNotNull(descriptor);
-        final FileName result = of(descriptor.getName());
+        FileName result = of(descriptor.getName());
         return result;
     }
 
@@ -75,8 +75,8 @@ public class FileName extends AbstractFileName<FileName> implements UnderscoredN
      */
     @Override
     public List<String> words() {
-        final String[] words = nameOnly().split(WORD_SEPARATOR);
-        final ImmutableList<String> result = ImmutableList.copyOf(words);
+        String[] words = nameOnly().split(WORD_SEPARATOR);
+        ImmutableList<String> result = ImmutableList.copyOf(words);
         return result;
     }
 
@@ -84,10 +84,10 @@ public class FileName extends AbstractFileName<FileName> implements UnderscoredN
      * Obtains the file name without path and extension.
      */
     private String nameOnly() {
-        final String value = value();
-        final int lastBackslashIndex = value.lastIndexOf(PATH_SEPARATOR);
-        final int extensionIndex = value.lastIndexOf(Suffix.EXTENSION);
-        final String result = value.substring(lastBackslashIndex + 1, extensionIndex);
+        String value = value();
+        int lastBackslashIndex = value.lastIndexOf(PATH_SEPARATOR);
+        int extensionIndex = value.lastIndexOf(Suffix.EXTENSION);
+        String result = value.substring(lastBackslashIndex + 1, extensionIndex);
         return result;
     }
 
@@ -95,7 +95,7 @@ public class FileName extends AbstractFileName<FileName> implements UnderscoredN
      * Returns the file name without path and extension in the {@code CamelCase}.
      */
     public String nameOnlyCamelCase() {
-        final String result = CamelCase.convert(this);
+        String result = CamelCase.convert(this);
         return result;
     }
 
@@ -103,7 +103,7 @@ public class FileName extends AbstractFileName<FileName> implements UnderscoredN
      * Returns {@code true} if the name of the file matches convention for command message files.
      */
     public boolean isCommands() {
-        final boolean result = value().endsWith(Suffix.forCommands());
+        boolean result = value().endsWith(Suffix.forCommands());
         return result;
     }
 
@@ -111,7 +111,7 @@ public class FileName extends AbstractFileName<FileName> implements UnderscoredN
      * Returns {@code true} if the name of the file matches convention for event message files.
      */
     public boolean isEvents() {
-        final boolean result = value().endsWith(Suffix.forEvents());
+        boolean result = value().endsWith(Suffix.forEvents());
         return result;
     }
 
@@ -119,7 +119,7 @@ public class FileName extends AbstractFileName<FileName> implements UnderscoredN
      * Returns {@code true} if the name of the file matches convention for rejection message files.
      */
     public boolean isRejections() {
-        final boolean result = value().endsWith(Suffix.forRejections());
+        boolean result = value().endsWith(Suffix.forRejections());
         return result;
     }
 

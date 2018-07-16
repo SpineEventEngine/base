@@ -51,7 +51,7 @@ public final class PackageName extends StringTypeValue {
      */
     public static PackageName of(String value) {
         checkNotEmptyOrBlank(value);
-        final PackageName result = new PackageName(value);
+        PackageName result = new PackageName(value);
         return result;
     }
 
@@ -59,8 +59,8 @@ public final class PackageName extends StringTypeValue {
      * Obtains a Java package name by the passed file descriptor.
      */
     public static PackageName resolve(FileDescriptorProto file) {
-        final String javaPackage = resolveName(file);
-        final PackageName result = new PackageName(javaPackage.trim());
+        String javaPackage = resolveName(file);
+        PackageName result = new PackageName(javaPackage.trim());
         return result;
     }
 
@@ -77,8 +77,8 @@ public final class PackageName extends StringTypeValue {
      * Obtains file system folder path for the package.
      */
     public Directory toDirectory() {
-        final String packageDir = value().replace(DELIMITER_CHAR, File.separatorChar);
-        final Directory result = Directory.at(Paths.get(packageDir));
+        String packageDir = value().replace(DELIMITER_CHAR, File.separatorChar);
+        Directory result = Directory.at(Paths.get(packageDir));
         return result;
     }
 }

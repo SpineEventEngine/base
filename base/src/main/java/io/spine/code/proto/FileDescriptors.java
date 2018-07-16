@@ -108,19 +108,19 @@ public final class FileDescriptors {
      */
     private static List<FileDescriptorProto> parseAndFilter(String descriptorSetFile,
                                                             Predicate<FileDescriptorProto> filter) {
-        final File descriptorsFile = new File(descriptorSetFile);
+        File descriptorsFile = new File(descriptorSetFile);
         checkArgument(descriptorsFile.exists(), "File %s does not exist", descriptorSetFile);
 
-        final Logger log = log();
+        Logger log = log();
         if (log.isDebugEnabled()) {
             log.debug("Looking up for the proto files matching predicate {} under {}",
                       filter,
                       descriptorSetFile);
         }
 
-        final List<FileDescriptorProto> files;
+        List<FileDescriptorProto> files;
         try (final FileInputStream fis = new FileInputStream(descriptorsFile)) {
-            final FileDescriptorSet fileSet = FileDescriptorSet.parseFrom(fis, registry());
+            FileDescriptorSet fileSet = FileDescriptorSet.parseFrom(fis, registry());
             files = fileSet.getFileList()
                            .stream()
                            .filter(filter)
@@ -146,7 +146,8 @@ public final class FileDescriptors {
         Iterator<URL> resources = ResourceFiles.loadAll(KNOWN_TYPES);
         Set<FileDescriptorProto> files = stream(resources)
                 .map(FileDescriptors::loadFrom)
-                .flatMap(set -> set.getFileList().stream())
+                .flatMap(set -> set.getFileList()
+                                   .stream())
                 .filter(distinctBy(FileDescriptorProto::getName))
                 .collect(toSet());
         return files;
@@ -204,7 +205,7 @@ public final class FileDescriptors {
     private static FileDescriptorSet loadFrom(URL file) {
         checkNotNull(file);
         try (InputStream stream = file.openStream()) {
-            final FileDescriptorSet parsed = FileDescriptorSet.parseFrom(stream, registry());
+            FileDescriptorSet parsed = FileDescriptorSet.parseFrom(stream, registry());
             return parsed;
         } catch (IOException e) {
             throw newIllegalStateException(
@@ -266,8 +267,8 @@ public final class FileDescriptors {
         @Override
         public boolean test(FileDescriptorProto file) {
             checkNotNull(file);
-            final boolean result = !file.getPackage()
-                                        .startsWith(GOOGLE_PACKAGE);
+            boolean result = !file.getPackage()
+                                  .startsWith(GOOGLE_PACKAGE);
             return result;
         }
 
