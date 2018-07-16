@@ -73,7 +73,7 @@ public class ProtoJavadocPluginShould {
     @Test
     public void have_extension() {
         Extension extension = project.getExtensions()
-                                           .getByType(Extension.class);
+                                     .getByType(Extension.class);
         assertNotNull(extension);
     }
 
@@ -98,10 +98,10 @@ public class ProtoJavadocPluginShould {
         String text = "javadoc text";
         String generatedFieldDescription = " <code>field description</code>";
         String textInPreTags = new StringBuilder().append(OPENING_PRE)
-                                                        .append(text)
-                                                        .append(CLOSING_PRE)
-                                                        .append(generatedFieldDescription)
-                                                        .toString();
+                                                  .append(text)
+                                                  .append(CLOSING_PRE)
+                                                  .append(generatedFieldDescription)
+                                                  .toString();
         String expected = getJavadoc(text + generatedFieldDescription);
         String javadocToFormat = getJavadoc(textInPreTags);
         formatAndAssert(expected, javadocToFormat, testProjectDir);
@@ -117,18 +117,18 @@ public class ProtoJavadocPluginShould {
 
     private static String multilineJavadoc(String codeOpening, String codeClosing) {
         String text = new StringBuilder().append("/**")
-                                               .append(System.lineSeparator())
-                                               .append("Javadoc header")
-                                               .append(System.lineSeparator())
-                                               .append(OPENING_PRE)
-                                               .append(codeOpening)
-                                               .append("java snippet")
-                                               .append(codeClosing)
-                                               .append(CLOSING_PRE)
-                                               .append(System.lineSeparator())
-                                               .append("Javadoc footer")
-                                               .append("*/")
-                                               .toString();
+                                         .append(System.lineSeparator())
+                                         .append("Javadoc header")
+                                         .append(System.lineSeparator())
+                                         .append(OPENING_PRE)
+                                         .append(codeOpening)
+                                         .append("java snippet")
+                                         .append(codeClosing)
+                                         .append(CLOSING_PRE)
+                                         .append(System.lineSeparator())
+                                         .append("Javadoc footer")
+                                         .append("*/")
+                                         .toString();
         return text;
     }
 
@@ -143,7 +143,7 @@ public class ProtoJavadocPluginShould {
 
     private static Project newProject() {
         Project project = ProjectBuilder.builder()
-                                              .build();
+                                        .build();
         project.task(COMPILE_JAVA.getValue());
         project.task(COMPILE_TEST_JAVA.getValue());
         project.task(GENERATE_PROTO.getValue());

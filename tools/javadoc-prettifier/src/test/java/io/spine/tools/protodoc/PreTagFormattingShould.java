@@ -37,7 +37,6 @@ public class PreTagFormattingShould {
     private static final String RAW_PROTO_DOC_WITH_PRE_TAG =
             "/** Doc header <pre> Preformated doc </pre> <code>string field = 1;</code> */";
 
-
     private final FormattingAction formatting = new PreTagFormatting();
 
     @Test

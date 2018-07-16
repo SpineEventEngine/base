@@ -101,7 +101,7 @@ public class ProtoJavadocPlugin extends SpinePlugin {
         }
 
         JavadocFormatter formatter = new JavadocFormatter(asList(new BacktickFormatting(),
-                                                                       new PreTagFormatting()));
+                                                                 new PreTagFormatting()));
         try {
             log().debug("Starting Javadocs formatting in `{}`.", genProtoDir);
             Files.walkFileTree(file.toPath(), new FormattingFileVisitor(formatter));

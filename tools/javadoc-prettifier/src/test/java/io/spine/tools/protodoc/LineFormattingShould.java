@@ -41,7 +41,7 @@ public class LineFormattingShould {
         int lineCount = 5;
         Iterable<String> lines = Collections.nCopies(lineCount, lineText);
         String linesAsString = Joiner.on(lineSeparator())
-                                           .join(lines);
+                                     .join(lines);
         assertEquals(linesAsString, formatting.execute(linesAsString));
     }
 

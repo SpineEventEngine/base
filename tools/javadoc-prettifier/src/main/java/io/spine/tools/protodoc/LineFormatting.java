@@ -46,7 +46,7 @@ abstract class LineFormatting implements FormattingAction {
     @Override
     public String execute(String text) {
         List<String> textAsLines = Splitter.on(lineSeparator())
-                                                 .splitToList(text);
+                                           .splitToList(text);
         List<String> formattedLines = newLinkedList();
         for (String line : textAsLines) {
             String formattedLine = formatLine(line);

@@ -57,11 +57,11 @@ public final class ProtoJavadocPluginTestEnv {
     }
 
     public static void formatAndAssert(String expectedContent, String contentToFormat,
-                                TemporaryFolder folder) throws IOException {
+                                       TemporaryFolder folder) throws IOException {
         Path formattedFilePath = format(contentToFormat, folder);
         List<String> formattedLines = Files.readAllLines(formattedFilePath, UTF_8);
         String mergedLines = Joiner.on(lineSeparator())
-                                         .join(formattedLines);
+                                   .join(formattedLines);
         assertEquals(expectedContent, mergedLines);
     }
 

@@ -75,6 +75,7 @@ class PreTagFormatting implements FormattingAction {
      * @return {@code true} if the Javadoc contains opening and closing {@code pre} tag
      */
     private static boolean shouldFormat(String javadoc) {
-        return NOT_FORMATTED_DOC_PATTERN.matcher(javadoc).matches();
+        return NOT_FORMATTED_DOC_PATTERN.matcher(javadoc)
+                                        .matches();
     }
 }

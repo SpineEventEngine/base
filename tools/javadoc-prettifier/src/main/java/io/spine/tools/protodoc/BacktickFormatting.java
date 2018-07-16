@@ -61,7 +61,7 @@ class BacktickFormatting extends LineFormatting {
         while (matcher.find()) {
             String partToFormat = matcher.group();
             String partWithoutBackticks = PATTERN_BACKTICK.matcher(partToFormat)
-                                                                .replaceAll("");
+                                                          .replaceAll("");
             String replacement = wrapWithCodeTag(partWithoutBackticks);
             matcher.appendReplacement(buffer, quoteReplacement(replacement));
         }
