@@ -126,8 +126,8 @@ class AttributeTest {
         }
 
         @Override
-        protected Map<String, Any> getMutableMap(Associations.Builder builder) {
-            return builder.getMutableEntry();
+        protected MapModifier<Associations.Builder> getMapModifier(Associations.Builder builder) {
+            return builder::putEntry;
         }
     }
 

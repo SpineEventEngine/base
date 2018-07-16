@@ -20,6 +20,7 @@
 
 package io.spine.protobuf;
 
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.Any;
 import com.google.protobuf.Message;
 import io.spine.util.NamedProperty;
@@ -57,8 +58,6 @@ public abstract class Attribute<T, M extends Message, B extends Message.Builder>
      */
     protected abstract Map<String, Any> getMap(M obj);
 
-    protected abstract Map<String, Any> getMutableMap(B builder);
-
     /**
      * Returns the attribute value or {@code Optional.absent()} if the attribute is not set.
      */
@@ -84,8 +83,32 @@ public abstract class Attribute<T, M extends Message, B extends Message.Builder>
      * Sets the value of the attribute in the passed builder.
      */
     public void setValue(B builder, T value) {
-        Map<String, Any> map = getMutableMap(builder);
         Any packed = toAny(value);
-        map.put(getName(), packed);
+        getMapModifier(builder).putEntry(getName(), packed);
+    }
+
+    /**
+     * Implementation should return a reference for a builder method that
+     * puts an entry into a map.
+     *
+     * <p>If a proto map is declared:
+     * <pre>{@code
+     *     map<string, google.protobuf.Any> item = 5;
+     * }</pre>
+     * the method reference would be {@code builder::putItem}.
+     */
+    protected abstract MapModifier<B> getMapModifier(B builder);
+
+    /**
+     * A functional interface for obtaining map mutation method reference.
+     *
+     * @param <B> the type of the builder of a message which contains a map with attributes
+     */
+    @FunctionalInterface
+    public interface MapModifier<B extends Message.Builder> {
+
+        @SuppressWarnings("UnusedReturnValue") // returned builder instance can be ignored
+        @CanIgnoreReturnValue
+        B putEntry(String key, Any value);
     }
 }
