@@ -47,14 +47,14 @@ public final class EntityOptions {
      */
     public static Visibility getVisibility(Class<? extends Message> stateClass) {
         checkNotNull(stateClass);
-        final Descriptor descriptor = TypeName.of(stateClass)
-                                              .getMessageDescriptor();
-        final EntityOption entityOption = descriptor.getOptions()
-                                                    .getExtension(OptionsProto.entity);
-        final Visibility definedVisibility = entityOption.getVisibility();
-        final Visibility result = (definedVisibility == Visibility.VISIBILITY_UNKNOWN)
-                ? Visibility.FULL
-                : definedVisibility;
+        Descriptor descriptor = TypeName.of(stateClass)
+                                        .getMessageDescriptor();
+        EntityOption entityOption = descriptor.getOptions()
+                                              .getExtension(OptionsProto.entity);
+        Visibility definedVisibility = entityOption.getVisibility();
+        Visibility result = (definedVisibility == Visibility.VISIBILITY_UNKNOWN)
+                            ? Visibility.FULL
+                            : definedVisibility;
         return result;
     }
 }

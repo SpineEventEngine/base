@@ -49,19 +49,19 @@ public class UrlQueryParameters {
      * @throws IllegalArgumentException in case of not well formed argument value
      */
     public static QueryParameter parse(String queryParameter) {
-        final int separatorIndex = queryParameter.indexOf(SEPARATOR);
+        int separatorIndex = queryParameter.indexOf(SEPARATOR);
 
         if (separatorIndex == -1) {
             throw newIllegalArgumentException("Query Parameter is invalid: %s", queryParameter);
         }
 
-        final String key = queryParameter.substring(0, separatorIndex);
-        final String value = queryParameter.substring(separatorIndex + 1);
+        String key = queryParameter.substring(0, separatorIndex);
+        String value = queryParameter.substring(separatorIndex + 1);
 
-        final QueryParameter result = QueryParameter.newBuilder()
-                                                    .setKey(key)
-                                                    .setValue(value)
-                                                    .build();
+        QueryParameter result = QueryParameter.newBuilder()
+                                              .setKey(key)
+                                              .setValue(value)
+                                              .build();
         return result;
     }
 
@@ -80,10 +80,10 @@ public class UrlQueryParameters {
         checkArgument(!key.isEmpty(), "Query parameter key cannot be empty.");
         checkArgument(!value.isEmpty(), "Query parameter value cannot be empty.");
 
-        final QueryParameter result = QueryParameter.newBuilder()
-                                                    .setKey(key)
-                                                    .setValue(value)
-                                                    .build();
+        QueryParameter result = QueryParameter.newBuilder()
+                                              .setKey(key)
+                                              .setValue(value)
+                                              .build();
         return result;
     }
 
@@ -94,7 +94,7 @@ public class UrlQueryParameters {
      * @return key=value String
      */
     public static String toString(QueryParameter param) {
-        final String result = param.getKey() + SEPARATOR + param.getValue();
+        String result = param.getKey() + SEPARATOR + param.getValue();
         return result;
     }
 }

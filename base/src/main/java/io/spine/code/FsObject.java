@@ -63,7 +63,7 @@ public abstract class FsObject {
         if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        final FsObject other = (FsObject) obj;
+        FsObject other = (FsObject) obj;
         return Objects.equals(this.path, other.path);
     }
 }

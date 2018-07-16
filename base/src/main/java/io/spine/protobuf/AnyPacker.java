@@ -66,9 +66,9 @@ public final class AnyPacker {
         if (message instanceof Any) {
             return (Any) message;
         }
-        final TypeUrl typeUrl = TypeUrl.from(message.getDescriptorForType());
-        final String typeUrlPrefix = typeUrl.getPrefix();
-        final Any result = Any.pack(message, typeUrlPrefix);
+        TypeUrl typeUrl = TypeUrl.from(message.getDescriptorForType());
+        String typeUrlPrefix = typeUrl.getPrefix();
+        Any result = Any.pack(message, typeUrlPrefix);
         return result;
     }
 
@@ -83,8 +83,8 @@ public final class AnyPacker {
      */
     public static <T extends Message> T unpack(Any any) {
         checkNotNull(any);
-        final TypeUrl typeUrl = TypeUrl.ofEnclosed(any);
-        final Class<T> messageClass = typeUrl.getMessageClass();
+        TypeUrl typeUrl = TypeUrl.ofEnclosed(any);
+        Class<T> messageClass = typeUrl.getMessageClass();
         return unpack(any, messageClass);
     }
 
@@ -102,7 +102,7 @@ public final class AnyPacker {
      */
     public static <T extends Message> T unpack(Any any, Class<T> cls) {
         try {
-            final T result = any.unpack(cls);
+            T result = any.unpack(cls);
             return result;
         } catch (InvalidProtocolBufferException e) {
             throw new UnexpectedTypeException(e);

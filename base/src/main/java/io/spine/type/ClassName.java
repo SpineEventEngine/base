@@ -116,11 +116,11 @@ public final class ClassName extends StringTypeValue {
                                  .getJavaPackage()
                                  .trim();
         String packageName = javaPackage.isEmpty()
-                           ? file.getPackage()
-                           : javaPackage;
+                             ? file.getPackage()
+                             : javaPackage;
         String result = packageName.isEmpty()
-                      ? ""
-                      : packageName + '.';
+                        ? ""
+                        : packageName + '.';
         return result;
     }
 

@@ -211,7 +211,7 @@ public class MarkerInterfaceGeneratorShould {
                                     .addFileToGenerate(filePath)
                                     .addProtoFile(descriptor)
                                     .build();
-        final CodeGeneratorResponse response = codeGenerator.process(request);
+        CodeGeneratorResponse response = codeGenerator.process(request);
         assertNotNull(response);
         List<File> files = response.getFileList();
         assertEquals(3, files.size());
@@ -220,14 +220,14 @@ public class MarkerInterfaceGeneratorShould {
                     .endsWith("Event.java")) {
                 assertFalse(file.hasInsertionPoint());
             } else {
-                final String name = file.getName();
+                String name = file.getName();
                 assertEquals(PACKAGE_PATH + "/IsInOneFileProto.java", name);
 
-                final String insertionPoint = file.getInsertionPoint();
+                String insertionPoint = file.getInsertionPoint();
                 assertTrue(insertionPoint.startsWith(format(INSERTION_POINT_IMPLEMENTS,
                                                             PROTO_PACKAGE)));
-                final String content = file.getContent();
-                final Matcher matcher = CUSTOMER_EVENT_INTERFACE_PATTERN.matcher(content);
+                String content = file.getContent();
+                Matcher matcher = CUSTOMER_EVENT_INTERFACE_PATTERN.matcher(content);
                 assertTrue(format("Unexpected inserted content: %s", content), matcher.matches());
             }
         }

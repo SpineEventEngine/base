@@ -82,7 +82,7 @@ public abstract class AbstractMessageDeclaration {
         if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        final AbstractMessageDeclaration other = (AbstractMessageDeclaration) obj;
+        AbstractMessageDeclaration other = (AbstractMessageDeclaration) obj;
         return Objects.equals(this.message, other.message)
                 && Objects.equals(this.file, other.file);
     }

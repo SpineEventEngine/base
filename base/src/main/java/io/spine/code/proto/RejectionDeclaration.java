@@ -59,8 +59,8 @@ public final class RejectionDeclaration extends AbstractMessageDeclaration {
      * {@code false} otherwise.
      */
     public static boolean isValidOuterClassName(SimpleClassName className) {
-        final boolean result = className.value()
-                                        .endsWith(OUTER_CLASS_NAME_SUFFIX);
+        boolean result = className.value()
+                                  .endsWith(OUTER_CLASS_NAME_SUFFIX);
         return result;
     }
 
@@ -84,7 +84,7 @@ public final class RejectionDeclaration extends AbstractMessageDeclaration {
         if (!super.equals(obj)) {
             return false;
         }
-        final RejectionDeclaration other = (RejectionDeclaration) obj;
+        RejectionDeclaration other = (RejectionDeclaration) obj;
         return Objects.equals(this.outerJavaClass, other.outerJavaClass);
     }
 }

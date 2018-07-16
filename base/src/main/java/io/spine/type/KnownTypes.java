@@ -67,7 +67,7 @@ public class KnownTypes {
         if (!instance().contains(typeUrl)) {
             throw new UnknownTypeException(typeUrl.getTypeName());
         }
-        final ClassName result = instance().get(typeUrl);
+        ClassName result = instance().get(typeUrl);
         return result;
     }
 
@@ -97,10 +97,10 @@ public class KnownTypes {
      * @return set of {@link TypeUrl TypeUrl}s of types that belong to the given package
      */
     public Set<TypeUrl> getAllFromPackage(String packageName) {
-        final Set<TypeUrl> result = getAllUrls().stream()
-                                                .filter(url -> url.toName()
-                                                                  .belongsTo(packageName))
-                                                .collect(toSet());
+        Set<TypeUrl> result = getAllUrls().stream()
+                                          .filter(url -> url.toName()
+                                                            .belongsTo(packageName))
+                                          .collect(toSet());
         return result;
     }
 

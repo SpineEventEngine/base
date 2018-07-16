@@ -94,7 +94,7 @@ public final class FieldContext {
      * @return the child descriptor context
      */
     public FieldContext forChild(FieldDescriptor child) {
-        final List<FieldDescriptor> newDescriptors = newLinkedList(descriptors);
+        List<FieldDescriptor> newDescriptors = newLinkedList(descriptors);
         newDescriptors.add(child);
         return new FieldContext(newDescriptors);
     }
@@ -105,7 +105,7 @@ public final class FieldContext {
      * @return the target descriptor
      */
     FieldDescriptor getTarget() {
-        final int targetIndex = descriptors.size() - 1;
+        int targetIndex = descriptors.size() - 1;
         if (targetIndex == -1) {
             throw newIllegalStateException("Empty context cannot have a target.");
         }
@@ -114,11 +114,11 @@ public final class FieldContext {
     }
 
     private Optional<FieldDescriptor> getTargetParent() {
-        final int targetParentIndex = descriptors.size() - 2;
-        final boolean parentExists = targetParentIndex > -1;
+        int targetParentIndex = descriptors.size() - 2;
+        boolean parentExists = targetParentIndex > -1;
         return parentExists
-                ? Optional.of(descriptors.get(targetParentIndex))
-                : Optional.empty();
+               ? Optional.of(descriptors.get(targetParentIndex))
+               : Optional.empty();
     }
 
     /**
@@ -139,17 +139,18 @@ public final class FieldContext {
      */
     public boolean hasSameTargetAndParent(FieldContext other) {
         String thisTargetName = getTarget().getFullName();
-        String otherTargetName = other.getTarget().getFullName();
+        String otherTargetName = other.getTarget()
+                                      .getFullName();
         boolean sameTarget = thisTargetName.equals(otherTargetName);
         if (!sameTarget) {
             return false;
         }
-        final Optional<String> parentFromThis = getTargetParent()
+        Optional<String> parentFromThis = getTargetParent()
                 .map(FieldDescriptor::getFullName);
-        final Optional<String> parentFromOther = other
+        Optional<String> parentFromOther = other
                 .getTargetParent()
                 .map(FieldDescriptor::getFullName);
-        final boolean bothHaveParents = parentFromThis.isPresent() && parentFromOther.isPresent();
+        boolean bothHaveParents = parentFromThis.isPresent() && parentFromOther.isPresent();
         return bothHaveParents && parentFromThis.get()
                                                 .equals(parentFromOther.get());
     }
@@ -176,7 +177,7 @@ public final class FieldContext {
     private static FieldPath fieldPathOf(Iterable<FieldDescriptor> descriptors) {
         FieldPath.Builder builder = FieldPath.newBuilder();
         for (FieldDescriptor descriptor : descriptors) {
-            final String fieldName = descriptor.getName();
+            String fieldName = descriptor.getName();
             builder = builder.addFieldName(fieldName);
         }
         return builder.build();
