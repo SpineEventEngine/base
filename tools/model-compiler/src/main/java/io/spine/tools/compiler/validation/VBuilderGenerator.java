@@ -20,8 +20,6 @@
 
 package io.spine.tools.compiler.validation;
 
-import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import io.spine.code.Indent;
@@ -32,6 +30,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
@@ -123,7 +122,7 @@ public class VBuilderGenerator {
 
     private Set<VBType> filter(boolean classpathGenEnabled, Set<VBType> types) {
         Predicate<VBType> shouldWrite = getPredicate(classpathGenEnabled);
-        Iterable<VBType> filtered = Iterables.filter(types, shouldWrite);
+        Iterable<VBType> filtered = Iterables.filter(types, shouldWrite::test);
         Set<VBType> result = ImmutableSet.copyOf(filtered);
         return result;
     }
@@ -131,7 +130,7 @@ public class VBuilderGenerator {
     private Predicate<VBType> getPredicate(boolean classpathGenEnabled) {
         Predicate<VBType> result;
         if (classpathGenEnabled) {
-            result = Predicates.alwaysTrue();
+            result = type -> true;
         } else {
             String rootPath = protoSrcDirPath.endsWith(File.separator)
                               ? protoSrcDirPath
@@ -160,7 +159,7 @@ public class VBuilderGenerator {
         }
 
         @Override
-        public boolean apply(@Nullable VBType input) {
+        public boolean test(@Nullable VBType input) {
             checkNotNull(input);
 
             String path = input.getSourceProtoFile();

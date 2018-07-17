@@ -20,13 +20,11 @@
 
 package io.spine.tools.compiler.validation;
 
-import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Message;
 import io.spine.tools.compiler.MessageTypeCache;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,6 +32,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Sets.newHashSet;
@@ -60,18 +59,14 @@ class VBTypeLookup {
 
     /** Verifies if a message is not one provided by the Protobuf library. */
     private final Predicate<DescriptorProto> isNotStandardType =
-            new Predicate<DescriptorProto>() {
-
-                @Override
-                public boolean apply(@Nullable DescriptorProto message) {
-                    if (message == null) {
-                        return false;
-                    }
-                    String javaPackage = getJavaPackage(message);
-                    boolean isGoogleMsg = javaPackage.contains(Message.class.getPackage()
-                                                                            .getName());
-                    return !isGoogleMsg;
+            message -> {
+                if (message == null) {
+                    return false;
                 }
+                String javaPackage = getJavaPackage(message);
+                boolean isGoogleMsg = javaPackage.contains(Message.class.getPackage()
+                                                                        .getName());
+                return !isGoogleMsg;
             };
 
     VBTypeLookup(String descriptorSetFile) {
@@ -117,7 +112,7 @@ class VBTypeLookup {
                                        FileDescriptorProto file) {
         Set<VBType> result = newHashSet();
         for (DescriptorProto message : descriptors) {
-            if (isNotStandardType.apply(message)) {
+            if (isNotStandardType.test(message)) {
                 VBType type = newType(message, file);
                 result.add(type);
             }
