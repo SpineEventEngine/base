@@ -26,9 +26,9 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import io.spine.base.ConversionException;
+import io.spine.code.proto.FieldName;
 import io.spine.tools.compiler.MessageTypeCache;
 import io.spine.tools.compiler.fieldtype.FieldType;
-import io.spine.code.proto.FieldName;
 import io.spine.validate.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +38,7 @@ import java.util.Collection;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static io.spine.code.java.Annotations.canIgnoreReturnValue;
 import static io.spine.tools.compiler.validation.ClassNames.getClassName;
 import static io.spine.tools.compiler.validation.ClassNames.getParameterClassName;
 import static io.spine.tools.compiler.validation.ClassNames.getStringClassName;
@@ -125,6 +126,7 @@ class SingularFieldMethodConstructor implements MethodConstructor {
         String setStatement = format("%s.%s(%s)", getMessageBuilder(), methodName, fieldName);
         MethodSpec methodSpec =
                 MethodSpec.methodBuilder(methodName)
+                          .addAnnotation(canIgnoreReturnValue())
                           .addModifiers(Modifier.PUBLIC)
                           .returns(builderClassName)
                           .addParameter(parameter)
@@ -159,6 +161,7 @@ class SingularFieldMethodConstructor implements MethodConstructor {
 
         MethodSpec methodSpec =
                 MethodSpec.methodBuilder(clearPrefix() + methodNamePart)
+                          .addAnnotation(canIgnoreReturnValue())
                           .addModifiers(Modifier.PUBLIC)
                           .returns(builderClassName)
                           .addStatement(methodBody)
@@ -188,6 +191,7 @@ class SingularFieldMethodConstructor implements MethodConstructor {
                                      convertedVariableName);
         MethodSpec methodSpec =
                 MethodSpec.methodBuilder(methodName)
+                          .addAnnotation(canIgnoreReturnValue())
                           .addModifiers(Modifier.PUBLIC)
                           .returns(builderClassName)
                           .addParameter(parameter)

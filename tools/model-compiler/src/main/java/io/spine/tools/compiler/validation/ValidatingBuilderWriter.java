@@ -27,8 +27,8 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeSpec;
 import io.spine.code.Indent;
-import io.spine.tools.compiler.MessageTypeCache;
 import io.spine.code.java.SimpleClassName;
+import io.spine.tools.compiler.MessageTypeCache;
 import io.spine.validate.AbstractValidatingBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,8 +38,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
-import static io.spine.tools.compiler.validation.ClassNames.getValidatorMessageClassName;
 import static io.spine.code.java.Annotations.generatedBySpineModelCompiler;
+import static io.spine.tools.compiler.validation.ClassNames.getValidatorMessageClassName;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 
 /**
