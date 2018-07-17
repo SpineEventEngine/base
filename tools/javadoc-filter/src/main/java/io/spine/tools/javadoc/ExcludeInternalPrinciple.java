@@ -55,7 +55,8 @@ class ExcludeInternalPrinciple implements ExcludePrinciple {
     }
 
     private boolean inExclusions(ProgramElementDoc doc) {
-        final String docPackageName = doc.containingPackage().name();
+        String docPackageName = doc.containingPackage()
+                                   .name();
 
         for (PackageDoc exclusion : exclusions) {
             if (docPackageName.startsWith(exclusion.name())) {
@@ -67,7 +68,7 @@ class ExcludeInternalPrinciple implements ExcludePrinciple {
     }
 
     private Collection<PackageDoc> getExclusions(RootDoc root) {
-        final PackageCollector packageCollector = new PackageCollector(internalAnalyst);
+        PackageCollector packageCollector = new PackageCollector(internalAnalyst);
         return packageCollector.collect(root);
     }
 }
