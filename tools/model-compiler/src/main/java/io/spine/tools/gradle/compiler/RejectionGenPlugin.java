@@ -20,14 +20,14 @@
 package io.spine.tools.gradle.compiler;
 
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
-import io.spine.tools.compiler.MessageTypeCache;
-import io.spine.tools.compiler.rejection.RejectionWriter;
-import io.spine.tools.gradle.GradleTask;
-import io.spine.tools.gradle.SpinePlugin;
 import io.spine.code.java.PackageName;
 import io.spine.code.java.SimpleClassName;
 import io.spine.code.proto.RejectionDeclaration;
 import io.spine.code.proto.RejectionsFile;
+import io.spine.tools.compiler.MessageTypeCache;
+import io.spine.tools.compiler.rejection.RejectionWriter;
+import io.spine.tools.gradle.GradleTask;
+import io.spine.tools.gradle.SpinePlugin;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.Map;
 
 import static io.spine.code.proto.FileDescriptors.parse;
+import static io.spine.code.proto.Rejections.collect;
 import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
 import static io.spine.tools.gradle.TaskName.COMPILE_TEST_JAVA;
 import static io.spine.tools.gradle.TaskName.GENERATE_PROTO;
@@ -48,7 +49,6 @@ import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSetPath;
 import static io.spine.tools.gradle.compiler.Extension.getTargetGenRejectionsRootDir;
 import static io.spine.tools.gradle.compiler.Extension.getTargetTestGenRejectionsRootDir;
 import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSetPath;
-import static io.spine.code.proto.Rejections.collect;
 
 /**
  * Plugin which generates Rejections declared in {@code rejections.proto} files.
@@ -79,14 +79,11 @@ public class RejectionGenPlugin extends SpinePlugin {
     public void apply(Project project) {
         Logger log = log();
 
-        Action<Task> mainScopeAction = new Action<Task>() {
-            @Override
-            public void execute(Task task) {
-                String mainFile = getMainDescriptorSetPath(project);
-                String targetFolder = getTargetGenRejectionsRootDir(project);
+        Action<Task> mainScopeAction = task -> {
+            String mainFile = getMainDescriptorSetPath(project);
+            String targetFolder = getTargetGenRejectionsRootDir(project);
 
-                generateRejections(mainFile, targetFolder);
-            }
+            generateRejections(mainFile, targetFolder);
         };
 
         logDependingTask(GENERATE_REJECTIONS, COMPILE_JAVA, GENERATE_PROTO);
@@ -96,15 +93,12 @@ public class RejectionGenPlugin extends SpinePlugin {
                         .insertBeforeTask(COMPILE_JAVA)
                         .applyNowTo(project);
 
-        Action<Task> testScopeAction = new Action<Task>() {
-            @Override
-            public void execute(Task task) {
-                String mainFile = getMainDescriptorSetPath(project);
-                String testFile = getTestDescriptorSetPath(project);
-                String targetFolder = getTargetTestGenRejectionsRootDir(project);
+        Action<Task> testScopeAction = task -> {
+            String mainFile = getMainDescriptorSetPath(project);
+            String testFile = getTestDescriptorSetPath(project);
+            String targetFolder = getTargetTestGenRejectionsRootDir(project);
 
-                generateTestRejections(mainFile, testFile, targetFolder);
-            }
+            generateTestRejections(mainFile, testFile, targetFolder);
         };
 
         logDependingTask(GENERATE_TEST_REJECTIONS, COMPILE_TEST_JAVA, GENERATE_TEST_PROTO);

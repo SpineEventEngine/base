@@ -22,9 +22,7 @@ package io.spine.tools.gradle.compiler;
 
 import com.google.common.io.Files;
 import io.spine.tools.gradle.SpinePlugin;
-import org.gradle.api.Action;
 import org.gradle.api.Project;
-import org.gradle.api.plugins.AppliedPlugin;
 import org.slf4j.Logger;
 
 import java.io.File;
@@ -51,16 +49,14 @@ public class ProtocPluginImporter extends SpinePlugin {
     @Override
     public void apply(Project project) {
         File configFile = generateSpineProtoc();
-        project.getPluginManager().withPlugin(PROTOBUF_PLUGIN_ID, new Action<AppliedPlugin>() {
-            @Override
-            public void execute(AppliedPlugin appliedPlugin) {
-                Logger log = log();
-                log.debug("Applying {} ({})",
-                          PROTOC_CONFIG_FILE_NAME,
-                          configFile.getAbsolutePath());
-                project.apply(of("from", configFile.getAbsolutePath()));
-                log.debug("Applied {}", PROTOC_CONFIG_FILE_NAME);
-            }
+        project.getPluginManager()
+               .withPlugin(PROTOBUF_PLUGIN_ID, appliedPlugin -> {
+                   Logger log = log();
+                   log.debug("Applying {} ({})",
+                             PROTOC_CONFIG_FILE_NAME,
+                             configFile.getAbsolutePath());
+                   project.apply(of("from", configFile.getAbsolutePath()));
+                   log.debug("Applied {}", PROTOC_CONFIG_FILE_NAME);
         });
     }
 
