@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.google.common.collect.ImmutableList.of;
-import static io.spine.test.Verify.assertNotEmpty;
+import static io.spine.testing.Verify.assertNotEmpty;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 
