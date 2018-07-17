@@ -37,7 +37,9 @@ public class FloatFieldValidatorShould {
     private static final Float VALUE = 0.5F;
     private static final Float NEGATIVE_VALUE = -0.5F;
 
-    private final FieldDescriptor fieldDescriptor = Any.getDescriptor().getFields().get(0);
+    private final FieldDescriptor fieldDescriptor = Any.getDescriptor()
+                                                       .getFields()
+                                                       .get(0);
     private final FloatFieldValidator validator =
             new FloatFieldValidator(FieldContext.create(fieldDescriptor),
                                     ImmutableList.of(VALUE));
@@ -54,8 +56,8 @@ public class FloatFieldValidatorShould {
 
     @Test
     public void wrap_to_any() {
-        final Any any = validator.wrap(VALUE);
-        final FloatValue msg = AnyPacker.unpack(any);
+        Any any = validator.wrap(VALUE);
+        FloatValue msg = AnyPacker.unpack(any);
         assertEquals(VALUE, (Float) msg.getValue());
     }
 }
