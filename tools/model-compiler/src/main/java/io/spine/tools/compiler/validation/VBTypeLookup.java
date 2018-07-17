@@ -26,7 +26,6 @@ import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Message;
 import io.spine.tools.compiler.MessageTypeCache;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,18 +59,14 @@ class VBTypeLookup {
 
     /** Verifies if a message is not one provided by the Protobuf library. */
     private final Predicate<DescriptorProto> isNotStandardType =
-            new Predicate<DescriptorProto>() {
-
-                @Override
-                public boolean apply(@Nullable DescriptorProto message) {
-                    if (message == null) {
-                        return false;
-                    }
-                    String javaPackage = getJavaPackage(message);
-                    boolean isGoogleMsg = javaPackage.contains(Message.class.getPackage()
-                                                                            .getName());
-                    return !isGoogleMsg;
+            message -> {
+                if (message == null) {
+                    return false;
                 }
+                String javaPackage = getJavaPackage(message);
+                boolean isGoogleMsg = javaPackage.contains(Message.class.getPackage()
+                                                                        .getName());
+                return !isGoogleMsg;
             };
 
     VBTypeLookup(String descriptorSetFile) {
