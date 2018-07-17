@@ -26,8 +26,8 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
 import io.spine.base.ConversionException;
-import io.spine.tools.compiler.fieldtype.MapFieldType;
 import io.spine.code.proto.FieldName;
+import io.spine.tools.compiler.fieldtype.MapFieldType;
 import io.spine.validate.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static io.spine.code.java.Annotations.canIgnoreReturnValue;
 import static io.spine.tools.compiler.validation.MethodConstructors.clearPrefix;
 import static io.spine.tools.compiler.validation.MethodConstructors.createConvertSingularValue;
 import static io.spine.tools.compiler.validation.MethodConstructors.createDescriptorStatement;
@@ -160,6 +161,7 @@ class MapFieldMethodConstructor implements MethodConstructor {
                                      getMessageBuilder(), propertyName, KEY, VALUE);
         MethodSpec result =
                 MethodSpec.methodBuilder(methodName)
+                          .addAnnotation(canIgnoreReturnValue())
                           .returns(builderClassName)
                           .addModifiers(Modifier.PUBLIC)
                           .addException(ValidationException.class)
@@ -186,6 +188,7 @@ class MapFieldMethodConstructor implements MethodConstructor {
 
         MethodSpec result =
                 MethodSpec.methodBuilder(methodName)
+                          .addAnnotation(canIgnoreReturnValue())
                           .returns(builderClassName)
                           .addModifiers(Modifier.PUBLIC)
                           .addException(ValidationException.class)
@@ -213,6 +216,7 @@ class MapFieldMethodConstructor implements MethodConstructor {
                                         getMessageBuilder(), propertyName, MAP_PARAM_NAME);
         String methodName = fieldType.getSetterPrefix() + propertyName;
         MethodSpec result = MethodSpec.methodBuilder(methodName)
+                                      .addAnnotation(canIgnoreReturnValue())
                                       .addModifiers(Modifier.PUBLIC)
                                       .returns(builderClassName)
                                       .addParameter(fieldType.getTypeName(), MAP_PARAM_NAME)
@@ -232,6 +236,7 @@ class MapFieldMethodConstructor implements MethodConstructor {
                                         getMessageBuilder(), propertyName);
         String methodName = fieldType.getSetterPrefix() + rawSuffix() + propertyName;
         MethodSpec result = MethodSpec.methodBuilder(methodName)
+                                      .addAnnotation(canIgnoreReturnValue())
                                       .addModifiers(Modifier.PUBLIC)
                                       .returns(builderClassName)
                                       .addParameter(String.class, MAP_PARAM_NAME)
@@ -252,6 +257,7 @@ class MapFieldMethodConstructor implements MethodConstructor {
         String removeFromMap = format("%s.remove%s(%s)",
                                       getMessageBuilder(), propertyName, KEY);
         MethodSpec result = MethodSpec.methodBuilder(removePrefix() + propertyName)
+                                      .addAnnotation(canIgnoreReturnValue())
                                       .addModifiers(Modifier.PUBLIC)
                                       .returns(builderClassName)
                                       .addParameter(keyTypeName, KEY)
@@ -264,6 +270,7 @@ class MapFieldMethodConstructor implements MethodConstructor {
     private MethodSpec createClearMethod() {
         String clearMap = format("%s.clear%s()", getMessageBuilder(), propertyName);
         MethodSpec result = MethodSpec.methodBuilder(clearPrefix() + propertyName)
+                                      .addAnnotation(canIgnoreReturnValue())
                                       .addModifiers(Modifier.PUBLIC)
                                       .returns(builderClassName)
                                       .addStatement(clearMap)
