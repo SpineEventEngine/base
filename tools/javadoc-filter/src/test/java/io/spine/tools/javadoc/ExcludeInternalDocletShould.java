@@ -57,7 +57,7 @@ public class ExcludeInternalDocletShould {
 
     @Test
     public void run_standard_doclet() {
-        final String[] args = new JavadocArgsBuilder()
+        String[] args = new JavadocArgsBuilder()
                 .addSource(NOT_INTERNAL_CLASS_FILENAME)
                 .build();
 
@@ -68,132 +68,132 @@ public class ExcludeInternalDocletShould {
 
     @Test
     public void exclude_internal_annotated_annotations() {
-        final String[] args = new JavadocArgsBuilder()
+        String[] args = new JavadocArgsBuilder()
                 .addSource("InternalAnnotatedAnnotation.java")
                 .build();
 
-        final RootDoc rootDoc = rootDocFor(args);
+        RootDoc rootDoc = rootDocFor(args);
 
         assertEquals(0, rootDoc.specifiedClasses().length);
     }
 
     @Test
     public void exclude_internal_ctors() {
-        final String[] args = new JavadocArgsBuilder().addSource("InternalCtorClass.java")
-                                                      .build();
+        String[] args = new JavadocArgsBuilder().addSource("InternalCtorClass.java")
+                                                .build();
 
-        final RootDoc rootDoc = rootDocFor(args);
+        RootDoc rootDoc = rootDocFor(args);
 
-        final ClassDoc classDoc = rootDoc.specifiedClasses()[0];
+        ClassDoc classDoc = rootDoc.specifiedClasses()[0];
         assertEquals(0, classDoc.constructors().length);
     }
 
     @Test
     public void exclude_internal_fields() {
-        final String[] args = new JavadocArgsBuilder()
+        String[] args = new JavadocArgsBuilder()
                 .addSource("InternalFieldClass.java")
                 .build();
 
-        final RootDoc rootDoc = rootDocFor(args);
+        RootDoc rootDoc = rootDocFor(args);
 
-        final ClassDoc classDoc = rootDoc.specifiedClasses()[0];
+        ClassDoc classDoc = rootDoc.specifiedClasses()[0];
         assertEquals(0, classDoc.fields().length);
     }
 
     @Test
     public void exclude_internal_methods() {
-        final String[] args = new JavadocArgsBuilder()
+        String[] args = new JavadocArgsBuilder()
                 .addSource(INTERNAL_METHOD_CLASS_FILENAME)
                 .build();
 
-        final RootDoc rootDoc = rootDocFor(args);
+        RootDoc rootDoc = rootDocFor(args);
 
-        final ClassDoc classDoc = rootDoc.specifiedClasses()[0];
+        ClassDoc classDoc = rootDoc.specifiedClasses()[0];
         assertEquals(0, classDoc.methods().length);
     }
 
     @Test
     public void exclude_internal_package_content() {
-        final String[] args = new JavadocArgsBuilder()
+        String[] args = new JavadocArgsBuilder()
                 .addSource("/internal/InternalPackageClass.java")
                 .build();
 
-        final RootDoc rootDoc = rootDocFor(args);
+        RootDoc rootDoc = rootDocFor(args);
 
         assertEquals(0, rootDoc.specifiedClasses().length);
     }
 
     @Test
     public void exclude_only_from_internal_subpackages() {
-        final String[] args = new JavadocArgsBuilder()
+        String[] args = new JavadocArgsBuilder()
                 .addSource("/internal/subinternal/SubInternalPackageClass.java")
                 .addSource(NOT_INTERNAL_CLASS_FILENAME)
                 .addPackage(INTERNAL_PACKAGE)
                 .addPackage(TEST_SOURCES_PACKAGE + ".notinternal")
                 .build();
 
-        final RootDoc rootDoc = rootDocFor(args);
+        RootDoc rootDoc = rootDocFor(args);
 
         assertEquals(1, rootDoc.specifiedClasses().length);
     }
 
     @Test
     public void exclude_internal_classes() {
-        final String[] args = new JavadocArgsBuilder()
+        String[] args = new JavadocArgsBuilder()
                 .addSource(INTERNAL_CLASS_FILENAME)
                 .build();
 
-        final RootDoc rootDoc = rootDocFor(args);
+        RootDoc rootDoc = rootDocFor(args);
 
         assertEquals(0, rootDoc.specifiedClasses().length);
     }
 
     @Test
     public void exclude_internal_interfaces() {
-        final String[] args = new JavadocArgsBuilder()
+        String[] args = new JavadocArgsBuilder()
                 .addSource("InternalAnnotatedInterface.java")
                 .build();
 
-        final RootDoc rootDoc = rootDocFor(args);
+        RootDoc rootDoc = rootDocFor(args);
 
         assertEquals(0, rootDoc.specifiedClasses().length);
     }
 
     @Test
     public void exclude_internal_enums() {
-        final String[] args = new JavadocArgsBuilder()
+        String[] args = new JavadocArgsBuilder()
                 .addSource("InternalEnum.java")
                 .build();
 
-        final RootDoc rootDoc = rootDocFor(args);
+        RootDoc rootDoc = rootDocFor(args);
 
         assertEquals(0, rootDoc.specifiedClasses().length);
     }
 
     @Test
     public void not_exclude_elements_annotated_with_Internal_located_in_another_package() {
-        final String[] args = new JavadocArgsBuilder()
+        String[] args = new JavadocArgsBuilder()
                 .addSource("GrpcInternalAnnotatedClass.java")
                 .build();
 
-        final RootDoc rootDoc = rootDocFor(args);
+        RootDoc rootDoc = rootDocFor(args);
 
         assertEquals(1, rootDoc.specifiedClasses().length);
     }
 
     @Test
     public void correctly_work_when_compareTo_called() {
-        final String[] args = new JavadocArgsBuilder()
+        String[] args = new JavadocArgsBuilder()
                 .addSource(INTERNAL_CLASS_FILENAME)
                 .addSource(DERIVED_FROM_INTERNAL_CLASS_FILENAME)
                 .build();
 
-        final RootDoc rootDoc = rootDocFor(args);
+        RootDoc rootDoc = rootDocFor(args);
 
         // invoke compareTo to be sure, that proxy unwrapping
         // doest not expose object passed to compareTo method
-        final ClassDoc classDoc = rootDoc.specifiedClasses()[0];
-        final ClassDoc anotherClassDoc = classDoc.superclass();
+        ClassDoc classDoc = rootDoc.specifiedClasses()[0];
+        ClassDoc anotherClassDoc = classDoc.superclass();
         classDoc.compareTo(anotherClassDoc);
 
         assertEquals(1, rootDoc.specifiedClasses().length);
@@ -201,19 +201,19 @@ public class ExcludeInternalDocletShould {
 
     @Test
     public void correctly_work_when_overrides_called() {
-        final String[] args = new JavadocArgsBuilder()
+        String[] args = new JavadocArgsBuilder()
                 .addSource(INTERNAL_METHOD_CLASS_FILENAME)
                 .addSource("OverridesInternalMethod.java")
                 .build();
 
-        final RootDoc rootDoc = rootDocFor(args);
+        RootDoc rootDoc = rootDocFor(args);
 
         // invoke overrides to be sure, that proxy unwrapping
         // doest not expose overridden method
-        final ClassDoc overridesInternalMethod =
+        ClassDoc overridesInternalMethod =
                 rootDoc.classNamed(TEST_SOURCES_PACKAGE + ".OverridesInternalMethod");
-        final MethodDoc methodDoc = overridesInternalMethod.methods()[0];
-        final MethodDoc overriddenMethod = methodDoc.overriddenMethod();
+        MethodDoc methodDoc = overridesInternalMethod.methods()[0];
+        MethodDoc overriddenMethod = methodDoc.overriddenMethod();
         methodDoc.overrides(overriddenMethod);
 
         assertEquals(0, rootDoc.classNamed(TEST_SOURCES_PACKAGE + ".InternalMethodClass")
@@ -222,17 +222,17 @@ public class ExcludeInternalDocletShould {
 
     @Test
     public void correctly_work_when_subclassOf_invoked() {
-        final String[] args = new JavadocArgsBuilder()
+        String[] args = new JavadocArgsBuilder()
                 .addSource(INTERNAL_CLASS_FILENAME)
                 .addSource(DERIVED_FROM_INTERNAL_CLASS_FILENAME)
                 .build();
 
-        final RootDoc rootDoc = rootDocFor(args);
+        RootDoc rootDoc = rootDocFor(args);
 
         // invoke subclassOf to be sure, that proxy unwrapping
         // doest not expose parent internal class
-        final ClassDoc classDoc = rootDoc.specifiedClasses()[0];
-        final ClassDoc superclass = classDoc.superclass();
+        ClassDoc classDoc = rootDoc.specifiedClasses()[0];
+        ClassDoc superclass = classDoc.superclass();
         classDoc.subclassOf(superclass);
 
         assertEquals(1, rootDoc.specifiedClasses().length);
@@ -244,7 +244,7 @@ public class ExcludeInternalDocletShould {
     })
     @Test
     public void not_throw_NPE_processing_null_values() {
-        final ExcludeInternalDoclet doclet = new NullProcessingTestDoclet();
+        ExcludeInternalDoclet doclet = new NullProcessingTestDoclet();
 
         try {
             doclet.process(Tests.nullRef(), void.class);
