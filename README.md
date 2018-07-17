@@ -26,4 +26,13 @@ This repository contains the code of foundation of the Spine Event Engine framew
 These components are used by [core-java](https://github.com/SpineEventEngine/core-java) and are not
 supposed to be used directly by the end user project.
 
+**Coverage**
+
+Currently the coverage stats reflect the hits gathered from unit tests. 
+
+However, Gradle plugins, that are a significant part of this repository, are covered with integration tests. During each of those a standalone Gradle process is launched. The limitations of `jacoco` task API do not allow to include the coverage of such tests into the repository coverage report easily. 
+
+Therefore the current coverage percentage shown is significantly lower than a real one.
+
+This issue will be addressed with the new API in Gradle 5.0 once it is released.
 
