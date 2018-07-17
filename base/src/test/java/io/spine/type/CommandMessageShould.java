@@ -44,11 +44,11 @@ public class CommandMessageShould {
     public void tell_commands_file_by_its_descriptor() {
         Descriptors.FileDescriptor file = CommandFromCommands.getDescriptor()
                                                              .getFile();
-        assertTrue(CommandMessage.File.PREDICATE.apply(file));
+        assertTrue(CommandMessage.File.PREDICATE.test(file));
 
         file = StringValue.getDescriptor()
                           .getFile();
 
-        assertFalse(CommandMessage.File.PREDICATE.apply(file));
+        assertFalse(CommandMessage.File.PREDICATE.test(file));
     }
 }

@@ -20,7 +20,6 @@
 
 package io.spine.code.proto;
 
-import com.google.common.base.Predicate;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.Descriptor;
@@ -30,6 +29,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Collection;
+import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static org.junit.Assert.assertEquals;
@@ -79,7 +79,7 @@ public class SourceFileShould {
         }
 
         @Override
-        public boolean apply(@Nullable DescriptorProto input) {
+        public boolean test(@Nullable DescriptorProto input) {
             checkNotNull(input);
             String messageName = input.getName();
             return messageName.equals(name);
