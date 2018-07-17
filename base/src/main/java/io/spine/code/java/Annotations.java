@@ -54,7 +54,7 @@ public final class Annotations {
     }
 
     /**
-     * Generates {@code \@Generated("by Spine Model Compiler")} annotation spec.
+     * Generates {@code @Generated("by Spine Model Compiler")} annotation spec.
      *
      * @return an {@code AnnotationSpec} describing the {@link Generated javax.annotation.Generated}
      *         annotation
@@ -64,7 +64,7 @@ public final class Annotations {
     }
 
     /**
-     * Generates {@code \@CanIgnoreReturnValue} annotation spec.
+     * Generates {@code @CanIgnoreReturnValue} annotation spec.
      *
      * @return an {@code AnnotationSpec} describing the {@link CanIgnoreReturnValue
      *         com.google.errorprone.annotations.CanIgnoreReturnValue} annotation
