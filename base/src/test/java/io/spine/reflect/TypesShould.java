@@ -30,7 +30,7 @@ import java.util.Map;
 
 import static io.spine.reflect.Types.listTypeOf;
 import static io.spine.reflect.Types.mapTypeOf;
-import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
+import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
 import static org.junit.Assert.assertEquals;
 
 /**

@@ -26,7 +26,7 @@ import org.junit.Test;
 import static io.spine.base.Errors.causeOf;
 import static io.spine.base.Errors.fromThrowable;
 import static io.spine.base.Identifier.newUuid;
-import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
+import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
 import static org.junit.Assert.assertEquals;
 
 /**

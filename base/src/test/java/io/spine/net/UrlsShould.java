@@ -25,7 +25,7 @@ import io.spine.net.Url.Record;
 import io.spine.net.Url.Record.Authorization;
 import org.junit.Test;
 
-import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
+import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 

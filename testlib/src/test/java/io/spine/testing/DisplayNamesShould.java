@@ -18,49 +18,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.test;
+package io.spine.testing;
 
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import org.junit.Test;
 
-import java.lang.reflect.Constructor;
+import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
 
 /**
- * The abstract base for test object builders.
- *
- * @author Alexander Yevsyukov
+ * @author Dmytro Kuzmin
  */
-public abstract class ReflectiveBuilder<T> {
+public class DisplayNamesShould {
 
-    /** The class of the object we create. */
-    private Class<T> resultClass;
-
-    /** Constructor for use by subclasses. */
-    protected ReflectiveBuilder() {
+    @Test
+    public void have_utility_ctor() {
+        assertHasPrivateParameterlessCtor(DisplayNames.class);
     }
-
-    /**
-     * Obtains constructor for the result object.
-     */
-    protected abstract Constructor<T> getConstructor();
-
-    /**
-     * Obtains the class of the object to build.
-     */
-    public Class<T> getResultClass() {
-        return this.resultClass;
-    }
-
-    /**
-     * Sets the class of the object to build.
-     */
-    @CanIgnoreReturnValue
-    protected ReflectiveBuilder<T> setResultClass(Class<T> resultClass) {
-        this.resultClass = resultClass;
-        return this;
-    }
-
-    /**
-     * Creates the object being built.
-     */
-    public abstract T build();
 }

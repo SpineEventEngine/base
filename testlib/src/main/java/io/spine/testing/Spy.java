@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.test;
+package io.spine.testing;
 
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import org.mockito.Mockito;

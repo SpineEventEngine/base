@@ -27,7 +27,7 @@ import io.spine.test.options.SubscribableAggregate;
 import org.junit.Test;
 
 import static io.spine.option.EntityOptions.getVisibility;
-import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
+import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
 import static org.junit.Assert.assertEquals;
 
 /**
