@@ -87,8 +87,8 @@ public class VerifyShould {
 
     @Test
     public void extend_Assert_class() {
-        final Type expectedSuperclass = Assert.class;
-        final Type actualSuperclass = Verify.class.getGenericSuperclass();
+        Type expectedSuperclass = Assert.class;
+        Type actualSuperclass = Verify.class.getGenericSuperclass();
         assertEquals(expectedSuperclass, actualSuperclass);
     }
 
@@ -100,13 +100,13 @@ public class VerifyShould {
     @SuppressWarnings({"ThrowCaughtLocally", "ErrorNotRethrown"})
     @Test
     public void mangle_assertion_error() {
-        final AssertionError sourceError = new AssertionError();
-        final int framesBefore = sourceError.getStackTrace().length;
+        AssertionError sourceError = new AssertionError();
+        int framesBefore = sourceError.getStackTrace().length;
 
         try {
             throw mangledException(sourceError);
         } catch (AssertionError e) {
-            final int framesAfter = e.getStackTrace().length;
+            int framesAfter = e.getStackTrace().length;
 
             assertEquals(framesBefore - 1, framesAfter);
         }
@@ -115,14 +115,14 @@ public class VerifyShould {
     @SuppressWarnings({"ThrowCaughtLocally", "ErrorNotRethrown"})
     @Test
     public void mangle_assertion_error_for_specified_frame_count() {
-        final AssertionError sourceError = new AssertionError();
-        final int framesBefore = sourceError.getStackTrace().length;
-        final int framesToPop = 3;
+        AssertionError sourceError = new AssertionError();
+        int framesBefore = sourceError.getStackTrace().length;
+        int framesToPop = 3;
 
         try {
             throw mangledException(sourceError, framesToPop);
         } catch (AssertionError e) {
-            final int framesAfter = e.getStackTrace().length;
+            int framesAfter = e.getStackTrace().length;
 
             assertEquals(framesBefore - framesToPop + 1, framesAfter);
         }
@@ -131,8 +131,8 @@ public class VerifyShould {
     @SuppressWarnings("ErrorNotRethrown")
     @Test
     public void fail_with_specified_message_and_cause() {
-        final String message = "Test failed";
-        final Throwable cause = new Error();
+        String message = "Test failed";
+        Throwable cause = new Error();
 
         try {
             Verify.fail(message, cause);
@@ -145,42 +145,42 @@ public class VerifyShould {
 
     @Test(expected = AssertionError.class)
     public void fail_assertNotEquals_if_float_values_are_positive_infinity() {
-        final float anyDeltaAcceptable = 0.0f;
+        float anyDeltaAcceptable = 0.0f;
         assertNotEquals(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY, anyDeltaAcceptable);
     }
 
     @Test(expected = AssertionError.class)
     public void fail_assertNotEquals_if_float_values_are_negative_infinity() {
-        final float anyDeltaAcceptable = 0.0f;
+        float anyDeltaAcceptable = 0.0f;
         assertNotEquals(Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY, anyDeltaAcceptable);
     }
 
     @Test(expected = AssertionError.class)
     public void fail_assertNotEquals_if_float_values_are_NaN() {
-        final float anyDeltaAcceptable = 0.0f;
+        float anyDeltaAcceptable = 0.0f;
         assertNotEquals(Float.NaN, Float.NaN, anyDeltaAcceptable);
     }
 
     @Test(expected = AssertionError.class)
     public void fail_assertNotEquals_if_float_values_are_equal() {
-        final float positiveValue = 5.0f;
-        final float negativeValue = -positiveValue;
-        final float equalToValuesDifference = positiveValue - negativeValue;
+        float positiveValue = 5.0f;
+        float negativeValue = -positiveValue;
+        float equalToValuesDifference = positiveValue - negativeValue;
         assertNotEquals(positiveValue, negativeValue, equalToValuesDifference);
     }
 
     @Test
     public void pass_assertNotEquals_if_float_values_are_different_types_of_infinity() {
-        final float anyDeltaAcceptable = 0.0f;
+        float anyDeltaAcceptable = 0.0f;
         assertNotEquals(Float.POSITIVE_INFINITY, Float.NEGATIVE_INFINITY, anyDeltaAcceptable);
         assertNotEquals(Float.NEGATIVE_INFINITY, Float.POSITIVE_INFINITY, anyDeltaAcceptable);
     }
 
     @Test
     public void pass_assertNotEquals_if_float_values_are_not_equal() {
-        final float expected = 0.0f;
-        final float actual = 1.0f;
-        final float lessThanValuesDifference = Math.abs(expected - actual) - 0.1f;
+        float expected = 0.0f;
+        float actual = 1.0f;
+        float lessThanValuesDifference = Math.abs(expected - actual) - 0.1f;
         assertNotEquals(expected, actual, lessThanValuesDifference);
     }
 
@@ -278,7 +278,7 @@ public class VerifyShould {
 
     @Test(expected = AssertionError.class)
     public void fail_assertEmpty_if_multimap_is_not_empty() {
-        final Multimap<Integer, Integer> multimap = ArrayListMultimap.create();
+        Multimap<Integer, Integer> multimap = ArrayListMultimap.create();
 
         multimap.put(1, 1);
 
@@ -341,7 +341,7 @@ public class VerifyShould {
 
     @Test
     public void pass_assertNotEmpty_if_multimap_is_not_empty() {
-        final Multimap<Integer, Integer> multimap = ArrayListMultimap.create();
+        Multimap<Integer, Integer> multimap = ArrayListMultimap.create();
 
         multimap.put(1, 1);
 
@@ -362,7 +362,7 @@ public class VerifyShould {
 
     @Test
     public void pass_assertNotEmpty_if_array_is_not_empty() {
-        final Integer[] array = {1, 2, 3};
+        Integer[] array = {1, 2, 3};
         assertNotEmpty(array);
     }
 
@@ -379,7 +379,7 @@ public class VerifyShould {
 
     @Test
     public void pass_assertSize_if_object_array_size_is_equal() {
-        final int size = 0;
+        int size = 0;
         assertSize(size, new Object[size]);
     }
 
@@ -461,7 +461,7 @@ public class VerifyShould {
     @SuppressWarnings({"ConstantConditions", "ErrorNotRethrown"})
     @Test(expected = AssertionError.class)
     public void fail_assertContains_if_contains_char_sequence_or_string_is_null() {
-        final String nullString = null;
+        String nullString = null;
 
         try {
             assertContains(null, EMPTY_STRING);
@@ -510,7 +510,7 @@ public class VerifyShould {
 
     @Test
     public void pass_assertContains_if_collection_contains_item() {
-        final Integer item = 1;
+        Integer item = 1;
         assertContains(item, Collections.singletonList(item));
     }
 
@@ -527,7 +527,7 @@ public class VerifyShould {
 
     @Test
     public void pass_assertContains_if_immutable_collection_contains_item() {
-        final Integer item = 1;
+        Integer item = 1;
         assertContains(item, ImmutableList.of(item));
     }
 
@@ -544,14 +544,14 @@ public class VerifyShould {
 
     @Test
     public void pass_assertContainsAll_if_iterable_contains_all() {
-        final Integer item = 1;
+        Integer item = 1;
         assertContainsAll(Collections.singletonList(item), item);
     }
 
     @Test(expected = AssertionError.class)
     public void fail_assertMapsEqual_if_map_are_not_equal() {
-        final Map<Integer, Map<Integer, Integer>> firstOne = singletonMap(1, singletonMap(1, 1));
-        final Map<Integer, Map<Integer, Integer>> secondOne = singletonMap(1, singletonMap(1, 2));
+        Map<Integer, Map<Integer, Integer>> firstOne = singletonMap(1, singletonMap(1, 1));
+        Map<Integer, Map<Integer, Integer>> secondOne = singletonMap(1, singletonMap(1, 2));
 
         assertMapsEqual(firstOne, secondOne, MAP_NAME);
     }
@@ -564,32 +564,32 @@ public class VerifyShould {
 
     @Test
     public void pass_assertMapsEqual_if_maps_are_equal() {
-        final Map<Integer, Map<Integer, Integer>> firstOne = singletonMap(1, singletonMap(1, 1));
-        final Map<Integer, Map<Integer, Integer>> secondOne = new HashMap<>(firstOne);
+        Map<Integer, Map<Integer, Integer>> firstOne = singletonMap(1, singletonMap(1, 1));
+        Map<Integer, Map<Integer, Integer>> secondOne = new HashMap<>(firstOne);
 
         assertMapsEqual(firstOne, secondOne, MAP_NAME);
     }
 
     @Test(expected = AssertionError.class)
     public void fail_assertSetsEqual_if_sets_are_not_equal_by_size() {
-        final Set<Integer> firstOne = Sets.newHashSet(1, 2, 3, 4);
-        final Set<Integer> secondOne = Sets.newHashSet(1, 2, 4);
+        Set<Integer> firstOne = Sets.newHashSet(1, 2, 3, 4);
+        Set<Integer> secondOne = Sets.newHashSet(1, 2, 4);
 
         assertSetsEqual(firstOne, secondOne);
     }
 
     @Test(expected = AssertionError.class)
     public void fail_assertSetsEqual_if_sets_are_not_equal_by_content() {
-        final Set<Integer> firstOne = Sets.newHashSet(1, 2, 3);
-        final Set<Integer> secondOne = Sets.newHashSet(1, 2, 777);
+        Set<Integer> firstOne = Sets.newHashSet(1, 2, 3);
+        Set<Integer> secondOne = Sets.newHashSet(1, 2, 777);
 
         assertSetsEqual(firstOne, secondOne);
     }
 
     @Test(expected = AssertionError.class)
     public void fail_assertSetsEqual_if_sets_are_equal_by_size_but_have_over_5_differences() {
-        final Set<Integer> firstOne = Sets.newHashSet(1, 2, 3, 4, 5, 6);
-        final Set<Integer> secondOne = Sets.newHashSet(11, 12, 13, 14, 15, 16);
+        Set<Integer> firstOne = Sets.newHashSet(1, 2, 3, 4, 5, 6);
+        Set<Integer> secondOne = Sets.newHashSet(11, 12, 13, 14, 15, 16);
 
         assertSetsEqual(firstOne, secondOne);
     }
@@ -602,8 +602,8 @@ public class VerifyShould {
 
     @Test
     public void pass_assertSetsEqual_if_sets_are_equal() {
-        final Set<Integer> firstOne = Sets.newHashSet(1, 2, 3);
-        final Set<Integer> secondOne = Sets.newHashSet(firstOne);
+        Set<Integer> firstOne = Sets.newHashSet(1, 2, 3);
+        Set<Integer> secondOne = Sets.newHashSet(firstOne);
 
         assertSetsEqual(firstOne, secondOne);
     }
@@ -621,10 +621,10 @@ public class VerifyShould {
 
     @Test
     public void pass_assertContainsEntry_if_multimap_contains_entry() {
-        final Integer entryKey = 1;
-        final Integer entryValue = 1;
+        Integer entryKey = 1;
+        Integer entryValue = 1;
 
-        final Multimap<Integer, Integer> multimap = ArrayListMultimap.create();
+        Multimap<Integer, Integer> multimap = ArrayListMultimap.create();
         multimap.put(entryKey, entryValue);
 
         assertContainsEntry(entryKey, entryValue, multimap);
@@ -643,13 +643,13 @@ public class VerifyShould {
 
     @Test
     public void pass_assertContainsKey_if_map_contains_key() {
-        final Integer key = 1;
+        Integer key = 1;
         assertContainsKey(key, Collections.singletonMap(key, 1));
     }
 
     @Test(expected = AssertionError.class)
     public void fail_denyContainsKey_if_map_contains_denied_key() {
-        final Integer key = 1;
+        Integer key = 1;
         denyContainsKey(key, Collections.singletonMap(key, 1));
     }
 
@@ -666,7 +666,7 @@ public class VerifyShould {
 
     @Test(expected = AssertionError.class)
     public void fail_assertContainsKeyValue_if_map_not_contains_entry() {
-        final Integer key = 0;
+        Integer key = 0;
         assertContainsKeyValue(key, 0, Collections.singletonMap(key, 1));
     }
 
@@ -678,14 +678,14 @@ public class VerifyShould {
 
     @Test
     public void pass_assertContainsKeyValue_if_map_contains_entry() {
-        final Integer key = 1;
+        Integer key = 1;
 
         assertContainsKeyValue(key, EMPTY_STRING, Collections.singletonMap(key, EMPTY_STRING));
     }
 
     @Test(expected = AssertionError.class)
     public void fail_assertNotContains_if_collection_contains_item() {
-        final Integer item = 1;
+        Integer item = 1;
         assertNotContains(item, Collections.singletonList(item));
     }
 
@@ -702,7 +702,7 @@ public class VerifyShould {
 
     @Test(expected = AssertionError.class)
     public void fail_assertNotContains_if_iterable_contains_item() {
-        final Integer item = 1;
+        Integer item = 1;
         assertNotContains(item, FluentIterable.of(item));
     }
 
@@ -719,7 +719,7 @@ public class VerifyShould {
 
     @Test(expected = AssertionError.class)
     public void fail_assertNotContainsKey_if_map_contains_key() {
-        final Integer key = 1;
+        Integer key = 1;
         assertNotContainsKey(key, Collections.singletonMap(key, 1));
     }
 
@@ -736,17 +736,17 @@ public class VerifyShould {
 
     @Test(expected = AssertionError.class)
     public void fail_assertBefore_if_former_goes_after_latter_in_list() {
-        final Integer firstItem = 1;
-        final Integer secondItem = 2;
+        Integer firstItem = 1;
+        Integer secondItem = 2;
 
-        final List<Integer> list = Arrays.asList(firstItem, secondItem);
+        List<Integer> list = Arrays.asList(firstItem, secondItem);
 
         assertBefore(secondItem, firstItem, list);
     }
 
     @Test(expected = AssertionError.class)
     public void fail_assertBefore_if_former_and_latter_are_equal() {
-        final Integer sameItem = 1;
+        Integer sameItem = 1;
         assertBefore(sameItem, sameItem, Collections.singletonList(sameItem));
     }
 
@@ -758,20 +758,20 @@ public class VerifyShould {
 
     @Test
     public void pass_assertBefore_if_former_goes_before_latter_in_list() {
-        final Integer firstItem = 1;
-        final Integer secondItem = 2;
+        Integer firstItem = 1;
+        Integer secondItem = 2;
 
-        final List<Integer> list = Arrays.asList(firstItem, secondItem);
+        List<Integer> list = Arrays.asList(firstItem, secondItem);
 
         assertBefore(firstItem, secondItem, list);
     }
 
     @Test(expected = AssertionError.class)
     public void fail_assertItemAtIndex_if_list_item_not_at_index() {
-        final Integer firstItem = 1;
-        final Integer secondItem = 2;
+        Integer firstItem = 1;
+        Integer secondItem = 2;
 
-        final List<Integer> list = Arrays.asList(firstItem, secondItem);
+        List<Integer> list = Arrays.asList(firstItem, secondItem);
 
         assertItemAtIndex(firstItem, list.indexOf(secondItem), list);
     }
@@ -784,18 +784,18 @@ public class VerifyShould {
 
     @Test
     public void pass_assertItemAtIndex_if_list_item_at_index() {
-        final Integer value = 1;
-        final List<Integer> list = Collections.singletonList(value);
+        Integer value = 1;
+        List<Integer> list = Collections.singletonList(value);
 
         assertItemAtIndex(value, list.indexOf(value), list);
     }
 
     @Test(expected = AssertionError.class)
     public void fail_assertItemAtIndex_if_array_item_not_at_index() {
-        final Integer firstItem = 1;
-        final Integer secondItem = 2;
+        Integer firstItem = 1;
+        Integer secondItem = 2;
 
-        final Object[] array = {firstItem, secondItem};
+        Object[] array = {firstItem, secondItem};
 
         assertItemAtIndex(firstItem, 1, array);
     }
@@ -808,16 +808,16 @@ public class VerifyShould {
 
     @Test
     public void pass_assertItemAtIndex_if_array_item_at_index() {
-        final Integer value = 1;
-        final Object[] array = {value};
+        Integer value = 1;
+        Object[] array = {value};
 
         assertItemAtIndex(value, 0, array);
     }
 
     @Test(expected = AssertionError.class)
     public void fail_assertStartsWith_if_array_not_starts_with_items() {
-        final Integer[] array = {1, 2, 3};
-        final Integer notStartsWith = 777;
+        Integer[] array = {1, 2, 3};
+        Integer notStartsWith = 777;
 
         assertStartsWith(array, notStartsWith);
     }
@@ -835,16 +835,16 @@ public class VerifyShould {
 
     @Test
     public void pass_assertStartsWith_if_array_starts_with_items() {
-        final Integer[] array = {1, 2};
-        final Integer firstItem = array[0];
+        Integer[] array = {1, 2};
+        Integer firstItem = array[0];
 
         assertStartsWith(array, firstItem);
     }
 
     @Test(expected = AssertionError.class)
     public void fail_assertStartsWith_if_list_not_starts_with_items() {
-        final List<Integer> list = Arrays.asList(1, 2, 3);
-        final Integer notStartsWith = 777;
+        List<Integer> list = Arrays.asList(1, 2, 3);
+        Integer notStartsWith = 777;
 
         assertStartsWith(list, notStartsWith);
     }
@@ -862,16 +862,16 @@ public class VerifyShould {
 
     @Test
     public void pass_assertStartsWith_if_list_starts_with_items() {
-        final List<Integer> list = Arrays.asList(1, 2, 3);
-        final Integer firstItem = list.get(0);
+        List<Integer> list = Arrays.asList(1, 2, 3);
+        Integer firstItem = list.get(0);
 
         assertStartsWith(list, firstItem);
     }
 
     @Test(expected = AssertionError.class)
     public void fail_assertEndsWith_if_list_not_ends_with_items() {
-        final List<Integer> list = Arrays.asList(1, 2, 3);
-        final Integer notEndsWith = 777;
+        List<Integer> list = Arrays.asList(1, 2, 3);
+        Integer notEndsWith = 777;
 
         assertEndsWith(list, notEndsWith);
     }
@@ -889,16 +889,16 @@ public class VerifyShould {
 
     @Test
     public void pass_assertEndsWith_if_list_ends_with_items() {
-        final List<Integer> list = Arrays.asList(1, 2, 3);
-        final Integer lastItem = list.get(list.size() - 1);
+        List<Integer> list = Arrays.asList(1, 2, 3);
+        Integer lastItem = list.get(list.size() - 1);
 
         assertEndsWith(list, lastItem);
     }
 
     @Test(expected = AssertionError.class)
     public void fail_assertEndsWith_if_array_not_ends_with_items() {
-        final Integer[] array = {1, 2, 3};
-        final Integer notEndsWith = 777;
+        Integer[] array = {1, 2, 3};
+        Integer notEndsWith = 777;
 
         assertEndsWith(array, notEndsWith);
     }
@@ -916,8 +916,8 @@ public class VerifyShould {
 
     @Test
     public void pass_assertEndsWith_if_array_ends_with() {
-        final Integer[] array = {1, 2, 3};
-        final Integer lastItem = array[array.length - 1];
+        Integer[] array = {1, 2, 3};
+        Integer lastItem = array[array.length - 1];
 
         assertEndsWith(array, lastItem);
     }
@@ -929,9 +929,9 @@ public class VerifyShould {
 
     @Test(expected = AssertionError.class)
     public void fail_assertEqualsAndHashCode_if_objects_are_equal_but_hash_codes_are_not_equal() {
-        final ClassThatViolateHashCodeAndCloneableContract objectA =
+        ClassThatViolateHashCodeAndCloneableContract objectA =
                 new ClassThatViolateHashCodeAndCloneableContract(1);
-        final ClassThatViolateHashCodeAndCloneableContract objectB =
+        ClassThatViolateHashCodeAndCloneableContract objectB =
                 new ClassThatViolateHashCodeAndCloneableContract(1);
 
         assertEqualsAndHashCode(objectA, objectB);
@@ -1030,7 +1030,7 @@ public class VerifyShould {
 
     @Test(expected = AssertionError.class)
     public void fail_assertError_if_runnable_not_throws_error() {
-        final Runnable notThrowsException = new Runnable() {
+        Runnable notThrowsException = new Runnable() {
             @Override
             public void run() {
             }
@@ -1041,7 +1041,7 @@ public class VerifyShould {
 
     @Test(expected = AssertionError.class)
     public void fail_assertError_if_runnable_not_throws_specified_error() {
-        final Runnable throwsAssertionError = new Runnable() {
+        Runnable throwsAssertionError = new Runnable() {
             @Override
             public void run() {
                 throw new AssertionError();
@@ -1053,7 +1053,7 @@ public class VerifyShould {
 
     @Test
     public void pass_assertError_if_runnable_throws_specified_error() {
-        final Runnable throwsAssertionError = new Runnable() {
+        Runnable throwsAssertionError = new Runnable() {
             @Override
             public void run() {
                 throw new AssertionError();
@@ -1065,7 +1065,7 @@ public class VerifyShould {
 
     @Test(expected = AssertionError.class)
     public void fail_assertThrows_if_callable_not_throws_exception() {
-        final Callable notThrowsException = new Callable() {
+        Callable notThrowsException = new Callable() {
             @Override
             public Object call() {
                 return null;
@@ -1077,7 +1077,7 @@ public class VerifyShould {
 
     @Test(expected = AssertionError.class)
     public void fail_assertThrows_if_callable_not_throws_specified_exception() {
-        final Callable throwsEmptyStackException = new Callable() {
+        Callable throwsEmptyStackException = new Callable() {
             @Override
             public Object call() throws EmptyStackException {
                 throw new EmptyStackException();
@@ -1089,7 +1089,7 @@ public class VerifyShould {
 
     @Test
     public void pass_assertThrows_if_callable_throws_specified_exception() {
-        final Callable throwsEmptyStackException = new Callable() {
+        Callable throwsEmptyStackException = new Callable() {
             @Override
             public Object call() throws EmptyStackException {
                 throw new EmptyStackException();
@@ -1101,7 +1101,7 @@ public class VerifyShould {
 
     @Test(expected = AssertionError.class)
     public void fail_assertThrows_if_runnable_not_throws_exception() {
-        final Runnable notThrowsException = new Runnable() {
+        Runnable notThrowsException = new Runnable() {
             @Override
             public void run() {
             }
@@ -1112,7 +1112,7 @@ public class VerifyShould {
 
     @Test(expected = AssertionError.class)
     public void fail_assertThrows_if_runnable_not_throws_specified_exception() {
-        final Runnable throwsEmptyStackException = new Runnable() {
+        Runnable throwsEmptyStackException = new Runnable() {
             @Override
             public void run() {
                 throw new EmptyStackException();
@@ -1124,7 +1124,7 @@ public class VerifyShould {
 
     @Test
     public void pass_assertThrows_if_runnable_throws_specified_exception() {
-        final Runnable throwsEmptyStackException = new Runnable() {
+        Runnable throwsEmptyStackException = new Runnable() {
             @Override
             public void run() {
                 throw new EmptyStackException();
@@ -1136,7 +1136,7 @@ public class VerifyShould {
 
     @Test(expected = AssertionError.class)
     public void fail_assertThrowsWithCause_if_callable_not_throws_exception_with_cause() {
-        final Callable notThrowsException = new Callable() {
+        Callable notThrowsException = new Callable() {
             @Override
             public Object call() {
                 return null;
@@ -1148,10 +1148,10 @@ public class VerifyShould {
 
     @Test(expected = AssertionError.class)
     public void fail_assertThrowsWithCause_if_callable_throws_exception_with_different_causes() {
-        final Throwable expectedCause = new EmptyStackException();
-        final Throwable actualCause = new AclNotFoundException();
-        final RuntimeException runtimeException = new RuntimeException(actualCause);
-        final Callable throwsRuntimeException = new Callable() {
+        Throwable expectedCause = new EmptyStackException();
+        Throwable actualCause = new AclNotFoundException();
+        RuntimeException runtimeException = new RuntimeException(actualCause);
+        Callable throwsRuntimeException = new Callable() {
             @Override
             public Object call() {
                 throw runtimeException;
@@ -1165,7 +1165,7 @@ public class VerifyShould {
     @SuppressWarnings("ConstantConditions")
     @Test(expected = AssertionError.class)
     public void fail_assertThrowsWithCause_if_callable_expected_cause_is_null() {
-        final Callable throwsRuntimeException = new Callable() {
+        Callable throwsRuntimeException = new Callable() {
             @Override
             public Object call() {
                 throw new RuntimeException(new EmptyStackException());
@@ -1178,9 +1178,9 @@ public class VerifyShould {
 
     @Test
     public void pass_assertThrowsWithCause_if_callable_throws_specified_exception_with_specified_cause() {
-        final Throwable cause = new EmptyStackException();
-        final RuntimeException runtimeException = new RuntimeException(cause);
-        final Callable throwsRuntimeException = new Callable() {
+        Throwable cause = new EmptyStackException();
+        RuntimeException runtimeException = new RuntimeException(cause);
+        Callable throwsRuntimeException = new Callable() {
             @Override
             public Object call() {
                 throw runtimeException;
@@ -1193,7 +1193,7 @@ public class VerifyShould {
 
     @Test(expected = AssertionError.class)
     public void fail_assertThrowsWithCause_if_runnable_not_throws_exception_with_cause() {
-        final Runnable notThrowsException = new Runnable() {
+        Runnable notThrowsException = new Runnable() {
             @Override
             public void run() {
             }
@@ -1204,10 +1204,10 @@ public class VerifyShould {
 
     @Test(expected = AssertionError.class)
     public void fail_assertThrowsWithCause_if_runnable_throws_exception_with_different_causes() {
-        final Throwable expectedCause = new EmptyStackException();
-        final Throwable actualCause = new AclNotFoundException();
-        final RuntimeException runtimeException = new RuntimeException(actualCause);
-        final Runnable throwsRuntimeException = new Runnable() {
+        Throwable expectedCause = new EmptyStackException();
+        Throwable actualCause = new AclNotFoundException();
+        RuntimeException runtimeException = new RuntimeException(actualCause);
+        Runnable throwsRuntimeException = new Runnable() {
             @Override
             public void run() {
                 throw runtimeException;
@@ -1221,7 +1221,7 @@ public class VerifyShould {
     @SuppressWarnings("ConstantConditions")
     @Test(expected = AssertionError.class)
     public void fail_assertThrowsWithCause_if_runnable_expected_cause_is_null() {
-        final Runnable throwsRuntimeException = new Runnable() {
+        Runnable throwsRuntimeException = new Runnable() {
             @Override
             public void run() {
                 throw new RuntimeException(new EmptyStackException());
@@ -1234,9 +1234,9 @@ public class VerifyShould {
 
     @Test
     public void pass_assertThrowsWithCause_if_runnable_throws_specified_exception_with_specified_cause() {
-        final Throwable cause = new EmptyStackException();
-        final RuntimeException runtimeException = new RuntimeException(cause);
-        final Runnable throwsRuntimeException = new Runnable() {
+        Throwable cause = new EmptyStackException();
+        RuntimeException runtimeException = new RuntimeException(cause);
+        Runnable throwsRuntimeException = new Runnable() {
             @Override
             public void run() {
                 throw runtimeException;

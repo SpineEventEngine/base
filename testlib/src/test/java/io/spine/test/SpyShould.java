@@ -59,8 +59,8 @@ public class SpyShould {
     
     @Test
     public void inject_by_class() {
-        final List spy = Spy.ofClass(List.class)
-                            .on(this);
+        List spy = Spy.ofClass(List.class)
+                      .on(this);
         assertSpy(spy);
     }
 
