@@ -30,7 +30,9 @@ supposed to be used directly by the end user project.
 
 Currently the coverage stats reflect the hits gathered from unit tests. 
 
-However, Gradle plugins, that are a significant part of this repository, are covered with integration tests. During each of those a standalong Gradle process is launched. The limitations of `jacoco` task API do not allow to include the coverage of such tests into the repository coverage report. Therefore the current coverage percentage is significantly lower than a real one.
+However, Gradle plugins, that are a significant part of this repository, are covered with integration tests. During each of those a standalone Gradle process is launched. The limitations of `jacoco` task API do not allow to include the coverage of such tests into the repository coverage report easily. 
 
-This issue will be addressed using the new API in Gradle 5.0 once it is released.
+Therefore the current coverage percentage shown is significantly lower than a real one.
+
+This issue will be addressed with the new API in Gradle 5.0 once it is released.
 
