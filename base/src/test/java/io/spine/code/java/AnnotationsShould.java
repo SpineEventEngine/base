@@ -26,7 +26,7 @@ import org.junit.Test;
 
 import javax.annotation.Generated;
 
-import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
+import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
 import static org.junit.Assert.assertEquals;
 
 /**

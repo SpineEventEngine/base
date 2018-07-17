@@ -24,7 +24,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
+import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
 import static io.spine.util.Math.floorDiv;
 import static io.spine.util.Math.safeMultiply;
 import static org.junit.Assert.assertEquals;

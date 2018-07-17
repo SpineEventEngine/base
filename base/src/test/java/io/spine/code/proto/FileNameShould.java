@@ -29,7 +29,7 @@ import org.junit.rules.ExpectedException;
 import java.util.List;
 
 import static io.spine.code.proto.FileName.of;
-import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
+import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;

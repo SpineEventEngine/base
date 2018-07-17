@@ -25,7 +25,7 @@ import io.spine.reflect.GenericTypeIndex.Default;
 import org.junit.Test;
 
 import static io.spine.reflect.GenericTypeIndex.Default.getArgument;
-import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
+import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
 import static org.junit.Assert.assertEquals;
 
 /**

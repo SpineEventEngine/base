@@ -45,7 +45,6 @@ import static io.spine.base.Time.getCurrentTime;
  *
  * @author Dmytro Dashenkov
  */
-@SuppressWarnings("CheckReturnValue") // when we call the builder methods.
 public class ValidatingBuilderShould {
 
     private ProjectVBuilder builder;
@@ -164,6 +163,7 @@ public class ValidatingBuilderShould {
         return add(getCurrentTime(), fromSeconds(1000L));
     }
 
+    @SuppressWarnings("CheckReturnValue") // We call the builder method.
     private static Task task() {
         Task.Builder task = Task.newBuilder()
                                 .setId(newUuid());

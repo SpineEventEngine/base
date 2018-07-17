@@ -18,46 +18,36 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.test;
+package io.spine.testing;
 
-import com.google.protobuf.Any;
+import com.google.common.testing.NullPointerTester;
 import org.junit.Test;
 
-import java.lang.reflect.Constructor;
+import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
+import static org.junit.Assert.assertTrue;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
-public class ReflectiveBuilderShould {
+public class TestValuesShould {
 
     @Test
-    public void has_result_class() {
-        ReflectiveBuilder<Any> builder =
-                new DummyBuilder().setResultClass(Any.class);
-        assertEquals(Any.class, builder.getResultClass());
+    public void have_utility_ctor() {
+        assertHasPrivateParameterlessCtor(TestValues.class);
     }
 
     @Test
-    public void obtain_ctor() {
-        assertNotNull(new DummyBuilder().getConstructor());
+    public void pass_null_tolerance_check() {
+        new NullPointerTester()
+                .testAllPublicStaticMethods(TestValues.class);
     }
 
-    private static class DummyBuilder extends ReflectiveBuilder<Any> {
+    @Test
+    public void provide_random_non_negative_number() {
+        assertTrue(TestValues.random(100) >= 0);
+    }
 
-        @Override
-        protected Constructor<Any> getConstructor() {
-            final Constructor<Any> ctor;
-            try {
-                ctor = Any.class.getDeclaredConstructor();
-            } catch (NoSuchMethodException e) {
-                throw new IllegalStateException(e);
-            }
-            return ctor;
-        }
-
-        @Override
-        public Any build() {
-            return Any.getDefaultInstance();
-        }
+    @Test
+    public void provide_randome_number_in_range() {
+        int value = TestValues.random(-100, 100);
+        assertTrue(value >= -100);
+        assertTrue(value <= 100);
     }
 }

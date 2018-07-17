@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.test;
+package io.spine.testing;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors;
@@ -101,7 +101,7 @@ public class Tests {
     @CheckReturnValue
     @VisibleForTesting
     static boolean hasPrivateParameterlessCtor(Class<?> targetClass) {
-        final Constructor constructor;
+        Constructor constructor;
         try {
             constructor = targetClass.getDeclaredConstructor();
         } catch (NoSuchMethodException ignored) {
@@ -134,7 +134,7 @@ public class Tests {
      * warnings suppression is needed.
      */
     public static <T> T nullRef() {
-        final T nullRef = null;
+        T nullRef = null;
         return nullRef;
     }
 
@@ -144,7 +144,7 @@ public class Tests {
      * @throws AssertionError if the check fails
      */
     public static void assertMatchesMask(Message message, FieldMask fieldMask) {
-        final List<String> paths = fieldMask.getPathsList();
+        List<String> paths = fieldMask.getPathsList();
 
         for (Descriptors.FieldDescriptor field : message.getDescriptorForType()
                                                         .getFields()) {
@@ -156,7 +156,7 @@ public class Tests {
     }
 
     public static void assertSecondsEqual(long expectedSec, long actualSec, long maxDiffSec) {
-        final long diffSec = abs(expectedSec - actualSec);
+        long diffSec = abs(expectedSec - actualSec);
         assertTrue(diffSec <= maxDiffSec);
     }
 }
