@@ -23,7 +23,7 @@ package io.spine.tools.javadoc;
 import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.MethodDoc;
 import com.sun.javadoc.RootDoc;
-import io.spine.test.Tests;
+import io.spine.testing.Tests;
 import io.spine.util.Exceptions;
 import org.junit.After;
 import org.junit.Test;

@@ -23,7 +23,7 @@ package io.spine.tools.compiler.fieldtype;
 import com.google.common.testing.NullPointerTester;
 import org.junit.Test;
 
-import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
+import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
 
 /**
  * @author Illia Shepilov

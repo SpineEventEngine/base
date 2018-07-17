@@ -18,36 +18,49 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.test;
+package io.spine.testing;
 
-import com.google.common.testing.NullPointerTester;
-import org.junit.Test;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 
-import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
-import static org.junit.Assert.assertTrue;
+import java.lang.reflect.Constructor;
 
-public class TestValuesShould {
+/**
+ * The abstract base for test object builders.
+ *
+ * @author Alexander Yevsyukov
+ */
+public abstract class ReflectiveBuilder<T> {
 
-    @Test
-    public void have_utility_ctor() {
-        assertHasPrivateParameterlessCtor(TestValues.class);
+    /** The class of the object we create. */
+    private Class<T> resultClass;
+
+    /** Constructor for use by subclasses. */
+    protected ReflectiveBuilder() {
     }
 
-    @Test
-    public void pass_null_tolerance_check() {
-        new NullPointerTester()
-                .testAllPublicStaticMethods(TestValues.class);
+    /**
+     * Obtains constructor for the result object.
+     */
+    protected abstract Constructor<T> getConstructor();
+
+    /**
+     * Obtains the class of the object to build.
+     */
+    public Class<T> getResultClass() {
+        return this.resultClass;
     }
 
-    @Test
-    public void provide_random_non_negative_number() {
-        assertTrue(TestValues.random(100) >= 0);
+    /**
+     * Sets the class of the object to build.
+     */
+    @CanIgnoreReturnValue
+    protected ReflectiveBuilder<T> setResultClass(Class<T> resultClass) {
+        this.resultClass = resultClass;
+        return this;
     }
 
-    @Test
-    public void provide_randome_number_in_range() {
-        final int value = TestValues.random(-100, 100);
-        assertTrue(value >= -100);
-        assertTrue(value <= 100);
-    }
+    /**
+     * Creates the object being built.
+     */
+    public abstract T build();
 }
