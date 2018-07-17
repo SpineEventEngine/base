@@ -23,7 +23,6 @@ package io.spine.base;
 import com.google.common.base.Predicate;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Message;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -59,15 +58,12 @@ public interface CommandMessage extends Message {
          * Returns {@code true} if the passed file defines command messages,
          * {@code false} otherwise.
          */
-        public static final Predicate<FileDescriptor> PREDICATE = new Predicate<FileDescriptor>() {
-            @Override
-            public boolean apply(@Nullable FileDescriptor file) {
-                checkNotNull(file);
+        public static final Predicate<FileDescriptor> PREDICATE = file -> {
+            checkNotNull(file);
 
-                String fqn = file.getName();
-                boolean result = fqn.endsWith(SUFFIX);
-                return result;
-            }
+            String fqn = file.getName();
+            boolean result = fqn.endsWith(SUFFIX);
+            return result;
         };
     }
 }
