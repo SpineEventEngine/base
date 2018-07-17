@@ -39,7 +39,7 @@ import io.spine.test.commands.TestCommand;
 import org.junit.Test;
 
 import static io.spine.protobuf.given.TypeConverterTestEnv.TaskStatus.SUCCESS;
-import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
+import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
 import static org.junit.Assert.assertEquals;
 
 /**

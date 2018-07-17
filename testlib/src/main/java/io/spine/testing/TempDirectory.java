@@ -8,7 +8,7 @@
  * http://www.eclipse.org/legal/epl-v20.html
  */
 
-package io.spine.test;
+package io.spine.testing;
 
 //TODO:2018-07-10:dmytro.kuzmin: Remove this file and use the one from the JUnit Pioneer when it
 // is released.

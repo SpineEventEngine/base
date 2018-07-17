@@ -79,7 +79,7 @@ import static com.google.protobuf.util.Timestamps.subtract;
 import static io.spine.base.Identifier.newUuid;
 import static io.spine.base.Time.getCurrentTime;
 import static io.spine.protobuf.TypeConverter.toMessage;
-import static io.spine.test.Verify.assertSize;
+import static io.spine.testing.Verify.assertSize;
 import static io.spine.validate.given.MessageValidatorTestEnv.FIFTY_NANOSECONDS;
 import static io.spine.validate.given.MessageValidatorTestEnv.SECONDS_IN_5_MINUTES;
 import static io.spine.validate.given.MessageValidatorTestEnv.ZERO_NANOSECONDS;

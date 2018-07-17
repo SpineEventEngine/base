@@ -32,7 +32,7 @@ import static io.spine.base.Time.systemTime;
 import static io.spine.base.given.TimeTestEnv.ConstantTimeProvider;
 import static io.spine.base.given.TimeTestEnv.DURATION_1_MINUTE;
 import static io.spine.base.given.TimeTestEnv.DURATION_5_MINUTES;
-import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
+import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;

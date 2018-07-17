@@ -43,7 +43,7 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
 
-import static io.spine.test.Verify.assertSize;
+import static io.spine.testing.Verify.assertSize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;

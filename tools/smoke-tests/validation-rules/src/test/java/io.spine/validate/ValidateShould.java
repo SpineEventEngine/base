@@ -23,13 +23,13 @@ package io.spine.validate;
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Message;
 import com.google.protobuf.StringValue;
-import io.spine.test.Tests;
+import io.spine.testing.Tests;
 import io.spine.type.TypeName;
 import org.junit.Test;
 
 import static io.spine.protobuf.TypeConverter.toMessage;
-import static io.spine.test.TestValues.newUuidValue;
-import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
+import static io.spine.testing.TestValues.newUuidValue;
+import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
 import static io.spine.validate.Validate.checkBounds;
 import static io.spine.validate.Validate.checkDefault;
 import static io.spine.validate.Validate.checkNotDefault;

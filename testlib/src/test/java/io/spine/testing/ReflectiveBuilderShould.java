@@ -18,19 +18,46 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.test;
+package io.spine.testing;
 
+import com.google.protobuf.Any;
 import org.junit.Test;
 
-import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
+import java.lang.reflect.Constructor;
 
-/**
- * @author Dmytro Kuzmin
- */
-public class DisplayNamesShould {
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+public class ReflectiveBuilderShould {
 
     @Test
-    public void have_utility_ctor() {
-        assertHasPrivateParameterlessCtor(DisplayNames.class);
+    public void has_result_class() {
+        ReflectiveBuilder<Any> builder =
+                new DummyBuilder().setResultClass(Any.class);
+        assertEquals(Any.class, builder.getResultClass());
+    }
+
+    @Test
+    public void obtain_ctor() {
+        assertNotNull(new DummyBuilder().getConstructor());
+    }
+
+    private static class DummyBuilder extends ReflectiveBuilder<Any> {
+
+        @Override
+        protected Constructor<Any> getConstructor() {
+            Constructor<Any> ctor;
+            try {
+                ctor = Any.class.getDeclaredConstructor();
+            } catch (NoSuchMethodException e) {
+                throw new IllegalStateException(e);
+            }
+            return ctor;
+        }
+
+        @Override
+        public Any build() {
+            return Any.getDefaultInstance();
+        }
     }
 }
