@@ -1030,10 +1030,7 @@ public class VerifyShould {
 
     @Test(expected = AssertionError.class)
     public void fail_assertError_if_runnable_not_throws_error() {
-        final Runnable notThrowsException = new Runnable() {
-            @Override
-            public void run() {
-            }
+        final Runnable notThrowsException = () -> {
         };
 
         assertError(AssertionError.class, notThrowsException);
@@ -1041,11 +1038,8 @@ public class VerifyShould {
 
     @Test(expected = AssertionError.class)
     public void fail_assertError_if_runnable_not_throws_specified_error() {
-        final Runnable throwsAssertionError = new Runnable() {
-            @Override
-            public void run() {
-                throw new AssertionError();
-            }
+        final Runnable throwsAssertionError = () -> {
+            throw new AssertionError();
         };
 
         assertError(Error.class, throwsAssertionError);
@@ -1053,11 +1047,8 @@ public class VerifyShould {
 
     @Test
     public void pass_assertError_if_runnable_throws_specified_error() {
-        final Runnable throwsAssertionError = new Runnable() {
-            @Override
-            public void run() {
-                throw new AssertionError();
-            }
+        final Runnable throwsAssertionError = () -> {
+            throw new AssertionError();
         };
 
         assertError(AssertionError.class, throwsAssertionError);
@@ -1065,23 +1056,15 @@ public class VerifyShould {
 
     @Test(expected = AssertionError.class)
     public void fail_assertThrows_if_callable_not_throws_exception() {
-        final Callable notThrowsException = new Callable() {
-            @Override
-            public Object call() {
-                return null;
-            }
-        };
+        final Callable notThrowsException = () -> null;
 
         assertThrows(Exception.class, notThrowsException);
     }
 
     @Test(expected = AssertionError.class)
     public void fail_assertThrows_if_callable_not_throws_specified_exception() {
-        final Callable throwsEmptyStackException = new Callable() {
-            @Override
-            public Object call() throws EmptyStackException {
-                throw new EmptyStackException();
-            }
+        final Callable throwsEmptyStackException = () -> {
+            throw new EmptyStackException();
         };
 
         assertThrows(Exception.class, throwsEmptyStackException);
@@ -1089,11 +1072,8 @@ public class VerifyShould {
 
     @Test
     public void pass_assertThrows_if_callable_throws_specified_exception() {
-        final Callable throwsEmptyStackException = new Callable() {
-            @Override
-            public Object call() throws EmptyStackException {
-                throw new EmptyStackException();
-            }
+        final Callable throwsEmptyStackException = () -> {
+            throw new EmptyStackException();
         };
 
         assertThrows(EmptyStackException.class, throwsEmptyStackException);
@@ -1101,10 +1081,7 @@ public class VerifyShould {
 
     @Test(expected = AssertionError.class)
     public void fail_assertThrows_if_runnable_not_throws_exception() {
-        final Runnable notThrowsException = new Runnable() {
-            @Override
-            public void run() {
-            }
+        final Runnable notThrowsException = () -> {
         };
 
         assertThrows(Exception.class, notThrowsException);
@@ -1112,11 +1089,8 @@ public class VerifyShould {
 
     @Test(expected = AssertionError.class)
     public void fail_assertThrows_if_runnable_not_throws_specified_exception() {
-        final Runnable throwsEmptyStackException = new Runnable() {
-            @Override
-            public void run() {
-                throw new EmptyStackException();
-            }
+        final Runnable throwsEmptyStackException = () -> {
+            throw new EmptyStackException();
         };
 
         assertThrows(Exception.class, throwsEmptyStackException);
@@ -1124,11 +1098,8 @@ public class VerifyShould {
 
     @Test
     public void pass_assertThrows_if_runnable_throws_specified_exception() {
-        final Runnable throwsEmptyStackException = new Runnable() {
-            @Override
-            public void run() {
-                throw new EmptyStackException();
-            }
+        final Runnable throwsEmptyStackException = () -> {
+            throw new EmptyStackException();
         };
 
         assertThrows(EmptyStackException.class, throwsEmptyStackException);
@@ -1136,12 +1107,7 @@ public class VerifyShould {
 
     @Test(expected = AssertionError.class)
     public void fail_assertThrowsWithCause_if_callable_not_throws_exception_with_cause() {
-        final Callable notThrowsException = new Callable() {
-            @Override
-            public Object call() {
-                return null;
-            }
-        };
+        final Callable notThrowsException = () -> null;
 
         assertThrowsWithCause(Exception.class, Exception.class, notThrowsException);
     }
@@ -1151,11 +1117,8 @@ public class VerifyShould {
         final Throwable expectedCause = new EmptyStackException();
         final Throwable actualCause = new AclNotFoundException();
         final RuntimeException runtimeException = new RuntimeException(actualCause);
-        final Callable throwsRuntimeException = new Callable() {
-            @Override
-            public Object call() {
-                throw runtimeException;
-            }
+        final Callable throwsRuntimeException = () -> {
+            throw runtimeException;
         };
 
         assertThrowsWithCause(runtimeException.getClass(), expectedCause.getClass(),
@@ -1165,11 +1128,8 @@ public class VerifyShould {
     @SuppressWarnings("ConstantConditions")
     @Test(expected = AssertionError.class)
     public void fail_assertThrowsWithCause_if_callable_expected_cause_is_null() {
-        final Callable throwsRuntimeException = new Callable() {
-            @Override
-            public Object call() {
-                throw new RuntimeException(new EmptyStackException());
-            }
+        final Callable throwsRuntimeException = () -> {
+            throw new RuntimeException(new EmptyStackException());
         };
 
         assertThrowsWithCause(EmptyStackException.class, null,
@@ -1180,11 +1140,8 @@ public class VerifyShould {
     public void pass_assertThrowsWithCause_if_callable_throws_specified_exception_with_specified_cause() {
         final Throwable cause = new EmptyStackException();
         final RuntimeException runtimeException = new RuntimeException(cause);
-        final Callable throwsRuntimeException = new Callable() {
-            @Override
-            public Object call() {
-                throw runtimeException;
-            }
+        final Callable throwsRuntimeException = () -> {
+            throw runtimeException;
         };
 
         assertThrowsWithCause(runtimeException.getClass(), cause.getClass(),
@@ -1193,10 +1150,7 @@ public class VerifyShould {
 
     @Test(expected = AssertionError.class)
     public void fail_assertThrowsWithCause_if_runnable_not_throws_exception_with_cause() {
-        final Runnable notThrowsException = new Runnable() {
-            @Override
-            public void run() {
-            }
+        final Runnable notThrowsException = () -> {
         };
 
         assertThrowsWithCause(Exception.class, Exception.class, notThrowsException);
@@ -1207,11 +1161,8 @@ public class VerifyShould {
         final Throwable expectedCause = new EmptyStackException();
         final Throwable actualCause = new AclNotFoundException();
         final RuntimeException runtimeException = new RuntimeException(actualCause);
-        final Runnable throwsRuntimeException = new Runnable() {
-            @Override
-            public void run() {
-                throw runtimeException;
-            }
+        final Runnable throwsRuntimeException = () -> {
+            throw runtimeException;
         };
 
         assertThrowsWithCause(runtimeException.getClass(), expectedCause.getClass(),
@@ -1221,11 +1172,8 @@ public class VerifyShould {
     @SuppressWarnings("ConstantConditions")
     @Test(expected = AssertionError.class)
     public void fail_assertThrowsWithCause_if_runnable_expected_cause_is_null() {
-        final Runnable throwsRuntimeException = new Runnable() {
-            @Override
-            public void run() {
-                throw new RuntimeException(new EmptyStackException());
-            }
+        final Runnable throwsRuntimeException = () -> {
+            throw new RuntimeException(new EmptyStackException());
         };
 
         assertThrowsWithCause(EmptyStackException.class, null,
@@ -1236,11 +1184,8 @@ public class VerifyShould {
     public void pass_assertThrowsWithCause_if_runnable_throws_specified_exception_with_specified_cause() {
         final Throwable cause = new EmptyStackException();
         final RuntimeException runtimeException = new RuntimeException(cause);
-        final Runnable throwsRuntimeException = new Runnable() {
-            @Override
-            public void run() {
-                throw runtimeException;
-            }
+        final Runnable throwsRuntimeException = () -> {
+            throw runtimeException;
         };
 
         assertThrowsWithCause(runtimeException.getClass(), cause.getClass(),
