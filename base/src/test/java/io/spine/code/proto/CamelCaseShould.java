@@ -27,7 +27,7 @@ import org.junit.Test;
 import java.util.List;
 
 import static io.spine.code.proto.CamelCase.convert;
-import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
+import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
 import static org.junit.Assert.assertEquals;
 
 /**
