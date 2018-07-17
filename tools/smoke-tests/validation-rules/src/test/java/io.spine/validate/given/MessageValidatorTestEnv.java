@@ -43,12 +43,12 @@ public class MessageValidatorTestEnv {
     }
 
     public static Timestamp currentTimeWithNanos(int nanos) {
-        final Timestamp result = timeWithNanos(getCurrentTime(), nanos);
+        Timestamp result = timeWithNanos(getCurrentTime(), nanos);
         return result;
     }
 
     public static Timestamp timeWithNanos(Timestamp time, int nanos) {
-        final Timestamp result =
+        Timestamp result =
                 time.toBuilder()
                     .setNanos(nanos)
                     .build();
@@ -56,7 +56,7 @@ public class MessageValidatorTestEnv {
     }
 
     public static Duration newDuration(int seconds) {
-        final Duration result =
+        Duration result =
                 Duration.newBuilder()
                         .setSeconds(seconds)
                         .build();
@@ -70,7 +70,7 @@ public class MessageValidatorTestEnv {
      * @param time time to be returned upon {@link Time#getCurrentTime()} call. 
      */
     public static void freezeTime(Timestamp time) {
-        final Time.Provider frozenTimeProvider = new ConstantTimeProvider(time);
+        Time.Provider frozenTimeProvider = new ConstantTimeProvider(time);
         setProvider(frozenTimeProvider);
     }
 

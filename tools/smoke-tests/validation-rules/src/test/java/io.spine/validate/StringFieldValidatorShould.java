@@ -36,8 +36,8 @@ public class StringFieldValidatorShould extends FieldValidatorShould<String> {
                                                            .get(0);
 
     private static final FieldDescriptor MAP_FIELD_DESC = MessageWithMapStringField.getDescriptor()
-                                                                                  .getFields()
-                                                                                  .get(0);
+                                                                                   .getFields()
+                                                                                   .get(0);
 
     @Override
     protected StringFieldValidator validatedRequiredRepeatedFieldValidator(List<String> values) {

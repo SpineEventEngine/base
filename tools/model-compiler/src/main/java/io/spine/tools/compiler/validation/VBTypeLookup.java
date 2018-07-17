@@ -58,7 +58,6 @@ class VBTypeLookup {
     /** A map from Protobuf type name to Protobuf FileDescriptorProto. */
     private final Map<DescriptorProto, FileDescriptorProto> descriptorCache = newHashMap();
 
-
     /** Verifies if a message is not one provided by the Protobuf library. */
     private final Predicate<DescriptorProto> isNotStandardType =
             new Predicate<DescriptorProto>() {
@@ -68,9 +67,9 @@ class VBTypeLookup {
                     if (message == null) {
                         return false;
                     }
-                    final String javaPackage = getJavaPackage(message);
-                    final boolean isGoogleMsg = javaPackage.contains(Message.class.getPackage()
-                                                                                  .getName());
+                    String javaPackage = getJavaPackage(message);
+                    boolean isGoogleMsg = javaPackage.contains(Message.class.getPackage()
+                                                                            .getName());
                     return !isGoogleMsg;
                 }
             };
@@ -85,15 +84,15 @@ class VBTypeLookup {
      * @return the {@code Set} of the assembled metadata for the validating builders.
      */
     Set<VBType> collect() {
-        final Logger log = log();
+        Logger log = log();
         log.debug("Collecting types for all validating builders.");
-        final Set<FileDescriptorProto> fileDescriptors = parseAndCollectTypes(descriptorSetFile);
-        final Set<VBType> result = newHashSet();
-        final Set<VBType> allTypes = fromAllFiles(fileDescriptors);
+        Set<FileDescriptorProto> fileDescriptors = parseAndCollectTypes(descriptorSetFile);
+        Set<VBType> result = newHashSet();
+        Set<VBType> allTypes = fromAllFiles(fileDescriptors);
         result.addAll(allTypes);
         if (result.size() == 1) {
-            final VBType found = allTypes.iterator()
-                                         .next();
+            VBType found = allTypes.iterator()
+                                   .next();
             log.debug("One type found for generating validating builder: {}", found);
         } else {
             log.debug("Types collected, {} validating builders will be generated.", result.size());
@@ -103,10 +102,10 @@ class VBTypeLookup {
 
     private Set<VBType> fromAllFiles(Iterable<FileDescriptorProto> files) {
         log().debug("Obtaining the file-level metadata for the validating builders.");
-        final Set<VBType> result = newHashSet();
+        Set<VBType> result = newHashSet();
         for (FileDescriptorProto file : files) {
-            final List<DescriptorProto> messageDescriptors = file.getMessageTypeList();
-            final Set<VBType> metadataSet = createMetadata(messageDescriptors, file);
+            List<DescriptorProto> messageDescriptors = file.getMessageTypeList();
+            Set<VBType> metadataSet = createMetadata(messageDescriptors, file);
             result.addAll(metadataSet);
 
         }
@@ -116,10 +115,10 @@ class VBTypeLookup {
 
     private Set<VBType> createMetadata(Iterable<DescriptorProto> descriptors,
                                        FileDescriptorProto file) {
-        final Set<VBType> result = newHashSet();
+        Set<VBType> result = newHashSet();
         for (DescriptorProto message : descriptors) {
             if (isNotStandardType.apply(message)) {
-                final VBType type = newType(message, file);
+                VBType type = newType(message, file);
                 result.add(type);
             }
         }
@@ -127,24 +126,24 @@ class VBTypeLookup {
     }
 
     private VBType newType(DescriptorProto message, FileDescriptorProto file) {
-        final String className = message.getName() + JAVA_CLASS_NAME_SUFFIX;
-        final String javaPackage = getJavaPackage(message);
-        final VBType result = new VBType(javaPackage, className, message, file.getName());
+        String className = message.getName() + JAVA_CLASS_NAME_SUFFIX;
+        String javaPackage = getJavaPackage(message);
+        VBType result = new VBType(javaPackage, className, message, file.getName());
         return result;
     }
 
     private String getJavaPackage(DescriptorProto msgDescriptor) {
-        final String result = descriptorCache.get(msgDescriptor)
-                                             .getOptions()
-                                             .getJavaPackage();
+        String result = descriptorCache.get(msgDescriptor)
+                                       .getOptions()
+                                       .getJavaPackage();
         return result;
     }
 
     private Set<FileDescriptorProto> parseAndCollectTypes(String descFilePath) {
-        final Logger log = log();
+        Logger log = log();
         log.debug("Obtaining the file descriptors by {} path.", descFilePath);
-        final ImmutableSet.Builder<FileDescriptorProto> result = ImmutableSet.builder();
-        final Collection<FileDescriptorProto> allDescriptors = parse(descFilePath);
+        ImmutableSet.Builder<FileDescriptorProto> result = ImmutableSet.builder();
+        Collection<FileDescriptorProto> allDescriptors = parse(descFilePath);
 
         for (FileDescriptorProto file : allDescriptors) {
             cacheTypesFromFile(file);

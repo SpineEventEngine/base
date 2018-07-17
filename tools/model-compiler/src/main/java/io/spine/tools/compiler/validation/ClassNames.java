@@ -28,9 +28,9 @@ import java.util.Collection;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.compiler.fieldtype.FieldTypes.trimTypeName;
 import static io.spine.code.java.PrimitiveType.getWrapperClass;
 import static io.spine.code.proto.ScalarType.getJavaTypeName;
+import static io.spine.tools.compiler.fieldtype.FieldTypes.trimTypeName;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 import static java.lang.String.format;
 
@@ -63,16 +63,16 @@ final class ClassNames {
             return getJavaTypeForScalarType(field);
         }
         typeName = trimTypeName(field);
-        final String parameterType = cache.getCachedTypes()
-                                          .get(typeName);
+        String parameterType = cache.getCachedTypes()
+                                    .get(typeName);
         return ClassName.bestGuess(parameterType);
     }
 
     private static ClassName getJavaTypeForScalarType(FieldDescriptorProto field) {
-        final FieldDescriptorProto.Type fieldType = field.getType();
-        final String scalarType = getJavaTypeName(fieldType);
+        FieldDescriptorProto.Type fieldType = field.getType();
+        String scalarType = getJavaTypeName(fieldType);
         try {
-            final Optional<? extends Class<?>> scalarPrimitive = getWrapperClass(scalarType);
+            Optional<? extends Class<?>> scalarPrimitive = getWrapperClass(scalarType);
             if (scalarPrimitive.isPresent()) {
                 return ClassName.get(scalarPrimitive.get());
             }
@@ -94,7 +94,7 @@ final class ClassNames {
     static ClassName getClassName(String javaPackage, String javaClass) {
         checkNotNull(javaPackage);
         checkNotNull(javaClass);
-        final ClassName className = ClassName.get(javaPackage, javaClass);
+        ClassName className = ClassName.get(javaPackage, javaClass);
         return className;
     }
 
@@ -114,15 +114,15 @@ final class ClassNames {
         checkNotNull(typeCache);
         checkNotNull(typeName);
 
-        final Collection<String> values = typeCache.getCachedTypes()
-                                                   .values();
-        final String expectedClassName = javaPackage + '.' + typeName;
+        Collection<String> values = typeCache.getCachedTypes()
+                                             .values();
+        String expectedClassName = javaPackage + '.' + typeName;
         for (String value : values) {
             if (value.equals(expectedClassName)) {
                 return ClassName.get(javaPackage, typeName);
             }
         }
-        final String exMessage = format("The %s class is not found.", expectedClassName);
+        String exMessage = format("The %s class is not found.", expectedClassName);
         throw newIllegalArgumentException(exMessage);
     }
 

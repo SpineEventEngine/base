@@ -53,13 +53,13 @@ class EnrichmentFinder {
      * @return a map from enrichment type name to event to enrich type name
      */
     Map<String, String> findAll() {
-        final Logger log = log();
+        Logger log = log();
         log.debug("Looking up for the enrichments in {}", file.getName());
 
-        final List<DescriptorProto> messages = file.getMessageTypeList();
-        final String packagePrefix = file.getPackage() + TypeName.PACKAGE_SEPARATOR;
-        final EnrichmentMap map = new EnrichmentMap(packagePrefix);
-        final Map<String, String> result = map.allOf(messages);
+        List<DescriptorProto> messages = file.getMessageTypeList();
+        String packagePrefix = file.getPackage() + TypeName.PACKAGE_SEPARATOR;
+        EnrichmentMap map = new EnrichmentMap(packagePrefix);
+        Map<String, String> result = map.allOf(messages);
 
         log.debug("Found {} enrichments", result.size());
         return result;

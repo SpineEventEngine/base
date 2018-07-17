@@ -55,12 +55,13 @@ class ByOption {
     }
 
     static boolean isSetFor(FieldDescriptorProto field) {
-        return Options.option(field, by).isPresent();
+        return Options.option(field, by)
+                      .isPresent();
     }
 
     Map.Entry<String, String> collect() {
-        final Collection<String> eventNamesFromBy = parse();
-        final Map.Entry<String, String> result = group(eventNamesFromBy);
+        Collection<String> eventNamesFromBy = parse();
+        Map.Entry<String, String> result = group(eventNamesFromBy);
         return result;
     }
 
@@ -69,9 +70,9 @@ class ByOption {
      * the given field.
      */
     private List<String> parse() {
-        final List<FieldReference> fieldRefs = FieldReference.allFrom(field);
+        List<FieldReference> fieldRefs = FieldReference.allFrom(field);
 
-        final ImmutableList.Builder<String> result = ImmutableList.builder();
+        ImmutableList.Builder<String> result = ImmutableList.builder();
         for (FieldReference fieldRef : fieldRefs) {
             if (fieldRef.isWildcard() && fieldRefs.size() > 1) {
                 // Multiple argument `by` annotation can not contain wildcard reference onto
@@ -84,7 +85,7 @@ class ByOption {
                 continue;
             }
 
-            final String fullTypeName = fieldRef.getType();
+            String fullTypeName = fieldRef.getType();
             result.add(fullTypeName);
         }
 
@@ -92,10 +93,10 @@ class ByOption {
     }
 
     private Map.Entry<String, String> group(Collection<String> events) {
-        final String enrichment = message.getName();
-        final String fieldName = field.getName();
-        final Logger log = log();
-        final Collection<String> eventGroup = new HashSet<>(events.size());
+        String enrichment = message.getName();
+        String fieldName = field.getName();
+        Logger log = log();
+        Collection<String> eventGroup = new HashSet<>(events.size());
         for (String eventName : events) {
             if (eventName == null || eventName.trim()
                                               .isEmpty()) {
@@ -111,9 +112,9 @@ class ByOption {
             }
             eventGroup.add(eventName);
         }
-        final String enrichmentName = packagePrefix + enrichment;
-        final String eventGroupString = TypeNameParser.joiner.join(eventGroup);
-        final Map.Entry<String, String> result =
+        String enrichmentName = packagePrefix + enrichment;
+        String eventGroupString = TypeNameParser.joiner.join(eventGroup);
+        Map.Entry<String, String> result =
                 new AbstractMap.SimpleEntry<>(enrichmentName, eventGroupString);
 
         return result;

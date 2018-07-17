@@ -91,7 +91,7 @@ class FileAnnotator extends Annotator<FileOptions, FileDescriptorProto> {
      * @see #annotateServices(FileDescriptorProto)
      */
     private void annotateNestedTypes(FileDescriptorProto file) {
-        final SourceFile filePath = SourceFile.forOuterClassOf(file);
+        SourceFile filePath = SourceFile.forOuterClassOf(file);
         rewriteSource(filePath, new SourceVisitor<JavaClassSource>() {
             @Nullable
             @Override
@@ -115,11 +115,11 @@ class FileAnnotator extends Annotator<FileOptions, FileDescriptorProto> {
      */
     private void annotateMessages(FileDescriptorProto file) {
         for (DescriptorProto messageType : file.getMessageTypeList()) {
-            final SourceFile messageClass =
+            SourceFile messageClass =
                     SourceFile.forMessage(messageType, false, file);
             rewriteSource(messageClass, new TypeDeclarationAnnotation());
 
-            final SourceFile messageOrBuilderClass =
+            SourceFile messageOrBuilderClass =
                     SourceFile.forMessage(messageType, true, file);
             rewriteSource(messageOrBuilderClass, new TypeDeclarationAnnotation());
         }
@@ -135,7 +135,7 @@ class FileAnnotator extends Annotator<FileOptions, FileDescriptorProto> {
      */
     private void annotateEnums(FileDescriptorProto file) {
         for (EnumDescriptorProto enumType : file.getEnumTypeList()) {
-            final SourceFile filePath = SourceFile.forEnum(enumType, file);
+            SourceFile filePath = SourceFile.forEnum(enumType, file);
             rewriteSource(filePath, new TypeDeclarationAnnotation());
         }
     }
@@ -151,7 +151,7 @@ class FileAnnotator extends Annotator<FileOptions, FileDescriptorProto> {
      */
     private void annotateServices(FileDescriptorProto file) {
         for (ServiceDescriptorProto serviceDescriptor : file.getServiceList()) {
-            final SourceFile serviceClass = SourceFile.forService(serviceDescriptor, file);
+            SourceFile serviceClass = SourceFile.forService(serviceDescriptor, file);
             rewriteSource(genGrpcDir, serviceClass, new TypeDeclarationAnnotation());
         }
     }

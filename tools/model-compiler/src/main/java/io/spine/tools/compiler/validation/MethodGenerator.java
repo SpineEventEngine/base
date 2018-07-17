@@ -57,7 +57,7 @@ class MethodGenerator {
         this.javaPackage = type.getJavaPackage();
         this.message = type.getDescriptor();
         this.typeCache = typeCache;
-        final String className = message.getName();
+        String className = message.getName();
         this.builderGenericClassName =
                 getValidatorMessageClassName(javaPackage, typeCache, className);
     }
@@ -68,7 +68,7 @@ class MethodGenerator {
      * @return the generated methods
      */
     Collection<MethodSpec> createMethods() {
-        final List<MethodSpec> methods = newArrayList();
+        List<MethodSpec> methods = newArrayList();
 
         methods.add(createPrivateConstructor());
         methods.add(createNewBuilderMethod());
@@ -78,29 +78,29 @@ class MethodGenerator {
     }
 
     private static MethodSpec createPrivateConstructor() {
-        final MethodSpec result = MethodSpec.constructorBuilder()
-                                            .addModifiers(Modifier.PRIVATE)
-                                            .build();
+        MethodSpec result = MethodSpec.constructorBuilder()
+                                      .addModifiers(Modifier.PRIVATE)
+                                      .build();
         return result;
     }
 
     private MethodSpec createNewBuilderMethod() {
-        final ClassName builderClass = ClassNames.getClassName(javaPackage, javaClass);
-        final MethodSpec buildMethod = MethodSpec.methodBuilder(Messages.METHOD_NEW_BUILDER)
-                                                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-                                                 .returns(builderClass)
-                                                 .addStatement("return new $T()", builderClass)
-                                                 .build();
+        ClassName builderClass = ClassNames.getClassName(javaPackage, javaClass);
+        MethodSpec buildMethod = MethodSpec.methodBuilder(Messages.METHOD_NEW_BUILDER)
+                                           .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+                                           .returns(builderClass)
+                                           .addStatement("return new $T()", builderClass)
+                                           .build();
         return buildMethod;
     }
 
     private List<MethodSpec> createFieldMethods() {
-        final Factory factory = new Factory();
-        final ImmutableList.Builder<MethodSpec> result = ImmutableList.builder();
+        Factory factory = new Factory();
+        ImmutableList.Builder<MethodSpec> result = ImmutableList.builder();
         int index = 0;
         for (FieldDescriptorProto field : message.getFieldList()) {
-            final MethodConstructor method = factory.create(field, index);
-            final Collection<MethodSpec> methods = method.construct();
+            MethodConstructor method = factory.create(field, index);
+            Collection<MethodSpec> methods = method.construct();
             result.addAll(methods);
 
             ++index;
@@ -135,10 +135,10 @@ class MethodGenerator {
         private MethodConstructor doCreate(AbstractMethodConstructorBuilder builder,
                                            FieldDescriptorProto field,
                                            int fieldIndex) {
-            final FieldTypeFactory factory =
+            FieldTypeFactory factory =
                     new FieldTypeFactory(message, typeCache.getCachedTypes());
-            final FieldType fieldType = factory.create(field);
-            final MethodConstructor methodConstructor =
+            FieldType fieldType = factory.create(field);
+            MethodConstructor methodConstructor =
                     builder.setField(field)
                            .setFieldType(fieldType)
                            .setFieldIndex(fieldIndex)

@@ -192,12 +192,12 @@ public class ProtoAnnotatorPlugin extends SpinePlugin {
     private Action<Task> newAction(String descriptorSetPath, Project project, boolean isTestTask) {
 
         String generatedProtoDir = isTestTask
-                ? getTestGenProtoDir(project)
-                : getMainGenProtoDir(project);
+                                   ? getTestGenProtoDir(project)
+                                   : getMainGenProtoDir(project);
 
         String generatedGrpcDir = isTestTask
-                ? getTestGenGrpcDir(project)
-                : getMainGenGrpcDir(project);
+                                  ? getTestGenGrpcDir(project)
+                                  : getMainGenGrpcDir(project);
 
         return task -> {
             File setFile = new File(descriptorSetPath);

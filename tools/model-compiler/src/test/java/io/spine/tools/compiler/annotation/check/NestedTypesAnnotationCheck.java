@@ -47,7 +47,7 @@ public class NestedTypesAnnotationCheck implements SourceCheck {
     public Void apply(@Nullable AbstractJavaSource<JavaClassSource> outerClass) {
         checkNotNull(outerClass);
         for (JavaSource<?> nestedType : outerClass.getNestedTypes()) {
-            final AnnotationSource annotation = findSpiAnnotation(nestedType);
+            AnnotationSource annotation = findSpiAnnotation(nestedType);
             if (shouldBeAnnotated) {
                 assertNotNull(annotation);
             } else {

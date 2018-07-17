@@ -69,7 +69,7 @@ class ServiceAnnotator extends Annotator<ServiceOptions, ServiceDescriptorProto>
     private void annotateServices(FileDescriptorProto file) {
         for (ServiceDescriptorProto serviceDescriptor : file.getServiceList()) {
             if (shouldAnnotate(serviceDescriptor)) {
-                final SourceFile serviceClass = SourceFile.forService(serviceDescriptor, file);
+                SourceFile serviceClass = SourceFile.forService(serviceDescriptor, file);
                 rewriteSource(serviceClass, new TypeDeclarationAnnotation());
             }
         }

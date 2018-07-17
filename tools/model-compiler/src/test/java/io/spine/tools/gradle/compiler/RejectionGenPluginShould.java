@@ -49,28 +49,28 @@ public class RejectionGenPluginShould {
 
     @Test
     public void compile_generated_rejections() {
-        final Collection<String> files = Arrays.asList("test_rejections.proto",
-                                                       "outer_class_by_file_name_rejections.proto",
-                                                       "outer_class_set_rejections.proto",
-                                                       "deps/deps.proto");
-        final GradleProject project = GradleProject.newBuilder()
-                                                   .setProjectName("rejections-gen-plugin-test")
-                                                   .setProjectFolder(testProjectDir.getRoot())
-                                                   .addProtoFiles(files)
-                                                   .build();
+        Collection<String> files = Arrays.asList("test_rejections.proto",
+                                                 "outer_class_by_file_name_rejections.proto",
+                                                 "outer_class_set_rejections.proto",
+                                                 "deps/deps.proto");
+        GradleProject project = GradleProject.newBuilder()
+                                             .setProjectName("rejections-gen-plugin-test")
+                                             .setProjectFolder(testProjectDir.getRoot())
+                                             .addProtoFiles(files)
+                                             .build();
         project.executeTask(COMPILE_JAVA);
     }
 
     @Test
     public void generate_rejection_javadoc() {
 
-        final GradleProject project = newProjectWithRejectionsJavadoc(testProjectDir);
+        GradleProject project = newProjectWithRejectionsJavadoc(testProjectDir);
         project.executeTask(COMPILE_JAVA);
 
-        final RootDoc root = RootDocReceiver.getRootDoc(testProjectDir,
-                                                        rejectionsJavadocSourceName());
-        final ClassDoc rejectionDoc = root.classes()[0];
-        final ConstructorDoc rejectionCtorDoc = rejectionDoc.constructors()[0];
+        RootDoc root = RootDocReceiver.getRootDoc(testProjectDir,
+                                                  rejectionsJavadocSourceName());
+        ClassDoc rejectionDoc = root.classes()[0];
+        ConstructorDoc rejectionCtorDoc = rejectionDoc.constructors()[0];
 
         assertEquals(getExpectedClassComment(), rejectionDoc.getRawCommentText());
         assertEquals(getExpectedCtorComment(), rejectionCtorDoc.getRawCommentText());
