@@ -43,10 +43,6 @@ public interface CommandMessage extends Message {
      */
     class File {
 
-        /** Prevents instantiation of this utility class. */
-        private File() {
-        }
-
         /**
          * The name suffix for proto files containing command message declarations.
          */
@@ -65,5 +61,9 @@ public interface CommandMessage extends Message {
             boolean result = fqn.endsWith(SUFFIX);
             return result;
         };
+
+        /** Prevents instantiation of this utility class. */
+        private File() {
+        }
     }
 }
