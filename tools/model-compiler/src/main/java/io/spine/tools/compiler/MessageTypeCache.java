@@ -56,26 +56,26 @@ public class MessageTypeCache {
     public void cacheTypes(FileDescriptorProto fileDescriptor) {
         log().debug("Caching all the types declared in the file: {}", fileDescriptor.getName());
 
-        final FileOptions options = fileDescriptor.getOptions();
+        FileOptions options = fileDescriptor.getOptions();
 
-        final String sourceProtoPackage = fileDescriptor.getPackage();
-        final String protoPackage = !sourceProtoPackage.isEmpty()
-                                    ? (sourceProtoPackage + '.')
-                                    : "";
-        final String sourceJavaPackage = options.getJavaPackage();
-        final StringBuilder javaPackage =
+        String sourceProtoPackage = fileDescriptor.getPackage();
+        String protoPackage = !sourceProtoPackage.isEmpty()
+                              ? (sourceProtoPackage + '.')
+                              : "";
+        String sourceJavaPackage = options.getJavaPackage();
+        StringBuilder javaPackage =
                 new StringBuilder(!sourceJavaPackage.isEmpty()
-                                          ? sourceJavaPackage + '.'
-                                          : "");
+                                  ? sourceJavaPackage + '.'
+                                  : "");
 
         if (!options.getJavaMultipleFiles()) {
-            final String singleFileSuffix = SimpleClassName.outerOf(fileDescriptor)
-                                                           .value();
+            String singleFileSuffix = SimpleClassName.outerOf(fileDescriptor)
+                                                     .value();
             javaPackage.append(singleFileSuffix)
                        .append('.');
         }
 
-        final String pkgValue = javaPackage.toString();
+        String pkgValue = javaPackage.toString();
         cacheMessageTypes(fileDescriptor, protoPackage, pkgValue);
         cacheEnumTypes(fileDescriptor, protoPackage, pkgValue);
     }
@@ -103,21 +103,21 @@ public class MessageTypeCache {
      * @return current cache contents
      */
     public Map<String, String> getCachedTypes() {
-        final ImmutableMap<String, String> immutable = ImmutableMap.copyOf(cachedMessageTypes);
+        ImmutableMap<String, String> immutable = ImmutableMap.copyOf(cachedMessageTypes);
         return immutable;
     }
 
     //It's fine, as we are caching multiple nested types per message descriptor.
     @SuppressWarnings("MethodWithMultipleLoops")
     private void cacheMessageType(DescriptorProto msg, String protoPrefix, String javaPrefix) {
-        final String msgName = msg.getName();
-        final String key = protoPrefix + msgName;
-        final String value = javaPrefix + msgName;
+        String msgName = msg.getName();
+        String key = protoPrefix + msgName;
+        String value = javaPrefix + msgName;
         log().debug("Caching message type {}", msgName);
         cachedMessageTypes.put(key, value);
         if (msg.getNestedTypeCount() > 0 || msg.getEnumTypeCount() > 0) {
-            final String nestedProtoPrefix = protoPrefix + msgName + '.';
-            final String nestedJavaPrefix = javaPrefix + msgName + '.';
+            String nestedProtoPrefix = protoPrefix + msgName + '.';
+            String nestedJavaPrefix = javaPrefix + msgName + '.';
             for (DescriptorProto nestedMsg : msg.getNestedTypeList()) {
                 cacheMessageType(nestedMsg, nestedProtoPrefix, nestedJavaPrefix);
             }
@@ -130,10 +130,10 @@ public class MessageTypeCache {
     private void cacheEnumType(EnumDescriptorProto descriptor,
                                String protoPrefix,
                                String javaPrefix) {
-        final String name = descriptor.getName();
+        String name = descriptor.getName();
         log().debug("Caching enum type {}", name);
-        final String key = protoPrefix + name;
-        final String value = javaPrefix + name;
+        String key = protoPrefix + name;
+        String value = javaPrefix + name;
         cachedMessageTypes.put(key, value);
     }
 

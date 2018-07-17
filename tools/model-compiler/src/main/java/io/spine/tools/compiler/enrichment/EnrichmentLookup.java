@@ -53,9 +53,9 @@ public class EnrichmentLookup {
      * specified directory.
      */
     public static void processDescriptorSetFile(File setFile, String targetDir) {
-        final Collection<FileDescriptorProto> files = parseSkipStandard(setFile.getPath());
+        Collection<FileDescriptorProto> files = parseSkipStandard(setFile.getPath());
 
-        final Map<String, String> propsMap = findAll(files);
+        Map<String, String> propsMap = findAll(files);
 
         if (propsMap.isEmpty()) {
             log().debug("Enrichment lookup complete. No enrichments found.");
@@ -66,10 +66,10 @@ public class EnrichmentLookup {
     }
 
     private static Map<String, String> findAll(Iterable<FileDescriptorProto> files) {
-        final Map<String, String> propsMap = newHashMap();
+        Map<String, String> propsMap = newHashMap();
         for (FileDescriptorProto file : files) {
-            final EnrichmentFinder lookup = new EnrichmentFinder(file);
-            final Map<String, String> enrichments = lookup.findAll();
+            EnrichmentFinder lookup = new EnrichmentFinder(file);
+            Map<String, String> enrichments = lookup.findAll();
             propsMap.putAll(enrichments);
         }
         return propsMap;
@@ -78,7 +78,7 @@ public class EnrichmentLookup {
     private static void writeTo(Map<String, String> propsMap, String targetDir) {
         log().debug("Writing the enrichment description to {}/{}",
                     targetDir, Resources.ENRICHMENTS);
-        final PropertiesWriter writer = new PropertiesWriter(targetDir, Resources.ENRICHMENTS);
+        PropertiesWriter writer = new PropertiesWriter(targetDir, Resources.ENRICHMENTS);
         writer.write(propsMap);
     }
 

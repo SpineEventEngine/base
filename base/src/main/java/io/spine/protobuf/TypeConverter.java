@@ -65,8 +65,8 @@ import static io.spine.protobuf.AnyPacker.unpack;
 @Internal
 public final class TypeConverter {
 
+    /** Prevents instantiation of this utility class. */
     private TypeConverter() {
-        // Prevent utility class initialization.
     }
 
     /**
@@ -168,9 +168,10 @@ public final class TypeConverter {
 
         @Override
         protected BytesValue toMessage(ByteString input) {
-            BytesValue bytes = BytesValue.newBuilder()
-                                         .setValue(input)
-                                         .build();
+            BytesValue bytes = BytesValue
+                    .newBuilder()
+                    .setValue(input)
+                    .build();
             return bytes;
         }
     }
@@ -195,9 +196,10 @@ public final class TypeConverter {
         @Override
         protected EnumValue toMessage(Enum input) {
             String name = input.name();
-            EnumValue value = EnumValue.newBuilder()
-                                       .setName(name)
-                                       .build();
+            EnumValue value = EnumValue
+                    .newBuilder()
+                    .setName(name)
+                    .build();
             return value;
         }
     }

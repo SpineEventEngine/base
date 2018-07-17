@@ -92,13 +92,13 @@ class MapFieldMethodConstructor implements MethodConstructor {
         super();
         this.fieldType = (MapFieldType) builder.getFieldType();
         this.fieldIndex = builder.getFieldIndex();
-        final FieldDescriptorProto fieldDescriptor = builder.getField();
+        FieldDescriptorProto fieldDescriptor = builder.getField();
         this.genericClassName = builder.getGenericClassName();
-        final FieldName fieldName = FieldName.of(fieldDescriptor);
+        FieldName fieldName = FieldName.of(fieldDescriptor);
         this.propertyName = fieldName.toCamelCase();
         this.javaFieldName = fieldName.javaCase();
-        final String javaClass = builder.getJavaClass();
-        final String javaPackage = builder.getJavaPackage();
+        String javaClass = builder.getJavaClass();
+        String javaPackage = builder.getJavaPackage();
         this.builderClassName = ClassNames.getClassName(javaPackage, javaClass);
         this.keyTypeName = fieldType.getKeyTypeName();
         this.valueTypeName = fieldType.getValueTypeName();
@@ -107,7 +107,7 @@ class MapFieldMethodConstructor implements MethodConstructor {
     @Override
     public Collection<MethodSpec> construct() {
         log().debug("The methods construction for the map field {} is started.", javaFieldName);
-        final List<MethodSpec> methods = newArrayList();
+        List<MethodSpec> methods = newArrayList();
         methods.add(createGetter());
         methods.addAll(createMapMethods());
         methods.addAll(createRawMapMethods());
@@ -117,11 +117,11 @@ class MapFieldMethodConstructor implements MethodConstructor {
 
     private MethodSpec createGetter() {
         log().debug("The getter construction for the map field is started.");
-        final String methodName = "get" + propertyName;
+        String methodName = "get" + propertyName;
 
-        final String returnStatement = format("return %s.get%sMap()",
-                                              getMessageBuilder(), propertyName);
-        final MethodSpec methodSpec =
+        String returnStatement = format("return %s.get%sMap()",
+                                        getMessageBuilder(), propertyName);
+        MethodSpec methodSpec =
                 MethodSpec.methodBuilder(methodName)
                           .addModifiers(Modifier.PUBLIC)
                           .returns(fieldType.getTypeName())
@@ -131,10 +131,9 @@ class MapFieldMethodConstructor implements MethodConstructor {
         return methodSpec;
     }
 
-
     private List<MethodSpec> createRawMapMethods() {
         log().debug("The raw methods construction for the map field is started.");
-        final List<MethodSpec> methods = newArrayList();
+        List<MethodSpec> methods = newArrayList();
         methods.add(createPutRawMethod());
         methods.add(createPutAllRawMethod());
         log().debug("The raw methods construction for the map field is finished.");
@@ -143,7 +142,7 @@ class MapFieldMethodConstructor implements MethodConstructor {
 
     private List<MethodSpec> createMapMethods() {
         log().debug("The methods construction for the map field is started.");
-        final List<MethodSpec> methods = newArrayList();
+        List<MethodSpec> methods = newArrayList();
         methods.add(createPutMethod());
         methods.add(createClearMethod());
         methods.add(createPutAllMethod());
@@ -153,13 +152,13 @@ class MapFieldMethodConstructor implements MethodConstructor {
     }
 
     private MethodSpec createPutMethod() {
-        final String methodName = "put" + propertyName;
-        final String descriptorCodeLine = createDescriptorStatement(fieldIndex, genericClassName);
-        final String mapToValidate = MAP_TO_VALIDATE +
+        String methodName = "put" + propertyName;
+        String descriptorCodeLine = createDescriptorStatement(fieldIndex, genericClassName);
+        String mapToValidate = MAP_TO_VALIDATE +
                 "$T.singletonMap(" + KEY + ", " + VALUE + ')';
-        final String putStatement = format("%s.put%s(%s, %s)",
-                                           getMessageBuilder(), propertyName, KEY, VALUE);
-        final MethodSpec result =
+        String putStatement = format("%s.put%s(%s, %s)",
+                                     getMessageBuilder(), propertyName, KEY, VALUE);
+        MethodSpec result =
                 MethodSpec.methodBuilder(methodName)
                           .returns(builderClassName)
                           .addModifiers(Modifier.PUBLIC)
@@ -178,14 +177,14 @@ class MapFieldMethodConstructor implements MethodConstructor {
     }
 
     private MethodSpec createPutRawMethod() {
-        final String methodName = "putRaw" + propertyName;
-        final String descriptorCodeLine = createDescriptorStatement(fieldIndex, genericClassName);
-        final String mapToValidate = MAP_TO_VALIDATE +
+        String methodName = "putRaw" + propertyName;
+        String descriptorCodeLine = createDescriptorStatement(fieldIndex, genericClassName);
+        String mapToValidate = MAP_TO_VALIDATE +
                 "$T.singletonMap(convertedKey, convertedValue)";
-        final String putStatement = format("%s.put%s(convertedKey, convertedValue)",
-                                           getMessageBuilder(), propertyName);
+        String putStatement = format("%s.put%s(convertedKey, convertedValue)",
+                                     getMessageBuilder(), propertyName);
 
-        final MethodSpec result =
+        MethodSpec result =
                 MethodSpec.methodBuilder(methodName)
                           .returns(builderClassName)
                           .addModifiers(Modifier.PUBLIC)
@@ -209,74 +208,72 @@ class MapFieldMethodConstructor implements MethodConstructor {
     }
 
     private MethodSpec createPutAllMethod() {
-        final String descriptorCodeLine = createDescriptorStatement(fieldIndex, genericClassName);
-        final String putAllStatement = format("%s.putAll%s(%s)",
-                                              getMessageBuilder(), propertyName, MAP_PARAM_NAME);
-        final String methodName = fieldType.getSetterPrefix() + propertyName;
-        final MethodSpec result = MethodSpec.methodBuilder(methodName)
-                                            .addModifiers(Modifier.PUBLIC)
-                                            .returns(builderClassName)
-                                            .addParameter(fieldType.getTypeName(), MAP_PARAM_NAME)
-                                            .addException(ValidationException.class)
-                                            .addStatement(descriptorCodeLine, FieldDescriptor.class)
-                                            .addStatement(createValidateStatement(MAP_PARAM_NAME),
-                                                          javaFieldName)
-                                            .addStatement(putAllStatement)
-                                            .addStatement(returnThis())
-                                            .build();
+        String descriptorCodeLine = createDescriptorStatement(fieldIndex, genericClassName);
+        String putAllStatement = format("%s.putAll%s(%s)",
+                                        getMessageBuilder(), propertyName, MAP_PARAM_NAME);
+        String methodName = fieldType.getSetterPrefix() + propertyName;
+        MethodSpec result = MethodSpec.methodBuilder(methodName)
+                                      .addModifiers(Modifier.PUBLIC)
+                                      .returns(builderClassName)
+                                      .addParameter(fieldType.getTypeName(), MAP_PARAM_NAME)
+                                      .addException(ValidationException.class)
+                                      .addStatement(descriptorCodeLine, FieldDescriptor.class)
+                                      .addStatement(createValidateStatement(MAP_PARAM_NAME),
+                                                    javaFieldName)
+                                      .addStatement(putAllStatement)
+                                      .addStatement(returnThis())
+                                      .build();
         return result;
     }
 
     private MethodSpec createPutAllRawMethod() {
-        final String descriptorCodeLine = createDescriptorStatement(fieldIndex, genericClassName);
-        final String putAllStatement = format("%s.putAll%s(convertedValue)",
-                                              getMessageBuilder(), propertyName);
-        final String methodName = fieldType.getSetterPrefix() + rawSuffix() + propertyName;
-        final MethodSpec result = MethodSpec.methodBuilder(methodName)
-                                            .addModifiers(Modifier.PUBLIC)
-                                            .returns(builderClassName)
-                                            .addParameter(String.class, MAP_PARAM_NAME)
-                                            .addException(ValidationException.class)
-                                            .addException(ConversionException.class)
-                                            .addStatement(descriptorCodeLine, FieldDescriptor.class)
-                                            .addStatement(createGetConvertedMapValue(),
-                                                          Map.class, keyTypeName, valueTypeName,
-                                                          keyTypeName, valueTypeName)
-                                            .addStatement(putAllStatement)
-                                            .addStatement(returnThis())
-                                            .build();
-
-
+        String descriptorCodeLine = createDescriptorStatement(fieldIndex, genericClassName);
+        String putAllStatement = format("%s.putAll%s(convertedValue)",
+                                        getMessageBuilder(), propertyName);
+        String methodName = fieldType.getSetterPrefix() + rawSuffix() + propertyName;
+        MethodSpec result = MethodSpec.methodBuilder(methodName)
+                                      .addModifiers(Modifier.PUBLIC)
+                                      .returns(builderClassName)
+                                      .addParameter(String.class, MAP_PARAM_NAME)
+                                      .addException(ValidationException.class)
+                                      .addException(ConversionException.class)
+                                      .addStatement(descriptorCodeLine, FieldDescriptor.class)
+                                      .addStatement(createGetConvertedMapValue(),
+                                                    Map.class, keyTypeName, valueTypeName,
+                                                    keyTypeName, valueTypeName)
+                                      .addStatement(putAllStatement)
+                                      .addStatement(returnThis())
+                                      .build();
 
         return result;
     }
 
     private MethodSpec createRemoveMethod() {
-        final String removeFromMap = format("%s.remove%s(%s)",
-                                            getMessageBuilder(), propertyName, KEY);
-        final MethodSpec result = MethodSpec.methodBuilder(removePrefix() + propertyName)
-                                            .addModifiers(Modifier.PUBLIC)
-                                            .returns(builderClassName)
-                                            .addParameter(keyTypeName, KEY)
-                                            .addStatement(removeFromMap)
-                                            .addStatement(returnThis())
-                                            .build();
+        String removeFromMap = format("%s.remove%s(%s)",
+                                      getMessageBuilder(), propertyName, KEY);
+        MethodSpec result = MethodSpec.methodBuilder(removePrefix() + propertyName)
+                                      .addModifiers(Modifier.PUBLIC)
+                                      .returns(builderClassName)
+                                      .addParameter(keyTypeName, KEY)
+                                      .addStatement(removeFromMap)
+                                      .addStatement(returnThis())
+                                      .build();
         return result;
     }
 
     private MethodSpec createClearMethod() {
-        final String clearMap = format("%s.clear%s()", getMessageBuilder(), propertyName);
-        final MethodSpec result = MethodSpec.methodBuilder(clearPrefix() + propertyName)
-                                            .addModifiers(Modifier.PUBLIC)
-                                            .returns(builderClassName)
-                                            .addStatement(clearMap)
-                                            .addStatement(returnThis())
-                                            .build();
+        String clearMap = format("%s.clear%s()", getMessageBuilder(), propertyName);
+        MethodSpec result = MethodSpec.methodBuilder(clearPrefix() + propertyName)
+                                      .addModifiers(Modifier.PUBLIC)
+                                      .returns(builderClassName)
+                                      .addStatement(clearMap)
+                                      .addStatement(returnThis())
+                                      .build();
         return result;
     }
 
     private static String createGetConvertedMapValue() {
-        final String result = "final $T<$T, $T> convertedValue = " +
+        String result = "final $T<$T, $T> convertedValue = " +
                 "convertToMap(map, $T.class, $T.class)";
         return result;
     }

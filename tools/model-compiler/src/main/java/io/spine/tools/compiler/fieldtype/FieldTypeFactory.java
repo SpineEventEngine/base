@@ -68,7 +68,7 @@ public class FieldTypeFactory {
         if (isMap(field)) {
             return new MapFieldType(getEntryTypeNames(field));
         } else {
-            final String fieldTypeName = getFieldTypeName(field);
+            String fieldTypeName = getFieldTypeName(field);
             return isRepeated(field)
                    ? new RepeatedFieldType(fieldTypeName)
                    : new SingularFieldType(fieldTypeName);
@@ -78,8 +78,8 @@ public class FieldTypeFactory {
     private String getFieldTypeName(FieldDescriptorProto field) {
         if (field.getType() == Type.TYPE_MESSAGE
                 || field.getType() == Type.TYPE_ENUM) {
-            final String typeName = trimTypeName(field);
-            final String result = messageTypeMap.get(typeName);
+            String typeName = trimTypeName(field);
+            String result = messageTypeMap.get(typeName);
             checkNotNull(result,
                          "Cannot find the field type name for %s of type %s",
                          typeName, field.getType());
@@ -101,13 +101,13 @@ public class FieldTypeFactory {
             throw new IllegalStateException(MAP_EXPECTED_ERROR_MESSAGE);
         }
 
-        final int keyFieldIndex = 0;
-        final int valueFieldIndex = 1;
+        int keyFieldIndex = 0;
+        int valueFieldIndex = 1;
 
-        final DescriptorProto mapEntryDescriptor = getDescriptorForMapField(map);
-        final TypeName keyTypeName =
+        DescriptorProto mapEntryDescriptor = getDescriptorForMapField(map);
+        TypeName keyTypeName =
                 create(mapEntryDescriptor.getField(keyFieldIndex)).getTypeName();
-        final TypeName valueTypeName =
+        TypeName valueTypeName =
                 create(mapEntryDescriptor.getField(valueFieldIndex)).getTypeName();
 
         return new AbstractMap.SimpleEntry<>(keyTypeName, valueTypeName);
@@ -127,7 +127,7 @@ public class FieldTypeFactory {
             throw new IllegalStateException(MAP_EXPECTED_ERROR_MESSAGE);
         }
 
-        final String entryName = getEntryNameFor(mapField);
+        String entryName = getEntryNameFor(mapField);
         for (DescriptorProto nestedType : messageNestedTypes) {
             if (nestedType.getName()
                           .equals(entryName)) {

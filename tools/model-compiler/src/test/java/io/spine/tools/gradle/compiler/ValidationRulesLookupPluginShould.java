@@ -66,23 +66,23 @@ public class ValidationRulesLookupPluginShould {
 
     @Test
     public void findNestedValidationRules() {
-        final String file = "nested_validation_rule.proto";
-        final GradleProject project = newProjectWithFile(file, NESTED_VALIDATION_RULE_PROTO);
+        String file = "nested_validation_rule.proto";
+        GradleProject project = newProjectWithFile(file, NESTED_VALIDATION_RULE_PROTO);
         project.executeTask(FIND_VALIDATION_RULES);
 
-        final String expectedKey = PROTO_FILE_PACKAGE + DOT +
+        String expectedKey = PROTO_FILE_PACKAGE + DOT +
                                    OUTER_MESSAGE_TYPE + DOT +
                                    VALIDATION_RULE_TYPE;
-        final String value = loadProperties().get(expectedKey);
+        String value = loadProperties().get(expectedKey);
         assertEquals(VALIDATION_TARGET, value);
     }
 
     private Map<String, String> loadProperties() {
-        final PropertyFile propFile = PropertyFile.of(ValidationRules.fileName())
-                                                  .at(DefaultProject.at(testProjectDir.getRoot())
-                                                                    .generated()
-                                                                    .mainResources());
-        final Map<String, String> result = propFile.load();
+        PropertyFile propFile = PropertyFile.of(ValidationRules.fileName())
+                                            .at(DefaultProject.at(testProjectDir.getRoot())
+                                                              .generated()
+                                                              .mainResources());
+        Map<String, String> result = propFile.load();
         return result;
     }
 

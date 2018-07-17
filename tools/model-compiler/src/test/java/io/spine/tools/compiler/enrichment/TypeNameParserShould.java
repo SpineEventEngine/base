@@ -43,22 +43,22 @@ public class TypeNameParserShould {
 
     @Test
     public void add_package_prefix_to_unqualified_type() {
-        final TypeName parsedTypes = parser.parseTypeName(MESSAGE_NAME);
+        TypeName parsedTypes = parser.parseTypeName(MESSAGE_NAME);
         assertEquals(PACKAGE_PREFIX + MESSAGE_NAME, parsedTypes.value());
     }
 
     @Test
     public void not_add_package_prefix_to_fully_qualified_type() {
-        final String fqn = PACKAGE_PREFIX + MESSAGE_NAME;
-        final TypeName parsedType = parser.parseTypeName(fqn);
+        String fqn = PACKAGE_PREFIX + MESSAGE_NAME;
+        TypeName parsedType = parser.parseTypeName(fqn);
         assertEquals(fqn, parsedType.value());
     }
 
     @Test
     public void return_empty_collection_if_option_is_not_present() {
-        final DescriptorProto definitionWithoutOption = StringValue.getDescriptor()
-                                                                   .toProto();
-        final Collection<TypeName> result = parser.parse(definitionWithoutOption);
+        DescriptorProto definitionWithoutOption = StringValue.getDescriptor()
+                                                             .toProto();
+        Collection<TypeName> result = parser.parse(definitionWithoutOption);
         assertTrue(result.isEmpty());
     }
 }

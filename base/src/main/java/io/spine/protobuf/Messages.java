@@ -43,8 +43,8 @@ public final class Messages {
     /** The name of a message builder factory method. */
     public static final String METHOD_NEW_BUILDER = "newBuilder";
 
+    /** Prevent instantiation of this utility class. */
     private Messages() {
-        // Prevent instantiation of this utility class.
     }
 
     /**
@@ -82,11 +82,12 @@ public final class Messages {
         checkNotNull(clazz);
         try {
             Method factoryMethod = clazz.getDeclaredMethod(METHOD_NEW_BUILDER);
-            @SuppressWarnings("unchecked") B result = (B) factoryMethod.invoke(null);
+            @SuppressWarnings("unchecked")
+            B result = (B) factoryMethod.invoke(null);
             return result;
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             String errMsg = format("Class %s must be a generated proto message",
-                                   clazz.getCanonicalName());
+                                         clazz.getCanonicalName());
             throw new IllegalArgumentException(errMsg, e);
         }
     }
