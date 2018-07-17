@@ -76,25 +76,19 @@ public class ValidationRulesLookupPlugin extends SpinePlugin {
 
     private Action<Task> mainScopeActionFor(Project project) {
         log().debug("Initializing the validation lookup for the `main` source code.");
-        return new Action<Task>() {
-            @Override
-            public void execute(Task task) {
-                String descriptorSetFile = getMainDescriptorSetPath(project);
-                String targetResourcesDir = getMainTargetGenResourcesDir(project);
-                processDescriptorSet(descriptorSetFile, targetResourcesDir);
-            }
+        return task -> {
+            String descriptorSetFile = getMainDescriptorSetPath(project);
+            String targetResourcesDir = getMainTargetGenResourcesDir(project);
+            processDescriptorSet(descriptorSetFile, targetResourcesDir);
         };
     }
 
     private Action<Task> testScopeActionFor(Project project) {
         log().debug("Initializing the validation lookup for the `test` source code.");
-        return new Action<Task>() {
-            @Override
-            public void execute(Task task) {
-                String descriptorSetPath = getTestDescriptorSetPath(project);
-                String targetGenResourcesDir = getTestTargetGenResourcesDir(project);
-                processDescriptorSet(descriptorSetPath, targetGenResourcesDir);
-            }
+        return task -> {
+            String descriptorSetPath = getTestDescriptorSetPath(project);
+            String targetGenResourcesDir = getTestTargetGenResourcesDir(project);
+            processDescriptorSet(descriptorSetPath, targetGenResourcesDir);
         };
     }
 

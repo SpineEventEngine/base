@@ -72,16 +72,10 @@ public class ReflectionsPlugin extends SpinePlugin {
         project.getExtensions()
                .create(REFLECTIONS_PLUGIN_EXTENSION, Extension.class);
 
-        Action<Task> scanClassPathAction = new Action<Task>() {
-            @Override
-            public void execute(Task task) {
-                scanClassPath(project);
-            }
-        };
-        GradleTask task =
-                newTask(SCAN_CLASS_PATH, scanClassPathAction).insertAfterTask(CLASSES)
-                                                             .insertBeforeTask(BUILD)
-                                                             .applyNowTo(project);
+        Action<Task> scanClassPathAction = task -> scanClassPath(project);
+        GradleTask task = newTask(SCAN_CLASS_PATH, scanClassPathAction).insertAfterTask(CLASSES)
+                                                                       .insertBeforeTask(BUILD)
+                                                                       .applyNowTo(project);
 
         log.debug("Reflection Gradle plugin initialized with the Gradle task: {}", task);
     }
