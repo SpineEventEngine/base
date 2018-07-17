@@ -45,11 +45,11 @@ public class DirectoryCleaner extends SimpleFileVisitor<Path> {
 
     public static void deleteDirs(List<String> dirs) {
         for (String dirPath : dirs) {
-            final File file = new File(dirPath);
+            File file = new File(dirPath);
             if (file.exists() && file.isDirectory()) {
                 deleteRecursively(file.toPath());
             } else {
-                final String msg = "Trying to delete '{}' which is not a directory";
+                String msg = "Trying to delete '{}' which is not a directory";
                 log().warn(msg, file.getAbsolutePath());
             }
         }
@@ -57,7 +57,7 @@ public class DirectoryCleaner extends SimpleFileVisitor<Path> {
 
     private static void deleteRecursively(Path path) {
         try {
-            final SimpleFileVisitor<Path> visitor = new DirectoryCleaner();
+            SimpleFileVisitor<Path> visitor = new DirectoryCleaner();
             log().debug("Starting to delete the files recursively in {}", path.toString());
             Files.walkFileTree(path, visitor);
         } catch (IOException e) {

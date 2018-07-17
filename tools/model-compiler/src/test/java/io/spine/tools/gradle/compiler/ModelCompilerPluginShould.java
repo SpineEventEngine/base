@@ -59,7 +59,7 @@ public class ModelCompilerPluginShould {
 
     @Before
     public void setUp() {
-        final Project project = newProject();
+        Project project = newProject();
         project.getPluginManager()
                .apply(SPINE_PROTOBUF_PLUGIN_ID);
         tasks = project.getTasks();
@@ -67,7 +67,7 @@ public class ModelCompilerPluginShould {
 
     @Test
     public void apply_to_project() {
-        final Project project = newProject();
+        Project project = newProject();
         project.getPluginManager()
                .apply(SPINE_PROTOBUF_PLUGIN_ID);
     }
@@ -80,7 +80,7 @@ public class ModelCompilerPluginShould {
 
     @Test
     public void add_task_generateRejections() {
-        final Task genRejections = task(GENERATE_REJECTIONS);
+        Task genRejections = task(GENERATE_REJECTIONS);
         assertNotNull(genRejections);
         assertTrue(dependsOn(genRejections, GENERATE_PROTO));
         assertTrue(dependsOn(task(COMPILE_JAVA), genRejections));
@@ -88,7 +88,7 @@ public class ModelCompilerPluginShould {
 
     @Test
     public void add_task_generateTestRejections() {
-        final Task genTestRejections = task(GENERATE_TEST_REJECTIONS);
+        Task genTestRejections = task(GENERATE_TEST_REJECTIONS);
         assertNotNull(genTestRejections);
         assertTrue(dependsOn(genTestRejections, GENERATE_TEST_PROTO));
         assertTrue(dependsOn(task(COMPILE_TEST_JAVA), genTestRejections));
@@ -96,7 +96,7 @@ public class ModelCompilerPluginShould {
 
     @Test
     public void add_task_findEnrichments() {
-        final Task find = task(FIND_ENRICHMENTS);
+        Task find = task(FIND_ENRICHMENTS);
         assertNotNull(find);
         assertTrue(dependsOn(find, COMPILE_JAVA));
         assertTrue(dependsOn(task(PROCESS_RESOURCES), find));
@@ -104,7 +104,7 @@ public class ModelCompilerPluginShould {
 
     @Test
     public void add_task_findTestEnrichments() {
-        final Task find = task(FIND_TEST_ENRICHMENTS);
+        Task find = task(FIND_TEST_ENRICHMENTS);
         assertNotNull(find);
         assertTrue(dependsOn(find, COMPILE_TEST_JAVA));
         assertTrue(dependsOn(task(PROCESS_TEST_RESOURCES), find));
@@ -112,7 +112,7 @@ public class ModelCompilerPluginShould {
 
     @Test
     public void add_task_findValidationRules() {
-        final Task find = task(FIND_VALIDATION_RULES);
+        Task find = task(FIND_VALIDATION_RULES);
         assertNotNull(find);
         assertTrue(dependsOn(find, GENERATE_PROTO));
         assertTrue(dependsOn(task(PROCESS_RESOURCES), find));
@@ -120,7 +120,7 @@ public class ModelCompilerPluginShould {
 
     @Test
     public void add_task_findTestValidationRules() {
-        final Task find = task(FIND_TEST_VALIDATION_RULES);
+        Task find = task(FIND_TEST_VALIDATION_RULES);
         assertNotNull(find);
         assertTrue(dependsOn(find, GENERATE_TEST_PROTO));
         assertTrue(dependsOn(task(PROCESS_TEST_RESOURCES), find));
@@ -128,7 +128,7 @@ public class ModelCompilerPluginShould {
 
     @Test
     public void add_task_generation_validating_builders() {
-        final Task genValidatingBuilders = task(GENERATE_VALIDATING_BUILDERS);
+        Task genValidatingBuilders = task(GENERATE_VALIDATING_BUILDERS);
         assertNotNull(genValidatingBuilders);
         assertTrue(dependsOn(genValidatingBuilders, GENERATE_PROTO));
         assertTrue(dependsOn(task(COMPILE_JAVA), genValidatingBuilders));
@@ -136,7 +136,7 @@ public class ModelCompilerPluginShould {
 
     @Test
     public void add_task_generation_test_validating_builders() {
-        final Task genTestValidatingBuidlers = task(GENERATE_TEST_VALIDATING_BUILDERS);
+        Task genTestValidatingBuidlers = task(GENERATE_TEST_VALIDATING_BUILDERS);
         assertNotNull(genTestValidatingBuidlers);
         assertTrue(dependsOn(genTestValidatingBuidlers, GENERATE_TEST_PROTO));
         assertTrue(dependsOn(task(COMPILE_TEST_JAVA), genTestValidatingBuidlers));
@@ -144,7 +144,7 @@ public class ModelCompilerPluginShould {
 
     @Test
     public void add_task_annotateProto() {
-        final Task annotateProto = task(ANNOTATE_PROTO);
+        Task annotateProto = task(ANNOTATE_PROTO);
         assertNotNull(annotateProto);
         assertTrue(dependsOn(annotateProto, GENERATE_PROTO));
         assertTrue(dependsOn(task(COMPILE_JAVA), annotateProto));
@@ -152,7 +152,7 @@ public class ModelCompilerPluginShould {
 
     @Test
     public void add_task_annotateTestProto() {
-        final Task annotateTestProto = task(ANNOTATE_TEST_PROTO);
+        Task annotateTestProto = task(ANNOTATE_TEST_PROTO);
         assertNotNull(annotateTestProto);
         assertTrue(dependsOn(annotateTestProto, GENERATE_TEST_PROTO));
         assertTrue(dependsOn(task(COMPILE_TEST_JAVA), annotateTestProto));

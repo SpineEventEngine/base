@@ -66,22 +66,22 @@ class ValidatingBuilderWriter {
         log().debug("Preparing to writing the {} class under the {} package",
                     type.getJavaClass(), type.getJavaPackage());
 
-        final MethodGenerator methodsAssembler =
+        MethodGenerator methodsAssembler =
                 new MethodGenerator(type, messageTypeCache);
-        final String javaClass = type.getJavaClass();
-        final String javaPackage = type.getJavaPackage();
-        final DescriptorProto descriptor = type.getDescriptor();
-        final ClassName messageClassName =
+        String javaClass = type.getJavaClass();
+        String javaPackage = type.getJavaPackage();
+        DescriptorProto descriptor = type.getDescriptor();
+        ClassName messageClassName =
                 getValidatorMessageClassName(javaPackage,
                                              messageTypeCache,
                                              descriptor.getName());
-        final ClassName messageBuilderClassName =
+        ClassName messageBuilderClassName =
                 messageClassName.nestedClass(SimpleClassName.ofBuilder()
                                                             .value());
 
-        final File rootDirectory = new File(targetDir);
-        final TypeSpec.Builder classBuilder = TypeSpec.classBuilder(javaClass);
-        final TypeSpec javaClassToWrite =
+        File rootDirectory = new File(targetDir);
+        TypeSpec.Builder classBuilder = TypeSpec.classBuilder(javaClass);
+        TypeSpec javaClassToWrite =
                 setupClassContract(classBuilder,
                                    messageClassName,
                                    messageBuilderClassName,
@@ -100,15 +100,15 @@ class ValidatingBuilderWriter {
                                                        ClassName messageClassParam,
                                                        ClassName messageBuilderParam,
                                                        Iterable<MethodSpec> methodSpecs) {
-        final ClassName abstractBuilderTypeName = ClassName.get(AbstractValidatingBuilder.class);
+        ClassName abstractBuilderTypeName = ClassName.get(AbstractValidatingBuilder.class);
 
-        final ParameterizedTypeName superClass =
+        ParameterizedTypeName superClass =
                 ParameterizedTypeName.get(abstractBuilderTypeName,
                                           messageClassParam,
                                           messageBuilderParam);
         typeBuilder.addModifiers(Modifier.PUBLIC, Modifier.FINAL)
-               .superclass(superClass)
-               .addMethods(methodSpecs);
+                   .superclass(superClass)
+                   .addMethods(methodSpecs);
         return typeBuilder;
     }
 
@@ -122,7 +122,7 @@ class ValidatingBuilderWriter {
                     .build()
                     .writeTo(rootFolder);
         } catch (IOException e) {
-            final String exMessage = String.format("%s was not written.", rootFolder);
+            String exMessage = String.format("%s was not written.", rootFolder);
             log().warn(exMessage, e);
             throw newIllegalArgumentException(exMessage, e);
         }

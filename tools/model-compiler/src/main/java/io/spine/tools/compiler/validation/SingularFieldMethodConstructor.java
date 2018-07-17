@@ -84,25 +84,25 @@ class SingularFieldMethodConstructor implements MethodConstructor {
         this.field = builder.getField();
         this.fieldIndex = builder.getFieldIndex();
         this.builderGenericClassName = builder.getGenericClassName();
-        final MessageTypeCache messageTypeCache = builder.getTypeCache();
+        MessageTypeCache messageTypeCache = builder.getTypeCache();
         this.fieldClassName = getParameterClassName(field, messageTypeCache);
         this.builderClassName = getClassName(builder.getJavaPackage(), builder.getJavaClass());
-        final FieldName fieldName = FieldName.of(field);
+        FieldName fieldName = FieldName.of(field);
         this.fieldName = fieldName.javaCase();
         this.methodNamePart = fieldName.toCamelCase();
     }
 
     @Override
     public Collection<MethodSpec> construct() {
-        final Logger log = log();
+        Logger log = log();
         // The variable is used for tracing only.
-        final String javaFieldName = log.isTraceEnabled()
-                ? FieldName.of(field)
-                           .javaCase()
-                : null;
+        String javaFieldName = log.isTraceEnabled()
+                               ? FieldName.of(field)
+                                          .javaCase()
+                               : null;
 
         log.debug("The method construction for the {} singular field is started.", javaFieldName);
-        final List<MethodSpec> methods = newArrayList();
+        List<MethodSpec> methods = newArrayList();
         methods.add(constructSetter());
 
         if (!fieldClassName.equals(getStringClassName())) {
@@ -117,13 +117,13 @@ class SingularFieldMethodConstructor implements MethodConstructor {
 
     private MethodSpec constructSetter() {
         log().debug("The setters construction for the singular field is started.");
-        final String methodName = fieldType.getSetterPrefix() + methodNamePart;
-        final String descriptorCodeLine = createDescriptorStatement(fieldIndex,
-                                                                    builderGenericClassName);
-        final ParameterSpec parameter = createParameterSpec(field, false);
+        String methodName = fieldType.getSetterPrefix() + methodNamePart;
+        String descriptorCodeLine = createDescriptorStatement(fieldIndex,
+                                                              builderGenericClassName);
+        ParameterSpec parameter = createParameterSpec(field, false);
 
-        final String setStatement = format("%s.%s(%s)", getMessageBuilder(), methodName, fieldName);
-        final MethodSpec methodSpec =
+        String setStatement = format("%s.%s(%s)", getMessageBuilder(), methodName, fieldName);
+        MethodSpec methodSpec =
                 MethodSpec.methodBuilder(methodName)
                           .addModifiers(Modifier.PUBLIC)
                           .returns(builderClassName)
@@ -141,9 +141,9 @@ class SingularFieldMethodConstructor implements MethodConstructor {
 
     private MethodSpec constructGetter() {
         log().debug("The getter construction for the singular field is started.");
-        final String methodName = GETTER_PREFIX + methodNamePart;
+        String methodName = GETTER_PREFIX + methodNamePart;
 
-        final MethodSpec methodSpec =
+        MethodSpec methodSpec =
                 MethodSpec.methodBuilder(methodName)
                           .addModifiers(Modifier.PUBLIC)
                           .returns(fieldClassName)
@@ -155,9 +155,9 @@ class SingularFieldMethodConstructor implements MethodConstructor {
 
     private MethodSpec constructClearMethods() {
         log().debug("The 'clear..()' method construction for the singular field is started.");
-        final String methodBody = getMessageBuilder() + clearProperty(methodNamePart);
+        String methodBody = getMessageBuilder() + clearProperty(methodNamePart);
 
-        final MethodSpec methodSpec =
+        MethodSpec methodSpec =
                 MethodSpec.methodBuilder(clearPrefix() + methodNamePart)
                           .addModifiers(Modifier.PUBLIC)
                           .returns(builderClassName)
@@ -173,20 +173,20 @@ class SingularFieldMethodConstructor implements MethodConstructor {
     // Although it has the equivalent literal they have the different meaning.
     private MethodSpec constructRawSetter() {
         log().debug("The raw setters construction is started.");
-        final String messageBuilderSetter = fieldType.getSetterPrefix() + methodNamePart;
-        final String methodName = messageBuilderSetter + rawSuffix();
-        final String descriptorCodeLine = createDescriptorStatement(fieldIndex,
-                                                                    builderGenericClassName);
-        final ParameterSpec parameter = createParameterSpec(field, true);
+        String messageBuilderSetter = fieldType.getSetterPrefix() + methodNamePart;
+        String methodName = messageBuilderSetter + rawSuffix();
+        String descriptorCodeLine = createDescriptorStatement(fieldIndex,
+                                                              builderGenericClassName);
+        ParameterSpec parameter = createParameterSpec(field, true);
 
-        final String convertedVariableName = "convertedValue";
-        final String convertedValue = format("final $T %s = convert(%s, $T.class)",
-                                             convertedVariableName, fieldName);
-        final String setStatement = format("%s.%s(%s)",
-                                           getMessageBuilder(),
-                                           messageBuilderSetter,
-                                           convertedVariableName);
-        final MethodSpec methodSpec =
+        String convertedVariableName = "convertedValue";
+        String convertedValue = format("final $T %s = convert(%s, $T.class)",
+                                       convertedVariableName, fieldName);
+        String setStatement = format("%s.%s(%s)",
+                                     getMessageBuilder(),
+                                     messageBuilderSetter,
+                                     convertedVariableName);
+        MethodSpec methodSpec =
                 MethodSpec.methodBuilder(methodName)
                           .addModifiers(Modifier.PUBLIC)
                           .returns(builderClassName)
@@ -206,13 +206,13 @@ class SingularFieldMethodConstructor implements MethodConstructor {
     }
 
     private ParameterSpec createParameterSpec(FieldDescriptorProto field, boolean raw) {
-        final ClassName methodParamClass = raw
-                ? getStringClassName()
-                : fieldClassName;
-        final String paramName = FieldName.of(field)
-                                          .javaCase();
-        final ParameterSpec result = ParameterSpec.builder(methodParamClass, paramName)
-                                                  .build();
+        ClassName methodParamClass = raw
+                                     ? getStringClassName()
+                                     : fieldClassName;
+        String paramName = FieldName.of(field)
+                                    .javaCase();
+        ParameterSpec result = ParameterSpec.builder(methodParamClass, paramName)
+                                            .build();
         return result;
     }
 

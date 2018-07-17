@@ -64,8 +64,8 @@ abstract class TypeDefinitionAnnotator<L extends ExtendableMessage, D extends Ge
     }
 
     @Override
-    protected final void annotateOneFile(final FileDescriptorProto file) {
-        final SourceFile outerClass = SourceFile.forOuterClassOf(file);
+    protected final void annotateOneFile(FileDescriptorProto file) {
+        SourceFile outerClass = SourceFile.forOuterClassOf(file);
         rewriteSource(outerClass, new AnnotateNestedType(file));
     }
 
@@ -115,8 +115,8 @@ abstract class TypeDefinitionAnnotator<L extends ExtendableMessage, D extends Ge
             }
         }
 
-        final String errMsg = format("Nested type `%s` is not defined in `%s`.",
-                                     typeName, enclosingClass.getName());
+        String errMsg = format("Nested type `%s` is not defined in `%s`.",
+                               typeName, enclosingClass.getName());
         throw new IllegalStateException(errMsg);
     }
 
@@ -137,13 +137,13 @@ abstract class TypeDefinitionAnnotator<L extends ExtendableMessage, D extends Ge
             checkNotNull(input);
             for (D definition : getDefinitions(file)) {
                 if (shouldAnnotate(definition)) {
-                    final String messageName = getDefinitionName(definition);
-                    final JavaSource message = findNestedType(input, messageName);
+                    String messageName = getDefinitionName(definition);
+                    JavaSource message = findNestedType(input, messageName);
                     addAnnotation(message);
 
-                    final String javaType = SimpleClassName.messageOrBuilder(messageName)
-                                                           .value();
-                    final JavaSource messageOrBuilder = findNestedType(input, javaType);
+                    String javaType = SimpleClassName.messageOrBuilder(messageName)
+                                                     .value();
+                    JavaSource messageOrBuilder = findNestedType(input, javaType);
                     addAnnotation(messageOrBuilder);
                 }
             }

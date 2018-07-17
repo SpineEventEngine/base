@@ -63,10 +63,10 @@ class MessageAnnotator extends TypeDefinitionAnnotator<MessageOptions, Descripto
     @Override
     protected void annotateDefinition(DescriptorProto definition,
                                       FileDescriptorProto file) {
-        final SourceFile messageClass = SourceFile.forMessage(definition, false, file);
+        SourceFile messageClass = SourceFile.forMessage(definition, false, file);
         rewriteSource(messageClass, new TypeDeclarationAnnotation());
 
-        final SourceFile messageOrBuilderClass = SourceFile.forMessage(definition, true, file);
+        SourceFile messageOrBuilderClass = SourceFile.forMessage(definition, true, file);
         rewriteSource(messageOrBuilderClass, new TypeDeclarationAnnotation());
     }
 

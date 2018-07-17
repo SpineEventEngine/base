@@ -49,12 +49,12 @@ public class ProtocPluginImporter extends SpinePlugin {
     private static final String PROTOBUF_PLUGIN_ID = "com.google.protobuf";
 
     @Override
-    public void apply(final Project project) {
-        final File configFile = generateSpineProtoc();
+    public void apply(Project project) {
+        File configFile = generateSpineProtoc();
         project.getPluginManager().withPlugin(PROTOBUF_PLUGIN_ID, new Action<AppliedPlugin>() {
             @Override
             public void execute(AppliedPlugin appliedPlugin) {
-                final Logger log = log();
+                Logger log = log();
                 log.debug("Applying {} ({})",
                           PROTOC_CONFIG_FILE_NAME,
                           configFile.getAbsolutePath());
@@ -74,8 +74,8 @@ public class ProtocPluginImporter extends SpinePlugin {
      * @throws IllegalStateException upon an {@link IOException}
      */
     private static File generateSpineProtoc() throws IllegalStateException {
-        final File tempFolder = Files.createTempDir();
-        final File configFile = new File(tempFolder, PROTOC_CONFIG_FILE_NAME);
+        File tempFolder = Files.createTempDir();
+        File configFile = new File(tempFolder, PROTOC_CONFIG_FILE_NAME);
         try (InputStream in = ProtocPluginImporter.class
                 .getClassLoader()
                 .getResourceAsStream(PROTOC_CONFIG_FILE_NAME);

@@ -83,14 +83,14 @@ public class VBuilderGenerator {
     }
 
     public void processDescriptorSetFile(File setFile) {
-        final Logger log = log();
+        Logger log = log();
         log.debug("Generating the validating builders from {}.", setFile);
 
-        final VBTypeLookup lookup = new VBTypeLookup(setFile.getPath());
-        final Set<VBType> allFound = lookup.collect();
-        final MessageTypeCache typeCache = lookup.getTypeCache();
+        VBTypeLookup lookup = new VBTypeLookup(setFile.getPath());
+        Set<VBType> allFound = lookup.collect();
+        MessageTypeCache typeCache = lookup.getTypeCache();
 
-        final Set<VBType> filtered = filter(classpathGenEnabled, allFound);
+        Set<VBType> filtered = filter(classpathGenEnabled, allFound);
         if (filtered.isEmpty()) {
             log.warn("No validating builders will be generated.");
         } else {
@@ -99,15 +99,15 @@ public class VBuilderGenerator {
     }
 
     private void writeVBuilders(Set<VBType> builders, MessageTypeCache cache) {
-        final Logger log = log();
-        final ValidatingBuilderWriter writer =
+        Logger log = log();
+        ValidatingBuilderWriter writer =
                 new ValidatingBuilderWriter(targetDirPath, indent, cache);
 
         for (VBType vb : builders) {
             try {
                 writer.write(vb);
             } catch (RuntimeException e) {
-                final String message =
+                String message =
                         format("Cannot generate the validating builder for %s. %n" +
                                "Error: %s", vb, e.toString());
                 // If debug level is enabled give it under this lever, otherwise WARN.
@@ -122,20 +122,20 @@ public class VBuilderGenerator {
     }
 
     private Set<VBType> filter(boolean classpathGenEnabled, Set<VBType> types) {
-        final Predicate<VBType> shouldWrite = getPredicate(classpathGenEnabled);
-        final Iterable<VBType> filtered = Iterables.filter(types, shouldWrite);
-        final Set<VBType> result = ImmutableSet.copyOf(filtered);
+        Predicate<VBType> shouldWrite = getPredicate(classpathGenEnabled);
+        Iterable<VBType> filtered = Iterables.filter(types, shouldWrite);
+        Set<VBType> result = ImmutableSet.copyOf(filtered);
         return result;
     }
 
     private Predicate<VBType> getPredicate(boolean classpathGenEnabled) {
-        final Predicate<VBType> result;
+        Predicate<VBType> result;
         if (classpathGenEnabled) {
             result = Predicates.alwaysTrue();
         } else {
-            final String rootPath = protoSrcDirPath.endsWith(File.separator)
-                                    ? protoSrcDirPath
-                                    : protoSrcDirPath + File.separator;
+            String rootPath = protoSrcDirPath.endsWith(File.separator)
+                              ? protoSrcDirPath
+                              : protoSrcDirPath + File.separator;
             result = new SourceProtoBelongsToModule(rootPath);
         }
         return result;
@@ -163,9 +163,9 @@ public class VBuilderGenerator {
         public boolean apply(@Nullable VBType input) {
             checkNotNull(input);
 
-            final String path = input.getSourceProtoFile();
-            final File protoFile = new File(rootPath + path);
-            final boolean belongsToModule = protoFile.exists();
+            String path = input.getSourceProtoFile();
+            File protoFile = new File(rootPath + path);
+            boolean belongsToModule = protoFile.exists();
             return belongsToModule;
         }
     }

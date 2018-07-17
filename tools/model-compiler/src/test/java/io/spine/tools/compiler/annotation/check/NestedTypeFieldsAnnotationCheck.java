@@ -50,7 +50,7 @@ public class NestedTypeFieldsAnnotationCheck implements SourceCheck {
     public Void apply(@Nullable AbstractJavaSource<JavaClassSource> outerClass) {
         checkNotNull(outerClass);
         for (DescriptorProtos.FieldDescriptorProto fieldDescriptor : messageDescriptor.getFieldList()) {
-            final AbstractJavaSource nestedType =
+            AbstractJavaSource nestedType =
                     (AbstractJavaSource) outerClass.getNestedType(messageDescriptor.getName());
             new FieldAnnotationCheck(fieldDescriptor, shouldBeAnnotated).apply(nestedType);
         }
