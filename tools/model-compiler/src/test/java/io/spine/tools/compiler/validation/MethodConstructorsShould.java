@@ -24,7 +24,7 @@ import com.google.common.testing.NullPointerTester;
 import com.squareup.javapoet.ClassName;
 import org.junit.Test;
 
-import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
+import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
 import static io.spine.tools.compiler.validation.MethodConstructors.createConvertSingularValue;
 import static io.spine.tools.compiler.validation.MethodConstructors.createDescriptorStatement;
 import static io.spine.tools.compiler.validation.MethodConstructors.createValidateStatement;
@@ -39,25 +39,25 @@ public class MethodConstructorsShould {
 
     @Test
     public void return_constructed_descriptor_statement() {
-        final String result = createDescriptorStatement(0, ClassName.get(getClass()));
+        String result = createDescriptorStatement(0, ClassName.get(getClass()));
         assertNotNull(result);
     }
 
     @Test
-    public void return_constructed_validate_statement(){
-        final String result = createValidateStatement(TEST_VALUE);
+    public void return_constructed_validate_statement() {
+        String result = createValidateStatement(TEST_VALUE);
         assertNotNull(result);
     }
 
     @Test
     public void return_constructed_converted_value_statement() {
-        final String result = createConvertSingularValue(TEST_VALUE);
+        String result = createConvertSingularValue(TEST_VALUE);
         assertNotNull(result);
     }
 
     @Test
     public void return_validate_statement() {
-        final String result = createConvertSingularValue(TEST_VALUE);
+        String result = createConvertSingularValue(TEST_VALUE);
         assertNotNull(result);
     }
 

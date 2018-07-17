@@ -88,9 +88,9 @@ public class ValidatingBuilderGenPlugin extends SpinePlugin {
 
     @Override
     public void apply(Project project) {
-        final Logger log = log();
+        Logger log = log();
         log.debug("Preparing to generate validating builders.");
-        final Action<Task> mainScopeAction =
+        Action<Task> mainScopeAction =
                 createAction(project,
                              getMainDescriptorSetPath(project),
                              getTargetGenValidatorsRootDir(project),
@@ -101,13 +101,13 @@ public class ValidatingBuilderGenPlugin extends SpinePlugin {
                          COMPILE_JAVA,
                          GENERATE_PROTO);
 
-        final GradleTask generateValidator =
+        GradleTask generateValidator =
                 newTask(GENERATE_VALIDATING_BUILDERS, mainScopeAction)
                         .insertAfterTask(GENERATE_PROTO)
                         .insertBeforeTask(COMPILE_JAVA)
                         .applyNowTo(project);
         log.debug("Preparing to generate test validating builders.");
-        final Action<Task> testScopeAction =
+        Action<Task> testScopeAction =
                 createAction(project,
                              getTestDescriptorSetPath(project),
                              getTargetTestGenValidatorsRootDir(project),
@@ -117,7 +117,7 @@ public class ValidatingBuilderGenPlugin extends SpinePlugin {
                          COMPILE_TEST_JAVA,
                          GENERATE_TEST_PROTO);
 
-        final GradleTask generateTestValidator =
+        GradleTask generateTestValidator =
                 newTask(GENERATE_TEST_VALIDATING_BUILDERS, testScopeAction)
                         .insertAfterTask(GENERATE_TEST_PROTO)
                         .insertBeforeTask(COMPILE_TEST_JAVA)
@@ -175,13 +175,13 @@ public class ValidatingBuilderGenPlugin extends SpinePlugin {
             if (!isGenerateValidatingBuilders(project)) {
                 return;
             }
-            final File setFile = new File(descriptorPath);
+            File setFile = new File(descriptorPath);
             if (!setFile.exists()) {
                 plugin.logMissingDescriptorSetFile(setFile);
             } else {
-                final Indent indent = getIndent(project);
-                final boolean genFromClasspath = isGenerateValidatingBuildersFromClasspath(project);
-                final VBuilderGenerator generator =
+                Indent indent = getIndent(project);
+                boolean genFromClasspath = isGenerateValidatingBuildersFromClasspath(project);
+                VBuilderGenerator generator =
                         new VBuilderGenerator(targetDirPath, protoSrcDirPath, genFromClasspath,
                                               indent);
                 generator.processDescriptorSetFile(setFile);

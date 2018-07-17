@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.test;
+package io.spine.testing;
 
 import com.google.protobuf.StringValue;
 
@@ -51,7 +51,7 @@ public class TestValues {
      * but do not want to resort to {@code Timestamp} via {@code Timestamps#getCurrentTime()}.
      */
     public static StringValue newUuidValue() {
-        final String id = randomString();
+        String id = randomString();
         return StringValue.newBuilder()
                           .setValue(id)
                           .build();

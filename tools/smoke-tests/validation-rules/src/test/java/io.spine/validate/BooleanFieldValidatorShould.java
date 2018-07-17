@@ -32,7 +32,9 @@ import static org.junit.Assert.assertFalse;
  */
 public class BooleanFieldValidatorShould {
 
-    private final FieldDescriptor fieldDescriptor = Any.getDescriptor().getFields().get(0);
+    private final FieldDescriptor fieldDescriptor = Any.getDescriptor()
+                                                       .getFields()
+                                                       .get(0);
     private final BooleanFieldValidator validator =
             new BooleanFieldValidator(FieldContext.create(fieldDescriptor),
                                       ImmutableList.of(false));

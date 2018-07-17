@@ -39,54 +39,54 @@ public class AlternativeFieldValidatorShould {
 
     @Before
     public void setUp() {
-        final Descriptor descriptor = PersonName.getDescriptor();
+        Descriptor descriptor = PersonName.getDescriptor();
         validator = new AlternativeFieldValidator(descriptor, EMPTY_CONTEXT);
     }
 
     @Test
     public void pass_if_one_field_populated() {
-        final PersonName fieldPopulated = PersonName.newBuilder()
-                                                    .setFirstName("Alexander")
-                                                    .build();
-        final List<? extends ConstraintViolation> violations = validator.validate(fieldPopulated);
+        PersonName fieldPopulated = PersonName.newBuilder()
+                                              .setFirstName("Alexander")
+                                              .build();
+        List<? extends ConstraintViolation> violations = validator.validate(fieldPopulated);
         assertTrue(violations.isEmpty());
     }
 
     @Test
     public void pass_if_combination_defined() {
-        final PersonName combinationDefined = PersonName.newBuilder()
-                                                        .setHonorificPrefix("Mr.")
-                                                        .setLastName("Yevsyukov")
-                                                        .build();
-        final List<? extends ConstraintViolation> violations = validator.validate(combinationDefined);
+        PersonName combinationDefined = PersonName.newBuilder()
+                                                  .setHonorificPrefix("Mr.")
+                                                  .setLastName("Yevsyukov")
+                                                  .build();
+        List<? extends ConstraintViolation> violations = validator.validate(combinationDefined);
         assertTrue(violations.isEmpty());
     }
 
     @Test
     public void fail_if_nothing_defined() {
-        final PersonName empty = PersonName.getDefaultInstance();
-        final List<? extends ConstraintViolation> violations = validator.validate(empty);
+        PersonName empty = PersonName.getDefaultInstance();
+        List<? extends ConstraintViolation> violations = validator.validate(empty);
         assertFalse(violations.isEmpty());
     }
 
     @Test
     public void fail_if_defined_not_required() {
-        final PersonName notRequiredPopulated = PersonName.newBuilder()
-                                                          .setHonorificSuffix("I")
-                                                          .build();
-        final List<? extends ConstraintViolation> violations = validator.validate(notRequiredPopulated);
+        PersonName notRequiredPopulated = PersonName.newBuilder()
+                                                    .setHonorificSuffix("I")
+                                                    .build();
+        List<? extends ConstraintViolation> violations = validator.validate(notRequiredPopulated);
         assertFalse(violations.isEmpty());
     }
 
     @Test
     public void report_missing_field() {
-        final AlternativeFieldValidator testee =
+        AlternativeFieldValidator testee =
                 new AlternativeFieldValidator(MessageWithMissingField.getDescriptor(),
                                               EMPTY_CONTEXT);
-        final MessageWithMissingField msg = MessageWithMissingField.newBuilder()
-                                                                   .setPresent(true)
-                                                                   .build();
-        final List<? extends ConstraintViolation> violations = testee.validate(msg);
+        MessageWithMissingField msg = MessageWithMissingField.newBuilder()
+                                                             .setPresent(true)
+                                                             .build();
+        List<? extends ConstraintViolation> violations = testee.validate(msg);
         assertFalse(violations.isEmpty());
     }
 }

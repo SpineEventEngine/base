@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.test;
+package io.spine.testing;
 
 import com.google.common.collect.Lists;
 import org.junit.After;
@@ -59,8 +59,8 @@ public class SpyShould {
     
     @Test
     public void inject_by_class() {
-        final List spy = Spy.ofClass(List.class)
-                            .on(this);
+        List spy = Spy.ofClass(List.class)
+                      .on(this);
         assertSpy(spy);
     }
 

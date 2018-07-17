@@ -21,8 +21,8 @@
 package io.spine.io;
 
 import com.google.common.testing.NullPointerTester;
-import io.spine.test.TestValues;
-import io.spine.test.Tests;
+import io.spine.testing.TestValues;
+import io.spine.testing.Tests;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;

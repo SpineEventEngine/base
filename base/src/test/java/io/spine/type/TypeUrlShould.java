@@ -32,7 +32,7 @@ import com.google.protobuf.StringValue;
 import com.google.protobuf.Timestamp;
 import com.google.protobuf.UInt32Value;
 import io.spine.option.EntityOption;
-import io.spine.test.Tests;
+import io.spine.testing.Tests;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;

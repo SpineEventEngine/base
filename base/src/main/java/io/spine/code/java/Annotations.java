@@ -20,6 +20,7 @@
 
 package io.spine.code.java;
 
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.CodeBlock;
 
@@ -42,6 +43,10 @@ public final class Annotations {
                                      CodeBlock.of("\"by Spine Model Compiler\""))
                           .build();
 
+    private static final AnnotationSpec CAN_IGNORE_RETURN_VALUE =
+            AnnotationSpec.builder(CanIgnoreReturnValue.class)
+                          .build();
+
     /**
      * Prevents the utility class instantiation.
      */
@@ -49,12 +54,22 @@ public final class Annotations {
     }
 
     /**
-     * Generates {@code \@Generated("by Spine Model Compiler")} annotation spec.
+     * Generates {@code @Generated("by Spine Model Compiler")} annotation spec.
      *
-     * @return an {@link AnnotationSpec} describing the {@link Generated javax.annotation.Generated}
+     * @return an {@code AnnotationSpec} describing the {@link Generated javax.annotation.Generated}
      *         annotation
      */
     public static AnnotationSpec generatedBySpineModelCompiler() {
         return GENERATED;
+    }
+
+    /**
+     * Generates {@code @CanIgnoreReturnValue} annotation spec.
+     *
+     * @return an {@code AnnotationSpec} describing the {@link CanIgnoreReturnValue
+     *         com.google.errorprone.annotations.CanIgnoreReturnValue} annotation
+     */
+    public static AnnotationSpec canIgnoreReturnValue() {
+        return CAN_IGNORE_RETURN_VALUE;
     }
 }

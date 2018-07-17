@@ -45,7 +45,6 @@ import static io.spine.base.Time.getCurrentTime;
  *
  * @author Dmytro Dashenkov
  */
-@SuppressWarnings("CheckReturnValue") // when we call the builder methods.
 public class ValidatingBuilderShould {
 
     private ProjectVBuilder builder;
@@ -147,11 +146,11 @@ public class ValidatingBuilderShould {
      * Creates a valid {@link ProjectVBuilder} instance.
      */
     private static ProjectVBuilder fill() {
-        final ProjectVBuilder builder = ProjectVBuilder.newBuilder()
-                                                       .addTask(task())
-                                                       .addMember(member())
-                                                       .putRole("Ownner", member())
-                                                       .putDeletedTask(newUuid(), timeInPast());
+        ProjectVBuilder builder = ProjectVBuilder.newBuilder()
+                                                 .addTask(task())
+                                                 .addMember(member())
+                                                 .putRole("Ownner", member())
+                                                 .putDeletedTask(newUuid(), timeInPast());
         builder.build(); // Ensure no ValidationException is thrown.
         return builder;
     }
@@ -164,18 +163,19 @@ public class ValidatingBuilderShould {
         return add(getCurrentTime(), fromSeconds(1000L));
     }
 
+    @SuppressWarnings("CheckReturnValue") // We call the builder method.
     private static Task task() {
-        final Task.Builder task = Task.newBuilder()
-                                      .setId(newUuid());
+        Task.Builder task = Task.newBuilder()
+                                .setId(newUuid());
         task.setName("Task name" + task.getId());
         return task.build();
     }
 
     private static Member member() {
-        final Member.Builder member = Member.newBuilder()
-                                            .setId(newUuid())
-                                            .setName("John Smith")
-                                            .setAvatarImage(copyFrom(new byte[] {1, 2, 3}));
+        Member.Builder member = Member.newBuilder()
+                                      .setId(newUuid())
+                                      .setName("John Smith")
+                                      .setAvatarImage(copyFrom(new byte[]{1, 2, 3}));
         return member.build();
     }
 }

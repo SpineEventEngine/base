@@ -67,7 +67,7 @@ class EnumAnnotator extends TypeDefinitionAnnotator<EnumOptions, EnumDescriptorP
 
     @Override
     protected void annotateDefinition(EnumDescriptorProto enumType, FileDescriptorProto file) {
-        final SourceFile filePath = SourceFile.forEnum(enumType, file);
+        SourceFile filePath = SourceFile.forEnum(enumType, file);
         rewriteSource(filePath, new TypeDeclarationAnnotation());
     }
 }

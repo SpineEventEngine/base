@@ -22,9 +22,7 @@ package io.spine.tools.gradle.compiler;
 
 import com.google.common.io.Files;
 import io.spine.tools.gradle.SpinePlugin;
-import org.gradle.api.Action;
 import org.gradle.api.Project;
-import org.gradle.api.plugins.AppliedPlugin;
 import org.slf4j.Logger;
 
 import java.io.File;
@@ -49,18 +47,16 @@ public class ProtocPluginImporter extends SpinePlugin {
     private static final String PROTOBUF_PLUGIN_ID = "com.google.protobuf";
 
     @Override
-    public void apply(final Project project) {
-        final File configFile = generateSpineProtoc();
-        project.getPluginManager().withPlugin(PROTOBUF_PLUGIN_ID, new Action<AppliedPlugin>() {
-            @Override
-            public void execute(AppliedPlugin appliedPlugin) {
-                final Logger log = log();
-                log.debug("Applying {} ({})",
-                          PROTOC_CONFIG_FILE_NAME,
-                          configFile.getAbsolutePath());
-                project.apply(of("from", configFile.getAbsolutePath()));
-                log.debug("Applied {}", PROTOC_CONFIG_FILE_NAME);
-            }
+    public void apply(Project project) {
+        File configFile = generateSpineProtoc();
+        project.getPluginManager()
+               .withPlugin(PROTOBUF_PLUGIN_ID, appliedPlugin -> {
+                   Logger log = log();
+                   log.debug("Applying {} ({})",
+                             PROTOC_CONFIG_FILE_NAME,
+                             configFile.getAbsolutePath());
+                   project.apply(of("from", configFile.getAbsolutePath()));
+                   log.debug("Applied {}", PROTOC_CONFIG_FILE_NAME);
         });
     }
 
@@ -74,8 +70,8 @@ public class ProtocPluginImporter extends SpinePlugin {
      * @throws IllegalStateException upon an {@link IOException}
      */
     private static File generateSpineProtoc() throws IllegalStateException {
-        final File tempFolder = Files.createTempDir();
-        final File configFile = new File(tempFolder, PROTOC_CONFIG_FILE_NAME);
+        File tempFolder = Files.createTempDir();
+        File configFile = new File(tempFolder, PROTOC_CONFIG_FILE_NAME);
         try (InputStream in = ProtocPluginImporter.class
                 .getClassLoader()
                 .getResourceAsStream(PROTOC_CONFIG_FILE_NAME);

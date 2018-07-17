@@ -92,10 +92,10 @@ final class TypeNameParser {
 
     @VisibleForTesting
     TypeName parseTypeName(String value) {
-        final boolean isFqn = value.contains(valueOf(TypeName.PACKAGE_SEPARATOR));
-        final String typeNameValue = isFqn
-                                     ? value
-                                     : packagePrefix + value;
+        boolean isFqn = value.contains(valueOf(TypeName.PACKAGE_SEPARATOR));
+        String typeNameValue = isFqn
+                               ? value
+                               : packagePrefix + value;
         return TypeName.of(typeNameValue);
     }
 }

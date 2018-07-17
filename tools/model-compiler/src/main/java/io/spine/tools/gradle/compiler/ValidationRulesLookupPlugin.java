@@ -54,8 +54,8 @@ public class ValidationRulesLookupPlugin extends SpinePlugin {
     public void apply(Project project) {
         logDependingTask(FIND_VALIDATION_RULES, PROCESS_RESOURCES, GENERATE_PROTO);
 
-        final Action<Task> mainScopeAction = mainScopeActionFor(project);
-        final GradleTask findRules =
+        Action<Task> mainScopeAction = mainScopeActionFor(project);
+        GradleTask findRules =
                 newTask(FIND_VALIDATION_RULES, mainScopeAction)
                         .insertAfterTask(GENERATE_PROTO)
                         .insertBeforeTask(PROCESS_RESOURCES)
@@ -63,8 +63,8 @@ public class ValidationRulesLookupPlugin extends SpinePlugin {
 
         logDependingTask(FIND_TEST_VALIDATION_RULES, PROCESS_TEST_RESOURCES, GENERATE_TEST_PROTO);
 
-        final Action<Task> testScopeAction = testScopeActionFor(project);
-        final GradleTask findTestRules =
+        Action<Task> testScopeAction = testScopeActionFor(project);
+        GradleTask findTestRules =
                 newTask(FIND_TEST_VALIDATION_RULES, testScopeAction)
                         .insertAfterTask(GENERATE_TEST_PROTO)
                         .insertBeforeTask(PROCESS_TEST_RESOURCES)
@@ -74,36 +74,30 @@ public class ValidationRulesLookupPlugin extends SpinePlugin {
                     findRules, findTestRules);
     }
 
-    private Action<Task> mainScopeActionFor(final Project project) {
+    private Action<Task> mainScopeActionFor(Project project) {
         log().debug("Initializing the validation lookup for the `main` source code.");
-        return new Action<Task>() {
-            @Override
-            public void execute(Task task) {
-                final String descriptorSetFile = getMainDescriptorSetPath(project);
-                final String targetResourcesDir = getMainTargetGenResourcesDir(project);
-                processDescriptorSet(descriptorSetFile, targetResourcesDir);
-            }
+        return task -> {
+            String descriptorSetFile = getMainDescriptorSetPath(project);
+            String targetResourcesDir = getMainTargetGenResourcesDir(project);
+            processDescriptorSet(descriptorSetFile, targetResourcesDir);
         };
     }
 
-    private Action<Task> testScopeActionFor(final Project project) {
+    private Action<Task> testScopeActionFor(Project project) {
         log().debug("Initializing the validation lookup for the `test` source code.");
-        return new Action<Task>() {
-            @Override
-            public void execute(Task task) {
-                final String descriptorSetPath = getTestDescriptorSetPath(project);
-                final String targetGenResourcesDir = getTestTargetGenResourcesDir(project);
-                processDescriptorSet(descriptorSetPath, targetGenResourcesDir);
-            }
+        return task -> {
+            String descriptorSetPath = getTestDescriptorSetPath(project);
+            String targetGenResourcesDir = getTestTargetGenResourcesDir(project);
+            processDescriptorSet(descriptorSetPath, targetGenResourcesDir);
         };
     }
 
     private void processDescriptorSet(String descriptorSetFile, String targetDirectory) {
-        final File setFile = new File(descriptorSetFile);
+        File setFile = new File(descriptorSetFile);
         if (!setFile.exists()) {
             logMissingDescriptorSetFile(setFile);
         } else {
-            final File targetDir = new File(targetDirectory);
+            File targetDir = new File(targetDirectory);
             ValidationRulesLookup.processDescriptorSetFile(setFile, targetDir);
         }
     }

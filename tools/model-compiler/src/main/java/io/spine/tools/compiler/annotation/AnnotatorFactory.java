@@ -92,9 +92,9 @@ public class AnnotatorFactory {
     public static void processDescriptorSetFile(File setFile,
                                                 String generatedProtoDir,
                                                 String generatedGrpcDir) {
-        final Collection<FileDescriptorProto> descriptors =
+        Collection<FileDescriptorProto> descriptors =
                 FileDescriptors.parseSkipStandard(setFile.getPath());
-        final AnnotatorFactory factory =
+        AnnotatorFactory factory =
                 new AnnotatorFactory(descriptors, generatedProtoDir, generatedGrpcDir);
 
         factory.createFileAnnotator(Experimental.class, experimentalAll)
