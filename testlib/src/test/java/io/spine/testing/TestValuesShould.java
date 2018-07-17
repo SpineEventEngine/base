@@ -18,13 +18,36 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * Utility classes for framework testing.
- */
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.test;
+package io.spine.testing;
 
-import com.google.errorprone.annotations.CheckReturnValue;
+import com.google.common.testing.NullPointerTester;
+import org.junit.Test;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
+import static org.junit.Assert.assertTrue;
+
+public class TestValuesShould {
+
+    @Test
+    public void have_utility_ctor() {
+        assertHasPrivateParameterlessCtor(TestValues.class);
+    }
+
+    @Test
+    public void pass_null_tolerance_check() {
+        new NullPointerTester()
+                .testAllPublicStaticMethods(TestValues.class);
+    }
+
+    @Test
+    public void provide_random_non_negative_number() {
+        assertTrue(TestValues.random(100) >= 0);
+    }
+
+    @Test
+    public void provide_randome_number_in_range() {
+        int value = TestValues.random(-100, 100);
+        assertTrue(value >= -100);
+        assertTrue(value <= 100);
+    }
+}

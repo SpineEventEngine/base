@@ -24,7 +24,7 @@ import com.google.common.testing.NullPointerTester;
 import org.junit.Test;
 
 import static io.spine.net.EmailAddresses.valueOf;
-import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
+import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
