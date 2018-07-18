@@ -89,14 +89,12 @@ public class RejectionJavadoc {
         Optional<String> leadingComments = getRejectionLeadingComments();
         StringBuilder builder = new StringBuilder(256);
 
-        if (leadingComments.isPresent()) {
-            builder.append(OPENING_PRE)
-                   .append(LINE_SEPARATOR)
-                   .append(JavadocEscaper.escape(leadingComments.get()))
-                   .append(CLOSING_PRE)
-                   .append(LINE_SEPARATOR)
-                   .append(LINE_SEPARATOR);
-        }
+        leadingComments.ifPresent(s -> builder.append(OPENING_PRE)
+                                              .append(LINE_SEPARATOR)
+                                              .append(JavadocEscaper.escape(s))
+                                              .append(CLOSING_PRE)
+                                              .append(LINE_SEPARATOR)
+                                              .append(LINE_SEPARATOR));
 
         builder.append("Rejection based on proto type {@code ")
                .append(declaration.getJavaPackage())
@@ -267,9 +265,7 @@ public class RejectionJavadoc {
         for (FieldDescriptorProto field : declaration.getMessage()
                                                      .getFieldList()) {
             Optional<String> leadingComments = getFieldLeadingComments(field);
-            if (leadingComments.isPresent()) {
-                commentedFields.put(field, leadingComments.get());
-            }
+            leadingComments.ifPresent(s -> commentedFields.put(field, s));
         }
 
         return commentedFields;
