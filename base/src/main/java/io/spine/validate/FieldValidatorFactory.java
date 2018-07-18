@@ -28,10 +28,10 @@ import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 import com.google.protobuf.Message;
 
 import java.util.Map;
+import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Predicates.notNull;
 import static com.google.common.collect.Iterables.find;
 import static java.lang.String.format;
 
@@ -136,7 +136,7 @@ class FieldValidatorFactory {
         if (value.isEmpty()) {
             return new EmptyMapFieldValidator(fieldContext, strict);
         }
-        Object firstValue = find(value.values(), notNull());
+        Object firstValue = find(value.values(), Objects::nonNull);
         Class<?> valueClass = firstValue.getClass();
         Class<?> wrappedValueClass = Primitives.wrap(valueClass);
         JavaType type = SCALAR_FIELD_TYPES.get(wrappedValueClass);

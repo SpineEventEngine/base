@@ -91,7 +91,7 @@ abstract class FieldValidator<V> {
         this.fieldDescriptor = fieldContext.getTarget();
         this.strict = strict;
         FileDescriptor file = fieldDescriptor.getFile();
-        this.isCommandsFile = CommandMessage.File.PREDICATE.apply(file);
+        this.isCommandsFile = CommandMessage.File.PREDICATE.test(file);
         this.isFirstField = fieldDescriptor.getIndex() == 0;
         this.required = getFieldOption(OptionsProto.required);
         this.ifMissingOption = getFieldOption(OptionsProto.ifMissing);
