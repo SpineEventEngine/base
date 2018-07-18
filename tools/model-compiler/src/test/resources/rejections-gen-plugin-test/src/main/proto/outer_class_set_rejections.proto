@@ -10,8 +10,6 @@ option java_multiple_files = false;
 // Buf if the option is set, it should be handled.
 option java_outer_classname = "OuterClassForRejections";
 
-option java_generate_equals_and_hash = true;
-
 message Rejection5Separate {
     string message = 1;
 }

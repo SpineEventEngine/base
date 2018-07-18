@@ -24,7 +24,6 @@ package spine.validate;
 import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
-option java_generate_equals_and_hash = false;
 option java_multiple_files = true;
 option java_outer_classname = "ConstraintViolationProto";
 option java_package = "io.spine.validate";
