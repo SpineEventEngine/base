@@ -20,7 +20,6 @@
 
 package io.spine.tools.compiler.validation;
 
-import com.google.common.base.Predicate;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.code.properties.PropertiesWriter;
@@ -34,6 +33,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Maps.newHashMap;
@@ -96,7 +96,7 @@ public final class ValidationRulesLookup {
     private static class IsValidationRule implements Predicate<DescriptorProto> {
 
         @Override
-        public boolean apply(@Nullable DescriptorProto input) {
+        public boolean test(@Nullable DescriptorProto input) {
             checkNotNull(input);
             return Options.option(input, validationOf)
                           .isPresent();
