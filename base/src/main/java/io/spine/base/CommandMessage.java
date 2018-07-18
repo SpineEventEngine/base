@@ -20,9 +20,10 @@
 
 package io.spine.base;
 
-import com.google.common.base.Predicate;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Message;
+
+import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
