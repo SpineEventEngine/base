@@ -25,7 +25,6 @@ package spine.sample.validators;
 option java_package = "io.spine.sample.validators.c";
 option java_outer_classname = "CommandsProto";
 option java_multiple_files = true;
-option java_generate_equals_and_hash = true;
 
 import "identifiers.proto";
 import "changes.proto";
