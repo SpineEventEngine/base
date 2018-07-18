@@ -19,7 +19,6 @@
  */
 package io.spine.validate;
 
-import com.google.common.base.Function;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.collect.ImmutableList;
@@ -27,10 +26,11 @@ import io.spine.string.Stringifiers;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.List;
+import java.util.function.Function;
 
 import static com.google.common.base.Joiner.on;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.Iterables.transform;
+import static java.util.stream.Collectors.toList;
 
 /**
  * An exception, thrown if a {@code Message} does not pass the validation.
@@ -64,9 +64,12 @@ public class ValidationException extends RuntimeException {
     public String toString() {
         ToStringHelper helper = MoreObjects.toStringHelper(this);
 
-        String violationContent = constraintViolations.isEmpty()
-                                  ? "[]"
-                                  : on(", ").join(transform(constraintViolations, TO_STRING_FN));
+        String violationContent =
+                constraintViolations.isEmpty()
+                ? "[]"
+                : on(", ").join(constraintViolations.stream()
+                                                    .map(TO_STRING_FN)
+                                                    .collect(toList()));
 
         return helper.add("constraintViolations", violationContent)
                      .toString();

@@ -20,7 +20,6 @@
 
 package io.spine.code.proto;
 
-import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
@@ -32,6 +31,7 @@ import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.code.proto.MessageDeclaration.create;
@@ -109,7 +109,7 @@ public class SourceFile extends AbstractSourceFile {
         ImmutableList.Builder<MessageDeclaration> result = ImmutableList.builder();
         for (DescriptorProto messageType : descriptor.getMessageTypeList()) {
             MessageDeclaration declaration = create(messageType, descriptor);
-            if (predicate.apply(messageType)) {
+            if (predicate.test(messageType)) {
                 result.add(declaration);
             }
             Collection<MessageDeclaration> allNested =

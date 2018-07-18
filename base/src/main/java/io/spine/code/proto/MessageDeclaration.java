@@ -20,7 +20,6 @@
 
 package io.spine.code.proto;
 
-import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
@@ -29,6 +28,7 @@ import io.spine.type.TypeName;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.List;
+import java.util.function.Predicate;
 
 import static com.google.common.collect.Lists.newLinkedList;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
@@ -108,7 +108,7 @@ public class MessageDeclaration extends AbstractMessageDeclaration {
             assert nestedDeclaration != null; // Cannot be null since the queue is not empty.
             DescriptorProto nestedDescriptor = nestedDeclaration.getMessage();
 
-            if (predicate.apply(nestedDescriptor)) {
+            if (predicate.test(nestedDescriptor)) {
                 result.add(nestedDeclaration);
             }
 
