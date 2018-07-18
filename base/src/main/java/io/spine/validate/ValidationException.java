@@ -27,10 +27,10 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static com.google.common.base.Joiner.on;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.stream.Collectors.toList;
 
 /**
  * An exception, thrown if a {@code Message} does not pass the validation.
@@ -64,12 +64,12 @@ public class ValidationException extends RuntimeException {
     public String toString() {
         ToStringHelper helper = MoreObjects.toStringHelper(this);
 
-        String violationContent = constraintViolations.isEmpty()
-                                  ? "[]"
-                                  : on(", ").join(constraintViolations.stream()
-                                                                      .map(TO_STRING_FN)
-                                                                      .collect(
-                                                                              Collectors.toList()));
+        String violationContent =
+                constraintViolations.isEmpty()
+                ? "[]"
+                : on(", ").join(constraintViolations.stream()
+                                                    .map(TO_STRING_FN)
+                                                    .collect(toList()));
 
         return helper.add("constraintViolations", violationContent)
                      .toString();
