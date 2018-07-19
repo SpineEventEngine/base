@@ -64,7 +64,7 @@ class MessageFieldValidator extends FieldValidator<Message> {
 
     @Override
     protected void validateOwnRules() {
-        boolean validateFields = getValidateOption();
+        boolean validateFields = getValidateOption() && !isValueNotSet(getValues().get(0));
         if (validateFields) {
             validateFields();
         }
