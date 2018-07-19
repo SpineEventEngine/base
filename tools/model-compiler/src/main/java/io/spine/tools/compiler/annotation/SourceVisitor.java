@@ -20,9 +20,10 @@
 
 package io.spine.tools.compiler.annotation;
 
-import com.google.common.base.Function;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
 import org.jboss.forge.roaster.model.source.JavaSource;
+
+import java.util.function.Function;
 
 /**
  * A {@link AbstractJavaSource} visitor.

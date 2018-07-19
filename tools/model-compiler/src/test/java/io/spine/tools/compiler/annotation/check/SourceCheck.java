@@ -20,9 +20,10 @@
 
 package io.spine.tools.compiler.annotation.check;
 
-import com.google.common.base.Function;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
+
+import java.util.function.Function;
 
 /**
  * Interface for validation of a {@link JavaClassSource}.
