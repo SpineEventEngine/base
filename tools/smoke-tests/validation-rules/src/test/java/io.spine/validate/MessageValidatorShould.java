@@ -44,6 +44,7 @@ import io.spine.test.validate.msg.DigitsCountNumberFieldValue;
 import io.spine.test.validate.msg.EnclosedMessageFieldValue;
 import io.spine.test.validate.msg.EnclosedMessageFieldValueWithCustomInvalidMessage;
 import io.spine.test.validate.msg.EnclosedMessageFieldValueWithoutAnnotationFieldValueWithCustomInvalidMessage;
+import io.spine.test.validate.msg.EnclosedMessageWithRequiredString;
 import io.spine.test.validate.msg.EnclosedMessageWithoutAnnotationFieldValue;
 import io.spine.test.validate.msg.EntityIdByteStringFieldValue;
 import io.spine.test.validate.msg.EntityIdDoubleFieldValue;
