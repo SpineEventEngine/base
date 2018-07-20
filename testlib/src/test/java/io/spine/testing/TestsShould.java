@@ -22,7 +22,10 @@ package io.spine.testing;
 
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.FieldMask;
-import io.spine.testing.given.TestsTestEnv;
+import io.spine.testing.given.TestsTestEnv.ClassThrowingExceptionInConstructor;
+import io.spine.testing.given.TestsTestEnv.ClassWithCtorWithArgs;
+import io.spine.testing.given.TestsTestEnv.ClassWithPrivateCtor;
+import io.spine.testing.given.TestsTestEnv.ClassWithPublicCtor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -60,29 +63,27 @@ class TestsShould extends UtilityClassTest<Tests> {
         @Test
         @DisplayName("returning false if it's public")
         void publicCtor() {
-            assertFalse(hasPrivateParameterlessCtor(TestsTestEnv.ClassWithPublicCtor.class));
+            assertFalse(hasPrivateParameterlessCtor(ClassWithPublicCtor.class));
         }
 
         @Test
         @DisplayName("return false if no parameterless ctor found")
         void ctorWithArgs() {
-            assertFalse(hasPrivateParameterlessCtor(TestsTestEnv.ClassWithCtorWithArgs.class));
+            assertFalse(hasPrivateParameterlessCtor(ClassWithCtorWithArgs.class));
         }
 
         @Test
         @DisplayName("accepting private parameterless ctor")
         void privateCtor() {
-            assertTrue(hasPrivateParameterlessCtor(TestsTestEnv.ClassWithPrivateCtor.class));
+            assertTrue(hasPrivateParameterlessCtor(ClassWithPrivateCtor.class));
         }
 
         @Test
         @DisplayName("ignore exceptions called thrown by the constructor")
         void ignoreExceptions() {
-            assertTrue(hasPrivateParameterlessCtor(TestsTestEnv.ClassThrowingExceptionInConstructor.class));
+            assertTrue(hasPrivateParameterlessCtor(ClassThrowingExceptionInConstructor.class));
         }
     }
-
-
 
     @Test
     @DisplayName("provide null reference method")
