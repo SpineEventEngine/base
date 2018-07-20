@@ -42,7 +42,7 @@ class ByteStringFieldValidator extends FieldValidator<ByteString> {
     }
 
     @Override
-    protected boolean isValueNotSet(ByteString value) {
+    protected boolean isNotSet(ByteString value) {
         boolean result = value.isEmpty();
         return result;
     }

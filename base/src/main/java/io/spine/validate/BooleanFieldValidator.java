@@ -50,7 +50,7 @@ class BooleanFieldValidator extends FieldValidator<Boolean> {
      * @return false
      */
     @Override
-    protected boolean isValueNotSet(Boolean value) {
+    protected boolean isNotSet(Boolean value) {
         return false;
     }
 

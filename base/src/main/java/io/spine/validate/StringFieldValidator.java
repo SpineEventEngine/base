@@ -80,7 +80,7 @@ class StringFieldValidator extends FieldValidator<String> {
     }
 
     @Override
-    protected boolean isValueNotSet(String value) {
+    protected boolean isNotSet(String value) {
         boolean result = value.isEmpty();
         return result;
     }

@@ -41,6 +41,6 @@ public class BooleanFieldValidatorShould {
 
     @Test
     public void convert_string_to_number() {
-        assertFalse(validator.isValueNotSet(false));
+        assertFalse(validator.isNotSet(false));
     }
 }
