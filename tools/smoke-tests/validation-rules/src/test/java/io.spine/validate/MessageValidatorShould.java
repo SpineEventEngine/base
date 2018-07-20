@@ -753,7 +753,7 @@ public class MessageValidatorShould {
     }
 
     @Test
-    public void consider_field_is_valid_if_no_valid_option_set() {
+    public void consider_field_valid_if_no_valid_option_is_set() {
         PatternStringFieldValue enclosedMsg = PatternStringFieldValue.newBuilder()
                                                                      .setEmail("invalid email")
                                                                      .build();
