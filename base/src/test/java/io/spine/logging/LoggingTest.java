@@ -20,21 +20,8 @@
 
 package io.spine.logging;
 
-import io.spine.logging.given.LoggingTestEnv.Base;
-import io.spine.logging.given.LoggingTestEnv.ChildOne;
-import io.spine.logging.given.LoggingTestEnv.ChildTwo;
 import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-
-import java.util.function.Supplier;
-
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNotSame;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Alexander Yevsyukov
@@ -44,43 +31,5 @@ class LoggingTest extends UtilityClassTest<Logging> {
 
     LoggingTest() {
         super(Logging.class);
-    }
-
-    @Test
-    @DisplayName("create a logger for class")
-    void createLogger() {
-        Supplier<Logger> supplier = Logging.supplyFor(getClass());
-        Logger logger = supplier.get();
-
-        assertNotNull(logger);
-        assertSame(logger, supplier.get());
-    }
-
-    @Test
-    @DisplayName("create a logger for each class in hierarchy")
-    void classHierarchy() {
-        Logger baseLogger = new Base().log();
-        Logger childOneLogger = new ChildOne().log();
-        Logger childTwoLogger = new ChildTwo().log();
-
-        assertNotSame(baseLogger, childOneLogger);
-        assertNotSame(baseLogger, childTwoLogger);
-        assertNotSame(childOneLogger, childTwoLogger);
-
-        assertNotEquals(baseLogger, childOneLogger);
-        assertNotEquals(baseLogger, childTwoLogger);
-        assertNotEquals(childOneLogger, childTwoLogger);
-
-        assertLogger(baseLogger, Base.class);
-        assertLogger(childOneLogger, ChildOne.class);
-        assertLogger(childTwoLogger, ChildTwo.class);
-    }
-
-    /**
-     * Asserts that the logger name contains the name of the passed class.
-     */
-    private static void assertLogger(Logger logger, Class<?> cls) {
-        assertTrue(logger.getName()
-                         .contains(cls.getName()));
     }
 }
