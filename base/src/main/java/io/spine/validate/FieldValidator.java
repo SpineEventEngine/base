@@ -123,7 +123,7 @@ abstract class FieldValidator<V> {
      *
      * @return {@code true} if the field value is not set and {@code false} otherwise
      */
-    protected boolean isValueNotSet() {
+    protected boolean fieldValueNotSet() {
         boolean valueNotSet = values.isEmpty() || !isRepeatedOrMap() && isNotSet(values.get(0));
         return valueNotSet;
     }
@@ -198,7 +198,7 @@ abstract class FieldValidator<V> {
             addViolation(violation);
             return;
         }
-        if (isValueNotSet()) {
+        if (fieldValueNotSet()) {
             addViolation(newViolation(ifMissingOption));
         }
     }
@@ -234,7 +234,7 @@ abstract class FieldValidator<V> {
             }
             return;
         }
-        if (isValueNotSet()) {
+        if (fieldValueNotSet()) {
             addViolation(newViolation(ifMissingOption));
         }
     }
