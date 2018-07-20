@@ -124,7 +124,8 @@ abstract class FieldValidator<V> {
      * @return {@code true} if the field value is not set and {@code false} otherwise
      */
     protected boolean isValueNotSet() {
-        return values.isEmpty() || !isRepeatedOrMap() && isNotSet(values.get(0));
+        boolean valueNotSet = values.isEmpty() || !isRepeatedOrMap() && isNotSet(values.get(0));
+        return valueNotSet;
     }
 
     /**
