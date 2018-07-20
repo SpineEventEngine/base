@@ -59,7 +59,8 @@ public class Preconditions2 {
      */
     @CanIgnoreReturnValue
     public static String checkNotEmptyOrBlank(String stringToCheck, String message) {
-        checkNotNull(stringToCheck, message);
+        checkNotNull(stringToCheck);
+        checkNotNull(message);
         checkArgument(!stringToCheck.isEmpty(), message);
         String trimmed = stringToCheck.trim();
         checkArgument(trimmed.length() > 0, message);
