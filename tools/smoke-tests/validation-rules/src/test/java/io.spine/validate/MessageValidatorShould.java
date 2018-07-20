@@ -767,6 +767,15 @@ public class MessageValidatorShould {
     }
 
     @Test
+    public void consider_field_valid_if_it_is_not_set() {
+        EnclosedMessageWithRequiredString msg = EnclosedMessageWithRequiredString.newBuilder()
+                                                                                 .build();
+        validate(msg);
+
+        assertIsValid(true);
+    }
+
+    @Test
     public void provide_valid_violations_if_enclosed_message_field_is_not_valid() {
         PatternStringFieldValue enclosedMsg = PatternStringFieldValue.newBuilder()
                                                                      .setEmail("invalid email")

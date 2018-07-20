@@ -173,6 +173,10 @@ message EnclosedMessageFieldValueWithoutAnnotationFieldValueWithCustomInvalidMes
     PatternStringFieldValue outer_msg_field = 1 [(if_invalid).msg_format = "Custom error is redundant in this case"];
 }
 
+message EnclosedMessageWithRequiredString {
+    RequiredStringFieldValue outer_msg_field = 1 [(valid) = true];
+}
+
 // Messages for testing validation of repeated fields.
 
 message MessageWithRepeatedUnchekedStringField {
