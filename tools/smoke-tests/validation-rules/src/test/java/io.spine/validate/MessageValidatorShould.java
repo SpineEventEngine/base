@@ -916,7 +916,6 @@ public class MessageValidatorShould {
                 EnclosedMessageFieldValueWithCustomInvalidMessage.newBuilder()
                                                                  .setOuterMsgField(enclosedMsg)
                                                                  .build();
-
         validate(msg);
 
         assertSize(1, violations);
