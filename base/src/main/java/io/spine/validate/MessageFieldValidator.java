@@ -57,14 +57,14 @@ class MessageFieldValidator extends FieldValidator<Message> {
     MessageFieldValidator(FieldContext fieldContext,
                           Object fieldValues,
                           boolean strict) {
-        super(fieldContext, FieldValidator.<Message>toValueList(fieldValues), strict);
+        super(fieldContext, toValueList(fieldValues), strict);
         this.timeConstraint = getFieldOption(OptionsProto.when);
         this.fieldIsTimestamp = isTimestamp();
     }
 
     @Override
     protected void validateOwnRules() {
-        boolean validateFields = getValidateOption();
+        boolean validateFields = getValidateOption() && !fieldValueNotSet();
         if (validateFields) {
             validateFields();
         }
@@ -74,7 +74,7 @@ class MessageFieldValidator extends FieldValidator<Message> {
     }
 
     @Override
-    protected boolean isValueNotSet(Message value) {
+    protected boolean isNotSet(Message value) {
         boolean result = isDefault(value);
         return result;
     }

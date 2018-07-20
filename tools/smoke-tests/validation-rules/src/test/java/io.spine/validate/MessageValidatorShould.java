@@ -44,6 +44,7 @@ import io.spine.test.validate.msg.DigitsCountNumberFieldValue;
 import io.spine.test.validate.msg.EnclosedMessageFieldValue;
 import io.spine.test.validate.msg.EnclosedMessageFieldValueWithCustomInvalidMessage;
 import io.spine.test.validate.msg.EnclosedMessageFieldValueWithoutAnnotationFieldValueWithCustomInvalidMessage;
+import io.spine.test.validate.msg.EnclosedMessageWithRequiredString;
 import io.spine.test.validate.msg.EnclosedMessageWithoutAnnotationFieldValue;
 import io.spine.test.validate.msg.EntityIdByteStringFieldValue;
 import io.spine.test.validate.msg.EntityIdDoubleFieldValue;
@@ -115,11 +116,13 @@ public class MessageValidatorShould {
 
     @SuppressWarnings("DuplicateStringLiteralInspection")
     private static final String VALUE = "value";
+    private static final String EMAIL = "email";
     private static final String OUTER_MSG_FIELD = "outer_msg_field";
 
     private static final String NO_VALUE_MSG = "Value must be set.";
     private static final String LESS_THAN_MIN_MSG = "Number must be greater than or equal to 16.5.";
     private static final String GREATER_MAX_MSG = "Number must be less than or equal to 64.5.";
+    private static final String MATCH_REGEXP_MSG = "String must match the regular expression '%s'.";
 
     private final MessageValidator validator = MessageValidator.newInstance();
 
@@ -705,18 +708,18 @@ public class MessageValidatorShould {
     @Test
     public void provide_one_valid_violation_if_string_does_not_match_to_regex_pattern() {
         PatternStringFieldValue msg = PatternStringFieldValue.newBuilder()
-                                                             .setEmail("invalid.email")
+                                                             .setEmail("invalid email")
                                                              .build();
 
         validate(msg);
 
         assertEquals(1, violations.size());
         ConstraintViolation violation = firstViolation();
-        assertEquals("String must match the regular expression '%s'.", violation.getMsgFormat());
+        assertEquals(MATCH_REGEXP_MSG, violation.getMsgFormat());
         assertEquals(
                 "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$",
                 firstViolation().getParam(0));
-        assertFieldPathIs(violation, "email");
+        assertFieldPathIs(violation, EMAIL);
         assertTrue(violation.getViolationList()
                             .isEmpty());
     }
@@ -727,9 +730,10 @@ public class MessageValidatorShould {
 
     @Test
     public void find_out_that_enclosed_message_field_is_valid() {
-        RequiredStringFieldValue enclosedMsg = RequiredStringFieldValue.newBuilder()
-                                                                       .setValue(newUuid())
-                                                                       .build();
+        PatternStringFieldValue enclosedMsg =
+                PatternStringFieldValue.newBuilder()
+                                       .setEmail("valid.email@mail.com")
+                                       .build();
         EnclosedMessageFieldValue msg = EnclosedMessageFieldValue.newBuilder()
                                                                  .setOuterMsgField(enclosedMsg)
                                                                  .build();
@@ -740,7 +744,9 @@ public class MessageValidatorShould {
 
     @Test
     public void find_out_that_enclosed_message_field_is_NOT_valid() {
-        RequiredStringFieldValue enclosedMsg = RequiredStringFieldValue.getDefaultInstance();
+        PatternStringFieldValue enclosedMsg = PatternStringFieldValue.newBuilder()
+                                                                     .setEmail("invalid email")
+                                                                     .build();
         EnclosedMessageFieldValue msg = EnclosedMessageFieldValue.newBuilder()
                                                                  .setOuterMsgField(enclosedMsg)
                                                                  .build();
@@ -750,11 +756,13 @@ public class MessageValidatorShould {
     }
 
     @Test
-    public void consider_field_is_valid_if_no_valid_option_set() {
-        RequiredStringFieldValue invalidEnclosedMsg = RequiredStringFieldValue.getDefaultInstance();
+    public void consider_field_valid_if_no_valid_option_is_set() {
+        PatternStringFieldValue enclosedMsg = PatternStringFieldValue.newBuilder()
+                                                                     .setEmail("invalid email")
+                                                                     .build();
         EnclosedMessageWithoutAnnotationFieldValue msg =
                 EnclosedMessageWithoutAnnotationFieldValue.newBuilder()
-                                                          .setOuterMsgField(invalidEnclosedMsg)
+                                                          .setOuterMsgField(enclosedMsg)
                                                           .build();
         validate(msg);
 
@@ -762,8 +770,19 @@ public class MessageValidatorShould {
     }
 
     @Test
+    public void consider_field_valid_if_it_is_not_set() {
+        EnclosedMessageWithRequiredString msg = EnclosedMessageWithRequiredString.newBuilder()
+                                                                                 .build();
+        validate(msg);
+
+        assertIsValid(true);
+    }
+
+    @Test
     public void provide_valid_violations_if_enclosed_message_field_is_not_valid() {
-        RequiredStringFieldValue enclosedMsg = RequiredStringFieldValue.getDefaultInstance();
+        PatternStringFieldValue enclosedMsg = PatternStringFieldValue.newBuilder()
+                                                                     .setEmail("invalid email")
+                                                                     .build();
         EnclosedMessageFieldValue msg = EnclosedMessageFieldValue.newBuilder()
                                                                  .setOuterMsgField(enclosedMsg)
                                                                  .build();
@@ -777,8 +796,8 @@ public class MessageValidatorShould {
         assertEquals(1, innerViolations.size());
 
         ConstraintViolation innerViolation = innerViolations.get(0);
-        assertEquals(NO_VALUE_MSG, innerViolation.getMsgFormat());
-        assertFieldPathIs(innerViolation, OUTER_MSG_FIELD, VALUE);
+        assertEquals(MATCH_REGEXP_MSG, innerViolation.getMsgFormat());
+        assertFieldPathIs(innerViolation, OUTER_MSG_FIELD, EMAIL);
         assertTrue(innerViolation.getViolationList()
                                  .isEmpty());
     }
@@ -890,7 +909,14 @@ public class MessageValidatorShould {
 
     @Test
     public void provide_custom_invalid_field_message_if_specified() {
-        validate(EnclosedMessageFieldValueWithCustomInvalidMessage.getDefaultInstance());
+        PatternStringFieldValue enclosedMsg = PatternStringFieldValue.newBuilder()
+                                                                     .setEmail("invalid email")
+                                                                     .build();
+        EnclosedMessageFieldValueWithCustomInvalidMessage msg =
+                EnclosedMessageFieldValueWithCustomInvalidMessage.newBuilder()
+                                                                 .setOuterMsgField(enclosedMsg)
+                                                                 .build();
+        validate(msg);
 
         assertSize(1, violations);
         ConstraintViolation violation = firstViolation();

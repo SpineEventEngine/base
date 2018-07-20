@@ -158,19 +158,23 @@ message PatternStringFieldValue {
 // Messages for "valid" option tests.
 
 message EnclosedMessageFieldValue {
-    RequiredStringFieldValue outer_msg_field = 1 [(valid) = true];
+    PatternStringFieldValue outer_msg_field = 1 [(valid) = true];
 }
 
 message EnclosedMessageWithoutAnnotationFieldValue {
-    RequiredStringFieldValue outer_msg_field = 1;
+    PatternStringFieldValue outer_msg_field = 1;
 }
 
 message EnclosedMessageFieldValueWithCustomInvalidMessage {
-    RequiredStringFieldValue outer_msg_field = 1 [(valid) = true, (if_invalid).msg_format = "Custom error"];
+    PatternStringFieldValue outer_msg_field = 1 [(valid) = true, (if_invalid).msg_format = "Custom error"];
 }
 
 message EnclosedMessageFieldValueWithoutAnnotationFieldValueWithCustomInvalidMessage {
-    RequiredStringFieldValue outer_msg_field = 1 [(if_invalid).msg_format = "Custom error is redundant in this case"];
+    PatternStringFieldValue outer_msg_field = 1 [(if_invalid).msg_format = "Custom error is redundant in this case"];
+}
+
+message EnclosedMessageWithRequiredString {
+    RequiredStringFieldValue outer_msg_field = 1 [(valid) = true];
 }
 
 // Messages for testing validation of repeated fields.
