@@ -69,7 +69,7 @@ public class EnvironmentShould {
     }
 
     @After
-    public void cleanUp() throws NoSuchFieldException, IllegalAccessException {
+    public void cleanUp() {
         Environment.getInstance()
                    .reset();
     }
@@ -80,7 +80,7 @@ public class EnvironmentShould {
     }
 
     @Test
-    public void tell_that_we_are_under_tests_if_env_var_set_to_true() throws Exception {
+    public void tell_that_we_are_under_tests_if_env_var_set_to_true() {
         Environment.getInstance()
                    .setToTests();
 
@@ -89,7 +89,7 @@ public class EnvironmentShould {
     }
 
     @Test
-    public void tell_that_we_are_under_tests_if_env_var_set_to_1() throws Exception {
+    public void tell_that_we_are_under_tests_if_env_var_set_to_1() {
         System.setProperty(Environment.ENV_KEY_TESTS, "1");
 
         assertTrue(environment.isTests());
