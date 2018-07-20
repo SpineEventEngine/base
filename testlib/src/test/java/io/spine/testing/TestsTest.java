@@ -163,5 +163,14 @@ class TestsTest extends UtilityClassTest<Tests> {
             // This method would be called within 10 seconds.
             Tests.assertSecondsEqual(recentTime, now(), 10);
         }
+
+        @Test
+        @DisplayName("throw if condition is not met")
+        void failure() {
+            assertThrows(
+                    AssertionError.class,
+                    () -> Tests.assertSecondsEqual(100, 200, 2)
+            );
+        }
     }
 }
