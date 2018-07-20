@@ -42,9 +42,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  */
 @SuppressWarnings({"InnerClassMayBeStatic", "ClassCanBeStatic"})
 @DisplayName("Tests utility class should")
-class TestsTest extends UtilityClassTest<Tests> {
+class TestsShould extends UtilityClassTest<Tests> {
 
-    TestsTest() {
+    TestsShould() {
         super(Tests.class);
     }
 
