@@ -116,12 +116,19 @@ abstract class FieldValidator<V> {
         }
     }
 
+    /**
+     * Checks if the value of the validated field is not set.
+     *
+     * <p>Checks both repeated/map fields and ordinary single-value fields.
+     *
+     * @return {@code true} if the field value is not set and {@code false} otherwise
+     */
     protected boolean isValueNotSet() {
         return values.isEmpty() || !isRepeatedOrMap() && isNotSet(values.get(0));
     }
 
     /**
-     * Checks if the field value is not set.
+     * Checks if the specified field value is not set.
      *
      * <p>If the field type is {@link Message}, it must be set to a non-default instance;
      * if it is {@link String} or {@link com.google.protobuf.ByteString ByteString}, it must be
