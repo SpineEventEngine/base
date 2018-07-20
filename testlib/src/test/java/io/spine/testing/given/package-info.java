@@ -19,15 +19,13 @@
  */
 
 /**
- * The versions of the libraries used.
- *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
+ * This package provides test environment for testing utilities.
  */
 
-final def SPINE_VERSION = '0.10.55-SNAPSHOT'
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.testing.given;
 
-ext {
-    spineVersion = SPINE_VERSION
-    versionToPublish = SPINE_VERSION
-}
+import com.google.errorprone.annotations.CheckReturnValue;
+
+import javax.annotation.ParametersAreNonnullByDefault;

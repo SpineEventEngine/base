@@ -53,6 +53,8 @@ public abstract class UtilityClassTest<T> {
 
     @Test
     @DisplayName("not accept nulls in public static methods if the arg is non-Nullable")
+    @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssertRule")
+        /* This test does assert via `NullPointerTester. */
     void nullCheckPublicStaticMethods() {
         NullPointerTester tester = new NullPointerTester();
         setDefaults(tester);

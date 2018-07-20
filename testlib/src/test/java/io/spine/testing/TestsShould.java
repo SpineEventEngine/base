@@ -20,93 +20,158 @@
 
 package io.spine.testing;
 
-import org.junit.Test;
+import com.google.common.testing.NullPointerTester;
+import com.google.protobuf.FieldMask;
+import io.spine.testing.given.TestsTestEnv.ClassThrowingExceptionInConstructor;
+import io.spine.testing.given.TestsTestEnv.ClassWithCtorWithArgs;
+import io.spine.testing.given.TestsTestEnv.ClassWithPrivateCtor;
+import io.spine.testing.given.TestsTestEnv.ClassWithPublicCtor;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
-import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
+import java.time.Instant;
+
+import static io.spine.testing.Tests.assertSecondsEqual;
 import static io.spine.testing.Tests.hasPrivateParameterlessCtor;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class TestsShould {
+/**
+ * @author Alexander Yevsyukov
+ */
+@SuppressWarnings({"InnerClassMayBeStatic", "ClassCanBeStatic"})
+@DisplayName("Tests utility class should")
+class TestsShould extends UtilityClassTest<Tests> {
 
-    @Test
-    public void have_private_constructor() {
-        assertHasPrivateParameterlessCtor(Tests.class);
+    TestsShould() {
+        super(Tests.class);
     }
 
-    @Test
-    public void return_false_if_no_private_but_public_ctor() {
-        assertFalse(hasPrivateParameterlessCtor(ClassWithPublicCtor.class));
+    @Override
+    protected void setDefaults(NullPointerTester tester) {
+        tester.setDefault(FieldMask.class, FieldMask.getDefaultInstance());
     }
 
-    @Test
-    public void return_false_if_only_ctor_with_args_found() {
-        assertFalse(hasPrivateParameterlessCtor(ClassWithCtorWithArgs.class));
-    }
+    @Nested
+    @DisplayName("Check private parameterless constructor")
+    class ParameterlessCtor {
 
-    @Test
-    public void return_true_if_class_has_private_ctor() {
-        assertTrue(hasPrivateParameterlessCtor(ClassWithPrivateCtor.class));
-    }
+        @Test
+        @DisplayName("returning false if it's public")
+        void publicCtor() {
+            assertFalse(hasPrivateParameterlessCtor(ClassWithPublicCtor.class));
+        }
 
-    @Test
-    public void return_true_if_class_has_private_throwing_ctor() {
-        assertTrue(hasPrivateParameterlessCtor(ClassThrowingExceptionInConstructor.class));
-    }
+        @Test
+        @DisplayName("return false if no parameterless ctor found")
+        void ctorWithArgs() {
+            assertFalse(hasPrivateParameterlessCtor(ClassWithCtorWithArgs.class));
+        }
 
-    @Test
-    public void return_null_reference() {
-        assertNull(Tests.nullRef());
-    }
+        @Test
+        @DisplayName("accepting private parameterless ctor")
+        void privateCtor() {
+            assertTrue(hasPrivateParameterlessCtor(ClassWithPrivateCtor.class));
+        }
 
-    @Test
-    public void assert_equality_of_booleans() {
-        Tests.assertEquals(true, true);
-        Tests.assertEquals(false, false);
-    }
-
-    @Test(expected = AssertionError.class)
-    public void fail_boolean_inequality_assertion() {
-        // This should fail.
-        Tests.assertEquals(true, false);
-    }
-
-    @Test
-    public void have_own_boolean_assertion() {
-        Tests.assertTrue(true);
-    }
-
-    @SuppressWarnings("ConstantConditions") // The call with `false` should always fail.
-    @Test(expected = AssertionError.class)
-    public void have_own_assertTrue() {
-        Tests.assertTrue(false);
-    }
-
-    /*
-     * Test environment classes
-     ***************************/
-
-    private static class ClassWithPrivateCtor {
-        @SuppressWarnings("RedundantNoArgConstructor") // We need this constructor for our tests.
-        private ClassWithPrivateCtor() {}
-    }
-
-    private static class ClassWithPublicCtor {
-        @SuppressWarnings("PublicConstructorInNonPublicClass") // It's the purpose of this
-                                                               // test class.
-        public ClassWithPublicCtor() {}
-    }
-
-    private static class ClassThrowingExceptionInConstructor {
-        private ClassThrowingExceptionInConstructor() {
-            throw new AssertionError("This private constructor must not be called.");
+        @Test
+        @DisplayName("ignore exceptions called thrown by the constructor")
+        void ignoreExceptions() {
+            assertTrue(hasPrivateParameterlessCtor(ClassThrowingExceptionInConstructor.class));
         }
     }
 
-    private static class ClassWithCtorWithArgs {
-        @SuppressWarnings("unused")
-        private final int id;
-        private ClassWithCtorWithArgs(int id) { this.id = id;}
+    @Test
+    @DisplayName("provide null reference method")
+    void nullRef() {
+        assertNull(Tests.nullRef());
+    }
+
+    @Nested
+    @DisplayName("Assert boolean equality")
+    class BooleanAssert {
+
+        @Test
+        @DisplayName("when true")
+        void onTrue() {
+            Tests.assertEquals(true, true);
+        }
+
+        @Test
+        @DisplayName("when false")
+        void onFalse() {
+            Tests.assertEquals(false, false);
+        }
+
+        @Test
+        @DisplayName("fail when not equal")
+        void failInequality() {
+            assertThrows(
+                    AssertionError.class,
+                    () -> Tests.assertEquals(true, false)
+            );
+        }
+    }
+
+    @Nested
+    @DisplayName("Assert true")
+    class AssertTrue {
+        @Test
+        @DisplayName("when true")
+        void onTrue() {
+            Tests.assertTrue(true);
+        }
+
+        @Test
+        @DisplayName("fail when false")
+        void whenFalse() {
+            assertThrows(
+                    AssertionError.class,
+                    () -> Tests.assertTrue(false)
+            );
+        }
+    }
+
+    @Nested
+    @DisplayName("Assert seconds range")
+    class SecondsRange {
+
+        private long recentTime;
+
+        @BeforeEach
+        void getCurrentTime() {
+            recentTime = now();
+        }
+
+        private long now() {
+            return Instant.now()
+                          .toEpochMilli();
+        }
+
+        @Test
+        @DisplayName("when values are equal")
+        void equalValues() {
+            assertSecondsEqual(recentTime, recentTime, 0);
+        }
+
+        @Test
+        @DisplayName("when values are close")
+        void closeValues() {
+            // This method would be called within 10 seconds.
+            Tests.assertSecondsEqual(recentTime, now(), 10);
+        }
+
+        @Test
+        @DisplayName("throw if condition is not met")
+        void failure() {
+            assertThrows(
+                    AssertionError.class,
+                    () -> Tests.assertSecondsEqual(100, 200, 2)
+            );
+        }
     }
 }

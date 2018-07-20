@@ -18,50 +18,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.util;
+package io.spine.logging;
 
 import io.spine.testing.UtilityClassTest;
-import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-
-import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * @author Alexander Yevsyukov
  */
-@SuppressWarnings({"InnerClassMayBeStatic", "ClassCanBeStatic"})
-@DisplayName("Preconditions2 utility class should")
-class Preconditions2Test extends UtilityClassTest<Preconditions2> {
+@DisplayName("Logging utility class should")
+class LoggingTest extends UtilityClassTest<Logging> {
 
-    Preconditions2Test() {
-        super(Preconditions2.class);
-    }
-
-    @Nested
-    @DisplayName("Check that a String is")
-    class StringArg {
-
-        private void assertThrowsOn(String arg) {
-            assertThrows(
-                    IllegalArgumentException.class,
-                    () -> checkNotEmptyOrBlank(arg)
-            );
-        }
-
-        @Test
-        @DisplayName("empty")
-        void emptyString() {
-            assertThrowsOn("");
-        }
-
-        @Test
-        @DisplayName("blank")
-        void blankString() {
-            assertThrowsOn(" ");
-            assertThrowsOn("  ");
-            assertThrowsOn("   ");
-        }
+    LoggingTest() {
+        super(Logging.class);
     }
 }
