@@ -727,9 +727,10 @@ public class MessageValidatorShould {
 
     @Test
     public void find_out_that_enclosed_message_field_is_valid() {
-        RequiredStringFieldValue enclosedMsg = RequiredStringFieldValue.newBuilder()
-                                                                       .setValue(newUuid())
-                                                                       .build();
+        PatternStringFieldValue enclosedMsg =
+                PatternStringFieldValue.newBuilder()
+                                       .setEmail("valid.email@mail.com")
+                                       .build();
         EnclosedMessageFieldValue msg = EnclosedMessageFieldValue.newBuilder()
                                                                  .setOuterMsgField(enclosedMsg)
                                                                  .build();
@@ -740,7 +741,9 @@ public class MessageValidatorShould {
 
     @Test
     public void find_out_that_enclosed_message_field_is_NOT_valid() {
-        RequiredStringFieldValue enclosedMsg = RequiredStringFieldValue.getDefaultInstance();
+        PatternStringFieldValue enclosedMsg = PatternStringFieldValue.newBuilder()
+                                                                     .setEmail("invalid email")
+                                                                     .build();
         EnclosedMessageFieldValue msg = EnclosedMessageFieldValue.newBuilder()
                                                                  .setOuterMsgField(enclosedMsg)
                                                                  .build();
@@ -751,10 +754,12 @@ public class MessageValidatorShould {
 
     @Test
     public void consider_field_is_valid_if_no_valid_option_set() {
-        RequiredStringFieldValue invalidEnclosedMsg = RequiredStringFieldValue.getDefaultInstance();
+        PatternStringFieldValue enclosedMsg = PatternStringFieldValue.newBuilder()
+                                                                     .setEmail("invalid email")
+                                                                     .build();
         EnclosedMessageWithoutAnnotationFieldValue msg =
                 EnclosedMessageWithoutAnnotationFieldValue.newBuilder()
-                                                          .setOuterMsgField(invalidEnclosedMsg)
+                                                          .setOuterMsgField(enclosedMsg)
                                                           .build();
         validate(msg);
 
@@ -763,7 +768,9 @@ public class MessageValidatorShould {
 
     @Test
     public void provide_valid_violations_if_enclosed_message_field_is_not_valid() {
-        RequiredStringFieldValue enclosedMsg = RequiredStringFieldValue.getDefaultInstance();
+        PatternStringFieldValue enclosedMsg = PatternStringFieldValue.newBuilder()
+                                                                     .setEmail("invalid email")
+                                                                     .build();
         EnclosedMessageFieldValue msg = EnclosedMessageFieldValue.newBuilder()
                                                                  .setOuterMsgField(enclosedMsg)
                                                                  .build();
