@@ -114,9 +114,9 @@ class Suppliers2Test extends UtilityClassTest<Suppliers2> {
             assertOutput(1, memoizing);
         }
 
-        void assertOutput(int expected, Supplier<Integer> supplier) {
+        private void assertOutput(int expected, Supplier<Integer> supplier) {
             assertEquals(expected, supplier.get()
-                                        .intValue());
+                                           .intValue());
         }
 
         /** The counter incrementing after each {@link #get()}. */
