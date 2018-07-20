@@ -20,34 +20,35 @@
 
 package io.spine.logging;
 
-import com.google.common.testing.NullPointerTester;
 import io.spine.logging.given.LoggingTestEnv.Base;
 import io.spine.logging.given.LoggingTestEnv.ChildOne;
 import io.spine.logging.given.LoggingTestEnv.ChildTwo;
-import org.junit.Test;
+import io.spine.testing.UtilityClassTest;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 
 import java.util.function.Supplier;
 
-import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Alexander Yevsyukov
  */
-public class LoggingShould {
+@DisplayName("Logging utility class should")
+class LoggingTest extends UtilityClassTest<Logging> {
 
-    @Test
-    public void have_utility_ctor() {
-        assertHasPrivateParameterlessCtor(Logging.class);
+    LoggingTest() {
+        super(Logging.class);
     }
 
     @Test
-    public void supply_logger_for_class() {
+    @DisplayName("create a logger for class")
+    void createLogger() {
         Supplier<Logger> supplier = Logging.supplyFor(getClass());
         Logger logger = supplier.get();
 
@@ -56,7 +57,8 @@ public class LoggingShould {
     }
 
     @Test
-    public void create_logger_for_each_class_in_hierarchy() {
+    @DisplayName("create a logger for each class in hierarchy")
+    void classHierarchy() {
         Logger baseLogger = new Base().log();
         Logger childOneLogger = new ChildOne().log();
         Logger childTwoLogger = new ChildTwo().log();
@@ -69,16 +71,16 @@ public class LoggingShould {
         assertNotEquals(baseLogger, childTwoLogger);
         assertNotEquals(childOneLogger, childTwoLogger);
 
-        assertTrue(baseLogger.getName()
-                             .contains(Base.class.getName()));
-        assertTrue(childOneLogger.getName()
-                                 .contains(ChildOne.class.getName()));
-        assertTrue(childTwoLogger.getName()
-                                 .contains(ChildTwo.class.getName()));
+        assertLogger(baseLogger, Base.class);
+        assertLogger(childOneLogger, ChildOne.class);
+        assertLogger(childTwoLogger, ChildTwo.class);
     }
 
-    @Test
-    public void pass_null_tolerance_check() {
-        new NullPointerTester().testAllPublicStaticMethods(Logging.class);
+    /**
+     * Asserts that the logger name contains the name of the passed class.
+     */
+    private static void assertLogger(Logger logger, Class<?> cls) {
+        assertTrue(logger.getName()
+                         .contains(cls.getName()));
     }
 }

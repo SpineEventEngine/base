@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 /**
  * @author Alexander Yevsyukov
  */
-@SuppressWarnings("InnerClassMayBeStatic")
+@SuppressWarnings({"InnerClassMayBeStatic", "ClassCanBeStatic"})
 @DisplayName("Preconditions2 utility class should")
 class Preconditions2Test extends UtilityClassTest<Preconditions2> {
 

@@ -33,7 +33,10 @@ import java.util.function.Supplier;
 import static com.google.common.testing.SerializableTester.reserializeAndAssert;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@SuppressWarnings({"InnerClassMayBeStatic", "Guava"}) // we test adaptation API.
+@SuppressWarnings({
+        "InnerClassMayBeStatic", "ClassCanBeStatic",
+        "Guava" /* we test adaptation API. */
+})
 @DisplayName("Suppliers2 utility class should")
 class Suppliers2Test extends UtilityClassTest<Suppliers2> {
 

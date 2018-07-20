@@ -112,27 +112,41 @@ public class Tests {
             return false;
         }
 
-        constructor.setAccessible(true);
-
-        //noinspection OverlyBroadCatchBlock
-        try {
-            // Call the constructor to include it into the coverage.
-
-            // Some of the coding conventions may encourage throwing AssertionError
-            // to prevent the instantiation of the target class,
-            // if it is designed as a utility class.
-            constructor.newInstance();
-        } catch (Exception ignored) {
-            return true;
-        }
+        callConstructor(constructor);
         return true;
     }
 
     /**
+     * Calls the passed constructor include it into the coverage.
+     *
+     * <p>Some of the coding conventions may encourage throwing {@link AssertionError}
+     * to prevent the instantiation of the target class, if it is designed as a utility class.
+     * This method catches all the exceptions which may be thrown by the constructor.
+     */
+    @SuppressWarnings("OverlyBroadCatchBlock") // see Javadoc
+    private static void callConstructor(Constructor constructor) {
+        boolean accessible = constructor.isAccessible();
+        if (!accessible) {
+            constructor.setAccessible(true);
+        }
+        try {
+            constructor.newInstance();
+        } catch (Exception ignored) {
+            // Do nothing.
+        } finally {
+            if (!accessible) {
+                constructor.setAccessible(false);
+            }
+        }
+    }
+
+    /**
      * Returns {@code null}.
-     * Use it when it is needed to pass {@code null} to a method in tests so that no
+     *
+     * <p>Use it when it is needed to pass {@code null} to a method in tests so that no
      * warnings suppression is needed.
      */
+    @SuppressWarnings("TypeParameterUnusedInFormals")
     public static <T> T nullRef() {
         T nullRef = null;
         return nullRef;
@@ -155,6 +169,14 @@ public class Tests {
         }
     }
 
+    /**
+     * Asserts that the difference between expected time and actual time is not bigger
+     * than set maximum.
+     *
+     * @param expectedSec expected timestamp value
+     * @param actualSec   actual timestamp value
+     * @param maxDiffSec  the maximum expected difference between the values
+     */
     public static void assertSecondsEqual(long expectedSec, long actualSec, long maxDiffSec) {
         long diffSec = abs(expectedSec - actualSec);
         assertTrue(diffSec <= maxDiffSec);
