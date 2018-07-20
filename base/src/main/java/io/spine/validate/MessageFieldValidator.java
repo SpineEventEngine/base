@@ -57,7 +57,7 @@ class MessageFieldValidator extends FieldValidator<Message> {
     MessageFieldValidator(FieldContext fieldContext,
                           Object fieldValues,
                           boolean strict) {
-        super(fieldContext, FieldValidator.toValueList(fieldValues), strict);
+        super(fieldContext, toValueList(fieldValues), strict);
         this.timeConstraint = getFieldOption(OptionsProto.when);
         this.fieldIsTimestamp = isTimestamp();
     }
