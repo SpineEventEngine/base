@@ -116,6 +116,10 @@ abstract class FieldValidator<V> {
         }
     }
 
+    protected boolean isValueNotSet() {
+        return values.isEmpty() || !isRepeatedOrMap() && isNotSet(values.get(0));
+    }
+
     /**
      * Checks if the field value is not set.
      *
@@ -126,7 +130,7 @@ abstract class FieldValidator<V> {
      * @param value a field value to check
      * @return {@code true} if the field is not set, {@code false} otherwise
      */
-    protected abstract boolean isValueNotSet(V value);
+    protected abstract boolean isNotSet(V value);
 
     /**
      * Validates messages according to Spine custom protobuf options and returns validation
@@ -186,8 +190,7 @@ abstract class FieldValidator<V> {
             addViolation(violation);
             return;
         }
-        V value = getValues().get(0);
-        if (isValueNotSet(value)) {
+        if (isValueNotSet()) {
             addViolation(newViolation(ifMissingOption));
         }
     }
@@ -214,7 +217,7 @@ abstract class FieldValidator<V> {
      * <p>If the field is repeated, it must have at least one value set, and all its values
      * must be valid.
      *
-     * <p>It is required to override {@link #isValueNotSet(Object)} method to use this one.
+     * <p>It is required to override {@link #isNotSet(Object)} method to use this one.
      */
     protected void checkIfRequiredAndNotSet() {
         if (!isRequiredField()) {
@@ -223,15 +226,8 @@ abstract class FieldValidator<V> {
             }
             return;
         }
-        if (values.isEmpty()) {
+        if (isValueNotSet()) {
             addViolation(newViolation(ifMissingOption));
-            return;
-        }
-        if (!isRepeatedOrMap()) {
-            V value = values.get(0);
-            if (isValueNotSet(value)) {
-                addViolation(newViolation(ifMissingOption));
-            }
         }
     }
 

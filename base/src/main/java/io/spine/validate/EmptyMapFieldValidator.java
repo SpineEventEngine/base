@@ -43,7 +43,7 @@ final class EmptyMapFieldValidator extends FieldValidator<Map<?, ?>> {
     }
 
     @Override
-    protected boolean isValueNotSet(Map<?, ?> value) {
+    protected boolean isNotSet(Map<?, ?> value) {
         return value.isEmpty();
     }
 

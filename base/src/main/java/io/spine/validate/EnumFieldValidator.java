@@ -42,7 +42,7 @@ class EnumFieldValidator extends FieldValidator<EnumValueDescriptor> {
     }
 
     @Override
-    protected boolean isValueNotSet(EnumValueDescriptor value) {
+    protected boolean isNotSet(EnumValueDescriptor value) {
         int intValue = value.getNumber();
         boolean result = intValue <= 0;
         return result;

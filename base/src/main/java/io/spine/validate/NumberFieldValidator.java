@@ -98,7 +98,7 @@ abstract class NumberFieldValidator<V extends Number & Comparable<V>> extends Fi
     }
 
     @Override
-    protected boolean isValueNotSet(V value) {
+    protected boolean isNotSet(V value) {
         int intValue = value.intValue();
         boolean result = intValue == 0;
         return result;

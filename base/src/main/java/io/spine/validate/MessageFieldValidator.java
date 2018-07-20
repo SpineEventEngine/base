@@ -64,7 +64,7 @@ class MessageFieldValidator extends FieldValidator<Message> {
 
     @Override
     protected void validateOwnRules() {
-        boolean validateFields = getValidateOption() && !isValueNotSet(getValues().get(0));
+        boolean validateFields = getValidateOption() && !isValueNotSet();
         if (validateFields) {
             validateFields();
         }
@@ -74,7 +74,7 @@ class MessageFieldValidator extends FieldValidator<Message> {
     }
 
     @Override
-    protected boolean isValueNotSet(Message value) {
+    protected boolean isNotSet(Message value) {
         boolean result = isDefault(value);
         return result;
     }
