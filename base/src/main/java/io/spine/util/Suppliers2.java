@@ -119,7 +119,7 @@ public class Suppliers2 {
     }
 
     /**
-     * Adapts  {@linkplain java.util.function.Supplier standard Supplier} to Guava's.
+     * Adapts {@linkplain java.util.function.Supplier standard Supplier} to Guava's.
      *
      * <p>This class is {@code Serializable} if the adaptee is {@code Serializable}.
      *
