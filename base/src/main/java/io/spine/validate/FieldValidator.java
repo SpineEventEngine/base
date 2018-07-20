@@ -119,7 +119,7 @@ abstract class FieldValidator<V> {
     /**
      * Checks if the value of the validated field is not set.
      *
-     * <p>Checks both repeated/map fields and ordinary single-value fields.
+     * <p>Works for both repeated/map fields and ordinary single-value fields.
      *
      * @return {@code true} if the field value is not set and {@code false} otherwise
      */
