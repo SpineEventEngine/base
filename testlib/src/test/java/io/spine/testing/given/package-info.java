@@ -18,6 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/**
+ * This package provides test environment for testing utilities.
+ */
+
 @CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.testing.given;
