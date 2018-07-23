@@ -134,11 +134,6 @@ public interface ValidatingBuilder<T extends Message, B extends Message.Builder>
         public int getIndex() {
             return this.index;
         }
-
-        @Override
-        public Class<?> getArgumentIn(Class<? extends ValidatingBuilder> cls) {
-            return Default.getArgument(this, cls);
-        }
     }
 
     /**
@@ -146,8 +141,8 @@ public interface ValidatingBuilder<T extends Message, B extends Message.Builder>
      */
     class TypeInfo {
 
+        /** Prevent construction from outside. */
         private TypeInfo() {
-            // Prevent construction from outside.
         }
 
         /**

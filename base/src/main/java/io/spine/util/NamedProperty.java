@@ -91,10 +91,5 @@ public abstract class NamedProperty<T, O> {
         public int getIndex() {
             return this.index;
         }
-
-        @Override
-        public Class<?> getArgumentIn(Class<? extends NamedProperty> cls) {
-            return Default.getArgument(this, cls);
-        }
     }
 }
