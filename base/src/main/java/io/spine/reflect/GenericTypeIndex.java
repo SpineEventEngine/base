@@ -87,8 +87,8 @@ public interface GenericTypeIndex<C> {
         // Replace this class with the default interface method when migrating to Java 8.
         //
 
+        /** Prevents instantiation of this utility class. */
         private Default() {
-            // Prevent instantiation of this utility class.
         }
 
         /**
@@ -102,11 +102,10 @@ public interface GenericTypeIndex<C> {
         public static <C> Class<?> getArgument(GenericTypeIndex<C> index, Class<? extends C> cls) {
             checkNotNull(index);
             checkNotNull(cls);
-            @SuppressWarnings("unchecked") /* The type is ensured by the declaration of
-                                              the GenericTypeIndex interface. */ Class<C> superclass = (Class<C>)
-                    getArgument(index.getClass(), GenericTypeIndex.class, 0);
-            Class<?> result =
-                    getArgument(cls, superclass, index.getIndex());
+            /* The type is ensured by the declaration of the GenericTypeIndex interface. */
+            @SuppressWarnings("unchecked") Class<C> superclass =
+                    (Class<C>) getArgument(index.getClass(), GenericTypeIndex.class, 0);
+            Class<?> result = getArgument(cls, superclass, index.getIndex());
             return result;
         }
 
