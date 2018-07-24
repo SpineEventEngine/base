@@ -54,10 +54,12 @@ public final class Types {
     public static <K, V> Type mapTypeOf(Class<K> keyClass, Class<V> valueClass) {
         checkNotNull(keyClass);
         checkNotNull(valueClass);
-
-        Type type = new TypeToken<Map<K, V>>() {}.where(new TypeParameter<K>() {}, keyClass)
-                                                       .where(new TypeParameter<V>() {}, valueClass)
-                                                       .getType();
+        // @formatter:off
+        Type type = new TypeToken<Map<K, V>>() {}
+                .where(new TypeParameter<K>() {}, keyClass)
+                .where(new TypeParameter<V>() {}, valueClass)
+                .getType();
+        // @formatter:on
         return type;
     }
 
@@ -70,10 +72,11 @@ public final class Types {
      */
     public static <T> Type listTypeOf(Class<T> elementClass) {
         checkNotNull(elementClass);
-
-        Type type =
-                new TypeToken<List<T>>() {}.where(new TypeParameter<T>() {}, elementClass)
-                                                 .getType();
+        // @formatter:off
+        Type type = new TypeToken<List<T>>() {}
+                    .where(new TypeParameter<T>() {}, elementClass)
+                    .getType();
+        // @formatter:on
         return type;
     }
 
@@ -93,9 +96,9 @@ public final class Types {
                                     int argNumber) {
         checkNotNull(cls);
         checkNotNull(genericSuperclass);
-
-        TypeToken<?> supertypeToken = TypeToken.of(cls)
-                                               .getSupertype(genericSuperclass);
+        TypeToken<?> supertypeToken =
+                TypeToken.of(cls)
+                         .getSupertype(genericSuperclass);
         ParameterizedType genericSupertype =
                 (ParameterizedType) supertypeToken.getType();
         Type[] typeArguments = genericSupertype.getActualTypeArguments();
