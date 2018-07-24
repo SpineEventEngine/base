@@ -20,12 +20,8 @@
 
 package io.spine.reflect;
 
-import com.google.common.testing.NullPointerTester;
-import io.spine.reflect.GenericTypeIndex.Default;
 import org.junit.Test;
 
-import static io.spine.reflect.GenericTypeIndex.Default.getArgument;
-import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -34,27 +30,16 @@ import static org.junit.Assert.assertEquals;
 public class GenericTypeIndexShould {
 
     @Test
-    public void have_utility_ctor_in_the_Default_class() {
-        assertHasPrivateParameterlessCtor(Default.class);
-    }
-
-    @Test
     public void obtain_generic_argument_assuming_generic_superclass() {
         Parametrized<Long, String> val = new Parametrized<Long, String>() {};
-        assertEquals(Long.class, getArgument(val.getClass(), Base.class, 0));
-        assertEquals(String.class, getArgument(val.getClass(), Base.class, 1));
+        assertEquals(Long.class, Types.getArgument(val.getClass(), Base.class, 0));
+        assertEquals(String.class, Types.getArgument(val.getClass(), Base.class, 1));
     }
 
     @Test
     public void obtain_generic_argument_via_superclass() {
-        assertEquals(String.class, getArgument(Leaf.class, Base.class, 0));
-        assertEquals(Float.class, getArgument(Leaf.class, Base.class, 1));
-    }
-
-    @Test
-    public void pass_null_tolerance_check() {
-        new NullPointerTester()
-                .testAllPublicStaticMethods(Default.class);
+        assertEquals(String.class, Types.getArgument(Leaf.class, Base.class, 0));
+        assertEquals(Float.class, Types.getArgument(Leaf.class, Base.class, 1));
     }
 
     @SuppressWarnings({"EmptyClass", "unused"})

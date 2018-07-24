@@ -20,13 +20,8 @@
 
 package io.spine.reflect;
 
-import com.google.common.reflect.TypeToken;
-
-import javax.annotation.CheckReturnValue;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.reflect.Types.getArgument;
 
 /**
  * Base interface for enumerations on generic parameters of types.
@@ -59,7 +54,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * }
  * }
  * </pre>
- * @param <C> the type in which class the generic index is declared
+ * @param <C> the type for which class the generic index is declared
  * @author Alexander Yevsyukov
  */
 public interface GenericTypeIndex<C> {
@@ -75,67 +70,15 @@ public interface GenericTypeIndex<C> {
      * @param cls the class to inspect
      * @return the argument class
      */
-    Class<?> getArgumentIn(Class<? extends C> cls);
-
-    /**
-     * Allows to obtain argument value of the {@code <C>} generic parameter for
-     * {@code GenericTypeIndex} implementations.
-     */
-    class Default {
-
-        //
-        // Replace this class with the default interface method when migrating to Java 8.
-        //
-
-        private Default() {
-            // Prevent instantiation of this utility class.
-        }
-
-        /**
-         * Obtains a generic argument of the passed class.
-         *
-         * @param index the index of the generic argument
-         * @param cls   the class in which inheritance chain the argument is specified
-         * @param <C>   the type of the class
-         * @return      the value of the generic argument
-         */
-        public static <C> Class<?> getArgument(GenericTypeIndex<C> index, Class<? extends C> cls) {
-            checkNotNull(index);
-            checkNotNull(cls);
-            @SuppressWarnings("unchecked") /* The type is ensured by the declaration of
-                                              the GenericTypeIndex interface. */ Class<C> superclass = (Class<C>)
-                    getArgument(index.getClass(), GenericTypeIndex.class, 0);
-            Class<?> result =
-                    getArgument(cls, superclass, index.getIndex());
-            return result;
-        }
-
-        /**
-         * Obtains the class of a generic type argument which is specified in the inheritance chain
-         * of the passed class.
-         *
-         * @param cls               the end class for which we find the generic argument
-         * @param genericSuperclass the superclass of the passed which has generic parameters
-         * @param argNumber         the index of the generic parameter in the superclass
-         * @param <T>               the type of superclass
-         * @return the class of the generic type argument
-         */
-        @CheckReturnValue
-        static <T> Class<?> getArgument(Class<? extends T> cls,
-                                        Class<T> genericSuperclass,
-                                        int argNumber) {
-            checkNotNull(cls);
-            checkNotNull(genericSuperclass);
-
-            TypeToken<?> supertypeToken = TypeToken.of(cls)
-                                                   .getSupertype(genericSuperclass);
-            ParameterizedType genericSupertype =
-                    (ParameterizedType) supertypeToken.getType();
-            Type[] typeArguments = genericSupertype.getActualTypeArguments();
-            Type typeArgument = typeArguments[argNumber];
-            @SuppressWarnings("unchecked") // The type is ensured by the calling code.
-            Class<?> result = (Class<?>) typeArgument;
-            return result;
-        }
+    default Class<?> getArgumentIn(Class<? extends C> cls) {
+        checkNotNull(cls);
+        Class<? extends GenericTypeIndex> indexClass = getClass();
+        // Obtain the super class of the passed one by inspecting the class which implements
+        // `GenericTypeIndex`.
+        // The type cast is ensured by the declaration of the `GenericTypeIndex` interface.
+        @SuppressWarnings("unchecked") Class<C> superclassOfPassed =
+                (Class<C>) getArgument(indexClass, GenericTypeIndex.class, 0);
+        Class<?> result = getArgument(cls, superclassOfPassed, getIndex());
+        return result;
     }
 }
