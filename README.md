@@ -30,7 +30,6 @@ This repository also contains:
 * [Test utilities](tools/plugin-testlib) for Spine plugins. // todo Add readme
 * [Integration tests](tools/smoke-tests) for all Spine tools. // todo Add readme
 
-
 **Coverage**
 
 Currently the coverage stats reflect the hits gathered from unit tests. 
