@@ -6,31 +6,39 @@
 
 This repository contains the code of foundation of the Spine Event Engine framework which includes:
 
-* The framework [base](base) data types.
-* [Utilities for testing](testlib).
+* The framework [base](base) data types. // todo Add readme
+* [Validating Builders](base-validating-builders) for `base` Protobuf definitions.
+* [Utilities for testing](testlib). // todo Add readme
 * Gradle plug-ins:
-  * [Spine Model Compiler](tools/gradle-plugins/model-compiler) — 
-    transforms a domain model defined in proto files into Java code.  
-  * [Google Cloud Storage Gradle plugin](tools/gradle-plugins/gcs-plugin) — 
-    allows to store build log in a Google Cloud Storage bucket.
-  * [Spine Javadoc](tools/gradle-plugins/spine-javadoc) — 
-    processes Javadocs of generated files.
-  * [Code Style Checker](tools/gradle-plugins/codestyle-checker) — utility plugin for 
-    verifying Java code conventions.
-  * [Reflections Plugin](tools/gradle-plugins/reflections-plugin) — 
-    Gradle port of Maven Reflections plugin required for Reflections framework.
+  * [Spine Model Compiler](tools/model-compiler) — 
+    transforms a domain model defined in proto files into the Java code. // todo Add readme
+  * [Spine Javadoc Prettifier](tools/javadoc-prettifier) — processes Javadocs of generated files. // todo Add readme
+  * [Reflections Plugin](tools/reflections-plugin) — 
+    Gradle port of Maven Reflections plugin required for Reflections framework. // todo Add readme
 * [Protoc plugin](tools/protoc-plugin) —
     a plug-in for Google Protobuf compiler for generating custom code for framework-specific message
     types.
-    
+* [Spine Javadoc Filter](tools/javadoc-filter) — excludes elements annotated with 
+  `io.spine.Internal` from the generated doc. // todo Add readme
+
 These components are used by [core-java](https://github.com/SpineEventEngine/core-java) and are not
 supposed to be used directly by the end user project.
+
+This repository also contains:
+
+* A [common base](tools/plugin-base) for Spine Gradle plugins. // todo Add readme
+* [Test utilities](tools/plugin-testlib) for Spine plugins. // todo Add readme
+* [Integration tests](tools/smoke-tests) for all Spine tools. // todo Add readme
+
 
 **Coverage**
 
 Currently the coverage stats reflect the hits gathered from unit tests. 
 
-However, Gradle plugins, that are a significant part of this repository, are covered with integration tests. During each of those a standalone Gradle process is launched. The limitations of `jacoco` task API do not allow to include the coverage of such tests into the repository coverage report easily. 
+However, Gradle plugins, that are a significant part of this repository, are covered with 
+integration tests. During each of those a standalone Gradle process is launched. The limitations of 
+`jacoco` task API do not allow to include the coverage of such tests into the repository coverage 
+report easily. 
 
 Therefore the current coverage percentage shown is significantly lower than a real one.
 
