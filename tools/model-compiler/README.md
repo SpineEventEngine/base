@@ -9,10 +9,10 @@ some features specific to the Spine application model.
 
 These features include:
 
-* [Annotating](src/main/java/io/spine/tools/compiler/annotation) Java files generated from Protobuf 
-definitions.
+* [Annotating](src/main/java/io/spine/tools/compiler/annotation) Java files generated from the 
+Protobuf definitions.
 * Event [enrichments](src/main/java/io/spine/tools/compiler/enrichment).
-* [Generating](src/main/java/io/spine/tools/compiler/rejection) Rejections from proto messages.
+* [Generating](src/main/java/io/spine/tools/compiler/rejection) Rejections from the proto messages.
 * Various [validation tools](src/main/java/io/spine/tools/compiler/validation) including
 [Validating Builders creation](src/main/java/io/spine/tools/gradle/compiler/ValidatingBuilderGenPlugin.java).
 
@@ -37,29 +37,29 @@ The validating builders generation can be disabled as follows:
 
 ```groovy
 modelCompiler {
-      generateValidatingBuilders = false
+    generateValidatingBuilders = false
 }
 ```
 
-By default, the value is true.
+By default, the value is `true`.
 
 All code in the validating builders is indented with spaces. To set the width, please use the 
 `indent` property of the `modelCompiler`:
 
 ```groovy
 modelCompiler {
-      indent = 2
+    indent = 2
 }
 ```
 
-By default, the value is 4.
+By default, the value is `4`.
 
 There is also a flag that forces Compiler to generate all validating builders from the classpath. 
 It can be used as follows:
 
 ```groovy
 modelCompiler {
-      generateBuildersFromClasspath = true
+    generateBuildersFromClasspath = true
 }
 ```
 
