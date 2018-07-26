@@ -8,8 +8,9 @@ Packages of this module include:
 
 * Common [annotations](src/main/java/io/spine/annotation) for the Java code.
 * Utilities for working with [Java](src/main/java/io/spine/code/java), 
-[Protobuf](src/main/java/io/spine/code/proto), [Properties](src/main/java/io/spine/code/properties)
-files.
+  [Protobuf](src/main/java/io/spine/code/proto), 
+  [Properties](src/main/java/io/spine/code/properties)
+  files.
 * [Tools](src/main/java/io/spine/io) for I/O operations.
 * JSON [utilities](src/main/java/io/spine/json).
 * Logging [tools](src/main/java/io/spine/logging) based on [SLF4J](https://www.slf4j.org/).
