@@ -1,4 +1,4 @@
-# Spine testlib
+# Spine test library
 
 This module stores utilities for testing the Spine framework.
 
