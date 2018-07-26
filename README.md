@@ -9,16 +9,14 @@ This repository contains the code of foundation of the Spine Event Engine framew
 * The framework [base](base) data types and utilities.
 * [Utilities for testing](testlib).
 * Gradle plug-ins:
-  * [Spine Model Compiler](tools/model-compiler) — 
-    transforms a domain model defined in proto files into the Java code.
-  * [Spine Javadoc Prettifier](tools/javadoc-prettifier) — 
-    processes Javadocs of generated files.
+  * [Spine Model Compiler](tools/model-compiler) — transforms a domain model defined in proto files 
+    into the Java code.
+  * [Spine Javadoc Prettifier](tools/javadoc-prettifier) — processes Javadocs of generated files.
   * [Reflections Plugin](tools/reflections-plugin) — Gradle port of 
     [Maven Reflections plugin](https://mvnrepository.com/artifact/org.reflections/reflections-maven) 
     required for Reflections framework.
-* [Protoc plugin](tools/protoc-plugin) —
-    a plug-in for Google Protobuf compiler for generating custom code for framework-specific message
-    types.
+* [Protoc plugin](tools/protoc-plugin) — a plug-in for Google Protobuf compiler for generating 
+  custom code for framework-specific message types.
 * [Spine Javadoc Filter](tools/javadoc-filter) — excludes elements annotated with 
   `io.spine.Internal` from the generated doc.
 
