@@ -11,7 +11,7 @@ Packages of this module include:
 [Properties](code/properties).
 * [Tools](io) for I/O operations.
 * JSON [utilities](json).
-* Logging [tools](logging) based on SLF4J.
+* Logging [tools](logging) based on [SLF4J](https://www.slf4j.org/).
 * [Data types and utilities](money) for working with monetary values.
 * [Classes and interfaces](net) for Internet data types.
 * [Utilities](option) for working with custom Protobuf Options.
