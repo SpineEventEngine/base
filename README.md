@@ -6,7 +6,7 @@
 
 This repository contains the code of foundation of the Spine Event Engine framework which includes:
 
-* The framework [base](base) data types. // todo Add readme
+* The framework [base](base) data types.
 * [Validating Builders](base-validating-builders) for `base` Protobuf definitions.
 * [Utilities for testing](testlib). // todo Add readme
 * Gradle plug-ins:
