@@ -15,7 +15,7 @@ This repository contains the code of foundation of the Spine Event Engine framew
     processes Javadocs of generated files.
   * [Reflections Plugin](tools/reflections-plugin) — Gradle port of 
     [Maven Reflections plugin](https://mvnrepository.com/artifact/org.reflections/reflections-maven) 
-    required for Reflections framework. // todo Add readme
+    required for Reflections framework.
 * [Protoc plugin](tools/protoc-plugin) —
     a plug-in for Google Protobuf compiler for generating custom code for framework-specific message
     types.
