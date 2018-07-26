@@ -26,4 +26,4 @@ protoJavadoc {
  ```
  
  Directories are specified relative to the project root and should contain files generated from 
- `.proto` definitions. If they contain other files, they will be formatted too.
+ the `.proto` definitions. If directories contain other files, they will be formatted too.
