@@ -20,7 +20,7 @@ This repository contains the code of foundation of the Spine Event Engine framew
     a plug-in for Google Protobuf compiler for generating custom code for framework-specific message
     types.
 * [Spine Javadoc Filter](tools/javadoc-filter) — excludes elements annotated with 
-  `io.spine.Internal` from the generated doc. // todo Add readme
+  `io.spine.Internal` from the generated doc.
 
 These components are used by [core-java](https://github.com/SpineEventEngine/core-java) and are not
 supposed to be used directly by the end user project.
