@@ -5,7 +5,7 @@ This module contains Spine Model Compiler and the associated utilities.
 The Model Compiler assembles the domain model contained in `.proto` files into the Java code. 
 
 It uses the [Spine Protobuf Compiler](../protoc-plugin) plugin in its core and adds processing of 
-some features specific to the Spine application model. 
+various features specific to the Spine application model. 
 
 These features include:
 
