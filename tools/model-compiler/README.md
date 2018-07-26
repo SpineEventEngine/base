@@ -31,5 +31,40 @@ All operations performed by the Spine Model Compiler plugin are automatically in
 
 The required version of the Protobuf Gradle plugin is `0.8.3` or higher.
 
+## Settings
+
+The validating builders generation can be disabled as follows:
+
+```groovy
+modelCompiler {
+      generateValidatingBuilders = false
+}
+```
+
+By default, the value is true.
+
+All code in the validating builders is indented with spaces. To set the width, please use the 
+`indent` property of the `modelCompiler`:
+
+```groovy
+modelCompiler {
+      indent = 2
+}
+```
+
+By default, the value is 4.
+
+There is also a flag that forces Compiler to generate all validating builders from class path. It 
+can be used as follows:
+
+```groovy
+modelCompiler {
+      generateBuildersFromClasspath = true
+}
+```
+
+By default, builders are generated only for the Protobuf messages  from the current module.
+
+
 
 
