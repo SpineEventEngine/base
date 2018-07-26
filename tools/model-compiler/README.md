@@ -54,8 +54,8 @@ modelCompiler {
 
 By default, the value is 4.
 
-There is also a flag that forces Compiler to generate all validating builders from class path. It 
-can be used as follows:
+There is also a flag that forces Compiler to generate all validating builders from the classpath. 
+It can be used as follows:
 
 ```groovy
 modelCompiler {
