@@ -12,7 +12,8 @@ These features include:
 * [Annotating](src/main/java/io/spine/tools/compiler/annotation) Java files generated from the 
 Protobuf definitions.
 * Event [enrichments](src/main/java/io/spine/tools/compiler/enrichment).
-* [Generating](src/main/java/io/spine/tools/compiler/rejection) Rejections from the proto messages.
+* [Generating](src/main/java/io/spine/tools/compiler/rejection) Rejections from the `proto` 
+messages.
 * Various [validation tools](src/main/java/io/spine/tools/compiler/validation) including
 [Validating Builders creation](src/main/java/io/spine/tools/gradle/compiler/ValidatingBuilderGenPlugin.java).
 
