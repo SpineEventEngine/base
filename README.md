@@ -7,7 +7,6 @@
 This repository contains the code of foundation of the Spine Event Engine framework which includes:
 
 * The framework [base](base) data types and utilities.
-* [Validating Builders](base-validating-builders) for Protobuf definitions of this repository.
 * [Utilities for testing](testlib). // todo Add readme
 * Gradle plug-ins:
   * [Spine Model Compiler](tools/model-compiler) — 
@@ -26,6 +25,7 @@ supposed to be used directly by the end user project.
 
 The repository also contains:
 
+* `base` Validating Builders [assembler](base-validating-builders).
 * A [common base](tools/plugin-base) for Spine Gradle plugins. // todo Add readme
 * [Test utilities](tools/plugin-testlib) for Spine plugins. // todo Add readme
 * [Integration tests](tools/smoke-tests) for all Spine tools. // todo Add readme
