@@ -1,6 +1,6 @@
 # Spine Javadoc Prettifier
 
-The Gradle plugin which assists in Javadoc formatting across files generated from Protobuf 
+The Gradle plugin which assists in Javadoc formatting across files generated from the Protobuf 
 definitions.
 
 The plugin does the following formatting:
