@@ -10,8 +10,9 @@ This repository contains the code of foundation of the Spine Event Engine framew
 * [Utilities for testing](testlib).
 * Gradle plug-ins:
   * [Spine Model Compiler](tools/model-compiler) — 
-    transforms a domain model defined in proto files into the Java code. // todo Add readme
-  * [Spine Javadoc Prettifier](tools/javadoc-prettifier) — processes Javadocs of generated files. // todo Add readme
+    transforms a domain model defined in proto files into the Java code.
+  * [Spine Javadoc Prettifier](tools/javadoc-prettifier) — 
+    processes Javadocs of generated files. // todo Add readme
   * [Reflections Plugin](tools/reflections-plugin) — 
     Gradle port of Maven Reflections plugin required for Reflections framework. // todo Add readme
 * [Protoc plugin](tools/protoc-plugin) —
