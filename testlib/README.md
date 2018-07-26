@@ -2,7 +2,6 @@
 
 This module stores utilities for testing the Spine framework.
 
-
 The utilities include common base classes for tests like 
 [utility class test](src/main/java/io/spine/testing/UtilityClassTest.java), custom 
 [assert statements](src/main/java/io/spine/testing/Verify.java), common test 
