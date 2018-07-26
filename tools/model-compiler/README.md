@@ -64,7 +64,3 @@ modelCompiler {
 ```
 
 By default, builders are generated only for the Protobuf messages  from the current module.
-
-
-
-
