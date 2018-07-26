@@ -28,9 +28,9 @@ supposed to be used directly by the end user project.
 The repository also contains:
 
 * `base` Validating Builders [assembler](base-validating-builders).
-* A [common base](tools/plugin-base) for Spine Gradle plugins. // todo Add readme
-* [Test utilities](tools/plugin-testlib) for Spine plugins. // todo Add readme
-* [Integration tests](tools/smoke-tests) for all Spine tools. // todo Add readme
+* A [common base](tools/plugin-base) for Spine Gradle plugins.
+* [Test utilities](tools/plugin-testlib) for Spine plugins.
+* [Integration tests](tools/smoke-tests) for all Spine tools.
 
 **Coverage**
 
