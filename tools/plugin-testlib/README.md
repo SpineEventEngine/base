@@ -1,4 +1,4 @@
-# Spine plugin testlib
+# Spine plugin test library
 
 This module contains utilities for testing Spine Gradle plugins.
 
