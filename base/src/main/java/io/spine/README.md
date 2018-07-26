@@ -19,5 +19,5 @@ Packages of this module include:
 * Various [stringifiers](string).
 * [Utilities](validate) for validation.
 
-These tools are internal for the Spine project and are not supposed to be utilized in the end user
+These tools are internal to the Spine project and are not supposed to be utilized in the end user
 code. Thus, the API of this module may change at any time.
