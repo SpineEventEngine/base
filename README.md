@@ -7,7 +7,7 @@
 This repository contains the code of foundation of the Spine Event Engine framework which includes:
 
 * The framework [base](base) data types and utilities.
-* [Utilities for testing](testlib). // todo Add readme
+* [Utilities for testing](testlib).
 * Gradle plug-ins:
   * [Spine Model Compiler](tools/model-compiler) — 
     transforms a domain model defined in proto files into the Java code. // todo Add readme
