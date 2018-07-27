@@ -23,15 +23,18 @@ package io.spine.tools.protoc;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Message;
+import com.squareup.javapoet.AnnotationSpec;
+import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
 import io.spine.code.java.PackageName;
 import io.spine.code.java.SourceFile;
 
+import javax.annotation.Generated;
 import java.util.Objects;
 
+import static io.spine.code.Generation.compilerAnnotation;
 import static io.spine.code.java.PackageName.DELIMITER;
-import static io.spine.tools.compiler.annotation.Annotations.generatedBySpineModelCompiler;
 import static javax.lang.model.element.Modifier.PUBLIC;
 
 /**
@@ -42,6 +45,12 @@ import static javax.lang.model.element.Modifier.PUBLIC;
  * @author Dmytro Dashenkov
  */
 final class MarkerInterfaceSpec {
+
+    private static final AnnotationSpec BY_MODEL_COMPILER =
+            AnnotationSpec.builder(Generated.class)
+                          .addMember(compilerAnnotation().getFieldName(),
+                                     CodeBlock.of(compilerAnnotation().getCodeBlock()))
+                          .build();
 
     private final String packageName;
     private final String name;
@@ -79,13 +88,15 @@ final class MarkerInterfaceSpec {
      * Converts the instance to {@link JavaFile}.
      */
     JavaFile toJavaCode() {
-        TypeSpec spec = TypeSpec.interfaceBuilder(getName())
-                                .addSuperinterface(Message.class)
-                                .addModifiers(PUBLIC)
-                                .addAnnotation(generatedBySpineModelCompiler())
-                                .build();
-        JavaFile javaFile = JavaFile.builder(packageName, spec)
-                                    .build();
+        TypeSpec spec = TypeSpec
+                .interfaceBuilder(getName())
+                .addSuperinterface(Message.class)
+                .addModifiers(PUBLIC)
+                .addAnnotation(BY_MODEL_COMPILER)
+                .build();
+        JavaFile javaFile = JavaFile
+                .builder(packageName, spec)
+                .build();
         return javaFile;
     }
 
