@@ -30,8 +30,8 @@ import io.spine.code.java.SourceFile;
 
 import java.util.Objects;
 
-import static io.spine.code.java.Annotations.generatedBySpineModelCompiler;
 import static io.spine.code.java.PackageName.DELIMITER;
+import static io.spine.tools.compiler.annotation.Annotations.generatedBySpineModelCompiler;
 import static javax.lang.model.element.Modifier.PUBLIC;
 
 /**

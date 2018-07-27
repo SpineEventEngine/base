@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.java;
+package io.spine.tools.compiler.annotation;
 
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.squareup.javapoet.AnnotationSpec;
@@ -54,20 +54,16 @@ public final class Annotations {
     }
 
     /**
-     * Generates {@code @Generated("by Spine Model Compiler")} annotation spec.
-     *
-     * @return an {@code AnnotationSpec} describing the {@link Generated javax.annotation.Generated}
-     *         annotation
+     * Obtains annotation spec. for
+     * {@link javax.annotation.Generated @Generated("by Spine Model Compiler")}
      */
     public static AnnotationSpec generatedBySpineModelCompiler() {
         return GENERATED;
     }
 
     /**
-     * Generates {@code @CanIgnoreReturnValue} annotation spec.
-     *
-     * @return an {@code AnnotationSpec} describing the {@link CanIgnoreReturnValue
-     *         com.google.errorprone.annotations.CanIgnoreReturnValue} annotation
+     * Obtains {@link com.google.errorprone.annotations.CanIgnoreReturnValue @CanIgnoreReturnValue}
+     * annotation spec.
      */
     public static AnnotationSpec canIgnoreReturnValue() {
         return CAN_IGNORE_RETURN_VALUE;

@@ -18,30 +18,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.java;
+package io.spine.tools.compiler.annotation;
 
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.TypeName;
-import org.junit.Test;
+import io.spine.testing.UtilityClassTest;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import javax.annotation.Generated;
 
-import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
+import static io.spine.tools.compiler.annotation.Annotations.generatedBySpineModelCompiler;
 import static org.junit.Assert.assertEquals;
 
 /**
  * @author Dmytro Dashenkov
  */
-public class AnnotationsShould {
+@DisplayName("Annotations utility class should")
+class AnnotationsTest extends UtilityClassTest<Annotations> {
 
-    @Test
-    public void have_util_ctor() {
-        assertHasPrivateParameterlessCtor(Annotations.class);
+    AnnotationsTest() {
+        super(Annotations.class);
     }
 
     @Test
-    public void return_generated_annotation_spec() {
-        AnnotationSpec spec = Annotations.generatedBySpineModelCompiler();
+    @DisplayName("provide Model Compiler annotation")
+    void ofModelCompiler() {
+        AnnotationSpec spec = generatedBySpineModelCompiler();
         assertEquals(spec.type, TypeName.get(Generated.class));
     }
 }
