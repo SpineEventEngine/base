@@ -156,7 +156,7 @@ public class Tests {
      * Asserts that the passed message has a field that matches the passed field mask.
      *
      * @param message the message to assert
-     * @param fieldMask  which is matched against the message field
+     * @param fieldMask which is matched against the message field
      *
      * @throws AssertionError if the check fails
      */
