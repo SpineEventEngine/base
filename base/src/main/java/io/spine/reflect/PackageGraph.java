@@ -20,6 +20,7 @@
 
 package io.spine.reflect;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Sets;
 import com.google.common.graph.ElementOrder;
@@ -29,16 +30,17 @@ import com.google.common.graph.GraphBuilder;
 import com.google.common.graph.ImmutableGraph;
 import com.google.common.graph.MutableGraph;
 
+import java.util.ArrayDeque;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Queue;
 import java.util.Set;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Suppliers.memoize;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 
@@ -50,18 +52,19 @@ import static java.util.stream.Collectors.toList;
  */
 public final class PackageGraph implements Graph<PackageGraph.Node> {
 
-    private static final Supplier<ImmutableList<Package>> packages = memoize(
-            () -> {
-                Package[] knownPackages = Package.getPackages();
-                Arrays.sort(knownPackages, comparing(Package::getName));
-                return ImmutableList.copyOf(knownPackages);
-            }
-    );
-
     private final ImmutableGraph<Node> impl;
 
     private PackageGraph(Graph<Node> graph) {
         this.impl = ImmutableGraph.copyOf(graph);
+    }
+
+    /**
+     * Obtains alphabetically sorted list of packages visible to the caller's {@code ClassLoader}.
+     */
+    private static ImmutableList<Package> packages() {
+        Package[] knownPackages = Package.getPackages();
+        Arrays.sort(knownPackages, comparing(Package::getName));
+        return ImmutableList.copyOf(knownPackages);
     }
 
     /**
@@ -83,6 +86,13 @@ public final class PackageGraph implements Graph<PackageGraph.Node> {
         return create(filteredPackages);
     }
 
+    private static List<Package> filterPackages(Predicate<Package> predicate) {
+        List<Package> result = packages().stream()
+                                         .filter(predicate)
+                                         .collect(toList());
+        return result;
+    }
+
     private static PackageGraph create(List<Package> filteredPackages) {
         Graph<Node> mutableGraph = buildGraph(filteredPackages);
         PackageGraph result = new PackageGraph(mutableGraph);
@@ -92,17 +102,13 @@ public final class PackageGraph implements Graph<PackageGraph.Node> {
     private static Graph<Node> buildGraph(List<Package> packages) {
         MutableGraph<Node> graph = GraphBuilder.directed()
                                                .build();
+        Queue<Package> deque = new ArrayDeque<>(packages);
+        Package first = deque.poll();
+        while (first != null) {
+
+        }
         //TODO:2018-07-27:alexander.yevsyukov: Add nodes
         return graph;
-    }
-
-    private static List<Package> filterPackages(Predicate<Package> predicate) {
-        List<Package> result =
-                packages.get()
-                        .stream()
-                        .filter(predicate)
-                        .collect(toList());
-        return result;
     }
 
     @Override
@@ -168,6 +174,11 @@ public final class PackageGraph implements Graph<PackageGraph.Node> {
     @Override
     public boolean hasEdgeConnecting(Node nodeU, Node nodeV) {
         return impl.hasEdgeConnecting(nodeU, nodeV);
+    }
+
+    private static void checkNotNullOrEmpty(String packagePrefix) {
+        checkNotNull(packagePrefix);
+        checkArgument(!packagePrefix.isEmpty(), "Package prefix cannot be empty");
     }
 
     /**
@@ -267,8 +278,5 @@ public final class PackageGraph implements Graph<PackageGraph.Node> {
             return true;
         }
     }
-    private static void checkNotNullOrEmpty(String packagePrefix) {
-        checkNotNull(packagePrefix);
-        checkArgument(!packagePrefix.isEmpty(), "Package prefix cannot be empty");
-    }
+
 }
