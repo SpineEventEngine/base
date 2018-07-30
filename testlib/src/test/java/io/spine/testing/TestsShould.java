@@ -21,7 +21,9 @@
 package io.spine.testing;
 
 import com.google.common.testing.NullPointerTester;
+import com.google.protobuf.Any;
 import com.google.protobuf.FieldMask;
+import com.google.protobuf.Timestamp;
 import io.spine.testing.given.TestsTestEnv.ClassThrowingExceptionInConstructor;
 import io.spine.testing.given.TestsTestEnv.ClassWithCtorWithArgs;
 import io.spine.testing.given.TestsTestEnv.ClassWithPrivateCtor;
@@ -33,6 +35,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 
+import static io.spine.testing.Tests.assertMatchesMask;
 import static io.spine.testing.Tests.assertSecondsEqual;
 import static io.spine.testing.Tests.hasPrivateParameterlessCtor;
 import static org.junit.Assert.assertFalse;
@@ -133,6 +136,65 @@ class TestsShould extends UtilityClassTest<Tests> {
                     AssertionError.class,
                     () -> Tests.assertTrue(false)
             );
+        }
+    }
+
+    @Nested
+    @DisplayName("Assert matches mask")
+    class AssertMatchesMask {
+
+        private Timestamp timestampMsg;
+
+        @BeforeEach
+        void setUp(){
+            long currentTime = Instant.now()
+                                      .toEpochMilli();
+            timestampMsg = Timestamp.newBuilder()
+                                    .setSeconds(currentTime)
+                                    .build();
+        }
+
+        @Test
+        @DisplayName("when field is matched")
+        void fieldIsPresent() {
+            String fieldPath = Timestamp.getDescriptor()
+                                        .getFields()
+                                        .get(0)
+                                        .getFullName();
+            FieldMask.Builder builder = FieldMask.newBuilder();
+            builder.addPaths(fieldPath);
+            FieldMask fieldMask = builder.build();
+
+            assertMatchesMask(timestampMsg, fieldMask);
+        }
+
+        @Test
+        @DisplayName("throws the error when field is not present")
+        void fieldIsNotPresent() {
+            String fieldPath = Any.getDescriptor()
+                                  .getFields()
+                                  .get(0)
+                                  .getFullName();
+            FieldMask.Builder builder = FieldMask.newBuilder();
+            builder.addPaths(fieldPath);
+            FieldMask fieldMask = builder.build();
+
+            assertThrows(AssertionError.class, () -> assertMatchesMask(timestampMsg, fieldMask));
+        }
+
+        @Test
+        @DisplayName("throws the error when the field value is not set")
+        void fieldIsNotSet() {
+            String fieldPath = Timestamp.getDescriptor()
+                                        .getFields()
+                                        .get(0)
+                                        .getFullName();
+            FieldMask.Builder builder = FieldMask.newBuilder();
+            builder.addPaths(fieldPath);
+            FieldMask fieldMask = builder.build();
+
+            assertThrows(AssertionError.class,
+                         () -> assertMatchesMask(Timestamp.getDefaultInstance(), fieldMask));
         }
     }
 
