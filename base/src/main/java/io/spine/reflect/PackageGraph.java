@@ -29,6 +29,7 @@ import com.google.common.graph.Graph;
 import com.google.common.graph.GraphBuilder;
 import com.google.common.graph.ImmutableGraph;
 import com.google.common.graph.MutableGraph;
+import com.google.errorprone.annotations.Immutable;
 
 import java.util.ArrayDeque;
 import java.util.Arrays;
@@ -48,8 +49,23 @@ import static java.util.stream.Collectors.toList;
  * Provides nesting information for packages {@linkplain Package#getPackages() known}
  * to the caller's {@code ClassLoader}
  *
+ * <p>Java does not support true nesting of packages. Package merely form namespaces for classes.
+ * Still, the package naming pattern, storage of source code files in a file system, and
+ * directory-like representation of package nesting in modern IDEs suggest that there is some form
+ * of nesting, at least in terms of naming.
+ *
+ * <p>This class implements a {@linkplain Graph#isDirected() directed} {@link Graph} with nodes
+ * representing Java packages, and edges representing child -&gt; parent relationships:
+ *
+ * <pre>
+ *     java.util.concurrent.atomic -&gt; java.util.concurrent
+ *     java.util.concurrent -&gt; java.util
+ *     java.util.function -&gt; java.util
+ * </pre>
+ *
  * @author Alexander Yevsyukov
  */
+@Immutable
 public final class PackageGraph implements Graph<PackageGraph.Node> {
 
     /** The instance to which we delegate. */
@@ -221,8 +237,12 @@ public final class PackageGraph implements Graph<PackageGraph.Node> {
     /**
      * A node in the graph.
      */
+    @Immutable
     public static final class Node implements Comparable<Node> {
 
+        @SuppressWarnings("Immutable")
+        // Even though, that Package is not immutable, the data we use from its
+        // instance is immutable.
         private final Package value;
 
         private Node(Package value) {

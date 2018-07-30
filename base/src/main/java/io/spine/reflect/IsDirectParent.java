@@ -21,6 +21,7 @@
 package io.spine.reflect;
 
 import com.google.common.base.Strings;
+import com.google.errorprone.annotations.Immutable;
 
 import java.util.function.Predicate;
 
@@ -31,6 +32,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  * @author Alexander Yevsyukov
  */
+@Immutable
 final class IsDirectParent implements Predicate<Package> {
 
     private final String childName;
