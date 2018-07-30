@@ -21,6 +21,7 @@
 package io.spine.reflect;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Sets;
 import com.google.common.graph.ElementOrder;
 import com.google.common.graph.EndpointPair;
 import com.google.common.graph.Graph;
@@ -32,8 +33,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Suppliers.memoize;
 import static java.util.Comparator.comparing;
@@ -65,8 +68,24 @@ public final class PackageGraph implements Graph<PackageGraph.Node> {
      * Builds a graph of packages that have the common passed package prefix.
      */
     public static PackageGraph containing(String packagePrefix) {
-        checkNotNull(packagePrefix);
-        PackageGraph result = new PackageGraph(buildGraph(under(packagePrefix)));
+        checkNotNullOrEmpty(packagePrefix);
+        Predicate<Package> predicate = (p) -> p.getName()
+                                               .startsWith(packagePrefix);
+        return matching(predicate);
+    }
+
+    /**
+     * Builds a graph of packages that match the passed predicate.
+     */
+    public static PackageGraph matching(Predicate<Package> predicate) {
+        checkNotNull(predicate);
+        List<Package> filteredPackages = filterPackages(predicate);
+        return create(filteredPackages);
+    }
+
+    private static PackageGraph create(List<Package> filteredPackages) {
+        Graph<Node> mutableGraph = buildGraph(filteredPackages);
+        PackageGraph result = new PackageGraph(mutableGraph);
         return result;
     }
 
@@ -77,12 +96,11 @@ public final class PackageGraph implements Graph<PackageGraph.Node> {
         return graph;
     }
 
-    private static List<Package> under(String packageName) {
+    private static List<Package> filterPackages(Predicate<Package> predicate) {
         List<Package> result =
                 packages.get()
                         .stream()
-                        .filter((p) -> p.getName()
-                                        .startsWith(packageName))
+                        .filter(predicate)
                         .collect(toList());
         return result;
     }
@@ -104,7 +122,7 @@ public final class PackageGraph implements Graph<PackageGraph.Node> {
 
     @Override
     public boolean allowsSelfLoops() {
-        return impl.isDirected();
+        return impl.allowsSelfLoops();
     }
 
     @Override
@@ -191,5 +209,66 @@ public final class PackageGraph implements Graph<PackageGraph.Node> {
         public int hashCode() {
             return Objects.hash(value);
         }
+    }
+
+    /**
+     * Filters packages by their names.
+     *
+     * @implNote This class is not thread-safe.
+     */
+    public static final class Filter implements Predicate<Package> {
+
+        private final Set<String> inclusions = Sets.newHashSet();
+        private final Set<String> exclusions = Sets.newHashSet();
+
+        /**
+         * Adds a package prefix for being accepted by the filer.
+         */
+        public Filter include(String packagePrefix) {
+            checkNotNullOrEmpty(packagePrefix);
+            inclusions.add(packagePrefix);
+            return this;
+        }
+
+        /**
+         * Makes packages with the passed prefix being rejected by the filter.
+         */
+        public Filter exclude(String packagePrefix) {
+            checkNotNullOrEmpty(packagePrefix);
+            exclusions.add(packagePrefix);
+            return this;
+        }
+
+        /**
+         * Filters the passed package by its name.
+         *
+         * <p>A package is accepted if its name:
+         * <ol>
+         *     <li>Starts from one of the names added to {@linkplain #include(String)
+         *     inclusions}.
+         *     <li>Does <em>not</em> start from all the names added to {@linkplain #exclude(String)
+         *     exclusions}.
+         * </ol>
+         */
+        @Override
+        public boolean test(Package aPackage) {
+            String packageName = aPackage.getName();
+
+            if (inclusions.stream()
+                          .anyMatch(packageName::startsWith)) {
+                return true;
+            }
+
+            if (exclusions.stream()
+                          .anyMatch(packageName::startsWith)) {
+                return false;
+            }
+
+            return true;
+        }
+    }
+    private static void checkNotNullOrEmpty(String packagePrefix) {
+        checkNotNull(packagePrefix);
+        checkArgument(!packagePrefix.isEmpty(), "Package prefix cannot be empty");
     }
 }
