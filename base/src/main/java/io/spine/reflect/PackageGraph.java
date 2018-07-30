@@ -52,6 +52,7 @@ import static java.util.stream.Collectors.toList;
  */
 public final class PackageGraph implements Graph<PackageGraph.Node> {
 
+    /** The instance to which we delegate. */
     private final ImmutableGraph<Node> impl;
 
     private PackageGraph(Graph<Node> graph) {
@@ -125,8 +126,8 @@ public final class PackageGraph implements Graph<PackageGraph.Node> {
             Optional<Node> directParent =
                     graph.nodes()
                          .stream()
-                         .filter((n) -> IsDirectParent.of(current)
-                                                      .test(n.getValue()))
+                         .filter((node) -> IsDirectParent.of(current)
+                                                         .test(node.getValue()))
                          .findFirst();
             Node newNode = Node.of(current);
             if (directParent.isPresent()) {
@@ -142,7 +143,7 @@ public final class PackageGraph implements Graph<PackageGraph.Node> {
     @VisibleForTesting
     boolean contains(Package p) {
         Optional<Node> result = nodes().stream()
-                                       .filter((n) -> n.contains(p))
+                                       .filter((node) -> node.contains(p))
                                        .findAny();
         return result.isPresent();
     }
@@ -218,7 +219,7 @@ public final class PackageGraph implements Graph<PackageGraph.Node> {
     }
 
     /**
-     * A node in the package graph.
+     * A node in the graph.
      */
     public static final class Node implements Comparable<Node> {
 
@@ -238,18 +239,30 @@ public final class PackageGraph implements Graph<PackageGraph.Node> {
         }
 
         /**
+         * Obtains an instance with the package of the passed class.
+         */
+        public static Node of(Class<?> cls) {
+            checkNotNull(cls);
+            Node result = new Node(cls.getPackage());
+            return result;
+        }
+
+        /**
          * Obtains the value stored in the node.
          */
         public Package getValue() {
             return value;
         }
 
-        boolean contains(Package p) {
+        private boolean contains(Package p) {
             checkNotNull(p);
             boolean result = value.equals(p);
             return result;
         }
 
+        /**
+         * Returns the name of the package.
+         */
         @Override
         public String toString() {
             return value.getName();

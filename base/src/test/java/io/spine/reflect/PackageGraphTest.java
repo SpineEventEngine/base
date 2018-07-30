@@ -20,19 +20,62 @@
 
 package io.spine.reflect;
 
+import com.google.common.graph.ElementOrder;
+import com.google.common.graph.EndpointPair;
+import com.google.common.testing.EqualsTester;
+import com.google.common.testing.NullPointerTester;
+import io.spine.reflect.PackageGraph.Node;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.lang.annotation.Annotation;
 import java.util.Collection;
+import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.Lock;
+import java.util.function.Function;
+import java.util.function.IntSupplier;
 import java.util.function.Predicate;
+import java.util.logging.Logger;
 
+import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static org.junit.jupiter.api.Assertions.*;
 
-@SuppressWarnings({"InnerClassMayBeStatic", "ClassCanBeStatic"})
+@SuppressWarnings({
+        "InnerClassMayBeStatic",
+        "ClassCanBeStatic",
+})
 @DisplayName("PackageGraph should")
 class PackageGraphTest {
+
+    private final PackageGraph graph = PackageGraph.newInstance();
+
+    // Test values representing well-known Java packages.
+    private final Node javaLang = Node.of(String.class);
+    private final Node javaUtil = Node.of(Collection.class.getPackage());
+    private final Node javaUtilConcurrent = Node.of(Callable.class.getPackage());
+
+    @Test
+    @DisplayName(NOT_ACCEPT_NULLS)
+    void nullCheck() {
+        new NullPointerTester().testAllPublicStaticMethods(PackageGraph.class);
+    }
+
+    @Nested
+    @DisplayName("Provide Node class")
+    class NodeClass {
+
+        @Test
+        @DisplayName("with equals() and hashCode()")
+        void hashCodeAndEquals() {
+            new EqualsTester()
+                    .addEqualityGroup(javaUtil, Node.of(Collection.class.getPackage()))
+                    .addEqualityGroup(javaUtilConcurrent)
+                    .testEquals();
+        }
+    }
 
     @Nested
     @DisplayName("Create instance with packages")
@@ -82,6 +125,165 @@ class PackageGraphTest {
 
         private void assertNotContainsPackageOf(PackageGraph graph, Class<?> cls) {
             assertFalse(graph.contains(cls.getPackage()));
+        }
+    }
+
+    @DisplayName("Implement Graph interface")
+    @Nested
+    class GraphApi {
+
+
+        @Test
+        @DisplayName("returning edges")
+        void edges() {
+            assertFalse(graph.edges()
+                             .isEmpty());
+        }
+
+        @Test
+        @DisplayName("be directed")
+        void directed() {
+            assertTrue(graph.isDirected());
+        }
+
+        @Test
+        @DisplayName("not allowing self loops")
+        void selfLoops() {
+            assertFalse(graph.allowsSelfLoops());
+        }
+
+        @Test
+        @DisplayName("having natural node order")
+        void naturalOrder() {
+            assertEquals(ElementOrder.<Node>natural(), graph.nodeOrder());
+        }
+
+        @Test
+        @DisplayName("returning adjacent nodes")
+        void adjacentNodes() {
+            Set<Node> nodes = graph.adjacentNodes(javaUtil);
+            assertContainsPackageOf(nodes, Callable.class);
+            assertContainsPackageOf(nodes, Function.class);
+            assertContainsPackageOf(nodes, Logger.class);
+        }
+
+        @Test
+        @DisplayName("obtaining predecessors")
+        void predecessors() {
+            Set<Node> predecessors = graph.predecessors(javaUtilConcurrent);
+
+            assertContainsPackageOf(predecessors, AtomicBoolean.class);
+            assertContainsPackageOf(predecessors, Lock.class);
+        }
+
+        @Test
+        @DisplayName("obtaining successors")
+        void successors() {
+            Set<Node> successors = graph.successors(javaUtilConcurrent);
+
+            assertEquals(1, successors.size());
+            assertContainsPackageOf(successors, Collection.class);
+        }
+
+        private void assertContainsPackageOf(Set<Node> nodes, Class<?> cls) {
+            assertTrue(nodes.contains(Node.of(cls)));
+        }
+
+        @Test
+        @DisplayName("obtaining incident edges")
+        void incidentEdges() {
+            Set<EndpointPair<Node>> edges = graph.incidentEdges(javaUtilConcurrent);
+            // The primary purpose of these checks is to demonstrate how the edges work.
+            // They do not test our code since we simply redirect to Guava's Graph.
+            for (EndpointPair<Node> edge : edges) {
+                boolean isSource = edge.source()
+                                       .equals(javaUtilConcurrent);
+                boolean isTarget = edge.target()
+                                       .equals(javaUtilConcurrent);
+                assertTrue(isSource || isTarget);
+            }
+        }
+
+        @Nested
+        @DisplayName("Return degree")
+        class Degree {
+
+            @Test
+            @DisplayName("total")
+            void degree() {
+                assertNotZero(() -> graph.degree(javaUtilConcurrent));
+            }
+
+            @Test
+            @DisplayName("incoming")
+            void inDegree() {
+                assertNotZero(() -> graph.inDegree(javaUtilConcurrent));
+            }
+
+            @Test
+            @DisplayName("outgoing")
+            void outDegree() {
+                assertNotZero(() -> graph.outDegree(javaUtilConcurrent));
+            }
+
+            /**
+             * Asserts that the value iz not zero.
+             *
+             * @implNote We do not compare with exact value to prevent breaking the test when
+             * Java gets more sub-packages under {@link java.util.concurrent}.
+             */
+            private void assertNotZero(IntSupplier s) {
+                assertNotEquals(0, s.getAsInt());
+            }
+        }
+
+        @Nested
+        @DisplayName("Check edge")
+        class Edge {
+
+            @Test
+            @DisplayName("connected")
+            void connected() {
+                assertTrue(graph.hasEdgeConnecting(javaUtilConcurrent, javaUtil));
+            }
+
+            @Test
+            @DisplayName("directed")
+            void directed() {
+                assertFalse(graph.hasEdgeConnecting(javaUtil, javaUtilConcurrent));
+            }
+
+            @Test
+            @DisplayName("not connected")
+            void notConnected() {
+                // Indirect connection.
+                assertFalse(graph.hasEdgeConnecting(Node.of(Lock.class), javaUtil));
+                // Another branch.
+                assertFalse(graph.hasEdgeConnecting(javaLang, javaUtil));
+            }
+        }
+    }
+
+    /**
+     * Debug utility for printing nodes and edges.
+     */
+    @SuppressWarnings({"unused", "UseOfSystemOutOrSystemErr"}) // see Javadoc
+    static class Print {
+
+        /** Prevents instantiation of this utility class. */
+        private Print() {
+        }
+
+        static void nodes(Collection<Node> nodes) {
+            for (Node node : nodes) {
+                System.out.println(node);
+            }
+        }
+
+        static void edges(Collection<EndpointPair<Node>> edges) {
+            for (EndpointPair<Node> edge : edges) {
+                System.out.println(edge);
+            }
         }
     }
 }

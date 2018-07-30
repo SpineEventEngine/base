@@ -25,7 +25,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static io.spine.testing.DisplayNames.HAVE_PARAMETERLESS_CTOR;
+import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("PackageGraph.Filter should")
 class PackageGraphFilterTest {
@@ -55,5 +58,11 @@ class PackageGraphFilterTest {
     @DisplayName("accept by default")
     void acceptances() {
         assertTrue(filter.test(Graph.class.getPackage()));
+    }
+
+    @Test
+    @DisplayName(HAVE_PARAMETERLESS_CTOR)
+    void privateCtor() {
+        assertHasPrivateParameterlessCtor(PackageGraph.Filter.class);
     }
 }
