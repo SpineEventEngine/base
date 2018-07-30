@@ -37,7 +37,6 @@ import java.time.Instant;
 
 import static io.spine.testing.Tests.assertWithInaccuracy;
 import static io.spine.testing.Tests.assertMatchesMask;
-import static io.spine.testing.Tests.assertSecondsEqual;
 import static io.spine.testing.Tests.hasPrivateParameterlessCtor;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
