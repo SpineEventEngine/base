@@ -34,7 +34,7 @@ class PackageGraphFilterTest {
 
     @BeforeEach
     void setUp() {
-        filter = new PackageGraph.Filter()
+        filter = PackageGraph.newFilter()
                 .include("io.spine.reflect")
                 .exclude("java");
     }

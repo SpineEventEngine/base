@@ -20,7 +20,7 @@
 
 package io.spine.reflect;
 
-import com.google.common.base.Strings;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Sets;
 import com.google.common.graph.ElementOrder;
@@ -32,9 +32,9 @@ import com.google.common.graph.MutableGraph;
 
 import java.util.ArrayDeque;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -65,6 +65,20 @@ public final class PackageGraph implements Graph<PackageGraph.Node> {
         Package[] knownPackages = Package.getPackages();
         Arrays.sort(knownPackages, comparing(Package::getName));
         return ImmutableList.copyOf(knownPackages);
+    }
+
+    /**
+     * Creates a new instance with the packages visible to the caller's {@code ClassLoader}.
+     */
+    public static PackageGraph newInstance() {
+        return create(packages());
+    }
+
+    /**
+     * Creates a new filter.
+     */
+    public static Filter newFilter() {
+        return new Filter();
     }
 
     /**
@@ -100,15 +114,37 @@ public final class PackageGraph implements Graph<PackageGraph.Node> {
     }
 
     private static Graph<Node> buildGraph(List<Package> packages) {
-        MutableGraph<Node> graph = GraphBuilder.directed()
-                                               .build();
-        Queue<Package> deque = new ArrayDeque<>(packages);
-        Package first = deque.poll();
+        MutableGraph<Node> graph = GraphBuilder
+                .directed()
+                .nodeOrder(ElementOrder.<Node>natural())
+                .build();
+        Queue<Package> queue = new ArrayDeque<>(packages);
+        Package first = queue.poll();
         while (first != null) {
-
+            final Package current = first;
+            Optional<Node> directParent =
+                    graph.nodes()
+                         .stream()
+                         .filter((n) -> IsDirectParent.of(current)
+                                                      .test(n.getValue()))
+                         .findFirst();
+            Node newNode = Node.of(current);
+            if (directParent.isPresent()) {
+                graph.putEdge(newNode, directParent.get());
+            } else {
+                graph.addNode(newNode);
+            }
+            first = queue.poll();
         }
-        //TODO:2018-07-27:alexander.yevsyukov: Add nodes
         return graph;
+    }
+
+    @VisibleForTesting
+    boolean contains(Package p) {
+        Optional<Node> result = nodes().stream()
+                                       .filter((n) -> n.contains(p))
+                                       .findAny();
+        return result.isPresent();
     }
 
     @Override
@@ -184,12 +220,21 @@ public final class PackageGraph implements Graph<PackageGraph.Node> {
     /**
      * A node in the package graph.
      */
-    public static final class Node {
+    public static final class Node implements Comparable<Node> {
 
         private final Package value;
 
-        public Node(Package value) {
+        private Node(Package value) {
             this.value = value;
+        }
+
+        /**
+         * Obtains an instance for the passed package value.
+         */
+        public static Node of(Package value) {
+            checkNotNull(value);
+            Node result = new Node(value);
+            return result;
         }
 
         /**
@@ -197,6 +242,12 @@ public final class PackageGraph implements Graph<PackageGraph.Node> {
          */
         public Package getValue() {
             return value;
+        }
+
+        boolean contains(Package p) {
+            checkNotNull(p);
+            boolean result = value.equals(p);
+            return result;
         }
 
         @Override
@@ -220,6 +271,13 @@ public final class PackageGraph implements Graph<PackageGraph.Node> {
         public int hashCode() {
             return Objects.hash(value);
         }
+
+        @Override
+        public int compareTo(Node o) {
+            return value.getName()
+                        .compareTo(o.getValue()
+                                    .getName());
+        }
     }
 
     /**
@@ -231,6 +289,10 @@ public final class PackageGraph implements Graph<PackageGraph.Node> {
 
         private final Set<String> inclusions = Sets.newHashSet();
         private final Set<String> exclusions = Sets.newHashSet();
+
+        /** Prevents instantiation from outside. */
+        private Filter() {
+        }
 
         /**
          * Adds a package prefix for being accepted by the filer.
@@ -278,5 +340,4 @@ public final class PackageGraph implements Graph<PackageGraph.Node> {
             return true;
         }
     }
-
 }
