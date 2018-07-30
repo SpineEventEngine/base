@@ -169,7 +169,7 @@ class TestsShould extends UtilityClassTest<Tests> {
         }
 
         @Test
-        @DisplayName("throws the exception when field is not present")
+        @DisplayName("throws the error when field is not present")
         void fieldIsNotPresent() {
             String fieldPath = Any.getDescriptor()
                                   .getFields()
@@ -183,7 +183,7 @@ class TestsShould extends UtilityClassTest<Tests> {
         }
 
         @Test
-        @DisplayName("throws the exception when field is not set")
+        @DisplayName("throws the error when the field value is not set")
         void fieldIsNotSet() {
             String fieldPath = Timestamp.getDescriptor()
                                         .getFields()
