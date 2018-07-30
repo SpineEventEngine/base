@@ -138,7 +138,7 @@ class TestsShould extends UtilityClassTest<Tests> {
 
     @Nested
     @DisplayName("Assert values with inaccuracy")
-    class SecondsRange {
+    class AssertWithInaccuracy {
 
         private long recentTime;
 
