@@ -177,7 +177,7 @@ public class Tests {
      * @param actualSec   actual timestamp value
      * @param maxDiffSec  the maximum expected difference between the values
      */
-    public static void assertSecondsEqual(long expectedSec, long actualSec, long maxDiffSec) {
+    public static void assertWithInaccuracy(long expectedSec, long actualSec, long maxDiffSec) {
         long diffSec = abs(expectedSec - actualSec);
         assertTrue(diffSec <= maxDiffSec);
     }

@@ -33,7 +33,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 
-import static io.spine.testing.Tests.assertSecondsEqual;
+import static io.spine.testing.Tests.assertWithInaccuracy;
 import static io.spine.testing.Tests.hasPrivateParameterlessCtor;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -155,14 +155,14 @@ class TestsShould extends UtilityClassTest<Tests> {
         @Test
         @DisplayName("when values are equal")
         void equalValues() {
-            assertSecondsEqual(recentTime, recentTime, 0);
+            assertWithInaccuracy(recentTime, recentTime, 0);
         }
 
         @Test
         @DisplayName("when values are close")
         void closeValues() {
             // This method would be called within 10 seconds.
-            Tests.assertSecondsEqual(recentTime, now(), 10);
+            Tests.assertWithInaccuracy(recentTime, now(), 10);
         }
 
         @Test
@@ -170,7 +170,7 @@ class TestsShould extends UtilityClassTest<Tests> {
         void failure() {
             assertThrows(
                     AssertionError.class,
-                    () -> Tests.assertSecondsEqual(100, 200, 2)
+                    () -> Tests.assertWithInaccuracy(100, 200, 2)
             );
         }
     }
