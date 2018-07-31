@@ -22,7 +22,6 @@ package io.spine.type;
 
 import com.google.protobuf.Message;
 import io.spine.value.ClassTypeValue;
-import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
 /**
  * A base class for value objects storing references to message classes.
@@ -34,24 +33,17 @@ public abstract class MessageClass extends ClassTypeValue<Message> {
     private static final long serialVersionUID = 0L;
 
     /** The name of the type of proto messages represented by this class. */
-    private volatile @MonotonicNonNull TypeName typeName;
+    private final TypeName typeName;
 
     protected MessageClass(Class<? extends Message> value) {
         super(value);
+        this.typeName = TypeName.of(value);
     }
 
-    @SuppressWarnings("SynchronizeOnThis") // Double-check idiom for lazy init.
+    /**
+     * Obtains a type name of the messages of this class.
+     */
     public TypeName getTypeName() {
-        TypeName result = typeName;
-        if (result == null) {
-            synchronized (this) {
-                result = typeName;
-                if (result == null) {
-                    typeName = TypeName.of(value());
-                    result = typeName;
-                }
-            }
-        }
-        return result;
+        return typeName;
     }
 }
