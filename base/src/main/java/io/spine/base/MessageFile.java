@@ -21,6 +21,7 @@
 package io.spine.base;
 
 import com.google.protobuf.Descriptors.FileDescriptor;
+import io.spine.code.proto.FileName;
 import io.spine.value.StringTypeValue;
 
 import java.util.function.Predicate;
@@ -36,11 +37,8 @@ public abstract class MessageFile extends StringTypeValue {
 
     private static final long serialVersionUID = 0L;
 
-    /** The standard file extension. */
-    public static final String EXTENSION = ".proto";
-
     MessageFile(String name) {
-        super(checkNotNull(name) + EXTENSION);
+        super(checkNotNull(name) + FileName.EXTENSION);
     }
 
     /**

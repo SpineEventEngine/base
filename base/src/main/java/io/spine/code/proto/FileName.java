@@ -25,7 +25,6 @@ import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.base.CommandMessage;
 import io.spine.base.EventMessage;
-import io.spine.base.MessageFile;
 import io.spine.base.RejectionMessage;
 import io.spine.code.AbstractFileName;
 
@@ -44,6 +43,9 @@ public class FileName extends AbstractFileName<FileName> implements UnderscoredN
 
     private static final long serialVersionUID = 0L;
 
+    /** The standard file extension. */
+    public static final String EXTENSION = ".proto";
+
     /** The file system separator as defined by Protobuf. Not platform-dependant. */
     private static final char PATH_SEPARATOR = '/';
 
@@ -56,7 +58,7 @@ public class FileName extends AbstractFileName<FileName> implements UnderscoredN
      */
     public static FileName of(String value) {
         checkNotEmptyOrBlank(value);
-        checkArgument(value.endsWith(MessageFile.EXTENSION));
+        checkArgument(value.endsWith(EXTENSION));
         return new FileName(value);
     }
 
@@ -92,7 +94,7 @@ public class FileName extends AbstractFileName<FileName> implements UnderscoredN
     private String nameOnly() {
         String value = value();
         int lastBackslashIndex = value.lastIndexOf(PATH_SEPARATOR);
-        int extensionIndex = value.lastIndexOf(MessageFile.EXTENSION);
+        int extensionIndex = value.lastIndexOf(EXTENSION);
         String result = value.substring(lastBackslashIndex + 1, extensionIndex);
         return result;
     }
