@@ -26,8 +26,7 @@ import com.google.errorprone.annotations.Immutable;
  * Abstract base for string value objects.
  *
  * @implNote The name of this class has the 'Type' infix in the name to prevent the name clash with
- *  {@link com.google.protobuf.StringValue StringValue}.
- *
+ * {@link com.google.protobuf.StringValue StringValue}.
  * @author Alexander Yevsyukov
  */
 @Immutable
