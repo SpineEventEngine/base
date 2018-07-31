@@ -20,10 +20,12 @@
 
 package io.spine.code;
 
+import io.spine.code.Generation.ModelCompilerAnnotation;
 import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
@@ -39,6 +41,11 @@ class GenerationTest extends UtilityClassTest<Generation> {
     @Test
     @DisplayName("provide information for annotation spec.")
     void byModelCompiler() {
-        assertNotNull(Generation.compilerAnnotation());
+        ModelCompilerAnnotation annotation = Generation.compilerAnnotation();
+        assertNotNull(annotation);
+        assertFalse(annotation.getFieldName()
+                              .isEmpty());
+        assertFalse(annotation.getCodeBlock()
+                              .isEmpty());
     }
 }
