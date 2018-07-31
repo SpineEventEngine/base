@@ -21,44 +21,37 @@
 package io.spine.base;
 
 import com.google.protobuf.Descriptors.FileDescriptor;
-import com.google.protobuf.Message;
+import io.spine.value.StringTypeValue;
 
 import java.util.function.Predicate;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
- * A common interface for command messages.
- *
- * <p>This interface is used by the Model Compiler for marking command messages.
- * By convention, command messages are defined in a proto file, which name ends
- * with {@code commands.proto}.
+ * Describes a file containing proto message declarations.
  *
  * @author Alexander Yevsyukov
  */
-@SuppressWarnings("InterfaceNeverImplemented") /* See Javadoc */
-public interface CommandMessage extends Message {
+public abstract class MessageFile extends StringTypeValue {
+
+    private static final long serialVersionUID = 0L;
+
+    /** The standard file extension. */
+    public static final String EXTENSION = ".proto";
+
+    MessageFile(String name) {
+        super(checkNotNull(name) + EXTENSION);
+    }
 
     /**
-     * Constants and utilities for working with proto command files.
+     * Obtains the predicate for filtering files containing message declarations
+     * of the required type.
      */
-    class File {
-
-        private static final MessageFile INSTANCE = new MessageFile("commands") {
-            private static final long serialVersionUID = 0L;
+    public final Predicate<FileDescriptor> predicate() {
+        return file -> {
+            String fqn = file.getName();
+            boolean result = fqn.endsWith(value());
+            return result;
         };
-
-        /** Prevents instantiation of this utility class. */
-        private File() {
-        }
-
-        public static Predicate<FileDescriptor> predicate() {
-            return INSTANCE.predicate();
-        }
-
-        /**
-         * Obtains the suffix common for proto files containing command message declarations.
-         */
-        public static String suffix() {
-            return INSTANCE.value();
-        }
     }
 }

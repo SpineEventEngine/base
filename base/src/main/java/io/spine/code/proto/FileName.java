@@ -24,6 +24,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.base.CommandMessage;
+import io.spine.base.MessageFile;
 import io.spine.code.AbstractFileName;
 
 import java.util.List;
@@ -53,7 +54,7 @@ public class FileName extends AbstractFileName<FileName> implements UnderscoredN
      */
     public static FileName of(String value) {
         checkNotEmptyOrBlank(value);
-        checkArgument(value.endsWith(Suffix.EXTENSION));
+        checkArgument(value.endsWith(MessageFile.EXTENSION));
         return new FileName(value);
     }
 
@@ -89,7 +90,7 @@ public class FileName extends AbstractFileName<FileName> implements UnderscoredN
     private String nameOnly() {
         String value = value();
         int lastBackslashIndex = value.lastIndexOf(PATH_SEPARATOR);
-        int extensionIndex = value.lastIndexOf(Suffix.EXTENSION);
+        int extensionIndex = value.lastIndexOf(MessageFile.EXTENSION);
         String result = value.substring(lastBackslashIndex + 1, extensionIndex);
         return result;
     }
@@ -131,12 +132,9 @@ public class FileName extends AbstractFileName<FileName> implements UnderscoredN
      */
     public static class Suffix {
 
-        /** The standard file extension. */
-        private static final String EXTENSION = ".proto";
-
         private static final String FOR_COMMANDS = CommandMessage.File.suffix();
-        private static final String FOR_EVENTS = "events" + EXTENSION;
-        private static final String FOR_REJECTIONS = "rejections" + EXTENSION;
+        private static final String FOR_EVENTS = "events" + MessageFile.EXTENSION;
+        private static final String FOR_REJECTIONS = "rejections" + MessageFile.EXTENSION;
 
         /** Prevents instantiation of this utility class. */
         private Suffix() {
