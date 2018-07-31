@@ -40,6 +40,8 @@ import static com.google.common.base.Preconditions.checkState;
  */
 public class TypeName extends StringTypeValue {
 
+    private static final long serialVersionUID = 0L;
+
     /**
      * The separator character for package names in a fully qualified proto type name.
      */

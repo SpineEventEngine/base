@@ -41,6 +41,7 @@ import static java.util.regex.Pattern.compile;
  */
 class FieldReference extends StringTypeValue {
 
+    private static final long serialVersionUID = 0L;
     /**
      * Wildcard option used in {@code "by"} field option.
      *

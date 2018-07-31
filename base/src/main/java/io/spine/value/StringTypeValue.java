@@ -20,8 +20,10 @@
 
 package io.spine.value;
 
+import com.google.errorprone.annotations.Immutable;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -31,8 +33,12 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  * @author Alexander Yevsyukov
  */
+@Immutable
 @SuppressWarnings("AbstractClassWithoutAbstractMethods") // is OK for the value object base.
-public abstract class StringTypeValue {
+public abstract class StringTypeValue implements Serializable {
+
+    private static final long serialVersionUID = 0L;
+
     /* NOTE: the class has the 'Type' infix in the name to prevent the name clash with
        com.google.protobuf.StringValue. */
 

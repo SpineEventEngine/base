@@ -23,6 +23,7 @@ package io.spine.code.proto;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.FileDescriptor;
+import io.spine.base.CommandMessage;
 import io.spine.code.AbstractFileName;
 
 import java.util.List;
@@ -37,6 +38,8 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
  * @author Alexander Yevsyukov
  */
 public class FileName extends AbstractFileName<FileName> implements UnderscoredName {
+
+    private static final long serialVersionUID = 0L;
 
     /** The file system separator as defined by Protobuf. Not platform-dependant. */
     private static final char PATH_SEPARATOR = '/';
@@ -131,7 +134,7 @@ public class FileName extends AbstractFileName<FileName> implements UnderscoredN
         /** The standard file extension. */
         private static final String EXTENSION = ".proto";
 
-        private static final String FOR_COMMANDS = "commands.proto";
+        private static final String FOR_COMMANDS = CommandMessage.File.suffix();
         private static final String FOR_EVENTS = "events" + EXTENSION;
         private static final String FOR_REJECTIONS = "rejections" + EXTENSION;
 

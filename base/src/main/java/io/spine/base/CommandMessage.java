@@ -44,10 +44,8 @@ public interface CommandMessage extends Message {
      */
     class File {
 
-        /**
-         * The name suffix for proto files containing command message declarations.
-         */
-        public static final String SUFFIX = "commands.proto";
+        /** File name suffix for command proto files. */
+        private static final String SUFFIX = "commands.proto";
 
         //TODO:2018-02-12:alexander.yevsyukov: Replace usages of this predicate with cast to
         // `CommandMessage` after code generation is updated.
@@ -59,12 +57,19 @@ public interface CommandMessage extends Message {
             checkNotNull(file);
 
             String fqn = file.getName();
-            boolean result = fqn.endsWith(SUFFIX);
+            boolean result = fqn.endsWith(suffix());
             return result;
         };
 
         /** Prevents instantiation of this utility class. */
         private File() {
+        }
+
+        /**
+         * Obtains the suffix common for proto files containing command message declarations.
+         */
+        public static String suffix() {
+            return SUFFIX;
         }
     }
 }

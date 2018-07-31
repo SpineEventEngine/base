@@ -31,6 +31,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public final class FieldName extends AbstractFieldName {
 
+    private static final long serialVersionUID = 0L;
     private static final FieldName SERIAL_VERSION_UID = new FieldName("serialVersionUID");
 
     private FieldName(String value) {

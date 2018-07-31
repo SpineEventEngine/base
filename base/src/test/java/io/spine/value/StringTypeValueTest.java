@@ -21,39 +21,58 @@
 package io.spine.value;
 
 import com.google.common.testing.EqualsTester;
-import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static com.google.common.testing.SerializableTester.reserializeAndAssert;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Alexander Yevsyukov
  */
-public class StringTypeValueShould {
+@DisplayName("StringTypeValue should")
+class StringTypeValueTest {
 
+    @SuppressWarnings("SerializableInnerClassWithNonSerializableOuterClass")
     @Test
-    public void return_value_in_toString() {
+    @DisplayName("return value")
+    void getValue() {
         String expected = "return_value_in_toString";
 
-        assertEquals(expected, new StringTypeValue(expected) {}.toString());
+        StringTypeValue value = new StringTypeValue(expected) {
+            private static final long serialVersionUID = 0L;
+        };
+
+        assertEquals(expected, value.toString());
     }
 
     @Test
-    public void have_equals() {
+    @DisplayName("have hashCode() and equals()")
+    void hashCodeAndEquals() {
         new EqualsTester().addEqualityGroup(new StrVal("uno"), new StrVal("uno"))
                           .addEqualityGroup(new StrVal("dos"))
                           .testEquals();
     }
 
     @Test
-    public void see_if_empty() {
+    @DisplayName("tell if empty")
+    void isEmpty() {
         assertTrue(new StrVal("").isEmpty());
         assertFalse(new StrVal(" ").isEmpty());
     }
 
+    @Test
+    @DisplayName("be Serializable")
+    void serialize() {
+        reserializeAndAssert(new StrVal(getClass().getName()));
+    }
+
     /** Simple descendant for testing. */
     private static class StrVal extends StringTypeValue {
+
+        private static final long serialVersionUID = 0L;
 
         StrVal(String value) {
             super(value);

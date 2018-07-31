@@ -32,7 +32,6 @@ import java.util.Deque;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Lists.newLinkedList;
-import static java.util.stream.Collectors.joining;
 
 /**
  * A value object holding a fully-qualified Java class name.
@@ -40,6 +39,8 @@ import static java.util.stream.Collectors.joining;
  * @author Mikhail Mikhaylov
  */
 public final class ClassName extends StringTypeValue {
+
+    private static final long serialVersionUID = 0L;
 
     private ClassName(String value) {
         super(checkNotNull(value));
@@ -134,8 +135,7 @@ public final class ClassName extends StringTypeValue {
             parentClassNames.addFirst(current.getName() + '$');
             current = current.getContainingType();
         }
-        String result = parentClassNames.stream()
-                                        .collect(joining());
+        String result = String.join("", parentClassNames);
         return result;
     }
 

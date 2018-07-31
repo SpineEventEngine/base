@@ -34,7 +34,7 @@ import javax.annotation.Generated;
 import java.util.Objects;
 
 import static io.spine.code.Generation.compilerAnnotation;
-import static io.spine.code.java.PackageName.DELIMITER;
+import static io.spine.code.java.PackageName.delimiter;
 import static javax.lang.model.element.Modifier.PUBLIC;
 
 /**
@@ -64,7 +64,7 @@ final class MarkerInterfaceSpec {
     static MarkerInterfaceSpec prepareInterface(String optionValue,
                                                 FileDescriptorProto srcFile) {
         MarkerInterfaceSpec spec;
-        if (optionValue.contains(DELIMITER)) {
+        if (optionValue.contains(delimiter())) {
             spec = from(optionValue);
         } else {
             String javaPackage = PackageName.resolve(srcFile)
@@ -78,7 +78,7 @@ final class MarkerInterfaceSpec {
      * Parses a {@code MarkerInterfaceSpec} from the given type fully qualified name.
      */
     private static MarkerInterfaceSpec from(String fullName) {
-        int index = fullName.lastIndexOf(DELIMITER);
+        int index = fullName.lastIndexOf(delimiter());
         String name = fullName.substring(index + 1);
         String packageName = fullName.substring(0, index);
         return new MarkerInterfaceSpec(packageName, name);
@@ -110,7 +110,7 @@ final class MarkerInterfaceSpec {
     }
 
     String getFqn() {
-        return packageName + DELIMITER + name;
+        return packageName + delimiter() + name;
     }
 
     @Override
