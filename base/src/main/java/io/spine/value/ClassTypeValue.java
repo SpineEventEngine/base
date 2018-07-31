@@ -40,7 +40,6 @@ public abstract class ClassTypeValue<T> extends ValueHolder<Class<? extends T>> 
 
     protected ClassTypeValue(Class<? extends T> value) {
         super(value);
-        checkNotNull(value);
     }
 
     @Override

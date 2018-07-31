@@ -25,6 +25,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import java.io.Serializable;
 import java.util.Objects;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * An abstract base for value holder objects.
  *
@@ -37,7 +39,7 @@ public abstract class ValueHolder<T extends Serializable> implements Serializabl
     private final T value;
 
     protected ValueHolder(T value) {
-        this.value = value;
+        this.value = checkNotNull(value);
     }
 
     /** Returns the stored value. */
