@@ -59,7 +59,7 @@ public class KnownTypes {
     /**
      * Loads known types from the classpath.
      */
-    static TypeSet load() {
+    private static TypeSet load() {
         FileSet protoDefinitions = FileSet.load();
         TypeSet types = TypeSet.messagesAndEnums(protoDefinitions);
         return types;
