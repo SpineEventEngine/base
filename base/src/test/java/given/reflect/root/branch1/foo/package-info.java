@@ -19,14 +19,11 @@
  */
 
 /**
- * This package contains language-neutral classes and interfaces for Spine tools.
+ * This package is annotated.
+ * One of its {@linkplain given.reflect.root.branch1.foo.sub1 sub-packages} is also annotated
+ * with the same type, but a different value.
  */
-@Internal
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.code;
+@ValueAnnotation("Branch One")
+package given.reflect.root.branch1.foo;
 
-import com.google.errorprone.annotations.CheckReturnValue;
-import io.spine.annotation.Internal;
-
-import javax.annotation.ParametersAreNonnullByDefault;
+import given.reflect.annotation.ValueAnnotation;

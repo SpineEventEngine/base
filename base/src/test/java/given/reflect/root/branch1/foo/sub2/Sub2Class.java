@@ -18,15 +18,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package given.reflect.root.branch1.foo.sub2;
+
+import given.reflect.root.branch1.foo.FooClass;
+
 /**
- * This package contains language-neutral classes and interfaces for Spine tools.
+ * A dummy class to reference from a package.
  */
-@Internal
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.code;
-
-import com.google.errorprone.annotations.CheckReturnValue;
-import io.spine.annotation.Internal;
-
-import javax.annotation.ParametersAreNonnullByDefault;
+@SuppressWarnings("unused")
+public class Sub2Class extends FooClass {
+}

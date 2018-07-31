@@ -19,14 +19,9 @@
  */
 
 /**
- * This package contains language-neutral classes and interfaces for Spine tools.
+ * This package is annotated, overriding the annotation present in the upper level package.
  */
-@Internal
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.code;
+@ValueAnnotation("Foo Sub 1")
+package given.reflect.root.branch1.foo.sub1;
 
-import com.google.errorprone.annotations.CheckReturnValue;
-import io.spine.annotation.Internal;
-
-import javax.annotation.ParametersAreNonnullByDefault;
+import given.reflect.annotation.ValueAnnotation;

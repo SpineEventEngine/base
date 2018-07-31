@@ -18,15 +18,34 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * This package contains language-neutral classes and interfaces for Spine tools.
- */
-@Internal
-@CheckReturnValue
-@ParametersAreNonnullByDefault
 package io.spine.code;
 
-import com.google.errorprone.annotations.CheckReturnValue;
-import io.spine.annotation.Internal;
+import io.spine.code.Generation.ModelCompilerAnnotation;
+import io.spine.testing.UtilityClassTest;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+/**
+ * @author Alexander Yevsyukov
+ */
+@DisplayName("Generation utility class should")
+class GenerationTest extends UtilityClassTest<Generation> {
+
+    GenerationTest() {
+        super(Generation.class);
+    }
+
+    @Test
+    @DisplayName("provide information for annotation spec.")
+    void byModelCompiler() {
+        ModelCompilerAnnotation annotation = Generation.compilerAnnotation();
+        assertNotNull(annotation);
+        assertFalse(annotation.getFieldName()
+                              .isEmpty());
+        assertFalse(annotation.getCodeBlock()
+                              .isEmpty());
+    }
+}

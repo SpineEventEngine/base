@@ -18,15 +18,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package given.reflect.root.branch2;
+
 /**
- * This package contains language-neutral classes and interfaces for Spine tools.
+ * The class which makes sure that the package is visible to ClassLoaders of derived classes.
  */
-@Internal
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.code;
-
-import com.google.errorprone.annotations.CheckReturnValue;
-import io.spine.annotation.Internal;
-
-import javax.annotation.ParametersAreNonnullByDefault;
+@SuppressWarnings("unused")
+public class Branch2Class {
+}

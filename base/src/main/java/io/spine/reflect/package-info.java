@@ -19,14 +19,12 @@
  */
 
 /**
- * This package contains language-neutral classes and interfaces for Spine tools.
+ * This package provides utilities for working with Java Reflection.
  */
-@Internal
 @CheckReturnValue
 @ParametersAreNonnullByDefault
-package io.spine.code;
+package io.spine.reflect;
 
 import com.google.errorprone.annotations.CheckReturnValue;
-import io.spine.annotation.Internal;
 
 import javax.annotation.ParametersAreNonnullByDefault;

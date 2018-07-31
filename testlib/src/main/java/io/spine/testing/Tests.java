@@ -25,7 +25,6 @@ import com.google.protobuf.Descriptors;
 import com.google.protobuf.FieldMask;
 import com.google.protobuf.Message;
 
-import javax.annotation.CheckReturnValue;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.util.List;
@@ -98,7 +97,6 @@ public class Tests {
      * @return {@code true} if the class has private parameter-less constructor,
      *         {@code false} otherwise
      */
-    @CheckReturnValue
     @VisibleForTesting
     static boolean hasPrivateParameterlessCtor(Class<?> targetClass) {
         Constructor constructor;
@@ -154,6 +152,9 @@ public class Tests {
 
     /**
      * Asserts that the passed message has a field that matches the passed field mask.
+     *
+     * @param message the message to assert
+     * @param fieldMask which is matched against the message field
      *
      * @throws AssertionError if the check fails
      */
