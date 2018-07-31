@@ -19,15 +19,11 @@
  */
 
 /**
- * The versions of the libraries used.
- *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
+ * This package is annotated.
+ * One of its {@linkplain given.reflect.root.branch1.foo.sub1 sub-packages} is also annotated
+ * with the same type, but a different value.
  */
+@ValueAnnotation("Branch One")
+package given.reflect.root.branch1.foo;
 
-final def SPINE_VERSION = '0.10.59-SNAPSHOT'
-
-ext {
-    spineVersion = SPINE_VERSION
-    versionToPublish = SPINE_VERSION
-}
+import given.reflect.annotation.ValueAnnotation;

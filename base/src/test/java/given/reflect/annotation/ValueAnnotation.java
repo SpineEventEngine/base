@@ -18,16 +18,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package given.reflect.annotation;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 /**
- * The versions of the libraries used.
+ * Annotation class for testing traversal of annotated packages.
  *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
+ * @author Alexander Yevsyukov
  */
+@Target(ElementType.PACKAGE)
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+public @interface ValueAnnotation {
 
-final def SPINE_VERSION = '0.10.59-SNAPSHOT'
-
-ext {
-    spineVersion = SPINE_VERSION
-    versionToPublish = SPINE_VERSION
+    /** A value bound to an annotated package. */
+    String value();
 }

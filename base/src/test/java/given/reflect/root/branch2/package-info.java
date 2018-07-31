@@ -17,17 +17,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+@ValueAnnotation("Branch 2")
+package given.reflect.root.branch2;
 
-/**
- * The versions of the libraries used.
- *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
- */
-
-final def SPINE_VERSION = '0.10.59-SNAPSHOT'
-
-ext {
-    spineVersion = SPINE_VERSION
-    versionToPublish = SPINE_VERSION
-}
+import given.reflect.annotation.ValueAnnotation;

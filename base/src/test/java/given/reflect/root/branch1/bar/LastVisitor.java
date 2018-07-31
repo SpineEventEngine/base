@@ -18,16 +18,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package given.reflect.root.branch1.bar;
+
 /**
- * The versions of the libraries used.
- *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
+ * A dummy class to in a {@linkplain given.reflect.root.branch1.bar not-annotated package}.
  */
-
-final def SPINE_VERSION = '0.10.59-SNAPSHOT'
-
-ext {
-    spineVersion = SPINE_VERSION
-    versionToPublish = SPINE_VERSION
+@SuppressWarnings("unused")
+public class LastVisitor {
 }

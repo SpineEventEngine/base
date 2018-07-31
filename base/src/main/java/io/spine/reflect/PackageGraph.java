@@ -34,7 +34,6 @@ import com.google.errorprone.annotations.Immutable;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
@@ -66,12 +65,12 @@ import static java.util.stream.Collectors.toList;
  * @author Alexander Yevsyukov
  */
 @Immutable
-public final class PackageGraph implements Graph<PackageGraph.Node> {
+public final class PackageGraph implements Graph<PackageInfo> {
 
     /** The instance to which we delegate. */
-    private final ImmutableGraph<Node> impl;
+    private final ImmutableGraph<PackageInfo> impl;
 
-    private PackageGraph(Graph<Node> graph) {
+    private PackageGraph(Graph<PackageInfo> graph) {
         this.impl = ImmutableGraph.copyOf(graph);
     }
 
@@ -125,27 +124,27 @@ public final class PackageGraph implements Graph<PackageGraph.Node> {
     }
 
     private static PackageGraph create(List<Package> filteredPackages) {
-        Graph<Node> mutableGraph = buildGraph(filteredPackages);
+        Graph<PackageInfo> mutableGraph = buildGraph(filteredPackages);
         PackageGraph result = new PackageGraph(mutableGraph);
         return result;
     }
 
-    private static Graph<Node> buildGraph(List<Package> packages) {
-        MutableGraph<Node> graph = GraphBuilder
+    private static Graph<PackageInfo> buildGraph(List<Package> packages) {
+        MutableGraph<PackageInfo> graph = GraphBuilder
                 .directed()
-                .nodeOrder(ElementOrder.<Node>natural())
+                .nodeOrder(ElementOrder.<PackageInfo>natural())
                 .build();
         Queue<Package> queue = new ArrayDeque<>(packages);
         Package first = queue.poll();
         while (first != null) {
             final Package current = first;
-            Optional<Node> directParent =
+            Optional<PackageInfo> directParent =
                     graph.nodes()
                          .stream()
                          .filter((node) -> IsDirectParent.of(current)
                                                          .test(node.getValue()))
                          .findFirst();
-            Node newNode = Node.of(current);
+            PackageInfo newNode = PackageInfo.of(current);
             if (directParent.isPresent()) {
                 graph.putEdge(newNode, directParent.get());
             } else {
@@ -158,19 +157,19 @@ public final class PackageGraph implements Graph<PackageGraph.Node> {
 
     @VisibleForTesting
     boolean contains(Package p) {
-        Optional<Node> result = nodes().stream()
-                                       .filter((node) -> node.contains(p))
-                                       .findAny();
+        Optional<PackageInfo> result = nodes().stream()
+                                              .filter((node) -> node.isAbout(p))
+                                              .findAny();
         return result.isPresent();
     }
 
     @Override
-    public Set<Node> nodes() {
+    public Set<PackageInfo> nodes() {
         return impl.nodes();
     }
 
     @Override
-    public Set<EndpointPair<Node>> edges() {
+    public Set<EndpointPair<PackageInfo>> edges() {
         return impl.edges();
     }
 
@@ -185,132 +184,53 @@ public final class PackageGraph implements Graph<PackageGraph.Node> {
     }
 
     @Override
-    public ElementOrder<Node> nodeOrder() {
+    public ElementOrder<PackageInfo> nodeOrder() {
         return impl.nodeOrder();
     }
 
     @Override
-    public Set<Node> adjacentNodes(Node node) {
+    public Set<PackageInfo> adjacentNodes(PackageInfo node) {
         return impl.adjacentNodes(node);
     }
 
     @Override
-    public Set<Node> predecessors(Node node) {
+    public Set<PackageInfo> predecessors(PackageInfo node) {
         return impl.predecessors(node);
     }
 
     @Override
-    public Set<Node> successors(Node node) {
+    public Set<PackageInfo> successors(PackageInfo node) {
         return impl.successors(node);
     }
 
     @Override
-    public Set<EndpointPair<Node>> incidentEdges(Node node) {
+    public Set<EndpointPair<PackageInfo>> incidentEdges(PackageInfo node) {
         return impl.incidentEdges(node);
     }
 
     @Override
-    public int degree(Node node) {
+    public int degree(PackageInfo node) {
         return impl.degree(node);
     }
 
     @Override
-    public int inDegree(Node node) {
+    public int inDegree(PackageInfo node) {
         return impl.inDegree(node);
     }
 
     @Override
-    public int outDegree(Node node) {
+    public int outDegree(PackageInfo node) {
         return impl.outDegree(node);
     }
 
     @Override
-    public boolean hasEdgeConnecting(Node nodeU, Node nodeV) {
+    public boolean hasEdgeConnecting(PackageInfo nodeU, PackageInfo nodeV) {
         return impl.hasEdgeConnecting(nodeU, nodeV);
     }
 
     private static void checkNotNullOrEmpty(String packagePrefix) {
         checkNotNull(packagePrefix);
         checkArgument(!packagePrefix.isEmpty(), "Package prefix cannot be empty");
-    }
-
-    /**
-     * A node in the graph.
-     */
-    @Immutable
-    public static final class Node implements Comparable<Node> {
-
-        @SuppressWarnings("Immutable")
-        // Even though, that Package is not immutable, the data we use from its
-        // instance is immutable.
-        private final Package value;
-
-        private Node(Package value) {
-            this.value = value;
-        }
-
-        /**
-         * Obtains an instance for the passed package value.
-         */
-        public static Node of(Package value) {
-            checkNotNull(value);
-            Node result = new Node(value);
-            return result;
-        }
-
-        /**
-         * Obtains an instance with the package of the passed class.
-         */
-        public static Node of(Class<?> cls) {
-            checkNotNull(cls);
-            Node result = new Node(cls.getPackage());
-            return result;
-        }
-
-        /**
-         * Obtains the value stored in the node.
-         */
-        public Package getValue() {
-            return value;
-        }
-
-        private boolean contains(Package p) {
-            checkNotNull(p);
-            boolean result = value.equals(p);
-            return result;
-        }
-
-        /**
-         * Returns the name of the package.
-         */
-        @Override
-        public String toString() {
-            return value.getName();
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (!(o instanceof Node)) {
-                return false;
-            }
-            Node node = (Node) o;
-            return Objects.equals(value, node.value);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(value);
-        }
-
-        @Override
-        public int compareTo(Node o) {
-            return value.getName()
-                        .compareTo(o.getValue()
-                                    .getName());
-        }
     }
 
     /**
