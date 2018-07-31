@@ -18,28 +18,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = 'spine-base'
+package io.spine.tools.check;
 
-include 'base'
+import com.google.errorprone.VisitorState;
+import com.google.errorprone.fixes.Fix;
+import com.sun.source.tree.Tree;
 
-include 'testlib'
+import java.util.Optional;
 
-/**
- * Includes a module and sets custom project directory to it.
- */
-final def module = { final String name, final String path ->
-    include name
-    project(":$name").projectDir = new File("$rootDir/$path")
+interface Fixer<T extends Tree> {
+
+    boolean matches(T tree, VisitorState state);
+
+    Optional<Fix> buildFix(T tree, VisitorState state);
 }
-
-module 'custom-checks',      'tools/custom-checks'
-module 'javadoc-filter',      'tools/javadoc-filter'
-module 'javadoc-prettifier',  'tools/javadoc-prettifier'
-
-module 'model-compiler',      'tools/model-compiler'
-module 'plugin-base',         'tools/plugin-base'
-module 'reflections-plugin',  'tools/reflections-plugin'
-
-module 'protoc-plugin',       'tools/protoc-plugin'
-
-module 'plugin-testlib' ,     'tools/plugin-testlib'

@@ -18,28 +18,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = 'spine-base'
-
-include 'base'
-
-include 'testlib'
-
 /**
- * Includes a module and sets custom project directory to it.
+ * This package provides the Gradle plugin for custom Error Prone checks used in Spine.
  */
-final def module = { final String name, final String path ->
-    include name
-    project(":$name").projectDir = new File("$rootDir/$path")
-}
 
-module 'custom-checks',      'tools/custom-checks'
-module 'javadoc-filter',      'tools/javadoc-filter'
-module 'javadoc-prettifier',  'tools/javadoc-prettifier'
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.tools.check;
 
-module 'model-compiler',      'tools/model-compiler'
-module 'plugin-base',         'tools/plugin-base'
-module 'reflections-plugin',  'tools/reflections-plugin'
+import com.google.errorprone.annotations.CheckReturnValue;
 
-module 'protoc-plugin',       'tools/protoc-plugin'
-
-module 'plugin-testlib' ,     'tools/plugin-testlib'
+import javax.annotation.ParametersAreNonnullByDefault;

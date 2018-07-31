@@ -17,29 +17,19 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+group 'io.spine.tools'
 
-rootProject.name = 'spine-base'
-
-include 'base'
-
-include 'testlib'
-
-/**
- * Includes a module and sets custom project directory to it.
- */
-final def module = { final String name, final String path ->
-    include name
-    project(":$name").projectDir = new File("$rootDir/$path")
+repositories {
+    maven { url = repos.sonatypeSnapshots }
 }
 
-module 'custom-checks',      'tools/custom-checks'
-module 'javadoc-filter',      'tools/javadoc-filter'
-module 'javadoc-prettifier',  'tools/javadoc-prettifier'
+dependencies {
+    implementation deps.build.errorProneCore
+    implementation deps.build.errorProneAnnotations
 
-module 'model-compiler',      'tools/model-compiler'
-module 'plugin-base',         'tools/plugin-base'
-module 'reflections-plugin',  'tools/reflections-plugin'
+    // todo extract version to ext
+    implementation 'com.google.auto.service:auto-service:1.0-rc4'
 
-module 'protoc-plugin',       'tools/protoc-plugin'
-
-module 'plugin-testlib' ,     'tools/plugin-testlib'
+    implementation project(':base')
+    implementation project(':plugin-base')
+}
