@@ -20,6 +20,7 @@
 
 package io.spine.validate;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.FieldOptions;
 import com.google.protobuf.Descriptors.FieldDescriptor;
@@ -322,6 +323,15 @@ abstract class FieldValidator<V> {
     private boolean isNotRepeatedOrMap() {
         return !fieldDescriptor.isRepeated()
                 && !fieldDescriptor.isMapField();
+    }
+
+    /**
+     * This test-only method is used from the module {@code smoke-tests}.
+     */
+    @SuppressWarnings("unused")
+    @VisibleForTesting
+    boolean isRepeatedOrMap() {
+        return !isNotRepeatedOrMap();
     }
 
     /**
