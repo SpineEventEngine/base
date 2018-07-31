@@ -72,13 +72,11 @@ public abstract class ClassTypeValue<T> implements Serializable {
         return value.getName();
     }
 
-    /** {@inheritDoc} */
     @Override
     public int hashCode() {
         return Objects.hash(value);
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean equals(@Nullable Object obj) {
         if (this == obj) {
