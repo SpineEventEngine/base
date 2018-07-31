@@ -18,13 +18,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package given.reflect.root.branch1.foo.sub1;
-
-import given.reflect.root.branch1.foo.FooClass;
+package given.reflect.root.branch1.foo;
 
 /**
- * A dummy class to reference from a package.
+ * A parent class which makes sure that the package is visible for the ClassLoader
+ * of derived classes.
  */
 @SuppressWarnings("unused")
-public class Sub1Class extends FooClass {
+public class FooClass {
 }

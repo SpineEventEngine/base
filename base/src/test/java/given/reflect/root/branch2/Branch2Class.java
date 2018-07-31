@@ -18,11 +18,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package given.reflect.root.branch2.ipsum;
+package given.reflect.root.branch2;
 
 /**
- * A dummy class to reference from a package.
+ * The class which makes sure that the package is visible to ClassLoaders of derived classes.
  */
 @SuppressWarnings("unused")
-public class Sub3Class {
+public class Branch2Class {
 }

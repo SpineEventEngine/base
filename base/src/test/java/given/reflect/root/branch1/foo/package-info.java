@@ -18,13 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package given.reflect.root.branch1.foo.sub1;
+@ValueAnnotation("Branch One")
+package given.reflect.root.branch1.foo;
 
-import given.reflect.root.branch1.foo.FooClass;
-
-/**
- * A dummy class to reference from a package.
- */
-@SuppressWarnings("unused")
-public class Sub1Class extends FooClass {
-}
+import given.reflect.annotation.ValueAnnotation;

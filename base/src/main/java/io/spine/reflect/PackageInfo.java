@@ -22,9 +22,17 @@ package io.spine.reflect;
 
 import com.google.errorprone.annotations.Immutable;
 
+import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Comparator.comparing;
+import static java.util.Comparator.reverseOrder;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Provides additional run-time information about a Java package.
@@ -67,6 +75,68 @@ public final class PackageInfo implements Comparable<PackageInfo> {
     }
 
     /**
+     * Finds an annotation of the specified type, set directly to the package, or via the package
+     * nesting hierarchy.
+     *
+     * <p>Tries to obtain the annotation if it presents directly in this package.
+     * If not, tries to obtain the annotation from the packages in which this package
+     * is nested, staring from inner most.
+     *
+     * <p>If none of the packages has the required annotation, returns {@link Optional#empty()}.
+     *
+     * @param annotationClass the class of the annotations
+     * @param <A> the type of the annotation to query
+     * @return annotation or {@link Optional#empty()} if not found
+     */
+    public <A extends Annotation> Optional<A> findAnnotation(Class<A> annotationClass) {
+        checkNotNull(annotationClass);
+
+        Optional<A> result = getAnnotation(annotationClass);
+        if (result.isPresent()) {
+            return result;
+        }
+
+        List<PackageInfo> goingUp = new ArrayList<>(parents());
+        goingUp.sort(reverseOrder());
+        for (PackageInfo parent : goingUp) {
+            Optional<A> ofParent = parent.getAnnotation(annotationClass);
+            if (ofParent.isPresent()) {
+                return ofParent;
+            }
+        }
+        return Optional.empty();
+    }
+
+    private <A extends Annotation> Optional<A> getAnnotation(Class<A> annotationClass) {
+        A annotation = value.getAnnotation(annotationClass);
+        Optional<A> result = Optional.ofNullable(annotation);
+        return result;
+    }
+
+    /**
+     * Obtains parents of this package in the alphabetical order.
+     */
+    private List<PackageInfo> parents() {
+        Package[] pack = Package.getPackages();
+        String packageName = getName();
+        List<Package> parentList =
+                Arrays.stream(pack)
+                      .filter((p) -> {
+                          String parentName = p.getName();
+                          return packageName.startsWith(parentName) &&
+                                  !packageName.equals(parentName);
+
+                      })
+                      .sorted(comparing(Package::getName))
+                      .collect(toList());
+        List<PackageInfo> result =
+                parentList.stream()
+                          .map(PackageInfo::of)
+                          .collect(toList());
+        return result;
+    }
+
+    /**
      * Obtains the value stored in the node.
      */
     public Package getValue() {
@@ -80,12 +150,16 @@ public final class PackageInfo implements Comparable<PackageInfo> {
         return result;
     }
 
+    public String getName() {
+        return value.getName();
+    }
+
     /**
      * Returns the name of the package.
      */
     @Override
     public String toString() {
-        return value.getName();
+        return getName();
     }
 
     @Override

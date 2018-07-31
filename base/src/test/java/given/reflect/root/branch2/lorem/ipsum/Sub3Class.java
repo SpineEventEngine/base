@@ -18,13 +18,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package given.reflect.root.branch1.foo.sub1;
+package given.reflect.root.branch2.lorem.ipsum;
 
-import given.reflect.root.branch1.foo.FooClass;
+import given.reflect.root.branch2.Branch2Class;
 
 /**
  * A dummy class to reference from a package.
  */
 @SuppressWarnings("unused")
-public class Sub1Class extends FooClass {
+public class Sub3Class extends Branch2Class {
 }

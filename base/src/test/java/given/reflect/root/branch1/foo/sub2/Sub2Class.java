@@ -20,9 +20,11 @@
 
 package given.reflect.root.branch1.foo.sub2;
 
+import given.reflect.root.branch1.foo.FooClass;
+
 /**
  * A dummy class to reference from a package.
  */
 @SuppressWarnings("unused")
-public class Sub2Class {
+public class Sub2Class extends FooClass {
 }
