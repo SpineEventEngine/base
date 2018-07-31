@@ -28,7 +28,7 @@ import java.util.Objects;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * An abstract base for value holder objects.
+ * An abstract base for objects that hold {@code Serializable} values.
  *
  * @param <T> a type of value enclosed in the holder
  * @author Alexander Yevsyukov
