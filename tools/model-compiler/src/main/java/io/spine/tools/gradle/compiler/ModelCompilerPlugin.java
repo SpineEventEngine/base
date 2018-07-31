@@ -59,7 +59,8 @@ public class ModelCompilerPlugin implements Plugin<Project> {
                   new ProtoAnnotatorPlugin(),
                   new ValidationRulesLookupPlugin(),
                   new ProtocPluginImporter(),
-                  new DescriptorSetMergerPlugin())
+                  new DescriptorSetMergerPlugin(),
+                  new SpineCheckPlugin())
               .forEach(plugin -> apply(plugin, project));
     }
 
