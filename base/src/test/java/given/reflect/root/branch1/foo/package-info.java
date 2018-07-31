@@ -18,6 +18,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/**
+ * This package is annotated.
+ * One of its {@linkplain given.reflect.root.branch1.foo.sub1 sub-packages} is also annotated
+ * with the same type, but a different value.
+ */
 @ValueAnnotation("Branch One")
 package given.reflect.root.branch1.foo;
 
