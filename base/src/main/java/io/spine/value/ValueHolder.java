@@ -20,49 +20,46 @@
 
 package io.spine.value;
 
-import io.spine.type.ClassName;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import java.io.Serializable;
+import java.util.Objects;
 
 /**
- * Abstract base for classes holding a value of a {@link Class}.
+ * An abstract base for value holder objects.
  *
- * @param <T> the type of the class
- *
+ * @param <T> a type of value enclosed in the holder
  * @author Alexander Yevsyukov
  */
-public abstract class ClassTypeValue<T> extends ValueHolder<Class<? extends T>> {
-
-    /* NOTE: the class has the 'Type' infix in the name to prevent the name clash with
-       java.lang.ClassValue. */
+public abstract class ValueHolder<T extends Serializable> implements Serializable {
 
     private static final long serialVersionUID = 0L;
+    private final T value;
 
-    protected ClassTypeValue(Class<? extends T> value) {
-        super(value);
-        checkNotNull(value);
+    protected ValueHolder(T value) {
+        this.value = value;
+    }
+
+    /** Returns the stored value. */
+    protected T value() {
+        return this.value;
     }
 
     @Override
-    public Class<? extends T> value() {
-        return super.value();
+    public int hashCode() {
+        return Objects.hash(value);
     }
 
-    /**
-     * Returns the name of the enclosed Java class.
-     */
-    public ClassName getName() {
-        ClassName result = ClassName.of(value());
-        return result;
-    }
-
-    /**
-     * Returns {@linkplain Class#getName() the name} of the enclosed class value.
-     *
-     * @return the value class name
-     */
     @Override
-    public String toString() {
-        return value().getName();
+    public boolean equals(@Nullable Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        ValueHolder other = (ValueHolder) obj;
+        return Objects.equals(this.value, other.value);
     }
 }
