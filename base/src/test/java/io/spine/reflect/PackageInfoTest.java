@@ -22,6 +22,7 @@ package io.spine.reflect;
 
 import com.google.common.testing.EqualsTester;
 import given.reflect.annotation.ValueAnnotation;
+import given.reflect.root.branch1.bar.LastVisitor;
 import given.reflect.root.branch1.foo.sub1.Sub1Class;
 import given.reflect.root.branch1.foo.sub2.Sub2Class;
 import given.reflect.root.branch2.lorem.ipsum.Sub3Class;
@@ -34,6 +35,7 @@ import java.util.Optional;
 import java.util.concurrent.Callable;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -92,6 +94,16 @@ class PackageInfoTest {
             Package pkg = Sub3Class.class.getPackage();
             assertNotAnnotated(pkg);
             assertFound(pkg);
+        }
+
+        @Test
+        @DisplayName("")
+        void notFound() {
+            Package pkg = LastVisitor.class.getPackage();
+            assertNotAnnotated(pkg);
+            assertFalse(PackageInfo.of(pkg)
+                                   .findAnnotation(ValueAnnotation.class)
+                                   .isPresent());
         }
 
         private void assertFound(Package pkg) {
