@@ -107,7 +107,16 @@ public final class PackageInfo implements Comparable<PackageInfo> {
         return Optional.empty();
     }
 
-    private <A extends Annotation> Optional<A> getAnnotation(Class<A> annotationClass) {
+    /**
+     * Obtains an annotation of the specified type, if it's <em>directly</em>
+     * present in the package.
+     *
+     * @param annotationClass the class of the annotations
+     * @param <A> the type of the annotation to query
+     * @return the annotation or {@link Optional#empty()} if not found
+     * @see #findAnnotation(Class)
+     */
+    public <A extends Annotation> Optional<A> getAnnotation(Class<A> annotationClass) {
         A annotation = value.getAnnotation(annotationClass);
         Optional<A> result = Optional.ofNullable(annotation);
         return result;
@@ -125,7 +134,6 @@ public final class PackageInfo implements Comparable<PackageInfo> {
                           String parentName = p.getName();
                           return packageName.startsWith(parentName) &&
                                   !packageName.equals(parentName);
-
                       })
                       .sorted(comparing(Package::getName))
                       .collect(toList());
