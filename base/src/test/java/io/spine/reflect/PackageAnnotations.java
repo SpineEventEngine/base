@@ -20,18 +20,15 @@
 
 package io.spine.reflect;
 
+import given.reflect.root.branch1.foo.sub1.Sub1Class;
+
 import java.util.Arrays;
 
 import static java.util.Comparator.comparing;
 
-public class PrintPackages {
+public class PackageAnnotations {
 
-    public static void main(String[] args) {
-        try {
-            Class.forName("io.spine.reflect.Types");
-        } catch (ClassNotFoundException e) {
-            return;
-        }
+    private static void printPackages() {
         Package[] pack = Package.getPackages();
 
         Arrays.sort(pack, comparing(Package::getName));
@@ -43,11 +40,28 @@ public class PrintPackages {
         }
     }
 
-    //TODO:2018-07-27:alexander.yevsyukov: Filter out packages:
-    // java
-    // com.google.common
-    // sun
-    // io.spine
-    //         annotation, base, code, io, json, logging, money, net, option, protobuf, reflect,
-    //         string, type, util, validate, value, testing
+    public static void main(String[] args) {
+
+        // Make sure the class is used.
+        Class<Sub1Class> cls = Sub1Class.class;
+//        System.out.println("cls.getPackage() = " + cls.getPackage());
+//        printPackages();
+
+        Package p = cls.getPackage();
+
+        print("Annotations:");
+        print(p.getAnnotations());
+
+        print("Declared annotations:");
+        print(p.getDeclaredAnnotations());
+
+        print("Class annotations:");
+        print(cls.getAnnotations());
+    }
+
+    private static void print(Object... obj) {
+        for (Object o : obj) {
+            System.out.println(o);
+        }
+    }
 }

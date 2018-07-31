@@ -24,7 +24,6 @@ import com.google.common.graph.ElementOrder;
 import com.google.common.graph.EndpointPair;
 import com.google.common.testing.EqualsTester;
 import com.google.common.testing.NullPointerTester;
-import io.spine.reflect.PackageGraph.Node;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -53,28 +52,14 @@ class PackageGraphTest {
     private final PackageGraph graph = PackageGraph.newInstance();
 
     // Test values representing well-known Java packages.
-    private final Node javaLang = Node.of(String.class);
-    private final Node javaUtil = Node.of(Collection.class.getPackage());
-    private final Node javaUtilConcurrent = Node.of(Callable.class.getPackage());
+    private final PackageInfo javaLang = PackageInfo.of(String.class);
+    private final PackageInfo javaUtil = PackageInfo.of(Collection.class.getPackage());
+    private final PackageInfo javaUtilConcurrent = PackageInfo.of(Callable.class.getPackage());
 
     @Test
     @DisplayName(NOT_ACCEPT_NULLS)
     void nullCheck() {
         new NullPointerTester().testAllPublicStaticMethods(PackageGraph.class);
-    }
-
-    @Nested
-    @DisplayName("Provide Node class")
-    class NodeClass {
-
-        @Test
-        @DisplayName("with equals() and hashCode()")
-        void hashCodeAndEquals() {
-            new EqualsTester()
-                    .addEqualityGroup(javaUtil, Node.of(Collection.class.getPackage()))
-                    .addEqualityGroup(javaUtilConcurrent)
-                    .testEquals();
-        }
     }
 
     @Nested
@@ -155,13 +140,13 @@ class PackageGraphTest {
         @Test
         @DisplayName("having natural node order")
         void naturalOrder() {
-            assertEquals(ElementOrder.<Node>natural(), graph.nodeOrder());
+            assertEquals(ElementOrder.<PackageInfo>natural(), graph.nodeOrder());
         }
 
         @Test
         @DisplayName("returning adjacent nodes")
         void adjacentNodes() {
-            Set<Node> nodes = graph.adjacentNodes(javaUtil);
+            Set<PackageInfo> nodes = graph.adjacentNodes(javaUtil);
             assertContainsPackageOf(nodes, Callable.class);
             assertContainsPackageOf(nodes, Function.class);
             assertContainsPackageOf(nodes, Logger.class);
@@ -170,7 +155,7 @@ class PackageGraphTest {
         @Test
         @DisplayName("obtaining predecessors")
         void predecessors() {
-            Set<Node> predecessors = graph.predecessors(javaUtilConcurrent);
+            Set<PackageInfo> predecessors = graph.predecessors(javaUtilConcurrent);
 
             assertContainsPackageOf(predecessors, AtomicBoolean.class);
             assertContainsPackageOf(predecessors, Lock.class);
@@ -179,23 +164,23 @@ class PackageGraphTest {
         @Test
         @DisplayName("obtaining successors")
         void successors() {
-            Set<Node> successors = graph.successors(javaUtilConcurrent);
+            Set<PackageInfo> successors = graph.successors(javaUtilConcurrent);
 
             assertEquals(1, successors.size());
             assertContainsPackageOf(successors, Collection.class);
         }
 
-        private void assertContainsPackageOf(Set<Node> nodes, Class<?> cls) {
-            assertTrue(nodes.contains(Node.of(cls)));
+        private void assertContainsPackageOf(Set<PackageInfo> nodes, Class<?> cls) {
+            assertTrue(nodes.contains(PackageInfo.of(cls)));
         }
 
         @Test
         @DisplayName("obtaining incident edges")
         void incidentEdges() {
-            Set<EndpointPair<Node>> edges = graph.incidentEdges(javaUtilConcurrent);
+            Set<EndpointPair<PackageInfo>> edges = graph.incidentEdges(javaUtilConcurrent);
             // The primary purpose of these checks is to demonstrate how the edges work.
             // They do not test our code since we simply redirect to Guava's Graph.
-            for (EndpointPair<Node> edge : edges) {
+            for (EndpointPair<PackageInfo> edge : edges) {
                 boolean isSource = edge.source()
                                        .equals(javaUtilConcurrent);
                 boolean isTarget = edge.target()
@@ -257,7 +242,7 @@ class PackageGraphTest {
             @DisplayName("not connected")
             void notConnected() {
                 // Indirect connection.
-                assertFalse(graph.hasEdgeConnecting(Node.of(Lock.class), javaUtil));
+                assertFalse(graph.hasEdgeConnecting(PackageInfo.of(Lock.class), javaUtil));
                 // Another branch.
                 assertFalse(graph.hasEdgeConnecting(javaLang, javaUtil));
             }
@@ -274,14 +259,14 @@ class PackageGraphTest {
         private Print() {
         }
 
-        static void nodes(Collection<Node> nodes) {
-            for (Node node : nodes) {
+        static void nodes(Collection<PackageInfo> nodes) {
+            for (PackageInfo node : nodes) {
                 System.out.println(node);
             }
         }
 
-        static void edges(Collection<EndpointPair<Node>> edges) {
-            for (EndpointPair<Node> edge : edges) {
+        static void edges(Collection<EndpointPair<PackageInfo>> edges) {
+            for (EndpointPair<PackageInfo> edge : edges) {
                 System.out.println(edge);
             }
         }
