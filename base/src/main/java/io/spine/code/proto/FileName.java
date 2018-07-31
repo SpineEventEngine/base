@@ -24,7 +24,9 @@ import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.base.CommandMessage;
+import io.spine.base.EventMessage;
 import io.spine.base.MessageFile;
+import io.spine.base.RejectionMessage;
 import io.spine.code.AbstractFileName;
 
 import java.util.List;
@@ -107,7 +109,7 @@ public class FileName extends AbstractFileName<FileName> implements UnderscoredN
      * Returns {@code true} if the name of the file matches convention for command message files.
      */
     public boolean isCommands() {
-        boolean result = value().endsWith(Suffix.forCommands());
+        boolean result = value().endsWith(CommandMessage.File.suffix());
         return result;
     }
 
@@ -115,7 +117,7 @@ public class FileName extends AbstractFileName<FileName> implements UnderscoredN
      * Returns {@code true} if the name of the file matches convention for event message files.
      */
     public boolean isEvents() {
-        boolean result = value().endsWith(Suffix.forEvents());
+        boolean result = value().endsWith(EventMessage.File.suffix());
         return result;
     }
 
@@ -123,42 +125,7 @@ public class FileName extends AbstractFileName<FileName> implements UnderscoredN
      * Returns {@code true} if the name of the file matches convention for rejection message files.
      */
     public boolean isRejections() {
-        boolean result = value().endsWith(Suffix.forRejections());
+        boolean result = value().endsWith(RejectionMessage.File.suffix());
         return result;
-    }
-
-    /**
-     * Constants for names of standard message files.
-     */
-    public static class Suffix {
-
-        private static final String FOR_COMMANDS = CommandMessage.File.suffix();
-        private static final String FOR_EVENTS = "events" + MessageFile.EXTENSION;
-        private static final String FOR_REJECTIONS = "rejections" + MessageFile.EXTENSION;
-
-        /** Prevents instantiation of this utility class. */
-        private Suffix() {
-        }
-
-        /**
-         * The name suffix for proto file containing command declarations.
-         */
-        public static String forCommands() {
-            return FOR_COMMANDS;
-        }
-
-        /**
-         * The name suffix for proto files containing event message declarations.
-         */
-        public static String forEvents() {
-            return FOR_EVENTS;
-        }
-
-        /**
-         * The name suffix for proto files containing rejection declarations.
-         */
-        public static String forRejections() {
-            return FOR_REJECTIONS;
-        }
     }
 }

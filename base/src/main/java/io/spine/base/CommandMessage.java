@@ -20,6 +20,7 @@
 
 package io.spine.base;
 
+import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Message;
 
@@ -34,11 +35,12 @@ import java.util.function.Predicate;
  *
  * @author Alexander Yevsyukov
  */
+@Immutable
 @SuppressWarnings("InterfaceNeverImplemented") /* See Javadoc */
 public interface CommandMessage extends Message {
 
     /**
-     * Constants and utilities for working with proto command files.
+     * Provides the predicate for finding proto files with command message declarations.
      */
     class File {
 
