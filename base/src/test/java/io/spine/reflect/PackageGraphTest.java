@@ -117,7 +117,6 @@ class PackageGraphTest {
     @Nested
     class GraphApi {
 
-
         @Test
         @DisplayName("returning edges")
         void edges() {
