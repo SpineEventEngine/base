@@ -20,6 +20,7 @@
 
 package io.spine.tools.compiler.annotation;
 
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.TypeName;
 import io.spine.testing.UtilityClassTest;
@@ -28,6 +29,7 @@ import org.junit.jupiter.api.Test;
 
 import javax.annotation.Generated;
 
+import static io.spine.tools.compiler.annotation.Annotations.canIgnoreReturnValue;
 import static io.spine.tools.compiler.annotation.Annotations.generatedBySpineModelCompiler;
 import static org.junit.Assert.assertEquals;
 
@@ -46,5 +48,12 @@ class AnnotationsTest extends UtilityClassTest<Annotations> {
     void ofModelCompiler() {
         AnnotationSpec spec = generatedBySpineModelCompiler();
         assertEquals(spec.type, TypeName.get(Generated.class));
+    }
+
+    @Test
+    @DisplayName("provide CanIgnoreReturnValue annotation")
+    void ofCanIgnoreReturnValue() {
+        AnnotationSpec spec = canIgnoreReturnValue();
+        assertEquals(spec.type, TypeName.get(CanIgnoreReturnValue.class));
     }
 }
