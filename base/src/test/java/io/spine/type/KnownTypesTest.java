@@ -33,10 +33,8 @@ import io.spine.option.IfMissingOption;
 import io.spine.test.types.Task;
 import io.spine.test.types.TaskId;
 import io.spine.test.types.TaskName;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -48,63 +46,61 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * @author Alexander Litus
+ * @author Alexander Yevsyukov
  */
-public class KnownTypesShould {
+@DisplayName("KnownTypes should")
+class KnownTypesTest {
 
-    private KnownTypes knownTypes;
-
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
-
-    @Before
-    public void setUp() {
-        knownTypes = KnownTypes.instance();
-    }
+    private final KnownTypes knownTypes = KnownTypes.instance();
 
     @Test
-    public void return_known_proto_message_type_urls() {
+    @DisplayName("obtain type URLs of known proto types")
+    void typeUrls() {
         Set<TypeUrl> typeUrls = knownTypes.getAllUrls();
 
         assertFalse(typeUrls.isEmpty());
     }
 
     @Test
-    public void return_spine_java_class_names_by_proto_type_urls() {
-        assertHasClassNameByTypeUrlOf(EntityOption.class);
-        assertHasClassNameByTypeUrlOf(Error.class);
-        assertHasClassNameByTypeUrlOf(IfMissingOption.class);
+    @DisplayName("contain types defined by Spine framework")
+    void containsSpineTypes() {
+        assertContainsClass(EntityOption.class);
+        assertContainsClass(Error.class);
+        assertContainsClass(IfMissingOption.class);
     }
 
     @Test
-    public void return_google_java_class_names_by_proto_type_urls() {
-        assertHasClassNameByTypeUrlOf(Any.class);
-        assertHasClassNameByTypeUrlOf(Timestamp.class);
-        assertHasClassNameByTypeUrlOf(Duration.class);
-        assertHasClassNameByTypeUrlOf(Empty.class);
+    @DisplayName("contain types from Google Protobuf")
+    void containsProtobufTypes() {
+        assertContainsClass(Any.class);
+        assertContainsClass(Timestamp.class);
+        assertContainsClass(Duration.class);
+        assertContainsClass(Empty.class);
     }
 
-    private void assertHasClassNameByTypeUrlOf(Class<? extends Message> msgClass) {
+    private void assertContainsClass(Class<? extends Message> msgClass) {
         TypeUrl typeUrl = TypeUrl.of(msgClass);
-
         ClassName className = knownTypes.getClassName(typeUrl);
 
         assertEquals(ClassName.of(msgClass), className);
     }
 
     @Test
-    public void return_java_inner_class_name_by_proto_type_url() {
+    @DisplayName("contain nested proto types")
+    void containNestedProtoTypes() {
         TypeUrl typeUrl = TypeUrl.from(EntityOption.Kind.getDescriptor());
-
         ClassName className = knownTypes.getClassName(typeUrl);
 
         assertEquals(ClassName.of(EntityOption.Kind.class), className);
     }
 
     @Test
-    public void return_proto_type_url_by_proto_type_name() {
+    @DisplayName("find type URL by type name")
+    void findTypeUrlByName() {
         TypeUrl typeUrlExpected = TypeUrl.from(StringValue.getDescriptor());
 
         Optional<TypeUrl> typeUrlActual = knownTypes.find(typeUrlExpected.toName())
@@ -114,28 +110,31 @@ public class KnownTypesShould {
     }
 
     @Test
-    public void return_all_types_under_certain_package() {
+    @DisplayName("obtain all types under a given package")
+    void typesFromPackage() {
         TypeUrl taskId = TypeUrl.from(TaskId.getDescriptor());
         TypeUrl taskName = TypeUrl.from(TaskName.getDescriptor());
         TypeUrl task = TypeUrl.from(Task.getDescriptor());
 
         String packageName = "spine.test.types";
 
-        Collection<TypeUrl> packageTypes = knownTypes.getAllFromPackage(packageName);
+        Set<TypeUrl> packageTypes = knownTypes.getAllFromPackage(packageName);
         assertSize(3, packageTypes);
         assertTrue(packageTypes.containsAll(Arrays.asList(taskId, taskName, task)));
     }
 
     @Test
-    public void return_empty_collection_if_package_is_empty_or_invalid() {
+    @DisplayName("return empty set of types for unknown package")
+    void emptyTypeSetForUnknownPackage() {
         String packageName = "com.foo.invalid.package";
-        Collection<?> emptyTypesCollection = knownTypes.getAllFromPackage(packageName);
+        Set<?> emptyTypesCollection = knownTypes.getAllFromPackage(packageName);
         assertNotNull(emptyTypesCollection);
         assertTrue(emptyTypesCollection.isEmpty());
     }
 
     @Test
-    public void do_not_return_types_of_package_by_package_prefix() {
+    @DisplayName("do not return types by package prefix")
+    void noTypesByPrefix() {
         String prefix = "spine.test.ty"; // "spine.test.types" is a valid package
 
         Collection<TypeUrl> packageTypes = knownTypes.getAllFromPackage(prefix);
@@ -143,9 +142,12 @@ public class KnownTypesShould {
     }
 
     @Test
-    public void throw_exception_if_no_java_class_name_by_type_url() {
+    @DisplayName("throw UnknownTypeException for requesting info on an unknown type")
+    void throwOnUnkownType() {
         TypeUrl unexpectedUrl = TypeUrl.parse("prefix/unexpected.type");
-        thrown.expect(UnknownTypeException.class);
-        knownTypes.getClassName(unexpectedUrl);
+        assertThrows(
+                UnknownTypeException.class,
+                () -> knownTypes.getClassName(unexpectedUrl)
+        );
     }
 }

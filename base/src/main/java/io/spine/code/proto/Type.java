@@ -21,6 +21,7 @@
 package io.spine.code.proto;
 
 import com.google.common.base.Objects;
+import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.GenericDescriptor;
 import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
@@ -39,6 +40,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * @author Alexander Yevsyukov
  * @author Dmytro Dashenkov
  */
+@Immutable(containerOf = {"T", "P"})
 @Internal
 public abstract class Type<T extends GenericDescriptor, P extends Message> {
 
