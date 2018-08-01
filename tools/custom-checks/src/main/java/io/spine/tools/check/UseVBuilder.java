@@ -46,13 +46,19 @@ import static com.google.errorprone.matchers.Matchers.isSubtypeOf;
 /**
  * Matches on using ordinary Builder instead of VBuilder for Proto Messages.
  */
+@SuppressWarnings("unused") // Used reflectively.
 @AutoService(BugChecker.class)
 @BugPattern(
         name = "UseVBuilder",
         category = JDK,
-        summary = "Prefer using Spine Validating Builder instead of ordinary Builder for Messages",
+        summary = UseVBuilder.SUMMARY,
         severity = WARNING)
 public class UseVBuilder extends BugChecker implements MethodInvocationTreeMatcher {
+
+    static final String SUMMARY = "Prefer using Spine Validating Builders instead of ordinary " +
+            "Builders for Protobuf Messages";
+
+    private static final long serialVersionUID = 0L;
 
     private static final List<Fixer<MethodInvocationTree>> BUILDER_CALL_FIXERS =
             builderCallFixers();

@@ -20,6 +20,7 @@
 package io.spine.tools.gradle.compiler;
 
 import io.spine.tools.gradle.SpinePlugin;
+import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.ConfigurationContainer;
@@ -28,20 +29,27 @@ import org.gradle.api.artifacts.DependencySet;
 import org.gradle.api.artifacts.ResolvedConfiguration;
 import org.gradle.api.initialization.dsl.ScriptHandler;
 import org.gradle.api.internal.artifacts.dependencies.DefaultExternalModuleDependency;
+import org.gradle.api.invocation.Gradle;
+import org.gradle.api.plugins.PluginContainer;
 import org.gradle.api.tasks.TaskCollection;
 import org.gradle.api.tasks.TaskContainer;
 import org.gradle.api.tasks.compile.CompileOptions;
 import org.gradle.api.tasks.compile.JavaCompile;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static io.spine.tools.gradle.compiler.SpineCheckExtension.getUseVBuilderSeverity;
+import static io.spine.tools.gradle.compiler.SpineCheckExtension.getUseVBuilder;
 
 public class SpineCheckPlugin extends SpinePlugin {
 
     private static final String SPINE_CHECKS_MODULE = "spine-custom-checks";
     private static final String EXTENSION_NAME = "spineCheck";
+    private static final String PREPROCESSOR_CONFIG_NAME = "annotationProcessor";
+    private static final String ERROR_PRONE_PLUGIN_ID = "net.ltgt.errorprone";
+    private static final String SPINE_TOOLS_GROUP = "io.spine.tools";
+    private static final String MODEL_COMPILER_PLUGIN_NAME = "spine-model-compiler";
 
     public static String extensionName() {
         return EXTENSION_NAME;
@@ -49,41 +57,51 @@ public class SpineCheckPlugin extends SpinePlugin {
 
     @Override
     public void apply(Project project) {
-        System.out.println("Applying Spine Check 1");
         project.getExtensions()
                .create(EXTENSION_NAME, SpineCheckExtension.class);
-        System.out.println("Created extension");
-        Optional<String> versionOptional = acquireModelCompilerVersion(project);
-        if (!versionOptional.isPresent()) {
-            log().debug("Model compiler plugin dependency version is not found for the project {}",
+        Configuration preprocessorConfig = setupPreprocessorConfig(project);
+        boolean addedSuccessfully = addSpineCheckDependency(preprocessorConfig, project);
+        if (addedSuccessfully) {
+            addConfigureSeverityAction(project);
+        }
+    }
+
+    private Configuration setupPreprocessorConfig(Project project) {
+        ConfigurationContainer configurations = project.getConfigurations();
+        Configuration preprocessorConfig = configurations.findByName(PREPROCESSOR_CONFIG_NAME);
+        if (preprocessorConfig == null) {
+            preprocessorConfig = configurations.create(PREPROCESSOR_CONFIG_NAME);
+            addToJavaCompileTasks(preprocessorConfig, project);
+        }
+        return preprocessorConfig;
+    }
+
+    private boolean addSpineCheckDependency(Configuration configuration, Project project) {
+        Optional<String> versionToUse = acquireModelCompilerVersion(project);
+        if (!versionToUse.isPresent()) {
+            log().debug("Can't determine which dependency version to use for the project {}",
                         project.getName());
-            return;
+            return false;
         }
-        String version = versionOptional.get();
-        Optional<Configuration> configurationOptional =
-                configureAnnotationProcessor(version, project);
-        if (!configurationOptional.isPresent()) {
-            log().debug("The configuration 'annotationProcessor' could not be created nor " +
-                                "acquired for the project {}", project.getName());
-            return;
+        String version = versionToUse.get();
+
+        boolean isResolvable = isSpineCheckVersionResolvable(version, configuration);
+        if (isResolvable) {
+            dependOnSpineCheckVersion(version, configuration);
         }
-        Configuration annotationProcessor = configurationOptional.get();
-        if (!isResolvable(annotationProcessor)) {
-            log().debug("The artifacts for the 'annotationProcessor' configuration are not " +
-                                "available in the project {}, rolling back changes and quitting",
-                        project.getName());
-            rollBackChanges(annotationProcessor);
-            return;
-        }
-        System.out.println("Getting vBuilder Severity");
-        String useVBuilderSeverity = getUseVBuilderSeverity(project);
-        System.out.println("Got vBuilder Severity");
-        if (useVBuilderSeverity == null) {
-            System.out.println("UseVBuilder severity is null.");
-        } else {
-            System.out.println("UseVBuilder severity is not null, but " + useVBuilderSeverity);
-        }
-        addToJavaCompileTasks(annotationProcessor, project);
+        return isResolvable;
+    }
+
+    private void addConfigureSeverityAction(Project project) {
+        Action<Gradle> configureCheckSeverity = createConfigureAction(project);
+        Gradle gradle = project.getGradle();
+        gradle.projectsEvaluated(configureCheckSeverity);
+    }
+
+    private void addToJavaCompileTasks(Configuration annotationProcessor, Project project) {
+        log().debug("Adding the {} configuration to all 'JavaCompile' tasks.",
+                    PREPROCESSOR_CONFIG_NAME);
+        addJavaCompileArgs(project, "-processorpath", annotationProcessor.getAsPath());
     }
 
     private Optional<String> acquireModelCompilerVersion(Project project) {
@@ -102,7 +120,7 @@ public class SpineCheckPlugin extends SpinePlugin {
         DependencySet classpathDependencies = classpath.getDependencies();
         Optional<String> version = Optional.empty();
         for (Dependency dependency : classpathDependencies) {
-            if ("spine-model-compiler".equals(dependency.getName())) {
+            if (MODEL_COMPILER_PLUGIN_NAME.equals(dependency.getName())) {
                 String dependencyVersion = dependency.getVersion();
                 version = Optional.ofNullable(dependencyVersion);
             }
@@ -110,42 +128,62 @@ public class SpineCheckPlugin extends SpinePlugin {
         return version;
     }
 
-    private Optional<Configuration> configureAnnotationProcessor(String version, Project project) {
-        log().debug("Creating/adjusting 'annotationProcessor' configuration for the project {}",
-                    project.getName());
-        ConfigurationContainer configurations = project.getConfigurations();
-        Configuration config = configurations.maybeCreate("annotationProcessor");
-        DependencySet dependencies = config.getDependencies();
-        Dependency dependency =
-                new DefaultExternalModuleDependency("io.spine.tools", SPINE_CHECKS_MODULE, version);
-        dependencies.add(dependency);
-        Optional<Configuration> result = Optional.of(config);
-        return result;
-    }
-
-    private boolean isResolvable(Configuration annotationProcessor) {
-        log().debug("Checking that all artifacts for the 'annotationProcessor' are available.");
-        Configuration configCopy = annotationProcessor.copy();
+    private boolean isSpineCheckVersionResolvable(String version, Configuration configuration) {
+        Configuration configCopy = configuration.copy();
+        dependOnSpineCheckVersion(version, configCopy);
         ResolvedConfiguration resolved = configCopy.getResolvedConfiguration();
         boolean isResolvable = !resolved.hasError();
         return isResolvable;
     }
 
-    private void rollBackChanges(Configuration annotationProcessor) {
-        log().debug("Rolling back dependency changes for the 'annotationProcessor' configuration.");
-        DependencySet dependencies = annotationProcessor.getDependencies();
-        dependencies.removeIf(dependency -> SPINE_CHECKS_MODULE.equals(dependency.getName()));
+    private void dependOnSpineCheckVersion(String dependencyVersion, Configuration configuration) {
+        log().debug("Adding dependency on {}:{}:{} to the {} configuration",
+                    SPINE_TOOLS_GROUP, SPINE_CHECKS_MODULE, dependencyVersion,
+                    PREPROCESSOR_CONFIG_NAME);
+        DependencySet dependencies = configuration.getDependencies();
+        Dependency dependency = new DefaultExternalModuleDependency(
+                SPINE_TOOLS_GROUP, SPINE_CHECKS_MODULE, dependencyVersion);
+        dependencies.add(dependency);
     }
 
-    private void addToJavaCompileTasks(Configuration annotationProcessor, Project project) {
-        log().debug("Adding the 'annotationProcessor' configuration to all 'JavaCompile' tasks.");
+    private Action<Gradle> createConfigureAction(Project project) {
+        return gradle -> configureCheckSeverity(project);
+    }
+
+    private void configureCheckSeverity(Project project) {
+        if (!hasErrorPronePlugin(project)) {
+            log().debug("Cannot configure Spine checks severity as Error Prone plugin is not " +
+                                "applied to the project {}.", project.getName());
+            return;
+        }
+
+        configureUseVBuilder(project);
+    }
+
+    private void configureUseVBuilder(Project project) {
+        Severity severity = getUseVBuilder(project);
+        if (severity == null) {
+            return;
+        }
+        log().debug("Setting UseVBuilder check severity to {} for the project {}",
+                    severity.name(), project.getName());
+        String severityArg = "-Xep:UseVBuilder:" + severity.name();
+        addJavaCompileArgs(project, severityArg);
+    }
+
+    private static void addJavaCompileArgs(Project project, String... args) {
         TaskContainer tasks = project.getTasks();
         TaskCollection<JavaCompile> javaCompileTasks = tasks.withType(JavaCompile.class);
         for (JavaCompile task : javaCompileTasks) {
-            CompileOptions options = task.getOptions();
-            List<String> compilerArgs = options.getCompilerArgs();
-            compilerArgs.add("-processorpath");
-            compilerArgs.add(annotationProcessor.getAsPath());
+            CompileOptions taskOptions = task.getOptions();
+            List<String> compilerArgs = taskOptions.getCompilerArgs();
+            compilerArgs.addAll(Arrays.asList(args));
         }
+    }
+
+    private static boolean hasErrorPronePlugin(Project project) {
+        PluginContainer appliedPlugins = project.getPlugins();
+        boolean hasPlugin = appliedPlugins.hasPlugin(ERROR_PRONE_PLUGIN_ID);
+        return hasPlugin;
     }
 }

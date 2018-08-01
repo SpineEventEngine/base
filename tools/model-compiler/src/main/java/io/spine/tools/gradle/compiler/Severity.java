@@ -20,17 +20,8 @@
 
 package io.spine.tools.gradle.compiler;
 
-import org.gradle.api.Project;
-
-@SuppressWarnings({"PublicField", "WeakerAccess"})
-public class SpineCheckExtension {
-
-    public Severity useVBuilder;
-
-    public static Severity getUseVBuilder(Project project) {
-        SpineCheckExtension extension = (SpineCheckExtension)
-                project.getExtensions()
-                       .getByName(SpineCheckPlugin.extensionName());
-        return extension.useVBuilder;
-    }
+public enum Severity {
+    OFF,
+    WARN,
+    ERROR
 }
