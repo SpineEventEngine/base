@@ -37,8 +37,8 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
  */
 public final class SimpleClassName extends StringTypeValue {
 
+    private static final long serialVersionUID = 0L;
     private static final SimpleClassName BUILDER_CLASS_NAME = new SimpleClassName("Builder");
-
     private static final String OR_BUILDER_SUFFIX = "OrBuilder";
 
     private SimpleClassName(String value) {

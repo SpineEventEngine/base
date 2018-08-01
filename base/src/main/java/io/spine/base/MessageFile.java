@@ -18,31 +18,38 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.type;
+package io.spine.base;
 
-import io.spine.code.proto.FileSet;
-import io.spine.code.proto.TypeSet;
+import com.google.protobuf.Descriptors.FileDescriptor;
+import io.spine.code.proto.FileName;
+import io.spine.value.StringTypeValue;
+
+import java.util.function.Predicate;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * The helper class for building a map from proto type URL to Java class name.
+ * Describes a file containing proto message declarations.
  *
- * @author Mikhail Mikhaylov
  * @author Alexander Yevsyukov
- * @author Dmytro Dashenkov
- * @see KnownTypes
  */
-final class Loader {
+public abstract class MessageFile extends StringTypeValue {
 
-    /** Prevents construction from outside. */
-    private Loader() {
+    private static final long serialVersionUID = 0L;
+
+    MessageFile(String name) {
+        super(checkNotNull(name) + FileName.EXTENSION);
     }
 
     /**
-     * Loads known types from the classpath.
+     * Obtains the predicate for filtering files containing message declarations
+     * of the required type.
      */
-    static TypeSet load() {
-        FileSet protoDefinitions = FileSet.load();
-        TypeSet types = TypeSet.messagesAndEnums(protoDefinitions);
-        return types;
+    public final Predicate<FileDescriptor> predicate() {
+        return file -> {
+            String fqn = file.getName();
+            boolean result = fqn.endsWith(value());
+            return result;
+        };
     }
 }

@@ -36,8 +36,9 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
  */
 public final class PackageName extends StringTypeValue {
 
+    private static final long serialVersionUID = 0L;
     private static final char DELIMITER_CHAR = '.';
-    public static final String DELIMITER = String.valueOf(DELIMITER_CHAR);
+    private static final String DELIMITER = String.valueOf(DELIMITER_CHAR);
 
     private PackageName(String value) {
         super(value);
@@ -53,6 +54,13 @@ public final class PackageName extends StringTypeValue {
         checkNotEmptyOrBlank(value);
         PackageName result = new PackageName(value);
         return result;
+    }
+
+    /**
+     * Obtains Java package delimiter.
+     */
+    public static String delimiter() {
+        return DELIMITER;
     }
 
     /**

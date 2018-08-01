@@ -24,6 +24,7 @@ import com.google.protobuf.Any;
 import com.google.protobuf.Message;
 import com.google.protobuf.util.JsonFormat;
 import io.spine.annotation.Internal;
+import io.spine.code.proto.FileSet;
 import io.spine.code.proto.Type;
 import io.spine.code.proto.TypeSet;
 
@@ -53,6 +54,15 @@ public class KnownTypes {
      */
     private KnownTypes(TypeSet types) {
         this.types = types;
+    }
+
+    /**
+     * Loads known types from the classpath.
+     */
+    private static TypeSet load() {
+        FileSet protoDefinitions = FileSet.load();
+        TypeSet types = TypeSet.messagesAndEnums(protoDefinitions);
+        return types;
     }
 
     /**
@@ -149,6 +159,6 @@ public class KnownTypes {
     private enum Singleton {
         INSTANCE;
 
-        private final KnownTypes value = new KnownTypes(Loader.load());
+        private final KnownTypes value = new KnownTypes(load());
     }
 }

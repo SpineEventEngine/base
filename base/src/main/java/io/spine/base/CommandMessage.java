@@ -20,12 +20,11 @@
 
 package io.spine.base;
 
+import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Message;
 
 import java.util.function.Predicate;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * A common interface for command messages.
@@ -36,35 +35,32 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  * @author Alexander Yevsyukov
  */
+@Immutable
 @SuppressWarnings("InterfaceNeverImplemented") /* See Javadoc */
 public interface CommandMessage extends Message {
 
     /**
-     * Constants and utilities for working with proto command files.
+     * Provides the predicate for finding proto files with command message declarations.
      */
     class File {
 
-        /**
-         * The name suffix for proto files containing command message declarations.
-         */
-        public static final String SUFFIX = "commands.proto";
-
-        //TODO:2018-02-12:alexander.yevsyukov: Replace usages of this predicate with cast to
-        // `CommandMessage` after code generation is updated.
-        /**
-         * Returns {@code true} if the passed file defines command messages,
-         * {@code false} otherwise.
-         */
-        public static final Predicate<FileDescriptor> PREDICATE = file -> {
-            checkNotNull(file);
-
-            String fqn = file.getName();
-            boolean result = fqn.endsWith(SUFFIX);
-            return result;
+        private static final MessageFile INSTANCE = new MessageFile("commands") {
+            private static final long serialVersionUID = 0L;
         };
 
         /** Prevents instantiation of this utility class. */
         private File() {
+        }
+
+        public static Predicate<FileDescriptor> predicate() {
+            return INSTANCE.predicate();
+        }
+
+        /**
+         * Obtains the suffix common for proto files containing command message declarations.
+         */
+        public static String suffix() {
+            return INSTANCE.value();
         }
     }
 }

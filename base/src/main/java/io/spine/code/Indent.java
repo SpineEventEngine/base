@@ -31,6 +31,7 @@ import io.spine.value.StringTypeValue;
  */
 public final class Indent extends StringTypeValue {
 
+    private static final long serialVersionUID = 0L;
     private static final String SPACE = " ";
     private static final Indent TWO = new Indent(2);
     private static final Indent FOUR = new Indent(4);

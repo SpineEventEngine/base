@@ -55,6 +55,8 @@ public class CamelCaseShould {
      */
     private static class UnderName extends StringTypeValue implements UnderscoredName {
 
+        private static final long serialVersionUID = 0L;
+
         protected UnderName(String value) {
             super(value);
         }
