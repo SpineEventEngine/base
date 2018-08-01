@@ -1190,7 +1190,7 @@ public class VerifyShould {
     }
 
     @SuppressWarnings({"EqualsAndHashcode", "EqualsHashCode"})
-        // Not having hashCode() is a part of this test. environment class.
+        // Not having hashCode() is a part of this test environment class.
     private static class ClassThatViolateHashCodeAndCloneableContract implements Cloneable {
         private final int value;
 
