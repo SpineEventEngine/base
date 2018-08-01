@@ -153,12 +153,13 @@ public class Extension {
      */
     public List<String> dirsToClean = new LinkedList<>();
 
+    public Severity spineCheckSeverity;
+
     private static DefaultProject def(Project project) {
         return DefaultProject.at(project.getProjectDir());
     }
 
     public static String getMainProtoSrcDir(Project project) {
-
         return pathOrDefault(spineProtobuf(project).mainProtoSrcDir,
                              def(project).src()
                                          .mainProto());
@@ -303,6 +304,13 @@ public class Extension {
             dirsToClean.add(defaultValue);
         }
         return ImmutableList.copyOf(dirsToClean);
+    }
+
+    public static Severity getSpineCheckSeverity(Project project) {
+        Severity result = spineProtobuf(project).spineCheckSeverity;
+        log().debug("The severity of Spine checks is {}",
+                    (result == null ? "unset" : result.name()));
+        return result;
     }
 
     private static Iterable<String> spineDirs(Project project) {

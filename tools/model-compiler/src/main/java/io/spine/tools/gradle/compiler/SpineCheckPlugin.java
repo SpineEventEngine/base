@@ -20,6 +20,7 @@
 package io.spine.tools.gradle.compiler;
 
 import io.spine.tools.gradle.SpinePlugin;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
@@ -156,14 +157,19 @@ public class SpineCheckPlugin extends SpinePlugin {
                                 "applied to the project {}.", project.getName());
             return;
         }
-
-        configureUseVBuilder(project);
+        Severity defaultSeverity = Extension.getSpineCheckSeverity(project);
+        configureUseVBuilder(project, defaultSeverity);
     }
 
-    private void configureUseVBuilder(Project project) {
+    @SuppressWarnings("ConstantConditions") // The condition is not really constant.
+    private void configureUseVBuilder(Project project, @Nullable Severity defaultSeverity) {
         Severity severity = getUseVBuilder(project);
         if (severity == null) {
-            return;
+            if (defaultSeverity == null) {
+                return;
+            } else {
+                severity = defaultSeverity;
+            }
         }
         log().debug("Setting UseVBuilder check severity to {} for the project {}",
                     severity.name(), project.getName());
