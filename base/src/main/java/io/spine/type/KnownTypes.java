@@ -52,7 +52,7 @@ public enum KnownTypes {
     INSTANCE;
 
     @SuppressWarnings({
-            "TransientFieldNotInitialized", // We substitute the instance in readResolve()
+            "TransientFieldNotInitialized", // We substitute the instance in readResolve().
             "ImmutableEnumChecker" // The field is effectively immutable.
     })
     private final transient Supplier<TypeSet> typeSet = memoize(KnownTypes::load);
