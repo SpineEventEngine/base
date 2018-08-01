@@ -39,7 +39,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.google.errorprone.BugPattern.Category.JDK;
-import static com.google.errorprone.BugPattern.SeverityLevel.ERROR;
+import static com.google.errorprone.BugPattern.SeverityLevel.WARNING;
 import static com.google.errorprone.matchers.Description.NO_MATCH;
 import static com.google.errorprone.matchers.Matchers.isSubtypeOf;
 
@@ -51,7 +51,7 @@ import static com.google.errorprone.matchers.Matchers.isSubtypeOf;
         name = "UseVBuilder",
         category = JDK,
         summary = "Prefer using Spine Validating Builder instead of ordinary Builder for Messages",
-        severity = ERROR)
+        severity = WARNING)
 public class UseVBuilder extends BugChecker implements MethodInvocationTreeMatcher {
 
     private static final List<Fixer<MethodInvocationTree>> BUILDER_CALL_FIXERS =
