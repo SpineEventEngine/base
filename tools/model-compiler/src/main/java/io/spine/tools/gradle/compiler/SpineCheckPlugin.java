@@ -72,7 +72,7 @@ public class SpineCheckPlugin extends SpinePlugin {
         Configuration preprocessorConfig = configurations.findByName(PREPROCESSOR_CONFIG_NAME);
         if (preprocessorConfig == null) {
             preprocessorConfig = configurations.create(PREPROCESSOR_CONFIG_NAME);
-            addToJavaCompileTasks(preprocessorConfig, project);
+            addConfigurePreprocessorAction(preprocessorConfig, project);
         }
         return preprocessorConfig;
     }
@@ -94,15 +94,16 @@ public class SpineCheckPlugin extends SpinePlugin {
     }
 
     private void addConfigureSeverityAction(Project project) {
-        Action<Gradle> configureCheckSeverity = createConfigureAction(project);
+        Action<Gradle> configureCheckSeverity = configureSeverityAction(project);
         Gradle gradle = project.getGradle();
         gradle.projectsEvaluated(configureCheckSeverity);
     }
 
-    private void addToJavaCompileTasks(Configuration annotationProcessor, Project project) {
-        log().debug("Adding the {} configuration to all 'JavaCompile' tasks.",
-                    PREPROCESSOR_CONFIG_NAME);
-        addJavaCompileArgs(project, "-processorpath", annotationProcessor.getAsPath());
+    private void addConfigurePreprocessorAction(Configuration preprocessorConfig, Project project) {
+        Action<Gradle> configurePreprocessor =
+                configurePreprocessorAction(preprocessorConfig, project);
+        Gradle gradle = project.getGradle();
+        gradle.projectsEvaluated(configurePreprocessor);
     }
 
     private Optional<String> acquireModelCompilerVersion(Project project) {
@@ -147,7 +148,18 @@ public class SpineCheckPlugin extends SpinePlugin {
         dependencies.add(dependency);
     }
 
-    private Action<Gradle> createConfigureAction(Project project) {
+    private Action<Gradle>
+    configurePreprocessorAction(Configuration preprocessorConfig, Project project) {
+        return gradle -> configurePreprocessor(preprocessorConfig, project);
+    }
+
+    private void configurePreprocessor(Configuration preprocessorConfig, Project project) {
+        log().debug("Adding the {} configuration to all 'JavaCompile' tasks.",
+                    PREPROCESSOR_CONFIG_NAME);
+        addJavaCompileArgs(project, "-processorpath", preprocessorConfig.getAsPath());
+    }
+
+    private Action<Gradle> configureSeverityAction(Project project) {
         return gradle -> configureCheckSeverity(project);
     }
 
@@ -158,11 +170,11 @@ public class SpineCheckPlugin extends SpinePlugin {
             return;
         }
         Severity defaultSeverity = Extension.getSpineCheckSeverity(project);
-        configureUseVBuilder(project, defaultSeverity);
+        setUseVBuilderSeverity(project, defaultSeverity);
     }
 
     @SuppressWarnings("ConstantConditions") // The condition is not really constant.
-    private void configureUseVBuilder(Project project, @Nullable Severity defaultSeverity) {
+    private void setUseVBuilderSeverity(Project project, @Nullable Severity defaultSeverity) {
         Severity severity = getUseVBuilder(project);
         if (severity == null) {
             if (defaultSeverity == null) {
