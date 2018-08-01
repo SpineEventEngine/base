@@ -21,7 +21,6 @@
 package io.spine.testing;
 
 import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
@@ -246,7 +245,7 @@ public class VerifyShould {
 
     @Test(expected = AssertionError.class)
     public void fail_assertIterableEmpty_if_iterable_is_not_empty() {
-        assertIterableEmpty(FluentIterable.of(1));
+        assertIterableEmpty(ImmutableList.of(1));
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -257,7 +256,7 @@ public class VerifyShould {
 
     @Test
     public void pass_assertIterableEmpty_if_iterable_is_empty() {
-        assertIterableEmpty(FluentIterable.of());
+        assertIterableEmpty(ImmutableList.of());
     }
 
     @Test(expected = AssertionError.class)
@@ -298,7 +297,7 @@ public class VerifyShould {
 
     @Test(expected = AssertionError.class)
     public void fail_assertNotEmpty_if_iterable_is_empty() {
-        assertNotEmpty(FluentIterable.of());
+        assertNotEmpty(ImmutableList.of());
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -309,7 +308,7 @@ public class VerifyShould {
 
     @Test
     public void pass_assertNotEmpty_if_iterable_is_not_empty() {
-        assertNotEmpty(FluentIterable.of(1));
+        assertNotEmpty(ImmutableList.of(1));
     }
 
     @Test(expected = AssertionError.class)
@@ -385,7 +384,7 @@ public class VerifyShould {
 
     @Test(expected = AssertionError.class)
     public void fail_assertSize_if_iterable_size_is_not_equal() {
-        assertSize(0, FluentIterable.of(1));
+        assertSize(0, ImmutableList.of(1));
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -396,7 +395,7 @@ public class VerifyShould {
 
     @Test
     public void pass_assertSize_if_iterable_size_is_equal() {
-        assertSize(0, FluentIterable.of());
+        assertSize(0, ImmutableList.of());
     }
 
     @Test(expected = AssertionError.class)
@@ -610,7 +609,7 @@ public class VerifyShould {
 
     @Test(expected = AssertionError.class)
     public void fail_assertContainsEntry_if_multimap_not_contains_entry() {
-        assertContainsEntry(1, 1, ArrayListMultimap.<Integer, Integer>create());
+        assertContainsEntry(1, 1, ArrayListMultimap.create());
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -703,7 +702,7 @@ public class VerifyShould {
     @Test(expected = AssertionError.class)
     public void fail_assertNotContains_if_iterable_contains_item() {
         Integer item = 1;
-        assertNotContains(item, FluentIterable.of(item));
+        assertNotContains(item, ImmutableList.of(item));
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -714,7 +713,7 @@ public class VerifyShould {
 
     @Test
     public void pass_assertNotContains_if_iterable_not_contains_item() {
-        assertNotContains(1, FluentIterable.of());
+        assertNotContains(1, ImmutableList.of());
     }
 
     @Test(expected = AssertionError.class)
@@ -852,7 +851,7 @@ public class VerifyShould {
     @SuppressWarnings("ConstantConditions")
     @Test(expected = AssertionError.class)
     public void fail_assertStartsWith_if_list_is_null_in_starts_with() {
-        assertStartsWith((List) null, 1, 2, 3);
+        assertStartsWith((List<Integer>) null, 1, 2, 3);
     }
 
     @Test(expected = AssertionError.class)
@@ -879,7 +878,7 @@ public class VerifyShould {
     @SuppressWarnings("ConstantConditions")
     @Test(expected = AssertionError.class)
     public void fail_assertEndsWith_if_list_is_null_in_ends_with() {
-        assertEndsWith((List) null, 1, 2, 3);
+        assertEndsWith((List<Integer>) null, 1, 2, 3);
     }
 
     @Test(expected = AssertionError.class)
@@ -1190,7 +1189,8 @@ public class VerifyShould {
                                      throwsRuntimeException);
     }
 
-    @SuppressWarnings("EqualsAndHashcode")
+    @SuppressWarnings({"EqualsAndHashcode", "EqualsHashCode"})
+        // Not having hashCode() is a part of this test. environment class.
     private static class ClassThatViolateHashCodeAndCloneableContract implements Cloneable {
         private final int value;
 
@@ -1211,11 +1211,6 @@ public class VerifyShould {
                     (ClassThatViolateHashCodeAndCloneableContract) o;
 
             return value == that.value;
-        }
-
-        @Override
-        public int hashCode() {
-            return value * 31;
         }
 
         @SuppressWarnings({"MethodDoesntCallSuperMethod", "RedundantThrows"})
