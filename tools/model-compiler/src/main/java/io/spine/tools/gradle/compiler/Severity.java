@@ -21,6 +21,7 @@
 package io.spine.tools.gradle.compiler;
 
 public enum Severity {
+
     OFF,
     WARN,
     ERROR
