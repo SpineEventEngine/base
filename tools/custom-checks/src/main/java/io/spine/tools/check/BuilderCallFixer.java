@@ -23,11 +23,17 @@ package io.spine.tools.check;
 import com.google.errorprone.VisitorState;
 import com.google.errorprone.fixes.Fix;
 import com.google.errorprone.fixes.SuggestedFix;
+import com.sun.source.tree.ExpressionTree;
 import com.sun.source.tree.MethodInvocationTree;
+import com.sun.tools.javac.code.Symbol.ClassSymbol;
+import com.sun.tools.javac.code.Symbol.MethodSymbol;
+import com.sun.tools.javac.code.Type;
 import com.sun.tools.javac.tree.JCTree.JCExpression;
 import com.sun.tools.javac.tree.JCTree.JCFieldAccess;
+import com.sun.tools.javac.tree.JCTree.JCIdent;
 
 import static com.google.errorprone.fixes.SuggestedFixes.prettyType;
+import static com.google.errorprone.util.ASTHelpers.enclosingClass;
 
 @SuppressWarnings("DuplicateStringLiteralInspection")
 // Method names for which introducing constant doesn't seem reasonable.
@@ -50,17 +56,26 @@ abstract class BuilderCallFixer implements Fixer<MethodInvocationTree> {
         return fix;
     }
 
-    JCExpression getObjectOnWhichInvoked(MethodInvocationTree tree) {
-        JCFieldAccess methodSelect = (JCFieldAccess) tree.getMethodSelect();
-        JCExpression invokedOn = methodSelect.selected;
-        return invokedOn;
+    Type getTypeOnWhichInvoked(MethodInvocationTree tree) {
+        ExpressionTree expression = tree.getMethodSelect();
+        if (expression instanceof JCFieldAccess) {
+            JCFieldAccess fieldAccess = (JCFieldAccess) expression;
+            JCExpression invokedOn = fieldAccess.selected;
+            return invokedOn.type;
+        }
+
+        // Static imported method.
+        JCIdent ident = (JCIdent) expression;
+        MethodSymbol method = (MethodSymbol) ident.sym;
+        ClassSymbol classSymbol = enclosingClass(method);
+        return classSymbol.type;
     }
 
     private String generateVBuilderName(MethodInvocationTree tree,
                                         VisitorState state,
                                         SuggestedFix.Builder builder) {
-        JCExpression invokedOn = getObjectOnWhichInvoked(tree);
-        String simpleName = prettyType(state, builder, invokedOn.type);
+        Type type = getTypeOnWhichInvoked(tree);
+        String simpleName = prettyType(state, builder, type);
         String vBuilderName = simpleName + "VBuilder";
         return vBuilderName;
     }

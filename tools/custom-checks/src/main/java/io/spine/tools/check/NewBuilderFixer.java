@@ -25,18 +25,21 @@ import com.google.errorprone.VisitorState;
 import com.google.errorprone.fixes.Fix;
 import com.google.errorprone.matchers.Matcher;
 import com.google.errorprone.matchers.method.MethodMatchers.MethodNameMatcher;
+import com.google.errorprone.suppliers.Supplier;
 import com.google.protobuf.Message;
 import com.sun.source.tree.ExpressionTree;
 import com.sun.source.tree.MethodInvocationTree;
-import com.sun.source.tree.Tree;
-import com.sun.tools.javac.tree.JCTree.JCExpression;
+import com.sun.tools.javac.code.Type;
+import com.sun.tools.javac.tree.JCTree.JCFieldAccess;
+import com.sun.tools.javac.tree.JCTree.JCIdent;
 import io.spine.protobuf.Messages;
 
 import java.util.List;
 import java.util.Optional;
 
-import static com.google.errorprone.matchers.Matchers.isSubtypeOf;
 import static com.google.errorprone.matchers.method.MethodMatchers.staticMethod;
+import static com.google.errorprone.suppliers.Suppliers.typeFromClass;
+import static com.google.errorprone.util.ASTHelpers.isSubtype;
 
 class NewBuilderFixer extends BuilderCallFixer {
 
@@ -45,11 +48,17 @@ class NewBuilderFixer extends BuilderCallFixer {
     @Override
     public boolean matches(MethodInvocationTree tree, VisitorState state) {
         boolean methodNameMatches = newBuilderMatcher().matches(tree, state);
-        if (!methodNameMatches) {
+        // todo refactor into something decent
+        ExpressionTree methodSelect = tree.getMethodSelect();
+        boolean calledOnClass = methodSelect instanceof JCFieldAccess;
+        boolean staticImported = methodSelect instanceof JCIdent;
+        if (!methodNameMatches || (!calledOnClass && !staticImported)) {
             return false;
         }
-        JCExpression invokedOn = getObjectOnWhichInvoked(tree);
-        boolean invokedOnMessage = isMessage().matches(invokedOn, state);
+        Type type = getTypeOnWhichInvoked(tree);
+        Supplier<Type> typeSupplier = typeFromClass(Message.class);
+        Type messageClassAsType = typeSupplier.get(state);
+        boolean invokedOnMessage = isSubtype(type, messageClassAsType, state);
         return invokedOnMessage;
     }
 
@@ -68,11 +77,6 @@ class NewBuilderFixer extends BuilderCallFixer {
     private static Matcher<ExpressionTree> newBuilderMatcher() {
         MethodNameMatcher matcher = staticMethod().anyClass()
                                                   .named(METHOD_NAME);
-        return matcher;
-    }
-
-    private static Matcher<Tree> isMessage() {
-        Matcher<Tree> matcher = isSubtypeOf(Message.class);
         return matcher;
     }
 

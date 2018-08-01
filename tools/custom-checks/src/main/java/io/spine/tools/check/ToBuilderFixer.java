@@ -27,6 +27,7 @@ import com.google.errorprone.matchers.method.MethodMatchers.MethodNameMatcher;
 import com.google.protobuf.Message;
 import com.sun.source.tree.ExpressionTree;
 import com.sun.source.tree.MethodInvocationTree;
+import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.tree.JCTree.JCExpression;
 
 import java.util.Optional;
@@ -45,7 +46,9 @@ class ToBuilderFixer extends BuilderCallFixer {
 
     @Override
     public Optional<Fix> buildFix(MethodInvocationTree tree, VisitorState state) {
-        JCExpression invokedOn = getObjectOnWhichInvoked(tree);
+        ExpressionTree expression = tree.getMethodSelect();
+        JCTree.JCFieldAccess fieldAccess = (JCTree.JCFieldAccess) expression;
+        JCExpression invokedOn = fieldAccess.selected;
         String invokedOnString = invokedOn.toString();
         Fix fix = mergeFromCall(tree, state, invokedOnString);
         Optional<Fix> result = Optional.of(fix);
