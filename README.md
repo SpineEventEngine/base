@@ -16,8 +16,6 @@ This repository contains the code of foundation of the Spine Event Engine framew
     allows to store build log in a Google Cloud Storage bucket.
   * [Spine Javadoc](tools/gradle-plugins/spine-javadoc) — 
     processes Javadocs of generated files.
-  * [Code Style Checker](tools/gradle-plugins/codestyle-checker) — utility plugin for 
-    verifying Java code conventions.
   * [Reflections Plugin](tools/gradle-plugins/reflections-plugin) — 
     Gradle port of Maven Reflections plugin required for Reflections framework.
 * [Protoc plugin](tools/protoc-plugin) —
