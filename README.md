@@ -10,12 +10,10 @@ This repository contains the code of foundation of the Spine Event Engine framew
 * The framework [base](base) data types.
 * [Utilities for testing](testlib).
 * Gradle plug-ins:
-  * [Spine Model Compiler](tools/gradle-plugins/model-compiler) — 
+  * [Spine Model Compiler](tools/model-compiler) — 
     transforms a domain model defined in proto files into Java code.  
-  * [Google Cloud Storage Gradle plugin](tools/gradle-plugins/gcs-plugin) — 
-    allows to store build log in a Google Cloud Storage bucket.
-  * [Spine Javadoc](tools/gradle-plugins/spine-javadoc) — 
-    processes Javadocs of generated files.
+  * [Javadoc Filter](tools/javadoc-filter) and [Javadoc Prettifier](tools/javadoc-prettifier) 
+    process Javadocs of generated files.
   * [Reflections Plugin](tools/gradle-plugins/reflections-plugin) — 
     Gradle port of Maven Reflections plugin required for Reflections framework.
 * [Protoc plugin](tools/protoc-plugin) —
