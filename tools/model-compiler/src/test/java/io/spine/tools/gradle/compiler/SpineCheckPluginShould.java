@@ -109,21 +109,21 @@ public class SpineCheckPluginShould {
     public void configure_check_severity() {
         Project project = projectWithModelCompilerDependency();
         configureWithSpineCheckExtension(project, ResolvingSpineCheckPlugin.class);
-        evaluateAndCheckSeverity(project);
+        checkSeverityConfigured(project);
     }
 
     @Test
     public void configure_check_severity_for_all_checks() {
         Project project = projectWithModelCompilerDependency();
         configureWithModelCompilerExtension(project, ResolvingSpineCheckPlugin.class);
-        evaluateAndCheckSeverity(project);
+        checkSeverityConfigured(project);
     }
 
     @Test
     public void not_add_severity_args_if_error_prone_plugin_not_applied() {
         Project project = projectWithModelCompilerDependency();
         configureWithModelCompilerExtension(project, SpineCheckPluginWithoutErrorProne.class);
-        evaluateAndCheckSeverityEmpty(project);
+        checkSeverityUntouched(project);
     }
 
     private static Project projectWithModelCompilerDependency() {
@@ -179,7 +179,7 @@ public class SpineCheckPluginShould {
         modelCompilerExtension.spineCheckSeverity = ERROR;
     }
 
-    private static void evaluateAndCheckSeverity(Project project) {
+    private static void checkSeverityConfigured(Project project) {
         TaskCollection<JavaCompile> javaCompileTasks = acquireJavaCompileTasks(project);
         for (JavaCompile task : javaCompileTasks) {
             List<String> compilerArgs = obtainCompilerArgs(task);
@@ -187,7 +187,7 @@ public class SpineCheckPluginShould {
         }
     }
 
-    private static void evaluateAndCheckSeverityEmpty(Project project) {
+    private static void checkSeverityUntouched(Project project) {
         TaskCollection<JavaCompile> javaCompileTasks = acquireJavaCompileTasks(project);
         for (JavaCompile task : javaCompileTasks) {
             List<String> compilerArgs = obtainCompilerArgs(task);
