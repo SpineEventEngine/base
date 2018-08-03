@@ -19,6 +19,7 @@
  */
 package io.spine.tools.gradle.compiler;
 
+import com.google.common.annotations.VisibleForTesting;
 import io.spine.tools.gradle.SpinePlugin;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.gradle.api.Action;
@@ -45,21 +46,30 @@ import static io.spine.tools.gradle.compiler.SpineCheckExtension.getUseVBuilder;
 
 public class SpineCheckPlugin extends SpinePlugin {
 
-    private static final String SPINE_CHECKS_MODULE = "spine-custom-checks";
-    private static final String EXTENSION_NAME = "spineCheck";
-    private static final String PREPROCESSOR_CONFIG_NAME = "annotationProcessor";
     private static final String ERROR_PRONE_PLUGIN_ID = "net.ltgt.errorprone";
-    private static final String SPINE_TOOLS_GROUP = "io.spine.tools";
-    private static final String MODEL_COMPILER_PLUGIN_NAME = "spine-model-compiler";
+    private static final String EXTENSION_NAME = "spineCheck";
 
-    public static String extensionName() {
+    @VisibleForTesting
+    static final String SPINE_TOOLS_GROUP = "io.spine.tools";
+
+    @VisibleForTesting
+    static final String SPINE_CHECKS_MODULE = "spine-custom-checks";
+
+    @VisibleForTesting
+    static final String MODEL_COMPILER_PLUGIN_NAME = "spine-model-compiler";
+
+    @VisibleForTesting
+    static final String PREPROCESSOR_CONFIG_NAME = "annotationProcessor";
+
+
+    static String extensionName() {
         return EXTENSION_NAME;
     }
 
     @Override
     public void apply(Project project) {
         project.getExtensions()
-               .create(EXTENSION_NAME, SpineCheckExtension.class);
+               .create(extensionName(), SpineCheckExtension.class);
         Configuration preprocessorConfig = setupPreprocessorConfig(project);
         boolean addedSuccessfully = addSpineCheckDependency(preprocessorConfig, project);
         if (addedSuccessfully) {
@@ -130,7 +140,8 @@ public class SpineCheckPlugin extends SpinePlugin {
         return version;
     }
 
-    private boolean isSpineCheckVersionResolvable(String version, Configuration configuration) {
+    @VisibleForTesting
+    protected boolean isSpineCheckVersionResolvable(String version, Configuration configuration) {
         Configuration configCopy = configuration.copy();
         dependOnSpineCheckVersion(version, configCopy);
         ResolvedConfiguration resolved = configCopy.getResolvedConfiguration();
@@ -156,7 +167,7 @@ public class SpineCheckPlugin extends SpinePlugin {
     private void configurePreprocessor(Configuration preprocessorConfig, Project project) {
         log().debug("Adding the {} configuration to all 'JavaCompile' tasks.",
                     PREPROCESSOR_CONFIG_NAME);
-        addJavaCompileArgs(project, "-processorpath", preprocessorConfig.getAsPath());
+        addArgsToJavaCompile(project, "-processorpath", preprocessorConfig.getAsPath());
     }
 
     private Action<Gradle> configureSeverityAction(Project project) {
@@ -186,10 +197,10 @@ public class SpineCheckPlugin extends SpinePlugin {
         log().debug("Setting UseVBuilder check severity to {} for the project {}",
                     severity.name(), project.getName());
         String severityArg = "-Xep:UseVBuilder:" + severity.name();
-        addJavaCompileArgs(project, severityArg);
+        addArgsToJavaCompile(project, severityArg);
     }
 
-    private static void addJavaCompileArgs(Project project, String... args) {
+    private static void addArgsToJavaCompile(Project project, String... args) {
         TaskContainer tasks = project.getTasks();
         TaskCollection<JavaCompile> javaCompileTasks = tasks.withType(JavaCompile.class);
         for (JavaCompile task : javaCompileTasks) {
@@ -199,7 +210,8 @@ public class SpineCheckPlugin extends SpinePlugin {
         }
     }
 
-    private static boolean hasErrorPronePlugin(Project project) {
+    @VisibleForTesting
+    protected boolean hasErrorPronePlugin(Project project) {
         PluginContainer appliedPlugins = project.getPlugins();
         boolean hasPlugin = appliedPlugins.hasPlugin(ERROR_PRONE_PLUGIN_ID);
         return hasPlugin;

@@ -224,6 +224,16 @@ public class ExtensionShould {
         );
     }
 
+    @Test
+    public void return_spine_check_severity() {
+
+    }
+
+    @Test
+    public void return_null_spine_check_severity_if_not_set() {
+
+    }
+
     private void assertNotEmptyAndIsInProjectDir(String path) {
         assertFalse(path.trim()
                         .isEmpty());
