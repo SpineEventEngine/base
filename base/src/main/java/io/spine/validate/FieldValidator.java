@@ -20,6 +20,7 @@
 
 package io.spine.validate;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.FieldOptions;
 import com.google.protobuf.Descriptors.FieldDescriptor;
@@ -91,7 +92,8 @@ abstract class FieldValidator<V> {
         this.fieldDescriptor = fieldContext.getTarget();
         this.strict = strict;
         FileDescriptor file = fieldDescriptor.getFile();
-        this.isCommandsFile = CommandMessage.File.PREDICATE.test(file);
+        this.isCommandsFile = CommandMessage.File.predicate()
+                                                 .test(file);
         this.isFirstField = fieldDescriptor.getIndex() == 0;
         this.required = getFieldOption(OptionsProto.required);
         this.ifMissingOption = getFieldOption(OptionsProto.ifMissing);
@@ -123,8 +125,10 @@ abstract class FieldValidator<V> {
      *
      * @return {@code true} if the field value is not set and {@code false} otherwise
      */
-    protected boolean fieldValueNotSet() {
-        boolean valueNotSet = values.isEmpty() || !isRepeatedOrMap() && isNotSet(values.get(0));
+    boolean fieldValueNotSet() {
+        boolean valueNotSet =
+                values.isEmpty()
+                        || (isNotRepeatedOrMap() && isNotSet(values.get(0)));
         return valueNotSet;
     }
 
@@ -296,7 +300,7 @@ abstract class FieldValidator<V> {
     }
 
     protected final boolean shouldValidate() {
-        return !isRepeatedOrMap() || validate;
+        return isNotRepeatedOrMap() || validate;
     }
 
     protected final IfInvalidOption ifInvalid() {
@@ -316,9 +320,18 @@ abstract class FieldValidator<V> {
         return result;
     }
 
-    protected boolean isRepeatedOrMap() {
-        return fieldDescriptor.isRepeated()
-                || fieldDescriptor.isMapField();
+    private boolean isNotRepeatedOrMap() {
+        return !fieldDescriptor.isRepeated()
+                && !fieldDescriptor.isMapField();
+    }
+
+    /**
+     * This test-only method is used from the module {@code smoke-tests}.
+     */
+    @SuppressWarnings("unused")
+    @VisibleForTesting
+    boolean isRepeatedOrMap() {
+        return !isNotRepeatedOrMap();
     }
 
     /**

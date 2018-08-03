@@ -44,6 +44,8 @@ public class ComparableStringValueShould {
 
     private static class TestVal extends ComparableStringValue<TestVal> {
 
+        private static final long serialVersionUID = 0L;
+
         private TestVal(String value) {
             super(value);
         }

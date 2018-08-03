@@ -35,7 +35,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
-import static io.spine.code.java.PackageName.DELIMITER;
+import static io.spine.code.java.PackageName.delimiter;
 import static io.spine.option.OptionsProto.everyIs;
 import static io.spine.option.OptionsProto.is;
 import static io.spine.tools.protoc.MarkerInterfaceSpec.prepareInterface;
@@ -79,7 +79,7 @@ final class MessageAndInterface {
                                                     String optionValue) {
         MarkerInterfaceSpec interfaceSpec = prepareInterface(optionValue, file);
         File.Builder srcFile = prepareFile(file, msg);
-        String messageFqn = file.getPackage() + DELIMITER + msg.getName();
+        String messageFqn = file.getPackage() + delimiter() + msg.getName();
         File messageFile = implementInterface(srcFile,
                                               interfaceSpec.getFqn(),
                                               messageFqn);

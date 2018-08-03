@@ -20,43 +20,48 @@
 
 package io.spine.value;
 
-import com.google.common.testing.EqualsTester;
-import org.junit.Test;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import java.io.Serializable;
+import java.util.Objects;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
+ * An abstract base for objects that hold {@code Serializable} values.
+ *
+ * @param <T> a type of value enclosed in the holder
  * @author Alexander Yevsyukov
  */
-public class StringTypeValueShould {
+public abstract class ValueHolder<T extends Serializable> implements Serializable {
 
-    @Test
-    public void return_value_in_toString() {
-        String expected = "return_value_in_toString";
+    private static final long serialVersionUID = 0L;
+    private final T value;
 
-        assertEquals(expected, new StringTypeValue(expected) {}.toString());
+    protected ValueHolder(T value) {
+        this.value = checkNotNull(value);
     }
 
-    @Test
-    public void have_equals() {
-        new EqualsTester().addEqualityGroup(new StrVal("uno"), new StrVal("uno"))
-                          .addEqualityGroup(new StrVal("dos"))
-                          .testEquals();
+    /** Returns the stored value. */
+    protected T value() {
+        return this.value;
     }
 
-    @Test
-    public void see_if_empty() {
-        assertTrue(new StrVal("").isEmpty());
-        assertFalse(new StrVal(" ").isEmpty());
+    @Override
+    public int hashCode() {
+        return Objects.hash(value);
     }
 
-    /** Simple descendant for testing. */
-    private static class StrVal extends StringTypeValue {
-
-        StrVal(String value) {
-            super(value);
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (this == obj) {
+            return true;
         }
+
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        ValueHolder other = (ValueHolder) obj;
+        return Objects.equals(this.value, other.value);
     }
 }

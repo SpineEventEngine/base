@@ -21,17 +21,18 @@
 package io.spine.code.proto;
 
 import com.google.common.base.Objects;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.util.JsonFormat.TypeRegistry;
 import io.spine.annotation.Internal;
 import io.spine.type.TypeName;
 
-import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableMap.copyOf;
@@ -45,10 +46,11 @@ import static com.google.common.collect.Maps.newHashMap;
  * @author Dmytro Dashenkov
  */
 @Internal
+@Immutable
 public class TypeSet {
 
-    private final Map<TypeName, MessageType> messageTypes;
-    private final Map<TypeName, EnumType> enumTypes;
+    private final ImmutableMap<TypeName, MessageType> messageTypes;
+    private final ImmutableMap<TypeName, EnumType> enumTypes;
 
     /** Creates a new empty set. */
     private TypeSet() {
@@ -179,8 +181,8 @@ public class TypeSet {
     /**
      * Obtains all the types contained in this set.
      */
-    public Collection<Type<?, ?>> types() {
-        ImmutableList<Type<?, ?>> types = ImmutableList
+    public Set<Type<?, ?>> types() {
+        ImmutableSet<Type<?, ?>> types = ImmutableSet
                 .<Type<?, ?>>builder()
                 .addAll(messageTypes.values())
                 .addAll(enumTypes.values())

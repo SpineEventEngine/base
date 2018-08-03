@@ -20,33 +20,38 @@
 
 package io.spine.type;
 
+import com.google.common.testing.EqualsTester;
 import com.google.protobuf.Message;
 import com.google.protobuf.StringValue;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertNotEquals;
+import static com.google.common.testing.SerializableTester.reserializeAndAssert;
 
-public class MessageClassShould {
+@DisplayName("MessageClass should")
+class MessageClassTest {
 
     private static final Class<StringValue> MSG_CLASS = StringValue.class;
 
-    private TestMessageClass testMsgClass;
-
-    @Before
-    public void setUp() {
-        testMsgClass = new TestMessageClass(MSG_CLASS);
-    }
-
     @SuppressWarnings("SerializableInnerClassWithNonSerializableOuterClass")
     @Test
-    public void be_not_equal_to_object_of_another_class() {
-        // Notice that we're creating a new object with the same value passed.
-        assertNotEquals(testMsgClass, new MessageClass(MSG_CLASS) {
-            private static final long serialVersionUID = 0L;
-        });
+    @DisplayName("provide equality within the class")
+    void beEqualWithingClass() {
+        new EqualsTester()
+                .addEqualityGroup(new TestMessageClass(MSG_CLASS), new TestMessageClass(MSG_CLASS))
+                .addEqualityGroup(new MessageClass(MSG_CLASS) {
+                    private static final long serialVersionUID = 0L;
+                });
     }
 
+    @Test
+    void serialize() {
+        reserializeAndAssert(new TestMessageClass(MSG_CLASS));
+    }
+
+    /**
+     * Test environment class.
+     */
     private static class TestMessageClass extends MessageClass {
 
         private static final long serialVersionUID = 0L;

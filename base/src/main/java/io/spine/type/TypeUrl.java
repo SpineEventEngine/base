@@ -22,6 +22,7 @@ package io.spine.type;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
+import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Any;
 import com.google.protobuf.AnyOrBuilder;
 import com.google.protobuf.Descriptors.Descriptor;
@@ -55,6 +56,7 @@ import static java.lang.String.format;
  * @author Alexander Yevsyukov
  * @see Any#getTypeUrl()
  */
+@Immutable
 public final class TypeUrl implements Serializable {
 
     private static final long serialVersionUID = 0L;

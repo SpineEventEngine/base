@@ -20,31 +20,27 @@
 
 package io.spine.value;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
-
-import java.util.Objects;
-
-import static com.google.common.base.Preconditions.checkNotNull;
+import com.google.errorprone.annotations.Immutable;
 
 /**
  * Abstract base for string value objects.
  *
+ * @implNote The name of this class has the 'Type' infix in the name to prevent the name clash with
+ * {@link com.google.protobuf.StringValue StringValue}.
  * @author Alexander Yevsyukov
  */
-@SuppressWarnings("AbstractClassWithoutAbstractMethods") // is OK for the value object base.
-public abstract class StringTypeValue {
-    /* NOTE: the class has the 'Type' infix in the name to prevent the name clash with
-       com.google.protobuf.StringValue. */
+@Immutable
+public abstract class StringTypeValue extends ValueHolder<String> {
 
-    private final String value;
+    private static final long serialVersionUID = 0L;
 
     protected StringTypeValue(String value) {
-        this.value = checkNotNull(value);
+        super(value);
     }
 
-    /** Returns the enclosed value. */
+    @Override
     public String value() {
-        return value;
+        return super.value();
     }
 
     /**
@@ -52,28 +48,11 @@ public abstract class StringTypeValue {
      * {@code false} otherwise.
      */
     public boolean isEmpty() {
-        return value.isEmpty();
+        return value().isEmpty();
     }
 
     @Override
     public String toString() {
-        return this.value;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.value);
-    }
-
-    @Override
-    public boolean equals(@Nullable Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-        StringTypeValue other = (StringTypeValue) obj;
-        return Objects.equals(this.value(), other.value());
+        return this.value();
     }
 }

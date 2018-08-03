@@ -20,7 +20,11 @@
 
 package io.spine.base;
 
+import com.google.errorprone.annotations.Immutable;
+import com.google.protobuf.Descriptors;
 import com.google.protobuf.Message;
+
+import java.util.function.Predicate;
 
 /**
  * A common interface for event messages.
@@ -31,6 +35,31 @@ import com.google.protobuf.Message;
  *
  * @author Alexander Yevsyukov
  */
+@Immutable
 @SuppressWarnings({"unused", "InterfaceNeverImplemented"}) /* See Javadoc */
 public interface EventMessage extends Message {
+
+    /**
+     * Provides the predicate for finding proto files with event message declarations.
+     */
+    class File {
+        private static final MessageFile INSTANCE = new MessageFile("events") {
+            private static final long serialVersionUID = 0L;
+        };
+
+        /** Prevents instantiation of this utility class. */
+        private File() {
+        }
+
+        public static Predicate<Descriptors.FileDescriptor> predicate() {
+            return INSTANCE.predicate();
+        }
+
+        /**
+         * Obtains the suffix common for proto files containing command message declarations.
+         */
+        public static String suffix() {
+            return INSTANCE.value();
+        }
+    }
 }

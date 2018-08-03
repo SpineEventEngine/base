@@ -32,7 +32,18 @@ public abstract class MessageClass extends ClassTypeValue<Message> {
 
     private static final long serialVersionUID = 0L;
 
+    /** The name of the type of proto messages represented by this class. */
+    private final TypeName typeName;
+
     protected MessageClass(Class<? extends Message> value) {
         super(value);
+        this.typeName = TypeName.of(value);
+    }
+
+    /**
+     * Obtains a type name of the messages of this class.
+     */
+    public TypeName getTypeName() {
+        return typeName;
     }
 }
