@@ -28,7 +28,6 @@ public class SpineCheckPluginTestEnv {
 
     /** Prevents instantiation of this utility class. */
     private SpineCheckPluginTestEnv() {
-
     }
 
     public static class ResolvingSpineCheckPlugin extends SpineCheckPlugin {
