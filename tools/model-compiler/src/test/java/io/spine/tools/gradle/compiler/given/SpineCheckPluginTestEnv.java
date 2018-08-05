@@ -54,7 +54,7 @@ public class SpineCheckPluginTestEnv {
 
         @Override
         protected boolean hasErrorPronePlugin(Project project) {
-            return false;
+            return true;
         }
     }
 
