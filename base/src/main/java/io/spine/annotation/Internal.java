@@ -51,6 +51,5 @@ import java.lang.annotation.Target;
         ElementType.PACKAGE,
         ElementType.TYPE})
 @Documented
-@Inherited
 public @interface Internal {
 }
