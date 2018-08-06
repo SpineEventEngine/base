@@ -30,6 +30,35 @@ dependencies {
     implementation deps.build.errorProneCore
     implementation deps.build.errorProneAnnotations
 
+    testImplementation deps.build.errorProneTestHelpers
+
     // todo extract version to ext
     compileOnly 'com.google.auto.service:auto-service:1.0-rc4'
 }
+
+def getResolvedVersionOf(final dependency) {
+    final def resolvedTestClasspath = configurations.testRuntimeClasspath.resolvedConfiguration
+    final def javacDependency = resolvedTestClasspath.resolvedArtifacts.findAll {
+        it.name == dependency
+    }
+    if (javacDependency.empty) {
+        throw new TaskInstantiationException("The 'javac' dependency is not found among the " +
+                "resolved artifacts");
+    }
+    final def version = javacDependency[0].moduleVersion.id.version
+    return version
+}
+
+task acquireErrorProneJavacVersion {
+    doLast {
+        final def javacVersion = getResolvedVersionOf("javac")
+        final
+        def localjavac = "${repositories.mavenLocal().url.path}com/google/errorprone/javac/${javacVersion}/javac-${javacVersion}.jar"
+
+        test {
+            jvmArgs "-Xbootclasspath/p:$localjavac"
+        }
+    }
+}
+
+test.dependsOn acquireErrorProneJavacVersion
