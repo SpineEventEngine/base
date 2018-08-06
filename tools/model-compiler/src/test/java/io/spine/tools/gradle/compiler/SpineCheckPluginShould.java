@@ -20,9 +20,9 @@
 
 package io.spine.tools.gradle.compiler;
 
-import io.spine.tools.gradle.compiler.given.SpineCheckPluginTestEnv.SpineCheckPluginWithoutErrorProne;
 import io.spine.tools.gradle.compiler.given.SpineCheckPluginTestEnv.NonResolvingSpineCheckPlugin;
 import io.spine.tools.gradle.compiler.given.SpineCheckPluginTestEnv.ResolvingSpineCheckPlugin;
+import io.spine.tools.gradle.compiler.given.SpineCheckPluginTestEnv.SpineCheckPluginWithoutErrorProne;
 import org.gradle.BuildListener;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
