@@ -60,7 +60,7 @@ public class ModelCompilerPlugin implements Plugin<Project> {
                   new ValidationRulesLookupPlugin(),
                   new ProtocPluginImporter(),
                   new DescriptorSetMergerPlugin(),
-                  new SpineCheckPlugin())
+                  new SpineCheckerPlugin())
               .forEach(plugin -> apply(plugin, project));
     }
 

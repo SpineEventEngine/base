@@ -42,12 +42,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static io.spine.tools.gradle.compiler.SpineCheckExtension.getUseVBuilder;
+import static io.spine.tools.gradle.compiler.SpineCheckerExtension.getUseVBuilder;
 
-public class SpineCheckPlugin extends SpinePlugin {
+public class SpineCheckerPlugin extends SpinePlugin {
 
     private static final String ERROR_PRONE_PLUGIN_ID = "net.ltgt.errorprone";
-    private static final String EXTENSION_NAME = "spineCheck";
+    private static final String EXTENSION_NAME = "spineChecker";
 
     @VisibleForTesting
     static final String SPINE_TOOLS_GROUP = "io.spine.tools";
@@ -69,9 +69,9 @@ public class SpineCheckPlugin extends SpinePlugin {
     @Override
     public void apply(Project project) {
         project.getExtensions()
-               .create(extensionName(), SpineCheckExtension.class);
+               .create(extensionName(), SpineCheckerExtension.class);
         Configuration preprocessorConfig = setupPreprocessorConfig(project);
-        boolean addedSuccessfully = addSpineCheckDependency(preprocessorConfig, project);
+        boolean addedSuccessfully = addSpineCheckerDependency(preprocessorConfig, project);
         if (addedSuccessfully) {
             addConfigureSeverityAction(project);
         }
@@ -87,7 +87,7 @@ public class SpineCheckPlugin extends SpinePlugin {
         return preprocessorConfig;
     }
 
-    private boolean addSpineCheckDependency(Configuration configuration, Project project) {
+    private boolean addSpineCheckerDependency(Configuration configuration, Project project) {
         Optional<String> versionToUse = acquireModelCompilerVersion(project);
         if (!versionToUse.isPresent()) {
             log().debug("Can't determine which dependency version to use for the project {}",
@@ -96,9 +96,9 @@ public class SpineCheckPlugin extends SpinePlugin {
         }
         String version = versionToUse.get();
 
-        boolean isResolvable = isSpineCheckVersionResolvable(version, configuration);
+        boolean isResolvable = isSpineCheckerVersionResolvable(version, configuration);
         if (isResolvable) {
-            dependOnSpineCheckVersion(version, configuration);
+            dependOnSpineChecker(version, configuration);
         }
         return isResolvable;
     }
@@ -141,15 +141,15 @@ public class SpineCheckPlugin extends SpinePlugin {
     }
 
     @VisibleForTesting
-    protected boolean isSpineCheckVersionResolvable(String version, Configuration configuration) {
+    protected boolean isSpineCheckerVersionResolvable(String version, Configuration configuration) {
         Configuration configCopy = configuration.copy();
-        dependOnSpineCheckVersion(version, configCopy);
+        dependOnSpineChecker(version, configCopy);
         ResolvedConfiguration resolved = configCopy.getResolvedConfiguration();
         boolean isResolvable = !resolved.hasError();
         return isResolvable;
     }
 
-    private void dependOnSpineCheckVersion(String dependencyVersion, Configuration configuration) {
+    private void dependOnSpineChecker(String dependencyVersion, Configuration configuration) {
         log().debug("Adding dependency on {}:{}:{} to the {} configuration",
                     SPINE_TOOLS_GROUP, SPINE_CHECKS_MODULE, dependencyVersion,
                     PREPROCESSOR_CONFIG_NAME);

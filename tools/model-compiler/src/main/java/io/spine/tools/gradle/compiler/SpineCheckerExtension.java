@@ -23,14 +23,14 @@ package io.spine.tools.gradle.compiler;
 import org.gradle.api.Project;
 
 @SuppressWarnings({"PublicField", "WeakerAccess"})
-public class SpineCheckExtension {
+public class SpineCheckerExtension {
 
     public Severity useVBuilder;
 
     public static Severity getUseVBuilder(Project project) {
-        SpineCheckExtension extension = (SpineCheckExtension)
+        SpineCheckerExtension extension = (SpineCheckerExtension)
                 project.getExtensions()
-                       .getByName(SpineCheckPlugin.extensionName());
+                       .getByName(SpineCheckerPlugin.extensionName());
         return extension.useVBuilder;
     }
 }

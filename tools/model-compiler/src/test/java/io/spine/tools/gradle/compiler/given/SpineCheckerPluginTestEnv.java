@@ -20,21 +20,21 @@
 
 package io.spine.tools.gradle.compiler.given;
 
-import io.spine.tools.gradle.compiler.SpineCheckPlugin;
+import io.spine.tools.gradle.compiler.SpineCheckerPlugin;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
 
-public class SpineCheckPluginTestEnv {
+public class SpineCheckerPluginTestEnv {
 
     /** Prevents instantiation of this utility class. */
-    private SpineCheckPluginTestEnv() {
+    private SpineCheckerPluginTestEnv() {
     }
 
-    public static class ResolvingSpineCheckPlugin extends SpineCheckPlugin {
+    public static class ResolvingSpineCheckerPlugin extends SpineCheckerPlugin {
 
         @Override
-        protected boolean isSpineCheckVersionResolvable(String version,
-                                                        Configuration configuration) {
+        protected boolean isSpineCheckerVersionResolvable(String version,
+                                                          Configuration configuration) {
             return true;
         }
 
@@ -44,11 +44,11 @@ public class SpineCheckPluginTestEnv {
         }
     }
 
-    public static class NonResolvingSpineCheckPlugin extends SpineCheckPlugin {
+    public static class NonResolvingSpineCheckerPlugin extends SpineCheckerPlugin {
 
         @Override
-        protected boolean isSpineCheckVersionResolvable(String version,
-                                                        Configuration configuration) {
+        protected boolean isSpineCheckerVersionResolvable(String version,
+                                                          Configuration configuration) {
             return false;
         }
 
@@ -58,11 +58,11 @@ public class SpineCheckPluginTestEnv {
         }
     }
 
-    public static class SpineCheckPluginWithoutErrorProne extends SpineCheckPlugin {
+    public static class SpineCheckerPluginWithoutErrorProne extends SpineCheckerPlugin {
 
         @Override
-        protected boolean isSpineCheckVersionResolvable(String version,
-                                                        Configuration configuration) {
+        protected boolean isSpineCheckerVersionResolvable(String version,
+                                                          Configuration configuration) {
             return true;
         }
 

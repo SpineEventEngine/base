@@ -20,9 +20,9 @@
 
 package io.spine.tools.gradle.compiler;
 
-import io.spine.tools.gradle.compiler.given.SpineCheckPluginTestEnv.NonResolvingSpineCheckPlugin;
-import io.spine.tools.gradle.compiler.given.SpineCheckPluginTestEnv.ResolvingSpineCheckPlugin;
-import io.spine.tools.gradle.compiler.given.SpineCheckPluginTestEnv.SpineCheckPluginWithoutErrorProne;
+import io.spine.tools.gradle.compiler.given.SpineCheckerPluginTestEnv.NonResolvingSpineCheckerPlugin;
+import io.spine.tools.gradle.compiler.given.SpineCheckerPluginTestEnv.ResolvingSpineCheckerPlugin;
+import io.spine.tools.gradle.compiler.given.SpineCheckerPluginTestEnv.SpineCheckerPluginWithoutErrorProne;
 import org.gradle.BuildListener;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
@@ -44,25 +44,25 @@ import java.util.List;
 import static com.google.common.collect.testing.Helpers.assertEmpty;
 import static io.spine.testing.Verify.assertContains;
 import static io.spine.tools.gradle.compiler.Severity.ERROR;
-import static io.spine.tools.gradle.compiler.SpineCheckPlugin.MODEL_COMPILER_PLUGIN_NAME;
-import static io.spine.tools.gradle.compiler.SpineCheckPlugin.PREPROCESSOR_CONFIG_NAME;
-import static io.spine.tools.gradle.compiler.SpineCheckPlugin.SPINE_CHECKS_MODULE;
-import static io.spine.tools.gradle.compiler.SpineCheckPlugin.SPINE_TOOLS_GROUP;
+import static io.spine.tools.gradle.compiler.SpineCheckerPlugin.MODEL_COMPILER_PLUGIN_NAME;
+import static io.spine.tools.gradle.compiler.SpineCheckerPlugin.PREPROCESSOR_CONFIG_NAME;
+import static io.spine.tools.gradle.compiler.SpineCheckerPlugin.SPINE_CHECKS_MODULE;
+import static io.spine.tools.gradle.compiler.SpineCheckerPlugin.SPINE_TOOLS_GROUP;
 import static io.spine.tools.gradle.compiler.given.ModelCompilerTestEnv.newProject;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-public class SpineCheckPluginShould {
+public class SpineCheckerPluginShould {
 
     @Test
     public void create_spine_check_extension() {
         Project project = newProject();
         project.getPluginManager()
-               .apply(SpineCheckPlugin.class);
+               .apply(SpineCheckerPlugin.class);
         ExtensionContainer extensions = project.getExtensions();
-        Object found = extensions.findByName(SpineCheckPlugin.extensionName());
+        Object found = extensions.findByName(SpineCheckerPlugin.extensionName());
         assertNotNull(found);
     }
 
@@ -76,7 +76,7 @@ public class SpineCheckPluginShould {
         assertNull(configs.findByName(PREPROCESSOR_CONFIG_NAME));
 
         project.getPluginManager()
-               .apply(SpineCheckPlugin.class);
+               .apply(SpineCheckerPlugin.class);
         assertNotNull(configs.findByName(PREPROCESSOR_CONFIG_NAME));
     }
 
@@ -84,45 +84,45 @@ public class SpineCheckPluginShould {
     public void add_spine_check_dependency_to_annotation_processor_config() {
         Project project = projectWithModelCompilerDependency();
         project.getPluginManager()
-               .apply(ResolvingSpineCheckPlugin.class);
-        boolean hasSpineCheckDependency = hasSpineCheckDependency(project);
-        assertTrue(hasSpineCheckDependency);
+               .apply(ResolvingSpineCheckerPlugin.class);
+        boolean hasSpineCheckerDependency = hasSpineCheckerDependency(project);
+        assertTrue(hasSpineCheckerDependency);
     }
 
     @Test
     public void not_add_spine_check_dependency_if_it_is_not_resolvable() {
         Project project = projectWithModelCompilerDependency();
         project.getPluginManager()
-               .apply(NonResolvingSpineCheckPlugin.class);
-        boolean hasSpineCheckDependency = hasSpineCheckDependency(project);
-        assertFalse(hasSpineCheckDependency);
+               .apply(NonResolvingSpineCheckerPlugin.class);
+        boolean hasSpineCheckerDependency = hasSpineCheckerDependency(project);
+        assertFalse(hasSpineCheckerDependency);
     }
 
     @Test
     public void not_add_spine_check_dependency_if_model_compiler_dependency_not_available() {
         Project project = newProject();
-        boolean hasSpineCheckDependency = hasSpineCheckDependency(project);
-        assertFalse(hasSpineCheckDependency);
+        boolean hasSpineCheckerDependency = hasSpineCheckerDependency(project);
+        assertFalse(hasSpineCheckerDependency);
     }
 
     @Test
     public void configure_check_severity() {
         Project project = projectWithModelCompilerDependency();
-        configureWithSpineCheckExtension(project, ResolvingSpineCheckPlugin.class);
+        configureWithSpineCheckerExtension(project, ResolvingSpineCheckerPlugin.class);
         checkSeverityConfigured(project);
     }
 
     @Test
     public void configure_check_severity_for_all_checks() {
         Project project = projectWithModelCompilerDependency();
-        configureWithModelCompilerExtension(project, ResolvingSpineCheckPlugin.class);
+        configureWithModelCompilerExtension(project, ResolvingSpineCheckerPlugin.class);
         checkSeverityConfigured(project);
     }
 
     @Test
     public void not_add_severity_args_if_error_prone_plugin_not_applied() {
         Project project = projectWithModelCompilerDependency();
-        configureWithModelCompilerExtension(project, SpineCheckPluginWithoutErrorProne.class);
+        configureWithModelCompilerExtension(project, SpineCheckerPluginWithoutErrorProne.class);
         checkSeverityUntouched(project);
     }
 
@@ -143,7 +143,7 @@ public class SpineCheckPluginShould {
         return project;
     }
 
-    private static boolean hasSpineCheckDependency(Project project) {
+    private static boolean hasSpineCheckerDependency(Project project) {
         ConfigurationContainer configs = project.getConfigurations();
         Configuration config = configs.getByName(PREPROCESSOR_CONFIG_NAME);
         DependencySet dependencies = config.getDependencies();
@@ -157,20 +157,20 @@ public class SpineCheckPluginShould {
     }
 
     private static void
-    configureWithSpineCheckExtension(Project project,
-                                     Class<? extends SpineCheckPlugin> pluginToApply) {
+    configureWithSpineCheckerExtension(Project project,
+                                       Class<? extends SpineCheckerPlugin> pluginToApply) {
         ExtensionContainer extensions = project.getExtensions();
         extensions.create(ModelCompilerPlugin.extensionName(), Extension.class);
         project.getPluginManager()
                .apply(pluginToApply);
-        SpineCheckExtension extension =
-                (SpineCheckExtension) extensions.getByName(SpineCheckPlugin.extensionName());
+        SpineCheckerExtension extension =
+                (SpineCheckerExtension) extensions.getByName(SpineCheckerPlugin.extensionName());
         extension.useVBuilder = ERROR;
     }
 
     private static void
     configureWithModelCompilerExtension(Project project,
-                                        Class<? extends SpineCheckPlugin> pluginToApply) {
+                                        Class<? extends SpineCheckerPlugin> pluginToApply) {
         ExtensionContainer extensions = project.getExtensions();
         Extension modelCompilerExtension =
                 extensions.create(ModelCompilerPlugin.extensionName(), Extension.class);
