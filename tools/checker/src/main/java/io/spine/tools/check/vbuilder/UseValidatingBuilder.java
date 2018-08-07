@@ -52,7 +52,7 @@ import static com.google.errorprone.matchers.Matchers.isSubtypeOf;
 
 /**
  * A custom Error Prone check that matches the usages of the ordinary {@linkplain Message.Builder}
- * and advices using {@linkplain ValidatingBuilder Spine Validating Builders} instead.
+ * and advices using {@linkplain ValidatingBuilder Spine Validating Builder} instead.
  *
  * <p>Currently, it detects the following cases and suggests fixes for them as follows:
  *
