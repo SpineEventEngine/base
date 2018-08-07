@@ -32,6 +32,7 @@ import com.google.protobuf.Message;
 import com.sun.source.tree.ClassTree;
 import com.sun.source.tree.MethodInvocationTree;
 import com.sun.source.tree.Tree;
+import io.spine.annotation.Internal;
 import io.spine.tools.check.BugPatternMatcher;
 import io.spine.tools.check.Fixer;
 import io.spine.tools.check.vbuilder.matcher.NewBuilderForTypeMatcher;
@@ -61,6 +62,7 @@ import static com.google.errorprone.matchers.Matchers.isSubtypeOf;
         linkType = CUSTOM,
         link = UseValidatingBuilder.LINK
 )
+@Internal
 public class UseValidatingBuilder extends BugChecker implements MethodInvocationTreeMatcher {
 
     static final String SUMMARY = "Prefer using Spine Validating Builders instead of ordinary " +
