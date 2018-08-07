@@ -28,9 +28,24 @@ import io.spine.tools.check.Fixer;
 
 import java.util.Optional;
 
+/**
+ * Creates a {@link Fix} for the {@link io.spine.tools.check.vbuilder.UseValidatingBuilder} bug
+ * pattern cases where the {@code message.newBuilderForType()} construction is used.
+
+ * <p>Suggests the fix as follows:
+ *
+ *  <pre>
+ * {@code message.newBuilderForType()} -> {@code MessageVBuilder.newBuilder()}
+ * </pre>
+ *
+ * @author Dmytro Kuzmin
+ */
 @Internal
 public class NewBuilderForTypeFixer implements Fixer<MethodInvocationTree> {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<Fix> createFix(MethodInvocationTree tree, VisitorState state) {
         FixGenerator generator = FixGenerator.createFor(tree, state);

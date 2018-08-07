@@ -31,9 +31,24 @@ import io.spine.tools.check.Fixer;
 
 import java.util.Optional;
 
+/**
+ * Creates a {@link Fix} for the {@link io.spine.tools.check.vbuilder.UseValidatingBuilder} bug
+ * pattern cases where the {@code message.toBuilder()} construction is used.
+
+ * <p>Suggests the fix as follows:
+ *
+ *  <pre>
+ * {@code message.toBuilder()} -> {@code MessageVBuilder.newBuilder().mergeFrom(message)}
+ * </pre>
+ *
+ * @author Dmytro Kuzmin
+ */
 @Internal
 public class ToBuilderFixer implements Fixer<MethodInvocationTree> {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<Fix> createFix(MethodInvocationTree tree, VisitorState state) {
         ExpressionTree expression = tree.getMethodSelect();

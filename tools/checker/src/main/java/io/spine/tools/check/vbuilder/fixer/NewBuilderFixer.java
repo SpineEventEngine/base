@@ -31,9 +31,26 @@ import io.spine.tools.check.Fixer;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Creates a {@link Fix} for the {@link io.spine.tools.check.vbuilder.UseValidatingBuilder} bug
+ * pattern cases where the {@code Message.newBuilder()} or {@code Message.newBuilder(prototype)}
+ * construction is used.
+
+ * <p>Suggests the fix as follows:
+ *
+ *  <pre>
+ * {@code Message.newBuilder()} -> {@code MessageVBuilder.newBuilder()}
+ * {@code Message.newBuilder(prototype)} -> {@code MessageVBuilder.newBuilder().mergeFrom(prototype)}
+ * </pre>
+ *
+ * @author Dmytro Kuzmin
+ */
 @Internal
 public class NewBuilderFixer implements Fixer<MethodInvocationTree> {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<Fix> createFix(MethodInvocationTree tree, VisitorState state) {
         List<? extends ExpressionTree> methodCallArgs = tree.getArguments();

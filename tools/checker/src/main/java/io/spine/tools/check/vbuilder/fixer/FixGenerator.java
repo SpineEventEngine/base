@@ -25,6 +25,7 @@ import com.google.errorprone.fixes.Fix;
 import com.google.errorprone.fixes.SuggestedFix;
 import com.sun.source.tree.ExpressionTree;
 import com.sun.source.tree.MethodInvocationTree;
+import com.sun.source.tree.Tree;
 import com.sun.source.tree.Tree.Kind;
 import com.sun.tools.javac.code.Symbol.ClassSymbol;
 import com.sun.tools.javac.code.Symbol.MethodSymbol;
@@ -39,6 +40,17 @@ import static com.sun.source.tree.Tree.Kind.IDENTIFIER;
 import static com.sun.source.tree.Tree.Kind.MEMBER_SELECT;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
+/**
+ * A generator for the common {@link com.google.errorprone.BugPattern} {@linkplain Fix fixes}
+ * related to the {@link io.spine.validate.ValidatingBuilder} usage.
+ *
+ * <p>This class should only be used from the Error Prone {@link
+ * com.google.errorprone.bugpatterns.BugChecker} context, where the code scanners can provide
+ * proper {@link MethodInvocationTree} and {@link VisitorState} for its initialization.
+ *
+ * @author Dmytro Kuzmin
+ * @see io.spine.tools.check.vbuilder.UseValidatingBuilder
+ */
 @SuppressWarnings("DuplicateStringLiteralInspection")
 // Method names for which introducing constant doesn't seem reasonable.
 class FixGenerator {
@@ -51,22 +63,61 @@ class FixGenerator {
         this.state = state;
     }
 
+    /**
+     * Creates the {@code FixGenerator} instance for the given expression and visitor state.
+     *
+     * @param tree  the expression {@code Tree}
+     * @param state the current {@code VisitorState}
+     * @return the {@code FixGenerator} instance for the given expression
+     */
     static FixGenerator createFor(MethodInvocationTree tree, VisitorState state) {
         return new FixGenerator(tree, state);
     }
 
+    /**
+     * Creates fix which replaces the current expression with the {@code
+     * MessageVBuilder.newBuilder()} expression.
+     *
+     * <p>This method assumes that the {@linkplain #tree current expression} is the call on some of
+     * the {@link com.google.protobuf.Message} class descendants.
+     *
+     * @return the {@code Fix} which can be later used in the {@link
+     * com.google.errorprone.bugpatterns.BugChecker#describeMatch(Tree, Fix)}
+     */
     Fix newVBuilderCall() {
         String newVBuilderCall = ".newBuilder()";
         Fix fix = callOnVBuilder(newVBuilderCall);
         return fix;
     }
 
+    /**
+     * Creates fix which replaces the current expression with the {@code
+     * MessageVBuilder.newBuilder().mergeFrom(arg)} expression.
+     *
+     * <p>This method assumes that the {@linkplain #tree current expression} is the
+     * call that utilizes some of the {@link com.google.protobuf.Message} class instances for the
+     * field initialization.
+     *
+     * @param mergeFromArg the object from which the fields are taken for the {@link
+     *                     com.google.protobuf.Message.Builder}
+     * @return the {@code Fix} which can be later used in the {@link
+     * com.google.errorprone.bugpatterns.BugChecker#describeMatch(Tree, Fix)}
+     */
     Fix mergeFromCall(String mergeFromArg) {
         String mergeFromCall = ".newBuilder().mergeFrom(" + mergeFromArg + ')';
         Fix fix = callOnVBuilder(mergeFromCall);
         return fix;
     }
 
+    /**
+     * Generates an expression such that given {@code statement} is called on the {@link
+     * io.spine.validate.ValidatingBuilder} class.
+     *
+     * <p>The {@code ValidatingBuilder} class is calculated from the current expression.
+     *
+     * @param statement the statement to call on the validating builder class
+     * @return the statement with the call
+     */
     private Fix callOnVBuilder(String statement) {
         String vBuilderName = generateVBuilderName();
         String fixedLine = vBuilderName + statement;
@@ -76,6 +127,10 @@ class FixGenerator {
         return fix;
     }
 
+    /**
+     * Generates the {@link io.spine.validate.ValidatingBuilder} class name based on the current
+     * expression {@code Tree} and {@code VisitorState}.
+     */
     private String generateVBuilderName() {
         Type type = getTypeOnWhichInvoked();
         String simpleName = prettyType(state, null, type);
@@ -83,6 +138,9 @@ class FixGenerator {
         return vBuilderName;
     }
 
+    /**
+     * Obtains {@code Type} on which the current expression is invoked.
+     */
     private Type getTypeOnWhichInvoked() {
         ExpressionTree expression = tree.getMethodSelect();
         Kind kind = expression.getKind();
