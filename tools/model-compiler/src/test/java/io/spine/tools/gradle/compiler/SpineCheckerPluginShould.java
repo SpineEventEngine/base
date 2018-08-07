@@ -111,7 +111,7 @@ public class SpineCheckerPluginShould {
     @Test
     public void configure_check_severity() {
         Project project = projectWithModelCompilerDependency();
-        configureWithSpineCheckerExtension(project, ResolvingSpineCheckerPlugin.class);
+        configureWithSpineCheckExtension(project, ResolvingSpineCheckerPlugin.class);
         checkSeverityConfigured(project);
     }
 
@@ -160,14 +160,14 @@ public class SpineCheckerPluginShould {
     }
 
     private static void
-    configureWithSpineCheckerExtension(Project project,
-                                       Class<? extends SpineCheckerPlugin> pluginToApply) {
+    configureWithSpineCheckExtension(Project project,
+                                     Class<? extends SpineCheckerPlugin> pluginToApply) {
         ExtensionContainer extensions = project.getExtensions();
         extensions.create(ModelCompilerPlugin.extensionName(), Extension.class);
         project.getPluginManager()
                .apply(pluginToApply);
-        SpineCheckerExtension extension =
-                (SpineCheckerExtension) extensions.getByName(SpineCheckerPlugin.extensionName());
+        SpineCheckExtension extension =
+                (SpineCheckExtension) extensions.getByName(SpineCheckerPlugin.extensionName());
         extension.useValidatingBuilder = ERROR;
     }
 

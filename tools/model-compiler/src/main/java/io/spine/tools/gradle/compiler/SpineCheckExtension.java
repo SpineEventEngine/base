@@ -31,12 +31,12 @@ import org.gradle.api.Project;
  * @see Severity
  */
 @SuppressWarnings({"PublicField", "WeakerAccess", "TypeMayBeWeakened"})
-public class SpineCheckerExtension {
+public class SpineCheckExtension {
 
     public Severity useValidatingBuilder;
 
     public static Severity getUseValidatingBuilder(Project project) {
-        SpineCheckerExtension extension = (SpineCheckerExtension)
+        SpineCheckExtension extension = (SpineCheckExtension)
                 project.getExtensions()
                        .getByName(SpineCheckerPlugin.extensionName());
         return extension.useValidatingBuilder;

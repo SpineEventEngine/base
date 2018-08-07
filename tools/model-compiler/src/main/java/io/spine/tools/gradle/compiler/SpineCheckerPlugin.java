@@ -43,7 +43,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static io.spine.tools.gradle.ConfigurationName.CLASSPATH;
-import static io.spine.tools.gradle.compiler.SpineCheckerExtension.getUseValidatingBuilder;
+import static io.spine.tools.gradle.compiler.SpineCheckExtension.getUseValidatingBuilder;
 
 /**
  * A Gradle plugin which configures the project to run Spine checks during compilation stage.
@@ -87,7 +87,7 @@ import static io.spine.tools.gradle.compiler.SpineCheckerExtension.getUseValidat
  */
 public class SpineCheckerPlugin extends SpinePlugin {
 
-    private static final String EXTENSION_NAME = "spineChecker";
+    private static final String EXTENSION_NAME = "spineCheck";
     private static final String ERROR_PRONE_PLUGIN_ID = "net.ltgt.errorprone";
 
     @VisibleForTesting
@@ -114,7 +114,7 @@ public class SpineCheckerPlugin extends SpinePlugin {
     @Override
     public void apply(Project project) {
         project.getExtensions()
-               .create(extensionName(), SpineCheckerExtension.class);
+               .create(extensionName(), SpineCheckExtension.class);
         Configuration preprocessorConfig = setupPreprocessorConfig(project);
         boolean addedSuccessfully = addSpineCheckerDependency(preprocessorConfig, project);
         if (addedSuccessfully) {

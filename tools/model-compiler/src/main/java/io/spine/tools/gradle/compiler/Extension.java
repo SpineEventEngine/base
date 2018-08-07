@@ -159,7 +159,7 @@ public class Extension {
      * <p>If this value is not set, the default severities are used, which are specific for the
      * each check.
      *
-     * <p>May be overridden by the {@link SpineCheckerExtension} values.
+     * <p>May be overridden by the {@link SpineCheckExtension} values.
      */
     public Severity spineCheckSeverity;
 
