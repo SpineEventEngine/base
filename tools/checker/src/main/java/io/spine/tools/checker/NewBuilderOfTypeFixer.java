@@ -55,5 +55,4 @@ class NewBuilderOfTypeFixer extends BuilderCallFixer {
                                                     .named(METHOD_NAME);
         return matcher;
     }
-
 }
