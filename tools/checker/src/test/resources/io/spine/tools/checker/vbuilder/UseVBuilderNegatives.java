@@ -18,51 +18,41 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.checker;
+package io.spine.tools.checker.vbuilder.;
 
-import com.google.protobuf.Int32Value;
+import com.google.protobuf.AbstractMessage;
 import com.google.protobuf.StringValue;
+import io.spine.validate.AbstractValidatingBuilder;
+import io.spine.validate.StringValueVBuilder;
 
-import static com.google.protobuf.Int32Value.newBuilder;
+import static io.spine.validate.Int32ValueVBuilder.newBuilder;
 
-class UseVBuilderPositives {
+abstract class UseVBuilderNegatives {
 
-    StringValue stringValue = StringValue.getDefaultInstance();
-
-    void callNewBuilder() {
-
-        // BUG: Diagnostic matches: UseVBuilderError
-        StringValue.newBuilder();
+    void callOnVBuilder() {
+        StringValueVBuilder.newBuilder();
     }
 
-    void callNewBuilderWithArg() {
-
-        // BUG: Diagnostic matches: UseVBuilderError
-        StringValue.newBuilder(stringValue);
-    }
-
-    void callNewBuilderForType() {
-
-        // BUG: Diagnostic matches: UseVBuilderError
-        stringValue.newBuilderForType();
-    }
-
-    void callToBuilder() {
-
-        // BUG: Diagnostic matches: UseVBuilderError
-        stringValue.toBuilder();
-    }
-
-    void callNewBuilderStaticImported() {
-
-        // BUG: Diagnostic matches: UseVBuilderError
+    void callOnVBuilderStaticImported() {
         newBuilder();
     }
 
-    void callNewBuilderWithArgStaticImported() {
-        Int32Value int32Value = Int32Value.getDefaultInstance();
+    @SuppressWarnings("UseVBuilder")
+    void callUnderWarningSuppressed() {
+        StringValue.newBuilder();
+    }
 
-        // BUG: Diagnostic matches: UseVBuilderError
-        newBuilder(int32Value);
+    class SomeBuilder extends AbstractValidatingBuilder {
+
+        void callInsideVBuilder() {
+            StringValue.newBuilder();
+        }
+    }
+
+    abstract class SomeMessage extends AbstractMessage {
+
+        void callInsideMessage() {
+            StringValue.newBuilder();
+        }
     }
 }

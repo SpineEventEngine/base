@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.checker;
+package io.spine.tools.checker.vbuilder;
 
 import com.google.errorprone.VisitorState;
 import com.google.errorprone.fixes.Fix;
@@ -39,13 +39,13 @@ class ToBuilderFixer extends BuilderCallFixer {
     private static final String METHOD_NAME = "toBuilder";
 
     @Override
-    public boolean matches(MethodInvocationTree tree, VisitorState state) {
+    public boolean matchesExpression(MethodInvocationTree tree, VisitorState state) {
         boolean isToBuilderCall = toBuilderMatcher().matches(tree, state);
         return isToBuilderCall;
     }
 
     @Override
-    public Optional<Fix> buildFix(MethodInvocationTree tree, VisitorState state) {
+    public Optional<Fix> createFix(MethodInvocationTree tree, VisitorState state) {
         ExpressionTree expression = tree.getMethodSelect();
         JCTree.JCFieldAccess fieldAccess = (JCTree.JCFieldAccess) expression;
         JCExpression invokedOn = fieldAccess.selected;

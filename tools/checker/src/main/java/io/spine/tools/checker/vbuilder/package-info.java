@@ -18,41 +18,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.checker;
+/**
+ * This package contains the custom Error Prone check to detect usage of ordinary Builder for the
+ * Protobuf messages and advice using Spine Validating Builder instead of that.
+ */
 
-import com.google.protobuf.AbstractMessage;
-import com.google.protobuf.StringValue;
-import io.spine.validate.AbstractValidatingBuilder;
-import io.spine.validate.StringValueVBuilder;
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.tools.checker.vbuilder;
 
-import static io.spine.validate.Int32ValueVBuilder.newBuilder;
+import com.google.errorprone.annotations.CheckReturnValue;
 
-abstract class UseVBuilderNegatives {
-
-    void callOnVBuilder() {
-        StringValueVBuilder.newBuilder();
-    }
-
-    void callOnVBuilderStaticImported() {
-        newBuilder();
-    }
-
-    @SuppressWarnings("UseVBuilder")
-    void callUnderWarningSuppressed() {
-        StringValue.newBuilder();
-    }
-
-    class SomeBuilder extends AbstractValidatingBuilder {
-
-        void callInsideVBuilder() {
-            StringValue.newBuilder();
-        }
-    }
-
-    abstract class SomeMessage extends AbstractMessage {
-
-        void callInsideMessage() {
-            StringValue.newBuilder();
-        }
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;

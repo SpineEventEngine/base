@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.checker;
+package io.spine.tools.checker.vbuilder;
 
 import com.google.common.collect.Iterators;
 import com.google.errorprone.VisitorState;
@@ -46,7 +46,7 @@ class NewBuilderFixer extends BuilderCallFixer {
     private static final String METHOD_NAME = Messages.METHOD_NEW_BUILDER;
 
     @Override
-    public boolean matches(MethodInvocationTree tree, VisitorState state) {
+    public boolean matchesExpression(MethodInvocationTree tree, VisitorState state) {
         boolean methodNameMatches = newBuilderMatcher().matches(tree, state);
         // todo refactor into something decent
         ExpressionTree methodSelect = tree.getMethodSelect();
@@ -63,7 +63,7 @@ class NewBuilderFixer extends BuilderCallFixer {
     }
 
     @Override
-    public Optional<Fix> buildFix(MethodInvocationTree tree, VisitorState state) {
+    public Optional<Fix> createFix(MethodInvocationTree tree, VisitorState state) {
         List<? extends ExpressionTree> methodCallArgs = tree.getArguments();
         if (methodCallArgs.isEmpty()) {
             return fixForNoArgs(tree, state);

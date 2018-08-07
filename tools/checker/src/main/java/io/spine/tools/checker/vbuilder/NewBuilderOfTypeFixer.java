@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.checker;
+package io.spine.tools.checker.vbuilder;
 
 import com.google.errorprone.VisitorState;
 import com.google.errorprone.fixes.Fix;
@@ -37,13 +37,13 @@ class NewBuilderOfTypeFixer extends BuilderCallFixer {
     private static final String METHOD_NAME = "newBuilderForType";
 
     @Override
-    public boolean matches(MethodInvocationTree tree, VisitorState state) {
+    public boolean matchesExpression(MethodInvocationTree tree, VisitorState state) {
         boolean isNewBuilderForClassCall = newBuilderForTypeMatcher().matches(tree, state);
         return isNewBuilderForClassCall;
     }
 
     @Override
-    public Optional<Fix> buildFix(MethodInvocationTree tree, VisitorState state) {
+    public Optional<Fix> createFix(MethodInvocationTree tree, VisitorState state) {
         Fix fix = newVBuilderCall(tree, state);
         Optional<Fix> result = Optional.of(fix);
         return result;

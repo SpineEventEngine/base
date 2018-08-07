@@ -18,10 +18,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.checker;
+package io.spine.tools.checker.vbuilder;
 
 import com.google.common.base.Predicates;
 import com.google.errorprone.CompilationTestHelper;
+import io.spine.tools.checker.vbuilder.UseVBuilder;
 import org.junit.Before;
 import org.junit.Test;
 

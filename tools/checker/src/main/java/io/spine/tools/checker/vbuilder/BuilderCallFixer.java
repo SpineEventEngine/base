@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.checker;
+package io.spine.tools.checker.vbuilder;
 
 import com.google.errorprone.VisitorState;
 import com.google.errorprone.fixes.Fix;
@@ -31,13 +31,14 @@ import com.sun.tools.javac.code.Type;
 import com.sun.tools.javac.tree.JCTree.JCExpression;
 import com.sun.tools.javac.tree.JCTree.JCFieldAccess;
 import com.sun.tools.javac.tree.JCTree.JCIdent;
+import io.spine.tools.checker.SuggestedFixCreator;
 
 import static com.google.errorprone.fixes.SuggestedFixes.prettyType;
 import static com.google.errorprone.util.ASTHelpers.enclosingClass;
 
 @SuppressWarnings("DuplicateStringLiteralInspection")
 // Method names for which introducing constant doesn't seem reasonable.
-abstract class BuilderCallFixer implements Fixer<MethodInvocationTree> {
+abstract class BuilderCallFixer implements SuggestedFixCreator<MethodInvocationTree> {
 
     Fix newVBuilderCall(MethodInvocationTree tree, VisitorState state) {
         SuggestedFix.Builder builder = SuggestedFix.builder();
