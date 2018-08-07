@@ -38,7 +38,7 @@ import java.util.Optional;
  * <p>Suggests the fix as follows:
  *
  *  <pre>
- * {@code message.toBuilder()} -> {@code MessageVBuilder.newBuilder().mergeFrom(message)}
+ * {@code message.toBuilder()} -&gt; {@code MessageVBuilder.newBuilder().mergeFrom(message)}
  * </pre>
  *
  * @author Dmytro Kuzmin

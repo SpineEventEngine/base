@@ -35,13 +35,14 @@ import java.util.Optional;
  * Creates a {@link Fix} for the {@link io.spine.tools.check.vbuilder.UseValidatingBuilder} bug
  * pattern cases where the {@code Message.newBuilder()} or {@code Message.newBuilder(prototype)}
  * construction is used.
-
+ *
  * <p>Suggests the fix as follows:
  *
- *  <pre>
- * {@code Message.newBuilder()} -> {@code MessageVBuilder.newBuilder()}
- * {@code Message.newBuilder(prototype)} -> {@code MessageVBuilder.newBuilder().mergeFrom(prototype)}
- * </pre>
+ * <ul>
+ * <li>{@code Message.newBuilder()} -&gt; {@code MessageVBuilder.newBuilder()}
+ * <li>{@code Message.newBuilder(prototype)} -&gt;
+ * {@code MessageVBuilder.newBuilder().mergeFrom(prototype)}
+ * </ul>
  *
  * @author Dmytro Kuzmin
  */

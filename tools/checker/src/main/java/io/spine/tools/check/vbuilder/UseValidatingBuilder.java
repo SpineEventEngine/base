@@ -57,11 +57,11 @@ import static com.google.errorprone.matchers.Matchers.isSubtypeOf;
  * <p>Currently, it detects the following cases and suggests fixes for them as follows:
  *
  * <ul>
- * <li>{@code Message.newBuilder()} -> {@code MessageVBuilder.newBuilder()}
- * <li>{@code Message.newBuilder(prototype)} ->
+ * <li>{@code Message.newBuilder()} -&gt; {@code MessageVBuilder.newBuilder()}
+ * <li>{@code Message.newBuilder(prototype)} -&gt;
  * {@code MessageVBuilder.newBuilder().mergeFrom(prototype)}
- * <li>{@code message.newBuilderForType()} -> {@code MessageVBuilder.newBuilder()}
- * <li>{@code message.toBuilder()} -> {@code MessageVBuilder.newBuilder().mergeFrom(message)}
+ * <li>{@code message.newBuilderForType()} -&gt; {@code MessageVBuilder.newBuilder()}
+ * <li>{@code message.toBuilder()} -&gt; {@code MessageVBuilder.newBuilder().mergeFrom(message)}
  * </ul>
  *
  * <p>Usage of the {@linkplain Message.Builder} inside the generated {@linkplain Message messages}

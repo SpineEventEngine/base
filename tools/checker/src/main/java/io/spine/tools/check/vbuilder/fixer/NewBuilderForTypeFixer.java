@@ -35,7 +35,7 @@ import java.util.Optional;
  * <p>Suggests the fix as follows:
  *
  *  <pre>
- * {@code message.newBuilderForType()} -> {@code MessageVBuilder.newBuilder()}
+ * {@code message.newBuilderForType()} -&gt; {@code MessageVBuilder.newBuilder()}
  * </pre>
  *
  * @author Dmytro Kuzmin
