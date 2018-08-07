@@ -24,8 +24,8 @@ import com.google.errorprone.VisitorState;
 import com.google.errorprone.fixes.Fix;
 import com.sun.source.tree.ExpressionTree;
 import com.sun.source.tree.MethodInvocationTree;
-import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.tree.JCTree.JCExpression;
+import com.sun.tools.javac.tree.JCTree.JCFieldAccess;
 import io.spine.annotation.Internal;
 import io.spine.tools.check.Fixer;
 
@@ -37,9 +37,10 @@ public class ToBuilderFixer implements Fixer<MethodInvocationTree> {
     @Override
     public Optional<Fix> createFix(MethodInvocationTree tree, VisitorState state) {
         ExpressionTree expression = tree.getMethodSelect();
-        JCTree.JCFieldAccess fieldAccess = (JCTree.JCFieldAccess) expression;
+        JCFieldAccess fieldAccess = (JCFieldAccess) expression;
         JCExpression invokedOn = fieldAccess.selected;
         String invokedOnString = invokedOn.toString();
+
         FixGenerator generator = FixGenerator.createFor(tree, state);
         Fix fix = generator.mergeFromCall(invokedOnString);
         Optional<Fix> result = Optional.of(fix);

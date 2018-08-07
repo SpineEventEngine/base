@@ -57,6 +57,7 @@ public class NewBuilderFixer implements Fixer<MethodInvocationTree> {
         List<? extends ExpressionTree> args = tree.getArguments();
         ExpressionTree arg = Iterators.getOnlyElement(args.iterator());
         String argString = arg.toString();
+
         FixGenerator generator = FixGenerator.createFor(tree, state);
         Fix fix = generator.mergeFromCall(argString);
         Optional<Fix> result = Optional.of(fix);

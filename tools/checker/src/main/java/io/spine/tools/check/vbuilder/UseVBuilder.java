@@ -59,7 +59,8 @@ import static com.google.errorprone.matchers.Matchers.isSubtypeOf;
         summary = UseVBuilder.SUMMARY,
         severity = WARNING,
         linkType = CUSTOM,
-        link = UseVBuilder.LINK)
+        link = UseVBuilder.LINK
+)
 public class UseVBuilder extends BugChecker implements MethodInvocationTreeMatcher {
 
     static final String SUMMARY = "Prefer using Spine Validating Builders instead of ordinary " +
@@ -87,17 +88,17 @@ public class UseVBuilder extends BugChecker implements MethodInvocationTreeMatch
 
     private static boolean isInVBuilderOrMessage(VisitorState state) {
         ClassTree enclosingClass = state.findEnclosing(ClassTree.class);
-        boolean isInVBuilder = inVBuilderMatcher().matches(enclosingClass, state);
-        boolean isInMessage = inMessageMatcher().matches(enclosingClass, state);
+        boolean isInVBuilder = vBuilderMatcher().matches(enclosingClass, state);
+        boolean isInMessage = messageMatcher().matches(enclosingClass, state);
         return isInVBuilder || isInMessage;
     }
 
-    private static Matcher<Tree> inVBuilderMatcher() {
+    private static Matcher<Tree> vBuilderMatcher() {
         Matcher<Tree> matcher = isSubtypeOf(ValidatingBuilder.class);
         return matcher;
     }
 
-    private static Matcher<Tree> inMessageMatcher() {
+    private static Matcher<Tree> messageMatcher() {
         Matcher<Tree> matcher = isSubtypeOf(Message.class);
         return matcher;
     }
