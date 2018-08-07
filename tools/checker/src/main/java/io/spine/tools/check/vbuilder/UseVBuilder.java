@@ -32,11 +32,13 @@ import com.google.protobuf.Message;
 import com.sun.source.tree.ClassTree;
 import com.sun.source.tree.MethodInvocationTree;
 import com.sun.source.tree.Tree;
-import io.spine.tools.check.SuggestedFixCreator;
+import io.spine.tools.check.BugPatternMatcher;
+import io.spine.tools.check.Fixer;
 import io.spine.validate.ValidatingBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static com.google.errorprone.BugPattern.Category.JDK;
@@ -64,14 +66,14 @@ public class UseVBuilder extends BugChecker implements MethodInvocationTreeMatch
 
     private static final long serialVersionUID = 0L;
 
-    private static final List<SuggestedFixCreator<MethodInvocationTree>> BUILDER_CALL_FIXERS =
-            builderCallFixers();
+    private static final List<BugPatternMatcher<MethodInvocationTree>> matchers = matchers();
 
     @Override
     public Description matchMethodInvocation(MethodInvocationTree tree, VisitorState state) {
-        for (SuggestedFixCreator<MethodInvocationTree> suggestedFixCreator : BUILDER_CALL_FIXERS) {
-            if (suggestedFixCreator.matchesExpression(tree, state) && !isInVBuilderOrMessage(state)) {
-                Optional<Fix> fix = suggestedFixCreator.createFix(tree, state);
+        for (BugPatternMatcher<MethodInvocationTree> matcher : matchers()) {
+            if (matcher.matches(tree, state) && !isInVBuilderOrMessage(state)) {
+                Fixer<MethodInvocationTree> fixer = matcher.getFixer();
+                Optional<Fix> fix = fixer.createFix(tree, state);
                 Description description = describeMatch(tree, fix);
                 return description;
             }
@@ -96,11 +98,11 @@ public class UseVBuilder extends BugChecker implements MethodInvocationTreeMatch
         return matcher;
     }
 
-    private static List<SuggestedFixCreator<MethodInvocationTree>> builderCallFixers() {
-        List<SuggestedFixCreator<MethodInvocationTree>> suggestedFixCreators = new ArrayList<>();
-        suggestedFixCreators.add(new NewBuilderFixer());
-        suggestedFixCreators.add(new NewBuilderOfTypeFixer());
-        suggestedFixCreators.add(new ToBuilderFixer());
-        return suggestedFixCreators;
+    private static List<BugPatternMatcher<MethodInvocationTree>> matchers() {
+        List<BugPatternMatcher<MethodInvocationTree>> fixers = new ArrayList<>();
+        fixers.add(new NewBuilderMatcher());
+        fixers.add(new NewBuilderForTypeMatcher());
+        fixers.add(new ToBuilderMatcher());
+        return fixers;
     }
 }

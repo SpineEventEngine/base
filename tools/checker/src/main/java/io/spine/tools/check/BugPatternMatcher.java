@@ -21,16 +21,13 @@
 package io.spine.tools.check;
 
 import com.google.errorprone.VisitorState;
-import com.google.errorprone.fixes.Fix;
 import com.sun.source.tree.Tree;
 import io.spine.annotation.Internal;
 
-import java.util.Optional;
-
 @Internal
-public interface SuggestedFixCreator<T extends Tree> {
+public interface BugPatternMatcher<T extends Tree> {
 
-    boolean matchesExpression(T tree, VisitorState state);
+    boolean matches(T tree, VisitorState state);
 
-    Optional<Fix> createFix(T tree, VisitorState state);
+    Fixer<T> getFixer();
 }

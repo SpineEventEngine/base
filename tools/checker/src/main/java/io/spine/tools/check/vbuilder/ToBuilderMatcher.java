@@ -21,29 +21,37 @@
 package io.spine.tools.check.vbuilder;
 
 import com.google.errorprone.VisitorState;
-import com.google.errorprone.fixes.Fix;
 import com.google.errorprone.matchers.Matcher;
 import com.google.errorprone.matchers.method.MethodMatchers.MethodNameMatcher;
 import com.google.protobuf.Message;
 import com.sun.source.tree.ExpressionTree;
 import com.sun.source.tree.MethodInvocationTree;
-import com.sun.tools.javac.tree.JCTree;
-import com.sun.tools.javac.tree.JCTree.JCExpression;
-
-import java.util.Optional;
+import io.spine.tools.check.BugPatternMatcher;
+import io.spine.tools.check.Fixer;
 
 import static com.google.errorprone.matchers.Matchers.instanceMethod;
 
-class ToBuilderFixer extends BuilderCallFixer {
+public class ToBuilderMatcher implements BugPatternMatcher<MethodInvocationTree> {
+
+    private static final String METHOD_NAME = "toBuilder";
+
+    private final Fixer<MethodInvocationTree> fixer = new ToBuilderFixer();
 
     @Override
-    public Optional<Fix> createFix(MethodInvocationTree tree, VisitorState state) {
-        ExpressionTree expression = tree.getMethodSelect();
-        JCTree.JCFieldAccess fieldAccess = (JCTree.JCFieldAccess) expression;
-        JCExpression invokedOn = fieldAccess.selected;
-        String invokedOnString = invokedOn.toString();
-        Fix fix = mergeFromCall(tree, state, invokedOnString);
-        Optional<Fix> result = Optional.of(fix);
-        return result;
+    public boolean matches(MethodInvocationTree tree, VisitorState state) {
+        boolean matches = matcher().matches(tree, state);
+        return matches;
+    }
+
+    @Override
+    public Fixer<MethodInvocationTree> getFixer() {
+        return fixer;
+    }
+
+    private static Matcher<ExpressionTree> matcher() {
+        String messageClassName = Message.class.getName();
+        MethodNameMatcher matcher = instanceMethod().onDescendantOf(messageClassName)
+                                                    .named(METHOD_NAME);
+        return matcher;
     }
 }

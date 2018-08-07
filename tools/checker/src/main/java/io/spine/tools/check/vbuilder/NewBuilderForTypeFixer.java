@@ -32,27 +32,12 @@ import java.util.Optional;
 
 import static com.google.errorprone.matchers.Matchers.instanceMethod;
 
-class NewBuilderOfTypeFixer extends BuilderCallFixer {
-
-    private static final String METHOD_NAME = "newBuilderForType";
-
-    @Override
-    public boolean matchesExpression(MethodInvocationTree tree, VisitorState state) {
-        boolean isNewBuilderForClassCall = newBuilderForTypeMatcher().matches(tree, state);
-        return isNewBuilderForClassCall;
-    }
+class NewBuilderForTypeFixer extends BuilderCallFixer {
 
     @Override
     public Optional<Fix> createFix(MethodInvocationTree tree, VisitorState state) {
         Fix fix = newVBuilderCall(tree, state);
         Optional<Fix> result = Optional.of(fix);
         return result;
-    }
-
-    private static Matcher<ExpressionTree> newBuilderForTypeMatcher() {
-        String messageClassName = Message.class.getName();
-        MethodNameMatcher matcher = instanceMethod().onDescendantOf(messageClassName)
-                                                    .named(METHOD_NAME);
-        return matcher;
     }
 }
