@@ -52,9 +52,9 @@ import static io.spine.tools.gradle.compiler.SpineCheckExtension.getUseValidatin
  * the Error Prone plugin</a> applied to the project, as the Spine checks are based on the Error
  * Prone custom checks.
  *
- * <p>The plugin adds a {@code spine-checker} dependency to the project's {@code
- * annotationProcessor} configuration. For older Gradle versions (pre {@code 4.6}), where there is
- * no such configuration, the plugin creates it.
+ * <p>The plugin adds a {@code spine-checker} dependency to the project's
+ * {@code annotationProcessor} configuration. For older Gradle versions (pre {@code 4.6}), where
+ * there is no such configuration, the plugin creates it.
  *
  * <p>Dependency has the same version as the project's {@code spine-model-compiler} plugin
  * dependency.
@@ -146,11 +146,11 @@ public class SpineCheckerPlugin extends SpinePlugin {
      * Adds the {@code io.spine.tools.spine-checker} dependency to the specified configuration of
      * the specified project.
      *
-     * <p>The version of the dependency used is the same as the version of the {@code
-     * spine-model-compiler} plugin used by the project.
+     * <p>The version of the dependency used is the same as the version of the
+     * {@code spine-model-compiler} plugin used by the project.
      *
-     * <p>If the {@code spine-model-compiler} version cannot be acquired or the {@code
-     * spine-checker} version is not resolvable, the method does nothing.
+     * <p>If the {@code spine-model-compiler} version cannot be acquired or the
+     * {@code spine-checker} version is not resolvable, the method does nothing.
      *
      * @param configuration the configuration to add the dependency to
      * @param project       the project to which this configuration belongs
@@ -198,8 +198,8 @@ public class SpineCheckerPlugin extends SpinePlugin {
     }
 
     /**
-     * Gets the {@code spine-model-compiler} dependency version from the {@code
-     * project.buildsript.classpath} configuration.
+     * Gets the {@code spine-model-compiler} dependency version from the
+     * {@code project.buildsript.classpath} configuration.
      *
      * <p>If the dependency version is not found, returns {@link Optional#EMPTY}.
      */
@@ -276,8 +276,8 @@ public class SpineCheckerPlugin extends SpinePlugin {
     }
 
     /**
-     * Adds command line flags necessary to configure Spine check severities to all {@code
-     * JavaCompile} tasks of the project.
+     * Adds command line flags necessary to configure Spine check severities to all
+     * {@code JavaCompile} tasks of the project.
      */
     private void configureCheckSeverity(Project project) {
         if (!hasErrorPronePlugin(project)) {

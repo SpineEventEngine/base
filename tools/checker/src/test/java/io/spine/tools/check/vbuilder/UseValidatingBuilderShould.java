@@ -28,8 +28,8 @@ import org.junit.Test;
 import java.util.function.Predicate;
 
 /**
- * This test requires configuring "-Xbootclasspath..." option with the path to the {@code
- * com.google.errorprone.javac} jar.
+ * This test requires configuring "-Xbootclasspath..." option with the path to the
+ * {@code com.google.errorprone.javac} jar.
  *
  * <p>In Gradle it's done automatically via the separate task (see the {@code build.gradle} of this
  * module).

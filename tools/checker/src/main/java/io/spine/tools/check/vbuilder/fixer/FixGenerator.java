@@ -44,15 +44,15 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  * A generator for the common {@link com.google.errorprone.BugPattern} {@linkplain Fix fixes}
  * related to the {@link io.spine.validate.ValidatingBuilder} usage.
  *
- * <p>This class should only be used from the Error Prone {@link
- * com.google.errorprone.bugpatterns.BugChecker} context, where the code scanners can provide
+ * <p>This class should only be used from the Error Prone
+ * {@link com.google.errorprone.bugpatterns.BugChecker} context, where the code scanners can provide
  * proper {@link MethodInvocationTree} and {@link VisitorState} for its initialization.
  *
  * @author Dmytro Kuzmin
  * @see io.spine.tools.check.vbuilder.UseValidatingBuilder
  */
 @SuppressWarnings("DuplicateStringLiteralInspection")
-// Method names for which introducing constant doesn't seem reasonable.
+// Method names where introducing constant doesn't seem reasonable.
 class FixGenerator {
 
     private final MethodInvocationTree tree;
@@ -75,14 +75,14 @@ class FixGenerator {
     }
 
     /**
-     * Creates a fix which replaces the current expression with the {@code
-     * MessageVBuilder.newBuilder()} expression.
+     * Creates a fix which replaces the current expression with the
+     * {@code MessageVBuilder.newBuilder()} expression.
      *
      * <p>This method assumes that the {@linkplain #tree current expression} is the call on some of
      * the {@link com.google.protobuf.Message} class descendants.
      *
-     * @return the {@code Fix} which can be later used in the {@link
-     *         com.google.errorprone.bugpatterns.BugChecker#describeMatch(Tree, Fix)}
+     * @return the {@code Fix} which can be later used in the
+     *         {@link com.google.errorprone.bugpatterns.BugChecker#describeMatch(Tree, Fix)}
      */
     Fix newVBuilderCall() {
         String newVBuilderCall = ".newBuilder()";
@@ -91,17 +91,17 @@ class FixGenerator {
     }
 
     /**
-     * Creates a fix which replaces the current expression with the {@code
-     * MessageVBuilder.newBuilder().mergeFrom(arg)} expression.
+     * Creates a fix which replaces the current expression with the
+     * {@code MessageVBuilder.newBuilder().mergeFrom(arg)} expression.
      *
      * <p>This method assumes that the {@linkplain #tree current expression} is the
      * call that utilizes some of the {@link com.google.protobuf.Message} class instances for the
      * field initialization.
      *
-     * @param mergeFromArg the object from which the fields are taken for the {@link
-     *                     com.google.protobuf.Message.Builder}
-     * @return the {@code Fix} which can be later used in the {@link
-     *         com.google.errorprone.bugpatterns.BugChecker#describeMatch(Tree, Fix)}
+     * @param mergeFromArg the object from which the fields are taken for the
+     *                     {@link com.google.protobuf.Message.Builder}
+     * @return the {@code Fix} which can be later used in the
+     *         {@link com.google.errorprone.bugpatterns.BugChecker#describeMatch(Tree, Fix)}
      */
     Fix mergeFromCall(String mergeFromArg) {
         String mergeFromCall = ".newBuilder().mergeFrom(" + mergeFromArg + ')';
@@ -110,8 +110,8 @@ class FixGenerator {
     }
 
     /**
-     * Generates an expression such that given {@code statement} is called on the {@link
-     * io.spine.validate.ValidatingBuilder} class.
+     * Generates an expression such that given {@code statement} is called on the
+     * {@link io.spine.validate.ValidatingBuilder} class.
      *
      * <p>The {@code ValidatingBuilder} class is calculated from the current expression.
      *

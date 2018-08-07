@@ -25,8 +25,8 @@ import com.sun.source.tree.Tree;
 import io.spine.annotation.Internal;
 
 /**
- * A basic interface to match the given expression against some known case of the {@link
- * com.google.errorprone.BugPattern}.
+ * A basic interface to match the given expression against some known case of the
+ * {@link com.google.errorprone.BugPattern}.
  *
  * @param <T> the expression {@code Tree}
  * @author Dmytro Kuzmin
