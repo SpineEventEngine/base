@@ -47,9 +47,10 @@ import static io.spine.tools.gradle.compiler.SpineCheckerExtension.getUseValidat
 
 /**
  * A Gradle plugin which configures the project to run Spine checks during compilation stage.
- * *
+ *
  * <p>To work, this plugin requires <a href="https://github.com/tbroyer/gradle-errorprone-plugin">
- * the Error Prone plugin</a> applied to the project.
+ * the Error Prone plugin</a> applied to the project, as the Spine checks are based on the Error
+ * Prone custom checks.
  *
  * <p>The plugin adds a {@code spine-checker} dependency to the project's {@code
  * annotationProcessor} configuration. For older Gradle versions (pre {@code 4.6}), where there is
@@ -68,7 +69,7 @@ import static io.spine.tools.gradle.compiler.SpineCheckerExtension.getUseValidat
  *   }
  * }
  * </pre>
- * or for specific ones:
+ * or for the specific ones:
  *
  *  <pre>
  * {@code
