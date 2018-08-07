@@ -130,7 +130,8 @@ public class SpineCheckerPlugin extends SpinePlugin {
     private boolean addSpineCheckerDependency(Configuration configuration, Project project) {
         Optional<String> versionToUse = acquireModelCompilerVersion(project);
         if (!versionToUse.isPresent()) {
-            log().debug("Can't acquire model compiler version for the project {}", project.getName());
+            log().debug("Can't acquire model compiler version for the project {}",
+                        project.getName());
             return false;
         }
         String version = versionToUse.get();
