@@ -52,11 +52,15 @@ import static com.google.errorprone.matchers.Matchers.isSubtypeOf;
         name = "UseVBuilder",
         category = JDK,
         summary = UseVBuilder.SUMMARY,
-        severity = WARNING)
+        severity = WARNING,
+        link = UseVBuilder.LINK)
 public class UseVBuilder extends BugChecker implements MethodInvocationTreeMatcher {
 
     static final String SUMMARY = "Prefer using Spine Validating Builders instead of ordinary " +
             "Builders for Protobuf Messages";
+
+    static final String LINK =
+            "https://github.com/SpineEventEngine/core-java/wiki/Validating-Builders-Generation";
 
     private static final long serialVersionUID = 0L;
 
