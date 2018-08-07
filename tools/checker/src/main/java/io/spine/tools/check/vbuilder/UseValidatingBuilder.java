@@ -81,8 +81,8 @@ import static com.google.errorprone.matchers.Matchers.isSubtypeOf;
 @Internal
 public class UseValidatingBuilder extends BugChecker implements MethodInvocationTreeMatcher {
 
-    static final String SUMMARY = "Prefer using Spine Validating Builders instead of ordinary " +
-            "Builders for Protobuf Messages";
+    static final String SUMMARY = "Prefer using Spine Validating Builders instead of the " +
+            "ordinary Message Builders for the Protobuf Messages";
 
     static final String LINK =
             "https://github.com/SpineEventEngine/core-java/wiki/Validating-Builders-Generation";
