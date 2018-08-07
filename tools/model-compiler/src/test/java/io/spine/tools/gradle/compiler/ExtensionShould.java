@@ -37,6 +37,7 @@ import static io.spine.tools.gradle.compiler.given.ModelCompilerTestEnv.newUuid;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -225,13 +226,16 @@ public class ExtensionShould {
     }
 
     @Test
-    public void return_spine_check_severity() {
-
+    public void return_spine_checker_severity() {
+        spineProtobuf().spineCheckerSeverity = Severity.ERROR;
+        Severity actualSeverity = Extension.getSpineCheckerSeverity(project);
+        assertEquals(spineProtobuf().spineCheckerSeverity, actualSeverity);
     }
 
     @Test
-    public void return_null_spine_check_severity_if_not_set() {
-
+    public void return_null_spine_checker_severity_if_not_set() {
+        Severity actualSeverity = Extension.getSpineCheckerSeverity(project);
+        assertNull(actualSeverity);
     }
 
     private void assertNotEmptyAndIsInProjectDir(String path) {
