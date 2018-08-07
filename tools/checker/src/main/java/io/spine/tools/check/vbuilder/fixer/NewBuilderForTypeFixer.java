@@ -24,17 +24,17 @@ import com.google.errorprone.VisitorState;
 import com.google.errorprone.fixes.Fix;
 import com.sun.source.tree.MethodInvocationTree;
 import io.spine.annotation.Internal;
+import io.spine.tools.check.Fixer;
 
 import java.util.Optional;
 
-import static com.google.errorprone.matchers.Matchers.instanceMethod;
-
 @Internal
-public class NewBuilderForTypeFixer extends BuilderCallFixer {
+public class NewBuilderForTypeFixer implements Fixer<MethodInvocationTree> {
 
     @Override
     public Optional<Fix> createFix(MethodInvocationTree tree, VisitorState state) {
-        Fix fix = newVBuilderCall(tree, state);
+        FixGenerator generator = FixGenerator.createFor(tree, state);
+        Fix fix = generator.newVBuilderCall();
         Optional<Fix> result = Optional.of(fix);
         return result;
     }

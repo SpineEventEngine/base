@@ -26,12 +26,13 @@ import com.google.errorprone.fixes.Fix;
 import com.sun.source.tree.ExpressionTree;
 import com.sun.source.tree.MethodInvocationTree;
 import io.spine.annotation.Internal;
+import io.spine.tools.check.Fixer;
 
 import java.util.List;
 import java.util.Optional;
 
 @Internal
-public class NewBuilderFixer extends BuilderCallFixer {
+public class NewBuilderFixer implements Fixer<MethodInvocationTree> {
 
     @Override
     public Optional<Fix> createFix(MethodInvocationTree tree, VisitorState state) {
@@ -45,17 +46,19 @@ public class NewBuilderFixer extends BuilderCallFixer {
         return noFix();
     }
 
-    private Optional<Fix> fixForNoArgs(MethodInvocationTree tree, VisitorState state) {
-        Fix fix = newVBuilderCall(tree, state);
+    private static Optional<Fix> fixForNoArgs(MethodInvocationTree tree, VisitorState state) {
+        FixGenerator generator = FixGenerator.createFor(tree, state);
+        Fix fix = generator.newVBuilderCall();
         Optional<Fix> result = Optional.of(fix);
         return result;
     }
 
-    private Optional<Fix> fixForOneArg(MethodInvocationTree tree, VisitorState state) {
+    private static Optional<Fix> fixForOneArg(MethodInvocationTree tree, VisitorState state) {
         List<? extends ExpressionTree> args = tree.getArguments();
         ExpressionTree arg = Iterators.getOnlyElement(args.iterator());
         String argString = arg.toString();
-        Fix fix = mergeFromCall(tree, state, argString);
+        FixGenerator generator = FixGenerator.createFor(tree, state);
+        Fix fix = generator.mergeFromCall(argString);
         Optional<Fix> result = Optional.of(fix);
         return result;
     }

@@ -27,13 +27,12 @@ import com.sun.source.tree.MethodInvocationTree;
 import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.tree.JCTree.JCExpression;
 import io.spine.annotation.Internal;
+import io.spine.tools.check.Fixer;
 
 import java.util.Optional;
 
-import static com.google.errorprone.matchers.Matchers.instanceMethod;
-
 @Internal
-public class ToBuilderFixer extends BuilderCallFixer {
+public class ToBuilderFixer implements Fixer<MethodInvocationTree> {
 
     @Override
     public Optional<Fix> createFix(MethodInvocationTree tree, VisitorState state) {
@@ -41,7 +40,8 @@ public class ToBuilderFixer extends BuilderCallFixer {
         JCTree.JCFieldAccess fieldAccess = (JCTree.JCFieldAccess) expression;
         JCExpression invokedOn = fieldAccess.selected;
         String invokedOnString = invokedOn.toString();
-        Fix fix = mergeFromCall(tree, state, invokedOnString);
+        FixGenerator generator = FixGenerator.createFor(tree, state);
+        Fix fix = generator.mergeFromCall(invokedOnString);
         Optional<Fix> result = Optional.of(fix);
         return result;
     }
