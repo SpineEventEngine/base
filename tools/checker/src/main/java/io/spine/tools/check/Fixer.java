@@ -41,7 +41,7 @@ public interface Fixer<T extends Tree> {
      * Creates a fix for the {@link com.google.errorprone.BugPattern} given the position where the
      * error was found and the expression.
      *
-     * <p>The method should be used from the {@link com.google.errorprone.bugpatterns.BugChecker}
+     * <p>The method should be used in the {@link com.google.errorprone.bugpatterns.BugChecker}
      * implementations where the tree and the state are provided by the Error Prone code scanners.
      *
      * @param tree  the errored expression {@code Tree}
