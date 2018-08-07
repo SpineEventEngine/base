@@ -32,7 +32,7 @@ final def module = { final String name, final String path ->
     project(":$name").projectDir = new File("$rootDir/$path")
 }
 
-module 'checker',              'tools/checker'
+module 'checker',             'tools/checker'
 module 'javadoc-filter',      'tools/javadoc-filter'
 module 'javadoc-prettifier',  'tools/javadoc-prettifier'
 
