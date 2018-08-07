@@ -72,7 +72,6 @@ public class SpineCheckerPluginShould {
         ConfigurationContainer configs = project.getConfigurations();
         Configuration config = configs.getByName(PREPROCESSOR_CONFIG_NAME);
         configs.remove(config);
-
         assertNull(configs.findByName(PREPROCESSOR_CONFIG_NAME));
 
         project.getPluginManager()
