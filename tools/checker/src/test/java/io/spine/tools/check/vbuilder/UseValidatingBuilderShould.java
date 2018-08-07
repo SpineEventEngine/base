@@ -33,7 +33,8 @@ public class UseValidatingBuilderShould {
 
     @Before
     public void setUp() {
-        compilationTestHelper = CompilationTestHelper.newInstance(UseValidatingBuilder.class, getClass());
+        compilationTestHelper =
+                CompilationTestHelper.newInstance(UseValidatingBuilder.class, getClass());
     }
 
     @Test
