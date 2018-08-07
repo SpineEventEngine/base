@@ -82,7 +82,7 @@ class FixGenerator {
      * the {@link com.google.protobuf.Message} class descendants.
      *
      * @return the {@code Fix} which can be later used in the {@link
-     * com.google.errorprone.bugpatterns.BugChecker#describeMatch(Tree, Fix)}
+     *         com.google.errorprone.bugpatterns.BugChecker#describeMatch(Tree, Fix)}
      */
     Fix newVBuilderCall() {
         String newVBuilderCall = ".newBuilder()";
@@ -101,7 +101,7 @@ class FixGenerator {
      * @param mergeFromArg the object from which the fields are taken for the {@link
      *                     com.google.protobuf.Message.Builder}
      * @return the {@code Fix} which can be later used in the {@link
-     * com.google.errorprone.bugpatterns.BugChecker#describeMatch(Tree, Fix)}
+     *         com.google.errorprone.bugpatterns.BugChecker#describeMatch(Tree, Fix)}
      */
     Fix mergeFromCall(String mergeFromArg) {
         String mergeFromCall = ".newBuilder().mergeFrom(" + mergeFromArg + ')';
