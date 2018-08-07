@@ -23,6 +23,10 @@ repositories {
     maven { url = repos.sonatypeSnapshots }
 }
 
+ext {
+    autoServiceVersion = '1.0-rc4'
+}
+
 dependencies {
     implementation project(':base')
     implementation project(':plugin-base')
@@ -30,10 +34,9 @@ dependencies {
     implementation deps.build.errorProneCore
     implementation deps.build.errorProneAnnotations
 
-    testImplementation deps.build.errorProneTestHelpers
+    compileOnly "com.google.auto.service:auto-service:$autoServiceVersion"
 
-    // todo extract version to ext
-    compileOnly 'com.google.auto.service:auto-service:1.0-rc4'
+    testImplementation deps.build.errorProneTestHelpers
 }
 
 def getResolvedVersionOf(final dependency) {
