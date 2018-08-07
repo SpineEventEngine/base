@@ -126,8 +126,8 @@ public class SpineCheckerPlugin extends SpinePlugin {
      * Creates the {@code annotationProcessor} config for the project if it does not exist and
      * adds it to the Java Compiler preprocessor path.
      *
-     * <p>For newer Gradle versions ({@code 4.6} and above) this method will likely just acquire
-     * the config and return it.
+     * <p>For newer Gradle versions ({@code 4.6} and above) this method will most probably just
+     * acquire the config and return it.
      *
      * @param project the project
      * @return the {@code annotationProcessor} configuration of the project
