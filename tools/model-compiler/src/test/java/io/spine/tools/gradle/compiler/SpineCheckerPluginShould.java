@@ -129,7 +129,6 @@ public class SpineCheckerPluginShould {
         checkSeverityNotConfigured(project);
     }
 
-    @SuppressWarnings("DuplicateStringLiteralInspection") // Configuration name.
     private static Project projectWithModelCompilerDependency() {
         Project project = newProject();
         ScriptHandler buildscript = project.getRootProject()
