@@ -54,7 +54,7 @@ def getResolvedArtifactFor(final dependency) {
     return path
 }
 
-task acquireErrorProneJavacVersion {
+task configureBootClasspath {
     doLast {
         final def javacPath = getResolvedArtifactFor("javac")
 
@@ -64,4 +64,4 @@ task acquireErrorProneJavacVersion {
     }
 }
 
-test.dependsOn acquireErrorProneJavacVersion
+test.dependsOn configureBootClasspath
