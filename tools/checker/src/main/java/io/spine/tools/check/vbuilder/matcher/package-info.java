@@ -19,8 +19,9 @@
  */
 
 /**
- * This package contains {@linkplain io.spine.tools.check.BugPatternMatcher matchers} for {@link
- * io.spine.tools.check.vbuilder.UseValidatingBuilder} bug pattern recognition across the code base.
+ * This package contains the {@linkplain io.spine.tools.check.BugPatternMatcher matchers} for the
+ * {@link io.spine.tools.check.vbuilder.UseValidatingBuilder} bug pattern recognition across the
+ * code base.
  */
 
 @CheckReturnValue

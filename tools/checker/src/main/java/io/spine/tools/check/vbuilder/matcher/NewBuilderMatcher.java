@@ -38,6 +38,15 @@ import static com.google.errorprone.matchers.method.MethodMatchers.staticMethod;
 import static com.google.errorprone.suppliers.Suppliers.typeFromClass;
 import static com.google.errorprone.util.ASTHelpers.isSubtype;
 
+/**
+ * A matcher for the {@link io.spine.tools.check.vbuilder.UseValidatingBuilder} bug pattern which
+ * tracks down the cases where {@code Message.newBuilder()} or {@code Message.newBuilder(prototype)}
+ * construction is used.
+ *
+ * <p>Both normally called and static-imported methods are handled.
+ *
+ * @author Dmytro Kuzmin
+ */
 @Internal
 public class NewBuilderMatcher implements BugPatternMatcher<MethodInvocationTree> {
 
@@ -47,12 +56,18 @@ public class NewBuilderMatcher implements BugPatternMatcher<MethodInvocationTree
     private final Matcher<ExpressionTree> matcher = matcher();
     private final Fixer<MethodInvocationTree> fixer = new NewBuilderFixer();
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean matches(MethodInvocationTree tree, VisitorState state) {
         boolean matches = matcher.matches(tree, state);
         return matches;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Fixer<MethodInvocationTree> getFixer() {
         return fixer;

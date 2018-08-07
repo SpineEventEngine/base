@@ -33,6 +33,13 @@ import io.spine.tools.check.vbuilder.fixer.NewBuilderForTypeFixer;
 
 import static com.google.errorprone.matchers.Matchers.instanceMethod;
 
+/**
+ * A matcher for the {@link io.spine.tools.check.vbuilder.UseValidatingBuilder} bug pattern which
+ * tracks down the cases where {@code message.newBuilderForType()} construction is used.
+ *
+ * @author Dmytro Kuzmin
+ * @see Message#newBuilderForType()
+ */
 @Internal
 public class NewBuilderForTypeMatcher implements BugPatternMatcher<MethodInvocationTree> {
 
@@ -41,12 +48,18 @@ public class NewBuilderForTypeMatcher implements BugPatternMatcher<MethodInvocat
     private final Matcher<ExpressionTree> matcher = matcher();
     private final Fixer<MethodInvocationTree> fixer = new NewBuilderForTypeFixer();
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean matches(MethodInvocationTree tree, VisitorState state) {
         boolean matches = matcher.matches(tree, state);
         return matches;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Fixer<MethodInvocationTree> getFixer() {
         return fixer;
