@@ -47,7 +47,7 @@ public interface Fixer<T extends Tree> {
      * @param tree  the errored expression {@code Tree}
      * @param state the current {@code VisitorState}
      * @return the {@code Optional} containing the {@code Fix} or {@link Optional#EMPTY} if no fix
-     * no fix can be created
+     *         can be created
      */
     Optional<Fix> createFix(T tree, VisitorState state);
 }
