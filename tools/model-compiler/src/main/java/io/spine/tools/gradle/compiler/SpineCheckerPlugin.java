@@ -42,8 +42,48 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static io.spine.tools.gradle.ConfigurationName.CLASSPATH;
 import static io.spine.tools.gradle.compiler.SpineCheckerExtension.getUseValidatingBuilder;
 
+/**
+ * A Gradle plugin which configures the project to run Spine checks during compilation stage.
+ * *
+ * <p>To work, this plugin requires <a href="https://github.com/tbroyer/gradle-errorprone-plugin">
+ * the Error Prone plugin</a> applied to the project.
+ *
+ * <p>The plugin adds a {@code spine-checker} dependency to the project's {@code
+ * annotationProcessor} configuration. For older Gradle versions (pre {@code 4.6}), where there is
+ * no such configuration, the plugin creates it.
+ *
+ * <p>Dependency has the same version as the project's {@code spine-model-compiler} plugin
+ * dependency.
+ *
+ * <p>Checks severity may be configured for all checks:
+ *
+ * <pre>
+ * {@code
+ *
+ *   modelCompiler {
+ *      spineCheckerSeverity = OFF
+ *   }
+ * }
+ * </pre>
+ * or for specific ones:
+ *
+ *  <pre>
+ * {@code
+ *
+ *   spineChecker {
+ *      useValidatingBuilder = ERROR
+ *   }
+ * }
+ * </pre>
+ *
+ * <p>The latter overrides the former.
+ *
+ * @author Dmytro Kuzmin
+ * @see io.spine.validate.ValidatingBuilder
+ */
 public class SpineCheckerPlugin extends SpinePlugin {
 
     private static final String ERROR_PRONE_PLUGIN_ID = "net.ltgt.errorprone";
@@ -114,7 +154,6 @@ public class SpineCheckerPlugin extends SpinePlugin {
         gradle.projectsEvaluated(configurePreprocessor);
     }
 
-    @SuppressWarnings("DuplicateStringLiteralInspection") // Configuration name.
     private Optional<String> acquireModelCompilerVersion(Project project) {
         log().debug("Acquiring 'spine-model-compiler' dependency version for the project {}",
                     project.getName());
@@ -122,7 +161,7 @@ public class SpineCheckerPlugin extends SpinePlugin {
         ScriptHandler buildscript = project.getRootProject()
                                            .getBuildscript();
         ConfigurationContainer configurations = buildscript.getConfigurations();
-        Configuration classpath = configurations.findByName("classpath");
+        Configuration classpath = configurations.findByName(CLASSPATH.getValue());
 
         if (classpath == null) {
             return Optional.empty();
