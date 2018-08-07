@@ -1,3 +1,5 @@
+import org.gradle.api.resources.MissingResourceException
+
 /*
  * Copyright 2018, TeamDev. All rights reserved.
  *
@@ -39,27 +41,25 @@ dependencies {
     testImplementation deps.build.errorProneTestHelpers
 }
 
-def getResolvedVersionOf(final dependency) {
+def getResolvedArtifactFor(final dependency) {
     final def resolvedTestClasspath = configurations.testRuntimeClasspath.resolvedConfiguration
     final def javacDependency = resolvedTestClasspath.resolvedArtifacts.findAll {
         it.name == dependency
     }
     if (javacDependency.empty) {
-        throw new TaskInstantiationException("The 'javac' dependency is not found among the " +
-                "resolved artifacts");
+        throw new MissingResourceException("The 'javac' dependency is not found among the " +
+                "resolved artifacts")
     }
-    final def version = javacDependency[0].moduleVersion.id.version
-    return version
+    final def path = javacDependency[0].file.absolutePath
+    return path
 }
 
 task acquireErrorProneJavacVersion {
     doLast {
-        final def javacVersion = getResolvedVersionOf("javac")
-        final
-        def localjavac = "${repositories.mavenLocal().url.path}com/google/errorprone/javac/${javacVersion}/javac-${javacVersion}.jar"
+        final def javacPath = getResolvedArtifactFor("javac")
 
         test {
-            jvmArgs "-Xbootclasspath/p:$localjavac"
+            jvmArgs "-Xbootclasspath/p:$javacPath"
         }
     }
 }
