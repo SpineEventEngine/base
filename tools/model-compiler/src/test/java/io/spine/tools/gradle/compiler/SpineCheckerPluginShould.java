@@ -46,7 +46,7 @@ import static io.spine.testing.Verify.assertContains;
 import static io.spine.tools.gradle.compiler.Severity.ERROR;
 import static io.spine.tools.gradle.compiler.SpineCheckerPlugin.MODEL_COMPILER_PLUGIN_NAME;
 import static io.spine.tools.gradle.compiler.SpineCheckerPlugin.PREPROCESSOR_CONFIG_NAME;
-import static io.spine.tools.gradle.compiler.SpineCheckerPlugin.SPINE_CHECKS_MODULE;
+import static io.spine.tools.gradle.compiler.SpineCheckerPlugin.SPINE_CHECKER_MODULE;
 import static io.spine.tools.gradle.compiler.SpineCheckerPlugin.SPINE_TOOLS_GROUP;
 import static io.spine.tools.gradle.compiler.given.ModelCompilerTestEnv.newProject;
 import static org.junit.Assert.assertFalse;
@@ -149,7 +149,7 @@ public class SpineCheckerPluginShould {
         DependencySet dependencies = config.getDependencies();
         for (Dependency dependency : dependencies) {
             if (SPINE_TOOLS_GROUP.equals(dependency.getGroup()) &&
-                    SPINE_CHECKS_MODULE.equals(dependency.getName())) {
+                    SPINE_CHECKER_MODULE.equals(dependency.getName())) {
                 return true;
             }
         }

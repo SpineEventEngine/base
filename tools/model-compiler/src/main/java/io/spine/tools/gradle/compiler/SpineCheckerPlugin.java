@@ -50,17 +50,16 @@ public class SpineCheckerPlugin extends SpinePlugin {
     private static final String EXTENSION_NAME = "spineChecker";
 
     @VisibleForTesting
+    static final String PREPROCESSOR_CONFIG_NAME = "annotationProcessor";
+
+    @VisibleForTesting
     static final String SPINE_TOOLS_GROUP = "io.spine.tools";
 
     @VisibleForTesting
-    static final String SPINE_CHECKS_MODULE = "spine-checker";
+    static final String SPINE_CHECKER_MODULE = "spine-checker";
 
     @VisibleForTesting
     static final String MODEL_COMPILER_PLUGIN_NAME = "spine-model-compiler";
-
-    @VisibleForTesting
-    static final String PREPROCESSOR_CONFIG_NAME = "annotationProcessor";
-
 
     static String extensionName() {
         return EXTENSION_NAME;
@@ -151,11 +150,11 @@ public class SpineCheckerPlugin extends SpinePlugin {
 
     private void dependOnSpineChecker(String dependencyVersion, Configuration configuration) {
         log().debug("Adding dependency on {}:{}:{} to the {} configuration",
-                    SPINE_TOOLS_GROUP, SPINE_CHECKS_MODULE, dependencyVersion,
+                    SPINE_TOOLS_GROUP, SPINE_CHECKER_MODULE, dependencyVersion,
                     PREPROCESSOR_CONFIG_NAME);
         DependencySet dependencies = configuration.getDependencies();
         Dependency dependency = new DefaultExternalModuleDependency(
-                SPINE_TOOLS_GROUP, SPINE_CHECKS_MODULE, dependencyVersion);
+                SPINE_TOOLS_GROUP, SPINE_CHECKER_MODULE, dependencyVersion);
         dependencies.add(dependency);
     }
 
