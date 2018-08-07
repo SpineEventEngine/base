@@ -183,7 +183,7 @@ public class SpineCheckerPlugin extends SpinePlugin {
         setUseVBuilderSeverity(project, defaultSeverity);
     }
 
-    @SuppressWarnings("ConstantConditions") // The condition is not really constant.
+    @SuppressWarnings("ConstantConditions") // Checking nullable argument for null.
     private void setUseVBuilderSeverity(Project project, @Nullable Severity defaultSeverity) {
         Severity severity = getUseVBuilder(project);
         if (severity == null) {
