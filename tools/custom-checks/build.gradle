@@ -36,7 +36,7 @@ dependencies {
     compileOnly 'com.google.auto.service:auto-service:1.0-rc4'
 }
 
-def getResolvedVersionOf(final dependency) {
+def getResolvedArtifactFor(final dependency) {
     final def resolvedTestClasspath = configurations.testRuntimeClasspath.resolvedConfiguration
     final def javacDependency = resolvedTestClasspath.resolvedArtifacts.findAll {
         it.name == dependency
@@ -45,18 +45,16 @@ def getResolvedVersionOf(final dependency) {
         throw new TaskInstantiationException("The 'javac' dependency is not found among the " +
                 "resolved artifacts");
     }
-    final def version = javacDependency[0].moduleVersion.id.version
-    return version
+    final def path = javacDependency[0].file.absolutePath
+    return path
 }
 
 task acquireErrorProneJavacVersion {
     doLast {
-        final def javacVersion = getResolvedVersionOf("javac")
-        final
-        def localjavac = "${repositories.mavenLocal().url.path}com/google/errorprone/javac/${javacVersion}/javac-${javacVersion}.jar"
+        final def javacPath = getResolvedArtifactFor("javac")
 
         test {
-            jvmArgs "-Xbootclasspath/p:$localjavac"
+            jvmArgs "-Xbootclasspath/p:$javacPath"
         }
     }
 }
