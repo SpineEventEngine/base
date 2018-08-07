@@ -19,7 +19,6 @@ For Gradle versions older than `4.6` you may need to create and configure the `a
 dependency manually:
 
 ```groovy
-
 configurations {
   annotationProcessor
 }
