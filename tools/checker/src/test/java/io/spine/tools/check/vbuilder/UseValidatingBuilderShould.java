@@ -20,39 +20,34 @@
 
 package io.spine.tools.check.vbuilder;
 
-import com.google.protobuf.AbstractMessage;
-import com.google.protobuf.StringValue;
-import io.spine.validate.AbstractValidatingBuilder;
-import io.spine.validate.StringValueVBuilder;
+import com.google.common.base.Predicates;
+import com.google.errorprone.CompilationTestHelper;
+import org.junit.Before;
+import org.junit.Test;
 
-import static io.spine.validate.Int32ValueVBuilder.newBuilder;
+import java.util.function.Predicate;
 
-abstract class UseVBuilderNegatives {
+public class UseValidatingBuilderShould {
 
-    void callOnVBuilder() {
-        StringValueVBuilder.newBuilder();
+    private CompilationTestHelper compilationTestHelper;
+
+    @Before
+    public void setUp() {
+        compilationTestHelper = CompilationTestHelper.newInstance(UseValidatingBuilder.class, getClass());
     }
 
-    void callOnVBuilderStaticImported() {
-        newBuilder();
+    @Test
+    public void recognize_positive_cases() {
+        Predicate<CharSequence> predicate =
+                Predicates.containsPattern(UseValidatingBuilder.SUMMARY)::apply;
+        compilationTestHelper.expectErrorMessage("UseValidatingBuilderError", predicate::test);
+        compilationTestHelper.addSourceFile("UseValidatingBuilderPositives.java")
+                             .doTest();
     }
 
-    @SuppressWarnings("UseVBuilder")
-    void callUnderWarningSuppressed() {
-        StringValue.newBuilder();
-    }
-
-    class SomeBuilder extends AbstractValidatingBuilder {
-
-        void callInsideVBuilder() {
-            StringValue.newBuilder();
-        }
-    }
-
-    abstract class SomeMessage extends AbstractMessage {
-
-        void callInsideMessage() {
-            StringValue.newBuilder();
-        }
+    @Test
+    public void recognize_negative_cases() {
+        compilationTestHelper.addSourceFile("UseValidatingBuilderNegatives.java")
+                             .doTest();
     }
 }

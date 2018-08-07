@@ -42,7 +42,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static io.spine.tools.gradle.compiler.SpineCheckerExtension.getUseVBuilder;
+import static io.spine.tools.gradle.compiler.SpineCheckerExtension.getUseValidatingBuilder;
 
 public class SpineCheckerPlugin extends SpinePlugin {
 
@@ -180,12 +180,13 @@ public class SpineCheckerPlugin extends SpinePlugin {
             return;
         }
         Severity defaultSeverity = Extension.getSpineCheckerSeverity(project);
-        setUseVBuilderSeverity(project, defaultSeverity);
+        setUseValidatingBuilderSeverity(project, defaultSeverity);
     }
 
     @SuppressWarnings("ConstantConditions") // Checking nullable argument for null.
-    private void setUseVBuilderSeverity(Project project, @Nullable Severity defaultSeverity) {
-        Severity severity = getUseVBuilder(project);
+    private void
+    setUseValidatingBuilderSeverity(Project project, @Nullable Severity defaultSeverity) {
+        Severity severity = getUseValidatingBuilder(project);
         if (severity == null) {
             if (defaultSeverity == null) {
                 return;
@@ -193,9 +194,9 @@ public class SpineCheckerPlugin extends SpinePlugin {
                 severity = defaultSeverity;
             }
         }
-        log().debug("Setting UseVBuilder checker severity to {} for the project {}",
+        log().debug("Setting UseValidatingBuilder checker severity to {} for the project {}",
                     severity.name(), project.getName());
-        String severityArg = "-Xep:UseVBuilder:" + severity.name();
+        String severityArg = "-Xep:UseValidatingBuilder:" + severity.name();
         addArgsToJavaCompile(project, severityArg);
     }
 

@@ -54,14 +54,14 @@ import static com.google.errorprone.matchers.Matchers.isSubtypeOf;
  */
 @AutoService(BugChecker.class)
 @BugPattern(
-        name = "UseVBuilder",
+        name = "UseValidatingBuilder",
         category = JDK,
-        summary = UseVBuilder.SUMMARY,
+        summary = UseValidatingBuilder.SUMMARY,
         severity = WARNING,
         linkType = CUSTOM,
-        link = UseVBuilder.LINK
+        link = UseValidatingBuilder.LINK
 )
-public class UseVBuilder extends BugChecker implements MethodInvocationTreeMatcher {
+public class UseValidatingBuilder extends BugChecker implements MethodInvocationTreeMatcher {
 
     static final String SUMMARY = "Prefer using Spine Validating Builders instead of ordinary " +
             "Builders for Protobuf Messages";

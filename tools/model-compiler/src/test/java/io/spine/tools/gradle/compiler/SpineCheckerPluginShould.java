@@ -165,7 +165,7 @@ public class SpineCheckerPluginShould {
                .apply(pluginToApply);
         SpineCheckerExtension extension =
                 (SpineCheckerExtension) extensions.getByName(SpineCheckerPlugin.extensionName());
-        extension.useVBuilder = ERROR;
+        extension.useValidatingBuilder = ERROR;
     }
 
     private static void
@@ -183,7 +183,7 @@ public class SpineCheckerPluginShould {
         TaskCollection<JavaCompile> javaCompileTasks = acquireJavaCompileTasks(project);
         for (JavaCompile task : javaCompileTasks) {
             List<String> compilerArgs = obtainCompilerArgs(task);
-            assertContains("-Xep:UseVBuilder:ERROR", compilerArgs);
+            assertContains("-Xep:UseValidatingBuilder:ERROR", compilerArgs);
         }
     }
 
