@@ -46,7 +46,6 @@ import static com.google.errorprone.matchers.Matchers.isSubtypeOf;
 /**
  * Matches on using ordinary Builder instead of VBuilder for Proto Messages.
  */
-@SuppressWarnings("unused") // Used reflectively.
 @AutoService(BugChecker.class)
 @BugPattern(
         name = "UseVBuilder",
