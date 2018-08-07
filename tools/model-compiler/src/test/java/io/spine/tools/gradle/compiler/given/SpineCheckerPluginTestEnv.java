@@ -33,8 +33,8 @@ public class SpineCheckerPluginTestEnv {
     public static class ResolvingSpineCheckerPlugin extends SpineCheckerPlugin {
 
         @Override
-        protected boolean isSpineCheckerVersionResolvable(String version,
-                                                          Configuration configuration) {
+        protected boolean
+        isSpineCheckerVersionResolvable(String version, Configuration configuration) {
             return true;
         }
 
@@ -47,8 +47,8 @@ public class SpineCheckerPluginTestEnv {
     public static class NonResolvingSpineCheckerPlugin extends SpineCheckerPlugin {
 
         @Override
-        protected boolean isSpineCheckerVersionResolvable(String version,
-                                                          Configuration configuration) {
+        protected boolean
+        isSpineCheckerVersionResolvable(String version, Configuration configuration) {
             return false;
         }
 
@@ -61,8 +61,8 @@ public class SpineCheckerPluginTestEnv {
     public static class SpineCheckerPluginWithoutErrorProne extends SpineCheckerPlugin {
 
         @Override
-        protected boolean isSpineCheckerVersionResolvable(String version,
-                                                          Configuration configuration) {
+        protected boolean
+        isSpineCheckerVersionResolvable(String version, Configuration configuration) {
             return true;
         }
 
