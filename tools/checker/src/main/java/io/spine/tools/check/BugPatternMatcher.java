@@ -35,10 +35,10 @@ import io.spine.annotation.Internal;
 public interface BugPatternMatcher<T extends Tree> {
 
     /**
-     * Checks if the given expression matches the case of {@link com.google.errorprone.BugPattern}
-     * stored in this class.
+     * Checks if the given expression matches the {@link com.google.errorprone.BugPattern} case
+     * processed by this class.
      *
-     * <p>This method should be used from inside the {@link
+     * <p>The method should be used from inside the {@link
      * com.google.errorprone.bugpatterns.BugChecker} implementations, so the Error Prone scanners
      * provide the proper {@code Tree} and {@code VisitorState} corresponding to the currently
      * assessed expression.
@@ -50,10 +50,10 @@ public interface BugPatternMatcher<T extends Tree> {
     boolean matches(T tree, VisitorState state);
 
     /**
-     * Obtains a {@code Fixer} for the case of the {@link com.google.errorprone.BugPattern} stored
-     * in this class.
+     * Obtains a {@code Fixer} for the case of the {@link com.google.errorprone.BugPattern}
+     * processed by this class.
      *
-     * @return the {@code Fixer} for the stored bug pattern
+     * @return the {@code Fixer} for the processed bug pattern case
      */
     Fixer<T> getFixer();
 }
