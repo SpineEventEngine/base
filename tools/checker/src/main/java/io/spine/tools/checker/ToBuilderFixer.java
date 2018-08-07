@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.check;
+package io.spine.tools.checker;
 
 import com.google.errorprone.VisitorState;
 import com.google.errorprone.fixes.Fix;
@@ -27,29 +27,35 @@ import com.google.errorprone.matchers.method.MethodMatchers.MethodNameMatcher;
 import com.google.protobuf.Message;
 import com.sun.source.tree.ExpressionTree;
 import com.sun.source.tree.MethodInvocationTree;
+import com.sun.tools.javac.tree.JCTree;
+import com.sun.tools.javac.tree.JCTree.JCExpression;
 
 import java.util.Optional;
 
 import static com.google.errorprone.matchers.Matchers.instanceMethod;
 
-class NewBuilderOfTypeFixer extends BuilderCallFixer {
+class ToBuilderFixer extends BuilderCallFixer {
 
-    private static final String METHOD_NAME = "newBuilderForType";
+    private static final String METHOD_NAME = "toBuilder";
 
     @Override
     public boolean matches(MethodInvocationTree tree, VisitorState state) {
-        boolean isNewBuilderForClassCall = newBuilderForTypeMatcher().matches(tree, state);
-        return isNewBuilderForClassCall;
+        boolean isToBuilderCall = toBuilderMatcher().matches(tree, state);
+        return isToBuilderCall;
     }
 
     @Override
     public Optional<Fix> buildFix(MethodInvocationTree tree, VisitorState state) {
-        Fix fix = newVBuilderCall(tree, state);
+        ExpressionTree expression = tree.getMethodSelect();
+        JCTree.JCFieldAccess fieldAccess = (JCTree.JCFieldAccess) expression;
+        JCExpression invokedOn = fieldAccess.selected;
+        String invokedOnString = invokedOn.toString();
+        Fix fix = mergeFromCall(tree, state, invokedOnString);
         Optional<Fix> result = Optional.of(fix);
         return result;
     }
 
-    private static Matcher<ExpressionTree> newBuilderForTypeMatcher() {
+    private static Matcher<ExpressionTree> toBuilderMatcher() {
         String messageClassName = Message.class.getName();
         MethodNameMatcher matcher = instanceMethod().onDescendantOf(messageClassName)
                                                     .named(METHOD_NAME);

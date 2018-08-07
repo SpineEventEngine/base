@@ -193,7 +193,7 @@ public class SpineCheckerPlugin extends SpinePlugin {
                 severity = defaultSeverity;
             }
         }
-        log().debug("Setting UseVBuilder check severity to {} for the project {}",
+        log().debug("Setting UseVBuilder checker severity to {} for the project {}",
                     severity.name(), project.getName());
         String severityArg = "-Xep:UseVBuilder:" + severity.name();
         addArgsToJavaCompile(project, severityArg);

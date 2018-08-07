@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.check;
+package io.spine.tools.checker;
 
 import com.google.common.collect.Iterators;
 import com.google.errorprone.VisitorState;

@@ -24,7 +24,7 @@
 
 @CheckReturnValue
 @ParametersAreNonnullByDefault
-package io.spine.tools.check;
+package io.spine.tools.checker;
 
 import com.google.errorprone.annotations.CheckReturnValue;
 

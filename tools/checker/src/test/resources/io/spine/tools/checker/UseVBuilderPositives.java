@@ -18,45 +18,51 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.check;
+package io.spine.tools.checker;
 
-import com.google.protobuf.AbstractMessage;
 import com.google.protobuf.Int32Value;
-import com.google.protobuf.Message;
 import com.google.protobuf.StringValue;
-import io.spine.base.ThrowableMessage;
-import io.spine.validate.AbstractValidatingBuilder;
-import io.spine.validate.Int32ValueVBuilder;
-import io.spine.validate.StringValueVBuilder;
 
-import static io.spine.validate.Int32ValueVBuilder.newBuilder;
+import static com.google.protobuf.Int32Value.newBuilder;
 
-abstract class UseVBuilderNegatives {
+class UseVBuilderPositives {
 
-    void callOnVBuilder() {
-        StringValueVBuilder.newBuilder();
-    }
+    StringValue stringValue = StringValue.getDefaultInstance();
 
-    void callOnVBuilderStaticImported() {
-        newBuilder();
-    }
+    void callNewBuilder() {
 
-    @SuppressWarnings("UseVBuilder")
-    void callUnderWarningSuppressed() {
+        // BUG: Diagnostic matches: UseVBuilderError
         StringValue.newBuilder();
     }
 
-    class SomeBuilder extends AbstractValidatingBuilder {
+    void callNewBuilderWithArg() {
 
-        void callInsideVBuilder() {
-            StringValue.newBuilder();
-        }
+        // BUG: Diagnostic matches: UseVBuilderError
+        StringValue.newBuilder(stringValue);
     }
 
-    abstract class SomeMessage extends AbstractMessage {
+    void callNewBuilderForType() {
 
-        void callInsideMessage() {
-            StringValue.newBuilder();
-        }
+        // BUG: Diagnostic matches: UseVBuilderError
+        stringValue.newBuilderForType();
+    }
+
+    void callToBuilder() {
+
+        // BUG: Diagnostic matches: UseVBuilderError
+        stringValue.toBuilder();
+    }
+
+    void callNewBuilderStaticImported() {
+
+        // BUG: Diagnostic matches: UseVBuilderError
+        newBuilder();
+    }
+
+    void callNewBuilderWithArgStaticImported() {
+        Int32Value int32Value = Int32Value.getDefaultInstance();
+
+        // BUG: Diagnostic matches: UseVBuilderError
+        newBuilder(int32Value);
     }
 }
