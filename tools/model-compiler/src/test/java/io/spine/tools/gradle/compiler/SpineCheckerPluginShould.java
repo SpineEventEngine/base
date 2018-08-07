@@ -123,7 +123,7 @@ public class SpineCheckerPluginShould {
     public void not_add_severity_args_if_error_prone_plugin_not_applied() {
         Project project = projectWithModelCompilerDependency();
         configureWithModelCompilerExtension(project, SpineCheckerPluginWithoutErrorProne.class);
-        checkSeverityUntouched(project);
+        checkSeverityNotConfigured(project);
     }
 
     private static Project projectWithModelCompilerDependency() {
@@ -187,7 +187,7 @@ public class SpineCheckerPluginShould {
         }
     }
 
-    private static void checkSeverityUntouched(Project project) {
+    private static void checkSeverityNotConfigured(Project project) {
         TaskCollection<JavaCompile> javaCompileTasks = acquireJavaCompileTasks(project);
         for (JavaCompile task : javaCompileTasks) {
             List<String> compilerArgs = obtainCompilerArgs(task);
