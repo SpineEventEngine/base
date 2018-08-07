@@ -75,7 +75,7 @@ class FixGenerator {
     }
 
     /**
-     * Creates fix which replaces the current expression with the {@code
+     * Creates a fix which replaces the current expression with the {@code
      * MessageVBuilder.newBuilder()} expression.
      *
      * <p>This method assumes that the {@linkplain #tree current expression} is the call on some of
@@ -91,7 +91,7 @@ class FixGenerator {
     }
 
     /**
-     * Creates fix which replaces the current expression with the {@code
+     * Creates a fix which replaces the current expression with the {@code
      * MessageVBuilder.newBuilder().mergeFrom(arg)} expression.
      *
      * <p>This method assumes that the {@linkplain #tree current expression} is the
