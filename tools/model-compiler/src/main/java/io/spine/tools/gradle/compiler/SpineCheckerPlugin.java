@@ -65,7 +65,7 @@ import static io.spine.tools.gradle.compiler.SpineCheckExtension.getUseValidatin
  * {@code
  *
  *   modelCompiler {
- *      spineCheckSeverity = OFF
+ *      spineCheckSeverity = "OFF"
  *   }
  * }
  * </pre>
@@ -75,7 +75,7 @@ import static io.spine.tools.gradle.compiler.SpineCheckExtension.getUseValidatin
  * {@code
  *
  *   spineChecker {
- *      useValidatingBuilder = ERROR
+ *      useValidatingBuilder = "ERROR"
  *   }
  * }
  * </pre>
