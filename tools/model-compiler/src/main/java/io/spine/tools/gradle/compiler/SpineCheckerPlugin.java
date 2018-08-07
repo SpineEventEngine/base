@@ -87,8 +87,8 @@ import static io.spine.tools.gradle.compiler.SpineCheckerExtension.getUseValidat
  */
 public class SpineCheckerPlugin extends SpinePlugin {
 
-    private static final String ERROR_PRONE_PLUGIN_ID = "net.ltgt.errorprone";
     private static final String EXTENSION_NAME = "spineChecker";
+    private static final String ERROR_PRONE_PLUGIN_ID = "net.ltgt.errorprone";
 
     @VisibleForTesting
     static final String PREPROCESSOR_CONFIG_NAME = "annotationProcessor";
