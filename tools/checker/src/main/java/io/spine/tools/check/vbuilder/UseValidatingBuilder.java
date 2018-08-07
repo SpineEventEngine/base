@@ -51,7 +51,23 @@ import static com.google.errorprone.matchers.Description.NO_MATCH;
 import static com.google.errorprone.matchers.Matchers.isSubtypeOf;
 
 /**
- * Matches on using ordinary Builder instead of VBuilder for Proto Messages.
+ * A custom Error Prone check that matches the usages of the ordinary {@linkplain Message.Builder}
+ * and advices using {@linkplain ValidatingBuilder Spine Validating Builders} instead.
+ *
+ * <p>Currently, it detects the following cases and suggests fixes for them as follows:
+ *
+ * <ul>
+ * <li>{@code Message.newBuilder()} -> {@code MessageVBuilder.newBuilder()}
+ * <li>{@code Message.newBuilder(prototype)} ->
+ * {@code MessageVBuilder.newBuilder().mergeFrom(prototype)}
+ * <li>{@code message.newBuilderForType()} -> {@code MessageVBuilder.newBuilder()}
+ * <li>{@code message.toBuilder()} -> {@code MessageVBuilder.newBuilder().mergeFrom(message)}
+ * </ul>
+ *
+ * <p>Usage of the {@linkplain Message.Builder} inside the generated {@linkplain Message messages}
+ * and in the {@linkplain ValidatingBuilder validating builders} themselves is allowed.
+ *
+ * @author Dmytro Kuzmin
  */
 @AutoService(BugChecker.class)
 @BugPattern(

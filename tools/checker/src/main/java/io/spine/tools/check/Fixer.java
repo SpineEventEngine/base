@@ -27,8 +27,27 @@ import io.spine.annotation.Internal;
 
 import java.util.Optional;
 
+/**
+ * Generates a {@link Fix} to be displayed to the user given the errored expression.
+ *
+ * @param <T> the expression {@code Tree}
+ * @author Dmytro Kuzmin
+ * @see com.google.errorprone.bugpatterns.BugChecker#describeMatch(Tree, Optional)
+ */
 @Internal
 public interface Fixer<T extends Tree> {
 
+    /**
+     * Creates a fix for the {@link com.google.errorprone.BugPattern} given the position where the
+     * error was found and the expression.
+     *
+     * <p>The method should be used from the {@link com.google.errorprone.bugpatterns.BugChecker}
+     * implementations where the tree and the state are provided by the Error Prone code scanners.
+     *
+     * @param tree  the errored expression {@code Tree}
+     * @param state the current {@code VisitorState}
+     * @return the {@code Optional} containing the {@code Fix} or {@link Optional#EMPTY} if no fix
+     * no fix can be created
+     */
     Optional<Fix> createFix(T tree, VisitorState state);
 }

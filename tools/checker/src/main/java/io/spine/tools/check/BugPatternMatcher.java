@@ -24,10 +24,36 @@ import com.google.errorprone.VisitorState;
 import com.sun.source.tree.Tree;
 import io.spine.annotation.Internal;
 
+/**
+ * A basic interface to match the given expression against some known case of the {@link
+ * com.google.errorprone.BugPattern}.
+ *
+ * @param <T> the expression {@code Tree}
+ * @author Dmytro Kuzmin
+ */
 @Internal
 public interface BugPatternMatcher<T extends Tree> {
 
+    /**
+     * Checks if the given expression matches the case of {@link com.google.errorprone.BugPattern}
+     * stored in this class.
+     *
+     * <p>This method should be used from inside the {@link
+     * com.google.errorprone.bugpatterns.BugChecker} implementations, so the Error Prone scanners
+     * provide the proper {@code Tree} and {@code VisitorState} corresponding to the currently
+     * assessed expression.
+     *
+     * @param tree  the expression {@code Tree}
+     * @param state the current {@code VisitorState}
+     * @return {@code true} if the expression matches the bug pattern and {@code false} otherwise
+     */
     boolean matches(T tree, VisitorState state);
 
+    /**
+     * Obtains a {@code Fixer} for the case of the {@link com.google.errorprone.BugPattern} stored
+     * in this class.
+     *
+     * @return the {@code Fixer} for the stored bug pattern
+     */
     Fixer<T> getFixer();
 }
