@@ -139,7 +139,7 @@ class FixGenerator {
     }
 
     /**
-     * Obtains {@code Type} on which the current expression is invoked.
+     * Obtains the {@code Type} on which the current expression is invoked.
      */
     private Type getTypeOnWhichInvoked() {
         ExpressionTree expression = tree.getMethodSelect();
