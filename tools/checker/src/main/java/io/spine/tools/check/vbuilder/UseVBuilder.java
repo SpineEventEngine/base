@@ -74,7 +74,7 @@ public class UseVBuilder extends BugChecker implements MethodInvocationTreeMatch
 
     @Override
     public Description matchMethodInvocation(MethodInvocationTree tree, VisitorState state) {
-        for (BugPatternMatcher<MethodInvocationTree> matcher : matchers()) {
+        for (BugPatternMatcher<MethodInvocationTree> matcher : matchers) {
             if (matcher.matches(tree, state) && !isInVBuilderOrMessage(state)) {
                 Fixer<MethodInvocationTree> fixer = matcher.getFixer();
                 Optional<Fix> fix = fixer.createFix(tree, state);
@@ -103,10 +103,10 @@ public class UseVBuilder extends BugChecker implements MethodInvocationTreeMatch
     }
 
     private static List<BugPatternMatcher<MethodInvocationTree>> matchers() {
-        List<BugPatternMatcher<MethodInvocationTree>> fixers = new ArrayList<>();
-        fixers.add(new NewBuilderMatcher());
-        fixers.add(new NewBuilderForTypeMatcher());
-        fixers.add(new ToBuilderMatcher());
-        return fixers;
+        List<BugPatternMatcher<MethodInvocationTree>> matchers = new ArrayList<>();
+        matchers.add(new NewBuilderMatcher());
+        matchers.add(new NewBuilderForTypeMatcher());
+        matchers.add(new ToBuilderMatcher());
+        return matchers;
     }
 }
