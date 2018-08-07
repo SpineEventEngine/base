@@ -150,7 +150,8 @@ public class SpineCheckerPlugin extends SpinePlugin {
      * {@code spine-model-compiler} plugin used by the project.
      *
      * <p>If the {@code spine-model-compiler} version cannot be acquired or the
-     * {@code spine-checker} version is not resolvable, the method does nothing.
+     * {@code spine-checker} version is not resolvable, the method does nothing and returns
+     * {@code false}.
      *
      * @param configuration the configuration to add the dependency to
      * @param project       the project to which this configuration belongs
@@ -255,6 +256,10 @@ public class SpineCheckerPlugin extends SpinePlugin {
         dependencies.add(dependency);
     }
 
+    /**
+     * Converts the {@link #configurePreprocessor(Configuration, Project)} method to the Gradle
+     * {@link Action}.
+     */
     private Action<Gradle>
     configurePreprocessorAction(Configuration preprocessorConfig, Project project) {
         return gradle -> configurePreprocessor(preprocessorConfig, project);
@@ -271,6 +276,9 @@ public class SpineCheckerPlugin extends SpinePlugin {
         addArgsToJavaCompile(project, "-processorpath", preprocessorConfig.getAsPath());
     }
 
+    /**
+     * Converts the {@link #configureCheckSeverity(Project)} method to the Gradle {@link Action}.
+     */
     private Action<Gradle> configureSeverityAction(Project project) {
         return gradle -> configureCheckSeverity(project);
     }
