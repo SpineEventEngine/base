@@ -43,6 +43,7 @@ import java.util.List;
 
 import static com.google.common.collect.testing.Helpers.assertEmpty;
 import static io.spine.testing.Verify.assertContains;
+import static io.spine.tools.gradle.ConfigurationName.CLASSPATH;
 import static io.spine.tools.gradle.compiler.Severity.ERROR;
 import static io.spine.tools.gradle.compiler.SpineCheckerPlugin.MODEL_COMPILER_PLUGIN_NAME;
 import static io.spine.tools.gradle.compiler.SpineCheckerPlugin.PREPROCESSOR_CONFIG_NAME;
@@ -131,7 +132,7 @@ public class SpineCheckerPluginShould {
         ScriptHandler buildscript = project.getRootProject()
                                            .getBuildscript();
         ConfigurationContainer configurations = buildscript.getConfigurations();
-        Configuration classpath = configurations.findByName("classpath");
+        Configuration classpath = configurations.findByName(CLASSPATH.getValue());
         DependencySet classpathDependencies = classpath.getDependencies();
 
         String versionStub = "versionStub";
