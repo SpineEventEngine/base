@@ -53,8 +53,8 @@ import static io.spine.tools.gradle.compiler.SpineCheckExtension.getUseValidatin
  * Prone custom checks.
  *
  * <p>The plugin adds a {@code spine-checker} dependency to the project's
- * {@code annotationProcessor} configuration. For older Gradle versions (pre {@code 4.6}), where
- * there is no such configuration, the plugin creates it.
+ * {@code annotationProcessor} configuration. For the older Gradle versions (pre {@code 4.6}),
+ * where there is no such configuration, the plugin creates it.
  *
  * <p>Dependency has the same version as the project's {@code spine-model-compiler} plugin
  * dependency.
