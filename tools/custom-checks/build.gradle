@@ -43,7 +43,7 @@ def getResolvedArtifactFor(final dependency) {
     }
     if (javacDependency.empty) {
         throw new TaskInstantiationException("The 'javac' dependency is not found among the " +
-                "resolved artifacts");
+                "resolved artifacts")
     }
     final def path = javacDependency[0].file.absolutePath
     return path
