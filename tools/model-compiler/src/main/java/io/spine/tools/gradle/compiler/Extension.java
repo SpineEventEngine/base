@@ -153,7 +153,7 @@ public class Extension {
      */
     public List<String> dirsToClean = new LinkedList<>();
 
-    public Severity spineCheckSeverity;
+    public Severity spineCheckerSeverity;
 
     private static DefaultProject def(Project project) {
         return DefaultProject.at(project.getProjectDir());
@@ -306,8 +306,8 @@ public class Extension {
         return ImmutableList.copyOf(dirsToClean);
     }
 
-    public static Severity getSpineCheckSeverity(Project project) {
-        Severity result = spineProtobuf(project).spineCheckSeverity;
+    public static Severity getSpineCheckerSeverity(Project project) {
+        Severity result = spineProtobuf(project).spineCheckerSeverity;
         log().debug("The severity of Spine checks is {}",
                     (result == null ? "unset" : result.name()));
         return result;

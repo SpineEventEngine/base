@@ -179,7 +179,7 @@ public class SpineCheckerPlugin extends SpinePlugin {
                                 "applied to the project {}.", project.getName());
             return;
         }
-        Severity defaultSeverity = Extension.getSpineCheckSeverity(project);
+        Severity defaultSeverity = Extension.getSpineCheckerSeverity(project);
         setUseVBuilderSeverity(project, defaultSeverity);
     }
 
