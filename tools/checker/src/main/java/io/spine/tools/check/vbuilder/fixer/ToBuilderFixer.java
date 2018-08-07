@@ -33,7 +33,7 @@ import java.util.Optional;
 
 /**
  * Creates a {@link Fix} for the {@link io.spine.tools.check.vbuilder.UseValidatingBuilder} bug
- * pattern cases where the {@code message.toBuilder()} construction is used.
+ * pattern cases where the {@code message.toBuilder()} statement is used.
 
  * <p>Suggests the fix as follows:
  *

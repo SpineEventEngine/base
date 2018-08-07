@@ -34,7 +34,7 @@ import java.util.Optional;
 /**
  * Creates a {@link Fix} for the {@link io.spine.tools.check.vbuilder.UseValidatingBuilder} bug
  * pattern cases where the {@code Message.newBuilder()} or {@code Message.newBuilder(prototype)}
- * construction is used.
+ * statement is used.
  *
  * <p>Suggests the fix as follows:
  *

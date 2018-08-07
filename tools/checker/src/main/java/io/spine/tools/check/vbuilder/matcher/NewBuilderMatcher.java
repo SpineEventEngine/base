@@ -41,7 +41,7 @@ import static com.google.errorprone.util.ASTHelpers.isSubtype;
 /**
  * A matcher for the {@link io.spine.tools.check.vbuilder.UseValidatingBuilder} bug pattern which
  * tracks down the cases where {@code Message.newBuilder()} or {@code Message.newBuilder(prototype)}
- * construction is used.
+ * statement is used.
  *
  * <p>Both normally called and static-imported methods are handled.
  *

@@ -35,7 +35,7 @@ import static com.google.errorprone.matchers.Matchers.instanceMethod;
 
 /**
  * A matcher for the {@link io.spine.tools.check.vbuilder.UseValidatingBuilder} bug pattern which
- * tracks down the cases where {@code message.newBuilderForType()} construction is used.
+ * tracks down the cases where {@code message.newBuilderForType()} statement is used.
  *
  * @author Dmytro Kuzmin
  * @see Message#newBuilderForType()
