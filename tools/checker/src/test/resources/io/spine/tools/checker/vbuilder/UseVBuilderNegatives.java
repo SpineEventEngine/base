@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.checker.vbuilder.;
+package io.spine.tools.checker.vbuilder;
 
 import com.google.protobuf.AbstractMessage;
 import com.google.protobuf.StringValue;
