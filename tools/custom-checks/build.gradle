@@ -1,3 +1,5 @@
+import org.gradle.api.resources.MissingResourceException
+
 /*
  * Copyright 2018, TeamDev. All rights reserved.
  *
@@ -42,7 +44,7 @@ def getResolvedArtifactFor(final dependency) {
         it.name == dependency
     }
     if (javacDependency.empty) {
-        throw new TaskInstantiationException("The 'javac' dependency is not found among the " +
+        throw new MissingResourceException("The 'javac' dependency is not found among the " +
                 "resolved artifacts")
     }
     final def path = javacDependency[0].file.absolutePath
