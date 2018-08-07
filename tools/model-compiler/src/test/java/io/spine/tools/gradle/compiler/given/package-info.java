@@ -19,7 +19,7 @@
  */
 
 /**
- * Test environment classes related to Model Compiler and its plugins.
+ * Test environment classes related to the Model Compiler and its plugins.
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault
