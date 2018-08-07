@@ -227,14 +227,14 @@ public class ExtensionShould {
 
     @Test
     public void return_spine_checker_severity() {
-        spineProtobuf().spineCheckerSeverity = Severity.ERROR;
-        Severity actualSeverity = Extension.getSpineCheckerSeverity(project);
-        assertEquals(spineProtobuf().spineCheckerSeverity, actualSeverity);
+        spineProtobuf().spineCheckSeverity = Severity.ERROR;
+        Severity actualSeverity = Extension.getSpineCheckSeverity(project);
+        assertEquals(spineProtobuf().spineCheckSeverity, actualSeverity);
     }
 
     @Test
     public void return_null_spine_checker_severity_if_not_set() {
-        Severity actualSeverity = Extension.getSpineCheckerSeverity(project);
+        Severity actualSeverity = Extension.getSpineCheckSeverity(project);
         assertNull(actualSeverity);
     }
 

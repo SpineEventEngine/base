@@ -177,7 +177,7 @@ public class SpineCheckerPluginShould {
                 extensions.create(ModelCompilerPlugin.extensionName(), Extension.class);
         project.getPluginManager()
                .apply(pluginToApply);
-        modelCompilerExtension.spineCheckerSeverity = ERROR;
+        modelCompilerExtension.spineCheckSeverity = ERROR;
     }
 
     private static void checkSeverityConfigured(Project project) {

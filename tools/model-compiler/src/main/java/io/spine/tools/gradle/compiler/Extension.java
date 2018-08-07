@@ -161,7 +161,7 @@ public class Extension {
      *
      * <p>May be overridden by the {@link SpineCheckerExtension} values.
      */
-    public Severity spineCheckerSeverity;
+    public Severity spineCheckSeverity;
 
     private static DefaultProject def(Project project) {
         return DefaultProject.at(project.getProjectDir());
@@ -314,8 +314,8 @@ public class Extension {
         return ImmutableList.copyOf(dirsToClean);
     }
 
-    public static Severity getSpineCheckerSeverity(Project project) {
-        Severity result = spineProtobuf(project).spineCheckerSeverity;
+    public static Severity getSpineCheckSeverity(Project project) {
+        Severity result = spineProtobuf(project).spineCheckSeverity;
         log().debug("The severity of Spine checks is {}",
                     (result == null ? "unset" : result.name()));
         return result;

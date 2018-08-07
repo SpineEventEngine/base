@@ -65,7 +65,7 @@ import static io.spine.tools.gradle.compiler.SpineCheckerExtension.getUseValidat
  * {@code
  *
  *   modelCompiler {
- *      spineCheckerSeverity = OFF
+ *      spineCheckSeverity = OFF
  *   }
  * }
  * </pre>
@@ -220,7 +220,7 @@ public class SpineCheckerPlugin extends SpinePlugin {
                                 "applied to the project {}.", project.getName());
             return;
         }
-        Severity defaultSeverity = Extension.getSpineCheckerSeverity(project);
+        Severity defaultSeverity = Extension.getSpineCheckSeverity(project);
         setUseValidatingBuilderSeverity(project, defaultSeverity);
     }
 
