@@ -44,11 +44,12 @@ public class NewBuilderMatcher implements BugPatternMatcher<MethodInvocationTree
     @SuppressWarnings("DuplicateStringLiteralInspection") // Commonly used method name.
     private static final String METHOD_NAME = "newBuilder";
 
+    private final Matcher<ExpressionTree> matcher = matcher();
     private final Fixer<MethodInvocationTree> fixer = new NewBuilderFixer();
 
     @Override
     public boolean matches(MethodInvocationTree tree, VisitorState state) {
-        boolean matches = matcher().matches(tree, state);
+        boolean matches = matcher.matches(tree, state);
         return matches;
     }
 

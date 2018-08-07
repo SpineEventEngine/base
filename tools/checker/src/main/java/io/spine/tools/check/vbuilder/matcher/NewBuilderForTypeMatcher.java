@@ -38,11 +38,12 @@ public class NewBuilderForTypeMatcher implements BugPatternMatcher<MethodInvocat
 
     private static final String METHOD_NAME = "newBuilderForType";
 
+    private final Matcher<ExpressionTree> matcher = matcher();
     private final Fixer<MethodInvocationTree> fixer = new NewBuilderForTypeFixer();
 
     @Override
     public boolean matches(MethodInvocationTree tree, VisitorState state) {
-        boolean matches = matcher().matches(tree, state);
+        boolean matches = matcher.matches(tree, state);
         return matches;
     }
 

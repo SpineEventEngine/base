@@ -38,11 +38,12 @@ public class ToBuilderMatcher implements BugPatternMatcher<MethodInvocationTree>
 
     private static final String METHOD_NAME = "toBuilder";
 
+    private final Matcher<ExpressionTree> matcher = matcher();
     private final Fixer<MethodInvocationTree> fixer = new ToBuilderFixer();
 
     @Override
     public boolean matches(MethodInvocationTree tree, VisitorState state) {
-        boolean matches = matcher().matches(tree, state);
+        boolean matches = matcher.matches(tree, state);
         return matches;
     }
 
