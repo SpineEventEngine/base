@@ -18,47 +18,31 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.check.vbuilder;
+package io.spine.tools.check.vbuilder.fixer;
 
-import com.google.common.collect.Iterators;
 import com.google.errorprone.VisitorState;
 import com.google.errorprone.fixes.Fix;
 import com.sun.source.tree.ExpressionTree;
 import com.sun.source.tree.MethodInvocationTree;
+import com.sun.tools.javac.tree.JCTree;
+import com.sun.tools.javac.tree.JCTree.JCExpression;
+import io.spine.annotation.Internal;
 
-import java.util.List;
 import java.util.Optional;
 
-class NewBuilderFixer extends BuilderCallFixer {
+import static com.google.errorprone.matchers.Matchers.instanceMethod;
+
+@Internal
+public class ToBuilderFixer extends BuilderCallFixer {
 
     @Override
     public Optional<Fix> createFix(MethodInvocationTree tree, VisitorState state) {
-        List<? extends ExpressionTree> methodCallArgs = tree.getArguments();
-        if (methodCallArgs.isEmpty()) {
-            return fixForNoArgs(tree, state);
-        }
-        if (methodCallArgs.size() == 1) {
-            return fixForOneArg(tree, state);
-        }
-        return noFix();
-    }
-
-    private Optional<Fix> fixForNoArgs(MethodInvocationTree tree, VisitorState state) {
-        Fix fix = newVBuilderCall(tree, state);
+        ExpressionTree expression = tree.getMethodSelect();
+        JCTree.JCFieldAccess fieldAccess = (JCTree.JCFieldAccess) expression;
+        JCExpression invokedOn = fieldAccess.selected;
+        String invokedOnString = invokedOn.toString();
+        Fix fix = mergeFromCall(tree, state, invokedOnString);
         Optional<Fix> result = Optional.of(fix);
         return result;
-    }
-
-    private Optional<Fix> fixForOneArg(MethodInvocationTree tree, VisitorState state) {
-        List<? extends ExpressionTree> args = tree.getArguments();
-        ExpressionTree arg = Iterators.getOnlyElement(args.iterator());
-        String argString = arg.toString();
-        Fix fix = mergeFromCall(tree, state, argString);
-        Optional<Fix> result = Optional.of(fix);
-        return result;
-    }
-
-    private static Optional<Fix> noFix() {
-        return Optional.empty();
     }
 }

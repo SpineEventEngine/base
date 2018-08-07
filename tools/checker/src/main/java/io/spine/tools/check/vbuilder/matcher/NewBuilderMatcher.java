@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.check.vbuilder;
+package io.spine.tools.check.vbuilder.matcher;
 
 import com.google.errorprone.VisitorState;
 import com.google.errorprone.matchers.Matcher;
@@ -30,14 +30,17 @@ import com.sun.source.tree.MethodInvocationTree;
 import com.sun.tools.javac.code.Symbol;
 import com.sun.tools.javac.code.Type;
 import com.sun.tools.javac.tree.JCTree;
+import io.spine.annotation.Internal;
 import io.spine.tools.check.BugPatternMatcher;
 import io.spine.tools.check.Fixer;
+import io.spine.tools.check.vbuilder.fixer.NewBuilderFixer;
 
 import static com.google.errorprone.matchers.method.MethodMatchers.staticMethod;
 import static com.google.errorprone.suppliers.Suppliers.typeFromClass;
 import static com.google.errorprone.util.ASTHelpers.enclosingClass;
 import static com.google.errorprone.util.ASTHelpers.isSubtype;
 
+@Internal
 public class NewBuilderMatcher implements BugPatternMatcher<MethodInvocationTree> {
 
     @SuppressWarnings("DuplicateStringLiteralInspection") // Commonly used method name.

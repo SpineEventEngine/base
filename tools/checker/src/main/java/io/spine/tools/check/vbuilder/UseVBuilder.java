@@ -34,11 +34,13 @@ import com.sun.source.tree.MethodInvocationTree;
 import com.sun.source.tree.Tree;
 import io.spine.tools.check.BugPatternMatcher;
 import io.spine.tools.check.Fixer;
+import io.spine.tools.check.vbuilder.matcher.NewBuilderForTypeMatcher;
+import io.spine.tools.check.vbuilder.matcher.NewBuilderMatcher;
+import io.spine.tools.check.vbuilder.matcher.ToBuilderMatcher;
 import io.spine.validate.ValidatingBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import static com.google.errorprone.BugPattern.Category.JDK;
