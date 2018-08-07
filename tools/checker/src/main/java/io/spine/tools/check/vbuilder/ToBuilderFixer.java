@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.checker.vbuilder;
+package io.spine.tools.check.vbuilder;
 
 import com.google.errorprone.VisitorState;
 import com.google.errorprone.fixes.Fix;

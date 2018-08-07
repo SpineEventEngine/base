@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.checker.vbuilder;
+package io.spine.tools.check.vbuilder;
 
 import com.google.errorprone.VisitorState;
 import com.google.errorprone.fixes.Fix;
@@ -31,7 +31,7 @@ import com.sun.tools.javac.code.Type;
 import com.sun.tools.javac.tree.JCTree.JCExpression;
 import com.sun.tools.javac.tree.JCTree.JCFieldAccess;
 import com.sun.tools.javac.tree.JCTree.JCIdent;
-import io.spine.tools.checker.SuggestedFixCreator;
+import io.spine.tools.check.SuggestedFixCreator;
 
 import static com.google.errorprone.fixes.SuggestedFixes.prettyType;
 import static com.google.errorprone.util.ASTHelpers.enclosingClass;

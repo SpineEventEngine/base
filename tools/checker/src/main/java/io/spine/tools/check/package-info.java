@@ -19,13 +19,14 @@
  */
 
 /**
- * This package contains the custom Error Prone check to detect usage of ordinary Builder for the
- * Protobuf messages and advice using Spine Validating Builder instead of that.
+ * This package provides the custom Error Prone checks used in Spine. No code should be used
+ * directly from this package as the checks are automatically exported via the {@link
+ * com.google.auto.service.AutoService} annotation.
  */
 
 @CheckReturnValue
 @ParametersAreNonnullByDefault
-package io.spine.tools.checker.vbuilder;
+package io.spine.tools.check;
 
 import com.google.errorprone.annotations.CheckReturnValue;
 

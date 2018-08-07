@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.checker.vbuilder;
+package io.spine.tools.check.vbuilder;
 
 import com.google.auto.service.AutoService;
 import com.google.errorprone.BugPattern;
@@ -32,7 +32,7 @@ import com.google.protobuf.Message;
 import com.sun.source.tree.ClassTree;
 import com.sun.source.tree.MethodInvocationTree;
 import com.sun.source.tree.Tree;
-import io.spine.tools.checker.SuggestedFixCreator;
+import io.spine.tools.check.SuggestedFixCreator;
 import io.spine.validate.ValidatingBuilder;
 
 import java.util.ArrayList;

@@ -18,16 +18,35 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * This package provides the custom Error Prone checks used in Spine. No code should be used
- * directly from this package as the checks are automatically exported via the {@link
- * com.google.auto.service.AutoService} annotation.
- */
+package io.spine.tools.check.vbuilder;
 
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.tools.checker;
+import com.google.common.base.Predicates;
+import com.google.errorprone.CompilationTestHelper;
+import org.junit.Before;
+import org.junit.Test;
 
-import com.google.errorprone.annotations.CheckReturnValue;
+import java.util.function.Predicate;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+public class UseVBuilderShould {
+
+    private CompilationTestHelper compilationTestHelper;
+
+    @Before
+    public void setUp() {
+        compilationTestHelper = CompilationTestHelper.newInstance(UseVBuilder.class, getClass());
+    }
+
+    @Test
+    public void recognize_positive_cases() {
+        Predicate<CharSequence> predicate = Predicates.containsPattern(UseVBuilder.SUMMARY)::apply;
+        compilationTestHelper.expectErrorMessage("UseVBuilderError", predicate::test);
+        compilationTestHelper.addSourceFile("UseVBuilderPositives.java")
+                             .doTest();
+    }
+
+    @Test
+    public void recognize_negative_cases() {
+        compilationTestHelper.addSourceFile("UseVBuilderNegatives.java")
+                             .doTest();
+    }
+}

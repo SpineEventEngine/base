@@ -18,19 +18,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.checker;
+/**
+ * This package contains the custom Error Prone check to detect usage of ordinary Builder for the
+ * Protobuf messages and advice using Spine Validating Builder instead of that.
+ */
 
-import com.google.errorprone.VisitorState;
-import com.google.errorprone.fixes.Fix;
-import com.sun.source.tree.Tree;
-import io.spine.annotation.Internal;
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.tools.check.vbuilder;
 
-import java.util.Optional;
+import com.google.errorprone.annotations.CheckReturnValue;
 
-@Internal
-public interface SuggestedFixCreator<T extends Tree> {
-
-    boolean matchesExpression(T tree, VisitorState state);
-
-    Optional<Fix> createFix(T tree, VisitorState state);
-}
+import javax.annotation.ParametersAreNonnullByDefault;

@@ -18,36 +18,41 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.checker.vbuilder;
+package io.spine.tools.check.vbuilder;
 
-import com.google.common.base.Predicates;
-import com.google.errorprone.CompilationTestHelper;
-import io.spine.tools.checker.vbuilder.UseVBuilder;
-import org.junit.Before;
-import org.junit.Test;
+import com.google.protobuf.AbstractMessage;
+import com.google.protobuf.StringValue;
+import io.spine.validate.AbstractValidatingBuilder;
+import io.spine.validate.StringValueVBuilder;
 
-import java.util.function.Predicate;
+import static io.spine.validate.Int32ValueVBuilder.newBuilder;
 
-public class UseVBuilderShould {
+abstract class UseVBuilderNegatives {
 
-    private CompilationTestHelper compilationTestHelper;
-
-    @Before
-    public void setUp() {
-        compilationTestHelper = CompilationTestHelper.newInstance(UseVBuilder.class, getClass());
+    void callOnVBuilder() {
+        StringValueVBuilder.newBuilder();
     }
 
-    @Test
-    public void recognize_positive_cases() {
-        Predicate<CharSequence> predicate = Predicates.containsPattern(UseVBuilder.SUMMARY)::apply;
-        compilationTestHelper.expectErrorMessage("UseVBuilderError", predicate::test);
-        compilationTestHelper.addSourceFile("UseVBuilderPositives.java")
-                             .doTest();
+    void callOnVBuilderStaticImported() {
+        newBuilder();
     }
 
-    @Test
-    public void recognize_negative_cases() {
-        compilationTestHelper.addSourceFile("UseVBuilderNegatives.java")
-                             .doTest();
+    @SuppressWarnings("UseVBuilder")
+    void callUnderWarningSuppressed() {
+        StringValue.newBuilder();
+    }
+
+    class SomeBuilder extends AbstractValidatingBuilder {
+
+        void callInsideVBuilder() {
+            StringValue.newBuilder();
+        }
+    }
+
+    abstract class SomeMessage extends AbstractMessage {
+
+        void callInsideMessage() {
+            StringValue.newBuilder();
+        }
     }
 }
