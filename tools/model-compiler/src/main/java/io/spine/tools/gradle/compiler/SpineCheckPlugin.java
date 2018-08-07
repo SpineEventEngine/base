@@ -53,7 +53,7 @@ public class SpineCheckPlugin extends SpinePlugin {
     static final String SPINE_TOOLS_GROUP = "io.spine.tools";
 
     @VisibleForTesting
-    static final String SPINE_CHECKS_MODULE = "spine-custom-checks";
+    static final String SPINE_CHECKS_MODULE = "spine-checker";
 
     @VisibleForTesting
     static final String MODEL_COMPILER_PLUGIN_NAME = "spine-model-compiler";

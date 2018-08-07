@@ -19,7 +19,7 @@
  */
 
 /**
- * This package provides the Gradle plugin for custom Error Prone checks used in Spine.
+ * This package provides the custom Error Prone checks used in Spine.
  */
 
 @CheckReturnValue
