@@ -94,9 +94,9 @@ class FixGenerator {
      * Creates a fix which replaces the current expression with the
      * {@code MessageVBuilder.newBuilder().mergeFrom(arg)} expression.
      *
-     * <p>This method assumes that the {@linkplain #tree current expression} is the
-     * call that utilizes some of the {@link com.google.protobuf.Message} class instances for the
-     * field initialization.
+     * <p>This method assumes that the {@linkplain #tree current expression} is the call that
+     * utilizes some of the {@link com.google.protobuf.Message} class instances for the field
+     * initialization.
      *
      * @param mergeFromArg the object from which the fields are taken for the
      *                     {@link com.google.protobuf.Message.Builder}
