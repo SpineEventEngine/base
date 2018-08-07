@@ -106,6 +106,11 @@ public class SpineCheckerPlugin extends SpinePlugin {
         return EXTENSION_NAME;
     }
 
+    /**
+     * Applies the plugin to the given {@code Project}.
+     *
+     * @param project the project to apply the plugin to
+     */
     @Override
     public void apply(Project project) {
         project.getExtensions()
@@ -117,6 +122,16 @@ public class SpineCheckerPlugin extends SpinePlugin {
         }
     }
 
+    /**
+     * Creates the {@code annotationProcessor} config for the project if it does not exist and
+     * adds it to the Java Compiler preprocessor path.
+     *
+     * <p>For newer Gradle versions ({@code 4.6} and newer) this method will likely just acquire
+     * the config and return it.
+     *
+     * @param project the project
+     * @return the {@code annotationProcessor} configuration of the project
+     */
     private Configuration setupPreprocessorConfig(Project project) {
         ConfigurationContainer configurations = project.getConfigurations();
         Configuration preprocessorConfig = configurations.findByName(PREPROCESSOR_CONFIG_NAME);
@@ -127,6 +142,20 @@ public class SpineCheckerPlugin extends SpinePlugin {
         return preprocessorConfig;
     }
 
+    /**
+     * Adds the {@code io.spine.tools.spine-checker} dependency to the specified configuration of
+     * the specified project.
+     *
+     * <p>The version of the dependency used is the same as the version of the {@code
+     * spine-model-compiler} plugin used by the project.
+     *
+     * <p>If the {@code spine-model-compiler} version cannot be acquired or the {@code
+     * spine-checker} version is not resolvable, the method does nothing.
+     *
+     * @param configuration the configuration to add the dependency to
+     * @param project       the project to which this configuration belongs
+     * @return {@code true} if the dependency was added successfully and {@code false} otherwise
+     */
     private boolean addSpineCheckerDependency(Configuration configuration, Project project) {
         Optional<String> versionToUse = acquireModelCompilerVersion(project);
         if (!versionToUse.isPresent()) {
@@ -143,12 +172,24 @@ public class SpineCheckerPlugin extends SpinePlugin {
         return isResolvable;
     }
 
+    /**
+     * Adds the action configuring Spine checks severity to the {@code projectEvaluated} stage of
+     * the project.
+     *
+     * @param project the project for which to configure the severity
+     */
     private void addConfigureSeverityAction(Project project) {
         Action<Gradle> configureCheckSeverity = configureSeverityAction(project);
         Gradle gradle = project.getGradle();
         gradle.projectsEvaluated(configureCheckSeverity);
     }
 
+    /**
+     * Adds the action configuring the preprocessor for all {@code JavaCompile} tasks of the
+     * project.
+     *
+     * <p>The action is executed on the {@code projectEvaluated} stage.
+     */
     private void addConfigurePreprocessorAction(Configuration preprocessorConfig, Project project) {
         Action<Gradle> configurePreprocessor =
                 configurePreprocessorAction(preprocessorConfig, project);
@@ -156,6 +197,12 @@ public class SpineCheckerPlugin extends SpinePlugin {
         gradle.projectsEvaluated(configurePreprocessor);
     }
 
+    /**
+     * Gets the {@code spine-model-compiler} dependency version from the {@code
+     * project.buildsript.classpath} configuration.
+     *
+     * <p>If the dependency version is not found, returns {@link Optional#EMPTY}.
+     */
     private Optional<String> acquireModelCompilerVersion(Project project) {
         log().debug("Acquiring 'spine-model-compiler' dependency version for the project {}",
                     project.getName());
@@ -180,6 +227,12 @@ public class SpineCheckerPlugin extends SpinePlugin {
         return version;
     }
 
+    /**
+     * Checks if the given {@code spine-checker} dependency is resolvable for the given
+     * configuration.
+     *
+     * <p>Uses the configuration copy to not resolve the given configuration itself.
+     */
     @VisibleForTesting
     protected boolean isSpineCheckerVersionResolvable(String version, Configuration configuration) {
         Configuration configCopy = configuration.copy();
@@ -189,6 +242,9 @@ public class SpineCheckerPlugin extends SpinePlugin {
         return isResolvable;
     }
 
+    /**
+     * Adds the {@code spine-checker} dependency to the given configuration.
+     */
     private void dependOnSpineChecker(String dependencyVersion, Configuration configuration) {
         log().debug("Adding dependency on {}:{}:{} to the {} configuration",
                     SPINE_TOOLS_GROUP, SPINE_CHECKER_MODULE, dependencyVersion,
@@ -204,6 +260,10 @@ public class SpineCheckerPlugin extends SpinePlugin {
         return gradle -> configurePreprocessor(preprocessorConfig, project);
     }
 
+    /**
+     * Adds the given preprocessor configuration as the preprocessor path to all {@code JavaCompile}
+     * tasks of the project.
+     */
     @SuppressWarnings("TypeMayBeWeakened") // More specific type expresses the method intent better.
     private void configurePreprocessor(Configuration preprocessorConfig, Project project) {
         log().debug("Adding the {} configuration to all 'JavaCompile' tasks.",
@@ -215,6 +275,10 @@ public class SpineCheckerPlugin extends SpinePlugin {
         return gradle -> configureCheckSeverity(project);
     }
 
+    /**
+     * Adds command line flags necessary to configure Spine check severities to all {@code
+     * JavaCompile} tasks of the project.
+     */
     private void configureCheckSeverity(Project project) {
         if (!hasErrorPronePlugin(project)) {
             log().debug("Cannot configure Spine checks severity as Error Prone plugin is not " +
@@ -225,6 +289,13 @@ public class SpineCheckerPlugin extends SpinePlugin {
         setUseValidatingBuilderSeverity(project, defaultSeverity);
     }
 
+    /**
+     * Configures the "UseValidatingBuilder" check severity for all {@code JavaCompile} tasks of
+     * the project.
+     *
+     * <p>Uses default severity set in the {@code modelCompiler} extension if set and not
+     * overridden by the more specific {@code spineChecker} extension.
+     */
     @SuppressWarnings("ConstantConditions") // Checking nullable argument for null.
     private void
     setUseValidatingBuilderSeverity(Project project, @Nullable Severity defaultSeverity) {
@@ -242,6 +313,9 @@ public class SpineCheckerPlugin extends SpinePlugin {
         addArgsToJavaCompile(project, severityArg);
     }
 
+    /**
+     * Adds specified arguments to all {@code JavaCompile} tasks of the project.
+     */
     private static void addArgsToJavaCompile(Project project, String... args) {
         TaskContainer tasks = project.getTasks();
         TaskCollection<JavaCompile> javaCompileTasks = tasks.withType(JavaCompile.class);
@@ -252,6 +326,9 @@ public class SpineCheckerPlugin extends SpinePlugin {
         }
     }
 
+    /**
+     * Checks if the project has Error Prone plugin applied.
+     */
     @VisibleForTesting
     protected boolean hasErrorPronePlugin(Project project) {
         PluginContainer appliedPlugins = project.getPlugins();
