@@ -30,13 +30,13 @@ import org.gradle.api.artifacts.ConfigurationContainer;
 import org.gradle.api.artifacts.Dependency;
 import org.gradle.api.artifacts.DependencySet;
 import org.gradle.api.initialization.dsl.ScriptHandler;
+import org.gradle.api.internal.GradleInternal;
 import org.gradle.api.internal.artifacts.dependencies.DefaultExternalModuleDependency;
 import org.gradle.api.plugins.ExtensionContainer;
 import org.gradle.api.tasks.TaskCollection;
 import org.gradle.api.tasks.TaskContainer;
 import org.gradle.api.tasks.compile.CompileOptions;
 import org.gradle.api.tasks.compile.JavaCompile;
-import org.gradle.invocation.DefaultGradle;
 import org.junit.Test;
 
 import java.util.List;
@@ -125,6 +125,7 @@ public class SpineCheckerPluginShould {
         checkSeverityNotConfigured(project);
     }
 
+    @SuppressWarnings("DuplicateStringLiteralInspection") // Configuration name.
     private static Project projectWithModelCompilerDependency() {
         Project project = newProject();
         ScriptHandler buildscript = project.getRootProject()
@@ -195,7 +196,7 @@ public class SpineCheckerPluginShould {
     }
 
     private static TaskCollection<JavaCompile> acquireJavaCompileTasks(Project project) {
-        DefaultGradle gradle = (DefaultGradle) project.getGradle();
+        GradleInternal gradle = (GradleInternal) project.getGradle();
         BuildListener buildListenerBroadcaster = gradle.getBuildListenerBroadcaster();
         buildListenerBroadcaster.projectsEvaluated(project.getGradle());
         TaskContainer tasks = project.getTasks();

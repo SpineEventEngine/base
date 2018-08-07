@@ -89,8 +89,7 @@ public class SpineCheckerPlugin extends SpinePlugin {
     private boolean addSpineCheckerDependency(Configuration configuration, Project project) {
         Optional<String> versionToUse = acquireModelCompilerVersion(project);
         if (!versionToUse.isPresent()) {
-            log().debug("Can't acquire model compiler version for the project {}",
-                        project.getName());
+            log().debug("Can't acquire model compiler version for the project {}", project.getName());
             return false;
         }
         String version = versionToUse.get();
@@ -115,6 +114,7 @@ public class SpineCheckerPlugin extends SpinePlugin {
         gradle.projectsEvaluated(configurePreprocessor);
     }
 
+    @SuppressWarnings("DuplicateStringLiteralInspection") // Configuration name.
     private Optional<String> acquireModelCompilerVersion(Project project) {
         log().debug("Acquiring 'spine-model-compiler' dependency version for the project {}",
                     project.getName());
@@ -163,6 +163,7 @@ public class SpineCheckerPlugin extends SpinePlugin {
         return gradle -> configurePreprocessor(preprocessorConfig, project);
     }
 
+    @SuppressWarnings("TypeMayBeWeakened") // More specific type expresses the method intent better.
     private void configurePreprocessor(Configuration preprocessorConfig, Project project) {
         log().debug("Adding the {} configuration to all 'JavaCompile' tasks.",
                     PREPROCESSOR_CONFIG_NAME);

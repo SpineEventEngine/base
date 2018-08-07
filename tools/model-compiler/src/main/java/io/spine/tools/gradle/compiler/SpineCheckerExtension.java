@@ -22,7 +22,7 @@ package io.spine.tools.gradle.compiler;
 
 import org.gradle.api.Project;
 
-@SuppressWarnings({"PublicField", "WeakerAccess"})
+@SuppressWarnings({"PublicField", "WeakerAccess", "TypeMayBeWeakened"})
 public class SpineCheckerExtension {
 
     public Severity useValidatingBuilder;
