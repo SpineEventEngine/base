@@ -25,7 +25,6 @@ import com.google.errorprone.fixes.Fix;
 import com.google.errorprone.fixes.SuggestedFix;
 import com.sun.source.tree.ExpressionTree;
 import com.sun.source.tree.MethodInvocationTree;
-import com.sun.source.tree.Tree;
 import com.sun.source.tree.Tree.Kind;
 import com.sun.tools.javac.code.Symbol.ClassSymbol;
 import com.sun.tools.javac.code.Symbol.MethodSymbol;
@@ -81,8 +80,7 @@ class FixGenerator {
      * <p>This method assumes that the {@linkplain #tree current expression} is the call on some of
      * the {@link com.google.protobuf.Message} class descendants.
      *
-     * @return the {@code Fix} which can be later used in the
-     *         {@link com.google.errorprone.bugpatterns.BugChecker#describeMatch(Tree, Fix)}
+     * @return the {@code Fix} which can be later displayed to the user via the Error Prone tools
      */
     Fix newVBuilderCall() {
         String newVBuilderCall = ".newBuilder()";
@@ -100,8 +98,7 @@ class FixGenerator {
      *
      * @param mergeFromArg the object from which the fields are taken for the
      *                     {@link com.google.protobuf.Message.Builder}
-     * @return the {@code Fix} which can be later used in the
-     *         {@link com.google.errorprone.bugpatterns.BugChecker#describeMatch(Tree, Fix)}
+     * @return the {@code Fix} which can be later displayed to the user via the Error Prone tools
      */
     Fix mergeFromCall(String mergeFromArg) {
         String mergeFromCall = ".newBuilder().mergeFrom(" + mergeFromArg + ')';
