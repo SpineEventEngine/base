@@ -24,6 +24,12 @@ import io.spine.tools.gradle.compiler.SpineCheckerPlugin;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
 
+/**
+ * This class contains various {@link SpineCheckerPlugin} descendants that emulate plugin behaviour
+ * for different use-cases and allow to avoid any real artifact dependencies.
+ *
+ * @author Dmytro Kuzmin
+ */
 public class SpineCheckerPluginTestEnv {
 
     /** Prevents instantiation of this utility class. */
@@ -42,6 +48,12 @@ public class SpineCheckerPluginTestEnv {
         protected boolean hasErrorPronePlugin(Project project) {
             return true;
         }
+
+        @Override
+        protected void addConfigurePreprocessorAction(Configuration preprocessorConfig,
+                                                      Project project) {
+            // NO-OP.
+        }
     }
 
     public static class NonResolvingSpineCheckerPlugin extends SpineCheckerPlugin {
@@ -56,6 +68,13 @@ public class SpineCheckerPluginTestEnv {
         protected boolean hasErrorPronePlugin(Project project) {
             return true;
         }
+
+
+        @Override
+        protected void addConfigurePreprocessorAction(Configuration preprocessorConfig,
+                                                      Project project) {
+            // NO-OP.
+        }
     }
 
     public static class SpineCheckerPluginWithoutErrorProne extends SpineCheckerPlugin {
@@ -69,6 +88,12 @@ public class SpineCheckerPluginTestEnv {
         @Override
         protected boolean hasErrorPronePlugin(Project project) {
             return false;
+        }
+
+        @Override
+        protected void addConfigurePreprocessorAction(Configuration preprocessorConfig,
+                                                      Project project) {
+            // NO-OP.
         }
     }
 }

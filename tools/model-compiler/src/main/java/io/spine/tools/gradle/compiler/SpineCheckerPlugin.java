@@ -116,18 +116,19 @@ public class SpineCheckerPlugin extends SpinePlugin {
         project.getExtensions()
                .create(extensionName(), SpineCheckExtension.class);
         Configuration preprocessorConfig = setupPreprocessorConfig(project);
-        boolean addedSuccessfully = addSpineCheckerDependency(preprocessorConfig, project);
-        if (addedSuccessfully) {
-            addConfigureSeverityAction(project);
+        boolean dependencyResolved = addSpineCheckerDependency(preprocessorConfig, project);
+        if (!dependencyResolved) {
+            return;
         }
+        addConfigurePreprocessorAction(preprocessorConfig, project);
+        addConfigureSeverityAction(project);
     }
 
     /**
-     * Creates the {@code annotationProcessor} config for the project if it does not exist and
-     * adds it to the Java Compiler preprocessor path.
+     * Creates the {@code annotationProcessor} config for the project if it does not exist.
      *
-     * <p>For newer Gradle versions ({@code 4.6} and above) this method will most probably just
-     * acquire the config and return it.
+     * <p>In the newer Gradle versions ({@code 4.6} and above) the config most probably already
+     * exists.
      *
      * @param project the project
      * @return the {@code annotationProcessor} configuration of the project
@@ -136,8 +137,9 @@ public class SpineCheckerPlugin extends SpinePlugin {
         ConfigurationContainer configurations = project.getConfigurations();
         Configuration preprocessorConfig = configurations.findByName(PREPROCESSOR_CONFIG_NAME);
         if (preprocessorConfig == null) {
+            log().debug("Creating preprocessor configuration for the project {}",
+                        project.getName());
             preprocessorConfig = configurations.create(PREPROCESSOR_CONFIG_NAME);
-            addConfigurePreprocessorAction(preprocessorConfig, project);
         }
         return preprocessorConfig;
     }
@@ -155,7 +157,7 @@ public class SpineCheckerPlugin extends SpinePlugin {
      *
      * @param configuration the configuration to add the dependency to
      * @param project       the project to which this configuration belongs
-     * @return {@code true} if the dependency was added successfully and {@code false} otherwise
+     * @return {@code true} if the dependency was resolved successfully and {@code false} otherwise
      */
     private boolean addSpineCheckerDependency(Configuration configuration, Project project) {
         Optional<String> versionToUse = acquireModelCompilerVersion(project);
@@ -174,6 +176,20 @@ public class SpineCheckerPlugin extends SpinePlugin {
     }
 
     /**
+     * Makes sure the preprocessor is configured for all the {@code JavaCompile} tasks of the
+     * project.
+     *
+     * <p>The action is executed on the {@code projectEvaluated} stage.
+     */
+    @VisibleForTesting
+    protected void addConfigurePreprocessorAction(Configuration preprocessorConfig, Project project) {
+        Action<Gradle> configurePreprocessor =
+                configurePreprocessorAction(preprocessorConfig, project);
+        Gradle gradle = project.getGradle();
+        gradle.projectsEvaluated(configurePreprocessor);
+    }
+
+    /**
      * Adds the action configuring Spine checks severity to the {@code projectEvaluated} stage of
      * the project.
      *
@@ -183,19 +199,6 @@ public class SpineCheckerPlugin extends SpinePlugin {
         Action<Gradle> configureCheckSeverity = configureSeverityAction(project);
         Gradle gradle = project.getGradle();
         gradle.projectsEvaluated(configureCheckSeverity);
-    }
-
-    /**
-     * Adds the action configuring the preprocessor for all {@code JavaCompile} tasks of the
-     * project.
-     *
-     * <p>The action is executed on the {@code projectEvaluated} stage.
-     */
-    private void addConfigurePreprocessorAction(Configuration preprocessorConfig, Project project) {
-        Action<Gradle> configurePreprocessor =
-                configurePreprocessorAction(preprocessorConfig, project);
-        Gradle gradle = project.getGradle();
-        gradle.projectsEvaluated(configurePreprocessor);
     }
 
     /**
@@ -294,7 +297,7 @@ public class SpineCheckerPlugin extends SpinePlugin {
             return;
         }
         Severity defaultSeverity = Extension.getSpineCheckSeverity(project);
-        setUseValidatingBuilderSeverity(project, defaultSeverity);
+        configureUseValidatingBuilder(project, defaultSeverity);
     }
 
     /**
@@ -306,7 +309,7 @@ public class SpineCheckerPlugin extends SpinePlugin {
      */
     @SuppressWarnings("ConstantConditions") // Checking nullable argument for null.
     private void
-    setUseValidatingBuilderSeverity(Project project, @Nullable Severity defaultSeverity) {
+    configureUseValidatingBuilder(Project project, @Nullable Severity defaultSeverity) {
         Severity severity = getUseValidatingBuilder(project);
         if (severity == null) {
             if (defaultSeverity == null) {
