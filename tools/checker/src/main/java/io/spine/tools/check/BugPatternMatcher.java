@@ -38,10 +38,10 @@ public interface BugPatternMatcher<T extends Tree> {
      * Checks if the given expression matches the {@link com.google.errorprone.BugPattern} case
      * processed by this class.
      *
-     * <p>The method should be used from inside the {@link
-     * com.google.errorprone.bugpatterns.BugChecker} implementations, so the Error Prone scanners
-     * provide the proper {@code Tree} and {@code VisitorState} corresponding to the currently
-     * assessed expression.
+     * <p>The method should be used from inside the
+     * {@link com.google.errorprone.bugpatterns.BugChecker} implementations, so the Error Prone
+     * scanners provide the proper {@code Tree} and {@code VisitorState} corresponding to the
+     * currently assessed expression.
      *
      * @param tree  the expression {@code Tree}
      * @param state the current {@code VisitorState}
