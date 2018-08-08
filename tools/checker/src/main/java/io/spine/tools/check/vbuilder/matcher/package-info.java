@@ -20,8 +20,7 @@
 
 /**
  * This package contains the {@linkplain io.spine.tools.check.BugPatternMatcher matchers} for the
- * {@link io.spine.tools.check.vbuilder.UseValidatingBuilder} bug pattern recognition across the
- * code base.
+ * {@link io.spine.tools.check.vbuilder.UseValidatingBuilder} bug pattern.
  */
 
 @CheckReturnValue
