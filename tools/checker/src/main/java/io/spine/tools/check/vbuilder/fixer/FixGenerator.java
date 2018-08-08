@@ -75,8 +75,8 @@ class FixGenerator {
     }
 
     /**
-     * Creates a fix which replaces the current expression with the
-     * {@code MessageVBuilder.newBuilder()} expression.
+     * Creates a fix which replaces the current expression with the {@code ...VBuilder.newBuilder()}
+     * expression.
      *
      * <p>This method assumes that the {@linkplain #tree current expression} is the call on some of
      * the {@link com.google.protobuf.Message} class descendants.
@@ -92,7 +92,7 @@ class FixGenerator {
 
     /**
      * Creates a fix which replaces the current expression with the
-     * {@code MessageVBuilder.newBuilder().mergeFrom(arg)} expression.
+     * {@code ...VBuilder.newBuilder().mergeFrom(arg)} expression.
      *
      * <p>This method assumes that the {@linkplain #tree current expression} is the call that
      * utilizes some of the {@link com.google.protobuf.Message} class instances for the field
