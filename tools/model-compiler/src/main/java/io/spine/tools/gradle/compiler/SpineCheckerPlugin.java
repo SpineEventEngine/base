@@ -71,7 +71,7 @@ import static io.spine.tools.gradle.compiler.SpineCheckExtension.getUseValidatin
  * </pre>
  * or for the specific ones:
  *
- *  <pre>
+ * <pre>
  * {@code
  *
  *   spineChecker {
@@ -182,7 +182,8 @@ public class SpineCheckerPlugin extends SpinePlugin {
      * <p>The action is executed on the {@code projectEvaluated} stage.
      */
     @VisibleForTesting
-    protected void addConfigurePreprocessorAction(Configuration preprocessorConfig, Project project) {
+    protected void
+    addConfigurePreprocessorAction(Configuration preprocessorConfig, Project project) {
         Action<Gradle> configurePreprocessor =
                 configurePreprocessorAction(preprocessorConfig, project);
         Gradle gradle = project.getGradle();
