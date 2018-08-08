@@ -25,8 +25,8 @@ import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
 
 /**
- * This class contains various {@link SpineCheckerPlugin} descendants that emulate plugin behaviour
- * for different use-cases and allow to avoid any real artifact dependencies.
+ * This class contains various {@link SpineCheckerPlugin} descendants that emulate the plugin
+ * behaviour for the different use-cases and allow to avoid any real artifact dependencies.
  *
  * @author Dmytro Kuzmin
  */
