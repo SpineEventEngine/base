@@ -36,5 +36,5 @@ tasks.withType(JavaCompile) {
 Currently, the Spine Checker is applied automatically to any project that uses 
 [Spine Model Compiler](../model-compiler).
 
-The Spine Checker Plugin which is a part of Model Compiler, performs all necessary configurations 
-automatically.
+The Spine Checker Plugin which is a part of the Model Compiler, performs all necessary 
+configurations automatically.
