@@ -25,6 +25,14 @@ import com.google.protobuf.StringValue;
 
 import static com.google.protobuf.Int32Value.newBuilder;
 
+/**
+ * Contains statements for which the {@link UseValidatingBuilder} bug pattern should return a match.
+ *
+ * <p>Comments in this file should not be modified as they serve as indicator for the
+ * {@link com.google.errorprone.CompilationTestHelper} Error Prone tool.
+ *
+ * @author Dmytro Kuzmin
+ */
 class UseValidatingBuilderPositives {
 
     StringValue stringValue = StringValue.getDefaultInstance();

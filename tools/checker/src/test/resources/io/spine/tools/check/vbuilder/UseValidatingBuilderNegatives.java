@@ -27,6 +27,12 @@ import io.spine.validate.StringValueVBuilder;
 
 import static io.spine.validate.Int32ValueVBuilder.newBuilder;
 
+/**
+ * Contains statements for which the {@link UseValidatingBuilder} bug pattern should respond with
+ * no match.
+ *
+ * @author Dmytro Kuzmin
+ */
 abstract class UseValidatingBuilderNegatives {
 
     void callOnVBuilder() {
