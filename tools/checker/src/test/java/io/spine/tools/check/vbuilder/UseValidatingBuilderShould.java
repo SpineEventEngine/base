@@ -34,8 +34,8 @@ import java.util.function.Predicate;
  * <p>In Gradle it's done automatically via the separate task (see the {@code build.gradle} of this
  * module).
  *
- * <p>To run the test in Idea you need to add VM options manually in the "Edit configurations" tab.
- * Typically, the {@code javac} jar can be found in the Gradle Caches directory in the
+ * <p>To run the test in Idea you need to add the VM options manually in the "Edit configurations"
+ * tab. Typically, the {@code javac} jar can be found in the Gradle Caches directory in the
  * "modules-2/files-2.1/com.google.errorprone/javac/" folder or its subfolders.
  *
  * <p>After you acquired the path to the existing {@code javac} jar, add the following VM Option:
