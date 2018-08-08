@@ -15,8 +15,8 @@ dependencies {
 Note that the Checker requires the 
 [Error Prone plugin](https://plugins.gradle.org/plugin/net.ltgt.errorprone) applied to the project.
 
-For Gradle versions older than `4.6` you may need to create and configure the `annotationProcessor`
-dependency manually:
+For the Gradle versions older than `4.6` you may need to create and configure the 
+`annotationProcessor` dependency manually:
 
 ```groovy
 configurations {
