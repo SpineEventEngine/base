@@ -46,7 +46,7 @@ import static io.spine.tools.gradle.ConfigurationName.CLASSPATH;
 import static io.spine.tools.gradle.compiler.ErrorProneChecksExtension.getUseValidatingBuilder;
 
 /**
- * A Gradle plugin which configures the project to run Spine Error Prone Checks during the
+ * A Gradle plugin which configures the project to run Spine-custom Error Prone checks during the
  * compilation stage.
  *
  * <p>To work, this plugin requires <a href="https://github.com/tbroyer/gradle-errorprone-plugin">
@@ -191,8 +191,8 @@ public class ErrorProneChecksPlugin extends SpinePlugin {
     }
 
     /**
-     * Adds the action configuring Spine Error Prone Checks severity to the {@code projectEvaluated}
-     * stage of the project.
+     * Adds the action configuring Spine Error Prone check severities to the
+     * {@code projectEvaluated} stage of the project.
      *
      * @param project the project for which to configure the severity
      */
@@ -288,7 +288,7 @@ public class ErrorProneChecksPlugin extends SpinePlugin {
     }
 
     /**
-     * Adds command line flags necessary to configure Spine Error Prone Checks severities to all
+     * Adds command line flags necessary to configure Spine Error Prone check severities to all
      * {@code JavaCompile} tasks of the project.
      */
     private void configureCheckSeverity(Project project) {
@@ -339,7 +339,7 @@ public class ErrorProneChecksPlugin extends SpinePlugin {
     }
 
     /**
-     * Checks if the project has Error Prone plugin applied.
+     * Checks if the project has the Error Prone plugin applied.
      */
     @VisibleForTesting
     protected boolean hasErrorPronePlugin(Project project) {

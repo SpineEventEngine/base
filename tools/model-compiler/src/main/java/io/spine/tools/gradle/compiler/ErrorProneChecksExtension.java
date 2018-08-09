@@ -23,9 +23,10 @@ package io.spine.tools.gradle.compiler;
 import org.gradle.api.Project;
 
 /**
- * The Spine Error Prone Checks plugin extension.
+ * The Error Prone Checks plugin extension.
  *
- * <p>Allows configuring severity for all the checks applied to the project.
+ * <p>Allows configuring severity for all the Spine-custom Error Prone checks applied to the
+ * project.
  *
  * @author Dmytro Kuzmin
  * @see Severity

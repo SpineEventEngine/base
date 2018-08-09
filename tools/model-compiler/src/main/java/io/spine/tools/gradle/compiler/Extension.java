@@ -154,7 +154,7 @@ public class Extension {
     public List<String> dirsToClean = new LinkedList<>();
 
     /**
-     * The severity of the Spine Error Prone Checks.
+     * The severity of the Spine-custom Error Prone checks.
      *
      * <p>If this value is not set, the default severities are used, which are specific for the
      * each check.
