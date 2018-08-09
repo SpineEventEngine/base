@@ -18,13 +18,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.java;
+package io.spine.tools.compiler.annotation;
 
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.CodeBlock;
 
 import javax.annotation.Generated;
+
+import static io.spine.code.Generation.compilerAnnotation;
 
 /**
  * A factory for Java annotation specs.
@@ -33,14 +35,10 @@ import javax.annotation.Generated;
  */
 public final class Annotations {
 
-    @SuppressWarnings("DuplicateStringLiteralInspection")
-        // Each occurrence has a different semantics.
-    private static final String GENERATED_FIELD_NAME = "value";
-
     private static final AnnotationSpec GENERATED =
             AnnotationSpec.builder(Generated.class)
-                          .addMember(GENERATED_FIELD_NAME,
-                                     CodeBlock.of("\"by Spine Model Compiler\""))
+                          .addMember(compilerAnnotation().getFieldName(),
+                                     CodeBlock.of(compilerAnnotation().getCodeBlock()))
                           .build();
 
     private static final AnnotationSpec CAN_IGNORE_RETURN_VALUE =
@@ -54,20 +52,16 @@ public final class Annotations {
     }
 
     /**
-     * Generates {@code @Generated("by Spine Model Compiler")} annotation spec.
-     *
-     * @return an {@code AnnotationSpec} describing the {@link Generated javax.annotation.Generated}
-     *         annotation
+     * Obtains annotation spec. for
+     * {@link javax.annotation.Generated @Generated("by Spine Model Compiler")}
      */
     public static AnnotationSpec generatedBySpineModelCompiler() {
         return GENERATED;
     }
 
     /**
-     * Generates {@code @CanIgnoreReturnValue} annotation spec.
-     *
-     * @return an {@code AnnotationSpec} describing the {@link CanIgnoreReturnValue
-     *         com.google.errorprone.annotations.CanIgnoreReturnValue} annotation
+     * Obtains {@link com.google.errorprone.annotations.CanIgnoreReturnValue @CanIgnoreReturnValue}
+     * annotation spec.
      */
     public static AnnotationSpec canIgnoreReturnValue() {
         return CAN_IGNORE_RETURN_VALUE;

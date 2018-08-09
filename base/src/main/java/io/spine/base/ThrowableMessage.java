@@ -26,7 +26,7 @@ import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
 import io.spine.annotation.Internal;
 import io.spine.string.Stringifiers;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
 import java.util.Optional;
 
@@ -57,7 +57,7 @@ public abstract class ThrowableMessage extends Throwable {
     private final Timestamp timestamp;
 
     /** Optional ID of the entity which thrown the message. */
-    private @Nullable Any producerId;
+    private @MonotonicNonNull Any producerId;
 
     protected ThrowableMessage(GeneratedMessageV3 message) {
         super();

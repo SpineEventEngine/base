@@ -90,7 +90,6 @@ public final class Types {
      * @param <T>               the type of superclass
      * @return the class of the generic type argument
      */
-    @CheckReturnValue
     static <T> Class<?> getArgument(Class<? extends T> cls,
                                     Class<T> genericSuperclass,
                                     int argNumber) {

@@ -20,45 +20,39 @@
 
 package io.spine.value;
 
+import com.google.errorprone.annotations.Immutable;
 import io.spine.type.ClassName;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
-import java.io.Serializable;
-import java.util.Objects;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Abstract base for classes holding a value of a {@link Class}.
  *
  * @param <T> the type of the class
- *
+ * @implNote The name of this class has the 'Type' infix in the name to prevent the name clash with
+ * {@link java.lang.ClassValue ClassValue}.
  * @author Alexander Yevsyukov
  */
-public abstract class ClassTypeValue<T> implements Serializable {
+@Immutable
+public abstract class ClassTypeValue<T> extends ValueHolder<Class<? extends T>> {
 
     /* NOTE: the class has the 'Type' infix in the name to prevent the name clash with
        java.lang.ClassValue. */
 
     private static final long serialVersionUID = 0L;
 
-    private final Class<? extends T> value;
-
     protected ClassTypeValue(Class<? extends T> value) {
-        checkNotNull(value);
-        this.value = value;
+        super(value);
     }
 
-    /** Returns value of the object. */
+    @Override
     public Class<? extends T> value() {
-        return this.value;
+        return super.value();
     }
 
     /**
      * Returns the name of the enclosed Java class.
      */
     public ClassName getName() {
-        ClassName result = ClassName.of(value);
+        ClassName result = ClassName.of(value());
         return result;
     }
 
@@ -69,26 +63,6 @@ public abstract class ClassTypeValue<T> implements Serializable {
      */
     @Override
     public String toString() {
-        return value.getName();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public int hashCode() {
-        return Objects.hash(value);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean equals(@Nullable Object obj) {
-        if (this == obj) {
-            return true;
-        }
-
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-        ClassTypeValue other = (ClassTypeValue) obj;
-        return Objects.equals(this.value, other.value);
+        return value().getName();
     }
 }

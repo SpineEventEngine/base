@@ -41,7 +41,7 @@ import java.nio.file.Files;
 import java.util.Map;
 
 import static com.squareup.javapoet.MethodSpec.constructorBuilder;
-import static io.spine.code.java.Annotations.generatedBySpineModelCompiler;
+import static io.spine.tools.compiler.annotation.Annotations.generatedBySpineModelCompiler;
 import static javax.lang.model.element.Modifier.FINAL;
 import static javax.lang.model.element.Modifier.PRIVATE;
 import static javax.lang.model.element.Modifier.PUBLIC;

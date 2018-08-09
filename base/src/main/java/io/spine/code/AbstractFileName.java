@@ -31,6 +31,8 @@ import io.spine.value.ComparableStringValue;
 public abstract class AbstractFileName<F extends AbstractFileName>
         extends ComparableStringValue<F> {
 
+    private static final long serialVersionUID = 0L;
+
     protected AbstractFileName(String value) {
         super(value);
     }
