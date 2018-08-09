@@ -22,7 +22,6 @@
  * This package contains the custom Error Prone check to detect usage of ordinary Builder for the
  * Protobuf messages and advice using Spine Validating Builder instead of that.
  */
-
 @CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.tools.check.vbuilder;
