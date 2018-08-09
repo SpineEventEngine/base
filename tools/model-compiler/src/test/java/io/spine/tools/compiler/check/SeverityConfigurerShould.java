@@ -41,8 +41,6 @@ import static org.mockito.Mockito.when;
 /**
  * @author Dmytro Kuzmin
  */
-@SuppressWarnings({"CheckReturnValue", "ResultOfMethodCallIgnored"})
-// OK as for several methods we need return values only in some cases.
 public class SeverityConfigurerShould {
 
     private Project project;
@@ -62,6 +60,8 @@ public class SeverityConfigurerShould {
         new NullPointerTester().testAllPublicInstanceMethods(configurer);
     }
 
+    @SuppressWarnings({"CheckReturnValue", "ResultOfMethodCallIgnored"})
+    // We use one extension and just create the other one.
     @Test
     public void configure_check_severity() {
         configureModelCompilerExtension();
@@ -72,6 +72,8 @@ public class SeverityConfigurerShould {
         checkSeverityConfiguredToError();
     }
 
+    @SuppressWarnings({"CheckReturnValue", "ResultOfMethodCallIgnored"})
+    // We use one extension and just create the other one.
     @Test
     public void configure_check_severity_for_all_checks() {
         Extension extension = configureModelCompilerExtension();
