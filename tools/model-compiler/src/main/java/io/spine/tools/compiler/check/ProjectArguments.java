@@ -32,15 +32,16 @@ import java.util.List;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Utilities related to the classes working with Spine-custom Error Prone checks and the
- * {@link io.spine.tools.gradle.compiler.ErrorProneChecksPlugin}.
+ * The modification tool for the {@link Project} {@link org.gradle.api.Task} arguments.
+ *
+ * <p>Allows adding new arguments to all the project's task of a certain type.
  *
  * @author Dmytro Kuzmin
  */
-class ProjectUtils {
+class ProjectArguments {
 
     /** Prevents instantiation of this utility class. */
-    private ProjectUtils() {
+    private ProjectArguments() {
     }
 
     /**

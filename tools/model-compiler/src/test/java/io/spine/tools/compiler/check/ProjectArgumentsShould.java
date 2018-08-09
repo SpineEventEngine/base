@@ -33,7 +33,7 @@ import static io.spine.tools.gradle.compiler.given.ModelCompilerTestEnv.newProje
 /**
  * @author Dmytro Kuzmin
  */
-public class ProjectUtilsShould {
+public class ProjectArgumentsShould {
 
     private Project project;
 
@@ -44,25 +44,25 @@ public class ProjectUtilsShould {
 
     @Test
     public void have_utility_constructor() {
-        assertHasPrivateParameterlessCtor(ProjectUtils.class);
+        assertHasPrivateParameterlessCtor(ProjectArguments.class);
     }
 
     @Test
     public void pass_null_tolerance_check() {
-        new NullPointerTester().testAllPublicStaticMethods(ProjectUtils.class);
+        new NullPointerTester().testAllPublicStaticMethods(ProjectArguments.class);
     }
 
     @Test
     public void add_args_to_java_compile_tasks_of_project() {
         String firstArg = "firstArg";
         String secondArg = "secondArg";
-        ProjectUtils.addArgsToJavaCompile(project, firstArg, secondArg);
+        ProjectArguments.addArgsToJavaCompile(project, firstArg, secondArg);
         assertCompileTasksContain(project, firstArg, secondArg);
     }
 
     @Test
     public void add_no_args_if_none_specified() {
-        ProjectUtils.addArgsToJavaCompile(project);
+        ProjectArguments.addArgsToJavaCompile(project);
         assertCompileTasksEmpty(project);
     }
 }

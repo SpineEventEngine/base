@@ -28,7 +28,7 @@ import org.gradle.api.artifacts.ConfigurationContainer;
 import org.gradle.api.invocation.Gradle;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.compiler.check.ProjectUtils.addArgsToJavaCompile;
+import static io.spine.tools.compiler.check.ProjectArguments.addArgsToJavaCompile;
 
 /**
  * A helper that sets up and configures the preprocessor dependency for the {@link Project}.

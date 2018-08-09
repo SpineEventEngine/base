@@ -31,7 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.compiler.check.ProjectUtils.addArgsToJavaCompile;
+import static io.spine.tools.compiler.check.ProjectArguments.addArgsToJavaCompile;
 import static io.spine.tools.gradle.compiler.ErrorProneChecksExtension.getUseValidatingBuilder;
 import static io.spine.tools.gradle.compiler.Extension.getSpineCheckSeverity;
 
