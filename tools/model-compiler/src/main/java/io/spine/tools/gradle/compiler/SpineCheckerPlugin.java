@@ -52,7 +52,7 @@ import static io.spine.tools.gradle.compiler.SpineCheckExtension.getUseValidatin
  * the Error Prone plugin</a> applied to the project, as the Spine checks are based on the Error
  * Prone custom checks.
  *
- * <p>The plugin adds a {@code spine-checker} dependency to the project's
+ * <p>The plugin adds a {@code spine-errorprone-checks} dependency to the project's
  * {@code annotationProcessor} configuration. For the older Gradle versions (pre {@code 4.6}),
  * where there is no such configuration, the plugin creates it.
  *
@@ -97,7 +97,7 @@ public class SpineCheckerPlugin extends SpinePlugin {
     static final String SPINE_TOOLS_GROUP = "io.spine.tools";
 
     @VisibleForTesting
-    static final String SPINE_CHECKER_MODULE = "spine-checker";
+    static final String SPINE_CHECKER_MODULE = "spine-errorprone-checks";
 
     @VisibleForTesting
     static final String MODEL_COMPILER_PLUGIN_NAME = "spine-model-compiler";
@@ -145,15 +145,15 @@ public class SpineCheckerPlugin extends SpinePlugin {
     }
 
     /**
-     * Adds the {@code io.spine.tools.spine-checker} dependency to the specified configuration of
-     * the specified project.
+     * Adds the {@code io.spine.tools.spine-errorprone-checks} dependency to the specified
+     * configuration of the specified project.
      *
      * <p>The version of the dependency used is the same as the version of the
      * {@code spine-model-compiler} plugin used by the project.
      *
      * <p>If the {@code spine-model-compiler} version cannot be acquired or the
-     * {@code spine-checker} version is not resolvable, the method does nothing and returns
-     * {@code false}.
+     * {@code spine-errorprone-checks} version is not resolvable, the method does nothing and
+     * returns {@code false}.
      *
      * @param configuration the configuration to add the dependency to
      * @param project       the project to which this configuration belongs
@@ -233,7 +233,7 @@ public class SpineCheckerPlugin extends SpinePlugin {
     }
 
     /**
-     * Checks if the given {@code spine-checker} dependency is resolvable for the given
+     * Checks if the given {@code spine-errorprone-checks} dependency is resolvable for the given
      * configuration.
      *
      * <p>Uses the configuration copy to not resolve the given configuration itself.
@@ -248,7 +248,7 @@ public class SpineCheckerPlugin extends SpinePlugin {
     }
 
     /**
-     * Adds the {@code spine-checker} dependency to the given configuration.
+     * Adds the {@code spine-erroprone-checks} dependency to the given configuration.
      */
     private void dependOnSpineChecker(String dependencyVersion, Configuration configuration) {
         log().debug("Adding dependency on {}:{}:{} to the {} configuration",
