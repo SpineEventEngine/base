@@ -42,7 +42,7 @@ import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type.TYPE_ENUM;
-import static io.spine.code.java.Annotations.canIgnoreReturnValue;
+import static io.spine.tools.compiler.annotation.Annotations.canIgnoreReturnValue;
 import static io.spine.tools.compiler.validation.ClassNames.getClassName;
 import static io.spine.tools.compiler.validation.ClassNames.getParameterClassName;
 import static io.spine.tools.compiler.validation.MethodConstructors.clearPrefix;

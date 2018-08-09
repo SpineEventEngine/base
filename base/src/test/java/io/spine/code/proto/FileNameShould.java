@@ -29,7 +29,6 @@ import org.junit.rules.ExpectedException;
 import java.util.List;
 
 import static io.spine.code.proto.FileName.of;
-import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -41,11 +40,6 @@ public class FileNameShould {
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
-
-    @Test
-    public void have_utility_ctor_for_Suffix() {
-        assertHasPrivateParameterlessCtor(FileName.Suffix.class);
-    }
 
     @Test
     public void pass_null_tolerance_check() {

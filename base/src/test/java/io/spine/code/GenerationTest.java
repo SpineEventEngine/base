@@ -18,41 +18,34 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.type;
+package io.spine.code;
 
-import com.google.protobuf.Message;
-import com.google.protobuf.StringValue;
-import org.junit.Before;
-import org.junit.Test;
+import io.spine.code.Generation.ModelCompilerAnnotation;
+import io.spine.testing.UtilityClassTest;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class MessageClassShould {
+/**
+ * @author Alexander Yevsyukov
+ */
+@DisplayName("Generation utility class should")
+class GenerationTest extends UtilityClassTest<Generation> {
 
-    private static final Class<StringValue> MSG_CLASS = StringValue.class;
-
-    private TestMessageClass testMsgClass;
-
-    @Before
-    public void setUp() {
-        testMsgClass = new TestMessageClass(MSG_CLASS);
+    GenerationTest() {
+        super(Generation.class);
     }
 
-    @SuppressWarnings("SerializableInnerClassWithNonSerializableOuterClass")
     @Test
-    public void be_not_equal_to_object_of_another_class() {
-        // Notice that we're creating a new object with the same value passed.
-        assertNotEquals(testMsgClass, new MessageClass(MSG_CLASS) {
-            private static final long serialVersionUID = 0L;
-        });
-    }
-
-    private static class TestMessageClass extends MessageClass {
-
-        private static final long serialVersionUID = 0L;
-
-        private TestMessageClass(Class<? extends Message> value) {
-            super(value);
-        }
+    @DisplayName("provide information for annotation spec.")
+    void byModelCompiler() {
+        ModelCompilerAnnotation annotation = Generation.compilerAnnotation();
+        assertNotNull(annotation);
+        assertFalse(annotation.getFieldName()
+                              .isEmpty());
+        assertFalse(annotation.getCodeBlock()
+                              .isEmpty());
     }
 }

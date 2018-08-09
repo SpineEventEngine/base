@@ -29,6 +29,8 @@ import io.spine.value.StringTypeValue;
  */
 class NoArgMethod extends StringTypeValue {
 
+    private static final long serialVersionUID = 0L;
+
     NoArgMethod(String methodName) {
         super(methodName);
     }

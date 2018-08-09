@@ -24,12 +24,15 @@ import com.google.protobuf.Any;
 import com.google.protobuf.Message;
 import com.google.protobuf.util.JsonFormat;
 import io.spine.annotation.Internal;
+import io.spine.code.proto.FileSet;
 import io.spine.code.proto.Type;
 import io.spine.code.proto.TypeSet;
 
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Supplier;
 
+import static com.google.common.base.Suppliers.memoize;
 import static java.util.stream.Collectors.toSet;
 
 /**
@@ -44,15 +47,43 @@ import static java.util.stream.Collectors.toSet;
  * @author Dmytro Dashenkov
  */
 @Internal
-public class KnownTypes {
+public enum KnownTypes {
 
-    private final TypeSet types;
+    INSTANCE;
+
+    @SuppressWarnings({
+            "TransientFieldNotInitialized", // We substitute the instance in readResolve().
+            "ImmutableEnumChecker" // The field is effectively immutable.
+    })
+    private final transient Supplier<TypeSet> typeSet = memoize(KnownTypes::load);
 
     /**
-     * Builds the instance by loading known types and composing lookup map for type URLs.
+     * Retrieves the singleton instance of {@code KnownTypes}.
      */
-    private KnownTypes(TypeSet types) {
-        this.types = types;
+    public static KnownTypes instance() {
+        return INSTANCE;
+    }
+
+    private Object readResolve() {
+        return INSTANCE;
+    }
+
+    private Set<Type<?, ?>> types() {
+        return typeSet.get()
+                      .types();
+    }
+
+    private TypeSet typeSet() {
+        return typeSet.get();
+    }
+
+    /**
+     * Loads known types from the classpath.
+     */
+    private static TypeSet load() {
+        FileSet protoDefinitions = FileSet.load();
+        TypeSet types = TypeSet.messagesAndEnums(protoDefinitions);
+        return types;
     }
 
     /**
@@ -75,10 +106,9 @@ public class KnownTypes {
      * Retrieves Protobuf type URLs known to the application.
      */
     public Set<TypeUrl> getAllUrls() {
-        return types.types()
-                    .stream()
-                    .map(Type::url)
-                    .collect(toSet());
+        return types().stream()
+                      .map(Type::url)
+                      .collect(toSet());
     }
 
     /**
@@ -87,7 +117,8 @@ public class KnownTypes {
      * <p>The resulting registry contains all the known Protobuf message types.
      */
     public JsonFormat.TypeRegistry typeRegistry() {
-        return types.toJsonPrinterRegistry();
+        return typeSet.get()
+                      .toJsonPrinterRegistry();
     }
 
     /**
@@ -112,7 +143,7 @@ public class KnownTypes {
      */
     public boolean contains(TypeUrl typeUrl) {
         TypeName name = typeUrl.toName();
-        boolean result = types.contains(name);
+        boolean result = typeSet().contains(name);
         return result;
     }
 
@@ -122,13 +153,13 @@ public class KnownTypes {
      * @see TypeSet#find(TypeName)
      */
     Optional<Type<?, ?>> find(TypeName typeName) {
-        Optional<Type<?, ?>> type = types.find(typeName);
+        Optional<Type<?, ?>> type = typeSet().find(typeName);
         return type;
     }
 
     private Type get(TypeName name) throws UnknownTypeException {
-        Type result = types.find(name)
-                           .orElseThrow(() -> new UnknownTypeException(name.value()));
+        Type result = typeSet().find(name)
+                               .orElseThrow(() -> new UnknownTypeException(name.value()));
         return result;
     }
 
@@ -136,19 +167,5 @@ public class KnownTypes {
         Type type = get(typeUrl.toName());
         ClassName result = type.javaClassName();
         return result;
-    }
-
-    /**
-     * Retrieves the singleton instance of {@code KnownTypes}.
-     */
-    public static KnownTypes instance() {
-        return Singleton.INSTANCE.value;
-    }
-
-    @SuppressWarnings("NonSerializableFieldInSerializableClass")
-    private enum Singleton {
-        INSTANCE;
-
-        private final KnownTypes value = new KnownTypes(Loader.load());
     }
 }

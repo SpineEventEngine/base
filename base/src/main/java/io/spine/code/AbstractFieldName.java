@@ -29,6 +29,8 @@ import io.spine.value.StringTypeValue;
  */
 public class AbstractFieldName extends StringTypeValue {
 
+    private static final long serialVersionUID = 0L;
+
     protected AbstractFieldName(String value) {
         super(value);
     }

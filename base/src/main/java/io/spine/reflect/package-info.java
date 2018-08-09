@@ -18,31 +18,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.type;
-
-import io.spine.code.proto.FileSet;
-import io.spine.code.proto.TypeSet;
-
 /**
- * The helper class for building a map from proto type URL to Java class name.
- *
- * @author Mikhail Mikhaylov
- * @author Alexander Yevsyukov
- * @author Dmytro Dashenkov
- * @see KnownTypes
+ * This package provides utilities for working with Java Reflection.
  */
-final class Loader {
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.reflect;
 
-    /** Prevents construction from outside. */
-    private Loader() {
-    }
+import com.google.errorprone.annotations.CheckReturnValue;
 
-    /**
-     * Loads known types from the classpath.
-     */
-    static TypeSet load() {
-        FileSet protoDefinitions = FileSet.load();
-        TypeSet types = TypeSet.messagesAndEnums(protoDefinitions);
-        return types;
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;

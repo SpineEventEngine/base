@@ -17,31 +17,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+@ValueAnnotation("Branch 2")
+package given.reflect.root.branch2;
 
-package io.spine.code.java;
-
-import com.squareup.javapoet.AnnotationSpec;
-import com.squareup.javapoet.TypeName;
-import org.junit.Test;
-
-import javax.annotation.Generated;
-
-import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
-import static org.junit.Assert.assertEquals;
-
-/**
- * @author Dmytro Dashenkov
- */
-public class AnnotationsShould {
-
-    @Test
-    public void have_util_ctor() {
-        assertHasPrivateParameterlessCtor(Annotations.class);
-    }
-
-    @Test
-    public void return_generated_annotation_spec() {
-        AnnotationSpec spec = Annotations.generatedBySpineModelCompiler();
-        assertEquals(spec.type, TypeName.get(Generated.class));
-    }
-}
+import given.reflect.annotation.ValueAnnotation;

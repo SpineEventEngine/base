@@ -34,6 +34,7 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
  */
 public final class FileName extends AbstractFileName<FileName> {
 
+    private static final long serialVersionUID = 0L;
     private static final String GRPC_CLASSNAME_SUFFIX = "Grpc";
     private static final String EXTENSION = ".java";
 
