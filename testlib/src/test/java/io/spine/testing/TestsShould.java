@@ -35,7 +35,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 
-import static io.spine.testing.Tests.assertWithInaccuracy;
+import static io.spine.testing.Tests.assertInDelta;
 import static io.spine.testing.Tests.assertMatchesMask;
 import static io.spine.testing.Tests.hasPrivateParameterlessCtor;
 import static org.junit.Assert.assertFalse;
@@ -146,7 +146,7 @@ class TestsShould extends UtilityClassTest<Tests> {
         private Timestamp timestampMsg;
 
         @BeforeEach
-        void setUp(){
+        void setUp() {
             long currentTime = Instant.now()
                                       .toEpochMilli();
             timestampMsg = Timestamp.newBuilder()
@@ -217,14 +217,14 @@ class TestsShould extends UtilityClassTest<Tests> {
         @Test
         @DisplayName("when values are equal")
         void equalValues() {
-            assertWithInaccuracy(recentTime, recentTime, 0);
+            assertInDelta(recentTime, recentTime, 0);
         }
 
         @Test
         @DisplayName("when values are close")
         void closeValues() {
             // This method would be called within 10 seconds.
-            Tests.assertWithInaccuracy(recentTime, now(), 10);
+            Tests.assertInDelta(recentTime, now(), 10);
         }
 
         @Test
@@ -232,7 +232,7 @@ class TestsShould extends UtilityClassTest<Tests> {
         void failure() {
             assertThrows(
                     AssertionError.class,
-                    () -> Tests.assertWithInaccuracy(100, 200, 2)
+                    () -> Tests.assertInDelta(100, 200, 2)
             );
         }
     }
