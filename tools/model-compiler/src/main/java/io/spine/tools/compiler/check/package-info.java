@@ -21,7 +21,6 @@
 /**
  * Classes containing logic of the {@link io.spine.tools.gradle.compiler.ErrorProneChecksPlugin}.
  */
-
 @CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.tools.compiler.check;
