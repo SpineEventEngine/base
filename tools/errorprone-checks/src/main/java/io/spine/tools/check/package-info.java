@@ -23,7 +23,6 @@
  * directly from this package as the checks are automatically exported via the
  * {@link com.google.auto.service.AutoService} annotation.
  */
-
 @CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.tools.check;

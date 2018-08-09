@@ -22,7 +22,6 @@
  * This package contains classes for generating {@link com.google.errorprone.fixes.Fix} for the
  * different cases of the {@link io.spine.tools.check.vbuilder.UseValidatingBuilder} bug pattern.
  */
-
 @CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.tools.check.vbuilder.fixer;

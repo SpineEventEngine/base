@@ -22,7 +22,6 @@
  * This package contains the {@linkplain io.spine.tools.check.BugPatternMatcher matchers} for the
  * {@link io.spine.tools.check.vbuilder.UseValidatingBuilder} bug pattern.
  */
-
 @CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.tools.check.vbuilder.matcher;
