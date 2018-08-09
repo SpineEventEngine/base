@@ -20,8 +20,8 @@
 
 package io.spine.tools.gradle.compiler;
 
-import io.spine.tools.gradle.compiler.given.ErrorProneChecksPluginTestEnv.ResolvingPlugin;
 import org.gradle.api.Project;
+import org.gradle.api.plugins.ExtensionContainer;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -38,6 +38,7 @@ import static org.junit.Assert.assertNull;
 public class ErrorProneChecksExtensionShould {
 
     private Project project;
+    private ErrorProneChecksExtension extension;
 
     @Rule
     public final TemporaryFolder projectDir = new TemporaryFolder();
@@ -45,14 +46,15 @@ public class ErrorProneChecksExtensionShould {
     @Before
     public void setUp() {
         project = newProject(projectDir.getRoot());
-        project.getPluginManager()
-               .apply(ResolvingPlugin.class);
+        ExtensionContainer extensions = project.getExtensions();
+        extension = extensions.create(ErrorProneChecksPlugin.extensionName(),
+                                      ErrorProneChecksExtension.class);
     }
 
     @Test
     public void return_use_validating_builder_severity() {
         final Severity expected = ERROR;
-        extension().useValidatingBuilder = expected;
+        extension.useValidatingBuilder = expected;
         final Severity actual = ErrorProneChecksExtension.getUseValidatingBuilder(project);
         assertEquals(expected, actual);
     }
@@ -61,10 +63,5 @@ public class ErrorProneChecksExtensionShould {
     public void return_null_use_validating_builder_severity_if_not_set() {
         final Severity severity = ErrorProneChecksExtension.getUseValidatingBuilder(project);
         assertNull(severity);
-    }
-
-    private ErrorProneChecksExtension extension() {
-        return (ErrorProneChecksExtension) project.getExtensions()
-                                                  .getByName(ErrorProneChecksPlugin.extensionName());
     }
 }

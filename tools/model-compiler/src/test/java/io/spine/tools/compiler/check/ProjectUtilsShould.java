@@ -18,39 +18,51 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.gradle.compiler;
+package io.spine.tools.compiler.check;
 
+import com.google.common.testing.NullPointerTester;
 import org.gradle.api.Project;
-import org.gradle.api.plugins.ExtensionContainer;
+import org.junit.Before;
 import org.junit.Test;
 
+import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
+import static io.spine.tools.compiler.check.given.ProjectTaskUtil.assertCompileTasksContain;
+import static io.spine.tools.compiler.check.given.ProjectTaskUtil.assertCompileTasksEmpty;
 import static io.spine.tools.gradle.compiler.given.ModelCompilerTestEnv.newProject;
-import static org.junit.Assert.assertNotNull;
 
 /**
- * This test contains very basic scenarios of the plugin usage.
- *
- * <p>For the tests of actual plugin functionality, see {@code io.spine.tools.check} test suites
- * from this module.
- *
  * @author Dmytro Kuzmin
  */
-public class ErrorProneChecksPluginShould {
+public class ProjectUtilsShould {
 
-    @Test
-    public void create_spine_check_extension() {
-        Project project = newProject();
-        project.getPluginManager()
-               .apply(ErrorProneChecksPlugin.class);
-        ExtensionContainer extensions = project.getExtensions();
-        Object found = extensions.findByName(ErrorProneChecksPlugin.extensionName());
-        assertNotNull(found);
+    private Project project;
+
+    @Before
+    public void setUp() {
+        project = newProject();
     }
 
     @Test
-    public void apply_to_empty_project_without_exceptions() {
-        Project project = newProject();
-        project.getPluginManager()
-               .apply(ErrorProneChecksPlugin.class);
+    public void have_utility_constructor() {
+        assertHasPrivateParameterlessCtor(ProjectUtils.class);
+    }
+
+    @Test
+    public void pass_null_tolerance_check() {
+        new NullPointerTester().testAllPublicStaticMethods(ProjectUtils.class);
+    }
+
+    @Test
+    public void add_args_to_java_compile_tasks_of_project() {
+        String firstArg = "firstArg";
+        String secondArg = "secondArg";
+        ProjectUtils.addArgsToJavaCompile(project, firstArg, secondArg);
+        assertCompileTasksContain(project, firstArg, secondArg);
+    }
+
+    @Test
+    public void add_no_args_if_none_specified() {
+        ProjectUtils.addArgsToJavaCompile(project);
+        assertCompileTasksEmpty(project);
     }
 }
