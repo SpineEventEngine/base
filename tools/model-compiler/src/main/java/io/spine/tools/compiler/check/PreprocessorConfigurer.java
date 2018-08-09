@@ -77,7 +77,7 @@ public class PreprocessorConfigurer {
     }
 
     /**
-     * Makes sure the given configuration is added to preprocessor path of all the
+     * Makes sure the given configuration is added to the preprocessor path of all the
      * {@code JavaCompile} tasks of the project.
      *
      * <p>The action is executed on the {@code projectEvaluated} stage.

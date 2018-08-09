@@ -19,7 +19,7 @@
  */
 package io.spine.tools.gradle.compiler;
 
-import io.spine.tools.compiler.check.DependencyHelper;
+import io.spine.tools.compiler.check.DependencyConfigurer;
 import io.spine.tools.compiler.check.PreprocessorConfigurer;
 import io.spine.tools.compiler.check.SeverityConfigurer;
 import io.spine.tools.gradle.SpinePlugin;
@@ -87,8 +87,9 @@ public class ErrorProneChecksPlugin extends SpinePlugin {
         PreprocessorConfigurer preprocessorConfigurer = PreprocessorConfigurer.initFor(project);
         Configuration preprocessorConfig = preprocessorConfigurer.setupPreprocessorConfig();
 
-        DependencyHelper dependencyHelper = DependencyHelper.createFor(project, preprocessorConfig);
-        boolean dependencyResolved = dependencyHelper.addErrorProneChecksDependency();
+        DependencyConfigurer dependencyConfigurer =
+                DependencyConfigurer.createFor(project, preprocessorConfig);
+        boolean dependencyResolved = dependencyConfigurer.addErrorProneChecksDependency();
         if (!dependencyResolved) {
             return;
         }

@@ -31,8 +31,8 @@ import org.junit.Test;
 
 import java.util.Optional;
 
-import static io.spine.tools.compiler.check.DependencyHelper.SPINE_CHECKER_MODULE;
-import static io.spine.tools.compiler.check.DependencyHelper.SPINE_TOOLS_GROUP;
+import static io.spine.tools.compiler.check.DependencyConfigurer.SPINE_CHECKER_MODULE;
+import static io.spine.tools.compiler.check.DependencyConfigurer.SPINE_TOOLS_GROUP;
 import static io.spine.tools.compiler.check.PreprocessorConfigurer.PREPROCESSOR_CONFIG_NAME;
 import static io.spine.tools.gradle.compiler.given.ModelCompilerTestEnv.newProject;
 import static org.junit.Assert.assertFalse;
@@ -46,26 +46,26 @@ import static org.mockito.Mockito.when;
  */
 @SuppressWarnings({"CheckReturnValue", "ResultOfMethodCallIgnored"})
 // We ignore boolean "success" flag which is not interesting for us in this test.
-public class DependencyHelperShould {
+public class DependencyConfigurerShould {
 
     private static final String STUB_VERSION = "versionStub";
 
     private Configuration preprocessor;
-    private DependencyHelper helper;
-    private DependencyHelper helperMock;
+    private DependencyConfigurer helper;
+    private DependencyConfigurer helperMock;
 
     @Before
     public void setUp() {
         Project project = newProject();
         ConfigurationContainer configs = project.getConfigurations();
         preprocessor = configs.getByName(PREPROCESSOR_CONFIG_NAME);
-        helper = DependencyHelper.createFor(project, preprocessor);
+        helper = DependencyConfigurer.createFor(project, preprocessor);
         helperMock = spy(helper);
     }
 
     @Test
     public void pass_null_tolerance_check() {
-        new NullPointerTester().testAllPublicStaticMethods(DependencyHelper.class);
+        new NullPointerTester().testAllPublicStaticMethods(DependencyConfigurer.class);
         new NullPointerTester().testAllPublicInstanceMethods(helper);
     }
 

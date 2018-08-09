@@ -39,15 +39,15 @@ import static io.spine.tools.compiler.check.PreprocessorConfigurer.PREPROCESSOR_
 import static io.spine.tools.gradle.ConfigurationName.CLASSPATH;
 
 /**
- * Class which helps managing dependencies related to Spine Error Prone Checks module and the
+ * Class which helps managing dependencies related to the Spine Error Prone Checks module and the
  * {@link io.spine.tools.gradle.compiler.ErrorProneChecksPlugin}.
  *
- * <p>The class manages dependencies of the given {@link Configuration} of the given
+ * <p>The class manages dependencies of the given {@link Configuration} for the given
  * {@link Project}.
  *
  * @author Dmytro Kuzmin
  */
-public class DependencyHelper {
+public class DependencyConfigurer {
 
     private static final String MODEL_COMPILER_PLUGIN_NAME = "spine-model-compiler";
 
@@ -60,22 +60,22 @@ public class DependencyHelper {
     private final Project project;
     private final Configuration configuration;
 
-    private DependencyHelper(Project project, Configuration configuration) {
+    private DependencyConfigurer(Project project, Configuration configuration) {
         this.project = project;
         this.configuration = configuration;
     }
 
     /**
-     * Create the {@code DependencyHelper} for the given project and configuration.
+     * Create the {@code DependencyConfigurer} for the given project and configuration.
      *
      * @param project       the project
      * @param configuration the configuration
-     * @return the {@code DependencyHelper} instance
+     * @return the {@code DependencyConfigurer} instance
      */
-    public static DependencyHelper createFor(Project project, Configuration configuration) {
+    public static DependencyConfigurer createFor(Project project, Configuration configuration) {
         checkNotNull(project);
         checkNotNull(configuration);
-        return new DependencyHelper(project, configuration);
+        return new DependencyConfigurer(project, configuration);
     }
 
     /**
@@ -169,6 +169,6 @@ public class DependencyHelper {
      * @return the logger for this class
      */
     private static Logger log() {
-        return LoggerFactory.getLogger(DependencyHelper.class);
+        return LoggerFactory.getLogger(DependencyConfigurer.class);
     }
 }

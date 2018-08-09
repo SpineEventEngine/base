@@ -32,7 +32,7 @@ import java.util.List;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Utilities related to working with Spine-custom Error Prone checks and
+ * Utilities related to the classes working with Spine-custom Error Prone checks and the
  * {@link io.spine.tools.gradle.compiler.ErrorProneChecksPlugin}.
  *
  * @author Dmytro Kuzmin
