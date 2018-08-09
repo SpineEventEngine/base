@@ -199,8 +199,8 @@ class TestsShould extends UtilityClassTest<Tests> {
     }
 
     @Nested
-    @DisplayName("Assert values with inaccuracy")
-    class AssertWithInaccuracy {
+    @DisplayName("Assert values in delta")
+    class AssertInDelta {
 
         private long recentTime;
 
