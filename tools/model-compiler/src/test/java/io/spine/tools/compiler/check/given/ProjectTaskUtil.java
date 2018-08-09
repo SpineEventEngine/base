@@ -34,6 +34,9 @@ import static com.google.common.collect.testing.Helpers.assertEmpty;
 import static io.spine.testing.Verify.assertContains;
 
 /**
+ * The utility with several methods related to project tasks and required to properly test the
+ * {@link io.spine.tools.gradle.compiler.ErrorProneChecksPlugin} functionality.
+ *
  * @author Dmytro Kuzmin
  */
 public class ProjectTaskUtil {
