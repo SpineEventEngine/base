@@ -20,7 +20,7 @@
 
 package io.spine.tools.gradle.compiler;
 
-import io.spine.tools.gradle.compiler.given.SpineCheckerPluginTestEnv.ResolvingSpineCheckerPlugin;
+import io.spine.tools.gradle.compiler.given.ErrorProneChecksPluginTestEnv.ResolvingPlugin;
 import org.gradle.api.Project;
 import org.junit.Before;
 import org.junit.Rule;
@@ -35,7 +35,7 @@ import static org.junit.Assert.assertNull;
 /**
  * @author Dmytro Kuzmin
  */
-public class SpineCheckExtensionShould {
+public class ErrorProneChecksExtensionShould {
 
     private Project project;
 
@@ -46,25 +46,25 @@ public class SpineCheckExtensionShould {
     public void setUp() {
         project = newProject(projectDir.getRoot());
         project.getPluginManager()
-               .apply(ResolvingSpineCheckerPlugin.class);
+               .apply(ResolvingPlugin.class);
     }
 
     @Test
     public void return_use_validating_builder_severity() {
         final Severity expected = ERROR;
         extension().useValidatingBuilder = expected;
-        final Severity actual = SpineCheckExtension.getUseValidatingBuilder(project);
+        final Severity actual = ErrorProneChecksExtension.getUseValidatingBuilder(project);
         assertEquals(expected, actual);
     }
 
     @Test
     public void return_null_use_validating_builder_severity_if_not_set() {
-        final Severity severity = SpineCheckExtension.getUseValidatingBuilder(project);
+        final Severity severity = ErrorProneChecksExtension.getUseValidatingBuilder(project);
         assertNull(severity);
     }
 
-    private SpineCheckExtension extension() {
-        return (SpineCheckExtension) project.getExtensions()
-                                            .getByName(SpineCheckerPlugin.extensionName());
+    private ErrorProneChecksExtension extension() {
+        return (ErrorProneChecksExtension) project.getExtensions()
+                                                  .getByName(ErrorProneChecksPlugin.extensionName());
     }
 }

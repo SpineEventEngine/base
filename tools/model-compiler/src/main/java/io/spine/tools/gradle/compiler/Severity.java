@@ -21,7 +21,7 @@
 package io.spine.tools.gradle.compiler;
 
 /**
- * The severity of the Spine checks.
+ * The severity of the Spine Error Prone Checks.
  *
  * <p>Values of this enum correspond to the possible Error Prone severity command line flags.
  * See <a href="http://errorprone.info/docs/flags">the flags specification</a>.

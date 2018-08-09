@@ -43,14 +43,14 @@ import java.util.List;
 import java.util.Optional;
 
 import static io.spine.tools.gradle.ConfigurationName.CLASSPATH;
-import static io.spine.tools.gradle.compiler.SpineCheckExtension.getUseValidatingBuilder;
+import static io.spine.tools.gradle.compiler.ErrorProneChecksExtension.getUseValidatingBuilder;
 
 /**
- * A Gradle plugin which configures the project to run Spine checks during compilation stage.
+ * A Gradle plugin which configures the project to run Spine Error Prone Checks during the
+ * compilation stage.
  *
  * <p>To work, this plugin requires <a href="https://github.com/tbroyer/gradle-errorprone-plugin">
- * the Error Prone plugin</a> applied to the project, as the Spine checks are based on the Error
- * Prone custom checks.
+ * the Error Prone plugin</a> to be applied to the project.
  *
  * <p>The plugin adds a {@code spine-errorprone-checks} dependency to the project's
  * {@code annotationProcessor} configuration. For the older Gradle versions (pre {@code 4.6}),
@@ -74,7 +74,7 @@ import static io.spine.tools.gradle.compiler.SpineCheckExtension.getUseValidatin
  * <pre>
  * {@code
  *
- *   spineChecker {
+ *   spineErrorProneChecks {
  *      useValidatingBuilder = "ERROR"
  *   }
  * }
@@ -85,9 +85,9 @@ import static io.spine.tools.gradle.compiler.SpineCheckExtension.getUseValidatin
  * @author Dmytro Kuzmin
  * @see io.spine.validate.ValidatingBuilder
  */
-public class SpineCheckerPlugin extends SpinePlugin {
+public class ErrorProneChecksPlugin extends SpinePlugin {
 
-    private static final String EXTENSION_NAME = "spineCheck";
+    private static final String EXTENSION_NAME = "spineErrorProneChecks";
     private static final String ERROR_PRONE_PLUGIN_ID = "net.ltgt.errorprone";
 
     @VisibleForTesting
@@ -114,9 +114,9 @@ public class SpineCheckerPlugin extends SpinePlugin {
     @Override
     public void apply(Project project) {
         project.getExtensions()
-               .create(extensionName(), SpineCheckExtension.class);
+               .create(extensionName(), ErrorProneChecksExtension.class);
         Configuration preprocessorConfig = setupPreprocessorConfig(project);
-        boolean dependencyResolved = addSpineCheckerDependency(preprocessorConfig, project);
+        boolean dependencyResolved = addErrorProneChecksDependency(preprocessorConfig, project);
         if (!dependencyResolved) {
             return;
         }
@@ -159,7 +159,7 @@ public class SpineCheckerPlugin extends SpinePlugin {
      * @param project       the project to which this configuration belongs
      * @return {@code true} if the dependency was resolved successfully and {@code false} otherwise
      */
-    private boolean addSpineCheckerDependency(Configuration configuration, Project project) {
+    private boolean addErrorProneChecksDependency(Configuration configuration, Project project) {
         Optional<String> versionToUse = acquireModelCompilerVersion(project);
         if (!versionToUse.isPresent()) {
             log().debug("Can't acquire model compiler version for the project {}",
@@ -168,9 +168,9 @@ public class SpineCheckerPlugin extends SpinePlugin {
         }
         String version = versionToUse.get();
 
-        boolean isResolvable = isSpineCheckerVersionResolvable(version, configuration);
+        boolean isResolvable = isChecksVersionResolvable(version, configuration);
         if (isResolvable) {
-            dependOnSpineChecker(version, configuration);
+            dependOnErrorProneChecks(version, configuration);
         }
         return isResolvable;
     }
@@ -191,8 +191,8 @@ public class SpineCheckerPlugin extends SpinePlugin {
     }
 
     /**
-     * Adds the action configuring Spine checks severity to the {@code projectEvaluated} stage of
-     * the project.
+     * Adds the action configuring Spine Error Prone Checks severity to the {@code projectEvaluated}
+     * stage of the project.
      *
      * @param project the project for which to configure the severity
      */
@@ -239,9 +239,9 @@ public class SpineCheckerPlugin extends SpinePlugin {
      * <p>Uses the configuration copy to not resolve the given configuration itself.
      */
     @VisibleForTesting
-    protected boolean isSpineCheckerVersionResolvable(String version, Configuration configuration) {
+    protected boolean isChecksVersionResolvable(String version, Configuration configuration) {
         Configuration configCopy = configuration.copy();
-        dependOnSpineChecker(version, configCopy);
+        dependOnErrorProneChecks(version, configCopy);
         ResolvedConfiguration resolved = configCopy.getResolvedConfiguration();
         boolean isResolvable = !resolved.hasError();
         return isResolvable;
@@ -250,7 +250,7 @@ public class SpineCheckerPlugin extends SpinePlugin {
     /**
      * Adds the {@code spine-erroprone-checks} dependency to the given configuration.
      */
-    private void dependOnSpineChecker(String dependencyVersion, Configuration configuration) {
+    private void dependOnErrorProneChecks(String dependencyVersion, Configuration configuration) {
         log().debug("Adding dependency on {}:{}:{} to the {} configuration",
                     SPINE_TOOLS_GROUP, SPINE_CHECKER_MODULE, dependencyVersion,
                     PREPROCESSOR_CONFIG_NAME);
@@ -288,13 +288,13 @@ public class SpineCheckerPlugin extends SpinePlugin {
     }
 
     /**
-     * Adds command line flags necessary to configure Spine check severities to all
+     * Adds command line flags necessary to configure Spine Error Prone Checks severities to all
      * {@code JavaCompile} tasks of the project.
      */
     private void configureCheckSeverity(Project project) {
         if (!hasErrorPronePlugin(project)) {
-            log().debug("Cannot configure Spine checks severity as Error Prone plugin is not " +
-                                "applied to the project {}.", project.getName());
+            log().debug("Cannot configure Spine Error Prone Checks severity as the Error Prone " +
+                                "plugin is not applied to the project {}.", project.getName());
             return;
         }
         Severity defaultSeverity = Extension.getSpineCheckSeverity(project);
@@ -306,7 +306,7 @@ public class SpineCheckerPlugin extends SpinePlugin {
      * the project.
      *
      * <p>Uses default severity set in the {@code modelCompiler} extension if set and not
-     * overridden by the more specific {@code spineChecker} extension.
+     * overridden by the more specific {@code spineErrorProneChecks} extension.
      */
     @SuppressWarnings("ConstantConditions") // Checking nullable argument for null.
     private void

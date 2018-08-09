@@ -23,7 +23,7 @@ package io.spine.tools.gradle.compiler;
 import org.gradle.api.Project;
 
 /**
- * The Spine Checker plugin extension.
+ * The Spine Error Prone Checks plugin extension.
  *
  * <p>Allows configuring severity for all the checks applied to the project.
  *
@@ -31,14 +31,14 @@ import org.gradle.api.Project;
  * @see Severity
  */
 @SuppressWarnings({"PublicField", "WeakerAccess", "TypeMayBeWeakened"})
-public class SpineCheckExtension {
+public class ErrorProneChecksExtension {
 
     public Severity useValidatingBuilder;
 
     public static Severity getUseValidatingBuilder(Project project) {
-        SpineCheckExtension extension = (SpineCheckExtension)
+        ErrorProneChecksExtension extension = (ErrorProneChecksExtension)
                 project.getExtensions()
-                       .getByName(SpineCheckerPlugin.extensionName());
+                       .getByName(ErrorProneChecksPlugin.extensionName());
         return extension.useValidatingBuilder;
     }
 }

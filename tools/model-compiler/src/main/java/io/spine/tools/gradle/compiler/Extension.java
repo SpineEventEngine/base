@@ -154,12 +154,12 @@ public class Extension {
     public List<String> dirsToClean = new LinkedList<>();
 
     /**
-     * The severity of the Spine checks.
+     * The severity of the Spine Error Prone Checks.
      *
      * <p>If this value is not set, the default severities are used, which are specific for the
      * each check.
      *
-     * <p>May be overridden by the values provided by the {@link SpineCheckExtension}.
+     * <p>May be overridden by the values provided by the {@link ErrorProneChecksExtension}.
      */
     public Severity spineCheckSeverity;
 
@@ -316,7 +316,7 @@ public class Extension {
 
     public static Severity getSpineCheckSeverity(Project project) {
         Severity result = spineProtobuf(project).spineCheckSeverity;
-        log().debug("The severity of Spine checks is {}",
+        log().debug("The severity of Spine-custom Error Prone checks is {}",
                     (result == null ? "unset" : result.name()));
         return result;
     }
