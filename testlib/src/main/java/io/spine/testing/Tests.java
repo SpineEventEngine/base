@@ -183,7 +183,7 @@ public class Tests {
      * @param delta  the maximum expected difference between the values
      */
     public static void assertInDelta(long expectedValue, long actualValue, long delta) {
-        long diffSec = abs(expectedValue - actualValue);
-        assertTrue(diffSec <= delta);
+        long actualDelta = abs(expectedValue - actualValue);
+        assertTrue(actualDelta <= delta);
     }
 }
