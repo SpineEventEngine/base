@@ -18,16 +18,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.tools.gradle.compiler;
+
+import org.gradle.api.Project;
+
 /**
- * The versions of the libraries used.
+ * The Error Prone Checks plugin extension.
  *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
+ * <p>Allows configuring severity for all the Spine-custom Error Prone checks applied to the
+ * project.
+ *
+ * @author Dmytro Kuzmin
+ * @see Severity
  */
+@SuppressWarnings({"PublicField", "WeakerAccess", "TypeMayBeWeakened"})
+public class ErrorProneChecksExtension {
 
-final def SPINE_VERSION = '0.10.64-SNAPSHOT'
+    public Severity useValidatingBuilder;
 
-ext {
-    spineVersion = SPINE_VERSION
-    versionToPublish = SPINE_VERSION
+    public static Severity getUseValidatingBuilder(Project project) {
+        ErrorProneChecksExtension extension = (ErrorProneChecksExtension)
+                project.getExtensions()
+                       .getByName(ErrorProneChecksPlugin.extensionName());
+        return extension.useValidatingBuilder;
+    }
 }

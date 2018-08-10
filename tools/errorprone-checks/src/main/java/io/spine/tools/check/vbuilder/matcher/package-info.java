@@ -19,15 +19,13 @@
  */
 
 /**
- * The versions of the libraries used.
- *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
+ * This package contains the {@linkplain io.spine.tools.check.BugPatternMatcher matchers} for the
+ * {@link io.spine.tools.check.vbuilder.UseValidatingBuilder} bug pattern.
  */
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.tools.check.vbuilder.matcher;
 
-final def SPINE_VERSION = '0.10.64-SNAPSHOT'
+import com.google.errorprone.annotations.CheckReturnValue;
 
-ext {
-    spineVersion = SPINE_VERSION
-    versionToPublish = SPINE_VERSION
-}
+import javax.annotation.ParametersAreNonnullByDefault;

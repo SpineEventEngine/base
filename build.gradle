@@ -62,6 +62,7 @@ ext {
     projectsToPublish = [
         'base',
         'testlib',
+        'errorprone-checks',
 
         // Gradle plugins
         'javadoc-filter',

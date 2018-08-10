@@ -18,16 +18,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.tools.gradle.compiler;
+
 /**
- * The versions of the libraries used.
+ * The severity of the Spine Error Prone Checks.
  *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
+ * <p>Values of this enum correspond to the possible Error Prone severity command line flags.
+ * See <a href="http://errorprone.info/docs/flags">the flags specification</a>.
+ *
+ * @author Dmytro Kuzmin
  */
+public enum Severity {
 
-final def SPINE_VERSION = '0.10.64-SNAPSHOT'
-
-ext {
-    spineVersion = SPINE_VERSION
-    versionToPublish = SPINE_VERSION
+    OFF,
+    WARN,
+    ERROR
 }
