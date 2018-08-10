@@ -145,7 +145,7 @@ class LoggingFacadeTest {
 
         @Nested
         @DisplayName("with format and one argument")
-        class OneArgument {
+        class SingleArgument {
 
             @Test
             void _trace() {
