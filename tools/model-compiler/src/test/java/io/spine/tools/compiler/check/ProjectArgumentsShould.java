@@ -26,8 +26,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
-import static io.spine.tools.compiler.check.given.ProjectTaskUtil.assertCompileTasksContain;
-import static io.spine.tools.compiler.check.given.ProjectTaskUtil.assertCompileTasksEmpty;
+import static io.spine.tools.compiler.check.given.ProjectConfigurations.assertCompileTasksContain;
+import static io.spine.tools.compiler.check.given.ProjectConfigurations.assertCompileTasksEmpty;
 import static io.spine.tools.gradle.compiler.given.ModelCompilerTestEnv.newProject;
 
 /**

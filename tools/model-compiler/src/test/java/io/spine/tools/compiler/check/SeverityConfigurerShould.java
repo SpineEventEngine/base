@@ -30,8 +30,8 @@ import org.gradle.api.plugins.ExtensionContainer;
 import org.junit.Before;
 import org.junit.Test;
 
-import static io.spine.tools.compiler.check.given.ProjectTaskUtil.assertCompileTasksContain;
-import static io.spine.tools.compiler.check.given.ProjectTaskUtil.assertCompileTasksEmpty;
+import static io.spine.tools.compiler.check.given.ProjectConfigurations.assertCompileTasksContain;
+import static io.spine.tools.compiler.check.given.ProjectConfigurations.assertCompileTasksEmpty;
 import static io.spine.tools.gradle.compiler.Severity.ERROR;
 import static io.spine.tools.gradle.compiler.Severity.OFF;
 import static io.spine.tools.gradle.compiler.given.ModelCompilerTestEnv.newProject;

@@ -29,7 +29,7 @@ import org.junit.Test;
 
 import static io.spine.tools.compiler.check.PreprocessorConfigurer.PREPROCESSOR_ARG;
 import static io.spine.tools.compiler.check.PreprocessorConfigurer.PREPROCESSOR_CONFIG_NAME;
-import static io.spine.tools.compiler.check.given.ProjectTaskUtil.assertCompileTasksContain;
+import static io.spine.tools.compiler.check.given.ProjectConfigurations.assertCompileTasksContain;
 import static io.spine.tools.gradle.compiler.given.ModelCompilerTestEnv.newProject;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;

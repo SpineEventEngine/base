@@ -20,29 +20,27 @@
 
 package io.spine.tools.compiler.check.given;
 
-import org.gradle.BuildListener;
 import org.gradle.api.Project;
-import org.gradle.api.internal.GradleInternal;
 import org.gradle.api.tasks.TaskCollection;
-import org.gradle.api.tasks.TaskContainer;
-import org.gradle.api.tasks.compile.CompileOptions;
 import org.gradle.api.tasks.compile.JavaCompile;
 
 import java.util.List;
 
 import static com.google.common.collect.testing.Helpers.assertEmpty;
 import static io.spine.testing.Verify.assertContains;
+import static io.spine.tools.compiler.check.given.ProjectTasks.acquireJavaCompileTasks;
+import static io.spine.tools.compiler.check.given.ProjectTasks.obtainCompilerArgs;
 
 /**
- * The utility with several methods related to project tasks and required to properly test the
- * {@link io.spine.tools.gradle.compiler.ErrorProneChecksPlugin} functionality.
+ * A test helper providing various {@code assert...} methods related to the {@link Project}
+ * configurations, tasks and their arguments.
  *
  * @author Dmytro Kuzmin
  */
-public class ProjectTaskUtil {
+public class ProjectConfigurations {
 
     /** Prevents instantiation of this utility class. */
-    private ProjectTaskUtil() {
+    private ProjectConfigurations() {
     }
 
     /**
@@ -73,19 +71,6 @@ public class ProjectTaskUtil {
             List<String> compilerArgs = obtainCompilerArgs(task);
             assertHasAllArgs(compilerArgs, args);
         }
-    }
-
-    private static TaskCollection<JavaCompile> acquireJavaCompileTasks(Project project) {
-        GradleInternal gradle = (GradleInternal) project.getGradle();
-        BuildListener buildListenerBroadcaster = gradle.getBuildListenerBroadcaster();
-        buildListenerBroadcaster.projectsEvaluated(project.getGradle());
-        TaskContainer tasks = project.getTasks();
-        return tasks.withType(JavaCompile.class);
-    }
-
-    private static List<String> obtainCompilerArgs(JavaCompile task) {
-        CompileOptions options = task.getOptions();
-        return options.getCompilerArgs();
     }
 
     private static void assertHasAllArgs(List<String> compilerArgs, String[] args) {
