@@ -137,10 +137,10 @@ public interface Logging {
      * @param params      the arguments for the formatted string
      */
     @FormatMethod
-    public static void warn(Logger log,
-                            Throwable th,
-                            @FormatString String errorFormat,
-                            Object @Nullable ... params) {
+    static void warn(Logger log,
+                     Throwable th,
+                     @FormatString String errorFormat,
+                     Object @Nullable ... params) {
         checkNotNull(log);
         checkNotNull(th);
         checkNotNull(errorFormat);
