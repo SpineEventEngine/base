@@ -38,7 +38,18 @@ import static com.google.common.base.Suppliers.memoize;
 import static java.lang.String.format;
 
 /**
- * Utilities for working with logging.
+ * Utility interface for objects that require logging output.
+ *
+ * <p>Such an object need to implement this interface and obtain a {@link Logger} instance
+ * associated with the class of the object via {@link #log()} method.
+ *
+ * <p>In addition to this, this interface provides shortcut methods for the popular
+ * logging interface methods. These shortcut methods are named after those provided by
+ * {@link Logger}, but with the underscore as the prefix: {@link #_trace(String) _trace()},
+ * {@link #_debug(String) _debuf()} and so on.
+ *
+ * @apiNote The underscore-based convention is selected for making logging calls more visible and
+ *          distinguishable from the real code.
  *
  * @author Alexander Yevsyukov
  */
@@ -91,7 +102,9 @@ public interface Logging {
      *
      * @param cls the class for which to supply a logger
      * @return new supplier
+     * @deprecated implement {@link Logging} and use {@link #log()} instead
      */
+    @Deprecated
     static Supplier<Logger> supplyFor(Class<?> cls) {
         checkNotNull(cls);
         Supplier<Logger> supplier = memoize(() -> getLogger(cls));
@@ -138,17 +151,31 @@ public interface Logging {
         }
     }
 
-    /**
-     * Logs a message at the {@linkplain Logger#trace(String) TRACE} level.
-     */
+    /** Logs a message at the {@linkplain Logger#trace(String) TRACE} level. */
     default void _trace(String msg) {
         log().trace(msg);
     }
 
     /**
-     * Logs a message at the {@linkplain Logger#debug(String) DEBUG} level.
+     * Logs a message at the {@linkplain Logger#trace(String) TRACE} level according
+     * to the specified format and argument.
      */
+    default void _trace(String format, Object arg) {
+        log().trace(format, arg);
+    }
+
+    /** Logs a message at the {@linkplain Logger#debug(String) DEBUG} level. */
     default void _debug(String msg) {
         log().debug(msg);
+    }
+
+    /** Logs a message at the {@linkplain Logger#warn(String) WARN} level. */
+    default void _warn(String msg) {
+        log().warn(msg);
+    }
+
+    /** Logs a message at the {@linkplain Logger#error(String) ERROR} level. */
+    default void _error(String msg) {
+        log().error(msg);
     }
 }

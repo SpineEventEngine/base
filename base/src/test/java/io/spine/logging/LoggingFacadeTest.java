@@ -44,7 +44,7 @@ import static io.spine.logging.Logging.redirect;
 /**
  * This test suite tests default implementations of the {@link Logging} interface.
  */
-@DisplayName("Logging object should")
+@DisplayName("Logging should")
 class LoggingFacadeTest {
 
     private Logging object;
@@ -65,8 +65,8 @@ class LoggingFacadeTest {
     }
 
     @Nested
-    @DisplayName("Support level")
-    class LogLevel {
+    @DisplayName("have shortcut methods")
+    class ShortcutMethod {
 
         private SubstituteLogger logger;
         private Queue<SubstituteLoggingEvent> queue;
@@ -78,34 +78,56 @@ class LoggingFacadeTest {
             redirect(logger, queue);
         }
 
-        @Test
-        @DisplayName("trace")
-        void trace() {
-            assertMethod(object::_trace, Level.TRACE);
-        }
+        @Nested
+        @DisplayName("with one message parameter")
+        class WithMessage {
 
-        @Test
-        @DisplayName("debug")
-        void debug() {
-            // We pass here `TRACE` (instead of `DEBUG`) because of this bug in Slf4J:
-            //   https://jira.qos.ch/browse/SLF4J-376
-            assertMethod(object::_debug, Level.TRACE);
-        }
+            @Test
+            void _trace() {
+                assertMethod(object::_trace, Level.TRACE);
+            }
 
-        /**
-         * Asserts that a method generates a logging event of the correct level,
-         * and passes the message to the event.
-         */
-        private void assertMethod(Consumer<String> method, Level level) {
-            String message = randomString();
-            method.accept(message);
+            /**
+             * @implNote This method passes {@code TRACE} instead of {@code DEBUG}
+             * because of the <a href="https://jira.qos.ch/browse/SLF4J-376">bug</a>
+             * in {@link org.slf4j.event.EventRecodingLogger#debug(String)
+             * EventRecodingLogger.debug(String)}.
+             *
+             * <p>This issue is not yet closed, but the
+             * <a href="https://github.com/qos-ch/slf4j/blob/master/slf4j-api/src/main/java/org/slf4j/event/EventRecodingLogger.java">
+             * EventRecodingLogger</a> class in the master branch of the coming v1.8 of Slf4J
+             * already fixes this issue.
+             */
+            @Test
+            void _debug() {
+                assertMethod(object::_debug, Level.TRACE);
+            }
 
-            LogEventSubject assertThat = assertThat(queue.poll());
-            assertThat.isNotNull();
-            assertThat.hasMessageThat()
-                      .isEqualTo(message);
-            assertThat.hasLevelThat()
-                      .isEqualTo(level);
+            @Test
+            void _warn() {
+                assertMethod(object::_warn, Level.WARN);
+            }
+
+            @Test
+            void _error() {
+                assertMethod(object::_error, Level.ERROR);
+            }
+
+            /**
+             * Asserts that a method generates a logging event of the correct level,
+             * and passes the message to the event.
+             */
+            private void assertMethod(Consumer<String> method, Level level) {
+                String message = randomString();
+                method.accept(message);
+
+                LogEventSubject assertThat = assertThat(queue.poll());
+                assertThat.isNotNull();
+                assertThat.hasMessageThat()
+                          .isEqualTo(message);
+                assertThat.hasLevelThat()
+                          .isEqualTo(level);
+            }
         }
     }
 }
