@@ -21,8 +21,8 @@
 package io.spine.testing.logging;
 
 import com.google.common.truth.ComparableSubject;
-import com.google.common.truth.DefaultSubject;
 import com.google.common.truth.FailureMetadata;
+import com.google.common.truth.ObjectArraySubject;
 import com.google.common.truth.StandardSubjectBuilder;
 import com.google.common.truth.StringSubject;
 import com.google.common.truth.Subject;
@@ -47,9 +47,16 @@ public class LogEventSubject extends Subject<LogEventSubject, SubstituteLoggingE
         return check.that(actual().getMessage());
     }
 
+    /** Obtains subject for the logging level. */
     public ComparableSubject<?, Level> hasLevelThat() {
         StandardSubjectBuilder check = check("getLevel()");
         return check.that(actual().getLevel());
+    }
+
+    /** Obtains subject for the logging event arguments. */
+    public ObjectArraySubject hasArgumentsThat() {
+        StandardSubjectBuilder check = check("getArguments");
+        return check.that(actual().getArgumentArray());
     }
 
     /** Obtains factory for creating logging event subjects for actual values. */
