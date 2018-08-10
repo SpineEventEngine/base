@@ -20,55 +20,81 @@
 
 package io.spine.base;
 
+import com.google.common.truth.DefaultSubject;
+import com.google.common.truth.Subject;
 import com.google.protobuf.Timestamp;
 import io.spine.base.Time.SystemTimeProvider;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
+import static com.google.common.truth.Truth.assertThat;
 import static com.google.protobuf.util.Timestamps.subtract;
 import static io.spine.base.Time.getCurrentTime;
 import static io.spine.base.Time.resetProvider;
 import static io.spine.base.Time.setProvider;
-import static io.spine.base.Time.systemTime;
-import static io.spine.base.given.TimeTestEnv.ConstantTimeProvider;
-import static io.spine.base.given.TimeTestEnv.DURATION_1_MINUTE;
-import static io.spine.base.given.TimeTestEnv.DURATION_5_MINUTES;
+
+import io.spine.base.given.ConstantTimeProvider;
+import static io.spine.base.given.GivenDurations.DURATION_1_MINUTE;
+import static io.spine.base.given.GivenDurations.DURATION_5_MINUTES;
 import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 
 /**
  * @author Mykhailo Drachuk
  */
-public class TimeShould {
+@DisplayName("Time class should")
+class TimeTest {
+
+    @AfterEach
+    void tearDown() {
+        resetProvider();
+    }
 
     @Test
-    public void accept_time_provider() {
+    @DisplayName("accept TimeProvider")
+    void acceptProvider() {
         Timestamp fiveMinutesAgo = subtract(getCurrentTime(), DURATION_5_MINUTES);
 
         setProvider(new ConstantTimeProvider(fiveMinutesAgo));
 
-        assertEquals(fiveMinutesAgo, getCurrentTime());
+        assertCurrentTime().isEqualTo(fiveMinutesAgo);
+    }
+
+    private static Subject<DefaultSubject, Object> assertCurrentTime() {
+        return assertThat(getCurrentTime());
     }
 
     @Test
-    public void reset_time_provider_to_default() {
-        Timestamp aMinuteAgo = subtract(systemTime(), DURATION_1_MINUTE);
+    @DisplayName("resent TimeProvider to default value")
+    void reset() {
+        Timestamp aMinuteAgo = subtract(Time.systemTime(), DURATION_1_MINUTE);
 
         setProvider(new ConstantTimeProvider(aMinuteAgo));
         resetProvider();
 
-        assertNotEquals(aMinuteAgo, getCurrentTime());
+        assertCurrentTime().isNotEqualTo(aMinuteAgo);
+    }
+
+    @Nested
+    @DisplayName("Have SystemTimeProvider")
+    class SystemTime {
+
+        @Test
+        @DisplayName("which is singleton")
+        void isSingleton() {
+            assertNotNull(SystemTimeProvider.INSTANCE);
+            assertHasPrivateParameterlessCtor(SystemTimeProvider.class);
+        }
     }
 
     @Test
-    public void obtain_system_time_millis() {
-        assertNotEquals(0, systemTime());
-    }
+    @DisplayName("obtain system time event if TimeProvider is set")
+    void systemTime() {
+        setProvider(new ConstantTimeProvider(Timestamp.getDefaultInstance()));
 
-    @Test
-    public void have_singleton_system_time_provider() {
-        assertNotNull(SystemTimeProvider.INSTANCE);
-        assertHasPrivateParameterlessCtor(SystemTimeProvider.class);
+        assertNotEquals(0, Time.systemTime());
     }
 }
