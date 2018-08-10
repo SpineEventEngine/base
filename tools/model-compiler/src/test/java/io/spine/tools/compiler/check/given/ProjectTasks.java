@@ -54,7 +54,8 @@ class ProjectTasks {
         BuildListener buildListenerBroadcaster = gradle.getBuildListenerBroadcaster();
         buildListenerBroadcaster.projectsEvaluated(project.getGradle());
         TaskContainer tasks = project.getTasks();
-        return tasks.withType(JavaCompile.class);
+        TaskCollection<JavaCompile> javaCompileTasks = tasks.withType(JavaCompile.class);
+        return javaCompileTasks;
     }
 
     /**
@@ -65,6 +66,7 @@ class ProjectTasks {
      */
     static List<String> obtainCompilerArgs(JavaCompile task) {
         CompileOptions options = task.getOptions();
-        return options.getCompilerArgs();
+        List<String> compilerArgs = options.getCompilerArgs();
+        return compilerArgs;
     }
 }
