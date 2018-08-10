@@ -36,6 +36,8 @@ import static io.spine.base.Time.resetProvider;
 import static io.spine.base.Time.setProvider;
 
 import io.spine.base.given.ConstantTimeProvider;
+
+import static io.spine.base.Time.systemTime;
 import static io.spine.base.given.GivenDurations.DURATION_1_MINUTE;
 import static io.spine.base.given.GivenDurations.DURATION_5_MINUTES;
 import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
@@ -70,7 +72,7 @@ class TimeTest {
     @Test
     @DisplayName("resent TimeProvider to default value")
     void reset() {
-        Timestamp aMinuteAgo = subtract(Time.systemTime(), DURATION_1_MINUTE);
+        Timestamp aMinuteAgo = subtract(systemTime(), DURATION_1_MINUTE);
 
         setProvider(new ConstantTimeProvider(aMinuteAgo));
         resetProvider();
@@ -92,9 +94,9 @@ class TimeTest {
 
     @Test
     @DisplayName("obtain system time event if TimeProvider is set")
-    void systemTime() {
+    void gettingSystemTime() {
         setProvider(new ConstantTimeProvider(Timestamp.getDefaultInstance()));
 
-        assertNotEquals(0, Time.systemTime());
+        assertNotEquals(0, systemTime());
     }
 }
