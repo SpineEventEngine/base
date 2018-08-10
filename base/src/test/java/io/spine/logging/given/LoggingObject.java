@@ -18,21 +18,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.logging;
+package io.spine.logging.given;
 
-import io.spine.testing.UtilityClassTest;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import io.spine.logging.Logging;
 
 /**
- * @author Alexander Yevsyukov
+ * A test dummy class which implements the {@link Logging} interface.
  */
-@DisplayName("Logging interface should")
-class LoggingTest {
-
-    @Test
-    @DisplayName("obtain Logger for an instance")
-    void obtainLogger() {
-
-    }
+public class LoggingObject implements Logging {
 }

@@ -18,21 +18,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.logging;
+package io.spine.testing.logging;
 
 import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Alexander Yevsyukov
  */
-@DisplayName("Logging interface should")
-class LoggingTest {
+@DisplayName("LogTruth should")
+class LogTruthTest extends UtilityClassTest<LogTruth> {
 
-    @Test
-    @DisplayName("obtain Logger for an instance")
-    void obtainLogger() {
-
+    LogTruthTest() {
+        super(LogTruth.class);
     }
 }

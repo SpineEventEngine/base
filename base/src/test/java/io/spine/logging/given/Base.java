@@ -18,21 +18,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.logging;
+package io.spine.logging.given;
 
-import io.spine.testing.UtilityClassTest;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import io.spine.logging.Logging;
+import org.slf4j.Logger;
+
+import java.util.function.Supplier;
 
 /**
- * @author Alexander Yevsyukov
+ * The root of the class hierarchy with the logger supplier.
  */
-@DisplayName("Logging interface should")
-class LoggingTest {
+public class Base {
 
-    @Test
-    @DisplayName("obtain Logger for an instance")
-    void obtainLogger() {
+    private final Supplier<Logger> loggerSupplier = Logging.supplyFor(getClass());
 
+    public Logger log() {
+        return loggerSupplier.get();
     }
 }

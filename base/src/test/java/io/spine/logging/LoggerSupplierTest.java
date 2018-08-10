@@ -20,7 +20,9 @@
 
 package io.spine.logging;
 
-import io.spine.logging.given.LoggingTestEnv;
+import io.spine.logging.given.Base;
+import io.spine.logging.given.ChildOne;
+import io.spine.logging.given.ChildTwo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -66,9 +68,9 @@ class LoggerSupplierTest {
     @Test
     @DisplayName("create a logger for each class in hierarchy")
     void classHierarchy() {
-        Logger baseLogger = new LoggingTestEnv.Base().log();
-        Logger childOneLogger = new LoggingTestEnv.ChildOne().log();
-        Logger childTwoLogger = new LoggingTestEnv.ChildTwo().log();
+        Logger baseLogger = new Base().log();
+        Logger childOneLogger = new ChildOne().log();
+        Logger childTwoLogger = new ChildTwo().log();
 
         assertNotSame(baseLogger, childOneLogger);
         assertNotSame(baseLogger, childTwoLogger);
@@ -78,9 +80,9 @@ class LoggerSupplierTest {
         assertNotEquals(baseLogger, childTwoLogger);
         assertNotEquals(childOneLogger, childTwoLogger);
 
-        assertLogger(baseLogger, LoggingTestEnv.Base.class);
-        assertLogger(childOneLogger, LoggingTestEnv.ChildOne.class);
-        assertLogger(childTwoLogger, LoggingTestEnv.ChildTwo.class);
+        assertLogger(baseLogger, Base.class);
+        assertLogger(childOneLogger, ChildOne.class);
+        assertLogger(childTwoLogger, ChildTwo.class);
     }
 
     /**

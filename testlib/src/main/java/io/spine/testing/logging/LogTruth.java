@@ -18,21 +18,35 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.logging;
+package io.spine.testing.logging;
 
-import io.spine.testing.UtilityClassTest;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import com.google.common.truth.DefaultSubject;
+import com.google.common.truth.Subject;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.event.SubstituteLoggingEvent;
+
+import static com.google.common.truth.Truth.assertAbout;
+import static com.google.common.truth.Truth.assert_;
 
 /**
+ * A set of static methods to begin a Truth assertion chain for logging types.
+ *
  * @author Alexander Yevsyukov
  */
-@DisplayName("Logging interface should")
-class LoggingTest {
+public final class LogTruth {
 
-    @Test
-    @DisplayName("obtain Logger for an instance")
-    void obtainLogger() {
+    /** Prevents instantiation of this utility class. */
+    private LogTruth() {
+    }
 
+    /** Creates a subject for the passed event. */
+    public static LogEventSubject assertThat(@Nullable SubstituteLoggingEvent event) {
+        return assertAbout(LogEventSubject.events()).that(event);
+    }
+
+    /** Creates a subject for the passed logger. */
+    public static Subject<DefaultSubject, Object> assertThat(@Nullable Logger actual) {
+        return assert_().that(actual);
     }
 }

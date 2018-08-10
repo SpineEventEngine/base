@@ -18,21 +18,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.logging;
-
-import io.spine.testing.UtilityClassTest;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
 /**
- * @author Alexander Yevsyukov
+ * This package provides Truth-based classes for testing logging.
  */
-@DisplayName("Logging interface should")
-class LoggingTest {
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.testing.logging;
 
-    @Test
-    @DisplayName("obtain Logger for an instance")
-    void obtainLogger() {
+import com.google.errorprone.annotations.CheckReturnValue;
 
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;

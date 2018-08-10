@@ -18,21 +18,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.logging;
+package io.spine.logging.given;
 
-import io.spine.testing.UtilityClassTest;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
-/**
- * @author Alexander Yevsyukov
- */
-@DisplayName("Logging interface should")
-class LoggingTest {
-
-    @Test
-    @DisplayName("obtain Logger for an instance")
-    void obtainLogger() {
-
-    }
+@SuppressWarnings("EmptyClass") // We need the class only to build the hierarchy.
+public class ChildOne extends Base {
 }

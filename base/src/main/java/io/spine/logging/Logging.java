@@ -26,8 +26,11 @@ import io.spine.base.Environment;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.event.EventRecodingLogger;
+import org.slf4j.event.SubstituteLoggingEvent;
 import org.slf4j.helpers.SubstituteLogger;
 
+import java.util.Queue;
 import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -39,10 +42,25 @@ import static java.lang.String.format;
  *
  * @author Alexander Yevsyukov
  */
-public class Logging {
+@SuppressWarnings("NewMethodNamingConvention")
+    // We provide methods prefixed with underscore to highlight the fact that these methods
+    // are for logging, and to make them visible.
+public interface Logging {
 
-    /** Prevents instantiation of this utility class. */
-    private Logging() {
+    /**
+     * Obtains logger associated with the class of this instance.
+     */
+    default Logger log() {
+        return LoggerClassValue.getFor(getClass());
+    }
+
+    /**
+     * Redirects logging to the passed logging event queue.
+     */
+    static void redirect(SubstituteLogger log, Queue<SubstituteLoggingEvent> queue) {
+        checkNotNull(log);
+        checkNotNull(queue);
+        log.setDelegate(new EventRecodingLogger(log, queue));
     }
 
     /**
@@ -74,7 +92,7 @@ public class Logging {
      * @param cls the class for which to supply a logger
      * @return new supplier
      */
-    public static Supplier<Logger> supplyFor(Class<?> cls) {
+    static Supplier<Logger> supplyFor(Class<?> cls) {
         checkNotNull(cls);
         Supplier<Logger> supplier = memoize(() -> getLogger(cls));
         return supplier;
@@ -93,16 +111,8 @@ public class Logging {
      * @param cls the class for which to create the logger
      * @return the logger instance
      */
-    public static Logger getLogger(Class<?> cls) {
-        Logger logger = LoggerFactory.getLogger(cls);
-        if (Environment.getInstance()
-                       .isTests()) {
-            SubstituteLogger substLogger = new SubstituteLogger(cls.getName(), null, true);
-            substLogger.setDelegate(logger);
-            return substLogger;
-        } else {
-            return logger;
-        }
+    static Logger getLogger(Class<?> cls) {
+        return LoggerClassValue.getFor(cls);
     }
 
     /**
@@ -126,5 +136,19 @@ public class Logging {
             String msg = format(errorFormat, params);
             log.warn(msg, th);
         }
+    }
+
+    /**
+     * Logs a message at the {@linkplain Logger#trace(String) TRACE} level.
+     */
+    default void _trace(String msg) {
+        log().trace(msg);
+    }
+
+    /**
+     * Logs a message at the {@linkplain Logger#debug(String) DEBUG} level.
+     */
+    default void _debug(String msg) {
+        log().debug(msg);
     }
 }
