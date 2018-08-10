@@ -18,28 +18,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = 'spine-base'
-
-include 'base'
-
-include 'testlib'
-
 /**
- * Includes a module and sets custom project directory to it.
+ * Test environment classes and utilities related to the
+ * {@link io.spine.tools.gradle.compiler.ErrorProneChecksPlugin} functionality.
  */
-final def module = { final String name, final String path ->
-    include name
-    project(":$name").projectDir = new File("$rootDir/$path")
-}
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.tools.compiler.check.given;
 
-module 'errorprone-checks',   'tools/errorprone-checks'
-module 'javadoc-filter',      'tools/javadoc-filter'
-module 'javadoc-prettifier',  'tools/javadoc-prettifier'
+import com.google.errorprone.annotations.CheckReturnValue;
 
-module 'model-compiler',      'tools/model-compiler'
-module 'plugin-base',         'tools/plugin-base'
-module 'reflections-plugin',  'tools/reflections-plugin'
-
-module 'protoc-plugin',       'tools/protoc-plugin'
-
-module 'plugin-testlib' ,     'tools/plugin-testlib'
+import javax.annotation.ParametersAreNonnullByDefault;
