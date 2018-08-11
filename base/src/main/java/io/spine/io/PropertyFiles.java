@@ -21,8 +21,7 @@
 package io.spine.io;
 
 import com.google.common.collect.ImmutableSet;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import io.spine.logging.Logging;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,7 +31,6 @@ import java.util.Properties;
 import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.logging.Logging.warn;
 
 /**
  * Utilities for working with property files.
@@ -56,44 +54,45 @@ public final class PropertyFiles {
      * @return set with loaded data
      */
     public static Set<Properties> loadAllProperties(String propsFilePath) {
-        checkNotNull(propsFilePath);
-        try {
-            return doLoad(propsFilePath);
-        } catch (IOException e) {
-            warn(log(), e, "Failed to load resources: %s", propsFilePath);
-            return ImmutableSet.of();
+        return Loader.INSTANCE.loadAllProperties(propsFilePath);
+    }
+
+    /**
+     * Performs loading of multiple property files from the specified path.
+     */
+    private static final class Loader implements Logging {
+
+        private static final Loader INSTANCE = new Loader();
+
+        private Set<Properties> loadAllProperties(String propsFilePath) {
+            checkNotNull(propsFilePath);
+            try {
+                return doLoad(propsFilePath);
+            } catch (IOException e) {
+                _warn(e, "Failed to load resources: {}", propsFilePath);
+                return ImmutableSet.of();
+            }
         }
-    }
 
-    private static Set<Properties> doLoad(String filePath)
-            throws IOException {
-        Iterator<URL> resources = ResourceFiles.tryLoadAll(filePath);
-        ImmutableSet.Builder<Properties> result = ImmutableSet.builder();
-        while (resources.hasNext()) {
-            URL resourceUrl = resources.next();
-            Properties properties = loadPropertiesFile(resourceUrl);
-            result.add(properties);
+        private Properties loadPropertiesFile(URL resourceUrl) {
+            Properties properties = new Properties();
+            try (InputStream inputStream = resourceUrl.openStream()) {
+                properties.load(inputStream);
+            } catch (IOException e) {
+                _warn(e, "Failed to load properties file from: %s", resourceUrl);
+            }
+            return properties;
         }
-        return result.build();
-    }
 
-    private static Properties loadPropertiesFile(URL resourceUrl) {
-        Properties properties = new Properties();
-        try (InputStream inputStream = resourceUrl.openStream()) {
-            properties.load(inputStream);
-        } catch (IOException e) {
-            warn(log(), e, "Failed to load properties file from: %s", resourceUrl);
+        private Set<Properties> doLoad(String filePath) throws IOException {
+            Iterator<URL> resources = ResourceFiles.tryLoadAll(filePath);
+            ImmutableSet.Builder<Properties> result = ImmutableSet.builder();
+            while (resources.hasNext()) {
+                URL resourceUrl = resources.next();
+                Properties properties = loadPropertiesFile(resourceUrl);
+                result.add(properties);
+            }
+            return result.build();
         }
-        return properties;
-    }
-
-    private static Logger log() {
-        return LogSingleton.INSTANCE.value;
-    }
-
-    private enum LogSingleton {
-        INSTANCE;
-        @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = LoggerFactory.getLogger(PropertyFiles.class);
     }
 }
