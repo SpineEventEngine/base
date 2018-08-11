@@ -31,6 +31,7 @@ import org.slf4j.helpers.SubstituteLogger;
 import java.util.Queue;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.logging.Util.logThrowable;
 import static java.lang.String.format;
 
 /**
@@ -66,6 +67,14 @@ import static java.lang.String.format;
 public interface Logging {
 
     /**
+     * Obtains Logger instance for the passed class.
+     * @apiNote The primary purpose of this method is to provide logging in static methods.
+     */
+    static Logger get(Class<?> cls) {
+        return LoggerClassValue.getFor(cls);
+    }
+
+    /**
      * Obtains logger associated with the class of this instance.
      */
     default Logger log() {
@@ -79,29 +88,6 @@ public interface Logging {
         checkNotNull(log);
         checkNotNull(queue);
         log.setDelegate(new EventRecodingLogger(log, queue));
-    }
-
-    /**
-     * Logs {@linkplain Logger#warn(String, Throwable) warning} with the formatted string.
-     *
-     * @param log         the logger for placing the warning
-     * @param th          the {@code Throwable} to log
-     * @param errorFormat the format string for the error message
-     * @param params      the arguments for the formatted string
-     */
-    @FormatMethod
-    static void warn(Logger log,
-                     Throwable th,
-                     @FormatString String errorFormat,
-                     Object @Nullable ... params) {
-        checkNotNull(log);
-        checkNotNull(th);
-        checkNotNull(errorFormat);
-        checkNotNull(params);
-        if (log.isWarnEnabled()) {
-            String msg = format(errorFormat, params);
-            log.warn(msg, th);
-        }
     }
 
     /*
@@ -213,6 +199,45 @@ public interface Logging {
         log().warn(format, arg1, arg2, arg3);
     }
 
+    /**
+     * Logs {@linkplain Logger#warn(String, Throwable) warning} with the formatted string.
+     *
+     * @param log         the logger for placing the warning
+     * @param th          the {@code Throwable} to log
+     * @param errorFormat the format string for the error message
+     * @param params      the arguments for the formatted string
+     * @deprecated use {@link #_warn(Throwable, String, Object...)}
+     */
+    @Deprecated
+    @FormatMethod
+    static void warn(Logger log,
+                     Throwable th,
+                     @FormatString String errorFormat,
+                     Object @Nullable ... params) {
+        checkNotNull(log);
+        checkNotNull(th);
+        checkNotNull(errorFormat);
+        checkNotNull(params);
+        if (log.isWarnEnabled()) {
+            String msg = format(errorFormat, params);
+            log.warn(msg, th);
+        }
+    }
+
+    /**
+     * Logs a {@code Throwable} with message at the {@linkplain Logger#warn(String, Throwable)
+     * WARN} level according to the specified format and arguments.
+     */
+    default void _warn(Throwable t, String fmt, Object @Nullable ... params) {
+        checkNotNull(t);
+        checkNotNull(fmt);
+        checkNotNull(params);
+        Logger log = log();
+        if (log.isWarnEnabled()) {
+            logThrowable(log::warn, t, fmt, params);
+        }
+    }
+
     /*
      * ERROR Level
      ****************/
@@ -247,5 +272,19 @@ public interface Logging {
      */
     default void _error(String format, Object arg1, Object arg2, Object arg3) {
         log().error(format, arg1, arg2, arg3);
+    }
+
+    /**
+     * Logs a {@code Throwable} with message at the {@linkplain Logger#error(String, Throwable)
+     * ERROR} level according to the specified format and arguments.
+     */
+    default void _error(Throwable t, String fmt, Object @Nullable ... params) {
+        checkNotNull(t);
+        checkNotNull(fmt);
+        checkNotNull(params);
+        Logger log = log();
+        if (log.isErrorEnabled()) {
+            logThrowable(log::error, t, fmt, params);
+        }
     }
 }

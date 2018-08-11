@@ -44,16 +44,42 @@ import static io.spine.testing.logging.LogTruth.assertThat;
  */
 abstract class MethodGroupTest<M> {
 
+    /**
+     * {@code true} if a method accepts {@code Throwable}.
+     */
+    private final boolean withThrowable;
+    /**
+     * A number of arguments to a formatting method.
+     * Equals one for a method with {@code Throwable}.
+     * In this case the single argument is {@code Object[]}.
+     */
     private final int numberOfArguments;
+
+    /**
+     * {@code true} if number of arguments is >=0 and the method does not accept {@code Throwable}.
+     * This is so because those methods expand strings on their own.
+     */
     private final boolean isFormat;
 
+    /** A test dummy. */
     private Logging object;
+
+    /** The queue with generated logging events. Should normally contain only one event. */
     private Queue<SubstituteLoggingEvent> queue;
 
-    MethodGroupTest(int numberOfArguments) {
+    MethodGroupTest(int numberOfArguments, boolean throwable) {
+        this.withThrowable = throwable;
+        if (withThrowable) {
+            checkArgument(
+                    numberOfArguments == 1,
+                    "shortcut methods with throwable accept only var arg array as a single argument"
+            );
+        }
         checkArgument(numberOfArguments >= 0);
         this.numberOfArguments = numberOfArguments;
-        this.isFormat = numberOfArguments > 0;
+        // Do not generate formatting arguments for a test with Throwable since we expand
+        // the message ourselves.
+        this.isFormat = numberOfArguments > 0 && !withThrowable;
     }
 
     protected Logging object() {
@@ -101,12 +127,10 @@ abstract class MethodGroupTest<M> {
      */
     void assertMethod(M method, Level level) {
         String text = randomText();
-        Object[] arguments = randomArguments();
+        Object[] arguments = generateArguments();
         String stringOrMessage = isFormat ? text + " {}" : text;
 
-        call(method,
-             stringOrMessage,
-             arguments);
+        call(method, stringOrMessage, arguments);
 
         LogEventSubject subject = assertEvent(stringOrMessage, level);
 
@@ -117,14 +141,32 @@ abstract class MethodGroupTest<M> {
         }
     }
 
-    private @Nullable Object[] randomArguments() {
+    @SuppressWarnings("MethodWithMultipleLoops")
+    private @Nullable Object[] generateArguments() {
+        Object[] result;
+
+        if (withThrowable) {
+            result = new Object[numberOfArguments + 1];
+            result[0] = new RuntimeException(getClass().getSimpleName());
+
+            // Generate test var. arg argument for a method with Throwable.
+            Object[] params = new Object[2];
+            params[0] = randomArgument();
+            params[1] = randomArgument();
+
+            result[1] = params;
+            return result;
+        }
+
         if (!isFormat) {
             return null;
         }
-        Object[] result = new Object[numberOfArguments];
+
+        result = new Object[numberOfArguments];
         for (int i = 0; i < numberOfArguments; i++) {
             result[i] = randomArgument();
         }
+
         return result;
     }
 
@@ -143,11 +185,11 @@ abstract class MethodGroupTest<M> {
         return subject;
     }
 
-    private static String randomText() {
+    static String randomText() {
         return "Fmt" + random(100);
     }
 
-    private static String randomArgument() {
+    static String randomArgument() {
         return "Arg" + random(10_000);
     }
 }

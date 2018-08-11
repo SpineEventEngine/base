@@ -43,7 +43,7 @@ class LoggingMethodTest {
     class WithMessage extends MethodGroupTest<Consumer<String>> {
 
         WithMessage() {
-            super(0);
+            super(0, false);
         }
 
         @Test
@@ -89,7 +89,7 @@ class LoggingMethodTest {
     class SingleArgument extends MethodGroupTest<BiConsumer<String, Object>> {
 
         SingleArgument() {
-            super(1);
+            super(1, false);
         }
 
         @Test
@@ -126,7 +126,7 @@ class LoggingMethodTest {
     class TwoArguments extends MethodGroupTest<TriConsumer<String, Object, Object>>{
 
         TwoArguments() {
-            super(2);
+            super(2, false);
         }
 
         @Test
@@ -150,7 +150,8 @@ class LoggingMethodTest {
         }
 
         @Override
-        void call(TriConsumer<String, Object, Object> method, String fmt,
+        void call(TriConsumer<String, Object, Object> method,
+                  String fmt,
                   @Nullable Object @Nullable... params) {
             checkNotNull(params);
             Object[] arg = Arrays.copyOf(params, 2, Object[].class);
@@ -163,7 +164,7 @@ class LoggingMethodTest {
     class ThreeArguments extends MethodGroupTest<QuadriConsumer<String, Object, Object, Object>> {
 
         ThreeArguments() {
-            super(3);
+            super(3, false);
         }
 
         @Test
@@ -187,11 +188,41 @@ class LoggingMethodTest {
         }
 
         @Override
-        void call(QuadriConsumer<String, Object, Object, Object> method, String fmt,
+        void call(QuadriConsumer<String, Object, Object, Object> method,
+                  String fmt,
                   @Nullable Object @Nullable... params) {
             checkNotNull(params);
             Object[] arg = Arrays.copyOf(params, 3, Object[].class);
             method.accept(fmt, arg[0], arg[1], arg[2]);
+        }
+    }
+
+    @Nested
+    @DisplayName("with Throwable, format, and arguments")
+    class ThrowableWithFormat extends MethodGroupTest<TriConsumer<Throwable, String, Object[]>> {
+
+        ThrowableWithFormat() {
+            // Pass one which in combination with `withThrowable = true` means `Object[]`.
+            super(1, true);
+        }
+
+        @Test
+        void _warn() {
+            assertMethod(object()::_warn, Level.WARN);
+        }
+
+        @Test
+        void _error() {
+            assertMethod(object()::_error, Level.ERROR);
+        }
+
+        @Override
+        void call(TriConsumer<Throwable, String, Object[]> method,
+                  String fmt,
+                  @Nullable Object @Nullable ... params) {
+            checkNotNull(params);
+            Object[] arg = Arrays.copyOf(params, 3, Object[].class);
+            method.accept((Throwable)arg[0], fmt, (Object[]) arg[1]);
         }
     }
 }
