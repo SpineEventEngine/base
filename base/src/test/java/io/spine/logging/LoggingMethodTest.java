@@ -116,13 +116,13 @@ class LoggingMethodTest {
         void call(BiConsumer<String, Object> method, String format,
                   @Nullable Object @Nullable... params) {
             checkNotNull(params);
-            Object[] args = Arrays.copyOf(params, 1, Object[].class);
-            method.accept(format, args[0]);
+            Object[] arg = Arrays.copyOf(params, 1, Object[].class);
+            method.accept(format, arg[0]);
         }
     }
 
     @Nested
-    @DisplayName("with two arguments")
+    @DisplayName("with format and two arguments")
     class TwoArguments extends MethodGroupTest<TriConsumer<String, Object, Object>>{
 
         TwoArguments() {
@@ -153,8 +153,45 @@ class LoggingMethodTest {
         void call(TriConsumer<String, Object, Object> method, String fmt,
                   @Nullable Object @Nullable... params) {
             checkNotNull(params);
-            Object[] args = Arrays.copyOf(params, 2, Object[].class);
-            method.accept(fmt, args[0], args[1]);
+            Object[] arg = Arrays.copyOf(params, 2, Object[].class);
+            method.accept(fmt, arg[0], arg[1]);
+        }
+    }
+
+    @Nested
+    @DisplayName("with format and three arguments")
+    class ThreeArguments extends MethodGroupTest<QuadriConsumer<String, Object, Object, Object>> {
+
+        ThreeArguments() {
+            super(3);
+        }
+
+        @Test
+        void _trace() {
+            assertMethod(object()::_trace, Level.TRACE);
+        }
+
+        @Test
+        void _debug() {
+            assertMethod(object()::_debug, Level.DEBUG);
+        }
+
+        @Test
+        void _warn() {
+            assertMethod(object()::_warn, Level.WARN);
+        }
+
+        @Test
+        void _error() {
+            assertMethod(object()::_error, Level.ERROR);
+        }
+
+        @Override
+        void call(QuadriConsumer<String, Object, Object, Object> method, String fmt,
+                  @Nullable Object @Nullable... params) {
+            checkNotNull(params);
+            Object[] arg = Arrays.copyOf(params, 3, Object[].class);
+            method.accept(fmt, arg[0], arg[1], arg[2]);
         }
     }
 }

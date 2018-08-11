@@ -53,9 +53,14 @@ import static java.lang.String.format;
  *
  * @author Alexander Yevsyukov
  */
-@SuppressWarnings("NewMethodNamingConvention")
-    // We provide methods prefixed with underscore to highlight the fact that these methods
-    // are for logging, and to make them visible.
+@SuppressWarnings({
+        "ClassWithTooManyMethods"
+        /* We provide shortcut methods for calling Slf4J Logger API. */,
+
+        "NewMethodNamingConvention"
+        /* These methods are prefixed with underscore to highlight the fact that these methods
+           are for logging, and to make them more visible in the production code. */
+})
 public interface Logging {
 
     /**
@@ -151,6 +156,10 @@ public interface Logging {
         }
     }
 
+    /*
+     * TRACE Level
+     ****************/
+
     /** Logs a message at the {@linkplain Logger#trace(String) TRACE} level. */
     default void _trace(String msg) {
         log().trace(msg);
@@ -171,6 +180,21 @@ public interface Logging {
     default void _trace(String format, Object arg1, Object arg2) {
         log().trace(format, arg1, arg2);
     }
+
+    /**
+     * Logs a message at the {@linkplain Logger#trace(String, Object) TRACE} level according
+     * to the specified format and arguments.
+     *
+     * @apiNote for a number of arguments greater than three, please use
+     * <blockquote>{@code log().trace(format, arg1, arg2, arg3, ...); }</blockquote>
+     */
+    default void _trace(String format, Object arg1, Object arg2, Object arg3) {
+        log().trace(format, arg1, arg2, arg3);
+    }
+
+    /*
+     * DEBUG Level
+     ****************/
 
     /** Logs a message at the {@linkplain Logger#debug(String) DEBUG} level. */
     default void _debug(String msg) {
@@ -193,6 +217,22 @@ public interface Logging {
         log().debug(format, arg1, arg2);
     }
 
+    /**
+     * Logs a message at the {@linkplain Logger#debug(String, Object) DEBUG} level according
+     * to the specified format and arguments.
+     *
+     * @apiNote for a number of arguments greater than three, please use
+     * <blockquote>{@code log().debug(format, arg1, arg2, arg3, ...); }</blockquote>
+     */
+    default void _debug(String format, Object arg1, Object arg2, Object arg3) {
+        log().debug(format, arg1, arg2, arg3);
+    }
+
+
+    /*
+     * WARN Level
+     ****************/
+
     /** Logs a message at the {@linkplain Logger#warn(String) WARN} level. */
     default void _warn(String msg) {
         log().warn(msg);
@@ -214,6 +254,21 @@ public interface Logging {
         log().warn(format, arg1, arg2);
     }
 
+    /**
+     * Logs a message at the {@linkplain Logger#warn(String, Object) WARN} level according
+     * to the specified format and arguments.
+     *
+     * @apiNote for a number of arguments greater than three, please use
+     * <blockquote>{@code log().warn(format, arg1, arg2, arg3, ...); }</blockquote>
+     */
+    default void _warn(String format, Object arg1, Object arg2, Object arg3) {
+        log().warn(format, arg1, arg2, arg3);
+    }
+
+    /*
+     * ERROR Level
+     ****************/
+
     /** Logs a message at the {@linkplain Logger#error(String) ERROR} level. */
     default void _error(String msg) {
         log().error(msg);
@@ -233,5 +288,16 @@ public interface Logging {
      */
     default void _error(String format, Object arg1, Object arg2) {
         log().error(format, arg1, arg2);
+    }
+
+    /**
+     * Logs a message at the {@linkplain Logger#error(String, Object) ERROR} level according
+     * to the specified format and arguments.
+     *
+     * @apiNote for a number of arguments greater than three, please use
+     * <blockquote>{@code log().error(format, arg1, arg2, arg3, ...); }</blockquote>
+     */
+    default void _error(String format, Object arg1, Object arg2, Object arg3) {
+        log().error(format, arg1, arg2, arg3);
     }
 }
