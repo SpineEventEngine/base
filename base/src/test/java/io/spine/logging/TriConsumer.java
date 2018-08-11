@@ -20,30 +20,17 @@
 
 package io.spine.logging;
 
-import com.google.common.truth.DefaultSubject;
-import com.google.common.truth.Subject;
-import io.spine.logging.given.LoggingObject;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.helpers.SubstituteLogger;
-
-import static io.spine.testing.logging.LogTruth.assertThat;
-
 /**
+ * Describes a method with three parameters.
+ *
+ * @param <T> the type of the first parameter
+ * @param <U> the type of the second parameter
+ * @param <V> the type of the third parameter
+ * @implNote Is used in these tests for passing method references with one format string and
+ *           two arguments.
  * @author Alexander Yevsyukov
  */
-@DisplayName("Logging interface should")
-class LoggingTest {
-
-    @Test
-    @DisplayName("obtain Logger instance")
-    void loggerInstance() {
-        Logging object = new LoggingObject();
-        Logger logger = object.log();
-        Subject<DefaultSubject, Object> assertLogger = assertThat(logger);
-
-        assertLogger.isNotNull();
-        assertLogger.isInstanceOf(SubstituteLogger.class);
-    }
+@FunctionalInterface
+interface TriConsumer<T, U, V> {
+    void accept(T t, U u, V v);
 }

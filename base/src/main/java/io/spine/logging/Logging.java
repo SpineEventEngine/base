@@ -164,6 +164,14 @@ public interface Logging {
         log().trace(format, arg);
     }
 
+    /**
+     * Logs a message at the {@linkplain Logger#trace(String, Object) TRACE} level according
+     * to the specified format and arguments.
+     */
+    default void _trace(String format, Object arg1, Object arg2) {
+        log().trace(format, arg1, arg2);
+    }
+
     /** Logs a message at the {@linkplain Logger#debug(String) DEBUG} level. */
     default void _debug(String msg) {
         log().debug(msg);
@@ -175,6 +183,14 @@ public interface Logging {
      */
     default void _debug(String format, Object arg) {
         log().debug(format, arg);
+    }
+
+    /**
+     * Logs a message at the {@linkplain Logger#debug(String, Object) DEBUG} level according
+     * to the specified format and arguments.
+     */
+    default void _debug(String format, Object arg1, Object arg2) {
+        log().debug(format, arg1, arg2);
     }
 
     /** Logs a message at the {@linkplain Logger#warn(String) WARN} level. */
@@ -190,6 +206,14 @@ public interface Logging {
         log().warn(format, arg);
     }
 
+    /**
+     * Logs a message at the {@linkplain Logger#warn(String, Object) WARN} level according
+     * to the specified format and arguments.
+     */
+    default void _warn(String format, Object arg1, Object arg2) {
+        log().warn(format, arg1, arg2);
+    }
+
     /** Logs a message at the {@linkplain Logger#error(String) ERROR} level. */
     default void _error(String msg) {
         log().error(msg);
@@ -201,5 +225,13 @@ public interface Logging {
      */
     default void _error(String format, Object arg) {
         log().error(format, arg);
+    }
+
+    /**
+     * Logs a message at the {@linkplain Logger#error(String, Object) ERROR} level according
+     * to the specified format and arguments.
+     */
+    default void _error(String format, Object arg1, Object arg2) {
+        log().error(format, arg1, arg2);
     }
 }
