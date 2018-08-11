@@ -69,7 +69,7 @@ public final class PropertyFiles {
             try {
                 return doLoad(propsFilePath);
             } catch (IOException e) {
-                _warn(e, "Failed to load resources: {}", propsFilePath);
+                _error(e, "Failed to load resources: {}", propsFilePath);
                 return ImmutableSet.of();
             }
         }
@@ -79,7 +79,7 @@ public final class PropertyFiles {
             try (InputStream inputStream = resourceUrl.openStream()) {
                 properties.load(inputStream);
             } catch (IOException e) {
-                _warn(e, "Failed to load properties file from: %s", resourceUrl);
+                _error(e, "Failed to load properties file from: %s", resourceUrl);
             }
             return properties;
         }
