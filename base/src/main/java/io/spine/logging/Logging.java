@@ -22,19 +22,15 @@ package io.spine.logging;
 
 import com.google.errorprone.annotations.FormatMethod;
 import com.google.errorprone.annotations.FormatString;
-import io.spine.base.Environment;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.slf4j.event.EventRecodingLogger;
 import org.slf4j.event.SubstituteLoggingEvent;
 import org.slf4j.helpers.SubstituteLogger;
 
 import java.util.Queue;
-import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Suppliers.memoize;
 import static java.lang.String.format;
 
 /**
@@ -45,8 +41,14 @@ import static java.lang.String.format;
  *
  * <p>In addition to this, this interface provides shortcut methods for the popular
  * logging interface methods. These shortcut methods are named after those provided by
- * {@link Logger}, but with the underscore as the prefix: {@link #_trace(String) _trace()},
- * {@link #_debug(String) _debuf()} and so on.
+ * {@link Logger}, but with the underscore as the prefix:
+ * {@link #_trace(String) _trace()}, {@link #_debug(String) _debug()},
+ * {@link #_warn(String) _warn()}, {@link #_error(String) _error()}.
+ *
+ * <p>The interface does not provide shortcut methods for than three arguments
+ * because of the {@linkplain Logger#debug(String, Object...) associated performance cost}.
+ * If you do need more than three arguments, please use a {@code Logger}
+ * instance obtained via {@link #log()}.
  *
  * @apiNote The underscore-based convention is selected for making logging calls more visible and
  *          distinguishable from the real code.
@@ -59,7 +61,7 @@ import static java.lang.String.format;
 
         "NewMethodNamingConvention"
         /* These methods are prefixed with underscore to highlight the fact that these methods
-           are for logging, and to make them more visible in the production code. */
+           are for logging, and to make them more visible in the real code. */
 })
 public interface Logging {
 
@@ -77,60 +79,6 @@ public interface Logging {
         checkNotNull(log);
         checkNotNull(queue);
         log.setDelegate(new EventRecodingLogger(log, queue));
-    }
-
-    /**
-     * Creates a supplier for logger of the passed class.
-     *
-     * <p>A logger instance will be lazily {@linkplain #getLogger(Class) created}
-     * when {@linkplain Supplier#get() requested} for the first time.
-     *
-     * <p>Such an arrangement may be convenient for having separate loggers in a class
-     * hierarchy.
-     *
-     * <h3>Typical usage pattern:</h3>
-     * <pre>
-     * {@code
-     *   class MyClass {
-     *     private final Supplier<Logger> loggerSupplier = Logging.supplyFor(getClass());
-     *     ...
-     *     protected Logger log() {
-     *       return loggerSupplier.get();
-     *     }
-     *
-     *     void doSomething() {
-     *       log().debug("do something");
-     *     }
-     *   }
-     * }
-     * </pre>
-     *
-     * @param cls the class for which to supply a logger
-     * @return new supplier
-     * @deprecated implement {@link Logging} and use {@link #log()} instead
-     */
-    @Deprecated
-    static Supplier<Logger> supplyFor(Class<?> cls) {
-        checkNotNull(cls);
-        Supplier<Logger> supplier = memoize(() -> getLogger(cls));
-        return supplier;
-    }
-
-    /**
-     * Obtains a logger for the passed class depending on the state of the {@link Environment}.
-     *
-     * <p>In {@linkplain Environment#isTests() tests mode}, the returned logger is a <em>new</em>
-     * instance of {@link org.slf4j.helpers.SubstituteLogger SubstituteLogger} delegating to
-     * a logger obtained from the {@link LoggerFactory#getLogger(Class) LoggerFactory}.
-     *
-     * <p>In {@linkplain Environment#isProduction() production mode}, returns the instance obtained
-     * from the {@link LoggerFactory#getLogger(Class) LoggerFactory}.
-     *
-     * @param cls the class for which to create the logger
-     * @return the logger instance
-     */
-    static Logger getLogger(Class<?> cls) {
-        return LoggerClassValue.getFor(cls);
     }
 
     /**
@@ -185,7 +133,7 @@ public interface Logging {
      * Logs a message at the {@linkplain Logger#trace(String, Object) TRACE} level according
      * to the specified format and arguments.
      *
-     * @apiNote for a number of arguments greater than three, please use
+     * @apiNote for more than three arguments, please use:
      * <blockquote>{@code log().trace(format, arg1, arg2, arg3, ...); }</blockquote>
      */
     default void _trace(String format, Object arg1, Object arg2, Object arg3) {
@@ -221,7 +169,7 @@ public interface Logging {
      * Logs a message at the {@linkplain Logger#debug(String, Object) DEBUG} level according
      * to the specified format and arguments.
      *
-     * @apiNote for a number of arguments greater than three, please use
+     * @apiNote for more than three arguments, please use:
      * <blockquote>{@code log().debug(format, arg1, arg2, arg3, ...); }</blockquote>
      */
     default void _debug(String format, Object arg1, Object arg2, Object arg3) {
@@ -258,7 +206,7 @@ public interface Logging {
      * Logs a message at the {@linkplain Logger#warn(String, Object) WARN} level according
      * to the specified format and arguments.
      *
-     * @apiNote for a number of arguments greater than three, please use
+     * @apiNote for more than three arguments, please use:
      * <blockquote>{@code log().warn(format, arg1, arg2, arg3, ...); }</blockquote>
      */
     default void _warn(String format, Object arg1, Object arg2, Object arg3) {
@@ -294,7 +242,7 @@ public interface Logging {
      * Logs a message at the {@linkplain Logger#error(String, Object) ERROR} level according
      * to the specified format and arguments.
      *
-     * @apiNote for a number of arguments greater than three, please use
+     * @apiNote for more than three arguments, please use:
      * <blockquote>{@code log().error(format, arg1, arg2, arg3, ...); }</blockquote>
      */
     default void _error(String format, Object arg1, Object arg2, Object arg3) {

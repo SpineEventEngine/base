@@ -38,11 +38,19 @@ class LoggerClassValue extends ClassValue<Logger> {
         return INSTANCE.get(cls);
     }
 
+    @Override
+    protected Logger computeValue(Class<?> type) {
+        Logger result = computeLogger(type);
+        return result;
+    }
+
     /**
-     * Obtains a logger for the passed class.
+     * Obtains or creates a logger for the passed class.
      *
-     * @apiNote If the code is executed under the {@linkplain Environment#isTests() tests},
-     *          returned instance is a {@link SubstituteLogger}.
+     * @implNote If the code is executed under the {@linkplain Environment#isTests() tests},
+     *           returned instance is new instance of a {@link SubstituteLogger},
+     *           which redirects to a {@code Logger} obtained from
+     *           {@link LoggerFactory#getLogger(Class) LoggerFactory}.
      */
     private static Logger computeLogger(Class<?> cls) {
         Logger logger = LoggerFactory.getLogger(cls);
@@ -53,11 +61,5 @@ class LoggerClassValue extends ClassValue<Logger> {
             return substLogger;
         }
         return logger;
-    }
-
-    @Override
-    protected Logger computeValue(Class<?> type) {
-        Logger result = computeLogger(type);
-        return result;
     }
 }
