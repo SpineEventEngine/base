@@ -21,7 +21,7 @@
 package io.spine.logging;
 
 /**
- * Describes a method with three parameters.
+ * Describes a method with four parameters.
  *
  * @param <T> the type of the first parameter
  * @param <U> the type of the second parameter
