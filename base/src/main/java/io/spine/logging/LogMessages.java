@@ -32,7 +32,7 @@ import java.util.function.BiConsumer;
  *
  * @author Alexander Yevsyukov
  */
-class LogMessages {
+final class LogMessages {
 
     /** Prevents instantiation of this utility class. */
     private LogMessages() {
