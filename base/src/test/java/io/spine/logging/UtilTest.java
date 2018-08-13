@@ -52,7 +52,7 @@ class UtilTest {
     @DisplayName("call logging method expanding formatted string")
     void logThrowable() {
         Throwable t = new RuntimeException(getClass().getSimpleName());
-        Util.logThrowable(this::inspectCall, t, fmt, arg1, arg2);
+        LogMessages.logThrowable(this::inspectCall, t, fmt, arg1, arg2);
     }
 
     private void inspectCall(String message, @SuppressWarnings("unused") Throwable ignored) {

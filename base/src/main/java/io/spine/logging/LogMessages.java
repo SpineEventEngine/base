@@ -32,10 +32,10 @@ import java.util.function.BiConsumer;
  *
  * @author Alexander Yevsyukov
  */
-class Util {
+class LogMessages {
 
     /** Prevents instantiation of this utility class. */
-    private Util() {
+    private LogMessages() {
     }
 
     /** Utility method for logging a throwable with a formatted message string. */

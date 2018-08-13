@@ -33,7 +33,7 @@ import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Suppliers.memoize;
-import static io.spine.logging.Util.logThrowable;
+import static io.spine.logging.LogMessages.logThrowable;
 import static java.lang.String.format;
 import static org.slf4j.LoggerFactory.getLogger;
 
