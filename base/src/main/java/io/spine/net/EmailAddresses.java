@@ -33,8 +33,8 @@ import static io.spine.net.Patterns.EMAIL_ADDRESS;
  */
 public final class EmailAddresses {
 
+    /** Prevent instantiation of this utility class. */
     private EmailAddresses() {
-        // Prevent instantiation of this utility class.
     }
 
     /**

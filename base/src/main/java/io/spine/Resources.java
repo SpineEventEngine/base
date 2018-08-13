@@ -25,7 +25,7 @@ package io.spine;
  *
  * @author Alexander Yevsyukov
  */
-public class Resources {
+public final class Resources {
 
     /*
       IMPLEMENTATION NOTE

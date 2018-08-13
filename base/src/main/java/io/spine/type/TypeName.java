@@ -38,7 +38,7 @@ import static com.google.common.base.Preconditions.checkState;
  *
  * @author Alexander Yevsyukov
  */
-public class TypeName extends StringTypeValue {
+public final class TypeName extends StringTypeValue {
 
     private static final long serialVersionUID = 0L;
 

@@ -43,7 +43,7 @@ import static com.google.common.io.Files.createParentDirs;
  *
  * @author Alexander Yevsyukov
  */
-public class Files2 {
+public final class Files2 {
 
     /** Prevents instantiation of this utility class. */
     private Files2() {

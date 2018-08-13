@@ -44,8 +44,7 @@ public final class Environment {
     public static final String ENV_KEY_TESTS = "io.spine.tests";
 
     /** If set, tells if the code runs from a testing framework. */
-    @Nullable
-    private Boolean tests;
+    private @Nullable Boolean tests;
 
     /** Prevents instantiation of this singleton class from outside. */
     private Environment() {}
