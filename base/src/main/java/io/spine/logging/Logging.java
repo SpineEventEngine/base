@@ -175,6 +175,41 @@ public interface Logging {
         log().debug(format, arg1, arg2, arg3);
     }
 
+    /*
+     * INFO level
+     ****************/
+
+    /** Logs a message at the {@linkplain Logger#info(String) INFO} level. */
+    default void _info(String msg) {
+        log().info(msg);
+    }
+
+    /**
+     * Logs a message at the {@linkplain Logger#info(String, Object) INFO} level according
+     * to the specified format and argument.
+     */
+    default void _info(String format, Object arg) {
+        log().info(format, arg);
+    }
+
+    /**
+     * Logs a message at the {@linkplain Logger#info(String, Object) INFO} level according
+     * to the specified format and arguments.
+     */
+    default void _info(String format, Object arg1, Object arg2) {
+        log().info(format, arg1, arg2);
+    }
+
+    /**
+     * Logs a message at the {@linkplain Logger#debug(String, Object) INFO} level according
+     * to the specified format and arguments.
+     *
+     * @apiNote for more than three arguments, please use:
+     * <blockquote>{@code log().info(format, arg1, arg2, arg3, ...); }</blockquote>
+     */
+    default void _info(String format, Object arg1, Object arg2, Object arg3) {
+        log().info(format, arg1, arg2, arg3);
+    }
 
     /*
      * WARN Level

@@ -68,6 +68,11 @@ class LoggingMethodTest {
         }
 
         @Test
+        void _info() {
+            assertMethod(object()::_info, Level.INFO);
+        }
+
+        @Test
         void _warn() {
             assertMethod(object()::_warn, Level.WARN);
         }
@@ -100,6 +105,11 @@ class LoggingMethodTest {
         @Test
         void _debug() {
             assertMethod(object()::_debug, Level.DEBUG);
+        }
+
+        @Test
+        void _info() {
+            assertMethod(object()::_info, Level.INFO);
         }
 
         @Test
@@ -140,6 +150,11 @@ class LoggingMethodTest {
         }
 
         @Test
+        void _info() {
+            assertMethod(object()::_info, Level.INFO);
+        }
+
+        @Test
         void _warn() {
             assertMethod(object()::_warn, Level.WARN);
         }
@@ -175,6 +190,11 @@ class LoggingMethodTest {
         @Test
         void _debug() {
             assertMethod(object()::_debug, Level.DEBUG);
+        }
+
+        @Test
+        void _info() {
+            assertMethod(object()::_info, Level.INFO);
         }
 
         @Test
