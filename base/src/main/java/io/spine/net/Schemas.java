@@ -32,11 +32,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  * @author Mikhail Mikhaylov
  */
-@SuppressWarnings("UtilityClass")
-class Schemas {
+final class Schemas {
 
     private static final Map<String, Schema> stringSchemas = buildSchemasMap();
 
+    /** Prevents instatiation of this utility class. */
     private Schemas() {
     }
 

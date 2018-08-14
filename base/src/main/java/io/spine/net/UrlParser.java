@@ -31,7 +31,7 @@ import io.spine.net.Url.Record.Schema;
  * @author Mikhail Mikhaylov
  */
 @SuppressWarnings("CheckReturnValue") // of calls to methods of fields that are builders
-class UrlParser {
+final class UrlParser {
 
     private static final char SEMICOLON = ':';
     static final String PROTOCOL_ENDING = "://";

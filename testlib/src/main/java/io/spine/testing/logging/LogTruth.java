@@ -18,32 +18,43 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.logging;
+package io.spine.testing.logging;
 
 import com.google.common.truth.DefaultSubject;
+import com.google.common.truth.IterableSubject;
 import com.google.common.truth.Subject;
-import io.spine.logging.given.LoggingObject;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
-import org.slf4j.helpers.SubstituteLogger;
+import org.slf4j.event.SubstituteLoggingEvent;
 
-import static io.spine.testing.logging.LogTruth.assertThat;
+import java.util.Queue;
+
+import static com.google.common.truth.Truth.assertAbout;
+import static com.google.common.truth.Truth.assert_;
 
 /**
+ * A set of static methods to begin a Truth assertion chain for logging types.
+ *
  * @author Alexander Yevsyukov
  */
-@DisplayName("Logging interface should")
-class LoggingTest {
+public final class LogTruth {
 
-    @Test
-    @DisplayName("obtain Logger instance")
-    void loggerInstance() {
-        Logging object = new LoggingObject();
-        Logger logger = object.log();
-        Subject<DefaultSubject, Object> assertLogger = assertThat(logger);
+    /** Prevents instantiation of this utility class. */
+    private LogTruth() {
+    }
 
-        assertLogger.isNotNull();
-        assertLogger.isInstanceOf(SubstituteLogger.class);
+    /** Creates a subject for the passed event. */
+    public static LogEventSubject assertThat(@Nullable SubstituteLoggingEvent event) {
+        return assertAbout(LogEventSubject.events()).that(event);
+    }
+
+    /** Creates a subject for the passed logger. */
+    public static Subject<DefaultSubject, Object> assertThat(@Nullable Logger actual) {
+        return assert_().that(actual);
+    }
+
+    /** Creates a subject for the passed logging event queue. */
+    public static IterableSubject assertThat(Queue<SubstituteLoggingEvent> queue) {
+        return assert_().that(queue);
     }
 }

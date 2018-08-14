@@ -18,36 +18,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.money;
-
-import io.spine.annotation.Experimental;
+package io.spine.logging;
 
 /**
- * The utility class containing convenience methods for working with {@link Money}.
+ * Describes a method with four parameters.
  *
- * @author Alexander Litus
- * @see Money
+ * @param <T> the type of the first parameter
+ * @param <U> the type of the second parameter
+ * @param <V> the type of the third parameter
+ * @param <W> the type of the fourth parameter
+ * @implNote Is used in these tests for passing method references with one format string and
+ *           two arguments.
+ * @author Alexander Yevsyukov
  */
-@Experimental
-public final class MoneyUtil {
-
-    /** Prevents instantiation of this utility class. */
-    private MoneyUtil() {
-    }
-
-    /**
-     * Creates a new {@code Money} instance.
-     *
-     * @param amount
-     *        the amount of minor currency units (for currencies whose minor units are used,
-     *        e.g. "cents") or the amount of major currency units (for currencies whose minor
-     *        currency units are unused due to negligible value or do not exist at all)
-     * @param currency the currency of the amount of money
-     */
-    public static Money newMoney(long amount, Currency currency) {
-        Money.Builder result = Money.newBuilder()
-                                    .setAmount(amount)
-                                    .setCurrency(currency);
-        return result.build();
-    }
+@FunctionalInterface
+interface QuadriConsumer<T, U, V, W> {
+    void accept(T t, U u, V v, W w);
 }

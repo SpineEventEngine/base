@@ -20,30 +20,45 @@
 
 package io.spine.logging;
 
-import com.google.common.truth.DefaultSubject;
-import com.google.common.truth.Subject;
-import io.spine.logging.given.LoggingObject;
+import com.google.common.truth.StringSubject;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.helpers.SubstituteLogger;
 
-import static io.spine.testing.logging.LogTruth.assertThat;
+import static com.google.common.truth.Truth.assertThat;
+import static io.spine.logging.MethodGroupTest.randomArgument;
+import static io.spine.logging.MethodGroupTest.randomText;
 
 /**
  * @author Alexander Yevsyukov
  */
-@DisplayName("Logging interface should")
-class LoggingTest {
+@DisplayName("Logging Util class should")
+class UtilTest {
+
+    private String formatText;
+    private String fmt;
+    private Object arg1;
+    private Object arg2;
+
+    @BeforeEach
+    void setUp() {
+        formatText = randomText();
+        fmt = formatText + " {} {}";
+        arg1 = randomArgument();
+        arg2 = randomArgument();
+    }
 
     @Test
-    @DisplayName("obtain Logger instance")
-    void loggerInstance() {
-        Logging object = new LoggingObject();
-        Logger logger = object.log();
-        Subject<DefaultSubject, Object> assertLogger = assertThat(logger);
+    @DisplayName("call logging method expanding formatted string")
+    void logThrowable() {
+        Throwable t = new RuntimeException(getClass().getSimpleName());
+        LogMessages.logThrowable(this::inspectCall, t, fmt, arg1, arg2);
+    }
 
-        assertLogger.isNotNull();
-        assertLogger.isInstanceOf(SubstituteLogger.class);
+    private void inspectCall(String message, @SuppressWarnings("unused") Throwable ignored) {
+        StringSubject assertThat = assertThat(message);
+        assertThat.contains(formatText);
+        assertThat.contains(arg1.toString());
+        assertThat.contains(arg2.toString());
     }
 }

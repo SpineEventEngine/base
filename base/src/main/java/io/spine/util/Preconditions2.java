@@ -30,7 +30,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  * @author Alexander Yevsyukov
  */
-public class Preconditions2 {
+public final class Preconditions2 {
 
     /** Prevents instantiation of this utility class. */
     private Preconditions2() {

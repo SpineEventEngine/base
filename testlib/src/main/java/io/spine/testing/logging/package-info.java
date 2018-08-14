@@ -18,36 +18,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.money;
-
-import io.spine.annotation.Experimental;
-
 /**
- * The utility class containing convenience methods for working with {@link Money}.
- *
- * @author Alexander Litus
- * @see Money
+ * This package provides Truth-based classes for testing logging.
  */
-@Experimental
-public final class MoneyUtil {
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.testing.logging;
 
-    /** Prevents instantiation of this utility class. */
-    private MoneyUtil() {
-    }
+import com.google.errorprone.annotations.CheckReturnValue;
 
-    /**
-     * Creates a new {@code Money} instance.
-     *
-     * @param amount
-     *        the amount of minor currency units (for currencies whose minor units are used,
-     *        e.g. "cents") or the amount of major currency units (for currencies whose minor
-     *        currency units are unused due to negligible value or do not exist at all)
-     * @param currency the currency of the amount of money
-     */
-    public static Money newMoney(long amount, Currency currency) {
-        Money.Builder result = Money.newBuilder()
-                                    .setAmount(amount)
-                                    .setCurrency(currency);
-        return result.build();
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;

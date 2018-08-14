@@ -18,36 +18,32 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.money;
+package io.spine.logging;
 
-import io.spine.annotation.Experimental;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.slf4j.helpers.FormattingTuple;
+import org.slf4j.helpers.MessageFormatter;
+
+import java.util.function.BiConsumer;
 
 /**
- * The utility class containing convenience methods for working with {@link Money}.
+ * Utilities internal to this package that are used by {@link Logging} interface default methods
+ * and should not be exposed in the public API.
  *
- * @author Alexander Litus
- * @see Money
+ * @author Alexander Yevsyukov
  */
-@Experimental
-public final class MoneyUtil {
+final class LogMessages {
 
     /** Prevents instantiation of this utility class. */
-    private MoneyUtil() {
+    private LogMessages() {
     }
 
-    /**
-     * Creates a new {@code Money} instance.
-     *
-     * @param amount
-     *        the amount of minor currency units (for currencies whose minor units are used,
-     *        e.g. "cents") or the amount of major currency units (for currencies whose minor
-     *        currency units are unused due to negligible value or do not exist at all)
-     * @param currency the currency of the amount of money
-     */
-    public static Money newMoney(long amount, Currency currency) {
-        Money.Builder result = Money.newBuilder()
-                                    .setAmount(amount)
-                                    .setCurrency(currency);
-        return result.build();
+    /** Utility method for logging a throwable with a formatted message string. */
+    static void logThrowable(BiConsumer<String, Throwable> method,
+                             Throwable t,
+                             String fmt,
+                             Object @Nullable ... params) {
+        FormattingTuple tuple = MessageFormatter.arrayFormat(fmt, params, t);
+        method.accept(tuple.getMessage(), t);
     }
 }

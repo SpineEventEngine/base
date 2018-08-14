@@ -18,32 +18,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.logging;
+package io.spine.logging.given;
 
-import com.google.common.truth.DefaultSubject;
-import com.google.common.truth.Subject;
-import io.spine.logging.given.LoggingObject;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.helpers.SubstituteLogger;
-
-import static io.spine.testing.logging.LogTruth.assertThat;
-
-/**
- * @author Alexander Yevsyukov
- */
-@DisplayName("Logging interface should")
-class LoggingTest {
-
-    @Test
-    @DisplayName("obtain Logger instance")
-    void loggerInstance() {
-        Logging object = new LoggingObject();
-        Logger logger = object.log();
-        Subject<DefaultSubject, Object> assertLogger = assertThat(logger);
-
-        assertLogger.isNotNull();
-        assertLogger.isInstanceOf(SubstituteLogger.class);
-    }
+@SuppressWarnings("EmptyClass") // We need the class only to build the hierarchy.
+public class ChildOne extends Base {
 }

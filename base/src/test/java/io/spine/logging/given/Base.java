@@ -18,36 +18,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.money;
+package io.spine.logging.given;
 
-import io.spine.annotation.Experimental;
+import io.spine.logging.Logging;
 
 /**
- * The utility class containing convenience methods for working with {@link Money}.
- *
- * @author Alexander Litus
- * @see Money
+ * The root of the class hierarchy.
  */
-@Experimental
-public final class MoneyUtil {
-
-    /** Prevents instantiation of this utility class. */
-    private MoneyUtil() {
-    }
-
-    /**
-     * Creates a new {@code Money} instance.
-     *
-     * @param amount
-     *        the amount of minor currency units (for currencies whose minor units are used,
-     *        e.g. "cents") or the amount of major currency units (for currencies whose minor
-     *        currency units are unused due to negligible value or do not exist at all)
-     * @param currency the currency of the amount of money
-     */
-    public static Money newMoney(long amount, Currency currency) {
-        Money.Builder result = Money.newBuilder()
-                                    .setAmount(amount)
-                                    .setCurrency(currency);
-        return result.build();
-    }
+public class Base implements Logging {
 }
