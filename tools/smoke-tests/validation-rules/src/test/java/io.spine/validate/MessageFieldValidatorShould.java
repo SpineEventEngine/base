@@ -63,7 +63,7 @@ public class MessageFieldValidatorShould extends FieldValidatorShould<Message> {
 
     @Override
     protected FieldValidator<Message> emptyMapFieldValidator() {
-        return getValidator(MAP_FIELD_DESC, Collections.<Message>emptyList());
+        return getValidator(MAP_FIELD_DESC, Collections.emptyList());
     }
 
     @Override

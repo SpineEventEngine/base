@@ -29,8 +29,7 @@ import java.util.List;
  *
  * @author Mikhail Mikhaylov
  */
-@SuppressWarnings({"UtilityClass", "TypeMayBeWeakened"})
-class UrlPrinter {
+final class UrlPrinter {
 
     private UrlPrinter() {
     }

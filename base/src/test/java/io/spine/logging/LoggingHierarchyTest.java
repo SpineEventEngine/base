@@ -20,55 +20,31 @@
 
 package io.spine.logging;
 
-import io.spine.logging.given.LoggingTestEnv;
-import org.junit.jupiter.api.BeforeEach;
+import io.spine.logging.given.Base;
+import io.spine.logging.given.ChildOne;
+import io.spine.logging.given.ChildTwo;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 
-import java.util.function.Supplier;
-
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
-import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * Tests for a logger supplier provided by the {@link Logging#getLogger(Class)}.
+ * Tests that classes in a hierarchy have own logs.
  *
  * @author Alexander Yevsyukov
  */
-@DisplayName("Logger Supplier should")
-class LoggerSupplierTest {
-
-    private Supplier<Logger> supplier;
-
-    @BeforeEach
-    void setUp() {
-        supplier = Logging.supplyFor(getClass());
-    }
-
-    @Test
-    @DisplayName("provide Logger")
-    void createLogger() {
-        Logger logger = supplier.get();
-
-        assertNotNull(logger);
-    }
-
-    @Test
-    @DisplayName("provide the same Logger instance each time")
-    void sameLogger() {
-        assertSame(supplier.get(), supplier.get());
-    }
+@DisplayName("Logging interface should work in a class hierarchy")
+class LoggingHierarchyTest {
 
     @Test
     @DisplayName("create a logger for each class in hierarchy")
     void classHierarchy() {
-        Logger baseLogger = new LoggingTestEnv.Base().log();
-        Logger childOneLogger = new LoggingTestEnv.ChildOne().log();
-        Logger childTwoLogger = new LoggingTestEnv.ChildTwo().log();
+        Logger baseLogger = new Base().log();
+        Logger childOneLogger = new ChildOne().log();
+        Logger childTwoLogger = new ChildTwo().log();
 
         assertNotSame(baseLogger, childOneLogger);
         assertNotSame(baseLogger, childTwoLogger);
@@ -78,9 +54,9 @@ class LoggerSupplierTest {
         assertNotEquals(baseLogger, childTwoLogger);
         assertNotEquals(childOneLogger, childTwoLogger);
 
-        assertLogger(baseLogger, LoggingTestEnv.Base.class);
-        assertLogger(childOneLogger, LoggingTestEnv.ChildOne.class);
-        assertLogger(childTwoLogger, LoggingTestEnv.ChildTwo.class);
+        assertLogger(baseLogger, Base.class);
+        assertLogger(childOneLogger, ChildOne.class);
+        assertLogger(childTwoLogger, ChildTwo.class);
     }
 
     /**

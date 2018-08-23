@@ -21,6 +21,7 @@
 package io.spine.type;
 
 import com.google.common.base.Splitter;
+import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.GenericDescriptor;
 import com.google.protobuf.Message;
@@ -38,7 +39,8 @@ import static com.google.common.base.Preconditions.checkState;
  *
  * @author Alexander Yevsyukov
  */
-public class TypeName extends StringTypeValue {
+@Immutable
+public final class TypeName extends StringTypeValue {
 
     private static final long serialVersionUID = 0L;
 

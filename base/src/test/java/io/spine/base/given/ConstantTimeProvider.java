@@ -20,44 +20,24 @@
 
 package io.spine.base.given;
 
-import com.google.protobuf.Duration;
 import com.google.protobuf.Timestamp;
 import io.spine.base.Time;
 
 /**
+ * The provider of the current time with value that does not change.
+ *
  * @author Mykhailo Drachuk
  */
-public class TimeTestEnv {
+public class ConstantTimeProvider implements Time.Provider {
 
-    private static final int SECONDS_IN_1_MINUTE = 60;
-    private static final int SECONDS_IN_5_MINUTES = 5 * SECONDS_IN_1_MINUTE;
+    private final Timestamp timestamp;
 
-    public static final Duration DURATION_1_MINUTE = newDuration(SECONDS_IN_1_MINUTE);
-    public static final Duration DURATION_5_MINUTES = newDuration(SECONDS_IN_5_MINUTES);
-
-    private static Duration newDuration(int seconds) {
-        return Duration.newBuilder()
-                       .setSeconds(seconds)
-                       .build();
+    public ConstantTimeProvider(Timestamp timestamp) {
+        this.timestamp = timestamp;
     }
 
-    /** Prevent instantiation of this test environment. */
-    private TimeTestEnv() {
-    }
-
-    /**
-     * The provider of the current time with value that does not change.
-     */
-    public static class ConstantTimeProvider implements Time.Provider {
-        private final Timestamp timestamp;
-
-        public ConstantTimeProvider(Timestamp timestamp) {
-            this.timestamp = timestamp;
-        }
-
-        @Override
-        public Timestamp getCurrentTime() {
-            return timestamp;
-        }
+    @Override
+    public Timestamp getCurrentTime() {
+        return timestamp;
     }
 }
