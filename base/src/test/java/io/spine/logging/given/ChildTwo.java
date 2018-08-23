@@ -20,31 +20,6 @@
 
 package io.spine.logging.given;
 
-import io.spine.logging.Logging;
-import org.slf4j.Logger;
-
-import java.util.function.Supplier;
-
-public class LoggingTestEnv {
-
-    /** Prevents instantiation of this utility class. */
-    private LoggingTestEnv() {}
-
-    /** The root of the class hierarchy with the logger supplier. */
-    public static class Base {
-
-        private final Supplier<Logger> loggerSupplier = Logging.supplyFor(getClass());
-
-        public Logger log() {
-            return loggerSupplier.get();
-        }
-    }
-
-    @SuppressWarnings("EmptyClass") // We need the class only to build the hierarchy.
-    public static class ChildOne extends Base {
-    }
-
-    @SuppressWarnings("EmptyClass") // Same as for `ChildOne`.
-    public static class ChildTwo extends Base {
-    }
+@SuppressWarnings("EmptyClass") // Same as for `ChildOne`.
+public class ChildTwo extends Base {
 }

@@ -33,8 +33,8 @@ import static io.spine.net.Patterns.HOST_NAME_PATTERN;
  */
 public final class InternetDomains {
 
+    /** Prevent instantiation of this  utility class. */
     private InternetDomains() {
-        // Prevent instantiation of this  utility class.
     }
 
     /**

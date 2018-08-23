@@ -22,87 +22,229 @@ package io.spine.logging;
 
 import com.google.errorprone.annotations.FormatMethod;
 import com.google.errorprone.annotations.FormatString;
-import io.spine.base.Environment;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.event.EventRecodingLogger;
+import org.slf4j.event.SubstituteLoggingEvent;
 import org.slf4j.helpers.SubstituteLogger;
 
+import java.util.Queue;
 import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Suppliers.memoize;
+import static io.spine.logging.LogMessages.logThrowable;
 import static java.lang.String.format;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
- * Utilities for working with logging.
+ * Utility interface for objects that require logging output.
+ *
+ * <p>Such an object need to implement this interface and obtain a {@link Logger} instance
+ * associated with the class of the object via {@link #log()} method.
+ *
+ * <p>In addition to this, this interface provides shortcut methods for the popular
+ * logging interface methods. These shortcut methods are named after those provided by
+ * {@link Logger}, but with the underscore as the prefix:
+ * {@link #_trace(String) _trace()}, {@link #_debug(String) _debug()},
+ * {@link #_warn(String) _warn()}, {@link #_error(String) _error()}.
+ *
+ * <p>The interface does not provide shortcut methods for than three arguments
+ * because of the {@linkplain Logger#debug(String, Object...) associated performance cost}.
+ * If you do need more than three arguments, please use a {@code Logger}
+ * instance obtained via {@link #log()}.
+ *
+ * @apiNote The underscore-based convention is selected for making logging calls more visible and
+ *          distinguishable from the real code.
  *
  * @author Alexander Yevsyukov
  */
-public class Logging {
+@SuppressWarnings({
+        "ClassWithTooManyMethods"
+        /* We provide shortcut methods for calling Slf4J Logger API. */,
 
-    /** Prevents instantiation of this utility class. */
-    private Logging() {
-    }
+        "NewMethodNamingConvention"
+        /* These methods are prefixed with underscore to highlight the fact that these methods
+           are for logging, and to make them more visible in the real code. */
+})
+public interface Logging {
 
     /**
-     * Creates a supplier for logger of the passed class.
-     *
-     * <p>A logger instance will be lazily {@linkplain #getLogger(Class) created}
-     * when {@linkplain Supplier#get() requested} for the first time.
-     *
-     * <p>Such an arrangement may be convenient for having separate loggers in a class
-     * hierarchy.
-     *
-     * <h3>Typical usage pattern:</h3>
-     * <pre>
-     * {@code
-     *   class MyClass {
-     *     private final Supplier<Logger> loggerSupplier = Logging.supplyFor(getClass());
-     *     ...
-     *     protected Logger log() {
-     *       return loggerSupplier.get();
-     *     }
-     *
-     *     void doSomething() {
-     *       log().debug("do something");
-     *     }
-     *   }
-     * }
-     * </pre>
-     *
-     * @param cls the class for which to supply a logger
-     * @return new supplier
+     * @deprecated use {@link Logging#get(Class)} if you need a {@code Logger} in static context.
      */
-    public static Supplier<Logger> supplyFor(Class<?> cls) {
+    @Deprecated
+    static Supplier<Logger> supplyFor(Class<?> cls) {
         checkNotNull(cls);
         Supplier<Logger> supplier = memoize(() -> getLogger(cls));
         return supplier;
     }
 
     /**
-     * Obtains a logger for the passed class depending on the state of the {@link Environment}.
-     *
-     * <p>In {@linkplain Environment#isTests() tests mode}, the returned logger is a <em>new</em>
-     * instance of {@link org.slf4j.helpers.SubstituteLogger SubstituteLogger} delegating to
-     * a logger obtained from the {@link LoggerFactory#getLogger(Class) LoggerFactory}.
-     *
-     * <p>In {@linkplain Environment#isProduction() production mode}, returns the instance obtained
-     * from the {@link LoggerFactory#getLogger(Class) LoggerFactory}.
-     *
-     * @param cls the class for which to create the logger
-     * @return the logger instance
+     * Obtains Logger instance for the passed class.
+     * @apiNote The primary purpose of this method is to provide logging in static methods.
      */
-    public static Logger getLogger(Class<?> cls) {
-        Logger logger = LoggerFactory.getLogger(cls);
-        if (Environment.getInstance()
-                       .isTests()) {
-            SubstituteLogger substLogger = new SubstituteLogger(cls.getName(), null, true);
-            substLogger.setDelegate(logger);
-            return substLogger;
-        } else {
-            return logger;
-        }
+    static Logger get(Class<?> cls) {
+        return LoggerClassValue.getFor(cls);
+    }
+
+    /**
+     * Obtains logger associated with the class of this instance.
+     */
+    default Logger log() {
+        return LoggerClassValue.getFor(getClass());
+    }
+
+    /**
+     * Redirects logging to the passed logging event queue.
+     */
+    static void redirect(SubstituteLogger log, Queue<SubstituteLoggingEvent> queue) {
+        checkNotNull(log);
+        checkNotNull(queue);
+        log.setDelegate(new EventRecodingLogger(log, queue));
+    }
+
+    /*
+     * TRACE Level
+     ****************/
+
+    /** Logs a message at the {@linkplain Logger#trace(String) TRACE} level. */
+    default void _trace(String msg) {
+        log().trace(msg);
+    }
+
+    /**
+     * Logs a message at the {@linkplain Logger#trace(String, Object) TRACE} level according
+     * to the specified format and argument.
+     */
+    default void _trace(String format, Object arg) {
+        log().trace(format, arg);
+    }
+
+    /**
+     * Logs a message at the {@linkplain Logger#trace(String, Object) TRACE} level according
+     * to the specified format and arguments.
+     */
+    default void _trace(String format, Object arg1, Object arg2) {
+        log().trace(format, arg1, arg2);
+    }
+
+    /**
+     * Logs a message at the {@linkplain Logger#trace(String, Object) TRACE} level according
+     * to the specified format and arguments.
+     *
+     * @apiNote for more than three arguments, please use:
+     * <blockquote>{@code log().trace(format, arg1, arg2, arg3, ...); }</blockquote>
+     */
+    default void _trace(String format, Object arg1, Object arg2, Object arg3) {
+        log().trace(format, arg1, arg2, arg3);
+    }
+
+    /*
+     * DEBUG Level
+     ****************/
+
+    /** Logs a message at the {@linkplain Logger#debug(String) DEBUG} level. */
+    default void _debug(String msg) {
+        log().debug(msg);
+    }
+
+    /**
+     * Logs a message at the {@linkplain Logger#debug(String, Object) DEBUG} level according
+     * to the specified format and argument.
+     */
+    default void _debug(String format, Object arg) {
+        log().debug(format, arg);
+    }
+
+    /**
+     * Logs a message at the {@linkplain Logger#debug(String, Object) DEBUG} level according
+     * to the specified format and arguments.
+     */
+    default void _debug(String format, Object arg1, Object arg2) {
+        log().debug(format, arg1, arg2);
+    }
+
+    /**
+     * Logs a message at the {@linkplain Logger#debug(String, Object) DEBUG} level according
+     * to the specified format and arguments.
+     *
+     * @apiNote for more than three arguments, please use:
+     * <blockquote>{@code log().debug(format, arg1, arg2, arg3, ...); }</blockquote>
+     */
+    default void _debug(String format, Object arg1, Object arg2, Object arg3) {
+        log().debug(format, arg1, arg2, arg3);
+    }
+
+    /*
+     * INFO level
+     ****************/
+
+    /** Logs a message at the {@linkplain Logger#info(String) INFO} level. */
+    default void _info(String msg) {
+        log().info(msg);
+    }
+
+    /**
+     * Logs a message at the {@linkplain Logger#info(String, Object) INFO} level according
+     * to the specified format and argument.
+     */
+    default void _info(String format, Object arg) {
+        log().info(format, arg);
+    }
+
+    /**
+     * Logs a message at the {@linkplain Logger#info(String, Object) INFO} level according
+     * to the specified format and arguments.
+     */
+    default void _info(String format, Object arg1, Object arg2) {
+        log().info(format, arg1, arg2);
+    }
+
+    /**
+     * Logs a message at the {@linkplain Logger#debug(String, Object) INFO} level according
+     * to the specified format and arguments.
+     *
+     * @apiNote for more than three arguments, please use:
+     * <blockquote>{@code log().info(format, arg1, arg2, arg3, ...); }</blockquote>
+     */
+    default void _info(String format, Object arg1, Object arg2, Object arg3) {
+        log().info(format, arg1, arg2, arg3);
+    }
+
+    /*
+     * WARN Level
+     ****************/
+
+    /** Logs a message at the {@linkplain Logger#warn(String) WARN} level. */
+    default void _warn(String msg) {
+        log().warn(msg);
+    }
+
+    /**
+     * Logs a message at the {@linkplain Logger#warn(String, Object) WARN} level according
+     * to the specified format and argument.
+     */
+    default void _warn(String format, Object arg) {
+        log().warn(format, arg);
+    }
+
+    /**
+     * Logs a message at the {@linkplain Logger#warn(String, Object) WARN} level according
+     * to the specified format and arguments.
+     */
+    default void _warn(String format, Object arg1, Object arg2) {
+        log().warn(format, arg1, arg2);
+    }
+
+    /**
+     * Logs a message at the {@linkplain Logger#warn(String, Object) WARN} level according
+     * to the specified format and arguments.
+     *
+     * @apiNote for more than three arguments, please use:
+     * <blockquote>{@code log().warn(format, arg1, arg2, arg3, ...); }</blockquote>
+     */
+    default void _warn(String format, Object arg1, Object arg2, Object arg3) {
+        log().warn(format, arg1, arg2, arg3);
     }
 
     /**
@@ -112,12 +254,14 @@ public class Logging {
      * @param th          the {@code Throwable} to log
      * @param errorFormat the format string for the error message
      * @param params      the arguments for the formatted string
+     * @deprecated use {@link #_warn(Throwable, String, Object...)}
      */
+    @Deprecated
     @FormatMethod
-    public static void warn(Logger log,
-                            Throwable th,
-                            @FormatString String errorFormat,
-                            Object @Nullable ... params) {
+    static void warn(Logger log,
+                     Throwable th,
+                     @FormatString String errorFormat,
+                     Object @Nullable ... params) {
         checkNotNull(log);
         checkNotNull(th);
         checkNotNull(errorFormat);
@@ -125,6 +269,70 @@ public class Logging {
         if (log.isWarnEnabled()) {
             String msg = format(errorFormat, params);
             log.warn(msg, th);
+        }
+    }
+
+    /**
+     * Logs a {@code Throwable} with message at the {@linkplain Logger#warn(String, Throwable)
+     * WARN} level according to the specified format and arguments.
+     */
+    default void _warn(Throwable t, String fmt, Object @Nullable ... params) {
+        checkNotNull(t);
+        checkNotNull(fmt);
+        checkNotNull(params);
+        Logger log = log();
+        if (log.isWarnEnabled()) {
+            logThrowable(log::warn, t, fmt, params);
+        }
+    }
+
+    /*
+     * ERROR Level
+     ****************/
+
+    /** Logs a message at the {@linkplain Logger#error(String) ERROR} level. */
+    default void _error(String msg) {
+        log().error(msg);
+    }
+
+    /**
+     * Logs a message at the {@linkplain Logger#error(String, Object) ERROR} level according
+     * to the specified format and argument.
+     */
+    default void _error(String format, Object arg) {
+        log().error(format, arg);
+    }
+
+    /**
+     * Logs a message at the {@linkplain Logger#error(String, Object) ERROR} level according
+     * to the specified format and arguments.
+     */
+    default void _error(String format, Object arg1, Object arg2) {
+        log().error(format, arg1, arg2);
+    }
+
+    /**
+     * Logs a message at the {@linkplain Logger#error(String, Object) ERROR} level according
+     * to the specified format and arguments.
+     *
+     * @apiNote for more than three arguments, please use:
+     * <blockquote>{@code log().error(format, arg1, arg2, arg3, ...); }</blockquote>
+     */
+    default void _error(String format, Object arg1, Object arg2, Object arg3) {
+        log().error(format, arg1, arg2, arg3);
+    }
+
+    /**
+     * Logs a {@code Throwable} with message at the {@linkplain Logger#error(String, Throwable)
+     * ERROR} level according to the specified format and arguments.
+     */
+    default void _error(Throwable t, String fmt, Object @Nullable ... params) {
+        checkNotNull(t);
+        checkNotNull(fmt);
+        checkNotNull(params);
+        Logger log = log();
+        if (log.isErrorEnabled()) {
+            logThrowable(log::error, t, fmt, params);
         }
     }
 }

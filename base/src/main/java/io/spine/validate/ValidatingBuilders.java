@@ -29,10 +29,10 @@ import static io.spine.util.Exceptions.illegalStateWithCauseOf;
  *
  * @author Alex Tymchenko
  */
-public class ValidatingBuilders {
+public final class ValidatingBuilders {
 
+    /** Prevent instantiation of this utility class. */
     private ValidatingBuilders() {
-        // Prevent instantiation of this utility class.
     }
 
     /**
@@ -49,8 +49,7 @@ public class ValidatingBuilders {
 
         try {
             Method newBuilderMethod =
-                    ValidatingBuilder.TypeInfo.getNewBuilderMethod(
-                            builderClass);
+                    ValidatingBuilder.TypeInfo.getNewBuilderMethod(builderClass);
             Object raw = newBuilderMethod.invoke(null);
 
             // By convention, `newBuilder()` always returns instances of `B`.

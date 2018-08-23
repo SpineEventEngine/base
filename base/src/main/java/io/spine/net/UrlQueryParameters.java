@@ -33,12 +33,12 @@ import static io.spine.util.Exceptions.newIllegalArgumentException;
  * @author Mikhail Mikhaylov
  */
 @Experimental
-public class UrlQueryParameters {
+public final class UrlQueryParameters {
 
     private static final char SEPARATOR = '=';
 
+    /** Prevent instantiation of this utility class. */
     private UrlQueryParameters() {
-        // Prevent instantiation of this utility class.
     }
 
     /**

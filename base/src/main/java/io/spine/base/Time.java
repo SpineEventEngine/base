@@ -33,7 +33,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  * @author Alexander Yevsyukov
  */
-public class Time {
+public final class Time {
 
     private static final ThreadLocal<Provider> timeProvider = ThreadLocal.withInitial(
             () -> SystemTimeProvider.INSTANCE
