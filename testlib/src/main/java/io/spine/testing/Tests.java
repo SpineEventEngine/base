@@ -153,7 +153,7 @@ public class Tests {
     /**
      * Asserts that the passed message has a field that matches the passed field mask.
      *
-     * @param message the message to assert
+     * @param message   the message to assert
      * @param fieldMask which is matched against the message field
      *
      * @throws AssertionError if the check fails
@@ -178,7 +178,7 @@ public class Tests {
      *
      * @param expectedValue expected value
      * @param actualValue   actual value
-     * @param delta  the maximum expected difference between the values
+     * @param delta         the maximum expected difference between the values
      */
     public static void assertInDelta(long expectedValue, long actualValue, long delta) {
         long actualDelta = abs(expectedValue - actualValue);
