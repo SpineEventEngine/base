@@ -153,7 +153,7 @@ public class Tests {
     /**
      * Asserts that the passed message has a field that matches the passed field mask.
      *
-     * @param message the message to assert
+     * @param message   the message to assert
      * @param fieldMask which is matched against the message field
      *
      * @throws AssertionError if the check fails
@@ -171,15 +171,17 @@ public class Tests {
     }
 
     /**
-     * Asserts that the difference between expected time and actual time is not bigger
-     * than set maximum.
+     * Asserts that the difference between expected value and actual value is not bigger
+     * than the set delta.
      *
-     * @param expectedSec expected timestamp value
-     * @param actualSec   actual timestamp value
-     * @param maxDiffSec  the maximum expected difference between the values
+     * <p>The assertion will be passed if the actual delta equals to the set one.
+     *
+     * @param expectedValue expected value
+     * @param actualValue   actual value
+     * @param delta         the maximum expected difference between the values
      */
-    public static void assertSecondsEqual(long expectedSec, long actualSec, long maxDiffSec) {
-        long diffSec = abs(expectedSec - actualSec);
-        assertTrue(diffSec <= maxDiffSec);
+    public static void assertInDelta(long expectedValue, long actualValue, long delta) {
+        long actualDelta = abs(expectedValue - actualValue);
+        assertTrue(actualDelta <= delta);
     }
 }
