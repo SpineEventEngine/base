@@ -275,7 +275,6 @@ class TestsShould extends UtilityClassTest<Tests> {
             assertThrows(
                     AssertionError.class,
                     () -> assertInDelta(expectedValue, actualValue, DELTA)
-
             );
         }
     }
