@@ -241,8 +241,8 @@ class TestsShould extends UtilityClassTest<Tests> {
         }
 
         @Test
-        @DisplayName("throw when the actual value grater than the sum of the expected value and delta")
-        void actualValueGraterThanTheSumExpectedValueAndDelta() {
+        @DisplayName("throw when the actual value greater than the sum of the expected value and delta")
+        void actualValueGreaterThanTheSumExpectedValueAndDelta() {
             long expectedValue = getValue();
             long actualValue = expectedValue + DELTA + 1;
             assertThrows(
@@ -252,8 +252,8 @@ class TestsShould extends UtilityClassTest<Tests> {
         }
 
         @Test
-        @DisplayName("when the actual value grater than the subtraction of the expected value and delta")
-        void actualValueGraterThanTheSubtractionOfExpectedValueAndDelta() {
+        @DisplayName("when the actual value greater than the subtraction of the expected value and delta")
+        void actualValueGreaterThanTheSubtractionOfExpectedValueAndDelta() {
             long actualValue = getValue();
             long expectedValue = actualValue + DELTA - 1;
             assertInDelta(expectedValue, actualValue, DELTA);
