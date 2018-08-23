@@ -203,9 +203,10 @@ class TestsShould extends UtilityClassTest<Tests> {
     class AssertInDelta {
 
         private static final long DELTA = 10;
+        private static final long VALUE = 100;
 
-        long getValue() {
-            return System.currentTimeMillis();
+        private long getValue() {
+            return VALUE;
         }
 
         @Test
