@@ -21,12 +21,14 @@
 package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
+import com.google.protobuf.Any;
 import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
 import io.spine.option.IfInvalidOption;
 import io.spine.option.OptionsProto;
 import io.spine.option.Time;
 import io.spine.option.TimeOption;
+import io.spine.protobuf.AnyPacker;
 
 import java.util.List;
 
@@ -44,7 +46,6 @@ import static io.spine.validate.Validate.isDefault;
 class MessageFieldValidator extends FieldValidator<Message> {
 
     private final TimeOption timeConstraint;
-    private final boolean fieldIsTimestamp;
 
     /**
      * Creates a new validator instance.
@@ -59,18 +60,20 @@ class MessageFieldValidator extends FieldValidator<Message> {
                           boolean strict) {
         super(fieldContext, toValueList(fieldValues), strict);
         this.timeConstraint = getFieldOption(OptionsProto.when);
-        this.fieldIsTimestamp = isTimestamp();
     }
 
     @Override
     protected void validateOwnRules() {
-        boolean validateFields = getValidateOption() && !fieldValueNotSet();
+        boolean validateFields = shouldValidateFields();
         if (validateFields) {
             validateFields();
+            BuiltInValidation.ANY.validate(this);
         }
-        if (fieldIsTimestamp) {
-            validateTimestamps();
-        }
+        BuiltInValidation.TIMESTAMP.validate(this);
+    }
+
+    private boolean shouldValidateFields() {
+        return getValidateOption() && !fieldValueNotSet();
     }
 
     @Override
@@ -79,22 +82,35 @@ class MessageFieldValidator extends FieldValidator<Message> {
         return result;
     }
 
-    private boolean isTimestamp() {
+    @SuppressWarnings("MethodOnlyUsedFromInnerClass") // Proper encapsulation here.
+    private boolean isOfType(Class<? extends Message> type) {
         ImmutableList<Message> values = getValues();
         Message value = values.isEmpty()
                         ? null
                         : values.get(0);
-        boolean result = value instanceof Timestamp;
+        boolean result = type.isInstance(value);
         return result;
     }
 
     private void validateFields() {
         for (Message value : getValues()) {
-            MessageValidator validator = MessageValidator.newInstance(getFieldContext());
-            List<ConstraintViolation> violations = validator.validate(value);
-            if (!violations.isEmpty()) {
-                addViolation(newValidViolation(value, violations));
-            }
+            validateSingle(value);
+        }
+    }
+
+    private void validateAny() {
+        for (Message value : getValues()) {
+            Any any = (Any) value;
+            Message unpacked = AnyPacker.unpack(any);
+            validateSingle(unpacked);
+        }
+    }
+
+    private void validateSingle(Message message) {
+        MessageValidator validator = MessageValidator.newInstance(getFieldContext());
+        List<ConstraintViolation> violations = validator.validate(message);
+        if (!violations.isEmpty()) {
+            addViolation(newValidViolation(message, violations));
         }
     }
 
@@ -163,5 +179,35 @@ class MessageFieldValidator extends FieldValidator<Message> {
                                                            .addAllViolation(violations)
                                                            .build();
         return violation;
+    }
+
+    private enum BuiltInValidation {
+
+        TIMESTAMP(Timestamp.class) {
+            @Override
+            void doValidate(MessageFieldValidator validator) {
+                validator.validateTimestamps();
+            }
+        },
+        ANY(Any.class) {
+            @Override
+            void doValidate(MessageFieldValidator validator) {
+                validator.validateAny();
+            }
+        };
+
+        private final Class<? extends Message> targetType;
+
+        BuiltInValidation(Class<? extends Message> type) {
+            this.targetType = type;
+        }
+
+        private void validate(MessageFieldValidator validator) {
+            if (validator.isOfType(targetType)) {
+                doValidate(validator);
+            }
+        }
+
+        abstract void doValidate(MessageFieldValidator validator);
     }
 }
