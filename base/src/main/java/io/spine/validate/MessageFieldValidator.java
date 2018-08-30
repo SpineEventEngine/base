@@ -70,9 +70,9 @@ class MessageFieldValidator extends FieldValidator<Message> {
         boolean validateFields = shouldValidateFields();
         if (validateFields) {
             validateFields();
-            BuiltInValidation.ANY.validate(this);
+            BuiltInValidation.ANY.validateIfApplies(this);
         }
-        BuiltInValidation.TIMESTAMP.validate(this);
+        BuiltInValidation.TIMESTAMP.validateIfApplies(this);
     }
 
     private boolean shouldValidateFields() {
@@ -187,8 +187,14 @@ class MessageFieldValidator extends FieldValidator<Message> {
         return violation;
     }
 
+    /**
+     * The enumeration of pre-defined custom validations for a message field.
+     */
     private enum BuiltInValidation {
 
+        /**
+         * Custom validation strategy for a {@link Timestamp} field.
+         */
         TIMESTAMP(Timestamp.class) {
             @Override
             void doValidate(MessageFieldValidator validator) {
@@ -196,6 +202,9 @@ class MessageFieldValidator extends FieldValidator<Message> {
             }
         },
 
+        /**
+         * Custom validation strategy for an {@link Any} field.
+         */
         ANY(Any.class) {
             @Override
             void doValidate(MessageFieldValidator validator) {
@@ -209,7 +218,11 @@ class MessageFieldValidator extends FieldValidator<Message> {
             this.targetType = type;
         }
 
-        private void validate(MessageFieldValidator validator) {
+        /**
+         * Validates the field with the given {@code validator} if the field is of
+         * the {@code targetType}.
+         */
+        private void validateIfApplies(MessageFieldValidator validator) {
             if (validator.isOfType(targetType)) {
                 doValidate(validator);
             }
