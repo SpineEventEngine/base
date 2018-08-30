@@ -50,10 +50,13 @@ class MessageFieldValidator extends FieldValidator<Message> {
     /**
      * Creates a new validator instance.
      *
-     * @param fieldContext the context of the field to validate
-     * @param fieldValues  values to validate
-     * @param strict       if {@code true} the validator would assume that the field
-     *                     is required even if the corresponding field option is not present
+     * @param fieldContext
+     *         the context of the field to validate
+     * @param fieldValues
+     *         values to validate
+     * @param strict
+     *         if {@code true} the validator would assume that the field
+     *         is required even if the corresponding field option is not present
      */
     MessageFieldValidator(FieldContext fieldContext,
                           Object fieldValues,
@@ -132,11 +135,14 @@ class MessageFieldValidator extends FieldValidator<Message> {
     /**
      * Checks the time.
      *
-     * @param timeToCheck  a timestamp to check
-     * @param whenExpected the time when the checked timestamp should be
-     * @param now          the current moment
+     * @param timeToCheck
+     *         a timestamp to check
+     * @param whenExpected
+     *         the time when the checked timestamp should be
+     * @param now
+     *         the current moment
      * @return {@code true} if the time is valid according to {@code whenExpected} parameter,
-     * {@code false} otherwise
+     *         {@code false} otherwise
      */
     private static boolean isTimeInvalid(Timestamp timeToCheck, Time whenExpected, Timestamp now) {
         boolean isValid = (whenExpected == FUTURE)
@@ -189,6 +195,7 @@ class MessageFieldValidator extends FieldValidator<Message> {
                 validator.validateTimestamps();
             }
         },
+
         ANY(Any.class) {
             @Override
             void doValidate(MessageFieldValidator validator) {
