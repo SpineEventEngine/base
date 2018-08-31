@@ -50,8 +50,10 @@ public final class AnyPacker {
     private static final Function<@Nullable Any, @Nullable Message> ANY_UNPACKER =
             (@Nullable Any any) -> any == null ? null : unpack(any);
 
+    /**
+     * Prevents the utility class instantiation.
+     */
     private AnyPacker() {
-        // Prevent instantiation of this utility class.
     }
 
     /**

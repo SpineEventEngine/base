@@ -299,15 +299,15 @@ abstract class FieldValidator<V> {
         return ownOption;
     }
 
-    protected final boolean shouldValidate() {
+    private boolean shouldValidate() {
         return isNotRepeatedOrMap() || validate;
     }
 
-    protected final IfInvalidOption ifInvalid() {
+    final IfInvalidOption ifInvalid() {
         return ifInvalid;
     }
 
-    protected final boolean getValidateOption() {
+    final boolean getValidateOption() {
         return validate;
     }
 

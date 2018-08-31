@@ -20,6 +20,7 @@
 
 package io.spine.validate;
 
+import com.google.protobuf.Any;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Descriptors;
 import com.google.protobuf.DoubleValue;
@@ -30,6 +31,7 @@ import com.google.protobuf.Timestamp;
 import io.spine.base.FieldPath;
 import io.spine.option.OptionsProto;
 import io.spine.option.Time;
+import io.spine.protobuf.AnyPacker;
 import io.spine.test.validate.msg.CustomMessageRequiredByteStringFieldValue;
 import io.spine.test.validate.msg.CustomMessageRequiredEnumFieldValue;
 import io.spine.test.validate.msg.CustomMessageRequiredMsgFieldValue;
@@ -69,6 +71,8 @@ import io.spine.test.validate.msg.SecondRuleTarget;
 import io.spine.test.validate.msg.TimeInFutureFieldValue;
 import io.spine.test.validate.msg.TimeInPastFieldValue;
 import io.spine.test.validate.msg.TimeWithoutOptsFieldValue;
+import io.spine.test.validate.msg.altfields.AnyContainer;
+import io.spine.test.validate.msg.altfields.UncheckedAnyContainer;
 import io.spine.validate.given.MessageValidatorTestEnv;
 import org.junit.Test;
 
@@ -429,6 +433,66 @@ public class MessageValidatorShould {
         assertFieldPathIs(violation, VALUE);
         assertTrue(violation.getViolationList()
                             .isEmpty());
+    }
+
+    /*
+     * `google.protobuf.Any` field tests.
+     */
+
+    @Test
+    public void consider_Any_valid_if_content_is_valid() {
+        RequiredMsgFieldValue value = RequiredMsgFieldValue
+                .newBuilder()
+                .setValue(newStringValue())
+                .build();
+        Any content = AnyPacker.pack(value);
+        AnyContainer container = AnyContainer
+                .newBuilder()
+                .setAny(content)
+                .build();
+        validate(container);
+        assertIsValid(true);
+    }
+
+    @Test
+    public void consider_Any_not_valid_if_content_is_not_valid() {
+        RequiredMsgFieldValue value = RequiredMsgFieldValue.getDefaultInstance();
+        Any content = AnyPacker.pack(value);
+        AnyContainer container = AnyContainer
+                .newBuilder()
+                .setAny(content)
+                .build();
+        validate(container);
+        assertIsValid(false);
+    }
+
+    @Test
+    public void consider_Any_valid_if_validation_is_not_required() {
+        RequiredMsgFieldValue value = RequiredMsgFieldValue.getDefaultInstance();
+        Any content = AnyPacker.pack(value);
+        UncheckedAnyContainer container = UncheckedAnyContainer
+                .newBuilder()
+                .setAny(content)
+                .build();
+        validate(container);
+        assertIsValid(true);
+    }
+
+    @Test
+    public void validate_recursive_messages() {
+        RequiredMsgFieldValue value = RequiredMsgFieldValue.getDefaultInstance();
+        Any internalAny = AnyPacker.pack(value);
+        AnyContainer internal = AnyContainer
+                .newBuilder()
+                .setAny(internalAny)
+                .build();
+        Any externalAny = AnyPacker.pack(internal);
+        AnyContainer external = AnyContainer
+                .newBuilder()
+                .setAny(externalAny)
+                .build();
+        validate(external);
+        assertIsValid(false);
     }
 
     /*

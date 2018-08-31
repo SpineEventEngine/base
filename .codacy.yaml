@@ -1,5 +1,3 @@
 ---
 exclude_paths:
   - "**/src/test/**/*.*"
-  # Exclude logging package because of underscored names.
-  - "**/src/main/**/logging/*.*"
