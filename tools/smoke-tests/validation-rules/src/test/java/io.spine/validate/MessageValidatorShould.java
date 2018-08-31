@@ -478,6 +478,23 @@ public class MessageValidatorShould {
         assertIsValid(true);
     }
 
+    @Test
+    public void validate_recursive_messages() {
+        RequiredMsgFieldValue value = RequiredMsgFieldValue.getDefaultInstance();
+        Any internalAny = AnyPacker.pack(value);
+        AnyContainer internal = AnyContainer
+                .newBuilder()
+                .setAny(internalAny)
+                .build();
+        Any externalAny = AnyPacker.pack(internal);
+        AnyContainer external = AnyContainer
+                .newBuilder()
+                .setAny(externalAny)
+                .build();
+        validate(external);
+        assertIsValid(false);
+    }
+
     /*
      * Decimal min option tests.
      */
