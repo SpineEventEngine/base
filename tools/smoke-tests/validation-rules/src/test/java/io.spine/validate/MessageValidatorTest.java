@@ -1066,7 +1066,7 @@ public class MessageValidatorTest {
 
     private void assertIsValid(boolean isValid) {
         if (isValid) {
-            assertTrue(violations.toString(), violations.isEmpty());
+            assertTrue(violations.isEmpty(), violations.toString());
         } else {
             assertFalse(violations.isEmpty());
             for (ConstraintViolation violation : violations) {
