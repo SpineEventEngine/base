@@ -36,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
  * @author Dmytro Dashenkov
  */
 @DisplayName("EnrichmentLookupPlugin should")
-public class EnrichmentLookupPluginShould {
+public class EnrichmentLookupPluginTest {
 
     private static final Properties prop = new Properties();
 

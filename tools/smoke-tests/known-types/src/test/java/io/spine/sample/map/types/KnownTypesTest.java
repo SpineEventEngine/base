@@ -35,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * @author Alexander Litus
  */
 @DisplayName("KnownTypes should")
-public class KnownTypesShould {
+public class KnownTypesTest {
 
     private static final String PROTO_TYPE_PREFIX = "type.spine.io/spine.sample.map.types.";
     private static final String JAVA_PACKAGE_PREFIX = "io.spine.sample.map.types.";

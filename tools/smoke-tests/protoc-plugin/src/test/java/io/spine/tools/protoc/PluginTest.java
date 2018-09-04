@@ -37,7 +37,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @author Dmytro Dashenkov
  */
 @DisplayName("Plugin should")
-public class PluginShould {
+public class PluginTest {
 
     private static final String EVENT_INTERFACE_FQN =
             "io.spine.tools.protoc.PICustomerEvent";
