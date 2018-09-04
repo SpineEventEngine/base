@@ -35,8 +35,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static java.nio.file.StandardOpenOption.APPEND;
-import static java.nio.file.StandardOpenOption.CREATE;
-import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 import static org.gradle.internal.impldep.org.apache.commons.lang.CharEncoding.UTF_8;
 
 @SuppressWarnings({"DuplicateStringLiteralInspection", "MethodMayBeStatic"}) // todo get rid.

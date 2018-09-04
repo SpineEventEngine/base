@@ -245,9 +245,9 @@ class FieldFromObject {
         TypeUrl typeUrl = TypeUrl.from(fieldType);
 
         jsWriter.addLine("let type = " + KnownTypesJsGenerator.FILE_NAME + '.' +
-                                    KnownTypesJsGenerator.MAP_NAME + ".get('" + typeUrl + "');");
+                                 KnownTypesJsGenerator.MAP_NAME + ".get('" + typeUrl + "');");
         jsWriter.addLine("let parser = " + KnownTypeParsersGenerator.FILE_NAME + '.' +
-                                    KnownTypeParsersGenerator.MAP_NAME + ".get(type);");
+                                 KnownTypeParsersGenerator.MAP_NAME + ".get(type);");
         jsWriter.addLine("let " + valueVarName + " = parser.parse(" + jsonObject + ");");
     }
 
@@ -257,7 +257,7 @@ class FieldFromObject {
         TypeUrl typeUrl = TypeUrl.from(fieldType);
 
         jsWriter.addLine("let type = " + KnownTypesJsGenerator.FILE_NAME + '.' +
-                                    KnownTypesJsGenerator.MAP_NAME + ".get('" + typeUrl + "');");
+                                 KnownTypesJsGenerator.MAP_NAME + ".get('" + typeUrl + "');");
         jsWriter.addLine("let " + valueVarName + " = type.fromObject(" + jsonObject + ");");
     }
 
