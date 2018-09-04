@@ -18,29 +18,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = 'spine-base'
+package io.spine.tools.fromjson.generator;
 
-include 'base'
+import io.spine.tools.fromjson.js.JsWriter;
 
-include 'testlib'
+final class MapObjectAccessor implements JsObjectAccessor {
 
-/**
- * Includes a module and sets custom project directory to it.
- */
-final def module = { final String name, final String path ->
-    include name
-    project(":$name").projectDir = new File("$rootDir/$path")
+    static final String ATTRIBUTE_VAR = "attr";
+
+    private final JsWriter jsWriter;
+
+    MapObjectAccessor(JsWriter jsWriter) {
+        this.jsWriter = jsWriter;
+    }
+
+    @Override
+    public String extractOrIterateValue(String jsObject) {
+        jsWriter.enterIfBlock(jsObject + " !== undefined && " + jsObject + " !== null");
+        jsWriter.enterBlock("for (let " + ATTRIBUTE_VAR + " in " + jsObject + ')');
+        jsWriter.enterIfBlock(jsObject + ".hasOwnProperty(" + ATTRIBUTE_VAR + ')');
+        String fieldValue = jsObject + '[' + ATTRIBUTE_VAR + ']';
+        return fieldValue;
+    }
+
+    @Override
+    public void exitToTopLevel() {
+        jsWriter.exitBlock();
+        jsWriter.exitBlock();
+        jsWriter.exitBlock();
+    }
 }
-
-module 'errorprone-checks',   'tools/errorprone-checks'
-module 'javadoc-filter',      'tools/javadoc-filter'
-module 'javadoc-prettifier',  'tools/javadoc-prettifier'
-module 'js-model-compiler',   'tools/js-model-compiler'
-
-module 'model-compiler',      'tools/model-compiler'
-module 'plugin-base',         'tools/plugin-base'
-module 'reflections-plugin',  'tools/reflections-plugin'
-
-module 'protoc-plugin',       'tools/protoc-plugin'
-
-module 'plugin-testlib' ,     'tools/plugin-testlib'

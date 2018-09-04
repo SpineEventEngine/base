@@ -30,8 +30,10 @@ import java.io.File;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 import static com.google.common.collect.ImmutableSet.copyOf;
 import static com.google.common.collect.Maps.newHashMap;
@@ -68,7 +70,7 @@ public final class FileSet {
     /**
      * Creates an empty set.
      */
-    static FileSet newInstance() {
+    public static FileSet newInstance() {
         return new FileSet();
     }
 
@@ -115,10 +117,14 @@ public final class FileSet {
         return result;
     }
 
+    public Set<Entry<FileName, FileDescriptor>> getEntries() {
+        return copyOf(files.entrySet());
+    }
+
     /**
      * Obtains immutable view of the files in this set.
      */
-    Collection<FileDescriptor> files() {
+    public Collection<FileDescriptor> files() {
         return copyOf(files.values());
     }
 

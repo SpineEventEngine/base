@@ -1,0 +1,250 @@
+/*
+ * Copyright 2018, TeamDev. All rights reserved.
+ *
+ * Redistribution and use in source and/or binary forms, with or without
+ * modification, must retain the above copyright notice and the following
+ * disclaimer.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+"use strict";
+
+let known_types = require("./known_types.js");
+
+let wrappers = require("google-protobuf/google/protobuf/wrappers_pb.js");
+let struct = require("google-protobuf/google/protobuf/struct_pb.js");
+let empty = require("google-protobuf/google/protobuf/empty_pb.js");
+let timestamp = require('google-protobuf/google/protobuf/timestamp_pb.js');
+let duration = require('google-protobuf/google/protobuf/duration_pb.js');
+let field_mask = require('google-protobuf/google/protobuf/field_mask_pb.js');
+let any = require('google-protobuf/google/protobuf/any_pb.js');
+
+class BoolValueParser {
+
+    parse(value) {
+        let boolValue = new wrappers.BoolValue();
+        boolValue.setValue(value);
+        return boolValue;
+    }
+}
+
+class BytesValueParser {
+
+    parse(value) {
+        let bytesValue = new wrappers.BytesValue();
+        bytesValue.setValue(value);
+        return bytesValue;
+    }
+}
+
+class DoubleValueParser {
+
+    parse(value) {
+        let doubleValue = new wrappers.DoubleValue();
+        doubleValue.setValue(value);
+        return doubleValue;
+    }
+}
+
+class FloatValueParser {
+
+    parse(value) {
+        let floatValue = new wrappers.FloatValue();
+        floatValue.setValue(value);
+        return floatValue;
+    }
+}
+
+class Int32ValueParser {
+
+    parse(value) {
+        let int32Value = new wrappers.Int32Value();
+        int32Value.setValue(value);
+        return int32Value;
+    }
+}
+
+class Int64ValueParser {
+
+    parse(value) {
+        let int64Value = new wrappers.Int64Value();
+        int64Value.setValue(value);
+        return int64Value;
+    }
+}
+
+class StringValueParser {
+
+    parse(value) {
+        let stringValue = new wrappers.StringValue();
+        stringValue.setValue(value);
+        return stringValue;
+    }
+}
+
+class UInt32ValueParser {
+
+    parse(value) {
+        let uInt32Value = new wrappers.UInt32Value();
+        uInt32Value.setValue(value);
+        return uInt32Value;
+    }
+}
+
+class UInt64ValueParser {
+
+    parse(value) {
+        let uInt64Value = new wrappers.UInt64Value();
+        uInt64Value.setValue(value);
+        return uInt64Value;
+    }
+}
+
+class ValueParser {
+
+    parse(value) {
+        let result = new struct.Value();
+        if (value === null) {
+            result.setNullValue(struct.NullValue.NULL_VALUE);
+        } else if (typeof value === 'number') {
+            result.setNumberValue(value);
+        } else if (typeof value === 'string') {
+            result.setStringValue(value);
+        } else if (typeof value === 'boolean') {
+            result.setBoolValue(value);
+        } else if (Array.isArray(value)) {
+            let parser = new ListValueParser(value);
+            let listValue = parser.parse(value);
+            result.setListValue(listValue);
+        } else {
+            // Is a Struct, unhandled for now.
+        }
+        return result;
+    }
+}
+
+class NullValueParser {
+
+    parse(value) {
+        let nullValue = struct.NullValue.NULL_VALUE;
+        return nullValue;
+    }
+}
+
+class ListValueParser {
+
+    parse(value) {
+        let listValue = new struct.ListValue;
+        value.forEach(
+            function callback(currentValue, index, array) {
+                let valueParser = new ValueParser();
+                array[index] = valueParser.parse(currentValue);
+            }
+        );
+        listValue.setValuesList(value);
+        return listValue;
+    }
+}
+
+class EmptyParser {
+
+    parse(value) {
+        let emptyValue = new empty.Empty();
+        return emptyValue;
+    }
+}
+
+class TimestampParser {
+
+    parse(value) {
+        let date = new Date(value);
+        let result = new timestamp.Timestamp();
+        result.fromDate(date);
+        return result;
+    }
+}
+
+class DurationParser {
+
+    parse(value) {
+        // Remove "s" symbol at the end of the string.
+        value = value.substring(0, value.length - 1);
+        let values = value.split('.');
+        let result = new duration.Duration();
+        if (values.length === 1) {
+            result.setSeconds(values[0]);
+        } else if (values.length === 2) {
+            result.setSeconds(values[0]);
+            let nanos = values[1];
+            for (let i = 0; i < 9 - nanos.length; i++) {
+                nanos += "0";
+            }
+            let nanosNumber = parseInt(nanos, 10);
+            result.setNanos(nanosNumber);
+        } else {
+            // Do nothing, should never happen.
+        }
+        return result;
+    }
+}
+
+class FieldMaskParser {
+
+    parse(value) {
+        let fieldMask = new field_mask.FieldMask();
+        fieldMask.setPathsList(value.split(','));
+        return fieldMask;
+    }
+}
+
+class AnyParser {
+
+    parse(value) {
+        let typeUrl = value['@type'];
+        let type = known_types.types.get(typeUrl);
+        let instance;
+        let parser = parsers.get(type);
+        if (parser) {
+            instance = parser.parse(value['value']);
+        } else {
+            let msg = new type();
+            instance = msg.fromObject(value);
+        }
+        let bytes = instance.serializeBinary();
+        let anyMsg = new any.Any;
+        anyMsg.setTypeUrl(typeUrl);
+        anyMsg.setValue(bytes);
+        return anyMsg;
+    }
+}
+
+export const parsers = new Map([
+    [wrappers.BoolValue, new BoolValueParser()],
+    [wrappers.BytesValue, new BytesValueParser()],
+    [wrappers.DoubleValue, new DoubleValueParser()],
+    [wrappers.FloatValue, new FloatValueParser()],
+    [wrappers.Int32Value, new Int32ValueParser()],
+    [wrappers.Int64Value, new Int64ValueParser()],
+    [wrappers.StringValue, new StringValueParser()],
+    [wrappers.UInt32Value, new UInt32ValueParser()],
+    [wrappers.UInt64Value, new UInt64ValueParser()],
+    [struct.Value, new ValueParser()],
+    [struct.NullValue, new NullValueParser()],
+    [struct.ListValue, new ListValueParser()],
+    [empty.Empty, new EmptyParser()],
+    [timestamp.Timestamp, new TimestampParser()],
+    [duration.Duration, new DurationParser()],
+    [field_mask.FieldMask, new FieldMaskParser()],
+    [any.Any, new AnyParser()]
+]);

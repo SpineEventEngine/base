@@ -45,6 +45,10 @@ public enum TaskName {
     GENERATE_PROTO("generateProto"),
     GENERATE_TEST_PROTO("generateTestProto"),
 
+    COMPILE_PROTO_TO_JS("compileProtoToJs"),
+
+    COPY_MODULE_SOURCES("copyModuleSources"),
+
     PROCESS_RESOURCES("processResources"),
     PROCESS_TEST_RESOURCES("processTestResources"),
 
@@ -153,6 +157,11 @@ public enum TaskName {
      * <p>Handles the {@code main} classes and resources scope.
      */
     ANNOTATE_PROTO("annotateProto"),
+
+    ADD_FROM_JSON("addFromJson"),
+
+    LINK_CLIENT_PROTO("linkClientProto"),
+    INSTALL_DEPENDENCIES("installDependencies"),
 
     /**
      * The name of the task, that annotates the Java sources generated from {@code .proto} files,

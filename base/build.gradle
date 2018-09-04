@@ -62,19 +62,19 @@ sourceSets {
 }
 
 clean {
-    delete "$projectDir/generated"
+    delete "$projectDir\\generated"
 }
 
 jar {
     // See `base-validating-builders/README.md`.
-    from "$rootDir/base-validating-builders/builders"
+    from "$rootDir\\base-validating-builders\\builders"
 }
 
 build.doLast {
     final boolean shouldClean = gradle.getTaskGraph().hasTask('clean')
-    final def directory = "$rootDir/base-validating-builders"
+    final def directory = "$rootDir\\base-validating-builders"
     final def command = []
-    command.add("$directory/../gradlew".toString())
+    command.add("$directory\\..\\gradlew.bat".toString())
     if (shouldClean) {
         command.add('clean')
     }

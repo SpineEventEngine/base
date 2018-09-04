@@ -25,6 +25,10 @@ import com.google.common.base.Splitter;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Any;
 import com.google.protobuf.AnyOrBuilder;
+import com.google.protobuf.DescriptorProtos;
+import com.google.protobuf.DescriptorProtos.DescriptorProto;
+import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
+import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
@@ -105,6 +109,17 @@ public final class TypeUrl implements Serializable {
     public static TypeUrl from(Descriptor descriptor) {
         String prefix = prefixFor(descriptor);
         return create(prefix, descriptor.getFullName());
+    }
+
+    public static TypeUrl
+    ofMessage(FileDescriptorProto fileDescriptor, DescriptorProto messageDescriptor) {
+        String prefix = prefixFor(fileDescriptor);
+        String aPackage = fileDescriptor.getPackage();
+        if (!aPackage.isEmpty()) {
+            aPackage += '.';
+        }
+        String typeName = aPackage + messageDescriptor.getName();
+        return create(prefix, typeName);
     }
 
     /**
@@ -191,6 +206,16 @@ public final class TypeUrl implements Serializable {
         return result;
     }
 
+    private static String prefixFor(FileDescriptorProto fileDescriptor) {
+        if (fileDescriptor.getPackage()
+                          .startsWith(GOOGLE_PROTOBUF_PACKAGE)) {
+            return Prefix.GOOGLE_APIS.value();
+        }
+        String result = fileDescriptor.getOptions()
+                                      .getExtension(OptionsProto.typeUrlPrefix);
+        return result;
+    }
+
     /**
      * Returns a message {@link Class} corresponding to the Protobuf type represented
      * by this type URL.
@@ -219,7 +244,7 @@ public final class TypeUrl implements Serializable {
      * Obtains a descriptor for the type of this URL.
      *
      * @return {@link Descriptor} if the URL represents a proto type,
-     *         {@link EnumDescriptor} if the URL represents a proto enum
+     * {@link EnumDescriptor} if the URL represents a proto enum
      */
     @Internal
     public GenericDescriptor getDescriptor() {
@@ -276,7 +301,7 @@ public final class TypeUrl implements Serializable {
         }
         TypeUrl typeUrl = (TypeUrl) o;
         return Objects.equals(prefix, typeUrl.prefix) &&
-               Objects.equals(typeName, typeUrl.typeName);
+                Objects.equals(typeName, typeUrl.typeName);
     }
 
     @Override
@@ -293,8 +318,8 @@ public final class TypeUrl implements Serializable {
          * Type prefix for standard Protobuf types.
          */
         @SuppressWarnings("DuplicateStringLiteralInspection")
-            // Used in the generated code as a literal.
-        GOOGLE_APIS("type.googleapis.com"),
+        // Used in the generated code as a literal.
+                GOOGLE_APIS("type.googleapis.com"),
 
         /**
          * Type prefix for types provided by the Spine framework.

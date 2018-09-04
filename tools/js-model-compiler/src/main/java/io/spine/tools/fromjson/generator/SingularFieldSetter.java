@@ -18,29 +18,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = 'spine-base'
+package io.spine.tools.fromjson.generator;
 
-include 'base'
+import com.google.protobuf.Descriptors.FieldDescriptor;
+import io.spine.tools.fromjson.js.JsWriter;
 
-include 'testlib'
+import static io.spine.tools.fromjson.generator.MessageHandler.MESSAGE_VAR;
 
-/**
- * Includes a module and sets custom project directory to it.
- */
-final def module = { final String name, final String path ->
-    include name
-    project(":$name").projectDir = new File("$rootDir/$path")
+final class SingularFieldSetter extends AbstractFieldSetter {
+
+    SingularFieldSetter(FieldDescriptor fieldDescriptor, JsWriter jsWriter) {
+        super(fieldDescriptor, jsWriter);
+    }
+
+    @Override
+    public void setField(String value) {
+        String setterName = "set" + capitalizedFieldName();
+        jsWriter().addLine(MESSAGE_VAR + '.' + setterName + '(' + value + ");");
+    }
 }
-
-module 'errorprone-checks',   'tools/errorprone-checks'
-module 'javadoc-filter',      'tools/javadoc-filter'
-module 'javadoc-prettifier',  'tools/javadoc-prettifier'
-module 'js-model-compiler',   'tools/js-model-compiler'
-
-module 'model-compiler',      'tools/model-compiler'
-module 'plugin-base',         'tools/plugin-base'
-module 'reflections-plugin',  'tools/reflections-plugin'
-
-module 'protoc-plugin',       'tools/protoc-plugin'
-
-module 'plugin-testlib' ,     'tools/plugin-testlib'

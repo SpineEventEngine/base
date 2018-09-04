@@ -18,29 +18,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = 'spine-base'
+package io.spine.tools.fromjson.js;
 
-include 'base'
+import java.util.List;
 
-include 'testlib'
+import static java.lang.String.join;
+import static java.util.Collections.nCopies;
 
-/**
- * Includes a module and sets custom project directory to it.
- */
-final def module = { final String name, final String path ->
-    include name
-    project(":$name").projectDir = new File("$rootDir/$path")
+class LineOfCode {
+
+    private final String code;
+    private final int depth;
+
+    LineOfCode(String code, int depth) {
+        this.code = code;
+        this.depth = depth;
+    }
+
+    String printToString(int indent) {
+        int spacesCount = depth * indent;
+        List<String> indentSpaces = nCopies(spacesCount, " ");
+        String codeIndent = join("", indentSpaces);
+        String result = codeIndent + code;
+        return result;
+    }
 }
-
-module 'errorprone-checks',   'tools/errorprone-checks'
-module 'javadoc-filter',      'tools/javadoc-filter'
-module 'javadoc-prettifier',  'tools/javadoc-prettifier'
-module 'js-model-compiler',   'tools/js-model-compiler'
-
-module 'model-compiler',      'tools/model-compiler'
-module 'plugin-base',         'tools/plugin-base'
-module 'reflections-plugin',  'tools/reflections-plugin'
-
-module 'protoc-plugin',       'tools/protoc-plugin'
-
-module 'plugin-testlib' ,     'tools/plugin-testlib'

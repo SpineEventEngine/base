@@ -19,10 +19,10 @@
  */
 
 buildscript {
-    ext.EXT = "$rootDir/../../ext.gradle"
+    ext.EXT = "$rootDir\\..\\..\\ext.gradle"
 
     apply from: EXT
-    apply from: "$rootDir/../../config/gradle/dependencies.gradle"
+    apply from: "$rootDir\\..\\..\\config\\gradle\\dependencies.gradle"
 
     repositories {
         jcenter()
