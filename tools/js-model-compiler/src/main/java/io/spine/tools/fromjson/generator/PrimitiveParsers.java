@@ -59,8 +59,9 @@ final class PrimitiveParsers {
         }
         PrimitiveParser parser = parsers.get(type);
         if (parser == null) {
-            throw newIllegalStateException(
-                    "An attempt to get a parser for the unknown Primitive type: %s", type.name());
+            System.out.println(
+                    "An attempt to get a parser for the unknown Primitive type: %s");
+            return new IdentityParser();
         }
         return parser;
     }
@@ -68,7 +69,10 @@ final class PrimitiveParsers {
     private static PrimitiveParser enumParserFor(FieldDescriptor fieldDescriptor) {
         EnumDescriptor enumType = fieldDescriptor.getEnumType();
         String enumTypeName = enumType.getFullName();
-        return new EnumParser(enumTypeName);
+
+        // todo have separate static util for this.
+        String typeWithProtoPrefix = "proto." + enumTypeName;
+        return new EnumParser(typeWithProtoPrefix);
     }
 
     private static Map<Type, PrimitiveParser> parsers() {
