@@ -139,6 +139,7 @@ public class MessageValidatorTest {
      */
 
     @Test
+    @DisplayName("find out that the required Message field is set")
     public void find_out_that_required_Message_field_is_set() {
         RequiredMsgFieldValue validMsg = RequiredMsgFieldValue.newBuilder()
                                                               .setValue(newStringValue())
@@ -148,6 +149,7 @@ public class MessageValidatorTest {
     }
 
     @Test
+    @DisplayName("find out that the required Message field is not set")
     public void find_out_that_required_Message_field_is_NOT_set() {
         RequiredMsgFieldValue invalidMsg = RequiredMsgFieldValue.getDefaultInstance();
         validate(invalidMsg);
@@ -155,6 +157,7 @@ public class MessageValidatorTest {
     }
 
     @Test
+    @DisplayName("find out that the required String field is set")
     public void find_out_that_required_String_field_is_set() {
         RequiredStringFieldValue validMsg = RequiredStringFieldValue.newBuilder()
                                                                     .setValue(newUuid())
@@ -164,6 +167,7 @@ public class MessageValidatorTest {
     }
 
     @Test
+    @DisplayName("find out that the required String field is not set")
     public void find_out_that_required_String_field_is_NOT_set() {
         RequiredStringFieldValue invalidMsg = RequiredStringFieldValue.getDefaultInstance();
         validate(invalidMsg);
@@ -171,6 +175,7 @@ public class MessageValidatorTest {
     }
 
     @Test
+    @DisplayName("find out that the required ByteString field is set")
     public void find_out_that_required_ByteString_field_is_set() {
         RequiredByteStringFieldValue validMsg =
                 RequiredByteStringFieldValue.newBuilder()
@@ -181,6 +186,7 @@ public class MessageValidatorTest {
     }
 
     @Test
+    @DisplayName("find out that the required ByteString field is not set")
     public void find_out_that_required_ByteString_field_is_NOT_set() {
         RequiredByteStringFieldValue invalidMsg = RequiredByteStringFieldValue.getDefaultInstance();
         validate(invalidMsg);
@@ -188,6 +194,7 @@ public class MessageValidatorTest {
     }
 
     @Test
+    @DisplayName("find out that the required Enum field is not set")
     public void find_out_that_required_Enum_field_is_NOT_set() {
         RequiredEnumFieldValue invalidMsg = RequiredEnumFieldValue.getDefaultInstance();
         validate(invalidMsg);
@@ -195,6 +202,7 @@ public class MessageValidatorTest {
     }
 
     @Test
+    @DisplayName("find out that the required Enum field is set")
     public void find_out_that_required_Enum_field_is_set() {
         RequiredEnumFieldValue invalidMsg = RequiredEnumFieldValue.newBuilder()
                                                                   .setValue(Time.FUTURE)
@@ -204,12 +212,14 @@ public class MessageValidatorTest {
     }
 
     @Test
+    @DisplayName("pass the validation when the required option is not set for the Boolean field")
     public void find_out_that_required_NOT_set_Boolean_field_pass_validation() {
         validate(RequiredBooleanFieldValue.getDefaultInstance());
         assertIsValid(true);
     }
 
     @Test
+    @DisplayName("find out that the repeated field has valid values")
     public void find_out_that_repeated_required_field_has_valid_values() {
         RepeatedRequiredMsgFieldValue invalidMsg =
                 RepeatedRequiredMsgFieldValue.newBuilder()
@@ -221,12 +231,14 @@ public class MessageValidatorTest {
     }
 
     @Test
+    @DisplayName("find out that the repeated required field has not values")
     public void find_out_that_repeated_required_field_has_no_values() {
         validate(RepeatedRequiredMsgFieldValue.getDefaultInstance());
         assertIsValid(false);
     }
 
     @Test
+    @DisplayName("ignore the repeated required field with an empty value")
     public void ignore_repeated_required_field_with_empty_value() {
         RepeatedRequiredMsgFieldValue msg =
                 RepeatedRequiredMsgFieldValue.newBuilder()
@@ -238,12 +250,14 @@ public class MessageValidatorTest {
     }
 
     @Test
+    @DisplayName("consider that the field is valid if the `required` option is not set")
     public void consider_field_is_valid_if_no_required_option_set() {
         validate(StringValue.getDefaultInstance());
         assertIsValid(true);
     }
 
     @Test
+    @DisplayName("provide the one valid violation is the required field is not set")
     public void provide_one_valid_violation_if_required_field_is_not_set() {
         RequiredStringFieldValue invalidMsg = RequiredStringFieldValue.getDefaultInstance();
 
@@ -258,6 +272,8 @@ public class MessageValidatorTest {
     }
 
     @Test
+    @DisplayName("propagate the proper error message if the custom message is set " +
+            "and the `required` option is not set for the Message field")
     public void propagate_proper_error_message_if_custom_message_set_and_required_Message_field_is_NOT_set() {
         CustomMessageRequiredMsgFieldValue invalidMsg =
                 CustomMessageRequiredMsgFieldValue.getDefaultInstance();
@@ -271,6 +287,8 @@ public class MessageValidatorTest {
     }
 
     @Test
+    @DisplayName("propagate the proper error message if the custom message is set " +
+            "and the `required` option is not set for the String field")
     public void propagate_proper_error_message_if_custom_message_set_and_required_String_field_is_NOT_set() {
         CustomMessageRequiredStringFieldValue invalidMsg =
                 CustomMessageRequiredStringFieldValue.getDefaultInstance();
@@ -284,6 +302,8 @@ public class MessageValidatorTest {
     }
 
     @Test
+    @DisplayName("propagate the proper error message is the custom message is set " +
+            "and the `required` option is not set for the ByteString field")
     public void propagate_proper_error_message_if_custom_message_set_and_required_ByteString_field_is_NOT_set() {
         CustomMessageRequiredByteStringFieldValue invalidMsg =
                 CustomMessageRequiredByteStringFieldValue.getDefaultInstance();
@@ -297,6 +317,8 @@ public class MessageValidatorTest {
     }
 
     @Test
+    @DisplayName("propagate the proper error message if the custom message is set" +
+            "and the `required` option is not set for the repeated message field")
     public void propagate_proper_error_message_if_custom_message_set_and_required_RepeatedMsg_field_is_NOT_set() {
         CustomMessageRequiredRepeatedMsgFieldValue invalidMsg =
                 CustomMessageRequiredRepeatedMsgFieldValue.getDefaultInstance();
@@ -310,6 +332,8 @@ public class MessageValidatorTest {
     }
 
     @Test
+    @DisplayName("prpagate the proper error message if the custom message is set" +
+            "and the `required` option is not set for the Enum field")
     public void propagate_proper_error_message_if_custom_message_set_and_required_Enum_field_is_NOT_set() {
         CustomMessageRequiredEnumFieldValue invalidMsg =
                 CustomMessageRequiredEnumFieldValue.getDefaultInstance();
@@ -323,6 +347,7 @@ public class MessageValidatorTest {
     }
 
     @Test
+    @DisplayName("ignore if the missing option and the field is not marked as required")
     public void ignore_if_missing_option_if_field_not_marked_required() {
         CustomMessageWithNoRequiredOption invalidMsg =
                 CustomMessageWithNoRequiredOption.getDefaultInstance();
@@ -351,6 +376,7 @@ public class MessageValidatorTest {
      */
 
     @Test
+    @DisplayName("found out that time is in future")
     public void find_out_that_time_is_in_future() {
         TimeInFutureFieldValue validMsg = TimeInFutureFieldValue.newBuilder()
                                                                 .setValue(getFuture())
@@ -360,6 +386,7 @@ public class MessageValidatorTest {
     }
 
     @Test
+    @DisplayName("find out that time is not in future")
     public void find_out_that_time_is_NOT_in_future() {
         TimeInFutureFieldValue invalidMsg = TimeInFutureFieldValue.newBuilder()
                                                                   .setValue(getPast())
@@ -369,6 +396,7 @@ public class MessageValidatorTest {
     }
 
     @Test
+    @DisplayName("find out that time is in past")
     public void find_out_that_time_is_in_past() {
         TimeInPastFieldValue validMsg = TimeInPastFieldValue.newBuilder()
                                                             .setValue(getPast())
@@ -378,6 +406,7 @@ public class MessageValidatorTest {
     }
 
     @Test
+    @DisplayName("find out that time is not in past")
     public void find_out_that_time_is_NOT_in_past() {
         TimeInPastFieldValue invalidMsg = TimeInPastFieldValue.newBuilder()
                                                               .setValue(getFuture())
@@ -387,6 +416,7 @@ public class MessageValidatorTest {
     }
 
     @Test
+    @DisplayName("find out that time in nanos is not in past")
     public void find_out_that_time_is_NOT_in_the_past_by_nanos() {
         Timestamp currentTime = currentTimeWithNanos(ZERO_NANOSECONDS);
         Timestamp timeInFuture = timeWithNanos(currentTime, FIFTY_NANOSECONDS);
@@ -400,6 +430,7 @@ public class MessageValidatorTest {
     }
 
     @Test
+    @DisplayName("find out that time in nanos is in past")
     public void find_out_that_time_is_in_the_past_by_nanos() {
         Timestamp currentTime = currentTimeWithNanos(FIFTY_NANOSECONDS);
         Timestamp timeInPast = timeWithNanos(currentTime, ZERO_NANOSECONDS);
@@ -413,12 +444,14 @@ public class MessageValidatorTest {
     }
 
     @Test
+    @DisplayName("consider timestamp field is valid if the time option is not set")
     public void consider_timestamp_field_is_valid_if_no_time_option_set() {
         validate(TimeWithoutOptsFieldValue.getDefaultInstance());
         assertIsValid(true);
     }
 
     @Test
+    @DisplayName("provide the one valid violation if time is invalid")
     public void provide_one_valid_violation_if_time_is_invalid() {
         TimeInFutureFieldValue invalidMsg = TimeInFutureFieldValue.newBuilder()
                                                                   .setValue(getPast())
@@ -442,6 +475,7 @@ public class MessageValidatorTest {
      */
 
     @Test
+    @DisplayName("consider Any is valid if the content is valid")
     public void consider_Any_valid_if_content_is_valid() {
         RequiredMsgFieldValue value = RequiredMsgFieldValue
                 .newBuilder()
@@ -457,6 +491,7 @@ public class MessageValidatorTest {
     }
 
     @Test
+    @DisplayName("consider Any is invalid if the content is invalid")
     public void consider_Any_not_valid_if_content_is_not_valid() {
         RequiredMsgFieldValue value = RequiredMsgFieldValue.getDefaultInstance();
         Any content = AnyPacker.pack(value);
@@ -469,6 +504,7 @@ public class MessageValidatorTest {
     }
 
     @Test
+    @DisplayName("consider Any is valid if the validation is not required")
     public void consider_Any_valid_if_validation_is_not_required() {
         RequiredMsgFieldValue value = RequiredMsgFieldValue.getDefaultInstance();
         Any content = AnyPacker.pack(value);
@@ -481,6 +517,7 @@ public class MessageValidatorTest {
     }
 
     @Test
+    @DisplayName("validate the recursive messages")
     public void validate_recursive_messages() {
         RequiredMsgFieldValue value = RequiredMsgFieldValue.getDefaultInstance();
         Any internalAny = AnyPacker.pack(value);
@@ -502,6 +539,7 @@ public class MessageValidatorTest {
      */
 
     @Test
+    @DisplayName("consider that the number field is valid if the number option is not set")
     public void consider_number_field_is_valid_if_no_number_options_set() {
         Message nonZeroValue = DoubleValue.newBuilder()
                                           .setValue(5)
@@ -511,11 +549,13 @@ public class MessageValidatorTest {
     }
 
     @Test
+    @DisplayName("find out that the number is greater inclusive than minimal decimal value")
     public void find_out_that_number_is_greater_than_decimal_min_inclusive() {
         minDecimalNumberTest(GREATER_THAN_MIN, true, true);
     }
 
     @Test
+    @DisplayName("find out that the number is equal to the minimal decimal inclusive")
     public void find_out_that_number_is_equal_to_decimal_min_inclusive() {
         minDecimalNumberTest(EQUAL_MIN, true, true);
     }
