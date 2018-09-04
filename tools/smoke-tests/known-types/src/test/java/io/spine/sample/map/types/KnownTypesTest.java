@@ -79,19 +79,19 @@ public class KnownTypesTest {
     }
 
     @Test
-    @DisplayName("put an entry for enum with outer class which set in the protobuf file as an option")
+    @DisplayName("put an entry for the enum with outer class which set in the protobuf file as an option")
     public void put_entry_for_enum_with_outer_class_set_in_protobuf_file_option() {
         assertIsKnownType("InnerEnum", "TestOuterClass$InnerEnum");
     }
 
     @Test
-    @DisplayName("put an entry for message with outer class which passed as a file name")
+    @DisplayName("put an entry for the message with outer class which passed as a file name")
     public void put_entry_for_msg_with_outer_class_as_file_name() {
         assertIsKnownType("TestMsg", "OuterClassName$TestMsg");
     }
 
     @Test
-    @DisplayName("put an entry for enum with outer class which passed as a file name")
+    @DisplayName("put an entry for the enum with outer class which passed as a file name")
     public void put_entry_for_enum_with_outer_class_as_file_name() {
         assertIsKnownType("TestEnum", "OuterClassName$TestEnum");
     }

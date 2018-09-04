@@ -47,13 +47,13 @@ public class LongFieldValidatorTest {
                                    ImmutableList.of(VALUE));
 
     @Test
-    @DisplayName("convert string to number")
+    @DisplayName("convert a string to number")
     public void convert_string_to_number() {
         assertEquals(VALUE, validator.toNumber(VALUE.toString()));
     }
 
     @Test
-    @DisplayName("return absolute number value")
+    @DisplayName("return an absolute number value")
     public void return_absolute_number_value() {
         assertEquals(VALUE, validator.getAbs(NEGATIVE_VALUE));
     }

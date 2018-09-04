@@ -67,7 +67,7 @@ public class AlternativeFieldValidatorTest {
     }
 
     @Test
-    @DisplayName("fail if nothing defined")
+    @DisplayName("fail if nothing is defined")
     public void fail_if_nothing_defined() {
         PersonName empty = PersonName.getDefaultInstance();
         List<? extends ConstraintViolation> violations = validator.validate(empty);

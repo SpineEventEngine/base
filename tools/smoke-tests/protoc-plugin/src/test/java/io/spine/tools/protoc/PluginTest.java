@@ -75,7 +75,7 @@ public class PluginTest {
 
     @SuppressWarnings({"ConstantConditions", "RedundantCast"}) // Required by the test logic.
     @Test
-    @DisplayName("ise `IS` in priority to `EVERY IS`")
+    @DisplayName("use `IS` in priority to `EVERY IS`")
     public void use_IS_in_priority_to_EVERY_IS() {
         assertTrue((Object) PIUserCreated.getDefaultInstance() instanceof PIUserEvent);
         assertTrue((Object) PIUserNameUpdated.getDefaultInstance() instanceof PIUserEvent);

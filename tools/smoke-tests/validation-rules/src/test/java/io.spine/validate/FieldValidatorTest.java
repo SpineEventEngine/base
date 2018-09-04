@@ -90,7 +90,7 @@ public abstract class FieldValidatorTest<V> {
     protected abstract V defaultValue();
 
     @Test
-    @DisplayName("validate repeated fields if it is specified")
+    @DisplayName("validate repeated fields if they are specified")
     public void validate_repeated_fields_if_specified() {
         FieldValidator<V> validator = validatedRequiredRepeatedFieldValidator(of(newValue(),
                                                                                        defaultValue()));
@@ -109,7 +109,7 @@ public abstract class FieldValidatorTest<V> {
     }
 
     @Test
-    @DisplayName("skip empty repeated fields if they are not required ")
+    @DisplayName("skip an empty repeated fields if they are not required")
     public void skip_empty_repeated_fields_if_not_required() {
         FieldValidator<V> validator = uncheckedRepeatedFieldValidator(ImmutableList.<V>of());
         List<ConstraintViolation> violations = validator.validate();
@@ -117,7 +117,7 @@ public abstract class FieldValidatorTest<V> {
     }
 
     @Test
-    @DisplayName("skip empty repeated validated not required fields")
+    @DisplayName("skip an empty repeated validated fields if they are not required")
     public void skip_empty_repeated_validated_not_required_fields() {
         FieldValidator<V> validator = validatedRepeatedFieldValidator(ImmutableList.<V>of());
         List<ConstraintViolation> violations = validator.validate();
