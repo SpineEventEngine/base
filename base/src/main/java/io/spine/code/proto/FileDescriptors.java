@@ -130,7 +130,7 @@ public final class FileDescriptors {
                     e, "Cannot get proto file descriptors. Path: %s", descriptorSetFile
             );
         }
-        log.debug("Found {} files: {}", files.size(), files);
+        log.debug("Found {} files.", files.size());
         return files;
     }
 

@@ -25,7 +25,7 @@
  * as we want to manage the versions in a single source.
  */
 
-final def SPINE_VERSION = '0.10.68-SNAPSHOT'
+final def SPINE_VERSION = '0.10.69-SNAPSHOT'
 
 ext {
     spineVersion = SPINE_VERSION
