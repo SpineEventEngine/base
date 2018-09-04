@@ -23,27 +23,30 @@ package io.spine.validate;
 import com.google.protobuf.Descriptors.Descriptor;
 import io.spine.test.validate.msg.altfields.MessageWithMissingField;
 import io.spine.test.validate.msg.altfields.PersonName;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class AlternativeFieldValidatorShould {
+@DisplayName("AlternativeFieldValidator should")
+public class AlternativeFieldValidatorTest {
 
     private static final FieldContext EMPTY_CONTEXT = FieldContext.empty();
 
     private AlternativeFieldValidator validator;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         Descriptor descriptor = PersonName.getDescriptor();
         validator = new AlternativeFieldValidator(descriptor, EMPTY_CONTEXT);
     }
 
     @Test
+    @DisplayName("pass if one field populated")
     public void pass_if_one_field_populated() {
         PersonName fieldPopulated = PersonName.newBuilder()
                                               .setFirstName("Alexander")
@@ -53,6 +56,7 @@ public class AlternativeFieldValidatorShould {
     }
 
     @Test
+    @DisplayName("pass if the combination is defined")
     public void pass_if_combination_defined() {
         PersonName combinationDefined = PersonName.newBuilder()
                                                   .setHonorificPrefix("Mr.")
@@ -63,6 +67,7 @@ public class AlternativeFieldValidatorShould {
     }
 
     @Test
+    @DisplayName("fail if nothing defined")
     public void fail_if_nothing_defined() {
         PersonName empty = PersonName.getDefaultInstance();
         List<? extends ConstraintViolation> violations = validator.validate(empty);
@@ -70,6 +75,7 @@ public class AlternativeFieldValidatorShould {
     }
 
     @Test
+    @DisplayName("fail if defined is not required")
     public void fail_if_defined_not_required() {
         PersonName notRequiredPopulated = PersonName.newBuilder()
                                                     .setHonorificSuffix("I")
@@ -79,6 +85,7 @@ public class AlternativeFieldValidatorShould {
     }
 
     @Test
+    @DisplayName("report the missing field")
     public void report_missing_field() {
         AlternativeFieldValidator testee =
                 new AlternativeFieldValidator(MessageWithMissingField.getDescriptor(),

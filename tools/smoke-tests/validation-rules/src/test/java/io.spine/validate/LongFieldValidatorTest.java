@@ -25,14 +25,16 @@ import com.google.protobuf.Any;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Int64Value;
 import io.spine.protobuf.AnyPacker;
-import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author Alexander Litus
  */
-public class LongFieldValidatorShould {
+@DisplayName("LongFieldValidator should")
+public class LongFieldValidatorTest {
 
     private static final Long VALUE = 2L;
     private static final Long NEGATIVE_VALUE = -2L;
@@ -45,16 +47,19 @@ public class LongFieldValidatorShould {
                                    ImmutableList.of(VALUE));
 
     @Test
+    @DisplayName("convert string to number")
     public void convert_string_to_number() {
         assertEquals(VALUE, validator.toNumber(VALUE.toString()));
     }
 
     @Test
+    @DisplayName("return absolute number value")
     public void return_absolute_number_value() {
         assertEquals(VALUE, validator.getAbs(NEGATIVE_VALUE));
     }
 
     @Test
+    @DisplayName("wrap to any")
     public void wrap_to_any() {
         Any any = validator.wrap(VALUE);
         Int64Value msg = AnyPacker.unpack(any);

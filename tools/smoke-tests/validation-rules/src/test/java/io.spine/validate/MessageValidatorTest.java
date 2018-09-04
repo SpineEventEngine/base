@@ -74,7 +74,8 @@ import io.spine.test.validate.msg.TimeWithoutOptsFieldValue;
 import io.spine.test.validate.msg.altfields.AnyContainer;
 import io.spine.test.validate.msg.altfields.UncheckedAnyContainer;
 import io.spine.validate.given.MessageValidatorTestEnv;
-import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
@@ -92,15 +93,16 @@ import static io.spine.validate.given.MessageValidatorTestEnv.currentTimeWithNan
 import static io.spine.validate.given.MessageValidatorTestEnv.freezeTime;
 import static io.spine.validate.given.MessageValidatorTestEnv.timeWithNanos;
 import static java.lang.String.format;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Alexander Litus
  */
 @SuppressWarnings({"ClassWithTooManyMethods", "OverlyCoupledClass", "OverlyComplexClass"})
-public class MessageValidatorShould {
+@DisplayName("MesageValidator should")
+public class MessageValidatorTest {
 
     private static final double EQUAL_MIN = 16.5;
     private static final double GREATER_THAN_MIN = EQUAL_MIN + 5;

@@ -2,7 +2,8 @@ package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
 import org.hamcrest.Matchers;
-import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -11,12 +12,13 @@ import java.util.List;
 import static com.google.common.collect.ImmutableList.of;
 import static io.spine.testing.Verify.assertNotEmpty;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Dmytro Dashenkov
  */
-public abstract class FieldValidatorShould<V> {
+@DisplayName("FieldValidator should")
+public abstract class FieldValidatorTest<V> {
 
     /**
      * Creates a {@link FieldValidator} for a repeated required field, which child items are also
@@ -88,6 +90,7 @@ public abstract class FieldValidatorShould<V> {
     protected abstract V defaultValue();
 
     @Test
+    @DisplayName("validate repeated fields if it is specified")
     public void validate_repeated_fields_if_specified() {
         FieldValidator<V> validator = validatedRequiredRepeatedFieldValidator(of(newValue(),
                                                                                        defaultValue()));
@@ -96,6 +99,7 @@ public abstract class FieldValidatorShould<V> {
     }
 
     @Test
+    @DisplayName("skip repeated fields if they are not specified")
     public void skip_repeated_fields_if_not_specified() {
         FieldValidator<V> validator = uncheckedRepeatedFieldValidator(of(defaultValue(),
                                                                                defaultValue(),
@@ -105,6 +109,7 @@ public abstract class FieldValidatorShould<V> {
     }
 
     @Test
+    @DisplayName("skip empty repeated fields if they are not required ")
     public void skip_empty_repeated_fields_if_not_required() {
         FieldValidator<V> validator = uncheckedRepeatedFieldValidator(ImmutableList.<V>of());
         List<ConstraintViolation> violations = validator.validate();
@@ -112,6 +117,7 @@ public abstract class FieldValidatorShould<V> {
     }
 
     @Test
+    @DisplayName("skip empty repeated validated not required fields")
     public void skip_empty_repeated_validated_not_required_fields() {
         FieldValidator<V> validator = validatedRepeatedFieldValidator(ImmutableList.<V>of());
         List<ConstraintViolation> violations = validator.validate();
@@ -119,6 +125,7 @@ public abstract class FieldValidatorShould<V> {
     }
 
     @Test
+    @DisplayName("not validate elements of repeated fields")
     public void not_validate_elements_of_repeated_field() {
         FieldValidator<V> validator = requiredRepeatedFieldValidator(of(defaultValue(),
                                                                               defaultValue()));
@@ -127,12 +134,14 @@ public abstract class FieldValidatorShould<V> {
     }
 
     @Test
+    @DisplayName("flag repeated fields")
     public void flag_repeated_fields() {
         FieldValidator<?> validator = uncheckedRepeatedFieldValidator(Collections.<V>emptyList());
         assertTrue(validator.isRepeatedOrMap());
     }
 
     @Test
+    @DisplayName("flag map fields")
     public void flag_map_fields() {
         FieldValidator<?> validator = emptyMapFieldValidator();
         assertTrue(validator.isRepeatedOrMap());

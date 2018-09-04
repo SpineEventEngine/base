@@ -17,27 +17,33 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package io.spine.validate;
 
-import com.google.common.testing.NullPointerTester;
-import org.junit.Test;
+import com.google.common.collect.ImmutableList;
+import com.google.protobuf.Any;
+import com.google.protobuf.Descriptors.FieldDescriptor;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 /**
- * @author Alex Tymchenko
+ * @author dmitry.kashcheiev
  */
-public class ConstraintViolationsShould {
+@DisplayName("BooleanFieldValidator should")
+public class BooleanFieldValidatorTest {
+
+    private final FieldDescriptor fieldDescriptor = Any.getDescriptor()
+                                                       .getFields()
+                                                       .get(0);
+    private final BooleanFieldValidator validator =
+            new BooleanFieldValidator(FieldContext.create(fieldDescriptor),
+                                      ImmutableList.of(false));
 
     @Test
-    public void have_private_constructor() {
-        assertHasPrivateParameterlessCtor(ConstraintViolations.class);
-    }
-
-    @Test
-    public void pass_the_null_tolerance_check() {
-        new NullPointerTester()
-                .setDefault(ConstraintViolation.class, ConstraintViolation.getDefaultInstance())
-                .testAllPublicStaticMethods(ConstraintViolations.class);
+    @DisplayName("convert string to number")
+    public void convert_string_to_number() {
+        assertFalse(validator.isNotSet(false));
     }
 }

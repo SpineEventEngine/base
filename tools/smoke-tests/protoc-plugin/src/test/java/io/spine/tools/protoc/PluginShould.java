@@ -23,18 +23,20 @@ package io.spine.tools.protoc;
 import com.google.protobuf.Message;
 import io.spine.tools.protoc.test.PIUserEvent;
 import io.spine.tools.protoc.test.UserInfo;
-import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Dmytro Dashenkov
  */
+@DisplayName("Plugin should")
 public class PluginShould {
 
     private static final String EVENT_INTERFACE_FQN =
@@ -51,18 +53,21 @@ public class PluginShould {
 
     @SuppressWarnings({"ConstantConditions", "RedundantCast"}) // Required by the test logic.
     @Test
+    @DisplayName("implement marker interface in the generated messages")
     public void implement_marker_interfaces_in_generated_messages() {
         assertTrue((Object) PICustomerNotified.getDefaultInstance() instanceof PICustomerEvent);
         assertTrue((Object) PICustomerEmailRecieved.getDefaultInstance() instanceof PICustomerEvent);
     }
 
     @Test
+    @DisplayName("generate marker interfaces for the separate messages")
     public void generate_marker_interfaces_for_separate_messages() throws ClassNotFoundException {
         checkMarkerInterface(COMMAND_INTERFACE_FQN);
     }
 
     @SuppressWarnings({"ConstantConditions", "RedundantCast"}) // Required by the test logic.
     @Test
+    @DisplayName("implement interface in the generated messages with `IS` option")
     public void implement_interface_in_generated_messages_with_IS_option() {
         assertTrue((Object) PICustomerCreated.getDefaultInstance() instanceof PICustomerEvent);
         assertTrue((Object) PICreateCustomer.getDefaultInstance() instanceof PICustomerCommand);
@@ -70,6 +75,7 @@ public class PluginShould {
 
     @SuppressWarnings({"ConstantConditions", "RedundantCast"}) // Required by the test logic.
     @Test
+    @DisplayName("ise `IS` in priority to `EVERY IS`")
     public void use_IS_in_priority_to_EVERY_IS() {
         assertTrue((Object) PIUserCreated.getDefaultInstance() instanceof PIUserEvent);
         assertTrue((Object) PIUserNameUpdated.getDefaultInstance() instanceof PIUserEvent);
@@ -79,12 +85,14 @@ public class PluginShould {
     }
 
     @Test
+    @DisplayName("resolve packages from src proto if the packages are not specified")
     public void resolve_packages_from_src_proto_if_not_specified() throws ClassNotFoundException {
         Class<?> cls = checkMarkerInterface(USER_COMMAND_FQN);
         assertTrue(cls.isAssignableFrom(PICreateUser.class));
     }
 
     @Test
+    @DisplayName("skip non specified message types")
     public void skip_non_specified_message_types() {
         Class<?> cls = CustomerName.class;
         Class[] interfaces = cls.getInterfaces();

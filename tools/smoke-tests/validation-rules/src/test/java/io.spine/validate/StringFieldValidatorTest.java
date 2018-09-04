@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * @author Dmytro Dashenkov
  */
-public class StringFieldValidatorShould extends FieldValidatorShould<String> {
+public class StringFieldValidatorTest extends FieldValidatorTest<String> {
 
     private static final FieldDescriptor UNCHECKED_FIELD_DESC =
             MessageWithRepeatedUnchekedStringField.getDescriptor()
