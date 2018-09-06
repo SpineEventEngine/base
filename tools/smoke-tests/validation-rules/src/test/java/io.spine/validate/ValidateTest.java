@@ -25,7 +25,8 @@ import com.google.protobuf.Message;
 import com.google.protobuf.StringValue;
 import io.spine.testing.Tests;
 import io.spine.type.TypeName;
-import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import static io.spine.protobuf.TypeConverter.toMessage;
 import static io.spine.testing.TestValues.newUuidValue;
@@ -37,38 +38,46 @@ import static io.spine.validate.Validate.checkNotEmptyOrBlank;
 import static io.spine.validate.Validate.checkPositive;
 import static io.spine.validate.Validate.isDefault;
 import static io.spine.validate.Validate.isNotDefault;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ValidateShould {
+@DisplayName("Validate should")
+public class ValidateTest {
 
     @Test
+    @DisplayName("have private constructor")
     public void have_private_constructor() {
         assertHasPrivateParameterlessCtor(Validate.class);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
+    @DisplayName("throw the exception if zero is passed to checkPositive")
     public void check_positive_if_zero() {
-        checkPositive(0);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void check_positive_if_negative() {
-        checkPositive(-1);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void check_positive_with_message() {
-        checkPositive(-1, "negativeInteger");
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void throw_exception_if_long_value_is_not_positive() {
-        checkPositive(-2L, "negativeLong");
+        assertThrows(IllegalArgumentException.class, () -> checkPositive(0));
     }
 
     @Test
+    @DisplayName("throw the exception if negative is passed to checkPositive")
+    public void check_positive_if_negative() {
+        assertThrows(IllegalArgumentException.class, () -> checkPositive(-1));
+    }
+
+    @Test
+    @DisplayName("throw the exception if negative is passed with message to checkPositive")
+    public void check_positive_with_message() {
+        assertThrows(IllegalArgumentException.class, () -> checkPositive(-1, "negativeInteger"));
+    }
+
+    @Test
+    @DisplayName("throw the exception if the passed to checkPositive value is not positive")
+    public void throw_exception_if_long_value_is_not_positive() {
+        assertThrows(IllegalArgumentException.class, () -> checkPositive(-2L, "negativeLong"));
+    }
+
+    @Test
+    @DisplayName("verify that a message is not in the default state")
     public void verify_that_message_is_not_in_default_state() {
         Message msg = toMessage("check_if_message_is_not_in_default_state");
 
@@ -76,12 +85,14 @@ public class ValidateShould {
         assertFalse(isNotDefault(StringValue.getDefaultInstance()));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
+    @DisplayName("throw the exception if the checked value is out of bounds")
     public void throw_exception_if_checked_value_out_of_bounds() {
-        checkBounds(10, "checked value", -5, 9);
+        assertThrows(IllegalArgumentException.class, () -> checkBounds(10, "checked value", -5, 9));
     }
 
     @Test
+    @DisplayName("verify that a message is in the default state")
     public void verify_that_message_is_in_default_state() {
         Message nonDefault = newUuidValue();
 
@@ -89,61 +100,74 @@ public class ValidateShould {
         assertFalse(isDefault(nonDefault));
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
+    @DisplayName("throw the exception when a message is not in the default state")
     public void check_if_message_is_in_default() {
         StringValue nonDefault = newUuidValue();
-        checkDefault(nonDefault);
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void check_a_message_is_default_with_parametrized_error_message() {
-        StringValue nonDefault = newUuidValue();
-        checkDefault(nonDefault,
-                     "Message value: %s, Type name: %s",
-                     nonDefault,
-                     TypeName.of(nonDefault));
+        assertThrows(IllegalStateException.class, () -> checkDefault(nonDefault));
     }
 
     @Test
+    @DisplayName("check that a message is default with the parametrized error message")
+    public void check_a_message_is_default_with_parametrized_error_message() {
+        StringValue nonDefault = newUuidValue();
+        assertThrows(IllegalStateException.class, () ->
+                checkDefault(nonDefault,
+                             "Message value: %s, Type name: %s",
+                             nonDefault,
+                             TypeName.of(nonDefault)));
+    }
+
+    @Test
+    @DisplayName("return default value on check")
     public void return_default_value_on_check() {
         Message defaultValue = StringValue.getDefaultInstance();
         assertEquals(defaultValue, checkDefault(defaultValue));
         assertEquals(defaultValue, checkDefault(defaultValue, "error message"));
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
+    @DisplayName("throw the exception when a message is not in the default state")
     public void check_if_message_is_in_not_in_default_state_throwing_exception_if_not() {
-        checkNotDefault(StringValue.getDefaultInstance());
+        assertThrows(IllegalStateException.class,
+                     () -> checkNotDefault(StringValue.getDefaultInstance()));
     }
 
     @Test
+    @DisplayName("return non default value on check")
     public void return_non_default_value_on_check() {
         StringValue nonDefault = newUuidValue();
         assertEquals(nonDefault, checkNotDefault(nonDefault));
         assertEquals(nonDefault, checkNotDefault(nonDefault, "with error message"));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
+    @DisplayName("throw the exception if the checked string is null")
     public void throw_exception_if_checked_string_is_null() {
-        checkNotEmptyOrBlank(Tests.<String>nullRef(), "");
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void throw_exception_if_checked_string_is_empty() {
-        checkNotEmptyOrBlank("", "");
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void throw_exception_if_checked_string_is_blank() {
-        checkNotEmptyOrBlank("   ", "");
+        assertThrows(NullPointerException.class,
+                     () -> checkNotEmptyOrBlank(Tests.<String>nullRef(), ""));
     }
 
     @Test
+    @DisplayName("throw the exception if the checked string is empty")
+    public void throw_exception_if_checked_string_is_empty() {
+        assertThrows(IllegalArgumentException.class, () -> checkNotEmptyOrBlank("", ""));
+    }
+
+    @Test
+    @DisplayName("throw the exception when the checked string is blank")
+    public void throw_exception_if_checked_string_is_blank() {
+        assertThrows(IllegalArgumentException.class, () -> checkNotEmptyOrBlank("   ", ""));
+    }
+
+    @Test
+    @DisplayName("not throw an exception if the checked string is valid")
     public void do_not_throw_exception_if_checked_string_is_valid() {
         checkNotEmptyOrBlank("valid_string", "");
     }
 
     @Test
+    @DisplayName("format a message from the constraint violation")
     public void format_message_from_constraint_violation() {
         ConstraintViolation violation = ConstraintViolation.newBuilder()
                                                            .setMsgFormat("test %s test %s")
@@ -156,6 +180,7 @@ public class ValidateShould {
     }
 
     @Test
+    @DisplayName("format a message using params from the constraint violation")
     public void format_message_using_params_from_constraint_violation() {
         ConstraintViolation violation = ConstraintViolation.newBuilder()
                                                            .addParam("1")
@@ -167,6 +192,7 @@ public class ValidateShould {
     }
 
     @Test
+    @DisplayName("pass the null tolerance check")
     public void pass_the_null_tolerance_check() {
         new NullPointerTester()
                 .testAllPublicStaticMethods(Validate.class);

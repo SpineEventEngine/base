@@ -23,41 +23,46 @@ package io.spine.validate;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Any;
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import com.google.protobuf.Int32Value;
+import com.google.protobuf.Int64Value;
 import io.spine.protobuf.AnyPacker;
-import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author Alexander Litus
  */
-public class IntegerFieldValidatorShould {
+@DisplayName("LongFieldValidator should")
+public class LongFieldValidatorTest {
 
-    private static final Integer VALUE = 2;
-    private static final Integer NEGATIVE_VALUE = -2;
+    private static final Long VALUE = 2L;
+    private static final Long NEGATIVE_VALUE = -2L;
 
     private final FieldDescriptor fieldDescriptor = Any.getDescriptor()
                                                        .getFields()
                                                        .get(0);
-    private final IntegerFieldValidator validator =
-            new IntegerFieldValidator(FieldContext.create(fieldDescriptor),
-                                      ImmutableList.of(VALUE));
+    private final LongFieldValidator validator =
+            new LongFieldValidator(FieldContext.create(fieldDescriptor),
+                                   ImmutableList.of(VALUE));
 
     @Test
+    @DisplayName("convert a string to number")
     public void convert_string_to_number() {
         assertEquals(VALUE, validator.toNumber(VALUE.toString()));
     }
 
     @Test
+    @DisplayName("return an absolute number value")
     public void return_absolute_number_value() {
         assertEquals(VALUE, validator.getAbs(NEGATIVE_VALUE));
     }
 
     @Test
+    @DisplayName("wrap to any")
     public void wrap_to_any() {
         Any any = validator.wrap(VALUE);
-        Int32Value msg = AnyPacker.unpack(any);
-        assertEquals(VALUE, (Integer) msg.getValue());
+        Int64Value msg = AnyPacker.unpack(any);
+        assertEquals(VALUE, (Long) msg.getValue());
     }
 }

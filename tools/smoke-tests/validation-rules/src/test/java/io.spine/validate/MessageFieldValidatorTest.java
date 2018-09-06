@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * @author Dmytro Dashenkov
  */
-public class MessageFieldValidatorShould extends FieldValidatorShould<Message> {
+public class MessageFieldValidatorTest extends FieldValidatorTest<Message> {
 
     private static final FieldDescriptor UNCHECKED_FIELD_DESC =
             MessageWithRepeatedUnchekedMessageField.getDescriptor()

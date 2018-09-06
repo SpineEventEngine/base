@@ -20,21 +20,25 @@
 package io.spine.validate;
 
 import com.google.common.testing.NullPointerTester;
-import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
 
 /**
  * @author Alex Tymchenko
  */
-public class ConstraintViolationsShould {
+@DisplayName("ConstraintViolations should")
+public class ConstraintViolationsTest {
 
     @Test
+    @DisplayName("have private constructor")
     public void have_private_constructor() {
         assertHasPrivateParameterlessCtor(ConstraintViolations.class);
     }
 
     @Test
+    @DisplayName("pass the null tolerance check")
     public void pass_the_null_tolerance_check() {
         new NullPointerTester()
                 .setDefault(ConstraintViolation.class, ConstraintViolation.getDefaultInstance())
