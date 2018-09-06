@@ -549,7 +549,7 @@ public class MessageValidatorTest {
     }
 
     @Test
-    @DisplayName("find out that the number is greater inclusive than minimal decimal value")
+    @DisplayName("find out that the number is greater than the minimal decimal value inclusive")
     public void find_out_that_number_is_greater_than_decimal_min_inclusive() {
         minDecimalNumberTest(GREATER_THAN_MIN, true, true);
     }
@@ -561,26 +561,31 @@ public class MessageValidatorTest {
     }
 
     @Test
+    @DisplayName("find out that the number is less than the minimal decimal value inclusive")
     public void find_out_that_number_is_less_than_decimal_min_inclusive() {
         minDecimalNumberTest(LESS_THAN_MIN, true, false);
     }
 
     @Test
+    @DisplayName("find out that the number is greater that the minimal decimal value exclusive")
     public void find_out_that_number_is_greater_than_decimal_min_NOT_inclusive() {
         minDecimalNumberTest(GREATER_THAN_MIN, false, true);
     }
 
     @Test
+    @DisplayName("find out that the number is equal to the minimal decimal value exclusive")
     public void find_out_that_number_is_equal_to_decimal_min_NOT_inclusive() {
         minDecimalNumberTest(EQUAL_MIN, false, false);
     }
 
     @Test
+    @DisplayName("find out that the number is less than the minimal decimal value exclusive")
     public void find_out_that_number_is_less_than_decimal_min_NOT_inclusive() {
         minDecimalNumberTest(LESS_THAN_MIN, false, false);
     }
 
     @Test
+    @DisplayName("provide the one valid violation if the number is less than the minimal decimal value")
     public void provide_one_valid_violation_if_number_is_less_than_decimal_min() {
         minDecimalNumberTest(LESS_THAN_MIN, true, false);
 
@@ -598,36 +603,43 @@ public class MessageValidatorTest {
      */
 
     @Test
+    @DisplayName("find out that the number is greater than the maximal decimal value inclusive")
     public void find_out_that_number_is_greater_than_decimal_max_inclusive() {
         maxDecimalNumberTest(GREATER_THAN_MAX, true, false);
     }
 
     @Test
+    @DisplayName("find out that the number is equal to maximal decimal value inclusive")
     public void find_out_that_number_is_equal_to_decimal_max_inclusive() {
         maxDecimalNumberTest(EQUAL_MAX, true, true);
     }
 
     @Test
+    @DisplayName("find out that the number is less than the maximal decimal value inclusive")
     public void find_out_that_number_is_less_than_decimal_max_inclusive() {
         maxDecimalNumberTest(LESS_THAN_MAX, true, true);
     }
 
     @Test
+    @DisplayName("find out that the number is greater than the maximal decimal value exclusive")
     public void find_out_that_number_is_greater_than_decimal_max_NOT_inclusive() {
         maxDecimalNumberTest(GREATER_THAN_MAX, false, false);
     }
 
     @Test
+    @DisplayName("find out that the number is equal to maximal decimal value exclusive")
     public void find_out_that_number_is_equal_to_decimal_max_NOT_inclusive() {
         maxDecimalNumberTest(EQUAL_MAX, false, false);
     }
 
     @Test
+    @DisplayName("find out that the number is less than maximal decimal value exclusive")
     public void find_out_that_number_is_less_than_decimal_max_NOT_inclusive() {
         maxDecimalNumberTest(LESS_THAN_MAX, false, true);
     }
 
     @Test
+    @DisplayName("provide the one valid violation if the number is greater than the maximal decimal value")
     public void provide_one_valid_violation_if_number_is_greater_than_decimal_max() {
         maxDecimalNumberTest(GREATER_THAN_MAX, true, false);
 
@@ -645,6 +657,7 @@ public class MessageValidatorTest {
      */
 
     @Test
+    @DisplayName("find out that the number is greater than minimal value")
     public void find_out_that_number_is_greater_than_min() {
         MinNumberFieldValue msg = MinNumberFieldValue.newBuilder()
                                                      .setValue(GREATER_THAN_MIN)
@@ -654,6 +667,7 @@ public class MessageValidatorTest {
     }
 
     @Test
+    @DisplayName("find out that the number is equal to minimal value")
     public void find_out_that_number_is_equal_to_min() {
         MinNumberFieldValue msg = MinNumberFieldValue.newBuilder()
                                                      .setValue(EQUAL_MIN)
@@ -663,6 +677,7 @@ public class MessageValidatorTest {
     }
 
     @Test
+    @DisplayName("find out that the number is less than minimal value")
     public void find_out_that_number_is_less_than_min() {
         MinNumberFieldValue msg = MinNumberFieldValue.newBuilder()
                                                      .setValue(LESS_THAN_MIN)
@@ -672,6 +687,7 @@ public class MessageValidatorTest {
     }
 
     @Test
+    @DisplayName("provide the one valid violation if the number is less than minimal")
     public void provide_one_valid_violation_if_number_is_less_than_min() {
         MinNumberFieldValue msg = MinNumberFieldValue.newBuilder()
                                                      .setValue(LESS_THAN_MIN)
@@ -692,6 +708,7 @@ public class MessageValidatorTest {
      */
 
     @Test
+    @DisplayName("find out that the number is greater than the maximal value inclusive")
     public void find_out_that_number_is_greater_than_max_inclusive() {
         MaxNumberFieldValue msg = MaxNumberFieldValue.newBuilder()
                                                      .setValue(GREATER_THAN_MAX)
@@ -701,6 +718,7 @@ public class MessageValidatorTest {
     }
 
     @Test
+    @DisplayName("find out that the number is equal to the maximal value inclusive")
     public void find_out_that_number_is_equal_to_max_inclusive() {
         MaxNumberFieldValue msg = MaxNumberFieldValue.newBuilder()
                                                      .setValue(EQUAL_MAX)
@@ -710,6 +728,7 @@ public class MessageValidatorTest {
     }
 
     @Test
+    @DisplayName("find out that the number is less than the maximal value inclusive")
     public void find_out_that_number_is_less_than_max_inclusive() {
         MaxNumberFieldValue msg = MaxNumberFieldValue.newBuilder()
                                                      .setValue(LESS_THAN_MAX)
@@ -719,6 +738,7 @@ public class MessageValidatorTest {
     }
 
     @Test
+    @DisplayName("provide the one valid violation if the number is greater than maximal value")
     public void provide_one_valid_violation_if_number_is_greater_than_max() {
         MaxNumberFieldValue msg = MaxNumberFieldValue.newBuilder()
                                                      .setValue(GREATER_THAN_MAX)
@@ -739,16 +759,19 @@ public class MessageValidatorTest {
      */
 
     @Test
+    @DisplayName("find out that the integral digit count is greater than the maximal value")
     public void find_out_that_integral_digit_count_is_greater_than_max() {
         digitsCountTest(INT_DIGIT_COUNT_GREATER_THAN_MAX, false);
     }
 
     @Test
+    @DisplayName("find out that the integral digits count is equal to maximal value")
     public void find_out_that_integral_digits_count_is_equal_to_max() {
         digitsCountTest(INT_DIGIT_COUNT_EQUAL_MAX, true);
     }
 
     @Test
+    @DisplayName("find out that the integral digit count is less than the maximal value")
     public void find_out_that_integral_digit_count_is_less_than_max() {
         digitsCountTest(INT_DIGIT_COUNT_LESS_THAN_MAX, true);
     }
@@ -759,16 +782,19 @@ public class MessageValidatorTest {
     }
 
     @Test
+    @DisplayName("find out that the fractional digit count is equal to maximal value")
     public void find_out_that_fractional_digit_count_is_equal_to_max() {
         digitsCountTest(FRACTIONAL_DIGIT_COUNT_EQUAL_MAX, true);
     }
 
     @Test
+    @DisplayName("find out that the fractional digit count is less than maximal value")
     public void find_out_that_fractional_digit_count_is_less_than_max() {
         digitsCountTest(FRACTIONAL_DIGIT_COUNT_LESS_THAN_MAX, true);
     }
 
     @Test
+    @DisplayName("provide the one valid violation if the integral digit count is greater than maximal value")
     public void provide_one_valid_violation_if_integral_digit_count_is_greater_than_max() {
         digitsCountTest(INT_DIGIT_COUNT_GREATER_THAN_MAX, false);
 
@@ -788,6 +814,7 @@ public class MessageValidatorTest {
      */
 
     @Test
+    @DisplayName("find out that the string matches to regex pattern")
     public void find_out_that_string_matches_to_regex_pattern() {
         PatternStringFieldValue msg = PatternStringFieldValue.newBuilder()
                                                              .setEmail("valid.email@mail.com")
@@ -797,6 +824,7 @@ public class MessageValidatorTest {
     }
 
     @Test
+    @DisplayName("find out that the string does not match to regex pattern")
     public void find_out_that_string_does_not_match_to_regex_pattern() {
         PatternStringFieldValue msg = PatternStringFieldValue.newBuilder()
                                                              .setEmail("invalid email")
@@ -806,12 +834,14 @@ public class MessageValidatorTest {
     }
 
     @Test
+    @DisplayName("consider the field is valid if the `pattern` option is not set")
     public void consider_field_is_valid_if_no_pattern_option_set() {
         validate(StringValue.getDefaultInstance());
         assertIsValid(true);
     }
 
     @Test
+    @DisplayName("provide the one valid violation if the string does not match to regex pattern")
     public void provide_one_valid_violation_if_string_does_not_match_to_regex_pattern() {
         PatternStringFieldValue msg = PatternStringFieldValue.newBuilder()
                                                              .setEmail("invalid email")
@@ -835,6 +865,7 @@ public class MessageValidatorTest {
      */
 
     @Test
+    @DisplayName("find out that the enclosed message field is valid")
     public void find_out_that_enclosed_message_field_is_valid() {
         PatternStringFieldValue enclosedMsg =
                 PatternStringFieldValue.newBuilder()
@@ -849,6 +880,7 @@ public class MessageValidatorTest {
     }
 
     @Test
+    @DisplayName("find out that the enclosed message field is not valid")
     public void find_out_that_enclosed_message_field_is_NOT_valid() {
         PatternStringFieldValue enclosedMsg = PatternStringFieldValue.newBuilder()
                                                                      .setEmail("invalid email")
@@ -862,6 +894,7 @@ public class MessageValidatorTest {
     }
 
     @Test
+    @DisplayName("consider that the field is valid if the `valid` option is not set")
     public void consider_field_valid_if_no_valid_option_is_set() {
         PatternStringFieldValue enclosedMsg = PatternStringFieldValue.newBuilder()
                                                                      .setEmail("invalid email")
@@ -876,6 +909,7 @@ public class MessageValidatorTest {
     }
 
     @Test
+    @DisplayName("consider that the field is valid if it is not set")
     public void consider_field_valid_if_it_is_not_set() {
         EnclosedMessageWithRequiredString msg = EnclosedMessageWithRequiredString.newBuilder()
                                                                                  .build();
@@ -885,6 +919,7 @@ public class MessageValidatorTest {
     }
 
     @Test
+    @DisplayName("provide the valid violations if an enclosed message field is not valid")
     public void provide_valid_violations_if_enclosed_message_field_is_not_valid() {
         PatternStringFieldValue enclosedMsg = PatternStringFieldValue.newBuilder()
                                                                      .setEmail("invalid email")
@@ -913,6 +948,7 @@ public class MessageValidatorTest {
      */
 
     @Test
+    @DisplayName("find out that the Message entity ID in command is valid")
     public void find_out_that_Message_entity_id_in_command_is_valid() {
         EntityIdMsgFieldValue msg = EntityIdMsgFieldValue.newBuilder()
                                                          .setValue(newStringValue())
@@ -922,12 +958,14 @@ public class MessageValidatorTest {
     }
 
     @Test
+    @DisplayName("find out that the Message entity ID in command is not valid")
     public void find_out_that_Message_entity_id_in_command_is_NOT_valid() {
         validate(EntityIdMsgFieldValue.getDefaultInstance());
         assertIsValid(false);
     }
 
     @Test
+    @DisplayName("find out that the String entity ID in command is valid")
     public void find_out_that_String_entity_id_in_command_is_valid() {
         EntityIdStringFieldValue msg = EntityIdStringFieldValue.newBuilder()
                                                                .setValue(newUuid())
@@ -937,12 +975,14 @@ public class MessageValidatorTest {
     }
 
     @Test
+    @DisplayName("find out that the String entity ID in command is not valid")
     public void find_out_that_String_entity_id_in_command_is_NOT_valid() {
         validate(EntityIdStringFieldValue.getDefaultInstance());
         assertIsValid(false);
     }
 
     @Test
+    @DisplayName("find out that the entity ID in command cannot be ByteString")
     public void find_out_that_entity_id_in_command_cannot_be_ByteString() {
         EntityIdByteStringFieldValue msg = EntityIdByteStringFieldValue.newBuilder()
                                                                        .setValue(newByteString())
@@ -952,6 +992,7 @@ public class MessageValidatorTest {
     }
 
     @Test
+    @DisplayName("find out that the entity ID in command cannot be float number")
     public void find_out_that_entity_id_in_command_cannot_be_float_number() {
         @SuppressWarnings("MagicNumber") EntityIdDoubleFieldValue msg =
                 EntityIdDoubleFieldValue.newBuilder()
@@ -963,6 +1004,7 @@ public class MessageValidatorTest {
     }
 
     @Test
+    @DisplayName("fins out that the Integer entity ID in command is valid")
     public void find_out_that_Integer_entity_id_in_command_is_valid() {
         EntityIdIntFieldValue msg = EntityIdIntFieldValue.newBuilder()
                                                          .setValue(5)
@@ -972,12 +1014,14 @@ public class MessageValidatorTest {
     }
 
     @Test
+    @DisplayName("find out that the Integer entity ID in command is not valid")
     public void find_out_that_Integer_entity_id_in_command_is_NOT_valid() {
         validate(EntityIdIntFieldValue.getDefaultInstance());
         assertIsValid(false);
     }
 
     @Test
+    @DisplayName("find out that the Long entity ID in command is valid")
     public void find_out_that_Long_entity_id_in_command_is_valid() {
         EntityIdLongFieldValue msg = EntityIdLongFieldValue.newBuilder()
                                                            .setValue(5)
@@ -987,12 +1031,14 @@ public class MessageValidatorTest {
     }
 
     @Test
+    @DisplayName("find out that the long entity ID in command is not valid")
     public void find_out_that_Long_entity_id_in_command_is_NOT_valid() {
         validate(EntityIdLongFieldValue.getDefaultInstance());
         assertIsValid(false);
     }
 
     @Test
+    @DisplayName("find out that the repeated entity ID in command is not valid")
     public void find_out_that_repeated_entity_id_in_command_is_not_valid() {
         EntityIdRepeatedFieldValue msg = EntityIdRepeatedFieldValue.newBuilder()
                                                                    .addValue(newUuid())
@@ -1002,6 +1048,7 @@ public class MessageValidatorTest {
     }
 
     @Test
+    @DisplayName("provide the one valid violation if the entity ID in command is not valid")
     public void provide_one_valid_violation_if_entity_id_in_command_is_not_valid() {
         validate(EntityIdMsgFieldValue.getDefaultInstance());
 
@@ -1014,6 +1061,7 @@ public class MessageValidatorTest {
     }
 
     @Test
+    @DisplayName("provide the custom invalid field message if it is specified")
     public void provide_custom_invalid_field_message_if_specified() {
         PatternStringFieldValue enclosedMsg = PatternStringFieldValue.newBuilder()
                                                                      .setEmail("invalid email")
@@ -1030,6 +1078,7 @@ public class MessageValidatorTest {
     }
 
     @Test
+    @DisplayName("ignore the custom invalid field message if the validation is disabled")
     public void ignore_custom_invalid_field_message_if_validation_is_disabled() {
         validate(
                 EnclosedMessageFieldValueWithoutAnnotationFieldValueWithCustomInvalidMessage.getDefaultInstance());
@@ -1041,6 +1090,7 @@ public class MessageValidatorTest {
      */
 
     @Test
+    @DisplayName("validate according to validation rules")
     public void validate_according_to_validation_rule() {
         String validValue = "any text";
         InvalidMessage invalidMessage = InvalidMessage.newBuilder()
