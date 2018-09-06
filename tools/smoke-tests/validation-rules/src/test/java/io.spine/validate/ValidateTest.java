@@ -77,7 +77,7 @@ public class ValidateTest {
     }
 
     @Test
-    @DisplayName("verify that message is not in default state")
+    @DisplayName("verify that a message is not in the default state")
     public void verify_that_message_is_not_in_default_state() {
         Message msg = toMessage("check_if_message_is_not_in_default_state");
 
@@ -86,13 +86,13 @@ public class ValidateTest {
     }
 
     @Test
-    @DisplayName("throw the exception if checkd value is out of bounds")
+    @DisplayName("throw the exception if the checked value is out of bounds")
     public void throw_exception_if_checked_value_out_of_bounds() {
         assertThrows(IllegalArgumentException.class, () -> checkBounds(10, "checked value", -5, 9));
     }
 
     @Test
-    @DisplayName("verify that message is in default state")
+    @DisplayName("verify that a message is in the default state")
     public void verify_that_message_is_in_default_state() {
         Message nonDefault = newUuidValue();
 
@@ -101,13 +101,14 @@ public class ValidateTest {
     }
 
     @Test
-    @DisplayName("throw the exception when a message is not in default state")
+    @DisplayName("throw the exception when a message is not in the default state")
     public void check_if_message_is_in_default() {
         StringValue nonDefault = newUuidValue();
         assertThrows(IllegalStateException.class, () -> checkDefault(nonDefault));
     }
 
     @Test
+    @DisplayName("check that a message is default with the parametrized error message")
     public void check_a_message_is_default_with_parametrized_error_message() {
         StringValue nonDefault = newUuidValue();
         assertThrows(IllegalStateException.class, () ->
@@ -126,7 +127,7 @@ public class ValidateTest {
     }
 
     @Test
-    @DisplayName("throw the exception when message is not in default state")
+    @DisplayName("throw the exception when a message is not in the default state")
     public void check_if_message_is_in_not_in_default_state_throwing_exception_if_not() {
         assertThrows(IllegalStateException.class,
                      () -> checkNotDefault(StringValue.getDefaultInstance()));
@@ -141,32 +142,32 @@ public class ValidateTest {
     }
 
     @Test
-    @DisplayName("throw the exception is checked string is null")
+    @DisplayName("throw the exception if the checked string is null")
     public void throw_exception_if_checked_string_is_null() {
         assertThrows(NullPointerException.class,
                      () -> checkNotEmptyOrBlank(Tests.<String>nullRef(), ""));
     }
 
     @Test
-    @DisplayName("throw the exception checked string is empty")
+    @DisplayName("throw the exception if the checked string is empty")
     public void throw_exception_if_checked_string_is_empty() {
         assertThrows(IllegalArgumentException.class, () -> checkNotEmptyOrBlank("", ""));
     }
 
     @Test
-    @DisplayName("throw the exception when checked string is blank")
+    @DisplayName("throw the exception when the checked string is blank")
     public void throw_exception_if_checked_string_is_blank() {
         assertThrows(IllegalArgumentException.class, () -> checkNotEmptyOrBlank("   ", ""));
     }
 
     @Test
-    @DisplayName("not throw an exception if checked string is valid")
+    @DisplayName("not throw an exception if the checked string is valid")
     public void do_not_throw_exception_if_checked_string_is_valid() {
         checkNotEmptyOrBlank("valid_string", "");
     }
 
     @Test
-    @DisplayName("format message from constraint violation")
+    @DisplayName("format a message from the constraint violation")
     public void format_message_from_constraint_violation() {
         ConstraintViolation violation = ConstraintViolation.newBuilder()
                                                            .setMsgFormat("test %s test %s")
@@ -179,7 +180,7 @@ public class ValidateTest {
     }
 
     @Test
-    @DisplayName("format message using params from constraint violation")
+    @DisplayName("format a message using params from the constraint violation")
     public void format_message_using_params_from_constraint_violation() {
         ConstraintViolation violation = ConstraintViolation.newBuilder()
                                                            .addParam("1")
