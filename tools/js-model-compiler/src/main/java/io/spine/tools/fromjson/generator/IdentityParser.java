@@ -25,9 +25,7 @@ import io.spine.tools.fromjson.js.JsWriter;
 public class IdentityParser implements PrimitiveParser {
 
     @Override
-    public String writeParseStatement(String jsObject, JsWriter jsWriter) {
-        String parsedValue = "parsedValue";
-        jsWriter.addLine("let " + parsedValue + " = " + jsObject + ';');
-        return parsedValue;
+    public void writeParseStatement(String jsObject, String output, JsWriter jsWriter) {
+        jsWriter.addLine("let " + output + " = " + jsObject + ';');
     }
 }

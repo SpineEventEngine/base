@@ -20,59 +20,29 @@
 
 package io.spine.tools.fromjson.generator;
 
+import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.tools.fromjson.js.JsWriter;
+import io.spine.type.TypeUrl;
 
-import static io.spine.tools.fromjson.generator.MessageHandler.FROM_OBJECT_ARG;
-
-abstract class AbstractFieldHandler implements FieldHandler {
+public class WellKnownFieldParser implements FieldValueParser {
 
     private final FieldDescriptor fieldDescriptor;
-    private final JsObjectAccessor jsObjectAccessor;
-    private final FieldSetter fieldSetter;
     private final JsWriter jsWriter;
 
-    AbstractFieldHandler(FieldDescriptor fieldDescriptor,
-                         JsObjectAccessor jsObjectAccessor,
-                         FieldSetter fieldSetter,
-                         JsWriter jsWriter) {
+    WellKnownFieldParser(FieldDescriptor fieldDescriptor, JsWriter jsWriter) {
         this.fieldDescriptor = fieldDescriptor;
-        this.jsObjectAccessor = jsObjectAccessor;
-        this.fieldSetter = fieldSetter;
         this.jsWriter = jsWriter;
     }
 
-    // todo check js object for null
     @Override
-    public void writeJs() {
-        String jsonName = fieldDescriptor.getJsonName();
-        String jsObject = FROM_OBJECT_ARG + '.' + jsonName;
-
-        String value = jsObjectAccessor.extractOrIterateValue(jsObject);
-        performNullCheck(value);
-
-        String fieldValue = parseFieldValue(value);
-        fieldSetter.setField(fieldValue);
-
-        exitNullCheck();
-        jsObjectAccessor.exitToTopLevel();
+    public void parseFieldValue(String value, String output) {
+        Descriptor fieldType = fieldDescriptor.getMessageType();
+        TypeUrl typeUrl = TypeUrl.from(fieldType);
+        jsWriter.addLine("let type = " + KnownTypesJsGenerator.FILE_NAME + '.' +
+                                 KnownTypesJsGenerator.MAP_NAME + ".get('" + typeUrl + "');");
+        jsWriter.addLine("let parser = " + KnownTypeParsersGenerator.FILE_NAME + '.' +
+                                 KnownTypeParsersGenerator.MAP_NAME + ".get(type);");
+        jsWriter.addLine("let " + output + " = parser.parse(" + value + ");");
     }
-
-    FieldDescriptor fieldDescriptor() {
-        return fieldDescriptor;
-    }
-
-    FieldSetter fieldSetter() {
-        return fieldSetter;
-    }
-
-    JsWriter jsWriter() {
-        return jsWriter;
-    }
-
-    abstract void performNullCheck(String jsObject);
-
-    abstract void exitNullCheck();
-
-    abstract String parseFieldValue(String jsObject);
 }

@@ -70,6 +70,7 @@ final class MessageHandler {
         List<FieldDescriptor> fields = messageDescriptor.getFields();
         for (FieldDescriptor fieldDescriptor : fields) {
             jsWriter.addEmptyLine();
+            // todo try jsWriter as a writeJs() param
             FieldHandler fieldHandler = FieldHandlers.createFor(fieldDescriptor, jsWriter);
             fieldHandler.writeJs();
         }

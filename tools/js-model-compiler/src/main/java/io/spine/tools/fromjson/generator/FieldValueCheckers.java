@@ -23,17 +23,23 @@ package io.spine.tools.fromjson.generator;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.tools.fromjson.js.JsWriter;
 
-import static io.spine.tools.fromjson.generator.MessageHandler.MESSAGE_VAR;
+import static com.google.protobuf.Descriptors.FieldDescriptor.Type.MESSAGE;
 
-final class RepeatedFieldSetter extends AbstractFieldSetter {
+final class FieldValueCheckers {
 
-    RepeatedFieldSetter(FieldDescriptor fieldDescriptor, JsWriter jsWriter) {
-        super(fieldDescriptor, jsWriter);
+    private FieldValueCheckers() {
     }
 
-    @Override
-    public void setField(String value) {
-        String addFunctionName = "add" + capitalizedFieldName();
-        jsWriter().addLine(MESSAGE_VAR + '.' + addFunctionName + '(' + value + ");");
+    static FieldValueChecker createFor(FieldDescriptor fieldDescriptor, JsWriter jsWriter) {
+        if (isMessage(fieldDescriptor)) {
+            return new MessageFieldChecker(fieldDescriptor, jsWriter);
+        }
+        return new PrimitiveFieldChecker(jsWriter);
+    }
+
+    private static boolean isMessage(FieldDescriptor fieldDescriptor) {
+        FieldDescriptor.Type fieldKind = fieldDescriptor.getType();
+        boolean isMessage = fieldKind == MESSAGE;
+        return isMessage;
     }
 }

@@ -20,7 +20,7 @@
 
 package io.spine.tools.fromjson.generator;
 
-interface FieldHandler {
+public interface FieldHandler {
 
     void writeJs();
 }

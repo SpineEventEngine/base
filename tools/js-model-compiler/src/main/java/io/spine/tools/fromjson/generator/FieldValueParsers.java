@@ -20,20 +20,34 @@
 
 package io.spine.tools.fromjson.generator;
 
+import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.tools.fromjson.js.JsWriter;
+import io.spine.type.TypeUrl;
 
-import static io.spine.tools.fromjson.generator.MessageHandler.MESSAGE_VAR;
+import static com.google.protobuf.Descriptors.FieldDescriptor.Type.MESSAGE;
 
-final class SingularFieldSetter extends AbstractFieldSetter {
+class FieldValueParsers {
 
-    SingularFieldSetter(FieldDescriptor fieldDescriptor, JsWriter jsWriter) {
-        super(fieldDescriptor, jsWriter);
+    static FieldValueParser createFor(FieldDescriptor fieldDescriptor, JsWriter jsWriter) {
+        if (isMessage(fieldDescriptor)) {
+            return isWellKnownType(fieldDescriptor)
+                    ? new WellKnownFieldParser(fieldDescriptor, jsWriter)
+                    : new MessageFieldParser(fieldDescriptor, jsWriter);
+        }
+        return new PrimitiveFieldParser(fieldDescriptor, jsWriter);
     }
 
-    @Override
-    public void setField(String value) {
-        String setterName = "set" + capitalizedFieldName();
-        jsWriter().addLine(MESSAGE_VAR + '.' + setterName + '(' + value + ");");
+    private static boolean isMessage(FieldDescriptor fieldDescriptor) {
+        FieldDescriptor.Type fieldKind = fieldDescriptor.getType();
+        boolean isMessage = fieldKind == MESSAGE;
+        return isMessage;
+    }
+
+    private static boolean isWellKnownType(FieldDescriptor fieldDescriptor) {
+        Descriptor fieldType = fieldDescriptor.getMessageType();
+        TypeUrl typeUrl = TypeUrl.from(fieldType);
+        boolean isWellKnownType = KnownTypeParsersGenerator.WELL_KNOWN_TYPES.contains(typeUrl);
+        return isWellKnownType;
     }
 }

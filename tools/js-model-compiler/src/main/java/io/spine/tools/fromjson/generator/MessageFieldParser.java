@@ -20,7 +20,28 @@
 
 package io.spine.tools.fromjson.generator;
 
-interface FieldSetter {
+import com.google.protobuf.Descriptors.Descriptor;
+import com.google.protobuf.Descriptors.FieldDescriptor;
+import io.spine.tools.fromjson.js.JsWriter;
+import io.spine.type.TypeUrl;
 
-    void setField(String value);
+public class MessageFieldParser implements FieldValueParser {
+
+    private final FieldDescriptor fieldDescriptor;
+    private final JsWriter jsWriter;
+
+    public MessageFieldParser(FieldDescriptor fieldDescriptor, JsWriter jsWriter) {
+        this.fieldDescriptor = fieldDescriptor;
+        this.jsWriter = jsWriter;
+    }
+
+    @Override
+    public void parseFieldValue(String value, String output) {
+        Descriptor fieldType = fieldDescriptor.getMessageType();
+        TypeUrl typeUrl = TypeUrl.from(fieldType);
+        // todo make some common robust methods for assigning variables in the generated code
+        jsWriter.addLine("let type = " + KnownTypesJsGenerator.FILE_NAME + '.' +
+                                 KnownTypesJsGenerator.MAP_NAME + ".get('" + typeUrl + "');");
+        jsWriter.addLine("let " + output + " = type.fromObject(" + value + ");");
+    }
 }

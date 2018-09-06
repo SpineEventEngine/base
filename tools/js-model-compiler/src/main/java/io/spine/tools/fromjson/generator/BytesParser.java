@@ -25,10 +25,8 @@ import io.spine.tools.fromjson.js.JsWriter;
 public class BytesParser implements PrimitiveParser {
 
     @Override
-    public String writeParseStatement(String jsObject, JsWriter jsWriter) {
-        String parsedValue = "parsedValue";
+    public void writeParseStatement(String jsObject, String output, JsWriter jsWriter) {
         jsWriter.addLine("let base64_js = require('base64-js');");
-        jsWriter.addLine("let " + parsedValue + " = base64_js.toByteArray(" + jsObject + ");");
-        return parsedValue;
+        jsWriter.addLine("let " + output + " = base64_js.toByteArray(" + jsObject + ");");
     }
 }

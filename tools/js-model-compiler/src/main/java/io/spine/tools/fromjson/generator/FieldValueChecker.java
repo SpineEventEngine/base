@@ -20,32 +20,9 @@
 
 package io.spine.tools.fromjson.generator;
 
-import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.code.proto.FieldName;
-import io.spine.tools.fromjson.js.JsWriter;
+interface FieldValueChecker {
 
-abstract class AbstractFieldSetter implements FieldSetter {
+    void performNullCheck(String fieldValue, String setterFormat);
 
-    private final FieldDescriptor fieldDescriptor;
-    private final JsWriter jsWriter;
-
-    AbstractFieldSetter(FieldDescriptor fieldDescriptor, JsWriter jsWriter) {
-        this.fieldDescriptor = fieldDescriptor;
-        this.jsWriter = jsWriter;
-    }
-
-    String capitalizedFieldName() {
-        String name = fieldDescriptor.getName();
-        FieldName fieldName = FieldName.of(name);
-        String capitalizedName = fieldName.toCamelCase();
-        return capitalizedName;
-    }
-
-    FieldDescriptor fieldDescriptor() {
-        return fieldDescriptor;
-    }
-
-    JsWriter jsWriter() {
-        return jsWriter;
-    }
+    void exitNullCheck();
 }

@@ -20,9 +20,7 @@
 
 package io.spine.tools.fromjson.generator;
 
-interface JsObjectAccessor {
+interface FieldValueParser {
 
-    String extractOrIterateValue(String jsObject);
-
-    void exitToTopLevel();
+    void parseFieldValue(String value, String output);
 }

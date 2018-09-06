@@ -22,22 +22,21 @@ package io.spine.tools.fromjson.generator;
 
 import io.spine.tools.fromjson.js.JsWriter;
 
-final class SingularObjectAccessor implements JsObjectAccessor {
+public class PrimitiveFieldChecker implements FieldValueChecker {
 
     private final JsWriter jsWriter;
 
-    SingularObjectAccessor(JsWriter jsWriter) {
+    public PrimitiveFieldChecker(JsWriter jsWriter) {
         this.jsWriter = jsWriter;
     }
 
     @Override
-    public String extractOrIterateValue(String jsObject) {
-        jsWriter.enterIfBlock(jsObject + " !== undefined");
-        return jsObject;
+    public void performNullCheck(String fieldValue, String setterFormat) {
+        jsWriter.enterIfBlock(fieldValue + " !== null");
     }
 
     @Override
-    public void exitToTopLevel() {
+    public void exitNullCheck() {
         jsWriter.exitBlock();
     }
 }

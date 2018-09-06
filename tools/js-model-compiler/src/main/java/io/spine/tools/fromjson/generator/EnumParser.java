@@ -31,9 +31,7 @@ class EnumParser implements PrimitiveParser {
     }
 
     @Override
-    public String writeParseStatement(String jsObject, JsWriter jsWriter) {
-        String parsedValue = "parsedValue";
-        jsWriter.addLine("let " + parsedValue + " = " + enumTypeName + '[' + jsObject + "];");
-        return parsedValue;
+    public void writeParseStatement(String jsObject, String output, JsWriter jsWriter) {
+        jsWriter.addLine("let " + output + " = " + enumTypeName + '[' + jsObject + "];");
     }
 }

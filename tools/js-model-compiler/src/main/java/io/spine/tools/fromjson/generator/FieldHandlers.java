@@ -21,12 +21,11 @@
 package io.spine.tools.fromjson.generator;
 
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
+import com.google.protobuf.Descriptors;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import com.google.protobuf.Descriptors.FieldDescriptor.Type;
 import io.spine.code.proto.FieldName;
 import io.spine.tools.fromjson.js.JsWriter;
-import io.spine.type.TypeUrl;
 
 import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Label.LABEL_REPEATED;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.MESSAGE;
@@ -37,41 +36,43 @@ final class FieldHandlers {
     }
 
     static FieldHandler createFor(FieldDescriptor fieldDescriptor, JsWriter jsWriter) {
-        JsObjectAccessor jsObjectAccessor = FieldIterators.createFor(fieldDescriptor, jsWriter);
-        FieldSetter fieldSetter = FieldSetters.createFor(fieldDescriptor, jsWriter);
-
-        // todo refactor
-        FieldDescriptor fieldValueDescriptor = isMap(fieldDescriptor)
-                ? getValueDescriptor(fieldDescriptor)
-                : fieldDescriptor;
-
-        if (isMessage(fieldValueDescriptor)) {
-            return isWellKnownType(fieldValueDescriptor)
-                    ? new WellKnownFieldHandler(fieldValueDescriptor.getMessageType(),
-                                                fieldDescriptor,
-                                                jsObjectAccessor,
-                                                fieldSetter,
-                                                jsWriter)
-                    : new MessageFieldHandler(fieldValueDescriptor.getMessageType(),
-                                              fieldDescriptor,
-                                              jsObjectAccessor,
-                                              fieldSetter,
-                                              jsWriter);
+        if (isMap(fieldDescriptor)) {
+            return mapHandlerFor(fieldDescriptor, jsWriter);
         }
-        return new PrimitiveFieldHandler(fieldDescriptor, jsObjectAccessor, fieldSetter, jsWriter);
+        if (isRepeated(fieldDescriptor)) {
+            return repeatedHandlerFor(fieldDescriptor, jsWriter);
+        }
+        return singularHandlerFor(fieldDescriptor, jsWriter);
     }
 
-    private static boolean isMessage(FieldDescriptor fieldDescriptor) {
-        Type fieldKind = fieldDescriptor.getType();
-        boolean isMessage = fieldKind == MESSAGE;
-        return isMessage;
+    private static FieldHandler mapHandlerFor(FieldDescriptor fieldDescriptor, JsWriter jsWriter) {
+        FieldDescriptor keyDescriptor = getKeyDescriptor(fieldDescriptor);
+        FieldDescriptor valueDescriptor = getValueDescriptor(fieldDescriptor);
+        FieldValueChecker valueChecker = FieldValueCheckers.createFor(valueDescriptor, jsWriter);
+        FieldValueParser keyParser = FieldValueParsers.createFor(keyDescriptor, jsWriter);
+        FieldValueParser valueParser = FieldValueParsers.createFor(valueDescriptor, jsWriter);
+        return new MapFieldHandler(fieldDescriptor, valueChecker, keyParser, valueParser, jsWriter);
     }
 
-    private static boolean isWellKnownType(FieldDescriptor fieldDescriptor) {
-        Descriptor fieldType = fieldDescriptor.getMessageType();
-        TypeUrl typeUrl = TypeUrl.from(fieldType);
-        boolean isWellKnownType = KnownTypeParsersGenerator.WELL_KNOWN_TYPES.contains(typeUrl);
-        return isWellKnownType;
+    private static FieldHandler
+    repeatedHandlerFor(FieldDescriptor fieldDescriptor, JsWriter jsWriter) {
+        FieldValueChecker valueChecker = FieldValueCheckers.createFor(fieldDescriptor, jsWriter);
+        FieldValueParser valueParser = FieldValueParsers.createFor(fieldDescriptor, jsWriter);
+        return new RepeatedFieldHandler(fieldDescriptor, valueChecker, valueParser, jsWriter);
+    }
+
+    private static FieldHandler
+    singularHandlerFor(FieldDescriptor fieldDescriptor, JsWriter jsWriter) {
+        FieldValueChecker valueChecker = FieldValueCheckers.createFor(fieldDescriptor, jsWriter);
+        FieldValueParser valueParser = FieldValueParsers.createFor(fieldDescriptor, jsWriter);
+        return new SingularFieldHandler(fieldDescriptor, valueChecker, valueParser, jsWriter);
+    }
+
+    private static boolean isRepeated(FieldDescriptor fieldDescriptor) {
+        FieldDescriptorProto descriptorProto = fieldDescriptor.toProto();
+        boolean isRepeated =
+                descriptorProto.getLabel() == LABEL_REPEATED && !isMap(fieldDescriptor);
+        return isRepeated;
     }
 
     private static boolean isMap(FieldDescriptor fieldDescriptor) {
@@ -88,6 +89,12 @@ final class FieldHandlers {
         boolean isMap = fieldType.getName()
                                  .equals(supposedNameForMap);
         return isMap;
+    }
+
+    private static FieldDescriptor getKeyDescriptor(FieldDescriptor fieldDescriptor) {
+        FieldDescriptor valueDescriptor = fieldDescriptor.getMessageType()
+                                                         .findFieldByName("key");
+        return valueDescriptor;
     }
 
     private static FieldDescriptor getValueDescriptor(FieldDescriptor fieldDescriptor) {

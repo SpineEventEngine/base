@@ -24,5 +24,5 @@ import io.spine.tools.fromjson.js.JsWriter;
 
 interface PrimitiveParser {
 
-    String writeParseStatement(String jsObject, JsWriter jsWriter);
+    void writeParseStatement(String jsObject, String output, JsWriter jsWriter);
 }

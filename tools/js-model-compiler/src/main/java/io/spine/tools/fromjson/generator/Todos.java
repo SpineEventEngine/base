@@ -20,21 +20,6 @@
 
 package io.spine.tools.fromjson.generator;
 
-import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.tools.fromjson.js.JsWriter;
+public class Todos {
 
-import static io.spine.tools.fromjson.generator.MessageHandler.MESSAGE_VAR;
-
-final class MapFieldSetter extends AbstractFieldSetter {
-
-    MapFieldSetter(FieldDescriptor fieldDescriptor, JsWriter jsWriter) {
-        super(fieldDescriptor, jsWriter);
-    }
-
-    @Override
-    public void setField(String value) {
-        String getMapCall = "get" + capitalizedFieldName() + "Map()";
-        String setMapValueCall = "set(" + MapObjectAccessor.ATTRIBUTE_VAR + ", " + value + ')';
-        jsWriter().addLine(MESSAGE_VAR + '.' + getMapCall + '.' + setMapValueCall + ';');
-    }
 }

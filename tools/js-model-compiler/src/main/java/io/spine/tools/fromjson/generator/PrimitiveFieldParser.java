@@ -20,31 +20,23 @@
 
 package io.spine.tools.fromjson.generator;
 
+import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.tools.fromjson.js.JsWriter;
 
-final class MapObjectAccessor implements JsObjectAccessor {
+public class PrimitiveFieldParser implements FieldValueParser {
 
-    static final String ATTRIBUTE_VAR = "attr";
-
+    private final FieldDescriptor fieldDescriptor;
     private final JsWriter jsWriter;
 
-    MapObjectAccessor(JsWriter jsWriter) {
+    public PrimitiveFieldParser(FieldDescriptor fieldDescriptor, JsWriter jsWriter) {
+        this.fieldDescriptor = fieldDescriptor;
         this.jsWriter = jsWriter;
     }
 
     @Override
-    public String extractOrIterateValue(String jsObject) {
-        jsWriter.enterIfBlock(jsObject + " !== undefined && " + jsObject + " !== null");
-        jsWriter.enterBlock("for (let " + ATTRIBUTE_VAR + " in " + jsObject + ')');
-        jsWriter.enterIfBlock(jsObject + ".hasOwnProperty(" + ATTRIBUTE_VAR + ')');
-        String fieldValue = jsObject + '[' + ATTRIBUTE_VAR + ']';
-        return fieldValue;
-    }
-
-    @Override
-    public void exitToTopLevel() {
-        jsWriter.exitBlock();
-        jsWriter.exitBlock();
-        jsWriter.exitBlock();
+    public void parseFieldValue(String value, String output) {
+        // todo address variable naming (name them "valueVarName" or just "value" for instance)
+        PrimitiveParser parser = PrimitiveParsers.getFor(fieldDescriptor);
+        parser.writeParseStatement(value, output, jsWriter);
     }
 }

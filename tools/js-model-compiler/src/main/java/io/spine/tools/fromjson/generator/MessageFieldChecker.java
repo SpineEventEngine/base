@@ -20,32 +20,44 @@
 
 package io.spine.tools.fromjson.generator;
 
+import com.google.protobuf.Descriptors.FieldDescriptor;
+import com.google.protobuf.Value;
 import io.spine.tools.fromjson.js.JsWriter;
 
-final class ListObjectAccessor implements JsObjectAccessor {
+public class MessageFieldChecker implements FieldValueChecker {
 
-    private static final String LIST_ITEM_VAR = "listItem";
-
+    private final FieldDescriptor fieldDescriptor;
     private final JsWriter jsWriter;
 
-    ListObjectAccessor(JsWriter jsWriter) {
+    public MessageFieldChecker(FieldDescriptor fieldDescriptor, JsWriter jsWriter) {
+        this.fieldDescriptor = fieldDescriptor;
         this.jsWriter = jsWriter;
     }
 
     @Override
-    public String extractOrIterateValue(String jsObject) {
-        jsWriter.enterIfBlock(jsObject + " !== undefined && " + jsObject + " !== null");
-        jsWriter.addLine(jsObject + ".forEach(");
-        jsWriter.increaseDepth();
-        jsWriter.enterBlock('(' + LIST_ITEM_VAR + ", index, array) =>");
-        return LIST_ITEM_VAR;
+    public void performNullCheck(String fieldValue, String setterFormat) {
+        if (isProtobufValueType()) {
+            return;
+        }
+        jsWriter.enterIfBlock(fieldValue + " === null");
+        String setFieldToNull = String.format(setterFormat, "null");
+        jsWriter.addLine(setFieldToNull);
+        jsWriter.enterElseBlock();
     }
 
     @Override
-    public void exitToTopLevel() {
-        jsWriter.exitBlock();
-        jsWriter.decreaseDepth();
-        jsWriter.addLine(");");
-        jsWriter.exitBlock();
+    public void exitNullCheck() {
+        if (!isProtobufValueType()) {
+            jsWriter.exitBlock();
+        }
+    }
+
+    private boolean isProtobufValueType() {
+        String valueType = Value.getDescriptor()
+                                .getFullName();
+        String fieldType = fieldDescriptor.getMessageType()
+                                          .getFullName();
+        boolean isValueType = fieldType.equals(valueType);
+        return isValueType;
     }
 }
