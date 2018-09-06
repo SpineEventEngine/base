@@ -555,7 +555,6 @@ public class GenerateFromJsonPlugin extends SpinePlugin {
         }
     }
 
-    // todo check enum values in maps and in setters
     private static void setMapField(StringBuilder fromObjectFunction,
                                     FieldDescriptor fieldDescriptor,
                                     FieldDescriptor valueDescriptor,

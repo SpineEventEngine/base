@@ -38,10 +38,6 @@ public final class JsWriter {
         this.currentDepth = 0;
     }
 
-    public void append(JsOutput jsOutput) {
-        generatedCode.append(jsOutput);
-    }
-
     public void addLine(String lineOfCode) {
         generatedCode.addLine(lineOfCode, currentDepth);
     }

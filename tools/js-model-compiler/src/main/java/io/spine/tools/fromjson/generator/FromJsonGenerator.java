@@ -34,7 +34,6 @@ class FromJsonGenerator {
         this.jsWriter = jsWriter;
     }
 
-    // todo make blocks exit via return object or something like that
     void generateJs() {
         generateComment();
         generateImports();
@@ -50,7 +49,7 @@ class FromJsonGenerator {
 
     private void generateImports() {
         jsWriter.addEmptyLine();
-        String fullName = fileDescriptor.getFullName();
-        jsWriter.addImportStatements(fullName, "known_types.js", "known_type_parsers.js");
+        String fileName = fileDescriptor.getFullName();
+        jsWriter.addImportStatements(fileName, "known_types.js", "known_type_parsers.js");
     }
 }

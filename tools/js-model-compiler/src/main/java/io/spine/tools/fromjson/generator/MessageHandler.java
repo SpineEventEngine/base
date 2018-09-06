@@ -50,9 +50,9 @@ final class MessageHandler {
 
         String fullTypeName = messageDescriptor.getFullName();
         String typeWithProtoPrefix = "proto." + fullTypeName;
-        String methodName = typeWithProtoPrefix + ".fromJson";
+        String functionName = typeWithProtoPrefix + ".fromJson";
 
-        jsWriter.enterFunction(methodName, "json");
+        jsWriter.enterFunction(functionName, "json");
         jsWriter.addLine("let jsonObject = JSON.parse(json);");
         jsWriter.addLine("return " + typeWithProtoPrefix + ".fromObject(jsonObject);");
         jsWriter.exitFunction();
@@ -64,13 +64,13 @@ final class MessageHandler {
         String fullTypeName = messageDescriptor.getFullName();
         String typeWithProtoPrefix = "proto." + fullTypeName;
 
-        jsWriter.enterFunction(typeWithProtoPrefix + ".fromObject", FROM_OBJECT_ARG);
+        String functionName = typeWithProtoPrefix + ".fromObject";
+        jsWriter.enterFunction(functionName, FROM_OBJECT_ARG);
         jsWriter.addLine("let " + MESSAGE_VAR + " = new " + typeWithProtoPrefix + "();");
 
         List<FieldDescriptor> fields = messageDescriptor.getFields();
         for (FieldDescriptor fieldDescriptor : fields) {
             jsWriter.addEmptyLine();
-            // todo try jsWriter as a writeJs() param
             FieldHandler fieldHandler = FieldHandlers.createFor(fieldDescriptor, jsWriter);
             fieldHandler.writeJs();
         }

@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 // todo make all classes final and non-public where possible.
+// introduce packages.
 public final class JsOutput {
 
     private final List<LineOfCode> linesOfCode;
