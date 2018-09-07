@@ -23,22 +23,14 @@ package io.spine.tools.protojs.knowntypes;
 import io.spine.code.proto.FileSet;
 import io.spine.tools.protojs.code.JsOutput;
 import io.spine.tools.protojs.code.JsWriter;
-import org.gradle.api.Project;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static java.nio.file.StandardOpenOption.CREATE;
-import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
+import static io.spine.tools.protojs.file.JsFiles.KNOWN_TYPES;
+import static io.spine.tools.protojs.file.JsFiles.writeToFile;
 
 public class KnownTypesWriter {
-
-    // todo create common class with file names
-    private static final String FILE_NAME = "known_types";
-    static final String JS_FILE_NAME = FILE_NAME + ".js";
 
     private final Path filePath;
     private final FileSet protoJsFiles;
@@ -48,8 +40,8 @@ public class KnownTypesWriter {
         this.protoJsFiles = protoJsFiles;
     }
 
-    public static KnownTypesWriter createFor(Project project, FileSet protoJsFiles) {
-        Path path = composeFilePath(project);
+    public static KnownTypesWriter createFor(Path protoJsLocation, FileSet protoJsFiles) {
+        Path path = composeFilePath(protoJsLocation);
         return new KnownTypesWriter(path, protoJsFiles);
     }
 
@@ -62,20 +54,8 @@ public class KnownTypesWriter {
         writeToFile(filePath, generatedCode);
     }
 
-    private static Path composeFilePath(Project project) {
-        File projectDir = project.getProjectDir();
-        String absolutePath = projectDir.getAbsolutePath();
-        Path path = Paths.get(absolutePath, "proto", "test", "js", JS_FILE_NAME);
+    private static Path composeFilePath(Path protoJsLocation) {
+        Path path = Paths.get(protoJsLocation.toString(), KNOWN_TYPES);
         return path;
-    }
-
-    // todo remove copypaste
-    private static void writeToFile(Path path, JsOutput output) {
-        try {
-            String content = output.toString();
-            Files.write(path, content.getBytes(), CREATE, TRUNCATE_EXISTING);
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
-        }
     }
 }

@@ -24,6 +24,7 @@ import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.proto.FileName;
 import io.spine.code.proto.FileSet;
+import io.spine.tools.protojs.code.JsImportGenerator;
 import io.spine.tools.protojs.code.JsWriter;
 import io.spine.type.TypeUrl;
 
@@ -33,7 +34,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import static io.spine.tools.protojs.knowntypes.KnownTypesWriter.JS_FILE_NAME;
+import static io.spine.tools.protojs.file.JsFiles.KNOWN_TYPES;
 
 class KnownTypesGenerator {
 
@@ -57,6 +58,7 @@ class KnownTypesGenerator {
     // todo have common file with file paths
     private void generateImports() {
         Set<Entry<FileName, FileDescriptor>> entries = protoJsFiles.getEntries();
+        JsImportGenerator importGenerator = JsImportGenerator.createFor(KNOWN_TYPES);
         for (Entry<FileName, FileDescriptor> entry : entries) {
             FileName fileName = entry.getKey();
             FileDescriptor fileDescriptor = entry.getValue();
@@ -65,7 +67,8 @@ class KnownTypesGenerator {
             List<Descriptor> declaredMessages = fileDescriptor.getMessageTypes();
             int declaredMessagesCount = declaredMessages.size();
             if (declaredMessagesCount > 0) {
-                jsWriter.addImport(JS_FILE_NAME, fileToImport);
+                String statement = importGenerator.createImport(fileToImport);
+                jsWriter.addLine(statement);
             }
         }
     }

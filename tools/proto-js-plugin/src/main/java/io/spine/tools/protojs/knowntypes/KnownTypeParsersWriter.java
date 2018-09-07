@@ -22,24 +22,21 @@ package io.spine.tools.protojs.knowntypes;
 
 import io.spine.tools.protojs.code.JsOutput;
 import io.spine.tools.protojs.code.JsWriter;
-import org.gradle.api.Project;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import static io.spine.tools.protojs.file.JsFiles.KNOWN_TYPE_PARSERS;
+import static io.spine.tools.protojs.file.JsFiles.appendToFile;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
-import static java.nio.file.StandardOpenOption.APPEND;
 
 public class KnownTypeParsersWriter {
 
-    public static final String FILE_NAME = "known_type_parsers";
-    private static final String JS_FILE_NAME = FILE_NAME + ".js";
-    private static final String JS_RESOURCE_PATH =
-            "io/spine/tools/protojs/knowntypes/" + JS_FILE_NAME;
+    private static final String PARSERS_RESOURCE =
+            "io/spine/tools/protojs/knowntypes/" + KNOWN_TYPE_PARSERS;
 
     private final Path filePath;
 
@@ -47,8 +44,8 @@ public class KnownTypeParsersWriter {
         this.filePath = filePath;
     }
 
-    public static KnownTypeParsersWriter createFor(Project project) {
-        Path filePath = composeFilePath(project);
+    public static KnownTypeParsersWriter createFor(Path protoJsLocation) {
+        Path filePath = composeFilePath(protoJsLocation);
         return new KnownTypeParsersWriter(filePath);
     }
 
@@ -60,7 +57,7 @@ public class KnownTypeParsersWriter {
     private void writeParsers() {
         try (InputStream in = KnownTypeParsersWriter.class
                 .getClassLoader()
-                .getResourceAsStream(JS_RESOURCE_PATH)) {
+                .getResourceAsStream(PARSERS_RESOURCE)) {
             Files.copy(in, filePath, REPLACE_EXISTING);
         } catch (IOException e) {
             throw new IllegalStateException(e);
@@ -75,23 +72,11 @@ public class KnownTypeParsersWriter {
         ParserMapGenerator generator = new ParserMapGenerator(jsWriter);
         generator.generateParserMap();
         JsOutput generatedCode = jsWriter.getGeneratedCode();
-        writeToFile(filePath, generatedCode);
+        appendToFile(filePath, generatedCode);
     }
 
-    private static Path composeFilePath(Project project) {
-        File projectDir = project.getProjectDir();
-        String absolutePath = projectDir.getAbsolutePath();
-        Path filePath = Paths.get(absolutePath, "proto", "test", "js", JS_FILE_NAME);
+    private static Path composeFilePath(Path protoJsLocation) {
+        Path filePath = Paths.get(protoJsLocation.toString(), KNOWN_TYPE_PARSERS);
         return filePath;
-    }
-
-    // todo remove copypaste
-    private static void writeToFile(Path path, JsOutput output) {
-        try {
-            String content = output.toString();
-            Files.write(path, content.getBytes(), APPEND);
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
-        }
     }
 }

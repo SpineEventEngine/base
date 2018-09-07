@@ -23,9 +23,10 @@ package io.spine.tools.protojs.field.parser;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.tools.protojs.code.JsWriter;
-import io.spine.tools.protojs.knowntypes.KnownTypeParsersWriter;
 import io.spine.tools.protojs.knowntypes.ParserMapGenerator;
 import io.spine.type.TypeUrl;
+
+import static io.spine.tools.protojs.fromjson.FromJsonGenerator.PARSERS_IMPORT_NAME;
 
 public class WellKnownFieldParser implements FieldValueParser {
 
@@ -41,8 +42,8 @@ public class WellKnownFieldParser implements FieldValueParser {
     public void parseFieldValue(String value, String output) {
         Descriptor fieldType = fieldDescriptor.getMessageType();
         TypeUrl typeUrl = TypeUrl.from(fieldType);
-        jsWriter.addLine("let parser = " + KnownTypeParsersWriter.FILE_NAME + '.' +
-                                 ParserMapGenerator.MAP_NAME + ".get('" + typeUrl + "');");
+        String parserMap = PARSERS_IMPORT_NAME + '.' + ParserMapGenerator.MAP_NAME;
+        jsWriter.addLine("let parser = " + parserMap + ".get('" + typeUrl + "');");
         jsWriter.addLine("let " + output + " = parser.parse(" + value + ");");
     }
 }

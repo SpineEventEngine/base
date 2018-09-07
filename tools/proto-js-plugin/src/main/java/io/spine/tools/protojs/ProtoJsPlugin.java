@@ -25,9 +25,16 @@ import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 
+import java.io.File;
+import java.nio.file.Path;
+
 import static io.spine.tools.gradle.TaskName.ADD_FROM_JSON;
 import static io.spine.tools.gradle.TaskName.COMPILE_PROTO_TO_JS;
 import static io.spine.tools.gradle.TaskName.COPY_MODULE_SOURCES;
+import static io.spine.tools.protojs.file.ProjectFiles.mainDescriptorSetFile;
+import static io.spine.tools.protojs.file.ProjectFiles.mainProtoJsLocation;
+import static io.spine.tools.protojs.file.ProjectFiles.testDescriptorSetFile;
+import static io.spine.tools.protojs.file.ProjectFiles.testProtoJsLocation;
 
 public class ProtoJsPlugin extends SpinePlugin {
 
@@ -45,7 +52,25 @@ public class ProtoJsPlugin extends SpinePlugin {
     }
 
     private static void generateFromJsonForProto(Project project) {
-        ProtoFromJsonWriter writer = ProtoFromJsonWriter.createFor(project);
+        generateForMain(project);
+        generateForTest(project);
+    }
+
+    private static void generateForMain(Project project) {
+        Path protoJsLocation = mainProtoJsLocation(project);
+        File descriptorSetFile = mainDescriptorSetFile(project);
+        generateFor(protoJsLocation, descriptorSetFile);
+    }
+
+    private static void generateForTest(Project project) {
+        Path protoJsLocation = testProtoJsLocation(project);
+        File descriptorSetFile = testDescriptorSetFile(project);
+        generateFor(protoJsLocation, descriptorSetFile);
+    }
+
+    private static void generateFor(Path protoJsLocation, File descriptorSetFile) {
+        ProtoFromJsonWriter writer =
+                ProtoFromJsonWriter.createFor(protoJsLocation, descriptorSetFile);
         if (writer.hasFilesToProcess()) {
             writer.writeFromJsonForProtos();
         }

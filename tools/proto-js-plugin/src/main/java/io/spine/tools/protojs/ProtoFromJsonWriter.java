@@ -24,45 +24,32 @@ import io.spine.code.proto.FileSet;
 import io.spine.tools.protojs.fromjson.FromJsonWriter;
 import io.spine.tools.protojs.knowntypes.KnownTypeParsersWriter;
 import io.spine.tools.protojs.knowntypes.KnownTypesWriter;
-import org.gradle.api.Project;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 class ProtoFromJsonWriter {
 
-    private final Project project;
+    private final Path protoJsLocation;
     private final FileSet protoJsFiles;
 
-    private ProtoFromJsonWriter(Project project, FileSet protoJsFiles) {
-        this.project = project;
+    private ProtoFromJsonWriter(Path protoJsLocation, FileSet protoJsFiles) {
+        this.protoJsLocation = protoJsLocation;
         this.protoJsFiles = protoJsFiles;
     }
 
-    static ProtoFromJsonWriter createFor(Project project) {
-        FileSet protoJsFiles = collectProtoJsFiles(project);
-        ProtoFromJsonWriter generator = new ProtoFromJsonWriter(project, protoJsFiles);
-        return generator;
+    static ProtoFromJsonWriter createFor(Path protoJsLocation, File descriptorSetFile) {
+        FileSet protoJsFiles = collectProtoJsFiles(descriptorSetFile);
+        return new ProtoFromJsonWriter(protoJsLocation, protoJsFiles);
     }
 
-    private static FileSet collectProtoJsFiles(Project project) {
-        File descriptorSetFile = descriptorSetFile(project);
+    private static FileSet collectProtoJsFiles(File descriptorSetFile) {
         if (descriptorSetFile.exists()) {
             FileSet fileSet = FileSet.parse(descriptorSetFile);
             return fileSet;
         }
         FileSet emptySet = FileSet.newInstance();
         return emptySet;
-    }
-
-    private static File descriptorSetFile(Project project) {
-        File projectDir = project.getProjectDir();
-        String absolutePath = projectDir.getAbsolutePath();
-        // todo distinguish between main and test sources
-        Path path = Paths.get(absolutePath, "build", "descriptors", "test", "known_types.desc");
-        File file = path.toFile();
-        return file;
     }
 
     boolean hasFilesToProcess() {
@@ -77,18 +64,18 @@ class ProtoFromJsonWriter {
     }
 
     private void writeKnownTypes() {
-        KnownTypesWriter writer = KnownTypesWriter.createFor(project, protoJsFiles);
+        KnownTypesWriter writer = KnownTypesWriter.createFor(protoJsLocation, protoJsFiles);
         writer.writeFile();
     }
 
     private void writeKnownTypeParsers() {
-        KnownTypeParsersWriter writer = KnownTypeParsersWriter.createFor(project);
+        KnownTypeParsersWriter writer = KnownTypeParsersWriter.createFor(protoJsLocation);
         writer.writeFile();
     }
 
     // todo add package-info everywhere.
     private void writeFromJsonMethod() {
-        FromJsonWriter writer = new FromJsonWriter(project, protoJsFiles);
+        FromJsonWriter writer = new FromJsonWriter(protoJsLocation, protoJsFiles);
         writer.writeFromJsonIntoMessages();
     }
 }

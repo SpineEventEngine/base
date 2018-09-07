@@ -22,10 +22,15 @@ package io.spine.tools.protojs.fromjson;
 
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
+import io.spine.tools.protojs.code.JsImportGenerator;
 import io.spine.tools.protojs.code.JsWriter;
 import io.spine.tools.protojs.message.MessageHandler;
 
-class FromJsonGenerator {
+import static io.spine.tools.protojs.file.JsFiles.KNOWN_TYPE_PARSERS;
+
+public class FromJsonGenerator {
+
+    public static final String PARSERS_IMPORT_NAME = "known_type_parsers";
 
     private final FileDescriptor fileDescriptor;
     private final JsWriter jsWriter;
@@ -51,6 +56,8 @@ class FromJsonGenerator {
     private void generateImports() {
         jsWriter.addEmptyLine();
         String fileName = fileDescriptor.getFullName();
-        jsWriter.addNamedImport(fileName, "known_type_parsers.js");
+        JsImportGenerator generator = JsImportGenerator.createFor(fileName);
+        String parsersImport = generator.createNamedImport(KNOWN_TYPE_PARSERS, PARSERS_IMPORT_NAME);
+        jsWriter.addLine(parsersImport);
     }
 }

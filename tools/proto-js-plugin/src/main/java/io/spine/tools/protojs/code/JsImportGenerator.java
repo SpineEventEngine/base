@@ -20,32 +20,27 @@
 
 package io.spine.tools.protojs.code;
 
-import java.util.regex.Pattern;
+public class JsImportGenerator {
 
-class JsImportWriter {
-
-    private static final Pattern PARENT_OR_CURRENT_DIR = Pattern.compile("(\\.\\./|\\./)");
-    private static final Pattern JS_EXTENSION = Pattern.compile(".js", Pattern.LITERAL);
     private final String importPrefix;
 
-    private JsImportWriter(String importPrefix) {
+    private JsImportGenerator(String importPrefix) {
         this.importPrefix = importPrefix;
     }
 
-    static JsImportWriter createFor(String filePath) {
-        String importPrefix = composePathToRoot(filePath);
-        return new JsImportWriter(importPrefix);
+    public static JsImportGenerator createFor(String filePath) {
+        String pathToRoot = composePathToRoot(filePath);
+        return new JsImportGenerator(pathToRoot);
     }
 
-    String importStatement(String fileToImport) {
+    public String createImport(String fileToImport) {
         String importPath = importPrefix + fileToImport;
         String importStatement = "require('" + importPath + "');";
         return importStatement;
     }
 
-    String namedImportStatement(String fileToImport) {
+    public String createNamedImport(String fileToImport, String importName) {
         String importPath = importPrefix + fileToImport;
-        String importName = generateImportName(importPath);
         String importStatement = "let " + importName + " = require('" + importPath + "');";
         return importStatement;
     }
@@ -59,14 +54,5 @@ class JsImportWriter {
         }
         String result = pathToRoot.length() > 0 ? pathToRoot.toString() : "./";
         return result;
-    }
-
-    private static String generateImportName(String importPath) {
-        String pathRelativeToRoot = PARENT_OR_CURRENT_DIR.matcher(importPath)
-                                                         .replaceAll("");
-        String pathWithoutExtension = JS_EXTENSION.matcher(pathRelativeToRoot)
-                                                  .replaceAll("");
-        String importName = pathWithoutExtension.replace('/', '_');
-        return importName;
     }
 }
