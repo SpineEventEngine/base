@@ -51,7 +51,6 @@ public class ParserMapGenerator {
 
     public static final ImmutableMap<TypeUrl, String> JS_PARSER_NAMES = jsParserNames();
 
-    // todo make it so we don't need to call map name from file import and just can call "get"
     public static final String MAP_NAME = "parsers";
 
     private final JsWriter jsWriter;

@@ -20,7 +20,7 @@
 
 package io.spine.tools.protojs.field;
 
-import com.google.protobuf.DescriptorProtos;
+import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.code.proto.FieldName;
 import io.spine.tools.protojs.code.JsWriter;
@@ -78,7 +78,7 @@ public class SingularFieldHandler implements FieldHandler {
     }
 
     private String setFieldFormat() {
-        DescriptorProtos.FieldDescriptorProto fieldDescriptorProto = fieldDescriptor.toProto();
+        FieldDescriptorProto fieldDescriptorProto = fieldDescriptor.toProto();
         String capitalizedFieldName = FieldName.of(fieldDescriptorProto)
                                                .toCamelCase();
         String setterName = "set" + capitalizedFieldName;

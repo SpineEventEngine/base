@@ -45,20 +45,16 @@ public final class JsWriter {
         generatedCode.addLine(lineOfCode, currentDepth);
     }
 
-    public void addImports(String importingFile, String... filesToImport) {
+    public void addImport(String importingFile, String fileToImport) {
         JsImportWriter generator = JsImportWriter.createFor(importingFile);
-        for (String fileToImport : filesToImport) {
-            String importStatement = generator.importStatement(fileToImport);
-            addLine(importStatement);
-        }
+        String importStatement = generator.importStatement(fileToImport);
+        addLine(importStatement);
     }
 
-    public void addNamedImports(String importingFile, String... filesToImport) {
+    public void addNamedImport(String importingFile, String fileToImport) {
         JsImportWriter generator = JsImportWriter.createFor(importingFile);
-        for (String fileToImport : filesToImport) {
-            String importStatement = generator.namedImportStatement(fileToImport);
-            addLine(importStatement);
-        }
+        String importStatement = generator.namedImportStatement(fileToImport);
+        addLine(importStatement);
     }
 
     public void addEmptyLine() {

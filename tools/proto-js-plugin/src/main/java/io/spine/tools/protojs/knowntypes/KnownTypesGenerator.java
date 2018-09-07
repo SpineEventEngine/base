@@ -65,7 +65,7 @@ class KnownTypesGenerator {
             List<Descriptor> declaredMessages = fileDescriptor.getMessageTypes();
             int declaredMessagesCount = declaredMessages.size();
             if (declaredMessagesCount > 0) {
-                jsWriter.addImports(JS_FILE_NAME, fileToImport);
+                jsWriter.addImport(JS_FILE_NAME, fileToImport);
             }
         }
     }
