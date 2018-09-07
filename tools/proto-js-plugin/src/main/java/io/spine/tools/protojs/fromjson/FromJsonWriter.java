@@ -44,7 +44,7 @@ public class FromJsonWriter {
 
     public void writeFromJsonIntoMessages() {
         for (FileDescriptor fileDescriptor : protoJsFiles.files()) {
-            Path jsFilePath = composeFilePath(fileDescriptor, protoJsLocation);
+            Path jsFilePath = composeFilePath(fileDescriptor);
             writeIntoFile(fileDescriptor, jsFilePath);
         }
     }
@@ -60,7 +60,7 @@ public class FromJsonWriter {
         appendToFile(jsFilePath, codeToWrite);
     }
 
-    private static Path composeFilePath(FileDescriptor fileDescriptor, Path protoJsLocation) {
+    private Path composeFilePath(FileDescriptor fileDescriptor) {
         String jsFileName = jsFileName(fileDescriptor);
         Path filePath = Paths.get(protoJsLocation.toString(), jsFileName);
         return filePath;
