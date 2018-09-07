@@ -26,78 +26,60 @@ import io.spine.tools.protojs.field.checker.FieldValueChecker;
 import io.spine.tools.protojs.field.parser.FieldValueParser;
 
 import static io.spine.tools.protojs.field.Fields.capitalizedName;
-import static io.spine.tools.protojs.message.MessageHandler.FROM_OBJECT_ARG;
 import static io.spine.tools.protojs.message.MessageHandler.MESSAGE_VAR;
 
-public class MapFieldHandler implements FieldHandler {
+public class MapFieldHandler extends AbstractFieldHandler {
 
     private static final String ATTRIBUTE_VAR = "attribute";
     private static final String MAP_KEY_VAR = "mapKey";
 
-    private final FieldDescriptor fieldDescriptor;
-    private final FieldValueChecker fieldValueChecker;
     private final FieldValueParser keyParser;
-    private final FieldValueParser valueParser;
-    private final JsWriter jsWriter;
 
     // todo create builder for ctors with arg count > 3.
-
-    public MapFieldHandler(FieldDescriptor fieldDescriptor,
-                           FieldValueChecker fieldValueChecker,
-                           FieldValueParser keyParser,
-                           FieldValueParser valueParser,
-                           JsWriter jsWriter) {
-        this.fieldDescriptor = fieldDescriptor;
-        this.fieldValueChecker = fieldValueChecker;
+    MapFieldHandler(FieldDescriptor fieldDescriptor,
+                    FieldValueChecker fieldValueChecker,
+                    FieldValueParser keyParser,
+                    FieldValueParser valueParser,
+                    JsWriter jsWriter) {
+        super(fieldDescriptor, fieldValueChecker, valueParser, jsWriter);
         this.keyParser = keyParser;
-        this.valueParser = valueParser;
-        this.jsWriter = jsWriter;
     }
 
     // todo try string format instead of concatenation everywhere
     // todo check js object for null
     @Override
-    public void writeJs() {
-        String fieldJsonName = fieldDescriptor.getJsonName();
-        String jsObject = FROM_OBJECT_ARG + '.' + fieldJsonName;
-
+    public void generateJs() {
+        String jsObject = acquireJsObject();
         String value = iterateOwnAttributes(jsObject);
-
-        keyParser.parseFieldValue(ATTRIBUTE_VAR, MAP_KEY_VAR);
-        String addToMapFormat = addToMapFormat();
-        fieldValueChecker.performNullCheck(value, addToMapFormat);
-
-        String fieldValue = "fieldValue";
-        valueParser.parseFieldValue(value, fieldValue);
-        addToMap(fieldValue);
-        fieldValueChecker.exitNullCheck();
+        parseMapKey();
+        setValue(value);
         exitOwnAttributeIteration();
     }
 
+    @Override
+    String setterFormat() {
+        String fieldName = capitalizedName(fieldDescriptor());
+        String getMapCall = "get" + fieldName + "Map()";
+        String setMapValueCall = "set(" + MAP_KEY_VAR + ", %s)";
+        String addStatementFormat = MESSAGE_VAR + '.' + getMapCall + '.' + setMapValueCall + ';';
+        return addStatementFormat;
+    }
+
+    private void parseMapKey() {
+        keyParser.parseFieldValue(ATTRIBUTE_VAR, MAP_KEY_VAR);
+    }
+
     private String iterateOwnAttributes(String jsObject) {
-        jsWriter.enterIfBlock(jsObject + " !== undefined && " + jsObject + " !== null");
-        jsWriter.enterBlock("for (let " + ATTRIBUTE_VAR + " in " + jsObject + ')');
-        jsWriter.enterIfBlock(jsObject + ".hasOwnProperty(" + ATTRIBUTE_VAR + ')');
+        jsWriter().enterIfBlock(jsObject + " !== undefined && " + jsObject + " !== null");
+        jsWriter().enterBlock("for (let " + ATTRIBUTE_VAR + " in " + jsObject + ')');
+        jsWriter().enterIfBlock(jsObject + ".hasOwnProperty(" + ATTRIBUTE_VAR + ')');
         String fieldValue = jsObject + '[' + ATTRIBUTE_VAR + ']';
         return fieldValue;
     }
 
     private void exitOwnAttributeIteration() {
-        jsWriter.exitBlock();
-        jsWriter.exitBlock();
-        jsWriter.exitBlock();
-    }
-
-    private void addToMap(String value) {
-        String addToMapFormat = addToMapFormat();
-        String addToMap = String.format(addToMapFormat, value);
-        jsWriter.addLine(addToMap);
-    }
-
-    private String addToMapFormat() {
-        String getMapCall = "get" + capitalizedName(fieldDescriptor) + "Map()";
-        String setMapValueCall = "set(" + MAP_KEY_VAR + ", %s)";
-        String addStatementFormat = MESSAGE_VAR + '.' + getMapCall + '.' + setMapValueCall + ';';
-        return addStatementFormat;
+        jsWriter().exitBlock();
+        jsWriter().exitBlock();
+        jsWriter().exitBlock();
     }
 }

@@ -25,39 +25,53 @@ import io.spine.tools.protojs.code.JsWriter;
 import io.spine.tools.protojs.field.checker.FieldValueChecker;
 import io.spine.tools.protojs.field.parser.FieldValueParser;
 
-import static io.spine.tools.protojs.field.Fields.capitalizedName;
-import static io.spine.tools.protojs.message.MessageHandler.MESSAGE_VAR;
+import static io.spine.tools.protojs.message.MessageHandler.FROM_OBJECT_ARG;
+import static java.lang.String.format;
 
-public class SingularFieldHandler extends AbstractFieldHandler {
+abstract class AbstractFieldHandler implements FieldHandler {
 
-    SingularFieldHandler(FieldDescriptor fieldDescriptor,
+    private final FieldDescriptor fieldDescriptor;
+    private final FieldValueChecker fieldValueChecker;
+    private final FieldValueParser fieldValueParser;
+    private final JsWriter jsWriter;
+
+    AbstractFieldHandler(FieldDescriptor fieldDescriptor,
                          FieldValueChecker fieldValueChecker,
                          FieldValueParser fieldValueParser,
                          JsWriter jsWriter) {
-        super(fieldDescriptor, fieldValueChecker, fieldValueParser, jsWriter);
+        this.fieldDescriptor = fieldDescriptor;
+        this.fieldValueChecker = fieldValueChecker;
+        this.fieldValueParser = fieldValueParser;
+        this.jsWriter = jsWriter;
     }
 
-    @Override
-    public void generateJs() {
-        String jsObject = acquireJsObject();
-        checkNotUndefined(jsObject);
-        setValue(jsObject);
-        exitUndefinedCheck();
+    String acquireJsObject() {
+        String fieldJsonName = fieldDescriptor.getJsonName();
+        String jsObject = FROM_OBJECT_ARG + '.' + fieldJsonName;
+        return jsObject;
     }
 
-    @Override
-    String setterFormat() {
-        String fieldName = capitalizedName(fieldDescriptor());
-        String setterName = "set" + fieldName;
-        String setFieldFormat = MESSAGE_VAR + '.' + setterName + "(%s);";
-        return setFieldFormat;
+    void setValue(String value) {
+        fieldValueChecker.performNullCheck(value, setterFormat());
+        String fieldValue = "fieldValue";
+        fieldValueParser.parseFieldValue(value, fieldValue);
+        callSetter(fieldValue);
+        fieldValueChecker.exitNullCheck();
     }
 
-    private void checkNotUndefined(String jsObject) {
-        jsWriter().enterIfBlock(jsObject + " !== undefined");
+    private void callSetter(String value) {
+        String addToMapFormat = setterFormat();
+        String addToMap = format(addToMapFormat, value);
+        jsWriter.addLine(addToMap);
     }
 
-    private void exitUndefinedCheck() {
-        jsWriter().exitBlock();
+    FieldDescriptor fieldDescriptor() {
+        return fieldDescriptor;
     }
+
+    JsWriter jsWriter() {
+        return jsWriter;
+    }
+
+    abstract String setterFormat();
 }

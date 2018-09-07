@@ -73,7 +73,7 @@ public final class MessageHandler {
         for (FieldDescriptor fieldDescriptor : fields) {
             jsWriter.addEmptyLine();
             FieldHandler fieldHandler = FieldHandlers.createFor(fieldDescriptor, jsWriter);
-            fieldHandler.writeJs();
+            fieldHandler.generateJs();
         }
         jsWriter.addLine("return " + MESSAGE_VAR + ';');
         jsWriter.exitFunction();

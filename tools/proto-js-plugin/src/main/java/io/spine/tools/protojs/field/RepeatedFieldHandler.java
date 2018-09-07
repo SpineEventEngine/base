@@ -26,68 +26,47 @@ import io.spine.tools.protojs.field.checker.FieldValueChecker;
 import io.spine.tools.protojs.field.parser.FieldValueParser;
 
 import static io.spine.tools.protojs.field.Fields.capitalizedName;
-import static io.spine.tools.protojs.message.MessageHandler.FROM_OBJECT_ARG;
 import static io.spine.tools.protojs.message.MessageHandler.MESSAGE_VAR;
 
-public class RepeatedFieldHandler implements FieldHandler {
+public class RepeatedFieldHandler extends AbstractFieldHandler {
 
     private static final String LIST_ITEM_VAR = "listItem";
 
-    private final FieldDescriptor fieldDescriptor;
-    private final FieldValueChecker fieldValueChecker;
-    private final FieldValueParser fieldValueParser;
-    private final JsWriter jsWriter;
-
-    public RepeatedFieldHandler(FieldDescriptor fieldDescriptor,
-                                FieldValueChecker fieldValueChecker,
-                                FieldValueParser fieldValueParser,
-                                JsWriter jsWriter) {
-        this.fieldDescriptor = fieldDescriptor;
-        this.fieldValueChecker = fieldValueChecker;
-        this.fieldValueParser = fieldValueParser;
-        this.jsWriter = jsWriter;
+    RepeatedFieldHandler(FieldDescriptor fieldDescriptor,
+                         FieldValueChecker fieldValueChecker,
+                         FieldValueParser fieldValueParser,
+                         JsWriter jsWriter) {
+        super(fieldDescriptor, fieldValueChecker, fieldValueParser, jsWriter);
     }
 
     @Override
-    public void writeJs() {
-        String fieldJsonName = fieldDescriptor.getJsonName();
-        String jsObject = FROM_OBJECT_ARG + '.' + fieldJsonName;
-
+    public void generateJs() {
+        String jsObject = acquireJsObject();
         String value = iterateListValues(jsObject);
-        String addToListFormat = addToListFormat();
-        fieldValueChecker.performNullCheck(value, addToListFormat);
-
-        String fieldValue = "fieldValue";
-        fieldValueParser.parseFieldValue(value, fieldValue);
-        addToList(fieldValue);
-        fieldValueChecker.exitNullCheck();
+        setValue(value);
         exitListValueIteration();
     }
 
+    @Override
+    String setterFormat() {
+        String fieldName = capitalizedName(fieldDescriptor());
+        String addFunctionName = "add" + fieldName;
+        String addToListFormat = MESSAGE_VAR + '.' + addFunctionName + "(%s);";
+        return addToListFormat;
+    }
+
     private String iterateListValues(String jsObject) {
-        jsWriter.enterIfBlock(jsObject + " !== undefined && " + jsObject + " !== null");
-        jsWriter.addLine(jsObject + ".forEach(");
-        jsWriter.increaseDepth();
-        jsWriter.enterBlock('(' + LIST_ITEM_VAR + ", index, array) =>");
+        jsWriter().enterIfBlock(jsObject + " !== undefined && " + jsObject + " !== null");
+        jsWriter().addLine(jsObject + ".forEach(");
+        jsWriter().increaseDepth();
+        jsWriter().enterBlock('(' + LIST_ITEM_VAR + ", index, array) =>");
         return LIST_ITEM_VAR;
     }
 
     private void exitListValueIteration() {
-        jsWriter.exitBlock();
-        jsWriter.decreaseDepth();
-        jsWriter.addLine(");");
-        jsWriter.exitBlock();
-    }
-
-    private void addToList(String fieldValue) {
-        String addToListFormat = addToListFormat();
-        String addToList = String.format(addToListFormat, fieldValue);
-        jsWriter.addLine(addToList);
-    }
-
-    private String addToListFormat() {
-        String addFunctionName = "add" + capitalizedName(fieldDescriptor);
-        String addToListFormat = MESSAGE_VAR + '.' + addFunctionName + "(%s);";
-        return addToListFormat;
+        jsWriter().exitBlock();
+        jsWriter().decreaseDepth();
+        jsWriter().addLine(");");
+        jsWriter().exitBlock();
     }
 }

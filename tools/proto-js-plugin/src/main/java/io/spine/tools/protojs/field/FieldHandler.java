@@ -22,5 +22,5 @@ package io.spine.tools.protojs.field;
 
 public interface FieldHandler {
 
-    void writeJs();
+    void generateJs();
 }
