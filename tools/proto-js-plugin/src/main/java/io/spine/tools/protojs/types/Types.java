@@ -18,22 +18,27 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protojs.field.checker;
+package io.spine.tools.protojs.types;
 
-import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.tools.protojs.code.JsWriter;
+import com.google.protobuf.Descriptors.Descriptor;
+import com.google.protobuf.Descriptors.EnumDescriptor;
 
-import static io.spine.tools.protojs.field.Fields.isMessage;
+public final class Types {
 
-public final class FieldValueCheckers {
+    private static final String PREFIX = "proto.";
 
-    private FieldValueCheckers() {
+    private Types() {
     }
 
-    public static FieldValueChecker createFor(FieldDescriptor fieldDescriptor, JsWriter jsWriter) {
-        if (isMessage(fieldDescriptor)) {
-            return new MessageFieldChecker(fieldDescriptor, jsWriter);
-        }
-        return new PrimitiveFieldChecker(jsWriter);
+    public static String typeWithProtoPrefix(Descriptor descriptor) {
+        String typeName = descriptor.getFullName();
+        String nameWithPrefix = PREFIX + typeName;
+        return nameWithPrefix;
+    }
+
+    public static String typeWithProtoPrefix(EnumDescriptor descriptor) {
+        String typeName = descriptor.getFullName();
+        String nameWithPrefix = PREFIX + typeName;
+        return nameWithPrefix;
     }
 }

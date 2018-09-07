@@ -27,6 +27,8 @@ import static java.util.Collections.nCopies;
 
 class LineOfCode {
 
+    private static final String SPACE = " ";
+
     private final String code;
     private final int depth;
 
@@ -37,7 +39,7 @@ class LineOfCode {
 
     String printToString(int indent) {
         int spacesCount = depth * indent;
-        List<String> indentSpaces = nCopies(spacesCount, " ");
+        List<String> indentSpaces = nCopies(spacesCount, SPACE);
         String codeIndent = join("", indentSpaces);
         String result = codeIndent + code;
         return result;

@@ -22,6 +22,10 @@ package io.spine.tools.protojs.code;
 
 public class JsImportGenerator {
 
+    private static final String PARENT_DIR = "../";
+    private static final String CURRENT_DIR = "./";
+    private static final String PATH_SEPARATOR = "/";
+
     private final String importPrefix;
 
     private JsImportGenerator(String importPrefix) {
@@ -46,13 +50,13 @@ public class JsImportGenerator {
     }
 
     private static String composePathToRoot(String filePath) {
-        String[] pathElements = filePath.split("/");
+        String[] pathElements = filePath.split(PATH_SEPARATOR);
         int fileLocationDepth = pathElements.length - 1;
         StringBuilder pathToRoot = new StringBuilder(fileLocationDepth);
         for (int i = 0; i < fileLocationDepth; i++) {
-            pathToRoot.append("../");
+            pathToRoot.append(PARENT_DIR);
         }
-        String result = pathToRoot.length() > 0 ? pathToRoot.toString() : "./";
+        String result = pathToRoot.length() > 0 ? pathToRoot.toString() : CURRENT_DIR;
         return result;
     }
 }

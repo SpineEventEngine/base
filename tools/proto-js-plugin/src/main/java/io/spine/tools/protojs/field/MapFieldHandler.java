@@ -20,13 +20,12 @@
 
 package io.spine.tools.protojs.field;
 
-import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.code.proto.FieldName;
 import io.spine.tools.protojs.code.JsWriter;
 import io.spine.tools.protojs.field.checker.FieldValueChecker;
 import io.spine.tools.protojs.field.parser.FieldValueParser;
 
+import static io.spine.tools.protojs.field.Fields.capitalizedName;
 import static io.spine.tools.protojs.message.MessageHandler.FROM_OBJECT_ARG;
 import static io.spine.tools.protojs.message.MessageHandler.MESSAGE_VAR;
 
@@ -96,10 +95,7 @@ public class MapFieldHandler implements FieldHandler {
     }
 
     private String addToMapFormat() {
-        FieldDescriptorProto fieldDescriptorProto = fieldDescriptor.toProto();
-        String capitalizedFieldName = FieldName.of(fieldDescriptorProto)
-                                               .toCamelCase();
-        String getMapCall = "get" + capitalizedFieldName + "Map()";
+        String getMapCall = "get" + capitalizedName(fieldDescriptor) + "Map()";
         String setMapValueCall = "set(" + MAP_KEY_VAR + ", %s)";
         String addStatementFormat = MESSAGE_VAR + '.' + getMapCall + '.' + setMapValueCall + ';';
         return addStatementFormat;

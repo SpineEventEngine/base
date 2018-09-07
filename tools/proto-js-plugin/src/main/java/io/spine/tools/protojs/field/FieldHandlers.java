@@ -20,18 +20,15 @@
 
 package io.spine.tools.protojs.field;
 
-import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
-import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.code.proto.FieldName;
 import io.spine.tools.protojs.code.JsWriter;
 import io.spine.tools.protojs.field.checker.FieldValueChecker;
 import io.spine.tools.protojs.field.checker.FieldValueCheckers;
 import io.spine.tools.protojs.field.parser.FieldValueParser;
 import io.spine.tools.protojs.field.parser.FieldValueParsers;
 
-import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Label.LABEL_REPEATED;
-import static com.google.protobuf.Descriptors.FieldDescriptor.Type.MESSAGE;
+import static io.spine.tools.protojs.field.Fields.isMap;
+import static io.spine.tools.protojs.field.Fields.isRepeated;
 
 public final class FieldHandlers {
 
@@ -71,29 +68,6 @@ public final class FieldHandlers {
         return new SingularFieldHandler(fieldDescriptor, valueChecker, valueParser, jsWriter);
     }
 
-    private static boolean isRepeated(FieldDescriptor fieldDescriptor) {
-        FieldDescriptorProto descriptorProto = fieldDescriptor.toProto();
-        boolean isRepeated =
-                descriptorProto.getLabel() == LABEL_REPEATED && !isMap(fieldDescriptor);
-        return isRepeated;
-    }
-
-    private static boolean isMap(FieldDescriptor fieldDescriptor) {
-        FieldDescriptorProto descriptorProto = fieldDescriptor.toProto();
-        if (descriptorProto.getLabel() != LABEL_REPEATED) {
-            return false;
-        }
-        if (fieldDescriptor.getType() != MESSAGE) {
-            return false;
-        }
-        Descriptor fieldType = fieldDescriptor.getMessageType();
-        String capitalizedName = capitalizedFieldName(fieldDescriptor);
-        String supposedNameForMap = capitalizedName + "Entry";
-        boolean isMap = fieldType.getName()
-                                 .equals(supposedNameForMap);
-        return isMap;
-    }
-
     private static FieldDescriptor getKeyDescriptor(FieldDescriptor fieldDescriptor) {
         FieldDescriptor valueDescriptor = fieldDescriptor.getMessageType()
                                                          .findFieldByName("key");
@@ -104,12 +78,5 @@ public final class FieldHandlers {
         FieldDescriptor valueDescriptor = fieldDescriptor.getMessageType()
                                                          .findFieldByName("value");
         return valueDescriptor;
-    }
-
-    private static String capitalizedFieldName(FieldDescriptor fieldDescriptor) {
-        String name = fieldDescriptor.getName();
-        FieldName fieldName = FieldName.of(name);
-        String capitalizedFieldName = fieldName.toCamelCase();
-        return capitalizedFieldName;
     }
 }

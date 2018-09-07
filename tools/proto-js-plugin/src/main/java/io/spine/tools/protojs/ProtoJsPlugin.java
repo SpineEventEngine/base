@@ -31,6 +31,7 @@ import java.nio.file.Path;
 import static io.spine.tools.gradle.TaskName.ADD_FROM_JSON;
 import static io.spine.tools.gradle.TaskName.COMPILE_PROTO_TO_JS;
 import static io.spine.tools.gradle.TaskName.COPY_MODULE_SOURCES;
+import static io.spine.tools.protojs.ProtoFromJsonWriter.createFor;
 import static io.spine.tools.protojs.files.ProjectFiles.mainDescriptorSetFile;
 import static io.spine.tools.protojs.files.ProjectFiles.mainProtoJsLocation;
 import static io.spine.tools.protojs.files.ProjectFiles.testDescriptorSetFile;
@@ -69,8 +70,7 @@ public class ProtoJsPlugin extends SpinePlugin {
     }
 
     private static void generateFor(Path protoJsLocation, File descriptorSetFile) {
-        ProtoFromJsonWriter writer =
-                ProtoFromJsonWriter.createFor(protoJsLocation, descriptorSetFile);
+        ProtoFromJsonWriter writer = createFor(protoJsLocation, descriptorSetFile);
         if (writer.hasFilesToProcess()) {
             writer.writeFromJsonForProtos();
         }

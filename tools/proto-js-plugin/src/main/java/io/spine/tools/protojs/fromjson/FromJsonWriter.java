@@ -21,7 +21,6 @@
 package io.spine.tools.protojs.fromjson;
 
 import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.code.proto.FileName;
 import io.spine.code.proto.FileSet;
 import io.spine.tools.protojs.code.JsOutput;
 import io.spine.tools.protojs.code.JsWriter;
@@ -31,6 +30,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static io.spine.tools.protojs.files.JsFiles.appendToFile;
+import static io.spine.tools.protojs.files.JsFiles.jsFileName;
 
 public class FromJsonWriter {
 
@@ -60,12 +60,9 @@ public class FromJsonWriter {
         appendToFile(jsFilePath, codeToWrite);
     }
 
-    private static Path composeFilePath(FileDescriptor fileDescriptor, Path protoJsFolder) {
-        FileName fileName = FileName.from(fileDescriptor);
-        String nameWithoutExtension = fileName.nameWithoutExtension();
-        Path fullPathWithoutExtension = Paths.get(protoJsFolder.toString(), nameWithoutExtension);
-        String jsFilePath = fullPathWithoutExtension + "_pb.js";
-        Path result = Paths.get(jsFilePath);
-        return result;
+    private static Path composeFilePath(FileDescriptor fileDescriptor, Path protoJsLocation) {
+        String jsFileName = jsFileName(fileDescriptor);
+        Path filePath = Paths.get(protoJsLocation.toString(), jsFileName);
+        return filePath;
     }
 }

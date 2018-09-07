@@ -35,6 +35,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import static io.spine.tools.protojs.files.JsFiles.KNOWN_TYPES;
+import static io.spine.tools.protojs.files.JsFiles.jsFileName;
+import static io.spine.tools.protojs.types.Types.typeWithProtoPrefix;
 
 class KnownTypesGenerator {
 
@@ -55,15 +57,11 @@ class KnownTypesGenerator {
     }
 
     // todo make methods shorter if necessary
-    // todo have common file with file paths
     private void generateImports() {
-        Set<Entry<FileName, FileDescriptor>> entries = protoJsFiles.getEntries();
+        Collection<FileDescriptor> fileDescriptors = protoJsFiles.getFileDescriptors();
         JsImportGenerator importGenerator = JsImportGenerator.createFor(KNOWN_TYPES);
-        for (Entry<FileName, FileDescriptor> entry : entries) {
-            FileName fileName = entry.getKey();
-            FileDescriptor fileDescriptor = entry.getValue();
-            String nameWithoutExtension = fileName.nameWithoutExtension();
-            String fileToImport = nameWithoutExtension + "_pb.js";
+        for (FileDescriptor fileDescriptor : fileDescriptors) {
+            String fileToImport = jsFileName(fileDescriptor);
             List<Descriptor> declaredMessages = fileDescriptor.getMessageTypes();
             int declaredMessagesCount = declaredMessages.size();
             if (declaredMessagesCount > 0) {
@@ -105,9 +103,8 @@ class KnownTypesGenerator {
 
     private static String createMapEntry(Descriptor descriptor) {
         TypeUrl typeUrl = TypeUrl.from(descriptor);
-        String messageName = descriptor.getFullName();
-        String nameWithProtoPrefix = "proto." + messageName;
-        String mapEntry = "['" + typeUrl + "', " + nameWithProtoPrefix + ']';
+        String typeName = typeWithProtoPrefix(descriptor);
+        String mapEntry = "['" + typeUrl + "', " + typeName + ']';
         return mapEntry;
     }
 }

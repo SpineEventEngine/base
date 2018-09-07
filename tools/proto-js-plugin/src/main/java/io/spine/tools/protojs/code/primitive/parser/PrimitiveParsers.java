@@ -43,6 +43,8 @@ import static com.google.protobuf.Descriptors.FieldDescriptor.Type.SINT64;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.STRING;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.UINT32;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.UINT64;
+import static io.spine.tools.protojs.types.Types.typeWithProtoPrefix;
+import static io.spine.util.Exceptions.newIllegalStateException;
 
 public final class PrimitiveParsers {
 
@@ -58,20 +60,16 @@ public final class PrimitiveParsers {
         }
         PrimitiveParser parser = parsers.get(type);
         if (parser == null) {
-            System.out.println(
-                    "An attempt to get a parser for the unknown Primitive type: %s");
-            return new IdentityParser();
+            throw newIllegalStateException(
+                    "An attempt to get a parser for the unknown Primitive type: %s", type.name());
         }
         return parser;
     }
 
     private static PrimitiveParser enumParserFor(FieldDescriptor fieldDescriptor) {
         EnumDescriptor enumType = fieldDescriptor.getEnumType();
-        String enumTypeName = enumType.getFullName();
-
-        // todo have separate static util for this.
-        String typeWithProtoPrefix = "proto." + enumTypeName;
-        return new EnumParser(typeWithProtoPrefix);
+        String typeName = typeWithProtoPrefix(enumType);
+        return new EnumParser(typeName);
     }
 
     private static Map<Type, PrimitiveParser> parsers() {

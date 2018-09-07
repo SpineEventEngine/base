@@ -28,6 +28,8 @@ import io.spine.tools.protojs.field.FieldHandlers;
 
 import java.util.List;
 
+import static io.spine.tools.protojs.types.Types.typeWithProtoPrefix;
+
 // todo add check not null everywhere
 public final class MessageHandler {
 
@@ -50,26 +52,23 @@ public final class MessageHandler {
     private void generateFromJson() {
         jsWriter.addEmptyLine();
 
-        String fullTypeName = messageDescriptor.getFullName();
-        String typeWithProtoPrefix = "proto." + fullTypeName;
-        String functionName = typeWithProtoPrefix + ".fromJson";
+        String typeName = typeWithProtoPrefix(messageDescriptor);
+        String functionName = typeName + ".fromJson";
 
         jsWriter.enterFunction(functionName, "json");
         jsWriter.addLine("let jsonObject = JSON.parse(json);");
-        jsWriter.addLine("return " + typeWithProtoPrefix + ".fromObject(jsonObject);");
+        jsWriter.addLine("return " + typeName + ".fromObject(jsonObject);");
         jsWriter.exitFunction();
     }
 
     private void generateFromObject() {
         jsWriter.addEmptyLine();
 
-        String fullTypeName = messageDescriptor.getFullName();
-        String typeWithProtoPrefix = "proto." + fullTypeName;
+        String typeName = typeWithProtoPrefix(messageDescriptor);
+        String functionName = typeName + ".fromObject";
 
-        String functionName = typeWithProtoPrefix + ".fromObject";
         jsWriter.enterFunction(functionName, FROM_OBJECT_ARG);
-        jsWriter.addLine("let " + MESSAGE_VAR + " = new " + typeWithProtoPrefix + "();");
-
+        jsWriter.addLine("let " + MESSAGE_VAR + " = new " + typeName + "();");
         List<FieldDescriptor> fields = messageDescriptor.getFields();
         for (FieldDescriptor fieldDescriptor : fields) {
             jsWriter.addEmptyLine();

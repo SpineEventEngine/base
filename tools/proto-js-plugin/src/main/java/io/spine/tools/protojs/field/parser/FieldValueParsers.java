@@ -20,13 +20,11 @@
 
 package io.spine.tools.protojs.field.parser;
 
-import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.tools.protojs.code.JsWriter;
-import io.spine.tools.protojs.knowntypes.ParserMapGenerator;
-import io.spine.type.TypeUrl;
 
-import static com.google.protobuf.Descriptors.FieldDescriptor.Type.MESSAGE;
+import static io.spine.tools.protojs.field.Fields.isMessage;
+import static io.spine.tools.protojs.field.Fields.isWellKnownType;
 
 public final class FieldValueParsers {
 
@@ -40,18 +38,5 @@ public final class FieldValueParsers {
                     : new MessageFieldParser(fieldDescriptor, jsWriter);
         }
         return new PrimitiveFieldParser(fieldDescriptor, jsWriter);
-    }
-
-    private static boolean isMessage(FieldDescriptor fieldDescriptor) {
-        FieldDescriptor.Type fieldKind = fieldDescriptor.getType();
-        boolean isMessage = fieldKind == MESSAGE;
-        return isMessage;
-    }
-
-    private static boolean isWellKnownType(FieldDescriptor fieldDescriptor) {
-        Descriptor fieldType = fieldDescriptor.getMessageType();
-        TypeUrl typeUrl = TypeUrl.from(fieldType);
-        boolean isWellKnownType = ParserMapGenerator.JS_PARSER_NAMES.containsKey(typeUrl);
-        return isWellKnownType;
     }
 }

@@ -27,6 +27,7 @@ import io.spine.tools.protojs.code.JsWriter;
 import io.spine.tools.protojs.field.checker.FieldValueChecker;
 import io.spine.tools.protojs.field.parser.FieldValueParser;
 
+import static io.spine.tools.protojs.field.Fields.capitalizedName;
 import static io.spine.tools.protojs.message.MessageHandler.FROM_OBJECT_ARG;
 import static io.spine.tools.protojs.message.MessageHandler.MESSAGE_VAR;
 
@@ -78,10 +79,7 @@ public class SingularFieldHandler implements FieldHandler {
     }
 
     private String setFieldFormat() {
-        FieldDescriptorProto fieldDescriptorProto = fieldDescriptor.toProto();
-        String capitalizedFieldName = FieldName.of(fieldDescriptorProto)
-                                               .toCamelCase();
-        String setterName = "set" + capitalizedFieldName;
+        String setterName = "set" + capitalizedName(fieldDescriptor);
         String setFieldFormat = MESSAGE_VAR + '.' + setterName + "(%s);";
         return setFieldFormat;
     }

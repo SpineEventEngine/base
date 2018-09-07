@@ -24,14 +24,14 @@ import io.spine.tools.protojs.code.JsWriter;
 
 class EnumParser implements PrimitiveParser {
 
-    private final String enumTypeName;
+    private final String enumType;
 
-    EnumParser(String enumTypeName) {
-        this.enumTypeName = enumTypeName;
+    EnumParser(String enumType) {
+        this.enumType = enumType;
     }
 
     @Override
     public void writeParseStatement(String jsObject, String output, JsWriter jsWriter) {
-        jsWriter.addLine("let " + output + " = " + enumTypeName + '[' + jsObject + "];");
+        jsWriter.addLine("let " + output + " = " + enumType + '[' + jsObject + "];");
     }
 }

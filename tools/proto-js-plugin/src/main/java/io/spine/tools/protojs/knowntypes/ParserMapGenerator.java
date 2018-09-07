@@ -46,12 +46,12 @@ import java.util.Map.Entry;
 import static io.spine.type.TypeUrl.of;
 
 @SuppressWarnings("OverlyCoupledClass")
-        // Dependencies for listed known types.
+// Dependencies for listed known types.
 public class ParserMapGenerator {
 
-    public static final ImmutableMap<TypeUrl, String> JS_PARSER_NAMES = jsParserNames();
-
     public static final String MAP_NAME = "parsers";
+
+    private static final ImmutableMap<TypeUrl, String> parsers = parsers();
 
     private final JsWriter jsWriter;
 
@@ -62,7 +62,7 @@ public class ParserMapGenerator {
     void generateParserMap() {
         jsWriter.addLine("export const " + MAP_NAME + " = new Map([");
         jsWriter.increaseDepth();
-        ImmutableSet<Entry<TypeUrl, String>> entries = JS_PARSER_NAMES.entrySet();
+        ImmutableSet<Entry<TypeUrl, String>> entries = parsers.entrySet();
         for (UnmodifiableIterator<Entry<TypeUrl, String>> it = entries.iterator(); it.hasNext(); ) {
             Entry<TypeUrl, String> entry = it.next();
             boolean hasNext = it.hasNext();
@@ -72,16 +72,24 @@ public class ParserMapGenerator {
         jsWriter.addLine("]);");
     }
 
+    public static boolean hasParser(TypeUrl typeUrl) {
+        boolean hasParser = parsers.containsKey(typeUrl);
+        return hasParser;
+    }
+
+    // todo split into shorter methods everywhere
     private void addMapEntry(Entry<TypeUrl, String> entry, boolean hasNext) {
         TypeUrl typeUrl = entry.getKey();
         String parserName = entry.getValue();
         String newParserInstance = "new " + parserName + "()";
         String mapEntry = mapEntry(typeUrl, newParserInstance);
+
         StringBuilder mapEntryBuilder = new StringBuilder(mapEntry);
         if (hasNext) {
             mapEntryBuilder.append(',');
         }
         String line = mapEntryBuilder.toString();
+
         jsWriter.addLine(line);
     }
 
@@ -91,7 +99,7 @@ public class ParserMapGenerator {
     }
 
     @SuppressWarnings("OverlyCoupledMethod") // Dependencies for listed known types.
-    private static ImmutableMap<TypeUrl, String> jsParserNames() {
+    private static ImmutableMap<TypeUrl, String> parsers() {
         ImmutableMap<TypeUrl, String> jsParserNames = ImmutableMap
                 .<TypeUrl, String>builder()
                 .put(of(BytesValue.class), "BytesValueParser")

@@ -20,10 +20,13 @@
 
 package io.spine.tools.protojs.files;
 
+import com.google.protobuf.Descriptors.FileDescriptor;
+import io.spine.code.proto.FileName;
 import io.spine.tools.protojs.code.JsOutput;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import static java.nio.file.Files.write;
 import static java.nio.file.StandardOpenOption.APPEND;
@@ -55,4 +58,12 @@ public final class JsFiles {
             throw new IllegalStateException(e);
         }
     }
+
+    public static String jsFileName(FileDescriptor fileDescriptor) {
+        FileName fileName = FileName.from(fileDescriptor);
+        String nameWithoutExtension = fileName.nameWithoutExtension();
+        String jsFileName = nameWithoutExtension + "_pb.js";
+        return jsFileName;
+    }
+
 }

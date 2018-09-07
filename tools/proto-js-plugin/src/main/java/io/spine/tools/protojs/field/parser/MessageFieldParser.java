@@ -23,7 +23,8 @@ package io.spine.tools.protojs.field.parser;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.tools.protojs.code.JsWriter;
-import io.spine.type.TypeUrl;
+
+import static io.spine.tools.protojs.types.Types.typeWithProtoPrefix;
 
 public class MessageFieldParser implements FieldValueParser {
 
@@ -38,11 +39,7 @@ public class MessageFieldParser implements FieldValueParser {
     @Override
     public void parseFieldValue(String value, String output) {
         Descriptor fieldType = fieldDescriptor.getMessageType();
-        TypeUrl typeUrl = TypeUrl.from(fieldType);
-        // todo make some common robust methods for assigning variables in the generated code
-        String type = fieldType.getFullName();
-        String typeWithProtoPrefix = "proto." + type;
-        jsWriter.addLine("let " + output + " = " + typeWithProtoPrefix + ".fromObject(" + value +
-                                 ");");
+        String typeName = typeWithProtoPrefix(fieldType);
+        jsWriter.addLine("let " + output + " = " + typeName + ".fromObject(" + value + ");");
     }
 }
