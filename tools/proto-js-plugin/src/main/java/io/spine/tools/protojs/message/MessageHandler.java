@@ -45,37 +45,46 @@ public final class MessageHandler {
     }
 
     public void generateJs() {
-        generateFromJson();
-        generateFromObject();
+        generateFromJsonMethod();
+        generateFromObjectMethod();
     }
 
-    private void generateFromJson() {
+    private void generateFromJsonMethod() {
         jsWriter.addEmptyLine();
-
         String typeName = typeWithProtoPrefix(messageDescriptor);
         String functionName = typeName + ".fromJson";
+        generateFromJsonCode(typeName, functionName);
+    }
 
+    private void generateFromJsonCode(String typeName, String functionName) {
         jsWriter.enterFunction(functionName, "json");
         jsWriter.addLine("let jsonObject = JSON.parse(json);");
+        // todo add return helper to jsWriter
         jsWriter.addLine("return " + typeName + ".fromObject(jsonObject);");
         jsWriter.exitFunction();
     }
 
-    private void generateFromObject() {
+    private void generateFromObjectMethod() {
         jsWriter.addEmptyLine();
-
         String typeName = typeWithProtoPrefix(messageDescriptor);
         String functionName = typeName + ".fromObject";
+        generateFromObjectCode(typeName, functionName);
+    }
 
+    private void generateFromObjectCode(String typeName, String functionName) {
         jsWriter.enterFunction(functionName, FROM_OBJECT_ARG);
         jsWriter.addLine("let " + MESSAGE_VAR + " = new " + typeName + "();");
+        generateFieldsCode();
+        jsWriter.addLine("return " + MESSAGE_VAR + ';');
+        jsWriter.exitFunction();
+    }
+
+    private void generateFieldsCode() {
         List<FieldDescriptor> fields = messageDescriptor.getFields();
         for (FieldDescriptor fieldDescriptor : fields) {
             jsWriter.addEmptyLine();
             FieldHandler fieldHandler = FieldHandlers.createFor(fieldDescriptor, jsWriter);
             fieldHandler.generateJs();
         }
-        jsWriter.addLine("return " + MESSAGE_VAR + ';');
-        jsWriter.exitFunction();
     }
 }

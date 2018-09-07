@@ -31,7 +31,7 @@ public final class FieldValueParsers {
     private FieldValueParsers() {
     }
 
-    public static FieldValueParser createFor(FieldDescriptor fieldDescriptor, JsWriter jsWriter) {
+    public static FieldValueParser parserFor(FieldDescriptor fieldDescriptor, JsWriter jsWriter) {
         if (isMessage(fieldDescriptor)) {
             return isWellKnownType(fieldDescriptor)
                     ? new WellKnownFieldParser(fieldDescriptor, jsWriter)

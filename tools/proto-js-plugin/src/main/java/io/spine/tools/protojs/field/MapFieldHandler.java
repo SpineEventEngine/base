@@ -61,8 +61,8 @@ public class MapFieldHandler extends AbstractFieldHandler {
         String fieldName = capitalizedName(fieldDescriptor());
         String getMapCall = "get" + fieldName + "Map()";
         String setMapValueCall = "set(" + MAP_KEY_VAR + ", %s)";
-        String addStatementFormat = MESSAGE_VAR + '.' + getMapCall + '.' + setMapValueCall + ';';
-        return addStatementFormat;
+        String addToMapFormat = MESSAGE_VAR + '.' + getMapCall + '.' + setMapValueCall + ';';
+        return addToMapFormat;
     }
 
     private void parseMapKey() {

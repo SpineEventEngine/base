@@ -59,43 +59,48 @@ public class ParserMapGenerator {
         this.jsWriter = jsWriter;
     }
 
+    public static boolean hasParser(TypeUrl typeUrl) {
+        boolean hasParser = parsers.containsKey(typeUrl);
+        return hasParser;
+    }
+
     void generateParserMap() {
         jsWriter.addLine("export const " + MAP_NAME + " = new Map([");
         jsWriter.increaseDepth();
+        storeKnownTypeParsers();
+        jsWriter.decreaseDepth();
+        jsWriter.addLine("]);");
+    }
+
+    private void storeKnownTypeParsers() {
         ImmutableSet<Entry<TypeUrl, String>> entries = parsers.entrySet();
         for (UnmodifiableIterator<Entry<TypeUrl, String>> it = entries.iterator(); it.hasNext(); ) {
             Entry<TypeUrl, String> entry = it.next();
             boolean hasNext = it.hasNext();
             addMapEntry(entry, hasNext);
         }
-        jsWriter.decreaseDepth();
-        jsWriter.addLine("]);");
     }
 
-    public static boolean hasParser(TypeUrl typeUrl) {
-        boolean hasParser = parsers.containsKey(typeUrl);
-        return hasParser;
-    }
-
-    // todo split into shorter methods everywhere
     private void addMapEntry(Entry<TypeUrl, String> entry, boolean hasNext) {
+        String jsMapEntry = jsMapEntry(entry);
+        String entryToAdd = appendCommaIfNeeded(jsMapEntry, hasNext);
+        jsWriter.addLine(entryToAdd);
+    }
+
+    private static String jsMapEntry(Entry<TypeUrl, String> entry) {
         TypeUrl typeUrl = entry.getKey();
         String parserName = entry.getValue();
         String newParserInstance = "new " + parserName + "()";
-        String mapEntry = mapEntry(typeUrl, newParserInstance);
+        String mapEntry = "['" + typeUrl + "', " + newParserInstance + ']';
+        return mapEntry;
+    }
 
-        StringBuilder mapEntryBuilder = new StringBuilder(mapEntry);
+    private static String appendCommaIfNeeded(String jsMapEntry, boolean hasNext) {
+        StringBuilder mapEntryBuilder = new StringBuilder(jsMapEntry);
         if (hasNext) {
             mapEntryBuilder.append(',');
         }
-        String line = mapEntryBuilder.toString();
-
-        jsWriter.addLine(line);
-    }
-
-    private static String mapEntry(TypeUrl typeUrl, String newParserInstance) {
-        String mapEntry = "['" + typeUrl + "', " + newParserInstance + ']';
-        return mapEntry;
+        return mapEntryBuilder.toString();
     }
 
     @SuppressWarnings("OverlyCoupledMethod") // Dependencies for listed known types.

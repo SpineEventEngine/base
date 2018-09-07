@@ -30,7 +30,7 @@ public final class FieldValueCheckers {
     private FieldValueCheckers() {
     }
 
-    public static FieldValueChecker createFor(FieldDescriptor fieldDescriptor, JsWriter jsWriter) {
+    public static FieldValueChecker checkerFor(FieldDescriptor fieldDescriptor, JsWriter jsWriter) {
         if (isMessage(fieldDescriptor)) {
             return new MessageFieldChecker(fieldDescriptor, jsWriter);
         }

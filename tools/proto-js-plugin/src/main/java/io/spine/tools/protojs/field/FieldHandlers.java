@@ -23,12 +23,12 @@ package io.spine.tools.protojs.field;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.tools.protojs.code.JsWriter;
 import io.spine.tools.protojs.field.checker.FieldValueChecker;
-import io.spine.tools.protojs.field.checker.FieldValueCheckers;
 import io.spine.tools.protojs.field.parser.FieldValueParser;
-import io.spine.tools.protojs.field.parser.FieldValueParsers;
 
 import static io.spine.tools.protojs.field.Fields.isMap;
 import static io.spine.tools.protojs.field.Fields.isRepeated;
+import static io.spine.tools.protojs.field.checker.FieldValueCheckers.checkerFor;
+import static io.spine.tools.protojs.field.parser.FieldValueParsers.parserFor;
 
 public final class FieldHandlers {
 
@@ -37,45 +37,56 @@ public final class FieldHandlers {
 
     public static FieldHandler createFor(FieldDescriptor fieldDescriptor, JsWriter jsWriter) {
         if (isMap(fieldDescriptor)) {
-            return mapHandlerFor(fieldDescriptor, jsWriter);
+            return map(fieldDescriptor, jsWriter);
         }
         if (isRepeated(fieldDescriptor)) {
-            return repeatedHandlerFor(fieldDescriptor, jsWriter);
+            return repeated(fieldDescriptor, jsWriter);
         }
-        return singularHandlerFor(fieldDescriptor, jsWriter);
+        return singular(fieldDescriptor, jsWriter);
     }
 
-    private static FieldHandler mapHandlerFor(FieldDescriptor fieldDescriptor, JsWriter jsWriter) {
-        FieldDescriptor keyDescriptor = getKeyDescriptor(fieldDescriptor);
-        FieldDescriptor valueDescriptor = getValueDescriptor(fieldDescriptor);
-        FieldValueChecker valueChecker = FieldValueCheckers.createFor(valueDescriptor, jsWriter);
-        FieldValueParser keyParser = FieldValueParsers.createFor(keyDescriptor, jsWriter);
-        FieldValueParser valueParser = FieldValueParsers.createFor(valueDescriptor, jsWriter);
-        return new MapFieldHandler(fieldDescriptor, valueChecker, keyParser, valueParser, jsWriter);
+    private static FieldHandler map(FieldDescriptor descriptor, JsWriter jsWriter) {
+        FieldDescriptor keyDescriptor = keyDescriptor(descriptor);
+        FieldDescriptor valueDescriptor = valueDescriptor(descriptor);
+        FieldValueChecker valueChecker = checkerFor(valueDescriptor, jsWriter);
+        FieldValueParser keyParser = parserFor(keyDescriptor, jsWriter);
+        FieldValueParser valueParser = parserFor(valueDescriptor, jsWriter);
+        FieldHandler handler = new MapFieldHandler(descriptor,
+                                                   valueChecker,
+                                                   keyParser,
+                                                   valueParser,
+                                                   jsWriter);
+        return handler;
     }
 
-    private static FieldHandler
-    repeatedHandlerFor(FieldDescriptor fieldDescriptor, JsWriter jsWriter) {
-        FieldValueChecker valueChecker = FieldValueCheckers.createFor(fieldDescriptor, jsWriter);
-        FieldValueParser valueParser = FieldValueParsers.createFor(fieldDescriptor, jsWriter);
-        return new RepeatedFieldHandler(fieldDescriptor, valueChecker, valueParser, jsWriter);
+    private static FieldHandler repeated(FieldDescriptor descriptor, JsWriter jsWriter) {
+        FieldValueChecker valueChecker = checkerFor(descriptor, jsWriter);
+        FieldValueParser valueParser = parserFor(descriptor, jsWriter);
+        FieldHandler handler = new RepeatedFieldHandler(descriptor,
+                                                        valueChecker,
+                                                        valueParser,
+                                                        jsWriter);
+        return handler;
     }
 
-    private static FieldHandler
-    singularHandlerFor(FieldDescriptor fieldDescriptor, JsWriter jsWriter) {
-        FieldValueChecker valueChecker = FieldValueCheckers.createFor(fieldDescriptor, jsWriter);
-        FieldValueParser valueParser = FieldValueParsers.createFor(fieldDescriptor, jsWriter);
-        return new SingularFieldHandler(fieldDescriptor, valueChecker, valueParser, jsWriter);
+    private static FieldHandler singular(FieldDescriptor descriptor, JsWriter jsWriter) {
+        FieldValueChecker valueChecker = checkerFor(descriptor, jsWriter);
+        FieldValueParser valueParser = parserFor(descriptor, jsWriter);
+        FieldHandler handler = new SingularFieldHandler(descriptor,
+                                                        valueChecker,
+                                                        valueParser,
+                                                        jsWriter);
+        return handler;
     }
 
-    private static FieldDescriptor getKeyDescriptor(FieldDescriptor fieldDescriptor) {
-        FieldDescriptor valueDescriptor = fieldDescriptor.getMessageType()
+    private static FieldDescriptor keyDescriptor(FieldDescriptor descriptor) {
+        FieldDescriptor valueDescriptor = descriptor.getMessageType()
                                                          .findFieldByName("key");
         return valueDescriptor;
     }
 
-    private static FieldDescriptor getValueDescriptor(FieldDescriptor fieldDescriptor) {
-        FieldDescriptor valueDescriptor = fieldDescriptor.getMessageType()
+    private static FieldDescriptor valueDescriptor(FieldDescriptor descriptor) {
+        FieldDescriptor valueDescriptor = descriptor.getMessageType()
                                                          .findFieldByName("value");
         return valueDescriptor;
     }

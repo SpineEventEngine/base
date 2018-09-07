@@ -26,7 +26,6 @@ import io.spine.tools.protojs.code.JsOutput;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import static java.nio.file.Files.write;
 import static java.nio.file.StandardOpenOption.APPEND;
@@ -37,10 +36,12 @@ public final class JsFiles {
 
     public static final String KNOWN_TYPES = "known_types.js";
     public static final String KNOWN_TYPE_PARSERS = "known_type_parsers.js";
-    public static final String JS_FILE_SUFFIX = "_pb.js";
+
+    private static final String JS_PROTO_SUFFIX = "_pb.js";
 
     private JsFiles() {
     }
+
 // todo make sure to get rid of all magic numbers and strings
     public static void writeToFile(Path path, JsOutput output) {
         try {
@@ -63,7 +64,7 @@ public final class JsFiles {
     public static String jsFileName(FileDescriptor fileDescriptor) {
         FileName fileName = FileName.from(fileDescriptor);
         String nameWithoutExtension = fileName.nameWithoutExtension();
-        String jsFileName = nameWithoutExtension + JS_FILE_SUFFIX;
+        String jsFileName = nameWithoutExtension + JS_PROTO_SUFFIX;
         return jsFileName;
     }
 

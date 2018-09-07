@@ -22,10 +22,10 @@ package io.spine.tools.protojs.code.primitive.parser;
 
 import io.spine.tools.protojs.code.JsWriter;
 
-public class FloatValueParser implements PrimitiveParser {
+public class LongParser implements PrimitiveParser {
 
     @Override
     public void writeParseStatement(String jsObject, String output, JsWriter jsWriter) {
-        jsWriter.addLine("let " + output + " = parseFloat(" + jsObject + ");");
+        jsWriter.addLine("let " + output + " = parseInt(" + jsObject + ");");
     }
 }
