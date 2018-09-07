@@ -29,42 +29,40 @@ import org.gradle.api.Project;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static java.nio.file.StandardOpenOption.APPEND;
-import static org.gradle.internal.impldep.org.apache.commons.lang.CharEncoding.UTF_8;
 
 @SuppressWarnings({"DuplicateStringLiteralInspection", "MethodMayBeStatic"}) // todo get rid.
-public class FromJsonInserter {
+public class FromJsonWriter {
 
     private final Project project;
     private final FileSet protoJsFiles;
 
-    public FromJsonInserter(Project project, FileSet protoJsFiles) {
+    public FromJsonWriter(Project project, FileSet protoJsFiles) {
         this.project = project;
         this.protoJsFiles = protoJsFiles;
     }
 
-    public void insertFromJsonIntoMessages() {
+    public void writeFromJsonIntoMessages() {
         Path protoJsFolder = getProtoJsLocation(project);
         for (FileDescriptor fileDescriptor : protoJsFiles.files()) {
-            Path jsFilePath = getJsFilePath(fileDescriptor, protoJsFolder);
-            insertIntoFile(fileDescriptor, jsFilePath);
+            Path jsFilePath = jsFilePath(fileDescriptor, protoJsFolder);
+            writeIntoFile(fileDescriptor, jsFilePath);
         }
     }
 
-    private void insertIntoFile(FileDescriptor fileDescriptor, Path jsFilePath) {
+    private void writeIntoFile(FileDescriptor fileDescriptor, Path jsFilePath) {
         if (!Files.exists(jsFilePath)) {
             return;
         }
         JsWriter jsWriter = new JsWriter();
         FromJsonGenerator generator = new FromJsonGenerator(fileDescriptor, jsWriter);
         generator.generateJs();
-        JsOutput codeToInsert = jsWriter.getGeneratedCode();
-        writeToFile(jsFilePath, codeToInsert);
+        JsOutput codeToWrite = jsWriter.getGeneratedCode();
+        writeToFile(jsFilePath, codeToWrite);
     }
 
     // todo distinguish between main and test somewhere
@@ -75,7 +73,7 @@ public class FromJsonInserter {
         return protoJsLocation;
     }
 
-    private static Path getJsFilePath(FileDescriptor fileDescriptor, Path protoJsFolder) {
+    private static Path jsFilePath(FileDescriptor fileDescriptor, Path protoJsFolder) {
         FileName fileName = FileName.from(fileDescriptor);
         String nameWithoutExtension = fileName.nameWithoutExtension();
         Path fullPathWithoutExtension = Paths.get(protoJsFolder.toString(), nameWithoutExtension);
@@ -85,12 +83,12 @@ public class FromJsonInserter {
     }
 
     // todo remove copypaste
-    private static void writeToFile(Path path, JsOutput code) {
+    private static void writeToFile(Path path, JsOutput output) {
         try {
-            String content = code.toString();
-            Files.write(path, content.getBytes(UTF_8), APPEND);
+            String content = output.toString();
+            Files.write(path, content.getBytes(), APPEND);
         } catch (IOException e) {
-            throw new UncheckedIOException(e);
+            throw new IllegalStateException(e);
         }
     }
 }

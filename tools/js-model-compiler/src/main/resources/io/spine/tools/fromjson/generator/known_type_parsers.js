@@ -134,14 +134,6 @@ class ValueParser {
     }
 }
 
-class NullValueParser {
-
-    parse(value) {
-        let nullValue = struct.NullValue.NULL_VALUE;
-        return nullValue;
-    }
-}
-
 class ListValueParser {
 
     parse(value) {
@@ -207,44 +199,23 @@ class FieldMaskParser {
         return fieldMask;
     }
 }
-
+// todo revise this code
 class AnyParser {
 
     parse(value) {
         let typeUrl = value['@type'];
-        let type = known_types.types.get(typeUrl);
-        let instance;
-        let parser = parsers.get(type);
+        let messageValue;
+        let parser = parsers.get(typeUrl);
         if (parser) {
-            instance = parser.parse(value['value']);
+            messageValue = parser.parse(value['value']);
         } else {
-            let msg = new type();
-            instance = msg.fromObject(value);
+            let type = known_types.types.get(typeUrl);
+            messageValue = type.fromObject(value);
         }
-        let bytes = instance.serializeBinary();
+        let bytes = messageValue.serializeBinary();
         let anyMsg = new any.Any;
         anyMsg.setTypeUrl(typeUrl);
         anyMsg.setValue(bytes);
         return anyMsg;
     }
 }
-
-export const parsers = new Map([
-    [wrappers.BoolValue, new BoolValueParser()],
-    [wrappers.BytesValue, new BytesValueParser()],
-    [wrappers.DoubleValue, new DoubleValueParser()],
-    [wrappers.FloatValue, new FloatValueParser()],
-    [wrappers.Int32Value, new Int32ValueParser()],
-    [wrappers.Int64Value, new Int64ValueParser()],
-    [wrappers.StringValue, new StringValueParser()],
-    [wrappers.UInt32Value, new UInt32ValueParser()],
-    [wrappers.UInt64Value, new UInt64ValueParser()],
-    [struct.Value, new ValueParser()],
-    [struct.NullValue, new NullValueParser()],
-    [struct.ListValue, new ListValueParser()],
-    [empty.Empty, new EmptyParser()],
-    [timestamp.Timestamp, new TimestampParser()],
-    [duration.Duration, new DurationParser()],
-    [field_mask.FieldMask, new FieldMaskParser()],
-    [any.Any, new AnyParser()]
-]);

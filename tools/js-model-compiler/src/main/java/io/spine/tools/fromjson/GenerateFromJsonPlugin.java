@@ -35,7 +35,6 @@ import io.spine.code.proto.FileDescriptors;
 import io.spine.code.proto.FileName;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.TypeSet;
-import io.spine.tools.fromjson.js.KnownTypeParsersCode;
 import io.spine.tools.gradle.SpinePlugin;
 import io.spine.type.TypeName;
 import io.spine.type.TypeUrl;
@@ -170,17 +169,17 @@ public class GenerateFromJsonPlugin extends SpinePlugin {
         File projectDir = project.getProjectDir();
         String absolutePath = projectDir.getAbsolutePath();
         Path knownTypeParsersPath = Paths.get(absolutePath, "proto", "test", "js",
-                                              "known_type_parsers.js");
+                                              "io/spine/tools/fromjson/generator/known_type_parsers.js");
         try {
-            Files.write(knownTypeParsersPath, KnownTypeParsersCode.get()
-                                                                  .getBytes(UTF_8), CREATE,
-                        TRUNCATE_EXISTING);
+//            Files.write(knownTypeParsersPath, KnownTypeParsersCode.get()
+//                                                                  .getBytes(UTF_8), CREATE,
+//                        TRUNCATE_EXISTING);
+            throw new IOException("dd");
         } catch (IOException ex) {
             System.out.println("IO Exception when writing known_type_parsers.js: " + ex);
         }
     }
 
-    // todo try to use full type names instead of getting them from imports
     // todo check if we need generate fromJson for Google Protobuf classes
     private static void insertIntoFiles(Path descriptorPath, Project project) {
         if (!Files.exists(descriptorPath)) {
@@ -234,8 +233,8 @@ public class GenerateFromJsonPlugin extends SpinePlugin {
 
             knownTypesImport += "known_types.js');" + lineSeparator();
             try {
-                Files.write(fullJsPath, knownTypeParsersImport.getBytes(UTF_8), APPEND);
-                Files.write(fullJsPath, knownTypesImport.getBytes(UTF_8), APPEND);
+                Files.write(fullJsPath, knownTypeParsersImport.getBytes(), APPEND);
+                Files.write(fullJsPath, knownTypesImport.getBytes(), APPEND);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -473,7 +472,7 @@ public class GenerateFromJsonPlugin extends SpinePlugin {
                 String content = fromJson + fromObject;
 
                 try {
-                    Files.write(fullJsPath, content.getBytes(UTF_8), APPEND);
+                    Files.write(fullJsPath, content.getBytes(), APPEND);
                 } catch (IOException e) {
                     System.out.println("IO Exception");
                 }

@@ -27,7 +27,10 @@ import io.spine.type.TypeUrl;
 
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.MESSAGE;
 
-class FieldValueParsers {
+final class FieldValueParsers {
+
+    private FieldValueParsers() {
+    }
 
     static FieldValueParser createFor(FieldDescriptor fieldDescriptor, JsWriter jsWriter) {
         if (isMessage(fieldDescriptor)) {
@@ -47,7 +50,7 @@ class FieldValueParsers {
     private static boolean isWellKnownType(FieldDescriptor fieldDescriptor) {
         Descriptor fieldType = fieldDescriptor.getMessageType();
         TypeUrl typeUrl = TypeUrl.from(fieldType);
-        boolean isWellKnownType = KnownTypeParsersGenerator.WELL_KNOWN_TYPES.contains(typeUrl);
+        boolean isWellKnownType = KnownParserMapGenerator.JS_PARSER_NAMES.containsKey(typeUrl);
         return isWellKnownType;
     }
 }

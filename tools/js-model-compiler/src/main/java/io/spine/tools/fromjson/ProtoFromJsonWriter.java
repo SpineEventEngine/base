@@ -21,35 +21,28 @@
 package io.spine.tools.fromjson;
 
 import io.spine.code.proto.FileSet;
-import io.spine.tools.fromjson.generator.FromJsonInserter;
-import io.spine.tools.fromjson.generator.KnownTypeParsersGenerator;
-import io.spine.tools.fromjson.generator.KnownTypesJsGenerator;
+import io.spine.tools.fromjson.generator.FromJsonWriter;
+import io.spine.tools.fromjson.generator.KnownTypeParsersWriter;
+import io.spine.tools.fromjson.generator.KnownTypesWriter;
 import org.gradle.api.Project;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static java.nio.file.StandardOpenOption.CREATE;
-import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
-import static org.gradle.internal.impldep.org.apache.commons.lang.CharEncoding.UTF_8;
-
-class ProtoFromJsonGenerator {
+class ProtoFromJsonWriter {
 
     private final Project project;
     private final FileSet protoJsFiles;
 
-    private ProtoFromJsonGenerator(Project project, FileSet protoJsFiles) {
+    private ProtoFromJsonWriter(Project project, FileSet protoJsFiles) {
         this.project = project;
         this.protoJsFiles = protoJsFiles;
     }
 
-    static ProtoFromJsonGenerator createFor(Project project) {
+    static ProtoFromJsonWriter createFor(Project project) {
         FileSet protoJsFiles = collectProtoJsFiles(project);
-        ProtoFromJsonGenerator generator = new ProtoFromJsonGenerator(project, protoJsFiles);
+        ProtoFromJsonWriter generator = new ProtoFromJsonWriter(project, protoJsFiles);
         return generator;
     }
 
@@ -84,29 +77,18 @@ class ProtoFromJsonGenerator {
     }
 
     private void generateKnownTypes() {
-        KnownTypesJsGenerator generator = new KnownTypesJsGenerator(project, protoJsFiles);
-        Path path = generator.composeFilePath();
-        String content = generator.createFileContent();
-        writeToFile(path, content);
+        KnownTypesWriter writer = KnownTypesWriter.createFor(project, protoJsFiles);
+        writer.writeFile();
     }
 
     private void generateKnownTypeParsers() {
-        KnownTypeParsersGenerator generator = new KnownTypeParsersGenerator(project);
-        Path path = generator.composeFilePath();
-        String content = generator.createFileContent();
-        writeToFile(path, content);
+        KnownTypeParsersWriter writer = KnownTypeParsersWriter.createFor(project);
+        writer.writeFile();
     }
 
+    // todo add package-info everywhere.
     private void insertFromJsonMethod() {
-        FromJsonInserter inserter = new FromJsonInserter(project, protoJsFiles);
-        inserter.insertFromJsonIntoMessages();
-    }
-
-    private static void writeToFile(Path path, String content) {
-        try {
-            Files.write(path, content.getBytes(UTF_8), CREATE, TRUNCATE_EXISTING);
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
+        FromJsonWriter writer = new FromJsonWriter(project, protoJsFiles);
+        writer.writeFromJsonIntoMessages();
     }
 }

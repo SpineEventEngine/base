@@ -39,10 +39,8 @@ public class WellKnownFieldParser implements FieldValueParser {
     public void parseFieldValue(String value, String output) {
         Descriptor fieldType = fieldDescriptor.getMessageType();
         TypeUrl typeUrl = TypeUrl.from(fieldType);
-        jsWriter.addLine("let type = " + KnownTypesJsGenerator.FILE_NAME + '.' +
-                                 KnownTypesJsGenerator.MAP_NAME + ".get('" + typeUrl + "');");
-        jsWriter.addLine("let parser = " + KnownTypeParsersGenerator.FILE_NAME + '.' +
-                                 KnownTypeParsersGenerator.MAP_NAME + ".get(type);");
+        jsWriter.addLine("let parser = " + KnownTypeParsersWriter.FILE_NAME + '.' +
+                                 KnownParserMapGenerator.MAP_NAME + ".get('" + typeUrl + "');");
         jsWriter.addLine("let " + output + " = parser.parse(" + value + ");");
     }
 }

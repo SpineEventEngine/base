@@ -20,11 +20,10 @@
 
 package io.spine.tools.fromjson.js;
 
-import com.google.common.base.Strings;
-
 import static java.lang.String.join;
 import static java.lang.System.lineSeparator;
 
+@SuppressWarnings("JavaDoc")
 public final class JsWriter {
 
     private static final String LINE_SEPARATOR = lineSeparator();
@@ -38,14 +37,27 @@ public final class JsWriter {
         this.currentDepth = 0;
     }
 
+    public JsWriter(int indent) {
+        this.generatedCode = new JsOutput(LINE_SEPARATOR, indent);
+        this.currentDepth = 0;
+    }
+
     public void addLine(String lineOfCode) {
         generatedCode.addLine(lineOfCode, currentDepth);
     }
 
-    public void addImportStatements(String importingFile, String... filesToImport) {
+    public void addImports(String importingFile, String... filesToImport) {
         JsImportWriter generator = JsImportWriter.createFor(importingFile);
         for (String fileToImport : filesToImport) {
             String importStatement = generator.importStatement(fileToImport);
+            addLine(importStatement);
+        }
+    }
+
+    public void addNamedImports(String importingFile, String... filesToImport) {
+        JsImportWriter generator = JsImportWriter.createFor(importingFile);
+        for (String fileToImport : filesToImport) {
+            String importStatement = generator.namedImportStatement(fileToImport);
             addLine(importStatement);
         }
     }

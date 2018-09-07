@@ -40,8 +40,9 @@ public class MessageFieldParser implements FieldValueParser {
         Descriptor fieldType = fieldDescriptor.getMessageType();
         TypeUrl typeUrl = TypeUrl.from(fieldType);
         // todo make some common robust methods for assigning variables in the generated code
-        jsWriter.addLine("let type = " + KnownTypesJsGenerator.FILE_NAME + '.' +
-                                 KnownTypesJsGenerator.MAP_NAME + ".get('" + typeUrl + "');");
-        jsWriter.addLine("let " + output + " = type.fromObject(" + value + ");");
+        String type = fieldType.getFullName();
+        String typeWithProtoPrefix = "proto." + type;
+        jsWriter.addLine("let " + output + " = " + typeWithProtoPrefix + ".fromObject(" + value +
+                                 ");");
     }
 }

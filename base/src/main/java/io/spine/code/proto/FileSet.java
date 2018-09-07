@@ -217,6 +217,11 @@ public final class FileSet {
         return fileNames;
     }
 
+    public Collection<FileDescriptor> getFileDescriptors() {
+        Collection<FileDescriptor> values = files.values();
+        return values;
+    }
+
     /**
      * Returns a string with alphabetically sorted list of files of this set.
      */

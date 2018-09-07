@@ -46,7 +46,7 @@ public class ProtoFromJsonPlugin extends SpinePlugin {
 
     private static void generateFromJsonForProto(Project project) {
         System.out.println("Applying Js Model Compiler");
-        ProtoFromJsonGenerator generator = ProtoFromJsonGenerator.createFor(project);
+        ProtoFromJsonWriter generator = ProtoFromJsonWriter.createFor(project);
         if (generator.hasMessagesToProcess()) {
             System.out.println("Js Model Compiler has messages to process");
             generator.createFromJsonForProtos();

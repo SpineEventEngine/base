@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
 
 class JsImportWriter {
 
-    private static final Pattern PARENT_DIR_PATH = Pattern.compile("../", Pattern.LITERAL);
+    private static final Pattern PARENT_OR_CURRENT_DIR = Pattern.compile("(\\.\\./|\\./)");
     private static final Pattern JS_EXTENSION = Pattern.compile(".js", Pattern.LITERAL);
     private final String importPrefix;
 
@@ -39,6 +39,12 @@ class JsImportWriter {
 
     String importStatement(String fileToImport) {
         String importPath = importPrefix + fileToImport;
+        String importStatement = "require('" + importPath + "');";
+        return importStatement;
+    }
+
+    String namedImportStatement(String fileToImport) {
+        String importPath = importPrefix + fileToImport;
         String importName = generateImportName(importPath);
         String importStatement = "let " + importName + " = require('" + importPath + "');";
         return importStatement;
@@ -51,13 +57,13 @@ class JsImportWriter {
         for (int i = 0; i < fileLocationDepth; i++) {
             pathToRoot.append("../");
         }
-        String result = pathToRoot.toString();
+        String result = pathToRoot.length() > 0 ? pathToRoot.toString() : "./";
         return result;
     }
 
     private static String generateImportName(String importPath) {
-        String pathRelativeToRoot = PARENT_DIR_PATH.matcher(importPath)
-                                                   .replaceAll("");
+        String pathRelativeToRoot = PARENT_OR_CURRENT_DIR.matcher(importPath)
+                                                         .replaceAll("");
         String pathWithoutExtension = JS_EXTENSION.matcher(pathRelativeToRoot)
                                                   .replaceAll("");
         String importName = pathWithoutExtension.replace('/', '_');

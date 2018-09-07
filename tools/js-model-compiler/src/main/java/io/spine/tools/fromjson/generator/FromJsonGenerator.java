@@ -50,6 +50,6 @@ class FromJsonGenerator {
     private void generateImports() {
         jsWriter.addEmptyLine();
         String fileName = fileDescriptor.getFullName();
-        jsWriter.addImportStatements(fileName, "known_types.js", "known_type_parsers.js");
+        jsWriter.addNamedImports(fileName, "known_types.js", "known_type_parsers.js");
     }
 }
