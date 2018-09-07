@@ -39,7 +39,7 @@ public class KnownTypeParsersWriter {
     public static final String FILE_NAME = "known_type_parsers";
     private static final String JS_FILE_NAME = FILE_NAME + ".js";
     private static final String JS_RESOURCE_PATH =
-            "io/spine/tools/fromjson/generator/" + JS_FILE_NAME;
+            "io/spine/tools/protojs/knowntypes/" + JS_FILE_NAME;
 
     private final Path filePath;
 
