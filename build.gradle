@@ -67,7 +67,7 @@ ext {
         // Gradle plugins
         'javadoc-filter',
         'javadoc-prettifier',
-        'js-model-compiler',
+        'proto-js-plugin',
         'plugin-base',
         'reflections-plugin',
         'model-compiler',

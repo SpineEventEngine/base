@@ -35,7 +35,6 @@ final def module = { final String name, final String path ->
 module 'errorprone-checks',   'tools/errorprone-checks'
 module 'javadoc-filter',      'tools/javadoc-filter'
 module 'javadoc-prettifier',  'tools/javadoc-prettifier'
-module 'js-model-compiler',   'tools/js-model-compiler'
 
 module 'model-compiler',      'tools/model-compiler'
 module 'plugin-base',         'tools/plugin-base'
@@ -44,3 +43,5 @@ module 'reflections-plugin',  'tools/reflections-plugin'
 module 'protoc-plugin',       'tools/protoc-plugin'
 
 module 'plugin-testlib' ,     'tools/plugin-testlib'
+
+module 'proto-js-plugin',     'tools/proto-js-plugin'
