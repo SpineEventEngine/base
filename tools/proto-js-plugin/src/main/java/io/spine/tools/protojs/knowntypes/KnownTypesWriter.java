@@ -27,8 +27,8 @@ import io.spine.tools.protojs.code.JsWriter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static io.spine.tools.protojs.file.JsFiles.KNOWN_TYPES;
-import static io.spine.tools.protojs.file.JsFiles.writeToFile;
+import static io.spine.tools.protojs.files.JsFiles.KNOWN_TYPES;
+import static io.spine.tools.protojs.files.JsFiles.writeToFile;
 
 public class KnownTypesWriter {
 

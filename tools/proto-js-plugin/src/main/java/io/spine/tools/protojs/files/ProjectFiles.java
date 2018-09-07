@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protojs.file;
+package io.spine.tools.protojs.files;
 
 import org.gradle.api.Project;
 

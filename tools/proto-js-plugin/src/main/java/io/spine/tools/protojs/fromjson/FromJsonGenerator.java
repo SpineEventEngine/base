@@ -26,7 +26,7 @@ import io.spine.tools.protojs.code.JsImportGenerator;
 import io.spine.tools.protojs.code.JsWriter;
 import io.spine.tools.protojs.message.MessageHandler;
 
-import static io.spine.tools.protojs.file.JsFiles.KNOWN_TYPE_PARSERS;
+import static io.spine.tools.protojs.files.JsFiles.KNOWN_TYPE_PARSERS;
 
 public class FromJsonGenerator {
 

@@ -29,8 +29,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static io.spine.tools.protojs.file.JsFiles.KNOWN_TYPE_PARSERS;
-import static io.spine.tools.protojs.file.JsFiles.appendToFile;
+import static io.spine.tools.protojs.files.JsFiles.KNOWN_TYPE_PARSERS;
+import static io.spine.tools.protojs.files.JsFiles.appendToFile;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 public class KnownTypeParsersWriter {

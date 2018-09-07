@@ -30,7 +30,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static io.spine.tools.protojs.file.JsFiles.appendToFile;
+import static io.spine.tools.protojs.files.JsFiles.appendToFile;
 
 public class FromJsonWriter {
 

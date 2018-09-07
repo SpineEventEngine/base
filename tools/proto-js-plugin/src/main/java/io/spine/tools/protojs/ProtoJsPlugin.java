@@ -31,10 +31,10 @@ import java.nio.file.Path;
 import static io.spine.tools.gradle.TaskName.ADD_FROM_JSON;
 import static io.spine.tools.gradle.TaskName.COMPILE_PROTO_TO_JS;
 import static io.spine.tools.gradle.TaskName.COPY_MODULE_SOURCES;
-import static io.spine.tools.protojs.file.ProjectFiles.mainDescriptorSetFile;
-import static io.spine.tools.protojs.file.ProjectFiles.mainProtoJsLocation;
-import static io.spine.tools.protojs.file.ProjectFiles.testDescriptorSetFile;
-import static io.spine.tools.protojs.file.ProjectFiles.testProtoJsLocation;
+import static io.spine.tools.protojs.files.ProjectFiles.mainDescriptorSetFile;
+import static io.spine.tools.protojs.files.ProjectFiles.mainProtoJsLocation;
+import static io.spine.tools.protojs.files.ProjectFiles.testDescriptorSetFile;
+import static io.spine.tools.protojs.files.ProjectFiles.testProtoJsLocation;
 
 public class ProtoJsPlugin extends SpinePlugin {
 

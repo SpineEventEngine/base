@@ -34,7 +34,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import static io.spine.tools.protojs.file.JsFiles.KNOWN_TYPES;
+import static io.spine.tools.protojs.files.JsFiles.KNOWN_TYPES;
 
 class KnownTypesGenerator {
 
