@@ -49,6 +49,12 @@ public class FromJsonWriter {
         }
     }
 
+    private Path composeFilePath(FileDescriptor fileDescriptor) {
+        String jsFileName = jsFileName(fileDescriptor);
+        Path filePath = Paths.get(protoJsLocation.toString(), jsFileName);
+        return filePath;
+    }
+
     private static void writeIntoFile(FileDescriptor fileDescriptor, Path jsFilePath) {
         if (!Files.exists(jsFilePath)) {
             return;
@@ -58,11 +64,5 @@ public class FromJsonWriter {
         generator.generateJs();
         JsOutput codeToWrite = jsWriter.getGeneratedCode();
         appendToFile(jsFilePath, codeToWrite);
-    }
-
-    private Path composeFilePath(FileDescriptor fileDescriptor) {
-        String jsFileName = jsFileName(fileDescriptor);
-        Path filePath = Paths.get(protoJsLocation.toString(), jsFileName);
-        return filePath;
     }
 }
