@@ -22,14 +22,17 @@ package io.spine.tools.protojs.code.primitive.parser;
 
 public class BytesParser extends AbstractPrimitiveParser {
 
+    private static final String BASE64_LIB = "base64-js";
+    private static final String BASE64_VAR = "base64";
+
     BytesParser(Builder builder) {
         super(builder);
     }
 
     @Override
     public void parseIntoVariable(String value, String output) {
-        jsWriter().addLine("let base64_js = require('base64-js');");
-        jsWriter().addLine("let " + output + " = base64_js.toByteArray(" + value + ");");
+        jsWriter().addLine("let " + BASE64_VAR + " = require('" + BASE64_LIB + "');");
+        jsWriter().addLine("let " + output + " = " + BASE64_VAR + ".toByteArray(" + value + ");");
     }
 
     public static Builder newBuilder() {
