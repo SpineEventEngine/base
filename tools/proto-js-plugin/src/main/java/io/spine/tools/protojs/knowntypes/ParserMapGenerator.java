@@ -69,11 +69,11 @@ public final class ParserMapGenerator {
     void generateJs() {
         jsGenerator.addEmptyLine();
         jsGenerator.exportMap(MAP_NAME);
-        storeKnownTypeParsers();
+        storeParsersToMap();
         jsGenerator.quitMapDeclaration();
     }
 
-    private void storeKnownTypeParsers() {
+    private void storeParsersToMap() {
         ImmutableSet<Entry<TypeUrl, String>> entries = parsers.entrySet();
         for (UnmodifiableIterator<Entry<TypeUrl, String>> it = entries.iterator(); it.hasNext(); ) {
             Entry<TypeUrl, String> typeToParser = it.next();

@@ -28,15 +28,12 @@ import io.spine.tools.protojs.field.parser.FieldValueParser;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.protojs.field.Fields.isMap;
 import static io.spine.tools.protojs.field.Fields.isRepeated;
+import static io.spine.tools.protojs.field.Fields.keyDescriptor;
+import static io.spine.tools.protojs.field.Fields.valueDescriptor;
 import static io.spine.tools.protojs.field.checker.FieldValueCheckers.checkerFor;
 import static io.spine.tools.protojs.field.parser.FieldValueParsers.parserFor;
 
 public final class FieldHandlers {
-
-    private static final String MAP_ENTRY_KEY = "key";
-
-    @SuppressWarnings("DuplicateStringLiteralInspection") // Random duplication.
-    private static final String MAP_ENTRY_VALUE = "value";
 
     private FieldHandlers() {
     }
@@ -113,17 +110,5 @@ public final class FieldHandlers {
         FieldDescriptor valueDescriptor = valueDescriptor(field);
         FieldValueChecker checker = checkerFor(valueDescriptor, jsGenerator);
         return checker;
-    }
-
-    private static FieldDescriptor keyDescriptor(FieldDescriptor field) {
-        FieldDescriptor descriptor = field.getMessageType()
-                                          .findFieldByName(MAP_ENTRY_KEY);
-        return descriptor;
-    }
-
-    private static FieldDescriptor valueDescriptor(FieldDescriptor field) {
-        FieldDescriptor descriptor = field.getMessageType()
-                                          .findFieldByName(MAP_ENTRY_VALUE);
-        return descriptor;
     }
 }

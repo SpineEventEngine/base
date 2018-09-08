@@ -33,7 +33,7 @@ public final class SingularFieldHandler extends AbstractFieldHandler {
     public void generateJs() {
         String jsObject = acquireJsObject();
         checkNotUndefined(jsObject);
-        setValue(jsObject);
+        setFieldValue(jsObject);
         exitUndefinedCheck();
     }
 

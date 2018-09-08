@@ -42,7 +42,7 @@ public final class MapFieldHandler extends AbstractFieldHandler {
         String jsObject = acquireJsObject();
         String value = iterateOwnAttributes(jsObject);
         parseMapKey();
-        setValue(value);
+        setFieldValue(value);
         exitOwnAttributeIteration();
     }
 

@@ -28,13 +28,16 @@ import io.spine.tools.protojs.knowntypes.ParserMapGenerator;
 import io.spine.type.TypeUrl;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Label.LABEL_REPEATED;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.MESSAGE;
 
+@SuppressWarnings("DuplicateStringLiteralInspection") // Duplication with unrelated modules.
 public final class Fields {
 
-    @SuppressWarnings("DuplicateStringLiteralInspection") // Duplication with unrelated module.
     private static final String ENTRY_SUFFIX = "Entry";
+    private static final String MAP_ENTRY_KEY = "key";
+    private static final String MAP_ENTRY_VALUE = "value";
 
     private Fields() {
     }
@@ -74,6 +77,20 @@ public final class Fields {
         boolean isMap = fieldType.getName()
                                  .equals(mapTypeName);
         return isMap;
+    }
+
+    public static FieldDescriptor keyDescriptor(FieldDescriptor field) {
+        checkState(isMap(field), "Trying to get key descriptor for the non-map field.");
+        FieldDescriptor descriptor = field.getMessageType()
+                                          .findFieldByName(MAP_ENTRY_KEY);
+        return descriptor;
+    }
+
+    public static FieldDescriptor valueDescriptor(FieldDescriptor field) {
+        checkState(isMap(field), "Trying to get value descriptor for the non-map field.");
+        FieldDescriptor descriptor = field.getMessageType()
+                                          .findFieldByName(MAP_ENTRY_VALUE);
+        return descriptor;
     }
 
     public static String capitalizedName(FieldDescriptor field) {

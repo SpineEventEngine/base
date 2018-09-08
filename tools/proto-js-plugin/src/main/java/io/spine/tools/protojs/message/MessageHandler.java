@@ -81,6 +81,7 @@ public final class MessageHandler {
     private void addFromObjectCode(String typeName, String functionName) {
         jsGenerator.enterFunction(functionName, FROM_OBJECT_ARG);
         checkParsedObject();
+        jsGenerator.addEmptyLine();
         jsGenerator.addLine("let " + MESSAGE + " = new " + typeName + "();");
         handleMessageFields();
         jsGenerator.returnValue(MESSAGE);

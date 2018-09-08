@@ -49,7 +49,6 @@ final class KnownTypesGenerator {
 
     void generateJs() {
         generateImports();
-        jsGenerator.addEmptyLine();
         generateKnownTypesMap();
     }
 
@@ -71,6 +70,7 @@ final class KnownTypesGenerator {
     }
 
     private void generateKnownTypesMap() {
+        jsGenerator.addEmptyLine();
         jsGenerator.exportMap(MAP_NAME);
         storeKnownTypes();
         jsGenerator.quitMapDeclaration();

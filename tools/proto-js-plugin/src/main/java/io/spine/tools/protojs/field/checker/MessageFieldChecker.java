@@ -40,7 +40,6 @@ final class MessageFieldChecker implements FieldValueChecker {
     public void performNullCheck(String fieldValue, String setterFormat) {
         checkNotNull(fieldValue);
         checkNotNull(setterFormat);
-
         if (isProtobufValueType()) {
             return;
         }

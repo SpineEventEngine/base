@@ -51,7 +51,7 @@ abstract class AbstractFieldHandler implements FieldHandler {
         return jsObject;
     }
 
-    void setValue(String value) {
+    void setFieldValue(String value) {
         checker.performNullCheck(value, setterFormat());
         parser.parseIntoVariable(value, FIELD_VALUE);
         callSetter(FIELD_VALUE);

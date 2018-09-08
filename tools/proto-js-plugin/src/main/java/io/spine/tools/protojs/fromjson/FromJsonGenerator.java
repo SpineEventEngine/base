@@ -49,6 +49,7 @@ public final class FromJsonGenerator {
     }
 
     private void generateComment() {
+        jsGenerator.addEmptyLine();
         jsGenerator.addComment(COMMENT);
     }
 

@@ -35,7 +35,7 @@ public final class RepeatedFieldHandler extends AbstractFieldHandler {
     public void generateJs() {
         String jsObject = acquireJsObject();
         String value = iterateListValues(jsObject);
-        setValue(value);
+        setFieldValue(value);
         exitListValueIteration();
     }
 
