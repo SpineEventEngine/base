@@ -47,12 +47,6 @@ public final class ProjectFiles {
         return location;
     }
 
-    private static Path protoJsLocation(Project project, String sourceSet) {
-        File projectDir = project.getProjectDir();
-        String absolutePath = projectDir.getAbsolutePath();
-        return Paths.get(absolutePath, "proto", sourceSet, "js");
-    }
-
     public static File mainDescriptorSetFile(Project project) {
         File file = descriptorSetFile(project, MAIN);
         return file;
@@ -61,6 +55,12 @@ public final class ProjectFiles {
     public static File testDescriptorSetFile(Project project) {
         File file = descriptorSetFile(project, TEST);
         return file;
+    }
+
+    private static Path protoJsLocation(Project project, String sourceSet) {
+        File projectDir = project.getProjectDir();
+        String absolutePath = projectDir.getAbsolutePath();
+        return Paths.get(absolutePath, "proto", sourceSet, "js");
     }
 
     private static File descriptorSetFile(Project project, String sourceSet) {
