@@ -99,8 +99,11 @@ public final class JsGenerator {
     }
 
     public void addMapEntry(String entry, boolean isLast) {
-        String lineToAdd = appendCommaIfNotLast(entry, isLast);
-        addLine(lineToAdd);
+        if (isLast) {
+            addLine(entry);
+        } else {
+            addLine(entry + ',');
+        }
     }
 
     public void quitMapDeclaration() {
@@ -110,12 +113,5 @@ public final class JsGenerator {
 
     public JsOutput getGeneratedCode() {
         return generatedCode;
-    }
-
-    private static String appendCommaIfNotLast(String entry, boolean isLast) {
-        if (!isLast) {
-            return entry + ',';
-        }
-        return entry;
     }
 }
