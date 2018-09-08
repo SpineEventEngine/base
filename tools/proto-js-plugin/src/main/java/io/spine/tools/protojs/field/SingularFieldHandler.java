@@ -46,7 +46,7 @@ public class SingularFieldHandler extends AbstractFieldHandler {
     }
 
     private void checkNotUndefined(String jsObject) {
-        jsGenerator().enterIfBlock(jsObject + " !== undefined");
+        jsGenerator().ifNotUndefined(jsObject);
     }
 
     private void exitUndefinedCheck() {

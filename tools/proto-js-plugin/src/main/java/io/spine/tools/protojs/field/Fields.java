@@ -23,7 +23,6 @@ package io.spine.tools.protojs.field;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import com.google.protobuf.Descriptors.FieldDescriptor.Type;
 import io.spine.code.proto.FieldName;
 import io.spine.tools.protojs.knowntypes.ParserMapGenerator;
 import io.spine.type.TypeUrl;
@@ -31,10 +30,10 @@ import io.spine.type.TypeUrl;
 import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Label.LABEL_REPEATED;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.MESSAGE;
 
+@SuppressWarnings("WeakerAccess") // Methods left public for consistency.
 public final class Fields {
 
-    @SuppressWarnings("DuplicateStringLiteralInspection")
-    // Introducing common constant is not reasonable.
+    @SuppressWarnings("DuplicateStringLiteralInspection") // Duplication with unrelated module.
     private static final String ENTRY_SUFFIX = "Entry";
 
     private Fields() {

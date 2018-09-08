@@ -39,12 +39,23 @@ public class JsImportGenerator {
 
     public String importStatement(String fileToImport) {
         String importPath = importPrefix + fileToImport;
-        String importStatement = "require('" + importPath + "');";
+        String importStatement = rawImport(importPath);
         return importStatement;
     }
 
     public String namedImport(String fileToImport, String importName) {
         String importPath = importPrefix + fileToImport;
+        String importStatement = rawNamedImport(importPath, importName);
+        return importStatement;
+    }
+
+    @SuppressWarnings("WeakerAccess") // Is left public for consistency.
+    public static String rawImport(String importPath) {
+        String importStatement = "require('" + importPath + "');";
+        return importStatement;
+    }
+
+    public static String rawNamedImport(String importPath, String importName) {
         String importStatement = "let " + importName + " = require('" + importPath + "');";
         return importStatement;
     }

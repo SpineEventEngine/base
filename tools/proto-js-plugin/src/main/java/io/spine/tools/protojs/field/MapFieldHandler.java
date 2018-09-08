@@ -60,7 +60,7 @@ public class MapFieldHandler extends AbstractFieldHandler {
     }
 
     private String iterateOwnAttributes(String jsObject) {
-        jsGenerator().enterIfBlock(jsObject + " !== undefined && " + jsObject + " !== null");
+        jsGenerator().ifNotNullOrUndefined(jsObject);
         jsGenerator().enterBlock("for (let " + ATTRIBUTE + " in " + jsObject + ')');
         jsGenerator().enterIfBlock(jsObject + ".hasOwnProperty(" + ATTRIBUTE + ')');
         String value = jsObject + '[' + ATTRIBUTE + ']';
@@ -81,7 +81,7 @@ public class MapFieldHandler extends AbstractFieldHandler {
 
         private FieldValueParser keyParser;
 
-        public Builder setKeyParser(FieldValueParser keyParser) {
+        Builder setKeyParser(FieldValueParser keyParser) {
             this.keyParser = keyParser;
             return self();
         }

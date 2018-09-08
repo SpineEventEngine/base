@@ -20,7 +20,6 @@
 
 package io.spine.tools.protojs.code;
 
-import static java.lang.String.format;
 import static java.lang.String.join;
 import static java.lang.System.lineSeparator;
 
@@ -46,6 +45,11 @@ public final class JsGenerator {
         generatedCode.addLine(lineOfCode, currentDepth);
     }
 
+    @SuppressWarnings("DuplicateStringLiteralInspection") // Duplication with unrelated module.
+    public void returnValue(String value) {
+        addLine("return " + value + ';');
+
+    }
     public void addEmptyLine() {
         addLine("");
     }
@@ -60,7 +64,6 @@ public final class JsGenerator {
 
     /**
      * @param functionName full function name including type name
-     * @param functionArgs
      */
     public void enterFunction(String functionName, String... functionArgs) {
         String argString = join(", ", functionArgs);
@@ -91,6 +94,22 @@ public final class JsGenerator {
     public void exitBlock() {
         currentDepth--;
         addLine("}");
+    }
+
+    public void ifNull(String value) {
+        enterIfBlock(value + " === null");
+    }
+
+    public void ifNotNull(String value) {
+        enterIfBlock(value + " !== null");
+    }
+
+    public void ifNotUndefined(String value) {
+        enterIfBlock(value + " !== undefined");
+    }
+
+    public void ifNotNullOrUndefined(String value) {
+        enterIfBlock(value + " !== undefined && " + value + " !== null");
     }
 
     public void exportMap(String mapName) {

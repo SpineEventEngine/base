@@ -30,6 +30,7 @@ import static java.lang.String.format;
 
 abstract class AbstractFieldHandler implements FieldHandler {
 
+    @SuppressWarnings("DuplicateStringLiteralInspection") // Duplication with unrelated module.
     private static final String FIELD_VALUE = "fieldValue";
 
     private final FieldDescriptor field;
@@ -80,22 +81,22 @@ abstract class AbstractFieldHandler implements FieldHandler {
         private FieldValueParser parser;
         private JsGenerator jsGenerator;
 
-        public B setField(FieldDescriptor field) {
+        B setField(FieldDescriptor field) {
             this.field = field;
             return self();
         }
 
-        public B setChecker(FieldValueChecker checker) {
+        B setChecker(FieldValueChecker checker) {
             this.checker = checker;
             return self();
         }
 
-        public B setParser(FieldValueParser parser) {
+        B setParser(FieldValueParser parser) {
             this.parser = parser;
             return self();
         }
 
-        public B setJsGenerator(JsGenerator jsGenerator) {
+        B setJsGenerator(JsGenerator jsGenerator) {
             this.jsGenerator = jsGenerator;
             return self();
         }

@@ -20,6 +20,8 @@
 
 package io.spine.tools.protojs.code.primitive.parser;
 
+import static io.spine.tools.protojs.code.JsImportGenerator.rawNamedImport;
+
 public class BytesParser extends AbstractPrimitiveParser {
 
     private static final String BASE64_LIB = "base64-js";
@@ -31,8 +33,10 @@ public class BytesParser extends AbstractPrimitiveParser {
 
     @Override
     public void parseIntoVariable(String value, String output) {
-        jsGenerator().addLine("let " + BASE64_VAR + " = require('" + BASE64_LIB + "');");
-        jsGenerator().addLine("let " + output + " = " + BASE64_VAR + ".toByteArray(" + value + ");");
+        String importStatement = rawNamedImport(BASE64_LIB, BASE64_VAR);
+        jsGenerator().addLine(importStatement);
+        String valueToByteArray = BASE64_VAR + ".toByteArray(" + value + ')';
+        jsGenerator().addLine("let " + output + " = " + valueToByteArray + ';');
     }
 
     public static Builder newBuilder() {

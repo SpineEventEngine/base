@@ -48,7 +48,7 @@ public class RepeatedFieldHandler extends AbstractFieldHandler {
     }
 
     private String iterateListValues(String jsObject) {
-        jsGenerator().enterIfBlock(jsObject + " !== undefined && " + jsObject + " !== null");
+        jsGenerator().ifNotNullOrUndefined(jsObject);
         jsGenerator().addLine(jsObject + ".forEach(");
         jsGenerator().increaseDepth();
         jsGenerator().enterBlock('(' + LIST_ITEM + ", index, array) =>");

@@ -22,17 +22,17 @@ package io.spine.tools.protojs.field.checker;
 
 import io.spine.tools.protojs.code.JsGenerator;
 
-public class PrimitiveFieldChecker implements FieldValueChecker {
+class PrimitiveFieldChecker implements FieldValueChecker {
 
     private final JsGenerator jsGenerator;
 
-    public PrimitiveFieldChecker(JsGenerator jsGenerator) {
+    PrimitiveFieldChecker(JsGenerator jsGenerator) {
         this.jsGenerator = jsGenerator;
     }
 
     @Override
     public void performNullCheck(String fieldValue, String setterFormat) {
-        jsGenerator.enterIfBlock(fieldValue + " !== null");
+        jsGenerator.ifNotNull(fieldValue);
     }
 
     @Override

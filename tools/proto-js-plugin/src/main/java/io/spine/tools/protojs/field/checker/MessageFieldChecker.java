@@ -24,12 +24,12 @@ import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Value;
 import io.spine.tools.protojs.code.JsGenerator;
 
-public class MessageFieldChecker implements FieldValueChecker {
+class MessageFieldChecker implements FieldValueChecker {
 
     private final FieldDescriptor field;
     private final JsGenerator jsGenerator;
 
-    public MessageFieldChecker(FieldDescriptor field, JsGenerator jsGenerator) {
+    MessageFieldChecker(FieldDescriptor field, JsGenerator jsGenerator) {
         this.field = field;
         this.jsGenerator = jsGenerator;
     }
@@ -39,7 +39,7 @@ public class MessageFieldChecker implements FieldValueChecker {
         if (isProtobufValueType()) {
             return;
         }
-        jsGenerator.enterIfBlock(fieldValue + " === null");
+        jsGenerator.ifNull(fieldValue);
         String setFieldToNull = String.format(setterFormat, "null");
         jsGenerator.addLine(setFieldToNull);
         jsGenerator.enterElseBlock();

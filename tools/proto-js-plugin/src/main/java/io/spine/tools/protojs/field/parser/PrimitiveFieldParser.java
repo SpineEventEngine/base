@@ -25,12 +25,12 @@ import io.spine.tools.protojs.code.JsGenerator;
 import io.spine.tools.protojs.code.primitive.parser.PrimitiveParser;
 import io.spine.tools.protojs.code.primitive.parser.PrimitiveParsers;
 
-public class PrimitiveFieldParser implements FieldValueParser {
+class PrimitiveFieldParser implements FieldValueParser {
 
     private final FieldDescriptor field;
     private final JsGenerator jsGenerator;
 
-    public PrimitiveFieldParser(FieldDescriptor field, JsGenerator jsGenerator) {
+    PrimitiveFieldParser(FieldDescriptor field, JsGenerator jsGenerator) {
         this.field = field;
         this.jsGenerator = jsGenerator;
     }

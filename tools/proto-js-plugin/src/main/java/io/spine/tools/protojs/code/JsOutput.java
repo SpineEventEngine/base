@@ -25,14 +25,17 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 // todo make all classes final and non-public where possible.
-// introduce packages.
+
+/**
+ * Meant to be read-only for all classes except {@link JsGenerator}.
+ */
 public final class JsOutput {
 
     private final List<LineOfCode> linesOfCode;
     private final String lineSeparator;
     private final int indent;
 
-    public JsOutput(String lineSeparator, int indent) {
+    JsOutput(String lineSeparator, int indent) {
         linesOfCode = new ArrayList<>();
         this.lineSeparator = lineSeparator;
         this.indent = indent;

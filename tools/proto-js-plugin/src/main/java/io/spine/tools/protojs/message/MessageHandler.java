@@ -34,6 +34,8 @@ import static io.spine.tools.protojs.types.Types.typeWithProtoPrefix;
 public final class MessageHandler {
 
     public static final String FROM_OBJECT_ARG = "obj";
+
+    @SuppressWarnings("DuplicateStringLiteralInspection") // Random duplication.
     public static final String MESSAGE = "message";
 
     private final Descriptor message;
@@ -66,7 +68,7 @@ public final class MessageHandler {
     private void addFromJsonCode(String typeName, String functionName) {
         jsGenerator.enterFunction(functionName, "json");
         jsGenerator.addLine("let jsonObject = JSON.parse(json);");
-        jsGenerator.addLine("return " + typeName + ".fromObject(jsonObject);");
+        jsGenerator.returnValue(typeName + ".fromObject(jsonObject)");
         jsGenerator.exitFunction();
     }
 
@@ -75,12 +77,12 @@ public final class MessageHandler {
         checkParsedObject();
         jsGenerator.addLine("let " + MESSAGE + " = new " + typeName + "();");
         handleMessageFields();
-        jsGenerator.addLine("return " + MESSAGE + ';');
+        jsGenerator.returnValue(MESSAGE);
         jsGenerator.exitFunction();
     }
 
     private void checkParsedObject() {
-        jsGenerator.enterIfBlock(FROM_OBJECT_ARG + "=== null");
+        jsGenerator.ifNull(FROM_OBJECT_ARG);
         jsGenerator.addLine("return null;");
         jsGenerator.exitBlock();
     }

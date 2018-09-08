@@ -28,9 +28,9 @@ import org.gradle.api.Task;
 import java.io.File;
 import java.nio.file.Path;
 
-import static io.spine.tools.gradle.TaskName.GENERATE_FROM_JSON;
 import static io.spine.tools.gradle.TaskName.COMPILE_PROTO_TO_JS;
 import static io.spine.tools.gradle.TaskName.COPY_MODULE_SOURCES;
+import static io.spine.tools.gradle.TaskName.GENERATE_FROM_JSON;
 import static io.spine.tools.protojs.ProtoFromJsonWriter.createFor;
 import static io.spine.tools.protojs.files.ProjectFiles.mainDescriptorSetFile;
 import static io.spine.tools.protojs.files.ProjectFiles.mainProtoJsLocation;
@@ -39,6 +39,8 @@ import static io.spine.tools.protojs.files.ProjectFiles.testProtoJsLocation;
 
 public class ProtoJsPlugin extends SpinePlugin {
 
+    @SuppressWarnings({"CheckReturnValue", "ResultOfMethodCallIgnored"})
+    // Method called to apply task.
     @Override
     public void apply(Project project) {
         Action<Task> task = newAction(project);
