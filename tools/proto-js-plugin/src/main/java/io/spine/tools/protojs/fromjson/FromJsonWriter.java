@@ -22,8 +22,8 @@ package io.spine.tools.protojs.fromjson;
 
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.proto.FileSet;
+import io.spine.tools.protojs.code.JsGenerator;
 import io.spine.tools.protojs.code.JsOutput;
-import io.spine.tools.protojs.code.JsWriter;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -42,27 +42,27 @@ public class FromJsonWriter {
         this.protoJsFiles = protoJsFiles;
     }
 
-    public void writeFromJsonIntoMessages() {
-        for (FileDescriptor fileDescriptor : protoJsFiles.files()) {
-            Path jsFilePath = composeFilePath(fileDescriptor);
-            writeIntoFile(fileDescriptor, jsFilePath);
+    public void writeIntoFiles() {
+        for (FileDescriptor file : protoJsFiles.files()) {
+            Path jsFilePath = composeFilePath(file);
+            writeIntoFile(file, jsFilePath);
         }
     }
 
-    private Path composeFilePath(FileDescriptor fileDescriptor) {
-        String jsFileName = jsFileName(fileDescriptor);
-        Path filePath = Paths.get(protoJsLocation.toString(), jsFileName);
-        return filePath;
+    private Path composeFilePath(FileDescriptor file) {
+        String jsFileName = jsFileName(file);
+        Path path = Paths.get(protoJsLocation.toString(), jsFileName);
+        return path;
     }
 
-    private static void writeIntoFile(FileDescriptor fileDescriptor, Path jsFilePath) {
-        if (!Files.exists(jsFilePath)) {
+    private static void writeIntoFile(FileDescriptor file, Path filePath) {
+        if (!Files.exists(filePath)) {
             return;
         }
-        JsWriter jsWriter = new JsWriter();
-        FromJsonGenerator generator = new FromJsonGenerator(fileDescriptor, jsWriter);
+        JsGenerator jsGenerator = new JsGenerator();
+        FromJsonGenerator generator = new FromJsonGenerator(file, jsGenerator);
         generator.generateJs();
-        JsOutput codeToWrite = jsWriter.getGeneratedCode();
-        appendToFile(jsFilePath, codeToWrite);
+        JsOutput generatedCode = jsGenerator.getGeneratedCode();
+        appendToFile(filePath, generatedCode);
     }
 }

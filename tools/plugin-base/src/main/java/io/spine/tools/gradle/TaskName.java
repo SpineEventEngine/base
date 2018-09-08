@@ -202,7 +202,7 @@ public enum TaskName {
      */
     MERGE_TEST_DESCRIPTOR_SET("mergeTestDescriptorSet"),
 
-    ADD_FROM_JSON("addFromJson"),
+    GENERATE_FROM_JSON("generateFromJson"),
 
     COMPILE_PROTO_TO_JS("compileProtoToJs"),
 

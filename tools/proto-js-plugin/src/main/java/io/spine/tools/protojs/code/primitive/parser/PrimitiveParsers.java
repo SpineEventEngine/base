@@ -24,7 +24,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.Type;
-import io.spine.tools.protojs.code.JsWriter;
+import io.spine.tools.protojs.code.JsGenerator;
 
 import java.util.Map;
 
@@ -54,32 +54,31 @@ public final class PrimitiveParsers {
     private PrimitiveParsers() {
     }
 
-    public static PrimitiveParser createFor(FieldDescriptor fieldDescriptor, JsWriter jsWriter) {
-        Type type = fieldDescriptor.getType();
+    public static PrimitiveParser createFor(FieldDescriptor field, JsGenerator jsGenerator) {
+        Type type = field.getType();
         if (type == ENUM) {
-            return enumParser(fieldDescriptor, jsWriter);
+            return enumParser(field, jsGenerator);
         }
-        return primitiveParser(type, jsWriter);
+        return primitiveParser(type, jsGenerator);
     }
 
-    private static PrimitiveParser enumParser(FieldDescriptor fieldDescriptor, JsWriter jsWriter) {
-        EnumDescriptor enumType = fieldDescriptor.getEnumType();
+    private static PrimitiveParser enumParser(FieldDescriptor field, JsGenerator jsGenerator) {
+        EnumDescriptor enumType = field.getEnumType();
         String typeName = typeWithProtoPrefix(enumType);
         PrimitiveParser parser = EnumParser
                 .newBuilder()
                 .setEnumType(typeName)
-                .setJsWriter(jsWriter)
+                .setJsWriter(jsGenerator)
                 .build();
         return parser;
     }
 
-    private static PrimitiveParser primitiveParser(Type type, JsWriter jsWriter) {
+    private static PrimitiveParser primitiveParser(Type type, JsGenerator jsGenerator) {
         PrimitiveParser.Builder parserBuilder = parsers.get(type);
-        boolean parserPresent = parsers.containsKey(type);
-        checkState(parserPresent,
+        checkState(parsers.containsKey(type),
                    "An attempt to get a parser for the unknown Primitive type: %s", type);
         PrimitiveParser parser = parserBuilder
-                .setJsWriter(jsWriter)
+                .setJsWriter(jsGenerator)
                 .build();
         return parser;
     }

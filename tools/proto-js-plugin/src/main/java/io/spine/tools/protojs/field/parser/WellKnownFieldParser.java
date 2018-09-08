@@ -22,7 +22,7 @@ package io.spine.tools.protojs.field.parser;
 
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.tools.protojs.code.JsWriter;
+import io.spine.tools.protojs.code.JsGenerator;
 import io.spine.tools.protojs.knowntypes.ParserMapGenerator;
 import io.spine.type.TypeUrl;
 
@@ -30,20 +30,20 @@ import static io.spine.tools.protojs.fromjson.FromJsonGenerator.PARSERS_IMPORT_N
 
 public class WellKnownFieldParser implements FieldValueParser {
 
-    private final FieldDescriptor fieldDescriptor;
-    private final JsWriter jsWriter;
+    private final FieldDescriptor field;
+    private final JsGenerator jsGenerator;
 
-    WellKnownFieldParser(FieldDescriptor fieldDescriptor, JsWriter jsWriter) {
-        this.fieldDescriptor = fieldDescriptor;
-        this.jsWriter = jsWriter;
+    WellKnownFieldParser(FieldDescriptor field, JsGenerator jsGenerator) {
+        this.field = field;
+        this.jsGenerator = jsGenerator;
     }
 
     @Override
     public void parseIntoVariable(String value, String variable) {
-        Descriptor fieldType = fieldDescriptor.getMessageType();
+        Descriptor fieldType = field.getMessageType();
         TypeUrl typeUrl = TypeUrl.from(fieldType);
         String parserMap = PARSERS_IMPORT_NAME + '.' + ParserMapGenerator.MAP_NAME;
-        jsWriter.addLine("let parser = " + parserMap + ".get('" + typeUrl + "');");
-        jsWriter.addLine("let " + variable + " = parser.parse(" + value + ");");
+        jsGenerator.addLine("let parser = " + parserMap + ".get('" + typeUrl + "');");
+        jsGenerator.addLine("let " + variable + " = parser.parse(" + value + ");");
     }
 }

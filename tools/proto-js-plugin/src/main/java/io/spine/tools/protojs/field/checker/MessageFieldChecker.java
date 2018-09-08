@@ -22,16 +22,16 @@ package io.spine.tools.protojs.field.checker;
 
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Value;
-import io.spine.tools.protojs.code.JsWriter;
+import io.spine.tools.protojs.code.JsGenerator;
 
 public class MessageFieldChecker implements FieldValueChecker {
 
-    private final FieldDescriptor fieldDescriptor;
-    private final JsWriter jsWriter;
+    private final FieldDescriptor field;
+    private final JsGenerator jsGenerator;
 
-    public MessageFieldChecker(FieldDescriptor fieldDescriptor, JsWriter jsWriter) {
-        this.fieldDescriptor = fieldDescriptor;
-        this.jsWriter = jsWriter;
+    public MessageFieldChecker(FieldDescriptor field, JsGenerator jsGenerator) {
+        this.field = field;
+        this.jsGenerator = jsGenerator;
     }
 
     @Override
@@ -39,24 +39,24 @@ public class MessageFieldChecker implements FieldValueChecker {
         if (isProtobufValueType()) {
             return;
         }
-        jsWriter.enterIfBlock(fieldValue + " === null");
+        jsGenerator.enterIfBlock(fieldValue + " === null");
         String setFieldToNull = String.format(setterFormat, "null");
-        jsWriter.addLine(setFieldToNull);
-        jsWriter.enterElseBlock();
+        jsGenerator.addLine(setFieldToNull);
+        jsGenerator.enterElseBlock();
     }
 
     @Override
     public void exitNullCheck() {
         if (!isProtobufValueType()) {
-            jsWriter.exitBlock();
+            jsGenerator.exitBlock();
         }
     }
 
     private boolean isProtobufValueType() {
         String valueType = Value.getDescriptor()
                                 .getFullName();
-        String fieldType = fieldDescriptor.getMessageType()
-                                          .getFullName();
+        String fieldType = field.getMessageType()
+                                .getFullName();
         boolean isValueType = fieldType.equals(valueType);
         return isValueType;
     }

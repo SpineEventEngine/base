@@ -21,7 +21,7 @@
 package io.spine.tools.protojs.field.checker;
 
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.tools.protojs.code.JsWriter;
+import io.spine.tools.protojs.code.JsGenerator;
 
 import static io.spine.tools.protojs.field.Fields.isMessage;
 
@@ -30,10 +30,10 @@ public final class FieldValueCheckers {
     private FieldValueCheckers() {
     }
 
-    public static FieldValueChecker checkerFor(FieldDescriptor fieldDescriptor, JsWriter jsWriter) {
-        if (isMessage(fieldDescriptor)) {
-            return new MessageFieldChecker(fieldDescriptor, jsWriter);
+    public static FieldValueChecker checkerFor(FieldDescriptor field, JsGenerator jsGenerator) {
+        if (isMessage(field)) {
+            return new MessageFieldChecker(field, jsGenerator);
         }
-        return new PrimitiveFieldChecker(jsWriter);
+        return new PrimitiveFieldChecker(jsGenerator);
     }
 }

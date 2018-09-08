@@ -21,7 +21,7 @@
 package io.spine.tools.protojs.field;
 
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.tools.protojs.code.JsWriter;
+import io.spine.tools.protojs.code.JsGenerator;
 import io.spine.tools.protojs.field.checker.FieldValueChecker;
 import io.spine.tools.protojs.field.parser.FieldValueParser;
 
@@ -32,11 +32,11 @@ public class RepeatedFieldHandler extends AbstractFieldHandler {
 
     private static final String LIST_ITEM = "listItem";
 
-    RepeatedFieldHandler(FieldDescriptor fieldDescriptor,
-                         FieldValueChecker fieldValueChecker,
-                         FieldValueParser fieldValueParser,
-                         JsWriter jsWriter) {
-        super(fieldDescriptor, fieldValueChecker, fieldValueParser, jsWriter);
+    RepeatedFieldHandler(FieldDescriptor field,
+                         FieldValueChecker checker,
+                         FieldValueParser parser,
+                         JsGenerator jsGenerator) {
+        super(field, checker, parser, jsGenerator);
     }
 
     @Override
@@ -49,7 +49,7 @@ public class RepeatedFieldHandler extends AbstractFieldHandler {
 
     @Override
     String setterFormat() {
-        String fieldName = capitalizedName(fieldDescriptor());
+        String fieldName = capitalizedName(field());
         String addFunctionName = "add" + fieldName;
         String addToListFormat = MESSAGE + '.' + addFunctionName + "(%s);";
         return addToListFormat;

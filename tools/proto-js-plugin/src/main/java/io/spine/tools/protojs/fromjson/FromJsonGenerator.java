@@ -22,8 +22,8 @@ package io.spine.tools.protojs.fromjson;
 
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
+import io.spine.tools.protojs.code.JsGenerator;
 import io.spine.tools.protojs.code.JsImportGenerator;
-import io.spine.tools.protojs.code.JsWriter;
 import io.spine.tools.protojs.message.MessageHandler;
 
 import static io.spine.tools.protojs.files.JsFiles.KNOWN_TYPE_PARSERS;
@@ -32,21 +32,18 @@ public class FromJsonGenerator {
 
     public static final String PARSERS_IMPORT_NAME = "known_type_parsers";
 
-    private final FileDescriptor fileDescriptor;
-    private final JsWriter jsWriter;
+    private final FileDescriptor file;
+    private final JsGenerator jsGenerator;
 
-    FromJsonGenerator(FileDescriptor fileDescriptor, JsWriter jsWriter) {
-        this.fileDescriptor = fileDescriptor;
-        this.jsWriter = jsWriter;
+    FromJsonGenerator(FileDescriptor file, JsGenerator jsGenerator) {
+        this.file = file;
+        this.jsGenerator = jsGenerator;
     }
 
     void generateJs() {
         generateComment();
         generateImports();
-        for (Descriptor messageDescriptor : fileDescriptor.getMessageTypes()) {
-            MessageHandler handler = new MessageHandler(messageDescriptor, jsWriter);
-            handler.generateJs();
-        }
+        generateMethods();
     }
 
     private void generateComment() {
@@ -54,10 +51,17 @@ public class FromJsonGenerator {
     }
 
     private void generateImports() {
-        jsWriter.addEmptyLine();
-        String fileName = fileDescriptor.getFullName();
+        jsGenerator.addEmptyLine();
+        String fileName = file.getFullName();
         JsImportGenerator generator = JsImportGenerator.createFor(fileName);
-        String parsersImport = generator.createNamedImport(KNOWN_TYPE_PARSERS, PARSERS_IMPORT_NAME);
-        jsWriter.addLine(parsersImport);
+        String parsersImport = generator.namedImport(KNOWN_TYPE_PARSERS, PARSERS_IMPORT_NAME);
+        jsGenerator.addLine(parsersImport);
+    }
+
+    private void generateMethods() {
+        for (Descriptor message : file.getMessageTypes()) {
+            MessageHandler handler = new MessageHandler(message, jsGenerator);
+            handler.generateJs();
+        }
     }
 }

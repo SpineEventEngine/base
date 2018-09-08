@@ -21,7 +21,7 @@
 package io.spine.tools.protojs.field;
 
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.tools.protojs.code.JsWriter;
+import io.spine.tools.protojs.code.JsGenerator;
 import io.spine.tools.protojs.field.checker.FieldValueChecker;
 import io.spine.tools.protojs.field.parser.FieldValueParser;
 
@@ -36,12 +36,12 @@ public class MapFieldHandler extends AbstractFieldHandler {
     private final FieldValueParser keyParser;
 
     // todo create builder for ctors with arg count > 3.
-    MapFieldHandler(FieldDescriptor fieldDescriptor,
-                    FieldValueChecker fieldValueChecker,
+    MapFieldHandler(FieldDescriptor field,
+                    FieldValueChecker valueChecker,
                     FieldValueParser keyParser,
                     FieldValueParser valueParser,
-                    JsWriter jsWriter) {
-        super(fieldDescriptor, fieldValueChecker, valueParser, jsWriter);
+                    JsGenerator jsGenerator) {
+        super(field, valueChecker, valueParser, jsGenerator);
         this.keyParser = keyParser;
     }
 
@@ -58,7 +58,7 @@ public class MapFieldHandler extends AbstractFieldHandler {
 
     @Override
     String setterFormat() {
-        String fieldName = capitalizedName(fieldDescriptor());
+        String fieldName = capitalizedName(field());
         String getMapCall = "get" + fieldName + "Map()";
         String setMapValueCall = "set(" + MAP_KEY + ", %s)";
         String addToMapFormat = MESSAGE + '.' + getMapCall + '.' + setMapValueCall + ';';
@@ -73,8 +73,8 @@ public class MapFieldHandler extends AbstractFieldHandler {
         jsWriter().enterIfBlock(jsObject + " !== undefined && " + jsObject + " !== null");
         jsWriter().enterBlock("for (let " + ATTRIBUTE + " in " + jsObject + ')');
         jsWriter().enterIfBlock(jsObject + ".hasOwnProperty(" + ATTRIBUTE + ')');
-        String fieldValue = jsObject + '[' + ATTRIBUTE + ']';
-        return fieldValue;
+        String value = jsObject + '[' + ATTRIBUTE + ']';
+        return value;
     }
 
     private void exitOwnAttributeIteration() {

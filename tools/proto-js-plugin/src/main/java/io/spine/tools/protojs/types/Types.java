@@ -30,14 +30,14 @@ public final class Types {
     private Types() {
     }
 
-    public static String typeWithProtoPrefix(Descriptor descriptor) {
-        String typeName = descriptor.getFullName();
+    public static String typeWithProtoPrefix(Descriptor message) {
+        String typeName = message.getFullName();
         String nameWithPrefix = PREFIX + typeName;
         return nameWithPrefix;
     }
 
-    public static String typeWithProtoPrefix(EnumDescriptor descriptor) {
-        String typeName = descriptor.getFullName();
+    public static String typeWithProtoPrefix(EnumDescriptor enumDescriptor) {
+        String typeName = enumDescriptor.getFullName();
         String nameWithPrefix = PREFIX + typeName;
         return nameWithPrefix;
     }

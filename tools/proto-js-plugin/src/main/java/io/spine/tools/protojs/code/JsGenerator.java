@@ -23,7 +23,7 @@ package io.spine.tools.protojs.code;
 import static java.lang.String.join;
 import static java.lang.System.lineSeparator;
 
-public final class JsWriter {
+public final class JsGenerator {
 
     private static final String LINE_SEPARATOR = lineSeparator();
     private static final int STANDARD_INDENT = 2;
@@ -31,12 +31,12 @@ public final class JsWriter {
     private final JsOutput generatedCode;
     private int currentDepth;
 
-    public JsWriter() {
+    public JsGenerator() {
         this.generatedCode = new JsOutput(LINE_SEPARATOR, STANDARD_INDENT);
         this.currentDepth = 0;
     }
 
-    public JsWriter(int indent) {
+    public JsGenerator(int indent) {
         this.generatedCode = new JsOutput(LINE_SEPARATOR, indent);
         this.currentDepth = 0;
     }

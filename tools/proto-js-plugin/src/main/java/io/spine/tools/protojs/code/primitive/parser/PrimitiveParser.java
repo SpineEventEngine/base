@@ -20,7 +20,7 @@
 
 package io.spine.tools.protojs.code.primitive.parser;
 
-import io.spine.tools.protojs.code.JsWriter;
+import io.spine.tools.protojs.code.JsGenerator;
 
 public interface PrimitiveParser {
 
@@ -28,7 +28,7 @@ public interface PrimitiveParser {
 
     interface Builder {
 
-        Builder setJsWriter(JsWriter jsWriter);
+        Builder setJsWriter(JsGenerator jsGenerator);
 
         PrimitiveParser build();
     }

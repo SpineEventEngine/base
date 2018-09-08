@@ -21,7 +21,7 @@
 package io.spine.tools.protojs.field.parser;
 
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.tools.protojs.code.JsWriter;
+import io.spine.tools.protojs.code.JsGenerator;
 
 import static io.spine.tools.protojs.field.Fields.isMessage;
 import static io.spine.tools.protojs.field.Fields.isWellKnownType;
@@ -31,12 +31,12 @@ public final class FieldValueParsers {
     private FieldValueParsers() {
     }
 
-    public static FieldValueParser parserFor(FieldDescriptor fieldDescriptor, JsWriter jsWriter) {
-        if (isMessage(fieldDescriptor)) {
-            return isWellKnownType(fieldDescriptor)
-                    ? new WellKnownFieldParser(fieldDescriptor, jsWriter)
-                    : new MessageFieldParser(fieldDescriptor, jsWriter);
+    public static FieldValueParser parserFor(FieldDescriptor field, JsGenerator jsGenerator) {
+        if (isMessage(field)) {
+            return isWellKnownType(field)
+                    ? new WellKnownFieldParser(field, jsGenerator)
+                    : new MessageFieldParser(field, jsGenerator);
         }
-        return new PrimitiveFieldParser(fieldDescriptor, jsWriter);
+        return new PrimitiveFieldParser(field, jsGenerator);
     }
 }

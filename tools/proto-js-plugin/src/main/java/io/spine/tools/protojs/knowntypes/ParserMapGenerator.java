@@ -38,7 +38,7 @@ import com.google.protobuf.Timestamp;
 import com.google.protobuf.UInt32Value;
 import com.google.protobuf.UInt64Value;
 import com.google.protobuf.Value;
-import io.spine.tools.protojs.code.JsWriter;
+import io.spine.tools.protojs.code.JsGenerator;
 import io.spine.type.TypeUrl;
 
 import java.util.Map.Entry;
@@ -53,10 +53,10 @@ public class ParserMapGenerator {
 
     private static final ImmutableMap<TypeUrl, String> parsers = parsers();
 
-    private final JsWriter jsWriter;
+    private final JsGenerator jsGenerator;
 
-    ParserMapGenerator(JsWriter jsWriter) {
-        this.jsWriter = jsWriter;
+    ParserMapGenerator(JsGenerator jsGenerator) {
+        this.jsGenerator = jsGenerator;
     }
 
     public static boolean hasParser(TypeUrl typeUrl) {
@@ -64,43 +64,43 @@ public class ParserMapGenerator {
         return hasParser;
     }
 
-    void generateParserMap() {
-        jsWriter.addLine("export const " + MAP_NAME + " = new Map([");
-        jsWriter.increaseDepth();
+    void generateJs() {
+        jsGenerator.addEmptyLine();
+        jsGenerator.addLine("export const " + MAP_NAME + " = new Map([");
+        jsGenerator.increaseDepth();
         storeKnownTypeParsers();
-        jsWriter.decreaseDepth();
-        jsWriter.addLine("]);");
+        jsGenerator.decreaseDepth();
+        jsGenerator.addLine("]);");
     }
 
     private void storeKnownTypeParsers() {
         ImmutableSet<Entry<TypeUrl, String>> entries = parsers.entrySet();
         for (UnmodifiableIterator<Entry<TypeUrl, String>> it = entries.iterator(); it.hasNext(); ) {
             Entry<TypeUrl, String> entry = it.next();
-            boolean hasNext = it.hasNext();
-            addMapEntry(entry, hasNext);
+            boolean isLastEntry = !it.hasNext();
+            addMapEntry(entry, isLastEntry);
         }
     }
 
-    private void addMapEntry(Entry<TypeUrl, String> entry, boolean hasNext) {
+    private void addMapEntry(Entry<TypeUrl, String> entry, boolean isLastEntry) {
         String jsMapEntry = jsMapEntry(entry);
-        String entryToAdd = appendCommaIfNeeded(jsMapEntry, hasNext);
-        jsWriter.addLine(entryToAdd);
+        String entryToAdd = appendCommaIfNecessary(jsMapEntry, isLastEntry);
+        jsGenerator.addLine(entryToAdd);
     }
 
     private static String jsMapEntry(Entry<TypeUrl, String> entry) {
         TypeUrl typeUrl = entry.getKey();
         String parserName = entry.getValue();
-        String newParserInstance = "new " + parserName + "()";
-        String mapEntry = "['" + typeUrl + "', " + newParserInstance + ']';
+        String newParserCall = "new " + parserName + "()";
+        String mapEntry = "['" + typeUrl + "', " + newParserCall + ']';
         return mapEntry;
     }
 
-    private static String appendCommaIfNeeded(String jsMapEntry, boolean hasNext) {
-        StringBuilder mapEntryBuilder = new StringBuilder(jsMapEntry);
-        if (hasNext) {
-            mapEntryBuilder.append(',');
+    private static String appendCommaIfNecessary(String mapEntry, boolean isLast) {
+        if (!isLast) {
+            return mapEntry + ',';
         }
-        return mapEntryBuilder.toString();
+        return mapEntry;
     }
 
     @SuppressWarnings("OverlyCoupledMethod") // Dependencies for listed known types.

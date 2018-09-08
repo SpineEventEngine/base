@@ -21,7 +21,7 @@
 package io.spine.tools.protojs.knowntypes;
 
 import io.spine.tools.protojs.code.JsOutput;
-import io.spine.tools.protojs.code.JsWriter;
+import io.spine.tools.protojs.code.JsGenerator;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,7 +35,7 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 public class KnownTypeParsersWriter {
 
-    private static final String PARSERS_RESOURCE =
+    private static final String PARSERS_CODE =
             "io/spine/tools/protojs/knowntypes/" + KNOWN_TYPE_PARSERS;
 
     private final Path filePath;
@@ -57,7 +57,7 @@ public class KnownTypeParsersWriter {
     private void writeParsersCode() {
         try (InputStream in = KnownTypeParsersWriter.class
                 .getClassLoader()
-                .getResourceAsStream(PARSERS_RESOURCE)) {
+                .getResourceAsStream(PARSERS_CODE)) {
             Files.copy(in, filePath, REPLACE_EXISTING);
         } catch (IOException e) {
             throw new IllegalStateException(e);
@@ -67,16 +67,15 @@ public class KnownTypeParsersWriter {
     // todo address "generate", "write", etc. naming
     private void writeParserMap() {
         int indent = 4;
-        JsWriter jsWriter = new JsWriter(indent);
-        jsWriter.addEmptyLine();
-        ParserMapGenerator generator = new ParserMapGenerator(jsWriter);
-        generator.generateParserMap();
-        JsOutput generatedCode = jsWriter.getGeneratedCode();
+        JsGenerator jsGenerator = new JsGenerator(indent);
+        ParserMapGenerator generator = new ParserMapGenerator(jsGenerator);
+        generator.generateJs();
+        JsOutput generatedCode = jsGenerator.getGeneratedCode();
         appendToFile(filePath, generatedCode);
     }
 
     private static Path composeFilePath(Path protoJsLocation) {
-        Path filePath = Paths.get(protoJsLocation.toString(), KNOWN_TYPE_PARSERS);
-        return filePath;
+        Path path = Paths.get(protoJsLocation.toString(), KNOWN_TYPE_PARSERS);
+        return path;
     }
 }

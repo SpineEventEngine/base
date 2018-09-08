@@ -61,8 +61,8 @@ public final class JsFiles {
         }
     }
 
-    public static String jsFileName(FileDescriptor fileDescriptor) {
-        FileName fileName = FileName.from(fileDescriptor);
+    public static String jsFileName(FileDescriptor file) {
+        FileName fileName = FileName.from(file);
         String nameWithoutExtension = fileName.nameWithoutExtension();
         String jsFileName = nameWithoutExtension + JS_PROTO_SUFFIX;
         return jsFileName;

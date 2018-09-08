@@ -43,15 +43,6 @@ class ProtoFromJsonWriter {
         return new ProtoFromJsonWriter(protoJsLocation, protoJsFiles);
     }
 
-    private static FileSet collectProtoJsFiles(File descriptorSetFile) {
-        if (descriptorSetFile.exists()) {
-            FileSet fileSet = FileSet.parse(descriptorSetFile);
-            return fileSet;
-        }
-        FileSet emptySet = FileSet.newInstance();
-        return emptySet;
-    }
-
     boolean hasFilesToProcess() {
         boolean hasFilesToProcess = !protoJsFiles.isEmpty();
         return hasFilesToProcess;
@@ -77,6 +68,15 @@ class ProtoFromJsonWriter {
     // todo fix all warnings.
     private void writeFromJsonMethod() {
         FromJsonWriter writer = new FromJsonWriter(protoJsLocation, protoJsFiles);
-        writer.writeFromJsonIntoMessages();
+        writer.writeIntoFiles();
+    }
+
+    private static FileSet collectProtoJsFiles(File descriptorSetFile) {
+        if (descriptorSetFile.exists()) {
+            FileSet fileSet = FileSet.parse(descriptorSetFile);
+            return fileSet;
+        }
+        FileSet emptySet = FileSet.newInstance();
+        return emptySet;
     }
 }

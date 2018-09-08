@@ -21,7 +21,7 @@
 package io.spine.tools.protojs.field;
 
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.tools.protojs.code.JsWriter;
+import io.spine.tools.protojs.code.JsGenerator;
 import io.spine.tools.protojs.field.checker.FieldValueChecker;
 import io.spine.tools.protojs.field.parser.FieldValueParser;
 
@@ -32,46 +32,46 @@ abstract class AbstractFieldHandler implements FieldHandler {
 
     private static final String FIELD_VALUE = "fieldValue";
 
-    private final FieldDescriptor fieldDescriptor;
-    private final FieldValueChecker fieldValueChecker;
-    private final FieldValueParser fieldValueParser;
-    private final JsWriter jsWriter;
+    private final FieldDescriptor field;
+    private final FieldValueChecker checker;
+    private final FieldValueParser parser;
+    private final JsGenerator jsGenerator;
 
-    AbstractFieldHandler(FieldDescriptor fieldDescriptor,
-                         FieldValueChecker fieldValueChecker,
-                         FieldValueParser fieldValueParser,
-                         JsWriter jsWriter) {
-        this.fieldDescriptor = fieldDescriptor;
-        this.fieldValueChecker = fieldValueChecker;
-        this.fieldValueParser = fieldValueParser;
-        this.jsWriter = jsWriter;
+    AbstractFieldHandler(FieldDescriptor field,
+                         FieldValueChecker checker,
+                         FieldValueParser parser,
+                         JsGenerator jsGenerator) {
+        this.field = field;
+        this.checker = checker;
+        this.parser = parser;
+        this.jsGenerator = jsGenerator;
     }
 
     String acquireJsObject() {
-        String fieldJsonName = fieldDescriptor.getJsonName();
+        String fieldJsonName = field.getJsonName();
         String jsObject = FROM_OBJECT_ARG + '.' + fieldJsonName;
         return jsObject;
     }
 
     void setValue(String value) {
-        fieldValueChecker.performNullCheck(value, setterFormat());
-        fieldValueParser.parseIntoVariable(value, FIELD_VALUE);
+        checker.performNullCheck(value, setterFormat());
+        parser.parseIntoVariable(value, FIELD_VALUE);
         callSetter(FIELD_VALUE);
-        fieldValueChecker.exitNullCheck();
+        checker.exitNullCheck();
     }
 
-    FieldDescriptor fieldDescriptor() {
-        return fieldDescriptor;
+    FieldDescriptor field() {
+        return field;
     }
 
-    JsWriter jsWriter() {
-        return jsWriter;
+    JsGenerator jsWriter() {
+        return jsGenerator;
     }
 
     private void callSetter(String value) {
         String setterFormat = setterFormat();
         String setValue = format(setterFormat, value);
-        jsWriter.addLine(setValue);
+        jsGenerator.addLine(setValue);
     }
 
     abstract String setterFormat();

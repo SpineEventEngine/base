@@ -28,7 +28,7 @@ import org.gradle.api.Task;
 import java.io.File;
 import java.nio.file.Path;
 
-import static io.spine.tools.gradle.TaskName.ADD_FROM_JSON;
+import static io.spine.tools.gradle.TaskName.GENERATE_FROM_JSON;
 import static io.spine.tools.gradle.TaskName.COMPILE_PROTO_TO_JS;
 import static io.spine.tools.gradle.TaskName.COPY_MODULE_SOURCES;
 import static io.spine.tools.protojs.ProtoFromJsonWriter.createFor;
@@ -42,7 +42,7 @@ public class ProtoJsPlugin extends SpinePlugin {
     @Override
     public void apply(Project project) {
         Action<Task> task = newAction(project);
-        newTask(ADD_FROM_JSON, task)
+        newTask(GENERATE_FROM_JSON, task)
                 .insertAfterTask(COMPILE_PROTO_TO_JS)
                 .insertBeforeTask(COPY_MODULE_SOURCES)
                 .applyNowTo(project);
@@ -53,23 +53,23 @@ public class ProtoJsPlugin extends SpinePlugin {
     }
 
     private static void generateFromJsonForProto(Project project) {
-        generateForMain(project);
-        generateForTest(project);
+        fromJsonForMain(project);
+        fromJsonForTest(project);
     }
 
-    private static void generateForMain(Project project) {
+    private static void fromJsonForMain(Project project) {
         Path protoJsLocation = mainProtoJsLocation(project);
         File descriptorSetFile = mainDescriptorSetFile(project);
-        generateFor(protoJsLocation, descriptorSetFile);
+        fromJsonFor(protoJsLocation, descriptorSetFile);
     }
 
-    private static void generateForTest(Project project) {
+    private static void fromJsonForTest(Project project) {
         Path protoJsLocation = testProtoJsLocation(project);
         File descriptorSetFile = testDescriptorSetFile(project);
-        generateFor(protoJsLocation, descriptorSetFile);
+        fromJsonFor(protoJsLocation, descriptorSetFile);
     }
 
-    private static void generateFor(Path protoJsLocation, File descriptorSetFile) {
+    private static void fromJsonFor(Path protoJsLocation, File descriptorSetFile) {
         ProtoFromJsonWriter writer = createFor(protoJsLocation, descriptorSetFile);
         if (writer.hasFilesToProcess()) {
             writer.writeFromJsonForProtos();

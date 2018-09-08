@@ -21,7 +21,7 @@
 package io.spine.tools.protojs.field;
 
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.tools.protojs.code.JsWriter;
+import io.spine.tools.protojs.code.JsGenerator;
 import io.spine.tools.protojs.field.checker.FieldValueChecker;
 import io.spine.tools.protojs.field.parser.FieldValueParser;
 
@@ -30,11 +30,11 @@ import static io.spine.tools.protojs.message.MessageHandler.MESSAGE;
 
 public class SingularFieldHandler extends AbstractFieldHandler {
 
-    SingularFieldHandler(FieldDescriptor fieldDescriptor,
+    SingularFieldHandler(FieldDescriptor field,
                          FieldValueChecker fieldValueChecker,
                          FieldValueParser fieldValueParser,
-                         JsWriter jsWriter) {
-        super(fieldDescriptor, fieldValueChecker, fieldValueParser, jsWriter);
+                         JsGenerator jsGenerator) {
+        super(field, fieldValueChecker, fieldValueParser, jsGenerator);
     }
 
     @Override
@@ -47,7 +47,7 @@ public class SingularFieldHandler extends AbstractFieldHandler {
 
     @Override
     String setterFormat() {
-        String fieldName = capitalizedName(fieldDescriptor());
+        String fieldName = capitalizedName(field());
         String setterName = "set" + fieldName;
         String setFieldFormat = MESSAGE + '.' + setterName + "(%s);";
         return setFieldFormat;

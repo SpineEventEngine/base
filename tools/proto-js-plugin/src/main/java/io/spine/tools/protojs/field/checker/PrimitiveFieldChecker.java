@@ -20,23 +20,23 @@
 
 package io.spine.tools.protojs.field.checker;
 
-import io.spine.tools.protojs.code.JsWriter;
+import io.spine.tools.protojs.code.JsGenerator;
 
 public class PrimitiveFieldChecker implements FieldValueChecker {
 
-    private final JsWriter jsWriter;
+    private final JsGenerator jsGenerator;
 
-    public PrimitiveFieldChecker(JsWriter jsWriter) {
-        this.jsWriter = jsWriter;
+    public PrimitiveFieldChecker(JsGenerator jsGenerator) {
+        this.jsGenerator = jsGenerator;
     }
 
     @Override
     public void performNullCheck(String fieldValue, String setterFormat) {
-        jsWriter.enterIfBlock(fieldValue + " !== null");
+        jsGenerator.enterIfBlock(fieldValue + " !== null");
     }
 
     @Override
     public void exitNullCheck() {
-        jsWriter.exitBlock();
+        jsGenerator.exitBlock();
     }
 }

@@ -29,11 +29,11 @@ class LineOfCode {
 
     private static final String SPACE = " ";
 
-    private final String code;
+    private final String content;
     private final int depth;
 
-    LineOfCode(String code, int depth) {
-        this.code = code;
+    LineOfCode(String content, int depth) {
+        this.content = content;
         this.depth = depth;
     }
 
@@ -41,7 +41,7 @@ class LineOfCode {
         int spacesCount = depth * indent;
         List<String> indentSpaces = nCopies(spacesCount, SPACE);
         String codeIndent = join("", indentSpaces);
-        String result = codeIndent + code;
+        String result = codeIndent + content;
         return result;
     }
 }

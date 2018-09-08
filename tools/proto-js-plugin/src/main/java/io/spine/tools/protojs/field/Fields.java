@@ -40,43 +40,42 @@ public final class Fields {
     private Fields() {
     }
 
-    public static boolean isMessage(FieldDescriptor fieldDescriptor) {
-        Type type = fieldDescriptor.getType();
-        boolean isMessage = type == MESSAGE;
+    public static boolean isMessage(FieldDescriptor field) {
+        boolean isMessage = field.getType() == MESSAGE;
         return isMessage;
     }
 
-    public static boolean isWellKnownType(FieldDescriptor fieldDescriptor) {
-        Descriptor messageType = fieldDescriptor.getMessageType();
-        TypeUrl typeUrl = TypeUrl.from(messageType);
+    public static boolean isWellKnownType(FieldDescriptor field) {
+        Descriptor message = field.getMessageType();
+        TypeUrl typeUrl = TypeUrl.from(message);
         boolean isWellKnownType = ParserMapGenerator.hasParser(typeUrl);
         return isWellKnownType;
     }
 
-    public static boolean isRepeated(FieldDescriptor fieldDescriptor) {
-        FieldDescriptorProto proto = fieldDescriptor.toProto();
-        boolean isRepeated = proto.getLabel() == LABEL_REPEATED && !isMap(fieldDescriptor);
+    public static boolean isRepeated(FieldDescriptor field) {
+        FieldDescriptorProto proto = field.toProto();
+        boolean isRepeated = proto.getLabel() == LABEL_REPEATED && !isMap(field);
         return isRepeated;
     }
 
-    public static boolean isMap(FieldDescriptor fieldDescriptor) {
-        FieldDescriptorProto descriptorProto = fieldDescriptor.toProto();
-        if (descriptorProto.getLabel() != LABEL_REPEATED) {
+    public static boolean isMap(FieldDescriptor field) {
+        FieldDescriptorProto proto = field.toProto();
+        if (proto.getLabel() != LABEL_REPEATED) {
             return false;
         }
-        if (fieldDescriptor.getType() != MESSAGE) {
+        if (field.getType() != MESSAGE) {
             return false;
         }
-        Descriptor fieldType = fieldDescriptor.getMessageType();
-        String mapTypeName = capitalizedName(fieldDescriptor) + ENTRY_SUFFIX;
+        Descriptor fieldType = field.getMessageType();
+        String mapTypeName = capitalizedName(field) + ENTRY_SUFFIX;
         boolean isMap = fieldType.getName()
                                  .equals(mapTypeName);
         return isMap;
     }
 
-    public static String capitalizedName(FieldDescriptor fieldDescriptor) {
-        FieldDescriptorProto fieldDescriptorProto = fieldDescriptor.toProto();
-        String capitalizedName = FieldName.of(fieldDescriptorProto)
+    public static String capitalizedName(FieldDescriptor field) {
+        FieldDescriptorProto proto = field.toProto();
+        String capitalizedName = FieldName.of(proto)
                                           .toCamelCase();
         return capitalizedName;
     }

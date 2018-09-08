@@ -20,27 +20,27 @@
 
 package io.spine.tools.protojs.code.primitive.parser;
 
-import io.spine.tools.protojs.code.JsWriter;
+import io.spine.tools.protojs.code.JsGenerator;
 
 abstract class AbstractPrimitiveParser implements PrimitiveParser {
 
-    private final JsWriter jsWriter;
+    private final JsGenerator jsGenerator;
 
     AbstractPrimitiveParser(Builder builder) {
-        this.jsWriter = builder.jsWriter;
+        this.jsGenerator = builder.jsGenerator;
     }
 
-    JsWriter jsWriter() {
-        return jsWriter;
+    JsGenerator jsWriter() {
+        return jsGenerator;
     }
 
     abstract static class Builder implements PrimitiveParser.Builder {
 
-        private JsWriter jsWriter;
+        private JsGenerator jsGenerator;
 
         @Override
-        public PrimitiveParser.Builder setJsWriter(JsWriter jsWriter) {
-            this.jsWriter = jsWriter;
+        public PrimitiveParser.Builder setJsWriter(JsGenerator jsGenerator) {
+            this.jsGenerator = jsGenerator;
             return this;
         }
     }

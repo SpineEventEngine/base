@@ -22,24 +22,24 @@ package io.spine.tools.protojs.field.parser;
 
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.tools.protojs.code.JsWriter;
+import io.spine.tools.protojs.code.JsGenerator;
 
 import static io.spine.tools.protojs.types.Types.typeWithProtoPrefix;
 
 public class MessageFieldParser implements FieldValueParser {
 
-    private final FieldDescriptor fieldDescriptor;
-    private final JsWriter jsWriter;
+    private final FieldDescriptor field;
+    private final JsGenerator jsGenerator;
 
-    public MessageFieldParser(FieldDescriptor fieldDescriptor, JsWriter jsWriter) {
-        this.fieldDescriptor = fieldDescriptor;
-        this.jsWriter = jsWriter;
+    public MessageFieldParser(FieldDescriptor field, JsGenerator jsGenerator) {
+        this.field = field;
+        this.jsGenerator = jsGenerator;
     }
 
     @Override
     public void parseIntoVariable(String value, String variable) {
-        Descriptor fieldType = fieldDescriptor.getMessageType();
+        Descriptor fieldType = field.getMessageType();
         String typeName = typeWithProtoPrefix(fieldType);
-        jsWriter.addLine("let " + variable + " = " + typeName + ".fromObject(" + value + ");");
+        jsGenerator.addLine("let " + variable + " = " + typeName + ".fromObject(" + value + ");");
     }
 }

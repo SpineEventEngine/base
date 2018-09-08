@@ -22,7 +22,7 @@ package io.spine.tools.protojs.message;
 
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.tools.protojs.code.JsWriter;
+import io.spine.tools.protojs.code.JsGenerator;
 import io.spine.tools.protojs.field.FieldHandler;
 import io.spine.tools.protojs.field.FieldHandlers;
 
@@ -36,12 +36,12 @@ public final class MessageHandler {
     public static final String FROM_OBJECT_ARG = "obj";
     public static final String MESSAGE = "message";
 
-    private final Descriptor messageDescriptor;
-    private final JsWriter jsWriter;
+    private final Descriptor message;
+    private final JsGenerator jsGenerator;
 
-    public MessageHandler(Descriptor messageDescriptor, JsWriter jsWriter) {
-        this.messageDescriptor = messageDescriptor;
-        this.jsWriter = jsWriter;
+    public MessageHandler(Descriptor message, JsGenerator jsGenerator) {
+        this.message = message;
+        this.jsGenerator = jsGenerator;
     }
 
     public void generateJs() {
@@ -50,40 +50,40 @@ public final class MessageHandler {
     }
 
     private void generateFromJsonMethod() {
-        jsWriter.addEmptyLine();
-        String typeName = typeWithProtoPrefix(messageDescriptor);
+        jsGenerator.addEmptyLine();
+        String typeName = typeWithProtoPrefix(message);
         String functionName = typeName + ".fromJson";
         generateFromJsonCode(typeName, functionName);
     }
 
-    private void generateFromJsonCode(String typeName, String functionName) {
-        jsWriter.enterFunction(functionName, "json");
-        jsWriter.addLine("let jsonObject = JSON.parse(json);");
-        // todo add return helper to jsWriter
-        jsWriter.addLine("return " + typeName + ".fromObject(jsonObject);");
-        jsWriter.exitFunction();
-    }
-
     private void generateFromObjectMethod() {
-        jsWriter.addEmptyLine();
-        String typeName = typeWithProtoPrefix(messageDescriptor);
+        jsGenerator.addEmptyLine();
+        String typeName = typeWithProtoPrefix(message);
         String functionName = typeName + ".fromObject";
         generateFromObjectCode(typeName, functionName);
     }
 
+    private void generateFromJsonCode(String typeName, String functionName) {
+        jsGenerator.enterFunction(functionName, "json");
+        jsGenerator.addLine("let jsonObject = JSON.parse(json);");
+        // todo add return helper to jsGenerator
+        jsGenerator.addLine("return " + typeName + ".fromObject(jsonObject);");
+        jsGenerator.exitFunction();
+    }
+
     private void generateFromObjectCode(String typeName, String functionName) {
-        jsWriter.enterFunction(functionName, FROM_OBJECT_ARG);
-        jsWriter.addLine("let " + MESSAGE + " = new " + typeName + "();");
+        jsGenerator.enterFunction(functionName, FROM_OBJECT_ARG);
+        jsGenerator.addLine("let " + MESSAGE + " = new " + typeName + "();");
         generateFieldsCode();
-        jsWriter.addLine("return " + MESSAGE + ';');
-        jsWriter.exitFunction();
+        jsGenerator.addLine("return " + MESSAGE + ';');
+        jsGenerator.exitFunction();
     }
 
     private void generateFieldsCode() {
-        List<FieldDescriptor> fields = messageDescriptor.getFields();
-        for (FieldDescriptor fieldDescriptor : fields) {
-            jsWriter.addEmptyLine();
-            FieldHandler fieldHandler = FieldHandlers.createFor(fieldDescriptor, jsWriter);
+        List<FieldDescriptor> fields = message.getFields();
+        for (FieldDescriptor field : fields) {
+            jsGenerator.addEmptyLine();
+            FieldHandler fieldHandler = FieldHandlers.createFor(field, jsGenerator);
             fieldHandler.generateJs();
         }
     }

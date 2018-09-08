@@ -37,13 +37,13 @@ public class JsImportGenerator {
         return new JsImportGenerator(pathToRoot);
     }
 
-    public String createImport(String fileToImport) {
+    public String importStatement(String fileToImport) {
         String importPath = importPrefix + fileToImport;
         String importStatement = "require('" + importPath + "');";
         return importStatement;
     }
 
-    public String createNamedImport(String fileToImport, String importName) {
+    public String namedImport(String fileToImport, String importName) {
         String importPath = importPrefix + fileToImport;
         String importStatement = "let " + importName + " = require('" + importPath + "');";
         return importStatement;

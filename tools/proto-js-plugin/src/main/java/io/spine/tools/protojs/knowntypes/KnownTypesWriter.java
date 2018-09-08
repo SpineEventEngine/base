@@ -21,8 +21,8 @@
 package io.spine.tools.protojs.knowntypes;
 
 import io.spine.code.proto.FileSet;
+import io.spine.tools.protojs.code.JsGenerator;
 import io.spine.tools.protojs.code.JsOutput;
-import io.spine.tools.protojs.code.JsWriter;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -47,10 +47,10 @@ public class KnownTypesWriter {
 
     public void writeFile() {
         int indent = 4;
-        JsWriter jsWriter = new JsWriter(indent);
-        KnownTypesGenerator generator = new KnownTypesGenerator(protoJsFiles, jsWriter);
-        generator.generateKnownTypes();
-        JsOutput generatedCode = jsWriter.getGeneratedCode();
+        JsGenerator jsGenerator = new JsGenerator(indent);
+        KnownTypesGenerator generator = new KnownTypesGenerator(protoJsFiles, jsGenerator);
+        generator.generateJs();
+        JsOutput generatedCode = jsGenerator.getGeneratedCode();
         writeToFile(filePath, generatedCode);
     }
 

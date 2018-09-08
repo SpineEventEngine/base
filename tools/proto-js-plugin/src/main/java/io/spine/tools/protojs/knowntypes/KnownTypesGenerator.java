@@ -23,8 +23,8 @@ package io.spine.tools.protojs.knowntypes;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.proto.FileSet;
+import io.spine.tools.protojs.code.JsGenerator;
 import io.spine.tools.protojs.code.JsImportGenerator;
-import io.spine.tools.protojs.code.JsWriter;
 import io.spine.type.TypeUrl;
 
 import java.util.Collection;
@@ -40,81 +40,80 @@ class KnownTypesGenerator {
     private static final String MAP_NAME = "types";
 
     private final FileSet protoJsFiles;
-    private final JsWriter jsWriter;
+    private final JsGenerator jsGenerator;
 
-    KnownTypesGenerator(FileSet protoJsFiles, JsWriter jsWriter) {
+    KnownTypesGenerator(FileSet protoJsFiles, JsGenerator jsGenerator) {
         this.protoJsFiles = protoJsFiles;
-        this.jsWriter = jsWriter;
+        this.jsGenerator = jsGenerator;
     }
 
-    void generateKnownTypes() {
+    void generateJs() {
         generateImports();
-        jsWriter.addEmptyLine();
+        jsGenerator.addEmptyLine();
         generateKnownTypesMap();
     }
 
-    // todo make methods shorter if necessary
     private void generateImports() {
-        Collection<FileDescriptor> fileDescriptors = protoJsFiles.getFileDescriptors();
+        Collection<FileDescriptor> files = protoJsFiles.getFileDescriptors();
         JsImportGenerator importGenerator = JsImportGenerator.createFor(KNOWN_TYPES);
-        for (FileDescriptor fileDescriptor : fileDescriptors) {
-            generateImport(importGenerator, fileDescriptor);
+        for (FileDescriptor file : files) {
+            generateImport(importGenerator, file);
         }
     }
 
-    private void generateImport(JsImportGenerator importGenerator, FileDescriptor fileDescriptor) {
-        String fileToImport = jsFileName(fileDescriptor);
-        List<Descriptor> declaredMessages = fileDescriptor.getMessageTypes();
+    private void generateImport(JsImportGenerator importGenerator, FileDescriptor file) {
+        String jsFileName = jsFileName(file);
+        List<Descriptor> declaredMessages = file.getMessageTypes();
         if (declaredMessages.size() > 0) {
-            String statement = importGenerator.createImport(fileToImport);
-            jsWriter.addLine(statement);
+            String statement = importGenerator.importStatement(jsFileName);
+            jsGenerator.addLine(statement);
         }
     }
 
     private void generateKnownTypesMap() {
-        jsWriter.addLine("export const " + MAP_NAME + " = new Map([");
-        jsWriter.increaseDepth();
+        jsGenerator.addLine("export const " + MAP_NAME + " = new Map([");
+        jsGenerator.increaseDepth();
         storeKnownTypes();
-        jsWriter.decreaseDepth();
-        jsWriter.addLine("]);");
+        jsGenerator.decreaseDepth();
+        jsGenerator.addLine("]);");
     }
 
     private void storeKnownTypes() {
-        Collection<FileDescriptor> fileDescriptors = protoJsFiles.getFileDescriptors();
-        for (Iterator<FileDescriptor> it = fileDescriptors.iterator(); it.hasNext(); ) {
-            FileDescriptor fileDescriptor = it.next();
+        Collection<FileDescriptor> files = protoJsFiles.getFileDescriptors();
+        for (Iterator<FileDescriptor> it = files.iterator(); it.hasNext(); ) {
+            FileDescriptor file = it.next();
             boolean isLastFile = !it.hasNext();
-            addTypesToMap(fileDescriptor, isLastFile);
+            storeTypesFromFile(file, isLastFile);
         }
     }
 
-    private void addTypesToMap(FileDescriptor fileDescriptor, boolean isLastFile) {
-        List<Descriptor> messages = fileDescriptor.getMessageTypes();
+    private void storeTypesFromFile(FileDescriptor file, boolean isLastFile) {
+        List<Descriptor> messages = file.getMessageTypes();
         for (Iterator<Descriptor> it = messages.iterator(); it.hasNext(); ) {
-            Descriptor descriptor = it.next();
+            Descriptor message = it.next();
             boolean isLastMessage = !it.hasNext() && isLastFile;
-            addMapEntry(descriptor, isLastMessage);
+            addMapEntry(message, isLastMessage);
         }
     }
 
-    private void addMapEntry(Descriptor descriptor, boolean isLastMessage) {
-        String mapEntry = jsMapEntry(descriptor);
+    private void addMapEntry(Descriptor message, boolean isLastMessage) {
+        String mapEntry = jsMapEntry(message);
         String entryToAdd = appendCommaIfNecessary(mapEntry, isLastMessage);
-        jsWriter.addLine(entryToAdd);
+        jsGenerator.addLine(entryToAdd);
     }
 
-    private static String jsMapEntry(Descriptor descriptor) {
-        TypeUrl typeUrl = TypeUrl.from(descriptor);
-        String typeName = typeWithProtoPrefix(descriptor);
+    private static String jsMapEntry(Descriptor message) {
+        TypeUrl typeUrl = TypeUrl.from(message);
+        String typeName = typeWithProtoPrefix(message);
         String mapEntry = "['" + typeUrl + "', " + typeName + ']';
         return mapEntry;
     }
 
-    private static String appendCommaIfNecessary(String mapEntry, boolean isLastMessage) {
-        StringBuilder mapEntryBuilder = new StringBuilder(mapEntry);
-        if (!isLastMessage) {
-            mapEntryBuilder.append(',');
+    // todo think of common method for creating map
+    private static String appendCommaIfNecessary(String mapEntry, boolean isLast) {
+        if (!isLast) {
+            return mapEntry + ',';
         }
-        return mapEntryBuilder.toString();
+        return mapEntry;
     }
 }
