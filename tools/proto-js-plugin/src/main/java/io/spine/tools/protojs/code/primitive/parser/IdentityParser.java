@@ -20,12 +20,26 @@
 
 package io.spine.tools.protojs.code.primitive.parser;
 
-import io.spine.tools.protojs.code.JsWriter;
+public class IdentityParser extends AbstractPrimitiveParser {
 
-public class IdentityParser implements PrimitiveParser {
+    IdentityParser(Builder builder) {
+        super(builder);
+    }
 
     @Override
-    public void writeParseStatement(String jsObject, String output, JsWriter jsWriter) {
-        jsWriter.addLine("let " + output + " = " + jsObject + ';');
+    public void parseIntoVariable(String value, String output) {
+        jsWriter().addLine("let " + output + " = " + value + ';');
+    }
+
+    public static Builder newBuilder() {
+        return new Builder();
+    }
+
+    static class Builder extends AbstractPrimitiveParser.Builder {
+
+        @Override
+        public PrimitiveParser build() {
+            return new IdentityParser(this);
+        }
     }
 }

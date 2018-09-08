@@ -22,5 +22,5 @@ package io.spine.tools.protojs.field.parser;
 
 public interface FieldValueParser {
 
-    void parseFieldValue(String value, String output);
+    void parseIntoVariable(String value, String variable);
 }

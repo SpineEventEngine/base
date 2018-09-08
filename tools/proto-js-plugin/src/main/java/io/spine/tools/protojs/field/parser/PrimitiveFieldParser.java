@@ -36,9 +36,9 @@ public class PrimitiveFieldParser implements FieldValueParser {
     }
 
     @Override
-    public void parseFieldValue(String value, String output) {
+    public void parseIntoVariable(String value, String variable) {
         // todo address variable naming (name them "valueVarName" or just "value" for instance), and how the return variable is defined
-        PrimitiveParser parser = PrimitiveParsers.getFor(fieldDescriptor);
-        parser.writeParseStatement(value, output, jsWriter);
+        PrimitiveParser parser = PrimitiveParsers.createFor(fieldDescriptor, jsWriter);
+        parser.parseIntoVariable(value, variable);
     }
 }

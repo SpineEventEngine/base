@@ -26,12 +26,12 @@ import io.spine.tools.protojs.field.checker.FieldValueChecker;
 import io.spine.tools.protojs.field.parser.FieldValueParser;
 
 import static io.spine.tools.protojs.field.Fields.capitalizedName;
-import static io.spine.tools.protojs.message.MessageHandler.MESSAGE_VAR;
+import static io.spine.tools.protojs.message.MessageHandler.MESSAGE;
 
 public class MapFieldHandler extends AbstractFieldHandler {
 
-    private static final String ATTRIBUTE_VAR = "attribute";
-    private static final String MAP_KEY_VAR = "mapKey";
+    private static final String ATTRIBUTE = "attribute";
+    private static final String MAP_KEY = "mapKey";
 
     private final FieldValueParser keyParser;
 
@@ -60,20 +60,20 @@ public class MapFieldHandler extends AbstractFieldHandler {
     String setterFormat() {
         String fieldName = capitalizedName(fieldDescriptor());
         String getMapCall = "get" + fieldName + "Map()";
-        String setMapValueCall = "set(" + MAP_KEY_VAR + ", %s)";
-        String addToMapFormat = MESSAGE_VAR + '.' + getMapCall + '.' + setMapValueCall + ';';
+        String setMapValueCall = "set(" + MAP_KEY + ", %s)";
+        String addToMapFormat = MESSAGE + '.' + getMapCall + '.' + setMapValueCall + ';';
         return addToMapFormat;
     }
 
     private void parseMapKey() {
-        keyParser.parseFieldValue(ATTRIBUTE_VAR, MAP_KEY_VAR);
+        keyParser.parseIntoVariable(ATTRIBUTE, MAP_KEY);
     }
 
     private String iterateOwnAttributes(String jsObject) {
         jsWriter().enterIfBlock(jsObject + " !== undefined && " + jsObject + " !== null");
-        jsWriter().enterBlock("for (let " + ATTRIBUTE_VAR + " in " + jsObject + ')');
-        jsWriter().enterIfBlock(jsObject + ".hasOwnProperty(" + ATTRIBUTE_VAR + ')');
-        String fieldValue = jsObject + '[' + ATTRIBUTE_VAR + ']';
+        jsWriter().enterBlock("for (let " + ATTRIBUTE + " in " + jsObject + ')');
+        jsWriter().enterIfBlock(jsObject + ".hasOwnProperty(" + ATTRIBUTE + ')');
+        String fieldValue = jsObject + '[' + ATTRIBUTE + ']';
         return fieldValue;
     }
 

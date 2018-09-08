@@ -24,9 +24,11 @@ import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.Type;
+import io.spine.tools.protojs.code.JsWriter;
 
 import java.util.Map;
 
+import static com.google.common.base.Preconditions.checkState;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.BOOL;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.BYTES;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.DOUBLE;
@@ -44,52 +46,62 @@ import static com.google.protobuf.Descriptors.FieldDescriptor.Type.STRING;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.UINT32;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.UINT64;
 import static io.spine.tools.protojs.types.Types.typeWithProtoPrefix;
-import static io.spine.util.Exceptions.newIllegalStateException;
 
 public final class PrimitiveParsers {
 
-    private static final Map<Type, PrimitiveParser> parsers = parsers();
+    private static final Map<Type, PrimitiveParser.Builder> parsers = parsers();
 
     private PrimitiveParsers() {
     }
 
-    public static PrimitiveParser getFor(FieldDescriptor fieldDescriptor) {
+    public static PrimitiveParser createFor(FieldDescriptor fieldDescriptor, JsWriter jsWriter) {
         Type type = fieldDescriptor.getType();
         if (type == ENUM) {
-            return enumParserFor(fieldDescriptor);
+            return enumParser(fieldDescriptor, jsWriter);
         }
-        PrimitiveParser parser = parsers.get(type);
-        if (parser == null) {
-            throw newIllegalStateException(
-                    "An attempt to get a parser for the unknown Primitive type: %s", type.name());
-        }
+        return primitiveParser(type, jsWriter);
+    }
+
+    private static PrimitiveParser enumParser(FieldDescriptor fieldDescriptor, JsWriter jsWriter) {
+        EnumDescriptor enumType = fieldDescriptor.getEnumType();
+        String typeName = typeWithProtoPrefix(enumType);
+        PrimitiveParser parser = EnumParser
+                .newBuilder()
+                .setEnumType(typeName)
+                .setJsWriter(jsWriter)
+                .build();
         return parser;
     }
 
-    private static PrimitiveParser enumParserFor(FieldDescriptor fieldDescriptor) {
-        EnumDescriptor enumType = fieldDescriptor.getEnumType();
-        String typeName = typeWithProtoPrefix(enumType);
-        return new EnumParser(typeName);
+    private static PrimitiveParser primitiveParser(Type type, JsWriter jsWriter) {
+        PrimitiveParser.Builder parserBuilder = parsers.get(type);
+        boolean parserPresent = parsers.containsKey(type);
+        checkState(parserPresent,
+                   "An attempt to get a parser for the unknown Primitive type: %s", type);
+        PrimitiveParser parser = parserBuilder
+                .setJsWriter(jsWriter)
+                .build();
+        return parser;
     }
 
-    private static Map<Type, PrimitiveParser> parsers() {
-        Map<Type, PrimitiveParser> parsers = ImmutableMap
-                .<Type, PrimitiveParser>builder()
-                .put(DOUBLE, new FloatParser())
-                .put(FLOAT, new FloatParser())
-                .put(INT32, new IdentityParser())
-                .put(INT64, new LongParser())
-                .put(UINT32, new IdentityParser())
-                .put(UINT64, new LongParser())
-                .put(SINT32, new IdentityParser())
-                .put(SINT64, new LongParser())
-                .put(FIXED32, new IdentityParser())
-                .put(FIXED64, new LongParser())
-                .put(SFIXED32, new IdentityParser())
-                .put(SFIXED64, new LongParser())
-                .put(BOOL, new IdentityParser())
-                .put(STRING, new IdentityParser())
-                .put(BYTES, new BytesParser())
+    private static Map<Type, PrimitiveParser.Builder> parsers() {
+        Map<Type, PrimitiveParser.Builder> parsers = ImmutableMap
+                .<Type, PrimitiveParser.Builder>builder()
+                .put(DOUBLE, FloatParser.newBuilder())
+                .put(FLOAT, FloatParser.newBuilder())
+                .put(INT32, IdentityParser.newBuilder())
+                .put(INT64, LongParser.newBuilder())
+                .put(UINT32, IdentityParser.newBuilder())
+                .put(UINT64, LongParser.newBuilder())
+                .put(SINT32, IdentityParser.newBuilder())
+                .put(SINT64, LongParser.newBuilder())
+                .put(FIXED32, IdentityParser.newBuilder())
+                .put(FIXED64, LongParser.newBuilder())
+                .put(SFIXED32, IdentityParser.newBuilder())
+                .put(SFIXED64, LongParser.newBuilder())
+                .put(BOOL, IdentityParser.newBuilder())
+                .put(STRING, IdentityParser.newBuilder())
+                .put(BYTES, BytesParser.newBuilder())
                 .build();
         return parsers;
     }

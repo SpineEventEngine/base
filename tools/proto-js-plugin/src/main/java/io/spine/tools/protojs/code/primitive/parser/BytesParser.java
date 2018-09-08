@@ -20,13 +20,27 @@
 
 package io.spine.tools.protojs.code.primitive.parser;
 
-import io.spine.tools.protojs.code.JsWriter;
+public class BytesParser extends AbstractPrimitiveParser {
 
-public class BytesParser implements PrimitiveParser {
+    BytesParser(Builder builder) {
+        super(builder);
+    }
 
     @Override
-    public void writeParseStatement(String jsObject, String output, JsWriter jsWriter) {
-        jsWriter.addLine("let base64_js = require('base64-js');");
-        jsWriter.addLine("let " + output + " = base64_js.toByteArray(" + jsObject + ");");
+    public void parseIntoVariable(String value, String output) {
+        jsWriter().addLine("let base64_js = require('base64-js');");
+        jsWriter().addLine("let " + output + " = base64_js.toByteArray(" + value + ");");
+    }
+
+    public static Builder newBuilder() {
+        return new Builder();
+    }
+
+    static class Builder extends AbstractPrimitiveParser.Builder {
+
+        @Override
+        public PrimitiveParser build() {
+            return new BytesParser(this);
+        }
     }
 }

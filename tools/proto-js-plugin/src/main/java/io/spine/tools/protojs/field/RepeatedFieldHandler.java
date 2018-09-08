@@ -26,11 +26,11 @@ import io.spine.tools.protojs.field.checker.FieldValueChecker;
 import io.spine.tools.protojs.field.parser.FieldValueParser;
 
 import static io.spine.tools.protojs.field.Fields.capitalizedName;
-import static io.spine.tools.protojs.message.MessageHandler.MESSAGE_VAR;
+import static io.spine.tools.protojs.message.MessageHandler.MESSAGE;
 
 public class RepeatedFieldHandler extends AbstractFieldHandler {
 
-    private static final String LIST_ITEM_VAR = "listItem";
+    private static final String LIST_ITEM = "listItem";
 
     RepeatedFieldHandler(FieldDescriptor fieldDescriptor,
                          FieldValueChecker fieldValueChecker,
@@ -51,7 +51,7 @@ public class RepeatedFieldHandler extends AbstractFieldHandler {
     String setterFormat() {
         String fieldName = capitalizedName(fieldDescriptor());
         String addFunctionName = "add" + fieldName;
-        String addToListFormat = MESSAGE_VAR + '.' + addFunctionName + "(%s);";
+        String addToListFormat = MESSAGE + '.' + addFunctionName + "(%s);";
         return addToListFormat;
     }
 
@@ -59,8 +59,8 @@ public class RepeatedFieldHandler extends AbstractFieldHandler {
         jsWriter().enterIfBlock(jsObject + " !== undefined && " + jsObject + " !== null");
         jsWriter().addLine(jsObject + ".forEach(");
         jsWriter().increaseDepth();
-        jsWriter().enterBlock('(' + LIST_ITEM_VAR + ", index, array) =>");
-        return LIST_ITEM_VAR;
+        jsWriter().enterBlock('(' + LIST_ITEM + ", index, array) =>");
+        return LIST_ITEM;
     }
 
     private void exitListValueIteration() {

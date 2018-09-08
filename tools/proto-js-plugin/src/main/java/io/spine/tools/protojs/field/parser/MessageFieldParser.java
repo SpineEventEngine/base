@@ -37,9 +37,9 @@ public class MessageFieldParser implements FieldValueParser {
     }
 
     @Override
-    public void parseFieldValue(String value, String output) {
+    public void parseIntoVariable(String value, String variable) {
         Descriptor fieldType = fieldDescriptor.getMessageType();
         String typeName = typeWithProtoPrefix(fieldType);
-        jsWriter.addLine("let " + output + " = " + typeName + ".fromObject(" + value + ");");
+        jsWriter.addLine("let " + variable + " = " + typeName + ".fromObject(" + value + ");");
     }
 }

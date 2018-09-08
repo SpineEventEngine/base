@@ -20,12 +20,26 @@
 
 package io.spine.tools.protojs.code.primitive.parser;
 
-import io.spine.tools.protojs.code.JsWriter;
+public class FloatParser extends AbstractPrimitiveParser {
 
-public class FloatParser implements PrimitiveParser {
+    FloatParser(Builder builder) {
+        super(builder);
+    }
 
     @Override
-    public void writeParseStatement(String jsObject, String output, JsWriter jsWriter) {
-        jsWriter.addLine("let " + output + " = parseFloat(" + jsObject + ");");
+    public void parseIntoVariable(String value, String output) {
+        jsWriter().addLine("let " + output + " = parseFloat(" + value + ");");
+    }
+
+    public static Builder newBuilder() {
+        return new Builder();
+    }
+
+    static class Builder extends AbstractPrimitiveParser.Builder {
+
+        @Override
+        public PrimitiveParser build() {
+            return new FloatParser(this);
+        }
     }
 }

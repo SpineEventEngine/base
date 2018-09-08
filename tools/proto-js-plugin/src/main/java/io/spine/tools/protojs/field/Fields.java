@@ -54,9 +54,8 @@ public final class Fields {
     }
 
     public static boolean isRepeated(FieldDescriptor fieldDescriptor) {
-        FieldDescriptorProto descriptorProto = fieldDescriptor.toProto();
-        boolean isRepeated =
-                descriptorProto.getLabel() == LABEL_REPEATED && !isMap(fieldDescriptor);
+        FieldDescriptorProto proto = fieldDescriptor.toProto();
+        boolean isRepeated = proto.getLabel() == LABEL_REPEATED && !isMap(fieldDescriptor);
         return isRepeated;
     }
 

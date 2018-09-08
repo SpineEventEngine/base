@@ -34,7 +34,7 @@ import static io.spine.tools.protojs.types.Types.typeWithProtoPrefix;
 public final class MessageHandler {
 
     public static final String FROM_OBJECT_ARG = "obj";
-    public static final String MESSAGE_VAR = "message";
+    public static final String MESSAGE = "message";
 
     private final Descriptor messageDescriptor;
     private final JsWriter jsWriter;
@@ -73,9 +73,9 @@ public final class MessageHandler {
 
     private void generateFromObjectCode(String typeName, String functionName) {
         jsWriter.enterFunction(functionName, FROM_OBJECT_ARG);
-        jsWriter.addLine("let " + MESSAGE_VAR + " = new " + typeName + "();");
+        jsWriter.addLine("let " + MESSAGE + " = new " + typeName + "();");
         generateFieldsCode();
-        jsWriter.addLine("return " + MESSAGE_VAR + ';');
+        jsWriter.addLine("return " + MESSAGE + ';');
         jsWriter.exitFunction();
     }
 

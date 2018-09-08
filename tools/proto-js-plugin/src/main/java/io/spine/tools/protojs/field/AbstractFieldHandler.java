@@ -30,6 +30,8 @@ import static java.lang.String.format;
 
 abstract class AbstractFieldHandler implements FieldHandler {
 
+    private static final String FIELD_VALUE = "fieldValue";
+
     private final FieldDescriptor fieldDescriptor;
     private final FieldValueChecker fieldValueChecker;
     private final FieldValueParser fieldValueParser;
@@ -53,9 +55,8 @@ abstract class AbstractFieldHandler implements FieldHandler {
 
     void setValue(String value) {
         fieldValueChecker.performNullCheck(value, setterFormat());
-        String fieldValue = "fieldValue";
-        fieldValueParser.parseFieldValue(value, fieldValue);
-        callSetter(fieldValue);
+        fieldValueParser.parseIntoVariable(value, FIELD_VALUE);
+        callSetter(FIELD_VALUE);
         fieldValueChecker.exitNullCheck();
     }
 
@@ -68,9 +69,9 @@ abstract class AbstractFieldHandler implements FieldHandler {
     }
 
     private void callSetter(String value) {
-        String addToMapFormat = setterFormat();
-        String addToMap = format(addToMapFormat, value);
-        jsWriter.addLine(addToMap);
+        String setterFormat = setterFormat();
+        String setValue = format(setterFormat, value);
+        jsWriter.addLine(setValue);
     }
 
     abstract String setterFormat();

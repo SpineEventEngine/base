@@ -22,14 +22,26 @@ package io.spine.tools.protojs.code.primitive.parser;
 
 import io.spine.tools.protojs.code.JsWriter;
 
-public interface PrimitiveParser {
+abstract class AbstractPrimitiveParser implements PrimitiveParser {
 
-    void parseIntoVariable(String value, String output);
+    private final JsWriter jsWriter;
 
-    interface Builder {
+    AbstractPrimitiveParser(Builder builder) {
+        this.jsWriter = builder.jsWriter;
+    }
 
-        Builder setJsWriter(JsWriter jsWriter);
+    JsWriter jsWriter() {
+        return jsWriter;
+    }
 
-        PrimitiveParser build();
+    abstract static class Builder implements PrimitiveParser.Builder {
+
+        private JsWriter jsWriter;
+
+        @Override
+        public PrimitiveParser.Builder setJsWriter(JsWriter jsWriter) {
+            this.jsWriter = jsWriter;
+            return this;
+        }
     }
 }

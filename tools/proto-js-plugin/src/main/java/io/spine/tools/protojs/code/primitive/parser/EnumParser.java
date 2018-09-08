@@ -20,18 +20,36 @@
 
 package io.spine.tools.protojs.code.primitive.parser;
 
-import io.spine.tools.protojs.code.JsWriter;
-
-class EnumParser implements PrimitiveParser {
+class EnumParser extends AbstractPrimitiveParser {
 
     private final String enumType;
 
-    EnumParser(String enumType) {
-        this.enumType = enumType;
+    EnumParser(Builder builder) {
+        super(builder);
+        this.enumType = builder.enumType;
     }
 
     @Override
-    public void writeParseStatement(String jsObject, String output, JsWriter jsWriter) {
-        jsWriter.addLine("let " + output + " = " + enumType + '[' + jsObject + "];");
+    public void parseIntoVariable(String value, String output) {
+        jsWriter().addLine("let " + output + " = " + enumType + '[' + value + "];");
+    }
+
+    public static Builder newBuilder() {
+        return new Builder();
+    }
+
+    static class Builder extends AbstractPrimitiveParser.Builder {
+
+        private String enumType;
+
+        public Builder setEnumType(String enumType) {
+            this.enumType = enumType;
+            return this;
+        }
+
+        @Override
+        public PrimitiveParser build() {
+            return new EnumParser(this);
+        }
     }
 }
