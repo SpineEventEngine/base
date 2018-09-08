@@ -37,15 +37,15 @@ public final class FieldHandlers {
 
     public static FieldHandler createFor(FieldDescriptor fieldDescriptor, JsWriter jsWriter) {
         if (isMap(fieldDescriptor)) {
-            return map(fieldDescriptor, jsWriter);
+            return mapHandler(fieldDescriptor, jsWriter);
         }
         if (isRepeated(fieldDescriptor)) {
-            return repeated(fieldDescriptor, jsWriter);
+            return repeatedHandler(fieldDescriptor, jsWriter);
         }
-        return singular(fieldDescriptor, jsWriter);
+        return singularHandler(fieldDescriptor, jsWriter);
     }
 
-    private static FieldHandler map(FieldDescriptor descriptor, JsWriter jsWriter) {
+    private static FieldHandler mapHandler(FieldDescriptor descriptor, JsWriter jsWriter) {
         FieldDescriptor keyDescriptor = keyDescriptor(descriptor);
         FieldDescriptor valueDescriptor = valueDescriptor(descriptor);
         FieldValueChecker valueChecker = checkerFor(valueDescriptor, jsWriter);
@@ -59,7 +59,7 @@ public final class FieldHandlers {
         return handler;
     }
 
-    private static FieldHandler repeated(FieldDescriptor descriptor, JsWriter jsWriter) {
+    private static FieldHandler repeatedHandler(FieldDescriptor descriptor, JsWriter jsWriter) {
         FieldValueChecker valueChecker = checkerFor(descriptor, jsWriter);
         FieldValueParser valueParser = parserFor(descriptor, jsWriter);
         FieldHandler handler = new RepeatedFieldHandler(descriptor,
@@ -69,7 +69,7 @@ public final class FieldHandlers {
         return handler;
     }
 
-    private static FieldHandler singular(FieldDescriptor descriptor, JsWriter jsWriter) {
+    private static FieldHandler singularHandler(FieldDescriptor descriptor, JsWriter jsWriter) {
         FieldValueChecker valueChecker = checkerFor(descriptor, jsWriter);
         FieldValueParser valueParser = parserFor(descriptor, jsWriter);
         FieldHandler handler = new SingularFieldHandler(descriptor,

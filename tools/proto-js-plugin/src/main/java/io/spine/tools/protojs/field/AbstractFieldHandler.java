@@ -59,18 +59,18 @@ abstract class AbstractFieldHandler implements FieldHandler {
         fieldValueChecker.exitNullCheck();
     }
 
-    private void callSetter(String value) {
-        String addToMapFormat = setterFormat();
-        String addToMap = format(addToMapFormat, value);
-        jsWriter.addLine(addToMap);
-    }
-
     FieldDescriptor fieldDescriptor() {
         return fieldDescriptor;
     }
 
     JsWriter jsWriter() {
         return jsWriter;
+    }
+
+    private void callSetter(String value) {
+        String addToMapFormat = setterFormat();
+        String addToMap = format(addToMapFormat, value);
+        jsWriter.addLine(addToMap);
     }
 
     abstract String setterFormat();
