@@ -35,14 +35,9 @@ public class MapFieldHandler extends AbstractFieldHandler {
 
     private final FieldValueParser keyParser;
 
-    // todo create builder for ctors with arg count > 3.
-    MapFieldHandler(FieldDescriptor field,
-                    FieldValueChecker valueChecker,
-                    FieldValueParser keyParser,
-                    FieldValueParser valueParser,
-                    JsGenerator jsGenerator) {
-        super(field, valueChecker, valueParser, jsGenerator);
-        this.keyParser = keyParser;
+    private MapFieldHandler(Builder builder) {
+        super(builder);
+        this.keyParser = builder.keyParser;
     }
 
     // todo try string format instead of concatenation everywhere
@@ -81,5 +76,29 @@ public class MapFieldHandler extends AbstractFieldHandler {
         jsWriter().exitBlock();
         jsWriter().exitBlock();
         jsWriter().exitBlock();
+    }
+
+    static Builder newBuilder() {
+        return new Builder();
+    }
+
+    static class Builder extends AbstractFieldHandler.Builder<Builder> {
+
+        private FieldValueParser keyParser;
+
+        public Builder setKeyParser(FieldValueParser keyParser) {
+            this.keyParser = keyParser;
+            return self();
+        }
+
+        @Override
+        Builder self() {
+            return this;
+        }
+
+        @Override
+        MapFieldHandler build() {
+            return new MapFieldHandler(this);
+        }
     }
 }

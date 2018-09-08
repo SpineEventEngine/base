@@ -20,11 +20,6 @@
 
 package io.spine.tools.protojs.field;
 
-import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.tools.protojs.code.JsGenerator;
-import io.spine.tools.protojs.field.checker.FieldValueChecker;
-import io.spine.tools.protojs.field.parser.FieldValueParser;
-
 import static io.spine.tools.protojs.field.Fields.capitalizedName;
 import static io.spine.tools.protojs.message.MessageHandler.MESSAGE;
 
@@ -32,11 +27,8 @@ public class RepeatedFieldHandler extends AbstractFieldHandler {
 
     private static final String LIST_ITEM = "listItem";
 
-    RepeatedFieldHandler(FieldDescriptor field,
-                         FieldValueChecker checker,
-                         FieldValueParser parser,
-                         JsGenerator jsGenerator) {
-        super(field, checker, parser, jsGenerator);
+    private RepeatedFieldHandler(Builder builder) {
+        super(builder);
     }
 
     @Override
@@ -68,5 +60,22 @@ public class RepeatedFieldHandler extends AbstractFieldHandler {
         jsWriter().decreaseDepth();
         jsWriter().addLine(");");
         jsWriter().exitBlock();
+    }
+
+    static Builder newBuilder() {
+        return new Builder();
+    }
+
+    static class Builder extends AbstractFieldHandler.Builder<Builder> {
+
+        @Override
+        Builder self() {
+            return this;
+        }
+
+        @Override
+        RepeatedFieldHandler build() {
+            return new RepeatedFieldHandler(this);
+        }
     }
 }

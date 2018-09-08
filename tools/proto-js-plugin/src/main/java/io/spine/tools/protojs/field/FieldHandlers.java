@@ -49,22 +49,40 @@ public final class FieldHandlers {
         FieldValueParser keyParser = keyParser(field, jsGenerator);
         FieldValueParser valueParser = valueParser(field, jsGenerator);
         FieldValueChecker valueChecker = valueChecker(field, jsGenerator);
-        FieldHandler handler =
-                new MapFieldHandler(field, valueChecker, keyParser, valueParser, jsGenerator);
+        FieldHandler handler = MapFieldHandler
+                .newBuilder()
+                .setField(field)
+                .setChecker(valueChecker)
+                .setKeyParser(keyParser)
+                .setParser(valueParser)
+                .setJsGenerator(jsGenerator)
+                .build();
         return handler;
     }
 
     private static FieldHandler repeatedHandler(FieldDescriptor field, JsGenerator jsGenerator) {
         FieldValueChecker checker = checkerFor(field, jsGenerator);
         FieldValueParser parser = parserFor(field, jsGenerator);
-        FieldHandler handler = new RepeatedFieldHandler(field, checker, parser, jsGenerator);
+        FieldHandler handler = RepeatedFieldHandler
+                .newBuilder()
+                .setField(field)
+                .setChecker(checker)
+                .setParser(parser)
+                .setJsGenerator(jsGenerator)
+                .build();
         return handler;
     }
 
     private static FieldHandler singularHandler(FieldDescriptor field, JsGenerator jsGenerator) {
         FieldValueChecker checker = checkerFor(field, jsGenerator);
         FieldValueParser parser = parserFor(field, jsGenerator);
-        FieldHandler handler = new SingularFieldHandler(field, checker, parser, jsGenerator);
+        FieldHandler handler = SingularFieldHandler
+                .newBuilder()
+                .setField(field)
+                .setChecker(checker)
+                .setParser(parser)
+                .setJsGenerator(jsGenerator)
+                .build();
         return handler;
     }
 

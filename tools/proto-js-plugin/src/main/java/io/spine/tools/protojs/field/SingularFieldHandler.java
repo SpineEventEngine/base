@@ -20,21 +20,13 @@
 
 package io.spine.tools.protojs.field;
 
-import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.tools.protojs.code.JsGenerator;
-import io.spine.tools.protojs.field.checker.FieldValueChecker;
-import io.spine.tools.protojs.field.parser.FieldValueParser;
-
 import static io.spine.tools.protojs.field.Fields.capitalizedName;
 import static io.spine.tools.protojs.message.MessageHandler.MESSAGE;
 
 public class SingularFieldHandler extends AbstractFieldHandler {
 
-    SingularFieldHandler(FieldDescriptor field,
-                         FieldValueChecker fieldValueChecker,
-                         FieldValueParser fieldValueParser,
-                         JsGenerator jsGenerator) {
-        super(field, fieldValueChecker, fieldValueParser, jsGenerator);
+    private SingularFieldHandler(Builder builder) {
+        super(builder);
     }
 
     @Override
@@ -59,5 +51,22 @@ public class SingularFieldHandler extends AbstractFieldHandler {
 
     private void exitUndefinedCheck() {
         jsWriter().exitBlock();
+    }
+
+    static Builder newBuilder() {
+        return new Builder();
+    }
+
+    static class Builder extends AbstractFieldHandler.Builder<Builder> {
+
+        @Override
+        Builder self() {
+            return this;
+        }
+
+        @Override
+        SingularFieldHandler build() {
+            return new SingularFieldHandler(this);
+        }
     }
 }

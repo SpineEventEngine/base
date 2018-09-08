@@ -37,14 +37,11 @@ abstract class AbstractFieldHandler implements FieldHandler {
     private final FieldValueParser parser;
     private final JsGenerator jsGenerator;
 
-    AbstractFieldHandler(FieldDescriptor field,
-                         FieldValueChecker checker,
-                         FieldValueParser parser,
-                         JsGenerator jsGenerator) {
-        this.field = field;
-        this.checker = checker;
-        this.parser = parser;
-        this.jsGenerator = jsGenerator;
+    AbstractFieldHandler(Builder builder) {
+        this.field = builder.field;
+        this.checker = builder.checker;
+        this.parser = builder.parser;
+        this.jsGenerator = builder.jsGenerator;
     }
 
     String acquireJsObject() {
@@ -75,4 +72,36 @@ abstract class AbstractFieldHandler implements FieldHandler {
     }
 
     abstract String setterFormat();
+
+    abstract static class Builder<B extends Builder<B>> {
+
+        private FieldDescriptor field;
+        private FieldValueChecker checker;
+        private FieldValueParser parser;
+        private JsGenerator jsGenerator;
+
+        public B setField(FieldDescriptor field) {
+            this.field = field;
+            return self();
+        }
+
+        public B setChecker(FieldValueChecker checker) {
+            this.checker = checker;
+            return self();
+        }
+
+        public B setParser(FieldValueParser parser) {
+            this.parser = parser;
+            return self();
+        }
+
+        public B setJsGenerator(JsGenerator jsGenerator) {
+            this.jsGenerator = jsGenerator;
+            return self();
+        }
+
+        abstract B self();
+
+        abstract AbstractFieldHandler build();
+    }
 }
