@@ -66,40 +66,30 @@ public class ParserMapGenerator {
 
     void generateJs() {
         jsGenerator.addEmptyLine();
-        jsGenerator.addLine("export const " + MAP_NAME + " = new Map([");
-        jsGenerator.increaseDepth();
+        jsGenerator.exportMap(MAP_NAME);
         storeKnownTypeParsers();
-        jsGenerator.decreaseDepth();
-        jsGenerator.addLine("]);");
+        jsGenerator.quitMapExport();
     }
 
     private void storeKnownTypeParsers() {
         ImmutableSet<Entry<TypeUrl, String>> entries = parsers.entrySet();
         for (UnmodifiableIterator<Entry<TypeUrl, String>> it = entries.iterator(); it.hasNext(); ) {
-            Entry<TypeUrl, String> entry = it.next();
+            Entry<TypeUrl, String> typeToParser = it.next();
             boolean isLastEntry = !it.hasNext();
-            addMapEntry(entry, isLastEntry);
+            addMapEntry(typeToParser, isLastEntry);
         }
     }
 
-    private void addMapEntry(Entry<TypeUrl, String> entry, boolean isLastEntry) {
-        String jsMapEntry = jsMapEntry(entry);
-        String entryToAdd = appendCommaIfNecessary(jsMapEntry, isLastEntry);
-        jsGenerator.addLine(entryToAdd);
+    private void addMapEntry(Entry<TypeUrl, String> typeToParser, boolean isLastEntry) {
+        String mapEntry = jsMapEntry(typeToParser);
+        jsGenerator.addMapEntry(mapEntry, isLastEntry);
     }
 
-    private static String jsMapEntry(Entry<TypeUrl, String> entry) {
-        TypeUrl typeUrl = entry.getKey();
-        String parserName = entry.getValue();
+    private static String jsMapEntry(Entry<TypeUrl, String> typeToParser) {
+        TypeUrl typeUrl = typeToParser.getKey();
+        String parserName = typeToParser.getValue();
         String newParserCall = "new " + parserName + "()";
         String mapEntry = "['" + typeUrl + "', " + newParserCall + ']';
-        return mapEntry;
-    }
-
-    private static String appendCommaIfNecessary(String mapEntry, boolean isLast) {
-        if (!isLast) {
-            return mapEntry + ',';
-        }
         return mapEntry;
     }
 

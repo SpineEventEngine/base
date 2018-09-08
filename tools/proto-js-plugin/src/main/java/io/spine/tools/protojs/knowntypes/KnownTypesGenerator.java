@@ -71,11 +71,9 @@ class KnownTypesGenerator {
     }
 
     private void generateKnownTypesMap() {
-        jsGenerator.addLine("export const " + MAP_NAME + " = new Map([");
-        jsGenerator.increaseDepth();
+        jsGenerator.exportMap(MAP_NAME);
         storeKnownTypes();
-        jsGenerator.decreaseDepth();
-        jsGenerator.addLine("]);");
+        jsGenerator.quitMapExport();
     }
 
     private void storeKnownTypes() {
@@ -98,22 +96,13 @@ class KnownTypesGenerator {
 
     private void addMapEntry(Descriptor message, boolean isLastMessage) {
         String mapEntry = jsMapEntry(message);
-        String entryToAdd = appendCommaIfNecessary(mapEntry, isLastMessage);
-        jsGenerator.addLine(entryToAdd);
+        jsGenerator.addMapEntry(mapEntry, isLastMessage);
     }
 
     private static String jsMapEntry(Descriptor message) {
         TypeUrl typeUrl = TypeUrl.from(message);
         String typeName = typeWithProtoPrefix(message);
         String mapEntry = "['" + typeUrl + "', " + typeName + ']';
-        return mapEntry;
-    }
-
-    // todo think of common method for creating map
-    private static String appendCommaIfNecessary(String mapEntry, boolean isLast) {
-        if (!isLast) {
-            return mapEntry + ',';
-        }
         return mapEntry;
     }
 }

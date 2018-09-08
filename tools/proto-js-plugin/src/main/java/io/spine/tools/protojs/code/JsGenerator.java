@@ -92,7 +92,29 @@ public final class JsGenerator {
         addLine("}");
     }
 
+    public void exportMap(String mapName) {
+        addLine("export const " + mapName + " = new Map([");
+        increaseDepth();
+    }
+
+    public void addMapEntry(String entry, boolean isLast) {
+        String lineToAdd = appendCommaIfNotLast(entry, isLast);
+        addLine(lineToAdd);
+    }
+
+    public void quitMapExport() {
+        decreaseDepth();
+        addLine("]);");
+    }
+
     public JsOutput getGeneratedCode() {
         return generatedCode;
+    }
+
+    private static String appendCommaIfNotLast(String entry, boolean isLast) {
+        if (!isLast) {
+            return entry + ',';
+        }
+        return entry;
     }
 }
