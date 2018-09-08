@@ -66,7 +66,6 @@ public final class MessageHandler {
     private void addFromJsonCode(String typeName, String functionName) {
         jsGenerator.enterFunction(functionName, "json");
         jsGenerator.addLine("let jsonObject = JSON.parse(json);");
-        // todo add return helper to jsGenerator
         jsGenerator.addLine("return " + typeName + ".fromObject(jsonObject);");
         jsGenerator.exitFunction();
     }

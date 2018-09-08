@@ -64,7 +64,6 @@ public class KnownTypeParsersWriter {
         }
     }
 
-    // todo address "generate", "write", etc. naming
     private void writeParserMap() {
         int indent = 4;
         JsGenerator jsGenerator = new JsGenerator(indent);

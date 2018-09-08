@@ -37,7 +37,6 @@ public class PrimitiveFieldParser implements FieldValueParser {
 
     @Override
     public void parseIntoVariable(String value, String variable) {
-        // todo address variable naming (name them "valueVarName" or just "value" for instance), and how the return variable is defined
         PrimitiveParser parser = PrimitiveParsers.createFor(field, jsGenerator);
         parser.parseIntoVariable(value, variable);
     }
