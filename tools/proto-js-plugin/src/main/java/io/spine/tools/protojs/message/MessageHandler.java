@@ -53,17 +53,17 @@ public final class MessageHandler {
         jsGenerator.addEmptyLine();
         String typeName = typeWithProtoPrefix(message);
         String functionName = typeName + ".fromJson";
-        generateFromJsonCode(typeName, functionName);
+        addFromJsonCode(typeName, functionName);
     }
 
     private void generateFromObjectMethod() {
         jsGenerator.addEmptyLine();
         String typeName = typeWithProtoPrefix(message);
         String functionName = typeName + ".fromObject";
-        generateFromObjectCode(typeName, functionName);
+        addFromObjectCode(typeName, functionName);
     }
 
-    private void generateFromJsonCode(String typeName, String functionName) {
+    private void addFromJsonCode(String typeName, String functionName) {
         jsGenerator.enterFunction(functionName, "json");
         jsGenerator.addLine("let jsonObject = JSON.parse(json);");
         // todo add return helper to jsGenerator
@@ -71,15 +71,15 @@ public final class MessageHandler {
         jsGenerator.exitFunction();
     }
 
-    private void generateFromObjectCode(String typeName, String functionName) {
+    private void addFromObjectCode(String typeName, String functionName) {
         jsGenerator.enterFunction(functionName, FROM_OBJECT_ARG);
         jsGenerator.addLine("let " + MESSAGE + " = new " + typeName + "();");
-        generateFieldsCode();
+        handleMessageFields();
         jsGenerator.addLine("return " + MESSAGE + ';');
         jsGenerator.exitFunction();
     }
 
-    private void generateFieldsCode() {
+    private void handleMessageFields() {
         List<FieldDescriptor> fields = message.getFields();
         for (FieldDescriptor field : fields) {
             jsGenerator.addEmptyLine();
