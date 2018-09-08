@@ -24,8 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-// todo make all classes final and non-public where possible.
-
 /**
  * Meant to be read-only for all classes except {@link JsGenerator}.
  */
