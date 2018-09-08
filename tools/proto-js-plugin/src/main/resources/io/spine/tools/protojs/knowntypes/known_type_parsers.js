@@ -30,6 +30,8 @@ let duration = require('google-protobuf/google/protobuf/duration_pb.js');
 let field_mask = require('google-protobuf/google/protobuf/field_mask_pb.js');
 let any = require('google-protobuf/google/protobuf/any_pb.js');
 
+// todo document this file too
+
 class BoolValueParser {
 
     parse(value) {
@@ -199,7 +201,7 @@ class FieldMaskParser {
         return fieldMask;
     }
 }
-// todo revise this code
+
 class AnyParser {
 
     parse(value) {
