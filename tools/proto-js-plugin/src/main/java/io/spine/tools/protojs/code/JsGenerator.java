@@ -47,22 +47,18 @@ public final class JsGenerator {
         generatedCode.addLine(lineOfCode, currentDepth);
     }
 
+    public void addEmptyLine() {
+        addLine("");
+    }
+
     @SuppressWarnings("DuplicateStringLiteralInspection") // Duplication with unrelated module.
     public void returnValue(String value) {
         checkNotNull(value);
         addLine("return " + value + ';');
     }
 
-    public void addEmptyLine() {
-        addLine("");
-    }
-
-    public void increaseDepth() {
-        currentDepth++;
-    }
-
-    public void decreaseDepth() {
-        currentDepth--;
+    public void addComment(String comment) {
+        addLine("// " + comment);
     }
 
     /**
@@ -141,6 +137,14 @@ public final class JsGenerator {
     public void quitMapDeclaration() {
         decreaseDepth();
         addLine("]);");
+    }
+
+    public void increaseDepth() {
+        currentDepth++;
+    }
+
+    public void decreaseDepth() {
+        currentDepth--;
     }
 
     public JsOutput getGeneratedCode() {

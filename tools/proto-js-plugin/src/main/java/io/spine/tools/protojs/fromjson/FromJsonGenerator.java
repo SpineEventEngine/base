@@ -30,6 +30,8 @@ import static io.spine.tools.protojs.files.JsFiles.KNOWN_TYPE_PARSERS;
 
 public final class FromJsonGenerator {
 
+    private static final String COMMENT = "The code generated for parsing the Protobuf messages " +
+            "declared in this file from the JSON data.";
     public static final String PARSERS_IMPORT_NAME = "known_type_parsers";
 
     private final FileDescriptor file;
@@ -47,7 +49,7 @@ public final class FromJsonGenerator {
     }
 
     private void generateComment() {
-        // todo generate some comment explaining generated code
+        jsGenerator.addComment(COMMENT);
     }
 
     private void generateImports() {
