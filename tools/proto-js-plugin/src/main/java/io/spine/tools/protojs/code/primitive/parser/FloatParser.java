@@ -28,7 +28,7 @@ public class FloatParser extends AbstractPrimitiveParser {
 
     @Override
     public void parseIntoVariable(String value, String output) {
-        jsWriter().addLine("let " + output + " = parseFloat(" + value + ");");
+        jsGenerator().addLine("let " + output + " = parseFloat(" + value + ");");
     }
 
     public static Builder newBuilder() {

@@ -31,8 +31,8 @@ public class BytesParser extends AbstractPrimitiveParser {
 
     @Override
     public void parseIntoVariable(String value, String output) {
-        jsWriter().addLine("let " + BASE64_VAR + " = require('" + BASE64_LIB + "');");
-        jsWriter().addLine("let " + output + " = " + BASE64_VAR + ".toByteArray(" + value + ");");
+        jsGenerator().addLine("let " + BASE64_VAR + " = require('" + BASE64_LIB + "');");
+        jsGenerator().addLine("let " + output + " = " + BASE64_VAR + ".toByteArray(" + value + ");");
     }
 
     public static Builder newBuilder() {

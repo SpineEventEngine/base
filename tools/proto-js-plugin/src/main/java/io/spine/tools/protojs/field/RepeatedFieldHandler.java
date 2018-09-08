@@ -48,18 +48,18 @@ public class RepeatedFieldHandler extends AbstractFieldHandler {
     }
 
     private String iterateListValues(String jsObject) {
-        jsWriter().enterIfBlock(jsObject + " !== undefined && " + jsObject + " !== null");
-        jsWriter().addLine(jsObject + ".forEach(");
-        jsWriter().increaseDepth();
-        jsWriter().enterBlock('(' + LIST_ITEM + ", index, array) =>");
+        jsGenerator().enterIfBlock(jsObject + " !== undefined && " + jsObject + " !== null");
+        jsGenerator().addLine(jsObject + ".forEach(");
+        jsGenerator().increaseDepth();
+        jsGenerator().enterBlock('(' + LIST_ITEM + ", index, array) =>");
         return LIST_ITEM;
     }
 
     private void exitListValueIteration() {
-        jsWriter().exitBlock();
-        jsWriter().decreaseDepth();
-        jsWriter().addLine(");");
-        jsWriter().exitBlock();
+        jsGenerator().exitBlock();
+        jsGenerator().decreaseDepth();
+        jsGenerator().addLine(");");
+        jsGenerator().exitBlock();
     }
 
     static Builder newBuilder() {

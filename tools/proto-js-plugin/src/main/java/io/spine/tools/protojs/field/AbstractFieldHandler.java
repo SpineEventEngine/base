@@ -61,7 +61,7 @@ abstract class AbstractFieldHandler implements FieldHandler {
         return field;
     }
 
-    JsGenerator jsWriter() {
+    JsGenerator jsGenerator() {
         return jsGenerator;
     }
 

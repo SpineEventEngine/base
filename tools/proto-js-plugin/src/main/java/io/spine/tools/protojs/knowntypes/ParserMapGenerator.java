@@ -68,7 +68,7 @@ public class ParserMapGenerator {
         jsGenerator.addEmptyLine();
         jsGenerator.exportMap(MAP_NAME);
         storeKnownTypeParsers();
-        jsGenerator.quitMapExport();
+        jsGenerator.quitMapDeclaration();
     }
 
     private void storeKnownTypeParsers() {

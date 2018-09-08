@@ -20,6 +20,7 @@
 
 package io.spine.tools.protojs.code;
 
+import static java.lang.String.format;
 import static java.lang.String.join;
 import static java.lang.System.lineSeparator;
 
@@ -102,7 +103,7 @@ public final class JsGenerator {
         addLine(lineToAdd);
     }
 
-    public void quitMapExport() {
+    public void quitMapDeclaration() {
         decreaseDepth();
         addLine("]);");
     }

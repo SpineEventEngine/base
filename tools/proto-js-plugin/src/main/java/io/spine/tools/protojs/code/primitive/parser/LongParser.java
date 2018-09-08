@@ -28,7 +28,7 @@ public class LongParser extends AbstractPrimitiveParser {
 
     @Override
     public void parseIntoVariable(String value, String output) {
-        jsWriter().addLine("let " + output + " = parseInt(" + value + ");");
+        jsGenerator().addLine("let " + output + " = parseInt(" + value + ");");
     }
 
     public static Builder newBuilder() {

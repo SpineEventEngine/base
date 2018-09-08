@@ -30,7 +30,7 @@ abstract class AbstractPrimitiveParser implements PrimitiveParser {
         this.jsGenerator = builder.jsGenerator;
     }
 
-    JsGenerator jsWriter() {
+    JsGenerator jsGenerator() {
         return jsGenerator;
     }
 

@@ -73,7 +73,7 @@ class KnownTypesGenerator {
     private void generateKnownTypesMap() {
         jsGenerator.exportMap(MAP_NAME);
         storeKnownTypes();
-        jsGenerator.quitMapExport();
+        jsGenerator.quitMapDeclaration();
     }
 
     private void storeKnownTypes() {

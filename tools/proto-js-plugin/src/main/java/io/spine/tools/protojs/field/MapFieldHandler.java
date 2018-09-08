@@ -20,9 +20,6 @@
 
 package io.spine.tools.protojs.field;
 
-import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.tools.protojs.code.JsGenerator;
-import io.spine.tools.protojs.field.checker.FieldValueChecker;
 import io.spine.tools.protojs.field.parser.FieldValueParser;
 
 import static io.spine.tools.protojs.field.Fields.capitalizedName;
@@ -54,9 +51,9 @@ public class MapFieldHandler extends AbstractFieldHandler {
     @Override
     String setterFormat() {
         String fieldName = capitalizedName(field());
-        String getMapCall = "get" + fieldName + "Map()";
-        String setMapValueCall = "set(" + MAP_KEY + ", %s)";
-        String addToMapFormat = MESSAGE + '.' + getMapCall + '.' + setMapValueCall + ';';
+        String getMap = "get" + fieldName + "Map()";
+        String setMapValue = "set(" + MAP_KEY + ", %s)";
+        String addToMapFormat = MESSAGE + '.' + getMap + '.' + setMapValue + ';';
         return addToMapFormat;
     }
 
@@ -65,17 +62,17 @@ public class MapFieldHandler extends AbstractFieldHandler {
     }
 
     private String iterateOwnAttributes(String jsObject) {
-        jsWriter().enterIfBlock(jsObject + " !== undefined && " + jsObject + " !== null");
-        jsWriter().enterBlock("for (let " + ATTRIBUTE + " in " + jsObject + ')');
-        jsWriter().enterIfBlock(jsObject + ".hasOwnProperty(" + ATTRIBUTE + ')');
+        jsGenerator().enterIfBlock(jsObject + " !== undefined && " + jsObject + " !== null");
+        jsGenerator().enterBlock("for (let " + ATTRIBUTE + " in " + jsObject + ')');
+        jsGenerator().enterIfBlock(jsObject + ".hasOwnProperty(" + ATTRIBUTE + ')');
         String value = jsObject + '[' + ATTRIBUTE + ']';
         return value;
     }
 
     private void exitOwnAttributeIteration() {
-        jsWriter().exitBlock();
-        jsWriter().exitBlock();
-        jsWriter().exitBlock();
+        jsGenerator().exitBlock();
+        jsGenerator().exitBlock();
+        jsGenerator().exitBlock();
     }
 
     static Builder newBuilder() {

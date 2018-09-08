@@ -28,7 +28,7 @@ public class IdentityParser extends AbstractPrimitiveParser {
 
     @Override
     public void parseIntoVariable(String value, String output) {
-        jsWriter().addLine("let " + output + " = " + value + ';');
+        jsGenerator().addLine("let " + output + " = " + value + ';');
     }
 
     public static Builder newBuilder() {

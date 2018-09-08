@@ -31,7 +31,7 @@ class EnumParser extends AbstractPrimitiveParser {
 
     @Override
     public void parseIntoVariable(String value, String output) {
-        jsWriter().addLine("let " + output + " = " + enumType + '[' + value + "];");
+        jsGenerator().addLine("let " + output + " = " + enumType + '[' + value + "];");
     }
 
     public static Builder newBuilder() {
