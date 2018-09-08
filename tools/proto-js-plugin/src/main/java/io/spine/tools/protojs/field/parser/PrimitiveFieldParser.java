@@ -25,6 +25,8 @@ import io.spine.tools.protojs.code.JsGenerator;
 import io.spine.tools.protojs.code.primitive.parser.PrimitiveParser;
 import io.spine.tools.protojs.code.primitive.parser.PrimitiveParsers;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 final class PrimitiveFieldParser implements FieldValueParser {
 
     private final FieldDescriptor field;
@@ -37,6 +39,9 @@ final class PrimitiveFieldParser implements FieldValueParser {
 
     @Override
     public void parseIntoVariable(String value, String variable) {
+        checkNotNull(value);
+        checkNotNull(variable);
+
         PrimitiveParser parser = PrimitiveParsers.createFor(field, jsGenerator);
         parser.parseIntoVariable(value, variable);
     }

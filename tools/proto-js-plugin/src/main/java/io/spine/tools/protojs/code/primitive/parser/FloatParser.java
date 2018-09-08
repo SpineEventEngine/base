@@ -20,6 +20,8 @@
 
 package io.spine.tools.protojs.code.primitive.parser;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 final class FloatParser extends AbstractPrimitiveParser {
 
     private FloatParser(Builder builder) {
@@ -28,6 +30,8 @@ final class FloatParser extends AbstractPrimitiveParser {
 
     @Override
     public void parseIntoVariable(String value, String output) {
+        checkNotNull(value);
+        checkNotNull(output);
         jsGenerator().addLine("let " + output + " = parseFloat(" + value + ");");
     }
 

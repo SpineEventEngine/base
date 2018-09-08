@@ -20,6 +20,8 @@
 
 package io.spine.tools.protojs.code;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 public final class JsImportGenerator {
 
     private static final String PARENT_DIR = "../";
@@ -33,28 +35,35 @@ public final class JsImportGenerator {
     }
 
     public static JsImportGenerator createFor(String filePath) {
+        checkNotNull(filePath);
         String pathToRoot = composePathToRoot(filePath);
         return new JsImportGenerator(pathToRoot);
     }
 
     public String importStatement(String fileToImport) {
+        checkNotNull(fileToImport);
         String importPath = importPrefix + fileToImport;
         String importStatement = rawImport(importPath);
         return importStatement;
     }
 
     public String namedImport(String fileToImport, String importName) {
+        checkNotNull(fileToImport);
+        checkNotNull(importName);
         String importPath = importPrefix + fileToImport;
         String importStatement = rawNamedImport(importPath, importName);
         return importStatement;
     }
 
     public static String rawImport(String importPath) {
+        checkNotNull(importPath);
         String importStatement = "require('" + importPath + "');";
         return importStatement;
     }
 
     public static String rawNamedImport(String importPath, String importName) {
+        checkNotNull(importPath);
+        checkNotNull(importName);
         String importStatement = "let " + importName + " = require('" + importPath + "');";
         return importStatement;
     }

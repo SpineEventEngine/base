@@ -27,6 +27,7 @@ import io.spine.tools.protojs.code.JsOutput;
 import java.io.IOException;
 import java.nio.file.Path;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static java.nio.file.Files.write;
 import static java.nio.file.StandardOpenOption.APPEND;
 import static java.nio.file.StandardOpenOption.CREATE;
@@ -44,6 +45,8 @@ public final class JsFiles {
 
 // todo make sure to get rid of all magic numbers and strings
     public static void writeToFile(Path path, JsOutput output) {
+        checkNotNull(path);
+        checkNotNull(output);
         try {
             String content = output.toString();
             write(path, content.getBytes(), CREATE, TRUNCATE_EXISTING);
@@ -53,15 +56,18 @@ public final class JsFiles {
     }
 
     public static void appendToFile(Path path, JsOutput output) {
+        checkNotNull(path);
+        checkNotNull(output);
         try {
             String content = output.toString();
-            write(path, content.getBytes(), APPEND);
+            write(path, content.getBytes(), CREATE, APPEND);
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
     }
 
     public static String jsFileName(FileDescriptor file) {
+        checkNotNull(file);
         FileName fileName = FileName.from(file);
         String nameWithoutExtension = fileName.nameWithoutExtension();
         String jsFileName = nameWithoutExtension + JS_PROTO_SUFFIX;

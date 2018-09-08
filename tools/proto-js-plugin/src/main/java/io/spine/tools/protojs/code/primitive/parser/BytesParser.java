@@ -20,6 +20,7 @@
 
 package io.spine.tools.protojs.code.primitive.parser;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.protojs.code.JsImportGenerator.rawNamedImport;
 
 final class BytesParser extends AbstractPrimitiveParser {
@@ -33,6 +34,8 @@ final class BytesParser extends AbstractPrimitiveParser {
 
     @Override
     public void parseIntoVariable(String value, String output) {
+        checkNotNull(value);
+        checkNotNull(output);
         String importStatement = rawNamedImport(BASE64_LIB, BASE64_VAR);
         jsGenerator().addLine(importStatement);
         String valueToByteArray = BASE64_VAR + ".toByteArray(" + value + ')';

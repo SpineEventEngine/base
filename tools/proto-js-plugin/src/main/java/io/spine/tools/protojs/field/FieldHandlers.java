@@ -25,6 +25,7 @@ import io.spine.tools.protojs.code.JsGenerator;
 import io.spine.tools.protojs.field.checker.FieldValueChecker;
 import io.spine.tools.protojs.field.parser.FieldValueParser;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.protojs.field.Fields.isMap;
 import static io.spine.tools.protojs.field.Fields.isRepeated;
 import static io.spine.tools.protojs.field.checker.FieldValueCheckers.checkerFor;
@@ -41,6 +42,8 @@ public final class FieldHandlers {
     }
 
     public static FieldHandler createFor(FieldDescriptor field, JsGenerator jsGenerator) {
+        checkNotNull(field);
+        checkNotNull(jsGenerator);
         if (isMap(field)) {
             return mapHandler(field, jsGenerator);
         }

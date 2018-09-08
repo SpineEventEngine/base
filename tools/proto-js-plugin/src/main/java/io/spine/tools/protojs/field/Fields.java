@@ -27,6 +27,7 @@ import io.spine.code.proto.FieldName;
 import io.spine.tools.protojs.knowntypes.ParserMapGenerator;
 import io.spine.type.TypeUrl;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Label.LABEL_REPEATED;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.MESSAGE;
 
@@ -39,11 +40,13 @@ public final class Fields {
     }
 
     public static boolean isMessage(FieldDescriptor field) {
+        checkNotNull(field);
         boolean isMessage = field.getType() == MESSAGE;
         return isMessage;
     }
 
     public static boolean isWellKnownType(FieldDescriptor field) {
+        checkNotNull(field);
         Descriptor message = field.getMessageType();
         TypeUrl typeUrl = TypeUrl.from(message);
         boolean isWellKnownType = ParserMapGenerator.hasParser(typeUrl);
@@ -51,12 +54,14 @@ public final class Fields {
     }
 
     public static boolean isRepeated(FieldDescriptor field) {
+        checkNotNull(field);
         FieldDescriptorProto proto = field.toProto();
         boolean isRepeated = proto.getLabel() == LABEL_REPEATED && !isMap(field);
         return isRepeated;
     }
 
     public static boolean isMap(FieldDescriptor field) {
+        checkNotNull(field);
         FieldDescriptorProto proto = field.toProto();
         if (proto.getLabel() != LABEL_REPEATED) {
             return false;
@@ -72,6 +77,7 @@ public final class Fields {
     }
 
     public static String capitalizedName(FieldDescriptor field) {
+        checkNotNull(field);
         FieldDescriptorProto proto = field.toProto();
         String capitalizedName = FieldName.of(proto)
                                           .toCamelCase();

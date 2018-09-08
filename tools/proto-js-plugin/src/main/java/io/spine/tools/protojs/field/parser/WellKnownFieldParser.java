@@ -26,6 +26,7 @@ import io.spine.tools.protojs.code.JsGenerator;
 import io.spine.tools.protojs.knowntypes.ParserMapGenerator;
 import io.spine.type.TypeUrl;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.protojs.fromjson.FromJsonGenerator.PARSERS_IMPORT_NAME;
 
 final class WellKnownFieldParser implements FieldValueParser {
@@ -40,6 +41,8 @@ final class WellKnownFieldParser implements FieldValueParser {
 
     @Override
     public void parseIntoVariable(String value, String variable) {
+        checkNotNull(value);
+        checkNotNull(variable);
         Descriptor fieldType = field.getMessageType();
         TypeUrl typeUrl = TypeUrl.from(fieldType);
         String parserMap = PARSERS_IMPORT_NAME + '.' + ParserMapGenerator.MAP_NAME;

@@ -22,6 +22,8 @@ package io.spine.tools.protojs.field.checker;
 
 import io.spine.tools.protojs.code.JsGenerator;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 final class PrimitiveFieldChecker implements FieldValueChecker {
 
     private final JsGenerator jsGenerator;
@@ -32,6 +34,8 @@ final class PrimitiveFieldChecker implements FieldValueChecker {
 
     @Override
     public void performNullCheck(String fieldValue, String setterFormat) {
+        checkNotNull(fieldValue);
+        checkNotNull(setterFormat);
         jsGenerator.ifNotNull(fieldValue);
     }
 

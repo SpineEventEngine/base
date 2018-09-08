@@ -26,6 +26,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.code.proto.FileDescriptors.KNOWN_TYPES;
 
 @SuppressWarnings("DuplicateStringLiteralInspection") // Random duplication of path elements.
@@ -38,21 +39,25 @@ public final class ProjectFiles {
     }
 
     public static Path mainProtoJsLocation(Project project) {
+        checkNotNull(project);
         Path location = protoJsLocation(project, MAIN);
         return location;
     }
 
     public static Path testProtoJsLocation(Project project) {
+        checkNotNull(project);
         Path location = protoJsLocation(project, TEST);
         return location;
     }
 
     public static File mainDescriptorSetFile(Project project) {
+        checkNotNull(project);
         File file = descriptorSetFile(project, MAIN);
         return file;
     }
 
     public static File testDescriptorSetFile(Project project) {
+        checkNotNull(project);
         File file = descriptorSetFile(project, TEST);
         return file;
     }

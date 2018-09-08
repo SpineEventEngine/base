@@ -20,6 +20,8 @@
 
 package io.spine.tools.protojs.code.primitive.parser;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 final class LongParser extends AbstractPrimitiveParser {
 
     private LongParser(Builder builder) {
@@ -28,6 +30,8 @@ final class LongParser extends AbstractPrimitiveParser {
 
     @Override
     public void parseIntoVariable(String value, String output) {
+        checkNotNull(value);
+        checkNotNull(output);
         jsGenerator().addLine("let " + output + " = parseInt(" + value + ");");
     }
 

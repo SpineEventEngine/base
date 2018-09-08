@@ -23,6 +23,7 @@ package io.spine.tools.protojs.field.checker;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.tools.protojs.code.JsGenerator;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.protojs.field.Fields.isMessage;
 
 public final class FieldValueCheckers {
@@ -31,6 +32,9 @@ public final class FieldValueCheckers {
     }
 
     public static FieldValueChecker checkerFor(FieldDescriptor field, JsGenerator jsGenerator) {
+        checkNotNull(field);
+        checkNotNull(jsGenerator);
+
         if (isMessage(field)) {
             return new MessageFieldChecker(field, jsGenerator);
         }

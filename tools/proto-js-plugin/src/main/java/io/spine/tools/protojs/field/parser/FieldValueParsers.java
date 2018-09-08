@@ -23,6 +23,7 @@ package io.spine.tools.protojs.field.parser;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.tools.protojs.code.JsGenerator;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.protojs.field.Fields.isMessage;
 import static io.spine.tools.protojs.field.Fields.isWellKnownType;
 
@@ -32,6 +33,9 @@ public final class FieldValueParsers {
     }
 
     public static FieldValueParser parserFor(FieldDescriptor field, JsGenerator jsGenerator) {
+        checkNotNull(field);
+        checkNotNull(jsGenerator);
+
         if (isMessage(field)) {
             return isWellKnownType(field)
                     ? new WellKnownFieldParser(field, jsGenerator)

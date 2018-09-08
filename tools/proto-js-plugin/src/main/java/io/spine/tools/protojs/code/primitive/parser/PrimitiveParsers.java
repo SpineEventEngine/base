@@ -28,6 +28,7 @@ import io.spine.tools.protojs.code.JsGenerator;
 
 import java.util.Map;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.BOOL;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.BYTES;
@@ -55,6 +56,8 @@ public final class PrimitiveParsers {
     }
 
     public static PrimitiveParser createFor(FieldDescriptor field, JsGenerator jsGenerator) {
+        checkNotNull(field);
+        checkNotNull(jsGenerator);
         Type type = field.getType();
         if (type == ENUM) {
             return enumParser(field, jsGenerator);

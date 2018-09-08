@@ -24,6 +24,7 @@ import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.tools.protojs.code.JsGenerator;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.protojs.types.Types.typeWithProtoPrefix;
 
 final class MessageFieldParser implements FieldValueParser {
@@ -38,6 +39,9 @@ final class MessageFieldParser implements FieldValueParser {
 
     @Override
     public void parseIntoVariable(String value, String variable) {
+        checkNotNull(value);
+        checkNotNull(variable);
+
         Descriptor fieldType = field.getMessageType();
         String typeName = typeWithProtoPrefix(fieldType);
         jsGenerator.addLine("let " + variable + " = " + typeName + ".fromObject(" + value + ");");

@@ -27,6 +27,7 @@ import io.spine.tools.protojs.code.JsOutput;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.protojs.files.JsFiles.KNOWN_TYPES;
 import static io.spine.tools.protojs.files.JsFiles.writeToFile;
 
@@ -41,6 +42,8 @@ public final class KnownTypesWriter {
     }
 
     public static KnownTypesWriter createFor(Path protoJsLocation, FileSet protoJsFiles) {
+        checkNotNull(protoJsLocation);
+        checkNotNull(protoJsFiles);
         Path path = composeFilePath(protoJsLocation);
         return new KnownTypesWriter(path, protoJsFiles);
     }

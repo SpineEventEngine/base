@@ -23,6 +23,8 @@ package io.spine.tools.protojs.types;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.EnumDescriptor;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 public final class Types {
 
     private static final String PREFIX = "proto.";
@@ -31,12 +33,14 @@ public final class Types {
     }
 
     public static String typeWithProtoPrefix(Descriptor message) {
+        checkNotNull(message);
         String typeName = message.getFullName();
         String nameWithPrefix = PREFIX + typeName;
         return nameWithPrefix;
     }
 
     public static String typeWithProtoPrefix(EnumDescriptor enumDescriptor) {
+        checkNotNull(enumDescriptor);
         String typeName = enumDescriptor.getFullName();
         String nameWithPrefix = PREFIX + typeName;
         return nameWithPrefix;

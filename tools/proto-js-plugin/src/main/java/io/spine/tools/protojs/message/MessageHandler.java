@@ -28,6 +28,7 @@ import io.spine.tools.protojs.field.FieldHandlers;
 
 import java.util.List;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.protojs.types.Types.typeWithProtoPrefix;
 
 // todo add check not null everywhere
@@ -47,6 +48,8 @@ public final class MessageHandler {
     }
 
     public static MessageHandler createFor(Descriptor message, JsGenerator jsGenerator) {
+        checkNotNull(message);
+        checkNotNull(jsGenerator);
         return new MessageHandler(message, jsGenerator);
     }
 

@@ -20,6 +20,7 @@
 
 package io.spine.tools.protojs.code;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.join;
 import static java.lang.System.lineSeparator;
 
@@ -42,14 +43,16 @@ public final class JsGenerator {
     }
 
     public void addLine(String lineOfCode) {
+        checkNotNull(lineOfCode);
         generatedCode.addLine(lineOfCode, currentDepth);
     }
 
     @SuppressWarnings("DuplicateStringLiteralInspection") // Duplication with unrelated module.
     public void returnValue(String value) {
+        checkNotNull(value);
         addLine("return " + value + ';');
-
     }
+
     public void addEmptyLine() {
         addLine("");
     }
@@ -66,6 +69,8 @@ public final class JsGenerator {
      * @param functionName full function name including type name
      */
     public void enterFunction(String functionName, String... functionArgs) {
+        checkNotNull(functionName);
+        checkNotNull(functionArgs);
         String argString = join(", ", functionArgs);
         addLine(functionName + " = function(" + argString + ") {");
         currentDepth++;
@@ -77,6 +82,7 @@ public final class JsGenerator {
     }
 
     public void enterIfBlock(String condition) {
+        checkNotNull(condition);
         enterBlock("if (" + condition + ')');
     }
 
@@ -87,6 +93,7 @@ public final class JsGenerator {
     }
 
     public void enterBlock(String blockHeader) {
+        checkNotNull(blockHeader);
         addLine(blockHeader + " {");
         currentDepth++;
     }
@@ -97,27 +104,33 @@ public final class JsGenerator {
     }
 
     public void ifNull(String value) {
+        checkNotNull(value);
         enterIfBlock(value + " === null");
     }
 
     public void ifNotNull(String value) {
+        checkNotNull(value);
         enterIfBlock(value + " !== null");
     }
 
     public void ifNotUndefined(String value) {
+        checkNotNull(value);
         enterIfBlock(value + " !== undefined");
     }
 
     public void ifNotNullOrUndefined(String value) {
+        checkNotNull(value);
         enterIfBlock(value + " !== undefined && " + value + " !== null");
     }
 
     public void exportMap(String mapName) {
+        checkNotNull(mapName);
         addLine("export const " + mapName + " = new Map([");
         increaseDepth();
     }
 
     public void addMapEntry(String entry, boolean isLast) {
+        checkNotNull(entry);
         if (isLast) {
             addLine(entry);
         } else {

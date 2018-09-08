@@ -20,8 +20,8 @@
 
 package io.spine.tools.protojs.knowntypes;
 
-import io.spine.tools.protojs.code.JsOutput;
 import io.spine.tools.protojs.code.JsGenerator;
+import io.spine.tools.protojs.code.JsOutput;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,6 +29,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.protojs.files.JsFiles.KNOWN_TYPE_PARSERS;
 import static io.spine.tools.protojs.files.JsFiles.appendToFile;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
@@ -45,6 +46,7 @@ public final class KnownTypeParsersWriter {
     }
 
     public static KnownTypeParsersWriter createFor(Path protoJsLocation) {
+        checkNotNull(protoJsLocation);
         Path filePath = composeFilePath(protoJsLocation);
         return new KnownTypeParsersWriter(filePath);
     }

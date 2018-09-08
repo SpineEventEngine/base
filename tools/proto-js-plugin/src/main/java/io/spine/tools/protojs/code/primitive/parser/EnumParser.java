@@ -20,6 +20,8 @@
 
 package io.spine.tools.protojs.code.primitive.parser;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 final class EnumParser extends AbstractPrimitiveParser {
 
     private final String enumType;
@@ -31,6 +33,8 @@ final class EnumParser extends AbstractPrimitiveParser {
 
     @Override
     public void parseIntoVariable(String value, String output) {
+        checkNotNull(value);
+        checkNotNull(output);
         jsGenerator().addLine("let " + output + " = " + enumType + '[' + value + "];");
     }
 

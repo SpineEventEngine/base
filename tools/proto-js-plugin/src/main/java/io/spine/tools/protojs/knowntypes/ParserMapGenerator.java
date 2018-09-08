@@ -43,6 +43,7 @@ import io.spine.type.TypeUrl;
 
 import java.util.Map.Entry;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.type.TypeUrl.of;
 
 @SuppressWarnings("OverlyCoupledClass")
@@ -60,6 +61,7 @@ public final class ParserMapGenerator {
     }
 
     public static boolean hasParser(TypeUrl typeUrl) {
+        checkNotNull(typeUrl);
         boolean hasParser = parsers.containsKey(typeUrl);
         return hasParser;
     }

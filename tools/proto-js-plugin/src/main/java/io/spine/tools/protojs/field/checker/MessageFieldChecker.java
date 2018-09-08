@@ -24,6 +24,8 @@ import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Value;
 import io.spine.tools.protojs.code.JsGenerator;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 final class MessageFieldChecker implements FieldValueChecker {
 
     private final FieldDescriptor field;
@@ -36,6 +38,9 @@ final class MessageFieldChecker implements FieldValueChecker {
 
     @Override
     public void performNullCheck(String fieldValue, String setterFormat) {
+        checkNotNull(fieldValue);
+        checkNotNull(setterFormat);
+
         if (isProtobufValueType()) {
             return;
         }

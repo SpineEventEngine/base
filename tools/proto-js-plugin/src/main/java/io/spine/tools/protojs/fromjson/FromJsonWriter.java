@@ -29,6 +29,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.protojs.files.JsFiles.appendToFile;
 import static io.spine.tools.protojs.files.JsFiles.jsFileName;
 
@@ -43,6 +44,8 @@ public final class FromJsonWriter {
     }
 
     public static FromJsonWriter createFor(Path protoJsLocation, FileSet protoJsFiles) {
+        checkNotNull(protoJsLocation);
+        checkNotNull(protoJsFiles);
         return new FromJsonWriter(protoJsLocation, protoJsFiles);
     }
 
