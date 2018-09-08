@@ -41,9 +41,13 @@ public final class MessageHandler {
     private final Descriptor message;
     private final JsGenerator jsGenerator;
 
-    public MessageHandler(Descriptor message, JsGenerator jsGenerator) {
+    private MessageHandler(Descriptor message, JsGenerator jsGenerator) {
         this.message = message;
         this.jsGenerator = jsGenerator;
+    }
+
+    public static MessageHandler createFor(Descriptor message, JsGenerator jsGenerator) {
+        return new MessageHandler(message, jsGenerator);
     }
 
     public void generateJs() {

@@ -28,7 +28,7 @@ import io.spine.type.TypeUrl;
 
 import static io.spine.tools.protojs.fromjson.FromJsonGenerator.PARSERS_IMPORT_NAME;
 
-class WellKnownFieldParser implements FieldValueParser {
+final class WellKnownFieldParser implements FieldValueParser {
 
     private final FieldDescriptor field;
     private final JsGenerator jsGenerator;

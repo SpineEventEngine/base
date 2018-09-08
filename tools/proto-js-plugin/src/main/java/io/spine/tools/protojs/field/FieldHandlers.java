@@ -34,7 +34,7 @@ public final class FieldHandlers {
 
     private static final String MAP_ENTRY_KEY = "key";
 
-    @SuppressWarnings("DuplicateStringLiteralInspection") // Random duplication
+    @SuppressWarnings("DuplicateStringLiteralInspection") // Random duplication.
     private static final String MAP_ENTRY_VALUE = "value";
 
     private FieldHandlers() {
@@ -54,6 +54,7 @@ public final class FieldHandlers {
         FieldValueParser keyParser = keyParser(field, jsGenerator);
         FieldValueParser valueParser = valueParser(field, jsGenerator);
         FieldValueChecker valueChecker = valueChecker(field, jsGenerator);
+
         FieldHandler handler = MapFieldHandler
                 .newBuilder()
                 .setField(field)
@@ -68,6 +69,7 @@ public final class FieldHandlers {
     private static FieldHandler repeatedHandler(FieldDescriptor field, JsGenerator jsGenerator) {
         FieldValueChecker checker = checkerFor(field, jsGenerator);
         FieldValueParser parser = parserFor(field, jsGenerator);
+
         FieldHandler handler = RepeatedFieldHandler
                 .newBuilder()
                 .setField(field)
@@ -81,6 +83,7 @@ public final class FieldHandlers {
     private static FieldHandler singularHandler(FieldDescriptor field, JsGenerator jsGenerator) {
         FieldValueChecker checker = checkerFor(field, jsGenerator);
         FieldValueParser parser = parserFor(field, jsGenerator);
+
         FieldHandler handler = SingularFieldHandler
                 .newBuilder()
                 .setField(field)

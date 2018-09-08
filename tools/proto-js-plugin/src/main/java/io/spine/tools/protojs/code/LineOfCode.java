@@ -25,7 +25,7 @@ import java.util.List;
 import static java.lang.String.join;
 import static java.util.Collections.nCopies;
 
-class LineOfCode {
+final class LineOfCode {
 
     private static final String SPACE = " ";
 

@@ -32,14 +32,18 @@ import java.nio.file.Paths;
 import static io.spine.tools.protojs.files.JsFiles.appendToFile;
 import static io.spine.tools.protojs.files.JsFiles.jsFileName;
 
-public class FromJsonWriter {
+public final class FromJsonWriter {
 
     private final Path protoJsLocation;
     private final FileSet protoJsFiles;
 
-    public FromJsonWriter(Path protoJsLocation, FileSet protoJsFiles) {
+    private FromJsonWriter(Path protoJsLocation, FileSet protoJsFiles) {
         this.protoJsLocation = protoJsLocation;
         this.protoJsFiles = protoJsFiles;
+    }
+
+    public static FromJsonWriter createFor(Path protoJsLocation, FileSet protoJsFiles) {
+        return new FromJsonWriter(protoJsLocation, protoJsFiles);
     }
 
     public void writeIntoFiles() {

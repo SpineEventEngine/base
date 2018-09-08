@@ -30,7 +30,6 @@ import io.spine.type.TypeUrl;
 import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Label.LABEL_REPEATED;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.MESSAGE;
 
-@SuppressWarnings("WeakerAccess") // Methods left public for consistency.
 public final class Fields {
 
     @SuppressWarnings("DuplicateStringLiteralInspection") // Duplication with unrelated module.

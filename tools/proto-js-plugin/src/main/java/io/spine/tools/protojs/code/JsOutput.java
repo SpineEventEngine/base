@@ -41,7 +41,7 @@ public final class JsOutput {
         this.indent = indent;
     }
 
-    public void addLine(String code, int depthLevel) {
+    void addLine(String code, int depthLevel) {
         LineOfCode line = new LineOfCode(code, depthLevel);
         linesOfCode.add(line);
     }

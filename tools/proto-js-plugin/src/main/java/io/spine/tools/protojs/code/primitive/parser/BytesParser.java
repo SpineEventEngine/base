@@ -22,12 +22,12 @@ package io.spine.tools.protojs.code.primitive.parser;
 
 import static io.spine.tools.protojs.code.JsImportGenerator.rawNamedImport;
 
-public class BytesParser extends AbstractPrimitiveParser {
+final class BytesParser extends AbstractPrimitiveParser {
 
     private static final String BASE64_LIB = "base64-js";
     private static final String BASE64_VAR = "base64";
 
-    BytesParser(Builder builder) {
+    private BytesParser(Builder builder) {
         super(builder);
     }
 
@@ -39,7 +39,7 @@ public class BytesParser extends AbstractPrimitiveParser {
         jsGenerator().addLine("let " + output + " = " + valueToByteArray + ';');
     }
 
-    public static Builder newBuilder() {
+    static Builder newBuilder() {
         return new Builder();
     }
 

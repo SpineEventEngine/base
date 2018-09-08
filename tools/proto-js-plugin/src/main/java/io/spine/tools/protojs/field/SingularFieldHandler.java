@@ -23,7 +23,7 @@ package io.spine.tools.protojs.field;
 import static io.spine.tools.protojs.field.Fields.capitalizedName;
 import static io.spine.tools.protojs.message.MessageHandler.MESSAGE;
 
-public class SingularFieldHandler extends AbstractFieldHandler {
+public final class SingularFieldHandler extends AbstractFieldHandler {
 
     private SingularFieldHandler(Builder builder) {
         super(builder);

@@ -22,7 +22,7 @@ package io.spine.tools.protojs.field.checker;
 
 import io.spine.tools.protojs.code.JsGenerator;
 
-class PrimitiveFieldChecker implements FieldValueChecker {
+final class PrimitiveFieldChecker implements FieldValueChecker {
 
     private final JsGenerator jsGenerator;
 

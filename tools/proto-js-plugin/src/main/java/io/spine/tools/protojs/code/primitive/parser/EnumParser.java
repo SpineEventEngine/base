@@ -20,11 +20,11 @@
 
 package io.spine.tools.protojs.code.primitive.parser;
 
-class EnumParser extends AbstractPrimitiveParser {
+final class EnumParser extends AbstractPrimitiveParser {
 
     private final String enumType;
 
-    EnumParser(Builder builder) {
+    private EnumParser(Builder builder) {
         super(builder);
         this.enumType = builder.enumType;
     }
@@ -34,7 +34,7 @@ class EnumParser extends AbstractPrimitiveParser {
         jsGenerator().addLine("let " + output + " = " + enumType + '[' + value + "];");
     }
 
-    public static Builder newBuilder() {
+    static Builder newBuilder() {
         return new Builder();
     }
 

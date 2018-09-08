@@ -20,7 +20,7 @@
 
 package io.spine.tools.protojs.code;
 
-public class JsImportGenerator {
+public final class JsImportGenerator {
 
     private static final String PARENT_DIR = "../";
     private static final String CURRENT_DIR = "./";
@@ -49,7 +49,6 @@ public class JsImportGenerator {
         return importStatement;
     }
 
-    @SuppressWarnings("WeakerAccess") // Is left public for consistency.
     public static String rawImport(String importPath) {
         String importStatement = "require('" + importPath + "');";
         return importStatement;

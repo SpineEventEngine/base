@@ -30,7 +30,7 @@ import java.nio.file.Paths;
 import static io.spine.tools.protojs.files.JsFiles.KNOWN_TYPES;
 import static io.spine.tools.protojs.files.JsFiles.writeToFile;
 
-public class KnownTypesWriter {
+public final class KnownTypesWriter {
 
     private final Path filePath;
     private final FileSet protoJsFiles;

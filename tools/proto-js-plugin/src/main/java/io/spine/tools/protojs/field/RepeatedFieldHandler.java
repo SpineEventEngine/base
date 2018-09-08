@@ -23,7 +23,7 @@ package io.spine.tools.protojs.field;
 import static io.spine.tools.protojs.field.Fields.capitalizedName;
 import static io.spine.tools.protojs.message.MessageHandler.MESSAGE;
 
-public class RepeatedFieldHandler extends AbstractFieldHandler {
+public final class RepeatedFieldHandler extends AbstractFieldHandler {
 
     private static final String LIST_ITEM = "listItem";
 

@@ -24,7 +24,7 @@ import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Value;
 import io.spine.tools.protojs.code.JsGenerator;
 
-class MessageFieldChecker implements FieldValueChecker {
+final class MessageFieldChecker implements FieldValueChecker {
 
     private final FieldDescriptor field;
     private final JsGenerator jsGenerator;

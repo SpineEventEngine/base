@@ -28,7 +28,7 @@ import io.spine.tools.protojs.knowntypes.KnownTypesWriter;
 import java.io.File;
 import java.nio.file.Path;
 
-class ProtoFromJsonWriter {
+final class ProtoFromJsonWriter {
 
     private final Path protoJsLocation;
     private final FileSet protoJsFiles;
@@ -65,7 +65,7 @@ class ProtoFromJsonWriter {
     }
 
     private void writeFromJsonMethod() {
-        FromJsonWriter writer = new FromJsonWriter(protoJsLocation, protoJsFiles);
+        FromJsonWriter writer = FromJsonWriter.createFor(protoJsLocation, protoJsFiles);
         writer.writeIntoFiles();
     }
 

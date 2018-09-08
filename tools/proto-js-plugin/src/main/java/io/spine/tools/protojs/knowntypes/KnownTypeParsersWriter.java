@@ -33,10 +33,10 @@ import static io.spine.tools.protojs.files.JsFiles.KNOWN_TYPE_PARSERS;
 import static io.spine.tools.protojs.files.JsFiles.appendToFile;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
-public class KnownTypeParsersWriter {
+public final class KnownTypeParsersWriter {
 
-    private static final String PARSERS_CODE =
-            "io/spine/tools/protojs/knowntypes/" + KNOWN_TYPE_PARSERS;
+    private static final String RESOURCES_DIR = "io/spine/tools/protojs/knowntypes/";
+    private static final String PARSERS_CODE = RESOURCES_DIR + KNOWN_TYPE_PARSERS;
 
     private final Path filePath;
 

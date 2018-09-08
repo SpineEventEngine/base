@@ -20,9 +20,9 @@
 
 package io.spine.tools.protojs.code.primitive.parser;
 
-public class LongParser extends AbstractPrimitiveParser {
+final class LongParser extends AbstractPrimitiveParser {
 
-    LongParser(Builder builder) {
+    private LongParser(Builder builder) {
         super(builder);
     }
 
@@ -31,7 +31,7 @@ public class LongParser extends AbstractPrimitiveParser {
         jsGenerator().addLine("let " + output + " = parseInt(" + value + ");");
     }
 
-    public static Builder newBuilder() {
+    static Builder newBuilder() {
         return new Builder();
     }
 

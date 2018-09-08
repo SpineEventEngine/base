@@ -20,9 +20,9 @@
 
 package io.spine.tools.protojs.code.primitive.parser;
 
-public class FloatParser extends AbstractPrimitiveParser {
+final class FloatParser extends AbstractPrimitiveParser {
 
-    FloatParser(Builder builder) {
+    private FloatParser(Builder builder) {
         super(builder);
     }
 
@@ -31,7 +31,7 @@ public class FloatParser extends AbstractPrimitiveParser {
         jsGenerator().addLine("let " + output + " = parseFloat(" + value + ");");
     }
 
-    public static Builder newBuilder() {
+    static Builder newBuilder() {
         return new Builder();
     }
 

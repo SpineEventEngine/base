@@ -28,7 +28,7 @@ import io.spine.tools.protojs.message.MessageHandler;
 
 import static io.spine.tools.protojs.files.JsFiles.KNOWN_TYPE_PARSERS;
 
-public class FromJsonGenerator {
+public final class FromJsonGenerator {
 
     public static final String PARSERS_IMPORT_NAME = "known_type_parsers";
 
@@ -60,7 +60,7 @@ public class FromJsonGenerator {
 
     private void generateMethods() {
         for (Descriptor message : file.getMessageTypes()) {
-            MessageHandler handler = new MessageHandler(message, jsGenerator);
+            MessageHandler handler = MessageHandler.createFor(message, jsGenerator);
             handler.generateJs();
         }
     }

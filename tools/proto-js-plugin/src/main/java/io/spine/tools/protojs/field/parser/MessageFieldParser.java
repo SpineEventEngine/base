@@ -26,7 +26,7 @@ import io.spine.tools.protojs.code.JsGenerator;
 
 import static io.spine.tools.protojs.types.Types.typeWithProtoPrefix;
 
-class MessageFieldParser implements FieldValueParser {
+final class MessageFieldParser implements FieldValueParser {
 
     private final FieldDescriptor field;
     private final JsGenerator jsGenerator;

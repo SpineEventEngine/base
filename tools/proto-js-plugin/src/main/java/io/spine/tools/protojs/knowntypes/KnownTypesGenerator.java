@@ -35,7 +35,7 @@ import static io.spine.tools.protojs.files.JsFiles.KNOWN_TYPES;
 import static io.spine.tools.protojs.files.JsFiles.jsFileName;
 import static io.spine.tools.protojs.types.Types.typeWithProtoPrefix;
 
-class KnownTypesGenerator {
+final class KnownTypesGenerator {
 
     private static final String MAP_NAME = "types";
 

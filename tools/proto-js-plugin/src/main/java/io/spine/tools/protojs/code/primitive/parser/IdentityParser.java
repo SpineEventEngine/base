@@ -20,9 +20,9 @@
 
 package io.spine.tools.protojs.code.primitive.parser;
 
-public class IdentityParser extends AbstractPrimitiveParser {
+final class IdentityParser extends AbstractPrimitiveParser {
 
-    IdentityParser(Builder builder) {
+    private IdentityParser(Builder builder) {
         super(builder);
     }
 
@@ -31,7 +31,7 @@ public class IdentityParser extends AbstractPrimitiveParser {
         jsGenerator().addLine("let " + output + " = " + value + ';');
     }
 
-    public static Builder newBuilder() {
+    static Builder newBuilder() {
         return new Builder();
     }
 

@@ -47,7 +47,7 @@ import static io.spine.type.TypeUrl.of;
 
 @SuppressWarnings("OverlyCoupledClass")
 // Dependencies for listed known types.
-public class ParserMapGenerator {
+public final class ParserMapGenerator {
 
     public static final String MAP_NAME = "parsers";
 

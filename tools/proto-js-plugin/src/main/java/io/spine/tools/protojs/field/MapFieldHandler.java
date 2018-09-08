@@ -25,7 +25,7 @@ import io.spine.tools.protojs.field.parser.FieldValueParser;
 import static io.spine.tools.protojs.field.Fields.capitalizedName;
 import static io.spine.tools.protojs.message.MessageHandler.MESSAGE;
 
-public class MapFieldHandler extends AbstractFieldHandler {
+public final class MapFieldHandler extends AbstractFieldHandler {
 
     private static final String ATTRIBUTE = "attribute";
     private static final String MAP_KEY = "mapKey";
