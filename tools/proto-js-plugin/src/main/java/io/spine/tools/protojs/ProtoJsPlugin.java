@@ -55,23 +55,23 @@ public class ProtoJsPlugin extends SpinePlugin {
     }
 
     private static void generateFromJsonForProto(Project project) {
-        fromJsonForMain(project);
-        fromJsonForTest(project);
+        generateForMain(project);
+        generateForTest(project);
     }
 
-    private static void fromJsonForMain(Project project) {
+    private static void generateForMain(Project project) {
         Path protoJsLocation = mainProtoJsLocation(project);
         File descriptorSetFile = mainDescriptorSetFile(project);
-        fromJsonFor(protoJsLocation, descriptorSetFile);
+        generateFor(protoJsLocation, descriptorSetFile);
     }
 
-    private static void fromJsonForTest(Project project) {
+    private static void generateForTest(Project project) {
         Path protoJsLocation = testProtoJsLocation(project);
         File descriptorSetFile = testDescriptorSetFile(project);
-        fromJsonFor(protoJsLocation, descriptorSetFile);
+        generateFor(protoJsLocation, descriptorSetFile);
     }
 
-    private static void fromJsonFor(Path protoJsLocation, File descriptorSetFile) {
+    private static void generateFor(Path protoJsLocation, File descriptorSetFile) {
         ProtoFromJsonWriter writer = createFor(protoJsLocation, descriptorSetFile);
         if (writer.hasFilesToProcess()) {
             writer.writeFromJsonForProtos();
