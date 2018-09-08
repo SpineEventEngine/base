@@ -41,7 +41,6 @@ final class MessageFieldParser implements FieldValueParser {
     public void parseIntoVariable(String value, String variable) {
         checkNotNull(value);
         checkNotNull(variable);
-
         Descriptor fieldType = field.getMessageType();
         String typeName = typeWithProtoPrefix(fieldType);
         jsGenerator.addLine("let " + variable + " = " + typeName + ".fromObject(" + value + ");");

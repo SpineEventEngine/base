@@ -89,7 +89,7 @@ public final class MessageHandler {
 
     private void checkParsedObject() {
         jsGenerator.ifNull(FROM_OBJECT_ARG);
-        jsGenerator.addLine("return null;");
+        jsGenerator.returnValue("null");
         jsGenerator.exitBlock();
     }
 

@@ -33,6 +33,8 @@ import static io.spine.tools.protojs.files.JsFiles.writeToFile;
 
 public final class KnownTypesWriter {
 
+    private static final int INDENT = 4;
+
     private final Path filePath;
     private final FileSet protoJsFiles;
 
@@ -49,8 +51,7 @@ public final class KnownTypesWriter {
     }
 
     public void writeFile() {
-        int indent = 4;
-        JsGenerator jsGenerator = new JsGenerator(indent);
+        JsGenerator jsGenerator = new JsGenerator(INDENT);
         KnownTypesGenerator generator = new KnownTypesGenerator(protoJsFiles, jsGenerator);
         generator.generateJs();
         JsOutput generatedCode = jsGenerator.getGeneratedCode();

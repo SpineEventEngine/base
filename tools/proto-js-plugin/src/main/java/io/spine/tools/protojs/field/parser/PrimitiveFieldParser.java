@@ -41,7 +41,6 @@ final class PrimitiveFieldParser implements FieldValueParser {
     public void parseIntoVariable(String value, String variable) {
         checkNotNull(value);
         checkNotNull(variable);
-
         PrimitiveParser parser = PrimitiveParsers.createFor(field, jsGenerator);
         parser.parseIntoVariable(value, variable);
     }

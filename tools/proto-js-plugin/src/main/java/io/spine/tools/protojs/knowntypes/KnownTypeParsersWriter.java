@@ -38,6 +38,7 @@ public final class KnownTypeParsersWriter {
 
     private static final String RESOURCES_DIR = "io/spine/tools/protojs/knowntypes/";
     private static final String PARSERS_CODE = RESOURCES_DIR + KNOWN_TYPE_PARSERS;
+    private static final int INDENT = 4;
 
     private final Path filePath;
 
@@ -67,8 +68,7 @@ public final class KnownTypeParsersWriter {
     }
 
     private void writeParserMap() {
-        int indent = 4;
-        JsGenerator jsGenerator = new JsGenerator(indent);
+        JsGenerator jsGenerator = new JsGenerator(INDENT);
         ParserMapGenerator generator = new ParserMapGenerator(jsGenerator);
         generator.generateJs();
         JsOutput generatedCode = jsGenerator.getGeneratedCode();

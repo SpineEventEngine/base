@@ -34,7 +34,6 @@ public final class FieldValueCheckers {
     public static FieldValueChecker checkerFor(FieldDescriptor field, JsGenerator jsGenerator) {
         checkNotNull(field);
         checkNotNull(jsGenerator);
-
         if (isMessage(field)) {
             return new MessageFieldChecker(field, jsGenerator);
         }

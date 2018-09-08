@@ -35,7 +35,6 @@ public final class FieldValueParsers {
     public static FieldValueParser parserFor(FieldDescriptor field, JsGenerator jsGenerator) {
         checkNotNull(field);
         checkNotNull(jsGenerator);
-
         if (isMessage(field)) {
             return isWellKnownType(field)
                     ? new WellKnownFieldParser(field, jsGenerator)

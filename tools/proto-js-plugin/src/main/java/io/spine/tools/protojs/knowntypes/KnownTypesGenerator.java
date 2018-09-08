@@ -64,7 +64,7 @@ final class KnownTypesGenerator {
     private void generateImport(JsImportGenerator importGenerator, FileDescriptor file) {
         String jsFileName = jsFileName(file);
         List<Descriptor> declaredMessages = file.getMessageTypes();
-        if (declaredMessages.size() > 0) {
+        if (!declaredMessages.isEmpty()) {
             String statement = importGenerator.importStatement(jsFileName);
             jsGenerator.addLine(statement);
         }

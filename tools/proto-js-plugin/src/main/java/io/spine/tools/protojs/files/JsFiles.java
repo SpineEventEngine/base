@@ -43,7 +43,6 @@ public final class JsFiles {
     private JsFiles() {
     }
 
-// todo make sure to get rid of all magic numbers and strings
     public static void writeToFile(Path path, JsOutput output) {
         checkNotNull(path);
         checkNotNull(output);
