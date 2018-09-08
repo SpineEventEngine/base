@@ -64,7 +64,6 @@ class ProtoFromJsonWriter {
         writer.writeFile();
     }
 
-    // todo add package-info everywhere.
     // todo fix all warnings.
     private void writeFromJsonMethod() {
         FromJsonWriter writer = new FromJsonWriter(protoJsLocation, protoJsFiles);
