@@ -37,8 +37,6 @@ public class MapFieldHandler extends AbstractFieldHandler {
         this.keyParser = builder.keyParser;
     }
 
-    // todo try string format instead of concatenation everywhere
-    // todo check js object for null
     @Override
     public void generateJs() {
         String jsObject = acquireJsObject();

@@ -72,10 +72,17 @@ public final class MessageHandler {
 
     private void addFromObjectCode(String typeName, String functionName) {
         jsGenerator.enterFunction(functionName, FROM_OBJECT_ARG);
+        checkParsedObject();
         jsGenerator.addLine("let " + MESSAGE + " = new " + typeName + "();");
         handleMessageFields();
         jsGenerator.addLine("return " + MESSAGE + ';');
         jsGenerator.exitFunction();
+    }
+
+    private void checkParsedObject() {
+        jsGenerator.enterIfBlock(FROM_OBJECT_ARG + "=== null");
+        jsGenerator.addLine("return null;");
+        jsGenerator.exitBlock();
     }
 
     private void handleMessageFields() {
