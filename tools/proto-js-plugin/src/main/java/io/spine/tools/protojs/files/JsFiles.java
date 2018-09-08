@@ -67,5 +67,4 @@ public final class JsFiles {
         String jsFileName = nameWithoutExtension + JS_PROTO_SUFFIX;
         return jsFileName;
     }
-
 }
