@@ -34,14 +34,16 @@ abstract class AbstractPrimitiveParser implements PrimitiveParser {
         return jsGenerator;
     }
 
-    abstract static class Builder implements PrimitiveParser.Builder {
+    abstract static class Builder<B extends Builder<B>> implements PrimitiveParser.Builder<B> {
 
         private JsGenerator jsGenerator;
 
         @Override
-        public PrimitiveParser.Builder setJsWriter(JsGenerator jsGenerator) {
+        public B setJsWriter(JsGenerator jsGenerator) {
             this.jsGenerator = jsGenerator;
-            return this;
+            return self();
         }
+
+        abstract B self();
     }
 }

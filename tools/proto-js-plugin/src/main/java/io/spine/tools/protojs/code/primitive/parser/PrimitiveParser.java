@@ -26,9 +26,9 @@ public interface PrimitiveParser {
 
     void parseIntoVariable(String value, String output);
 
-    interface Builder {
+    interface Builder<B extends Builder<B>> {
 
-        Builder setJsWriter(JsGenerator jsGenerator);
+        B setJsWriter(JsGenerator jsGenerator);
 
         PrimitiveParser build();
     }

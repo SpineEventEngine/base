@@ -39,7 +39,12 @@ public class BytesParser extends AbstractPrimitiveParser {
         return new Builder();
     }
 
-    static class Builder extends AbstractPrimitiveParser.Builder {
+    static class Builder extends AbstractPrimitiveParser.Builder<Builder> {
+
+        @Override
+        Builder self() {
+            return this;
+        }
 
         @Override
         public PrimitiveParser build() {
