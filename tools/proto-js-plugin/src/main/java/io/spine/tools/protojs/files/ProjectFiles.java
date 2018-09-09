@@ -20,6 +20,7 @@
 
 package io.spine.tools.protojs.files;
 
+import io.spine.code.DefaultProject;
 import org.gradle.api.Project;
 
 import java.io.File;
@@ -27,7 +28,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.code.proto.FileDescriptors.KNOWN_TYPES;
 
 @SuppressWarnings("DuplicateStringLiteralInspection") // Random duplication of path elements.
 public final class ProjectFiles {
@@ -52,27 +52,22 @@ public final class ProjectFiles {
 
     public static File mainDescriptorSetFile(Project project) {
         checkNotNull(project);
-        File file = descriptorSetFile(project, MAIN);
+        DefaultProject defaultProject = DefaultProject.at(project.getProjectDir());
+        File file = defaultProject.mainDescriptors();
         return file;
     }
 
     public static File testDescriptorSetFile(Project project) {
         checkNotNull(project);
-        File file = descriptorSetFile(project, TEST);
+        DefaultProject defaultProject = DefaultProject.at(project.getProjectDir());
+        File file = defaultProject.testDescriptors();
         return file;
     }
 
     private static Path protoJsLocation(Project project, String sourceSet) {
         File projectDir = project.getProjectDir();
         String absolutePath = projectDir.getAbsolutePath();
-        return Paths.get(absolutePath, "proto", sourceSet, "js");
-    }
-
-    private static File descriptorSetFile(Project project, String sourceSet) {
-        File projectDir = project.getProjectDir();
-        String absolutePath = projectDir.getAbsolutePath();
-        Path path = Paths.get(absolutePath, "build", "descriptors", sourceSet, KNOWN_TYPES);
-        File file = path.toFile();
-        return file;
+        Path location = Paths.get(absolutePath, "proto", sourceSet, "js");
+        return location;
     }
 }
