@@ -20,6 +20,7 @@
 
 package io.spine.tools.protojs.files;
 
+import com.google.common.annotations.VisibleForTesting;
 import io.spine.code.DefaultProject;
 import org.gradle.api.Project;
 
@@ -40,7 +41,14 @@ public final class ProjectFiles {
 
     public static Path mainProtoJsLocation(Project project) {
         checkNotNull(project);
-        Path location = protoJsLocation(project, MAIN);
+        Path location = protoJsLocation(project, TEST);
+        return location;
+    }
+
+    @VisibleForTesting
+    public static Path mainProtoJsLocation(File projectDir) {
+        checkNotNull(projectDir);
+        Path location = protoJsLocation(projectDir, MAIN);
         return location;
     }
 
@@ -66,6 +74,10 @@ public final class ProjectFiles {
 
     private static Path protoJsLocation(Project project, String sourceSet) {
         File projectDir = project.getProjectDir();
+        return protoJsLocation(projectDir, sourceSet);
+    }
+
+    private static Path protoJsLocation(File projectDir, String sourceSet) {
         String absolutePath = projectDir.getAbsolutePath();
         Path location = Paths.get(absolutePath, "proto", sourceSet, "js");
         return location;
