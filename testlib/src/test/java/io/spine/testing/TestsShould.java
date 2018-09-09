@@ -35,8 +35,8 @@ import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 
+import static io.spine.testing.Tests.assertInDelta;
 import static io.spine.testing.Tests.assertMatchesMask;
-import static io.spine.testing.Tests.assertSecondsEqual;
 import static io.spine.testing.Tests.hasPrivateParameterlessCtor;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -146,7 +146,7 @@ class TestsShould extends UtilityClassTest<Tests> {
         private Timestamp timestampMsg;
 
         @BeforeEach
-        void setUp(){
+        void setUp() {
             long currentTime = Instant.now()
                                       .toEpochMilli();
             timestampMsg = Timestamp.newBuilder()
@@ -199,40 +199,83 @@ class TestsShould extends UtilityClassTest<Tests> {
     }
 
     @Nested
-    @DisplayName("Assert seconds range")
-    class SecondsRange {
+    @DisplayName("Assert values in delta")
+    class AssertInDelta {
 
-        private long recentTime;
+        private static final long DELTA = 10;
+        private static final long VALUE = 100;
 
-        @BeforeEach
-        void getCurrentTime() {
-            recentTime = now();
-        }
-
-        private long now() {
-            return Instant.now()
-                          .toEpochMilli();
+        private long getValue() {
+            return VALUE;
         }
 
         @Test
         @DisplayName("when values are equal")
         void equalValues() {
-            assertSecondsEqual(recentTime, recentTime, 0);
+            long expectedValue = getValue();
+            long actualValue = expectedValue;
+            assertInDelta(expectedValue, actualValue, 0);
         }
 
         @Test
         @DisplayName("when values are close")
         void closeValues() {
-            // This method would be called within 10 seconds.
-            Tests.assertSecondsEqual(recentTime, now(), 10);
+            long expectedValue = getValue();
+            long actualValue = getValue();
+            assertInDelta(expectedValue, actualValue, DELTA);
         }
 
         @Test
-        @DisplayName("throw if condition is not met")
-        void failure() {
+        @DisplayName("when actual value less than the sum of the expected value and delta")
+        void actualValueLessThanExpectedWithDelta() {
+            long expectedValue = getValue();
+            long actualValue = expectedValue + DELTA - 1;
+            assertInDelta(expectedValue, actualValue, DELTA);
+        }
+
+        @Test
+        @DisplayName("when the actual value equals the sum of the expected value and delta")
+        void actualValueEqualsTheSumExpectedValueAndDelta() {
+            long expectedValue = getValue();
+            long actualValue = expectedValue + DELTA;
+            assertInDelta(expectedValue, actualValue, DELTA);
+        }
+
+        @Test
+        @DisplayName("throw when the actual value greater than the sum of the expected value and delta")
+        void actualValueGreaterThanTheSumExpectedValueAndDelta() {
+            long expectedValue = getValue();
+            long actualValue = expectedValue + DELTA + 1;
             assertThrows(
                     AssertionError.class,
-                    () -> Tests.assertSecondsEqual(100, 200, 2)
+                    () -> assertInDelta(expectedValue, actualValue, DELTA)
+            );
+        }
+
+        @Test
+        @DisplayName("when the actual value greater than the subtraction of the expected value and delta")
+        void actualValueGreaterThanTheSubtractionOfExpectedValueAndDelta() {
+            long actualValue = getValue();
+            long expectedValue = actualValue + DELTA - 1;
+            assertInDelta(expectedValue, actualValue, DELTA);
+        }
+
+        @Test
+        @DisplayName("when the actual value equals the subtraction of the expected value and delta")
+        void actualValueEqualsTheSubtractionOfExpectedValueAndDelta() {
+            long actualValue = getValue();
+            long expectedValue = actualValue + DELTA;
+            assertInDelta(expectedValue, actualValue, DELTA);
+        }
+
+        @Test
+        @DisplayName("throw when the actual value less than the subtraction of the expected value and delta")
+        void actualValueLessThanTheSubtractionExpectedValueAndDelta() {
+            long actualValue = getValue();
+            long expectedValue = actualValue + DELTA + 1;
+            assertThrows(
+                    AssertionError.class,
+                    () -> assertInDelta(expectedValue, actualValue, DELTA)
             );
         }
     }
