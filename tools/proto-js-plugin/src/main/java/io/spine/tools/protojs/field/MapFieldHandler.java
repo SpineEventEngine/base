@@ -30,6 +30,8 @@ public final class MapFieldHandler extends AbstractFieldHandler {
     private static final String ATTRIBUTE = "attribute";
     private static final String MAP_KEY = "mapKey";
 
+    // todo mention in doc somewhere that key and value of the matrix are also fields of 'Entry'
+    // message type, so they are processed by FieldValueParser too for this reason.
     private final FieldValueParser keyParser;
 
     private MapFieldHandler(Builder builder) {
