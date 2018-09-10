@@ -20,6 +20,7 @@
 
 package io.spine.tools.protojs.knowntypes;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.proto.FileSet;
@@ -52,12 +53,21 @@ final class KnownTypesGenerator {
         generateKnownTypesMap();
     }
 
-    private void generateImports() {
+    @VisibleForTesting
+    void generateImports() {
         Collection<FileDescriptor> files = protoJsFiles.getFileDescriptors();
         JsImportGenerator importGenerator = JsImportGenerator.createFor(KNOWN_TYPES);
         for (FileDescriptor file : files) {
             generateImport(importGenerator, file);
         }
+    }
+
+    @VisibleForTesting
+    void generateKnownTypesMap() {
+        jsGenerator.addEmptyLine();
+        jsGenerator.exportMap(MAP_NAME);
+        storeKnownTypes();
+        jsGenerator.quitMapDeclaration();
     }
 
     private void generateImport(JsImportGenerator importGenerator, FileDescriptor file) {
@@ -67,13 +77,6 @@ final class KnownTypesGenerator {
             String statement = importGenerator.importStatement(jsFileName);
             jsGenerator.addLine(statement);
         }
-    }
-
-    private void generateKnownTypesMap() {
-        jsGenerator.addEmptyLine();
-        jsGenerator.exportMap(MAP_NAME);
-        storeKnownTypes();
-        jsGenerator.quitMapDeclaration();
     }
 
     private void storeKnownTypes() {

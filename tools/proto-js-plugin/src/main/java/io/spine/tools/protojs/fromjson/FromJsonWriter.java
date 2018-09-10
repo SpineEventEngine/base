@@ -62,7 +62,8 @@ public final class FromJsonWriter {
         }
     }
 
-    private Path composeFilePath(FileDescriptor file) {
+    @VisibleForTesting
+    Path composeFilePath(FileDescriptor file) {
         String jsFileName = jsFileName(file);
         Path path = Paths.get(protoJsLocation.toString(), jsFileName);
         return path;

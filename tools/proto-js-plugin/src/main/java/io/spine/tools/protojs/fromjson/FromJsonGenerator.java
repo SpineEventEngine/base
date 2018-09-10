@@ -20,6 +20,7 @@
 
 package io.spine.tools.protojs.fromjson;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.tools.protojs.code.JsGenerator;
@@ -48,12 +49,14 @@ public final class FromJsonGenerator {
         generateMethods();
     }
 
-    private void generateComment() {
+    @VisibleForTesting
+    void generateComment() {
         jsGenerator.addEmptyLine();
         jsGenerator.addComment(COMMENT);
     }
 
-    private void generateImports() {
+    @VisibleForTesting
+    void generateImports() {
         jsGenerator.addEmptyLine();
         String fileName = file.getFullName();
         JsImportGenerator generator = JsImportGenerator.createFor(fileName);
@@ -61,7 +64,8 @@ public final class FromJsonGenerator {
         jsGenerator.addLine(parsersImport);
     }
 
-    private void generateMethods() {
+    @VisibleForTesting
+    void generateMethods() {
         for (Descriptor message : file.getMessageTypes()) {
             MessageHandler handler = MessageHandler.createFor(message, jsGenerator);
             handler.generateJs();

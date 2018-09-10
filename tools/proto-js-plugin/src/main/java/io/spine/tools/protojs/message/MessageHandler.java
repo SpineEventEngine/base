@@ -20,6 +20,7 @@
 
 package io.spine.tools.protojs.message;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.tools.protojs.code.JsGenerator;
@@ -57,14 +58,16 @@ public final class MessageHandler {
         generateFromObjectMethod();
     }
 
-    private void generateFromJsonMethod() {
+    @VisibleForTesting
+    void generateFromJsonMethod() {
         jsGenerator.addEmptyLine();
         String typeName = typeWithProtoPrefix(message);
         String functionName = typeName + ".fromJson";
         addFromJsonCode(typeName, functionName);
     }
 
-    private void generateFromObjectMethod() {
+    @VisibleForTesting
+    void generateFromObjectMethod() {
         jsGenerator.addEmptyLine();
         String typeName = typeWithProtoPrefix(message);
         String functionName = typeName + ".fromObject";

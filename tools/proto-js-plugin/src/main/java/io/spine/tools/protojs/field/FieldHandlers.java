@@ -51,9 +51,9 @@ public final class FieldHandlers {
     }
 
     private static FieldHandler mapHandler(FieldDescriptor field, JsGenerator jsGenerator) {
-        FieldValueParser keyParser = keyParser(field, jsGenerator);
-        FieldValueParser valueParser = valueParser(field, jsGenerator);
-        FieldValueChecker valueChecker = valueChecker(field, jsGenerator);
+        FieldValueParser keyParser = mapKeyParser(field, jsGenerator);
+        FieldValueParser valueParser = mapValueParser(field, jsGenerator);
+        FieldValueChecker valueChecker = mapValueChecker(field, jsGenerator);
 
         FieldHandler handler = MapFieldHandler
                 .newBuilder()
@@ -94,19 +94,20 @@ public final class FieldHandlers {
         return handler;
     }
 
-    private static FieldValueParser keyParser(FieldDescriptor field, JsGenerator jsGenerator) {
+    private static FieldValueParser mapKeyParser(FieldDescriptor field, JsGenerator jsGenerator) {
         FieldDescriptor keyDescriptor = keyDescriptor(field);
         FieldValueParser parser = parserFor(keyDescriptor, jsGenerator);
         return parser;
     }
 
-    private static FieldValueParser valueParser(FieldDescriptor field, JsGenerator jsGenerator) {
+    private static FieldValueParser mapValueParser(FieldDescriptor field, JsGenerator jsGenerator) {
         FieldDescriptor valueDescriptor = valueDescriptor(field);
         FieldValueParser parser = parserFor(valueDescriptor, jsGenerator);
         return parser;
     }
 
-    private static FieldValueChecker valueChecker(FieldDescriptor field, JsGenerator jsGenerator) {
+    private static FieldValueChecker
+    mapValueChecker(FieldDescriptor field, JsGenerator jsGenerator) {
         FieldDescriptor valueDescriptor = valueDescriptor(field);
         FieldValueChecker checker = checkerFor(valueDescriptor, jsGenerator);
         return checker;
