@@ -73,6 +73,11 @@ final class ProtoFromJsonWriter {
         writer.writeIntoFiles();
     }
 
+    @VisibleForTesting
+    FileSet protoJsFiles() {
+        return protoJsFiles;
+    }
+
     private static FileSet collectProtoJsFiles(File descriptorSetFile) {
         if (descriptorSetFile.exists()) {
             FileSet fileSet = FileSet.parse(descriptorSetFile);

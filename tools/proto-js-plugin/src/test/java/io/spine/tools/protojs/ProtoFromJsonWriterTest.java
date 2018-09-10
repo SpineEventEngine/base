@@ -21,6 +21,8 @@
 package io.spine.tools.protojs;
 
 import com.google.common.testing.NullPointerTester;
+import com.google.protobuf.Descriptors.FileDescriptor;
+import io.spine.code.proto.FileSet;
 import io.spine.tools.gradle.GradleProject;
 import io.spine.tools.protojs.files.JsFiles;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,13 +36,16 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static io.spine.tools.gradle.TaskName.COMPILE_PROTO_TO_JS;
 import static io.spine.tools.protojs.ProtoFromJsonWriter.createFor;
+import static io.spine.tools.protojs.files.JsFiles.jsFileName;
 import static io.spine.tools.protojs.files.ProjectFiles.mainDescriptorSetFile;
 import static io.spine.tools.protojs.files.ProjectFiles.mainProtoJsLocation;
+import static io.spine.tools.protojs.fromjson.FromJsonWriter.isStandardOrSpineOptions;
 import static java.nio.file.Files.exists;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -51,21 +56,15 @@ class ProtoFromJsonWriterTest {
     private static final List<String> PROTO_FILES = Arrays.asList("commands.proto", "task.proto");
 
     private Path protoJsLocation;
-    private File descriptorSetFile;
     private ProtoFromJsonWriter writer;
 
     @BeforeEach
     void setUp(@TempDir Path tempDir) {
         File projectDir = tempDir.toFile();
-        GradleProject gradleProject = GradleProject
-                .newBuilder()
-                .setProjectName("proto-js-plugin-test")
-                .setProjectFolder(projectDir)
-                .addProtoFiles(PROTO_FILES)
-                .build();
-        gradleProject.executeTask(COMPILE_PROTO_TO_JS);
+        prepareProject(projectDir);
+
+        File descriptorSetFile = mainDescriptorSetFile(projectDir);
         protoJsLocation = mainProtoJsLocation(projectDir);
-        descriptorSetFile = mainDescriptorSetFile(projectDir);
         writer = createFor(protoJsLocation, descriptorSetFile);
     }
 
@@ -81,5 +80,38 @@ class ProtoFromJsonWriterTest {
         writer.writeKnownTypes();
         Path knownTypes = Paths.get(protoJsLocation.toString(), JsFiles.KNOWN_TYPES);
         assertTrue(exists(knownTypes));
+    }
+
+    @Test
+    @DisplayName("write known type parsers map to JS file")
+    void writeKnownTypeParsers() {
+        writer.writeKnownTypeParsers();
+        Path knownTypeParsers = Paths.get(protoJsLocation.toString(), JsFiles.KNOWN_TYPE_PARSERS);
+        assertTrue(exists(knownTypeParsers));
+    }
+
+    @Test
+    @DisplayName("write fromJson method into generated JS proto definitions")
+    void writeFromJsonMethod() {
+        writer.writeFromJsonMethod();
+        FileSet fileSet = writer.protoJsFiles();
+        Collection<FileDescriptor> fileDescriptors = fileSet.getFileDescriptors();
+        for (FileDescriptor file : fileDescriptors) {
+            if (!isStandardOrSpineOptions(file)) {
+                String jsFileName = jsFileName(file);
+                Path jsFilePath = Paths.get(protoJsLocation.toString(), jsFileName);
+                assertTrue(exists(jsFilePath));
+            }
+        }
+    }
+
+    private static void prepareProject(File projectDir) {
+        GradleProject gradleProject = GradleProject
+                .newBuilder()
+                .setProjectName("proto-js-plugin-test")
+                .setProjectFolder(projectDir)
+                .addProtoFiles(PROTO_FILES)
+                .build();
+        gradleProject.executeTask(COMPILE_PROTO_TO_JS);
     }
 }
