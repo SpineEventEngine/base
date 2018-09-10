@@ -50,6 +50,9 @@ public final class Fields {
 
     public static boolean isWellKnownType(FieldDescriptor field) {
         checkNotNull(field);
+        if (!isMessage(field)) {
+            return false;
+        }
         Descriptor message = field.getMessageType();
         TypeUrl typeUrl = TypeUrl.from(message);
         boolean isWellKnownType = ParserMapGenerator.hasParser(typeUrl);
