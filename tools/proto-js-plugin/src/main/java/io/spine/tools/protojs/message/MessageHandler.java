@@ -32,12 +32,18 @@ import java.util.List;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.protojs.types.Types.typeWithProtoPrefix;
 
-public final class MessageHandler {
+/**
+ * Non-final for mockito.
+ */
+public class MessageHandler {
 
     public static final String FROM_OBJECT_ARG = "obj";
 
     @SuppressWarnings("DuplicateStringLiteralInspection") // Random duplication.
     public static final String MESSAGE = "message";
+
+    @VisibleForTesting
+    static final String FROM_JSON_ARG = "json";
 
     private final Descriptor message;
     private final JsGenerator jsGenerator;
@@ -75,8 +81,8 @@ public final class MessageHandler {
     }
 
     private void addFromJsonCode(String typeName, String functionName) {
-        jsGenerator.enterFunction(functionName, "json");
-        jsGenerator.addLine("let jsonObject = JSON.parse(json);");
+        jsGenerator.enterFunction(functionName, FROM_JSON_ARG);
+        jsGenerator.addLine("let jsonObject = JSON.parse(" + FROM_JSON_ARG + ");");
         jsGenerator.returnValue(typeName + ".fromObject(jsonObject)");
         jsGenerator.exitFunction();
     }
@@ -97,7 +103,8 @@ public final class MessageHandler {
         jsGenerator.exitBlock();
     }
 
-    private void handleMessageFields() {
+    @VisibleForTesting
+    void handleMessageFields() {
         List<FieldDescriptor> fields = message.getFields();
         for (FieldDescriptor field : fields) {
             jsGenerator.addEmptyLine();

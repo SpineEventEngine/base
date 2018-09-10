@@ -18,33 +18,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protojs.types;
+package io.spine.tools.protojs.given;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.protobuf.Descriptors.Descriptor;
-import com.google.protobuf.Descriptors.EnumDescriptor;
+import io.spine.tools.protojs.code.JsGenerator;
+import io.spine.tools.protojs.code.JsOutput;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.testing.Verify.assertContains;
 
-public final class Types {
+public final class Generators {
 
-    @VisibleForTesting
-    static final String PREFIX = "proto.";
-
-    private Types() {
+    private Generators() {
     }
 
-    public static String typeWithProtoPrefix(Descriptor message) {
-        checkNotNull(message);
-        String typeName = message.getFullName();
-        String nameWithPrefix = PREFIX + typeName;
-        return nameWithPrefix;
-    }
-
-    public static String typeWithProtoPrefix(EnumDescriptor enumDescriptor) {
-        checkNotNull(enumDescriptor);
-        String typeName = enumDescriptor.getFullName();
-        String nameWithPrefix = PREFIX + typeName;
-        return nameWithPrefix;
+    public static void assertGeneratedCodeContains(JsGenerator jsGenerator, String toSearch) {
+        JsOutput generatedCode = jsGenerator.getGeneratedCode();
+        String codeString = generatedCode.toString();
+        assertContains(toSearch, codeString);
     }
 }

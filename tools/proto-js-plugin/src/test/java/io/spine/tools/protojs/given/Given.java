@@ -25,7 +25,6 @@ import io.spine.tools.gradle.GradleProject;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 
@@ -34,10 +33,13 @@ import static io.spine.tools.gradle.TaskName.COMPILE_PROTO_TO_JS;
 import static io.spine.tools.protojs.files.ProjectFiles.mainDescriptorSetFile;
 import static io.spine.tools.protojs.files.ProjectFiles.mainProtoJsLocation;
 
-public class Given {
+public final class Given {
+
+    public static final String COMMANDS_PROTO = "commands.proto";
+    public static final String TASK_PROTO = "task.proto";
 
     private static final String PROJECT_NAME = "proto-js-plugin-test";
-    private static final List<String> PROTO_FILES = Arrays.asList("commands.proto", "task.proto");
+    private static final List<String> PROTO_FILES = Arrays.asList(COMMANDS_PROTO, TASK_PROTO);
 
     private Given() {
     }

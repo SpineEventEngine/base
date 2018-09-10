@@ -30,15 +30,15 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
-import static io.spine.testing.Verify.assertContains;
 import static io.spine.tools.protojs.files.JsFiles.jsFileName;
+import static io.spine.tools.protojs.given.Given.TASK_PROTO;
 import static io.spine.tools.protojs.given.Given.preparedProject;
+import static io.spine.tools.protojs.given.Writers.assertFileContains;
 import static java.nio.file.Files.exists;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -47,7 +47,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 @DisplayName("FromJsonWriter should")
 class FromJsonWriterTest {
 
-    private static final String TASK_PROTO = "task.proto";
     private static final String OPTIONS_PROTO = "spine/options.proto";
     private static final String DESCRIPTOR_PROTO = "google/protobuf/descriptor.proto";
 
@@ -80,19 +79,17 @@ class FromJsonWriterTest {
     }
 
     @Test
-    @DisplayName("write fromJson method into generated JS proto definitions")
+    @DisplayName("write `fromJson` method into generated JS proto definitions")
     void writeFromJsonMethod() throws IOException {
         writer.writeIntoFiles();
-        FileDescriptor file = getFile("task.proto");
+        FileDescriptor file = getFile(TASK_PROTO);
         Path filePath = writer.composeFilePath(file);
-        byte[] bytes = Files.readAllBytes(filePath);
-        String fileContent = new String(bytes);
         String fromJsonDeclaration = "proto.spine.sample.protojs.TaskId.fromJson = function";
-        assertContains(fromJsonDeclaration, fileContent);
+        assertFileContains(filePath, fromJsonDeclaration);
     }
 
     @Test
-    @DisplayName("skip standard types as well as spine/options.proto")
+    @DisplayName("skip standard types as well as `spine/options.proto`")
     void skipStandardAndOptions() {
         FileDescriptor options = getFile(OPTIONS_PROTO);
         Path optionsPath = writer.composeFilePath(options);
@@ -106,6 +103,7 @@ class FromJsonWriterTest {
     private FileDescriptor getFile(String name) {
         FileName taskProtoName = FileName.of(name);
         Optional<FileDescriptor> fileDescriptor = fileSet.tryFind(taskProtoName);
-        return fileDescriptor.get();
+        FileDescriptor file = fileDescriptor.get();
+        return file;
     }
 }

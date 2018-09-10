@@ -20,7 +20,6 @@
 
 package io.spine.tools.protojs.knowntypes;
 
-import com.google.common.testing.NullPointerTester;
 import io.spine.code.proto.FileSet;
 import io.spine.tools.protojs.given.Given.PreparedProject;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,14 +29,12 @@ import org.junit.jupiter.api.Test;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static io.spine.tools.protojs.files.JsFiles.KNOWN_TYPES;
 import static io.spine.tools.protojs.given.Given.preparedProject;
+import static io.spine.tools.protojs.given.Writers.assertNonZeroSize;
 import static java.nio.file.Files.exists;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SuppressWarnings("DuplicateStringLiteralInspection") // Common test display names.
 @DisplayName("KnownTypesWriter should")
@@ -68,9 +65,6 @@ class KnownTypesWriterTest {
         Path filePath = KnownTypesWriter.composeFilePath(protoJsLocation);
         assertFalse(exists(filePath));
         writer.writeFile();
-        assertTrue(exists(filePath));
-        long fileSize = filePath.toFile()
-                                .length();
-        assertNotEquals(0, fileSize);
+        assertNonZeroSize(filePath);
     }
 }

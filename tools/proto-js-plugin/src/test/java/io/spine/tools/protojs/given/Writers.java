@@ -18,33 +18,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protojs.types;
+package io.spine.tools.protojs.given;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.protobuf.Descriptors.Descriptor;
-import com.google.protobuf.Descriptors.EnumDescriptor;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.testing.Verify.assertContains;
+import static java.nio.file.Files.exists;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public final class Types {
+public final class Writers {
 
-    @VisibleForTesting
-    static final String PREFIX = "proto.";
-
-    private Types() {
+    private Writers() {
     }
 
-    public static String typeWithProtoPrefix(Descriptor message) {
-        checkNotNull(message);
-        String typeName = message.getFullName();
-        String nameWithPrefix = PREFIX + typeName;
-        return nameWithPrefix;
+    public static void assertFileContains(Path filePath, String toSearch) throws IOException {
+        assertTrue(exists(filePath));
+        byte[] bytes = Files.readAllBytes(filePath);
+        String fileContent = new String(bytes);
+        assertContains(toSearch, fileContent);
     }
 
-    public static String typeWithProtoPrefix(EnumDescriptor enumDescriptor) {
-        checkNotNull(enumDescriptor);
-        String typeName = enumDescriptor.getFullName();
-        String nameWithPrefix = PREFIX + typeName;
-        return nameWithPrefix;
+    public static void assertNonZeroSize(Path filePath) {
+        assertTrue(exists(filePath));
+        long fileSize = filePath.toFile()
+                                .length();
+        assertNotEquals(0, fileSize);
     }
 }

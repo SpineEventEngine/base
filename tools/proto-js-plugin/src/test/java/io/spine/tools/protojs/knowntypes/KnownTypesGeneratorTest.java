@@ -29,6 +29,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.testing.Verify.assertContains;
+import static io.spine.tools.protojs.given.Generators.assertGeneratedCodeContains;
 import static io.spine.tools.protojs.given.Given.preparedProject;
 
 @DisplayName("KnownTypesGenerator should")
@@ -50,7 +51,7 @@ class KnownTypesGeneratorTest {
     void generateImports() {
         generator.generateImports();
         String taskImport = "require('./task_pb.js');";
-        assertGeneratedCodeContains(taskImport);
+        assertGeneratedCodeContains(jsGenerator, taskImport);
     }
 
     @Test
@@ -59,12 +60,6 @@ class KnownTypesGeneratorTest {
         generator.generateKnownTypesMap();
         String mapEntry = "['type.spine.io/spine.sample.protojs.TaskId', " +
                 "proto.spine.sample.protojs.TaskId]";
-        assertGeneratedCodeContains(mapEntry);
-    }
-
-    private void assertGeneratedCodeContains(String expression) {
-        JsOutput generatedCode = jsGenerator.getGeneratedCode();
-        String codeString = generatedCode.toString();
-        assertContains(expression, codeString);
+        assertGeneratedCodeContains(jsGenerator, mapEntry);
     }
 }

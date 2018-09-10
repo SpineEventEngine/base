@@ -31,9 +31,11 @@ import static io.spine.tools.protojs.files.JsFiles.KNOWN_TYPE_PARSERS;
 
 public final class FromJsonGenerator {
 
-    private static final String COMMENT = "The code generated for parsing the Protobuf messages " +
-            "declared in this file from the JSON data.";
     public static final String PARSERS_IMPORT_NAME = "known_type_parsers";
+
+    @VisibleForTesting
+    static final String COMMENT = "The code generated for parsing the Protobuf messages " +
+            "declared in this file from the JSON data.";
 
     private final FileDescriptor file;
     private final JsGenerator jsGenerator;
@@ -45,7 +47,7 @@ public final class FromJsonGenerator {
 
     void generateJs() {
         generateComment();
-        generateImports();
+        generateParsersImport();
         generateMethods();
     }
 
@@ -56,7 +58,7 @@ public final class FromJsonGenerator {
     }
 
     @VisibleForTesting
-    void generateImports() {
+    void generateParsersImport() {
         jsGenerator.addEmptyLine();
         String fileName = file.getFullName();
         JsImportGenerator generator = JsImportGenerator.createFor(fileName);

@@ -23,17 +23,14 @@ package io.spine.tools.protojs.knowntypes;
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Timestamp;
 import io.spine.tools.protojs.code.JsGenerator;
-import io.spine.tools.protojs.code.JsOutput;
 import io.spine.type.TypeUrl;
 import io.spine.validate.ValidationError;
-import io.spine.validate.ValidationErrorProto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
-import static io.spine.testing.Verify.assertContains;
-import static io.spine.type.TypeUrl.of;
+import static io.spine.tools.protojs.given.Generators.assertGeneratedCodeContains;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -69,9 +66,7 @@ class ParserMapGeneratorTest {
     @DisplayName("generate known type parsers map")
     void generateParsersMap() {
         generator.generateJs();
-        JsOutput generatedCode = jsGenerator.getGeneratedCode();
-        String codeString = generatedCode.toString();
         String mapEntry = "['type.googleapis.com/google.protobuf.Value', new ValueParser()]";
-        assertContains(mapEntry, codeString);
+        assertGeneratedCodeContains(jsGenerator, mapEntry);
     }
 }

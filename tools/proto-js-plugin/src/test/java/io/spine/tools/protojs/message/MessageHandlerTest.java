@@ -20,47 +20,98 @@
 
 package io.spine.tools.protojs.message;
 
+import com.google.common.testing.NullPointerTester;
+import com.google.protobuf.Descriptors.Descriptor;
+import com.google.protobuf.Descriptors.FileDescriptor;
+import io.spine.code.proto.FileName;
+import io.spine.code.proto.FileSet;
+import io.spine.tools.protojs.code.JsGenerator;
+import io.spine.tools.protojs.given.Generators;
+import io.spine.tools.protojs.given.Given.PreparedProject;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+import java.util.Optional;
+
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
+import static io.spine.tools.protojs.given.Given.COMMANDS_PROTO;
+import static io.spine.tools.protojs.given.Given.preparedProject;
+import static io.spine.tools.protojs.message.MessageHandler.FROM_JSON_ARG;
+import static io.spine.tools.protojs.message.MessageHandler.FROM_OBJECT_ARG;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @DisplayName("MessageHandler should")
 class MessageHandlerTest {
 
+    private Descriptor message;
+    private JsGenerator jsGenerator;
+    private MessageHandler handler;
+
+    @BeforeEach
+    void setUp() throws IOException {
+        PreparedProject project = preparedProject();
+        FileSet fileSet = project.fileSet();
+        FileName fileName = FileName.of(COMMANDS_PROTO);
+        Optional<FileDescriptor> fileDescriptor = fileSet.tryFind(fileName);
+        FileDescriptor file = fileDescriptor.get();
+        message = file.getMessageTypes()
+                      .get(0);
+        jsGenerator = new JsGenerator();
+        handler = MessageHandler.createFor(message, jsGenerator);
+    }
+
     @Test
     @DisplayName(NOT_ACCEPT_NULLS)
     void passNullToleranceCheck() {
-
+        new NullPointerTester().setDefault(Descriptor.class, message)
+                               .testAllPublicStaticMethods(MessageHandler.class);
     }
 
     @Test
-    @DisplayName("generate fromJson method for message")
+    @DisplayName("generate `fromJson` method for message")
     void generateFromJson() {
-
+        handler.generateFromJsonMethod();
+        String methodDeclaration = message.getFullName() + ".fromJson";
+        assertGeneratedCodeContains(methodDeclaration);
     }
 
     @Test
-    @DisplayName("parse JSON into JS object in fromJson method")
+    @DisplayName("parse JSON into JS object in `fromJson` method")
     void parseJsonIntoObject() {
-
+        handler.generateFromJsonMethod();
+        String parseStatement = "JSON.parse(" + FROM_JSON_ARG + ')';
+        assertGeneratedCodeContains(parseStatement);
     }
 
     @Test
-    @DisplayName("generate fromObject method for message")
+    @DisplayName("generate `fromObject` method for message")
     void generateFromObject() {
-
+        handler.generateFromObjectMethod();
+        String methodDeclaration = message.getFullName() + ".fromObject";
+        assertGeneratedCodeContains(methodDeclaration);
     }
 
     @Test
-    @DisplayName("check parsed object for null in fromObject method")
-    void checkJObjectForNull() {
-
+    @DisplayName("check parsed object for null in `fromObject` method")
+    void checkJsObjectForNull() {
+        handler.generateFromObjectMethod();
+        String check = "if (" + FROM_OBJECT_ARG + " === null) {";
+        assertGeneratedCodeContains(check);
     }
 
     @Test
-    @DisplayName("handle message fields in fromObject method")
+    @DisplayName("handle message fields in `fromObject` method")
     void handleMessageFields() {
+        MessageHandler handler = spy(this.handler);
+        handler.generateFromObjectMethod();
+        verify(handler, times(1)).handleMessageFields();
+    }
 
+    private void assertGeneratedCodeContains(String toSearch) {
+        Generators.assertGeneratedCodeContains(jsGenerator, toSearch);
     }
 }

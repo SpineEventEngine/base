@@ -55,11 +55,11 @@ public final class KnownTypeParsersWriter {
     }
 
     public void writeFile() {
-        writeParsersCode();
+        copyParsersCode();
         writeParserMap();
     }
 
-    private void writeParsersCode() {
+    private void copyParsersCode() {
         try (InputStream in = KnownTypeParsersWriter.class
                 .getClassLoader()
                 .getResourceAsStream(PARSERS_CODE)) {

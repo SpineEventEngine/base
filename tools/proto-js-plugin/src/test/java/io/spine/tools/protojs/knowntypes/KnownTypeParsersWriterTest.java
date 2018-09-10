@@ -32,12 +32,11 @@ import java.nio.file.Paths;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static io.spine.tools.protojs.files.JsFiles.KNOWN_TYPE_PARSERS;
 import static io.spine.tools.protojs.given.Given.preparedProject;
+import static io.spine.tools.protojs.given.Writers.assertNonZeroSize;
 import static io.spine.tools.protojs.knowntypes.KnownTypeParsersWriter.createFor;
 import static java.nio.file.Files.exists;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SuppressWarnings("DuplicateStringLiteralInspection") // Common test display names.
 @DisplayName("KnownTypeParsersWriter should")
@@ -73,9 +72,6 @@ class KnownTypeParsersWriterTest {
         Path filePath = KnownTypeParsersWriter.composeFilePath(protoJsLocation);
         assertFalse(exists(filePath));
         writer.writeFile();
-        assertTrue(exists(filePath));
-        long fileSize = filePath.toFile()
-                                .length();
-        assertNotEquals(0, fileSize);
+        assertNonZeroSize(filePath);
     }
 }
