@@ -20,6 +20,7 @@
 
 package io.spine.tools.protojs.fromjson;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.proto.FileSet;
 import io.spine.tools.protojs.code.JsGenerator;
@@ -32,8 +33,11 @@ import java.nio.file.Paths;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.protojs.files.JsFiles.appendToFile;
 import static io.spine.tools.protojs.files.JsFiles.jsFileName;
+import static io.spine.type.TypeUrl.GOOGLE_PROTOBUF_PACKAGE;
 
 public final class FromJsonWriter {
+
+    private static final String SPINE_OPTIONS_PROTO = "spine/options.proto";
 
     private final Path protoJsLocation;
     private final FileSet protoJsFiles;
@@ -51,8 +55,10 @@ public final class FromJsonWriter {
 
     public void writeIntoFiles() {
         for (FileDescriptor file : protoJsFiles.files()) {
-            Path jsFilePath = composeFilePath(file);
-            writeIntoFile(file, jsFilePath);
+            if (!isStandardOrSpineOptions(file)) {
+                Path jsFilePath = composeFilePath(file);
+                writeIntoFile(file, jsFilePath);
+            }
         }
     }
 
@@ -60,6 +66,14 @@ public final class FromJsonWriter {
         String jsFileName = jsFileName(file);
         Path path = Paths.get(protoJsLocation.toString(), jsFileName);
         return path;
+    }
+
+    @VisibleForTesting
+    public static boolean isStandardOrSpineOptions(FileDescriptor file) {
+        boolean isStandardType = file.getPackage()
+                                     .startsWith(GOOGLE_PROTOBUF_PACKAGE);
+        boolean isSpineOptions = SPINE_OPTIONS_PROTO.equals(file.getFullName());
+        return isStandardType || isSpineOptions;
     }
 
     private static void writeIntoFile(FileDescriptor file, Path filePath) {

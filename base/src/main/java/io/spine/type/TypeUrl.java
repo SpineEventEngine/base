@@ -63,10 +63,11 @@ import static java.lang.String.format;
 @Immutable
 public final class TypeUrl implements Serializable {
 
+    public static final String GOOGLE_PROTOBUF_PACKAGE = "google.protobuf";
+
     private static final long serialVersionUID = 0L;
     private static final String SEPARATOR = "/";
     private static final Splitter splitter = Splitter.on(SEPARATOR);
-    private static final String GOOGLE_PROTOBUF_PACKAGE = "google.protobuf";
 
     /** The prefix of the type URL. */
     private final String prefix;
@@ -109,17 +110,6 @@ public final class TypeUrl implements Serializable {
     public static TypeUrl from(Descriptor descriptor) {
         String prefix = prefixFor(descriptor);
         return create(prefix, descriptor.getFullName());
-    }
-
-    public static TypeUrl
-    ofMessage(FileDescriptorProto fileDescriptor, DescriptorProto messageDescriptor) {
-        String prefix = prefixFor(fileDescriptor);
-        String aPackage = fileDescriptor.getPackage();
-        if (!aPackage.isEmpty()) {
-            aPackage += '.';
-        }
-        String typeName = aPackage + messageDescriptor.getName();
-        return create(prefix, typeName);
     }
 
     /**
@@ -205,17 +195,6 @@ public final class TypeUrl implements Serializable {
                             .getExtension(OptionsProto.typeUrlPrefix);
         return result;
     }
-
-    private static String prefixFor(FileDescriptorProto fileDescriptor) {
-        if (fileDescriptor.getPackage()
-                          .startsWith(GOOGLE_PROTOBUF_PACKAGE)) {
-            return Prefix.GOOGLE_APIS.value();
-        }
-        String result = fileDescriptor.getOptions()
-                                      .getExtension(OptionsProto.typeUrlPrefix);
-        return result;
-    }
-
     /**
      * Returns a message {@link Class} corresponding to the Protobuf type represented
      * by this type URL.
