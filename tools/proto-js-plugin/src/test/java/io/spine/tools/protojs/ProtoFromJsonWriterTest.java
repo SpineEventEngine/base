@@ -20,15 +20,15 @@
 
 package io.spine.tools.protojs;
 
-import com.google.common.io.Files;
 import com.google.common.testing.NullPointerTester;
-import io.spine.code.DefaultProject;
 import io.spine.tools.gradle.GradleProject;
 import io.spine.tools.protojs.files.JsFiles;
-import io.spine.tools.protojs.knowntypes.KnownTypesWriter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junitpioneer.jupiter.TempDirectory;
+import org.junitpioneer.jupiter.TempDirectory.TempDir;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -39,21 +39,24 @@ import java.util.List;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static io.spine.tools.gradle.TaskName.COMPILE_PROTO_TO_JS;
 import static io.spine.tools.protojs.ProtoFromJsonWriter.createFor;
+import static io.spine.tools.protojs.files.ProjectFiles.mainDescriptorSetFile;
 import static io.spine.tools.protojs.files.ProjectFiles.mainProtoJsLocation;
 import static java.nio.file.Files.exists;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@ExtendWith(TempDirectory.class)
 @DisplayName("ProtoFromJsonWriter should")
 class ProtoFromJsonWriterTest {
 
     private static final List<String> PROTO_FILES = Arrays.asList("commands.proto", "task.proto");
 
-    private File projectDir;
-    private DefaultProject project;
+    private Path protoJsLocation;
+    private File descriptorSetFile;
+    private ProtoFromJsonWriter writer;
 
     @BeforeEach
-    void setUp() {
-        projectDir = Files.createTempDir();
+    void setUp(@TempDir Path tempDir) {
+        File projectDir = tempDir.toFile();
         GradleProject gradleProject = GradleProject
                 .newBuilder()
                 .setProjectName("proto-js-plugin-test")
@@ -61,7 +64,9 @@ class ProtoFromJsonWriterTest {
                 .addProtoFiles(PROTO_FILES)
                 .build();
         gradleProject.executeTask(COMPILE_PROTO_TO_JS);
-        project = DefaultProject.at(projectDir);
+        protoJsLocation = mainProtoJsLocation(projectDir);
+        descriptorSetFile = mainDescriptorSetFile(projectDir);
+        writer = createFor(protoJsLocation, descriptorSetFile);
     }
 
     @Test
@@ -73,15 +78,7 @@ class ProtoFromJsonWriterTest {
     @Test
     @DisplayName("write known types map to JS file")
     void writeKnownTypes() {
-        Path protoJsLocation = mainProtoJsLocation(projectDir);
-        File descriptorSetFile = project.mainDescriptors();
-        assertTrue(exists(protoJsLocation));
-        assertTrue(exists(descriptorSetFile.toPath()));
-
-        ProtoFromJsonWriter writer = createFor(protoJsLocation, descriptorSetFile);
-        assertTrue(writer.hasFilesToProcess());
-
-        writer.writeFromJsonForProtos();
+        writer.writeKnownTypes();
         Path knownTypes = Paths.get(protoJsLocation.toString(), JsFiles.KNOWN_TYPES);
         assertTrue(exists(knownTypes));
     }

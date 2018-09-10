@@ -26,4 +26,14 @@ dependencies {
     testImplementation project(':testlib')
     testImplementation project(':plugin-testlib')
     testImplementation gradleTestKit()
+
+    testImplementation deps.test.junit5Api
+    testImplementation deps.test.junit5Runner
+    testImplementation "org.junit-pioneer:junit-pioneer:0.1.2"
+}
+
+test {
+    useJUnitPlatform {
+        includeEngines 'junit-jupiter'
+    }
 }

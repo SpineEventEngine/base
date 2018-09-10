@@ -20,6 +20,7 @@
 
 package io.spine.tools.protojs;
 
+import com.google.common.annotations.VisibleForTesting;
 import io.spine.code.proto.FileSet;
 import io.spine.tools.protojs.fromjson.FromJsonWriter;
 import io.spine.tools.protojs.knowntypes.KnownTypeParsersWriter;
@@ -54,17 +55,20 @@ final class ProtoFromJsonWriter {
         writeFromJsonMethod();
     }
 
-    private void writeKnownTypes() {
+    @VisibleForTesting
+    void writeKnownTypes() {
         KnownTypesWriter writer = KnownTypesWriter.createFor(protoJsLocation, protoJsFiles);
         writer.writeFile();
     }
 
-    private void writeKnownTypeParsers() {
+    @VisibleForTesting
+    void writeKnownTypeParsers() {
         KnownTypeParsersWriter writer = KnownTypeParsersWriter.createFor(protoJsLocation);
         writer.writeFile();
     }
 
-    private void writeFromJsonMethod() {
+    @VisibleForTesting
+    void writeFromJsonMethod() {
         FromJsonWriter writer = FromJsonWriter.createFor(protoJsLocation, protoJsFiles);
         writer.writeIntoFiles();
     }

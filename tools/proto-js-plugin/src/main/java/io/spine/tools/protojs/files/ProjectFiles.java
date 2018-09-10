@@ -65,6 +65,14 @@ public final class ProjectFiles {
         return file;
     }
 
+    @VisibleForTesting
+    public static File mainDescriptorSetFile(File projectDir) {
+        checkNotNull(projectDir);
+        DefaultProject defaultProject = DefaultProject.at(projectDir);
+        File file = defaultProject.mainDescriptors();
+        return file;
+    }
+
     public static File testDescriptorSetFile(Project project) {
         checkNotNull(project);
         DefaultProject defaultProject = DefaultProject.at(project.getProjectDir());
