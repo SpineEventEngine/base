@@ -25,6 +25,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static io.spine.testing.Verify.assertContains;
+import static io.spine.testing.Verify.assertNotContains;
 import static java.nio.file.Files.exists;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -39,6 +40,13 @@ public final class Writers {
         byte[] bytes = Files.readAllBytes(filePath);
         String fileContent = new String(bytes);
         assertContains(toSearch, fileContent);
+    }
+
+    public static void assertFileNotContains(Path filePath, String toSearch) throws IOException {
+        assertTrue(exists(filePath));
+        byte[] bytes = Files.readAllBytes(filePath);
+        String fileContent = new String(bytes);
+        assertNotContains(toSearch, fileContent);
     }
 
     public static void assertNonZeroSize(Path filePath) {

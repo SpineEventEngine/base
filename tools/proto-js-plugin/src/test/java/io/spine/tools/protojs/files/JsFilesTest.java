@@ -20,38 +20,103 @@
 
 package io.spine.tools.protojs.files;
 
+import com.google.common.testing.NullPointerTester;
+import com.google.protobuf.Descriptors;
+import com.google.protobuf.Descriptors.FileDescriptor;
+import io.spine.code.proto.FileName;
+import io.spine.code.proto.FileSet;
 import io.spine.testing.UtilityClassTest;
+import io.spine.tools.protojs.code.JsGenerator;
+import io.spine.tools.protojs.code.JsOutput;
+import io.spine.tools.protojs.given.Given;
+import io.spine.tools.protojs.given.Given.PreparedProject;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Optional;
+
+import static com.google.common.io.Files.createTempDir;
+import static io.spine.tools.protojs.given.Given.COMMANDS_PROTO;
+import static io.spine.tools.protojs.given.Given.preparedProject;
+import static io.spine.tools.protojs.given.Writers.assertFileContains;
+import static io.spine.tools.protojs.given.Writers.assertFileNotContains;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("JsFiles utility should")
 class JsFilesTest extends UtilityClassTest<JsFiles> {
 
-    protected JsFilesTest(Class<JsFiles> aClass) {
-        super(aClass);
+    private static final String TEST_FILE_JS = "test_file.js";
+    private static final String TEST_LINE_1 = "test line 1";
+    private static final String TEST_LINE_2 = "test line 2";
+
+    JsFilesTest() {
+        super(JsFiles.class);
     }
 
     @Test
     @DisplayName("write `JsOutput` to new file")
-    void writeToFile() {
+    void writeToFile() throws IOException {
+        String tempDirPath = createTempDir().getAbsolutePath();
+        Path path = Paths.get(tempDirPath, TEST_FILE_JS);
+        JsOutput testLine1 = generateCode(TEST_LINE_1);
+        JsFiles.writeToFile(path, testLine1);
 
+        assertFileContains(path, TEST_LINE_1);
     }
 
     @Test
     @DisplayName("overwrite existing file")
-    void overwriteExisting() {
+    void overwriteExisting() throws IOException {
+        String tempDirPath = createTempDir().getAbsolutePath();
+        Path path = Paths.get(tempDirPath, TEST_FILE_JS);
+        JsOutput testLine1 = generateCode(TEST_LINE_1);
+        JsFiles.writeToFile(path, testLine1);
 
+        JsOutput testLine2 = generateCode(TEST_LINE_2);
+        JsFiles.writeToFile(path, testLine2);
+
+        assertFileNotContains(path, TEST_LINE_1);
+        assertFileContains(path, TEST_LINE_2);
     }
 
     @Test
     @DisplayName("append `JsOutput` to existing file")
-    void appendToFile() {
+    void appendToFile() throws IOException {
+        String tempDirPath = createTempDir().getAbsolutePath();
+        Path path = Paths.get(tempDirPath, TEST_FILE_JS);
+        JsOutput testLine1 = generateCode(TEST_LINE_1);
+        JsFiles.writeToFile(path, testLine1);
 
+        JsOutput testLine2 = generateCode(TEST_LINE_2);
+        JsFiles.appendToFile(path, testLine2);
+
+        assertFileContains(path, TEST_LINE_2);
+        assertFileContains(path, TEST_LINE_2);
     }
 
     @Test
     @DisplayName("return JS file name for the `FileDescriptor`")
     void getJsFileName() {
+        PreparedProject project = preparedProject();
+        FileSet fileSet = project.fileSet();
+        FileName fileName = FileName.of(COMMANDS_PROTO);
+        Optional<FileDescriptor> fileDescriptor = fileSet.tryFind(fileName);
+        FileDescriptor file = fileDescriptor.get();
 
+        String jsFileName = JsFiles.jsFileName(file);
+
+        String nameWithoutExtension = FileName.from(file)
+                           .nameWithoutExtension();
+        String expected = nameWithoutExtension + "_pb.js";
+        assertEquals(expected, jsFileName);
+    }
+
+    private static JsOutput generateCode(String lineOfCode) {
+        JsGenerator jsGenerator = new JsGenerator();
+        jsGenerator.addLine(lineOfCode);
+        return jsGenerator.getGeneratedCode();
     }
 }

@@ -20,38 +20,76 @@
 
 package io.spine.tools.protojs.files;
 
+import io.spine.code.DefaultProject;
 import io.spine.testing.UtilityClassTest;
+import org.gradle.api.Project;
+import org.gradle.testfixtures.ProjectBuilder;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import static com.google.common.io.Files.createTempDir;
+import static io.spine.tools.protojs.files.ProjectFiles.mainDescriptorSetFile;
+import static io.spine.tools.protojs.files.ProjectFiles.mainProtoJsLocation;
+import static io.spine.tools.protojs.files.ProjectFiles.testDescriptorSetFile;
+import static io.spine.tools.protojs.files.ProjectFiles.testProtoJsLocation;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("ProjectFiles utility should")
 class ProjectFilesTest extends UtilityClassTest<ProjectFiles> {
 
-    protected ProjectFilesTest(Class<ProjectFiles> aClass) {
-        super(aClass);
+    private Project project;
+
+    ProjectFilesTest() {
+        super(ProjectFiles.class);
+    }
+
+    @BeforeEach
+    void setUp() {
+        project = ProjectBuilder.builder()
+                                .withProjectDir(createTempDir())
+                                .build();
     }
 
     @Test
     @DisplayName("obtain generated `main` proto JS files location for project")
     void getMainProtoLocation() {
-
+        Path location = mainProtoJsLocation(project);
+        String projectDir = project.getProjectDir()
+                                   .getAbsolutePath();
+        Path expected = Paths.get(projectDir, "proto", "main", "js");
+        assertEquals(expected, location);
     }
 
     @Test
     @DisplayName("obtain generated `test` proto JS files location for project")
     void getTestProtoLocation() {
-
+        Path location = testProtoJsLocation(project);
+        String projectDir = project.getProjectDir()
+                                   .getAbsolutePath();
+        Path expected = Paths.get(projectDir, "proto", "test", "js");
+        assertEquals(expected, location);
     }
 
     @Test
     @DisplayName("obtain `main` descriptor set file location for project")
     void getMainDescriptorSetFile() {
-
+        File file = mainDescriptorSetFile(project);
+        DefaultProject defaultProject = DefaultProject.at(project.getProjectDir());
+        File expected = defaultProject.mainDescriptors();
+        assertEquals(expected, file);
     }
 
     @Test
     @DisplayName("obtain `test` descriptor set file location for project")
     void getTestDescriptorSetFile() {
-
+        File file = testDescriptorSetFile(project);
+        DefaultProject defaultProject = DefaultProject.at(project.getProjectDir());
+        File expected = defaultProject.testDescriptors();
+        assertEquals(expected, file);
     }
 }

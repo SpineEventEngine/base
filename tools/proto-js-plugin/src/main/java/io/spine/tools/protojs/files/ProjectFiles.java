@@ -41,7 +41,7 @@ public final class ProjectFiles {
 
     public static Path mainProtoJsLocation(Project project) {
         checkNotNull(project);
-        Path location = protoJsLocation(project, TEST);
+        Path location = protoJsLocation(project, MAIN);
         return location;
     }
 

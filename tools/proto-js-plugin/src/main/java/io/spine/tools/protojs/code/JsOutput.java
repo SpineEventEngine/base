@@ -20,9 +20,13 @@
 
 package io.spine.tools.protojs.code;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static java.lang.System.lineSeparator;
 
 /**
  * Meant to be read-only for all classes except {@link JsGenerator}.
@@ -32,6 +36,16 @@ public final class JsOutput {
     private final List<LineOfCode> linesOfCode;
     private final String lineSeparator;
     private final int indent;
+
+    /**
+     * Exists only for testing.
+     */
+    @VisibleForTesting
+    public JsOutput() {
+        linesOfCode = new ArrayList<>();
+        this.lineSeparator = lineSeparator();
+        this.indent = 4;
+    }
 
     JsOutput(String lineSeparator, int indent) {
         linesOfCode = new ArrayList<>();
