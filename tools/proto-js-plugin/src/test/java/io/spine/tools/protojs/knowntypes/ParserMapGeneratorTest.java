@@ -20,29 +20,58 @@
 
 package io.spine.tools.protojs.knowntypes;
 
+import com.google.common.testing.NullPointerTester;
+import com.google.protobuf.Timestamp;
+import io.spine.tools.protojs.code.JsGenerator;
+import io.spine.tools.protojs.code.JsOutput;
+import io.spine.type.TypeUrl;
+import io.spine.validate.ValidationError;
+import io.spine.validate.ValidationErrorProto;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
+import static io.spine.testing.Verify.assertContains;
+import static io.spine.type.TypeUrl.of;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("ParserMapGenerator should")
 class ParserMapGeneratorTest {
 
+    private JsGenerator jsGenerator;
+    private ParserMapGenerator generator;
+
+    @BeforeEach
+    void setUp() {
+        jsGenerator = new JsGenerator();
+        generator = new ParserMapGenerator(jsGenerator);
+    }
+
     @Test
     @DisplayName(NOT_ACCEPT_NULLS)
     void passNullToleranceCheck() {
-
+        new NullPointerTester().testAllPublicStaticMethods(ParserMapGenerator.class);
     }
 
     @Test
     @DisplayName("tell if parser for type URL is present")
     void tellIfHasParser() {
+        TypeUrl timestamp = TypeUrl.of(Timestamp.class);
+        assertTrue(ParserMapGenerator.hasParser(timestamp));
 
+        TypeUrl validationError = TypeUrl.of(ValidationError.class);
+        assertFalse(ParserMapGenerator.hasParser(validationError));
     }
 
     @Test
     @DisplayName("generate known type parsers map")
     void generateParsersMap() {
-
+        generator.generateJs();
+        JsOutput generatedCode = jsGenerator.getGeneratedCode();
+        String codeString = generatedCode.toString();
+        String mapEntry = "['type.googleapis.com/google.protobuf.Value', new ValueParser()]";
+        assertContains(mapEntry, codeString);
     }
 }

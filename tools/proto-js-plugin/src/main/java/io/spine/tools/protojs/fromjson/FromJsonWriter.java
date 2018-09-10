@@ -40,21 +40,21 @@ public final class FromJsonWriter {
     private static final String SPINE_OPTIONS_PROTO = "spine/options.proto";
 
     private final Path protoJsLocation;
-    private final FileSet protoJsFiles;
+    private final FileSet fileSet;
 
-    private FromJsonWriter(Path protoJsLocation, FileSet protoJsFiles) {
+    private FromJsonWriter(Path protoJsLocation, FileSet fileSet) {
         this.protoJsLocation = protoJsLocation;
-        this.protoJsFiles = protoJsFiles;
+        this.fileSet = fileSet;
     }
 
-    public static FromJsonWriter createFor(Path protoJsLocation, FileSet protoJsFiles) {
+    public static FromJsonWriter createFor(Path protoJsLocation, FileSet fileSet) {
         checkNotNull(protoJsLocation);
-        checkNotNull(protoJsFiles);
-        return new FromJsonWriter(protoJsLocation, protoJsFiles);
+        checkNotNull(fileSet);
+        return new FromJsonWriter(protoJsLocation, fileSet);
     }
 
     public void writeIntoFiles() {
-        for (FileDescriptor file : protoJsFiles.files()) {
+        for (FileDescriptor file : fileSet.files()) {
             if (!isStandardOrSpineOptions(file)) {
                 Path jsFilePath = composeFilePath(file);
                 writeIntoFile(file, jsFilePath);

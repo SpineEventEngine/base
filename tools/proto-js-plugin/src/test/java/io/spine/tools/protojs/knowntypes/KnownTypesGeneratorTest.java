@@ -20,21 +20,51 @@
 
 package io.spine.tools.protojs.knowntypes;
 
+import io.spine.code.proto.FileSet;
+import io.spine.tools.protojs.code.JsGenerator;
+import io.spine.tools.protojs.code.JsOutput;
+import io.spine.tools.protojs.given.Given.PreparedProject;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import static io.spine.testing.Verify.assertContains;
+import static io.spine.tools.protojs.given.Given.preparedProject;
 
 @DisplayName("KnownTypesGenerator should")
 class KnownTypesGeneratorTest {
 
+    private JsGenerator jsGenerator;
+    private KnownTypesGenerator generator;
+
+    @BeforeEach
+    void setUp() {
+        PreparedProject project = preparedProject();
+        FileSet fileSet = project.fileSet();
+        jsGenerator = new JsGenerator();
+        generator = new KnownTypesGenerator(fileSet, jsGenerator);
+    }
+
     @Test
     @DisplayName("generate imports for known types")
     void generateImports() {
-
+        generator.generateImports();
+        String taskImport = "require('./task_pb.js');";
+        assertGeneratedCodeContains(taskImport);
     }
 
     @Test
     @DisplayName("generate known types map")
     void generateKnownTypesMap() {
+        generator.generateKnownTypesMap();
+        String mapEntry = "['type.spine.io/spine.sample.protojs.TaskId', " +
+                "proto.spine.sample.protojs.TaskId]";
+        assertGeneratedCodeContains(mapEntry);
+    }
 
+    private void assertGeneratedCodeContains(String expression) {
+        JsOutput generatedCode = jsGenerator.getGeneratedCode();
+        String codeString = generatedCode.toString();
+        assertContains(expression, codeString);
     }
 }

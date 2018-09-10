@@ -40,11 +40,11 @@ final class KnownTypesGenerator {
 
     private static final String MAP_NAME = "types";
 
-    private final FileSet protoJsFiles;
+    private final FileSet fileSet;
     private final JsGenerator jsGenerator;
 
-    KnownTypesGenerator(FileSet protoJsFiles, JsGenerator jsGenerator) {
-        this.protoJsFiles = protoJsFiles;
+    KnownTypesGenerator(FileSet fileSet, JsGenerator jsGenerator) {
+        this.fileSet = fileSet;
         this.jsGenerator = jsGenerator;
     }
 
@@ -55,7 +55,7 @@ final class KnownTypesGenerator {
 
     @VisibleForTesting
     void generateImports() {
-        Collection<FileDescriptor> files = protoJsFiles.getFileDescriptors();
+        Collection<FileDescriptor> files = fileSet.getFileDescriptors();
         JsImportGenerator importGenerator = JsImportGenerator.createFor(KNOWN_TYPES);
         for (FileDescriptor file : files) {
             generateImport(importGenerator, file);
@@ -80,7 +80,7 @@ final class KnownTypesGenerator {
     }
 
     private void storeKnownTypes() {
-        Collection<FileDescriptor> files = protoJsFiles.getFileDescriptors();
+        Collection<FileDescriptor> files = fileSet.getFileDescriptors();
         for (Iterator<FileDescriptor> it = files.iterator(); it.hasNext(); ) {
             FileDescriptor file = it.next();
             boolean isLastFile = !it.hasNext();

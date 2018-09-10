@@ -20,6 +20,7 @@
 
 package io.spine.tools.protojs.knowntypes;
 
+import com.google.common.annotations.VisibleForTesting;
 import io.spine.tools.protojs.code.JsGenerator;
 import io.spine.tools.protojs.code.JsOutput;
 
@@ -38,6 +39,7 @@ public final class KnownTypeParsersWriter {
 
     private static final String RESOURCES_DIR = "io/spine/tools/protojs/knowntypes/";
     private static final String PARSERS_CODE = RESOURCES_DIR + KNOWN_TYPE_PARSERS;
+
     private static final int INDENT = 4;
 
     private final Path filePath;
@@ -75,7 +77,8 @@ public final class KnownTypeParsersWriter {
         appendToFile(filePath, generatedCode);
     }
 
-    private static Path composeFilePath(Path protoJsLocation) {
+    @VisibleForTesting
+    static Path composeFilePath(Path protoJsLocation) {
         Path path = Paths.get(protoJsLocation.toString(), KNOWN_TYPE_PARSERS);
         return path;
     }

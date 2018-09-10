@@ -20,6 +20,7 @@
 
 package io.spine.tools.protojs.knowntypes;
 
+import com.google.common.annotations.VisibleForTesting;
 import io.spine.code.proto.FileSet;
 import io.spine.tools.protojs.code.JsGenerator;
 import io.spine.tools.protojs.code.JsOutput;
@@ -36,29 +37,30 @@ public final class KnownTypesWriter {
     private static final int INDENT = 4;
 
     private final Path filePath;
-    private final FileSet protoJsFiles;
+    private final FileSet fileSet;
 
-    private KnownTypesWriter(Path filePath, FileSet protoJsFiles) {
+    private KnownTypesWriter(Path filePath, FileSet fileSet) {
         this.filePath = filePath;
-        this.protoJsFiles = protoJsFiles;
+        this.fileSet = fileSet;
     }
 
-    public static KnownTypesWriter createFor(Path protoJsLocation, FileSet protoJsFiles) {
+    public static KnownTypesWriter createFor(Path protoJsLocation, FileSet fileSet) {
         checkNotNull(protoJsLocation);
-        checkNotNull(protoJsFiles);
+        checkNotNull(fileSet);
         Path path = composeFilePath(protoJsLocation);
-        return new KnownTypesWriter(path, protoJsFiles);
+        return new KnownTypesWriter(path, fileSet);
     }
 
     public void writeFile() {
         JsGenerator jsGenerator = new JsGenerator(INDENT);
-        KnownTypesGenerator generator = new KnownTypesGenerator(protoJsFiles, jsGenerator);
+        KnownTypesGenerator generator = new KnownTypesGenerator(fileSet, jsGenerator);
         generator.generateJs();
         JsOutput generatedCode = jsGenerator.getGeneratedCode();
         writeToFile(filePath, generatedCode);
     }
 
-    private static Path composeFilePath(Path protoJsLocation) {
+    @VisibleForTesting
+    static Path composeFilePath(Path protoJsLocation) {
         Path path = Paths.get(protoJsLocation.toString(), KNOWN_TYPES);
         return path;
     }

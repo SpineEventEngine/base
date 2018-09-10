@@ -32,20 +32,20 @@ import java.nio.file.Path;
 final class ProtoFromJsonWriter {
 
     private final Path protoJsLocation;
-    private final FileSet protoJsFiles;
+    private final FileSet fileSet;
 
-    private ProtoFromJsonWriter(Path protoJsLocation, FileSet protoJsFiles) {
+    private ProtoFromJsonWriter(Path protoJsLocation, FileSet fileSet) {
         this.protoJsLocation = protoJsLocation;
-        this.protoJsFiles = protoJsFiles;
+        this.fileSet = fileSet;
     }
 
     static ProtoFromJsonWriter createFor(Path protoJsLocation, File descriptorSetFile) {
-        FileSet protoJsFiles = collectProtoJsFiles(descriptorSetFile);
-        return new ProtoFromJsonWriter(protoJsLocation, protoJsFiles);
+        FileSet fileSet = collectFileSet(descriptorSetFile);
+        return new ProtoFromJsonWriter(protoJsLocation, fileSet);
     }
 
     boolean hasFilesToProcess() {
-        boolean hasFilesToProcess = !protoJsFiles.isEmpty();
+        boolean hasFilesToProcess = !fileSet.isEmpty();
         return hasFilesToProcess;
     }
 
@@ -57,7 +57,7 @@ final class ProtoFromJsonWriter {
 
     @VisibleForTesting
     void writeKnownTypes() {
-        KnownTypesWriter writer = KnownTypesWriter.createFor(protoJsLocation, protoJsFiles);
+        KnownTypesWriter writer = KnownTypesWriter.createFor(protoJsLocation, fileSet);
         writer.writeFile();
     }
 
@@ -69,16 +69,16 @@ final class ProtoFromJsonWriter {
 
     @VisibleForTesting
     void writeFromJsonMethod() {
-        FromJsonWriter writer = FromJsonWriter.createFor(protoJsLocation, protoJsFiles);
+        FromJsonWriter writer = FromJsonWriter.createFor(protoJsLocation, fileSet);
         writer.writeIntoFiles();
     }
 
     @VisibleForTesting
-    FileSet protoJsFiles() {
-        return protoJsFiles;
+    FileSet fileSet() {
+        return fileSet;
     }
 
-    private static FileSet collectProtoJsFiles(File descriptorSetFile) {
+    private static FileSet collectFileSet(File descriptorSetFile) {
         if (descriptorSetFile.exists()) {
             FileSet fileSet = FileSet.parse(descriptorSetFile);
             return fileSet;

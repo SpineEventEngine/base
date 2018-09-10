@@ -21,30 +21,56 @@
 package io.spine.tools.protojs.knowntypes;
 
 import com.google.common.testing.NullPointerTester;
+import io.spine.code.proto.FileSet;
+import io.spine.tools.protojs.given.Given.PreparedProject;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
+import static io.spine.tools.protojs.files.JsFiles.KNOWN_TYPES;
+import static io.spine.tools.protojs.given.Given.preparedProject;
+import static java.nio.file.Files.exists;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SuppressWarnings("DuplicateStringLiteralInspection") // Common test display names.
 @DisplayName("KnownTypesWriter should")
 class KnownTypesWriterTest {
 
-    @Test
-    @DisplayName(NOT_ACCEPT_NULLS)
-    void passNullToleranceCheck() {
-        new NullPointerTester().testAllPublicStaticMethods(KnownTypesWriter.class);
+    private Path protoJsLocation;
+    private KnownTypesWriter writer;
+
+    @BeforeEach
+    void setUp() {
+        PreparedProject project = preparedProject();
+        protoJsLocation = project.protoJsLocation();
+        FileSet fileSet = project.fileSet();
+        writer = KnownTypesWriter.createFor(protoJsLocation, fileSet);
     }
 
     @Test
     @DisplayName("compose file path")
     void composeFilePath() {
-
+        Path filePath = KnownTypesWriter.composeFilePath(protoJsLocation);
+        Path expected = Paths.get(protoJsLocation.toString(), KNOWN_TYPES);
+        assertEquals(expected, filePath);
     }
 
     @Test
     @DisplayName("write known types map to JS file")
     void writeKnownTypes() {
-
+        Path filePath = KnownTypesWriter.composeFilePath(protoJsLocation);
+        assertFalse(exists(filePath));
+        writer.writeFile();
+        assertTrue(exists(filePath));
+        long fileSize = filePath.toFile()
+                                .length();
+        assertNotEquals(0, fileSize);
     }
 }
