@@ -33,6 +33,8 @@ import org.junitpioneer.jupiter.TempDirectory;
 import org.junitpioneer.jupiter.TempDirectory.TempDir;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -92,8 +94,9 @@ class ProtoFromJsonWriterTest {
 
     @Test
     @DisplayName("write fromJson method into generated JS proto definitions")
-    void writeFromJsonMethod() {
+    void writeFromJsonMethod() throws IOException {
         writer.writeFromJsonMethod();
+
         FileSet fileSet = writer.protoJsFiles();
         Collection<FileDescriptor> fileDescriptors = fileSet.getFileDescriptors();
         for (FileDescriptor file : fileDescriptors) {
@@ -101,6 +104,11 @@ class ProtoFromJsonWriterTest {
                 String jsFileName = jsFileName(file);
                 Path jsFilePath = Paths.get(protoJsLocation.toString(), jsFileName);
                 assertTrue(exists(jsFilePath));
+
+                byte[] bytes = Files.readAllBytes(jsFilePath);
+                String fileContent = new String(bytes);
+                boolean methodIsPresent = fileContent.contains("fromJson = function");
+                assertTrue(methodIsPresent);
             }
         }
     }
