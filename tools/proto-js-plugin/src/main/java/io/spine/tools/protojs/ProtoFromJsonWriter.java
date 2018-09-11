@@ -34,16 +34,16 @@ import java.nio.file.Path;
  *
  * <p>This class generates and writes JS code to the files processed by the plugin, more
  * specifically:
- * <ul>
- *     <li>1. Writes all known types to the {@code known_types.js} file in Proto JS location root.
+ * <ol>
+ *     <li>Writes all known types to the {@code known_types.js} file in Proto JS location root.
  *         The types are stored in a global {@code Map} in the
  *         "{@linkplain io.spine.type.TypeUrl type-url}-to-JS-type" format.
- *     <li>2. Writes all standard type parsers to the {@code known_type_parsers.js} file in Proto
+ *     <li>Writes all standard type parsers to the {@code known_type_parsers.js} file in Proto
  *         JS location root. The parsers are stored in a global {@code Map} in the
  *         "type-url-to-parser" format.
- *     <li>3. Appends {@code fromJson(json)} method to all Proto JS files, one for each message
- *         stored in a file.
- * </ul>
+ *     <li>Appends {@code fromJson(json)} method to all Proto JS files, one for each message stored
+ *         in a file.
+ * </ol>
  *
  * @author Dmytro Kuzmin
  */

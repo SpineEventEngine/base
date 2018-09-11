@@ -36,6 +36,16 @@ import static io.spine.tools.protojs.files.JsFiles.KNOWN_TYPES;
 import static io.spine.tools.protojs.files.JsFiles.jsFileName;
 import static io.spine.tools.protojs.types.Types.typeWithProtoPrefix;
 
+/**
+ * The generator of the {@code known_types.js} code.
+ *
+ * <p>This class generates the global JS {@code Map} with all the known types written in the form
+ * of "{@linkplain TypeUrl type-url}-to-JS-type".
+ *
+ * <p>All the generated code is stored to the {@link JsGenerator} provided on construction.
+ *
+ * @author Dmytro Kuzmin
+ */
 final class KnownTypesGenerator {
 
     private static final String MAP_NAME = "types";
@@ -43,16 +53,43 @@ final class KnownTypesGenerator {
     private final FileSet fileSet;
     private final JsGenerator jsGenerator;
 
+    /**
+     * Creates a new {@code KnownTypesGenerator}.
+     *
+     * <p>All the known types will be acquired from the {@code fileSet} and the {@code jsGenerator}
+     * creates and accumulates JS code lines.
+     *
+     * @param fileSet
+     *         the {@code FileSet} containing all the known types
+     * @param jsGenerator
+     *         the JS code generator to append the code to
+     */
     KnownTypesGenerator(FileSet fileSet, JsGenerator jsGenerator) {
         this.fileSet = fileSet;
         this.jsGenerator = jsGenerator;
     }
 
+    /**
+     * Generates known types code.
+     *
+     * <p>The code includes:
+     * <ol>
+     *     <li>Imports of all files declaring Proto JS messages
+     *     <li>Known types map itself
+     * </ol>
+     *
+     * <p>The generated code is accumulated in the {@link #jsGenerator}.
+     */
     void generateJs() {
         generateImports();
         generateKnownTypesMap();
     }
 
+    /**
+     * Generates import statements for all files declaring Proto JS messages.
+     *
+     * <p>Imports are written in the CommonJS style ({@code "require('./lib')"}).
+     */
     @VisibleForTesting
     void generateImports() {
         Collection<FileDescriptor> files = fileSet.getFileDescriptors();
@@ -62,6 +99,14 @@ final class KnownTypesGenerator {
         }
     }
 
+    /**
+     * Generates the JS {@code Map} of known types.
+     *
+     * <p>Map entries are known types stored in the "{@linkplain TypeUrl type-url}-to-JS-type
+     * format.
+     *
+     * <p>The map is exported under the {@link #MAP_NAME}.
+     */
     @VisibleForTesting
     void generateKnownTypesMap() {
         jsGenerator.addEmptyLine();

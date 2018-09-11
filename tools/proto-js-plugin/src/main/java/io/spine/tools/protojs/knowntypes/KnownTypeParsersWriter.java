@@ -99,10 +99,10 @@ public final class KnownTypeParsersWriter {
      * Writes the contents of the {@code known_type_parsers.js} file to disk.
      *
      * <p>This method performs 2 steps:
-     * <ul>
-     *     <li>1. Copy the parser definitions from the {@code known_type_parsers.js} resource.
-     *     <li>2. Generate and append the known type parsers map to the file.
-     * </ul>
+     * <ol>
+     *     <li>Copy the parser definitions from the {@code known_type_parsers.js} resource.
+     *     <li>Generate and append the known type parsers map to the file.
+     * </ol>
      *
      * @throws IllegalStateException
      *         if the {@code known_type_parsers.js} resource cannot be located or something goes
