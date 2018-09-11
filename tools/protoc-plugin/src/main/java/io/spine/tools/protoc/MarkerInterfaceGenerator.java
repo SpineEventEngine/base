@@ -47,6 +47,8 @@ import static io.spine.tools.protoc.MessageAndInterface.scanMsgOption;
  */
 public class MarkerInterfaceGenerator extends SpineProtoGenerator {
 
+    private static final SpineProtoGenerator instance = new MarkerInterfaceGenerator();
+
     /** Prevents singleton class instantiation. */
     private MarkerInterfaceGenerator() {
         super();
@@ -56,7 +58,7 @@ public class MarkerInterfaceGenerator extends SpineProtoGenerator {
      * Retrieves the single instance of the {@code MarkerInterfaceGenerator} type.
      */
     public static SpineProtoGenerator instance() {
-        return Singleton.INSTANCE.value;
+        return instance;
     }
 
     /**
@@ -86,12 +88,5 @@ public class MarkerInterfaceGenerator extends SpineProtoGenerator {
             result.addAll(fromFileOption);
         }
         return result.build();
-    }
-
-    private enum Singleton {
-        INSTANCE;
-
-        @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final SpineProtoGenerator value = new MarkerInterfaceGenerator();
     }
 }
