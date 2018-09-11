@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static io.spine.tools.protoc.MessageAndInterface.INSERTION_POINT_IMPLEMENTS;
+import static io.spine.tools.protoc.InsertionPoint.INSERTION_POINT_IMPLEMENTS;
 import static java.lang.String.format;
 import static java.util.regex.Pattern.compile;
 import static org.junit.Assert.assertEquals;

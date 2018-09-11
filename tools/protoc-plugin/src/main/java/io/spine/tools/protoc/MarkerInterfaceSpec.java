@@ -74,6 +74,11 @@ final class MarkerInterfaceSpec {
         return spec;
     }
 
+    static MarkerInterfaceSpec from(Class<?> interfaceClass) {
+        String fqn = interfaceClass.getName();
+        return from(fqn);
+    }
+
     /**
      * Parses a {@code MarkerInterfaceSpec} from the given type fully qualified name.
      */

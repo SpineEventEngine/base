@@ -103,8 +103,8 @@ public abstract class SpineProtoGenerator {
      * @return optionally a {@link Collection} of {@linkplain File Files} to generate or an empty
      * {@code Collection}
      */
-    protected abstract Collection<File> processMessage(FileDescriptorProto file,
-                                                       DescriptorProto message);
+    protected abstract Collection<CompilerOutput> processMessage(FileDescriptorProto file,
+                                                                 DescriptorProto message);
 
     /**
      * Processes the given compiler request and generates the response to the compiler.
@@ -148,9 +148,9 @@ public abstract class SpineProtoGenerator {
      * Processes all passed proto files.
      */
     private CodeGeneratorResponse process(Iterable<FileDescriptorProto> files) {
-        Collection<File> generatedFiles = newHashSet();
+        Collection<CompilerOutput> generatedFiles = newHashSet();
         for (FileDescriptorProto file : files) {
-            Collection<File> newFiles = generateForTypesIn(file);
+            Collection<CompilerOutput> newFiles = generateForTypesIn(file);
             generatedFiles.addAll(newFiles);
         }
         Collection<File> mergedFiles = mergeFiles(generatedFiles);
@@ -161,9 +161,10 @@ public abstract class SpineProtoGenerator {
         return response;
     }
 
-    private static Collection<File> mergeFiles(Collection<File> allFiles) {
+    private static Collection<File> mergeFiles(Collection<CompilerOutput> allFiles) {
         Map<Boolean, List<File>> partitionedFiles = allFiles
                 .stream()
+                .map(CompilerOutput::toFile)
                 .collect(partitioningBy(File::hasInsertionPoint));
         Collection<File> insertionPoints = mergeInsertionPoints(partitionedFiles.get(true));
         Collection<File> completeFiles = partitionedFiles.get(false);
@@ -197,10 +198,10 @@ public abstract class SpineProtoGenerator {
     /**
      * Processes the passed proto file.
      */
-    private Collection<File> generateForTypesIn(FileDescriptorProto file) {
-        Collection<File> result = newHashSet();
+    private Collection<CompilerOutput> generateForTypesIn(FileDescriptorProto file) {
+        Collection<CompilerOutput> result = newHashSet();
         for (DescriptorProto message : file.getMessageTypeList()) {
-            Collection<File> processedFile = processMessage(file, message);
+            Collection<CompilerOutput> processedFile = processMessage(file, message);
             result.addAll(processedFile);
         }
         return result;

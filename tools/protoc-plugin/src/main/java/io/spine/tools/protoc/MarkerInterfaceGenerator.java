@@ -26,7 +26,9 @@ import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 
 import java.util.Collection;
+import java.util.Optional;
 
+import static io.spine.tools.protoc.BuiltInMarkerInterface.scanForBuiltIns;
 import static io.spine.tools.protoc.MessageAndInterface.scanFileOption;
 import static io.spine.tools.protoc.MessageAndInterface.scanMsgOption;
 
@@ -77,16 +79,20 @@ public class MarkerInterfaceGenerator extends SpineProtoGenerator {
      * </ol>
      */
     @Override
-    protected Collection<File> processMessage(FileDescriptorProto file, DescriptorProto message) {
-        ImmutableList.Builder<File> result = ImmutableList.builder();
+    protected Collection<CompilerOutput> processMessage(FileDescriptorProto file, DescriptorProto message) {
+        ImmutableList.Builder<CompilerOutput> result = ImmutableList.builder();
 
-        Collection<File> fromMsgOption = scanMsgOption(file, message);
+        Collection<CompilerOutput> fromMsgOption = scanMsgOption(file, message);
         result.addAll(fromMsgOption);
 
         if (fromMsgOption.isEmpty()) {
-            Collection<File> fromFileOption = scanFileOption(file, message);
+            Collection<CompilerOutput> fromFileOption = scanFileOption(file, message);
             result.addAll(fromFileOption);
         }
+
+        Optional<CompilerOutput> builtInMarkedInterface = scanForBuiltIns(file, message);
+        builtInMarkedInterface.ifPresent(result::add);
+
         return result.build();
     }
 }
