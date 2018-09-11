@@ -34,8 +34,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
+import static com.google.protobuf.Descriptors.FieldDescriptor.Type.INT64;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.MESSAGE;
-import static com.google.protobuf.Descriptors.FieldDescriptor.Type.STRING;
 import static io.spine.tools.protojs.field.Fields.capitalizedName;
 import static io.spine.tools.protojs.field.Fields.isMap;
 import static io.spine.tools.protojs.field.Fields.isMessage;
@@ -122,7 +122,7 @@ class FieldsTest extends UtilityClassTest<Fields> {
     @DisplayName("get key descriptor for map field")
     void getKeyDescriptor() {
         FieldDescriptor key = keyDescriptor(mapField);
-        assertEquals(STRING, key.getType());
+        assertEquals(INT64, key.getType());
     }
 
     @Test
