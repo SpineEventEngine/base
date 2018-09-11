@@ -33,6 +33,8 @@ import java.util.List;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Sets.newHashSet;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.reducing;
 
 /**
  * An abstract base for the Protobuf code generator.
@@ -147,11 +149,28 @@ public abstract class SpineProtoGenerator {
             Collection<File> newFiles = generateForTypesIn(file);
             generatedFiles.addAll(newFiles);
         }
+        Collection<File> mergedFiles = mergeInsertionPoints(generatedFiles);
         CodeGeneratorResponse response =
                 CodeGeneratorResponse.newBuilder()
-                                     .addAllFile(generatedFiles)
+                                     .addAllFile(mergedFiles)
                                      .build();
         return response;
+    }
+
+    private static Collection<File> mergeInsertionPoints(Collection<File> allFiles) {
+        File reducingSeed = File.getDefaultInstance();
+        Collection<File> merged = allFiles
+                .stream()
+                .collect(groupingBy(File::getName,
+                                    reducing(reducingSeed, SpineProtoGenerator::concatContent)))
+                .values();
+        return merged;
+    }
+
+    private static File concatContent(File left, File right) {
+        return left.toBuilder()
+                   .setContent(left.getContent() + right.getContent())
+                   .build();
     }
 
     /**

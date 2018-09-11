@@ -31,6 +31,7 @@ import io.spine.code.java.PackageName;
 import io.spine.code.java.SourceFile;
 import io.spine.option.Options;
 
+import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
 
@@ -63,15 +64,11 @@ final class MessageAndInterface {
     /**
      * Scans the given {@linkplain FileDescriptorProto file} for the {@code (every_is)} option.
      */
-    static Optional<MessageAndInterface> scanFileOption(FileDescriptorProto file,
-                                                        DescriptorProto msg) {
-        Optional<String> everyIs = getEveryIs(file);
-        if (everyIs.isPresent()) {
-            MessageAndInterface resultingFile = generateFile(file, msg, everyIs.get());
-            return Optional.of(resultingFile);
-        } else {
-            return Optional.empty();
-        }
+    static Collection<File> scanFileOption(FileDescriptorProto file, DescriptorProto msg) {
+        Set<File> files = getEveryIs(file).map(option -> generateFile(file, msg, option))
+                                          .map(MessageAndInterface::asSet)
+                                          .orElseGet(ImmutableSet::of);
+        return files;
     }
 
     private static MessageAndInterface generateFile(FileDescriptorProto file,
@@ -140,15 +137,11 @@ final class MessageAndInterface {
     /**
      * Scans the given {@linkplain DescriptorProto message} for the {@code (is)} option.
      */
-    static Optional<MessageAndInterface> scanMsgOption(FileDescriptorProto file,
-                                                       DescriptorProto msg) {
-        Optional<String> everyIs = getIs(msg);
-        if (everyIs.isPresent()) {
-            MessageAndInterface resultingFile = generateFile(file, msg, everyIs.get());
-            return Optional.of(resultingFile);
-        } else {
-            return Optional.empty();
-        }
+    static Collection<File> scanMsgOption(FileDescriptorProto file, DescriptorProto msg) {
+        Set<File> files = getIs(msg).map(option -> generateFile(file, msg, option))
+                                    .map(MessageAndInterface::asSet)
+                                    .orElseGet(ImmutableSet::of);
+        return files;
     }
 
     private static Optional<String> getIs(DescriptorProto descriptor) {

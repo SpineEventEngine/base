@@ -20,14 +20,13 @@
 
 package io.spine.tools.protoc;
 
+import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 
 import java.util.Collection;
-import java.util.Optional;
 
-import static com.google.common.collect.ImmutableSet.of;
 import static io.spine.tools.protoc.MessageAndInterface.scanFileOption;
 import static io.spine.tools.protoc.MessageAndInterface.scanMsgOption;
 
@@ -54,7 +53,7 @@ public class MarkerInterfaceGenerator extends SpineProtoGenerator {
     }
 
     /**
-     * Retrieves the single instance of the {@link MarkerInterfaceGenerator} type.
+     * Retrieves the single instance of the {@code MarkerInterfaceGenerator} type.
      */
     public static SpineProtoGenerator instance() {
         return Singleton.INSTANCE.value;
@@ -77,19 +76,16 @@ public class MarkerInterfaceGenerator extends SpineProtoGenerator {
      */
     @Override
     protected Collection<File> processMessage(FileDescriptorProto file, DescriptorProto message) {
-        Optional<MessageAndInterface> fromMsgOption = scanMsgOption(file, message);
-        if (fromMsgOption.isPresent()) {
-            return fromMsgOption.get()
-                                .asSet();
-        }
+        ImmutableList.Builder<File> result = ImmutableList.builder();
 
-        Optional<MessageAndInterface> fromFileOption = scanFileOption(file, message);
-        if (fromFileOption.isPresent()) {
-            return fromFileOption.get()
-                                 .asSet();
-        }
+        Collection<File> fromMsgOption = scanMsgOption(file, message);
+        result.addAll(fromMsgOption);
 
-        return of();
+        if (fromMsgOption.isEmpty()) {
+            Collection<File> fromFileOption = scanFileOption(file, message);
+            result.addAll(fromFileOption);
+        }
+        return result.build();
     }
 
     private enum Singleton {
