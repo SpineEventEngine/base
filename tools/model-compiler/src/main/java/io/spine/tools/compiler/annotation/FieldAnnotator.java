@@ -89,7 +89,7 @@ class FieldAnnotator extends Annotator<FieldOptions, FieldDescriptorProto> {
             if (shouldAnnotate(messageType)) {
                 SourceVisitor<JavaClassSource> annotation =
                         new MessageFieldAnnotation<>(file, messageType);
-                SourceFile filePath = SourceFile.forMessage(messageType, false, file);
+                SourceFile filePath = SourceFile.forMessage(messageType, file);
                 rewriteSource(filePath, annotation);
             }
         }

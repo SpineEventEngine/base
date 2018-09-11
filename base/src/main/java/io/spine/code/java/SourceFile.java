@@ -27,6 +27,7 @@ import com.google.protobuf.DescriptorProtos.ServiceDescriptorProto;
 import io.spine.code.AbstractSourceFile;
 
 import java.nio.file.Path;
+import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Exceptions.newIllegalStateException;
@@ -49,7 +50,7 @@ public final class SourceFile extends AbstractSourceFile {
     }
 
     /**
-     * Obtains the generated file {@link Path} for the specified file descriptor.
+     * Obtains the generated file {@link java.nio.file.Path} for the specified file descriptor.
      *
      * @param file the proto file descriptor
      * @return the relative file path
@@ -63,7 +64,7 @@ public final class SourceFile extends AbstractSourceFile {
     }
 
     /**
-     * Obtains the {@link Path} to a folder, that contains
+     * Obtains the {@link java.nio.file.Path} to a folder, that contains
      * a generated file from the file descriptor.
      *
      * @param file the proto file descriptor
@@ -77,18 +78,26 @@ public final class SourceFile extends AbstractSourceFile {
     }
 
     /**
-     * Obtains the generated file {@link Path} for the specified message descriptor.
+     * Obtains the generated file {@link java.nio.file.Path} for the specified message descriptor.
      *
      * @param  message   the descriptor of the message type for which we obtain the source code file
-     * @param  orBuilder indicates if a {@code MessageOrBuilder} path for the message should
-     *                   be returned
      * @param  file      the descriptor of the proto file which contains the declaration of the
      *                   message type
      * @return the relative file path
      */
     public static SourceFile forMessage(DescriptorProto message,
-                                        boolean orBuilder,
                                         FileDescriptorProto file) {
+        return forMessageOrInterface(message, file, FileName::forMessage);
+    }
+
+    public static SourceFile forMessageOrBuilder(DescriptorProto message,
+                                                 FileDescriptorProto file) {
+        return forMessageOrInterface(message, file, FileName::forMessageOrBuilder);
+    }
+
+    private static SourceFile forMessageOrInterface(DescriptorProto message,
+                                                    FileDescriptorProto file,
+                                                    Function<DescriptorProto, FileName> fileName) {
         checkNotNull(file);
         checkNotNull(message);
         String typeName = message.getName();
@@ -103,7 +112,7 @@ public final class SourceFile extends AbstractSourceFile {
             return result;
         }
 
-        FileName filename = FileName.forMessage(message, orBuilder);
+        FileName filename = fileName.apply(message);
         SourceFile result = getFolder(file).resolve(filename);
         return result;
     }
@@ -115,7 +124,7 @@ public final class SourceFile extends AbstractSourceFile {
     }
 
     /**
-     * Obtains the generated file {@link Path} for the specified enum descriptor.
+     * Obtains the generated file {@link java.nio.file.Path} for the specified enum descriptor.
      *
      * @param enumType the enum descriptor to get path
      * @param file the file descriptor containing the enum descriptor

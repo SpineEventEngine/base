@@ -21,10 +21,8 @@
 package io.spine.base;
 
 import com.google.errorprone.annotations.Immutable;
-import com.google.protobuf.Descriptors;
 import com.google.protobuf.Message;
-
-import java.util.function.Predicate;
+import io.spine.base.MessageFile.Predicate;
 
 /**
  * A common interface for rejection messages.
@@ -51,7 +49,7 @@ public interface RejectionMessage extends Message {
         private File() {
         }
 
-        public static Predicate<Descriptors.FileDescriptor> predicate() {
+        public static Predicate predicate() {
             return INSTANCE.predicate();
         }
 

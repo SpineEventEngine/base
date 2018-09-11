@@ -21,10 +21,8 @@
 package io.spine.base;
 
 import com.google.errorprone.annotations.Immutable;
-import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Message;
-
-import java.util.function.Predicate;
+import io.spine.base.MessageFile.Predicate;
 
 /**
  * A common interface for command messages.
@@ -52,7 +50,7 @@ public interface CommandMessage extends Message {
         private File() {
         }
 
-        public static Predicate<FileDescriptor> predicate() {
+        public static Predicate predicate() {
             return INSTANCE.predicate();
         }
 

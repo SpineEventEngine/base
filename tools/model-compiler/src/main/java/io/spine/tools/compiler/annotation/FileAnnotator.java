@@ -93,9 +93,8 @@ class FileAnnotator extends Annotator<FileOptions, FileDescriptorProto> {
     private void annotateNestedTypes(FileDescriptorProto file) {
         SourceFile filePath = SourceFile.forOuterClassOf(file);
         rewriteSource(filePath, new SourceVisitor<JavaClassSource>() {
-            @Nullable
             @Override
-            public Void apply(@Nullable AbstractJavaSource<JavaClassSource> input) {
+            public @Nullable Void apply(@Nullable AbstractJavaSource<JavaClassSource> input) {
                 checkNotNull(input);
                 for (JavaSource nestedType : input.getNestedTypes()) {
                     addAnnotation(nestedType);
@@ -116,11 +115,11 @@ class FileAnnotator extends Annotator<FileOptions, FileDescriptorProto> {
     private void annotateMessages(FileDescriptorProto file) {
         for (DescriptorProto messageType : file.getMessageTypeList()) {
             SourceFile messageClass =
-                    SourceFile.forMessage(messageType, false, file);
+                    SourceFile.forMessage(messageType, file);
             rewriteSource(messageClass, new TypeDeclarationAnnotation());
 
             SourceFile messageOrBuilderClass =
-                    SourceFile.forMessage(messageType, true, file);
+                    SourceFile.forMessageOrBuilder(messageType, file);
             rewriteSource(messageOrBuilderClass, new TypeDeclarationAnnotation());
         }
     }

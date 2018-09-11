@@ -20,11 +20,13 @@
 
 package io.spine.base;
 
+import com.google.errorprone.annotations.Immutable;
+import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.proto.FileName;
 import io.spine.value.StringTypeValue;
 
-import java.util.function.Predicate;
+import java.io.Serializable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -45,11 +47,30 @@ public abstract class MessageFile extends StringTypeValue {
      * Obtains the predicate for filtering files containing message declarations
      * of the required type.
      */
-    public final Predicate<FileDescriptor> predicate() {
-        return file -> {
-            String fqn = file.getName();
-            boolean result = fqn.endsWith(value());
-            return result;
-        };
+    public final Predicate predicate() {
+        String suffix = value();
+        return new Predicate(suffix);
+    }
+
+    @Immutable
+    public static class Predicate implements Serializable {
+
+        private static final long serialVersionUID = 0L;
+
+        private final String suffix;
+
+        private Predicate(String suffix) {
+            this.suffix = suffix;
+        }
+
+        public boolean test(FileDescriptorProto file) {
+            String name = file.getName();
+            return name.endsWith(suffix);
+        }
+
+        public boolean test(FileDescriptor file) {
+            FileDescriptorProto protoDescriptor = file.toProto();
+            return test(protoDescriptor);
+        }
     }
 }
