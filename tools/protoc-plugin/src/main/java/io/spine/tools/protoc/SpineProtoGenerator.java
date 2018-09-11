@@ -29,12 +29,16 @@ import com.google.protobuf.compiler.PluginProtos.Version;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.collect.Lists.newArrayListWithExpectedSize;
 import static com.google.common.collect.Sets.newHashSet;
 import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.partitioningBy;
 import static java.util.stream.Collectors.reducing;
+import static java.util.stream.Collectors.toList;
 
 /**
  * An abstract base for the Protobuf code generator.
@@ -149,7 +153,7 @@ public abstract class SpineProtoGenerator {
             Collection<File> newFiles = generateForTypesIn(file);
             generatedFiles.addAll(newFiles);
         }
-        Collection<File> mergedFiles = mergeInsertionPoints(generatedFiles);
+        Collection<File> mergedFiles = mergeFiles(generatedFiles);
         CodeGeneratorResponse response =
                 CodeGeneratorResponse.newBuilder()
                                      .addAllFile(mergedFiles)
@@ -157,13 +161,30 @@ public abstract class SpineProtoGenerator {
         return response;
     }
 
-    private static Collection<File> mergeInsertionPoints(Collection<File> allFiles) {
-        File reducingSeed = File.getDefaultInstance();
-        Collection<File> merged = allFiles
+    private static Collection<File> mergeFiles(Collection<File> allFiles) {
+        Map<Boolean, List<File>> partitionedFiles = allFiles
                 .stream()
-                .collect(groupingBy(File::getName,
-                                    reducing(reducingSeed, SpineProtoGenerator::concatContent)))
-                .values();
+                .collect(partitioningBy(File::hasInsertionPoint));
+        Collection<File> insertionPoints = mergeInsertionPoints(partitionedFiles.get(true));
+        Collection<File> completeFiles = partitionedFiles.get(false);
+
+        Collection<File> merged = newArrayListWithExpectedSize(allFiles.size());
+        merged.addAll(insertionPoints);
+        merged.addAll(completeFiles);
+
+        return merged;
+    }
+
+    private static Collection<File> mergeInsertionPoints(Collection<File> insertionPoints) {
+        File emptyFile = File.getDefaultInstance();
+        List<File> merged = insertionPoints
+                .stream()
+                .collect(groupingBy(File::getInsertionPoint,
+                                    reducing(SpineProtoGenerator::concatContent)))
+                .values()
+                .stream()
+                .map(file -> file.orElse(emptyFile))
+                .collect(toList());
         return merged;
     }
 
