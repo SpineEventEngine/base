@@ -35,30 +35,90 @@ import static io.spine.tools.protojs.files.JsFiles.KNOWN_TYPE_PARSERS;
 import static io.spine.tools.protojs.files.JsFiles.appendToFile;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
+/**
+ * The writer of the {@code known_type_parsers.js}.
+ *
+ * <p>This class generates and writes the file content to the disk.
+ *
+ * <p>The file contains the global JS {@code Map} of
+ * <a href="https://developers.google.com/protocol-buffers/docs/proto3#json">standard Protobuf
+ * type</a> parsers as well as their source code.
+ *
+ * <p>The parsers lay in the map in the "{@linkplain io.spine.type.TypeUrl type-url}-to-parser"
+ * format. The acquired parser then can be used to parse the JSON value via the {@code parse(value)}
+ * method.
+ *
+ * @author Dmytro Kuzmin
+ * @see ParserMapGenerator
+ */
 public final class KnownTypeParsersWriter {
 
-    private static final String RESOURCES_DIR = "io/spine/tools/protojs/knowntypes/";
-    private static final String PARSERS_CODE = RESOURCES_DIR + KNOWN_TYPE_PARSERS;
+    /**
+     * The package under which the resource containing known type parsers code lays.
+     */
+    private static final String PARSERS_PACKAGE = "io/spine/tools/protojs/knowntypes/";
 
+    /**
+     * The path to the {@code known_type_parsers.js} file from the resources which contains the
+     * parser JS definitions.
+     */
+    private static final String PARSERS_CODE = PARSERS_PACKAGE + KNOWN_TYPE_PARSERS;
+
+    /**
+     * The indent for the generated code.
+     */
     private static final int INDENT = 4;
 
+    /**
+     * The path of the recorded {@code known_type_parsers.js} file.
+     */
     private final Path filePath;
 
     private KnownTypeParsersWriter(Path filePath) {
         this.filePath = filePath;
     }
 
+    /**
+     * Creates the {@code KnownTypeParsersWriter} instance for the specified
+     * {@code protoJsLocation}.
+     *
+     * <p>The location is used by this class only as a root folder for the stored
+     * {@code known_type_parsers.js}.
+     *
+     * @param protoJsLocation
+     *         the Proto JS definitions root folder
+     * @return the new instance of {@code KnownTypeParsersWriter}
+     */
     public static KnownTypeParsersWriter createFor(Path protoJsLocation) {
         checkNotNull(protoJsLocation);
         Path filePath = composeFilePath(protoJsLocation);
         return new KnownTypeParsersWriter(filePath);
     }
 
+    /**
+     * Writes the contents of the {@code known_type_parsers.js} file to disk.
+     *
+     * <p>This method performs 2 steps:
+     * <ul>
+     *     <li>1. Copy the parser definitions from the {@code known_type_parsers.js} resource.
+     *     <li>2. Generate and append the known type parsers map to the file.
+     * </ul>
+     *
+     * @throws IllegalStateException
+     *         if the {@code known_type_parsers.js} resource cannot be located or something goes
+     *         wrong with writing the file
+     */
     public void writeFile() {
         copyParsersCode();
         writeParserMap();
     }
 
+    /**
+     * Copies the {@code known_type_parsers.js} resource content and stores it in the target file.
+     *
+     * <p>Possible {@link IOException} when copying the resource is wrapped as the
+     * {@link IllegalStateException}.
+     */
     private void copyParsersCode() {
         try (InputStream in = KnownTypeParsersWriter.class
                 .getClassLoader()
@@ -69,6 +129,9 @@ public final class KnownTypeParsersWriter {
         }
     }
 
+    /**
+     * Generates and writes known type parsers map to the file.
+     */
     private void writeParserMap() {
         JsGenerator jsGenerator = new JsGenerator(INDENT);
         ParserMapGenerator generator = new ParserMapGenerator(jsGenerator);
@@ -77,6 +140,9 @@ public final class KnownTypeParsersWriter {
         appendToFile(filePath, generatedCode);
     }
 
+    /**
+     * Composes the file path for the {@code known_type_parsers.js} file.
+     */
     @VisibleForTesting
     static Path composeFilePath(Path protoJsLocation) {
         Path path = Paths.get(protoJsLocation.toString(), KNOWN_TYPE_PARSERS);

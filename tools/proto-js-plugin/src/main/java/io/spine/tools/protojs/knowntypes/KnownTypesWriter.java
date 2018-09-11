@@ -32,6 +32,20 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.protojs.files.JsFiles.KNOWN_TYPES;
 import static io.spine.tools.protojs.files.JsFiles.writeToFile;
 
+/**
+ * The writer which stores global known types {@code Map} in the {@code known_types.js} file.
+ *
+ * <p>The types are stored in the "{@linkplain io.spine.type.TypeUrl type-url}-to-JS-type" format.
+ *
+ * <p>The JS type acquired from the map can then be used as a constructor or for the static method
+ * call.
+ *
+ * <p>This is mainly useful for the {@link com.google.protobuf.Any} type processing whose value
+ * is not known until runtime.
+ *
+ * @author Dmytro Kuzmin
+ * @see KnownTypesGenerator
+ */
 public final class KnownTypesWriter {
 
     private static final int INDENT = 4;
@@ -44,6 +58,18 @@ public final class KnownTypesWriter {
         this.fileSet = fileSet;
     }
 
+    /**
+     * Creates the {@code KnownTypesWriter} for the {@code protoJsLocation} and {@code fileSet}.
+     *
+     * <p>All known types will be acquired from the specified {@code FileSet} and the
+     * {@code protoJsLocation} will be used to determine the {@code known_types.js} file path.
+     *
+     * @param protoJsLocation
+     *         the root of the Proto JS files location
+     * @param fileSet
+     *         the {@code FileSet} containing known types
+     * @return the new {@code KnownTypesWriter}
+     */
     public static KnownTypesWriter createFor(Path protoJsLocation, FileSet fileSet) {
         checkNotNull(protoJsLocation);
         checkNotNull(fileSet);
@@ -51,6 +77,14 @@ public final class KnownTypesWriter {
         return new KnownTypesWriter(path, fileSet);
     }
 
+    /**
+     * Generates the content of the {@code known_types.js} file and stores it to disk.
+     *
+     * <p>The file is written to the root of the Proto JS location.
+     *
+     * @throws IllegalStateException
+     *         if something goes wrong when recording the file
+     */
     public void writeFile() {
         JsGenerator jsGenerator = new JsGenerator(INDENT);
         KnownTypesGenerator generator = new KnownTypesGenerator(fileSet, jsGenerator);
@@ -59,6 +93,9 @@ public final class KnownTypesWriter {
         writeToFile(filePath, generatedCode);
     }
 
+    /**
+     * Composes the file path for the {@code known_types.js}.
+     */
     @VisibleForTesting
     static Path composeFilePath(Path protoJsLocation) {
         Path path = Paths.get(protoJsLocation.toString(), KNOWN_TYPES);
