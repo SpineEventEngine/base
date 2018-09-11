@@ -82,6 +82,11 @@ public final class MapFieldHandler extends AbstractFieldHandler {
         jsGenerator().exitBlock();
     }
 
+    @VisibleForTesting
+    FieldValueParser keyParser() {
+        return keyParser;
+    }
+
     static Builder newBuilder() {
         return new Builder();
     }

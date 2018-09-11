@@ -68,6 +68,16 @@ abstract class AbstractFieldHandler implements FieldHandler {
         return jsGenerator;
     }
 
+    @VisibleForTesting
+    FieldValueChecker checker() {
+        return checker;
+    }
+
+    @VisibleForTesting
+    FieldValueParser parser() {
+        return parser;
+    }
+
     private void callSetter(String value) {
         String setterFormat = setterFormat();
         String setValue = format(setterFormat, value);

@@ -27,7 +27,7 @@ import io.spine.tools.protojs.code.primitive.parser.PrimitiveParsers;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-final class PrimitiveFieldParser implements FieldValueParser {
+public final class PrimitiveFieldParser implements FieldValueParser {
 
     private final FieldDescriptor field;
     private final JsGenerator jsGenerator;

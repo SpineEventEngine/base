@@ -27,7 +27,7 @@ import io.spine.tools.protojs.code.JsGenerator;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.protojs.types.Types.typeWithProtoPrefix;
 
-final class MessageFieldParser implements FieldValueParser {
+public final class MessageFieldParser implements FieldValueParser {
 
     private final FieldDescriptor field;
     private final JsGenerator jsGenerator;

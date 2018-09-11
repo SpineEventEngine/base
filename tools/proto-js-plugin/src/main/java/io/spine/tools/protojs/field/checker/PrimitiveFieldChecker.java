@@ -20,11 +20,13 @@
 
 package io.spine.tools.protojs.field.checker;
 
+import com.google.common.annotations.VisibleForTesting;
 import io.spine.tools.protojs.code.JsGenerator;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-class PrimitiveFieldChecker implements FieldValueChecker {
+@VisibleForTesting
+public class PrimitiveFieldChecker implements FieldValueChecker {
 
     private final JsGenerator jsGenerator;
 

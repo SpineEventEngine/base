@@ -20,13 +20,15 @@
 
 package io.spine.tools.protojs.field.checker;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Value;
 import io.spine.tools.protojs.code.JsGenerator;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-class MessageFieldChecker implements FieldValueChecker {
+@VisibleForTesting
+public class MessageFieldChecker implements FieldValueChecker {
 
     private final FieldDescriptor field;
     private final JsGenerator jsGenerator;

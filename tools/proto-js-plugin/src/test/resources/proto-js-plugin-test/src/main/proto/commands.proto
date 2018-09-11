@@ -13,7 +13,7 @@ import "task.proto";
 message CreateTask {
 
     TaskId message_field = 1;
-    int32 primitive_field = 2;
+    int64 primitive_field = 2;
     google.protobuf.Timestamp timestamp_field = 3;
     repeated TaskId repeated_field = 4;
     map<int64, TaskId> map_field = 5;
