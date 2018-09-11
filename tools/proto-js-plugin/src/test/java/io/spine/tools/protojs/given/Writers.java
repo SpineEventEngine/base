@@ -21,12 +21,12 @@
 package io.spine.tools.protojs.given;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static io.spine.testing.Verify.assertContains;
 import static io.spine.testing.Verify.assertNotContains;
 import static java.nio.file.Files.exists;
+import static java.nio.file.Files.readAllBytes;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -35,16 +35,18 @@ public final class Writers {
     private Writers() {
     }
 
-    public static void assertFileContains(Path filePath, String toSearch) throws IOException {
+    public static void
+    assertFileContains(Path filePath, CharSequence toSearch) throws IOException {
         assertTrue(exists(filePath));
-        byte[] bytes = Files.readAllBytes(filePath);
+        byte[] bytes = readAllBytes(filePath);
         String fileContent = new String(bytes);
         assertContains(toSearch, fileContent);
     }
 
-    public static void assertFileNotContains(Path filePath, String toSearch) throws IOException {
+    public static void
+    assertFileNotContains(Path filePath, CharSequence toSearch) throws IOException {
         assertTrue(exists(filePath));
-        byte[] bytes = Files.readAllBytes(filePath);
+        byte[] bytes = readAllBytes(filePath);
         String fileContent = new String(bytes);
         assertNotContains(toSearch, fileContent);
     }

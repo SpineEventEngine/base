@@ -21,7 +21,7 @@
 package io.spine.tools.protojs.knowntypes;
 
 import io.spine.code.proto.FileSet;
-import io.spine.tools.protojs.given.Given.PreparedProject;
+import io.spine.tools.protojs.given.Given.Project;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,7 +30,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static io.spine.tools.protojs.files.JsFiles.KNOWN_TYPES;
-import static io.spine.tools.protojs.given.Given.preparedProject;
+import static io.spine.tools.protojs.given.Given.project;
 import static io.spine.tools.protojs.given.Writers.assertNonZeroSize;
 import static java.nio.file.Files.exists;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -45,7 +45,7 @@ class KnownTypesWriterTest {
 
     @BeforeEach
     void setUp() {
-        PreparedProject project = preparedProject();
+        Project project = project();
         protoJsLocation = project.protoJsLocation();
         FileSet fileSet = project.fileSet();
         writer = KnownTypesWriter.createFor(protoJsLocation, fileSet);

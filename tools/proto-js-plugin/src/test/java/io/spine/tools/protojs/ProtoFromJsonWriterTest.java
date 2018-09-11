@@ -23,25 +23,24 @@ package io.spine.tools.protojs;
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.proto.FileSet;
-import io.spine.tools.protojs.files.JsFiles;
-import io.spine.tools.protojs.given.Given.PreparedProject;
+import io.spine.tools.protojs.given.Given.Project;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
-import static io.spine.testing.Verify.assertContains;
 import static io.spine.tools.protojs.ProtoFromJsonWriter.createFor;
+import static io.spine.tools.protojs.files.JsFiles.KNOWN_TYPES;
+import static io.spine.tools.protojs.files.JsFiles.KNOWN_TYPE_PARSERS;
 import static io.spine.tools.protojs.files.JsFiles.jsFileName;
 import static io.spine.tools.protojs.fromjson.FromJsonWriter.isStandardOrSpineOptions;
-import static io.spine.tools.protojs.given.Given.preparedProject;
+import static io.spine.tools.protojs.given.Given.project;
 import static io.spine.tools.protojs.given.Writers.assertFileContains;
 import static java.nio.file.Files.exists;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -55,7 +54,7 @@ class ProtoFromJsonWriterTest {
 
     @BeforeEach
     void setUp() {
-        PreparedProject project = preparedProject();
+        Project project = project();
         File descriptorSetFile = project.descriptorSetFile();
         protoJsLocation = project.protoJsLocation();
         writer = createFor(protoJsLocation, descriptorSetFile);
@@ -71,7 +70,7 @@ class ProtoFromJsonWriterTest {
     @DisplayName("write known types map to JS file")
     void writeKnownTypes() {
         writer.writeKnownTypes();
-        Path knownTypes = Paths.get(protoJsLocation.toString(), JsFiles.KNOWN_TYPES);
+        Path knownTypes = Paths.get(protoJsLocation.toString(), KNOWN_TYPES);
         assertTrue(exists(knownTypes));
     }
 
@@ -79,7 +78,7 @@ class ProtoFromJsonWriterTest {
     @DisplayName("write known type parsers map to JS file")
     void writeKnownTypeParsers() {
         writer.writeKnownTypeParsers();
-        Path knownTypeParsers = Paths.get(protoJsLocation.toString(), JsFiles.KNOWN_TYPE_PARSERS);
+        Path knownTypeParsers = Paths.get(protoJsLocation.toString(), KNOWN_TYPE_PARSERS);
         assertTrue(exists(knownTypeParsers));
     }
 
@@ -87,15 +86,23 @@ class ProtoFromJsonWriterTest {
     @DisplayName("write `fromJson` method into generated JS proto definitions")
     void writeFromJsonMethod() throws IOException {
         writer.writeFromJsonMethod();
-
         FileSet fileSet = writer.fileSet();
+        checkProcessedFiles(fileSet);
+    }
+
+    private void checkProcessedFiles(FileSet fileSet) throws IOException {
         Collection<FileDescriptor> fileDescriptors = fileSet.getFileDescriptors();
         for (FileDescriptor file : fileDescriptors) {
             if (!isStandardOrSpineOptions(file)) {
-                String jsFileName = jsFileName(file);
-                Path jsFilePath = Paths.get(protoJsLocation.toString(), jsFileName);
-                assertFileContains(jsFilePath, "fromJson = function");
+                checkFromJsonDeclared(file);
             }
         }
+    }
+
+    private void checkFromJsonDeclared(FileDescriptor file) throws IOException {
+        String jsFileName = jsFileName(file);
+        Path jsFilePath = Paths.get(protoJsLocation.toString(), jsFileName);
+        String fromJsonDeclaration = ".fromJson = function";
+        assertFileContains(jsFilePath, fromJsonDeclaration);
     }
 }

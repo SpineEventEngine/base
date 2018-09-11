@@ -20,27 +20,20 @@
 
 package io.spine.tools.protojs.files;
 
-import com.google.common.testing.NullPointerTester;
-import com.google.protobuf.Descriptors;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.proto.FileName;
-import io.spine.code.proto.FileSet;
 import io.spine.testing.UtilityClassTest;
 import io.spine.tools.protojs.code.JsGenerator;
 import io.spine.tools.protojs.code.JsOutput;
-import io.spine.tools.protojs.given.Given;
-import io.spine.tools.protojs.given.Given.PreparedProject;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Optional;
 
 import static com.google.common.io.Files.createTempDir;
-import static io.spine.tools.protojs.given.Given.COMMANDS_PROTO;
-import static io.spine.tools.protojs.given.Given.preparedProject;
+import static io.spine.tools.protojs.given.Given.file;
 import static io.spine.tools.protojs.given.Writers.assertFileContains;
 import static io.spine.tools.protojs.given.Writers.assertFileNotContains;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -61,6 +54,7 @@ class JsFilesTest extends UtilityClassTest<JsFiles> {
     void writeToFile() throws IOException {
         String tempDirPath = createTempDir().getAbsolutePath();
         Path path = Paths.get(tempDirPath, TEST_FILE_JS);
+
         JsOutput testLine1 = generateCode(TEST_LINE_1);
         JsFiles.writeToFile(path, testLine1);
 
@@ -72,6 +66,7 @@ class JsFilesTest extends UtilityClassTest<JsFiles> {
     void overwriteExisting() throws IOException {
         String tempDirPath = createTempDir().getAbsolutePath();
         Path path = Paths.get(tempDirPath, TEST_FILE_JS);
+
         JsOutput testLine1 = generateCode(TEST_LINE_1);
         JsFiles.writeToFile(path, testLine1);
 
@@ -87,29 +82,24 @@ class JsFilesTest extends UtilityClassTest<JsFiles> {
     void appendToFile() throws IOException {
         String tempDirPath = createTempDir().getAbsolutePath();
         Path path = Paths.get(tempDirPath, TEST_FILE_JS);
+
         JsOutput testLine1 = generateCode(TEST_LINE_1);
         JsFiles.writeToFile(path, testLine1);
 
         JsOutput testLine2 = generateCode(TEST_LINE_2);
         JsFiles.appendToFile(path, testLine2);
 
-        assertFileContains(path, TEST_LINE_2);
+        assertFileContains(path, TEST_LINE_1);
         assertFileContains(path, TEST_LINE_2);
     }
 
     @Test
     @DisplayName("return JS file name for the `FileDescriptor`")
     void getJsFileName() {
-        PreparedProject project = preparedProject();
-        FileSet fileSet = project.fileSet();
-        FileName fileName = FileName.of(COMMANDS_PROTO);
-        Optional<FileDescriptor> fileDescriptor = fileSet.tryFind(fileName);
-        FileDescriptor file = fileDescriptor.get();
-
+        FileDescriptor file = file();
         String jsFileName = JsFiles.jsFileName(file);
-
         String nameWithoutExtension = FileName.from(file)
-                           .nameWithoutExtension();
+                                              .nameWithoutExtension();
         String expected = nameWithoutExtension + "_pb.js";
         assertEquals(expected, jsFileName);
     }

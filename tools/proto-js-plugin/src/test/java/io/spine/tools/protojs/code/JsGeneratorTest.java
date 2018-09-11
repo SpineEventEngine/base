@@ -23,13 +23,14 @@ package io.spine.tools.protojs.code;
 import com.google.common.testing.NullPointerTester;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
-import static io.spine.tools.protojs.given.Generators.assertGeneratedCodeContains;
-import static io.spine.tools.protojs.given.Generators.assertGeneratedCodeNotContains;
+import static io.spine.tools.protojs.given.Generators.assertContains;
+import static io.spine.tools.protojs.given.Generators.assertNotContains;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("JsGenerator should")
@@ -85,19 +86,24 @@ class JsGeneratorTest {
         assertEquals(1, line.depth());
     }
 
-    @Test
-    @DisplayName("manually increase depth")
-    void increaseDepth() {
-        jsGenerator.increaseDepth();
-        assertEquals(1, jsGenerator.currentDepth());
-    }
+    @Nested
+    @DisplayName("allow manually")
+    class AllowManually {
 
-    @Test
-    @DisplayName("manually decrease depth")
-    void decreaseDepth() {
-        jsGenerator.increaseDepth();
-        jsGenerator.decreaseDepth();
-        assertEquals(0, jsGenerator.currentDepth());
+        @Test
+        @DisplayName("increase depth")
+        void increaseDepth() {
+            jsGenerator.increaseDepth();
+            assertEquals(1, jsGenerator.currentDepth());
+        }
+
+        @Test
+        @DisplayName("decrease depth")
+        void decreaseDepth() {
+            jsGenerator.increaseDepth();
+            jsGenerator.decreaseDepth();
+            assertEquals(0, jsGenerator.currentDepth());
+        }
     }
 
     @Test
@@ -105,7 +111,7 @@ class JsGeneratorTest {
     void declareFunction() {
         jsGenerator.enterFunction(FUNCTION_NAME, FUNCTION_ARG);
         String declaration = FUNCTION_NAME + " = function(" + FUNCTION_ARG + ") {";
-        assertGeneratedCodeContains(jsGenerator, declaration);
+        assertContains(jsGenerator, declaration);
         assertEquals(1, jsGenerator.currentDepth());
     }
 
@@ -115,7 +121,7 @@ class JsGeneratorTest {
         jsGenerator.enterFunction(FUNCTION_NAME, FUNCTION_ARG);
         jsGenerator.exitFunction();
         String functionExit = "};";
-        assertGeneratedCodeContains(jsGenerator, functionExit);
+        assertContains(jsGenerator, functionExit);
         assertEquals(0, jsGenerator.currentDepth());
     }
 
@@ -124,7 +130,7 @@ class JsGeneratorTest {
     void addComment() {
         jsGenerator.addComment(COMMENT);
         String comment = "// " + COMMENT;
-        assertGeneratedCodeContains(jsGenerator, comment);
+        assertContains(jsGenerator, comment);
     }
 
     @Test
@@ -132,35 +138,40 @@ class JsGeneratorTest {
     void addReturn() {
         jsGenerator.returnValue(VALUE);
         String returnStatement = "return " + VALUE + ';';
-        assertGeneratedCodeContains(jsGenerator, returnStatement);
+        assertContains(jsGenerator, returnStatement);
     }
 
-    @Test
-    @DisplayName("enter if block")
-    void enterIf() {
-        jsGenerator.enterIfBlock(CONDITION);
-        String ifDeclaration = "if (" + CONDITION + ") {";
-        assertGeneratedCodeContains(jsGenerator, ifDeclaration);
-        assertEquals(1, jsGenerator.currentDepth());
-    }
+    @Nested
+    @DisplayName("enter")
+    class Enter {
 
-    @Test
-    @DisplayName("enter else block")
-    void enterElse() {
-        jsGenerator.enterIfBlock(CONDITION);
-        jsGenerator.enterElseBlock();
-        String elseDeclaration = "} else {";
-        assertGeneratedCodeContains(jsGenerator, elseDeclaration);
-        assertEquals(1, jsGenerator.currentDepth());
-    }
+        @Test
+        @DisplayName("if block")
+        void enterIf() {
+            jsGenerator.enterIfBlock(CONDITION);
+            String ifDeclaration = "if (" + CONDITION + ") {";
+            assertContains(jsGenerator, ifDeclaration);
+            assertEquals(1, jsGenerator.currentDepth());
+        }
 
-    @Test
-    @DisplayName("enter custom block")
-    void enterCustomBlock() {
-        jsGenerator.enterBlock(CUSTOM_BLOCK);
-        String blockDeclaration = CUSTOM_BLOCK + " {";
-        assertGeneratedCodeContains(jsGenerator, blockDeclaration);
-        assertEquals(1, jsGenerator.currentDepth());
+        @Test
+        @DisplayName("else block")
+        void enterElse() {
+            jsGenerator.enterIfBlock(CONDITION);
+            jsGenerator.enterElseBlock();
+            String elseDeclaration = "} else {";
+            assertContains(jsGenerator, elseDeclaration);
+            assertEquals(1, jsGenerator.currentDepth());
+        }
+
+        @Test
+        @DisplayName("custom block")
+        void enterCustomBlock() {
+            jsGenerator.enterBlock(CUSTOM_BLOCK);
+            String blockDeclaration = CUSTOM_BLOCK + " {";
+            assertContains(jsGenerator, blockDeclaration);
+            assertEquals(1, jsGenerator.currentDepth());
+        }
     }
 
     @Test
@@ -169,7 +180,7 @@ class JsGeneratorTest {
         jsGenerator.enterBlock(CUSTOM_BLOCK);
         jsGenerator.exitBlock();
         String blockExit = "}";
-        assertGeneratedCodeContains(jsGenerator, blockExit);
+        assertContains(jsGenerator, blockExit);
         assertEquals(0, jsGenerator.currentDepth());
     }
 
@@ -178,7 +189,7 @@ class JsGeneratorTest {
     void exportMap() {
         jsGenerator.exportMap(MAP_NAME);
         String mapDeclaration = "export const " + MAP_NAME + " = new Map([";
-        assertGeneratedCodeContains(jsGenerator, mapDeclaration);
+        assertContains(jsGenerator, mapDeclaration);
         assertEquals(1, jsGenerator.currentDepth());
     }
 
@@ -194,9 +205,9 @@ class JsGeneratorTest {
 
         String entry1WithComma = entry1 + ',';
         String entry2WithComma = entry2 + ',';
-        assertGeneratedCodeContains(jsGenerator, entry1WithComma);
-        assertGeneratedCodeContains(jsGenerator, entry2);
-        assertGeneratedCodeNotContains(jsGenerator, entry2WithComma);
+        assertContains(jsGenerator, entry1WithComma);
+        assertContains(jsGenerator, entry2);
+        assertNotContains(jsGenerator, entry2WithComma);
     }
 
     @Test
@@ -205,7 +216,7 @@ class JsGeneratorTest {
         jsGenerator.exportMap(MAP_NAME);
         jsGenerator.quitMapDeclaration();
         String mapDeclarationExit = "]);";
-        assertGeneratedCodeContains(jsGenerator, mapDeclarationExit);
+        assertContains(jsGenerator, mapDeclarationExit);
         assertEquals(0, jsGenerator.currentDepth());
     }
 

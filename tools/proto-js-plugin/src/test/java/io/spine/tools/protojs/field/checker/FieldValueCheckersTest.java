@@ -21,31 +21,21 @@
 package io.spine.tools.protojs.field.checker;
 
 import com.google.common.testing.NullPointerTester;
-import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.code.proto.FileName;
-import io.spine.code.proto.FileSet;
 import io.spine.testing.UtilityClassTest;
 import io.spine.tools.protojs.code.JsGenerator;
-import io.spine.tools.protojs.given.Given.PreparedProject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.Optional;
-
 import static io.spine.testing.Verify.assertInstanceOf;
 import static io.spine.tools.protojs.field.checker.FieldValueCheckers.checkerFor;
-import static io.spine.tools.protojs.given.Given.COMMANDS_PROTO;
-import static io.spine.tools.protojs.given.Given.preparedProject;
+import static io.spine.tools.protojs.given.Given.messageField;
+import static io.spine.tools.protojs.given.Given.primitiveField;
+import static io.spine.tools.protojs.given.Given.timestampField;
 
 @DisplayName("FieldValueCheckers utility should")
 class FieldValueCheckersTest extends UtilityClassTest<FieldValueCheckers> {
-
-    private FieldDescriptor messageField;
-    private FieldDescriptor primitiveField;
-    private FieldDescriptor timestampField;
 
     private JsGenerator jsGenerator;
 
@@ -55,45 +45,32 @@ class FieldValueCheckersTest extends UtilityClassTest<FieldValueCheckers> {
 
     @Override
     protected void setDefaults(NullPointerTester tester) {
-        tester.setDefault(FieldDescriptor.class, messageField);
+        tester.setDefault(FieldDescriptor.class, messageField());
     }
 
     @BeforeEach
     void setUp() {
-        PreparedProject project = preparedProject();
-        FileSet fileSet = project.fileSet();
-        FileName fileName = FileName.of(COMMANDS_PROTO);
-        Optional<FileDescriptor> fileDescriptor = fileSet.tryFind(fileName);
-        FileDescriptor commandsProto = fileDescriptor.get();
-        Descriptor createTask = commandsProto.getMessageTypes()
-                                             .get(0);
-        messageField = createTask.getFields()
-                                 .get(0);
-        primitiveField = createTask.getFields()
-                                   .get(1);
-        timestampField = createTask.getFields()
-                                   .get(2);
         jsGenerator = new JsGenerator();
     }
 
     @Test
     @DisplayName("create checker for primitive field")
     void createForPrimitive() {
-        FieldValueChecker checker = checkerFor(primitiveField, jsGenerator);
+        FieldValueChecker checker = checkerFor(primitiveField(), jsGenerator);
         assertInstanceOf(PrimitiveFieldChecker.class, checker);
     }
 
     @Test
     @DisplayName("create checker for message field")
     void createForMessage() {
-        FieldValueChecker checker = checkerFor(messageField, jsGenerator);
+        FieldValueChecker checker = checkerFor(messageField(), jsGenerator);
         assertInstanceOf(MessageFieldChecker.class, checker);
     }
 
     @Test
     @DisplayName("create message checker for standard type field")
     void createForWellKnown() {
-        FieldValueChecker checker = checkerFor(timestampField, jsGenerator);
+        FieldValueChecker checker = checkerFor(timestampField(), jsGenerator);
         assertInstanceOf(MessageFieldChecker.class, checker);
     }
 }

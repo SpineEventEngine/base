@@ -30,7 +30,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
-import static io.spine.tools.protojs.given.Generators.assertGeneratedCodeContains;
+import static io.spine.tools.protojs.given.Generators.assertContains;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -67,6 +67,6 @@ class ParserMapGeneratorTest {
     void generateParsersMap() {
         generator.generateJs();
         String mapEntry = "['type.googleapis.com/google.protobuf.Value', new ValueParser()]";
-        assertGeneratedCodeContains(jsGenerator, mapEntry);
+        assertContains(jsGenerator, mapEntry);
     }
 }

@@ -22,136 +22,116 @@ package io.spine.tools.protojs.field;
 
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.code.proto.FileName;
-import io.spine.code.proto.FileSet;
 import io.spine.testing.UtilityClassTest;
-import io.spine.tools.protojs.given.Given.PreparedProject;
 import io.spine.type.TypeUrl;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-
-import java.util.Optional;
+import spine.test.protojs.Task.TaskId;
 
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.INT64;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.MESSAGE;
 import static io.spine.tools.protojs.field.Fields.capitalizedName;
-import static io.spine.tools.protojs.field.Fields.isMap;
-import static io.spine.tools.protojs.field.Fields.isMessage;
-import static io.spine.tools.protojs.field.Fields.isRepeated;
-import static io.spine.tools.protojs.field.Fields.isWellKnownType;
 import static io.spine.tools.protojs.field.Fields.keyDescriptor;
 import static io.spine.tools.protojs.field.Fields.valueDescriptor;
-import static io.spine.tools.protojs.given.Given.COMMANDS_PROTO;
-import static io.spine.tools.protojs.given.Given.preparedProject;
+import static io.spine.tools.protojs.given.Given.mapField;
+import static io.spine.tools.protojs.given.Given.messageField;
+import static io.spine.tools.protojs.given.Given.primitiveField;
+import static io.spine.tools.protojs.given.Given.repeatedField;
+import static io.spine.tools.protojs.given.Given.timestampField;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@SuppressWarnings("InnerClassMayBeStatic") // JUnit nested classes cannot be static.
 @DisplayName("Fields utility should")
 class FieldsTest extends UtilityClassTest<Fields> {
-
-    private FieldDescriptor messageField;
-    private FieldDescriptor primitiveField;
-    private FieldDescriptor timestampField;
-    private FieldDescriptor repeatedField;
-    private FieldDescriptor mapField;
 
     FieldsTest() {
         super(Fields.class);
     }
 
-    @BeforeEach
-    void setUp() {
-        PreparedProject project = preparedProject();
-        FileSet fileSet = project.fileSet();
-        FileName fileName = FileName.of(COMMANDS_PROTO);
-        Optional<FileDescriptor> fileDescriptor = fileSet.tryFind(fileName);
-        FileDescriptor commandsProto = fileDescriptor.get();
-        Descriptor createTask = commandsProto.getMessageTypes()
-                                             .get(0);
-        messageField = createTask.getFields()
-                                 .get(0);
-        primitiveField = createTask.getFields()
-                                   .get(1);
-        timestampField = createTask.getFields()
-                                   .get(2);
-        repeatedField = createTask.getFields()
-                                  .get(3);
-        mapField = createTask.getFields()
-                             .get(4);
-    }
+    @Nested
+    @DisplayName("check if field")
+    class CheckIfField {
 
-    @Test
-    @DisplayName("tell if field is message")
-    void tellIfMessage() {
-        assertTrue(isMessage(messageField));
-        assertFalse(isMessage(primitiveField));
-        assertTrue(isMessage(repeatedField));
-    }
+        @Test
+        @DisplayName("is message")
+        void isMessage() {
+            assertTrue(Fields.isMessage(messageField()));
+            assertFalse(Fields.isMessage(primitiveField()));
+            assertTrue(Fields.isMessage(repeatedField()));
+        }
 
-    @Test
-    @DisplayName("tell if field is standard type with known parser")
-    void tellIfWellKnownType() {
-        assertTrue(isWellKnownType(timestampField));
-        assertFalse(isWellKnownType(messageField));
-        assertFalse(isWellKnownType(primitiveField));
-    }
+        @Test
+        @DisplayName("is standard type with known parser")
+        void isWellKnownType() {
+            assertTrue(Fields.isWellKnownType(timestampField()));
+            assertFalse(Fields.isWellKnownType(messageField()));
+            assertFalse(Fields.isWellKnownType(primitiveField()));
+        }
 
-    @Test
-    @DisplayName("tell if field is repeated")
-    void tellIfRepeated() {
-        assertTrue(isRepeated(repeatedField));
-    }
+        @Test
+        @DisplayName("is repeated")
+        void isRepeated() {
+            assertTrue(Fields.isRepeated(repeatedField()));
+        }
 
-    @Test
-    @DisplayName("tell if field is map")
-    void tellIfMap() {
-        assertTrue(isMap(mapField));
+        @Test
+        @DisplayName("is map")
+        void isMap() {
+            assertTrue(Fields.isMap(mapField()));
+        }
     }
 
     @Test
     @DisplayName("not mark map field as repeated")
     void notMarkMapAsRepeated() {
-        assertFalse(isRepeated(mapField));
+        assertFalse(Fields.isRepeated(mapField()));
     }
 
     @Test
     @DisplayName("get key descriptor for map field")
     void getKeyDescriptor() {
-        FieldDescriptor key = keyDescriptor(mapField);
+        FieldDescriptor key = keyDescriptor(mapField());
         assertEquals(INT64, key.getType());
-    }
-
-    @Test
-    @DisplayName("throw ISE if getting key descriptor from non-map field")
-    void getKeyOnlyFromMap() {
-        assertThrows(IllegalStateException.class, () -> keyDescriptor(repeatedField));
     }
 
     @Test
     @DisplayName("get value descriptor for map field")
     void getValueDescriptor() {
-        FieldDescriptor value = valueDescriptor(mapField);
+        FieldDescriptor value = valueDescriptor(mapField());
         assertEquals(MESSAGE, value.getType());
         Descriptor messageType = value.getMessageType();
         TypeUrl typeUrl = TypeUrl.from(messageType);
-        String expected = "type.spine.io/spine.sample.protojs.TaskId";
-        assertEquals(expected, typeUrl.toString());
+        TypeUrl expected = TypeUrl.from(TaskId.getDescriptor());
+        assertEquals(expected, typeUrl);
     }
 
-    @Test
-    @DisplayName("throw ISE if getting value descriptor from non-map field")
-    void getValueOnlyFromMap() {
-        assertThrows(IllegalStateException.class, () -> valueDescriptor(repeatedField));
+    @SuppressWarnings({"CheckReturnValue", "ResultOfMethodCallIgnored"})
+    // Calling methods to throw exception.
+    @Nested
+    @DisplayName("throw ISE if")
+    class ThrowIse {
+
+        @Test
+        @DisplayName("getting key descriptor from non-map field")
+        void getKeyForNonMap() {
+            assertThrows(IllegalStateException.class, () -> keyDescriptor(repeatedField()));
+        }
+
+        @Test
+        @DisplayName("getting value descriptor from non-map field")
+        void getValueForNonMap() {
+            assertThrows(IllegalStateException.class, () -> valueDescriptor(repeatedField()));
+        }
     }
 
     @Test
     @DisplayName("return capitalized field name")
     void getCapitalizedName() {
-        String capitalizedName = capitalizedName(messageField);
+        String capitalizedName = capitalizedName(messageField());
         String expected = "MessageField";
         assertEquals(expected, capitalizedName);
     }

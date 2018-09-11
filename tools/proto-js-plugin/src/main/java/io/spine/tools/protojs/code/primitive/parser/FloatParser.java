@@ -29,10 +29,10 @@ final class FloatParser extends AbstractPrimitiveParser {
     }
 
     @Override
-    public void parseIntoVariable(String value, String output) {
+    public void parseIntoVariable(String value, String variable) {
         checkNotNull(value);
-        checkNotNull(output);
-        jsGenerator().addLine("let " + output + " = parseFloat(" + value + ");");
+        checkNotNull(variable);
+        jsGenerator().addLine("let " + variable + " = parseFloat(" + value + ");");
     }
 
     static Builder newBuilder() {

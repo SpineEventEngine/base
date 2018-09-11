@@ -22,22 +22,17 @@ package io.spine.tools.protojs.message;
 
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Descriptors.Descriptor;
-import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.code.proto.FileName;
-import io.spine.code.proto.FileSet;
 import io.spine.tools.protojs.code.JsGenerator;
 import io.spine.tools.protojs.given.Generators;
-import io.spine.tools.protojs.given.Given.PreparedProject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.util.Optional;
 
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
-import static io.spine.tools.protojs.given.Given.COMMANDS_PROTO;
-import static io.spine.tools.protojs.given.Given.preparedProject;
+import static io.spine.tools.protojs.given.Generators.assertContains;
+import static io.spine.tools.protojs.given.Given.message;
 import static io.spine.tools.protojs.message.MessageHandler.FROM_JSON_ARG;
 import static io.spine.tools.protojs.message.MessageHandler.FROM_OBJECT_ARG;
 import static org.mockito.Mockito.spy;
@@ -53,13 +48,7 @@ class MessageHandlerTest {
 
     @BeforeEach
     void setUp() throws IOException {
-        PreparedProject project = preparedProject();
-        FileSet fileSet = project.fileSet();
-        FileName fileName = FileName.of(COMMANDS_PROTO);
-        Optional<FileDescriptor> fileDescriptor = fileSet.tryFind(fileName);
-        FileDescriptor file = fileDescriptor.get();
-        message = file.getMessageTypes()
-                      .get(0);
+        message = message();
         jsGenerator = new JsGenerator();
         handler = MessageHandler.createFor(message, jsGenerator);
     }
@@ -111,7 +100,7 @@ class MessageHandlerTest {
         verify(handler, times(1)).handleMessageFields();
     }
 
-    private void assertGeneratedCodeContains(String toSearch) {
-        Generators.assertGeneratedCodeContains(jsGenerator, toSearch);
+    private void assertGeneratedCodeContains(CharSequence toSearch) {
+        assertContains(jsGenerator, toSearch);
     }
 }

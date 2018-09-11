@@ -22,19 +22,14 @@ package io.spine.tools.protojs.fromjson;
 
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.code.proto.FileName;
-import io.spine.code.proto.FileSet;
 import io.spine.tools.protojs.code.JsGenerator;
-import io.spine.tools.protojs.given.Generators;
-import io.spine.tools.protojs.given.Given.PreparedProject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import spine.test.protojs.Fields.FieldContainer;
 
-import java.util.Optional;
-
-import static io.spine.tools.protojs.given.Given.COMMANDS_PROTO;
-import static io.spine.tools.protojs.given.Given.preparedProject;
+import static io.spine.tools.protojs.given.Generators.assertContains;
+import static io.spine.tools.protojs.given.Given.file;
 
 @DisplayName("FromJsonGenerator should")
 class FromJsonGeneratorTest {
@@ -45,11 +40,7 @@ class FromJsonGeneratorTest {
 
     @BeforeEach
     void setUp() {
-        PreparedProject project = preparedProject();
-        FileSet fileSet = project.fileSet();
-        FileName fileName = FileName.of(COMMANDS_PROTO);
-        Optional<FileDescriptor> fileDescriptor = fileSet.tryFind(fileName);
-        file = fileDescriptor.get();
+        file = file();
         jsGenerator = new JsGenerator();
         generator = new FromJsonGenerator(file, jsGenerator);
     }
@@ -65,7 +56,7 @@ class FromJsonGeneratorTest {
     @DisplayName("generate known types and known type parsers imports")
     void generateImports() {
         generator.generateParsersImport();
-        String knownTypeParsersImport = "require('./known_type_parsers.js');";
+        String knownTypeParsersImport = "require('../../known_type_parsers.js');";
         assertGeneratedCodeContains(knownTypeParsersImport);
     }
 
@@ -82,6 +73,6 @@ class FromJsonGeneratorTest {
     }
 
     private void assertGeneratedCodeContains(String toSearch) {
-        Generators.assertGeneratedCodeContains(jsGenerator, toSearch);
+        assertContains(jsGenerator, toSearch);
     }
 }

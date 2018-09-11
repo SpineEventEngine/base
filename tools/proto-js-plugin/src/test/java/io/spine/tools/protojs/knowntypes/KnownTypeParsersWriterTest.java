@@ -21,7 +21,7 @@
 package io.spine.tools.protojs.knowntypes;
 
 import com.google.common.testing.NullPointerTester;
-import io.spine.tools.protojs.given.Given.PreparedProject;
+import io.spine.tools.protojs.given.Given.Project;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,7 +31,7 @@ import java.nio.file.Paths;
 
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static io.spine.tools.protojs.files.JsFiles.KNOWN_TYPE_PARSERS;
-import static io.spine.tools.protojs.given.Given.preparedProject;
+import static io.spine.tools.protojs.given.Given.project;
 import static io.spine.tools.protojs.given.Writers.assertNonZeroSize;
 import static io.spine.tools.protojs.knowntypes.KnownTypeParsersWriter.createFor;
 import static java.nio.file.Files.exists;
@@ -47,7 +47,7 @@ class KnownTypeParsersWriterTest {
 
     @BeforeEach
     void setUp() {
-        PreparedProject project = preparedProject();
+        Project project = project();
         protoJsLocation = project.protoJsLocation();
         writer = createFor(protoJsLocation);
     }

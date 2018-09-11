@@ -20,6 +20,8 @@
 group 'io.spine.tools'
 
 dependencies {
+    testProtobuf project(':base')
+
     implementation project(':base')
     implementation project(':plugin-base')
 
@@ -32,8 +34,16 @@ dependencies {
     testImplementation "org.junit-pioneer:junit-pioneer:0.1.2"
 }
 
+protobuf {
+    generatedFilesBaseDir = generatedRootDir
+    protoc {
+        artifact = deps.build.protoc
+    }
+}
+
 test {
     useJUnitPlatform {
         includeEngines 'junit-jupiter'
     }
 }
+

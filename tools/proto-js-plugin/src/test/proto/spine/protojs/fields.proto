@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package spine.test.protojs;
+
+import "google/protobuf/timestamp.proto";
+
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.spine.io";
+
+import "spine/protojs/task.proto";
+
+message FieldContainer {
+
+    int32 int32_field = 1;
+    int64 int64_field = 2;
+    float float_field = 3;
+    bytes bytes_field = 4;
+    TaskType enum_field = 5;
+
+    TaskId message_field = 6;
+    google.protobuf.Timestamp timestamp_field = 7;
+
+    repeated TaskId repeated_field = 8;
+    map<int64, TaskId> map_field = 9;
+}
+
+enum TaskType {
+    CREATE = 0;
+    READ = 1;
+    UPDATE = 2;
+    DELETE = 3;
+}

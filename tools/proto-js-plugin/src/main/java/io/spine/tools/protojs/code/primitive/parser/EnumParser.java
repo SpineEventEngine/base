@@ -32,10 +32,10 @@ final class EnumParser extends AbstractPrimitiveParser {
     }
 
     @Override
-    public void parseIntoVariable(String value, String output) {
+    public void parseIntoVariable(String value, String variable) {
         checkNotNull(value);
-        checkNotNull(output);
-        jsGenerator().addLine("let " + output + " = " + enumType + '[' + value + "];");
+        checkNotNull(variable);
+        jsGenerator().addLine("let " + variable + " = " + enumType + '[' + value + "];");
     }
 
     static Builder newBuilder() {

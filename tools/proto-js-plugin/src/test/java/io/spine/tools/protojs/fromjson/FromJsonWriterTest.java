@@ -21,10 +21,11 @@
 package io.spine.tools.protojs.fromjson;
 
 import com.google.common.testing.NullPointerTester;
+import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.proto.FileName;
 import io.spine.code.proto.FileSet;
-import io.spine.tools.protojs.given.Given.PreparedProject;
+import io.spine.tools.protojs.given.Given.Project;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,8 +38,10 @@ import java.util.Optional;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static io.spine.tools.protojs.files.JsFiles.jsFileName;
 import static io.spine.tools.protojs.given.Given.TASK_PROTO;
-import static io.spine.tools.protojs.given.Given.preparedProject;
+import static io.spine.tools.protojs.given.Given.project;
 import static io.spine.tools.protojs.given.Writers.assertFileContains;
+import static io.spine.tools.protojs.types.Types.typeWithProtoPrefix;
+import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.nio.file.Files.exists;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -56,7 +59,7 @@ class FromJsonWriterTest {
 
     @BeforeEach
     void setUp() {
-        PreparedProject project = preparedProject();
+        Project project = project();
         fileSet = project.fileSet();
         protoJsLocation = project.protoJsLocation();
         writer = FromJsonWriter.createFor(protoJsLocation, fileSet);
@@ -84,7 +87,10 @@ class FromJsonWriterTest {
         writer.writeIntoFiles();
         FileDescriptor file = getFile(TASK_PROTO);
         Path filePath = writer.composeFilePath(file);
-        String fromJsonDeclaration = "proto.spine.sample.protojs.TaskId.fromJson = function";
+        Descriptor taskIdDescriptor = file.getMessageTypes()
+                                          .get(0);
+        String type = typeWithProtoPrefix(taskIdDescriptor);
+        String fromJsonDeclaration = type + ".fromJson = function";
         assertFileContains(filePath, fromJsonDeclaration);
     }
 
@@ -102,8 +108,11 @@ class FromJsonWriterTest {
 
     private FileDescriptor getFile(String name) {
         FileName taskProtoName = FileName.of(name);
-        Optional<FileDescriptor> fileDescriptor = fileSet.tryFind(taskProtoName);
-        FileDescriptor file = fileDescriptor.get();
+        Optional<FileDescriptor> foundFile = fileSet.tryFind(taskProtoName);
+        if (!foundFile.isPresent()) {
+            throw newIllegalStateException("The file %s cannot be found in the file set", name);
+        }
+        FileDescriptor file = foundFile.get();
         return file;
     }
 }

@@ -20,26 +20,31 @@
 
 package io.spine.tools.protojs.code.primitive.parser;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.protojs.code.JsImportGenerator.rawNamedImport;
 
 final class BytesParser extends AbstractPrimitiveParser {
 
-    private static final String BASE64_LIB = "base64-js";
-    private static final String BASE64_VAR = "base64";
+    @VisibleForTesting
+    static final String BASE64_LIB = "base64-js";
+
+    @VisibleForTesting
+    static final String BASE64_VAR = "base64";
 
     private BytesParser(Builder builder) {
         super(builder);
     }
 
     @Override
-    public void parseIntoVariable(String value, String output) {
+    public void parseIntoVariable(String value, String variable) {
         checkNotNull(value);
-        checkNotNull(output);
+        checkNotNull(variable);
         String importStatement = rawNamedImport(BASE64_LIB, BASE64_VAR);
         jsGenerator().addLine(importStatement);
         String valueToByteArray = BASE64_VAR + ".toByteArray(" + value + ')';
-        jsGenerator().addLine("let " + output + " = " + valueToByteArray + ';');
+        jsGenerator().addLine("let " + variable + " = " + valueToByteArray + ';');
     }
 
     static Builder newBuilder() {

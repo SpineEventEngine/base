@@ -20,38 +20,87 @@
 
 package io.spine.tools.protojs.code.primitive.parser;
 
+import com.google.protobuf.Descriptors.EnumDescriptor;
+import com.google.protobuf.Descriptors.FieldDescriptor;
+import io.spine.tools.protojs.code.JsGenerator;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static io.spine.tools.protojs.code.JsImportGenerator.rawNamedImport;
+import static io.spine.tools.protojs.code.primitive.parser.BytesParser.BASE64_LIB;
+import static io.spine.tools.protojs.code.primitive.parser.BytesParser.BASE64_VAR;
+import static io.spine.tools.protojs.given.Generators.assertContains;
+import static io.spine.tools.protojs.given.Given.bytesField;
+import static io.spine.tools.protojs.given.Given.enumField;
+import static io.spine.tools.protojs.given.Given.floatField;
+import static io.spine.tools.protojs.given.Given.int32Field;
+import static io.spine.tools.protojs.given.Given.int64Field;
+import static io.spine.tools.protojs.types.Types.typeWithProtoPrefix;
+
 @DisplayName("PrimitiveParser should")
-public class PrimitiveParserTest {
+class PrimitiveParserTest {
 
-    @Test
-    @DisplayName("generate code for parsing bytes value")
-    void parseBytes() {
+    private static final String VALUE = "value";
+    private static final String VARIABLE = "variable";
 
+    private JsGenerator jsGenerator;
+
+    @BeforeEach
+    void setUp() {
+        jsGenerator = new JsGenerator();
     }
 
     @Test
-    @DisplayName("generate code for parsing enum value")
-    void parseEnum() {
+    @DisplayName("generate code for parsing value identically")
+    void parseIdentically() {
+        PrimitiveParser parser = parserFor(int32Field());
+        parser.parseIntoVariable(VALUE, VARIABLE);
+        String parse = "let " + VARIABLE + " = " + VALUE;
+        assertContains(jsGenerator, parse);
+    }
 
+    @Test
+    @DisplayName("generate code for parsing long value")
+    void parseLong() {
+        PrimitiveParser parser = parserFor(int64Field());
+        parser.parseIntoVariable(VALUE, VARIABLE);
+        String parse = "let " + VARIABLE + " = parseInt(" + VALUE + ')';
+        assertContains(jsGenerator, parse);
     }
 
     @Test
     @DisplayName("generate code for parsing float value")
     void parseFloat() {
-
+        PrimitiveParser parser = parserFor(floatField());
+        parser.parseIntoVariable(VALUE, VARIABLE);
+        String parse = "let " + VARIABLE + " = parseFloat(" + VALUE + ')';
+        assertContains(jsGenerator, parse);
     }
 
     @Test
-    @DisplayName("generate code for `identity` parsing of value")
-    void parseIdentically() {
-
+    @DisplayName("generate code for parsing bytes value")
+    void parseBytes() {
+        PrimitiveParser parser = parserFor(bytesField());
+        parser.parseIntoVariable(VALUE, VARIABLE);
+        String base64Import = rawNamedImport(BASE64_LIB, BASE64_VAR);
+        assertContains(jsGenerator, base64Import);
+        String parse = "let " + VARIABLE + " = " + BASE64_VAR + ".toByteArray(" + VALUE + ')';
+        assertContains(jsGenerator, parse);
     }
-    @Test
-    @DisplayName("generate code for parsing long value")
-    void parseLong() {
 
+    @Test
+    @DisplayName("generate code for parsing enum value")
+    void parseEnum() {
+        PrimitiveParser parser = parserFor(enumField());
+        parser.parseIntoVariable(VALUE, VARIABLE);
+        EnumDescriptor enumType = enumField().getEnumType();
+        String typeName = typeWithProtoPrefix(enumType);
+        String parse = "let " + VARIABLE + " = " + typeName + '[' + VALUE + ']';
+        assertContains(jsGenerator, parse);
+    }
+
+    private PrimitiveParser parserFor(FieldDescriptor field) {
+        return PrimitiveParsers.createFor(field, jsGenerator);
     }
 }

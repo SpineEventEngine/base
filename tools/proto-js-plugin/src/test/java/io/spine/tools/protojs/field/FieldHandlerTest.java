@@ -20,26 +20,20 @@
 
 package io.spine.tools.protojs.field;
 
-import com.google.protobuf.Descriptors.Descriptor;
-import com.google.protobuf.Descriptors.FieldDescriptor;
-import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.code.proto.FileName;
-import io.spine.code.proto.FileSet;
 import io.spine.tools.protojs.code.JsGenerator;
 import io.spine.tools.protojs.given.Generators;
-import io.spine.tools.protojs.given.Given.PreparedProject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-
-import java.util.Optional;
 
 import static io.spine.tools.protojs.field.AbstractFieldHandler.FIELD_VALUE;
 import static io.spine.tools.protojs.field.Fields.capitalizedName;
 import static io.spine.tools.protojs.field.MapFieldHandler.ATTRIBUTE;
 import static io.spine.tools.protojs.field.MapFieldHandler.MAP_KEY;
-import static io.spine.tools.protojs.given.Given.COMMANDS_PROTO;
-import static io.spine.tools.protojs.given.Given.preparedProject;
+import static io.spine.tools.protojs.given.Given.mapField;
+import static io.spine.tools.protojs.given.Given.repeatedField;
+import static io.spine.tools.protojs.given.Given.singularField;
 import static io.spine.tools.protojs.message.MessageHandler.FROM_OBJECT_ARG;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -47,9 +41,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class FieldHandlerTest {
 
     private static final String JS_OBJECT = "jsObject";
-    private FieldDescriptor singularField;
-    private FieldDescriptor repeatedField;
-    private FieldDescriptor mapField;
 
     private JsGenerator jsGenerator;
 
@@ -59,19 +50,6 @@ class FieldHandlerTest {
 
     @BeforeEach
     void setUp() {
-        PreparedProject project = preparedProject();
-        FileSet fileSet = project.fileSet();
-        FileName fileName = FileName.of(COMMANDS_PROTO);
-        Optional<FileDescriptor> fileDescriptor = fileSet.tryFind(fileName);
-        FileDescriptor commandsProto = fileDescriptor.get();
-        Descriptor createTask = commandsProto.getMessageTypes()
-                                             .get(0);
-        singularField = createTask.getFields()
-                                  .get(0);
-        repeatedField = createTask.getFields()
-                                  .get(3);
-        mapField = createTask.getFields()
-                             .get(4);
         jsGenerator = new JsGenerator();
         singularHandler = singularHandler();
         repeatedHandler = repeatedHandler();
@@ -82,30 +60,35 @@ class FieldHandlerTest {
     @DisplayName("acquire JS object by field JSON name")
     void acquireJsObject() {
         String jsObject = singularHandler.acquireJsObject();
-        String expected = FROM_OBJECT_ARG + '.' + singularField.getJsonName();
+        String expected = FROM_OBJECT_ARG + '.' + singularField().getJsonName();
         assertEquals(expected, jsObject);
     }
 
-    @Test
-    @DisplayName("iterate JS list items in case of repeated field")
-    void iterateRepeated() {
-        String listItem = repeatedHandler.iterateListValues(JS_OBJECT);
-        String forEach = JS_OBJECT + ".forEach";
-        assertGeneratedCodeContains(forEach);
-        String forEachVariables = '(' + listItem + ", index, array)";
-        assertGeneratedCodeContains(forEachVariables);
-    }
+    @Nested
+    @DisplayName("iterate")
+    class Iterate {
 
-    @Test
-    @DisplayName("iterate JS object own properties in case of map field")
-    void iterateMap() {
-        String value = mapHandler.iterateOwnAttributes(JS_OBJECT);
-        String iteration = "for (let " + ATTRIBUTE + " in " + JS_OBJECT + ')';
-        assertGeneratedCodeContains(iteration);
-        String ownPropertyCheck = "hasOwnProperty(" + ATTRIBUTE + ')';
-        assertGeneratedCodeContains(ownPropertyCheck);
-        String expected = JS_OBJECT + '[' + ATTRIBUTE + ']';
-        assertEquals(expected, value);
+        @Test
+        @DisplayName("JS list items in case of repeated field")
+        void repeated() {
+            String listItem = repeatedHandler.iterateListValues(JS_OBJECT);
+            String forEach = JS_OBJECT + ".forEach";
+            assertGeneratedCodeContains(forEach);
+            String forEachVariables = '(' + listItem + ", index, array)";
+            assertGeneratedCodeContains(forEachVariables);
+        }
+
+        @Test
+        @DisplayName("JS object own properties in case of map field")
+        void map() {
+            String value = mapHandler.iterateOwnAttributes(JS_OBJECT);
+            String iteration = "for (let " + ATTRIBUTE + " in " + JS_OBJECT + ')';
+            assertGeneratedCodeContains(iteration);
+            String ownPropertyCheck = "hasOwnProperty(" + ATTRIBUTE + ')';
+            assertGeneratedCodeContains(ownPropertyCheck);
+            String expected = JS_OBJECT + '[' + ATTRIBUTE + ']';
+            assertEquals(expected, value);
+        }
     }
 
     @Test
@@ -122,8 +105,8 @@ class FieldHandlerTest {
     void callParser() {
         String jsObject = singularHandler.acquireJsObject();
         singularHandler.generateJs();
-        String typeName = singularField.getMessageType()
-                                       .getFullName();
+        String typeName = singularField().getMessageType()
+                                         .getFullName();
         String recursiveCall = typeName + ".fromObject(" + jsObject + ')';
         assertGeneratedCodeContains(recursiveCall);
     }
@@ -140,7 +123,7 @@ class FieldHandlerTest {
     @DisplayName("set singular field")
     void setSingular() {
         singularHandler.generateJs();
-        String setterCall = "set" + capitalizedName(singularField) + '(' + FIELD_VALUE + ')';
+        String setterCall = "set" + capitalizedName(singularField()) + '(' + FIELD_VALUE + ')';
         assertGeneratedCodeContains(setterCall);
     }
 
@@ -148,7 +131,7 @@ class FieldHandlerTest {
     @DisplayName("add value to repeated field")
     void addToRepeated() {
         repeatedHandler.generateJs();
-        String addCall = "add" + capitalizedName(repeatedField) + '(' + FIELD_VALUE + ')';
+        String addCall = "add" + capitalizedName(repeatedField()) + '(' + FIELD_VALUE + ')';
         assertGeneratedCodeContains(addCall);
     }
 
@@ -156,25 +139,25 @@ class FieldHandlerTest {
     @DisplayName("add value to map field")
     void addToMap() {
         mapHandler.generateJs();
-        String getMapCall = "get" + capitalizedName(mapField) + "Map()";
+        String getMapCall = "get" + capitalizedName(mapField()) + "Map()";
         String addToMapCall = "set(" + MAP_KEY + ", " + FIELD_VALUE + ')';
         String addCall = getMapCall + '.' + addToMapCall;
         assertGeneratedCodeContains(addCall);
     }
 
-    private void assertGeneratedCodeContains(String setterCall) {
-        Generators.assertGeneratedCodeContains(jsGenerator, setterCall);
+    private void assertGeneratedCodeContains(CharSequence setterCall) {
+        Generators.assertContains(jsGenerator, setterCall);
     }
 
     private SingularFieldHandler singularHandler() {
-        return (SingularFieldHandler) FieldHandlers.createFor(singularField, jsGenerator);
+        return (SingularFieldHandler) FieldHandlers.createFor(singularField(), jsGenerator);
     }
 
     private RepeatedFieldHandler repeatedHandler() {
-        return (RepeatedFieldHandler) FieldHandlers.createFor(repeatedField, jsGenerator);
+        return (RepeatedFieldHandler) FieldHandlers.createFor(repeatedField(), jsGenerator);
     }
 
     private MapFieldHandler mapHandler() {
-        return (MapFieldHandler) FieldHandlers.createFor(mapField, jsGenerator);
+        return (MapFieldHandler) FieldHandlers.createFor(mapField(), jsGenerator);
     }
 }

@@ -18,18 +18,34 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protojs.code.primitive.parser;
+package io.spine.tools.protojs.given;
 
-import io.spine.tools.protojs.code.JsGenerator;
+enum FieldContainerEntry {
 
-public interface PrimitiveParser {
+    INT32_FIELD("int32_field"),
+    INT64_FIELD("int64_field"),
+    FLOAT_FIELD("float_field"),
+    BYTES_FIELD("bytes_field"),
+    ENUM_FIELD("enum_field"),
 
-    void parseIntoVariable(String value, String variable);
+    MESSAGE_FIELD("message_field"),
+    TIMESTAMP_FIELD("timestamp_field"),
 
-    interface Builder<B extends Builder<B>> {
+    REPEATED_FIELD("repeated_field"),
+    MAP_FIELD("map_field");
 
-        B setJsWriter(JsGenerator jsGenerator);
+    private final String protoName;
 
-        PrimitiveParser build();
+    FieldContainerEntry(String protoName) {
+        this.protoName = protoName;
+    }
+
+    String protoName() {
+        return protoName;
+    }
+
+    @Override
+    public String toString() {
+        return protoName;
     }
 }

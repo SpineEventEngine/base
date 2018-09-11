@@ -29,10 +29,10 @@ final class LongParser extends AbstractPrimitiveParser {
     }
 
     @Override
-    public void parseIntoVariable(String value, String output) {
+    public void parseIntoVariable(String value, String variable) {
         checkNotNull(value);
-        checkNotNull(output);
-        jsGenerator().addLine("let " + output + " = parseInt(" + value + ");");
+        checkNotNull(variable);
+        jsGenerator().addLine("let " + variable + " = parseInt(" + value + ");");
     }
 
     static Builder newBuilder() {

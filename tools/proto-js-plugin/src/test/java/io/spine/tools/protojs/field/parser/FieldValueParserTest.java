@@ -21,21 +21,16 @@
 package io.spine.tools.protojs.field.parser;
 
 import com.google.protobuf.Descriptors.Descriptor;
-import com.google.protobuf.Descriptors.FieldDescriptor;
-import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.code.proto.FileName;
-import io.spine.code.proto.FileSet;
 import io.spine.tools.protojs.code.JsGenerator;
-import io.spine.tools.protojs.given.Given.PreparedProject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.Optional;
-
-import static io.spine.tools.protojs.given.Generators.assertGeneratedCodeContains;
-import static io.spine.tools.protojs.given.Given.COMMANDS_PROTO;
-import static io.spine.tools.protojs.given.Given.preparedProject;
+import static io.spine.tools.protojs.field.parser.FieldValueParsers.parserFor;
+import static io.spine.tools.protojs.given.Generators.assertContains;
+import static io.spine.tools.protojs.given.Given.int64Field;
+import static io.spine.tools.protojs.given.Given.messageField;
+import static io.spine.tools.protojs.given.Given.timestampField;
 import static io.spine.tools.protojs.types.Types.typeWithProtoPrefix;
 
 @DisplayName("FieldValueParser should")
@@ -44,55 +39,39 @@ class FieldValueParserTest {
     private static final String VALUE = "value";
     private static final String VARIABLE = "variable";
 
-    private FieldDescriptor messageField;
-    private FieldDescriptor primitiveField;
-    private FieldDescriptor timestampField;
     private JsGenerator jsGenerator;
 
     @BeforeEach
     void setUp() {
-        PreparedProject project = preparedProject();
-        FileSet fileSet = project.fileSet();
-        FileName fileName = FileName.of(COMMANDS_PROTO);
-        Optional<FileDescriptor> fileDescriptor = fileSet.tryFind(fileName);
-        FileDescriptor commandsProto = fileDescriptor.get();
-        Descriptor createTask = commandsProto.getMessageTypes()
-                                             .get(0);
-        messageField = createTask.getFields()
-                                 .get(0);
-        primitiveField = createTask.getFields()
-                                   .get(1);
-        timestampField = createTask.getFields()
-                                   .get(2);
         jsGenerator = new JsGenerator();
-    }
-
-    @Test
-    @DisplayName("parse message field with custom type via recursive call to fromObject")
-    void parseMessage() {
-        FieldValueParser parser = FieldValueParsers.parserFor(messageField, jsGenerator);
-        parser.parseIntoVariable(VALUE, VARIABLE);
-        Descriptor messageType = messageField.getMessageType();
-        String type = typeWithProtoPrefix(messageType);
-        String parse = "let " + VARIABLE + " = " + type + ".fromObject(" + VALUE + ')';
-        assertGeneratedCodeContains(jsGenerator, parse);
     }
 
     @Test
     @DisplayName("parse primitive field via predefined code")
     void parsePrimitive() {
-        FieldValueParser parser = FieldValueParsers.parserFor(primitiveField, jsGenerator);
+        FieldValueParser parser = parserFor(int64Field(), jsGenerator);
         parser.parseIntoVariable(VALUE, VARIABLE);
         String parse = "let " + VARIABLE + " = parseInt(" + VALUE + ')';
-        assertGeneratedCodeContains(jsGenerator, parse);
+        assertContains(jsGenerator, parse);
+    }
+
+    @Test
+    @DisplayName("parse message field with custom type via recursive call to fromObject")
+    void parseMessage() {
+        FieldValueParser parser = parserFor(messageField(), jsGenerator);
+        parser.parseIntoVariable(VALUE, VARIABLE);
+        Descriptor messageType = messageField().getMessageType();
+        String type = typeWithProtoPrefix(messageType);
+        String parse = "let " + VARIABLE + " = " + type + ".fromObject(" + VALUE + ')';
+        assertContains(jsGenerator, parse);
     }
 
     @Test
     @DisplayName("parse message field with standard type via known type parser")
     void parseWellKnown() {
-        FieldValueParser parser = FieldValueParsers.parserFor(timestampField, jsGenerator);
+        FieldValueParser parser = parserFor(timestampField(), jsGenerator);
         parser.parseIntoVariable(VALUE, VARIABLE);
         String parse = "let " + VARIABLE + " = parser.parse(" + VALUE + ')';
-        assertGeneratedCodeContains(jsGenerator, parse);
+        assertContains(jsGenerator, parse);
     }
 }

@@ -21,11 +21,7 @@
 package io.spine.tools.protojs.field;
 
 import com.google.common.testing.NullPointerTester;
-import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.code.proto.FileName;
-import io.spine.code.proto.FileSet;
 import io.spine.testing.UtilityClassTest;
 import io.spine.tools.protojs.code.JsGenerator;
 import io.spine.tools.protojs.field.checker.MessageFieldChecker;
@@ -33,25 +29,19 @@ import io.spine.tools.protojs.field.checker.PrimitiveFieldChecker;
 import io.spine.tools.protojs.field.parser.MessageFieldParser;
 import io.spine.tools.protojs.field.parser.PrimitiveFieldParser;
 import io.spine.tools.protojs.field.parser.WellKnownFieldParser;
-import io.spine.tools.protojs.given.Given.PreparedProject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.Optional;
-
 import static io.spine.testing.Verify.assertInstanceOf;
-import static io.spine.tools.protojs.given.Given.COMMANDS_PROTO;
-import static io.spine.tools.protojs.given.Given.preparedProject;
+import static io.spine.tools.protojs.given.Given.mapField;
+import static io.spine.tools.protojs.given.Given.messageField;
+import static io.spine.tools.protojs.given.Given.primitiveField;
+import static io.spine.tools.protojs.given.Given.repeatedField;
+import static io.spine.tools.protojs.given.Given.timestampField;
 
 @DisplayName("FieldHandlers utility should")
 class FieldHandlersTest extends UtilityClassTest<FieldHandlers> {
-
-    private FieldDescriptor messageField;
-    private FieldDescriptor primitiveField;
-    private FieldDescriptor timestampField;
-    private FieldDescriptor repeatedField;
-    private FieldDescriptor mapField;
 
     private JsGenerator jsGenerator;
 
@@ -61,79 +51,62 @@ class FieldHandlersTest extends UtilityClassTest<FieldHandlers> {
 
     @Override
     protected void setDefaults(NullPointerTester tester) {
-        tester.setDefault(FieldDescriptor.class, messageField);
+        tester.setDefault(FieldDescriptor.class, messageField());
     }
 
     @BeforeEach
     void setUp() {
-        PreparedProject project = preparedProject();
-        FileSet fileSet = project.fileSet();
-        FileName fileName = FileName.of(COMMANDS_PROTO);
-        Optional<FileDescriptor> fileDescriptor = fileSet.tryFind(fileName);
-        FileDescriptor commandsProto = fileDescriptor.get();
-        Descriptor createTask = commandsProto.getMessageTypes()
-                                             .get(0);
-        messageField = createTask.getFields()
-                                 .get(0);
-        primitiveField = createTask.getFields()
-                                   .get(1);
-        timestampField = createTask.getFields()
-                                   .get(2);
-        repeatedField = createTask.getFields()
-                                  .get(3);
-        mapField = createTask.getFields()
-                             .get(4);
         jsGenerator = new JsGenerator();
     }
 
     @Test
     @DisplayName("create singular handler for ordinary Protobuf field")
     void createSingularHandler() {
-        FieldHandler handler = handlerFor(messageField);
+        FieldHandler handler = handlerFor(messageField());
         assertInstanceOf(SingularFieldHandler.class, handler);
     }
 
     @Test
     @DisplayName("create repeated handler for repeated Protobuf field")
     void createRepeatedHandler() {
-        FieldHandler handler = handlerFor(repeatedField);
+        FieldHandler handler = handlerFor(repeatedField());
         assertInstanceOf(RepeatedFieldHandler.class, handler);
     }
 
     @Test
     @DisplayName("create map handler for map Protobuf field")
     void createMapHandler() {
-        FieldHandler handler = handlerFor(mapField);
+        FieldHandler handler = handlerFor(mapField());
         assertInstanceOf(MapFieldHandler.class, handler);
     }
 
     @Test
     @DisplayName("set value checker of correct type for handler")
     void setValueChecker() {
-        AbstractFieldHandler messageHandler = handlerFor(messageField);
+        AbstractFieldHandler messageHandler = handlerFor(messageField());
         assertInstanceOf(MessageFieldChecker.class, messageHandler.checker());
 
-        AbstractFieldHandler primitiveHandler = handlerFor(primitiveField);
+        AbstractFieldHandler primitiveHandler = handlerFor(primitiveField());
         assertInstanceOf(PrimitiveFieldChecker.class, primitiveHandler.checker());
     }
 
     @Test
     @DisplayName("set value parser of correct type for handler")
     void setValueParser() {
-        AbstractFieldHandler messageHandler = handlerFor(messageField);
+        AbstractFieldHandler messageHandler = handlerFor(messageField());
         assertInstanceOf(MessageFieldParser.class, messageHandler.parser());
 
-        AbstractFieldHandler primitiveHandler = handlerFor(primitiveField);
+        AbstractFieldHandler primitiveHandler = handlerFor(primitiveField());
         assertInstanceOf(PrimitiveFieldParser.class, primitiveHandler.parser());
 
-        AbstractFieldHandler timestampHandler = handlerFor(timestampField);
+        AbstractFieldHandler timestampHandler = handlerFor(timestampField());
         assertInstanceOf(WellKnownFieldParser.class, timestampHandler.parser());
     }
 
     @Test
     @DisplayName("create value parser for key and value in case of map field")
     void setParsersForMapField() {
-        MapFieldHandler handler = (MapFieldHandler) handlerFor(mapField);
+        MapFieldHandler handler = (MapFieldHandler) handlerFor(mapField());
         assertInstanceOf(PrimitiveFieldParser.class, handler.keyParser());
         assertInstanceOf(MessageFieldParser.class, handler.parser());
     }

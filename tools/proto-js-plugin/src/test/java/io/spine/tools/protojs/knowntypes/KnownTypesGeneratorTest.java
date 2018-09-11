@@ -20,28 +20,32 @@
 
 package io.spine.tools.protojs.knowntypes;
 
+import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.proto.FileSet;
 import io.spine.tools.protojs.code.JsGenerator;
-import io.spine.tools.protojs.code.JsOutput;
-import io.spine.tools.protojs.given.Given.PreparedProject;
+import io.spine.tools.protojs.files.JsFiles;
+import io.spine.tools.protojs.types.Types;
+import io.spine.type.TypeUrl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static io.spine.testing.Verify.assertContains;
-import static io.spine.tools.protojs.given.Generators.assertGeneratedCodeContains;
-import static io.spine.tools.protojs.given.Given.preparedProject;
+import static io.spine.tools.protojs.given.Generators.assertContains;
+import static io.spine.tools.protojs.given.Given.file;
+import static io.spine.tools.protojs.given.Given.message;
 
 @DisplayName("KnownTypesGenerator should")
 class KnownTypesGeneratorTest {
 
+    private FileDescriptor file;
     private JsGenerator jsGenerator;
     private KnownTypesGenerator generator;
 
     @BeforeEach
     void setUp() {
-        PreparedProject project = preparedProject();
-        FileSet fileSet = project.fileSet();
+        FileSet fileSet = FileSet.newInstance();
+        file = file();
+        fileSet.add(file);
         jsGenerator = new JsGenerator();
         generator = new KnownTypesGenerator(fileSet, jsGenerator);
     }
@@ -50,16 +54,18 @@ class KnownTypesGeneratorTest {
     @DisplayName("generate imports for known types")
     void generateImports() {
         generator.generateImports();
-        String taskImport = "require('./task_pb.js');";
-        assertGeneratedCodeContains(jsGenerator, taskImport);
+        String jsFileName = JsFiles.jsFileName(file);
+        String taskImport = "require('./" + jsFileName + "');";
+        assertContains(jsGenerator, taskImport);
     }
 
     @Test
     @DisplayName("generate known types map")
     void generateKnownTypesMap() {
         generator.generateKnownTypesMap();
-        String mapEntry = "['type.spine.io/spine.sample.protojs.TaskId', " +
-                "proto.spine.sample.protojs.TaskId]";
-        assertGeneratedCodeContains(jsGenerator, mapEntry);
+        TypeUrl typeUrl = TypeUrl.from(message());
+        String type = Types.typeWithProtoPrefix(message());
+        String mapEntry = "['" + typeUrl + "', " + type + ']';
+        assertContains(jsGenerator, mapEntry);
     }
 }
