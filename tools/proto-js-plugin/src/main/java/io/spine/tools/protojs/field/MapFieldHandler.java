@@ -20,6 +20,7 @@
 
 package io.spine.tools.protojs.field;
 
+import com.google.common.annotations.VisibleForTesting;
 import io.spine.tools.protojs.field.parser.FieldValueParser;
 
 import static io.spine.tools.protojs.field.Fields.capitalizedName;
@@ -27,8 +28,11 @@ import static io.spine.tools.protojs.message.MessageHandler.MESSAGE;
 
 public final class MapFieldHandler extends AbstractFieldHandler {
 
-    private static final String ATTRIBUTE = "attribute";
-    private static final String MAP_KEY = "mapKey";
+    @VisibleForTesting
+    static final String ATTRIBUTE = "attribute";
+
+    @VisibleForTesting
+    static final String MAP_KEY = "mapKey";
 
     // todo mention in doc somewhere that key and value of the matrix are also fields of 'Entry'
     // message type, so they are processed by FieldValueParser too for this reason.
@@ -57,11 +61,13 @@ public final class MapFieldHandler extends AbstractFieldHandler {
         return addToMapFormat;
     }
 
-    private void parseMapKey() {
+    @VisibleForTesting
+    void parseMapKey() {
         keyParser.parseIntoVariable(ATTRIBUTE, MAP_KEY);
     }
 
-    private String iterateOwnAttributes(String jsObject) {
+    @VisibleForTesting
+    String iterateOwnAttributes(String jsObject) {
         jsGenerator().ifNotNullOrUndefined(jsObject);
         jsGenerator().enterBlock("for (let " + ATTRIBUTE + " in " + jsObject + ')');
         jsGenerator().enterIfBlock(jsObject + ".hasOwnProperty(" + ATTRIBUTE + ')');
@@ -69,7 +75,8 @@ public final class MapFieldHandler extends AbstractFieldHandler {
         return value;
     }
 
-    private void exitOwnAttributeIteration() {
+    @VisibleForTesting
+    void exitOwnAttributeIteration() {
         jsGenerator().exitBlock();
         jsGenerator().exitBlock();
         jsGenerator().exitBlock();

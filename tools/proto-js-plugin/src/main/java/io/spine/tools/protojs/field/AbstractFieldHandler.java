@@ -20,6 +20,7 @@
 
 package io.spine.tools.protojs.field;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.tools.protojs.code.JsGenerator;
 import io.spine.tools.protojs.field.checker.FieldValueChecker;
@@ -31,7 +32,8 @@ import static java.lang.String.format;
 abstract class AbstractFieldHandler implements FieldHandler {
 
     @SuppressWarnings("DuplicateStringLiteralInspection") // Duplication with unrelated module.
-    private static final String FIELD_VALUE = "fieldValue";
+    @VisibleForTesting
+    static final String FIELD_VALUE = "fieldValue";
 
     private final FieldDescriptor field;
     private final FieldValueChecker checker;

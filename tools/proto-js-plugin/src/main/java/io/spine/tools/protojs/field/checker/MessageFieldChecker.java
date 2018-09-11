@@ -26,7 +26,7 @@ import io.spine.tools.protojs.code.JsGenerator;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-final class MessageFieldChecker implements FieldValueChecker {
+class MessageFieldChecker implements FieldValueChecker {
 
     private final FieldDescriptor field;
     private final JsGenerator jsGenerator;

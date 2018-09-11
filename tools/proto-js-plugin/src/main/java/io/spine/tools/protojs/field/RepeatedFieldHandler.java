@@ -20,6 +20,8 @@
 
 package io.spine.tools.protojs.field;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import static io.spine.tools.protojs.field.Fields.capitalizedName;
 import static io.spine.tools.protojs.message.MessageHandler.MESSAGE;
 
@@ -47,7 +49,8 @@ public final class RepeatedFieldHandler extends AbstractFieldHandler {
         return addToListFormat;
     }
 
-    private String iterateListValues(String jsObject) {
+    @VisibleForTesting
+    String iterateListValues(String jsObject) {
         jsGenerator().ifNotNullOrUndefined(jsObject);
         jsGenerator().addLine(jsObject + ".forEach(");
         jsGenerator().increaseDepth();
@@ -55,7 +58,8 @@ public final class RepeatedFieldHandler extends AbstractFieldHandler {
         return LIST_ITEM;
     }
 
-    private void exitListValueIteration() {
+    @VisibleForTesting
+    void exitListValueIteration() {
         jsGenerator().exitBlock();
         jsGenerator().decreaseDepth();
         jsGenerator().addLine(");");
