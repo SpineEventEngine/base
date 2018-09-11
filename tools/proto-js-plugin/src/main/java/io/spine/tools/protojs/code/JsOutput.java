@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static java.lang.System.lineSeparator;
+import static java.util.Collections.unmodifiableList;
 
 /**
  * Meant to be read-only for all classes except {@link JsGenerator}.
@@ -43,8 +43,8 @@ public final class JsOutput {
     @VisibleForTesting
     public JsOutput() {
         linesOfCode = new ArrayList<>();
-        this.lineSeparator = lineSeparator();
-        this.indent = 4;
+        this.lineSeparator = System.lineSeparator();
+        this.indent = 2;
     }
 
     JsOutput(String lineSeparator, int indent) {
@@ -56,6 +56,16 @@ public final class JsOutput {
     void addLine(String code, int depthLevel) {
         LineOfCode line = new LineOfCode(code, depthLevel);
         linesOfCode.add(line);
+    }
+
+    @VisibleForTesting
+    List<LineOfCode> linesOfCode() {
+        return unmodifiableList(linesOfCode);
+    }
+
+    @VisibleForTesting
+    String lineSeparator() {
+        return lineSeparator;
     }
 
     @Override

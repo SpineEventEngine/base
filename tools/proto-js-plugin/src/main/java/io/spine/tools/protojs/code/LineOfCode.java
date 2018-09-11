@@ -20,6 +20,8 @@
 
 package io.spine.tools.protojs.code;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import java.util.List;
 
 import static java.lang.String.join;
@@ -43,5 +45,10 @@ final class LineOfCode {
         String codeIndent = join("", indentSpaces);
         String result = codeIndent + content;
         return result;
+    }
+
+    @VisibleForTesting
+    int depth() {
+        return depth;
     }
 }

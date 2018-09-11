@@ -23,12 +23,17 @@ package io.spine.tools.protojs.code;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 @DisplayName("LineOfCode should")
 class LineOfCodeTest {
 
     @Test
     @DisplayName("inject spaces before code based on depth and indent")
     void printToString() {
-
+        LineOfCode lineOfCode = new LineOfCode("content", 2);
+        String result = lineOfCode.printToString(2);
+        String expected = "    content";
+        assertEquals(expected, result);
     }
 }

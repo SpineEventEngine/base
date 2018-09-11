@@ -20,8 +20,11 @@
 
 package io.spine.tools.protojs.code;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.join;
+import static java.lang.String.valueOf;
 import static java.lang.System.lineSeparator;
 
 public final class JsGenerator {
@@ -58,6 +61,7 @@ public final class JsGenerator {
     }
 
     public void addComment(String comment) {
+        checkNotNull(comment);
         addLine("// " + comment);
     }
 
@@ -149,5 +153,10 @@ public final class JsGenerator {
 
     public JsOutput getGeneratedCode() {
         return generatedCode;
+    }
+
+    @VisibleForTesting
+    int currentDepth() {
+        return currentDepth;
     }
 }

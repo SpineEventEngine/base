@@ -23,18 +23,30 @@ package io.spine.tools.protojs.code;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 @DisplayName("JsOutput should")
 class JsOutputTest {
 
     @Test
     @DisplayName("add line on specified depth level")
     void addLine() {
-
+        JsOutput jsOutput = new JsOutput();
+        int depth = 2;
+        jsOutput.addLine("line of code", depth);
+        LineOfCode addedLine = jsOutput.linesOfCode()
+                                       .get(0);
+        assertEquals(depth, addedLine.depth());
     }
 
     @Test
-    @DisplayName("concatenate all line of code with correct indent in `toString`")
+    @DisplayName("concatenate all lines of code with correct indent in `toString`")
     void provideToString() {
-
+        JsOutput jsOutput = new JsOutput();
+        jsOutput.addLine("line 1", 1);
+        jsOutput.addLine("line 2", 2);
+        String output = jsOutput.toString();
+        String expected = "  line 1" + jsOutput.lineSeparator() + "    line 2";
+        assertEquals(expected, output);
     }
 }

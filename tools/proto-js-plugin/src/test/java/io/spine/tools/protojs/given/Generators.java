@@ -24,15 +24,24 @@ import io.spine.tools.protojs.code.JsGenerator;
 import io.spine.tools.protojs.code.JsOutput;
 
 import static io.spine.testing.Verify.assertContains;
+import static io.spine.testing.Verify.assertNotContains;
 
 public final class Generators {
 
     private Generators() {
     }
 
-    public static void assertGeneratedCodeContains(JsGenerator jsGenerator, String toSearch) {
+    public static void
+    assertGeneratedCodeContains(JsGenerator jsGenerator, CharSequence toSearch) {
         JsOutput generatedCode = jsGenerator.getGeneratedCode();
         String codeString = generatedCode.toString();
         assertContains(toSearch, codeString);
+    }
+
+    public static void
+    assertGeneratedCodeNotContains(JsGenerator jsGenerator, CharSequence toSearch) {
+        JsOutput generatedCode = jsGenerator.getGeneratedCode();
+        String codeString = generatedCode.toString();
+        assertNotContains(toSearch, codeString);
     }
 }

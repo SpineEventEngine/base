@@ -20,41 +20,65 @@
 
 package io.spine.tools.protojs.code;
 
+import com.google.common.testing.NullPointerTester;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("JsImportGenerator should")
 class JsImportGeneratorTest {
 
+    private static final String FILE_PATH = "root1/test/test.js";
+    private static final String FILE_TO_IMPORT = "root2/tools/test_2.js";
+    private static final String IMPORT_NAME = "test_2";
+
+    private JsImportGenerator generator;
+
+    @BeforeEach
+    void setUp() {
+        generator = JsImportGenerator.createFor(FILE_PATH);
+    }
+
     @Test
     @DisplayName(NOT_ACCEPT_NULLS)
     void passNullToleranceCheck() {
-
+        new NullPointerTester().testAllPublicInstanceMethods(generator);
     }
 
     @Test
     @DisplayName("generate import relative to proto location root")
     void generateImport() {
-
+        String statement = generator.importStatement(FILE_TO_IMPORT);
+        String pathToImport = "../../" + FILE_TO_IMPORT;
+        String expected = "require('" + pathToImport + "');";
+        assertEquals(expected, statement);
     }
 
     @Test
     @DisplayName("generate named import")
     void generateNamedImport() {
-
+        String statement = generator.namedImport(FILE_TO_IMPORT, IMPORT_NAME);
+        String pathToImport = "../../" + FILE_TO_IMPORT;
+        String expected = "let " + IMPORT_NAME + " = require('" + pathToImport + "');";
+        assertEquals(expected, statement);
     }
 
     @Test
     @DisplayName("generate raw import statement, i.e. not relative to root")
     void generateRawImport() {
-
+        String statement = JsImportGenerator.rawImport(FILE_TO_IMPORT);
+        String expected = "require('" + FILE_TO_IMPORT + "');";
+        assertEquals(expected, statement);
     }
 
     @Test
     @DisplayName("generate raw named import statement")
     void generateRawNamedImport() {
-
+        String statement = JsImportGenerator.rawNamedImport(FILE_TO_IMPORT, IMPORT_NAME);
+        String expected = "let " + IMPORT_NAME + " = require('" + FILE_TO_IMPORT + "');";
+        assertEquals(expected, statement);
     }
 }
