@@ -64,7 +64,7 @@ final class SingularFieldHandler extends AbstractFieldHandler {
      *         the name of the variable which holds the JS object to check
      */
     private void checkNotUndefined(String jsObject) {
-        jsGenerator().ifNotUndefined(jsObject);
+        jsOutput().ifNotUndefined(jsObject);
     }
 
     /**
@@ -73,7 +73,7 @@ final class SingularFieldHandler extends AbstractFieldHandler {
      * <p>Returns the cursor to the {@code fromObject} method level.
      */
     private void exitUndefinedCheck() {
-        jsGenerator().exitBlock();
+        jsOutput().exitBlock();
     }
 
     static Builder newBuilder() {

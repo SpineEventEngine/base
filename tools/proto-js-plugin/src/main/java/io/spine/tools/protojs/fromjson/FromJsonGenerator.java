@@ -23,8 +23,8 @@ package io.spine.tools.protojs.fromjson;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.tools.protojs.code.JsGenerator;
 import io.spine.tools.protojs.code.JsImportGenerator;
+import io.spine.tools.protojs.code.JsOutput;
 import io.spine.tools.protojs.message.MessageHandler;
 
 import static io.spine.tools.protojs.files.JsFiles.KNOWN_TYPE_PARSERS;
@@ -35,12 +35,10 @@ import static io.spine.tools.protojs.files.JsFiles.KNOWN_TYPE_PARSERS;
  * <p>The class generates the {@code fromJson} method for each message declared in the
  * {@link FileDescriptor}.
  *
- * <p>All the generated code is stored in the given {@link JsGenerator}.
- *
  * @apiNote
  * Like the other handlers and generators of this module, the {@code FromJsonGenerator} is meant to
- * operate on the common {@link io.spine.tools.protojs.code.JsGenerator} passed on construction and
- * thus its methods do not return any generated code.
+ * operate on the common {@link JsOutput} passed on construction and thus its methods do not return
+ * any generated code.
  *
  * @author Dmytro Kuzmin
  */
@@ -59,21 +57,21 @@ public final class FromJsonGenerator {
             "the JSON data.";
 
     private final FileDescriptor file;
-    private final JsGenerator jsGenerator;
+    private final JsOutput jsOutput;
 
     /**
      * Creates the new {@code FromJsonGenerator} which will process the given file descriptor.
      *
-     * <p>Passed {@code JsGenerator} is used to create and accumulate the JS code lines.
+     * <p>Passed {@code JsOutput} is used to create and accumulate the JS code lines.
      *
      * @param file
      *         the {@code FileDescriptor} whose messages to process
-     * @param jsGenerator
-     *         the {@code JsGenerator} to accumulate the JS code
+     * @param jsOutput
+     *         the {@code JsOutput} to accumulate the generated JS code
      */
-    FromJsonGenerator(FileDescriptor file, JsGenerator jsGenerator) {
+    FromJsonGenerator(FileDescriptor file, JsOutput jsOutput) {
         this.file = file;
-        this.jsGenerator = jsGenerator;
+        this.jsOutput = jsOutput;
     }
 
     /**
@@ -102,8 +100,8 @@ public final class FromJsonGenerator {
      */
     @VisibleForTesting
     void generateComment() {
-        jsGenerator.addEmptyLine();
-        jsGenerator.addComment(COMMENT);
+        jsOutput.addEmptyLine();
+        jsOutput.addComment(COMMENT);
     }
 
     /**
@@ -114,20 +112,21 @@ public final class FromJsonGenerator {
      */
     @VisibleForTesting
     void generateParsersImport() {
-        jsGenerator.addEmptyLine();
+        jsOutput.addEmptyLine();
         String fileName = file.getFullName();
         JsImportGenerator generator = JsImportGenerator.createFor(fileName);
         String parsersImport = generator.namedImport(KNOWN_TYPE_PARSERS, PARSERS_IMPORT_NAME);
-        jsGenerator.addLine(parsersImport);
+        jsOutput.addLine(parsersImport);
     }
 
     /**
-     * Generates the {@code fromJson(json)} and {@code fromObject(obj)} methods.
+     * Generates the {@code fromJson(json)} and {@code fromObject(obj)} methods for each message of
+     * the file.
      */
     @VisibleForTesting
     void generateMethods() {
         for (Descriptor message : file.getMessageTypes()) {
-            MessageHandler handler = MessageHandler.createFor(message, jsGenerator);
+            MessageHandler handler = MessageHandler.createFor(message, jsOutput);
             handler.generateJs();
         }
     }

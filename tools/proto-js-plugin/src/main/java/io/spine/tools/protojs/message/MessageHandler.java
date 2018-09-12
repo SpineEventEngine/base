@@ -23,7 +23,7 @@ package io.spine.tools.protojs.message;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.tools.protojs.code.JsGenerator;
+import io.spine.tools.protojs.code.JsOutput;
 import io.spine.tools.protojs.field.FieldHandler;
 import io.spine.tools.protojs.field.FieldHandlers;
 
@@ -33,7 +33,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.protojs.types.Types.typeWithProtoPrefix;
 
 /**
- * The generator of the {@code fromJson(json)} method for the given message.
+ * The generator of the {@code fromJson(json)} method for the given message type.
  *
  * <p>The class also generates {@code fromObject(obj)} method which is used inside {@code fromJson}
  * and can be called to parse the JS proto message from the JS object.
@@ -43,8 +43,8 @@ import static io.spine.tools.protojs.types.Types.typeWithProtoPrefix;
  *
  * @apiNote
  * Like the other handlers and generators of this module, the {@code MessageHandler} is meant to
- * operate on the common {@link io.spine.tools.protojs.code.JsGenerator} passed on construction and
- * thus its methods do not return any generated code.
+ * operate on the common {@link JsOutput} passed on construction and thus its methods do not return
+ * any generated code.
  *
  * @author Dmytro Kuzmin
  */
@@ -70,34 +70,33 @@ public class MessageHandler {
     static final String FROM_JSON_ARG = "json";
 
     private final Descriptor message;
-    private final JsGenerator jsGenerator;
+    private final JsOutput jsOutput;
 
-    private MessageHandler(Descriptor message, JsGenerator jsGenerator) {
+    private MessageHandler(Descriptor message, JsOutput jsOutput) {
         this.message = message;
-        this.jsGenerator = jsGenerator;
+        this.jsOutput = jsOutput;
     }
 
     /**
-     * Creates the {@code MessageHandler} for the given message and {@code JsGenerator}.
+     * Creates the {@code MessageHandler} for the given message and {@code JsOutput}.
      *
      * @param message
      *         the {@code Descriptor} of the message type which will be parsed in JS
-     * @param jsGenerator
-     *         the {@code JsGenerator} to assist code generation and accumulate all the generated
-     *         lines
+     * @param jsOutput
+     *         the {@code JsOutput} which accumulates all the generated lines
      * @return the new {@code MessageHandler}
      */
-    public static MessageHandler createFor(Descriptor message, JsGenerator jsGenerator) {
+    public static MessageHandler createFor(Descriptor message, JsOutput jsOutput) {
         checkNotNull(message);
-        checkNotNull(jsGenerator);
-        return new MessageHandler(message, jsGenerator);
+        checkNotNull(jsOutput);
+        return new MessageHandler(message, jsOutput);
     }
 
     /**
-     * Generates the JS code necessary to handle the contained {@link #message}.
+     * Generates the JS code necessary to handle the contained {@code message}.
      *
      * <p>Adds the {@code fromJson(json)} and {@code fromObject(obj)} methods to the
-     * {@code JsGenerator} code lines.
+     * {@code JsOutput} code lines.
      */
     public void generateJs() {
         generateFromJsonMethod();
@@ -110,7 +109,7 @@ public class MessageHandler {
      */
     @VisibleForTesting
     void generateFromJsonMethod() {
-        jsGenerator.addEmptyLine();
+        jsOutput.addEmptyLine();
         String typeName = typeWithProtoPrefix(message);
         String functionName = typeName + ".fromJson";
         addFromJsonCode(typeName, functionName);
@@ -126,53 +125,53 @@ public class MessageHandler {
      */
     @VisibleForTesting
     void generateFromObjectMethod() {
-        jsGenerator.addEmptyLine();
+        jsOutput.addEmptyLine();
         String typeName = typeWithProtoPrefix(message);
         String functionName = typeName + ".fromObject";
         addFromObjectCode(typeName, functionName);
     }
 
     /**
-     * Adds the {@code fromJson} code to the {@link #jsGenerator}.
+     * Adds the {@code fromJson} code to the {@code jsOutput}.
      */
     private void addFromJsonCode(String typeName, String functionName) {
-        jsGenerator.enterFunction(functionName, FROM_JSON_ARG);
-        jsGenerator.addLine("let jsonObject = JSON.parse(" + FROM_JSON_ARG + ");");
-        jsGenerator.returnValue(typeName + ".fromObject(jsonObject)");
-        jsGenerator.exitFunction();
+        jsOutput.enterFunction(functionName, FROM_JSON_ARG);
+        jsOutput.addLine("let jsonObject = JSON.parse(" + FROM_JSON_ARG + ");");
+        jsOutput.returnValue(typeName + ".fromObject(jsonObject)");
+        jsOutput.exitFunction();
     }
 
     /**
-     * Adds the {@code fromObject} code to the {@link #jsGenerator}.
+     * Adds the {@code fromObject} code to the {@code jsOutput}.
      */
     private void addFromObjectCode(String typeName, String functionName) {
-        jsGenerator.enterFunction(functionName, FROM_OBJECT_ARG);
+        jsOutput.enterFunction(functionName, FROM_OBJECT_ARG);
         checkParsedObject();
-        jsGenerator.addEmptyLine();
-        jsGenerator.addLine("let " + MESSAGE + " = new " + typeName + "();");
+        jsOutput.addEmptyLine();
+        jsOutput.addLine("let " + MESSAGE + " = new " + typeName + "();");
         handleMessageFields();
-        jsGenerator.returnValue(MESSAGE);
-        jsGenerator.exitFunction();
+        jsOutput.returnValue(MESSAGE);
+        jsOutput.exitFunction();
     }
 
     /**
-     * Adds the code checking that {@linkplain #FROM_OBJECT_ARG from object argument} is not null.
+     * Adds the code checking that {@code fromObject} argument is not null.
      */
     private void checkParsedObject() {
-        jsGenerator.ifNull(FROM_OBJECT_ARG);
-        jsGenerator.returnValue("null");
-        jsGenerator.exitBlock();
+        jsOutput.ifNull(FROM_OBJECT_ARG);
+        jsOutput.returnValue("null");
+        jsOutput.exitBlock();
     }
 
     /**
-     * Adds the code necessary to parse and set the {@link #message} fields.
+     * Adds the code necessary to parse and set the message fields.
      */
     @VisibleForTesting
     void handleMessageFields() {
         List<FieldDescriptor> fields = message.getFields();
         for (FieldDescriptor field : fields) {
-            jsGenerator.addEmptyLine();
-            FieldHandler fieldHandler = FieldHandlers.createFor(field, jsGenerator);
+            jsOutput.addEmptyLine();
+            FieldHandler fieldHandler = FieldHandlers.createFor(field, jsOutput);
             fieldHandler.generateJs();
         }
     }

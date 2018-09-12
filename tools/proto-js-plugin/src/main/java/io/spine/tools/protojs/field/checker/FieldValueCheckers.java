@@ -21,7 +21,7 @@
 package io.spine.tools.protojs.field.checker;
 
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.tools.protojs.code.JsGenerator;
+import io.spine.tools.protojs.code.JsOutput;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.protojs.field.Fields.isMessage;
@@ -38,21 +38,20 @@ public final class FieldValueCheckers {
     }
 
     /**
-     * Creates {@code FieldValueChecker} for the given {@code field} which will store all generated
-     * code in the given {@code jsGenerator}.
+     * Creates {@code FieldValueChecker} for the given {@code field}.
      *
      * @param field
      *         the descriptor of the Protobuf field to create the checker for
-     * @param jsGenerator
-     *         the {@code JsGenerator} which will accumulate all the generated code
+     * @param jsOutput
+     *         the {@code JsOutput} which will accumulate all the generated code
      * @return a {@code FieldValueChecker} of the appropriate type
      */
-    public static FieldValueChecker checkerFor(FieldDescriptor field, JsGenerator jsGenerator) {
+    public static FieldValueChecker checkerFor(FieldDescriptor field, JsOutput jsOutput) {
         checkNotNull(field);
-        checkNotNull(jsGenerator);
+        checkNotNull(jsOutput);
         if (isMessage(field)) {
-            return new MessageFieldChecker(field, jsGenerator);
+            return new MessageFieldChecker(field, jsOutput);
         }
-        return new PrimitiveFieldChecker(jsGenerator);
+        return new PrimitiveFieldChecker(jsOutput);
     }
 }

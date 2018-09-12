@@ -79,10 +79,10 @@ final class RepeatedFieldHandler extends AbstractFieldHandler {
      */
     @VisibleForTesting
     void iterateListValues(String jsObject) {
-        jsGenerator().ifNotNullOrUndefined(jsObject);
-        jsGenerator().addLine(jsObject + ".forEach(");
-        jsGenerator().increaseDepth();
-        jsGenerator().enterBlock('(' + LIST_ITEM + ", index, array) =>");
+        jsOutput().ifNotNullOrUndefined(jsObject);
+        jsOutput().addLine(jsObject + ".forEach(");
+        jsOutput().increaseDepth();
+        jsOutput().enterBlock('(' + LIST_ITEM + ", index, array) =>");
     }
 
     /**
@@ -92,10 +92,10 @@ final class RepeatedFieldHandler extends AbstractFieldHandler {
      */
     @VisibleForTesting
     void exitListValueIteration() {
-        jsGenerator().exitBlock();
-        jsGenerator().decreaseDepth();
-        jsGenerator().addLine(");");
-        jsGenerator().exitBlock();
+        jsOutput().exitBlock();
+        jsOutput().decreaseDepth();
+        jsOutput().addLine(");");
+        jsOutput().exitBlock();
     }
 
     static Builder newBuilder() {

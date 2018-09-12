@@ -20,7 +20,7 @@
 
 package io.spine.tools.protojs.code.primitive;
 
-import io.spine.tools.protojs.code.JsGenerator;
+import io.spine.tools.protojs.code.JsOutput;
 
 /**
  * The generator of the JS code parsing some primitive value from its JSON representation.
@@ -29,8 +29,8 @@ import io.spine.tools.protojs.code.JsGenerator;
  *
  * @apiNote
  * Like the other handlers and generators of this module, the {@code PrimitiveParser} is meant to
- * operate on the common {@link io.spine.tools.protojs.code.JsGenerator} passed on construction and
- * thus its method does not return any generated code.
+ * operate on the common {@link JsOutput} passed on construction and thus its method does not
+ * return any generated code.
  *
  * @author Dmytro Kuzmin
  * @see <a href="https://developers.google.com/protocol-buffers/docs/proto3#json">Protobuf JSON
@@ -57,13 +57,13 @@ public interface PrimitiveParser {
     interface Builder<B extends Builder<B>> {
 
         /**
-         * Sets the {@code JsGenerator} which will accumulate all the generated code.
+         * Sets the {@code JsOutput} which will accumulate all the generated code.
          *
-         * @param jsGenerator
-         *         the {@code JsGenerator} to use
+         * @param jsOutput
+         *         the {@code JsOutput} to use
          * @return self
          */
-        B setJsGenerator(JsGenerator jsGenerator);
+        B setJsOutput(JsOutput jsOutput);
 
         /**
          * Creates the {@code PrimitiveParser} instance corresponding to this builder.

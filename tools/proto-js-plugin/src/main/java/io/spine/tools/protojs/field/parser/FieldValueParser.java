@@ -20,14 +20,16 @@
 
 package io.spine.tools.protojs.field.parser;
 
+import io.spine.tools.protojs.code.JsOutput;
+
 /**
  * The generator of the code which parses the field value from the JS object and stores it into
  * some variable.
  *
  * @apiNote
  * Like the other handlers and generators of this module, the {@code FieldValueParser} is meant to
- * operate on the common {@link io.spine.tools.protojs.code.JsGenerator} passed on construction and
- * thus its method does not return any generated code.
+ * operate on the common {@link JsOutput} passed on construction and thus its method does not
+ * return any generated code.
  *
  * @author Dmytro Kuzmin
  */

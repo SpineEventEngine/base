@@ -20,7 +20,7 @@
 
 package io.spine.tools.protojs.code.primitive;
 
-import io.spine.tools.protojs.code.JsGenerator;
+import io.spine.tools.protojs.code.JsOutput;
 
 /**
  * The common base for {@link PrimitiveParser} implementations.
@@ -29,23 +29,23 @@ import io.spine.tools.protojs.code.JsGenerator;
  */
 abstract class AbstractPrimitiveParser implements PrimitiveParser {
 
-    private final JsGenerator jsGenerator;
+    private final JsOutput jsOutput;
 
     AbstractPrimitiveParser(Builder builder) {
-        this.jsGenerator = builder.jsGenerator;
+        this.jsOutput = builder.jsOutput;
     }
 
-    JsGenerator jsGenerator() {
-        return jsGenerator;
+    JsOutput jsOutput() {
+        return jsOutput;
     }
 
     abstract static class Builder<B extends Builder<B>> implements PrimitiveParser.Builder<B> {
 
-        private JsGenerator jsGenerator;
+        private JsOutput jsOutput;
 
         @Override
-        public B setJsGenerator(JsGenerator jsGenerator) {
-            this.jsGenerator = jsGenerator;
+        public B setJsOutput(JsOutput jsOutput) {
+            this.jsOutput = jsOutput;
             return self();
         }
 

@@ -22,7 +22,7 @@ package io.spine.tools.protojs.field.checker;
 
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Value;
-import io.spine.tools.protojs.code.JsGenerator;
+import io.spine.tools.protojs.code.JsOutput;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -36,19 +36,19 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public final class MessageFieldChecker implements FieldValueChecker {
 
     private final FieldDescriptor field;
-    private final JsGenerator jsGenerator;
+    private final JsOutput jsOutput;
 
     /**
      * Creates a new {@code MessageFieldChecker} for the given {@code field}.
      *
      * @param field
      *         the field to create the checker for
-     * @param jsGenerator
-     *         the {@code JsGenerator} which accumulates all generated code
+     * @param jsOutput
+     *         the {@code JsOutput} which accumulates all generated code
      */
-    MessageFieldChecker(FieldDescriptor field, JsGenerator jsGenerator) {
+    MessageFieldChecker(FieldDescriptor field, JsOutput jsOutput) {
         this.field = field;
-        this.jsGenerator = jsGenerator;
+        this.jsOutput = jsOutput;
     }
 
     /**
@@ -68,21 +68,21 @@ public final class MessageFieldChecker implements FieldValueChecker {
         if (isProtobufValueType()) {
             return;
         }
-        jsGenerator.ifNull(value);
+        jsOutput.ifNull(value);
         String setFieldToNull = String.format(setterFormat, "null");
-        jsGenerator.addLine(setFieldToNull);
-        jsGenerator.enterElseBlock();
+        jsOutput.addLine(setFieldToNull);
+        jsOutput.enterElseBlock();
     }
 
     @Override
     public void exitNullCheck() {
         if (!isProtobufValueType()) {
-            jsGenerator.exitBlock();
+            jsOutput.exitBlock();
         }
     }
 
     /**
-     * Checks if the stored {@link #field} is of {@link Value} type.
+     * Checks if the stored {@link #field} is of the Protobuf {@link Value} type.
      */
     private boolean isProtobufValueType() {
         String valueType = Value.getDescriptor()

@@ -51,10 +51,13 @@ import static io.spine.tools.protojs.files.ProjectFiles.testProtoJsLocation;
  * set to the required values in a project willing to use the plugin. These settings are:
  * <ul>
  *     <li>JS proto definitions path set to {@code ${projectDir}/proto/${sourceSet}/js"};
+ *
  *     <li>descriptor set file stored under the
  *         {@code "${projectDir}/build/descriptors/${task.sourceSet.name}/known_types.desc"};
+ *
  *     <li>CommonJS import style for all generated proto definitions ({@code js {option
  *     "import_style=commonjs"}});
+ *
  *     <li>{@code compileProtoToJs} task available in the project.
  * </ul>
  *

@@ -24,7 +24,7 @@ import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.code.proto.FieldName;
-import io.spine.tools.protojs.code.JsGenerator;
+import io.spine.tools.protojs.code.JsOutput;
 import io.spine.tools.protojs.knowntypes.ParserMapGenerator;
 import io.spine.type.TypeUrl;
 
@@ -144,7 +144,7 @@ public final class Fields {
      * @return the key descriptor for the specified {@code map} field
      * @throws IllegalStateException
      *         if the specified field is not a {@code map} proto field
-     * @see FieldHandlers#mapHandler(FieldDescriptor, JsGenerator)
+     * @see FieldHandlers#mapHandler(FieldDescriptor, JsOutput)
      */
     static FieldDescriptor keyDescriptor(FieldDescriptor field) {
         checkState(isMap(field), "Trying to get key descriptor for the non-map field.");
@@ -164,7 +164,7 @@ public final class Fields {
      * @return the value descriptor for the specified {@code map} field
      * @throws IllegalStateException
      *         if the specified field is not a {@code map} proto field
-     * @see FieldHandlers#mapHandler(FieldDescriptor, JsGenerator)
+     * @see FieldHandlers#mapHandler(FieldDescriptor, JsOutput)
      */
     static FieldDescriptor valueDescriptor(FieldDescriptor field) {
         checkState(isMap(field), "Trying to get value descriptor for the non-map field.");

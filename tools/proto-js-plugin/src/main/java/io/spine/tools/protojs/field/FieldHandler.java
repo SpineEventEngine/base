@@ -20,6 +20,8 @@
 
 package io.spine.tools.protojs.field;
 
+import io.spine.tools.protojs.code.JsOutput;
+
 /**
  * The generator of the code necessary to handle a Protobuf message field.
  *
@@ -31,8 +33,8 @@ package io.spine.tools.protojs.field;
  *
  * @apiNote
  * Like the other handlers and generators of this module, the {@code FieldHandler} is meant to
- * operate on the common {@link io.spine.tools.protojs.code.JsGenerator} passed on construction and
- * thus its method does not return any generated code.
+ * operate on the common {@link JsOutput} passed on construction and thus its method does not
+ * return any generated code.
  *
  * @author Dmytro Kuzmin
  */

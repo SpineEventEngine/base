@@ -23,7 +23,6 @@ package io.spine.tools.protojs.files;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.proto.FileName;
 import io.spine.testing.UtilityClassTest;
-import io.spine.tools.protojs.code.JsGenerator;
 import io.spine.tools.protojs.code.JsOutput;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -104,9 +103,9 @@ class JsFilesTest extends UtilityClassTest<JsFiles> {
         assertEquals(expected, jsFileName);
     }
 
-    private static JsOutput generateCode(String lineOfCode) {
-        JsGenerator jsGenerator = new JsGenerator();
-        jsGenerator.addLine(lineOfCode);
-        return jsGenerator.getGeneratedCode();
+    private static JsOutput generateCode(String codeLine) {
+        JsOutput jsOutput = new JsOutput();
+        jsOutput.addLine(codeLine);
+        return jsOutput;
     }
 }

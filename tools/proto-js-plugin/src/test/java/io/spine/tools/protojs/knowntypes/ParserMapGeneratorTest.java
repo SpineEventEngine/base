@@ -22,7 +22,7 @@ package io.spine.tools.protojs.knowntypes;
 
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Timestamp;
-import io.spine.tools.protojs.code.JsGenerator;
+import io.spine.tools.protojs.code.JsOutput;
 import io.spine.type.TypeUrl;
 import io.spine.validate.ValidationError;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,13 +37,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @DisplayName("ParserMapGenerator should")
 class ParserMapGeneratorTest {
 
-    private JsGenerator jsGenerator;
+    private JsOutput jsOutput;
     private ParserMapGenerator generator;
 
     @BeforeEach
     void setUp() {
-        jsGenerator = new JsGenerator();
-        generator = new ParserMapGenerator(jsGenerator);
+        jsOutput = new JsOutput();
+        generator = new ParserMapGenerator(jsOutput);
     }
 
     @Test
@@ -67,6 +67,6 @@ class ParserMapGeneratorTest {
     void generateParsersMap() {
         generator.generateJs();
         String mapEntry = "['type.googleapis.com/google.protobuf.Value', new ValueParser()]";
-        assertContains(jsGenerator, mapEntry);
+        assertContains(jsOutput, mapEntry);
     }
 }

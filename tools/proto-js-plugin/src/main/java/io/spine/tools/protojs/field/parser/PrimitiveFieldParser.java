@@ -21,7 +21,7 @@
 package io.spine.tools.protojs.field.parser;
 
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.tools.protojs.code.JsGenerator;
+import io.spine.tools.protojs.code.JsOutput;
 import io.spine.tools.protojs.code.primitive.PrimitiveParser;
 import io.spine.tools.protojs.code.primitive.PrimitiveParsers;
 
@@ -33,28 +33,28 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * <p>All Protobuf fields that are not of the message type are considered primitive and are thus
  * handled by this parser.
  *
- * <p>The class is {@code public} for the test purposes.
+ * <p>The class is {@code public} only for test purposes.
  *
  * @author Dmytro Kuzmin
  */
 public final class PrimitiveFieldParser implements FieldValueParser {
 
     private final FieldDescriptor field;
-    private final JsGenerator jsGenerator;
+    private final JsOutput jsOutput;
 
     /**
      * Creates a new {@code PrimitiveFieldParser} for the given field.
      *
-     * <p>All the generated code will be accumulated in the given {@code jsGenerator}.
+     * <p>All the generated code will be accumulated in the given {@code jsOutput}.
      *
      * @param field
      *         the descriptor of the field to create the parser for
-     * @param jsGenerator
-     *         the {@code JsGenerator} to store the generated code
+     * @param jsOutput
+     *         the {@code JsOutput} to store the generated code
      */
-    PrimitiveFieldParser(FieldDescriptor field, JsGenerator jsGenerator) {
+    PrimitiveFieldParser(FieldDescriptor field, JsOutput jsOutput) {
         this.field = field;
-        this.jsGenerator = jsGenerator;
+        this.jsOutput = jsOutput;
     }
 
     /**
@@ -69,7 +69,7 @@ public final class PrimitiveFieldParser implements FieldValueParser {
     public void parseIntoVariable(String value, String variable) {
         checkNotNull(value);
         checkNotNull(variable);
-        PrimitiveParser parser = PrimitiveParsers.createFor(field, jsGenerator);
+        PrimitiveParser parser = PrimitiveParsers.createFor(field, jsOutput);
         parser.parseIntoVariable(value, variable);
     }
 }

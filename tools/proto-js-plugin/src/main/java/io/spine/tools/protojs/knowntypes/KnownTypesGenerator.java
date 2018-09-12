@@ -24,7 +24,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.proto.FileSet;
-import io.spine.tools.protojs.code.JsGenerator;
+import io.spine.tools.protojs.code.JsOutput;
 import io.spine.tools.protojs.code.JsImportGenerator;
 import io.spine.type.TypeUrl;
 
@@ -42,12 +42,10 @@ import static io.spine.tools.protojs.types.Types.typeWithProtoPrefix;
  * <p>This class generates the map with all the known types written in the form of
  * "{@linkplain TypeUrl type-url}-to-JS-type", as well as the imports necessary to use JS types.
  *
- * <p>All the generated code is stored to the {@link JsGenerator} provided on construction.
- *
  * @apiNote
  * Like the other handlers and generators of this module, the {@code KnownTypesGenerator} is meant
- * to operate on the common {@link io.spine.tools.protojs.code.JsGenerator} passed on construction
- * and thus its methods do not return any generated code.
+ * to operate on the common {@link JsOutput} passed on construction and thus its methods do not
+ * return any generated code.
  *
  * @author Dmytro Kuzmin
  * @see KnownTypesWriter
@@ -60,22 +58,22 @@ final class KnownTypesGenerator {
     private static final String MAP_NAME = "types";
 
     private final FileSet fileSet;
-    private final JsGenerator jsGenerator;
+    private final JsOutput jsOutput;
 
     /**
      * Creates a new {@code KnownTypesGenerator}.
      *
-     * <p>All the known types will be acquired from the {@code fileSet} and the {@code jsGenerator}
+     * <p>All the known types will be acquired from the {@code fileSet} and the {@code jsOutput}
      * accumulates the JS code lines.
      *
      * @param fileSet
      *         the {@code FileSet} containing all the known types
-     * @param jsGenerator
-     *         the JS code generator to append the code to
+     * @param jsOutput
+     *         the {@code JsOutput} to accumulate the generated code
      */
-    KnownTypesGenerator(FileSet fileSet, JsGenerator jsGenerator) {
+    KnownTypesGenerator(FileSet fileSet, JsOutput jsOutput) {
         this.fileSet = fileSet;
-        this.jsGenerator = jsGenerator;
+        this.jsOutput = jsOutput;
     }
 
     /**
@@ -87,7 +85,7 @@ final class KnownTypesGenerator {
      *     <li>The global JS {@code Map}
      * </ol>
      *
-     * <p>The generated code is accumulated in the {@link #jsGenerator}.
+     * <p>The generated code is accumulated in the {@link #jsOutput}.
      */
     void generateJs() {
         generateImports();
@@ -118,10 +116,10 @@ final class KnownTypesGenerator {
      */
     @VisibleForTesting
     void generateKnownTypesMap() {
-        jsGenerator.addEmptyLine();
-        jsGenerator.exportMap(MAP_NAME);
+        jsOutput.addEmptyLine();
+        jsOutput.exportMap(MAP_NAME);
         storeKnownTypes();
-        jsGenerator.quitMapDeclaration();
+        jsOutput.quitMapDeclaration();
     }
 
     /**
@@ -135,7 +133,7 @@ final class KnownTypesGenerator {
         List<Descriptor> declaredMessages = file.getMessageTypes();
         if (!declaredMessages.isEmpty()) {
             String statement = importGenerator.importStatement(jsFileName);
-            jsGenerator.addLine(statement);
+            jsOutput.addLine(statement);
         }
     }
 
@@ -165,11 +163,11 @@ final class KnownTypesGenerator {
 
     /**
      * Converts the {@code message} to the JS {@code Map} entry and adds it to the
-     * {@link #jsGenerator}.
+     * {@link #jsOutput}.
      */
     private void addMapEntry(Descriptor message, boolean isLastMessage) {
         String mapEntry = jsMapEntry(message);
-        jsGenerator.addMapEntry(mapEntry, isLastMessage);
+        jsOutput.addMapEntry(mapEntry, isLastMessage);
     }
 
     /**

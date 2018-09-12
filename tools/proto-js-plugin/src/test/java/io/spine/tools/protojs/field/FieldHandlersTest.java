@@ -23,7 +23,7 @@ package io.spine.tools.protojs.field;
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.testing.UtilityClassTest;
-import io.spine.tools.protojs.code.JsGenerator;
+import io.spine.tools.protojs.code.JsOutput;
 import io.spine.tools.protojs.field.checker.MessageFieldChecker;
 import io.spine.tools.protojs.field.checker.PrimitiveFieldChecker;
 import io.spine.tools.protojs.field.parser.MessageFieldParser;
@@ -43,7 +43,7 @@ import static io.spine.tools.protojs.given.Given.timestampField;
 @DisplayName("FieldHandlers utility should")
 class FieldHandlersTest extends UtilityClassTest<FieldHandlers> {
 
-    private JsGenerator jsGenerator;
+    private JsOutput jsOutput;
 
     FieldHandlersTest() {
         super(FieldHandlers.class);
@@ -56,7 +56,7 @@ class FieldHandlersTest extends UtilityClassTest<FieldHandlers> {
 
     @BeforeEach
     void setUp() {
-        jsGenerator = new JsGenerator();
+        jsOutput = new JsOutput();
     }
 
     @Test
@@ -112,6 +112,6 @@ class FieldHandlersTest extends UtilityClassTest<FieldHandlers> {
     }
 
     private AbstractFieldHandler handlerFor(FieldDescriptor field) {
-        return (AbstractFieldHandler) FieldHandlers.createFor(field, jsGenerator);
+        return (AbstractFieldHandler) FieldHandlers.createFor(field, jsOutput);
     }
 }

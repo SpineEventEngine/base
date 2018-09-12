@@ -22,7 +22,7 @@ package io.spine.tools.protojs.knowntypes;
 
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.proto.FileSet;
-import io.spine.tools.protojs.code.JsGenerator;
+import io.spine.tools.protojs.code.JsOutput;
 import io.spine.tools.protojs.files.JsFiles;
 import io.spine.tools.protojs.types.Types;
 import io.spine.type.TypeUrl;
@@ -38,7 +38,7 @@ import static io.spine.tools.protojs.given.Given.message;
 class KnownTypesGeneratorTest {
 
     private FileDescriptor file;
-    private JsGenerator jsGenerator;
+    private JsOutput jsOutput;
     private KnownTypesGenerator generator;
 
     @BeforeEach
@@ -46,8 +46,8 @@ class KnownTypesGeneratorTest {
         FileSet fileSet = FileSet.newInstance();
         file = file();
         fileSet.add(file);
-        jsGenerator = new JsGenerator();
-        generator = new KnownTypesGenerator(fileSet, jsGenerator);
+        jsOutput = new JsOutput();
+        generator = new KnownTypesGenerator(fileSet, jsOutput);
     }
 
     @Test
@@ -56,7 +56,7 @@ class KnownTypesGeneratorTest {
         generator.generateImports();
         String jsFileName = JsFiles.jsFileName(file);
         String taskImport = "require('./" + jsFileName + "');";
-        assertContains(jsGenerator, taskImport);
+        assertContains(jsOutput, taskImport);
     }
 
     @Test
@@ -66,6 +66,6 @@ class KnownTypesGeneratorTest {
         TypeUrl typeUrl = TypeUrl.from(message());
         String type = Types.typeWithProtoPrefix(message());
         String mapEntry = "['" + typeUrl + "', " + type + ']';
-        assertContains(jsGenerator, mapEntry);
+        assertContains(jsOutput, mapEntry);
     }
 }

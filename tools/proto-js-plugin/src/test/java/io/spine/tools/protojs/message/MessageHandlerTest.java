@@ -22,8 +22,7 @@ package io.spine.tools.protojs.message;
 
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Descriptors.Descriptor;
-import io.spine.tools.protojs.code.JsGenerator;
-import io.spine.tools.protojs.given.Generators;
+import io.spine.tools.protojs.code.JsOutput;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -43,14 +42,14 @@ import static org.mockito.Mockito.verify;
 class MessageHandlerTest {
 
     private Descriptor message;
-    private JsGenerator jsGenerator;
+    private JsOutput jsOutput;
     private MessageHandler handler;
 
     @BeforeEach
     void setUp() throws IOException {
         message = message();
-        jsGenerator = new JsGenerator();
-        handler = MessageHandler.createFor(message, jsGenerator);
+        jsOutput = new JsOutput();
+        handler = MessageHandler.createFor(message, jsOutput);
     }
 
     @Test
@@ -101,6 +100,6 @@ class MessageHandlerTest {
     }
 
     private void assertGeneratedCodeContains(CharSequence toSearch) {
-        assertContains(jsGenerator, toSearch);
+        assertContains(jsOutput, toSearch);
     }
 }

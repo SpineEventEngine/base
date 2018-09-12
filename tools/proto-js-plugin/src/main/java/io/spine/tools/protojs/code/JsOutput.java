@@ -26,53 +26,150 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static java.util.Collections.unmodifiableList;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static java.lang.String.join;
+import static java.lang.System.lineSeparator;
 
-/**
- * Meant to be read-only for all classes except {@link JsGenerator}.
- */
 public final class JsOutput {
 
-    private final List<LineOfCode> linesOfCode;
-    private final String lineSeparator;
-    private final int indent;
-
-    /**
-     * Exists only for testing.
-     */
     @VisibleForTesting
+    static final String LINE_SEPARATOR = lineSeparator();
+
+    private static final int STANDARD_INDENT = 2;
+
+    private final int indent;
+    private final List<CodeLine> codeLines;
+    private int currentDepth;
+
     public JsOutput() {
-        linesOfCode = new ArrayList<>();
-        this.lineSeparator = System.lineSeparator();
-        this.indent = 2;
+        this.codeLines = new ArrayList<>();
+        this.currentDepth = 0;
+        this.indent = STANDARD_INDENT;
     }
 
-    JsOutput(String lineSeparator, int indent) {
-        linesOfCode = new ArrayList<>();
-        this.lineSeparator = lineSeparator;
+    public JsOutput(int indent) {
+        this.codeLines = new ArrayList<>();
+        this.currentDepth = 0;
         this.indent = indent;
     }
 
-    void addLine(String code, int depthLevel) {
-        LineOfCode line = new LineOfCode(code, depthLevel);
-        linesOfCode.add(line);
+    public void addLine(String codeLine) {
+        checkNotNull(codeLine);
+        CodeLine line = new CodeLine(codeLine, currentDepth);
+        codeLines.add(line);
     }
 
-    @VisibleForTesting
-    List<LineOfCode> linesOfCode() {
-        return unmodifiableList(linesOfCode);
+    public void addEmptyLine() {
+        addLine("");
     }
 
-    @VisibleForTesting
-    String lineSeparator() {
-        return lineSeparator;
+    @SuppressWarnings("DuplicateStringLiteralInspection") // Duplication with unrelated module.
+    public void returnValue(String value) {
+        checkNotNull(value);
+        addLine("return " + value + ';');
+    }
+
+    public void addComment(String comment) {
+        checkNotNull(comment);
+        addLine("// " + comment);
+    }
+
+    /**
+     * @param functionName full function name including type name
+     */
+    public void enterFunction(String functionName, String... functionArgs) {
+        checkNotNull(functionName);
+        checkNotNull(functionArgs);
+        String argString = join(", ", functionArgs);
+        addLine(functionName + " = function(" + argString + ") {");
+        currentDepth++;
+    }
+
+    public void exitFunction() {
+        currentDepth--;
+        addLine("};");
+    }
+
+    public void enterIfBlock(String condition) {
+        checkNotNull(condition);
+        enterBlock("if (" + condition + ')');
+    }
+
+    public void enterElseBlock() {
+        currentDepth--;
+        addLine("} else {");
+        currentDepth++;
+    }
+
+    public void enterBlock(String blockHeader) {
+        checkNotNull(blockHeader);
+        addLine(blockHeader + " {");
+        currentDepth++;
+    }
+
+    public void exitBlock() {
+        currentDepth--;
+        addLine("}");
+    }
+
+    public void ifNull(String value) {
+        checkNotNull(value);
+        enterIfBlock(value + " === null");
+    }
+
+    public void ifNotNull(String value) {
+        checkNotNull(value);
+        enterIfBlock(value + " !== null");
+    }
+
+    public void ifNotUndefined(String value) {
+        checkNotNull(value);
+        enterIfBlock(value + " !== undefined");
+    }
+
+    public void ifNotNullOrUndefined(String value) {
+        checkNotNull(value);
+        enterIfBlock(value + " !== undefined && " + value + " !== null");
+    }
+
+    public void exportMap(String mapName) {
+        checkNotNull(mapName);
+        addLine("export const " + mapName + " = new Map([");
+        increaseDepth();
+    }
+
+    public void addMapEntry(String entry, boolean isLast) {
+        checkNotNull(entry);
+        if (isLast) {
+            addLine(entry);
+        } else {
+            addLine(entry + ',');
+        }
+    }
+
+    public void quitMapDeclaration() {
+        decreaseDepth();
+        addLine("]);");
+    }
+
+    public void increaseDepth() {
+        currentDepth++;
+    }
+
+    public void decreaseDepth() {
+        currentDepth--;
     }
 
     @Override
     public String toString() {
-        String result = linesOfCode.stream()
-                                   .map(lineOfCode -> lineOfCode.printToString(indent))
-                                   .collect(Collectors.joining(lineSeparator));
+        String result = codeLines.stream()
+                                 .map(codeLine -> codeLine.printToString(indent))
+                                 .collect(Collectors.joining(LINE_SEPARATOR));
         return result;
+    }
+
+    @VisibleForTesting
+    int currentDepth() {
+        return currentDepth;
     }
 }

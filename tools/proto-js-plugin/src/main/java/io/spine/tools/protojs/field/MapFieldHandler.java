@@ -101,9 +101,9 @@ final class MapFieldHandler extends AbstractFieldHandler {
      */
     @VisibleForTesting
     String iterateOwnAttributes(String jsObject) {
-        jsGenerator().ifNotNullOrUndefined(jsObject);
-        jsGenerator().enterBlock("for (let " + ATTRIBUTE + " in " + jsObject + ')');
-        jsGenerator().enterIfBlock(jsObject + ".hasOwnProperty(" + ATTRIBUTE + ')');
+        jsOutput().ifNotNullOrUndefined(jsObject);
+        jsOutput().enterBlock("for (let " + ATTRIBUTE + " in " + jsObject + ')');
+        jsOutput().enterIfBlock(jsObject + ".hasOwnProperty(" + ATTRIBUTE + ')');
         String value = jsObject + '[' + ATTRIBUTE + ']';
         return value;
     }
@@ -114,9 +114,9 @@ final class MapFieldHandler extends AbstractFieldHandler {
      * <p>Returns the cursor to the {@code fromObject} method level.
      */
     private void exitOwnAttributeIteration() {
-        jsGenerator().exitBlock();
-        jsGenerator().exitBlock();
-        jsGenerator().exitBlock();
+        jsOutput().exitBlock();
+        jsOutput().exitBlock();
+        jsOutput().exitBlock();
     }
 
     /**

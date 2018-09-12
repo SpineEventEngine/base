@@ -20,7 +20,7 @@
 
 package io.spine.tools.protojs.field;
 
-import io.spine.tools.protojs.code.JsGenerator;
+import io.spine.tools.protojs.code.JsOutput;
 import io.spine.tools.protojs.given.Generators;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -43,7 +43,7 @@ class FieldHandlerTest {
 
     private static final String JS_OBJECT = "jsObject";
 
-    private JsGenerator jsGenerator;
+    private JsOutput jsOutput;
 
     private SingularFieldHandler singularHandler;
     private RepeatedFieldHandler repeatedHandler;
@@ -51,7 +51,7 @@ class FieldHandlerTest {
 
     @BeforeEach
     void setUp() {
-        jsGenerator = new JsGenerator();
+        jsOutput = new JsOutput();
         singularHandler = singularHandler();
         repeatedHandler = repeatedHandler();
         mapHandler = mapHandler();
@@ -147,18 +147,18 @@ class FieldHandlerTest {
     }
 
     private void assertGeneratedCodeContains(CharSequence setterCall) {
-        Generators.assertContains(jsGenerator, setterCall);
+        Generators.assertContains(jsOutput, setterCall);
     }
 
     private SingularFieldHandler singularHandler() {
-        return (SingularFieldHandler) FieldHandlers.createFor(singularField(), jsGenerator);
+        return (SingularFieldHandler) FieldHandlers.createFor(singularField(), jsOutput);
     }
 
     private RepeatedFieldHandler repeatedHandler() {
-        return (RepeatedFieldHandler) FieldHandlers.createFor(repeatedField(), jsGenerator);
+        return (RepeatedFieldHandler) FieldHandlers.createFor(repeatedField(), jsOutput);
     }
 
     private MapFieldHandler mapHandler() {
-        return (MapFieldHandler) FieldHandlers.createFor(mapField(), jsGenerator);
+        return (MapFieldHandler) FieldHandlers.createFor(mapField(), jsOutput);
     }
 }

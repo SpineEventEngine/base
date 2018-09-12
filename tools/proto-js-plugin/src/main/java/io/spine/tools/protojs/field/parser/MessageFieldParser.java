@@ -22,7 +22,7 @@ package io.spine.tools.protojs.field.parser;
 
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.tools.protojs.code.JsGenerator;
+import io.spine.tools.protojs.code.JsOutput;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.protojs.types.Types.typeWithProtoPrefix;
@@ -34,28 +34,28 @@ import static io.spine.tools.protojs.types.Types.typeWithProtoPrefix;
  * {@linkplain io.spine.tools.protojs.field.Fields#isWellKnownType(FieldDescriptor) types} which
  * are parsed separately.
  *
- * <p>The class is {@code public} for the test purposes.
+ * <p>The class is {@code public} only for test purposes.
  *
  * @author Dmytro Kuzmin
  */
 public final class MessageFieldParser implements FieldValueParser {
 
     private final FieldDescriptor field;
-    private final JsGenerator jsGenerator;
+    private final JsOutput jsOutput;
 
     /**
      * Creates the {@code MessageFieldParser} for the given {@code field}.
      *
-     * <p>All the generated code will be stored in the given {@code jsGenerator}.
+     * <p>All the generated code will be stored in the given {@code jsOutput}.
      *
      * @param field
      *         the descriptor of the field for which to create the parser
-     * @param jsGenerator
-     *         the {@code JsGenerator} which accumulates all the generated code
+     * @param jsOutput
+     *         the {@code JsOutput} which accumulates all the generated code
      */
-    MessageFieldParser(FieldDescriptor field, JsGenerator jsGenerator) {
+    MessageFieldParser(FieldDescriptor field, JsOutput jsOutput) {
         this.field = field;
-        this.jsGenerator = jsGenerator;
+        this.jsOutput = jsOutput;
     }
 
     /**
@@ -71,6 +71,6 @@ public final class MessageFieldParser implements FieldValueParser {
         checkNotNull(variable);
         Descriptor fieldType = field.getMessageType();
         String typeName = typeWithProtoPrefix(fieldType);
-        jsGenerator.addLine("let " + variable + " = " + typeName + ".fromObject(" + value + ");");
+        jsOutput.addLine("let " + variable + " = " + typeName + ".fromObject(" + value + ");");
     }
 }

@@ -22,11 +22,10 @@ package io.spine.tools.protojs.fromjson;
 
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.tools.protojs.code.JsGenerator;
+import io.spine.tools.protojs.code.JsOutput;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import spine.test.protojs.Fields.FieldContainer;
 
 import static io.spine.tools.protojs.given.Generators.assertContains;
 import static io.spine.tools.protojs.given.Given.file;
@@ -35,14 +34,14 @@ import static io.spine.tools.protojs.given.Given.file;
 class FromJsonGeneratorTest {
 
     private FileDescriptor file;
-    private JsGenerator jsGenerator;
+    private JsOutput jsOutput;
     private FromJsonGenerator generator;
 
     @BeforeEach
     void setUp() {
         file = file();
-        jsGenerator = new JsGenerator();
-        generator = new FromJsonGenerator(file, jsGenerator);
+        jsOutput = new JsOutput();
+        generator = new FromJsonGenerator(file, jsOutput);
     }
 
     @Test
@@ -73,6 +72,6 @@ class FromJsonGeneratorTest {
     }
 
     private void assertGeneratedCodeContains(String toSearch) {
-        assertContains(jsGenerator, toSearch);
+        assertContains(jsOutput, toSearch);
     }
 }

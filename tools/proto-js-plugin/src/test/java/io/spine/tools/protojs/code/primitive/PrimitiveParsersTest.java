@@ -20,7 +20,7 @@
 
 package io.spine.tools.protojs.code.primitive;
 
-import io.spine.tools.protojs.code.JsGenerator;
+import io.spine.tools.protojs.code.JsOutput;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,24 +32,24 @@ import static io.spine.tools.protojs.given.Given.int64Field;
 @DisplayName("PrimitiveParsers utility should")
 class PrimitiveParsersTest {
 
-    private JsGenerator jsGenerator;
+    private JsOutput jsOutput;
 
     @BeforeEach
     void setUp() {
-        jsGenerator = new JsGenerator();
+        jsOutput = new JsOutput();
     }
 
     @Test
     @DisplayName("create parser for primitive value")
     void createPrimitiveParser() {
-        PrimitiveParser parser = PrimitiveParsers.createFor(int64Field(), jsGenerator);
+        PrimitiveParser parser = PrimitiveParsers.createFor(int64Field(), jsOutput);
         assertInstanceOf(LongParser.class, parser);
     }
 
     @Test
     @DisplayName("create parser for enum value")
     void createEnumParser() {
-        PrimitiveParser parser = PrimitiveParsers.createFor(enumField(), jsGenerator);
+        PrimitiveParser parser = PrimitiveParsers.createFor(enumField(), jsOutput);
         assertInstanceOf(EnumParser.class, parser);
     }
 }

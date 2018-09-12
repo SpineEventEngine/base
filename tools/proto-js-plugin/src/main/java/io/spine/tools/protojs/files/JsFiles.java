@@ -37,7 +37,7 @@ import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
  * The utility for writing the JavaScript files.
  *
  * @author Dmytro Kuzmin
- * @see io.spine.tools.protojs.code.JsGenerator
+ * @see JsOutput
  */
 public final class JsFiles {
 
@@ -72,7 +72,7 @@ public final class JsFiles {
      * @param path
      *         the file path
      * @param output
-     *         the JS code to write
+     *         the {@code JsOutput} to write
      * @throws IllegalStateException
      *         if something went wrong when writing to the file
      */
@@ -93,7 +93,7 @@ public final class JsFiles {
      * @param path
      *         the file path
      * @param output
-     *         the JS code to append
+     *         the {@code JsOutput} to append
      * @throws IllegalStateException
      *         if something went wrong when writing to the file
      */

@@ -23,7 +23,6 @@ package io.spine.tools.protojs.fromjson;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.proto.FileSet;
-import io.spine.tools.protojs.code.JsGenerator;
 import io.spine.tools.protojs.code.JsOutput;
 
 import java.nio.file.Files;
@@ -36,7 +35,7 @@ import static io.spine.tools.protojs.files.JsFiles.jsFileName;
 import static io.spine.type.TypeUrl.GOOGLE_PROTOBUF_PACKAGE;
 
 /**
- * The inserter of the {@code fromJson(json)} method into existing JS Proto definitions.
+ * The inserter of the {@code fromJson(json)} method into the existing JS Proto definitions.
  *
  * <p>The class processes all the known types except the standard ones and Spine Options.
  *
@@ -109,11 +108,10 @@ public final class FromJsonWriter {
         if (!Files.exists(jsFilePath)) {
             return;
         }
-        JsGenerator jsGenerator = new JsGenerator();
-        FromJsonGenerator generator = new FromJsonGenerator(file, jsGenerator);
+        JsOutput jsOutput = new JsOutput();
+        FromJsonGenerator generator = new FromJsonGenerator(file, jsOutput);
         generator.generateJs();
-        JsOutput generatedCode = jsGenerator.getGeneratedCode();
-        appendToFile(jsFilePath, generatedCode);
+        appendToFile(jsFilePath, jsOutput);
     }
 
     /**

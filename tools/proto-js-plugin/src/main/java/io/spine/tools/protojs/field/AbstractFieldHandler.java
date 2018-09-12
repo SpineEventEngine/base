@@ -22,7 +22,7 @@ package io.spine.tools.protojs.field;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.tools.protojs.code.JsGenerator;
+import io.spine.tools.protojs.code.JsOutput;
 import io.spine.tools.protojs.field.checker.FieldValueChecker;
 import io.spine.tools.protojs.field.parser.FieldValueParser;
 
@@ -50,13 +50,13 @@ abstract class AbstractFieldHandler implements FieldHandler {
     private final FieldDescriptor field;
     private final FieldValueChecker checker;
     private final FieldValueParser parser;
-    private final JsGenerator jsGenerator;
+    private final JsOutput jsOutput;
 
     AbstractFieldHandler(Builder builder) {
         this.field = builder.field;
         this.checker = builder.checker;
         this.parser = builder.parser;
-        this.jsGenerator = builder.jsGenerator;
+        this.jsOutput = builder.jsOutput;
     }
 
     /**
@@ -93,8 +93,8 @@ abstract class AbstractFieldHandler implements FieldHandler {
         return field;
     }
 
-    JsGenerator jsGenerator() {
-        return jsGenerator;
+    JsOutput jsOutput() {
+        return jsOutput;
     }
 
     @VisibleForTesting
@@ -120,7 +120,7 @@ abstract class AbstractFieldHandler implements FieldHandler {
     private void merge(String value) {
         String setterFormat = mergeFormat();
         String setValue = format(setterFormat, value);
-        jsGenerator.addLine(setValue);
+        jsOutput.addLine(setValue);
     }
 
     /**
@@ -145,7 +145,7 @@ abstract class AbstractFieldHandler implements FieldHandler {
         private FieldDescriptor field;
         private FieldValueChecker checker;
         private FieldValueParser parser;
-        private JsGenerator jsGenerator;
+        private JsOutput jsOutput;
 
         B setField(FieldDescriptor field) {
             this.field = field;
@@ -162,8 +162,8 @@ abstract class AbstractFieldHandler implements FieldHandler {
             return self();
         }
 
-        B setJsGenerator(JsGenerator jsGenerator) {
-            this.jsGenerator = jsGenerator;
+        B setJsOutput(JsOutput jsOutput) {
+            this.jsOutput = jsOutput;
             return self();
         }
 

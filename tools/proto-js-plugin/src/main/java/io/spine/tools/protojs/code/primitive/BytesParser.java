@@ -59,9 +59,9 @@ final class BytesParser extends AbstractPrimitiveParser {
         checkNotNull(value);
         checkNotNull(variable);
         String importStatement = rawNamedImport(BASE64_LIB, BASE64_VAR);
-        jsGenerator().addLine(importStatement);
+        jsOutput().addLine(importStatement);
         String valueToByteArray = BASE64_VAR + ".toByteArray(" + value + ')';
-        jsGenerator().addLine("let " + variable + " = " + valueToByteArray + ';');
+        jsOutput().addLine("let " + variable + " = " + valueToByteArray + ';');
     }
 
     static Builder newBuilder() {

@@ -20,35 +20,20 @@
 
 package io.spine.tools.protojs.code;
 
-import com.google.common.annotations.VisibleForTesting;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import java.util.List;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import static java.lang.String.join;
-import static java.util.Collections.nCopies;
+@DisplayName("CodeLine should")
+class CodeLineTest {
 
-final class LineOfCode {
-
-    private static final String SPACE = " ";
-
-    private final String content;
-    private final int depth;
-
-    LineOfCode(String content, int depth) {
-        this.content = content;
-        this.depth = depth;
-    }
-
-    String printToString(int indent) {
-        int spacesCount = depth * indent;
-        List<String> indentSpaces = nCopies(spacesCount, SPACE);
-        String codeIndent = join("", indentSpaces);
-        String result = codeIndent + content;
-        return result;
-    }
-
-    @VisibleForTesting
-    int depth() {
-        return depth;
+    @Test
+    @DisplayName("inject spaces before code based on depth and indent")
+    void printToString() {
+        CodeLine codeLine = new CodeLine("content", 2);
+        String result = codeLine.printToString(2);
+        String expected = "    content";
+        assertEquals(expected, result);
     }
 }

@@ -23,7 +23,7 @@ package io.spine.tools.protojs.field.checker;
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.testing.UtilityClassTest;
-import io.spine.tools.protojs.code.JsGenerator;
+import io.spine.tools.protojs.code.JsOutput;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,7 +37,7 @@ import static io.spine.tools.protojs.given.Given.timestampField;
 @DisplayName("FieldValueCheckers utility should")
 class FieldValueCheckersTest extends UtilityClassTest<FieldValueCheckers> {
 
-    private JsGenerator jsGenerator;
+    private JsOutput jsOutput;
 
     FieldValueCheckersTest() {
         super(FieldValueCheckers.class);
@@ -50,27 +50,27 @@ class FieldValueCheckersTest extends UtilityClassTest<FieldValueCheckers> {
 
     @BeforeEach
     void setUp() {
-        jsGenerator = new JsGenerator();
+        jsOutput = new JsOutput();
     }
 
     @Test
     @DisplayName("create checker for primitive field")
     void createForPrimitive() {
-        FieldValueChecker checker = checkerFor(primitiveField(), jsGenerator);
+        FieldValueChecker checker = checkerFor(primitiveField(), jsOutput);
         assertInstanceOf(PrimitiveFieldChecker.class, checker);
     }
 
     @Test
     @DisplayName("create checker for message field")
     void createForMessage() {
-        FieldValueChecker checker = checkerFor(messageField(), jsGenerator);
+        FieldValueChecker checker = checkerFor(messageField(), jsOutput);
         assertInstanceOf(MessageFieldChecker.class, checker);
     }
 
     @Test
     @DisplayName("create message checker for standard type field")
     void createForWellKnown() {
-        FieldValueChecker checker = checkerFor(timestampField(), jsGenerator);
+        FieldValueChecker checker = checkerFor(timestampField(), jsOutput);
         assertInstanceOf(MessageFieldChecker.class, checker);
     }
 }

@@ -20,7 +20,7 @@
 
 package io.spine.tools.protojs.field.checker;
 
-import io.spine.tools.protojs.code.JsGenerator;
+import io.spine.tools.protojs.code.JsOutput;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,37 +37,37 @@ class FieldValueCheckerTest {
     private static final String FIELD_VALUE = "value";
     private static final String SETTER_FORMAT = "set(%s)";
 
-    private JsGenerator jsGenerator;
+    private JsOutput jsOutput;
 
     @BeforeEach
     void setUp() {
-        jsGenerator = new JsGenerator();
+        jsOutput = new JsOutput();
     }
 
     @Test
     @DisplayName("generate code to enter non-null check for primitive")
     void enterPrimitiveCheck() {
-        FieldValueChecker checker = checkerFor(primitiveField(), jsGenerator);
+        FieldValueChecker checker = checkerFor(primitiveField(), jsOutput);
         checker.performNullCheck(FIELD_VALUE, SETTER_FORMAT);
         String check = "if (" + FIELD_VALUE + " !== null)";
-        assertContains(jsGenerator, check);
+        assertContains(jsOutput, check);
     }
 
     @Test
     @DisplayName("generate code to enter null check for message")
     void enterMessageCheck() {
-        FieldValueChecker checker = checkerFor(messageField(), jsGenerator);
+        FieldValueChecker checker = checkerFor(messageField(), jsOutput);
         checker.performNullCheck(FIELD_VALUE, SETTER_FORMAT);
         String check = "if (" + FIELD_VALUE + " === null)";
-        assertContains(jsGenerator, check);
+        assertContains(jsOutput, check);
     }
 
     @Test
     @DisplayName("set field value to null in case of message")
     void setMessageToNull() {
-        FieldValueChecker checker = checkerFor(messageField(), jsGenerator);
+        FieldValueChecker checker = checkerFor(messageField(), jsOutput);
         checker.performNullCheck(FIELD_VALUE, SETTER_FORMAT);
         String setNull = format(SETTER_FORMAT, "null");
-        assertContains(jsGenerator, setNull);
+        assertContains(jsOutput, setNull);
     }
 }

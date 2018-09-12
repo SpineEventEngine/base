@@ -22,7 +22,6 @@ package io.spine.tools.protojs.knowntypes;
 
 import com.google.common.annotations.VisibleForTesting;
 import io.spine.code.proto.FileSet;
-import io.spine.tools.protojs.code.JsGenerator;
 import io.spine.tools.protojs.code.JsOutput;
 
 import java.nio.file.Path;
@@ -40,7 +39,7 @@ import static io.spine.tools.protojs.files.JsFiles.writeToFile;
  * <p>The JS type acquired from the map can then be used as a constructor or for the static method
  * call.
  *
- * <p>This is mainly useful for the {@link com.google.protobuf.Any} type processing whose value
+ * <p>This is mainly useful for the {@link com.google.protobuf.Any} values processing whose type
  * is not known until runtime.
  *
  * @author Dmytro Kuzmin
@@ -89,11 +88,10 @@ public final class KnownTypesWriter {
      *         if something goes wrong when recording the file
      */
     public void writeFile() {
-        JsGenerator jsGenerator = new JsGenerator(INDENT);
-        KnownTypesGenerator generator = new KnownTypesGenerator(fileSet, jsGenerator);
+        JsOutput jsOutput = new JsOutput(INDENT);
+        KnownTypesGenerator generator = new KnownTypesGenerator(fileSet, jsOutput);
         generator.generateJs();
-        JsOutput generatedCode = jsGenerator.getGeneratedCode();
-        writeToFile(filePath, generatedCode);
+        writeToFile(filePath, jsOutput);
     }
 
     /**

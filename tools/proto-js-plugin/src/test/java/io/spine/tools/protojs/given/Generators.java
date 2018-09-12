@@ -21,7 +21,6 @@
 package io.spine.tools.protojs.given;
 
 import io.spine.testing.Verify;
-import io.spine.tools.protojs.code.JsGenerator;
 import io.spine.tools.protojs.code.JsOutput;
 
 import static io.spine.testing.Verify.assertContains;
@@ -32,15 +31,13 @@ public final class Generators {
     private Generators() {
     }
 
-    public static void assertContains(JsGenerator jsGenerator, CharSequence toSearch) {
-        JsOutput generatedCode = jsGenerator.getGeneratedCode();
-        String codeString = generatedCode.toString();
+    public static void assertContains(JsOutput jsOutput, CharSequence toSearch) {
+        String codeString = jsOutput.toString();
         Verify.assertContains(toSearch, codeString);
     }
 
-    public static void assertNotContains(JsGenerator jsGenerator, CharSequence toSearch) {
-        JsOutput generatedCode = jsGenerator.getGeneratedCode();
-        String codeString = generatedCode.toString();
+    public static void assertNotContains(JsOutput jsOutput, CharSequence toSearch) {
+        String codeString = jsOutput.toString();
         Verify.assertNotContains(toSearch, codeString);
     }
 }

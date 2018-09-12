@@ -38,7 +38,7 @@ import com.google.protobuf.Timestamp;
 import com.google.protobuf.UInt32Value;
 import com.google.protobuf.UInt64Value;
 import com.google.protobuf.Value;
-import io.spine.tools.protojs.code.JsGenerator;
+import io.spine.tools.protojs.code.JsOutput;
 import io.spine.type.TypeUrl;
 
 import java.util.Map.Entry;
@@ -53,12 +53,10 @@ import static io.spine.type.TypeUrl.of;
  *
  * <p>The parsers may be used to parse JSON via their {@code parse(value)} method.
  *
- * <p>All the generated code is stored to the {@link JsGenerator} provided on construction.
- *
  * @apiNote
  * Like the other handlers and generators of this module, the {@code ParserMapGenerator} is meant
- * to operate on the common {@link io.spine.tools.protojs.code.JsGenerator} passed on construction
- * and thus its methods do not return any generated code.
+ * to operate on the common {@link JsOutput} passed on construction and thus its methods do not
+ * return any generated code.
  *
  * @author Dmytro Kuzmin
  * @see KnownTypeParsersWriter
@@ -82,18 +80,16 @@ public final class ParserMapGenerator {
      */
     private static final ImmutableMap<TypeUrl, String> parsers = parsers();
 
-    private final JsGenerator jsGenerator;
+    private final JsOutput jsOutput;
 
     /**
-     * Creates a new {@code ParserMapGenerator} for the given {@code jsGenerator}.
+     * Creates a new {@code ParserMapGenerator}.
      *
-     * <p>The {@code JsGenerator} will be used to create and store lines of JS code.
-     *
-     * @param jsGenerator
-     *         the {@code JsGenerator} which accumulates all the code
+     * @param jsOutput
+     *         the {@code JsOutput} which accumulates all the generated code
      */
-    ParserMapGenerator(JsGenerator jsGenerator) {
-        this.jsGenerator = jsGenerator;
+    ParserMapGenerator(JsOutput jsOutput) {
+        this.jsOutput = jsOutput;
     }
 
     /**
@@ -111,15 +107,15 @@ public final class ParserMapGenerator {
     }
 
     /**
-     * Stores known parser {@code Map} to the {@link #jsGenerator}.
+     * Stores known parser {@code Map} to the {@code jsOutput}.
      *
-     * <p>The name of the exported map is {@link #MAP_NAME}.
+     * <p>The name of the exported map is stored in the {@link #MAP_NAME}.
      */
     void generateJs() {
-        jsGenerator.addEmptyLine();
-        jsGenerator.exportMap(MAP_NAME);
+        jsOutput.addEmptyLine();
+        jsOutput.exportMap(MAP_NAME);
         storeParsersToMap();
-        jsGenerator.quitMapDeclaration();
+        jsOutput.quitMapDeclaration();
     }
 
     /**
@@ -140,7 +136,7 @@ public final class ParserMapGenerator {
      */
     private void addMapEntry(Entry<TypeUrl, String> typeToParser, boolean isLastEntry) {
         String mapEntry = jsMapEntry(typeToParser);
-        jsGenerator.addMapEntry(mapEntry, isLastEntry);
+        jsOutput.addMapEntry(mapEntry, isLastEntry);
     }
 
     /**

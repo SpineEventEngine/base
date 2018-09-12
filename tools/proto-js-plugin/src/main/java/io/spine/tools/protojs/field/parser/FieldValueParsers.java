@@ -21,7 +21,7 @@
 package io.spine.tools.protojs.field.parser;
 
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.tools.protojs.code.JsGenerator;
+import io.spine.tools.protojs.code.JsOutput;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.protojs.field.Fields.isMessage;
@@ -41,22 +41,20 @@ public final class FieldValueParsers {
     /**
      * Creates the {@code FieldValueParser} for the given field.
      *
-     * <p>All the generated code will be stored to the {@code jsGenerator}.
-     *
      * @param field
      *         the descriptor of the field to create the parser for
-     * @param jsGenerator
-     *         the {@code JsGenerator} to accumulate the generated code
+     * @param jsOutput
+     *         the {@code JsOutput} to accumulate the generated code
      * @return the {@code FieldValueParser} of the appropriate type
      */
-    public static FieldValueParser parserFor(FieldDescriptor field, JsGenerator jsGenerator) {
+    public static FieldValueParser parserFor(FieldDescriptor field, JsOutput jsOutput) {
         checkNotNull(field);
-        checkNotNull(jsGenerator);
+        checkNotNull(jsOutput);
         if (isMessage(field)) {
             return isWellKnownType(field)
-                    ? new WellKnownFieldParser(field, jsGenerator)
-                    : new MessageFieldParser(field, jsGenerator);
+                    ? new WellKnownFieldParser(field, jsOutput)
+                    : new MessageFieldParser(field, jsOutput);
         }
-        return new PrimitiveFieldParser(field, jsGenerator);
+        return new PrimitiveFieldParser(field, jsOutput);
     }
 }

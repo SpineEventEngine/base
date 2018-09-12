@@ -21,7 +21,6 @@
 package io.spine.tools.protojs.knowntypes;
 
 import com.google.common.annotations.VisibleForTesting;
-import io.spine.tools.protojs.code.JsGenerator;
 import io.spine.tools.protojs.code.JsOutput;
 
 import java.io.IOException;
@@ -134,11 +133,10 @@ public final class KnownTypeParsersWriter {
      * Generates and writes known type parsers map to the file.
      */
     private void writeParserMap() {
-        JsGenerator jsGenerator = new JsGenerator(INDENT);
-        ParserMapGenerator generator = new ParserMapGenerator(jsGenerator);
+        JsOutput jsOutput = new JsOutput(INDENT);
+        ParserMapGenerator generator = new ParserMapGenerator(jsOutput);
         generator.generateJs();
-        JsOutput generatedCode = jsGenerator.getGeneratedCode();
-        appendToFile(filePath, generatedCode);
+        appendToFile(filePath, jsOutput);
     }
 
     /**

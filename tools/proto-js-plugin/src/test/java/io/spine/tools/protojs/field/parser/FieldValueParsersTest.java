@@ -23,7 +23,7 @@ package io.spine.tools.protojs.field.parser;
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.testing.UtilityClassTest;
-import io.spine.tools.protojs.code.JsGenerator;
+import io.spine.tools.protojs.code.JsOutput;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,7 +37,7 @@ import static io.spine.tools.protojs.given.Given.timestampField;
 @DisplayName("FieldValueParsers utility should")
 class FieldValueParsersTest extends UtilityClassTest<FieldValueParsers> {
 
-    private JsGenerator jsGenerator;
+    private JsOutput jsOutput;
 
     FieldValueParsersTest() {
         super(FieldValueParsers.class);
@@ -50,27 +50,27 @@ class FieldValueParsersTest extends UtilityClassTest<FieldValueParsers> {
 
     @BeforeEach
     void setUp() {
-        jsGenerator = new JsGenerator();
+        jsOutput = new JsOutput();
     }
 
     @Test
     @DisplayName("create parser for primitive field")
     void createParserForPrimitive() {
-        FieldValueParser parser = parserFor(primitiveField(), jsGenerator);
+        FieldValueParser parser = parserFor(primitiveField(), jsOutput);
         assertInstanceOf(PrimitiveFieldParser.class, parser);
     }
 
     @Test
     @DisplayName("create parser for message field with custom type")
     void createParserForMessage() {
-        FieldValueParser parser = parserFor(messageField(), jsGenerator);
+        FieldValueParser parser = parserFor(messageField(), jsOutput);
         assertInstanceOf(MessageFieldParser.class, parser);
     }
 
     @Test
     @DisplayName("create parser for message field with standard type")
     void createParserForWellKnown() {
-        FieldValueParser parser = parserFor(timestampField(), jsGenerator);
+        FieldValueParser parser = parserFor(timestampField(), jsOutput);
         assertInstanceOf(WellKnownFieldParser.class, parser);
     }
 }

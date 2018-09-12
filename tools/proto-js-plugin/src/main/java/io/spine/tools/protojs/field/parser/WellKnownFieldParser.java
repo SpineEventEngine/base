@@ -22,7 +22,7 @@ package io.spine.tools.protojs.field.parser;
 
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.tools.protojs.code.JsGenerator;
+import io.spine.tools.protojs.code.JsOutput;
 import io.spine.tools.protojs.knowntypes.ParserMapGenerator;
 import io.spine.type.TypeUrl;
 
@@ -35,7 +35,7 @@ import static io.spine.tools.protojs.fromjson.FromJsonGenerator.PARSERS_IMPORT_N
  * <p>Well-known message types are those standard Protobuf types for which the predefined parsers
  * are present.
  *
- * <p>The class is {@code public} for the test purposes.
+ * <p>The class is {@code public} only for test purposes.
  *
  * @author Dmytro Kuzmin
  * @see io.spine.tools.protojs.knowntypes.KnownTypeParsersWriter
@@ -43,21 +43,21 @@ import static io.spine.tools.protojs.fromjson.FromJsonGenerator.PARSERS_IMPORT_N
 public final class WellKnownFieldParser implements FieldValueParser {
 
     private final FieldDescriptor field;
-    private final JsGenerator jsGenerator;
+    private final JsOutput jsOutput;
 
     /**
      * Creates a new {@code WellKnownFieldParser} for the given field.
      *
-     * <p>All the generated code will be accumulated in the given {@code jsGenerator}.
+     * <p>All the generated code will be accumulated in the given {@code jsOutput}.
      *
      * @param field
      *         the descriptor of the field to create the parser for
-     * @param jsGenerator
-     *         the {@code JsGenerator} to store the generated code
+     * @param jsOutput
+     *         the {@code JsOutput} to store the generated code
      */
-    WellKnownFieldParser(FieldDescriptor field, JsGenerator jsGenerator) {
+    WellKnownFieldParser(FieldDescriptor field, JsOutput jsOutput) {
         this.field = field;
-        this.jsGenerator = jsGenerator;
+        this.jsOutput = jsOutput;
     }
 
     /**
@@ -73,7 +73,7 @@ public final class WellKnownFieldParser implements FieldValueParser {
         Descriptor fieldType = field.getMessageType();
         TypeUrl typeUrl = TypeUrl.from(fieldType);
         String parserMap = PARSERS_IMPORT_NAME + '.' + ParserMapGenerator.MAP_NAME;
-        jsGenerator.addLine("let parser = " + parserMap + ".get('" + typeUrl + "');");
-        jsGenerator.addLine("let " + variable + " = parser.parse(" + value + ");");
+        jsOutput.addLine("let parser = " + parserMap + ".get('" + typeUrl + "');");
+        jsOutput.addLine("let " + variable + " = parser.parse(" + value + ");");
     }
 }

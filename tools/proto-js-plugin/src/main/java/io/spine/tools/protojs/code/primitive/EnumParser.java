@@ -43,7 +43,7 @@ final class EnumParser extends AbstractPrimitiveParser {
     public void parseIntoVariable(String value, String variable) {
         checkNotNull(value);
         checkNotNull(variable);
-        jsGenerator().addLine("let " + variable + " = " + enumType + '[' + value + "];");
+        jsOutput().addLine("let " + variable + " = " + enumType + '[' + value + "];");
     }
 
     static Builder newBuilder() {

@@ -22,7 +22,7 @@ package io.spine.tools.protojs.code.primitive;
 
 import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.tools.protojs.code.JsGenerator;
+import io.spine.tools.protojs.code.JsOutput;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -44,11 +44,11 @@ class PrimitiveParserTest {
     private static final String VALUE = "value";
     private static final String VARIABLE = "variable";
 
-    private JsGenerator jsGenerator;
+    private JsOutput jsOutput;
 
     @BeforeEach
     void setUp() {
-        jsGenerator = new JsGenerator();
+        jsOutput = new JsOutput();
     }
 
     @Test
@@ -57,7 +57,7 @@ class PrimitiveParserTest {
         PrimitiveParser parser = parserFor(int32Field());
         parser.parseIntoVariable(VALUE, VARIABLE);
         String parse = "let " + VARIABLE + " = " + VALUE;
-        assertContains(jsGenerator, parse);
+        assertContains(jsOutput, parse);
     }
 
     @Test
@@ -66,7 +66,7 @@ class PrimitiveParserTest {
         PrimitiveParser parser = parserFor(int64Field());
         parser.parseIntoVariable(VALUE, VARIABLE);
         String parse = "let " + VARIABLE + " = parseInt(" + VALUE + ')';
-        assertContains(jsGenerator, parse);
+        assertContains(jsOutput, parse);
     }
 
     @Test
@@ -75,7 +75,7 @@ class PrimitiveParserTest {
         PrimitiveParser parser = parserFor(floatField());
         parser.parseIntoVariable(VALUE, VARIABLE);
         String parse = "let " + VARIABLE + " = parseFloat(" + VALUE + ')';
-        assertContains(jsGenerator, parse);
+        assertContains(jsOutput, parse);
     }
 
     @Test
@@ -84,9 +84,9 @@ class PrimitiveParserTest {
         PrimitiveParser parser = parserFor(bytesField());
         parser.parseIntoVariable(VALUE, VARIABLE);
         String base64Import = rawNamedImport(BASE64_LIB, BASE64_VAR);
-        assertContains(jsGenerator, base64Import);
+        assertContains(jsOutput, base64Import);
         String parse = "let " + VARIABLE + " = " + BASE64_VAR + ".toByteArray(" + VALUE + ')';
-        assertContains(jsGenerator, parse);
+        assertContains(jsOutput, parse);
     }
 
     @Test
@@ -97,10 +97,10 @@ class PrimitiveParserTest {
         EnumDescriptor enumType = enumField().getEnumType();
         String typeName = typeWithProtoPrefix(enumType);
         String parse = "let " + VARIABLE + " = " + typeName + '[' + VALUE + ']';
-        assertContains(jsGenerator, parse);
+        assertContains(jsOutput, parse);
     }
 
     private PrimitiveParser parserFor(FieldDescriptor field) {
-        return PrimitiveParsers.createFor(field, jsGenerator);
+        return PrimitiveParsers.createFor(field, jsOutput);
     }
 }

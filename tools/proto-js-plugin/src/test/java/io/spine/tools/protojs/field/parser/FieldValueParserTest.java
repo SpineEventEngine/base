@@ -21,7 +21,7 @@
 package io.spine.tools.protojs.field.parser;
 
 import com.google.protobuf.Descriptors.Descriptor;
-import io.spine.tools.protojs.code.JsGenerator;
+import io.spine.tools.protojs.code.JsOutput;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,39 +39,39 @@ class FieldValueParserTest {
     private static final String VALUE = "value";
     private static final String VARIABLE = "variable";
 
-    private JsGenerator jsGenerator;
+    private JsOutput jsOutput;
 
     @BeforeEach
     void setUp() {
-        jsGenerator = new JsGenerator();
+        jsOutput = new JsOutput();
     }
 
     @Test
     @DisplayName("parse primitive field via predefined code")
     void parsePrimitive() {
-        FieldValueParser parser = parserFor(int64Field(), jsGenerator);
+        FieldValueParser parser = parserFor(int64Field(), jsOutput);
         parser.parseIntoVariable(VALUE, VARIABLE);
         String parse = "let " + VARIABLE + " = parseInt(" + VALUE + ')';
-        assertContains(jsGenerator, parse);
+        assertContains(jsOutput, parse);
     }
 
     @Test
     @DisplayName("parse message field with custom type via recursive call to fromObject")
     void parseMessage() {
-        FieldValueParser parser = parserFor(messageField(), jsGenerator);
+        FieldValueParser parser = parserFor(messageField(), jsOutput);
         parser.parseIntoVariable(VALUE, VARIABLE);
         Descriptor messageType = messageField().getMessageType();
         String type = typeWithProtoPrefix(messageType);
         String parse = "let " + VARIABLE + " = " + type + ".fromObject(" + VALUE + ')';
-        assertContains(jsGenerator, parse);
+        assertContains(jsOutput, parse);
     }
 
     @Test
     @DisplayName("parse message field with standard type via known type parser")
     void parseWellKnown() {
-        FieldValueParser parser = parserFor(timestampField(), jsGenerator);
+        FieldValueParser parser = parserFor(timestampField(), jsOutput);
         parser.parseIntoVariable(VALUE, VARIABLE);
         String parse = "let " + VARIABLE + " = parser.parse(" + VALUE + ')';
-        assertContains(jsGenerator, parse);
+        assertContains(jsOutput, parse);
     }
 }

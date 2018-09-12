@@ -20,7 +20,7 @@
 
 package io.spine.tools.protojs.field.checker;
 
-import io.spine.tools.protojs.code.JsGenerator;
+import io.spine.tools.protojs.code.JsOutput;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -36,16 +36,16 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public final class PrimitiveFieldChecker implements FieldValueChecker {
 
-    private final JsGenerator jsGenerator;
+    private final JsOutput jsOutput;
 
     /**
      * Creates a new {@code PrimitiveFieldChecker}.
      *
-     * @param jsGenerator
-     *         the {@code JsGenerator} which accumulates all the generated code
+     * @param jsOutput
+     *         the {@code JsOutput} which accumulates all the generated code
      */
-    PrimitiveFieldChecker(JsGenerator jsGenerator) {
-        this.jsGenerator = jsGenerator;
+    PrimitiveFieldChecker(JsOutput jsOutput) {
+        this.jsOutput = jsOutput;
     }
 
     /**
@@ -57,11 +57,11 @@ public final class PrimitiveFieldChecker implements FieldValueChecker {
     public void performNullCheck(String value, String setterFormat) {
         checkNotNull(value);
         checkNotNull(setterFormat);
-        jsGenerator.ifNotNull(value);
+        jsOutput.ifNotNull(value);
     }
 
     @Override
     public void exitNullCheck() {
-        jsGenerator.exitBlock();
+        jsOutput.exitBlock();
     }
 }

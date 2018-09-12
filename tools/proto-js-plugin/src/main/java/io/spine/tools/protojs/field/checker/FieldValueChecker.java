@@ -20,12 +20,14 @@
 
 package io.spine.tools.protojs.field.checker;
 
+import io.spine.tools.protojs.code.JsOutput;
+
 /**
  * The generator of the code which checks the proto field value.
  *
  * @apiNote
  * Like the other handlers and generators of this module, the {@code FieldValueChecker} is meant to
- * operate on the common {@link io.spine.tools.protojs.code.JsGenerator} passed on construction and
+ * operate on the common {@link JsOutput} passed on construction and
  * thus its methods do not return any generated code.
  *
  * @author Dmytro Kuzmin
