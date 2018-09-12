@@ -19,7 +19,8 @@
  */
 
 /**
- * Generate desc.
+ * The main classes for the {@link io.spine.tools.protojs.ProtoJsPlugin} as well as the plugin
+ * itself.
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault
