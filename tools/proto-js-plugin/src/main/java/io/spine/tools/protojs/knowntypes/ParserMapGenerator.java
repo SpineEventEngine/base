@@ -46,26 +46,70 @@ import java.util.Map.Entry;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.type.TypeUrl.of;
 
+/**
+ * The generator which creates standard type parsers JS {@code Map}.
+ *
+ * <p>Parsers are stored in the map in the "{@linkplain TypeUrl type-url}-to-parser" format.
+ *
+ * <p>The parsers may be used to parse JSON via their {@code parse(value)} method.
+ *
+ * <p>All the generated code is stored to the {@link JsGenerator} provided on construction.
+ *
+ * @author Dmytro Kuzmin
+ * @see KnownTypeParsersWriter
+ */
 @SuppressWarnings("OverlyCoupledClass")
-// Dependencies for listed known types.
+// Dependencies for listed Message types.
 public final class ParserMapGenerator {
 
+    /**
+     * The exported map name.
+     */
     public static final String MAP_NAME = "parsers";
 
+    /**
+     * The hard-coded map of known standard type parsers.
+     *
+     * <p>The map entry's value represents the JS type name of the parser.
+     *
+     * <p>Before adding the new entry to the map make sure the corresponding parser type is present
+     * in the {@code known_type_parsers.js} resource.
+     */
     private static final ImmutableMap<TypeUrl, String> parsers = parsers();
 
     private final JsGenerator jsGenerator;
 
+    /**
+     * Creates a new {@code ParserMapGenerator} for the given {@code jsGenerator}.
+     *
+     * <p>The {@code JsGenerator} will be used to create and store lines of JS code.
+     *
+     * @param jsGenerator
+     *         the {@code JsGenerator} which accumulates all the code
+     */
     ParserMapGenerator(JsGenerator jsGenerator) {
         this.jsGenerator = jsGenerator;
     }
 
+    /**
+     * Checks if the JSON parser for the following {@code TypeUrl} is available.
+     *
+     * @param typeUrl
+     *         the type url to check
+     * @return {@code true} if the parser for {@code TypeUrl} is present and {@code false}
+     *         otherwise
+     */
     public static boolean hasParser(TypeUrl typeUrl) {
         checkNotNull(typeUrl);
         boolean hasParser = parsers.containsKey(typeUrl);
         return hasParser;
     }
 
+    /**
+     * Stores known parsers {@code Map} to the {@link #jsGenerator}.
+     *
+     * <p>The name of the exported map is {@link #MAP_NAME}.
+     */
     void generateJs() {
         jsGenerator.addEmptyLine();
         jsGenerator.exportMap(MAP_NAME);
@@ -95,7 +139,7 @@ public final class ParserMapGenerator {
         return mapEntry;
     }
 
-    @SuppressWarnings("OverlyCoupledMethod") // Dependencies for listed known types.
+    @SuppressWarnings("OverlyCoupledMethod") // Dependencies for listed Message types.
     private static ImmutableMap<TypeUrl, String> parsers() {
         ImmutableMap<TypeUrl, String> jsParserNames = ImmutableMap
                 .<TypeUrl, String>builder()

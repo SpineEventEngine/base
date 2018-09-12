@@ -36,17 +36,18 @@ import static io.spine.tools.protojs.files.JsFiles.appendToFile;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 /**
- * The writer of the {@code known_type_parsers.js}.
+ * A class that generates and writes the JS file containing JSON parsers for standard Protobuf
+ * Message types.
  *
- * <p>This class generates and writes the file content to the disk.
+ * <p>The file receives name {@code known_type_parsers.js}.
  *
  * <p>The file contains the global JS {@code Map} of
  * <a href="https://developers.google.com/protocol-buffers/docs/proto3#json">standard Protobuf
  * type</a> parsers as well as their source code.
  *
- * <p>The parsers lay in the map in the "{@linkplain io.spine.type.TypeUrl type-url}-to-parser"
- * format. The acquired parser then can be used to parse the JSON value via the {@code parse(value)}
- * method.
+ * <p>The parsers are stored in the map in the
+ * "{@linkplain io.spine.type.TypeUrl type-url}-to-parser" format. The acquired parser then can be
+ * used to parse the JSON value via the {@code parse(value)} method.
  *
  * @author Dmytro Kuzmin
  * @see ParserMapGenerator

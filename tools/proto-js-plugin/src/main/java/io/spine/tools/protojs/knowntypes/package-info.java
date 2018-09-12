@@ -19,7 +19,7 @@
  */
 
 /**
- * Generate desc.
+ * The classes which generate the JS files working with Protobuf known types.
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault

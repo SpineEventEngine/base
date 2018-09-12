@@ -37,17 +37,21 @@ import static io.spine.tools.protojs.files.JsFiles.jsFileName;
 import static io.spine.tools.protojs.types.Types.typeWithProtoPrefix;
 
 /**
- * The generator of the {@code known_types.js} code.
+ * The generator of the global known types JS {@code Map}.
  *
- * <p>This class generates the global JS {@code Map} with all the known types written in the form
- * of "{@linkplain TypeUrl type-url}-to-JS-type".
+ * <p>This class generates the map with all the known types written in the form of
+ * "{@linkplain TypeUrl type-url}-to-JS-type", as well as the imports necessary to use JS types.
  *
  * <p>All the generated code is stored to the {@link JsGenerator} provided on construction.
  *
  * @author Dmytro Kuzmin
+ * @see KnownTypesWriter
  */
 final class KnownTypesGenerator {
 
+    /**
+     * The exported map name.
+     */
     private static final String MAP_NAME = "types";
 
     private final FileSet fileSet;
