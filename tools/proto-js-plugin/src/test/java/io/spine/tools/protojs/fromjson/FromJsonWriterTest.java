@@ -37,6 +37,7 @@ import java.util.Optional;
 
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static io.spine.tools.protojs.files.JsFiles.jsFileName;
+import static io.spine.tools.protojs.fromjson.FromJsonWriter.SPINE_OPTIONS_PROTO;
 import static io.spine.tools.protojs.given.Given.TASK_PROTO;
 import static io.spine.tools.protojs.given.Given.project;
 import static io.spine.tools.protojs.given.Writers.assertFileContains;
@@ -50,7 +51,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 @DisplayName("FromJsonWriter should")
 class FromJsonWriterTest {
 
-    private static final String OPTIONS_PROTO = "spine/options.proto";
     private static final String DESCRIPTOR_PROTO = "google/protobuf/descriptor.proto";
 
     private Path protoJsLocation;
@@ -97,7 +97,7 @@ class FromJsonWriterTest {
     @Test
     @DisplayName("skip standard types as well as `spine/options.proto`")
     void skipStandardAndOptions() {
-        FileDescriptor options = getFile(OPTIONS_PROTO);
+        FileDescriptor options = getFile(SPINE_OPTIONS_PROTO);
         Path optionsPath = writer.composeFilePath(options);
         assertFalse(exists(optionsPath));
 

@@ -35,9 +35,20 @@ import static io.spine.tools.protojs.files.JsFiles.appendToFile;
 import static io.spine.tools.protojs.files.JsFiles.jsFileName;
 import static io.spine.type.TypeUrl.GOOGLE_PROTOBUF_PACKAGE;
 
+/**
+ * The inserter of the {@code fromJson(json)} method into existing JS Proto definitions.
+ *
+ * <p>The class processes all the known types except the standard ones and Spine Options.
+ *
+ * <p>The method and all the related code is simply appended at the end of the JS file.
+ *
+ * @author Dmytro Kuzmin
+ * @see FromJsonGenerator
+ */
 public final class FromJsonWriter {
 
-    private static final String SPINE_OPTIONS_PROTO = "spine/options.proto";
+    @VisibleForTesting
+    static final String SPINE_OPTIONS_PROTO = "spine/options.proto";
 
     private final Path protoJsLocation;
     private final FileSet fileSet;
@@ -47,12 +58,28 @@ public final class FromJsonWriter {
         this.fileSet = fileSet;
     }
 
+    /**
+     * Creates new {@code FromJsonWriter}.
+     *
+     * @param protoJsLocation
+     *         the location to lookup JS Proto definitions
+     * @param fileSet
+     *         the {@code FileSet} containing all the known types
+     * @return the new {@code FromJsonWriter} instance
+     */
     public static FromJsonWriter createFor(Path protoJsLocation, FileSet fileSet) {
         checkNotNull(protoJsLocation);
         checkNotNull(fileSet);
         return new FromJsonWriter(protoJsLocation, fileSet);
     }
 
+    /**
+     * Writes the {@code fromJson(json)} method and related code into the JS Proto definitions.
+     *
+     * <p>Standard Google Protobuf types and Spine Options are skipped.
+     *
+     * <p>If the JS definition for the {@link FileDescriptor} is not found, the file is skipped.
+     */
     public void writeIntoFiles() {
         for (FileDescriptor file : fileSet.files()) {
             if (!isStandardOrSpineOptions(file)) {
@@ -62,6 +89,9 @@ public final class FromJsonWriter {
         }
     }
 
+    /**
+     * Calculates the supposed JS definition path for the given {@code FileDescriptor}.
+     */
     @VisibleForTesting
     Path composeFilePath(FileDescriptor file) {
         String jsFileName = jsFileName(file);

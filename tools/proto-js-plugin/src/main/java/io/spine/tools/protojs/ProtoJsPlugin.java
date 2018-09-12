@@ -50,7 +50,7 @@ import static io.spine.tools.protojs.files.ProjectFiles.testProtoJsLocation;
  * <p>This plugin currently relies on the set of hard-coded Gradle settings which have to be set to
  * the required values in the project willing to use the plugin. These settings are:
  * <ul>
- *     <li>Proto JS definitions path set to {@code ${projectDir}/proto/${sourceSet}/js"};
+ *     <li>JS Proto definitions path set to {@code ${projectDir}/proto/${sourceSet}/js"};
  *     <li><i>known_types.desc</i> file stored under the
  *         {@code "${projectDir}/build/descriptors/${task.sourceSet.name}/known_types.desc"};
  *     <li>CommonJS import style for all generated Proto definitions ({@code js {option
@@ -83,7 +83,7 @@ public class ProtoJsPlugin extends SpinePlugin {
      * Creates an {@code Action} to generate {@code fromJson} method for both main and test proto
      * definitions.
      *
-     * <p>The paths to Proto JS definitions location as well as {@code known_types.desc} -
+     * <p>The paths to JS Proto definitions location as well as {@code known_types.desc} -
      * the descriptor set file - are currently hard-coded.
      *
      * <p>See {@link io.spine.tools.protojs.files.ProjectFiles} for the expected configuration.

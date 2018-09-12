@@ -65,7 +65,7 @@ final class ProtoFromJsonWriter {
      * {@code descriptorSetFile} is used to acquire all the known types.
      *
      * @param protoJsLocation
-     *         the location of the Proto JS definitions
+     *         the location of the JS Proto definitions
      * @param descriptorSetFile
      *         the {@code File} object representing {@code known_types.desc}
      * @return the new instance of the {@code ProtoFromJsonWriter}

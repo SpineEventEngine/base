@@ -19,7 +19,8 @@
  */
 
 /**
- * Generate desc.
+ * The classes that insert the {@code fromJson(json)} method and all the related code to the JS
+ * Proto definitions.
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault

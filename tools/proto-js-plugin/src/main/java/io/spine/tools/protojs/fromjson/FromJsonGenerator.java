@@ -29,22 +29,63 @@ import io.spine.tools.protojs.message.MessageHandler;
 
 import static io.spine.tools.protojs.files.JsFiles.KNOWN_TYPE_PARSERS;
 
+/**
+ * The generator of the {@code fromJson(json)} method for the JS Proto definitions.
+ *
+ * <p>The class generates the {@code fromJson} method for each message declared in the
+ * {@link FileDescriptor}.
+ *
+ * <p>All the generated code is stored in the given {@link JsGenerator}.
+ *
+ * @author Dmytro Kuzmin
+ */
 public final class FromJsonGenerator {
 
+    /**
+     * The name of the {@code known_type_parsers.js} import.
+     */
     public static final String PARSERS_IMPORT_NAME = "known_type_parsers";
 
+    /**
+     * The comment inserted before the generated code.
+     */
     @VisibleForTesting
-    static final String COMMENT = "The code generated for parsing the Protobuf messages " +
-            "declared in this file from the JSON data.";
+    static final String COMMENT = "The code for parsing the Protobuf messages of this file from " +
+            "the JSON data.";
 
     private final FileDescriptor file;
     private final JsGenerator jsGenerator;
 
+    /**
+     * Creates the new {@code FromJsonGenerator} which will process the given file descriptor.
+     *
+     * <p>Passed {@code JsGenerator} is used to create and accumulate the JS code lines.
+     *
+     * @param file
+     *         the {@code FileDescriptor} whose messages to process
+     * @param jsGenerator
+     *         the {@code JsGenerator} to accumulate the JS code
+     */
     FromJsonGenerator(FileDescriptor file, JsGenerator jsGenerator) {
         this.file = file;
         this.jsGenerator = jsGenerator;
     }
 
+    /**
+     * Generates the {@code fromJson(json)} method and all the related code for each Message of the
+     * processed {@link #file}.
+     *
+     * <p>More specifically:
+     * <ol>
+     *     <li>Writes a comment explaining the generated code.
+     *     <li>Adds an import for the
+     *         {@linkplain io.spine.tools.protojs.knowntypes.KnownTypeParsersWriter known parsers}.
+     *     <li>Adds the {@code fromJson(json)} method for each Message which parses json string
+     *         into object.
+     *     <li>Adds the {@code fromObject(object)} method for each Message which parses the JS
+     *         object and creates a Message.
+     * </ol>
+     */
     void generateJs() {
         generateComment();
         generateParsersImport();
