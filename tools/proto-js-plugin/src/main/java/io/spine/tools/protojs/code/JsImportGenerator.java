@@ -22,18 +22,55 @@ package io.spine.tools.protojs.code;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+/**
+ * The helper that generates imports for the JS code.
+ *
+ * <p>Currently all imports are generated in the CommonJS style.
+ *
+ * @author Dmytro Kuzmin
+ */
 public final class JsImportGenerator {
 
+    /**
+     * The path to parent dir.
+     */
     private static final String PARENT_DIR = "../";
+
+    /**
+     * The path to the current dir.
+     */
     private static final String CURRENT_DIR = "./";
+
+    /**
+     * The path separator used for imports.
+     */
     private static final String PATH_SEPARATOR = "/";
 
+    /**
+     * The value which is prepended to every import.
+     *
+     * <p>In case of JS proto definitions, this prefix represents the path from the current file
+     * to the proto JS location root.
+     */
     private final String importPrefix;
 
     private JsImportGenerator(String importPrefix) {
         this.importPrefix = importPrefix;
     }
 
+    /**
+     * Creates a {@code JsImportGenerator} set to generate imports for the specified file.
+     *
+     * <p>The provided file path should be relative to the desired import root (e.g. sources root,
+     * generated protos root).
+     *
+     * <p>Unlike the Java {@link java.nio.file.Path}, the {@code filePath} must be split by the
+     * {@link #PATH_SEPARATOR} independently of OS as it represents the path inside the JS code.
+     *
+     * @param filePath
+     *         the file for which the imports will be generated
+     * @return the {@code JsImportGenerator} that will generate imports relatively to this file
+     */
     public static JsImportGenerator createFor(String filePath) {
         checkNotNull(filePath);
         String pathToRoot = composePathToRoot(filePath);
