@@ -23,11 +23,26 @@ package io.spine.tools.protojs.field;
 import com.google.common.annotations.VisibleForTesting;
 
 import static io.spine.tools.protojs.field.Fields.capitalizedName;
-import static io.spine.tools.protojs.message.MessageHandler.FROM_OBJECT_RETURN;
+import static io.spine.tools.protojs.message.MessageHandler.MESSAGE;
 
-public final class RepeatedFieldHandler extends AbstractFieldHandler {
+/**
+ * The handler of the Protobuf {@code repeated} fields.
+ *
+ * <p>The handler expects a JS object to always be a list, iterating over it and adding its values
+ * to the field.
+ *
+ * <p>Although the {@code map} fields are technically also {@code repeated}, they are not handled
+ * by this class.
+ *
+ * @author Dmytro Kuzmin
+ */
+final class RepeatedFieldHandler extends AbstractFieldHandler {
 
-    private static final String LIST_ITEM = "listItem";
+    /**
+     * The variable used to represent the list item during the JS object iteration.
+     */
+    @VisibleForTesting
+    static final String LIST_ITEM = "listItem";
 
     private RepeatedFieldHandler(Builder builder) {
         super(builder);
@@ -36,28 +51,45 @@ public final class RepeatedFieldHandler extends AbstractFieldHandler {
     @Override
     public void generateJs() {
         String jsObject = acquireJsObject();
-        String value = iterateListValues(jsObject);
-        setFieldValue(value);
+        iterateListValues(jsObject);
+        mergeFieldValue(LIST_ITEM);
         exitListValueIteration();
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The merge format for the {@code repeated} field is calling the {@code add...} method on
+     * the message field.
+     */
     @Override
-    String setterFormat() {
+    String mergeFormat() {
         String fieldName = capitalizedName(field());
         String addFunctionName = "add" + fieldName;
-        String addToListFormat = FROM_OBJECT_RETURN + '.' + addFunctionName + "(%s);";
+        String addToListFormat = MESSAGE + '.' + addFunctionName + "(%s);";
         return addToListFormat;
     }
 
+    /**
+     * Generates the code to iterate over given {@code jsObject} assuming it is a list.
+     *
+     * <p>Checks the value for not being {@code null} or {@code undefined}.
+     *
+     * @param jsObject the name of the variable holding the JS object to iterate
+     */
     @VisibleForTesting
-    String iterateListValues(String jsObject) {
+    void iterateListValues(String jsObject) {
         jsGenerator().ifNotNullOrUndefined(jsObject);
         jsGenerator().addLine(jsObject + ".forEach(");
         jsGenerator().increaseDepth();
         jsGenerator().enterBlock('(' + LIST_ITEM + ", index, array) =>");
-        return LIST_ITEM;
     }
 
+    /**
+     * Generates the code to exit all blocks entered during the JS object iteration.
+     *
+     * <p>Returns the cursor to the {@code fromObject} method level.
+     */
     @VisibleForTesting
     void exitListValueIteration() {
         jsGenerator().exitBlock();

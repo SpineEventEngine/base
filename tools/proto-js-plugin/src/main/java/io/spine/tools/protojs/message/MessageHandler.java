@@ -56,7 +56,7 @@ public class MessageHandler {
      * <p>This value represents the JS Proto message whose fields are parsed and set from the JS
      * object.
      */
-    public static final String FROM_OBJECT_RETURN = "msg";
+    public static final String MESSAGE = "msg";
 
     /**
      * The argument name of the {@code fromJson} method.
@@ -144,9 +144,9 @@ public class MessageHandler {
         jsGenerator.enterFunction(functionName, FROM_OBJECT_ARG);
         checkParsedObject();
         jsGenerator.addEmptyLine();
-        jsGenerator.addLine("let " + FROM_OBJECT_RETURN + " = new " + typeName + "();");
+        jsGenerator.addLine("let " + MESSAGE + " = new " + typeName + "();");
         handleMessageFields();
-        jsGenerator.returnValue(FROM_OBJECT_RETURN);
+        jsGenerator.returnValue(MESSAGE);
         jsGenerator.exitFunction();
     }
 
@@ -160,7 +160,7 @@ public class MessageHandler {
     }
 
     /**
-     * Generates the code necessary to parse and set the {@link #message} fields.
+     * Adds the code necessary to parse and set the {@link #message} fields.
      */
     @VisibleForTesting
     void handleMessageFields() {

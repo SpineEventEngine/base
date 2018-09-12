@@ -29,11 +29,25 @@ import io.spine.tools.protojs.field.parser.FieldValueParser;
 import static io.spine.tools.protojs.message.MessageHandler.FROM_OBJECT_ARG;
 import static java.lang.String.format;
 
+/**
+ * The base class for the {@link FieldHandler} implementations.
+ *
+ * <p>The class generates the JS code common for all kinds of field handlers including calling the
+ * {@linkplain FieldValueChecker field value checker} and the
+ * {@linkplain FieldValueParser field value parser} to check and parse the field value respectively.
+ *
+ * <p>All the generated code is stored in the {@link JsGenerator} passed on construction.
+ *
+ * @author Dmytro Kuzmin
+ */
 abstract class AbstractFieldHandler implements FieldHandler {
 
-    @SuppressWarnings("DuplicateStringLiteralInspection") // Duplication with unrelated module.
+    /**
+     * The name of the value parsed by the {@link FieldValueParser} and then used to set the field.
+     */
+    @SuppressWarnings("DuplicateStringLiteralInspection") // Random duplication.
     @VisibleForTesting
-    static final String FIELD_VALUE = "fieldValue";
+    static final String FIELD_VALUE = "value";
 
     private final FieldDescriptor field;
     private final FieldValueChecker checker;
@@ -47,16 +61,33 @@ abstract class AbstractFieldHandler implements FieldHandler {
         this.jsGenerator = builder.jsGenerator;
     }
 
+    /**
+     * Returns the corresponding field value of the {@code fromObject} method argument.
+     *
+     * @return the field value in the form of JS object
+     */
     String acquireJsObject() {
         String fieldJsonName = field.getJsonName();
         String jsObject = FROM_OBJECT_ARG + '.' + fieldJsonName;
         return jsObject;
     }
 
-    void setFieldValue(String value) {
-        checker.performNullCheck(value, setterFormat());
+    /**
+     * Generates the JS code necessary to merge the field value with the specified JS value.
+     *
+     * <p>"Merge" implies either setting the field value in case of singular field or adding the
+     * value to the {@code repeated}/{@code map} field.
+     *
+     * <p>The class descendants have to specify the desired action via overriding the
+     * {@link #mergeFormat()} method.
+     *
+     * @param value
+     *         the name of the variable containing JS value to set the field to
+     */
+    void mergeFieldValue(String value) {
+        checker.performNullCheck(value, mergeFormat());
         parser.parseIntoVariable(value, FIELD_VALUE);
-        callSetter(FIELD_VALUE);
+        merge(FIELD_VALUE);
         checker.exitNullCheck();
     }
 
@@ -78,14 +109,39 @@ abstract class AbstractFieldHandler implements FieldHandler {
         return parser;
     }
 
-    private void callSetter(String value) {
-        String setterFormat = setterFormat();
+    /**
+     * Generates the JS code which calls the field merge action on the specified value.
+     *
+     * <p>The value should already be in the appropriate form, i.e.
+     * {@linkplain FieldValueChecker checked} and {@linkplain FieldValueParser parsed}.
+     *
+     * @param value
+     *         the name of the variable with the value to be set
+     * @see #mergeFormat()
+     */
+    private void merge(String value) {
+        String setterFormat = mergeFormat();
         String setValue = format(setterFormat, value);
         jsGenerator.addLine(setValue);
     }
 
-    abstract String setterFormat();
+    /**
+     * Returns the format of the set/add action which can be used to merge the field value from
+     * the JS variable.
+     *
+     * <p>The format should have exactly one placeholder - {@code %s} - where the variable name
+     * will be inserted.
+     *
+     * @return the field merger format
+     */
+    abstract String mergeFormat();
 
+    /**
+     * The generic builder for the classes-descendants.
+     *
+     * @param <B>
+     *         the class of the Builder itself
+     */
     abstract static class Builder<B extends Builder<B>> {
 
         private FieldDescriptor field;
@@ -113,6 +169,9 @@ abstract class AbstractFieldHandler implements FieldHandler {
             return self();
         }
 
+        /**
+         * <strong>Must</strong> return {@code this} in classes-descendants.
+         */
         abstract B self();
 
         abstract AbstractFieldHandler build();

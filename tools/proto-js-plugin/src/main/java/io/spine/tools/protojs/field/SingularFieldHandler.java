@@ -21,9 +21,14 @@
 package io.spine.tools.protojs.field;
 
 import static io.spine.tools.protojs.field.Fields.capitalizedName;
-import static io.spine.tools.protojs.message.MessageHandler.FROM_OBJECT_RETURN;
+import static io.spine.tools.protojs.message.MessageHandler.MESSAGE;
 
-public final class SingularFieldHandler extends AbstractFieldHandler {
+/**
+ * The handler of the ordinary Protobuf field (i.e. non-{@code repeated} and non-{@code map}).
+ *
+ * @author Dmytro Kuzmin
+ */
+final class SingularFieldHandler extends AbstractFieldHandler {
 
     private SingularFieldHandler(Builder builder) {
         super(builder);
@@ -33,22 +38,40 @@ public final class SingularFieldHandler extends AbstractFieldHandler {
     public void generateJs() {
         String jsObject = acquireJsObject();
         checkNotUndefined(jsObject);
-        setFieldValue(jsObject);
+        mergeFieldValue(jsObject);
         exitUndefinedCheck();
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The merge format for a singular field is just calling the corresponding field setter on
+     * the message object.
+     */
     @Override
-    String setterFormat() {
+    String mergeFormat() {
         String fieldName = capitalizedName(field());
         String setterName = "set" + fieldName;
-        String setFieldFormat = FROM_OBJECT_RETURN + '.' + setterName + "(%s);";
+        String setFieldFormat = MESSAGE + '.' + setterName + "(%s);";
         return setFieldFormat;
     }
 
+    /**
+     * Generates the code which will check the provided {@code jsObject} for not being
+     * {@code undefined}.
+     *
+     * @param jsObject
+     *         the name of the variable which holds the JS object to check
+     */
     private void checkNotUndefined(String jsObject) {
         jsGenerator().ifNotUndefined(jsObject);
     }
 
+    /**
+     * Generates the code which exists all block entered when checking for undefined.
+     *
+     * <p>Returns the cursor to the {@code fromObject} method level.
+     */
     private void exitUndefinedCheck() {
         jsGenerator().exitBlock();
     }

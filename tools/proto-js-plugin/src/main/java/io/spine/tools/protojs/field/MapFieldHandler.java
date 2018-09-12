@@ -24,18 +24,40 @@ import com.google.common.annotations.VisibleForTesting;
 import io.spine.tools.protojs.field.parser.FieldValueParser;
 
 import static io.spine.tools.protojs.field.Fields.capitalizedName;
-import static io.spine.tools.protojs.message.MessageHandler.FROM_OBJECT_RETURN;
+import static io.spine.tools.protojs.message.MessageHandler.MESSAGE;
 
-public final class MapFieldHandler extends AbstractFieldHandler {
+/**
+ * The handler of the Protobuf {@code map} fields.
+ *
+ * <p>The handler expects a plain JS object as an input, treating its properties as the Protobuf
+ * map entries.
+ *
+ * @implNote
+ * This class holds the additional {@link #keyParser} which parses the map key from the JS object
+ * attribute.
+ *
+ * <p>This is necessary as all proto {@code map} keys are converted to {@code string}s in JSON.
+ *
+ * <p>The {@link #checker} and {@link #parser} from the superclass are used to process the proto
+ * {@code map} value before adding it to the map.
+ *
+ * @author Dmytro Kuzmin
+ */
+final class MapFieldHandler extends AbstractFieldHandler {
 
+    /**
+     * The variable holding the JS object own attribute during the iteration.
+     */
     @VisibleForTesting
     static final String ATTRIBUTE = "attribute";
 
+    /**
+     * The variable which contains the parsed {@code map}key by which we can add the value to the
+     * field.
+     */
     @VisibleForTesting
     static final String MAP_KEY = "mapKey";
 
-    // todo mention in doc somewhere that key and value of the matrix are also fields of 'Entry'
-    // message type, so they are processed by FieldValueParser too for this reason.
     private final FieldValueParser keyParser;
 
     private MapFieldHandler(Builder builder) {
@@ -48,24 +70,34 @@ public final class MapFieldHandler extends AbstractFieldHandler {
         String jsObject = acquireJsObject();
         String value = iterateOwnAttributes(jsObject);
         parseMapKey();
-        setFieldValue(value);
+        mergeFieldValue(value);
         exitOwnAttributeIteration();
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The merge format for the {@code map} field is getting the field through getter and then
+     * using the standard JS {@code Map.set} function on it.
+     */
     @Override
-    String setterFormat() {
+    String mergeFormat() {
         String fieldName = capitalizedName(field());
         String getMap = "get" + fieldName + "Map()";
         String setMapValue = "set(" + MAP_KEY + ", %s)";
-        String addToMapFormat = FROM_OBJECT_RETURN + '.' + getMap + '.' + setMapValue + ';';
+        String addToMapFormat = MESSAGE + '.' + getMap + '.' + setMapValue + ';';
         return addToMapFormat;
     }
 
-    @VisibleForTesting
-    void parseMapKey() {
-        keyParser.parseIntoVariable(ATTRIBUTE, MAP_KEY);
-    }
-
+    /**
+     * Generates the code to iterate own properties of the given JS object.
+     *
+     * <p>Checks the JS object to be not {@code null} or {@code undefined}.
+     *
+     * @param jsObject
+     *         the name of the variable holding the JS object to iterate
+     * @return the expression which represents the object property value
+     */
     @VisibleForTesting
     String iterateOwnAttributes(String jsObject) {
         jsGenerator().ifNotNullOrUndefined(jsObject);
@@ -75,11 +107,23 @@ public final class MapFieldHandler extends AbstractFieldHandler {
         return value;
     }
 
-    @VisibleForTesting
-    void exitOwnAttributeIteration() {
+    /**
+     * Generates the code to exit the own properties iteration.
+     *
+     * <p>Returns the cursor to the {@code fromObject} method level.
+     */
+    private void exitOwnAttributeIteration() {
         jsGenerator().exitBlock();
         jsGenerator().exitBlock();
         jsGenerator().exitBlock();
+    }
+
+    /**
+     * Generates the code which parses the proto {@linkplain #MAP_KEY map key} from the JS object
+     * {@linkplain #ATTRIBUTE attribute name}, which is always a {@code string}.
+     */
+    private void parseMapKey() {
+        keyParser.parseIntoVariable(ATTRIBUTE, MAP_KEY);
     }
 
     @VisibleForTesting

@@ -82,21 +82,21 @@ public final class Fields {
         return isMap;
     }
 
-    public static FieldDescriptor keyDescriptor(FieldDescriptor field) {
+    static FieldDescriptor keyDescriptor(FieldDescriptor field) {
         checkState(isMap(field), "Trying to get key descriptor for the non-map field.");
         FieldDescriptor descriptor = field.getMessageType()
                                           .findFieldByName(MAP_ENTRY_KEY);
         return descriptor;
     }
 
-    public static FieldDescriptor valueDescriptor(FieldDescriptor field) {
+    static FieldDescriptor valueDescriptor(FieldDescriptor field) {
         checkState(isMap(field), "Trying to get value descriptor for the non-map field.");
         FieldDescriptor descriptor = field.getMessageType()
                                           .findFieldByName(MAP_ENTRY_VALUE);
         return descriptor;
     }
 
-    public static String capitalizedName(FieldDescriptor field) {
+    static String capitalizedName(FieldDescriptor field) {
         checkNotNull(field);
         FieldDescriptorProto proto = field.toProto();
         String capitalizedName = FieldName.of(proto)

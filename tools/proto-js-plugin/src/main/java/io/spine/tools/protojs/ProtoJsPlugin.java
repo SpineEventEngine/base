@@ -86,7 +86,7 @@ public class ProtoJsPlugin extends SpinePlugin {
      * <p>The paths to the JS proto definitions location, as well as to {@code known_types.desc} -
      * the descriptor set file - are currently hard-coded.
      *
-     * <p>See {@link io.spine.tools.protojs.files.ProjectFiles} for the expected configuration.
+     * <p>See io.spine.tools.protojs.files.ProjectFiles} for the expected configuration.
      */
     private static Action<Task> newAction(Project project) {
         return task -> generateFromJsonForProto(project);

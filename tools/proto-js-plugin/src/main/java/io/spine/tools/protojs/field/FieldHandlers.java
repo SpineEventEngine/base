@@ -33,6 +33,10 @@ import static io.spine.tools.protojs.field.Fields.valueDescriptor;
 import static io.spine.tools.protojs.field.checker.FieldValueCheckers.checkerFor;
 import static io.spine.tools.protojs.field.parser.FieldValueParsers.parserFor;
 
+// * <p>This class has the different logic of checking and parsing the field value comparing to other
+// * handlers. As the {@code map} field always has predefined {@code ...Entry} type as its message
+//        * type, the {@link #checker} and {@link #parser} from superclass are created for the
+//        *
 public final class FieldHandlers {
 
     private FieldHandlers() {

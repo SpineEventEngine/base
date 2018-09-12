@@ -31,6 +31,7 @@ import static io.spine.tools.protojs.field.AbstractFieldHandler.FIELD_VALUE;
 import static io.spine.tools.protojs.field.Fields.capitalizedName;
 import static io.spine.tools.protojs.field.MapFieldHandler.ATTRIBUTE;
 import static io.spine.tools.protojs.field.MapFieldHandler.MAP_KEY;
+import static io.spine.tools.protojs.field.RepeatedFieldHandler.LIST_ITEM;
 import static io.spine.tools.protojs.given.Given.mapField;
 import static io.spine.tools.protojs.given.Given.repeatedField;
 import static io.spine.tools.protojs.given.Given.singularField;
@@ -71,10 +72,10 @@ class FieldHandlerTest {
         @Test
         @DisplayName("JS list items in case of repeated field")
         void repeated() {
-            String listItem = repeatedHandler.iterateListValues(JS_OBJECT);
+            repeatedHandler.iterateListValues(JS_OBJECT);
             String forEach = JS_OBJECT + ".forEach";
             assertGeneratedCodeContains(forEach);
-            String forEachVariables = '(' + listItem + ", index, array)";
+            String forEachVariables = '(' + LIST_ITEM + ", index, array)";
             assertGeneratedCodeContains(forEachVariables);
         }
 

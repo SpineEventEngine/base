@@ -131,9 +131,6 @@ final class ProtoFromJsonWriter {
         writer.writeIntoFiles();
     }
 
-    /**
-     * Exists only for testing purposes.
-     */
     @VisibleForTesting
     FileSet fileSet() {
         return fileSet;
@@ -141,7 +138,7 @@ final class ProtoFromJsonWriter {
 
     /**
      * Collects the {@code FileSet} from the given descriptor set file, returns
-     * {@linkplain FileSet#newInstance() empty} file set in case the file does not exist./
+     * {@linkplain FileSet#newInstance() empty} file set in case the file does not exist.
      */
     private static FileSet collectFileSet(File descriptorSetFile) {
         if (descriptorSetFile.exists()) {
