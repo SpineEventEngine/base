@@ -62,7 +62,7 @@ public final class FromJsonWriter {
      * Creates new {@code FromJsonWriter}.
      *
      * @param protoJsLocation
-     *         the location to lookup JS Proto definitions
+     *         the location to lookup JS proto definitions
      * @param fileSet
      *         the {@code FileSet} containing all the known types
      * @return the new {@code FromJsonWriter} instance
@@ -74,7 +74,7 @@ public final class FromJsonWriter {
     }
 
     /**
-     * Writes the {@code fromJson(json)} method and related code into the JS Proto definitions.
+     * Writes the {@code fromJson(json)} method and related code into the JS proto definitions.
      *
      * <p>Standard Google Protobuf types and Spine Options are skipped.
      *
@@ -83,10 +83,37 @@ public final class FromJsonWriter {
     public void writeIntoFiles() {
         for (FileDescriptor file : fileSet.files()) {
             if (!isStandardOrSpineOptions(file)) {
-                Path jsFilePath = composeFilePath(file);
-                writeIntoFile(file, jsFilePath);
+                writeIntoFile(file);
             }
         }
+    }
+
+    /**
+     * Checks if the proto {@code file} belongs to the Standard proto types or is a
+     * {@linkplain #SPINE_OPTIONS_PROTO Spine Options file}.
+     */
+    @VisibleForTesting
+    public static boolean isStandardOrSpineOptions(FileDescriptor file) {
+        boolean isStandardType = file.getPackage()
+                                     .startsWith(GOOGLE_PROTOBUF_PACKAGE);
+        boolean isSpineOptions = SPINE_OPTIONS_PROTO.equals(file.getFullName());
+        return isStandardType || isSpineOptions;
+    }
+
+    /**
+     * Generates the {@code fromJson} code for the given {@code file} and appends it to the
+     * corresponding JS file.
+     */
+    private void writeIntoFile(FileDescriptor file) {
+        Path jsFilePath = composeFilePath(file);
+        if (!Files.exists(jsFilePath)) {
+            return;
+        }
+        JsGenerator jsGenerator = new JsGenerator();
+        FromJsonGenerator generator = new FromJsonGenerator(file, jsGenerator);
+        generator.generateJs();
+        JsOutput generatedCode = jsGenerator.getGeneratedCode();
+        appendToFile(jsFilePath, generatedCode);
     }
 
     /**
@@ -97,24 +124,5 @@ public final class FromJsonWriter {
         String jsFileName = jsFileName(file);
         Path path = Paths.get(protoJsLocation.toString(), jsFileName);
         return path;
-    }
-
-    @VisibleForTesting
-    public static boolean isStandardOrSpineOptions(FileDescriptor file) {
-        boolean isStandardType = file.getPackage()
-                                     .startsWith(GOOGLE_PROTOBUF_PACKAGE);
-        boolean isSpineOptions = SPINE_OPTIONS_PROTO.equals(file.getFullName());
-        return isStandardType || isSpineOptions;
-    }
-
-    private static void writeIntoFile(FileDescriptor file, Path filePath) {
-        if (!Files.exists(filePath)) {
-            return;
-        }
-        JsGenerator jsGenerator = new JsGenerator();
-        FromJsonGenerator generator = new FromJsonGenerator(file, jsGenerator);
-        generator.generateJs();
-        JsOutput generatedCode = jsGenerator.getGeneratedCode();
-        appendToFile(filePath, generatedCode);
     }
 }

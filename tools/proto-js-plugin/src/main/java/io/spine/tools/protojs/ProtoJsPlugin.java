@@ -37,23 +37,23 @@ import static io.spine.tools.protojs.files.ProjectFiles.testDescriptorSetFile;
 import static io.spine.tools.protojs.files.ProjectFiles.testProtoJsLocation;
 
 /**
- * The Gradle plugin which generates code to parse JavaScript proto definitions from the JSON
+ * The Gradle plugin which generates the code to parse JavaScript proto definitions from the JSON
  * format.
  *
- * <p>To run the plugin add the {@code "io.spine.tools:spine-proto-js-plugin:$spineBaseVersion"} to
- * {@code classpath} configuration and also add
+ * <p>To run the plugin, add the {@code "io.spine.tools:spine-proto-js-plugin:$spineBaseVersion"}
+ * to the {@code classpath} configuration and add
  * {@code apply plugin: 'io.spine.tools.proto-js-plugin'} to the module generating JS protos.
  *
  * <p>The tool will insert {@code fromJson(json)} method for every JS message definition found
  * among the {@linkplain io.spine.code.proto.FileSet known types}.
  *
- * <p>This plugin currently relies on the set of hard-coded Gradle settings which have to be set to
- * the required values in the project willing to use the plugin. These settings are:
+ * <p>This plugin currently relies on the set of the hard-coded Gradle settings which have to be
+ * set to the required values in a project willing to use the plugin. These settings are:
  * <ul>
- *     <li>JS Proto definitions path set to {@code ${projectDir}/proto/${sourceSet}/js"};
+ *     <li>JS proto definitions path set to {@code ${projectDir}/proto/${sourceSet}/js"};
  *     <li><i>known_types.desc</i> file stored under the
  *         {@code "${projectDir}/build/descriptors/${task.sourceSet.name}/known_types.desc"};
- *     <li>CommonJS import style for all generated Proto definitions ({@code js {option
+ *     <li>CommonJS import style for all generated proto definitions ({@code js {option
  *     "import_style=commonjs"}});
  *     <li>{@code compileProtoToJs} task available in the project.
  * </ul>
@@ -63,7 +63,7 @@ import static io.spine.tools.protojs.files.ProjectFiles.testProtoJsLocation;
  *
  * <p>The {@code build.gradle} file located under the {@code test/resources} folder of this module
  * contains the configuration of the project to which the plugin can be successfully applied. It
- * can be used then as an example.
+ * can thus be used as an example.
  *
  * @author Dmytro Kuzmin
  */
@@ -83,7 +83,7 @@ public class ProtoJsPlugin extends SpinePlugin {
      * Creates an {@code Action} to generate {@code fromJson} method for both main and test proto
      * definitions.
      *
-     * <p>The paths to JS Proto definitions location as well as {@code known_types.desc} -
+     * <p>The paths to the JS proto definitions location, as well as to {@code known_types.desc} -
      * the descriptor set file - are currently hard-coded.
      *
      * <p>See {@link io.spine.tools.protojs.files.ProjectFiles} for the expected configuration.
@@ -109,6 +109,12 @@ public class ProtoJsPlugin extends SpinePlugin {
         generateFor(protoJsLocation, descriptorSetFile);
     }
 
+    /**
+     * Generates JSON-parsing code for the proto definitions in the specified
+     * {@code descriptorSetFile}.
+     *
+     * <p>The {@code protoJsLocation} is a root folder of the generated proto JS files.
+     */
     private static void generateFor(Path protoJsLocation, File descriptorSetFile) {
         ProtoFromJsonWriter writer = createFor(protoJsLocation, descriptorSetFile);
         if (writer.hasFilesToProcess()) {

@@ -90,7 +90,7 @@ public enum KnownTypes {
      * Retrieves a Java class name generated for the Protobuf type by its type URL
      * to be used to parse {@link Message Message} from {@link Any}.
      *
-     * @param typeUrl {@link Any} type url
+     * @param typeUrl {@link Any} type URL
      * @return Java class name
      * @throws UnknownTypeException if there is no such type known to the application
      */

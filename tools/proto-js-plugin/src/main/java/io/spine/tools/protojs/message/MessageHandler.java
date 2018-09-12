@@ -36,7 +36,7 @@ import static io.spine.tools.protojs.types.Types.typeWithProtoPrefix;
  * The generator of the {@code fromJson(json)} method for the given message.
  *
  * <p>The class also generates {@code fromObject(obj)} method which is used inside {@code fromJson}
- * and can be called to parse the JS Proto message from the JS object.
+ * and can be called to parse the JS proto message from the JS object.
  *
  * <p>The class is effectively {@code final} and is left non-{@code final} only for testing
  * purposes.

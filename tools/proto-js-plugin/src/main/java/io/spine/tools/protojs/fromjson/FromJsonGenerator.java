@@ -92,12 +92,21 @@ public final class FromJsonGenerator {
         generateMethods();
     }
 
+    /**
+     * Generates comment explaining the generated code.
+     */
     @VisibleForTesting
     void generateComment() {
         jsGenerator.addEmptyLine();
         jsGenerator.addComment(COMMENT);
     }
 
+    /**
+     * Generates the {@link io.spine.tools.protojs.knowntypes.KnownTypeParsersWriter
+     * known_type_parsers.js} import.
+     *
+     * <p>The import path is relative to the stored {@link #file}.
+     */
     @VisibleForTesting
     void generateParsersImport() {
         jsGenerator.addEmptyLine();
@@ -107,6 +116,9 @@ public final class FromJsonGenerator {
         jsGenerator.addLine(parsersImport);
     }
 
+    /**
+     * Generates the {@code fromJson(json)} and {@code fromObject(obj)} methods.
+     */
     @VisibleForTesting
     void generateMethods() {
         for (Descriptor message : file.getMessageTypes()) {

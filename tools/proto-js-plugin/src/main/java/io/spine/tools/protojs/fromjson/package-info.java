@@ -20,7 +20,7 @@
 
 /**
  * The classes that insert the {@code fromJson(json)} method and all the related code to the JS
- * Proto definitions.
+ * proto definitions.
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault

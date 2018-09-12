@@ -35,13 +35,13 @@ import java.nio.file.Path;
  * <p>This class generates and writes JS code to the files processed by the plugin, more
  * specifically:
  * <ol>
- *     <li>Writes all known types to the {@code known_types.js} file in Proto JS location root.
+ *     <li>Writes all known types to the {@code known_types.js} file in proto JS location root.
  *         The types are stored in a global {@code Map} in the
  *         "{@linkplain io.spine.type.TypeUrl type-url}-to-JS-type" format.
  *     <li>Writes all standard type parsers to the {@code known_type_parsers.js} file in Proto
  *         JS location root. The parsers are stored in a global {@code Map} in the
  *         "type-url-to-parser" format.
- *     <li>Appends {@code fromJson(json)} method to all Proto JS files, one for each message stored
+ *     <li>Appends {@code fromJson(json)} method to all proto JS files, one for each message stored
  *         in a file.
  * </ol>
  *
@@ -61,11 +61,11 @@ final class ProtoFromJsonWriter {
      * Creates the {@code ProtoFromJsonWriter} for the specified {@code protoJsLocation} and
      * {@code descriptorSetFile}.
      *
-     * <p>The {@code protoJsLocation} will be used to look for the Proto JS files and the
+     * <p>The {@code protoJsLocation} will be used to look for the proto JS files and the
      * {@code descriptorSetFile} is used to acquire all the known types.
      *
      * @param protoJsLocation
-     *         the location of the JS Proto definitions
+     *         the location of the JS proto definitions
      * @param descriptorSetFile
      *         the {@code File} object representing {@code known_types.desc}
      * @return the new instance of the {@code ProtoFromJsonWriter}
@@ -86,7 +86,7 @@ final class ProtoFromJsonWriter {
     }
 
     /**
-     * Generates and writes the JS code necessary to parse Proto JS messages from the JSON format.
+     * Generates and writes the JS code necessary to parse proto JS messages from the JSON format.
      */
     void writeFromJsonForProtos() {
         writeKnownTypes();
@@ -100,7 +100,7 @@ final class ProtoFromJsonWriter {
      * <p>The types in map are stored in the
      * "{@linkplain io.spine.type.TypeUrl type-url}-to-JS-type" format.
      *
-     * <p>The file is written to the root of the Proto JS location.
+     * <p>The file is written to the root of the proto JS location.
      */
     @VisibleForTesting
     void writeKnownTypes() {
@@ -114,7 +114,7 @@ final class ProtoFromJsonWriter {
      * <p>The parsers can be accessed via a global map, where they are stored in the
      * "{@linkplain io.spine.type.TypeUrl type-url}-to-parser" format.
      *
-     * <p>The file is written to the root of the Proto JS location.
+     * <p>The file is written to the root of the proto JS location.
      */
     @VisibleForTesting
     void writeKnownTypeParsers() {
@@ -123,7 +123,7 @@ final class ProtoFromJsonWriter {
     }
 
     /**
-     * Writes {@code fromJson(json)} method into all files containing Proto messages definitions.
+     * Writes {@code fromJson(json)} method into all files containing proto messages definitions.
      */
     @VisibleForTesting
     void writeFromJsonMethod() {
@@ -131,6 +131,9 @@ final class ProtoFromJsonWriter {
         writer.writeIntoFiles();
     }
 
+    /**
+     * Exists only for testing purposes.
+     */
     @VisibleForTesting
     FileSet fileSet() {
         return fileSet;

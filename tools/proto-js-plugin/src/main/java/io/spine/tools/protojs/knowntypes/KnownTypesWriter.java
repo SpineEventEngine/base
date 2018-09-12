@@ -48,6 +48,9 @@ import static io.spine.tools.protojs.files.JsFiles.writeToFile;
  */
 public final class KnownTypesWriter {
 
+    /**
+     * The indent for the generated code.
+     */
     private static final int INDENT = 4;
 
     private final Path filePath;
@@ -65,7 +68,7 @@ public final class KnownTypesWriter {
      * {@code protoJsLocation} will be used to determine the {@code known_types.js} file path.
      *
      * @param protoJsLocation
-     *         the root of the Proto JS files location
+     *         the root of the proto JS files location
      * @param fileSet
      *         the {@code FileSet} containing known types
      * @return the new {@code KnownTypesWriter}
@@ -80,7 +83,7 @@ public final class KnownTypesWriter {
     /**
      * Generates the content of the {@code known_types.js} file and stores it to disk.
      *
-     * <p>The file is written to the root of the Proto JS location.
+     * <p>The file is written to the root of the proto JS location.
      *
      * @throws IllegalStateException
      *         if something goes wrong when recording the file

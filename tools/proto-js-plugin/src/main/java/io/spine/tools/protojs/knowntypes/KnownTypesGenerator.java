@@ -61,7 +61,7 @@ final class KnownTypesGenerator {
      * Creates a new {@code KnownTypesGenerator}.
      *
      * <p>All the known types will be acquired from the {@code fileSet} and the {@code jsGenerator}
-     * creates and accumulates JS code lines.
+     * accumulates the JS code lines.
      *
      * @param fileSet
      *         the {@code FileSet} containing all the known types
@@ -74,12 +74,12 @@ final class KnownTypesGenerator {
     }
 
     /**
-     * Generates known types code.
+     * Generates the known types code.
      *
      * <p>The code includes:
      * <ol>
-     *     <li>Imports of all files declaring Proto JS messages
-     *     <li>Known types map itself
+     *     <li>Imports of all files declaring proto JS messages
+     *     <li>The global JS {@code Map}
      * </ol>
      *
      * <p>The generated code is accumulated in the {@link #jsGenerator}.
@@ -90,7 +90,7 @@ final class KnownTypesGenerator {
     }
 
     /**
-     * Generates import statements for all files declaring Proto JS messages.
+     * Generates import statements for all files declaring proto JS messages.
      *
      * <p>Imports are written in the CommonJS style ({@code "require('./lib')"}).
      */
@@ -106,7 +106,7 @@ final class KnownTypesGenerator {
     /**
      * Generates the JS {@code Map} of known types.
      *
-     * <p>Map entries are known types stored in the "{@linkplain TypeUrl type-url}-to-JS-type
+     * <p>Map entries are known types stored in the "{@linkplain TypeUrl type-url}-to-JS-type"
      * format.
      *
      * <p>The map is exported under the {@link #MAP_NAME}.
@@ -119,6 +119,12 @@ final class KnownTypesGenerator {
         jsGenerator.quitMapDeclaration();
     }
 
+    /**
+     * Generates an import for the JS file corresponding to the specified {@code FileDescriptor}.
+     *
+     * <p>The passed {@code importGenerator} should be initialized with the file that performs the
+     * import.
+     */
     private void generateImport(JsImportGenerator importGenerator, FileDescriptor file) {
         String jsFileName = jsFileName(file);
         List<Descriptor> declaredMessages = file.getMessageTypes();
@@ -128,6 +134,9 @@ final class KnownTypesGenerator {
         }
     }
 
+    /**
+     * Stores known types to the declared JS {@code Map}.
+     */
     private void storeKnownTypes() {
         Collection<FileDescriptor> files = fileSet.getFileDescriptors();
         for (Iterator<FileDescriptor> it = files.iterator(); it.hasNext(); ) {
@@ -137,6 +146,9 @@ final class KnownTypesGenerator {
         }
     }
 
+    /**
+     * Stores all message types declared in a file as known types JS {@code Map} entries.
+     */
     private void storeTypesFromFile(FileDescriptor file, boolean isLastFile) {
         List<Descriptor> messages = file.getMessageTypes();
         for (Iterator<Descriptor> it = messages.iterator(); it.hasNext(); ) {
@@ -146,11 +158,19 @@ final class KnownTypesGenerator {
         }
     }
 
+    /**
+     * Converts the {@code message} to the JS {@code Map} entry and adds it to the
+     * {@link #jsGenerator}.
+     */
     private void addMapEntry(Descriptor message, boolean isLastMessage) {
         String mapEntry = jsMapEntry(message);
         jsGenerator.addMapEntry(mapEntry, isLastMessage);
     }
 
+    /**
+     * Obtains type URL and JS type name of the {@code message} and creates a JS {@code Map} entry
+     * of the "{@linkplain TypeUrl type-url}-to-JS-type" format.
+     */
     private static String jsMapEntry(Descriptor message) {
         TypeUrl typeUrl = TypeUrl.from(message);
         String typeName = typeWithProtoPrefix(message);

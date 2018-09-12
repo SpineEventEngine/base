@@ -95,7 +95,7 @@ public final class ParserMapGenerator {
      * Checks if the JSON parser for the following {@code TypeUrl} is available.
      *
      * @param typeUrl
-     *         the type url to check
+     *         the type URL to check
      * @return {@code true} if the parser for {@code TypeUrl} is present and {@code false}
      *         otherwise
      */
@@ -106,7 +106,7 @@ public final class ParserMapGenerator {
     }
 
     /**
-     * Stores known parsers {@code Map} to the {@link #jsGenerator}.
+     * Stores known parser {@code Map} to the {@link #jsGenerator}.
      *
      * <p>The name of the exported map is {@link #MAP_NAME}.
      */
@@ -117,6 +117,9 @@ public final class ParserMapGenerator {
         jsGenerator.quitMapDeclaration();
     }
 
+    /**
+     * Adds entries to the declared parser {@code Map}.
+     */
     private void storeParsersToMap() {
         ImmutableSet<Entry<TypeUrl, String>> entries = parsers.entrySet();
         for (UnmodifiableIterator<Entry<TypeUrl, String>> it = entries.iterator(); it.hasNext(); ) {
@@ -126,11 +129,19 @@ public final class ParserMapGenerator {
         }
     }
 
+    /**
+     * Converts the {@linkplain #parsers parser map} entry to the JS map entry and adds it to the
+     * generated code.
+     */
     private void addMapEntry(Entry<TypeUrl, String> typeToParser, boolean isLastEntry) {
         String mapEntry = jsMapEntry(typeToParser);
         jsGenerator.addMapEntry(mapEntry, isLastEntry);
     }
 
+    /**
+     * Converts the {@linkplain Entry Java Map Entry} from the {@link #parsers} to the JS
+     * {@code Map} entry.
+     */
     private static String jsMapEntry(Entry<TypeUrl, String> typeToParser) {
         TypeUrl typeUrl = typeToParser.getKey();
         String parserName = typeToParser.getValue();

@@ -87,7 +87,7 @@ public final class KnownTypeParsersWriter {
      * {@code known_type_parsers.js}.
      *
      * @param protoJsLocation
-     *         the JS Proto definitions root folder
+     *         the JS proto definitions root folder
      * @return the new instance of {@code KnownTypeParsersWriter}
      */
     public static KnownTypeParsersWriter createFor(Path protoJsLocation) {
