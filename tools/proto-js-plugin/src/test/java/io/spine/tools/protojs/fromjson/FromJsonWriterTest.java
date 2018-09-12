@@ -109,10 +109,9 @@ class FromJsonWriterTest {
     private FileDescriptor getFile(String name) {
         FileName taskProtoName = FileName.of(name);
         Optional<FileDescriptor> foundFile = fileSet.tryFind(taskProtoName);
-        if (!foundFile.isPresent()) {
-            throw newIllegalStateException("The file %s cannot be found in the file set", name);
-        }
-        FileDescriptor file = foundFile.get();
+        FileDescriptor file = foundFile.orElseThrow(
+                () -> newIllegalStateException("The file %s cannot be found in the file set", name)
+        );
         return file;
     }
 }
