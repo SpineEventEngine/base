@@ -24,7 +24,7 @@ import com.google.common.annotations.VisibleForTesting;
 import io.spine.tools.protojs.field.parser.FieldValueParser;
 
 import static io.spine.tools.protojs.field.Fields.capitalizedName;
-import static io.spine.tools.protojs.message.MessageHandler.MESSAGE;
+import static io.spine.tools.protojs.message.MessageHandler.FROM_OBJECT_RETURN;
 
 public final class MapFieldHandler extends AbstractFieldHandler {
 
@@ -57,7 +57,7 @@ public final class MapFieldHandler extends AbstractFieldHandler {
         String fieldName = capitalizedName(field());
         String getMap = "get" + fieldName + "Map()";
         String setMapValue = "set(" + MAP_KEY + ", %s)";
-        String addToMapFormat = MESSAGE + '.' + getMap + '.' + setMapValue + ';';
+        String addToMapFormat = FROM_OBJECT_RETURN + '.' + getMap + '.' + setMapValue + ';';
         return addToMapFormat;
     }
 

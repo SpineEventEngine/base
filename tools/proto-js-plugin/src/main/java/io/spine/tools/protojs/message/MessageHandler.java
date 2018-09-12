@@ -33,15 +33,34 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.protojs.types.Types.typeWithProtoPrefix;
 
 /**
- * Non-final for mockito.
+ * The generator of the {@code fromJson(json)} method for the given message.
+ *
+ * <p>The class also generates {@code fromObject(obj)} method which is used inside {@code fromJson}
+ * and can be called to parse the JS Proto message from the JS object.
+ *
+ * <p>The class is effectively {@code final} and is left non-{@code final} only for testing
+ * purposes.
+ *
+ * @author Dmytro Kuzmin
  */
 public class MessageHandler {
 
+    /**
+     * The argument name of the {@code fromObject} method.
+     */
     public static final String FROM_OBJECT_ARG = "obj";
 
-    @SuppressWarnings("DuplicateStringLiteralInspection") // Random duplication.
-    public static final String MESSAGE = "message";
+    /**
+     * The name of the {@code fromObject} method return value.
+     *
+     * <p>This value represents the JS Proto message whose fields are parsed and set from the JS
+     * object.
+     */
+    public static final String FROM_OBJECT_RETURN = "msg";
 
+    /**
+     * The argument name of the {@code fromJson} method.
+     */
     @VisibleForTesting
     static final String FROM_JSON_ARG = "json";
 
@@ -53,17 +72,37 @@ public class MessageHandler {
         this.jsGenerator = jsGenerator;
     }
 
+    /**
+     * Creates the {@code MessageHandler} for the given message and {@code JsGenerator}.
+     *
+     * @param message
+     *         the {@code Descriptor} of the message type which will be parsed in JS
+     * @param jsGenerator
+     *         the {@code JsGenerator} to assist code generation and accumulate all the generated
+     *         lines
+     * @return the new {@code MessageHandler}
+     */
     public static MessageHandler createFor(Descriptor message, JsGenerator jsGenerator) {
         checkNotNull(message);
         checkNotNull(jsGenerator);
         return new MessageHandler(message, jsGenerator);
     }
 
+    /**
+     * Generates the JS code necessary to handle the contained {@link #message}.
+     *
+     * <p>Adds the {@code fromJson(json)} and {@code fromObject(obj)} methods to the
+     * {@code JsGenerator} code lines.
+     */
     public void generateJs() {
         generateFromJsonMethod();
         generateFromObjectMethod();
     }
 
+    /**
+     * Generates the {@code fromJson} method which parses the JSON string via the {@code JSON.parse}
+     * functionality and then calls {@code fromObject} for the parsed JS object.
+     */
     @VisibleForTesting
     void generateFromJsonMethod() {
         jsGenerator.addEmptyLine();
@@ -72,6 +111,14 @@ public class MessageHandler {
         addFromJsonCode(typeName, functionName);
     }
 
+    /**
+     * Generates the {@code fromObject} method which goes through the JS object fields iteratively,
+     * adding the code to parse them and assign to the JS Proto message.
+     *
+     * <p>If the object is {@code null}, the returned value will be {@code null}.
+     *
+     * <p>See {@link FieldHandler} implementations.
+     */
     @VisibleForTesting
     void generateFromObjectMethod() {
         jsGenerator.addEmptyLine();
@@ -80,6 +127,9 @@ public class MessageHandler {
         addFromObjectCode(typeName, functionName);
     }
 
+    /**
+     * Adds the {@code fromJson} code to the {@link #jsGenerator}.
+     */
     private void addFromJsonCode(String typeName, String functionName) {
         jsGenerator.enterFunction(functionName, FROM_JSON_ARG);
         jsGenerator.addLine("let jsonObject = JSON.parse(" + FROM_JSON_ARG + ");");
@@ -87,22 +137,31 @@ public class MessageHandler {
         jsGenerator.exitFunction();
     }
 
+    /**
+     * Adds the {@code fromObject} code to the {@link #jsGenerator}.
+     */
     private void addFromObjectCode(String typeName, String functionName) {
         jsGenerator.enterFunction(functionName, FROM_OBJECT_ARG);
         checkParsedObject();
         jsGenerator.addEmptyLine();
-        jsGenerator.addLine("let " + MESSAGE + " = new " + typeName + "();");
+        jsGenerator.addLine("let " + FROM_OBJECT_RETURN + " = new " + typeName + "();");
         handleMessageFields();
-        jsGenerator.returnValue(MESSAGE);
+        jsGenerator.returnValue(FROM_OBJECT_RETURN);
         jsGenerator.exitFunction();
     }
 
+    /**
+     * Adds the code checking that {@linkplain #FROM_OBJECT_ARG from object argument} is not null.
+     */
     private void checkParsedObject() {
         jsGenerator.ifNull(FROM_OBJECT_ARG);
         jsGenerator.returnValue("null");
         jsGenerator.exitBlock();
     }
 
+    /**
+     * Generates the code necessary to parse and set the {@link #message} fields.
+     */
     @VisibleForTesting
     void handleMessageFields() {
         List<FieldDescriptor> fields = message.getFields();

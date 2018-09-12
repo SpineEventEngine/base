@@ -21,7 +21,7 @@
 package io.spine.tools.protojs.field;
 
 import static io.spine.tools.protojs.field.Fields.capitalizedName;
-import static io.spine.tools.protojs.message.MessageHandler.MESSAGE;
+import static io.spine.tools.protojs.message.MessageHandler.FROM_OBJECT_RETURN;
 
 public final class SingularFieldHandler extends AbstractFieldHandler {
 
@@ -41,7 +41,7 @@ public final class SingularFieldHandler extends AbstractFieldHandler {
     String setterFormat() {
         String fieldName = capitalizedName(field());
         String setterName = "set" + fieldName;
-        String setFieldFormat = MESSAGE + '.' + setterName + "(%s);";
+        String setFieldFormat = FROM_OBJECT_RETURN + '.' + setterName + "(%s);";
         return setFieldFormat;
     }
 

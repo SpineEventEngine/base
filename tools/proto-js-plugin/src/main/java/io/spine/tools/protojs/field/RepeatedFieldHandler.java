@@ -23,7 +23,7 @@ package io.spine.tools.protojs.field;
 import com.google.common.annotations.VisibleForTesting;
 
 import static io.spine.tools.protojs.field.Fields.capitalizedName;
-import static io.spine.tools.protojs.message.MessageHandler.MESSAGE;
+import static io.spine.tools.protojs.message.MessageHandler.FROM_OBJECT_RETURN;
 
 public final class RepeatedFieldHandler extends AbstractFieldHandler {
 
@@ -45,7 +45,7 @@ public final class RepeatedFieldHandler extends AbstractFieldHandler {
     String setterFormat() {
         String fieldName = capitalizedName(field());
         String addFunctionName = "add" + fieldName;
-        String addToListFormat = MESSAGE + '.' + addFunctionName + "(%s);";
+        String addToListFormat = FROM_OBJECT_RETURN + '.' + addFunctionName + "(%s);";
         return addToListFormat;
     }
 

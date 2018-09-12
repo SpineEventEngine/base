@@ -72,7 +72,7 @@ public final class FromJsonGenerator {
     }
 
     /**
-     * Generates the {@code fromJson(json)} method and all the related code for each Message of the
+     * Generates the {@code fromJson(json)} method and all the related code for each message of the
      * processed {@link #file}.
      *
      * <p>More specifically:
@@ -80,10 +80,10 @@ public final class FromJsonGenerator {
      *     <li>Writes a comment explaining the generated code.
      *     <li>Adds an import for the
      *         {@linkplain io.spine.tools.protojs.knowntypes.KnownTypeParsersWriter known parsers}.
-     *     <li>Adds the {@code fromJson(json)} method for each Message which parses json string
+     *     <li>Adds the {@code fromJson(json)} method for each message which parses JSON string
      *         into object.
-     *     <li>Adds the {@code fromObject(object)} method for each Message which parses the JS
-     *         object and creates a Message.
+     *     <li>Adds the {@code fromObject(obj)} method for each message which parses the JS object
+     *         and creates a message.
      * </ol>
      */
     void generateJs() {
