@@ -30,21 +30,49 @@ import java.nio.file.Paths;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+/**
+ * The utility for working with Gradle {@link Project} file paths.
+ *
+ * @author Dmytro Kuzmin
+ */
 @SuppressWarnings("DuplicateStringLiteralInspection") // Random duplication of path elements.
 public final class ProjectFiles {
 
+    /**
+     * Main source set name.
+     */
     private static final String MAIN = "main";
+
+    /**
+     * Test source set name.
+     */
     private static final String TEST = "test";
 
+    /** Prevents the instantiation of this utility class. */
     private ProjectFiles() {
     }
 
+    /**
+     * Obtains the root location of the generated JS protos from the "main" source set.
+     *
+     * @param project
+     *         the project for which to get the location
+     * @return the location of the "main" JS proto files
+     */
     public static Path mainProtoJsLocation(Project project) {
         checkNotNull(project);
         Path location = protoJsLocation(project, MAIN);
         return location;
     }
 
+
+    /**
+     * Obtains the root location of the generated JS protos from the "main" source set.
+     *
+     * @param projectDir
+     *         the project directory used as a root for path calculation
+     * @return the location of the "main" JS proto files
+     */
     @VisibleForTesting
     public static Path mainProtoJsLocation(File projectDir) {
         checkNotNull(projectDir);
@@ -52,19 +80,40 @@ public final class ProjectFiles {
         return location;
     }
 
+
+    /**
+     * Obtains the root location of the generated JS protos from the "test" source set.
+     *
+     * @param project
+     *         the project for which to get the location
+     * @return the location of the "test" JS proto files
+     */
     public static Path testProtoJsLocation(Project project) {
         checkNotNull(project);
         Path location = protoJsLocation(project, TEST);
         return location;
     }
 
+    /**
+     * Obtains the "main" descriptor set file for the project.
+     *
+     * @param project
+     *         the project for which to obtain the file
+     * @return the Java {@code File} object representing the main descriptor set file
+     */
     public static File mainDescriptorSetFile(Project project) {
         checkNotNull(project);
         DefaultProject defaultProject = DefaultProject.at(project.getProjectDir());
         File file = defaultProject.mainDescriptors();
         return file;
     }
-
+    /**
+     * Obtains the "main" descriptor set file for the project directory.
+     *
+     * @param projectDir
+     *         the project directory used as a path calculation root
+     * @return the Java {@code File} object representing the main descriptor set file
+     */
     @VisibleForTesting
     public static File mainDescriptorSetFile(File projectDir) {
         checkNotNull(projectDir);
@@ -73,6 +122,14 @@ public final class ProjectFiles {
         return file;
     }
 
+
+    /**
+     * Obtains the "test" descriptor set file for the project.
+     *
+     * @param project
+     *         the project for which to obtain the file
+     * @return the Java {@code File} object representing the main descriptor set file
+     */
     public static File testDescriptorSetFile(Project project) {
         checkNotNull(project);
         DefaultProject defaultProject = DefaultProject.at(project.getProjectDir());

@@ -51,7 +51,7 @@ import static io.spine.tools.protojs.files.ProjectFiles.testProtoJsLocation;
  * set to the required values in a project willing to use the plugin. These settings are:
  * <ul>
  *     <li>JS proto definitions path set to {@code ${projectDir}/proto/${sourceSet}/js"};
- *     <li><i>known_types.desc</i> file stored under the
+ *     <li>descriptor set file stored under the
  *         {@code "${projectDir}/build/descriptors/${task.sourceSet.name}/known_types.desc"};
  *     <li>CommonJS import style for all generated proto definitions ({@code js {option
  *     "import_style=commonjs"}});
@@ -83,8 +83,8 @@ public class ProtoJsPlugin extends SpinePlugin {
      * Creates an {@code Action} to generate {@code fromJson} method for both main and test proto
      * definitions.
      *
-     * <p>The paths to the JS proto definitions location, as well as to {@code known_types.desc} -
-     * the descriptor set file - are currently hard-coded.
+     * <p>The paths to the JS proto definitions location, as well as to the descriptor set file,
+     * are currently hard-coded.
      *
      * <p>See io.spine.tools.protojs.files.ProjectFiles} for the expected configuration.
      */
