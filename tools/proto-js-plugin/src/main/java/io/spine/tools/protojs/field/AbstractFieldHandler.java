@@ -30,13 +30,11 @@ import static io.spine.tools.protojs.message.MessageHandler.FROM_OBJECT_ARG;
 import static java.lang.String.format;
 
 /**
- * The base class for the {@link FieldHandler} implementations.
+ * The common base for the {@link FieldHandler} implementations.
  *
  * <p>The class generates the JS code common for all kinds of field handlers including calling the
  * {@linkplain FieldValueChecker field value checker} and the
  * {@linkplain FieldValueParser field value parser} to check and parse the field value respectively.
- *
- * <p>All the generated code is stored in the {@link JsGenerator} passed on construction.
  *
  * @author Dmytro Kuzmin
  */

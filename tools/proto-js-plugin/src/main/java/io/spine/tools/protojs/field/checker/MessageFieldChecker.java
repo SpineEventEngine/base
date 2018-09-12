@@ -29,9 +29,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * The value checker for fields of Protobuf message type.
  *
+ * <p>The class is {@code public} for the testing purposes.
+ *
  * @author Dmytro Kuzmin
  */
-public class MessageFieldChecker implements FieldValueChecker {
+public final class MessageFieldChecker implements FieldValueChecker {
 
     private final FieldDescriptor field;
     private final JsGenerator jsGenerator;

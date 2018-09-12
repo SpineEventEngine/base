@@ -27,16 +27,44 @@ import io.spine.tools.protojs.code.primitive.parser.PrimitiveParsers;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+/**
+ * The value parser for the primitive Protobuf fields.
+ *
+ * <p>All Protobuf fields that are not of the message type are considered primitive and are thus
+ * handled by this parser.
+ *
+ * <p>The class is {@code public} for the test purposes.
+ *
+ * @author Dmytro Kuzmin
+ */
 public final class PrimitiveFieldParser implements FieldValueParser {
 
     private final FieldDescriptor field;
     private final JsGenerator jsGenerator;
 
+    /**
+     * Creates a new {@code PrimitiveFieldParser} for the given field.
+     *
+     * <p>All the generated code will be accumulated in the given {@code jsGenerator}.
+     *
+     * @param field
+     *         the descriptor of the field to create the parser for
+     * @param jsGenerator
+     *         the {@code JsGenerator} to store the generated code
+     */
     PrimitiveFieldParser(FieldDescriptor field, JsGenerator jsGenerator) {
         this.field = field;
         this.jsGenerator = jsGenerator;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>For the primitive field, the {@link PrimitiveParser} implementation is used to convert
+     * the field value into the appropriate type.
+     *
+     * @see PrimitiveParsers
+     */
     @Override
     public void parseIntoVariable(String value, String variable) {
         checkNotNull(value);

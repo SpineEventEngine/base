@@ -37,6 +37,11 @@ import static io.spine.tools.protojs.files.JsFiles.KNOWN_TYPE_PARSERS;
  *
  * <p>All the generated code is stored in the given {@link JsGenerator}.
  *
+ * @apiNote
+ * Like the other handlers and generators of this module, the {@code FromJsonGenerator} is meant to
+ * operate on the common {@link io.spine.tools.protojs.code.JsGenerator} passed on construction and
+ * thus its methods do not return any generated code.
+ *
  * @author Dmytro Kuzmin
  */
 public final class FromJsonGenerator {

@@ -29,15 +29,17 @@ package io.spine.tools.protojs.field;
  * <p>The {@code undefined} field values in general should be ignored, while {@code null} is a
  * valid value for the {@linkplain com.google.protobuf.Message Message} fields.
  *
+ * @apiNote
+ * Like the other handlers and generators of this module, the {@code FieldHandler} is meant to
+ * operate on the common {@link io.spine.tools.protojs.code.JsGenerator} passed on construction and
+ * thus its method does not return any generated code.
+ *
  * @author Dmytro Kuzmin
  */
 public interface FieldHandler {
 
     /**
      * Generates the JS code which handles the field.
-     *
-     * <p>The generated code is meant to be stored to some object passed on construction (e.g.
-     * {@link io.spine.tools.protojs.code.JsGenerator}) rather than returned from the method.
      */
     void generateJs();
 }

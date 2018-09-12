@@ -29,16 +29,43 @@ import io.spine.type.TypeUrl;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.protojs.fromjson.FromJsonGenerator.PARSERS_IMPORT_NAME;
 
+/**
+ * The value parser for the Protobuf fields of well-known message types.
+ *
+ * <p>Well-known message types are those standard Protobuf types for which the predefined parsers
+ * are present.
+ *
+ * <p>The class is {@code public} for the test purposes.
+ *
+ * @author Dmytro Kuzmin
+ * @see io.spine.tools.protojs.knowntypes.KnownTypeParsersWriter
+ */
 public final class WellKnownFieldParser implements FieldValueParser {
 
     private final FieldDescriptor field;
     private final JsGenerator jsGenerator;
 
+    /**
+     * Creates a new {@code WellKnownFieldParser} for the given field.
+     *
+     * <p>All the generated code will be accumulated in the given {@code jsGenerator}.
+     *
+     * @param field
+     *         the descriptor of the field to create the parser for
+     * @param jsGenerator
+     *         the {@code JsGenerator} to store the generated code
+     */
     WellKnownFieldParser(FieldDescriptor field, JsGenerator jsGenerator) {
         this.field = field;
         this.jsGenerator = jsGenerator;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The field value of well-known type is parsed via a predefined parser stored in the known
+     * type parsers {@linkplain io.spine.tools.protojs.files.JsFiles#KNOWN_TYPE_PARSERS file}.
+     */
     @Override
     public void parseIntoVariable(String value, String variable) {
         checkNotNull(value);

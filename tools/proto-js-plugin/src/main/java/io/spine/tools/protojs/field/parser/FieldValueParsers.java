@@ -27,11 +27,28 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.protojs.field.Fields.isMessage;
 import static io.spine.tools.protojs.field.Fields.isWellKnownType;
 
+/**
+ * A helper class which creates {@link FieldValueParser} instances based on the passed field.
+ *
+ * @author Dmytro Kuzmin
+ */
 public final class FieldValueParsers {
 
+    /** Prevents instantiation of this utility class. */
     private FieldValueParsers() {
     }
 
+    /**
+     * Creates the {@code FieldValueParser} for the given field.
+     *
+     * <p>All the generated code will be stored to the {@code jsGenerator}.
+     *
+     * @param field
+     *         the descriptor of the field to create the parser for
+     * @param jsGenerator
+     *         the {@code JsGenerator} to accumulate the generated code
+     * @return the {@code FieldValueParser} of the appropriate type
+     */
     public static FieldValueParser parserFor(FieldDescriptor field, JsGenerator jsGenerator) {
         checkNotNull(field);
         checkNotNull(jsGenerator);

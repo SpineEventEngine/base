@@ -27,16 +27,44 @@ import io.spine.tools.protojs.code.JsGenerator;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.protojs.types.Types.typeWithProtoPrefix;
 
+/**
+ * The value parser for the Protobuf message fields.
+ *
+ * <p>Handles all fields of message types except those who belong to standard Protobuf
+ * {@linkplain io.spine.tools.protojs.field.Fields#isWellKnownType(FieldDescriptor) types} which
+ * are parsed separately.
+ *
+ * <p>The class is {@code public} for the test purposes.
+ *
+ * @author Dmytro Kuzmin
+ */
 public final class MessageFieldParser implements FieldValueParser {
 
     private final FieldDescriptor field;
     private final JsGenerator jsGenerator;
 
+    /**
+     * Creates the {@code MessageFieldParser} for the given {@code field}.
+     *
+     * <p>All the generated code will be stored in the given {@code jsGenerator}.
+     *
+     * @param field
+     *         the descriptor of the field for which to create the parser
+     * @param jsGenerator
+     *         the {@code JsGenerator} which accumulates all the generated code
+     */
     MessageFieldParser(FieldDescriptor field, JsGenerator jsGenerator) {
         this.field = field;
         this.jsGenerator = jsGenerator;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>For the message type which does not belong to the well-known types (see
+     * {@link WellKnownFieldParser}), the parse operation is executed via the recursive
+     * {@code fromObject} method call.
+     */
     @Override
     public void parseIntoVariable(String value, String variable) {
         checkNotNull(value);

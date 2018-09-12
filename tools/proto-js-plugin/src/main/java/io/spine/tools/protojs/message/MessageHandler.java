@@ -41,6 +41,11 @@ import static io.spine.tools.protojs.types.Types.typeWithProtoPrefix;
  * <p>The class is effectively {@code final} and is left non-{@code final} only for testing
  * purposes.
  *
+ * @apiNote
+ * Like the other handlers and generators of this module, the {@code MessageHandler} is meant to
+ * operate on the common {@link io.spine.tools.protojs.code.JsGenerator} passed on construction and
+ * thus its methods do not return any generated code.
+ *
  * @author Dmytro Kuzmin
  */
 public class MessageHandler {

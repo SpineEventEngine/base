@@ -55,6 +55,11 @@ import static io.spine.type.TypeUrl.of;
  *
  * <p>All the generated code is stored to the {@link JsGenerator} provided on construction.
  *
+ * @apiNote
+ * Like the other handlers and generators of this module, the {@code ParserMapGenerator} is meant
+ * to operate on the common {@link io.spine.tools.protojs.code.JsGenerator} passed on construction
+ * and thus its methods do not return any generated code.
+ *
  * @author Dmytro Kuzmin
  * @see KnownTypeParsersWriter
  */

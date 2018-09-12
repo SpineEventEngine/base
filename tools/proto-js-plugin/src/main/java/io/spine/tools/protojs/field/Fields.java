@@ -74,7 +74,7 @@ public final class Fields {
     }
 
     /**
-     * Checks if the given field is of one of the standard Protobuf types which have pre-defined
+     * Checks if the given field is of one of the standard Protobuf types which have predefined
      * JSON parsers for them.
      *
      * @param field

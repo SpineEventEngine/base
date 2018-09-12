@@ -27,12 +27,14 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * The value checker for the Protobuf primitive fields.
  *
- * <p>All Protobuf fields which are not of message type are considered primitive and thus are
+ * <p>All Protobuf fields which are not of the message type are considered primitive and thus are
  * handled by this checker.
+ *
+ * <p>The class is {@code public} for the testing purposes.
  *
  * @author Dmytro Kuzmin
  */
-public class PrimitiveFieldChecker implements FieldValueChecker {
+public final class PrimitiveFieldChecker implements FieldValueChecker {
 
     private final JsGenerator jsGenerator;
 
