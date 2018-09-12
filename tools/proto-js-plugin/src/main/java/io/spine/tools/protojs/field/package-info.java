@@ -19,7 +19,7 @@
  */
 
 /**
- * Generate desc.
+ * The classes which handle parsing the separate proto fields from JSON.
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault

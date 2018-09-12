@@ -130,7 +130,7 @@ public final class ParserMapGenerator {
     }
 
     /**
-     * Converts the {@linkplain #parsers parser map} entry to the JS map entry and adds it to the
+     * Converts the {@linkplain #parsers parsers map} entry to the JS map entry and adds it to the
      * generated code.
      */
     private void addMapEntry(Entry<TypeUrl, String> typeToParser, boolean isLastEntry) {

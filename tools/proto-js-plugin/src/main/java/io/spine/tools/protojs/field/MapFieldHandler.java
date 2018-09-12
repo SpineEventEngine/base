@@ -36,10 +36,11 @@ import static io.spine.tools.protojs.message.MessageHandler.MESSAGE;
  * This class holds the additional {@link #keyParser} which parses the map key from the JS object
  * attribute.
  *
- * <p>This is necessary as all proto {@code map} keys are converted to {@code string}s in JSON.
+ * <p>This is necessary as all proto {@code map} keys are converted to {@code string}s in JSON and
+ * thus the object properties will also be of string type.
  *
- * <p>The {@link #checker} and {@link #parser} from the superclass are used to process the proto
- * {@code map} value before adding it to the map.
+ * <p>The {@link #checker} and {@link #parser} from the superclass are used to process the
+ * {@code map} value before adding it to the field.
  *
  * @author Dmytro Kuzmin
  */
@@ -52,7 +53,7 @@ final class MapFieldHandler extends AbstractFieldHandler {
     static final String ATTRIBUTE = "attribute";
 
     /**
-     * The variable which contains the parsed {@code map}key by which we can add the value to the
+     * The variable which contains the parsed {@code map} key by which we can add the value to the
      * field.
      */
     @VisibleForTesting
