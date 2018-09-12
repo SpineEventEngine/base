@@ -111,7 +111,7 @@ public final class JsFiles {
     /**
      * Gets the JS proto definition name for the proto file.
      *
-     * <p>The file name is relative to the proto definitions root (i.e. is not absolute path).
+     * <p>The file name is relative to the proto definitions root.
      *
      * @param file
      *         the descriptor of the file
