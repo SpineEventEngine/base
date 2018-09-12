@@ -18,18 +18,37 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protojs.code.primitive.parser;
+package io.spine.tools.protojs.code.primitive;
 
 import io.spine.tools.protojs.code.JsGenerator;
 
-public interface PrimitiveParser {
+/**
+ * The common base for {@link PrimitiveParser} implementations.
+ *
+ * @author Dmytro Kuzmin
+ */
+abstract class AbstractPrimitiveParser implements PrimitiveParser {
 
-    void parseIntoVariable(String value, String variable);
+    private final JsGenerator jsGenerator;
 
-    interface Builder<B extends Builder<B>> {
+    AbstractPrimitiveParser(Builder builder) {
+        this.jsGenerator = builder.jsGenerator;
+    }
 
-        B setJsWriter(JsGenerator jsGenerator);
+    JsGenerator jsGenerator() {
+        return jsGenerator;
+    }
 
-        PrimitiveParser build();
+    abstract static class Builder<B extends Builder<B>> implements PrimitiveParser.Builder<B> {
+
+        private JsGenerator jsGenerator;
+
+        @Override
+        public B setJsGenerator(JsGenerator jsGenerator) {
+            this.jsGenerator = jsGenerator;
+            return self();
+        }
+
+        abstract B self();
     }
 }

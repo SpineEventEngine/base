@@ -18,24 +18,50 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protojs.code.primitive.parser;
+package io.spine.tools.protojs.code.primitive;
+
+import com.google.common.annotations.VisibleForTesting;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.tools.protojs.code.JsImportGenerator.rawNamedImport;
 
-final class EnumParser extends AbstractPrimitiveParser {
+/**
+ * The generator of the JS code parsing {@code bytes} value from its JSON representation.
+ *
+ * <p>The JSON representation of the {@code bytes} value is the base-64 encoded {@code string}.
+ *
+ * <p>The parser thus imports the "base64" lib and decodes the value.
+ *
+ * @author Dmytro Kuzmin
+ */
+final class BytesParser extends AbstractPrimitiveParser {
 
-    private final String enumType;
+    /**
+     * Base-64 JS lib name to import.
+     *
+     * @see <a href="https://www.npmjs.com/package/base64-js">The lib page</a>
+     */
+    @VisibleForTesting
+    static final String BASE64_LIB = "base64-js";
 
-    private EnumParser(Builder builder) {
+    /**
+     * The name of the "base64-js" import.
+     */
+    @VisibleForTesting
+    static final String BASE64_VAR = "base64";
+
+    private BytesParser(Builder builder) {
         super(builder);
-        this.enumType = builder.enumType;
     }
 
     @Override
     public void parseIntoVariable(String value, String variable) {
         checkNotNull(value);
         checkNotNull(variable);
-        jsGenerator().addLine("let " + variable + " = " + enumType + '[' + value + "];");
+        String importStatement = rawNamedImport(BASE64_LIB, BASE64_VAR);
+        jsGenerator().addLine(importStatement);
+        String valueToByteArray = BASE64_VAR + ".toByteArray(" + value + ')';
+        jsGenerator().addLine("let " + variable + " = " + valueToByteArray + ';');
     }
 
     static Builder newBuilder() {
@@ -44,13 +70,6 @@ final class EnumParser extends AbstractPrimitiveParser {
 
     static class Builder extends AbstractPrimitiveParser.Builder<Builder> {
 
-        private String enumType;
-
-        Builder setEnumType(String enumType) {
-            this.enumType = enumType;
-            return this;
-        }
-
         @Override
         Builder self() {
             return this;
@@ -58,7 +77,7 @@ final class EnumParser extends AbstractPrimitiveParser {
 
         @Override
         public PrimitiveParser build() {
-            return new EnumParser(this);
+            return new BytesParser(this);
         }
     }
 }

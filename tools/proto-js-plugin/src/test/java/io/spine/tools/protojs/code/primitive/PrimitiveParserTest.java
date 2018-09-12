@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protojs.code.primitive.parser;
+package io.spine.tools.protojs.code.primitive;
 
 import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
@@ -28,8 +28,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.tools.protojs.code.JsImportGenerator.rawNamedImport;
-import static io.spine.tools.protojs.code.primitive.parser.BytesParser.BASE64_LIB;
-import static io.spine.tools.protojs.code.primitive.parser.BytesParser.BASE64_VAR;
+import static io.spine.tools.protojs.code.primitive.BytesParser.BASE64_LIB;
+import static io.spine.tools.protojs.code.primitive.BytesParser.BASE64_VAR;
 import static io.spine.tools.protojs.given.Generators.assertContains;
 import static io.spine.tools.protojs.given.Given.bytesField;
 import static io.spine.tools.protojs.given.Given.enumField;

@@ -18,32 +18,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protojs.code.primitive.parser;
+/**
+ * The classes which generate the JS code related to parsing the proto primitive types from their
+ * JSON representation.
+ */
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.tools.protojs.code.primitive;
 
-import io.spine.tools.protojs.code.JsGenerator;
+import com.google.errorprone.annotations.CheckReturnValue;
 
-abstract class AbstractPrimitiveParser implements PrimitiveParser {
-
-    private final JsGenerator jsGenerator;
-
-    AbstractPrimitiveParser(Builder builder) {
-        this.jsGenerator = builder.jsGenerator;
-    }
-
-    JsGenerator jsGenerator() {
-        return jsGenerator;
-    }
-
-    abstract static class Builder<B extends Builder<B>> implements PrimitiveParser.Builder<B> {
-
-        private JsGenerator jsGenerator;
-
-        @Override
-        public B setJsWriter(JsGenerator jsGenerator) {
-            this.jsGenerator = jsGenerator;
-            return self();
-        }
-
-        abstract B self();
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;

@@ -18,21 +18,32 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protojs.code.primitive.parser;
+package io.spine.tools.protojs.code.primitive;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-final class LongParser extends AbstractPrimitiveParser {
+/**
+ * The generator of the JS code parsing {@code enum} value from its JSON representation.
+ *
+ * <p>The {@code enum} proto value in JSON is represented as a plain {@code string}. Thus, the
+ * parser obtains the value by parsing the JS enum-like object from the given {@code string}.
+ *
+ * @author Dmytro Kuzmin
+ */
+final class EnumParser extends AbstractPrimitiveParser {
 
-    private LongParser(Builder builder) {
+    private final String enumType;
+
+    private EnumParser(Builder builder) {
         super(builder);
+        this.enumType = builder.enumType;
     }
 
     @Override
     public void parseIntoVariable(String value, String variable) {
         checkNotNull(value);
         checkNotNull(variable);
-        jsGenerator().addLine("let " + variable + " = parseInt(" + value + ");");
+        jsGenerator().addLine("let " + variable + " = " + enumType + '[' + value + "];");
     }
 
     static Builder newBuilder() {
@@ -41,6 +52,20 @@ final class LongParser extends AbstractPrimitiveParser {
 
     static class Builder extends AbstractPrimitiveParser.Builder<Builder> {
 
+        private String enumType;
+
+        /**
+         * Sets the enum type of the field.
+         *
+         * @param enumType
+         *         the full enum type name with the "proto." prefix
+         * @return self
+         */
+        Builder setEnumType(String enumType) {
+            this.enumType = enumType;
+            return this;
+        }
+
         @Override
         Builder self() {
             return this;
@@ -48,7 +73,7 @@ final class LongParser extends AbstractPrimitiveParser {
 
         @Override
         public PrimitiveParser build() {
-            return new LongParser(this);
+            return new EnumParser(this);
         }
     }
 }

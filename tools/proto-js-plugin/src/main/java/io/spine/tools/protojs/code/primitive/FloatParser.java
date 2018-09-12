@@ -18,10 +18,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protojs.code.primitive.parser;
+package io.spine.tools.protojs.code.primitive;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+/**
+ * The generator of the JS code parsing the floating point values from their JSON representation.
+ *
+ * <p>The parser uses the {@code parseFloat} operation on the value to obtain the original floating
+ * point number.
+ *
+ * @author Dmytro Kuzmin
+ */
 final class FloatParser extends AbstractPrimitiveParser {
 
     private FloatParser(Builder builder) {

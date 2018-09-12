@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protojs.code.primitive.parser;
+package io.spine.tools.protojs.code.primitive;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Descriptors.EnumDescriptor;
@@ -48,13 +48,37 @@ import static com.google.protobuf.Descriptors.FieldDescriptor.Type.UINT32;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.UINT64;
 import static io.spine.tools.protojs.types.Types.typeWithProtoPrefix;
 
+/**
+ * The helper class which creates a {@link PrimitiveParser} based on the passed field.
+ *
+ * @author Dmytro Kuzmin
+ */
 public final class PrimitiveParsers {
 
+    /**
+     * The global map which maps the field {@linkplain FieldDescriptor#getType() type} (aka "kind")
+     * to the {@link PrimitiveParser} builder instance.
+     *
+     * <p>The builder can be later used to specify the {@link JsGenerator} to the parser, as well
+     * as the other inputs if necessary.
+     */
     private static final Map<Type, PrimitiveParser.Builder> parsers = parsers();
 
+    /** Prevents the instantiation of this utility class. */
     private PrimitiveParsers() {
     }
 
+    /**
+     * Creates the new instance of {@code PrimitiveParser} for the given field.
+     *
+     * <p>All the generated code will be stored to the {@code JsGenerator}.
+     *
+     * @param field
+     *         the descriptor of the field to create the parser for
+     * @param jsGenerator
+     *         the {@code JsGenerator} to accumulate the generated code
+     * @return the new instance of the {@code PrimitiveParser}
+     */
     public static PrimitiveParser createFor(FieldDescriptor field, JsGenerator jsGenerator) {
         checkNotNull(field);
         checkNotNull(jsGenerator);
@@ -65,23 +89,30 @@ public final class PrimitiveParsers {
         return primitiveParser(type, jsGenerator);
     }
 
+    /**
+     * Creates a {@link EnumParser} based on the field enum type.
+     */
     private static PrimitiveParser enumParser(FieldDescriptor field, JsGenerator jsGenerator) {
         EnumDescriptor enumType = field.getEnumType();
         String typeName = typeWithProtoPrefix(enumType);
         PrimitiveParser parser = EnumParser
                 .newBuilder()
                 .setEnumType(typeName)
-                .setJsWriter(jsGenerator)
+                .setJsGenerator(jsGenerator)
                 .build();
         return parser;
     }
 
+    /**
+     * Creates the primitive parser using the field {@link Type} and taking the parser builder from
+     * the {@linkplain #parsers map}.
+     */
     private static PrimitiveParser primitiveParser(Type type, JsGenerator jsGenerator) {
         PrimitiveParser.Builder parserBuilder = parsers.get(type);
         checkState(parsers.containsKey(type),
                    "An attempt to get a parser for the unknown Primitive type: %s", type);
         PrimitiveParser parser = parserBuilder
-                .setJsWriter(jsGenerator)
+                .setJsGenerator(jsGenerator)
                 .build();
         return parser;
     }

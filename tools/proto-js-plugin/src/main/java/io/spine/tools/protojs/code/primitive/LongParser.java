@@ -18,22 +18,25 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protojs.code.primitive.parser;
-
-import com.google.common.annotations.VisibleForTesting;
+package io.spine.tools.protojs.code.primitive;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.protojs.code.JsImportGenerator.rawNamedImport;
 
-final class BytesParser extends AbstractPrimitiveParser {
+/**
+ * The generator of the JS code which parses the proto 64-bit numerical values from their JSON
+ * representation.
+ *
+ * <p>Types like {@code int64}, {@code uint64}, {@code fixed64} etc. are encoded in the JSON as a
+ * {@code string}.
+ *
+ * <p>The parser thus applies the {@code parseInt} operation to the given {@code string} to obtain
+ * the proto value from it.
+ *
+ * @author Dmytro Kuzmin
+ */
+final class LongParser extends AbstractPrimitiveParser {
 
-    @VisibleForTesting
-    static final String BASE64_LIB = "base64-js";
-
-    @VisibleForTesting
-    static final String BASE64_VAR = "base64";
-
-    private BytesParser(Builder builder) {
+    private LongParser(Builder builder) {
         super(builder);
     }
 
@@ -41,10 +44,7 @@ final class BytesParser extends AbstractPrimitiveParser {
     public void parseIntoVariable(String value, String variable) {
         checkNotNull(value);
         checkNotNull(variable);
-        String importStatement = rawNamedImport(BASE64_LIB, BASE64_VAR);
-        jsGenerator().addLine(importStatement);
-        String valueToByteArray = BASE64_VAR + ".toByteArray(" + value + ')';
-        jsGenerator().addLine("let " + variable + " = " + valueToByteArray + ';');
+        jsGenerator().addLine("let " + variable + " = parseInt(" + value + ");");
     }
 
     static Builder newBuilder() {
@@ -60,7 +60,7 @@ final class BytesParser extends AbstractPrimitiveParser {
 
         @Override
         public PrimitiveParser build() {
-            return new BytesParser(this);
+            return new LongParser(this);
         }
     }
 }

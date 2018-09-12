@@ -22,8 +22,8 @@ package io.spine.tools.protojs.field.parser;
 
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.tools.protojs.code.JsGenerator;
-import io.spine.tools.protojs.code.primitive.parser.PrimitiveParser;
-import io.spine.tools.protojs.code.primitive.parser.PrimitiveParsers;
+import io.spine.tools.protojs.code.primitive.PrimitiveParser;
+import io.spine.tools.protojs.code.primitive.PrimitiveParsers;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 

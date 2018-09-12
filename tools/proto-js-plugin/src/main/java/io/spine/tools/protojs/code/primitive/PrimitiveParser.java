@@ -18,26 +18,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protojs.field.parser;
+package io.spine.tools.protojs.code.primitive;
+
+import io.spine.tools.protojs.code.JsGenerator;
 
 /**
- * The generator of the code which parses the field value from the JS object and stores it into
- * some variable.
+ * The generator of the JS code parsing some primitive value from its JSON representation.
+ *
+ * <p>The parsed value is then stored into the specified variable.
  *
  * @apiNote
- * Like the other handlers and generators of this module, the {@code FieldValueParser} is meant to
+ * Like the other handlers and generators of this module, the {@code PrimitiveParser} is meant to
  * operate on the common {@link io.spine.tools.protojs.code.JsGenerator} passed on construction and
  * thus its method does not return any generated code.
  *
  * @author Dmytro Kuzmin
+ * @see <a href="https://developers.google.com/protocol-buffers/docs/proto3#json">Protobuf JSON
+ * Mapping</a> for how the various primitive types are encoded in JSON
  */
-public interface FieldValueParser {
+public interface PrimitiveParser {
 
     /**
-     * Generates the code which parses the field value from some object and assigns it to the
-     * variable.
-     *
-     * <p>The parsed value is then assigned to the specified variable.
+     * Generates the code required to parse the primitive value and assign it to the variable.
      *
      * @param value
      *         the name of the variable holding the value to parse
@@ -45,4 +47,29 @@ public interface FieldValueParser {
      *         the name of the variable to receive the parsed value
      */
     void parseIntoVariable(String value, String variable);
+
+    /**
+     * The generic builder for the classes-descendants.
+     *
+     * @param <B>
+     *         the class of the Builder itself
+     */
+    interface Builder<B extends Builder<B>> {
+
+        /**
+         * Sets the {@code JsGenerator} which will accumulate all the generated code.
+         *
+         * @param jsGenerator
+         *         the {@code JsGenerator} to use
+         * @return self
+         */
+        B setJsGenerator(JsGenerator jsGenerator);
+
+        /**
+         * Creates the {@code PrimitiveParser} instance corresponding to this builder.
+         *
+         * @return the {@code PrimitiveParser} of the corresponding type
+         */
+        PrimitiveParser build();
+    }
 }
