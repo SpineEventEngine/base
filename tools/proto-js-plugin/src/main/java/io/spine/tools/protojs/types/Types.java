@@ -26,14 +26,33 @@ import com.google.protobuf.Descriptors.EnumDescriptor;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+/**
+ * A helper tool for working with protobuf descriptors.
+ *
+ * @author Dmytro Kuzmin
+ */
 public final class Types {
 
+    /**
+     * The prefix which is added to all proto types in the JS generated code.
+     *
+     * <p>For example, the "spine.web.test.CreateTask" command becomes the
+     * "proto.spine.web.test.CreateTask" in the generated code.
+     */
     @VisibleForTesting
     static final String PREFIX = "proto.";
 
+    /** Prevents instantiation of this utility class. */
     private Types() {
     }
 
+    /**
+     * Obtains {@code message}'s type prepended with the {@code proto.} prefix.
+     *
+     * @param message
+     *         the descriptor of the {@code message} whose type to obtain
+     * @return the type of the {@code message} with the {@code proto.} prefix
+     */
     public static String typeWithProtoPrefix(Descriptor message) {
         checkNotNull(message);
         String typeName = message.getFullName();
@@ -41,6 +60,13 @@ public final class Types {
         return nameWithPrefix;
     }
 
+    /**
+     * Obtains {@code enum}'s type prepended with the {@code proto.} prefix.
+     *
+     * @param enumDescriptor
+     *         the descriptor of the {@code enum} whose type to obtain
+     * @return the type of the {@code enum} with the {@code proto.} prefix
+     */
     public static String typeWithProtoPrefix(EnumDescriptor enumDescriptor) {
         checkNotNull(enumDescriptor);
         String typeName = enumDescriptor.getFullName();

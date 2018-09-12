@@ -19,7 +19,7 @@
  */
 
 /**
- * Generate desc.
+ * The classes related to working with Protobuf types.
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault
