@@ -19,7 +19,7 @@
  */
 
 /**
- * Generate desc.
+ * The classes which generate JS code performing various field value checks.
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault

@@ -20,32 +20,53 @@
 
 package io.spine.tools.protojs.field.checker;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Value;
 import io.spine.tools.protojs.code.JsGenerator;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-@VisibleForTesting
+/**
+ * The value checker for fields of Protobuf message type.
+ *
+ * @author Dmytro Kuzmin
+ */
 public class MessageFieldChecker implements FieldValueChecker {
 
     private final FieldDescriptor field;
     private final JsGenerator jsGenerator;
 
+    /**
+     * Creates a new {@code MessageFieldChecker} for the given {@code field}.
+     *
+     * @param field
+     *         the field to create the checker for
+     * @param jsGenerator
+     *         the {@code JsGenerator} which accumulates all generated code
+     */
     MessageFieldChecker(FieldDescriptor field, JsGenerator jsGenerator) {
         this.field = field;
         this.jsGenerator = jsGenerator;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>For messages, if the parsed value equals to {@code null}, the message value is also set
+     * to null via {@code setterFormat}. The further parsing does not happen in this case.
+     *
+     * <p>The only exception is Protobuf {@link Value} type, where the check does not take place
+     * and the {@code null} is allowed to reach the parser, which later converts it to
+     * {@link com.google.protobuf.NullValue}.
+     */
     @Override
-    public void performNullCheck(String fieldValue, String setterFormat) {
-        checkNotNull(fieldValue);
+    public void performNullCheck(String value, String setterFormat) {
+        checkNotNull(value);
         checkNotNull(setterFormat);
         if (isProtobufValueType()) {
             return;
         }
-        jsGenerator.ifNull(fieldValue);
+        jsGenerator.ifNull(value);
         String setFieldToNull = String.format(setterFormat, "null");
         jsGenerator.addLine(setFieldToNull);
         jsGenerator.enterElseBlock();
@@ -58,6 +79,9 @@ public class MessageFieldChecker implements FieldValueChecker {
         }
     }
 
+    /**
+     * Checks if the stored {@link #field} is of {@link Value} type.
+     */
     private boolean isProtobufValueType() {
         String valueType = Value.getDescriptor()
                                 .getFullName();

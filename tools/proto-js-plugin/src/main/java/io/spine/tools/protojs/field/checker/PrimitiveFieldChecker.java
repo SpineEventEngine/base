@@ -20,25 +20,42 @@
 
 package io.spine.tools.protojs.field.checker;
 
-import com.google.common.annotations.VisibleForTesting;
 import io.spine.tools.protojs.code.JsGenerator;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-@VisibleForTesting
+/**
+ * The value checker for the Protobuf primitive fields.
+ *
+ * <p>All Protobuf fields which are not of message type are considered primitive and thus are
+ * handled by this checker.
+ *
+ * @author Dmytro Kuzmin
+ */
 public class PrimitiveFieldChecker implements FieldValueChecker {
 
     private final JsGenerator jsGenerator;
 
+    /**
+     * Creates a new {@code PrimitiveFieldChecker}.
+     *
+     * @param jsGenerator
+     *         the {@code JsGenerator} which accumulates all the generated code
+     */
     PrimitiveFieldChecker(JsGenerator jsGenerator) {
         this.jsGenerator = jsGenerator;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>In case of the primitive field, the {@code null} values are not allowed and thus not set.
+     */
     @Override
-    public void performNullCheck(String fieldValue, String setterFormat) {
-        checkNotNull(fieldValue);
+    public void performNullCheck(String value, String setterFormat) {
+        checkNotNull(value);
         checkNotNull(setterFormat);
-        jsGenerator.ifNotNull(fieldValue);
+        jsGenerator.ifNotNull(value);
     }
 
     @Override

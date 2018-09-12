@@ -26,11 +26,27 @@ import io.spine.tools.protojs.code.JsGenerator;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.protojs.field.Fields.isMessage;
 
+/**
+ * The helper which creates {@link FieldValueChecker} instances based on the field type.
+ *
+ * @author Dmytro Kuzmin
+ */
 public final class FieldValueCheckers {
 
+    /** Prevents instantiation of this utility class. */
     private FieldValueCheckers() {
     }
 
+    /**
+     * Creates {@code FieldValueChecker} for the given {@code field} which will store all generated
+     * code in the given {@code jsGenerator}.
+     *
+     * @param field
+     *         the descriptor of the Protobuf field to create the checker for
+     * @param jsGenerator
+     *         the {@code JsGenerator} which will accumulate all the generated code
+     * @return a {@code FieldValueChecker} of the appropriate type
+     */
     public static FieldValueChecker checkerFor(FieldDescriptor field, JsGenerator jsGenerator) {
         checkNotNull(field);
         checkNotNull(jsGenerator);

@@ -20,9 +20,28 @@
 
 package io.spine.tools.protojs.field.checker;
 
+/**
+ * The generator of the code which checks the proto field value.
+ *
+ * @author Dmytro Kuzmin
+ */
 public interface FieldValueChecker {
 
-    void performNullCheck(String fieldValue, String setterFormat);
+    /**
+     * Generates the code which checks the given field value for {@code null}.
+     *
+     * <p>The setter format is specified so the checker can interact with the field itself in case
+     * the check passes/fails.
+     *
+     * @param value
+     *         the name of the variable representing the field value to check
+     * @param setterFormat
+     *         the format of the setter
+     */
+    void performNullCheck(String value, String setterFormat);
 
+    /**
+     * Generates the code to exit all {@code null} check blocks and return to the upper level.
+     */
     void exitNullCheck();
 }
