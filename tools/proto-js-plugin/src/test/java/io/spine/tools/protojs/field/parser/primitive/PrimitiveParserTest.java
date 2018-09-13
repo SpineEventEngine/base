@@ -51,7 +51,7 @@ class PrimitiveParserTest {
     }
 
     @Test
-    @DisplayName("generate code for parsing value identically")
+    @DisplayName("generate code for parsing value to itself")
     void parseIdentically() {
         PrimitiveParser parser = PrimitiveParsers.createFor(INT32, jsOutput);
         parser.parseIntoVariable(VALUE, VARIABLE);
