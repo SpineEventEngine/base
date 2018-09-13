@@ -32,7 +32,7 @@ import java.nio.file.Paths;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.protojs.files.JsFiles.appendToFile;
 import static io.spine.tools.protojs.files.JsFiles.jsFileName;
-import static io.spine.type.TypeUrl.GOOGLE_PROTOBUF_PACKAGE;
+import static io.spine.tools.protojs.types.Types.isStandardOrSpineOptions;
 
 /**
  * The inserter of the {@code fromJson(json)} method into the existing JS Proto definitions.
@@ -45,9 +45,6 @@ import static io.spine.type.TypeUrl.GOOGLE_PROTOBUF_PACKAGE;
  * @see FromJsonGenerator
  */
 public final class FromJsonWriter {
-
-    @VisibleForTesting
-    static final String SPINE_OPTIONS_PROTO = "spine/options.proto";
 
     private final Path protoJsLocation;
     private final FileSet fileSet;
@@ -85,18 +82,6 @@ public final class FromJsonWriter {
                 writeIntoFile(file);
             }
         }
-    }
-
-    /**
-     * Checks if the proto {@code file} belongs to the Standard proto types or is a
-     * {@linkplain #SPINE_OPTIONS_PROTO Spine Options file}.
-     */
-    @VisibleForTesting
-    public static boolean isStandardOrSpineOptions(FileDescriptor file) {
-        boolean isStandardType = file.getPackage()
-                                     .startsWith(GOOGLE_PROTOBUF_PACKAGE);
-        boolean isSpineOptions = SPINE_OPTIONS_PROTO.equals(file.getFullName());
-        return isStandardType || isSpineOptions;
     }
 
     /**

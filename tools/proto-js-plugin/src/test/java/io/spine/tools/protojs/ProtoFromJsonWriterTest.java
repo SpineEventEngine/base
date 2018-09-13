@@ -39,10 +39,10 @@ import static io.spine.tools.protojs.ProtoFromJsonWriter.createFor;
 import static io.spine.tools.protojs.files.JsFiles.KNOWN_TYPES;
 import static io.spine.tools.protojs.files.JsFiles.KNOWN_TYPE_PARSERS;
 import static io.spine.tools.protojs.files.JsFiles.jsFileName;
-import static io.spine.tools.protojs.fromjson.FromJsonWriter.isStandardOrSpineOptions;
 import static io.spine.tools.protojs.given.Given.project;
 import static io.spine.tools.protojs.given.Writers.assertFileContains;
 import static io.spine.tools.protojs.message.MessageHandler.FROM_JSON;
+import static io.spine.tools.protojs.types.Types.isStandardOrSpineOptions;
 import static java.nio.file.Files.exists;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

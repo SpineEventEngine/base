@@ -22,15 +22,22 @@ package io.spine.tools.protojs.types;
 
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.EnumDescriptor;
+import com.google.protobuf.Descriptors.FileDescriptor;
+import com.google.protobuf.Timestamp;
+import io.spine.option.OptionsProto;
 import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import spine.test.protojs.Task.TaskId;
 
 import static io.spine.tools.protojs.given.Given.enumType;
 import static io.spine.tools.protojs.given.Given.message;
 import static io.spine.tools.protojs.types.Types.PREFIX;
+import static io.spine.tools.protojs.types.Types.isStandardOrSpineOptions;
 import static io.spine.tools.protojs.types.Types.typeWithProtoPrefix;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Dmytro Kuzmin
@@ -58,5 +65,25 @@ class TypesTest extends UtilityClassTest<Types> {
         String typeWithProtoPrefix = typeWithProtoPrefix(enumType);
         String expected = PREFIX + enumType.getFullName();
         assertEquals(expected, typeWithProtoPrefix);
+    }
+
+    @Test
+    @DisplayName("check if file is standard type")
+    void checkStandardType() {
+        FileDescriptor timestamp = Timestamp.getDescriptor()
+                                            .getFile();
+        assertTrue(isStandardOrSpineOptions(timestamp));
+
+        FileDescriptor taskId = TaskId.getDescriptor()
+                                      .getFile();
+        assertFalse(isStandardOrSpineOptions(taskId));
+    }
+
+    @Test
+    @DisplayName("check if file is Spine Options")
+    void checkSpineOptions() {
+        FileDescriptor options = OptionsProto.getDescriptor()
+                                               .getFile();
+        assertTrue(isStandardOrSpineOptions(options));
     }
 }

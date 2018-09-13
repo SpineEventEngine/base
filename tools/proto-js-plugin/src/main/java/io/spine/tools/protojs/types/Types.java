@@ -23,8 +23,10 @@ package io.spine.tools.protojs.types;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.EnumDescriptor;
+import com.google.protobuf.Descriptors.FileDescriptor;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.type.TypeUrl.GOOGLE_PROTOBUF_PACKAGE;
 
 /**
  * A helper tool for working with Protobuf types.
@@ -32,6 +34,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * @author Dmytro Kuzmin
  */
 public final class Types {
+
+    public static final String SPINE_OPTIONS_PROTO = "spine/options.proto";
 
     /**
      * The prefix which is added to all proto types in the JS generated code.
@@ -72,5 +76,19 @@ public final class Types {
         String typeName = enumDescriptor.getFullName();
         String nameWithPrefix = PREFIX + typeName;
         return nameWithPrefix;
+    }
+
+    /**
+     * Checks if the proto {@code file} belongs to the Standard proto types or is a
+     * {@linkplain #SPINE_OPTIONS_PROTO Spine Options file}.
+     *
+     * @param file
+     *         the descriptor of the file to check
+     */
+    public static boolean isStandardOrSpineOptions(FileDescriptor file) {
+        boolean isStandardType = file.getPackage()
+                                     .startsWith(GOOGLE_PROTOBUF_PACKAGE);
+        boolean isSpineOptions = SPINE_OPTIONS_PROTO.equals(file.getFullName());
+        return isStandardType || isSpineOptions;
     }
 }
