@@ -29,6 +29,7 @@ import java.io.File;
 import java.nio.file.Path;
 
 import static io.spine.tools.gradle.TaskName.COMPILE_PROTO_TO_JS;
+import static io.spine.tools.gradle.TaskName.COPY_MODULE_SOURCES;
 import static io.spine.tools.gradle.TaskName.GENERATE_FROM_JSON;
 import static io.spine.tools.protojs.ProtoFromJsonWriter.createFor;
 import static io.spine.tools.protojs.files.ProjectFiles.mainDescriptorSetFile;
@@ -58,7 +59,7 @@ import static io.spine.tools.protojs.files.ProjectFiles.testProtoJsLocation;
  *     <li>CommonJS import style for all generated proto definitions:
  *         {@code js {option "import_style=commonjs"}};
  *
- *     <li>{@code compileProtoToJs} task available in the project.
+ *     <li>{@code compileProtoToJs} and {@code copyModuleSources} tasks available in the project.
  * </ul>
  *
  * <p>In general, it is how the <a href="https://github.com/SpineEventEngine/web">Spine Web</a>
@@ -79,6 +80,7 @@ public class ProtoJsPlugin extends SpinePlugin {
         Action<Task> task = newAction(project);
         newTask(GENERATE_FROM_JSON, task)
                 .insertAfterTask(COMPILE_PROTO_TO_JS)
+                .insertBeforeTask(COPY_MODULE_SOURCES)
                 .applyNowTo(project);
     }
 
