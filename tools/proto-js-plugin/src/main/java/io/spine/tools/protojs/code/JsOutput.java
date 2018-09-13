@@ -39,7 +39,7 @@ import static java.lang.System.lineSeparator;
  * <p>The writable representation of the output may be obtained through the {@link #toString()}
  * method.
  *
- *  @author Dmytro Kuzmin
+ * @author Dmytro Kuzmin
  */
 @SuppressWarnings("DuplicateStringLiteralInspection")
 // Duplication with own tests checking the generated code.

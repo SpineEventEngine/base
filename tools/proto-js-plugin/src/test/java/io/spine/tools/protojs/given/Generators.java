@@ -23,9 +23,6 @@ package io.spine.tools.protojs.given;
 import io.spine.testing.Verify;
 import io.spine.tools.protojs.code.JsOutput;
 
-import static io.spine.testing.Verify.assertContains;
-import static io.spine.testing.Verify.assertNotContains;
-
 /**
  * A helper tool for working with generators output.
  *

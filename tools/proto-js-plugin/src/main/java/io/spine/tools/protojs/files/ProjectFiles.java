@@ -65,7 +65,6 @@ public final class ProjectFiles {
         return location;
     }
 
-
     /**
      * Obtains the root location of the generated JS protos from the "main" source set.
      *
@@ -79,7 +78,6 @@ public final class ProjectFiles {
         Path location = protoJsLocation(projectDir, MAIN);
         return location;
     }
-
 
     /**
      * Obtains the root location of the generated JS protos from the "test" source set.
@@ -107,6 +105,7 @@ public final class ProjectFiles {
         File file = defaultProject.mainDescriptors();
         return file;
     }
+
     /**
      * Obtains the "main" descriptor set file for the project directory.
      *
@@ -121,7 +120,6 @@ public final class ProjectFiles {
         File file = defaultProject.mainDescriptors();
         return file;
     }
-
 
     /**
      * Obtains the "test" descriptor set file for the project.
