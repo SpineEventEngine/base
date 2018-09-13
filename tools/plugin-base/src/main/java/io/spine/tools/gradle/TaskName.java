@@ -154,9 +154,6 @@ public enum TaskName {
      */
     ANNOTATE_PROTO("annotateProto"),
 
-    LINK_CLIENT_PROTO("linkClientProto"),
-    INSTALL_DEPENDENCIES("installDependencies"),
-
     /**
      * The name of the task, that annotates the Java sources generated from {@code .proto} files,
      * added to the Gradle lifecycle.
@@ -202,10 +199,25 @@ public enum TaskName {
      */
     MERGE_TEST_DESCRIPTOR_SET("mergeTestDescriptorSet"),
 
-    GENERATE_FROM_JSON("generateFromJson"),
-
+    /**
+     * The name of the task, that compiles .proto files into the JavaScript code.
+     *
+     * <p>Handles both {@code main} and {@code test} classes and resources scope.
+     */
     COMPILE_PROTO_TO_JS("compileProtoToJs"),
 
+    /**
+     * The name of the task, that generates JSON-parsing code for JavaScript proto definitions.
+     *
+     * <p>Handles both {@code main} and {@code test} classes and resources scope.
+     */
+    GENERATE_FROM_JSON("generateFromJson"),
+
+    /**
+     * The name of the task, that copies module sources for the JavaScript-based projects.
+     *
+     * <p>Handles both {@code main} and {@code test} classes and resources scope.
+     */
     COPY_MODULE_SOURCES("copyModuleSources");
 
     private final String value;

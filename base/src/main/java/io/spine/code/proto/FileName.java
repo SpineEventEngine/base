@@ -47,7 +47,7 @@ public class FileName extends AbstractFileName<FileName> implements UnderscoredN
     public static final String EXTENSION = ".proto";
 
     /** The file system separator as defined by Protobuf. Not platform-dependant. */
-    public static final char PATH_SEPARATOR = '/';
+    private static final char PATH_SEPARATOR = '/';
 
     private FileName(String value) {
         super(value);
@@ -88,21 +88,13 @@ public class FileName extends AbstractFileName<FileName> implements UnderscoredN
         return result;
     }
 
-    public String nameWithoutExtension() {
-        String value = value();
-        int extensionIndex = value.lastIndexOf(EXTENSION);
-        String result = value.substring(0, extensionIndex);
-        return result;
-    }
-
     /**
      * Obtains the file name without path and extension.
      */
-    public String nameOnly() {
-        String value = value();
-        int lastBackslashIndex = value.lastIndexOf(PATH_SEPARATOR);
-        int extensionIndex = value.lastIndexOf(EXTENSION);
-        String result = value.substring(lastBackslashIndex + 1, extensionIndex);
+    private String nameOnly() {
+        String name = nameWithoutExtension();
+        int lastBackslashIndex = name.lastIndexOf(PATH_SEPARATOR);
+        String result = name.substring(lastBackslashIndex + 1);
         return result;
     }
 
@@ -111,6 +103,16 @@ public class FileName extends AbstractFileName<FileName> implements UnderscoredN
      */
     public String nameOnlyCamelCase() {
         String result = CamelCase.convert(this);
+        return result;
+    }
+
+    /**
+     * Returns the file name without extension.
+     */
+    public String nameWithoutExtension() {
+        String value = value();
+        int extensionIndex = value.lastIndexOf(EXTENSION);
+        String result = value.substring(0, extensionIndex);
         return result;
     }
 

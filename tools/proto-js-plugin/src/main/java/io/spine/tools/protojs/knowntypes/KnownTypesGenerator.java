@@ -99,7 +99,7 @@ final class KnownTypesGenerator {
      */
     @VisibleForTesting
     void generateImports() {
-        Collection<FileDescriptor> files = fileSet.getFileDescriptors();
+        Collection<FileDescriptor> files = fileSet.files();
         JsImportGenerator importGenerator = JsImportGenerator.createFor(KNOWN_TYPES);
         for (FileDescriptor file : files) {
             generateImport(importGenerator, file);
@@ -141,7 +141,7 @@ final class KnownTypesGenerator {
      * Stores known types to the declared JS {@code Map}.
      */
     private void storeKnownTypes() {
-        Collection<FileDescriptor> files = fileSet.getFileDescriptors();
+        Collection<FileDescriptor> files = fileSet.files();
         for (Iterator<FileDescriptor> it = files.iterator(); it.hasNext(); ) {
             FileDescriptor file = it.next();
             boolean isLastFile = !it.hasNext();

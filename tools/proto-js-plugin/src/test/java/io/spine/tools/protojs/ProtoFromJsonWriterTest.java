@@ -94,7 +94,7 @@ class ProtoFromJsonWriterTest {
     }
 
     private void checkProcessedFiles(FileSet fileSet) throws IOException {
-        Collection<FileDescriptor> fileDescriptors = fileSet.getFileDescriptors();
+        Collection<FileDescriptor> fileDescriptors = fileSet.files();
         for (FileDescriptor file : fileDescriptors) {
             if (!isStandardOrSpineOptions(file)) {
                 checkFromJsonDeclared(file);

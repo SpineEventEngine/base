@@ -117,10 +117,6 @@ public final class FileSet {
         return result;
     }
 
-    public Set<Entry<FileName, FileDescriptor>> getEntries() {
-        return copyOf(files.entrySet());
-    }
-
     /**
      * Obtains immutable view of the files in this set.
      */
@@ -215,11 +211,6 @@ public final class FileSet {
                      .sorted()
                      .collect(toList());
         return fileNames;
-    }
-
-    public Collection<FileDescriptor> getFileDescriptors() {
-        Collection<FileDescriptor> values = files.values();
-        return values;
     }
 
     /**

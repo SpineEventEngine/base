@@ -28,8 +28,8 @@ import io.spine.tools.protojs.code.JsOutput;
 import io.spine.tools.protojs.knowntypes.ParserMapGenerator;
 import io.spine.type.TypeUrl;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
 import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Label.LABEL_REPEATED;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.ENUM;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.MESSAGE;
@@ -161,7 +161,7 @@ public final class Fields {
      * @see FieldHandlers#mapHandler(FieldDescriptor, JsOutput)
      */
     static FieldDescriptor keyDescriptor(FieldDescriptor field) {
-        checkState(isMap(field), "Trying to get key descriptor for the non-map field.");
+        checkArgument(isMap(field), "Trying to get key descriptor for the non-map field.");
         FieldDescriptor descriptor = field.getMessageType()
                                           .findFieldByName(MAP_ENTRY_KEY);
         return descriptor;
@@ -181,7 +181,7 @@ public final class Fields {
      * @see FieldHandlers#mapHandler(FieldDescriptor, JsOutput)
      */
     static FieldDescriptor valueDescriptor(FieldDescriptor field) {
-        checkState(isMap(field), "Trying to get value descriptor for the non-map field.");
+        checkArgument(isMap(field), "Trying to get value descriptor for the non-map field.");
         FieldDescriptor descriptor = field.getMessageType()
                                           .findFieldByName(MAP_ENTRY_VALUE);
         return descriptor;

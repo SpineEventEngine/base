@@ -63,6 +63,9 @@ import static java.lang.String.format;
 @Immutable
 public final class TypeUrl implements Serializable {
 
+    /**
+     * The package used to identify standard Protobuf types.
+     */
     public static final String GOOGLE_PROTOBUF_PACKAGE = "google.protobuf";
 
     private static final long serialVersionUID = 0L;
@@ -223,7 +226,7 @@ public final class TypeUrl implements Serializable {
      * Obtains a descriptor for the type of this URL.
      *
      * @return {@link Descriptor} if the URL represents a proto type,
-     * {@link EnumDescriptor} if the URL represents a proto enum
+     *         {@link EnumDescriptor} if the URL represents a proto enum
      */
     @Internal
     public GenericDescriptor getDescriptor() {
@@ -280,7 +283,7 @@ public final class TypeUrl implements Serializable {
         }
         TypeUrl typeUrl = (TypeUrl) o;
         return Objects.equals(prefix, typeUrl.prefix) &&
-                Objects.equals(typeName, typeUrl.typeName);
+               Objects.equals(typeName, typeUrl.typeName);
     }
 
     @Override
@@ -298,7 +301,7 @@ public final class TypeUrl implements Serializable {
          */
         @SuppressWarnings("DuplicateStringLiteralInspection")
         // Used in the generated code as a literal.
-                GOOGLE_APIS("type.googleapis.com"),
+        GOOGLE_APIS("type.googleapis.com"),
 
         /**
          * Type prefix for types provided by the Spine framework.

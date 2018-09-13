@@ -27,7 +27,7 @@ import com.google.protobuf.Descriptors.EnumDescriptor;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A helper tool for working with protobuf types.
+ * A helper tool for working with Protobuf types.
  *
  * @author Dmytro Kuzmin
  */
