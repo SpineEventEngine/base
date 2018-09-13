@@ -42,6 +42,7 @@ import static io.spine.tools.protojs.files.JsFiles.jsFileName;
 import static io.spine.tools.protojs.fromjson.FromJsonWriter.isStandardOrSpineOptions;
 import static io.spine.tools.protojs.given.Given.project;
 import static io.spine.tools.protojs.given.Writers.assertFileContains;
+import static io.spine.tools.protojs.message.MessageHandler.FROM_JSON;
 import static java.nio.file.Files.exists;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -105,7 +106,7 @@ class ProtoFromJsonWriterTest {
     private void checkFromJsonDeclared(FileDescriptor file) throws IOException {
         String jsFileName = jsFileName(file);
         Path jsFilePath = Paths.get(protoJsLocation.toString(), jsFileName);
-        String fromJsonDeclaration = ".fromJson = function";
+        String fromJsonDeclaration = '.' + FROM_JSON + " = function";
         assertFileContains(jsFilePath, fromJsonDeclaration);
     }
 }

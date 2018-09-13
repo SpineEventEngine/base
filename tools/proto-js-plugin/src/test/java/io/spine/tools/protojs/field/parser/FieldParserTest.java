@@ -33,6 +33,7 @@ import static io.spine.tools.protojs.given.Given.enumField;
 import static io.spine.tools.protojs.given.Given.int64Field;
 import static io.spine.tools.protojs.given.Given.messageField;
 import static io.spine.tools.protojs.given.Given.timestampField;
+import static io.spine.tools.protojs.message.MessageHandler.FROM_OBJECT;
 import static io.spine.tools.protojs.types.Types.typeWithProtoPrefix;
 
 /**
@@ -78,7 +79,7 @@ class FieldParserTest {
         parser.parseIntoVariable(VALUE, VARIABLE);
         Descriptor messageType = messageField().getMessageType();
         String type = typeWithProtoPrefix(messageType);
-        String parse = "let " + VARIABLE + " = " + type + ".fromObject(" + VALUE + ')';
+        String parse = "let " + VARIABLE + " = " + type + '.' + FROM_OBJECT + '(' + VALUE + ')';
         assertContains(jsOutput, parse);
     }
 

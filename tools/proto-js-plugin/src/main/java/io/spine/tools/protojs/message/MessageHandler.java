@@ -51,6 +51,16 @@ import static io.spine.tools.protojs.types.Types.typeWithProtoPrefix;
 public class MessageHandler {
 
     /**
+     * The {@code fromJson} method name.
+     */
+    public static final String FROM_JSON = "fromJson";
+
+    /**
+     * The {@code fromObject} method name.
+     */
+    public static final String FROM_OBJECT = "fromObject";
+
+    /**
      * The argument name of the {@code fromObject} method.
      */
     public static final String FROM_OBJECT_ARG = "obj";
@@ -133,10 +143,10 @@ public class MessageHandler {
      * Adds the {@code fromJson} code to the {@code jsOutput}.
      */
     private void addFromJsonCode(String typeName) {
-        String methodName = typeName + ".fromJson";
+        String methodName = typeName + '.' + FROM_JSON;
         jsOutput.enterMethod(methodName, FROM_JSON_ARG);
         jsOutput.addLine("let jsonObject = JSON.parse(" + FROM_JSON_ARG + ");");
-        jsOutput.returnValue(typeName + ".fromObject(jsonObject)");
+        jsOutput.returnValue(typeName + '.' + FROM_OBJECT + "(jsonObject)");
         jsOutput.exitFunction();
     }
 
@@ -144,7 +154,7 @@ public class MessageHandler {
      * Adds the {@code fromObject} code to the {@code jsOutput}.
      */
     private void addFromObjectCode(String typeName) {
-        String methodName = typeName + ".fromObject";
+        String methodName = typeName + '.' + FROM_OBJECT;
         jsOutput.enterMethod(methodName, FROM_OBJECT_ARG);
         checkParsedObject();
         jsOutput.addEmptyLine();

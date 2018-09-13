@@ -32,7 +32,9 @@ import java.io.IOException;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static io.spine.tools.protojs.given.Generators.assertContains;
 import static io.spine.tools.protojs.given.Given.message;
+import static io.spine.tools.protojs.message.MessageHandler.FROM_JSON;
 import static io.spine.tools.protojs.message.MessageHandler.FROM_JSON_ARG;
+import static io.spine.tools.protojs.message.MessageHandler.FROM_OBJECT;
 import static io.spine.tools.protojs.message.MessageHandler.FROM_OBJECT_ARG;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -66,7 +68,7 @@ class MessageHandlerTest {
     @DisplayName("generate `fromJson` method for message")
     void generateFromJson() {
         handler.generateFromJsonMethod();
-        String methodDeclaration = message.getFullName() + ".fromJson";
+        String methodDeclaration = message.getFullName() + '.' + FROM_JSON;
         assertGeneratedCodeContains(methodDeclaration);
     }
 
@@ -82,7 +84,7 @@ class MessageHandlerTest {
     @DisplayName("generate `fromObject` method for message")
     void generateFromObject() {
         handler.generateFromObjectMethod();
-        String methodDeclaration = message.getFullName() + ".fromObject";
+        String methodDeclaration = message.getFullName() + '.' + FROM_OBJECT;
         assertGeneratedCodeContains(methodDeclaration);
     }
 

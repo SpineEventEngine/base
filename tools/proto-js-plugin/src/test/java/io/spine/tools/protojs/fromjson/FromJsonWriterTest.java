@@ -41,6 +41,7 @@ import static io.spine.tools.protojs.fromjson.FromJsonWriter.SPINE_OPTIONS_PROTO
 import static io.spine.tools.protojs.given.Given.TASK_PROTO;
 import static io.spine.tools.protojs.given.Given.project;
 import static io.spine.tools.protojs.given.Writers.assertFileContains;
+import static io.spine.tools.protojs.message.MessageHandler.FROM_JSON;
 import static io.spine.tools.protojs.types.Types.typeWithProtoPrefix;
 import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.nio.file.Files.exists;
@@ -93,7 +94,7 @@ class FromJsonWriterTest {
         Descriptor taskIdDescriptor = file.getMessageTypes()
                                           .get(0);
         String type = typeWithProtoPrefix(taskIdDescriptor);
-        String fromJsonDeclaration = type + ".fromJson = function";
+        String fromJsonDeclaration = type + '.' + FROM_JSON + " = function";
         assertFileContains(filePath, fromJsonDeclaration);
     }
 

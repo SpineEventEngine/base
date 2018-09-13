@@ -35,6 +35,7 @@ import static io.spine.tools.protojs.given.Generators.assertContains;
 import static io.spine.tools.protojs.given.Given.mapField;
 import static io.spine.tools.protojs.given.Given.repeatedField;
 import static io.spine.tools.protojs.given.Given.singularField;
+import static io.spine.tools.protojs.message.MessageHandler.FROM_OBJECT;
 import static io.spine.tools.protojs.message.MessageHandler.FROM_OBJECT_ARG;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -111,7 +112,7 @@ class FieldHandlerTest {
         singularHandler.generateJs();
         String typeName = singularField().getMessageType()
                                          .getFullName();
-        String recursiveCall = typeName + ".fromObject(" + jsObject + ')';
+        String recursiveCall = typeName + '.' + FROM_OBJECT + '(' + jsObject + ')';
         assertContains(jsOutput, recursiveCall);
     }
 

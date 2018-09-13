@@ -25,6 +25,7 @@ import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.tools.protojs.code.JsOutput;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.tools.protojs.message.MessageHandler.FROM_OBJECT;
 import static io.spine.tools.protojs.types.Types.typeWithProtoPrefix;
 
 /**
@@ -72,6 +73,7 @@ public final class MessageFieldParser implements FieldParser {
     public void parseIntoVariable(String value, String variable) {
         checkNotNull(value);
         checkNotNull(variable);
-        jsOutput.addLine("let " + variable + " = " + typeName + ".fromObject(" + value + ");");
+        String recursiveCall = typeName + '.' + FROM_OBJECT + '(' + value + ')';
+        jsOutput.addLine("let " + variable + " = " + recursiveCall + ';');
     }
 }

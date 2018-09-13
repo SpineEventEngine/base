@@ -29,6 +29,8 @@ import org.junit.jupiter.api.Test;
 
 import static io.spine.tools.protojs.given.Generators.assertContains;
 import static io.spine.tools.protojs.given.Given.file;
+import static io.spine.tools.protojs.message.MessageHandler.FROM_JSON;
+import static io.spine.tools.protojs.message.MessageHandler.FROM_OBJECT;
 
 /**
  * @author Dmytro Kuzmin
@@ -67,9 +69,9 @@ class FromJsonGeneratorTest {
     void generateMethods() {
         generator.generateMethods();
         for (Descriptor message : file.getMessageTypes()) {
-            String fromJsonDeclaration = message.getFullName() + ".fromJson";
+            String fromJsonDeclaration = message.getFullName() + '.' + FROM_JSON;
             assertGeneratedCodeContains(fromJsonDeclaration);
-            String fromObjectDeclaration = message.getFullName() + ".fromObject";
+            String fromObjectDeclaration = message.getFullName() + '.' + FROM_OBJECT;
             assertGeneratedCodeContains(fromObjectDeclaration);
         }
     }
