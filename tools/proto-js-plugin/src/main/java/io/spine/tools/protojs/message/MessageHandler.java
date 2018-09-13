@@ -48,6 +48,8 @@ import static io.spine.tools.protojs.types.Types.typeWithProtoPrefix;
  *
  * @author Dmytro Kuzmin
  */
+@SuppressWarnings("DuplicateStringLiteralInspection")
+// The generated code duplicates the code used in test that checks it.
 public class MessageHandler {
 
     /**
@@ -140,8 +142,6 @@ public class MessageHandler {
     /**
      * Adds the {@code fromJson} code to the {@code jsOutput}.
      */
-    @SuppressWarnings("DuplicateStringLiteralInspection")
-    // The generated code duplicates the code used in test that checks it.
     private void addFromJsonCode(String typeName) {
         String methodName = typeName + '.' + FROM_JSON;
         jsOutput.enterMethod(methodName, FROM_JSON_ARG);
