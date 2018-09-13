@@ -122,6 +122,8 @@ public final class JsOutput {
      *         the value to assign to the variable
      */
     public void declareVariable(String name, String value) {
+        checkNotNull(name);
+        checkNotNull(value);
         addLine(VARIABLE_MODIFIER + ' ' + name + " = " + value + ';');
     }
 
