@@ -21,6 +21,8 @@
 package io.spine.tools.protojs.field.parser;
 
 import com.google.protobuf.Descriptors.Descriptor;
+import com.google.protobuf.Descriptors.EnumDescriptor;
+import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.tools.protojs.code.JsOutput;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -28,6 +30,7 @@ import org.junit.jupiter.api.Test;
 
 import static io.spine.tools.protojs.field.parser.FieldValueParsers.parserFor;
 import static io.spine.tools.protojs.given.Generators.assertContains;
+import static io.spine.tools.protojs.given.Given.enumField;
 import static io.spine.tools.protojs.given.Given.int64Field;
 import static io.spine.tools.protojs.given.Given.messageField;
 import static io.spine.tools.protojs.given.Given.timestampField;
@@ -55,6 +58,17 @@ class FieldValueParserTest {
         FieldValueParser parser = parserFor(int64Field(), jsOutput);
         parser.parseIntoVariable(VALUE, VARIABLE);
         String parse = "let " + VARIABLE + " = parseInt(" + VALUE + ')';
+        assertContains(jsOutput, parse);
+    }
+
+    @Test
+    @DisplayName("parse enum field via JS enum object attribute")
+    void parseEnum() {
+        FieldValueParser parser = parserFor(enumField(), jsOutput);
+        parser.parseIntoVariable(VALUE, VARIABLE);
+        EnumDescriptor enumType = enumField().getEnumType();
+        String typeName = typeWithProtoPrefix(enumType);
+        String parse = "let " + VARIABLE + " = " + typeName + '[' + VALUE + ']';
         assertContains(jsOutput, parse);
     }
 

@@ -18,13 +18,39 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.tools.protojs.field.parser.primitive.given;
+
+import com.google.protobuf.Descriptors.FieldDescriptor.Type;
+
+import static io.spine.tools.protojs.given.Given.bytesField;
+import static io.spine.tools.protojs.given.Given.floatField;
+import static io.spine.tools.protojs.given.Given.int32Field;
+import static io.spine.tools.protojs.given.Given.int64Field;
+
 /**
- * The test environment classes for {@code ProtoJsPlugin} tests.
+ * The test env for tests related to {@code PrimitiveParser} implementations.
+ *
+ * @author Dmytro Kuzmin
  */
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.tools.protojs.given;
+public final class PrimitiveParserTestEnv {
 
-import com.google.errorprone.annotations.CheckReturnValue;
+    /** Prevents instantiation of this utility class. */
+    private PrimitiveParserTestEnv() {
+    }
 
-import javax.annotation.ParametersAreNonnullByDefault;
+    public static Type int32Type() {
+        return int32Field().getType();
+    }
+
+    public static Type int64Type() {
+        return int64Field().getType();
+    }
+
+    public static Type floatType() {
+        return floatField().getType();
+    }
+
+    public static Type bytesType() {
+        return bytesField().getType();
+    }
+}

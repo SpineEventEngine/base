@@ -20,22 +20,29 @@
 
 package io.spine.tools.protojs.field.parser.primitive;
 
+import io.spine.testing.UtilityClassTest;
 import io.spine.tools.protojs.code.JsOutput;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.testing.Verify.assertInstanceOf;
-import static io.spine.tools.protojs.given.Given.enumField;
-import static io.spine.tools.protojs.given.Given.int64Field;
+import static io.spine.tools.protojs.field.parser.primitive.given.PrimitiveParserTestEnv.bytesType;
+import static io.spine.tools.protojs.field.parser.primitive.given.PrimitiveParserTestEnv.floatType;
+import static io.spine.tools.protojs.field.parser.primitive.given.PrimitiveParserTestEnv.int32Type;
+import static io.spine.tools.protojs.field.parser.primitive.given.PrimitiveParserTestEnv.int64Type;
 
 /**
  * @author Dmytro Kuzmin
  */
 @DisplayName("PrimitiveParsers utility should")
-class PrimitiveParsersTest {
+class PrimitiveParsersTest extends UtilityClassTest<PrimitiveParsers> {
 
     private JsOutput jsOutput;
+
+    PrimitiveParsersTest() {
+        super(PrimitiveParsers.class);
+    }
 
     @BeforeEach
     void setUp() {
@@ -43,16 +50,30 @@ class PrimitiveParsersTest {
     }
 
     @Test
-    @DisplayName("create parser for primitive value")
-    void createPrimitiveParser() {
-        PrimitiveParser parser = PrimitiveParsers.createFor(int64Field(), jsOutput);
+    @DisplayName("create identity parser")
+    void createIdentityParser() {
+        PrimitiveParser parser = PrimitiveParsers.createFor(int32Type(), jsOutput);
+        assertInstanceOf(IdentityParser.class, parser);
+    }
+
+    @Test
+    @DisplayName("create parser for long value")
+    void createLongParser() {
+        PrimitiveParser parser = PrimitiveParsers.createFor(int64Type(), jsOutput);
         assertInstanceOf(LongParser.class, parser);
     }
 
     @Test
-    @DisplayName("create parser for enum value")
-    void createEnumParser() {
-        PrimitiveParser parser = PrimitiveParsers.createFor(enumField(), jsOutput);
-        assertInstanceOf(EnumParser.class, parser);
+    @DisplayName("create parser for float value")
+    void createFloatParser() {
+        PrimitiveParser parser = PrimitiveParsers.createFor(floatType(), jsOutput);
+        assertInstanceOf(FloatParser.class, parser);
+    }
+
+    @Test
+    @DisplayName("create parser for bytes value")
+    void createBytesParser() {
+        PrimitiveParser parser = PrimitiveParsers.createFor(bytesType(), jsOutput);
+        assertInstanceOf(BytesParser.class, parser);
     }
 }

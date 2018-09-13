@@ -19,11 +19,11 @@
  */
 
 /**
- * The test environment classes for {@code ProtoJsPlugin} tests.
+ * The test environment classes for {@code PrimitiveParser} tests.
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault
-package io.spine.tools.protojs.given;
+package io.spine.tools.protojs.field.parser.primitive.given;
 
 import com.google.errorprone.annotations.CheckReturnValue;
 

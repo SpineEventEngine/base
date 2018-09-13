@@ -30,6 +30,7 @@ import org.junit.jupiter.api.Test;
 
 import static io.spine.testing.Verify.assertInstanceOf;
 import static io.spine.tools.protojs.field.parser.FieldValueParsers.parserFor;
+import static io.spine.tools.protojs.given.Given.enumField;
 import static io.spine.tools.protojs.given.Given.messageField;
 import static io.spine.tools.protojs.given.Given.primitiveField;
 import static io.spine.tools.protojs.given.Given.timestampField;
@@ -61,6 +62,13 @@ class FieldValueParsersTest extends UtilityClassTest<FieldValueParsers> {
     void createParserForPrimitive() {
         FieldValueParser parser = parserFor(primitiveField(), jsOutput);
         assertInstanceOf(PrimitiveFieldParser.class, parser);
+    }
+
+    @Test
+    @DisplayName("create parser for enum field")
+    void createParserForEnum() {
+        FieldValueParser parser = parserFor(enumField(), jsOutput);
+        assertInstanceOf(EnumFieldParser.class, parser);
     }
 
     @Test

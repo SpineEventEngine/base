@@ -80,6 +80,10 @@ public final class Given {
         return field(INT32_FIELD);
     }
 
+    public static FieldDescriptor enumField() {
+        return field(ENUM_FIELD);
+    }
+
     public static FieldDescriptor messageField() {
         return field(MESSAGE_FIELD);
     }
@@ -114,10 +118,6 @@ public final class Given {
 
     public static FieldDescriptor bytesField() {
         return field(BYTES_FIELD);
-    }
-
-    public static FieldDescriptor enumField() {
-        return field(ENUM_FIELD);
     }
 
     private static FieldDescriptor field(FieldContainerEntry entry) {

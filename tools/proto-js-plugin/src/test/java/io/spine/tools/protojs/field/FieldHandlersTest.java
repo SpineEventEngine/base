@@ -26,6 +26,7 @@ import io.spine.testing.UtilityClassTest;
 import io.spine.tools.protojs.code.JsOutput;
 import io.spine.tools.protojs.field.checker.MessageFieldChecker;
 import io.spine.tools.protojs.field.checker.PrimitiveFieldChecker;
+import io.spine.tools.protojs.field.parser.EnumFieldParser;
 import io.spine.tools.protojs.field.parser.MessageFieldParser;
 import io.spine.tools.protojs.field.parser.PrimitiveFieldParser;
 import io.spine.tools.protojs.field.parser.WellKnownFieldParser;
@@ -34,6 +35,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.testing.Verify.assertInstanceOf;
+import static io.spine.tools.protojs.given.Given.enumField;
 import static io.spine.tools.protojs.given.Given.mapField;
 import static io.spine.tools.protojs.given.Given.messageField;
 import static io.spine.tools.protojs.given.Given.primitiveField;
@@ -96,11 +98,14 @@ class FieldHandlersTest extends UtilityClassTest<FieldHandlers> {
     @Test
     @DisplayName("set value parser of correct type for handler")
     void setValueParser() {
-        AbstractFieldHandler messageHandler = handlerFor(messageField());
-        assertInstanceOf(MessageFieldParser.class, messageHandler.parser());
-
         AbstractFieldHandler primitiveHandler = handlerFor(primitiveField());
         assertInstanceOf(PrimitiveFieldParser.class, primitiveHandler.parser());
+
+        AbstractFieldHandler enumHandler = handlerFor(enumField());
+        assertInstanceOf(EnumFieldParser.class, enumHandler.parser());
+
+        AbstractFieldHandler messageHandler = handlerFor(messageField());
+        assertInstanceOf(MessageFieldParser.class, messageHandler.parser());
 
         AbstractFieldHandler timestampHandler = handlerFor(timestampField());
         assertInstanceOf(WellKnownFieldParser.class, timestampHandler.parser());

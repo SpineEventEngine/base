@@ -65,7 +65,7 @@ public final class EnumFieldParser implements FieldValueParser {
      * {@inheritDoc}
      *
      * <p>The {@code enum} proto value in JSON is represented as a plain {@code string}. Thus, the
-     * parser obtains the value by parsing the JS enum from the given {@code string}.
+     * parser obtains the JS enum object property using given {@code string} as an attribute name.
      */
     @Override
     public void parseIntoVariable(String value, String variable) {
