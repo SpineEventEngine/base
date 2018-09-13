@@ -46,6 +46,13 @@ import static java.lang.System.lineSeparator;
         "ClassWithTooManyMethods" /* A lot of simple utility methods for code generation. */})
 public final class JsOutput {
 
+    /**
+     * The modifier which is used to create variables.
+     *
+     * <p>Currently is set to ES6 {@code let}.
+     */
+    static final String VARIABLE_MODIFIER = "let";
+
     @VisibleForTesting
     static final String LINE_SEPARATOR = lineSeparator();
 
@@ -109,15 +116,13 @@ public final class JsOutput {
     /**
      * Declares a variable in the code.
      *
-     * <p>The variable is ES6-style, i.e. declared with {@code let}.
-     *
      * @param name
      *         the variable name
      * @param value
      *         the value to assign to the variable
      */
     public void declareVariable(String name, String value) {
-        addLine("let " + name + " = " + value + ';');
+        addLine(VARIABLE_MODIFIER + ' ' + name + " = " + value + ';');
     }
 
     /**

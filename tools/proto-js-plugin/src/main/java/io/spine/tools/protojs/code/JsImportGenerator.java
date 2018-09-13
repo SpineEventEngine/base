@@ -23,6 +23,7 @@ package io.spine.tools.protojs.code;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.tools.protojs.code.JsOutput.VARIABLE_MODIFIER;
 import static java.lang.String.format;
 import static java.lang.String.join;
 import static java.util.Collections.nCopies;
@@ -143,12 +144,11 @@ public final class JsImportGenerator {
      *         the name of the variable which will hold the imported module
      * @return the named import statement
      */
-    @SuppressWarnings("DuplicateStringLiteralInspection") // Duplicates with random test code.
     public static String rawNamedImport(String fileToImport, String importName) {
         checkNotNull(fileToImport);
         checkNotNull(importName);
         String importStatement = rawImport(fileToImport);
-        String namedImport = "let " + importName + " = " + importStatement;
+        String namedImport = VARIABLE_MODIFIER + ' ' + importName + " = " + importStatement;
         return namedImport;
     }
 
