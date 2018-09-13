@@ -36,9 +36,9 @@ final class SingularFieldHandler extends AbstractFieldHandler {
 
     @Override
     public void generateJs() {
-        String jsObject = acquireJsObject();
-        checkNotUndefined(jsObject);
-        mergeFieldValue(jsObject);
+        String fieldValue = acquireFieldValue();
+        checkNotUndefined(fieldValue);
+        mergeFieldValue(fieldValue);
         exitUndefinedCheck();
     }
 

@@ -68,8 +68,8 @@ final class MapFieldHandler extends AbstractFieldHandler {
 
     @Override
     public void generateJs() {
-        String jsObject = acquireJsObject();
-        String value = iterateOwnAttributes(jsObject);
+        String fieldValue = acquireFieldValue();
+        String value = iterateOwnAttributes(fieldValue);
         parseMapKey();
         mergeFieldValue(value);
         exitOwnAttributeIteration();

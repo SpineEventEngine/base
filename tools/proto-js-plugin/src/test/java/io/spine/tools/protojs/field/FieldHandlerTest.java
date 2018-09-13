@@ -64,11 +64,11 @@ class FieldHandlerTest {
     }
 
     @Test
-    @DisplayName("acquire JS object by field JSON name")
+    @DisplayName("acquire field value by field JSON name")
     void acquireJsObject() {
-        String jsObject = singularHandler.acquireJsObject();
+        String fieldValue = singularHandler.acquireFieldValue();
         String expected = FROM_OBJECT_ARG + '.' + singularField().getJsonName();
-        assertEquals(expected, jsObject);
+        assertEquals(expected, fieldValue);
     }
 
     @Nested
@@ -101,20 +101,20 @@ class FieldHandlerTest {
     @Test
     @DisplayName("call field value checker to check field value for null")
     void callChecker() {
-        String jsObject = singularHandler.acquireJsObject();
+        String fieldValue = singularHandler.acquireFieldValue();
         singularHandler.generateJs();
-        String nullCheck = "if (" + jsObject + " === null)";
+        String nullCheck = "if (" + fieldValue + " === null)";
         assertContains(jsOutput, nullCheck);
     }
 
     @Test
     @DisplayName("call field value parser to parse field value")
     void callParser() {
-        String jsObject = singularHandler.acquireJsObject();
+        String fieldValue = singularHandler.acquireFieldValue();
         singularHandler.generateJs();
         String typeName = singularField().getMessageType()
                                          .getFullName();
-        String recursiveCall = typeName + '.' + FROM_OBJECT + '(' + jsObject + ')';
+        String recursiveCall = typeName + '.' + FROM_OBJECT + '(' + fieldValue + ')';
         assertContains(jsOutput, recursiveCall);
     }
 

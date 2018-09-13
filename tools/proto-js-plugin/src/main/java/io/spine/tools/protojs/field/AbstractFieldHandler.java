@@ -60,11 +60,12 @@ abstract class AbstractFieldHandler implements FieldHandler {
     }
 
     /**
-     * Returns the corresponding field value of the {@code fromObject} method argument.
+     * Returns the property of the {@code fromObject} method argument which corresponds to the
+     * processed field.
      *
-     * @return the field value in the form of the JS object
+     * @return the field value as parsed from the JSON
      */
-    String acquireJsObject() {
+    String acquireFieldValue() {
         String fieldJsonName = field.getJsonName();
         String jsObject = FROM_OBJECT_ARG + '.' + fieldJsonName;
         return jsObject;

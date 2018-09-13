@@ -50,8 +50,8 @@ final class RepeatedFieldHandler extends AbstractFieldHandler {
 
     @Override
     public void generateJs() {
-        String jsObject = acquireJsObject();
-        iterateListValues(jsObject);
+        String fieldValue = acquireFieldValue();
+        iterateListValues(fieldValue);
         mergeFieldValue(LIST_ITEM);
         exitListValueIteration();
     }
