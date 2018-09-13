@@ -26,7 +26,6 @@ import com.google.protobuf.Descriptors.Descriptor;
 import io.spine.test.code.NoOuterClassnameSourceFileTest.NoOuterClassnameMessage;
 import io.spine.test.code.SourceFile.NestedMessage;
 import io.spine.test.code.StandaloneMessage;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -38,7 +37,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /**
  * @author Dmytro Dashenkov
  */
-@Disabled
 @DisplayName("Java SourceFile should")
 @SuppressWarnings("InnerClassMayBeStatic") // Nested test suite.
 class SourceFileTest {
