@@ -25,7 +25,7 @@ import io.spine.tools.protojs.code.JsOutput;
 /**
  * The generator of the code necessary to handle a proto field.
  *
- * <p>"To handle" implies parsing the field value from the JS object and assigning it to the field.
+ * <p>To "handle" implies parsing the field value from the JS object and assigning it to the field.
  *
  * <p>The {@code undefined} field values in general should be ignored, while {@code null} is a
  * valid value for the fields of {@code message} type.

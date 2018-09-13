@@ -81,7 +81,7 @@ abstract class AbstractFieldHandler implements FieldHandler {
      * {@link #mergeFormat()} method.
      *
      * @param value
-     *         the name of the variable containing value to set the field to
+     *         the name of the variable containing the value to set the field to
      */
     void mergeFieldValue(String value) {
         checker.performNullCheck(value, mergeFormat());
