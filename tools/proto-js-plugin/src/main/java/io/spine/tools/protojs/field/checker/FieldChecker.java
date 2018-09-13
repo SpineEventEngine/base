@@ -43,8 +43,7 @@ public interface FieldChecker {
      * @param value
      *         the name of the variable representing the field value to check
      * @param mergeFieldFormat
-     *         the code that sets/adds value to the field that can be formatted with some value
-     * @see io.spine.tools.protojs.field.AbstractFieldHandler#mergeFormat()
+     *         the code that sets/adds value to the field
      */
     void performNullCheck(String value, String mergeFieldFormat);
 
