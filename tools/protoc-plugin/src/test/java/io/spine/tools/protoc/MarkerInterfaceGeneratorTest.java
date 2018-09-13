@@ -26,8 +26,10 @@ import com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import com.google.protobuf.compiler.PluginProtos.Version;
+import io.spine.base.CommandMessage;
+import io.spine.base.EventMessage;
+import io.spine.base.RejectionMessage;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -36,7 +38,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static io.spine.tools.protoc.MessageAndInterface.INSERTION_POINT_IMPLEMENTS;
+import static io.spine.tools.protoc.InsertionPoint.INSERTION_POINT_IMPLEMENTS;
 import static java.lang.String.format;
 import static java.util.regex.Pattern.compile;
 import static org.junit.Assert.assertEquals;
@@ -44,18 +46,14 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-/**
- * @author Dmytro Dashenkov
- */
-@Ignore
-public class MarkerInterfaceGeneratorShould {
+public class MarkerInterfaceGeneratorTest {
 
     private static final String PROTO_PACKAGE = "spine.tools.protoc.";
 
     private static final String PACKAGE_PATH =
-            MarkerInterfaceGeneratorShould.class.getPackage()
-                                                .getName()
-                                                .replace('.', '/');
+            MarkerInterfaceGeneratorTest.class.getPackage()
+                                              .getName()
+                                              .replace('.', '/');
     private static final Pattern CUSTOMER_EVENT_INTERFACE_PATTERN =
             compile("^\\s*io\\.spine\\.tools\\.protoc\\.ProtocCustomerEvent\\s*,\\s*$");
 
@@ -232,6 +230,78 @@ public class MarkerInterfaceGeneratorShould {
                 Matcher matcher = CUSTOMER_EVENT_INTERFACE_PATTERN.matcher(content);
                 assertTrue(format("Unexpected inserted content: %s", content), matcher.matches());
             }
+        }
+    }
+
+    @Test
+    public void generate_EventMessage_insertion_points() {
+        // Sample path; never resolved
+        String filePath = "/proto/spine/tools/protoc/test_events.proto";
+
+        FileDescriptorProto descriptor = TestEventsProto.getDescriptor().toProto();
+        CodeGeneratorRequest request =
+                CodeGeneratorRequest.newBuilder()
+                                    .setCompilerVersion(version())
+                                    .addFileToGenerate(filePath)
+                                    .addProtoFile(descriptor)
+                                    .build();
+        CodeGeneratorResponse response = codeGenerator.process(request);
+        assertNotNull(response);
+        List<File> files = response.getFileList();
+        assertEquals(2, files.size());
+        for (File file : files) {
+            assertTrue(file.hasInsertionPoint());
+            assertTrue(file.hasName());
+
+            assertEquals(EventMessage.class.getName() + ',', file.getContent());
+        }
+    }
+
+    @Test
+    public void generate_CommandMessage_insertion_points() {
+        // Sample path; never resolved
+        String filePath = "/proto/spine/tools/protoc/test_commands.proto";
+
+        FileDescriptorProto descriptor = TestCommandsProto.getDescriptor().toProto();
+        CodeGeneratorRequest request =
+                CodeGeneratorRequest.newBuilder()
+                                    .setCompilerVersion(version())
+                                    .addFileToGenerate(filePath)
+                                    .addProtoFile(descriptor)
+                                    .build();
+        CodeGeneratorResponse response = codeGenerator.process(request);
+        assertNotNull(response);
+        List<File> files = response.getFileList();
+        assertEquals(2, files.size());
+        for (File file : files) {
+            assertTrue(file.hasInsertionPoint());
+            assertTrue(file.hasName());
+
+            assertEquals(CommandMessage.class.getName() + ',', file.getContent());
+        }
+    }
+
+    @Test
+    public void generate_RejectionMessage_insertion_points() {
+        // Sample path; never resolved
+        String filePath = "/proto/spine/tools/protoc/test_rejections.proto";
+
+        FileDescriptorProto descriptor = Rejections.getDescriptor().toProto();
+        CodeGeneratorRequest request =
+                CodeGeneratorRequest.newBuilder()
+                                    .setCompilerVersion(version())
+                                    .addFileToGenerate(filePath)
+                                    .addProtoFile(descriptor)
+                                    .build();
+        CodeGeneratorResponse response = codeGenerator.process(request);
+        assertNotNull(response);
+        List<File> files = response.getFileList();
+        assertEquals(1, files.size());
+        for (File file : files) {
+            assertTrue(file.hasInsertionPoint());
+            assertTrue(file.hasName());
+
+            assertEquals(RejectionMessage.class.getName() + ',', file.getContent());
         }
     }
 

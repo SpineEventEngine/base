@@ -29,6 +29,7 @@ import org.slf4j.event.SubstituteLoggingEvent;
 
 import java.util.Queue;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.truth.Truth.assertAbout;
 import static com.google.common.truth.Truth.assert_;
 
@@ -55,6 +56,7 @@ public final class LogTruth {
 
     /** Creates a subject for the passed logging event queue. */
     public static IterableSubject assertThat(Queue<SubstituteLoggingEvent> queue) {
+        checkNotNull(queue);
         return assert_().that(queue);
     }
 }

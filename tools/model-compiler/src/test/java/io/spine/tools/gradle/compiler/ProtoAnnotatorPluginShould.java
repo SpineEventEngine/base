@@ -176,7 +176,7 @@ public class ProtoAnnotatorPluginShould {
             throws FileNotFoundException {
         FileDescriptorProto fileDescriptor = compileAndAnnotate(testFile);
         DescriptorProto messageDescriptor = fileDescriptor.getMessageType(0);
-        Path sourcePath = SourceFile.forMessage(messageDescriptor, false, fileDescriptor)
+        Path sourcePath = SourceFile.forMessage(messageDescriptor, fileDescriptor)
                                     .getPath();
         NestedTypeFieldsAnnotationCheck check =
                 new NestedTypeFieldsAnnotationCheck(messageDescriptor, shouldBeAnnotated);
@@ -188,7 +188,7 @@ public class ProtoAnnotatorPluginShould {
         FileDescriptorProto fileDescriptor = compileAndAnnotate(testFile);
         DescriptorProto messageDescriptor = fileDescriptor.getMessageType(0);
         FieldDescriptorProto experimentalField = messageDescriptor.getField(0);
-        Path sourcePath = SourceFile.forMessage(messageDescriptor, false, fileDescriptor)
+        Path sourcePath = SourceFile.forMessage(messageDescriptor, fileDescriptor)
                                     .getPath();
         check(sourcePath, new FieldAnnotationCheck(experimentalField, shouldBeAnnotated));
     }
@@ -198,10 +198,10 @@ public class ProtoAnnotatorPluginShould {
         FileDescriptorProto fileDescriptor = compileAndAnnotate(testFile);
         for (DescriptorProto messageDescriptor : fileDescriptor.getMessageTypeList()) {
             Path messagePath =
-                    SourceFile.forMessage(messageDescriptor, false, fileDescriptor)
+                    SourceFile.forMessage(messageDescriptor, fileDescriptor)
                               .getPath();
             Path messageOrBuilderPath =
-                    SourceFile.forMessage(messageDescriptor, true, fileDescriptor)
+                    SourceFile.forMessageOrBuilder(messageDescriptor, fileDescriptor)
                               .getPath();
             SourceCheck annotationCheck =
                     new MainDefinitionAnnotationCheck(shouldBeAnnotated);

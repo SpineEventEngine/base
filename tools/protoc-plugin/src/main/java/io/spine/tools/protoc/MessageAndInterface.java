@@ -20,26 +20,20 @@
 
 package io.spine.tools.protoc;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
-import com.squareup.javapoet.JavaFile;
-import io.spine.code.java.PackageName;
-import io.spine.code.java.SourceFile;
 import io.spine.option.Options;
 
+import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
 
-import static com.google.common.base.Strings.isNullOrEmpty;
-import static io.spine.code.java.PackageName.delimiter;
 import static io.spine.option.OptionsProto.everyIs;
 import static io.spine.option.OptionsProto.is;
 import static io.spine.tools.protoc.MarkerInterfaceSpec.prepareInterface;
-import static java.lang.String.format;
 
 /**
  * A tuple of two {@link File} instances representing a message and the marker interface
@@ -49,13 +43,10 @@ import static java.lang.String.format;
  */
 final class MessageAndInterface {
 
-    @VisibleForTesting
-    static final String INSERTION_POINT_IMPLEMENTS = "message_implements:%s";
+    private final InsertionPoint messageFile;
+    private final UserMarkerInterface interfaceFile;
 
-    private final File messageFile;
-    private final File interfaceFile;
-
-    private MessageAndInterface(File messageFile, File interfaceFile) {
+    private MessageAndInterface(InsertionPoint messageFile, UserMarkerInterface interfaceFile) {
         this.messageFile = messageFile;
         this.interfaceFile = interfaceFile;
     }
@@ -63,42 +54,11 @@ final class MessageAndInterface {
     /**
      * Scans the given {@linkplain FileDescriptorProto file} for the {@code (every_is)} option.
      */
-    static Optional<MessageAndInterface> scanFileOption(FileDescriptorProto file,
-                                                        DescriptorProto msg) {
-        Optional<String> everyIs = getEveryIs(file);
-        if (everyIs.isPresent()) {
-            MessageAndInterface resultingFile = generateFile(file, msg, everyIs.get());
-            return Optional.of(resultingFile);
-        } else {
-            return Optional.empty();
-        }
-    }
-
-    private static MessageAndInterface generateFile(FileDescriptorProto file,
-                                                    DescriptorProto msg,
-                                                    String optionValue) {
-        MarkerInterfaceSpec interfaceSpec = prepareInterface(optionValue, file);
-        File.Builder srcFile = prepareFile(file, msg);
-        String messageFqn = file.getPackage() + delimiter() + msg.getName();
-        File messageFile = implementInterface(srcFile,
-                                              interfaceSpec.getFqn(),
-                                              messageFqn);
-        JavaFile interfaceContent = interfaceSpec.toJavaCode();
-        File interfaceFile = File.newBuilder()
-                                 .setName(interfaceSpec.toSourceFile()
-                                                       .toString())
-                                 .setContent(interfaceContent.toString())
-                                 .build();
-        MessageAndInterface result = new MessageAndInterface(messageFile, interfaceFile);
-        return result;
-    }
-
-    private static String toTypeName(FileDescriptorProto file, DescriptorProto msg) {
-        boolean multipleFiles = file.getOptions()
-                                    .getJavaMultipleFiles();
-        return multipleFiles
-               ? msg.getName()
-               : resolveName(file);
+    static Collection<CompilerOutput> scanFileOption(FileDescriptorProto file, DescriptorProto msg) {
+        Set<CompilerOutput> files = getEveryIs(file).map(option -> generateFile(file, msg, option))
+                                          .map(MessageAndInterface::asSet)
+                                          .orElseGet(ImmutableSet::of);
+        return files;
     }
 
     private static Optional<String> getEveryIs(FileDescriptorProto descriptor) {
@@ -106,49 +66,14 @@ final class MessageAndInterface {
         return value;
     }
 
-    private static File implementInterface(File.Builder srcFile,
-                                           String interfaceTypeName,
-                                           String messageTypeName) {
-        String insertionPoint = format(INSERTION_POINT_IMPLEMENTS, messageTypeName);
-        File result = srcFile.setInsertionPoint(insertionPoint)
-                             .setContent(interfaceTypeName + ',')
-                             .build();
-        return result;
-    }
-
-    private static String resolveName(FileDescriptorProto fileDescriptor) {
-        String name = fileDescriptor.getOptions()
-                                    .getJavaOuterClassname();
-        if (isNullOrEmpty(name)) {
-            name = fileDescriptor.getName();
-        }
-        return name;
-    }
-
-    private static File.Builder prepareFile(FileDescriptorProto file, DescriptorProto msg) {
-        String javaPackage = PackageName.resolve(file)
-                                        .value();
-        String messageName = toTypeName(file, msg);
-        String fileName = SourceFile.forType(javaPackage, messageName)
-                                    .toString();
-        String uriStyleName = fileName.replace('\\', '/');
-        File.Builder srcFile = File.newBuilder()
-                                   .setName(uriStyleName);
-        return srcFile;
-    }
-
     /**
      * Scans the given {@linkplain DescriptorProto message} for the {@code (is)} option.
      */
-    static Optional<MessageAndInterface> scanMsgOption(FileDescriptorProto file,
-                                                       DescriptorProto msg) {
-        Optional<String> everyIs = getIs(msg);
-        if (everyIs.isPresent()) {
-            MessageAndInterface resultingFile = generateFile(file, msg, everyIs.get());
-            return Optional.of(resultingFile);
-        } else {
-            return Optional.empty();
-        }
+    static Collection<CompilerOutput> scanMsgOption(FileDescriptorProto file, DescriptorProto msg) {
+        Set<CompilerOutput> files = getIs(msg).map(option -> generateFile(file, msg, option))
+                                    .map(MessageAndInterface::asSet)
+                                    .orElseGet(ImmutableSet::of);
+        return files;
     }
 
     private static Optional<String> getIs(DescriptorProto descriptor) {
@@ -156,10 +81,20 @@ final class MessageAndInterface {
         return value;
     }
 
+    private static MessageAndInterface generateFile(FileDescriptorProto file,
+                                                    DescriptorProto msg,
+                                                    String optionValue) {
+        MarkerInterfaceSpec interfaceSpec = prepareInterface(optionValue, file);
+        UserMarkerInterface markerInterface = UserMarkerInterface.from(interfaceSpec);
+        InsertionPoint message = InsertionPoint.implementInterface(file, msg, markerInterface);
+        MessageAndInterface result = new MessageAndInterface(message, markerInterface);
+        return result;
+    }
+
     /**
      * Converts the instance into the pair containing a message file and an interface file.
      */
-    Set<File> asSet() {
+    Set<CompilerOutput> asSet() {
         return ImmutableSet.of(messageFile, interfaceFile);
     }
 

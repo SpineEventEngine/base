@@ -33,6 +33,7 @@ import java.io.PrintWriter;
 
 import static io.spine.io.Files2.ensureFile;
 import static io.spine.io.Files2.existsNonEmpty;
+import static java.nio.charset.Charset.defaultCharset;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -70,7 +71,9 @@ public class Files2Should {
         assertFalse(existsNonEmpty(doesNotExist));
 
         File nonEmpty = testFolder.newFile();
-        try (PrintWriter out = new PrintWriter(nonEmpty.getAbsolutePath())) {
+        String path = nonEmpty.getAbsolutePath();
+        String charsetName = defaultCharset().name();
+        try (PrintWriter out = new PrintWriter(path, charsetName)) {
             out.println(TestValues.randomString());
         }
         assertTrue(existsNonEmpty(nonEmpty));

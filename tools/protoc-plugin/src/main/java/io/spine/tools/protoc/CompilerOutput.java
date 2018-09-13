@@ -18,16 +18,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.tools.protoc;
+
+import static com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
+
 /**
- * The versions of the libraries used.
+ * Output of the Protobuf compiler plugin.
  *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
+ * @author Dmytro Dashenkov
  */
+interface CompilerOutput {
 
-final def SPINE_VERSION = '0.10.70-SNAPSHOT'
-
-ext {
-    spineVersion = SPINE_VERSION
-    versionToPublish = SPINE_VERSION
+    /**
+     * Obtains the {@link File CodeGeneratorResponse.File} representing this output item.
+     *
+     * @return compiler output as a {@link File}
+     */
+    File asFile();
 }

@@ -180,6 +180,8 @@ subprojects {
 
         testImplementation deps.test.slf4j
         testImplementation deps.test.guavaTestlib
+        testImplementation deps.test.junit5Api
+        testImplementation deps.test.junit5Runner
     }
 
     sourceSets {
@@ -193,24 +195,15 @@ subprojects {
         }
     }
 
-    /* Uncomment this block if you need to display console output during the Gradle build.*/
     test {
-        testLogging {
-            // Make sure output from standard out or error is shown in Gradle output.
-            showStandardStreams = true
-
-            // Or we use events method:
-            // events 'standard_out', 'standard_error'
-
-            // Or set property events:
-            events = ['standard_out', 'standard_error']
-
-            // Instead of string values we can
-            // use enum values:
-            // events org.gradle.api.tasks.testing.logging.TestLogEvent.STANDARD_OUT,
-            //        org.gradle.api.tasks.testing.logging.TestLogEvent.STANDARD_ERROR,
+        useJUnitPlatform {
+            includeEngines 'junit-jupiter', 'junit-vintage'
         }
+
+        include "**/*Test.class", "**/*Should.class"
     }
+
+    apply from: deps.scripts.testOutput
 
     javadoc {
         source = sourceSets.main.allJava

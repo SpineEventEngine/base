@@ -20,6 +20,7 @@
 
 package io.spine.tools.protoc;
 
+import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
@@ -27,7 +28,7 @@ import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import java.util.Collection;
 import java.util.Optional;
 
-import static com.google.common.collect.ImmutableSet.of;
+import static io.spine.tools.protoc.BuiltInMarkerInterface.scanForBuiltIns;
 import static io.spine.tools.protoc.MessageAndInterface.scanFileOption;
 import static io.spine.tools.protoc.MessageAndInterface.scanMsgOption;
 
@@ -48,16 +49,18 @@ import static io.spine.tools.protoc.MessageAndInterface.scanMsgOption;
  */
 public class MarkerInterfaceGenerator extends SpineProtoGenerator {
 
+    private static final SpineProtoGenerator instance = new MarkerInterfaceGenerator();
+
     /** Prevents singleton class instantiation. */
     private MarkerInterfaceGenerator() {
         super();
     }
 
     /**
-     * Retrieves the single instance of the {@link MarkerInterfaceGenerator} type.
+     * Retrieves the single instance of the {@code MarkerInterfaceGenerator} type.
      */
     public static SpineProtoGenerator instance() {
-        return Singleton.INSTANCE.value;
+        return instance;
     }
 
     /**
@@ -76,26 +79,20 @@ public class MarkerInterfaceGenerator extends SpineProtoGenerator {
      * </ol>
      */
     @Override
-    protected Collection<File> processMessage(FileDescriptorProto file, DescriptorProto message) {
-        Optional<MessageAndInterface> fromMsgOption = scanMsgOption(file, message);
-        if (fromMsgOption.isPresent()) {
-            return fromMsgOption.get()
-                                .asSet();
+    protected Collection<CompilerOutput>
+    processMessage(FileDescriptorProto file, DescriptorProto message) {
+        ImmutableList.Builder<CompilerOutput> result = ImmutableList.builder();
+
+        Optional<CompilerOutput> builtInMarkedInterface = scanForBuiltIns(file, message);
+        builtInMarkedInterface.ifPresent(result::add);
+
+        Collection<CompilerOutput> fromMsgOption = scanMsgOption(file, message);
+        result.addAll(fromMsgOption);
+
+        if (fromMsgOption.isEmpty()) {
+            Collection<CompilerOutput> fromFileOption = scanFileOption(file, message);
+            result.addAll(fromFileOption);
         }
-
-        Optional<MessageAndInterface> fromFileOption = scanFileOption(file, message);
-        if (fromFileOption.isPresent()) {
-            return fromFileOption.get()
-                                 .asSet();
-        }
-
-        return of();
-    }
-
-    private enum Singleton {
-        INSTANCE;
-
-        @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final SpineProtoGenerator value = new MarkerInterfaceGenerator();
+        return result.build();
     }
 }

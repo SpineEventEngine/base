@@ -27,6 +27,7 @@ import com.google.protobuf.DescriptorProtos.ServiceDescriptorProto;
 import io.spine.code.AbstractSourceFile;
 
 import java.nio.file.Path;
+import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Exceptions.newIllegalStateException;
@@ -51,7 +52,8 @@ public final class SourceFile extends AbstractSourceFile {
     /**
      * Obtains the generated file {@link Path} for the specified file descriptor.
      *
-     * @param file the proto file descriptor
+     * @param file
+     *         the proto file descriptor
      * @return the relative file path
      */
     public static SourceFile forOuterClassOf(FileDescriptorProto file) {
@@ -63,10 +65,11 @@ public final class SourceFile extends AbstractSourceFile {
     }
 
     /**
-     * Obtains the {@link Path} to a folder, that contains
+     * Obtains the {@link java.nio.file.Path} to a folder, that contains
      * a generated file from the file descriptor.
      *
-     * @param file the proto file descriptor
+     * @param file
+     *         the proto file descriptor
      * @return the relative folder path
      */
     private static Directory getFolder(FileDescriptorProto file) {
@@ -77,18 +80,39 @@ public final class SourceFile extends AbstractSourceFile {
     }
 
     /**
-     * Obtains the generated file {@link Path} for the specified message descriptor.
+     * Obtains the generated file for the specified message descriptor.
      *
-     * @param  message   the descriptor of the message type for which we obtain the source code file
-     * @param  orBuilder indicates if a {@code MessageOrBuilder} path for the message should
-     *                   be returned
-     * @param  file      the descriptor of the proto file which contains the declaration of the
-     *                   message type
+     * @param message
+     *         the descriptor of the message type for which we obtain the source code file
+     * @param file
+     *         the descriptor of the proto file which contains the declaration of the
+     *         message type
      * @return the relative file path
      */
     public static SourceFile forMessage(DescriptorProto message,
-                                        boolean orBuilder,
                                         FileDescriptorProto file) {
+        return forMessageOrInterface(message, file, FileName::forMessage);
+    }
+
+    /**
+     * Obtains the generated file for the {@code MessageOrBuilder} interface of the specified
+     * message descriptor.
+     *
+     * @param message
+     *         the descriptor of the message type for which we obtain the source code file
+     * @param file
+     *         the descriptor of the proto file which contains the declaration of the
+     *         message type
+     * @return the relative file path
+     */
+    public static SourceFile forMessageOrBuilder(DescriptorProto message,
+                                                 FileDescriptorProto file) {
+        return forMessageOrInterface(message, file, FileName::forMessageOrBuilder);
+    }
+
+    private static SourceFile forMessageOrInterface(DescriptorProto message,
+                                                    FileDescriptorProto file,
+                                                    Function<DescriptorProto, FileName> fileName) {
         checkNotNull(file);
         checkNotNull(message);
         String typeName = message.getName();
@@ -96,16 +120,15 @@ public final class SourceFile extends AbstractSourceFile {
                  .contains(message)) {
             throw invalidNestedDefinition(file.getName(), typeName);
         }
-
-        if (!file.getOptions()
-                 .hasJavaMultipleFiles()) {
+        if (file.getOptions().getJavaMultipleFiles()) {
+            FileName filename = fileName.apply(message);
+            SourceFile result = getFolder(file).resolve(filename);
+            return result;
+        } else {
             SourceFile result = forOuterClassOf(file);
             return result;
         }
 
-        FileName filename = FileName.forMessage(message, orBuilder);
-        SourceFile result = getFolder(file).resolve(filename);
-        return result;
     }
 
     private static IllegalStateException invalidNestedDefinition(String filename,
@@ -115,10 +138,12 @@ public final class SourceFile extends AbstractSourceFile {
     }
 
     /**
-     * Obtains the generated file {@link Path} for the specified enum descriptor.
+     * Obtains the generated file for the specified enum descriptor.
      *
-     * @param enumType the enum descriptor to get path
-     * @param file the file descriptor containing the enum descriptor
+     * @param enumType
+     *         the enum descriptor to get the file for
+     * @param file
+     *         the file descriptor containing the enum descriptor
      * @return the relative file path
      */
     public static SourceFile forEnum(EnumDescriptorProto enumType, FileDescriptorProto file) {
@@ -128,18 +153,25 @@ public final class SourceFile extends AbstractSourceFile {
                  .contains(enumType)) {
             throw invalidNestedDefinition(file.getName(), enumType.getName());
         }
-
-        if (!file.getOptions()
-                 .hasJavaMultipleFiles()) {
+        if (file.getOptions().getJavaMultipleFiles()) {
+            FileName filename = FileName.forEnum(enumType);
+            SourceFile result = getFolder(file).resolve(filename);
+            return result;
+        } else {
             SourceFile result = forOuterClassOf(file);
             return result;
         }
-
-        FileName filename = FileName.forEnum(enumType);
-        SourceFile result = getFolder(file).resolve(filename);
-        return result;
     }
 
+    /**
+     * Obtains the generated file for the specified service descriptor.
+     *
+     * @param service
+     *         the service descriptor to get the file for
+     * @param file
+     *         the file descriptor containing the enum descriptor
+     * @return the relative file path
+     */
     public static SourceFile forService(ServiceDescriptorProto service, FileDescriptorProto file) {
         checkNotNull(service);
         checkNotNull(file);
