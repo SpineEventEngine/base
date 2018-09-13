@@ -37,14 +37,14 @@ public abstract class AbstractCompilerOutput implements CompilerOutput {
      * Creates a new {@code AbstractCompilerOutput} with the given {@link File}.
      *
      * @param file
-     *         the {@linkplain #toFile() file representation} of this compiler output item
+     *         the {@linkplain #asFile() file representation} of this compiler output item
      */
     protected AbstractCompilerOutput(File file) {
         this.file = file;
     }
 
     @Override
-    public final File toFile() {
+    public final File asFile() {
         return file;
     }
 

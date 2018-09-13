@@ -34,5 +34,5 @@ interface CompilerOutput {
      *
      * @return compiler output as a {@link File}
      */
-    File toFile();
+    File asFile();
 }

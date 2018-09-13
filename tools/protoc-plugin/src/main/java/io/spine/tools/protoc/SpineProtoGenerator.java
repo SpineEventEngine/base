@@ -164,7 +164,7 @@ public abstract class SpineProtoGenerator {
     private static Collection<File> mergeFiles(Collection<CompilerOutput> allFiles) {
         Map<Boolean, List<File>> partitionedFiles = allFiles
                 .stream()
-                .map(CompilerOutput::toFile)
+                .map(CompilerOutput::asFile)
                 .collect(partitioningBy(File::hasInsertionPoint));
         Collection<File> insertionPoints = mergeInsertionPoints(partitionedFiles.get(true));
         Collection<File> completeFiles = partitionedFiles.get(false);
