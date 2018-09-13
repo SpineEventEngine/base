@@ -19,6 +19,10 @@
  */
 group 'io.spine.tools'
 
+ext {
+    jUnitPioneerVersion = '0.1.2'
+}
+
 dependencies {
     testProtobuf project(':base')
 
@@ -31,7 +35,7 @@ dependencies {
 
     testImplementation deps.test.junit5Api
     testImplementation deps.test.junit5Runner
-    testImplementation "org.junit-pioneer:junit-pioneer:0.1.2"
+    testImplementation "org.junit-pioneer:junit-pioneer:$jUnitPioneerVersion"
 }
 
 protobuf {
