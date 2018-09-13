@@ -115,19 +115,19 @@ class FieldsTest extends UtilityClassTest<Fields> {
     @SuppressWarnings({"CheckReturnValue", "ResultOfMethodCallIgnored"})
     // Calling methods to throw exception.
     @Nested
-    @DisplayName("throw ISE if")
-    class ThrowIse {
+    @DisplayName("throw IAE if")
+    class ThrowIae {
 
         @Test
         @DisplayName("getting key descriptor from non-map field")
         void getKeyForNonMap() {
-            assertThrows(IllegalStateException.class, () -> keyDescriptor(repeatedField()));
+            assertThrows(IllegalArgumentException.class, () -> keyDescriptor(repeatedField()));
         }
 
         @Test
         @DisplayName("getting value descriptor from non-map field")
         void getValueForNonMap() {
-            assertThrows(IllegalStateException.class, () -> valueDescriptor(repeatedField()));
+            assertThrows(IllegalArgumentException.class, () -> valueDescriptor(repeatedField()));
         }
     }
 
