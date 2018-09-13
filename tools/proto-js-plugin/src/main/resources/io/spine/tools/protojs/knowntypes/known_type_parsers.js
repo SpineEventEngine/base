@@ -30,7 +30,12 @@ let duration = require('google-protobuf/google/protobuf/duration_pb.js');
 let field_mask = require('google-protobuf/google/protobuf/field_mask_pb.js');
 let any = require('google-protobuf/google/protobuf/any_pb.js');
 
-// todo document this file too
+/**
+ * The parsers used to obtain Protobuf standard types from JSON.
+ *
+ * For the details about how the parsers work, see
+ * https://developers.google.com/protocol-buffers/docs/proto3#json.
+ */
 
 class BoolValueParser {
 
@@ -172,7 +177,6 @@ class TimestampParser {
 class DurationParser {
 
     parse(value) {
-        // Remove "s" symbol at the end of the string.
         value = value.substring(0, value.length - 1);
         let values = value.split('.');
         let result = new duration.Duration();
@@ -186,8 +190,6 @@ class DurationParser {
             }
             let nanosNumber = parseInt(nanos, 10);
             result.setNanos(nanosNumber);
-        } else {
-            // Do nothing, should never happen.
         }
         return result;
     }
