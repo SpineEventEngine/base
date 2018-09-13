@@ -45,6 +45,9 @@ import static io.spine.tools.protojs.given.Writers.assertFileContains;
 import static java.nio.file.Files.exists;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * @author Dmytro Kuzmin
+ */
 @SuppressWarnings("DuplicateStringLiteralInspection") // Common test display names.
 @DisplayName("ProtoFromJsonWriter should")
 class ProtoFromJsonWriterTest {

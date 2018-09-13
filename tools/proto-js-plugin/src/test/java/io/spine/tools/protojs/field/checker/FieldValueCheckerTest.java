@@ -31,6 +31,9 @@ import static io.spine.tools.protojs.given.Given.messageField;
 import static io.spine.tools.protojs.given.Given.primitiveField;
 import static java.lang.String.format;
 
+/**
+ * @author Dmytro Kuzmin
+ */
 @DisplayName("FieldValueChecker should")
 class FieldValueCheckerTest {
 

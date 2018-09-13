@@ -20,16 +20,11 @@
 
 package io.spine.tools.protojs.types;
 
-import com.google.protobuf.Descriptors;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.EnumDescriptor;
 import io.spine.testing.UtilityClassTest;
-import io.spine.tools.protojs.given.Given;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import spine.test.protojs.Fields;
-import spine.test.protojs.Fields.FieldContainer;
-import spine.test.protojs.Fields.TaskType;
 
 import static io.spine.tools.protojs.given.Given.enumType;
 import static io.spine.tools.protojs.given.Given.message;
@@ -37,6 +32,9 @@ import static io.spine.tools.protojs.types.Types.PREFIX;
 import static io.spine.tools.protojs.types.Types.typeWithProtoPrefix;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * @author Dmytro Kuzmin
+ */
 @DisplayName("Types utility should")
 class TypesTest extends UtilityClassTest<Types> {
 

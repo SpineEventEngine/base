@@ -28,6 +28,9 @@ import org.junit.jupiter.api.Test;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * @author Dmytro Kuzmin
+ */
 @DisplayName("JsImportGenerator should")
 class JsImportGeneratorTest {
 

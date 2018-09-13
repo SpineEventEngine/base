@@ -37,6 +37,9 @@ import static io.spine.tools.protojs.given.Writers.assertFileContains;
 import static io.spine.tools.protojs.given.Writers.assertFileNotContains;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * @author Dmytro Kuzmin
+ */
 @DisplayName("JsFiles utility should")
 class JsFilesTest extends UtilityClassTest<JsFiles> {
 

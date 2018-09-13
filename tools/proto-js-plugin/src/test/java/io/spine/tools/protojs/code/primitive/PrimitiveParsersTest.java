@@ -29,6 +29,9 @@ import static io.spine.testing.Verify.assertInstanceOf;
 import static io.spine.tools.protojs.given.Given.enumField;
 import static io.spine.tools.protojs.given.Given.int64Field;
 
+/**
+ * @author Dmytro Kuzmin
+ */
 @DisplayName("PrimitiveParsers utility should")
 class PrimitiveParsersTest {
 

@@ -34,6 +34,9 @@ import static io.spine.tools.protojs.given.Generators.assertContains;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * @author Dmytro Kuzmin
+ */
 @DisplayName("ParserMapGenerator should")
 class ParserMapGeneratorTest {
 

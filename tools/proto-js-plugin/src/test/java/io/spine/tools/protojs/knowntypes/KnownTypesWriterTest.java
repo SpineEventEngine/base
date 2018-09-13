@@ -36,6 +36,9 @@ import static java.nio.file.Files.exists;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
+/**
+ * @author Dmytro Kuzmin
+ */
 @SuppressWarnings("DuplicateStringLiteralInspection") // Common test display names.
 @DisplayName("KnownTypesWriter should")
 class KnownTypesWriterTest {

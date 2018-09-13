@@ -34,6 +34,9 @@ import static io.spine.tools.protojs.given.Given.messageField;
 import static io.spine.tools.protojs.given.Given.primitiveField;
 import static io.spine.tools.protojs.given.Given.timestampField;
 
+/**
+ * @author Dmytro Kuzmin
+ */
 @DisplayName("FieldValueCheckers utility should")
 class FieldValueCheckersTest extends UtilityClassTest<FieldValueCheckers> {
 

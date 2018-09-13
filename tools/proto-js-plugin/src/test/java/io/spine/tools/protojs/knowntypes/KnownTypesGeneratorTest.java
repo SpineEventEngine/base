@@ -34,6 +34,9 @@ import static io.spine.tools.protojs.given.Generators.assertContains;
 import static io.spine.tools.protojs.given.Given.file;
 import static io.spine.tools.protojs.given.Given.message;
 
+/**
+ * @author Dmytro Kuzmin
+ */
 @DisplayName("KnownTypesGenerator should")
 class KnownTypesGeneratorTest {
 

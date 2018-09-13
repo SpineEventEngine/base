@@ -39,6 +39,9 @@ import static io.spine.tools.protojs.files.ProjectFiles.testDescriptorSetFile;
 import static io.spine.tools.protojs.files.ProjectFiles.testProtoJsLocation;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * @author Dmytro Kuzmin
+ */
 @DisplayName("ProjectFiles utility should")
 class ProjectFilesTest extends UtilityClassTest<ProjectFiles> {
 

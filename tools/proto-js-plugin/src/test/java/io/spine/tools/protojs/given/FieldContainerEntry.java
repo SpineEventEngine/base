@@ -20,6 +20,11 @@
 
 package io.spine.tools.protojs.given;
 
+/**
+ * The field of the {@code FieldContainer} type declared in {@code fields.proto}.
+ *
+ * @author Dmytro Kuzmin
+ */
 enum FieldContainerEntry {
 
     INT32_FIELD("int32_field"),
@@ -41,11 +46,6 @@ enum FieldContainerEntry {
     }
 
     String protoName() {
-        return protoName;
-    }
-
-    @Override
-    public String toString() {
         return protoName;
     }
 }

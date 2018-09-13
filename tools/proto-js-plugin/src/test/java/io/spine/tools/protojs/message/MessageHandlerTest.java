@@ -38,6 +38,9 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+/**
+ * @author Dmytro Kuzmin
+ */
 @DisplayName("MessageHandler should")
 class MessageHandlerTest {
 

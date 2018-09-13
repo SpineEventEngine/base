@@ -44,6 +44,9 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * @author Dmytro Kuzmin
+ */
 @SuppressWarnings("InnerClassMayBeStatic") // JUnit nested classes cannot be static.
 @DisplayName("Fields utility should")
 class FieldsTest extends UtilityClassTest<Fields> {

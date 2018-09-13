@@ -26,8 +26,14 @@ import io.spine.tools.protojs.code.JsOutput;
 import static io.spine.testing.Verify.assertContains;
 import static io.spine.testing.Verify.assertNotContains;
 
+/**
+ * A helper tool for working with generators output.
+ *
+ * @author Dmytro Kuzmin
+ */
 public final class Generators {
 
+    /** Prevents instantiation of this utility class. */
     private Generators() {
     }
 

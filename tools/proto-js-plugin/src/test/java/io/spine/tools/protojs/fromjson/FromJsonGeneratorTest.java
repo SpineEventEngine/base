@@ -30,6 +30,9 @@ import org.junit.jupiter.api.Test;
 import static io.spine.tools.protojs.given.Generators.assertContains;
 import static io.spine.tools.protojs.given.Given.file;
 
+/**
+ * @author Dmytro Kuzmin
+ */
 @DisplayName("FromJsonGenerator should")
 class FromJsonGeneratorTest {
 

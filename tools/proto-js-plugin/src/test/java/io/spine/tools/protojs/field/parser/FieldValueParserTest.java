@@ -33,6 +33,9 @@ import static io.spine.tools.protojs.given.Given.messageField;
 import static io.spine.tools.protojs.given.Given.timestampField;
 import static io.spine.tools.protojs.types.Types.typeWithProtoPrefix;
 
+/**
+ * @author Dmytro Kuzmin
+ */
 @DisplayName("FieldValueParser should")
 class FieldValueParserTest {
 

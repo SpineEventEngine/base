@@ -38,6 +38,9 @@ import static io.spine.tools.protojs.given.Given.singularField;
 import static io.spine.tools.protojs.message.MessageHandler.FROM_OBJECT_ARG;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * @author Dmytro Kuzmin
+ */
 @DisplayName("FieldHandler should")
 class FieldHandlerTest {
 

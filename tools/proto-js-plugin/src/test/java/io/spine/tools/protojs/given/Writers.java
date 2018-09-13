@@ -30,6 +30,11 @@ import static java.nio.file.Files.readAllBytes;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * A helper tool for working with file writers.
+ *
+ * @author Dmytro Kuzmin
+ */
 public final class Writers {
 
     private Writers() {

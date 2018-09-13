@@ -48,6 +48,9 @@ import static io.spine.tools.protojs.given.FieldContainerEntry.REPEATED_FIELD;
 import static io.spine.tools.protojs.given.FieldContainerEntry.TIMESTAMP_FIELD;
 import static java.util.Collections.singletonList;
 
+/**
+ * @author Dmytro Kuzmin
+ */
 public final class Given {
 
     public static final String TASK_PROTO = "task.proto";
@@ -140,9 +143,6 @@ public final class Given {
         gradleProject.executeTask(COMPILE_PROTO_TO_JS);
     }
 
-    /**
-     * This class is read-only for external accessors.
-     */
     public static class Project {
 
         private final Path protoJsLocation;

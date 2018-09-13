@@ -38,6 +38,9 @@ import static io.spine.tools.protojs.given.Given.int32Field;
 import static io.spine.tools.protojs.given.Given.int64Field;
 import static io.spine.tools.protojs.types.Types.typeWithProtoPrefix;
 
+/**
+ * @author Dmytro Kuzmin
+ */
 @DisplayName("PrimitiveParser should")
 class PrimitiveParserTest {
 

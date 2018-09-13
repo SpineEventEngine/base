@@ -40,6 +40,9 @@ import static io.spine.tools.protojs.given.Given.primitiveField;
 import static io.spine.tools.protojs.given.Given.repeatedField;
 import static io.spine.tools.protojs.given.Given.timestampField;
 
+/**
+ * @author Dmytro Kuzmin
+ */
 @DisplayName("FieldHandlers utility should")
 class FieldHandlersTest extends UtilityClassTest<FieldHandlers> {
 

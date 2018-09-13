@@ -32,6 +32,9 @@ import static io.spine.tools.protojs.given.Generators.assertContains;
 import static io.spine.tools.protojs.given.Generators.assertNotContains;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * @author Dmytro Kuzmin
+ */
 @DisplayName("JsOutput should")
 class JsOutputTest {
 
