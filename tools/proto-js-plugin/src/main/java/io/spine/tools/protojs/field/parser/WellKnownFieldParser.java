@@ -76,7 +76,7 @@ public final class WellKnownFieldParser implements FieldParser {
         checkNotNull(value);
         checkNotNull(variable);
         String parserMap = PARSERS_IMPORT_NAME + '.' + ParserMapGenerator.MAP_NAME;
-        jsOutput.addLine("let parser = " + parserMap + ".get('" + typeUrl + "');");
-        jsOutput.addLine("let " + variable + " = parser.parse(" + value + ");");
+        jsOutput.declareVariable("parser", parserMap + ".get('" + typeUrl + "')");
+        jsOutput.declareVariable(variable, "parser.parse(" + value + ')');
     }
 }

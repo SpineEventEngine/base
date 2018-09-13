@@ -140,10 +140,12 @@ public class MessageHandler {
     /**
      * Adds the {@code fromJson} code to the {@code jsOutput}.
      */
+    @SuppressWarnings("DuplicateStringLiteralInspection")
+    // The generated code duplicates the code used in test that checks it.
     private void addFromJsonCode(String typeName) {
         String methodName = typeName + '.' + FROM_JSON;
         jsOutput.enterMethod(methodName, FROM_JSON_ARG);
-        jsOutput.addLine("let jsonObject = JSON.parse(" + FROM_JSON_ARG + ");");
+        jsOutput.declareVariable("jsObject", "JSON.parse(" + FROM_JSON_ARG + ')');
         jsOutput.returnValue(typeName + '.' + FROM_OBJECT + "(jsonObject)");
         jsOutput.exitFunction();
     }
@@ -156,7 +158,7 @@ public class MessageHandler {
         jsOutput.enterMethod(methodName, FROM_OBJECT_ARG);
         checkParsedObject();
         jsOutput.addEmptyLine();
-        jsOutput.addLine("let " + MESSAGE + " = new " + typeName + "();");
+        jsOutput.declareVariable(MESSAGE, "new " + typeName + "()");
         handleMessageFields();
         jsOutput.returnValue(MESSAGE);
         jsOutput.exitFunction();

@@ -45,13 +45,13 @@ import static io.spine.tools.protojs.files.ProjectFiles.testProtoJsLocation;
  * to the {@code classpath} configuration and add
  * {@code apply plugin: 'io.spine.tools.proto-js-plugin'} to the module generating JS protos.
  *
- * <p>The tool will insert the {@code fromJson(json)} method for every JS message definition found
+ * <p>The tool will create the {@code fromJson(json)} method for every JS message definition found
  * among the {@linkplain io.spine.code.proto.FileSet known types}.
  *
  * <p>This plugin currently relies on the set of the hard-coded Gradle settings which have to be
  * set to the required values in a project willing to use the plugin. These settings are:
- * <ul>
- *     <li>JS proto definitions path set to {@code ${projectDir}/proto/${sourceSet}/js"};
+ * <ol>
+ *     <li>The JS proto definitions path set to {@code ${projectDir}/proto/${sourceSet}/js"};
  *
  *     <li>descriptor set file stored under the
  *         {@code "${projectDir}/build/descriptors/${task.sourceSet.name}/known_types.desc"};
@@ -60,7 +60,7 @@ import static io.spine.tools.protojs.files.ProjectFiles.testProtoJsLocation;
  *         {@code js {option "import_style=commonjs"}};
  *
  *     <li>{@code compileProtoToJs} and {@code copyModuleSources} tasks available in the project.
- * </ul>
+ * </ol>
  *
  * <p>In general, it is how the <a href="https://github.com/SpineEventEngine/web">Spine Web</a>
  * builds its Protobuf definitions to JS and the plugin relies on this behaviour.
@@ -85,8 +85,8 @@ public class ProtoJsPlugin extends SpinePlugin {
     }
 
     /**
-     * Creates an {@code Action} to generate {@code fromJson} method for both main and test proto
-     * definitions.
+     * Creates an {@code Action} to generate the {@code fromJson} method for both main and test
+     * proto definitions.
      *
      * <p>The paths to the JS proto definitions location, as well as to the descriptor set file,
      * are currently hard-coded.
@@ -115,10 +115,13 @@ public class ProtoJsPlugin extends SpinePlugin {
     }
 
     /**
-     * Generates JSON-parsing code for the proto definitions in the specified
-     * {@code descriptorSetFile}.
+     * Generates the JSON-parsing code for the proto definitions in the specified descriptor set
+     * file.
      *
-     * <p>The {@code protoJsLocation} is a root folder of the generated proto JS files.
+     * @param protoJsLocation
+     *         the root of the generated JS proto definitions
+     * @param descriptorSetFile
+     *         the descriptor set file
      */
     private static void generateFor(Path protoJsLocation, File descriptorSetFile) {
         ProtoFromJsonWriter writer = createFor(protoJsLocation, descriptorSetFile);

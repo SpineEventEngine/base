@@ -69,6 +69,6 @@ public final class EnumFieldParser implements FieldParser {
     public void parseIntoVariable(String value, String variable) {
         checkNotNull(value);
         checkNotNull(variable);
-        jsOutput.addLine("let " + variable + " = " + typeName + '[' + value + "];");
+        jsOutput.declareVariable(variable, typeName + '[' + value + ']');
     }
 }

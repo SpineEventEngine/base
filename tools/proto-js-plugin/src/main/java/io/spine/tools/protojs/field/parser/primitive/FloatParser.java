@@ -41,7 +41,7 @@ final class FloatParser extends AbstractPrimitiveParser {
     public void parseIntoVariable(String value, String variable) {
         checkNotNull(value);
         checkNotNull(variable);
-        jsOutput().addLine("let " + variable + " = parseFloat(" + value + ");");
+        jsOutput().declareVariable(variable, "parseFloat(" + value + ')');
     }
 
     static Builder newBuilder() {

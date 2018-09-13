@@ -42,7 +42,7 @@ final class IdentityParser extends AbstractPrimitiveParser {
     public void parseIntoVariable(String value, String variable) {
         checkNotNull(value);
         checkNotNull(variable);
-        jsOutput().addLine("let " + variable + " = " + value + ';');
+        jsOutput().declareVariable(variable, value);
     }
 
     static Builder newBuilder() {

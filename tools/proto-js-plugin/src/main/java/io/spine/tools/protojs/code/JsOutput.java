@@ -41,8 +41,9 @@ import static java.lang.System.lineSeparator;
  *
  * @author Dmytro Kuzmin
  */
-@SuppressWarnings("DuplicateStringLiteralInspection")
-// Duplication with own tests checking the generated code.
+@SuppressWarnings({"DuplicateStringLiteralInspection"
+        /* The generated code duplicates the code used in test that checks it. */,
+        "ClassWithTooManyMethods" /* A lot of simple utility methods for code generation. */})
 public final class JsOutput {
 
     @VisibleForTesting
@@ -103,6 +104,20 @@ public final class JsOutput {
      */
     public void addEmptyLine() {
         addLine("");
+    }
+
+    /**
+     * Declares a variable in the code.
+     *
+     * <p>The variable is ES6-style, i.e. declared with {@code let}.
+     *
+     * @param name
+     *         the variable name
+     * @param value
+     *         the value to assign to the variable
+     */
+    public void declareVariable(String name, String value) {
+        addLine("let " + name + " = " + value + ';');
     }
 
     /**

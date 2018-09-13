@@ -74,6 +74,6 @@ public final class MessageFieldParser implements FieldParser {
         checkNotNull(value);
         checkNotNull(variable);
         String recursiveCall = typeName + '.' + FROM_OBJECT + '(' + value + ')';
-        jsOutput.addLine("let " + variable + " = " + recursiveCall + ';');
+        jsOutput.declareVariable(variable, recursiveCall);
     }
 }

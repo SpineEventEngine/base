@@ -143,6 +143,7 @@ public final class JsImportGenerator {
      *         the name of the variable which will hold the imported module
      * @return the named import statement
      */
+    @SuppressWarnings("DuplicateStringLiteralInspection") // Duplicates with random test code.
     public static String rawNamedImport(String fileToImport, String importName) {
         checkNotNull(fileToImport);
         checkNotNull(importName);

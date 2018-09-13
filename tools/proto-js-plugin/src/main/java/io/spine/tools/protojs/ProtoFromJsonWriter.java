@@ -32,8 +32,8 @@ import java.nio.file.Path;
 /**
  * The global writer used by the {@link ProtoJsPlugin}.
  *
- * <p>This class generates and writes JS code to the files processed by the plugin, more
- * specifically:
+ * <p>This class generates JS code to parse JS proto definitions from JSON and writes it to the
+ * project files, more specifically:
  * <ol>
  *     <li>Writes all known types to the {@code known_types.js} file in proto JS location root.
  *         The types are stored in a global {@code Map} in the
