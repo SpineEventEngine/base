@@ -79,7 +79,8 @@ public class MarkerInterfaceGenerator extends SpineProtoGenerator {
      * </ol>
      */
     @Override
-    protected Collection<CompilerOutput> processMessage(FileDescriptorProto file, DescriptorProto message) {
+    protected Collection<CompilerOutput>
+    processMessage(FileDescriptorProto file, DescriptorProto message) {
         ImmutableList.Builder<CompilerOutput> result = ImmutableList.builder();
 
         Collection<CompilerOutput> fromMsgOption = scanMsgOption(file, message);
