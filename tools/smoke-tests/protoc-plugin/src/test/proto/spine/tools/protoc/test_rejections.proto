@@ -11,6 +11,11 @@ option java_multiple_files = false;
 
 option (every_is) = "UserRejection";
 
+// This file contains test rejection types.
+//
+// The name of the file matches the Spine convension. All the generated classes should implement
+// `io.spine.base.RejectionMessage`.
+
 message UserAlreadyExists {
     string id = 1;
 }

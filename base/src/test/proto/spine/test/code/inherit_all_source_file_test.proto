@@ -26,5 +26,8 @@ import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
 
+// This message inherits the outer class name from the file name and the Java package name from
+// the Protobuf package name.
+//
 message InheritAllMessage {
 }
