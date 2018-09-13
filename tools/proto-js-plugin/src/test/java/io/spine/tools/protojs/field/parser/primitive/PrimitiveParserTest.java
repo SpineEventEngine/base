@@ -25,13 +25,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static com.google.protobuf.Descriptors.FieldDescriptor.Type.BYTES;
+import static com.google.protobuf.Descriptors.FieldDescriptor.Type.FLOAT;
+import static com.google.protobuf.Descriptors.FieldDescriptor.Type.INT32;
+import static com.google.protobuf.Descriptors.FieldDescriptor.Type.INT64;
 import static io.spine.tools.protojs.code.JsImportGenerator.rawNamedImport;
 import static io.spine.tools.protojs.field.parser.primitive.BytesParser.BASE64_LIB;
 import static io.spine.tools.protojs.field.parser.primitive.BytesParser.BASE64_VAR;
-import static io.spine.tools.protojs.field.parser.primitive.given.PrimitiveParserTestEnv.bytesType;
-import static io.spine.tools.protojs.field.parser.primitive.given.PrimitiveParserTestEnv.floatType;
-import static io.spine.tools.protojs.field.parser.primitive.given.PrimitiveParserTestEnv.int32Type;
-import static io.spine.tools.protojs.field.parser.primitive.given.PrimitiveParserTestEnv.int64Type;
 import static io.spine.tools.protojs.given.Generators.assertContains;
 
 /**
@@ -53,7 +53,7 @@ class PrimitiveParserTest {
     @Test
     @DisplayName("generate code for parsing value identically")
     void parseIdentically() {
-        PrimitiveParser parser = PrimitiveParsers.createFor(int32Type(), jsOutput);
+        PrimitiveParser parser = PrimitiveParsers.createFor(INT32, jsOutput);
         parser.parseIntoVariable(VALUE, VARIABLE);
         String parse = "let " + VARIABLE + " = " + VALUE;
         assertContains(jsOutput, parse);
@@ -62,7 +62,7 @@ class PrimitiveParserTest {
     @Test
     @DisplayName("generate code for parsing long value")
     void parseLong() {
-        PrimitiveParser parser = PrimitiveParsers.createFor(int64Type(), jsOutput);
+        PrimitiveParser parser = PrimitiveParsers.createFor(INT64, jsOutput);
         parser.parseIntoVariable(VALUE, VARIABLE);
         String parse = "let " + VARIABLE + " = parseInt(" + VALUE + ')';
         assertContains(jsOutput, parse);
@@ -71,7 +71,7 @@ class PrimitiveParserTest {
     @Test
     @DisplayName("generate code for parsing float value")
     void parseFloat() {
-        PrimitiveParser parser = PrimitiveParsers.createFor(floatType(), jsOutput);
+        PrimitiveParser parser = PrimitiveParsers.createFor(FLOAT, jsOutput);
         parser.parseIntoVariable(VALUE, VARIABLE);
         String parse = "let " + VARIABLE + " = parseFloat(" + VALUE + ')';
         assertContains(jsOutput, parse);
@@ -80,7 +80,7 @@ class PrimitiveParserTest {
     @Test
     @DisplayName("generate code for parsing bytes value")
     void parseBytes() {
-        PrimitiveParser parser = PrimitiveParsers.createFor(bytesType(), jsOutput);
+        PrimitiveParser parser = PrimitiveParsers.createFor(BYTES, jsOutput);
         parser.parseIntoVariable(VALUE, VARIABLE);
         String base64Import = rawNamedImport(BASE64_LIB, BASE64_VAR);
         assertContains(jsOutput, base64Import);

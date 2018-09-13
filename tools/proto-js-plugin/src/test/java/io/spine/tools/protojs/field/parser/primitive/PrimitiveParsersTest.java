@@ -26,11 +26,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static com.google.protobuf.Descriptors.FieldDescriptor.Type.BYTES;
+import static com.google.protobuf.Descriptors.FieldDescriptor.Type.FLOAT;
+import static com.google.protobuf.Descriptors.FieldDescriptor.Type.INT32;
+import static com.google.protobuf.Descriptors.FieldDescriptor.Type.INT64;
 import static io.spine.testing.Verify.assertInstanceOf;
-import static io.spine.tools.protojs.field.parser.primitive.given.PrimitiveParserTestEnv.bytesType;
-import static io.spine.tools.protojs.field.parser.primitive.given.PrimitiveParserTestEnv.floatType;
-import static io.spine.tools.protojs.field.parser.primitive.given.PrimitiveParserTestEnv.int32Type;
-import static io.spine.tools.protojs.field.parser.primitive.given.PrimitiveParserTestEnv.int64Type;
 
 /**
  * @author Dmytro Kuzmin
@@ -52,28 +52,28 @@ class PrimitiveParsersTest extends UtilityClassTest<PrimitiveParsers> {
     @Test
     @DisplayName("create identity parser")
     void createIdentityParser() {
-        PrimitiveParser parser = PrimitiveParsers.createFor(int32Type(), jsOutput);
+        PrimitiveParser parser = PrimitiveParsers.createFor(INT32, jsOutput);
         assertInstanceOf(IdentityParser.class, parser);
     }
 
     @Test
     @DisplayName("create parser for long value")
     void createLongParser() {
-        PrimitiveParser parser = PrimitiveParsers.createFor(int64Type(), jsOutput);
+        PrimitiveParser parser = PrimitiveParsers.createFor(INT64, jsOutput);
         assertInstanceOf(LongParser.class, parser);
     }
 
     @Test
     @DisplayName("create parser for float value")
     void createFloatParser() {
-        PrimitiveParser parser = PrimitiveParsers.createFor(floatType(), jsOutput);
+        PrimitiveParser parser = PrimitiveParsers.createFor(FLOAT, jsOutput);
         assertInstanceOf(FloatParser.class, parser);
     }
 
     @Test
     @DisplayName("create parser for bytes value")
     void createBytesParser() {
-        PrimitiveParser parser = PrimitiveParsers.createFor(bytesType(), jsOutput);
+        PrimitiveParser parser = PrimitiveParsers.createFor(BYTES, jsOutput);
         assertInstanceOf(BytesParser.class, parser);
     }
 }
