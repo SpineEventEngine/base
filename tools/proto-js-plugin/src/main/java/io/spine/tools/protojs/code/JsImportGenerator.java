@@ -77,6 +77,13 @@ public final class JsImportGenerator {
         return new JsImportGenerator(pathToRoot);
     }
 
+    /**
+     * Generates a JS import statement with a stored {@code importPrefix}.
+     *
+     * @param fileToImport
+     *         the path from the import root to the file which should be imported
+     * @return the import statement
+     */
     public String importStatement(String fileToImport) {
         checkNotNull(fileToImport);
         String importPath = importPrefix + fileToImport;
@@ -84,6 +91,17 @@ public final class JsImportGenerator {
         return importStatement;
     }
 
+    /**
+     * Generates a named JS import with a stored {@code importPrefix}.
+     *
+     * <p>Named import is a statement of type "{@code let a = require('./b')}".
+     *
+     * @param fileToImport
+     *         the path from the import root to the file which should be imported
+     * @param importName
+     *         the name of the variable which will hold the imported module
+     * @return the named import statement
+     */
     public String namedImport(String fileToImport, String importName) {
         checkNotNull(fileToImport);
         checkNotNull(importName);
@@ -92,19 +110,43 @@ public final class JsImportGenerator {
         return importStatement;
     }
 
-    public static String rawImport(String importPath) {
-        checkNotNull(importPath);
-        String importStatement = "require('" + importPath + "');";
+    /**
+     * Generates a JS import statement.
+     *
+     * @param fileToImport
+     *         the path from the import root to the file which should be imported
+     * @return the import statement
+     */
+    public static String rawImport(String fileToImport) {
+        checkNotNull(fileToImport);
+        String importStatement = "require('" + fileToImport + "');";
         return importStatement;
     }
 
-    public static String rawNamedImport(String importPath, String importName) {
-        checkNotNull(importPath);
+    /**
+     * Generates a named JS import.
+     *
+     * <p>Named import is a statement of type "{@code let a = require('./b')}".
+     *
+     * @param fileToImport
+     *         the path from the import root to the file which should be imported
+     * @param importName
+     *         the name of the variable which will hold the imported module
+     * @return the named import statement
+     */
+    public static String rawNamedImport(String fileToImport, String importName) {
+        checkNotNull(fileToImport);
         checkNotNull(importName);
-        String importStatement = "let " + importName + " = require('" + importPath + "');";
+        String importStatement = "let " + importName + " = require('" + fileToImport + "');";
         return importStatement;
     }
 
+    /**
+     * Composes the path from the given file to the import root.
+     *
+     * <p>The {@code filePath} is assumed to be relative to the import root, so basically the
+     * method replaces all preceding path elements by the {@link #PARENT_DIR}.
+     */
     private static String composePathToRoot(String filePath) {
         String[] pathElements = filePath.split(PATH_SEPARATOR);
         int fileLocationDepth = pathElements.length - 1;
