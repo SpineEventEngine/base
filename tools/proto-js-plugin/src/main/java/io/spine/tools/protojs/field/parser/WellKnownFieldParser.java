@@ -48,8 +48,6 @@ public final class WellKnownFieldParser implements FieldValueParser {
     /**
      * Creates a new {@code WellKnownFieldParser} for the given field.
      *
-     * <p>All the generated code will be accumulated in the given {@code jsOutput}.
-     *
      * @param field
      *         the descriptor of the field to create the parser for
      * @param jsOutput

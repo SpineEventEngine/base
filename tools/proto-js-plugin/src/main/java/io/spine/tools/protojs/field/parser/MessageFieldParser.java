@@ -46,8 +46,6 @@ public final class MessageFieldParser implements FieldValueParser {
     /**
      * Creates the {@code MessageFieldParser} for the given {@code field}.
      *
-     * <p>All the generated code will be stored in the given {@code jsOutput}.
-     *
      * @param field
      *         the descriptor of the field for which to create the parser
      * @param jsOutput
