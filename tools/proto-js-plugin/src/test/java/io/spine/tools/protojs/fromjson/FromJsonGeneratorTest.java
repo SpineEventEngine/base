@@ -58,7 +58,7 @@ class FromJsonGeneratorTest {
     }
 
     @Test
-    @DisplayName("generate known types and known type parsers imports")
+    @DisplayName("generate known type parsers imports")
     void generateImports() {
         generator.generateParsersImport();
         String knownTypeParsersImport = "require('../../known_type_parsers.js');";
