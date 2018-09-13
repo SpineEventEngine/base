@@ -107,7 +107,7 @@ public class FileName extends AbstractFileName<FileName> implements UnderscoredN
     }
 
     /**
-     * Returns the file name without extension.
+     * Returns the file name without extension (but including path).
      */
     public String nameWithoutExtension() {
         String value = value();
