@@ -69,7 +69,7 @@ class MessageHandlerTest {
     void generateFromJson() {
         handler.generateFromJsonMethod();
         String methodDeclaration = message.getFullName() + '.' + FROM_JSON;
-        assertGeneratedCodeContains(methodDeclaration);
+        assertContains(jsOutput, methodDeclaration);
     }
 
     @Test
@@ -77,7 +77,7 @@ class MessageHandlerTest {
     void parseJsonIntoObject() {
         handler.generateFromJsonMethod();
         String parseStatement = "JSON.parse(" + FROM_JSON_ARG + ')';
-        assertGeneratedCodeContains(parseStatement);
+        assertContains(jsOutput, parseStatement);
     }
 
     @Test
@@ -85,7 +85,7 @@ class MessageHandlerTest {
     void generateFromObject() {
         handler.generateFromObjectMethod();
         String methodDeclaration = message.getFullName() + '.' + FROM_OBJECT;
-        assertGeneratedCodeContains(methodDeclaration);
+        assertContains(jsOutput, methodDeclaration);
     }
 
     @Test
@@ -93,7 +93,7 @@ class MessageHandlerTest {
     void checkJsObjectForNull() {
         handler.generateFromObjectMethod();
         String check = "if (" + FROM_OBJECT_ARG + " === null) {";
-        assertGeneratedCodeContains(check);
+        assertContains(jsOutput, check);
     }
 
     @Test
@@ -102,9 +102,5 @@ class MessageHandlerTest {
         MessageHandler handler = spy(this.handler);
         handler.generateFromObjectMethod();
         verify(handler, times(1)).handleMessageFields();
-    }
-
-    private void assertGeneratedCodeContains(CharSequence toSearch) {
-        assertContains(jsOutput, toSearch);
     }
 }

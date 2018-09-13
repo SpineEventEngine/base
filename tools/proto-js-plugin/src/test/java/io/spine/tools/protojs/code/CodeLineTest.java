@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class CodeLineTest {
 
     @Test
-    @DisplayName("inject spaces before code based on depth and indent")
+    @DisplayName("calculate indent for code based on depth and indentation")
     void printToString() {
         CodeLine codeLine = new CodeLine("content", 2);
         String result = codeLine.printToString(2);

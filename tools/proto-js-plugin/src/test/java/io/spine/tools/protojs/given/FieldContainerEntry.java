@@ -27,15 +27,12 @@ package io.spine.tools.protojs.given;
  */
 enum FieldContainerEntry {
 
-    INT32_FIELD("int32_field"),
-    INT64_FIELD("int64_field"),
-    FLOAT_FIELD("float_field"),
-    BYTES_FIELD("bytes_field"),
+    PRIMITIVE_FIELD("primitive_field"),
     ENUM_FIELD("enum_field"),
-
     MESSAGE_FIELD("message_field"),
     TIMESTAMP_FIELD("timestamp_field"),
 
+    SINGULAR_FIELD("singular_field"),
     REPEATED_FIELD("repeated_field"),
     MAP_FIELD("map_field");
 

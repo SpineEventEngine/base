@@ -31,6 +31,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /**
  * @author Dmytro Kuzmin
  */
+@SuppressWarnings("DuplicateStringLiteralInspection")
+// Generated code duplication needed to check main class.
 @DisplayName("JsImportGenerator should")
 class JsImportGeneratorTest {
 
@@ -52,7 +54,7 @@ class JsImportGeneratorTest {
     }
 
     @Test
-    @DisplayName("generate import relative to proto location root")
+    @DisplayName("generate import relative to file location")
     void generateImport() {
         String statement = generator.importStatement(FILE_TO_IMPORT);
         String pathToImport = "../../" + FILE_TO_IMPORT;
@@ -70,7 +72,7 @@ class JsImportGeneratorTest {
     }
 
     @Test
-    @DisplayName("generate raw import statement, i.e. not relative to root")
+    @DisplayName("generate raw import statement")
     void generateRawImport() {
         String statement = JsImportGenerator.rawImport(FILE_TO_IMPORT);
         String expected = "require('" + FILE_TO_IMPORT + "');";

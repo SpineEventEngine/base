@@ -12,17 +12,14 @@ import "spine/protojs/task.proto";
 
 message FieldContainer {
 
-    int32 int32_field = 1;
-    int64 int64_field = 2;
-    float float_field = 3;
-    bytes bytes_field = 4;
-    TaskType enum_field = 5;
+    int64 primitive_field = 1;
+    TaskType enum_field = 2;
+    TaskId message_field = 3;
+    google.protobuf.Timestamp timestamp_field = 4;
 
-    TaskId message_field = 6;
-    google.protobuf.Timestamp timestamp_field = 7;
-
-    repeated TaskId repeated_field = 8;
-    map<int64, TaskId> map_field = 9;
+    string singular_field = 5;
+    repeated TaskId repeated_field = 6;
+    map<int64, TaskId> map_field = 7;
 }
 
 enum TaskType {

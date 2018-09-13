@@ -35,6 +35,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /**
  * @author Dmytro Kuzmin
  */
+@SuppressWarnings("DuplicateStringLiteralInspection")
+// Generated code duplication needed to check main class.
 @DisplayName("JsOutput should")
 class JsOutputTest {
 
@@ -58,13 +60,6 @@ class JsOutputTest {
     @DisplayName(NOT_ACCEPT_NULLS)
     void passNullToleranceCheck() {
         new NullPointerTester().testAllPublicInstanceMethods(jsOutput);
-    }
-
-    @Test
-    @DisplayName("return generated code")
-    void returnGeneratedCode() {
-        jsOutput.addLine(LINE);
-        assertEquals(LINE, jsOutput.toString());
     }
 
     @Test
@@ -221,9 +216,5 @@ class JsOutputTest {
         String output = jsOutput.toString();
         String expected = "line 1" + LINE_SEPARATOR + "  line 2";
         assertEquals(expected, output);
-    }
-
-    private String output() {
-        return jsOutput.toString();
     }
 }

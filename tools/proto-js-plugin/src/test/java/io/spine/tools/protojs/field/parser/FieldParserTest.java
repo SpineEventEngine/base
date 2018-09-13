@@ -30,8 +30,8 @@ import org.junit.jupiter.api.Test;
 import static io.spine.tools.protojs.field.parser.FieldParsers.parserFor;
 import static io.spine.tools.protojs.given.Generators.assertContains;
 import static io.spine.tools.protojs.given.Given.enumField;
-import static io.spine.tools.protojs.given.Given.int64Field;
 import static io.spine.tools.protojs.given.Given.messageField;
+import static io.spine.tools.protojs.given.Given.primitiveField;
 import static io.spine.tools.protojs.given.Given.timestampField;
 import static io.spine.tools.protojs.message.MessageHandler.FROM_OBJECT;
 import static io.spine.tools.protojs.types.Types.typeWithProtoPrefix;
@@ -39,6 +39,8 @@ import static io.spine.tools.protojs.types.Types.typeWithProtoPrefix;
 /**
  * @author Dmytro Kuzmin
  */
+@SuppressWarnings("DuplicateStringLiteralInspection")
+// Generated code duplication needed to check main class.
 @DisplayName("FieldParser should")
 class FieldParserTest {
 
@@ -55,7 +57,7 @@ class FieldParserTest {
     @Test
     @DisplayName("parse primitive field via predefined code")
     void parsePrimitive() {
-        FieldParser parser = parserFor(int64Field(), jsOutput);
+        FieldParser parser = parserFor(primitiveField(), jsOutput);
         parser.parseIntoVariable(VALUE, VARIABLE);
         String parse = "let " + VARIABLE + " = parseInt(" + VALUE + ')';
         assertContains(jsOutput, parse);

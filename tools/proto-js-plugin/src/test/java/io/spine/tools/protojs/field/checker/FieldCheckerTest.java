@@ -34,6 +34,8 @@ import static java.lang.String.format;
 /**
  * @author Dmytro Kuzmin
  */
+@SuppressWarnings("DuplicateStringLiteralInspection")
+// Generated code duplication needed to check main class.
 @DisplayName("FieldChecker should")
 class FieldCheckerTest {
 

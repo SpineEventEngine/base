@@ -42,6 +42,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /**
  * @author Dmytro Kuzmin
  */
+@SuppressWarnings("DuplicateStringLiteralInspection")
+// Generated code duplication needed to check main class.
 @DisplayName("FieldHandler should")
 class FieldHandlerTest {
 

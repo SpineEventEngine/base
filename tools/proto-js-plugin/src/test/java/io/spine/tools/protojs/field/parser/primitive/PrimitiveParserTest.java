@@ -37,6 +37,8 @@ import static io.spine.tools.protojs.given.Generators.assertContains;
 /**
  * @author Dmytro Kuzmin
  */
+@SuppressWarnings("DuplicateStringLiteralInspection")
+// Generated code duplication needed to check main class.
 @DisplayName("PrimitiveParser should")
 class PrimitiveParserTest {
 

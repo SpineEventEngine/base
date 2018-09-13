@@ -32,6 +32,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static com.google.common.io.Files.createTempDir;
+import static io.spine.tools.protojs.files.JsFiles.JS_PROTO_SUFFIX;
 import static io.spine.tools.protojs.given.Given.file;
 import static io.spine.tools.protojs.given.Writers.assertFileContains;
 import static io.spine.tools.protojs.given.Writers.assertFileNotContains;
@@ -102,7 +103,7 @@ class JsFilesTest extends UtilityClassTest<JsFiles> {
         String jsFileName = JsFiles.jsFileName(file);
         String nameWithoutExtension = FileName.from(file)
                                               .nameWithoutExtension();
-        String expected = nameWithoutExtension + "_pb.js";
+        String expected = nameWithoutExtension + JS_PROTO_SUFFIX;
         assertEquals(expected, jsFileName);
     }
 

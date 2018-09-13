@@ -37,11 +37,8 @@ import static com.google.common.io.Files.createTempDir;
 import static io.spine.tools.gradle.TaskName.COMPILE_PROTO_TO_JS;
 import static io.spine.tools.protojs.files.ProjectFiles.mainDescriptorSetFile;
 import static io.spine.tools.protojs.files.ProjectFiles.mainProtoJsLocation;
-import static io.spine.tools.protojs.given.FieldContainerEntry.BYTES_FIELD;
 import static io.spine.tools.protojs.given.FieldContainerEntry.ENUM_FIELD;
-import static io.spine.tools.protojs.given.FieldContainerEntry.FLOAT_FIELD;
-import static io.spine.tools.protojs.given.FieldContainerEntry.INT32_FIELD;
-import static io.spine.tools.protojs.given.FieldContainerEntry.INT64_FIELD;
+import static io.spine.tools.protojs.given.FieldContainerEntry.PRIMITIVE_FIELD;
 import static io.spine.tools.protojs.given.FieldContainerEntry.MAP_FIELD;
 import static io.spine.tools.protojs.given.FieldContainerEntry.MESSAGE_FIELD;
 import static io.spine.tools.protojs.given.FieldContainerEntry.REPEATED_FIELD;
@@ -77,7 +74,7 @@ public final class Given {
     }
 
     public static FieldDescriptor primitiveField() {
-        return field(INT32_FIELD);
+        return field(PRIMITIVE_FIELD);
     }
 
     public static FieldDescriptor enumField() {
@@ -102,22 +99,6 @@ public final class Given {
 
     public static FieldDescriptor mapField() {
         return field(MAP_FIELD);
-    }
-
-    public static FieldDescriptor int32Field() {
-        return field(INT32_FIELD);
-    }
-
-    public static FieldDescriptor int64Field() {
-        return field(INT64_FIELD);
-    }
-
-    public static FieldDescriptor floatField() {
-        return field(FLOAT_FIELD);
-    }
-
-    public static FieldDescriptor bytesField() {
-        return field(BYTES_FIELD);
     }
 
     private static FieldDescriptor field(FieldContainerEntry entry) {

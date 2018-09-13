@@ -27,6 +27,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static io.spine.tools.protojs.fromjson.FromJsonGenerator.COMMENT;
 import static io.spine.tools.protojs.given.Generators.assertContains;
 import static io.spine.tools.protojs.given.Given.file;
 import static io.spine.tools.protojs.message.MessageHandler.FROM_JSON;
@@ -53,7 +54,7 @@ class FromJsonGeneratorTest {
     @DisplayName("generate explaining comment")
     void generateComment() {
         generator.generateComment();
-        assertGeneratedCodeContains(FromJsonGenerator.COMMENT);
+        assertContains(jsOutput, COMMENT);
     }
 
     @Test
@@ -61,7 +62,7 @@ class FromJsonGeneratorTest {
     void generateImports() {
         generator.generateParsersImport();
         String knownTypeParsersImport = "require('../../known_type_parsers.js');";
-        assertGeneratedCodeContains(knownTypeParsersImport);
+        assertContains(jsOutput, knownTypeParsersImport);
     }
 
     @Test
@@ -70,13 +71,9 @@ class FromJsonGeneratorTest {
         generator.generateMethods();
         for (Descriptor message : file.getMessageTypes()) {
             String fromJsonDeclaration = message.getFullName() + '.' + FROM_JSON;
-            assertGeneratedCodeContains(fromJsonDeclaration);
+            assertContains(jsOutput, fromJsonDeclaration);
             String fromObjectDeclaration = message.getFullName() + '.' + FROM_OBJECT;
-            assertGeneratedCodeContains(fromObjectDeclaration);
+            assertContains(jsOutput, fromObjectDeclaration);
         }
-    }
-
-    private void assertGeneratedCodeContains(String toSearch) {
-        assertContains(jsOutput, toSearch);
     }
 }

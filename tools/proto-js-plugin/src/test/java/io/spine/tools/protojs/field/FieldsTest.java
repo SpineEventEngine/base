@@ -131,6 +131,7 @@ class FieldsTest extends UtilityClassTest<Fields> {
         }
     }
 
+    @SuppressWarnings("DuplicateStringLiteralInspection") // Random duplication.
     @Test
     @DisplayName("return capitalized field name")
     void getCapitalizedName() {
