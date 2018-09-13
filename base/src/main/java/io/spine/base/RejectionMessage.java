@@ -21,7 +21,6 @@
 package io.spine.base;
 
 import com.google.errorprone.annotations.Immutable;
-import com.google.protobuf.Message;
 import io.spine.base.MessageFile.Predicate;
 
 /**
@@ -35,7 +34,7 @@ import io.spine.base.MessageFile.Predicate;
  */
 @Immutable
 @SuppressWarnings("InterfaceNeverImplemented") /* See Javadoc */
-public interface RejectionMessage extends Message {
+public interface RejectionMessage extends EventMessage {
 
     /**
      * Provides the predicate for finding proto files with rejection message declarations.
