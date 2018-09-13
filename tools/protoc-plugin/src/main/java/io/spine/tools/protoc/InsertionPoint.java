@@ -32,15 +32,13 @@ import static java.lang.String.format;
 /**
  * @author Dmytro Dashenkov
  */
-final class InsertionPoint implements CompilerOutput {
+final class InsertionPoint extends AbstractCompilerOutput {
 
     @VisibleForTesting
     static final String INSERTION_POINT_IMPLEMENTS = "message_implements:%s";
 
-    private final File file;
-
     private InsertionPoint(File file) {
-        this.file = file;
+        super(file);
     }
 
     static InsertionPoint implementInterface(FileDescriptorProto containingFile,
@@ -63,10 +61,5 @@ final class InsertionPoint implements CompilerOutput {
         File.Builder srcFile = File.newBuilder()
                                    .setName(uriStyleName);
         return srcFile;
-    }
-
-    @Override
-    public File toFile() {
-        return file;
     }
 }

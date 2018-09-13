@@ -105,16 +105,15 @@ public final class SourceFile extends AbstractSourceFile {
                  .contains(message)) {
             throw invalidNestedDefinition(file.getName(), typeName);
         }
-
-        if (!file.getOptions()
-                 .hasJavaMultipleFiles()) {
+        if (file.getOptions().getJavaMultipleFiles()) {
+            FileName filename = fileName.apply(message);
+            SourceFile result = getFolder(file).resolve(filename);
+            return result;
+        } else {
             SourceFile result = forOuterClassOf(file);
             return result;
         }
 
-        FileName filename = fileName.apply(message);
-        SourceFile result = getFolder(file).resolve(filename);
-        return result;
     }
 
     private static IllegalStateException invalidNestedDefinition(String filename,
@@ -137,16 +136,14 @@ public final class SourceFile extends AbstractSourceFile {
                  .contains(enumType)) {
             throw invalidNestedDefinition(file.getName(), enumType.getName());
         }
-
-        if (!file.getOptions()
-                 .hasJavaMultipleFiles()) {
+        if (file.getOptions().getJavaMultipleFiles()) {
+            FileName filename = FileName.forEnum(enumType);
+            SourceFile result = getFolder(file).resolve(filename);
+            return result;
+        } else {
             SourceFile result = forOuterClassOf(file);
             return result;
         }
-
-        FileName filename = FileName.forEnum(enumType);
-        SourceFile result = getFolder(file).resolve(filename);
-        return result;
     }
 
     public static SourceFile forService(ServiceDescriptorProto service, FileDescriptorProto file) {

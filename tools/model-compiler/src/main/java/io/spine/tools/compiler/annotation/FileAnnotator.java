@@ -108,7 +108,7 @@ class FileAnnotator extends Annotator<FileOptions, FileDescriptorProto> {
      * Annotates all messages generated from the specified {@link FileDescriptorProto}.
      *
      * <p>The specified file descriptor should
-     * {@linkplain FileOptions#hasJavaMultipleFiles() has multiple Java files}.
+     * {@linkplain FileOptions#getJavaMultipleFiles() have multiple Java files}.
      *
      * @param file the file descriptor to get message descriptors
      */
@@ -128,7 +128,7 @@ class FileAnnotator extends Annotator<FileOptions, FileDescriptorProto> {
      * Annotates all enums generated from the specified {@link FileDescriptorProto}.
      *
      * <p>The specified file descriptor should
-     * {@linkplain FileOptions#hasJavaMultipleFiles() has multiple Java files}.
+     * {@linkplain FileOptions#getJavaMultipleFiles() hav multiple Java files}.
      *
      * @param file the file descriptor to get enum descriptors
      */
@@ -144,7 +144,7 @@ class FileAnnotator extends Annotator<FileOptions, FileDescriptorProto> {
      * generated basing on the specified {@link FileDescriptorProto}.
      *
      * <p>A generated service is always a separate file.
-     * So value of {@link FileOptions#hasJavaMultipleFiles()} does not play a role.
+     * So value of {@link FileOptions#getJavaMultipleFiles()} does not play a role.
      *
      * @param file the file descriptor to get service descriptors
      */

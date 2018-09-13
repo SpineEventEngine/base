@@ -103,6 +103,7 @@ public class MarkerInterfaceGeneratorShould {
         CodeGeneratorResponse response = codeGenerator.process(request);
         assertNotNull(response);
         List<File> files = response.getFileList();
+        System.out.println(files);
         assertEquals(3, files.size());
         for (File file : files) {
             String name = file.getName();

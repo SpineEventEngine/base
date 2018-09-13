@@ -20,39 +20,47 @@
 
 package io.spine.tools.protoc;
 
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
-import com.squareup.javapoet.JavaFile;
-import io.spine.code.java.SourceFile;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * @author Dmytro Dashenkov
  */
-final class UserMarkerInterface extends AbstractCompilerOutput implements MarkerInterface {
+public abstract class AbstractCompilerOutput implements CompilerOutput {
 
-    private final String interfaceFqn;
+    private final File file;
 
-    private UserMarkerInterface(File file, String interfaceFqn) {
-        super(file);
-        this.interfaceFqn = interfaceFqn;
-    }
-
-    static UserMarkerInterface from(MarkerInterfaceSpec spec) {
-        checkNotNull(spec);
-        JavaFile javaCode = spec.toJavaCode();
-        SourceFile file = spec.toSourceFile();
-        File interfaceFile = File
-                .newBuilder()
-                .setName(file.toString())
-                .setContent(javaCode.toString())
-                .build();
-        String fqn = spec.getFqn();
-        return new UserMarkerInterface(interfaceFile, fqn);
+    protected AbstractCompilerOutput(File file) {
+        this.file = file;
     }
 
     @Override
-    public String name() {
-        return interfaceFqn;
+    public final File toFile() {
+        return file;
+    }
+
+    @Override
+    public final boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        AbstractCompilerOutput output = (AbstractCompilerOutput) o;
+        return Objects.equal(file, output.file);
+    }
+
+    @Override
+    public final int hashCode() {
+        return Objects.hashCode(file);
+    }
+
+    @Override
+    public final String toString() {
+        return MoreObjects.toStringHelper(this)
+                          .add("file", file)
+                          .toString();
     }
 }
