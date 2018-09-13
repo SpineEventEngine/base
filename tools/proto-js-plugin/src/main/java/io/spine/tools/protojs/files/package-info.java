@@ -19,7 +19,7 @@
  */
 
 /**
- * The utilities for working with files related to the module.
+ * The utilities for working with files processed by the module.
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault

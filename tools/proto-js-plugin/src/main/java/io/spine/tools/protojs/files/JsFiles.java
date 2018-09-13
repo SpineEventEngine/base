@@ -36,7 +36,7 @@ import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 /**
  * The utility for writing the JavaScript files.
  *
- * <p>{@code JsFiles} also hold the names of common JS files used in the module.
+ * <p>{@code JsFiles} also hold the names of common JS files used in the plugin.
  *
  * @author Dmytro Kuzmin
  * @see JsOutput
