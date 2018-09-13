@@ -54,15 +54,10 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 public final class KnownTypeParsersWriter {
 
     /**
-     * The package under which the resource containing known type parsers code lays.
+     * The path to the {@code known_type_parsers} resource which contains the parser definitions.
      */
-    private static final String PARSERS_PACKAGE = "io/spine/tools/protojs/knowntypes/";
-
-    /**
-     * The path to the {@code known_type_parsers.js} resource which contains the parser JS
-     * definitions.
-     */
-    private static final String PARSERS_CODE = PARSERS_PACKAGE + KNOWN_TYPE_PARSERS;
+    private static final String PARSERS_RESOURCE =
+            "io/spine/tools/protojs/knowntypes/known_type_parsers";
 
     /**
      * The indent for the generated code.
@@ -122,7 +117,7 @@ public final class KnownTypeParsersWriter {
     private void copyParsersCode() {
         try (InputStream in = KnownTypeParsersWriter.class
                 .getClassLoader()
-                .getResourceAsStream(PARSERS_CODE)) {
+                .getResourceAsStream(PARSERS_RESOURCE)) {
             Files.copy(in, filePath, REPLACE_EXISTING);
         } catch (IOException e) {
             throw new IllegalStateException(e);
