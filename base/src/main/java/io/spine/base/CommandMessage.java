@@ -34,7 +34,6 @@ import io.spine.base.MessageFile.Predicate;
  * @author Alexander Yevsyukov
  */
 @Immutable
-@SuppressWarnings("InterfaceNeverImplemented") /* See Javadoc */
 public interface CommandMessage extends Message {
 
     /**

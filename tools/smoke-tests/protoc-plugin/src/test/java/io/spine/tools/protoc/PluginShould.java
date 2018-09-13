@@ -96,21 +96,21 @@ public class PluginShould {
 
     @Test
     public void mark_event_messages() {
-        assertThat(UserCreated.class, instanceOf(EventMessage.class));
-        assertThat(UserCreated.class, instanceOf(FirstEvent.class));
-        assertThat(UserNotfied.class, instanceOf(EventMessage.class));
+        assertThat(UserCreated.getDefaultInstance(), instanceOf(EventMessage.class));
+        assertThat(UserCreated.getDefaultInstance(), instanceOf(FirstEvent.class));
+        assertThat(UserNotfied.getDefaultInstance(), instanceOf(EventMessage.class));
     }
 
     @Test
     public void mark_command_messages() {
-        assertThat(CreateUser.class, instanceOf(CommandMessage.class));
-        assertThat(NotifyUser.class, instanceOf(CommandMessage.class));
+        assertThat(CreateUser.getDefaultInstance(), instanceOf(CommandMessage.class));
+        assertThat(NotifyUser.getDefaultInstance(), instanceOf(CommandMessage.class));
     }
 
     @Test
     public void mark_rejection_messages() {
-        assertThat(Rejections.UserAlreadyExists.class, instanceOf(RejectionMessage.class));
-        assertThat(Rejections.UserAlreadyExists.class, instanceOf(UserRejection.class));
+        assertThat(Rejections.UserAlreadyExists.getDefaultInstance(), instanceOf(RejectionMessage.class));
+        assertThat(Rejections.UserAlreadyExists.getDefaultInstance(), instanceOf(UserRejection.class));
     }
 
     private static Class<?> checkMarkerInterface(String fqn) throws ClassNotFoundException {

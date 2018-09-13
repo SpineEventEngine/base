@@ -34,7 +34,6 @@ import io.spine.base.MessageFile.Predicate;
  * @author Alexander Yevsyukov
  */
 @Immutable
-@SuppressWarnings({"unused", "InterfaceNeverImplemented"}) /* See Javadoc */
 public interface EventMessage extends Message {
 
     /**
