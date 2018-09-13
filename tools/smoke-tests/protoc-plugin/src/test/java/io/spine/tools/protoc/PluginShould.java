@@ -21,6 +21,9 @@
 package io.spine.tools.protoc;
 
 import com.google.protobuf.Message;
+import io.spine.base.CommandMessage;
+import io.spine.base.EventMessage;
+import io.spine.base.RejectionMessage;
 import io.spine.tools.protoc.test.PIUserEvent;
 import io.spine.tools.protoc.test.UserInfo;
 import org.junit.Test;
@@ -89,6 +92,25 @@ public class PluginShould {
         Class[] interfaces = cls.getInterfaces();
         assertEquals(1, interfaces.length);
         assertSame(CustomerNameOrBuilder.class, interfaces[0]);
+    }
+
+    @Test
+    public void mark_event_messages() {
+        assertThat(UserCreated.class, instanceOf(EventMessage.class));
+        assertThat(UserCreated.class, instanceOf(FirstEvent.class));
+        assertThat(UserNotfied.class, instanceOf(EventMessage.class));
+    }
+
+    @Test
+    public void mark_command_messages() {
+        assertThat(CreateUser.class, instanceOf(CommandMessage.class));
+        assertThat(NotifyUser.class, instanceOf(CommandMessage.class));
+    }
+
+    @Test
+    public void mark_rejection_messages() {
+        assertThat(Rejections.UserAlreadyExists.class, instanceOf(RejectionMessage.class));
+        assertThat(Rejections.UserAlreadyExists.class, instanceOf(UserRejection.class));
     }
 
     private static Class<?> checkMarkerInterface(String fqn) throws ClassNotFoundException {
