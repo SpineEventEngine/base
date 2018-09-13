@@ -90,9 +90,9 @@ task copyCompiledClasses(type: Copy) {
 assemble.dependsOn copyCompiledClasses
 
 build.doLast {
-    final def directory = "$projectDir\\..\\"
+    final def directory = "$projectDir/../"
     final def process = new ProcessBuilder()
-            .command("$directory\\gradlew.bat".toString(), ':base:cleanJar', ':base:jar', '--console=plain')
+            .command("$directory/gradlew.bat".toString(), ':base:cleanJar', ':base:jar', '--console=plain')
             .directory(file(directory))
             .start()
     if (process.waitFor() != 0) {

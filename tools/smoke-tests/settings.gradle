@@ -43,7 +43,7 @@ final def links = [
  * See the Gradle manual for more info:
  * https://docs.gradle.org/current/userguide/composite_builds.html
  */
-includeBuild("$rootDir\\..\\..\\") {
+includeBuild("$rootDir/../../") {
     dependencySubstitution {
         links.each {
             substitute module(it.key) with project(it.value)
