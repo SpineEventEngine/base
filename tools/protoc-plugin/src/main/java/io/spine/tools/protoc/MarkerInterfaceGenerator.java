@@ -83,6 +83,9 @@ public class MarkerInterfaceGenerator extends SpineProtoGenerator {
     processMessage(FileDescriptorProto file, DescriptorProto message) {
         ImmutableList.Builder<CompilerOutput> result = ImmutableList.builder();
 
+        Optional<CompilerOutput> builtInMarkedInterface = scanForBuiltIns(file, message);
+        builtInMarkedInterface.ifPresent(result::add);
+
         Collection<CompilerOutput> fromMsgOption = scanMsgOption(file, message);
         result.addAll(fromMsgOption);
 
@@ -90,10 +93,6 @@ public class MarkerInterfaceGenerator extends SpineProtoGenerator {
             Collection<CompilerOutput> fromFileOption = scanFileOption(file, message);
             result.addAll(fromFileOption);
         }
-
-        Optional<CompilerOutput> builtInMarkedInterface = scanForBuiltIns(file, message);
-        builtInMarkedInterface.ifPresent(result::add);
-
         return result.build();
     }
 }
