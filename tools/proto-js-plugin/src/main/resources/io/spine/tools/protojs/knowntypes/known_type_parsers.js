@@ -20,15 +20,15 @@
 
 "use strict";
 
-let known_types = require("./known_types.js");
+let knownTypes = require("./known_types.js");
 
 let wrappers = require("google-protobuf/google/protobuf/wrappers_pb.js");
 let struct = require("google-protobuf/google/protobuf/struct_pb.js");
 let empty = require("google-protobuf/google/protobuf/empty_pb.js");
-let timestamp = require('google-protobuf/google/protobuf/timestamp_pb.js');
-let duration = require('google-protobuf/google/protobuf/duration_pb.js');
-let field_mask = require('google-protobuf/google/protobuf/field_mask_pb.js');
-let any = require('google-protobuf/google/protobuf/any_pb.js');
+let timestamp = require("google-protobuf/google/protobuf/timestamp_pb.js");
+let duration = require("google-protobuf/google/protobuf/duration_pb.js");
+let fieldMask = require("google-protobuf/google/protobuf/field_mask_pb.js");
+let any = require("google-protobuf/google/protobuf/any_pb.js");
 
 /**
  * The parsers used to obtain Protobuf standard types from JSON.
@@ -118,29 +118,6 @@ class UInt64ValueParser {
     }
 }
 
-class ValueParser {
-
-    parse(value) {
-        let result = new struct.Value();
-        if (value === null) {
-            result.setNullValue(struct.NullValue.NULL_VALUE);
-        } else if (typeof value === 'number') {
-            result.setNumberValue(value);
-        } else if (typeof value === 'string') {
-            result.setStringValue(value);
-        } else if (typeof value === 'boolean') {
-            result.setBoolValue(value);
-        } else if (Array.isArray(value)) {
-            let parser = new ListValueParser(value);
-            let listValue = parser.parse(value);
-            result.setListValue(listValue);
-        } else {
-            // Is a Struct, unhandled for now.
-        }
-        return result;
-    }
-}
-
 class ListValueParser {
 
     parse(value) {
@@ -153,6 +130,29 @@ class ListValueParser {
         );
         listValue.setValuesList(value);
         return listValue;
+    }
+}
+
+class ValueParser {
+
+    parse(value) {
+        let result = new struct.Value();
+        if (value === null) {
+            result.setNullValue(struct.NullValue.NULL_VALUE);
+        } else if (typeof value === "number") {
+            result.setNumberValue(value);
+        } else if (typeof value === "string") {
+            result.setStringValue(value);
+        } else if (typeof value === "boolean") {
+            result.setBoolValue(value);
+        } else if (Array.isArray(value)) {
+            let parser = new ListValueParser(value);
+            let listValue = parser.parse(value);
+            result.setListValue(listValue);
+        } else {
+            // Is a Struct, unhandled for now.
+        }
+        return result;
     }
 }
 
@@ -178,7 +178,7 @@ class DurationParser {
 
     parse(value) {
         value = value.substring(0, value.length - 1);
-        let values = value.split('.');
+        let values = value.split(".");
         let result = new duration.Duration();
         if (values.length === 1) {
             result.setSeconds(values[0]);
@@ -198,8 +198,8 @@ class DurationParser {
 class FieldMaskParser {
 
     parse(value) {
-        let fieldMask = new field_mask.FieldMask();
-        fieldMask.setPathsList(value.split(','));
+        let fieldMask = new fieldMask.FieldMask();
+        fieldMask.setPathsList(value.split(","));
         return fieldMask;
     }
 }
@@ -207,13 +207,13 @@ class FieldMaskParser {
 class AnyParser {
 
     parse(value) {
-        let typeUrl = value['@type'];
+        let typeUrl = value["@type"];
         let messageValue;
         let parser = parsers.get(typeUrl);
         if (parser) {
-            messageValue = parser.parse(value['value']);
+            messageValue = parser.parse(value["value"]);
         } else {
-            let type = known_types.types.get(typeUrl);
+            let type = knownTypes.types.get(typeUrl);
             messageValue = type.fromObject(value);
         }
         let bytes = messageValue.serializeBinary();
