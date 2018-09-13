@@ -51,7 +51,6 @@ public class PluginShould {
         checkMarkerInterface(EVENT_INTERFACE_FQN);
     }
 
-    @SuppressWarnings({"ConstantConditions", "RedundantCast"}) // Required by the test logic.
     @Test
     public void implement_marker_interfaces_in_generated_messages() {
         assertThat(PICustomerNotified.getDefaultInstance(), instanceOf(PICustomerEvent.class));
@@ -63,14 +62,12 @@ public class PluginShould {
         checkMarkerInterface(COMMAND_INTERFACE_FQN);
     }
 
-    @SuppressWarnings({"ConstantConditions", "RedundantCast"}) // Required by the test logic.
     @Test
     public void implement_interface_in_generated_messages_with_IS_option() {
         assertThat(PICustomerCreated.getDefaultInstance(), instanceOf(PICustomerEvent.class));
         assertThat(PICreateCustomer.getDefaultInstance(), instanceOf(PICustomerCommand.class));
     }
 
-    @SuppressWarnings({"ConstantConditions", "RedundantCast"}) // Required by the test logic.
     @Test
     public void use_IS_in_priority_to_EVERY_IS() {
         assertThat(PIUserCreated.getDefaultInstance(), instanceOf(PIUserEvent.class));
