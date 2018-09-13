@@ -30,114 +30,235 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.join;
 import static java.lang.System.lineSeparator;
 
+/**
+ * The aggregator of the JavaScript output.
+ *
+ * <p>This class serves as the JS code storage as well as provides the convenience methods for
+ * adding the code.
+ *
+ * <p>The writable representation of the code may be obtained through the {@link #toString()}
+ * method.
+ *
+ *  @author Dmytro Kuzmin
+ */
 public final class JsOutput {
 
     @VisibleForTesting
     static final String LINE_SEPARATOR = lineSeparator();
 
-    private static final int STANDARD_INDENT = 2;
+    private static final int STANDARD_INDENTATION = 2;
 
-    private final int indent;
+    /**
+     * The indentation of the code, i.e. how many spaces each depth level takes.
+     */
+    private final int indentation;
+
+    /**
+     * The aggregator of the JS code.
+     */
     private final List<CodeLine> codeLines;
+
+    /**
+     * The current depth of the code on which the next line will be added.
+     */
     private int currentDepth;
 
+    /**
+     * Creates an instance of the {@code JsOutput} with the default indentation.
+     */
     public JsOutput() {
         this.codeLines = new ArrayList<>();
         this.currentDepth = 0;
-        this.indent = STANDARD_INDENT;
+        this.indentation = STANDARD_INDENTATION;
     }
 
-    public JsOutput(int indent) {
+    /**
+     * Creates an instance of the {@code JsOutput} with the custom indentation.
+     *
+     * @param indentation
+     *         the indentation to use
+     */
+    public JsOutput(int indentation) {
         this.codeLines = new ArrayList<>();
         this.currentDepth = 0;
-        this.indent = indent;
+        this.indentation = indentation;
     }
 
+    /**
+     * Adds the line of code on the current depth.
+     *
+     * @param codeLine
+     *         the code to add
+     */
     public void addLine(String codeLine) {
         checkNotNull(codeLine);
         CodeLine line = new CodeLine(codeLine, currentDepth);
         codeLines.add(line);
     }
 
+    /**
+     * Adds an empty line to the code.
+     */
     public void addEmptyLine() {
         addLine("");
     }
 
+    /**
+     * Adds a {@code return} declaration.
+     *
+     * @param value
+     *         the value to return
+     */
     @SuppressWarnings("DuplicateStringLiteralInspection") // Duplication with unrelated module.
     public void returnValue(String value) {
         checkNotNull(value);
         addLine("return " + value + ';');
     }
 
+    /**
+     * Adds a comment to the code.
+     *
+     * @param comment
+     *         the comment text
+     */
     public void addComment(String comment) {
         checkNotNull(comment);
         addLine("// " + comment);
     }
 
     /**
-     * @param functionName full function name including type name
+     * Declares JS method and enter its body.
+     *
+     * @param methodName
+     *         the full method name including type name
+     * @param methodArgs
+     *         the args to pass to the method
      */
-    public void enterFunction(String functionName, String... functionArgs) {
-        checkNotNull(functionName);
-        checkNotNull(functionArgs);
-        String argString = join(", ", functionArgs);
-        addLine(functionName + " = function(" + argString + ") {");
+    public void enterMethod(String methodName, String... methodArgs) {
+        checkNotNull(methodName);
+        checkNotNull(methodArgs);
+        String argString = join(", ", methodArgs);
+        addLine(methodName + " = function(" + argString + ") {");
         currentDepth++;
     }
 
+    /**
+     * Exits method declaration.
+     */
     public void exitFunction() {
         currentDepth--;
         addLine("};");
     }
 
+    /**
+     * Enters the {@code if} block body.
+     *
+     * @param condition
+     *         the {@code if} clause
+     */
     public void enterIfBlock(String condition) {
         checkNotNull(condition);
         enterBlock("if (" + condition + ')');
     }
 
+    /**
+     * Closes the previous {@code if} block and enter the {@code else} block.
+     */
     public void enterElseBlock() {
         currentDepth--;
         addLine("} else {");
         currentDepth++;
     }
 
+    /**
+     * Enters block with the custom header.
+     *
+     * <p>For example, the block header may be "{@code for (let a in b)}".
+     *
+     * @param blockHeader
+     *         the block header
+     */
     public void enterBlock(String blockHeader) {
         checkNotNull(blockHeader);
         addLine(blockHeader + " {");
         currentDepth++;
     }
 
+    /**
+     * Exits the {@code if}, {@code else} or custom block.
+     */
     public void exitBlock() {
         currentDepth--;
         addLine("}");
     }
 
+    /**
+     * Enters the {@code if} block checking that given value is {@code null}.
+     *
+     * @param value
+     *         the expression to check for {@code null}
+     */
     public void ifNull(String value) {
         checkNotNull(value);
         enterIfBlock(value + " === null");
     }
 
+    /**
+     * Enters the {@code if} block checking that given value is not {@code null}.
+     *
+     * @param value
+     *         the expression to check for not being {@code null}
+     */
     public void ifNotNull(String value) {
         checkNotNull(value);
         enterIfBlock(value + " !== null");
     }
 
+    /**
+     * Enters the {@code if} block checking that given value is not {@code undefined}.
+     *
+     * @param value
+     *         the expression to check for not being {@code undefined}
+     */
     public void ifNotUndefined(String value) {
         checkNotNull(value);
         enterIfBlock(value + " !== undefined");
     }
 
+    /**
+     * Enters the {@code if} block checking that given value is not {@code undefined} or
+     * {@code null}.
+     *
+     * @param value
+     *         the expression to check for not being {@code undefined} or {@code null}
+     */
     public void ifNotNullOrUndefined(String value) {
         checkNotNull(value);
         enterIfBlock(value + " !== undefined && " + value + " !== null");
     }
 
+    /**
+     * Exports the JS map with a given name and enter its declaration body.
+     *
+     * @param mapName
+     *         the name of the map
+     */
     public void exportMap(String mapName) {
         checkNotNull(mapName);
         addLine("export const " + mapName + " = new Map([");
         increaseDepth();
     }
 
+    /**
+     * Adds an entry to the map.
+     *
+     * <p>Assumes that the cursor is currently inside the exported map declaration.
+     *
+     * @param entry
+     *         the entry to add
+     * @param isLast
+     *         whether this entry is last or there will be more
+     */
     public void addMapEntry(String entry, boolean isLast) {
         checkNotNull(entry);
         if (isLast) {
@@ -147,23 +268,37 @@ public final class JsOutput {
         }
     }
 
+    /**
+     * Exits the exported map declaration.
+     */
     public void quitMapDeclaration() {
         decreaseDepth();
         addLine("]);");
     }
 
+    /**
+     * Increases the current depth.
+     */
     public void increaseDepth() {
         currentDepth++;
     }
 
+    /**
+     * Decreases the current depth.
+     */
     public void decreaseDepth() {
         currentDepth--;
     }
 
+    /**
+     * Concatenates all the code lines with the correct indent and line separator.
+     *
+     * @return all accumulated JS code in a single {@code String}
+     */
     @Override
     public String toString() {
         String result = codeLines.stream()
-                                 .map(codeLine -> codeLine.printToString(indent))
+                                 .map(codeLine -> codeLine.printToString(indentation))
                                  .collect(Collectors.joining(LINE_SEPARATOR));
         return result;
     }

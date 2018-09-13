@@ -111,8 +111,7 @@ public class MessageHandler {
     void generateFromJsonMethod() {
         jsOutput.addEmptyLine();
         String typeName = typeWithProtoPrefix(message);
-        String functionName = typeName + ".fromJson";
-        addFromJsonCode(typeName, functionName);
+        addFromJsonCode(typeName);
     }
 
     /**
@@ -127,15 +126,15 @@ public class MessageHandler {
     void generateFromObjectMethod() {
         jsOutput.addEmptyLine();
         String typeName = typeWithProtoPrefix(message);
-        String functionName = typeName + ".fromObject";
-        addFromObjectCode(typeName, functionName);
+        addFromObjectCode(typeName);
     }
 
     /**
      * Adds the {@code fromJson} code to the {@code jsOutput}.
      */
-    private void addFromJsonCode(String typeName, String functionName) {
-        jsOutput.enterFunction(functionName, FROM_JSON_ARG);
+    private void addFromJsonCode(String typeName) {
+        String methodName = typeName + ".fromJson";
+        jsOutput.enterMethod(methodName, FROM_JSON_ARG);
         jsOutput.addLine("let jsonObject = JSON.parse(" + FROM_JSON_ARG + ");");
         jsOutput.returnValue(typeName + ".fromObject(jsonObject)");
         jsOutput.exitFunction();
@@ -144,8 +143,9 @@ public class MessageHandler {
     /**
      * Adds the {@code fromObject} code to the {@code jsOutput}.
      */
-    private void addFromObjectCode(String typeName, String functionName) {
-        jsOutput.enterFunction(functionName, FROM_OBJECT_ARG);
+    private void addFromObjectCode(String typeName) {
+        String methodName = typeName + ".fromObject";
+        jsOutput.enterMethod(methodName, FROM_OBJECT_ARG);
         checkParsedObject();
         jsOutput.addEmptyLine();
         jsOutput.addLine("let " + MESSAGE + " = new " + typeName + "();");

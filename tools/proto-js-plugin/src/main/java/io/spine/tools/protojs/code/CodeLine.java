@@ -26,10 +26,12 @@ import static java.lang.String.join;
 import static java.util.Collections.nCopies;
 
 /**
- * The line of JS code located at some depth.
+ * The JS code line.
  *
- * <p>The depth is later used together with the indent to calculate the correct indentation of the
- * line in the generated code.
+ * <p>Consists of the code itself and the depth on which the code is located.
+ *
+ * <p>For example, the code inside the {@code if} block is one unit deeper than the {@code if}
+ * condition itself.
  *
  * @author Dmytro Kuzmin
  */
@@ -46,8 +48,7 @@ final class CodeLine {
      * @param content
      *         the JS code
      * @param depth
-     *         the depth of the code, for example the code inside the "if" block is one unit deeper
-     *         than the "if" statement itself
+     *         the depth of the code
      */
     CodeLine(String content, int depth) {
         this.content = content;
@@ -55,17 +56,17 @@ final class CodeLine {
     }
 
     /**
-     * Prints the {@code CodeLine} to the {@code String} with the specified indent.
+     * Prints the {@code CodeLine} to the {@code String} with the specified indentation.
      *
-     * @param indent
-     *         the indent of the file where this line will be written
+     * @param indentation
+     *         the indentation of the file where this line will be written
      * @return the {@code CodeLine} content with the correct indentation
      */
-    String printToString(int indent) {
-        int indentationUnits = depth * indent;
-        List<String> spaces = nCopies(indentationUnits, SPACE);
-        String indentation = join("", spaces);
-        String result = indentation + content;
+    String printToString(int indentation) {
+        int indentUnits = depth * indentation;
+        List<String> spaces = nCopies(indentUnits, SPACE);
+        String indent = join("", spaces);
+        String result = indent + content;
         return result;
     }
 }

@@ -26,8 +26,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static io.spine.tools.protojs.code.JsOutput.LINE_SEPARATOR;
 import static io.spine.tools.protojs.given.Generators.assertContains;
@@ -38,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class JsOutputTest {
 
     private static final String LINE = "line";
-    private static final String FUNCTION_NAME = "func";
+    private static final String METHOD_NAME = "func";
     private static final String FUNCTION_ARG = "arg";
     private static final String COMMENT = "comment";
     private static final String VALUE = "someValue";
@@ -99,8 +97,8 @@ class JsOutputTest {
     @Test
     @DisplayName("declare function")
     void declareFunction() {
-        jsOutput.enterFunction(FUNCTION_NAME, FUNCTION_ARG);
-        String declaration = FUNCTION_NAME + " = function(" + FUNCTION_ARG + ") {";
+        jsOutput.enterMethod(METHOD_NAME, FUNCTION_ARG);
+        String declaration = METHOD_NAME + " = function(" + FUNCTION_ARG + ") {";
         assertContains(jsOutput, declaration);
         assertEquals(1, jsOutput.currentDepth());
     }
@@ -108,7 +106,7 @@ class JsOutputTest {
     @Test
     @DisplayName("exit function body")
     void exitFunction() {
-        jsOutput.enterFunction(FUNCTION_NAME, FUNCTION_ARG);
+        jsOutput.enterMethod(METHOD_NAME, FUNCTION_ARG);
         jsOutput.exitFunction();
         String functionExit = "};";
         assertContains(jsOutput, functionExit);
