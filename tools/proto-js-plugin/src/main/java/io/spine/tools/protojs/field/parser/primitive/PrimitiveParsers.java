@@ -18,10 +18,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protojs.code.primitive;
+package io.spine.tools.protojs.field.parser.primitive;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.Type;
 import io.spine.tools.protojs.code.JsOutput;
@@ -33,7 +32,6 @@ import static com.google.common.base.Preconditions.checkState;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.BOOL;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.BYTES;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.DOUBLE;
-import static com.google.protobuf.Descriptors.FieldDescriptor.Type.ENUM;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.FIXED32;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.FIXED64;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.FLOAT;

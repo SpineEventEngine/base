@@ -18,14 +18,37 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.tools.protojs.field.parser.primitive;
+
+import io.spine.tools.protojs.code.JsOutput;
+
 /**
- * The classes which generate the JS code related to parsing the proto primitive types from their
- * JSON representation.
+ * The common base for {@link PrimitiveParser} implementations.
+ *
+ * @author Dmytro Kuzmin
  */
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.tools.protojs.code.primitive;
+abstract class AbstractPrimitiveParser implements PrimitiveParser {
 
-import com.google.errorprone.annotations.CheckReturnValue;
+    private final JsOutput jsOutput;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+    AbstractPrimitiveParser(Builder builder) {
+        this.jsOutput = builder.jsOutput;
+    }
+
+    JsOutput jsOutput() {
+        return jsOutput;
+    }
+
+    abstract static class Builder<B extends Builder<B>> implements PrimitiveParser.Builder<B> {
+
+        private JsOutput jsOutput;
+
+        @Override
+        public B setJsOutput(JsOutput jsOutput) {
+            this.jsOutput = jsOutput;
+            return self();
+        }
+
+        abstract B self();
+    }
+}

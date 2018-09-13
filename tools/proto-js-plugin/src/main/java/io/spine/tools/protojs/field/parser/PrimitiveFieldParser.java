@@ -23,8 +23,8 @@ package io.spine.tools.protojs.field.parser;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.Type;
 import io.spine.tools.protojs.code.JsOutput;
-import io.spine.tools.protojs.code.primitive.PrimitiveParser;
-import io.spine.tools.protojs.code.primitive.PrimitiveParsers;
+import io.spine.tools.protojs.field.parser.primitive.PrimitiveParser;
+import io.spine.tools.protojs.field.parser.primitive.PrimitiveParsers;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 

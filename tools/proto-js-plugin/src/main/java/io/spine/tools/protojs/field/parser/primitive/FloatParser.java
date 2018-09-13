@@ -18,37 +18,45 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protojs.code.primitive;
+package io.spine.tools.protojs.field.parser.primitive;
 
-import io.spine.tools.protojs.code.JsOutput;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * The common base for {@link PrimitiveParser} implementations.
+ * The generator of the JS code parsing the floating point values from their JSON representation.
+ *
+ * <p>The parser uses the {@code parseFloat} operation on the value to obtain the original floating
+ * point number.
  *
  * @author Dmytro Kuzmin
  */
-abstract class AbstractPrimitiveParser implements PrimitiveParser {
+final class FloatParser extends AbstractPrimitiveParser {
 
-    private final JsOutput jsOutput;
-
-    AbstractPrimitiveParser(Builder builder) {
-        this.jsOutput = builder.jsOutput;
+    private FloatParser(Builder builder) {
+        super(builder);
     }
 
-    JsOutput jsOutput() {
-        return jsOutput;
+    @Override
+    public void parseIntoVariable(String value, String variable) {
+        checkNotNull(value);
+        checkNotNull(variable);
+        jsOutput().addLine("let " + variable + " = parseFloat(" + value + ");");
     }
 
-    abstract static class Builder<B extends Builder<B>> implements PrimitiveParser.Builder<B> {
+    static Builder newBuilder() {
+        return new Builder();
+    }
 
-        private JsOutput jsOutput;
+    static class Builder extends AbstractPrimitiveParser.Builder<Builder> {
 
         @Override
-        public B setJsOutput(JsOutput jsOutput) {
-            this.jsOutput = jsOutput;
-            return self();
+        Builder self() {
+            return this;
         }
 
-        abstract B self();
+        @Override
+        public PrimitiveParser build() {
+            return new FloatParser(this);
+        }
     }
 }

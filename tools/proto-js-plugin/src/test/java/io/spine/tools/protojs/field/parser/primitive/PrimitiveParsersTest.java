@@ -18,45 +18,41 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protojs.code.primitive;
+package io.spine.tools.protojs.field.parser.primitive;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import io.spine.tools.protojs.code.JsOutput;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import static io.spine.testing.Verify.assertInstanceOf;
+import static io.spine.tools.protojs.given.Given.enumField;
+import static io.spine.tools.protojs.given.Given.int64Field;
 
 /**
- * The generator of the JS code parsing the floating point values from their JSON representation.
- *
- * <p>The parser uses the {@code parseFloat} operation on the value to obtain the original floating
- * point number.
- *
  * @author Dmytro Kuzmin
  */
-final class FloatParser extends AbstractPrimitiveParser {
+@DisplayName("PrimitiveParsers utility should")
+class PrimitiveParsersTest {
 
-    private FloatParser(Builder builder) {
-        super(builder);
+    private JsOutput jsOutput;
+
+    @BeforeEach
+    void setUp() {
+        jsOutput = new JsOutput();
     }
 
-    @Override
-    public void parseIntoVariable(String value, String variable) {
-        checkNotNull(value);
-        checkNotNull(variable);
-        jsOutput().addLine("let " + variable + " = parseFloat(" + value + ");");
+    @Test
+    @DisplayName("create parser for primitive value")
+    void createPrimitiveParser() {
+        PrimitiveParser parser = PrimitiveParsers.createFor(int64Field(), jsOutput);
+        assertInstanceOf(LongParser.class, parser);
     }
 
-    static Builder newBuilder() {
-        return new Builder();
-    }
-
-    static class Builder extends AbstractPrimitiveParser.Builder<Builder> {
-
-        @Override
-        Builder self() {
-            return this;
-        }
-
-        @Override
-        public PrimitiveParser build() {
-            return new FloatParser(this);
-        }
+    @Test
+    @DisplayName("create parser for enum value")
+    void createEnumParser() {
+        PrimitiveParser parser = PrimitiveParsers.createFor(enumField(), jsOutput);
+        assertInstanceOf(EnumParser.class, parser);
     }
 }

@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protojs.code.primitive;
+package io.spine.tools.protojs.field.parser.primitive;
 
 import io.spine.tools.protojs.code.JsOutput;
 
