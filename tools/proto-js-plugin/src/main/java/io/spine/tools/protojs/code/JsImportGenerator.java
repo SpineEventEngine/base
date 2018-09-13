@@ -161,7 +161,7 @@ public final class JsImportGenerator {
         int fileLocationDepth = pathElements.length - 1;
         List<String> pathToRootElements = nCopies(fileLocationDepth, PARENT_DIR);
         String pathToRoot = join("", pathToRootElements);
-        String result = pathToRoot.isEmpty() ? pathToRoot : CURRENT_DIR;
+        String result = pathToRoot.isEmpty() ? CURRENT_DIR : pathToRoot;
         return result;
     }
 }
