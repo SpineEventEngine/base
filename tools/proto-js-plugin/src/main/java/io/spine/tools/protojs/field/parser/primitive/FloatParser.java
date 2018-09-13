@@ -36,7 +36,6 @@ final class FloatParser extends AbstractPrimitiveParser {
         super(builder);
     }
 
-    @SuppressWarnings("DuplicateStringLiteralInspection") // Necessary duplication with own test.
     @Override
     public void parseIntoVariable(String value, String variable) {
         checkNotNull(value);

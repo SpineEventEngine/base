@@ -70,7 +70,6 @@ public final class WellKnownFieldParser implements FieldParser {
      * <p>The field value of well-known type is parsed via a predefined parser stored in the known
      * type parsers {@linkplain io.spine.tools.protojs.files.JsFiles#KNOWN_TYPE_PARSERS file}.
      */
-    @SuppressWarnings("DuplicateStringLiteralInspection") // Necessary duplication with own test.
     @Override
     public void parseIntoVariable(String value, String variable) {
         checkNotNull(value);

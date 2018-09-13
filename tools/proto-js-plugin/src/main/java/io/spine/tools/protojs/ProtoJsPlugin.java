@@ -73,8 +73,6 @@ import static io.spine.tools.protojs.files.ProjectFiles.testProtoJsLocation;
  */
 public class ProtoJsPlugin extends SpinePlugin {
 
-    @SuppressWarnings({"CheckReturnValue", "ResultOfMethodCallIgnored"})
-    // Method called to apply task.
     @Override
     public void apply(Project project) {
         Action<Task> task = newAction(project);

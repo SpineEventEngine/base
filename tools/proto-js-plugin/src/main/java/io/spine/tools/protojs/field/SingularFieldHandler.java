@@ -48,7 +48,6 @@ final class SingularFieldHandler extends AbstractFieldHandler {
      * <p>The merge format for a singular field is just calling the corresponding field setter on
      * the message object.
      */
-    @SuppressWarnings("DuplicateStringLiteralInspection") // Random duplication.
     @Override
     String mergeFormat() {
         String fieldName = capitalizedName(field());
