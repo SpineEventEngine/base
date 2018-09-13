@@ -22,7 +22,6 @@ package io.spine.tools.protoc;
 
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.JavaFile;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.annotation.Generated;
@@ -32,7 +31,6 @@ import static org.junit.Assert.assertEquals;
 /**
  * @author Dmytro Dashenkov
  */
-@Ignore
 public class MarkerInterfaceSpecShould {
 
     @Test
