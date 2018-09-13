@@ -25,12 +25,20 @@ import com.google.common.base.Objects;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 
 /**
+ * An implementation base for a Protobuf compiler output items.
+ *
  * @author Dmytro Dashenkov
  */
 public abstract class AbstractCompilerOutput implements CompilerOutput {
 
     private final File file;
 
+    /**
+     * Creates a new {@code AbstractCompilerOutput} with the given {@link File}.
+     *
+     * @param file
+     *         the {@linkplain #toFile() file representation} of this compiler output item
+     */
     protected AbstractCompilerOutput(File file) {
         this.file = file;
     }

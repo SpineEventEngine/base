@@ -27,6 +27,12 @@ import io.spine.code.java.SourceFile;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
+ * A user-defined marker interface.
+ *
+ * <p>This interface is declared with an {@link io.spine.option.OptionsProto#is (is)} or
+ * an {@link io.spine.option.OptionsProto#everyIs (every_is)} option. See the option doc for
+ * details.
+ *
  * @author Dmytro Dashenkov
  */
 final class UserMarkerInterface extends AbstractCompilerOutput implements MarkerInterface {
@@ -38,6 +44,13 @@ final class UserMarkerInterface extends AbstractCompilerOutput implements Marker
         this.interfaceFqn = interfaceFqn;
     }
 
+    /**
+     * Creates a {@code UserMarkerInterface} from the given spec.
+     *
+     * @param spec
+     *         the interface spec to create an interface from
+     * @return new instance of {@code UserMarkerInterface}
+     */
     static UserMarkerInterface from(MarkerInterfaceSpec spec) {
         checkNotNull(spec);
         JavaFile javaCode = spec.toJavaCode();

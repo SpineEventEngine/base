@@ -56,7 +56,7 @@ public final class FileName extends AbstractFileName<FileName> {
      *
      * @param message
      *        a descriptor of the message
-     * @return new instance
+     * @return the name of the Java file
      */
     public static FileName forMessage(DescriptorProto message) {
         String typeName = message.getName();
@@ -64,6 +64,13 @@ public final class FileName extends AbstractFileName<FileName> {
         return result;
     }
 
+    /**
+     * Obtains file name for the specified message {@code MessageOrBuilder} interface.
+     *
+     * @param message
+     *        a descriptor of the message
+     * @return the name of the Java file
+     */
     public static FileName forMessageOrBuilder(DescriptorProto message) {
         String typeName = message.getName();
         String javaType = SimpleClassName.messageOrBuilder(typeName).value();

@@ -30,6 +30,9 @@ import static io.spine.code.java.PackageName.delimiter;
 import static java.lang.String.format;
 
 /**
+ * A {@link io.spine.tools.protoc.CompilerOutput CompilerOutput} item, which alters a generated
+ * message class to implement a given marker interface.
+ *
  * @author Dmytro Dashenkov
  */
 final class InsertionPoint extends AbstractCompilerOutput {
@@ -41,6 +44,17 @@ final class InsertionPoint extends AbstractCompilerOutput {
         super(file);
     }
 
+    /**
+     * Creates a new instance of {@code InsertionPoint}.
+     *
+     * @param containingFile
+     *         the file which contains the given {@code message}
+     * @param message
+     *         the message to mark with an interface
+     * @param markerInterface
+     *         the interface to implement
+     * @return new instance of {@code InsertionPoint}
+     */
     static InsertionPoint implementInterface(FileDescriptorProto containingFile,
                                              DescriptorProto message,
                                              MarkerInterface markerInterface) {

@@ -21,9 +21,14 @@
 package io.spine.tools.protoc;
 
 /**
+ * A marker interface extending {@link com.google.protobuf.Message}.
+ *
  * @author Dmytro Dashenkov
  */
 public interface MarkerInterface {
 
+    /**
+     * Obtains a fully-qualified name of the interface.
+     */
     String name();
 }

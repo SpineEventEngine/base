@@ -52,22 +52,50 @@ public abstract class MessageFile extends StringTypeValue {
         return new Predicate(suffix);
     }
 
+    /**
+     * A Protobuf file predicate.
+     *
+     * <p>Tests if a given file matches a {@linkplain MessageFile file type}.
+     */
     @Immutable
-    public static class Predicate implements Serializable {
+    public static final class Predicate implements Serializable {
 
         private static final long serialVersionUID = 0L;
 
         private final String suffix;
 
+        /**
+         * Creates a new instance of {@code Predicate}.
+         *
+         * <p>A file matches this predicate if the file name ends with the given {@code suffix}.
+         *
+         * @param suffix the suffix of a Protobuf file name
+         */
         private Predicate(String suffix) {
             this.suffix = suffix;
         }
 
+        /**
+         * Checks if given file upon this predicate.
+         *
+         * @param file
+         *         the file descriptor message
+         * @return {@code true} if the file name ends with the {@code suffix},
+         *         {@code false} otherwise
+         */
         public boolean test(FileDescriptorProto file) {
             String name = file.getName();
             return name.endsWith(suffix);
         }
 
+        /**
+         * Checks if given file upon this predicate.
+         *
+         * @param file
+         *         the file descriptor
+         * @return {@code true} if the file name ends with the {@code suffix},
+         *         {@code false} otherwise
+         */
         public boolean test(FileDescriptor file) {
             FileDescriptorProto protoDescriptor = file.toProto();
             return test(protoDescriptor);

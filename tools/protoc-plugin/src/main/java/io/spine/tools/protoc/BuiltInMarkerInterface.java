@@ -36,6 +36,10 @@ import static java.util.Optional.empty;
 import static java.util.stream.Stream.of;
 
 /**
+ * A built-in marked interface.
+ *
+ * <p>This interface marks special message types, such as events, commands, etc.
+ *
  * @author Dmytro Dashenkov
  */
 public class BuiltInMarkerInterface implements MarkerInterface {
@@ -51,6 +55,17 @@ public class BuiltInMarkerInterface implements MarkerInterface {
         return new BuiltInMarkerInterface(type);
     }
 
+    /**
+     * Obtains the {@link CompilerOutput} item which generates Java sources for the given message
+     * to implement a built-in marker interface.
+     *
+     * @param file
+     *         the file containing the given {@code message} definition
+     * @param message
+     *         the message type to check
+     * @return the compiler output item or {@link Optional#empty()} if the given message should not
+     *         implement a built-in interface
+     */
     static Optional<CompilerOutput> scanForBuiltIns(FileDescriptorProto file,
                                                     DescriptorProto message) {
         Optional<Type> foundInterface =
@@ -71,6 +86,9 @@ public class BuiltInMarkerInterface implements MarkerInterface {
         return type.getName();
     }
 
+    /**
+     * The enumeration of built-in interfaces.
+     */
     private enum Type {
 
         EVENT_MESSAGE(EventMessage.class, EventMessage.File.predicate()),
@@ -85,6 +103,14 @@ public class BuiltInMarkerInterface implements MarkerInterface {
             this.filePredicate = filePredicate;
         }
 
+        /**
+         * Checks if the given file contains messages of this interface.
+         *
+         * @param file
+         *         the file to check
+         * @return {@code true} if the given file contains messages of this type, {@code false}
+         *         otherwise
+         */
         private boolean matches(FileDescriptorProto file) {
             return filePredicate.test(file);
         }

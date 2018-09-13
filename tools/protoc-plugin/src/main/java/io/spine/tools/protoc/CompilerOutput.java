@@ -23,9 +23,16 @@ package io.spine.tools.protoc;
 import static com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 
 /**
+ * Output of the Protobuf compiler plugin.
+ *
  * @author Dmytro Dashenkov
  */
 interface CompilerOutput {
 
+    /**
+     * Obtains the {@link File CodeGeneratorResponse.File} representing this output item.
+     *
+     * @return compiler output as a {@link File}
+     */
     File toFile();
 }

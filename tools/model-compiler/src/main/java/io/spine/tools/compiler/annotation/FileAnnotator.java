@@ -128,7 +128,7 @@ class FileAnnotator extends Annotator<FileOptions, FileDescriptorProto> {
      * Annotates all enums generated from the specified {@link FileDescriptorProto}.
      *
      * <p>The specified file descriptor should
-     * {@linkplain FileOptions#getJavaMultipleFiles() hav multiple Java files}.
+     * {@linkplain FileOptions#getJavaMultipleFiles() have multiple Java files}.
      *
      * @param file the file descriptor to get enum descriptors
      */
