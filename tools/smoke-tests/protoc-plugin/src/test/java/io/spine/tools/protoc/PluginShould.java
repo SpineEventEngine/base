@@ -21,14 +21,19 @@
 package io.spine.tools.protoc;
 
 import com.google.protobuf.Message;
+import io.spine.base.CommandMessage;
+import io.spine.base.EventMessage;
+import io.spine.base.RejectionMessage;
 import io.spine.tools.protoc.test.PIUserEvent;
 import io.spine.tools.protoc.test.UserInfo;
 import org.junit.Test;
 
 import java.lang.reflect.Method;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
@@ -49,11 +54,10 @@ public class PluginShould {
         checkMarkerInterface(EVENT_INTERFACE_FQN);
     }
 
-    @SuppressWarnings({"ConstantConditions", "RedundantCast"}) // Required by the test logic.
     @Test
     public void implement_marker_interfaces_in_generated_messages() {
-        assertTrue((Object) PICustomerNotified.getDefaultInstance() instanceof PICustomerEvent);
-        assertTrue((Object) PICustomerEmailRecieved.getDefaultInstance() instanceof PICustomerEvent);
+        assertThat(PICustomerNotified.getDefaultInstance(), instanceOf(PICustomerEvent.class));
+        assertThat(PICustomerEmailRecieved.getDefaultInstance(), instanceOf(PICustomerEvent.class));
     }
 
     @Test
@@ -61,21 +65,19 @@ public class PluginShould {
         checkMarkerInterface(COMMAND_INTERFACE_FQN);
     }
 
-    @SuppressWarnings({"ConstantConditions", "RedundantCast"}) // Required by the test logic.
     @Test
     public void implement_interface_in_generated_messages_with_IS_option() {
-        assertTrue((Object) PICustomerCreated.getDefaultInstance() instanceof PICustomerEvent);
-        assertTrue((Object) PICreateCustomer.getDefaultInstance() instanceof PICustomerCommand);
+        assertThat(PICustomerCreated.getDefaultInstance(), instanceOf(PICustomerEvent.class));
+        assertThat(PICreateCustomer.getDefaultInstance(), instanceOf(PICustomerCommand.class));
     }
 
-    @SuppressWarnings({"ConstantConditions", "RedundantCast"}) // Required by the test logic.
     @Test
     public void use_IS_in_priority_to_EVERY_IS() {
-        assertTrue((Object) PIUserCreated.getDefaultInstance() instanceof PIUserEvent);
-        assertTrue((Object) PIUserNameUpdated.getDefaultInstance() instanceof PIUserEvent);
+        assertThat(PIUserCreated.getDefaultInstance(), instanceOf(PIUserEvent.class));
+        assertThat(PIUserNameUpdated.getDefaultInstance(), instanceOf(PIUserEvent.class));
 
-        assertFalse((Object) UserName.getDefaultInstance() instanceof PIUserEvent);
-        assertTrue((Object) UserName.getDefaultInstance() instanceof UserInfo);
+        assertThat(UserName.getDefaultInstance(), not(instanceOf(PIUserEvent.class)));
+        assertThat(UserName.getDefaultInstance(), instanceOf(UserInfo.class));
     }
 
     @Test
@@ -90,6 +92,25 @@ public class PluginShould {
         Class[] interfaces = cls.getInterfaces();
         assertEquals(1, interfaces.length);
         assertSame(CustomerNameOrBuilder.class, interfaces[0]);
+    }
+
+    @Test
+    public void mark_event_messages() {
+        assertThat(UserCreated.getDefaultInstance(), instanceOf(EventMessage.class));
+        assertThat(UserCreated.getDefaultInstance(), instanceOf(FirstEvent.class));
+        assertThat(UserNotfied.getDefaultInstance(), instanceOf(EventMessage.class));
+    }
+
+    @Test
+    public void mark_command_messages() {
+        assertThat(CreateUser.getDefaultInstance(), instanceOf(CommandMessage.class));
+        assertThat(NotifyUser.getDefaultInstance(), instanceOf(CommandMessage.class));
+    }
+
+    @Test
+    public void mark_rejection_messages() {
+        assertThat(Rejections.UserAlreadyExists.getDefaultInstance(), instanceOf(RejectionMessage.class));
+        assertThat(Rejections.UserAlreadyExists.getDefaultInstance(), instanceOf(UserRejection.class));
     }
 
     private static Class<?> checkMarkerInterface(String fqn) throws ClassNotFoundException {

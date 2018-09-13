@@ -20,11 +20,13 @@
 
 package io.spine.base;
 
+import com.google.errorprone.annotations.Immutable;
+import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.proto.FileName;
 import io.spine.value.StringTypeValue;
 
-import java.util.function.Predicate;
+import java.io.Serializable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -45,11 +47,58 @@ public abstract class MessageFile extends StringTypeValue {
      * Obtains the predicate for filtering files containing message declarations
      * of the required type.
      */
-    public final Predicate<FileDescriptor> predicate() {
-        return file -> {
-            String fqn = file.getName();
-            boolean result = fqn.endsWith(value());
-            return result;
-        };
+    public final Predicate predicate() {
+        String suffix = value();
+        return new Predicate(suffix);
+    }
+
+    /**
+     * A Protobuf file predicate.
+     *
+     * <p>Tests if a given file matches a {@linkplain MessageFile file type}.
+     */
+    @Immutable
+    public static final class Predicate implements Serializable {
+
+        private static final long serialVersionUID = 0L;
+
+        private final String suffix;
+
+        /**
+         * Creates a new instance of {@code Predicate}.
+         *
+         * <p>A file matches this predicate if the file name ends with the given {@code suffix}.
+         *
+         * @param suffix the suffix of a Protobuf file name
+         */
+        private Predicate(String suffix) {
+            this.suffix = suffix;
+        }
+
+        /**
+         * Checks if given file upon this predicate.
+         *
+         * @param file
+         *         the file descriptor message
+         * @return {@code true} if the file name ends with the {@code suffix},
+         *         {@code false} otherwise
+         */
+        public boolean test(FileDescriptorProto file) {
+            String name = file.getName();
+            return name.endsWith(suffix);
+        }
+
+        /**
+         * Checks if given file upon this predicate.
+         *
+         * @param file
+         *         the file descriptor
+         * @return {@code true} if the file name ends with the {@code suffix},
+         *         {@code false} otherwise
+         */
+        public boolean test(FileDescriptor file) {
+            FileDescriptorProto protoDescriptor = file.toProto();
+            return test(protoDescriptor);
+        }
     }
 }
