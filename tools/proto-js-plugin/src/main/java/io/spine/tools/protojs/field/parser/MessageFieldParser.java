@@ -40,8 +40,13 @@ import static io.spine.tools.protojs.types.Types.typeWithProtoPrefix;
  */
 public final class MessageFieldParser implements FieldValueParser {
 
-    private final FieldDescriptor field;
+    private final String typeName;
     private final JsOutput jsOutput;
+
+    private MessageFieldParser(String typeName, JsOutput jsOutput) {
+        this.typeName = typeName;
+        this.jsOutput = jsOutput;
+    }
 
     /**
      * Creates the {@code MessageFieldParser} for the given {@code field}.
@@ -51,24 +56,24 @@ public final class MessageFieldParser implements FieldValueParser {
      * @param jsOutput
      *         the {@code JsOutput} which accumulates all the generated code
      */
-    MessageFieldParser(FieldDescriptor field, JsOutput jsOutput) {
-        this.field = field;
-        this.jsOutput = jsOutput;
+    static MessageFieldParser createFor(FieldDescriptor field, JsOutput jsOutput) {
+        checkNotNull(field);
+        checkNotNull(jsOutput);
+        Descriptor messageType = field.getMessageType();
+        String typeName = typeWithProtoPrefix(messageType);
+        return new MessageFieldParser(typeName, jsOutput);
     }
 
     /**
      * {@inheritDoc}
      *
-     * <p>For the message type which does not belong to the well-known types (see
-     * {@link WellKnownFieldParser}), the parse operation is executed via the recursive
-     * {@code fromObject} method call.
+     * <p>For the message type which does not belong to the well-known types, the parse operation
+     * is executed via the recursive {@code fromObject} method call.
      */
     @Override
     public void parseIntoVariable(String value, String variable) {
         checkNotNull(value);
         checkNotNull(variable);
-        Descriptor fieldType = field.getMessageType();
-        String typeName = typeWithProtoPrefix(fieldType);
         jsOutput.addLine("let " + variable + " = " + typeName + ".fromObject(" + value + ");");
     }
 }

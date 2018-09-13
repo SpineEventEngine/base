@@ -24,6 +24,7 @@ import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.tools.protojs.code.JsOutput;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.tools.protojs.field.Fields.isEnum;
 import static io.spine.tools.protojs.field.Fields.isMessage;
 import static io.spine.tools.protojs.field.Fields.isWellKnownType;
 
@@ -52,9 +53,12 @@ public final class FieldValueParsers {
         checkNotNull(jsOutput);
         if (isMessage(field)) {
             return isWellKnownType(field)
-                    ? new WellKnownFieldParser(field, jsOutput)
-                    : new MessageFieldParser(field, jsOutput);
+                    ? WellKnownFieldParser.createFor(field, jsOutput)
+                    : MessageFieldParser.createFor(field, jsOutput);
         }
-        return new PrimitiveFieldParser(field, jsOutput);
+        if (isEnum(field)) {
+            return EnumFieldParser.createFor(field, jsOutput);
+        }
+        return PrimitiveFieldParser.createFor(field, jsOutput);
     }
 }

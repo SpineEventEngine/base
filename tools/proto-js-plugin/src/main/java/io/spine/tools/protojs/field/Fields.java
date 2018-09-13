@@ -31,6 +31,7 @@ import io.spine.type.TypeUrl;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Label.LABEL_REPEATED;
+import static com.google.protobuf.Descriptors.FieldDescriptor.Type.ENUM;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.MESSAGE;
 
 /**
@@ -91,6 +92,19 @@ public final class Fields {
         TypeUrl typeUrl = TypeUrl.from(message);
         boolean isWellKnownType = ParserMapGenerator.hasParser(typeUrl);
         return isWellKnownType;
+    }
+
+    /**
+     * Checks if the given field is of enum type.
+     *
+     * @param field
+     *         the descriptor of the field to check
+     * @return {@code true} if the field is of enum kind, {@code false} otherwise
+     */
+    public static boolean isEnum(FieldDescriptor field) {
+        checkNotNull(field);
+        boolean isMessage = field.getType() == ENUM;
+        return isMessage;
     }
 
     /**

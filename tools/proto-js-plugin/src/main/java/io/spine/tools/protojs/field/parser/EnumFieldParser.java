@@ -20,60 +20,57 @@
 
 package io.spine.tools.protojs.field.parser;
 
+import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import com.google.protobuf.Descriptors.FieldDescriptor.Type;
 import io.spine.tools.protojs.code.JsOutput;
-import io.spine.tools.protojs.code.primitive.PrimitiveParser;
-import io.spine.tools.protojs.code.primitive.PrimitiveParsers;
+import io.spine.tools.protojs.types.Types;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.tools.protojs.types.Types.typeWithProtoPrefix;
 
 /**
- * The value parser for the primitive Protobuf fields.
- *
- * <p>All Protobuf fields that are not of message or enum type are considered primitive and are
- * thus handled by this parser.
+ * The value parser for the Protobuf enum fields.
  *
  * <p>The class is {@code public} only for test purposes.
  *
  * @author Dmytro Kuzmin
  */
-public final class PrimitiveFieldParser implements FieldValueParser {
+public final class EnumFieldParser implements FieldValueParser {
 
-    private final Type fieldType;
+    private final String typeName;
     private final JsOutput jsOutput;
 
-    private PrimitiveFieldParser(Type fieldType, JsOutput jsOutput) {
-        this.fieldType = fieldType;
+    private EnumFieldParser(String typeName, JsOutput jsOutput) {
+        this.typeName = typeName;
         this.jsOutput = jsOutput;
     }
 
     /**
-     * Creates a new {@code PrimitiveFieldParser} for the given field.
+     * Creates a new {@code EnumFieldParser} for the given field.
      *
-     * @param field    the descriptor of the field to create the parser for
-     * @param jsOutput the {@code JsOutput} to store the generated code
+     * @param field
+     *         the descriptor of the field to create the parser for
+     * @param jsOutput
+     *         the {@code JsOutput} to store the generated code
      */
-    static PrimitiveFieldParser createFor(FieldDescriptor field, JsOutput jsOutput) {
+    static EnumFieldParser createFor(FieldDescriptor field, JsOutput jsOutput) {
         checkNotNull(field);
         checkNotNull(jsOutput);
-        Type fieldType = field.getType();
-        return new PrimitiveFieldParser(fieldType, jsOutput);
+        EnumDescriptor enumType = field.getEnumType();
+        String typeName = typeWithProtoPrefix(enumType);
+        return new EnumFieldParser(typeName, jsOutput);
     }
 
     /**
      * {@inheritDoc}
      *
-     * <p>For the primitive field, the {@link PrimitiveParser} implementation is used to convert
-     * the field value into the appropriate type.
-     *
-     * @see PrimitiveParsers
+     * <p>The {@code enum} proto value in JSON is represented as a plain {@code string}. Thus, the
+     * parser obtains the value by parsing the JS enum from the given {@code string}.
      */
     @Override
     public void parseIntoVariable(String value, String variable) {
         checkNotNull(value);
         checkNotNull(variable);
-        PrimitiveParser parser = PrimitiveParsers.createFor(fieldType, jsOutput);
-        parser.parseIntoVariable(value, variable);
+        jsOutput.addLine("let " + variable + " = " + typeName + '[' + value + "];");
     }
 }

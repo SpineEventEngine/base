@@ -42,8 +42,13 @@ import static io.spine.tools.protojs.fromjson.FromJsonGenerator.PARSERS_IMPORT_N
  */
 public final class WellKnownFieldParser implements FieldValueParser {
 
-    private final FieldDescriptor field;
+    private final TypeUrl typeUrl;
     private final JsOutput jsOutput;
+
+    private WellKnownFieldParser(TypeUrl typeUrl, JsOutput jsOutput) {
+        this.typeUrl = typeUrl;
+        this.jsOutput = jsOutput;
+    }
 
     /**
      * Creates a new {@code WellKnownFieldParser} for the given field.
@@ -53,9 +58,12 @@ public final class WellKnownFieldParser implements FieldValueParser {
      * @param jsOutput
      *         the {@code JsOutput} to store the generated code
      */
-    WellKnownFieldParser(FieldDescriptor field, JsOutput jsOutput) {
-        this.field = field;
-        this.jsOutput = jsOutput;
+    static WellKnownFieldParser createFor(FieldDescriptor field, JsOutput jsOutput) {
+        checkNotNull(field);
+        checkNotNull(jsOutput);
+        Descriptor fieldType = field.getMessageType();
+        TypeUrl typeUrl = TypeUrl.from(fieldType);
+        return new WellKnownFieldParser(typeUrl, jsOutput);
     }
 
     /**
@@ -68,8 +76,6 @@ public final class WellKnownFieldParser implements FieldValueParser {
     public void parseIntoVariable(String value, String variable) {
         checkNotNull(value);
         checkNotNull(variable);
-        Descriptor fieldType = field.getMessageType();
-        TypeUrl typeUrl = TypeUrl.from(fieldType);
         String parserMap = PARSERS_IMPORT_NAME + '.' + ParserMapGenerator.MAP_NAME;
         jsOutput.addLine("let parser = " + parserMap + ".get('" + typeUrl + "');");
         jsOutput.addLine("let " + variable + " = parser.parse(" + value + ");");
