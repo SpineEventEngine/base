@@ -26,7 +26,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.protojs.code.JsImportGenerator.rawNamedImport;
 
 /**
- * The generator of the JS code parsing {@code bytes} value from its JSON representation.
+ * The generator of the code parsing {@code bytes} value from its JSON representation.
  *
  * <p>The JSON representation of the {@code bytes} value is the base-64 encoded {@code string}.
  *
@@ -54,6 +54,7 @@ final class BytesParser extends AbstractPrimitiveParser {
         super(builder);
     }
 
+    @SuppressWarnings("DuplicateStringLiteralInspection") // Necessary duplication with own test.
     @Override
     public void parseIntoVariable(String value, String variable) {
         checkNotNull(value);

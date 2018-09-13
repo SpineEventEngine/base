@@ -22,13 +22,12 @@ package io.spine.tools.protojs.field.parser;
 
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.EnumDescriptor;
-import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.tools.protojs.code.JsOutput;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static io.spine.tools.protojs.field.parser.FieldValueParsers.parserFor;
+import static io.spine.tools.protojs.field.parser.FieldParsers.parserFor;
 import static io.spine.tools.protojs.given.Generators.assertContains;
 import static io.spine.tools.protojs.given.Given.enumField;
 import static io.spine.tools.protojs.given.Given.int64Field;
@@ -39,8 +38,8 @@ import static io.spine.tools.protojs.types.Types.typeWithProtoPrefix;
 /**
  * @author Dmytro Kuzmin
  */
-@DisplayName("FieldValueParser should")
-class FieldValueParserTest {
+@DisplayName("FieldParser should")
+class FieldParserTest {
 
     private static final String VALUE = "value";
     private static final String VARIABLE = "variable";
@@ -55,7 +54,7 @@ class FieldValueParserTest {
     @Test
     @DisplayName("parse primitive field via predefined code")
     void parsePrimitive() {
-        FieldValueParser parser = parserFor(int64Field(), jsOutput);
+        FieldParser parser = parserFor(int64Field(), jsOutput);
         parser.parseIntoVariable(VALUE, VARIABLE);
         String parse = "let " + VARIABLE + " = parseInt(" + VALUE + ')';
         assertContains(jsOutput, parse);
@@ -64,7 +63,7 @@ class FieldValueParserTest {
     @Test
     @DisplayName("parse enum field via JS enum object attribute")
     void parseEnum() {
-        FieldValueParser parser = parserFor(enumField(), jsOutput);
+        FieldParser parser = parserFor(enumField(), jsOutput);
         parser.parseIntoVariable(VALUE, VARIABLE);
         EnumDescriptor enumType = enumField().getEnumType();
         String typeName = typeWithProtoPrefix(enumType);
@@ -75,7 +74,7 @@ class FieldValueParserTest {
     @Test
     @DisplayName("parse message field with custom type via recursive call to fromObject")
     void parseMessage() {
-        FieldValueParser parser = parserFor(messageField(), jsOutput);
+        FieldParser parser = parserFor(messageField(), jsOutput);
         parser.parseIntoVariable(VALUE, VARIABLE);
         Descriptor messageType = messageField().getMessageType();
         String type = typeWithProtoPrefix(messageType);
@@ -86,7 +85,7 @@ class FieldValueParserTest {
     @Test
     @DisplayName("parse message field with standard type via known type parser")
     void parseWellKnown() {
-        FieldValueParser parser = parserFor(timestampField(), jsOutput);
+        FieldParser parser = parserFor(timestampField(), jsOutput);
         parser.parseIntoVariable(VALUE, VARIABLE);
         String parse = "let " + VARIABLE + " = parser.parse(" + VALUE + ')';
         assertContains(jsOutput, parse);

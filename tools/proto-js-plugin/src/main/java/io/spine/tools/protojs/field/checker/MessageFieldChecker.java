@@ -27,13 +27,11 @@ import io.spine.tools.protojs.code.JsOutput;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * The value checker for fields of Protobuf message type.
- *
- * <p>The class is {@code public} for the testing purposes.
+ * The value checker for the proto fields of {@code message} type.
  *
  * @author Dmytro Kuzmin
  */
-public final class MessageFieldChecker implements FieldValueChecker {
+public final class MessageFieldChecker implements FieldChecker {
 
     private final FieldDescriptor field;
     private final JsOutput jsOutput;
@@ -42,7 +40,7 @@ public final class MessageFieldChecker implements FieldValueChecker {
      * Creates a new {@code MessageFieldChecker} for the given {@code field}.
      *
      * @param field
-     *         the field to create the checker for
+     *         the processed field
      * @param jsOutput
      *         the {@code JsOutput} which accumulates all generated code
      */
@@ -55,22 +53,22 @@ public final class MessageFieldChecker implements FieldValueChecker {
      * {@inheritDoc}
      *
      * <p>For messages, if the parsed value equals to {@code null}, the message value is also set
-     * to null via {@code setterFormat}. The further parsing does not happen in this case.
+     * to null via the {@code mergeFieldFormat}. The further parsing does not happen in this case.
      *
-     * <p>The only exception is Protobuf {@link Value} type, where the check does not take place
-     * and the {@code null} is allowed to reach the parser, which later converts it to
+     * <p>The only exception is the Protobuf {@link Value} type, where the check does not take
+     * place and the {@code null} is allowed to reach the parser, which later converts it to the
      * {@link com.google.protobuf.NullValue}.
      */
     @Override
-    public void performNullCheck(String value, String setterFormat) {
+    public void performNullCheck(String value, String mergeFieldFormat) {
         checkNotNull(value);
-        checkNotNull(setterFormat);
+        checkNotNull(mergeFieldFormat);
         if (isProtobufValueType()) {
             return;
         }
         jsOutput.ifNull(value);
-        String setFieldToNull = String.format(setterFormat, "null");
-        jsOutput.addLine(setFieldToNull);
+        String mergeNull = String.format(mergeFieldFormat, "null");
+        jsOutput.addLine(mergeNull);
         jsOutput.enterElseBlock();
     }
 
@@ -82,7 +80,7 @@ public final class MessageFieldChecker implements FieldValueChecker {
     }
 
     /**
-     * Checks if the stored {@link #field} is of the Protobuf {@link Value} type.
+     * Checks if the processed {@code field} is of the Protobuf {@link Value} type.
      */
     private boolean isProtobufValueType() {
         String valueType = Value.getDescriptor()

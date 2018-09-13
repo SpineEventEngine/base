@@ -36,11 +36,13 @@ import static java.lang.System.lineSeparator;
  * <p>This class serves as the JS code storage as well as provides the convenience methods for
  * adding the code.
  *
- * <p>The writable representation of the code may be obtained through the {@link #toString()}
+ * <p>The writable representation of the output may be obtained through the {@link #toString()}
  * method.
  *
  *  @author Dmytro Kuzmin
  */
+@SuppressWarnings("DuplicateStringLiteralInspection")
+// Duplication with own tests checking the generated code.
 public final class JsOutput {
 
     @VisibleForTesting
@@ -109,7 +111,6 @@ public final class JsOutput {
      * @param value
      *         the value to return
      */
-    @SuppressWarnings("DuplicateStringLiteralInspection") // Duplication with unrelated module.
     public void returnValue(String value) {
         checkNotNull(value);
         addLine("return " + value + ';');
@@ -162,7 +163,7 @@ public final class JsOutput {
     }
 
     /**
-     * Closes the previous {@code if} block and enter the {@code else} block.
+     * Closes the current {@code if} block and enters the {@code else} block.
      */
     public void enterElseBlock() {
         currentDepth--;
@@ -173,7 +174,7 @@ public final class JsOutput {
     /**
      * Enters block with the custom header.
      *
-     * <p>For example, the block header may be "{@code for (let a in b)}".
+     * <p>For example, the custom header may be "{@code for (let value in list)}".
      *
      * @param blockHeader
      *         the block header
@@ -193,7 +194,7 @@ public final class JsOutput {
     }
 
     /**
-     * Enters the {@code if} block checking that given value is {@code null}.
+     * Enters the {@code if} block checking that the given value is {@code null}.
      *
      * @param value
      *         the expression to check for {@code null}
@@ -204,7 +205,7 @@ public final class JsOutput {
     }
 
     /**
-     * Enters the {@code if} block checking that given value is not {@code null}.
+     * Enters the {@code if} block checking that the given value is not {@code null}.
      *
      * @param value
      *         the expression to check for not being {@code null}
@@ -215,7 +216,7 @@ public final class JsOutput {
     }
 
     /**
-     * Enters the {@code if} block checking that given value is not {@code undefined}.
+     * Enters the {@code if} block checking that the given value is not {@code undefined}.
      *
      * @param value
      *         the expression to check for not being {@code undefined}
@@ -226,11 +227,11 @@ public final class JsOutput {
     }
 
     /**
-     * Enters the {@code if} block checking that given value is not {@code undefined} or
-     * {@code null}.
+     * Enters the {@code if} block checking that given value is not {@code null} or
+     * {@code undefined}.
      *
      * @param value
-     *         the expression to check for not being {@code undefined} or {@code null}
+     *         the expression to check for not being {@code null} or {@code undefined}
      */
     public void ifNotNullOrUndefined(String value) {
         checkNotNull(value);
@@ -238,7 +239,7 @@ public final class JsOutput {
     }
 
     /**
-     * Exports the JS map with a given name and enter its declaration body.
+     * Exports the JS map with a given name and enters its declaration body.
      *
      * @param mapName
      *         the name of the map
@@ -246,7 +247,7 @@ public final class JsOutput {
     public void exportMap(String mapName) {
         checkNotNull(mapName);
         addLine("export const " + mapName + " = new Map([");
-        increaseDepth();
+        currentDepth++;
     }
 
     /**
@@ -277,21 +278,21 @@ public final class JsOutput {
     }
 
     /**
-     * Increases the current depth.
+     * Manually increases the current depth.
      */
     public void increaseDepth() {
         currentDepth++;
     }
 
     /**
-     * Decreases the current depth.
+     * Manually decreases the current depth.
      */
     public void decreaseDepth() {
         currentDepth--;
     }
 
     /**
-     * Concatenates all the code lines with the correct indent and line separator.
+     * Concatenates all the code lines with the correct indentation and line separator.
      *
      * @return all accumulated JS code in a single {@code String}
      */

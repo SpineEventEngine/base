@@ -20,27 +20,36 @@
 
 package io.spine.tools.protojs.field.checker;
 
+import com.google.common.testing.NullPointerTester;
+import com.google.protobuf.Descriptors.FieldDescriptor;
+import io.spine.testing.UtilityClassTest;
 import io.spine.tools.protojs.code.JsOutput;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static io.spine.tools.protojs.field.checker.FieldValueCheckers.checkerFor;
-import static io.spine.tools.protojs.given.Generators.assertContains;
+import static io.spine.testing.Verify.assertInstanceOf;
+import static io.spine.tools.protojs.field.checker.FieldCheckers.checkerFor;
 import static io.spine.tools.protojs.given.Given.messageField;
 import static io.spine.tools.protojs.given.Given.primitiveField;
-import static java.lang.String.format;
+import static io.spine.tools.protojs.given.Given.timestampField;
 
 /**
  * @author Dmytro Kuzmin
  */
-@DisplayName("FieldValueChecker should")
-class FieldValueCheckerTest {
-
-    private static final String FIELD_VALUE = "value";
-    private static final String SETTER_FORMAT = "set(%s)";
+@DisplayName("FieldCheckers utility should")
+class FieldCheckersTest extends UtilityClassTest<FieldCheckers> {
 
     private JsOutput jsOutput;
+
+    FieldCheckersTest() {
+        super(FieldCheckers.class);
+    }
+
+    @Override
+    protected void setDefaults(NullPointerTester tester) {
+        tester.setDefault(FieldDescriptor.class, messageField());
+    }
 
     @BeforeEach
     void setUp() {
@@ -48,29 +57,23 @@ class FieldValueCheckerTest {
     }
 
     @Test
-    @DisplayName("generate code to enter non-null check for primitive")
-    void enterPrimitiveCheck() {
-        FieldValueChecker checker = checkerFor(primitiveField(), jsOutput);
-        checker.performNullCheck(FIELD_VALUE, SETTER_FORMAT);
-        String check = "if (" + FIELD_VALUE + " !== null)";
-        assertContains(jsOutput, check);
+    @DisplayName("create checker for primitive field")
+    void createForPrimitive() {
+        FieldChecker checker = checkerFor(primitiveField(), jsOutput);
+        assertInstanceOf(PrimitiveFieldChecker.class, checker);
     }
 
     @Test
-    @DisplayName("generate code to enter null check for message")
-    void enterMessageCheck() {
-        FieldValueChecker checker = checkerFor(messageField(), jsOutput);
-        checker.performNullCheck(FIELD_VALUE, SETTER_FORMAT);
-        String check = "if (" + FIELD_VALUE + " === null)";
-        assertContains(jsOutput, check);
+    @DisplayName("create checker for message field")
+    void createForMessage() {
+        FieldChecker checker = checkerFor(messageField(), jsOutput);
+        assertInstanceOf(MessageFieldChecker.class, checker);
     }
 
     @Test
-    @DisplayName("set field value to null in case of message")
-    void setMessageToNull() {
-        FieldValueChecker checker = checkerFor(messageField(), jsOutput);
-        checker.performNullCheck(FIELD_VALUE, SETTER_FORMAT);
-        String setNull = format(SETTER_FORMAT, "null");
-        assertContains(jsOutput, setNull);
+    @DisplayName("create message checker for standard type field")
+    void createForWellKnown() {
+        FieldChecker checker = checkerFor(timestampField(), jsOutput);
+        assertInstanceOf(MessageFieldChecker.class, checker);
     }
 }

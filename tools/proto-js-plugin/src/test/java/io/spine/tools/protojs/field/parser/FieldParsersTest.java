@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protojs.field.checker;
+package io.spine.tools.protojs.field.parser;
 
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Descriptors.FieldDescriptor;
@@ -29,7 +29,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.testing.Verify.assertInstanceOf;
-import static io.spine.tools.protojs.field.checker.FieldValueCheckers.checkerFor;
+import static io.spine.tools.protojs.field.parser.FieldParsers.parserFor;
+import static io.spine.tools.protojs.given.Given.enumField;
 import static io.spine.tools.protojs.given.Given.messageField;
 import static io.spine.tools.protojs.given.Given.primitiveField;
 import static io.spine.tools.protojs.given.Given.timestampField;
@@ -37,13 +38,13 @@ import static io.spine.tools.protojs.given.Given.timestampField;
 /**
  * @author Dmytro Kuzmin
  */
-@DisplayName("FieldValueCheckers utility should")
-class FieldValueCheckersTest extends UtilityClassTest<FieldValueCheckers> {
+@DisplayName("FieldParsers utility should")
+class FieldParsersTest extends UtilityClassTest<FieldParsers> {
 
     private JsOutput jsOutput;
 
-    FieldValueCheckersTest() {
-        super(FieldValueCheckers.class);
+    FieldParsersTest() {
+        super(FieldParsers.class);
     }
 
     @Override
@@ -57,23 +58,30 @@ class FieldValueCheckersTest extends UtilityClassTest<FieldValueCheckers> {
     }
 
     @Test
-    @DisplayName("create checker for primitive field")
-    void createForPrimitive() {
-        FieldValueChecker checker = checkerFor(primitiveField(), jsOutput);
-        assertInstanceOf(PrimitiveFieldChecker.class, checker);
+    @DisplayName("create parser for primitive field")
+    void createParserForPrimitive() {
+        FieldParser parser = parserFor(primitiveField(), jsOutput);
+        assertInstanceOf(PrimitiveFieldParser.class, parser);
     }
 
     @Test
-    @DisplayName("create checker for message field")
-    void createForMessage() {
-        FieldValueChecker checker = checkerFor(messageField(), jsOutput);
-        assertInstanceOf(MessageFieldChecker.class, checker);
+    @DisplayName("create parser for enum field")
+    void createParserForEnum() {
+        FieldParser parser = parserFor(enumField(), jsOutput);
+        assertInstanceOf(EnumFieldParser.class, parser);
     }
 
     @Test
-    @DisplayName("create message checker for standard type field")
-    void createForWellKnown() {
-        FieldValueChecker checker = checkerFor(timestampField(), jsOutput);
-        assertInstanceOf(MessageFieldChecker.class, checker);
+    @DisplayName("create parser for message field with custom type")
+    void createParserForMessage() {
+        FieldParser parser = parserFor(messageField(), jsOutput);
+        assertInstanceOf(MessageFieldParser.class, parser);
+    }
+
+    @Test
+    @DisplayName("create parser for message field with standard type")
+    void createParserForWellKnown() {
+        FieldParser parser = parserFor(timestampField(), jsOutput);
+        assertInstanceOf(WellKnownFieldParser.class, parser);
     }
 }

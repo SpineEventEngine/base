@@ -23,8 +23,8 @@ package io.spine.tools.protojs.field;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.tools.protojs.code.JsOutput;
-import io.spine.tools.protojs.field.checker.FieldValueChecker;
-import io.spine.tools.protojs.field.parser.FieldValueParser;
+import io.spine.tools.protojs.field.checker.FieldChecker;
+import io.spine.tools.protojs.field.parser.FieldParser;
 
 import static io.spine.tools.protojs.message.MessageHandler.FROM_OBJECT_ARG;
 import static java.lang.String.format;
@@ -33,23 +33,23 @@ import static java.lang.String.format;
  * The common base for the {@link FieldHandler} implementations.
  *
  * <p>The class generates the JS code common for all kinds of field handlers including calling the
- * {@linkplain FieldValueChecker field value checker} and the
- * {@linkplain FieldValueParser field value parser} to check and parse the field value respectively.
+ * {@linkplain FieldChecker field value checker} and the
+ * {@linkplain FieldParser field value parser} to check and parse the field value respectively.
  *
  * @author Dmytro Kuzmin
  */
 abstract class AbstractFieldHandler implements FieldHandler {
 
     /**
-     * The name of the value parsed by the {@link FieldValueParser} and then used to set the field.
+     * The name of the value parsed by the {@link FieldParser} and then used to set the field.
      */
     @SuppressWarnings("DuplicateStringLiteralInspection") // Random duplication.
     @VisibleForTesting
     static final String FIELD_VALUE = "value";
 
     private final FieldDescriptor field;
-    private final FieldValueChecker checker;
-    private final FieldValueParser parser;
+    private final FieldChecker checker;
+    private final FieldParser parser;
     private final JsOutput jsOutput;
 
     AbstractFieldHandler(Builder builder) {
@@ -98,12 +98,12 @@ abstract class AbstractFieldHandler implements FieldHandler {
     }
 
     @VisibleForTesting
-    FieldValueChecker checker() {
+    FieldChecker checker() {
         return checker;
     }
 
     @VisibleForTesting
-    FieldValueParser parser() {
+    FieldParser parser() {
         return parser;
     }
 
@@ -111,15 +111,15 @@ abstract class AbstractFieldHandler implements FieldHandler {
      * Generates the JS code which calls the field merge action on the specified value.
      *
      * <p>The value should already be in the appropriate form, i.e.
-     * {@linkplain FieldValueChecker checked} and {@linkplain FieldValueParser parsed}.
+     * {@linkplain FieldChecker checked} and {@linkplain FieldParser parsed}.
      *
      * @param value
      *         the name of the variable with the value to be set
      * @see #mergeFormat()
      */
     private void merge(String value) {
-        String setterFormat = mergeFormat();
-        String setValue = format(setterFormat, value);
+        String mergeFormat = mergeFormat();
+        String setValue = format(mergeFormat, value);
         jsOutput.addLine(setValue);
     }
 
@@ -143,8 +143,8 @@ abstract class AbstractFieldHandler implements FieldHandler {
     abstract static class Builder<B extends Builder<B>> {
 
         private FieldDescriptor field;
-        private FieldValueChecker checker;
-        private FieldValueParser parser;
+        private FieldChecker checker;
+        private FieldParser parser;
         private JsOutput jsOutput;
 
         B setField(FieldDescriptor field) {
@@ -152,12 +152,12 @@ abstract class AbstractFieldHandler implements FieldHandler {
             return self();
         }
 
-        B setChecker(FieldValueChecker checker) {
+        B setChecker(FieldChecker checker) {
             this.checker = checker;
             return self();
         }
 
-        B setParser(FieldValueParser parser) {
+        B setParser(FieldParser parser) {
             this.parser = parser;
             return self();
         }

@@ -28,17 +28,15 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.protojs.types.Types.typeWithProtoPrefix;
 
 /**
- * The value parser for the Protobuf message fields.
+ * The value parser for the proto fields of {@code message} type.
  *
- * <p>Handles all fields of message types except those who belong to standard Protobuf
+ * <p>Handles all {@code message} fields except those who belong to standard Protobuf
  * {@linkplain io.spine.tools.protojs.field.Fields#isWellKnownType(FieldDescriptor) types} which
  * are parsed separately.
  *
- * <p>The class is {@code public} only for test purposes.
- *
  * @author Dmytro Kuzmin
  */
-public final class MessageFieldParser implements FieldValueParser {
+public final class MessageFieldParser implements FieldParser {
 
     private final String typeName;
     private final JsOutput jsOutput;
@@ -52,7 +50,7 @@ public final class MessageFieldParser implements FieldValueParser {
      * Creates the {@code MessageFieldParser} for the given {@code field}.
      *
      * @param field
-     *         the descriptor of the field for which to create the parser
+     *         the processed field
      * @param jsOutput
      *         the {@code JsOutput} which accumulates all the generated code
      */
@@ -67,8 +65,8 @@ public final class MessageFieldParser implements FieldValueParser {
     /**
      * {@inheritDoc}
      *
-     * <p>For the message type which does not belong to the well-known types, the parse operation
-     * is executed via the recursive {@code fromObject} method call.
+     * <p>For the {@code message} types that do not belong to the well-known types, the parse
+     * operation is executed via the recursive {@code fromObject} method call.
      */
     @Override
     public void parseIntoVariable(String value, String variable) {

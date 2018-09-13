@@ -23,7 +23,7 @@ package io.spine.tools.protojs.field.parser.primitive;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * The generator of the JS code for parsing proto value from the JSON to itself.
+ * The generator of the code for parsing proto value from the JSON to itself.
  *
  * <p>The number of proto types like {@code int32}, {@code string}, {@code bool} and others are
  * represented in JSON in the same way as in the JS.

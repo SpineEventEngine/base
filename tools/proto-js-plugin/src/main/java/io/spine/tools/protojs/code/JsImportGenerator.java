@@ -20,7 +20,12 @@
 
 package io.spine.tools.protojs.code;
 
+import java.util.List;
+
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.lang.String.format;
+import static java.lang.String.join;
+import static java.util.Collections.nCopies;
 
 /**
  * The helper that generates imports for the JS code.
@@ -30,6 +35,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * @author Dmytro Kuzmin
  */
 public final class JsImportGenerator {
+
+    /**
+     * The path separator used for imports.
+     */
+    private static final String PATH_SEPARATOR = "/";
 
     /**
      * The path to parent dir.
@@ -42,9 +52,11 @@ public final class JsImportGenerator {
     private static final String CURRENT_DIR = "./";
 
     /**
-     * The path separator used for imports.
+     * The import format.
+     *
+     * <p>The placeholder represents the file to be imported.
      */
-    private static final String PATH_SEPARATOR = "/";
+    private static final String IMPORT_FORMAT = "require('%s');";
 
     /**
      * The value which is prepended to every import.
@@ -59,17 +71,14 @@ public final class JsImportGenerator {
     }
 
     /**
-     * Creates a {@code JsImportGenerator} set to generate imports for the specified file.
+     * Creates a {@code JsImportGenerator} to generate imports for the specified file.
      *
      * <p>The provided file path should be relative to the desired import root (e.g. sources root,
      * generated protos root).
      *
-     * <p>Unlike the Java {@link java.nio.file.Path}, the {@code filePath} must be split by the
-     * {@link #PATH_SEPARATOR} independently of OS as it represents the path inside the JS code.
-     *
      * @param filePath
      *         the file for which the imports will be generated
-     * @return the {@code JsImportGenerator} that will generate imports relatively to this file
+     * @return the {@code JsImportGenerator} that generates imports relative to this file
      */
     public static JsImportGenerator createFor(String filePath) {
         checkNotNull(filePath);
@@ -119,7 +128,7 @@ public final class JsImportGenerator {
      */
     public static String rawImport(String fileToImport) {
         checkNotNull(fileToImport);
-        String importStatement = "require('" + fileToImport + "');";
+        String importStatement = format(IMPORT_FORMAT, fileToImport);
         return importStatement;
     }
 
@@ -137,24 +146,22 @@ public final class JsImportGenerator {
     public static String rawNamedImport(String fileToImport, String importName) {
         checkNotNull(fileToImport);
         checkNotNull(importName);
-        String importStatement = "let " + importName + " = require('" + fileToImport + "');";
-        return importStatement;
+        String importStatement = rawImport(fileToImport);
+        String namedImport = "let " + importName + " = " + importStatement;
+        return namedImport;
     }
 
     /**
-     * Composes the path from the given file to the import root.
+     * Composes the path from the given file to its root.
      *
-     * <p>The {@code filePath} is assumed to be relative to the import root, so basically the
-     * method replaces all preceding path elements by the {@link #PARENT_DIR}.
+     * <p>Basically, the method replaces all preceding path elements by the {@link #PARENT_DIR}.
      */
     private static String composePathToRoot(String filePath) {
         String[] pathElements = filePath.split(PATH_SEPARATOR);
         int fileLocationDepth = pathElements.length - 1;
-        StringBuilder pathToRoot = new StringBuilder(fileLocationDepth);
-        for (int i = 0; i < fileLocationDepth; i++) {
-            pathToRoot.append(PARENT_DIR);
-        }
-        String result = pathToRoot.length() > 0 ? pathToRoot.toString() : CURRENT_DIR;
+        List<String> pathToRootElements = nCopies(fileLocationDepth, PARENT_DIR);
+        String pathToRoot = join("", pathToRootElements);
+        String result = pathToRoot.isEmpty() ? pathToRoot : CURRENT_DIR;
         return result;
     }
 }

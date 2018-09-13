@@ -19,7 +19,7 @@
  */
 
 /**
- * Generate desc.
+ * The utility tools for generating the JavaScript code.
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault

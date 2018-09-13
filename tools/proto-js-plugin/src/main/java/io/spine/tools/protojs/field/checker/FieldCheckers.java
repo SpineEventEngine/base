@@ -18,33 +18,40 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protojs.field.parser;
+package io.spine.tools.protojs.field.checker;
 
+import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.tools.protojs.code.JsOutput;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.tools.protojs.field.Fields.isMessage;
+
 /**
- * The generator of the code which parses the field value from the JS object and stores it into
- * some variable.
- *
- * @apiNote
- * Like the other handlers and generators of this module, the {@code FieldValueParser} is meant to
- * operate on the common {@link JsOutput} passed on construction and thus its method does not
- * return any generated code.
+ * The helper which creates {@link FieldChecker} instances based on the field type.
  *
  * @author Dmytro Kuzmin
  */
-public interface FieldValueParser {
+public final class FieldCheckers {
+
+    /** Prevents instantiation of this utility class. */
+    private FieldCheckers() {
+    }
 
     /**
-     * Generates the code which parses the field value from some object and assigns it to the
-     * variable.
+     * Creates a {@code FieldChecker} for the given {@code field}.
      *
-     * <p>The parsed value is then assigned to the specified variable.
-     *
-     * @param value
-     *         the name of the variable holding the value to parse
-     * @param variable
-     *         the name of the variable to receive the parsed value
+     * @param field
+     *         the descriptor of the Protobuf field to create the checker for
+     * @param jsOutput
+     *         the {@code JsOutput} which will accumulate all the generated code
+     * @return a {@code FieldChecker} of the appropriate type
      */
-    void parseIntoVariable(String value, String variable);
+    public static FieldChecker checkerFor(FieldDescriptor field, JsOutput jsOutput) {
+        checkNotNull(field);
+        checkNotNull(jsOutput);
+        if (isMessage(field)) {
+            return new MessageFieldChecker(field, jsOutput);
+        }
+        return new PrimitiveFieldChecker(jsOutput);
+    }
 }

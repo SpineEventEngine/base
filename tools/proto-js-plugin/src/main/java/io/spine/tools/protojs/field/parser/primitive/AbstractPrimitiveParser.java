@@ -23,7 +23,7 @@ package io.spine.tools.protojs.field.parser.primitive;
 import io.spine.tools.protojs.code.JsOutput;
 
 /**
- * The common base for {@link PrimitiveParser} implementations.
+ * The common base for the {@link PrimitiveParser} implementations.
  *
  * @author Dmytro Kuzmin
  */
@@ -49,6 +49,9 @@ abstract class AbstractPrimitiveParser implements PrimitiveParser {
             return self();
         }
 
+        /**
+         * <strong>Must</strong> return {@code this} in classes-descendants.
+         */
         abstract B self();
     }
 }

@@ -31,7 +31,7 @@ import static java.util.Collections.nCopies;
  * <p>Consists of the code itself and the depth on which the code is located.
  *
  * <p>For example, the code inside the {@code if} block is one unit deeper than the {@code if}
- * condition itself.
+ * declaration itself.
  *
  * @author Dmytro Kuzmin
  */
@@ -59,8 +59,8 @@ final class CodeLine {
      * Prints the {@code CodeLine} to the {@code String} with the specified indentation.
      *
      * @param indentation
-     *         the indentation of the file where this line will be written
-     * @return the {@code CodeLine} content with the correct indentation
+     *         the code indentation, i.e. how many spaces are inserted per depth level
+     * @return the {@code CodeLine} content with the correct indent
      */
     String printToString(int indentation) {
         int indentUnits = depth * indentation;

@@ -21,7 +21,6 @@
 package io.spine.tools.protojs.field;
 
 import io.spine.tools.protojs.code.JsOutput;
-import io.spine.tools.protojs.given.Generators;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -32,6 +31,7 @@ import static io.spine.tools.protojs.field.Fields.capitalizedName;
 import static io.spine.tools.protojs.field.MapFieldHandler.ATTRIBUTE;
 import static io.spine.tools.protojs.field.MapFieldHandler.MAP_KEY;
 import static io.spine.tools.protojs.field.RepeatedFieldHandler.LIST_ITEM;
+import static io.spine.tools.protojs.given.Generators.assertContains;
 import static io.spine.tools.protojs.given.Given.mapField;
 import static io.spine.tools.protojs.given.Given.repeatedField;
 import static io.spine.tools.protojs.given.Given.singularField;
@@ -77,9 +77,9 @@ class FieldHandlerTest {
         void repeated() {
             repeatedHandler.iterateListValues(JS_OBJECT);
             String forEach = JS_OBJECT + ".forEach";
-            assertGeneratedCodeContains(forEach);
-            String forEachVariables = '(' + LIST_ITEM + ", index, array)";
-            assertGeneratedCodeContains(forEachVariables);
+            assertContains(jsOutput, forEach);
+            String forEachItems = '(' + LIST_ITEM + ", index, array)";
+            assertContains(jsOutput, forEachItems);
         }
 
         @Test
@@ -87,9 +87,9 @@ class FieldHandlerTest {
         void map() {
             String value = mapHandler.iterateOwnAttributes(JS_OBJECT);
             String iteration = "for (let " + ATTRIBUTE + " in " + JS_OBJECT + ')';
-            assertGeneratedCodeContains(iteration);
+            assertContains(jsOutput, iteration);
             String ownPropertyCheck = "hasOwnProperty(" + ATTRIBUTE + ')';
-            assertGeneratedCodeContains(ownPropertyCheck);
+            assertContains(jsOutput, ownPropertyCheck);
             String expected = JS_OBJECT + '[' + ATTRIBUTE + ']';
             assertEquals(expected, value);
         }
@@ -101,7 +101,7 @@ class FieldHandlerTest {
         String jsObject = singularHandler.acquireJsObject();
         singularHandler.generateJs();
         String nullCheck = "if (" + jsObject + " === null)";
-        assertGeneratedCodeContains(nullCheck);
+        assertContains(jsOutput, nullCheck);
     }
 
     @Test
@@ -112,7 +112,7 @@ class FieldHandlerTest {
         String typeName = singularField().getMessageType()
                                          .getFullName();
         String recursiveCall = typeName + ".fromObject(" + jsObject + ')';
-        assertGeneratedCodeContains(recursiveCall);
+        assertContains(jsOutput, recursiveCall);
     }
 
     @Test
@@ -120,7 +120,7 @@ class FieldHandlerTest {
     void parseMapKey() {
         mapHandler.generateJs();
         String parseAttribute = MAP_KEY + " = parseInt(" + ATTRIBUTE + ')';
-        assertGeneratedCodeContains(parseAttribute);
+        assertContains(jsOutput, parseAttribute);
     }
 
     @Test
@@ -128,7 +128,7 @@ class FieldHandlerTest {
     void setSingular() {
         singularHandler.generateJs();
         String setterCall = "set" + capitalizedName(singularField()) + '(' + FIELD_VALUE + ')';
-        assertGeneratedCodeContains(setterCall);
+        assertContains(jsOutput, setterCall);
     }
 
     @Test
@@ -136,7 +136,7 @@ class FieldHandlerTest {
     void addToRepeated() {
         repeatedHandler.generateJs();
         String addCall = "add" + capitalizedName(repeatedField()) + '(' + FIELD_VALUE + ')';
-        assertGeneratedCodeContains(addCall);
+        assertContains(jsOutput, addCall);
     }
 
     @Test
@@ -146,11 +146,7 @@ class FieldHandlerTest {
         String getMapCall = "get" + capitalizedName(mapField()) + "Map()";
         String addToMapCall = "set(" + MAP_KEY + ", " + FIELD_VALUE + ')';
         String addCall = getMapCall + '.' + addToMapCall;
-        assertGeneratedCodeContains(addCall);
-    }
-
-    private void assertGeneratedCodeContains(CharSequence setterCall) {
-        Generators.assertContains(jsOutput, setterCall);
+        assertContains(jsOutput, addCall);
     }
 
     private SingularFieldHandler singularHandler() {

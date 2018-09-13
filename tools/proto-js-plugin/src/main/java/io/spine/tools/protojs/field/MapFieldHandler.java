@@ -21,7 +21,7 @@
 package io.spine.tools.protojs.field;
 
 import com.google.common.annotations.VisibleForTesting;
-import io.spine.tools.protojs.field.parser.FieldValueParser;
+import io.spine.tools.protojs.field.parser.FieldParser;
 
 import static io.spine.tools.protojs.field.Fields.capitalizedName;
 import static io.spine.tools.protojs.message.MessageHandler.MESSAGE;
@@ -59,7 +59,7 @@ final class MapFieldHandler extends AbstractFieldHandler {
     @VisibleForTesting
     static final String MAP_KEY = "mapKey";
 
-    private final FieldValueParser keyParser;
+    private final FieldParser keyParser;
 
     private MapFieldHandler(Builder builder) {
         super(builder);
@@ -128,7 +128,7 @@ final class MapFieldHandler extends AbstractFieldHandler {
     }
 
     @VisibleForTesting
-    FieldValueParser keyParser() {
+    FieldParser keyParser() {
         return keyParser;
     }
 
@@ -138,9 +138,9 @@ final class MapFieldHandler extends AbstractFieldHandler {
 
     static class Builder extends AbstractFieldHandler.Builder<Builder> {
 
-        private FieldValueParser keyParser;
+        private FieldParser keyParser;
 
-        Builder setKeyParser(FieldValueParser keyParser) {
+        Builder setKeyParser(FieldParser keyParser) {
             this.keyParser = keyParser;
             return self();
         }

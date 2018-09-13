@@ -22,16 +22,16 @@ package io.spine.tools.protojs.field;
 
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.tools.protojs.code.JsOutput;
-import io.spine.tools.protojs.field.checker.FieldValueChecker;
-import io.spine.tools.protojs.field.parser.FieldValueParser;
+import io.spine.tools.protojs.field.checker.FieldChecker;
+import io.spine.tools.protojs.field.parser.FieldParser;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.protojs.field.Fields.isMap;
 import static io.spine.tools.protojs.field.Fields.isRepeated;
 import static io.spine.tools.protojs.field.Fields.keyDescriptor;
 import static io.spine.tools.protojs.field.Fields.valueDescriptor;
-import static io.spine.tools.protojs.field.checker.FieldValueCheckers.checkerFor;
-import static io.spine.tools.protojs.field.parser.FieldValueParsers.parserFor;
+import static io.spine.tools.protojs.field.checker.FieldCheckers.checkerFor;
+import static io.spine.tools.protojs.field.parser.FieldParsers.parserFor;
 
 /**
  * The helper class which provides the {@link FieldHandler} implementation for the given
@@ -73,17 +73,17 @@ public final class FieldHandlers {
      * The creation logic is different from all other handlers.
      *
      * <p>As the {@code map} field is always a message of type {@code ...Entry}, we create
-     * {@link FieldValueChecker} and {@link FieldValueParser} for it's field with name
+     * {@link FieldChecker} and {@link FieldParser} for it's field with name
      * {@code "value"} (whose type corresponds to the {@code map} value type).
      *
-     * <p>The key also has to be parsed via separate {@code FieldValueParser}, as in JSON it is
-     * always converted to a {@code string}. So we create additional {@code FieldValueParser} for
+     * <p>The key also has to be parsed via separate {@code FieldParser}, as in JSON it is
+     * always converted to a {@code string}. So we create additional {@code FieldParser} for
      * the {@code ...Entry} {@code "key"} field.
      */
     private static FieldHandler mapHandler(FieldDescriptor field, JsOutput jsOutput) {
-        FieldValueParser keyParser = mapKeyParser(field, jsOutput);
-        FieldValueParser valueParser = mapValueParser(field, jsOutput);
-        FieldValueChecker valueChecker = mapValueChecker(field, jsOutput);
+        FieldParser keyParser = mapKeyParser(field, jsOutput);
+        FieldParser valueParser = mapValueParser(field, jsOutput);
+        FieldChecker valueChecker = mapValueChecker(field, jsOutput);
 
         FieldHandler handler = MapFieldHandler
                 .newBuilder()
@@ -100,8 +100,8 @@ public final class FieldHandlers {
      * Creates the {@linkplain RepeatedFieldHandler handler} for the {@code repeated} proto field.
      */
     private static FieldHandler repeatedHandler(FieldDescriptor field, JsOutput jsOutput) {
-        FieldValueChecker checker = checkerFor(field, jsOutput);
-        FieldValueParser parser = parserFor(field, jsOutput);
+        FieldChecker checker = checkerFor(field, jsOutput);
+        FieldParser parser = parserFor(field, jsOutput);
 
         FieldHandler handler = RepeatedFieldHandler
                 .newBuilder()
@@ -117,8 +117,8 @@ public final class FieldHandlers {
      * Creates the {@linkplain SingularFieldHandler handler} for the ordinary proto field.
      */
     private static FieldHandler singularHandler(FieldDescriptor field, JsOutput jsOutput) {
-        FieldValueChecker checker = checkerFor(field, jsOutput);
-        FieldValueParser parser = parserFor(field, jsOutput);
+        FieldChecker checker = checkerFor(field, jsOutput);
+        FieldParser parser = parserFor(field, jsOutput);
 
         FieldHandler handler = SingularFieldHandler
                 .newBuilder()
@@ -131,30 +131,30 @@ public final class FieldHandlers {
     }
 
     /**
-     * Creates a {@code FieldValueChecker} for the value of the map field.
+     * Creates a {@code FieldChecker} for the value of the map field.
      */
-    private static FieldValueChecker
+    private static FieldChecker
     mapValueChecker(FieldDescriptor field, JsOutput jsOutput) {
         FieldDescriptor valueDescriptor = valueDescriptor(field);
-        FieldValueChecker checker = checkerFor(valueDescriptor, jsOutput);
+        FieldChecker checker = checkerFor(valueDescriptor, jsOutput);
         return checker;
     }
 
     /**
-     * Creates a {@code FieldValueParser} for the key of the map field.
+     * Creates a {@code FieldParser} for the key of the map field.
      */
-    private static FieldValueParser mapKeyParser(FieldDescriptor field, JsOutput jsOutput) {
+    private static FieldParser mapKeyParser(FieldDescriptor field, JsOutput jsOutput) {
         FieldDescriptor keyDescriptor = keyDescriptor(field);
-        FieldValueParser parser = parserFor(keyDescriptor, jsOutput);
+        FieldParser parser = parserFor(keyDescriptor, jsOutput);
         return parser;
     }
 
     /**
-     * Creates a {@code FieldValueParser} for the value of the map field.
+     * Creates a {@code FieldParser} for the value of the map field.
      */
-    private static FieldValueParser mapValueParser(FieldDescriptor field, JsOutput jsOutput) {
+    private static FieldParser mapValueParser(FieldDescriptor field, JsOutput jsOutput) {
         FieldDescriptor valueDescriptor = valueDescriptor(field);
-        FieldValueParser parser = parserFor(valueDescriptor, jsOutput);
+        FieldParser parser = parserFor(valueDescriptor, jsOutput);
         return parser;
     }
 }

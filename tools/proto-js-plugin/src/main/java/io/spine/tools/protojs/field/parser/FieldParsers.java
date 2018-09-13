@@ -29,26 +29,26 @@ import static io.spine.tools.protojs.field.Fields.isMessage;
 import static io.spine.tools.protojs.field.Fields.isWellKnownType;
 
 /**
- * A helper class which creates {@link FieldValueParser} instances based on the passed field.
+ * A helper class which creates a {@link FieldParser} instance for the passed field.
  *
  * @author Dmytro Kuzmin
  */
-public final class FieldValueParsers {
+public final class FieldParsers {
 
     /** Prevents instantiation of this utility class. */
-    private FieldValueParsers() {
+    private FieldParsers() {
     }
 
     /**
-     * Creates the {@code FieldValueParser} for the given field.
+     * Creates a {@code FieldParser} for the given field.
      *
      * @param field
      *         the descriptor of the field to create the parser for
      * @param jsOutput
      *         the {@code JsOutput} to accumulate the generated code
-     * @return the {@code FieldValueParser} of the appropriate type
+     * @return the {@code FieldParser} of the appropriate type
      */
-    public static FieldValueParser parserFor(FieldDescriptor field, JsOutput jsOutput) {
+    public static FieldParser parserFor(FieldDescriptor field, JsOutput jsOutput) {
         checkNotNull(field);
         checkNotNull(jsOutput);
         if (isMessage(field)) {

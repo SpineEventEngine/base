@@ -23,19 +23,16 @@ package io.spine.tools.protojs.field.parser;
 import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.tools.protojs.code.JsOutput;
-import io.spine.tools.protojs.types.Types;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.protojs.types.Types.typeWithProtoPrefix;
 
 /**
- * The value parser for the Protobuf enum fields.
- *
- * <p>The class is {@code public} only for test purposes.
+ * The value parser for the proto fields of {@code enum} type.
  *
  * @author Dmytro Kuzmin
  */
-public final class EnumFieldParser implements FieldValueParser {
+public final class EnumFieldParser implements FieldParser {
 
     private final String typeName;
     private final JsOutput jsOutput;
@@ -49,7 +46,7 @@ public final class EnumFieldParser implements FieldValueParser {
      * Creates a new {@code EnumFieldParser} for the given field.
      *
      * @param field
-     *         the descriptor of the field to create the parser for
+     *         the processed field
      * @param jsOutput
      *         the {@code JsOutput} to store the generated code
      */
@@ -65,7 +62,8 @@ public final class EnumFieldParser implements FieldValueParser {
      * {@inheritDoc}
      *
      * <p>The {@code enum} proto value in JSON is represented as a plain {@code string}. Thus, the
-     * parser obtains the JS enum object property using given {@code string} as an attribute name.
+     * parser obtains the JS enum object property using the given {@code string} as an attribute
+     * name.
      */
     @Override
     public void parseIntoVariable(String value, String variable) {

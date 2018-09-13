@@ -44,7 +44,6 @@ import static com.google.protobuf.Descriptors.FieldDescriptor.Type.SINT64;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.STRING;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.UINT32;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.UINT64;
-import static io.spine.tools.protojs.types.Types.typeWithProtoPrefix;
 
 /**
  * The helper class which creates a {@link PrimitiveParser} based on the passed field type.

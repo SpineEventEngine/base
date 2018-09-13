@@ -25,15 +25,14 @@ import io.spine.tools.protojs.code.JsOutput;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * The value checker for the Protobuf primitive fields.
+ * The value checker for the proto fields of primitive type.
  *
- * <p>All Protobuf fields which are not of the message type are handled by this checker.
- *
- * <p>The class is {@code public} for the testing purposes.
+ * <p>All the proto fields which are not of the {@code message} type are handled by this checker.
+ * This includes the {@code enum} type fields which obey the same rules as primitives in this case.
  *
  * @author Dmytro Kuzmin
  */
-public final class PrimitiveFieldChecker implements FieldValueChecker {
+public final class PrimitiveFieldChecker implements FieldChecker {
 
     private final JsOutput jsOutput;
 
@@ -50,12 +49,12 @@ public final class PrimitiveFieldChecker implements FieldValueChecker {
     /**
      * {@inheritDoc}
      *
-     * <p>In case of the primitive field, the {@code null} values are not allowed and thus not set.
+     * <p>In case of the primitive field, the {@code null} values are simply not allowed.
      */
     @Override
-    public void performNullCheck(String value, String setterFormat) {
+    public void performNullCheck(String value, String mergeFieldFormat) {
         checkNotNull(value);
-        checkNotNull(setterFormat);
+        checkNotNull(mergeFieldFormat);
         jsOutput.ifNotNull(value);
     }
 

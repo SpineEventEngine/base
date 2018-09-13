@@ -23,7 +23,7 @@ package io.spine.tools.protojs.field.parser.primitive;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * The generator of the JS code which parses the proto 64-bit numerical values from their JSON
+ * The generator of the code which parses the proto 64-bit numerical values from their JSON
  * representation.
  *
  * <p>Types like {@code int64}, {@code uint64}, {@code fixed64} etc. are encoded in the JSON as a
@@ -40,6 +40,7 @@ final class LongParser extends AbstractPrimitiveParser {
         super(builder);
     }
 
+    @SuppressWarnings("DuplicateStringLiteralInspection") // Necessary duplication with own test.
     @Override
     public void parseIntoVariable(String value, String variable) {
         checkNotNull(value);

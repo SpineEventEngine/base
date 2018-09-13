@@ -18,40 +18,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protojs.field.checker;
+package io.spine.tools.protojs.field.parser;
 
-import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.tools.protojs.code.JsOutput;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.protojs.field.Fields.isMessage;
-
 /**
- * The helper which creates {@link FieldValueChecker} instances based on the field type.
+ * The generator of the code which parses the field value from the JS object and stores it into
+ * some variable.
+ *
+ * @apiNote
+ * Like the other handlers and generators of this module, the {@code FieldParser} is meant to
+ * operate on the common {@link JsOutput} passed on construction and thus its method does not
+ * return any generated code.
  *
  * @author Dmytro Kuzmin
  */
-public final class FieldValueCheckers {
-
-    /** Prevents instantiation of this utility class. */
-    private FieldValueCheckers() {
-    }
+public interface FieldParser {
 
     /**
-     * Creates {@code FieldValueChecker} for the given {@code field}.
+     * Generates the code which parses the field value from some object and assigns it to the
+     * variable.
      *
-     * @param field
-     *         the descriptor of the Protobuf field to create the checker for
-     * @param jsOutput
-     *         the {@code JsOutput} which will accumulate all the generated code
-     * @return a {@code FieldValueChecker} of the appropriate type
+     * <p>The parsed value is then assigned to the specified variable.
+     *
+     * @param value
+     *         the name of the variable holding the value to parse
+     * @param variable
+     *         the name of the variable to receive the parsed value
      */
-    public static FieldValueChecker checkerFor(FieldDescriptor field, JsOutput jsOutput) {
-        checkNotNull(field);
-        checkNotNull(jsOutput);
-        if (isMessage(field)) {
-            return new MessageFieldChecker(field, jsOutput);
-        }
-        return new PrimitiveFieldChecker(jsOutput);
-    }
+    void parseIntoVariable(String value, String variable);
 }

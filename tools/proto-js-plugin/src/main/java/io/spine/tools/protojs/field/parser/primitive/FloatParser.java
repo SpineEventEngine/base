@@ -23,7 +23,7 @@ package io.spine.tools.protojs.field.parser.primitive;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * The generator of the JS code parsing the floating point values from their JSON representation.
+ * The generator of the code parsing the floating point values from their JSON representation.
  *
  * <p>The parser uses the {@code parseFloat} operation on the value to obtain the original floating
  * point number.
@@ -36,6 +36,7 @@ final class FloatParser extends AbstractPrimitiveParser {
         super(builder);
     }
 
+    @SuppressWarnings("DuplicateStringLiteralInspection") // Necessary duplication with own test.
     @Override
     public void parseIntoVariable(String value, String variable) {
         checkNotNull(value);

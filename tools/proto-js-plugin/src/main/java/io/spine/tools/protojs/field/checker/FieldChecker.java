@@ -23,32 +23,33 @@ package io.spine.tools.protojs.field.checker;
 import io.spine.tools.protojs.code.JsOutput;
 
 /**
- * The generator of the code which checks the proto field value.
+ * The generator of the code which performs various checks on the proto field value.
  *
  * @apiNote
- * Like the other handlers and generators of this module, the {@code FieldValueChecker} is meant to
- * operate on the common {@link JsOutput} passed on construction and
- * thus its methods do not return any generated code.
+ * Like the other handlers and generators of this module, the {@code FieldChecker} is meant to
+ * operate on the common {@link JsOutput} passed on construction and thus its methods do not return
+ * any generated code.
  *
  * @author Dmytro Kuzmin
  */
-public interface FieldValueChecker {
+public interface FieldChecker {
 
     /**
      * Generates the code which checks the given field value for {@code null}.
      *
-     * <p>The setter format is specified so the checker can interact with the field itself in case
-     * the check passes/fails.
+     * <p>The merge field format is specified so the checker can interact with the field itself in
+     * case the check passes/fails.
      *
      * @param value
      *         the name of the variable representing the field value to check
-     * @param setterFormat
-     *         the format of the setter
+     * @param mergeFieldFormat
+     *         the code that sets/adds value to the field that can be formatted with some value
+     * @see io.spine.tools.protojs.field.AbstractFieldHandler#mergeFormat()
      */
-    void performNullCheck(String value, String setterFormat);
+    void performNullCheck(String value, String mergeFieldFormat);
 
     /**
-     * Generates the code to exit all {@code null} check blocks and return to the upper level.
+     * Generates the code to exit the {@code null} check block and return to the upper level.
      */
     void exitNullCheck();
 }

@@ -29,16 +29,14 @@ import io.spine.tools.protojs.field.parser.primitive.PrimitiveParsers;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * The value parser for the primitive Protobuf fields.
+ * The value parser for the primitive proto fields.
  *
- * <p>All Protobuf fields that are not of message or enum type are considered primitive and are
- * thus handled by this parser.
- *
- * <p>The class is {@code public} only for test purposes.
+ * <p>All the fields that are not of the {@code message} or {@code enum} type are handled by this
+ * parser.
  *
  * @author Dmytro Kuzmin
  */
-public final class PrimitiveFieldParser implements FieldValueParser {
+public final class PrimitiveFieldParser implements FieldParser {
 
     private final Type fieldType;
     private final JsOutput jsOutput;
@@ -51,8 +49,10 @@ public final class PrimitiveFieldParser implements FieldValueParser {
     /**
      * Creates a new {@code PrimitiveFieldParser} for the given field.
      *
-     * @param field    the descriptor of the field to create the parser for
-     * @param jsOutput the {@code JsOutput} to store the generated code
+     * @param field
+     *         the processed field
+     * @param jsOutput
+     *         the {@code JsOutput} to store the generated code
      */
     static PrimitiveFieldParser createFor(FieldDescriptor field, JsOutput jsOutput) {
         checkNotNull(field);
@@ -66,8 +66,6 @@ public final class PrimitiveFieldParser implements FieldValueParser {
      *
      * <p>For the primitive field, the {@link PrimitiveParser} implementation is used to convert
      * the field value into the appropriate type.
-     *
-     * @see PrimitiveParsers
      */
     @Override
     public void parseIntoVariable(String value, String variable) {
