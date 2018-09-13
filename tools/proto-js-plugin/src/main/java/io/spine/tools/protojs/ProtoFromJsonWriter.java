@@ -76,9 +76,9 @@ final class ProtoFromJsonWriter {
     }
 
     /**
-     * Checks if {@code ProtoJsonWriter}'s {@link FileSet} has any known types.
+     * Checks if {@code ProtoJsonWriter}'s {@link FileSet} has any known types to process.
      *
-     * @return {@code true} if the writer "sees" any known types and {@code false} otherwise
+     * @return {@code true} if the file set has files to process and {@code false} otherwise
      */
     boolean hasFilesToProcess() {
         boolean hasFilesToProcess = !fileSet.isEmpty();
@@ -123,7 +123,7 @@ final class ProtoFromJsonWriter {
     }
 
     /**
-     * Writes {@code fromJson(json)} method into all files containing proto messages definitions.
+     * Appends the {@code fromJson(json)} methods for all known types into the corresponding files.
      */
     @VisibleForTesting
     void writeFromJsonMethod() {

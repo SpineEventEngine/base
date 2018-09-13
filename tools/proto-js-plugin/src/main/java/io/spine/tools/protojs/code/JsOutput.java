@@ -174,7 +174,7 @@ public final class JsOutput {
     /**
      * Enters block with the custom header.
      *
-     * <p>For example, the custom header may be "{@code for (let value in list)}".
+     * <p>For example, the custom header may be {@code for (let value in list)}.
      *
      * @param blockHeader
      *         the block header

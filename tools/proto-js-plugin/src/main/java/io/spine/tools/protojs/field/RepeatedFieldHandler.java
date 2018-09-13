@@ -26,7 +26,7 @@ import static io.spine.tools.protojs.field.Fields.capitalizedName;
 import static io.spine.tools.protojs.message.MessageHandler.MESSAGE;
 
 /**
- * The handler of the Protobuf {@code repeated} fields.
+ * The handler of the {@code repeated} proto fields.
  *
  * <p>The handler expects a JS object to always be a list, iterating over it and adding its values
  * to the field.
@@ -60,7 +60,7 @@ final class RepeatedFieldHandler extends AbstractFieldHandler {
      * {@inheritDoc}
      *
      * <p>The merge format for the {@code repeated} field is calling the {@code add...} method on
-     * the message field.
+     * the repeated field JS representation.
      */
     @Override
     String mergeFormat() {
@@ -90,8 +90,7 @@ final class RepeatedFieldHandler extends AbstractFieldHandler {
      *
      * <p>Returns the cursor to the {@code fromObject} method level.
      */
-    @VisibleForTesting
-    void exitListValueIteration() {
+    private void exitListValueIteration() {
         jsOutput().exitBlock();
         jsOutput().decreaseDepth();
         jsOutput().addLine(");");

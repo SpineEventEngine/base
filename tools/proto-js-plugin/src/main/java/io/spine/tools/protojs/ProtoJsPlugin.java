@@ -44,7 +44,7 @@ import static io.spine.tools.protojs.files.ProjectFiles.testProtoJsLocation;
  * to the {@code classpath} configuration and add
  * {@code apply plugin: 'io.spine.tools.proto-js-plugin'} to the module generating JS protos.
  *
- * <p>The tool will insert {@code fromJson(json)} method for every JS message definition found
+ * <p>The tool will insert the {@code fromJson(json)} method for every JS message definition found
  * among the {@linkplain io.spine.code.proto.FileSet known types}.
  *
  * <p>This plugin currently relies on the set of the hard-coded Gradle settings which have to be
@@ -55,14 +55,14 @@ import static io.spine.tools.protojs.files.ProjectFiles.testProtoJsLocation;
  *     <li>descriptor set file stored under the
  *         {@code "${projectDir}/build/descriptors/${task.sourceSet.name}/known_types.desc"};
  *
- *     <li>CommonJS import style for all generated proto definitions ({@code js {option
- *     "import_style=commonjs"}});
+ *     <li>CommonJS import style for all generated proto definitions:
+ *         {@code js {option "import_style=commonjs"}};
  *
  *     <li>{@code compileProtoToJs} task available in the project.
  * </ul>
  *
- * <p>In general, it is how the <a href="https://github.com/SpineEventEngine/web">Spine Web</a> is
- * building Protobuf to JS and the plugin relies on this behaviour.
+ * <p>In general, it is how the <a href="https://github.com/SpineEventEngine/web">Spine Web</a>
+ * builds its Protobuf definitions to JS and the plugin relies on this behaviour.
  *
  * <p>The {@code build.gradle} file located under the {@code test/resources} folder of this module
  * contains the configuration of the project to which the plugin can be successfully applied. It
@@ -89,7 +89,7 @@ public class ProtoJsPlugin extends SpinePlugin {
      * <p>The paths to the JS proto definitions location, as well as to the descriptor set file,
      * are currently hard-coded.
      *
-     * <p>See io.spine.tools.protojs.files.ProjectFiles} for the expected configuration.
+     * <p>See {@link io.spine.tools.protojs.files.ProjectFiles} for the expected configuration.
      */
     private static Action<Task> newAction(Project project) {
         return task -> generateFromJsonForProto(project);

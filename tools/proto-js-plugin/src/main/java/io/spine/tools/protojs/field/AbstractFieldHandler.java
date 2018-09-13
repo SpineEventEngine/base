@@ -33,15 +33,15 @@ import static java.lang.String.format;
  * The common base for the {@link FieldHandler} implementations.
  *
  * <p>The class generates the JS code common for all kinds of field handlers including calling the
- * {@linkplain FieldChecker field value checker} and the
- * {@linkplain FieldParser field value parser} to check and parse the field value respectively.
+ * {@linkplain FieldChecker field checker} and the {@linkplain FieldParser field parser}.
  *
  * @author Dmytro Kuzmin
  */
 abstract class AbstractFieldHandler implements FieldHandler {
 
     /**
-     * The name of the value parsed by the {@link FieldParser} and then used to set the field.
+     * The variable holding the value parsed by the {@link FieldParser} and then used to set the
+     * field.
      */
     @SuppressWarnings("DuplicateStringLiteralInspection") // Random duplication.
     @VisibleForTesting
@@ -62,7 +62,7 @@ abstract class AbstractFieldHandler implements FieldHandler {
     /**
      * Returns the corresponding field value of the {@code fromObject} method argument.
      *
-     * @return the field value in the form of JS object
+     * @return the field value in the form of the JS object
      */
     String acquireJsObject() {
         String fieldJsonName = field.getJsonName();
@@ -71,7 +71,7 @@ abstract class AbstractFieldHandler implements FieldHandler {
     }
 
     /**
-     * Generates the JS code necessary to merge the field value with the specified JS value.
+     * Generates the code necessary to merge the field value with the specified JS value.
      *
      * <p>"Merge" implies either setting the field value in case of singular field or adding the
      * value to the {@code repeated}/{@code map} field.
@@ -80,7 +80,7 @@ abstract class AbstractFieldHandler implements FieldHandler {
      * {@link #mergeFormat()} method.
      *
      * @param value
-     *         the name of the variable containing JS value to set the field to
+     *         the name of the variable containing value to set the field to
      */
     void mergeFieldValue(String value) {
         checker.performNullCheck(value, mergeFormat());
@@ -108,13 +108,13 @@ abstract class AbstractFieldHandler implements FieldHandler {
     }
 
     /**
-     * Generates the JS code which calls the field merge action on the specified value.
+     * Generates the code which calls the field merge action on the specified value.
      *
-     * <p>The value should already be in the appropriate form, i.e.
-     * {@linkplain FieldChecker checked} and {@linkplain FieldParser parsed}.
+     * <p>The value is assumed to be already {@linkplain FieldChecker checked} and
+     * {@linkplain FieldParser parsed}.
      *
      * @param value
-     *         the name of the variable with the value to be set
+     *         the name of the variable with the value to set
      * @see #mergeFormat()
      */
     private void merge(String value) {
@@ -125,7 +125,7 @@ abstract class AbstractFieldHandler implements FieldHandler {
 
     /**
      * Returns the format of the set/add action which can be used to merge the field value from
-     * the JS variable.
+     * the variable.
      *
      * <p>The format should have exactly one placeholder - {@code %s} - where the variable name
      * will be inserted.

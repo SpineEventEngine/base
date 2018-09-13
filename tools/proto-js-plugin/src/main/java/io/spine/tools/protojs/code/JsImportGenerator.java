@@ -103,7 +103,7 @@ public final class JsImportGenerator {
     /**
      * Generates a named JS import with a stored {@code importPrefix}.
      *
-     * <p>Named import is a statement of type "{@code let a = require('./b')}".
+     * <p>Named import is a statement of type {@code let a = require('./b')}.
      *
      * @param fileToImport
      *         the path from the import root to the file which should be imported
@@ -135,7 +135,7 @@ public final class JsImportGenerator {
     /**
      * Generates a named JS import.
      *
-     * <p>Named import is a statement of type "{@code let a = require('./b')}".
+     * <p>Named import is a statement of type {@code let a = require('./b')}.
      *
      * @param fileToImport
      *         the path from the import root to the file which should be imported

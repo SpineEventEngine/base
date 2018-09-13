@@ -125,12 +125,10 @@ public class MessageHandler {
     }
 
     /**
-     * Generates the {@code fromObject} method which goes through the JS object fields iteratively,
+     * Generates the {@code fromObject} method, going through the JS object fields iteratively,
      * adding the code to parse them and assign to the JS Proto message.
      *
      * <p>If the object is {@code null}, the returned value will be {@code null}.
-     *
-     * <p>See {@link FieldHandler} implementations.
      */
     @VisibleForTesting
     void generateFromObjectMethod() {

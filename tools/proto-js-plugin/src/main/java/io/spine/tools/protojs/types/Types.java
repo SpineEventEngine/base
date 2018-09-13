@@ -36,8 +36,8 @@ public final class Types {
     /**
      * The prefix which is added to all proto types in the JS generated code.
      *
-     * <p>For example, the "spine.web.test.CreateTask" command becomes the
-     * "proto.spine.web.test.CreateTask" in the generated code.
+     * <p>For example, the {@code spine.web.test.CreateTask} command becomes the
+     * {@code proto.spine.web.test.CreateTask} in the generated code.
      */
     @VisibleForTesting
     static final String PREFIX = "proto.";

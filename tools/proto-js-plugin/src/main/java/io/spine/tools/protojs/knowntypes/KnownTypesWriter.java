@@ -39,8 +39,8 @@ import static io.spine.tools.protojs.files.JsFiles.writeToFile;
  * <p>The JS type acquired from the map can then be used as a constructor or for the static method
  * call.
  *
- * <p>This is mainly useful for the {@link com.google.protobuf.Any} values processing whose type
- * is not known until runtime.
+ * <p>This is mainly useful for processing {@link com.google.protobuf.Any} values whose type is not
+ * known until runtime.
  *
  * @author Dmytro Kuzmin
  * @see KnownTypesGenerator
@@ -63,7 +63,7 @@ public final class KnownTypesWriter {
     /**
      * Creates the {@code KnownTypesWriter} for the {@code protoJsLocation} and {@code fileSet}.
      *
-     * <p>All known types will be acquired from the specified {@code FileSet} and the
+     * <p>All known types will be acquired from the specified {@code fileSet} and the
      * {@code protoJsLocation} will be used to determine the {@code known_types.js} file path.
      *
      * @param protoJsLocation
@@ -80,7 +80,7 @@ public final class KnownTypesWriter {
     }
 
     /**
-     * Generates the content of the {@code known_types.js} file and stores it to disk.
+     * Generates the content of the {@code known_types.js} file and stores it to the disk.
      *
      * <p>The file is written to the root of the proto JS location.
      *

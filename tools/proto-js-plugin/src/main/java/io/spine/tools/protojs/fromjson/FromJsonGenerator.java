@@ -53,16 +53,14 @@ public final class FromJsonGenerator {
      * The comment inserted before the generated code.
      */
     @VisibleForTesting
-    static final String COMMENT = "The code for parsing the Protobuf messages of this file from " +
-            "the JSON data.";
+    static final String COMMENT =
+            "The code for parsing the Protobuf messages of this file from the JSON data.";
 
     private final FileDescriptor file;
     private final JsOutput jsOutput;
 
     /**
      * Creates the new {@code FromJsonGenerator} which will process the given file descriptor.
-     *
-     * <p>Passed {@code JsOutput} is used to create and accumulate the JS code lines.
      *
      * @param file
      *         the {@code FileDescriptor} whose messages to process
@@ -76,15 +74,16 @@ public final class FromJsonGenerator {
 
     /**
      * Generates the {@code fromJson(json)} method and all the related code for each message of the
-     * processed {@link #file}.
+     * processed {@code file}.
      *
      * <p>More specifically:
      * <ol>
      *     <li>Writes a comment explaining the generated code.
      *     <li>Adds an import for the
-     *         {@linkplain io.spine.tools.protojs.knowntypes.KnownTypeParsersWriter known parsers}.
-     *     <li>Adds the {@code fromJson(json)} method for each message which parses JSON string
-     *         into object.
+     *         {@linkplain io.spine.tools.protojs.knowntypes.KnownTypeParsersWriter standard type
+     *         parsers}.
+     *     <li>Adds the {@code fromJson(json)} method for each message which parses JSON
+     *         {@code string} into object.
      *     <li>Adds the {@code fromObject(obj)} method for each message which parses the JS object
      *         and creates a message.
      * </ol>
@@ -108,7 +107,7 @@ public final class FromJsonGenerator {
      * Generates the {@link io.spine.tools.protojs.knowntypes.KnownTypeParsersWriter
      * known_type_parsers.js} import.
      *
-     * <p>The import path is relative to the stored {@link #file}.
+     * <p>The import path is relative to the processed {@code file}.
      */
     @VisibleForTesting
     void generateParsersImport() {

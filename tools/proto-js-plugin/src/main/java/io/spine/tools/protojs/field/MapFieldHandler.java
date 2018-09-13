@@ -27,7 +27,7 @@ import static io.spine.tools.protojs.field.Fields.capitalizedName;
 import static io.spine.tools.protojs.message.MessageHandler.MESSAGE;
 
 /**
- * The handler of the Protobuf {@code map} fields.
+ * The handler of the {@code map} proto fields.
  *
  * <p>The handler expects a plain JS object as an input, treating its properties as the Protobuf
  * map entries.
@@ -37,7 +37,7 @@ import static io.spine.tools.protojs.message.MessageHandler.MESSAGE;
  * attribute.
  *
  * <p>This is necessary as all proto {@code map} keys are converted to {@code string}s in JSON and
- * thus the object properties will also be of string type.
+ * thus the object properties will also be of {@code string} type.
  *
  * <p>The {@link #checker} and {@link #parser} from the superclass are used to process the
  * {@code map} value before adding it to the field.
@@ -79,7 +79,7 @@ final class MapFieldHandler extends AbstractFieldHandler {
      * {@inheritDoc}
      *
      * <p>The merge format for the {@code map} field is getting the field through getter and then
-     * using the standard JS {@code Map.set} function on it.
+     * using the standard JS {@code Map.set} function to set the value.
      */
     @Override
     String mergeFormat() {
@@ -120,7 +120,7 @@ final class MapFieldHandler extends AbstractFieldHandler {
     }
 
     /**
-     * Generates the code which parses the proto {@linkplain #MAP_KEY map key} from the JS object
+     * Generates the code which parses the proto {@linkplain #MAP_KEY map key} from the object
      * {@linkplain #ATTRIBUTE attribute name}, which is always a {@code string}.
      */
     private void parseMapKey() {

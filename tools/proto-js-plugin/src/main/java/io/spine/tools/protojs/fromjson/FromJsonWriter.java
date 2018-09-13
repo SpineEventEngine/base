@@ -58,7 +58,7 @@ public final class FromJsonWriter {
     }
 
     /**
-     * Creates new {@code FromJsonWriter}.
+     * Creates a new {@code FromJsonWriter}.
      *
      * @param protoJsLocation
      *         the location to lookup JS proto definitions

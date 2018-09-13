@@ -35,7 +35,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  * @author Dmytro Kuzmin
  */
-@SuppressWarnings("DuplicateStringLiteralInspection") // Random duplication of path elements.
+@SuppressWarnings("DuplicateStringLiteralInspection") // Random duplication of the path elements.
 public final class ProjectFiles {
 
     /**

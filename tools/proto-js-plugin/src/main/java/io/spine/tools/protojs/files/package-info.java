@@ -19,7 +19,7 @@
  */
 
 /**
- * Generate desc.
+ * The utilities for working with files related to the module.
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault

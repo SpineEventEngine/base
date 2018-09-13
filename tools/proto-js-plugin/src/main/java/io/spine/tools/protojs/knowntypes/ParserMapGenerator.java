@@ -47,7 +47,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.type.TypeUrl.of;
 
 /**
- * The generator which creates standard type parsers JS {@code Map}.
+ * The generator which creates standard type parsers {@code Map}.
  *
  * <p>Parsers are stored in the map in the "{@linkplain TypeUrl type-url}-to-parser" format.
  *
@@ -107,9 +107,9 @@ public final class ParserMapGenerator {
     }
 
     /**
-     * Stores known parser {@code Map} to the {@code jsOutput}.
+     * Stores parsers {@code Map} to the {@code jsOutput}.
      *
-     * <p>The name of the exported map is stored in the {@link #MAP_NAME}.
+     * <p>The name of the exported map is the {@link #MAP_NAME}.
      */
     void generateJs() {
         jsOutput.addEmptyLine();
@@ -119,7 +119,7 @@ public final class ParserMapGenerator {
     }
 
     /**
-     * Adds entries to the declared parser {@code Map}.
+     * Adds entries to the declared parsers {@code Map}.
      */
     private void storeParsersToMap() {
         ImmutableSet<Entry<TypeUrl, String>> entries = parsers.entrySet();

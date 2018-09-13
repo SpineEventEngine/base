@@ -23,13 +23,12 @@ package io.spine.tools.protojs.field;
 import io.spine.tools.protojs.code.JsOutput;
 
 /**
- * The generator of the code necessary to handle a Protobuf message field.
+ * The generator of the code necessary to handle a proto field.
  *
- * <p>"To handle" implies parsing the field value from the JS object and assigning it to the
- * message field.
+ * <p>"To handle" implies parsing the field value from the JS object and assigning it to the field.
  *
  * <p>The {@code undefined} field values in general should be ignored, while {@code null} is a
- * valid value for the {@linkplain com.google.protobuf.Message Message} fields.
+ * valid value for the fields of {@code message} type.
  *
  * @apiNote
  * Like the other handlers and generators of this module, the {@code FieldHandler} is meant to
@@ -41,7 +40,7 @@ import io.spine.tools.protojs.code.JsOutput;
 public interface FieldHandler {
 
     /**
-     * Generates the JS code which handles the field.
+     * Generates the code which handles the field.
      */
     void generateJs();
 }

@@ -81,8 +81,8 @@ final class KnownTypesGenerator {
      *
      * <p>The code includes:
      * <ol>
-     *     <li>Imports of all files declaring proto JS messages
-     *     <li>The global JS {@code Map}
+     *     <li>Imports of all JS files declaring proto messages
+     *     <li>The global {@code Map} of known types
      * </ol>
      *
      * <p>The generated code is accumulated in the {@link #jsOutput}.
@@ -95,7 +95,7 @@ final class KnownTypesGenerator {
     /**
      * Generates import statements for all files declaring proto JS messages.
      *
-     * <p>Imports are written in the CommonJS style ({@code "require('./lib')"}).
+     * <p>Imports are written in the CommonJS style: {@code require('./lib')}.
      */
     @VisibleForTesting
     void generateImports() {
@@ -107,7 +107,7 @@ final class KnownTypesGenerator {
     }
 
     /**
-     * Generates the JS {@code Map} of known types.
+     * Generates the {@code Map} of known types.
      *
      * <p>Map entries are known types stored in the "{@linkplain TypeUrl type-url}-to-JS-type"
      * format.

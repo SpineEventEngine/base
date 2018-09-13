@@ -35,12 +35,12 @@ import static io.spine.tools.protojs.files.JsFiles.appendToFile;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 /**
- * A class that generates and writes the JS file containing JSON parsers for standard Protobuf
- * Message types.
+ * A class that generates and writes the JS file containing JSON parsers for the standard Protobuf
+ * types.
  *
- * <p>The file receives name {@code known_type_parsers.js}.
+ * <p>The file receives the name {@code "known_type_parsers.js"}.
  *
- * <p>The file contains the global JS {@code Map} of
+ * <p>The file contains the global JS {@code Map} of the
  * <a href="https://developers.google.com/protocol-buffers/docs/proto3#json">standard Protobuf
  * type</a> parsers as well as their source code.
  *
@@ -59,8 +59,8 @@ public final class KnownTypeParsersWriter {
     private static final String PARSERS_PACKAGE = "io/spine/tools/protojs/knowntypes/";
 
     /**
-     * The path to the {@code known_type_parsers.js} file from the resources which contains the
-     * parser JS definitions.
+     * The path to the {@code known_type_parsers.js} resource which contains the parser JS
+     * definitions.
      */
     private static final String PARSERS_CODE = PARSERS_PACKAGE + KNOWN_TYPE_PARSERS;
 
@@ -87,7 +87,7 @@ public final class KnownTypeParsersWriter {
      *
      * @param protoJsLocation
      *         the JS proto definitions root folder
-     * @return the new instance of {@code KnownTypeParsersWriter}
+     * @return a new instance of {@code KnownTypeParsersWriter}
      */
     public static KnownTypeParsersWriter createFor(Path protoJsLocation) {
         checkNotNull(protoJsLocation);
@@ -96,7 +96,7 @@ public final class KnownTypeParsersWriter {
     }
 
     /**
-     * Writes the contents of the {@code known_type_parsers.js} file to disk.
+     * Writes the contents of the {@code known_type_parsers.js} to the file.
      *
      * <p>This method performs 2 steps:
      * <ol>

@@ -24,7 +24,7 @@ import static io.spine.tools.protojs.field.Fields.capitalizedName;
 import static io.spine.tools.protojs.message.MessageHandler.MESSAGE;
 
 /**
- * The handler of the ordinary Protobuf field (i.e. non-{@code repeated} and non-{@code map}).
+ * The handler of the ordinary proto field (i.e. non-{@code repeated} and non-{@code map}).
  *
  * @author Dmytro Kuzmin
  */
@@ -48,6 +48,7 @@ final class SingularFieldHandler extends AbstractFieldHandler {
      * <p>The merge format for a singular field is just calling the corresponding field setter on
      * the message object.
      */
+    @SuppressWarnings("DuplicateStringLiteralInspection") // Random duplication.
     @Override
     String mergeFormat() {
         String fieldName = capitalizedName(field());

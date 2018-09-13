@@ -72,11 +72,11 @@ public final class FieldHandlers {
      * @implNote
      * The creation logic is different from all other handlers.
      *
-     * <p>As the {@code map} field is always a message of type {@code ...Entry}, we create
-     * {@link FieldChecker} and {@link FieldParser} for it's field with name
-     * {@code "value"} (whose type corresponds to the {@code map} value type).
+     * <p>As the {@code map} field is always a {@code message} of type {@code ...Entry}, we create
+     * {@link FieldChecker} and {@link FieldParser} for it's field with name {@code "value"}
+     * (whose type corresponds to the {@code map} value type).
      *
-     * <p>The key also has to be parsed via separate {@code FieldParser}, as in JSON it is
+     * <p>The key also has to be parsed via the separate {@code FieldParser}, as in JSON it is
      * always converted to a {@code string}. So we create additional {@code FieldParser} for
      * the {@code ...Entry} {@code "key"} field.
      */
@@ -133,8 +133,7 @@ public final class FieldHandlers {
     /**
      * Creates a {@code FieldChecker} for the value of the map field.
      */
-    private static FieldChecker
-    mapValueChecker(FieldDescriptor field, JsOutput jsOutput) {
+    private static FieldChecker mapValueChecker(FieldDescriptor field, JsOutput jsOutput) {
         FieldDescriptor valueDescriptor = valueDescriptor(field);
         FieldChecker checker = checkerFor(valueDescriptor, jsOutput);
         return checker;

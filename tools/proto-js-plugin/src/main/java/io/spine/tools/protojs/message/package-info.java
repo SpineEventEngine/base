@@ -19,7 +19,7 @@
  */
 
 /**
- * Generate desc.
+ * The classes which generate the code to handle the proto messages when parsing from JSON.
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault

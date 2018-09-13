@@ -35,7 +35,7 @@ import static com.google.protobuf.Descriptors.FieldDescriptor.Type.ENUM;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.MESSAGE;
 
 /**
- * A utility to work with Protobuf {@linkplain FieldDescriptor fields}.
+ * A utility to work with proto {@linkplain FieldDescriptor fields}.
  *
  * @author Dmytro Kuzmin
  */
@@ -43,17 +43,17 @@ import static com.google.protobuf.Descriptors.FieldDescriptor.Type.MESSAGE;
 public final class Fields {
 
     /**
-     * The suffix of the class representing the {@code map} proto field message type.
+     * The suffix of the class representing the {@code message} type of the {@code map} field.
      */
     private static final String ENTRY_SUFFIX = "Entry";
 
     /**
-     * The field of the {@code map} field message type which represents map key.
+     * The field of the {@code map} field type which represents the {@code map} key.
      */
     private static final String MAP_ENTRY_KEY = "key";
 
     /**
-     * The field of the {@code map} field message type which represents map value.
+     * The field of the {@code map} field type which represents the {@code map} value.
      */
     private static final String MAP_ENTRY_VALUE = "value";
 
@@ -62,11 +62,11 @@ public final class Fields {
     }
 
     /**
-     * Checks if the given field is of message type.
+     * Checks if the given field is of {@code message} type.
      *
      * @param field
      *         the descriptor of the field to check
-     * @return {@code true} if the field is of message kind, {@code false} otherwise
+     * @return {@code true} if the field is of {@code message} type, {@code false} otherwise
      */
     public static boolean isMessage(FieldDescriptor field) {
         checkNotNull(field);
@@ -80,7 +80,7 @@ public final class Fields {
      *
      * @param field
      *         the descriptor of the field to check
-     * @return {@code true} if the field is of well-known type and {@code false} otherwise
+     * @return {@code true} if the field is of the well-known type and {@code false} otherwise
      * @see io.spine.tools.protojs.knowntypes.KnownTypeParsersWriter
      */
     public static boolean isWellKnownType(FieldDescriptor field) {
@@ -95,11 +95,11 @@ public final class Fields {
     }
 
     /**
-     * Checks if the given field is of enum type.
+     * Checks if the given field is of {@code enum} type.
      *
      * @param field
      *         the descriptor of the field to check
-     * @return {@code true} if the field is of enum kind, {@code false} otherwise
+     * @return {@code true} if the field is of {@code enum} type, {@code false} otherwise
      */
     public static boolean isEnum(FieldDescriptor field) {
         checkNotNull(field);
@@ -150,9 +150,6 @@ public final class Fields {
     /**
      * Obtains the key descriptor for the {@code map} field.
      *
-     * <p>The descriptor can then be used to gather information about {@code map} key type and
-     * parse it.
-     *
      * @param field
      *         the {@code map} field for which to obtain key descriptor
      * @return the key descriptor for the specified {@code map} field
@@ -161,7 +158,8 @@ public final class Fields {
      * @see FieldHandlers#mapHandler(FieldDescriptor, JsOutput)
      */
     static FieldDescriptor keyDescriptor(FieldDescriptor field) {
-        checkArgument(isMap(field), "Trying to get key descriptor for the non-map field.");
+        checkArgument(isMap(field),
+                      "Trying to get key descriptor for the non-map field %s.", field.getName());
         FieldDescriptor descriptor = field.getMessageType()
                                           .findFieldByName(MAP_ENTRY_KEY);
         return descriptor;
@@ -169,9 +167,6 @@ public final class Fields {
 
     /**
      * Obtains the value descriptor for the {@code map} field.
-     *
-     * <p>The descriptor can then be used to gather information about {@code map} value type and
-     * parse it.
      *
      * @param field
      *         the {@code map} field for which to obtain value descriptor
@@ -181,7 +176,8 @@ public final class Fields {
      * @see FieldHandlers#mapHandler(FieldDescriptor, JsOutput)
      */
     static FieldDescriptor valueDescriptor(FieldDescriptor field) {
-        checkArgument(isMap(field), "Trying to get value descriptor for the non-map field.");
+        checkArgument(isMap(field),
+                      "Trying to get value descriptor for the non-map field %s.", field.getName());
         FieldDescriptor descriptor = field.getMessageType()
                                           .findFieldByName(MAP_ENTRY_VALUE);
         return descriptor;
