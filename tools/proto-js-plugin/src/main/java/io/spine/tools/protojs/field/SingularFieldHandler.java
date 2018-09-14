@@ -20,7 +20,7 @@
 
 package io.spine.tools.protojs.field;
 
-import static io.spine.tools.protojs.field.Fields.capitalizedName;
+import static io.spine.tools.protojs.field.Fields.camelCaseName;
 import static io.spine.tools.protojs.message.MessageHandler.MESSAGE;
 
 /**
@@ -50,7 +50,7 @@ final class SingularFieldHandler extends AbstractFieldHandler {
      */
     @Override
     String mergeFormat() {
-        String fieldName = capitalizedName(field());
+        String fieldName = camelCaseName(field());
         String setterName = "set" + fieldName;
         String setFieldFormat = MESSAGE + '.' + setterName + "(%s);";
         return setFieldFormat;

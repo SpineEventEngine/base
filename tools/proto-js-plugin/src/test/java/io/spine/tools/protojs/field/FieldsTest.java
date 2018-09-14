@@ -31,7 +31,7 @@ import spine.test.protojs.Task.TaskId;
 
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.INT64;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.MESSAGE;
-import static io.spine.tools.protojs.field.Fields.capitalizedName;
+import static io.spine.tools.protojs.field.Fields.camelCaseName;
 import static io.spine.tools.protojs.field.Fields.keyDescriptor;
 import static io.spine.tools.protojs.field.Fields.valueDescriptor;
 import static io.spine.tools.protojs.given.Given.mapField;
@@ -133,10 +133,10 @@ class FieldsTest extends UtilityClassTest<Fields> {
 
     @SuppressWarnings("DuplicateStringLiteralInspection") // Random duplication.
     @Test
-    @DisplayName("return capitalized field name")
+    @DisplayName("return CamelCase field name")
     void getCapitalizedName() {
-        String capitalizedName = capitalizedName(messageField());
+        String camelCaseName = camelCaseName(messageField());
         String expected = "MessageField";
-        assertEquals(expected, capitalizedName);
+        assertEquals(expected, camelCaseName);
     }
 }

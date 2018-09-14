@@ -22,7 +22,7 @@ package io.spine.tools.protojs.field;
 
 import com.google.common.annotations.VisibleForTesting;
 
-import static io.spine.tools.protojs.field.Fields.capitalizedName;
+import static io.spine.tools.protojs.field.Fields.camelCaseName;
 import static io.spine.tools.protojs.message.MessageHandler.MESSAGE;
 
 /**
@@ -64,7 +64,7 @@ final class RepeatedFieldHandler extends AbstractFieldHandler {
      */
     @Override
     String mergeFormat() {
-        String fieldName = capitalizedName(field());
+        String fieldName = camelCaseName(field());
         String addFunctionName = "add" + fieldName;
         String addToListFormat = MESSAGE + '.' + addFunctionName + "(%s);";
         return addToListFormat;

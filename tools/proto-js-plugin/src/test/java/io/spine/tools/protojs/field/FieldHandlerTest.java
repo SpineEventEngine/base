@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.tools.protojs.field.AbstractFieldHandler.FIELD_VALUE;
-import static io.spine.tools.protojs.field.Fields.capitalizedName;
+import static io.spine.tools.protojs.field.Fields.camelCaseName;
 import static io.spine.tools.protojs.field.MapFieldHandler.ATTRIBUTE;
 import static io.spine.tools.protojs.field.MapFieldHandler.MAP_KEY;
 import static io.spine.tools.protojs.field.RepeatedFieldHandler.LIST_ITEM;
@@ -130,7 +130,7 @@ class FieldHandlerTest {
     @DisplayName("set singular field")
     void setSingular() {
         singularHandler.generateJs();
-        String setterCall = "set" + capitalizedName(singularField()) + '(' + FIELD_VALUE + ')';
+        String setterCall = "set" + camelCaseName(singularField()) + '(' + FIELD_VALUE + ')';
         assertContains(jsOutput, setterCall);
     }
 
@@ -138,7 +138,7 @@ class FieldHandlerTest {
     @DisplayName("add value to repeated field")
     void addToRepeated() {
         repeatedHandler.generateJs();
-        String addCall = "add" + capitalizedName(repeatedField()) + '(' + FIELD_VALUE + ')';
+        String addCall = "add" + camelCaseName(repeatedField()) + '(' + FIELD_VALUE + ')';
         assertContains(jsOutput, addCall);
     }
 
@@ -146,7 +146,7 @@ class FieldHandlerTest {
     @DisplayName("add value to map field")
     void addToMap() {
         mapHandler.generateJs();
-        String getMapCall = "get" + capitalizedName(mapField()) + "Map()";
+        String getMapCall = "get" + camelCaseName(mapField()) + "Map()";
         String addToMapCall = "set(" + MAP_KEY + ", " + FIELD_VALUE + ')';
         String addCall = getMapCall + '.' + addToMapCall;
         assertContains(jsOutput, addCall);

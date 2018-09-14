@@ -141,7 +141,7 @@ public final class Fields {
             return false;
         }
         Descriptor fieldType = field.getMessageType();
-        String mapTypeName = capitalizedName(field) + ENTRY_SUFFIX;
+        String mapTypeName = camelCaseName(field) + ENTRY_SUFFIX;
         boolean isMap = fieldType.getName()
                                  .equals(mapTypeName);
         return isMap;
@@ -184,16 +184,16 @@ public final class Fields {
     }
 
     /**
-     * Generates the capitalized {@code CamelCase} name of the field.
+     * Generates the {@code CamelCase} name of the field.
      *
      * <p>For example, for the field with the name "task_id", the method will generate a name
      * "TaskId".
      *
      * @param field
      *         the descriptor of the field for which the name should be generated
-     * @return the capitalized {@code CamelCase} name of the field
+     * @return the {@code CamelCase} name of the field
      */
-    static String capitalizedName(FieldDescriptor field) {
+    static String camelCaseName(FieldDescriptor field) {
         checkNotNull(field);
         FieldDescriptorProto proto = field.toProto();
         String capitalizedName = FieldName.of(proto)

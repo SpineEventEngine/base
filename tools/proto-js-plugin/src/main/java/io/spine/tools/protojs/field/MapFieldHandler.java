@@ -23,7 +23,7 @@ package io.spine.tools.protojs.field;
 import com.google.common.annotations.VisibleForTesting;
 import io.spine.tools.protojs.field.parser.FieldParser;
 
-import static io.spine.tools.protojs.field.Fields.capitalizedName;
+import static io.spine.tools.protojs.field.Fields.camelCaseName;
 import static io.spine.tools.protojs.message.MessageHandler.MESSAGE;
 
 /**
@@ -83,7 +83,7 @@ final class MapFieldHandler extends AbstractFieldHandler {
      */
     @Override
     String mergeFormat() {
-        String fieldName = capitalizedName(field());
+        String fieldName = camelCaseName(field());
         String getMap = "get" + fieldName + "Map()";
         String setMapValue = "set(" + MAP_KEY + ", %s)";
         String addToMapFormat = MESSAGE + '.' + getMap + '.' + setMapValue + ';';
