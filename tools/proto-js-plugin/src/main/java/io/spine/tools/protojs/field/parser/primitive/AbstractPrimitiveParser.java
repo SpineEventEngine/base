@@ -22,6 +22,8 @@ package io.spine.tools.protojs.field.parser.primitive;
 
 import io.spine.tools.protojs.code.JsOutput;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * The common base for the {@link PrimitiveParser} implementations.
  *
@@ -45,7 +47,7 @@ abstract class AbstractPrimitiveParser implements PrimitiveParser {
 
         @Override
         public B setJsOutput(JsOutput jsOutput) {
-            this.jsOutput = jsOutput;
+            this.jsOutput = checkNotNull(jsOutput);
             return self();
         }
 

@@ -26,6 +26,7 @@ import io.spine.tools.protojs.code.JsOutput;
 import io.spine.tools.protojs.field.checker.FieldChecker;
 import io.spine.tools.protojs.field.parser.FieldParser;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.protojs.message.MessageHandler.FROM_OBJECT_ARG;
 import static java.lang.String.format;
 
@@ -149,22 +150,22 @@ abstract class AbstractFieldHandler implements FieldHandler {
         private JsOutput jsOutput;
 
         B setField(FieldDescriptor field) {
-            this.field = field;
+            this.field = checkNotNull(field);
             return self();
         }
 
         B setChecker(FieldChecker checker) {
-            this.checker = checker;
+            this.checker = checkNotNull(checker);
             return self();
         }
 
         B setParser(FieldParser parser) {
-            this.parser = parser;
+            this.parser = checkNotNull(parser);
             return self();
         }
 
         B setJsOutput(JsOutput jsOutput) {
-            this.jsOutput = jsOutput;
+            this.jsOutput = checkNotNull(jsOutput);
             return self();
         }
 
