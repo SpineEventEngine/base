@@ -67,7 +67,7 @@ public final class FieldHandlers {
     }
 
     /**
-     * Creates the {@linkplain MapFieldHandler handler} for the {@code map} field.
+     * Creates a {@linkplain MapFieldHandler handler} for the {@code map} field.
      *
      * @implNote
      * The creation logic is different from all other handlers.
@@ -97,7 +97,7 @@ public final class FieldHandlers {
     }
 
     /**
-     * Creates the {@linkplain RepeatedFieldHandler handler} for the {@code repeated} proto field.
+     * Creates a {@linkplain RepeatedFieldHandler handler} for the {@code repeated} proto field.
      */
     private static FieldHandler repeatedHandler(FieldDescriptor field, JsOutput jsOutput) {
         FieldChecker checker = checkerFor(field, jsOutput);
@@ -114,7 +114,7 @@ public final class FieldHandlers {
     }
 
     /**
-     * Creates the {@linkplain SingularFieldHandler handler} for the ordinary proto field.
+     * Creates a {@linkplain SingularFieldHandler handler} for the ordinary proto field.
      */
     private static FieldHandler singularHandler(FieldDescriptor field, JsOutput jsOutput) {
         FieldChecker checker = checkerFor(field, jsOutput);

@@ -150,7 +150,7 @@ public final class JsOutput {
     }
 
     /**
-     * Declares JS method and enter its body.
+     * Declares JS method and enters its body.
      *
      * @param methodName
      *         the full method name including type name
