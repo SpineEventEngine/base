@@ -31,7 +31,7 @@ import static io.spine.code.proto.ProtoPackage.GOOGLE_PROTOBUF_PACKAGE;
  *
  * @author Dmytro Kuzmin
  */
-public class ProtobufTypes {
+public class Types {
 
     private static final String SPINE_OPTIONS_PROTO = "spine/options.proto";
 
@@ -45,7 +45,7 @@ public class ProtobufTypes {
     static final String PREFIX = "proto.";
 
     /** Prevents instantiation of this utility class. */
-    private ProtobufTypes() {
+    private Types() {
     }
 
     /**

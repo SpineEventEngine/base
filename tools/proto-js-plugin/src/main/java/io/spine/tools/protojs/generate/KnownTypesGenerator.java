@@ -33,7 +33,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import static io.spine.code.js.ProtobufTypes.typeWithProtoPrefix;
+import static io.spine.code.js.Types.typeWithProtoPrefix;
 import static io.spine.tools.protojs.files.JsFiles.KNOWN_TYPES;
 import static java.util.stream.Collectors.toSet;
 

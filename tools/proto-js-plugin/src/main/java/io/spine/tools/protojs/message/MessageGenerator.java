@@ -31,7 +31,7 @@ import io.spine.tools.protojs.generate.JsOutput;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.code.js.ProtobufTypes.typeWithProtoPrefix;
+import static io.spine.code.js.Types.typeWithProtoPrefix;
 
 /**
  * The generator of the {@code fromJson(json)} method for the given message type.
