@@ -32,7 +32,7 @@ import static io.spine.tools.protojs.message.MessageGenerator.FROM_OBJECT_ARG;
 import static java.lang.String.format;
 
 /**
- * The common base for the {@link FieldHandler} implementations.
+ * The common base for the {@link FieldGenerator} implementations.
  *
  * <p>The class generates the JS code common for all kinds of field handlers including calling the
  * {@linkplain FieldPrecondition field precondition} and the {@linkplain FieldParser field parser}.

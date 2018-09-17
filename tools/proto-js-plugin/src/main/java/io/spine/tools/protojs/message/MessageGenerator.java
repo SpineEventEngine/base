@@ -23,8 +23,8 @@ package io.spine.tools.protojs.message;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
+import io.spine.tools.protojs.field.FieldGenerator;
 import io.spine.tools.protojs.field.FieldGenerators;
-import io.spine.tools.protojs.field.FieldHandler;
 import io.spine.tools.protojs.generate.JsCodeGenerator;
 import io.spine.tools.protojs.generate.JsOutput;
 
@@ -111,7 +111,7 @@ public class MessageGenerator extends JsCodeGenerator {
      * {@code JsOutput} code lines.
      */
     @Override
-    protected void generate() {
+    public void generate() {
         generateFromJsonMethod();
         generateFromObjectMethod();
     }
@@ -182,8 +182,8 @@ public class MessageGenerator extends JsCodeGenerator {
         List<FieldDescriptor> fields = message.getFields();
         for (FieldDescriptor field : fields) {
             jsOutput().addEmptyLine();
-            FieldHandler fieldHandler = FieldGenerators.createFor(field, jsOutput());
-            fieldHandler.generateJs();
+            FieldGenerator fieldHandler = FieldGenerators.createFor(field, jsOutput());
+            fieldHandler.generate();
         }
     }
 }

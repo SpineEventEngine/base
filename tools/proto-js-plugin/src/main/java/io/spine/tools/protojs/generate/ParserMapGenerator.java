@@ -38,7 +38,6 @@ import com.google.protobuf.Timestamp;
 import com.google.protobuf.UInt32Value;
 import com.google.protobuf.UInt64Value;
 import com.google.protobuf.Value;
-import io.spine.tools.protojs.generate.JsOutput;
 import io.spine.tools.protojs.knowntypes.KnownTypeParsersWriter;
 import io.spine.type.TypeUrl;
 
@@ -63,7 +62,7 @@ import static io.spine.type.TypeUrl.of;
  * @see KnownTypeParsersWriter
  */
 @SuppressWarnings("OverlyCoupledClass") // Dependencies for the listed Message types.
-public final class ParserMapGenerator {
+final class ParserMapGenerator extends JsCodeGenerator {
 
     /**
      * The exported map name.
@@ -80,8 +79,6 @@ public final class ParserMapGenerator {
      */
     private static final ImmutableMap<TypeUrl, String> parsers = parsers();
 
-    private final JsOutput jsOutput;
-
     /**
      * Creates a new {@code ParserMapGenerator}.
      *
@@ -89,7 +86,7 @@ public final class ParserMapGenerator {
      *         the {@code JsOutput} which accumulates all the generated code
      */
     ParserMapGenerator(JsOutput jsOutput) {
-        this.jsOutput = jsOutput;
+        super(jsOutput);
     }
 
     /**
@@ -111,11 +108,12 @@ public final class ParserMapGenerator {
      *
      * <p>The name of the exported map is the {@link #MAP_NAME}.
      */
-    void generateJs() {
-        jsOutput.addEmptyLine();
-        jsOutput.exportMap(MAP_NAME);
+    @Override
+    public void generate() {
+        jsOutput().addEmptyLine();
+        jsOutput().exportMap(MAP_NAME);
         storeParsersToMap();
-        jsOutput.quitMapDeclaration();
+        jsOutput().quitMapDeclaration();
     }
 
     /**
@@ -136,7 +134,7 @@ public final class ParserMapGenerator {
      */
     private void addMapEntry(Entry<TypeUrl, String> typeToParser, boolean isLastEntry) {
         String mapEntry = jsMapEntry(typeToParser);
-        jsOutput.addMapEntry(mapEntry, isLastEntry);
+        jsOutput().addMapEntry(mapEntry, isLastEntry);
     }
 
     /**

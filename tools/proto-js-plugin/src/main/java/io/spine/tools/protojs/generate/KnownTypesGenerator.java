@@ -51,7 +51,7 @@ import static java.util.stream.Collectors.toSet;
  * @author Dmytro Kuzmin
  * @see KnownTypesWriter
  */
-final class KnownTypesGenerator {
+final class KnownTypesGenerator extends JsCodeGenerator {
 
     /**
      * The exported map name.
@@ -59,7 +59,6 @@ final class KnownTypesGenerator {
     private static final String MAP_NAME = "types";
 
     private final FileSet fileSet;
-    private final JsOutput jsOutput;
 
     /**
      * Creates a new {@code KnownTypesGenerator}.
@@ -73,8 +72,8 @@ final class KnownTypesGenerator {
      *         the {@code JsOutput} to accumulate the generated code
      */
     KnownTypesGenerator(FileSet fileSet, JsOutput jsOutput) {
+        super(jsOutput);
         this.fileSet = fileSet;
-        this.jsOutput = jsOutput;
     }
 
     /**
@@ -88,7 +87,8 @@ final class KnownTypesGenerator {
      *
      * <p>The generated code is accumulated in the {@link #jsOutput}.
      */
-    void generateJs() {
+    @Override
+    public void generate() {
         generateImports();
         generateKnownTypesMap();
     }
@@ -108,7 +108,7 @@ final class KnownTypesGenerator {
                 .newBuilder()
                 .setFilePath(KNOWN_TYPES)
                 .setImports(imports)
-                .setJsOutput(jsOutput)
+                .setJsOutput(jsOutput())
                 .build();
         generator.generate();
     }
@@ -123,10 +123,10 @@ final class KnownTypesGenerator {
      */
     @VisibleForTesting
     void generateKnownTypesMap() {
-        jsOutput.addEmptyLine();
-        jsOutput.exportMap(MAP_NAME);
+        jsOutput().addEmptyLine();
+        jsOutput().exportMap(MAP_NAME);
         storeKnownTypes();
-        jsOutput.quitMapDeclaration();
+        jsOutput().quitMapDeclaration();
     }
 
     /**
@@ -159,7 +159,7 @@ final class KnownTypesGenerator {
      */
     private void addMapEntry(Descriptor message, boolean isLastMessage) {
         String mapEntry = jsMapEntry(message);
-        jsOutput.addMapEntry(mapEntry, isLastMessage);
+        jsOutput().addMapEntry(mapEntry, isLastMessage);
     }
 
     /**
