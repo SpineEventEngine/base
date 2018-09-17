@@ -36,7 +36,7 @@ import static io.spine.tools.protojs.files.JsFiles.jsFileName;
 import static io.spine.tools.protojs.types.Types.isStandardOrSpineOptions;
 
 /**
- * The inserter of the {@code fromJson(json)} method into the existing JS Proto definitions.
+ * The appender of the {@code fromJson(json)} method into the existing JS Proto definitions.
  *
  * <p>The class processes all the known types except the standard ones and Spine Options.
  *
