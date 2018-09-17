@@ -20,7 +20,7 @@
 
 package io.spine.tools.protojs.field.checker;
 
-import io.spine.tools.protojs.code.JsOutput;
+import io.spine.tools.protojs.generate.JsOutput;
 
 /**
  * The generator of the code which performs various checks on the proto field value.

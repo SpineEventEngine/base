@@ -22,7 +22,7 @@ package io.spine.tools.protojs.files;
 
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.proto.FileName;
-import io.spine.tools.protojs.code.JsOutput;
+import io.spine.tools.protojs.generate.JsOutput;
 
 import java.io.IOException;
 import java.nio.file.Path;

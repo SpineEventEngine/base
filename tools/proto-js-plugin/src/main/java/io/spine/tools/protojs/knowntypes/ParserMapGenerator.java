@@ -38,7 +38,7 @@ import com.google.protobuf.Timestamp;
 import com.google.protobuf.UInt32Value;
 import com.google.protobuf.UInt64Value;
 import com.google.protobuf.Value;
-import io.spine.tools.protojs.code.JsOutput;
+import io.spine.tools.protojs.generate.JsOutput;
 import io.spine.type.TypeUrl;
 
 import java.util.Map.Entry;

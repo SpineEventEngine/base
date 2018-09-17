@@ -20,7 +20,7 @@
 
 package io.spine.tools.protojs.field.checker;
 
-import io.spine.tools.protojs.code.JsOutput;
+import io.spine.tools.protojs.generate.JsOutput;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 

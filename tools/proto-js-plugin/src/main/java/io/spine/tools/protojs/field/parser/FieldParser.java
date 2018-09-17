@@ -20,7 +20,7 @@
 
 package io.spine.tools.protojs.field.parser;
 
-import io.spine.tools.protojs.code.JsOutput;
+import io.spine.tools.protojs.generate.JsOutput;
 
 /**
  * The generator of the code which parses the field value from the JS object and stores it into

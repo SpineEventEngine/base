@@ -21,13 +21,14 @@
 package io.spine.tools.protojs.code;
 
 import com.google.common.testing.NullPointerTester;
+import io.spine.tools.protojs.generate.JsOutput;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
-import static io.spine.tools.protojs.code.JsOutput.LINE_SEPARATOR;
+import static io.spine.tools.protojs.generate.JsOutput.LINE_SEPARATOR;
 import static io.spine.tools.protojs.given.Generators.assertContains;
 import static io.spine.tools.protojs.given.Generators.assertNotContains;
 import static org.junit.jupiter.api.Assertions.assertEquals;

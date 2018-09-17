@@ -24,7 +24,7 @@ import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.code.proto.FieldName;
-import io.spine.tools.protojs.code.JsOutput;
+import io.spine.tools.protojs.generate.JsOutput;
 import io.spine.tools.protojs.knowntypes.ParserMapGenerator;
 import io.spine.type.TypeUrl;
 

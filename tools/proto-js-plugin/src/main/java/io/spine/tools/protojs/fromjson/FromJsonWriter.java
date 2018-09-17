@@ -23,7 +23,7 @@ package io.spine.tools.protojs.fromjson;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.proto.FileSet;
-import io.spine.tools.protojs.code.JsOutput;
+import io.spine.tools.protojs.generate.JsOutput;
 
 import java.nio.file.Files;
 import java.nio.file.Path;

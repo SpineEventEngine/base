@@ -23,7 +23,7 @@ package io.spine.tools.protojs.field.parser.primitive;
 import com.google.common.annotations.VisibleForTesting;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.protojs.code.JsImportGenerator.rawNamedImport;
+import static io.spine.tools.protojs.generate.JsImportGenerator.rawNamedImport;
 
 /**
  * The generator of the code parsing {@code bytes} value from its JSON representation.

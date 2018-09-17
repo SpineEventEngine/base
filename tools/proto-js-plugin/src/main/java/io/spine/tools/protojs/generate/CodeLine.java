@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protojs.code;
+package io.spine.tools.protojs.generate;
 
 import java.util.List;
 

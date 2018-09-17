@@ -21,7 +21,7 @@
 package io.spine.tools.protojs.field.checker;
 
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.tools.protojs.code.JsOutput;
+import io.spine.tools.protojs.generate.JsOutput;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.protojs.field.Fields.isMessage;

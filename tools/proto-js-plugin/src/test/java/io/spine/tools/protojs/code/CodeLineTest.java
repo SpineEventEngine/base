@@ -20,6 +20,7 @@
 
 package io.spine.tools.protojs.code;
 
+import io.spine.tools.protojs.generate.CodeLine;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

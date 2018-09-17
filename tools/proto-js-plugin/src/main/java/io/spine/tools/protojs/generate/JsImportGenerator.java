@@ -18,12 +18,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protojs.code;
+package io.spine.tools.protojs.generate;
 
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.protojs.code.JsOutput.VARIABLE_MODIFIER;
+import static io.spine.tools.protojs.generate.JsOutput.VARIABLE_MODIFIER;
 import static java.lang.String.format;
 import static java.lang.String.join;
 import static java.util.Collections.nCopies;

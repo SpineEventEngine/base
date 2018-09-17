@@ -19,11 +19,11 @@
  */
 
 /**
- * The utility tools for generating the JavaScript code.
+ * todo generate desc.
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault
-package io.spine.tools.protojs.code;
+package io.spine.tools.protojs.generate;
 
 import com.google.errorprone.annotations.CheckReturnValue;
 

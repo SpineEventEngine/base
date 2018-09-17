@@ -23,7 +23,7 @@ package io.spine.tools.protojs.message;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.tools.protojs.code.JsOutput;
+import io.spine.tools.protojs.generate.JsOutput;
 import io.spine.tools.protojs.field.FieldHandler;
 import io.spine.tools.protojs.field.FieldHandlers;
 

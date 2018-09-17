@@ -20,7 +20,7 @@
 
 package io.spine.tools.protojs.field;
 
-import io.spine.tools.protojs.code.JsOutput;
+import io.spine.tools.protojs.generate.JsOutput;
 
 /**
  * The generator of the code necessary to handle a proto field.
