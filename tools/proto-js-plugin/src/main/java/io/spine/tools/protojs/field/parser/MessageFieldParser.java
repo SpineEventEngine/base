@@ -37,7 +37,7 @@ import static io.spine.tools.protojs.types.Types.typeWithProtoPrefix;
  *
  * @author Dmytro Kuzmin
  */
-public final class MessageFieldParser implements FieldParser {
+final class MessageFieldParser implements FieldParser {
 
     private final String typeName;
     private final JsOutput jsOutput;

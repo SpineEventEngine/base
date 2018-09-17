@@ -36,7 +36,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  * @author Dmytro Kuzmin
  */
-public final class PrimitiveFieldParser implements FieldParser {
+final class PrimitiveFieldParser implements FieldParser {
 
     private final Type fieldType;
     private final JsOutput jsOutput;

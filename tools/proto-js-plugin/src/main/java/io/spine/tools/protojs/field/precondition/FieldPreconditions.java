@@ -50,8 +50,8 @@ public final class FieldPreconditions {
         checkNotNull(field);
         checkNotNull(jsOutput);
         if (isMessage(field)) {
-            return new MessageFieldPrecondition(field, jsOutput);
+            return new MessagePrecondition(field, jsOutput);
         }
-        return new PrimitiveFieldPrecondition(jsOutput);
+        return new PrimitivePrecondition(jsOutput);
     }
 }

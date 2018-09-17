@@ -38,7 +38,7 @@ import static io.spine.tools.protojs.generate.FromJsonGenerator.PARSERS_IMPORT_N
  * @author Dmytro Kuzmin
  * @see io.spine.tools.protojs.knowntypes.KnownTypeParsersWriter
  */
-public final class WellKnownFieldParser implements FieldParser {
+final class WellKnownFieldParser implements FieldParser {
 
     private final TypeUrl typeUrl;
     private final JsOutput jsOutput;

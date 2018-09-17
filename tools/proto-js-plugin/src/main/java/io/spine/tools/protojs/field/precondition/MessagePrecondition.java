@@ -31,20 +31,20 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  * @author Dmytro Kuzmin
  */
-public final class MessageFieldPrecondition implements FieldPrecondition {
+final class MessagePrecondition implements FieldPrecondition {
 
     private final FieldDescriptor field;
     private final JsOutput jsOutput;
 
     /**
-     * Creates a new {@code MessageFieldPrecondition} for the given {@code field}.
+     * Creates a new {@code MessagePrecondition} for the given {@code field}.
      *
      * @param field
      *         the processed field
      * @param jsOutput
      *         the {@code JsOutput} which accumulates all generated code
      */
-    MessageFieldPrecondition(FieldDescriptor field, JsOutput jsOutput) {
+    MessagePrecondition(FieldDescriptor field, JsOutput jsOutput) {
         this.field = field;
         this.jsOutput = jsOutput;
     }

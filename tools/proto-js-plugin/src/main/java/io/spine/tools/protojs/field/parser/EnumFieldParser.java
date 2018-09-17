@@ -32,7 +32,7 @@ import static io.spine.tools.protojs.types.Types.typeWithProtoPrefix;
  *
  * @author Dmytro Kuzmin
  */
-public final class EnumFieldParser implements FieldParser {
+final class EnumFieldParser implements FieldParser {
 
     private final String typeName;
     private final JsOutput jsOutput;

@@ -60,20 +60,20 @@ class FieldPreconditionsTest extends UtilityClassTest<FieldPreconditions> {
     @DisplayName("create precondition for primitive field")
     void createForPrimitive() {
         FieldPrecondition checker = checkerFor(primitiveField(), jsOutput);
-        assertInstanceOf(PrimitiveFieldPrecondition.class, checker);
+        assertInstanceOf(PrimitivePrecondition.class, checker);
     }
 
     @Test
     @DisplayName("create precondition for message field")
     void createForMessage() {
         FieldPrecondition checker = checkerFor(messageField(), jsOutput);
-        assertInstanceOf(MessageFieldPrecondition.class, checker);
+        assertInstanceOf(MessagePrecondition.class, checker);
     }
 
     @Test
     @DisplayName("create message precondition for standard type field")
     void createForWellKnown() {
         FieldPrecondition checker = checkerFor(timestampField(), jsOutput);
-        assertInstanceOf(MessageFieldPrecondition.class, checker);
+        assertInstanceOf(MessagePrecondition.class, checker);
     }
 }
