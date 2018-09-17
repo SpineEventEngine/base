@@ -18,16 +18,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protojs.field.checker;
+package io.spine.tools.protojs.field.precondition;
 
 import io.spine.tools.protojs.generate.JsOutput;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * The value checker for the proto fields of primitive type.
+ * The value precondition for the proto fields of primitive type.
  *
- * <p>All the proto fields which are not of the {@code message} type are handled by this checker.
+ * <p>All the proto fields which are not of the {@code message} type are handled by this precondition.
  * This includes the {@code enum} type fields which obey the same rules as primitives in this case.
  *
  * @author Dmytro Kuzmin

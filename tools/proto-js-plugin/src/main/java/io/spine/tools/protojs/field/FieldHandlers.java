@@ -21,7 +21,7 @@
 package io.spine.tools.protojs.field;
 
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.tools.protojs.field.checker.FieldPrecondition;
+import io.spine.tools.protojs.field.precondition.FieldPrecondition;
 import io.spine.tools.protojs.generate.JsOutput;
 import io.spine.tools.protojs.field.parser.FieldParser;
 
@@ -30,7 +30,7 @@ import static io.spine.tools.protojs.field.Fields.isMap;
 import static io.spine.tools.protojs.field.Fields.isRepeated;
 import static io.spine.tools.protojs.field.Fields.keyDescriptor;
 import static io.spine.tools.protojs.field.Fields.valueDescriptor;
-import static io.spine.tools.protojs.field.checker.FieldPreconditions.checkerFor;
+import static io.spine.tools.protojs.field.precondition.FieldPreconditions.checkerFor;
 import static io.spine.tools.protojs.field.parser.FieldParsers.parserFor;
 
 /**

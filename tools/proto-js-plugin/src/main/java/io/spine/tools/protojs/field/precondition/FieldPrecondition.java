@@ -18,40 +18,37 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protojs.field.checker;
+package io.spine.tools.protojs.field.precondition;
 
-import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.tools.protojs.generate.JsOutput;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.protojs.field.Fields.isMessage;
-
 /**
- * The helper which creates {@link FieldPrecondition} instances based on the field type.
+ * The generator of the code which performs various checks on the proto field value.
+ *
+ * @apiNote
+ * Like the other handlers and generators of this module, the {@code FieldPrecondition} is meant to
+ * operate on the common {@link JsOutput} passed on construction and thus its methods do not return
+ * any generated code.
  *
  * @author Dmytro Kuzmin
  */
-public final class FieldPreconditions {
-
-    /** Prevents instantiation of this utility class. */
-    private FieldPreconditions() {
-    }
+public interface FieldPrecondition {
 
     /**
-     * Creates a {@code FieldPrecondition} for the given {@code field}.
+     * Generates the code which checks the given field value for {@code null}.
      *
-     * @param field
-     *         the descriptor of the Protobuf field to create the checker for
-     * @param jsOutput
-     *         the {@code JsOutput} which will accumulate all the generated code
-     * @return a {@code FieldPrecondition} of the appropriate type
+     * <p>The merge field format is specified so the precondition can interact with the field itself in
+     * case the check passes/fails.
+     *
+     * @param value
+     *         the name of the variable representing the field value to check
+     * @param mergeFieldFormat
+     *         the code that sets/adds value to the field
      */
-    public static FieldPrecondition checkerFor(FieldDescriptor field, JsOutput jsOutput) {
-        checkNotNull(field);
-        checkNotNull(jsOutput);
-        if (isMessage(field)) {
-            return new MessageFieldPrecondition(field, jsOutput);
-        }
-        return new PrimitiveFieldPrecondition(jsOutput);
-    }
+    void performNullCheck(String value, String mergeFieldFormat);
+
+    /**
+     * Generates the code to exit the {@code null} check block and return to the upper level.
+     */
+    void exitNullCheck();
 }

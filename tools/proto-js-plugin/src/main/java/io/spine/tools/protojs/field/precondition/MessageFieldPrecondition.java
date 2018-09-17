@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protojs.field.checker;
+package io.spine.tools.protojs.field.precondition;
 
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Value;
@@ -27,7 +27,7 @@ import io.spine.tools.protojs.generate.JsOutput;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * The value checker for the proto fields of {@code message} type.
+ * The value precondition for the proto fields of {@code message} type.
  *
  * @author Dmytro Kuzmin
  */

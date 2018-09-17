@@ -99,7 +99,7 @@ class FieldHandlerTest {
     }
 
     @Test
-    @DisplayName("call field value checker to check field value for null")
+    @DisplayName("call field value precondition to check field value for null")
     void callChecker() {
         String fieldValue = singularHandler.acquireFieldValue();
         singularHandler.generateJs();

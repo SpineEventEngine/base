@@ -22,7 +22,7 @@ package io.spine.tools.protojs.field;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.tools.protojs.field.checker.FieldPrecondition;
+import io.spine.tools.protojs.field.precondition.FieldPrecondition;
 import io.spine.tools.protojs.generate.JsOutput;
 import io.spine.tools.protojs.field.parser.FieldParser;
 
@@ -34,7 +34,7 @@ import static java.lang.String.format;
  * The common base for the {@link FieldHandler} implementations.
  *
  * <p>The class generates the JS code common for all kinds of field handlers including calling the
- * {@linkplain FieldPrecondition field checker} and the {@linkplain FieldParser field parser}.
+ * {@linkplain FieldPrecondition field precondition} and the {@linkplain FieldParser field parser}.
  *
  * @author Dmytro Kuzmin
  */

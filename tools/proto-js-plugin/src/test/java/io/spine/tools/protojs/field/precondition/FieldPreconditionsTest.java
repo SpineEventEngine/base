@@ -18,31 +18,38 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protojs.field.checker;
+package io.spine.tools.protojs.field.precondition;
 
+import com.google.common.testing.NullPointerTester;
+import com.google.protobuf.Descriptors.FieldDescriptor;
+import io.spine.testing.UtilityClassTest;
 import io.spine.tools.protojs.generate.JsOutput;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static io.spine.tools.protojs.field.checker.FieldPreconditions.checkerFor;
-import static io.spine.tools.protojs.given.Generators.assertContains;
+import static io.spine.testing.Verify.assertInstanceOf;
+import static io.spine.tools.protojs.field.precondition.FieldPreconditions.checkerFor;
 import static io.spine.tools.protojs.given.Given.messageField;
 import static io.spine.tools.protojs.given.Given.primitiveField;
-import static java.lang.String.format;
+import static io.spine.tools.protojs.given.Given.timestampField;
 
 /**
  * @author Dmytro Kuzmin
  */
-@SuppressWarnings("DuplicateStringLiteralInspection")
-// Generated code duplication needed to check main class.
-@DisplayName("FieldPrecondition should")
-class FieldPreconditionTest {
-
-    private static final String FIELD_VALUE = "value";
-    private static final String SETTER_FORMAT = "set(%s)";
+@DisplayName("FieldPreconditions utility should")
+class FieldPreconditionsTest extends UtilityClassTest<FieldPreconditions> {
 
     private JsOutput jsOutput;
+
+    FieldPreconditionsTest() {
+        super(FieldPreconditions.class);
+    }
+
+    @Override
+    protected void setDefaults(NullPointerTester tester) {
+        tester.setDefault(FieldDescriptor.class, messageField());
+    }
 
     @BeforeEach
     void setUp() {
@@ -50,29 +57,23 @@ class FieldPreconditionTest {
     }
 
     @Test
-    @DisplayName("generate code to enter non-null check for primitive")
-    void enterPrimitiveCheck() {
+    @DisplayName("create precondition for primitive field")
+    void createForPrimitive() {
         FieldPrecondition checker = checkerFor(primitiveField(), jsOutput);
-        checker.performNullCheck(FIELD_VALUE, SETTER_FORMAT);
-        String check = "if (" + FIELD_VALUE + " !== null)";
-        assertContains(jsOutput, check);
+        assertInstanceOf(PrimitiveFieldPrecondition.class, checker);
     }
 
     @Test
-    @DisplayName("generate code to enter null check for message")
-    void enterMessageCheck() {
+    @DisplayName("create precondition for message field")
+    void createForMessage() {
         FieldPrecondition checker = checkerFor(messageField(), jsOutput);
-        checker.performNullCheck(FIELD_VALUE, SETTER_FORMAT);
-        String check = "if (" + FIELD_VALUE + " === null)";
-        assertContains(jsOutput, check);
+        assertInstanceOf(MessageFieldPrecondition.class, checker);
     }
 
     @Test
-    @DisplayName("set field value to null in case of message")
-    void setMessageToNull() {
-        FieldPrecondition checker = checkerFor(messageField(), jsOutput);
-        checker.performNullCheck(FIELD_VALUE, SETTER_FORMAT);
-        String setNull = format(SETTER_FORMAT, "null");
-        assertContains(jsOutput, setNull);
+    @DisplayName("create message precondition for standard type field")
+    void createForWellKnown() {
+        FieldPrecondition checker = checkerFor(timestampField(), jsOutput);
+        assertInstanceOf(MessageFieldPrecondition.class, checker);
     }
 }
