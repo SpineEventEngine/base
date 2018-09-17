@@ -20,11 +20,8 @@
 
 package io.spine.net;
 
-import io.spine.annotation.Experimental;
-
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
 
 /**
  * Utility class for working with {@link Url}.
@@ -33,21 +30,10 @@ import static com.google.common.base.Preconditions.checkState;
  *
  * @author Mikhail Mikhaylov
  */
-@Experimental
 public class Urls {
 
     /** Prevent instantiation of this utility class. */
     private Urls() {
-    }
-
-    /**
-     * Does nothing.
-     * @deprecated do not use
-     */
-    @Deprecated
-    public static Url structurize(Url value) {
-        checkNotNull(value);
-        return value;
     }
 
     /**
@@ -75,16 +61,5 @@ public class Urls {
     public static String toString(Url url) {
         checkNotNull(url);
         return url.getSpec();
-    }
-
-    /**
-     * Validates if the value is not empty.
-     *
-     * @deprecated Do not use. Use instances as they are
-     */
-    @Deprecated
-    public static void validate(Url url) {
-        checkNotNull(url);
-        checkState(url.getSpec().length() > 0);
     }
 }

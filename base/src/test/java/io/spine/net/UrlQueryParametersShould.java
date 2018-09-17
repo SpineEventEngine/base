@@ -20,7 +20,7 @@
 
 package io.spine.net;
 
-import io.spine.net.Url.Record.QueryParameter;
+import io.spine.net.UrlRecord.QueryParameter;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -29,6 +29,8 @@ import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
 import static org.junit.Assert.assertEquals;
 
 /**
+ * Tests {@link io.spine.net.UrlQueryParameters}.
+ *
  * @author Mikhail Mikhaylov
  */
 @SuppressWarnings("DuplicateStringLiteralInspection")

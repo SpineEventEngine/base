@@ -21,7 +21,7 @@
 package io.spine.net;
 
 import com.google.common.collect.ImmutableMap;
-import io.spine.net.Url.Record.Schema;
+import io.spine.net.UrlRecord.Schema;
 
 import java.util.Map;
 
@@ -36,7 +36,7 @@ final class Schemas {
 
     private static final Map<String, Schema> stringSchemas = buildSchemasMap();
 
-    /** Prevents instatiation of this utility class. */
+    /** Prevents instantiation of this utility class. */
     private Schemas() {
     }
 

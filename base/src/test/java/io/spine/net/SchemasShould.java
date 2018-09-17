@@ -27,19 +27,21 @@ import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
 import static org.junit.Assert.assertEquals;
 
 /**
+ * Tests {@link io.spine.net.UrlRecord.Schema}.
+ *
  * @author Mikhail Mikhaylov
  */
 public class SchemasShould {
 
     @Test
     public void return_valid_schemas_on_valid_args() {
-        assertEquals(Url.Record.Schema.FILE, Schemas.parse("file"));
-        assertEquals(Url.Record.Schema.FILE, Schemas.parse("FILE"));
+        assertEquals(UrlRecord.Schema.FILE, Schemas.parse("file"));
+        assertEquals(UrlRecord.Schema.FILE, Schemas.parse("FILE"));
     }
 
     @Test
     public void return_undefined_schema_on_invalid_args() {
-        assertEquals(Url.Record.Schema.UNDEFINED, Schemas.parse("someunknownschema"));
+        assertEquals(UrlRecord.Schema.UNDEFINED, Schemas.parse("someunknownschema"));
     }
 
     @Test
@@ -50,7 +52,7 @@ public class SchemasShould {
     @Test
     public void pass_the_null_tolerance_check() {
         new NullPointerTester()
-                .setDefault(Url.Record.Schema.class, Url.Record.Schema.UNDEFINED)
+                .setDefault(UrlRecord.Schema.class, UrlRecord.Schema.UNDEFINED)
                 .testAllPublicStaticMethods(Schemas.class);
     }
 }

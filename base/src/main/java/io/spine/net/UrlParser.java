@@ -21,14 +21,15 @@
 package io.spine.net;
 
 import com.google.common.base.Splitter;
-import io.spine.net.Url.Record.Protocol;
-import io.spine.net.Url.Record.QueryParameter;
-import io.spine.net.Url.Record.Schema;
+import io.spine.net.UrlRecord.Protocol;
+import io.spine.net.UrlRecord.QueryParameter;
+import io.spine.net.UrlRecord.Schema;
 
 /**
- * Parses given URL to {@link Url} instance.
+ * Parses given URL to {@link UrlRecord} instance.
  *
  * @author Mikhail Mikhaylov
+ * @author Alexander Yevsyukov
  */
 @SuppressWarnings("CheckReturnValue") // of calls to methods of fields that are builders
 final class UrlParser {
@@ -47,7 +48,7 @@ final class UrlParser {
 
     private final String originalUrl;
 
-    private Url.Record.Builder record;
+    private UrlRecord.Builder record;
     private String unProcessedInput;
 
     /**
@@ -60,11 +61,9 @@ final class UrlParser {
     }
 
     /**
-     * Starts parsing.
-     *
-     * @return {@link Url} instance
+     * Performs the parsing.
      */
-    Url parse() {
+    UrlRecord parse() {
         init();
 
         parseProtocol();
@@ -74,15 +73,13 @@ final class UrlParser {
         parseHost();
         parsePath();
 
-        Url.Builder result = Url.newBuilder();
-        result.setRecord(record);
 
-        return result.build();
+        return record.build();
     }
 
     /** Initializes the parser. */
     private void init() {
-        record = Url.Record.newBuilder();
+        record = UrlRecord.newBuilder();
         unProcessedInput = originalUrl;
     }
 
@@ -127,7 +124,7 @@ final class UrlParser {
         String credential = unProcessedInput.substring(0, credentialsEndingIndex);
         unProcessedInput = unProcessedInput.substring(credentialsEndingIndex + 1);
 
-        Url.Record.Authorization.Builder auth = Url.Record.Authorization.newBuilder();
+        UrlRecord.Authorization.Builder auth = UrlRecord.Authorization.newBuilder();
 
         int credentialsSeparatorIndex = credential.indexOf(CREDENTIALS_SEPARATOR);
         if (credentialsSeparatorIndex != -1) {
