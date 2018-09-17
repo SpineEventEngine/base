@@ -25,7 +25,10 @@ import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.tools.protojs.message.MessageGenerator;
 
+import java.util.Map;
+
 import static io.spine.tools.protojs.files.JsFiles.KNOWN_TYPE_PARSERS;
+import static java.util.Collections.singletonList;
 
 /**
  * The generator of the {@code fromJson(json)} method for the JS Proto definitions.
@@ -86,7 +89,7 @@ public final class FileGenerator extends JsCodeGenerator {
      * </ol>
      */
     @Override
-    protected void generate() {
+    public void generate() {
         generateComment();
         generateParsersImport();
         generateMethods();
@@ -110,10 +113,13 @@ public final class FileGenerator extends JsCodeGenerator {
     @VisibleForTesting
     void generateParsersImport() {
         jsOutput().addEmptyLine();
-        String fileName = file.getFullName();
-        JsImportGenerator generator = JsImportGenerator.createFor(fileName);
-        String parsersImport = generator.namedImport(KNOWN_TYPE_PARSERS, PARSERS_IMPORT_NAME);
-        jsOutput().addLine(parsersImport);
+        String filePath = file.getFullName();
+        JsImportGenerator generator = JsImportGenerator
+                .newBuilder()
+                .setFilePath(filePath)
+                .setJsOutput(jsOutput())
+                .build();
+        generator.generateNamed(KNOWN_TYPE_PARSERS, PARSERS_IMPORT_NAME);
     }
 
     /**
@@ -123,8 +129,8 @@ public final class FileGenerator extends JsCodeGenerator {
     @VisibleForTesting
     void generateMethods() {
         for (Descriptor message : file.getMessageTypes()) {
-            MessageGenerator handler = MessageGenerator.createFor(message, jsOutput());
-            handler.generateJs();
+            MessageGenerator generator = MessageGenerator.createFor(message, jsOutput());
+            generator.generate();
         }
     }
 }

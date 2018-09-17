@@ -24,18 +24,18 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.proto.FileSet;
-import io.spine.tools.protojs.generate.JsImportGenerator;
-import io.spine.tools.protojs.generate.JsOutput;
+import io.spine.tools.protojs.files.JsFiles;
 import io.spine.tools.protojs.knowntypes.KnownTypesWriter;
 import io.spine.type.TypeUrl;
 
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
+import static io.spine.code.js.ProtobufTypes.typeWithProtoPrefix;
 import static io.spine.tools.protojs.files.JsFiles.KNOWN_TYPES;
-import static io.spine.tools.protojs.files.JsFiles.jsFileName;
-import static io.spine.tools.protojs.types.Types.typeWithProtoPrefix;
+import static java.util.stream.Collectors.toSet;
 
 /**
  * The generator of the global known types JS {@code Map}.
@@ -95,16 +95,22 @@ final class KnownTypesGenerator {
 
     /**
      * Generates import statements for all files declaring proto JS messages.
-     *
-     * <p>Imports are written in the CommonJS style: {@code require('./lib')}.
      */
     @VisibleForTesting
     void generateImports() {
         Collection<FileDescriptor> files = fileSet.files();
-        JsImportGenerator importGenerator = JsImportGenerator.createFor(KNOWN_TYPES);
-        for (FileDescriptor file : files) {
-            generateImport(importGenerator, file);
-        }
+        Set<String> imports = files.stream()
+                                   .filter(file -> !file.getMessageTypes()
+                                                        .isEmpty())
+                                   .map(JsFiles::jsFileName)
+                                   .collect(toSet());
+        JsImportGenerator generator = JsImportGenerator
+                .newBuilder()
+                .setFilePath(KNOWN_TYPES)
+                .setImports(imports)
+                .setJsOutput(jsOutput)
+                .build();
+        generator.generate();
     }
 
     /**
@@ -121,21 +127,6 @@ final class KnownTypesGenerator {
         jsOutput.exportMap(MAP_NAME);
         storeKnownTypes();
         jsOutput.quitMapDeclaration();
-    }
-
-    /**
-     * Generates an import for the JS file corresponding to the specified {@code FileDescriptor}.
-     *
-     * <p>The passed {@code importGenerator} should be initialized with the file that performs the
-     * import.
-     */
-    private void generateImport(JsImportGenerator importGenerator, FileDescriptor file) {
-        String jsFileName = jsFileName(file);
-        List<Descriptor> declaredMessages = file.getMessageTypes();
-        if (!declaredMessages.isEmpty()) {
-            String statement = importGenerator.importStatement(jsFileName);
-            jsOutput.addLine(statement);
-        }
     }
 
     /**

@@ -21,9 +21,9 @@
 package io.spine.tools.protojs.field.parser.primitive;
 
 import com.google.common.annotations.VisibleForTesting;
+import io.spine.tools.protojs.generate.JsImportGenerator;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.protojs.generate.JsImportGenerator.rawNamedImport;
 
 /**
  * The generator of the code parsing {@code bytes} value from its JSON representation.
@@ -59,8 +59,11 @@ final class BytesParser extends AbstractPrimitiveParser {
     public void parseIntoVariable(String value, String variable) {
         checkNotNull(value);
         checkNotNull(variable);
-        String importStatement = rawNamedImport(BASE64_LIB, BASE64_VAR);
-        jsOutput().addLine(importStatement);
+        JsImportGenerator generator = JsImportGenerator
+                .newBuilder()
+                .setJsOutput(jsOutput())
+                .build();
+        generator.generateNamed(BASE64_LIB, BASE64_VAR);
         String valueToByteArray = BASE64_VAR + ".toByteArray(" + value + ')';
         jsOutput().declareVariable(variable, valueToByteArray);
     }

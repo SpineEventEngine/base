@@ -57,7 +57,7 @@ class JsImportGeneratorTest {
     @Test
     @DisplayName("generate import relative to file location")
     void generateImport() {
-        String statement = generator.importStatement(FILE_TO_IMPORT);
+        String statement = generator.generate(FILE_TO_IMPORT);
         String pathToImport = "../../" + FILE_TO_IMPORT;
         String expected = "require('" + pathToImport + "');";
         assertEquals(expected, statement);
@@ -66,7 +66,7 @@ class JsImportGeneratorTest {
     @Test
     @DisplayName("generate named import")
     void generateNamedImport() {
-        String statement = generator.namedImport(FILE_TO_IMPORT, IMPORT_NAME);
+        String statement = generator.generateNamed(FILE_TO_IMPORT, IMPORT_NAME);
         String pathToImport = "../../" + FILE_TO_IMPORT;
         String expected = "let " + IMPORT_NAME + " = require('" + pathToImport + "');";
         assertEquals(expected, statement);

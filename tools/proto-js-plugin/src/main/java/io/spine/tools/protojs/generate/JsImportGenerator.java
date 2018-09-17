@@ -20,12 +20,13 @@
 
 package io.spine.tools.protojs.generate;
 
+import java.util.Collection;
 import java.util.List;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.protojs.generate.JsOutput.VARIABLE_MODIFIER;
+import static com.google.common.collect.ImmutableList.copyOf;
 import static java.lang.String.format;
 import static java.lang.String.join;
+import static java.util.Collections.emptyList;
 import static java.util.Collections.nCopies;
 
 /**
@@ -35,7 +36,7 @@ import static java.util.Collections.nCopies;
  *
  * @author Dmytro Kuzmin
  */
-public final class JsImportGenerator {
+public final class JsImportGenerator extends JsCodeGenerator {
 
     /**
      * The path separator used for imports.
@@ -59,6 +60,8 @@ public final class JsImportGenerator {
      */
     private static final String IMPORT_FORMAT = "require('%s');";
 
+    private static final String NAMED_IMPORT_FORMAT = "let %s = " + IMPORT_FORMAT;
+
     /**
      * The value which is prepended to every import.
      *
@@ -66,90 +69,36 @@ public final class JsImportGenerator {
      * to the proto JS location root.
      */
     private final String importPrefix;
+    private final Collection<String> imports;
 
-    private JsImportGenerator(String importPrefix) {
-        this.importPrefix = importPrefix;
+    private JsImportGenerator(Builder builder) {
+        super(builder.jsOutput);
+        this.importPrefix = builder.filePath != null
+                ? composePathToRoot(builder.filePath)
+                : "";
+        this.imports = builder.imports != null
+                ? builder.imports
+                : emptyList();
     }
 
-    /**
-     * Creates a {@code JsImportGenerator} to generate imports for the specified file.
-     *
-     * <p>The provided file path should be relative to the desired import root (e.g. sources root,
-     * generated protos root).
-     *
-     * @param filePath
-     *         the file for which the imports will be generated
-     * @return the {@code JsImportGenerator} that generates imports relative to this file
-     */
-    public static JsImportGenerator createFor(String filePath) {
-        checkNotNull(filePath);
-        String pathToRoot = composePathToRoot(filePath);
-        return new JsImportGenerator(pathToRoot);
-    }
-
-    /**
-     * Generates a JS import statement with a stored {@code importPrefix}.
-     *
-     * @param fileToImport
-     *         the path from the import root to the file which should be imported
-     * @return the import statement
-     */
-    public String importStatement(String fileToImport) {
-        checkNotNull(fileToImport);
-        String importPath = importPrefix + fileToImport;
-        String importStatement = rawImport(importPath);
-        return importStatement;
+    @Override
+    public void generate() {
+        for (String fileToImport : imports) {
+            String importPath = importPrefix + fileToImport;
+            String theImport = format(IMPORT_FORMAT, importPath);
+            jsOutput().addLine(theImport);
+        }
     }
 
     /**
      * Generates a named JS import with a stored {@code importPrefix}.
      *
      * <p>Named import is a statement of type {@code let a = require('./b')}.
-     *
-     * @param fileToImport
-     *         the path from the import root to the file which should be imported
-     * @param importName
-     *         the name of the variable which will hold the imported module
-     * @return the named import statement
      */
-    public String namedImport(String fileToImport, String importName) {
-        checkNotNull(fileToImport);
-        checkNotNull(importName);
+    public void generateNamed(String fileToImport, String importName) {
         String importPath = importPrefix + fileToImport;
-        String importStatement = rawNamedImport(importPath, importName);
-        return importStatement;
-    }
-
-    /**
-     * Generates a JS import statement.
-     *
-     * @param fileToImport
-     *         the path from the import root to the file which should be imported
-     * @return the import statement
-     */
-    public static String rawImport(String fileToImport) {
-        checkNotNull(fileToImport);
-        String importStatement = format(IMPORT_FORMAT, fileToImport);
-        return importStatement;
-    }
-
-    /**
-     * Generates a named JS import.
-     *
-     * <p>Named import is a statement of type {@code let a = require('./b')}.
-     *
-     * @param fileToImport
-     *         the path from the import root to the file which should be imported
-     * @param importName
-     *         the name of the variable which will hold the imported module
-     * @return the named import statement
-     */
-    public static String rawNamedImport(String fileToImport, String importName) {
-        checkNotNull(fileToImport);
-        checkNotNull(importName);
-        String importStatement = rawImport(fileToImport);
-        String namedImport = VARIABLE_MODIFIER + ' ' + importName + " = " + importStatement;
-        return namedImport;
+        String namedImport = format(NAMED_IMPORT_FORMAT, importName, importPath);
+        jsOutput().addLine(namedImport);
     }
 
     /**
@@ -164,5 +113,51 @@ public final class JsImportGenerator {
         String pathToRoot = join("", pathToRootElements);
         String result = pathToRoot.isEmpty() ? CURRENT_DIR : pathToRoot;
         return result;
+    }
+
+    public static Builder newBuilder() {
+        return new Builder();
+    }
+
+    /**
+     * Creates a {@code JsImportGenerator} to generate imports for the specified file.
+     *
+     * 1. If file path not specified, generates relative to root.
+     * etc.
+     *
+     */
+    public static class Builder {
+
+        /**
+         * The file for which the imports will be generated.
+         *
+         * <p>The provided file path should be relative to the desired import root (e.g. sources root,
+         * generated protos root).
+         */
+        private String filePath;
+        private Collection<String> imports;
+        private JsOutput jsOutput;
+
+        public Builder setFilePath(String filePath) {
+            this.filePath = filePath;
+            return this;
+        }
+
+        public Builder setImports(Collection<String> imports) {
+            this.imports = copyOf(imports);
+            return this;
+        }
+
+        public Builder setJsOutput(JsOutput jsOutput) {
+            this.jsOutput = jsOutput;
+            return this;
+        }
+
+        /**
+         * @return the {@code JsImportGenerator} that generates imports relative to this file
+         */
+        public JsImportGenerator build() {
+            return new JsImportGenerator(this);
+        }
     }
 }

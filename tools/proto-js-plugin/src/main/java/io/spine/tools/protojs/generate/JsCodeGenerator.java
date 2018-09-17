@@ -32,5 +32,5 @@ public abstract class JsCodeGenerator {
         return jsOutput;
     }
 
-    protected abstract void generate();
+    public abstract void generate();
 }

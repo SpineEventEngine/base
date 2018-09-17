@@ -39,7 +39,7 @@ import static java.lang.String.format;
  *
  * @author Dmytro Kuzmin
  */
-abstract class FieldGenerator extends JsCodeGenerator {
+public abstract class FieldGenerator extends JsCodeGenerator {
 
     /**
      * The variable holding the value parsed by the {@link FieldParser} and then used to set the
