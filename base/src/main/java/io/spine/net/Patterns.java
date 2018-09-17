@@ -270,26 +270,26 @@ final class Patterns {
     );
 
     /**
-     * Regular expression that matches known TLDs and punycode TLDs
+     * Regular expression that matches known TLDs and punycode TLDs.
      */
     private static final String STRICT_TLD = "(?:" +
                                              IANA_TOP_LEVEL_DOMAINS + "|" + PUNYCODE_TLD + ")";
 
     /**
-     * Regular expression that matches host names using {@link #STRICT_TLD}
+     * Regular expression that matches host names using {@link #STRICT_TLD}.
      */
     private static final String STRICT_HOST_NAME = "(?:(?:" + IRI_LABEL + "\\.)+"
                                                    + STRICT_TLD + ")";
 
     /**
      * Regular expression that matches domain names using either {@link #STRICT_HOST_NAME} or
-     * {@link #IP_ADDRESS}
+     * {@link #IP_ADDRESS}.
      */
     private static final Pattern STRICT_DOMAIN_NAME
             = Pattern.compile("(?:" + STRICT_HOST_NAME + "|" + IP_ADDRESS + ")");
 
     /**
-     * Regular expression that matches domain names without a TLD
+     * Regular expression that matches domain names without a TLD.
      */
     private static final String RELAXED_DOMAIN_NAME =
             "(?:" + "(?:" + IRI_LABEL + "(?:\\.(?=\\S))" +"?)+" + "|" + IP_ADDRESS + ")";
@@ -373,7 +373,7 @@ final class Patterns {
             ")+"
     );
 
+    /** Prevent instantiation of this utility class. */
     private Patterns() {
-        // Prevent instantiation of this utility class.
     }
 }

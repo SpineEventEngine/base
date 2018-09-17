@@ -58,10 +58,11 @@ public final class UrlQueryParameters {
         String key = queryParameter.substring(0, separatorIndex);
         String value = queryParameter.substring(separatorIndex + 1);
 
-        QueryParameter result = QueryParameter.newBuilder()
-                                              .setKey(key)
-                                              .setValue(value)
-                                              .build();
+        QueryParameter result = QueryParameter
+                .newBuilder()
+                .setKey(key)
+                .setValue(value)
+                .build();
         return result;
     }
 
@@ -80,10 +81,11 @@ public final class UrlQueryParameters {
         checkArgument(!key.isEmpty(), "Query parameter key cannot be empty.");
         checkArgument(!value.isEmpty(), "Query parameter value cannot be empty.");
 
-        QueryParameter result = QueryParameter.newBuilder()
-                                              .setKey(key)
-                                              .setValue(value)
-                                              .build();
+        QueryParameter result = QueryParameter
+                .newBuilder()
+                .setKey(key)
+                .setValue(value)
+                .build();
         return result;
     }
 

@@ -12,15 +12,20 @@ option java_outer_classname = "UrlProto";
 option (experimental_all) = true;
 
 // Protobuf definition for URL.
-//
-// Can be defined in raw string form or as a structurized parsed record. Validity of URL is not
-// guaranteed, if the raw form is used.
-//
 message Url {
     oneof value {
-        string raw = 1;
-        Record record = 2;
+        // Use the field `spec` instead.
+        string raw = 1 [deprecated = true];
+
+        // Use the field `spec` instead.
+        Record record = 2 [deprecated = true];
     }
+
+    // The value of the URL.
+    //
+    // Validity of the value should be provided by the code creating `Url` instances.
+    //
+    string spec = 3 [(required) = true];
 
     // Structured record.
     //

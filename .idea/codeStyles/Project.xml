@@ -11,17 +11,6 @@
       <option name="JD_PRESERVE_LINE_FEEDS" value="true" />
       <option name="JD_PARAM_DESCRIPTION_ON_NEW_LINE" value="true" />
       <option name="JD_INDENT_ON_CONTINUATION" value="true" />
-      <REPEAT_ANNOTATIONS>
-        <ANNO name="com.google.errorprone.annotations.CanIgnoreReturnValue" />
-        <ANNO name="com.google.errorprone.annotations.OverridingMethodsMustInvokeSuper" />
-        <ANNO name="io.spine.annotation.Internal" />
-        <ANNO name="org.junit.After" />
-        <ANNO name="org.junit.Before" />
-        <ANNO name="org.junit.Test" />
-        <ANNO name="org.junit.jupiter.api.AfterEach" />
-        <ANNO name="org.junit.jupiter.api.BeforeEach" />
-        <ANNO name="org.junit.jupiter.api.Test" />
-      </REPEAT_ANNOTATIONS>
     </JavaCodeStyleSettings>
     <XML>
       <option name="XML_LEGACY_SETTINGS_IMPORTED" value="true" />

@@ -20,17 +20,39 @@
 
 package io.spine.net;
 
-import org.junit.Test;
+import io.spine.testing.UtilityClassTest;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
+import static com.google.common.truth.Truth.assertThat;
 
 /**
- * @author Alexander Yevsyukov
+ * Tests {@link io.spine.net.Url}.
+ *
+ * @author Mikhail Mikhaylov
  */
-public class PatternsShould {
+@DisplayName("Urls utility class should")
+class UrlsTest extends UtilityClassTest<Urls> {
+
+    UrlsTest() {
+        super(Urls.class);
+    }
 
     @Test
-    public void have_utility_ctor() {
-        assertHasPrivateParameterlessCtor(Patterns.class);
+    @DisplayName("create new instances")
+    void create() {
+        String expected = "http://convert-proper-url.com";
+        Url url = Urls.create(expected);
+
+        assertThat(url.getSpec()).isEqualTo(expected);
+    }
+
+    @Test
+    @DisplayName("convert instances to String")
+    void stringify() {
+        String expected = "http://foo-bar.com/index";
+
+        Url url = Urls.create(expected);
+        assertThat(Urls.toString(url)).isEqualTo(expected);
     }
 }

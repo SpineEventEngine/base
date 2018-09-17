@@ -51,7 +51,7 @@ final class UrlParser {
     private String unProcessedInput;
 
     /**
-     * Creates an instance of {@link UrlParser} with given String URL to parse.
+     * Creates an new instance of {@code UrlParser} with given String URL to parse.
      *
      * @param url String URL to parse
      */
@@ -65,7 +65,7 @@ final class UrlParser {
      * @return {@link Url} instance
      */
     Url parse() {
-        setupStartingState();
+        init();
 
         parseProtocol();
         parseCredentials();
@@ -80,8 +80,8 @@ final class UrlParser {
         return result.build();
     }
 
-    /** Initializes starting {@link UrlParser} state. */
-    private void setupStartingState() {
+    /** Initializes the parser. */
+    private void init() {
         record = Url.Record.newBuilder();
         unProcessedInput = originalUrl;
     }
