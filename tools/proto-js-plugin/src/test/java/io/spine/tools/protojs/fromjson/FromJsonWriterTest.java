@@ -40,7 +40,7 @@ import static io.spine.tools.protojs.files.JsFiles.jsFileName;
 import static io.spine.tools.protojs.given.Given.TASK_PROTO;
 import static io.spine.tools.protojs.given.Given.project;
 import static io.spine.tools.protojs.given.Writers.assertFileContains;
-import static io.spine.tools.protojs.message.MessageHandler.FROM_JSON;
+import static io.spine.tools.protojs.message.MessageGenerator.FROM_JSON;
 import static io.spine.tools.protojs.types.Types.SPINE_OPTIONS_PROTO;
 import static io.spine.tools.protojs.types.Types.typeWithProtoPrefix;
 import static io.spine.util.Exceptions.newIllegalStateException;

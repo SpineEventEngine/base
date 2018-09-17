@@ -25,7 +25,7 @@ import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.tools.protojs.generate.JsOutput;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.protojs.message.MessageHandler.FROM_OBJECT;
+import static io.spine.tools.protojs.message.MessageGenerator.FROM_OBJECT;
 import static io.spine.tools.protojs.types.Types.typeWithProtoPrefix;
 
 /**

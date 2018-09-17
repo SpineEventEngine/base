@@ -23,7 +23,7 @@ package io.spine.tools.protojs.field;
 import com.google.common.annotations.VisibleForTesting;
 
 import static io.spine.tools.protojs.field.Fields.camelCaseName;
-import static io.spine.tools.protojs.message.MessageHandler.MESSAGE;
+import static io.spine.tools.protojs.message.MessageGenerator.MESSAGE;
 
 /**
  * The handler of the {@code repeated} proto fields.
@@ -36,7 +36,7 @@ import static io.spine.tools.protojs.message.MessageHandler.MESSAGE;
  *
  * @author Dmytro Kuzmin
  */
-final class RepeatedFieldHandler extends AbstractFieldHandler {
+final class RepeatedFieldGenerator extends FieldGenerator {
 
     /**
      * The variable used to represent the list item during the JS object iteration.
@@ -44,12 +44,12 @@ final class RepeatedFieldHandler extends AbstractFieldHandler {
     @VisibleForTesting
     static final String LIST_ITEM = "listItem";
 
-    private RepeatedFieldHandler(Builder builder) {
+    private RepeatedFieldGenerator(Builder builder) {
         super(builder);
     }
 
     @Override
-    public void generateJs() {
+    public void generate() {
         String fieldValue = acquireFieldValue();
         iterateListValues(fieldValue);
         mergeFieldValue(LIST_ITEM);
@@ -101,7 +101,7 @@ final class RepeatedFieldHandler extends AbstractFieldHandler {
         return new Builder();
     }
 
-    static class Builder extends AbstractFieldHandler.Builder<Builder> {
+    static class Builder extends FieldGenerator.Builder<Builder> {
 
         @Override
         Builder self() {
@@ -109,8 +109,8 @@ final class RepeatedFieldHandler extends AbstractFieldHandler {
         }
 
         @Override
-        RepeatedFieldHandler build() {
-            return new RepeatedFieldHandler(this);
+        RepeatedFieldGenerator build() {
+            return new RepeatedFieldGenerator(this);
         }
     }
 }

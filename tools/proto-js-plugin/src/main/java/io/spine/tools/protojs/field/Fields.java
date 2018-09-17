@@ -155,7 +155,7 @@ public final class Fields {
      * @return the key descriptor for the specified {@code map} field
      * @throws IllegalStateException
      *         if the specified field is not a {@code map} proto field
-     * @see FieldHandlers#mapHandler(FieldDescriptor, JsOutput)
+     * @see FieldGenerators#mapHandler(FieldDescriptor, JsOutput)
      */
     static FieldDescriptor keyDescriptor(FieldDescriptor field) {
         checkArgument(isMap(field),
@@ -173,7 +173,7 @@ public final class Fields {
      * @return the value descriptor for the specified {@code map} field
      * @throws IllegalStateException
      *         if the specified field is not a {@code map} proto field
-     * @see FieldHandlers#mapHandler(FieldDescriptor, JsOutput)
+     * @see FieldGenerators#mapHandler(FieldDescriptor, JsOutput)
      */
     static FieldDescriptor valueDescriptor(FieldDescriptor field) {
         checkArgument(isMap(field),

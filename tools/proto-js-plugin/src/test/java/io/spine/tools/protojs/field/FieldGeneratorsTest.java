@@ -45,13 +45,13 @@ import static io.spine.tools.protojs.given.Given.timestampField;
 /**
  * @author Dmytro Kuzmin
  */
-@DisplayName("FieldHandlers utility should")
-class FieldHandlersTest extends UtilityClassTest<FieldHandlers> {
+@DisplayName("FieldGenerators utility should")
+class FieldGeneratorsTest extends UtilityClassTest<FieldGenerators> {
 
     private JsOutput jsOutput;
 
-    FieldHandlersTest() {
-        super(FieldHandlers.class);
+    FieldGeneratorsTest() {
+        super(FieldGenerators.class);
     }
 
     @Override
@@ -68,58 +68,58 @@ class FieldHandlersTest extends UtilityClassTest<FieldHandlers> {
     @DisplayName("create singular handler for ordinary Protobuf field")
     void createSingularHandler() {
         FieldHandler handler = handlerFor(messageField());
-        assertInstanceOf(SingularFieldHandler.class, handler);
+        assertInstanceOf(SingularFieldGenerator.class, handler);
     }
 
     @Test
     @DisplayName("create repeated handler for repeated Protobuf field")
     void createRepeatedHandler() {
         FieldHandler handler = handlerFor(repeatedField());
-        assertInstanceOf(RepeatedFieldHandler.class, handler);
+        assertInstanceOf(RepeatedFieldGenerator.class, handler);
     }
 
     @Test
     @DisplayName("create map handler for map Protobuf field")
     void createMapHandler() {
         FieldHandler handler = handlerFor(mapField());
-        assertInstanceOf(MapFieldHandler.class, handler);
+        assertInstanceOf(MapFieldGenerator.class, handler);
     }
 
     @Test
     @DisplayName("set value precondition of correct type for handler")
     void setValueChecker() {
-        AbstractFieldHandler messageHandler = handlerFor(messageField());
+        FieldGenerator messageHandler = handlerFor(messageField());
         assertInstanceOf(MessageFieldPrecondition.class, messageHandler.checker());
 
-        AbstractFieldHandler primitiveHandler = handlerFor(primitiveField());
+        FieldGenerator primitiveHandler = handlerFor(primitiveField());
         assertInstanceOf(PrimitiveFieldPrecondition.class, primitiveHandler.checker());
     }
 
     @Test
     @DisplayName("set value parser of correct type for handler")
     void setValueParser() {
-        AbstractFieldHandler primitiveHandler = handlerFor(primitiveField());
+        FieldGenerator primitiveHandler = handlerFor(primitiveField());
         assertInstanceOf(PrimitiveFieldParser.class, primitiveHandler.parser());
 
-        AbstractFieldHandler enumHandler = handlerFor(enumField());
+        FieldGenerator enumHandler = handlerFor(enumField());
         assertInstanceOf(EnumFieldParser.class, enumHandler.parser());
 
-        AbstractFieldHandler messageHandler = handlerFor(messageField());
+        FieldGenerator messageHandler = handlerFor(messageField());
         assertInstanceOf(MessageFieldParser.class, messageHandler.parser());
 
-        AbstractFieldHandler timestampHandler = handlerFor(timestampField());
+        FieldGenerator timestampHandler = handlerFor(timestampField());
         assertInstanceOf(WellKnownFieldParser.class, timestampHandler.parser());
     }
 
     @Test
     @DisplayName("create value parser for key and value in case of map field")
     void setParsersForMapField() {
-        MapFieldHandler handler = (MapFieldHandler) handlerFor(mapField());
+        MapFieldGenerator handler = (MapFieldGenerator) handlerFor(mapField());
         assertInstanceOf(PrimitiveFieldParser.class, handler.keyParser());
         assertInstanceOf(MessageFieldParser.class, handler.parser());
     }
 
-    private AbstractFieldHandler handlerFor(FieldDescriptor field) {
-        return (AbstractFieldHandler) FieldHandlers.createFor(field, jsOutput);
+    private FieldGenerator handlerFor(FieldDescriptor field) {
+        return (FieldGenerator) FieldGenerators.createFor(field, jsOutput);
     }
 }

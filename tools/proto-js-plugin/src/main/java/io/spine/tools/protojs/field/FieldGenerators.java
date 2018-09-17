@@ -39,10 +39,10 @@ import static io.spine.tools.protojs.field.parser.FieldParsers.parserFor;
  *
  * @author Dmytro Kuzmin
  */
-public final class FieldHandlers {
+public final class FieldGenerators {
 
     /** Prevents instantiation of this utility class. */
-    private FieldHandlers() {
+    private FieldGenerators() {
     }
 
     /**
@@ -67,7 +67,7 @@ public final class FieldHandlers {
     }
 
     /**
-     * Creates a {@linkplain MapFieldHandler handler} for the {@code map} field.
+     * Creates a {@linkplain MapFieldGenerator handler} for the {@code map} field.
      *
      * @implNote
      * The creation logic is different from all other handlers.
@@ -85,7 +85,7 @@ public final class FieldHandlers {
         FieldParser valueParser = mapValueParser(field, jsOutput);
         FieldPrecondition valueChecker = mapValueChecker(field, jsOutput);
 
-        FieldHandler handler = MapFieldHandler
+        FieldHandler handler = MapFieldGenerator
                 .newBuilder()
                 .setField(field)
                 .setChecker(valueChecker)
@@ -97,13 +97,13 @@ public final class FieldHandlers {
     }
 
     /**
-     * Creates a {@linkplain RepeatedFieldHandler handler} for the {@code repeated} proto field.
+     * Creates a {@linkplain RepeatedFieldGenerator handler} for the {@code repeated} proto field.
      */
     private static FieldHandler repeatedHandler(FieldDescriptor field, JsOutput jsOutput) {
         FieldPrecondition checker = checkerFor(field, jsOutput);
         FieldParser parser = parserFor(field, jsOutput);
 
-        FieldHandler handler = RepeatedFieldHandler
+        FieldHandler handler = RepeatedFieldGenerator
                 .newBuilder()
                 .setField(field)
                 .setChecker(checker)
@@ -114,13 +114,13 @@ public final class FieldHandlers {
     }
 
     /**
-     * Creates a {@linkplain SingularFieldHandler handler} for the ordinary proto field.
+     * Creates a {@linkplain SingularFieldGenerator handler} for the ordinary proto field.
      */
     private static FieldHandler singularHandler(FieldDescriptor field, JsOutput jsOutput) {
         FieldPrecondition checker = checkerFor(field, jsOutput);
         FieldParser parser = parserFor(field, jsOutput);
 
-        FieldHandler handler = SingularFieldHandler
+        FieldHandler handler = SingularFieldGenerator
                 .newBuilder()
                 .setField(field)
                 .setChecker(checker)

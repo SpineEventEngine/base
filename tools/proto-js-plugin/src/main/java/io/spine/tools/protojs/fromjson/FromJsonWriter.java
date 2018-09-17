@@ -23,7 +23,7 @@ package io.spine.tools.protojs.fromjson;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.proto.FileSet;
-import io.spine.tools.protojs.generate.FromJsonGenerator;
+import io.spine.tools.protojs.generate.FileGenerator;
 import io.spine.tools.protojs.generate.JsOutput;
 
 import java.nio.file.Files;
@@ -43,7 +43,7 @@ import static io.spine.tools.protojs.types.Types.isStandardOrSpineOptions;
  * <p>The method and all the related code is simply appended at the end of the JS file.
  *
  * @author Dmytro Kuzmin
- * @see FromJsonGenerator
+ * @see FileGenerator
  */
 public final class FromJsonWriter {
 
@@ -95,7 +95,7 @@ public final class FromJsonWriter {
             return;
         }
         JsOutput jsOutput = new JsOutput();
-        FromJsonGenerator generator = new FromJsonGenerator(file, jsOutput);
+        FileGenerator generator = new FileGenerator(file, jsOutput);
         generator.generateJs();
         appendToFile(jsFilePath, jsOutput);
     }

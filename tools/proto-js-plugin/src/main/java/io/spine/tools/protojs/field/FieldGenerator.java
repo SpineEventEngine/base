@@ -22,12 +22,13 @@ package io.spine.tools.protojs.field;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.tools.protojs.field.precondition.FieldPrecondition;
-import io.spine.tools.protojs.generate.JsOutput;
 import io.spine.tools.protojs.field.parser.FieldParser;
+import io.spine.tools.protojs.field.precondition.FieldPrecondition;
+import io.spine.tools.protojs.generate.JsCodeGenerator;
+import io.spine.tools.protojs.generate.JsOutput;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.protojs.message.MessageHandler.FROM_OBJECT_ARG;
+import static io.spine.tools.protojs.message.MessageGenerator.FROM_OBJECT_ARG;
 import static java.lang.String.format;
 
 /**
@@ -38,7 +39,7 @@ import static java.lang.String.format;
  *
  * @author Dmytro Kuzmin
  */
-abstract class AbstractFieldHandler implements FieldHandler {
+abstract class FieldGenerator extends JsCodeGenerator {
 
     /**
      * The variable holding the value parsed by the {@link FieldParser} and then used to set the
@@ -51,13 +52,12 @@ abstract class AbstractFieldHandler implements FieldHandler {
     private final FieldDescriptor field;
     private final FieldPrecondition checker;
     private final FieldParser parser;
-    private final JsOutput jsOutput;
 
-    AbstractFieldHandler(Builder builder) {
+    FieldGenerator(Builder builder) {
+        super(builder.jsOutput);
         this.field = builder.field;
         this.checker = builder.checker;
         this.parser = builder.parser;
-        this.jsOutput = builder.jsOutput;
     }
 
     /**
@@ -95,10 +95,6 @@ abstract class AbstractFieldHandler implements FieldHandler {
         return field;
     }
 
-    JsOutput jsOutput() {
-        return jsOutput;
-    }
-
     @VisibleForTesting
     FieldPrecondition checker() {
         return checker;
@@ -122,7 +118,7 @@ abstract class AbstractFieldHandler implements FieldHandler {
     private void merge(String value) {
         String mergeFormat = mergeFormat();
         String setValue = format(mergeFormat, value);
-        jsOutput.addLine(setValue);
+        jsOutput().addLine(setValue);
     }
 
     /**
@@ -174,6 +170,6 @@ abstract class AbstractFieldHandler implements FieldHandler {
          */
         abstract B self();
 
-        abstract AbstractFieldHandler build();
+        abstract FieldGenerator build();
     }
 }

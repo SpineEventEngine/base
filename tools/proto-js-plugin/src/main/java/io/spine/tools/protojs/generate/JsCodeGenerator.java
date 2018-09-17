@@ -24,13 +24,13 @@ public abstract class JsCodeGenerator {
 
     private final JsOutput jsOutput;
 
-    JsCodeGenerator(JsOutput jsOutput) {
+    protected JsCodeGenerator(JsOutput jsOutput) {
         this.jsOutput = jsOutput;
     }
 
-    JsOutput jsOutput() {
+    protected JsOutput jsOutput() {
         return jsOutput;
     }
 
-    abstract void generate();
+    protected abstract void generate();
 }

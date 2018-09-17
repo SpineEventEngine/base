@@ -23,14 +23,15 @@ package io.spine.tools.protojs.message;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.tools.protojs.generate.JsOutput;
+import io.spine.tools.protojs.field.FieldGenerators;
 import io.spine.tools.protojs.field.FieldHandler;
-import io.spine.tools.protojs.field.FieldHandlers;
+import io.spine.tools.protojs.generate.JsCodeGenerator;
+import io.spine.tools.protojs.generate.JsOutput;
 
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.protojs.types.Types.typeWithProtoPrefix;
+import static io.spine.code.js.ProtobufTypes.typeWithProtoPrefix;
 
 /**
  * The generator of the {@code fromJson(json)} method for the given message type.
@@ -42,7 +43,7 @@ import static io.spine.tools.protojs.types.Types.typeWithProtoPrefix;
  * purposes.
  *
  * @apiNote
- * Like the other handlers and generators of this module, the {@code MessageHandler} is meant to
+ * Like the other handlers and generators of this module, the {@code MessageGenerator} is meant to
  * operate on the common {@link JsOutput} passed on construction and thus its methods do not return
  * any generated code.
  *
@@ -50,7 +51,7 @@ import static io.spine.tools.protojs.types.Types.typeWithProtoPrefix;
  */
 @SuppressWarnings("DuplicateStringLiteralInspection")
 // The generated code duplicates the code used in test that checks it.
-public class MessageHandler {
+public class MessageGenerator extends JsCodeGenerator {
 
     /**
      * The {@code fromJson} method name.
@@ -82,26 +83,25 @@ public class MessageHandler {
     static final String FROM_JSON_ARG = "json";
 
     private final Descriptor message;
-    private final JsOutput jsOutput;
 
-    private MessageHandler(Descriptor message, JsOutput jsOutput) {
+    private MessageGenerator(Descriptor message, JsOutput jsOutput) {
+        super(jsOutput);
         this.message = message;
-        this.jsOutput = jsOutput;
     }
 
     /**
-     * Creates the {@code MessageHandler} for the given message and {@code JsOutput}.
+     * Creates the {@code MessageGenerator} for the given message and {@code JsOutput}.
      *
      * @param message
      *         the {@code Descriptor} of the message type which will be parsed in JS
      * @param jsOutput
      *         the {@code JsOutput} which accumulates all the generated lines
-     * @return the new {@code MessageHandler}
+     * @return the new {@code MessageGenerator}
      */
-    public static MessageHandler createFor(Descriptor message, JsOutput jsOutput) {
+    public static MessageGenerator createFor(Descriptor message, JsOutput jsOutput) {
         checkNotNull(message);
         checkNotNull(jsOutput);
-        return new MessageHandler(message, jsOutput);
+        return new MessageGenerator(message, jsOutput);
     }
 
     /**
@@ -110,18 +110,19 @@ public class MessageHandler {
      * <p>Adds the {@code fromJson(json)} and {@code fromObject(obj)} methods to the
      * {@code JsOutput} code lines.
      */
-    public void generateJs() {
+    @Override
+    protected void generate() {
         generateFromJsonMethod();
         generateFromObjectMethod();
     }
-
+    
     /**
      * Generates the {@code fromJson} method which parses the JSON string via the {@code JSON.parse}
      * functionality and then calls {@code fromObject} for the parsed JS object.
      */
     @VisibleForTesting
     void generateFromJsonMethod() {
-        jsOutput.addEmptyLine();
+        jsOutput().addEmptyLine();
         String typeName = typeWithProtoPrefix(message);
         addFromJsonCode(typeName);
     }
@@ -134,7 +135,7 @@ public class MessageHandler {
      */
     @VisibleForTesting
     void generateFromObjectMethod() {
-        jsOutput.addEmptyLine();
+        jsOutput().addEmptyLine();
         String typeName = typeWithProtoPrefix(message);
         addFromObjectCode(typeName);
     }
@@ -144,10 +145,10 @@ public class MessageHandler {
      */
     private void addFromJsonCode(String typeName) {
         String methodName = typeName + '.' + FROM_JSON;
-        jsOutput.enterMethod(methodName, FROM_JSON_ARG);
-        jsOutput.declareVariable("jsObject", "JSON.parse(" + FROM_JSON_ARG + ')');
-        jsOutput.returnValue(typeName + '.' + FROM_OBJECT + "(jsonObject)");
-        jsOutput.exitFunction();
+        jsOutput().enterMethod(methodName, FROM_JSON_ARG);
+        jsOutput().declareVariable("jsObject", "JSON.parse(" + FROM_JSON_ARG + ')');
+        jsOutput().returnValue(typeName + '.' + FROM_OBJECT + "(jsonObject)");
+        jsOutput().exitFunction();
     }
 
     /**
@@ -155,22 +156,22 @@ public class MessageHandler {
      */
     private void addFromObjectCode(String typeName) {
         String methodName = typeName + '.' + FROM_OBJECT;
-        jsOutput.enterMethod(methodName, FROM_OBJECT_ARG);
+        jsOutput().enterMethod(methodName, FROM_OBJECT_ARG);
         checkParsedObject();
-        jsOutput.addEmptyLine();
-        jsOutput.declareVariable(MESSAGE, "new " + typeName + "()");
+        jsOutput().addEmptyLine();
+        jsOutput().declareVariable(MESSAGE, "new " + typeName + "()");
         handleMessageFields();
-        jsOutput.returnValue(MESSAGE);
-        jsOutput.exitFunction();
+        jsOutput().returnValue(MESSAGE);
+        jsOutput().exitFunction();
     }
 
     /**
      * Adds the code checking that {@code fromObject} argument is not null.
      */
     private void checkParsedObject() {
-        jsOutput.ifNull(FROM_OBJECT_ARG);
-        jsOutput.returnValue("null");
-        jsOutput.exitBlock();
+        jsOutput().ifNull(FROM_OBJECT_ARG);
+        jsOutput().returnValue("null");
+        jsOutput().exitBlock();
     }
 
     /**
@@ -180,8 +181,8 @@ public class MessageHandler {
     void handleMessageFields() {
         List<FieldDescriptor> fields = message.getFields();
         for (FieldDescriptor field : fields) {
-            jsOutput.addEmptyLine();
-            FieldHandler fieldHandler = FieldHandlers.createFor(field, jsOutput);
+            jsOutput().addEmptyLine();
+            FieldHandler fieldHandler = FieldGenerators.createFor(field, jsOutput());
             fieldHandler.generateJs();
         }
     }

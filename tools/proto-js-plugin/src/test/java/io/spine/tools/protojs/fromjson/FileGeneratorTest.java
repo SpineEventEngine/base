@@ -22,33 +22,33 @@ package io.spine.tools.protojs.fromjson;
 
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.tools.protojs.generate.FromJsonGenerator;
+import io.spine.tools.protojs.generate.FileGenerator;
 import io.spine.tools.protojs.generate.JsOutput;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static io.spine.tools.protojs.generate.FromJsonGenerator.COMMENT;
+import static io.spine.tools.protojs.generate.FileGenerator.COMMENT;
 import static io.spine.tools.protojs.given.Generators.assertContains;
 import static io.spine.tools.protojs.given.Given.file;
-import static io.spine.tools.protojs.message.MessageHandler.FROM_JSON;
-import static io.spine.tools.protojs.message.MessageHandler.FROM_OBJECT;
+import static io.spine.tools.protojs.message.MessageGenerator.FROM_JSON;
+import static io.spine.tools.protojs.message.MessageGenerator.FROM_OBJECT;
 
 /**
  * @author Dmytro Kuzmin
  */
-@DisplayName("FromJsonGenerator should")
-class FromJsonGeneratorTest {
+@DisplayName("FileGenerator should")
+class FileGeneratorTest {
 
     private FileDescriptor file;
     private JsOutput jsOutput;
-    private FromJsonGenerator generator;
+    private FileGenerator generator;
 
     @BeforeEach
     void setUp() {
         file = file();
         jsOutput = new JsOutput();
-        generator = new FromJsonGenerator(file, jsOutput);
+        generator = new FileGenerator(file, jsOutput);
     }
 
     @Test

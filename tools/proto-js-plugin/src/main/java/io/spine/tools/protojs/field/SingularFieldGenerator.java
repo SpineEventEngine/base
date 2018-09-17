@@ -21,21 +21,21 @@
 package io.spine.tools.protojs.field;
 
 import static io.spine.tools.protojs.field.Fields.camelCaseName;
-import static io.spine.tools.protojs.message.MessageHandler.MESSAGE;
+import static io.spine.tools.protojs.message.MessageGenerator.MESSAGE;
 
 /**
  * The handler of the ordinary proto field (i.e. non-{@code repeated} and non-{@code map}).
  *
  * @author Dmytro Kuzmin
  */
-final class SingularFieldHandler extends AbstractFieldHandler {
+final class SingularFieldGenerator extends FieldGenerator {
 
-    private SingularFieldHandler(Builder builder) {
+    private SingularFieldGenerator(Builder builder) {
         super(builder);
     }
 
     @Override
-    public void generateJs() {
+    public void generate() {
         String fieldValue = acquireFieldValue();
         checkNotUndefined(fieldValue);
         mergeFieldValue(fieldValue);
@@ -80,7 +80,7 @@ final class SingularFieldHandler extends AbstractFieldHandler {
         return new Builder();
     }
 
-    static class Builder extends AbstractFieldHandler.Builder<Builder> {
+    static class Builder extends FieldGenerator.Builder<Builder> {
 
         @Override
         Builder self() {
@@ -88,8 +88,8 @@ final class SingularFieldHandler extends AbstractFieldHandler {
         }
 
         @Override
-        SingularFieldHandler build() {
-            return new SingularFieldHandler(this);
+        SingularFieldGenerator build() {
+            return new SingularFieldGenerator(this);
         }
     }
 }

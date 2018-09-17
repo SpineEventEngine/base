@@ -24,7 +24,7 @@ import com.google.common.annotations.VisibleForTesting;
 import io.spine.tools.protojs.field.parser.FieldParser;
 
 import static io.spine.tools.protojs.field.Fields.camelCaseName;
-import static io.spine.tools.protojs.message.MessageHandler.MESSAGE;
+import static io.spine.tools.protojs.message.MessageGenerator.MESSAGE;
 
 /**
  * The handler of the {@code map} proto fields.
@@ -44,7 +44,7 @@ import static io.spine.tools.protojs.message.MessageHandler.MESSAGE;
  *
  * @author Dmytro Kuzmin
  */
-final class MapFieldHandler extends AbstractFieldHandler {
+final class MapFieldGenerator extends FieldGenerator {
 
     /**
      * The variable holding the JS object own attribute during the iteration.
@@ -61,13 +61,13 @@ final class MapFieldHandler extends AbstractFieldHandler {
 
     private final FieldParser keyParser;
 
-    private MapFieldHandler(Builder builder) {
+    private MapFieldGenerator(Builder builder) {
         super(builder);
         this.keyParser = builder.keyParser;
     }
 
     @Override
-    public void generateJs() {
+    public void generate() {
         String fieldValue = acquireFieldValue();
         String value = iterateOwnAttributes(fieldValue);
         parseMapKey();
@@ -136,7 +136,7 @@ final class MapFieldHandler extends AbstractFieldHandler {
         return new Builder();
     }
 
-    static class Builder extends AbstractFieldHandler.Builder<Builder> {
+    static class Builder extends FieldGenerator.Builder<Builder> {
 
         private FieldParser keyParser;
 
@@ -151,8 +151,8 @@ final class MapFieldHandler extends AbstractFieldHandler {
         }
 
         @Override
-        MapFieldHandler build() {
-            return new MapFieldHandler(this);
+        MapFieldGenerator build() {
+            return new MapFieldGenerator(this);
         }
     }
 }

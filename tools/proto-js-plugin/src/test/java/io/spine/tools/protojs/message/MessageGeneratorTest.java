@@ -32,10 +32,10 @@ import java.io.IOException;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static io.spine.tools.protojs.given.Generators.assertContains;
 import static io.spine.tools.protojs.given.Given.message;
-import static io.spine.tools.protojs.message.MessageHandler.FROM_JSON;
-import static io.spine.tools.protojs.message.MessageHandler.FROM_JSON_ARG;
-import static io.spine.tools.protojs.message.MessageHandler.FROM_OBJECT;
-import static io.spine.tools.protojs.message.MessageHandler.FROM_OBJECT_ARG;
+import static io.spine.tools.protojs.message.MessageGenerator.FROM_JSON;
+import static io.spine.tools.protojs.message.MessageGenerator.FROM_JSON_ARG;
+import static io.spine.tools.protojs.message.MessageGenerator.FROM_OBJECT;
+import static io.spine.tools.protojs.message.MessageGenerator.FROM_OBJECT_ARG;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -43,25 +43,25 @@ import static org.mockito.Mockito.verify;
 /**
  * @author Dmytro Kuzmin
  */
-@DisplayName("MessageHandler should")
-class MessageHandlerTest {
+@DisplayName("MessageGenerator should")
+class MessageGeneratorTest {
 
     private Descriptor message;
     private JsOutput jsOutput;
-    private MessageHandler handler;
+    private MessageGenerator handler;
 
     @BeforeEach
     void setUp() throws IOException {
         message = message();
         jsOutput = new JsOutput();
-        handler = MessageHandler.createFor(message, jsOutput);
+        handler = MessageGenerator.createFor(message, jsOutput);
     }
 
     @Test
     @DisplayName(NOT_ACCEPT_NULLS)
     void passNullToleranceCheck() {
         new NullPointerTester().setDefault(Descriptor.class, message)
-                               .testAllPublicStaticMethods(MessageHandler.class);
+                               .testAllPublicStaticMethods(MessageGenerator.class);
     }
 
     @Test
@@ -99,7 +99,7 @@ class MessageHandlerTest {
     @Test
     @DisplayName("handle message fields in `fromObject` method")
     void handleMessageFields() {
-        MessageHandler handler = spy(this.handler);
+        MessageGenerator handler = spy(this.handler);
         handler.generateFromObjectMethod();
         verify(handler, times(1)).handleMessageFields();
     }

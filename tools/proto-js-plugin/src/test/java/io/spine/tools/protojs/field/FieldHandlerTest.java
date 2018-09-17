@@ -26,17 +26,17 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static io.spine.tools.protojs.field.AbstractFieldHandler.FIELD_VALUE;
+import static io.spine.tools.protojs.field.FieldGenerator.FIELD_VALUE;
 import static io.spine.tools.protojs.field.Fields.camelCaseName;
-import static io.spine.tools.protojs.field.MapFieldHandler.ATTRIBUTE;
-import static io.spine.tools.protojs.field.MapFieldHandler.MAP_KEY;
-import static io.spine.tools.protojs.field.RepeatedFieldHandler.LIST_ITEM;
+import static io.spine.tools.protojs.field.MapFieldGenerator.ATTRIBUTE;
+import static io.spine.tools.protojs.field.MapFieldGenerator.MAP_KEY;
+import static io.spine.tools.protojs.field.RepeatedFieldGenerator.LIST_ITEM;
 import static io.spine.tools.protojs.given.Generators.assertContains;
 import static io.spine.tools.protojs.given.Given.mapField;
 import static io.spine.tools.protojs.given.Given.repeatedField;
 import static io.spine.tools.protojs.given.Given.singularField;
-import static io.spine.tools.protojs.message.MessageHandler.FROM_OBJECT;
-import static io.spine.tools.protojs.message.MessageHandler.FROM_OBJECT_ARG;
+import static io.spine.tools.protojs.message.MessageGenerator.FROM_OBJECT;
+import static io.spine.tools.protojs.message.MessageGenerator.FROM_OBJECT_ARG;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
@@ -51,9 +51,9 @@ class FieldHandlerTest {
 
     private JsOutput jsOutput;
 
-    private SingularFieldHandler singularHandler;
-    private RepeatedFieldHandler repeatedHandler;
-    private MapFieldHandler mapHandler;
+    private SingularFieldGenerator singularHandler;
+    private RepeatedFieldGenerator repeatedHandler;
+    private MapFieldGenerator mapHandler;
 
     @BeforeEach
     void setUp() {
@@ -152,15 +152,15 @@ class FieldHandlerTest {
         assertContains(jsOutput, addCall);
     }
 
-    private SingularFieldHandler singularHandler() {
-        return (SingularFieldHandler) FieldHandlers.createFor(singularField(), jsOutput);
+    private SingularFieldGenerator singularHandler() {
+        return (SingularFieldGenerator) FieldGenerators.createFor(singularField(), jsOutput);
     }
 
-    private RepeatedFieldHandler repeatedHandler() {
-        return (RepeatedFieldHandler) FieldHandlers.createFor(repeatedField(), jsOutput);
+    private RepeatedFieldGenerator repeatedHandler() {
+        return (RepeatedFieldGenerator) FieldGenerators.createFor(repeatedField(), jsOutput);
     }
 
-    private MapFieldHandler mapHandler() {
-        return (MapFieldHandler) FieldHandlers.createFor(mapField(), jsOutput);
+    private MapFieldGenerator mapHandler() {
+        return (MapFieldGenerator) FieldGenerators.createFor(mapField(), jsOutput);
     }
 }

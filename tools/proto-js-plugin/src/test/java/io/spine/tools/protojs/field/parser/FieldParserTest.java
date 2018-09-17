@@ -33,7 +33,7 @@ import static io.spine.tools.protojs.given.Given.enumField;
 import static io.spine.tools.protojs.given.Given.messageField;
 import static io.spine.tools.protojs.given.Given.primitiveField;
 import static io.spine.tools.protojs.given.Given.timestampField;
-import static io.spine.tools.protojs.message.MessageHandler.FROM_OBJECT;
+import static io.spine.tools.protojs.message.MessageGenerator.FROM_OBJECT;
 import static io.spine.tools.protojs.types.Types.typeWithProtoPrefix;
 
 /**

@@ -23,9 +23,7 @@ package io.spine.tools.protojs.generate;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.tools.protojs.generate.JsImportGenerator;
-import io.spine.tools.protojs.generate.JsOutput;
-import io.spine.tools.protojs.message.MessageHandler;
+import io.spine.tools.protojs.message.MessageGenerator;
 
 import static io.spine.tools.protojs.files.JsFiles.KNOWN_TYPE_PARSERS;
 
@@ -36,13 +34,13 @@ import static io.spine.tools.protojs.files.JsFiles.KNOWN_TYPE_PARSERS;
  * {@link FileDescriptor}.
  *
  * @apiNote
- * Like the other handlers and generators of this module, the {@code FromJsonGenerator} is meant to
+ * Like the other handlers and generators of this module, the {@code FileGenerator} is meant to
  * operate on the common {@link JsOutput} passed on construction and thus its methods do not return
  * any generated code.
  *
  * @author Dmytro Kuzmin
  */
-public final class FromJsonGenerator {
+public final class FileGenerator extends JsCodeGenerator {
 
     /**
      * The name of the {@code known_type_parsers.js} import.
@@ -57,19 +55,18 @@ public final class FromJsonGenerator {
             "The code for parsing the Protobuf messages of this file from the JSON data.";
 
     private final FileDescriptor file;
-    private final JsOutput jsOutput;
 
     /**
-     * Creates the new {@code FromJsonGenerator} which will process the given file descriptor.
+     * Creates the new {@code FileGenerator} which will process the given file descriptor.
      *
      * @param file
      *         the {@code FileDescriptor} whose messages to process
      * @param jsOutput
      *         the {@code JsOutput} to accumulate the generated JS code
      */
-    FromJsonGenerator(FileDescriptor file, JsOutput jsOutput) {
+    FileGenerator(FileDescriptor file, JsOutput jsOutput) {
+        super(jsOutput);
         this.file = file;
-        this.jsOutput = jsOutput;
     }
 
     /**
@@ -88,7 +85,8 @@ public final class FromJsonGenerator {
      *         and creates a message.
      * </ol>
      */
-    void generateJs() {
+    @Override
+    protected void generate() {
         generateComment();
         generateParsersImport();
         generateMethods();
@@ -99,8 +97,8 @@ public final class FromJsonGenerator {
      */
     @VisibleForTesting
     void generateComment() {
-        jsOutput.addEmptyLine();
-        jsOutput.addComment(COMMENT);
+        jsOutput().addEmptyLine();
+        jsOutput().addComment(COMMENT);
     }
 
     /**
@@ -111,11 +109,11 @@ public final class FromJsonGenerator {
      */
     @VisibleForTesting
     void generateParsersImport() {
-        jsOutput.addEmptyLine();
+        jsOutput().addEmptyLine();
         String fileName = file.getFullName();
         JsImportGenerator generator = JsImportGenerator.createFor(fileName);
         String parsersImport = generator.namedImport(KNOWN_TYPE_PARSERS, PARSERS_IMPORT_NAME);
-        jsOutput.addLine(parsersImport);
+        jsOutput().addLine(parsersImport);
     }
 
     /**
@@ -125,7 +123,7 @@ public final class FromJsonGenerator {
     @VisibleForTesting
     void generateMethods() {
         for (Descriptor message : file.getMessageTypes()) {
-            MessageHandler handler = MessageHandler.createFor(message, jsOutput);
+            MessageGenerator handler = MessageGenerator.createFor(message, jsOutput());
             handler.generateJs();
         }
     }
