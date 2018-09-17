@@ -42,6 +42,7 @@ import java.util.Objects;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.protobuf.Internal.getDefaultInstance;
+import static io.spine.code.proto.ProtoPackage.GOOGLE_PROTOBUF_PACKAGE;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 import static java.lang.String.format;
 
@@ -58,11 +59,6 @@ import static java.lang.String.format;
  */
 @Immutable
 public final class TypeUrl implements Serializable {
-
-    /**
-     * The package used to identify standard Protobuf types.
-     */
-    public static final String GOOGLE_PROTOBUF_PACKAGE = "google.protobuf";
 
     private static final long serialVersionUID = 0L;
     private static final String SEPARATOR = "/";
@@ -187,7 +183,7 @@ public final class TypeUrl implements Serializable {
     private static String prefixFor(GenericDescriptor descriptor) {
         FileDescriptor file = descriptor.getFile();
         if (file.getPackage()
-                .startsWith(GOOGLE_PROTOBUF_PACKAGE)) {
+                .startsWith(GOOGLE_PROTOBUF_PACKAGE.packageName())) {
             return Prefix.GOOGLE_APIS.value();
         }
         String result = file.getOptions()

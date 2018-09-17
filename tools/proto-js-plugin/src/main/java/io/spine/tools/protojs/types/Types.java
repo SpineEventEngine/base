@@ -26,7 +26,7 @@ import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.type.TypeUrl.GOOGLE_PROTOBUF_PACKAGE;
+import static io.spine.code.proto.ProtoPackage.GOOGLE_PROTOBUF_PACKAGE;
 
 /**
  * A helper tool for working with Protobuf types.
@@ -87,7 +87,7 @@ public final class Types {
      */
     public static boolean isStandardOrSpineOptions(FileDescriptor file) {
         boolean isStandardType = file.getPackage()
-                                     .startsWith(GOOGLE_PROTOBUF_PACKAGE);
+                                     .startsWith(GOOGLE_PROTOBUF_PACKAGE.packageName());
         boolean isSpineOptions = SPINE_OPTIONS_PROTO.equals(file.getFullName());
         return isStandardType || isSpineOptions;
     }
