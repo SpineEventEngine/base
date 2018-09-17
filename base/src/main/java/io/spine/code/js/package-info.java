@@ -19,11 +19,11 @@
  */
 
 /**
- * The classes related to working with Protobuf types.
+ * todo create desc.
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault
-package io.spine.tools.protojs.types;
+package io.spine.code.js;
 
 import com.google.errorprone.annotations.CheckReturnValue;
 

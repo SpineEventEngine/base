@@ -18,24 +18,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protojs.types;
+package io.spine.code.js;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.protobuf.Descriptors.Descriptor;
-import com.google.protobuf.Descriptors.EnumDescriptor;
-import com.google.protobuf.Descriptors.FileDescriptor;
+import com.google.protobuf.Descriptors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.code.proto.ProtoPackage.GOOGLE_PROTOBUF_PACKAGE;
 
 /**
- * A helper tool for working with Protobuf types.
+ * Describes the Protobuf types from the JavaScript code.
  *
  * @author Dmytro Kuzmin
  */
-public final class Types {
+public class ProtobufTypes {
 
-    public static final String SPINE_OPTIONS_PROTO = "spine/options.proto";
+    private static final String SPINE_OPTIONS_PROTO = "spine/options.proto";
 
     /**
      * The prefix which is added to all proto types in the JS generated code.
@@ -47,7 +45,7 @@ public final class Types {
     static final String PREFIX = "proto.";
 
     /** Prevents instantiation of this utility class. */
-    private Types() {
+    private ProtobufTypes() {
     }
 
     /**
@@ -57,7 +55,7 @@ public final class Types {
      *         the descriptor of the {@code message} whose type to obtain
      * @return the type of the {@code message} with the {@code proto.} prefix
      */
-    public static String typeWithProtoPrefix(Descriptor message) {
+    public static String typeWithProtoPrefix(Descriptors.Descriptor message) {
         checkNotNull(message);
         String typeName = message.getFullName();
         String nameWithPrefix = PREFIX + typeName;
@@ -71,7 +69,7 @@ public final class Types {
      *         the descriptor of the {@code enum} whose type to obtain
      * @return the type of the {@code enum} with the {@code proto.} prefix
      */
-    public static String typeWithProtoPrefix(EnumDescriptor enumDescriptor) {
+    public static String typeWithProtoPrefix(Descriptors.EnumDescriptor enumDescriptor) {
         checkNotNull(enumDescriptor);
         String typeName = enumDescriptor.getFullName();
         String nameWithPrefix = PREFIX + typeName;
@@ -85,7 +83,7 @@ public final class Types {
      * @param file
      *         the descriptor of the file to check
      */
-    public static boolean isStandardOrSpineOptions(FileDescriptor file) {
+    public static boolean isStandardOrSpineOptions(Descriptors.FileDescriptor file) {
         boolean isStandardType = file.getPackage()
                                      .startsWith(GOOGLE_PROTOBUF_PACKAGE.packageName());
         boolean isSpineOptions = SPINE_OPTIONS_PROTO.equals(file.getFullName());
