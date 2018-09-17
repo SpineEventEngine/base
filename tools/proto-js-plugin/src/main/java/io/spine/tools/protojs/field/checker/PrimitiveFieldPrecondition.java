@@ -32,17 +32,17 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  * @author Dmytro Kuzmin
  */
-public final class PrimitiveFieldChecker implements FieldChecker {
+public final class PrimitiveFieldPrecondition implements FieldPrecondition {
 
     private final JsOutput jsOutput;
 
     /**
-     * Creates a new {@code PrimitiveFieldChecker}.
+     * Creates a new {@code PrimitiveFieldPrecondition}.
      *
      * @param jsOutput
      *         the {@code JsOutput} which accumulates all the generated code
      */
-    PrimitiveFieldChecker(JsOutput jsOutput) {
+    PrimitiveFieldPrecondition(JsOutput jsOutput) {
         this.jsOutput = jsOutput;
     }
 

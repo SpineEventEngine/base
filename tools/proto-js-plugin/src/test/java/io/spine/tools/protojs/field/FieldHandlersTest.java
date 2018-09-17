@@ -24,8 +24,8 @@ import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.testing.UtilityClassTest;
 import io.spine.tools.protojs.generate.JsOutput;
-import io.spine.tools.protojs.field.checker.MessageFieldChecker;
-import io.spine.tools.protojs.field.checker.PrimitiveFieldChecker;
+import io.spine.tools.protojs.field.checker.MessageFieldPrecondition;
+import io.spine.tools.protojs.field.checker.PrimitiveFieldPrecondition;
 import io.spine.tools.protojs.field.parser.EnumFieldParser;
 import io.spine.tools.protojs.field.parser.MessageFieldParser;
 import io.spine.tools.protojs.field.parser.PrimitiveFieldParser;
@@ -89,10 +89,10 @@ class FieldHandlersTest extends UtilityClassTest<FieldHandlers> {
     @DisplayName("set value checker of correct type for handler")
     void setValueChecker() {
         AbstractFieldHandler messageHandler = handlerFor(messageField());
-        assertInstanceOf(MessageFieldChecker.class, messageHandler.checker());
+        assertInstanceOf(MessageFieldPrecondition.class, messageHandler.checker());
 
         AbstractFieldHandler primitiveHandler = handlerFor(primitiveField());
-        assertInstanceOf(PrimitiveFieldChecker.class, primitiveHandler.checker());
+        assertInstanceOf(PrimitiveFieldPrecondition.class, primitiveHandler.checker());
     }
 
     @Test

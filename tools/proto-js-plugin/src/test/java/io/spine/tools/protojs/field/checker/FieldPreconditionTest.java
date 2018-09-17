@@ -36,8 +36,8 @@ import static java.lang.String.format;
  */
 @SuppressWarnings("DuplicateStringLiteralInspection")
 // Generated code duplication needed to check main class.
-@DisplayName("FieldChecker should")
-class FieldCheckerTest {
+@DisplayName("FieldPrecondition should")
+class FieldPreconditionTest {
 
     private static final String FIELD_VALUE = "value";
     private static final String SETTER_FORMAT = "set(%s)";
@@ -52,7 +52,7 @@ class FieldCheckerTest {
     @Test
     @DisplayName("generate code to enter non-null check for primitive")
     void enterPrimitiveCheck() {
-        FieldChecker checker = checkerFor(primitiveField(), jsOutput);
+        FieldPrecondition checker = checkerFor(primitiveField(), jsOutput);
         checker.performNullCheck(FIELD_VALUE, SETTER_FORMAT);
         String check = "if (" + FIELD_VALUE + " !== null)";
         assertContains(jsOutput, check);
@@ -61,7 +61,7 @@ class FieldCheckerTest {
     @Test
     @DisplayName("generate code to enter null check for message")
     void enterMessageCheck() {
-        FieldChecker checker = checkerFor(messageField(), jsOutput);
+        FieldPrecondition checker = checkerFor(messageField(), jsOutput);
         checker.performNullCheck(FIELD_VALUE, SETTER_FORMAT);
         String check = "if (" + FIELD_VALUE + " === null)";
         assertContains(jsOutput, check);
@@ -70,7 +70,7 @@ class FieldCheckerTest {
     @Test
     @DisplayName("set field value to null in case of message")
     void setMessageToNull() {
-        FieldChecker checker = checkerFor(messageField(), jsOutput);
+        FieldPrecondition checker = checkerFor(messageField(), jsOutput);
         checker.performNullCheck(FIELD_VALUE, SETTER_FORMAT);
         String setNull = format(SETTER_FORMAT, "null");
         assertContains(jsOutput, setNull);

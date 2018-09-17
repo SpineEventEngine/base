@@ -26,13 +26,13 @@ import io.spine.tools.protojs.generate.JsOutput;
  * The generator of the code which performs various checks on the proto field value.
  *
  * @apiNote
- * Like the other handlers and generators of this module, the {@code FieldChecker} is meant to
+ * Like the other handlers and generators of this module, the {@code FieldPrecondition} is meant to
  * operate on the common {@link JsOutput} passed on construction and thus its methods do not return
  * any generated code.
  *
  * @author Dmytro Kuzmin
  */
-public interface FieldChecker {
+public interface FieldPrecondition {
 
     /**
      * Generates the code which checks the given field value for {@code null}.

@@ -22,8 +22,8 @@ package io.spine.tools.protojs.field;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.FieldDescriptor;
+import io.spine.tools.protojs.field.checker.FieldPrecondition;
 import io.spine.tools.protojs.generate.JsOutput;
-import io.spine.tools.protojs.field.checker.FieldChecker;
 import io.spine.tools.protojs.field.parser.FieldParser;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -34,7 +34,7 @@ import static java.lang.String.format;
  * The common base for the {@link FieldHandler} implementations.
  *
  * <p>The class generates the JS code common for all kinds of field handlers including calling the
- * {@linkplain FieldChecker field checker} and the {@linkplain FieldParser field parser}.
+ * {@linkplain FieldPrecondition field checker} and the {@linkplain FieldParser field parser}.
  *
  * @author Dmytro Kuzmin
  */
@@ -49,7 +49,7 @@ abstract class AbstractFieldHandler implements FieldHandler {
     static final String FIELD_VALUE = "value";
 
     private final FieldDescriptor field;
-    private final FieldChecker checker;
+    private final FieldPrecondition checker;
     private final FieldParser parser;
     private final JsOutput jsOutput;
 
@@ -100,7 +100,7 @@ abstract class AbstractFieldHandler implements FieldHandler {
     }
 
     @VisibleForTesting
-    FieldChecker checker() {
+    FieldPrecondition checker() {
         return checker;
     }
 
@@ -112,7 +112,7 @@ abstract class AbstractFieldHandler implements FieldHandler {
     /**
      * Generates the code which calls the field merge action on the specified value.
      *
-     * <p>The value is assumed to be already {@linkplain FieldChecker checked} and
+     * <p>The value is assumed to be already {@linkplain FieldPrecondition checked} and
      * {@linkplain FieldParser parsed}.
      *
      * @param value
@@ -145,7 +145,7 @@ abstract class AbstractFieldHandler implements FieldHandler {
     abstract static class Builder<B extends Builder<B>> {
 
         private FieldDescriptor field;
-        private FieldChecker checker;
+        private FieldPrecondition checker;
         private FieldParser parser;
         private JsOutput jsOutput;
 
@@ -154,7 +154,7 @@ abstract class AbstractFieldHandler implements FieldHandler {
             return self();
         }
 
-        B setChecker(FieldChecker checker) {
+        B setChecker(FieldPrecondition checker) {
             this.checker = checkNotNull(checker);
             return self();
         }
