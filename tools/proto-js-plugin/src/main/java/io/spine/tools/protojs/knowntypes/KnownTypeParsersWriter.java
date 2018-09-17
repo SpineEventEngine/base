@@ -22,6 +22,7 @@ package io.spine.tools.protojs.knowntypes;
 
 import com.google.common.annotations.VisibleForTesting;
 import io.spine.tools.protojs.generate.JsOutput;
+import io.spine.tools.protojs.generate.ParserMapGenerator;
 
 import java.io.IOException;
 import java.io.InputStream;

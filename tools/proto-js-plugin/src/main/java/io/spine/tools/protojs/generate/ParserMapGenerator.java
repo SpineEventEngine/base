@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protojs.knowntypes;
+package io.spine.tools.protojs.generate;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -39,6 +39,7 @@ import com.google.protobuf.UInt32Value;
 import com.google.protobuf.UInt64Value;
 import com.google.protobuf.Value;
 import io.spine.tools.protojs.generate.JsOutput;
+import io.spine.tools.protojs.knowntypes.KnownTypeParsersWriter;
 import io.spine.type.TypeUrl;
 
 import java.util.Map.Entry;

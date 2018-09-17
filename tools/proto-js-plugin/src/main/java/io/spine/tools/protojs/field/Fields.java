@@ -25,7 +25,7 @@ import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.code.proto.FieldName;
 import io.spine.tools.protojs.generate.JsOutput;
-import io.spine.tools.protojs.knowntypes.ParserMapGenerator;
+import io.spine.tools.protojs.generate.ParserMapGenerator;
 import io.spine.type.TypeUrl;
 
 import static com.google.common.base.Preconditions.checkArgument;

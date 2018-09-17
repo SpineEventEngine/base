@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protojs.knowntypes;
+package io.spine.tools.protojs.generate;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.Descriptor;
@@ -26,6 +26,7 @@ import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.proto.FileSet;
 import io.spine.tools.protojs.generate.JsImportGenerator;
 import io.spine.tools.protojs.generate.JsOutput;
+import io.spine.tools.protojs.knowntypes.KnownTypesWriter;
 import io.spine.type.TypeUrl;
 
 import java.util.Collection;

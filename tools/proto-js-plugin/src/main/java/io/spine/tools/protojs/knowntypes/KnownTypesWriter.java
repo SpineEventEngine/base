@@ -23,6 +23,7 @@ package io.spine.tools.protojs.knowntypes;
 import com.google.common.annotations.VisibleForTesting;
 import io.spine.code.proto.FileSet;
 import io.spine.tools.protojs.generate.JsOutput;
+import io.spine.tools.protojs.generate.KnownTypesGenerator;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
