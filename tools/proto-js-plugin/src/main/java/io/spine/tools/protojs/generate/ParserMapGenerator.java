@@ -62,8 +62,7 @@ import static io.spine.type.TypeUrl.of;
  * @author Dmytro Kuzmin
  * @see KnownTypeParsersWriter
  */
-@SuppressWarnings("OverlyCoupledClass")
-// Dependencies for the listed Message types.
+@SuppressWarnings("OverlyCoupledClass") // Dependencies for the listed Message types.
 public final class ParserMapGenerator {
 
     /**
