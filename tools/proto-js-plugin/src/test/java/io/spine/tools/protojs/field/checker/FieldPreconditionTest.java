@@ -25,7 +25,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static io.spine.tools.protojs.field.checker.FieldCheckers.checkerFor;
+import static io.spine.tools.protojs.field.checker.FieldPreconditions.checkerFor;
 import static io.spine.tools.protojs.given.Generators.assertContains;
 import static io.spine.tools.protojs.given.Given.messageField;
 import static io.spine.tools.protojs.given.Given.primitiveField;

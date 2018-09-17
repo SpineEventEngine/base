@@ -30,7 +30,7 @@ import static io.spine.tools.protojs.field.Fields.isMap;
 import static io.spine.tools.protojs.field.Fields.isRepeated;
 import static io.spine.tools.protojs.field.Fields.keyDescriptor;
 import static io.spine.tools.protojs.field.Fields.valueDescriptor;
-import static io.spine.tools.protojs.field.checker.FieldCheckers.checkerFor;
+import static io.spine.tools.protojs.field.checker.FieldPreconditions.checkerFor;
 import static io.spine.tools.protojs.field.parser.FieldParsers.parserFor;
 
 /**

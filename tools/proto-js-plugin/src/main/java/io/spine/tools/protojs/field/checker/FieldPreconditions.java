@@ -27,31 +27,31 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.protojs.field.Fields.isMessage;
 
 /**
- * The helper which creates {@link FieldChecker} instances based on the field type.
+ * The helper which creates {@link FieldPrecondition} instances based on the field type.
  *
  * @author Dmytro Kuzmin
  */
-public final class FieldCheckers {
+public final class FieldPreconditions {
 
     /** Prevents instantiation of this utility class. */
-    private FieldCheckers() {
+    private FieldPreconditions() {
     }
 
     /**
-     * Creates a {@code FieldChecker} for the given {@code field}.
+     * Creates a {@code FieldPrecondition} for the given {@code field}.
      *
      * @param field
      *         the descriptor of the Protobuf field to create the checker for
      * @param jsOutput
      *         the {@code JsOutput} which will accumulate all the generated code
-     * @return a {@code FieldChecker} of the appropriate type
+     * @return a {@code FieldPrecondition} of the appropriate type
      */
-    public static FieldChecker checkerFor(FieldDescriptor field, JsOutput jsOutput) {
+    public static FieldPrecondition checkerFor(FieldDescriptor field, JsOutput jsOutput) {
         checkNotNull(field);
         checkNotNull(jsOutput);
         if (isMessage(field)) {
-            return new MessageFieldChecker(field, jsOutput);
+            return new MessageFieldPrecondition(field, jsOutput);
         }
-        return new PrimitiveFieldChecker(jsOutput);
+        return new PrimitiveFieldPrecondition(jsOutput);
     }
 }

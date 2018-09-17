@@ -29,7 +29,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.testing.Verify.assertInstanceOf;
-import static io.spine.tools.protojs.field.checker.FieldCheckers.checkerFor;
+import static io.spine.tools.protojs.field.checker.FieldPreconditions.checkerFor;
 import static io.spine.tools.protojs.given.Given.messageField;
 import static io.spine.tools.protojs.given.Given.primitiveField;
 import static io.spine.tools.protojs.given.Given.timestampField;
@@ -37,13 +37,13 @@ import static io.spine.tools.protojs.given.Given.timestampField;
 /**
  * @author Dmytro Kuzmin
  */
-@DisplayName("FieldCheckers utility should")
-class FieldCheckersTest extends UtilityClassTest<FieldCheckers> {
+@DisplayName("FieldPreconditions utility should")
+class FieldPreconditionsTest extends UtilityClassTest<FieldPreconditions> {
 
     private JsOutput jsOutput;
 
-    FieldCheckersTest() {
-        super(FieldCheckers.class);
+    FieldPreconditionsTest() {
+        super(FieldPreconditions.class);
     }
 
     @Override
@@ -59,21 +59,21 @@ class FieldCheckersTest extends UtilityClassTest<FieldCheckers> {
     @Test
     @DisplayName("create checker for primitive field")
     void createForPrimitive() {
-        FieldChecker checker = checkerFor(primitiveField(), jsOutput);
-        assertInstanceOf(PrimitiveFieldChecker.class, checker);
+        FieldPrecondition checker = checkerFor(primitiveField(), jsOutput);
+        assertInstanceOf(PrimitiveFieldPrecondition.class, checker);
     }
 
     @Test
     @DisplayName("create checker for message field")
     void createForMessage() {
-        FieldChecker checker = checkerFor(messageField(), jsOutput);
-        assertInstanceOf(MessageFieldChecker.class, checker);
+        FieldPrecondition checker = checkerFor(messageField(), jsOutput);
+        assertInstanceOf(MessageFieldPrecondition.class, checker);
     }
 
     @Test
     @DisplayName("create message checker for standard type field")
     void createForWellKnown() {
-        FieldChecker checker = checkerFor(timestampField(), jsOutput);
-        assertInstanceOf(MessageFieldChecker.class, checker);
+        FieldPrecondition checker = checkerFor(timestampField(), jsOutput);
+        assertInstanceOf(MessageFieldPrecondition.class, checker);
     }
 }
