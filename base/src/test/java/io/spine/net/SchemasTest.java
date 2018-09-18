@@ -20,39 +20,36 @@
 
 package io.spine.net;
 
-import com.google.common.testing.NullPointerTester;
-import org.junit.Test;
+import io.spine.net.UrlRecord.Schema;
+import io.spine.testing.UtilityClassTest;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
-import static org.junit.Assert.assertEquals;
+import static io.spine.net.Schemas.parse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * Tests {@link io.spine.net.UrlRecord.Schema}.
+ * Tests {@link io.spine.net.Schemas}.
  *
  * @author Mikhail Mikhaylov
  */
-public class SchemasShould {
+@DisplayName("Schemas utility class should")
+class SchemasTest extends UtilityClassTest<Schemas> {
 
-    @Test
-    public void return_valid_schemas_on_valid_args() {
-        assertEquals(UrlRecord.Schema.FILE, Schemas.parse("file"));
-        assertEquals(UrlRecord.Schema.FILE, Schemas.parse("FILE"));
+    SchemasTest() {
+        super(Schemas.class);
     }
 
     @Test
-    public void return_undefined_schema_on_invalid_args() {
-        assertEquals(UrlRecord.Schema.UNDEFINED, Schemas.parse("someunknownschema"));
+    @DisplayName("obtain value by correct names")
+    void parseValid() {
+        assertEquals(Schema.FILE, parse("file"));
+        assertEquals(Schema.FILE, parse("FILE"));
     }
 
     @Test
-    public void have_private_constructor() {
-        assertHasPrivateParameterlessCtor(Schemas.class);
-    }
-
-    @Test
-    public void pass_the_null_tolerance_check() {
-        new NullPointerTester()
-                .setDefault(UrlRecord.Schema.class, UrlRecord.Schema.UNDEFINED)
-                .testAllPublicStaticMethods(Schemas.class);
+    @DisplayName("return UNDEFINED for unknown schema")
+    void unknownSchema() {
+        assertEquals(Schema.UNDEFINED, parse("someunknownschema"));
     }
 }

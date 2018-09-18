@@ -64,7 +64,9 @@ final class UrlPrinter {
             return;
         }
 
-        sb.append(Schemas.getLowerCaseName(protocol.getSchema()))
+        sb.append(protocol.getSchema()
+                          .name()
+                          .toLowerCase())
           .append(UrlParser.PROTOCOL_ENDING);
     }
 

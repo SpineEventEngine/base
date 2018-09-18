@@ -47,10 +47,6 @@ public final class InternetDomains {
         return HOST_NAME_PATTERN;
     }
 
-    private static void checkArgumentIsDomainName(CharSequence name) {
-        checkArgument(isValid(name));
-    }
-
     /**
      * Verifies if the passed sequence is a valid internet domain name.
      */
@@ -69,11 +65,12 @@ public final class InternetDomains {
      */
     public static InternetDomain valueOf(CharSequence name) {
         checkNotNull(name);
-        checkArgumentIsDomainName(name);
+        checkArgument(isValid(name));
 
-        InternetDomain result = InternetDomain.newBuilder()
-                                              .setValue(name.toString())
-                                              .build();
+        InternetDomain result = InternetDomain
+                .newBuilder()
+                .setValue(name.toString())
+                .build();
         return result;
     }
 }

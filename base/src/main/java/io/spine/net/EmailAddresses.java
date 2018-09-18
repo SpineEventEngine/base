@@ -54,11 +54,6 @@ public final class EmailAddresses {
         return result;
     }
 
-    private static void checkArgumentIsEmailAddress(CharSequence value) {
-        checkNotNull(value);
-        checkArgument(isValid(value));
-    }
-
     /**
      * Creates a new {@code EmailAddress} instance for the passed value.
      *
@@ -67,7 +62,8 @@ public final class EmailAddresses {
      * @throws IllegalArgumentException if the passed email address is not valid
      */
     public static EmailAddress valueOf(CharSequence value) {
-        checkArgumentIsEmailAddress(value);
+        checkNotNull(value);
+        checkArgument(isValid(value));
 
         EmailAddress result = EmailAddress.newBuilder()
                                           .setValue(value.toString())

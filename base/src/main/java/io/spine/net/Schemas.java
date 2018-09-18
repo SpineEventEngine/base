@@ -55,23 +55,12 @@ final class Schemas {
         return stringSchemas.get(lowercaseValue);
     }
 
-    /**
-     * Obtains the lowercase schema name.
-     *
-     * @param schema {@link Schema} value
-     * @return String name
-     */
-    static String getLowerCaseName(Schema schema) {
-        checkNotNull(schema);
-        return schema.name()
-                     .toLowerCase();
-    }
-
     private static Map<String, Schema> buildSchemasMap() {
-        ImmutableMap.Builder<String, Schema> schemas = new ImmutableMap.Builder<>();
+        ImmutableMap.Builder<String, Schema> schemas = ImmutableMap.builder();
 
         for (Schema schema : Schema.values()) {
-            schemas.put(getLowerCaseName(schema), schema);
+            schemas.put(schema.name()
+                              .toLowerCase(), schema);
         }
 
         return schemas.build();
