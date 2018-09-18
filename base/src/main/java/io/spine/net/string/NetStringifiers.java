@@ -20,22 +20,37 @@
 
 package io.spine.net.string;
 
-import com.google.protobuf.Message;
-import io.spine.string.FnStringifier;
-import io.spine.util.SerializableFunction;
+import com.google.common.collect.ImmutableList;
+import io.spine.net.EmailAddress;
+import io.spine.net.Url;
+import io.spine.string.Registrar;
+import io.spine.string.Stringifier;
 
 /**
- * Abstract base for stringifiers of network-related types.
+ * Provides stringifiers for network-related types.
  *
  * @author Alexander Yevsyukov
  */
-abstract class NetStringifier<T extends Message> extends FnStringifier<T> {
+public final class NetStringifiers {
 
-    private static final long serialVersionUID = 0L;
+    static {
+        Registrar registrar = new Registrar(ImmutableList.of(
+                forUrl(),
+                forEmailAddress()
+        ));
+        registrar.register();
+    }
+    /** Prevents instantiation of this utility class. */
+    private NetStringifiers() {
+    }
 
-    NetStringifier(String identity,
-                   SerializableFunction<T, String> printer,
-                   SerializableFunction<String, T> parser) {
-        super(identity, printer, parser);
+    /** Obtains default stringifier for {@code Url}. */
+    public static Stringifier<Url> forUrl() {
+        return UrlStringifier.getInstance();
+    }
+
+    /** Obtains default stringifier for {@code EmailAddress}. */
+    public static Stringifier<EmailAddress> forEmailAddress() {
+        return EmailAddressStringifier.getInstance();
     }
 }

@@ -55,6 +55,14 @@ public final class EmailAddresses {
     }
 
     /**
+     * Obtains string representation of the passed email address.
+     */
+    public static String toString(EmailAddress address) {
+        checkNotNull(address);
+        return address.getValue();
+    }
+
+    /**
      * Creates a new {@code EmailAddress} instance for the passed value.
      *
      * @param value a valid email address

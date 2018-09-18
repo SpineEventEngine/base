@@ -20,22 +20,30 @@
 
 package io.spine.net.string;
 
-import com.google.protobuf.Message;
-import io.spine.string.FnStringifier;
-import io.spine.util.SerializableFunction;
+import io.spine.net.EmailAddress;
+import io.spine.net.EmailAddresses;
 
 /**
- * Abstract base for stringifiers of network-related types.
+ * The default stringifier for {@link EmailAddress}.
  *
  * @author Alexander Yevsyukov
  */
-abstract class NetStringifier<T extends Message> extends FnStringifier<T> {
+final class EmailAddressStringifier extends NetStringifier<EmailAddress> {
 
     private static final long serialVersionUID = 0L;
+    private static final EmailAddressStringifier INSTANCE = new EmailAddressStringifier();
 
-    NetStringifier(String identity,
-                   SerializableFunction<T, String> printer,
-                   SerializableFunction<String, T> parser) {
-        super(identity, printer, parser);
+    private EmailAddressStringifier() {
+        super("NetStringifiers.forEmailAddress()",
+              EmailAddresses::toString,
+              EmailAddresses::valueOf);
+    }
+
+    static EmailAddressStringifier getInstance() {
+        return INSTANCE;
+    }
+
+    private Object readResolve() {
+        return INSTANCE;
     }
 }

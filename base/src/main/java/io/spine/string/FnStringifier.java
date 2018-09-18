@@ -18,24 +18,42 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.net.string;
+package io.spine.string;
 
-import com.google.protobuf.Message;
-import io.spine.string.FnStringifier;
 import io.spine.util.SerializableFunction;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
- * Abstract base for stringifiers of network-related types.
+ * Abstract base for stringifiers that convert values using method references.
  *
  * @author Alexander Yevsyukov
  */
-abstract class NetStringifier<T extends Message> extends FnStringifier<T> {
+public abstract class FnStringifier<T> extends SerializableStringifier<T> {
 
     private static final long serialVersionUID = 0L;
 
-    NetStringifier(String identity,
-                   SerializableFunction<T, String> printer,
-                   SerializableFunction<String, T> parser) {
-        super(identity, printer, parser);
+    private final SerializableFunction<T, String> printer;
+    private final SerializableFunction<String, T> parser;
+
+    protected FnStringifier(String identity,
+                            SerializableFunction<T, String> printer,
+                            SerializableFunction<String, T> parser) {
+        super(identity);
+        this.printer = checkNotNull(printer);
+        this.parser = checkNotNull(parser);
+    }
+
+
+    @Override
+    protected final String toString(T obj) {
+        String result = printer.apply(obj);
+        return result;
+    }
+
+    @Override
+    protected final T fromString(String s) {
+        T result = parser.apply(s);
+        return result;
     }
 }

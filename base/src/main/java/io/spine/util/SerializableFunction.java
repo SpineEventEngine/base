@@ -18,24 +18,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.net.string;
+package io.spine.util;
 
-import com.google.protobuf.Message;
-import io.spine.string.FnStringifier;
-import io.spine.util.SerializableFunction;
+import java.io.Serializable;
+import java.util.function.Function;
 
 /**
- * Abstract base for stringifiers of network-related types.
+ * A function that computes an output value of type {@code R} from an input value of type
+ * {@code T} and is {@link Serializable}.
  *
+ * @param <T> input value type
+ * @param <R> output value type
  * @author Alexander Yevsyukov
  */
-abstract class NetStringifier<T extends Message> extends FnStringifier<T> {
-
-    private static final long serialVersionUID = 0L;
-
-    NetStringifier(String identity,
-                   SerializableFunction<T, String> printer,
-                   SerializableFunction<String, T> parser) {
-        super(identity, printer, parser);
-    }
+@FunctionalInterface
+public interface SerializableFunction<T, R> extends Function<T, R>, Serializable {
 }
