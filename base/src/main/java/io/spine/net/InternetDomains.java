@@ -20,6 +20,7 @@
 
 package io.spine.net;
 
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -47,8 +48,16 @@ public final class InternetDomains {
     }
 
     private static void checkArgumentIsDomainName(CharSequence name) {
-        checkArgument(pattern().matcher(name)
-                               .matches());
+        checkArgument(isValid(name));
+    }
+
+    /**
+     * Verifies if the passed sequence is a valid internet domain name.
+     */
+    public static boolean isValid(CharSequence name) {
+        Matcher matcher = pattern().matcher(name);
+        boolean result = matcher.matches();
+        return result;
     }
 
     /**
