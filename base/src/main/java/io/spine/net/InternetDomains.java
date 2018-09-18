@@ -57,6 +57,14 @@ public final class InternetDomains {
     }
 
     /**
+     * Obtains string representation of the passed internet domain.
+     */
+    public static String toString(InternetDomain domain) {
+        checkNotNull(domain);
+        return domain.getValue();
+    }
+
+    /**
      * Creates a new {@code InternetDomain} instance for the passed name.
      *
      * @param name a valid Internet domain name

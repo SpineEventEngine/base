@@ -20,18 +20,22 @@
 
 package io.spine.net.string;
 
+import com.google.common.truth.Truth8;
 import io.spine.net.EmailAddress;
+import io.spine.net.InternetDomain;
 import io.spine.net.Url;
 import io.spine.string.Stringifier;
 import io.spine.string.StringifierRegistry;
 import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
-import static com.google.common.truth.Truth8.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 import static io.spine.net.string.NetStringifiers.forEmailAddress;
+import static io.spine.net.string.NetStringifiers.forInternetDomain;
 import static io.spine.net.string.NetStringifiers.forUrl;
 
 /**
@@ -50,12 +54,49 @@ class NetStringifiersTest extends UtilityClassTest<NetStringifiers> {
     void registration() {
         assertRegistered(forUrl(), Url.class);
         assertRegistered(forEmailAddress(), EmailAddress.class);
+        assertRegistered(forInternetDomain(), InternetDomain.class);
     }
 
-    private static <T, S extends Stringifier<? super T>>
-    void assertRegistered(S stringifier, Class<T> type) {
+    private static <T> void assertRegistered(Stringifier<T> stringifier, Class<T> cls) {
         Optional<Stringifier<T>> optional = StringifierRegistry.getInstance()
-                                                               .get(type);
-        assertThat(optional).hasValue(stringifier);
+                                                               .get(cls);
+        Truth8.assertThat(optional).hasValue(stringifier);
+    }
+
+    @Nested
+    @DisplayName("convert to string and back")
+    class Convert {
+
+        @Test
+        @DisplayName("Url")
+        void url() {
+            assertStringifier(Url.class, "https://spine.io/about");
+        }
+
+        @Test
+        @DisplayName("InternetDomain")
+        void internetDomain() {
+            assertStringifier(InternetDomain.class, "spine.io");
+        }
+
+        @Test
+        @DisplayName("EmailAddress")
+        void emailAddress() {
+            assertStringifier(EmailAddress.class, "info@spine.io");
+        }
+
+        <T> void assertStringifier(Class<T> cls, String value) {
+            Optional<Stringifier<T>> optional = StringifierRegistry.getInstance()
+                                                                   .get(cls);
+            Truth8.assertThat(optional).isPresent();
+
+            @SuppressWarnings("OptionalGetWithoutIsPresent") // checked above.
+                    Stringifier<T> stringifier = optional.get();
+
+            T object = stringifier.reverse()
+                                  .convert(value);
+            assertThat(stringifier.convert(object))
+                    .isEqualTo(value);
+        }
     }
 }

@@ -20,45 +20,30 @@
 
 package io.spine.net.string;
 
-import com.google.common.collect.ImmutableList;
-import io.spine.net.EmailAddress;
 import io.spine.net.InternetDomain;
-import io.spine.net.Url;
-import io.spine.string.Registrar;
-import io.spine.string.Stringifier;
+import io.spine.net.InternetDomains;
 
 /**
- * Provides stringifiers for network-related types.
+ * Default stringifier for {@code InternetDomain}.
  *
  * @author Alexander Yevsyukov
  */
-public final class NetStringifiers {
+final class InternetDomainStringifier extends NetStringifier<InternetDomain> {
 
-    static {
-        Registrar registrar = new Registrar(ImmutableList.of(
-                forUrl(),
-                forEmailAddress(),
-                forInternetDomain()
-        ));
-        registrar.register();
+    private static final long serialVersionUID = 0L;
+    private static final InternetDomainStringifier INSTANCE = new InternetDomainStringifier();
+
+    private InternetDomainStringifier() {
+        super("NetStringifiers.forInternetDomain()",
+              InternetDomains::toString,
+              InternetDomains::valueOf);
     }
 
-    /** Prevents instantiation of this utility class. */
-    private NetStringifiers() {
+    static InternetDomainStringifier getInstance() {
+        return INSTANCE;
     }
 
-    /** Obtains default stringifier for {@code Url}. */
-    public static Stringifier<Url> forUrl() {
-        return UrlStringifier.getInstance();
-    }
-
-    /** Obtains default stringifier for {@code EmailAddress}. */
-    public static Stringifier<EmailAddress> forEmailAddress() {
-        return EmailAddressStringifier.getInstance();
-    }
-
-    /** Obtains default stringifier for {@code InternetDomain}. */
-    public static Stringifier<InternetDomain> forInternetDomain() {
-        return InternetDomainStringifier.getInstance();
+    private Object readResolve() {
+        return INSTANCE;
     }
 }
