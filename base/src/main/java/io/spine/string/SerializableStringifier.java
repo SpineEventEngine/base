@@ -20,42 +20,36 @@
 
 package io.spine.string;
 
-import com.google.common.primitives.Longs;
+import java.io.Serializable;
 
 /**
- * The {@code Stringifier} for the long values.
+ * Abstract base serializable stringifiers.
  *
- * @author Illia Shepilov
+ * @param <T> the type to stringify
  * @author Alexander Yevsyukov
  */
-final class LongStringifier extends SerializableStringifier<Long> {
+public abstract class SerializableStringifier<T> extends Stringifier<T> implements Serializable {
 
     private static final long serialVersionUID = 0L;
 
-    private static final LongStringifier INSTANCE = new LongStringifier();
+    private final String identity;
 
-    private LongStringifier() {
-        super("Stringifiers.forLong()");
+    /**
+     * Creates a new instance with the passed identity.
+     *
+     * @param identity the identity of the stringifier, which is used in {@link #toString()}.
+     */
+    protected SerializableStringifier(String identity) {
+        super();
+        this.identity = identity;
     }
 
-    static LongStringifier getInstance() {
-        return INSTANCE;
-    }
-
+    /**
+     * Returns the identity of the stringifier.
+     */
     @Override
-    protected String toString(Long obj) {
-        return Longs.stringConverter()
-                    .reverse()
-                    .convert(obj);
-    }
-
-    @Override
-    protected Long fromString(String s) {
-        return Longs.stringConverter()
-                    .convert(s);
-    }
-
-    private Object readResolve() {
-        return INSTANCE;
+    public final String toString() {
+        return identity;
     }
 }
+

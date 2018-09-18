@@ -36,7 +36,7 @@ import static com.google.common.collect.Lists.newArrayList;
  * should be registered in the {@code StringifierRegistry} class
  * for the correct usage of the {@code ListStringifier}.
  *
- * <h3>Example</h3>
+ * <h1>Example</h1>
  * <pre>    {@code
  *   // Stringifier creation.
  *   final Stringifier<List<Integer>> listStringifier = Stringifiers.listStringifier();

@@ -18,44 +18,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.string;
-
-import com.google.common.primitives.Longs;
-
 /**
- * The {@code Stringifier} for the long values.
- *
- * @author Illia Shepilov
- * @author Alexander Yevsyukov
+ * This package provides stringifiers for network-related types.
  */
-final class LongStringifier extends SerializableStringifier<Long> {
 
-    private static final long serialVersionUID = 0L;
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.net.string;
 
-    private static final LongStringifier INSTANCE = new LongStringifier();
+import com.google.errorprone.annotations.CheckReturnValue;
 
-    private LongStringifier() {
-        super("Stringifiers.forLong()");
-    }
-
-    static LongStringifier getInstance() {
-        return INSTANCE;
-    }
-
-    @Override
-    protected String toString(Long obj) {
-        return Longs.stringConverter()
-                    .reverse()
-                    .convert(obj);
-    }
-
-    @Override
-    protected Long fromString(String s) {
-        return Longs.stringConverter()
-                    .convert(s);
-    }
-
-    private Object readResolve() {
-        return INSTANCE;
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;

@@ -22,19 +22,21 @@ package io.spine.string;
 
 import com.google.common.primitives.Ints;
 
-import java.io.Serializable;
-
 /**
  * The {@code Stringifier} for the integer values.
  *
  * @author Illia Shepilov
  * @author Alexander Yevsyukov
  */
-final class IntegerStringifier extends Stringifier<Integer> implements Serializable {
+final class IntegerStringifier extends SerializableStringifier<Integer> {
 
     private static final long serialVersionUID = 0L;
 
     private static final IntegerStringifier INSTANCE = new IntegerStringifier();
+
+    private IntegerStringifier() {
+        super("Stringifiers.forInteger()");
+    }
 
     static IntegerStringifier getInstance() {
         return INSTANCE;
@@ -51,11 +53,6 @@ final class IntegerStringifier extends Stringifier<Integer> implements Serializa
     protected Integer fromString(String s) {
         return Ints.stringConverter()
                    .convert(s);
-    }
-
-    @Override
-    public String toString() {
-        return "Stringifiers.forInteger()";
     }
 
     private Object readResolve() {

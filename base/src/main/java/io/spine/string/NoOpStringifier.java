@@ -20,8 +20,6 @@
 
 package io.spine.string;
 
-import java.io.Serializable;
-
 /**
  * The {@code Stringifier} for the {@code String} values.
  *
@@ -30,11 +28,15 @@ import java.io.Serializable;
  * @author Illia Shepilov
  * @author Alexander Yevsyukov
  */
-final class NoOpStringifier extends Stringifier<String> implements Serializable {
+final class NoOpStringifier extends SerializableStringifier<String> {
 
     private static final long serialVersionUID = 0L;
 
     private static final NoOpStringifier INSTANCE = new NoOpStringifier();
+
+    private NoOpStringifier() {
+        super("Stringifiers.forString()");
+    }
 
     static NoOpStringifier getInstance() {
         return INSTANCE;
@@ -48,11 +50,6 @@ final class NoOpStringifier extends Stringifier<String> implements Serializable 
     @Override
     protected String fromString(String s) {
         return s;
-    }
-
-    @Override
-    public String toString() {
-        return "Stringifiers.forString()";
     }
 
     private Object readResolve() {
