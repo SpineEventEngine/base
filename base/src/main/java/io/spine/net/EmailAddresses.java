@@ -65,9 +65,10 @@ public final class EmailAddresses {
         checkNotNull(value);
         checkArgument(isValid(value));
 
-        EmailAddress result = EmailAddress.newBuilder()
-                                          .setValue(value.toString())
-                                          .build();
+        EmailAddress result = EmailAddress
+                .newBuilder()
+                .setValue(value.toString())
+                .build();
         return result;
     }
 }
