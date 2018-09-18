@@ -21,9 +21,9 @@
 package io.spine.net;
 
 import io.spine.net.UrlRecord.Authorization;
+import io.spine.net.UrlRecord.Protocol;
 import io.spine.testing.UtilityClassTest;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -40,7 +40,10 @@ import static io.spine.net.UrlPrinter.printToString;
  */
 /* when we call the builder methods. */
 @SuppressWarnings("CheckReturnValue")
+@DisplayName("UrlPrinter should")
 class UrlPrinterTest extends UtilityClassTest<UrlPrinter> {
+
+    private static final String HOST = "spine.io";
 
     private static final Authorization AUTH =
             Authorization.newBuilder()
@@ -48,20 +51,18 @@ class UrlPrinterTest extends UtilityClassTest<UrlPrinter> {
                          .setPassword("root")
                          .build();
 
-    private static final String HOST = "spine.io";
-
     private static final UrlRecord FULL_RECORD =
             UrlRecord.newBuilder()
-                  .setHost(HOST)
-                  .setPort("80")
-                  .setProtocol(UrlRecord.Protocol.newBuilder()
-                                              .setSchema(UrlRecord.Schema.HTTP))
-                  .setAuth(AUTH)
-                  .setPath("index")
-                  .addQuery(UrlQueryParameters.parse("key=value"))
-                  .addQuery(UrlQueryParameters.parse("key2=value2"))
-                  .setFragment("frag1")
-                  .build();
+                     .setHost(HOST)
+                     .setPort("80")
+                     .setProtocol(Protocol.newBuilder()
+                                          .setSchema(UrlRecord.Schema.HTTP))
+                     .setAuth(AUTH)
+                     .setPath("index")
+                     .addQuery(UrlQueryParameters.parse("key=value"))
+                     .addQuery(UrlQueryParameters.parse("key2=value2"))
+                     .setFragment("frag1")
+                     .build();
 
     UrlPrinterTest() {
         super(UrlPrinter.class);
@@ -69,80 +70,52 @@ class UrlPrinterTest extends UtilityClassTest<UrlPrinter> {
 
     private static Stream<Arguments> recordAndResult() {
         return Stream.of(
-                Arguments.of(FULL_RECORD,
-                             "http://admin:root@spine.io:80/index?key=value&key2=value2#frag1"),
-                Arguments.of(UrlRecord.newBuilder()
-                                      .setHost(HOST)
-                                      .build(),
-                             HOST)
+                Arguments.of(
+                        FULL_RECORD,
+                        "http://admin:root@spine.io:80/index?key=value&key2=value2#frag1"
+                ),
+                Arguments.of(
+                        UrlRecord.newBuilder()
+                                 .setHost(HOST)
+                                 .build(),
+                        HOST
+                ),
+                Arguments.of(
+                        UrlRecord.newBuilder(FULL_RECORD)
+                                 .setAuth(Authorization.newBuilder(AUTH)
+                                                       .setPassword("")
+                                                       .build())
+                                 .build(),
+                        "http://admin@spine.io:80/index?key=value&key2=value2#frag1"
+                ),
+
+                Arguments.of(
+                        UrlRecord.newBuilder(FULL_RECORD)
+                                 .setAuth(Authorization.newBuilder(AUTH)
+                                                       .setUserName("")
+                                                       .build())
+                                 .build(),
+                        // As UrlPrinter assumes that we have already validated url,
+                        // it just ignores password if user is not set.
+                        "http://spine.io:80/index?key=value&key2=value2#frag1"
+                ),
+
+                Arguments.of(
+                        UrlRecord.newBuilder()
+                                 .setHost(HOST)
+                                 .setProtocol(Protocol.newBuilder()
+                                                      .setName("custom")
+                                                      .build())
+                                 .build(),
+                        "custom://" + HOST
+                )
         );
     }
 
     @ParameterizedTest
     @MethodSource("recordAndResult")
-    void verifyPrinting(UrlRecord record, String output) {
-        assertThat(printToString(record)).isEqualTo(output);
-    }
-
-    @Test
-    void print_valid_url() {
-        assertThat(printToString(FULL_RECORD))
-                .isEqualTo("http://admin:root@spine.io:80/index?key=value&key2=value2#frag1");
-    }
-
-    @Test
-    void print_empty_url() {
-        UrlRecord record = UrlRecord
-                .newBuilder()
-                .setHost(HOST)
-                .build();
-
-        assertThat(printToString(record))
-                .isEqualTo(HOST);
-    }
-
-    @Test
-    void print_url_without_password() {
-
-        UrlRecord record = UrlRecord
-                .newBuilder(FULL_RECORD)
-                .setAuth(Authorization.newBuilder(AUTH)
-                                      .setPassword("")
-                                      .build())
-                .build();
-
-        assertThat(printToString(record))
-                .isEqualTo("http://admin@spine.io:80/index?key=value&key2=value2#frag1");
-    }
-
-    @Test
-    void print_url_with_broken_auth() {
-        UrlRecord record = UrlRecord
-                .newBuilder(FULL_RECORD)
-                .setAuth(Authorization.newBuilder(AUTH)
-                                      .setUserName("")
-                                      .build())
-                .build();
-
-        // As UrlPrinter assumes that we have already validated url,
-        // it just ignores password if user is not set.
-        assertThat(printToString(record))
-                .isEqualTo("http://spine.io:80/index?key=value&key2=value2#frag1");
-    }
-
-    @Test
-    void print_url_with_custom_protocol() {
-        UrlRecord.Protocol protocol = UrlRecord.Protocol
-                .newBuilder()
-                .setName("custom")
-                .build();
-        UrlRecord record = UrlRecord
-                .newBuilder()
-                .setHost(HOST)
-                .setProtocol(protocol)
-                .build();
-
-        assertThat(printToString(record))
-                .isEqualTo("custom://" + HOST);
+    void verifyPrinting(UrlRecord record, String expectedOutput) {
+        String str = printToString(record);
+        assertThat(str).isEqualTo(expectedOutput);
     }
 }
