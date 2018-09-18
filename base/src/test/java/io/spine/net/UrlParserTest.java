@@ -20,19 +20,20 @@
 
 package io.spine.net;
 
-import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Tests {@link io.spine.net.UrlParser}.
  *
  * @author Mikhail Mikhaylov
  */
-@SuppressWarnings("DuplicateStringLiteralInspection")
-public class UrlParserShould {
+@DisplayName("UrlParser should parse")
+class UrlParserTest {
 
     private static final String HOST = "ulr-parser-should.com";
     private static final String HTTP_PROTOCOL = "http";
@@ -42,37 +43,41 @@ public class UrlParserShould {
     private static final String PORT = "8080";
 
     @Test
-    public void parse_protocol_and_host() {
+    @DisplayName("protocol and host")
+    void protocolAndHost() {
         UrlRecord record = new UrlParser(PROTOCOL_HOST).parse();
         assertEquals(HOST, record.getHost());
         assertEquals(UrlRecord.Schema.HTTP, record.getProtocol()
-                                                   .getSchema());
+                                                  .getSchema());
     }
 
     @Test
-    public void parse_host() {
+    @DisplayName("host")
+    void host() {
         UrlRecord record = new UrlParser(HOST).parse();
 
         assertEquals(HOST, record.getHost());
         assertEquals(UrlRecord.Schema.UNDEFINED, record.getProtocol()
-                                                        .getSchema());
+                                                       .getSchema());
     }
 
     @Test
-    public void parse_unknown_protocol() {
+    @DisplayName("unknown protocol")
+    void unknownProtocol() {
         UrlRecord record = new UrlParser(UNKNOWN_PROTOCOL_HOST).parse();
         assertEquals(UNKNOWN_PROTOCOL, record.getProtocol()
                                              .getName());
     }
 
     @Test
-    public void parse_credentials() {
+    @DisplayName("credentials")
+    void credentials() {
         String userName = "admin";
         String password = "root";
 
         String userUrl = HTTP_PROTOCOL + "://" + userName + '@' + HOST;
         String userPasswordUrl = HTTP_PROTOCOL + "://" + userName + ':' +
-                                 password + '@' + HOST;
+                password + '@' + HOST;
 
         UrlRecord record1 = new UrlParser(userUrl).parse();
         String user1 = record1.getAuth()
@@ -87,7 +92,8 @@ public class UrlParserShould {
     }
 
     @Test
-    public void parse_port() {
+    @DisplayName("port")
+    void port() {
         String url = HOST + ':' + PORT;
 
         UrlRecord parsedUrl = new UrlParser(url).parse();
@@ -96,7 +102,8 @@ public class UrlParserShould {
     }
 
     @Test
-    public void parse_path() {
+    @DisplayName("path")
+    void path() {
         String resource = "index/2";
         String rawUrl = HOST + '/' + resource;
 
@@ -106,7 +113,8 @@ public class UrlParserShould {
     }
 
     @Test
-    public void parse_fragment() {
+    @DisplayName("fragment")
+    void fragment() {
         String fragment = "reference";
         String rawUrl = HOST + "/index/2#" + fragment;
 
@@ -116,7 +124,8 @@ public class UrlParserShould {
     }
 
     @Test
-    public void parse_queries() {
+    @DisplayName("queries")
+    void queries() {
         String key1 = "key1";
         String key2 = "key2";
 
@@ -144,15 +153,18 @@ public class UrlParserShould {
     }
 
     @Test
-    public void parse_url_with_all_sub_items() {
-        String rawUrl =
-                "https://user:password@spine.io/index?auth=none&locale=us#fragment9";
+    @DisplayName("URL with all sub-items")
+    void urlWithAllSubItems() {
+        String rawUrl = "https://user:password@spine.io/index?auth=none&locale=us#fragment9";
 
         UrlRecord record = new UrlParser(rawUrl).parse();
 
-        assertEquals(UrlRecord.Schema.HTTPS, record.getProtocol().getSchema());
-        assertEquals("user", record.getAuth().getUserName());
-        assertEquals("password", record.getAuth().getPassword());
+        assertEquals(UrlRecord.Schema.HTTPS, record.getProtocol()
+                                                   .getSchema());
+        assertEquals("user", record.getAuth()
+                                   .getUserName());
+        assertEquals("password", record.getAuth()
+                                       .getPassword());
         assertEquals("spine.io", record.getHost());
         assertEquals("index", record.getPath());
         assertEquals("auth=none", UrlQueryParameters.toString(record.getQuery(0)));
