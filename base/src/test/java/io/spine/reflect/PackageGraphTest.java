@@ -22,7 +22,6 @@ package io.spine.reflect;
 
 import com.google.common.graph.ElementOrder;
 import com.google.common.graph.EndpointPair;
-import com.google.common.testing.EqualsTester;
 import com.google.common.testing.NullPointerTester;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -40,12 +39,11 @@ import java.util.function.Predicate;
 import java.util.logging.Logger;
 
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SuppressWarnings({
-        "InnerClassMayBeStatic",
-        "ClassCanBeStatic",
-})
 @DisplayName("PackageGraph should")
 class PackageGraphTest {
 

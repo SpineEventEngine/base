@@ -36,7 +36,7 @@ import static java.lang.Math.abs;
  *
  * @author Alexander Yevsyukov
  */
-public class Tests {
+public final class Tests {
 
     /** Prevent instantiation of this utility class. */
     private Tests() {
