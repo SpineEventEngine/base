@@ -93,7 +93,10 @@ public final class Environment {
      *
      * @return {@code true} if the code runs under a testing framework, {@code false} otherwise
      */
-    @SuppressWarnings("DynamicRegexReplaceableByCompiledPattern") // OK as we cache the result
+    @SuppressWarnings({
+            "DynamicRegexReplaceableByCompiledPattern", // OK as we cache the result
+            "DuplicateStringLiteralInspection" // used in another context
+    })
     public boolean isTests() {
         // If we cached the value before, return it.
         if (tests != null) {
