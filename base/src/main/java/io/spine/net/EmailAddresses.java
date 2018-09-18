@@ -20,6 +20,7 @@
 
 package io.spine.net;
 
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -44,10 +45,18 @@ public final class EmailAddresses {
         return EMAIL_ADDRESS;
     }
 
+    /**
+     * Verifies if the passed sequence is a valid email address.
+     */
+    public static boolean isValid(CharSequence value) {
+        Matcher matcher = pattern().matcher(value);
+        boolean result = matcher.matches();
+        return result;
+    }
+
     private static void checkArgumentIsEmailAddress(CharSequence value) {
         checkNotNull(value);
-        checkArgument(pattern().matcher(value)
-                               .matches());
+        checkArgument(isValid(value));
     }
 
     /**

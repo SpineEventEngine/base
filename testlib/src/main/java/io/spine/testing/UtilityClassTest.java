@@ -24,7 +24,10 @@ import com.google.common.testing.NullPointerTester;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Modifier;
+
 import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
+import static io.spine.testing.Tests.assertTrue;
 
 /**
  * Abstract base for utility classes tests.
@@ -59,6 +62,12 @@ public abstract class UtilityClassTest<T> {
         NullPointerTester tester = new NullPointerTester();
         setDefaults(tester);
         tester.testAllPublicStaticMethods(getUtilityClass());
+    }
+
+    @Test
+    @DisplayName("be final")
+    void checkFinal() {
+        assertTrue(Modifier.isFinal(utilityClass.getModifiers()));
     }
 
     /**
