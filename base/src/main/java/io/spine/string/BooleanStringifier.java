@@ -20,8 +20,6 @@
 
 package io.spine.string;
 
-import java.io.Serializable;
-
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
@@ -29,11 +27,15 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  * @author Alexander Yevsyukov
  */
-final class BooleanStringifier extends Stringifier<Boolean> implements Serializable {
+final class BooleanStringifier extends SerializableStringifier<Boolean> {
 
     private static final long serialVersionUID = 0L;
 
     private static final BooleanStringifier INSTANCE = new BooleanStringifier();
+
+    private BooleanStringifier() {
+        super("Stringifiers.forBoolean()");
+    }
 
     static BooleanStringifier getInstance() {
         return INSTANCE;
@@ -50,11 +52,6 @@ final class BooleanStringifier extends Stringifier<Boolean> implements Serializa
         checkNotNull(s);
         Boolean result = Boolean.parseBoolean(s);
         return result;
-    }
-
-    @Override
-    public String toString() {
-        return "Stringifiers.forBoolean()";
     }
 
     private Object readResolve() {

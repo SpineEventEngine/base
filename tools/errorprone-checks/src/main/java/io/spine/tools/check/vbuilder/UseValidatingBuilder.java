@@ -51,8 +51,9 @@ import static com.google.errorprone.matchers.Description.NO_MATCH;
 import static com.google.errorprone.matchers.Matchers.isSubtypeOf;
 
 /**
- * A custom Error Prone check that matches the usages of the ordinary {@linkplain Message.Builder}
- * and advices using {@linkplain ValidatingBuilder Spine Validating Builder} instead.
+ * A custom Error Prone check that matches the usages of the ordinary
+ * {@code Message.Builder} and advices using {@linkplain ValidatingBuilder Spine Validating Builder}
+ * instead.
  *
  * <p>Currently, it detects the erroneous statements and suggests fixes for them as follows:
  *
@@ -64,8 +65,8 @@ import static com.google.errorprone.matchers.Matchers.isSubtypeOf;
  * <li>{@code message.toBuilder()} -&gt; {@code MessageVBuilder.newBuilder().mergeFrom(message)}
  * </ul>
  *
- * <p>Usage of the {@linkplain Message.Builder} inside the generated {@linkplain Message messages}
- * and in the {@linkplain ValidatingBuilder validating builders} themselves is allowed.
+ * <p>Usage of the {@code Message.Builder} inside of the generated {@code Message messages} and
+ * in the {@linkplain ValidatingBuilder validating builders} themselves is allowed.
  *
  * @author Dmytro Kuzmin
  */

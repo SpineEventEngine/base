@@ -160,7 +160,7 @@ abstract class Quoter extends Converter<String, String> {
     }
 
     /**
-     * @throws IllegalArgumentException if the passed char sequence is not wrapped into {@code \"}
+     * Throws IllegalArgumentException if the passed char sequence is not wrapped into {@code \"}.
      */
     private static void checkQuoted(String str) {
         if (!(str.startsWith(BACKSLASH_QUOTE)

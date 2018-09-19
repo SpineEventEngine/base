@@ -20,7 +20,7 @@
 
 package io.spine.net;
 
-import io.spine.net.Url.Record.QueryParameter;
+import io.spine.net.Uri.QueryParameter;
 
 import java.util.List;
 
@@ -35,56 +35,48 @@ final class UrlPrinter {
     }
 
     /**
-     * Converts {@link Url} to String.
-     *
-     * <p>Does not perform any validation.
-     *
-     * @param url already valid {@link Url} instance
-     * @return String {@link Url} value
+     * Converts {@link Uri} to String.
      */
-    static String printToString(Url url) {
-        if (url.getValueCase() == Url.ValueCase.RAW) {
-            return url.getRaw();
-        }
-
+    static String printToString(Uri url) {
         // We don't know the capacity at this point
         @SuppressWarnings("StringBufferWithoutInitialCapacity") StringBuilder sb = new StringBuilder();
 
-        Url.Record record = url.getRecord();
-        appendProtocol(record, sb);
-        appendAuth(record, sb);
-        appendHost(record, sb);
-        appendPort(record, sb);
-        appendPath(record, sb);
-        appendQueries(record, sb);
-        appendFragment(record, sb);
+        appendProtocol(url, sb);
+        appendAuth(url, sb);
+        appendHost(url, sb);
+        appendPort(url, sb);
+        appendPath(url, sb);
+        appendQueries(url, sb);
+        appendFragment(url, sb);
 
         return sb.toString();
     }
 
-    private static void appendProtocol(Url.Record record, StringBuilder sb) {
+    private static void appendProtocol(Uri record, StringBuilder sb) {
         if (!record.hasProtocol()) {
             return;
         }
 
-        Url.Record.Protocol protocol = record.getProtocol();
-        if (protocol.getProtocolCase() == Url.Record.Protocol.ProtocolCase.NAME) {
+        Uri.Protocol protocol = record.getProtocol();
+        if (protocol.getProtocolCase() == Uri.Protocol.ProtocolCase.NAME) {
             sb.append(protocol.getName())
               .append(UrlParser.PROTOCOL_ENDING);
             return;
         }
 
-        sb.append(Schemas.getLowerCaseName(protocol.getSchema()))
+        sb.append(protocol.getSchema()
+                          .name()
+                          .toLowerCase())
           .append(UrlParser.PROTOCOL_ENDING);
     }
 
-    private static void appendAuth(Url.Record record, StringBuilder sb) {
+    private static void appendAuth(Uri record, StringBuilder sb) {
         if (!record.hasAuth() || record.getAuth()
-                                       .equals(Url.Record.Authorization.getDefaultInstance())) {
+                                       .equals(Uri.Authorization.getDefaultInstance())) {
             return;
         }
 
-        Url.Record.Authorization auth = record.getAuth();
+        Uri.Authorization auth = record.getAuth();
         String userName = auth.getUserName();
         String password = auth.getPassword();
 
@@ -101,11 +93,11 @@ final class UrlPrinter {
         sb.append(UrlParser.CREDENTIALS_ENDING);
     }
 
-    private static void appendHost(Url.Record record, StringBuilder sb) {
+    private static void appendHost(Uri record, StringBuilder sb) {
         sb.append(record.getHost());
     }
 
-    private static void appendPort(Url.Record record, StringBuilder sb) {
+    private static void appendPort(Uri record, StringBuilder sb) {
         String port = record.getPort();
         if (port.isEmpty()) {
             return;
@@ -115,7 +107,7 @@ final class UrlPrinter {
           .append(port);
     }
 
-    private static void appendPath(Url.Record record, StringBuilder sb) {
+    private static void appendPath(Uri record, StringBuilder sb) {
         String path = record.getPath();
         if (path.isEmpty()) {
             return;
@@ -125,7 +117,7 @@ final class UrlPrinter {
           .append(path);
     }
 
-    private static void appendQueries(Url.Record record, StringBuilder sb) {
+    private static void appendQueries(Uri record, StringBuilder sb) {
         List<QueryParameter> queryList = record.getQueryList();
 
         if (queryList.isEmpty()) {
@@ -144,7 +136,7 @@ final class UrlPrinter {
         }
     }
 
-    private static void appendFragment(Url.Record record, StringBuilder sb) {
+    private static void appendFragment(Uri record, StringBuilder sb) {
         String fragment = record.getFragment();
         if (fragment.isEmpty()) {
             return;

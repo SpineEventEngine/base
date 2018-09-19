@@ -21,7 +21,7 @@
 package io.spine.net;
 
 import com.google.common.collect.ImmutableMap;
-import io.spine.net.Url.Record.Schema;
+import io.spine.net.Uri.Schema;
 
 import java.util.Map;
 
@@ -36,7 +36,7 @@ final class Schemas {
 
     private static final Map<String, Schema> stringSchemas = buildSchemasMap();
 
-    /** Prevents instatiation of this utility class. */
+    /** Prevents instantiation of this utility class. */
     private Schemas() {
     }
 
@@ -55,23 +55,12 @@ final class Schemas {
         return stringSchemas.get(lowercaseValue);
     }
 
-    /**
-     * Obtains the lowercase schema name.
-     *
-     * @param schema {@link Schema} value
-     * @return String name
-     */
-    static String getLowerCaseName(Schema schema) {
-        checkNotNull(schema);
-        return schema.name()
-                     .toLowerCase();
-    }
-
     private static Map<String, Schema> buildSchemasMap() {
-        ImmutableMap.Builder<String, Schema> schemas = new ImmutableMap.Builder<>();
+        ImmutableMap.Builder<String, Schema> schemas = ImmutableMap.builder();
 
         for (Schema schema : Schema.values()) {
-            schemas.put(getLowerCaseName(schema), schema);
+            schemas.put(schema.name()
+                              .toLowerCase(), schema);
         }
 
         return schemas.build();

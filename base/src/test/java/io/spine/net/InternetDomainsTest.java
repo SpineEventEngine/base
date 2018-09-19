@@ -20,57 +20,71 @@
 
 package io.spine.net;
 
-import com.google.common.testing.NullPointerTester;
+import com.google.common.truth.BooleanSubject;
+import io.spine.testing.UtilityClassTest;
 import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
 
-import static io.spine.net.InternetDomains.pattern;
+import static com.google.common.truth.Truth.assertThat;
+import static io.spine.net.InternetDomains.isValid;
 import static io.spine.net.InternetDomains.valueOf;
-import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
+ * Tests of {@link io.spine.net.InternetDomains}.
+ *
  * @author Alexander Yevsyukov
  */
-@SuppressWarnings("DuplicateStringLiteralInspection")
-public class InternetDomainsShould {
+@DisplayName("InternetDomains utility class should")
+class InternetDomainsTest extends UtilityClassTest<InternetDomains> {
 
-    @Test
-    public void have_utility_ctor() {
-        assertHasPrivateParameterlessCtor(InternetDomains.class);
+    InternetDomainsTest() {
+        super(InternetDomains.class);
     }
 
     @Test
-    public void pass_null_tolerance_check() {
-        new NullPointerTester()
-                .testAllPublicStaticMethods(InternetDomains.class);
+    @DisplayName("validate char sequence")
+    void provide_matching_pattern() {
+        assertValid("spine.io");
+
+        assertValid("teamdev.com");
+        assertValid("a.com");
+        assertValid("boeng747.aero");
+
+        assertInvalid("192.168.0.1");
+        assertInvalid(".com");
+        assertInvalid("com");
+    }
+
+    private static void assertValid(String sequence) {
+        assertDomain(sequence).isTrue();
+    }
+
+    private static void assertInvalid(String sequence) {
+        assertDomain(sequence).isFalse();
+    }
+
+    private static BooleanSubject assertDomain(String email) {
+        return assertThat(isValid(email));
     }
 
     @Test
-    public void provide_matching_pattern() {
-        assertTrue(pattern().matcher("spine.io")
-                            .matches());
-
-        assertTrue(pattern().matcher("teamdev.com").matches());
-        assertTrue(pattern().matcher("a.com").matches());
-        assertTrue(pattern().matcher("boeng747.aero").matches());
-
-        assertFalse(pattern().matcher("192.168.0.1").matches());
-        assertFalse(pattern().matcher(".com").matches());
-        assertFalse(pattern().matcher("com").matches());
-    }
-
-    @Test
-    public void create_InternetDomain_instance() {
+    @DisplayName("create new instance")
+    void create() {
         String domainName = "example.org";
 
         assertEquals(domainName, valueOf(domainName).getValue());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     @SuppressWarnings("CheckReturnValue")
-    public void reject_invalid_name() {
-        valueOf("1.0");
+    void reject_invalid_name() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> valueOf("1.0")
+        );
     }
 }

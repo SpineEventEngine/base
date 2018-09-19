@@ -18,19 +18,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.net;
-
-import org.junit.Test;
-
-import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
-
 /**
- * @author Alexander Yevsyukov
+ * This package provides stringifiers for network-related types.
  */
-public class PatternsShould {
 
-    @Test
-    public void have_utility_ctor() {
-        assertHasPrivateParameterlessCtor(Patterns.class);
-    }
-}
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.net.string;
+
+import com.google.errorprone.annotations.CheckReturnValue;
+
+import javax.annotation.ParametersAreNonnullByDefault;

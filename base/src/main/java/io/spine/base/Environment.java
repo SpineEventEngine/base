@@ -35,6 +35,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 @SuppressWarnings("AccessOfSystemProperties") // OK as we need system properties for this class.
 public final class Environment {
 
+    private static final Environment INSTANCE = new Environment();
+
     /**
      * The key name of the system property which tells if a code runs under a testing framework.
      *
@@ -56,7 +58,7 @@ public final class Environment {
 
     /** Returns the singleton instance. */
     public static Environment getInstance() {
-        return Singleton.INSTANCE.value;
+        return INSTANCE;
     }
 
     /**
@@ -91,7 +93,10 @@ public final class Environment {
      *
      * @return {@code true} if the code runs under a testing framework, {@code false} otherwise
      */
-    @SuppressWarnings("DynamicRegexReplaceableByCompiledPattern") // OK as we cache the result
+    @SuppressWarnings({
+            "DynamicRegexReplaceableByCompiledPattern", // OK as we cache the result
+            "DuplicateStringLiteralInspection" // used in another context
+    })
     public boolean isTests() {
         // If we cached the value before, return it.
         if (tests != null) {
@@ -162,11 +167,5 @@ public final class Environment {
     public void reset() {
         this.tests = null;
         System.clearProperty(ENV_KEY_TESTS);
-    }
-
-    private enum Singleton {
-        INSTANCE;
-        @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Environment value = new Environment();
     }
 }

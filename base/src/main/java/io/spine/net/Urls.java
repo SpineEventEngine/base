@@ -20,10 +20,10 @@
 
 package io.spine.net;
 
-import io.spine.annotation.Experimental;
+import io.spine.net.string.NetStringifiers;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.util.Exceptions.newIllegalArgumentException;
 
 /**
  * Utility class for working with {@link Url}.
@@ -32,107 +32,39 @@ import static io.spine.util.Exceptions.newIllegalArgumentException;
  *
  * @author Mikhail Mikhaylov
  */
-@Experimental
-public class Urls {
+public final class Urls {
 
+    /** Prevent instantiation of this utility class. */
     private Urls() {
-        // Prevent instantiation of this utility class.
     }
 
     /**
-     * Converts {@link Url} with {@linkplain Url#getRaw() raw} data into the
-     * {@linkplain Url#getRecord() structurized} instance.
+     * Creates a new instance with the passed spec.
      *
-     * @param rawUrl {@link Url} a {@linkplain Url#getRaw() raw} instance
-     * @return {@link Url} with {@link io.spine.net.Url.Record Url.Record} instance
-     * @throws IllegalArgumentException if the argument is already structurized
+     * <p>It is assumed that the passed value is a valid URL. No special checking is performed.
+     *
+     * @param spec a valid, non-null and not-empty URL spec.
+     * @return new instance
      */
-    @SuppressWarnings("TypeMayBeWeakened")
-    public static Url structurize(Url rawUrl) {
-        checkNotNull(rawUrl);
-        if (rawUrl.getValueCase() != Url.ValueCase.RAW) {
-            throw newIllegalArgumentException("Given url is already built (%s)", rawUrl);
-        }
-
-        String rawUrlString = rawUrl.getRaw();
-
-        Url url = new UrlParser(rawUrlString).parse();
-
-        validate(url);
-
-        return url;
+    public static Url create(String spec) {
+        checkNotNull(spec);
+        checkArgument(spec.length() > 0);
+        Url result = NetStringifiers.forUrl()
+                                    .reverse()
+                                    .convert(spec);
+        return result;
     }
 
     /**
-     * Creates a {@link Url} from a string value.
+     * Performs String conversion for passed value.
      *
-     * <p>Does not perform any additional validation of the value, except
-     * calling {@link Urls#validate(Url)}.
-     *
-     * <p>The returned instance is {@linkplain #structurize(Url) structured}.
-     *
-     * @param rawUrlString raw URL String
-     * @return {@link Url} with {@link io.spine.net.Url.Record Url.Record} instance
-     */
-    public static Url create(String rawUrlString) {
-        checkNotNull(rawUrlString);
-        Url.Builder builder = Url.newBuilder()
-                                 .setRaw(rawUrlString);
-        Url rawUrl = structurize(builder.build());
-        return rawUrl;
-    }
-
-    /**
-     * Performs String conversion for given {@link Url}.
-     *
-     * @param url valid {@link Url} instance
+     * @param url a value to convert to string
      * @return String representation of the given URL
-     * @throws IllegalArgumentException if the argument is invalid
      */
     public static String toString(Url url) {
         checkNotNull(url);
-        validate(url);
-        String stringUrl = UrlPrinter.printToString(url);
-        return stringUrl;
-    }
-
-    /**
-     * Validates {@link Url} instance.
-     *
-     * <ul>
-     *     <li>{@link Url} with raw String is always valid.
-     *     <li>{@link Url} with not set value is always invalid.
-     *     <li>{@link Url} can not have empty host.
-     *     <li>{@link io.spine.net.Url.Record.Authorization Record.Authorization} can't have
-     *          password without having login.
-     * </ul>
-     *
-     * @param url {@link Url} instance
-     * @throws IllegalArgumentException in case of invalid {@link Url}
-     */
-    @SuppressWarnings("TypeMayBeWeakened")
-    public static void validate(Url url) {
-        checkNotNull(url);
-        if (url.getValueCase() == Url.ValueCase.VALUE_NOT_SET) {
-            throw new IllegalArgumentException("Url is empty");
-        }
-
-        if (url.getValueCase() == Url.ValueCase.RAW) {
-            return;
-        }
-
-        Url.Record record = url.getRecord();
-        String host = record.getHost();
-        if (host.isEmpty()) {
-            throw newIllegalArgumentException("Url host can not be empty (%s)", url);
-        }
-
-        Url.Record.Authorization auth = record.getAuth();
-        String user = auth.getUserName();
-        String password = auth.getPassword();
-
-        if (user.isEmpty() && !password.isEmpty()) {
-            throw new IllegalArgumentException("Url can't have password without having user name");
-        }
+        String result = NetStringifiers.forUrl()
+                                       .convert(url);
+        return result;
     }
 }

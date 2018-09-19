@@ -18,16 +18,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.net.string;
+
+import io.spine.net.Url;
+
 /**
- * The versions of the libraries used.
+ * The default stringifier for {@code Url}.
  *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
+ * @author Alexander Yevsyukov
  */
+final class UrlStringifier extends NetStringifier<Url> {
 
-final def SPINE_VERSION = '0.10.89-SNAPSHOT'
+    private static final long serialVersionUID = 0L;
+    private static final UrlStringifier INSTANCE = new UrlStringifier();
 
-ext {
-    spineVersion = SPINE_VERSION
-    versionToPublish = SPINE_VERSION
+    private UrlStringifier() {
+        super("NetStringifiers.forUrl()",
+              Url::getSpec,
+              (spec) -> Url.newBuilder()
+                           .setSpec(spec)
+                           .build());
+    }
+
+    static UrlStringifier getInstance() {
+        return INSTANCE;
+    }
+
+    private Object readResolve() {
+        return INSTANCE;
+    }
 }

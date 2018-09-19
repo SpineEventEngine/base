@@ -18,16 +18,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.util;
+
+import java.io.Serializable;
+import java.util.function.Function;
+
 /**
- * The versions of the libraries used.
+ * A function that computes an output value of type {@code R} from an input value of type
+ * {@code T} and is {@link Serializable}.
  *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
+ * @param <T> input value type
+ * @param <R> output value type
+ * @author Alexander Yevsyukov
  */
-
-final def SPINE_VERSION = '0.10.89-SNAPSHOT'
-
-ext {
-    spineVersion = SPINE_VERSION
-    versionToPublish = SPINE_VERSION
+@FunctionalInterface
+public interface SerializableFunction<T, R> extends Function<T, R>, Serializable {
 }

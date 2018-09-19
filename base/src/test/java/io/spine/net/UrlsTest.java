@@ -18,16 +18,41 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.net;
+
+import io.spine.testing.UtilityClassTest;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import static com.google.common.truth.Truth.assertThat;
+
 /**
- * The versions of the libraries used.
+ * Tests {@link io.spine.net.Url}.
  *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
+ * @author Mikhail Mikhaylov
  */
+@DisplayName("Urls utility class should")
+class UrlsTest extends UtilityClassTest<Urls> {
 
-final def SPINE_VERSION = '0.10.89-SNAPSHOT'
+    UrlsTest() {
+        super(Urls.class);
+    }
 
-ext {
-    spineVersion = SPINE_VERSION
-    versionToPublish = SPINE_VERSION
+    @Test
+    @DisplayName("create new instances")
+    void create() {
+        String expected = "http://convert-proper-url.com";
+        Url url = Urls.create(expected);
+
+        assertThat(url.getSpec()).isEqualTo(expected);
+    }
+
+    @Test
+    @DisplayName("convert instances to String")
+    void stringify() {
+        String expected = "http://foo-bar.com/index";
+
+        Url url = Urls.create(expected);
+        assertThat(Urls.toString(url)).isEqualTo(expected);
+    }
 }

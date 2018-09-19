@@ -20,17 +20,20 @@
 
 package io.spine.net;
 
-import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
+ * Tests {@link io.spine.net.UrlParser}.
+ *
  * @author Mikhail Mikhaylov
  */
-@SuppressWarnings("DuplicateStringLiteralInspection")
-public class UrlParserShould {
+@DisplayName("UrlParser should parse")
+class UrlParserTest {
 
     private static final String HOST = "ulr-parser-should.com";
     private static final String HTTP_PROTOCOL = "http";
@@ -40,92 +43,89 @@ public class UrlParserShould {
     private static final String PORT = "8080";
 
     @Test
-    public void parse_protocol_and_host() {
-        Url protocolHost = new UrlParser(PROTOCOL_HOST).parse();
-
-        Url.Record record = protocolHost.getRecord();
+    @DisplayName("protocol and host")
+    void protocolAndHost() {
+        Uri record = new UrlParser(PROTOCOL_HOST).parse();
         assertEquals(HOST, record.getHost());
-        assertEquals(Url.Record.Schema.HTTP, record.getProtocol()
-                                                   .getSchema());
+        assertEquals(Uri.Schema.HTTP, record.getProtocol()
+                                            .getSchema());
     }
 
     @Test
-    public void parse_host() {
-        Url protocolHost = new UrlParser(HOST).parse();
-
-        Url.Record record = protocolHost.getRecord();
+    @DisplayName("host")
+    void host() {
+        Uri record = new UrlParser(HOST).parse();
 
         assertEquals(HOST, record.getHost());
-        assertEquals(Url.Record.Schema.UNDEFINED, record.getProtocol()
-                                                        .getSchema());
+        assertEquals(Uri.Schema.UNDEFINED, record.getProtocol()
+                                                 .getSchema());
     }
 
     @Test
-    public void parse_unknown_protocol() {
-        Url protocolHost = new UrlParser(UNKNOWN_PROTOCOL_HOST).parse();
-
-        Url.Record record = protocolHost.getRecord();
+    @DisplayName("unknown protocol")
+    void unknownProtocol() {
+        Uri record = new UrlParser(UNKNOWN_PROTOCOL_HOST).parse();
         assertEquals(UNKNOWN_PROTOCOL, record.getProtocol()
                                              .getName());
     }
 
     @Test
-    public void parse_credentials() {
+    @DisplayName("credentials")
+    void credentials() {
         String userName = "admin";
         String password = "root";
 
         String userUrl = HTTP_PROTOCOL + "://" + userName + '@' + HOST;
         String userPasswordUrl = HTTP_PROTOCOL + "://" + userName + ':' +
-                                 password + '@' + HOST;
+                password + '@' + HOST;
 
-        Url.Record record1 = new UrlParser(userUrl).parse()
-                                                   .getRecord();
+        Uri record1 = new UrlParser(userUrl).parse();
         String user1 = record1.getAuth()
                               .getUserName();
         assertEquals(userName, user1);
 
-        Url.Record record2 = new UrlParser(userPasswordUrl).parse()
-                                                           .getRecord();
-        Url.Record.Authorization auth2 = record2.getAuth();
+        Uri record2 = new UrlParser(userPasswordUrl).parse();
+        Uri.Authorization auth2 = record2.getAuth();
         String user2 = auth2.getUserName();
         assertEquals(userName, user2);
         assertEquals(password, auth2.getPassword());
     }
 
     @Test
-    public void parse_port() {
+    @DisplayName("port")
+    void port() {
         String url = HOST + ':' + PORT;
 
-        Url parsedUrl = new UrlParser(url).parse();
+        Uri parsedUrl = new UrlParser(url).parse();
 
-        assertEquals(PORT, parsedUrl.getRecord()
-                                    .getPort());
+        assertEquals(PORT, parsedUrl.getPort());
     }
 
     @Test
-    public void parse_path() {
+    @DisplayName("path")
+    void path() {
         String resource = "index/2";
         String rawUrl = HOST + '/' + resource;
 
-        Url url = new UrlParser(rawUrl).parse();
+        Uri url = new UrlParser(rawUrl).parse();
 
-        assertEquals(resource, url.getRecord()
-                                  .getPath());
+        assertEquals(resource, url.getPath());
     }
 
     @Test
-    public void parse_fragment() {
+    @DisplayName("fragment")
+    void fragment() {
         String fragment = "reference";
         String rawUrl = HOST + "/index/2#" + fragment;
 
-        Url url = new UrlParser(rawUrl).parse();
+        Uri url = new UrlParser(rawUrl).parse();
 
-        assertEquals(fragment, url.getRecord()
-                                  .getFragment());
+        assertEquals(fragment, url.getFragment());
     }
 
     @Test
-    public void parse_queries() {
+    @DisplayName("queries")
+    void queries() {
         String key1 = "key1";
         String key2 = "key2";
 
@@ -137,15 +137,14 @@ public class UrlParserShould {
 
         String rawUrl = HOST + '?' + query1 + '&' + query2;
 
-        Url url = new UrlParser(rawUrl).parse();
+        Uri url = new UrlParser(rawUrl).parse();
 
-        List<Url.Record.QueryParameter> queries = url.getRecord()
-                                                     .getQueryList();
+        List<Uri.QueryParameter> queries = url.getQueryList();
 
         assertEquals(2, queries.size());
 
-        Url.Record.QueryParameter queryInstance1 = queries.get(0);
-        Url.Record.QueryParameter queryInstance2 = queries.get(1);
+        Uri.QueryParameter queryInstance1 = queries.get(0);
+        Uri.QueryParameter queryInstance2 = queries.get(1);
 
         assertEquals(key1, queryInstance1.getKey());
         assertEquals(value1, queryInstance1.getValue());
@@ -154,16 +153,18 @@ public class UrlParserShould {
     }
 
     @Test
-    public void parse_url_with_all_sub_items() {
-        String rawUrl =
-                "https://user:password@spine.io/index?auth=none&locale=us#fragment9";
+    @DisplayName("URL with all sub-items")
+    void urlWithAllSubItems() {
+        String rawUrl = "https://user:password@spine.io/index?auth=none&locale=us#fragment9";
 
-        Url.Record record = new UrlParser(rawUrl).parse()
-                                                 .getRecord();
+        Uri record = new UrlParser(rawUrl).parse();
 
-        assertEquals(Url.Record.Schema.HTTPS, record.getProtocol().getSchema());
-        assertEquals("user", record.getAuth().getUserName());
-        assertEquals("password", record.getAuth().getPassword());
+        assertEquals(Uri.Schema.HTTPS, record.getProtocol()
+                                             .getSchema());
+        assertEquals("user", record.getAuth()
+                                   .getUserName());
+        assertEquals("password", record.getAuth()
+                                       .getPassword());
         assertEquals("spine.io", record.getHost());
         assertEquals("index", record.getPath());
         assertEquals("auth=none", UrlQueryParameters.toString(record.getQuery(0)));

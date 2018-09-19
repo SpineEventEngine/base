@@ -18,16 +18,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.net;
+
+import io.spine.testing.UtilityClassTest;
+import org.junit.jupiter.api.Test;
+
+import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
+
 /**
- * The versions of the libraries used.
+ * Tests for {@link io.spine.net.Patterns}.
  *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
+ * @author Alexander Yevsyukov
  */
+class PatternsTest extends UtilityClassTest<Patterns> {
 
-final def SPINE_VERSION = '0.10.89-SNAPSHOT'
-
-ext {
-    spineVersion = SPINE_VERSION
-    versionToPublish = SPINE_VERSION
+    PatternsTest() {
+        super(Patterns.class);
+    }
 }
