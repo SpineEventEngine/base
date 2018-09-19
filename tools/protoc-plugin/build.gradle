@@ -24,9 +24,9 @@ group 'io.spine.tools'
 
 dependencies {
     implementation project(':base')
-
     implementation deps.gen.javaPoet
-    testProtobuf project(':base')
+
+    testCompile project(':base')
 }
 
 protobuf {
