@@ -52,7 +52,7 @@ public final class InternetDomains {
     /**
      * Verifies if the passed sequence is a valid internet domain name.
      */
-    public static boolean isValid(CharSequence name) {
+    public static boolean isValid(String name) {
         Matcher matcher = pattern().matcher(name);
         boolean result = matcher.matches();
         return result;
@@ -75,12 +75,12 @@ public final class InternetDomains {
      * @return new {@code InternetDomain} instance
      * @throws IllegalArgumentException if the passed domain name is not valid
      */
-    public static InternetDomain valueOf(CharSequence name) {
+    public static InternetDomain valueOf(String name) {
         checkNotNull(name);
         checkArgument(isValid(name));
         InternetDomain result = NetStringifiers.forInternetDomain()
                                                .reverse()
-                                               .convert(name.toString());
+                                               .convert(name);
         return result;
     }
 }

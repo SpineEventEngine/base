@@ -50,7 +50,7 @@ public final class EmailAddresses {
     /**
      * Verifies if the passed sequence is a valid email address.
      */
-    public static boolean isValid(CharSequence value) {
+    public static boolean isValid(String value) {
         Matcher matcher = pattern().matcher(value);
         boolean result = matcher.matches();
         return result;
@@ -73,12 +73,12 @@ public final class EmailAddresses {
      * @return new {@code EmailAddress} instance
      * @throws IllegalArgumentException if the passed email address is not valid
      */
-    public static EmailAddress valueOf(CharSequence value) {
+    public static EmailAddress valueOf(String value) {
         checkNotNull(value);
         checkArgument(isValid(value));
         EmailAddress result = NetStringifiers.forEmailAddress()
                                              .reverse()
-                                             .convert(value.toString());
+                                             .convert(value);
         return result;
     }
 }

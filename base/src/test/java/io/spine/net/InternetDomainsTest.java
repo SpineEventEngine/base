@@ -59,15 +59,15 @@ class InternetDomainsTest extends UtilityClassTest<InternetDomains> {
         assertInvalid("com");
     }
 
-    private static void assertValid(CharSequence sequence) {
+    private static void assertValid(String sequence) {
         assertDomain(sequence).isTrue();
     }
 
-    private static void assertInvalid(CharSequence sequence) {
+    private static void assertInvalid(String sequence) {
         assertDomain(sequence).isFalse();
     }
 
-    private static BooleanSubject assertDomain(CharSequence email) {
+    private static BooleanSubject assertDomain(String email) {
         return assertThat(isValid(email));
     }
 

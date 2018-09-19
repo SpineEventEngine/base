@@ -54,15 +54,15 @@ class EmailAddressesTest extends UtilityClassTest<EmailAddresses> {
         assertInvalid("user @ site.com");
     }
 
-    private static void assertValid(CharSequence sequence) {
+    private static void assertValid(String sequence) {
         assertEmail(sequence).isTrue();
     }
 
-    private static void assertInvalid(CharSequence sequence) {
+    private static void assertInvalid(String sequence) {
         assertEmail(sequence).isFalse();
     }
 
-    private static BooleanSubject assertEmail(CharSequence email) {
+    private static BooleanSubject assertEmail(String email) {
         return assertThat(isValid(email));
     }
 
