@@ -32,6 +32,8 @@ apply plugin: 'com.google.protobuf'
 apply from: deps.scripts.testArtifacts
 
 dependencies {
+    protobuf deps.build.protobuf
+
     testImplementation project(path: ":testlib")
 }
 
