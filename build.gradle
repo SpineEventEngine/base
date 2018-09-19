@@ -201,13 +201,7 @@ subprojects {
     }
 
     apply from: deps.scripts.testOutput
-
-    javadoc {
-        source = sourceSets.main.allJava
-        options.tags = ["apiNote:a:API Note:",
-                        "implSpec:a:Implementation Requirements:",
-                        "implNote:a:Implementation Note:"]
-    }
+    apply from: deps.scripts.addJavadocTags
 
     tasks.withType(JavaCompile) {
         options.compilerArgs += [
