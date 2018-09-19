@@ -16,6 +16,7 @@ message Url {
     reserved 1 to 2;
     reserved "raw";
     reserved "record";
+    reserved "value";
 
     // The value of the URL.
     //
