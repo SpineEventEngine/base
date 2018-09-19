@@ -32,6 +32,7 @@ apply plugin: 'com.google.protobuf'
 apply from: deps.scripts.testArtifacts
 
 dependencies {
+    // Re-generate standard Proto types, so they are included in `known_types.desc`.
     protobuf deps.build.protobuf
 
     testImplementation project(path: ":testlib")
@@ -61,9 +62,11 @@ sourceSets {
     }
 }
 
-clean {
-    delete "$projectDir/generated"
+task cleanGenerated(type: Delete) {
+    delete = "$projectDir/generated"
 }
+
+clean.dependsOn cleanGenerated
 
 jar {
     // See `base-validating-builders/README.md`.
