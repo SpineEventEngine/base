@@ -50,21 +50,18 @@ public final class Registrar {
 
     /**
      * Registers stringifiers.
-     *
-     * <p>If the registry already contains an entry for the type handled by one of the passed
-     * stringifiers, it will not be replaced.
      */
     public void register() {
         StringifierRegistry registry = StringifierRegistry.getInstance();
-        for (Stringifier<?> stringifier : stringifiers) {
+        stringifiers.forEach((stringifier) -> {
             Class<?> dataClass = getDataClass(stringifier.getClass());
-            if (!registry.get(dataClass)
-                         .isPresent()) {
-                registry.register(stringifier, dataClass);
-            }
-        }
+            registry.register(stringifier, dataClass);
+        });
     }
 
+    /**
+     * Obtains the class handled by the passed class of stringifiers.
+     */
     private static Class<?> getDataClass(Class<? extends Stringifier> stringifierClass) {
         TypeToken<?> supertypeToken = TypeToken.of(stringifierClass)
                                                .getSupertype(Stringifier.class);
