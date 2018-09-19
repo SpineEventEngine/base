@@ -21,7 +21,6 @@
 package io.spine.net.string;
 
 import io.spine.net.InternetDomain;
-import io.spine.net.InternetDomains;
 
 /**
  * Default stringifier for {@code InternetDomain}.
@@ -35,8 +34,10 @@ final class InternetDomainStringifier extends NetStringifier<InternetDomain> {
 
     private InternetDomainStringifier() {
         super("NetStringifiers.forInternetDomain()",
-              InternetDomains::toString,
-              InternetDomains::valueOf);
+              InternetDomain::getValue,
+              (s -> InternetDomain.newBuilder()
+                                  .setValue(s)
+                                  .build()));
     }
 
     static InternetDomainStringifier getInstance() {

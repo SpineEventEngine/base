@@ -21,7 +21,6 @@
 package io.spine.net.string;
 
 import io.spine.net.Url;
-import io.spine.net.Urls;
 
 /**
  * The default stringifier for {@code Url}.
@@ -35,8 +34,10 @@ final class UrlStringifier extends NetStringifier<Url> {
 
     private UrlStringifier() {
         super("NetStringifiers.forUrl()",
-              Urls::toString,
-              Urls::create);
+              Url::getSpec,
+              (spec) -> Url.newBuilder()
+                           .setSpec(spec)
+                           .build());
     }
 
     static UrlStringifier getInstance() {

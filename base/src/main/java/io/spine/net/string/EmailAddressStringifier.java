@@ -21,7 +21,6 @@
 package io.spine.net.string;
 
 import io.spine.net.EmailAddress;
-import io.spine.net.EmailAddresses;
 
 /**
  * The default stringifier for {@link EmailAddress}.
@@ -35,8 +34,10 @@ final class EmailAddressStringifier extends NetStringifier<EmailAddress> {
 
     private EmailAddressStringifier() {
         super("NetStringifiers.forEmailAddress()",
-              EmailAddresses::toString,
-              EmailAddresses::valueOf);
+              EmailAddress::getValue,
+              (s) -> EmailAddress.newBuilder()
+                                 .setValue(s)
+                                 .build());
     }
 
     static EmailAddressStringifier getInstance() {

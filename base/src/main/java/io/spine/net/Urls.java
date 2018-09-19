@@ -20,6 +20,8 @@
 
 package io.spine.net;
 
+import io.spine.net.string.NetStringifiers;
+
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -47,9 +49,10 @@ public final class Urls {
     public static Url create(String spec) {
         checkNotNull(spec);
         checkArgument(spec.length() > 0);
-        Url.Builder result = Url.newBuilder()
-                                .setSpec(spec);
-        return result.build();
+        Url result = NetStringifiers.forUrl()
+                                    .reverse()
+                                    .convert(spec);
+        return result;
     }
 
     /**
@@ -60,6 +63,8 @@ public final class Urls {
      */
     public static String toString(Url url) {
         checkNotNull(url);
-        return url.getSpec();
+        String result = NetStringifiers.forUrl()
+                                       .convert(url);
+        return result;
     }
 }

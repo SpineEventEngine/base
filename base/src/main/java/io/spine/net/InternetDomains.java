@@ -20,6 +20,8 @@
 
 package io.spine.net;
 
+import io.spine.net.string.NetStringifiers;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -61,7 +63,9 @@ public final class InternetDomains {
      */
     public static String toString(InternetDomain domain) {
         checkNotNull(domain);
-        return domain.getValue();
+        String result = NetStringifiers.forInternetDomain()
+                                       .convert(domain);
+        return result;
     }
 
     /**
@@ -74,11 +78,9 @@ public final class InternetDomains {
     public static InternetDomain valueOf(CharSequence name) {
         checkNotNull(name);
         checkArgument(isValid(name));
-
-        InternetDomain result = InternetDomain
-                .newBuilder()
-                .setValue(name.toString())
-                .build();
+        InternetDomain result = NetStringifiers.forInternetDomain()
+                                               .reverse()
+                                               .convert(name.toString());
         return result;
     }
 }

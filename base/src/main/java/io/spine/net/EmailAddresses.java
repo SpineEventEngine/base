@@ -20,6 +20,8 @@
 
 package io.spine.net;
 
+import io.spine.net.string.NetStringifiers;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -59,7 +61,9 @@ public final class EmailAddresses {
      */
     public static String toString(EmailAddress address) {
         checkNotNull(address);
-        return address.getValue();
+        String result = NetStringifiers.forEmailAddress()
+                                       .convert(address);
+        return result;
     }
 
     /**
@@ -72,11 +76,9 @@ public final class EmailAddresses {
     public static EmailAddress valueOf(CharSequence value) {
         checkNotNull(value);
         checkArgument(isValid(value));
-
-        EmailAddress result = EmailAddress
-                .newBuilder()
-                .setValue(value.toString())
-                .build();
+        EmailAddress result = NetStringifiers.forEmailAddress()
+                                             .reverse()
+                                             .convert(value.toString());
         return result;
     }
 }
