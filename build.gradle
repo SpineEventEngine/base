@@ -238,9 +238,11 @@ subprojects {
         }
     }
 
-    clean {
+    task cleanGenerated(type: Delete) {
         delete = "$projectDir/generated"
     }
+
+    clean.dependsOn cleanGenerated
 }
 
 // IDEA project configuration.

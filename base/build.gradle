@@ -62,12 +62,6 @@ sourceSets {
     }
 }
 
-task cleanGenerated(type: Delete) {
-    delete = "$projectDir/generated"
-}
-
-clean.dependsOn cleanGenerated
-
 jar {
     // See `base-validating-builders/README.md`.
     from "$rootDir/base-validating-builders/builders"
