@@ -13,10 +13,9 @@ option java_outer_classname = "UrlProto";
 //
 message Url {
 
+    // Reservation of the previously deprecated field indexes and names.
     reserved 1 to 2;
-    reserved "raw";
-    reserved "record";
-    reserved "value";
+    reserved "raw", "record", "value";
 
     // The value of the URL.
     //
