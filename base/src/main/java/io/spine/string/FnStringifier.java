@@ -25,7 +25,7 @@ import io.spine.util.SerializableFunction;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Abstract base for stringifiers that convert values using method references.
+ * Abstract base for stringifiers that convert values using function objects.
  *
  * @author Alexander Yevsyukov
  */

@@ -33,6 +33,7 @@ apply from: deps.scripts.testArtifacts
 
 dependencies {
     // Re-generate standard Proto types, so they are included in `known_types.desc`.
+    //noinspection GroovyAssignabilityCheck
     protobuf deps.build.protobuf
 
     testImplementation project(path: ":testlib")
@@ -62,12 +63,6 @@ sourceSets {
     }
 }
 
-task cleanGenerated(type: Delete) {
-    delete = "$projectDir/generated"
-}
-
-clean.dependsOn cleanGenerated
-
 jar {
     // See `base-validating-builders/README.md`.
     from "$rootDir/base-validating-builders/builders"
@@ -83,11 +78,22 @@ build.doLast {
     }
     command.add('build')
     command.add('--console=plain')
+
+    // Ensure build error output log. 
+    // Since we're executing this task in another process, we redirect error output to 
+    // the file under the `build` directory.  
+    final File buildDir = new File(directory, "build")
+    if (!buildDir.exists()) {
+        buildDir.mkdir()
+    }
+    final File errorOut = new File(buildDir, 'error-out.txt')
+
     final def process = new ProcessBuilder()
             .command(command)
             .directory(file(directory))
+            .redirectError(errorOut)
             .start()
     if (process.waitFor() != 0) {
-        throw new GradleException("Unable to build validating builders.")
+        throw new GradleException("Unable to build validating builders. See $errorOut for details.")
     }
 }

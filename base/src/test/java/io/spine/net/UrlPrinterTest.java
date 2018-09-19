@@ -20,8 +20,8 @@
 
 package io.spine.net;
 
-import io.spine.net.UrlRecord.Authorization;
-import io.spine.net.UrlRecord.Protocol;
+import io.spine.net.Uri.Authorization;
+import io.spine.net.Uri.Protocol;
 import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -51,18 +51,18 @@ class UrlPrinterTest extends UtilityClassTest<UrlPrinter> {
                          .setPassword("root")
                          .build();
 
-    private static final UrlRecord FULL_RECORD =
-            UrlRecord.newBuilder()
-                     .setHost(HOST)
-                     .setPort("80")
-                     .setProtocol(Protocol.newBuilder()
-                                          .setSchema(UrlRecord.Schema.HTTP))
-                     .setAuth(AUTH)
-                     .setPath("index")
-                     .addQuery(UrlQueryParameters.parse("key=value"))
-                     .addQuery(UrlQueryParameters.parse("key2=value2"))
-                     .setFragment("frag1")
-                     .build();
+    private static final Uri FULL_RECORD =
+            Uri.newBuilder()
+               .setHost(HOST)
+               .setPort("80")
+               .setProtocol(Protocol.newBuilder()
+                                          .setSchema(Uri.Schema.HTTP))
+               .setAuth(AUTH)
+               .setPath("index")
+               .addQuery(UrlQueryParameters.parse("key=value"))
+               .addQuery(UrlQueryParameters.parse("key2=value2"))
+               .setFragment("frag1")
+               .build();
 
     UrlPrinterTest() {
         super(UrlPrinter.class);
@@ -75,38 +75,38 @@ class UrlPrinterTest extends UtilityClassTest<UrlPrinter> {
                         "http://admin:root@spine.io:80/index?key=value&key2=value2#frag1"
                 ),
                 Arguments.of(
-                        UrlRecord.newBuilder()
-                                 .setHost(HOST)
-                                 .build(),
+                        Uri.newBuilder()
+                           .setHost(HOST)
+                           .build(),
                         HOST
                 ),
                 Arguments.of(
-                        UrlRecord.newBuilder(FULL_RECORD)
-                                 .setAuth(Authorization.newBuilder(AUTH)
+                        Uri.newBuilder(FULL_RECORD)
+                           .setAuth(Authorization.newBuilder(AUTH)
                                                        .setPassword("")
                                                        .build())
-                                 .build(),
+                           .build(),
                         "http://admin@spine.io:80/index?key=value&key2=value2#frag1"
                 ),
 
                 Arguments.of(
-                        UrlRecord.newBuilder(FULL_RECORD)
-                                 .setAuth(Authorization.newBuilder(AUTH)
+                        Uri.newBuilder(FULL_RECORD)
+                           .setAuth(Authorization.newBuilder(AUTH)
                                                        .setUserName("")
                                                        .build())
-                                 .build(),
+                           .build(),
                         // As UrlPrinter assumes that we have already validated url,
                         // it just ignores password if user is not set.
                         "http://spine.io:80/index?key=value&key2=value2#frag1"
                 ),
 
                 Arguments.of(
-                        UrlRecord.newBuilder()
-                                 .setHost(HOST)
-                                 .setProtocol(Protocol.newBuilder()
+                        Uri.newBuilder()
+                           .setHost(HOST)
+                           .setProtocol(Protocol.newBuilder()
                                                       .setName("custom")
                                                       .build())
-                                 .build(),
+                           .build(),
                         "custom://" + HOST
                 )
         );
@@ -114,7 +114,7 @@ class UrlPrinterTest extends UtilityClassTest<UrlPrinter> {
 
     @ParameterizedTest
     @MethodSource("recordAndResult")
-    void verifyPrinting(UrlRecord record, String expectedOutput) {
+    void verifyPrinting(Uri record, String expectedOutput) {
         String str = printToString(record);
         assertThat(str).isEqualTo(expectedOutput);
     }

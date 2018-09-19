@@ -20,7 +20,7 @@
 
 package io.spine.net;
 
-import io.spine.net.UrlRecord.QueryParameter;
+import io.spine.net.Uri.QueryParameter;
 import io.spine.testing.UtilityClassTest;
 import org.junit.Rule;
 import org.junit.jupiter.api.DisplayName;

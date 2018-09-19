@@ -21,12 +21,12 @@
 package io.spine.net;
 
 import com.google.common.base.Splitter;
-import io.spine.net.UrlRecord.Protocol;
-import io.spine.net.UrlRecord.QueryParameter;
-import io.spine.net.UrlRecord.Schema;
+import io.spine.net.Uri.Protocol;
+import io.spine.net.Uri.QueryParameter;
+import io.spine.net.Uri.Schema;
 
 /**
- * Parses given URL to {@link UrlRecord} instance.
+ * Parses given URL to {@link Uri} instance.
  *
  * @author Mikhail Mikhaylov
  * @author Alexander Yevsyukov
@@ -48,7 +48,7 @@ final class UrlParser {
 
     private final String originalUrl;
 
-    private UrlRecord.Builder record;
+    private Uri.Builder record;
     private String unProcessedInput;
 
     /**
@@ -63,7 +63,7 @@ final class UrlParser {
     /**
      * Performs the parsing.
      */
-    UrlRecord parse() {
+    Uri parse() {
         init();
 
         parseProtocol();
@@ -79,7 +79,7 @@ final class UrlParser {
 
     /** Initializes the parser. */
     private void init() {
-        record = UrlRecord.newBuilder();
+        record = Uri.newBuilder();
         unProcessedInput = originalUrl;
     }
 
@@ -124,7 +124,7 @@ final class UrlParser {
         String credential = unProcessedInput.substring(0, credentialsEndingIndex);
         unProcessedInput = unProcessedInput.substring(credentialsEndingIndex + 1);
 
-        UrlRecord.Authorization.Builder auth = UrlRecord.Authorization.newBuilder();
+        Uri.Authorization.Builder auth = Uri.Authorization.newBuilder();
 
         int credentialsSeparatorIndex = credential.indexOf(CREDENTIALS_SEPARATOR);
         if (credentialsSeparatorIndex != -1) {

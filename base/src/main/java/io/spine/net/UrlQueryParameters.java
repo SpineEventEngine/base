@@ -20,7 +20,7 @@
 
 package io.spine.net;
 
-import io.spine.net.UrlRecord.QueryParameter;
+import io.spine.net.Uri.QueryParameter;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;

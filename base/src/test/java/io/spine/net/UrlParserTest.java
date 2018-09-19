@@ -45,26 +45,26 @@ class UrlParserTest {
     @Test
     @DisplayName("protocol and host")
     void protocolAndHost() {
-        UrlRecord record = new UrlParser(PROTOCOL_HOST).parse();
+        Uri record = new UrlParser(PROTOCOL_HOST).parse();
         assertEquals(HOST, record.getHost());
-        assertEquals(UrlRecord.Schema.HTTP, record.getProtocol()
-                                                  .getSchema());
+        assertEquals(Uri.Schema.HTTP, record.getProtocol()
+                                            .getSchema());
     }
 
     @Test
     @DisplayName("host")
     void host() {
-        UrlRecord record = new UrlParser(HOST).parse();
+        Uri record = new UrlParser(HOST).parse();
 
         assertEquals(HOST, record.getHost());
-        assertEquals(UrlRecord.Schema.UNDEFINED, record.getProtocol()
-                                                       .getSchema());
+        assertEquals(Uri.Schema.UNDEFINED, record.getProtocol()
+                                                 .getSchema());
     }
 
     @Test
     @DisplayName("unknown protocol")
     void unknownProtocol() {
-        UrlRecord record = new UrlParser(UNKNOWN_PROTOCOL_HOST).parse();
+        Uri record = new UrlParser(UNKNOWN_PROTOCOL_HOST).parse();
         assertEquals(UNKNOWN_PROTOCOL, record.getProtocol()
                                              .getName());
     }
@@ -79,13 +79,13 @@ class UrlParserTest {
         String userPasswordUrl = HTTP_PROTOCOL + "://" + userName + ':' +
                 password + '@' + HOST;
 
-        UrlRecord record1 = new UrlParser(userUrl).parse();
+        Uri record1 = new UrlParser(userUrl).parse();
         String user1 = record1.getAuth()
                               .getUserName();
         assertEquals(userName, user1);
 
-        UrlRecord record2 = new UrlParser(userPasswordUrl).parse();
-        UrlRecord.Authorization auth2 = record2.getAuth();
+        Uri record2 = new UrlParser(userPasswordUrl).parse();
+        Uri.Authorization auth2 = record2.getAuth();
         String user2 = auth2.getUserName();
         assertEquals(userName, user2);
         assertEquals(password, auth2.getPassword());
@@ -96,7 +96,7 @@ class UrlParserTest {
     void port() {
         String url = HOST + ':' + PORT;
 
-        UrlRecord parsedUrl = new UrlParser(url).parse();
+        Uri parsedUrl = new UrlParser(url).parse();
 
         assertEquals(PORT, parsedUrl.getPort());
     }
@@ -107,7 +107,7 @@ class UrlParserTest {
         String resource = "index/2";
         String rawUrl = HOST + '/' + resource;
 
-        UrlRecord url = new UrlParser(rawUrl).parse();
+        Uri url = new UrlParser(rawUrl).parse();
 
         assertEquals(resource, url.getPath());
     }
@@ -118,7 +118,7 @@ class UrlParserTest {
         String fragment = "reference";
         String rawUrl = HOST + "/index/2#" + fragment;
 
-        UrlRecord url = new UrlParser(rawUrl).parse();
+        Uri url = new UrlParser(rawUrl).parse();
 
         assertEquals(fragment, url.getFragment());
     }
@@ -137,14 +137,14 @@ class UrlParserTest {
 
         String rawUrl = HOST + '?' + query1 + '&' + query2;
 
-        UrlRecord url = new UrlParser(rawUrl).parse();
+        Uri url = new UrlParser(rawUrl).parse();
 
-        List<UrlRecord.QueryParameter> queries = url.getQueryList();
+        List<Uri.QueryParameter> queries = url.getQueryList();
 
         assertEquals(2, queries.size());
 
-        UrlRecord.QueryParameter queryInstance1 = queries.get(0);
-        UrlRecord.QueryParameter queryInstance2 = queries.get(1);
+        Uri.QueryParameter queryInstance1 = queries.get(0);
+        Uri.QueryParameter queryInstance2 = queries.get(1);
 
         assertEquals(key1, queryInstance1.getKey());
         assertEquals(value1, queryInstance1.getValue());
@@ -157,10 +157,10 @@ class UrlParserTest {
     void urlWithAllSubItems() {
         String rawUrl = "https://user:password@spine.io/index?auth=none&locale=us#fragment9";
 
-        UrlRecord record = new UrlParser(rawUrl).parse();
+        Uri record = new UrlParser(rawUrl).parse();
 
-        assertEquals(UrlRecord.Schema.HTTPS, record.getProtocol()
-                                                   .getSchema());
+        assertEquals(Uri.Schema.HTTPS, record.getProtocol()
+                                             .getSchema());
         assertEquals("user", record.getAuth()
                                    .getUserName());
         assertEquals("password", record.getAuth()

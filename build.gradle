@@ -167,6 +167,11 @@ subprojects {
     }
 
     dependencies {
+        errorprone deps.build.errorProneCore
+        errorproneJavac deps.build.errorProneJavac
+        // For dependencies config. based on version of Java, see:
+        //  https://github.com/epeee/junit-jupiter-extension-testing/blob/57b7ba75ab64ed8c229d2a5b14a954d6ae359189/gradle/errorprone.gradle
+        
         api deps.build.protobuf
 
         implementation deps.build.guava
@@ -238,9 +243,11 @@ subprojects {
         }
     }
 
-    clean {
+    task cleanGenerated(type: Delete) {
         delete = "$projectDir/generated"
     }
+
+    clean.dependsOn cleanGenerated
 }
 
 // IDEA project configuration.
