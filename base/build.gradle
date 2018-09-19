@@ -83,11 +83,13 @@ build.doLast {
     }
     command.add('build')
     command.add('--console=plain')
+    final File errorOut = new File(directory, 'build/error-out.txt');
     final def process = new ProcessBuilder()
             .command(command)
             .directory(file(directory))
+            .redirectError(errorOut)
             .start()
     if (process.waitFor() != 0) {
-        throw new GradleException("Unable to build validating builders.")
+        throw new GradleException("Unable to build validating builders. See $errorOut for details.")
     }
 }
