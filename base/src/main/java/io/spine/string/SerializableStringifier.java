@@ -52,4 +52,3 @@ public abstract class SerializableStringifier<T> extends Stringifier<T> implemen
         return identity;
     }
 }
-
