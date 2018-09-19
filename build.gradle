@@ -201,7 +201,7 @@ subprojects {
     }
 
     apply from: deps.scripts.testOutput
-    apply from: deps.scripts.addJavadocTags
+    apply from: deps.scripts.javadocOptions
     apply from: deps.scripts.javacArgs
     
     task sourceJar(type: Jar) {
