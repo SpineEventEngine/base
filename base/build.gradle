@@ -83,7 +83,13 @@ build.doLast {
     }
     command.add('build')
     command.add('--console=plain')
-    final File errorOut = new File(directory, 'build/error-out.txt');
+
+    final File errorOut = new File(directory, 'build/error-out.txt')
+    if (errorOut.exists()) {
+        errorOut.delete()
+    }
+    errorOut.createNewFile()
+
     final def process = new ProcessBuilder()
             .command(command)
             .directory(file(directory))
