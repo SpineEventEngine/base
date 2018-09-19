@@ -253,6 +253,10 @@ subprojects {
             }
         }
     }
+
+    clean {
+        delete = "$projectDir/generated"
+    }
 }
 
 // IDEA project configuration.

@@ -39,7 +39,6 @@ dependencies {
         exclude group: 'com.google.guava'
     }
 
-    implementation deps.build.protobuf
     implementation deps.gen.javaPoet
 
     // A library for parsing Java sources.
@@ -53,7 +52,6 @@ dependencies {
         exclude group: 'com.google.guava'
     }
 
-    testProtobuf project(':base')
     testImplementation project(':testlib')
     testImplementation deps.test.hamcrest
     testImplementation gradleTestKit()
