@@ -20,7 +20,7 @@
 
 package io.spine.net;
 
-import io.spine.net.UrlRecord.Schema;
+import io.spine.net.Uri.Schema;
 import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

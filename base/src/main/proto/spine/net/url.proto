@@ -31,10 +31,10 @@ message Url {
 // Using this type makes it easier to operate concrete URL attributes.
 // Please see https://tools.ietf.org/html/rfc3986.
 //
-// This type should be used only by parsing or validating utilities.
+// This type is intended to be used only by parsing or validating utilities.
 // For general purpose usage, please use `Url`.
 //
-message UrlRecord {
+message Uri {
 
     // Application layer protocol.
     Protocol protocol = 1;

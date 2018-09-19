@@ -21,7 +21,7 @@
 package io.spine.net;
 
 import com.google.common.collect.ImmutableMap;
-import io.spine.net.UrlRecord.Schema;
+import io.spine.net.Uri.Schema;
 
 import java.util.Map;
 
