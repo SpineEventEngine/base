@@ -18,27 +18,47 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.js;
+package io.spine.code.js.given;
 
-import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
+import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.value.StringTypeValue;
+import spine.test.code.js.FieldDescriptorsTest.FieldContainer;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import java.util.List;
 
-public final class FieldName extends StringTypeValue {
+public final class Given {
 
-    private static final long serialVersionUID = 0L;
-
-    private FieldName(String value) {
-        super(value);
+    /** Prevents instantiation of this utility class. */
+    private Given() {
     }
 
-    public static FieldName from(FieldDescriptor fieldDescriptor) {
-        checkNotNull(fieldDescriptor);
-        FieldDescriptorProto proto = fieldDescriptor.toProto();
-        String capitalizedName = io.spine.code.proto.FieldName.of(proto)
-                                                              .toCamelCase();
-        return new FieldName(capitalizedName);
+    public static FieldDescriptor singularField() {
+        return fieldWithIndex(0);
+    }
+
+    public static FieldDescriptor repeatedField() {
+        return fieldWithIndex(1);
+    }
+
+    public static FieldDescriptor mapField() {
+        return fieldWithIndex(2);
+    }
+
+    public static FieldDescriptor primitiveField() {
+        return fieldWithIndex(3);
+    }
+
+    public static FieldDescriptor messageField() {
+        return fieldWithIndex(4);
+    }
+
+    public static FieldDescriptor enumField() {
+        return fieldWithIndex(5);
+    }
+
+    private static FieldDescriptor fieldWithIndex(int index) {
+        Descriptor fieldContainer = FieldContainer.getDescriptor();
+        List<FieldDescriptor> fields = fieldContainer.getFields();
+        return fields.get(index);
     }
 }

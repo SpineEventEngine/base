@@ -21,40 +21,28 @@
 package io.spine.code.js;
 
 import com.google.common.testing.NullPointerTester;
-import com.google.protobuf.Any;
-import com.google.protobuf.Descriptors.Descriptor;
-import com.google.protobuf.Descriptors.EnumDescriptor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import spine.test.code.js.FieldDescriptorsTest.TaskType;
 
+import static io.spine.code.js.given.Given.primitiveField;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DisplayName("TypeName should")
-class TypeNameTest {
+@DisplayName("FieldName should")
+class FieldNameTest {
 
     @Test
     @DisplayName(NOT_ACCEPT_NULLS)
     void passNullToleranceCheck() {
-        new NullPointerTester().testAllPublicStaticMethods(TypeName.class);
+        new NullPointerTester().testAllPublicStaticMethods(FieldName.class);
     }
 
+    @SuppressWarnings("DuplicateStringLiteralInspection") // Duplication with generated code.
     @Test
-    @DisplayName("append `proto.` prefix to message type")
-    void appendPrefixToMessage() {
-        Descriptor descriptor = Any.getDescriptor();
-        TypeName typeName = TypeName.from(descriptor);
-        String expected = "proto.google.protobuf.Any";
-        assertEquals(expected, typeName.value());
-    }
-
-    @Test
-    @DisplayName("append `proto.` prefix to enum type")
-    void appendPrefixToEnum() {
-        EnumDescriptor descriptor = TaskType.getDescriptor();
-        TypeName typeName = TypeName.from(descriptor);
-        String expected = "proto.spine.test.code.js.TaskType";
-        assertEquals(expected, typeName.value());
+    @DisplayName("create CamelCase name from Protobuf field")
+    void convertToCamelCase() {
+        FieldName fieldName = FieldName.from(primitiveField());
+        String expected = "PrimitiveField";
+        assertEquals(expected, fieldName.value());
     }
 }

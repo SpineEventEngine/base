@@ -89,14 +89,14 @@ public final class FieldDescriptors {
      * <p>Although {@code map} fields technically count as {@code repeated}, this method will
      * return {@code false} for them.
      *
-     * @param field
+     * @param fieldDescriptor
      *         the descriptor of the field to check
      * @return {@code true} if the field is a {@code repeated} proto field, {@code false} otherwise
      */
-    public static boolean isRepeated(FieldDescriptor field) {
-        checkNotNull(field);
-        FieldDescriptorProto proto = field.toProto();
-        boolean isRepeated = proto.getLabel() == LABEL_REPEATED && !isMap(field);
+    public static boolean isRepeated(FieldDescriptor fieldDescriptor) {
+        checkNotNull(fieldDescriptor);
+        FieldDescriptorProto proto = fieldDescriptor.toProto();
+        boolean isRepeated = proto.getLabel() == LABEL_REPEATED && !isMap(fieldDescriptor);
         return isRepeated;
     }
 
@@ -134,7 +134,8 @@ public final class FieldDescriptors {
      */
     public static FieldDescriptor keyDescriptor(FieldDescriptor fieldDescriptor) {
         checkArgument(isMap(fieldDescriptor),
-                      "Trying to get key descriptor for the non-map field %s.", fieldDescriptor.getName());
+                      "Trying to get key descriptor for the non-map field %s.",
+                      fieldDescriptor.getName());
         FieldDescriptor descriptor = fieldDescriptor.getMessageType()
                                           .findFieldByName(MAP_ENTRY_KEY);
         return descriptor;
@@ -151,7 +152,8 @@ public final class FieldDescriptors {
      */
     public static FieldDescriptor valueDescriptor(FieldDescriptor fieldDescriptor) {
         checkArgument(isMap(fieldDescriptor),
-                      "Trying to get value descriptor for the non-map field %s.", fieldDescriptor.getName());
+                      "Trying to get value descriptor for the non-map field %s.",
+                      fieldDescriptor.getName());
         FieldDescriptor descriptor = fieldDescriptor.getMessageType()
                                           .findFieldByName(MAP_ENTRY_VALUE);
         return descriptor;

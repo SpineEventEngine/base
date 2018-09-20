@@ -18,27 +18,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.js;
+/**
+ * The test environment classes for JavaScript-code related tools.
+ */
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.code.js.given;
 
-import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
-import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.value.StringTypeValue;
+import com.google.errorprone.annotations.CheckReturnValue;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
-public final class FieldName extends StringTypeValue {
-
-    private static final long serialVersionUID = 0L;
-
-    private FieldName(String value) {
-        super(value);
-    }
-
-    public static FieldName from(FieldDescriptor fieldDescriptor) {
-        checkNotNull(fieldDescriptor);
-        FieldDescriptorProto proto = fieldDescriptor.toProto();
-        String capitalizedName = io.spine.code.proto.FieldName.of(proto)
-                                                              .toCamelCase();
-        return new FieldName(capitalizedName);
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;

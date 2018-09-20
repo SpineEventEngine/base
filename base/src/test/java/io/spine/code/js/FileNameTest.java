@@ -22,39 +22,51 @@ package io.spine.code.js;
 
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Any;
-import com.google.protobuf.Descriptors.Descriptor;
-import com.google.protobuf.Descriptors.EnumDescriptor;
+import com.google.protobuf.Descriptors.FileDescriptor;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import spine.test.code.js.FieldDescriptorsTest.TaskType;
+
+import java.util.Arrays;
+import java.util.List;
 
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
+import static io.spine.testing.Verify.assertContains;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DisplayName("TypeName should")
-class TypeNameTest {
+@DisplayName("FileName should")
+class FileNameTest {
+
+    private FileDescriptor file;
+
+    @BeforeEach
+    void setUp() {
+        file = Any.getDescriptor()
+                  .getFile();
+    }
 
     @Test
     @DisplayName(NOT_ACCEPT_NULLS)
     void passNullToleranceCheck() {
-        new NullPointerTester().testAllPublicStaticMethods(TypeName.class);
+        new NullPointerTester().testAllPublicStaticMethods(FileName.class);
     }
 
     @Test
-    @DisplayName("append `proto.` prefix to message type")
-    void appendPrefixToMessage() {
-        Descriptor descriptor = Any.getDescriptor();
-        TypeName typeName = TypeName.from(descriptor);
-        String expected = "proto.google.protobuf.Any";
-        assertEquals(expected, typeName.value());
+    @DisplayName("replace `.proto` extension with predefined suffix")
+    void appendSuffix() {
+        FileName fileName = FileName.from(file);
+        String expected = "google/protobuf/any_pb.js";
+        assertEquals(expected, fileName.value());
     }
 
     @Test
-    @DisplayName("append `proto.` prefix to enum type")
-    void appendPrefixToEnum() {
-        EnumDescriptor descriptor = TaskType.getDescriptor();
-        TypeName typeName = TypeName.from(descriptor);
-        String expected = "proto.spine.test.code.js.TaskType";
-        assertEquals(expected, typeName.value());
+    @DisplayName("return path elements")
+    void returnPathElements() {
+        FileName fileName = FileName.from(file);
+        String[] pathElements = fileName.pathElements();
+        List<String> pathElementList = Arrays.asList(pathElements);
+        assertContains("google", pathElementList);
+        assertContains("protobuf", pathElementList);
+        assertContains("any_pb.js", pathElementList);
     }
 }

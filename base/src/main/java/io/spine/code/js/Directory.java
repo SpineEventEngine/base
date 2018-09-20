@@ -64,6 +64,7 @@ public final class Directory extends SourceCodeDirectory {
      * Obtains the source code path for the passed file name.
      */
     public Path resolve(FileName fileName) {
+        checkNotNull(fileName);
         Path result = getPath().resolve(fileName.value());
         return result;
     }
@@ -72,6 +73,7 @@ public final class Directory extends SourceCodeDirectory {
      * Obtains the source code path for the passed file.
      */
     public Path resolve(CommonFileName commonFileName) {
+        checkNotNull(commonFileName);
         return resolve(commonFileName.fileName());
     }
 }

@@ -21,40 +21,51 @@
 package io.spine.code.js;
 
 import com.google.common.testing.NullPointerTester;
-import com.google.protobuf.Any;
-import com.google.protobuf.Descriptors.Descriptor;
-import com.google.protobuf.Descriptors.EnumDescriptor;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import spine.test.code.js.FieldDescriptorsTest.TaskType;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import static io.spine.code.js.CommonFileName.SPINE_OPTIONS;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DisplayName("TypeName should")
-class TypeNameTest {
+@DisplayName("Directory should")
+class DirectoryTest {
+
+    private static final Path DIRECTORY_PATH = Paths.get("/home/user/directory");
+
+    private Directory directory;
+
+    @BeforeEach
+    void setUp() {
+        directory = Directory.at(DIRECTORY_PATH);
+    }
 
     @Test
     @DisplayName(NOT_ACCEPT_NULLS)
     void passNullToleranceCheck() {
-        new NullPointerTester().testAllPublicStaticMethods(TypeName.class);
+        new NullPointerTester().testAllPublicStaticMethods(Directory.class);
+        new NullPointerTester().testAllPublicInstanceMethods(directory);
     }
 
     @Test
-    @DisplayName("append `proto.` prefix to message type")
-    void appendPrefixToMessage() {
-        Descriptor descriptor = Any.getDescriptor();
-        TypeName typeName = TypeName.from(descriptor);
-        String expected = "proto.google.protobuf.Any";
-        assertEquals(expected, typeName.value());
+    @DisplayName("resolve file name")
+    void resolveFileName() {
+        String rawName = "tasks_pb.js";
+        FileName fileName = FileName.of(rawName);
+        Path resolved = directory.resolve(fileName);
+        Path expected = DIRECTORY_PATH.resolve(rawName);
+        assertEquals(expected, resolved);
     }
 
     @Test
-    @DisplayName("append `proto.` prefix to enum type")
-    void appendPrefixToEnum() {
-        EnumDescriptor descriptor = TaskType.getDescriptor();
-        TypeName typeName = TypeName.from(descriptor);
-        String expected = "proto.spine.test.code.js.TaskType";
-        assertEquals(expected, typeName.value());
+    @DisplayName("resolve CommonFileName")
+    void resolveCommonFileName() {
+        Path resolved = directory.resolve(SPINE_OPTIONS);
+        Path expected = DIRECTORY_PATH.resolve(SPINE_OPTIONS.toString());
+        assertEquals(expected, resolved);
     }
 }

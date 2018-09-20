@@ -77,6 +77,7 @@ public final class FileName extends AbstractFileName<FileName> {
      * Obtains the file name from the passed descriptor.
      */
     public static FileName from(FileDescriptor descriptor) {
+        checkNotNull(descriptor);
         return from(descriptor.toProto());
     }
 
