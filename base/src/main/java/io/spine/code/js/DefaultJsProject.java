@@ -31,10 +31,11 @@ import static io.spine.code.js.FileName.of;
 public final class DefaultJsProject extends DefaultProject {
 
     /**
-     * Visible so they can be used for JS imports.
+     * Visible so it can be used to generate JS imports.
      */
-    public static final FileName KNOWN_TYPES_JS = of("known_types.js");
     public static final FileName KNOWN_TYPE_PARSERS_JS = of("known_type_parsers.js");
+
+    private static final FileName KNOWN_TYPES_JS = of("known_types.js");
 
     private DefaultJsProject(Path path) {
         super(path);

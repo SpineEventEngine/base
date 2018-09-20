@@ -43,7 +43,7 @@ public final class Directory extends SourceCodeDirectory {
     /**
      * Creates a new instance.
      */
-    static Directory at(Path path) {
+    private static Directory at(Path path) {
         checkNotNull(path);
         return new Directory(path);
     }
@@ -51,7 +51,7 @@ public final class Directory extends SourceCodeDirectory {
     /**
      * Creates an instance of the root directory named {@code "java"}.
      */
-    public static Directory rootIn(AbstractDirectory parent) {
+    static Directory rootIn(AbstractDirectory parent) {
         checkNotNull(parent);
         Path path = parent.getPath()
                           .resolve(ROOT_NAME);
