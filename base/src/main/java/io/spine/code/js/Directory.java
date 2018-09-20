@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.proto;
+package io.spine.code.js;
 
 import io.spine.code.AbstractDirectory;
 import io.spine.code.SourceCodeDirectory;
@@ -28,14 +28,13 @@ import java.nio.file.Path;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A proto source code directory.
+ * A folder with JavaScript source files.
  *
- * @author Alexander Yevsyukov
+ * @author Dmytro Kuzmin
  */
 public final class Directory extends SourceCodeDirectory {
 
-    @SuppressWarnings("DuplicateStringLiteralInspection") // Same name for different directories.
-    private static final String ROOT_NAME = "proto";
+    private static final String ROOT_NAME = "js";
 
     private Directory(Path path) {
         super(path);
@@ -57,5 +56,13 @@ public final class Directory extends SourceCodeDirectory {
         Path path = parent.getPath()
                           .resolve(ROOT_NAME);
         return at(path);
+    }
+
+    /**
+     * Obtains the source code path for the passed file.
+     */
+    public Path resolve(FileName fileName) {
+        Path result = getPath().resolve(fileName.value());
+        return result;
     }
 }

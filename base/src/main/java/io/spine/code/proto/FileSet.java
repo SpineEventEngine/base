@@ -68,8 +68,15 @@ public final class FileSet {
     /**
      * Creates an empty set.
      */
-    public static FileSet newInstance() {
+    static FileSet newInstance() {
         return new FileSet();
+    }
+
+    public static FileSet parseOrEmpty(File descriptorSet) {
+        FileSet result = descriptorSet.exists()
+                ? parse(descriptorSet)
+                : newInstance();
+        return result;
     }
 
     /**

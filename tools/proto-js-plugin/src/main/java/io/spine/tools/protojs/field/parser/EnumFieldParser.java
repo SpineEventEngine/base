@@ -22,10 +22,10 @@ package io.spine.tools.protojs.field.parser;
 
 import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
+import io.spine.code.js.TypeName;
 import io.spine.tools.protojs.generate.JsOutput;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.protojs.types.Types.typeWithProtoPrefix;
 
 /**
  * The value parser for the proto fields of {@code enum} type.
@@ -34,10 +34,10 @@ import static io.spine.tools.protojs.types.Types.typeWithProtoPrefix;
  */
 final class EnumFieldParser implements FieldParser {
 
-    private final String typeName;
+    private final TypeName typeName;
     private final JsOutput jsOutput;
 
-    private EnumFieldParser(String typeName, JsOutput jsOutput) {
+    private EnumFieldParser(TypeName typeName, JsOutput jsOutput) {
         this.typeName = typeName;
         this.jsOutput = jsOutput;
     }
@@ -54,7 +54,7 @@ final class EnumFieldParser implements FieldParser {
         checkNotNull(field);
         checkNotNull(jsOutput);
         EnumDescriptor enumType = field.getEnumType();
-        String typeName = typeWithProtoPrefix(enumType);
+        TypeName typeName = TypeName.from(enumType);
         return new EnumFieldParser(typeName, jsOutput);
     }
 
@@ -69,6 +69,6 @@ final class EnumFieldParser implements FieldParser {
     public void parseIntoVariable(String value, String variable) {
         checkNotNull(value);
         checkNotNull(variable);
-        jsOutput.declareVariable(variable, typeName + '[' + value + ']');
+        jsOutput.declareVariable(variable, typeName.value() + '[' + value + ']');
     }
 }

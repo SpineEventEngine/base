@@ -66,7 +66,7 @@ class JsImportGeneratorTest {
     @Test
     @DisplayName("generate named import")
     void generateNamedImport() {
-        String statement = generator.generateNamed(FILE_TO_IMPORT, IMPORT_NAME);
+        String statement = generator.importFile(FILE_TO_IMPORT, IMPORT_NAME);
         String pathToImport = "../../" + FILE_TO_IMPORT;
         String expected = "let " + IMPORT_NAME + " = require('" + pathToImport + "');";
         assertEquals(expected, statement);

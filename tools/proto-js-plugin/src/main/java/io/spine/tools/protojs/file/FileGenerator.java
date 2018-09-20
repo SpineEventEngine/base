@@ -18,17 +18,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protojs.generate;
+package io.spine.tools.protojs.file;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
+import io.spine.code.js.FileName;
+import io.spine.tools.protojs.generate.JsCodeGenerator;
+import io.spine.tools.protojs.generate.JsImportGenerator;
+import io.spine.tools.protojs.generate.JsOutput;
 import io.spine.tools.protojs.message.MessageGenerator;
 
-import java.util.Map;
-
-import static io.spine.tools.protojs.files.JsFiles.KNOWN_TYPE_PARSERS;
-import static java.util.Collections.singletonList;
+import static io.spine.code.js.DefaultJsProject.KNOWN_TYPE_PARSERS_JS;
 
 /**
  * The generator of the {@code fromJson(json)} method for the JS Proto definitions.
@@ -47,6 +48,9 @@ public final class FileGenerator extends JsCodeGenerator {
 
     /**
      * The name of the {@code known_type_parsers.js} import.
+     *
+     * <p>Visible so the other generators such as {@linkplain MessageGenerator message} or
+     * {@linkplain io.spine.tools.protojs.field.FieldGenerator field} can use the import.
      */
     public static final String PARSERS_IMPORT_NAME = "known_type_parsers";
 
@@ -67,7 +71,7 @@ public final class FileGenerator extends JsCodeGenerator {
      * @param jsOutput
      *         the {@code JsOutput} to accumulate the generated JS code
      */
-    FileGenerator(FileDescriptor file, JsOutput jsOutput) {
+    public FileGenerator(FileDescriptor file, JsOutput jsOutput) {
         super(jsOutput);
         this.file = file;
     }
@@ -79,9 +83,7 @@ public final class FileGenerator extends JsCodeGenerator {
      * <p>More specifically:
      * <ol>
      *     <li>Writes a comment explaining the generated code.
-     *     <li>Adds an import for the
-     *         {@linkplain io.spine.tools.protojs.knowntypes.KnownTypeParsersWriter standard type
-     *         parsers}.
+     *     <li>Adds an import for the standard Protobuf types parsers.
      *     <li>Adds the {@code fromJson(json)} method for each message which parses JSON
      *         {@code string} into object.
      *     <li>Adds the {@code fromObject(obj)} method for each message which parses the JS object
@@ -105,21 +107,20 @@ public final class FileGenerator extends JsCodeGenerator {
     }
 
     /**
-     * Generates the {@link io.spine.tools.protojs.knowntypes.KnownTypeParsersWriter
-     * known_type_parsers.js} import.
+     * Generates the {@code known_type_parsers.js} import.
      *
      * <p>The import path is relative to the processed {@code file}.
      */
     @VisibleForTesting
     void generateParsersImport() {
         jsOutput().addEmptyLine();
-        String filePath = file.getFullName();
+        FileName fileName = FileName.from(file);
         JsImportGenerator generator = JsImportGenerator
                 .newBuilder()
-                .setFilePath(filePath)
+                .setFileName(fileName)
                 .setJsOutput(jsOutput())
                 .build();
-        generator.generateNamed(KNOWN_TYPE_PARSERS, PARSERS_IMPORT_NAME);
+        generator.importFile(KNOWN_TYPE_PARSERS_JS, PARSERS_IMPORT_NAME);
     }
 
     /**

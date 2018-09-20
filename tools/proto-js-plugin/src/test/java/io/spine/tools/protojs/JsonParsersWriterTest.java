@@ -35,7 +35,7 @@ import java.nio.file.Paths;
 import java.util.Collection;
 
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
-import static io.spine.tools.protojs.ProtoFromJsonWriter.createFor;
+import static io.spine.tools.protojs.JsonParsersWriter.createFor;
 import static io.spine.tools.protojs.files.JsFiles.KNOWN_TYPES;
 import static io.spine.tools.protojs.files.JsFiles.KNOWN_TYPE_PARSERS;
 import static io.spine.tools.protojs.files.JsFiles.jsFileName;
@@ -50,11 +50,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @author Dmytro Kuzmin
  */
 @SuppressWarnings("DuplicateStringLiteralInspection") // Common test display names.
-@DisplayName("ProtoFromJsonWriter should")
-class ProtoFromJsonWriterTest {
+@DisplayName("JsonParsersWriter should")
+class JsonParsersWriterTest {
 
     private Path protoJsLocation;
-    private ProtoFromJsonWriter writer;
+    private JsonParsersWriter writer;
 
     @BeforeEach
     void setUp() {
@@ -67,7 +67,7 @@ class ProtoFromJsonWriterTest {
     @Test
     @DisplayName(NOT_ACCEPT_NULLS)
     void passNullToleranceCheck() {
-        new NullPointerTester().testAllPublicStaticMethods(ProtoFromJsonWriter.class);
+        new NullPointerTester().testAllPublicStaticMethods(JsonParsersWriter.class);
     }
 
     @Test

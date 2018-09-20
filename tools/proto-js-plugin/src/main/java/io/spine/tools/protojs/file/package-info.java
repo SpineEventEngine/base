@@ -19,12 +19,11 @@
  */
 
 /**
- * The classes that insert the {@code fromJson(json)} method and all the related code to the JS
- * proto definitions.
+ * todo generate desc.
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault
-package io.spine.tools.protojs.fromjson;
+package io.spine.tools.protojs.file;
 
 import com.google.errorprone.annotations.CheckReturnValue;
 

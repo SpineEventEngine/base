@@ -27,7 +27,7 @@ import io.spine.tools.protojs.generate.ParserMapGenerator;
 import io.spine.type.TypeUrl;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.protojs.generate.FileGenerator.PARSERS_IMPORT_NAME;
+import static io.spine.tools.protojs.file.FileGenerator.PARSERS_IMPORT_NAME;
 
 /**
  * The value parser for the proto fields of well-known {@code message} types.
@@ -36,7 +36,6 @@ import static io.spine.tools.protojs.generate.FileGenerator.PARSERS_IMPORT_NAME;
  * are present.
  *
  * @author Dmytro Kuzmin
- * @see io.spine.tools.protojs.knowntypes.KnownTypeParsersWriter
  */
 final class WellKnownFieldParser implements FieldParser {
 
@@ -68,7 +67,6 @@ final class WellKnownFieldParser implements FieldParser {
      * {@inheritDoc}
      *
      * <p>The field value of well-known type is parsed via a predefined parser stored in the known
-     * type parsers {@linkplain io.spine.tools.protojs.files.JsFiles#KNOWN_TYPE_PARSERS file}.
      */
     @Override
     public void parseIntoVariable(String value, String variable) {

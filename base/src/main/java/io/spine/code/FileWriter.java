@@ -18,44 +18,50 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.proto;
+package io.spine.code;
 
-import io.spine.code.AbstractDirectory;
-import io.spine.code.SourceCodeDirectory;
-
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.nio.file.StandardOpenOption.APPEND;
+import static java.nio.file.StandardOpenOption.CREATE;
+import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 
-/**
- * A proto source code directory.
- *
- * @author Alexander Yevsyukov
- */
-public final class Directory extends SourceCodeDirectory {
+public final class FileWriter {
 
-    @SuppressWarnings("DuplicateStringLiteralInspection") // Same name for different directories.
-    private static final String ROOT_NAME = "proto";
+    private final Path path;
 
-    private Directory(Path path) {
-        super(path);
+    public FileWriter(Path path) {
+        this.path = path;
     }
 
     /**
-     * Creates a new instance.
+     * Writes the given content to the file.
+     *
+     * <p>Overwrites the previous file content.
+     *
+     * @param content
+     *         the content to write
+     * @throws IllegalStateException
+     *         if something went wrong when writing to file
      */
-    static Directory at(Path path) {
-        checkNotNull(path);
-        return new Directory(path);
+    public void write(String content) {
+        checkNotNull(content);
+        try {
+            Files.write(path, content.getBytes(), CREATE, TRUNCATE_EXISTING);
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
-    /**
-     * Creates an instance of the root directory named {@code "java"}.
-     */
-    public static Directory rootIn(AbstractDirectory parent) {
-        checkNotNull(parent);
-        Path path = parent.getPath()
-                          .resolve(ROOT_NAME);
-        return at(path);
+    public void append(String content) {
+        checkNotNull(content);
+        try {
+            Files.write(path, content.getBytes(), APPEND);
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
     }
 }

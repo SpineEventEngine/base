@@ -23,9 +23,9 @@ package io.spine.tools.protojs.generate;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
+import io.spine.code.js.FileName;
+import io.spine.code.js.TypeName;
 import io.spine.code.proto.FileSet;
-import io.spine.tools.protojs.files.JsFiles;
-import io.spine.tools.protojs.knowntypes.KnownTypesWriter;
 import io.spine.type.TypeUrl;
 
 import java.util.Collection;
@@ -33,8 +33,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import static io.spine.code.js.Types.typeWithProtoPrefix;
-import static io.spine.tools.protojs.files.JsFiles.KNOWN_TYPES;
 import static java.util.stream.Collectors.toSet;
 
 /**
@@ -49,9 +47,8 @@ import static java.util.stream.Collectors.toSet;
  * return any generated code.
  *
  * @author Dmytro Kuzmin
- * @see KnownTypesWriter
  */
-final class KnownTypesGenerator extends JsCodeGenerator {
+public final class KnownTypesGenerator extends JsCodeGenerator {
 
     /**
      * The exported map name.
@@ -71,7 +68,7 @@ final class KnownTypesGenerator extends JsCodeGenerator {
      * @param jsOutput
      *         the {@code JsOutput} to accumulate the generated code
      */
-    KnownTypesGenerator(FileSet fileSet, JsOutput jsOutput) {
+    public KnownTypesGenerator(FileSet fileSet, JsOutput jsOutput) {
         super(jsOutput);
         this.fileSet = fileSet;
     }
@@ -99,14 +96,13 @@ final class KnownTypesGenerator extends JsCodeGenerator {
     @VisibleForTesting
     void generateImports() {
         Collection<FileDescriptor> files = fileSet.files();
-        Set<String> imports = files.stream()
-                                   .filter(file -> !file.getMessageTypes()
+        Set<FileName> imports = files.stream()
+                                     .filter(file -> !file.getMessageTypes()
                                                         .isEmpty())
-                                   .map(JsFiles::jsFileName)
-                                   .collect(toSet());
+                                     .map(FileName::from)
+                                     .collect(toSet());
         JsImportGenerator generator = JsImportGenerator
                 .newBuilder()
-                .setFilePath(KNOWN_TYPES)
                 .setImports(imports)
                 .setJsOutput(jsOutput())
                 .build();
@@ -168,7 +164,7 @@ final class KnownTypesGenerator extends JsCodeGenerator {
      */
     private static String jsMapEntry(Descriptor message) {
         TypeUrl typeUrl = TypeUrl.from(message);
-        String typeName = typeWithProtoPrefix(message);
+        TypeName typeName = TypeName.from(message);
         String mapEntry = "['" + typeUrl + "', " + typeName + ']';
         return mapEntry;
     }

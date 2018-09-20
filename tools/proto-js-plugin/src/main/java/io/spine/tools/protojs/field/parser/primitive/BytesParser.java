@@ -63,7 +63,7 @@ final class BytesParser extends AbstractPrimitiveParser {
                 .newBuilder()
                 .setJsOutput(jsOutput())
                 .build();
-        generator.generateNamed(BASE64_LIB, BASE64_VAR);
+        generator.importLib(BASE64_LIB, BASE64_VAR);
         String valueToByteArray = BASE64_VAR + ".toByteArray(" + value + ')';
         jsOutput().declareVariable(variable, valueToByteArray);
     }

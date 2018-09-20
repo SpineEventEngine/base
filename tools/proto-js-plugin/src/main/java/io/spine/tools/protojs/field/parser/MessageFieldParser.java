@@ -22,10 +22,10 @@ package io.spine.tools.protojs.field.parser;
 
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
+import io.spine.code.js.TypeName;
 import io.spine.tools.protojs.generate.JsOutput;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.code.js.Types.typeWithProtoPrefix;
 import static io.spine.tools.protojs.message.MessageGenerator.FROM_OBJECT;
 
 /**
@@ -39,10 +39,10 @@ import static io.spine.tools.protojs.message.MessageGenerator.FROM_OBJECT;
  */
 final class MessageFieldParser implements FieldParser {
 
-    private final String typeName;
+    private final TypeName typeName;
     private final JsOutput jsOutput;
 
-    private MessageFieldParser(String typeName, JsOutput jsOutput) {
+    private MessageFieldParser(TypeName typeName, JsOutput jsOutput) {
         this.typeName = typeName;
         this.jsOutput = jsOutput;
     }
@@ -59,7 +59,7 @@ final class MessageFieldParser implements FieldParser {
         checkNotNull(field);
         checkNotNull(jsOutput);
         Descriptor messageType = field.getMessageType();
-        String typeName = typeWithProtoPrefix(messageType);
+        TypeName typeName = TypeName.from(messageType);
         return new MessageFieldParser(typeName, jsOutput);
     }
 
@@ -73,7 +73,7 @@ final class MessageFieldParser implements FieldParser {
     public void parseIntoVariable(String value, String variable) {
         checkNotNull(value);
         checkNotNull(variable);
-        String recursiveCall = typeName + '.' + FROM_OBJECT + '(' + value + ')';
+        String recursiveCall = typeName.value() + '.' + FROM_OBJECT + '(' + value + ')';
         jsOutput.declareVariable(variable, recursiveCall);
     }
 }

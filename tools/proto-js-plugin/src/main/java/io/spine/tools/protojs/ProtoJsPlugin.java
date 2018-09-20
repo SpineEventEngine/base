@@ -20,22 +20,15 @@
 
 package io.spine.tools.protojs;
 
+import io.spine.code.js.DefaultJsProject;
 import io.spine.tools.gradle.SpinePlugin;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 
-import java.io.File;
-import java.nio.file.Path;
-
 import static io.spine.tools.gradle.TaskName.COMPILE_PROTO_TO_JS;
 import static io.spine.tools.gradle.TaskName.COPY_MODULE_SOURCES;
 import static io.spine.tools.gradle.TaskName.GENERATE_FROM_JSON;
-import static io.spine.tools.protojs.ProtoFromJsonWriter.createFor;
-import static io.spine.tools.protojs.files.ProjectFiles.mainDescriptorSetFile;
-import static io.spine.tools.protojs.files.ProjectFiles.mainProtoJsLocation;
-import static io.spine.tools.protojs.files.ProjectFiles.testDescriptorSetFile;
-import static io.spine.tools.protojs.files.ProjectFiles.testProtoJsLocation;
 
 /**
  * The Gradle plugin which generates the code to parse JavaScript proto definitions from the JSON
@@ -89,7 +82,7 @@ public class ProtoJsPlugin extends SpinePlugin {
      * <p>The paths to the JS proto definitions location, as well as to the descriptor set file,
      * are currently hard-coded.
      *
-     * <p>See {@link io.spine.tools.protojs.files.ProjectFiles} for the expected configuration.
+     * <p>See {@link DefaultJsProject} for the expected configuration.
      */
     private static Action<Task> newAction(Project project) {
         return task -> generateFromJsonForProto(project);
@@ -100,31 +93,33 @@ public class ProtoJsPlugin extends SpinePlugin {
         generateForTest(project);
     }
 
+    /**
+     * Generates the JSON-parsing code for the proto definitions of the {@code main} source set.
+     */
     private static void generateForMain(Project project) {
-        Path protoJsLocation = mainProtoJsLocation(project);
-        File descriptorSetFile = mainDescriptorSetFile(project);
-        generateFor(protoJsLocation, descriptorSetFile);
-    }
-
-    private static void generateForTest(Project project) {
-        Path protoJsLocation = testProtoJsLocation(project);
-        File descriptorSetFile = testDescriptorSetFile(project);
-        generateFor(protoJsLocation, descriptorSetFile);
+        DefaultJsProject jsProject = DefaultJsProject.at(project.getProjectDir());
+        JsonParsersWriter writer = JsonParsersWriter
+                .newBuilder()
+                .setKnownTypes(jsProject.mainKnownTypes())
+                .setKnownTypeParsers(jsProject.mainKnownTypeParsers())
+                .setGeneratedProtoDir(jsProject.proto().mainJs())
+                .setDescriptorSetFile(jsProject.mainDescriptors())
+                .build();
+        writer.write();
     }
 
     /**
-     * Generates the JSON-parsing code for the proto definitions in the specified descriptor set
-     * file.
-     *
-     * @param protoJsLocation
-     *         the root of the generated JS proto definitions
-     * @param descriptorSetFile
-     *         the descriptor set file
+     * Generates the JSON-parsing code for the proto definitions of the {@code test} source set.
      */
-    private static void generateFor(Path protoJsLocation, File descriptorSetFile) {
-        ProtoFromJsonWriter writer = createFor(protoJsLocation, descriptorSetFile);
-        if (writer.hasFilesToProcess()) {
-            writer.writeFromJsonForProtos();
-        }
+    private static void generateForTest(Project project) {
+        DefaultJsProject jsProject = DefaultJsProject.at(project.getProjectDir());
+        JsonParsersWriter writer = JsonParsersWriter
+                .newBuilder()
+                .setKnownTypes(jsProject.testKnownTypes())
+                .setKnownTypeParsers(jsProject.testKnownTypeParsers())
+                .setGeneratedProtoDir(jsProject.proto().testJs())
+                .setDescriptorSetFile(jsProject.testDescriptors())
+                .build();
+        writer.write();
     }
 }

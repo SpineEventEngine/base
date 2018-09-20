@@ -81,7 +81,6 @@ public final class Fields {
      * @param field
      *         the descriptor of the field to check
      * @return {@code true} if the field is of well-known type and {@code false} otherwise
-     * @see io.spine.tools.protojs.knowntypes.KnownTypeParsersWriter
      */
     public static boolean isWellKnownType(FieldDescriptor field) {
         checkNotNull(field);

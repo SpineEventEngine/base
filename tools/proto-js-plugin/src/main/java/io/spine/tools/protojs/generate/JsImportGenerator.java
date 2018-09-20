@@ -20,6 +20,8 @@
 
 package io.spine.tools.protojs.generate;
 
+import io.spine.code.js.FileName;
+
 import java.util.Collection;
 import java.util.List;
 
@@ -37,11 +39,6 @@ import static java.util.Collections.nCopies;
  * @author Dmytro Kuzmin
  */
 public final class JsImportGenerator extends JsCodeGenerator {
-
-    /**
-     * The path separator used for imports.
-     */
-    private static final String PATH_SEPARATOR = "/";
 
     /**
      * The path to parent dir.
@@ -69,12 +66,12 @@ public final class JsImportGenerator extends JsCodeGenerator {
      * to the proto JS location root.
      */
     private final String importPrefix;
-    private final Collection<String> imports;
+    private final Collection<FileName> imports;
 
     private JsImportGenerator(Builder builder) {
         super(builder.jsOutput);
-        this.importPrefix = builder.filePath != null
-                ? composePathToRoot(builder.filePath)
+        this.importPrefix = builder.fileName != null
+                ? composePathToRoot(builder.fileName)
                 : "";
         this.imports = builder.imports != null
                 ? builder.imports
@@ -83,7 +80,7 @@ public final class JsImportGenerator extends JsCodeGenerator {
 
     @Override
     public void generate() {
-        for (String fileToImport : imports) {
+        for (FileName fileToImport : imports) {
             String importPath = importPrefix + fileToImport;
             String theImport = format(IMPORT_FORMAT, importPath);
             jsOutput().addLine(theImport);
@@ -95,9 +92,19 @@ public final class JsImportGenerator extends JsCodeGenerator {
      *
      * <p>Named import is a statement of type {@code let a = require('./b')}.
      */
-    public void generateNamed(String fileToImport, String importName) {
+    public void importFile(FileName fileToImport, String importName) {
         String importPath = importPrefix + fileToImport;
         String namedImport = format(NAMED_IMPORT_FORMAT, importName, importPath);
+        jsOutput().addLine(namedImport);
+    }
+
+    /**
+     * Generates a named JS import for a specified lib.
+     *
+     * <p>Named import is a statement of type {@code let a = require('./b')}.
+     */
+    public void importLib(String libName, String importName) {
+        String namedImport = format(NAMED_IMPORT_FORMAT, importName, libName);
         jsOutput().addLine(namedImport);
     }
 
@@ -105,9 +112,10 @@ public final class JsImportGenerator extends JsCodeGenerator {
      * Composes the path from the given file to its root.
      *
      * <p>Basically, the method replaces all preceding path elements by the {@link #PARENT_DIR}.
+     * @param fileName
      */
-    private static String composePathToRoot(String filePath) {
-        String[] pathElements = filePath.split(PATH_SEPARATOR);
+    private static String composePathToRoot(FileName fileName) {
+        String[] pathElements = fileName.pathElements();
         int fileLocationDepth = pathElements.length - 1;
         List<String> pathToRootElements = nCopies(fileLocationDepth, PARENT_DIR);
         String pathToRoot = join("", pathToRootElements);
@@ -134,16 +142,16 @@ public final class JsImportGenerator extends JsCodeGenerator {
          * <p>The provided file path should be relative to the desired import root (e.g. sources root,
          * generated protos root).
          */
-        private String filePath;
-        private Collection<String> imports;
+        private FileName fileName;
+        private Collection<FileName> imports;
         private JsOutput jsOutput;
 
-        public Builder setFilePath(String filePath) {
-            this.filePath = filePath;
+        public Builder setFileName(FileName fileName) {
+            this.fileName = fileName;
             return this;
         }
 
-        public Builder setImports(Collection<String> imports) {
+        public Builder setImports(Collection<FileName> imports) {
             this.imports = copyOf(imports);
             return this;
         }

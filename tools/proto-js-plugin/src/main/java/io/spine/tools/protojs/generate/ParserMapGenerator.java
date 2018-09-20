@@ -38,7 +38,6 @@ import com.google.protobuf.Timestamp;
 import com.google.protobuf.UInt32Value;
 import com.google.protobuf.UInt64Value;
 import com.google.protobuf.Value;
-import io.spine.tools.protojs.knowntypes.KnownTypeParsersWriter;
 import io.spine.type.TypeUrl;
 
 import java.util.Map.Entry;
@@ -59,10 +58,9 @@ import static io.spine.type.TypeUrl.of;
  * return any generated code.
  *
  * @author Dmytro Kuzmin
- * @see KnownTypeParsersWriter
  */
 @SuppressWarnings("OverlyCoupledClass") // Dependencies for the listed Message types.
-final class ParserMapGenerator extends JsCodeGenerator {
+public final class ParserMapGenerator extends JsCodeGenerator {
 
     /**
      * The exported map name.
@@ -85,7 +83,7 @@ final class ParserMapGenerator extends JsCodeGenerator {
      * @param jsOutput
      *         the {@code JsOutput} which accumulates all the generated code
      */
-    ParserMapGenerator(JsOutput jsOutput) {
+    public ParserMapGenerator(JsOutput jsOutput) {
         super(jsOutput);
     }
 

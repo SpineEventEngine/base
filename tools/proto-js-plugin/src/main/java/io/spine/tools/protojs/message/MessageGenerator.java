@@ -23,6 +23,7 @@ package io.spine.tools.protojs.message;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
+import io.spine.code.js.TypeName;
 import io.spine.tools.protojs.field.FieldGenerator;
 import io.spine.tools.protojs.field.FieldGenerators;
 import io.spine.tools.protojs.generate.JsCodeGenerator;
@@ -31,7 +32,6 @@ import io.spine.tools.protojs.generate.JsOutput;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.code.js.Types.typeWithProtoPrefix;
 
 /**
  * The generator of the {@code fromJson(json)} method for the given message type.
@@ -123,7 +123,7 @@ public class MessageGenerator extends JsCodeGenerator {
     @VisibleForTesting
     void generateFromJsonMethod() {
         jsOutput().addEmptyLine();
-        String typeName = typeWithProtoPrefix(message);
+        TypeName typeName = TypeName.from(message);
         addFromJsonCode(typeName);
     }
 
@@ -136,26 +136,26 @@ public class MessageGenerator extends JsCodeGenerator {
     @VisibleForTesting
     void generateFromObjectMethod() {
         jsOutput().addEmptyLine();
-        String typeName = typeWithProtoPrefix(message);
+        TypeName typeName = TypeName.from(message);
         addFromObjectCode(typeName);
     }
 
     /**
      * Adds the {@code fromJson} code to the {@code jsOutput}.
      */
-    private void addFromJsonCode(String typeName) {
-        String methodName = typeName + '.' + FROM_JSON;
+    private void addFromJsonCode(TypeName typeName) {
+        String methodName = typeName.value() + '.' + FROM_JSON;
         jsOutput().enterMethod(methodName, FROM_JSON_ARG);
         jsOutput().declareVariable("jsObject", "JSON.parse(" + FROM_JSON_ARG + ')');
-        jsOutput().returnValue(typeName + '.' + FROM_OBJECT + "(jsonObject)");
+        jsOutput().returnValue(typeName.value() + '.' + FROM_OBJECT + "(jsonObject)");
         jsOutput().exitFunction();
     }
 
     /**
      * Adds the {@code fromObject} code to the {@code jsOutput}.
      */
-    private void addFromObjectCode(String typeName) {
-        String methodName = typeName + '.' + FROM_OBJECT;
+    private void addFromObjectCode(TypeName typeName) {
+        String methodName = typeName.value() + '.' + FROM_OBJECT;
         jsOutput().enterMethod(methodName, FROM_OBJECT_ARG);
         checkParsedObject();
         jsOutput().addEmptyLine();
