@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.tools.protojs.field.FieldGenerator.FIELD_VALUE;
-import static io.spine.code.js.Fields.camelCaseName;
+import static io.spine.code.js.FieldDescriptors.camelCaseName;
 import static io.spine.tools.protojs.field.MapFieldGenerator.ATTRIBUTE;
 import static io.spine.tools.protojs.field.MapFieldGenerator.MAP_KEY;
 import static io.spine.tools.protojs.field.RepeatedFieldGenerator.LIST_ITEM;

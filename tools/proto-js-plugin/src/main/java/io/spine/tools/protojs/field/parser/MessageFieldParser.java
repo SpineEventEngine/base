@@ -22,7 +22,7 @@ package io.spine.tools.protojs.field.parser;
 
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.code.js.Fields;
+import io.spine.code.js.FieldDescriptors;
 import io.spine.code.js.TypeName;
 import io.spine.tools.protojs.generate.JsOutput;
 
@@ -33,7 +33,7 @@ import static io.spine.tools.protojs.message.MessageGenerator.FROM_OBJECT;
  * The value parser for the proto fields of {@code message} type.
  *
  * <p>Handles all {@code message} fields except those who belong to standard Protobuf
- * {@linkplain Fields#isWellKnownType(FieldDescriptor) types} which
+ * {@linkplain FieldDescriptors#isWellKnownType(FieldDescriptor) types} which
  * are parsed separately.
  *
  * @author Dmytro Kuzmin

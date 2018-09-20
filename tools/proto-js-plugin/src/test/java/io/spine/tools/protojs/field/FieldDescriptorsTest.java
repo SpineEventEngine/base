@@ -22,7 +22,7 @@ package io.spine.tools.protojs.field;
 
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.code.js.Fields;
+import io.spine.code.js.FieldDescriptors;
 import io.spine.testing.UtilityClassTest;
 import io.spine.type.TypeUrl;
 import org.junit.jupiter.api.DisplayName;
@@ -32,9 +32,9 @@ import spine.test.protojs.Task.TaskId;
 
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.INT64;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.MESSAGE;
-import static io.spine.code.js.Fields.camelCaseName;
-import static io.spine.code.js.Fields.keyDescriptor;
-import static io.spine.code.js.Fields.valueDescriptor;
+import static io.spine.code.js.FieldDescriptors.camelCaseName;
+import static io.spine.code.js.FieldDescriptors.keyDescriptor;
+import static io.spine.code.js.FieldDescriptors.valueDescriptor;
 import static io.spine.tools.protojs.given.Given.mapField;
 import static io.spine.tools.protojs.given.Given.messageField;
 import static io.spine.tools.protojs.given.Given.primitiveField;
@@ -50,10 +50,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 @SuppressWarnings("InnerClassMayBeStatic") // JUnit nested classes cannot be static.
 @DisplayName("Fields utility should")
-class FieldsTest extends UtilityClassTest<Fields> {
+class FieldDescriptorsTest extends UtilityClassTest<FieldDescriptors> {
 
-    FieldsTest() {
-        super(Fields.class);
+    FieldDescriptorsTest() {
+        super(FieldDescriptors.class);
     }
 
     @Nested
@@ -63,36 +63,36 @@ class FieldsTest extends UtilityClassTest<Fields> {
         @Test
         @DisplayName("is message")
         void isMessage() {
-            assertTrue(Fields.isMessage(messageField()));
-            assertFalse(Fields.isMessage(primitiveField()));
-            assertTrue(Fields.isMessage(repeatedField()));
+            assertTrue(FieldDescriptors.isMessage(messageField()));
+            assertFalse(FieldDescriptors.isMessage(primitiveField()));
+            assertTrue(FieldDescriptors.isMessage(repeatedField()));
         }
 
         @Test
         @DisplayName("is standard type with known parser")
         void isWellKnownType() {
-            assertTrue(Fields.isWellKnownType(timestampField()));
-            assertFalse(Fields.isWellKnownType(messageField()));
-            assertFalse(Fields.isWellKnownType(primitiveField()));
+            assertTrue(FieldDescriptors.isWellKnownType(timestampField()));
+            assertFalse(FieldDescriptors.isWellKnownType(messageField()));
+            assertFalse(FieldDescriptors.isWellKnownType(primitiveField()));
         }
 
         @Test
         @DisplayName("is repeated")
         void isRepeated() {
-            assertTrue(Fields.isRepeated(repeatedField()));
+            assertTrue(FieldDescriptors.isRepeated(repeatedField()));
         }
 
         @Test
         @DisplayName("is map")
         void isMap() {
-            assertTrue(Fields.isMap(mapField()));
+            assertTrue(FieldDescriptors.isMap(mapField()));
         }
     }
 
     @Test
     @DisplayName("not mark map field as repeated")
     void notMarkMapAsRepeated() {
-        assertFalse(Fields.isRepeated(mapField()));
+        assertFalse(FieldDescriptors.isRepeated(mapField()));
     }
 
     @Test
