@@ -28,6 +28,9 @@ import static io.spine.code.js.given.Given.primitiveField;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * @author Dmytro Kuzmin
+ */
 @DisplayName("FieldName should")
 class FieldNameTest {
 

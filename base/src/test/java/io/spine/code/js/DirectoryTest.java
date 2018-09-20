@@ -32,6 +32,9 @@ import static io.spine.code.js.CommonFileName.SPINE_OPTIONS;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * @author Dmytro Kuzmin
+ */
 @DisplayName("Directory should")
 class DirectoryTest {
 

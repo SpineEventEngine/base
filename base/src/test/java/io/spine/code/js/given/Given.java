@@ -26,6 +26,9 @@ import spine.test.code.js.FieldDescriptorsTest.FieldContainer;
 
 import java.util.List;
 
+/**
+ * @author Dmytro Kuzmin
+ */
 public final class Given {
 
     /** Prevents instantiation of this utility class. */
