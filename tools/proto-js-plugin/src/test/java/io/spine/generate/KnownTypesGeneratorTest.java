@@ -36,6 +36,8 @@ import static io.spine.generate.given.Generators.assertContains;
 /**
  * @author Dmytro Kuzmin
  */
+@SuppressWarnings("DuplicateStringLiteralInspection")
+// Duplication necessary to check main class code.
 @DisplayName("KnownTypesGenerator should")
 class KnownTypesGeneratorTest {
 
@@ -62,7 +64,7 @@ class KnownTypesGeneratorTest {
         FileDescriptor file = Any.getDescriptor()
                                  .getFile();
         FileName fileName = FileName.from(file);
-        String taskImport = "require('./" + fileName + "');";
+        String taskImport = "require('" + fileName + "');";
         assertContains(jsOutput, taskImport);
     }
 

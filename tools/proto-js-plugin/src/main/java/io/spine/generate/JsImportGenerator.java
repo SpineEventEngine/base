@@ -92,6 +92,8 @@ public final class JsImportGenerator extends JsCodeGenerator {
      * <p>Named import is a statement of type {@code let a = require('./b')}.
      */
     public void importFile(FileName fileToImport, String importName) {
+        checkNotNull(fileToImport);
+        checkNotNull(importName);
         String importPath = importPrefix + fileToImport;
         String namedImport = format(NAMED_IMPORT_FORMAT, importName, importPath);
         jsOutput().addLine(namedImport);
@@ -103,6 +105,8 @@ public final class JsImportGenerator extends JsCodeGenerator {
      * <p>Named import is a statement of type {@code let a = require('./b')}.
      */
     public void importLib(String libToImport, String importName) {
+        checkNotNull(libToImport);
+        checkNotNull(importName);
         String namedImport = format(NAMED_IMPORT_FORMAT, importName, libToImport);
         jsOutput().addLine(namedImport);
     }

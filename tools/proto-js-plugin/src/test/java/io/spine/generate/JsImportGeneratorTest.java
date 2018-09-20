@@ -65,7 +65,8 @@ class JsImportGeneratorTest {
     @Test
     @DisplayName(NOT_ACCEPT_NULLS)
     void passNullToleranceCheck() {
-        new NullPointerTester().testAllPublicInstanceMethods(generator);
+        new NullPointerTester().setDefault(FileName.class, FILE_TO_IMPORT)
+                               .testAllPublicInstanceMethods(generator);
     }
 
     @SuppressWarnings({"CheckReturnValue", "ResultOfMethodCallIgnored"})
