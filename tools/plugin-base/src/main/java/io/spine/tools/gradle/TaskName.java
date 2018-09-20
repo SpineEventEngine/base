@@ -211,7 +211,7 @@ public enum TaskName {
      *
      * <p>Handles both {@code main} and {@code test} classes and resources scope.
      */
-    GENERATE_FROM_JSON("generateFromJson"),
+    GENERATE_JSON_PARSERS("generateJsonParsers"),
 
     /**
      * The name of the task, that copies module sources for the JavaScript-based projects.

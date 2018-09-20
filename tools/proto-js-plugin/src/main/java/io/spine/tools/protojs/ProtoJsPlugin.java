@@ -28,7 +28,7 @@ import org.gradle.api.Task;
 
 import static io.spine.tools.gradle.TaskName.COMPILE_PROTO_TO_JS;
 import static io.spine.tools.gradle.TaskName.COPY_MODULE_SOURCES;
-import static io.spine.tools.gradle.TaskName.GENERATE_FROM_JSON;
+import static io.spine.tools.gradle.TaskName.GENERATE_JSON_PARSERS;
 
 /**
  * The Gradle plugin which generates the code to parse JavaScript proto definitions from the JSON
@@ -69,7 +69,7 @@ public class ProtoJsPlugin extends SpinePlugin {
     @Override
     public void apply(Project project) {
         Action<Task> task = newAction(project);
-        newTask(GENERATE_FROM_JSON, task)
+        newTask(GENERATE_JSON_PARSERS, task)
                 .insertAfterTask(COMPILE_PROTO_TO_JS)
                 .insertBeforeTask(COPY_MODULE_SOURCES)
                 .applyNowTo(project);
@@ -85,10 +85,10 @@ public class ProtoJsPlugin extends SpinePlugin {
      * <p>See {@link DefaultJsProject} for the expected configuration.
      */
     private static Action<Task> newAction(Project project) {
-        return task -> generateFromJsonForProto(project);
+        return task -> generateJsonParsers(project);
     }
 
-    private static void generateFromJsonForProto(Project project) {
+    private static void generateJsonParsers(Project project) {
         generateForMain(project);
         generateForTest(project);
     }

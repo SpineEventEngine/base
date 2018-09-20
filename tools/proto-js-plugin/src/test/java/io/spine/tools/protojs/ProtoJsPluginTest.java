@@ -31,7 +31,7 @@ import org.junit.jupiter.api.Test;
 
 import static io.spine.tools.gradle.TaskName.COMPILE_PROTO_TO_JS;
 import static io.spine.tools.gradle.TaskName.COPY_MODULE_SOURCES;
-import static io.spine.tools.gradle.TaskName.GENERATE_FROM_JSON;
+import static io.spine.tools.gradle.TaskName.GENERATE_JSON_PARSERS;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
@@ -57,7 +57,7 @@ class ProtoJsPluginTest {
         project.getPluginManager()
                .apply(ProtoJsPlugin.class);
         TaskContainer tasks = project.getTasks();
-        Task task = tasks.findByName(GENERATE_FROM_JSON.getValue());
+        Task task = tasks.findByName(GENERATE_JSON_PARSERS.getValue());
         assertNotNull(task);
     }
 }
