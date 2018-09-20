@@ -66,6 +66,7 @@ import static io.spine.tools.gradle.TaskName.GENERATE_JSON_PARSERS;
  */
 public class ProtoJsPlugin extends SpinePlugin {
 
+    @SuppressWarnings("ResultOfMethodCallIgnored") // Method annotated with `@CanIgnoreReturnValue`.
     @Override
     public void apply(Project project) {
         Action<Task> task = newAction(project);

@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protojs.generate;
+package io.spine.base.generate;
 
 import com.google.common.annotations.VisibleForTesting;
 

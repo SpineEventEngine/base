@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protojs.generate;
+package io.spine.base.generate;
 
 import com.google.common.base.Strings;
 import io.spine.code.js.FileName;
@@ -110,7 +110,6 @@ public final class JsImportGenerator extends JsCodeGenerator {
      * Composes the path from the given file to its root.
      *
      * <p>Basically, the method replaces all preceding path elements by the {@link #PARENT_DIR}.
-     * @param fileName
      */
     private static String composePathToRoot(FileName fileName) {
         String[] pathElements = fileName.pathElements();

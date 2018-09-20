@@ -21,7 +21,7 @@
 package io.spine.tools.protojs.code;
 
 import com.google.common.testing.NullPointerTester;
-import io.spine.tools.protojs.generate.JsImportGenerator;
+import io.spine.base.generate.JsImportGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

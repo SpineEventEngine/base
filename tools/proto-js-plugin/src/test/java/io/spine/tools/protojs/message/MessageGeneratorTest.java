@@ -22,7 +22,7 @@ package io.spine.tools.protojs.message;
 
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Descriptors.Descriptor;
-import io.spine.tools.protojs.generate.JsOutput;
+import io.spine.base.generate.JsOutput;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

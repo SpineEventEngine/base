@@ -22,8 +22,8 @@ package io.spine.tools.protojs.knowntypes;
 
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Timestamp;
-import io.spine.tools.protojs.generate.JsOutput;
-import io.spine.tools.protojs.generate.ParserMapGenerator;
+import io.spine.base.generate.JsOutput;
+import io.spine.base.generate.ParserMapGenerator;
 import io.spine.type.TypeUrl;
 import io.spine.validate.ValidationError;
 import org.junit.jupiter.api.BeforeEach;

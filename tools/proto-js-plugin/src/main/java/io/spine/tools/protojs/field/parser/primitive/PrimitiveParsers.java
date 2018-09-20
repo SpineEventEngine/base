@@ -23,7 +23,7 @@ package io.spine.tools.protojs.field.parser.primitive;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.Type;
-import io.spine.tools.protojs.generate.JsOutput;
+import io.spine.base.generate.JsOutput;
 
 import java.util.Map;
 

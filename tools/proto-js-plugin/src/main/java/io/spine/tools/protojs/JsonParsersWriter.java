@@ -27,9 +27,9 @@ import io.spine.code.js.Directory;
 import io.spine.code.js.FileName;
 import io.spine.code.proto.FileSet;
 import io.spine.tools.protojs.file.FileGenerator;
-import io.spine.tools.protojs.generate.JsOutput;
-import io.spine.tools.protojs.generate.KnownTypesGenerator;
-import io.spine.tools.protojs.generate.ParserMapGenerator;
+import io.spine.base.generate.JsOutput;
+import io.spine.base.generate.KnownTypesGenerator;
+import io.spine.base.generate.ParserMapGenerator;
 
 import java.io.File;
 import java.io.IOException;

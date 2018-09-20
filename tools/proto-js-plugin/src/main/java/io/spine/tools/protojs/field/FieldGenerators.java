@@ -23,7 +23,7 @@ package io.spine.tools.protojs.field;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.tools.protojs.field.parser.FieldParser;
 import io.spine.tools.protojs.field.precondition.FieldPrecondition;
-import io.spine.tools.protojs.generate.JsOutput;
+import io.spine.base.generate.JsOutput;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.code.js.FieldDescriptors.isMap;
