@@ -37,7 +37,6 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import static io.spine.code.js.FileName.KNOWN_TYPE_PARSERS_JS;
 import static io.spine.code.js.FileName.knownTypeParsersJs;
 import static io.spine.code.js.FileName.knownTypesJs;
 import static io.spine.code.js.FileName.spineOptionsJs;
@@ -74,9 +73,14 @@ final class JsonParsersWriter {
     private final Directory generatedProtoDir;
     private final FileSet fileSet;
 
-    private JsonParsersWriter(Builder builder) {
-        this.generatedProtoDir = builder.generatedProtoDir;
-        this.fileSet = parseOrEmpty(builder.descriptorSetFile);
+    private JsonParsersWriter(Directory generatedProtoDir, FileSet fileSet) {
+        this.generatedProtoDir = generatedProtoDir;
+        this.fileSet = fileSet;
+    }
+
+    static JsonParsersWriter createFor(Directory generatedProtoDir, File descriptorSetFile) {
+        FileSet fileSet = parseOrEmpty(descriptorSetFile);
+        return new JsonParsersWriter(generatedProtoDir, fileSet);
     }
 
     /**
@@ -181,29 +185,5 @@ final class JsonParsersWriter {
     @VisibleForTesting
     FileSet fileSet() {
         return fileSet;
-    }
-
-    static Builder newBuilder() {
-        return new Builder();
-    }
-
-    static final class Builder {
-
-        private Directory generatedProtoDir;
-        private File descriptorSetFile;
-
-        Builder setGeneratedProtoDir(Directory generatedProtoDir) {
-            this.generatedProtoDir = generatedProtoDir;
-            return this;
-        }
-
-        Builder setDescriptorSetFile(File descriptorSetFile) {
-            this.descriptorSetFile = descriptorSetFile;
-            return this;
-        }
-
-        public JsonParsersWriter build() {
-            return new JsonParsersWriter(this);
-        }
     }
 }

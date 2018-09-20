@@ -21,10 +21,13 @@
 package io.spine.tools.protojs;
 
 import io.spine.code.js.DefaultJsProject;
+import io.spine.code.js.Directory;
 import io.spine.tools.gradle.SpinePlugin;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
+
+import java.io.File;
 
 import static io.spine.tools.gradle.TaskName.COMPILE_PROTO_TO_JS;
 import static io.spine.tools.gradle.TaskName.COPY_MODULE_SOURCES;
@@ -99,11 +102,10 @@ public class ProtoJsPlugin extends SpinePlugin {
      */
     private static void generateForMain(Project project) {
         DefaultJsProject jsProject = DefaultJsProject.at(project.getProjectDir());
-        JsonParsersWriter writer = JsonParsersWriter
-                .newBuilder()
-                .setGeneratedProtoDir(jsProject.proto().mainJs())
-                .setDescriptorSetFile(jsProject.mainDescriptors())
-                .build();
+        Directory generatedProtoDir = jsProject.proto()
+                                               .mainJs();
+        File descriptors = jsProject.mainDescriptors();
+        JsonParsersWriter writer = JsonParsersWriter.createFor(generatedProtoDir, descriptors);
         writer.write();
     }
 
@@ -112,11 +114,10 @@ public class ProtoJsPlugin extends SpinePlugin {
      */
     private static void generateForTest(Project project) {
         DefaultJsProject jsProject = DefaultJsProject.at(project.getProjectDir());
-        JsonParsersWriter writer = JsonParsersWriter
-                .newBuilder()
-                .setGeneratedProtoDir(jsProject.proto().testJs())
-                .setDescriptorSetFile(jsProject.testDescriptors())
-                .build();
+        Directory generatedProtoDir = jsProject.proto()
+                                               .testJs();
+        File descriptors = jsProject.testDescriptors();
+        JsonParsersWriter writer = JsonParsersWriter.createFor(generatedProtoDir, descriptors);
         writer.write();
     }
 }
