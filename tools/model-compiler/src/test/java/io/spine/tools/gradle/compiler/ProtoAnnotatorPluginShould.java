@@ -25,7 +25,7 @@ import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.ServiceDescriptorProto;
 import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.code.DefaultProject;
+import io.spine.code.java.DefaultJavaProject;
 import io.spine.code.java.SourceFile;
 import io.spine.code.proto.FileName;
 import io.spine.code.proto.FileSet;
@@ -219,10 +219,10 @@ public class ProtoAnnotatorPluginShould {
     }
 
     private void check(Path sourcePath, SourceCheck check) throws FileNotFoundException {
-        Path filePath = DefaultProject.at(testProjectDir.getRoot())
-                                      .generated()
-                                      .mainJava()
-                                      .resolve(sourcePath);
+        Path filePath = DefaultJavaProject.at(testProjectDir.getRoot())
+                                          .generated()
+                                          .mainJava()
+                                          .resolve(sourcePath);
         @SuppressWarnings("unchecked")
         AbstractJavaSource<JavaClassSource> javaSource =
                 Roaster.parse(AbstractJavaSource.class, filePath.toFile());
@@ -231,10 +231,10 @@ public class ProtoAnnotatorPluginShould {
 
     private void checkGrpcService(SourceFile serviceFile, SourceCheck check)
             throws FileNotFoundException {
-        Path fullPath = DefaultProject.at(testProjectDir.getRoot())
-                                      .generated()
-                                      .mainGrpc()
-                                      .resolve(serviceFile);
+        Path fullPath = DefaultJavaProject.at(testProjectDir.getRoot())
+                                          .generated()
+                                          .mainGrpc()
+                                          .resolve(serviceFile);
         @SuppressWarnings("unchecked")
         AbstractJavaSource<JavaClassSource> javaSource =
                 Roaster.parse(AbstractJavaSource.class, fullPath.toFile());
@@ -261,8 +261,8 @@ public class ProtoAnnotatorPluginShould {
     }
 
     private FileDescriptorProto getDescriptor(FileName fileName) {
-        File descriptorSet = DefaultProject.at(testProjectDir.getRoot())
-                                           .mainDescriptors();
+        File descriptorSet = DefaultJavaProject.at(testProjectDir.getRoot())
+                                               .mainDescriptors();
         FileSet fileSet = FileSet.parse(descriptorSet);
         Optional<FileDescriptor> file = fileSet.tryFind(fileName);
         checkState(file.isPresent(), "Unable to get file descriptor for %s", fileName);

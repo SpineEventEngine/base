@@ -21,11 +21,11 @@
 package io.spine.tools.gradle.compiler.given;
 
 import com.sun.javadoc.RootDoc;
-import io.spine.code.DefaultProject;
-import io.spine.tools.gradle.GradleProject;
+import io.spine.code.java.DefaultJavaProject;
 import io.spine.code.java.FileName;
 import io.spine.code.java.PackageName;
 import io.spine.code.proto.FieldName;
+import io.spine.tools.gradle.GradleProject;
 import org.junit.rules.TemporaryFolder;
 
 import java.nio.file.Path;
@@ -64,11 +64,11 @@ public class RejectionTestEnv {
     }
 
     public static String rejectionsJavadocSourceName() {
-        Path fileName = DefaultProject.at(Paths.get("/"))
-                                      .generated()
-                                      .mainSpine()
-                                      .resolve(JAVA_PACKAGE.toDirectory())
-                                      .resolve(REJECTION_FILE_NAME.value());
+        Path fileName = DefaultJavaProject.at(Paths.get("/"))
+                                          .generated()
+                                          .mainSpine()
+                                          .resolve(JAVA_PACKAGE.toDirectory())
+                                          .resolve(REJECTION_FILE_NAME.value());
         return fileName.toString();
     }
 
