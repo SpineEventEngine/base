@@ -321,7 +321,7 @@ public final class JsOutput {
     @Override
     public String toString() {
         String result = codeLines.stream()
-                                 .map(codeLine -> codeLine.printToString(indentation))
+                                 .map(codeLine -> codeLine.indent(indentation))
                                  .collect(Collectors.joining(LINE_SEPARATOR));
         return result;
     }

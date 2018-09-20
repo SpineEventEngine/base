@@ -20,16 +20,14 @@
 
 package io.spine.tools.protojs.generate;
 
+import com.google.common.base.Strings;
 import io.spine.code.js.FileName;
 
 import java.util.Collection;
-import java.util.List;
 
 import static com.google.common.collect.ImmutableList.copyOf;
 import static java.lang.String.format;
-import static java.lang.String.join;
 import static java.util.Collections.emptyList;
-import static java.util.Collections.nCopies;
 
 /**
  * The helper that generates imports for the JS code.
@@ -117,8 +115,7 @@ public final class JsImportGenerator extends JsCodeGenerator {
     private static String composePathToRoot(FileName fileName) {
         String[] pathElements = fileName.pathElements();
         int fileLocationDepth = pathElements.length - 1;
-        List<String> pathToRootElements = nCopies(fileLocationDepth, PARENT_DIR);
-        String pathToRoot = join("", pathToRootElements);
+        String pathToRoot = Strings.repeat(PARENT_DIR, fileLocationDepth);
         String result = pathToRoot.isEmpty() ? CURRENT_DIR : pathToRoot;
         return result;
     }

@@ -20,10 +20,7 @@
 
 package io.spine.tools.protojs.generate;
 
-import java.util.List;
-
-import static java.lang.String.join;
-import static java.util.Collections.nCopies;
+import io.spine.code.Indent;
 
 /**
  * The JS code line.
@@ -36,8 +33,6 @@ import static java.util.Collections.nCopies;
  * @author Dmytro Kuzmin
  */
 final class CodeLine {
-
-    private static final String SPACE = " ";
 
     private final String content;
     private final int depth;
@@ -62,10 +57,9 @@ final class CodeLine {
      *         the code indentation, i.e. how many spaces are inserted per depth level
      * @return the {@code CodeLine} content with the correct indent
      */
-    String printToString(int indentation) {
+    String indent(int indentation) {
         int indentUnits = depth * indentation;
-        List<String> spaces = nCopies(indentUnits, SPACE);
-        String indent = join("", spaces);
+        Indent indent = Indent.of(indentUnits);
         String result = indent + content;
         return result;
     }
