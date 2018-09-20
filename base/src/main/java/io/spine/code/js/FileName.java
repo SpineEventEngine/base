@@ -28,6 +28,16 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
+/**
+ * The JavaScript source file name.
+ *
+ * <p>When being created from {@link FileDescriptor}, the {@code .proto} extension is replaced by
+ * {@code _pb.js} suffix, as per Protobuf standards.
+ *
+ * <p>The {@code FileName} is always relative to the sources root, e.g. generated proto's root.
+ *
+ * @author Dmytro Kuzmin
+ */
 public final class FileName extends AbstractFileName<FileName> {
 
     private static final long serialVersionUID = 0L;
@@ -59,8 +69,6 @@ public final class FileName extends AbstractFileName<FileName> {
 
     /**
      * Gets the JS proto definition name for the proto file.
-     *
-     * <p>The file name is relative to the proto definitions root.
      *
      * @param descriptor
      *         the descriptor of the file

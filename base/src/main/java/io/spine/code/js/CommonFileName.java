@@ -22,10 +22,26 @@ package io.spine.code.js;
 
 import static io.spine.code.js.FileName.of;
 
+/**
+ * The common file {@linkplain FileName names} used in Spine-based JavaScript projects.
+ *
+ * @author Dmytro Kuzmin
+ */
 public enum CommonFileName {
 
+    /**
+     * The file declaring Spine Options.
+     */
     SPINE_OPTIONS(of("spine/options_pb.js")),
+
+    /**
+     * The file containing map of all known types with their {@linkplain io.spine.type.TypeUrl URL}.
+     */
     KNOWN_TYPES(of("known_types.js")),
+
+    /**
+     * The file containing the number of predefined JSON parsers for various types.
+     */
     KNOWN_TYPE_PARSERS(of("known_type_parsers.js"));
 
     private final FileName fileName;

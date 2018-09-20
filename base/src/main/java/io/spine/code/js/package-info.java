@@ -19,7 +19,7 @@
  */
 
 /**
- * // todo create desc.
+ * The tools for working with JavaScript code.
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault

@@ -51,7 +51,7 @@ public final class Directory extends SourceCodeDirectory {
     }
 
     /**
-     * Creates an instance of the root directory named {@code "java"}.
+     * Creates an instance of the root directory named {@code "js"}.
      */
     static Directory rootIn(AbstractDirectory parent) {
         checkNotNull(parent);
@@ -70,7 +70,7 @@ public final class Directory extends SourceCodeDirectory {
     }
 
     /**
-     * Obtains the source code path for the passed file.
+     * Obtains the source code path for the passed common file name.
      */
     public Path resolve(CommonFileName commonFileName) {
         checkNotNull(commonFileName);

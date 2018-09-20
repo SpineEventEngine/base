@@ -27,6 +27,44 @@ import java.nio.file.Path;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+/**
+ * A default directory structure for a Spine-based JavaScript project.
+ *
+ * <p>The project structure reflects the conventions currently used in Spine, and contains the
+ * following directories under the project root:
+ *
+ * <ul>
+ * <li>{@code build}
+ * <ul>
+ *     <li>{@code descriptors}
+ *     <ul>
+ *         <li>{@code main}
+ *         <ul>
+ *             <li>{@code known_types.desc} — descriptors for "main" source set.
+ *         </ul>
+ *         <li>{@code test}
+ *         <ul>
+ *             <li>{@code known_types.desc} — descriptors for "test" source set.
+ *         </ul>
+ *     </ul>
+ * </ul>
+ *
+ * <li>{@code proto} — the code generated from Protobuf messages.
+ * <ul>
+ *     <li>{@code main}
+ *     <ul>
+ *         <li>{@code js} — Protobuf messages from "main" source set.
+ *     </ul>
+ *     <li>{@code test}
+ *     <ul>
+ *         <li>{@code js} — Protobuf messages from "test" source set.
+ *     </ul>
+ * </ul>
+ * </li>
+ * </ul>
+ *
+ * @author Dmytro Kuzmin
+ */
 public final class DefaultJsProject extends DefaultProject {
 
     private DefaultJsProject(Path path) {
@@ -44,6 +82,9 @@ public final class DefaultJsProject extends DefaultProject {
         return at(projectDir.toPath());
     }
 
+    /**
+     * The root folder for generated Protobuf messages.
+     */
     public GeneratedProtoRoot proto() {
         return new GeneratedProtoRoot(this);
     }

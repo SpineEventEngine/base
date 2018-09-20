@@ -31,7 +31,7 @@ import static com.google.protobuf.Descriptors.FieldDescriptor.Type.ENUM;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.MESSAGE;
 
 /**
- * A utility to work with proto {@linkplain FieldDescriptor fields}.
+ * A utility to work with Protobuf field {@linkplain FieldDescriptor descriptors}.
  *
  * @author Dmytro Kuzmin
  */
@@ -155,7 +155,7 @@ public final class FieldDescriptors {
                       "Trying to get value descriptor for the non-map field %s.",
                       fieldDescriptor.getName());
         FieldDescriptor descriptor = fieldDescriptor.getMessageType()
-                                          .findFieldByName(MAP_ENTRY_VALUE);
+                                                    .findFieldByName(MAP_ENTRY_VALUE);
         return descriptor;
     }
 }
