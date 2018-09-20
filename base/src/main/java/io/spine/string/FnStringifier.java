@@ -20,42 +20,40 @@
 
 package io.spine.string;
 
-import com.google.common.primitives.Longs;
+import io.spine.util.SerializableFunction;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * The {@code Stringifier} for the long values.
+ * Abstract base for stringifiers that convert values using function objects.
  *
- * @author Illia Shepilov
  * @author Alexander Yevsyukov
  */
-final class LongStringifier extends SerializableStringifier<Long> {
+public abstract class FnStringifier<T> extends SerializableStringifier<T> {
 
     private static final long serialVersionUID = 0L;
 
-    private static final LongStringifier INSTANCE = new LongStringifier();
+    private final SerializableFunction<T, String> printer;
+    private final SerializableFunction<String, T> parser;
 
-    private LongStringifier() {
-        super("Stringifiers.forLong()");
+    protected FnStringifier(String identity,
+                            SerializableFunction<T, String> printer,
+                            SerializableFunction<String, T> parser) {
+        super(identity);
+        this.printer = checkNotNull(printer);
+        this.parser = checkNotNull(parser);
     }
 
-    static LongStringifier getInstance() {
-        return INSTANCE;
+
+    @Override
+    protected final String toString(T obj) {
+        String result = printer.apply(obj);
+        return result;
     }
 
     @Override
-    protected String toString(Long obj) {
-        return Longs.stringConverter()
-                    .reverse()
-                    .convert(obj);
-    }
-
-    @Override
-    protected Long fromString(String s) {
-        return Longs.stringConverter()
-                    .convert(s);
-    }
-
-    private Object readResolve() {
-        return INSTANCE;
+    protected final T fromString(String s) {
+        T result = parser.apply(s);
+        return result;
     }
 }

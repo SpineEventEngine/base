@@ -18,16 +18,38 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.net;
+
+import io.spine.net.Uri.Schema;
+import io.spine.testing.UtilityClassTest;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import static io.spine.net.Schemas.parse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 /**
- * The versions of the libraries used.
+ * Tests {@link io.spine.net.Schemas}.
  *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
+ * @author Mikhail Mikhaylov
  */
+@DisplayName("Schemas utility class should")
+class SchemasTest extends UtilityClassTest<Schemas> {
 
-final def SPINE_VERSION = '0.10.89-SNAPSHOT'
+    SchemasTest() {
+        super(Schemas.class);
+    }
 
-ext {
-    spineVersion = SPINE_VERSION
-    versionToPublish = SPINE_VERSION
+    @Test
+    @DisplayName("obtain value by correct names")
+    void parseValid() {
+        assertEquals(Schema.FILE, parse("file"));
+        assertEquals(Schema.FILE, parse("FILE"));
+    }
+
+    @Test
+    @DisplayName("return UNDEFINED for unknown schema")
+    void unknownSchema() {
+        assertEquals(Schema.UNDEFINED, parse("someunknownschema"));
+    }
 }

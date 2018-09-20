@@ -21,14 +21,15 @@
 package io.spine.net;
 
 import com.google.common.base.Splitter;
-import io.spine.net.Url.Record.Protocol;
-import io.spine.net.Url.Record.QueryParameter;
-import io.spine.net.Url.Record.Schema;
+import io.spine.net.Uri.Protocol;
+import io.spine.net.Uri.QueryParameter;
+import io.spine.net.Uri.Schema;
 
 /**
- * Parses given URL to {@link Url} instance.
+ * Parses given URL to {@link Uri} instance.
  *
  * @author Mikhail Mikhaylov
+ * @author Alexander Yevsyukov
  */
 @SuppressWarnings("CheckReturnValue") // of calls to methods of fields that are builders
 final class UrlParser {
@@ -47,11 +48,11 @@ final class UrlParser {
 
     private final String originalUrl;
 
-    private Url.Record.Builder record;
+    private Uri.Builder record;
     private String unProcessedInput;
 
     /**
-     * Creates an instance of {@link UrlParser} with given String URL to parse.
+     * Creates an new instance of {@code UrlParser} with given String URL to parse.
      *
      * @param url String URL to parse
      */
@@ -60,12 +61,10 @@ final class UrlParser {
     }
 
     /**
-     * Starts parsing.
-     *
-     * @return {@link Url} instance
+     * Performs the parsing.
      */
-    Url parse() {
-        setupStartingState();
+    Uri parse() {
+        init();
 
         parseProtocol();
         parseCredentials();
@@ -74,15 +73,13 @@ final class UrlParser {
         parseHost();
         parsePath();
 
-        Url.Builder result = Url.newBuilder();
-        result.setRecord(record);
 
-        return result.build();
+        return record.build();
     }
 
-    /** Initializes starting {@link UrlParser} state. */
-    private void setupStartingState() {
-        record = Url.Record.newBuilder();
+    /** Initializes the parser. */
+    private void init() {
+        record = Uri.newBuilder();
         unProcessedInput = originalUrl;
     }
 
@@ -127,7 +124,7 @@ final class UrlParser {
         String credential = unProcessedInput.substring(0, credentialsEndingIndex);
         unProcessedInput = unProcessedInput.substring(credentialsEndingIndex + 1);
 
-        Url.Record.Authorization.Builder auth = Url.Record.Authorization.newBuilder();
+        Uri.Authorization.Builder auth = Uri.Authorization.newBuilder();
 
         int credentialsSeparatorIndex = credential.indexOf(CREDENTIALS_SEPARATOR);
         if (credentialsSeparatorIndex != -1) {

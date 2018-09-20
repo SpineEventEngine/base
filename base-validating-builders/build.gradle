@@ -101,9 +101,11 @@ build.doLast {
     }
 }
 
-clean {
-    delete buildersDir
+task cleanGenerated(type: Delete) {
+    delete = files("$projectDir/generated", buildersDir)
 }
+
+clean.dependsOn cleanGenerated
 
 idea.module {
     generatedSourceDirs += buildersDir

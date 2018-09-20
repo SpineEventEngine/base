@@ -18,16 +18,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.net.string;
+
+import io.spine.net.EmailAddress;
+
 /**
- * The versions of the libraries used.
+ * The default stringifier for {@link EmailAddress}.
  *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
+ * @author Alexander Yevsyukov
  */
+final class EmailAddressStringifier extends NetStringifier<EmailAddress> {
 
-final def SPINE_VERSION = '0.10.89-SNAPSHOT'
+    private static final long serialVersionUID = 0L;
+    private static final EmailAddressStringifier INSTANCE = new EmailAddressStringifier();
 
-ext {
-    spineVersion = SPINE_VERSION
-    versionToPublish = SPINE_VERSION
+    private EmailAddressStringifier() {
+        super("NetStringifiers.forEmailAddress()",
+              EmailAddress::getValue,
+              (s) -> EmailAddress.newBuilder()
+                                 .setValue(s)
+                                 .build());
+    }
+
+    static EmailAddressStringifier getInstance() {
+        return INSTANCE;
+    }
+
+    private Object readResolve() {
+        return INSTANCE;
+    }
 }

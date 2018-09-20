@@ -20,43 +20,66 @@
 
 package io.spine.net;
 
-import io.spine.net.Url.Record.QueryParameter;
+import io.spine.net.Uri.QueryParameter;
+import io.spine.testing.UtilityClassTest;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.junit.rules.ExpectedException;
 
-import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
+ * Tests {@link io.spine.net.UrlQueryParameters}.
+ *
  * @author Mikhail Mikhaylov
  */
-@SuppressWarnings("DuplicateStringLiteralInspection")
-public class UrlQueryParametersShould {
+public class UrlQueryParametersTest extends UtilityClassTest<UrlQueryParameters> {
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
-    @Test
-    public void fail_on_parsing_wrong_query() {
-        thrown.expect(IllegalArgumentException.class);
-        UrlQueryParameters.parse("123");
+    UrlQueryParametersTest() {
+        super(UrlQueryParameters.class);
+    }
+
+    @Nested
+    @DisplayName("fail on")
+    class Fail {
+
+        @Test
+        @DisplayName("parsing wrong query")
+        void wrongQuery() {
+            assertThrows(
+                    IllegalArgumentException.class,
+                    () ->  UrlQueryParameters.parse("123")
+            );
+        }
+
+        @Test
+        @DisplayName("missing key")
+        void missingKey() {
+            assertThrows(
+                    IllegalArgumentException.class,
+                    () ->  UrlQueryParameters.from("", "123")
+            );
+        }
+
+        @Test
+        @DisplayName("missing value")
+        void fail_on_missing_value() {
+            assertThrows(
+                    IllegalArgumentException.class,
+                    () ->  UrlQueryParameters.from("123", "")
+            );
+        }
     }
 
     @Test
-    public void fail_on_missing_key() {
-        thrown.expect(IllegalArgumentException.class);
-        UrlQueryParameters.from("", "123");
-    }
-
-    @Test
-    public void fail_on_missing_value() {
-        thrown.expect(IllegalArgumentException.class);
-        UrlQueryParameters.from("123", "");
-    }
-
-    @Test
-    public void convert_proper_parameters() {
+    @DisplayName("convert parameters")
+    void convertParams() {
         String key = "keyOne";
         String value = "valueTwo";
 
@@ -70,10 +93,5 @@ public class UrlQueryParametersShould {
 
         assertEquals(query, UrlQueryParameters.toString(parameter1));
         assertEquals(query, UrlQueryParameters.toString(parameter2));
-    }
-
-    @Test
-    public void have_private_constructor() {
-        assertHasPrivateParameterlessCtor(UrlQueryParameters.class);
     }
 }

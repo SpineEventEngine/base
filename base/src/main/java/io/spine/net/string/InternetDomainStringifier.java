@@ -18,16 +18,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.net.string;
+
+import io.spine.net.InternetDomain;
+
 /**
- * The versions of the libraries used.
+ * Default stringifier for {@code InternetDomain}.
  *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
+ * @author Alexander Yevsyukov
  */
+final class InternetDomainStringifier extends NetStringifier<InternetDomain> {
 
-final def SPINE_VERSION = '0.10.89-SNAPSHOT'
+    private static final long serialVersionUID = 0L;
+    private static final InternetDomainStringifier INSTANCE = new InternetDomainStringifier();
 
-ext {
-    spineVersion = SPINE_VERSION
-    versionToPublish = SPINE_VERSION
+    private InternetDomainStringifier() {
+        super("NetStringifiers.forInternetDomain()",
+              InternetDomain::getValue,
+              (s -> InternetDomain.newBuilder()
+                                  .setValue(s)
+                                  .build()));
+    }
+
+    static InternetDomainStringifier getInstance() {
+        return INSTANCE;
+    }
+
+    private Object readResolve() {
+        return INSTANCE;
+    }
 }

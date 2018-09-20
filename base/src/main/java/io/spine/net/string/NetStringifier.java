@@ -18,16 +18,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.net.string;
+
+import com.google.protobuf.Message;
+import io.spine.string.FnStringifier;
+import io.spine.util.SerializableFunction;
+
 /**
- * The versions of the libraries used.
+ * Abstract base for stringifiers of network-related types.
  *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
+ * @author Alexander Yevsyukov
  */
+abstract class NetStringifier<T extends Message> extends FnStringifier<T> {
 
-final def SPINE_VERSION = '0.10.89-SNAPSHOT'
+    private static final long serialVersionUID = 0L;
 
-ext {
-    spineVersion = SPINE_VERSION
-    versionToPublish = SPINE_VERSION
+    NetStringifier(String identity,
+                   SerializableFunction<T, String> printer,
+                   SerializableFunction<String, T> parser) {
+        super(identity, printer, parser);
+    }
 }

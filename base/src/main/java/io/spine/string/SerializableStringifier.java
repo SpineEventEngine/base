@@ -18,39 +18,37 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.net;
+package io.spine.string;
 
-import com.google.common.testing.NullPointerTester;
-import org.junit.Test;
-
-import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
-import static org.junit.Assert.assertEquals;
+import java.io.Serializable;
 
 /**
- * @author Mikhail Mikhaylov
+ * Abstract base serializable stringifiers.
+ *
+ * @param <T> the type to stringify
+ * @author Alexander Yevsyukov
  */
-public class SchemasShould {
+public abstract class SerializableStringifier<T> extends Stringifier<T> implements Serializable {
 
-    @Test
-    public void return_valid_schemas_on_valid_args() {
-        assertEquals(Url.Record.Schema.FILE, Schemas.parse("file"));
-        assertEquals(Url.Record.Schema.FILE, Schemas.parse("FILE"));
+    private static final long serialVersionUID = 0L;
+
+    private final String identity;
+
+    /**
+     * Creates a new instance with the passed identity.
+     *
+     * @param identity the identity of the stringifier, which is used in {@link #toString()}.
+     */
+    protected SerializableStringifier(String identity) {
+        super();
+        this.identity = identity;
     }
 
-    @Test
-    public void return_undefined_schema_on_invalid_args() {
-        assertEquals(Url.Record.Schema.UNDEFINED, Schemas.parse("someunknownschema"));
-    }
-
-    @Test
-    public void have_private_constructor() {
-        assertHasPrivateParameterlessCtor(Schemas.class);
-    }
-
-    @Test
-    public void pass_the_null_tolerance_check() {
-        new NullPointerTester()
-                .setDefault(Url.Record.Schema.class, Url.Record.Schema.UNDEFINED)
-                .testAllPublicStaticMethods(Schemas.class);
+    /**
+     * Returns the identity of the stringifier.
+     */
+    @Override
+    public final String toString() {
+        return identity;
     }
 }
