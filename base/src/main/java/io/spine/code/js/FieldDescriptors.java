@@ -137,7 +137,7 @@ public final class FieldDescriptors {
                       "Trying to get key descriptor for the non-map field %s.",
                       fieldDescriptor.getName());
         FieldDescriptor descriptor = fieldDescriptor.getMessageType()
-                                          .findFieldByName(MAP_ENTRY_KEY);
+                                                    .findFieldByName(MAP_ENTRY_KEY);
         return descriptor;
     }
 

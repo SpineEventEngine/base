@@ -22,10 +22,10 @@ package io.spine.tools.protojs.field;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.tools.protojs.field.parser.FieldParser;
-import io.spine.tools.protojs.field.precondition.FieldPrecondition;
 import io.spine.generate.JsCodeGenerator;
 import io.spine.generate.JsOutput;
+import io.spine.tools.protojs.field.parser.FieldParser;
+import io.spine.tools.protojs.field.precondition.FieldPrecondition;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.protojs.message.MessageGenerator.FROM_OBJECT_ARG;

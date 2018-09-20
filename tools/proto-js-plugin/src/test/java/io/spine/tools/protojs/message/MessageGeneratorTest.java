@@ -29,8 +29,8 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static io.spine.generate.given.Generators.assertContains;
+import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static io.spine.tools.protojs.given.Given.message;
 import static io.spine.tools.protojs.message.MessageGenerator.FROM_JSON;
 import static io.spine.tools.protojs.message.MessageGenerator.FROM_JSON_ARG;

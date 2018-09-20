@@ -186,7 +186,8 @@ final class JsonParsersWriter {
     @VisibleForTesting
     static boolean shouldSkip(FileDescriptor file) {
         FileName fileName = FileName.from(file);
-        boolean isSpineOptions = SPINE_OPTIONS.fileName().equals(fileName);
+        boolean isSpineOptions = SPINE_OPTIONS.fileName()
+                                              .equals(fileName);
         boolean isStandardType = file.getPackage()
                                      .startsWith(GOOGLE_PROTOBUF_PACKAGE.packageName());
         boolean shouldSkip = isSpineOptions || isStandardType;

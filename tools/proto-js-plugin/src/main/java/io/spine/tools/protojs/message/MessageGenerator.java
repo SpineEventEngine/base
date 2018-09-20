@@ -24,10 +24,10 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.code.js.TypeName;
-import io.spine.tools.protojs.field.FieldGenerator;
-import io.spine.tools.protojs.field.FieldGenerators;
 import io.spine.generate.JsCodeGenerator;
 import io.spine.generate.JsOutput;
+import io.spine.tools.protojs.field.FieldGenerator;
+import io.spine.tools.protojs.field.FieldGenerators;
 
 import java.util.List;
 
@@ -110,7 +110,7 @@ public class MessageGenerator extends JsCodeGenerator {
         generateFromJsonMethod();
         generateFromObjectMethod();
     }
-    
+
     /**
      * Generates the {@code fromJson} method which parses the JSON string via the {@code JSON.parse}
      * functionality and then calls {@code fromObject} for the parsed JS object.

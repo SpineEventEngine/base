@@ -91,7 +91,7 @@ public final class KnownTypesGenerator extends JsCodeGenerator {
         Collection<FileDescriptor> files = fileSet.files();
         Set<FileName> imports = files.stream()
                                      .filter(file -> !file.getMessageTypes()
-                                                        .isEmpty())
+                                                          .isEmpty())
                                      .map(FileName::from)
                                      .collect(toSet());
         JsImportGenerator generator = JsImportGenerator
