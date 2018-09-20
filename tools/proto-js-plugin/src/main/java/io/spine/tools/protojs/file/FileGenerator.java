@@ -29,7 +29,7 @@ import io.spine.generate.JsImportGenerator;
 import io.spine.generate.JsOutput;
 import io.spine.tools.protojs.message.MessageGenerator;
 
-import static io.spine.code.js.DefaultJsProject.KNOWN_TYPE_PARSERS_JS;
+import static io.spine.code.js.FileName.knownTypeParsersJs;
 
 /**
  * The generator of the {@code fromJson(json)} method for the JS Proto definitions.
@@ -120,7 +120,7 @@ public final class FileGenerator extends JsCodeGenerator {
                 .setFileName(fileName)
                 .setJsOutput(jsOutput())
                 .build();
-        generator.importFile(KNOWN_TYPE_PARSERS_JS, PARSERS_IMPORT_NAME);
+        generator.importFile(knownTypeParsersJs(), PARSERS_IMPORT_NAME);
     }
 
     /**

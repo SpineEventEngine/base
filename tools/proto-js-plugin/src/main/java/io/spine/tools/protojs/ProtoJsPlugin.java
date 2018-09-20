@@ -101,8 +101,6 @@ public class ProtoJsPlugin extends SpinePlugin {
         DefaultJsProject jsProject = DefaultJsProject.at(project.getProjectDir());
         JsonParsersWriter writer = JsonParsersWriter
                 .newBuilder()
-                .setKnownTypes(jsProject.mainKnownTypes())
-                .setKnownTypeParsers(jsProject.mainKnownTypeParsers())
                 .setGeneratedProtoDir(jsProject.proto().mainJs())
                 .setDescriptorSetFile(jsProject.mainDescriptors())
                 .build();
@@ -116,8 +114,6 @@ public class ProtoJsPlugin extends SpinePlugin {
         DefaultJsProject jsProject = DefaultJsProject.at(project.getProjectDir());
         JsonParsersWriter writer = JsonParsersWriter
                 .newBuilder()
-                .setKnownTypes(jsProject.testKnownTypes())
-                .setKnownTypeParsers(jsProject.testKnownTypeParsers())
                 .setGeneratedProtoDir(jsProject.proto().testJs())
                 .setDescriptorSetFile(jsProject.testDescriptors())
                 .build();

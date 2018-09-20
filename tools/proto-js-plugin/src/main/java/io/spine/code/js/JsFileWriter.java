@@ -18,7 +18,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code;
+package io.spine.code.js;
+
+import io.spine.generate.JsOutput;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -29,12 +31,17 @@ import static java.nio.file.StandardOpenOption.APPEND;
 import static java.nio.file.StandardOpenOption.CREATE;
 import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 
-public final class FileWriter {
+public class JsFileWriter {
 
     private final Path path;
 
-    public FileWriter(Path path) {
+    private JsFileWriter(Path path) {
         this.path = path;
+    }
+
+    public static JsFileWriter createFor(Directory directory, FileName fileName) {
+        Path filePath = directory.resolve(fileName);
+        return new JsFileWriter(filePath);
     }
 
     /**
@@ -42,24 +49,28 @@ public final class FileWriter {
      *
      * <p>Overwrites the previous file content.
      *
-     * @param content
-     *         the content to write
+     * @param jsOutput
+     *         the {@code JsOutput} to write
      * @throws IllegalStateException
      *         if something went wrong when writing to file
      */
-    public void write(String content) {
-        checkNotNull(content);
+    public void write(JsOutput jsOutput) {
+        checkNotNull(jsOutput);
         try {
-            Files.write(path, content.getBytes(), CREATE, TRUNCATE_EXISTING);
+            byte[] bytes = jsOutput.toString()
+                                   .getBytes();
+            Files.write(path, bytes, CREATE, TRUNCATE_EXISTING);
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
     }
 
-    public void append(String content) {
-        checkNotNull(content);
+    public void append(JsOutput jsOutput) {
+        checkNotNull(jsOutput);
         try {
-            Files.write(path, content.getBytes(), APPEND);
+            byte[] bytes = jsOutput.toString()
+                                   .getBytes();
+            Files.write(path, bytes, APPEND);
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }

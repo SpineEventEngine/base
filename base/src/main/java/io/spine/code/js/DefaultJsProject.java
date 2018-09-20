@@ -26,16 +26,8 @@ import java.io.File;
 import java.nio.file.Path;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.code.js.FileName.of;
 
 public final class DefaultJsProject extends DefaultProject {
-
-    /**
-     * Visible so it can be used to generate JS imports.
-     */
-    public static final FileName KNOWN_TYPE_PARSERS_JS = of("known_type_parsers.js");
-
-    private static final FileName KNOWN_TYPES_JS = of("known_types.js");
 
     private DefaultJsProject(Path path) {
         super(path);
@@ -50,22 +42,6 @@ public final class DefaultJsProject extends DefaultProject {
     public static DefaultJsProject at(File projectDir) {
         checkNotNull(projectDir);
         return at(projectDir.toPath());
-    }
-
-    public Path mainKnownTypes() {
-        return proto().mainJs().resolve(KNOWN_TYPES_JS);
-    }
-
-    public Path testKnownTypes() {
-        return proto().testJs().resolve(KNOWN_TYPES_JS);
-    }
-
-    public Path mainKnownTypeParsers() {
-        return proto().mainJs().resolve(KNOWN_TYPE_PARSERS_JS);
-    }
-
-    public Path testKnownTypeParsers() {
-        return proto().testJs().resolve(KNOWN_TYPE_PARSERS_JS);
     }
 
     public GeneratedProtoRoot proto() {

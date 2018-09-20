@@ -22,14 +22,14 @@ package io.spine.tools.protojs;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.code.FileWriter;
 import io.spine.code.js.Directory;
 import io.spine.code.js.FileName;
+import io.spine.code.js.JsFileWriter;
 import io.spine.code.proto.FileSet;
-import io.spine.tools.protojs.file.FileGenerator;
 import io.spine.generate.JsOutput;
 import io.spine.generate.KnownTypesGenerator;
 import io.spine.generate.ParserMapGenerator;
+import io.spine.tools.protojs.file.FileGenerator;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,6 +37,9 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import static io.spine.code.js.FileName.KNOWN_TYPE_PARSERS_JS;
+import static io.spine.code.js.FileName.knownTypeParsersJs;
+import static io.spine.code.js.FileName.knownTypesJs;
 import static io.spine.code.js.FileName.spineOptionsJs;
 import static io.spine.code.proto.FileSet.parseOrEmpty;
 import static io.spine.code.proto.ProtoPackage.GOOGLE_PROTOBUF_PACKAGE;
@@ -68,14 +71,10 @@ final class JsonParsersWriter {
     private static final String PARSERS_RESOURCE =
             "io/spine/tools/protojs/knowntypes/known_type_parsers";
 
-    private final Path knownTypes;
-    private final Path knownTypeParsers;
     private final Directory generatedProtoDir;
     private final FileSet fileSet;
 
     private JsonParsersWriter(Builder builder) {
-        this.knownTypes = builder.knownTypes;
-        this.knownTypeParsers = builder.knownTypeParsers;
         this.generatedProtoDir = builder.generatedProtoDir;
         this.fileSet = parseOrEmpty(builder.descriptorSetFile);
     }
@@ -115,8 +114,8 @@ final class JsonParsersWriter {
         JsOutput jsOutput = new JsOutput();
         KnownTypesGenerator generator = new KnownTypesGenerator(fileSet, jsOutput);
         generator.generate();
-        FileWriter writer = new FileWriter(knownTypes);
-        writer.write(jsOutput.toString());
+        JsFileWriter writer = JsFileWriter.createFor(generatedProtoDir, knownTypesJs());
+        writer.write(jsOutput);
     }
 
     /**
@@ -133,8 +132,8 @@ final class JsonParsersWriter {
         JsOutput jsOutput = new JsOutput();
         ParserMapGenerator generator = new ParserMapGenerator(jsOutput);
         generator.generate();
-        FileWriter writer = new FileWriter(knownTypeParsers);
-        writer.write(jsOutput.toString());
+        JsFileWriter writer = JsFileWriter.createFor(generatedProtoDir, knownTypeParsersJs());
+        writer.write(jsOutput);
     }
 
     /**
@@ -147,7 +146,8 @@ final class JsonParsersWriter {
         try (InputStream in = JsonParsersWriter.class
                 .getClassLoader()
                 .getResourceAsStream(PARSERS_RESOURCE)) {
-            Files.copy(in, knownTypeParsers, REPLACE_EXISTING);
+            Path path = generatedProtoDir.resolve(knownTypeParsersJs());
+            Files.copy(in, path, REPLACE_EXISTING);
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
@@ -174,9 +174,8 @@ final class JsonParsersWriter {
         JsOutput jsOutput = new JsOutput();
         FileGenerator generator = new FileGenerator(file, jsOutput);
         generator.generate();
-        Path filePath = generatedProtoDir.resolve(fileName);
-        FileWriter writer = new FileWriter(filePath);
-        writer.append(jsOutput.toString());
+        JsFileWriter writer = JsFileWriter.createFor(generatedProtoDir, fileName);
+        writer.append(jsOutput);
     }
 
     @VisibleForTesting
@@ -190,20 +189,8 @@ final class JsonParsersWriter {
 
     static final class Builder {
 
-        private Path knownTypes;
-        private Path knownTypeParsers;
         private Directory generatedProtoDir;
         private File descriptorSetFile;
-
-        Builder setKnownTypes(Path knownTypes) {
-            this.knownTypes = knownTypes;
-            return this;
-        }
-
-        Builder setKnownTypeParsers(Path knownTypeParsers) {
-            this.knownTypeParsers = knownTypeParsers;
-            return this;
-        }
 
         Builder setGeneratedProtoDir(Directory generatedProtoDir) {
             this.generatedProtoDir = generatedProtoDir;
