@@ -20,7 +20,7 @@
 
 package io.spine.tools.protojs.field.precondition;
 
-import io.spine.base.generate.JsOutput;
+import io.spine.generate.JsOutput;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 

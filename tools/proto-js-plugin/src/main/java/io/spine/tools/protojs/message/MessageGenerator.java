@@ -26,8 +26,8 @@ import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.code.js.TypeName;
 import io.spine.tools.protojs.field.FieldGenerator;
 import io.spine.tools.protojs.field.FieldGenerators;
-import io.spine.base.generate.JsCodeGenerator;
-import io.spine.base.generate.JsOutput;
+import io.spine.generate.JsCodeGenerator;
+import io.spine.generate.JsOutput;
 
 import java.util.List;
 

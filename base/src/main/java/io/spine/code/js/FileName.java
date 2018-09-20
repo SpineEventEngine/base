@@ -28,7 +28,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
-public class FileName extends AbstractFileName<FileName> {
+public final class FileName extends AbstractFileName<FileName> {
 
     private static final long serialVersionUID = 0L;
 

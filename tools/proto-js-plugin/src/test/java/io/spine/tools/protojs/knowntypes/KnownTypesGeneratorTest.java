@@ -22,9 +22,9 @@ package io.spine.tools.protojs.knowntypes;
 
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.proto.FileSet;
-import io.spine.base.generate.JsOutput;
+import io.spine.generate.JsOutput;
 import io.spine.tools.protojs.files.JsFiles;
-import io.spine.base.generate.KnownTypesGenerator;
+import io.spine.generate.KnownTypesGenerator;
 import io.spine.tools.protojs.types.Types;
 import io.spine.type.TypeUrl;
 import org.junit.jupiter.api.BeforeEach;

@@ -21,7 +21,7 @@
 package io.spine.tools.protojs.given;
 
 import io.spine.testing.Verify;
-import io.spine.base.generate.JsOutput;
+import io.spine.generate.JsOutput;
 
 /**
  * A helper tool for working with generators output.

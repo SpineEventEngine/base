@@ -20,7 +20,7 @@
 
 package io.spine.tools.protojs.field.precondition;
 
-import io.spine.base.generate.JsOutput;
+import io.spine.generate.JsOutput;
 
 /**
  * The generator of the code which performs various checks on the proto field value.

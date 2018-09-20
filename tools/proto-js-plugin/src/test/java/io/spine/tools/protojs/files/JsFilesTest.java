@@ -23,7 +23,7 @@ package io.spine.tools.protojs.files;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.proto.FileName;
 import io.spine.testing.UtilityClassTest;
-import io.spine.base.generate.JsOutput;
+import io.spine.generate.JsOutput;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

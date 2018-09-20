@@ -20,7 +20,7 @@
 
 package io.spine.tools.protojs.field.parser.primitive;
 
-import io.spine.base.generate.JsOutput;
+import io.spine.generate.JsOutput;
 
 /**
  * The generator of the JS code parsing some primitive value from its JSON representation.

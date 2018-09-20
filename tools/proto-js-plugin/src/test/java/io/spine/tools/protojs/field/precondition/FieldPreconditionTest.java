@@ -20,7 +20,7 @@
 
 package io.spine.tools.protojs.field.precondition;
 
-import io.spine.base.generate.JsOutput;
+import io.spine.generate.JsOutput;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

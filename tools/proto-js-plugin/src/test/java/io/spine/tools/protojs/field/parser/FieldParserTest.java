@@ -22,7 +22,7 @@ package io.spine.tools.protojs.field.parser;
 
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.EnumDescriptor;
-import io.spine.base.generate.JsOutput;
+import io.spine.generate.JsOutput;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

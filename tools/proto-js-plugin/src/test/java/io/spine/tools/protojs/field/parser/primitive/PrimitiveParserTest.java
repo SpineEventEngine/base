@@ -20,7 +20,7 @@
 
 package io.spine.tools.protojs.field.parser.primitive;
 
-import io.spine.base.generate.JsOutput;
+import io.spine.generate.JsOutput;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,7 +29,7 @@ import static com.google.protobuf.Descriptors.FieldDescriptor.Type.BYTES;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.FLOAT;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.INT32;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.INT64;
-import static io.spine.base.generate.JsImportGenerator.rawNamedImport;
+import static io.spine.generate.JsImportGenerator.rawNamedImport;
 import static io.spine.tools.protojs.field.parser.primitive.BytesParser.BASE64_LIB;
 import static io.spine.tools.protojs.field.parser.primitive.BytesParser.BASE64_VAR;
 import static io.spine.tools.protojs.given.Generators.assertContains;

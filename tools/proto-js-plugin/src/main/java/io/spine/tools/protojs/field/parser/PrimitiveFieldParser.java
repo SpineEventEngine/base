@@ -22,7 +22,7 @@ package io.spine.tools.protojs.field.parser;
 
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.Type;
-import io.spine.base.generate.JsOutput;
+import io.spine.generate.JsOutput;
 import io.spine.tools.protojs.field.parser.primitive.PrimitiveParser;
 import io.spine.tools.protojs.field.parser.primitive.PrimitiveParsers;
 

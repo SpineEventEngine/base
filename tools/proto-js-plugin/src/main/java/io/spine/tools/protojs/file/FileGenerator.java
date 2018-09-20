@@ -24,9 +24,9 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.js.FileName;
-import io.spine.base.generate.JsCodeGenerator;
-import io.spine.base.generate.JsImportGenerator;
-import io.spine.base.generate.JsOutput;
+import io.spine.generate.JsCodeGenerator;
+import io.spine.generate.JsImportGenerator;
+import io.spine.generate.JsOutput;
 import io.spine.tools.protojs.message.MessageGenerator;
 
 import static io.spine.code.js.DefaultJsProject.KNOWN_TYPE_PARSERS_JS;

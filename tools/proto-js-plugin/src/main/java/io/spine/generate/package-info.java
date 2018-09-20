@@ -18,19 +18,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base.generate;
+/**
+ * // todo generate desc.
+ */
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.generate;
 
-public abstract class JsCodeGenerator {
+import com.google.errorprone.annotations.CheckReturnValue;
 
-    private final JsOutput jsOutput;
-
-    protected JsCodeGenerator(JsOutput jsOutput) {
-        this.jsOutput = jsOutput;
-    }
-
-    protected JsOutput jsOutput() {
-        return jsOutput;
-    }
-
-    public abstract void generate();
-}
+import javax.annotation.ParametersAreNonnullByDefault;

@@ -23,7 +23,7 @@ package io.spine.tools.protojs.field.parser;
 import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.code.js.TypeName;
-import io.spine.base.generate.JsOutput;
+import io.spine.generate.JsOutput;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
