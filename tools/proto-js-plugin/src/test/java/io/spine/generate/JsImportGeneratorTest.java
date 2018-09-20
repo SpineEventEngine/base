@@ -99,7 +99,7 @@ class JsImportGeneratorTest {
                 .setJsOutput(jsOutput)
                 .build();
         generator.generate();
-        String expected = "require('" + FILE_TO_IMPORT + "');";
+        String expected = "require('./" + FILE_TO_IMPORT + "');";
         assertContains(jsOutput, expected);
     }
 

@@ -64,7 +64,7 @@ class KnownTypesGeneratorTest {
         FileDescriptor file = Any.getDescriptor()
                                  .getFile();
         FileName fileName = FileName.from(file);
-        String taskImport = "require('" + fileName + "');";
+        String taskImport = "require('./" + fileName + "');";
         assertContains(jsOutput, taskImport);
     }
 

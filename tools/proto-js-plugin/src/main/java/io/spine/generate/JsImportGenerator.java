@@ -87,7 +87,7 @@ public final class JsImportGenerator extends JsCodeGenerator {
         super(checkNotNull(builder.jsOutput));
         this.importPrefix = builder.fileName != null
                 ? composePathToRoot(builder.fileName)
-                : "";
+                : CURRENT_DIR;
         this.imports = builder.imports != null
                 ? builder.imports
                 : emptyList();
@@ -108,7 +108,7 @@ public final class JsImportGenerator extends JsCodeGenerator {
     /**
      * Generates a named JS import with a stored {@code importPrefix}.
      *
-     * <p>Named import is a statement of type {@code let a = require('./file.js')}.
+     * <p>Named file import is a statement of type {@code let a = require('./file.js')}.
      */
     public void importFile(FileName fileToImport, String importName) {
         checkNotNull(fileToImport);
@@ -121,7 +121,7 @@ public final class JsImportGenerator extends JsCodeGenerator {
     /**
      * Generates a named JS import for a specified lib.
      *
-     * <p>Named import is a statement of type {@code let a = require('lib')}.
+     * <p>Named lib import is a statement of type {@code let a = require('lib')}.
      */
     public void importLib(String libToImport, String importName) {
         checkNotNull(libToImport);
