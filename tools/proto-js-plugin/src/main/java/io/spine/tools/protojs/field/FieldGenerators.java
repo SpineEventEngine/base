@@ -26,10 +26,10 @@ import io.spine.tools.protojs.field.precondition.FieldPrecondition;
 import io.spine.tools.protojs.generate.JsOutput;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.protojs.field.Fields.isMap;
-import static io.spine.tools.protojs.field.Fields.isRepeated;
-import static io.spine.tools.protojs.field.Fields.keyDescriptor;
-import static io.spine.tools.protojs.field.Fields.valueDescriptor;
+import static io.spine.code.js.Fields.isMap;
+import static io.spine.code.js.Fields.isRepeated;
+import static io.spine.code.js.Fields.keyDescriptor;
+import static io.spine.code.js.Fields.valueDescriptor;
 import static io.spine.tools.protojs.field.parser.FieldParsers.parserFor;
 import static io.spine.tools.protojs.field.precondition.FieldPreconditions.checkerFor;
 

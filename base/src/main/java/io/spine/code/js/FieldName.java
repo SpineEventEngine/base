@@ -18,13 +18,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * // todo generate desc.
- */
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.tools.protojs.generate;
+package io.spine.code.js;
 
-import com.google.errorprone.annotations.CheckReturnValue;
+import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
+import com.google.protobuf.Descriptors.FieldDescriptor;
+import io.spine.value.StringTypeValue;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+public final class FieldName extends StringTypeValue {
+
+    private static final long serialVersionUID = 0L;
+
+    private FieldName(String value) {
+        super(value);
+    }
+
+    public static FieldName from(FieldDescriptor fieldDescriptor) {
+        FieldDescriptorProto proto = fieldDescriptor.toProto();
+        String capitalizedName = io.spine.code.proto.FieldName.of(proto)
+                                                              .toCamelCase();
+        return new FieldName(capitalizedName);
+    }
+}

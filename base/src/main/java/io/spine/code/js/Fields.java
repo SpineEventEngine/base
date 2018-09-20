@@ -18,15 +18,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protojs.field;
+package io.spine.code.js;
 
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.code.proto.FieldName;
-import io.spine.tools.protojs.generate.JsOutput;
-import io.spine.tools.protojs.generate.ParserMapGenerator;
-import io.spine.type.TypeUrl;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -72,25 +68,6 @@ public final class Fields {
         checkNotNull(field);
         boolean isMessage = field.getType() == MESSAGE;
         return isMessage;
-    }
-
-    /**
-     * Checks if the given field is of one of the standard Protobuf types which have predefined
-     * JSON parsers for them.
-     *
-     * @param field
-     *         the descriptor of the field to check
-     * @return {@code true} if the field is of well-known type and {@code false} otherwise
-     */
-    public static boolean isWellKnownType(FieldDescriptor field) {
-        checkNotNull(field);
-        if (!isMessage(field)) {
-            return false;
-        }
-        Descriptor message = field.getMessageType();
-        TypeUrl typeUrl = TypeUrl.from(message);
-        boolean isWellKnownType = ParserMapGenerator.hasParser(typeUrl);
-        return isWellKnownType;
     }
 
     /**
@@ -140,7 +117,7 @@ public final class Fields {
             return false;
         }
         Descriptor fieldType = field.getMessageType();
-        String mapTypeName = camelCaseName(field) + ENTRY_SUFFIX;
+        String mapTypeName = FieldName.from(field) + ENTRY_SUFFIX;
         boolean isMap = fieldType.getName()
                                  .equals(mapTypeName);
         return isMap;
@@ -154,9 +131,8 @@ public final class Fields {
      * @return the key descriptor for the specified {@code map} field
      * @throws IllegalStateException
      *         if the specified field is not a {@code map} proto field
-     * @see FieldGenerators#mapHandler(FieldDescriptor, JsOutput)
      */
-    static FieldDescriptor keyDescriptor(FieldDescriptor field) {
+    public static FieldDescriptor keyDescriptor(FieldDescriptor field) {
         checkArgument(isMap(field),
                       "Trying to get key descriptor for the non-map field %s.", field.getName());
         FieldDescriptor descriptor = field.getMessageType()
@@ -172,31 +148,12 @@ public final class Fields {
      * @return the value descriptor for the specified {@code map} field
      * @throws IllegalStateException
      *         if the specified field is not a {@code map} proto field
-     * @see FieldGenerators#mapHandler(FieldDescriptor, JsOutput)
      */
-    static FieldDescriptor valueDescriptor(FieldDescriptor field) {
+    public static FieldDescriptor valueDescriptor(FieldDescriptor field) {
         checkArgument(isMap(field),
                       "Trying to get value descriptor for the non-map field %s.", field.getName());
         FieldDescriptor descriptor = field.getMessageType()
                                           .findFieldByName(MAP_ENTRY_VALUE);
         return descriptor;
-    }
-
-    /**
-     * Generates the {@code CamelCase} name of the field.
-     *
-     * <p>For example, for the field with the name "task_id", the method will generate a name
-     * "TaskId".
-     *
-     * @param field
-     *         the descriptor of the field for which the name should be generated
-     * @return the {@code CamelCase} name of the field
-     */
-    static String camelCaseName(FieldDescriptor field) {
-        checkNotNull(field);
-        FieldDescriptorProto proto = field.toProto();
-        String capitalizedName = FieldName.of(proto)
-                                          .toCamelCase();
-        return capitalizedName;
     }
 }

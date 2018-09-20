@@ -20,7 +20,8 @@
 
 package io.spine.tools.protojs.field;
 
-import static io.spine.tools.protojs.field.Fields.camelCaseName;
+import io.spine.code.js.FieldName;
+
 import static io.spine.tools.protojs.message.MessageGenerator.MESSAGE;
 
 /**
@@ -50,7 +51,7 @@ final class SingularFieldGenerator extends FieldGenerator {
      */
     @Override
     String mergeFormat() {
-        String fieldName = camelCaseName(field());
+        FieldName fieldName = FieldName.from(field());
         String setterName = "set" + fieldName;
         String setFieldFormat = MESSAGE + '.' + setterName + "(%s);";
         return setFieldFormat;

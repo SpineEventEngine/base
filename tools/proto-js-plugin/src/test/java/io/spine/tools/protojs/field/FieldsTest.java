@@ -22,6 +22,7 @@ package io.spine.tools.protojs.field;
 
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
+import io.spine.code.js.Fields;
 import io.spine.testing.UtilityClassTest;
 import io.spine.type.TypeUrl;
 import org.junit.jupiter.api.DisplayName;
@@ -31,9 +32,9 @@ import spine.test.protojs.Task.TaskId;
 
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.INT64;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.MESSAGE;
-import static io.spine.tools.protojs.field.Fields.camelCaseName;
-import static io.spine.tools.protojs.field.Fields.keyDescriptor;
-import static io.spine.tools.protojs.field.Fields.valueDescriptor;
+import static io.spine.code.js.Fields.camelCaseName;
+import static io.spine.code.js.Fields.keyDescriptor;
+import static io.spine.code.js.Fields.valueDescriptor;
 import static io.spine.tools.protojs.given.Given.mapField;
 import static io.spine.tools.protojs.given.Given.messageField;
 import static io.spine.tools.protojs.given.Given.primitiveField;

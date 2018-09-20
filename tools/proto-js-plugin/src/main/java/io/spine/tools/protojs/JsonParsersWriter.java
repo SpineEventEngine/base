@@ -37,6 +37,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import static io.spine.code.js.FileName.spineOptionsJs;
 import static io.spine.code.proto.FileSet.parseOrEmpty;
 import static io.spine.code.proto.ProtoPackage.GOOGLE_PROTOBUF_PACKAGE;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
@@ -66,8 +67,6 @@ final class JsonParsersWriter {
      */
     private static final String PARSERS_RESOURCE =
             "io/spine/tools/protojs/knowntypes/known_type_parsers";
-
-    private static final String SPINE_OPTIONS_PROTO = "spine/options.proto";
 
     private final Path knownTypes;
     private final Path knownTypeParsers;
@@ -160,17 +159,21 @@ final class JsonParsersWriter {
     @VisibleForTesting
     void writeFromJsonMethod() {
         for (FileDescriptor file : fileSet.files()) {
-            if (!isStandardOrSpineOptions(file)) {
-                writeIntoFile(file);
-            }
+            writeIntoFile(file);
         }
     }
 
     private void writeIntoFile(FileDescriptor file) {
+        FileName fileName = FileName.from(file);
+        boolean isSpineOptions = spineOptionsJs().equals(fileName);
+        boolean isStandardType = file.getPackage()
+                                     .startsWith(GOOGLE_PROTOBUF_PACKAGE.packageName());
+        if (isSpineOptions || isStandardType) {
+            return;
+        }
         JsOutput jsOutput = new JsOutput();
         FileGenerator generator = new FileGenerator(file, jsOutput);
         generator.generate();
-        FileName fileName = FileName.from(file);
         Path filePath = generatedProtoDir.resolve(fileName);
         FileWriter writer = new FileWriter(filePath);
         writer.append(jsOutput.toString());
@@ -179,13 +182,6 @@ final class JsonParsersWriter {
     @VisibleForTesting
     FileSet fileSet() {
         return fileSet;
-    }
-
-    private static boolean isStandardOrSpineOptions(FileDescriptor file) {
-        boolean isStandardType = file.getPackage()
-                                     .startsWith(GOOGLE_PROTOBUF_PACKAGE.packageName());
-        boolean isSpineOptions = SPINE_OPTIONS_PROTO.equals(file.getFullName());
-        return isStandardType || isSpineOptions;
     }
 
     static Builder newBuilder() {

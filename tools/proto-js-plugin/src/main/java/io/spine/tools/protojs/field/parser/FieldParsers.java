@@ -20,13 +20,15 @@
 
 package io.spine.tools.protojs.field.parser;
 
+import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.tools.protojs.generate.JsOutput;
+import io.spine.tools.protojs.generate.ParserMapGenerator;
+import io.spine.type.TypeUrl;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.protojs.field.Fields.isEnum;
-import static io.spine.tools.protojs.field.Fields.isMessage;
-import static io.spine.tools.protojs.field.Fields.isWellKnownType;
+import static io.spine.code.js.Fields.isEnum;
+import static io.spine.code.js.Fields.isMessage;
 
 /**
  * A helper class which creates a {@link FieldParser} instance for the passed field.
@@ -52,7 +54,10 @@ public final class FieldParsers {
         checkNotNull(field);
         checkNotNull(jsOutput);
         if (isMessage(field)) {
-            return isWellKnownType(field)
+            Descriptor message = field.getMessageType();
+            TypeUrl typeUrl = TypeUrl.from(message);
+            boolean isWellKnownType = ParserMapGenerator.hasParser(typeUrl);
+            return isWellKnownType
                     ? WellKnownFieldParser.createFor(field, jsOutput)
                     : MessageFieldParser.createFor(field, jsOutput);
         }

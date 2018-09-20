@@ -21,8 +21,8 @@
 package io.spine.tools.protojs.field;
 
 import com.google.common.annotations.VisibleForTesting;
+import io.spine.code.js.FieldName;
 
-import static io.spine.tools.protojs.field.Fields.camelCaseName;
 import static io.spine.tools.protojs.message.MessageGenerator.MESSAGE;
 
 /**
@@ -64,7 +64,7 @@ final class RepeatedFieldGenerator extends FieldGenerator {
      */
     @Override
     String mergeFormat() {
-        String fieldName = camelCaseName(field());
+        FieldName fieldName = FieldName.from(field());
         String addFunctionName = "add" + fieldName;
         String addToListFormat = MESSAGE + '.' + addFunctionName + "(%s);";
         return addToListFormat;
