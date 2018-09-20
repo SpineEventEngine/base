@@ -149,6 +149,7 @@ public class MessageGenerator extends JsCodeGenerator {
     /**
      * Adds the {@code fromObject} code to the {@code jsOutput}.
      */
+    @SuppressWarnings("DuplicateStringLiteralInspection") // Duplication in different context.
     private void addFromObjectCode(TypeName typeName) {
         String methodName = typeName.value() + '.' + FROM_OBJECT;
         jsOutput().enterMethod(methodName, FROM_OBJECT_ARG);

@@ -19,7 +19,7 @@
  */
 
 /**
- * The classes which handle parsing the separate proto fields from JSON.
+ * The classes which generate code for parsing the separate proto fields from JSON.
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault

@@ -29,7 +29,7 @@ import io.spine.generate.JsOutput;
  *
  * @apiNote
  * The descendants are supposed to operate on the provided {@link JsOutput}, so the interface
- * methods are not returning any generated code.
+ * method is not returning any generated code.
  *
  * @author Dmytro Kuzmin
  * @see <a href="https://developers.google.com/protocol-buffers/docs/proto3#json">Protobuf JSON

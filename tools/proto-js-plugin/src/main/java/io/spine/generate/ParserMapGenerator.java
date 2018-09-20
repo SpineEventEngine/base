@@ -136,6 +136,7 @@ public final class ParserMapGenerator extends JsCodeGenerator {
      * Converts the {@linkplain Entry Java Map Entry} from the {@link #parsers} to the JS
      * {@code Map} entry.
      */
+    @SuppressWarnings("DuplicateStringLiteralInspection") // Duplication in different context.
     private static String jsMapEntry(Entry<TypeUrl, String> typeToParser) {
         TypeUrl typeUrl = typeToParser.getKey();
         String parserName = typeToParser.getValue();
