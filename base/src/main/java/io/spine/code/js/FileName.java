@@ -50,6 +50,7 @@ public class FileName extends AbstractFileName<FileName> {
     /**
      * Creates new JavaScript file name with the passed value.
      */
+    @SuppressWarnings("ResultOfMethodCallIgnored") // Method annotated with `@CanIgnoreReturnValue`.
     public static FileName of(String value) {
         checkNotEmptyOrBlank(value);
         checkArgument(value.endsWith(EXTENSION));
