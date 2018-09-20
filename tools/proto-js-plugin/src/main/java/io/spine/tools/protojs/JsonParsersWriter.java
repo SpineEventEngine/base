@@ -139,7 +139,7 @@ final class JsonParsersWriter {
         ParserMapGenerator generator = new ParserMapGenerator(jsOutput);
         generator.generate();
         JsFileWriter writer = JsFileWriter.createFor(generatedProtoDir, KNOWN_TYPE_PARSERS);
-        writer.write(jsOutput);
+        writer.append(jsOutput);
     }
 
     /**
