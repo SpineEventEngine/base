@@ -29,10 +29,9 @@ import static com.google.protobuf.Descriptors.FieldDescriptor.Type.BYTES;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.FLOAT;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.INT32;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.INT64;
-import static io.spine.generate.JsImportGenerator.rawNamedImport;
+import static io.spine.generate.given.Generators.assertContains;
 import static io.spine.tools.protojs.field.parser.primitive.BytesParser.BASE64_LIB;
 import static io.spine.tools.protojs.field.parser.primitive.BytesParser.BASE64_VAR;
-import static io.spine.tools.protojs.given.Generators.assertContains;
 
 /**
  * @author Dmytro Kuzmin
@@ -84,7 +83,7 @@ class PrimitiveParserTest {
     void parseBytes() {
         PrimitiveParser parser = PrimitiveParsers.createFor(BYTES, jsOutput);
         parser.parseIntoVariable(VALUE, VARIABLE);
-        String base64Import = rawNamedImport(BASE64_LIB, BASE64_VAR);
+        String base64Import = "let " + BASE64_VAR + " = require('" + BASE64_LIB + "');";
         assertContains(jsOutput, base64Import);
         String parse = "let " + VARIABLE + " = " + BASE64_VAR + ".toByteArray(" + VALUE + ')';
         assertContains(jsOutput, parse);

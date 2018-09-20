@@ -46,13 +46,13 @@ public final class FieldGenerators {
     }
 
     /**
-     * Creates a {@code FieldHandler} for the given field.
+     * Creates a {@code FieldGenerator} for the given field.
      *
      * @param field
      *         the descriptor of the field to be handled
      * @param jsOutput
      *         the {@code JsOutput} to accumulate all the generated code
-     * @return the new {@code FieldHandler} of the appropriate type
+     * @return the new {@code FieldGenerator} of the appropriate type
      */
     public static FieldGenerator createFor(FieldDescriptor field, JsOutput jsOutput) {
         checkNotNull(field);

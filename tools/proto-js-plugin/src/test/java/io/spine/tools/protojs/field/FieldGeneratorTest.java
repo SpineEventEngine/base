@@ -20,18 +20,18 @@
 
 package io.spine.tools.protojs.field;
 
+import io.spine.code.js.FieldName;
 import io.spine.generate.JsOutput;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import static io.spine.generate.given.Generators.assertContains;
 import static io.spine.tools.protojs.field.FieldGenerator.FIELD_VALUE;
-import static io.spine.code.js.FieldDescriptors.camelCaseName;
 import static io.spine.tools.protojs.field.MapFieldGenerator.ATTRIBUTE;
 import static io.spine.tools.protojs.field.MapFieldGenerator.MAP_KEY;
 import static io.spine.tools.protojs.field.RepeatedFieldGenerator.LIST_ITEM;
-import static io.spine.tools.protojs.given.Generators.assertContains;
 import static io.spine.tools.protojs.given.Given.mapField;
 import static io.spine.tools.protojs.given.Given.repeatedField;
 import static io.spine.tools.protojs.given.Given.singularField;
@@ -44,29 +44,29 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 @SuppressWarnings("DuplicateStringLiteralInspection")
 // Generated code duplication needed to check main class.
-@DisplayName("FieldHandler should")
-class FieldHandlerTest {
+@DisplayName("FieldGenerator should")
+class FieldGeneratorTest {
 
     private static final String JS_OBJECT = "jsObject";
 
     private JsOutput jsOutput;
 
-    private SingularFieldGenerator singularHandler;
-    private RepeatedFieldGenerator repeatedHandler;
-    private MapFieldGenerator mapHandler;
+    private SingularFieldGenerator singularGenerator;
+    private RepeatedFieldGenerator repeatedGenerator;
+    private MapFieldGenerator mapGenerator;
 
     @BeforeEach
     void setUp() {
         jsOutput = new JsOutput();
-        singularHandler = singularHandler();
-        repeatedHandler = repeatedHandler();
-        mapHandler = mapHandler();
+        singularGenerator = singularGenerator();
+        repeatedGenerator = repeatedGenerator();
+        mapGenerator = mapGenerator();
     }
 
     @Test
     @DisplayName("acquire field value by field JSON name")
     void acquireJsObject() {
-        String fieldValue = singularHandler.acquireFieldValue();
+        String fieldValue = singularGenerator.acquireFieldValue();
         String expected = FROM_OBJECT_ARG + '.' + singularField().getJsonName();
         assertEquals(expected, fieldValue);
     }
@@ -78,7 +78,7 @@ class FieldHandlerTest {
         @Test
         @DisplayName("JS list items in case of repeated field")
         void repeated() {
-            repeatedHandler.iterateListValues(JS_OBJECT);
+            repeatedGenerator.iterateListValues(JS_OBJECT);
             String forEach = JS_OBJECT + ".forEach";
             assertContains(jsOutput, forEach);
             String forEachItems = '(' + LIST_ITEM + ", index, array)";
@@ -88,7 +88,7 @@ class FieldHandlerTest {
         @Test
         @DisplayName("JS object own properties in case of map field")
         void map() {
-            String value = mapHandler.iterateOwnAttributes(JS_OBJECT);
+            String value = mapGenerator.iterateOwnAttributes(JS_OBJECT);
             String iteration = "for (let " + ATTRIBUTE + " in " + JS_OBJECT + ')';
             assertContains(jsOutput, iteration);
             String ownPropertyCheck = "hasOwnProperty(" + ATTRIBUTE + ')';
@@ -101,8 +101,8 @@ class FieldHandlerTest {
     @Test
     @DisplayName("call field value precondition to check field value for null")
     void callChecker() {
-        String fieldValue = singularHandler.acquireFieldValue();
-        singularHandler.generateJs();
+        String fieldValue = singularGenerator.acquireFieldValue();
+        singularGenerator.generate();
         String nullCheck = "if (" + fieldValue + " === null)";
         assertContains(jsOutput, nullCheck);
     }
@@ -110,8 +110,8 @@ class FieldHandlerTest {
     @Test
     @DisplayName("call field value parser to parse field value")
     void callParser() {
-        String fieldValue = singularHandler.acquireFieldValue();
-        singularHandler.generateJs();
+        String fieldValue = singularGenerator.acquireFieldValue();
+        singularGenerator.generate();
         String typeName = singularField().getMessageType()
                                          .getFullName();
         String recursiveCall = typeName + '.' + FROM_OBJECT + '(' + fieldValue + ')';
@@ -121,7 +121,7 @@ class FieldHandlerTest {
     @Test
     @DisplayName("parse object attribute value to obtain key in case of map field")
     void parseMapKey() {
-        mapHandler.generateJs();
+        mapGenerator.generate();
         String parseAttribute = MAP_KEY + " = parseInt(" + ATTRIBUTE + ')';
         assertContains(jsOutput, parseAttribute);
     }
@@ -129,38 +129,41 @@ class FieldHandlerTest {
     @Test
     @DisplayName("set singular field")
     void setSingular() {
-        singularHandler.generateJs();
-        String setterCall = "set" + camelCaseName(singularField()) + '(' + FIELD_VALUE + ')';
+        singularGenerator.generate();
+        FieldName fieldName = FieldName.from(singularField());
+        String setterCall = "set" + fieldName + '(' + FIELD_VALUE + ')';
         assertContains(jsOutput, setterCall);
     }
 
     @Test
     @DisplayName("add value to repeated field")
     void addToRepeated() {
-        repeatedHandler.generateJs();
-        String addCall = "add" + camelCaseName(repeatedField()) + '(' + FIELD_VALUE + ')';
+        repeatedGenerator.generate();
+        FieldName fieldName = FieldName.from(repeatedField());
+        String addCall = "add" + fieldName + '(' + FIELD_VALUE + ')';
         assertContains(jsOutput, addCall);
     }
 
     @Test
     @DisplayName("add value to map field")
     void addToMap() {
-        mapHandler.generateJs();
-        String getMapCall = "get" + camelCaseName(mapField()) + "Map()";
+        mapGenerator.generate();
+        FieldName fieldName = FieldName.from(mapField());
+        String getMapCall = "get" + fieldName + "Map()";
         String addToMapCall = "set(" + MAP_KEY + ", " + FIELD_VALUE + ')';
         String addCall = getMapCall + '.' + addToMapCall;
         assertContains(jsOutput, addCall);
     }
 
-    private SingularFieldGenerator singularHandler() {
+    private SingularFieldGenerator singularGenerator() {
         return (SingularFieldGenerator) FieldGenerators.createFor(singularField(), jsOutput);
     }
 
-    private RepeatedFieldGenerator repeatedHandler() {
+    private RepeatedFieldGenerator repeatedGenerator() {
         return (RepeatedFieldGenerator) FieldGenerators.createFor(repeatedField(), jsOutput);
     }
 
-    private MapFieldGenerator mapHandler() {
+    private MapFieldGenerator mapGenerator() {
         return (MapFieldGenerator) FieldGenerators.createFor(mapField(), jsOutput);
     }
 }

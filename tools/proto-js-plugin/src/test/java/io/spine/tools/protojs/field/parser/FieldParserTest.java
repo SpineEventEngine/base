@@ -22,19 +22,19 @@ package io.spine.tools.protojs.field.parser;
 
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.EnumDescriptor;
+import io.spine.code.js.TypeName;
 import io.spine.generate.JsOutput;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static io.spine.generate.given.Generators.assertContains;
 import static io.spine.tools.protojs.field.parser.FieldParsers.parserFor;
-import static io.spine.tools.protojs.given.Generators.assertContains;
 import static io.spine.tools.protojs.given.Given.enumField;
 import static io.spine.tools.protojs.given.Given.messageField;
 import static io.spine.tools.protojs.given.Given.primitiveField;
 import static io.spine.tools.protojs.given.Given.timestampField;
 import static io.spine.tools.protojs.message.MessageGenerator.FROM_OBJECT;
-import static io.spine.tools.protojs.types.Types.typeWithProtoPrefix;
 
 /**
  * @author Dmytro Kuzmin
@@ -69,19 +69,19 @@ class FieldParserTest {
         FieldParser parser = parserFor(enumField(), jsOutput);
         parser.parseIntoVariable(VALUE, VARIABLE);
         EnumDescriptor enumType = enumField().getEnumType();
-        String typeName = typeWithProtoPrefix(enumType);
+        TypeName typeName = TypeName.from(enumType);
         String parse = "let " + VARIABLE + " = " + typeName + '[' + VALUE + ']';
         assertContains(jsOutput, parse);
     }
 
     @Test
-    @DisplayName("parse message field with custom type via recursive call to fromObject")
+    @DisplayName("parse message field with custom type via recursive call to `fromObject`")
     void parseMessage() {
         FieldParser parser = parserFor(messageField(), jsOutput);
         parser.parseIntoVariable(VALUE, VARIABLE);
         Descriptor messageType = messageField().getMessageType();
-        String type = typeWithProtoPrefix(messageType);
-        String parse = "let " + VARIABLE + " = " + type + '.' + FROM_OBJECT + '(' + VALUE + ')';
+        TypeName typeName = TypeName.from(messageType);
+        String parse = "let " + VARIABLE + " = " + typeName + '.' + FROM_OBJECT + '(' + VALUE + ')';
         assertContains(jsOutput, parse);
     }
 

@@ -18,10 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protojs.given;
+package io.spine.generate.given;
 
-import io.spine.testing.Verify;
 import io.spine.generate.JsOutput;
+import io.spine.testing.Verify;
 
 /**
  * A helper tool for working with generators output.

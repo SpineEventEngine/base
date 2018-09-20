@@ -25,6 +25,7 @@ import io.spine.code.js.FileName;
 
 import java.util.Collection;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.copyOf;
 import static java.lang.String.format;
 import static java.util.Collections.emptyList;
@@ -67,7 +68,7 @@ public final class JsImportGenerator extends JsCodeGenerator {
     private final Collection<FileName> imports;
 
     private JsImportGenerator(Builder builder) {
-        super(builder.jsOutput);
+        super(checkNotNull(builder.jsOutput));
         this.importPrefix = builder.fileName != null
                 ? composePathToRoot(builder.fileName)
                 : "";
@@ -128,6 +129,7 @@ public final class JsImportGenerator extends JsCodeGenerator {
      *
      * 1. If file path not specified, generates relative to root.
      * etc.
+     * // todo continue doc
      *
      */
     public static class Builder {
@@ -143,16 +145,19 @@ public final class JsImportGenerator extends JsCodeGenerator {
         private JsOutput jsOutput;
 
         public Builder setFileName(FileName fileName) {
+            checkNotNull(fileName);
             this.fileName = fileName;
             return this;
         }
 
         public Builder setImports(Collection<FileName> imports) {
+            checkNotNull(imports);
             this.imports = copyOf(imports);
             return this;
         }
 
         public Builder setJsOutput(JsOutput jsOutput) {
+            checkNotNull(jsOutput);
             this.jsOutput = jsOutput;
             return this;
         }

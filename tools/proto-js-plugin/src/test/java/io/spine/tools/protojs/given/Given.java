@@ -21,22 +21,17 @@
 package io.spine.tools.protojs.given;
 
 import com.google.protobuf.Descriptors.Descriptor;
-import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.code.proto.FileSet;
+import io.spine.code.js.DefaultJsProject;
 import io.spine.tools.gradle.GradleProject;
 import spine.test.protojs.Fields.FieldContainer;
-import spine.test.protojs.Fields.TaskType;
 
 import java.io.File;
-import java.nio.file.Path;
 import java.util.List;
 
 import static com.google.common.io.Files.createTempDir;
 import static io.spine.tools.gradle.TaskName.COMPILE_PROTO_TO_JS;
-import static io.spine.tools.protojs.files.ProjectFiles.mainDescriptorSetFile;
-import static io.spine.tools.protojs.files.ProjectFiles.mainProtoJsLocation;
 import static io.spine.tools.protojs.given.FieldContainerEntry.ENUM_FIELD;
 import static io.spine.tools.protojs.given.FieldContainerEntry.MAP_FIELD;
 import static io.spine.tools.protojs.given.FieldContainerEntry.MESSAGE_FIELD;
@@ -50,8 +45,7 @@ import static java.util.Collections.singletonList;
  */
 public final class Given {
 
-    public static final String TASK_PROTO = "task.proto";
-
+    private static final String TASK_PROTO = "task.proto";
     private static final String PROJECT_NAME = "proto-js-plugin-test";
     private static final List<String> PROTO_FILES = singletonList(TASK_PROTO);
 
@@ -66,11 +60,6 @@ public final class Given {
     public static Descriptor message() {
         Descriptor message = FieldContainer.getDescriptor();
         return message;
-    }
-
-    public static EnumDescriptor enumType() {
-        EnumDescriptor enumType = TaskType.getDescriptor();
-        return enumType;
     }
 
     public static FieldDescriptor primitiveField() {
@@ -107,13 +96,14 @@ public final class Given {
         return field;
     }
 
-    public static Project project() {
+    public static DefaultJsProject project() {
         File projectDir = createTempDir();
         compileProject(projectDir);
-        Project project = Project.at(projectDir);
+        DefaultJsProject project = DefaultJsProject.at(projectDir);
         return project;
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored") // Method annotated with `@CanIgnoreReturnValue`.
     private static void compileProject(File projectDir) {
         GradleProject gradleProject = GradleProject
                 .newBuilder()
@@ -122,37 +112,5 @@ public final class Given {
                 .addProtoFiles(PROTO_FILES)
                 .build();
         gradleProject.executeTask(COMPILE_PROTO_TO_JS);
-    }
-
-    public static class Project {
-
-        private final Path protoJsLocation;
-        private final File descriptorSetFile;
-        private final FileSet fileSet;
-
-        private Project(Path protoJsLocation, File descriptorSetFile, FileSet fileSet) {
-            this.protoJsLocation = protoJsLocation;
-            this.descriptorSetFile = descriptorSetFile;
-            this.fileSet = fileSet;
-        }
-
-        private static Project at(File projectDir) {
-            Path protoJsLocation = mainProtoJsLocation(projectDir);
-            File descriptorSetFile = mainDescriptorSetFile(projectDir);
-            FileSet fileSet = FileSet.parse(descriptorSetFile);
-            return new Project(protoJsLocation, descriptorSetFile, fileSet);
-        }
-
-        public Path protoJsLocation() {
-            return protoJsLocation;
-        }
-
-        public File descriptorSetFile() {
-            return descriptorSetFile;
-        }
-
-        public FileSet fileSet() {
-            return fileSet;
-        }
     }
 }

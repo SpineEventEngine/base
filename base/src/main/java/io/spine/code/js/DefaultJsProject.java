@@ -51,7 +51,7 @@ public final class DefaultJsProject extends DefaultProject {
     public static final class GeneratedProtoRoot extends SourceRoot {
 
         @SuppressWarnings("DuplicateStringLiteralInspection")
-        // Same name for different directories.
+        // Same name in different context.
         private static final String DIR_NAME = "proto";
 
         private GeneratedProtoRoot(DefaultProject parent) {

@@ -20,6 +20,7 @@
 
 package io.spine.code.js;
 
+import com.google.common.annotations.VisibleForTesting;
 import io.spine.code.AbstractDirectory;
 import io.spine.code.SourceCodeDirectory;
 
@@ -43,7 +44,8 @@ public final class Directory extends SourceCodeDirectory {
     /**
      * Creates a new instance.
      */
-    private static Directory at(Path path) {
+    @VisibleForTesting
+    static Directory at(Path path) {
         checkNotNull(path);
         return new Directory(path);
     }
@@ -59,10 +61,17 @@ public final class Directory extends SourceCodeDirectory {
     }
 
     /**
-     * Obtains the source code path for the passed file.
+     * Obtains the source code path for the passed file name.
      */
     public Path resolve(FileName fileName) {
         Path result = getPath().resolve(fileName.value());
         return result;
+    }
+
+    /**
+     * Obtains the source code path for the passed file.
+     */
+    public Path resolve(CommonFileName commonFileName) {
+        return resolve(commonFileName.fileName());
     }
 }

@@ -20,8 +20,8 @@
 
 package io.spine.tools.protojs.field.parser.primitive;
 
-import io.spine.testing.UtilityClassTest;
 import io.spine.generate.JsOutput;
+import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

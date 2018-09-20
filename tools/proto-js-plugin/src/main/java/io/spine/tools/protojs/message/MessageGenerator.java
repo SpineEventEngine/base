@@ -182,8 +182,8 @@ public class MessageGenerator extends JsCodeGenerator {
         List<FieldDescriptor> fields = message.getFields();
         for (FieldDescriptor field : fields) {
             jsOutput().addEmptyLine();
-            FieldGenerator fieldHandler = FieldGenerators.createFor(field, jsOutput());
-            fieldHandler.generate();
+            FieldGenerator generator = FieldGenerators.createFor(field, jsOutput());
+            generator.generate();
         }
     }
 }

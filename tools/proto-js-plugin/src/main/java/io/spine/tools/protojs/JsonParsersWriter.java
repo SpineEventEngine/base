@@ -37,9 +37,9 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import static io.spine.code.js.FileName.knownTypeParsersJs;
-import static io.spine.code.js.FileName.knownTypesJs;
-import static io.spine.code.js.FileName.spineOptionsJs;
+import static io.spine.code.js.CommonFileName.KNOWN_TYPES;
+import static io.spine.code.js.CommonFileName.KNOWN_TYPE_PARSERS;
+import static io.spine.code.js.CommonFileName.SPINE_OPTIONS;
 import static io.spine.code.proto.FileSet.parseOrEmpty;
 import static io.spine.code.proto.ProtoPackage.GOOGLE_PROTOBUF_PACKAGE;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
@@ -118,7 +118,7 @@ final class JsonParsersWriter {
         JsOutput jsOutput = new JsOutput();
         KnownTypesGenerator generator = new KnownTypesGenerator(fileSet, jsOutput);
         generator.generate();
-        JsFileWriter writer = JsFileWriter.createFor(generatedProtoDir, knownTypesJs());
+        JsFileWriter writer = JsFileWriter.createFor(generatedProtoDir, KNOWN_TYPES);
         writer.write(jsOutput);
     }
 
@@ -136,7 +136,7 @@ final class JsonParsersWriter {
         JsOutput jsOutput = new JsOutput();
         ParserMapGenerator generator = new ParserMapGenerator(jsOutput);
         generator.generate();
-        JsFileWriter writer = JsFileWriter.createFor(generatedProtoDir, knownTypeParsersJs());
+        JsFileWriter writer = JsFileWriter.createFor(generatedProtoDir, KNOWN_TYPE_PARSERS);
         writer.write(jsOutput);
     }
 
@@ -150,7 +150,7 @@ final class JsonParsersWriter {
         try (InputStream in = JsonParsersWriter.class
                 .getClassLoader()
                 .getResourceAsStream(PARSERS_RESOURCE)) {
-            Path path = generatedProtoDir.resolve(knownTypeParsersJs());
+            Path path = generatedProtoDir.resolve(KNOWN_TYPE_PARSERS);
             Files.copy(in, path, REPLACE_EXISTING);
         } catch (IOException e) {
             throw new IllegalStateException(e);
@@ -168,18 +168,24 @@ final class JsonParsersWriter {
     }
 
     private void writeIntoFile(FileDescriptor file) {
-        FileName fileName = FileName.from(file);
-        boolean isSpineOptions = spineOptionsJs().equals(fileName);
-        boolean isStandardType = file.getPackage()
-                                     .startsWith(GOOGLE_PROTOBUF_PACKAGE.packageName());
-        if (isSpineOptions || isStandardType) {
+        if (shouldSkip(file)) {
             return;
         }
         JsOutput jsOutput = new JsOutput();
         FileGenerator generator = new FileGenerator(file, jsOutput);
         generator.generate();
-        JsFileWriter writer = JsFileWriter.createFor(generatedProtoDir, fileName);
+        JsFileWriter writer = JsFileWriter.createFor(generatedProtoDir, file);
         writer.append(jsOutput);
+    }
+
+    @VisibleForTesting
+    static boolean shouldSkip(FileDescriptor file) {
+        FileName fileName = FileName.from(file);
+        boolean isSpineOptions = SPINE_OPTIONS.fileName().equals(fileName);
+        boolean isStandardType = file.getPackage()
+                                     .startsWith(GOOGLE_PROTOBUF_PACKAGE.packageName());
+        boolean shouldSkip = isSpineOptions || isStandardType;
+        return shouldSkip;
     }
 
     @VisibleForTesting

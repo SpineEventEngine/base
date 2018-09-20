@@ -18,26 +18,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protojs.code;
-
-import io.spine.tools.protojs.generate.CodeLine;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 /**
- * @author Dmytro Kuzmin
+ * The test environment for various {@linkplain io.spine.generate.JsCodeGenerator generator} tools.
  */
-@DisplayName("CodeLine should")
-class CodeLineTest {
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.generate.given;
 
-    @Test
-    @DisplayName("calculate indent for code based on depth and indentation")
-    void printToString() {
-        CodeLine codeLine = new CodeLine("content", 2);
-        String result = codeLine.printToString(2);
-        String expected = "    content";
-        assertEquals(expected, result);
-    }
-}
+import com.google.errorprone.annotations.CheckReturnValue;
+
+import javax.annotation.ParametersAreNonnullByDefault;

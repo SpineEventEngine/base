@@ -53,12 +53,12 @@ final class CodeLine {
     /**
      * Prints the {@code CodeLine} to the {@code String} with the specified indentation.
      *
-     * @param indentation
-     *         the code indentation, i.e. how many spaces are inserted per depth level
+     * @param spacesPerDepth
+     *         how many spaces are inserted per depth level
      * @return the {@code CodeLine} content with the correct indent
      */
-    String indent(int indentation) {
-        int indentUnits = depth * indentation;
+    String indent(int spacesPerDepth) {
+        int indentUnits = depth * spacesPerDepth;
         Indent indent = Indent.of(indentUnits);
         String result = indent + content;
         return result;

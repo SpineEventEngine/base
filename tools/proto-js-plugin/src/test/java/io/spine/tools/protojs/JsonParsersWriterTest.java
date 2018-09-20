@@ -21,9 +21,13 @@
 package io.spine.tools.protojs;
 
 import com.google.common.testing.NullPointerTester;
+import com.google.protobuf.Any;
 import com.google.protobuf.Descriptors.FileDescriptor;
+import io.spine.code.js.DefaultJsProject;
+import io.spine.code.js.Directory;
+import io.spine.code.js.FileName;
 import io.spine.code.proto.FileSet;
-import io.spine.tools.protojs.given.Given.Project;
+import io.spine.option.OptionsProto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,18 +35,16 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collection;
 
+import static io.spine.code.js.CommonFileName.KNOWN_TYPES;
+import static io.spine.code.js.CommonFileName.KNOWN_TYPE_PARSERS;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static io.spine.tools.protojs.JsonParsersWriter.createFor;
-import static io.spine.tools.protojs.files.JsFiles.KNOWN_TYPES;
-import static io.spine.tools.protojs.files.JsFiles.KNOWN_TYPE_PARSERS;
-import static io.spine.tools.protojs.files.JsFiles.jsFileName;
+import static io.spine.tools.protojs.JsonParsersWriter.shouldSkip;
 import static io.spine.tools.protojs.given.Given.project;
-import static io.spine.tools.protojs.given.Writers.assertFileContains;
+import static io.spine.code.js.given.JsFileWriters.assertFileContains;
 import static io.spine.tools.protojs.message.MessageGenerator.FROM_JSON;
-import static io.spine.tools.protojs.types.Types.isStandardOrSpineOptions;
 import static java.nio.file.Files.exists;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -53,15 +55,16 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @DisplayName("JsonParsersWriter should")
 class JsonParsersWriterTest {
 
-    private Path protoJsLocation;
+    private Directory generatedProtoDir;
     private JsonParsersWriter writer;
 
     @BeforeEach
     void setUp() {
-        Project project = project();
-        File descriptorSetFile = project.descriptorSetFile();
-        protoJsLocation = project.protoJsLocation();
-        writer = createFor(protoJsLocation, descriptorSetFile);
+        DefaultJsProject project = project();
+        File descriptorSetFile = project.mainDescriptors();
+        generatedProtoDir = project.proto()
+                                   .mainJs();
+        writer = createFor(generatedProtoDir, descriptorSetFile);
     }
 
     @Test
@@ -74,7 +77,7 @@ class JsonParsersWriterTest {
     @DisplayName("write known types map to JS file")
     void writeKnownTypes() {
         writer.writeKnownTypes();
-        Path knownTypes = Paths.get(protoJsLocation.toString(), KNOWN_TYPES);
+        Path knownTypes = generatedProtoDir.resolve(KNOWN_TYPES);
         assertTrue(exists(knownTypes));
     }
 
@@ -82,7 +85,7 @@ class JsonParsersWriterTest {
     @DisplayName("write known type parsers map to JS file")
     void writeKnownTypeParsers() {
         writer.writeKnownTypeParsers();
-        Path knownTypeParsers = Paths.get(protoJsLocation.toString(), KNOWN_TYPE_PARSERS);
+        Path knownTypeParsers = generatedProtoDir.resolve(KNOWN_TYPE_PARSERS);
         assertTrue(exists(knownTypeParsers));
     }
 
@@ -94,18 +97,32 @@ class JsonParsersWriterTest {
         checkProcessedFiles(fileSet);
     }
 
+    @Test
+    @DisplayName("not write `fromJson` method into Spine Options file")
+    void skipSpineOptions() {
+        FileDescriptor spineOptionsFile = OptionsProto.getDescriptor();
+        assertTrue(shouldSkip(spineOptionsFile));
+    }
+
+    @Test
+    @DisplayName("not write `fromJson` method into files declaring standard Protobuf types")
+    void skipStandard() {
+        FileDescriptor fileDeclaringAny = Any.getDescriptor()
+                                             .getFile();
+        assertTrue(shouldSkip(fileDeclaringAny));
+    }
+
     private void checkProcessedFiles(FileSet fileSet) throws IOException {
         Collection<FileDescriptor> fileDescriptors = fileSet.files();
         for (FileDescriptor file : fileDescriptors) {
-            if (!isStandardOrSpineOptions(file)) {
+            if (!shouldSkip(file)) {
                 checkFromJsonDeclared(file);
             }
         }
     }
 
     private void checkFromJsonDeclared(FileDescriptor file) throws IOException {
-        String jsFileName = jsFileName(file);
-        Path jsFilePath = Paths.get(protoJsLocation.toString(), jsFileName);
+        Path jsFilePath = generatedProtoDir.resolve(FileName.from(file));
         String fromJsonDeclaration = '.' + FROM_JSON + " = function";
         assertFileContains(jsFilePath, fromJsonDeclaration);
     }

@@ -18,58 +18,57 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protojs.knowntypes;
+package io.spine.generate;
 
-import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.code.proto.FileSet;
-import io.spine.generate.JsOutput;
-import io.spine.tools.protojs.files.JsFiles;
-import io.spine.generate.KnownTypesGenerator;
-import io.spine.tools.protojs.types.Types;
+import com.google.common.testing.NullPointerTester;
+import com.google.protobuf.Timestamp;
 import io.spine.type.TypeUrl;
+import io.spine.validate.ValidationError;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static io.spine.tools.protojs.given.Generators.assertContains;
-import static io.spine.tools.protojs.given.Given.file;
-import static io.spine.tools.protojs.given.Given.message;
+import static io.spine.generate.given.Generators.assertContains;
+import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Dmytro Kuzmin
  */
-@DisplayName("KnownTypesGenerator should")
-class KnownTypesGeneratorTest {
+@DisplayName("ParserMapGenerator should")
+class ParserMapGeneratorTest {
 
-    private FileDescriptor file;
     private JsOutput jsOutput;
-    private KnownTypesGenerator generator;
+    private ParserMapGenerator generator;
 
     @BeforeEach
     void setUp() {
-        FileSet fileSet = FileSet.newInstance();
-        file = file();
-        fileSet.add(file);
         jsOutput = new JsOutput();
-        generator = new KnownTypesGenerator(fileSet, jsOutput);
+        generator = new ParserMapGenerator(jsOutput);
     }
 
     @Test
-    @DisplayName("generate imports for known types")
-    void generateImports() {
-        generator.generateImports();
-        String jsFileName = JsFiles.jsFileName(file);
-        String taskImport = "require('./" + jsFileName + "');";
-        assertContains(jsOutput, taskImport);
+    @DisplayName(NOT_ACCEPT_NULLS)
+    void passNullToleranceCheck() {
+        new NullPointerTester().testAllPublicStaticMethods(ParserMapGenerator.class);
     }
 
     @Test
-    @DisplayName("generate known types map")
-    void generateKnownTypesMap() {
-        generator.generateKnownTypesMap();
-        TypeUrl typeUrl = TypeUrl.from(message());
-        String type = Types.typeWithProtoPrefix(message());
-        String mapEntry = "['" + typeUrl + "', " + type + ']';
+    @DisplayName("tell if parser for type URL is present")
+    void tellIfHasParser() {
+        TypeUrl timestamp = TypeUrl.of(Timestamp.class);
+        assertTrue(ParserMapGenerator.hasParser(timestamp));
+
+        TypeUrl validationError = TypeUrl.of(ValidationError.class);
+        assertFalse(ParserMapGenerator.hasParser(validationError));
+    }
+
+    @Test
+    @DisplayName("generate known type parsers map")
+    void generateParsersMap() {
+        generator.generate();
+        String mapEntry = "['type.googleapis.com/google.protobuf.Value', new ValueParser()]";
         assertContains(jsOutput, mapEntry);
     }
 }

@@ -18,18 +18,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protojs.fromjson;
+package io.spine.tools.protojs.file;
 
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.tools.protojs.file.FileGenerator;
 import io.spine.generate.JsOutput;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static io.spine.code.js.CommonFileName.KNOWN_TYPE_PARSERS;
+import static io.spine.generate.given.Generators.assertContains;
 import static io.spine.tools.protojs.file.FileGenerator.COMMENT;
-import static io.spine.tools.protojs.given.Generators.assertContains;
 import static io.spine.tools.protojs.given.Given.file;
 import static io.spine.tools.protojs.message.MessageGenerator.FROM_JSON;
 import static io.spine.tools.protojs.message.MessageGenerator.FROM_OBJECT;
@@ -62,7 +62,7 @@ class FileGeneratorTest {
     @DisplayName("generate known type parsers imports")
     void generateImports() {
         generator.generateParsersImport();
-        String knownTypeParsersImport = "require('../../known_type_parsers.js');";
+        String knownTypeParsersImport = "require('../../" + KNOWN_TYPE_PARSERS + "');";
         assertContains(jsOutput, knownTypeParsersImport);
     }
 

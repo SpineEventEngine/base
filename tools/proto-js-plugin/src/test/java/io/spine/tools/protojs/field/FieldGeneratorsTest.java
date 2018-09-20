@@ -22,25 +22,16 @@ package io.spine.tools.protojs.field;
 
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.testing.UtilityClassTest;
 import io.spine.generate.JsOutput;
-import io.spine.tools.protojs.field.precondition.MessageFieldPrecondition;
-import io.spine.tools.protojs.field.precondition.PrimitiveFieldPrecondition;
-import io.spine.tools.protojs.field.parser.EnumFieldParser;
-import io.spine.tools.protojs.field.parser.MessageFieldParser;
-import io.spine.tools.protojs.field.parser.PrimitiveFieldParser;
-import io.spine.tools.protojs.field.parser.WellKnownFieldParser;
+import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.testing.Verify.assertInstanceOf;
-import static io.spine.tools.protojs.given.Given.enumField;
 import static io.spine.tools.protojs.given.Given.mapField;
 import static io.spine.tools.protojs.given.Given.messageField;
-import static io.spine.tools.protojs.given.Given.primitiveField;
 import static io.spine.tools.protojs.given.Given.repeatedField;
-import static io.spine.tools.protojs.given.Given.timestampField;
 
 /**
  * @author Dmytro Kuzmin
@@ -65,61 +56,27 @@ class FieldGeneratorsTest extends UtilityClassTest<FieldGenerators> {
     }
 
     @Test
-    @DisplayName("create singular handler for ordinary Protobuf field")
-    void createSingularHandler() {
-        FieldHandler handler = handlerFor(messageField());
-        assertInstanceOf(SingularFieldGenerator.class, handler);
+    @DisplayName("create singular field generator for ordinary Protobuf field")
+    void createForSingular() {
+        FieldGenerator generator = generatorFor(messageField());
+        assertInstanceOf(SingularFieldGenerator.class, generator);
     }
 
     @Test
-    @DisplayName("create repeated handler for repeated Protobuf field")
-    void createRepeatedHandler() {
-        FieldHandler handler = handlerFor(repeatedField());
-        assertInstanceOf(RepeatedFieldGenerator.class, handler);
+    @DisplayName("create repeated field generator for repeated Protobuf field")
+    void createForRepeated() {
+        FieldGenerator generator = generatorFor(repeatedField());
+        assertInstanceOf(RepeatedFieldGenerator.class, generator);
     }
 
     @Test
-    @DisplayName("create map handler for map Protobuf field")
-    void createMapHandler() {
-        FieldHandler handler = handlerFor(mapField());
-        assertInstanceOf(MapFieldGenerator.class, handler);
+    @DisplayName("create map field generator for map Protobuf field")
+    void createForMap() {
+        FieldGenerator generator = generatorFor(mapField());
+        assertInstanceOf(MapFieldGenerator.class, generator);
     }
 
-    @Test
-    @DisplayName("set value precondition of correct type for handler")
-    void setValueChecker() {
-        FieldGenerator messageHandler = handlerFor(messageField());
-        assertInstanceOf(MessageFieldPrecondition.class, messageHandler.checker());
-
-        FieldGenerator primitiveHandler = handlerFor(primitiveField());
-        assertInstanceOf(PrimitiveFieldPrecondition.class, primitiveHandler.checker());
-    }
-
-    @Test
-    @DisplayName("set value parser of correct type for handler")
-    void setValueParser() {
-        FieldGenerator primitiveHandler = handlerFor(primitiveField());
-        assertInstanceOf(PrimitiveFieldParser.class, primitiveHandler.parser());
-
-        FieldGenerator enumHandler = handlerFor(enumField());
-        assertInstanceOf(EnumFieldParser.class, enumHandler.parser());
-
-        FieldGenerator messageHandler = handlerFor(messageField());
-        assertInstanceOf(MessageFieldParser.class, messageHandler.parser());
-
-        FieldGenerator timestampHandler = handlerFor(timestampField());
-        assertInstanceOf(WellKnownFieldParser.class, timestampHandler.parser());
-    }
-
-    @Test
-    @DisplayName("create value parser for key and value in case of map field")
-    void setParsersForMapField() {
-        MapFieldGenerator handler = (MapFieldGenerator) handlerFor(mapField());
-        assertInstanceOf(PrimitiveFieldParser.class, handler.keyParser());
-        assertInstanceOf(MessageFieldParser.class, handler.parser());
-    }
-
-    private FieldGenerator handlerFor(FieldDescriptor field) {
-        return (FieldGenerator) FieldGenerators.createFor(field, jsOutput);
+    private FieldGenerator generatorFor(FieldDescriptor field) {
+        return FieldGenerators.createFor(field, jsOutput);
     }
 }

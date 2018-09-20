@@ -20,6 +20,8 @@
 
 package io.spine.code.js;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.generate.JsOutput;
 
 import java.io.IOException;
@@ -33,15 +35,25 @@ import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 
 public class JsFileWriter {
 
-    private final Path path;
+    private final Path filePath;
 
-    private JsFileWriter(Path path) {
-        this.path = path;
+    private JsFileWriter(Path filePath) {
+        this.filePath = filePath;
     }
 
-    public static JsFileWriter createFor(Directory directory, FileName fileName) {
+    @VisibleForTesting
+    static JsFileWriter createFor(Directory directory, FileName fileName) {
         Path filePath = directory.resolve(fileName);
         return new JsFileWriter(filePath);
+    }
+
+    public static JsFileWriter createFor(Directory directory, CommonFileName commonFileName) {
+        return createFor(directory, commonFileName.fileName());
+    }
+
+    public static JsFileWriter createFor(Directory directory, FileDescriptor file) {
+        FileName fileName = FileName.from(file);
+        return createFor(directory, fileName);
     }
 
     /**
@@ -59,7 +71,7 @@ public class JsFileWriter {
         try {
             byte[] bytes = jsOutput.toString()
                                    .getBytes();
-            Files.write(path, bytes, CREATE, TRUNCATE_EXISTING);
+            Files.write(filePath, bytes, CREATE, TRUNCATE_EXISTING);
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
@@ -70,7 +82,7 @@ public class JsFileWriter {
         try {
             byte[] bytes = jsOutput.toString()
                                    .getBytes();
-            Files.write(path, bytes, APPEND);
+            Files.write(filePath, bytes, APPEND);
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }

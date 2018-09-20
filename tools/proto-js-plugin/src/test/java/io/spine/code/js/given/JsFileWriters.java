@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protojs.given;
+package io.spine.code.js.given;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -31,13 +31,13 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * A helper tool for working with file writers.
+ * A helper tool for checking file I/O operations result.
  *
  * @author Dmytro Kuzmin
  */
-public final class Writers {
+public final class JsFileWriters {
 
-    private Writers() {
+    private JsFileWriters() {
     }
 
     public static void
@@ -54,12 +54,5 @@ public final class Writers {
         byte[] bytes = readAllBytes(filePath);
         String fileContent = new String(bytes);
         assertNotContains(toSearch, fileContent);
-    }
-
-    public static void assertNonZeroSize(Path filePath) {
-        assertTrue(exists(filePath));
-        long fileSize = filePath.toFile()
-                                .length();
-        assertNotEquals(0, fileSize);
     }
 }
