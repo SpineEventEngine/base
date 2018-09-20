@@ -32,10 +32,12 @@ import static io.spine.tools.protojs.message.MessageGenerator.FROM_OBJECT_ARG;
 import static java.lang.String.format;
 
 /**
- * The common base for the {@link FieldGenerator} implementations.
+ * The common base for classes generating the code necessary to parse a specific Protobuf field
+ * from JSON.
  *
- * <p>The class generates the JS code common for all kinds of field handlers including calling the
- * {@linkplain FieldPrecondition field precondition} and the {@linkplain FieldParser field parser}.
+ * <p>This class generates the JS code common for all kinds of field generators including inserting
+ * a {@linkplain FieldPrecondition field precondition} and calling a
+ * {@linkplain FieldParser field parser}.
  *
  * @author Dmytro Kuzmin
  */
@@ -50,13 +52,13 @@ public abstract class FieldGenerator extends JsCodeGenerator {
     static final String FIELD_VALUE = "value";
 
     private final FieldDescriptor field;
-    private final FieldPrecondition checker;
+    private final FieldPrecondition precondition;
     private final FieldParser parser;
 
     FieldGenerator(Builder builder) {
         super(builder.jsOutput);
         this.field = builder.field;
-        this.checker = builder.checker;
+        this.precondition = builder.precondition;
         this.parser = builder.parser;
     }
 
@@ -85,24 +87,14 @@ public abstract class FieldGenerator extends JsCodeGenerator {
      *         the name of the variable containing the value to set the field to
      */
     void mergeFieldValue(String value) {
-        checker.performNullCheck(value, mergeFormat());
+        precondition.performNullCheck(value, mergeFormat());
         parser.parseIntoVariable(value, FIELD_VALUE);
         merge(FIELD_VALUE);
-        checker.exitNullCheck();
+        precondition.exitNullCheck();
     }
 
     FieldDescriptor field() {
         return field;
-    }
-
-    @VisibleForTesting
-    FieldPrecondition checker() {
-        return checker;
-    }
-
-    @VisibleForTesting
-    FieldParser parser() {
-        return parser;
     }
 
     /**
@@ -141,7 +133,7 @@ public abstract class FieldGenerator extends JsCodeGenerator {
     abstract static class Builder<B extends Builder<B>> {
 
         private FieldDescriptor field;
-        private FieldPrecondition checker;
+        private FieldPrecondition precondition;
         private FieldParser parser;
         private JsOutput jsOutput;
 
@@ -150,8 +142,8 @@ public abstract class FieldGenerator extends JsCodeGenerator {
             return self();
         }
 
-        B setChecker(FieldPrecondition checker) {
-            this.checker = checkNotNull(checker);
+        B setPrecondition(FieldPrecondition precondition) {
+            this.precondition = checkNotNull(precondition);
             return self();
         }
 
@@ -166,7 +158,7 @@ public abstract class FieldGenerator extends JsCodeGenerator {
         }
 
         /**
-         * <strong>Must</strong> return {@code this} in classes-descendants.
+         * Must return {@code this} in classes-descendants.
          */
         abstract B self();
 

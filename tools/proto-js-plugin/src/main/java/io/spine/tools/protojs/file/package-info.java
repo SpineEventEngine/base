@@ -19,7 +19,7 @@
  */
 
 /**
- * // todo generate desc.
+ * The classes generating JSON-parsing code for the Protobuf messages in JavaScript.
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault

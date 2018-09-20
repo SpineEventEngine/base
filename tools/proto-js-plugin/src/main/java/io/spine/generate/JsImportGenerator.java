@@ -33,6 +33,11 @@ import static java.util.Collections.emptyList;
 /**
  * The helper that generates imports for the JS code.
  *
+ * <p>The class has several usages: firstly, it can generate imports in a batch using
+ * {@link Builder#setImports(Collection)} and {@link JsImportGenerator#generate()}.
+ *
+ * <p>Secondly, it can generate single imports via the dedicated methods.
+ *
  * <p>Currently all imports are generated in the CommonJS style.
  *
  * @author Dmytro Kuzmin
@@ -40,12 +45,12 @@ import static java.util.Collections.emptyList;
 public final class JsImportGenerator extends JsCodeGenerator {
 
     /**
-     * The path to parent dir.
+     * The path to parent directory.
      */
     private static final String PARENT_DIR = "../";
 
     /**
-     * The path to the current dir.
+     * The path to the current directory.
      */
     private static final String CURRENT_DIR = "./";
 
@@ -56,15 +61,26 @@ public final class JsImportGenerator extends JsCodeGenerator {
      */
     private static final String IMPORT_FORMAT = "require('%s');";
 
+    /**
+     * The named import format.
+     *
+     * <p>The first placeholder is the import name and the second one represents the file to be
+     * imported.
+     */
     private static final String NAMED_IMPORT_FORMAT = "let %s = " + IMPORT_FORMAT;
 
     /**
      * The value which is prepended to every import.
      *
-     * <p>In case of JS proto definitions, this prefix represents the path from the current file
-     * to the proto JS location root.
+     * <p>In case of generated messages, this prefix represents the path from the current file
+     * to the proto location root.
      */
     private final String importPrefix;
+
+    /**
+     * The predefined imports which will be stored to the {@link JsOutput} when calling
+     * {@link #generate()}.
+     */
     private final Collection<FileName> imports;
 
     private JsImportGenerator(Builder builder) {
@@ -77,6 +93,9 @@ public final class JsImportGenerator extends JsCodeGenerator {
                 : emptyList();
     }
 
+    /**
+     * Put all the predefined imports specified on creation into the {@link JsOutput}.
+     */
     @Override
     public void generate() {
         for (FileName fileToImport : imports) {
@@ -89,7 +108,7 @@ public final class JsImportGenerator extends JsCodeGenerator {
     /**
      * Generates a named JS import with a stored {@code importPrefix}.
      *
-     * <p>Named import is a statement of type {@code let a = require('./b')}.
+     * <p>Named import is a statement of type {@code let a = require('./file.js')}.
      */
     public void importFile(FileName fileToImport, String importName) {
         checkNotNull(fileToImport);
@@ -102,7 +121,7 @@ public final class JsImportGenerator extends JsCodeGenerator {
     /**
      * Generates a named JS import for a specified lib.
      *
-     * <p>Named import is a statement of type {@code let a = require('./b')}.
+     * <p>Named import is a statement of type {@code let a = require('lib')}.
      */
     public void importLib(String libToImport, String importName) {
         checkNotNull(libToImport);
@@ -131,19 +150,18 @@ public final class JsImportGenerator extends JsCodeGenerator {
     /**
      * Creates a {@code JsImportGenerator} to generate imports for the specified file.
      *
-     * 1. If file path not specified, generates relative to root.
-     * etc.
-     * // todo continue doc
+     * <p>The {@link #fileName} and {@link #imports} parameters are optional and the
+     * {@link #jsOutput} is required to be set.
      *
+     * <ol>
+     * <li>If the {@link #fileName} is specified, the {@code JsImportGenerator} will generate all
+     *     its imports relative to the specified file.
+     * <li>If the {@link #imports} then the {@code JsImportGenerator} will be able to generate all
+     *     these imports in a batch via the {@link #generate()} method.
+     * </ol>
      */
     public static class Builder {
 
-        /**
-         * The file for which the imports will be generated.
-         *
-         * <p>The provided file path should be relative to the desired import root (e.g. sources root,
-         * generated protos root).
-         */
         private FileName fileName;
         private Collection<FileName> imports;
         private JsOutput jsOutput;
@@ -166,9 +184,6 @@ public final class JsImportGenerator extends JsCodeGenerator {
             return this;
         }
 
-        /**
-         * @return the {@code JsImportGenerator} that generates imports relative to this file
-         */
         public JsImportGenerator build() {
             return new JsImportGenerator(this);
         }

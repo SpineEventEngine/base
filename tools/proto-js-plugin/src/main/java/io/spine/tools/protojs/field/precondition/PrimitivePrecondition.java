@@ -25,10 +25,11 @@ import io.spine.generate.JsOutput;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * The value precondition for the proto fields of primitive type.
+ * The precondition for the proto fields of primitive types.
  *
- * <p>All the proto fields which are not of the {@code message} type are handled by this precondition.
- * This includes the {@code enum} type fields which obey the same rules as primitives in this case.
+ * <p>All the proto fields which are not of the {@code message} type are handled by this
+ * precondition. This includes the {@code enum} type fields which obey the same rules as primitives
+ * in this case.
  *
  * @author Dmytro Kuzmin
  */

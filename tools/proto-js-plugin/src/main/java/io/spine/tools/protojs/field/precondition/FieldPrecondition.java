@@ -26,9 +26,8 @@ import io.spine.generate.JsOutput;
  * The generator of the code which performs various checks on the proto field value.
  *
  * @apiNote
- * Like the other handlers and generators of this module, the {@code FieldPrecondition} is meant to
- * operate on the common {@link JsOutput} passed on construction and thus its methods do not return
- * any generated code.
+ * The descendants are supposed to operate on the provided {@link JsOutput}, so the interface
+ * methods are not returning any generated code.
  *
  * @author Dmytro Kuzmin
  */
@@ -37,8 +36,8 @@ public interface FieldPrecondition {
     /**
      * Generates the code which checks the given field value for {@code null}.
      *
-     * <p>The merge field format is specified so the precondition can interact with the field itself in
-     * case the check passes/fails.
+     * <p>The merge field format is specified so the precondition can interact with the field
+     * itself in case the check passes/fails.
      *
      * @param value
      *         the name of the variable representing the field value to check

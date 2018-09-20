@@ -26,7 +26,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.generate.given.Generators.assertContains;
-import static io.spine.tools.protojs.field.precondition.FieldPreconditions.checkerFor;
+import static io.spine.tools.protojs.field.precondition.FieldPreconditions.preconditionFor;
 import static io.spine.tools.protojs.given.Given.messageField;
 import static io.spine.tools.protojs.given.Given.primitiveField;
 import static java.lang.String.format;
@@ -52,8 +52,8 @@ class FieldPreconditionTest {
     @Test
     @DisplayName("generate code to enter non-null check for primitive")
     void enterPrimitiveCheck() {
-        FieldPrecondition checker = checkerFor(primitiveField(), jsOutput);
-        checker.performNullCheck(FIELD_VALUE, SETTER_FORMAT);
+        FieldPrecondition precondition = preconditionFor(primitiveField(), jsOutput);
+        precondition.performNullCheck(FIELD_VALUE, SETTER_FORMAT);
         String check = "if (" + FIELD_VALUE + " !== null)";
         assertContains(jsOutput, check);
     }
@@ -61,8 +61,8 @@ class FieldPreconditionTest {
     @Test
     @DisplayName("generate code to enter null check for message")
     void enterMessageCheck() {
-        FieldPrecondition checker = checkerFor(messageField(), jsOutput);
-        checker.performNullCheck(FIELD_VALUE, SETTER_FORMAT);
+        FieldPrecondition precondition = preconditionFor(messageField(), jsOutput);
+        precondition.performNullCheck(FIELD_VALUE, SETTER_FORMAT);
         String check = "if (" + FIELD_VALUE + " === null)";
         assertContains(jsOutput, check);
     }
@@ -70,8 +70,8 @@ class FieldPreconditionTest {
     @Test
     @DisplayName("set field value to null in case of message")
     void setMessageToNull() {
-        FieldPrecondition checker = checkerFor(messageField(), jsOutput);
-        checker.performNullCheck(FIELD_VALUE, SETTER_FORMAT);
+        FieldPrecondition precondition = preconditionFor(messageField(), jsOutput);
+        precondition.performNullCheck(FIELD_VALUE, SETTER_FORMAT);
         String setNull = format(SETTER_FORMAT, "null");
         assertContains(jsOutput, setNull);
     }

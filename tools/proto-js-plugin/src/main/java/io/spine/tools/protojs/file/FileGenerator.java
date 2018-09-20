@@ -32,15 +32,10 @@ import io.spine.tools.protojs.message.MessageGenerator;
 import static io.spine.code.js.CommonFileName.KNOWN_TYPE_PARSERS;
 
 /**
- * The generator of the {@code fromJson(json)} method for the JS Proto definitions.
+ * The generator of the {@code fromJson(json)} method for the Protobuf messages in JavaScript.
  *
- * <p>The class generates the {@code fromJson} method for each message declared in the
- * {@link FileDescriptor}.
- *
- * @apiNote
- * Like the other handlers and generators of this module, the {@code FileGenerator} is meant to
- * operate on the common {@link JsOutput} passed on construction and thus its methods do not return
- * any generated code.
+ * <p>The class generates the {@code fromJson} and {@code fromObject} methods for each message
+ * declared in the {@link FileDescriptor}.
  *
  * @author Dmytro Kuzmin
  */

@@ -34,8 +34,8 @@ import static io.spine.tools.gradle.TaskName.COPY_MODULE_SOURCES;
 import static io.spine.tools.gradle.TaskName.GENERATE_JSON_PARSERS;
 
 /**
- * The Gradle plugin which generates the code to parse JavaScript proto definitions from the JSON
- * format.
+ * The Gradle plugin which generates the code to parse the Protobuf messages compiled into
+ * JavaScript from the JSON format.
  *
  * <p>To run the plugin, add the {@code "io.spine.tools:spine-proto-js-plugin:$spineBaseVersion"}
  * to the {@code classpath} configuration and add

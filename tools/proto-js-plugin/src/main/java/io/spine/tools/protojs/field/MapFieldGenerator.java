@@ -27,9 +27,9 @@ import io.spine.tools.protojs.field.parser.FieldParser;
 import static io.spine.tools.protojs.message.MessageGenerator.MESSAGE;
 
 /**
- * The handler of the {@code map} proto fields.
+ * The generator for the {@code map} Protobuf fields.
  *
- * <p>The handler expects a plain JS object as an input, treating its properties as the Protobuf
+ * <p>The generator expects a plain JS object as an input, treating its properties as the Protobuf
  * map entries.
  *
  * @implNote
@@ -39,7 +39,7 @@ import static io.spine.tools.protojs.message.MessageGenerator.MESSAGE;
  * <p>This is necessary as all proto {@code map} keys are converted to {@code string}s in JSON and
  * thus the object properties will also be of {@code string} type.
  *
- * <p>The {@link #checker} and {@link #parser} from the superclass are used to process the
+ * <p>The {@link #precondition} and {@link #parser} from the superclass are used to process the
  * {@code map} value before adding it to the field.
  *
  * @author Dmytro Kuzmin
@@ -125,11 +125,6 @@ final class MapFieldGenerator extends FieldGenerator {
      */
     private void parseMapKey() {
         keyParser.parseIntoVariable(ATTRIBUTE, MAP_KEY);
-    }
-
-    @VisibleForTesting
-    FieldParser keyParser() {
-        return keyParser;
     }
 
     static Builder newBuilder() {

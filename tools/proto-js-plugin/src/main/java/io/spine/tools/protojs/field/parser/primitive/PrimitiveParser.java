@@ -28,9 +28,8 @@ import io.spine.generate.JsOutput;
  * <p>The parsed value is then stored into the specified variable.
  *
  * @apiNote
- * Like the other handlers and generators of this module, the {@code PrimitiveParser} is meant to
- * operate on the common {@link JsOutput} passed on construction and thus its method does not
- * return any generated code.
+ * The descendants are supposed to operate on the provided {@link JsOutput}, so the interface
+ * methods are not returning any generated code.
  *
  * @author Dmytro Kuzmin
  * @see <a href="https://developers.google.com/protocol-buffers/docs/proto3#json">Protobuf JSON

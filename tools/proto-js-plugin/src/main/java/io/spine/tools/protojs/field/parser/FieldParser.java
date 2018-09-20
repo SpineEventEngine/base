@@ -27,9 +27,8 @@ import io.spine.generate.JsOutput;
  * some variable.
  *
  * @apiNote
- * Like the other handlers and generators of this module, the {@code FieldParser} is meant to
- * operate on the common {@link JsOutput} passed on construction and thus its method does not
- * return any generated code.
+ * The descendants are supposed to operate on the provided {@link JsOutput}, so the interface
+ * method is not returning any generated code.
  *
  * @author Dmytro Kuzmin
  */

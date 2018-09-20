@@ -31,7 +31,7 @@ import static io.spine.code.js.FieldDescriptors.isRepeated;
 import static io.spine.code.js.FieldDescriptors.keyDescriptor;
 import static io.spine.code.js.FieldDescriptors.valueDescriptor;
 import static io.spine.tools.protojs.field.parser.FieldParsers.parserFor;
-import static io.spine.tools.protojs.field.precondition.FieldPreconditions.checkerFor;
+import static io.spine.tools.protojs.field.precondition.FieldPreconditions.preconditionFor;
 
 /**
  * The helper class which provides the {@link FieldGenerator} implementation for the given
@@ -49,7 +49,7 @@ public final class FieldGenerators {
      * Creates a {@code FieldGenerator} for the given field.
      *
      * @param field
-     *         the descriptor of the field to be handled
+     *         the descriptor of the field to be handled by the generator
      * @param jsOutput
      *         the {@code JsOutput} to accumulate all the generated code
      * @return the new {@code FieldGenerator} of the appropriate type
@@ -58,19 +58,19 @@ public final class FieldGenerators {
         checkNotNull(field);
         checkNotNull(jsOutput);
         if (isMap(field)) {
-            return mapHandler(field, jsOutput);
+            return mapGenerator(field, jsOutput);
         }
         if (isRepeated(field)) {
-            return repeatedHandler(field, jsOutput);
+            return repeatedGenerator(field, jsOutput);
         }
-        return singularHandler(field, jsOutput);
+        return singularGenerator(field, jsOutput);
     }
 
     /**
-     * Creates a {@linkplain MapFieldGenerator handler} for the {@code map} field.
+     * Creates a {@linkplain MapFieldGenerator generator} for the {@code map} field.
      *
      * @implNote
-     * The creation logic is different from all other handlers.
+     * The creation logic is different from all other generators.
      *
      * <p>As the {@code map} field is always a {@code message} of type {@code ...Entry}, we create
      * {@link FieldPrecondition} and {@link FieldParser} for it's field with name {@code "value"}
@@ -80,15 +80,15 @@ public final class FieldGenerators {
      * always converted to a {@code string}. So we create additional {@code FieldParser} for
      * the {@code ...Entry} {@code "key"} field.
      */
-    private static FieldGenerator mapHandler(FieldDescriptor field, JsOutput jsOutput) {
+    private static FieldGenerator mapGenerator(FieldDescriptor field, JsOutput jsOutput) {
         FieldParser keyParser = mapKeyParser(field, jsOutput);
         FieldParser valueParser = mapValueParser(field, jsOutput);
-        FieldPrecondition valueChecker = mapValueChecker(field, jsOutput);
+        FieldPrecondition valuePrecondition = mapValuePrecondition(field, jsOutput);
 
         FieldGenerator handler = MapFieldGenerator
                 .newBuilder()
                 .setField(field)
-                .setChecker(valueChecker)
+                .setPrecondition(valuePrecondition)
                 .setKeyParser(keyParser)
                 .setParser(valueParser)
                 .setJsOutput(jsOutput)
@@ -97,16 +97,16 @@ public final class FieldGenerators {
     }
 
     /**
-     * Creates a {@linkplain RepeatedFieldGenerator handler} for the {@code repeated} proto field.
+     * Creates a {@linkplain RepeatedFieldGenerator generator} for the {@code repeated} proto field.
      */
-    private static FieldGenerator repeatedHandler(FieldDescriptor field, JsOutput jsOutput) {
-        FieldPrecondition checker = checkerFor(field, jsOutput);
+    private static FieldGenerator repeatedGenerator(FieldDescriptor field, JsOutput jsOutput) {
+        FieldPrecondition precondition = preconditionFor(field, jsOutput);
         FieldParser parser = parserFor(field, jsOutput);
 
         FieldGenerator handler = RepeatedFieldGenerator
                 .newBuilder()
                 .setField(field)
-                .setChecker(checker)
+                .setPrecondition(precondition)
                 .setParser(parser)
                 .setJsOutput(jsOutput)
                 .build();
@@ -114,16 +114,16 @@ public final class FieldGenerators {
     }
 
     /**
-     * Creates a {@linkplain SingularFieldGenerator handler} for the ordinary proto field.
+     * Creates a {@linkplain SingularFieldGenerator generator} for the ordinary proto field.
      */
-    private static FieldGenerator singularHandler(FieldDescriptor field, JsOutput jsOutput) {
-        FieldPrecondition checker = checkerFor(field, jsOutput);
+    private static FieldGenerator singularGenerator(FieldDescriptor field, JsOutput jsOutput) {
+        FieldPrecondition precondition = preconditionFor(field, jsOutput);
         FieldParser parser = parserFor(field, jsOutput);
 
         FieldGenerator handler = SingularFieldGenerator
                 .newBuilder()
                 .setField(field)
-                .setChecker(checker)
+                .setPrecondition(precondition)
                 .setParser(parser)
                 .setJsOutput(jsOutput)
                 .build();
@@ -133,10 +133,11 @@ public final class FieldGenerators {
     /**
      * Creates a {@code FieldPrecondition} for the value of the map field.
      */
-    private static FieldPrecondition mapValueChecker(FieldDescriptor field, JsOutput jsOutput) {
+    private static FieldPrecondition
+    mapValuePrecondition(FieldDescriptor field, JsOutput jsOutput) {
         FieldDescriptor valueDescriptor = valueDescriptor(field);
-        FieldPrecondition checker = checkerFor(valueDescriptor, jsOutput);
-        return checker;
+        FieldPrecondition precondition = preconditionFor(valueDescriptor, jsOutput);
+        return precondition;
     }
 
     /**

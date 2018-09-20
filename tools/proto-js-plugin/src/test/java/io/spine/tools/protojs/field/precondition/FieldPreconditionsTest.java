@@ -29,7 +29,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.testing.Verify.assertInstanceOf;
-import static io.spine.tools.protojs.field.precondition.FieldPreconditions.checkerFor;
+import static io.spine.tools.protojs.field.precondition.FieldPreconditions.preconditionFor;
 import static io.spine.tools.protojs.given.Given.messageField;
 import static io.spine.tools.protojs.given.Given.primitiveField;
 import static io.spine.tools.protojs.given.Given.timestampField;
@@ -59,21 +59,21 @@ class FieldPreconditionsTest extends UtilityClassTest<FieldPreconditions> {
     @Test
     @DisplayName("create precondition for primitive field")
     void createForPrimitive() {
-        FieldPrecondition checker = checkerFor(primitiveField(), jsOutput);
-        assertInstanceOf(PrimitivePrecondition.class, checker);
+        FieldPrecondition precondition = preconditionFor(primitiveField(), jsOutput);
+        assertInstanceOf(PrimitivePrecondition.class, precondition);
     }
 
     @Test
     @DisplayName("create precondition for message field")
     void createForMessage() {
-        FieldPrecondition checker = checkerFor(messageField(), jsOutput);
-        assertInstanceOf(MessagePrecondition.class, checker);
+        FieldPrecondition precondition = preconditionFor(messageField(), jsOutput);
+        assertInstanceOf(MessagePrecondition.class, precondition);
     }
 
     @Test
     @DisplayName("create message precondition for standard type field")
     void createForWellKnown() {
-        FieldPrecondition checker = checkerFor(timestampField(), jsOutput);
-        assertInstanceOf(MessagePrecondition.class, checker);
+        FieldPrecondition precondition = preconditionFor(timestampField(), jsOutput);
+        assertInstanceOf(MessagePrecondition.class, precondition);
     }
 }

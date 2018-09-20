@@ -41,11 +41,6 @@ import static java.util.stream.Collectors.toSet;
  * <p>This class generates the map with all the known types written in the form of
  * "{@linkplain TypeUrl type-url}-to-JS-type", as well as the imports necessary to use JS types.
  *
- * @apiNote
- * Like the other handlers and generators of this module, the {@code KnownTypesGenerator} is meant
- * to operate on the common {@link JsOutput} passed on construction and thus its methods do not
- * return any generated code.
- *
  * @author Dmytro Kuzmin
  */
 public final class KnownTypesGenerator extends JsCodeGenerator {
@@ -81,8 +76,6 @@ public final class KnownTypesGenerator extends JsCodeGenerator {
      *     <li>Imports of all JS files declaring proto messages
      *     <li>The global {@code Map} of known types
      * </ol>
-     *
-     * <p>The generated code is accumulated in the {@link #jsOutput}.
      */
     @Override
     public void generate() {

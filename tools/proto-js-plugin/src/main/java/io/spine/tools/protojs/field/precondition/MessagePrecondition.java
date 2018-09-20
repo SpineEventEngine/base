@@ -27,7 +27,7 @@ import io.spine.generate.JsOutput;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * The value precondition for the proto fields of {@code message} type.
+ * The precondition for the proto fields of {@code message} types.
  *
  * @author Dmytro Kuzmin
  */
@@ -53,7 +53,8 @@ final class MessagePrecondition implements FieldPrecondition {
      * {@inheritDoc}
      *
      * <p>For messages, if the parsed value equals to {@code null}, the message value is also set
-     * to null via the {@code mergeFieldFormat}. The further parsing does not happen in this case.
+     * to {@code null} via the {@code mergeFieldFormat}. The further parsing does not happen in
+     * this case.
      *
      * <p>The only exception is the Protobuf {@link Value} type, where the check does not take
      * place and the {@code null} is allowed to reach the parser, which later converts it to the

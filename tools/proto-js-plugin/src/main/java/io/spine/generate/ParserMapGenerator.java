@@ -52,11 +52,6 @@ import static io.spine.type.TypeUrl.of;
  *
  * <p>The parsers may be used to parse JSON via their {@code parse(value)} method.
  *
- * @apiNote
- * Like the other handlers and generators of this module, the {@code ParserMapGenerator} is meant
- * to operate on the common {@link JsOutput} passed on construction and thus its methods do not
- * return any generated code.
- *
  * @author Dmytro Kuzmin
  */
 @SuppressWarnings("OverlyCoupledClass") // Dependencies for the listed Message types.
@@ -65,7 +60,7 @@ public final class ParserMapGenerator extends JsCodeGenerator {
     /**
      * The exported map name.
      *
-     * <p>Has {@code public} visibility so other generators can use the map in the created code.
+     * <p>Has {@code public} visibility so other generators can use the map in their code.
      */
     public static final String MAP_NAME = "parsers";
 
@@ -75,7 +70,7 @@ public final class ParserMapGenerator extends JsCodeGenerator {
      * <p>The map entry's value represents the JS type name of the parser.
      *
      * <p>Before adding the new entry to the map make sure the corresponding parser type is present
-     * in the {@code known_type_parsers.js} resource.
+     * in the {@code known_type_parsers} resource.
      */
     private static final ImmutableMap<TypeUrl, String> parsers = parsers();
 

@@ -42,11 +42,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * <p>The class is effectively {@code final} and is left non-{@code final} only for testing
  * purposes.
  *
- * @apiNote
- * Like the other handlers and generators of this module, the {@code MessageGenerator} is meant to
- * operate on the common {@link JsOutput} passed on construction and thus its methods do not return
- * any generated code.
- *
  * @author Dmytro Kuzmin
  */
 @SuppressWarnings("DuplicateStringLiteralInspection")

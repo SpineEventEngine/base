@@ -46,7 +46,7 @@ public final class FieldPreconditions {
      *         the {@code JsOutput} which will accumulate all the generated code
      * @return a {@code FieldPrecondition} of the appropriate type
      */
-    public static FieldPrecondition checkerFor(FieldDescriptor field, JsOutput jsOutput) {
+    public static FieldPrecondition preconditionFor(FieldDescriptor field, JsOutput jsOutput) {
         checkNotNull(field);
         checkNotNull(jsOutput);
         if (isMessage(field)) {

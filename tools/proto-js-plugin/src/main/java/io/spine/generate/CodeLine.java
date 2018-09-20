@@ -51,7 +51,7 @@ final class CodeLine {
     }
 
     /**
-     * Prints the {@code CodeLine} to the {@code String} with the specified indentation.
+     * Prepends the correct indent to the code line content.
      *
      * @param spacesPerDepth
      *         how many spaces are inserted per depth level

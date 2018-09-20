@@ -46,15 +46,15 @@ import static java.lang.System.lineSeparator;
         "ClassWithTooManyMethods" /* A lot of simple utility methods for code generation. */})
 public final class JsOutput {
 
+    @VisibleForTesting
+    static final String LINE_SEPARATOR = lineSeparator();
+
     /**
      * The modifier which is used to create variables.
      *
      * <p>Currently is set to ES6 {@code let}.
      */
-    static final String VARIABLE_MODIFIER = "let";
-
-    @VisibleForTesting
-    static final String LINE_SEPARATOR = lineSeparator();
+    private static final String VARIABLE_MODIFIER = "let";
 
     private static final int STANDARD_INDENTATION = 2;
 
@@ -266,7 +266,7 @@ public final class JsOutput {
      * @param mapName
      *         the name of the map
      */
-    public void exportMap(String mapName) {
+    void exportMap(String mapName) {
         checkNotNull(mapName);
         addLine("export const " + mapName + " = new Map([");
         currentDepth++;
@@ -282,7 +282,7 @@ public final class JsOutput {
      * @param isLast
      *         whether this entry is last or there will be more
      */
-    public void addMapEntry(String entry, boolean isLast) {
+    void addMapEntry(String entry, boolean isLast) {
         checkNotNull(entry);
         if (isLast) {
             addLine(entry);
@@ -294,7 +294,7 @@ public final class JsOutput {
     /**
      * Exits the exported map declaration.
      */
-    public void quitMapDeclaration() {
+    void quitMapDeclaration() {
         decreaseDepth();
         addLine("]);");
     }

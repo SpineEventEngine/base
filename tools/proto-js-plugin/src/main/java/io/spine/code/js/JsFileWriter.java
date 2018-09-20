@@ -33,6 +33,14 @@ import static java.nio.file.StandardOpenOption.APPEND;
 import static java.nio.file.StandardOpenOption.CREATE;
 import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 
+/**
+ * A tool for writing into JavaScript source files.
+ *
+ * <p>The class wraps all {@link IOException}s which occur during its operations in the
+ * {@link IllegalStateException}.
+ *
+ * @author Dmytro Kuzmin
+ */
 public class JsFileWriter {
 
     private final Path filePath;
@@ -47,17 +55,25 @@ public class JsFileWriter {
         return new JsFileWriter(filePath);
     }
 
+    /**
+     * Creates a {@code JsFileWriter} which will operate on the file with specified name located in
+     * the specified directory.
+     */
     public static JsFileWriter createFor(Directory directory, CommonFileName commonFileName) {
         return createFor(directory, commonFileName.fileName());
     }
 
+    /**
+     * Creates a {@code JsFileWriter} which will operate on the file pointed by the file descriptor
+     * and located in the specified directory.
+     */
     public static JsFileWriter createFor(Directory directory, FileDescriptor file) {
         FileName fileName = FileName.from(file);
         return createFor(directory, fileName);
     }
 
     /**
-     * Writes the given content to the file.
+     * Writes the given output to the file.
      *
      * <p>Overwrites the previous file content.
      *
@@ -77,6 +93,14 @@ public class JsFileWriter {
         }
     }
 
+    /**
+     * Appends the given output to the end of the file.
+     *
+     * @param jsOutput
+     *         the {@code JsOutput} to append
+     * @throws IllegalStateException
+     *         if something went wrong when writing to file
+     */
     public void append(JsOutput jsOutput) {
         checkNotNull(jsOutput);
         try {

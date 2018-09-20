@@ -47,8 +47,8 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 /**
  * The JSON parsers writer used by the {@link ProtoJsPlugin}.
  *
- * <p>This class generates JS code to parse JS proto definitions from JSON and writes it to the
- * project files, more specifically:
+ * <p>This class writes the JavaScript code necessary to parse the generated Protobuf messages from
+ * JSON in JavaScript. More specifically, the class:
  * <ol>
  *     <li>Writes all known types to the {@code known_types.js} file in proto JS location root.
  *         The types are stored in a global {@code Map} in the
@@ -56,8 +56,8 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
  *     <li>Writes all standard type parsers to the {@code known_type_parsers.js} file in Proto
  *         JS location root. The parsers are stored in a global {@code Map} in the
  *         "type-url-to-parser" format.
- *     <li>Appends {@code fromJson(json)} method to all proto JS files, one for each message stored
- *         in a file.
+ *     <li>Appends {@code fromJson(json)} method to all files generated from Protobuf, one for each
+ *         message stored in a file.
  * </ol>
  *
  * @author Dmytro Kuzmin
@@ -84,7 +84,9 @@ final class JsonParsersWriter {
     }
 
     /**
-     * Generates and writes the JS code necessary to parse proto JS messages from the JSON format.
+     * Generates and writes the JS code necessary to parse proto messages from the JSON format.
+     *
+     * <p>Does nothing if there are no files to process in the {@link #fileSet}.
      */
     void write() {
         if (!hasFilesToProcess()) {
@@ -111,7 +113,7 @@ final class JsonParsersWriter {
      * <p>The types in map are stored in the
      * "{@linkplain io.spine.type.TypeUrl type-url}-to-JS-type" format.
      *
-     * <p>The file is written to the root of the proto JS location.
+     * <p>The file is written to the root of the generated messages location.
      */
     @VisibleForTesting
     void writeKnownTypes() {
@@ -128,7 +130,7 @@ final class JsonParsersWriter {
      * <p>The parsers can be accessed via the global map, where they are stored in the
      * "{@linkplain io.spine.type.TypeUrl type-url}-to-parser" format.
      *
-     * <p>The file is written to the root of the proto JS location.
+     * <p>The file is written to the root of the generated messages location.
      */
     @VisibleForTesting
     void writeKnownTypeParsers() {
@@ -158,7 +160,10 @@ final class JsonParsersWriter {
     }
 
     /**
-     * Appends the {@code fromJson(json)} methods for all known types into the corresponding files.
+     * Appends the {@code fromJson(json)} methods for all known types in the corresponding files.
+     *
+     * <p>The standard Protobuf types and the
+     * {@linkplain io.spine.option.OptionsProto Spine Options} type are skipped.
      */
     @VisibleForTesting
     void writeFromJsonMethod() {

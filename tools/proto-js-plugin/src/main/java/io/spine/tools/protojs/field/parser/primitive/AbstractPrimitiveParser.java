@@ -52,7 +52,7 @@ abstract class AbstractPrimitiveParser implements PrimitiveParser {
         }
 
         /**
-         * <strong>Must</strong> return {@code this} in classes-descendants.
+         * Must return {@code this} in classes-descendants.
          */
         abstract B self();
     }

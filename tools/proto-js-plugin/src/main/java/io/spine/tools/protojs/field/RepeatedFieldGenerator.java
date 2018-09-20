@@ -26,10 +26,10 @@ import io.spine.code.js.FieldName;
 import static io.spine.tools.protojs.message.MessageGenerator.MESSAGE;
 
 /**
- * The handler of the {@code repeated} proto fields.
+ * The generator for the {@code repeated} Protobuf fields.
  *
- * <p>The handler expects a JS object to always be a list, iterating over it and adding its values
- * to the field.
+ * <p>The generator expects a JS object to always be a list, iterating over it and adding its
+ * values to the field.
  *
  * <p>Although the {@code map} fields are technically also {@code repeated}, they are not handled
  * by this class.

@@ -25,7 +25,7 @@ import io.spine.code.js.FieldName;
 import static io.spine.tools.protojs.message.MessageGenerator.MESSAGE;
 
 /**
- * The handler of the ordinary proto field (i.e. non-{@code repeated} and non-{@code map}).
+ * The generator of the ordinary proto field (i.e. non-{@code repeated} and non-{@code map}).
  *
  * @author Dmytro Kuzmin
  */

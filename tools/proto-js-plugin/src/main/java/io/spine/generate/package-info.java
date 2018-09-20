@@ -19,7 +19,7 @@
  */
 
 /**
- * // todo generate desc.
+ * The tools for the JavaScript code generation.
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault

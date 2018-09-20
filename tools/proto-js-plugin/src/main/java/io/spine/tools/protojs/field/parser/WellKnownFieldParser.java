@@ -66,7 +66,8 @@ final class WellKnownFieldParser implements FieldParser {
     /**
      * {@inheritDoc}
      *
-     * <p>The field value of well-known type is parsed via a predefined parser stored in the known
+     * <p>The field value of well-known type is parsed via a predefined parser stored in the
+     * dedicated file.
      */
     @Override
     public void parseIntoVariable(String value, String variable) {
