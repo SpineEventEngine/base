@@ -101,8 +101,8 @@ class MessageGeneratorTest {
     @Test
     @DisplayName("handle message fields in `fromObject` method")
     void handleMessageFields() {
-        MessageGenerator handler = spy(this.generator);
-        handler.generateFromObjectMethod();
-        verify(handler, times(1)).handleMessageFields();
+        MessageGenerator generator = spy(this.generator);
+        generator.generateFromObjectMethod();
+        verify(generator, times(1)).handleMessageFields();
     }
 }

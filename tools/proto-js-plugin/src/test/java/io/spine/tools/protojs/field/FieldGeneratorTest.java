@@ -100,7 +100,7 @@ class FieldGeneratorTest {
 
     @Test
     @DisplayName("call field value precondition to check field value for null")
-    void callChecker() {
+    void callPrecondition() {
         String fieldValue = singularGenerator.acquireFieldValue();
         singularGenerator.generate();
         String nullCheck = "if (" + fieldValue + " === null)";

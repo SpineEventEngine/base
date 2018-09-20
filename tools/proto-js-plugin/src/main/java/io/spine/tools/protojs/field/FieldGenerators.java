@@ -85,7 +85,7 @@ public final class FieldGenerators {
         FieldParser valueParser = mapValueParser(field, jsOutput);
         FieldPrecondition valuePrecondition = mapValuePrecondition(field, jsOutput);
 
-        FieldGenerator handler = MapFieldGenerator
+        FieldGenerator generator = MapFieldGenerator
                 .newBuilder()
                 .setField(field)
                 .setPrecondition(valuePrecondition)
@@ -93,7 +93,7 @@ public final class FieldGenerators {
                 .setParser(valueParser)
                 .setJsOutput(jsOutput)
                 .build();
-        return handler;
+        return generator;
     }
 
     /**
@@ -103,14 +103,14 @@ public final class FieldGenerators {
         FieldPrecondition precondition = preconditionFor(field, jsOutput);
         FieldParser parser = parserFor(field, jsOutput);
 
-        FieldGenerator handler = RepeatedFieldGenerator
+        FieldGenerator generator = RepeatedFieldGenerator
                 .newBuilder()
                 .setField(field)
                 .setPrecondition(precondition)
                 .setParser(parser)
                 .setJsOutput(jsOutput)
                 .build();
-        return handler;
+        return generator;
     }
 
     /**
@@ -120,14 +120,14 @@ public final class FieldGenerators {
         FieldPrecondition precondition = preconditionFor(field, jsOutput);
         FieldParser parser = parserFor(field, jsOutput);
 
-        FieldGenerator handler = SingularFieldGenerator
+        FieldGenerator generator = SingularFieldGenerator
                 .newBuilder()
                 .setField(field)
                 .setPrecondition(precondition)
                 .setParser(parser)
                 .setJsOutput(jsOutput)
                 .build();
-        return handler;
+        return generator;
     }
 
     /**
