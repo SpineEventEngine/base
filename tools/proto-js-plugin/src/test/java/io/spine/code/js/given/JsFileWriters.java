@@ -27,7 +27,6 @@ import static io.spine.testing.Verify.assertContains;
 import static io.spine.testing.Verify.assertNotContains;
 import static java.nio.file.Files.exists;
 import static java.nio.file.Files.readAllBytes;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
