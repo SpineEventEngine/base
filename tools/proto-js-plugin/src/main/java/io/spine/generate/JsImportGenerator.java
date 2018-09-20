@@ -101,8 +101,8 @@ public final class JsImportGenerator extends JsCodeGenerator {
      *
      * <p>Named import is a statement of type {@code let a = require('./b')}.
      */
-    public void importLib(String libName, String importName) {
-        String namedImport = format(NAMED_IMPORT_FORMAT, importName, libName);
+    public void importLib(String libToImport, String importName) {
+        String namedImport = format(NAMED_IMPORT_FORMAT, importName, libToImport);
         jsOutput().addLine(namedImport);
     }
 

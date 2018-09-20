@@ -69,7 +69,7 @@ final class SingularFieldGenerator extends FieldGenerator {
     }
 
     /**
-     * Generates the code which exists all block entered when checking for undefined.
+     * Generates the code which exits all blocks entered when checking for undefined.
      *
      * <p>Returns the cursor to the {@code fromObject} method level.
      */

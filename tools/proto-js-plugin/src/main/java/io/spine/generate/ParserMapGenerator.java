@@ -64,6 +64,8 @@ public final class ParserMapGenerator extends JsCodeGenerator {
 
     /**
      * The exported map name.
+     *
+     * <p>Has {@code public} visibility so other generators can use the map in the created code.
      */
     public static final String MAP_NAME = "parsers";
 
