@@ -126,6 +126,9 @@ public final class FieldDescriptors {
     /**
      * Obtains the key descriptor for the {@code map} field.
      *
+     * <p>The descriptor type is {@link FieldDescriptor} because the map key technically is the
+     * field of the {@code ...Entry} {@code message} type.
+     *
      * @param fieldDescriptor
      *         the {@code map} field for which to obtain key descriptor
      * @return the key descriptor for the specified {@code map} field
@@ -143,6 +146,9 @@ public final class FieldDescriptors {
 
     /**
      * Obtains the value descriptor for the {@code map} field.
+     *
+     * <p>The descriptor type is {@link FieldDescriptor} because the map value technically is the
+     * field of the {@code ...Entry} {@code message} type.
      *
      * @param fieldDescriptor
      *         the {@code map} field for which to obtain value descriptor

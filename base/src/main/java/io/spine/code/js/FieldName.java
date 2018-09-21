@@ -29,8 +29,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * A name of the generated Protobuf message field in JavaScript.
  *
- * <p>Comparing to {@linkplain io.spine.code.proto.FieldName proto name}, all field names are
- * converted to {@code CamelCase}. So, for example {@code task_id} becomes {@code TaskId}.
+ * <p>Represents the {@linkplain io.spine.code.proto.FieldName proto name} converted to
+ * {@code CamelCase} for convenient usage in JavaScript.
  *
  * @author Dmytro Kuzmin
  */

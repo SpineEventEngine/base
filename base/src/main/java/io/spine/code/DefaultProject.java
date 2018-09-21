@@ -28,7 +28,7 @@ import static io.spine.code.proto.FileDescriptors.KNOWN_TYPES;
 /**
  * This class represents a default directory structure for a Spine-based project of any language.
  *
- * <p>The descendants of the class contain the language-specific directory structures.
+ * <p>The descendants of the class contain the language-specific project structures.
  *
  * <p>The {@code DefaultProject} helps resolving names of the directories and files under the
  * project directory. It is expected that for most projects, the default values of paths remain
@@ -37,7 +37,7 @@ import static io.spine.code.proto.FileDescriptors.KNOWN_TYPES;
  * @author Alexander Yevsyukov
  */
 @SuppressWarnings("AbstractClassWithoutAbstractMethods")
-// Class exists only to store common elements of subclasses.
+// Only stores common elements of subclasses.
 public abstract class DefaultProject extends AbstractDirectory {
 
     /**
@@ -95,7 +95,7 @@ public abstract class DefaultProject extends AbstractDirectory {
 
     protected static class SourceDir extends SourceCodeDirectory {
 
-        public SourceDir(AbstractDirectory parent, String name) {
+        protected SourceDir(AbstractDirectory parent, String name) {
             super(parent.getPath()
                         .resolve(name));
         }

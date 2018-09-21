@@ -32,7 +32,7 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
  * The JavaScript source file name.
  *
  * <p>When being created from {@link FileDescriptor}, the {@code .proto} extension is replaced by
- * {@code _pb.js} suffix, as per Protobuf standards.
+ * {@code _pb.js} suffix, as per Protobuf standard.
  *
  * <p>The {@code FileName} is always relative to the sources root, e.g. generated proto's root.
  *
@@ -68,11 +68,11 @@ public final class FileName extends AbstractFileName<FileName> {
     }
 
     /**
-     * Gets the JS proto definition name for the proto file.
+     * Gets the generated JavaScript file name for the proto file.
      *
      * @param descriptor
      *         the descriptor of the file
-     * @return the JS proto file name
+     * @return the generated JavaScript file name
      */
     public static FileName from(FileDescriptorProto descriptor) {
         checkNotNull(descriptor);

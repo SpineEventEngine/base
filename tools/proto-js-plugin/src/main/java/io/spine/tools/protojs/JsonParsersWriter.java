@@ -50,7 +50,7 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
  * <p>This class writes the JavaScript code necessary to parse the generated Protobuf messages from
  * JSON in JavaScript. More specifically, the class:
  * <ol>
- *     <li>Writes all known types to the {@code known_types.js} file in proto JS location root.
+ *     <li>Writes all known types to the {@code known_types.js} file in generated JS location root.
  *         The types are stored in a global {@code Map} in the
  *         "{@linkplain io.spine.type.TypeUrl type-url}-to-JS-type" format.
  *     <li>Writes all standard type parsers to the {@code known_type_parsers.js} file in Proto

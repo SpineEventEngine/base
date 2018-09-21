@@ -90,7 +90,7 @@ class JsonParsersWriterTest {
     }
 
     @Test
-    @DisplayName("write `fromJson` method into generated JS proto definitions")
+    @DisplayName("write `fromJson` method into generated JS files")
     void writeFromJsonMethod() throws IOException {
         writer.writeFromJsonMethod();
         FileSet fileSet = writer.fileSet();

@@ -37,7 +37,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * The generator of the {@code fromJson(json)} method for the given message type.
  *
  * <p>The class also generates the {@code fromObject(obj)} method which is used inside the
- * {@code fromJson} and can be called to parse the JS proto message from the JS object.
+ * {@code fromJson} and can be called to parse the generated JS message from the JS object.
  *
  * <p>The class is effectively {@code final} and is left non-{@code final} only for testing
  * purposes.
@@ -66,8 +66,8 @@ public class MessageGenerator extends JsCodeGenerator {
     /**
      * The name of the {@code fromObject} method return value.
      *
-     * <p>This value represents the JS Proto message whose fields are parsed and set from the JS
-     * object.
+     * <p>This value represents the generated JS message whose fields are parsed and set from the
+     * JS object.
      */
     public static final String MESSAGE = "msg";
 
@@ -124,7 +124,7 @@ public class MessageGenerator extends JsCodeGenerator {
 
     /**
      * Generates the {@code fromObject} method, going through the JS object fields iteratively,
-     * adding the code to parse them and assign to the JS Proto message.
+     * adding the code to parse them and assign to the JS message.
      *
      * <p>If the object is {@code null}, the returned value will be {@code null}.
      */
@@ -142,7 +142,7 @@ public class MessageGenerator extends JsCodeGenerator {
         String methodName = typeName.value() + '.' + FROM_JSON;
         jsOutput().enterMethod(methodName, FROM_JSON_ARG);
         jsOutput().declareVariable("jsObject", "JSON.parse(" + FROM_JSON_ARG + ')');
-        jsOutput().returnValue(typeName.value() + '.' + FROM_OBJECT + "(jsonObject)");
+        jsOutput().returnValue(typeName.value() + '.' + FROM_OBJECT + "(jsObject)");
         jsOutput().exitFunction();
     }
 

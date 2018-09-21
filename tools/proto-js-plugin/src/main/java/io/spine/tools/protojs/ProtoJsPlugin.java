@@ -39,7 +39,7 @@ import static io.spine.tools.gradle.TaskName.GENERATE_JSON_PARSERS;
  *
  * <p>To run the plugin, add the {@code "io.spine.tools:spine-proto-js-plugin:$spineBaseVersion"}
  * to the {@code classpath} configuration and add
- * {@code apply plugin: 'io.spine.tools.proto-js-plugin'} to the module generating JS protos.
+ * {@code apply plugin: 'io.spine.tools.proto-js-plugin'} to the module generating JS messages.
  *
  * <p>The tool will create the {@code fromJson(json)} method for every JS message definition found
  * among the {@linkplain io.spine.code.proto.FileSet known types}.
@@ -47,7 +47,7 @@ import static io.spine.tools.gradle.TaskName.GENERATE_JSON_PARSERS;
  * <p>This plugin currently relies on the set of the hard-coded Gradle settings which have to be
  * set to the required values in a project willing to use the plugin. These settings are:
  * <ol>
- *     <li>The JS proto definitions path set to {@code ${projectDir}/proto/${sourceSet}/js"};
+ *     <li>The generated JS messages path set to {@code ${projectDir}/proto/${sourceSet}/js"};
  *
  *     <li>descriptor set file stored under the
  *         {@code "${projectDir}/build/descriptors/${task.sourceSet.name}/known_types.desc"};
@@ -83,7 +83,7 @@ public class ProtoJsPlugin extends SpinePlugin {
      * Creates an {@code Action} to generate the {@code fromJson} method for both main and test
      * proto definitions.
      *
-     * <p>The paths to the JS proto definitions location, as well as to the descriptor set file,
+     * <p>The paths to the generated JS messages location, as well as to the descriptor set file,
      * are currently hard-coded.
      *
      * <p>See {@link DefaultJsProject} for the expected configuration.

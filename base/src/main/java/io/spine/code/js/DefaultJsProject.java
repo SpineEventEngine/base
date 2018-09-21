@@ -30,8 +30,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * A default directory structure for a Spine-based JavaScript project.
  *
- * <p>The project structure reflects the conventions currently used in Spine, and contains the
- * following directories under the project root:
+ * <p>The project structure reflects the conventions currently used in Spine, and contains at least
+ * the following directories:
  *
  * <ul>
  * <li>{@code build}
@@ -63,6 +63,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * </li>
  * </ul>
  *
+ * <p>Other directories (like source code directory) may also be present in the project, but their
+ * location is currently not standardized and thus is not described by this class.
+ *
  * @author Dmytro Kuzmin
  */
 public final class DefaultJsProject extends DefaultProject {
@@ -91,8 +94,7 @@ public final class DefaultJsProject extends DefaultProject {
 
     public static final class GeneratedProtoRoot extends SourceRoot {
 
-        @SuppressWarnings("DuplicateStringLiteralInspection")
-        // Same name in different context.
+        @SuppressWarnings("DuplicateStringLiteralInspection") // Same name in different context.
         private static final String DIR_NAME = "proto";
 
         private GeneratedProtoRoot(DefaultProject parent) {

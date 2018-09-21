@@ -52,7 +52,7 @@ class ProtoJsPluginTest {
     }
 
     @Test
-    @DisplayName("add task to generate code for parsing JS proto messages from JSON")
+    @DisplayName("add task to generate code for parsing generated JS messages from JSON")
     void addTaskToGenerateCode() {
         project.getPluginManager()
                .apply(ProtoJsPlugin.class);

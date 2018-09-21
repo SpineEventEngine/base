@@ -84,7 +84,7 @@ public final class KnownTypesGenerator extends JsCodeGenerator {
     }
 
     /**
-     * Generates import statements for all files declaring proto JS messages.
+     * Generates import statements for all files declaring generated JS messages.
      */
     @VisibleForTesting
     void generateImports() {
