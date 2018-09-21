@@ -78,32 +78,26 @@ abstract class Quoter extends Converter<String, String> {
         return result;
     }
 
-    @SuppressWarnings("NonSerializableFieldInSerializableClass")
-    private enum Singleton {
-        INSTANCE;
-
-        private final Quoter mapQuoter = new MapQuoter();
-        private final Quoter listQuoter = new ListQuoter();
-    }
-
     /**
      * Returns the {@code MapQuoter} instance.
      */
     static Quoter forMaps() {
-        return Singleton.INSTANCE.mapQuoter;
+        return MapQuoter.INSTANCE;
     }
 
     /**
      * Returns the {@code ListQuoter} instance.
      */
     static Quoter forLists() {
-        return Singleton.INSTANCE.listQuoter;
+        return ListQuoter.INSTANCE;
     }
 
     /**
      * The {@code Quoter} for the {@code Map}.
      */
     private static class MapQuoter extends Quoter {
+
+        private static final MapQuoter INSTANCE = new MapQuoter();
 
         private static final String QUOTE_PATTERN = "((?=[^\\\\])[^\\w])";
         private static final Pattern DOUBLE_BACKSLASH_PATTERN = compile(BACKSLASH);
@@ -129,6 +123,8 @@ abstract class Quoter extends Converter<String, String> {
      * The {@code Quoter} for the {@code List}.
      */
     private static class ListQuoter extends Quoter {
+
+        private static final Quoter INSTANCE = new ListQuoter();
 
         private static final String BACKSLASH_PATTERN_VALUE = "\\\\\\\\";
         private static final Pattern BACKSLASH_LIST_PATTERN = compile(BACKSLASH_PATTERN_VALUE);
