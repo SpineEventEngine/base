@@ -30,7 +30,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * A name of the generated Protobuf message field in JavaScript.
  *
  * <p>Represents the {@linkplain io.spine.code.proto.FieldName proto name} converted to
- * {@code CamelCase} for convenient usage in JavaScript.
+ * {@code CamelCase}.
  *
  * @author Dmytro Kuzmin
  */
