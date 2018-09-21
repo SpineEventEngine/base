@@ -109,7 +109,7 @@ public abstract class Annotator<O extends ExtendableMessage, D extends Generated
     public abstract void annotate();
 
     /**
-     * Annotates the Java sources generated from the specified file descriptor
+     * Annotates the Java sources generated from the specified file descriptor.
      */
     protected final void annotate(FileDescriptorProto fileDescriptor) {
         if (fileDescriptor.getOptions().getJavaMultipleFiles()) {
