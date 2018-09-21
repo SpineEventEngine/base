@@ -38,8 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * @author Dmytro Dashenkov
  */
 @DisplayName("Java SourceFile should")
-@SuppressWarnings("InnerClassMayBeStatic")
-        // Nested test suite.
+@SuppressWarnings("InnerClassMayBeStatic") // Nested test suite.
 class SourceFileTest {
 
     @DisplayName("compile path to class generated from message which")
@@ -85,8 +84,7 @@ class SourceFileTest {
     private static void checkPath(String expectedName, Descriptor descriptor) {
         DescriptorProto message = descriptor.toProto();
 
-        FileDescriptorProto file = descriptor.getFile()
-                                             .toProto();
+        FileDescriptorProto file = descriptor.getFile().toProto();
         SourceFile sourceFile = SourceFile.forMessage(message, file);
         assertEquals(expectedName, sourceFile.toString());
     }
