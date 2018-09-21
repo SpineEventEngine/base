@@ -95,7 +95,7 @@ public abstract class DefaultProject extends AbstractDirectory {
 
     protected static class SourceDir extends SourceCodeDirectory {
 
-        protected SourceDir(AbstractDirectory parent, String name) {
+        public SourceDir(AbstractDirectory parent, String name) {
             super(parent.getPath()
                         .resolve(name));
         }

@@ -31,12 +31,12 @@ import static com.google.protobuf.Descriptors.FieldDescriptor.Type.ENUM;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.MESSAGE;
 
 /**
- * A utility to work with Protobuf field {@linkplain FieldDescriptor descriptors}.
+ * A utility to work with Protobuf {@linkplain FieldDescriptor fields}.
  *
  * @author Dmytro Kuzmin
  */
 @SuppressWarnings("DuplicateStringLiteralInspection") // Duplication with unrelated modules.
-public final class FieldDescriptors {
+public final class Fields {
 
     /**
      * The suffix of the class representing the {@code message} type of the {@code map} field.
@@ -54,32 +54,32 @@ public final class FieldDescriptors {
     private static final String MAP_ENTRY_VALUE = "value";
 
     /** Prevents instantiation of this utility class. */
-    private FieldDescriptors() {
+    private Fields() {
     }
 
     /**
      * Checks if the given field is of {@code message} type.
      *
-     * @param fieldDescriptor
+     * @param field
      *         the descriptor of the field to check
      * @return {@code true} if the field is of {@code message} type, {@code false} otherwise
      */
-    public static boolean isMessage(FieldDescriptor fieldDescriptor) {
-        checkNotNull(fieldDescriptor);
-        boolean isMessage = fieldDescriptor.getType() == MESSAGE;
+    public static boolean isMessage(FieldDescriptor field) {
+        checkNotNull(field);
+        boolean isMessage = field.getType() == MESSAGE;
         return isMessage;
     }
 
     /**
      * Checks if the given field is of {@code enum} type.
      *
-     * @param fieldDescriptor
+     * @param field
      *         the descriptor of the field to check
      * @return {@code true} if the field is of {@code enum} type, {@code false} otherwise
      */
-    public static boolean isEnum(FieldDescriptor fieldDescriptor) {
-        checkNotNull(fieldDescriptor);
-        boolean isMessage = fieldDescriptor.getType() == ENUM;
+    public static boolean isEnum(FieldDescriptor field) {
+        checkNotNull(field);
+        boolean isMessage = field.getType() == ENUM;
         return isMessage;
     }
 
@@ -89,35 +89,35 @@ public final class FieldDescriptors {
      * <p>Although {@code map} fields technically count as {@code repeated}, this method will
      * return {@code false} for them.
      *
-     * @param fieldDescriptor
+     * @param field
      *         the descriptor of the field to check
      * @return {@code true} if the field is a {@code repeated} proto field, {@code false} otherwise
      */
-    public static boolean isRepeated(FieldDescriptor fieldDescriptor) {
-        checkNotNull(fieldDescriptor);
-        FieldDescriptorProto proto = fieldDescriptor.toProto();
-        boolean isRepeated = proto.getLabel() == LABEL_REPEATED && !isMap(fieldDescriptor);
+    public static boolean isRepeated(FieldDescriptor field) {
+        checkNotNull(field);
+        FieldDescriptorProto proto = field.toProto();
+        boolean isRepeated = proto.getLabel() == LABEL_REPEATED && !isMap(field);
         return isRepeated;
     }
 
     /**
      * Checks if the given field is a {@code map} proto field.
      *
-     * @param fieldDescriptor
+     * @param field
      *         the descriptor of the field to check
      * @return {@code true} if the field is a {@code map} proto field and {@code false} otherwise
      */
-    public static boolean isMap(FieldDescriptor fieldDescriptor) {
-        checkNotNull(fieldDescriptor);
-        FieldDescriptorProto proto = fieldDescriptor.toProto();
+    public static boolean isMap(FieldDescriptor field) {
+        checkNotNull(field);
+        FieldDescriptorProto proto = field.toProto();
         if (proto.getLabel() != LABEL_REPEATED) {
             return false;
         }
-        if (fieldDescriptor.getType() != MESSAGE) {
+        if (field.getType() != MESSAGE) {
             return false;
         }
-        Descriptor fieldType = fieldDescriptor.getMessageType();
-        String mapTypeName = FieldName.from(fieldDescriptor) + ENTRY_SUFFIX;
+        Descriptor fieldType = field.getMessageType();
+        String mapTypeName = FieldName.from(field) + ENTRY_SUFFIX;
         boolean isMap = fieldType.getName()
                                  .equals(mapTypeName);
         return isMap;
@@ -129,17 +129,17 @@ public final class FieldDescriptors {
      * <p>The descriptor type is {@link FieldDescriptor} because the map key technically is the
      * field of the {@code ...Entry} {@code message} type.
      *
-     * @param fieldDescriptor
+     * @param field
      *         the {@code map} field for which to obtain key descriptor
      * @return the key descriptor for the specified {@code map} field
      * @throws IllegalStateException
      *         if the specified field is not a {@code map} proto field
      */
-    public static FieldDescriptor keyDescriptor(FieldDescriptor fieldDescriptor) {
-        checkArgument(isMap(fieldDescriptor),
+    public static FieldDescriptor keyDescriptor(FieldDescriptor field) {
+        checkArgument(isMap(field),
                       "Trying to get key descriptor for the non-map field %s.",
-                      fieldDescriptor.getName());
-        FieldDescriptor descriptor = fieldDescriptor.getMessageType()
+                      field.getName());
+        FieldDescriptor descriptor = field.getMessageType()
                                                     .findFieldByName(MAP_ENTRY_KEY);
         return descriptor;
     }
@@ -150,17 +150,17 @@ public final class FieldDescriptors {
      * <p>The descriptor type is {@link FieldDescriptor} because the map value technically is the
      * field of the {@code ...Entry} {@code message} type.
      *
-     * @param fieldDescriptor
+     * @param field
      *         the {@code map} field for which to obtain value descriptor
      * @return the value descriptor for the specified {@code map} field
      * @throws IllegalStateException
      *         if the specified field is not a {@code map} proto field
      */
-    public static FieldDescriptor valueDescriptor(FieldDescriptor fieldDescriptor) {
-        checkArgument(isMap(fieldDescriptor),
+    public static FieldDescriptor valueDescriptor(FieldDescriptor field) {
+        checkArgument(isMap(field),
                       "Trying to get value descriptor for the non-map field %s.",
-                      fieldDescriptor.getName());
-        FieldDescriptor descriptor = fieldDescriptor.getMessageType()
+                      field.getName());
+        FieldDescriptor descriptor = field.getMessageType()
                                                     .findFieldByName(MAP_ENTRY_VALUE);
         return descriptor;
     }

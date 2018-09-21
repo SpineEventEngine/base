@@ -34,6 +34,8 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
  * <p>When being created from {@link FileDescriptor}, the {@code .proto} extension is replaced by
  * {@code _pb.js} suffix, as per Protobuf standard.
  *
+ * <p>For example, the {@code spine/options.proto} becomes {spine/options_pb.js}.
+ *
  * <p>The {@code FileName} is always relative to the sources root, e.g. generated proto's root.
  *
  * @author Dmytro Kuzmin
@@ -89,6 +91,10 @@ public final class FileName extends AbstractFileName<FileName> {
         return from(descriptor.toProto());
     }
 
+    /**
+     * Returns all {@code FileName} elements, i.e. the relative path to the file and file name
+     * itself.
+     */
     public String[] pathElements() {
         String[] result = value().split(PATH_SEPARATOR);
         return result;

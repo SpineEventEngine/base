@@ -28,8 +28,8 @@ import org.junit.jupiter.api.Test;
 
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.INT64;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.STRING;
-import static io.spine.code.js.FieldDescriptors.keyDescriptor;
-import static io.spine.code.js.FieldDescriptors.valueDescriptor;
+import static io.spine.code.js.Fields.keyDescriptor;
+import static io.spine.code.js.Fields.valueDescriptor;
 import static io.spine.code.js.given.Given.enumField;
 import static io.spine.code.js.given.Given.mapField;
 import static io.spine.code.js.given.Given.messageField;
@@ -45,11 +45,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @author Dmytro Kuzmin
  */
 @SuppressWarnings("InnerClassMayBeStatic") // JUnit nested classes cannot be static.
-@DisplayName("FieldDescriptors utility should")
-class FieldDescriptorsTest extends UtilityClassTest<FieldDescriptors> {
+@DisplayName("Fields utility should")
+class FieldsTest extends UtilityClassTest<Fields> {
 
-    FieldDescriptorsTest() {
-        super(FieldDescriptors.class);
+    FieldsTest() {
+        super(Fields.class);
     }
 
     @Nested
@@ -59,30 +59,30 @@ class FieldDescriptorsTest extends UtilityClassTest<FieldDescriptors> {
         @Test
         @DisplayName("is message")
         void isMessage() {
-            assertTrue(FieldDescriptors.isMessage(messageField()));
-            assertFalse(FieldDescriptors.isMessage(primitiveField()));
-            assertFalse(FieldDescriptors.isMessage(enumField()));
+            assertTrue(Fields.isMessage(messageField()));
+            assertFalse(Fields.isMessage(primitiveField()));
+            assertFalse(Fields.isMessage(enumField()));
         }
 
         @Test
         @DisplayName("is repeated")
         void isRepeated() {
-            assertTrue(FieldDescriptors.isRepeated(repeatedField()));
-            assertFalse(FieldDescriptors.isRepeated(singularField()));
+            assertTrue(Fields.isRepeated(repeatedField()));
+            assertFalse(Fields.isRepeated(singularField()));
         }
 
         @Test
         @DisplayName("is map")
         void isMap() {
-            assertTrue(FieldDescriptors.isMap(mapField()));
-            assertFalse(FieldDescriptors.isMap(singularField()));
+            assertTrue(Fields.isMap(mapField()));
+            assertFalse(Fields.isMap(singularField()));
         }
     }
 
     @Test
     @DisplayName("not mark map field as repeated")
     void notMarkMapAsRepeated() {
-        assertFalse(FieldDescriptors.isRepeated(mapField()));
+        assertFalse(Fields.isRepeated(mapField()));
     }
 
     @Test
