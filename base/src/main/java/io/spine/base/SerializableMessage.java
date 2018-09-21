@@ -22,6 +22,7 @@ package io.spine.base;
 
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Message;
+import io.spine.annotation.Internal;
 
 import java.io.Serializable;
 
@@ -34,6 +35,7 @@ import java.io.Serializable;
  *
  * @author Dmytro Dashenkov
  */
+@Internal
 @Immutable
 public interface SerializableMessage extends Message, Serializable {
 }
