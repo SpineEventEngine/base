@@ -51,7 +51,7 @@ class AlternativeFieldValidator {
     private static final String OPTION_REQUIRED_FIELD = "required_field";
 
     /**
-     * The separator of field name (or field combination) options
+     * The separator of field name (or field combination) options.
      */
     private static final char OPTION_SEPARATOR = '|';
 
@@ -145,10 +145,11 @@ class AlternativeFieldValidator {
     private boolean checkField(Message message, String fieldName) {
         FieldDescriptor field = messageDescriptor.findFieldByName(fieldName);
         if (field == null) {
-            ConstraintViolation notFound = ConstraintViolation.newBuilder()
-                                                              .setMsgFormat("Field %s not found")
-                                                              .addParam(fieldName)
-                                                              .build();
+            ConstraintViolation notFound = ConstraintViolation
+                    .newBuilder()
+                    .setMsgFormat("Field %s not found")
+                    .addParam(fieldName)
+                    .build();
             violations.add(notFound);
             return false;
         }
@@ -180,10 +181,8 @@ class AlternativeFieldValidator {
      */
     private static class RequiredFieldOption {
 
-        @Nullable
-        private final String fieldName;
-        @Nullable
-        private final ImmutableList<String> fieldNames;
+        private final @Nullable String fieldName;
+        private final @Nullable ImmutableList<String> fieldNames;
 
         private RequiredFieldOption(String fieldName) {
             this.fieldName = fieldName;

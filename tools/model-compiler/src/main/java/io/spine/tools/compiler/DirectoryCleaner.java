@@ -95,6 +95,11 @@ public class DirectoryCleaner extends SimpleFileVisitor<Path> {
         log().debug("Deleting file {}", file.toString());
     }
 
+    /**
+     * Log singleton impl.
+     * @see io.spine.tools.gradle.compiler.ModelCompilerPlugin.LoggerSingleton
+     */
+    @SuppressWarnings("ImmutableEnumChecker") // See Javadoc ref.
     private enum LogSingleton {
         INSTANCE;
 

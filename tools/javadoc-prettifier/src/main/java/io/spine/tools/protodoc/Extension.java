@@ -107,6 +107,8 @@ public class Extension {
         return LogSingleton.INSTANCE.value;
     }
 
+    @SuppressWarnings("ImmutableEnumChecker")
+        // See Javadoc for io.spine.tools.gradle.compiler.ModelCompilerPlugin.LoggerSingleton
     private enum LogSingleton {
         INSTANCE;
         @SuppressWarnings("NonSerializableFieldInSerializableClass")

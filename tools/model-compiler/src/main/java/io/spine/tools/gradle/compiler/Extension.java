@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -151,7 +151,7 @@ public class Extension {
      *
      * <p>Either this property OR {@code dirToClean} property is used.
      */
-    public List<String> dirsToClean = new LinkedList<>();
+    public List<String> dirsToClean = new ArrayList<>();
 
     /**
      * The severity of the Spine-custom Error Prone checks.
@@ -363,6 +363,11 @@ public class Extension {
         return LoggerSingleton.INSTANCE.logger;
     }
 
+    /**
+     * Log singleton impl.
+     * @see io.spine.tools.gradle.compiler.ModelCompilerPlugin.LoggerSingleton
+     */
+    @SuppressWarnings("ImmutableEnumChecker") // See Javadoc ref.
     private enum LoggerSingleton {
         INSTANCE;
         @SuppressWarnings("NonSerializableFieldInSerializableClass")

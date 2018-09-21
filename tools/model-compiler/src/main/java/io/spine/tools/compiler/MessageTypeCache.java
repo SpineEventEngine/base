@@ -141,6 +141,11 @@ public class MessageTypeCache {
         return LoggerSingleton.INSTANCE.logger;
     }
 
+    /**
+     * Log singleton impl.
+     * @see io.spine.tools.gradle.compiler.ModelCompilerPlugin.LoggerSingleton
+     */
+    @SuppressWarnings("ImmutableEnumChecker") // See Javadoc ref.
     private enum LoggerSingleton {
         INSTANCE;
         @SuppressWarnings("NonSerializableFieldInSerializableClass")
