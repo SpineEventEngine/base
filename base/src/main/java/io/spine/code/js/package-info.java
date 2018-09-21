@@ -19,7 +19,7 @@
  */
 
 /**
- * The tools for working with JavaScript code.
+ * The tools for generating and working with JavaScript code.
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault

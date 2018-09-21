@@ -34,9 +34,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  *
  * @author Dmytro Kuzmin
  */
-public final class JsFileWriters {
+public final class FileWriters {
 
-    private JsFileWriters() {
+    private FileWriters() {
     }
 
     public static void

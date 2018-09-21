@@ -207,7 +207,8 @@ public enum TaskName {
     COMPILE_PROTO_TO_JS("compileProtoToJs"),
 
     /**
-     * The name of the task, that generates JSON-parsing code for JavaScript proto definitions.
+     * The name of the task, that generates JSON-parsing code for the JavaScript messages compiled
+     * from Protobuf.
      *
      * <p>Handles both {@code main} and {@code test} classes and resources scope.
      */

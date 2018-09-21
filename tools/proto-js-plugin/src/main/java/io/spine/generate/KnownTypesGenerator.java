@@ -36,10 +36,10 @@ import java.util.Set;
 import static java.util.stream.Collectors.toSet;
 
 /**
- * The generator of the global known types JS {@code Map}.
+ * The generator of the global known types {@code Map}.
  *
  * <p>This class generates the map with all the known types written in the form of
- * "{@linkplain TypeUrl type-url}-to-JS-type", as well as the imports necessary to use JS types.
+ * "{@linkplain TypeUrl type-url}-to-JS-type", as well as the imports necessary to use the types.
  *
  * @author Dmytro Kuzmin
  */
@@ -73,7 +73,7 @@ public final class KnownTypesGenerator extends JsCodeGenerator {
      *
      * <p>The code includes:
      * <ol>
-     *     <li>Imports of all JS files declaring proto messages
+     *     <li>Imports of all JS files declaring generated messages
      *     <li>The global {@code Map} of known types
      * </ol>
      */
@@ -84,7 +84,7 @@ public final class KnownTypesGenerator extends JsCodeGenerator {
     }
 
     /**
-     * Generates import statements for all files declaring generated JS messages.
+     * Generates import statements for all files declaring generated messages.
      */
     @VisibleForTesting
     void generateImports() {
@@ -119,7 +119,7 @@ public final class KnownTypesGenerator extends JsCodeGenerator {
     }
 
     /**
-     * Stores known types to the declared JS {@code Map}.
+     * Stores known types to the declared {@code Map}.
      */
     private void storeKnownTypes() {
         Collection<FileDescriptor> files = fileSet.files();
@@ -131,7 +131,7 @@ public final class KnownTypesGenerator extends JsCodeGenerator {
     }
 
     /**
-     * Stores all message types declared in a file as known types JS {@code Map} entries.
+     * Stores all message types declared in a file as known types {@code Map} entries.
      */
     private void storeTypesFromFile(FileDescriptor file, boolean isLastFile) {
         List<Descriptor> messages = file.getMessageTypes();
@@ -143,8 +143,7 @@ public final class KnownTypesGenerator extends JsCodeGenerator {
     }
 
     /**
-     * Converts the {@code message} to the JS {@code Map} entry and adds it to the
-     * {@link #jsOutput}.
+     * Converts the {@code message} to the {@code Map} entry and adds it to the {@link #jsOutput}.
      */
     private void addMapEntry(Descriptor message, boolean isLastMessage) {
         String mapEntry = jsMapEntry(message);
@@ -152,7 +151,7 @@ public final class KnownTypesGenerator extends JsCodeGenerator {
     }
 
     /**
-     * Obtains type URL and JS type name of the {@code message} and creates a JS {@code Map} entry
+     * Obtains type URL and JS type name of the {@code message} and creates a {@code Map} entry
      * of the "{@linkplain TypeUrl type-url}-to-JS-type" format.
      */
     private static String jsMapEntry(Descriptor message) {

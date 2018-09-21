@@ -190,6 +190,7 @@ public final class TypeUrl implements Serializable {
                             .getExtension(OptionsProto.typeUrlPrefix);
         return result;
     }
+
     /**
      * Returns a message {@link Class} corresponding to the Protobuf type represented
      * by this type URL.

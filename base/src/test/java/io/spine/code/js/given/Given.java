@@ -62,6 +62,7 @@ public final class Given {
     private static FieldDescriptor fieldWithIndex(int index) {
         Descriptor fieldContainer = FieldContainer.getDescriptor();
         List<FieldDescriptor> fields = fieldContainer.getFields();
-        return fields.get(index);
+        FieldDescriptor field = fields.get(index);
+        return field;
     }
 }

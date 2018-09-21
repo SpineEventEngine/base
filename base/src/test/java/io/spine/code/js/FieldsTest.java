@@ -103,7 +103,7 @@ class FieldsTest extends UtilityClassTest<Fields> {
     // Calling methods to throw exception.
     @Nested
     @DisplayName("throw IAE if")
-    class ThrowIae {
+    class ThrowIaeIf {
 
         @Test
         @DisplayName("getting key descriptor from non-map field")

@@ -32,13 +32,13 @@ import java.nio.file.Path;
 import static com.google.common.io.Files.createTempDir;
 import static io.spine.code.js.FileName.of;
 import static io.spine.code.js.JsFileWriter.createFor;
-import static io.spine.code.js.given.JsFileWriters.assertFileContains;
-import static io.spine.code.js.given.JsFileWriters.assertFileNotContains;
+import static io.spine.code.js.given.FileWriters.assertFileContains;
+import static io.spine.code.js.given.FileWriters.assertFileNotContains;
 
 /**
  * @author Dmytro Kuzmin
  */
-@DisplayName("JsFiles utility should")
+@DisplayName("JsFileWriter should")
 class JsFileWriterTest {
 
     private static final FileName TASKS_JS = of("tasks.js");

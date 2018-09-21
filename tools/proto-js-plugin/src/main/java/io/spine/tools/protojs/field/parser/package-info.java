@@ -19,7 +19,7 @@
  */
 
 /**
- * The classes which generate the JS code related to the field value parsing.
+ * The classes which generate the JavaScript code related to parsing proto fields from JSON.
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault

@@ -41,7 +41,7 @@ import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
  *
  * @author Dmytro Kuzmin
  */
-public class JsFileWriter {
+public final class JsFileWriter {
 
     private final Path filePath;
 
@@ -56,8 +56,8 @@ public class JsFileWriter {
     }
 
     /**
-     * Creates a {@code JsFileWriter} which will operate on the file with specified name located in
-     * the specified directory.
+     * Creates a {@code JsFileWriter} which will operate on the file with the specified name
+     * located in the specified directory.
      */
     public static JsFileWriter createFor(Directory directory, CommonFileName commonFileName) {
         return createFor(directory, commonFileName.fileName());

@@ -11,7 +11,6 @@ option (type_url_prefix) = "type.spine.io";
 import "spine/protojs/task.proto";
 
 message FieldContainer {
-
     int64 primitive_field = 1;
     TaskType enum_field = 2;
     TaskId message_field = 3;

@@ -19,7 +19,7 @@
  */
 
 /**
- * The test environment classes for JavaScript-code related tools.
+ * The test environment classes for JavaScript code related tools.
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault

@@ -50,11 +50,11 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
  * <p>This class writes the JavaScript code necessary to parse the generated Protobuf messages from
  * JSON in JavaScript. More specifically, the class:
  * <ol>
- *     <li>Writes all known types to the {@code known_types.js} file in generated JS location root.
- *         The types are stored in a global {@code Map} in the
+ *     <li>Writes all known types to the {@code known_types.js} file in generated messages location
+ *         root. The types are stored in a global {@code Map} in the
  *         "{@linkplain io.spine.type.TypeUrl type-url}-to-JS-type" format.
- *     <li>Writes all standard type parsers to the {@code known_type_parsers.js} file in Proto
- *         JS location root. The parsers are stored in a global {@code Map} in the
+ *     <li>Writes all standard type parsers to the {@code known_type_parsers.js} file in generated
+ *         messages location root. The parsers are stored in a global {@code Map} in the
  *         "type-url-to-parser" format.
  *     <li>Appends {@code fromJson(json)} method to all files generated from Protobuf, one for each
  *         message stored in a file.
@@ -70,17 +70,17 @@ final class JsonParsersWriter {
     private static final String PARSERS_RESOURCE =
             "io/spine/tools/protojs/knowntypes/known_type_parsers";
 
-    private final Directory generatedProtoDir;
+    private final Directory generatedRoot;
     private final FileSet fileSet;
 
-    private JsonParsersWriter(Directory generatedProtoDir, FileSet fileSet) {
-        this.generatedProtoDir = generatedProtoDir;
+    private JsonParsersWriter(Directory generatedRoot, FileSet fileSet) {
+        this.generatedRoot = generatedRoot;
         this.fileSet = fileSet;
     }
 
-    static JsonParsersWriter createFor(Directory generatedProtoDir, File descriptorSetFile) {
+    static JsonParsersWriter createFor(Directory generatedRoot, File descriptorSetFile) {
         FileSet fileSet = parseOrEmpty(descriptorSetFile);
-        return new JsonParsersWriter(generatedProtoDir, fileSet);
+        return new JsonParsersWriter(generatedRoot, fileSet);
     }
 
     /**
@@ -120,7 +120,7 @@ final class JsonParsersWriter {
         JsOutput jsOutput = new JsOutput();
         KnownTypesGenerator generator = new KnownTypesGenerator(fileSet, jsOutput);
         generator.generate();
-        JsFileWriter writer = JsFileWriter.createFor(generatedProtoDir, KNOWN_TYPES);
+        JsFileWriter writer = JsFileWriter.createFor(generatedRoot, KNOWN_TYPES);
         writer.write(jsOutput);
     }
 
@@ -138,7 +138,7 @@ final class JsonParsersWriter {
         JsOutput jsOutput = new JsOutput();
         ParserMapGenerator generator = new ParserMapGenerator(jsOutput);
         generator.generate();
-        JsFileWriter writer = JsFileWriter.createFor(generatedProtoDir, KNOWN_TYPE_PARSERS);
+        JsFileWriter writer = JsFileWriter.createFor(generatedRoot, KNOWN_TYPE_PARSERS);
         writer.append(jsOutput);
     }
 
@@ -152,7 +152,7 @@ final class JsonParsersWriter {
         try (InputStream in = JsonParsersWriter.class
                 .getClassLoader()
                 .getResourceAsStream(PARSERS_RESOURCE)) {
-            Path path = generatedProtoDir.resolve(KNOWN_TYPE_PARSERS);
+            Path path = generatedRoot.resolve(KNOWN_TYPE_PARSERS);
             Files.copy(in, path, REPLACE_EXISTING);
         } catch (IOException e) {
             throw new IllegalStateException(e);
@@ -179,10 +179,13 @@ final class JsonParsersWriter {
         JsOutput jsOutput = new JsOutput();
         FileGenerator generator = new FileGenerator(file, jsOutput);
         generator.generate();
-        JsFileWriter writer = JsFileWriter.createFor(generatedProtoDir, file);
+        JsFileWriter writer = JsFileWriter.createFor(generatedRoot, file);
         writer.append(jsOutput);
     }
 
+    /**
+     * Checks if the writer should skip generating JSON-parsing code for messages in a file.
+     */
     @VisibleForTesting
     static boolean shouldSkip(FileDescriptor file) {
         FileName fileName = FileName.from(file);

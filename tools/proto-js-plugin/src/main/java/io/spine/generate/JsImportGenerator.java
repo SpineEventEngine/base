@@ -156,8 +156,8 @@ public final class JsImportGenerator extends JsCodeGenerator {
      * <ol>
      *     <li>If the {@link #fileName} is specified, the {@code JsImportGenerator} will generate
      *         all its imports relative to the specified file.
-     *     <li>If the {@link #imports} then the {@code JsImportGenerator} will be able to generate
-     *         all these imports in a batch via the {@link #generate()} method.
+     *     <li>If the {@link #imports} are specified then the {@code JsImportGenerator} will be
+     *         able to generate all specified imports in a batch via the {@link #generate()} method.
      * </ol>
      */
     public static class Builder {

@@ -33,7 +33,7 @@ class CodeLineTest {
 
     @Test
     @DisplayName("create indent for code based on depth and indentation")
-    void doIndent() {
+    void createIndent() {
         int depth = 2;
         CodeLine codeLine = new CodeLine("content", depth);
         int spacesPerDepth = 2;

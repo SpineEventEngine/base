@@ -72,6 +72,11 @@ public final class FileSet {
         return new FileSet();
     }
 
+    /**
+     * Creates a new file set by parsing the passed file if it exists.
+     *
+     * <p>If the file does not exist, returns empty set.
+     */
     public static FileSet parseOrEmpty(File descriptorSet) {
         FileSet result = descriptorSet.exists()
                 ? parse(descriptorSet)
