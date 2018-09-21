@@ -35,5 +35,5 @@ import java.io.Serializable;
  * @author Dmytro Dashenkov
  */
 @Immutable
-interface SerializableMessage extends Message, Serializable {
+public interface SerializableMessage extends Message, Serializable {
 }
