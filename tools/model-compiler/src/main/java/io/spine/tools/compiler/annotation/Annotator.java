@@ -37,7 +37,6 @@ import org.jboss.forge.roaster.model.source.JavaSource;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -210,9 +209,7 @@ public abstract class Annotator<O extends ExtendableMessage, D extends Generated
         sourceVisitor.apply(javaSource);
         String resultingSource = javaSource.toString();
         try {
-            Files.write(absoluteSourcePath,
-                        resultingSource.getBytes(),
-                        TRUNCATE_EXISTING);
+            Files.write(absoluteSourcePath, ImmutableList.of(resultingSource), TRUNCATE_EXISTING);
         } catch (IOException e) {
             throw illegalStateWithCauseOf(e);
         }
