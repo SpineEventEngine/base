@@ -145,12 +145,9 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
     @Override
     public <V> void validate(FieldDescriptor descriptor, V fieldValue, String fieldName)
             throws ValidationException {
-        Object valueToValidate;
-        if (fieldValue instanceof ProtocolMessageEnum) {
-            valueToValidate = ((ProtocolMessageEnum) fieldValue).getValueDescriptor();
-        } else {
-            valueToValidate = fieldValue;
-        }
+        Object valueToValidate = fieldValue instanceof ProtocolMessageEnum
+                                 ? ((ProtocolMessageEnum) fieldValue).getValueDescriptor()
+                                 : fieldValue;
         FieldContext fieldContext = FieldContext.create(descriptor);
         FieldValidator<?> validator = create(fieldContext, valueToValidate);
         List<ConstraintViolation> violations = validator.validate();
@@ -165,7 +162,6 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
     @Override
     public boolean isDirty() {
         T message = internalBuild();
-
         boolean result = originalState != null
                          ? !originalState.equals(message)
                          : Validate.isNotDefault(message);
