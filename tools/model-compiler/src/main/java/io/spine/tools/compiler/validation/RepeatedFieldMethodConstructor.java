@@ -30,6 +30,7 @@ import com.squareup.javapoet.TypeName;
 import io.spine.base.ConversionException;
 import io.spine.code.proto.FieldName;
 import io.spine.code.proto.ScalarType;
+import io.spine.logging.Logging;
 import io.spine.tools.compiler.MessageTypeCache;
 import io.spine.tools.compiler.fieldtype.FieldType;
 import io.spine.validate.ValidationException;
@@ -66,7 +67,7 @@ import static java.lang.String.format;
 @SuppressWarnings("DuplicateStringLiteralInspection")
 // It cannot be used as the constant across the project.
 // Although it has the equivalent literal they have the different meaning.
-class RepeatedFieldMethodConstructor implements MethodConstructor {
+class RepeatedFieldMethodConstructor implements MethodConstructor, Logging {
 
     private static final String VALUE = "value";
     private static final String INDEX = "index";
@@ -135,12 +136,12 @@ class RepeatedFieldMethodConstructor implements MethodConstructor {
                                                                      listElementClassName);
         String returnStatement = format("return %s.get%sList()",
                                         getMessageBuilder(), methodNamePart);
-        MethodSpec methodSpec =
-                MethodSpec.methodBuilder(methodName)
-                          .addModifiers(Modifier.PUBLIC)
-                          .returns(returnType)
-                          .addStatement(returnStatement)
-                          .build();
+        MethodSpec methodSpec = MethodSpec
+                .methodBuilder(methodName)
+                .addModifiers(Modifier.PUBLIC)
+                .returns(returnType)
+                .addStatement(returnStatement)
+                .build();
 
         log().debug("The getter construction for the repeated field is finished.");
         return methodSpec;
@@ -203,22 +204,23 @@ class RepeatedFieldMethodConstructor implements MethodConstructor {
         String addValueStatement = getMessageBuilder() + '.'
                 + ADD_PREFIX + methodNamePart + "(convertedValue)";
         String convertStatement = createValidateStatement(CONVERTED_VALUE);
-        MethodSpec result = MethodSpec.methodBuilder(methodName)
-                                      .addAnnotation(canIgnoreReturnValue())
-                                      .returns(builderClassName)
-                                      .addModifiers(Modifier.PUBLIC)
-                                      .addParameter(String.class, VALUE)
-                                      .addException(ValidationException.class)
-                                      .addException(ConversionException.class)
-                                      .addStatement(createConvertSingularValue(VALUE),
-                                                    listElementClassName,
-                                                    listElementClassName)
-                                      .addStatement(descriptorCodeLine, FieldDescriptor.class)
-                                      .addStatement(convertStatement,
-                                                    fieldDescriptor.getName())
-                                      .addStatement(addValueStatement)
-                                      .addStatement(returnThis())
-                                      .build();
+        MethodSpec result = MethodSpec
+                .methodBuilder(methodName)
+                .addAnnotation(canIgnoreReturnValue())
+                .returns(builderClassName)
+                .addModifiers(Modifier.PUBLIC)
+                .addParameter(String.class, VALUE)
+                .addException(ValidationException.class)
+                .addException(ConversionException.class)
+                .addStatement(createConvertSingularValue(VALUE),
+                              listElementClassName,
+                              listElementClassName)
+                .addStatement(descriptorCodeLine, FieldDescriptor.class)
+                .addStatement(convertStatement,
+                              fieldDescriptor.getName())
+                .addStatement(addValueStatement)
+                .addStatement(returnThis())
+                .build();
         return result;
     }
 
@@ -240,23 +242,24 @@ class RepeatedFieldMethodConstructor implements MethodConstructor {
                 format("%s.%s%s(%s, convertedValue)",
                        getMessageBuilder(), realBuilderCallPrefix, methodNamePart, INDEX);
         String convertStatement = createValidateStatement(CONVERTED_VALUE);
-        MethodSpec result = MethodSpec.methodBuilder(methodName)
-                                      .addAnnotation(canIgnoreReturnValue())
-                                      .returns(builderClassName)
-                                      .addModifiers(Modifier.PUBLIC)
-                                      .addParameter(TypeName.INT, INDEX)
-                                      .addParameter(String.class, VALUE)
-                                      .addException(ValidationException.class)
-                                      .addException(ConversionException.class)
-                                      .addStatement(createConvertSingularValue(VALUE),
-                                                    listElementClassName,
-                                                    listElementClassName)
-                                      .addStatement(descriptorCodeLine, FieldDescriptor.class)
-                                      .addStatement(convertStatement,
-                                                    fieldDescriptor.getName())
-                                      .addStatement(modificationStatement)
-                                      .addStatement(returnThis())
-                                      .build();
+        MethodSpec result = MethodSpec
+                .methodBuilder(methodName)
+                .addAnnotation(canIgnoreReturnValue())
+                .returns(builderClassName)
+                .addModifiers(Modifier.PUBLIC)
+                .addParameter(TypeName.INT, INDEX)
+                .addParameter(String.class, VALUE)
+                .addException(ValidationException.class)
+                .addException(ConversionException.class)
+                .addStatement(createConvertSingularValue(VALUE),
+                              listElementClassName,
+                              listElementClassName)
+                .addStatement(descriptorCodeLine, FieldDescriptor.class)
+                .addStatement(convertStatement,
+                              fieldDescriptor.getName())
+                .addStatement(modificationStatement)
+                .addStatement(returnThis())
+                .build();
         return result;
     }
 
@@ -266,23 +269,24 @@ class RepeatedFieldMethodConstructor implements MethodConstructor {
                                                               builderGenericClassName);
         String addAllValues = getMessageBuilder()
                 + format(".addAll%s(%s)", methodNamePart, CONVERTED_VALUE);
-        MethodSpec result = MethodSpec.methodBuilder(methodName)
-                                      .addAnnotation(canIgnoreReturnValue())
-                                      .returns(builderClassName)
-                                      .addModifiers(Modifier.PUBLIC)
-                                      .addParameter(String.class, VALUE)
-                                      .addException(ValidationException.class)
-                                      .addException(ConversionException.class)
-                                      .addStatement(createGetConvertedCollectionValue(),
-                                                    List.class,
-                                                    listElementClassName,
-                                                    listElementClassName)
-                                      .addStatement(descriptorCodeLine, FieldDescriptor.class)
-                                      .addStatement(createValidateStatement(CONVERTED_VALUE),
-                                                    fieldDescriptor.getName())
-                                      .addStatement(addAllValues)
-                                      .addStatement(returnThis())
-                                      .build();
+        MethodSpec result = MethodSpec
+                .methodBuilder(methodName)
+                .addAnnotation(canIgnoreReturnValue())
+                .returns(builderClassName)
+                .addModifiers(Modifier.PUBLIC)
+                .addParameter(String.class, VALUE)
+                .addException(ValidationException.class)
+                .addException(ConversionException.class)
+                .addStatement(createGetConvertedCollectionValue(),
+                              List.class,
+                              listElementClassName,
+                              listElementClassName)
+                .addStatement(descriptorCodeLine, FieldDescriptor.class)
+                .addStatement(createValidateStatement(CONVERTED_VALUE),
+                              fieldDescriptor.getName())
+                .addStatement(addAllValues)
+                .addStatement(returnThis())
+                .build();
         return result;
     }
 
@@ -296,19 +300,20 @@ class RepeatedFieldMethodConstructor implements MethodConstructor {
         String fieldName = fieldDescriptor.getName();
         String addAllValues = getMessageBuilder()
                 + format(".addAll%s(%s)", methodNamePart, VALUE);
-        MethodSpec result = MethodSpec.methodBuilder(methodName)
-                                      .addAnnotation(canIgnoreReturnValue())
-                                      .returns(builderClassName)
-                                      .addModifiers(Modifier.PUBLIC)
-                                      .addParameter(parameter, VALUE)
-                                      .addException(ValidationException.class)
-                                      .addStatement(descriptorCodeLine,
-                                                    FieldDescriptor.class)
-                                      .addStatement(createValidateStatement(VALUE),
-                                                    fieldName)
-                                      .addStatement(addAllValues)
-                                      .addStatement(returnThis())
-                                      .build();
+        MethodSpec result = MethodSpec
+                .methodBuilder(methodName)
+                .addAnnotation(canIgnoreReturnValue())
+                .returns(builderClassName)
+                .addModifiers(Modifier.PUBLIC)
+                .addParameter(parameter, VALUE)
+                .addException(ValidationException.class)
+                .addStatement(descriptorCodeLine,
+                              FieldDescriptor.class)
+                .addStatement(createValidateStatement(VALUE),
+                              fieldName)
+                .addStatement(addAllValues)
+                .addStatement(returnThis())
+                .build();
         return result;
     }
 
@@ -318,18 +323,19 @@ class RepeatedFieldMethodConstructor implements MethodConstructor {
                                                               builderGenericClassName);
         String addValue = format("%s.%s%s(%s)",
                                  getMessageBuilder(), ADD_PREFIX, methodNamePart, VALUE);
-        MethodSpec result = MethodSpec.methodBuilder(methodName)
-                                      .addAnnotation(canIgnoreReturnValue())
-                                      .returns(builderClassName)
-                                      .addModifiers(Modifier.PUBLIC)
-                                      .addParameter(listElementClassName, VALUE)
-                                      .addException(ValidationException.class)
-                                      .addStatement(descriptorCodeLine, FieldDescriptor.class)
-                                      .addStatement(createValidateStatement(VALUE),
-                                                    javaFieldName)
-                                      .addStatement(addValue)
-                                      .addStatement(returnThis())
-                                      .build();
+        MethodSpec result = MethodSpec
+                .methodBuilder(methodName)
+                .addAnnotation(canIgnoreReturnValue())
+                .returns(builderClassName)
+                .addModifiers(Modifier.PUBLIC)
+                .addParameter(listElementClassName, VALUE)
+                .addException(ValidationException.class)
+                .addStatement(descriptorCodeLine, FieldDescriptor.class)
+                .addStatement(createValidateStatement(VALUE),
+                              javaFieldName)
+                .addStatement(addValue)
+                .addStatement(returnThis())
+                .build();
         return result;
     }
 
@@ -345,14 +351,15 @@ class RepeatedFieldMethodConstructor implements MethodConstructor {
         String methodName = removePrefix() + methodNamePart;
         String addValue = format("%s.%s%s(%s)", getMessageBuilder(),
                                  removePrefix(), methodNamePart, INDEX);
-        MethodSpec result = MethodSpec.methodBuilder(methodName)
-                                      .addAnnotation(canIgnoreReturnValue())
-                                      .returns(builderClassName)
-                                      .addModifiers(Modifier.PUBLIC)
-                                      .addParameter(TypeName.INT, INDEX)
-                                      .addStatement(addValue)
-                                      .addStatement(returnThis())
-                                      .build();
+        MethodSpec result = MethodSpec
+                .methodBuilder(methodName)
+                .addAnnotation(canIgnoreReturnValue())
+                .returns(builderClassName)
+                .addModifiers(Modifier.PUBLIC)
+                .addParameter(TypeName.INT, INDEX)
+                .addStatement(addValue)
+                .addStatement(returnThis())
+                .build();
         return result;
     }
 
@@ -362,31 +369,33 @@ class RepeatedFieldMethodConstructor implements MethodConstructor {
                                                               builderGenericClassName);
         String modificationStatement = format("%s.%s%s(%s, %s)", getMessageBuilder(),
                                               methodPrefix, methodNamePart, INDEX, VALUE);
-        MethodSpec result = MethodSpec.methodBuilder(methodName)
-                                      .addAnnotation(canIgnoreReturnValue())
-                                      .returns(builderClassName)
-                                      .addModifiers(Modifier.PUBLIC)
-                                      .addParameter(TypeName.INT, INDEX)
-                                      .addParameter(listElementClassName, VALUE)
-                                      .addException(ValidationException.class)
-                                      .addStatement(descriptorCodeLine, FieldDescriptor.class)
-                                      .addStatement(createValidateStatement(VALUE),
-                                                    javaFieldName)
-                                      .addStatement(modificationStatement)
-                                      .addStatement(returnThis())
-                                      .build();
+        MethodSpec result = MethodSpec
+                .methodBuilder(methodName)
+                .addAnnotation(canIgnoreReturnValue())
+                .returns(builderClassName)
+                .addModifiers(Modifier.PUBLIC)
+                .addParameter(TypeName.INT, INDEX)
+                .addParameter(listElementClassName, VALUE)
+                .addException(ValidationException.class)
+                .addStatement(descriptorCodeLine, FieldDescriptor.class)
+                .addStatement(createValidateStatement(VALUE),
+                              javaFieldName)
+                .addStatement(modificationStatement)
+                .addStatement(returnThis())
+                .build();
         return result;
     }
 
     private MethodSpec createClearMethod() {
         String clearField = getMessageBuilder() + clearProperty(methodNamePart);
-        MethodSpec result = MethodSpec.methodBuilder(clearPrefix() + methodNamePart)
-                                      .addAnnotation(canIgnoreReturnValue())
-                                      .addModifiers(Modifier.PUBLIC)
-                                      .returns(builderClassName)
-                                      .addStatement(clearField)
-                                      .addStatement(returnThis())
-                                      .build();
+        MethodSpec result = MethodSpec
+                .methodBuilder(clearPrefix() + methodNamePart)
+                .addAnnotation(canIgnoreReturnValue())
+                .addModifiers(Modifier.PUBLIC)
+                .returns(builderClassName)
+                .addStatement(clearField)
+                .addStatement(returnThis())
+                .build();
         return result;
     }
 
@@ -415,16 +424,5 @@ class RepeatedFieldMethodConstructor implements MethodConstructor {
             checkFields();
             return new RepeatedFieldMethodConstructor(this);
         }
-    }
-
-    private enum LogSingleton {
-        INSTANCE;
-
-        @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = LoggerFactory.getLogger(RepeatedFieldMethodConstructor.class);
-    }
-
-    private static Logger log() {
-        return LogSingleton.INSTANCE.value;
     }
 }

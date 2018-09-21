@@ -106,7 +106,8 @@ public class ReflectionsPlugin extends SpinePlugin {
 
     private static Set<URL> toUrls(File outputDir) {
         // because they are file URIs, they will not cause any network-related issues.
-        @SuppressWarnings("CollectionContainsUrl") Set<URL> urls = new HashSet<>();
+        @SuppressWarnings({"CollectionContainsUrl", "URLEqualsHashCode"})
+        Set<URL> urls = new HashSet<>();
         try {
             urls.add(outputDir.toURI()
                               .toURL());

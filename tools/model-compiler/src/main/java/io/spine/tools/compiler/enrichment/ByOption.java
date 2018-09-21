@@ -23,6 +23,7 @@ package io.spine.tools.compiler.enrichment;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
+import io.spine.logging.Logging;
 import io.spine.option.Options;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +43,7 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  * @author Alexander Litus
  * @author Alexander Yevsyukov
  */
-class ByOption {
+class ByOption implements Logging {
 
     private final String packagePrefix;
     private final DescriptorProto message;
@@ -136,16 +137,5 @@ class ByOption {
                         "with `enrichment_for` annotation.",
                 msgName
         );
-    }
-
-    private enum LogSingleton {
-        INSTANCE;
-
-        @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = LoggerFactory.getLogger(ByOption.class);
-    }
-
-    private static Logger log() {
-        return LogSingleton.INSTANCE.value;
     }
 }

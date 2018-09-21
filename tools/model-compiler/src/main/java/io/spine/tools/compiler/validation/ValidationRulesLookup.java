@@ -24,11 +24,11 @@ import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.code.properties.PropertiesWriter;
 import io.spine.code.proto.MessageDeclaration;
+import io.spine.logging.Logging;
 import io.spine.option.Options;
 import io.spine.type.TypeName;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.List;
@@ -82,7 +82,8 @@ public final class ValidationRulesLookup {
             String ruleTargets =
                     Options.option(declaration.getMessage(), validationOf)
                            .orElseThrow(() -> newIllegalArgumentException(declaration.getTypeName()
-                                                                                     .value()));
+                                                                                     .value())
+                           );
             propsMap.put(typeName.value(), ruleTargets);
         }
 
@@ -103,14 +104,7 @@ public final class ValidationRulesLookup {
         }
     }
 
-    private enum LogSingleton {
-        INSTANCE;
-
-        @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = LoggerFactory.getLogger(ValidationRulesLookup.class);
-    }
-
     private static Logger log() {
-        return LogSingleton.INSTANCE.value;
+        return Logging.get(ValidationRulesLookup.class);
     }
 }
