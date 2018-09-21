@@ -103,7 +103,7 @@ public class PropertiesWriter {
         }
     }
 
-    private static void prepareTargetFile(Properties props, File file) {
+    private void prepareTargetFile(Properties props, File file) {
         log().debug("Preparing the target file");
         if (file.exists()) {
             try {
@@ -127,13 +127,7 @@ public class PropertiesWriter {
         }
     }
 
-    private static Logger log() {
-        return LogSingleton.INSTANCE.value;
-    }
-
-    private enum LogSingleton {
-        INSTANCE;
-        @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = LoggerFactory.getLogger(PropertiesWriter.class);
+    private Logger log() {
+        return LoggerFactory.getLogger(getClass().getName());
     }
 }
