@@ -117,11 +117,8 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
      * @param keyClass   the {@code Class} of the key
      * @param valueClass the {@code Class} of the value
      * @return the converted value
-     * @throws ConversionException if passed value cannot be converted
      */
-    public <K, V> Map<K, V> convertToMap(String value,
-                                         Class<K> keyClass,
-                                         Class<V> valueClass) throws ConversionException {
+    public <K, V> Map<K, V> convertToMap(String value, Class<K> keyClass, Class<V> valueClass) {
         Map<K, V> result = Stringifiers.newForMapOf(keyClass, valueClass)
                                        .reverse()
                                        .convert(value);
@@ -137,10 +134,8 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
      * @param value      the value to convert
      * @param valueClass the {@code Class} of the list values
      * @return the converted value
-     * @throws ConversionException if passed value cannot be converted
      */
-    public <V> List<V> convertToList(String value,
-                                     Class<V> valueClass) throws ConversionException {
+    public <V> List<V> convertToList(String value, Class<V> valueClass) {
         List<V> result = Stringifiers.newForListOf(valueClass)
                                      .reverse()
                                      .convert(value);

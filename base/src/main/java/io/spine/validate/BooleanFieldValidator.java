@@ -37,7 +37,7 @@ class BooleanFieldValidator extends FieldValidator<Boolean> {
      * @param fieldValues  values to validate
      */
     BooleanFieldValidator(FieldContext fieldContext, Object fieldValues) {
-        super(fieldContext, FieldValidator.<Boolean>toValueList(fieldValues), false);
+        super(fieldContext, FieldValidator.toValueList(fieldValues), false);
     }
 
     private static Logger log() {

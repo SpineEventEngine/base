@@ -38,7 +38,7 @@ class ByteStringFieldValidator extends FieldValidator<ByteString> {
      * @param fieldValues  values to validate
      */
     ByteStringFieldValidator(FieldContext fieldContext, Object fieldValues) {
-        super(fieldContext, FieldValidator.<ByteString>toValueList(fieldValues), false);
+        super(fieldContext, FieldValidator.toValueList(fieldValues), false);
     }
 
     @Override

@@ -44,6 +44,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.copyOf;
 import static com.google.common.collect.ImmutableList.of;
 import static com.google.common.collect.Lists.newLinkedList;
+import static io.spine.validate.rules.ValidationRuleOptions.getOptionValue;
 
 /**
  * Validates messages according to Spine custom protobuf options and
@@ -194,11 +195,11 @@ abstract class FieldValidator<V> {
      */
     protected void validateEntityId() {
         if (fieldDescriptor.isRepeated()) {
-            ConstraintViolation violation =
-                    ConstraintViolation.newBuilder()
-                                       .setMsgFormat(ENTITY_ID_REPEATED_FIELD_MSG)
-                                       .setFieldPath(getFieldPath())
-                                       .build();
+            ConstraintViolation violation = ConstraintViolation
+                    .newBuilder()
+                    .setMsgFormat(ENTITY_ID_REPEATED_FIELD_MSG)
+                    .setFieldPath(getFieldPath())
+                    .build();
             addViolation(violation);
             return;
         }
@@ -260,10 +261,11 @@ abstract class FieldValidator<V> {
 
     private ConstraintViolation newViolation(IfMissingOption option) {
         String msg = getErrorMsgFormat(option, option.getMsgFormat());
-        ConstraintViolation violation = ConstraintViolation.newBuilder()
-                                                           .setMsgFormat(msg)
-                                                           .setFieldPath(getFieldPath())
-                                                           .build();
+        ConstraintViolation violation = ConstraintViolation
+                .newBuilder()
+                .setMsgFormat(msg)
+                .setFieldPath(getFieldPath())
+                .build();
         return violation;
     }
 
@@ -288,8 +290,7 @@ abstract class FieldValidator<V> {
      * @param <T>       the type of the option
      */
     protected final <T> T getFieldOption(GeneratedExtension<FieldOptions, T> extension) {
-        Optional<T> externalOption = ValidationRuleOptions.getOptionValue(fieldContext,
-                                                                          extension);
+        Optional<T> externalOption = getOptionValue(fieldContext, extension);
         if (externalOption.isPresent()) {
             return externalOption.get();
         }
