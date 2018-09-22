@@ -48,6 +48,7 @@ class LoggerClassValue extends ClassValue<Logger> {
     private final @MonotonicNonNull SubstituteLoggerFactory substFactory;
 
     private LoggerClassValue() {
+        super();
         this.substFactory = Environment.getInstance()
                                        .isTests()
                             ? new SubstituteLoggerFactory()
