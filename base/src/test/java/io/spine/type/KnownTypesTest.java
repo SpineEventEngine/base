@@ -41,7 +41,7 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
 
-import static io.spine.testing.Verify.assertSize;
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -49,6 +49,8 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
+ * Tests {@link io.spine.type.KnownTypes}.
+ *
  * @author Alexander Litus
  * @author Alexander Yevsyukov
  */
@@ -119,7 +121,8 @@ class KnownTypesTest {
         String packageName = "spine.test.types";
 
         Set<TypeUrl> packageTypes = knownTypes.getAllFromPackage(packageName);
-        assertSize(3, packageTypes);
+
+        assertThat(packageTypes).hasSize(3);
         assertTrue(packageTypes.containsAll(Arrays.asList(taskId, taskName, task)));
     }
 
