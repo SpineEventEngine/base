@@ -21,9 +21,11 @@
 package io.spine.logging;
 
 import io.spine.base.Environment;
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.helpers.SubstituteLogger;
+import org.slf4j.helpers.SubstituteLoggerFactory;
 
 /**
  * Obtains {@link Logger} instance for a passed class and associates the value with the class.
@@ -33,6 +35,24 @@ import org.slf4j.helpers.SubstituteLogger;
 class LoggerClassValue extends ClassValue<Logger> {
 
     private static final LoggerClassValue INSTANCE = new LoggerClassValue();
+
+    /**
+     * The factory for logger instances when running under tests.
+     *
+     * <p>If this field is not-null, we're running under tests, and should produce
+     * {@link org.slf4j.helpers.SubstituteLogger} instances, so that logging can be tested too.
+     *
+     * <p>If this field is {@code null}, we're under production mode, and return
+     * {@link org.slf4j.Logger} obtained from {@link org.slf4j.LoggerFactory} without substitution.
+     */
+    private final @MonotonicNonNull SubstituteLoggerFactory substFactory;
+
+    private LoggerClassValue() {
+        this.substFactory = Environment.getInstance()
+                                       .isTests()
+                            ? new SubstituteLoggerFactory()
+                            : null;
+    }
 
     static Logger getFor(Class<?> cls) {
         return INSTANCE.get(cls);
@@ -52,11 +72,10 @@ class LoggerClassValue extends ClassValue<Logger> {
      *           which redirects to a {@code Logger} obtained from
      *           {@link LoggerFactory#getLogger(Class) LoggerFactory}.
      */
-    private static Logger computeLogger(Class<?> cls) {
+    private Logger computeLogger(Class<?> cls) {
         Logger logger = LoggerFactory.getLogger(cls);
-        if (Environment.getInstance()
-                       .isTests()) {
-            SubstituteLogger substLogger = new SubstituteLogger(cls.getName(), null, true);
+        if (substFactory != null) {
+            SubstituteLogger substLogger = (SubstituteLogger) substFactory.getLogger(cls.getName());
             substLogger.setDelegate(logger);
             return substLogger;
         }
