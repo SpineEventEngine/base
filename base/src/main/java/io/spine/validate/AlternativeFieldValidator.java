@@ -26,9 +26,8 @@ import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 import com.google.protobuf.Message;
+import io.spine.logging.Logging;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
@@ -43,7 +42,7 @@ import static io.spine.validate.FieldValidatorFactory.createStrict;
  *
  * @author Alexander Yevsyukov
  */
-class AlternativeFieldValidator {
+class AlternativeFieldValidator implements Logging {
 
     /**
      * The name of the message option field.
@@ -234,16 +233,5 @@ class AlternativeFieldValidator {
 
             return fieldNames;
         }
-    }
-
-    private enum LogSingleton {
-        INSTANCE;
-
-        @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = LoggerFactory.getLogger(AlternativeFieldValidator.class);
-    }
-
-    private static Logger log() {
-        return LogSingleton.INSTANCE.value;
     }
 }

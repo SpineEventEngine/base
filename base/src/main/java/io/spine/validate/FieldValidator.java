@@ -29,12 +29,10 @@ import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import com.google.protobuf.Message;
 import io.spine.base.CommandMessage;
 import io.spine.base.FieldPath;
+import io.spine.logging.Logging;
 import io.spine.option.IfInvalidOption;
 import io.spine.option.IfMissingOption;
 import io.spine.option.OptionsProto;
-import io.spine.validate.rules.ValidationRuleOptions;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
@@ -53,7 +51,7 @@ import static io.spine.validate.rules.ValidationRuleOptions.getOptionValue;
  * @param <V> a type of field values
  * @author Alexander Litus
  */
-abstract class FieldValidator<V> {
+abstract class FieldValidator<V> implements Logging {
 
     private static final String ENTITY_ID_REPEATED_FIELD_MSG =
             "Entity ID must not be a repeated field.";
@@ -347,16 +345,5 @@ abstract class FieldValidator<V> {
     /** Returns a path to the current field. */
     protected FieldPath getFieldPath() {
         return fieldContext.getFieldPath();
-    }
-
-    @SuppressWarnings("ImmutableEnumChecker")
-    private enum LogSingleton {
-        INSTANCE;
-        @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = LoggerFactory.getLogger(FieldValidator.class);
-    }
-
-    private static Logger log() {
-        return LogSingleton.INSTANCE.value;
     }
 }
