@@ -20,15 +20,14 @@
 
 package io.spine.tools.protodoc;
 
+import io.spine.logging.Logging;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.gradle.api.Project;
-import org.slf4j.Logger;
 
 import java.io.File;
 
 import static io.spine.tools.protodoc.ProtoJavadocPlugin.PROTO_JAVADOC_EXTENSION_NAME;
 import static java.lang.String.format;
-import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * The extension for {@link ProtoJavadocPlugin}.
@@ -36,7 +35,7 @@ import static org.slf4j.LoggerFactory.getLogger;
  * @author Dmytro Grankin
  */
 @SuppressWarnings("unused") // Implicitly used during a Gradle build.
-public class Extension {
+public class Extension implements Logging {
 
     /**
      * The path to the main Java sources directory, generated basing on Protobuf definitions.
@@ -101,17 +100,5 @@ public class Extension {
     private static Extension getExtension(Project project) {
         return (Extension) project.getExtensions()
                                   .getByName(PROTO_JAVADOC_EXTENSION_NAME);
-    }
-
-    private static Logger log() {
-        return LogSingleton.INSTANCE.value;
-    }
-
-    @SuppressWarnings("ImmutableEnumChecker")
-        // See Javadoc for io.spine.tools.gradle.compiler.ModelCompilerPlugin.LoggerSingleton
-    private enum LogSingleton {
-        INSTANCE;
-        @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = getLogger(Extension.class);
     }
 }

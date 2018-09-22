@@ -19,11 +19,10 @@
  */
 package io.spine.tools.gradle.compiler;
 
+import io.spine.logging.Logging;
 import io.spine.tools.gradle.SpinePlugin;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.stream.Stream;
 
@@ -35,7 +34,7 @@ import java.util.stream.Stream;
  * @author Alexander Litus
  * @author Mikhail Mikhaylov
  */
-public class ModelCompilerPlugin implements Plugin<Project> {
+public class ModelCompilerPlugin implements Plugin<Project>, Logging {
 
     private static final String EXTENSION_NAME = "modelCompiler";
 
@@ -65,57 +64,9 @@ public class ModelCompilerPlugin implements Plugin<Project> {
               .forEach(plugin -> apply(plugin, project));
     }
 
-    private static void apply(SpinePlugin plugin, Project project) {
+    private void apply(SpinePlugin plugin, Project project) {
         log().debug("Applying {}", plugin.getClass()
                                          .getName());
         plugin.apply(project);
-    }
-
-    private static Logger log() {
-        return LoggerSingleton.INSTANCE.logger;
-    }
-
-    /**
-     * Enum with singleton instance of the logger.
-     *
-     * <p>We have to stick with this old-fashion approach for logging arrangement because
-     * of the following. New {@linkplain io.spine.logging.Logging logging implementation}
-     * uses Slf4J {@link org.slf4j.helpers.SubstituteLogger SubstituteLogger} from
-     * the version 1.7.25. This version provides the following constructor:
-     *
-     * <blockquote>{@code
-     * public SubstituteLogger(String name, Queue<SubstituteLoggingEvent> eventQueue, boolean createdPostInitialization)
-     * }</blockquote>
-     *
-     * <p>This constructor is not available in the Slf4J API provided by Gradle API JAR
-     * (gradle-api-4.10.1.jar). The constructor available is this:
-     *
-     * <blockquote>
-     * {@code public SubstituteLogger(String name, List<SubstituteLoggingEvent> eventList)}
-     * </blockquote>
-     *
-     * <p>An attempt to use {@linkplain io.spine.logging.Logging new logging API}, results in
-     * {@code NoSuchMethodError}:
-     *
-     * <blockquote>{@code
-     * java.lang.NoSuchMethodError: org.slf4j.helpers.SubstituteLogger.<init>(Ljava/lang/String;Ljava/util/Queue;Z)V
-     *  at io.spine.logging.LoggerClassValue.computeLogger(LoggerClassValue.java:59)
-     *  at io.spine.logging.LoggerClassValue.computeValue(LoggerClassValue.java:43)
-     *  at io.spine.logging.LoggerClassValue.computeValue(LoggerClassValue.java:33)
-     *  at java.lang.ClassValue.getFromHashMap(ClassValue.java:227)
-     *  at java.lang.ClassValue.getFromBackup(ClassValue.java:209)
-     *  at java.lang.ClassValue.get(ClassValue.java:115)
-     * 	...
-     * }
-     * </blockquote>
-     *
-     * <p>Therefore, the Model Compiler and the code which uses Gradle API must stick with the
-     * current approach, until we migrate to a Gradle version, which uses newer Slf4J API.
-     */
-    @SuppressWarnings("ImmutableEnumChecker")
-    private enum LoggerSingleton {
-        INSTANCE;
-        @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger logger = LoggerFactory.getLogger(ModelCompilerPlugin.class);
     }
 }

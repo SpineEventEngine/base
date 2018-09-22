@@ -20,7 +20,7 @@
 
 package io.spine.tools.protodoc;
 
-import org.slf4j.Logger;
+import io.spine.logging.Logging;
 
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
@@ -28,14 +28,12 @@ import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 
-import static org.slf4j.LoggerFactory.getLogger;
-
 /**
  * A {@code FileVisitor} for formatting files.
  *
  * @author Dmytro Grankin
  */
-class FormattingFileVisitor extends SimpleFileVisitor<Path> {
+class FormattingFileVisitor extends SimpleFileVisitor<Path> implements Logging {
 
     private final JavadocFormatter formatter;
 
@@ -55,17 +53,5 @@ class FormattingFileVisitor extends SimpleFileVisitor<Path> {
     public FileVisitResult visitFileFailed(Path file, IOException exc) {
         log().error("Error walking down the file tree for file: {}", file);
         return FileVisitResult.TERMINATE;
-    }
-
-    private static Logger log() {
-        return LogSingleton.INSTANCE.value;
-    }
-
-    @SuppressWarnings("ImmutableEnumChecker")
-        // See Javadoc for io.spine.tools.gradle.compiler.ModelCompilerPlugin.LoggerSingleton.
-    private enum LogSingleton {
-        INSTANCE;
-        @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = getLogger(FormattingFileVisitor.class);
     }
 }
