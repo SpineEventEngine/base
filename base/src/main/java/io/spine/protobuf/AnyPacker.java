@@ -78,7 +78,6 @@ public final class AnyPacker {
      * Unwraps {@code Any} value into an instance of type specified by value
      * returned by {@link Any#getTypeUrl()}.
      *
-     *
      * @param any instance of {@link Any} that should be unwrapped
      * @param <T> the type enclosed into {@code Any}
      * @return unwrapped message instance
