@@ -39,11 +39,6 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
 
-/**
- * Tests {@link io.spine.tools.protodoc.JavadocFormatter}.
- *
- * @author Dmytro Grankin
- */
 public class JavadocFormatterShould {
 
     private static final char BACKTICK = '`';
