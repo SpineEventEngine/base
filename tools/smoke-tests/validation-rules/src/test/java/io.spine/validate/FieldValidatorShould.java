@@ -20,12 +20,10 @@
 
 package io.spine.validate;
 
-import com.google.common.collect.ImmutableList;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import static com.google.common.collect.ImmutableList.of;
@@ -112,7 +110,7 @@ public abstract class FieldValidatorShould<V> {
     @Test
     public void validate_repeated_fields_if_specified() {
         FieldValidator<V> validator = validatedRequiredRepeatedFieldValidator(of(newValue(),
-                                                                                       defaultValue()));
+                                                                                 defaultValue()));
         List<ConstraintViolation> violations = validator.validate();
 
         assertFalse(violations.isEmpty());
@@ -121,22 +119,22 @@ public abstract class FieldValidatorShould<V> {
     @Test
     public void skip_repeated_fields_if_not_specified() {
         FieldValidator<V> validator = uncheckedRepeatedFieldValidator(of(defaultValue(),
-                                                                               defaultValue(),
-                                                                               defaultValue()));
+                                                                         defaultValue(),
+                                                                         defaultValue()));
         List<ConstraintViolation> violations = validator.validate();
         assertEmpty(violations);
     }
 
     @Test
     public void skip_empty_repeated_fields_if_not_required() {
-        FieldValidator<V> validator = uncheckedRepeatedFieldValidator(ImmutableList.<V>of());
+        FieldValidator<V> validator = uncheckedRepeatedFieldValidator(of());
         List<ConstraintViolation> violations = validator.validate();
         assertEmpty(violations);
     }
 
     @Test
     public void skip_empty_repeated_validated_not_required_fields() {
-        FieldValidator<V> validator = validatedRepeatedFieldValidator(ImmutableList.<V>of());
+        FieldValidator<V> validator = validatedRepeatedFieldValidator(of());
         List<ConstraintViolation> violations = validator.validate();
         assertEmpty(violations);
     }
@@ -144,14 +142,14 @@ public abstract class FieldValidatorShould<V> {
     @Test
     public void not_validate_elements_of_repeated_field() {
         FieldValidator<V> validator = requiredRepeatedFieldValidator(of(defaultValue(),
-                                                                              defaultValue()));
+                                                                        defaultValue()));
         List<ConstraintViolation> violations = validator.validate();
         assertEmpty(violations);
     }
 
     @Test
     public void flag_repeated_fields() {
-        FieldValidator<?> validator = uncheckedRepeatedFieldValidator(Collections.emptyList());
+        FieldValidator<?> validator = uncheckedRepeatedFieldValidator(of());
         assertTrue(validator.isRepeatedOrMap());
     }
 
