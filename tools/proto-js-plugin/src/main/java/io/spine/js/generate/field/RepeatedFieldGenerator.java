@@ -75,7 +75,8 @@ final class RepeatedFieldGenerator extends FieldGenerator {
      *
      * <p>Checks the value for not being {@code null} or {@code undefined}.
      *
-     * @param jsObject the name of the variable holding the JS object to iterate
+     * @param jsObject
+     *         the name of the variable holding the JS object to iterate
      */
     @VisibleForTesting
     void iterateListValues(String jsObject) {

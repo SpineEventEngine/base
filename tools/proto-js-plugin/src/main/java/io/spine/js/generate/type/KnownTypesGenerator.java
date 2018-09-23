@@ -154,8 +154,8 @@ public final class KnownTypesGenerator extends JsCodeGenerator {
     }
 
     /**
-     * Obtains type URL and JS type name of the {@code message} and creates a {@code Map} entry
-     * of the "{@linkplain TypeUrl type-url}-to-JS-type" format.
+     * Obtains type URL and JS type name of the {@code message} and creates a {@code Map} entry of
+     * the "{@linkplain TypeUrl type-url}-to-JS-type" format.
      */
     private static String jsMapEntry(Descriptor message) {
         TypeUrl typeUrl = TypeUrl.from(message);
