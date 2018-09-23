@@ -25,7 +25,7 @@ import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.js.DefaultJsProject;
 import io.spine.tools.gradle.GradleProject;
-import spine.test.protojs.Fields.FieldContainer;
+import spine.test.js.Fields.FieldContainer;
 
 import java.io.File;
 import java.util.List;

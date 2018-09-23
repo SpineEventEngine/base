@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package spine.sample.protojs;
+package spine.sample.js;
 
 import "spine/options.proto";
 
