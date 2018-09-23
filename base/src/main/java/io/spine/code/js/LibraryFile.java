@@ -23,7 +23,7 @@ package io.spine.code.js;
 import static io.spine.code.js.FileName.of;
 
 /**
- * The common library files used in Spine-based JavaScript projects.
+ * The enumeration of project files provided by the Spine framework.
  *
  * @author Dmytro Kuzmin
  */
