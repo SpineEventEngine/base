@@ -196,12 +196,13 @@ public class RejectionGenPlugin extends SpinePlugin {
                                     Map<String, String> messageTypeMap,
                                     String rejectionsRootDir) {
         Logger log = log();
-        log.debug("Generating rejections from file {}", file.getPath());
-
         if (log.isDebugEnabled()) {
-            log.debug("javaPackage: {}, javaOuterClassName: {}",
-                      PackageName.resolve(file.getDescriptor()),
-                      SimpleClassName.outerOf(file.getDescriptor()));
+            log.debug(
+                "Generating rejections from file: `{}` javaPackage: `{}`, javaOuterClassName: `{}`",
+                file.getPath(),
+                PackageName.resolve(file.getDescriptor()),
+                SimpleClassName.outerOf(file.getDescriptor())
+            );
         }
 
         List<RejectionDeclaration> rejections = file.getRejectionDeclarations();
