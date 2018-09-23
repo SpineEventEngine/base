@@ -37,8 +37,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
 
-import static io.spine.code.js.CommonFileName.KNOWN_TYPES;
-import static io.spine.code.js.CommonFileName.KNOWN_TYPE_PARSERS;
+import static io.spine.code.js.LibraryFile.KNOWN_TYPES;
+import static io.spine.code.js.LibraryFile.KNOWN_TYPE_PARSERS;
 import static io.spine.code.js.given.FileWriters.assertFileContains;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static io.spine.tools.protojs.JsonParsersWriter.createFor;

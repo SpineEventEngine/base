@@ -29,7 +29,7 @@ import io.spine.generate.JsImportGenerator;
 import io.spine.generate.JsOutput;
 import io.spine.tools.protojs.message.MessageGenerator;
 
-import static io.spine.code.js.CommonFileName.KNOWN_TYPE_PARSERS;
+import static io.spine.code.js.LibraryFile.KNOWN_TYPE_PARSERS;
 
 /**
  * The generator of the {@code fromJson(json)} method for the Protobuf messages in JavaScript.

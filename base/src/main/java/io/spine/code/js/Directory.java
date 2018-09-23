@@ -70,10 +70,10 @@ public final class Directory extends SourceCodeDirectory {
     }
 
     /**
-     * Obtains the source code path for the passed common file name.
+     * Obtains the source code path for the passed library file.
      */
-    public Path resolve(CommonFileName commonFileName) {
-        checkNotNull(commonFileName);
-        return resolve(commonFileName.fileName());
+    public Path resolve(LibraryFile libraryFile) {
+        checkNotNull(libraryFile);
+        return resolve(libraryFile.fileName());
     }
 }

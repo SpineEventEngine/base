@@ -27,7 +27,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static io.spine.code.js.CommonFileName.KNOWN_TYPE_PARSERS;
+import static io.spine.code.js.LibraryFile.KNOWN_TYPE_PARSERS;
 import static io.spine.generate.given.Generators.assertContains;
 import static io.spine.tools.protojs.file.FileGenerator.COMMENT;
 import static io.spine.tools.protojs.given.Given.file;

@@ -23,11 +23,11 @@ package io.spine.code.js;
 import static io.spine.code.js.FileName.of;
 
 /**
- * The common file {@linkplain FileName names} used in Spine-based JavaScript projects.
+ * The common library files used in Spine-based JavaScript projects.
  *
  * @author Dmytro Kuzmin
  */
-public enum CommonFileName {
+public enum LibraryFile {
 
     /**
      * The file declaring Spine Options.
@@ -46,7 +46,7 @@ public enum CommonFileName {
 
     private final FileName fileName;
 
-    CommonFileName(FileName fileName) {
+    LibraryFile(FileName fileName) {
         this.fileName = fileName;
     }
 

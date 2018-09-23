@@ -37,9 +37,9 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import static io.spine.code.js.CommonFileName.KNOWN_TYPES;
-import static io.spine.code.js.CommonFileName.KNOWN_TYPE_PARSERS;
-import static io.spine.code.js.CommonFileName.SPINE_OPTIONS;
+import static io.spine.code.js.LibraryFile.KNOWN_TYPES;
+import static io.spine.code.js.LibraryFile.KNOWN_TYPE_PARSERS;
+import static io.spine.code.js.LibraryFile.SPINE_OPTIONS;
 import static io.spine.code.proto.FileSet.parseOrEmpty;
 import static io.spine.code.proto.ProtoPackage.GOOGLE_PROTOBUF_PACKAGE;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;

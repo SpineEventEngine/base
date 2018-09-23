@@ -56,11 +56,11 @@ public final class JsFileWriter {
     }
 
     /**
-     * Creates a {@code JsFileWriter} which will operate on the file with the specified name
-     * located in the specified directory.
+     * Creates a {@code JsFileWriter} which will operate on the specified library file located in
+     * the specified directory.
      */
-    public static JsFileWriter createFor(Directory directory, CommonFileName commonFileName) {
-        return createFor(directory, commonFileName.fileName());
+    public static JsFileWriter createFor(Directory directory, LibraryFile libraryFile) {
+        return createFor(directory, libraryFile.fileName());
     }
 
     /**
