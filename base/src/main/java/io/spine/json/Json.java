@@ -47,6 +47,7 @@ public final class Json {
     private static final TypeRegistry typeRegistry = KnownTypes.instance()
                                                                .typeRegistry();
     private static final Printer PRINTER = printer().usingTypeRegistry(typeRegistry);
+    private static final Printer COMPACT_PRINTER = PRINTER.omittingInsignificantWhitespace();
     private static final Parser PARSER = parser().usingTypeRegistry(typeRegistry);
 
     /**
@@ -75,8 +76,7 @@ public final class Json {
      * @return the converted message to Json
      */
     public static String toCompactJson(Message message) {
-        Printer compactPrinter = PRINTER.omittingInsignificantWhitespace();
-        String result = toJson(message, compactPrinter);
+        String result = toJson(message, COMPACT_PRINTER);
         return result;
     }
 
