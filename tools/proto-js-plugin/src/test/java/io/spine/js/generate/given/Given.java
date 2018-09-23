@@ -31,13 +31,13 @@ import java.io.File;
 import java.util.List;
 
 import static com.google.common.io.Files.createTempDir;
-import static io.spine.tools.gradle.TaskName.COMPILE_PROTO_TO_JS;
 import static io.spine.js.generate.given.FieldContainerEntry.ENUM_FIELD;
 import static io.spine.js.generate.given.FieldContainerEntry.MAP_FIELD;
 import static io.spine.js.generate.given.FieldContainerEntry.MESSAGE_FIELD;
 import static io.spine.js.generate.given.FieldContainerEntry.PRIMITIVE_FIELD;
 import static io.spine.js.generate.given.FieldContainerEntry.REPEATED_FIELD;
 import static io.spine.js.generate.given.FieldContainerEntry.TIMESTAMP_FIELD;
+import static io.spine.tools.gradle.TaskName.COMPILE_PROTO_TO_JS;
 import static java.util.Collections.singletonList;
 
 /**

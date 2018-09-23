@@ -25,8 +25,8 @@ import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.js.FileName;
 import io.spine.js.generate.JsCodeGenerator;
-import io.spine.js.generate.importado.JsImportGenerator;
 import io.spine.js.generate.JsOutput;
+import io.spine.js.generate.importado.JsImportGenerator;
 import io.spine.js.generate.message.MessageGenerator;
 
 import static io.spine.code.js.LibraryFile.KNOWN_TYPE_PARSERS;

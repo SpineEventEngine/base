@@ -27,11 +27,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static io.spine.js.generate.given.Generators.assertContains;
 import static io.spine.js.generate.field.FieldGenerator.FIELD_VALUE;
 import static io.spine.js.generate.field.MapFieldGenerator.ATTRIBUTE;
 import static io.spine.js.generate.field.MapFieldGenerator.MAP_KEY;
 import static io.spine.js.generate.field.RepeatedFieldGenerator.LIST_ITEM;
+import static io.spine.js.generate.given.Generators.assertContains;
 import static io.spine.js.generate.given.Given.mapField;
 import static io.spine.js.generate.given.Given.repeatedField;
 import static io.spine.js.generate.given.Given.singularField;

@@ -28,10 +28,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static io.spine.testing.Verify.assertInstanceOf;
 import static io.spine.js.generate.given.Given.mapField;
 import static io.spine.js.generate.given.Given.messageField;
 import static io.spine.js.generate.given.Given.repeatedField;
+import static io.spine.testing.Verify.assertInstanceOf;
 
 /**
  * @author Dmytro Kuzmin

@@ -29,9 +29,9 @@ import static com.google.protobuf.Descriptors.FieldDescriptor.Type.BYTES;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.FLOAT;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.INT32;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.INT64;
-import static io.spine.js.generate.given.Generators.assertContains;
 import static io.spine.js.generate.field.parser.primitive.BytesParser.BASE64_LIB;
 import static io.spine.js.generate.field.parser.primitive.BytesParser.BASE64_VAR;
+import static io.spine.js.generate.given.Generators.assertContains;
 
 /**
  * @author Dmytro Kuzmin

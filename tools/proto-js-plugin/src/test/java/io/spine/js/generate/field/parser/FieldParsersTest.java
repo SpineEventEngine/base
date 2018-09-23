@@ -28,12 +28,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static io.spine.testing.Verify.assertInstanceOf;
 import static io.spine.js.generate.field.parser.FieldParsers.parserFor;
 import static io.spine.js.generate.given.Given.enumField;
 import static io.spine.js.generate.given.Given.messageField;
 import static io.spine.js.generate.given.Given.primitiveField;
 import static io.spine.js.generate.given.Given.timestampField;
+import static io.spine.testing.Verify.assertInstanceOf;
 
 /**
  * @author Dmytro Kuzmin

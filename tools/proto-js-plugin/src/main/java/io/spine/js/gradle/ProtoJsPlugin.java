@@ -104,7 +104,7 @@ public class ProtoJsPlugin extends SpinePlugin {
     private static void generateForMain(Project project) {
         DefaultJsProject jsProject = DefaultJsProject.at(project.getProjectDir());
         Directory generatedRoot = jsProject.proto()
-                                               .mainJs();
+                                           .mainJs();
         File descriptors = jsProject.mainDescriptors();
         JsonParsersWriter writer = JsonParsersWriter.createFor(generatedRoot, descriptors);
         writer.write();
@@ -116,7 +116,7 @@ public class ProtoJsPlugin extends SpinePlugin {
     private static void generateForTest(Project project) {
         DefaultJsProject jsProject = DefaultJsProject.at(project.getProjectDir());
         Directory generatedRoot = jsProject.proto()
-                                               .testJs();
+                                           .testJs();
         File descriptors = jsProject.testDescriptors();
         JsonParsersWriter writer = JsonParsersWriter.createFor(generatedRoot, descriptors);
         writer.write();
