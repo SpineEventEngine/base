@@ -19,6 +19,7 @@
  */
 package io.spine.tools.reflections;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.common.io.Files;
 import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.SpinePlugin;
@@ -37,7 +38,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashSet;
 import java.util.Set;
 
 import static io.spine.tools.gradle.TaskName.BUILD;
@@ -73,9 +73,10 @@ public class ReflectionsPlugin extends SpinePlugin {
                .create(REFLECTIONS_PLUGIN_EXTENSION, Extension.class);
 
         Action<Task> scanClassPathAction = task -> scanClassPath(project);
-        GradleTask task = newTask(SCAN_CLASS_PATH, scanClassPathAction).insertAfterTask(CLASSES)
-                                                                       .insertBeforeTask(BUILD)
-                                                                       .applyNowTo(project);
+        GradleTask task = newTask(SCAN_CLASS_PATH, scanClassPathAction)
+                .insertAfterTask(CLASSES)
+                .insertBeforeTask(BUILD)
+                .applyNowTo(project);
 
         log.debug("Reflection Gradle plugin initialized with the Gradle task: {}", task);
     }
@@ -107,7 +108,7 @@ public class ReflectionsPlugin extends SpinePlugin {
     private static Set<URL> toUrls(File outputDir) {
         // because they are file URIs, they will not cause any network-related issues.
         @SuppressWarnings({"CollectionContainsUrl", "URLEqualsHashCode"})
-        Set<URL> urls = new HashSet<>();
+        ImmutableSet.Builder<URL> urls = ImmutableSet.builder();
         try {
             urls.add(outputDir.toURI()
                               .toURL());
@@ -116,7 +117,7 @@ public class ReflectionsPlugin extends SpinePlugin {
                     e, "Cannot parse an output directory: %s", outputDir.getAbsolutePath()
             );
         }
-        return urls;
+        return urls.build();
     }
 
     private static void ensureFolderCreated(File folder) {
