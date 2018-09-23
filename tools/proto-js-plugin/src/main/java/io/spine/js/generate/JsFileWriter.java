@@ -44,7 +44,7 @@ import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
  * @author Dmytro Kuzmin
  */
 @SuppressWarnings("WeakerAccess")
-// The class belongs to the public API of the package although now used only package-locally.
+// The class belongs to the public API of the package although now usage is only package-local.
 public final class JsFileWriter {
 
     private final Path filePath;
