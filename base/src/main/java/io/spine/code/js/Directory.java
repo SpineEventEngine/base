@@ -42,10 +42,10 @@ public final class Directory extends SourceCodeDirectory {
     }
 
     /**
-     * Creates a new instance.
+     * Creates a new instance at the specified location.
      */
     @VisibleForTesting
-    static Directory at(Path path) {
+    public static Directory at(Path path) {
         checkNotNull(path);
         return new Directory(path);
     }
