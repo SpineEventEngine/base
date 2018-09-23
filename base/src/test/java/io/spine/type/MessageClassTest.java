@@ -39,7 +39,7 @@ class MessageClassTest {
     void beEqualWithingClass() {
         new EqualsTester()
                 .addEqualityGroup(new TestMessageClass(MSG_CLASS), new TestMessageClass(MSG_CLASS))
-                .addEqualityGroup(new MessageClass(MSG_CLASS) {
+                .addEqualityGroup(new MessageClass<StringValue>(MSG_CLASS) {
                     private static final long serialVersionUID = 0L;
                 });
     }
@@ -52,12 +52,13 @@ class MessageClassTest {
     /**
      * Test environment class.
      */
-    private static class TestMessageClass extends MessageClass {
+    private static class TestMessageClass extends MessageClass<Message> {
 
         private static final long serialVersionUID = 0L;
 
+        @SuppressWarnings("unchecked") // OK for tests.
         private TestMessageClass(Class<? extends Message> value) {
-            super(value);
+            super((Class<Message>) value);
         }
     }
 }
