@@ -19,7 +19,7 @@
  */
 
 /**
- * The classes which generate the code to parse the Protobuf messages from JSON in Javascript.
+ * The classes which generate the code to parse the proto messages from JSON in Javascript.
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault

@@ -32,7 +32,7 @@ import io.spine.js.generate.message.MessageGenerator;
 import static io.spine.code.js.LibraryFile.KNOWN_TYPE_PARSERS;
 
 /**
- * The generator of the {@code fromJson(json)} method for the Protobuf messages in JavaScript.
+ * The generator of the {@code fromJson(json)} method for the given {@link FileDescriptor}.
  *
  * <p>The class generates the {@code fromJson} and {@code fromObject} methods for each message
  * declared in the {@link FileDescriptor}.
@@ -78,11 +78,11 @@ public final class FileGenerator extends JsCodeGenerator {
      * <p>More specifically:
      * <ol>
      *     <li>Writes a comment explaining the generated code.
-     *     <li>Adds an import for the standard Protobuf types parsers.
-     *     <li>Adds the {@code fromJson(json)} method for each message which parses JSON
+     *     <li>Adds an import for the standard Protobuf type parsers.
+     *     <li>For each message, adds the {@code fromJson(json)} method which parses JSON
      *         {@code string} into object.
-     *     <li>Adds the {@code fromObject(obj)} method for each message which parses the JS object
-     *         and creates a message.
+     *     <li>For each message, adds the {@code fromObject(obj)} method which parses the JS object
+     *         and creates a message instance.
      * </ol>
      */
     @Override
