@@ -23,7 +23,7 @@ package io.spine.js.generate.field.parser;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.js.generate.JsOutput;
-import io.spine.js.generate.type.ProtoParserGenerator;
+import io.spine.js.generate.type.ProtoParsersGenerator;
 import io.spine.type.TypeUrl;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -73,7 +73,7 @@ final class WellKnownFieldParser implements FieldParser {
     public void parseIntoVariable(String value, String variable) {
         checkNotNull(value);
         checkNotNull(variable);
-        String parserMap = PARSERS_IMPORT_NAME + '.' + ProtoParserGenerator.MAP_NAME;
+        String parserMap = PARSERS_IMPORT_NAME + '.' + ProtoParsersGenerator.MAP_NAME;
         jsOutput.declareVariable("parser", parserMap + ".get('" + typeUrl + "')");
         jsOutput.declareVariable(variable, "parser.parse(" + value + ')');
     }

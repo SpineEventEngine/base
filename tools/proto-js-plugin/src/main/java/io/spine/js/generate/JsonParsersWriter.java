@@ -27,7 +27,7 @@ import io.spine.code.js.FileName;
 import io.spine.code.proto.FileSet;
 import io.spine.js.generate.file.FileGenerator;
 import io.spine.js.generate.type.KnownTypesGenerator;
-import io.spine.js.generate.type.ProtoParserGenerator;
+import io.spine.js.generate.type.ProtoParsersGenerator;
 import io.spine.js.gradle.ProtoJsPlugin;
 
 import java.io.File;
@@ -138,7 +138,7 @@ public final class JsonParsersWriter {
     void writeKnownTypeParsers() {
         copyParsersCode();
         JsOutput jsOutput = new JsOutput();
-        ProtoParserGenerator generator = new ProtoParserGenerator(jsOutput);
+        ProtoParsersGenerator generator = new ProtoParsersGenerator(jsOutput);
         generator.generate();
         JsFileWriter writer = JsFileWriter.createFor(generatedRoot, KNOWN_TYPE_PARSERS);
         writer.append(jsOutput);

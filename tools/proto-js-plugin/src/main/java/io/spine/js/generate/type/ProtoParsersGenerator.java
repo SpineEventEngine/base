@@ -57,7 +57,7 @@ import static io.spine.type.TypeUrl.of;
  * @author Dmytro Kuzmin
  */
 @SuppressWarnings("OverlyCoupledClass") // Dependencies for the listed Protobuf types.
-public final class ProtoParserGenerator extends JsCodeGenerator {
+public final class ProtoParsersGenerator extends JsCodeGenerator {
 
     /**
      * The exported map name.
@@ -77,12 +77,12 @@ public final class ProtoParserGenerator extends JsCodeGenerator {
     private static final ImmutableMap<TypeUrl, String> parsers = parsers();
 
     /**
-     * Creates a new {@code ProtoParserGenerator}.
+     * Creates a new {@code ProtoParsersGenerator}.
      *
      * @param jsOutput
      *         the {@code JsOutput} which accumulates all the generated code
      */
-    public ProtoParserGenerator(JsOutput jsOutput) {
+    public ProtoParsersGenerator(JsOutput jsOutput) {
         super(jsOutput);
     }
 

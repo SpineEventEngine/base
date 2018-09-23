@@ -37,32 +37,32 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * @author Dmytro Kuzmin
  */
-@DisplayName("ProtoParserGenerator should")
-class ProtoParserGeneratorTest {
+@DisplayName("ProtoParsersGenerator should")
+class ProtoParsersGeneratorTest {
 
     private JsOutput jsOutput;
-    private ProtoParserGenerator generator;
+    private ProtoParsersGenerator generator;
 
     @BeforeEach
     void setUp() {
         jsOutput = new JsOutput();
-        generator = new ProtoParserGenerator(jsOutput);
+        generator = new ProtoParsersGenerator(jsOutput);
     }
 
     @Test
     @DisplayName(NOT_ACCEPT_NULLS)
     void passNullToleranceCheck() {
-        new NullPointerTester().testAllPublicStaticMethods(ProtoParserGenerator.class);
+        new NullPointerTester().testAllPublicStaticMethods(ProtoParsersGenerator.class);
     }
 
     @Test
     @DisplayName("tell if parser for type URL is present")
     void tellIfHasParser() {
         TypeUrl timestamp = TypeUrl.of(Timestamp.class);
-        assertTrue(ProtoParserGenerator.hasParser(timestamp));
+        assertTrue(ProtoParsersGenerator.hasParser(timestamp));
 
         TypeUrl validationError = TypeUrl.of(ValidationError.class);
-        assertFalse(ProtoParserGenerator.hasParser(validationError));
+        assertFalse(ProtoParsersGenerator.hasParser(validationError));
     }
 
     @Test
