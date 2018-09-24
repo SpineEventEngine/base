@@ -18,16 +18,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.base;
+
+import com.google.errorprone.annotations.Immutable;
+import com.google.protobuf.Message;
+import io.spine.annotation.Internal;
+
+import java.io.Serializable;
+
 /**
- * The versions of the libraries used.
+ * A Protobuf {@link Message} which can be {@linkplain Serializable serialized} with the Java
+ * standard serialization mechanism.
  *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
+ * <p>This interface deliberately declares no methods. Its purpose is to be used in the framework
+ * marker interfaces. See the known subtypes for more details.
+ *
+ * @author Dmytro Dashenkov
  */
-
-final def SPINE_VERSION = '0.10.90-SNAPSHOT'
-
-ext {
-    spineVersion = SPINE_VERSION
-    versionToPublish = SPINE_VERSION
+@Internal
+@Immutable
+public interface SerializableMessage extends Message, Serializable {
 }

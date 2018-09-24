@@ -21,7 +21,6 @@ package io.spine.base;
 
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.Any;
-import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
 import io.spine.annotation.Internal;
@@ -47,11 +46,7 @@ public abstract class ThrowableMessage extends Throwable {
 
     private static final long serialVersionUID = 0L;
 
-    /**
-     * We accept GeneratedMessage (instead of Message) because generated messages
-     * implement {@code Serializable}.
-     */
-    private final GeneratedMessageV3 message;
+    private final RejectionMessage message;
 
     /** The moment of creation of this object. */
     private final Timestamp timestamp;
@@ -59,13 +54,13 @@ public abstract class ThrowableMessage extends Throwable {
     /** Optional ID of the entity which thrown the message. */
     private @MonotonicNonNull Any producerId;
 
-    protected ThrowableMessage(GeneratedMessageV3 message) {
+    protected ThrowableMessage(RejectionMessage message) {
         super();
         this.message = checkNotNull(message);
         this.timestamp = getCurrentTime();
     }
 
-    public Message getMessageThrown() {
+    public RejectionMessage getMessageThrown() {
         return message;
     }
 

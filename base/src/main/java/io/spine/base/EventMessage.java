@@ -21,7 +21,6 @@
 package io.spine.base;
 
 import com.google.errorprone.annotations.Immutable;
-import com.google.protobuf.Message;
 import io.spine.base.MessageFile.Predicate;
 
 /**
@@ -34,7 +33,7 @@ import io.spine.base.MessageFile.Predicate;
  * @author Alexander Yevsyukov
  */
 @Immutable
-public interface EventMessage extends Message {
+public interface EventMessage extends SerializableMessage {
 
     /**
      * Provides the predicate for finding proto files with event message declarations.
