@@ -21,41 +21,21 @@
 package io.spine.base;
 
 import com.google.errorprone.annotations.Immutable;
-import io.spine.base.MessageFile.Predicate;
+import com.google.protobuf.Message;
+import io.spine.annotation.Internal;
+
+import java.io.Serializable;
 
 /**
- * A common interface for event messages.
+ * A Protobuf {@link Message} which can be {@linkplain Serializable serialized} with the Java
+ * standard serialization mechanism.
  *
- * <p>This interface is used by the Model Compiler for marking event messages.
- * By convention, event messages are defined in a proto file, which name ends
- * with {@code events.proto}.
+ * <p>This interface deliberately declares no methods. Its purpose is to be used in the framework
+ * marker interfaces. See the known subtypes for more details.
  *
- * @author Alexander Yevsyukov
+ * @author Dmytro Dashenkov
  */
+@Internal
 @Immutable
-public interface EventMessage extends SerializableMessage {
-
-    /**
-     * Provides the predicate for finding proto files with event message declarations.
-     */
-    class File {
-        private static final MessageFile INSTANCE = new MessageFile("events") {
-            private static final long serialVersionUID = 0L;
-        };
-
-        /** Prevents instantiation of this utility class. */
-        private File() {
-        }
-
-        public static Predicate predicate() {
-            return INSTANCE.predicate();
-        }
-
-        /**
-         * Obtains the suffix common for proto files containing command message declarations.
-         */
-        public static String suffix() {
-            return INSTANCE.value();
-        }
-    }
+public interface SerializableMessage extends Message, Serializable {
 }
