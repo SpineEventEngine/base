@@ -92,10 +92,9 @@ public class FileName extends AbstractFileName<FileName> implements UnderscoredN
      * Obtains the file name without path and extension.
      */
     private String nameOnly() {
-        String value = value();
-        int lastBackslashIndex = value.lastIndexOf(PATH_SEPARATOR);
-        int extensionIndex = value.lastIndexOf(EXTENSION);
-        String result = value.substring(lastBackslashIndex + 1, extensionIndex);
+        String name = nameWithoutExtension();
+        int lastBackslashIndex = name.lastIndexOf(PATH_SEPARATOR);
+        String result = name.substring(lastBackslashIndex + 1);
         return result;
     }
 
@@ -104,6 +103,16 @@ public class FileName extends AbstractFileName<FileName> implements UnderscoredN
      */
     public String nameOnlyCamelCase() {
         String result = CamelCase.convert(this);
+        return result;
+    }
+
+    /**
+     * Returns the file name without extension (but including path).
+     */
+    public String nameWithoutExtension() {
+        String value = value();
+        int extensionIndex = value.lastIndexOf(EXTENSION);
+        String result = value.substring(0, extensionIndex);
         return result;
     }
 

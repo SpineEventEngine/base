@@ -19,7 +19,7 @@
  */
 package io.spine.tools.gradle.compiler;
 
-import io.spine.code.DefaultProject;
+import io.spine.code.java.DefaultJavaProject;
 import org.gradle.api.Project;
 import org.junit.Before;
 import org.junit.Rule;
@@ -210,7 +210,7 @@ public class ExtensionShould {
 
     @Test
     public void include_spine_dir_in_dirsToClean_if_exists() throws IOException {
-        DefaultProject defaultProject = DefaultProject.at(projectDir.getRoot());
+        DefaultJavaProject defaultProject = DefaultJavaProject.at(projectDir.getRoot());
         File spineDir = defaultProject.tempArtifacts();
         assertTrue(spineDir.mkdir());
         String generatedDir = defaultProject.generated()

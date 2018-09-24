@@ -73,6 +73,18 @@ public final class FileSet {
     }
 
     /**
+     * Creates a new file set by parsing the passed file if it exists.
+     *
+     * <p>If the file does not exist, returns empty set.
+     */
+    public static FileSet parseOrEmpty(File descriptorSet) {
+        FileSet result = descriptorSet.exists()
+                ? parse(descriptorSet)
+                : newInstance();
+        return result;
+    }
+
+    /**
      * Creates a new file set by parsing the passed descriptor set file.
      */
     public static FileSet parse(File descriptorSet) {
@@ -118,7 +130,7 @@ public final class FileSet {
     /**
      * Obtains immutable view of the files in this set.
      */
-    Collection<FileDescriptor> files() {
+    public Collection<FileDescriptor> files() {
         return copyOf(files.values());
     }
 

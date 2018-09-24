@@ -69,6 +69,11 @@ public class FileNameShould {
     }
 
     @Test
+    public void return_file_name_without_extension() {
+        assertEquals("package/commands", of("package/commands.proto").nameWithoutExtension());
+    }
+
+    @Test
     public void tell_commands_file_kind() {
         FileName commandsFile = of("my_commands.proto");
 

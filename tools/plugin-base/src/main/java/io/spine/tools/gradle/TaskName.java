@@ -197,7 +197,29 @@ public enum TaskName {
      *
      * <p>Handles the {@code test} classes and resources scope.
      */
-    MERGE_TEST_DESCRIPTOR_SET("mergeTestDescriptorSet");
+    MERGE_TEST_DESCRIPTOR_SET("mergeTestDescriptorSet"),
+
+    /**
+     * The name of the task, that compiles .proto files into the JavaScript code.
+     *
+     * <p>Handles both {@code main} and {@code test} classes and resources scope.
+     */
+    COMPILE_PROTO_TO_JS("compileProtoToJs"),
+
+    /**
+     * The name of the task, that generates JSON-parsing code for the JavaScript messages compiled
+     * from Protobuf.
+     *
+     * <p>Handles both {@code main} and {@code test} classes and resources scope.
+     */
+    GENERATE_JSON_PARSERS("generateJsonParsers"),
+
+    /**
+     * The name of the task, that copies module sources for the JavaScript-based projects.
+     *
+     * <p>Handles both {@code main} and {@code test} classes and resources scope.
+     */
+    COPY_MODULE_SOURCES("copyModuleSources");
 
     private final String value;
 

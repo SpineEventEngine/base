@@ -91,8 +91,9 @@ assemble.dependsOn copyCompiledClasses
 
 build.doLast {
     final def directory = "$projectDir/../"
+    final def script = runsOnWindows ? "gradlew.bat" : "gradlew"
     final def process = new ProcessBuilder()
-            .command("$directory/gradlew".toString(), ':base:cleanJar', ':base:jar', '--console=plain')
+            .command("$directory/$script".toString(), ':base:cleanJar', ':base:jar', '--console=plain')
             .directory(file(directory))
             .start()
     if (process.waitFor() != 0) {

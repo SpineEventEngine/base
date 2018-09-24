@@ -20,8 +20,8 @@
 package io.spine.tools.gradle.compiler;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.code.DefaultProject;
 import io.spine.code.Indent;
+import io.spine.code.java.DefaultJavaProject;
 import io.spine.logging.Logging;
 import org.gradle.api.Project;
 import org.slf4j.Logger;
@@ -163,8 +163,8 @@ public class Extension {
      */
     public Severity spineCheckSeverity;
 
-    private static DefaultProject def(Project project) {
-        return DefaultProject.at(project.getProjectDir());
+    private static DefaultJavaProject def(Project project) {
+        return DefaultJavaProject.at(project.getProjectDir());
     }
 
     public static String getMainProtoSrcDir(Project project) {
@@ -345,8 +345,8 @@ public class Extension {
                     e, "Project directory %s is invalid!", project.getProjectDir()
             );
         }
-        File spinePath = DefaultProject.at(projectDir)
-                                       .tempArtifacts();
+        File spinePath = DefaultJavaProject.at(projectDir)
+                                           .tempArtifacts();
         if (spinePath.exists()) {
             return Optional.of(spinePath.toString());
         } else {
