@@ -28,12 +28,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static com.google.common.truth.Truth.assertThat;
 import static io.spine.js.generate.field.parser.FieldParsers.parserFor;
 import static io.spine.js.generate.given.Given.enumField;
 import static io.spine.js.generate.given.Given.messageField;
 import static io.spine.js.generate.given.Given.primitiveField;
 import static io.spine.js.generate.given.Given.timestampField;
-import static io.spine.testing.Verify.assertInstanceOf;
 
 /**
  * @author Dmytro Kuzmin
@@ -48,7 +48,7 @@ class FieldParsersTest extends UtilityClassTest<FieldParsers> {
     }
 
     @Override
-    protected void setDefaults(NullPointerTester tester) {
+    protected void configure(NullPointerTester tester) {
         tester.setDefault(FieldDescriptor.class, messageField());
     }
 
@@ -61,27 +61,27 @@ class FieldParsersTest extends UtilityClassTest<FieldParsers> {
     @DisplayName("create parser for primitive field")
     void createParserForPrimitive() {
         FieldParser parser = parserFor(primitiveField(), jsOutput);
-        assertInstanceOf(PrimitiveFieldParser.class, parser);
+        assertThat(parser).isInstanceOf(PrimitiveFieldParser.class);
     }
 
     @Test
     @DisplayName("create parser for enum field")
     void createParserForEnum() {
         FieldParser parser = parserFor(enumField(), jsOutput);
-        assertInstanceOf(EnumFieldParser.class, parser);
+        assertThat(parser).isInstanceOf(EnumFieldParser.class);
     }
 
     @Test
     @DisplayName("create parser for message field with custom type")
     void createParserForMessage() {
         FieldParser parser = parserFor(messageField(), jsOutput);
-        assertInstanceOf(MessageFieldParser.class, parser);
+        assertThat(parser).isInstanceOf(MessageFieldParser.class);
     }
 
     @Test
     @DisplayName("create parser for message field with standard type")
     void createParserForWellKnown() {
         FieldParser parser = parserFor(timestampField(), jsOutput);
-        assertInstanceOf(WellKnownFieldParser.class, parser);
+        assertThat(parser).isInstanceOf(WellKnownFieldParser.class);
     }
 }

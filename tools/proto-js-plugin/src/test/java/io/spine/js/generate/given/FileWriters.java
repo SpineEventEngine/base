@@ -23,8 +23,7 @@ package io.spine.js.generate.given;
 import java.io.IOException;
 import java.nio.file.Path;
 
-import static io.spine.testing.Verify.assertContains;
-import static io.spine.testing.Verify.assertNotContains;
+import static com.google.common.truth.Truth.assertThat;
 import static java.nio.file.Files.exists;
 import static java.nio.file.Files.readAllBytes;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -44,7 +43,7 @@ public final class FileWriters {
         assertTrue(exists(filePath));
         byte[] bytes = readAllBytes(filePath);
         String fileContent = new String(bytes);
-        assertContains(toSearch, fileContent);
+        assertThat(fileContent).contains(toSearch);
     }
 
     public static void
@@ -52,6 +51,6 @@ public final class FileWriters {
         assertTrue(exists(filePath));
         byte[] bytes = readAllBytes(filePath);
         String fileContent = new String(bytes);
-        assertNotContains(toSearch, fileContent);
+        assertThat(fileContent).doesNotContain(toSearch);
     }
 }

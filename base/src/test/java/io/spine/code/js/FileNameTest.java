@@ -30,8 +30,8 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
-import static io.spine.testing.Verify.assertContains;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
@@ -68,8 +68,8 @@ class FileNameTest {
         FileName fileName = FileName.from(file);
         String[] pathElements = fileName.pathElements();
         List<String> pathElementList = Arrays.asList(pathElements);
-        assertContains("google", pathElementList);
-        assertContains("protobuf", pathElementList);
-        assertContains("any_pb.js", pathElementList);
+        assertThat(pathElementList).contains("google");
+        assertThat(pathElementList).contains("protobuf");
+        assertThat(pathElementList).contains("any_pb.js");
     }
 }

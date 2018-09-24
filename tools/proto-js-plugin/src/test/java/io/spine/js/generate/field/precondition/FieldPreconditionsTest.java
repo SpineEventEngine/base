@@ -28,11 +28,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static com.google.common.truth.Truth.assertThat;
 import static io.spine.js.generate.field.precondition.FieldPreconditions.preconditionFor;
 import static io.spine.js.generate.given.Given.messageField;
 import static io.spine.js.generate.given.Given.primitiveField;
 import static io.spine.js.generate.given.Given.timestampField;
-import static io.spine.testing.Verify.assertInstanceOf;
 
 /**
  * @author Dmytro Kuzmin
@@ -47,7 +47,7 @@ class FieldPreconditionsTest extends UtilityClassTest<FieldPreconditions> {
     }
 
     @Override
-    protected void setDefaults(NullPointerTester tester) {
+    protected void configure(NullPointerTester tester) {
         tester.setDefault(FieldDescriptor.class, messageField());
     }
 
@@ -60,20 +60,20 @@ class FieldPreconditionsTest extends UtilityClassTest<FieldPreconditions> {
     @DisplayName("create precondition for primitive field")
     void createForPrimitive() {
         FieldPrecondition precondition = preconditionFor(primitiveField(), jsOutput);
-        assertInstanceOf(PrimitivePrecondition.class, precondition);
+        assertThat(precondition).isInstanceOf(PrimitivePrecondition.class);
     }
 
     @Test
     @DisplayName("create precondition for message field")
     void createForMessage() {
         FieldPrecondition precondition = preconditionFor(messageField(), jsOutput);
-        assertInstanceOf(MessagePrecondition.class, precondition);
+        assertThat(precondition).isInstanceOf(MessagePrecondition.class);
     }
 
     @Test
     @DisplayName("create message precondition for standard type field")
     void createForWellKnown() {
         FieldPrecondition precondition = preconditionFor(timestampField(), jsOutput);
-        assertInstanceOf(MessagePrecondition.class, precondition);
+        assertThat(precondition).isInstanceOf(MessagePrecondition.class);
     }
 }

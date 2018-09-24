@@ -21,7 +21,8 @@
 package io.spine.js.generate.given;
 
 import io.spine.js.generate.JsOutput;
-import io.spine.testing.Verify;
+
+import static com.google.common.truth.Truth.assertThat;
 
 /**
  * A helper tool for working with generators output.
@@ -36,11 +37,11 @@ public final class Generators {
 
     public static void assertContains(JsOutput jsOutput, CharSequence toSearch) {
         String codeString = jsOutput.toString();
-        Verify.assertContains(toSearch, codeString);
+        assertThat(codeString).contains(toSearch);
     }
 
     public static void assertNotContains(JsOutput jsOutput, CharSequence toSearch) {
         String codeString = jsOutput.toString();
-        Verify.assertNotContains(toSearch, codeString);
+        assertThat(codeString).doesNotContain(toSearch);
     }
 }

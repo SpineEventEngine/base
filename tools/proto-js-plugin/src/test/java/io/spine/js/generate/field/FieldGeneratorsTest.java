@@ -28,10 +28,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static com.google.common.truth.Truth.assertThat;
 import static io.spine.js.generate.given.Given.mapField;
 import static io.spine.js.generate.given.Given.messageField;
 import static io.spine.js.generate.given.Given.repeatedField;
-import static io.spine.testing.Verify.assertInstanceOf;
 
 /**
  * @author Dmytro Kuzmin
@@ -46,7 +46,7 @@ class FieldGeneratorsTest extends UtilityClassTest<FieldGenerators> {
     }
 
     @Override
-    protected void setDefaults(NullPointerTester tester) {
+    protected void configure(NullPointerTester tester) {
         tester.setDefault(FieldDescriptor.class, messageField());
     }
 
@@ -59,21 +59,21 @@ class FieldGeneratorsTest extends UtilityClassTest<FieldGenerators> {
     @DisplayName("create singular field generator for ordinary Protobuf field")
     void createForSingular() {
         FieldGenerator generator = generatorFor(messageField());
-        assertInstanceOf(SingularFieldGenerator.class, generator);
+        assertThat(generator).isInstanceOf(SingularFieldGenerator.class);
     }
 
     @Test
     @DisplayName("create repeated field generator for repeated Protobuf field")
     void createForRepeated() {
         FieldGenerator generator = generatorFor(repeatedField());
-        assertInstanceOf(RepeatedFieldGenerator.class, generator);
+        assertThat(generator).isInstanceOf(RepeatedFieldGenerator.class);
     }
 
     @Test
     @DisplayName("create map field generator for map Protobuf field")
     void createForMap() {
         FieldGenerator generator = generatorFor(mapField());
-        assertInstanceOf(MapFieldGenerator.class, generator);
+        assertThat(generator).isInstanceOf(MapFieldGenerator.class);
     }
 
     private FieldGenerator generatorFor(FieldDescriptor field) {

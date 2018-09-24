@@ -26,11 +26,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static com.google.common.truth.Truth.assertThat;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.BYTES;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.FLOAT;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.INT32;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.INT64;
-import static io.spine.testing.Verify.assertInstanceOf;
 
 /**
  * @author Dmytro Kuzmin
@@ -53,27 +53,27 @@ class PrimitiveParsersTest extends UtilityClassTest<PrimitiveParsers> {
     @DisplayName("create identity parser")
     void createIdentityParser() {
         PrimitiveParser parser = PrimitiveParsers.createFor(INT32, jsOutput);
-        assertInstanceOf(IdentityParser.class, parser);
+        assertThat(parser).isInstanceOf(IdentityParser.class);
     }
 
     @Test
     @DisplayName("create parser for long value")
     void createLongParser() {
         PrimitiveParser parser = PrimitiveParsers.createFor(INT64, jsOutput);
-        assertInstanceOf(LongParser.class, parser);
+        assertThat(parser).isInstanceOf(LongParser.class);
     }
 
     @Test
     @DisplayName("create parser for float value")
     void createFloatParser() {
         PrimitiveParser parser = PrimitiveParsers.createFor(FLOAT, jsOutput);
-        assertInstanceOf(FloatParser.class, parser);
+        assertThat(parser).isInstanceOf(FloatParser.class);
     }
 
     @Test
     @DisplayName("create parser for bytes value")
     void createBytesParser() {
         PrimitiveParser parser = PrimitiveParsers.createFor(BYTES, jsOutput);
-        assertInstanceOf(BytesParser.class, parser);
+        assertThat(parser).isInstanceOf(BytesParser.class);
     }
 }
