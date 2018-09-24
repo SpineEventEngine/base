@@ -21,6 +21,7 @@
 package io.spine.tools.protodoc;
 
 import com.google.common.base.Joiner;
+import com.google.common.collect.ImmutableList;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -38,9 +39,6 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
 
-/**
- * @author Dmytro Grankin
- */
 public class JavadocFormatterShould {
 
     private static final char BACKTICK = '`';
@@ -78,7 +76,7 @@ public class JavadocFormatterShould {
 
     private String getFormattingResult(String content) throws IOException {
         Path path = createJavaFile();
-        Files.write(path, content.getBytes());
+        Files.write(path, ImmutableList.of(content));
 
         backtickFormatter.format(path);
 

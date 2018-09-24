@@ -79,12 +79,12 @@ import org.junit.Test;
 import java.util.List;
 
 import static com.google.common.collect.ImmutableList.copyOf;
+import static com.google.common.truth.Truth.assertThat;
 import static com.google.protobuf.util.Timestamps.add;
 import static com.google.protobuf.util.Timestamps.subtract;
 import static io.spine.base.Identifier.newUuid;
 import static io.spine.base.Time.getCurrentTime;
 import static io.spine.protobuf.TypeConverter.toMessage;
-import static io.spine.testing.Verify.assertSize;
 import static io.spine.validate.given.MessageValidatorTestEnv.FIFTY_NANOSECONDS;
 import static io.spine.validate.given.MessageValidatorTestEnv.SECONDS_IN_5_MINUTES;
 import static io.spine.validate.given.MessageValidatorTestEnv.ZERO_NANOSECONDS;
@@ -138,9 +138,10 @@ public class MessageValidatorShould {
 
     @Test
     public void find_out_that_required_Message_field_is_set() {
-        RequiredMsgFieldValue validMsg = RequiredMsgFieldValue.newBuilder()
-                                                              .setValue(newStringValue())
-                                                              .build();
+        RequiredMsgFieldValue validMsg = RequiredMsgFieldValue
+                .newBuilder()
+                .setValue(newStringValue())
+                .build();
         validate(validMsg);
         assertIsValid(true);
     }
@@ -982,7 +983,8 @@ public class MessageValidatorShould {
                                                                  .build();
         validate(msg);
 
-        assertSize(1, violations);
+        assertThat(violations).hasSize(1);
+
         ConstraintViolation violation = firstViolation();
         assertEquals("Custom error", violation.getMsgFormat());
     }

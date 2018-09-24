@@ -19,11 +19,10 @@
  */
 package io.spine.tools.gradle.compiler;
 
+import io.spine.logging.Logging;
 import io.spine.tools.gradle.SpinePlugin;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.stream.Stream;
 
@@ -35,7 +34,7 @@ import java.util.stream.Stream;
  * @author Alexander Litus
  * @author Mikhail Mikhaylov
  */
-public class ModelCompilerPlugin implements Plugin<Project> {
+public class ModelCompilerPlugin implements Plugin<Project>, Logging {
 
     private static final String EXTENSION_NAME = "modelCompiler";
 
@@ -65,19 +64,9 @@ public class ModelCompilerPlugin implements Plugin<Project> {
               .forEach(plugin -> apply(plugin, project));
     }
 
-    private static void apply(SpinePlugin plugin, Project project) {
+    private void apply(SpinePlugin plugin, Project project) {
         log().debug("Applying {}", plugin.getClass()
                                          .getName());
         plugin.apply(project);
-    }
-
-    private static Logger log() {
-        return LoggerSingleton.INSTANCE.logger;
-    }
-
-    private enum LoggerSingleton {
-        INSTANCE;
-        @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger logger = LoggerFactory.getLogger(ModelCompilerPlugin.class);
     }
 }

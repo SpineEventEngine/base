@@ -41,7 +41,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("PackageInfo should")
-@SuppressWarnings("InnerClassMayBeStatic")
 class PackageInfoTest {
 
     private final PackageInfo javaUtil = PackageInfo.of(Collection.class.getPackage());
@@ -96,16 +95,6 @@ class PackageInfoTest {
             assertFound(pkg);
         }
 
-        @Test
-        @DisplayName("")
-        void notFound() {
-            Package pkg = LastVisitor.class.getPackage();
-            assertNotAnnotated(pkg);
-            assertFalse(PackageInfo.of(pkg)
-                                   .findAnnotation(ValueAnnotation.class)
-                                   .isPresent());
-        }
-
         private void assertFound(Package pkg) {
             PackageInfo packageInfo = PackageInfo.of(pkg);
             Optional<ValueAnnotation> optional = packageInfo.findAnnotation(ValueAnnotation.class);
@@ -119,10 +108,21 @@ class PackageInfoTest {
             return annotation;
         }
 
-        private void assertNotAnnotated(Package pkg) {
-            ValueAnnotation annotation = pkg.getAnnotation(ValueAnnotation.class);
-            // Make sure that the package is NOT annotated in the test environment.
-            assertNull(annotation);
-        }
+    }
+
+    @Test
+    @DisplayName("tell if there is not annotation")
+    void notFound() {
+        Package pkg = LastVisitor.class.getPackage();
+        assertNotAnnotated(pkg);
+        assertFalse(PackageInfo.of(pkg)
+                               .findAnnotation(ValueAnnotation.class)
+                               .isPresent());
+    }
+
+    private static void assertNotAnnotated(Package pkg) {
+        ValueAnnotation annotation = pkg.getAnnotation(ValueAnnotation.class);
+        // Make sure that the package is NOT annotated in the test environment.
+        assertNull(annotation);
     }
 }

@@ -20,8 +20,8 @@
 
 package io.spine.tools.compiler;
 
+import io.spine.logging.Logging;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -95,14 +95,7 @@ public class DirectoryCleaner extends SimpleFileVisitor<Path> {
         log().debug("Deleting file {}", file.toString());
     }
 
-    private enum LogSingleton {
-        INSTANCE;
-
-        @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = LoggerFactory.getLogger(DirectoryCleaner.class);
-    }
-
     private static Logger log() {
-        return LogSingleton.INSTANCE.value;
+        return Logging.get(DirectoryCleaner.class);
     }
 }

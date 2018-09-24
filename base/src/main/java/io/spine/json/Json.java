@@ -46,6 +46,9 @@ public final class Json {
 
     private static final TypeRegistry typeRegistry = KnownTypes.instance()
                                                                .typeRegistry();
+    private static final Printer PRINTER = printer().usingTypeRegistry(typeRegistry);
+    private static final Printer COMPACT_PRINTER = PRINTER.omittingInsignificantWhitespace();
+    private static final Parser PARSER = parser().usingTypeRegistry(typeRegistry);
 
     /**
      * Prevents the utility class instantiation.
@@ -60,7 +63,7 @@ public final class Json {
      * @return Json string
      */
     public static String toJson(Message message) {
-        String result = toJson(message, JsonPrinter.getInstance());
+        String result = toJson(message, PRINTER);
         return result;
     }
 
@@ -73,9 +76,7 @@ public final class Json {
      * @return the converted message to Json
      */
     public static String toCompactJson(Message message) {
-        Printer compactPrinter = JsonPrinter.getInstance()
-                                            .omittingInsignificantWhitespace();
-        String result = toJson(message, compactPrinter);
+        String result = toJson(message, COMPACT_PRINTER);
         return result;
     }
 
@@ -97,8 +98,7 @@ public final class Json {
         checkNotNull(json);
         try {
             Message.Builder messageBuilder = builderFor(messageClass);
-            JsonParser.getInstance()
-                      .merge(json, messageBuilder);
+            PARSER.merge(json, messageBuilder);
             T result = (T) messageBuilder.build();
             return result;
         } catch (InvalidProtocolBufferException e) {
@@ -111,27 +111,5 @@ public final class Json {
     @VisibleForTesting
     static TypeRegistry typeRegistry() {
         return typeRegistry;
-    }
-
-    private enum JsonPrinter {
-        INSTANCE;
-
-        @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Printer value = printer().usingTypeRegistry(typeRegistry);
-
-        private static Printer getInstance() {
-            return INSTANCE.value;
-        }
-    }
-
-    private enum JsonParser {
-        INSTANCE;
-
-        @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Parser value = parser().usingTypeRegistry(typeRegistry);
-
-        private static Parser getInstance() {
-            return INSTANCE.value;
-        }
     }
 }

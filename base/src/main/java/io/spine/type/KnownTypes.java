@@ -112,7 +112,8 @@ public enum KnownTypes {
     }
 
     /**
-     * Assembles the known types into a {@link JsonFormat.TypeRegistry}.
+     * Assembles the known types into a
+     * {@link com.google.protobuf.util.JsonFormat.TypeRegistry JsonFormat.TypeRegistry}.
      *
      * <p>The resulting registry contains all the known Protobuf message types.
      */

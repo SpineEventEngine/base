@@ -27,7 +27,7 @@ import org.gradle.api.tasks.compile.JavaCompile;
 import java.util.List;
 
 import static com.google.common.collect.testing.Helpers.assertEmpty;
-import static io.spine.testing.Verify.assertContains;
+import static com.google.common.truth.Truth.assertThat;
 import static io.spine.tools.compiler.check.given.ProjectTasks.acquireJavaCompileTasks;
 import static io.spine.tools.compiler.check.given.ProjectTasks.obtainCompilerArgs;
 
@@ -74,8 +74,6 @@ public class ProjectConfigurations {
     }
 
     private static void assertHasAllArgs(List<String> compilerArgs, String[] args) {
-        for (String arg : args) {
-            assertContains(arg, compilerArgs);
-        }
+        assertThat(compilerArgs).containsAllIn(args);
     }
 }

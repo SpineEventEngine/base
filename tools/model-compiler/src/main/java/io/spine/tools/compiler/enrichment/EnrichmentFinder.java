@@ -21,6 +21,7 @@ package io.spine.tools.compiler.enrichment;
 
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
+import io.spine.logging.Logging;
 import io.spine.type.TypeName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +35,7 @@ import java.util.Map;
  * @author Alexander Litus
  * @author Alex Tymchenko
  */
-class EnrichmentFinder {
+class EnrichmentFinder implements Logging {
 
     private final FileDescriptorProto file;
 
@@ -63,15 +64,5 @@ class EnrichmentFinder {
 
         log.debug("Found {} enrichments", result.size());
         return result;
-    }
-
-    private static Logger log() {
-        return LoggerSingleton.INSTANCE.logger;
-    }
-
-    private enum LoggerSingleton {
-        INSTANCE;
-        @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger logger = LoggerFactory.getLogger(EnrichmentFinder.class);
     }
 }

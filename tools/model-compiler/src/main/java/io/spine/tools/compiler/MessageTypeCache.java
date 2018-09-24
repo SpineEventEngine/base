@@ -24,10 +24,9 @@ import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.EnumDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileOptions;
-import io.spine.tools.gradle.compiler.RejectionGenPlugin;
 import io.spine.code.java.SimpleClassName;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import io.spine.logging.Logging;
+import io.spine.tools.gradle.compiler.RejectionGenPlugin;
 
 import java.util.Map;
 
@@ -41,7 +40,7 @@ import static com.google.common.collect.Maps.newHashMap;
  * @author Alex Tymchenko
  * @see RejectionGenPlugin
  */
-public class MessageTypeCache {
+public class MessageTypeCache implements Logging {
 
     /** A map from Protobuf type name to Java class FQN. */
     private final Map<String, String> cachedMessageTypes = newHashMap();
@@ -135,15 +134,5 @@ public class MessageTypeCache {
         String key = protoPrefix + name;
         String value = javaPrefix + name;
         cachedMessageTypes.put(key, value);
-    }
-
-    private static Logger log() {
-        return LoggerSingleton.INSTANCE.logger;
-    }
-
-    private enum LoggerSingleton {
-        INSTANCE;
-        @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger logger = LoggerFactory.getLogger(MessageTypeCache.class);
     }
 }

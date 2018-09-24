@@ -26,6 +26,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
+import io.spine.logging.Logging;
 import io.spine.type.TypeName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +47,7 @@ import static io.spine.option.OptionsProto.enrichmentFor;
  * @author Alex Tymchenko
  * @author Alexander Yevsyukov
  */
-class EnrichmentMap {
+class EnrichmentMap implements Logging {
 
     private static final String EMPTY_TYPE_NAME = "";
 
@@ -90,7 +91,7 @@ class EnrichmentMap {
      * i.e. when processing a single enrichment type as a map key, but multiple target
      * event types as values.
      */
-    private static Map<String, String> merge(HashMultimap<String, String> source) {
+    private Map<String, String> merge(HashMultimap<String, String> source) {
         log().debug("Merging duplicating entries");
         ImmutableMap.Builder<String, String> mergedResult = ImmutableMap.builder();
         for (String key : source.keySet()) {
@@ -211,16 +212,5 @@ class EnrichmentMap {
             }
         }
         return null;
-    }
-
-    private enum LogSingleton {
-        INSTANCE;
-
-        @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = LoggerFactory.getLogger(EnrichmentMap.class);
-    }
-
-    private static Logger log() {
-        return LogSingleton.INSTANCE.value;
     }
 }

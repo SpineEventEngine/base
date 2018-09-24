@@ -22,13 +22,13 @@ package io.spine.tools.gradle.compiler;
 import com.google.common.collect.ImmutableList;
 import io.spine.code.DefaultProject;
 import io.spine.code.Indent;
+import io.spine.logging.Logging;
 import org.gradle.api.Project;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -151,7 +151,7 @@ public class Extension {
      *
      * <p>Either this property OR {@code dirToClean} property is used.
      */
-    public List<String> dirsToClean = new LinkedList<>();
+    public List<String> dirsToClean = new ArrayList<>();
 
     /**
      * The severity of the Spine-custom Error Prone checks.
@@ -296,19 +296,20 @@ public class Extension {
 
     public static List<String> getDirsToClean(Project project) {
         List<String> dirsToClean = newLinkedList(spineDirs(project));
-        log().debug("Finding the directories to clean");
+        Logger log = log();
+        log.debug("Finding the directories to clean");
         List<String> dirs = spineProtobuf(project).dirsToClean;
         String singleDir = spineProtobuf(project).dirToClean;
         if (dirs.size() > 0) {
-            log().error("Found {} directories to clean: {}", dirs.size(), dirs);
+            log.error("Found {} directories to clean: {}", dirs.size(), dirs);
             dirsToClean.addAll(dirs);
         } else if (singleDir != null && !singleDir.isEmpty()) {
-            log().debug("Found directory to clean: {}", singleDir);
+            log.debug("Found directory to clean: {}", singleDir);
             dirsToClean.add(singleDir);
         } else {
             String defaultValue = def(project).generated()
                                               .toString();
-            log().debug("Default directory to clean: {}", defaultValue);
+            log.debug("Default directory to clean: {}", defaultValue);
             dirsToClean.add(defaultValue);
         }
         return ImmutableList.copyOf(dirsToClean);
@@ -360,12 +361,6 @@ public class Extension {
     }
 
     private static Logger log() {
-        return LoggerSingleton.INSTANCE.logger;
-    }
-
-    private enum LoggerSingleton {
-        INSTANCE;
-        @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger logger = LoggerFactory.getLogger(Extension.class);
+        return Logging.get(Extension.class);
     }
 }

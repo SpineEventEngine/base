@@ -20,8 +20,8 @@
 
 package io.spine.code.proto;
 
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -48,7 +48,7 @@ public class LocationPath {
      * Creates an empty location path.
      */
     public LocationPath() {
-        this.path = new LinkedList<>();
+        this.path = new ArrayList<>();
     }
 
     /**
