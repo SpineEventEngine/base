@@ -58,7 +58,7 @@ class MessageClassTest {
 
         @SuppressWarnings("unchecked") // OK for tests.
         private TestMessageClass(Class<? extends Message> value) {
-            super((Class<Message>) value);
+            super(value);
         }
     }
 }
