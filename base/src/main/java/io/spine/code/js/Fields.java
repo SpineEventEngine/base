@@ -140,7 +140,7 @@ public final class Fields {
                       "Trying to get key descriptor for the non-map field %s.",
                       field.getName());
         FieldDescriptor descriptor = field.getMessageType()
-                                                    .findFieldByName(MAP_ENTRY_KEY);
+                                          .findFieldByName(MAP_ENTRY_KEY);
         return descriptor;
     }
 
@@ -161,7 +161,7 @@ public final class Fields {
                       "Trying to get value descriptor for the non-map field %s.",
                       field.getName());
         FieldDescriptor descriptor = field.getMessageType()
-                                                    .findFieldByName(MAP_ENTRY_VALUE);
+                                          .findFieldByName(MAP_ENTRY_VALUE);
         return descriptor;
     }
 }
