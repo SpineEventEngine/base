@@ -108,16 +108,16 @@ public class ReflectionsPlugin extends SpinePlugin {
     private static Set<URL> toUrls(File outputDir) {
         // because they are file URIs, they will not cause any network-related issues.
         @SuppressWarnings({"CollectionContainsUrl", "URLEqualsHashCode"})
-        ImmutableSet.Builder<URL> urls = ImmutableSet.builder();
+        ImmutableSet<URL> urls;
         try {
-            urls.add(outputDir.toURI()
-                              .toURL());
+            urls = ImmutableSet.of(outputDir.toURI()
+                                            .toURL());
         } catch (MalformedURLException e) {
             throw newIllegalArgumentException(
                     e, "Cannot parse an output directory: %s", outputDir.getAbsolutePath()
             );
         }
-        return urls.build();
+        return urls;
     }
 
     private static void ensureFolderCreated(File folder) {
