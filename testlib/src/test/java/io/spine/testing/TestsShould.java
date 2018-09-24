@@ -55,7 +55,7 @@ class TestsShould extends UtilityClassTest<Tests> {
     }
 
     @Override
-    protected void setDefaults(NullPointerTester tester) {
+    protected void configure(NullPointerTester tester) {
         tester.setDefault(FieldMask.class, FieldMask.getDefaultInstance());
     }
 

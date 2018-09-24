@@ -26,10 +26,11 @@ import org.slf4j.LoggerFactory;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Properties;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * A utility class for writing to {@code .properties} file.
@@ -93,8 +94,7 @@ public class PropertiesWriter {
 
         try {
             log.debug("Writing properties file {}", fullPath);
-            FileWriter outFileWriter = new FileWriter(file);
-            BufferedWriter bufferedWriter = new BufferedWriter(outFileWriter);
+            BufferedWriter bufferedWriter = Files.newWriter(file, UTF_8);
             props.store(bufferedWriter, /*comments=*/null);
             bufferedWriter.close();
             log.debug("Properties file written successfully");
@@ -103,7 +103,7 @@ public class PropertiesWriter {
         }
     }
 
-    private static void prepareTargetFile(Properties props, File file) {
+    private void prepareTargetFile(Properties props, File file) {
         log().debug("Preparing the target file");
         if (file.exists()) {
             try {
@@ -127,13 +127,7 @@ public class PropertiesWriter {
         }
     }
 
-    private static Logger log() {
-        return LogSingleton.INSTANCE.value;
-    }
-
-    private enum LogSingleton {
-        INSTANCE;
-        @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = LoggerFactory.getLogger(PropertiesWriter.class);
+    private Logger log() {
+        return LoggerFactory.getLogger(getClass().getName());
     }
 }

@@ -45,6 +45,7 @@ import static io.spine.base.Time.getCurrentTime;
  *
  * @author Dmytro Dashenkov
  */
+@SuppressWarnings("CheckReturnValue")
 public class ValidatingBuilderShould {
 
     private ProjectVBuilder builder;

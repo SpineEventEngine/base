@@ -27,9 +27,11 @@ import io.spine.tools.gradle.compiler.Extension;
 import io.spine.tools.gradle.compiler.ModelCompilerPlugin;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.ExtensionContainer;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
+import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static io.spine.tools.compiler.check.given.ProjectConfigurations.assertCompileTasksContain;
 import static io.spine.tools.compiler.check.given.ProjectConfigurations.assertCompileTasksEmpty;
 import static io.spine.tools.gradle.compiler.Severity.ERROR;
@@ -39,23 +41,27 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 /**
+ * Tests {@link io.spine.tools.gradle.compiler.Severity}.
+ *
  * @author Dmytro Kuzmin
  */
-public class SeverityConfigurerShould {
+@DisplayName("SeverityConfigurer should")
+class SeverityConfigurerTest {
 
     private Project project;
     private SeverityConfigurer configurer;
     private SeverityConfigurer configurerMock;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         project = newProject();
         configurer = SeverityConfigurer.initFor(project);
         configurerMock = spy(configurer);
     }
 
     @Test
-    public void pass_null_tolerance_check() {
+    @DisplayName(NOT_ACCEPT_NULLS)
+    void nullCheck() {
         new NullPointerTester().testAllPublicStaticMethods(SeverityConfigurer.class);
         new NullPointerTester().testAllPublicInstanceMethods(configurer);
     }
@@ -63,7 +69,8 @@ public class SeverityConfigurerShould {
     @SuppressWarnings({"CheckReturnValue", "ResultOfMethodCallIgnored"})
     // We use one extension and just create the other one.
     @Test
-    public void configure_check_severity() {
+    @DisplayName("configure check severity")
+    void configureCheckSeverity() {
         configureModelCompilerExtension();
         ErrorProneChecksExtension extension = configureSpineCheckExtension();
         extension.useValidatingBuilder = ERROR;
@@ -75,7 +82,8 @@ public class SeverityConfigurerShould {
     @SuppressWarnings({"CheckReturnValue", "ResultOfMethodCallIgnored"})
     // We use one extension and just create the other one.
     @Test
-    public void configure_check_severity_for_all_checks() {
+    @DisplayName("configure check severity for all checks")
+    void configureCheckSeverityForAllChecks() {
         Extension extension = configureModelCompilerExtension();
         extension.spineCheckSeverity = ERROR;
         configureSpineCheckExtension();
@@ -85,7 +93,8 @@ public class SeverityConfigurerShould {
     }
 
     @Test
-    public void override_model_compiler_extension_by_error_prone_checks_extension() {
+    @DisplayName("override ModelCompiler extension by ErrorProne checks extension")
+    void overrideModelCompilerCheck() {
         Extension modelCompilerExtension = configureModelCompilerExtension();
         modelCompilerExtension.spineCheckSeverity = OFF;
         ErrorProneChecksExtension errorProneChecksExtension = configureSpineCheckExtension();
@@ -96,7 +105,8 @@ public class SeverityConfigurerShould {
     }
 
     @Test
-    public void not_add_severity_args_if_error_prone_plugin_not_applied() {
+    @DisplayName("not add severity args if ErrorProne plugin not applied")
+    void detectErrorProne() {
         when(configurerMock.hasErrorPronePlugin()).thenReturn(false);
         configurerMock.addConfigureSeverityAction();
         checkSeverityNotConfigured();

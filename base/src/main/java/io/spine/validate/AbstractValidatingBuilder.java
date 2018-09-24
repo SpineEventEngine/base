@@ -117,11 +117,8 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
      * @param keyClass   the {@code Class} of the key
      * @param valueClass the {@code Class} of the value
      * @return the converted value
-     * @throws ConversionException if passed value cannot be converted
      */
-    public <K, V> Map<K, V> convertToMap(String value,
-                                         Class<K> keyClass,
-                                         Class<V> valueClass) throws ConversionException {
+    public <K, V> Map<K, V> convertToMap(String value, Class<K> keyClass, Class<V> valueClass) {
         Map<K, V> result = Stringifiers.newForMapOf(keyClass, valueClass)
                                        .reverse()
                                        .convert(value);
@@ -137,10 +134,8 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
      * @param value      the value to convert
      * @param valueClass the {@code Class} of the list values
      * @return the converted value
-     * @throws ConversionException if passed value cannot be converted
      */
-    public <V> List<V> convertToList(String value,
-                                     Class<V> valueClass) throws ConversionException {
+    public <V> List<V> convertToList(String value, Class<V> valueClass) {
         List<V> result = Stringifiers.newForListOf(valueClass)
                                      .reverse()
                                      .convert(value);
@@ -150,12 +145,9 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
     @Override
     public <V> void validate(FieldDescriptor descriptor, V fieldValue, String fieldName)
             throws ValidationException {
-        Object valueToValidate;
-        if (fieldValue instanceof ProtocolMessageEnum) {
-            valueToValidate = ((ProtocolMessageEnum) fieldValue).getValueDescriptor();
-        } else {
-            valueToValidate = fieldValue;
-        }
+        Object valueToValidate = fieldValue instanceof ProtocolMessageEnum
+                                 ? ((ProtocolMessageEnum) fieldValue).getValueDescriptor()
+                                 : fieldValue;
         FieldContext fieldContext = FieldContext.create(descriptor);
         FieldValidator<?> validator = create(fieldContext, valueToValidate);
         List<ConstraintViolation> violations = validator.validate();
@@ -170,7 +162,6 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
     @Override
     public boolean isDirty() {
         T message = internalBuild();
-
         boolean result = originalState != null
                          ? !originalState.equals(message)
                          : Validate.isNotDefault(message);

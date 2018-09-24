@@ -18,41 +18,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.validate;
-
-import io.spine.logging.Logging;
-
 /**
- * Validates fields of type {@link Boolean}.
- *
- * @author Dmitry Kashcheiev
+ * Provides a test environment annotation for {@link io.spine.reflect.PackageInfoTest}.
  */
-class BooleanFieldValidator extends FieldValidator<Boolean> implements Logging {
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package given.reflect.annotation;
 
-    /**
-     * Creates a new validator instance.
-     *
-     * @param fieldContext the context of the field to validate
-     * @param fieldValues  values to validate
-     */
-    BooleanFieldValidator(FieldContext fieldContext, Object fieldValues) {
-        super(fieldContext, FieldValidator.toValueList(fieldValues), false);
-    }
+import com.google.errorprone.annotations.CheckReturnValue;
 
-    /**
-     * In Protobuf there is no way to tell if the value is {@code false} or was not set.
-     *
-     * @return false
-     */
-    @Override
-    protected boolean isNotSet(Boolean value) {
-        return false;
-    }
-
-    @Override
-    protected void validateOwnRules() {
-        if (isRequiredField()) {
-            log().warn("'required' option not allowed for boolean field");
-        }
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;
