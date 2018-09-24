@@ -35,7 +35,7 @@ public abstract class MessageClass<M extends Message> extends ClassTypeValue<M> 
     /** The name of the type of proto messages represented by this class. */
     private final TypeName typeName;
 
-    protected MessageClass(Class<M> value) {
+    protected MessageClass(Class<? extends M> value) {
         super(value);
         this.typeName = TypeName.of(value);
     }
