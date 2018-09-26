@@ -21,8 +21,8 @@
 package io.spine.validate;
 
 import com.google.protobuf.Descriptors.Descriptor;
-import io.spine.test.validate.msg.altfields.MessageWithMissingField;
-import io.spine.test.validate.msg.altfields.PersonName;
+import io.spine.test.validate.altfields.MessageWithMissingField;
+import io.spine.test.validate.altfields.PersonName;
 import org.junit.Before;
 import org.junit.Test;
 

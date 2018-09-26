@@ -23,41 +23,26 @@ package io.spine.validate;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Any;
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import com.google.protobuf.FloatValue;
-import io.spine.protobuf.AnyPacker;
+import io.spine.validate.BooleanFieldValidator;
+import io.spine.validate.FieldContext;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 /**
- * @author Alexander Litus
+ * @author dmitry.kashcheiev
  */
-public class FloatFieldValidatorShould {
-
-    private static final Float VALUE = 0.5F;
-    private static final Float NEGATIVE_VALUE = -0.5F;
+public class BooleanFieldValidatorShould {
 
     private final FieldDescriptor fieldDescriptor = Any.getDescriptor()
                                                        .getFields()
                                                        .get(0);
-    private final FloatFieldValidator validator =
-            new FloatFieldValidator(FieldContext.create(fieldDescriptor),
-                                    ImmutableList.of(VALUE));
+    private final BooleanFieldValidator validator =
+            new BooleanFieldValidator(FieldContext.create(fieldDescriptor),
+                                      ImmutableList.of(false));
 
     @Test
     public void convert_string_to_number() {
-        assertEquals(VALUE, validator.toNumber(VALUE.toString()));
-    }
-
-    @Test
-    public void return_absolute_number_value() {
-        assertEquals(VALUE, validator.getAbs(NEGATIVE_VALUE));
-    }
-
-    @Test
-    public void wrap_to_any() {
-        Any any = validator.wrap(VALUE);
-        FloatValue msg = AnyPacker.unpack(any);
-        assertEquals(VALUE, (Float) msg.getValue());
+        assertFalse(validator.isNotSet(false));
     }
 }

@@ -19,23 +19,28 @@
 //
 syntax = "proto3";
 
-package spine.test.validate.msg;
+package spine.test.validate;
 
 import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
 option java_multiple_files = true;
-option java_outer_classname = "ValidationTestAnyFieldsProto";
-option java_package = "io.spine.test.validate.msg.altfields";
+option java_outer_classname = "ValidationTestAltFieldsProto";
+option java_package = "io.spine.test.validate.altfields";
 
-import "google/protobuf/any.proto";
 
-message AnyContainer {
+message PersonName {
+    option (required_field) = "first_name | honorific_prefix & last_name";
 
-    google.protobuf.Any any = 1 [(valid) = true];
+    string honorific_prefix = 1;
+    string first_name = 2;
+    string last_name = 3;
+    string honorific_suffix = 4;
 }
 
-message UncheckedAnyContainer  {
+message MessageWithMissingField {
+    option (required_field) = "name | else";
 
-    google.protobuf.Any any = 1;
+    string name = 1;
+    bool present = 2;
 }
