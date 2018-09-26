@@ -243,30 +243,6 @@ message MessageWithMapDoubleField {
     map<string, double> map_field = 1;
 }
 
-// Messages for testing validation rules.
-
-message AValidationRule {
-    option (validation_of) = "spine.test.validate.msg.FirstRuleTarget.can_be_valid,"
-                             "spine.test.validate.msg.SecondRuleTarget.can_be_valid";
-
-    // Redefines regex for invalid message, so it can be valid if has one more character.
-    string invalid_field = 1 [(pattern).regex = "^.{1,}$"];
-}
-
-message RuleTargetAggregate {
-
-    FirstRuleTarget first = 1 [(valid) = true];
-    SecondRuleTarget second = 2 [(valid) = true];
-}
-
-message FirstRuleTarget {
-    InvalidMessage can_be_valid = 1 [(valid) = true];
-}
-
-message SecondRuleTarget {
-    InvalidMessage can_be_valid = 1 [(valid) = true];
-}
-
 // A message which is used to violate its constraints in scope of `MessageFieldValidator` tests.
 //
 // The field `invalid_field` must contain a non-empty value, but it also must match "^$" regex,

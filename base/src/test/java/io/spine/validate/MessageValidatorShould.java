@@ -48,8 +48,6 @@ import io.spine.test.validate.EnclosedMessageFieldValueWithCustomInvalidMessage;
 import io.spine.test.validate.EnclosedMessageFieldValueWithoutAnnotationFieldValueWithCustomInvalidMessage;
 import io.spine.test.validate.EnclosedMessageWithRequiredString;
 import io.spine.test.validate.EnclosedMessageWithoutAnnotationFieldValue;
-import io.spine.test.validate.FirstRuleTarget;
-import io.spine.test.validate.InvalidMessage;
 import io.spine.test.validate.MaxNumberFieldValue;
 import io.spine.test.validate.MinNumberFieldValue;
 import io.spine.test.validate.PatternStringFieldValue;
@@ -59,8 +57,6 @@ import io.spine.test.validate.RequiredByteStringFieldValue;
 import io.spine.test.validate.RequiredEnumFieldValue;
 import io.spine.test.validate.RequiredMsgFieldValue;
 import io.spine.test.validate.RequiredStringFieldValue;
-import io.spine.test.validate.RuleTargetAggregate;
-import io.spine.test.validate.SecondRuleTarget;
 import io.spine.test.validate.TimeInFutureFieldValue;
 import io.spine.test.validate.TimeInPastFieldValue;
 import io.spine.test.validate.TimeWithoutOptsFieldValue;
@@ -992,30 +988,6 @@ public class MessageValidatorShould {
     public void ignore_custom_invalid_field_message_if_validation_is_disabled() {
         validate(
                 EnclosedMessageFieldValueWithoutAnnotationFieldValueWithCustomInvalidMessage.getDefaultInstance());
-        assertIsValid(true);
-    }
-
-    /*
-     * Validation rules tests.
-     */
-
-    @Test
-    public void validate_according_to_validation_rule() {
-        String validValue = "any text";
-        InvalidMessage invalidMessage = InvalidMessage.newBuilder()
-                                                      .setInvalidField(validValue)
-                                                      .build();
-        FirstRuleTarget first = FirstRuleTarget.newBuilder()
-                                               .setCanBeValid(invalidMessage)
-                                               .build();
-        SecondRuleTarget second = SecondRuleTarget.newBuilder()
-                                                  .setCanBeValid(invalidMessage)
-                                                  .build();
-        RuleTargetAggregate aggregate = RuleTargetAggregate.newBuilder()
-                                                           .setFirst(first)
-                                                           .setSecond(second)
-                                                           .build();
-        validate(aggregate);
         assertIsValid(true);
     }
 

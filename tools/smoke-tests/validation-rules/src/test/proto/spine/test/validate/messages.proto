@@ -1,0 +1,65 @@
+//
+// Copyright 2018, TeamDev. All rights reserved.
+//
+// Redistribution and use in source and/or binary forms, with or without
+// modification, must retain the above copyright notice and the following
+// disclaimer.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+syntax = "proto3";
+
+package spine.test.validate;
+
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.spine.io";
+option java_multiple_files = true;
+option java_outer_classname = "ValidationTestMessagesProto";
+option java_package = "io.spine.test.validate";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/any.proto";
+
+// Messages for testing validation rules.
+
+message AValidationRule {
+    option (validation_of) = "spine.test.validate.FirstRuleTarget.can_be_valid,"
+                             "spine.test.validate.SecondRuleTarget.can_be_valid";
+
+    // Redefines regex for invalid message, so it can be valid if has one more character.
+    string invalid_field = 1 [(pattern).regex = "^.{1,}$"];
+}
+
+message RuleTargetAggregate {
+
+    FirstRuleTarget first = 1 [(valid) = true];
+    SecondRuleTarget second = 2 [(valid) = true];
+}
+
+message FirstRuleTarget {
+    InvalidMessage can_be_valid = 1 [(valid) = true];
+}
+
+message SecondRuleTarget {
+    InvalidMessage can_be_valid = 1 [(valid) = true];
+}
+
+// A message which is used to violate its constraints in scope of `MessageFieldValidator` tests.
+//
+// The field `invalid_field` must contain a non-empty value, but it also must match "^$" regex,
+// which represents an empty string. Thus, any instance of this message type is invalid.
+message InvalidMessage {
+    string invalid_field = 1 [(required) = true, (pattern).regex = "^$"];
+}
