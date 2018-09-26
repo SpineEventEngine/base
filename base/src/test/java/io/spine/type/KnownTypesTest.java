@@ -20,6 +20,7 @@
 
 package io.spine.type;
 
+import com.google.common.truth.IterableSubject;
 import com.google.protobuf.Any;
 import com.google.protobuf.Duration;
 import com.google.protobuf.Empty;
@@ -36,11 +37,11 @@ import io.spine.test.types.TaskName;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
 
+import static com.google.common.collect.ImmutableSet.of;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -122,8 +123,9 @@ class KnownTypesTest {
 
         Set<TypeUrl> packageTypes = knownTypes.getAllFromPackage(packageName);
 
-        assertThat(packageTypes).hasSize(3);
-        assertTrue(packageTypes.containsAll(Arrays.asList(taskId, taskName, task)));
+        IterableSubject assertTypes = assertThat(packageTypes);
+        assertTypes.hasSize(3);
+        assertTypes.containsAllIn(of(taskId, taskName, task));
     }
 
     @Test
