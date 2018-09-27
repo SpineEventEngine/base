@@ -75,8 +75,8 @@ class MemoizingStreamTest {
     }
 
     @Test
-    @DisplayName("clear memoized bytes idempotently")
-    void clearIdempotently() throws IOException {
+    @DisplayName("allow to clear memoized bytes any number of times")
+    void clearAnyNumberOfTimes() throws IOException {
         MemoizingStream stream = new MemoizingStream();
         byte[] input = randomBytes(4);
 
