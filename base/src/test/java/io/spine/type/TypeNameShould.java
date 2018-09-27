@@ -100,7 +100,7 @@ public class TypeNameShould {
 
     @Test
     public void provide_proto_descriptor_by_type_name() {
-        TypeName typeName = TypeName.of("spine.test.types.Task");
+        TypeName typeName = TypeName.of("spine.test.types.KnownTask");
         Descriptor typeDescriptor = typeName.getMessageDescriptor();
         assertNotNull(typeDescriptor);
         assertEquals(typeName.value(), typeDescriptor.getFullName());
