@@ -31,15 +31,15 @@ option java_multiple_files = true;
 //
 // See `KnownTypesShould` for the unit test code.
 //
-message TaskId {
+message KnownTaskId {
     string value = 1;
 }
 
-message TaskName {
+message KnownTaskName {
     string value = 1;
 }
 
-message Task {
-    TaskId id = 1;
-    TaskName name = 2;
+message KnownTask {
+    KnownTaskId id = 1;
+    KnownTaskName name = 2;
 }
