@@ -104,7 +104,7 @@ public final class DefaultJavaProject extends DefaultProject {
      * A root source code directory for manually written code.
      *
      * <p>Adds a root directory for the proto code in addition to those exposed
-     * by {@link SourceRoot}.
+     * by {@link io.spine.code.DefaultProject.SourceRoot SourceRoot}.
      */
     public static class HandmadeCodeRoot extends JavaCodeRoot {
 

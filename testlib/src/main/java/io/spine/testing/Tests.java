@@ -166,7 +166,7 @@ public final class Tests {
             if (field.isRepeated()) {
                 continue;
             }
-            assertEquals(message.hasField(field), paths.contains(field.getFullName()));
+            assertEquals(message.hasField(field), paths.contains(field.getName()));
         }
     }
 
