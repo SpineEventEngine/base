@@ -18,16 +18,27 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * The versions of the libraries used.
- *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
- */
+package io.spine.testing.logging;
 
-final def SPINE_VERSION = '0.10.92-SNAPSHOT'
+import com.google.common.truth.ObjectArraySubject;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.Extension;
 
-ext {
-    spineVersion = SPINE_VERSION
-    versionToPublish = SPINE_VERSION
+import static com.google.common.truth.Truth.assertThat;
+
+@DisplayName("@MuteLogging should")
+class MuteLoggingTest {
+
+    @Test
+    @DisplayName("be marked as an extension")
+    void annotated() {
+        Class<MuteLogging> annotation = MuteLogging.class;
+        ExtendWith extendsWith = annotation.getAnnotation(ExtendWith.class);
+        Class<? extends Extension>[] extensions = extendsWith.value();
+        ObjectArraySubject<Class<? extends Extension>> assertExtensions = assertThat(extensions);
+        assertExtensions.hasLength(1);
+        assertExtensions.asList().contains(MuteLoggingExtension.class);
+    }
 }
