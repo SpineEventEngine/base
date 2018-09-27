@@ -46,16 +46,12 @@ public final class MuteLoggingExtension implements BeforeEachCallback, AfterEach
 
     @Override
     public void beforeEach(ExtensionContext context) {
-        if (isAnnotated(context)) {
-            mute();
-        }
+        mute();
     }
 
     @Override
     public void afterEach(ExtensionContext context) throws IOException {
-        if (isAnnotated(context)) {
-            unMute(context);
-        }
+        unMute(context);
     }
 
     private void mute() {
@@ -71,13 +67,6 @@ public final class MuteLoggingExtension implements BeforeEachCallback, AfterEach
         } else {
             memoizingStream.clear();
         }
-    }
-
-    private static boolean isAnnotated(ExtensionContext context) {
-        boolean result = context.getElement()
-                                .map(element -> element.isAnnotationPresent(MuteLogging.class))
-                                .orElse(false);
-        return result;
     }
 
     /**
