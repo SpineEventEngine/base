@@ -31,6 +31,7 @@ import static com.google.common.primitives.Bytes.asList;
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.TestValues.random;
 import static java.lang.Byte.MAX_VALUE;
+import static java.lang.Byte.MIN_VALUE;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("MemoizingStream should")
@@ -101,6 +102,20 @@ class MemoizingStreamTest {
 
         assertThrows(BufferOverflowException.class, () -> stream.write(42));
         checkMemoized(stream, input);
+    }
+
+    @Test
+    @DisplayName("ignore negative values")
+    void negatives() throws IOException {
+        MemoizingStream stream = new MemoizingStream();
+
+        stream.write(-1);
+        stream.write(-42);
+        stream.write(10);
+        stream.write(0);
+        stream.write(MIN_VALUE);
+
+        checkMemoized(stream, new byte[]{(byte) 10, (byte) 0});
     }
 
     private static void checkMemoized(MemoizingStream stream, byte[] expected)
