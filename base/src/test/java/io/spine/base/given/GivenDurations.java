@@ -22,9 +22,6 @@ package io.spine.base.given;
 
 import com.google.protobuf.Duration;
 
-/**
- * @author Mykhailo Drachuk
- */
 public class GivenDurations {
 
     private static final int SECONDS_IN_1_MINUTE = 60;

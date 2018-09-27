@@ -30,9 +30,6 @@ import static io.spine.code.proto.CamelCase.convert;
 import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
 import static org.junit.Assert.assertEquals;
 
-/**
- * @author Alexander Yevsyukov
- */
 public class CamelCaseShould {
 
     @Test

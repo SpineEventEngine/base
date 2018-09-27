@@ -20,9 +20,6 @@
 
 package io.spine.protobuf.given;
 
-/**
- * @author Dmytro Kuzmin
- */
 public class TypeConverterTestEnv {
 
     public enum TaskStatus {

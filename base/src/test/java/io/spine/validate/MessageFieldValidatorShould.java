@@ -32,9 +32,6 @@ import io.spine.test.validate.MessegeWithRepeatedRequiredMessageField;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * @author Dmytro Dashenkov
- */
 public class MessageFieldValidatorShould extends FieldValidatorShould<Message> {
 
     private static final FieldDescriptor UNCHECKED_FIELD_DESC =

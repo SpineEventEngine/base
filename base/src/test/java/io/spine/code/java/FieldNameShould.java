@@ -23,9 +23,6 @@ package io.spine.code.java;
 import com.google.common.testing.NullPointerTester;
 import org.junit.Test;
 
-/**
- * @author Alexander Yevsyukov
- */
 public class FieldNameShould {
 
     @Test

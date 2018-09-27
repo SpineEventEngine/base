@@ -30,9 +30,6 @@ import io.spine.test.validate.MessegeWithRepeatedRequiredStringField;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * @author Dmytro Dashenkov
- */
 public class StringFieldValidatorShould extends FieldValidatorShould<String> {
 
     private static final FieldDescriptor UNCHECKED_FIELD_DESC =

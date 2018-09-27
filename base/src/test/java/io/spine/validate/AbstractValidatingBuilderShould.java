@@ -28,13 +28,10 @@ import java.util.Map;
 
 import static junit.framework.TestCase.assertTrue;
 
-/**
- * @author Alexander Aleksandrov
- */
 public class AbstractValidatingBuilderShould {
 
     @Test
-    public void convert_to_map() throws Exception {
+    public void convert_to_map() {
         String key1 = "key1";
         UInt32Value value = UInt32Value.newBuilder()
                                        .setValue(123)
@@ -52,7 +49,7 @@ public class AbstractValidatingBuilderShould {
     }
 
     @Test
-    public void convert_to_list() throws Exception {
+    public void convert_to_list() {
         String key1 = "key1";
         String value = "123";
         String listStr = "\"key1\",\"123\",\"key2\",\"234\"";

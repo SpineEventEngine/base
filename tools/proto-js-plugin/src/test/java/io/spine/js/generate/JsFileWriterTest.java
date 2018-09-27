@@ -36,9 +36,6 @@ import static io.spine.js.generate.JsFileWriter.createFor;
 import static io.spine.js.generate.given.FileWriters.assertFileContains;
 import static io.spine.js.generate.given.FileWriters.assertFileNotContains;
 
-/**
- * @author Dmytro Kuzmin
- */
 @DisplayName("JsFileWriter should")
 class JsFileWriterTest {
 

@@ -36,10 +36,6 @@ import static io.spine.tools.compiler.validation.ClassNames.getStringClassName;
 import static io.spine.tools.compiler.validation.ClassNames.getValidatorMessageClassName;
 import static org.junit.Assert.assertEquals;
 
-/**
- * @author Illia Shepilov
- * @author Alexander Yevsyukov
- */
 public class ClassNamesShould {
 
     private static final String TEST_PACKAGE = ClassNamesShould.class.getPackage()

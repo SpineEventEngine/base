@@ -41,9 +41,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-/**
- * @author Alex Tymchenko
- */
 public class ExtensionShould {
 
     private Project project;

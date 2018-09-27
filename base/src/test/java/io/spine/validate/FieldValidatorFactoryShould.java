@@ -49,9 +49,6 @@ import static java.util.Collections.emptyMap;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.Assert.assertThat;
 
-/**
- * @author Alexander Litus
- */
 public class FieldValidatorFactoryShould {
 
     @Test

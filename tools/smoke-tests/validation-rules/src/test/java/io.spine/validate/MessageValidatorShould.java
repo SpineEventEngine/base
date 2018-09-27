@@ -31,9 +31,6 @@ import java.util.List;
 
 import static org.junit.Assert.assertTrue;
 
-/**
- * @author Alexander Litus
- */
 @SuppressWarnings({"ClassWithTooManyMethods", "OverlyCoupledClass", "OverlyComplexClass"})
 public class MessageValidatorShould {
 

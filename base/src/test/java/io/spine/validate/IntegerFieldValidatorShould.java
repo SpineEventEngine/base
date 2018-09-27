@@ -29,9 +29,6 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-/**
- * @author Alexander Litus
- */
 public class IntegerFieldValidatorShould {
 
     private static final Integer VALUE = 2;

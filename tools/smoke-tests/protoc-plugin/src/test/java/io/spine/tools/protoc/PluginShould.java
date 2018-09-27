@@ -37,9 +37,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
-/**
- * @author Dmytro Dashenkov
- */
 public class PluginShould {
 
     private static final String EVENT_INTERFACE_FQN =

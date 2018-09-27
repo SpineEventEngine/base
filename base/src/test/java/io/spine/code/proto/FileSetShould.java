@@ -24,9 +24,6 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertFalse;
 
-/**
- * @author Alexander Yevsyukov
- */
 public class FileSetShould {
 
     @Test

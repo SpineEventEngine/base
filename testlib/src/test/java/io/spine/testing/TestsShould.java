@@ -43,9 +43,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-/**
- * @author Alexander Yevsyukov
- */
 @SuppressWarnings({"InnerClassMayBeStatic", "ClassCanBeStatic"})
 @DisplayName("Tests utility class should")
 class TestsShould extends UtilityClassTest<Tests> {

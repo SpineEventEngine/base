@@ -27,9 +27,6 @@ import io.spine.base.Time;
 import static io.spine.base.Time.getCurrentTime;
 import static io.spine.base.Time.setProvider;
 
-/**
- * @author Mykhailo Drachuk
- */
 public class MessageValidatorTestEnv {
 
     private static final int SECONDS_IN_MINUTE = 60;

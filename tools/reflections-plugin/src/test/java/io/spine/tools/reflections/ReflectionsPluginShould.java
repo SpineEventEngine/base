@@ -33,9 +33,6 @@ import static io.spine.tools.reflections.Given.newProject;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-/**
- * @author Alex Tymchenko
- */
 public class ReflectionsPluginShould {
 
     @Test

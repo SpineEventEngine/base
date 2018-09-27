@@ -35,9 +35,6 @@ import static io.spine.js.generate.given.Given.messageField;
 import static io.spine.js.generate.given.Given.primitiveField;
 import static io.spine.js.generate.given.Given.timestampField;
 
-/**
- * @author Dmytro Kuzmin
- */
 @DisplayName("FieldParsers utility should")
 class FieldParsersTest extends UtilityClassTest<FieldParsers> {
 

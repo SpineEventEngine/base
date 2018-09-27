@@ -31,9 +31,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-/**
- * @author Alexander Yevsyukov
- */
 @SuppressWarnings("AccessOfSystemProperties")
 public class EnvironmentShould {
 

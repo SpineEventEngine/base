@@ -32,9 +32,6 @@ import static io.spine.js.generate.given.Generators.assertNotContains;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-/**
- * @author Dmytro Kuzmin
- */
 @SuppressWarnings("DuplicateStringLiteralInspection")
 // Generated code duplication needed to check main class.
 @DisplayName("JsOutput should")

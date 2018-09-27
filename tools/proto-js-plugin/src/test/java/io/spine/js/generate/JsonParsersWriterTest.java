@@ -48,9 +48,6 @@ import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static java.nio.file.Files.exists;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-/**
- * @author Dmytro Kuzmin
- */
 @SuppressWarnings("DuplicateStringLiteralInspection") // Common test display names.
 @DisplayName("JsonParsersWriter should")
 class JsonParsersWriterTest {

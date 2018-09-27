@@ -34,9 +34,6 @@ import spine.test.code.InheritPackage;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-/**
- * @author Dmytro Dashenkov
- */
 @DisplayName("Java SourceFile should")
 @SuppressWarnings("InnerClassMayBeStatic") // Nested test suite.
 class SourceFileTest {

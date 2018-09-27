@@ -24,6 +24,7 @@ import com.google.common.truth.DefaultSubject;
 import com.google.common.truth.Subject;
 import com.google.protobuf.Timestamp;
 import io.spine.base.Time.SystemTimeProvider;
+import io.spine.base.given.ConstantTimeProvider;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -34,9 +35,6 @@ import static com.google.protobuf.util.Timestamps.subtract;
 import static io.spine.base.Time.getCurrentTime;
 import static io.spine.base.Time.resetProvider;
 import static io.spine.base.Time.setProvider;
-
-import io.spine.base.given.ConstantTimeProvider;
-
 import static io.spine.base.Time.systemTime;
 import static io.spine.base.given.GivenDurations.DURATION_1_MINUTE;
 import static io.spine.base.given.GivenDurations.DURATION_5_MINUTES;
@@ -44,9 +42,6 @@ import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 
-/**
- * @author Mykhailo Drachuk
- */
 @DisplayName("Time class should")
 class TimeTest {
 

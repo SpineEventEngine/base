@@ -24,9 +24,6 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-/**
- * @author Dmytro Grankin
- */
 public class PreTagFormattingShould {
 
     private static final String RAW_PROTO_DOC =

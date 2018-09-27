@@ -120,7 +120,7 @@ public interface ValidatingBuilder<T extends Message, B extends Message.Builder>
 
         /**
          * The index of the declaration of the generic parameter type {@code <B>}
-         * in {@link ValidatingBuilder}
+         * in {@link ValidatingBuilder}.
          */
         MESSAGE_BUILDER(1);
 

@@ -32,9 +32,6 @@ import static com.google.protobuf.Descriptors.FieldDescriptor.Type.FLOAT;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.INT32;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.INT64;
 
-/**
- * @author Dmytro Kuzmin
- */
 @DisplayName("PrimitiveParsers utility should")
 class PrimitiveParsersTest extends UtilityClassTest<PrimitiveParsers> {
 

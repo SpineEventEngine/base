@@ -25,15 +25,10 @@ import com.google.protobuf.Any;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.FloatValue;
 import io.spine.protobuf.AnyPacker;
-import io.spine.validate.FieldContext;
-import io.spine.validate.FloatFieldValidator;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-/**
- * @author Alexander Litus
- */
 public class FloatFieldValidatorShould {
 
     private static final Float VALUE = 0.5F;

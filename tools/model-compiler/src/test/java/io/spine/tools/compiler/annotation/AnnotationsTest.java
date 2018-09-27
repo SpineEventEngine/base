@@ -33,9 +33,6 @@ import static io.spine.tools.compiler.annotation.Annotations.canIgnoreReturnValu
 import static io.spine.tools.compiler.annotation.Annotations.generatedBySpineModelCompiler;
 import static org.junit.Assert.assertEquals;
 
-/**
- * @author Dmytro Dashenkov
- */
 @DisplayName("Annotations utility class should")
 class AnnotationsTest extends UtilityClassTest<Annotations> {
 

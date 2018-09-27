@@ -100,7 +100,7 @@ public final class FieldContext {
     }
 
     /**
-     * Obtains target of this context
+     * Obtains target of this context.
      *
      * @return the target descriptor
      */

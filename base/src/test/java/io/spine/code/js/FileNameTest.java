@@ -34,9 +34,6 @@ import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-/**
- * @author Dmytro Kuzmin
- */
 @DisplayName("FileName should")
 class FileNameTest {
 

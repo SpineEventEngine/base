@@ -20,15 +20,10 @@
 package io.spine.validate;
 
 import com.google.common.testing.NullPointerTester;
-import io.spine.validate.ConstraintViolation;
-import io.spine.validate.ConstraintViolations;
 import org.junit.Test;
 
 import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
 
-/**
- * @author Alex Tymchenko
- */
 public class ConstraintViolationsShould {
 
     @Test

@@ -30,9 +30,6 @@ import static io.spine.tools.compiler.annotation.check.Annotations.findSpiAnnota
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-/**
- * @author Dmytro Grankin
- */
 public class MainDefinitionAnnotationCheck implements SourceCheck {
 
     private final boolean shouldBeAnnotated;
@@ -41,9 +38,8 @@ public class MainDefinitionAnnotationCheck implements SourceCheck {
         this.shouldBeAnnotated = shouldBeAnnotated;
     }
 
-    @Nullable
     @Override
-    public Void apply(@Nullable AbstractJavaSource<JavaClassSource> input) {
+    public @Nullable Void apply(@Nullable AbstractJavaSource<JavaClassSource> input) {
         checkNotNull(input);
         AnnotationSource annotationSource = findSpiAnnotation(input);
         if (shouldBeAnnotated) {

@@ -34,9 +34,6 @@ import org.junit.jupiter.api.Test;
 
 import static io.spine.js.generate.given.Generators.assertContains;
 
-/**
- * @author Dmytro Kuzmin
- */
 @SuppressWarnings("DuplicateStringLiteralInspection")
 // Duplication necessary to check main class code.
 @DisplayName("KnownTypesGenerator should")

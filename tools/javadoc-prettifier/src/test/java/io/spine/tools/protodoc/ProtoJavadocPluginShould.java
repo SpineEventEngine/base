@@ -46,9 +46,6 @@ import static io.spine.tools.protodoc.PreTagFormatting.OPENING_PRE;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-/**
- * @author Dmytro Grankin
- */
 public class ProtoJavadocPluginShould {
 
     private static final String PLUGIN_ID = "io.spine.tools.protobuf-javadoc-plugin";

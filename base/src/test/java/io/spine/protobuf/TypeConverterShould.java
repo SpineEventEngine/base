@@ -42,9 +42,6 @@ import static io.spine.protobuf.given.TypeConverterTestEnv.TaskStatus.SUCCESS;
 import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
 import static org.junit.Assert.assertEquals;
 
-/**
- * @author Dmytro Dashenkov
- */
 public class TypeConverterShould {
 
     @Test

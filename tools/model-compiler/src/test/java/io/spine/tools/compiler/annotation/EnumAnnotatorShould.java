@@ -31,9 +31,6 @@ import java.util.Collections;
 import static io.spine.test.compiler.annotation.EnumAnnotatorShouldProto.experimentalType;
 import static org.junit.Assert.assertFalse;
 
-/**
- * @author Dmytro Grankin
- */
 public class EnumAnnotatorShould {
 
     private static final String INVALID_GEN_PROTO_DIR = "";

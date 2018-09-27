@@ -23,15 +23,10 @@ package io.spine.validate;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Any;
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.validate.BooleanFieldValidator;
-import io.spine.validate.FieldContext;
 import org.junit.Test;
 
 import static org.junit.Assert.assertFalse;
 
-/**
- * @author dmitry.kashcheiev
- */
 public class BooleanFieldValidatorShould {
 
     private final FieldDescriptor fieldDescriptor = Any.getDescriptor()

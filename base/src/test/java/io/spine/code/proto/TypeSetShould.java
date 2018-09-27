@@ -25,9 +25,6 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertFalse;
 
-/**
- * @author Alexander Yevsyukov
- */
 public class TypeSetShould {
 
     private static final FileSet fileSet = FileSet.load();

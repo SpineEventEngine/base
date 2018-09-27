@@ -39,9 +39,6 @@ import static io.spine.tools.gradle.compiler.given.RejectionTestEnv.newProjectWi
 import static io.spine.tools.gradle.compiler.given.RejectionTestEnv.rejectionsJavadocSourceName;
 import static org.junit.Assert.assertEquals;
 
-/**
- * @author Dmytro Grankin
- */
 public class RejectionGenPluginShould {
 
     @Rule

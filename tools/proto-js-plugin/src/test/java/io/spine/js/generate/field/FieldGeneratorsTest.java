@@ -33,9 +33,6 @@ import static io.spine.js.generate.given.Given.mapField;
 import static io.spine.js.generate.given.Given.messageField;
 import static io.spine.js.generate.given.Given.repeatedField;
 
-/**
- * @author Dmytro Kuzmin
- */
 @DisplayName("FieldGenerators utility should")
 class FieldGeneratorsTest extends UtilityClassTest<FieldGenerators> {
 

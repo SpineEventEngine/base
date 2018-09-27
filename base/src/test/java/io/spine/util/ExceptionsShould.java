@@ -33,10 +33,6 @@ import static io.spine.util.Exceptions.unsupported;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-/**
- * @author Alexander Litus
- * @author Alexander Yevsyukov
- */
 @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
 public class ExceptionsShould {
 

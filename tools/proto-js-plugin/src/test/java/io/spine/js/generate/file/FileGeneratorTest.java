@@ -34,9 +34,6 @@ import static io.spine.js.generate.given.Given.file;
 import static io.spine.js.generate.message.MessageGenerator.FROM_JSON;
 import static io.spine.js.generate.message.MessageGenerator.FROM_OBJECT;
 
-/**
- * @author Dmytro Kuzmin
- */
 @DisplayName("FileGenerator should")
 class FileGeneratorTest {
 

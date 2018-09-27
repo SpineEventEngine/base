@@ -30,9 +30,6 @@ import static io.spine.tools.compiler.check.given.ProjectConfigurations.assertCo
 import static io.spine.tools.compiler.check.given.ProjectConfigurations.assertCompileTasksEmpty;
 import static io.spine.tools.gradle.compiler.given.ModelCompilerTestEnv.newProject;
 
-/**
- * @author Dmytro Kuzmin
- */
 public class ProjectArgumentsShould {
 
     private Project project;

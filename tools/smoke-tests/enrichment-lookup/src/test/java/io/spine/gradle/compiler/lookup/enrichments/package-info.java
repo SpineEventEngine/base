@@ -18,33 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.value;
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.gradle.compiler.lookup.enrichments;
 
-import org.junit.Test;
+import com.google.errorprone.annotations.CheckReturnValue;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-public class ComparableStringValueShould {
-
-    /* shorter names are meaningful for this test */
-    @SuppressWarnings("LocalVariableNamingConvention")
-    @Test
-    public void compare() {
-        TestVal a = new TestVal("a");
-        TestVal b = new TestVal("b");
-
-        assertTrue(a.compareTo(b) < 0);
-        assertTrue(b.compareTo(a) > 0);
-        assertEquals(0, a.compareTo(new TestVal("a")));
-    }
-
-    private static class TestVal extends ComparableStringValue<TestVal> {
-
-        private static final long serialVersionUID = 0L;
-
-        private TestVal(String value) {
-            super(value);
-        }
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;

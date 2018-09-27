@@ -41,9 +41,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
-/**
- * @author Dmytro Kuzmin
- */
 @SuppressWarnings({"CheckReturnValue", "ResultOfMethodCallIgnored"})
 // We ignore boolean "success" flag which is not interesting for us in this test.
 public class DependencyConfigurerShould {
