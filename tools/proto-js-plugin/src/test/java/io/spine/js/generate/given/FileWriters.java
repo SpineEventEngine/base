@@ -20,6 +20,8 @@
 
 package io.spine.js.generate.given;
 
+import com.google.common.base.Charsets;
+
 import java.io.IOException;
 import java.nio.file.Path;
 
@@ -42,7 +44,7 @@ public final class FileWriters {
     assertFileContains(Path filePath, CharSequence toSearch) throws IOException {
         assertTrue(exists(filePath));
         byte[] bytes = readAllBytes(filePath);
-        String fileContent = new String(bytes);
+        String fileContent = new String(bytes, Charsets.UTF_8);
         assertThat(fileContent).contains(toSearch);
     }
 
@@ -50,7 +52,7 @@ public final class FileWriters {
     assertFileNotContains(Path filePath, CharSequence toSearch) throws IOException {
         assertTrue(exists(filePath));
         byte[] bytes = readAllBytes(filePath);
-        String fileContent = new String(bytes);
+        String fileContent = new String(bytes, Charsets.UTF_8);
         assertThat(fileContent).doesNotContain(toSearch);
     }
 }
