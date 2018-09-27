@@ -20,6 +20,7 @@
 
 package io.spine.testing.logging;
 
+import com.google.common.base.Charsets;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -86,7 +87,7 @@ class MuteLoggingExtensionTest {
         extension.afterEach(failedContext());
 
         assertEquals(0, out.size());
-        String actualErrorOutput = new String(err.toByteArray());
+        String actualErrorOutput = new String(err.toByteArray(), Charsets.UTF_8);
         assertThat(actualErrorOutput).contains(
                 outputMessage
               + System.lineSeparator()

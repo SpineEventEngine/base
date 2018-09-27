@@ -105,9 +105,9 @@ public class ReflectionsPlugin extends SpinePlugin {
         reflections.save(reflectionsOutputFilePath);
     }
 
+    @SuppressWarnings({"CollectionContainsUrl", "URLEqualsHashCode"})
+    // because they are file URIs, they will not cause any network-related issues.
     private static Set<URL> toUrls(File outputDir) {
-        // because they are file URIs, they will not cause any network-related issues.
-        @SuppressWarnings({"CollectionContainsUrl", "URLEqualsHashCode"})
         ImmutableSet<URL> urls;
         try {
             urls = ImmutableSet.of(outputDir.toURI()

@@ -24,6 +24,7 @@ import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Any;
 import com.google.protobuf.FieldMask;
 import com.google.protobuf.Timestamp;
+import com.google.protobuf.util.FieldMaskUtil;
 import io.spine.testing.given.TestsTestEnv.ClassThrowingExceptionInConstructor;
 import io.spine.testing.given.TestsTestEnv.ClassWithCtorWithArgs;
 import io.spine.testing.given.TestsTestEnv.ClassWithPrivateCtor;
@@ -43,10 +44,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-/**
- * @author Alexander Yevsyukov
- */
-@SuppressWarnings({"InnerClassMayBeStatic", "ClassCanBeStatic"})
 @DisplayName("Tests utility class should")
 class TestsShould extends UtilityClassTest<Tests> {
 
@@ -157,13 +154,7 @@ class TestsShould extends UtilityClassTest<Tests> {
         @Test
         @DisplayName("when field is matched")
         void fieldIsPresent() {
-            String fieldPath = Timestamp.getDescriptor()
-                                        .getFields()
-                                        .get(0)
-                                        .getFullName();
-            FieldMask.Builder builder = FieldMask.newBuilder();
-            builder.addPaths(fieldPath);
-            FieldMask fieldMask = builder.build();
+            FieldMask fieldMask = FieldMaskUtil.fromFieldNumbers(Timestamp.class, 1);
 
             assertMatchesMask(timestampMsg, fieldMask);
         }
@@ -171,13 +162,7 @@ class TestsShould extends UtilityClassTest<Tests> {
         @Test
         @DisplayName("throws the error when field is not present")
         void fieldIsNotPresent() {
-            String fieldPath = Any.getDescriptor()
-                                  .getFields()
-                                  .get(0)
-                                  .getFullName();
-            FieldMask.Builder builder = FieldMask.newBuilder();
-            builder.addPaths(fieldPath);
-            FieldMask fieldMask = builder.build();
+            FieldMask fieldMask = FieldMaskUtil.fromFieldNumbers(Any.class, 1);
 
             assertThrows(AssertionError.class, () -> assertMatchesMask(timestampMsg, fieldMask));
         }
@@ -213,6 +198,7 @@ class TestsShould extends UtilityClassTest<Tests> {
         @DisplayName("when values are equal")
         void equalValues() {
             long expectedValue = getValue();
+            @SuppressWarnings("UnnecessaryLocalVariable") // For readability of this test.
             long actualValue = expectedValue;
             assertInDelta(expectedValue, actualValue, 0);
         }

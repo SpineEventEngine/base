@@ -22,13 +22,17 @@ package io.spine.testing;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors;
+import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.FieldMask;
 import com.google.protobuf.Message;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import static com.google.common.collect.ImmutableList.toImmutableList;
+import static com.google.common.truth.Truth.assertThat;
 import static java.lang.Math.abs;
 
 /**
@@ -161,12 +165,22 @@ public final class Tests {
     public static void assertMatchesMask(Message message, FieldMask fieldMask) {
         List<String> paths = fieldMask.getPathsList();
 
-        for (Descriptors.FieldDescriptor field : message.getDescriptorForType()
-                                                        .getFields()) {
+        List<FieldDescriptor> fields = message.getDescriptorForType()
+                                              .getFields();
+
+        List<String> fieldNames = fields.stream()
+                                        .map(FieldDescriptor::getName)
+                                        .collect(toImmutableList());
+
+        // Assert that the passed field mask contains the field of this message type.
+        assertThat(fieldNames).containsAllIn(paths);
+
+        // Assert that values match the field mask.
+        for (FieldDescriptor field : fields) {
             if (field.isRepeated()) {
                 continue;
             }
-            assertEquals(message.hasField(field), paths.contains(field.getFullName()));
+            assertEquals(message.hasField(field), paths.contains(field.getName()));
         }
     }
 

@@ -32,8 +32,7 @@ import io.spine.js.generate.JsOutput;
  * method is not returning any generated code.
  *
  * @author Dmytro Kuzmin
- * @see <a href="https://developers.google.com/protocol-buffers/docs/proto3#json">Protobuf JSON
- * Mapping</a> for how the various primitive types are encoded in JSON
+ * @see <a href="https://developers.google.com/protocol-buffers/docs/proto3#json">Protobuf JSON Mapping</a>
  */
 public interface PrimitiveParser {
 
