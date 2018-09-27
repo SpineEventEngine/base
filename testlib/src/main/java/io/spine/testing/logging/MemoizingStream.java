@@ -41,6 +41,10 @@ final class MemoizingStream extends OutputStream {
 
     @Override
     public void write(int b) {
+        /*
+           According to the `OutputStream` contract, a negative value may represent the end of
+           the stream. The actual data is the lowest 8 bits of the int.
+         */
         if (b >= 0) {
             @SuppressWarnings("NumericCastThatLosesPrecision")
                 // Adheres to the OutputStream contract.
