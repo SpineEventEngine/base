@@ -106,7 +106,7 @@ public class ReflectionsPlugin extends SpinePlugin {
     }
 
     @SuppressWarnings({"CollectionContainsUrl", "URLEqualsHashCode"})
-        // because they are file URIs, they will not cause any network-related issues.
+    // because they are file URIs, they will not cause any network-related issues.
     private static Set<URL> toUrls(File outputDir) {
         ImmutableSet<URL> urls;
         try {
