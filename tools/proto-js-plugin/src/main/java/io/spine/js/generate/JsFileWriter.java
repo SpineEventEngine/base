@@ -21,6 +21,8 @@
 package io.spine.js.generate;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Charsets;
+import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.js.Directory;
 import io.spine.code.js.FileName;
@@ -89,9 +91,10 @@ public final class JsFileWriter {
     public void write(JsOutput jsOutput) {
         checkNotNull(jsOutput);
         try {
-            byte[] bytes = jsOutput.toString()
-                                   .getBytes();
-            Files.write(filePath, bytes, CREATE, TRUNCATE_EXISTING);
+            Files.write(filePath,
+                        ImmutableList.of(jsOutput.toString()),
+                        Charsets.UTF_8,
+                        CREATE, TRUNCATE_EXISTING);
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
@@ -108,9 +111,7 @@ public final class JsFileWriter {
     public void append(JsOutput jsOutput) {
         checkNotNull(jsOutput);
         try {
-            byte[] bytes = jsOutput.toString()
-                                   .getBytes();
-            Files.write(filePath, bytes, APPEND);
+            Files.write(filePath, ImmutableList.of(jsOutput.toString()), Charsets.UTF_8, APPEND);
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
