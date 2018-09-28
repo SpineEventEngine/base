@@ -33,9 +33,6 @@ import static io.spine.js.generate.field.parser.primitive.BytesParser.BASE64_LIB
 import static io.spine.js.generate.field.parser.primitive.BytesParser.BASE64_VAR;
 import static io.spine.js.generate.given.Generators.assertContains;
 
-/**
- * @author Dmytro Kuzmin
- */
 @SuppressWarnings("DuplicateStringLiteralInspection")
 // Generated code duplication needed to check main class.
 @DisplayName("PrimitiveParser should")

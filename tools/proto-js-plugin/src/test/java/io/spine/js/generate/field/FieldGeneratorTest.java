@@ -39,9 +39,6 @@ import static io.spine.js.generate.message.MessageGenerator.FROM_OBJECT;
 import static io.spine.js.generate.message.MessageGenerator.FROM_OBJECT_ARG;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-/**
- * @author Dmytro Kuzmin
- */
 @SuppressWarnings("DuplicateStringLiteralInspection")
 // Generated code duplication needed to check main class.
 @DisplayName("FieldGenerator should")

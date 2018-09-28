@@ -30,9 +30,6 @@ import org.slf4j.event.SubstituteLoggingEvent;
 
 import static io.spine.testing.logging.LogTruth.assertThat;
 
-/**
- * @author Alexander Yevsyukov
- */
 @DisplayName("LogTruth should")
 class LogTruthTest extends UtilityClassTest<LogTruth> {
 

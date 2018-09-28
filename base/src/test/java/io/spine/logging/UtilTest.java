@@ -29,9 +29,6 @@ import static com.google.common.truth.Truth.assertThat;
 import static io.spine.logging.MethodGroupTest.randomArgument;
 import static io.spine.logging.MethodGroupTest.randomText;
 
-/**
- * @author Alexander Yevsyukov
- */
 @DisplayName("Logging Util class should")
 class UtilTest {
 

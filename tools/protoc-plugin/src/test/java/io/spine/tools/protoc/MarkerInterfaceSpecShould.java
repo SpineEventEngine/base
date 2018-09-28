@@ -28,9 +28,6 @@ import javax.annotation.Generated;
 
 import static org.junit.Assert.assertEquals;
 
-/**
- * @author Dmytro Dashenkov
- */
 public class MarkerInterfaceSpecShould {
 
     @Test

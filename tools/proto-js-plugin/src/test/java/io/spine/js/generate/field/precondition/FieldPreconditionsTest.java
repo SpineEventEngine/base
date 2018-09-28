@@ -34,9 +34,6 @@ import static io.spine.js.generate.given.Given.messageField;
 import static io.spine.js.generate.given.Given.primitiveField;
 import static io.spine.js.generate.given.Given.timestampField;
 
-/**
- * @author Dmytro Kuzmin
- */
 @DisplayName("FieldPreconditions utility should")
 class FieldPreconditionsTest extends UtilityClassTest<FieldPreconditions> {
 

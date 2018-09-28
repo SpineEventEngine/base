@@ -30,9 +30,6 @@ import java.util.List;
 
 import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
 
-/**
- * @author Illia Shepilov
- */
 public class ValidatingBuilderGenPluginShould {
 
     private static final String PROJECT_NAME = "validators-gen-plugin-test";

@@ -28,9 +28,6 @@ import java.util.Collections;
 import static java.lang.System.lineSeparator;
 import static org.junit.Assert.assertEquals;
 
-/**
- * @author Dmytro Grankin
- */
 public class LineFormattingShould {
 
     private final FormattingAction formatting = new ALineFormatting();

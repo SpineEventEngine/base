@@ -34,9 +34,6 @@ import static io.spine.tools.gradle.TaskName.COPY_MODULE_SOURCES;
 import static io.spine.tools.gradle.TaskName.GENERATE_JSON_PARSERS;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-/**
- * @author Dmytro Kuzmin
- */
 @DisplayName("ProtoJsPlugin should")
 class ProtoJsPluginTest {
 

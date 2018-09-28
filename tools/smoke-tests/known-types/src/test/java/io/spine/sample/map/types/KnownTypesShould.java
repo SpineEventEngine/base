@@ -30,9 +30,6 @@ import org.junit.Test;
 import static com.google.common.collect.ImmutableList.copyOf;
 import static org.junit.Assert.assertEquals;
 
-/**
- * @author Alexander Litus
- */
 public class KnownTypesShould {
 
     private static final String PROTO_TYPE_PREFIX = "type.spine.io/spine.sample.map.types.";

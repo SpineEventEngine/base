@@ -30,9 +30,6 @@ import org.slf4j.helpers.SubstituteLogger;
 
 import static io.spine.testing.logging.LogTruth.assertThat;
 
-/**
- * @author Alexander Yevsyukov
- */
 @DisplayName("Logging interface should")
 class LoggingTest {
 

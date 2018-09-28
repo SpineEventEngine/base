@@ -34,9 +34,6 @@ import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-/**
- * @author Dmytro Kuzmin
- */
 @DisplayName("ProtoParsersGenerator should")
 class ProtoParsersGeneratorTest {
 

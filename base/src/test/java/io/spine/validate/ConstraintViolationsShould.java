@@ -24,9 +24,6 @@ import org.junit.Test;
 
 import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
 
-/**
- * @author Alex Tymchenko
- */
 public class ConstraintViolationsShould {
 
     @Test

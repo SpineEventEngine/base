@@ -64,7 +64,7 @@ public class MessageFieldException extends RuntimeException {
     }
 
     /**
-     * Obtains a Protobuf message working with a field of which caused an error
+     * Obtains a Protobuf message working with a field of which caused an error.
      */
     public Message getProtobufMessage() {
         return protobufMessage;

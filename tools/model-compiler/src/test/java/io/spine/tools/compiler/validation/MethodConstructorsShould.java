@@ -30,9 +30,6 @@ import static io.spine.tools.compiler.validation.MethodConstructors.createDescri
 import static io.spine.tools.compiler.validation.MethodConstructors.createValidateStatement;
 import static org.junit.Assert.assertNotNull;
 
-/**
- * @author Illia Shepilov
- */
 public class MethodConstructorsShould {
 
     private static final String TEST_VALUE = "testValue";

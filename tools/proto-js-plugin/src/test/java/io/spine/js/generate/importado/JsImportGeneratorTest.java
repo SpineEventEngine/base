@@ -35,9 +35,6 @@ import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-/**
- * @author Dmytro Kuzmin
- */
 @SuppressWarnings("DuplicateStringLiteralInspection")
 // Generated code duplication needed to check main class.
 @DisplayName("JsImportGenerator should")

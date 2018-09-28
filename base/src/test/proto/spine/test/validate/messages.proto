@@ -19,14 +19,14 @@
 //
 syntax = "proto3";
 
-package spine.test.validate.msg;
+package spine.test.validate;
 
 import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
 option java_multiple_files = true;
 option java_outer_classname = "ValidationTestMessagesProto";
-option java_package = "io.spine.test.validate.msg";
+option java_package = "io.spine.test.validate";
 
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
@@ -241,30 +241,6 @@ message MessageWithMapFloatField {
 
 message MessageWithMapDoubleField {
     map<string, double> map_field = 1;
-}
-
-// Messages for testing validation rules.
-
-message AValidationRule {
-    option (validation_of) = "spine.test.validate.msg.FirstRuleTarget.can_be_valid,"
-                             "spine.test.validate.msg.SecondRuleTarget.can_be_valid";
-
-    // Redefines regex for invalid message, so it can be valid if has one more character.
-    string invalid_field = 1 [(pattern).regex = "^.{1,}$"];
-}
-
-message RuleTargetAggregate {
-
-    FirstRuleTarget first = 1 [(valid) = true];
-    SecondRuleTarget second = 2 [(valid) = true];
-}
-
-message FirstRuleTarget {
-    InvalidMessage can_be_valid = 1 [(valid) = true];
-}
-
-message SecondRuleTarget {
-    InvalidMessage can_be_valid = 1 [(valid) = true];
 }
 
 // A message which is used to violate its constraints in scope of `MessageFieldValidator` tests.

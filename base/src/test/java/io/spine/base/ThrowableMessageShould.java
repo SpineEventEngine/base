@@ -40,10 +40,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
-/**
- * @author Alex Tymchenko
- * @author Alexander Yevsyukov
- */
 public class ThrowableMessageShould {
 
     private RejectionMessage message;

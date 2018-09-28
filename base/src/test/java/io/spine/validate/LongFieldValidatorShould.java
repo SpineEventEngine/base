@@ -29,9 +29,6 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-/**
- * @author Alexander Litus
- */
 public class LongFieldValidatorShould {
 
     private static final Long VALUE = 2L;

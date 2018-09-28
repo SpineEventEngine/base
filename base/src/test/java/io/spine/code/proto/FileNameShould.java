@@ -33,9 +33,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-/**
- * @author Alexander Yevsyukov
- */
 public class FileNameShould {
 
     @Rule

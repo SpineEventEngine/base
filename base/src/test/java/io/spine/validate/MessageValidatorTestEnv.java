@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.validate.given;
+package io.spine.validate;
 
 import com.google.protobuf.Duration;
 import com.google.protobuf.Timestamp;
@@ -27,9 +27,6 @@ import io.spine.base.Time;
 import static io.spine.base.Time.getCurrentTime;
 import static io.spine.base.Time.setProvider;
 
-/**
- * @author Mykhailo Drachuk
- */
 public class MessageValidatorTestEnv {
 
     private static final int SECONDS_IN_MINUTE = 60;

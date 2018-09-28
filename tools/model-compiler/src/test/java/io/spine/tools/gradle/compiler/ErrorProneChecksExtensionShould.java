@@ -32,9 +32,6 @@ import static io.spine.tools.gradle.compiler.given.ModelCompilerTestEnv.newProje
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-/**
- * @author Dmytro Kuzmin
- */
 public class ErrorProneChecksExtensionShould {
 
     private Project project;

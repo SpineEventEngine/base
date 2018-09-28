@@ -32,9 +32,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 
-/**
- * @author Dmytro Grankin
- */
 public class RejectionTestEnv {
 
     /** Javadocs received from {@link RootDoc} contain "\n" line separator. */

@@ -20,6 +20,7 @@
 
 package io.spine.type;
 
+import com.google.common.truth.IterableSubject;
 import com.google.protobuf.Any;
 import com.google.protobuf.Duration;
 import com.google.protobuf.Empty;
@@ -30,17 +31,17 @@ import io.spine.base.Error;
 import io.spine.code.proto.Type;
 import io.spine.option.EntityOption;
 import io.spine.option.IfMissingOption;
-import io.spine.test.types.Task;
-import io.spine.test.types.TaskId;
-import io.spine.test.types.TaskName;
+import io.spine.test.types.KnownTask;
+import io.spine.test.types.KnownTaskId;
+import io.spine.test.types.KnownTaskName;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
 
+import static com.google.common.collect.ImmutableSet.of;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -114,16 +115,17 @@ class KnownTypesTest {
     @Test
     @DisplayName("obtain all types under a given package")
     void typesFromPackage() {
-        TypeUrl taskId = TypeUrl.from(TaskId.getDescriptor());
-        TypeUrl taskName = TypeUrl.from(TaskName.getDescriptor());
-        TypeUrl task = TypeUrl.from(Task.getDescriptor());
+        TypeUrl taskId = TypeUrl.from(KnownTaskId.getDescriptor());
+        TypeUrl taskName = TypeUrl.from(KnownTaskName.getDescriptor());
+        TypeUrl task = TypeUrl.from(KnownTask.getDescriptor());
 
         String packageName = "spine.test.types";
 
         Set<TypeUrl> packageTypes = knownTypes.getAllFromPackage(packageName);
 
-        assertThat(packageTypes).hasSize(3);
-        assertTrue(packageTypes.containsAll(Arrays.asList(taskId, taskName, task)));
+        IterableSubject assertTypes = assertThat(packageTypes);
+        assertTypes.hasSize(3);
+        assertTypes.containsAllIn(of(taskId, taskName, task));
     }
 
     @Test
@@ -146,7 +148,7 @@ class KnownTypesTest {
 
     @Test
     @DisplayName("throw UnknownTypeException for requesting info on an unknown type")
-    void throwOnUnkownType() {
+    void throwOnUnknownType() {
         TypeUrl unexpectedUrl = TypeUrl.parse("prefix/unexpected.type");
         assertThrows(
                 UnknownTypeException.class,

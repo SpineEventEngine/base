@@ -50,9 +50,6 @@ import static io.spine.tools.gradle.compiler.given.ModelCompilerTestEnv.newProje
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-/**
- * @author Alex Tymchenko
- */
 public class ModelCompilerPluginShould {
 
     private TaskContainer tasks;

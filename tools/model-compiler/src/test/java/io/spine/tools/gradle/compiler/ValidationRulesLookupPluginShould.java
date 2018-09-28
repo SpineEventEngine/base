@@ -35,9 +35,6 @@ import java.util.Map;
 import static io.spine.tools.gradle.TaskName.FIND_VALIDATION_RULES;
 import static org.junit.Assert.assertEquals;
 
-/**
- * @author Dmytro Grankin
- */
 public class ValidationRulesLookupPluginShould {
 
     private static final char DOT = '.';

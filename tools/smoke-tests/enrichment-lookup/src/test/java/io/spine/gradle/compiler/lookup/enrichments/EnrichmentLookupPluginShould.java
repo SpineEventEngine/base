@@ -31,9 +31,6 @@ import java.util.Properties;
 
 import static org.junit.Assert.assertFalse;
 
-/**
- * @author Dmytro Dashenkov
- */
 public class EnrichmentLookupPluginShould {
 
     private static final Properties prop = new Properties();

@@ -20,6 +20,8 @@
 
 package io.spine.validate;
 
+import io.spine.validate.ConstraintViolation;
+import io.spine.validate.FieldValidator;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
@@ -39,15 +41,15 @@ import static org.junit.Assert.assertTrue;
 public abstract class FieldValidatorShould<V> {
 
     /**
-     * Creates a {@link FieldValidator} for a repeated required field, which child items are also
+     * Creates a {@link io.spine.validate.FieldValidator} for a repeated required field, which child items are also
      * validated separately.
      *
      * <p>The proto description of this field looks as follows:
      * {@code repeated T field_name = 42 [(required) = true, (valid) = true];}, where {@code T} is
-     * the type parameter of the tested {@link FieldValidator}.
+     * the type parameter of the tested {@link io.spine.validate.FieldValidator}.
      *
      * @param values the list of the field values
-     * @return new instance of {@link FieldValidator}
+     * @return new instance of {@link io.spine.validate.FieldValidator}
      */
     protected abstract FieldValidator<V> validatedRequiredRepeatedFieldValidator(List<V> values);
 

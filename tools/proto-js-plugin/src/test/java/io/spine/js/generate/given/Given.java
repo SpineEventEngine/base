@@ -40,9 +40,6 @@ import static io.spine.js.generate.given.FieldContainerEntry.TIMESTAMP_FIELD;
 import static io.spine.tools.gradle.TaskName.COMPILE_PROTO_TO_JS;
 import static java.util.Collections.singletonList;
 
-/**
- * @author Dmytro Kuzmin
- */
 public final class Given {
 
     private static final String TASK_PROTO = "task.proto";

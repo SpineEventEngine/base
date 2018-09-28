@@ -31,9 +31,7 @@ import static io.spine.js.generate.given.Given.messageField;
 import static io.spine.js.generate.given.Given.primitiveField;
 import static java.lang.String.format;
 
-/**
- * @author Dmytro Kuzmin
- */
+
 @SuppressWarnings("DuplicateStringLiteralInspection")
 // Generated code duplication needed to check main class.
 @DisplayName("FieldPrecondition should")

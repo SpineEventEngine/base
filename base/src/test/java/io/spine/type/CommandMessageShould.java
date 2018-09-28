@@ -30,9 +30,6 @@ import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-/**
- * @author Alexander Yevsyukov
- */
 public class CommandMessageShould {
 
     @Test

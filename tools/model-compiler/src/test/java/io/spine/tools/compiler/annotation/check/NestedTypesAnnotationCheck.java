@@ -31,9 +31,6 @@ import static io.spine.tools.compiler.annotation.check.Annotations.findSpiAnnota
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-/**
- * @author Dmytro Grankin
- */
 public class NestedTypesAnnotationCheck implements SourceCheck {
 
     private final boolean shouldBeAnnotated;

@@ -28,9 +28,6 @@ import org.junit.jupiter.api.Test;
 import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-/**
- * @author Alexander Yevsyukov
- */
 @DisplayName("Generation utility class should")
 class GenerationTest extends UtilityClassTest<Generation> {
 

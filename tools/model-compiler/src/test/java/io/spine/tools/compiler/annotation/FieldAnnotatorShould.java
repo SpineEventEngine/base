@@ -29,9 +29,6 @@ import static java.util.Collections.singleton;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-/**
- * @author Dmytro Grankin
- */
 public class FieldAnnotatorShould {
 
     @Test

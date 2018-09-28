@@ -36,9 +36,6 @@ import static io.spine.js.generate.given.Given.primitiveField;
 import static io.spine.js.generate.given.Given.timestampField;
 import static io.spine.js.generate.message.MessageGenerator.FROM_OBJECT;
 
-/**
- * @author Dmytro Kuzmin
- */
 @SuppressWarnings("DuplicateStringLiteralInspection")
 // Generated code duplication needed to check main class.
 @DisplayName("FieldParser should")
