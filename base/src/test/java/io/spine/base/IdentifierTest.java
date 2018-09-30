@@ -32,55 +32,57 @@ import io.spine.protobuf.AnyPacker;
 import io.spine.test.identifiers.NestedMessageId;
 import io.spine.test.identifiers.SeveralFieldsId;
 import io.spine.test.identifiers.TimestampFieldId;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import static io.spine.base.Identifier.EMPTY_ID;
 import static io.spine.base.Identifier.NULL_ID;
 import static io.spine.base.Identifier.newUuid;
 import static io.spine.protobuf.TypeConverter.toMessage;
 import static io.spine.testing.TestValues.newUuidValue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class IdentifierShould {
+@DisplayName("Identifier should")
+class IdentifierTest {
 
     private static final String TEST_ID = "someTestId 1234567890 !@#$%^&()[]{}-+=_";
 
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
-
     @SuppressWarnings("UnnecessaryBoxing") // We want to make the unsupported type obvious.
     @Test
-    public void reject_objects_of_unsupported_class_passed() {
-        thrown.expect(IllegalArgumentException.class);
-        Identifier.toString(Boolean.valueOf(true));
+    void reject_objects_of_unsupported_class_passed() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> Identifier.toString(Boolean.valueOf(true))
+        );
     }
 
     @Test
-    public void reject_unsupported_classes() {
-        thrown.expect(IllegalArgumentException.class);
-        Identifier.getType(Float.class);
+    void reject_unsupported_classes() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () ->  Identifier.getType(Float.class)
+        );
     }
 
     @SuppressWarnings("UnnecessaryBoxing") // OK as we want to show types clearly.
     @Test
-    public void convert_to_string_number_ids() {
+    void convert_to_string_number_ids() {
         assertEquals("10", Identifier.toString(Integer.valueOf(10)));
         assertEquals("100", Identifier.toString(Long.valueOf(100)));
     }
 
     @Test
-    public void unpack_passed_Any() {
+    void unpack_passed_Any() {
         StringValue id = newUuidValue();
         assertEquals(id.getValue(), Identifier.toString(AnyPacker.pack(id)));
     }
 
     @Test
-    public void generate_new_UUID() {
+    void generate_new_UUID() {
         // We have non-empty values.
         assertTrue(newUuid().length() > 0);
 
@@ -90,39 +92,40 @@ public class IdentifierShould {
 
     @SuppressWarnings("UnnecessaryBoxing") // We want to make the unsupported type obvious.
     @Test
-    public void do_not_convert_unsupported_ID_type_to_Any() {
-        thrown.expect(IllegalArgumentException.class);
-        Identifier.pack(Boolean.valueOf(false));
+    void do_not_convert_unsupported_ID_type_to_Any() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> Identifier.pack(Boolean.valueOf(false))
+        );
     }
 
-    @SuppressWarnings("ConstantConditions") // Passing null is the purpose of the test.
     @Test
-    public void return_NULL_ID_if_convert_null_to_string() {
+    void return_NULL_ID_if_convert_null_to_string() {
         assertEquals(NULL_ID, Identifier.toString(null));
     }
 
     @Test
-    public void return_EMPTY_ID_if_convert_empty_string_to_string() {
+    void return_EMPTY_ID_if_convert_empty_string_to_string() {
         assertEquals(EMPTY_ID, Identifier.toString(""));
     }
 
     @Test
-    public void return_EMPTY_ID_if_result_of_Message_to_string_conversion_is_empty_string() {
+    void return_EMPTY_ID_if_result_of_Message_to_string_conversion_is_empty_string() {
         assertEquals(EMPTY_ID, Identifier.toString(TimestampFieldId.getDefaultInstance()));
     }
 
     @Test
-    public void return_EMPTY_ID_if_convert_empty_message_to_string() {
+    void return_EMPTY_ID_if_convert_empty_message_to_string() {
         assertEquals(EMPTY_ID, Identifier.toString(StringValue.getDefaultInstance()));
     }
 
     @Test
-    public void return_string_id_as_is() {
+    void return_string_id_as_is() {
         assertEquals(TEST_ID, Identifier.toString(TEST_ID));
     }
 
     @Test
-    public void return_same_string_when_convert_string_wrapped_into_message() {
+    void return_same_string_when_convert_string_wrapped_into_message() {
 
         StringValue id = toMessage(TEST_ID);
 
@@ -132,7 +135,7 @@ public class IdentifierShould {
     }
 
     @Test
-    public void convert_to_string_integer_id_wrapped_into_message() {
+    void convert_to_string_integer_id_wrapped_into_message() {
         Integer value = 1024;
         Int32Value id = toMessage(value);
         String expected = value.toString();
@@ -143,7 +146,7 @@ public class IdentifierShould {
     }
 
     @Test
-    public void convert_to_string_long_id_wrapped_into_message() {
+    void convert_to_string_long_id_wrapped_into_message() {
         Long value = 100500L;
         Int64Value id = toMessage(value);
         String expected = value.toString();
@@ -154,7 +157,7 @@ public class IdentifierShould {
     }
 
     @Test
-    public void convert_to_string_message_id_with_string_field() {
+    void convert_to_string_message_id_with_string_field() {
         StringValue id = toMessage(TEST_ID);
 
         String result = Identifier.toString(id);
@@ -163,7 +166,7 @@ public class IdentifierShould {
     }
 
     @Test
-    public void convert_to_string_message_id_with_message_field() {
+    void convert_to_string_message_id_with_message_field() {
         StringValue value = toMessage(TEST_ID);
         NestedMessageId idToConvert = NestedMessageId.newBuilder()
                                                      .setId(value)
@@ -175,7 +178,7 @@ public class IdentifierShould {
     }
 
     @Test
-    public void have_default_to_string_conversion_of_message_id_with_several_fields() {
+    void have_default_to_string_conversion_of_message_id_with_several_fields() {
         String nestedString = "nested_string";
         String outerString = "outer_string";
         Integer number = 256;
@@ -198,7 +201,7 @@ public class IdentifierShould {
     }
 
     @Test
-    public void convert_to_string_message_id_wrapped_in_Any() {
+    void convert_to_string_message_id_wrapped_in_Any() {
         StringValue messageToWrap = toMessage(TEST_ID);
         Any any = AnyPacker.pack(messageToWrap);
 
@@ -208,13 +211,13 @@ public class IdentifierShould {
     }
 
     @Test
-    public void pass_the_null_tolerance_check() {
+    void pass_the_null_tolerance_check() {
         new NullPointerTester()
                 .testAllPublicStaticMethods(Identifier.class);
     }
 
     @Test
-    public void getDefaultValue_by_class_id() {
+    void getDefaultValue_by_class_id() {
         assertEquals(0L, Identifier.getDefaultValue(Long.class)
                                    .longValue());
         assertEquals(0, Identifier.getDefaultValue(Integer.class)
@@ -224,7 +227,7 @@ public class IdentifierShould {
     }
 
     @Test
-    public void create_values_by_type() {
+    void create_values_by_type() {
         assertTrue(Identifier.from("")
                              .isString());
         assertTrue(Identifier.from(0)
@@ -236,7 +239,7 @@ public class IdentifierShould {
     }
 
     @Test
-    public void recognize_type_by_supported_message_type() {
+    void recognize_type_by_supported_message_type() {
         assertTrue(Type.INTEGER.matchMessage(toMessage(10)));
         assertTrue(Type.LONG.matchMessage(toMessage(1020L)));
         assertTrue(Type.STRING.matchMessage(toMessage("")));
@@ -248,7 +251,7 @@ public class IdentifierShould {
     }
 
     @Test
-    public void create_values_depending_on_wrapper_message_type() {
+    void create_values_depending_on_wrapper_message_type() {
         assertEquals(10, Type.INTEGER.fromMessage(toMessage(10)));
         assertEquals(1024L, Type.LONG.fromMessage(toMessage(1024L)));
 
@@ -257,17 +260,25 @@ public class IdentifierShould {
     }
 
     @Test
-    public void not_unpack_empty_Any() {
-        thrown.expect(IllegalArgumentException.class);
-        Identifier.unpack(Any.getDefaultInstance());
+    void not_unpack_empty_Any() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> Identifier.unpack(Any.getDefaultInstance())        
+        );
     }
 
-    @Test(expected = ClassCastException.class)
-    public void fail_to_unpack_ID_of_wrong_type() {
+    @Test
+    void fail_to_unpack_ID_of_wrong_type() {
         String id = "abcdef";
         Any packed = Identifier.pack(id);
 
-        @SuppressWarnings("unused") // Required to invoke the cast.
-        Message wrong = Identifier.unpack(packed);
+        assertThrows(
+                ClassCastException.class,
+                () -> {
+                    @SuppressWarnings({"RedundantSuppression", "unused"})
+                    // Required to invoke the cast.
+                    Message wrong = Identifier.unpack(packed);            
+                }
+        );
     }
 }
