@@ -18,6 +18,8 @@ This repository contains the code of foundation of the Spine Event Engine framew
     required for Reflections framework.
 * [Protoc plugin](tools/protoc-plugin) — a plug-in for Google Protobuf compiler for generating 
   custom code for framework-specific message types.
+* [Proto JS plugin](tools/proto-js-plugin) — a plug-in that assists Protobuf JS compiler in 
+  JavaScript code generation.
 * [Spine Javadoc Filter](tools/javadoc-filter) — excludes elements annotated with 
   `io.spine.Internal` from the generated doc.
 
