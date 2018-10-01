@@ -29,8 +29,6 @@ import io.spine.string.Stringifier;
 
 /**
  * Provides stringifiers for network-related types.
- *
- * @author Alexander Yevsyukov
  */
 public final class NetStringifiers {
 

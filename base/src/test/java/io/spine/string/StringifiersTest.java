@@ -20,6 +20,7 @@
 
 package io.spine.string;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.truth.StringSubject;
 import com.google.protobuf.Timestamp;
@@ -30,9 +31,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.Map;
 
 import static com.google.common.truth.Truth.assertThat;
+import static io.spine.string.Stringifiers.newForListOf;
 import static io.spine.string.Stringifiers.newForMapOf;
 
 @DisplayName("Stringifiers utility class should")
@@ -50,6 +53,22 @@ class StringifiersTest extends UtilityClassTest<Stringifiers> {
         private static final int SIZE = 5;
 
         @Test
+        @DisplayName("List")
+        void list() {
+            List<Timestamp> stamps = createList();
+            Stringifier<List<Timestamp>> stringifier = newForListOf(Timestamp.class, DELIMITER);
+
+            String out = stringifier.toString(stamps);
+
+            StringSubject assertOut = assertThat(out);
+            assertOut.contains(String.valueOf(DELIMITER));
+            Quoter quoter = Quoter.forLists();
+            for (Timestamp stamp : stamps) {
+                assertOut.contains(quoter.quote(Timestamps.toString(stamp)));
+            }
+        }
+
+        @Test
         @DisplayName("Map")
         void map() {
             ImmutableMap<Long, Timestamp> stamps = createMap();
@@ -65,6 +84,14 @@ class StringifiersTest extends UtilityClassTest<Stringifiers> {
                 assertOut.contains(String.valueOf(key));
                 assertOut.contains(quoter.quote(Timestamps.toString(stamps.get(key))));
             }
+        }
+
+        private ImmutableList<Timestamp> createList() {
+            ImmutableList.Builder<Timestamp> builder = ImmutableList.builder();
+            for (int i = 0; i < SIZE; i++) {
+                builder.add(Time.getCurrentTime());
+            }
+            return builder.build();
         }
 
         private ImmutableMap<Long, Timestamp> createMap() {

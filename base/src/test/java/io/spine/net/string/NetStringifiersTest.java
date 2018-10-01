@@ -40,8 +40,6 @@ import static io.spine.net.string.NetStringifiers.forUrl;
 
 /**
  * Tests of {@link io.spine.net.string.NetStringifiers}.
- *
- * @author Alexander Yevsyukov
  */
 class NetStringifiersTest extends UtilityClassTest<NetStringifiers> {
 
