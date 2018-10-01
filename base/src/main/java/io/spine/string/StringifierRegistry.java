@@ -34,14 +34,12 @@ import static io.spine.string.Stringifiers.forBoolean;
 import static io.spine.string.Stringifiers.forInteger;
 import static io.spine.string.Stringifiers.forLong;
 import static io.spine.string.Stringifiers.forString;
+import static io.spine.string.Stringifiers.newForMessage;
 import static java.lang.String.format;
 import static java.util.Collections.synchronizedMap;
 
 /**
  * The registry of converters of types to their string representations.
- *
- * @author Alexander Yevsyukov
- * @author Illia Shepilov
  */
 public final class StringifierRegistry {
 
@@ -62,6 +60,10 @@ public final class StringifierRegistry {
     private StringifierRegistry() {
     }
 
+    public static StringifierRegistry getInstance() {
+        return INSTANCE;
+    }
+
     static <T> Stringifier<T> getStringifier(Type typeOfT) {
         checkNotNull(typeOfT);
         Optional<Stringifier<T>> optional = getInstance().get(typeOfT);
@@ -72,18 +74,13 @@ public final class StringifierRegistry {
         }
 
         if (isMessage(typeOfT)) {
-            return getDefaultStringifier(typeOfT);
+            @SuppressWarnings("unchecked") // OK since the type is checked above.
+            Stringifier<T> result = (Stringifier<T>) newForMessage((Class<Message>) typeOfT);
+            return result;
         }
 
         String errMsg = format("No stringifier registered for the type: %s", typeOfT);
         throw new MissingStringifierException(errMsg);
-    }
-
-    @SuppressWarnings("unchecked") // It is OK because the class is checked before the cast.
-    private static <T> Stringifier<T> getDefaultStringifier(Type typeOfT) {
-        Stringifier<T> result =
-                (Stringifier<T>) Stringifiers.newForMessage((Class<Message>) typeOfT);
-        return result;
     }
 
     /**
@@ -95,10 +92,6 @@ public final class StringifierRegistry {
     @SuppressWarnings("unchecked")
     private static <T> Stringifier<T> cast(Stringifier<?> func) {
         return (Stringifier<T>) func;
-    }
-
-    public static StringifierRegistry getInstance() {
-        return INSTANCE;
     }
 
     /**

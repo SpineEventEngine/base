@@ -158,7 +158,7 @@ public final class TypeConverter {
         protected abstract M toMessage(T input);
     }
 
-    private static class BytesCaster extends MessageCaster<BytesValue, ByteString> {
+    private static final class BytesCaster extends MessageCaster<BytesValue, ByteString> {
 
         @Override
         protected ByteString toObject(BytesValue input) {
@@ -176,7 +176,7 @@ public final class TypeConverter {
         }
     }
 
-    private static class EnumCaster extends MessageCaster<EnumValue, Enum> {
+    private static final class EnumCaster extends MessageCaster<EnumValue, Enum> {
 
         private final Class<? extends Enum> type;
 
@@ -204,7 +204,7 @@ public final class TypeConverter {
         }
     }
 
-    private static class MessageTypeCaster extends MessageCaster<Message, Message> {
+    private static final class MessageTypeCaster extends MessageCaster<Message, Message> {
 
         @Override
         protected Message toObject(Message input) {
@@ -217,7 +217,9 @@ public final class TypeConverter {
         }
     }
 
-    private static class PrimitiveTypeCaster<M extends Message, T> extends MessageCaster<M, T> {
+    @SuppressWarnings("OverlyCoupledClass") // OK as it maps many converted types.
+    private static final class PrimitiveTypeCaster<M extends Message, T>
+            extends MessageCaster<M, T> {
 
         private static final ImmutableMap<Class<?>, Converter<? extends Message, ?>>
                 PROTO_WRAPPER_TO_HANDLER =
@@ -311,7 +313,7 @@ public final class TypeConverter {
         protected abstract M pack(T value);
     }
 
-    private static class Int32Handler extends PrimitiveHandler<Int32Value, Integer> {
+    private static final class Int32Handler extends PrimitiveHandler<Int32Value, Integer> {
 
         @Override
         protected Integer unpack(Int32Value message) {
@@ -327,7 +329,7 @@ public final class TypeConverter {
         }
     }
 
-    private static class Int64Handler extends PrimitiveHandler<Int64Value, Long> {
+    private static final class Int64Handler extends PrimitiveHandler<Int64Value, Long> {
 
         @Override
         protected Long unpack(Int64Value message) {
@@ -343,7 +345,7 @@ public final class TypeConverter {
         }
     }
 
-    private static class UInt32Handler extends PrimitiveHandler<UInt32Value, Integer> {
+    private static final class UInt32Handler extends PrimitiveHandler<UInt32Value, Integer> {
 
         @Override
         protected Integer unpack(UInt32Value message) {
@@ -360,7 +362,7 @@ public final class TypeConverter {
         }
     }
 
-    private static class UInt64Handler extends PrimitiveHandler<UInt64Value, Long> {
+    private static final class UInt64Handler extends PrimitiveHandler<UInt64Value, Long> {
 
         @Override
         protected Long unpack(UInt64Value message) {
@@ -377,7 +379,7 @@ public final class TypeConverter {
         }
     }
 
-    private static class FloatHandler extends PrimitiveHandler<FloatValue, Float> {
+    private static final class FloatHandler extends PrimitiveHandler<FloatValue, Float> {
 
         @Override
         protected Float unpack(FloatValue message) {
@@ -393,7 +395,7 @@ public final class TypeConverter {
         }
     }
 
-    private static class DoubleHandler extends PrimitiveHandler<DoubleValue, Double> {
+    private static final class DoubleHandler extends PrimitiveHandler<DoubleValue, Double> {
 
         @Override
         protected Double unpack(DoubleValue message) {
@@ -409,7 +411,7 @@ public final class TypeConverter {
         }
     }
 
-    private static class BoolHandler extends PrimitiveHandler<BoolValue, Boolean> {
+    private static final class BoolHandler extends PrimitiveHandler<BoolValue, Boolean> {
 
         @Override
         protected Boolean unpack(BoolValue message) {
@@ -425,7 +427,7 @@ public final class TypeConverter {
         }
     }
 
-    private static class StringHandler extends PrimitiveHandler<StringValue, String> {
+    private static final class StringHandler extends PrimitiveHandler<StringValue, String> {
 
         @Override
         protected String unpack(StringValue message) {

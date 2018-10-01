@@ -32,9 +32,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Utility class for working with {@code Stringifier}s.
- *
- * @author Alexander Yevsyukov
- * @author Illia Shepilov
  */
 public final class Stringifiers {
 
@@ -68,7 +65,6 @@ public final class Stringifiers {
      * @return the string representation of the passed object
      * @throws MissingStringifierException if passed value cannot be converted
      */
-    @SuppressWarnings("unchecked") // It is OK because the type is checked before cast.
     public static <T> String toString(T object, Type typeOfT) {
         checkNotNull(object);
         checkNotNull(typeOfT);
@@ -187,8 +183,7 @@ public final class Stringifiers {
      */
     public static <T> Stringifier<List<T>> newForListOf(Class<T> elementClass, char delimiter) {
         checkNotNull(elementClass);
-        Stringifier<List<T>> listStringifier =
-                new ListStringifier<>(elementClass, delimiter);
+        Stringifier<List<T>> listStringifier = new ListStringifier<>(elementClass, delimiter);
         return listStringifier;
     }
 
