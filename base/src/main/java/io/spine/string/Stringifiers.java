@@ -83,6 +83,8 @@ public final class Stringifiers {
      * @return the parsed value from string
      * @throws MissingStringifierException if passed value cannot be converted
      */
+    @SuppressWarnings("TypeParameterUnusedInFormals")
+    // We're pretty safe as we pass the type value as the parameter.
     public static <T> T fromString(String str, Type typeOfT) {
         checkNotNull(str);
         checkNotNull(typeOfT);

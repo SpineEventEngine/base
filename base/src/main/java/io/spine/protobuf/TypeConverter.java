@@ -109,6 +109,8 @@ public final class TypeConverter {
      * @param <M>   the resulting message type
      * @return the wrapped value
      */
+    @SuppressWarnings("TypeParameterUnusedInFormals")
+    // Parameters are handled by MessageCaster, that we wrap by this method.
     public static <T, M extends Message> M toMessage(T value) {
         @SuppressWarnings("unchecked") // Must be checked at runtime
         Class<T> srcClass = (Class<T>) value.getClass();
