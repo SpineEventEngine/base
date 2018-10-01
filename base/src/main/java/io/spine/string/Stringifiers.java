@@ -22,6 +22,7 @@ package io.spine.string;
 
 import com.google.common.escape.Escaper;
 import com.google.common.escape.Escapers;
+import com.google.protobuf.Duration;
 import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
 
@@ -157,6 +158,19 @@ public final class Stringifiers {
      */
     static Stringifier<String> forString() {
         return NoOpStringifier.getInstance();
+    }
+
+    /**
+     * Obtains the default stringifier for {@code Duration} instances.
+     *
+     * <p>This stringifier is automatically registered in the
+     * {@link StringifierRegistry StringifierRegistry}.
+     *
+     * @see com.google.protobuf.util.Durations#toString(com.google.protobuf.Duration) Durations.toString(Duration)
+     * @see com.google.protobuf.util.Durations#parse(String) Durations.parse(String)
+     */
+    public static Stringifier<Duration> forDuration() {
+        return DurationStringifier.getInstance();
     }
 
     /**

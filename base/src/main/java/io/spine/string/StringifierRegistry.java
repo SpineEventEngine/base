@@ -21,6 +21,7 @@
 package io.spine.string;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.protobuf.Duration;
 import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
 
@@ -32,6 +33,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Maps.newHashMap;
 import static io.spine.protobuf.Messages.isMessage;
 import static io.spine.string.Stringifiers.forBoolean;
+import static io.spine.string.Stringifiers.forDuration;
 import static io.spine.string.Stringifiers.forInteger;
 import static io.spine.string.Stringifiers.forLong;
 import static io.spine.string.Stringifiers.forString;
@@ -55,6 +57,7 @@ public final class StringifierRegistry {
                             .put(Long.class, forLong())
                             .put(String.class, forString())
                             .put(Timestamp.class, forTimestamp())
+                            .put(Duration.class, forDuration())
                             .build()
             )
     );

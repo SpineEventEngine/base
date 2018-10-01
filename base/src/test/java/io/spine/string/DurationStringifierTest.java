@@ -20,44 +20,31 @@
 
 package io.spine.string;
 
-import com.google.protobuf.Timestamp;
-import com.google.protobuf.util.Timestamps;
+import com.google.protobuf.Duration;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import java.text.ParseException;
+import static io.spine.protobuf.Durations2.hoursAndMinutes;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import static io.spine.util.Exceptions.newIllegalArgumentException;
+@DisplayName("DurationStringifier should")
+class DurationStringifierTest extends AbstractStringifierTest<Duration> {
 
-/**
- * The stringifier of timestamps into RFC 3339 date string format.
- */
-final class TimestampStringifier extends SerializableStringifier<Timestamp> {
-
-    private static final long serialVersionUID = 0L;
-    private static final TimestampStringifier INSTANCE = new TimestampStringifier();
-
-    private TimestampStringifier() {
-        super("Stringifiers.forTimestamp()");
-    }
-
-    static TimestampStringifier getInstance() {
-        return INSTANCE;
+    DurationStringifierTest() {
+        super(Stringifiers.forDuration());
     }
 
     @Override
-    protected String toString(Timestamp value) {
-        return Timestamps.toString(value);
+    protected Duration createObject() {
+        return hoursAndMinutes(5, 37);
     }
 
-    @Override
-    protected Timestamp fromString(String str) {
-        try {
-            return Timestamps.parse(str);
-        } catch (ParseException e) {
-            throw newIllegalArgumentException(e.getMessage(), e);
-        }
-    }
-
-    private Object readResolve() {
-        return INSTANCE;
+    @Test
+    @DisplayName("Convert negative duration")
+    void convertNegativeDuration() {
+        Stringifier<Duration> stringifier = getStringifier();
+        Duration negative = hoursAndMinutes(-4, -31);
+        assertEquals(negative, stringifier.reverse()
+                                          .convert(stringifier.convert(negative)));
     }
 }

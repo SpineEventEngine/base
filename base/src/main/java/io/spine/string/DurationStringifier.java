@@ -20,41 +20,44 @@
 
 package io.spine.string;
 
-import com.google.protobuf.Timestamp;
-import com.google.protobuf.util.Timestamps;
+import com.google.protobuf.Duration;
+import com.google.protobuf.util.Durations;
 
 import java.text.ParseException;
 
-import static io.spine.util.Exceptions.newIllegalArgumentException;
+import static io.spine.util.Exceptions.illegalArgumentWithCauseOf;
 
 /**
- * The stringifier of timestamps into RFC 3339 date string format.
+ * The default stringifier for {@code Duration}s.
  */
-final class TimestampStringifier extends SerializableStringifier<Timestamp> {
+final class DurationStringifier extends SerializableStringifier<Duration> {
 
     private static final long serialVersionUID = 0L;
-    private static final TimestampStringifier INSTANCE = new TimestampStringifier();
+    private static final DurationStringifier INSTANCE = new DurationStringifier();
 
-    private TimestampStringifier() {
-        super("Stringifiers.forTimestamp()");
+    private DurationStringifier() {
+        super("Stringifiers.forDuration()");
     }
 
-    static TimestampStringifier getInstance() {
+    static DurationStringifier getInstance() {
         return INSTANCE;
     }
 
     @Override
-    protected String toString(Timestamp value) {
-        return Timestamps.toString(value);
+    protected String toString(Duration duration) {
+        String result = Durations.toString(duration);
+        return result;
     }
 
     @Override
-    protected Timestamp fromString(String str) {
+    protected Duration fromString(String str) {
+        Duration result;
         try {
-            return Timestamps.parse(str);
+            result = Durations.parse(str);
         } catch (ParseException e) {
-            throw newIllegalArgumentException(e.getMessage(), e);
+            throw illegalArgumentWithCauseOf(e);
         }
+        return result;
     }
 
     private Object readResolve() {
