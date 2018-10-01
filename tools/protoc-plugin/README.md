@@ -1,4 +1,4 @@
-# Spine Protobuf compiler plugin
+# Spine Protobuf Compiler plugin
 
 Spine uses [Google Protobuf](https://developers.google.com/protocol-buffers/) as a model definition
 language. Some of the framework features require compile-time processing of the data model. For that
