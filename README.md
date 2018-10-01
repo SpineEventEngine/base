@@ -7,21 +7,33 @@
 
 This repository contains the code of foundation of the Spine Event Engine framework which includes:
 
-* The framework [base](base) data types.
+* The framework [base](base) data types and utilities.
 * [Utilities for testing](testlib).
 * Gradle plug-ins:
-  * [Spine Model Compiler](tools/model-compiler) — 
-    transforms a domain model defined in proto files into Java code.  
-  * [Javadoc Filter](tools/javadoc-filter) and [Javadoc Prettifier](tools/javadoc-prettifier) 
-    process Javadocs of generated files.
-  * [Reflections Plugin](tools/gradle-plugins/reflections-plugin) — 
-    Gradle port of Maven Reflections plugin required for Reflections framework.
-* [Protoc plugin](tools/protoc-plugin) —
-    a plug-in for Google Protobuf compiler for generating custom code for framework-specific message
-    types.
-    
+  * [Spine Model Compiler](tools/model-compiler) — transforms a domain model defined in proto files 
+    into the Java code.
+  * [Spine Javadoc Prettifier](tools/javadoc-prettifier) — processes Javadocs of generated files.
+  * [Reflections Plugin](tools/reflections-plugin) — Gradle port of 
+    [Maven Reflections plugin](https://mvnrepository.com/artifact/org.reflections/reflections-maven) 
+    required for Reflections framework.
+* [Protoc plugin](tools/protoc-plugin) — a plug-in for Google Protobuf compiler for generating 
+  custom code for framework-specific message types.
+* [Proto JS plugin](tools/proto-js-plugin) — a plug-in that assists Protobuf JS compiler in 
+  JavaScript code generation.
+* [Spine Javadoc Filter](tools/javadoc-filter) — excludes elements annotated with 
+  `io.spine.Internal` from the generated doc.
+* [Spine Error Prone Checks](tools/errorprone-checks) — the custom Error Prone checks for the
+  Spine projects.
+
 These components are used by [core-java](https://github.com/SpineEventEngine/core-java) and are not
 supposed to be used directly by the end user project.
+
+The repository also contains:
+
+* Validating Builders [assembler](base-validating-builders) for `base`.
+* A [common base](tools/plugin-base) for Spine Gradle plugins.
+* [Test utilities](tools/plugin-testlib) for Spine plugins.
+* [Integration tests](tools/smoke-tests) for all Spine tools.
 
 ### On Coverage
 
