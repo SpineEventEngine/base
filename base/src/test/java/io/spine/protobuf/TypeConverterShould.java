@@ -35,16 +35,13 @@ import com.google.protobuf.Message;
 import com.google.protobuf.StringValue;
 import com.google.protobuf.UInt32Value;
 import com.google.protobuf.UInt64Value;
-import io.spine.test.commands.TestCommand;
+import io.spine.test.command.TestCommand;
 import org.junit.Test;
 
 import static io.spine.protobuf.given.TypeConverterTestEnv.TaskStatus.SUCCESS;
 import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
 import static org.junit.Assert.assertEquals;
 
-/**
- * @author Dmytro Dashenkov
- */
 public class TypeConverterShould {
 
     @Test

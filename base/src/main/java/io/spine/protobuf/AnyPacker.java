@@ -50,8 +50,10 @@ public final class AnyPacker {
     private static final Function<@Nullable Any, @Nullable Message> ANY_UNPACKER =
             (@Nullable Any any) -> any == null ? null : unpack(any);
 
+    /**
+     * Prevents the utility class instantiation.
+     */
     private AnyPacker() {
-        // Prevent instantiation of this utility class.
     }
 
     /**
@@ -75,7 +77,6 @@ public final class AnyPacker {
     /**
      * Unwraps {@code Any} value into an instance of type specified by value
      * returned by {@link Any#getTypeUrl()}.
-     *
      *
      * @param any instance of {@link Any} that should be unwrapped
      * @param <T> the type enclosed into {@code Any}

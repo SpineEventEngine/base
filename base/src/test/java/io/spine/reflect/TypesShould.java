@@ -33,9 +33,6 @@ import static io.spine.reflect.Types.mapTypeOf;
 import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
 import static org.junit.Assert.assertEquals;
 
-/**
- * @author Illia Shepilov
- */
 @SuppressWarnings({"SerializableNonStaticInnerClassWithoutSerialVersionUID",
         "SerializableInnerClassWithNonSerializableOuterClass"}) // It is OK for test methods.
 public class TypesShould {

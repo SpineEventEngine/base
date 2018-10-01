@@ -35,9 +35,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-/**
- * @author Dmytro Dashenkov
- */
 public class GradleProjectTest {
 
     private static final String PROJECT_NAME = "gradle_project_test";

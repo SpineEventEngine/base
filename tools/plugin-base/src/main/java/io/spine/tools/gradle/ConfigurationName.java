@@ -33,6 +33,11 @@ import com.google.common.base.MoreObjects;
 public enum ConfigurationName {
 
     /**
+     * The {@code classpath} configuration.
+     */
+    CLASSPATH("classpath"),
+
+    /**
      * The {@code runtime} configuration.
      */
     RUNTIME("runtime"),

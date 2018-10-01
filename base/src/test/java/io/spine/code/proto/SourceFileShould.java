@@ -34,9 +34,6 @@ import java.util.function.Predicate;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static org.junit.Assert.assertEquals;
 
-/**
- * @author Dmytro Grankin
- */
 public class SourceFileShould {
 
     private static final FileDescriptorProto TEST_FILE_DESCRIPTOR = Top.getDescriptor()

@@ -24,6 +24,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Message;
+import io.spine.logging.Logging;
 import io.spine.tools.compiler.MessageTypeCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +45,7 @@ import static io.spine.code.proto.FileDescriptors.parse;
  * @author Illia Shepilov
  * @author Alex Tymchenko
  */
-class VBTypeLookup {
+class VBTypeLookup implements Logging {
 
     private static final String JAVA_CLASS_NAME_SUFFIX = "VBuilder";
 
@@ -159,16 +160,5 @@ class VBTypeLookup {
 
     MessageTypeCache getTypeCache() {
         return messageTypeCache;
-    }
-
-    private enum LogSingleton {
-        INSTANCE;
-
-        @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = LoggerFactory.getLogger(VBTypeLookup.class);
-    }
-
-    private static Logger log() {
-        return LogSingleton.INSTANCE.value;
     }
 }

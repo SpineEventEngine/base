@@ -20,7 +20,7 @@
 
 package io.spine.tools.gradle.compiler;
 
-import io.spine.code.DefaultProject;
+import io.spine.code.java.DefaultJavaProject;
 import io.spine.tools.gradle.GradleProject;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -62,8 +62,8 @@ public class SpineProtocShould {
     @Test
     public void create_spine_directory() {
         project.executeTask(BUILD);
-        File spineDirPath = DefaultProject.at(projectDir.getRoot())
-                                          .tempArtifacts();
+        File spineDirPath = DefaultJavaProject.at(projectDir.getRoot())
+                                              .tempArtifacts();
         assertTrue(spineDirPath.exists());
     }
 }

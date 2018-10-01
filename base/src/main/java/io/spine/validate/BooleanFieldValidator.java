@@ -20,15 +20,14 @@
 
 package io.spine.validate;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import io.spine.logging.Logging;
 
 /**
  * Validates fields of type {@link Boolean}.
  *
  * @author Dmitry Kashcheiev
  */
-class BooleanFieldValidator extends FieldValidator<Boolean> {
+class BooleanFieldValidator extends FieldValidator<Boolean> implements Logging {
 
     /**
      * Creates a new validator instance.
@@ -37,11 +36,7 @@ class BooleanFieldValidator extends FieldValidator<Boolean> {
      * @param fieldValues  values to validate
      */
     BooleanFieldValidator(FieldContext fieldContext, Object fieldValues) {
-        super(fieldContext, FieldValidator.<Boolean>toValueList(fieldValues), false);
-    }
-
-    private static Logger log() {
-        return LogSingleton.INSTANCE.value;
+        super(fieldContext, FieldValidator.toValueList(fieldValues), false);
     }
 
     /**
@@ -59,11 +54,5 @@ class BooleanFieldValidator extends FieldValidator<Boolean> {
         if (isRequiredField()) {
             log().warn("'required' option not allowed for boolean field");
         }
-    }
-
-    private enum LogSingleton {
-        INSTANCE;
-        @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = LoggerFactory.getLogger(BooleanFieldValidator.class);
     }
 }

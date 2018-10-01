@@ -25,9 +25,6 @@ import org.gradle.testfixtures.ProjectBuilder;
 import static io.spine.tools.gradle.TaskName.BUILD;
 import static io.spine.tools.gradle.TaskName.CLASSES;
 
-/**
- * @author Alex Tymchenko
- */
 class Given {
 
     static final String REFLECTIONS_PLUGIN_ID = "io.spine.tools.reflections-plugin";

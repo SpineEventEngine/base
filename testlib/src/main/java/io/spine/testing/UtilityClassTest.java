@@ -24,7 +24,10 @@ import com.google.common.testing.NullPointerTester;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Modifier;
+
 import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
+import static io.spine.testing.Tests.assertTrue;
 
 /**
  * Abstract base for utility classes tests.
@@ -57,17 +60,23 @@ public abstract class UtilityClassTest<T> {
         /* This test does assert via `NullPointerTester. */
     void nullCheckPublicStaticMethods() {
         NullPointerTester tester = new NullPointerTester();
-        setDefaults(tester);
+        configure(tester);
         tester.testAllPublicStaticMethods(getUtilityClass());
     }
 
+    @Test
+    @DisplayName("be final")
+    void checkFinal() {
+        assertTrue(Modifier.isFinal(utilityClass.getModifiers()));
+    }
+
     /**
-     * A callback to set default values for a passed {@linkplain NullPointerTester}.
+     * A callback to configure a passed {@linkplain NullPointerTester}.
      *
      * <p>Does nothing. Override to specify default values in a derived test.
      */
     @SuppressWarnings("NoopMethodInAbstractClass") // We do not force overriding without a need.
-    protected void setDefaults(@SuppressWarnings("unused") NullPointerTester tester) {
+    protected void configure(@SuppressWarnings("unused") NullPointerTester tester) {
         // Do nothing.
     }
 }

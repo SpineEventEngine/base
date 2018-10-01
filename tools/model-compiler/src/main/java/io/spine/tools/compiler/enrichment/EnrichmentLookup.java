@@ -23,8 +23,8 @@ package io.spine.tools.compiler.enrichment;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.Resources;
 import io.spine.code.properties.PropertiesWriter;
+import io.spine.logging.Logging;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.Collection;
@@ -82,14 +82,7 @@ public class EnrichmentLookup {
         writer.write(propsMap);
     }
 
-    private enum LogSingleton {
-        INSTANCE;
-
-        @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = LoggerFactory.getLogger(EnrichmentLookup.class);
-    }
-
     private static Logger log() {
-        return LogSingleton.INSTANCE.value;
+        return Logging.get(EnrichmentLookup.class);
     }
 }

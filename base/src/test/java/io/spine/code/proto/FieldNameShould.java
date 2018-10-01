@@ -24,9 +24,6 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-/**
- * @author Alexander Yevsyukov
- */
 public class FieldNameShould {
 
     private static final String PROTO_FIELD_NAME = "correct_java_name";

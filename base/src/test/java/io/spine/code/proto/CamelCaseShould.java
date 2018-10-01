@@ -30,9 +30,6 @@ import static io.spine.code.proto.CamelCase.convert;
 import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
 import static org.junit.Assert.assertEquals;
 
-/**
- * @author Alexander Yevsyukov
- */
 public class CamelCaseShould {
 
     @Test
@@ -54,6 +51,8 @@ public class CamelCaseShould {
      * A test value object.
      */
     private static class UnderName extends StringTypeValue implements UnderscoredName {
+
+        private static final long serialVersionUID = 0L;
 
         protected UnderName(String value) {
             super(value);

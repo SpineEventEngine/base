@@ -38,15 +38,15 @@ import static com.google.common.collect.ImmutableMap.builder;
  *
  * @author Dmytro Grankin
  */
-public class ValidationRuleOptions {
+public final class ValidationRuleOptions {
 
     /**
      * A map from a field context to the options extracted from a validation rule.
      */
     private static final Map<FieldContext, FieldOptions> options = new Builder().build();
 
+    /** Prevent instantiation of this utility class. */
     private ValidationRuleOptions() {
-        // Prevent instantiation of this utility class.
     }
 
     /**

@@ -30,6 +30,10 @@ import java.util.Optional;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Maps.newHashMap;
 import static io.spine.protobuf.Messages.isMessage;
+import static io.spine.string.Stringifiers.forBoolean;
+import static io.spine.string.Stringifiers.forInteger;
+import static io.spine.string.Stringifiers.forLong;
+import static io.spine.string.Stringifiers.forString;
 import static java.lang.String.format;
 import static java.util.Collections.synchronizedMap;
 
@@ -41,13 +45,15 @@ import static java.util.Collections.synchronizedMap;
  */
 public final class StringifierRegistry {
 
+    private static final StringifierRegistry INSTANCE = new StringifierRegistry();
+
     private final Map<Type, Stringifier<?>> stringifiers = synchronizedMap(
             newHashMap(
                     ImmutableMap.<Type, Stringifier<?>>builder()
-                            .put(Boolean.class, Stringifiers.forBoolean())
-                            .put(Integer.class, Stringifiers.forInteger())
-                            .put(Long.class, Stringifiers.forLong())
-                            .put(String.class, Stringifiers.forString())
+                            .put(Boolean.class, forBoolean())
+                            .put(Integer.class, forInteger())
+                            .put(Long.class, forLong())
+                            .put(String.class, forString())
                             .build()
             )
     );
@@ -58,10 +64,10 @@ public final class StringifierRegistry {
 
     static <T> Stringifier<T> getStringifier(Type typeOfT) {
         checkNotNull(typeOfT);
-        Optional<Stringifier<T>> stringifierOptional = getInstance().get(typeOfT);
+        Optional<Stringifier<T>> optional = getInstance().get(typeOfT);
 
-        if (stringifierOptional.isPresent()) {
-            Stringifier<T> stringifier = stringifierOptional.get();
+        if (optional.isPresent()) {
+            Stringifier<T> stringifier = optional.get();
             return stringifier;
         }
 
@@ -92,7 +98,7 @@ public final class StringifierRegistry {
     }
 
     public static StringifierRegistry getInstance() {
-        return Singleton.INSTANCE.value;
+        return INSTANCE;
     }
 
     /**
@@ -122,11 +128,5 @@ public final class StringifierRegistry {
 
         Stringifier<T> result = cast(func);
         return Optional.ofNullable(result);
-    }
-
-    private enum Singleton {
-        INSTANCE;
-        @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final StringifierRegistry value = new StringifierRegistry();
     }
 }

@@ -22,19 +22,21 @@ package io.spine.string;
 
 import com.google.common.primitives.Longs;
 
-import java.io.Serializable;
-
 /**
  * The {@code Stringifier} for the long values.
  *
  * @author Illia Shepilov
  * @author Alexander Yevsyukov
  */
-final class LongStringifier extends Stringifier<Long> implements Serializable {
+final class LongStringifier extends SerializableStringifier<Long> {
 
     private static final long serialVersionUID = 0L;
 
     private static final LongStringifier INSTANCE = new LongStringifier();
+
+    private LongStringifier() {
+        super("Stringifiers.forLong()");
+    }
 
     static LongStringifier getInstance() {
         return INSTANCE;
@@ -51,11 +53,6 @@ final class LongStringifier extends Stringifier<Long> implements Serializable {
     protected Long fromString(String s) {
         return Longs.stringConverter()
                     .convert(s);
-    }
-
-    @Override
-    public String toString() {
-        return "Stringifiers.forLong()";
     }
 
     private Object readResolve() {

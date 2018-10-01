@@ -20,6 +20,9 @@
 
 package io.spine.net;
 
+import io.spine.net.string.NetStringifiers;
+
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -33,8 +36,8 @@ import static io.spine.net.Patterns.HOST_NAME_PATTERN;
  */
 public final class InternetDomains {
 
+    /** Prevent instantiation of this  utility class. */
     private InternetDomains() {
-        // Prevent instantiation of this  utility class.
     }
 
     /**
@@ -46,9 +49,23 @@ public final class InternetDomains {
         return HOST_NAME_PATTERN;
     }
 
-    private static void checkArgumentIsDomainName(CharSequence name) {
-        checkArgument(pattern().matcher(name)
-                               .matches());
+    /**
+     * Verifies if the passed sequence is a valid internet domain name.
+     */
+    public static boolean isValid(String name) {
+        Matcher matcher = pattern().matcher(name);
+        boolean result = matcher.matches();
+        return result;
+    }
+
+    /**
+     * Obtains string representation of the passed internet domain.
+     */
+    public static String toString(InternetDomain domain) {
+        checkNotNull(domain);
+        String result = NetStringifiers.forInternetDomain()
+                                       .convert(domain);
+        return result;
     }
 
     /**
@@ -58,13 +75,12 @@ public final class InternetDomains {
      * @return new {@code InternetDomain} instance
      * @throws IllegalArgumentException if the passed domain name is not valid
      */
-    public static InternetDomain valueOf(CharSequence name) {
+    public static InternetDomain valueOf(String name) {
         checkNotNull(name);
-        checkArgumentIsDomainName(name);
-
-        InternetDomain result = InternetDomain.newBuilder()
-                                              .setValue(name.toString())
-                                              .build();
+        checkArgument(isValid(name));
+        InternetDomain result = NetStringifiers.forInternetDomain()
+                                               .reverse()
+                                               .convert(name);
         return result;
     }
 }

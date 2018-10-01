@@ -37,9 +37,6 @@ import static io.spine.code.java.SimpleClassName.ofBuilder;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-/**
- * @author Dmytro Grankin
- */
 public class FieldAnnotationCheck implements SourceCheck {
 
     private final DescriptorProtos.FieldDescriptorProto fieldDescriptor;
@@ -51,9 +48,8 @@ public class FieldAnnotationCheck implements SourceCheck {
         this.shouldBeAnnotated = shouldBeAnnotated;
     }
 
-    @Nullable
     @Override
-    public Void apply(@Nullable AbstractJavaSource<JavaClassSource> input) {
+    public @Nullable Void apply(@Nullable AbstractJavaSource<JavaClassSource> input) {
         checkNotNull(input);
         JavaClassSource message = (JavaClassSource) input;
         JavaClassSource messageBuilder = getBuilder(message);

@@ -34,6 +34,7 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
  */
 public final class FileName extends AbstractFileName<FileName> {
 
+    private static final long serialVersionUID = 0L;
     private static final String GRPC_CLASSNAME_SUFFIX = "Grpc";
     private static final String EXTENSION = ".java";
 
@@ -55,17 +56,24 @@ public final class FileName extends AbstractFileName<FileName> {
      *
      * @param message
      *        a descriptor of the message
-     * @param orBuilder
-     *        if {@code true} the file would represent a descendant of
-     *        {@link com.google.protobuf.MessageOrBuilder MessageOrBuilder}
-     * @return new instance
+     * @return the name of the Java file
      */
-    public static FileName forMessage(DescriptorProto message, boolean orBuilder) {
+    public static FileName forMessage(DescriptorProto message) {
         String typeName = message.getName();
-        String javaType = orBuilder
-                          ? SimpleClassName.messageOrBuilder(typeName)
-                                           .value()
-                          : typeName;
+        FileName result = forType(typeName);
+        return result;
+    }
+
+    /**
+     * Obtains file name for the specified message {@code MessageOrBuilder} interface.
+     *
+     * @param message
+     *        a descriptor of the message
+     * @return the name of the Java file
+     */
+    public static FileName forMessageOrBuilder(DescriptorProto message) {
+        String typeName = message.getName();
+        String javaType = SimpleClassName.messageOrBuilder(typeName).value();
         FileName result = forType(javaType);
         return result;
     }

@@ -20,7 +20,8 @@
 
 package io.spine.base;
 
-import com.google.protobuf.Message;
+import com.google.errorprone.annotations.Immutable;
+import io.spine.base.MessageFile.Predicate;
 
 /**
  * A common interface for rejection messages.
@@ -31,6 +32,31 @@ import com.google.protobuf.Message;
  *
  * @author Alexander Yevsyukov
  */
-@SuppressWarnings("InterfaceNeverImplemented") /* See Javadoc */
-public interface RejectionMessage extends Message {
+@Immutable
+public interface RejectionMessage extends EventMessage {
+
+    /**
+     * Provides the predicate for finding proto files with rejection message declarations.
+     */
+    class File {
+        @SuppressWarnings("DuplicateStringLiteralInspection") // Used in other contexts.
+        private static final MessageFile INSTANCE = new MessageFile("rejections") {
+            private static final long serialVersionUID = 0L;
+        };
+
+        /** Prevents instantiation of this utility class. */
+        private File() {
+        }
+
+        public static Predicate predicate() {
+            return INSTANCE.predicate();
+        }
+
+        /**
+         * Obtains the suffix common for proto files containing command message declarations.
+         */
+        public static String suffix() {
+            return INSTANCE.value();
+        }
+    }
 }

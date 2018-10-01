@@ -98,7 +98,7 @@ abstract class TypeDefinitionAnnotator<L extends ExtendableMessage, D extends Ge
      * Annotates a Java source, generated basing on the specified definition descriptor.
      *
      * <p>This method is used for {@link FileDescriptorProto} if it
-     * {@linkplain com.google.protobuf.DescriptorProtos.FileOptions#hasJavaMultipleFiles()
+     * {@linkplain com.google.protobuf.DescriptorProtos.FileOptions#getJavaMultipleFiles()
      * has multiple Java files}.
      *
      * @param definition the definition descriptor
@@ -131,9 +131,8 @@ abstract class TypeDefinitionAnnotator<L extends ExtendableMessage, D extends Ge
             this.file = file;
         }
 
-        @Nullable
         @Override
-        public Void apply(@Nullable AbstractJavaSource<JavaClassSource> input) {
+        public @Nullable Void apply(@Nullable AbstractJavaSource<JavaClassSource> input) {
             checkNotNull(input);
             for (D definition : getDefinitions(file)) {
                 if (shouldAnnotate(definition)) {

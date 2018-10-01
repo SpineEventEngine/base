@@ -35,9 +35,6 @@ import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-/**
- * @author Alexander Yevsyukov
- */
 public class SpyShould {
 
     private static final String FIELD_NAME = "list";

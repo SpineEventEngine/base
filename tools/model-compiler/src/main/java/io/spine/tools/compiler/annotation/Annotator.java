@@ -109,11 +109,10 @@ public abstract class Annotator<O extends ExtendableMessage, D extends Generated
     public abstract void annotate();
 
     /**
-     * Annotates the Java sources generated from the specified file descriptor
+     * Annotates the Java sources generated from the specified file descriptor.
      */
     protected final void annotate(FileDescriptorProto fileDescriptor) {
-        if (fileDescriptor.getOptions()
-                          .hasJavaMultipleFiles()) {
+        if (fileDescriptor.getOptions().getJavaMultipleFiles()) {
             annotateMultipleFiles(fileDescriptor);
         } else {
             annotateOneFile(fileDescriptor);
@@ -122,8 +121,8 @@ public abstract class Annotator<O extends ExtendableMessage, D extends Generated
 
     /**
      * Annotates the Java sources generated from the specified file descriptor
-     * if {@linkplain com.google.protobuf.DescriptorProtos.FileOptions#hasJavaMultipleFiles()
-     * FileOptions#hasJavaMultipleFiles()} is {@code false}.
+     * if {@linkplain com.google.protobuf.DescriptorProtos.FileOptions#getJavaMultipleFiles()
+     * FileOptions#getJavaMultipleFiles()} is {@code false}.
      *
      * @param fileDescriptor the file descriptor
      */
@@ -210,7 +209,7 @@ public abstract class Annotator<O extends ExtendableMessage, D extends Generated
         sourceVisitor.apply(javaSource);
         String resultingSource = javaSource.toString();
         try {
-            Files.write(absoluteSourcePath, resultingSource.getBytes(), TRUNCATE_EXISTING);
+            Files.write(absoluteSourcePath, ImmutableList.of(resultingSource), TRUNCATE_EXISTING);
         } catch (IOException e) {
             throw illegalStateWithCauseOf(e);
         }

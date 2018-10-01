@@ -27,20 +27,19 @@ option (type_url_prefix) = "type.spine.io";
 option java_package="io.spine.test.types";
 option java_multiple_files = true;
 
-
 // The types declared below are used to test the `KnownTypes#getTypesFromPackage`.
 //
 // See `KnownTypesShould` for the unit test code.
 //
-message TaskId {
+message KnownTaskId {
     string value = 1;
 }
 
-message TaskName {
+message KnownTaskName {
     string value = 1;
 }
 
-message Task {
-    TaskId id = 1;
-    TaskName name = 2;
+message KnownTask {
+    KnownTaskId id = 1;
+    KnownTaskName name = 2;
 }

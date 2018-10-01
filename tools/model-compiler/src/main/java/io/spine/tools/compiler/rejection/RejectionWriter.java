@@ -28,6 +28,7 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import io.spine.base.ThrowableMessage;
+import io.spine.logging.Logging;
 import io.spine.tools.compiler.fieldtype.FieldType;
 import io.spine.tools.compiler.fieldtype.FieldTypeFactory;
 import io.spine.code.proto.FieldName;
@@ -41,7 +42,7 @@ import java.nio.file.Files;
 import java.util.Map;
 
 import static com.squareup.javapoet.MethodSpec.constructorBuilder;
-import static io.spine.code.java.Annotations.generatedBySpineModelCompiler;
+import static io.spine.tools.compiler.annotation.Annotations.generatedBySpineModelCompiler;
 import static javax.lang.model.element.Modifier.FINAL;
 import static javax.lang.model.element.Modifier.PRIVATE;
 import static javax.lang.model.element.Modifier.PUBLIC;
@@ -55,7 +56,7 @@ import static javax.lang.model.element.Modifier.STATIC;
  * @author Alexander Litus
  * @author Alex Tymchenko
  */
-public class RejectionWriter {
+public class RejectionWriter implements Logging {
 
     private static final NoArgMethod getMessageThrown = new NoArgMethod("getMessageThrown");
 
@@ -202,15 +203,5 @@ public class RejectionWriter {
         log.debug("Read fields: {}", result);
 
         return result;
-    }
-
-    private static Logger log() {
-        return LoggerSingleton.INSTANCE.logger;
-    }
-
-    private enum LoggerSingleton {
-        INSTANCE;
-        @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger logger = LoggerFactory.getLogger(RejectionWriter.class);
     }
 }

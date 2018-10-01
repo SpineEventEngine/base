@@ -19,11 +19,14 @@
  */
 package io.spine.tools.gradle.compiler;
 
+import com.google.common.collect.Lists;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.code.java.PackageName;
 import io.spine.code.java.SimpleClassName;
+import io.spine.code.proto.FileName;
 import io.spine.code.proto.RejectionDeclaration;
 import io.spine.code.proto.RejectionsFile;
+import io.spine.code.proto.SourceFile;
 import io.spine.tools.compiler.MessageTypeCache;
 import io.spine.tools.compiler.rejection.RejectionWriter;
 import io.spine.tools.gradle.GradleTask;
@@ -38,7 +41,6 @@ import java.util.List;
 import java.util.Map;
 
 import static io.spine.code.proto.FileDescriptors.parse;
-import static io.spine.code.proto.Rejections.collect;
 import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
 import static io.spine.tools.gradle.TaskName.COMPILE_TEST_JAVA;
 import static io.spine.tools.gradle.TaskName.GENERATE_PROTO;
@@ -66,6 +68,29 @@ public class RejectionGenPlugin extends SpinePlugin {
 
     /** A map from Protobuf type name to Java class FQN. */
     private final MessageTypeCache messageTypeCache = new MessageTypeCache();
+
+    private List<RejectionsFile> collect(Iterable<FileDescriptorProto> files) {
+        List<RejectionsFile> result = Lists.newLinkedList();
+        Logger log = log();
+        for (FileDescriptorProto file : files) {
+            FileName fn = FileName.from(file);
+            if (fn.isRejections()) {
+                log.debug("Found rejections file: {}", fn.value());
+
+                // See if the file content matches conventions.
+                SourceFile sourceFile = SourceFile.from(file);
+                if (sourceFile.isRejections()) {
+                    RejectionsFile rejectionsFile = RejectionsFile.from(sourceFile);
+                    result.add(rejectionsFile);
+                } else {
+                    log.error("Invalid rejections file: {}", file.getName());
+                }
+            }
+        }
+        log.debug("Found rejections in files: {}", result);
+
+        return result;
+    }
 
     /**
      * Applies the plug-in to a project.
@@ -171,12 +196,13 @@ public class RejectionGenPlugin extends SpinePlugin {
                                     Map<String, String> messageTypeMap,
                                     String rejectionsRootDir) {
         Logger log = log();
-        log.debug("Generating rejections from file {}", file.getPath());
-
-        if (log.isTraceEnabled()) {
-            log.debug("javaPackage: {}, javaOuterClassName: {}",
-                      PackageName.resolve(file.getDescriptor()),
-                      SimpleClassName.outerOf(file.getDescriptor()));
+        if (log.isDebugEnabled()) {
+            log.debug(
+                "Generating rejections from file: `{}` javaPackage: `{}`, javaOuterClassName: `{}`",
+                file.getPath(),
+                PackageName.resolve(file.getDescriptor()),
+                SimpleClassName.outerOf(file.getDescriptor())
+            );
         }
 
         List<RejectionDeclaration> rejections = file.getRejectionDeclarations();

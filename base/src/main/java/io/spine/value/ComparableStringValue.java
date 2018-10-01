@@ -34,6 +34,8 @@ public abstract class ComparableStringValue<T extends ComparableStringValue>
         extends StringTypeValue
         implements Comparable<T> {
 
+    private static final long serialVersionUID = 0L;
+
     protected ComparableStringValue(String value) {
         super(value);
     }

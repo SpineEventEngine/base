@@ -20,6 +20,7 @@
 
 package io.spine.validate;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.FieldOptions;
 import com.google.protobuf.Descriptors.FieldDescriptor;
@@ -28,12 +29,10 @@ import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import com.google.protobuf.Message;
 import io.spine.base.CommandMessage;
 import io.spine.base.FieldPath;
+import io.spine.logging.Logging;
 import io.spine.option.IfInvalidOption;
 import io.spine.option.IfMissingOption;
 import io.spine.option.OptionsProto;
-import io.spine.validate.rules.ValidationRuleOptions;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
@@ -43,6 +42,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.copyOf;
 import static com.google.common.collect.ImmutableList.of;
 import static com.google.common.collect.Lists.newLinkedList;
+import static io.spine.validate.rules.ValidationRuleOptions.getOptionValue;
 
 /**
  * Validates messages according to Spine custom protobuf options and
@@ -51,7 +51,7 @@ import static com.google.common.collect.Lists.newLinkedList;
  * @param <V> a type of field values
  * @author Alexander Litus
  */
-abstract class FieldValidator<V> {
+abstract class FieldValidator<V> implements Logging {
 
     private static final String ENTITY_ID_REPEATED_FIELD_MSG =
             "Entity ID must not be a repeated field.";
@@ -91,7 +91,8 @@ abstract class FieldValidator<V> {
         this.fieldDescriptor = fieldContext.getTarget();
         this.strict = strict;
         FileDescriptor file = fieldDescriptor.getFile();
-        this.isCommandsFile = CommandMessage.File.PREDICATE.test(file);
+        this.isCommandsFile = CommandMessage.File.predicate()
+                                                 .test(file);
         this.isFirstField = fieldDescriptor.getIndex() == 0;
         this.required = getFieldOption(OptionsProto.required);
         this.ifMissingOption = getFieldOption(OptionsProto.ifMissing);
@@ -123,8 +124,10 @@ abstract class FieldValidator<V> {
      *
      * @return {@code true} if the field value is not set and {@code false} otherwise
      */
-    protected boolean fieldValueNotSet() {
-        boolean valueNotSet = values.isEmpty() || !isRepeatedOrMap() && isNotSet(values.get(0));
+    boolean fieldValueNotSet() {
+        boolean valueNotSet =
+                values.isEmpty()
+                        || (isNotRepeatedOrMap() && isNotSet(values.get(0)));
         return valueNotSet;
     }
 
@@ -190,11 +193,11 @@ abstract class FieldValidator<V> {
      */
     protected void validateEntityId() {
         if (fieldDescriptor.isRepeated()) {
-            ConstraintViolation violation =
-                    ConstraintViolation.newBuilder()
-                                       .setMsgFormat(ENTITY_ID_REPEATED_FIELD_MSG)
-                                       .setFieldPath(getFieldPath())
-                                       .build();
+            ConstraintViolation violation = ConstraintViolation
+                    .newBuilder()
+                    .setMsgFormat(ENTITY_ID_REPEATED_FIELD_MSG)
+                    .setFieldPath(getFieldPath())
+                    .build();
             addViolation(violation);
             return;
         }
@@ -256,10 +259,11 @@ abstract class FieldValidator<V> {
 
     private ConstraintViolation newViolation(IfMissingOption option) {
         String msg = getErrorMsgFormat(option, option.getMsgFormat());
-        ConstraintViolation violation = ConstraintViolation.newBuilder()
-                                                           .setMsgFormat(msg)
-                                                           .setFieldPath(getFieldPath())
-                                                           .build();
+        ConstraintViolation violation = ConstraintViolation
+                .newBuilder()
+                .setMsgFormat(msg)
+                .setFieldPath(getFieldPath())
+                .build();
         return violation;
     }
 
@@ -284,8 +288,7 @@ abstract class FieldValidator<V> {
      * @param <T>       the type of the option
      */
     protected final <T> T getFieldOption(GeneratedExtension<FieldOptions, T> extension) {
-        Optional<T> externalOption = ValidationRuleOptions.getOptionValue(fieldContext,
-                                                                          extension);
+        Optional<T> externalOption = getOptionValue(fieldContext, extension);
         if (externalOption.isPresent()) {
             return externalOption.get();
         }
@@ -295,15 +298,15 @@ abstract class FieldValidator<V> {
         return ownOption;
     }
 
-    protected final boolean shouldValidate() {
-        return !isRepeatedOrMap() || validate;
+    private boolean shouldValidate() {
+        return isNotRepeatedOrMap() || validate;
     }
 
-    protected final IfInvalidOption ifInvalid() {
+    final IfInvalidOption ifInvalid() {
         return ifInvalid;
     }
 
-    protected final boolean getValidateOption() {
+    final boolean getValidateOption() {
         return validate;
     }
 
@@ -316,9 +319,18 @@ abstract class FieldValidator<V> {
         return result;
     }
 
-    protected boolean isRepeatedOrMap() {
-        return fieldDescriptor.isRepeated()
-                || fieldDescriptor.isMapField();
+    private boolean isNotRepeatedOrMap() {
+        return !fieldDescriptor.isRepeated()
+                && !fieldDescriptor.isMapField();
+    }
+
+    /**
+     * This test-only method is used from the module {@code smoke-tests}.
+     */
+    @SuppressWarnings("unused")
+    @VisibleForTesting
+    boolean isRepeatedOrMap() {
+        return !isNotRepeatedOrMap();
     }
 
     /**
@@ -333,16 +345,5 @@ abstract class FieldValidator<V> {
     /** Returns a path to the current field. */
     protected FieldPath getFieldPath() {
         return fieldContext.getFieldPath();
-    }
-
-    @SuppressWarnings("ImmutableEnumChecker")
-    private enum LogSingleton {
-        INSTANCE;
-        @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = LoggerFactory.getLogger(FieldValidator.class);
-    }
-
-    private static Logger log() {
-        return LogSingleton.INSTANCE.value;
     }
 }

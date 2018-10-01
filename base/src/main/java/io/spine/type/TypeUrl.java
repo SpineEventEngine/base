@@ -22,6 +22,7 @@ package io.spine.type;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
+import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Any;
 import com.google.protobuf.AnyOrBuilder;
 import com.google.protobuf.Descriptors.Descriptor;
@@ -41,6 +42,7 @@ import java.util.Objects;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.protobuf.Internal.getDefaultInstance;
+import static io.spine.code.proto.ProtoPackage.GOOGLE_PROTOBUF_PACKAGE;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 import static java.lang.String.format;
 
@@ -55,12 +57,12 @@ import static java.lang.String.format;
  * @author Alexander Yevsyukov
  * @see Any#getTypeUrl()
  */
+@Immutable
 public final class TypeUrl implements Serializable {
 
     private static final long serialVersionUID = 0L;
     private static final String SEPARATOR = "/";
     private static final Splitter splitter = Splitter.on(SEPARATOR);
-    private static final String GOOGLE_PROTOBUF_PACKAGE = "google.protobuf";
 
     /** The prefix of the type URL. */
     private final String prefix;
@@ -181,7 +183,7 @@ public final class TypeUrl implements Serializable {
     private static String prefixFor(GenericDescriptor descriptor) {
         FileDescriptor file = descriptor.getFile();
         if (file.getPackage()
-                .startsWith(GOOGLE_PROTOBUF_PACKAGE)) {
+                .startsWith(GOOGLE_PROTOBUF_PACKAGE.packageName())) {
             return Prefix.GOOGLE_APIS.value();
         }
         String result = file.getOptions()
@@ -204,7 +206,7 @@ public final class TypeUrl implements Serializable {
      * Returns a message {@link Class} corresponding to the Protobuf message type represented
      * by this type URL.
      *
-     * <p>This is a convenience method. Use it only when sure that the {@link TypeUrl} represents
+     * <p>This is a convenience method. Use it only when sure that the {@code TypeUrl} represents
      * a message (i.e. not an enum).
      *
      * @throws IllegalStateException if the type URL represents an enum

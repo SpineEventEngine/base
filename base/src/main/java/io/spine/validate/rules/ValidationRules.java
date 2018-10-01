@@ -37,7 +37,7 @@ import java.util.Properties;
  *
  * @author Dmytro Grankin
  */
-public class ValidationRules {
+public final class ValidationRules {
 
     /**
      * An instance of {@link Splitter} for the string option values.

@@ -20,16 +20,27 @@
 
 package io.spine.logging;
 
-import io.spine.testing.UtilityClassTest;
+import com.google.common.truth.DefaultSubject;
+import com.google.common.truth.Subject;
+import io.spine.logging.given.LoggingObject;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.helpers.SubstituteLogger;
 
-/**
- * @author Alexander Yevsyukov
- */
-@DisplayName("Logging utility class should")
-class LoggingTest extends UtilityClassTest<Logging> {
+import static io.spine.testing.logging.LogTruth.assertThat;
 
-    LoggingTest() {
-        super(Logging.class);
+@DisplayName("Logging interface should")
+class LoggingTest {
+
+    @Test
+    @DisplayName("obtain Logger instance")
+    void loggerInstance() {
+        Logging object = new LoggingObject();
+        Logger logger = object.log();
+        Subject<DefaultSubject, Object> assertLogger = assertThat(logger);
+
+        assertLogger.isNotNull();
+        assertLogger.isInstanceOf(SubstituteLogger.class);
     }
 }

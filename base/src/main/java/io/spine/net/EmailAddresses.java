@@ -20,6 +20,9 @@
 
 package io.spine.net;
 
+import io.spine.net.string.NetStringifiers;
+
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -33,8 +36,8 @@ import static io.spine.net.Patterns.EMAIL_ADDRESS;
  */
 public final class EmailAddresses {
 
+    /** Prevent instantiation of this utility class. */
     private EmailAddresses() {
-        // Prevent instantiation of this utility class.
     }
 
     /**
@@ -44,10 +47,23 @@ public final class EmailAddresses {
         return EMAIL_ADDRESS;
     }
 
-    private static void checkArgumentIsEmailAddress(CharSequence value) {
-        checkNotNull(value);
-        checkArgument(pattern().matcher(value)
-                               .matches());
+    /**
+     * Verifies if the passed sequence is a valid email address.
+     */
+    public static boolean isValid(String value) {
+        Matcher matcher = pattern().matcher(value);
+        boolean result = matcher.matches();
+        return result;
+    }
+
+    /**
+     * Obtains string representation of the passed email address.
+     */
+    public static String toString(EmailAddress address) {
+        checkNotNull(address);
+        String result = NetStringifiers.forEmailAddress()
+                                       .convert(address);
+        return result;
     }
 
     /**
@@ -57,12 +73,12 @@ public final class EmailAddresses {
      * @return new {@code EmailAddress} instance
      * @throws IllegalArgumentException if the passed email address is not valid
      */
-    public static EmailAddress valueOf(CharSequence value) {
-        checkArgumentIsEmailAddress(value);
-
-        EmailAddress result = EmailAddress.newBuilder()
-                                          .setValue(value.toString())
-                                          .build();
+    public static EmailAddress valueOf(String value) {
+        checkNotNull(value);
+        checkArgument(isValid(value));
+        EmailAddress result = NetStringifiers.forEmailAddress()
+                                             .reverse()
+                                             .convert(value);
         return result;
     }
 }

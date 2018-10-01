@@ -31,9 +31,6 @@ import static io.spine.option.OptionsProto.enrichment;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-/**
- * @author Dmytro Grankin
- */
 public class TypeNameParserShould {
 
     private static final String PACKAGE_PREFIX = "foo.bar.";

@@ -23,6 +23,7 @@ package io.spine.tools.compiler.validation;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import io.spine.code.Indent;
+import io.spine.logging.Logging;
 import io.spine.tools.compiler.MessageTypeCache;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
@@ -43,7 +44,7 @@ import static java.lang.String.format;
  *
  * @author Illia Shepilov
  */
-public class VBuilderGenerator {
+public class VBuilderGenerator implements Logging {
 
     /** Code will be generated into this directory. */
     private final String targetDirPath;
@@ -167,16 +168,5 @@ public class VBuilderGenerator {
             boolean belongsToModule = protoFile.exists();
             return belongsToModule;
         }
-    }
-
-    private enum LogSingleton {
-        INSTANCE;
-
-        @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = LoggerFactory.getLogger(VBuilderGenerator.class);
-    }
-
-    private static Logger log() {
-        return LogSingleton.INSTANCE.value;
     }
 }

@@ -26,9 +26,6 @@ import static io.spine.tools.protodoc.BacktickFormatting.wrapWithCodeTag;
 import static java.lang.System.lineSeparator;
 import static org.junit.Assert.assertEquals;
 
-/**
- * @author Dmytro Grankin
- */
 public class BacktickFormattingShould {
 
     private static final char BACKTICK = '`';

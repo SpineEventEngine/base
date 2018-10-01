@@ -27,9 +27,6 @@ import org.junit.Test;
 import static io.spine.code.javadoc.JavadocEscaper.escape;
 import static org.junit.Assert.assertEquals;
 
-/**
- * @author Dmytro Grankin
- */
 public class JavadocEscaperShould {
 
     @Test

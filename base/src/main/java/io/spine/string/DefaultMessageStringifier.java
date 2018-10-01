@@ -26,40 +26,40 @@ import io.spine.json.Json;
 /**
  * The default {@code Stringifier} for {@code Message} classes.
  *
- * <p>The sample of the usage:
+ * <p>Suppose we have the following domain type definitions:
  * <pre>  {@code
- * // The `TaskId` Protobuf message definition.
  * message TaskId {
  *     string value = 1;
- * }}</pre>
+ * }
  *
- * <pre>  {@code
- * // The `TaskName` Protobuf message definition.
  * message TaskName {
  *     string value = 1;
- * }}</pre>
+ * }
  *
- * <pre>  {@code
- * // The `Task` Protobuf message definition.
  * message Task {
  *     TaskId id = 1;
  *     TaskName name = 2;
  * }}</pre>
  *
+ * <p>The Java code for constructing the {@code Task} instance would be:
+ *
  * <pre>  {@code
- * // Construct the message.
- * final TaskId taskId = TaskId.newBuilder().setValue("task-id").build();
- * final TaskName taskName = TaskName.newBuilder().setValue("task-name").build();
- * final Task task = Task.newBuilder().setId(taskId).setTaskName(taskName).build();
+ * TaskId taskId = TaskId.newBuilder().setValue("task-id").build();
+ * TaskName taskName = TaskName.newBuilder().setValue("task-name").build();
+ * Task task = Task.newBuilder().setId(taskId).setTaskName(taskName).build();
+ * }</pre>
  *
- * // Obtain the default Stringifier.
- * final Stringifier<Task> taskStringifier = StringifierRegistry.getStringifier(Task.class);
+ * <p>Obtaining a default stringifier for the {@code Task} object (which is a {@code Message}),
+ * and backward conversion would look like:
  *
- * // The result is {"id":{"value":"task-id"},"name":{"value":"task-name"}}.
- * final String json = taskStringifier.reverse().convert(task);
+ * <pre>  {@code
+ * Stringifier<Task> taskStringifier = StringifierRegistry.getStringifier(Task.class);
+ *
+ * // The result of the below call would be {"id":{"value":"task-id"},"name":{"value":"task-name"}}.
+ * String json = taskStringifier.reverse().convert(task);
  *
  * // task.equals(taskFromJson) == true.
- * final Task taskFromJson = taskStringifier.convert(json);
+ * Task taskFromJson = taskStringifier.convert(json);
  * }</pre>
  *
  * @param <T> the message type

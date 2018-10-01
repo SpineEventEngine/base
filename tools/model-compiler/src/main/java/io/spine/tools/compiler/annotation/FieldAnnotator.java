@@ -89,7 +89,7 @@ class FieldAnnotator extends Annotator<FieldOptions, FieldDescriptorProto> {
             if (shouldAnnotate(messageType)) {
                 SourceVisitor<JavaClassSource> annotation =
                         new MessageFieldAnnotation<>(file, messageType);
-                SourceFile filePath = SourceFile.forMessage(messageType, false, file);
+                SourceFile filePath = SourceFile.forMessage(messageType, file);
                 rewriteSource(filePath, annotation);
             }
         }
@@ -347,8 +347,7 @@ class FieldAnnotator extends Annotator<FieldOptions, FieldDescriptorProto> {
      * @param expectedValue  the expected value for the {@code java_multiple_files}.
      */
     private static void checkMultipleFilesOption(FileDescriptorProto file, boolean expectedValue) {
-        boolean actualValue = file.getOptions()
-                                  .hasJavaMultipleFiles();
+        boolean actualValue = file.getOptions().getJavaMultipleFiles();
         if (actualValue != expectedValue) {
             throw newIllegalStateException("`java_multiple_files` should be `%s`, but was `%s`.",
                                            expectedValue, actualValue);

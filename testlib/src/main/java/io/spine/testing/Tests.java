@@ -22,14 +22,17 @@ package io.spine.testing;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors;
+import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.FieldMask;
 import com.google.protobuf.Message;
 
-import javax.annotation.CheckReturnValue;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import static com.google.common.collect.ImmutableList.toImmutableList;
+import static com.google.common.truth.Truth.assertThat;
 import static java.lang.Math.abs;
 
 /**
@@ -37,7 +40,7 @@ import static java.lang.Math.abs;
  *
  * @author Alexander Yevsyukov
  */
-public class Tests {
+public final class Tests {
 
     /** Prevent instantiation of this utility class. */
     private Tests() {
@@ -98,7 +101,6 @@ public class Tests {
      * @return {@code true} if the class has private parameter-less constructor,
      *         {@code false} otherwise
      */
-    @CheckReturnValue
     @VisibleForTesting
     static boolean hasPrivateParameterlessCtor(Class<?> targetClass) {
         Constructor constructor;
@@ -155,30 +157,45 @@ public class Tests {
     /**
      * Asserts that the passed message has a field that matches the passed field mask.
      *
+     * @param message   the message to assert
+     * @param fieldMask which is matched against the message field
+     *
      * @throws AssertionError if the check fails
      */
     public static void assertMatchesMask(Message message, FieldMask fieldMask) {
         List<String> paths = fieldMask.getPathsList();
 
-        for (Descriptors.FieldDescriptor field : message.getDescriptorForType()
-                                                        .getFields()) {
+        List<FieldDescriptor> fields = message.getDescriptorForType()
+                                              .getFields();
+
+        List<String> fieldNames = fields.stream()
+                                        .map(FieldDescriptor::getName)
+                                        .collect(toImmutableList());
+
+        // Assert that the passed field mask contains the field of this message type.
+        assertThat(fieldNames).containsAllIn(paths);
+
+        // Assert that values match the field mask.
+        for (FieldDescriptor field : fields) {
             if (field.isRepeated()) {
                 continue;
             }
-            assertEquals(message.hasField(field), paths.contains(field.getFullName()));
+            assertEquals(message.hasField(field), paths.contains(field.getName()));
         }
     }
 
     /**
-     * Asserts that the difference between expected time and actual time is not bigger
-     * than set maximum.
+     * Asserts that the difference between expected value and actual value is not bigger
+     * than the set delta.
      *
-     * @param expectedSec expected timestamp value
-     * @param actualSec   actual timestamp value
-     * @param maxDiffSec  the maximum expected difference between the values
+     * <p>The assertion will be passed if the actual delta equals to the set one.
+     *
+     * @param expectedValue expected value
+     * @param actualValue   actual value
+     * @param delta         the maximum expected difference between the values
      */
-    public static void assertSecondsEqual(long expectedSec, long actualSec, long maxDiffSec) {
-        long diffSec = abs(expectedSec - actualSec);
-        assertTrue(diffSec <= maxDiffSec);
+    public static void assertInDelta(long expectedValue, long actualValue, long delta) {
+        long actualDelta = abs(expectedValue - actualValue);
+        assertTrue(actualDelta <= delta);
     }
 }

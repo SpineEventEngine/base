@@ -149,9 +149,9 @@ public class ConstraintViolations {
      */
     @Internal
     public abstract static class ExceptionFactory<E extends Exception,
-            M extends Message,
-            C extends MessageClass,
-            R extends ProtocolMessageEnum> {
+                                                  M extends Message,
+                                                  C extends MessageClass<?>,
+                                                  R extends ProtocolMessageEnum> {
 
         private final Iterable<ConstraintViolation> constraintViolations;
         private final M message;

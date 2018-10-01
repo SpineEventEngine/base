@@ -25,9 +25,6 @@ import org.junit.Test;
 
 import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
 
-/**
- * @author Illia Shepilov
- */
 public class FieldTypesShould {
 
     @Test

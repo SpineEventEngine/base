@@ -36,6 +36,8 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
  */
 public final class FieldName extends AbstractFieldName implements UnderscoredName {
 
+    private static final long serialVersionUID = 0L;
+
     /** A delimiter between a type name and a field name. */
     public static final String TYPE_SEPARATOR = ".";
 

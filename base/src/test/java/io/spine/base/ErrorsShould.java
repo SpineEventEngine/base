@@ -29,9 +29,6 @@ import static io.spine.base.Identifier.newUuid;
 import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
 import static org.junit.Assert.assertEquals;
 
-/**
- * @author Alexander Yevsyukov
- */
 public class ErrorsShould {
 
     @Test

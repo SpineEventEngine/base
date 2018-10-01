@@ -20,9 +20,9 @@
 
 package io.spine.tools.gradle.compiler;
 
-import io.spine.code.DefaultProject;
-import io.spine.tools.gradle.GradleProject;
+import io.spine.code.java.DefaultJavaProject;
 import io.spine.code.properties.PropertyFile;
+import io.spine.tools.gradle.GradleProject;
 import io.spine.validate.rules.ValidationRules;
 import org.junit.Rule;
 import org.junit.Test;
@@ -35,9 +35,6 @@ import java.util.Map;
 import static io.spine.tools.gradle.TaskName.FIND_VALIDATION_RULES;
 import static org.junit.Assert.assertEquals;
 
-/**
- * @author Dmytro Grankin
- */
 public class ValidationRulesLookupPluginShould {
 
     private static final char DOT = '.';
@@ -79,9 +76,9 @@ public class ValidationRulesLookupPluginShould {
 
     private Map<String, String> loadProperties() {
         PropertyFile propFile = PropertyFile.of(ValidationRules.fileName())
-                                            .at(DefaultProject.at(testProjectDir.getRoot())
-                                                              .generated()
-                                                              .mainResources());
+                                            .at(DefaultJavaProject.at(testProjectDir.getRoot())
+                                                                  .generated()
+                                                                  .mainResources());
         Map<String, String> result = propFile.load();
         return result;
     }

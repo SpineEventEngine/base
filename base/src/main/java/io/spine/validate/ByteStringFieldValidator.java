@@ -38,7 +38,7 @@ class ByteStringFieldValidator extends FieldValidator<ByteString> {
      * @param fieldValues  values to validate
      */
     ByteStringFieldValidator(FieldContext fieldContext, Object fieldValues) {
-        super(fieldContext, FieldValidator.<ByteString>toValueList(fieldValues), false);
+        super(fieldContext, FieldValidator.toValueList(fieldValues), false);
     }
 
     @Override
@@ -61,10 +61,11 @@ class ByteStringFieldValidator extends FieldValidator<ByteString> {
     @Override
     @SuppressWarnings("RefusedBequest")
     protected void validateEntityId() {
-        ConstraintViolation violation = ConstraintViolation.newBuilder()
-                                                           .setMsgFormat(INVALID_ID_TYPE_MSG)
-                                                           .setFieldPath(getFieldPath())
-                                                           .build();
+        ConstraintViolation violation = ConstraintViolation
+                .newBuilder()
+                .setMsgFormat(INVALID_ID_TYPE_MSG)
+                .setFieldPath(getFieldPath())
+                .build();
         addViolation(violation);
     }
 }

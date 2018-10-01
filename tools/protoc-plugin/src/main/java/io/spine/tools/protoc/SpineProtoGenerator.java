@@ -29,10 +29,16 @@ import com.google.protobuf.compiler.PluginProtos.Version;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.collect.Lists.newArrayListWithExpectedSize;
 import static com.google.common.collect.Sets.newHashSet;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.partitioningBy;
+import static java.util.stream.Collectors.reducing;
+import static java.util.stream.Collectors.toList;
 
 /**
  * An abstract base for the Protobuf code generator.
@@ -97,8 +103,8 @@ public abstract class SpineProtoGenerator {
      * @return optionally a {@link Collection} of {@linkplain File Files} to generate or an empty
      * {@code Collection}
      */
-    protected abstract Collection<File> processMessage(FileDescriptorProto file,
-                                                       DescriptorProto message);
+    protected abstract Collection<CompilerOutput> processMessage(FileDescriptorProto file,
+                                                                 DescriptorProto message);
 
     /**
      * Processes the given compiler request and generates the response to the compiler.
@@ -142,25 +148,60 @@ public abstract class SpineProtoGenerator {
      * Processes all passed proto files.
      */
     private CodeGeneratorResponse process(Iterable<FileDescriptorProto> files) {
-        Collection<File> generatedFiles = newHashSet();
+        Collection<CompilerOutput> generatedFiles = newHashSet();
         for (FileDescriptorProto file : files) {
-            Collection<File> newFiles = generateForTypesIn(file);
+            Collection<CompilerOutput> newFiles = generateForTypesIn(file);
             generatedFiles.addAll(newFiles);
         }
+        Collection<File> mergedFiles = mergeFiles(generatedFiles);
         CodeGeneratorResponse response =
                 CodeGeneratorResponse.newBuilder()
-                                     .addAllFile(generatedFiles)
+                                     .addAllFile(mergedFiles)
                                      .build();
         return response;
+    }
+
+    private static Collection<File> mergeFiles(Collection<CompilerOutput> allFiles) {
+        Map<Boolean, List<File>> partitionedFiles = allFiles
+                .stream()
+                .map(CompilerOutput::asFile)
+                .collect(partitioningBy(File::hasInsertionPoint));
+        Collection<File> insertionPoints = mergeInsertionPoints(partitionedFiles.get(true));
+        Collection<File> completeFiles = partitionedFiles.get(false);
+
+        Collection<File> merged = newArrayListWithExpectedSize(allFiles.size());
+        merged.addAll(insertionPoints);
+        merged.addAll(completeFiles);
+
+        return merged;
+    }
+
+    private static Collection<File> mergeInsertionPoints(Collection<File> insertionPoints) {
+        File emptyFile = File.getDefaultInstance();
+        List<File> merged = insertionPoints
+                .stream()
+                .collect(groupingBy(File::getInsertionPoint,
+                                    reducing(SpineProtoGenerator::concatContent)))
+                .values()
+                .stream()
+                .map(file -> file.orElse(emptyFile))
+                .collect(toList());
+        return merged;
+    }
+
+    private static File concatContent(File left, File right) {
+        return left.toBuilder()
+                   .setContent(left.getContent() + right.getContent())
+                   .build();
     }
 
     /**
      * Processes the passed proto file.
      */
-    private Collection<File> generateForTypesIn(FileDescriptorProto file) {
-        Collection<File> result = newHashSet();
+    private Collection<CompilerOutput> generateForTypesIn(FileDescriptorProto file) {
+        Collection<CompilerOutput> result = newHashSet();
         for (DescriptorProto message : file.getMessageTypeList()) {
-            Collection<File> processedFile = processMessage(file, message);
+            Collection<CompilerOutput> processedFile = processMessage(file, message);
             result.addAll(processedFile);
         }
         return result;

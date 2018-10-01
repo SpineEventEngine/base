@@ -23,8 +23,8 @@ import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
 import io.spine.annotation.Internal;
 import io.spine.io.ResourceFiles;
+import io.spine.logging.Logging;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -130,7 +130,7 @@ public final class FileDescriptors {
                     e, "Cannot get proto file descriptors. Path: %s", descriptorSetFile
             );
         }
-        log.debug("Found {} files: {}", files.size(), files);
+        log.debug("Found {} files.", files.size());
         return files;
     }
 
@@ -278,13 +278,8 @@ public final class FileDescriptors {
         }
     }
 
-    private static Logger log() {
-        return LogSingleton.INSTANCE.value;
-    }
 
-    private enum LogSingleton {
-        INSTANCE;
-        @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = LoggerFactory.getLogger(FileDescriptors.class);
+    private static Logger log() {
+        return Logging.get(FileDescriptors.class);
     }
 }

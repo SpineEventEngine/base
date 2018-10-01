@@ -29,7 +29,7 @@ import io.spine.annotation.Experimental;
  * @see Money
  */
 @Experimental
-public class MoneyUtil {
+public final class MoneyUtil {
 
     /** Prevents instantiation of this utility class. */
     private MoneyUtil() {

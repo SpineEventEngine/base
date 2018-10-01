@@ -20,6 +20,7 @@
 
 package io.spine.tools.gradle;
 
+import com.google.common.base.Charsets;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import org.gradle.api.Action;
 import org.gradle.testkit.runner.BuildResult;
@@ -28,7 +29,6 @@ import org.gradle.testkit.runner.GradleRunner;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -309,7 +309,7 @@ public final class GradleProject {
                                     .resolve(path);
             try {
                 Files.createDirectories(sourcePath.getParent());
-                Files.write(sourcePath, lines, Charset.forName("UTF-8"));
+                Files.write(sourcePath, lines, Charsets.UTF_8);
             } catch (IOException e) {
                 throw illegalStateWithCauseOf(e);
             }

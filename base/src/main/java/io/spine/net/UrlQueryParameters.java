@@ -20,8 +20,7 @@
 
 package io.spine.net;
 
-import io.spine.annotation.Experimental;
-import io.spine.net.Url.Record.QueryParameter;
+import io.spine.net.Uri.QueryParameter;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -32,13 +31,12 @@ import static io.spine.util.Exceptions.newIllegalArgumentException;
  *
  * @author Mikhail Mikhaylov
  */
-@Experimental
-public class UrlQueryParameters {
+final class UrlQueryParameters {
 
     private static final char SEPARATOR = '=';
 
+    /** Prevent instantiation of this utility class. */
     private UrlQueryParameters() {
-        // Prevent instantiation of this utility class.
     }
 
     /**
@@ -58,10 +56,11 @@ public class UrlQueryParameters {
         String key = queryParameter.substring(0, separatorIndex);
         String value = queryParameter.substring(separatorIndex + 1);
 
-        QueryParameter result = QueryParameter.newBuilder()
-                                              .setKey(key)
-                                              .setValue(value)
-                                              .build();
+        QueryParameter result = QueryParameter
+                .newBuilder()
+                .setKey(key)
+                .setValue(value)
+                .build();
         return result;
     }
 
@@ -80,10 +79,11 @@ public class UrlQueryParameters {
         checkArgument(!key.isEmpty(), "Query parameter key cannot be empty.");
         checkArgument(!value.isEmpty(), "Query parameter value cannot be empty.");
 
-        QueryParameter result = QueryParameter.newBuilder()
-                                              .setKey(key)
-                                              .setValue(value)
-                                              .build();
+        QueryParameter result = QueryParameter
+                .newBuilder()
+                .setKey(key)
+                .setValue(value)
+                .build();
         return result;
     }
 

@@ -28,6 +28,7 @@ import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeSpec;
 import io.spine.code.Indent;
 import io.spine.code.java.SimpleClassName;
+import io.spine.logging.Logging;
 import io.spine.tools.compiler.MessageTypeCache;
 import io.spine.validate.AbstractValidatingBuilder;
 import org.slf4j.Logger;
@@ -38,7 +39,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
-import static io.spine.code.java.Annotations.generatedBySpineModelCompiler;
+import static io.spine.tools.compiler.annotation.Annotations.generatedBySpineModelCompiler;
 import static io.spine.tools.compiler.validation.ClassNames.getValidatorMessageClassName;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 
@@ -47,7 +48,7 @@ import static io.spine.util.Exceptions.newIllegalArgumentException;
  *
  * @author Illia Shepilov
  */
-class ValidatingBuilderWriter {
+class ValidatingBuilderWriter implements Logging {
 
     private final String targetDir;
     private final Indent indent;
@@ -112,7 +113,7 @@ class ValidatingBuilderWriter {
         return typeBuilder;
     }
 
-    private static void writeClass(File rootFolder, TypeSpec validator,
+    private void writeClass(File rootFolder, TypeSpec validator,
                                    String javaPackage, Indent indent) {
         try {
             Files.createDirectories(rootFolder.toPath());
@@ -126,16 +127,5 @@ class ValidatingBuilderWriter {
             log().warn(exMessage, e);
             throw newIllegalArgumentException(exMessage, e);
         }
-    }
-
-    private enum LogSingleton {
-        INSTANCE;
-
-        @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = LoggerFactory.getLogger(ValidatingBuilderWriter.class);
-    }
-
-    private static Logger log() {
-        return LogSingleton.INSTANCE.value;
     }
 }

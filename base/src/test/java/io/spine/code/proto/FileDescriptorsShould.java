@@ -27,9 +27,6 @@ import java.util.Collection;
 
 import static org.junit.Assert.assertFalse;
 
-/**
- * @author Alexander Yevsyukov
- */
 public class FileDescriptorsShould {
 
     @Test

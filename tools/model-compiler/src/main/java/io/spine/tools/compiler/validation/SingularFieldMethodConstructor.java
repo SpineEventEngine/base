@@ -27,6 +27,7 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import io.spine.base.ConversionException;
 import io.spine.code.proto.FieldName;
+import io.spine.logging.Logging;
 import io.spine.tools.compiler.MessageTypeCache;
 import io.spine.tools.compiler.fieldtype.FieldType;
 import io.spine.validate.ValidationException;
@@ -38,7 +39,7 @@ import java.util.Collection;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static io.spine.code.java.Annotations.canIgnoreReturnValue;
+import static io.spine.tools.compiler.annotation.Annotations.canIgnoreReturnValue;
 import static io.spine.tools.compiler.validation.ClassNames.getClassName;
 import static io.spine.tools.compiler.validation.ClassNames.getParameterClassName;
 import static io.spine.tools.compiler.validation.ClassNames.getStringClassName;
@@ -59,7 +60,7 @@ import static java.lang.String.format;
  *
  * @author Illia Shepilov
  */
-class SingularFieldMethodConstructor implements MethodConstructor {
+class SingularFieldMethodConstructor implements MethodConstructor, Logging {
 
     private static final String GETTER_PREFIX = "get";
 
@@ -240,16 +241,5 @@ class SingularFieldMethodConstructor implements MethodConstructor {
             checkFields();
             return new SingularFieldMethodConstructor(this);
         }
-    }
-
-    private enum LogSingleton {
-        INSTANCE;
-
-        @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = LoggerFactory.getLogger(SingularFieldMethodConstructor.class);
-    }
-
-    private static Logger log() {
-        return LogSingleton.INSTANCE.value;
     }
 }

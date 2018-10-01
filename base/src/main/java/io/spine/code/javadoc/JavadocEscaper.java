@@ -37,7 +37,7 @@ import static io.spine.code.javadoc.JavadocEscaper.EscapeSequence.fromBeginningO
  */
 public class JavadocEscaper {
 
-    /** Prevents instantiation of this utility class */
+    /** Prevents instantiation of this utility class. */
     private JavadocEscaper() {
     }
 

@@ -29,23 +29,14 @@ import org.junit.rules.ExpectedException;
 import java.util.List;
 
 import static io.spine.code.proto.FileName.of;
-import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-/**
- * @author Alexander Yevsyukov
- */
 public class FileNameShould {
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
-
-    @Test
-    public void have_utility_ctor_for_Suffix() {
-        assertHasPrivateParameterlessCtor(FileName.Suffix.class);
-    }
 
     @Test
     public void pass_null_tolerance_check() {
@@ -72,6 +63,11 @@ public class FileNameShould {
         assertEquals("Rejections", of("rejections.proto").nameOnlyCamelCase());
         assertEquals("ManyRejections", of("many_rejections.proto").nameOnlyCamelCase());
         assertEquals("ManyMoreRejections", of("many_more_rejections.proto").nameOnlyCamelCase());
+    }
+
+    @Test
+    public void return_file_name_without_extension() {
+        assertEquals("package/commands", of("package/commands.proto").nameWithoutExtension());
     }
 
     @Test

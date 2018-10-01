@@ -28,11 +28,22 @@ import io.spine.value.ClassTypeValue;
  *
  * @author Alexander Yevsyukov
  */
-public abstract class MessageClass extends ClassTypeValue<Message> {
+public abstract class MessageClass<M extends Message> extends ClassTypeValue<M> {
 
     private static final long serialVersionUID = 0L;
 
-    protected MessageClass(Class<? extends Message> value) {
+    /** The name of the type of proto messages represented by this class. */
+    private final TypeName typeName;
+
+    protected MessageClass(Class<? extends M> value) {
         super(value);
+        this.typeName = TypeName.of(value);
+    }
+
+    /**
+     * Obtains a type name of the messages of this class.
+     */
+    public TypeName getTypeName() {
+        return typeName;
     }
 }

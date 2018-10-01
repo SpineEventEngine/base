@@ -27,9 +27,6 @@ import org.jboss.forge.roaster.model.source.JavaClassSource;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-/**
- * @author Dmytro Grankin
- */
 public class NestedTypeFieldsAnnotationCheck implements SourceCheck {
 
     private final DescriptorProtos.DescriptorProto messageDescriptor;
@@ -41,13 +38,12 @@ public class NestedTypeFieldsAnnotationCheck implements SourceCheck {
         this.shouldBeAnnotated = shouldBeAnnotated;
     }
 
+    @Override
     @SuppressWarnings({
             "ResultOfMethodCallIgnored", // `Void` return type.
             "unchecked"                  // Could not determine exact type for nested declaration.
     })
-    @Nullable
-    @Override
-    public Void apply(@Nullable AbstractJavaSource<JavaClassSource> outerClass) {
+    public @Nullable Void apply(@Nullable AbstractJavaSource<JavaClassSource> outerClass) {
         checkNotNull(outerClass);
         for (DescriptorProtos.FieldDescriptorProto fieldDescriptor : messageDescriptor.getFieldList()) {
             AbstractJavaSource nestedType =

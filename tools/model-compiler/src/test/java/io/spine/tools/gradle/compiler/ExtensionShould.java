@@ -19,7 +19,7 @@
  */
 package io.spine.tools.gradle.compiler;
 
-import io.spine.code.DefaultProject;
+import io.spine.code.java.DefaultJavaProject;
 import org.gradle.api.Project;
 import org.junit.Before;
 import org.junit.Rule;
@@ -37,12 +37,10 @@ import static io.spine.tools.gradle.compiler.given.ModelCompilerTestEnv.newUuid;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-/**
- * @author Alex Tymchenko
- */
 public class ExtensionShould {
 
     private Project project;
@@ -209,7 +207,7 @@ public class ExtensionShould {
 
     @Test
     public void include_spine_dir_in_dirsToClean_if_exists() throws IOException {
-        DefaultProject defaultProject = DefaultProject.at(projectDir.getRoot());
+        DefaultJavaProject defaultProject = DefaultJavaProject.at(projectDir.getRoot());
         File spineDir = defaultProject.tempArtifacts();
         assertTrue(spineDir.mkdir());
         String generatedDir = defaultProject.generated()
@@ -222,6 +220,19 @@ public class ExtensionShould {
         assertThat(dirsToClean,
                    containsInAnyOrder(spineDir.getCanonicalPath(), generatedDir)
         );
+    }
+
+    @Test
+    public void return_spine_checker_severity() {
+        spineProtobuf().spineCheckSeverity = Severity.ERROR;
+        Severity actualSeverity = Extension.getSpineCheckSeverity(project);
+        assertEquals(spineProtobuf().spineCheckSeverity, actualSeverity);
+    }
+
+    @Test
+    public void return_null_spine_checker_severity_if_not_set() {
+        Severity actualSeverity = Extension.getSpineCheckSeverity(project);
+        assertNull(actualSeverity);
     }
 
     private void assertNotEmptyAndIsInProjectDir(String path) {

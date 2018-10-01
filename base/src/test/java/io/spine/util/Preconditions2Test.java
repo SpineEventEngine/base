@@ -28,9 +28,6 @@ import org.junit.jupiter.api.Nested;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-/**
- * @author Alexander Yevsyukov
- */
 @SuppressWarnings({"InnerClassMayBeStatic", "ClassCanBeStatic"})
 @DisplayName("Preconditions2 utility class should")
 class Preconditions2Test extends UtilityClassTest<Preconditions2> {
