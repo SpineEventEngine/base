@@ -38,33 +38,32 @@ import static com.google.common.collect.Maps.newLinkedHashMap;
  * should be registered in the {@code StringifierRegistry} class
  * for the correct usage of {@code MapStringifier}.
  *
- * <h3>Example</h3>
+ * <h1>Example</h1>
  * <pre>    {@code
+ *   StringifierRegistry registry = StringifierRegistry.getInstance();
+ *
  *   // The registration of the stringifier.
- *   final Type type = Types.mapTypeOf(String.class, Long.class);
- *   StringifierRegistry.getInstance().register(stringifier, type);
+ *   Type type = Types.mapTypeOf(String.class, Long.class);
+ *   registry.register(stringifier, type);
  *
  *   // Obtain already registered `MapStringifier`.
- *   final Stringifier<Map<String, Long>> mapStringifier = StringifierRegistry.getInstance()
- *                                                                            .getStringifier(type);
+ *   Stringifier<Map<String, Long>> mapStringifier = registry.getStringifier(type);
  *
  *   // Convert to string.
- *   final Map<String, Long> mapToConvert = newHashMap();
+ *   Map<String, Long> mapToConvert = newHashMap();
  *   mapToConvert.put("first", 1);
  *   mapToConvert.put("second", 2);
  *
  *   // The result is: \"first\":\"1\",\"second\":\"2\".
- *   final String convertedString = mapStringifier.toString(mapToConvert);
- *
+ *   String convertedString = mapStringifier.toString(mapToConvert);
  *
  *   // Convert from string.
- *   final String stringToConvert = ...
- *   final Map<String, Long> convertedMap = mapStringifier.fromString(stringToConvert); }
+ *   String stringToConvert = ...
+ *   Map<String, Long> convertedMap = mapStringifier.fromString(stringToConvert); }
  * </pre>
  *
  * @param <K> the type of the keys in the map
  * @param <V> the type of the values in the map
- * @author Illia Shepilov
  */
 final class MapStringifier<K, V> extends Stringifier<Map<K, V>> {
 
