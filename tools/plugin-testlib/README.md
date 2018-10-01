@@ -6,6 +6,6 @@ The Spine Gradle plugins are covered by the integration tests that require progr
 project setup and are run in the separate process.
 
 This module brings helper functionality to work with the
-[Gradle API](https://docs.gradle.org/current/javadoc/) for the integration tests environment setup.
+[Gradle API](https://docs.gradle.org/current/javadoc/) for the integration tests setup.
 
 See the [smoke tests](../smoke-tests) module.

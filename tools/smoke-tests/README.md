@@ -1,6 +1,6 @@
 # Smoke tests
 
-Smoke tests module contains integration tests for the Spine tools.
+Smoke tests module contains the integration tests for the Spine tools.
 
 This module is treated as a separate Gradle project and depends on `main` via Gradle
 [composite build](https://docs.gradle.org/current/userguide/composite_builds.html#included_build_declaring_substitutions).
