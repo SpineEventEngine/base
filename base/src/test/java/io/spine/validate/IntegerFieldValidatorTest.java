@@ -20,32 +20,15 @@
 
 package io.spine.validate;
 
-import static java.lang.Math.abs;
+import com.google.common.collect.ImmutableList;
+import org.junit.jupiter.api.DisplayName;
 
-/**
- * Validates fields of {@link Double} types.
- */
-final class DoubleFieldValidator extends FloatFieldValidatorBase<Double> {
+@DisplayName("IntegerFieldValidator should")
+class IntegerFieldValidatorTest extends NumberFieldValidatorTest<Integer, IntegerFieldValidator> {
 
-    /**
-     * Creates a new validator instance.
-     *
-     * @param fieldContext the context of the field to validate
-     * @param fieldValues  values to validate
-     */
-    DoubleFieldValidator(FieldContext fieldContext, Object fieldValues) {
-        super(fieldContext, FieldValidator.toValueList(fieldValues));
-    }
+    private static final int DOS = 2;
 
-    @Override
-    protected Double toNumber(String value) {
-        Double min = Double.valueOf(value);
-        return min;
-    }
-
-    @Override
-    protected Double getAbs(Double value) {
-        Double abs = abs(value);
-        return abs;
+    IntegerFieldValidatorTest() {
+        super(DOS, -DOS, new IntegerFieldValidator(fieldContext, ImmutableList.of(DOS)));
     }
 }

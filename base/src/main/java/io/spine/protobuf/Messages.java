@@ -77,7 +77,6 @@ public final class Messages {
      * @param <B>   the builder type
      * @return the message builder
      */
-    @SuppressWarnings("JavaReflectionMemberAccess") // The method is available in generated code.
     public static <B extends Message.Builder> B builderFor(Class<? extends Message> clazz) {
         checkNotNull(clazz);
         try {
@@ -87,7 +86,7 @@ public final class Messages {
             return result;
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             String errMsg = format("Class %s must be a generated proto message",
-                                         clazz.getCanonicalName());
+                                   clazz.getCanonicalName());
             throw new IllegalArgumentException(errMsg, e);
         }
     }

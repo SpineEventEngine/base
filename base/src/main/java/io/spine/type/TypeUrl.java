@@ -94,6 +94,7 @@ public final class TypeUrl implements Serializable {
      * @param msg an instance to get the type URL from
      */
     public static TypeUrl of(Message msg) {
+        checkNotNull(msg);
         return from(msg.getDescriptorForType());
     }
 
@@ -103,6 +104,7 @@ public final class TypeUrl implements Serializable {
      * @param descriptor the descriptor of the type
      */
     public static TypeUrl from(Descriptor descriptor) {
+        checkNotNull(descriptor);
         String prefix = prefixFor(descriptor);
         return create(prefix, descriptor.getFullName());
     }
@@ -113,6 +115,7 @@ public final class TypeUrl implements Serializable {
      * @param descriptor the descriptor of the type
      */
     public static TypeUrl from(EnumDescriptor descriptor) {
+        checkNotNull(descriptor);
         String prefix = prefixFor(descriptor);
         return create(prefix, descriptor.getFullName());
     }

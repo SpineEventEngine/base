@@ -36,7 +36,7 @@ class FloatFieldValidator extends FloatFieldValidatorBase<Float> {
      * @param fieldValues  values to validate
      */
     FloatFieldValidator(FieldContext fieldContext, Object fieldValues) {
-        super(fieldContext, FieldValidator.<Float>toValueList(fieldValues));
+        super(fieldContext, FieldValidator.toValueList(fieldValues));
     }
 
     @Override
