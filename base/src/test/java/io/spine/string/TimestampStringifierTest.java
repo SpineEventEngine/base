@@ -18,17 +18,35 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.validate;
+package io.spine.string;
 
-import com.google.common.collect.ImmutableList;
+import com.google.protobuf.Timestamp;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-@DisplayName("DoubleFieldValidator should")
-class DoubleFieldValidatorTest extends NumberFieldValidatorTest<Double, DoubleFieldValidator> {
+import static io.spine.base.Time.getCurrentTime;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-    private static final double PI = 3.14159;
+@DisplayName("TimestampStringifier should")
+class TimestampStringifierTest extends AbstractStringifierTest<Timestamp> {
 
-    DoubleFieldValidatorTest() {
-        super(PI, -PI, new DoubleFieldValidator(fieldContext, ImmutableList.of(PI)));
+    TimestampStringifierTest() {
+        super(Stringifiers.forTimestamp());
+    }
+
+    @Override
+    protected Timestamp createObject() {
+        return getCurrentTime();
+    }
+
+    @Test
+    @DisplayName("Throw IllegalArgumentException when parsing unsupported format")
+    void parsingError() {
+        // This uses TextFormat printing, for the output which won't be parsable.
+        String time = getCurrentTime().toString();
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> Stringifiers.fromString(time, Timestamp.class)
+        );
     }
 }

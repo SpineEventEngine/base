@@ -23,6 +23,7 @@ package io.spine.string;
 import com.google.common.escape.Escaper;
 import com.google.common.escape.Escapers;
 import com.google.protobuf.Message;
+import com.google.protobuf.Timestamp;
 
 import java.lang.reflect.Type;
 import java.util.List;
@@ -156,6 +157,16 @@ public final class Stringifiers {
      */
     static Stringifier<String> forString() {
         return NoOpStringifier.getInstance();
+    }
+
+    /**
+     * Obtains a stringifier that coverts a Timestamp into to RFC 3339 date string format.
+     *
+     * @see com.google.protobuf.util.Timestamps#toString(com.google.protobuf.Timestamp) Timestamps.toString(Timestamp)
+     * @see com.google.protobuf.util.Timestamps#parse(String) Timestamps.parse(String)
+     */
+    public static Stringifier<Timestamp> forTimestamp() {
+        return TimestampStringifier.getInstance();
     }
 
     /**

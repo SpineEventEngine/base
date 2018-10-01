@@ -22,6 +22,7 @@ package io.spine.string;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Message;
+import com.google.protobuf.Timestamp;
 
 import java.lang.reflect.Type;
 import java.util.Map;
@@ -34,6 +35,7 @@ import static io.spine.string.Stringifiers.forBoolean;
 import static io.spine.string.Stringifiers.forInteger;
 import static io.spine.string.Stringifiers.forLong;
 import static io.spine.string.Stringifiers.forString;
+import static io.spine.string.Stringifiers.forTimestamp;
 import static io.spine.string.Stringifiers.newForMessage;
 import static java.lang.String.format;
 import static java.util.Collections.synchronizedMap;
@@ -52,6 +54,7 @@ public final class StringifierRegistry {
                             .put(Integer.class, forInteger())
                             .put(Long.class, forLong())
                             .put(String.class, forString())
+                            .put(Timestamp.class, forTimestamp())
                             .build()
             )
     );
