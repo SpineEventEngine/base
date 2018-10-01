@@ -184,16 +184,16 @@ public final class Identifier<I> {
      *
      * <p>Returned type depends on the type of the message wrapped into {@code Any}:
      * <ul>
-     * <li>{@code String} for unwrapped {@link StringValue}
-     * <li>{@code Integer} for unwrapped {@link Int32Value}
-     * <li>{@code Long} for unwrapped {@link Int64Value}
-     * <li>unwrapped {@code Message} instance if its type is none of the above
+     *   <li>{@code String} for unwrapped {@link StringValue}
+     *   <li>{@code Integer} for unwrapped {@link Int32Value}
+     *   <li>{@code Long} for unwrapped {@link Int64Value}
+     *   <li>unwrapped {@code Message} instance if its type is none of the above
      * </ul>
      *
      * @param any the ID value wrapped into {@code Any}
      * @return unwrapped ID
      */
-    public static <I> I unpack(Any any) {
+    public static Object unpack(Any any) {
         checkNotNull(any);
         Message unpacked = AnyPacker.unpack(any);
 
@@ -201,7 +201,7 @@ public final class Identifier<I> {
             if (type.matchMessage(unpacked)) {
                 // Expect the client to know the desired type.
                 // If the client fails to predict it in compile time, fail fast.
-                @SuppressWarnings("unchecked") I result = (I) type.fromMessage(unpacked);
+                Object result = type.fromMessage(unpacked);
                 return result;
             }
         }
