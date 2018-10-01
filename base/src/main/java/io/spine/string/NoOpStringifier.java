@@ -24,9 +24,6 @@ package io.spine.string;
  * The {@code Stringifier} for the {@code String} values.
  *
  * <p>Always returns the original {@code String} passed as an argument.
- *
- * @author Illia Shepilov
- * @author Alexander Yevsyukov
  */
 final class NoOpStringifier extends SerializableStringifier<String> {
 

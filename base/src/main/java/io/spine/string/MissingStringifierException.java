@@ -24,7 +24,6 @@ package io.spine.string;
  * Thrown when a string conversion operation encounters a type for which
  * there is no registered {@link Stringifier Stringifier}.
  *
- * @author Alexander Yevsyukov
  * @see StringifierRegistry#register(Stringifier,
  *      java.lang.reflect.Type) StringifierRegistry.register()
  */

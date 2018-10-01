@@ -63,8 +63,6 @@ import io.spine.json.Json;
  * }</pre>
  *
  * @param <T> the message type
- *
- * @author Illia Shepilov
  */
 final class DefaultMessageStringifier<T extends Message> extends Stringifier<T> {
 
