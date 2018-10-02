@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class DurationStringifierTest extends AbstractStringifierTest<Duration> {
 
     DurationStringifierTest() {
-        super(Stringifiers.forDuration());
+        super(Stringifiers.forDuration(), Duration.class);
     }
 
     @Override

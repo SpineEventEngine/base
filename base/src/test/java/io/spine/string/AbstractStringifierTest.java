@@ -20,7 +20,6 @@
 
 package io.spine.string;
 
-import com.google.protobuf.Timestamp;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -42,9 +41,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 abstract class AbstractStringifierTest<T> {
 
     private final Stringifier<T> stringifier;
+    private final Class<T> dataClass;
 
-    AbstractStringifierTest(Stringifier<T> stringifier) {
+    AbstractStringifierTest(Stringifier<T> stringifier, Class<T> dataClass) {
         this.stringifier = stringifier;
+        this.dataClass = dataClass;
     }
 
     protected abstract T createObject();
@@ -92,9 +93,8 @@ abstract class AbstractStringifierTest<T> {
     @Test
     @DisplayName("be registered")
     void isRegistered() {
-        Class<? extends Stringifier> cls = stringifier.getClass();
         assertTrue(StringifierRegistry.getInstance()
-                                      .get(Timestamp.class)
+                                      .get(dataClass)
                                       .isPresent());
     }
 
