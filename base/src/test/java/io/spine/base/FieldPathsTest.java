@@ -22,6 +22,7 @@ package io.spine.base;
 
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Any;
+import com.google.protobuf.Empty;
 import io.spine.test.base.AnyHolder;
 import io.spine.test.base.GenericHolder;
 import io.spine.test.base.StringHolder;
@@ -124,6 +125,13 @@ class FieldPathsTest extends UtilityClassTest<FieldPaths> {
         FieldPath path = parse("generic.shh.holder.val");
         Object actual = fieldAt(holder3, path);
         assertEquals(value, actual);
+    }
+
+    @Test
+    @DisplayName("fail when trying to obtain a value at an empty path")
+    void notAllowEmptyPaths() {
+        assertThrows(IllegalArgumentException.class,
+                     () -> fieldAt(Empty.getDefaultInstance(), FieldPath.getDefaultInstance()));
     }
 
     @Test
