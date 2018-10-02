@@ -89,8 +89,8 @@ public final class Timestamps2 {
     public static Timestamp parse(String str) {
         checkNotNull(str);
         return Stringifiers.forTimestamp()
-                               .reverse()
-                               .convert(str);
+                           .reverse()
+                           .convert(str);
     }
 
     /**
