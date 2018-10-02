@@ -25,11 +25,11 @@ buildscript {
     apply from: "$rootDir/ext.gradle"
 
     repositories {
-        jcenter()
+        maven { url = repos.gradlePlugins }
         google()
+        jcenter()
         mavenCentral()
         mavenLocal()
-        maven { url = repos.gradlePlugins }
         maven { url = repos.spine }
         maven { url = repos.spineSnapshots }
     }
