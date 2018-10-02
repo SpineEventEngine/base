@@ -30,6 +30,7 @@ import com.sun.source.tree.ExpressionTree;
 import com.sun.source.tree.MethodInvocationTree;
 import com.sun.tools.javac.code.Type;
 import io.spine.annotation.Internal;
+import io.spine.protobuf.Messages;
 import io.spine.tools.check.BugPatternMatcher;
 import io.spine.tools.check.Fixer;
 import io.spine.tools.check.vbuilder.fixer.NewBuilderFixer;
@@ -44,30 +45,19 @@ import static com.google.errorprone.util.ASTHelpers.isSubtype;
  * {@code Message.newBuilder(prototype)} statement is used.
  *
  * <p>Both normally called and static-imported methods are handled.
- *
- * @author Dmytro Kuzmin
  */
 @Internal
 public class NewBuilderMatcher implements BugPatternMatcher<MethodInvocationTree> {
 
-    @SuppressWarnings("DuplicateStringLiteralInspection") // Commonly used method name.
-    private static final String METHOD_NAME = "newBuilder";
-
     private final Matcher<ExpressionTree> matcher = matcher();
     private final Fixer<MethodInvocationTree> fixer = new NewBuilderFixer();
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean matches(MethodInvocationTree tree, VisitorState state) {
         boolean matches = matcher.matches(tree, state);
         return matches;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Fixer<MethodInvocationTree> getFixer() {
         return fixer;
@@ -81,7 +71,7 @@ public class NewBuilderMatcher implements BugPatternMatcher<MethodInvocationTree
             return isMessageSubclass;
         };
         MethodNameMatcher matcher = staticMethod().onClass(messageSubtype)
-                                                  .named(METHOD_NAME);
+                                                  .named(Messages.METHOD_NEW_BUILDER);
         return matcher;
     }
 }

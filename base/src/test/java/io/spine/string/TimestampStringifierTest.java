@@ -18,16 +18,35 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * The versions of the libraries used.
- *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
- */
+package io.spine.string;
 
-final def SPINE_VERSION = '0.10.95-SNAPSHOT'
+import com.google.protobuf.Timestamp;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-ext {
-    spineVersion = SPINE_VERSION
-    versionToPublish = SPINE_VERSION
+import static io.spine.base.Time.getCurrentTime;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+@DisplayName("TimestampStringifier should")
+class TimestampStringifierTest extends AbstractStringifierTest<Timestamp> {
+
+    TimestampStringifierTest() {
+        super(Stringifiers.forTimestamp());
+    }
+
+    @Override
+    protected Timestamp createObject() {
+        return getCurrentTime();
+    }
+
+    @Test
+    @DisplayName("Throw IllegalArgumentException when parsing unsupported format")
+    void parsingError() {
+        // This uses TextFormat printing, for the output which won't be parsable.
+        String time = getCurrentTime().toString();
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> Stringifiers.fromString(time, Timestamp.class)
+        );
+    }
 }

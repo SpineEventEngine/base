@@ -26,7 +26,6 @@ import java.io.Serializable;
  * Abstract base serializable stringifiers.
  *
  * @param <T> the type to stringify
- * @author Alexander Yevsyukov
  */
 public abstract class SerializableStringifier<T> extends Stringifier<T> implements Serializable {
 

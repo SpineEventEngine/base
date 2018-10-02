@@ -31,9 +31,6 @@ import static java.util.regex.Pattern.compile;
 
 /**
  * Encloses and discloses the {@code String} objects with double quotes.
- *
- * @author Illia Shepilov
- * @author Alexander Yevsyukov
  */
 abstract class Quoter extends Converter<String, String> {
 

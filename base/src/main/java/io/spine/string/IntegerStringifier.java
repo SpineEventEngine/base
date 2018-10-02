@@ -24,9 +24,6 @@ import com.google.common.primitives.Ints;
 
 /**
  * The {@code Stringifier} for the integer values.
- *
- * @author Illia Shepilov
- * @author Alexander Yevsyukov
  */
 final class IntegerStringifier extends SerializableStringifier<Integer> {
 

@@ -24,8 +24,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * The {@code Stringifier} for boolean values.
- *
- * @author Alexander Yevsyukov
  */
 final class BooleanStringifier extends SerializableStringifier<Boolean> {
 
