@@ -33,7 +33,6 @@ import static io.spine.testing.Tests.assertTrue;
  * Abstract base for utility classes tests.
  *
  * @param <T> the type of the utility class under the test
- * @author Alexander Yevsyukov
  */
 @SuppressWarnings("UnstableApiUsage")
 public abstract class UtilityClassTest<T> {

@@ -37,8 +37,6 @@ import static java.lang.Math.abs;
 
 /**
  * Utilities for testing.
- *
- * @author Alexander Yevsyukov
  */
 public final class Tests {
 

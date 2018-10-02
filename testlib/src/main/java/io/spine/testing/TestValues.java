@@ -27,8 +27,6 @@ import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Utility factories for test values.
- *
- * @author Alexander Yevsyukov
  */
 public class TestValues {
 
