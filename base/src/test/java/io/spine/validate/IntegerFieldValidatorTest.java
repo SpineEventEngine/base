@@ -18,16 +18,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * The versions of the libraries used.
- *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
- */
+package io.spine.validate;
 
-final def SPINE_VERSION = '0.10.95-SNAPSHOT'
+import com.google.common.collect.ImmutableList;
+import org.junit.jupiter.api.DisplayName;
 
-ext {
-    spineVersion = SPINE_VERSION
-    versionToPublish = SPINE_VERSION
+@DisplayName("IntegerFieldValidator should")
+class IntegerFieldValidatorTest extends NumberFieldValidatorTest<Integer, IntegerFieldValidator> {
+
+    private static final int DOS = 2;
+
+    IntegerFieldValidatorTest() {
+        super(DOS, -DOS, new IntegerFieldValidator(fieldContext, ImmutableList.of(DOS)));
+    }
 }

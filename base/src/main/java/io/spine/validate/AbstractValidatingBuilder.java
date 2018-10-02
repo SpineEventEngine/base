@@ -40,9 +40,6 @@ import static io.spine.validate.FieldValidatorFactory.create;
 
 /**
  * Serves as an abstract base for all {@linkplain ValidatingBuilder validating builders}.
- *
- * @author Illia Shepilov
- * @author Alex Tymchenko
  */
 public abstract class AbstractValidatingBuilder<T extends Message, B extends Message.Builder>
         implements ValidatingBuilder<T, B> {
@@ -89,16 +86,18 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
     /**
      * Converts the passed `raw` value and returns it.
      *
-     * @param <V>   the type of the converted value
-     * @param value the value to convert
-     * @param type  the key of the {@code StringifierRegistry} storage
-     *              to obtain the {@code Stringifier}
+     * @param value   the value to convert
+     * @param typeOfV the key of the {@code StringifierRegistry} storage
+     *                to obtain the {@code Stringifier}
+     * @param <V>     the type of the converted value
      * @return the converted value
      * @throws ConversionException if passed value cannot be converted
      */
-    public <V> V convert(String value, Type type) throws ConversionException {
+    @SuppressWarnings("TypeParameterUnusedInFormals")
+    // We're pretty safe as we pass the type value as the parameter.
+    protected <V> V convert(String value, Type typeOfV) throws ConversionException {
         try {
-            V convertedValue = Stringifiers.fromString(value, type);
+            V convertedValue = Stringifiers.fromString(value, typeOfV);
             return convertedValue;
         } catch (RuntimeException ex) {
             Throwable rootCause = getRootCause(ex);
@@ -118,7 +117,7 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
      * @param valueClass the {@code Class} of the value
      * @return the converted value
      */
-    public <K, V> Map<K, V> convertToMap(String value, Class<K> keyClass, Class<V> valueClass) {
+    protected <K, V> Map<K, V> convertToMap(String value, Class<K> keyClass, Class<V> valueClass) {
         Map<K, V> result = Stringifiers.newForMapOf(keyClass, valueClass)
                                        .reverse()
                                        .convert(value);
@@ -135,7 +134,7 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
      * @param valueClass the {@code Class} of the list values
      * @return the converted value
      */
-    public <V> List<V> convertToList(String value, Class<V> valueClass) {
+    protected <V> List<V> convertToList(String value, Class<V> valueClass) {
         List<V> result = Stringifiers.newForListOf(valueClass)
                                      .reverse()
                                      .convert(value);

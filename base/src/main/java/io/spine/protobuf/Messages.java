@@ -74,20 +74,18 @@ public final class Messages {
      * Returns the builder of the {@code Message}.
      *
      * @param clazz the message class
-     * @param <B>   the builder type
      * @return the message builder
      */
-    @SuppressWarnings("JavaReflectionMemberAccess") // The method is available in generated code.
-    public static <B extends Message.Builder> B builderFor(Class<? extends Message> clazz) {
+    @Internal
+    public static Message.Builder builderFor(Class<? extends Message> clazz) {
         checkNotNull(clazz);
         try {
             Method factoryMethod = clazz.getDeclaredMethod(METHOD_NEW_BUILDER);
-            @SuppressWarnings("unchecked")
-            B result = (B) factoryMethod.invoke(null);
+            Message.Builder result = (Message.Builder) factoryMethod.invoke(null);
             return result;
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             String errMsg = format("Class %s must be a generated proto message",
-                                         clazz.getCanonicalName());
+                                   clazz.getCanonicalName());
             throw new IllegalArgumentException(errMsg, e);
         }
     }

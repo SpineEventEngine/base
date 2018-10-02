@@ -18,16 +18,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * The versions of the libraries used.
- *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
- */
+package io.spine.string;
 
-final def SPINE_VERSION = '0.10.95-SNAPSHOT'
+import com.google.protobuf.Duration;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-ext {
-    spineVersion = SPINE_VERSION
-    versionToPublish = SPINE_VERSION
+import static io.spine.protobuf.Durations2.hoursAndMinutes;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+@DisplayName("DurationStringifier should")
+class DurationStringifierTest extends AbstractStringifierTest<Duration> {
+
+    DurationStringifierTest() {
+        super(Stringifiers.forDuration());
+    }
+
+    @Override
+    protected Duration createObject() {
+        return hoursAndMinutes(5, 37);
+    }
+
+    @Test
+    @DisplayName("Convert negative duration")
+    void convertNegativeDuration() {
+        Stringifier<Duration> stringifier = getStringifier();
+        Duration negative = hoursAndMinutes(-4, -31);
+        assertEquals(negative, stringifier.reverse()
+                                          .convert(stringifier.convert(negative)));
+    }
 }

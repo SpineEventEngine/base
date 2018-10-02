@@ -77,7 +77,7 @@ public class AnyPackerShould {
     public void unpack_spine_message_from_Any() {
         Any any = pack(spineMsg);
 
-        MessageToPack actual = unpack(any);
+        MessageToPack actual = (MessageToPack) unpack(any);
 
         assertEquals(spineMsg, actual);
     }
@@ -95,7 +95,7 @@ public class AnyPackerShould {
     public void unpack_google_message_from_Any() {
         Any any = Any.pack(googleMsg);
 
-        StringValue actual = unpack(any);
+        StringValue actual = (StringValue) unpack(any);
 
         assertEquals(googleMsg, actual);
     }

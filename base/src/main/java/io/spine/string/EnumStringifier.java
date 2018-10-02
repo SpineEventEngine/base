@@ -18,16 +18,32 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.string;
+
 /**
- * The versions of the libraries used.
+ * Abstract base for stringifiers that work with enum values.
  *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
+ * @param <E> the type of the enum
  */
+public abstract class EnumStringifier<E extends Enum<E>> extends SerializableStringifier<E> {
 
-final def SPINE_VERSION = '0.10.95-SNAPSHOT'
+    private static final long serialVersionUID = 0L;
 
-ext {
-    spineVersion = SPINE_VERSION
-    versionToPublish = SPINE_VERSION
+    private final Class<E> enumClass;
+
+    protected EnumStringifier(String identity, Class<E> aClass) {
+        super(identity);
+        enumClass = aClass;
+    }
+
+    @Override
+    protected final String toString(E e) {
+        return e.toString();
+    }
+
+    @Override
+    protected final E fromString(String s) {
+        E result = Enum.valueOf(enumClass, s);
+        return result;
+    }
 }

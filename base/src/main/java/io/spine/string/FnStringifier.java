@@ -26,8 +26,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Abstract base for stringifiers that convert values using function objects.
- *
- * @author Alexander Yevsyukov
  */
 public abstract class FnStringifier<T> extends SerializableStringifier<T> {
 

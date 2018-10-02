@@ -62,7 +62,6 @@ import static com.google.common.collect.Lists.newArrayList;
  * </pre>
  *
  * @param <T> the type of the elements in the list.
- * @author Illia Shepilov
  */
 final class ListStringifier<T> extends Stringifier<List<T>> {
 

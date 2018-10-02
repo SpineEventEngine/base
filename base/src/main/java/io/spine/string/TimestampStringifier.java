@@ -18,34 +18,46 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.validate;
+package io.spine.string;
 
-import static java.lang.Math.abs;
+import com.google.protobuf.Timestamp;
+import com.google.protobuf.util.Timestamps;
+
+import java.text.ParseException;
+
+import static io.spine.util.Exceptions.newIllegalArgumentException;
 
 /**
- * Validates fields of {@link Double} types.
+ * The stringifier of timestamps into RFC 3339 date string format.
  */
-final class DoubleFieldValidator extends FloatFieldValidatorBase<Double> {
+final class TimestampStringifier extends SerializableStringifier<Timestamp> {
 
-    /**
-     * Creates a new validator instance.
-     *
-     * @param fieldContext the context of the field to validate
-     * @param fieldValues  values to validate
-     */
-    DoubleFieldValidator(FieldContext fieldContext, Object fieldValues) {
-        super(fieldContext, FieldValidator.toValueList(fieldValues));
+    private static final long serialVersionUID = 0L;
+    private static final TimestampStringifier INSTANCE = new TimestampStringifier();
+
+    private TimestampStringifier() {
+        super("Stringifiers.forTimestamp()");
+    }
+
+    static TimestampStringifier getInstance() {
+        return INSTANCE;
     }
 
     @Override
-    protected Double toNumber(String value) {
-        Double min = Double.valueOf(value);
-        return min;
+    protected String toString(Timestamp value) {
+        return Timestamps.toString(value);
     }
 
     @Override
-    protected Double getAbs(Double value) {
-        Double abs = abs(value);
-        return abs;
+    protected Timestamp fromString(String str) {
+        try {
+            return Timestamps.parse(str);
+        } catch (ParseException e) {
+            throw newIllegalArgumentException(e.getMessage(), e);
+        }
+    }
+
+    private Object readResolve() {
+        return INSTANCE;
     }
 }

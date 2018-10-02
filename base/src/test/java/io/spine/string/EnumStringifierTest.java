@@ -21,43 +21,39 @@
 package io.spine.string;
 
 import com.google.common.base.Converter;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-/**
- * Serves as converter from {@code I} to {@code String} with an associated
- * reverse function from {@code String} to {@code I}.
- *
- * <p>It is used for converting back and forth between the different
- * representations of the same information.
- *
- * @param <T> the type of converted objects
- * @see #convert(Object)
- * @see #reverse()
- */
-public abstract class Stringifier<T> extends Converter<T, String> {
+import static org.junit.jupiter.api.Assertions.*;
 
-    /**
-     * Convert the thing to a string.
-     */
-    protected abstract String toString(T obj);
+@DisplayName("EnumStringifier should")
+class EnumStringifierTest {
 
-    /**
-     * Convert the string back to a thing.
-     */
-    protected abstract T fromString(String s);
+    @Test
+    @DisplayName("convert values to String and back")
+    void convert() {
+        DayOfWeekStringifier stringifier = DayOfWeekStringifier.INSTANCE;
+        Converter<String, DayOfWeek> reverse = stringifier.reverse();
 
-    /**
-     * Invokes {@link #toString(Object)}.
-     */
-    @Override
-    protected final String doForward(T obj) {
-        return toString(obj);
+        for (DayOfWeek value : DayOfWeek.values()) {
+            String str = stringifier.convert(value);
+            assertEquals(value, reverse.convert(str));
+        }
     }
 
-    /**
-     * Invokes {@link #fromString(String)}.
-     */
-    @Override
-    protected final T doBackward(String str) {
-        return fromString(str);
+
+    private enum DayOfWeek {
+        MONDAY, TUESDAY, WEDNESDAY,
+        THURSDAY, FRIDAY, SATURDAY, SUNDAY
+    }
+
+    private static final class DayOfWeekStringifier extends EnumStringifier<DayOfWeek> {
+
+        private static final long serialVersionUID = 0L;
+        private static final DayOfWeekStringifier INSTANCE = new DayOfWeekStringifier();
+
+        private DayOfWeekStringifier() {
+            super(DayOfWeekStringifier.class.getName(), DayOfWeek.class);
+        }
     }
 }

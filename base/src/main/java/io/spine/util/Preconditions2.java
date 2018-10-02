@@ -27,8 +27,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Utilities for checking preconditions.
- *
- * @author Alexander Yevsyukov
  */
 public final class Preconditions2 {
 
