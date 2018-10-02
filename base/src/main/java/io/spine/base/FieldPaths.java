@@ -45,6 +45,13 @@ public final class FieldPaths {
     private FieldPaths() {
     }
 
+    /**
+     * Parses the given field path into a {@link FieldPath}.
+     *
+     * @param stringPath
+     *         non-empty field path
+     * @return parsed field path
+     */
     public static FieldPath parse(String stringPath) {
         checkNotNull(stringPath);
         checkArgument(!stringPath.isEmpty(), "Path must not be empty.");
@@ -57,6 +64,19 @@ public final class FieldPaths {
         return result;
     }
 
+    /**
+     * Obtains the value of the field at the given field path from the given value holder.
+     *
+     * <p>For example, if the given path is {@code protocol.name} and the given value holder is of
+     * type {@link io.spine.net.Uri io.spine.net.Uri}, the method invocation is equivalent to
+     * {@code uri.getSchema().getName()}.
+     *
+     * @param holder
+     *         message to obtain the (nested) field value from
+     * @param path
+     *         non-empty field path
+     * @return the value of the field
+     */
     public static Object fieldAt(Message holder, FieldPath path) {
         checkNotNull(holder);
         checkNotNull(path);
