@@ -29,8 +29,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Tests {@link io.spine.net.UrlParser}.
- *
- * @author Mikhail Mikhaylov
  */
 @DisplayName("UrlParser should parse")
 class UrlParserTest {

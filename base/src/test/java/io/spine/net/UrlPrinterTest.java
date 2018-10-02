@@ -33,13 +33,7 @@ import java.util.stream.Stream;
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.net.UrlPrinter.printToString;
 
-/**
- * Tests of {@link io.spine.net.UrlPrinter}.
- *
- * @author Mikhail Mikhaylov
- */
-/* when we call the builder methods. */
-@SuppressWarnings("CheckReturnValue")
+@SuppressWarnings("CheckReturnValue") // Calling builder methods.
 @DisplayName("UrlPrinter should")
 class UrlPrinterTest extends UtilityClassTest<UrlPrinter> {
 

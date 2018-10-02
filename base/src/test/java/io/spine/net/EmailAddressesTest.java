@@ -30,11 +30,6 @@ import static io.spine.net.EmailAddresses.isValid;
 import static io.spine.net.EmailAddresses.valueOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-/**
- * Test of {@link io.spine.net.EmailAddresses}.
- *
- * @author Alexander Yevsyukov
- */
 @DisplayName("EmailAddresses utility class should")
 class EmailAddressesTest extends UtilityClassTest<EmailAddresses> {
 

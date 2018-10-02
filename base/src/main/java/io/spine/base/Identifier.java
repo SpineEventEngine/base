@@ -47,9 +47,8 @@ import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
  * Wrapper of an identifier value.
- *
- * @author Alexander Yevsyukov
  */
+@Internal
 public final class Identifier<I> {
 
     /** The suffix of ID fields. */
@@ -92,7 +91,6 @@ public final class Identifier<I> {
     /**
      * Obtains a default value for an identifier of the passed class.
      */
-    @Internal
     public static <I> I getDefaultValue(Class<I> idClass) {
         checkNotNull(idClass);
         Type type = getType(idClass);
@@ -126,10 +124,10 @@ public final class Identifier<I> {
      *
      * <p>The following types of IDs are supported:
      * <ul>
-     * <li>{@code String}
-     * <li>{@code Long}
-     * <li>{@code Integer}
-     * <li>A class implementing {@link Message}
+     *   <li>{@code String}
+     *   <li>{@code Long}
+     *   <li>{@code Integer}
+     *   <li>A class implementing {@link Message}
      * </ul>
      *
      * <p>Consider using {@code Message}-based IDs if you want to have typed IDs in your code,
@@ -137,10 +135,10 @@ public final class Identifier<I> {
      *
      * <p>Examples of such structural IDs are:
      * <ul>
-     * <li>EAN value used in bar codes
-     * <li>ISBN
-     * <li>Phone number
-     * <li>Email address as a couple of local-part and domain
+     *   <li>EAN value used in bar codes
+     *   <li>ISBN
+     *   <li>Phone number
+     *   <li>Email address as a couple of local-part and domain
      * </ul>
      *
      * @param <I>     the type of the ID
@@ -161,10 +159,10 @@ public final class Identifier<I> {
      * The type of the value wrapped into the returned instance is defined by the type
      * of the passed value:
      * <ul>
-     * <li>For classes implementing {@link Message} — the value of the message itself
-     * <li>For {@code String} — {@link StringValue}
-     * <li>For {@code Long} — {@link Int64Value}
-     * <li>For {@code Integer} — {@link Int32Value}
+     *   <li>For classes implementing {@link Message} — the value of the message itself
+     *   <li>For {@code String} — {@link StringValue}
+     *   <li>For {@code Long} — {@link Int64Value}
+     *   <li>For {@code Integer} — {@link Int32Value}
      * </ul>
      *
      * @param id  the value to wrap
@@ -190,10 +188,15 @@ public final class Identifier<I> {
      *   <li>unwrapped {@code Message} instance if its type is none of the above
      * </ul>
      *
+     * @apiNote This method assumes that the calling code knows the type of value packed into
+     *          {@code Any}. The generic parameter and the cast performed by the method allows
+     *          to avoid casting and suppressing {@code "unchecked"} warning at the place of the
+     *          call.
      * @param any the ID value wrapped into {@code Any}
      * @return unwrapped ID
      */
-    public static Object unpack(Any any) {
+    @SuppressWarnings("TypeParameterUnusedInFormals" /* See api note. */)
+    public static <I> I unpack(Any any) {
         checkNotNull(any);
         Message unpacked = AnyPacker.unpack(any);
 
@@ -201,7 +204,7 @@ public final class Identifier<I> {
             if (type.matchMessage(unpacked)) {
                 // Expect the client to know the desired type.
                 // If the client fails to predict it in compile time, fail fast.
-                Object result = type.fromMessage(unpacked);
+                @SuppressWarnings("unchecked") I result = (I) type.fromMessage(unpacked);
                 return result;
             }
         }

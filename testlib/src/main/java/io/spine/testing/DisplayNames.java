@@ -27,8 +27,6 @@ package io.spine.testing;
  *
  * <p>This class can be used to avoid string literal duplication when assigning {@code DisplayName}
  * to the common test cases.
- *
- * @author Dmytro Kuzmin
  */
 public class DisplayNames {
 
