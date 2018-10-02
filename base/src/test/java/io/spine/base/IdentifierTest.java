@@ -198,14 +198,14 @@ class IdentifierTest {
 
         @Test
         @DisplayName("Integer")
-        @SuppressWarnings("UnnecessaryBoxing") // OK as we want to show types clearly.
+        @SuppressWarnings("UnnecessaryBoxing") // OK as we want to show types explicitly.
         void ofInteger() {
             assertEquals("10", Identifier.toString(Integer.valueOf(10)));
         }
 
         @Test
         @DisplayName("Long")
-        @SuppressWarnings("UnnecessaryBoxing") // OK as we want to show types clearly.
+        @SuppressWarnings("UnnecessaryBoxing") // OK as we want to show types explicitly.
         void ofLong() {
             assertEquals("100000", Identifier.toString(Long.valueOf(100_000)));
         }
