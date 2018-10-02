@@ -35,7 +35,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * The abstract base for stringifier tests.
  *
- * @author Alexander Yevsyukov
  * @param <T> the type of stringifier objects
  */
 abstract class AbstractStringifierTest<T> {
