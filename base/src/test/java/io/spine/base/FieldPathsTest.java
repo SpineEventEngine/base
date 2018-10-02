@@ -125,4 +125,28 @@ class FieldPathsTest extends UtilityClassTest<FieldPaths> {
         Object actual = fieldAt(holder3, path);
         assertEquals(value, actual);
     }
+
+    @Test
+    @DisplayName("fail if the path contains a typo")
+    void failOnTypo() {
+        String value = "hello";
+        StringHolder holder = StringHolder
+                .newBuilder()
+                .setVal(value)
+                .build();
+        FieldPath wrongPath = parse("wrong_field_name");
+        assertThrows(IllegalArgumentException.class, () -> fieldAt(holder, wrongPath));
+    }
+
+    @Test
+    @DisplayName("fail if the path reaches over a primitive value")
+    void failOnMissingField() {
+        String value = "primitive value";
+        StringHolder holder = StringHolder
+                .newBuilder()
+                .setVal(value)
+                .build();
+        FieldPath wrongPath = parse("val.this_field_is_absent");
+        assertThrows(IllegalArgumentException.class, () -> fieldAt(holder, wrongPath));
+    }
 }
