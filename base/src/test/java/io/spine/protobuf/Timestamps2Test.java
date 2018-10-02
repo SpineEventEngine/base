@@ -43,7 +43,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SuppressWarnings("ClassCanBeStatic")
 @DisplayName("Timestamps2 should")
 class Timestamps2Test extends UtilityClassTest<Timestamps2> {
 
@@ -57,7 +56,6 @@ class Timestamps2Test extends UtilityClassTest<Timestamps2> {
     protected void configure(NullPointerTester nullTester) {
         nullTester.setDefault(Timestamp.class, Time.getCurrentTime())
                   .setDefault(Instant.class, Instant.now());
-
     }
 
     @Nested
