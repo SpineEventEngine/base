@@ -23,6 +23,7 @@ package io.spine.js.gradle;
 import io.spine.code.js.DefaultJsProject;
 import io.spine.code.js.Directory;
 import io.spine.js.generate.JsonParsersWriter;
+import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.SpinePlugin;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
@@ -30,8 +31,7 @@ import org.gradle.api.Task;
 
 import java.io.File;
 
-import static io.spine.tools.gradle.TaskName.COMPILE_PROTO_TO_JS;
-import static io.spine.tools.gradle.TaskName.COPY_MODULE_SOURCES;
+import static io.spine.tools.gradle.TaskName.BUILD;
 import static io.spine.tools.gradle.TaskName.GENERATE_JSON_PARSERS;
 
 /**
@@ -71,14 +71,21 @@ import static io.spine.tools.gradle.TaskName.GENERATE_JSON_PARSERS;
  */
 public class ProtoJsPlugin extends SpinePlugin {
 
+    private static final String EXTENSION_NAME = "protoJs";
+
     @SuppressWarnings("ResultOfMethodCallIgnored") // Method annotated with `@CanIgnoreReturnValue`.
     @Override
     public void apply(Project project) {
-        Action<Task> task = newAction(project);
-        newTask(GENERATE_JSON_PARSERS, task)
-                .insertAfterTask(COMPILE_PROTO_TO_JS)
-                .insertBeforeTask(COPY_MODULE_SOURCES)
+        Extension extension = project.getExtensions()
+                                     .create(EXTENSION_NAME, Extension.class);
+
+        Action<Task> action = newAction(project);
+        GradleTask newTask = newTask(GENERATE_JSON_PARSERS, action)
+                .insertBeforeTask(BUILD)
                 .applyNowTo(project);
+
+        Task task = newTask.getTask();
+        extension.setGenerateParsersTask(task);
     }
 
     /**

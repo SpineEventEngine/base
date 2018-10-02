@@ -46,12 +46,19 @@ import static com.google.common.collect.Lists.newLinkedList;
  */
 public final class GradleTask {
 
+    private final Task task;
     private final TaskName name;
     private final Project project;
 
-    private GradleTask(TaskName name, Project project) {
+    private GradleTask(Task task, TaskName name, Project project) {
+        this.task = task;
         this.name = name;
         this.project = project;
+    }
+
+    /** Obtains the Gradle task itself. */
+    public Task getTask() {
+        return task;
     }
 
     /** Obtains task name. */
@@ -195,7 +202,7 @@ public final class GradleTask {
                                   .doLast(action);
             dependTask(newTask, project);
             addTaskIO(newTask);
-            GradleTask result = new GradleTask(name, project);
+            GradleTask result = new GradleTask(newTask, name, project);
             return result;
         }
 
