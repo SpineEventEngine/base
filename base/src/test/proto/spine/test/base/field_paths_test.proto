@@ -29,5 +29,3 @@ message GenericHolder {
     AnyHolder any = 3;
     GenericHolder generic = 4;
 }
-
-
