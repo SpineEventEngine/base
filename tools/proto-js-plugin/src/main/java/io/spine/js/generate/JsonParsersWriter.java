@@ -100,12 +100,15 @@ public final class JsonParsersWriter {
     }
 
     /**
-     * Checks if {@code ProtoJsonWriter}'s {@link FileSet} has any known types to process.
+     * Checks if the {@code ProtoJsonWriter}'s {@link FileSet} has any files to process.
+     *
+     * <p>Will return {@code false} either if there are no known types to process or the generated
+     * files for them cannot be found.
      *
      * @return {@code true} if the file set has files to process and {@code false} otherwise
      */
     private boolean hasFilesToProcess() {
-        boolean hasFilesToProcess = !fileSet.isEmpty();
+        boolean hasFilesToProcess = !fileSet.isEmpty() && generatedRoot.exists();
         return hasFilesToProcess;
     }
 
