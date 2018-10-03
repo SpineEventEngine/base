@@ -1,11 +1,11 @@
 syntax = "proto3";
 
-package spine.test.base;
+package spine.test.protobuf;
 
 import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
-option java_package = "io.spine.test.base";
+option java_package = "io.spine.test.protobuf";
 option java_outer_classname = "FieldPathsTestProto";
 option java_multiple_files = true;
 

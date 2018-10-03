@@ -18,11 +18,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.base;
+package io.spine.protobuf;
 
 import com.google.common.base.Splitter;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
+import io.spine.base.FieldPath;
 
 import java.util.Iterator;
 import java.util.List;
@@ -31,7 +32,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Utilities for working with {@link FieldPath} instances.
+ * Utilities for working with {@link io.spine.base.FieldPath} instances.
  *
  * @author Dmytro Dashenkov
  */
@@ -46,7 +47,7 @@ public final class FieldPaths {
     }
 
     /**
-     * Parses the given field path into a {@link FieldPath}.
+     * Parses the given field path into a {@link io.spine.base.FieldPath}.
      *
      * @param stringPath
      *         non-empty field path
