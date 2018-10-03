@@ -268,7 +268,7 @@ public final class JsOutput {
      */
     public void exportMap(String mapName) {
         checkNotNull(mapName);
-        addLine("export const " + mapName + " = new Map([");
+        addLine("module.exports." + mapName + " = new Map([");
         currentDepth++;
     }
 
