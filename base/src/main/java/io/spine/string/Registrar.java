@@ -32,8 +32,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Registers passed stringifiers at the {@link StringifierRegistry}.
- *
- * @author Alexander Yevsyukov
  */
 public final class Registrar {
 

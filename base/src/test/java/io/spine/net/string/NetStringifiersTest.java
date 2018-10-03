@@ -38,11 +38,6 @@ import static io.spine.net.string.NetStringifiers.forEmailAddress;
 import static io.spine.net.string.NetStringifiers.forInternetDomain;
 import static io.spine.net.string.NetStringifiers.forUrl;
 
-/**
- * Tests of {@link io.spine.net.string.NetStringifiers}.
- *
- * @author Alexander Yevsyukov
- */
 class NetStringifiersTest extends UtilityClassTest<NetStringifiers> {
 
     NetStringifiersTest() {

@@ -39,8 +39,7 @@ abstract class FloatFieldValidatorBase<V extends Number & Comparable<V>>
      * @param fieldContext the context of the field to validate
      * @param fieldValues  values to validate
      */
-    protected FloatFieldValidatorBase(FieldContext fieldContext,
-                                      ImmutableList<V> fieldValues) {
+    FloatFieldValidatorBase(FieldContext fieldContext, ImmutableList<V> fieldValues) {
         super(fieldContext, fieldValues);
     }
 
@@ -48,11 +47,12 @@ abstract class FloatFieldValidatorBase<V extends Number & Comparable<V>>
     @SuppressWarnings("RefusedBequest")
     protected void validateEntityId() {
         V value = getValues().get(0);
-        ConstraintViolation violation = ConstraintViolation.newBuilder()
-                                                           .setMsgFormat(INVALID_ID_TYPE_MSG)
-                                                           .setFieldPath(getFieldPath())
-                                                           .setFieldValue(wrap(value))
-                                                           .build();
+        ConstraintViolation violation = ConstraintViolation
+                .newBuilder()
+                .setMsgFormat(INVALID_ID_TYPE_MSG)
+                .setFieldPath(getFieldPath())
+                .setFieldValue(wrap(value))
+                .build();
         addViolation(violation);
     }
 }

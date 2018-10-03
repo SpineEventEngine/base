@@ -78,14 +78,13 @@ public final class AnyPacker {
      * Unwraps {@code Any} value into an instance of type specified by value
      * returned by {@link Any#getTypeUrl()}.
      *
-     * @param any instance of {@link Any} that should be unwrapped
-     * @param <T> the type enclosed into {@code Any}
+     * @param any instance of {@link com.google.protobuf.Any} that should be unwrapped
      * @return unwrapped message instance
      */
-    public static <T extends Message> T unpack(Any any) {
+    public static Message unpack(Any any) {
         checkNotNull(any);
         TypeUrl typeUrl = TypeUrl.ofEnclosed(any);
-        Class<T> messageClass = typeUrl.getMessageClass();
+        Class<? extends Message> messageClass = typeUrl.getMessageClass();
         return unpack(any, messageClass);
     }
 

@@ -28,11 +28,6 @@ import org.junit.jupiter.api.Test;
 import static io.spine.net.Schemas.parse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-/**
- * Tests {@link io.spine.net.Schemas}.
- *
- * @author Mikhail Mikhaylov
- */
 @DisplayName("Schemas utility class should")
 class SchemasTest extends UtilityClassTest<Schemas> {
 

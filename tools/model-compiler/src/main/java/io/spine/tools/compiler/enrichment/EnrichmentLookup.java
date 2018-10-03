@@ -25,7 +25,6 @@ import io.spine.Resources;
 import io.spine.code.properties.PropertiesWriter;
 import io.spine.logging.Logging;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.Collection;

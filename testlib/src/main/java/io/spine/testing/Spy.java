@@ -32,8 +32,6 @@ import static com.google.common.base.Throwables.getRootCause;
  *
  * <p>Although, it's a not recommended way of testing, in some cases such an approach is needed for
  * testing interactions in complex objects.
- *
- * @author Alexander Yevsyukov
  */
 public class Spy<T> {
 

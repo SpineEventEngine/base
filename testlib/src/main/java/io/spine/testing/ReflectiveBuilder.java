@@ -26,8 +26,6 @@ import java.lang.reflect.Constructor;
 
 /**
  * The abstract base for test object builders.
- *
- * @author Alexander Yevsyukov
  */
 public abstract class ReflectiveBuilder<T> {
 

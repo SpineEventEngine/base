@@ -18,6 +18,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/**
+ * Common data types and utilities for the Spine Event Engine.
+ */
 @CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine;

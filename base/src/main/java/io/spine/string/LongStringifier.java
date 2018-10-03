@@ -24,9 +24,6 @@ import com.google.common.primitives.Longs;
 
 /**
  * The {@code Stringifier} for the long values.
- *
- * @author Illia Shepilov
- * @author Alexander Yevsyukov
  */
 final class LongStringifier extends SerializableStringifier<Long> {
 

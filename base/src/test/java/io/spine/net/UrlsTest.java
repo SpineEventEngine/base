@@ -26,11 +26,6 @@ import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 
-/**
- * Tests {@link io.spine.net.Url}.
- *
- * @author Mikhail Mikhaylov
- */
 @DisplayName("Urls utility class should")
 class UrlsTest extends UtilityClassTest<Urls> {
 

@@ -30,8 +30,6 @@ import com.google.common.base.Converter;
  * representations of the same information.
  *
  * @param <T> the type of converted objects
- * @author Alexander Yevsyukov
- * @author Illia Shepilov
  * @see #convert(Object)
  * @see #reverse()
  */

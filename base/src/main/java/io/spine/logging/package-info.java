@@ -19,7 +19,7 @@
  */
 
 /**
- * This package provides utilities for logging based on Slf4J.
+ * This package provides utilities for logging based on SLF4J.
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault

@@ -22,7 +22,9 @@ package io.spine.string;
 
 import com.google.common.escape.Escaper;
 import com.google.common.escape.Escapers;
+import com.google.protobuf.Duration;
 import com.google.protobuf.Message;
+import com.google.protobuf.Timestamp;
 
 import java.lang.reflect.Type;
 import java.util.List;
@@ -32,9 +34,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Utility class for working with {@code Stringifier}s.
- *
- * @author Alexander Yevsyukov
- * @author Illia Shepilov
  */
 public final class Stringifiers {
 
@@ -68,11 +67,9 @@ public final class Stringifiers {
      * @return the string representation of the passed object
      * @throws MissingStringifierException if passed value cannot be converted
      */
-    @SuppressWarnings("unchecked") // It is OK because the type is checked before cast.
     public static <T> String toString(T object, Type typeOfT) {
         checkNotNull(object);
         checkNotNull(typeOfT);
-
         Stringifier<T> stringifier = StringifierRegistry.getStringifier(typeOfT);
         String result = stringifier.convert(object);
         return result;
@@ -87,10 +84,11 @@ public final class Stringifiers {
      * @return the parsed value from string
      * @throws MissingStringifierException if passed value cannot be converted
      */
+    @SuppressWarnings("TypeParameterUnusedInFormals")
+    // We're pretty safe as we pass the type value as the parameter.
     public static <T> T fromString(String str, Type typeOfT) {
         checkNotNull(str);
         checkNotNull(typeOfT);
-
         Stringifier<T> stringifier = StringifierRegistry.getStringifier(typeOfT);
         T result = stringifier.reverse()
                               .convert(str);
@@ -106,12 +104,12 @@ public final class Stringifiers {
      * @param <V>        the type of the values stored in this map
      * @return the stringifier for the map
      */
-    public static <K, V> Stringifier<Map<K, V>> newForMapOf(Class<K> keyClass,
-                                                            Class<V> valueClass) {
+    public static <K, V>
+    Stringifier<Map<K, V>> newForMapOf(Class<K> keyClass, Class<V> valueClass) {
         checkNotNull(keyClass);
         checkNotNull(valueClass);
-        Stringifier<Map<K, V>> mapStringifier = new MapStringifier<>(keyClass, valueClass);
-        return mapStringifier;
+        Stringifier<Map<K, V>> result = new MapStringifier<>(keyClass, valueClass);
+        return result;
     }
 
     /**
@@ -124,14 +122,12 @@ public final class Stringifiers {
      * @param <V>        the type of mapped values
      * @return the stringifier for the map
      */
-    public static <K, V> Stringifier<Map<K, V>> newForMapOf(Class<K> keyClass,
-                                                            Class<V> valueClass,
-                                                            char delimiter) {
+    public static <K, V>
+    Stringifier<Map<K, V>> newForMapOf(Class<K> keyClass, Class<V> valueClass, char delimiter) {
         checkNotNull(keyClass);
         checkNotNull(valueClass);
-        Stringifier<Map<K, V>> mapStringifier =
-                new MapStringifier<>(keyClass, valueClass, delimiter);
-        return mapStringifier;
+        Stringifier<Map<K, V>> result = new MapStringifier<>(keyClass, valueClass, delimiter);
+        return result;
     }
 
     /**
@@ -165,6 +161,29 @@ public final class Stringifiers {
     }
 
     /**
+     * Obtains the default stringifier for {@code Duration} instances.
+     *
+     * <p>This stringifier is automatically registered in the
+     * {@link StringifierRegistry StringifierRegistry}.
+     *
+     * @see com.google.protobuf.util.Durations#toString(com.google.protobuf.Duration) Durations.toString(Duration)
+     * @see com.google.protobuf.util.Durations#parse(String) Durations.parse(String)
+     */
+    public static Stringifier<Duration> forDuration() {
+        return DurationStringifier.getInstance();
+    }
+
+    /**
+     * Obtains a stringifier that coverts a Timestamp into to RFC 3339 date string format.
+     *
+     * @see com.google.protobuf.util.Timestamps#toString(com.google.protobuf.Timestamp) Timestamps.toString(Timestamp)
+     * @see com.google.protobuf.util.Timestamps#parse(String) Timestamps.parse(String)
+     */
+    public static Stringifier<Timestamp> forTimestamp() {
+        return TimestampStringifier.getInstance();
+    }
+
+    /**
      * Obtains {@code Stringifier} for list with default delimiter for the passed list elements.
      *
      * @param elementClass the class of the list elements
@@ -173,8 +192,8 @@ public final class Stringifiers {
      */
     public static <T> Stringifier<List<T>> newForListOf(Class<T> elementClass) {
         checkNotNull(elementClass);
-        Stringifier<List<T>> listStringifier = new ListStringifier<>(elementClass);
-        return listStringifier;
+        Stringifier<List<T>> result = new ListStringifier<>(elementClass);
+        return result;
     }
 
     /**
@@ -187,9 +206,8 @@ public final class Stringifiers {
      */
     public static <T> Stringifier<List<T>> newForListOf(Class<T> elementClass, char delimiter) {
         checkNotNull(elementClass);
-        Stringifier<List<T>> listStringifier =
-                new ListStringifier<>(elementClass, delimiter);
-        return listStringifier;
+        Stringifier<List<T>> result = new ListStringifier<>(elementClass, delimiter);
+        return result;
     }
 
     /**
@@ -201,9 +219,8 @@ public final class Stringifiers {
      */
     static <T extends Message> Stringifier<T> newForMessage(Class<T> messageClass) {
         checkNotNull(messageClass);
-        DefaultMessageStringifier<T> defaultStringifier =
-                new DefaultMessageStringifier<>(messageClass);
-        return defaultStringifier;
+        DefaultMessageStringifier<T> result = new DefaultMessageStringifier<>(messageClass);
+        return result;
     }
 
     /**

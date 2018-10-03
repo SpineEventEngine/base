@@ -24,10 +24,8 @@ import static java.lang.Math.abs;
 
 /**
  * Validates fields of {@link Double} types.
- *
- * @author Alexander Litus
  */
-class DoubleFieldValidator extends FloatFieldValidatorBase<Double> {
+final class DoubleFieldValidator extends FloatFieldValidatorBase<Double> {
 
     /**
      * Creates a new validator instance.
@@ -36,7 +34,7 @@ class DoubleFieldValidator extends FloatFieldValidatorBase<Double> {
      * @param fieldValues  values to validate
      */
     DoubleFieldValidator(FieldContext fieldContext, Object fieldValues) {
-        super(fieldContext, FieldValidator.<Double>toValueList(fieldValues));
+        super(fieldContext, FieldValidator.toValueList(fieldValues));
     }
 
     @Override
