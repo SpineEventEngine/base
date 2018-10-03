@@ -25,11 +25,6 @@ import org.junit.jupiter.api.Test;
 
 import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
 
-/**
- * Tests for {@link io.spine.net.Patterns}.
- *
- * @author Alexander Yevsyukov
- */
 class PatternsTest extends UtilityClassTest<Patterns> {
 
     PatternsTest() {

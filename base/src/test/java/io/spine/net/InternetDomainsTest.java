@@ -29,15 +29,8 @@ import static com.google.common.truth.Truth.assertThat;
 import static io.spine.net.InternetDomains.isValid;
 import static io.spine.net.InternetDomains.valueOf;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-/**
- * Tests of {@link io.spine.net.InternetDomains}.
- *
- * @author Alexander Yevsyukov
- */
 @DisplayName("InternetDomains utility class should")
 class InternetDomainsTest extends UtilityClassTest<InternetDomains> {
 

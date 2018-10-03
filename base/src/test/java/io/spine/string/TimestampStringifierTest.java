@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class TimestampStringifierTest extends AbstractStringifierTest<Timestamp> {
 
     TimestampStringifierTest() {
-        super(Stringifiers.forTimestamp());
+        super(Stringifiers.forTimestamp(), Timestamp.class);
     }
 
     @Override

@@ -35,12 +35,14 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import static com.google.common.truth.Truth.assertThat;
 import static io.spine.base.Identifier.EMPTY_ID;
 import static io.spine.base.Identifier.NULL_ID;
 import static io.spine.base.Identifier.newUuid;
 import static io.spine.protobuf.TypeConverter.toMessage;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static io.spine.testing.TestValues.newUuidValue;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -328,6 +330,20 @@ class IdentifierTest {
         assertEquals(value, Type.STRING.fromMessage(toMessage(value)));
     }
 
+    @Test
+    @DisplayName("check that a class of identifiers is supported")
+    void checkSupported() {
+        assertDoesNotThrow(() -> Identifier.checkSupported(String.class));
+        assertDoesNotThrow(() -> Identifier.checkSupported(Integer.class));
+        assertDoesNotThrow(() -> Identifier.checkSupported(Long.class));
+        assertDoesNotThrow(() -> Identifier.checkSupported(StringValue.class));
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> Identifier.checkSupported(Boolean.class)
+        );
+    }
+
     @Nested
     @DisplayName("reject unsupported")
     class RejectUnsupported {
@@ -350,8 +366,8 @@ class IdentifierTest {
                     () ->  Identifier.getType(Float.class)
             );
         }
-
     }
+
     @Test
     @DisplayName("unpack Any")
     void unpackAny() {
@@ -382,5 +398,11 @@ class IdentifierTest {
     @DisplayName("return NULL_ID when converting null")
     void nullId() {
         assertEquals(NULL_ID, Identifier.toString(null));
+    }
+
+    @Test
+    @DisplayName("declare ID_PROPERTY_SUFFIX")
+    void idPropSuffix() {
+        assertThat(Identifier.ID_PROPERTY_SUFFIX).isEqualTo("id");
     }
 }

@@ -22,24 +22,14 @@ package io.spine.net;
 
 import io.spine.net.Uri.QueryParameter;
 import io.spine.testing.UtilityClassTest;
-import org.junit.Rule;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.rules.ExpectedException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-/**
- * Tests {@link io.spine.net.UrlQueryParameters}.
- *
- * @author Mikhail Mikhaylov
- */
-public class UrlQueryParametersTest extends UtilityClassTest<UrlQueryParameters> {
-
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
+class UrlQueryParametersTest extends UtilityClassTest<UrlQueryParameters> {
 
     UrlQueryParametersTest() {
         super(UrlQueryParameters.class);
