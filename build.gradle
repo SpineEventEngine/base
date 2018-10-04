@@ -22,7 +22,7 @@ buildscript {
     // As long as `buildscript` section is always evaluated first,
     // we need to apply explicitly here.
     apply from: "$rootDir/config/gradle/dependencies.gradle"
-    apply from: "$rootDir/ext.gradle"
+    apply from: "$rootDir/version.gradle"
 
     repositories {
         maven { url = repos.gradlePlugins }
@@ -58,7 +58,7 @@ buildscript {
     })
 }
 
-apply from: 'ext.gradle'
+apply from: 'version.gradle'
 
 ext {
     credentialsPropertyFile = 'credentials.properties'
@@ -96,7 +96,7 @@ allprojects {
 subprojects {
 
     buildscript {
-        apply from: "$rootDir/ext.gradle"
+        apply from: "$rootDir/version.gradle"
 
         repositories {
             jcenter()

@@ -19,7 +19,7 @@
  */
 
 buildscript {
-    ext.EXT = "$rootDir/../../ext.gradle"
+    ext.EXT = "$rootDir/../../version.gradle"
 
     apply from: EXT
     apply from: "$rootDir/../../config/gradle/dependencies.gradle"
