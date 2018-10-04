@@ -73,7 +73,7 @@ subprojects {
         // todo Spine issue: https://github.com/SpineEventEngine/base/issues/126
         compile "io.spine:spine-base:$spineVersion"
 
-        testImplementation "io.spine:spine-base-testlib:$spineVersion"
+        testImplementation "io.spine:spine-testlib:$spineVersion"
     }
 
     idea.module {

@@ -42,7 +42,7 @@ import static org.junit.Assert.assertEquals;
 public class RejectionGenPluginShould {
 
     @Rule
-    public final TemporaryFolder testProjectDir = new TemporaryFolder();
+    public TemporaryFolder testProjectDir = new TemporaryFolder();
 
     @Test
     public void compile_generated_rejections() {
