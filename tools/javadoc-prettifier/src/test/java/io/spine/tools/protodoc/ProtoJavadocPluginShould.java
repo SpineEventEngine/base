@@ -51,7 +51,8 @@ public class ProtoJavadocPluginShould {
     private static final String PLUGIN_ID = "io.spine.tools.protobuf-javadoc-plugin";
 
     @Rule
-    public final TemporaryFolder testProjectDir = new TemporaryFolder();
+    public TemporaryFolder testProjectDir = new TemporaryFolder();
+
     private Project project;
 
     @Before

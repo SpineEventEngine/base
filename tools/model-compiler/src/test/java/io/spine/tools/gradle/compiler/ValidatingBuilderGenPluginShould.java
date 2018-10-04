@@ -39,7 +39,7 @@ public class ValidatingBuilderGenPluginShould {
                                                                   "c/test_commands.proto");
 
     @Rule
-    public final TemporaryFolder testProjectDir = new TemporaryFolder();
+    public TemporaryFolder testProjectDir = new TemporaryFolder();
 
     @Test
     public void compile_generated_validators() {

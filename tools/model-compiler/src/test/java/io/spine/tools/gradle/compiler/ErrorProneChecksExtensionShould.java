@@ -38,7 +38,7 @@ public class ErrorProneChecksExtensionShould {
     private ErrorProneChecksExtension extension;
 
     @Rule
-    public final TemporaryFolder projectDir = new TemporaryFolder();
+    public TemporaryFolder projectDir = new TemporaryFolder();
 
     @Before
     public void setUp() {

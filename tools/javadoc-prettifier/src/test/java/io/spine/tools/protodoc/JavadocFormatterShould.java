@@ -47,7 +47,8 @@ public class JavadocFormatterShould {
     private static final String TEXT_IN_BACKTICKS = BACKTICK + TEXT + BACKTICK;
 
     @Rule
-    public final TemporaryFolder folder = new TemporaryFolder();
+    public TemporaryFolder folder = new TemporaryFolder();
+
     private final FormattingAction formatting = new BacktickFormatting();
     private final List<FormattingAction> actions = singletonList(formatting);
     private final JavadocFormatter backtickFormatter = new JavadocFormatter(actions);

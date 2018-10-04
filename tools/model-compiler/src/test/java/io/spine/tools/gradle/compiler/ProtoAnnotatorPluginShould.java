@@ -68,7 +68,7 @@ public class ProtoAnnotatorPluginShould {
     private static final String PROJECT_NAME = "annotator-plugin-test";
 
     @Rule
-    public final TemporaryFolder testProjectDir = new TemporaryFolder();
+    public TemporaryFolder testProjectDir = new TemporaryFolder();
 
     @Test
     public void annotate_if_file_option_is_true() throws FileNotFoundException {

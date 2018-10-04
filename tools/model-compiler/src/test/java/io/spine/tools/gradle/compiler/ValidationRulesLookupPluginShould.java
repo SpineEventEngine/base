@@ -59,7 +59,7 @@ public class ValidationRulesLookupPluginShould {
             );
 
     @Rule
-    public final TemporaryFolder testProjectDir = new TemporaryFolder();
+    public TemporaryFolder testProjectDir = new TemporaryFolder();
 
     @Test
     public void findNestedValidationRules() {

@@ -46,7 +46,7 @@ public class ExtensionShould {
     private Project project;
 
     @Rule
-    public final TemporaryFolder projectDir = new TemporaryFolder();
+    public TemporaryFolder projectDir = new TemporaryFolder();
 
     @Before
     public void setUp() {
