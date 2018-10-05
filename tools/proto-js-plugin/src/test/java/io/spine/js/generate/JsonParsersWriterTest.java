@@ -28,6 +28,7 @@ import io.spine.code.js.Directory;
 import io.spine.code.js.FileName;
 import io.spine.code.proto.FileSet;
 import io.spine.option.OptionsProto;
+import io.spine.testing.logging.MuteLogging;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -81,6 +82,7 @@ class JsonParsersWriterTest {
     }
 
     @Test
+    @MuteLogging
     @DisplayName("recognize there are no generated files to process")
     void recognizeThereAreNoFiles() {
         Directory nonExistentRoot = Directory.at(Paths.get("non-existent"));
