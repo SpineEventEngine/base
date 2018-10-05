@@ -24,6 +24,18 @@ The plugin may then be applied where necessary:
 apply plugin: "io.spine.tools.proto-js-plugin"
 ```
 
+The `protoJs` extension can be used to configure when during the build lifecycle the plugin action
+will be executed. Example:
+
+```groovy
+protoJs {
+    generateParsersTask().dependsOn compileProtoToJs
+    compileJs.dependsOn generateParsersTask()
+}
+```
+
+By default, the plugin action will be just a dependency of the `build` task.
+
 ## Required configurations
 
 At the moment, the plugin relies on the set of hard-coded Gradle configurations which are required 

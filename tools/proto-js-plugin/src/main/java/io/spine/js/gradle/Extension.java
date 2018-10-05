@@ -24,16 +24,27 @@ import org.gradle.api.Task;
 
 import static com.google.common.base.Preconditions.checkState;
 
+/**
+ * An extension for the {@link ProtoJsPlugin} which allows to obtain the {@code generateJsonParsers}
+ * task to configure before and after which tasks it will be executed.
+ */
 public class Extension {
 
     private Task generateParsersTask;
 
+    /**
+     * Returns the {@code generateJsonParsers} task configured by the {@link ProtoJsPlugin}.
+     */
+    @SuppressWarnings("unused") // Used in project applying the plugin.
     public Task generateParsersTask() {
         checkState(generateParsersTask != null,
                    "The 'generateJsonParsers' task was not configured by the ProtoJS plugin");
         return generateParsersTask;
     }
 
+    /**
+     * Makes the extension read-only for all plugin users.
+     */
     void setGenerateParsersTask(Task generateParsersTask) {
         this.generateParsersTask = generateParsersTask;
     }
