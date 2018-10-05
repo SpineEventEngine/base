@@ -28,8 +28,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * The precondition for the proto fields of {@code message} types.
- *
- * @author Dmytro Kuzmin
  */
 final class MessagePrecondition implements FieldPrecondition {
 

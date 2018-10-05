@@ -29,8 +29,6 @@ import io.spine.code.Indent;
  *
  * <p>For example, the code inside the {@code if} block is one unit deeper than the {@code if}
  * declaration itself.
- *
- * @author Dmytro Kuzmin
  */
 final class CodeLine {
 

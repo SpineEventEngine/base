@@ -59,8 +59,6 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
  *     <li>Appends {@code fromJson(json)} method to all files generated from Protobuf, one for each
  *         message stored in a file.
  * </ol>
- *
- * @author Dmytro Kuzmin
  */
 public final class JsonParsersWriter {
 

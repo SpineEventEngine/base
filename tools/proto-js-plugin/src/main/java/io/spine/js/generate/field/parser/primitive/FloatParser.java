@@ -27,8 +27,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  * <p>The parser uses the {@code parseFloat} operation on the value to obtain the original floating
  * point number.
- *
- * @author Dmytro Kuzmin
  */
 final class FloatParser extends AbstractPrimitiveParser {
 

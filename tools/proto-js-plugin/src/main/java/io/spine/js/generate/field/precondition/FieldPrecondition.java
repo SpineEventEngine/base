@@ -28,8 +28,6 @@ import io.spine.js.generate.JsOutput;
  * @apiNote
  * The descendants are supposed to operate on the provided {@link JsOutput}, so the interface
  * methods are not returning any generated code.
- *
- * @author Dmytro Kuzmin
  */
 public interface FieldPrecondition {
 

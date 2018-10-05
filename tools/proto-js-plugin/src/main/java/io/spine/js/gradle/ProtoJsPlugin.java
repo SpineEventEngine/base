@@ -67,8 +67,6 @@ import static io.spine.tools.gradle.TaskName.GENERATE_JSON_PARSERS;
  *
  * <p>The {@code build.gradle} file located under the {@code test/resources} folder of this module
  * can be used as an example of the required project configuration.
- *
- * @author Dmytro Kuzmin
  */
 public class ProtoJsPlugin extends SpinePlugin {
 

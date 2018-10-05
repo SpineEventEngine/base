@@ -36,8 +36,6 @@ import static io.spine.js.generate.field.precondition.FieldPreconditions.precond
 /**
  * The helper class which provides the {@link FieldGenerator} implementation for the given
  * {@linkplain FieldDescriptor field}.
- *
- * @author Dmytro Kuzmin
  */
 public final class FieldGenerators {
 

@@ -41,8 +41,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  * <p>The class is effectively {@code final} and is left non-{@code final} only for testing
  * purposes.
- *
- * @author Dmytro Kuzmin
  */
 @SuppressWarnings("DuplicateStringLiteralInspection")
 // The generated code duplicates the code used in test that checks it.

@@ -22,8 +22,6 @@ package io.spine.js.generate;
 
 /**
  * The common base for JavaScript code generators which operate on the {@link JsOutput}.
- *
- * @author Dmytro Kuzmin
  */
 public abstract class JsCodeGenerator {
 

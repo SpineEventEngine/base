@@ -38,8 +38,6 @@ import static java.lang.String.format;
  * <p>This class generates the JS code common for all kinds of field generators including inserting
  * a {@linkplain FieldPrecondition field precondition} and calling a
  * {@linkplain FieldParser field parser}.
- *
- * @author Dmytro Kuzmin
  */
 public abstract class FieldGenerator extends JsCodeGenerator {
 

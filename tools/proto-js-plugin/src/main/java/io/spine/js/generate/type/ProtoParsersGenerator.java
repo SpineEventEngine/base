@@ -53,8 +53,6 @@ import static io.spine.type.TypeUrl.of;
  * <p>Parsers are stored in the map in the "{@linkplain TypeUrl type-url}-to-parser" format.
  *
  * <p>The parsers may be used to parse JSON via their {@code parse(value)} method.
- *
- * @author Dmytro Kuzmin
  */
 @SuppressWarnings("OverlyCoupledClass") // Dependencies for the listed Protobuf types.
 public final class ProtoParsersGenerator extends JsCodeGenerator {

@@ -29,8 +29,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * The value parser for the proto fields of {@code enum} type.
- *
- * @author Dmytro Kuzmin
  */
 final class EnumFieldParser implements FieldParser {
 

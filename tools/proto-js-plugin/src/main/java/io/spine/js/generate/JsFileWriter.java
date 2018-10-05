@@ -42,8 +42,6 @@ import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
  *
  * <p>The class wraps all {@link IOException}s which occur during its operations in the
  * {@link IllegalStateException}.
- *
- * @author Dmytro Kuzmin
  */
 @SuppressWarnings("WeakerAccess")
 // The class belongs to the public API of the package although now usage is only package-local.

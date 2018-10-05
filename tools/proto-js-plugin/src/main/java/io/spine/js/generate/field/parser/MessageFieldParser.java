@@ -33,8 +33,6 @@ import static io.spine.js.generate.message.MessageGenerator.FROM_OBJECT;
  *
  * <p>Handles all {@code message} fields except those who belong to standard Protobuf types which
  * are parsed separately.
- *
- * @author Dmytro Kuzmin
  */
 final class MessageFieldParser implements FieldParser {
 

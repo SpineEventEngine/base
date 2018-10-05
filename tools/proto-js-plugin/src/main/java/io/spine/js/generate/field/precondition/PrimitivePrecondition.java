@@ -30,8 +30,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * <p>All the proto fields which are not of the {@code message} type are handled by this
  * precondition. This includes the {@code enum} type fields which obey the same rules as primitives
  * in this case.
- *
- * @author Dmytro Kuzmin
  */
 final class PrimitivePrecondition implements FieldPrecondition {
 

@@ -33,8 +33,6 @@ import static io.spine.js.generate.message.MessageGenerator.MESSAGE;
  *
  * <p>Although the {@code map} fields are technically also {@code repeated}, they are not handled
  * by this class.
- *
- * @author Dmytro Kuzmin
  */
 final class RepeatedFieldGenerator extends FieldGenerator {
 

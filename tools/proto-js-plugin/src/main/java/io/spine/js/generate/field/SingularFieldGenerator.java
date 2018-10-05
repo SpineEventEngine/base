@@ -26,8 +26,6 @@ import static io.spine.js.generate.message.MessageGenerator.MESSAGE;
 
 /**
  * The generator of the ordinary proto field (i.e. non-{@code repeated} and non-{@code map}).
- *
- * @author Dmytro Kuzmin
  */
 final class SingularFieldGenerator extends FieldGenerator {
 

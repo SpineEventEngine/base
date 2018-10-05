@@ -47,8 +47,6 @@ import static com.google.protobuf.Descriptors.FieldDescriptor.Type.UINT64;
 
 /**
  * The helper class which creates a {@link PrimitiveParser} based on the passed field type.
- *
- * @author Dmytro Kuzmin
  */
 public final class PrimitiveParsers {
 
