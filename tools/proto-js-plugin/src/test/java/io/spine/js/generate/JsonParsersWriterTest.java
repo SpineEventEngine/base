@@ -35,6 +35,7 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collection;
 
 import static io.spine.code.js.LibraryFile.KNOWN_TYPES;
@@ -46,19 +47,21 @@ import static io.spine.js.generate.given.Given.project;
 import static io.spine.js.generate.message.MessageGenerator.FROM_JSON;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static java.nio.file.Files.exists;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SuppressWarnings("DuplicateStringLiteralInspection") // Common test display names.
 @DisplayName("JsonParsersWriter should")
 class JsonParsersWriterTest {
 
+    private File descriptorSetFile;
     private Directory generatedProtoDir;
     private JsonParsersWriter writer;
 
     @BeforeEach
     void setUp() {
         DefaultJsProject project = project();
-        File descriptorSetFile = project.mainDescriptors();
+        descriptorSetFile = project.mainDescriptors();
         generatedProtoDir = project.proto()
                                    .mainJs();
         writer = createFor(generatedProtoDir, descriptorSetFile);
@@ -69,6 +72,28 @@ class JsonParsersWriterTest {
     void passNullToleranceCheck() {
         new NullPointerTester().setDefault(Directory.class, generatedProtoDir)
                                .testAllPublicStaticMethods(JsonParsersWriter.class);
+    }
+
+    @Test
+    @DisplayName("check if there are files to process")
+    void checkFilesToProcess() {
+        assertTrue(writer.hasFilesToProcess());
+    }
+
+    @Test
+    @DisplayName("recognize there are no generated files to process")
+    void recognizeThereAreNoFiles() {
+        Directory nonExistentRoot = Directory.at(Paths.get("non-existent"));
+        JsonParsersWriter writer = createFor(nonExistentRoot, descriptorSetFile);
+        assertFalse(writer.hasFilesToProcess());
+    }
+
+    @Test
+    @DisplayName("recognize there are no known types to process")
+    void recognizeThereAreNoTypes() {
+        File nonExistentDescriptors = new File("non-existent");
+        JsonParsersWriter writer = createFor(generatedProtoDir, nonExistentDescriptors);
+        assertFalse(writer.hasFilesToProcess());
     }
 
     @Test

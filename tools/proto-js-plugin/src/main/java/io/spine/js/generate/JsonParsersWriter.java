@@ -107,7 +107,8 @@ public final class JsonParsersWriter {
      *
      * @return {@code true} if there are files to process and {@code false} otherwise
      */
-    private boolean hasFilesToProcess() {
+    @VisibleForTesting
+    boolean hasFilesToProcess() {
         boolean hasFilesToProcess = !fileSet.isEmpty() && generatedRoot.exists();
         return hasFilesToProcess;
     }
