@@ -26,7 +26,7 @@ import static com.google.common.base.Preconditions.checkState;
 
 /**
  * An extension for the {@link ProtoJsPlugin} which allows to obtain the {@code generateJsonParsers}
- * task to configure before and after which tasks it will be executed.
+ * task to configure when it will be executed during the build lifecycle.
  */
 public class Extension {
 

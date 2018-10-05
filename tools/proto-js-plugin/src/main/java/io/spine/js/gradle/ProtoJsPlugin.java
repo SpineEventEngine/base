@@ -46,7 +46,7 @@ import static io.spine.tools.gradle.TaskName.GENERATE_JSON_PARSERS;
  * Protobuf JS compiler and found among the {@linkplain io.spine.code.proto.FileSet known types}.
  *
  * <p>The main plugin action may be retrieved and configured as necessary via the
- * {@linkplain Extension "protoJs" extension}. By default, it is a dependency of the
+ * {@linkplain Extension "protoJs" extension}. By default, the action is a dependency of the
  * {@linkplain io.spine.tools.gradle.TaskName#BUILD build} task.
  *
  * <p>This plugin currently relies on the set of the hard-coded Gradle settings which have to be
@@ -66,7 +66,7 @@ import static io.spine.tools.gradle.TaskName.GENERATE_JSON_PARSERS;
  * builds its Protobuf definitions to JS and the plugin relies on this behaviour.
  *
  * <p>The {@code build.gradle} file located under the {@code test/resources} folder of this module
- * can be used as an example of required project configuration.
+ * can be used as an example of the required project configuration.
  *
  * @author Dmytro Kuzmin
  */

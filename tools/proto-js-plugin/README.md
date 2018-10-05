@@ -34,7 +34,7 @@ protoJs {
 }
 ```
 
-By default, the plugin action will be just a dependency of the `build` task.
+By default, the plugin action will just be a dependency of the `build` task.
 
 ## Required configurations
 
