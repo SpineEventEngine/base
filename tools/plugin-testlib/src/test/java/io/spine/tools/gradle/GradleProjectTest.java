@@ -40,7 +40,7 @@ public class GradleProjectTest {
     private static final String PROJECT_NAME = "gradle_project_test";
 
     @Rule
-    public final TemporaryFolder temporaryFolder = new TemporaryFolder();
+    public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
     @Test
     public void build_from_project_folder_and_project_name() {

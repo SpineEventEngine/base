@@ -56,7 +56,6 @@ import static java.util.Arrays.asList;
  */
 public final class GradleProject {
 
-    @SuppressWarnings("DuplicateStringLiteralInspection") // Different semantics.
     public static final String JAVA_PLUGIN_ID = "java";
 
     private static final String BUILD_GRADLE_NAME = "build.gradle";
@@ -280,8 +279,8 @@ public final class GradleProject {
          *
          * <p>Use debug mode only for temporary debug purposes.
          */
-        @SuppressWarnings("unused") // Used only for debug purposes. Should never get
-                                    // to e.g. CLI server.
+        @SuppressWarnings({"unused", "RedundantSuppression"})
+        // Used only for debug purposes. Should never get to e.g. CLI server.
         public Builder enableDebug() {
             this.debug = true;
             return this;
