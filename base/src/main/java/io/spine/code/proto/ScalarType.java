@@ -23,7 +23,7 @@ package io.spine.code.proto;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
-import static java.lang.String.format;
+import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
  * Enumeration of the Protobuf scalar value types and corresponding Java types.
@@ -67,14 +67,23 @@ public enum ScalarType {
      * @return the name of the corresponding Java type
      */
     public static String getJavaTypeName(Type protoScalar) {
+        return getJavaType(protoScalar).getName();
+    }
+
+    /**
+     * Returns the the corresponding Java type for the Protobuf scalar type.
+     *
+     * @param protoScalar the Protobuf scalar type
+     * @return the corresponding Java type
+     */
+    public static Class<?> getJavaType(Type protoScalar) {
         for (ScalarType scalarType : ScalarType.values()) {
             if (scalarType.protoScalarType == protoScalar) {
-                return scalarType.javaClass.getName();
+                return scalarType.javaClass;
             }
         }
-
-        String msg = format("Protobuf type \"%s\" is not a scalar value type.", protoScalar);
-        throw new IllegalStateException(msg);
+        throw newIllegalStateException("Protobuf type `%s` is not a scalar value type.",
+                                       protoScalar);
     }
 
     public Type getProtoScalarType() {
