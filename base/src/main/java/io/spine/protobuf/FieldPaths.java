@@ -105,6 +105,15 @@ public final class FieldPaths {
         return currentValue;
     }
 
+    /**
+     * Obtains the class of the field at the given field path from the given field holder type.
+     *
+     * @param holderType
+     *         the type of the message to search
+     * @param path
+     *         the field path to search by
+     * @return the class of the requested field
+     */
     public static Class<?> typeOfFieldAt(Class<? extends Message> holderType, FieldPath path) {
         Descriptor descriptor = TypeName.of(holderType).getMessageDescriptor();
         for (Iterator<String> iterator = path.getFieldNameList().iterator(); iterator.hasNext(); ) {
