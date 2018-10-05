@@ -25,9 +25,12 @@
 # Spine model compiler auto-generated resources
 /tools/gradle-plugins/model-compiler/src/main/resources/spine-protoc.gradle
 
-# Login details to Maven repository.
-# Each workstation should have developer's login defined in this file.
+# Prevent accidental adding of credential files
+credentials.tar
 credentials.properties
+cloudrepo.properties
+deploy_key_rsa
+gcs-auth-key.json
 
 #
 # The gradle.properties file should contain settings specific to a developer's workstation.

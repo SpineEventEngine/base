@@ -27,7 +27,6 @@ import com.sun.tools.doclets.standard.Standard;
 import com.sun.tools.javadoc.Main;
 import com.sun.tools.javadoc.MethodDocImpl;
 import io.spine.annotation.Internal;
-import io.spine.util.Exceptions;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.lang.reflect.Array;
@@ -37,6 +36,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
+
+import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 
 /**
  * Extension of {@linkplain Standard} doclet, which excludes
@@ -91,7 +92,7 @@ public class ExcludeInternalDoclet extends Standard {
      * @return {@code true} if the doclet ran without encountering any errors,
      * {@code false} otherwise
      */
-    @SuppressWarnings("unused") // called by com.sun.tools.javadoc.Main
+    @SuppressWarnings({"unused", "RedundantSuppression"}) // called by com.sun.tools.javadoc.Main
     public static boolean start(RootDoc root) {
         ExcludePrinciple excludePrinciple = new ExcludeInternalPrinciple(root);
         ExcludeInternalDoclet doclet = new ExcludeInternalDoclet(excludePrinciple);
@@ -154,7 +155,7 @@ public class ExcludeInternalDoclet extends Standard {
             try {
                 return process(method.invoke(target, args), method.getReturnType());
             } catch (InvocationTargetException e) {
-                throw Exceptions.illegalStateWithCauseOf(e);
+                throw illegalStateWithCauseOf(e);
             }
         }
 
@@ -181,7 +182,7 @@ public class ExcludeInternalDoclet extends Standard {
      * <p>Because we use proxy to filter Javadocs, we should unwrap proxy
      * of parameters passed to these methods to prevent {@code ClassCastException}.
      */
-    @SuppressWarnings("unused") // Used in implicit form.
+    @SuppressWarnings({"unused", "RedundantSuppression"}) // Used in implicit form.
     private enum IgnoredMethod {
         COMPARE_TO("compareTo"),
         EQUALS("equals"),
@@ -199,10 +200,10 @@ public class ExcludeInternalDoclet extends Standard {
         }
 
         /**
-         * Returns {@code true} if the passed method name is one of {@linkplain IgnoredMethod}s.
+         * Returns {@code true} if the passed method name is one of {@code IgnoredMethod}s.
          *
          * @param methodName the method name to test
-         * @return {@code true} if the method name is one of {@linkplain IgnoredMethod}s
+         * @return {@code true} if the method name is one of {@code IgnoredMethod}s
          */
         private static boolean isIgnored(String methodName) {
             for (IgnoredMethod ignoredMethod : IgnoredMethod.values()) {
