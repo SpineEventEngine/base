@@ -37,6 +37,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static io.spine.protobuf.AnyPacker.pack;
 import static io.spine.protobuf.FieldPaths.fieldAt;
 import static io.spine.protobuf.FieldPaths.parse;
+import static io.spine.protobuf.FieldPaths.typeOfFieldAt;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -134,6 +135,8 @@ class FieldPathsTest extends UtilityClassTest<FieldPaths> {
     void notAllowEmptyPaths() {
         assertThrows(IllegalArgumentException.class,
                      () -> fieldAt(Empty.getDefaultInstance(), FieldPath.getDefaultInstance()));
+        assertThrows(IllegalArgumentException.class,
+                     () -> typeOfFieldAt(Empty.class, FieldPath.getDefaultInstance()));
     }
 
     @Test
@@ -158,5 +161,35 @@ class FieldPathsTest extends UtilityClassTest<FieldPaths> {
                 .build();
         FieldPath wrongPath = parse("val.this_field_is_absent");
         assertThrows(IllegalArgumentException.class, () -> fieldAt(holder, wrongPath));
+    }
+
+    @Test
+    @DisplayName("obtain a field type")
+    void findTypeByPath() {
+        FieldPath path = parse("shh.holder");
+        assertEquals(StringHolder.class, typeOfFieldAt(GenericHolder.class, path));
+    }
+
+    @Test
+    @DisplayName("fail if the type lookup reaches a primitive value")
+    void failOnMissingFieldInTypeLookup() {
+        FieldPath wrongPath = parse("val.non_existing_field");
+        assertThrows(IllegalArgumentException.class,
+                     () -> typeOfFieldAt(StringHolder.class, wrongPath));
+    }
+
+    @Test
+    @DisplayName("fail if the path to find a type by contains a typo")
+    void failOnTypoInFieldPathInTypeLookup() {
+        FieldPath wrongPath = parse("generic.ssh");
+        assertThrows(IllegalArgumentException.class,
+                     () -> typeOfFieldAt(GenericHolder.class, wrongPath));
+    }
+
+    @Test
+    @DisplayName("lookup recursive types")
+    void recursiveTypeLookup() {
+        FieldPath path = parse("generic.generic.generic.generic.generic");
+        assertEquals(GenericHolder.class, typeOfFieldAt(GenericHolder.class, path));
     }
 }

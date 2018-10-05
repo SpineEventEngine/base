@@ -88,7 +88,7 @@ public final class FieldPaths {
     public static Object fieldAt(Message holder, FieldPath path) {
         checkNotNull(holder);
         checkNotNull(path);
-        checkArgument(path.getFieldNameCount() > 0, "Field path must not be empty.");
+        checkNotEmpty(path);
 
         Message message = holder;
         Object currentValue = message;
@@ -115,6 +115,10 @@ public final class FieldPaths {
      * @return the class of the requested field
      */
     public static Class<?> typeOfFieldAt(Class<? extends Message> holderType, FieldPath path) {
+        checkNotNull(holderType);
+        checkNotNull(path);
+        checkNotEmpty(path);
+
         Descriptor descriptor = TypeName.of(holderType).getMessageDescriptor();
         for (Iterator<String> iterator = path.getFieldNameList().iterator(); iterator.hasNext(); ) {
             String fieldName = iterator.next();
@@ -128,6 +132,10 @@ public final class FieldPaths {
             }
         }
         throw new IllegalStateException("Unreachable statement.");
+    }
+
+    private static void checkNotEmpty(FieldPath path) throws IllegalArgumentException {
+        checkArgument(path.getFieldNameCount() > 0, "Field path must not be empty.");
     }
 
     private static FieldDescriptor getField(Descriptor container, String name) {
