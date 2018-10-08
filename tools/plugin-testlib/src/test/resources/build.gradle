@@ -20,4 +20,4 @@
 
 apply plugin: 'java'
 
-apply from: 'ext.gradle'
+apply from: 'version.gradle'
