@@ -65,9 +65,9 @@ class FieldPathsTest extends UtilityClassTest<FieldPaths> {
     @Test
     @DisplayName("parse long field paths")
     void parseLong() {
-        String path = "shh.holder.val";
+        String path = "holder_holder.holder.val";
         FieldPath parsed = parse(path);
-        assertThat(parsed.getFieldNameList()).containsExactly("shh", "holder", "val");
+        assertThat(parsed.getFieldNameList()).containsExactly("holder_holder", "holder", "val");
     }
 
     @Test
@@ -119,13 +119,13 @@ class FieldPathsTest extends UtilityClassTest<FieldPaths> {
                 .build();
         GenericHolder holder2 = GenericHolder
                 .newBuilder()
-                .setShh(holder1)
+                .setHolderHolder(holder1)
                 .build();
         GenericHolder holder3 = GenericHolder
                 .newBuilder()
                 .setGeneric(holder2)
                 .build();
-        FieldPath path = parse("generic.shh.holder.val");
+        FieldPath path = parse("generic.holder_holder.holder.val");
         Object actual = fieldAt(holder3, path);
         assertEquals(value, actual);
     }
@@ -166,7 +166,7 @@ class FieldPathsTest extends UtilityClassTest<FieldPaths> {
     @Test
     @DisplayName("obtain a field type")
     void findTypeByPath() {
-        FieldPath path = parse("shh.holder");
+        FieldPath path = parse("holder_holder.holder");
         assertEquals(StringHolder.class, typeOfFieldAt(GenericHolder.class, path));
     }
 
@@ -181,7 +181,7 @@ class FieldPathsTest extends UtilityClassTest<FieldPaths> {
     @Test
     @DisplayName("fail if the path to find a type by contains a typo")
     void failOnTypoInFieldPathInTypeLookup() {
-        FieldPath wrongPath = parse("generic.ssh");
+        FieldPath wrongPath = parse("generic.hldr");
         assertThrows(IllegalArgumentException.class,
                      () -> typeOfFieldAt(GenericHolder.class, wrongPath));
     }
