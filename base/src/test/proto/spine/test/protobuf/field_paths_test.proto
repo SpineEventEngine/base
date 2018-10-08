@@ -25,7 +25,7 @@ message AnyHolder {
 
 message GenericHolder {
     StringHolder str = 1;
-    StringHolderHolder shh = 2;
+    StringHolderHolder holder_holder = 2;
     AnyHolder any = 3;
     GenericHolder generic = 4;
 }

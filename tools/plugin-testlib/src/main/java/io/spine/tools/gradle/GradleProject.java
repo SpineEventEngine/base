@@ -50,16 +50,13 @@ import static java.util.Arrays.asList;
  *
  * <p>{@code GradleProject} operates in the given {@linkplain File test project directory} and
  * allows to execute Gradle tasks.
- *
- * @author Dmytro Grankin
- * @author Dmytro Dashenkov
  */
 public final class GradleProject {
 
     public static final String JAVA_PLUGIN_ID = "java";
 
     private static final String BUILD_GRADLE_NAME = "build.gradle";
-    private static final String EXT_GRADLE_NAME = "ext.gradle";
+    private static final String VERSION_GRADLE_NAME = "version.gradle";
     private static final String BASE_PROTO_LOCATION = "src/main/proto/";
     private static final String BASE_JAVA_LOCATION = "src/main/java/";
     private static final String CONFIG_DIR_NAME = "config";
@@ -129,6 +126,7 @@ public final class GradleProject {
         InputStream fileContent = getClass().getClassLoader()
                                             .getResourceAsStream(fullyQualifiedPath);
         Files.createDirectories(resultingPath.getParent());
+        checkNotNull(fileContent);
         Files.copy(fileContent, resultingPath);
     }
 
@@ -146,6 +144,7 @@ public final class GradleProject {
         InputStream fileContent = getClass().getClassLoader()
                                             .getResourceAsStream(BUILD_GRADLE_NAME);
         Files.createDirectories(resultingPath.getParent());
+        checkNotNull(fileContent);
         Files.copy(fileContent, resultingPath);
     }
 
@@ -154,10 +153,10 @@ public final class GradleProject {
      * into the root of the test project.
      */
     private void copyExtGradle(Path projectRoot) throws IOException {
-        Path sourcePath = projectRoot.resolve(EXT_GRADLE_NAME);
+        Path sourcePath = projectRoot.resolve(VERSION_GRADLE_NAME);
         Path targetPath = gradleRunner.getProjectDir()
                                       .toPath()
-                                      .resolve(EXT_GRADLE_NAME);
+                                      .resolve(VERSION_GRADLE_NAME);
         Files.copy(sourcePath, targetPath);
     }
 
@@ -194,7 +193,7 @@ public final class GradleProject {
 
     /**
      * Finds a root directory of the project by searching for the file
-     * named {@link #EXT_GRADLE_NAME ext.gradle}.
+     * named {@link #VERSION_GRADLE_NAME ext.gradle}.
      *
      * <p>Starts from the current directory, climbing up, if the file is not found.
      *
@@ -205,7 +204,7 @@ public final class GradleProject {
                                       .toAbsolutePath();
         Path extGradleDirPath = workingFolderPath;
         while (extGradleDirPath != null
-                && !exists(extGradleDirPath.resolve(EXT_GRADLE_NAME))) {
+                && !exists(extGradleDirPath.resolve(VERSION_GRADLE_NAME))) {
             extGradleDirPath = extGradleDirPath.getParent();
         }
         checkState(extGradleDirPath != null,
