@@ -120,18 +120,19 @@ public final class FieldPaths {
         checkNotEmpty(path);
 
         Descriptor descriptor = TypeName.of(holderType).getMessageDescriptor();
+        FieldDescriptor field = null;
         for (Iterator<String> iterator = path.getFieldNameList().iterator(); iterator.hasNext(); ) {
             String fieldName = iterator.next();
-            FieldDescriptor field = getField(descriptor, fieldName);
+            field = getField(descriptor, fieldName);
             if (iterator.hasNext()) {
                 checkArgument(field.getType() == MESSAGE,
                               "Field %s of type %s is not a message field.");
                 descriptor = field.getMessageType();
-            } else {
-                return classOf(field);
             }
         }
-        throw new IllegalStateException("Unreachable statement.");
+        checkNotNull(field);
+        Class<?> result = classOf(field);
+        return result;
     }
 
     private static void checkNotEmpty(FieldPath path) throws IllegalArgumentException {
