@@ -21,15 +21,22 @@
 package io.spine.protobuf;
 
 import com.google.common.base.Splitter;
+import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
+import com.google.protobuf.Descriptors.FieldDescriptor.Type;
 import com.google.protobuf.Message;
 import io.spine.base.FieldPath;
+import io.spine.code.proto.ScalarType;
+import io.spine.type.TypeName;
+import io.spine.type.TypeUrl;
 
 import java.util.Iterator;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.protobuf.Descriptors.FieldDescriptor.Type.ENUM;
+import static com.google.protobuf.Descriptors.FieldDescriptor.Type.MESSAGE;
 
 /**
  * Utilities for working with {@link io.spine.base.FieldPath} instances.
@@ -81,15 +88,13 @@ public final class FieldPaths {
     public static Object fieldAt(Message holder, FieldPath path) {
         checkNotNull(holder);
         checkNotNull(path);
-        checkArgument(path.getFieldNameCount() > 0, "Field path must not be empty.");
+        checkNotEmpty(path);
 
         Message message = holder;
         Object currentValue = message;
         for (Iterator<String> iterator = path.getFieldNameList().iterator(); iterator.hasNext(); ) {
             String fieldName = iterator.next();
-            FieldDescriptor field = message.getDescriptorForType()
-                                           .findFieldByName(fieldName);
-            checkArgument(field != null, "Field `%s` is not found.", fieldName);
+            FieldDescriptor field = getField(message.getDescriptorForType(), fieldName);
             currentValue = message.getField(field);
             if (currentValue instanceof Message) {
                 message = (Message) currentValue;
@@ -98,5 +103,59 @@ public final class FieldPaths {
             }
         }
         return currentValue;
+    }
+
+    /**
+     * Obtains the class of the field at the given field path from the given field holder type.
+     *
+     * @param holderType
+     *         the type of the message to search
+     * @param path
+     *         the field path to search by
+     * @return the class of the requested field
+     */
+    public static Class<?> typeOfFieldAt(Class<? extends Message> holderType, FieldPath path) {
+        checkNotNull(holderType);
+        checkNotNull(path);
+        checkNotEmpty(path);
+
+        Descriptor descriptor = TypeName.of(holderType).getMessageDescriptor();
+        FieldDescriptor field = null;
+        for (Iterator<String> iterator = path.getFieldNameList().iterator(); iterator.hasNext(); ) {
+            String fieldName = iterator.next();
+            field = getField(descriptor, fieldName);
+            if (iterator.hasNext()) {
+                checkArgument(field.getType() == MESSAGE,
+                              "Field %s of type %s is not a message field.");
+                descriptor = field.getMessageType();
+            }
+        }
+        checkNotNull(field);
+        Class<?> result = classOf(field);
+        return result;
+    }
+
+    private static void checkNotEmpty(FieldPath path) throws IllegalArgumentException {
+        checkArgument(path.getFieldNameCount() > 0, "Field path must not be empty.");
+    }
+
+    private static FieldDescriptor getField(Descriptor container, String name) {
+        FieldDescriptor field = container.findFieldByName(name);
+        checkArgument(field != null, "Field `%s` not found.", name);
+        return field;
+    }
+
+    private static Class<?> classOf(FieldDescriptor field) {
+        Type type = field.getType();
+        if (type == MESSAGE) {
+            Class<?> cls = TypeUrl.from(field.getMessageType()).getJavaClass();
+            return cls;
+        } else if (type == ENUM) {
+            Class<?> cls = TypeUrl.from(field.getEnumType()).getJavaClass();
+            return cls;
+        } else {
+            Class<?> result = ScalarType.getJavaType(field.toProto().getType());
+            return result;
+        }
     }
 }
