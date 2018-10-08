@@ -38,8 +38,6 @@ import static java.lang.System.lineSeparator;
  *
  * <p>The writable representation of the output may be obtained through the {@link #toString()}
  * method.
- *
- * @author Dmytro Kuzmin
  */
 @SuppressWarnings({"DuplicateStringLiteralInspection"
         /* The generated code duplicates the code used in test that checks it. */,
@@ -268,7 +266,7 @@ public final class JsOutput {
      */
     public void exportMap(String mapName) {
         checkNotNull(mapName);
-        addLine("export const " + mapName + " = new Map([");
+        addLine("module.exports." + mapName + " = new Map([");
         currentDepth++;
     }
 

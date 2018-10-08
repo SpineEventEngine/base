@@ -179,7 +179,7 @@ class JsOutputTest {
     @DisplayName("declare map export")
     void exportMap() {
         jsOutput.exportMap(MAP_NAME);
-        String mapDeclaration = "export const " + MAP_NAME + " = new Map([";
+        String mapDeclaration = "module.exports." + MAP_NAME + " = new Map([";
         assertContains(jsOutput, mapDeclaration);
         assertEquals(1, jsOutput.currentDepth());
     }

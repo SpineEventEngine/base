@@ -30,8 +30,6 @@ import io.spine.js.generate.JsOutput;
  * @apiNote
  * The descendants are supposed to operate on the provided {@link JsOutput}, so the interface
  * method is not returning any generated code.
- *
- * @author Dmytro Kuzmin
  * @see <a href="https://developers.google.com/protocol-buffers/docs/proto3#json">Protobuf JSON Mapping</a>
  */
 public interface PrimitiveParser {

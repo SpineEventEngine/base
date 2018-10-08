@@ -32,8 +32,6 @@ import static io.spine.code.js.Fields.isMessage;
 
 /**
  * A helper class which creates a {@link FieldParser} instance for the passed field.
- *
- * @author Dmytro Kuzmin
  */
 public final class FieldParsers {
 

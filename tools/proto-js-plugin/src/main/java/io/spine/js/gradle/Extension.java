@@ -18,18 +18,34 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.js.gradle;
+
+import org.gradle.api.Task;
+
+import static com.google.common.base.Preconditions.checkState;
+
 /**
- * The versions of the libraries used.
- *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
+ * An extension for the {@link ProtoJsPlugin} which allows to obtain the {@code generateJsonParsers}
+ * task to configure when it will be executed during the build lifecycle.
  */
+public class Extension {
 
-final def SPINE_VERSION = '0.11.2-SNAPSHOT'
+    private Task generateParsersTask;
 
-ext {
-    spineVersion = SPINE_VERSION
-    spineBaseVersion = SPINE_VERSION // Used by `filter-internal-javadoc.gradle`.
+    /**
+     * Returns the {@code generateJsonParsers} task configured by the {@link ProtoJsPlugin}.
+     */
+    @SuppressWarnings("unused") // Used in project applying the plugin.
+    public Task generateParsersTask() {
+        checkState(generateParsersTask != null,
+                   "The 'generateJsonParsers' task was not configured by the ProtoJS plugin");
+        return generateParsersTask;
+    }
 
-    versionToPublish = SPINE_VERSION
+    /**
+     * Makes the extension read-only for all plugin users.
+     */
+    void setGenerateParsersTask(Task generateParsersTask) {
+        this.generateParsersTask = generateParsersTask;
+    }
 }

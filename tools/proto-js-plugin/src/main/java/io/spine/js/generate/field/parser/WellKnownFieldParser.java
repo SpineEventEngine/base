@@ -34,8 +34,6 @@ import static io.spine.js.generate.file.FileGenerator.PARSERS_IMPORT_NAME;
  *
  * <p>Well-known message types are those standard Protobuf types for which the predefined parsers
  * are present.
- *
- * @author Dmytro Kuzmin
  */
 final class WellKnownFieldParser implements FieldParser {
 

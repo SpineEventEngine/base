@@ -59,8 +59,6 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
  *     <li>Appends {@code fromJson(json)} method to all files generated from Protobuf, one for each
  *         message stored in a file.
  * </ol>
- *
- * @author Dmytro Kuzmin
  */
 public final class JsonParsersWriter {
 
@@ -88,7 +86,7 @@ public final class JsonParsersWriter {
     /**
      * Generates and writes the JS code necessary to parse proto messages from the JSON format.
      *
-     * <p>Does nothing if there are no files to process in the {@link #fileSet}.
+     * <p>Does nothing if there are no Protobuf files to process.
      */
     public void write() {
         if (!hasFilesToProcess()) {
@@ -100,12 +98,16 @@ public final class JsonParsersWriter {
     }
 
     /**
-     * Checks if {@code ProtoJsonWriter}'s {@link FileSet} has any known types to process.
+     * Checks if the {@code JsonParsersWriter} has any files to process.
      *
-     * @return {@code true} if the file set has files to process and {@code false} otherwise
+     * <p>Will return {@code false} either if there are no known types to process or the generated
+     * files for them cannot be found.
+     *
+     * @return {@code true} if there are files to process and {@code false} otherwise
      */
-    private boolean hasFilesToProcess() {
-        boolean hasFilesToProcess = !fileSet.isEmpty();
+    @VisibleForTesting
+    boolean hasFilesToProcess() {
+        boolean hasFilesToProcess = !fileSet.isEmpty() && generatedRoot.exists();
         return hasFilesToProcess;
     }
 

@@ -36,8 +36,6 @@ import static io.spine.code.js.LibraryFile.KNOWN_TYPE_PARSERS;
  *
  * <p>The class generates the {@code fromJson} and {@code fromObject} methods for each message
  * declared in the {@link FileDescriptor}.
- *
- * @author Dmytro Kuzmin
  */
 public final class FileGenerator extends JsCodeGenerator {
 

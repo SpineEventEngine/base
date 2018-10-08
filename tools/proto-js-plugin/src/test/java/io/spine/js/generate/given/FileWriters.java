@@ -32,8 +32,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * A helper tool for checking file I/O operations result.
- *
- * @author Dmytro Kuzmin
  */
 public final class FileWriters {
 

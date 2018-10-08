@@ -22,8 +22,6 @@ package io.spine.js.generate.given;
 
 /**
  * The field of the {@code FieldContainer} type declared in {@code fields.proto}.
- *
- * @author Dmytro Kuzmin
  */
 enum FieldContainerEntry {
 

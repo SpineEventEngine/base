@@ -28,8 +28,6 @@ import static io.spine.code.js.Fields.isMessage;
 
 /**
  * The helper which creates {@link FieldPrecondition} instances based on the field type.
- *
- * @author Dmytro Kuzmin
  */
 public final class FieldPreconditions {
 

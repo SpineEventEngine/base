@@ -41,8 +41,6 @@ import static java.util.Collections.emptyList;
  * <p>Secondly, it can generate single imports via the dedicated methods.
  *
  * <p>Currently all imports are generated in the CommonJS style.
- *
- * @author Dmytro Kuzmin
  */
 public final class JsImportGenerator extends JsCodeGenerator {
 

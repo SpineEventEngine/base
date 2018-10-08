@@ -43,8 +43,6 @@ import static java.util.stream.Collectors.toSet;
  *
  * <p>This class generates the map with all the known types written in the form of
  * "{@linkplain TypeUrl type-url}-to-JS-type", as well as the imports necessary to use the types.
- *
- * @author Dmytro Kuzmin
  */
 public final class KnownTypesGenerator extends JsCodeGenerator {
 

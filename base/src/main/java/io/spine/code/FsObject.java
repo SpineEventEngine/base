@@ -20,6 +20,7 @@
 
 package io.spine.code;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
 
@@ -43,6 +44,13 @@ public abstract class FsObject {
      */
     public Path getPath() {
         return path;
+    }
+
+    /**
+     * Checks if the object is actually present in the file system.
+     */
+    public boolean exists() {
+        return Files.exists(path);
     }
 
     @Override

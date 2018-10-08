@@ -26,8 +26,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * The common base for the {@link PrimitiveParser} implementations.
- *
- * @author Dmytro Kuzmin
  */
 abstract class AbstractPrimitiveParser implements PrimitiveParser {
 

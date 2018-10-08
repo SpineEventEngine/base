@@ -31,8 +31,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  * <p>The parser thus applies the {@code parseInt} operation to the given {@code string} to obtain
  * the proto value from it.
- *
- * @author Dmytro Kuzmin
  */
 final class LongParser extends AbstractPrimitiveParser {
 

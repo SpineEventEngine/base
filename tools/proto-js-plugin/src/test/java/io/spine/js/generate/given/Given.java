@@ -37,7 +37,7 @@ import static io.spine.js.generate.given.FieldContainerEntry.MESSAGE_FIELD;
 import static io.spine.js.generate.given.FieldContainerEntry.PRIMITIVE_FIELD;
 import static io.spine.js.generate.given.FieldContainerEntry.REPEATED_FIELD;
 import static io.spine.js.generate.given.FieldContainerEntry.TIMESTAMP_FIELD;
-import static io.spine.tools.gradle.TaskName.COMPILE_PROTO_TO_JS;
+import static io.spine.tools.gradle.TaskName.BUILD;
 import static java.util.Collections.singletonList;
 
 public final class Given {
@@ -108,6 +108,6 @@ public final class Given {
                 .setProjectFolder(projectDir)
                 .addProtoFiles(PROTO_FILES)
                 .build();
-        gradleProject.executeTask(COMPILE_PROTO_TO_JS);
+        gradleProject.executeTask(BUILD);
     }
 }

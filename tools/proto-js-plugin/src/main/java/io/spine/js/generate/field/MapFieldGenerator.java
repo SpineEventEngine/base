@@ -41,8 +41,6 @@ import static io.spine.js.generate.message.MessageGenerator.MESSAGE;
  *
  * <p>The {@link #precondition} and {@link #parser} from the superclass are used to process the
  * {@code map} value before adding it to the field.
- *
- * @author Dmytro Kuzmin
  */
 final class MapFieldGenerator extends FieldGenerator {
 

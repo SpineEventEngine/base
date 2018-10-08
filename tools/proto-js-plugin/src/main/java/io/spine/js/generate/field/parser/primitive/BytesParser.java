@@ -31,8 +31,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * <p>The JSON representation of the {@code bytes} value is the base-64 encoded {@code string}.
  *
  * <p>The parser thus imports the "base64" lib and decodes the value.
- *
- * @author Dmytro Kuzmin
  */
 final class BytesParser extends AbstractPrimitiveParser {
 

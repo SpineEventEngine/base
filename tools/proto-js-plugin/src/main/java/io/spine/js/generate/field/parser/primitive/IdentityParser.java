@@ -29,8 +29,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * represented in JSON in the same way as in the JS.
  *
  * <p>The {@code IdentityParser} "parses" them by just assigning the variable to the passed value.
- *
- * @author Dmytro Kuzmin
  */
 final class IdentityParser extends AbstractPrimitiveParser {
 

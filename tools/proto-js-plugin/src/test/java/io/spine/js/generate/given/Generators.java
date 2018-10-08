@@ -26,8 +26,6 @@ import static com.google.common.truth.Truth.assertThat;
 
 /**
  * A helper tool for working with generators output.
- *
- * @author Dmytro Kuzmin
  */
 public final class Generators {
 
