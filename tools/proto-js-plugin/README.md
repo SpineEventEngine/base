@@ -24,8 +24,8 @@ The plugin may then be applied where necessary:
 apply plugin: "io.spine.tools.proto-js-plugin"
 ```
 
-The `protoJs` extension can be used to configure when during the build lifecycle the plugin action
-will be executed. Example:
+The `protoJs` extension provides access to the main plugin action. It may then be used to configure 
+when the action will be executed relative to other tasks. Example:
 
 ```groovy
 protoJs {
