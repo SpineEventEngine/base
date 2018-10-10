@@ -40,10 +40,7 @@ import static com.google.common.collect.ImmutableMap.of;
 import static com.google.common.collect.Maps.newHashMap;
 
 /**
- * A set of proto types.
- *
- * @author Alexander Yevsyukov
- * @author Dmytro Dashenkov
+ * A set of Protobuf types.
  */
 @Internal
 @Immutable
@@ -157,7 +154,7 @@ public class TypeSet {
     /**
      * Creates a new set which is a union of this and the passed one.
      */
-    private TypeSet union(TypeSet another) {
+    public TypeSet union(TypeSet another) {
         if (another.isEmpty()) {
             return this;
         }
@@ -190,7 +187,6 @@ public class TypeSet {
         return types;
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -204,7 +200,6 @@ public class TypeSet {
                 Objects.equal(enumTypes, typeSet.enumTypes);
     }
 
-    /** {@inheritDoc} */
     @Override
     public int hashCode() {
         return Objects.hashCode(messageTypes, enumTypes);
