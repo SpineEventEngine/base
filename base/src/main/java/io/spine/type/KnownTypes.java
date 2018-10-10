@@ -28,6 +28,7 @@ import io.spine.annotation.Internal;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.Type;
 import io.spine.code.proto.TypeSet;
+import io.spine.security.InvocationGuard;
 
 import java.io.Serializable;
 import java.util.Optional;
@@ -57,7 +58,7 @@ public class KnownTypes implements Serializable {
      * Retrieves the singleton instance of {@code KnownTypes}.
      */
     public static KnownTypes instance() {
-        return KnownTypesHolder.instance();
+        return Holder.instance();
     }
 
     private KnownTypes() {
@@ -175,7 +176,7 @@ public class KnownTypes implements Serializable {
     /**
      * A holder of the {@link KnownTypes} instance.
      */
-    public static final class KnownTypesHolder {
+    public static final class Holder {
 
         /**
          * The lock to synchronize the write access to the {@code KnownTypes} instance.
@@ -187,7 +188,7 @@ public class KnownTypes implements Serializable {
         /**
          * Prevents the utility class instantiation.
          */
-        private KnownTypesHolder() {
+        private Holder() {
         }
 
         /**
@@ -202,9 +203,13 @@ public class KnownTypes implements Serializable {
          *
          * <p>This method should never be called in a client code. The sole purpose of extending
          * the known types is for running compile-time checks on the user types.
+         *
+         * @throws java.lang.SecurityException if called from the client code
          */
         @Internal
-        public static void extend(TypeSet moreKnownTypes) {
+        public static void extendWith(TypeSet moreKnownTypes) {
+            InvocationGuard.allowOnly("io.spine.typehack.MoreKnownTypes");
+
             lock.lock();
             try {
                 TypeSet newKnownTypes = instance.typeSet.union(moreKnownTypes);
