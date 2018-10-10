@@ -29,6 +29,9 @@ import java.io.File;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
+/**
+ * A utility for extending the system {@link KnownTypes}.
+ */
 public final class MoreKnownTypes {
 
     /**
@@ -37,6 +40,15 @@ public final class MoreKnownTypes {
     private MoreKnownTypes() {
     }
 
+    /**
+     * Reads a {@link com.google.protobuf.DescriptorProtos.FileDescriptorSet} from the given file
+     * and adds the described types to the known types.
+     *
+     * @param descriptorSetFile
+     *         the descriptor file to read
+     * @implNote This operation is potentially time consuming. Minimize calls to this method
+     *           if possible.
+     */
     public static void extendWith(File descriptorSetFile) {
         checkNotNull(descriptorSetFile);
         checkArgument(descriptorSetFile.exists());

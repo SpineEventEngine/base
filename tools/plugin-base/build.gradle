@@ -28,6 +28,7 @@ dependencies {
     testImplementation project(':testlib')
     testImplementation project(':plugin-testlib')
     testImplementation deps.test.mockito
+    testImplementation deps.test.junitPioneer
 }
 
 sourceSets {
