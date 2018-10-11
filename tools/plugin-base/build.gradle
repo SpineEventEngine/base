@@ -22,10 +22,13 @@ group = 'io.spine.tools'
 
 dependencies {
     api gradleApi()
+    
+    implementation project(':base')
 
     testImplementation project(':testlib')
     testImplementation project(':plugin-testlib')
     testImplementation deps.test.mockito
+    testImplementation deps.test.junitPioneer
 }
 
 sourceSets {

@@ -75,9 +75,9 @@ public abstract class SpinePlugin implements Plugin<Project> {
         log().debug(
                 "Adding the Gradle task {} to the lifecycle: after {}, before {}",
                 taskName.getValue(),
-                beforeTask.getValue(),
-                afterTask.getValue()
-        );
+                afterTask.getValue(),
+                beforeTask.getValue()
+                );
     }
 
     protected void logDependingTask(TaskName taskName, TaskName beforeTask) {

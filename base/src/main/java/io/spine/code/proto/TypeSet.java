@@ -38,12 +38,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableMap.copyOf;
 import static com.google.common.collect.ImmutableMap.of;
 import static com.google.common.collect.Maps.newHashMap;
+import static com.google.common.collect.Maps.newHashMapWithExpectedSize;
 
 /**
- * A set of proto types.
- *
- * @author Alexander Yevsyukov
- * @author Dmytro Dashenkov
+ * A set of Protobuf types.
  */
 @Internal
 @Immutable
@@ -157,25 +155,25 @@ public class TypeSet {
     /**
      * Creates a new set which is a union of this and the passed one.
      */
-    private TypeSet union(TypeSet another) {
+    public TypeSet union(TypeSet another) {
         if (another.isEmpty()) {
             return this;
         }
         if (this.isEmpty()) {
             return another;
         }
-        Map<TypeName, MessageType> messages = ImmutableMap
-                .<TypeName, MessageType>builder()
-                .putAll(this.messageTypes)
-                .putAll(another.messageTypes)
-                .build();
-        Map<TypeName, EnumType> enums = ImmutableMap
-                .<TypeName, EnumType>builder()
-                .putAll(this.enumTypes)
-                .putAll(another.enumTypes)
-                .build();
+        Map<TypeName, MessageType> messages = unite(this.messageTypes, another.messageTypes);
+        Map<TypeName, EnumType> enums = unite(this.enumTypes, another.enumTypes);
         TypeSet result = new TypeSet(messages, enums);
         return result;
+    }
+
+    private static <T extends Type<?, ?>> Map<TypeName, T> unite(Map<TypeName, T> left,
+                                                                 Map<TypeName, T> right) {
+        Map<TypeName, T> union = newHashMapWithExpectedSize(left.size() + right.size());
+        union.putAll(left);
+        union.putAll(right);
+        return union;
     }
 
     /**
@@ -190,7 +188,6 @@ public class TypeSet {
         return types;
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -204,7 +201,6 @@ public class TypeSet {
                 Objects.equal(enumTypes, typeSet.enumTypes);
     }
 
-    /** {@inheritDoc} */
     @Override
     public int hashCode() {
         return Objects.hashCode(messageTypes, enumTypes);

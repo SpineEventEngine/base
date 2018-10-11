@@ -19,17 +19,19 @@
  */
 
 /**
- * The versions of the libraries used.
+ * This package contains utilities for the Spine type system for the needs of the compile-time
+ * checkers and processors.
  *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
+ * <p>DO NOT use these classes, as well as any other classes of the {@code plugin-base} module in
+ * the production code.
  */
 
-final def SPINE_VERSION = '0.11.4-SNAPSHOT'
+@Internal
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.tools.type;
 
-ext {
-    spineVersion = SPINE_VERSION
-    spineBaseVersion = SPINE_VERSION // Used by `filter-internal-javadoc.gradle`.
+import com.google.errorprone.annotations.CheckReturnValue;
+import io.spine.annotation.Internal;
 
-    versionToPublish = SPINE_VERSION
-}
+import javax.annotation.ParametersAreNonnullByDefault;

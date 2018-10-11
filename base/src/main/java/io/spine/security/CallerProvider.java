@@ -18,18 +18,39 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.security;
+
 /**
- * The versions of the libraries used.
- *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
+ * Provides information about the class calling a method.
  */
+final class CallerProvider extends SecurityManager {
 
-final def SPINE_VERSION = '0.11.4-SNAPSHOT'
+    private static final CallerProvider INSTANCE = new CallerProvider();
 
-ext {
-    spineVersion = SPINE_VERSION
-    spineBaseVersion = SPINE_VERSION // Used by `filter-internal-javadoc.gradle`.
+    /**
+     * Obtains the instance.
+     */
+    static CallerProvider instance() {
+        return INSTANCE;
+    }
 
-    versionToPublish = SPINE_VERSION
+    /**
+     * Obtains the class of the object which calls the method from which this method
+     * is being called.
+     */
+    Class getCallerClass() {
+        Class[] context = getClassContext();
+        Class result = context[2];
+        return result;
+    }
+
+    /**
+     * Obtains the class preceding in call chain the class which calls the
+     * method from which this method is being called.
+     */
+    Class getPreviousCallerClass() {
+        Class[] context = getClassContext();
+        Class result = context[3];
+        return result;
+    }
 }

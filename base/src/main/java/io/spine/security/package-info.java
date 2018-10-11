@@ -19,17 +19,15 @@
  */
 
 /**
- * The versions of the libraries used.
- *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
+ * This package provides classes for controlling Java code execution security.
  */
 
-final def SPINE_VERSION = '0.11.4-SNAPSHOT'
+@Internal
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.security;
 
-ext {
-    spineVersion = SPINE_VERSION
-    spineBaseVersion = SPINE_VERSION // Used by `filter-internal-javadoc.gradle`.
+import com.google.errorprone.annotations.CheckReturnValue;
+import io.spine.annotation.Internal;
 
-    versionToPublish = SPINE_VERSION
-}
+import javax.annotation.ParametersAreNonnullByDefault;
