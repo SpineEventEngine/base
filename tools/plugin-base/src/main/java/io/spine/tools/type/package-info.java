@@ -19,8 +19,8 @@
  */
 
 /**
- * This package contains classes used to hack the Spine type system for the needs of
- * the compile-time checkers and processors.
+ * This package contains utilities for the Spine type system for the needs of the compile-time
+ * checkers and processors.
  *
  * <p>DO NOT use these classes, as well as any other classes of the {@code plugin-base} module in
  * the production code.
