@@ -46,9 +46,6 @@ class ExcludeInternalPrinciple implements ExcludePrinciple {
         exclusions = getExclusions(root);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean shouldExclude(ProgramElementDoc doc) {
         return inExclusions(doc) || internalAnalyst.hasAnnotation(doc);
