@@ -21,49 +21,42 @@
 package io.spine.value;
 
 import com.google.common.testing.EqualsTester;
-import com.google.common.testing.NullPointerTester;
-import com.google.common.testing.SerializableTester;
-import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import java.util.Objects;
+import static com.google.common.testing.SerializableTester.reserializeAndAssert;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import static org.junit.Assert.assertEquals;
-
-@SuppressWarnings("SerializableInnerClassWithNonSerializableOuterClass")
-public class ClassTypeValueShould {
+@DisplayName("ClassTypeValue should")
+class ClassTypeValueTest {
 
     private final Class<?> cls = getClass();
     private final ClassTypeValue<?> classTypeValue =  new AClassValue(cls);
 
     @Test
-    public void return_enclosed_value() {
+    @DisplayName("return enclosed value")
+    void enclosedValue() {
         assertEquals(cls, classTypeValue.value());
     }
 
     @Test
-    public void have_string_form_with_the_name_of_the_enclosed_class() {
+    @DisplayName("give enclosed class name in toString()")
+    void classNameInString() {
         assertEquals(cls.getName(), classTypeValue.toString());
     }
 
     @Test
-    public void return_hash_code() {
-        assertEquals(Objects.hash(cls), classTypeValue.hashCode());
-    }
-
-    @Test
-    public void pass_null_tolerance_check() {
-        new NullPointerTester().testAllPublicInstanceMethods(classTypeValue);
-    }
-
-    @Test
-    public void override_equals() {
+    @DisplayName("be equal to another with the same class value")
+    void equality() {
         new EqualsTester().addEqualityGroup(new AClassValue(cls), new AClassValue(cls))
+                          .addEqualityGroup(new AClassValue(Boolean.class))
                           .testEquals();
     }
-
+    
     @Test
-    public void serialize() {
-        SerializableTester.reserializeAndAssert(new AClassValue(Void.class));
+    @DisplayName("be serializable")
+    void serialize() {
+        reserializeAndAssert(new AClassValue(Void.class));
     }
 
     private static class AClassValue extends ClassTypeValue<Object> {

@@ -51,9 +51,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Tests {@link io.spine.type.KnownTypes}.
- *
- * @author Alexander Litus
- * @author Alexander Yevsyukov
  */
 @DisplayName("KnownTypes should")
 class KnownTypesTest {
