@@ -27,9 +27,8 @@ import io.spine.type.ClassName;
  * Abstract base for classes holding a value of a {@link Class}.
  *
  * @param <T> the type of the class
- * @implNote The name of this class has the 'Type' infix in the name to prevent the name clash with
- * {@link java.lang.ClassValue ClassValue}.
- * @author Alexander Yevsyukov
+ * @apiNote The name of this class has the 'Type' infix to prevent the clash with
+ *          {@link java.lang.ClassValue ClassValue}.
  */
 @Immutable
 public abstract class ClassTypeValue<T> extends ValueHolder<Class<? extends T>> {

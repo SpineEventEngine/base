@@ -31,7 +31,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * An abstract base for objects that hold {@code Serializable} values.
  *
  * @param <T> a type of value enclosed in the holder
- * @author Alexander Yevsyukov
  */
 public abstract class ValueHolder<T extends Serializable> implements Serializable {
 
