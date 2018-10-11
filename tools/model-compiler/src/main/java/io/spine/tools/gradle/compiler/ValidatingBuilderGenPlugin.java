@@ -123,7 +123,7 @@ public class ValidatingBuilderGenPlugin extends SpinePlugin {
                         .insertBeforeTask(COMPILE_TEST_JAVA)
                         .applyNowTo(project);
         log.debug("Validating builders generation phase initialized with tasks: {}, {}.",
-                    generateValidator, generateTestValidator);
+                  generateValidator, generateTestValidator);
     }
 
     private Action<Task> createAction(Project project,
