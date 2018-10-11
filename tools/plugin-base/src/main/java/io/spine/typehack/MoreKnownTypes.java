@@ -31,6 +31,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * A utility for extending the system {@link KnownTypes}.
+ *
+ * <p>When performing build-time model processing, it may be necessary to add all the processed
+ * types to the set of known types. This utility provides the only way to add new types to
+ * the system.
  */
 public final class MoreKnownTypes {
 
