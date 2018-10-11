@@ -20,6 +20,7 @@
 
 package io.spine.type;
 
+import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
@@ -35,9 +36,8 @@ import static com.google.common.collect.Lists.newLinkedList;
 
 /**
  * A value object holding a fully-qualified Java class name.
- *
- * @author Mikhail Mikhaylov
  */
+@Immutable
 public final class ClassName extends StringTypeValue {
 
     private static final long serialVersionUID = 0L;

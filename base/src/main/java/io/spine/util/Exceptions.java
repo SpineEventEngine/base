@@ -31,8 +31,6 @@ import static java.lang.String.format;
 /**
  * Utility class for working with exceptions for cases that are not
  * covered by {@link com.google.common.base.Throwables Throwables} class from Guava.
- *
- * @author Alexander Yevsyukov
  */
 public final class Exceptions {
 
