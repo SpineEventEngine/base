@@ -21,7 +21,6 @@
 package io.spine.value;
 
 import com.google.errorprone.annotations.Immutable;
-import io.spine.type.ClassName;
 
 /**
  * Abstract base for classes holding a value of a {@link Class}.
@@ -45,14 +44,6 @@ public abstract class ClassTypeValue<T> extends ValueHolder<Class<? extends T>> 
     @Override
     public Class<? extends T> value() {
         return super.value();
-    }
-
-    /**
-     * Returns the name of the enclosed Java class.
-     */
-    public ClassName getName() {
-        ClassName result = ClassName.of(value());
-        return result;
     }
 
     /**
