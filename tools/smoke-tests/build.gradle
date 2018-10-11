@@ -25,11 +25,11 @@ buildscript {
     apply from: "$rootDir/../../config/gradle/dependencies.gradle"
 
     repositories {
+        maven { url = repos.gradlePlugins }
         jcenter()
         google()
         mavenCentral()
         mavenLocal()
-        maven { url = repos.gradlePlugins }
 
         maven { url = repos.oldSpine }
         maven { url = repos.oldSpineSnapshots }
