@@ -36,8 +36,6 @@ import static com.google.common.base.Preconditions.checkState;
 
 /**
  * A fully-qualified Protobuf type name.
- *
- * @author Alexander Yevsyukov
  */
 @Immutable
 public final class TypeName extends StringTypeValue {
