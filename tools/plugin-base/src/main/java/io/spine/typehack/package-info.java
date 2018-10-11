@@ -26,10 +26,12 @@
  * the production code.
  */
 
+@Internal
 @CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.typehack;
 
 import com.google.errorprone.annotations.CheckReturnValue;
+import io.spine.annotation.Internal;
 
 import javax.annotation.ParametersAreNonnullByDefault;
