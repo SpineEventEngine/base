@@ -38,6 +38,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableMap.copyOf;
 import static com.google.common.collect.ImmutableMap.of;
 import static com.google.common.collect.Maps.newHashMap;
+import static com.google.common.collect.Maps.newHashMapWithExpectedSize;
 
 /**
  * A set of Protobuf types.
@@ -161,18 +162,18 @@ public class TypeSet {
         if (this.isEmpty()) {
             return another;
         }
-        Map<TypeName, MessageType> messages = ImmutableMap
-                .<TypeName, MessageType>builder()
-                .putAll(this.messageTypes)
-                .putAll(another.messageTypes)
-                .build();
-        Map<TypeName, EnumType> enums = ImmutableMap
-                .<TypeName, EnumType>builder()
-                .putAll(this.enumTypes)
-                .putAll(another.enumTypes)
-                .build();
+        Map<TypeName, MessageType> messages = unite(this.messageTypes, another.messageTypes);
+        Map<TypeName, EnumType> enums = unite(this.enumTypes, another.enumTypes);
         TypeSet result = new TypeSet(messages, enums);
         return result;
+    }
+
+    private static <T extends Type<?, ?>> Map<TypeName, T> unite(Map<TypeName, T> left,
+                                                                 Map<TypeName, T> right) {
+        Map<TypeName, T> union = newHashMapWithExpectedSize(left.size() + right.size());
+        union.putAll(left);
+        union.putAll(right);
+        return union;
     }
 
     /**
