@@ -223,7 +223,7 @@ public class KnownTypes implements Serializable {
          */
         @Internal
         public static void extendWith(TypeSet moreKnownTypes) {
-            InvocationGuard.allowOnly("io.spine.typehack.MoreKnownTypes");
+            InvocationGuard.allowOnly("io.spine.tools.type.MoreKnownTypes");
 
             lock.lock();
             try {
