@@ -25,16 +25,15 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import io.spine.base.ThrowableMessage;
+import io.spine.code.proto.RejectionDeclaration;
 import io.spine.logging.Logging;
 import io.spine.tools.compiler.fieldtype.FieldType;
 import io.spine.tools.compiler.fieldtype.FieldTypeFactory;
-import io.spine.code.proto.FieldName;
-import io.spine.code.proto.RejectionDeclaration;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -65,13 +64,17 @@ public class RejectionWriter implements Logging {
 
     private final FieldTypeFactory fieldTypeFactory;
     private final RejectionJavadoc javadoc;
+    private final RejectionBuilder builder;
 
     /**
      * Creates a new instance.
      *
-     * @param metadata        a rejection metadata
-     * @param outputDirectory a directory to write a Rejection
-     * @param messageTypeMap  pre-scanned map with proto types and their appropriate Java classes
+     * @param metadata
+     *         a rejection metadata
+     * @param outputDirectory
+     *         a directory to write a Rejection
+     * @param messageTypeMap
+     *         pre-scanned map with proto types and their appropriate Java classes
      */
     public RejectionWriter(RejectionDeclaration metadata,
                            File outputDirectory,
@@ -80,6 +83,7 @@ public class RejectionWriter implements Logging {
         this.outputDirectory = outputDirectory;
         this.fieldTypeFactory = new FieldTypeFactory(metadata.getMessage(), messageTypeMap);
         this.javadoc = new RejectionJavadoc(metadata);
+        this.builder = new RejectionBuilder(metadata, fieldDeclarations());
     }
 
     /**
@@ -103,6 +107,8 @@ public class RejectionWriter implements Logging {
                             .addField(serialVersionUID())
                             .addMethod(constructor())
                             .addMethod(getMessageThrown())
+                            .addMethod(builder.newBuilder())
+                            .addType(builder.typeDeclaration())
                             .build();
             JavaFile javaFile =
                     JavaFile.builder(declaration.getJavaPackage()
@@ -121,41 +127,13 @@ public class RejectionWriter implements Logging {
     private MethodSpec constructor() {
         log().debug("Creating the constructor for the type '{}'",
                     declaration.getSimpleJavaClassName());
-        MethodSpec.Builder builder = constructorBuilder()
+        ParameterSpec builderParameter = builder.asParameter();
+        return constructorBuilder()
                 .addJavadoc(javadoc.forConstructor())
-                .addModifiers(PUBLIC);
-        for (Map.Entry<String, FieldType> field : fieldDeclarations().entrySet()) {
-            TypeName parameterType = field.getValue()
-                                          .getTypeName();
-            String parameterName = FieldName.of(field.getKey())
-                                            .javaCase();
-            builder.addParameter(parameterType, parameterName);
-        }
-
-        return builder.addStatement(superStatement())
-                      .build();
-    }
-
-    private String superStatement() {
-        StringBuilder superStatement = new StringBuilder("super(");
-        superStatement.append(declaration.getOuterJavaClass())
-                      .append('.')
-                      .append(declaration.getSimpleJavaClassName())
-                      .append(".newBuilder()");
-
-        for (Map.Entry<String, FieldType> field : fieldDeclarations().entrySet()) {
-            FieldName fieldName = FieldName.of(field.getKey());
-            superStatement.append('.')
-                          .append(field.getValue()
-                                       .getSetterPrefix())
-                          .append(fieldName.toCamelCase())
-                          .append('(')
-                          .append(fieldName.javaCase())
-                          .append(')');
-        }
-        superStatement.append(".build())");
-
-        return superStatement.toString();
+                .addModifiers(PRIVATE)
+                .addParameter(builderParameter)
+                .addStatement("super($N.build())", builderParameter)
+                .build();
     }
 
     private MethodSpec getMessageThrown() {
