@@ -32,16 +32,32 @@ option (experimental_all) = true;
 
 import "google/protobuf/descriptor.proto";
 
-// The amount of money.
-message Money {
-    // The amount of minor currency units (for currencies whose minor units are used, e.g. "cents")
-    // or the amount of major currency units (for currencies whose minor currency units are unused
-    // due to negligible value or do not exist at all).
-    // See ISO 4217 "exponent" definition for details.
-    sint64 amount = 1;
+//
+// The `Money` type below is modeled after one defined in Google APIs.
+// For the original code see:
+//   https://raw.githubusercontent.com/googleapis/googleapis/master/google/type/money.proto)
+// But in our type we use enumeration instead of a string currency code to provide more information
+// about currencies for UI-related code.
+//
 
+// An amount of money in its currency type.
+message Money {
     // The currency of the amount of money.
-    Currency currency = 2 [(required) = true];
+    Currency currency = 1 [(required) = true];
+
+    // The whole units of the amount.
+    //
+    // For example, if `currency` is `EUR`, then 1 unit is one euro.
+    int64 units = 2;
+
+    // Number of nano (10^-9) units of the amount.
+    //
+    // The value must be between -999,999,999 and +999,999,999 inclusive.
+    // If `units` is positive, `nanos` must be positive or zero.
+    // If `units` is zero, `nanos` can be positive, zero, or negative.
+    // If `units` is negative, `nanos` must be negative or zero.
+    // For example $-1.75 is represented as `units`=-1 and `nanos`=-750,000,000.
+    int32 nanos = 3;
 }
 
 // The ISO 4217 currency attributes (unless specifically noted).
