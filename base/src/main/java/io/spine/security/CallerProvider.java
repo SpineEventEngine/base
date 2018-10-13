@@ -18,21 +18,39 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-group = 'io.spine.tools'
+package io.spine.security;
 
-dependencies {
-    api gradleApi()
-    
-    implementation project(':base')
+/**
+ * Provides information about the class calling a method.
+ */
+final class CallerProvider extends SecurityManager {
 
-    testImplementation project(':testlib')
-    testImplementation project(':plugin-testlib')
-    testImplementation deps.test.mockito
-    testImplementation deps.test.junitPioneer
-}
+    private static final CallerProvider INSTANCE = new CallerProvider();
 
-sourceSets {
-    test {
-        resources.srcDirs += "$sourcesRootDir/test/resources"
+    /**
+     * Obtains the instance.
+     */
+    static CallerProvider instance() {
+        return INSTANCE;
+    }
+
+    /**
+     * Obtains the class of the object which calls the method from which this method
+     * is being called.
+     */
+    Class getCallerClass() {
+        Class[] context = getClassContext();
+        Class result = context[2];
+        return result;
+    }
+
+    /**
+     * Obtains the class preceding in call chain the class which calls the
+     * method from which this method is being called.
+     */
+    Class getPreviousCallerClass() {
+        Class[] context = getClassContext();
+        Class result = context[3];
+        return result;
     }
 }

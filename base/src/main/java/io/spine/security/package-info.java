@@ -18,21 +18,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-group = 'io.spine.tools'
+/**
+ * This package provides classes for controlling Java code execution security.
+ */
 
-dependencies {
-    api gradleApi()
-    
-    implementation project(':base')
+@Internal
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.security;
 
-    testImplementation project(':testlib')
-    testImplementation project(':plugin-testlib')
-    testImplementation deps.test.mockito
-    testImplementation deps.test.junitPioneer
-}
+import com.google.errorprone.annotations.CheckReturnValue;
+import io.spine.annotation.Internal;
 
-sourceSets {
-    test {
-        resources.srcDirs += "$sourcesRootDir/test/resources"
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;

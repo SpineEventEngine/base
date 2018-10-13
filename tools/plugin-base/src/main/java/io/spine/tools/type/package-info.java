@@ -18,21 +18,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-group = 'io.spine.tools'
+/**
+ * This package contains utilities for the Spine type system for the needs of the compile-time
+ * checkers and processors.
+ *
+ * <p>DO NOT use these classes, as well as any other classes of the {@code plugin-base} module in
+ * the production code.
+ */
 
-dependencies {
-    api gradleApi()
-    
-    implementation project(':base')
+@Internal
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.tools.type;
 
-    testImplementation project(':testlib')
-    testImplementation project(':plugin-testlib')
-    testImplementation deps.test.mockito
-    testImplementation deps.test.junitPioneer
-}
+import com.google.errorprone.annotations.CheckReturnValue;
 
-sourceSets {
-    test {
-        resources.srcDirs += "$sourcesRootDir/test/resources"
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;
