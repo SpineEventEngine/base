@@ -45,8 +45,8 @@ public final class MoreKnownTypes {
     }
 
     /**
-     * Reads a {@link com.google.protobuf.DescriptorProtos.FileDescriptorSet} from the given file
-     * and adds the described types to the known types.
+     * Reads a {@link com.google.protobuf.DescriptorProtos.FileDescriptorSet FileDescriptorSet}
+     * from the given file and adds the described types to the known types.
      *
      * @param descriptorSetFile
      *         the descriptor file to read

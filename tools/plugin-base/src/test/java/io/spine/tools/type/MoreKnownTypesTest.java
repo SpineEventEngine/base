@@ -44,7 +44,9 @@ import java.nio.file.Path;
 import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type.TYPE_STRING;
 import static io.spine.testing.TestValues.randomString;
 import static java.nio.file.Files.newOutputStream;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(TempDirectory.class)
 @DisplayName("MoreKnownTypes should")
