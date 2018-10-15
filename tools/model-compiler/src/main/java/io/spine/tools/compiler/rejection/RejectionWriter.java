@@ -132,7 +132,7 @@ public class RejectionWriter implements Logging {
                 .addJavadoc(javadoc.forConstructor())
                 .addModifiers(PRIVATE)
                 .addParameter(builderParameter)
-                .addStatement("super($N.build())", builderParameter)
+                .addStatement("super($L)", builder.buildRejectionMessage().toString())
                 .build();
     }
 
