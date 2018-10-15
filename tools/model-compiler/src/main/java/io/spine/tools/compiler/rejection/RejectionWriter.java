@@ -77,7 +77,7 @@ public class RejectionWriter implements Logging {
         this.declaration = metadata;
         this.outputDirectory = outputDirectory;
         this.fieldTypeFactory = new FieldTypeFactory(metadata.getMessage(), messageTypeMap);
-        this.javadoc = new RejectionJavadoc(metadata);
+        this.javadoc = new RejectionJavadoc(metadata, new RejectionDocumentation(metadata));
         this.builder = new RejectionBuilder(new GeneratedRejectionDeclaration(metadata),
                                             fieldDeclarations());
     }
