@@ -126,7 +126,7 @@ public class RejectionWriter implements Logging {
         ParameterSpec builderParameter = builder.asParameter();
         CodeBlock buildRejectionMessage = builder.buildRejectionMessage();
         return constructorBuilder()
-                .addJavadoc(javadoc.forConstructor())
+                .addJavadoc(javadoc.forConstructor(builderParameter))
                 .addModifiers(PRIVATE)
                 .addParameter(builderParameter)
                 .addStatement("super($L)", buildRejectionMessage.toString())

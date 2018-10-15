@@ -20,20 +20,12 @@
 
 package io.spine.tools.compiler.rejection;
 
-import com.google.common.base.Strings;
-import com.google.common.collect.Ordering;
-import com.google.common.primitives.Ints;
-import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
+import com.squareup.javapoet.CodeBlock;
+import com.squareup.javapoet.ParameterSpec;
 import io.spine.code.javadoc.JavadocEscaper;
-import io.spine.code.proto.FieldName;
 import io.spine.code.proto.RejectionDeclaration;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Optional;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Generates Javadoc for a rejection.
@@ -100,58 +92,17 @@ class RejectionJavadoc {
     /**
      * Generates a Javadoc content for the rejection constructor.
      *
+     * @param builderParameter
+     *         the name of a rejection builder parameter
      * @return the constructor Javadoc content
      */
-    String forConstructor() {
-        StringBuilder builder = new StringBuilder("Creates a new instance.");
-        Map<FieldDescriptorProto, String> commentedFields = documentation.commentedFields();
-
-        if (!commentedFields.isEmpty()) {
-            int maxFieldLength = getMaxFieldNameLength(commentedFields.keySet());
-
-            builder.append(LINE_SEPARATOR)
-                   .append(LINE_SEPARATOR);
-            for (Entry<FieldDescriptorProto, String> commentedField : commentedFields.entrySet()) {
-                String fieldName = FieldName.of(commentedField.getKey()
-                                                              .getName())
-                                            .javaCase();
-                int commentOffset = maxFieldLength - fieldName.length() + 1;
-                builder.append("@param ")
-                       .append(fieldName)
-                       .append(Strings.repeat(" ", commentOffset))
-                       .append(JavadocEscaper.escape(commentedField.getValue()));
-            }
-        }
-
-        return builder.toString();
-    }
-
-    /**
-     * Returns a max field name length among the non-empty
-     * {@linkplain FieldDescriptorProto field} collection.
-     *
-     * @param fields
-     *         the non-empty fields collection
-     * @return the max name length
-     */
-    private static int getMaxFieldNameLength(Iterable<FieldDescriptorProto> fields) {
-        Ordering<FieldDescriptorProto> ordering = new Ordering<FieldDescriptorProto>() {
-            @Override
-            public int compare(@Nullable FieldDescriptorProto left,
-                               @Nullable FieldDescriptorProto right) {
-                checkNotNull(left);
-                checkNotNull(right);
-
-                int result = Ints.compare(left.getName()
-                                              .length(),
-                                          right.getName()
-                                               .length());
-                return result;
-            }
-        };
-
-        FieldDescriptorProto longestNameField = ordering.max(fields);
-        return longestNameField.getName()
-                               .length();
+    CodeBlock forConstructor(ParameterSpec builderParameter) {
+        return CodeBlock.builder()
+                        .add("Creates a new instance.")
+                        .add(LINE_SEPARATOR)
+                        .add(LINE_SEPARATOR)
+                        .add("@param $L the builder for the rejection", builderParameter)
+                        .add(LINE_SEPARATOR)
+                        .build();
     }
 }
