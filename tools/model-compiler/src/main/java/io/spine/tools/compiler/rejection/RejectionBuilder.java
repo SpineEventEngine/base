@@ -26,10 +26,8 @@ import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeSpec;
-import io.spine.code.java.PackageName;
 import io.spine.code.java.SimpleClassName;
 import io.spine.code.proto.FieldName;
-import io.spine.code.proto.RejectionDeclaration;
 import io.spine.protobuf.Messages;
 import io.spine.tools.compiler.field.type.FieldType;
 import io.spine.validate.Validate;
@@ -55,14 +53,14 @@ class RejectionBuilder {
     private static final NoArgMethod newBuilder = new NoArgMethod(Messages.METHOD_NEW_BUILDER);
     private static final String BUILDER_FIELD = "builder";
 
-    private final RejectionDeclaration rejection;
+    private final GeneratedRejectionDeclaration rejection;
     private final SimpleClassName name;
     //TODO:2018-10-12:dmytro.grankin: Get rid of the field?
     // Introduce `FieldDeclaration`, which composes the field name and the field type
     // and generates the setter name
     private final Map<String, FieldType> rejectionFields;
 
-    RejectionBuilder(RejectionDeclaration rejection,
+    RejectionBuilder(GeneratedRejectionDeclaration rejection,
                      Map<String, FieldType> fields) {
         this.rejection = rejection;
         rejectionFields = fields;
@@ -136,14 +134,13 @@ class RejectionBuilder {
     }
 
     private MethodSpec rejectionMessage() {
-        ClassName validateName = ClassName.get(Validate.class);
         return MethodSpec
                 .methodBuilder("rejectionMessage")
                 .addModifiers(PRIVATE)
                 .addJavadoc("Obtains the rejection and validates it.")
                 .returns(protoRejection())
-                .addStatement("$L message = $L.build()", protoRejection(), BUILDER_FIELD)
-                .addStatement("$L.checkValid(message)", validateName)
+                .addStatement("$T message = $L.build()", protoRejection(), BUILDER_FIELD)
+                .addStatement("$T.checkValid(message)", Validate.class)
                 .addStatement("return message")
                 .build();
     }
@@ -154,22 +151,21 @@ class RejectionBuilder {
                 .methodBuilder("build")
                 .addModifiers(PUBLIC)
                 .addJavadoc("Creates the rejection from the builder and validates it.")
-                .returns(generatedRejection())
-                .addStatement("return new $L(this)", generatedRejection())
+                .returns(throwableRejection())
+                .addStatement("return new $T(this)", throwableRejection())
                 .build();
     }
 
     private String classJavadoc() {
-        return "The builder for the " + rejection.getSimpleTypeName() + " rejection.";
+        return "The builder for the " + rejection.simpleTypeName() + " rejection.";
     }
 
     private FieldSpec initializedProtoBuilder() {
-        ClassName protoRejection = protoRejection();
-        ClassName protoBuilderClass = protoRejection.nestedClass(SimpleClassName.ofBuilder()
-                                                                                .value());
+        ClassName protoBuilderClass = protoRejection().nestedClass(SimpleClassName.ofBuilder()
+                                                                                  .value());
         return FieldSpec
                 .builder(protoBuilderClass, BUILDER_FIELD, PRIVATE, FINAL)
-                .initializer("$L.newBuilder()", protoRejection.topLevelClassName())
+                .initializer("$T.newBuilder()", protoRejection())
                 .build();
     }
 
@@ -203,30 +199,14 @@ class RejectionBuilder {
      * @return class name for the builder
      */
     private ClassName thisType() {
-        return generatedRejection().nestedClass(name.value());
+        return throwableRejection().nestedClass(name.value());
     }
 
-    /**
-     * Obtains the class name of the {@link io.spine.base.RejectionMessage} for the builder.
-     *
-     * @return the class name of the Protobuf rejection message
-     */
     private ClassName protoRejection() {
-        return ClassName.get(rejection.getOuterJavaClass()
-                                      .value(),
-                             rejection.getSimpleJavaClassName()
-                                      .value());
+        return rejection.rejectionMessage();
     }
 
-    /**
-     * Obtains the class name of the {@linkplain io.spine.base.ThrowableMessage rejection},
-     * that will be generated.
-     *
-     * @return the rejection class name
-     */
-    private ClassName generatedRejection() {
-        PackageName javaPackage = rejection.getJavaPackage();
-        return ClassName.get(javaPackage.value(),
-                             rejection.getSimpleTypeName());
+    private ClassName throwableRejection() {
+        return rejection.throwableRejection();
     }
 }

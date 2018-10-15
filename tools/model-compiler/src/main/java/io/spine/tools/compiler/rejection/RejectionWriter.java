@@ -27,7 +27,6 @@ import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
-import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import io.spine.base.ThrowableMessage;
 import io.spine.code.proto.RejectionDeclaration;
@@ -79,7 +78,8 @@ public class RejectionWriter implements Logging {
         this.outputDirectory = outputDirectory;
         this.fieldTypeFactory = new FieldTypeFactory(metadata.getMessage(), messageTypeMap);
         this.javadoc = new RejectionJavadoc(metadata);
-        this.builder = new RejectionBuilder(metadata, fieldDeclarations());
+        this.builder = new RejectionBuilder(new GeneratedRejectionDeclaration(metadata),
+                                            fieldDeclarations());
     }
 
     /**
@@ -137,18 +137,12 @@ public class RejectionWriter implements Logging {
         String methodSignature = getMessageThrown.signature();
         log().debug("Constructing method {}", methodSignature);
 
-        TypeName returnType =
-                ClassName.get(declaration.getJavaPackage()
-                                         .value(),
-                              declaration.getOuterJavaClass()
-                                         .value())
-                         .nestedClass(declaration.getSimpleJavaClassName()
-                                                 .value());
+        ClassName returnType = new GeneratedRejectionDeclaration(declaration).rejectionMessage();
         return MethodSpec.methodBuilder(getMessageThrown.name())
                          .addAnnotation(Override.class)
                          .addModifiers(PUBLIC)
                          .returns(returnType)
-                         .addStatement("return (" + returnType + ") super." + methodSignature)
+                         .addStatement("return ($T) super.$L", returnType, methodSignature)
                          .build();
     }
 
