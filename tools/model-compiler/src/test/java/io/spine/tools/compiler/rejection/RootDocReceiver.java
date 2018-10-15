@@ -25,14 +25,14 @@ import com.sun.tools.doclets.standard.Standard;
 import com.sun.tools.javadoc.Main;
 import org.junit.rules.TemporaryFolder;
 
+import java.util.Collection;
+
 /**
  * {@link RootDoc} receiver for the tests purposes.
  *
  * <p>To receive {@link RootDoc}, necessary extend {@link Standard} doclet
  * and define static method with the following signature:
  * <pre>{@code public static boolean start(RootDoc}</pre>
- *
- * @author Dmytro Grankin
  */
 @SuppressWarnings("ExtendsUtilityClass")
 public class RootDocReceiver extends Standard {
@@ -51,16 +51,21 @@ public class RootDocReceiver extends Standard {
      * calls {@link Main#execute(String, String, String...)}.
      * Such a call chain guarantees a proper {@link #rootDoc} initialization.
      *
-     * @param projectDir     the project directory, that contains the source
-     * @param sourceLocation the source relative location
+     * @param projectDir
+     *         the project directory, that contains the source
+     * @param sourceLocations
+     *         the relative locations to source files
      * @return the root document
      */
     @SuppressWarnings("StaticVariableUsedBeforeInitialization")
-    public static RootDoc getRootDoc(TemporaryFolder projectDir, String sourceLocation) {
-        main(new String[]{
-                projectDir.getRoot()
-                          .getAbsolutePath() + sourceLocation
-        });
+    public static RootDoc getRootDoc(TemporaryFolder projectDir,
+                                     Collection<String> sourceLocations) {
+        String projectAbsolutePath = projectDir.getRoot()
+                                               .getAbsolutePath();
+        String[] javadocSources = sourceLocations.stream()
+                                                 .map(source -> projectAbsolutePath + source)
+                                                 .toArray(String[]::new);
+        main(javadocSources);
         return rootDoc;
     }
 
@@ -76,7 +81,8 @@ public class RootDocReceiver extends Standard {
      *
      * <p>Called by {@link Main#execute(String, String, String...)}
      *
-     * @param root the {@link RootDoc} formed by {@link Main#execute(String, String, String...)}
+     * @param root
+     *         the {@link RootDoc} formed by {@link Main#execute(String, String, String...)}
      * @return {@code true} anyway
      */
     @SuppressWarnings("unused")

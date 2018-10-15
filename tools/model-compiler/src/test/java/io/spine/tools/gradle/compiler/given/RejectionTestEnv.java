@@ -60,13 +60,23 @@ public class RejectionTestEnv {
                             .build();
     }
 
-    public static String rejectionsJavadocSourceName() {
+    public static String rejectionsJavadocThrowableSource() {
         Path fileName = DefaultJavaProject.at(Paths.get("/"))
                                           .generated()
                                           .mainSpine()
                                           .resolve(JAVA_PACKAGE.toDirectory())
                                           .resolve(REJECTION_FILE_NAME.value());
         return fileName.toString();
+    }
+
+    public static String rejectionsJavadocProtoSource() {
+        FileName fileName = FileName.forType("JavadocRejections");
+        Path filePath = DefaultJavaProject.at(Paths.get("/"))
+                                          .generated()
+                                          .mainJava()
+                                          .resolve(JAVA_PACKAGE.toDirectory())
+                                          .resolve(fileName.value());
+        return filePath.toString();
     }
 
     private static Iterable<String> rejectionWithJavadoc() {

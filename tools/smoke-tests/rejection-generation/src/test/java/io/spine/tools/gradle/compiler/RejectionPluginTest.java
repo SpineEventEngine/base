@@ -45,7 +45,7 @@ class RejectionPluginTest {
     }
 
     @Test
-    @DisplayName("throw ValidationException if rejection message is not valid")
+    @DisplayName("throw ValidationException if a rejection message is not valid")
     void validate() {
         assertThrows(ValidationException.class, () -> CannotUpdateUsername.newBuilder()
                                                                           .build());

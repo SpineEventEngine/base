@@ -36,7 +36,8 @@ import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
 import static io.spine.tools.gradle.compiler.given.RejectionTestEnv.getExpectedClassComment;
 import static io.spine.tools.gradle.compiler.given.RejectionTestEnv.getExpectedCtorComment;
 import static io.spine.tools.gradle.compiler.given.RejectionTestEnv.newProjectWithRejectionsJavadoc;
-import static io.spine.tools.gradle.compiler.given.RejectionTestEnv.rejectionsJavadocSourceName;
+import static io.spine.tools.gradle.compiler.given.RejectionTestEnv.rejectionsJavadocProtoSource;
+import static io.spine.tools.gradle.compiler.given.RejectionTestEnv.rejectionsJavadocThrowableSource;
 import static org.junit.Assert.assertEquals;
 
 public class RejectionGenPluginShould {
@@ -60,12 +61,12 @@ public class RejectionGenPluginShould {
 
     @Test
     public void generate_rejection_javadoc() {
-
         GradleProject project = newProjectWithRejectionsJavadoc(testProjectDir);
         project.executeTask(COMPILE_JAVA);
 
-        RootDoc root = RootDocReceiver.getRootDoc(testProjectDir,
-                                                  rejectionsJavadocSourceName());
+        Collection<String> sources = Arrays.asList(rejectionsJavadocThrowableSource(),
+                                                   rejectionsJavadocProtoSource());
+        RootDoc root = RootDocReceiver.getRootDoc(testProjectDir, sources);
         ClassDoc rejectionDoc = root.classes()[0];
         ConstructorDoc rejectionCtorDoc = rejectionDoc.constructors()[0];
 
