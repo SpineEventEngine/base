@@ -55,9 +55,6 @@ class RejectionBuilder {
 
     private final GeneratedRejectionDeclaration rejection;
     private final SimpleClassName name;
-    //TODO:2018-10-12:dmytro.grankin: Get rid of the field?
-    // Introduce `FieldDeclaration`, which composes the field name and the field type
-    // and generates the setter name
     private final List<FieldDeclaration> rejectionFields;
 
     RejectionBuilder(GeneratedRejectionDeclaration rejection,
@@ -187,6 +184,8 @@ class RejectionBuilder {
                 .addModifiers(PUBLIC)
                 .returns(thisType())
                 //TODO:2018-10-12:dmytro.grankin: Javadoc
+                .addJavadoc(field.leadingComments()
+                                 .orElse(""))
                 .addParameter(field.typeName(), parameterName)
                 .addStatement("$L.$L($L)", BUILDER_FIELD, methodName, parameterName)
                 .addStatement("return this")

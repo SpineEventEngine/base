@@ -28,6 +28,7 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeSpec;
 import io.spine.base.ThrowableMessage;
+import io.spine.code.proto.MessageDocumentation;
 import io.spine.code.proto.RejectionDeclaration;
 import io.spine.logging.Logging;
 import io.spine.tools.compiler.field.FieldDeclaration;
@@ -40,6 +41,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static com.squareup.javapoet.MethodSpec.constructorBuilder;
@@ -76,12 +78,13 @@ public class RejectionWriter implements Logging {
     public RejectionWriter(RejectionDeclaration metadata,
                            File outputDirectory,
                            Map<String, String> messageTypeMap) {
+        MessageDocumentation documentation = new MessageDocumentation(metadata);
         this.declaration = metadata;
         this.outputDirectory = outputDirectory;
         this.fieldTypeFactory = new FieldTypeFactory(metadata.getMessage(), messageTypeMap);
-        this.javadoc = new RejectionJavadoc(metadata, new RejectionDocumentation(metadata));
+        this.javadoc = new RejectionJavadoc(metadata, documentation);
         this.builder = new RejectionBuilder(new GeneratedRejectionDeclaration(metadata),
-                                            fieldDeclarations());
+                                            fieldDeclarations(documentation));
     }
 
     /**
@@ -160,16 +163,19 @@ public class RejectionWriter implements Logging {
     /**
      * Reads all descriptor fields.
      *
+     * @param documentation
+     *         the documentation for the rejection
      * @return field declarations with the order as in a {@code .proto} file
      */
-    private List<FieldDeclaration> fieldDeclarations() {
+    private List<FieldDeclaration> fieldDeclarations(MessageDocumentation documentation) {
         Logger log = log();
         log.debug("Reading all the field values from the descriptor: {}", declaration.getMessage());
         List<FieldDeclaration> result = newArrayList();
         for (FieldDescriptorProto field : declaration.getMessage()
                                                      .getFieldList()) {
             FieldType type = fieldTypeFactory.create(field);
-            FieldDeclaration declaration = new FieldDeclaration(field, type);
+            Optional<String> leadingComments = documentation.getFieldLeadingComments(field);
+            FieldDeclaration declaration = new FieldDeclaration(field, type, leadingComments);
             result.add(declaration);
         }
         log.debug("Read fields: {}", result);

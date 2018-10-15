@@ -23,27 +23,13 @@ package io.spine.tools.compiler.rejection;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.ParameterSpec;
 import io.spine.code.javadoc.JavadocEscaper;
+import io.spine.code.proto.MessageDocumentation;
 import io.spine.code.proto.RejectionDeclaration;
 
 import java.util.Optional;
 
 /**
  * Generates Javadoc for a rejection.
- *
- * <p>Requires the following Protobuf plugin configuration:
- * <pre> {@code
- * generateProtoTasks {
- *     all().each { final task ->
- *         // If true, the descriptor set will contain line number information
- *         // and comments. Default is false.
- *         task.descriptorSetOptions.includeSourceInfo = true
- *         // ...
- *     }
- * }
- * }</pre>
- *
- * @see <a href="https://github.com/google/protobuf-gradle-plugin/blob/master/README.md#generate-descriptor-set-files">
- *         Protobuf plugin configuration</a>
  */
 class RejectionJavadoc {
 
@@ -57,9 +43,9 @@ class RejectionJavadoc {
     private static final String LINE_SEPARATOR = "\n";
 
     private final RejectionDeclaration declaration;
-    private final RejectionDocumentation documentation;
+    private final MessageDocumentation documentation;
 
-    RejectionJavadoc(RejectionDeclaration declaration, RejectionDocumentation documentation) {
+    RejectionJavadoc(RejectionDeclaration declaration, MessageDocumentation documentation) {
         this.declaration = declaration;
         this.documentation = documentation;
     }

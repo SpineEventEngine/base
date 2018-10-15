@@ -18,29 +18,40 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.compiler.rejection;
+package io.spine.code.proto;
 
-import com.google.common.collect.Maps;
 import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
-import io.spine.code.proto.LocationPath;
-import io.spine.code.proto.RejectionDeclaration;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import static java.lang.String.format;
 
 /**
- * The documentation of a rejection declaration in a {@code .proto} file.
+ * The documentation of a message in a {@code .proto} file.
+ *
+ * <p>Requires the following Protobuf plugin configuration:
+ * <pre> {@code
+ * generateProtoTasks {
+ *     all().each { final task ->
+ *         // If true, the descriptor set will contain line number information
+ *         // and comments. Default is false.
+ *         task.descriptorSetOptions.includeSourceInfo = true
+ *         // ...
+ *     }
+ * }
+ * }</pre>
+ *
+ * @see <a href="https://github.com/google/protobuf-gradle-plugin/blob/master/README.md#generate-descriptor-set-files">
+ *         Protobuf plugin configuration</a>
  */
-class RejectionDocumentation {
+public class MessageDocumentation {
 
-    private final RejectionDeclaration declaration;
+    private final AbstractMessageDeclaration declaration;
 
-    RejectionDocumentation(RejectionDeclaration declaration) {
+    public MessageDocumentation(AbstractMessageDeclaration declaration) {
         this.declaration = declaration;
     }
 
@@ -49,37 +60,19 @@ class RejectionDocumentation {
      *
      * @return the comments text or {@code Optional.empty()} if there are no comments
      */
-    Optional<String> leadingComments() {
+    public Optional<String> leadingComments() {
         LocationPath messagePath = getMessageLocationPath();
         return getLeadingComments(messagePath);
     }
 
     /**
-     * Returns field-to-comment map in order of {@linkplain FieldDescriptorProto fields}
-     * declaration in the rejection.
-     *
-     * @return the commented fields
-     */
-    Map<FieldDescriptorProto, String> commentedFields() {
-        Map<FieldDescriptorProto, String> commentedFields = Maps.newLinkedHashMap();
-
-        for (FieldDescriptorProto field : declaration.getMessage()
-                                                     .getFieldList()) {
-            Optional<String> leadingComments = getFieldLeadingComments(field);
-            leadingComments.ifPresent(s -> commentedFields.put(field, s));
-        }
-
-        return commentedFields;
-    }
-
-    /**
-     * Obtains the leading comments for fields for the rejection.
+     * Obtains the leading comments for the field.
      *
      * @param field
      *         the descriptor of the field
      * @return the field leading comments or {@code Optional.empty()} if there are no comments
      */
-    private Optional<String> getFieldLeadingComments(FieldDescriptorProto field) {
+    public Optional<String> getFieldLeadingComments(FieldDescriptorProto field) {
         LocationPath fieldPath = getFieldLocationPath(field);
         return getLeadingComments(fieldPath);
     }

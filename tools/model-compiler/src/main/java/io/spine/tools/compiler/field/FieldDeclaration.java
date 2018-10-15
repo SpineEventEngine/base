@@ -25,6 +25,8 @@ import com.squareup.javapoet.TypeName;
 import io.spine.code.proto.FieldName;
 import io.spine.tools.compiler.field.type.FieldType;
 
+import java.util.Optional;
+
 /**
  * A declaration of a field in a {@code .proto} file.
  */
@@ -32,10 +34,15 @@ public class FieldDeclaration {
 
     private final FieldDescriptorProto descriptor;
     private final FieldType type;
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType" /* A framework user may provide no comments. */)
+    private final Optional<String> leadingComments;
 
-    public FieldDeclaration(FieldDescriptorProto descriptor, FieldType type) {
+    public FieldDeclaration(FieldDescriptorProto descriptor,
+                            FieldType type,
+                            Optional<String> leadingComments) {
         this.descriptor = descriptor;
         this.type = type;
+        this.leadingComments = leadingComments;
     }
 
     public FieldName name() {
@@ -48,5 +55,9 @@ public class FieldDeclaration {
 
     public String setterName() {
         return type.getSetterPrefix() + name().toCamelCase();
+    }
+
+    public Optional<String> leadingComments() {
+        return leadingComments;
     }
 }
