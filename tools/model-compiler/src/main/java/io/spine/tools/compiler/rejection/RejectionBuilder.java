@@ -34,9 +34,11 @@ import io.spine.tools.compiler.field.FieldDeclaration;
 import io.spine.validate.Validate;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static com.squareup.javapoet.MethodSpec.constructorBuilder;
+import static io.spine.tools.compiler.rejection.RejectionJavadoc.escapeAndWrapInPreTags;
 import static javax.lang.model.element.Modifier.FINAL;
 import static javax.lang.model.element.Modifier.PRIVATE;
 import static javax.lang.model.element.Modifier.PUBLIC;
@@ -179,17 +181,16 @@ class RejectionBuilder {
         FieldName fieldName = field.name();
         String parameterName = fieldName.javaCase();
         String methodName = field.setterName();
-        return MethodSpec
+        MethodSpec.Builder methodBuilder = MethodSpec
                 .methodBuilder(methodName)
                 .addModifiers(PUBLIC)
                 .returns(thisType())
-                //TODO:2018-10-12:dmytro.grankin: Javadoc
-                .addJavadoc(field.leadingComments()
-                                 .orElse(""))
                 .addParameter(field.typeName(), parameterName)
                 .addStatement("$L.$L($L)", BUILDER_FIELD, methodName, parameterName)
-                .addStatement("return this")
-                .build();
+                .addStatement("return this");
+        Optional<String> comments = field.leadingComments();
+        comments.ifPresent(text -> methodBuilder.addJavadoc(escapeAndWrapInPreTags(text)));
+        return methodBuilder.build();
     }
 
     /**

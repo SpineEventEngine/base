@@ -59,11 +59,7 @@ class RejectionJavadoc {
         Optional<String> leadingComments = documentation.leadingComments();
         StringBuilder builder = new StringBuilder(256);
 
-        leadingComments.ifPresent(s -> builder.append(OPENING_PRE)
-                                              .append(LINE_SEPARATOR)
-                                              .append(JavadocEscaper.escape(s))
-                                              .append(CLOSING_PRE)
-                                              .append(LINE_SEPARATOR)
+        leadingComments.ifPresent(s -> builder.append(escapeAndWrapInPreTags(s))
                                               .append(LINE_SEPARATOR));
 
         builder.append("Rejection based on proto type {@code ")
@@ -90,5 +86,16 @@ class RejectionJavadoc {
                         .add("@param $L the builder for the rejection", builderParameter)
                         .add(LINE_SEPARATOR)
                         .build();
+    }
+
+    static String escapeAndWrapInPreTags(String text) {
+        return CodeBlock.builder()
+                        .add(OPENING_PRE)
+                        .add(LINE_SEPARATOR)
+                        .add(JavadocEscaper.escape(text))
+                        .add(CLOSING_PRE)
+                        .add(LINE_SEPARATOR)
+                        .build()
+                        .toString();
     }
 }

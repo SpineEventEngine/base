@@ -57,6 +57,13 @@ public class FieldDeclaration {
         return type.getSetterPrefix() + name().toCamelCase();
     }
 
+    /**
+     * Obtains unescaped leading comments.
+     *
+     * <p>To escape comments, use {@link io.spine.code.javadoc.JavadocEscaper JavadocEscaper}.
+     *
+     * @return the unescaped leading comments
+     */
     public Optional<String> leadingComments() {
         return leadingComments;
     }
