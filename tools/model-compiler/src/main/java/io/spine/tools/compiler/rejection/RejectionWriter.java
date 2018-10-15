@@ -31,8 +31,8 @@ import com.squareup.javapoet.TypeSpec;
 import io.spine.base.ThrowableMessage;
 import io.spine.code.proto.RejectionDeclaration;
 import io.spine.logging.Logging;
-import io.spine.tools.compiler.fieldtype.FieldType;
-import io.spine.tools.compiler.fieldtype.FieldTypeFactory;
+import io.spine.tools.compiler.field.type.FieldType;
+import io.spine.tools.compiler.field.type.FieldTypeFactory;
 import org.slf4j.Logger;
 
 import java.io.File;

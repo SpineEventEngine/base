@@ -31,7 +31,7 @@ import io.spine.code.java.SimpleClassName;
 import io.spine.code.proto.FieldName;
 import io.spine.code.proto.RejectionDeclaration;
 import io.spine.protobuf.Messages;
-import io.spine.tools.compiler.fieldtype.FieldType;
+import io.spine.tools.compiler.field.type.FieldType;
 import io.spine.validate.Validate;
 
 import java.util.List;

@@ -28,7 +28,7 @@ import com.squareup.javapoet.TypeName;
 import io.spine.base.ConversionException;
 import io.spine.code.proto.FieldName;
 import io.spine.logging.Logging;
-import io.spine.tools.compiler.fieldtype.MapFieldType;
+import io.spine.tools.compiler.field.type.MapFieldType;
 import io.spine.validate.ValidationException;
 
 import javax.lang.model.element.Modifier;

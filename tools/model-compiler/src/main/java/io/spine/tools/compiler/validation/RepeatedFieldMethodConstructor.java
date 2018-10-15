@@ -32,10 +32,8 @@ import io.spine.code.proto.FieldName;
 import io.spine.code.proto.ScalarType;
 import io.spine.logging.Logging;
 import io.spine.tools.compiler.MessageTypeCache;
-import io.spine.tools.compiler.fieldtype.FieldType;
+import io.spine.tools.compiler.field.type.FieldType;
 import io.spine.validate.ValidationException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.lang.model.element.Modifier;
 import java.util.Collection;

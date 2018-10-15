@@ -17,7 +17,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.tools.compiler.fieldtype;
+package io.spine.tools.compiler.field.type;
 
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
@@ -29,10 +29,10 @@ import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.protobuf.DescriptorProtos.DescriptorProto;
-import static io.spine.tools.compiler.fieldtype.FieldTypes.getEntryNameFor;
-import static io.spine.tools.compiler.fieldtype.FieldTypes.isMap;
-import static io.spine.tools.compiler.fieldtype.FieldTypes.isRepeated;
-import static io.spine.tools.compiler.fieldtype.FieldTypes.trimTypeName;
+import static io.spine.tools.compiler.field.type.FieldTypes.getEntryNameFor;
+import static io.spine.tools.compiler.field.type.FieldTypes.isMap;
+import static io.spine.tools.compiler.field.type.FieldTypes.isRepeated;
+import static io.spine.tools.compiler.field.type.FieldTypes.trimTypeName;
 
 /**
  * Factory for creation {@link FieldType} instances.
