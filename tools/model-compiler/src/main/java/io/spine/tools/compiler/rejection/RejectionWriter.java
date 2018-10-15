@@ -22,6 +22,7 @@ package io.spine.tools.compiler.rejection;
 import com.google.common.collect.Maps;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
@@ -49,11 +50,6 @@ import static javax.lang.model.element.Modifier.STATIC;
 
 /**
  * Generates Java code for a rejection based on its Protobuf descriptor.
- *
- * @author Mikhail Mikhaylov
- * @author Alexander Yevsyukov
- * @author Alexander Litus
- * @author Alex Tymchenko
  */
 public class RejectionWriter implements Logging {
 
@@ -128,11 +124,12 @@ public class RejectionWriter implements Logging {
         log().debug("Creating the constructor for the type '{}'",
                     declaration.getSimpleJavaClassName());
         ParameterSpec builderParameter = builder.asParameter();
+        CodeBlock buildRejectionMessage = builder.buildRejectionMessage();
         return constructorBuilder()
                 .addJavadoc(javadoc.forConstructor())
                 .addModifiers(PRIVATE)
                 .addParameter(builderParameter)
-                .addStatement("super($L)", builder.buildRejectionMessage().toString())
+                .addStatement("super($L)", buildRejectionMessage.toString())
                 .build();
     }
 

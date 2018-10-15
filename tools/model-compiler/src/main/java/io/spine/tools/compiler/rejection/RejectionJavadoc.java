@@ -58,8 +58,6 @@ import static java.lang.String.format;
  * }
  * }</pre>
  *
- * @author Dmytro Grankin
- * @author Alexander Yevsyukov
  * @see <a href="https://github.com/google/protobuf-gradle-plugin/blob/master/README.md#generate-descriptor-set-files">
  * Protobuf plugin configuration</a>
  */
