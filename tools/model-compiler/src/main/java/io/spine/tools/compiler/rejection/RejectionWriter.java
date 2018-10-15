@@ -19,7 +19,6 @@
  */
 package io.spine.tools.compiler.rejection;
 
-import com.google.common.collect.Maps;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
@@ -31,6 +30,7 @@ import com.squareup.javapoet.TypeSpec;
 import io.spine.base.ThrowableMessage;
 import io.spine.code.proto.RejectionDeclaration;
 import io.spine.logging.Logging;
+import io.spine.tools.compiler.field.FieldDeclaration;
 import io.spine.tools.compiler.field.type.FieldType;
 import io.spine.tools.compiler.field.type.FieldTypeFactory;
 import org.slf4j.Logger;
@@ -38,8 +38,10 @@ import org.slf4j.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.List;
 import java.util.Map;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static com.squareup.javapoet.MethodSpec.constructorBuilder;
 import static io.spine.tools.compiler.annotation.Annotations.generatedBySpineModelCompiler;
 import static javax.lang.model.element.Modifier.FINAL;
@@ -158,19 +160,19 @@ public class RejectionWriter implements Logging {
     /**
      * Reads all descriptor fields.
      *
-     * @return name-to-{@link FieldType} map
+     * @return field declarations with the order as in a {@code .proto} file
      */
-    private Map<String, FieldType> fieldDeclarations() {
+    private List<FieldDeclaration> fieldDeclarations() {
         Logger log = log();
         log.debug("Reading all the field values from the descriptor: {}", declaration.getMessage());
-
-        Map<String, FieldType> result = Maps.newLinkedHashMap();
+        List<FieldDeclaration> result = newArrayList();
         for (FieldDescriptorProto field : declaration.getMessage()
                                                      .getFieldList()) {
-            result.put(field.getName(), fieldTypeFactory.create(field));
+            FieldType type = fieldTypeFactory.create(field);
+            FieldDeclaration declaration = new FieldDeclaration(field, type);
+            result.add(declaration);
         }
         log.debug("Read fields: {}", result);
-
         return result;
     }
 }

@@ -20,6 +20,7 @@
 
 package io.spine.tools.compiler.rejection;
 
+import com.google.common.collect.ImmutableList;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
@@ -29,11 +30,10 @@ import com.squareup.javapoet.TypeSpec;
 import io.spine.code.java.SimpleClassName;
 import io.spine.code.proto.FieldName;
 import io.spine.protobuf.Messages;
-import io.spine.tools.compiler.field.type.FieldType;
+import io.spine.tools.compiler.field.FieldDeclaration;
 import io.spine.validate.Validate;
 
 import java.util.List;
-import java.util.Map;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static com.squareup.javapoet.MethodSpec.constructorBuilder;
@@ -58,12 +58,12 @@ class RejectionBuilder {
     //TODO:2018-10-12:dmytro.grankin: Get rid of the field?
     // Introduce `FieldDeclaration`, which composes the field name and the field type
     // and generates the setter name
-    private final Map<String, FieldType> rejectionFields;
+    private final List<FieldDeclaration> rejectionFields;
 
     RejectionBuilder(GeneratedRejectionDeclaration rejection,
-                     Map<String, FieldType> fields) {
+                     List<FieldDeclaration> rejectionFields) {
         this.rejection = rejection;
-        rejectionFields = fields;
+        this.rejectionFields = ImmutableList.copyOf(rejectionFields);
         this.name = SimpleClassName.ofBuilder();
     }
 
@@ -171,23 +171,23 @@ class RejectionBuilder {
 
     private List<MethodSpec> setters() {
         List<MethodSpec> methods = newArrayList();
-        for (Map.Entry<String, FieldType> field : rejectionFields.entrySet()) {
-            MethodSpec setter = fieldSetter(field.getKey(), field.getValue());
+        for (FieldDeclaration field : rejectionFields) {
+            MethodSpec setter = fieldSetter(field);
             methods.add(setter);
         }
         return methods;
     }
 
-    private MethodSpec fieldSetter(String fieldName, FieldType type) {
-        FieldName fName = FieldName.of(fieldName);
-        String parameterName = fName.javaCase();
-        String methodName = type.getSetterPrefix() + fName.toCamelCase();
+    private MethodSpec fieldSetter(FieldDeclaration field) {
+        FieldName fieldName = field.name();
+        String parameterName = fieldName.javaCase();
+        String methodName = field.setterName();
         return MethodSpec
                 .methodBuilder(methodName)
                 .addModifiers(PUBLIC)
                 .returns(thisType())
                 //TODO:2018-10-12:dmytro.grankin: Javadoc
-                .addParameter(type.getTypeName(), parameterName)
+                .addParameter(field.typeName(), parameterName)
                 .addStatement("$L.$L($L)", BUILDER_FIELD, methodName, parameterName)
                 .addStatement("return this")
                 .build();
