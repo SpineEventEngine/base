@@ -80,7 +80,7 @@ class RejectionBuilder {
                 .addModifiers(PUBLIC, STATIC)
                 .addJavadoc("@return a new builder for the rejection")
                 .returns(thisType())
-                .addStatement("return new " + name.value() + "()")
+                .addStatement("return new $L()", name.value())
                 .build();
     }
 
@@ -167,10 +167,9 @@ class RejectionBuilder {
         ClassName protoRejection = protoRejection();
         ClassName protoBuilderClass = protoRejection.nestedClass(SimpleClassName.ofBuilder()
                                                                                 .value());
-        String newProtoBuilder = protoRejection.topLevelClassName() + ".newBuilder()";
         return FieldSpec
                 .builder(protoBuilderClass, BUILDER_FIELD, PRIVATE, FINAL)
-                .initializer(newProtoBuilder)
+                .initializer("$L.newBuilder()", protoRejection.topLevelClassName())
                 .build();
     }
 
