@@ -18,36 +18,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-include 'enrichment-lookup'
-include 'known-types'
-include 'validation-rules'
-include 'protoc-plugin'
-include 'rejection-generation'
+package io.spine.tools.gradle.compiler;
 
-/*
- * Dependency links established with the Gradle included build.
- *
- * See the `includeBuild(...)` block below for more info.
- */
-final def links = [
-        'io.spine.tools:spine-model-compiler': ':model-compiler',
-        'io.spine:spine-base'                : ':base',
-        'io.spine:spine-base-testlib'        : ':testlib'
-]
+import org.junit.Assert;
+import org.junit.Test;
 
-/*
- * Include the `base` build into `smoke-test` project build.
- *
- * Smoke tests are built separately in order to be able to test current version of the Gradle
- * plugins.
- *
- * See the Gradle manual for more info:
- * https://docs.gradle.org/current/userguide/composite_builds.html
- */
-includeBuild("$rootDir/../../") {
-    dependencySubstitution {
-        links.each {
-            substitute module(it.key) with project(it.value)
-        }
+public class PluginShould {
+
+    @Test
+    public void generate_rejection() {
+        Assert.assertTrue(true);
     }
 }
