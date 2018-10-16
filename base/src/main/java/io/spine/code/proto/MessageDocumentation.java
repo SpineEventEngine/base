@@ -22,6 +22,7 @@ package io.spine.code.proto;
 
 import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
+import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 
 import java.util.Arrays;
 import java.util.List;
@@ -108,7 +109,7 @@ public class MessageDocumentation {
     private LocationPath getMessageLocationPath() {
         return new LocationPath(
                 Arrays.asList(
-                        DescriptorProtos.FileDescriptorProto.MESSAGE_TYPE_FIELD_NUMBER,
+                        FileDescriptorProto.MESSAGE_TYPE_FIELD_NUMBER,
                         getTopLevelMessageIndex())
         );
     }
@@ -163,9 +164,9 @@ public class MessageDocumentation {
      * @return the location for the path
      */
     private DescriptorProtos.SourceCodeInfo.Location getLocation(LocationPath locationPath) {
-        for (DescriptorProtos.SourceCodeInfo.Location location : declaration.getFile()
-                                                                            .getSourceCodeInfo()
-                                                                            .getLocationList()) {
+        FileDescriptorProto declarationFile = declaration.getFile();
+        for (DescriptorProtos.SourceCodeInfo.Location location : declarationFile.getSourceCodeInfo()
+                                                                                .getLocationList()) {
             if (location.getPathList()
                         .equals(locationPath.getPath())) {
                 return location;
@@ -173,9 +174,7 @@ public class MessageDocumentation {
         }
 
         String msg = format("The location with %s path should be present in \"%s\".",
-                            locationPath,
-                            declaration.getFile()
-                                       .getName());
+                            locationPath, declarationFile.getName());
         throw new IllegalStateException(msg);
     }
 }
