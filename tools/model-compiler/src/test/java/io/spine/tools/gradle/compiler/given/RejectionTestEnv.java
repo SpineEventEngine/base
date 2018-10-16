@@ -20,7 +20,6 @@
 
 package io.spine.tools.gradle.compiler.given;
 
-import com.sun.javadoc.RootDoc;
 import io.spine.code.java.DefaultJavaProject;
 import io.spine.code.java.FileName;
 import io.spine.code.java.PackageName;
@@ -36,9 +35,9 @@ import static java.lang.String.format;
 
 public class RejectionTestEnv {
 
-    /** Javadocs received from {@link RootDoc} contain "\n" line separator. */
+    /** Javadocs received using {@link org.jboss.forge.roaster.Roaster} have no line separators. */
     @SuppressWarnings("HardcodedLineSeparator")
-    private static final String JAVADOC_LINE_SEPARATOR = "\n";
+    private static final String JAVADOC_LINE_SEPARATOR = "";
     private static final String CLASS_COMMENT =
             "The rejection definition to test Javadoc generation.";
     private static final String REJECTION_NAME = "Rejection";
@@ -72,16 +71,6 @@ public class RejectionTestEnv {
         return fileName.toString();
     }
 
-    public static String rejectionsJavadocProtoSource() {
-        FileName fileName = FileName.forType("JavadocRejections");
-        Path filePath = DefaultJavaProject.at(Paths.get("/"))
-                                          .generated()
-                                          .mainJava()
-                                          .resolve(JAVA_PACKAGE.toDirectory())
-                                          .resolve(fileName.value());
-        return filePath.toString();
-    }
-
     private static Iterable<String> rejectionWithJavadoc() {
         return Arrays.asList(
                 "syntax = \"proto3\";",
@@ -104,26 +93,26 @@ public class RejectionTestEnv {
     }
 
     public static String getExpectedClassComment() {
-        return expectedWrappedInPreTag(CLASS_COMMENT) + JAVADOC_LINE_SEPARATOR
-                + " Rejection based on proto type {@code " + JAVA_PACKAGE + '.' + REJECTION_NAME
+        return wrappedInPreTag(CLASS_COMMENT) + JAVADOC_LINE_SEPARATOR
+                + " Rejection based on proto type  {@code " + JAVA_PACKAGE + '.' + REJECTION_NAME
                 + '}' + JAVADOC_LINE_SEPARATOR;
     }
 
     public static String getExpectedBuilderClassComment() {
-        return format(" The builder for the {@code %s} rejection. ", REJECTION_NAME);
+        return format("The builder for the  {@code %s}  rejection.", REJECTION_NAME);
     }
 
     public static String getExpectedFirstFieldComment() {
-        return expectedWrappedInPreTag(FIRST_FIELD_COMMENT);
+        return wrappedInPreTag(FIRST_FIELD_COMMENT);
 
     }
 
     public static String getExpectedSecondFieldComment() {
-        return expectedWrappedInPreTag(SECOND_FIELD_COMMENT);
+        return wrappedInPreTag(SECOND_FIELD_COMMENT);
     }
 
-    private static String expectedWrappedInPreTag(String commentText) {
-        return " <pre>" + JAVADOC_LINE_SEPARATOR
+    private static String wrappedInPreTag(String commentText) {
+        return "<pre>" + JAVADOC_LINE_SEPARATOR
                 + ' ' + commentText + JAVADOC_LINE_SEPARATOR
                 + " </pre>" + JAVADOC_LINE_SEPARATOR;
     }

@@ -57,11 +57,6 @@ dependencies {
     testImplementation gradleTestKit()
     testImplementation project(':plugin-testlib')
 
-    // "tools.jar" contains Javadoc classes used in the rejections Javadoc generation tests.
-    // It is a local version bundled within the JDK installation.
-    // "JAVA_HOME" environment variable must be set for correct work.
-    testImplementation files("${System.properties['java.home']}/../lib/tools.jar")
-
     // The freshest version of the plugin required for tests
     protocPluginDependency = testCompileOnly "io.spine.tools:spine-protoc-plugin:$spineVersion@jar"
 }
