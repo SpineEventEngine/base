@@ -21,7 +21,8 @@
 package io.spine.tools.gradle.compiler;
 
 import com.sun.javadoc.ClassDoc;
-import com.sun.javadoc.ConstructorDoc;
+import com.sun.javadoc.MethodDoc;
+import com.sun.javadoc.ProgramElementDoc;
 import com.sun.javadoc.RootDoc;
 import io.spine.tools.compiler.rejection.RootDocReceiver;
 import io.spine.tools.gradle.GradleProject;
@@ -33,11 +34,14 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
+import static io.spine.tools.gradle.compiler.given.RejectionTestEnv.getExpectedBuilderClassComment;
 import static io.spine.tools.gradle.compiler.given.RejectionTestEnv.getExpectedClassComment;
-import static io.spine.tools.gradle.compiler.given.RejectionTestEnv.getExpectedCtorComment;
+import static io.spine.tools.gradle.compiler.given.RejectionTestEnv.getExpectedFirstFieldComment;
+import static io.spine.tools.gradle.compiler.given.RejectionTestEnv.getExpectedSecondFieldComment;
 import static io.spine.tools.gradle.compiler.given.RejectionTestEnv.newProjectWithRejectionsJavadoc;
 import static io.spine.tools.gradle.compiler.given.RejectionTestEnv.rejectionsJavadocProtoSource;
 import static io.spine.tools.gradle.compiler.given.RejectionTestEnv.rejectionsJavadocThrowableSource;
+import static io.spine.util.Exceptions.newIllegalStateException;
 import static org.junit.Assert.assertEquals;
 
 public class RejectionGenPluginShould {
@@ -63,14 +67,45 @@ public class RejectionGenPluginShould {
     public void generate_rejection_javadoc() {
         GradleProject project = newProjectWithRejectionsJavadoc(testProjectDir);
         project.executeTask(COMPILE_JAVA);
-
         Collection<String> sources = Arrays.asList(rejectionsJavadocThrowableSource(),
                                                    rejectionsJavadocProtoSource());
         RootDoc root = RootDocReceiver.getRootDoc(testProjectDir, sources);
-        ClassDoc rejectionDoc = root.classes()[0];
-        ConstructorDoc rejectionCtorDoc = rejectionDoc.constructors()[0];
+        assertRejectionJavadoc(root);
+        assertBuilderJavadoc(root);
+    }
 
-        assertEquals(getExpectedClassComment(), rejectionDoc.getRawCommentText());
-        assertEquals(getExpectedCtorComment(), rejectionCtorDoc.getRawCommentText());
+    private static void assertRejectionJavadoc(RootDoc root) {
+        ClassDoc rejection = find(root.classes(), "Rejection");
+        assertDoc(getExpectedClassComment(), rejection);
+        assertDoc(rejection.methods(), "newBuilder", " @return a new builder for the rejection ");
+    }
+
+    private static void assertBuilderJavadoc(RootDoc root) {
+        ClassDoc builder = find(root.classes(), "Rejection.Builder");
+        MethodDoc[] methods = builder.methods();
+        assertDoc(getExpectedBuilderClassComment(), builder);
+        assertDoc(methods, "build", " Creates the rejection from the builder and validates it. ");
+        assertDoc(methods, "setId", getExpectedFirstFieldComment());
+        assertDoc(methods, "setRejectionMessage", getExpectedSecondFieldComment());
+    }
+
+    private static <T extends ProgramElementDoc>
+    void assertDoc(T[] docs, String docName, String expectedText) {
+        T element = find(docs, docName);
+        assertEquals(expectedText, element.getRawCommentText());
+    }
+
+    private static void assertDoc(String expectedText, ProgramElementDoc element) {
+        assertEquals(expectedText, element.getRawCommentText());
+    }
+
+    private static <T extends ProgramElementDoc> T find(T[] docs, String name) {
+        return Arrays
+                .stream(docs)
+                .filter(doc -> doc.name()
+                                  .equals(name))
+                .findFirst()
+                .orElseThrow(() -> newIllegalStateException(
+                        "Unable to find Javadocs for the element %s.", name));
     }
 }

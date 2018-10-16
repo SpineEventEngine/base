@@ -155,8 +155,11 @@ class RejectionBuilder {
                 .build();
     }
 
-    private String classJavadoc() {
-        return "The builder for the " + rejection.simpleTypeName() + " rejection.";
+    private CodeBlock classJavadoc() {
+        String rejectionName = rejection.simpleTypeName();
+        return CodeBlock.builder()
+                        .add("The builder for the {@code $L} rejection.", rejectionName)
+                        .build();
     }
 
     private FieldSpec initializedProtoBuilder() {

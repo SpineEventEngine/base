@@ -58,10 +58,10 @@ class GeneratedRejectionDeclaration {
     ClassName rejectionMessage() {
         PackageName javaPackage = protoDeclaration.getJavaPackage();
         SimpleClassName outerClass = protoDeclaration.getOuterJavaClass();
-        return ClassName.get(javaPackage.value(),
-                             outerClass.value())
-                        .nestedClass(protoDeclaration.getSimpleJavaClassName()
-                                                     .value());
+        ClassName outerClassFqn = ClassName.get(javaPackage.value(),
+                                                outerClass.value());
+        return outerClassFqn.nestedClass(protoDeclaration.getSimpleJavaClassName()
+                                                         .value());
     }
 
     String simpleTypeName() {

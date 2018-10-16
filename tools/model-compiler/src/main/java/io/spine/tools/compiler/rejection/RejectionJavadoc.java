@@ -83,7 +83,7 @@ class RejectionJavadoc {
                         .add("Creates a new instance.")
                         .add(LINE_SEPARATOR)
                         .add(LINE_SEPARATOR)
-                        .add("@param $L the builder for the rejection", builderParameter)
+                        .add("@param $N the builder for the rejection", builderParameter)
                         .add(LINE_SEPARATOR)
                         .build();
     }

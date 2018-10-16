@@ -32,6 +32,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 
+import static java.lang.String.format;
+
 public class RejectionTestEnv {
 
     /** Javadocs received from {@link RootDoc} contain "\n" line separator. */
@@ -41,9 +43,9 @@ public class RejectionTestEnv {
             "The rejection definition to test Javadoc generation.";
     private static final String REJECTION_NAME = "Rejection";
     private static final String FIRST_FIELD_COMMENT = "The rejection ID.";
-    private static final String FIRST_FIELD_NAME = "id";
+    private static final FieldName FIRST_FIELD = FieldName.of("id");
     private static final String SECOND_FIELD_COMMENT = "The rejection message.";
-    private static final String SECOND_FIELD_NAME = "rejection_message";
+    private static final FieldName SECOND_FIELD = FieldName.of("rejection_message");
 
     private static final PackageName JAVA_PACKAGE = PackageName.of("io.spine.sample.rejections");
     private static final FileName REJECTION_FILE_NAME = FileName.forType(REJECTION_NAME);
@@ -57,6 +59,7 @@ public class RejectionTestEnv {
                             .setProjectName("rejections-javadoc")
                             .setProjectFolder(projectFolder.getRoot())
                             .createProto("javadoc_rejections.proto", rejectionWithJavadoc())
+                            .enableDebug()
                             .build();
     }
 
@@ -90,10 +93,10 @@ public class RejectionTestEnv {
                 "message " + REJECTION_NAME + " {",
 
                     "//" + FIRST_FIELD_COMMENT,
-                    "int32 " + FIRST_FIELD_NAME + " = 1; // Is not a part of Javadoc.",
+                    "int32 " + FIRST_FIELD + " = 1; // Is not a part of Javadoc.",
 
                     "//" + SECOND_FIELD_COMMENT,
-                    "string " + SECOND_FIELD_NAME + " = 2;",
+                    "string " + SECOND_FIELD + " = 2;",
 
                     "bool hasNoComment = 3;",
                 "}"
@@ -101,23 +104,27 @@ public class RejectionTestEnv {
     }
 
     public static String getExpectedClassComment() {
-        return ' ' + "<pre>" + JAVADOC_LINE_SEPARATOR
-                + ' ' + CLASS_COMMENT + JAVADOC_LINE_SEPARATOR
-                + " </pre>" + JAVADOC_LINE_SEPARATOR + JAVADOC_LINE_SEPARATOR
+        return expectedWrappedInPreTag(CLASS_COMMENT) + JAVADOC_LINE_SEPARATOR
                 + " Rejection based on proto type {@code " + JAVA_PACKAGE + '.' + REJECTION_NAME
                 + '}' + JAVADOC_LINE_SEPARATOR;
     }
 
-    public static String getExpectedCtorComment() {
-        String param = " @param ";
-        String firstFieldJavaName = FieldName.of(FIRST_FIELD_NAME)
-                                             .javaCase();
-        String secondFieldJavaName = FieldName.of(SECOND_FIELD_NAME)
-                                              .javaCase();
-        return " Creates a new instance." + JAVADOC_LINE_SEPARATOR + JAVADOC_LINE_SEPARATOR
-                + param + firstFieldJavaName + "                " + FIRST_FIELD_COMMENT
-                + JAVADOC_LINE_SEPARATOR
-                + param + secondFieldJavaName + "  " + SECOND_FIELD_COMMENT
-                + JAVADOC_LINE_SEPARATOR;
+    public static String getExpectedBuilderClassComment() {
+        return format(" The builder for the {@code %s} rejection. ", REJECTION_NAME);
+    }
+
+    public static String getExpectedFirstFieldComment() {
+        return expectedWrappedInPreTag(FIRST_FIELD_COMMENT);
+
+    }
+
+    public static String getExpectedSecondFieldComment() {
+        return expectedWrappedInPreTag(SECOND_FIELD_COMMENT);
+    }
+
+    private static String expectedWrappedInPreTag(String commentText) {
+        return " <pre>" + JAVADOC_LINE_SEPARATOR
+                + ' ' + commentText + JAVADOC_LINE_SEPARATOR
+                + " </pre>" + JAVADOC_LINE_SEPARATOR;
     }
 }
