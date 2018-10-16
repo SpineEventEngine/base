@@ -63,7 +63,6 @@ public class RejectionWriter implements Logging {
     private final RejectionDeclaration declaration;
     private final File outputDirectory;
 
-    private final FieldTypeFactory fieldTypeFactory;
     private final MessageDocumentation documentation;
     private final RejectionBuilder builder;
     private final Indent indent;
@@ -71,8 +70,8 @@ public class RejectionWriter implements Logging {
     /**
      * Creates a new instance.
      *
-     * @param metadata
-     *         a rejection metadata
+     * @param rejection
+     *         a rejection declaration
      * @param outputDirectory
      *         a directory to write a Rejection
      * @param messageTypeMap
@@ -80,16 +79,19 @@ public class RejectionWriter implements Logging {
      * @param indent
      *         indentation for the generated code
      */
-    public RejectionWriter(RejectionDeclaration metadata,
+    public RejectionWriter(RejectionDeclaration rejection,
                            File outputDirectory,
                            Map<String, String> messageTypeMap,
                            Indent indent) {
-        this.documentation = new MessageDocumentation(metadata);
-        this.declaration = metadata;
+        this.documentation = new MessageDocumentation(rejection);
+        this.declaration = rejection;
         this.outputDirectory = outputDirectory;
-        this.fieldTypeFactory = new FieldTypeFactory(metadata.getMessage(), messageTypeMap);
-        this.builder = new RejectionBuilder(new GeneratedRejectionDeclaration(metadata),
-                                            fieldDeclarations(documentation));
+        FieldTypeFactory fieldTypeFactory = new FieldTypeFactory(rejection.getMessage(),
+                                                                 messageTypeMap);
+        List<FieldDeclaration> fields = fieldDeclarations(declaration, documentation,
+                                                          fieldTypeFactory, log());
+        this.builder = new RejectionBuilder(new GeneratedRejectionDeclaration(rejection),
+                                            fields);
         this.indent = indent;
     }
 
@@ -207,16 +209,24 @@ public class RejectionWriter implements Logging {
     /**
      * Reads all descriptor fields.
      *
+     * @param rejection
+     *         the rejection to get fields for
      * @param documentation
      *         the documentation for the rejection
+     * @param fieldTypeFactory
+     *         the factory to create field types
+     * @param log
+     *         the logger to use
      * @return field declarations with the order as in a {@code .proto} file
      */
-    private List<FieldDeclaration> fieldDeclarations(MessageDocumentation documentation) {
-        Logger log = log();
-        log.debug("Reading all the field values from the descriptor: {}", declaration.getMessage());
+    private static List<FieldDeclaration> fieldDeclarations(RejectionDeclaration rejection,
+                                                            MessageDocumentation documentation,
+                                                            FieldTypeFactory fieldTypeFactory,
+                                                            Logger log) {
+        log.debug("Reading all the field values from the descriptor: {}", rejection.getMessage());
         List<FieldDeclaration> result = newArrayList();
-        for (FieldDescriptorProto field : declaration.getMessage()
-                                                     .getFieldList()) {
+        for (FieldDescriptorProto field : rejection.getMessage()
+                                                   .getFieldList()) {
             FieldType type = fieldTypeFactory.create(field);
             Optional<String> leadingComments = documentation.getFieldLeadingComments(field);
             FieldDeclaration declaration = new FieldDeclaration(field, type, leadingComments);

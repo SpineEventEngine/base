@@ -28,7 +28,7 @@ import io.spine.tools.compiler.field.type.FieldType;
 import java.util.Optional;
 
 /**
- * A declaration of a field in a {@code .proto} file.
+ * A declaration of a message field in a {@code .proto} file.
  */
 public class FieldDeclaration {
 
