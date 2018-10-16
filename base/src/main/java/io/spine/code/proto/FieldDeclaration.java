@@ -18,53 +18,41 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.compiler.field;
+package io.spine.code.proto;
 
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
-import com.squareup.javapoet.TypeName;
-import io.spine.code.proto.FieldName;
-import io.spine.tools.compiler.field.type.FieldType;
 
 import java.util.Optional;
 
 /**
- * A declaration of a message field in a {@code .proto} file.
+ * A declaration of a message field.
  */
 public class FieldDeclaration {
 
     private final FieldDescriptorProto descriptor;
-    private final FieldType type;
-    @SuppressWarnings("OptionalUsedAsFieldOrParameterType" /* A framework user may provide no comments. */)
-    private final Optional<String> leadingComments;
+    private final AbstractMessageDeclaration originMessage;
 
     public FieldDeclaration(FieldDescriptorProto descriptor,
-                            FieldType type,
-                            Optional<String> leadingComments) {
+                            AbstractMessageDeclaration originMessage) {
         this.descriptor = descriptor;
-        this.type = type;
-        this.leadingComments = leadingComments;
+        this.originMessage = originMessage;
     }
 
     public FieldName name() {
-        return FieldName.of(descriptor.getName());
+        return FieldName.of(descriptor);
     }
 
-    public TypeName typeName() {
-        return type.getTypeName();
-    }
-
-    public String setterName() {
-        return type.getSetterPrefix() + name().toCamelCase();
+    public FieldDescriptorProto descriptor() {
+        return descriptor;
     }
 
     /**
-     * Obtains unescaped leading comments.
+     * Obtains comments going before the field.
      *
-     * <p>To escape comments, use {@link io.spine.code.javadoc.JavadocEscaper JavadocEscaper}.
-     *
-     * @return the unescaped leading comments
+     * @return the leading field comments
      */
     public Optional<String> leadingComments() {
-        return leadingComments;
+        return originMessage.documentation()
+                            .getFieldLeadingComments(descriptor);
     }
 }

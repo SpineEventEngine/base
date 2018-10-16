@@ -20,7 +20,7 @@
 
 package io.spine.tools.compiler.rejection;
 
-import com.google.common.collect.ImmutableList;
+import com.google.protobuf.DescriptorProtos;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
@@ -28,12 +28,15 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeSpec;
 import io.spine.code.java.SimpleClassName;
+import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.FieldName;
 import io.spine.protobuf.Messages;
-import io.spine.tools.compiler.field.FieldDeclaration;
+import io.spine.tools.compiler.field.type.FieldType;
+import io.spine.tools.compiler.field.type.FieldTypeFactory;
 import io.spine.validate.Validate;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static com.google.common.collect.Lists.newArrayList;
@@ -57,13 +60,15 @@ class RejectionBuilder {
 
     private final GeneratedRejectionDeclaration rejection;
     private final SimpleClassName name;
-    private final List<FieldDeclaration> rejectionFields;
+    private final FieldTypeFactory fieldTypeFactory;
 
     RejectionBuilder(GeneratedRejectionDeclaration rejection,
-                     List<FieldDeclaration> rejectionFields) {
+                     Map<String, String> messageTypeMap) {
+        DescriptorProtos.DescriptorProto rejectionDescriptor = rejection.protoDeclaration()
+                                                                        .getMessage();
         this.rejection = rejection;
-        this.rejectionFields = ImmutableList.copyOf(rejectionFields);
         this.name = SimpleClassName.ofBuilder();
+        this.fieldTypeFactory = new FieldTypeFactory(rejectionDescriptor, messageTypeMap);
     }
 
     /**
@@ -177,22 +182,26 @@ class RejectionBuilder {
 
     private List<MethodSpec> setters() {
         List<MethodSpec> methods = newArrayList();
-        for (FieldDeclaration field : rejectionFields) {
-            MethodSpec setter = fieldSetter(field);
+        List<FieldDeclaration> fields = rejection.protoDeclaration()
+                                                 .fields();
+        for (FieldDeclaration field : fields) {
+            FieldType fieldType = fieldTypeFactory.create(field.descriptor());
+            MethodSpec setter = fieldSetter(field, fieldType);
             methods.add(setter);
         }
         return methods;
     }
 
-    private MethodSpec fieldSetter(FieldDeclaration field) {
+    private MethodSpec fieldSetter(FieldDeclaration field,
+                                   FieldType fieldType) {
         FieldName fieldName = field.name();
         String parameterName = fieldName.javaCase();
-        String methodName = field.setterName();
+        String methodName = fieldType.getSetterPrefix() + fieldName.toCamelCase();
         MethodSpec.Builder methodBuilder = MethodSpec
                 .methodBuilder(methodName)
                 .addModifiers(PUBLIC)
                 .returns(thisType())
-                .addParameter(field.typeName(), parameterName)
+                .addParameter(fieldType.getTypeName(), parameterName)
                 .addStatement("$L.$L($L)", BUILDER_FIELD, methodName, parameterName)
                 .addStatement("return this");
         Optional<String> comments = field.leadingComments();

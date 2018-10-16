@@ -19,7 +19,6 @@
  */
 package io.spine.tools.compiler.rejection;
 
-import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
@@ -29,22 +28,16 @@ import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeSpec;
 import io.spine.base.ThrowableMessage;
 import io.spine.code.Indent;
-import io.spine.code.proto.MessageDocumentation;
 import io.spine.code.proto.RejectionDeclaration;
 import io.spine.logging.Logging;
-import io.spine.tools.compiler.field.FieldDeclaration;
-import io.spine.tools.compiler.field.type.FieldType;
-import io.spine.tools.compiler.field.type.FieldTypeFactory;
 import org.slf4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static com.squareup.javapoet.MethodSpec.constructorBuilder;
 import static io.spine.tools.compiler.annotation.Annotations.generatedBySpineModelCompiler;
 import static io.spine.tools.compiler.rejection.FormattedCodeBlock.lineSeparator;
@@ -63,7 +56,6 @@ public class RejectionWriter implements Logging {
     private final RejectionDeclaration declaration;
     private final File outputDirectory;
 
-    private final MessageDocumentation documentation;
     private final RejectionBuilder builder;
     private final Indent indent;
 
@@ -83,15 +75,10 @@ public class RejectionWriter implements Logging {
                            File outputDirectory,
                            Map<String, String> messageTypeMap,
                            Indent indent) {
-        this.documentation = new MessageDocumentation(rejection);
         this.declaration = rejection;
         this.outputDirectory = outputDirectory;
-        FieldTypeFactory fieldTypeFactory = new FieldTypeFactory(rejection.getMessage(),
-                                                                 messageTypeMap);
-        List<FieldDeclaration> fields = fieldDeclarations(declaration, documentation,
-                                                          fieldTypeFactory, log());
         this.builder = new RejectionBuilder(new GeneratedRejectionDeclaration(rejection),
-                                            fields);
+                                            messageTypeMap);
         this.indent = indent;
     }
 
@@ -167,8 +154,8 @@ public class RejectionWriter implements Logging {
      */
     private CodeBlock classJavadoc() {
         CodeBlock.Builder docBuilder = CodeBlock.builder();
-        Optional<String> leadingComments = documentation.leadingComments();
-
+        Optional<String> leadingComments = declaration.documentation()
+                                                      .leadingComments();
         leadingComments.ifPresent(s -> docBuilder.add(FormattedCodeBlock.from(s)
                                                                         .asJavadoc())
                                                  .add(lineSeparator()));
@@ -204,35 +191,5 @@ public class RejectionWriter implements Logging {
                                  PRIVATE, STATIC, FINAL)
                         .initializer("0L")
                         .build();
-    }
-
-    /**
-     * Reads all descriptor fields.
-     *
-     * @param rejection
-     *         the rejection to get fields for
-     * @param documentation
-     *         the documentation for the rejection
-     * @param fieldTypeFactory
-     *         the factory to create field types
-     * @param log
-     *         the logger to use
-     * @return field declarations with the order as in a {@code .proto} file
-     */
-    private static List<FieldDeclaration> fieldDeclarations(RejectionDeclaration rejection,
-                                                            MessageDocumentation documentation,
-                                                            FieldTypeFactory fieldTypeFactory,
-                                                            Logger log) {
-        log.debug("Reading all the field values from the descriptor: {}", rejection.getMessage());
-        List<FieldDeclaration> result = newArrayList();
-        for (FieldDescriptorProto field : rejection.getMessage()
-                                                   .getFieldList()) {
-            FieldType type = fieldTypeFactory.create(field);
-            Optional<String> leadingComments = documentation.getFieldLeadingComments(field);
-            FieldDeclaration declaration = new FieldDeclaration(field, type, leadingComments);
-            result.add(declaration);
-        }
-        log.debug("Read fields: {}", result);
-        return result;
     }
 }

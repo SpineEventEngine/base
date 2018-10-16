@@ -67,4 +67,8 @@ class GeneratedRejectionDeclaration {
     String simpleTypeName() {
         return protoDeclaration.getSimpleTypeName();
     }
+
+    RejectionDeclaration protoDeclaration() {
+        return protoDeclaration;
+    }
 }
