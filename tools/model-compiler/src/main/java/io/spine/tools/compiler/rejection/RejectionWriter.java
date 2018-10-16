@@ -28,6 +28,7 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeSpec;
 import io.spine.base.ThrowableMessage;
+import io.spine.code.Indent;
 import io.spine.code.proto.MessageDocumentation;
 import io.spine.code.proto.RejectionDeclaration;
 import io.spine.logging.Logging;
@@ -64,6 +65,7 @@ public class RejectionWriter implements Logging {
     private final FieldTypeFactory fieldTypeFactory;
     private final RejectionJavadoc javadoc;
     private final RejectionBuilder builder;
+    private final Indent indent;
 
     /**
      * Creates a new instance.
@@ -73,11 +75,14 @@ public class RejectionWriter implements Logging {
      * @param outputDirectory
      *         a directory to write a Rejection
      * @param messageTypeMap
-     *         pre-scanned map with proto types and their appropriate Java classes
+     *         the Proto-to-Java names map
+     * @param indent
+     *         indentation for the generated code
      */
     public RejectionWriter(RejectionDeclaration metadata,
                            File outputDirectory,
-                           Map<String, String> messageTypeMap) {
+                           Map<String, String> messageTypeMap,
+                           Indent indent) {
         MessageDocumentation documentation = new MessageDocumentation(metadata);
         this.declaration = metadata;
         this.outputDirectory = outputDirectory;
@@ -85,6 +90,7 @@ public class RejectionWriter implements Logging {
         this.javadoc = new RejectionJavadoc(metadata, documentation);
         this.builder = new RejectionBuilder(new GeneratedRejectionDeclaration(metadata),
                                             fieldDeclarations(documentation));
+        this.indent = indent;
     }
 
     /**
@@ -116,6 +122,7 @@ public class RejectionWriter implements Logging {
                                                 .toString(),
                                      rejection)
                             .skipJavaLangImports(true)
+                            .indent(indent.toString())
                             .build();
             log.debug("Writing {}", className);
             javaFile.writeTo(outputDirectory);
