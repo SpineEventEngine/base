@@ -22,21 +22,19 @@ package io.spine.tools.compiler.field.type;
 import com.squareup.javapoet.TypeName;
 
 /**
- * Interface for obtaining type specific information.
- *
- * @author Dmytro Grankin
+ * The type information of a field for a code-generation.
  */
 public interface FieldType {
 
     /**
-     * Returns the {@link TypeName} for specific {@link FieldType}.
+     * Obtains the {@link TypeName} for the field.
      *
      * @return the type name
      */
     TypeName getTypeName();
 
     /**
-     * Returns the setter prefix for specific {@link FieldType}.
+     * Obtains the setter prefix for the field.
      *
      * @return the setter prefix
      */
