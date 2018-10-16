@@ -18,15 +18,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.compiler.rejection;
+package io.spine.code.javadoc;
 
-import io.spine.code.javadoc.JavadocEscaper;
 import io.spine.value.StringTypeValue;
 
 /**
  * A text of a Javadoc.
  */
-class JavadocText extends StringTypeValue {
+public class JavadocText extends StringTypeValue {
 
     private static final String OPENING_PRE = "<pre>";
     private static final String CLOSING_PRE = "</pre>";
@@ -44,7 +43,11 @@ class JavadocText extends StringTypeValue {
         super(escapedText);
     }
 
-    static JavadocText fromUnescaped(String unescapedText) {
+    public static JavadocText fromEscaped(String escapedText) {
+        return new JavadocText(escapedText);
+    }
+
+    public static JavadocText fromUnescaped(String unescapedText) {
         return new JavadocText(JavadocEscaper.escape(unescapedText));
     }
 
@@ -53,7 +56,7 @@ class JavadocText extends StringTypeValue {
      *
      * @return the text wrapped in the tags
      */
-    JavadocText inPreTags() {
+    public JavadocText inPreTags() {
         String inTags = new StringBuilder(OPENING_PRE).append(LINE_SEPARATOR)
                                                       .append(JavadocEscaper.escape(value()))
                                                       .append(CLOSING_PRE)
@@ -62,7 +65,7 @@ class JavadocText extends StringTypeValue {
         return new JavadocText(inTags);
     }
 
-    JavadocText withNewLine() {
+    public JavadocText withNewLine() {
         return new JavadocText(value() + LINE_SEPARATOR);
     }
 }

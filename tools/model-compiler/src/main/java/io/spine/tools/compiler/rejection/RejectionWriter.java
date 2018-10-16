@@ -29,6 +29,7 @@ import com.squareup.javapoet.TypeSpec;
 import io.spine.base.ThrowableMessage;
 import io.spine.code.Indent;
 import io.spine.code.java.PackageName;
+import io.spine.code.javadoc.JavadocText;
 import io.spine.code.proto.RejectionDeclaration;
 import io.spine.logging.Logging;
 import org.slf4j.Logger;
@@ -157,9 +158,9 @@ public class RejectionWriter implements Logging {
                                                  .map(text -> JavadocText.fromUnescaped(text)
                                                                          .inPreTags()
                                                                          .withNewLine())
-                                                 .orElse(JavadocText.fromUnescaped(""));
+                                                 .orElse(JavadocText.fromEscaped(""));
         PackageName rejectionPackage = declaration.getJavaPackage();
-        CodeBlock noteBlock = CodeBlock
+        CodeBlock sourceProtoNote = CodeBlock
                 .builder()
                 .add("Rejection based on proto type ")
                 .add("{@code $L.$L}", rejectionPackage, declaration.getSimpleJavaClassName())
@@ -167,7 +168,7 @@ public class RejectionWriter implements Logging {
         return CodeBlock
                 .builder()
                 .add(leadingComments.value())
-                .add(JavadocText.fromUnescaped(noteBlock.toString())
+                .add(JavadocText.fromEscaped(sourceProtoNote.toString())
                                 .withNewLine()
                                 .value())
                 .build();
@@ -186,7 +187,7 @@ public class RejectionWriter implements Logging {
                                              .withNewLine();
         CodeBlock paramsBlock = CodeBlock.of("@param $N the builder for the rejection",
                                              builderParameter);
-        JavadocText paramsPart = JavadocText.fromUnescaped(paramsBlock.toString())
+        JavadocText paramsPart = JavadocText.fromEscaped(paramsBlock.toString())
                                             .withNewLine();
         return CodeBlock.builder()
                         .add(generalPart.value())

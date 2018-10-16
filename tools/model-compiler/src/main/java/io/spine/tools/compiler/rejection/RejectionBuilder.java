@@ -28,6 +28,7 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeSpec;
 import io.spine.code.java.SimpleClassName;
+import io.spine.code.javadoc.JavadocText;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.FieldName;
 import io.spine.protobuf.Messages;
@@ -76,10 +77,12 @@ class RejectionBuilder {
      * @return the {@code newInstance} specification
      */
     MethodSpec newBuilder() {
+        JavadocText javadoc = JavadocText.fromEscaped("@return a new builder for the rejection")
+                                         .withNewLine();
         return MethodSpec
                 .methodBuilder(newBuilder.name())
                 .addModifiers(PUBLIC, STATIC)
-                .addJavadoc(javadocWithNewLine("@return a new builder for the rejection"))
+                .addJavadoc(javadoc.value())
                 .returns(thisType())
                 .addStatement("return new $L()", name.value())
                 .build();
@@ -94,7 +97,7 @@ class RejectionBuilder {
         return TypeSpec
                 .classBuilder(name.value())
                 .addModifiers(PUBLIC, STATIC)
-                .addJavadoc(classJavadoc())
+                .addJavadoc(classJavadoc().value())
                 .addField(initializedProtoBuilder())
                 .addMethod(constructor())
                 .addMethods(setters())
@@ -130,19 +133,22 @@ class RejectionBuilder {
     }
 
     private static MethodSpec constructor() {
-        String javadoc = javadocWithNewLine("Prevent direct instantiation of the builder.");
+        String rawJavadoc = "Prevent direct instantiation of the builder.";
+        JavadocText javadoc = JavadocText.fromEscaped(rawJavadoc)
+                                         .withNewLine();
         return constructorBuilder()
-                .addJavadoc(javadoc)
+                .addJavadoc(javadoc.value())
                 .addModifiers(PRIVATE)
                 .build();
     }
 
     private MethodSpec rejectionMessage() {
-        String javadoc = javadocWithNewLine("Obtains the rejection and validates it.");
+        JavadocText javadoc = JavadocText.fromEscaped("Obtains the rejection and validates it.")
+                                         .withNewLine();
         return MethodSpec
                 .methodBuilder("rejectionMessage")
                 .addModifiers(PRIVATE)
-                .addJavadoc(javadoc)
+                .addJavadoc(javadoc.value())
                 .returns(protoRejection())
                 .addStatement("$T message = $L.build()", protoRejection(), BUILDER_FIELD)
                 .addStatement("$T.checkValid(message)", Validate.class)
@@ -152,25 +158,26 @@ class RejectionBuilder {
 
     @SuppressWarnings("DuplicateStringLiteralInspection") // The same string has different semantics
     private MethodSpec build() {
-        String javadoc = javadocWithNewLine(
-                "Creates the rejection from the builder and validates it.");
+        String rawJavadoc = "Creates the rejection from the builder and validates it.";
+        JavadocText javadoc = JavadocText.fromEscaped(rawJavadoc)
+                                         .withNewLine();
         return MethodSpec
                 .methodBuilder("build")
                 .addModifiers(PUBLIC)
-                .addJavadoc(javadoc)
+                .addJavadoc(javadoc.value())
                 .returns(throwableRejection())
                 .addStatement("return new $T(this)", throwableRejection())
                 .build();
     }
 
-    private String classJavadoc() {
+    private JavadocText classJavadoc() {
         String rejectionName = rejection.simpleTypeName();
         String javadocText = CodeBlock
                 .builder()
                 .add("The builder for the {@code $L} rejection.", rejectionName)
                 .build()
                 .toString();
-        return javadocWithNewLine(javadocText);
+        return JavadocText.fromEscaped(javadocText);
     }
 
     private FieldSpec initializedProtoBuilder() {
@@ -229,11 +236,5 @@ class RejectionBuilder {
 
     private ClassName throwableRejection() {
         return rejection.throwableRejection();
-    }
-
-    private static String javadocWithNewLine(String text) {
-        return JavadocText.fromUnescaped(text)
-                          .withNewLine()
-                          .value();
     }
 }
