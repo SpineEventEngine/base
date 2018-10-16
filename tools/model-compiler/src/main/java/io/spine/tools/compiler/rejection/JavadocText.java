@@ -20,16 +20,19 @@
 
 package io.spine.tools.compiler.rejection;
 
-import com.squareup.javapoet.CodeBlock;
 import io.spine.code.javadoc.JavadocEscaper;
+import io.spine.value.StringTypeValue;
 
 /**
- * A wrapper around {@link CodeBlock}, which facilitates formatting.
+ * A text of a Javadoc.
  */
-class FormattedCodeBlock {
+class JavadocText extends StringTypeValue {
 
     private static final String OPENING_PRE = "<pre>";
     private static final String CLOSING_PRE = "</pre>";
+
+    private static final long serialVersionUID = 0L;
+
     /*
       TODO:2017-03-24:dmytro.grankin: Replace hardcoded line separator by system-independent
       after https://github.com/square/javapoet/issues/552 is fixed.
@@ -37,32 +40,29 @@ class FormattedCodeBlock {
     @SuppressWarnings("HardcodedLineSeparator")
     private static final String LINE_SEPARATOR = "\n";
 
-    private final CodeBlock codeBlock;
-
-    private FormattedCodeBlock(CodeBlock codeBlock) {
-        this.codeBlock = codeBlock;
+    private JavadocText(String escapedText) {
+        super(escapedText);
     }
 
-    static FormattedCodeBlock from(String text) {
-        return new FormattedCodeBlock(CodeBlock.of(text));
+    static JavadocText fromUnescaped(String unescapedText) {
+        return new JavadocText(JavadocEscaper.escape(unescapedText));
     }
 
     /**
-     * Wraps the code block in {@code <pre>} tags and escapes prohibited Javadoc symbols.
+     * Wraps the text in {@code <pre>} tags.
      *
-     * @return the code block representing a valid Javadoc
+     * @return the text wrapped in the tags
      */
-    CodeBlock asJavadoc() {
-        return CodeBlock.builder()
-                        .add(OPENING_PRE)
-                        .add(lineSeparator())
-                        .add(JavadocEscaper.escape(codeBlock.toString()))
-                        .add(CLOSING_PRE)
-                        .add(lineSeparator())
-                        .build();
+    JavadocText inPreTags() {
+        String inTags = new StringBuilder(OPENING_PRE).append(LINE_SEPARATOR)
+                                                      .append(JavadocEscaper.escape(value()))
+                                                      .append(CLOSING_PRE)
+                                                      .append(LINE_SEPARATOR)
+                                                      .toString();
+        return new JavadocText(inTags);
     }
 
-    static String lineSeparator() {
-        return LINE_SEPARATOR;
+    JavadocText withNewLine() {
+        return new JavadocText(value() + LINE_SEPARATOR);
     }
 }

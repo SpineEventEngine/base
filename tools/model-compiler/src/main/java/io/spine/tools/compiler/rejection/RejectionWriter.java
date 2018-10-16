@@ -28,6 +28,7 @@ import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeSpec;
 import io.spine.base.ThrowableMessage;
 import io.spine.code.Indent;
+import io.spine.code.java.PackageName;
 import io.spine.code.proto.RejectionDeclaration;
 import io.spine.logging.Logging;
 import org.slf4j.Logger;
@@ -36,11 +37,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Map;
-import java.util.Optional;
 
 import static com.squareup.javapoet.MethodSpec.constructorBuilder;
 import static io.spine.tools.compiler.annotation.Annotations.generatedBySpineModelCompiler;
-import static io.spine.tools.compiler.rejection.FormattedCodeBlock.lineSeparator;
 import static javax.lang.model.element.Modifier.FINAL;
 import static javax.lang.model.element.Modifier.PRIVATE;
 import static javax.lang.model.element.Modifier.PUBLIC;
@@ -153,18 +152,25 @@ public class RejectionWriter implements Logging {
      * @return the class-level Javadoc content
      */
     private CodeBlock classJavadoc() {
-        CodeBlock.Builder docBuilder = CodeBlock.builder();
-        Optional<String> leadingComments = declaration.documentation()
-                                                      .leadingComments();
-        leadingComments.ifPresent(s -> docBuilder.add(FormattedCodeBlock.from(s)
-                                                                        .asJavadoc())
-                                                 .add(lineSeparator()));
-
-        docBuilder.add("Rejection based on proto type ")
-                  .add("{@code $L.$L}",
-                       declaration.getJavaPackage(), declaration.getSimpleJavaClassName())
-                  .add(lineSeparator());
-        return docBuilder.build();
+        JavadocText leadingComments = declaration.documentation()
+                                                 .leadingComments()
+                                                 .map(text -> JavadocText.fromUnescaped(text)
+                                                                         .inPreTags()
+                                                                         .withNewLine())
+                                                 .orElse(JavadocText.fromUnescaped(""));
+        PackageName rejectionPackage = declaration.getJavaPackage();
+        CodeBlock noteBlock = CodeBlock
+                .builder()
+                .add("Rejection based on proto type ")
+                .add("{@code $L.$L}", rejectionPackage, declaration.getSimpleJavaClassName())
+                .build();
+        return CodeBlock
+                .builder()
+                .add(leadingComments.value())
+                .add(JavadocText.fromUnescaped(noteBlock.toString())
+                                .withNewLine()
+                                .value())
+                .build();
     }
 
     /**
@@ -175,12 +181,16 @@ public class RejectionWriter implements Logging {
      * @return the constructor Javadoc content
      */
     private static CodeBlock constructorJavadoc(ParameterSpec builderParameter) {
+        JavadocText generalPart = JavadocText.fromUnescaped("Creates a new instance.")
+                                             .withNewLine()
+                                             .withNewLine();
+        CodeBlock paramsBlock = CodeBlock.of("@param $N the builder for the rejection",
+                                             builderParameter);
+        JavadocText paramsPart = JavadocText.fromUnescaped(paramsBlock.toString())
+                                            .withNewLine();
         return CodeBlock.builder()
-                        .add("Creates a new instance.")
-                        .add(lineSeparator())
-                        .add(lineSeparator())
-                        .add("@param $N the builder for the rejection", builderParameter)
-                        .add(lineSeparator())
+                        .add(generalPart.value())
+                        .add(paramsPart.value())
                         .build();
     }
 
