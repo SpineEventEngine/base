@@ -58,7 +58,6 @@ public class RejectionTestEnv {
                             .setProjectName("rejections-javadoc")
                             .setProjectFolder(projectFolder.getRoot())
                             .createProto("javadoc_rejections.proto", rejectionWithJavadoc())
-                            .enableDebug()
                             .build();
     }
 
