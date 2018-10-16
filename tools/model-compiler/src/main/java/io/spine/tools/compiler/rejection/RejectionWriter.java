@@ -47,6 +47,7 @@ import java.util.Optional;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.squareup.javapoet.MethodSpec.constructorBuilder;
 import static io.spine.tools.compiler.annotation.Annotations.generatedBySpineModelCompiler;
+import static io.spine.tools.compiler.rejection.FormattedCodeBlock.lineSeparator;
 import static javax.lang.model.element.Modifier.FINAL;
 import static javax.lang.model.element.Modifier.PRIVATE;
 import static javax.lang.model.element.Modifier.PUBLIC;
@@ -63,7 +64,7 @@ public class RejectionWriter implements Logging {
     private final File outputDirectory;
 
     private final FieldTypeFactory fieldTypeFactory;
-    private final RejectionJavadoc javadoc;
+    private final MessageDocumentation documentation;
     private final RejectionBuilder builder;
     private final Indent indent;
 
@@ -83,11 +84,10 @@ public class RejectionWriter implements Logging {
                            File outputDirectory,
                            Map<String, String> messageTypeMap,
                            Indent indent) {
-        MessageDocumentation documentation = new MessageDocumentation(metadata);
+        this.documentation = new MessageDocumentation(metadata);
         this.declaration = metadata;
         this.outputDirectory = outputDirectory;
         this.fieldTypeFactory = new FieldTypeFactory(metadata.getMessage(), messageTypeMap);
-        this.javadoc = new RejectionJavadoc(metadata, documentation);
         this.builder = new RejectionBuilder(new GeneratedRejectionDeclaration(metadata),
                                             fieldDeclarations(documentation));
         this.indent = indent;
@@ -107,7 +107,7 @@ public class RejectionWriter implements Logging {
             log.debug("Constructing class {}", className);
             TypeSpec rejection =
                     TypeSpec.classBuilder(className)
-                            .addJavadoc(javadoc.forClass())
+                            .addJavadoc(classJavadoc())
                             .addAnnotation(generatedBySpineModelCompiler())
                             .addModifiers(PUBLIC)
                             .superclass(ThrowableMessage.class)
@@ -138,7 +138,7 @@ public class RejectionWriter implements Logging {
         ParameterSpec builderParameter = builder.asParameter();
         CodeBlock buildRejectionMessage = builder.buildRejectionMessage();
         return constructorBuilder()
-                .addJavadoc(javadoc.forConstructor(builderParameter))
+                .addJavadoc(constructorJavadoc(builderParameter))
                 .addModifiers(PRIVATE)
                 .addParameter(builderParameter)
                 .addStatement("super($L)", buildRejectionMessage.toString())
@@ -156,6 +156,43 @@ public class RejectionWriter implements Logging {
                          .returns(returnType)
                          .addStatement("return ($T) super.$L", returnType, methodSignature)
                          .build();
+    }
+
+    /**
+     * Generates a Javadoc content for the rejection.
+     *
+     * @return the class-level Javadoc content
+     */
+    private CodeBlock classJavadoc() {
+        CodeBlock.Builder docBuilder = CodeBlock.builder();
+        Optional<String> leadingComments = documentation.leadingComments();
+
+        leadingComments.ifPresent(s -> docBuilder.add(FormattedCodeBlock.from(s)
+                                                                        .asJavadoc())
+                                                 .add(lineSeparator()));
+
+        docBuilder.add("Rejection based on proto type ")
+                  .add("{@code $L.$L}",
+                       declaration.getJavaPackage(), declaration.getSimpleJavaClassName())
+                  .add(lineSeparator());
+        return docBuilder.build();
+    }
+
+    /**
+     * Generates a Javadoc content for the rejection constructor.
+     *
+     * @param builderParameter
+     *         the name of a rejection builder parameter
+     * @return the constructor Javadoc content
+     */
+    private static CodeBlock constructorJavadoc(ParameterSpec builderParameter) {
+        return CodeBlock.builder()
+                        .add("Creates a new instance.")
+                        .add(lineSeparator())
+                        .add(lineSeparator())
+                        .add("@param $N the builder for the rejection", builderParameter)
+                        .add(lineSeparator())
+                        .build();
     }
 
     private static FieldSpec serialVersionUID() {

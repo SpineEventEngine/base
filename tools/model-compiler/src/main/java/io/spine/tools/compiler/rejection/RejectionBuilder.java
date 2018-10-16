@@ -38,7 +38,7 @@ import java.util.Optional;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static com.squareup.javapoet.MethodSpec.constructorBuilder;
-import static io.spine.tools.compiler.rejection.RejectionJavadoc.escapeAndWrapInPreTags;
+import static io.spine.tools.compiler.rejection.FormattedCodeBlock.lineSeparator;
 import static javax.lang.model.element.Modifier.FINAL;
 import static javax.lang.model.element.Modifier.PRIVATE;
 import static javax.lang.model.element.Modifier.PUBLIC;
@@ -75,7 +75,7 @@ class RejectionBuilder {
         return MethodSpec
                 .methodBuilder(newBuilder.name())
                 .addModifiers(PUBLIC, STATIC)
-                .addJavadoc("@return a new builder for the rejection")
+                .addJavadoc(withNewLine("@return a new builder for the rejection"))
                 .returns(thisType())
                 .addStatement("return new $L()", name.value())
                 .build();
@@ -126,17 +126,19 @@ class RejectionBuilder {
     }
 
     private static MethodSpec constructor() {
+        CodeBlock javadoc = withNewLine("Prevent direct instantiation of the builder.");
         return constructorBuilder()
-                .addJavadoc("Prevent direct instantiation of the builder.")
+                .addJavadoc(javadoc)
                 .addModifiers(PRIVATE)
                 .build();
     }
 
     private MethodSpec rejectionMessage() {
+        CodeBlock javadoc = withNewLine("Obtains the rejection and validates it.");
         return MethodSpec
                 .methodBuilder("rejectionMessage")
                 .addModifiers(PRIVATE)
-                .addJavadoc("Obtains the rejection and validates it.")
+                .addJavadoc(javadoc)
                 .returns(protoRejection())
                 .addStatement("$T message = $L.build()", protoRejection(), BUILDER_FIELD)
                 .addStatement("$T.checkValid(message)", Validate.class)
@@ -146,10 +148,11 @@ class RejectionBuilder {
 
     @SuppressWarnings("DuplicateStringLiteralInspection") // The same string has different semantics
     private MethodSpec build() {
+        CodeBlock javadoc = withNewLine("Creates the rejection from the builder and validates it.");
         return MethodSpec
                 .methodBuilder("build")
                 .addModifiers(PUBLIC)
-                .addJavadoc("Creates the rejection from the builder and validates it.")
+                .addJavadoc(javadoc)
                 .returns(throwableRejection())
                 .addStatement("return new $T(this)", throwableRejection())
                 .build();
@@ -159,6 +162,7 @@ class RejectionBuilder {
         String rejectionName = rejection.simpleTypeName();
         return CodeBlock.builder()
                         .add("The builder for the {@code $L} rejection.", rejectionName)
+                        .add(lineSeparator())
                         .build();
     }
 
@@ -192,7 +196,9 @@ class RejectionBuilder {
                 .addStatement("$L.$L($L)", BUILDER_FIELD, methodName, parameterName)
                 .addStatement("return this");
         Optional<String> comments = field.leadingComments();
-        comments.ifPresent(text -> methodBuilder.addJavadoc(escapeAndWrapInPreTags(text)));
+        comments.ifPresent(
+                text -> methodBuilder.addJavadoc(FormattedCodeBlock.from(text)
+                                                                   .asJavadoc()));
         return methodBuilder.build();
     }
 
@@ -211,5 +217,12 @@ class RejectionBuilder {
 
     private ClassName throwableRejection() {
         return rejection.throwableRejection();
+    }
+
+    private static CodeBlock withNewLine(String text) {
+        return CodeBlock.builder()
+                        .add(text)
+                        .add(lineSeparator())
+                        .build();
     }
 }
