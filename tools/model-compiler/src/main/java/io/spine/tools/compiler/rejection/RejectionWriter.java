@@ -54,6 +54,7 @@ public class RejectionWriter implements Logging {
     private static final NoArgMethod getMessageThrown = new NoArgMethod("getMessageThrown");
 
     private final RejectionDeclaration declaration;
+    private final ClassName messageClass;
     private final File outputDirectory;
 
     private final RejectionBuilder builder;
@@ -76,8 +77,11 @@ public class RejectionWriter implements Logging {
                            Map<String, String> messageTypeMap,
                            Indent indent) {
         this.declaration = rejection;
+        this.messageClass = toJavaPoetName(rejection.messageClass());
         this.outputDirectory = outputDirectory;
-        this.builder = new RejectionBuilder(new GeneratedRejectionDeclaration(rejection),
+        this.builder = new RejectionBuilder(rejection,
+                                            messageClass,
+                                            toJavaPoetName(rejection.throwableClass()),
                                             messageTypeMap);
         this.indent = indent;
     }
@@ -137,8 +141,7 @@ public class RejectionWriter implements Logging {
     private MethodSpec getMessageThrown() {
         String methodSignature = getMessageThrown.signature();
         log().debug("Constructing method {}", methodSignature);
-
-        ClassName returnType = new GeneratedRejectionDeclaration(declaration).rejectionMessage();
+        ClassName returnType = messageClass;
         return MethodSpec.methodBuilder(getMessageThrown.name())
                          .addAnnotation(Override.class)
                          .addModifiers(PUBLIC)
@@ -202,5 +205,9 @@ public class RejectionWriter implements Logging {
                                  PRIVATE, STATIC, FINAL)
                         .initializer("0L")
                         .build();
+    }
+
+    private static ClassName toJavaPoetName(io.spine.type.ClassName className) {
+        return ClassName.bestGuess(className.toSimpleName());
     }
 }

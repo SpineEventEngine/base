@@ -20,7 +20,6 @@
 
 package io.spine.tools.compiler.rejection;
 
-import com.google.protobuf.DescriptorProtos;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
@@ -31,6 +30,7 @@ import io.spine.code.java.SimpleClassName;
 import io.spine.code.javadoc.JavadocText;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.FieldName;
+import io.spine.code.proto.RejectionDeclaration;
 import io.spine.protobuf.Messages;
 import io.spine.tools.compiler.field.type.FieldType;
 import io.spine.tools.compiler.field.type.FieldTypeFactory;
@@ -58,17 +58,21 @@ class RejectionBuilder {
     private static final NoArgMethod newBuilder = new NoArgMethod(Messages.METHOD_NEW_BUILDER);
     private static final String BUILDER_FIELD = "builder";
 
-    private final GeneratedRejectionDeclaration rejection;
+    private final RejectionDeclaration rejection;
+    private final ClassName messageClass;
+    private final ClassName throwableClass;
     private final SimpleClassName name;
     private final FieldTypeFactory fieldTypeFactory;
 
-    RejectionBuilder(GeneratedRejectionDeclaration rejection,
+    RejectionBuilder(RejectionDeclaration rejection,
+                     ClassName messageClass,
+                     ClassName throwableClass,
                      Map<String, String> messageTypeMap) {
-        DescriptorProtos.DescriptorProto rejectionDescriptor = rejection.protoDeclaration()
-                                                                        .getMessage();
         this.rejection = rejection;
+        this.messageClass = messageClass;
+        this.throwableClass = throwableClass;
         this.name = SimpleClassName.ofBuilder();
-        this.fieldTypeFactory = new FieldTypeFactory(rejectionDescriptor, messageTypeMap);
+        this.fieldTypeFactory = new FieldTypeFactory(rejection.getMessage(), messageTypeMap);
     }
 
     /**
@@ -149,8 +153,8 @@ class RejectionBuilder {
                 .methodBuilder("rejectionMessage")
                 .addModifiers(PRIVATE)
                 .addJavadoc(javadoc.value())
-                .returns(protoRejection())
-                .addStatement("$T message = $L.build()", protoRejection(), BUILDER_FIELD)
+                .returns(messageClass)
+                .addStatement("$T message = $L.build()", messageClass, BUILDER_FIELD)
                 .addStatement("$T.checkValid(message)", Validate.class)
                 .addStatement("return message")
                 .build();
@@ -165,34 +169,34 @@ class RejectionBuilder {
                 .methodBuilder("build")
                 .addModifiers(PUBLIC)
                 .addJavadoc(javadoc.value())
-                .returns(throwableRejection())
-                .addStatement("return new $T(this)", throwableRejection())
+                .returns(throwableClass)
+                .addStatement("return new $T(this)", throwableClass)
                 .build();
     }
 
     private JavadocText classJavadoc() {
-        String rejectionName = rejection.simpleTypeName();
+        String rejectionName = rejection.getSimpleTypeName();
         String javadocText = CodeBlock
                 .builder()
                 .add("The builder for the {@code $L} rejection.", rejectionName)
                 .build()
                 .toString();
-        return JavadocText.fromEscaped(javadocText);
+        return JavadocText.fromEscaped(javadocText)
+                          .withNewLine();
     }
 
     private FieldSpec initializedProtoBuilder() {
-        ClassName protoBuilderClass = protoRejection().nestedClass(SimpleClassName.ofBuilder()
-                                                                                  .value());
+        ClassName protoBuilderClass = messageClass.nestedClass(SimpleClassName.ofBuilder()
+                                                                              .value());
         return FieldSpec
                 .builder(protoBuilderClass, BUILDER_FIELD, PRIVATE, FINAL)
-                .initializer("$T.newBuilder()", protoRejection())
+                .initializer("$T.newBuilder()", messageClass)
                 .build();
     }
 
     private List<MethodSpec> setters() {
         List<MethodSpec> methods = newArrayList();
-        List<FieldDeclaration> fields = rejection.protoDeclaration()
-                                                 .fields();
+        List<FieldDeclaration> fields = rejection.fields();
         for (FieldDeclaration field : fields) {
             FieldType fieldType = fieldTypeFactory.create(field.descriptor());
             MethodSpec setter = fieldSetter(field, fieldType);
@@ -227,14 +231,6 @@ class RejectionBuilder {
      * @return class name for the builder
      */
     private ClassName thisType() {
-        return throwableRejection().nestedClass(name.value());
-    }
-
-    private ClassName protoRejection() {
-        return rejection.rejectionMessage();
-    }
-
-    private ClassName throwableRejection() {
-        return rejection.throwableRejection();
+        return throwableClass.nestedClass(name.value());
     }
 }
