@@ -25,14 +25,12 @@ import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.BufferOverflowException;
 
 import static com.google.common.primitives.Bytes.asList;
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.TestValues.random;
 import static java.lang.Byte.MAX_VALUE;
 import static java.lang.Byte.MIN_VALUE;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("MemoizingStream should")
 class MemoizingStreamTest {
@@ -89,19 +87,6 @@ class MemoizingStreamTest {
         stream.clear();
 
         checkMemoized(stream, EMPTY_BYTES);
-    }
-
-    @Test
-    @DisplayName("store 1 MiB of data")
-    void capacity() throws IOException {
-        int mebiByte = 1024 * 1024;
-        byte[] input = randomBytes(mebiByte);
-
-        MemoizingStream stream = new MemoizingStream();
-        stream.write(input);
-
-        assertThrows(BufferOverflowException.class, () -> stream.write(42));
-        checkMemoized(stream, input);
     }
 
     @Test
