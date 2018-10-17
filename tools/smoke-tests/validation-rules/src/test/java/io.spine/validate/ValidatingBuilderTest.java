@@ -45,7 +45,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  * <p>Any {@code ValidatingBuilder} implementation should pass these tests. When implementing your
  * own {@code ValidatingBuilder}, be sure to check if it fits the constraints stated below.
  */
-@SuppressWarnings("CheckReturnValue")
+@SuppressWarnings("ResultOfMethodCallIgnored")
 @DisplayName("ValidatingBuilder should")
 public class ValidatingBuilderTest {
 
@@ -59,7 +59,7 @@ public class ValidatingBuilderTest {
     @Test
     @DisplayName("check required validated repeated fields")
     public void check_required_validated_repeated_fields() {
-        assertThrows(ValidationException.class, () -> builder.addTask(Task.getDefaultInstance());
+        assertThrows(ValidationException.class, () -> builder.addTask(Task.getDefaultInstance()));
     }
 
     @Test
@@ -183,12 +183,13 @@ public class ValidatingBuilderTest {
         return add(getCurrentTime(), fromSeconds(1000L));
     }
 
-    @SuppressWarnings("CheckReturnValue") // We call the builder method.
     private static Task task() {
-        Task.Builder task = Task.newBuilder()
-                                .setId(newUuid());
-        task.setName("Task name" + task.getId());
-        return task.build();
+        String id = newUuid();
+        String name = "Task name" + id;
+        return Task.newBuilder()
+                   .setId(id)
+                   .setName(name)
+                   .build();
     }
 
     private static Member member() {
