@@ -21,6 +21,7 @@
 package io.spine.code.proto;
 
 import io.spine.code.java.SimpleClassName;
+import io.spine.type.ClassName;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.Objects;
@@ -30,9 +31,6 @@ import static com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 
 /**
  * A code generation metadata on a rejection.
- *
- * @author Dmytro Grankin
- * @author Alexander Yevsyukov
  */
 public final class RejectionDeclaration extends AbstractMessageDeclaration {
 
@@ -46,8 +44,10 @@ public final class RejectionDeclaration extends AbstractMessageDeclaration {
     /**
      * Creates a new instance.
      *
-     * @param message the declaration of the rejection message
-     * @param file    the file that contains the rejection
+     * @param message
+     *         the declaration of the rejection message
+     * @param file
+     *         the file that contains the rejection
      */
     RejectionDeclaration(DescriptorProto message, FileDescriptorProto file) {
         super(message, file);
@@ -64,8 +64,24 @@ public final class RejectionDeclaration extends AbstractMessageDeclaration {
         return result;
     }
 
-    public SimpleClassName getOuterJavaClass() {
-        return outerJavaClass;
+    /**
+     * Obtains the class name for the
+     * {@link io.spine.base.RejectionMessage RejectionMessage}.
+     *
+     * @return the fully qualified class name for the rejection message
+     */
+    public ClassName messageClass() {
+        ClassName outerClass = ClassName.of(getJavaPackage(), outerJavaClass);
+        return outerClass.nestedClass(getSimpleJavaClassName());
+    }
+
+    /**
+     * Obtains the class name of the {@linkplain io.spine.base.ThrowableMessage rejection}.
+     *
+     * @return the fully qualified class name for a throwable message
+     */
+    public ClassName throwableClass() {
+        return ClassName.of(getJavaPackage().value() + '.' + getSimpleTypeName());
     }
 
     @Override

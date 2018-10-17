@@ -20,7 +20,6 @@
 
 package io.spine.tools.gradle.compiler.given;
 
-import com.sun.javadoc.RootDoc;
 import io.spine.code.java.DefaultJavaProject;
 import io.spine.code.java.FileName;
 import io.spine.code.java.PackageName;
@@ -32,18 +31,20 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 
+import static java.lang.String.format;
+
 public class RejectionTestEnv {
 
-    /** Javadocs received from {@link RootDoc} contain "\n" line separator. */
+    /** Javadocs received using {@link org.jboss.forge.roaster.Roaster} have no line separators. */
     @SuppressWarnings("HardcodedLineSeparator")
-    private static final String JAVADOC_LINE_SEPARATOR = "\n";
+    private static final String JAVADOC_LINE_SEPARATOR = "";
     private static final String CLASS_COMMENT =
             "The rejection definition to test Javadoc generation.";
     private static final String REJECTION_NAME = "Rejection";
     private static final String FIRST_FIELD_COMMENT = "The rejection ID.";
-    private static final String FIRST_FIELD_NAME = "id";
+    private static final FieldName FIRST_FIELD = FieldName.of("id");
     private static final String SECOND_FIELD_COMMENT = "The rejection message.";
-    private static final String SECOND_FIELD_NAME = "rejection_message";
+    private static final FieldName SECOND_FIELD = FieldName.of("rejection_message");
 
     private static final PackageName JAVA_PACKAGE = PackageName.of("io.spine.sample.rejections");
     private static final FileName REJECTION_FILE_NAME = FileName.forType(REJECTION_NAME);
@@ -60,7 +61,7 @@ public class RejectionTestEnv {
                             .build();
     }
 
-    public static String rejectionsJavadocSourceName() {
+    public static String rejectionsJavadocThrowableSource() {
         Path fileName = DefaultJavaProject.at(Paths.get("/"))
                                           .generated()
                                           .mainSpine()
@@ -80,10 +81,10 @@ public class RejectionTestEnv {
                 "message " + REJECTION_NAME + " {",
 
                     "//" + FIRST_FIELD_COMMENT,
-                    "int32 " + FIRST_FIELD_NAME + " = 1; // Is not a part of Javadoc.",
+                    "int32 " + FIRST_FIELD + " = 1; // Is not a part of Javadoc.",
 
                     "//" + SECOND_FIELD_COMMENT,
-                    "string " + SECOND_FIELD_NAME + " = 2;",
+                    "string " + SECOND_FIELD + " = 2;",
 
                     "bool hasNoComment = 3;",
                 "}"
@@ -91,23 +92,27 @@ public class RejectionTestEnv {
     }
 
     public static String getExpectedClassComment() {
-        return ' ' + "<pre>" + JAVADOC_LINE_SEPARATOR
-                + ' ' + CLASS_COMMENT + JAVADOC_LINE_SEPARATOR
-                + " </pre>" + JAVADOC_LINE_SEPARATOR + JAVADOC_LINE_SEPARATOR
-                + " Rejection based on proto type {@code " + JAVA_PACKAGE + '.' + REJECTION_NAME
+        return wrappedInPreTag(CLASS_COMMENT) + JAVADOC_LINE_SEPARATOR
+                + " Rejection based on proto type  {@code " + JAVA_PACKAGE + '.' + REJECTION_NAME
                 + '}' + JAVADOC_LINE_SEPARATOR;
     }
 
-    public static String getExpectedCtorComment() {
-        String param = " @param ";
-        String firstFieldJavaName = FieldName.of(FIRST_FIELD_NAME)
-                                             .javaCase();
-        String secondFieldJavaName = FieldName.of(SECOND_FIELD_NAME)
-                                              .javaCase();
-        return " Creates a new instance." + JAVADOC_LINE_SEPARATOR + JAVADOC_LINE_SEPARATOR
-                + param + firstFieldJavaName + "                " + FIRST_FIELD_COMMENT
-                + JAVADOC_LINE_SEPARATOR
-                + param + secondFieldJavaName + "  " + SECOND_FIELD_COMMENT
-                + JAVADOC_LINE_SEPARATOR;
+    public static String getExpectedBuilderClassComment() {
+        return format("The builder for the  {@code %s}  rejection.", REJECTION_NAME);
+    }
+
+    public static String getExpectedFirstFieldComment() {
+        return wrappedInPreTag(FIRST_FIELD_COMMENT);
+
+    }
+
+    public static String getExpectedSecondFieldComment() {
+        return wrappedInPreTag(SECOND_FIELD_COMMENT);
+    }
+
+    private static String wrappedInPreTag(String commentText) {
+        return "<pre>" + JAVADOC_LINE_SEPARATOR
+                + ' ' + commentText + JAVADOC_LINE_SEPARATOR
+                + " </pre>" + JAVADOC_LINE_SEPARATOR;
     }
 }

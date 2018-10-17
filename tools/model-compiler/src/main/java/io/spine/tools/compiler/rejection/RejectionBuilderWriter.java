@@ -1,0 +1,236 @@
+/*
+ * Copyright 2018, TeamDev. All rights reserved.
+ *
+ * Redistribution and use in source and/or binary forms, with or without
+ * modification, must retain the above copyright notice and the following
+ * disclaimer.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package io.spine.tools.compiler.rejection;
+
+import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.CodeBlock;
+import com.squareup.javapoet.FieldSpec;
+import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.ParameterSpec;
+import com.squareup.javapoet.TypeSpec;
+import io.spine.code.java.SimpleClassName;
+import io.spine.code.javadoc.JavadocText;
+import io.spine.code.proto.FieldDeclaration;
+import io.spine.code.proto.FieldName;
+import io.spine.code.proto.RejectionDeclaration;
+import io.spine.protobuf.Messages;
+import io.spine.tools.compiler.field.type.FieldType;
+import io.spine.tools.compiler.field.type.FieldTypeFactory;
+import io.spine.validate.Validate;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import static com.google.common.collect.Lists.newArrayList;
+import static com.squareup.javapoet.MethodSpec.constructorBuilder;
+import static javax.lang.model.element.Modifier.FINAL;
+import static javax.lang.model.element.Modifier.PRIVATE;
+import static javax.lang.model.element.Modifier.PUBLIC;
+import static javax.lang.model.element.Modifier.STATIC;
+
+/**
+ * Generates code for a rejection builder.
+ *
+ * <p>A generated builder validates rejection messages using
+ * {@link io.spine.validate.Validate#checkValid(com.google.protobuf.Message)}.
+ */
+class RejectionBuilderWriter {
+
+    private static final NoArgMethod newBuilder = new NoArgMethod(Messages.METHOD_NEW_BUILDER);
+    private static final String BUILDER_FIELD = "builder";
+
+    private final RejectionDeclaration rejection;
+    private final ClassName messageClass;
+    private final ClassName throwableClass;
+    private final SimpleClassName name;
+    private final FieldTypeFactory fieldTypeFactory;
+
+    RejectionBuilderWriter(RejectionDeclaration rejection,
+                           ClassName messageClass,
+                           ClassName throwableClass,
+                           Map<String, String> messageTypeMap) {
+        this.rejection = rejection;
+        this.messageClass = messageClass;
+        this.throwableClass = throwableClass;
+        this.name = SimpleClassName.ofBuilder();
+        this.fieldTypeFactory = new FieldTypeFactory(rejection.getMessage(), messageTypeMap);
+    }
+
+    /**
+     * Obtains the method to create the builder.
+     *
+     * @return the {@code newInstance} specification
+     */
+    MethodSpec newBuilder() {
+        JavadocText javadoc = JavadocText.fromEscaped("@return a new builder for the rejection")
+                                         .withNewLine();
+        return MethodSpec
+                .methodBuilder(newBuilder.name())
+                .addModifiers(PUBLIC, STATIC)
+                .addJavadoc(javadoc.value())
+                .returns(thisType())
+                .addStatement("return new $L()", name.value())
+                .build();
+    }
+
+    /**
+     * Obtains the declaration for the builder.
+     *
+     * @return the builder type specification
+     */
+    TypeSpec typeDeclaration() {
+        return TypeSpec
+                .classBuilder(name.value())
+                .addModifiers(PUBLIC, STATIC)
+                .addJavadoc(classJavadoc().value())
+                .addField(initializedProtoBuilder())
+                .addMethod(constructor())
+                .addMethods(setters())
+                .addMethod(rejectionMessage())
+                .addMethod(build())
+                .build();
+    }
+
+    /**
+     * Obtains the builder as a parameter.
+     *
+     * @return the parameter specification for this builder
+     */
+    ParameterSpec asParameter() {
+        return ParameterSpec
+                .builder(thisType(), BUILDER_FIELD)
+                .build();
+    }
+
+    /**
+     * A code block, which builds and validates the rejection message.
+     *
+     * <p>The code block is not a statement (there is no semicolon) since
+     * it is intended to be passes to a constructor.
+     *
+     * @return the code block to obtain a rejection message
+     */
+    CodeBlock buildRejectionMessage() {
+        return CodeBlock
+                .builder()
+                .add("$N.$N()", asParameter(), rejectionMessage())
+                .build();
+    }
+
+    private static MethodSpec constructor() {
+        String rawJavadoc = "Prevent direct instantiation of the builder.";
+        JavadocText javadoc = JavadocText.fromEscaped(rawJavadoc)
+                                         .withNewLine();
+        return constructorBuilder()
+                .addJavadoc(javadoc.value())
+                .addModifiers(PRIVATE)
+                .build();
+    }
+
+    private MethodSpec rejectionMessage() {
+        JavadocText javadoc = JavadocText.fromEscaped("Obtains the rejection and validates it.")
+                                         .withNewLine();
+        return MethodSpec
+                .methodBuilder("rejectionMessage")
+                .addModifiers(PRIVATE)
+                .addJavadoc(javadoc.value())
+                .returns(messageClass)
+                .addStatement("$T message = $L.build()", messageClass, BUILDER_FIELD)
+                .addStatement("$T.checkValid(message)", Validate.class)
+                .addStatement("return message")
+                .build();
+    }
+
+    @SuppressWarnings("DuplicateStringLiteralInspection") // The same string has different semantics
+    private MethodSpec build() {
+        String rawJavadoc = "Creates the rejection from the builder and validates it.";
+        JavadocText javadoc = JavadocText.fromEscaped(rawJavadoc)
+                                         .withNewLine();
+        return MethodSpec
+                .methodBuilder("build")
+                .addModifiers(PUBLIC)
+                .addJavadoc(javadoc.value())
+                .returns(throwableClass)
+                .addStatement("return new $T(this)", throwableClass)
+                .build();
+    }
+
+    private JavadocText classJavadoc() {
+        String rejectionName = rejection.getSimpleTypeName();
+        String javadocText = CodeBlock
+                .builder()
+                .add("The builder for the {@code $L} rejection.", rejectionName)
+                .build()
+                .toString();
+        return JavadocText.fromEscaped(javadocText)
+                          .withNewLine();
+    }
+
+    private FieldSpec initializedProtoBuilder() {
+        ClassName protoBuilderClass = messageClass.nestedClass(SimpleClassName.ofBuilder()
+                                                                              .value());
+        return FieldSpec
+                .builder(protoBuilderClass, BUILDER_FIELD, PRIVATE, FINAL)
+                .initializer("$T.newBuilder()", messageClass)
+                .build();
+    }
+
+    private List<MethodSpec> setters() {
+        List<MethodSpec> methods = newArrayList();
+        List<FieldDeclaration> fields = rejection.fields();
+        for (FieldDeclaration field : fields) {
+            FieldType fieldType = fieldTypeFactory.create(field.descriptor());
+            MethodSpec setter = fieldSetter(field, fieldType);
+            methods.add(setter);
+        }
+        return methods;
+    }
+
+    private MethodSpec fieldSetter(FieldDeclaration field,
+                                   FieldType fieldType) {
+        FieldName fieldName = field.name();
+        String parameterName = fieldName.javaCase();
+        String methodName = fieldType.getSetterPrefix() + fieldName.toCamelCase();
+        MethodSpec.Builder methodBuilder = MethodSpec
+                .methodBuilder(methodName)
+                .addModifiers(PUBLIC)
+                .returns(thisType())
+                .addParameter(fieldType.getTypeName(), parameterName)
+                .addStatement("$L.$L($L)", BUILDER_FIELD, methodName, parameterName)
+                .addStatement("return this");
+        Optional<String> comments = field.leadingComments();
+        comments.ifPresent(
+                text -> methodBuilder.addJavadoc(JavadocText.fromUnescaped(text)
+                                                            .inPreTags()
+                                                            .value()));
+        return methodBuilder.build();
+    }
+
+    /**
+     * Obtains the class name of this builder.
+     *
+     * @return class name for the builder
+     */
+    private ClassName thisType() {
+        return throwableClass.nestedClass(name.value());
+    }
+}

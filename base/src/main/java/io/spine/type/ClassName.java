@@ -24,6 +24,7 @@ import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
+import io.spine.code.java.PackageName;
 import io.spine.code.java.SimpleClassName;
 import io.spine.value.StringTypeValue;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -53,7 +54,8 @@ public final class ClassName extends StringTypeValue {
     /**
      * Creates a new instance with the name of the passed class.
      *
-     * @param cls the class to get name from
+     * @param cls
+     *         the class to get name from
      * @return new instance
      */
     public static ClassName of(Class cls) {
@@ -63,7 +65,8 @@ public final class ClassName extends StringTypeValue {
     /**
      * Creates a new instance with the passed class name value.
      *
-     * @param className a fully-qualified Java class name
+     * @param className
+     *         a fully-qualified Java class name
      * @return new
      */
     public static ClassName of(String className) {
@@ -73,12 +76,28 @@ public final class ClassName extends StringTypeValue {
     }
 
     /**
+     * Creates a class name from the specified package the and simple name.
+     *
+     * @param packageName
+     *         the name of the class package
+     * @param simpleClassName
+     *         the simple name of a the class
+     * @return a new instance
+     */
+    public static ClassName of(PackageName packageName, SimpleClassName simpleClassName) {
+        checkNotNull(packageName);
+        checkNotNull(simpleClassName);
+        return new ClassName(packageName.value() + '.' + simpleClassName);
+    }
+
+    /**
      * Creates an instance of {@code ClassName} from the given Protobuf message type descriptor.
      *
      * <p>The resulting class name is the name of the Java class which represents the given Protobuf
      * type.
      *
-     * @param descriptor the Protobuf message type descriptor
+     * @param descriptor
+     *         the Protobuf message type descriptor
      * @return new instance of {@code ClassName}
      */
     public static ClassName from(Descriptor descriptor) {
@@ -93,13 +112,35 @@ public final class ClassName extends StringTypeValue {
      * <p>The resulting class name is the name of the Java enum which represents the given Protobuf
      * type.
      *
-     * @param descriptor the Protobuf enum type descriptor
+     * @param descriptor
+     *         the Protobuf enum type descriptor
      * @return new instance of {@code ClassName}
      */
     public static ClassName from(EnumDescriptor descriptor) {
         return construct(descriptor.getName(),
                          descriptor.getFile(),
                          descriptor.getContainingType());
+    }
+
+    /**
+     * Obtains the name of a nested class.
+     *
+     * @param className
+     *         the name of the nested class to get
+     * @return the nested class name
+     */
+    public ClassName nestedClass(SimpleClassName className) {
+        checkNotNull(className);
+        return of(value() + '$' + className);
+    }
+
+    /**
+     * Converts the class name to a simple name by replacing all {@code $} by dots.
+     *
+     * @return the simple name representation
+     */
+    public String toSimpleName() {
+        return value().replace('$', '.');
     }
 
     private static ClassName construct(String typeName,
