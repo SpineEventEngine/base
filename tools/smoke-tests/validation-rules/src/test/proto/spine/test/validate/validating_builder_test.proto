@@ -24,7 +24,7 @@ package spine.test.validate.msg;
 
 option (type_url_prefix) = "type.spine.io";
 option java_multiple_files = true;
-option java_outer_classname = "ValidatingBuilderShouldProto";
+option java_outer_classname = "ValidatingBuilderTestProto";
 option java_package = "io.spine.test.validate.msg.builder";
 
 import "google/protobuf/timestamp.proto";
@@ -37,7 +37,7 @@ import "spine/people/person_name.proto";
 
 // The test definitions for the `ValidatingBuilder` tests.
 //
-// Use in `ValidatingBuilderShould` only
+// Use in `ValidatingBuilderTest` only
 
 message Project {
 

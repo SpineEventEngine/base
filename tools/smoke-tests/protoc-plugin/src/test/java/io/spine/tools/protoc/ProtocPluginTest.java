@@ -26,18 +26,20 @@ import io.spine.base.EventMessage;
 import io.spine.base.RejectionMessage;
 import io.spine.tools.protoc.test.PIUserEvent;
 import io.spine.tools.protoc.test.UserInfo;
-import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PluginShould {
+@DisplayName("ProtocPlugin should")
+class ProtocPluginTest {
 
     private static final String EVENT_INTERFACE_FQN =
             "io.spine.tools.protoc.PICustomerEvent";
@@ -47,29 +49,34 @@ public class PluginShould {
             "io.spine.tools.protoc.PIUserCommand";
 
     @Test
-    public void generate_marker_interfaces() throws ClassNotFoundException {
+    @DisplayName("generate marker interfaces")
+    void generate_marker_interfaces() throws ClassNotFoundException {
         checkMarkerInterface(EVENT_INTERFACE_FQN);
     }
 
     @Test
-    public void implement_marker_interfaces_in_generated_messages() {
+    @DisplayName("implement marker interface in the generated messages")
+    void implement_marker_interfaces_in_generated_messages() {
         assertThat(PICustomerNotified.getDefaultInstance(), instanceOf(PICustomerEvent.class));
         assertThat(PICustomerEmailRecieved.getDefaultInstance(), instanceOf(PICustomerEvent.class));
     }
 
     @Test
-    public void generate_marker_interfaces_for_separate_messages() throws ClassNotFoundException {
+    @DisplayName("generate marker interfaces for the separate messages")
+    void generate_marker_interfaces_for_separate_messages() throws ClassNotFoundException {
         checkMarkerInterface(COMMAND_INTERFACE_FQN);
     }
 
     @Test
-    public void implement_interface_in_generated_messages_with_IS_option() {
+    @DisplayName("implement interface in the generated messages with `IS` option")
+    void implement_interface_in_generated_messages_with_IS_option() {
         assertThat(PICustomerCreated.getDefaultInstance(), instanceOf(PICustomerEvent.class));
         assertThat(PICreateCustomer.getDefaultInstance(), instanceOf(PICustomerCommand.class));
     }
 
     @Test
-    public void use_IS_in_priority_to_EVERY_IS() {
+    @DisplayName("use `IS` in priority to `EVERY IS`")
+    void use_IS_in_priority_to_EVERY_IS() {
         assertThat(PIUserCreated.getDefaultInstance(), instanceOf(PIUserEvent.class));
         assertThat(PIUserNameUpdated.getDefaultInstance(), instanceOf(PIUserEvent.class));
 
@@ -78,13 +85,15 @@ public class PluginShould {
     }
 
     @Test
-    public void resolve_packages_from_src_proto_if_not_specified() throws ClassNotFoundException {
+    @DisplayName("resolve packages from src proto if the packages are not specified")
+    void resolve_packages_from_src_proto_if_not_specified() throws ClassNotFoundException {
         Class<?> cls = checkMarkerInterface(USER_COMMAND_FQN);
         assertTrue(cls.isAssignableFrom(PICreateUser.class));
     }
 
     @Test
-    public void skip_non_specified_message_types() {
+    @DisplayName("skip non specified message types")
+    void skip_non_specified_message_types() {
         Class<?> cls = CustomerName.class;
         Class[] interfaces = cls.getInterfaces();
         assertEquals(1, interfaces.length);
@@ -92,22 +101,27 @@ public class PluginShould {
     }
 
     @Test
-    public void mark_event_messages() {
+    @DisplayName("mark as event messages")
+    void mark_event_messages() {
         assertThat(UserCreated.getDefaultInstance(), instanceOf(EventMessage.class));
         assertThat(UserCreated.getDefaultInstance(), instanceOf(FirstEvent.class));
         assertThat(UserNotfied.getDefaultInstance(), instanceOf(EventMessage.class));
     }
 
     @Test
-    public void mark_command_messages() {
+    @DisplayName("mark as command messages")
+    void mark_command_messages() {
         assertThat(CreateUser.getDefaultInstance(), instanceOf(CommandMessage.class));
         assertThat(NotifyUser.getDefaultInstance(), instanceOf(CommandMessage.class));
     }
 
     @Test
-    public void mark_rejection_messages() {
-        assertThat(Rejections.UserAlreadyExists.getDefaultInstance(), instanceOf(RejectionMessage.class));
-        assertThat(Rejections.UserAlreadyExists.getDefaultInstance(), instanceOf(UserRejection.class));
+    @DisplayName("mark as rejection messages")
+    void mark_rejection_messages() {
+        assertThat(Rejections.UserAlreadyExists.getDefaultInstance(),
+                   instanceOf(RejectionMessage.class));
+        assertThat(Rejections.UserAlreadyExists.getDefaultInstance(),
+                   instanceOf(UserRejection.class));
     }
 
     private static Class<?> checkMarkerInterface(String fqn) throws ClassNotFoundException {

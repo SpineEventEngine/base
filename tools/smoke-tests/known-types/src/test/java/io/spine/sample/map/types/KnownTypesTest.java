@@ -24,13 +24,15 @@ import com.google.common.base.Joiner;
 import io.spine.type.ClassName;
 import io.spine.type.KnownTypes;
 import io.spine.type.TypeUrl;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import static com.google.common.collect.ImmutableList.copyOf;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class KnownTypesShould {
+@DisplayName("KnownTypes should")
+class KnownTypesTest {
 
     private static final String PROTO_TYPE_PREFIX = "type.spine.io/spine.sample.map.types.";
     private static final String JAVA_PACKAGE_PREFIX = "io.spine.sample.map.types.";
@@ -50,76 +52,89 @@ public class KnownTypesShould {
 
     private KnownTypes knownTypes;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         knownTypes = KnownTypes.instance();
     }
 
     @Test
-    public void put_entry_for_simple_message() {
+    @DisplayName("put an entry for the simple message")
+    void put_entry_for_simple_message() {
         assertIsKnownType("SimpleMsg");
     }
 
     @Test
-    public void put_entry_for_simple_enum() {
+    @DisplayName("put an entry for the simple enum")
+    void put_entry_for_simple_enum() {
         assertIsKnownType("SimpleEnum");
     }
 
     @Test
-    public void put_entry_for_msg_with_outer_class_set_in_protobuf_file_option() {
+    @DisplayName("put an entry for the message with outer class which set in the protobuf file as an option")
+    void put_entry_for_msg_with_outer_class_set_in_protobuf_file_option() {
         assertIsKnownType("InnerMsg", "TestOuterClass$InnerMsg");
     }
 
     @Test
-    public void put_entry_for_enum_with_outer_class_set_in_protobuf_file_option() {
+    @DisplayName("put an entry for the enum with outer class which set in the protobuf file as an option")
+    void put_entry_for_enum_with_outer_class_set_in_protobuf_file_option() {
         assertIsKnownType("InnerEnum", "TestOuterClass$InnerEnum");
     }
 
     @Test
-    public void put_entry_for_msg_with_outer_class_as_file_name() {
+    @DisplayName("put an entry for the message with outer class which passed as a file name")
+    void put_entry_for_msg_with_outer_class_as_file_name() {
         assertIsKnownType("TestMsg", "OuterClassName$TestMsg");
     }
 
     @Test
-    public void put_entry_for_enum_with_outer_class_as_file_name() {
+    @DisplayName("put an entry for the enum with outer class which passed as a file name")
+    void put_entry_for_enum_with_outer_class_as_file_name() {
         assertIsKnownType("TestEnum", "OuterClassName$TestEnum");
     }
 
     @Test
-    public void put_entry_for_top_level_messages() {
+    @DisplayName("put an entry for the top level messages")
+    void put_entry_for_top_level_messages() {
         assertIsKnownType(FIRST_MSG);
         assertIsKnownType(MSG_ONE);
     }
 
     @Test
-    public void put_entry_for_second_level_messages() {
+    @DisplayName("put an entry for the second level messages")
+    void put_entry_for_second_level_messages() {
         assertIsKnownType(compose(FIRST_MSG, SECOND_MSG));
         assertIsKnownType(compose(MSG_ONE, MSG_TWO));
     }
 
     @Test
-    public void put_entry_for_second_level_enum() {
+    @DisplayName("put an entry for the second level enum")
+    void put_entry_for_second_level_enum() {
         assertIsKnownType(compose(FIRST_MSG, SECOND_ENUM));
         assertIsKnownType(compose(MSG_ONE, ENUM_TWO));
     }
 
     @Test
-    public void put_entry_for_third_level_msg() {
+    @DisplayName("put an entry for the third level message")
+    void put_entry_for_third_level_msg() {
         assertIsKnownType(compose(FIRST_MSG, SECOND_MSG, THIRD_MSG));
     }
 
     @Test
-    public void put_entry_for_third_level_enum() {
+    @DisplayName("put an entry for the third level enum")
+    void put_entry_for_third_level_enum() {
         assertIsKnownType(compose(FIRST_MSG, SECOND_MSG, THIRD_ENUM));
     }
 
     @Test
-    public void put_entry_for_fourth_level_msg() {
+    @DisplayName("put an entry for the fourth level message")
+    void put_entry_for_fourth_level_msg() {
         assertIsKnownType(compose(FIRST_MSG, SECOND_MSG, THIRD_MSG, FOURTH_MSG));
     }
 
     @Test
-    public void put_entry_for_fourth_level_enum() {
+    @DisplayName("put an entry for the fourth level enum")
+    void put_entry_for_fourth_level_enum() {
         assertIsKnownType(compose(FIRST_MSG, SECOND_MSG, THIRD_MSG, FOURTH_ENUM));
     }
 
