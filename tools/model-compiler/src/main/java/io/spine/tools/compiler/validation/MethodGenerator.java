@@ -27,16 +27,16 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import io.spine.protobuf.Messages;
 import io.spine.tools.compiler.MessageTypeCache;
-import io.spine.tools.compiler.fieldtype.FieldType;
-import io.spine.tools.compiler.fieldtype.FieldTypeFactory;
+import io.spine.tools.compiler.field.type.FieldType;
+import io.spine.tools.compiler.field.type.FieldTypeFactory;
 
 import javax.lang.model.element.Modifier;
 import java.util.Collection;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static io.spine.tools.compiler.fieldtype.FieldTypes.isMap;
-import static io.spine.tools.compiler.fieldtype.FieldTypes.isRepeated;
+import static io.spine.tools.compiler.field.type.FieldTypes.isMap;
+import static io.spine.tools.compiler.field.type.FieldTypes.isRepeated;
 import static io.spine.tools.compiler.validation.ClassNames.getValidatorMessageClassName;
 
 /**

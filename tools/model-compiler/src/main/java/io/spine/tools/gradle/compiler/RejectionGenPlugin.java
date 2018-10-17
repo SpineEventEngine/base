@@ -21,6 +21,7 @@ package io.spine.tools.gradle.compiler;
 
 import com.google.common.collect.Lists;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
+import io.spine.code.Indent;
 import io.spine.code.java.PackageName;
 import io.spine.code.java.SimpleClassName;
 import io.spine.code.proto.FileName;
@@ -47,6 +48,7 @@ import static io.spine.tools.gradle.TaskName.GENERATE_PROTO;
 import static io.spine.tools.gradle.TaskName.GENERATE_REJECTIONS;
 import static io.spine.tools.gradle.TaskName.GENERATE_TEST_PROTO;
 import static io.spine.tools.gradle.TaskName.GENERATE_TEST_REJECTIONS;
+import static io.spine.tools.gradle.compiler.Extension.getIndent;
 import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSetPath;
 import static io.spine.tools.gradle.compiler.Extension.getTargetGenRejectionsRootDir;
 import static io.spine.tools.gradle.compiler.Extension.getTargetTestGenRejectionsRootDir;
@@ -104,11 +106,12 @@ public class RejectionGenPlugin extends SpinePlugin {
     public void apply(Project project) {
         Logger log = log();
 
+        Indent indent = getIndent(project);
         Action<Task> mainScopeAction = task -> {
             String mainFile = getMainDescriptorSetPath(project);
             String targetFolder = getTargetGenRejectionsRootDir(project);
 
-            generateRejections(mainFile, targetFolder);
+            generateRejections(mainFile, targetFolder, indent);
         };
 
         logDependingTask(GENERATE_REJECTIONS, COMPILE_JAVA, GENERATE_PROTO);
@@ -123,7 +126,7 @@ public class RejectionGenPlugin extends SpinePlugin {
             String testFile = getTestDescriptorSetPath(project);
             String targetFolder = getTargetTestGenRejectionsRootDir(project);
 
-            generateTestRejections(mainFile, testFile, targetFolder);
+            generateTestRejections(mainFile, testFile, targetFolder, indent);
         };
 
         logDependingTask(GENERATE_TEST_REJECTIONS, COMPILE_TEST_JAVA, GENERATE_TEST_PROTO);
@@ -137,7 +140,7 @@ public class RejectionGenPlugin extends SpinePlugin {
         log.debug("Rejection generation phase initialized with tasks: {}, {}", mainTask, testTask);
     }
 
-    private void generateRejections(String mainFile, String targetFolder) {
+    private void generateRejections(String mainFile, String targetFolder, Indent indent) {
         Logger log = log();
         File setFile = new File(mainFile);
         if (!setFile.exists()) {
@@ -149,10 +152,11 @@ public class RejectionGenPlugin extends SpinePlugin {
         List<FileDescriptorProto> mainFiles = parse(mainFile);
         collectAllMessageTypes(mainFiles);
         List<RejectionsFile> rejectionFiles = collect(mainFiles);
-        doGenerate(rejectionFiles, targetFolder);
+        doGenerate(rejectionFiles, targetFolder, indent);
     }
 
-    private void generateTestRejections(String mainFile, String testFile, String targetFolder) {
+    private void generateTestRejections(String mainFile, String testFile, String targetFolder,
+                                        Indent indent) {
         Logger log = log();
         File setFile = new File(mainFile);
         if (!setFile.exists()) {
@@ -174,7 +178,7 @@ public class RejectionGenPlugin extends SpinePlugin {
         List<FileDescriptorProto> testFiles = parse(testFile);
         collectAllMessageTypes(testFiles);
         List<RejectionsFile> rejectionFiles = collect(testFiles);
-        doGenerate(rejectionFiles, targetFolder);
+        doGenerate(rejectionFiles, targetFolder, indent);
     }
 
     private void collectAllMessageTypes(Iterable<FileDescriptorProto> files) {
@@ -183,18 +187,19 @@ public class RejectionGenPlugin extends SpinePlugin {
         }
     }
 
-    private void doGenerate(Iterable<RejectionsFile> files, String outDir) {
+    private void doGenerate(Iterable<RejectionsFile> files, String outDir, Indent indent) {
         Logger log = log();
         log.debug("Processing the file descriptors for the rejections {}", files);
         for (RejectionsFile file : files) {
             // We are sure that this is a rejections file because we got them filtered.
-            generateRejections(file, messageTypeCache.getCachedTypes(), outDir);
+            generateRejections(file, messageTypeCache.getCachedTypes(), outDir, indent);
         }
     }
 
     private void generateRejections(RejectionsFile file,
                                     Map<String, String> messageTypeMap,
-                                    String rejectionsRootDir) {
+                                    String rejectionsRootDir,
+                                    Indent indent) {
         Logger log = log();
         if (log.isDebugEnabled()) {
             log.debug(
@@ -211,7 +216,7 @@ public class RejectionGenPlugin extends SpinePlugin {
             // The name of the generated `ThrowableMessage` will be the same
             // as for the Protobuf message.
             log.debug("Processing rejection '{}'", rejection.getSimpleTypeName());
-            RejectionWriter writer = new RejectionWriter(rejection, outDir, messageTypeMap);
+            RejectionWriter writer = new RejectionWriter(rejection, outDir, messageTypeMap, indent);
             writer.write();
         }
     }
