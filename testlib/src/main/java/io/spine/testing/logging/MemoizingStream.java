@@ -22,25 +22,21 @@ package io.spine.testing.logging;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.ByteBuffer;
+import java.util.List;
+
+import static com.google.common.collect.Lists.newArrayListWithExpectedSize;
 
 /**
- * An {@link java.io.OutputStream} which stores its input.
- *
- * <p>The stream stores all the given bytes in a {@link java.nio.ByteBuffer}. The size of the buffer is
- * exactly 1 MiB. If the steam is not {@linkplain #clear() cleared} before the buffer fills up,
- * an {@link java.nio.BufferOverflowException} occurs.
- *
- * @author Dmytro Dashenkov
+ * An {@link OutputStream} which stores its input.
  */
 final class MemoizingStream extends OutputStream {
 
     private static final int ONE_MEBI_BYTE = 1024 * 1024;
 
-    private final ByteBuffer memory = ByteBuffer.allocate(ONE_MEBI_BYTE);
+    private final List<Byte> memory = newArrayListWithExpectedSize(ONE_MEBI_BYTE);
 
     @Override
-    public void write(int b) {
+    public synchronized void write(int b) {
         /*
            According to the `OutputStream` contract, a negative value may represent the end of
            the stream. The actual data is the lowest 8 bits of the int.
@@ -49,14 +45,14 @@ final class MemoizingStream extends OutputStream {
             @SuppressWarnings("NumericCastThatLosesPrecision")
                 // Adheres to the OutputStream contract.
             byte byteValue = (byte) b;
-            memory.put(byteValue);
+            memory.add(byteValue);
         }
     }
 
     /**
      * Clears the memoized input.
      */
-    void clear() {
+    synchronized void clear() {
         memory.clear();
     }
 
@@ -64,13 +60,14 @@ final class MemoizingStream extends OutputStream {
      * Copies the memoized input into the given stream and {@linkplain #clear() clears} memory.
      *
      * @param stream the target stream
-     * @throws java.io.IOException if the target stream throws an {@link java.io.IOException} on a write operation
+     * @throws IOException if the target stream throws an {@link IOException} on a write operation
      */
-    void flushTo(OutputStream stream) throws IOException {
-        int entryCount = memory.position();
-        for (int i = 0; i < entryCount; i++) {
-            byte byteValue = memory.get(i);
-            stream.write(byteValue);
+    synchronized void flushTo(OutputStream stream) throws IOException {
+        byte[] buffer = new byte[memory.size()];
+        for (int i = 0; i < memory.size(); i++) {
+            buffer[i] = memory.get(i);
         }
+        stream.write(buffer);
+        clear();
     }
 }
