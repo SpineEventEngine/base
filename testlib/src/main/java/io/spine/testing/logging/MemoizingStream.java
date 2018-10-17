@@ -36,7 +36,7 @@ final class MemoizingStream extends OutputStream {
     private final List<Byte> memory = newArrayListWithExpectedSize(ONE_MEBI_BYTE);
 
     @Override
-    public void write(int b) {
+    public synchronized void write(int b) {
         /*
            According to the `OutputStream` contract, a negative value may represent the end of
            the stream. The actual data is the lowest 8 bits of the int.
@@ -52,7 +52,7 @@ final class MemoizingStream extends OutputStream {
     /**
      * Clears the memoized input.
      */
-    void clear() {
+    synchronized void clear() {
         memory.clear();
     }
 
@@ -62,7 +62,7 @@ final class MemoizingStream extends OutputStream {
      * @param stream the target stream
      * @throws IOException if the target stream throws an {@link IOException} on a write operation
      */
-    void flushTo(OutputStream stream) throws IOException {
+    synchronized void flushTo(OutputStream stream) throws IOException {
         byte[] buffer = new byte[memory.size()];
         for (int i = 0; i < memory.size(); i++) {
             buffer[i] = memory.get(i);
