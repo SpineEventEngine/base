@@ -17,28 +17,5 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.tools.compiler.fieldtype;
 
-import com.squareup.javapoet.TypeName;
-
-/**
- * Interface for obtaining type specific information.
- *
- * @author Dmytro Grankin
- */
-public interface FieldType {
-
-    /**
-     * Returns the {@link TypeName} for specific {@link FieldType}.
-     *
-     * @return the type name
-     */
-    TypeName getTypeName();
-
-    /**
-     * Returns the setter prefix for specific {@link FieldType}.
-     *
-     * @return the setter prefix
-     */
-    String getSetterPrefix();
-}
+// No additional config is required. See smoke-tests/build.gradle for all the config of the project.

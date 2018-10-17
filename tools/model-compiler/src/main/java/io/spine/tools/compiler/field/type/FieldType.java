@@ -17,37 +17,26 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package io.spine.tools.compiler.field.type;
 
-include 'enrichment-lookup'
-include 'known-types'
-include 'validation-rules'
-include 'protoc-plugin'
-include 'rejection-generation'
+import com.squareup.javapoet.TypeName;
 
-/*
- * Dependency links established with the Gradle included build.
- *
- * See the `includeBuild(...)` block below for more info.
+/**
+ * The type information of a field for a code-generation.
  */
-final def links = [
-        'io.spine.tools:spine-model-compiler': ':model-compiler',
-        'io.spine:spine-base'                : ':base',
-        'io.spine:spine-base-testlib'        : ':testlib'
-]
+public interface FieldType {
 
-/*
- * Include the `base` build into `smoke-test` project build.
- *
- * Smoke tests are built separately in order to be able to test current version of the Gradle
- * plugins.
- *
- * See the Gradle manual for more info:
- * https://docs.gradle.org/current/userguide/composite_builds.html
- */
-includeBuild("$rootDir/../../") {
-    dependencySubstitution {
-        links.each {
-            substitute module(it.key) with project(it.value)
-        }
-    }
+    /**
+     * Obtains the {@link TypeName} for the field.
+     *
+     * @return the type name
+     */
+    TypeName getTypeName();
+
+    /**
+     * Obtains the setter prefix for the field.
+     *
+     * @return the setter prefix
+     */
+    String getSetterPrefix();
 }

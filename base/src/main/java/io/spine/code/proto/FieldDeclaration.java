@@ -18,36 +18,41 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-include 'enrichment-lookup'
-include 'known-types'
-include 'validation-rules'
-include 'protoc-plugin'
-include 'rejection-generation'
+package io.spine.code.proto;
 
-/*
- * Dependency links established with the Gradle included build.
- *
- * See the `includeBuild(...)` block below for more info.
- */
-final def links = [
-        'io.spine.tools:spine-model-compiler': ':model-compiler',
-        'io.spine:spine-base'                : ':base',
-        'io.spine:spine-base-testlib'        : ':testlib'
-]
+import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 
-/*
- * Include the `base` build into `smoke-test` project build.
- *
- * Smoke tests are built separately in order to be able to test current version of the Gradle
- * plugins.
- *
- * See the Gradle manual for more info:
- * https://docs.gradle.org/current/userguide/composite_builds.html
+import java.util.Optional;
+
+/**
+ * A declaration of a message field.
  */
-includeBuild("$rootDir/../../") {
-    dependencySubstitution {
-        links.each {
-            substitute module(it.key) with project(it.value)
-        }
+public class FieldDeclaration {
+
+    private final FieldDescriptorProto descriptor;
+    private final AbstractMessageDeclaration originMessage;
+
+    public FieldDeclaration(FieldDescriptorProto descriptor,
+                            AbstractMessageDeclaration originMessage) {
+        this.descriptor = descriptor;
+        this.originMessage = originMessage;
+    }
+
+    public FieldName name() {
+        return FieldName.of(descriptor);
+    }
+
+    public FieldDescriptorProto descriptor() {
+        return descriptor;
+    }
+
+    /**
+     * Obtains comments going before the field.
+     *
+     * @return the leading field comments or {@code Optional.empty()} if there are no comments
+     */
+    public Optional<String> leadingComments() {
+        return originMessage.documentation()
+                            .getFieldLeadingComments(descriptor);
     }
 }
