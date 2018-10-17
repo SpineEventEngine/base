@@ -45,7 +45,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  * <p>Any {@code ValidatingBuilder} implementation should pass these tests. When implementing your
  * own {@code ValidatingBuilder}, be sure to check if it fits the constraints stated below.
  */
-@SuppressWarnings("ResultOfMethodCallIgnored")
 @DisplayName("ValidatingBuilder should")
 class ValidatingBuilderTest {
 
