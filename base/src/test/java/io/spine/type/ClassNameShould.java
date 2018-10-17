@@ -21,6 +21,10 @@
 package io.spine.type;
 
 import com.google.common.testing.NullPointerTester;
+import com.google.protobuf.Descriptors;
+import com.google.protobuf.StringValue;
+import io.spine.code.java.PackageName;
+import io.spine.code.java.SimpleClassName;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -38,6 +42,11 @@ public class ClassNameShould {
 
     @Test
     public void pass_null_tolerance_check() {
-        new NullPointerTester().testAllPublicStaticMethods(ClassName.class);
+        Descriptors.Descriptor descriptor = StringValue.getDescriptor();
+        new NullPointerTester()
+                .setDefault(SimpleClassName.class, SimpleClassName.ofMessage(descriptor))
+                .setDefault(PackageName.class, PackageName.resolve(descriptor.getFile()
+                                                                             .toProto()))
+                .testAllPublicStaticMethods(ClassName.class);
     }
 }

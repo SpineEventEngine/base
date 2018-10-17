@@ -24,8 +24,6 @@ import io.spine.value.StringTypeValue;
 
 /**
  * A reference to a method with no arguments.
- *
- * @author Alexander Yevsyukov
  */
 class NoArgMethod extends StringTypeValue {
 

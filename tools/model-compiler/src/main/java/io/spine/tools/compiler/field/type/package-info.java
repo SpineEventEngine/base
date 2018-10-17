@@ -23,7 +23,7 @@
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault
-package io.spine.tools.compiler.fieldtype;
+package io.spine.tools.compiler.field.type;
 
 import com.google.errorprone.annotations.CheckReturnValue;
 
