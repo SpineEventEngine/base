@@ -24,10 +24,10 @@ import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Message;
+import io.spine.code.proto.SourceFile;
 import io.spine.logging.Logging;
 import io.spine.tools.compiler.MessageTypeCache;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.List;
@@ -37,13 +37,10 @@ import java.util.function.Predicate;
 
 import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Sets.newHashSet;
-import static io.spine.code.proto.FileDescriptors.parse;
+import static io.spine.code.proto.FileDescriptors.parseAndFilter;
 
 /**
  * Collects types for which validating builders are generated.
- *
- * @author Illia Shepilov
- * @author Alex Tymchenko
  */
 class VBTypeLookup implements Logging {
 
@@ -139,9 +136,8 @@ class VBTypeLookup implements Logging {
         Logger log = log();
         log.debug("Obtaining the file descriptors by {} path.", descFilePath);
         ImmutableSet.Builder<FileDescriptorProto> result = ImmutableSet.builder();
-        Collection<FileDescriptorProto> allDescriptors = parse(descFilePath);
-
-        for (FileDescriptorProto file : allDescriptors) {
+        Collection<FileDescriptorProto> descriptors = fileDescriptors(descFilePath);
+        for (FileDescriptorProto file : descriptors) {
             cacheTypesFromFile(file);
             messageTypeCache.cacheTypes(file);
 
@@ -160,5 +156,13 @@ class VBTypeLookup implements Logging {
 
     MessageTypeCache getTypeCache() {
         return messageTypeCache;
+    }
+
+    private static Collection<FileDescriptorProto> fileDescriptors(String descFilePath) {
+        Predicate<FileDescriptorProto> isNotRejection = (file) -> {
+            SourceFile source = SourceFile.from(file);
+            return !source.isRejections();
+        };
+        return parseAndFilter(descFilePath, isNotRejection);
     }
 }
