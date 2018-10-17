@@ -25,21 +25,23 @@ import io.spine.test.validate.FirstRuleTarget;
 import io.spine.test.validate.InvalidMessage;
 import io.spine.test.validate.RuleTargetAggregate;
 import io.spine.test.validate.SecondRuleTarget;
-import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SuppressWarnings({"ClassWithTooManyMethods", "OverlyCoupledClass", "OverlyComplexClass"})
-public class MessageValidatorShould {
+@DisplayName("MessageValidator should")
+class MessageValidatorTest {
 
     private final MessageValidator validator = MessageValidator.newInstance();
 
     private List<ConstraintViolation> violations;
 
     @Test
-    public void validate_according_to_validation_rule() {
+    @DisplayName("validate according to validation rules")
+    void validate_according_to_validation_rule() {
         String validValue = "any text";
         InvalidMessage invalidMessage = InvalidMessage.newBuilder()
                                                       .setInvalidField(validValue)
@@ -63,6 +65,6 @@ public class MessageValidatorShould {
     }
 
     private void assertIsValid() {
-        assertTrue(violations.toString(), violations.isEmpty());
+        assertTrue(violations.isEmpty());
     }
 }

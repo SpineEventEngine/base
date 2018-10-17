@@ -30,7 +30,7 @@ option java_multiple_files = true;
 
 // Test events for enrichments lookup tests
 //
-// See EnrichmentLookupPluginShould
+// See EnrichmentLookupPluginTest
 //
 message ProjectCreated {
     int32 project_id = 1;

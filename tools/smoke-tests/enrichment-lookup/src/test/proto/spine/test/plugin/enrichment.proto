@@ -30,7 +30,7 @@ option java_multiple_files = true;
 
 // Messages in this file are test enrichments.
 //
-// See EnrichmentLookupPluginShould
+// See EnrichmentLookupPluginTest
 //
 message ProjectCreatedEnrichment {
     option (enrichment_for) = "spine.test.plugin.event.ProjectCreated";
