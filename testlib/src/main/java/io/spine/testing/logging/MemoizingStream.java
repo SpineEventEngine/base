@@ -35,9 +35,9 @@ import java.nio.ByteBuffer;
  */
 final class MemoizingStream extends OutputStream {
 
-    private static final int ONE_MEBI_BYTE = 1024 * 1024;
+    private static final int TEN_MEBI_BYTES = 10 * 1024 * 1024;
 
-    private final ByteBuffer memory = ByteBuffer.allocate(ONE_MEBI_BYTE);
+    private final ByteBuffer memory = ByteBuffer.allocate(TEN_MEBI_BYTES);
 
     @Override
     public void write(int b) {
