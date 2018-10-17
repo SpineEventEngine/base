@@ -47,117 +47,117 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  */
 @SuppressWarnings("ResultOfMethodCallIgnored")
 @DisplayName("ValidatingBuilder should")
-public class ValidatingBuilderTest {
+class ValidatingBuilderTest {
 
     private ProjectVBuilder builder;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         builder = fill();
     }
 
     @Test
     @DisplayName("check required validated repeated fields")
-    public void check_required_validated_repeated_fields() {
+    void check_required_validated_repeated_fields() {
         assertThrows(ValidationException.class, () -> builder.addTask(Task.getDefaultInstance()));
     }
 
     @Test
     @DisplayName("ensure required validated repeated fields")
-    public void ensure_required_validated_repeated_fields() {
+    void ensure_required_validated_repeated_fields() {
         builder.clearTask();
         assertThrows(ValidationException.class, () -> builder.build());
     }
 
     @Test
     @DisplayName("check required validated map field values")
-    public void check_required_validated_map_field_values() {
+    void check_required_validated_map_field_values() {
         assertThrows(ValidationException.class,
                      () -> builder.putRole("Co-owner", Member.getDefaultInstance()));
     }
 
     @Test
     @DisplayName("ensure required validated map fields")
-    public void ensure_required_validated_map_fields() {
+    void ensure_required_validated_map_fields() {
         builder.clearRole();
         assertThrows(ValidationException.class, () -> builder.build());
     }
 
     @Test
     @DisplayName("check validated repeated fields")
-    public void check_validated_repeated_fields() {
+    void check_validated_repeated_fields() {
         assertThrows(ValidationException.class, () -> builder.addSubscriberEmail(""));
     }
 
     @Test
     @DisplayName("dispense with validated repeated fields")
-    public void dispense_with_validated_repeated_fields() {
+    void dispense_with_validated_repeated_fields() {
         builder.clearSubscriberEmail();
         builder.build();
     }
 
     @Test
     @DisplayName("check validated map field values")
-    public void check_validated_map_field_values() {
+    void check_validated_map_field_values() {
         assertThrows(ValidationException.class,
                      () -> builder.putAttachment(newUuid(), Attachment.getDefaultInstance()));
     }
 
     @Test
     @DisplayName("dispense with validated map fields")
-    public void dispense_with_validated_map_fields() {
+    void dispense_with_validated_map_fields() {
         builder.clearAttachment();
         builder.build();
     }
 
     @Test
     @DisplayName("accept any required repeated fields")
-    public void accept_any_required_repeated_fields() {
+    void accept_any_required_repeated_fields() {
         builder.addMember(Member.getDefaultInstance());
     }
 
     @Test
     @DisplayName("ensure required repeated fields")
-    public void ensure_required_repeated_fields() {
+    void ensure_required_repeated_fields() {
         builder.clearMember();
         assertThrows(ValidationException.class, () -> builder.build());
     }
 
     @Test
     @DisplayName("accept any required map field value")
-    public void accept_any_required_map_field_value() {
+    void accept_any_required_map_field_value() {
         builder.putDeletedTask(newUuid(), timeInFuture());
     }
 
     @Test
     @DisplayName("ensure required map fields")
-    public void ensure_required_map_fields() {
+    void ensure_required_map_fields() {
         builder.clearDeletedTask();
         assertThrows(ValidationException.class, () -> builder.build());
     }
 
     @Test
     @DisplayName("accept any unchecked repeated fields")
-    public void accept_any_unchecked_repeated_fields() {
+    void accept_any_unchecked_repeated_fields() {
         builder.addDescription("");
     }
 
     @Test
     @DisplayName("dispense with unchecked repeated fields")
-    public void dispense_with_unchecked_repeated_fields() {
+    void dispense_with_unchecked_repeated_fields() {
         builder.clearDescription();
         builder.build();
     }
 
     @Test
     @DisplayName("accept any unchecked map field value")
-    public void accept_any_unchecked_map_field_value() {
+    void accept_any_unchecked_map_field_value() {
         builder.putLabel("empty", "none");
     }
 
     @Test
     @DisplayName("dispense with unchecked map fields")
-    public void dispense_with_unchecked_map_fields() {
+    void dispense_with_unchecked_map_fields() {
         builder.clearLabel();
         builder.build();
     }
