@@ -31,7 +31,7 @@ import static com.google.common.collect.Lists.newArrayListWithExpectedSize;
  */
 final class MemoizingStream extends OutputStream {
 
-    private static final int ONE_MEBI_BYTE = 10 * 1024 * 1024;
+    private static final int ONE_MEBI_BYTE = 1024 * 1024;
 
     private final List<Byte> memory = newArrayListWithExpectedSize(ONE_MEBI_BYTE);
 
