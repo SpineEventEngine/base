@@ -23,8 +23,8 @@ package io.spine.tools.compiler.validation;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
-import com.google.protobuf.Message;
-import io.spine.code.proto.SourceFile;
+import io.spine.code.java.PackageName;
+import io.spine.code.proto.FileName;
 import io.spine.logging.Logging;
 import io.spine.tools.compiler.MessageTypeCache;
 import org.slf4j.Logger;
@@ -33,11 +33,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Predicate;
 
 import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Sets.newHashSet;
-import static io.spine.code.proto.FileDescriptors.parseAndFilter;
+import static io.spine.code.proto.FileDescriptors.parseSkipStandard;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Collects types for which validating builders are generated.
@@ -54,18 +54,6 @@ class VBTypeLookup implements Logging {
 
     /** A map from Protobuf type name to Protobuf FileDescriptorProto. */
     private final Map<DescriptorProto, FileDescriptorProto> descriptorCache = newHashMap();
-
-    /** Verifies if a message is not one provided by the Protobuf library. */
-    private final Predicate<DescriptorProto> isNotStandardType =
-            message -> {
-                if (message == null) {
-                    return false;
-                }
-                String javaPackage = getJavaPackage(message);
-                boolean isGoogleMsg = javaPackage.contains(Message.class.getPackage()
-                                                                        .getName());
-                return !isGoogleMsg;
-            };
 
     VBTypeLookup(String descriptorSetFile) {
         this.descriptorSetFile = descriptorSetFile;
@@ -106,29 +94,21 @@ class VBTypeLookup implements Logging {
         return result;
     }
 
-    private Set<VBType> createMetadata(Iterable<DescriptorProto> descriptors,
-                                       FileDescriptorProto file) {
+    private static Set<VBType> createMetadata(Iterable<DescriptorProto> descriptors,
+                                              FileDescriptorProto file) {
         Set<VBType> result = newHashSet();
         for (DescriptorProto message : descriptors) {
-            if (isNotStandardType.test(message)) {
-                VBType type = newType(message, file);
-                result.add(type);
-            }
+            VBType type = newType(message, file);
+            result.add(type);
         }
         return result;
     }
 
-    private VBType newType(DescriptorProto message, FileDescriptorProto file) {
+    private static VBType newType(DescriptorProto message, FileDescriptorProto file) {
         String className = message.getName() + JAVA_CLASS_NAME_SUFFIX;
-        String javaPackage = getJavaPackage(message);
+        String javaPackage = PackageName.resolve(file)
+                                        .value();
         VBType result = new VBType(javaPackage, className, message, file.getName());
-        return result;
-    }
-
-    private String getJavaPackage(DescriptorProto msgDescriptor) {
-        String result = descriptorCache.get(msgDescriptor)
-                                       .getOptions()
-                                       .getJavaPackage();
         return result;
     }
 
@@ -138,9 +118,7 @@ class VBTypeLookup implements Logging {
         ImmutableSet.Builder<FileDescriptorProto> result = ImmutableSet.builder();
         Collection<FileDescriptorProto> descriptors = fileDescriptors(descFilePath);
         for (FileDescriptorProto file : descriptors) {
-            cacheTypesFromFile(file);
             messageTypeCache.cacheTypes(file);
-
             log.debug("Found Protobuf file: {}", file.getName());
             result.add(file);
         }
@@ -148,21 +126,21 @@ class VBTypeLookup implements Logging {
         return result.build();
     }
 
-    private void cacheTypesFromFile(FileDescriptorProto file) {
-        for (DescriptorProto msgDescriptor : file.getMessageTypeList()) {
-            descriptorCache.put(msgDescriptor, file);
-        }
-    }
-
     MessageTypeCache getTypeCache() {
         return messageTypeCache;
     }
 
+    /**
+     * Obtains file descriptors for which validating builders should be generated.
+     *
+     * @param descFilePath
+     *         the path to the descriptor set file
+     * @return descriptors excluding Protobuf and rejections descriptors
+     */
     private static Collection<FileDescriptorProto> fileDescriptors(String descFilePath) {
-        Predicate<FileDescriptorProto> isNotRejection = (file) -> {
-            SourceFile source = SourceFile.from(file);
-            return !source.isRejections();
-        };
-        return parseAndFilter(descFilePath, isNotRejection);
+        return parseSkipStandard(descFilePath).stream()
+                                              .filter(descriptor -> !FileName.from(descriptor)
+                                                                             .isRejections())
+                                              .collect(toList());
     }
 }
