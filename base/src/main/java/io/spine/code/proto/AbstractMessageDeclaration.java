@@ -20,15 +20,15 @@
 
 package io.spine.code.proto;
 
+import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.code.java.PackageName;
 import io.spine.code.java.SimpleClassName;
 
-import java.util.List;
 import java.util.Objects;
 
-import static java.util.stream.Collectors.toList;
+import static com.google.common.collect.ImmutableList.toImmutableList;
 
 /**
  * Abstract base for message declarations in a proto file.
@@ -81,11 +81,11 @@ public abstract class AbstractMessageDeclaration {
      *
      * @return fields in the order of their declaration
      */
-    public List<FieldDeclaration> fields() {
+    public ImmutableList<FieldDeclaration> fields() {
         return getMessage().getFieldList()
                            .stream()
                            .map(fieldDescriptor -> new FieldDeclaration(fieldDescriptor, this))
-                           .collect(toList());
+                           .collect(toImmutableList());
     }
 
     @Override

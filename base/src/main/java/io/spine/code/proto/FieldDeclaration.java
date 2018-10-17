@@ -49,7 +49,7 @@ public class FieldDeclaration {
     /**
      * Obtains comments going before the field.
      *
-     * @return the leading field comments
+     * @return the leading field comments or {@code Optional.empty()} if there are no comments
      */
     public Optional<String> leadingComments() {
         return originMessage.documentation()
