@@ -57,7 +57,7 @@ public class RejectionWriter implements Logging {
     private final ClassName messageClass;
     private final File outputDirectory;
 
-    private final RejectionBuilder builder;
+    private final RejectionBuilderWriter builder;
     private final Indent indent;
 
     /**
@@ -79,10 +79,10 @@ public class RejectionWriter implements Logging {
         this.declaration = rejection;
         this.messageClass = toJavaPoetName(rejection.messageClass());
         this.outputDirectory = outputDirectory;
-        this.builder = new RejectionBuilder(rejection,
-                                            messageClass,
-                                            toJavaPoetName(rejection.throwableClass()),
-                                            messageTypeMap);
+        this.builder = new RejectionBuilderWriter(rejection,
+                                                  messageClass,
+                                                  toJavaPoetName(rejection.throwableClass()),
+                                                  messageTypeMap);
         this.indent = indent;
     }
 

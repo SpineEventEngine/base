@@ -53,7 +53,7 @@ import static javax.lang.model.element.Modifier.STATIC;
  * <p>A generated builder validates rejection messages using
  * {@link io.spine.validate.Validate#checkValid(com.google.protobuf.Message)}.
  */
-class RejectionBuilder {
+class RejectionBuilderWriter {
 
     private static final NoArgMethod newBuilder = new NoArgMethod(Messages.METHOD_NEW_BUILDER);
     private static final String BUILDER_FIELD = "builder";
@@ -64,10 +64,10 @@ class RejectionBuilder {
     private final SimpleClassName name;
     private final FieldTypeFactory fieldTypeFactory;
 
-    RejectionBuilder(RejectionDeclaration rejection,
-                     ClassName messageClass,
-                     ClassName throwableClass,
-                     Map<String, String> messageTypeMap) {
+    RejectionBuilderWriter(RejectionDeclaration rejection,
+                           ClassName messageClass,
+                           ClassName throwableClass,
+                           Map<String, String> messageTypeMap) {
         this.rejection = rejection;
         this.messageClass = messageClass;
         this.throwableClass = throwableClass;
