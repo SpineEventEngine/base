@@ -539,7 +539,6 @@ public final class Identifier<I> {
     private static class UuidMessage<I extends Message> {
 
         private static final String FIELD_NAME = "uuid";
-        private static final FieldDescriptor.Type TYPE = FieldDescriptor.Type.STRING;
 
         private final Class<I> idClass;
         private final FieldDescriptor uuidField;
@@ -570,7 +569,7 @@ public final class Identifier<I> {
         private static void checkUuidField(FieldDescriptor field) {
             boolean nameMatches = field.getName()
                                        .equals(FIELD_NAME);
-            boolean typeMatches = field.getType() == TYPE;
+            boolean typeMatches = field.getType() == FieldDescriptor.Type.STRING;
             boolean isUuidField = nameMatches && typeMatches;
             checkState(isUuidField,
                        "A UUID message should have a single string field named %s.", FIELD_NAME);
