@@ -31,6 +31,7 @@ import io.spine.protobuf.AnyPacker;
 import io.spine.test.identifiers.NestedMessageId;
 import io.spine.test.identifiers.SeveralFieldsId;
 import io.spine.test.identifiers.TimestampFieldId;
+import io.spine.test.identifiers.UuidMessage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -368,6 +369,29 @@ class IdentifierTest {
         }
     }
 
+    @Nested
+    @DisplayName("not generate UUID-based value if")
+    class NotGenerateMessageUuid {
+
+        @Test
+        @DisplayName("the field name is not `uuid`")
+        void nameIsInvalid() {
+            assertThrows(IllegalStateException.class, () -> Identifier.generate(StringValue.class));
+        }
+
+        @Test
+        @DisplayName("it contains more than one field")
+        void moreThanTwoFields() {
+            assertThrows(IllegalStateException.class, () -> Identifier.generate(Any.class));
+        }
+
+        @Test
+        @DisplayName("the field is not string")
+        void fieldNotString() {
+            assertThrows(IllegalStateException.class, () -> Identifier.generate(Int32Value.class));
+        }
+    }
+
     @Test
     @DisplayName("unpack Any")
     void unpackAny() {
@@ -404,5 +428,13 @@ class IdentifierTest {
     @DisplayName("declare ID_PROPERTY_SUFFIX")
     void idPropSuffix() {
         assertThat(Identifier.ID_PROPERTY_SUFFIX).isEqualTo("id");
+    }
+
+    @Test
+    @DisplayName("generate UUID-based message")
+    void generateUuidMessage() {
+        UuidMessage uuidMessage = Identifier.generate(UuidMessage.class);
+        String uuid = uuidMessage.getUuid();
+        assertFalse(uuid.isEmpty());
     }
 }
