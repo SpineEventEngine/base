@@ -935,122 +935,6 @@ class MessageValidatorTest {
                                  .isEmpty());
     }
 
-    /*
-     * Entity ID in command validation tests.
-     */
-
-    @Test
-    @DisplayName("find out that Message entity ID in command is valid")
-    void find_out_that_Message_entity_id_in_command_is_valid() {
-        EntityIdMsgFieldValue msg = EntityIdMsgFieldValue.newBuilder()
-                                                         .setValue(newStringValue())
-                                                         .build();
-        validate(msg);
-        assertIsValid(true);
-    }
-
-    @Test
-    @DisplayName("find out that Message entity ID in command is NOT valid")
-    void find_out_that_Message_entity_id_in_command_is_NOT_valid() {
-        validate(EntityIdMsgFieldValue.getDefaultInstance());
-        assertIsValid(false);
-    }
-
-    @Test
-    @DisplayName("find out that String entity ID in command is valid")
-    void find_out_that_String_entity_id_in_command_is_valid() {
-        EntityIdStringFieldValue msg = EntityIdStringFieldValue.newBuilder()
-                                                               .setValue(newUuid())
-                                                               .build();
-        validate(msg);
-        assertIsValid(true);
-    }
-
-    @Test
-    @DisplayName("find out that String entity ID in command is NOT valid")
-    void find_out_that_String_entity_id_in_command_is_NOT_valid() {
-        validate(EntityIdStringFieldValue.getDefaultInstance());
-        assertIsValid(false);
-    }
-
-    @Test
-    @DisplayName("find out that entity ID in command cannot be ByteString")
-    void find_out_that_entity_id_in_command_cannot_be_ByteString() {
-        EntityIdByteStringFieldValue msg = EntityIdByteStringFieldValue.newBuilder()
-                                                                       .setValue(newByteString())
-                                                                       .build();
-        validate(msg);
-        assertIsValid(false);
-    }
-
-    @Test
-    @DisplayName("find out that entity ID in command cannot be float number")
-    void find_out_that_entity_id_in_command_cannot_be_float_number() {
-        @SuppressWarnings("MagicNumber") EntityIdDoubleFieldValue msg =
-                EntityIdDoubleFieldValue.newBuilder()
-                                        .setValue(1.1)
-                                        .build();
-        validate(msg);
-        assertIsValid(false);
-    }
-
-    @Test
-    @DisplayName("find out that Integer entity ID in command is valid")
-    void find_out_that_Integer_entity_id_in_command_is_valid() {
-        EntityIdIntFieldValue msg = EntityIdIntFieldValue.newBuilder()
-                                                         .setValue(5)
-                                                         .build();
-        validate(msg);
-        assertIsValid(true);
-    }
-
-    @Test
-    @DisplayName("find out that Integer entity ID in command is NOT valid")
-    void find_out_that_Integer_entity_id_in_command_is_NOT_valid() {
-        validate(EntityIdIntFieldValue.getDefaultInstance());
-        assertIsValid(false);
-    }
-
-    @Test
-    @DisplayName("find out that Long entity ID in command is valid")
-    void find_out_that_Long_entity_id_in_command_is_valid() {
-        EntityIdLongFieldValue msg = EntityIdLongFieldValue.newBuilder()
-                                                           .setValue(5)
-                                                           .build();
-        validate(msg);
-        assertIsValid(true);
-    }
-
-    @Test
-    @DisplayName("find out that Long entity ID in command is NOT valid")
-    void find_out_that_Long_entity_id_in_command_is_NOT_valid() {
-        validate(EntityIdLongFieldValue.getDefaultInstance());
-        assertIsValid(false);
-    }
-
-    @Test
-    @DisplayName("find out that repeated entity ID in command is NOT valid")
-    void find_out_that_repeated_entity_id_in_command_is_not_valid() {
-        EntityIdRepeatedFieldValue msg = EntityIdRepeatedFieldValue.newBuilder()
-                                                                   .addValue(newUuid())
-                                                                   .build();
-        validate(msg);
-        assertIsValid(false);
-    }
-
-    @Test
-    @DisplayName("provide one valid violation if entity ID in command is not valid")
-    void provide_one_valid_violation_if_entity_id_in_command_is_not_valid() {
-        validate(EntityIdMsgFieldValue.getDefaultInstance());
-
-        assertEquals(1, violations.size());
-        ConstraintViolation violation = firstViolation();
-        assertEquals(NO_VALUE_MSG, violation.getMsgFormat());
-        assertFieldPathIs(violation, VALUE);
-        assertTrue(violation.getViolationList()
-                            .isEmpty());
-    }
-
     @Test
     @DisplayName("provide custom invalid field message if specified")
     void provide_custom_invalid_field_message_if_specified() {
@@ -1082,6 +966,97 @@ class MessageValidatorTest {
     class EntityId {
 
         @Nested
+        @DisplayName("in a command file and")
+        class InCommandFile {
+
+            @Test
+            @DisplayName("find out that Message is valid")
+            void find_out_that_Message_entity_id_in_command_is_valid() {
+                EntityIdMsgFieldValue msg = EntityIdMsgFieldValue.newBuilder()
+                                                                 .setValue(newStringValue())
+                                                                 .build();
+                assertValid(msg);
+            }
+
+            @Test
+            @DisplayName("find out that Message is NOT valid")
+            void find_out_that_Message_entity_id_in_command_is_NOT_valid() {
+                EntityIdMsgFieldValue msg = EntityIdMsgFieldValue.getDefaultInstance();
+                assertNotValid(msg);
+            }
+
+            @Test
+            @DisplayName("find out that String is valid")
+            void find_out_that_String_entity_id_in_command_is_valid() {
+                EntityIdStringFieldValue msg = EntityIdStringFieldValue.newBuilder()
+                                                                       .setValue(newUuid())
+                                                                       .build();
+                assertValid(msg);
+            }
+
+            @Test
+            @DisplayName("find out that String is NOT valid")
+            void find_out_that_String_entity_id_in_command_is_NOT_valid() {
+                EntityIdStringFieldValue msg = EntityIdStringFieldValue.getDefaultInstance();
+                assertNotValid(msg);
+            }
+
+            @Test
+            @DisplayName("find out that Integer is valid")
+            void find_out_that_Integer_entity_id_in_command_is_valid() {
+                EntityIdIntFieldValue msg = EntityIdIntFieldValue.newBuilder()
+                                                                 .setValue(5)
+                                                                 .build();
+                assertValid(msg);
+            }
+
+            @Test
+            @DisplayName("find out that Integer is NOT valid")
+            void find_out_that_Integer_entity_id_in_command_is_NOT_valid() {
+                EntityIdIntFieldValue msg = EntityIdIntFieldValue.getDefaultInstance();
+                assertNotValid(msg);
+            }
+
+            @Test
+            @DisplayName("find out that Long is valid")
+            void find_out_that_Long_entity_id_in_command_is_valid() {
+                EntityIdLongFieldValue msg = EntityIdLongFieldValue.newBuilder()
+                                                                   .setValue(5)
+                                                                   .build();
+                assertValid(msg);
+            }
+
+            @Test
+            @DisplayName("find out that Long is NOT valid")
+            void find_out_that_Long_entity_id_in_command_is_NOT_valid() {
+                EntityIdLongFieldValue msg = EntityIdLongFieldValue.getDefaultInstance();
+                assertNotValid(msg);
+            }
+
+            @Test
+            @DisplayName("find out that repeated is NOT valid")
+            void find_out_that_repeated_entity_id_in_command_is_not_valid() {
+                EntityIdRepeatedFieldValue msg = EntityIdRepeatedFieldValue.newBuilder()
+                                                                           .addValue(newUuid())
+                                                                           .build();
+                assertValid(msg);
+            }
+
+            @Test
+            @DisplayName("provide one valid violation if is not valid")
+            void provide_one_valid_violation_if_entity_id_in_command_is_not_valid() {
+                validate(EntityIdMsgFieldValue.getDefaultInstance());
+
+                assertEquals(1, violations.size());
+                ConstraintViolation violation = firstViolation();
+                assertEquals(NO_VALUE_MSG, violation.getMsgFormat());
+                assertFieldPathIs(violation, VALUE);
+                assertTrue(violation.getViolationList()
+                                    .isEmpty());
+            }
+        }
+
+        @Nested
         @DisplayName("in state and")
         class InState {
 
@@ -1106,6 +1081,30 @@ class MessageValidatorTest {
             void notRequiredIfOptionIsFalse() {
                 ProjectionState stateWithDefaultId = ProjectionState.getDefaultInstance();
                 assertValid(stateWithDefaultId);
+            }
+        }
+
+        @Nested
+        @DisplayName("and reject")
+        class Reject {
+
+            @Test
+            @DisplayName("ByteString")
+            void find_out_that_entity_id_in_command_cannot_be_ByteString() {
+                EntityIdByteStringFieldValue msg = EntityIdByteStringFieldValue.newBuilder()
+                                                                               .setValue(newByteString())
+                                                                               .build();
+                assertNotValid(msg);
+            }
+
+            @Test
+            @DisplayName("Float")
+            void find_out_that_entity_id_in_command_cannot_be_float_number() {
+                @SuppressWarnings("MagicNumber") EntityIdDoubleFieldValue msg =
+                        EntityIdDoubleFieldValue.newBuilder()
+                                                .setValue(1.1)
+                                                .build();
+                assertNotValid(msg);
             }
         }
     }
