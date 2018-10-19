@@ -41,6 +41,7 @@ import java.util.UUID;
 import java.util.regex.Pattern;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 import static com.google.protobuf.TextFormat.shortDebugString;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 import static io.spine.util.Exceptions.newIllegalStateException;
@@ -222,6 +223,24 @@ public final class Identifier<I> {
         String id = UUID.randomUUID()
                         .toString();
         return id;
+    }
+
+    /**
+     * Generates a UUID message of the specified class.
+     *
+     * <p>A UUID message should have a single string field named {@code uuid}.
+     *
+     * @param idClass
+     *         the class of the message to generate
+     * @param <I>
+     *         the type of the message to generate
+     * @return a message with the initialized {@code uuid} field
+     * @throws java.lang.IllegalStateException
+     *         if the message is not a UUID message
+     */
+    public static <I extends Message> I generate(Class<I> idClass) {
+        UuidMessage<I> uuidMessage = UuidMessage.of(idClass);
+        return uuidMessage.generate();
     }
 
     /**
