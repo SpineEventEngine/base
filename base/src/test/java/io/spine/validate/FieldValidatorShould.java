@@ -20,8 +20,6 @@
 
 package io.spine.validate;
 
-import io.spine.validate.ConstraintViolation;
-import io.spine.validate.FieldValidator;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 

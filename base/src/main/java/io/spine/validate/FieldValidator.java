@@ -42,7 +42,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.copyOf;
 import static com.google.common.collect.ImmutableList.of;
 import static com.google.common.collect.Lists.newLinkedList;
-import static io.spine.validate.rules.ValidationRuleOptions.getOptionValue;
+import static io.spine.validate.Validate.isNotDefault;
+import static io.spine.validate.rule.ValidationRuleOptions.getOptionValue;
 
 /**
  * Validates messages according to Spine custom protobuf options and
@@ -218,7 +219,7 @@ abstract class FieldValidator<V> implements Logging {
      * Returns {@code true} in case `if_missing` option is set with a non-default error message.
      */
     private boolean hasCustomMissingMessage() {
-        boolean result = !ifMissingOption.equals(IfMissingOption.getDefaultInstance());
+        boolean result = isNotDefault(ifMissingOption);
         return result;
     }
 
