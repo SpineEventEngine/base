@@ -29,6 +29,7 @@ import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import com.google.protobuf.Message;
 import io.spine.base.CommandMessage;
 import io.spine.base.FieldPath;
+import io.spine.code.proto.Option;
 import io.spine.logging.Logging;
 import io.spine.option.IfInvalidOption;
 import io.spine.option.IfMissingOption;
@@ -98,10 +99,10 @@ abstract class FieldValidator<V> implements Logging {
         this.isCommandsFile = CommandMessage.File.predicate()
                                                  .test(file);
         this.isFirstField = fieldDescriptor.getIndex() == 0;
-        this.required = getFieldOption(OptionsProto.required);
-        this.ifMissingOption = getFieldOption(OptionsProto.ifMissing);
-        this.validate = getFieldOption(OptionsProto.valid);
-        this.ifInvalid = getFieldOption(OptionsProto.ifInvalid);
+        this.required = optionValue(OptionsProto.required);
+        this.ifMissingOption = optionValue(OptionsProto.ifMissing);
+        this.validate = optionValue(OptionsProto.valid);
+        this.ifInvalid = optionValue(OptionsProto.ifInvalid);
     }
 
     @SuppressWarnings({
@@ -290,22 +291,25 @@ abstract class FieldValidator<V> implements Logging {
     }
 
     /**
-     * Returns a field validation option.
+     * Obtains the option for the validated field.
      *
      * @param extension
      *         an extension key used to obtain a validation option
      * @param <T>
-     *         the type of the option
+     *         the type of the option value
      */
-    protected final <T> T getFieldOption(GeneratedExtension<FieldOptions, T> extension) {
-        Optional<T> externalOption = getOptionValue(fieldContext, extension);
-        if (externalOption.isPresent()) {
-            return externalOption.get();
+    protected final <T> Option<T> option(GeneratedExtension<FieldOptions, T> extension) {
+        Optional<Option<T>> validationRuleOption = getOptionValue(fieldContext, extension);
+        if (validationRuleOption.isPresent()) {
+            return validationRuleOption.get();
         }
 
-        T ownOption = fieldDescriptor.getOptions()
-                                     .getExtension(extension);
+        Option<T> ownOption = Option.from(fieldDescriptor, extension);
         return ownOption;
+    }
+
+    protected final <T> T optionValue(GeneratedExtension<FieldOptions, T> extension) {
+        return option(extension).value();
     }
 
     private boolean shouldValidate() {
