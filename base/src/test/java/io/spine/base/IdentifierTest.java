@@ -381,7 +381,7 @@ class IdentifierTest {
 
         @Test
         @DisplayName("it contains more than one field")
-        void moreThanTwoFields() {
+        void moreThanOneField() {
             assertThrows(IllegalStateException.class, () -> Identifier.generate(Any.class));
         }
 

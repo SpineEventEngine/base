@@ -22,8 +22,6 @@ package io.spine.base;
 
 import com.google.common.reflect.TypeToken;
 import com.google.protobuf.Any;
-import com.google.protobuf.Descriptors;
-import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Int32Value;
 import com.google.protobuf.Int64Value;
 import com.google.protobuf.Message;
@@ -38,7 +36,6 @@ import io.spine.string.StringifierRegistry;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.regex.Pattern;
@@ -530,49 +527,6 @@ public final class Identifier<I> {
             Message msg = toMessage(id);
             Any result = AnyPacker.pack(msg);
             return result;
-        }
-    }
-
-    /**
-     * A message containing a single string field with the {@linkplain #FIELD_NAME name}.
-     */
-    private static class UuidMessage<I extends Message> {
-
-        private static final String FIELD_NAME = "uuid";
-
-        private final Class<I> idClass;
-        private final FieldDescriptor uuidField;
-
-        private UuidMessage(Class<I> idClass, FieldDescriptor uuidField) {
-            this.idClass = idClass;
-            this.uuidField = uuidField;
-        }
-
-        private static <I extends Message> UuidMessage<I> of(Class<I> idClass) {
-            Descriptors.Descriptor message = Messages.newInstance(idClass)
-                                                     .getDescriptorForType();
-            List<FieldDescriptor> fields = message.getFields();
-            checkState(fields.size() == 1, "A UUID message should have a single field.");
-            FieldDescriptor uuidField = fields.get(0);
-            checkUuidField(uuidField);
-            return new UuidMessage<>(idClass, uuidField);
-        }
-
-        @SuppressWarnings("unchecked" /* It is OK as the builder is obtained by the specified class. */)
-        private I generate() {
-            Message initializedId = Messages.builderFor(idClass)
-                                            .setField(uuidField, newUuid())
-                                            .build();
-            return (I) initializedId;
-        }
-
-        private static void checkUuidField(FieldDescriptor field) {
-            boolean nameMatches = field.getName()
-                                       .equals(FIELD_NAME);
-            boolean typeMatches = field.getType() == FieldDescriptor.Type.STRING;
-            boolean isUuidField = nameMatches && typeMatches;
-            checkState(isUuidField,
-                       "A UUID message should have a single string field named %s.", FIELD_NAME);
         }
     }
 }
