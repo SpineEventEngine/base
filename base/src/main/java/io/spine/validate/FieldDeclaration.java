@@ -73,12 +73,11 @@ final class FieldDeclaration {
     /**
      * Determines whether the field is an entity ID.
      *
-     * <p>An entity ID is a field, which:
-     *
+     * <p>An entity ID satisfies the following conditions:
      * <ul>
-     *     <li>The first field.</li>
-     *     <li>Named {@code id} or the named ends with {@code _id}.</li>
-     *     <li>An entity kind is specified via the {@linkplain EntityOption#getKind() option}.
+     *     <li>Declared as the first field.</li>
+     *     <li>Named {@code id} or the name ends with {@code _id}.</li>
+     *     <li>Declared inside an {@linkplain EntityOption#getKind() entity state message}.
      * </ul>
      *
      * @return {@code true} if the field is an entity ID, {@code false} otherwise

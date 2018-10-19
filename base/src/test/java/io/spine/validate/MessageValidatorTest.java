@@ -1039,7 +1039,7 @@ class MessageValidatorTest {
                 EntityIdRepeatedFieldValue msg = EntityIdRepeatedFieldValue.newBuilder()
                                                                            .addValue(newUuid())
                                                                            .build();
-                assertValid(msg);
+                assertNotValid(msg);
             }
 
             @Test
