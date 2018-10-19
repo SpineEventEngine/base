@@ -250,3 +250,20 @@ message MessageWithMapDoubleField {
 message InvalidMessage {
     string invalid_field = 1 [(required) = true, (pattern).regex = "^$"];
 }
+
+message AggregateState {
+    option (entity).kind = AGGREGATE;
+
+    // An entity ID (ends with `_id` and declared first). The ID is required by default.
+    string entity_id = 1;
+
+    // Not an entity ID because it isn't the first field, even tough it ends with `_id`.
+    string another_id = 2;
+}
+
+message ProjectionState {
+    option (entity).kind = PROJECTION;
+
+    // An entity ID, but it isn't required since the option is set to `false`.
+    string not_important_id = 1 [(required) = false];
+}

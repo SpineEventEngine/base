@@ -32,6 +32,7 @@ import io.spine.base.FieldPath;
 import io.spine.option.OptionsProto;
 import io.spine.option.Time;
 import io.spine.protobuf.AnyPacker;
+import io.spine.test.validate.AggregateState;
 import io.spine.test.validate.CustomMessageRequiredByteStringFieldValue;
 import io.spine.test.validate.CustomMessageRequiredEnumFieldValue;
 import io.spine.test.validate.CustomMessageRequiredMsgFieldValue;
@@ -51,6 +52,7 @@ import io.spine.test.validate.EnclosedMessageWithoutAnnotationFieldValue;
 import io.spine.test.validate.MaxNumberFieldValue;
 import io.spine.test.validate.MinNumberFieldValue;
 import io.spine.test.validate.PatternStringFieldValue;
+import io.spine.test.validate.ProjectionState;
 import io.spine.test.validate.RepeatedRequiredMsgFieldValue;
 import io.spine.test.validate.RequiredBooleanFieldValue;
 import io.spine.test.validate.RequiredByteStringFieldValue;
@@ -70,6 +72,7 @@ import io.spine.test.validate.command.EntityIdMsgFieldValue;
 import io.spine.test.validate.command.EntityIdRepeatedFieldValue;
 import io.spine.test.validate.command.EntityIdStringFieldValue;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -1074,6 +1077,39 @@ class MessageValidatorTest {
         assertIsValid(true);
     }
 
+    @Nested
+    @DisplayName("validate an entity ID")
+    class EntityId {
+
+        @Nested
+        @DisplayName("in state and")
+        class InState {
+
+            @Test
+            @DisplayName("consider it required by default")
+            void requiredByDefault() {
+                AggregateState stateWithDefaultId = AggregateState.getDefaultInstance();
+                assertNotValid(stateWithDefaultId);
+            }
+
+            @Test
+            @DisplayName("match only the first field named `id` or ending with `_id`")
+            void onlyFirstField() {
+                AggregateState onlyEntityIdSet = AggregateState.newBuilder()
+                                                               .setEntityId(newUuid())
+                                                               .build();
+                assertValid(onlyEntityIdSet);
+            }
+
+            @Test
+            @DisplayName("not consider it (required) if the option is set explicitly set to false")
+            void notRequiredIfOptionIsFalse() {
+                ProjectionState stateWithDefaultId = ProjectionState.getDefaultInstance();
+                assertValid(stateWithDefaultId);
+            }
+        }
+    }
+
     /*
      * Utility methods.
      */
@@ -1116,6 +1152,15 @@ class MessageValidatorTest {
 
     private ConstraintViolation firstViolation() {
         return violations.get(0);
+    }
+
+    private void assertValid(Message msg) {
+        validate(msg);
+        assertIsValid(false);
+    }
+    private void assertNotValid(Message msg) {
+        validate(msg);
+        assertIsValid(true);
     }
 
     private void assertIsValid(boolean isValid) {
