@@ -23,7 +23,7 @@ package io.spine.tools.gradle.compiler;
 import io.spine.code.java.DefaultJavaProject;
 import io.spine.code.properties.PropertyFile;
 import io.spine.tools.gradle.GradleProject;
-import io.spine.validate.rules.ValidationRules;
+import io.spine.validate.rule.ValidationRules;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
