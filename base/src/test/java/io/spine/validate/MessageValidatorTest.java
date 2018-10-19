@@ -1156,11 +1156,11 @@ class MessageValidatorTest {
 
     private void assertValid(Message msg) {
         validate(msg);
-        assertIsValid(false);
+        assertIsValid(true);
     }
     private void assertNotValid(Message msg) {
         validate(msg);
-        assertIsValid(true);
+        assertIsValid(false);
     }
 
     private void assertIsValid(boolean isValid) {
