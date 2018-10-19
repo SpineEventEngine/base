@@ -49,8 +49,8 @@ import static io.spine.validate.rule.ValidationRuleOptions.getOptionValue;
  * Validates messages according to Spine custom protobuf options and
  * provides constraint violations found.
  *
- * @param <V> a type of field values
- * @author Alexander Litus
+ * @param <V>
+ *         a type of field values
  */
 abstract class FieldValidator<V> implements Logging {
 
@@ -79,10 +79,13 @@ abstract class FieldValidator<V> implements Logging {
     /**
      * Creates a new validator instance.
      *
-     * @param fieldContext the context of the field to validate
-     * @param values       values to validate
-     * @param strict       if {@code true} the validator would assume that the field
-     *                     is required, even if corresponding field option is not present
+     * @param fieldContext
+     *         the context of the field to validate
+     * @param values
+     *         values to validate
+     * @param strict
+     *         if {@code true} the validator would assume that the field
+     *         is required, even if corresponding field option is not present
      */
     protected FieldValidator(FieldContext fieldContext,
                              ImmutableList<V> values,
@@ -139,7 +142,8 @@ abstract class FieldValidator<V> implements Logging {
      * if it is {@link String} or {@link com.google.protobuf.ByteString ByteString}, it must be
      * set to a non-empty string or array.
      *
-     * @param value a field value to check
+     * @param value
+     *         a field value to check
      * @return {@code true} if the field is not set, {@code false} otherwise
      */
     protected abstract boolean isNotSet(V value);
@@ -252,7 +256,8 @@ abstract class FieldValidator<V> implements Logging {
     /**
      * Adds a validation constraint validation to the collection of violations.
      *
-     * @param violation a violation to add
+     * @param violation
+     *         a violation to add
      */
     protected void addViolation(ConstraintViolation violation) {
         violations.add(violation);
@@ -271,8 +276,10 @@ abstract class FieldValidator<V> implements Logging {
     /**
      * Returns a validation error message (a custom one (if present) or the default one).
      *
-     * @param option    a validation option used to get the default message
-     * @param customMsg a user-defined error message
+     * @param option
+     *         a validation option used to get the default message
+     * @param customMsg
+     *         a user-defined error message
      */
     protected String getErrorMsgFormat(Message option, String customMsg) {
         String defaultMsg = option.getDescriptorForType()
@@ -285,8 +292,10 @@ abstract class FieldValidator<V> implements Logging {
     /**
      * Returns a field validation option.
      *
-     * @param extension an extension key used to obtain a validation option
-     * @param <T>       the type of the option
+     * @param extension
+     *         an extension key used to obtain a validation option
+     * @param <T>
+     *         the type of the option
      */
     protected final <T> T getFieldOption(GeneratedExtension<FieldOptions, T> extension) {
         Optional<T> externalOption = getOptionValue(fieldContext, extension);
@@ -328,7 +337,6 @@ abstract class FieldValidator<V> implements Logging {
     /**
      * This test-only method is used from the module {@code smoke-tests}.
      */
-    @SuppressWarnings("unused")
     @VisibleForTesting
     boolean isRepeatedOrMap() {
         return !isNotRepeatedOrMap();
