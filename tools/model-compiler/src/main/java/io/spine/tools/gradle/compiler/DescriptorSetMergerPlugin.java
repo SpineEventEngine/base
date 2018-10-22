@@ -21,7 +21,7 @@
 package io.spine.tools.gradle.compiler;
 
 import com.google.common.collect.ImmutableSet;
-import io.spine.code.proto.FileDescriptors;
+import io.spine.tools.compiler.descriptor.Merger;
 import io.spine.tools.gradle.ConfigurationName;
 import io.spine.tools.gradle.SpinePlugin;
 import org.gradle.api.Action;
@@ -30,9 +30,7 @@ import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
 
 import java.io.File;
-import java.util.Collection;
 
-import static io.spine.code.proto.FileDescriptors.KNOWN_TYPES;
 import static io.spine.tools.gradle.ConfigurationName.RUNTIME;
 import static io.spine.tools.gradle.ConfigurationName.TEST_RUNTIME;
 import static io.spine.tools.gradle.TaskName.GENERATE_PROTO;
@@ -43,13 +41,10 @@ import static io.spine.tools.gradle.TaskName.MERGE_DESCRIPTOR_SET;
 import static io.spine.tools.gradle.TaskName.MERGE_TEST_DESCRIPTOR_SET;
 import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSetPath;
 import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSetPath;
-import static java.util.stream.Collectors.toList;
 
 /**
  * A Gradle plugin which merges the descriptor file with all the descriptor files from
  * the project runtime classpath.
- *
- * @author Dmytro Dashenkov
  */
 public class DescriptorSetMergerPlugin extends SpinePlugin {
 
@@ -83,27 +78,20 @@ public class DescriptorSetMergerPlugin extends SpinePlugin {
                 .applyNowTo(project);
     }
 
-    private Action<Task> createMergingAction(Configuration configuration,
-                                             String descriptorSetPath) {
+    private static Action<Task> createMergingAction(Configuration configuration,
+                                                    String descriptorSetPath) {
         return task -> {
             File descriptorSet = new File(descriptorSetPath);
-            Collection<File> descriptors =
-                    configuration.getFiles()
-                                 .stream()
-                                 .map(task.getProject()::zipTree)
-                                 .flatMap(fileTree -> fileTree.getFiles()
-                                                              .stream())
-                                 .filter(file -> KNOWN_TYPES.equals(file.getName()))
-                                 .peek(file -> log().debug("Merging descriptors from {}", file))
-                                 .collect(toList());
+            Project project = task.getProject();
             ImmutableSet.Builder<File> files = ImmutableSet
                     .<File>builder()
-                    .addAll(descriptors);
+                    .addAll(configuration.getFiles());
             if (descriptorSet.exists()) {
                 files.add(descriptorSet);
             }
-            FileDescriptors.merge(files.build())
-                           .writeTo(descriptorSet);
+            Merger merger = new Merger(archive -> project.zipTree(archive).getFiles());
+            merger.merge(files.build())
+                  .writeTo(descriptorSet);
         };
     }
 
