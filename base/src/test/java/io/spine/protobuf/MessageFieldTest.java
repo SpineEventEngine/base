@@ -24,9 +24,8 @@ import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import com.google.protobuf.StringValue;
 import com.google.protobuf.Timestamp;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import static com.google.protobuf.Descriptors.FieldDescriptor;
 import static com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
@@ -36,22 +35,22 @@ import static io.spine.protobuf.MessageField.getFieldDescriptor;
 import static io.spine.protobuf.MessageField.getFieldName;
 import static io.spine.protobuf.MessageField.toAccessorMethodName;
 import static io.spine.protobuf.TypeConverter.toMessage;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class MessageFieldShould {
+@DisplayName("MessageField should")
+class MessageFieldTest {
 
     private static final int STR_VALUE_FIELD_INDEX = 0;
 
     @SuppressWarnings("DuplicateStringLiteralInspection")
-    public static final String STR_VALUE_FIELD_NAME = "value";
+    private static final String STR_VALUE_FIELD_NAME = "value";
 
     private final StringValue stringValue = toMessage(newUuid());
 
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
-
     @Test
-    public void accept_positive_index() {
+    @DisplayName("accept positive index")
+    void accept_positive_index() {
         int index = 5;
 
         MessageField field = new TestMessageField(index);
@@ -60,7 +59,8 @@ public class MessageFieldShould {
     }
 
     @Test
-    public void accept_zero_index() {
+    @DisplayName("accept zero index")
+    void accept_zero_index() {
         int index = 0;
 
         MessageField field = new TestMessageField(index);
@@ -69,28 +69,32 @@ public class MessageFieldShould {
     }
 
     @Test
-    public void throw_exception_if_field_index_is_negative() {
-        thrown.expect(IllegalArgumentException.class);
-        new TestMessageField(-5);
+    @DisplayName("not accept negative index")
+    void throw_exception_if_field_index_is_negative() {
+        assertThrows(IllegalArgumentException.class,
+                     () -> new TestMessageField(-5));
     }
 
     @Test
-    public void throw_exception_if_field_is_not_available() {
+    @DisplayName("throw if field is not available")
+    void throw_exception_if_field_is_not_available() {
         TestMessageField field = new TestMessageField(STR_VALUE_FIELD_INDEX);
         field.setIsFieldAvailable(false);
-        thrown.expect(MessageFieldException.class);
-        field.getValue(stringValue);
+        assertThrows(MessageFieldException.class,
+                     () -> field.getValue(stringValue));
     }
 
     @Test
-    public void throw_exception_if_no_field_by_given_index() {
+    @DisplayName("throw if there is not field for index")
+    void throw_exception_if_no_field_by_given_index() {
         TestMessageField field = new TestMessageField(Integer.MAX_VALUE);
-        thrown.expect(ArrayIndexOutOfBoundsException.class);
-        field.getValue(stringValue);
+        assertThrows(ArrayIndexOutOfBoundsException.class,
+                     () -> field.getValue(stringValue));
     }
 
     @Test
-    public void return_field_value() {
+    @DisplayName("return field value")
+    void return_field_value() {
         TestMessageField field = new TestMessageField(STR_VALUE_FIELD_INDEX);
 
         Object value = field.getValue(stringValue);
@@ -99,28 +103,32 @@ public class MessageFieldShould {
     }
 
     @Test
-    public void return_field_descriptor() {
+    @DisplayName("return field descriptor")
+    void return_field_descriptor() {
         FieldDescriptor descriptor = getFieldDescriptor(stringValue, STR_VALUE_FIELD_INDEX);
 
         assertEquals(JavaType.STRING, descriptor.getJavaType());
     }
 
     @Test
-    public void return_field_name() {
+    @DisplayName("return field name")
+    void return_field_name() {
         String fieldName = getFieldName(stringValue, STR_VALUE_FIELD_INDEX);
 
         assertEquals(STR_VALUE_FIELD_NAME, fieldName);
     }
 
     @Test
-    public void convert_field_name_to_method_name() {
+    @DisplayName("convert field name to method name")
+    void convert_field_name_to_method_name() {
         assertEquals("getUserId", toAccessorMethodName("user_id"));
         assertEquals("getId", toAccessorMethodName("id"));
         assertEquals("getAggregateRootId", toAccessorMethodName("aggregate_root_id"));
     }
 
     @Test
-    public void obtain_number_of_fields() {
+    @DisplayName("obtain number of fields")
+    void obtain_number_of_fields() {
         assertEquals(0, getFieldCount(Empty.getDefaultInstance()));
         assertEquals(1, getFieldCount(StringValue.getDefaultInstance()));
         assertEquals(2, getFieldCount(Timestamp.getDefaultInstance()));

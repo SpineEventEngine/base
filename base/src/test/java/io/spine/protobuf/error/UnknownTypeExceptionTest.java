@@ -18,23 +18,38 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.java;
+package io.spine.protobuf.error;
 
-import com.google.common.testing.NullPointerTester;
+import io.spine.type.UnknownTypeException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
+import static io.spine.base.Identifier.newUuid;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("FieldName should")
-class FieldNameShould {
+@DisplayName("UnknownTypeException should")
+class UnknownTypeExceptionTest {
 
     @Test
-    @DisplayName(NOT_ACCEPT_NULLS)
-    void pass_null_tolerance_check() {
-        new NullPointerTester()
-                .setDefault(io.spine.code.proto.FieldName.class,
-                            io.spine.code.proto.FieldName.of("value"))
-                .testStaticMethods(FieldName.class, NullPointerTester.Visibility.PACKAGE);
+    @DisplayName("have constructor with type name")
+    void have_ctor_with_type_name() {
+        String str = newUuid();
+        UnknownTypeException exception = new UnknownTypeException(str);
+
+        assertTrue(exception.getMessage()
+                            .contains(str));
+    }
+
+    @Test
+    @DisplayName("have constructor with type name and cause")
+    void have_ctor_with_type_name_and_cause() {
+        String str = newUuid();
+        RuntimeException cause = new RuntimeException("");
+        UnknownTypeException exception = new UnknownTypeException(str, cause);
+
+        assertTrue(exception.getMessage()
+                            .contains(str));
+        assertEquals(cause, exception.getCause());
     }
 }

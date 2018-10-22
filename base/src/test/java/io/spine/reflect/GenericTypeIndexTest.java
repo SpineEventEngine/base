@@ -20,21 +20,25 @@
 
 package io.spine.reflect;
 
-import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class GenericTypeIndexShould {
+@DisplayName("GenericTypeIndex should")
+class GenericTypeIndexTest {
 
     @Test
-    public void obtain_generic_argument_assuming_generic_superclass() {
+    @DisplayName("obtain generic argument assuming generic superclass")
+    void obtain_generic_argument_assuming_generic_superclass() {
         Parametrized<Long, String> val = new Parametrized<Long, String>() {};
         assertEquals(Long.class, Types.getArgument(val.getClass(), Base.class, 0));
         assertEquals(String.class, Types.getArgument(val.getClass(), Base.class, 1));
     }
 
     @Test
-    public void obtain_generic_argument_via_superclass() {
+    @DisplayName("obtain generic argument via superclass")
+    void obtain_generic_argument_via_superclass() {
         assertEquals(String.class, Types.getArgument(Leaf.class, Base.class, 0));
         assertEquals(Float.class, Types.getArgument(Leaf.class, Base.class, 1));
     }

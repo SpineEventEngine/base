@@ -18,32 +18,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.protobuf.error;
+package io.spine.code.proto;
 
-import io.spine.type.UnknownTypeException;
-import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import static io.spine.base.Identifier.newUuid;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
-public class UnknownTypeExceptionShould {
-
-    @Test
-    public void have_ctor_with_type_name() {
-        String str = newUuid();
-        UnknownTypeException exception = new UnknownTypeException(str);
-
-        assertTrue(exception.getMessage().contains(str));
-    }
+@DisplayName("FileSet should")
+class FileSetTest {
 
     @Test
-    public void have_ctor_with_type_name_and_cause() {
-        String str = newUuid();
-        RuntimeException cause = new RuntimeException("");
-        UnknownTypeException exception = new UnknownTypeException(str, cause);
-
-        assertTrue(exception.getMessage().contains(str));
-        assertEquals(cause, exception.getCause());
+    @DisplayName("load mains resources")
+    void load_main_resources() {
+        assertFalse(FileSet.load()
+                           .isEmpty());
     }
 }

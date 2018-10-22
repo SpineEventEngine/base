@@ -21,16 +21,20 @@
 package io.spine.code.proto;
 
 import com.google.protobuf.Descriptors.FileDescriptor;
-import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
-public class TypeSetShould {
+@DisplayName("TypeSet should")
+class TypeSetTest {
 
     private static final FileSet fileSet = FileSet.load();
 
     @Test
-    public void obtain_messages_and_enums_from_a_file() {
+    @DisplayName("obtain messages and enums from a file")
+    @SuppressWarnings("OptionalGetWithoutIsPresent") /* The file is present in resources. */
+    void obtain_messages_and_enums_from_a_file() {
         FileDescriptor file = fileSet.tryFind(FileName.of("google/protobuf/descriptor.proto"))
                                      .get();
         TypeSet typeSet = TypeSet.messagesAndEnums(file);
@@ -38,7 +42,8 @@ public class TypeSetShould {
     }
 
     @Test
-    public void obtain_messages_and_enum_from_a_set() {
+    @DisplayName("obtain message and enums")
+    void obtain_messages_and_enum_from_a_set() {
         assertFalse(TypeSet.messagesAndEnums(fileSet)
                            .isEmpty());
     }

@@ -18,17 +18,29 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.proto;
+package io.spine.validate;
 
-import org.junit.Test;
+import com.google.common.collect.ImmutableList;
+import com.google.protobuf.Any;
+import com.google.protobuf.Descriptors.FieldDescriptor;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
-public class FileSetShould {
+@DisplayName("BooleanFieldValidator should")
+class BooleanFieldValidatorTest {
+
+    private final FieldDescriptor fieldDescriptor = Any.getDescriptor()
+                                                       .getFields()
+                                                       .get(0);
+    private final BooleanFieldValidator validator =
+            new BooleanFieldValidator(FieldContext.create(fieldDescriptor),
+                                      ImmutableList.of(false));
 
     @Test
-    public void load_main_resources() {
-        assertFalse(FileSet.load()
-                           .isEmpty());
+    @DisplayName("convert string to number")
+    void convert_string_to_number() {
+        assertFalse(validator.isNotSet(false));
     }
 }

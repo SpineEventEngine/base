@@ -18,26 +18,35 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.validate;
+package io.spine.value;
 
-import com.google.common.collect.ImmutableList;
-import com.google.protobuf.Any;
-import com.google.protobuf.Descriptors.FieldDescriptor;
-import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class BooleanFieldValidatorShould {
-
-    private final FieldDescriptor fieldDescriptor = Any.getDescriptor()
-                                                       .getFields()
-                                                       .get(0);
-    private final BooleanFieldValidator validator =
-            new BooleanFieldValidator(FieldContext.create(fieldDescriptor),
-                                      ImmutableList.of(false));
+@DisplayName("ComparableStringValue should")
+class ComparableStringValueTest {
 
     @Test
-    public void convert_string_to_number() {
-        assertFalse(validator.isNotSet(false));
+    @DisplayName("compare")
+    @SuppressWarnings("LocalVariableNamingConvention") /* shorter names are meaningful for this test */
+    void compare() {
+        TestVal a = new TestVal("a");
+        TestVal b = new TestVal("b");
+
+        assertTrue(a.compareTo(b) < 0);
+        assertTrue(b.compareTo(a) > 0);
+        assertEquals(0, a.compareTo(new TestVal("a")));
+    }
+
+    private static class TestVal extends ComparableStringValue<TestVal> {
+
+        private static final long serialVersionUID = 0L;
+
+        private TestVal(String value) {
+            super(value);
+        }
     }
 }

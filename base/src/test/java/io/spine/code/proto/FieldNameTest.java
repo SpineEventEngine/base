@@ -18,33 +18,29 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.value;
+package io.spine.code.proto;
 
-import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ComparableStringValueShould {
+@DisplayName("FieldName should")
+class FieldNameTest {
 
-    /* shorter names are meaningful for this test */
-    @SuppressWarnings("LocalVariableNamingConvention")
+    private static final String PROTO_FIELD_NAME = "correct_java_name";
+
+    private final FieldName fieldName = FieldName.of(PROTO_FIELD_NAME);
+
     @Test
-    public void compare() {
-        TestVal a = new TestVal("a");
-        TestVal b = new TestVal("b");
-
-        assertTrue(a.compareTo(b) < 0);
-        assertTrue(b.compareTo(a) > 0);
-        assertEquals(0, a.compareTo(new TestVal("a")));
+    @DisplayName("obtain javaCase")
+    void return_correct_java_field_name() {
+        assertEquals("correctJavaName", fieldName.javaCase());
     }
 
-    private static class TestVal extends ComparableStringValue<TestVal> {
-
-        private static final long serialVersionUID = 0L;
-
-        private TestVal(String value) {
-            super(value);
-        }
+    @Test
+    @DisplayName("obtain CamelCase")
+    void return_correct_capitalized_java_name() {
+        assertEquals("CorrectJavaName", fieldName.toCamelCase());
     }
 }

@@ -22,35 +22,36 @@ package io.spine.code.proto;
 
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.DescriptorValidationException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
 
 import static com.google.common.collect.ImmutableList.of;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests resolving of {@link com.google.protobuf.Descriptors.FileDescriptor FileDescriptor}s
  * using test resource file.
  *
  * <p>See {@code test/resources/main.desc}.
- *
- * @author Alexander Yevsyukov
  */
-public class LinkerShould {
+@DisplayName("Linker should")
+class LinkerTest {
 
     private Linker linker;
 
-    @Before
-    public void setUp() throws DescriptorValidationException {
+    @BeforeEach
+    void setUp() throws DescriptorValidationException {
         Collection<FileDescriptorProto> fileSets = FileDescriptors.load();
         linker = new Linker(fileSets);
         linker.resolve();
     }
 
     @Test
-    public void resolve_files() {
+    @DisplayName("resolve files")
+    void resolve_files() {
         FileSet resolved = linker.getResolved();
         assertTrue(resolved.size() > 0);
         assertTrue(resolved.containsAll(of(
@@ -60,21 +61,24 @@ public class LinkerShould {
     }
 
     @Test
-    public void obtain_partial() {
+    @DisplayName("obtain partially resolved files")
+    void obtain_partial() {
         // No such in the given test data.
         assertTrue(linker.getPartiallyResolved()
                          .isEmpty());
     }
 
     @Test
-    public void obtain_unresolved() {
+    @DisplayName("obtain unresolved files")
+    void obtain_unresolved() {
         // No such in the given test data.
         assertTrue(linker.getUnresolved()
                          .isEmpty());
     }
 
     @Test
-    public void do_not_leave_remaining() {
+    @DisplayName("not leave remaining")
+    void do_not_leave_remaining() {
         assertTrue(linker.getRemaining()
                          .isEmpty());
     }

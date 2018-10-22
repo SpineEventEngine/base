@@ -20,33 +20,38 @@
 
 package io.spine.type;
 
-import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Descriptors;
 import com.google.protobuf.StringValue;
-import io.spine.code.java.PackageName;
-import io.spine.code.java.SimpleClassName;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import io.spine.base.CommandMessage;
+import io.spine.base.given.CommandFromCommands;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-public class ClassNameShould {
+import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
+@DisplayName("CommandMessage should")
+class CommandMessageTest {
 
     @Test
-    public void reject_empty_value() {
-        thrown.expect(IllegalArgumentException.class);
-        ClassName.of("");
+    @DisplayName("have utility ctor for File")
+    void have_utility_ctor_for_File_class() {
+        assertHasPrivateParameterlessCtor(CommandMessage.File.class);
     }
 
     @Test
-    public void pass_null_tolerance_check() {
-        Descriptors.Descriptor descriptor = StringValue.getDescriptor();
-        new NullPointerTester()
-                .setDefault(SimpleClassName.class, SimpleClassName.ofMessage(descriptor))
-                .setDefault(PackageName.class, PackageName.resolve(descriptor.getFile()
-                                                                             .toProto()))
-                .testAllPublicStaticMethods(ClassName.class);
+    @DisplayName("tell commands file by descriptor")
+    void tell_commands_file_by_its_descriptor() {
+        Descriptors.FileDescriptor file = CommandFromCommands.getDescriptor()
+                                                             .getFile();
+        assertTrue(CommandMessage.File.predicate()
+                                      .test(file));
+
+        file = StringValue.getDescriptor()
+                          .getFile();
+
+        assertFalse(CommandMessage.File.predicate()
+                                       .test(file));
     }
 }

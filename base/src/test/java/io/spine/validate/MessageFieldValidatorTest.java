@@ -28,11 +28,13 @@ import io.spine.test.validate.MessageWithRepeatedRequiredValidatedMessageField;
 import io.spine.test.validate.MessageWithRepeatedUnchekedMessageField;
 import io.spine.test.validate.MessageWithRepeatedValidatedMessageField;
 import io.spine.test.validate.MessegeWithRepeatedRequiredMessageField;
+import org.junit.jupiter.api.DisplayName;
 
 import java.util.Collections;
 import java.util.List;
 
-public class MessageFieldValidatorShould extends FieldValidatorShould<Message> {
+@DisplayName("MessageFieldValidator should")
+public class MessageFieldValidatorTest extends FieldValidatorShould<Message> {
 
     private static final FieldDescriptor UNCHECKED_FIELD_DESC =
             MessageWithRepeatedUnchekedMessageField.getDescriptor()

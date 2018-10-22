@@ -20,35 +20,34 @@
 
 package io.spine.validate;
 
-import io.spine.validate.ConstraintViolation;
-import io.spine.validate.FieldValidator;
 import org.hamcrest.Matchers;
-import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
 import java.util.List;
 
 import static com.google.common.collect.ImmutableList.of;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests {@link io.spine.validate.FieldValidator}.
- *
- * @author Dmytro Dashenkov
  */
 public abstract class FieldValidatorShould<V> {
 
     /**
-     * Creates a {@link io.spine.validate.FieldValidator} for a repeated required field, which child items are also
+     * Creates a {@link io.spine.validate.FieldValidator} for a repeated required field, which child
+     * items are also
      * validated separately.
      *
      * <p>The proto description of this field looks as follows:
      * {@code repeated T field_name = 42 [(required) = true, (valid) = true];}, where {@code T} is
      * the type parameter of the tested {@link io.spine.validate.FieldValidator}.
      *
-     * @param values the list of the field values
+     * @param values
+     *         the list of the field values
      * @return new instance of {@link io.spine.validate.FieldValidator}
      */
     protected abstract FieldValidator<V> validatedRequiredRepeatedFieldValidator(List<V> values);
@@ -61,7 +60,8 @@ public abstract class FieldValidatorShould<V> {
      * {@code repeated T field_name = 42 [(required) = true;}, where {@code T} is the type parameter
      * of the tested {@link FieldValidator}.
      *
-     * @param values the list of the field values
+     * @param values
+     *         the list of the field values
      * @return new instance of {@link FieldValidator}
      */
     protected abstract FieldValidator<V> requiredRepeatedFieldValidator(List<V> values);
@@ -73,7 +73,8 @@ public abstract class FieldValidatorShould<V> {
      * {@code repeated T field_name = 42 [(valid) = true];}, where {@code T} is the type parameter
      * of the tested {@link FieldValidator}.
      *
-     * @param values the list of the field values
+     * @param values
+     *         the list of the field values
      * @return new instance of {@link FieldValidator}
      */
     protected abstract FieldValidator<V> validatedRepeatedFieldValidator(List<V> values);
@@ -85,7 +86,8 @@ public abstract class FieldValidatorShould<V> {
      * {@code repeated T field_name = 42;}, where {@code T} is the type parameter of the tested
      * {@link FieldValidator}.
      *
-     * @param values the list of the field values
+     * @param values
+     *         the list of the field values
      * @return new instance of {@link FieldValidator}
      */
     protected abstract FieldValidator<V> uncheckedRepeatedFieldValidator(List<V> values);
@@ -110,7 +112,8 @@ public abstract class FieldValidatorShould<V> {
     protected abstract V defaultValue();
 
     @Test
-    public void validate_repeated_fields_if_specified() {
+    @DisplayName("validate repeated fields if specified")
+    void validate_repeated_fields_if_specified() {
         FieldValidator<V> validator = validatedRequiredRepeatedFieldValidator(of(newValue(),
                                                                                  defaultValue()));
         List<ConstraintViolation> violations = validator.validate();
@@ -119,7 +122,8 @@ public abstract class FieldValidatorShould<V> {
     }
 
     @Test
-    public void skip_repeated_fields_if_not_specified() {
+    @DisplayName("skip repeated fields if not specified")
+    void skip_repeated_fields_if_not_specified() {
         FieldValidator<V> validator = uncheckedRepeatedFieldValidator(of(defaultValue(),
                                                                          defaultValue(),
                                                                          defaultValue()));
@@ -128,21 +132,24 @@ public abstract class FieldValidatorShould<V> {
     }
 
     @Test
-    public void skip_empty_repeated_fields_if_not_required() {
+    @DisplayName("skip empty repeated fields if not required")
+    void skip_empty_repeated_fields_if_not_required() {
         FieldValidator<V> validator = uncheckedRepeatedFieldValidator(of());
         List<ConstraintViolation> violations = validator.validate();
         assertEmpty(violations);
     }
 
     @Test
-    public void skip_empty_repeated_validated_not_required_fields() {
+    @DisplayName("skip empty repeated validated not required fields")
+    void skip_empty_repeated_validated_not_required_fields() {
         FieldValidator<V> validator = validatedRepeatedFieldValidator(of());
         List<ConstraintViolation> violations = validator.validate();
         assertEmpty(violations);
     }
 
     @Test
-    public void not_validate_elements_of_repeated_field() {
+    @DisplayName("not validate elements of repeated fields")
+    void not_validate_elements_of_repeated_field() {
         FieldValidator<V> validator = requiredRepeatedFieldValidator(of(defaultValue(),
                                                                         defaultValue()));
         List<ConstraintViolation> violations = validator.validate();
@@ -150,13 +157,15 @@ public abstract class FieldValidatorShould<V> {
     }
 
     @Test
-    public void flag_repeated_fields() {
+    @DisplayName("flag repeated fields")
+    void flag_repeated_fields() {
         FieldValidator<?> validator = uncheckedRepeatedFieldValidator(of());
         assertTrue(validator.isRepeatedOrMap());
     }
 
     @Test
-    public void flag_map_fields() {
+    @DisplayName("flag map fields")
+    void flag_map_fields() {
         FieldValidator<?> validator = emptyMapFieldValidator();
         assertTrue(validator.isRepeatedOrMap());
     }

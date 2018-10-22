@@ -27,13 +27,14 @@ import com.google.protobuf.TimestampOrBuilder;
 import io.spine.base.Error;
 import io.spine.code.proto.FileName;
 import io.spine.code.proto.FileSet;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests {@link SimpleClassName}.
@@ -41,19 +42,18 @@ import static org.junit.Assert.assertTrue;
  * <p>Even though the code where {@link SimpleClassName} resides no longer depends on the
  * {@code base} module, this test uses descriptors copied from the {@code base} stored in
  * resources. That's why the {@code ErrorProto} descriptor is available for these tests.
- *
- * @author Alexander Yevsyukov
  */
-public class SimpleClassNameShould {
+@DisplayName("SimpleClassName should")
+class SimpleClassNameTest {
 
     private static final FileSet mainSet = FileSet.load();
     private static final String ERROR_PROTO = "ErrorProto";
 
     private FileDescriptor errorProto;
 
-    @SuppressWarnings("ConstantConditions") /* The file is present in resources. */
-    @Before
-    public void setUp() {
+    @SuppressWarnings("OptionalGetWithoutIsPresent") /* The file is present in resources. */
+    @BeforeEach
+    void setUp() {
         FileName errorFileName = FileName.from(Error.getDescriptor()
                                                     .getFile()
                                                     .toProto());
@@ -62,13 +62,15 @@ public class SimpleClassNameShould {
     }
 
     @Test
-    public void obtain_outer_class_name() {
+    @DisplayName("obtain outer class name")
+    void obtain_outer_class_name() {
         assertEquals(ERROR_PROTO, SimpleClassName.outerOf(errorProto.toProto())
                                                  .value());
     }
 
     @Test
-    public void obtain_declared_outer_class_name() {
+    @DisplayName("obtain declared outer class name")
+    void obtain_declared_outer_class_name() {
         Optional<SimpleClassName> className =
                 SimpleClassName.declaredOuterClassName(errorProto.toProto());
 
@@ -78,28 +80,32 @@ public class SimpleClassNameShould {
     }
 
     @Test
-    public void obtain_default_builder_class_name() {
+    @DisplayName("obtain default builder class name")
+    void obtain_default_builder_class_name() {
         assertTrue(SimpleClassName.ofBuilder()
                                   .value()
                                   .contains(Message.Builder.class.getSimpleName()));
     }
 
     @Test
-    public void obtains_name_for_message_or_builder() {
+    @DisplayName("obtain name for message or builder")
+    void obtain_name_for_message_or_builder() {
         assertEquals(TimestampOrBuilder.class.getSimpleName(),
                      SimpleClassName.messageOrBuilder(Timestamp.class.getSimpleName())
                                     .value());
     }
 
     @Test
-    public void obtains_value_by_descriptor() {
+    @DisplayName("obtain value by descriptor")
+    void obtain_value_by_descriptor() {
         assertEquals(Timestamp.class.getSimpleName(),
                      SimpleClassName.ofMessage(Timestamp.getDescriptor())
                                     .value());
     }
 
     @Test
-    public void convert_to_file_name() {
+    @DisplayName("convert to FileName")
+    void convert_to_file_name() {
         SimpleClassName className = SimpleClassName.ofMessage(Timestamp.getDescriptor());
         assertTrue(className.toFileName()
                             .value()

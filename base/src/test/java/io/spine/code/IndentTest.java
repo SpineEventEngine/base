@@ -20,27 +20,27 @@
 
 package io.spine.code;
 
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class IndentShould {
-
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
+@DisplayName("Indent should")
+class IndentTest {
 
     @Test
-    public void prohibit_negative_value() {
-        thrown.expect(IllegalArgumentException.class);
-        Indent.of(-1);
+    @DisplayName("prohibit negative values")
+    void prohibit_negative_value() {
+        assertThrows(IllegalArgumentException.class,
+                     () -> Indent.of(-1));
     }
 
     @Test
-    public void allow_zero_indent() {
+    @DisplayName("allow zero indent")
+    void allow_zero_indent() {
         Indent zeroIndent = Indent.of(0);
         assertEquals(0, zeroIndent.getSize());
         assertTrue(zeroIndent.toString()
@@ -48,14 +48,16 @@ public class IndentShould {
     }
 
     @Test
-    public void allow_custom_size() {
+    @DisplayName("allow custom size")
+    void allow_custom_size() {
         Indent ofThree = Indent.of(3);
         assertEquals(3, ofThree.getSize());
         assertEquals("   ", ofThree.toString());
     }
 
     @Test
-    public void return_popular_constants() {
+    @DisplayName("provide convenient methods")
+    void return_popular_constants() {
         assertEquals(2, Indent.of2()
                               .getSize());
         assertEquals(4, Indent.of4()
@@ -63,7 +65,8 @@ public class IndentShould {
     }
 
     @Test
-    public void return_constants_by_popular_values() {
+    @DisplayName("return constant for popular values")
+    void return_constants_by_popular_values() {
         assertSame(Indent.of2(), Indent.of(2));
         assertSame(Indent.of4(), Indent.of(4));
     }

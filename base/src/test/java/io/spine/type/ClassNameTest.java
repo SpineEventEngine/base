@@ -20,34 +20,35 @@
 
 package io.spine.type;
 
+import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Descriptors;
 import com.google.protobuf.StringValue;
-import io.spine.base.CommandMessage;
-import io.spine.base.given.CommandFromCommands;
-import org.junit.Test;
+import io.spine.code.java.PackageName;
+import io.spine.code.java.SimpleClassName;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class CommandMessageShould {
+@DisplayName("ClassName should")
+class ClassNameTest {
 
     @Test
-    public void have_utility_ctor_for_File_class() {
-        assertHasPrivateParameterlessCtor(CommandMessage.File.class);
+    @DisplayName("reject empty value")
+    void reject_empty_value() {
+        assertThrows(IllegalArgumentException.class,
+                     () -> ClassName.of(""));
     }
 
     @Test
-    public void tell_commands_file_by_its_descriptor() {
-        Descriptors.FileDescriptor file = CommandFromCommands.getDescriptor()
-                                                             .getFile();
-        assertTrue(CommandMessage.File.predicate()
-                                      .test(file));
-
-        file = StringValue.getDescriptor()
-                          .getFile();
-
-        assertFalse(CommandMessage.File.predicate()
-                                       .test(file));
+    @DisplayName(NOT_ACCEPT_NULLS)
+    void pass_null_tolerance_check() {
+        Descriptors.Descriptor descriptor = StringValue.getDescriptor();
+        new NullPointerTester()
+                .setDefault(SimpleClassName.class, SimpleClassName.ofMessage(descriptor))
+                .setDefault(PackageName.class, PackageName.resolve(descriptor.getFile()
+                                                                             .toProto()))
+                .testAllPublicStaticMethods(ClassName.class);
     }
 }

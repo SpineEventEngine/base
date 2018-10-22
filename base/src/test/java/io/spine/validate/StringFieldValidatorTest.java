@@ -26,11 +26,13 @@ import io.spine.test.validate.MessageWithRepeatedRequiredValidatedStringField;
 import io.spine.test.validate.MessageWithRepeatedUnchekedStringField;
 import io.spine.test.validate.MessageWithRepeatedValidatedStringField;
 import io.spine.test.validate.MessegeWithRepeatedRequiredStringField;
+import org.junit.jupiter.api.DisplayName;
 
 import java.util.Collections;
 import java.util.List;
 
-public class StringFieldValidatorShould extends FieldValidatorShould<String> {
+@DisplayName("StringFieldValidator should")
+public class StringFieldValidatorTest extends FieldValidatorShould<String> {
 
     private static final FieldDescriptor UNCHECKED_FIELD_DESC =
             MessageWithRepeatedUnchekedStringField.getDescriptor()
@@ -78,7 +80,7 @@ public class StringFieldValidatorShould extends FieldValidatorShould<String> {
 
     @Override
     protected FieldValidator<String> emptyMapFieldValidator() {
-        return getValidator(MAP_FIELD_DESC, Collections.<String>emptyList());
+        return getValidator(MAP_FIELD_DESC, Collections.emptyList());
     }
 
     @Override
@@ -91,8 +93,8 @@ public class StringFieldValidatorShould extends FieldValidatorShould<String> {
         return "";
     }
 
-    private StringFieldValidator getValidator(FieldDescriptor field,
-                                              List<? extends String> values) {
+    private static StringFieldValidator getValidator(FieldDescriptor field,
+                                                     List<? extends String> values) {
         return new StringFieldValidator(FieldContext.create(field),
                                         values,
                                         false);

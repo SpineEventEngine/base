@@ -23,8 +23,9 @@ package io.spine.protobuf;
 import com.google.common.collect.Lists;
 import com.google.protobuf.Any;
 import com.google.protobuf.Message;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.util.Iterator;
 import java.util.List;
@@ -32,17 +33,18 @@ import java.util.List;
 import static io.spine.protobuf.AnyPacker.unpack;
 import static io.spine.protobuf.TypeConverter.toMessage;
 import static io.spine.validate.Validate.isDefault;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PackingIteratorShould {
+@DisplayName("PackingIterator should")
+class PackingIteratorTest {
 
     private List<Message> list;
     private Iterator<Any> packer;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         list = Lists.newArrayList(toMessage("one"),
                                   toMessage(2),
                                   toMessage(3),
@@ -52,7 +54,8 @@ public class PackingIteratorShould {
     }
 
     @Test
-    public void implement_hasNext() throws Exception {
+    @DisplayName("implement hasNext()")
+    void implement_hasNext() {
         assertTrue(packer.hasNext());
 
         list.clear();
@@ -61,7 +64,8 @@ public class PackingIteratorShould {
     }
 
     @Test
-    public void implement_next() throws Exception {
+    @DisplayName("implement next()")
+    void implement_next() {
         while (packer.hasNext()) {
             Any packed = packer.next();
             assertNotNull(packed);

@@ -25,9 +25,6 @@ import com.google.protobuf.Message;
 import com.google.protobuf.StringValue;
 import io.spine.testing.Tests;
 import io.spine.type.TypeName;
-import io.spine.validate.ConstraintViolation;
-import io.spine.validate.ConstraintViolations;
-import io.spine.validate.Validate;
 import org.junit.Test;
 
 import static io.spine.protobuf.TypeConverter.toMessage;

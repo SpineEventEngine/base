@@ -22,56 +22,61 @@ package io.spine.code.proto;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.testing.NullPointerTester;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static io.spine.code.proto.FileName.of;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class FileNameShould {
-
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
+@DisplayName("FileName should")
+class FileNameTest {
 
     @Test
-    public void pass_null_tolerance_check() {
+    @DisplayName(NOT_ACCEPT_NULLS)
+    void pass_null_tolerance_check() {
         new NullPointerTester().testStaticMethods(FileName.class,
                                                   NullPointerTester.Visibility.PACKAGE);
     }
 
     @Test
-    public void require_standard_extension() {
-        thrown.expect(IllegalArgumentException.class);
-        of("some_thing");
+    @DisplayName("require standard extension")
+    void require_standard_extension() {
+        assertThrows(IllegalArgumentException.class,
+                     () -> of("some_thing"));
     }
 
     @Test
-    public void return_words() {
+    @DisplayName("return words")
+    void return_words() {
         List<String> words = of("some_file_name.proto").words();
 
         assertEquals(ImmutableList.of("some", "file", "name"), words);
     }
 
-    @SuppressWarnings("DuplicateStringLiteralInspection")
     @Test
-    public void calculate_outer_class_name() {
+    @DisplayName("calculate outer class name")
+    @SuppressWarnings("DuplicateStringLiteralInspection")
+    void calculate_outer_class_name() {
         assertEquals("Rejections", of("rejections.proto").nameOnlyCamelCase());
         assertEquals("ManyRejections", of("many_rejections.proto").nameOnlyCamelCase());
         assertEquals("ManyMoreRejections", of("many_more_rejections.proto").nameOnlyCamelCase());
     }
 
     @Test
-    public void return_file_name_without_extension() {
+    @DisplayName("return file name without extension")
+    void return_file_name_without_extension() {
         assertEquals("package/commands", of("package/commands.proto").nameWithoutExtension());
     }
 
     @Test
-    public void tell_commands_file_kind() {
+    @DisplayName("tell commands file kind")
+    void tell_commands_file_kind() {
         FileName commandsFile = of("my_commands.proto");
 
         assertTrue(commandsFile.isCommands());
@@ -80,7 +85,8 @@ public class FileNameShould {
     }
 
     @Test
-    public void tell_events_file_kind() {
+    @DisplayName("tell events file kind")
+    void tell_events_file_kind() {
         FileName eventsFile = of("project_events.proto");
 
         assertTrue(eventsFile.isEvents());
@@ -89,11 +95,12 @@ public class FileNameShould {
     }
 
     @Test
-    public void tell_rejections_file_kind() {
-        FileName rejectsionFile = of("rejections.proto");
+    @DisplayName("tell rejection file kind")
+    void tell_rejections_file_kind() {
+        FileName rejectionsFile = of("rejections.proto");
 
-        assertTrue(rejectsionFile.isRejections());
-        assertFalse(rejectsionFile.isCommands());
-        assertFalse(rejectsionFile.isEvents());
+        assertTrue(rejectionsFile.isRejections());
+        assertFalse(rejectionsFile.isCommands());
+        assertFalse(rejectionsFile.isEvents());
     }
 }

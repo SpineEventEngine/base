@@ -21,32 +21,35 @@
 package io.spine.tools.compiler.annotation;
 
 import com.google.protobuf.DescriptorProtos.EnumDescriptorProto;
-import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.annotation.Experimental;
 import io.spine.ui.Language;
-import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 
 import static io.spine.test.compiler.annotation.EnumAnnotatorShouldProto.experimentalType;
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
-public class EnumAnnotatorShould {
+@DisplayName("EnumAnnotator should")
+class EnumAnnotatorTest {
 
     private static final String INVALID_GEN_PROTO_DIR = "";
 
     private final EnumAnnotator annotator = new EnumAnnotator(Experimental.class,
                                                               experimentalType,
-                                                              Collections.<FileDescriptorProto>emptySet(),
+                                                              Collections.emptySet(),
                                                               INVALID_GEN_PROTO_DIR);
 
     @Test
-    public void do_nothing_if_no_descriptors_specified() {
+    @DisplayName("do nothing if no descriptors specified")
+    void do_nothing_if_no_descriptors_specified() {
         annotator.annotate();
     }
 
     @Test
-    public void not_annotate_enum_without_option() {
+    @DisplayName("not annotate enum without option")
+    void not_annotate_enum_without_option() {
         EnumDescriptorProto descriptorWithoutOption = Language.getDescriptor()
                                                               .toProto();
         boolean shouldAnnotate = annotator.shouldAnnotate(descriptorWithoutOption);

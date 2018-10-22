@@ -27,47 +27,48 @@ import com.google.protobuf.Parser;
 import com.google.protobuf.UnknownFieldSet;
 import com.google.protobuf.util.Timestamps;
 import io.spine.testing.Tests;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ThrowableMessageShould {
+@DisplayName("ThrowableMessage should")
+class ThrowableMessageTest {
 
     private RejectionMessage message;
     private ThrowableMessage throwableMessage;
     private Any producer;
 
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
-
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         message = new FakeRejectionMessage();
         throwableMessage = new TestThrowableMessage(message);
         producer = Identifier.pack(getClass().getName());
     }
 
     @Test
-    public void return_message_thrown() {
+    @DisplayName("return the thrown message")
+    void return_message_thrown() {
         assertEquals(message, throwableMessage.getMessageThrown());
     }
 
     @Test
-    public void have_timestamp() {
+    @DisplayName("have timestamp")
+    void have_timestamp() {
         assertTrue(Timestamps.isValid(throwableMessage.getTimestamp()));
     }
 
     @Test
-    public void init_producer() {
+    @DisplayName("initialize the producer")
+    void init_producer() {
         assertFalse(throwableMessage.producerId()
                                     .isPresent());
 
@@ -80,23 +81,25 @@ public class ThrowableMessageShould {
     }
 
     @Test
-    public void not_allow_repeated_producer_initialization() {
-        thrown.expect(IllegalStateException.class);
-        throwableMessage.initProducer(producer)
-                        .initProducer(producer);
+    @DisplayName("not allow repeated producer initialization")
+    void not_allow_repeated_producer_initialization() {
+        throwableMessage.initProducer(producer);
+        assertThrows(IllegalStateException.class,
+                     () -> throwableMessage.initProducer(producer));
     }
 
     @Test
-    public void not_allow_null_producer() {
-        thrown.expect(NullPointerException.class);
-        throwableMessage.initProducer(Tests.nullRef());
+    @DisplayName("not allow null producer")
+    void not_allow_null_producer() {
+        assertThrows(NullPointerException.class,
+                     () -> throwableMessage.initProducer(Tests.nullRef()));
     }
 
-    @SuppressWarnings("ThrowableNotThrown")
     @Test
-    public void prohibit_null_message() {
-        thrown.expect(NullPointerException.class);
-        new TestThrowableMessage(Tests.nullRef());
+    @DisplayName("prohibit null message")
+    void prohibit_null_message() {
+        assertThrows(NullPointerException.class,
+                     () -> new TestThrowableMessage(Tests.nullRef()));
     }
 
     /**

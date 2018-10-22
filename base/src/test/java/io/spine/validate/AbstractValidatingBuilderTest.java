@@ -21,17 +21,20 @@
 package io.spine.validate;
 
 import com.google.protobuf.UInt32Value;
-import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Map;
 
-import static junit.framework.TestCase.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class AbstractValidatingBuilderShould {
+@DisplayName("AbstractValidatingBuilder should")
+class AbstractValidatingBuilderTest {
 
     @Test
-    public void convert_to_map() {
+    @DisplayName("convert to map")
+    void convert_to_map() {
         String key1 = "key1";
         UInt32Value value = UInt32Value.newBuilder()
                                        .setValue(123)
@@ -49,7 +52,8 @@ public class AbstractValidatingBuilderShould {
     }
 
     @Test
-    public void convert_to_list() {
+    @DisplayName("convert to list")
+    void convert_to_list() {
         String key1 = "key1";
         String value = "123";
         String listStr = "\"key1\",\"123\",\"key2\",\"234\"";

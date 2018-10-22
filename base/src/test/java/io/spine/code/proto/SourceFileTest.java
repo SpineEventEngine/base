@@ -25,29 +25,32 @@ import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.Descriptor;
 import io.spine.test.compiler.message.Top;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
 import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class SourceFileShould {
+@DisplayName("SourceFile should")
+class SourceFileTest {
 
     private static final FileDescriptorProto TEST_FILE_DESCRIPTOR = Top.getDescriptor()
                                                                        .getFile()
                                                                        .toProto();
     private SourceFile sourceFile;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         sourceFile = SourceFile.from(TEST_FILE_DESCRIPTOR);
     }
 
     @Test
-    public void search_nested_declarations_recursively() {
+    @DisplayName("search nested declarations recursively")
+    void search_nested_declarations_recursively() {
         Descriptor nestedForNested = Top.NestedForTop.NestedForNested.getDescriptor();
         String expectedTypeName = nestedForNested.getFullName();
         String simpleTypeName = nestedForNested.getName();
