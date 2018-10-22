@@ -7,5 +7,4 @@ The utilities include common base classes for tests like
 [assert statements](src/main/java/io/spine/testing/Verify.java), common test 
 [display names](src/main/java/io/spine/testing/DisplayNames.java) and others.
 
-Most testing utilities rely on [JUnit 4](https://junit.org/junit4/)/
-[JUnit 5](https://junit.org/junit5/) API for their work.
+Most testing utilities rely on [JUnit 5](https://junit.org/junit5/) API for their work.

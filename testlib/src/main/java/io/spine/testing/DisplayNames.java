@@ -28,7 +28,7 @@ package io.spine.testing;
  * <p>This class can be used to avoid string literal duplication when assigning {@code DisplayName}
  * to the common test cases.
  */
-public class DisplayNames {
+public final class DisplayNames {
 
     /**
      * A name for the test cases checking that a class has private parameterless (aka "utility")

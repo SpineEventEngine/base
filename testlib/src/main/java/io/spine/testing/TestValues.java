@@ -28,7 +28,7 @@ import java.util.concurrent.ThreadLocalRandom;
 /**
  * Utility factories for test values.
  */
-public class TestValues {
+public final class TestValues {
 
     /** Prevents instantiation of this utility class. */
     private TestValues() {

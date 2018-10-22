@@ -21,24 +21,28 @@
 package io.spine.testing;
 
 import com.google.protobuf.Any;
-import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Constructor;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class ReflectiveBuilderShould {
+@DisplayName("ReflectiveBuilder should")
+class ReflectiveBuilderShould {
 
     @Test
-    public void has_result_class() {
+    @DisplayName("has the result class")
+    void has_result_class() {
         ReflectiveBuilder<Any> builder =
                 new DummyBuilder().setResultClass(Any.class);
         assertEquals(Any.class, builder.getResultClass());
     }
 
     @Test
-    public void obtain_ctor() {
+    @DisplayName("obtain a constructor")
+    void obtain_ctor() {
         assertNotNull(new DummyBuilder().getConstructor());
     }
 

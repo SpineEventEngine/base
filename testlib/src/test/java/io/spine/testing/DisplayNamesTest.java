@@ -20,14 +20,12 @@
 
 package io.spine.testing;
 
-import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
 
-import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
+@DisplayName("DisplayNames utility class should")
+class DisplayNamesTest extends UtilityClassTest<DisplayNames> {
 
-public class DisplayNamesShould {
-
-    @Test
-    public void have_utility_ctor() {
-        assertHasPrivateParameterlessCtor(DisplayNames.class);
+    DisplayNamesTest() {
+        super(DisplayNames.class);
     }
 }

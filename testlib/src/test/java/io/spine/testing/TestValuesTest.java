@@ -20,32 +20,27 @@
 
 package io.spine.testing;
 
-import com.google.common.testing.NullPointerTester;
-import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class TestValuesShould {
+@DisplayName("TestValues utility class should")
+class TestValuesTest extends UtilityClassTest<TestValues> {
 
-    @Test
-    public void have_utility_ctor() {
-        assertHasPrivateParameterlessCtor(TestValues.class);
+    TestValuesTest() {
+        super(TestValues.class);
     }
 
     @Test
-    public void pass_null_tolerance_check() {
-        new NullPointerTester()
-                .testAllPublicStaticMethods(TestValues.class);
-    }
-
-    @Test
-    public void provide_random_non_negative_number() {
+    @DisplayName("provide a random non-negative number")
+    void provide_random_non_negative_number() {
         assertTrue(TestValues.random(100) >= 0);
     }
 
     @Test
-    public void provide_randome_number_in_range() {
+    @DisplayName("provide a random number in a range")
+    void provide_random_number_in_range() {
         int value = TestValues.random(-100, 100);
         assertTrue(value >= -100);
         assertTrue(value <= 100);

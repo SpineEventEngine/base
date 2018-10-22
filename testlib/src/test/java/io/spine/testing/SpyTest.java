@@ -21,51 +21,59 @@
 package io.spine.testing;
 
 import com.google.common.collect.Lists;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-public class SpyShould {
+@DisplayName("Spy should")
+class SpyTest {
 
     private static final String FIELD_NAME = "list";
 
     private List<String> list;
 
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
-
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         list = Lists.newArrayList("a", "b", "c");
     }
 
-    @After
-    public void tearDown() {
+    @AfterEach
+    void tearDown() {
         list = null;
     }
-    
+
     @Test
-    public void inject_by_class() {
+    @DisplayName("inject by a class")
+    void inject_by_class() {
         List spy = Spy.ofClass(List.class)
                       .on(this);
         assertSpy(spy);
     }
 
     @Test
-    public void inject_by_name() {
+    @DisplayName("inject by a name")
+    void inject_by_name() {
         List spy = Spy.ofClass(List.class)
                       .on(this, FIELD_NAME);
         assertSpy(spy);
+    }
+
+    @Test
+    @DisplayName("propagate an exception")
+    void propagate_exception() {
+        Spy<Number> spy = Spy.ofClass(Number.class);
+        assertThrows(IllegalArgumentException.class,
+                     () -> spy.on(this, FIELD_NAME));
     }
 
     private void assertSpy(List spy) {
@@ -77,12 +85,5 @@ public class SpyShould {
         // Check that we got a Mockito spy.
         assertEquals(3, list.size());
         verify(spy, times(1)).size();
-    }
-
-    @Test
-    public void propagate_exception() {
-        thrown.expect(IllegalArgumentException.class);
-        Spy.ofClass(Number.class)
-           .on(this, FIELD_NAME);
     }
 }

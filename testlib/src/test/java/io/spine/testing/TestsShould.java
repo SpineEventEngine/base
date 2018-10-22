@@ -39,10 +39,10 @@ import java.time.Instant;
 import static io.spine.testing.Tests.assertInDelta;
 import static io.spine.testing.Tests.assertMatchesMask;
 import static io.spine.testing.Tests.hasPrivateParameterlessCtor;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("Tests utility class should")
 class TestsShould extends UtilityClassTest<Tests> {
