@@ -38,7 +38,6 @@ import static io.spine.protobuf.TypeConverter.toAny;
  * Validates fields of number types (protobuf: int32, double, etc).
  *
  * @param <V> the type of the field value
- * @author Alexander Litus
  */
 abstract class NumberFieldValidator<V extends Number & Comparable<V>> extends FieldValidator<V> {
 

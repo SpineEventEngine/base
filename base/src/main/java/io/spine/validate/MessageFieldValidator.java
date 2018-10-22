@@ -40,8 +40,6 @@ import static io.spine.validate.Validate.isDefault;
 
 /**
  * Validates fields of type {@link Message}.
- *
- * @author Alexander Litus
  */
 class MessageFieldValidator extends FieldValidator<Message> {
 

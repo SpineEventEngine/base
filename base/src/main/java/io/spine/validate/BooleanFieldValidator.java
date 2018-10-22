@@ -24,8 +24,6 @@ import io.spine.logging.Logging;
 
 /**
  * Validates fields of type {@link Boolean}.
- *
- * @author Dmitry Kashcheiev
  */
 class BooleanFieldValidator extends FieldValidator<Boolean> implements Logging {
 

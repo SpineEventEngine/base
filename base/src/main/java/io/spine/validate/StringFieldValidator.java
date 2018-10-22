@@ -27,8 +27,6 @@ import static io.spine.protobuf.TypeConverter.toAny;
 
 /**
  * Validates fields of type {@link String}.
- *
- * @author Alexander Litus
  */
 class StringFieldValidator extends FieldValidator<String> {
 
