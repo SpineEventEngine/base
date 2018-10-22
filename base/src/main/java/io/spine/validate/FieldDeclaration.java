@@ -117,7 +117,7 @@ final class FieldDeclaration {
 
     private boolean matchesIdName() {
         String name = field.getName();
-        return name.equals("id") || name.endsWith("_id");
+        return "id".equals(name) || name.endsWith("_id");
     }
 
     private boolean isFirstField() {
