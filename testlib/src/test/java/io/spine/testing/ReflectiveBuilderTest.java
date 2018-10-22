@@ -30,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @DisplayName("ReflectiveBuilder should")
-class ReflectiveBuilderShould {
+class ReflectiveBuilderTest {
 
     @Test
     @DisplayName("has the result class")
