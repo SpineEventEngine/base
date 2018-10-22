@@ -21,16 +21,22 @@
 package io.spine.tools.gradle.compiler;
 
 import io.spine.tools.gradle.GradleProject;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junitpioneer.jupiter.TempDirectory;
 
+import java.io.File;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 
 import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
 
-public class ValidatingBuilderGenPluginShould {
+@ExtendWith(TempDirectory.class)
+@DisplayName("ValidatingBuilderGenPlugin should")
+class ValidatingBuilderGenPluginTest {
 
     private static final String PROJECT_NAME = "validators-gen-plugin-test";
     private static final List<String> PROTO_FILES = Arrays.asList("identifiers.proto",
@@ -38,15 +44,20 @@ public class ValidatingBuilderGenPluginShould {
                                                                   "changes.proto",
                                                                   "c/test_commands.proto");
 
-    @Rule
-    public TemporaryFolder testProjectDir = new TemporaryFolder();
+    private File testProjectDir;
+
+    @BeforeEach
+    void setUp(@TempDirectory.TempDir Path tempDirPath) {
+        testProjectDir = tempDirPath.toFile();
+    }
 
     @Test
-    public void compile_generated_validators() {
+    @DisplayName("compile generated validators")
+    void compile_generated_validators() {
         GradleProject project =
                 GradleProject.newBuilder()
                              .setProjectName(PROJECT_NAME)
-                             .setProjectFolder(testProjectDir.getRoot())
+                             .setProjectFolder(testProjectDir)
                              .addProtoFiles(PROTO_FILES)
                              .build();
         project.executeTask(COMPILE_JAVA);

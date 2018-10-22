@@ -35,10 +35,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * The modification tool for the {@link Project} {@link org.gradle.api.Task} arguments.
  *
  * <p>Allows adding new arguments to all the project's task of a certain type.
- *
- * @author Dmytro Kuzmin
  */
-class ProjectArguments {
+final class ProjectArguments {
 
     /** Prevents instantiation of this utility class. */
     private ProjectArguments() {

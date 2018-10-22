@@ -38,9 +38,10 @@ import io.spine.tools.gradle.GradleProject;
 import org.jboss.forge.roaster.Roaster;
 import org.jboss.forge.roaster.model.impl.AbstractJavaSource;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.TempDirectory.TempDir;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -63,99 +64,119 @@ import static io.spine.tools.compiler.annotation.given.GivenProtoFile.SPI_SERVIC
 import static io.spine.tools.gradle.TaskName.ANNOTATE_PROTO;
 import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
 
-public class ProtoAnnotatorPluginShould {
+@DisplayName("ProtoAnnotatorPlugin should")
+class ProtoAnnotatorPluginTest {
 
     private static final String PROJECT_NAME = "annotator-plugin-test";
 
-    @Rule
-    public TemporaryFolder testProjectDir = new TemporaryFolder();
+    private File testProjectDir;
+
+    @BeforeEach
+    void setUp(@TempDir Path tempDirPath) {
+        testProjectDir = tempDirPath.toFile();
+    }
 
     @Test
-    public void annotate_if_file_option_is_true() throws FileNotFoundException {
+    @DisplayName("annotate if file option is true")
+    void annotate_if_file_option_is_true() throws FileNotFoundException {
         assertNestedTypesAnnotations(SPI_ALL, true);
     }
 
     @Test
-    public void annotate_service_if_file_option_is_true() throws FileNotFoundException {
+    @DisplayName("annotate service if file option if true")
+    void annotate_service_if_file_option_is_true() throws FileNotFoundException {
         assertServiceAnnotations(SPI_ALL_SERVICE, true);
     }
 
     @Test
-    public void not_annotate_if_file_option_if_false() throws FileNotFoundException {
+    @DisplayName("not annotate if file option if false")
+    void not_annotate_if_file_option_if_false() throws FileNotFoundException {
         assertNestedTypesAnnotations(NO_SPI_OPTIONS, false);
     }
 
     @Test
-    public void not_annotate_service_if_file_option_if_false() throws FileNotFoundException {
+    @DisplayName("not annotate service if file option is false")
+    void not_annotate_service_if_file_option_if_false() throws FileNotFoundException {
         assertNestedTypesAnnotations(NO_SPI_OPTIONS, false);
     }
 
     @Test
-    public void annotate_multiple_files_if_file_option_is_true() throws FileNotFoundException {
+    @DisplayName("annotate multiple files if file option is true")
+    void annotate_multiple_files_if_file_option_is_true() throws FileNotFoundException {
         assertMainDefinitionAnnotations(SPI_ALL_MULTIPLE, true);
     }
 
     @Test
-    public void not_annotate_multiple_files_if_file_option_is_false() throws FileNotFoundException {
+    @DisplayName("not annotate multiple files if file option is false")
+    void not_annotate_multiple_files_if_file_option_is_false() throws FileNotFoundException {
         assertMainDefinitionAnnotations(NO_SPI_OPTIONS_MULTIPLE, false);
     }
 
     @Test
-    public void annotate_if_message_option_is_true() throws FileNotFoundException {
+    @DisplayName("annotate if message option is true")
+    void annotate_if_message_option_is_true() throws FileNotFoundException {
         assertNestedTypesAnnotations(SPI_MESSAGE, true);
     }
 
     @Test
-    public void not_annotate_if_message_option_is_false() throws FileNotFoundException {
+    @DisplayName("not annotate if message option is false")
+    void not_annotate_if_message_option_is_false() throws FileNotFoundException {
         assertNestedTypesAnnotations(NO_SPI_OPTIONS, false);
     }
 
     @Test
-    public void annotate_multiple_files_if_message_option_is_true() throws FileNotFoundException {
+    @DisplayName("annotate multiple files if message option is true")
+    void annotate_multiple_files_if_message_option_is_true() throws FileNotFoundException {
         assertMainDefinitionAnnotations(SPI_MESSAGE_MULTIPLE, true);
     }
 
     @Test
-    public void not_annotate_multiple_files_if_message_option_is_false()
-            throws FileNotFoundException {
+    @DisplayName("not annotate multiple files if message option is false")
+    void not_annotate_multiple_files_if_message_option_is_false() throws FileNotFoundException {
         assertMainDefinitionAnnotations(NO_SPI_OPTIONS_MULTIPLE, false);
     }
 
     @Test
-    public void annotate_accessors_if_field_option_is_true() throws FileNotFoundException {
+    @DisplayName("annotate accessors if field option is true")
+    void annotate_accessors_if_field_option_is_true() throws FileNotFoundException {
         assertFieldAnnotations(SPI_FIELD, true);
     }
 
     @Test
-    public void not_annotate_accessors_if_field_option_is_false() throws FileNotFoundException {
+    @DisplayName("not annotate accessors if field option is false")
+    void not_annotate_accessors_if_field_option_is_false() throws FileNotFoundException {
         assertFieldAnnotations(NO_SPI_OPTIONS, false);
     }
 
     @Test
-    public void annotate_accessors_in_multiple_files_if_field_option_is_true()
+    @DisplayName("annotate accessors in multiple files if field option is true")
+    void annotate_accessors_in_multiple_files_if_field_option_is_true()
             throws FileNotFoundException {
         assertFieldAnnotationsMultiple(SPI_FIELD_MULTIPLE, true);
     }
 
     @Test
-    public void not_annotate_accessors_in_multiple_files_if_field_option_is_false()
+    @DisplayName("not annotate accessors in multiple files if field option is false")
+    void not_annotate_accessors_in_multiple_files_if_field_option_is_false()
             throws FileNotFoundException {
         assertFieldAnnotationsMultiple(NO_SPI_OPTIONS_MULTIPLE, false);
     }
 
     @Test
-    public void annotate_grpc_services_if_service_option_is_true() throws FileNotFoundException {
+    @DisplayName("annotate GRPC services if section option is true")
+    void annotate_grpc_services_if_service_option_is_true() throws FileNotFoundException {
         assertServiceAnnotations(SPI_SERVICE, true);
     }
 
     @Test
-    public void not_annotate_grpc_services_if_service_option_is_false()
-            throws FileNotFoundException {
+    @DisplayName("not annotate GRPC services if service option is false")
+    void not_annotate_grpc_services_if_service_option_is_false() throws FileNotFoundException {
         assertServiceAnnotations(NO_SPI_OPTIONS, false);
     }
 
     @Test
-    public void compile_generated_sources_with_potential_annotation_duplication() {
+    @DisplayName("compile generated source with potential annotation duplication")
+    void compile_generated_sources_with_potential_annotation_duplication() {
         newProjectWithFile(POTENTIAL_ANNOTATION_DUP).executeTask(COMPILE_JAVA);
     }
 
@@ -216,7 +237,7 @@ public class ProtoAnnotatorPluginShould {
     }
 
     private void check(Path sourcePath, SourceCheck check) throws FileNotFoundException {
-        Path filePath = DefaultJavaProject.at(testProjectDir.getRoot())
+        Path filePath = DefaultJavaProject.at(testProjectDir)
                                           .generated()
                                           .mainJava()
                                           .resolve(sourcePath);
@@ -228,7 +249,7 @@ public class ProtoAnnotatorPluginShould {
 
     private void checkGrpcService(SourceFile serviceFile, SourceCheck check)
             throws FileNotFoundException {
-        Path fullPath = DefaultJavaProject.at(testProjectDir.getRoot())
+        Path fullPath = DefaultJavaProject.at(testProjectDir)
                                           .generated()
                                           .mainGrpc()
                                           .resolve(serviceFile);
@@ -245,7 +266,7 @@ public class ProtoAnnotatorPluginShould {
     private GradleProject newProjectWithFile(FileName protoFileName) {
         return GradleProject.newBuilder()
                             .setProjectName(PROJECT_NAME)
-                            .setProjectFolder(testProjectDir.getRoot())
+                            .setProjectFolder(testProjectDir)
                             .addProtoFile(protoFileName.value())
                             .build();
     }
@@ -258,7 +279,7 @@ public class ProtoAnnotatorPluginShould {
     }
 
     private FileDescriptorProto getDescriptor(FileName fileName) {
-        File descriptorSet = DefaultJavaProject.at(testProjectDir.getRoot())
+        File descriptorSet = DefaultJavaProject.at(testProjectDir)
                                                .mainDescriptors();
         FileSet fileSet = FileSet.parse(descriptorSet);
         Optional<FileDescriptor> file = fileSet.tryFind(fileName);

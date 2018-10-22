@@ -22,8 +22,9 @@ package io.spine.tools.check.vbuilder;
 
 import com.google.common.base.Predicates;
 import com.google.errorprone.CompilationTestHelper;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.util.function.Predicate;
 
@@ -47,21 +48,21 @@ import java.util.function.Predicate;
  * <p>For the information about how this test suite works, see the Error Prone
  * <a href="https://github.com/google/error-prone/wiki/Writing-a-check#testing-a-bugchecker">
  * guide</a> to testing the custom checks.
- *
- * @author Dmytro Kuzmin
  */
-public class UseValidatingBuilderShould {
+@DisplayName("UseValidatingBuilder should")
+class UseValidatingBuilderTest {
 
     private CompilationTestHelper compilationTestHelper;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         compilationTestHelper =
                 CompilationTestHelper.newInstance(UseValidatingBuilder.class, getClass());
     }
 
     @Test
-    public void recognize_positive_cases() {
+    @DisplayName("recognize positive cases")
+    void recognize_positive_cases() {
         Predicate<CharSequence> predicate =
                 Predicates.containsPattern(UseValidatingBuilder.SUMMARY)::apply;
         compilationTestHelper.expectErrorMessage("UseValidatingBuilderError", predicate::test);
@@ -70,7 +71,8 @@ public class UseValidatingBuilderShould {
     }
 
     @Test
-    public void recognize_negative_cases() {
+    @DisplayName("recognize negative cases")
+    void recognize_negative_cases() {
         compilationTestHelper.addSourceFile("UseValidatingBuilderNegatives.java")
                              .doTest();
     }

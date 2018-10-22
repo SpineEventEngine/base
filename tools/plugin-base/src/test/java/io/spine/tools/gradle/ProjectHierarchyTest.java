@@ -21,39 +21,41 @@
 package io.spine.tools.gradle;
 
 import com.google.common.testing.NullPointerTester;
+import io.spine.testing.UtilityClassTest;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
-import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.util.Set;
 
 import static com.google.common.collect.Sets.newHashSet;
-import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptySet;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class ProjectHierarchyShould {
+@DisplayName("ProjectHierarchy should")
+class ProjectHierarchyTest extends UtilityClassTest<ProjectHierarchy> {
 
-    @Test
-    public void have_private_util_ctor() {
-        assertHasPrivateParameterlessCtor(ProjectHierarchy.class);
+    ProjectHierarchyTest() {
+        super(ProjectHierarchy.class);
+    }
+
+    @Override
+    protected void configure(NullPointerTester tester) {
+        super.configure(tester);
+        tester.setDefault(Project.class, mock(Project.class))
+              .setDefault(Action.class, mock(Action.class));
     }
 
     @Test
-    public void not_accept_nulls() {
-        new NullPointerTester()
-                .setDefault(Project.class, mock(Project.class))
-                .setDefault(Action.class, mock(Action.class))
-                .testAllPublicStaticMethods(ProjectHierarchy.class);
-    }
-
-    @Test
-    public void traverse_hierarchy_in_bf_ordering() {
+    @DisplayName("traverse hierarcy in bf ordering")
+    void traverse_hierarchy_in_bf_ordering() {
         Project root = mock(Project.class);
         Project sub1 = mock(Project.class);
         Project sub2 = mock(Project.class);
@@ -81,11 +83,13 @@ public class ProjectHierarchyShould {
         assertEquals(5, visited.size());
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void not_accept_non_root_projects() {
+    @Test
+    @DisplayName("not accept non root projects")
+    void not_accept_non_root_projects() {
         Project project = mock(Project.class);
         when(project.getRootProject()).thenReturn(mock(Project.class)); // other instance
-        ProjectHierarchy.applyToAll(project, GradleProject.NoOp.<Project>action());
+        assertThrows(IllegalArgumentException.class,
+                     () -> ProjectHierarchy.applyToAll(project, GradleProject.NoOp.action()));
     }
 
 }

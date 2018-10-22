@@ -26,12 +26,16 @@ import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.jboss.forge.roaster.model.source.JavaDocCapableSource;
 import org.jboss.forge.roaster.model.source.JavaDocSource;
 import org.jboss.forge.roaster.model.source.MethodSource;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junitpioneer.jupiter.TempDirectory;
+import org.junitpioneer.jupiter.TempDirectory.TempDir;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -42,33 +46,40 @@ import static io.spine.tools.gradle.compiler.given.RejectionTestEnv.getExpectedF
 import static io.spine.tools.gradle.compiler.given.RejectionTestEnv.getExpectedSecondFieldComment;
 import static io.spine.tools.gradle.compiler.given.RejectionTestEnv.newProjectWithRejectionsJavadoc;
 import static io.spine.tools.gradle.compiler.given.RejectionTestEnv.rejectionsJavadocThrowableSource;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class RejectionGenPluginShould {
+@ExtendWith(TempDirectory.class)
+@DisplayName("RejectionGenPlugin should")
+class RejectionGenPluginTest {
 
-    @Rule
-    public TemporaryFolder testProjectDir = new TemporaryFolder();
+    private File testProjectDir;
+
+    @BeforeEach
+    void setUp(@TempDir Path tempDirPath) {
+        testProjectDir = tempDirPath.toFile();
+    }
 
     @Test
-    public void compile_generated_rejections() {
+    @DisplayName("compile generated rejections")
+    void compile_generated_rejections() {
         Collection<String> files = Arrays.asList("test_rejections.proto",
                                                  "outer_class_by_file_name_rejections.proto",
                                                  "outer_class_set_rejections.proto",
                                                  "deps/deps.proto");
         GradleProject project = GradleProject.newBuilder()
                                              .setProjectName("rejections-gen-plugin-test")
-                                             .setProjectFolder(testProjectDir.getRoot())
+                                             .setProjectFolder(testProjectDir)
                                              .addProtoFiles(files)
                                              .build();
         project.executeTask(COMPILE_JAVA);
     }
 
     @Test
-    public void generate_rejection_javadoc() throws FileNotFoundException {
+    @DisplayName("generate rejection Javadoc")
+    void generate_rejection_javadoc() throws FileNotFoundException {
         GradleProject project = newProjectWithRejectionsJavadoc(testProjectDir);
         project.executeTask(COMPILE_JAVA);
-        String projectAbsolutePath = testProjectDir.getRoot()
-                                                   .getAbsolutePath();
+        String projectAbsolutePath = testProjectDir.getAbsolutePath();
         File generatedFile = new File(projectAbsolutePath + rejectionsJavadocThrowableSource());
         JavaClassSource generatedSource = Roaster.parse(JavaClassSource.class, generatedFile);
         assertRejectionJavadoc(generatedSource);

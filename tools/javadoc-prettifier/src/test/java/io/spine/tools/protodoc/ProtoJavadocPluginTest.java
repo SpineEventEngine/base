@@ -25,12 +25,16 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.plugins.PluginContainer;
 import org.gradle.testfixtures.ProjectBuilder;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junitpioneer.jupiter.TempDirectory;
+import org.junitpioneer.jupiter.TempDirectory.TempDir;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 
 import static io.spine.tools.gradle.TaskDependencies.dependsOn;
 import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
@@ -40,43 +44,48 @@ import static io.spine.tools.gradle.TaskName.FORMAT_TEST_PROTO_DOC;
 import static io.spine.tools.gradle.TaskName.GENERATE_PROTO;
 import static io.spine.tools.gradle.TaskName.GENERATE_TEST_PROTO;
 import static io.spine.tools.protodoc.BacktickFormatting.BACKTICK;
-import static io.spine.tools.protodoc.given.ProtoJavadocPluginTestEnv.formatAndAssert;
 import static io.spine.tools.protodoc.PreTagFormatting.CLOSING_PRE;
 import static io.spine.tools.protodoc.PreTagFormatting.OPENING_PRE;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static io.spine.tools.protodoc.given.ProtoJavadocPluginTestEnv.formatAndAssert;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ProtoJavadocPluginShould {
+@ExtendWith(TempDirectory.class)
+@DisplayName("ProtoJavadocPlugin should")
+class ProtoJavadocPluginTest {
 
     private static final String PLUGIN_ID = "io.spine.tools.protobuf-javadoc-plugin";
 
-    @Rule
-    public TemporaryFolder testProjectDir = new TemporaryFolder();
+    private File testProjectDir;
 
     private Project project;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp(@TempDir Path tempDirPath) {
+        testProjectDir = tempDirPath.toFile();
         project = newProject();
         project.getPluginManager()
                .apply(PLUGIN_ID);
     }
 
     @Test
-    public void apply_to_project() {
+    @DisplayName("apply to project")
+    void apply_to_project() {
         PluginContainer plugins = project.getPlugins();
         assertTrue(plugins.hasPlugin(PLUGIN_ID));
     }
 
     @Test
-    public void have_extension() {
+    @DisplayName("have extension")
+    void have_extension() {
         Extension extension = project.getExtensions()
                                      .getByType(Extension.class);
         assertNotNull(extension);
     }
 
     @Test
-    public void add_task_formatProtoDoc() {
+    @DisplayName("add formatProtoDoc task")
+    void add_task_formatProtoDoc() {
         Task formatProtoDoc = task(FORMAT_PROTO_DOC);
         assertNotNull(formatProtoDoc);
         assertTrue(dependsOn(formatProtoDoc, GENERATE_PROTO));
@@ -84,7 +93,8 @@ public class ProtoJavadocPluginShould {
     }
 
     @Test
-    public void add_task_formatTestProtoDoc() {
+    @DisplayName("add formatTestProtoDoc task")
+    void add_task_formatTestProtoDoc() {
         Task formatTestProtoDoc = task(FORMAT_TEST_PROTO_DOC);
         assertNotNull(formatTestProtoDoc);
         assertTrue(dependsOn(formatTestProtoDoc, GENERATE_TEST_PROTO));
@@ -92,7 +102,8 @@ public class ProtoJavadocPluginShould {
     }
 
     @Test
-    public void format_generated_java_sources() throws IOException {
+    @DisplayName("format generated java sources")
+    void format_generated_java_sources() throws IOException {
         String text = "javadoc text";
         String generatedFieldDescription = " <code>field description</code>";
         String textInPreTags = new StringBuilder().append(OPENING_PRE)
@@ -106,7 +117,8 @@ public class ProtoJavadocPluginShould {
     }
 
     @Test
-    public void handle_multiline_code_snippets_properly() throws IOException {
+    @DisplayName("handle multiline code snippets")
+    void handle_multiline_code_snippets_properly() throws IOException {
         String protoDoc = multilineJavadoc(BACKTICK, BACKTICK);
         String javadoc = multilineJavadoc("{@code ", "}");
 

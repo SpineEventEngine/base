@@ -20,26 +20,30 @@
 
 package io.spine.tools.compiler.annotation;
 
-import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 
 import static io.spine.tools.compiler.annotation.FieldAnnotator.shouldAnnotateMethod;
 import static java.util.Collections.singleton;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class FieldAnnotatorShould {
+@DisplayName("FieldAnnotator should")
+class FieldAnnotatorTest {
 
     @Test
-    public void annotate_accessor_for_field() {
+    @DisplayName("annotate field accessor")
+    void annotate_accessor_for_field() {
         String fieldName = "FieldName";
         String methodName = getAccessorName(fieldName);
-        assertTrue(shouldAnnotateMethod(methodName, fieldName, Collections.<String>emptyList()));
+        assertTrue(shouldAnnotateMethod(methodName, fieldName, Collections.emptyList()));
     }
 
     @Test
-    public void not_annotate_accessor_for_field_that_does_not_require_it() {
+    @DisplayName("not annotate field accessor")
+    void not_annotate_accessor_for_field_that_does_not_require_it() {
         String requiresAnnotation = "GoodBoy";
         String notRequiresAnnotation = requiresAnnotation + "AdditionalPart";
         String methodName = getAccessorName(notRequiresAnnotation);
@@ -48,7 +52,8 @@ public class FieldAnnotatorShould {
     }
 
     @Test
-    public void filter_fields_that_does_not_require_annotation_by_name_length() {
+    @DisplayName("filter fields that does not requrie annotation by name length")
+    void filter_fields_that_does_not_require_annotation_by_name_length() {
         String requiresAnnotation = "FriendList";
         String notRequiresAnnotation = requiresAnnotation.substring(0, 4);
         String methodName = getAccessorName(requiresAnnotation);

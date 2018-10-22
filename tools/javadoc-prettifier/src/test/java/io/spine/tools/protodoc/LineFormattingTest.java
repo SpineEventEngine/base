@@ -18,23 +18,38 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.compiler.field.type;
+package io.spine.tools.protodoc;
 
-import com.google.common.testing.NullPointerTester;
-import org.junit.Test;
+import com.google.common.base.Joiner;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
+import java.util.Collections;
 
-public class FieldTypesShould {
+import static java.lang.System.lineSeparator;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+@DisplayName("LineFormatting should")
+class LineFormattingTest {
+
+    private final FormattingAction formatting = new ALineFormatting();
 
     @Test
-    public void have_private_constructor() {
-        assertHasPrivateParameterlessCtor(FieldTypes.class);
+    @DisplayName("merge lines")
+    void merge_lines_correctly() {
+        String lineText = "a text in a single line";
+        int lineCount = 5;
+        Iterable<String> lines = Collections.nCopies(lineCount, lineText);
+        String linesAsString = Joiner.on(lineSeparator())
+                                     .join(lines);
+        assertEquals(linesAsString, formatting.execute(linesAsString));
     }
 
-    @Test
-    public void pass_null_tolerance_check() {
-        new NullPointerTester().testStaticMethods(FieldTypes.class,
-                                                  NullPointerTester.Visibility.PACKAGE);
+    private static class ALineFormatting extends LineFormatting {
+
+        @Override
+        String formatLine(String line) {
+            return line;
+        }
     }
 }

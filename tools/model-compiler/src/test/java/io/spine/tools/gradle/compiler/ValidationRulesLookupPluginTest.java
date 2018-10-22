@@ -24,18 +24,25 @@ import io.spine.code.java.DefaultJavaProject;
 import io.spine.code.properties.PropertyFile;
 import io.spine.tools.gradle.GradleProject;
 import io.spine.validate.rules.ValidationRules;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junitpioneer.jupiter.TempDirectory;
+import org.junitpioneer.jupiter.TempDirectory.TempDir;
 
+import java.io.File;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import static io.spine.tools.gradle.TaskName.FIND_VALIDATION_RULES;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ValidationRulesLookupPluginShould {
+@ExtendWith(TempDirectory.class)
+@DisplayName("ValidationRulesLookupPlugin should")
+class ValidationRulesLookupPluginTest {
 
     private static final char DOT = '.';
     private static final String PROJECT_NAME = "validation-rules-lookup-plugin-test";
@@ -43,8 +50,8 @@ public class ValidationRulesLookupPluginShould {
     private static final String OUTER_MESSAGE_TYPE = "Outer";
     private static final String VALIDATION_RULE_TYPE = "ValidationRule";
     private static final String VALIDATION_TARGET = PROTO_FILE_PACKAGE + DOT +
-                                                    OUTER_MESSAGE_TYPE + DOT +
-                                                    "field_name";
+            OUTER_MESSAGE_TYPE + DOT +
+            "field_name";
     private static final List<String> NESTED_VALIDATION_RULE_PROTO =
             Arrays.asList("syntax = \"proto3\";",
                           "package " + PROTO_FILE_PACKAGE + ';',
@@ -58,25 +65,30 @@ public class ValidationRulesLookupPluginShould {
                           "}"
             );
 
-    @Rule
-    public TemporaryFolder testProjectDir = new TemporaryFolder();
+    private File testProjectDir;
+
+    @BeforeEach
+    void setUp(@TempDir Path tempDirPath) {
+        testProjectDir = tempDirPath.toFile();
+    }
 
     @Test
-    public void findNestedValidationRules() {
+    @DisplayName("find nested validation rules")
+    void findNestedValidationRules() {
         String file = "nested_validation_rule.proto";
         GradleProject project = newProjectWithFile(file, NESTED_VALIDATION_RULE_PROTO);
         project.executeTask(FIND_VALIDATION_RULES);
 
         String expectedKey = PROTO_FILE_PACKAGE + DOT +
-                                   OUTER_MESSAGE_TYPE + DOT +
-                                   VALIDATION_RULE_TYPE;
+                OUTER_MESSAGE_TYPE + DOT +
+                VALIDATION_RULE_TYPE;
         String value = loadProperties().get(expectedKey);
         assertEquals(VALIDATION_TARGET, value);
     }
 
     private Map<String, String> loadProperties() {
         PropertyFile propFile = PropertyFile.of(ValidationRules.fileName())
-                                            .at(DefaultJavaProject.at(testProjectDir.getRoot())
+                                            .at(DefaultJavaProject.at(testProjectDir)
                                                                   .generated()
                                                                   .mainResources());
         Map<String, String> result = propFile.load();
@@ -86,7 +98,7 @@ public class ValidationRulesLookupPluginShould {
     private GradleProject newProjectWithFile(String protoFileName, List<String> protoFileLines) {
         return GradleProject.newBuilder()
                             .setProjectName(PROJECT_NAME)
-                            .setProjectFolder(testProjectDir.getRoot())
+                            .setProjectFolder(testProjectDir)
                             .createProto(protoFileName, protoFileLines)
                             .build();
     }

@@ -18,28 +18,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protoc;
+package io.spine.tools.compiler.field.type;
 
-import com.squareup.javapoet.AnnotationSpec;
-import com.squareup.javapoet.JavaFile;
-import org.junit.Test;
+import io.spine.testing.UtilityClassTest;
+import org.junit.jupiter.api.DisplayName;
 
-import javax.annotation.Generated;
+@DisplayName("FieldTypes utility class should")
+class FieldTypesTest extends UtilityClassTest<FieldTypes> {
 
-import static org.junit.Assert.assertEquals;
-
-public class MarkerInterfaceSpecShould {
-
-    @Test
-    public void generate_interfaces() {
-        String packageName = "io.spine.test";
-        String interfaceName = "CustomerEvent";
-        JavaFile javaFile = new MarkerInterfaceSpec(packageName, interfaceName).toJavaCode();
-
-        AnnotationSpec generated = javaFile.typeSpec.annotations.get(0);
-        assertEquals(Generated.class.getName(), generated.type.toString());
-
-        assertEquals(packageName, javaFile.packageName);
-        assertEquals(interfaceName, javaFile.typeSpec.name);
+    FieldTypesTest() {
+        super(FieldTypes.class);
     }
 }

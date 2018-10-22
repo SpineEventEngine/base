@@ -31,7 +31,7 @@ import javax.annotation.Generated;
 
 import static io.spine.tools.compiler.annotation.Annotations.canIgnoreReturnValue;
 import static io.spine.tools.compiler.annotation.Annotations.generatedBySpineModelCompiler;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("Annotations utility class should")
 class AnnotationsTest extends UtilityClassTest<Annotations> {

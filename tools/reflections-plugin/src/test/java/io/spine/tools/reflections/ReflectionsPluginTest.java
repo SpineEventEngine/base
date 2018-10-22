@@ -22,7 +22,8 @@ package io.spine.tools.reflections;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.tasks.TaskContainer;
-import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import static io.spine.tools.gradle.TaskDependencies.dependsOn;
 import static io.spine.tools.gradle.TaskName.BUILD;
@@ -30,20 +31,23 @@ import static io.spine.tools.gradle.TaskName.CLASSES;
 import static io.spine.tools.gradle.TaskName.SCAN_CLASS_PATH;
 import static io.spine.tools.reflections.Given.REFLECTIONS_PLUGIN_ID;
 import static io.spine.tools.reflections.Given.newProject;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ReflectionsPluginShould {
+@DisplayName("ReflectionsPlugin should")
+class ReflectionsPluginTest {
 
     @Test
-    public void apply_to_project() {
+    @DisplayName("apply to project")
+    void apply_to_project() {
         Project project = newProject();
         project.getPluginManager()
                .apply(REFLECTIONS_PLUGIN_ID);
     }
 
     @Test
-    public void add_task_scanClassPath() {
+    @DisplayName("add scanClassPath task")
+    void add_task_scanClassPath() {
         Project project = newProject();
         project.getPluginManager()
                .apply(REFLECTIONS_PLUGIN_ID);

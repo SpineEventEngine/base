@@ -20,13 +20,15 @@
 
 package io.spine.tools.protodoc;
 
-import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import static io.spine.tools.protodoc.BacktickFormatting.wrapWithCodeTag;
 import static java.lang.System.lineSeparator;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class BacktickFormattingShould {
+@DisplayName("BacktickFormatting should")
+class BacktickFormattingTest {
 
     private static final char BACKTICK = '`';
     private static final String TEXT = "true";
@@ -36,13 +38,15 @@ public class BacktickFormattingShould {
     private final FormattingAction formatting = new BacktickFormatting();
 
     @Test
-    public void surround_text_in_backticks_with_code_tag() {
+    @DisplayName("surround text in backticks with {@code }")
+    void surround_text_in_backticks_with_code_tag() {
         String result = formatting.execute(TEXT_IN_BACKTICKS);
         assertEquals(TEXT_IN_CODE_TAG, result);
     }
 
     @Test
-    public void handle_multiple_entries_surrounded_with_backticks() {
+    @DisplayName("handle multiple entries surrounded with backticks")
+    void handle_multiple_entries_surrounded_with_backticks() {
         String separatingPart = " some other text ";
         String source = TEXT_IN_BACKTICKS + separatingPart + TEXT_IN_BACKTICKS;
         String expected = TEXT_IN_CODE_TAG + separatingPart + TEXT_IN_CODE_TAG;
@@ -50,7 +54,8 @@ public class BacktickFormattingShould {
     }
 
     @Test
-    public void not_handle_multi_lined_text_surrounded_with_backticks() {
+    @DisplayName("not handle multilined text surrounded with backticks")
+    void not_handle_multi_lined_text_surrounded_with_backticks() {
         String lineWithOpeningBacktick = BACKTICK + TEXT;
         String lineWithClosingBacktick = TEXT + BACKTICK;
         String multiLinedText = lineWithOpeningBacktick + lineSeparator()
@@ -62,7 +67,8 @@ public class BacktickFormattingShould {
      * @see java.util.regex.Matcher#quoteReplacement(String)
      */
     @Test
-    public void escape_replacement_for_matcher() {
+    @DisplayName("escape replacement for matcher")
+    void escape_replacement_for_matcher() {
         String dollarInBackticks = BACKTICK + "$" + BACKTICK;
         String result = formatting.execute(dollarInBackticks);
         assertEquals("{@code $}", result);

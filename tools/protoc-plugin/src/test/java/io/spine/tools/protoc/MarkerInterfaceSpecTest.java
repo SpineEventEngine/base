@@ -18,35 +18,31 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protodoc;
+package io.spine.tools.protoc;
 
-import com.google.common.base.Joiner;
-import org.junit.Test;
+import com.squareup.javapoet.AnnotationSpec;
+import com.squareup.javapoet.JavaFile;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import java.util.Collections;
+import javax.annotation.Generated;
 
-import static java.lang.System.lineSeparator;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class LineFormattingShould {
-
-    private final FormattingAction formatting = new ALineFormatting();
+@DisplayName("MarkerInterfaceSpec should")
+class MarkerInterfaceSpecTest {
 
     @Test
-    public void merge_lines_correctly() {
-        String lineText = "a text in a single line";
-        int lineCount = 5;
-        Iterable<String> lines = Collections.nCopies(lineCount, lineText);
-        String linesAsString = Joiner.on(lineSeparator())
-                                     .join(lines);
-        assertEquals(linesAsString, formatting.execute(linesAsString));
-    }
+    @DisplayName("generate interfaces")
+    void generate_interfaces() {
+        String packageName = "io.spine.test";
+        String interfaceName = "CustomerEvent";
+        JavaFile javaFile = new MarkerInterfaceSpec(packageName, interfaceName).toJavaCode();
 
-    private static class ALineFormatting extends LineFormatting {
+        AnnotationSpec generated = javaFile.typeSpec.annotations.get(0);
+        assertEquals(Generated.class.getName(), generated.type.toString());
 
-        @Override
-        String formatLine(String line) {
-            return line;
-        }
+        assertEquals(packageName, javaFile.packageName);
+        assertEquals(interfaceName, javaFile.typeSpec.name);
     }
 }

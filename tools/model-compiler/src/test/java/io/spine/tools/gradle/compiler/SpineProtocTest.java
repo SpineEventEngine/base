@@ -22,47 +22,50 @@ package io.spine.tools.gradle.compiler;
 
 import io.spine.code.java.DefaultJavaProject;
 import io.spine.tools.gradle.GradleProject;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junitpioneer.jupiter.TempDirectory;
+import org.junitpioneer.jupiter.TempDirectory.TempDir;
 
 import java.io.File;
+import java.nio.file.Path;
 
 import static io.spine.tools.gradle.TaskName.BUILD;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests the {@code spine-protoc.gradle} plugin.
- *
- * @author Dmytro Dashenkov
  */
-public class SpineProtocShould {
+@ExtendWith(TempDirectory.class)
+@DisplayName("SpineProtoc should")
+class SpineProtocTest {
 
     private static final String PROJECT_NAME = "empty-project";
 
     private GradleProject project;
+    private File projectDir;
 
-    @Rule
-    public TemporaryFolder projectDir = new TemporaryFolder();
-
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp(@TempDir Path tempDirPath) {
+        projectDir = tempDirPath.toFile();
         project = GradleProject.newBuilder()
-                               .setProjectFolder(projectDir.getRoot())
+                               .setProjectFolder(projectDir)
                                .setProjectName(PROJECT_NAME)
                                .build();
     }
 
-    @Ignore(
-        "Turned off because it tests the side effect. " +
-        "In a project which does not have descriptor set file the directory should not be created."
+    @Disabled(
+            "Turned off because it tests the side effect. " +
+                    "In a project which does not have descriptor set file the directory should not be created."
     )
     @Test
-    public void create_spine_directory() {
+    @DisplayName("create spine directory")
+    void create_spine_directory() {
         project.executeTask(BUILD);
-        File spineDirPath = DefaultJavaProject.at(projectDir.getRoot())
+        File spineDirPath = DefaultJavaProject.at(projectDir)
                                               .tempArtifacts();
         assertTrue(spineDirPath.exists());
     }

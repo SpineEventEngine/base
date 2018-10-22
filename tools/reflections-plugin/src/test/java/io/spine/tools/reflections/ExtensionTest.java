@@ -20,26 +20,29 @@
 package io.spine.tools.reflections;
 
 import org.gradle.api.Project;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ExtensionShould {
+@DisplayName("Extension should")
+class ExtensionTest {
 
     private Project project;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         project = Given.newProject();
         project.getPluginManager()
                .apply(Given.REFLECTIONS_PLUGIN_ID);
     }
 
     @Test
-    public void return_default_targetDir_if_not_set() {
+    @DisplayName("return default targetDir if not set")
+    void return_default_targetDir_if_not_set() {
         String dir = Extension.getTargetDir(project);
 
         assertFalse(dir.trim()
@@ -49,7 +52,8 @@ public class ExtensionShould {
     }
 
     @Test
-    public void return_targetDir_if_set() {
+    @DisplayName("return targetDir if set")
+    void return_targetDir_if_set() {
         Extension extension = Extension.reflectionsPlugin(project);
         extension.targetDir = "some target dir value";
 

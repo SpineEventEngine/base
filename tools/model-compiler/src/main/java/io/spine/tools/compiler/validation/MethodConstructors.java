@@ -38,7 +38,7 @@ import static java.lang.String.format;
  *
  * @author Illia Shepilov
  */
-class MethodConstructors {
+final class MethodConstructors {
 
     private static final String TEMPLATE_PATH = "templates/method_constructors.soy";
 

@@ -22,23 +22,24 @@ package io.spine.tools.gradle.compiler;
 
 import org.gradle.api.Project;
 import org.gradle.api.plugins.ExtensionContainer;
-import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import static io.spine.tools.gradle.compiler.given.ModelCompilerTestEnv.newProject;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * This test contains very basic scenarios of the plugin usage.
  *
  * <p>For the tests of actual plugin functionality, see {@code io.spine.tools.check} test suites
  * from this module.
- *
- * @author Dmytro Kuzmin
  */
-public class ErrorProneChecksPluginShould {
+@DisplayName("ErrorProneChecksPlugin should")
+class ErrorProneChecksPluginTest {
 
     @Test
-    public void create_spine_check_extension() {
+    @DisplayName("create Spine check extension")
+    void create_spine_check_extension() {
         Project project = newProject();
         project.getPluginManager()
                .apply(ErrorProneChecksPlugin.class);
@@ -48,7 +49,8 @@ public class ErrorProneChecksPluginShould {
     }
 
     @Test
-    public void apply_to_empty_project_without_exceptions() {
+    @DisplayName("apply to empty project")
+    void apply_to_empty_project_without_exceptions() {
         Project project = newProject();
         project.getPluginManager()
                .apply(ErrorProneChecksPlugin.class);

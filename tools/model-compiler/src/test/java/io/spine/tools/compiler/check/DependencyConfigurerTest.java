@@ -26,8 +26,9 @@ import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.ConfigurationContainer;
 import org.gradle.api.artifacts.Dependency;
 import org.gradle.api.artifacts.DependencySet;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
@@ -35,15 +36,16 @@ import static io.spine.tools.compiler.check.DependencyConfigurer.SPINE_CHECKER_M
 import static io.spine.tools.compiler.check.DependencyConfigurer.SPINE_TOOLS_GROUP;
 import static io.spine.tools.compiler.check.PreprocessorConfigurer.PREPROCESSOR_CONFIG_NAME;
 import static io.spine.tools.gradle.compiler.given.ModelCompilerTestEnv.newProject;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 @SuppressWarnings({"CheckReturnValue", "ResultOfMethodCallIgnored"})
 // We ignore boolean "success" flag which is not interesting for us in this test.
-public class DependencyConfigurerShould {
+@DisplayName("DependencyConfigurer should")
+class DependencyConfigurerTest {
 
     private static final String STUB_VERSION = "versionStub";
 
@@ -51,8 +53,8 @@ public class DependencyConfigurerShould {
     private DependencyConfigurer helper;
     private DependencyConfigurer helperMock;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         Project project = newProject();
         ConfigurationContainer configs = project.getConfigurations();
         preprocessor = configs.getByName(PREPROCESSOR_CONFIG_NAME);
@@ -61,13 +63,15 @@ public class DependencyConfigurerShould {
     }
 
     @Test
-    public void pass_null_tolerance_check() {
+    @DisplayName("pass null tolerance check")
+    void pass_null_tolerance_check() {
         new NullPointerTester().testAllPublicStaticMethods(DependencyConfigurer.class);
         new NullPointerTester().testAllPublicInstanceMethods(helper);
     }
 
     @Test
-    public void add_spine_check_dependency_to_annotation_processor_config() {
+    @DisplayName("add spine check dependency to annotation processor config")
+    void add_spine_check_dependency_to_annotation_processor_config() {
         when(helperMock.acquireModelCompilerVersion()).thenReturn(Optional.of(STUB_VERSION));
         when(helperMock.isChecksVersionResolvable(any())).thenReturn(true);
 
@@ -78,7 +82,8 @@ public class DependencyConfigurerShould {
     }
 
     @Test
-    public void not_add_spine_check_dependency_if_it_is_not_resolvable() {
+    @DisplayName("not add spine check dependency if it is not resolvable")
+    void not_add_spine_check_dependency_if_it_is_not_resolvable() {
         when(helperMock.acquireModelCompilerVersion()).thenReturn(Optional.of(STUB_VERSION));
         when(helperMock.isChecksVersionResolvable(any())).thenReturn(false);
 
@@ -89,7 +94,8 @@ public class DependencyConfigurerShould {
     }
 
     @Test
-    public void not_add_spine_check_dependency_if_model_compiler_dependency_not_available() {
+    @DisplayName("not add spine check dependency if model compiler dependency not available")
+    void not_add_spine_check_dependency_if_model_compiler_dependency_not_available() {
         when(helperMock.acquireModelCompilerVersion()).thenReturn(Optional.empty());
 
         helperMock.addErrorProneChecksDependency();

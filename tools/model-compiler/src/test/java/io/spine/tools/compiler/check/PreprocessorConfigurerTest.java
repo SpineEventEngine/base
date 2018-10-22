@@ -24,25 +24,27 @@ import com.google.common.testing.NullPointerTester;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.ConfigurationContainer;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import static io.spine.tools.compiler.check.PreprocessorConfigurer.PREPROCESSOR_ARG;
 import static io.spine.tools.compiler.check.PreprocessorConfigurer.PREPROCESSOR_CONFIG_NAME;
 import static io.spine.tools.compiler.check.given.ProjectConfigurations.assertCompileTasksContain;
 import static io.spine.tools.gradle.compiler.given.ModelCompilerTestEnv.newProject;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class PreprocessorConfigurerShould {
+@DisplayName("PreprocessorConfigurer should")
+class PreprocessorConfigurerTest {
 
     private Project project;
     private ConfigurationContainer projectConfigs;
     private Configuration preprocessorConfig;
     private PreprocessorConfigurer configurer;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         project = newProject();
         projectConfigs = project.getConfigurations();
         preprocessorConfig = projectConfigs.getByName(PREPROCESSOR_CONFIG_NAME);
@@ -50,19 +52,22 @@ public class PreprocessorConfigurerShould {
     }
 
     @Test
-    public void pass_null_tolerance_check() {
+    @DisplayName("pass null tolerance check")
+    void pass_null_tolerance_check() {
         new NullPointerTester().testAllPublicStaticMethods(PreprocessorConfigurer.class);
         new NullPointerTester().testAllPublicInstanceMethods(configurer);
     }
 
     @Test
-    public void return_annotation_processor_config_if_it_exists() {
+    @DisplayName("return annotation processor config if it exists")
+    void return_annotation_processor_config_if_it_exists() {
         Configuration returnedConfig = configurer.setupPreprocessorConfig();
         assertEquals(preprocessorConfig, returnedConfig);
     }
 
     @Test
-    public void create_and_return_annotation_processor_config_if_it_does_not_exist() {
+    @DisplayName("create and return annotation processor config if it does not exist")
+    void create_and_return_annotation_processor_config_if_it_does_not_exist() {
         projectConfigs.remove(preprocessorConfig);
         assertNull(projectConfigs.findByName(PREPROCESSOR_CONFIG_NAME));
 
@@ -72,7 +77,8 @@ public class PreprocessorConfigurerShould {
     }
 
     @Test
-    public void add_configure_preprocessor_action() {
+    @DisplayName("add configure preprocessor action")
+    void add_configure_preprocessor_action() {
         configurer.addConfigurePreprocessorAction(preprocessorConfig);
         assertCompileTasksContain(project, PREPROCESSOR_ARG, preprocessorConfig.getAsPath());
     }

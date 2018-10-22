@@ -22,34 +22,39 @@ package io.spine.tools.gradle.compiler;
 
 import org.gradle.api.Project;
 import org.gradle.api.plugins.ExtensionContainer;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junitpioneer.jupiter.TempDirectory;
+
+import java.io.File;
+import java.nio.file.Path;
 
 import static io.spine.tools.gradle.compiler.Severity.ERROR;
 import static io.spine.tools.gradle.compiler.given.ModelCompilerTestEnv.newProject;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class ErrorProneChecksExtensionShould {
+@ExtendWith(TempDirectory.class)
+@DisplayName("ErrorProneChecksExtension should")
+class ErrorProneChecksExtensionTest {
 
     private Project project;
     private ErrorProneChecksExtension extension;
 
-    @Rule
-    public TemporaryFolder projectDir = new TemporaryFolder();
-
-    @Before
-    public void setUp() {
-        project = newProject(projectDir.getRoot());
+    @BeforeEach
+    void setUp(@TempDirectory.TempDir Path tempDirPath) {
+        File tempDir = tempDirPath.toFile();
+        project = newProject(tempDir);
         ExtensionContainer extensions = project.getExtensions();
         extension = extensions.create(ErrorProneChecksPlugin.extensionName(),
                                       ErrorProneChecksExtension.class);
     }
 
     @Test
-    public void return_use_validating_builder_severity() {
+    @DisplayName("return use validating builder severity")
+    void return_use_validating_builder_severity() {
         final Severity expected = ERROR;
         extension.useValidatingBuilder = expected;
         final Severity actual = ErrorProneChecksExtension.getUseValidatingBuilder(project);
@@ -57,7 +62,8 @@ public class ErrorProneChecksExtensionShould {
     }
 
     @Test
-    public void return_null_use_validating_builder_severity_if_not_set() {
+    @DisplayName("return null severity if not set")
+    void return_null_use_validating_builder_severity_if_not_set() {
         final Severity severity = ErrorProneChecksExtension.getUseValidatingBuilder(project);
         assertNull(severity);
     }

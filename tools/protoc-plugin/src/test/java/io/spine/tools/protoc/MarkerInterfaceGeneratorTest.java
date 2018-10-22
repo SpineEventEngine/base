@@ -29,10 +29,9 @@ import com.google.protobuf.compiler.PluginProtos.Version;
 import io.spine.base.CommandMessage;
 import io.spine.base.EventMessage;
 import io.spine.base.RejectionMessage;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -41,12 +40,14 @@ import java.util.regex.Pattern;
 import static io.spine.tools.protoc.InsertionPoint.INSERTION_POINT_IMPLEMENTS;
 import static java.lang.String.format;
 import static java.util.regex.Pattern.compile;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class MarkerInterfaceGeneratorTest {
+@DisplayName("MarkerInterfaceGenerator should")
+class MarkerInterfaceGeneratorTest {
 
     private static final String PROTO_PACKAGE = "spine.tools.protoc.";
 
@@ -65,9 +66,6 @@ public class MarkerInterfaceGeneratorTest {
 
     private SpineProtoGenerator codeGenerator;
 
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
-
     private static Version version() {
         return Version.newBuilder()
                       .setMajor(3)
@@ -76,20 +74,22 @@ public class MarkerInterfaceGeneratorTest {
                       .build();
     }
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         codeGenerator = MarkerInterfaceGenerator.instance();
     }
 
     @Test
-    public void not_accept_nulls() {
+    @DisplayName("not accept nulls")
+    void not_accept_nulls() {
         new NullPointerTester()
                 .setDefault(CodeGeneratorRequest.class, CodeGeneratorRequest.getDefaultInstance())
                 .testAllPublicStaticMethods(MarkerInterfaceGenerator.class);
     }
 
     @Test
-    public void generate_insertion_point_contents_for_EveryIs_option() {
+    @DisplayName("generate insertion point contents for EveryIs option")
+    void generate_insertion_point_contents_for_EveryIs_option() {
         // Sample path; never resolved
         String filePath = "/proto/spine/tools/protoc/every_is_test.proto";
 
@@ -126,7 +126,8 @@ public class MarkerInterfaceGeneratorTest {
     }
 
     @Test
-    public void generate_insertion_point_contents_for_Is_option() {
+    @DisplayName("generate insertion point contents for Is option")
+    void generate_insertion_point_contents_for_Is_option() {
         // Sample path; never resolved
         String filePath = "/proto/spine/tools/protoc/is_test.proto";
 
@@ -166,7 +167,8 @@ public class MarkerInterfaceGeneratorTest {
     }
 
     @Test
-    public void generate_insertion_point_contents_for_EveryIs_in_single_file() {
+    @DisplayName("generate insertion point contents for EveryIs in singe file")
+    void generate_insertion_point_contents_for_EveryIs_in_single_file() {
         // Sample path; never resolved
         String filePath = "/proto/spine/tools/protoc/every_is_in_one_file.proto";
 
@@ -193,13 +195,14 @@ public class MarkerInterfaceGeneratorTest {
                                                             PROTO_PACKAGE)));
                 String content = file.getContent();
                 Matcher matcher = CUSTOMER_EVENT_INTERFACE_PATTERN.matcher(content);
-                assertTrue(content, matcher.matches());
+                assertTrue(matcher.matches(), content);
             }
         }
     }
 
     @Test
-    public void generate_insertion_point_contents_for_Is_in_single_file() {
+    @DisplayName("generate insertion point contents for Is in single file")
+    void generate_insertion_point_contents_for_Is_in_single_file() {
         // Sample path; never resolved
         String filePath = "/proto/spine/tools/protoc/is_in_one_file.proto";
 
@@ -228,17 +231,19 @@ public class MarkerInterfaceGeneratorTest {
                                                             PROTO_PACKAGE)));
                 String content = file.getContent();
                 Matcher matcher = CUSTOMER_EVENT_INTERFACE_PATTERN.matcher(content);
-                assertTrue(format("Unexpected inserted content: %s", content), matcher.matches());
+                assertTrue(matcher.matches(), format("Unexpected inserted content: %s", content));
             }
         }
     }
 
     @Test
-    public void generate_EventMessage_insertion_points() {
+    @DisplayName("generate EventMessage insertion points")
+    void generate_EventMessage_insertion_points() {
         // Sample path; never resolved
         String filePath = "/proto/spine/tools/protoc/test_events.proto";
 
-        FileDescriptorProto descriptor = TestEventsProto.getDescriptor().toProto();
+        FileDescriptorProto descriptor = TestEventsProto.getDescriptor()
+                                                        .toProto();
         CodeGeneratorRequest request =
                 CodeGeneratorRequest.newBuilder()
                                     .setCompilerVersion(version())
@@ -258,11 +263,13 @@ public class MarkerInterfaceGeneratorTest {
     }
 
     @Test
-    public void generate_CommandMessage_insertion_points() {
+    @DisplayName("generate CommandMessage insertion points")
+    void generate_CommandMessage_insertion_points() {
         // Sample path; never resolved
         String filePath = "/proto/spine/tools/protoc/test_commands.proto";
 
-        FileDescriptorProto descriptor = TestCommandsProto.getDescriptor().toProto();
+        FileDescriptorProto descriptor = TestCommandsProto.getDescriptor()
+                                                          .toProto();
         CodeGeneratorRequest request =
                 CodeGeneratorRequest.newBuilder()
                                     .setCompilerVersion(version())
@@ -282,11 +289,13 @@ public class MarkerInterfaceGeneratorTest {
     }
 
     @Test
-    public void generate_RejectionMessage_insertion_points() {
+    @DisplayName("generate RejectionMessage insertion points")
+    void generate_RejectionMessage_insertion_points() {
         // Sample path; never resolved
         String filePath = "/proto/spine/tools/protoc/test_rejections.proto";
 
-        FileDescriptorProto descriptor = Rejections.getDescriptor().toProto();
+        FileDescriptorProto descriptor = Rejections.getDescriptor()
+                                                   .toProto();
         CodeGeneratorRequest request =
                 CodeGeneratorRequest.newBuilder()
                                     .setCompilerVersion(version())
@@ -306,7 +315,8 @@ public class MarkerInterfaceGeneratorTest {
     }
 
     @Test
-    public void not_accept_requests_from_old_compiler() {
+    @DisplayName("not accept requests from old compiler")
+    void not_accept_requests_from_old_compiler() {
         Version version = Version.newBuilder()
                                  .setMajor(2)
                                  .build();
@@ -316,12 +326,13 @@ public class MarkerInterfaceGeneratorTest {
                                     .setCompilerVersion(version)
                                     .addProtoFile(stubFile)
                                     .build();
-        thrown.expect(IllegalArgumentException.class);
-        codeGenerator.process(request);
+        assertThrows(IllegalArgumentException.class,
+                     () -> codeGenerator.process(request));
     }
 
     @Test
-    public void not_accept_empty_requests() {
+    @DisplayName("not accept empty requests")
+    void not_accept_empty_requests() {
         Version version = Version.newBuilder()
                                  .setMajor(3)
                                  .build();
@@ -329,7 +340,7 @@ public class MarkerInterfaceGeneratorTest {
                 CodeGeneratorRequest.newBuilder()
                                     .setCompilerVersion(version)
                                     .build();
-        thrown.expect(IllegalArgumentException.class);
-        codeGenerator.process(request);
+        assertThrows(IllegalArgumentException.class,
+                     () -> codeGenerator.process(request));
     }
 }

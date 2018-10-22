@@ -20,37 +20,27 @@
 
 package io.spine.tools.compiler.check;
 
-import com.google.common.testing.NullPointerTester;
+import io.spine.testing.UtilityClassTest;
 import org.gradle.api.Project;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
 import static io.spine.tools.compiler.check.given.ProjectConfigurations.assertCompileTasksContain;
 import static io.spine.tools.compiler.check.given.ProjectConfigurations.assertCompileTasksEmpty;
 import static io.spine.tools.gradle.compiler.given.ModelCompilerTestEnv.newProject;
 
-public class ProjectArgumentsShould {
+@DisplayName("ProjectArguments utility class should")
+class ProjectArgumentsTest extends UtilityClassTest<ProjectArguments> {
 
-    private Project project;
+    private final Project project = newProject();
 
-    @Before
-    public void setUp() {
-        project = newProject();
+    ProjectArgumentsTest() {
+        super(ProjectArguments.class);
     }
 
     @Test
-    public void have_utility_constructor() {
-        assertHasPrivateParameterlessCtor(ProjectArguments.class);
-    }
-
-    @Test
-    public void pass_null_tolerance_check() {
-        new NullPointerTester().testAllPublicStaticMethods(ProjectArguments.class);
-    }
-
-    @Test
-    public void add_args_to_java_compile_tasks_of_project() {
+    @DisplayName("add arguments to Java compile tasks")
+    void add_args_to_java_compile_tasks_of_project() {
         String firstArg = "firstArg";
         String secondArg = "secondArg";
         ProjectArguments.addArgsToJavaCompile(project, firstArg, secondArg);
@@ -58,7 +48,8 @@ public class ProjectArgumentsShould {
     }
 
     @Test
-    public void add_no_args_if_none_specified() {
+    @DisplayName("not add arguments if none is specified")
+    void add_no_args_if_none_specified() {
         ProjectArguments.addArgsToJavaCompile(project);
         assertCompileTasksEmpty(project);
     }

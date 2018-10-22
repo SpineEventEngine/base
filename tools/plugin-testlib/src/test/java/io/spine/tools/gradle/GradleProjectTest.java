@@ -22,62 +22,73 @@ package io.spine.tools.gradle;
 
 import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.BuildTask;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junitpioneer.jupiter.TempDirectory;
 
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
 import static org.gradle.testkit.runner.TaskOutcome.FAILED;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junitpioneer.jupiter.TempDirectory.TempDir;
 
-public class GradleProjectTest {
+@ExtendWith(TempDirectory.class)
+class GradleProjectTest {
 
     private static final String PROJECT_NAME = "gradle_project_test";
 
-    @Rule
-    public TemporaryFolder temporaryFolder = new TemporaryFolder();
+    private File temporaryFolder;
+
+    @BeforeEach
+    void setUp(@TempDir Path tempDirPath) {
+        temporaryFolder = tempDirPath.toFile();
+    }
 
     @Test
-    public void build_from_project_folder_and_project_name() {
+    @DisplayName("build from project folder and project name")
+    void build_from_project_folder_and_project_name() {
         GradleProject project = GradleProject.newBuilder()
-                                             .setProjectFolder(temporaryFolder.getRoot())
+                                             .setProjectFolder(temporaryFolder)
                                              .setProjectName(PROJECT_NAME)
                                              .build();
         assertNotNull(project);
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
-        // OK for this test case; result of `build` it ignored.
+    // OK for this test case; result of `build` it ignored.
     @Test
-    public void write_given_java_files() {
+    @DisplayName("write given Java files")
+    void write_given_java_files() {
         String[] files = {"Foo.java", "Bar.java"};
         GradleProject.newBuilder()
-                     .setProjectFolder(temporaryFolder.getRoot())
+                     .setProjectFolder(temporaryFolder)
                      .setProjectName(PROJECT_NAME)
                      .addJavaFiles(files)
                      .build();
         @SuppressWarnings("DuplicateStringLiteralInspection")
-            // "java" literal is copied with different semantics.
-        Path root = temporaryFolder.getRoot()
-                                   .toPath()
-                                   .resolve("src")
-                                   .resolve("main")
-                                   .resolve("java");
+        // "java" literal is copied with different semantics.
+                Path root = temporaryFolder.toPath()
+                                           .resolve("src")
+                                           .resolve("main")
+                                           .resolve("java");
         for (String fileName : files) {
             assertTrue(Files.exists(root.resolve(fileName)));
         }
     }
 
     @Test
-    public void execute_faulty_build() {
+    @DisplayName("execute faulty build")
+    void execute_faulty_build() {
         GradleProject project = GradleProject.newBuilder()
                                              .setProjectName(PROJECT_NAME)
-                                             .setProjectFolder(temporaryFolder.getRoot())
+                                             .setProjectFolder(temporaryFolder)
                                              .addJavaFiles("Faulty.java")
                                              .build();
         BuildResult buildResult = project.executeAndFail(COMPILE_JAVA);
