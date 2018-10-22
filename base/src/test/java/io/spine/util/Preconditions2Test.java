@@ -21,14 +21,13 @@
 package io.spine.util;
 
 import io.spine.testing.UtilityClassTest;
-import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@SuppressWarnings({"InnerClassMayBeStatic", "ClassCanBeStatic"})
 @DisplayName("Preconditions2 utility class should")
 class Preconditions2Test extends UtilityClassTest<Preconditions2> {
 

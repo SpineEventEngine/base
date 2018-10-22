@@ -27,11 +27,11 @@ import com.google.protobuf.util.JsonFormat;
 import io.spine.json.given.Node;
 import io.spine.json.given.WrappedString;
 import io.spine.testing.Tests;
+import io.spine.testing.UtilityClassTest;
 import io.spine.type.KnownTypes;
 import io.spine.type.TypeUrl;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
@@ -40,24 +40,22 @@ import static io.spine.json.Json.fromJson;
 import static io.spine.json.Json.toCompactJson;
 import static io.spine.json.Json.toJson;
 import static io.spine.protobuf.TypeConverter.toMessage;
-import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
 import static java.lang.String.format;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class JsonShould {
+@DisplayName("Json utility class should")
+class JsonTest extends UtilityClassTest<Json> {
 
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
-
-    @Test
-    public void have_utility_ctor() {
-        assertHasPrivateParameterlessCtor(Json.class);
+    JsonTest() {
+        super(Json.class);
     }
 
     @Test
-    public void build_JsonFormat_registry_for_known_types() {
+    @DisplayName("build JsonFormat registry for known types")
+    void build_JsonFormat_registry_for_known_types() {
         JsonFormat.TypeRegistry typeRegistry = Json.typeRegistry();
 
         List<Descriptors.Descriptor> found = Lists.newLinkedList();
@@ -73,19 +71,22 @@ public class JsonShould {
     }
 
     @Test
-    public void toJson_fail_on_null() {
-        thrown.expect(NullPointerException.class);
-        toJson(Tests.nullRef());
+    @DisplayName("not allow null message")
+    void toJson_fail_on_null() {
+        assertThrows(NullPointerException.class,
+                     () -> toJson(Tests.nullRef()));
     }
 
     @Test
-    public void print_to_json() {
+    @DisplayName("print to JSON")
+    void print_to_json() {
         StringValue value = toMessage("print_to_json");
         assertFalse(toJson(value).isEmpty());
     }
 
     @Test
-    public void print_to_compact_json() {
+    @DisplayName("print to compact JSON")
+    void print_to_compact_json() {
         String idValue = newUuid();
         Node node = Node.newBuilder()
                         .setName(idValue)
@@ -97,7 +98,8 @@ public class JsonShould {
     }
 
     @Test
-    public void parse_from_json() {
+    @DisplayName("parse from JSON")
+    void parse_from_json() {
         String idValue = newUuid();
         String jsonMessage = format("{value:%s}", idValue);
         WrappedString parsedValue = fromJson(jsonMessage, WrappedString.class);

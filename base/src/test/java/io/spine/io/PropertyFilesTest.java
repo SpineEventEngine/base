@@ -17,24 +17,16 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.validate;
 
-import com.google.common.testing.NullPointerTester;
-import org.junit.Test;
+package io.spine.io;
 
-import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
+import io.spine.testing.UtilityClassTest;
+import org.junit.jupiter.api.DisplayName;
 
-public class ConstraintViolationsShould {
+@DisplayName("PropertyFiles utility class should")
+class PropertyFilesTest extends UtilityClassTest<PropertyFiles> {
 
-    @Test
-    public void have_private_constructor() {
-        assertHasPrivateParameterlessCtor(ConstraintViolations.class);
-    }
-
-    @Test
-    public void pass_the_null_tolerance_check() {
-        new NullPointerTester()
-                .setDefault(ConstraintViolation.class, ConstraintViolation.getDefaultInstance())
-                .testAllPublicStaticMethods(ConstraintViolations.class);
+    PropertyFilesTest() {
+        super(PropertyFiles.class);
     }
 }

@@ -22,7 +22,9 @@ package io.spine.reflect;
 
 import com.google.common.reflect.TypeToken;
 import com.google.common.testing.NullPointerTester;
-import org.junit.Test;
+import io.spine.testing.UtilityClassTest;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Type;
 import java.util.List;
@@ -30,35 +32,36 @@ import java.util.Map;
 
 import static io.spine.reflect.Types.listTypeOf;
 import static io.spine.reflect.Types.mapTypeOf;
-import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SuppressWarnings({"SerializableNonStaticInnerClassWithoutSerialVersionUID",
         "SerializableInnerClassWithNonSerializableOuterClass"}) // It is OK for test methods.
-public class TypesShould {
+@DisplayName("Types utility class should")
+class TypesTest extends UtilityClassTest<Types> {
 
-    @Test
-    public void pass_the_null_tolerance_check() {
-        NullPointerTester tester = new NullPointerTester();
-        tester.testStaticMethods(Types.class, NullPointerTester.Visibility.PACKAGE);
+    TypesTest() {
+        super(Types.class);
     }
 
     @Test
-    public void have_private_constructor() {
-        assertHasPrivateParameterlessCtor(Types.class);
-    }
-
-    @Test
-    public void create_map_type() {
+    @DisplayName("create map type")
+    void create_map_type() {
         Type type = mapTypeOf(String.class, Integer.class);
         Type expectedType = new TypeToken<Map<String, Integer>>(){}.getType();
         assertEquals(expectedType, type);
     }
 
     @Test
-    public void create_list_type() {
+    @DisplayName("create list type")
+    void create_list_type() {
         Type type = listTypeOf(String.class);
         Type expectedType = new TypeToken<List<String>>(){}.getType();
         assertEquals(expectedType, type);
+    }
+
+    @Override
+    protected void configure(NullPointerTester tester) {
+        super.configure(tester);
+        tester.testStaticMethods(Types.class, NullPointerTester.Visibility.PACKAGE);
     }
 }

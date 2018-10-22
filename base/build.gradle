@@ -37,6 +37,7 @@ dependencies {
     protobuf deps.build.protobuf
 
     testImplementation project(path: ":testlib")
+    testImplementation deps.test.junitPioneer
 }
 
 protobuf {

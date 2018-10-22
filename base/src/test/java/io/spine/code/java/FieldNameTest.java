@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Test;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 
 @DisplayName("FieldName should")
-class FieldNameShould {
+class FieldNameTest {
 
     @Test
     @DisplayName(NOT_ACCEPT_NULLS)

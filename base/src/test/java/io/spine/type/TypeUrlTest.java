@@ -41,10 +41,11 @@ import static com.google.common.testing.SerializableTester.reserializeAndAssert;
 import static io.spine.base.Identifier.newUuid;
 import static io.spine.protobuf.TypeConverter.toMessage;
 import static io.spine.type.TypeUrl.composeTypeUrl;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("TypeUrl should")
 class TypeUrlTest {
@@ -137,7 +138,7 @@ class TypeUrlTest {
         void nullUrl() {
             assertThrows(
                     NullPointerException.class,
-                    () ->  TypeUrl.parse(Tests.nullRef())
+                    () -> TypeUrl.parse(Tests.nullRef())
             );
         }
 
@@ -152,17 +153,13 @@ class TypeUrlTest {
 
         @Test
         @DisplayName("invalid URL of a packed message")
-        @SuppressWarnings("CheckReturnValue") // we test exception cause, not the output
         void anyWithInvalidUrl() {
             Any any = Any.newBuilder()
                          .setTypeUrl("invalid_type_url")
                          .build();
-            try {
-                TypeUrl.ofEnclosed(any);
-                fail("Invalid type URL accepted.");
-            } catch (RuntimeException e) {
-                assertTrue(e.getCause() instanceof InvalidProtocolBufferException);
-            }
+            RuntimeException exception = assertThrows(RuntimeException.class,
+                                                      () -> TypeUrl.ofEnclosed(any));
+            assertThat(exception.getCause(), instanceOf(InvalidProtocolBufferException.class));
         }
 
         @Test
@@ -256,7 +253,6 @@ class TypeUrlTest {
                 .addEqualityGroup(TypeUrl.of(UInt32Value.class))
                 .testEquals();
     }
-
 
     @Test
     @DisplayName("provide string representation")

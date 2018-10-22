@@ -39,7 +39,7 @@ import static io.spine.base.Time.getCurrentTime;
 import static io.spine.protobuf.Timestamps2.fromInstant;
 import static io.spine.protobuf.Timestamps2.isLaterThan;
 import static io.spine.protobuf.Timestamps2.toInstant;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

@@ -20,29 +20,25 @@
 
 package io.spine.base;
 
-import com.google.common.testing.NullPointerTester;
-import org.junit.Test;
+import io.spine.testing.UtilityClassTest;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import static io.spine.base.Errors.causeOf;
 import static io.spine.base.Errors.fromThrowable;
 import static io.spine.base.Identifier.newUuid;
-import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ErrorsShould {
+@DisplayName("Errors utility class should")
+class ErrorsTest extends UtilityClassTest<Errors> {
 
-    @Test
-    public void have_utility_ctor() {
-        assertHasPrivateParameterlessCtor(Errors.class);
+    ErrorsTest() {
+        super(Errors.class);
     }
 
     @Test
-    public void pass_null_tolerance_check() {
-        new NullPointerTester().testAllPublicStaticMethods(Errors.class);
-    }
-
-    @Test
-    public void convert_cause_of_throwable_to_Error() {
+    @DisplayName("convert cause of throwable to Error")
+    void convert_cause_of_throwable_to_Error() {
         int errorCode = 404;
         String errorMessage = newUuid();
 
@@ -58,7 +54,8 @@ public class ErrorsShould {
     }
 
     @Test
-    public void convert_throwable_to_Error() {
+    @DisplayName("convert throwable to Error")
+    void convert_throwable_to_Error() {
         String errorMessage = newUuid();
         RuntimeException throwable = new RuntimeException(errorMessage);
 

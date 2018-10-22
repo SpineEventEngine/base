@@ -18,16 +18,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.io;
+package io.spine.code.proto;
 
-import org.junit.Test;
+import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
+import io.spine.testing.UtilityClassTest;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
+import java.util.Collection;
 
-public class PropertyFilesShould {
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
+@DisplayName("FileDescriptors utility class should")
+class FileDescriptorsTest extends UtilityClassTest<FileDescriptors> {
+
+    FileDescriptorsTest() {
+        super(FileDescriptors.class);
+    }
 
     @Test
-    public void have_utility_ctor() {
-        assertHasPrivateParameterlessCtor(PropertyFiles.class);
+    @DisplayName("load main set")
+    void load_main_set() {
+        Collection<FileDescriptorProto> fileSets = FileDescriptors.load();
+        assertFalse(fileSets.isEmpty());
     }
 }

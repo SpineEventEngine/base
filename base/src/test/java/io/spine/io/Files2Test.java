@@ -20,37 +20,45 @@
 
 package io.spine.io;
 
-import com.google.common.testing.NullPointerTester;
 import io.spine.testing.TestValues;
-import io.spine.testing.Tests;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import io.spine.testing.UtilityClassTest;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junitpioneer.jupiter.TempDirectory;
+import org.junitpioneer.jupiter.TempDirectory.TempDir;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Path;
 
 import static io.spine.io.Files2.ensureFile;
 import static io.spine.io.Files2.existsNonEmpty;
 import static java.nio.charset.Charset.defaultCharset;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class Files2Should {
+@ExtendWith(TempDirectory.class)
+@DisplayName("Files2 utility class should")
+class Files2Test extends UtilityClassTest<Files2> {
 
-    @Rule
-    public TemporaryFolder testFolder = new TemporaryFolder();
+    private File testFolder;
 
-    @Test
-    public void have_utility_ctor() {
-        Tests.assertHasPrivateParameterlessCtor(Files2.class);
+    Files2Test() {
+        super(Files2.class);
+    }
+
+    @BeforeEach
+    void setUp(@TempDir Path testFolderPath) {
+        testFolder = testFolderPath.toFile();
     }
 
     @Test
-    public void ensure_file() {
-        File expected = new File(testFolder.getRoot()
-                                           .getAbsolutePath(), "with/sub/dirs/file.txt");
+    @DisplayName("ensure file")
+    void ensure_file() {
+        File expected = new File(testFolder.getAbsolutePath(), "with/sub/dirs/file.txt");
 
         boolean result = ensureFile(expected);
 
@@ -63,24 +71,24 @@ public class Files2Should {
     }
 
     @Test
-    public void verify_non_empty_file() throws IOException {
-        File empty = testFolder.newFile();
+    @DisplayName("verify non-empty file")
+    void verify_non_empty_file() throws IOException {
+        File empty = testFolder.toPath()
+                               .resolve("empty file")
+                               .toFile();
         assertFalse(existsNonEmpty(empty));
 
         File doesNotExist = new File(TestValues.randomString());
         assertFalse(existsNonEmpty(doesNotExist));
 
-        File nonEmpty = testFolder.newFile();
+        File nonEmpty = testFolder.toPath()
+                                  .resolve("non-empty file")
+                                  .toFile();
         String path = nonEmpty.getAbsolutePath();
         String charsetName = defaultCharset().name();
         try (PrintWriter out = new PrintWriter(path, charsetName)) {
             out.println(TestValues.randomString());
         }
         assertTrue(existsNonEmpty(nonEmpty));
-    }
-
-    @Test
-    public void pass_null_tolerance_test() {
-        new NullPointerTester().testAllPublicConstructors(Files2.class);
     }
 }

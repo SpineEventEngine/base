@@ -22,15 +22,23 @@ package io.spine.code.javadoc;
 
 import com.google.common.testing.NullPointerTester;
 import io.spine.code.javadoc.JavadocEscaper.EscapeSequence;
-import org.junit.Test;
+import io.spine.testing.UtilityClassTest;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import static io.spine.code.javadoc.JavadocEscaper.escape;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class JavadocEscaperShould {
+@DisplayName("JavadocEscaper utility class should")
+class JavadocEscaperTest extends UtilityClassTest<JavadocEscaper> {
+
+    JavadocEscaperTest() {
+        super(JavadocEscaper.class);
+    }
 
     @Test
-    public void escape_comment_beginning_and_ending() {
+    @DisplayName("escape comment beginning and ending")
+    void escape_comment_beginning_and_ending() {
         assertEquals(EscapeSequence.COMMENT_ENDING.getEscaped(),
                      escape(EscapeSequence.COMMENT_ENDING.getUnescaped()));
         assertEquals(' ' + EscapeSequence.COMMENT_BEGINNING.getEscaped(),
@@ -38,13 +46,15 @@ public class JavadocEscaperShould {
     }
 
     @Test
-    public void escape_slash_in_beginning() {
+    @DisplayName("escape slash in beginning")
+    void escape_slash_in_beginning() {
         String remainingJavadoc = "ABC";
         assertEquals("&#47;" + remainingJavadoc, escape('/' + remainingJavadoc));
     }
 
     @Test
-    public void escape_html() {
+    @DisplayName("escape HTML")
+    void escape_html() {
         assertEquals(EscapeSequence.LESS_THAN.getEscaped(),
                      escape(EscapeSequence.LESS_THAN.getUnescaped()));
         assertEquals(EscapeSequence.GREATER_THAN.getEscaped(),
@@ -54,18 +64,17 @@ public class JavadocEscaperShould {
     }
 
     @Test
-    public void escape_at_and_back_slash() {
+    @DisplayName("escape @ and back slash")
+    void escape_at_and_back_slash() {
         assertEquals(EscapeSequence.AT_MARK.getEscaped(),
                      escape(EscapeSequence.AT_MARK.getUnescaped()));
         assertEquals(EscapeSequence.BACK_SLASH.getEscaped(),
                      escape(EscapeSequence.BACK_SLASH.getUnescaped()));
     }
 
-    @Test
-    public void pass_the_null_tolerance_check() {
-        NullPointerTester nullPointerTester = new NullPointerTester();
-
-        nullPointerTester.testAllPublicStaticMethods(JavadocEscaper.class);
-        nullPointerTester.testAllPublicStaticMethods(EscapeSequence.class);
+    @Override
+    protected void configure(NullPointerTester tester) {
+        super.configure(tester);
+        tester.testAllPublicStaticMethods(EscapeSequence.class);
     }
 }

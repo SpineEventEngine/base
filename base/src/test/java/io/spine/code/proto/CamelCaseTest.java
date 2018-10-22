@@ -21,29 +21,32 @@
 package io.spine.code.proto;
 
 import com.google.common.collect.ImmutableList;
+import io.spine.testing.UtilityClassTest;
 import io.spine.value.StringTypeValue;
-import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static io.spine.code.proto.CamelCase.convert;
-import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class CamelCaseShould {
+@DisplayName("CamelCase utility class should")
+class CamelCaseTest extends UtilityClassTest<CamelCase> {
 
-    @Test
-    public void have_utility_ctor() {
-        assertHasPrivateParameterlessCtor(CamelCase.class);
+    CamelCaseTest() {
+        super(CamelCase.class);
     }
 
     @Test
-    public void capitalize_words() {
+    @DisplayName("capitalize words")
+    void capitalize_words() {
         assertEquals("CapitalizeWords", convert(new UnderName("capitalize_words")));
     }
 
     @Test
-    public void do_not_lowercase_words() {
+    @DisplayName("not lowercase words")
+    void do_not_lowercase_words() {
         assertEquals("TestHTTPRequest", convert(new UnderName("test_HTTP_request")));
     }
 
@@ -54,7 +57,7 @@ public class CamelCaseShould {
 
         private static final long serialVersionUID = 0L;
 
-        protected UnderName(String value) {
+        private UnderName(String value) {
             super(value);
         }
 

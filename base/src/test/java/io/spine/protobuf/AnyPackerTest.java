@@ -24,12 +24,11 @@ import com.google.common.collect.Lists;
 import com.google.protobuf.Any;
 import com.google.protobuf.Message;
 import com.google.protobuf.StringValue;
-import io.spine.testing.Tests;
 import io.spine.test.protobuf.MessageToPack;
+import io.spine.testing.Tests;
 import io.spine.type.TypeUrl;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.util.Iterator;
 
@@ -38,14 +37,17 @@ import static io.spine.protobuf.AnyPacker.pack;
 import static io.spine.protobuf.AnyPacker.unpack;
 import static io.spine.protobuf.AnyPacker.unpackFunc;
 import static io.spine.protobuf.TypeConverter.toMessage;
+import static io.spine.testing.DisplayNames.HAVE_PARAMETERLESS_CTOR;
 import static io.spine.testing.TestValues.newUuidValue;
 import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class AnyPackerShould {
+@DisplayName("AnyPacker utility class should")
+class AnyPackerTest {
 
     /** A message with type URL standard to Google Protobuf. */
     private final StringValue googleMsg = toMessage(newUuid());
@@ -55,26 +57,26 @@ public class AnyPackerShould {
                                                         .setValue(newUuidValue())
                                                         .build();
 
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
-
     @Test
-    public void have_private_constructor() {
+    @DisplayName(HAVE_PARAMETERLESS_CTOR)
+    void have_private_constructor() {
         assertHasPrivateParameterlessCtor(AnyPacker.class);
     }
 
     @Test
-    public void pack_spine_message_to_Any() {
+    @DisplayName("pack Spine message to Any")
+    void pack_spine_message_to_Any() {
         Any actual = pack(spineMsg);
         TypeUrl typeUrl = TypeUrl.of(spineMsg);
 
-
-        assertEquals(Any.pack(spineMsg).getValue(), actual.getValue());
+        assertEquals(Any.pack(spineMsg)
+                        .getValue(), actual.getValue());
         assertEquals(typeUrl.value(), actual.getTypeUrl());
     }
 
     @Test
-    public void unpack_spine_message_from_Any() {
+    @DisplayName("unpack Spine message from Any")
+    void unpack_spine_message_from_Any() {
         Any any = pack(spineMsg);
 
         MessageToPack actual = (MessageToPack) unpack(any);
@@ -83,7 +85,8 @@ public class AnyPackerShould {
     }
 
     @Test
-    public void pack_google_message_to_Any() {
+    @DisplayName("pack Google message to Any")
+    void pack_google_message_to_Any() {
         Any expected = Any.pack(googleMsg);
 
         Any actual = pack(googleMsg);
@@ -92,7 +95,8 @@ public class AnyPackerShould {
     }
 
     @Test
-    public void unpack_google_message_from_Any() {
+    @DisplayName("unpack Google message from Any")
+    void unpack_google_message_from_Any() {
         Any any = Any.pack(googleMsg);
 
         StringValue actual = (StringValue) unpack(any);
@@ -101,37 +105,43 @@ public class AnyPackerShould {
     }
 
     @Test
-    public void return_Any_if_it_is_passed_to_pack() {
+    @DisplayName("return Any if it is passes to pack")
+    void return_Any_if_it_is_passed_to_pack() {
         Any any = Any.pack(googleMsg);
 
         assertSame(any, pack(any));
     }
 
     @Test
-    public void fail_on_attempt_to_pack_null() {
-        thrown.expect(NullPointerException.class);
-        pack(Tests.<Message>nullRef());
+    @DisplayName("fail on attempt to pack null")
+    void fail_on_attempt_to_pack_null() {
+        assertThrows(NullPointerException.class,
+                     () -> pack(Tests.<Message>nullRef()));
     }
 
     @Test
-    public void fail_on_attempt_to_unpack_null() {
-        thrown.expect(NullPointerException.class);
-        unpack(Tests.nullRef());
+    @DisplayName("fail on attempt to unpack null")
+    void fail_on_attempt_to_unpack_null() {
+        assertThrows(NullPointerException.class,
+                     () -> unpack(Tests.nullRef()));
     }
 
     @Test
-    public void create_packing_iterator() {
+    @DisplayName("create packing iterator")
+    void create_packing_iterator() {
         Iterator<Message> iterator = Lists.<Message>newArrayList(newUuidValue()).iterator();
         assertNotNull(pack(iterator));
     }
 
     @Test
-    public void have_null_accepting_func() {
+    @DisplayName("have null accepting function")
+    void have_null_accepting_func() {
         assertNull(unpackFunc().apply(null));
     }
 
     @Test
-    public void have_unpacking_func() {
+    @DisplayName("have unpacking function")
+    void have_unpacking_func() {
         StringValue value = newUuidValue();
 
         assertEquals(value, unpackFunc().apply(Any.pack(value)));

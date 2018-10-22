@@ -20,42 +20,35 @@
 
 package io.spine.option;
 
-import com.google.common.testing.NullPointerTester;
 import io.spine.option.EntityOption.Visibility;
 import io.spine.test.options.FullAccessAggregate;
 import io.spine.test.options.SubscribableAggregate;
-import org.junit.Test;
+import io.spine.testing.UtilityClassTest;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import static io.spine.option.EntityOptions.getVisibility;
-import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * See `spine/test/option/entity_options_should.proto` for definitions of types used in the tests.
- *
- * @author Alexander Yevsyukov
  */
-public class EntityOptionsShould {
+@DisplayName("EntityOptions utility class should")
+class EntityOptionsTest extends UtilityClassTest<EntityOptions> {
 
-    @Test
-    public void have_utility_ctor() {
-        assertHasPrivateParameterlessCtor(EntityOptions.class);
+    EntityOptionsTest() {
+        super(EntityOptions.class);
     }
 
     @Test
-    public void assume_full_visibility_when_not_defined() {
+    @DisplayName("assume full visibility when not defined")
+    void assume_full_visibility_when_not_defined() {
         assertEquals(Visibility.FULL, getVisibility(FullAccessAggregate.class));
     }
 
     @Test
-    public void get_defined_visibility_value() {
+    @DisplayName("get defined visibility")
+    void get_defined_visibility_value() {
         assertEquals(Visibility.SUBSCRIBE, getVisibility(SubscribableAggregate.class));
-    }
-
-    @Test
-    public void pass_null_tolerance_test() {
-        new NullPointerTester()
-                .setDefault(Visibility.class, Visibility.NONE)
-                .testAllPublicStaticMethods(EntityOptions.class);
     }
 }

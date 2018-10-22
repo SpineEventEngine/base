@@ -32,10 +32,8 @@ import static io.spine.code.javadoc.JavadocEscaper.EscapeSequence.fromBeginningO
  * <p>Example of such source is a comment from ".proto" file. In particular,
  * a person that writes a comment in ".proto" file does not know,
  * that {@literal "<"} and {@literal ">"} should not appear in Javadoc.
- *
- * @author Dmytro Grankin
  */
-public class JavadocEscaper {
+public final class JavadocEscaper {
 
     /** Prevents instantiation of this utility class. */
     private JavadocEscaper() {

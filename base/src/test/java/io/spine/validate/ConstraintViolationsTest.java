@@ -17,21 +17,22 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package io.spine.validate;
 
-package io.spine.code.proto;
+import com.google.common.testing.NullPointerTester;
+import io.spine.testing.UtilityClassTest;
+import org.junit.jupiter.api.DisplayName;
 
-import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
-import org.junit.Test;
+@DisplayName("ConstraintViolations utility class should")
+class ConstraintViolationsTest extends UtilityClassTest<ConstraintViolations> {
 
-import java.util.Collection;
+    ConstraintViolationsTest() {
+        super(ConstraintViolations.class);
+    }
 
-import static org.junit.Assert.assertFalse;
-
-public class FileDescriptorsShould {
-
-    @Test
-    public void load_main_set() {
-        Collection<FileDescriptorProto> fileSets = FileDescriptors.load();
-        assertFalse(fileSets.isEmpty());
+    @Override
+    protected void configure(NullPointerTester tester) {
+        super.configure(tester);
+        tester.setDefault(ConstraintViolation.class, ConstraintViolation.getDefaultInstance());
     }
 }

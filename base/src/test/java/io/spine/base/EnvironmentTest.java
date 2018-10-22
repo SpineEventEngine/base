@@ -20,21 +20,21 @@
 
 package io.spine.base;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import io.spine.testing.UtilityClassTest;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@DisplayName("Environment utility class should")
 @SuppressWarnings("AccessOfSystemProperties")
-public class EnvironmentShould {
-
-    private Environment environment;
+class EnvironmentTest extends UtilityClassTest<Environment> {
 
     /*
      * Environment protection START
@@ -45,39 +45,41 @@ public class EnvironmentShould {
     @SuppressWarnings("StaticVariableMayNotBeInitialized")
     private static Environment storedEnvironment;
 
-    @BeforeClass
-    public static void storeEnvironment() {
+    private Environment environment;
+
+    EnvironmentTest() {
+        super(Environment.class);
+    }
+
+    @BeforeAll
+    static void storeEnvironment() {
         storedEnvironment = Environment.getInstance()
                                        .createCopy();
     }
 
     @SuppressWarnings("StaticVariableUsedBeforeInitialization")
-    @AfterClass
-    public static void restoreEnvironment() {
+    @AfterAll
+    static void restoreEnvironment() {
         Environment.getInstance()
                    .restoreFrom(storedEnvironment);
     }
 
     /* Environment protection END */
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         environment = Environment.getInstance();
     }
 
-    @After
-    public void cleanUp() {
+    @AfterEach
+    void cleanUp() {
         Environment.getInstance()
                    .reset();
     }
 
     @Test
-    public void have_private_constructor() {
-        assertHasPrivateParameterlessCtor(Environment.class);
-    }
-
-    @Test
-    public void tell_that_we_are_under_tests_if_env_var_set_to_true() {
+    @DisplayName("tell that we are under tests if env variable set to true")
+    void tell_that_we_are_under_tests_if_env_var_set_to_true() {
         Environment.getInstance()
                    .setToTests();
 
@@ -86,7 +88,8 @@ public class EnvironmentShould {
     }
 
     @Test
-    public void tell_that_we_are_under_tests_if_env_var_set_to_1() {
+    @DisplayName("tell that we are under tests if env variable set to 1")
+    void tell_that_we_are_under_tests_if_env_var_set_to_1() {
         System.setProperty(Environment.ENV_KEY_TESTS, "1");
 
         assertTrue(environment.isTests());
@@ -94,14 +97,16 @@ public class EnvironmentShould {
     }
 
     @Test
-    public void tell_that_we_are_under_tests_if_run_under_known_framework() {
+    @DisplayName("tell that we are under tests if run under known framework")
+    void tell_that_we_are_under_tests_if_run_under_known_framework() {
         // As we run this from under JUnit...
         assertTrue(environment.isTests());
         assertFalse(environment.isProduction());
     }
 
     @Test
-    public void tell_that_we_are_not_under_tests_if_env_set_to_something_else() {
+    @DisplayName("tell that we are not under tests if env set to something else")
+    void tell_that_we_are_not_under_tests_if_env_set_to_something_else() {
         System.setProperty(Environment.ENV_KEY_TESTS, "neitherTrueNor1");
 
         assertFalse(environment.isTests());
@@ -109,7 +114,8 @@ public class EnvironmentShould {
     }
 
     @Test
-    public void turn_tests_mode_on() {
+    @DisplayName("turn tests mode on")
+    void turn_tests_mode_on() {
         environment.setToTests();
 
         assertTrue(environment.isTests());
@@ -117,7 +123,8 @@ public class EnvironmentShould {
     }
 
     @Test
-    public void turn_production_mode_on() {
+    @DisplayName("turn production mode on")
+    void turn_production_mode_on() {
         environment.setToProduction();
 
         assertFalse(environment.isTests());
@@ -125,7 +132,8 @@ public class EnvironmentShould {
     }
 
     @Test
-    public void clear_environment_var_on_reset() {
+    @DisplayName("clear environment var on rest")
+    void clear_environment_var_on_reset() {
         environment.reset();
 
         assertNull(System.getProperty(Environment.ENV_KEY_TESTS));
