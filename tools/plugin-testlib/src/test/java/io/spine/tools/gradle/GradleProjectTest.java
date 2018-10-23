@@ -39,6 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junitpioneer.jupiter.TempDirectory.TempDir;
 
+@DisplayName("GradleProject should")
 @ExtendWith(TempDirectory.class)
 class GradleProjectTest {
 
