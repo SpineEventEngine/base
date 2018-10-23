@@ -23,12 +23,10 @@ package io.spine.validate;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.FieldOptions;
-import com.google.protobuf.Descriptors.FieldDescriptor;
-import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import com.google.protobuf.Message;
-import io.spine.base.CommandMessage;
 import io.spine.base.FieldPath;
+import io.spine.code.proto.Option;
 import io.spine.logging.Logging;
 import io.spine.option.IfInvalidOption;
 import io.spine.option.IfMissingOption;
@@ -36,34 +34,31 @@ import io.spine.option.OptionsProto;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.copyOf;
 import static com.google.common.collect.ImmutableList.of;
 import static com.google.common.collect.Lists.newLinkedList;
-import static io.spine.validate.rules.ValidationRuleOptions.getOptionValue;
+import static io.spine.validate.Validate.isNotDefault;
 
 /**
  * Validates messages according to Spine custom protobuf options and
  * provides constraint violations found.
  *
- * @param <V> a type of field values
- * @author Alexander Litus
+ * @param <V>
+ *         a type of field values
  */
 abstract class FieldValidator<V> implements Logging {
 
     private static final String ENTITY_ID_REPEATED_FIELD_MSG =
             "Entity ID must not be a repeated field.";
 
-    private final FieldDescriptor fieldDescriptor;
+    private final FieldDeclaration field;
     private final ImmutableList<V> values;
     private final FieldContext fieldContext;
 
     private final List<ConstraintViolation> violations = newLinkedList();
 
-    private final boolean isCommandsFile;
-    private final boolean isFirstField;
     private final boolean required;
     private final IfMissingOption ifMissingOption;
     private final boolean validate;
@@ -78,26 +73,25 @@ abstract class FieldValidator<V> implements Logging {
     /**
      * Creates a new validator instance.
      *
-     * @param fieldContext the context of the field to validate
-     * @param values       values to validate
-     * @param strict       if {@code true} the validator would assume that the field
-     *                     is required, even if corresponding field option is not present
+     * @param fieldContext
+     *         the context of the field to validate
+     * @param values
+     *         values to validate
+     * @param strict
+     *         if {@code true} the validator would assume that the field
+     *         is required, even if corresponding field option is not present
      */
     protected FieldValidator(FieldContext fieldContext,
                              ImmutableList<V> values,
                              boolean strict) {
         this.fieldContext = checkNotNull(fieldContext);
         this.values = checkNotNull(values);
-        this.fieldDescriptor = fieldContext.getTarget();
+        this.field = new FieldDeclaration(fieldContext);
         this.strict = strict;
-        FileDescriptor file = fieldDescriptor.getFile();
-        this.isCommandsFile = CommandMessage.File.predicate()
-                                                 .test(file);
-        this.isFirstField = fieldDescriptor.getIndex() == 0;
-        this.required = getFieldOption(OptionsProto.required);
-        this.ifMissingOption = getFieldOption(OptionsProto.ifMissing);
-        this.validate = getFieldOption(OptionsProto.valid);
-        this.ifInvalid = getFieldOption(OptionsProto.ifInvalid);
+        this.required = optionValue(OptionsProto.required);
+        this.ifMissingOption = optionValue(OptionsProto.ifMissing);
+        this.validate = optionValue(OptionsProto.valid);
+        this.ifInvalid = optionValue(OptionsProto.ifInvalid);
     }
 
     @SuppressWarnings({
@@ -138,7 +132,8 @@ abstract class FieldValidator<V> implements Logging {
      * if it is {@link String} or {@link com.google.protobuf.ByteString ByteString}, it must be
      * set to a non-empty string or array.
      *
-     * @param value a field value to check
+     * @param value
+     *         a field value to check
      * @return {@code true} if the field is not set, {@code false} otherwise
      */
     protected abstract boolean isNotSet(V value);
@@ -161,7 +156,7 @@ abstract class FieldValidator<V> implements Logging {
      */
     protected final List<ConstraintViolation> validate() {
         checkIfRequiredAndNotSet();
-        if (isRequiredEntityIdField()) {
+        if (isRequiredId()) {
             validateEntityId();
         }
         if (shouldValidate()) {
@@ -189,10 +184,10 @@ abstract class FieldValidator<V> implements Logging {
      *
      * <p>The field must not be repeated or not set.
      *
-     * @see #isRequiredEntityIdField()
+     * @see #isRequiredId()
      */
     protected void validateEntityId() {
-        if (fieldDescriptor.isRepeated()) {
+        if (field.isRepeated()) {
             ConstraintViolation violation = ConstraintViolation
                     .newBuilder()
                     .setMsgFormat(ENTITY_ID_REPEATED_FIELD_MSG)
@@ -218,7 +213,7 @@ abstract class FieldValidator<V> implements Logging {
      * Returns {@code true} in case `if_missing` option is set with a non-default error message.
      */
     private boolean hasCustomMissingMessage() {
-        boolean result = !ifMissingOption.equals(IfMissingOption.getDefaultInstance());
+        boolean result = isNotDefault(ifMissingOption);
         return result;
     }
 
@@ -251,7 +246,8 @@ abstract class FieldValidator<V> implements Logging {
     /**
      * Adds a validation constraint validation to the collection of violations.
      *
-     * @param violation a violation to add
+     * @param violation
+     *         a violation to add
      */
     protected void addViolation(ConstraintViolation violation) {
         violations.add(violation);
@@ -270,8 +266,10 @@ abstract class FieldValidator<V> implements Logging {
     /**
      * Returns a validation error message (a custom one (if present) or the default one).
      *
-     * @param option    a validation option used to get the default message
-     * @param customMsg a user-defined error message
+     * @param option
+     *         a validation option used to get the default message
+     * @param customMsg
+     *         a user-defined error message
      */
     protected String getErrorMsgFormat(Message option, String customMsg) {
         String defaultMsg = option.getDescriptorForType()
@@ -282,20 +280,19 @@ abstract class FieldValidator<V> implements Logging {
     }
 
     /**
-     * Returns a field validation option.
+     * Obtains the option for the validated field.
      *
-     * @param extension an extension key used to obtain a validation option
-     * @param <T>       the type of the option
+     * @param extension
+     *         an extension key used to obtain a validation option
+     * @param <T>
+     *         the type of the option value
      */
-    protected final <T> T getFieldOption(GeneratedExtension<FieldOptions, T> extension) {
-        Optional<T> externalOption = getOptionValue(fieldContext, extension);
-        if (externalOption.isPresent()) {
-            return externalOption.get();
-        }
+    protected final <T> Option<T> option(GeneratedExtension<FieldOptions, T> extension) {
+        return field.option(extension);
+    }
 
-        T ownOption = fieldDescriptor.getOptions()
-                                     .getExtension(extension);
-        return ownOption;
+    protected final <T> T optionValue(GeneratedExtension<FieldOptions, T> extension) {
+        return option(extension).value();
     }
 
     private boolean shouldValidate() {
@@ -311,23 +308,35 @@ abstract class FieldValidator<V> implements Logging {
     }
 
     /**
-     * Returns {@code true} if the field must be an entity ID
-     * (if the field is the first in a command message), {@code false} otherwise.
+     * Returns {@code true} if the field is a required ID, {@code false} otherwise.
      */
-    private boolean isRequiredEntityIdField() {
-        boolean result = isCommandsFile && isFirstField;
+    private boolean isRequiredId() {
+        boolean result = field.isCommandId() || isRequiredEntityId();
         return result;
     }
 
+    /**
+     * Determines whether the field is a required
+     * {@linkplain FieldDeclaration#isEntityId() entity ID}.
+     *
+     * <p>We have a convention, that an entity ID is required by default.
+     * The ID is not required only if its declaration is marked with {@code [(required)=false]}.
+     *
+     * @return {@code true} if the field is a required entity ID, {@code false} otherwise
+     */
+    private boolean isRequiredEntityId() {
+        boolean requiredSetExplicitly = option(OptionsProto.required).isExplicitlySet();
+        boolean notRequired = !required && requiredSetExplicitly;
+        return field.isEntityId() && !notRequired;
+    }
+
     private boolean isNotRepeatedOrMap() {
-        return !fieldDescriptor.isRepeated()
-                && !fieldDescriptor.isMapField();
+        return field.isNotRepeatedOrMap();
     }
 
     /**
      * This test-only method is used from the module {@code smoke-tests}.
      */
-    @SuppressWarnings("unused")
     @VisibleForTesting
     boolean isRepeatedOrMap() {
         return !isNotRepeatedOrMap();

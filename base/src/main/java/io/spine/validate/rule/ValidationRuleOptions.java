@@ -18,13 +18,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.validate.rules;
+package io.spine.validate.rule;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.DescriptorProtos.FieldOptions;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
+import io.spine.code.proto.Option;
 import io.spine.validate.FieldContext;
 
 import java.util.Collection;
@@ -35,8 +36,6 @@ import static com.google.common.collect.ImmutableMap.builder;
 
 /**
  * Utilities for obtaining Protobuf options extracted from validation rules.
- *
- * @author Dmytro Grankin
  */
 public final class ValidationRuleOptions {
 
@@ -52,22 +51,26 @@ public final class ValidationRuleOptions {
     /**
      * Obtains value of the specified option by the specified field context.
      *
-     * @param fieldContext the field descriptor to obtain the option
-     * @param option       the option to obtain
-     * @param <T>          the type of the option
+     * @param fieldContext
+     *         the field descriptor to obtain the option
+     * @param option
+     *         the option to obtain
+     * @param <T>
+     *         the type of the option value
      * @return the {@code Optional} of option value
      *         or {@code Optional.empty()} if there is not option for the field descriptor
      */
-    public static <T> Optional<T> getOptionValue(FieldContext fieldContext,
-                                                 GeneratedExtension<FieldOptions, T> option) {
+    public static <T> Optional<Option<T>> getOptionValue(FieldContext fieldContext,
+                                                         GeneratedExtension<FieldOptions, T> option) {
         for (FieldContext context : options.keySet()) {
             if (fieldContext.hasSameTargetAndParent(context)) {
                 FieldOptions fieldOptions = options.get(context);
                 T optionValue = fieldOptions.getExtension(option);
-                return Optional.of(optionValue);
+                // A option is set explicitly if it was found in validation rules
+                Option<T> fieldOption = Option.explicitlySet(optionValue);
+                return Optional.of(fieldOption);
             }
         }
-
         return Optional.empty();
     }
 

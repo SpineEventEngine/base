@@ -26,8 +26,6 @@ import java.util.Map;
 
 /**
  * Performs the validation for a {@code map} field which has no values set.
- *
- * @author Dmytro Dashenkov
  */
 final class EmptyMapFieldValidator extends FieldValidator<Map<?, ?>> {
 
