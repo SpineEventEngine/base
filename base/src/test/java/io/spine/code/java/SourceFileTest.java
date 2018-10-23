@@ -32,6 +32,9 @@ import org.junit.jupiter.api.Test;
 import spine.test.code.InheritAllSourceFileTest.InheritAllMessage;
 import spine.test.code.InheritPackage;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("Java SourceFile should")
@@ -83,6 +86,7 @@ class SourceFileTest {
 
         FileDescriptorProto file = descriptor.getFile().toProto();
         SourceFile sourceFile = SourceFile.forMessage(message, file);
-        assertEquals(expectedName, sourceFile.toString());
+        Path expectedPath = Paths.get(expectedName);
+        assertEquals(expectedPath, sourceFile.getPath());
     }
 }
