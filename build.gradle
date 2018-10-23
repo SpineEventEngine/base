@@ -215,10 +215,10 @@ subprojects {
 
     test {
         useJUnitPlatform {
-            includeEngines 'junit-jupiter', 'junit-vintage'
+            includeEngines 'junit-jupiter'
         }
 
-        include "**/*Test.class", "**/*Should.class"
+        include "**/*Test.class"
     }
 
     apply from: deps.scripts.testOutput

@@ -25,7 +25,6 @@ dependencies {
         sub-projects.
     */
     api deps.build.protobuf
-    api deps.test.junit4
     api deps.test.junit5Api
     api deps.test.truth
     api deps.test.guavaTestlib
