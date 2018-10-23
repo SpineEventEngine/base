@@ -29,10 +29,15 @@ import com.google.protobuf.compiler.PluginProtos.Version;
 import io.spine.base.CommandMessage;
 import io.spine.base.EventMessage;
 import io.spine.base.RejectionMessage;
+import io.spine.code.java.FileName;
+import io.spine.code.java.PackageName;
+import io.spine.code.java.SourceFile;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -51,10 +56,8 @@ class MarkerInterfaceGeneratorTest {
 
     private static final String PROTO_PACKAGE = "spine.tools.protoc.";
 
-    private static final String PACKAGE_PATH =
-            MarkerInterfaceGeneratorTest.class.getPackage()
-                                              .getName()
-                                              .replace('.', '/');
+    private static final PackageName PACKAGE_NAME =
+            PackageName.of(MarkerInterfaceGeneratorTest.class);
     private static final Pattern CUSTOMER_EVENT_INTERFACE_PATTERN =
             compile("^\\s*io\\.spine\\.tools\\.protoc\\.ProtocCustomerEvent\\s*,\\s*$");
 
@@ -95,19 +98,14 @@ class MarkerInterfaceGeneratorTest {
 
         FileDescriptorProto descriptor = EveryIsTestProto.getDescriptor()
                                                          .toProto();
-        CodeGeneratorRequest request = CodeGeneratorRequest.newBuilder()
-                                                           .setCompilerVersion(version())
-                                                           .addFileToGenerate(filePath)
-                                                           .addProtoFile(descriptor)
-                                                           .build();
-        CodeGeneratorResponse response = codeGenerator.process(request);
+        CodeGeneratorResponse response = processCodeGenRequest(filePath, descriptor);
         assertNotNull(response);
         List<File> files = response.getFileList();
         assertEquals(3, files.size());
         for (File file : files) {
-            String name = file.getName();
-            assertTrue(name.startsWith(PACKAGE_PATH));
+            assertPackage(file);
 
+            String name = file.getName();
             String insertionPoint = file.getInsertionPoint();
             if (!insertionPoint.isEmpty()) {
                 String messageName = PROTO_PACKAGE + name.substring(name.lastIndexOf('/') + 1,
@@ -133,20 +131,14 @@ class MarkerInterfaceGeneratorTest {
 
         FileDescriptorProto descriptor = IsTestProto.getDescriptor()
                                                     .toProto();
-        CodeGeneratorRequest request =
-                CodeGeneratorRequest.newBuilder()
-                                    .setCompilerVersion(version())
-                                    .addFileToGenerate(filePath)
-                                    .addProtoFile(descriptor)
-                                    .build();
-        CodeGeneratorResponse response = codeGenerator.process(request);
+        CodeGeneratorResponse response = processCodeGenRequest(filePath, descriptor);
         assertNotNull(response);
         List<File> files = response.getFileList();
         assertEquals(4, files.size());
         for (File file : files) {
-            String name = file.getName();
-            assertTrue(name.startsWith(PACKAGE_PATH));
+            assertPackage(file);
 
+            String name = file.getName();
             String insertionPoint = file.getInsertionPoint();
             if (!insertionPoint.isEmpty()) {
                 String messageName = PROTO_PACKAGE +
@@ -174,21 +166,13 @@ class MarkerInterfaceGeneratorTest {
 
         FileDescriptorProto descriptor = EveryIsInOneFileProto.getDescriptor()
                                                               .toProto();
-        CodeGeneratorRequest request =
-                CodeGeneratorRequest.newBuilder()
-                                    .setCompilerVersion(version())
-                                    .addFileToGenerate(filePath)
-                                    .addProtoFile(descriptor)
-                                    .build();
-        CodeGeneratorResponse response = codeGenerator.process(request);
+        CodeGeneratorResponse response = processCodeGenRequest(filePath, descriptor);
         assertNotNull(response);
         List<File> files = response.getFileList();
         assertEquals(3, files.size());
         for (File file : files) {
-            if (!file.getName()
-                     .equals("io/spine/tools/protoc/ProtocCustomerEvent.java")) {
-                String name = file.getName();
-                assertEquals(PACKAGE_PATH + "/EveryIsInOneFileProto.java", name);
+            if (!haveSamePath(file, sourceWithPackage("ProtocCustomerEvent"))) {
+                assertFilePath(file, sourceWithPackage("EveryIsInOneFileProto"));
 
                 String insertionPoint = file.getInsertionPoint();
                 assertTrue(insertionPoint.startsWith(format(INSERTION_POINT_IMPLEMENTS,
@@ -208,13 +192,7 @@ class MarkerInterfaceGeneratorTest {
 
         FileDescriptorProto descriptor = IsInOneFileProto.getDescriptor()
                                                          .toProto();
-        CodeGeneratorRequest request =
-                CodeGeneratorRequest.newBuilder()
-                                    .setCompilerVersion(version())
-                                    .addFileToGenerate(filePath)
-                                    .addProtoFile(descriptor)
-                                    .build();
-        CodeGeneratorResponse response = codeGenerator.process(request);
+        CodeGeneratorResponse response = processCodeGenRequest(filePath, descriptor);
         assertNotNull(response);
         List<File> files = response.getFileList();
         assertEquals(3, files.size());
@@ -223,8 +201,7 @@ class MarkerInterfaceGeneratorTest {
                     .endsWith("Event.java")) {
                 assertFalse(file.hasInsertionPoint());
             } else {
-                String name = file.getName();
-                assertEquals(PACKAGE_PATH + "/IsInOneFileProto.java", name);
+                assertFilePath(file, sourceWithPackage("IsInOneFileProto"));
 
                 String insertionPoint = file.getInsertionPoint();
                 assertTrue(insertionPoint.startsWith(format(INSERTION_POINT_IMPLEMENTS,
@@ -244,13 +221,7 @@ class MarkerInterfaceGeneratorTest {
 
         FileDescriptorProto descriptor = TestEventsProto.getDescriptor()
                                                         .toProto();
-        CodeGeneratorRequest request =
-                CodeGeneratorRequest.newBuilder()
-                                    .setCompilerVersion(version())
-                                    .addFileToGenerate(filePath)
-                                    .addProtoFile(descriptor)
-                                    .build();
-        CodeGeneratorResponse response = codeGenerator.process(request);
+        CodeGeneratorResponse response = processCodeGenRequest(filePath, descriptor);
         assertNotNull(response);
         List<File> files = response.getFileList();
         assertEquals(2, files.size());
@@ -270,13 +241,7 @@ class MarkerInterfaceGeneratorTest {
 
         FileDescriptorProto descriptor = TestCommandsProto.getDescriptor()
                                                           .toProto();
-        CodeGeneratorRequest request =
-                CodeGeneratorRequest.newBuilder()
-                                    .setCompilerVersion(version())
-                                    .addFileToGenerate(filePath)
-                                    .addProtoFile(descriptor)
-                                    .build();
-        CodeGeneratorResponse response = codeGenerator.process(request);
+        CodeGeneratorResponse response = processCodeGenRequest(filePath, descriptor);
         assertNotNull(response);
         List<File> files = response.getFileList();
         assertEquals(2, files.size());
@@ -296,13 +261,7 @@ class MarkerInterfaceGeneratorTest {
 
         FileDescriptorProto descriptor = Rejections.getDescriptor()
                                                    .toProto();
-        CodeGeneratorRequest request =
-                CodeGeneratorRequest.newBuilder()
-                                    .setCompilerVersion(version())
-                                    .addFileToGenerate(filePath)
-                                    .addProtoFile(descriptor)
-                                    .build();
-        CodeGeneratorResponse response = codeGenerator.process(request);
+        CodeGeneratorResponse response = processCodeGenRequest(filePath, descriptor);
         assertNotNull(response);
         List<File> files = response.getFileList();
         assertEquals(1, files.size());
@@ -342,5 +301,37 @@ class MarkerInterfaceGeneratorTest {
                                     .build();
         assertThrows(IllegalArgumentException.class,
                      () -> codeGenerator.process(request));
+    }
+
+    private CodeGeneratorResponse processCodeGenRequest(String filePath,
+                                                        FileDescriptorProto descriptor) {
+        CodeGeneratorRequest request =
+                CodeGeneratorRequest.newBuilder()
+                                    .setCompilerVersion(version())
+                                    .addFileToGenerate(filePath)
+                                    .addProtoFile(descriptor)
+                                    .build();
+        return codeGenerator.process(request);
+    }
+
+    private static SourceFile sourceWithPackage(String typeName) {
+        FileName fileName = FileName.forType(typeName);
+        return PACKAGE_NAME.toDirectory()
+                           .resolve(fileName);
+    }
+
+    private static boolean haveSamePath(File generatedFile, SourceFile anotherFile) {
+        Path generatedFilePath = Paths.get(generatedFile.getName());
+        return generatedFilePath.equals(anotherFile.getPath());
+    }
+
+    private static void assertFilePath(File generatedFile, SourceFile expectedFile) {
+        assertTrue(haveSamePath(generatedFile, expectedFile));
+    }
+
+    private static void assertPackage(File generatedFile) {
+        Path generatedFilePath = Paths.get(generatedFile.getName());
+        assertTrue(generatedFilePath.startsWith(PACKAGE_NAME.toDirectory()
+                                                            .getPath()));
     }
 }

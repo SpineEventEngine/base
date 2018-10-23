@@ -47,13 +47,26 @@ public final class PackageName extends StringTypeValue {
     /**
      * Creates instance for the passed package name.
      *
-     * @param value package name, which cannot be empty or blank
+     * @param value
+     *         package name, which cannot be empty or blank
      * @return new instance
      */
     public static PackageName of(String value) {
         checkNotEmptyOrBlank(value);
         PackageName result = new PackageName(value);
         return result;
+    }
+
+    /**
+     * Creates an instance for the passed class.
+     *
+     * @param cls
+     *         the class to create the package for
+     * @return a new instance
+     */
+    public static PackageName of(Class cls) {
+        return of(cls.getPackage()
+                     .getName());
     }
 
     /**
