@@ -118,6 +118,25 @@ class TestsTest extends UtilityClassTest<Tests> {
     }
 
     @Nested
+    @DisplayName("Assert true")
+    class AssertTrue {
+        @Test
+        @DisplayName("when true")
+        void onTrue() {
+            Tests.assertTrue(true);
+        }
+
+        @Test
+        @DisplayName("fail when false")
+        void whenFalse() {
+            assertThrows(
+                    AssertionError.class,
+                    () -> Tests.assertTrue(false)
+            );
+        }
+    }
+
+    @Nested
     @DisplayName("Assert matches mask")
     class AssertMatchesMask {
 
