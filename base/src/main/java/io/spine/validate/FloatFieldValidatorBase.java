@@ -24,8 +24,6 @@ import com.google.common.collect.ImmutableList;
 
 /**
  * A base for floating point number field validators.
- *
- * @author Alexander Litus
  */
 abstract class FloatFieldValidatorBase<V extends Number & Comparable<V>>
          extends NumberFieldValidator<V> {
