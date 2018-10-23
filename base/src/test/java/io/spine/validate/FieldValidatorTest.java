@@ -35,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * Tests {@link io.spine.validate.FieldValidator}.
  */
-public abstract class FieldValidatorShould<V> {
+public abstract class FieldValidatorTest<V> {
 
     /**
      * Creates a {@link io.spine.validate.FieldValidator} for a repeated required field, which child

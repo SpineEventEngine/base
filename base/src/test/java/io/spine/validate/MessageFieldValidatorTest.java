@@ -34,7 +34,7 @@ import java.util.Collections;
 import java.util.List;
 
 @DisplayName("MessageFieldValidator should")
-public class MessageFieldValidatorTest extends FieldValidatorShould<Message> {
+public class MessageFieldValidatorTest extends FieldValidatorTest<Message> {
 
     private static final FieldDescriptor UNCHECKED_FIELD_DESC =
             MessageWithRepeatedUnchekedMessageField.getDescriptor()

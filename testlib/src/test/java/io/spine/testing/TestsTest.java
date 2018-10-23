@@ -45,9 +45,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("Tests utility class should")
-class TestsShould extends UtilityClassTest<Tests> {
+class TestsTest extends UtilityClassTest<Tests> {
 
-    TestsShould() {
+    TestsTest() {
         super(Tests.class);
     }
 
@@ -113,25 +113,6 @@ class TestsShould extends UtilityClassTest<Tests> {
             assertThrows(
                     AssertionError.class,
                     () -> Tests.assertEquals(true, false)
-            );
-        }
-    }
-
-    @Nested
-    @DisplayName("Assert true")
-    class AssertTrue {
-        @Test
-        @DisplayName("when true")
-        void onTrue() {
-            Tests.assertTrue(true);
-        }
-
-        @Test
-        @DisplayName("fail when false")
-        void whenFalse() {
-            assertThrows(
-                    AssertionError.class,
-                    () -> Tests.assertTrue(false)
             );
         }
     }

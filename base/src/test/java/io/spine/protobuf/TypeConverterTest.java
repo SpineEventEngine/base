@@ -35,11 +35,11 @@ import com.google.protobuf.Message;
 import com.google.protobuf.StringValue;
 import com.google.protobuf.UInt32Value;
 import com.google.protobuf.UInt64Value;
-import io.spine.test.command.TestCommand;
 import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static io.spine.base.Identifier.newUuid;
 import static io.spine.protobuf.given.TypeConverterTestEnv.TaskStatus.SUCCESS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -59,9 +59,7 @@ class TypeConverterTest extends UtilityClassTest<TypeConverter> {
     @Test
     @DisplayName("map arbitrary message to itself")
     void map_arbitrary_message_to_itself() {
-        Message message = TestCommand.newBuilder()
-                                     .setValue("my-command-message")
-                                     .build();
+        Message message = StringValue.of(newUuid());
         checkMapping(message, message);
     }
 

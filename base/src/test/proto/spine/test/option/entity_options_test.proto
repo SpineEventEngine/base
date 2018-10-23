@@ -19,19 +19,36 @@
 //
 syntax = "proto3";
 
-package spine.test.commands;
-
-//
-// Defines types for `FieldValidatorShould` test suite. Hence the funny file name.
-//
+package spine.test.options;
 
 import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
-option java_package="io.spine.base.given";
+option java_package="io.spine.test.options";
 option java_multiple_files = true;
-option java_outer_classname = "GivenCommandsProto";
+option java_outer_classname = "EntityOptionsTestProto";
 
-message CommandFromCommands {
-    string value = 1;
+
+message FullAccessAggregate {
+    option (entity).kind = AGGREGATE;
+    // Do not specify visibility, assuming FULL.
+
+    uint64 id = 1;
+    string name = 2;
+}
+
+message SubscribableAggregate {
+    option (entity).kind = AGGREGATE;
+    option (entity).visibility = SUBSCRIBE;
+
+    uint64 id = 1;
+    string description = 2;
+}
+
+message HiddenAggregate {
+    option (entity).kind = AGGREGATE;
+    option (entity).visibility = NONE;
+
+    string uuid = 1;
+    string secret = 2;
 }

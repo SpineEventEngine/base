@@ -17,29 +17,29 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
-
 syntax = "proto3";
 
-package spine.test.validate.msg;
+package spine.test.types;
 
 import "spine/options.proto";
+
 option (type_url_prefix) = "type.spine.io";
-
+option java_package="io.spine.test.types";
 option java_multiple_files = true;
-option java_outer_classname = "MessageDeclarationsShouldProto";
-option java_package = "io.spine.test.compiler.message";
 
-
-// The test definitions for the `MessageDeclarations` tests.
+// The types declared below are used to test the `KnownTypes#getTypesFromPackage`.
 //
-// Use in `MessageDeclarationsShould` only.
+// See `KnownTypesTest` for the unit test code.
+//
+message KnownTaskId {
+    string value = 1;
+}
 
-// A message to test recursive search among nested types.
-message Top {
+message KnownTaskName {
+    string value = 1;
+}
 
-    message NestedForTop {
-
-        message NestedForNested {
-        }
-    }
+message KnownTask {
+    KnownTaskId id = 1;
+    KnownTaskName name = 2;
 }

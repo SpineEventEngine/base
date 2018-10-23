@@ -19,20 +19,19 @@
 //
 syntax = "proto3";
 
-package spine.test.protobuf;
+package spine.test.commands;
+
+//
+// Defines types for `FieldValidatorTest` test suite. Hence the funny file name.
+//
 
 import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
-option java_package="io.spine.test.protobuf";
+option java_package="io.spine.base.given";
 option java_multiple_files = true;
-option java_outer_classname = "AnyPackerShouldProto";
+option java_outer_classname = "GivenCommandsProto";
 
-import "google/protobuf/wrappers.proto";
-
-
-// Only for usage in `AnyPackerShould` class.
-
-message MessageToPack {
-    google.protobuf.StringValue value = 1;
+message CommandFromCommands {
+    string value = 1;
 }

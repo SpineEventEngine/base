@@ -32,7 +32,7 @@ import java.util.Collections;
 import java.util.List;
 
 @DisplayName("StringFieldValidator should")
-public class StringFieldValidatorTest extends FieldValidatorShould<String> {
+public class StringFieldValidatorTest extends FieldValidatorTest<String> {
 
     private static final FieldDescriptor UNCHECKED_FIELD_DESC =
             MessageWithRepeatedUnchekedStringField.getDescriptor()
