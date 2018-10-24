@@ -19,8 +19,6 @@
  */
 group 'io.spine.tools'
 
-apply plugin: 'java-gradle-plugin'
-
 dependencies {
     implementation deps.build.guava
 
@@ -28,6 +26,7 @@ dependencies {
     implementation project(':plugin-base')
 
     testImplementation project(':plugin-testlib')
+    testImplementation gradleTestKit()
 }
 
 test.dependsOn(publishToMavenLocal,
