@@ -217,7 +217,7 @@ class IdentifierTest {
         @DisplayName("wrapped Integer")
         void ofWrappedInteger() {
             Integer value = 1024;
-            Int32Value id = toMessage(value);
+            Int32Value id = Int32Value.of(value);
             String expected = value.toString();
 
             String actual = Identifier.toString(id);
@@ -229,7 +229,7 @@ class IdentifierTest {
         @DisplayName("wrapped Long")
         void ofWrappedLong() {
             Long value = 100500L;
-            Int64Value id = toMessage(value);
+            Int64Value id = Int64Value.of(value);
             String expected = value.toString();
 
             String actual = Identifier.toString(id);
@@ -243,12 +243,10 @@ class IdentifierTest {
             assertEquals(TEST_ID, Identifier.toString(TEST_ID));
         }
 
-
         @Test
         @DisplayName("wrapped String")
         void ofWrappedString() {
-
-            StringValue id = toMessage(TEST_ID);
+            StringValue id = StringValue.of(TEST_ID);
 
             String result = Identifier.toString(id);
 
@@ -258,7 +256,7 @@ class IdentifierTest {
         @Test
         @DisplayName("Message with string field")
         void ofMessage() {
-            StringValue id = toMessage(TEST_ID);
+            StringValue id = StringValue.of(TEST_ID);
 
             String result = Identifier.toString(id);
 
@@ -268,7 +266,7 @@ class IdentifierTest {
         @Test
         @DisplayName("Message with nested Message")
         void ofNestedMessage() {
-            StringValue value = toMessage(TEST_ID);
+            StringValue value = StringValue.of(TEST_ID);
             NestedMessageId idToConvert = NestedMessageId
                     .newBuilder()
                     .setId(value)
@@ -282,7 +280,7 @@ class IdentifierTest {
         @Test
         @DisplayName("Any")
         void ofAny() {
-            StringValue messageToWrap = toMessage(TEST_ID);
+            StringValue messageToWrap = StringValue.of(TEST_ID);
             Any any = AnyPacker.pack(messageToWrap);
 
             String result = Identifier.toString(any);
@@ -298,7 +296,7 @@ class IdentifierTest {
         String outerString = "outer_string";
         Integer number = 256;
 
-        StringValue nestedMessageString = toMessage(nestedString);
+        StringValue nestedMessageString = StringValue.of(nestedString);
         SeveralFieldsId idToConvert = SeveralFieldsId.newBuilder()
                                                      .setString(outerString)
                                                      .setNumber(number)
@@ -364,7 +362,7 @@ class IdentifierTest {
         void clazz() {
             assertThrows(
                     IllegalArgumentException.class,
-                    () ->  Identifier.getType(Float.class)
+                    () -> Identifier.getType(Float.class)
             );
         }
     }
