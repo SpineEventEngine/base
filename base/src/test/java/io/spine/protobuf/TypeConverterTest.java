@@ -72,71 +72,57 @@ class TypeConverterTest extends UtilityClassTest<TypeConverter> {
         @Test
         @DisplayName("Int32Value to int")
         void map_Int32Value_to_int() {
-            int rowValue = 42;
-            Message value = Int32Value.newBuilder()
-                                      .setValue(rowValue)
-                                      .build();
-            checkMapping(rowValue, value);
+            int rawValue = 42;
+            Message value = Int32Value.of(rawValue);
+            checkMapping(rawValue, value);
         }
 
         @Test
         @DisplayName("Int64Value to int")
         void map_Int64Value_to_long() {
-            long rowValue = 42;
-            Message value = Int64Value.newBuilder()
-                                      .setValue(rowValue)
-                                      .build();
-            checkMapping(rowValue, value);
+            long rawValue = 42;
+            Message value = Int64Value.of(rawValue);
+            checkMapping(rawValue, value);
         }
 
         @Test
         @DisplayName("FloatValue to float")
         void map_FloatValue_to_float() {
-            float rowValue = 42.0f;
-            Message value = FloatValue.newBuilder()
-                                      .setValue(rowValue)
-                                      .build();
-            checkMapping(rowValue, value);
+            float rawValue = 42.0f;
+            Message value = FloatValue.of(rawValue);
+            checkMapping(rawValue, value);
         }
 
         @Test
         @DisplayName("DoubleValue to double")
         void map_DoubleValue_to_double() {
-            double rowValue = 42.0;
-            Message value = DoubleValue.newBuilder()
-                                       .setValue(rowValue)
-                                       .build();
-            checkMapping(rowValue, value);
+            double rawValue = 42.0;
+            Message value = DoubleValue.of(rawValue);
+            checkMapping(rawValue, value);
         }
 
         @Test
         @DisplayName("BoolValue to boolean")
         void map_BoolValue_to_boolean() {
-            boolean rowValue = true;
-            Message value = BoolValue.newBuilder()
-                                     .setValue(rowValue)
-                                     .build();
-            checkMapping(rowValue, value);
+            boolean rawValue = true;
+            Message value = BoolValue.of(rawValue);
+            checkMapping(rawValue, value);
         }
 
         @Test
         @DisplayName("StringValue to String")
         void map_StringValue_to_String() {
-            String rowValue = "Hello";
-            Message value = StringValue.newBuilder()
-                                       .setValue(rowValue)
-                                       .build();
-            checkMapping(rowValue, value);
+            String rawValue = "Hello";
+            Message value = StringValue.of(rawValue);
+            checkMapping(rawValue, value);
         }
 
         @Test
         @DisplayName("BytesValue to ByteString")
         void map_BytesValue_to_ByteString() {
-            ByteString rowValue = ByteString.copyFrom("Hello!", Charsets.UTF_8);
-            Message value = BytesValue.newBuilder()
-                                      .setValue(rowValue)
-                                      .build();
-            checkMapping(rowValue, value);
+            ByteString rawValue = ByteString.copyFrom("Hello!", Charsets.UTF_8);
+            Message value = BytesValue.of(rawValue);
+            checkMapping(rawValue, value);
         }
 
         @Test
@@ -152,9 +138,7 @@ class TypeConverterTest extends UtilityClassTest<TypeConverter> {
         @DisplayName("UInt32 to int")
         void map_uint32_to_int() {
             int value = 42;
-            UInt32Value wrapped = UInt32Value.newBuilder()
-                                             .setValue(value)
-                                             .build();
+            UInt32Value wrapped = UInt32Value.of(value);
             Any packed = AnyPacker.pack(wrapped);
             int mapped = TypeConverter.toObject(packed, Integer.class);
             assertEquals(value, mapped);
@@ -164,9 +148,7 @@ class TypeConverterTest extends UtilityClassTest<TypeConverter> {
         @DisplayName("UInt64 to int")
         void map_uint64_to_long() {
             long value = 42L;
-            UInt64Value wrapped = UInt64Value.newBuilder()
-                                             .setValue(value)
-                                             .build();
+            UInt64Value wrapped = UInt64Value.of(value);
             Any packed = AnyPacker.pack(wrapped);
             long mapped = TypeConverter.toObject(packed, Long.class);
             assertEquals(value, mapped);
