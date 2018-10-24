@@ -316,6 +316,7 @@ class IdentifierTest {
     @DisplayName(NOT_ACCEPT_NULLS)
     void nullCheck() {
         new NullPointerTester()
+                .setDefault(Any.class, AnyPacker.pack(StringValue.of(TEST_ID)))
                 .testAllPublicStaticMethods(Identifier.class);
     }
 
@@ -373,29 +374,52 @@ class IdentifierTest {
         @Test
         @DisplayName("the field name is not `uuid`")
         void nameIsInvalid() {
-            assertThrows(IllegalStateException.class, () -> Identifier.generate(StringValue.class));
+            assertThrows(
+                    IllegalStateException.class,
+                    () -> Identifier.generate(StringValue.class)
+            );
         }
 
         @Test
         @DisplayName("it contains more than one field")
         void moreThanOneField() {
-            assertThrows(IllegalStateException.class, () -> Identifier.generate(Any.class));
+            assertThrows(
+                    IllegalStateException.class,
+                    () -> Identifier.generate(Any.class)
+            );
         }
 
         @Test
         @DisplayName("the field is not string")
         void fieldNotString() {
-            assertThrows(IllegalStateException.class, () -> Identifier.generate(Int32Value.class));
+            assertThrows(
+                    IllegalStateException.class,
+                    () -> Identifier.generate(Int32Value.class)
+            );
         }
     }
 
-    @Test
-    @DisplayName("do not unpack empty Any")
-    void rejectUnpackingEmptyAny() {
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> Identifier.unpack(Any.getDefaultInstance())
-        );
+    @Nested
+    @DisplayName("unpack")
+    class Unpack {
+
+        @Test
+        @DisplayName("Any with StringValue and cast")
+        void anyWithStringValue() {
+            StringValue testIdMessage = StringValue.of(TEST_ID);
+            Any any = AnyPacker.pack(testIdMessage);
+            String unpackedId = Identifier.unpack(any, String.class);
+            assertEquals(testIdMessage.getValue(), unpackedId);
+        }
+
+        @Test
+        @DisplayName("and throw if Any is empty")
+        void rejectEmptyAny() {
+            assertThrows(
+                    IllegalArgumentException.class,
+                    () -> Identifier.unpack(Any.getDefaultInstance())
+            );
+        }
     }
 
     @Test

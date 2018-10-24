@@ -41,7 +41,6 @@ import java.util.UUID;
 import java.util.regex.Pattern;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
 import static com.google.protobuf.TextFormat.shortDebugString;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 import static io.spine.util.Exceptions.newIllegalStateException;
@@ -142,9 +141,12 @@ public final class Identifier<I> {
      *   <li>Email address as a couple of local-part and domain
      * </ul>
      *
-     * @param <I>     the type of the ID
-     * @param idClass the class of IDs
-     * @throws IllegalArgumentException if the class of IDs is not of supported type
+     * @param <I>
+     *         the type of the ID
+     * @param idClass
+     *         the class of IDs
+     * @throws IllegalArgumentException
+     *         if the class of IDs is not of supported type
      */
     public static <I> void checkSupported(Class<I> idClass) {
         checkNotNull(idClass);
@@ -166,10 +168,13 @@ public final class Identifier<I> {
      *   <li>For {@code Integer} — {@link Int32Value}
      * </ul>
      *
-     * @param id  the value to wrap
-     * @param <I> the type of the value
+     * @param id
+     *         the value to wrap
+     * @param <I>
+     *         the type of the value
      * @return instance of {@link Any} with the passed value
-     * @throws IllegalArgumentException if the passed value is not of the supported type
+     * @throws IllegalArgumentException
+     *         if the passed value is not of the supported type
      */
     public static <I> Any pack(I id) {
         checkNotNull(id);
@@ -189,28 +194,40 @@ public final class Identifier<I> {
      *   <li>unwrapped {@code Message} instance if its type is none of the above
      * </ul>
      *
-     * @apiNote This method assumes that the calling code knows the type of value packed into
-     *          {@code Any}. The generic parameter and the cast performed by the method allows
-     *          to avoid casting and suppressing {@code "unchecked"} warning at the place of the
-     *          call.
-     * @param any the ID value wrapped into {@code Any}
+     * @param any
+     *         the ID value wrapped into {@code Any}
      * @return unwrapped ID
      */
-    @SuppressWarnings("TypeParameterUnusedInFormals" /* See api note. */)
-    public static <I> I unpack(Any any) {
+    public static Object unpack(Any any) {
         checkNotNull(any);
         Message unpacked = AnyPacker.unpack(any);
 
         for (Type type : Type.values()) {
             if (type.matchMessage(unpacked)) {
-                // Expect the client to know the desired type.
-                // If the client fails to predict it in compile time, fail fast.
-                @SuppressWarnings("unchecked") I result = (I) type.fromMessage(unpacked);
+                Object result = type.fromMessage(unpacked);
                 return result;
             }
         }
 
         throw unsupported(unpacked);
+    }
+
+    /**
+     * Does the same as {@link #unpack(com.google.protobuf.Any)} and
+     * additionally casts the ID to the specified class.
+     *
+     * @param any
+     *         the ID value wrapped into {@code Any}
+     * @param idClass
+     *         the class of the packed ID
+     * @param <I>
+     *         the type of the packed ID
+     * @return unwrapped ID
+     */
+    public static <I> I unpack(Any any, Class<I> idClass) {
+        checkNotNull(idClass);
+        Object identifier = unpack(any);
+        return idClass.cast(identifier);
     }
 
     /**
@@ -246,17 +263,20 @@ public final class Identifier<I> {
     /**
      * Converts the passed ID value into the string representation.
      *
-     * @param id  the value to convert
-     * @param <I> the type of the ID
+     * @param id
+     *         the value to convert
+     * @param <I>
+     *         the type of the ID
      * @return <ul>
-     * <li>for classes implementing {@link Message} &mdash; a Json form;
-     * <li>for {@code String}, {@code Long}, {@code Integer} &mdash;
-     * the result of {@link Object#toString()};
-     * <li>for {@code null} ID &mdash; the {@link #NULL_ID};
-     * <li>if the result is empty or blank string &mdash; the {@link #EMPTY_ID}.
-     * </ul>
-     * @throws IllegalArgumentException if the passed type isn't one of the above or
-     *                                  the passed {@link Message} instance has no fields
+     *         <li>for classes implementing {@link Message} &mdash; a Json form;
+     *         <li>for {@code String}, {@code Long}, {@code Integer} &mdash;
+     *         the result of {@link Object#toString()};
+     *         <li>for {@code null} ID &mdash; the {@link #NULL_ID};
+     *         <li>if the result is empty or blank string &mdash; the {@link #EMPTY_ID}.
+     *         </ul>
+     * @throws IllegalArgumentException
+     *         if the passed type isn't one of the above or
+     *         the passed {@link Message} instance has no fields
      * @see StringifierRegistry
      */
     public static <I> String toString(@Nullable I id) {
@@ -276,7 +296,6 @@ public final class Identifier<I> {
         return result;
     }
 
-    @SuppressWarnings("unchecked") // OK to cast to String as output type of Stringifier.
     private static String idMessageToString(Message message) {
         checkNotNull(message);
         String result;
@@ -286,8 +305,8 @@ public final class Identifier<I> {
         java.lang.reflect.Type msgType = msgToken.getType();
         Optional<Stringifier<Object>> optional = registry.get(msgType);
         if (optional.isPresent()) {
-            Stringifier converter = optional.get();
-            result = (String) converter.convert(message);
+            Stringifier<Object> converter = optional.get();
+            result = converter.convert(message);
         } else {
             result = convert(message);
         }
