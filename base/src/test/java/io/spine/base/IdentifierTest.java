@@ -42,7 +42,6 @@ import static io.spine.base.Identifier.NULL_ID;
 import static io.spine.base.Identifier.newUuid;
 import static io.spine.protobuf.TypeConverter.toMessage;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
-import static io.spine.testing.TestValues.newUuidValue;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -388,13 +387,6 @@ class IdentifierTest {
         void fieldNotString() {
             assertThrows(IllegalStateException.class, () -> Identifier.generate(Int32Value.class));
         }
-    }
-
-    @Test
-    @DisplayName("unpack Any")
-    void unpackAny() {
-        StringValue id = newUuidValue();
-        assertEquals(id.getValue(), Identifier.toString(AnyPacker.pack(id)));
     }
 
     @Test
