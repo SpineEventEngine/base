@@ -20,13 +20,18 @@
 
 syntax = "proto3";
 
-package spine.test.code.js;
-
-import "google/protobuf/any.proto";
+package spine.test.code.proto;
 
 import "spine/options.proto";
 
+import "google/protobuf/any.proto";
+
 option (type_url_prefix) = "type.spine.io";
+option java_package = "io.spine.test.code.proto";
+option java_outer_classname = "FieldTypeTestProto";
+option java_multiple_files = true;
+
+// Declaration for use in `FieldTypesTest` only.
 
 message FieldContainer {
     string singular_field = 1;
@@ -39,8 +44,6 @@ message FieldContainer {
 }
 
 enum TaskType {
-    CREATE = 0;
+    TT_UNKNOWN = 0;
     READ = 1;
-    UPDATE = 2;
-    DELETE = 3;
 }

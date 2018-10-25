@@ -75,13 +75,8 @@ public final class FieldTypes {
      * @return the name of the map field
      */
     public static String getEntryNameFor(FieldDescriptorProto mapField) {
-        checkNotNull(mapField);
-
-        String jsonName = mapField.getJsonName();
-        char capitalizedFirstSymbol = Character.toUpperCase(jsonName.charAt(0));
-        String remainingPart = jsonName.substring(1);
-
-        return capitalizedFirstSymbol + remainingPart + ENTRY_SUFFIX;
+        FieldName fieldName = FieldName.of(mapField);
+        return fieldName.toCamelCase() + ENTRY_SUFFIX;
     }
 
     /**

@@ -22,11 +22,57 @@ package io.spine.code.proto;
 
 import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+
+import static io.spine.code.proto.given.Given.enumField;
+import static io.spine.code.proto.given.Given.mapField;
+import static io.spine.code.proto.given.Given.messageField;
+import static io.spine.code.proto.given.Given.primitiveField;
+import static io.spine.code.proto.given.Given.repeatedField;
+import static io.spine.code.proto.given.Given.singularField;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("FieldTypes utility class should")
 class FieldTypesTest extends UtilityClassTest<FieldTypes> {
 
     FieldTypesTest() {
         super(FieldTypes.class);
+    }
+
+    @Nested
+    @DisplayName("check if field")
+    class CheckIfField {
+
+        @Test
+        @DisplayName("is message")
+        void isMessage() {
+            assertTrue(FieldTypes.isMessage(messageField()));
+            assertFalse(FieldTypes.isMessage(primitiveField()));
+            assertFalse(FieldTypes.isMessage(enumField()));
+        }
+
+        @Test
+        @DisplayName("is repeated")
+        void isRepeated() {
+            assertTrue(FieldTypes.isRepeated(repeatedField()));
+            assertTrue(FieldTypes.isRepeated(mapField()));
+            assertFalse(FieldTypes.isRepeated(singularField()));
+        }
+
+        @Test
+        @DisplayName("is map")
+        void isMap() {
+            assertTrue(FieldTypes.isMap(mapField()));
+            assertFalse(FieldTypes.isMap(singularField()));
+        }
+    }
+
+    @Test
+    @DisplayName("obtain a map entry name")
+    void obtainEntryName() {
+        assertEquals("MapFieldEntry", FieldTypes.getEntryNameFor(mapField()));
     }
 }
