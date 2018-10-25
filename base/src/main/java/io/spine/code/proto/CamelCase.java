@@ -64,7 +64,7 @@ public final class CamelCase {
      *         Protoc Camel Case</a>
      */
     @SuppressWarnings("MethodWithMultipleLoops" /* Keep specific logic inside one method. */ )
-    public static String protocStyle(UnderscoredName name) {
+    public static String protocStyled(UnderscoredName name) {
         Iterator<String> iterator = name.words()
                                         .iterator();
         StringBuilder builder = new StringBuilder(name.value()

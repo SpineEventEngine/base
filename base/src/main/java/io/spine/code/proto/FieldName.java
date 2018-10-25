@@ -77,7 +77,7 @@ public final class FieldName extends AbstractFieldName implements UnderscoredNam
      * Obtains the field name in {@code CamelCase}.
      */
     public String toCamelCase() {
-        String result = CamelCase.protocStyle(this);
+        String result = CamelCase.protocStyled(this);
         return result;
     }
 
