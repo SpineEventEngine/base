@@ -24,6 +24,7 @@ import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Label.LABEL_REPEATED;
+import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type.TYPE_MESSAGE;
 
 /**
  * Utility class for working with types of the Protobuf fields.
@@ -56,12 +57,21 @@ public final class FieldTypes {
     /**
      * Checks the Protobuf field and determines it is map field or not.
      *
+     * <p>If a field is a map it is repeated message with the specific
+     * {@linkplain #getEntryNameFor(FieldDescriptorProto) type}.
+     *
      * @param field
      *         the descriptor of the field to check
      * @return {@code true} if field is map, {@code false} otherwise
      */
     public static boolean isMap(FieldDescriptorProto field) {
         checkNotNull(field);
+        if (field.getLabel() != LABEL_REPEATED) {
+            return false;
+        }
+        if (field.getType() != TYPE_MESSAGE) {
+            return false;
+        }
         boolean result = field.getTypeName()
                               .endsWith('.' + getEntryNameFor(field));
         return result;
@@ -92,7 +102,7 @@ public final class FieldTypes {
      */
     public static boolean isMessage(FieldDescriptorProto fieldDescriptor) {
         checkNotNull(fieldDescriptor);
-        return fieldDescriptor.getType() == FieldDescriptorProto.Type.TYPE_MESSAGE;
+        return fieldDescriptor.getType() == TYPE_MESSAGE;
     }
 
     /**

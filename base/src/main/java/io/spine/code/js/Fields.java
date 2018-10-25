@@ -21,12 +21,11 @@
 package io.spine.code.js;
 
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
-import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
+import io.spine.code.proto.FieldTypes;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Label.LABEL_REPEATED;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.ENUM;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.MESSAGE;
 
@@ -37,11 +36,6 @@ import static com.google.protobuf.Descriptors.FieldDescriptor.Type.MESSAGE;
  */
 @SuppressWarnings("DuplicateStringLiteralInspection") // Duplication with unrelated modules.
 public final class Fields {
-
-    /**
-     * The suffix of the class representing the {@code message} type of the {@code map} field.
-     */
-    private static final String ENTRY_SUFFIX = "Entry";
 
     /**
      * The field of the {@code map} message type which represents the {@code map} key.
@@ -79,8 +73,8 @@ public final class Fields {
      */
     public static boolean isEnum(FieldDescriptor field) {
         checkNotNull(field);
-        boolean isMessage = field.getType() == ENUM;
-        return isMessage;
+        boolean isEnum = field.getType() == ENUM;
+        return isEnum;
     }
 
     /**
@@ -96,8 +90,7 @@ public final class Fields {
     public static boolean isRepeated(FieldDescriptor field) {
         checkNotNull(field);
         FieldDescriptorProto proto = field.toProto();
-        boolean isRepeated = proto.getLabel() == LABEL_REPEATED && !isMap(field);
-        return isRepeated;
+        return FieldTypes.isRepeated(proto);
     }
 
     /**
@@ -110,17 +103,7 @@ public final class Fields {
     public static boolean isMap(FieldDescriptor field) {
         checkNotNull(field);
         FieldDescriptorProto proto = field.toProto();
-        if (proto.getLabel() != LABEL_REPEATED) {
-            return false;
-        }
-        if (field.getType() != MESSAGE) {
-            return false;
-        }
-        Descriptor fieldType = field.getMessageType();
-        String mapTypeName = FieldName.from(field) + ENTRY_SUFFIX;
-        boolean isMap = fieldType.getName()
-                                 .equals(mapTypeName);
-        return isMap;
+        return FieldTypes.isMap(proto);
     }
 
     /**
