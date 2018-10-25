@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.compiler.field.type;
+package io.spine.code.proto;
 
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 
@@ -29,15 +29,18 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public final class FieldTypes {
 
+    @SuppressWarnings("DuplicateStringLiteralInspection" /* The same string has different semantics. */)
     private static final String ENTRY_SUFFIX = "Entry";
 
-    /** Prevents instantiation of this utility class .*/
-    private FieldTypes() {}
+    /** Prevents instantiation of this utility class . */
+    private FieldTypes() {
+    }
 
     /**
      * Checks the Protobuf field and determines it is repeated field or not.
      *
-     * @param field the descriptor of the field to check
+     * @param field
+     *         the descriptor of the field to check
      * @return {@code true} if field is repeated, {@code false} otherwise
      */
     public static boolean isRepeated(FieldDescriptorProto field) {
@@ -49,7 +52,8 @@ public final class FieldTypes {
     /**
      * Checks the Protobuf field and determines it is map field or not.
      *
-     * @param field the descriptor of the field to check
+     * @param field
+     *         the descriptor of the field to check
      * @return {@code true} if field is map, {@code false} otherwise
      */
     public static boolean isMap(FieldDescriptorProto field) {
@@ -66,12 +70,10 @@ public final class FieldTypes {
      * Every map field has corresponding entry type.
      * For 'word_dictionary' it would be 'WordDictionaryEntry'
      *
-     * @param mapField the field to construct entry name
+     * @param mapField
+     *         the field to construct entry name
      * @return the name of the map field
      */
-    @SuppressWarnings("DuplicateStringLiteralInspection")
-    // It cannot be used as the constant across the project.
-    // Although it has the equivalent literal they have the different meaning.
     public static String getEntryNameFor(FieldDescriptorProto mapField) {
         checkNotNull(mapField);
 
@@ -85,7 +87,8 @@ public final class FieldTypes {
     /**
      * Checks the Protobuf field and determines it is message type or not.
      *
-     * @param fieldDescriptor the descriptor of the field to check
+     * @param fieldDescriptor
+     *         the descriptor of the field to check
      * @return {@code true} if it is message, {@code false} otherwise
      */
     public static boolean isMessage(FieldDescriptorProto fieldDescriptor) {
@@ -98,7 +101,8 @@ public final class FieldTypes {
      *
      * <p>If there is no leading dots, returns the unmodified parameter.
      *
-     * @param fieldDescriptor the field descriptor whose type name to modify
+     * @param fieldDescriptor
+     *         the field descriptor whose type name to modify
      * @return the type name without leading dot
      */
     public static String trimTypeName(FieldDescriptorProto fieldDescriptor) {
