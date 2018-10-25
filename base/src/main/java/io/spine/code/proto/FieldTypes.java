@@ -23,6 +23,7 @@ package io.spine.code.proto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Label.LABEL_REPEATED;
 
 /**
  * Utility class for working with types of the Protobuf fields.
@@ -39,13 +40,16 @@ public final class FieldTypes {
     /**
      * Checks the Protobuf field and determines it is repeated field or not.
      *
+     * <p>Although {@code map} fields technically count as {@code repeated}, this method will
+     * return {@code false} for them.
+     *
      * @param field
      *         the descriptor of the field to check
      * @return {@code true} if field is repeated, {@code false} otherwise
      */
     public static boolean isRepeated(FieldDescriptorProto field) {
         checkNotNull(field);
-        boolean result = field.getLabel() == FieldDescriptorProto.Label.LABEL_REPEATED;
+        boolean result = field.getLabel() == LABEL_REPEATED && !isMap(field);
         return result;
     }
 

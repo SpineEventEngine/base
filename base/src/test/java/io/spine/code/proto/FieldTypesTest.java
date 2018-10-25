@@ -58,7 +58,7 @@ class FieldTypesTest extends UtilityClassTest<FieldTypes> {
         @DisplayName("is repeated")
         void isRepeated() {
             assertTrue(FieldTypes.isRepeated(repeatedField()));
-            assertTrue(FieldTypes.isRepeated(mapField()));
+            assertFalse(FieldTypes.isRepeated(mapField()));
             assertFalse(FieldTypes.isRepeated(singularField()));
         }
 
