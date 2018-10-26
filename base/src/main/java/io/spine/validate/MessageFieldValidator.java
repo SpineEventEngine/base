@@ -53,8 +53,7 @@ class MessageFieldValidator extends FieldValidator<Message> {
      * @param strict
      *         if {@code true} the validator would assume that the field
      */
-    MessageFieldValidator(FieldValue fieldValue,
-                          boolean strict) {
+    MessageFieldValidator(FieldValue fieldValue, boolean strict) {
         super(fieldValue, strict);
         this.timeConstraint = optionValue(OptionsProto.when);
     }

@@ -99,8 +99,31 @@ final class FieldDeclaration {
         return isFirstField() && isCommandsFile();
     }
 
-    boolean isNotRepeatedOrMap() {
-        return !isRepeated() && !isMap();
+    /**
+     * Determines whether the declaration is a scalar type.
+     *
+     * @return {@code true} if the declaration neither map nor repeated, {@code false} otherwise
+     */
+    boolean isScalar() {
+        return !isMap() && !isRepeated();
+    }
+
+    /**
+     * Determines whether the declaration is not a scalar type.
+     *
+     * @return {@code true} if the declaration either map or repeated, {@code false} otherwise
+     */
+    boolean isNotScalar() {
+        return isMap() || isRepeated();
+    }
+
+    FieldDescriptor.JavaType javaType() {
+        if (!isMap()) {
+            return field.getJavaType();
+        }
+        FieldDescriptor.JavaType valuesType = FieldTypes2.valueDescriptor(field)
+                                                         .getJavaType();
+        return valuesType;
     }
 
     boolean isRepeated() {
@@ -109,6 +132,10 @@ final class FieldDeclaration {
 
     boolean isMap() {
         return FieldTypes2.isMap(field);
+    }
+
+    FieldContext context() {
+        return context;
     }
 
     private boolean isEntityField() {

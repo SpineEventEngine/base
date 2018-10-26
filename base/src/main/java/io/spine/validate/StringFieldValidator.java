@@ -41,8 +41,7 @@ class StringFieldValidator extends FieldValidator<String> {
      * @param strict
      *         if {@code true} the validator would assume that the field
      */
-    StringFieldValidator(FieldValue fieldValue,
-                         boolean strict) {
+    StringFieldValidator(FieldValue fieldValue, boolean strict) {
         super(fieldValue, strict);
         this.patternOption = optionValue(OptionsProto.pattern);
         this.regex = patternOption.getRegex();

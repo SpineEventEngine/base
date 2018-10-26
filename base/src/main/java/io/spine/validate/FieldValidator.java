@@ -20,7 +20,6 @@
 
 package io.spine.validate;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.FieldOptions;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
@@ -52,7 +51,6 @@ abstract class FieldValidator<V> implements Logging {
 
     private final FieldDeclaration field;
     private final ImmutableList<V> values;
-    private final FieldContext fieldContext;
 
     private final List<ConstraintViolation> violations = newLinkedList();
 
@@ -75,11 +73,9 @@ abstract class FieldValidator<V> implements Logging {
      * @param strict
      *         if {@code true} the validator would assume that the field
      */
-    protected FieldValidator(FieldValue value,
-                             boolean strict) {
-        this.fieldContext = value.context();
-        this.values = value.asList();
+    protected FieldValidator(FieldValue value, boolean strict) {
         this.field = value.declaration();
+        this.values = value.asList();
         this.strict = strict;
         this.required = optionValue(OptionsProto.required);
         this.ifMissingOption = optionValue(OptionsProto.ifMissing);
@@ -97,7 +93,7 @@ abstract class FieldValidator<V> implements Logging {
     boolean fieldValueNotSet() {
         boolean valueNotSet =
                 values.isEmpty()
-                        || (isNotRepeatedOrMap() && isNotSet(values.get(0)));
+                        || (field.isScalar() && isNotSet(values.get(0)));
         return valueNotSet;
     }
 
@@ -272,7 +268,7 @@ abstract class FieldValidator<V> implements Logging {
     }
 
     private boolean shouldValidate() {
-        return isNotRepeatedOrMap() || validate;
+        return field.isScalar() || validate;
     }
 
     final IfInvalidOption ifInvalid() {
@@ -306,29 +302,22 @@ abstract class FieldValidator<V> implements Logging {
         return field.isEntityId() && !notRequired;
     }
 
-    private boolean isNotRepeatedOrMap() {
-        return field.isNotRepeatedOrMap();
-    }
-
-    /**
-     * This test-only method is used from the module {@code smoke-tests}.
-     */
-    @VisibleForTesting
-    boolean isRepeatedOrMap() {
-        return !isNotRepeatedOrMap();
-    }
-
     /**
      * Obtains field context for the validator.
      *
      * @return the field context
      */
     protected FieldContext getFieldContext() {
-        return fieldContext;
+        return field.context();
     }
 
     /** Returns a path to the current field. */
     protected FieldPath getFieldPath() {
-        return fieldContext.getFieldPath();
+        return getFieldContext().getFieldPath();
+    }
+
+    /** Returns the declaration of the validated field. */
+    protected FieldDeclaration field() {
+        return field;
     }
 }

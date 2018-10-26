@@ -20,7 +20,6 @@
 
 package io.spine.validate;
 
-import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -72,7 +71,7 @@ class FieldValidatorFactory {
             case ENUM:
                 return new EnumFieldValidator(fieldValue);
             default:
-                throw fieldTypeIsNotSupported(fieldValue.descriptor());
+                throw fieldTypeIsNotSupported(fieldType);
         }
     }
 
@@ -84,9 +83,8 @@ class FieldValidatorFactory {
         return createForLinear(fieldValue, fieldValue.javaType(), true);
     }
 
-    private static IllegalArgumentException fieldTypeIsNotSupported(FieldDescriptor descriptor) {
-        String msg = format("The field type is not supported for validation: %s",
-                            descriptor.getType());
+    private static IllegalArgumentException fieldTypeIsNotSupported(JavaType type) {
+        String msg = format("The field type is not supported for validation: %s", type);
         throw new IllegalArgumentException(msg);
     }
 }

@@ -21,10 +21,8 @@
 package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
-import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 import com.google.protobuf.ProtocolMessageEnum;
-import io.spine.code.proto.FieldTypes2;
 
 import java.util.List;
 import java.util.Map;
@@ -46,15 +44,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
 class FieldValue {
 
     private final Object value;
-    private final FieldDescriptor descriptor;
-    private final FieldContext context;
     private final FieldDeclaration declaration;
 
-    private FieldValue(Object value, FieldContext context) {
+    private FieldValue(Object value, FieldDeclaration declaration) {
         this.value = value;
-        this.descriptor = context.getTarget();
-        this.context = context;
-        this.declaration = new FieldDeclaration(context);
+        this.declaration = declaration;
     }
 
     /**
@@ -72,7 +66,8 @@ class FieldValue {
         Object value = rawValue instanceof ProtocolMessageEnum
                        ? ((ProtocolMessageEnum) rawValue).getValueDescriptor()
                        : rawValue;
-        return new FieldValue(value, context);
+        FieldDeclaration declaration = new FieldDeclaration(context);
+        return new FieldValue(value, declaration);
     }
 
     /**
@@ -83,24 +78,12 @@ class FieldValue {
      * @return {@link JavaType} of {@linkplain #asList() list} elements
      */
     JavaType javaType() {
-        if (!isMap()) {
-            return descriptor().getJavaType();
-        }
-        JavaType valuesType = FieldTypes2.valueDescriptor(descriptor())
-                                         .getJavaType();
-        return valuesType;
+        return declaration.javaType();
     }
 
-    FieldDescriptor descriptor() {
-        return descriptor;
-    }
-
+    /** Returns the declaration of the value. */
     FieldDeclaration declaration() {
         return declaration;
-    }
-
-    FieldContext context() {
-        return context;
     }
 
     /**
@@ -122,14 +105,5 @@ class FieldValue {
             T result = (T) value;
             return ImmutableList.of(result);
         }
-    }
-
-    /**
-     * Determines whether the field is a {@code map<k, v>}.
-     *
-     * @return {@code true} if the value is a map, {@code false} otherwise
-     */
-    private boolean isMap() {
-        return FieldTypes2.isMap(descriptor);
     }
 }
