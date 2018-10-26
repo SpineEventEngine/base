@@ -80,7 +80,7 @@ public class StringFieldValidatorTest extends FieldValidatorTest<String> {
 
     @Override
     protected FieldValidator<String> emptyMapFieldValidator() {
-        return getValidator(MAP_FIELD_DESC, Collections.emptyList());
+        return getValidator(MAP_FIELD_DESC, Collections.emptyMap());
     }
 
     @Override
@@ -94,9 +94,9 @@ public class StringFieldValidatorTest extends FieldValidatorTest<String> {
     }
 
     private static StringFieldValidator getValidator(FieldDescriptor field,
-                                                     List<? extends String> values) {
+                                                     Object rawValue) {
         FieldContext fieldContext = FieldContext.create(field);
-        return new StringFieldValidator(FieldValue.of(values, fieldContext),
+        return new StringFieldValidator(FieldValue.of(rawValue, fieldContext),
                                         false);
     }
 }

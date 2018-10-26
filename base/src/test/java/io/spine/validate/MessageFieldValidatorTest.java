@@ -82,7 +82,7 @@ public class MessageFieldValidatorTest extends FieldValidatorTest<Message> {
 
     @Override
     protected FieldValidator<Message> emptyMapFieldValidator() {
-        return getValidator(MAP_FIELD_DESC, Collections.emptyList());
+        return getValidator(MAP_FIELD_DESC, Collections.emptyMap());
     }
 
     @Override
@@ -98,8 +98,8 @@ public class MessageFieldValidatorTest extends FieldValidatorTest<Message> {
     }
 
     private static MessageFieldValidator getValidator(FieldDescriptor field,
-                                                      List<? extends Message> values) {
+                                                      Object rawValue) {
         FieldContext context = FieldContext.create(field);
-        return new MessageFieldValidator(FieldValue.of(values, context), false);
+        return new MessageFieldValidator(FieldValue.of(rawValue, context), false);
     }
 }
