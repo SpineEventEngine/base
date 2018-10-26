@@ -18,11 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.js;
+package io.spine.code.proto;
 
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.code.proto.FieldTypes;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -31,11 +30,9 @@ import static com.google.protobuf.Descriptors.FieldDescriptor.Type.MESSAGE;
 
 /**
  * A utility to work with Protobuf {@linkplain FieldDescriptor fields}.
- *
- * @author Dmytro Kuzmin
  */
 @SuppressWarnings("DuplicateStringLiteralInspection") // Duplication with unrelated modules.
-public final class Fields {
+public final class FieldTypes2 {
 
     /**
      * The field of the {@code map} message type which represents the {@code map} key.
@@ -48,7 +45,7 @@ public final class Fields {
     private static final String MAP_ENTRY_VALUE = "value";
 
     /** Prevents instantiation of this utility class. */
-    private Fields() {
+    private FieldTypes2() {
     }
 
     /**

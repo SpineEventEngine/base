@@ -27,7 +27,7 @@ import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Label.LA
 import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type.TYPE_MESSAGE;
 
 /**
- * Utility class for working with types of the Protobuf fields.
+ * A utility to work with Protobuf {@linkplain FieldDescriptorProto fields}.
  */
 public final class FieldTypes {
 

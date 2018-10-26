@@ -49,30 +49,30 @@ class FieldTypesTest extends UtilityClassTest<FieldTypes> {
         @Test
         @DisplayName("is message")
         void isMessage() {
-            assertTrue(FieldTypes.isMessage(messageField()));
-            assertFalse(FieldTypes.isMessage(primitiveField()));
-            assertFalse(FieldTypes.isMessage(enumField()));
+            assertTrue(FieldTypes.isMessage(messageField().toProto()));
+            assertFalse(FieldTypes.isMessage(primitiveField().toProto()));
+            assertFalse(FieldTypes.isMessage(enumField().toProto()));
         }
 
         @Test
         @DisplayName("is repeated")
         void isRepeated() {
-            assertTrue(FieldTypes.isRepeated(repeatedField()));
-            assertFalse(FieldTypes.isRepeated(mapField()));
-            assertFalse(FieldTypes.isRepeated(singularField()));
+            assertTrue(FieldTypes.isRepeated(repeatedField().toProto()));
+            assertFalse(FieldTypes.isRepeated(mapField().toProto()));
+            assertFalse(FieldTypes.isRepeated(singularField().toProto()));
         }
 
         @Test
         @DisplayName("is map")
         void isMap() {
-            assertTrue(FieldTypes.isMap(mapField()));
-            assertFalse(FieldTypes.isMap(singularField()));
+            assertTrue(FieldTypes.isMap(mapField().toProto()));
+            assertFalse(FieldTypes.isMap(singularField().toProto()));
         }
     }
 
     @Test
     @DisplayName("obtain a map entry name")
     void obtainEntryName() {
-        assertEquals("MapFieldEntry", FieldTypes.getEntryNameFor(mapField()));
+        assertEquals("MapFieldEntry", FieldTypes.getEntryNameFor(mapField().toProto()));
     }
 }

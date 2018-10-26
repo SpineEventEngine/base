@@ -20,7 +20,6 @@
 
 package io.spine.code.proto.given;
 
-import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import spine.test.code.js.FieldDescriptorsTest.FieldContainer;
@@ -33,35 +32,34 @@ public final class Given {
     private Given() {
     }
 
-    public static FieldDescriptorProto singularField() {
+    public static FieldDescriptor singularField() {
         return fieldWithIndex(0);
     }
 
-    public static FieldDescriptorProto repeatedField() {
+    public static FieldDescriptor repeatedField() {
         return fieldWithIndex(1);
     }
 
-    public static FieldDescriptorProto mapField() {
+    public static FieldDescriptor mapField() {
         return fieldWithIndex(2);
     }
 
-    public static FieldDescriptorProto primitiveField() {
+    public static FieldDescriptor primitiveField() {
         return fieldWithIndex(3);
     }
 
-    public static FieldDescriptorProto messageField() {
+    public static FieldDescriptor messageField() {
         return fieldWithIndex(4);
     }
 
-    public static FieldDescriptorProto enumField() {
+    public static FieldDescriptor enumField() {
         return fieldWithIndex(5);
     }
 
-    private static FieldDescriptorProto fieldWithIndex(int index) {
+    private static FieldDescriptor fieldWithIndex(int index) {
         Descriptor fieldContainer = FieldContainer.getDescriptor();
         List<FieldDescriptor> fields = fieldContainer.getFields();
-        FieldDescriptorProto field = fields.get(index)
-                                           .toProto();
+        FieldDescriptor field = fields.get(index);
         return field;
     }
 }
