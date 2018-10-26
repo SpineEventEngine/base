@@ -20,7 +20,6 @@
 
 package io.spine.validate;
 
-import com.google.common.collect.ImmutableList;
 import org.junit.jupiter.api.DisplayName;
 
 @DisplayName("LongFieldValidator should")
@@ -29,6 +28,6 @@ class LongFieldValidatorTest extends NumberFieldValidatorTest<Long, LongFieldVal
     private static final long TRES = 3L;
 
     LongFieldValidatorTest() {
-        super(TRES, -TRES, new LongFieldValidator(fieldContext, ImmutableList.of(TRES)));
+        super(TRES, -TRES, new LongFieldValidator(fieldContext, FieldValue.of(TRES)));
     }
 }

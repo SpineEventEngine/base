@@ -23,7 +23,6 @@ package io.spine.validate;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
-import com.google.protobuf.ProtocolMessageEnum;
 import io.spine.annotation.Internal;
 import io.spine.base.ConversionException;
 import io.spine.protobuf.Messages;
@@ -144,11 +143,9 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
     @Override
     public <V> void validate(FieldDescriptor descriptor, V fieldValue, String fieldName)
             throws ValidationException {
-        Object valueToValidate = fieldValue instanceof ProtocolMessageEnum
-                                 ? ((ProtocolMessageEnum) fieldValue).getValueDescriptor()
-                                 : fieldValue;
+        FieldValue valueToValidate = FieldValue.of(fieldValue);
         FieldContext fieldContext = FieldContext.create(descriptor);
-        FieldValidator<?> validator = create(fieldContext, valueToValidate);
+        FieldValidator<?> validator = create(fieldContext, valueToValidate.value());
         List<ConstraintViolation> violations = validator.validate();
         checkViolations(violations);
     }

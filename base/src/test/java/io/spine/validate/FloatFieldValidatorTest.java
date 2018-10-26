@@ -20,7 +20,6 @@
 
 package io.spine.validate;
 
-import com.google.common.collect.ImmutableList;
 import org.junit.jupiter.api.DisplayName;
 
 @DisplayName("FloatFieldValidator should")
@@ -28,6 +27,6 @@ class FloatFieldValidatorTest extends NumberFieldValidatorTest<Float, FloatField
 
     private static final float HALF = 0.5F;
     FloatFieldValidatorTest() {
-        super(HALF, -HALF, new FloatFieldValidator(fieldContext, ImmutableList.of(HALF)));
+        super(HALF, -HALF, new FloatFieldValidator(fieldContext, FieldValue.of(HALF)));
     }
 }

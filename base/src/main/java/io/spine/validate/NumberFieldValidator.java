@@ -20,7 +20,6 @@
 
 package io.spine.validate;
 
-import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Any;
 import com.google.protobuf.Message;
 import io.spine.option.DecimalMaxOption;
@@ -37,7 +36,8 @@ import static io.spine.protobuf.TypeConverter.toAny;
 /**
  * Validates fields of number types (protobuf: int32, double, etc).
  *
- * @param <V> the type of the field value
+ * @param <V>
+ *         the type of the field value
  */
 abstract class NumberFieldValidator<V extends Number & Comparable<V>> extends FieldValidator<V> {
 
@@ -57,11 +57,13 @@ abstract class NumberFieldValidator<V extends Number & Comparable<V>> extends Fi
     /**
      * Creates a new validator instance.
      *
-     * @param fieldContext the context of the field to validate
-     * @param fieldValues  values to validate
+     * @param fieldContext
+     *         the context of the field to validate
+     * @param fieldValue
+     *         the value to validate
      */
-    NumberFieldValidator(FieldContext fieldContext, ImmutableList<V> fieldValues) {
-        super(fieldContext, fieldValues, false);
+    NumberFieldValidator(FieldContext fieldContext, FieldValue fieldValue) {
+        super(fieldContext, fieldValue, false);
         this.minDecimalOpt = optionValue(OptionsProto.decimalMin);
         this.isMinDecimalInclusive = minDecimalOpt.getInclusive();
         this.maxDecimalOpt = optionValue(OptionsProto.decimalMax);

@@ -33,11 +33,9 @@ import io.spine.option.IfMissingOption;
 import io.spine.option.OptionsProto;
 
 import java.util.List;
-import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.copyOf;
-import static com.google.common.collect.ImmutableList.of;
 import static com.google.common.collect.Lists.newLinkedList;
 import static io.spine.validate.Validate.isNotDefault;
 
@@ -75,40 +73,23 @@ abstract class FieldValidator<V> implements Logging {
      *
      * @param fieldContext
      *         the context of the field to validate
-     * @param values
-     *         values to validate
+     * @param value
+     *         the value to validate
      * @param strict
      *         if {@code true} the validator would assume that the field
      *         is required, even if corresponding field option is not present
      */
     protected FieldValidator(FieldContext fieldContext,
-                             ImmutableList<V> values,
+                             FieldValue value,
                              boolean strict) {
         this.fieldContext = checkNotNull(fieldContext);
-        this.values = checkNotNull(values);
+        this.values = checkNotNull(value.asList());
         this.field = new FieldDeclaration(fieldContext);
         this.strict = strict;
         this.required = optionValue(OptionsProto.required);
         this.ifMissingOption = optionValue(OptionsProto.ifMissing);
         this.validate = optionValue(OptionsProto.valid);
         this.ifInvalid = optionValue(OptionsProto.ifInvalid);
-    }
-
-    @SuppressWarnings({
-            "unchecked"               /* specific validator must call with its type */,
-            "ChainOfInstanceofChecks" /* because fields do not have common parent class */
-    })
-    static <T> ImmutableList<T> toValueList(Object fieldValue) {
-        if (fieldValue instanceof List) {
-            List<T> value = (List<T>) fieldValue;
-            return copyOf(value);
-        } else if (fieldValue instanceof Map) {
-            Map<?, T> map = (Map<?, T>) fieldValue;
-            return copyOf(map.values());
-        } else {
-            T value = (T) fieldValue;
-            return of(value);
-        }
     }
 
     /**
@@ -147,9 +128,9 @@ abstract class FieldValidator<V> implements Logging {
      *
      * <p>The flow of the validation is as follows:
      * <ol>
-     *     <li>check the field to be set if it is {@code required};
-     *     <li>validate the field as an Entity ID if required;
-     *     <li>performs the {@linkplain #validateOwnRules() custom type-dependant validation}.
+     * <li>check the field to be set if it is {@code required};
+     * <li>validate the field as an Entity ID if required;
+     * <li>performs the {@linkplain #validateOwnRules() custom type-dependant validation}.
      * </ol>
      *
      * @return a list of found {@linkplain ConstraintViolation constraint violations} is any

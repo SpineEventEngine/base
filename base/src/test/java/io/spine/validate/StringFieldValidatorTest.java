@@ -96,7 +96,7 @@ public class StringFieldValidatorTest extends FieldValidatorTest<String> {
     private static StringFieldValidator getValidator(FieldDescriptor field,
                                                      List<? extends String> values) {
         return new StringFieldValidator(FieldContext.create(field),
-                                        values,
+                                        FieldValue.of(values),
                                         false);
     }
 }

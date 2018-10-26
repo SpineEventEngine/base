@@ -20,25 +20,25 @@
 
 package io.spine.validate;
 
-import com.google.common.collect.ImmutableList;
-
 /**
  * A base for floating point number field validators.
  */
 abstract class FloatFieldValidatorBase<V extends Number & Comparable<V>>
-         extends NumberFieldValidator<V> {
+        extends NumberFieldValidator<V> {
 
     private static final String INVALID_ID_TYPE_MSG =
-                                "Entity ID field must not be a floating point number.";
+            "Entity ID field must not be a floating point number.";
 
     /**
      * Creates a new validator instance.
      *
-     * @param fieldContext the context of the field to validate
-     * @param fieldValues  values to validate
+     * @param fieldContext
+     *         the context of the field to validate
+     * @param fieldValue
+     *         the value to validate
      */
-    FloatFieldValidatorBase(FieldContext fieldContext, ImmutableList<V> fieldValues) {
-        super(fieldContext, fieldValues);
+    FloatFieldValidatorBase(FieldContext fieldContext, FieldValue fieldValue) {
+        super(fieldContext, fieldValue);
     }
 
     @Override

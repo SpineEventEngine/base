@@ -32,12 +32,14 @@ final class EmptyMapFieldValidator extends FieldValidator<Map<?, ?>> {
     /**
      * Creates a new validator instance.
      *
-     * @param fieldContext the context of the field to validate
-     * @param strict       if {@code true} the validator would assume that the field
-     *                     is required even if the corresponding option is not set
+     * @param fieldContext
+     *         the context of the field to validate
+     * @param strict
+     *         if {@code true} the validator would assume that the field
+     *         is required even if the corresponding option is not set
      */
     EmptyMapFieldValidator(FieldContext fieldContext, boolean strict) {
-        super(fieldContext, ImmutableList.<Map<?, ?>>of(), strict);
+        super(fieldContext, FieldValue.of(ImmutableList.of()), strict);
     }
 
     @Override

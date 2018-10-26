@@ -50,16 +50,16 @@ class MessageFieldValidator extends FieldValidator<Message> {
      *
      * @param fieldContext
      *         the context of the field to validate
-     * @param fieldValues
-     *         values to validate
+     * @param fieldValue
+     *         the value to validate
      * @param strict
      *         if {@code true} the validator would assume that the field
      *         is required even if the corresponding field option is not present
      */
     MessageFieldValidator(FieldContext fieldContext,
-                          Object fieldValues,
+                          FieldValue fieldValue,
                           boolean strict) {
-        super(fieldContext, toValueList(fieldValues), strict);
+        super(fieldContext, fieldValue, strict);
         this.timeConstraint = optionValue(OptionsProto.when);
     }
 

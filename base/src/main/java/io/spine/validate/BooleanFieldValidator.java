@@ -20,21 +20,21 @@
 
 package io.spine.validate;
 
-import io.spine.logging.Logging;
-
 /**
  * Validates fields of type {@link Boolean}.
  */
-class BooleanFieldValidator extends FieldValidator<Boolean> implements Logging {
+class BooleanFieldValidator extends FieldValidator<Boolean> {
 
     /**
      * Creates a new validator instance.
      *
-     * @param fieldContext the context of the field to validate
-     * @param fieldValues  values to validate
+     * @param fieldContext
+     *         the context of the field to validate
+     * @param fieldValue
+     *         the value to to validate
      */
-    BooleanFieldValidator(FieldContext fieldContext, Object fieldValues) {
-        super(fieldContext, FieldValidator.toValueList(fieldValues), false);
+    BooleanFieldValidator(FieldContext fieldContext, FieldValue fieldValue) {
+        super(fieldContext, fieldValue, false);
     }
 
     /**

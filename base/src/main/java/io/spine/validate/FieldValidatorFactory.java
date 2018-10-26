@@ -37,8 +37,6 @@ import static java.lang.String.format;
 
 /**
  * Creates {@link FieldValidator}s.
- *
- * @author Alexander Litus
  */
 class FieldValidatorFactory {
 
@@ -61,10 +59,13 @@ class FieldValidatorFactory {
      * <p>The target field of the resulting validator is represented with a linear data structure,
      * i.e. not a map.
      *
-     * @param fieldContext the context of the field to validate
-     * @param fieldValue   a value of the field to validate
-     * @param strict       if {@code true} validators would always assume that the field is
-     *                     required
+     * @param fieldContext
+     *         the context of the field to validate
+     * @param fieldValue
+     *         a value of the field to validate
+     * @param strict
+     *         if {@code true} validators would always assume that the field is
+     *         required
      */
     private static FieldValidator<?> createForLinear(FieldContext fieldContext,
                                                      Object fieldValue,
@@ -83,36 +84,41 @@ class FieldValidatorFactory {
      * <p>The target field of the resulting validator is represented with a linear data structure,
      * i.e. not a map.
      *
-     * @param fieldType    the required field type
-     * @param fieldContext the context of the field to create validator for
-     * @param fieldValue   a value of the field to validate
-     * @param strict       if {@code true} validators would always assume that the field is
-     *                     required
+     * @param fieldType
+     *         the required field type
+     * @param fieldContext
+     *         the context of the field to create validator for
+     * @param fieldValue
+     *         a value of the field to validate
+     * @param strict
+     *         if {@code true} validators would always assume that the field is
+     *         required
      */
     private static FieldValidator<?> createForLinear(JavaType fieldType,
                                                      FieldContext fieldContext,
                                                      Object fieldValue,
                                                      boolean strict) {
         checkNotNull(fieldType);
+        FieldValue wrappedValue = FieldValue.of(fieldValue);
         switch (fieldType) {
             case MESSAGE:
-                return new MessageFieldValidator(fieldContext, fieldValue, strict);
+                return new MessageFieldValidator(fieldContext, wrappedValue, strict);
             case INT:
-                return new IntegerFieldValidator(fieldContext, fieldValue);
+                return new IntegerFieldValidator(fieldContext, wrappedValue);
             case LONG:
-                return new LongFieldValidator(fieldContext, fieldValue);
+                return new LongFieldValidator(fieldContext, wrappedValue);
             case FLOAT:
-                return new FloatFieldValidator(fieldContext, fieldValue);
+                return new FloatFieldValidator(fieldContext, wrappedValue);
             case DOUBLE:
-                return new DoubleFieldValidator(fieldContext, fieldValue);
+                return new DoubleFieldValidator(fieldContext, wrappedValue);
             case STRING:
-                return new StringFieldValidator(fieldContext, fieldValue, strict);
+                return new StringFieldValidator(fieldContext, wrappedValue, strict);
             case BYTE_STRING:
-                return new ByteStringFieldValidator(fieldContext, fieldValue);
+                return new ByteStringFieldValidator(fieldContext, wrappedValue);
             case BOOLEAN:
-                return new BooleanFieldValidator(fieldContext, fieldValue);
+                return new BooleanFieldValidator(fieldContext, wrappedValue);
             case ENUM:
-                return new EnumFieldValidator(fieldContext, fieldValue);
+                return new EnumFieldValidator(fieldContext, wrappedValue);
             default:
                 throw fieldTypeIsNotSupported(fieldContext.getTarget());
         }
@@ -121,10 +127,17 @@ class FieldValidatorFactory {
     /**
      * Creates a new validator instance for a map field.
      *
-     * @param fieldContext the context of the field to create validator for
-     * @param value        a value of the field to validate
-     * @param strict       if {@code true} validators would always assume that the field is
-     *                     required
+     * <p>In Protobuf, keys of a map is restricted to primitive types.
+     * So, only values of a map are validated.
+     *
+     * @param fieldContext
+     *         the context of the field to create validator for
+     * @param value
+     *         a value of the field to validate
+     * @param strict
+     *         if {@code true} validators would always assume that the field is required
+     * @see <a href="https://developers.google.com/protocol-buffers/docs/proto3#maps">
+     *         Protobuf Maps</a>
      */
     private static FieldValidator<?> createForMap(FieldContext fieldContext,
                                                   Map<?, ?> value,
@@ -139,19 +152,19 @@ class FieldValidatorFactory {
         Object firstValue = find(value.values(), Objects::nonNull);
         Class<?> valueClass = firstValue.getClass();
         Class<?> wrappedValueClass = Primitives.wrap(valueClass);
-        JavaType type = SCALAR_FIELD_TYPES.get(wrappedValueClass);
-        if (type == null) {
+        JavaType valuesType = SCALAR_FIELD_TYPES.get(wrappedValueClass);
+        if (valuesType == null) {
             if (ByteString.class.isAssignableFrom(valueClass)) {
-                type = JavaType.BYTE_STRING;
+                valuesType = JavaType.BYTE_STRING;
             } else if (Message.class.isAssignableFrom(valueClass)) {
-                type = JavaType.MESSAGE;
+                valuesType = JavaType.MESSAGE;
             } else if (Enum.class.isAssignableFrom(valueClass)) {
-                type = JavaType.ENUM;
+                valuesType = JavaType.ENUM;
             } else {
                 throw fieldTypeIsNotSupported(descriptor);
             }
         }
-        FieldValidator<?> validator = createForLinear(type,
+        FieldValidator<?> validator = createForLinear(valuesType,
                                                       fieldContext,
                                                       value,
                                                       strict);
