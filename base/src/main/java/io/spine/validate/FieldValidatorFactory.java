@@ -24,8 +24,6 @@ import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 import io.spine.code.proto.FieldTypes2;
 
-import java.util.Map;
-
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
@@ -54,7 +52,7 @@ class FieldValidatorFactory {
      *         required
      */
     private static FieldValidator<?> createForLinear(FieldContext fieldContext,
-                                                     Object fieldValue,
+                                                     FieldValue fieldValue,
                                                      boolean strict) {
         JavaType fieldType = fieldContext.getTarget()
                                          .getJavaType();
@@ -126,7 +124,7 @@ class FieldValidatorFactory {
      *         Protobuf Maps</a>
      */
     private static FieldValidator<?> createForMap(FieldContext fieldContext,
-                                                  Map<?, ?> value,
+                                                  FieldValue value,
                                                   boolean strict) {
         FieldDescriptor descriptor = fieldContext.getTarget();
         checkArgument(descriptor.isMapField(),
@@ -142,16 +140,18 @@ class FieldValidatorFactory {
     }
 
     static FieldValidator<?> create(FieldContext fieldContext,
-                                    Object fieldValue) {
-        return fieldValue instanceof Map
-               ? createForMap(fieldContext, (Map<?, ?>) fieldValue, false)
+                                    FieldValue fieldValue) {
+        boolean isMap = FieldTypes2.isMap(fieldContext.getTarget());
+        return isMap
+               ? createForMap(fieldContext, fieldValue, false)
                : createForLinear(fieldContext, fieldValue, false);
     }
 
     static FieldValidator<?> createStrict(FieldContext fieldContext,
-                                          Object fieldValue) {
-        return fieldValue instanceof Map
-               ? createForMap(fieldContext, (Map<?, ?>) fieldValue, true)
+                                          FieldValue fieldValue) {
+        boolean isMap = FieldTypes2.isMap(fieldContext.getTarget());
+        return isMap
+               ? createForMap(fieldContext, fieldValue, true)
                : createForLinear(fieldContext, fieldValue, true);
     }
 

@@ -57,10 +57,13 @@ class FieldValue {
         return new FieldValue(value);
     }
 
-    Object value() {
-        return value;
-    }
-
+    /**
+     * Converts the value to a list.
+     *
+     * @param <T>
+     *         the type of the list elements
+     * @return the value as a list
+     */
     @SuppressWarnings({
             "unchecked"               /* specific validator must call with its type */,
             "ChainOfInstanceofChecks" /* because fields do not have common parent class */
