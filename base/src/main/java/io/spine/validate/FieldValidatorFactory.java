@@ -22,7 +22,6 @@ package io.spine.validate;
 
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
 
 /**
@@ -34,23 +33,24 @@ class FieldValidatorFactory {
         // Prevent instantiation of this utility class.
     }
 
+    static FieldValidator<?> create(FieldValue fieldValue) {
+        return create(fieldValue, false);
+    }
+
+    static FieldValidator<?> createStrict(FieldValue fieldValue) {
+        return create(fieldValue, true);
+    }
+
     /**
-     * Creates a new validator instance according to the field type and validates the field.
-     *
-     * <p>The target field of the resulting validator is represented with a linear data structure,
-     * i.e. not a map.
+     * Creates a new validator instance according to the type of the value.
      *
      * @param fieldValue
      *         a value of the field to validate
-     * @param fieldType
-     *         the required field type
      * @param strict
      *         if {@code true} validators would always assume that the field is
      */
-    private static FieldValidator<?> createForLinear(FieldValue fieldValue,
-                                                     JavaType fieldType,
-                                                     boolean strict) {
-        checkNotNull(fieldType);
+    private static FieldValidator<?> create(FieldValue fieldValue, boolean strict) {
+        JavaType fieldType = fieldValue.javaType();
         switch (fieldType) {
             case MESSAGE:
                 return new MessageFieldValidator(fieldValue, strict);
@@ -73,14 +73,6 @@ class FieldValidatorFactory {
             default:
                 throw fieldTypeIsNotSupported(fieldType);
         }
-    }
-
-    static FieldValidator<?> create(FieldValue fieldValue) {
-        return createForLinear(fieldValue, fieldValue.javaType(), false);
-    }
-
-    static FieldValidator<?> createStrict(FieldValue fieldValue) {
-        return createForLinear(fieldValue, fieldValue.javaType(), true);
     }
 
     private static IllegalArgumentException fieldTypeIsNotSupported(JavaType type) {
