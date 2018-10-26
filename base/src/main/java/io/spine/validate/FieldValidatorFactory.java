@@ -22,7 +22,6 @@ package io.spine.validate;
 
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
-import io.spine.code.proto.FieldTypes2;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
@@ -44,34 +43,13 @@ class FieldValidatorFactory {
      *
      * @param fieldValue
      *         a value of the field to validate
+     * @param fieldType
+     *         the required field type
      * @param strict
      *         if {@code true} validators would always assume that the field is
      */
     private static FieldValidator<?> createForLinear(FieldValue fieldValue,
-                                                     boolean strict) {
-        JavaType fieldType = fieldValue.context()
-                                       .getTarget()
-                                       .getJavaType();
-        return createForLinear(fieldType,
-                               fieldValue,
-                               strict);
-    }
-
-    /**
-     * Creates a new validator instance according to the field type and validates the field.
-     *
-     * <p>The target field of the resulting validator is represented with a linear data structure,
-     * i.e. not a map.
-     *
-     * @param fieldType
-     *         the required field type
-     * @param fieldValue
-     *         a value of the field to validate
-     * @param strict
-     *         if {@code true} validators would always assume that the field is
-     */
-    private static FieldValidator<?> createForLinear(JavaType fieldType,
-                                                     FieldValue fieldValue,
+                                                     JavaType fieldType,
                                                      boolean strict) {
         checkNotNull(fieldType);
         switch (fieldType) {
@@ -94,45 +72,16 @@ class FieldValidatorFactory {
             case ENUM:
                 return new EnumFieldValidator(fieldValue);
             default:
-                throw fieldTypeIsNotSupported(fieldValue.context()
-                                                        .getTarget());
+                throw fieldTypeIsNotSupported(fieldValue.descriptor());
         }
     }
 
-    /**
-     * Creates a new validator instance for a map field.
-     *
-     * <p>In Protobuf, keys of a map is restricted to primitive types.
-     * So, only values of a map are validated.
-     *
-     * @param value
-     *         a value of the field to validate
-     * @param strict
-     *         if {@code true} validators would always assume that the field is required
-     * @see <a href="https://developers.google.com/protocol-buffers/docs/proto3#maps">
-     *         Protobuf Maps</a>
-     */
-    private static FieldValidator<?> createForMap(FieldValue value,
-                                                  boolean strict) {
-        JavaType valuesType = FieldTypes2.valueDescriptor(value.context()
-                                                               .getTarget())
-                                         .getJavaType();
-        FieldValidator<?> validator = createForLinear(valuesType,
-                                                      value,
-                                                      strict);
-        return validator;
-    }
-
     static FieldValidator<?> create(FieldValue fieldValue) {
-        return fieldValue.isMap()
-               ? createForMap(fieldValue, false)
-               : createForLinear(fieldValue, false);
+        return createForLinear(fieldValue, fieldValue.javaType(), false);
     }
 
     static FieldValidator<?> createStrict(FieldValue fieldValue) {
-        return fieldValue.isMap()
-               ? createForMap(fieldValue, true)
-               : createForLinear(fieldValue, true);
+        return createForLinear(fieldValue, fieldValue.javaType(), true);
     }
 
     private static IllegalArgumentException fieldTypeIsNotSupported(FieldDescriptor descriptor) {

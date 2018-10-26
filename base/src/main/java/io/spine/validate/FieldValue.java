@@ -22,6 +22,7 @@ package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Descriptors.FieldDescriptor;
+import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 import com.google.protobuf.ProtocolMessageEnum;
 import io.spine.code.proto.FieldTypes2;
 
@@ -35,14 +36,22 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  * <p>The exact type of the value is unknown since it is set
  * by a user using a generated validating builder.
+ *
+ * <p>Map fields are considered in a special way and only values are validated.
+ * Keys don't require validation since they are of primitive types.
+ *
+ * @see <a href="https://developers.google.com/protocol-buffers/docs/proto3#maps">
+ *         Protobuf Maps</a>
  */
 class FieldValue {
 
     private final Object value;
+    private final FieldDescriptor descriptor;
     private final FieldContext context;
 
     private FieldValue(Object value, FieldContext context) {
         this.value = value;
+        this.descriptor = context.getTarget();
         this.context = context;
     }
 
@@ -65,13 +74,23 @@ class FieldValue {
     }
 
     /**
-     * Determines whether the field is a {@code map<k, v>}.
+     * Obtains the {@link JavaType} of the value.
      *
-     * @return {@code true} if the value is a map, {@code false} otherwise
+     * <p>For a map, returns the type of the values.
+     *
+     * @return {@link JavaType} of {@linkplain #asList() list} elements
      */
-    boolean isMap() {
-        FieldDescriptor descriptor = context.getTarget();
-        return FieldTypes2.isMap(descriptor);
+    JavaType javaType() {
+        if (!isMap()) {
+            return descriptor().getJavaType();
+        }
+        JavaType valuesType = FieldTypes2.valueDescriptor(descriptor())
+                                         .getJavaType();
+        return valuesType;
+    }
+
+    FieldDescriptor descriptor() {
+        return descriptor;
     }
 
     FieldContext context() {
@@ -100,5 +119,14 @@ class FieldValue {
             T result = (T) value;
             return ImmutableList.of(result);
         }
+    }
+
+    /**
+     * Determines whether the field is a {@code map<k, v>}.
+     *
+     * @return {@code true} if the value is a map, {@code false} otherwise
+     */
+    private boolean isMap() {
+        return FieldTypes2.isMap(descriptor);
     }
 }
