@@ -22,7 +22,7 @@ package io.spine.code.proto.given;
 
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import spine.test.code.js.FieldDescriptorsTest.FieldContainer;
+import io.spine.test.code.proto.FieldContainer;
 
 import java.util.List;
 
