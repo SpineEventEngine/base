@@ -100,6 +100,6 @@ public class MessageFieldValidatorTest extends FieldValidatorTest<Message> {
     private static MessageFieldValidator getValidator(FieldDescriptor field,
                                                       List<? extends Message> values) {
         FieldContext context = FieldContext.create(field);
-        return new MessageFieldValidator(context, FieldValue.of(values), false);
+        return new MessageFieldValidator(FieldValue.of(values, context), false);
     }
 }

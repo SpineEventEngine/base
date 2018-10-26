@@ -143,9 +143,9 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
     @Override
     public <V> void validate(FieldDescriptor descriptor, V fieldValue, String fieldName)
             throws ValidationException {
-        FieldValue valueToValidate = FieldValue.of(fieldValue);
         FieldContext fieldContext = FieldContext.create(descriptor);
-        FieldValidator<?> validator = create(fieldContext, valueToValidate);
+        FieldValue valueToValidate = FieldValue.of(fieldValue, fieldContext);
+        FieldValidator<?> validator = create(valueToValidate);
         List<ConstraintViolation> violations = validator.validate();
         checkViolations(violations);
     }

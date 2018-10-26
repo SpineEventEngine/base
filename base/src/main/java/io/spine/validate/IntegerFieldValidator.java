@@ -30,13 +30,11 @@ class IntegerFieldValidator extends NumberFieldValidator<Integer> {
     /**
      * Creates a new validator instance.
      *
-     * @param fieldContext
-     *         the context of the field to validate
      * @param fieldValue
      *         the value to validate
      */
-    IntegerFieldValidator(FieldContext fieldContext, FieldValue fieldValue) {
-        super(fieldContext, fieldValue);
+    IntegerFieldValidator(FieldValue fieldValue) {
+        super(fieldValue);
     }
 
     @Override

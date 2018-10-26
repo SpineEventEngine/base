@@ -32,13 +32,11 @@ class ByteStringFieldValidator extends FieldValidator<ByteString> {
     /**
      * Creates a new validator instance.
      *
-     * @param fieldContext
-     *         the context of the field to validate
      * @param fieldValue
      *         the value to validate
      */
-    ByteStringFieldValidator(FieldContext fieldContext, FieldValue fieldValue) {
-        super(fieldContext, fieldValue, false);
+    ByteStringFieldValidator(FieldValue fieldValue) {
+        super(fieldValue, false);
     }
 
     @Override

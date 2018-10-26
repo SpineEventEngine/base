@@ -30,13 +30,11 @@ class FloatFieldValidator extends FloatFieldValidatorBase<Float> {
     /**
      * Creates a new validator instance.
      *
-     * @param fieldContext
-     *         the context of the field to validate
      * @param fieldValue
      *         the value to validate
      */
-    FloatFieldValidator(FieldContext fieldContext, FieldValue fieldValue) {
-        super(fieldContext, fieldValue);
+    FloatFieldValidator(FieldValue fieldValue) {
+        super(fieldValue);
     }
 
     @Override

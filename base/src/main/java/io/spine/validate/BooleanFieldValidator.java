@@ -28,13 +28,11 @@ class BooleanFieldValidator extends FieldValidator<Boolean> {
     /**
      * Creates a new validator instance.
      *
-     * @param fieldContext
-     *         the context of the field to validate
      * @param fieldValue
      *         the value to to validate
      */
-    BooleanFieldValidator(FieldContext fieldContext, FieldValue fieldValue) {
-        super(fieldContext, fieldValue, false);
+    BooleanFieldValidator(FieldValue fieldValue) {
+        super(fieldValue, false);
     }
 
     /**

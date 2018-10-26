@@ -21,7 +21,9 @@
 package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
+import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.ProtocolMessageEnum;
+import io.spine.code.proto.FieldTypes2;
 
 import java.util.List;
 import java.util.Map;
@@ -37,9 +39,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
 class FieldValue {
 
     private final Object value;
+    private final FieldContext context;
 
-    private FieldValue(Object value) {
+    private FieldValue(Object value, FieldContext context) {
         this.value = value;
+        this.context = context;
     }
 
     /**
@@ -47,14 +51,31 @@ class FieldValue {
      *
      * @param rawValue
      *         the value obtained via a validating builder
+     * @param context
+     *         the context of the field
      * @return a new instance
      */
-    static FieldValue of(Object rawValue) {
+    static FieldValue of(Object rawValue, FieldContext context) {
         checkNotNull(rawValue);
+        checkNotNull(context);
         Object value = rawValue instanceof ProtocolMessageEnum
                        ? ((ProtocolMessageEnum) rawValue).getValueDescriptor()
                        : rawValue;
-        return new FieldValue(value);
+        return new FieldValue(value, context);
+    }
+
+    /**
+     * Determines whether the field is a {@code map<k, v>}.
+     *
+     * @return {@code true} if the value is a map, {@code false} otherwise
+     */
+    boolean isMap() {
+        FieldDescriptor descriptor = context.getTarget();
+        return FieldTypes2.isMap(descriptor);
+    }
+
+    FieldContext context() {
+        return context;
     }
 
     /**

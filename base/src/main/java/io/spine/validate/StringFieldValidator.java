@@ -36,18 +36,14 @@ class StringFieldValidator extends FieldValidator<String> {
     /**
      * Creates a new validator instance.
      *
-     * @param fieldContext
-     *         the context of the field to validate
      * @param fieldValue
      *         the value to validate
      * @param strict
      *         if {@code true} the validator would assume that the field
-     *         is required even if the corresponding option is not set
      */
-    StringFieldValidator(FieldContext fieldContext,
-                         FieldValue fieldValue,
+    StringFieldValidator(FieldValue fieldValue,
                          boolean strict) {
-        super(fieldContext, fieldValue, strict);
+        super(fieldValue, strict);
         this.patternOption = optionValue(OptionsProto.pattern);
         this.regex = patternOption.getRegex();
     }

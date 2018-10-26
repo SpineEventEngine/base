@@ -90,8 +90,8 @@ public class MessageValidator {
         List<FieldDescriptor> fields = msgDescriptor.getFields();
         for (FieldDescriptor field : fields) {
             FieldContext fieldContext = rootContext.forChild(field);
-            FieldValue value = FieldValue.of(message.getField(field));
-            FieldValidator<?> fieldValidator = create(fieldContext, value);
+            FieldValue value = FieldValue.of(message.getField(field), fieldContext);
+            FieldValidator<?> fieldValidator = create(value);
             List<ConstraintViolation> violations = fieldValidator.validate();
             result.addAll(violations);
         }

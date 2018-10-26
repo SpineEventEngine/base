@@ -28,6 +28,6 @@ class IntegerFieldValidatorTest extends NumberFieldValidatorTest<Integer, Intege
     private static final int DOS = 2;
 
     IntegerFieldValidatorTest() {
-        super(DOS, -DOS, new IntegerFieldValidator(fieldContext, FieldValue.of(DOS)));
+        super(DOS, -DOS, new IntegerFieldValidator(FieldValue.of(DOS, fieldContext)));
     }
 }

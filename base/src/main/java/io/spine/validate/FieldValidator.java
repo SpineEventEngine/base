@@ -71,18 +71,14 @@ abstract class FieldValidator<V> implements Logging {
     /**
      * Creates a new validator instance.
      *
-     * @param fieldContext
-     *         the context of the field to validate
      * @param value
      *         the value to validate
      * @param strict
      *         if {@code true} the validator would assume that the field
-     *         is required, even if corresponding field option is not present
      */
-    protected FieldValidator(FieldContext fieldContext,
-                             FieldValue value,
+    protected FieldValidator(FieldValue value,
                              boolean strict) {
-        this.fieldContext = checkNotNull(fieldContext);
+        this.fieldContext = checkNotNull(value.context());
         this.values = checkNotNull(value.asList());
         this.field = new FieldDeclaration(fieldContext);
         this.strict = strict;

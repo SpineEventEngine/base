@@ -154,8 +154,8 @@ class AlternativeFieldValidator implements Logging {
         }
 
         FieldContext fieldContext = rootContext.forChild(field);
-        FieldValue fieldValue = FieldValue.of(message.getField(field));
-        FieldValidator<?> fieldValidator = createStrict(fieldContext, fieldValue);
+        FieldValue fieldValue = FieldValue.of(message.getField(field), fieldContext);
+        FieldValidator<?> fieldValidator = createStrict(fieldValue);
         List<ConstraintViolation> violations = fieldValidator.validate();
 
         // Do not add violations to the results because we have options.
