@@ -21,6 +21,7 @@
 package io.spine.code.proto;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -31,16 +32,39 @@ class FieldNameTest {
     private static final String PROTO_FIELD_NAME = "correct_java_name";
 
     private final FieldName fieldName = FieldName.of(PROTO_FIELD_NAME);
+    private final FieldName fieldNameWithNumbers = FieldName.of("hand2hand");
 
-    @Test
-    @DisplayName("obtain javaCase")
-    void return_correct_java_field_name() {
-        assertEquals("correctJavaName", fieldName.javaCase());
+    @Nested
+    @DisplayName("obtain CamelCase")
+    class CamelCase {
+
+        @Test
+        @DisplayName("of lower-cased letters")
+        void lowerCasedLetters() {
+            assertEquals("CorrectJavaName", fieldName.toCamelCase());
+        }
+
+        @Test
+        @DisplayName("of lower-cased letters with a number")
+        void lowerCasedLettersAndNumbers() {
+            assertEquals("Hand2Hand", fieldNameWithNumbers.toCamelCase());
+        }
     }
 
-    @Test
-    @DisplayName("obtain CamelCase")
-    void return_correct_capitalized_java_name() {
-        assertEquals("CorrectJavaName", fieldName.toCamelCase());
+    @Nested
+    @DisplayName("obtain javaCase")
+    class JavaCase {
+
+        @Test
+        @DisplayName("of lower-cased letters")
+        void lowerCasedLetters() {
+            assertEquals("correctJavaName", fieldName.javaCase());
+        }
+
+        @Test
+        @DisplayName("of lower-cased letters with a number")
+        void lowerCasedLettersAndNumbers() {
+            assertEquals("hand2Hand", fieldNameWithNumbers.javaCase());
+        }
     }
 }

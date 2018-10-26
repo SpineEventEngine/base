@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.js;
+package io.spine.code.proto;
 
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.testing.UtilityClassTest;
@@ -28,14 +28,14 @@ import org.junit.jupiter.api.Test;
 
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.INT64;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.STRING;
-import static io.spine.code.js.Fields.keyDescriptor;
-import static io.spine.code.js.Fields.valueDescriptor;
-import static io.spine.code.js.given.Given.enumField;
-import static io.spine.code.js.given.Given.mapField;
-import static io.spine.code.js.given.Given.messageField;
-import static io.spine.code.js.given.Given.primitiveField;
-import static io.spine.code.js.given.Given.repeatedField;
-import static io.spine.code.js.given.Given.singularField;
+import static io.spine.code.proto.FieldTypes2.keyDescriptor;
+import static io.spine.code.proto.FieldTypes2.valueDescriptor;
+import static io.spine.code.proto.given.Given.enumField;
+import static io.spine.code.proto.given.Given.mapField;
+import static io.spine.code.proto.given.Given.messageField;
+import static io.spine.code.proto.given.Given.primitiveField;
+import static io.spine.code.proto.given.Given.repeatedField;
+import static io.spine.code.proto.given.Given.singularField;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -43,10 +43,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SuppressWarnings("InnerClassMayBeStatic") // JUnit nested classes cannot be static.
 @DisplayName("Fields utility should")
-class FieldsTest extends UtilityClassTest<Fields> {
+class FieldTypes2Test extends UtilityClassTest<FieldTypes2> {
 
-    FieldsTest() {
-        super(Fields.class);
+    FieldTypes2Test() {
+        super(FieldTypes2.class);
     }
 
     @Nested
@@ -56,30 +56,30 @@ class FieldsTest extends UtilityClassTest<Fields> {
         @Test
         @DisplayName("is message")
         void isMessage() {
-            assertTrue(Fields.isMessage(messageField()));
-            assertFalse(Fields.isMessage(primitiveField()));
-            assertFalse(Fields.isMessage(enumField()));
+            assertTrue(FieldTypes2.isMessage(messageField()));
+            assertFalse(FieldTypes2.isMessage(primitiveField()));
+            assertFalse(FieldTypes2.isMessage(enumField()));
         }
 
         @Test
         @DisplayName("is repeated")
         void isRepeated() {
-            assertTrue(Fields.isRepeated(repeatedField()));
-            assertFalse(Fields.isRepeated(singularField()));
+            assertTrue(FieldTypes2.isRepeated(repeatedField()));
+            assertFalse(FieldTypes2.isRepeated(singularField()));
         }
 
         @Test
         @DisplayName("is map")
         void isMap() {
-            assertTrue(Fields.isMap(mapField()));
-            assertFalse(Fields.isMap(singularField()));
+            assertTrue(FieldTypes2.isMap(mapField()));
+            assertFalse(FieldTypes2.isMap(singularField()));
         }
     }
 
     @Test
     @DisplayName("not mark map field as repeated")
     void notMarkMapAsRepeated() {
-        assertFalse(Fields.isRepeated(mapField()));
+        assertFalse(FieldTypes2.isRepeated(mapField()));
     }
 
     @Test

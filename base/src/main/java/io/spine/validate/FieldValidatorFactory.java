@@ -20,34 +20,20 @@
 
 package io.spine.validate;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.primitives.Primitives;
-import com.google.protobuf.ByteString;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
-import com.google.protobuf.Message;
+import io.spine.code.proto.FieldTypes2;
 
 import java.util.Map;
-import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.Iterables.find;
 import static java.lang.String.format;
 
 /**
  * Creates {@link FieldValidator}s.
  */
 class FieldValidatorFactory {
-
-    private static final ImmutableMap<Class<?>, JavaType> SCALAR_FIELD_TYPES =
-            ImmutableMap.<Class<?>, JavaType>builder().put(Integer.class, JavaType.INT)
-                                                      .put(Long.class, JavaType.LONG)
-                                                      .put(Float.class, JavaType.FLOAT)
-                                                      .put(Double.class, JavaType.DOUBLE)
-                                                      .put(String.class, JavaType.STRING)
-                                                      .put(Boolean.class, JavaType.BOOLEAN)
-                                                      .build();
 
     private FieldValidatorFactory() {
         // Prevent instantiation of this utility class.
@@ -149,21 +135,8 @@ class FieldValidatorFactory {
         if (value.isEmpty()) {
             return new EmptyMapFieldValidator(fieldContext, strict);
         }
-        Object firstValue = find(value.values(), Objects::nonNull);
-        Class<?> valueClass = firstValue.getClass();
-        Class<?> wrappedValueClass = Primitives.wrap(valueClass);
-        JavaType valuesType = SCALAR_FIELD_TYPES.get(wrappedValueClass);
-        if (valuesType == null) {
-            if (ByteString.class.isAssignableFrom(valueClass)) {
-                valuesType = JavaType.BYTE_STRING;
-            } else if (Message.class.isAssignableFrom(valueClass)) {
-                valuesType = JavaType.MESSAGE;
-            } else if (Enum.class.isAssignableFrom(valueClass)) {
-                valuesType = JavaType.ENUM;
-            } else {
-                throw fieldTypeIsNotSupported(descriptor);
-            }
-        }
+        JavaType valuesType = FieldTypes2.valueDescriptor(fieldContext.getTarget())
+                                         .getJavaType();
         FieldValidator<?> validator = createForLinear(valuesType,
                                                       fieldContext,
                                                       value,
