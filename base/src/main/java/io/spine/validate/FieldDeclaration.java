@@ -25,6 +25,7 @@ import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import io.spine.base.CommandMessage;
+import io.spine.code.proto.FieldTypes2;
 import io.spine.code.proto.Option;
 import io.spine.option.EntityOption;
 import io.spine.option.OptionsProto;
@@ -99,12 +100,15 @@ final class FieldDeclaration {
     }
 
     boolean isNotRepeatedOrMap() {
-        return !isRepeated()
-                && !field.isMapField();
+        return !isRepeated() && !isMap();
     }
 
     boolean isRepeated() {
-        return field.isRepeated();
+        return FieldTypes2.isRepeated(field);
+    }
+
+    boolean isMap() {
+        return FieldTypes2.isMap(field);
     }
 
     private boolean isEntityField() {

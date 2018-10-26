@@ -34,7 +34,6 @@ import io.spine.option.OptionsProto;
 
 import java.util.List;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.copyOf;
 import static com.google.common.collect.Lists.newLinkedList;
 import static io.spine.validate.Validate.isNotDefault;
@@ -78,9 +77,9 @@ abstract class FieldValidator<V> implements Logging {
      */
     protected FieldValidator(FieldValue value,
                              boolean strict) {
-        this.fieldContext = checkNotNull(value.context());
-        this.values = checkNotNull(value.asList());
-        this.field = new FieldDeclaration(fieldContext);
+        this.fieldContext = value.context();
+        this.values = value.asList();
+        this.field = value.declaration();
         this.strict = strict;
         this.required = optionValue(OptionsProto.required);
         this.ifMissingOption = optionValue(OptionsProto.ifMissing);

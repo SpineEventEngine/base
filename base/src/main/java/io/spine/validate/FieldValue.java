@@ -48,11 +48,13 @@ class FieldValue {
     private final Object value;
     private final FieldDescriptor descriptor;
     private final FieldContext context;
+    private final FieldDeclaration declaration;
 
     private FieldValue(Object value, FieldContext context) {
         this.value = value;
         this.descriptor = context.getTarget();
         this.context = context;
+        this.declaration = new FieldDeclaration(context);
     }
 
     /**
@@ -93,6 +95,10 @@ class FieldValue {
         return descriptor;
     }
 
+    FieldDeclaration declaration() {
+        return declaration;
+    }
+
     FieldContext context() {
         return context;
     }
@@ -104,15 +110,12 @@ class FieldValue {
      *         the type of the list elements
      * @return the value as a list
      */
-    @SuppressWarnings({
-            "unchecked"               /* specific validator must call with its type */,
-            "ChainOfInstanceofChecks" /* because fields do not have common parent class */
-    })
+    @SuppressWarnings("unchecked" /* specific validator must call with its type */)
     <T> ImmutableList<T> asList() {
-        if (value instanceof List) {
+        if (declaration.isRepeated()) {
             List<T> result = (List<T>) value;
             return ImmutableList.copyOf(result);
-        } else if (value instanceof Map) {
+        } else if (declaration.isMap()) {
             Map<?, T> map = (Map<?, T>) value;
             return ImmutableList.copyOf(map.values());
         } else {
