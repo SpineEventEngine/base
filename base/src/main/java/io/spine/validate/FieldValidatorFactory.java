@@ -132,9 +132,6 @@ class FieldValidatorFactory {
         checkArgument(descriptor.isMapField(),
                       "Field %s is not a map field.",
                       descriptor.getFullName());
-        if (value.isEmpty()) {
-            return new EmptyMapFieldValidator(fieldContext, strict);
-        }
         JavaType valuesType = FieldTypes2.valueDescriptor(fieldContext.getTarget())
                                          .getJavaType();
         FieldValidator<?> validator = createForLinear(valuesType,

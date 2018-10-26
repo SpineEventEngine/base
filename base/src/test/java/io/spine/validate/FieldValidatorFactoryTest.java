@@ -194,7 +194,7 @@ class FieldValidatorFactoryTest {
                                                          .get(0);
         FieldValidator<?> validator = create(field, emptyMap());
 
-        assertThat(validator, instanceOf(EmptyMapFieldValidator.class));
+        assertThat(validator, instanceOf(StringFieldValidator.class));
     }
 
     @Test
