@@ -46,7 +46,6 @@ import static io.spine.tools.compiler.validation.ClassNames.getParameterClassNam
 import static io.spine.tools.compiler.validation.MethodConstructors.clearPrefix;
 import static io.spine.tools.compiler.validation.MethodConstructors.clearProperty;
 import static io.spine.tools.compiler.validation.MethodConstructors.createConvertSingularValue;
-import static io.spine.tools.compiler.validation.MethodConstructors.createDescriptorStatement;
 import static io.spine.tools.compiler.validation.MethodConstructors.createValidateStatement;
 import static io.spine.tools.compiler.validation.MethodConstructors.getMessageBuilder;
 import static io.spine.tools.compiler.validation.MethodConstructors.rawSuffix;
@@ -64,7 +63,7 @@ import static java.lang.String.format;
 @SuppressWarnings("DuplicateStringLiteralInspection")
 // It cannot be used as the constant across the project.
 // Although it has the equivalent literal they have the different meaning.
-class RepeatedFieldMethodConstructor implements MethodConstructor, Logging {
+class RepeatedFieldMethodConstructor extends AbstractMethodConstructor implements Logging {
 
     private static final String VALUE = "value";
     private static final String INDEX = "index";
@@ -74,13 +73,11 @@ class RepeatedFieldMethodConstructor implements MethodConstructor, Logging {
     private static final String SET_RAW_PREFIX = "setRaw";
     private static final String CONVERTED_VALUE = "convertedValue";
 
-    private final int fieldIndex;
     private final FieldType fieldType;
     private final String javaFieldName;
     private final String methodNamePart;
     private final ClassName builderClassName;
     private final ClassName listElementClassName;
-    private final ClassName builderGenericClassName;
     private final FieldDescriptorProto fieldDescriptor;
     private final boolean isScalarOrEnum;
 
@@ -93,11 +90,9 @@ class RepeatedFieldMethodConstructor implements MethodConstructor, Logging {
     // The fields are checked in the {@code #build()} method
     // of the {@code RepeatedFieldMethodsConstructorBuilder} class.
     private RepeatedFieldMethodConstructor(RepeatedFieldMethodsConstructorBuilder builder) {
-        super();
+        super(builder);
         this.fieldType = builder.getFieldType();
-        this.fieldIndex = builder.getFieldIndex();
         this.fieldDescriptor = builder.getField();
-        this.builderGenericClassName = builder.getGenericClassName();
         FieldName fieldName = FieldName.of(fieldDescriptor);
         this.javaFieldName = fieldName.javaCase();
         this.methodNamePart = fieldName.toCamelCase();
@@ -374,11 +369,6 @@ class RepeatedFieldMethodConstructor implements MethodConstructor, Logging {
     private static String createGetConvertedCollectionValue() {
         String result = "final $T<$T> convertedValue = convertToList(value, $T.class)";
         return result;
-    }
-
-    private String descriptorCodeLine() {
-        return createDescriptorStatement(fieldIndex,
-                                         builderGenericClassName);
     }
 
     /**

@@ -40,7 +40,6 @@ import static com.google.common.collect.Lists.newArrayList;
 import static io.spine.tools.compiler.annotation.Annotations.canIgnoreReturnValue;
 import static io.spine.tools.compiler.validation.MethodConstructors.clearPrefix;
 import static io.spine.tools.compiler.validation.MethodConstructors.createConvertSingularValue;
-import static io.spine.tools.compiler.validation.MethodConstructors.createDescriptorStatement;
 import static io.spine.tools.compiler.validation.MethodConstructors.createValidateStatement;
 import static io.spine.tools.compiler.validation.MethodConstructors.getMessageBuilder;
 import static io.spine.tools.compiler.validation.MethodConstructors.rawSuffix;
@@ -55,7 +54,7 @@ import static java.lang.String.format;
  *
  * @author Illia Shepilov
  */
-class MapFieldMethodConstructor implements MethodConstructor, Logging {
+class MapFieldMethodConstructor extends AbstractMethodConstructor implements Logging {
 
     private static final String KEY = "key";
     private static final String VALUE = "value";
@@ -63,7 +62,6 @@ class MapFieldMethodConstructor implements MethodConstructor, Logging {
     private static final String MAP_TO_VALIDATE_PARAM_NAME = "mapToValidate";
     private static final String MAP_TO_VALIDATE = "final $T<$T, $T> mapToValidate = ";
 
-    private final int fieldIndex;
     private final String javaFieldName;
 
     /**
@@ -76,7 +74,6 @@ class MapFieldMethodConstructor implements MethodConstructor, Logging {
     private final TypeName keyTypeName;
     private final TypeName valueTypeName;
     private final MapFieldType fieldType;
-    private final ClassName genericClassName;
     private final ClassName builderClassName;
 
     /**
@@ -88,11 +85,9 @@ class MapFieldMethodConstructor implements MethodConstructor, Logging {
     // The fields are checked in the {@code #build()} method
     // of the {@code MapFieldMethodConstructorBuilder} class.
     private MapFieldMethodConstructor(MapFieldMethodsConstructorBuilder builder) {
-        super();
+        super(builder);
         this.fieldType = (MapFieldType) builder.getFieldType();
-        this.fieldIndex = builder.getFieldIndex();
         FieldDescriptorProto fieldDescriptor = builder.getField();
-        this.genericClassName = builder.getGenericClassName();
         FieldName fieldName = FieldName.of(fieldDescriptor);
         this.propertyName = fieldName.toCamelCase();
         this.javaFieldName = fieldName.javaCase();
@@ -276,10 +271,6 @@ class MapFieldMethodConstructor implements MethodConstructor, Logging {
         String result = "final $T<$T, $T> convertedValue = " +
                 "convertToMap(map, $T.class, $T.class)";
         return result;
-    }
-
-    private String descriptorCodeLine() {
-        return createDescriptorStatement(fieldIndex, genericClassName);
     }
 
     /**
