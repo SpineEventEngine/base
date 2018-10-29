@@ -121,8 +121,6 @@ class MessageValidatorTest {
     private static final String GREATER_MAX_MSG = "Number must be less than or equal to 64.5.";
     private static final String MATCH_REGEXP_MSG = "String must match the regular expression '%s'.";
 
-    private final MessageValidator validator = MessageValidator.newInstance();
-
     private List<ConstraintViolation> violations;
 
     /*
@@ -1022,7 +1020,8 @@ class MessageValidatorTest {
     }
 
     private void validate(Message msg) {
-        violations = validator.validate(msg);
+        MessageValidator validator = MessageValidator.newInstance(msg);
+        violations = validator.validate();
     }
 
     private ConstraintViolation firstViolation() {

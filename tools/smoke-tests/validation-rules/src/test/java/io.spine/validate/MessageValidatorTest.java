@@ -35,8 +35,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @DisplayName("MessageValidator should")
 class MessageValidatorTest {
 
-    private final MessageValidator validator = MessageValidator.newInstance();
-
     private List<ConstraintViolation> violations;
 
     @Test
@@ -61,7 +59,8 @@ class MessageValidatorTest {
     }
 
     private void validate(Message msg) {
-        violations = validator.validate(msg);
+        MessageValidator validator = MessageValidator.newInstance(msg);
+        violations = validator.validate();
     }
 
     private void assertIsValid() {

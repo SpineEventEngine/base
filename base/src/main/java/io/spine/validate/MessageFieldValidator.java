@@ -104,8 +104,8 @@ class MessageFieldValidator extends FieldValidator<Message> {
     }
 
     private void validateSingle(Message message) {
-        MessageValidator validator = MessageValidator.newInstance(getFieldContext());
-        List<ConstraintViolation> violations = validator.validate(message);
+        MessageValidator validator = MessageValidator.newInstance(message, getFieldContext());
+        List<ConstraintViolation> violations = validator.validate();
         if (!violations.isEmpty()) {
             addViolation(newValidViolation(message, violations));
         }

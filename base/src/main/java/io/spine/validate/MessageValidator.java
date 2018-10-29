@@ -39,37 +39,38 @@ import static io.spine.validate.FieldValidatorFactory.create;
 @Internal
 public class MessageValidator {
 
-    private final FieldContext rootContext;
+    private final Message message;
+    private final FieldContext messageContext;
 
-    /** Creates a new validator instance. */
-    public static MessageValidator newInstance() {
-        return new MessageValidator(FieldContext.empty());
+    private MessageValidator(Message message, FieldContext messageContext) {
+        this.message = message;
+        this.messageContext = messageContext;
     }
 
     /**
-     * Creates a new validator instance.
-     *
-     * <p>Use this constructor for inner messages
-     * (which are marked with "valid" option in Protobuf).
-     *
-     * @param rootContext the context of the message field,
-     *                    which is the root for the messages to validate
+     * Creates a validator for a top-level message.
      */
-    static MessageValidator newInstance(FieldContext rootContext) {
-        return new MessageValidator(rootContext);
+    public static MessageValidator newInstance(Message message) {
+        return new MessageValidator(message, FieldContext.empty());
     }
 
-    private MessageValidator(FieldContext rootContext) {
-        this.rootContext = rootContext;
+    /**
+     * Creates a validator for a message inside another message.
+     *
+     * @param message
+     *         the message to validate
+     * @param messageContext
+     *         the context of the message
+     */
+    static MessageValidator newInstance(Message message, FieldContext messageContext) {
+        return new MessageValidator(message, messageContext);
     }
 
     /**
      * Validates messages according to Spine custom protobuf options and returns constraint
      * violations found.
-     *
-     * @param message a message to validate
      */
-    public List<ConstraintViolation> validate(Message message) {
+    public List<ConstraintViolation> validate() {
         ImmutableList.Builder<ConstraintViolation> result = ImmutableList.builder();
         validateAlternativeFields(message, result);
         validateFields(message, result);
@@ -79,7 +80,7 @@ public class MessageValidator {
     private void validateAlternativeFields(Message message,
                                            ImmutableList.Builder<ConstraintViolation> result) {
         AlternativeFieldValidator altFieldValidator =
-                new AlternativeFieldValidator(message, rootContext);
+                new AlternativeFieldValidator(message, messageContext);
         result.addAll(altFieldValidator.validate());
     }
 
@@ -88,7 +89,7 @@ public class MessageValidator {
         Descriptor msgDescriptor = message.getDescriptorForType();
         List<FieldDescriptor> fields = msgDescriptor.getFields();
         for (FieldDescriptor field : fields) {
-            FieldContext fieldContext = rootContext.forChild(field);
+            FieldContext fieldContext = messageContext.forChild(field);
             FieldValue value = FieldValue.of(message.getField(field), fieldContext);
             FieldValidator<?> fieldValidator = create(value);
             List<ConstraintViolation> violations = fieldValidator.validate();
