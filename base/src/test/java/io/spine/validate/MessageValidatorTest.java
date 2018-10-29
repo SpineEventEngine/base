@@ -140,16 +140,14 @@ class MessageValidatorTest {
                 .newBuilder()
                 .setValue(newStringValue())
                 .build();
-        validate(validMsg);
-        assertIsValid(true);
+        assertValid(validMsg);
     }
 
     @Test
     @DisplayName("find out that required message field is NOT set")
     void find_out_that_required_Message_field_is_NOT_set() {
         RequiredMsgFieldValue invalidMsg = RequiredMsgFieldValue.getDefaultInstance();
-        validate(invalidMsg);
-        assertIsValid(false);
+        assertNotValid(invalidMsg);
     }
 
     @Test
@@ -158,16 +156,14 @@ class MessageValidatorTest {
         RequiredStringFieldValue validMsg = RequiredStringFieldValue.newBuilder()
                                                                     .setValue(newUuid())
                                                                     .build();
-        validate(validMsg);
-        assertIsValid(true);
+        assertValid(validMsg);
     }
 
     @Test
     @DisplayName("find out that required String field is NOT set")
     void find_out_that_required_String_field_is_NOT_set() {
         RequiredStringFieldValue invalidMsg = RequiredStringFieldValue.getDefaultInstance();
-        validate(invalidMsg);
-        assertIsValid(false);
+        assertNotValid(invalidMsg);
     }
 
     @Test
@@ -177,24 +173,21 @@ class MessageValidatorTest {
                 RequiredByteStringFieldValue.newBuilder()
                                             .setValue(newByteString())
                                             .build();
-        validate(validMsg);
-        assertIsValid(true);
+        assertValid(validMsg);
     }
 
     @Test
     @DisplayName("find out that required ByteString field is NOT set")
     void find_out_that_required_ByteString_field_is_NOT_set() {
         RequiredByteStringFieldValue invalidMsg = RequiredByteStringFieldValue.getDefaultInstance();
-        validate(invalidMsg);
-        assertIsValid(false);
+        assertNotValid(invalidMsg);
     }
 
     @Test
     @DisplayName("find out that required Enum field is set")
     void find_out_that_required_Enum_field_is_NOT_set() {
         RequiredEnumFieldValue invalidMsg = RequiredEnumFieldValue.getDefaultInstance();
-        validate(invalidMsg);
-        assertIsValid(false);
+        assertNotValid(invalidMsg);
     }
 
     @Test
@@ -203,15 +196,14 @@ class MessageValidatorTest {
         RequiredEnumFieldValue invalidMsg = RequiredEnumFieldValue.newBuilder()
                                                                   .setValue(Time.FUTURE)
                                                                   .build();
-        validate(invalidMsg);
-        assertIsValid(true);
+        assertValid(invalidMsg);
     }
 
     @Test
     @DisplayName("find out that required NOT set Boolean field passes validation")
     void find_out_that_required_NOT_set_Boolean_field_pass_validation() {
-        validate(RequiredBooleanFieldValue.getDefaultInstance());
-        assertIsValid(true);
+        RequiredBooleanFieldValue msg = RequiredBooleanFieldValue.getDefaultInstance();
+        assertValid(msg);
     }
 
     @Test
@@ -222,120 +214,39 @@ class MessageValidatorTest {
                                              .addValue(newStringValue())
                                              .addValue(newStringValue())
                                              .build();
-        validate(invalidMsg);
-        assertIsValid(true);
+        assertValid(invalidMsg);
     }
 
     @Test
     @DisplayName("find out that repeated required field has not values")
     void find_out_that_repeated_required_field_has_no_values() {
-        validate(RepeatedRequiredMsgFieldValue.getDefaultInstance());
-        assertIsValid(false);
+        RepeatedRequiredMsgFieldValue msg = RepeatedRequiredMsgFieldValue.getDefaultInstance();
+        assertNotValid(msg);
     }
 
     @Test
     @DisplayName("ignore repeated required field with an empty value")
     void ignore_repeated_required_field_with_empty_value() {
-        RepeatedRequiredMsgFieldValue msg =
-                RepeatedRequiredMsgFieldValue.newBuilder()
-                                             .addValue(newStringValue()) // valid value
-                                             .addValue(
-                                                     StringValue.getDefaultInstance()) // empty value
-                                             .build();
-        validate(msg);
-        assertIsValid(true);
+        RepeatedRequiredMsgFieldValue msg = RepeatedRequiredMsgFieldValue
+                .newBuilder()
+                .addValue(newStringValue()) // valid value
+                .addValue(StringValue.getDefaultInstance()) // empty value
+                .build();
+        assertValid(msg);
     }
 
     @Test
     @DisplayName("consider field is valid if no required option set")
     void consider_field_is_valid_if_no_required_option_set() {
-        validate(StringValue.getDefaultInstance());
-        assertIsValid(true);
+        StringValue msg = StringValue.getDefaultInstance();
+        assertValid(msg);
     }
 
     @Test
     @DisplayName("provide one valid violation if required field is NOT set")
     void provide_one_valid_violation_if_required_field_is_NOT_set() {
         RequiredStringFieldValue invalidMsg = RequiredStringFieldValue.getDefaultInstance();
-
-        validate(invalidMsg);
-
-        assertEquals(1, violations.size());
-        ConstraintViolation violation = firstViolation();
-        assertEquals(NO_VALUE_MSG, violation.getMsgFormat());
-        assertFieldPathIs(violation, VALUE);
-        assertTrue(violation.getViolationList()
-                            .isEmpty());
-    }
-
-    @Test
-    @DisplayName("propagate proper error message if custom message set and required Message field is NOT set")
-    void propagate_proper_error_message_if_custom_message_set_and_required_Message_field_is_NOT_set() {
-        CustomMessageRequiredMsgFieldValue invalidMsg =
-                CustomMessageRequiredMsgFieldValue.getDefaultInstance();
-        String expectedMessage =
-                getCustomErrorMessage(CustomMessageRequiredMsgFieldValue.getDescriptor());
-
-        validate(invalidMsg);
-        assertIsValid(false);
-
-        checkErrorMessage(expectedMessage);
-    }
-
-    @Test
-    @DisplayName("propagate proper error message if custom message set and required String field is NOT set")
-    void propagate_proper_error_message_if_custom_message_set_and_required_String_field_is_NOT_set() {
-        CustomMessageRequiredStringFieldValue invalidMsg =
-                CustomMessageRequiredStringFieldValue.getDefaultInstance();
-        String expectedMessage = getCustomErrorMessage(
-                CustomMessageRequiredStringFieldValue.getDescriptor());
-
-        validate(invalidMsg);
-        assertIsValid(false);
-
-        checkErrorMessage(expectedMessage);
-    }
-
-    @Test
-    @DisplayName("propagate proper error message if custom message set and required ByteString field is NOT set")
-    void propagate_proper_error_message_if_custom_message_set_and_required_ByteString_field_is_NOT_set() {
-        CustomMessageRequiredByteStringFieldValue invalidMsg =
-                CustomMessageRequiredByteStringFieldValue.getDefaultInstance();
-        String expectedMessage =
-                getCustomErrorMessage(CustomMessageRequiredByteStringFieldValue.getDescriptor());
-
-        validate(invalidMsg);
-        assertIsValid(false);
-
-        checkErrorMessage(expectedMessage);
-    }
-
-    @Test
-    @DisplayName("propagate proper error message if custom message set and required repeated field is NOT set")
-    void propagate_proper_error_message_if_custom_message_set_and_required_RepeatedMsg_field_is_NOT_set() {
-        CustomMessageRequiredRepeatedMsgFieldValue invalidMsg =
-                CustomMessageRequiredRepeatedMsgFieldValue.getDefaultInstance();
-        String expectedMessage =
-                getCustomErrorMessage(CustomMessageRequiredRepeatedMsgFieldValue.getDescriptor());
-
-        validate(invalidMsg);
-        assertIsValid(false);
-
-        checkErrorMessage(expectedMessage);
-    }
-
-    @Test
-    @DisplayName("propagate proper error message if custom message set and required Enum field is NOT set")
-    void propagate_proper_error_message_if_custom_message_set_and_required_Enum_field_is_NOT_set() {
-        CustomMessageRequiredEnumFieldValue invalidMsg =
-                CustomMessageRequiredEnumFieldValue.getDefaultInstance();
-        String expectedMessage =
-                getCustomErrorMessage(CustomMessageRequiredEnumFieldValue.getDescriptor());
-
-        validate(invalidMsg);
-        assertIsValid(false);
-
-        checkErrorMessage(expectedMessage);
+        assertSingleViolation(invalidMsg, NO_VALUE_MSG, VALUE);
     }
 
     @Test
@@ -344,23 +255,8 @@ class MessageValidatorTest {
         CustomMessageWithNoRequiredOption invalidMsg =
                 CustomMessageWithNoRequiredOption.getDefaultInstance();
 
-        validate(invalidMsg);
-        assertIsValid(true);
-
+        assertValid(invalidMsg);
         assertTrue(violations.isEmpty());
-    }
-
-    private void checkErrorMessage(String expectedMessage) {
-        ConstraintViolation constraintViolation = firstViolation();
-        assertEquals(expectedMessage, constraintViolation.getMsgFormat());
-    }
-
-    private static String getCustomErrorMessage(Descriptors.Descriptor descriptor) {
-        Descriptors.FieldDescriptor firstFieldDescriptor = descriptor.getFields()
-                                                                     .get(0);
-        return firstFieldDescriptor.getOptions()
-                                   .getExtension(OptionsProto.ifMissing)
-                                   .getMsgFormat();
     }
 
     /*
@@ -373,8 +269,7 @@ class MessageValidatorTest {
         TimeInFutureFieldValue validMsg = TimeInFutureFieldValue.newBuilder()
                                                                 .setValue(getFuture())
                                                                 .build();
-        validate(validMsg);
-        assertIsValid(true);
+        assertValid(validMsg);
     }
 
     @Test
@@ -383,8 +278,7 @@ class MessageValidatorTest {
         TimeInFutureFieldValue invalidMsg = TimeInFutureFieldValue.newBuilder()
                                                                   .setValue(getPast())
                                                                   .build();
-        validate(invalidMsg);
-        assertIsValid(false);
+        assertNotValid(invalidMsg);
     }
 
     @Test
@@ -393,8 +287,7 @@ class MessageValidatorTest {
         TimeInPastFieldValue validMsg = TimeInPastFieldValue.newBuilder()
                                                             .setValue(getPast())
                                                             .build();
-        validate(validMsg);
-        assertIsValid(true);
+        assertValid(validMsg);
     }
 
     @Test
@@ -403,8 +296,7 @@ class MessageValidatorTest {
         TimeInPastFieldValue invalidMsg = TimeInPastFieldValue.newBuilder()
                                                               .setValue(getFuture())
                                                               .build();
-        validate(invalidMsg);
-        assertIsValid(false);
+        assertNotValid(invalidMsg);
     }
 
     @Test
@@ -417,8 +309,7 @@ class MessageValidatorTest {
                 TimeInPastFieldValue.newBuilder()
                                     .setValue(timeInFuture)
                                     .build();
-        validate(invalidMsg);
-        assertIsValid(false);
+        assertNotValid(invalidMsg);
     }
 
     @Test
@@ -431,15 +322,14 @@ class MessageValidatorTest {
                 TimeInPastFieldValue.newBuilder()
                                     .setValue(timeInPast)
                                     .build();
-        validate(invalidMsg);
-        assertIsValid(true);
+        assertValid(invalidMsg);
     }
 
     @Test
     @DisplayName("consider Timestamp field valid if no TimeOption set")
     void consider_timestamp_field_is_valid_if_no_time_option_set() {
-        validate(TimeWithoutOptsFieldValue.getDefaultInstance());
-        assertIsValid(true);
+        TimeWithoutOptsFieldValue msg = TimeWithoutOptsFieldValue.getDefaultInstance();
+        assertValid(msg);
     }
 
     @Test
@@ -448,18 +338,7 @@ class MessageValidatorTest {
         TimeInFutureFieldValue invalidMsg = TimeInFutureFieldValue.newBuilder()
                                                                   .setValue(getPast())
                                                                   .build();
-
-        validate(invalidMsg);
-
-        assertEquals(1, violations.size());
-        ConstraintViolation violation = firstViolation();
-        assertEquals(
-                "Timestamp value must be in the future.",
-                format(firstViolation().getMsgFormat(), firstViolation().getParam(0))
-        );
-        assertFieldPathIs(violation, VALUE);
-        assertTrue(violation.getViolationList()
-                            .isEmpty());
+        assertSingleViolation(invalidMsg, "Timestamp value must be in the future.", VALUE);
     }
 
     /*
@@ -478,8 +357,7 @@ class MessageValidatorTest {
                 .newBuilder()
                 .setAny(content)
                 .build();
-        validate(container);
-        assertIsValid(true);
+        assertValid(container);
     }
 
     @Test
@@ -491,8 +369,7 @@ class MessageValidatorTest {
                 .newBuilder()
                 .setAny(content)
                 .build();
-        validate(container);
-        assertIsValid(false);
+        assertNotValid(container);
     }
 
     @Test
@@ -504,8 +381,7 @@ class MessageValidatorTest {
                 .newBuilder()
                 .setAny(content)
                 .build();
-        validate(container);
-        assertIsValid(true);
+        assertValid(container);
     }
 
     @Test
@@ -522,8 +398,7 @@ class MessageValidatorTest {
                 .newBuilder()
                 .setAny(externalAny)
                 .build();
-        validate(external);
-        assertIsValid(false);
+        assertNotValid(external);
     }
 
     /*
@@ -536,8 +411,7 @@ class MessageValidatorTest {
         Message nonZeroValue = DoubleValue.newBuilder()
                                           .setValue(5)
                                           .build();
-        validate(nonZeroValue);
-        assertIsValid(true);
+        assertValid(nonZeroValue);
     }
 
     @Test
@@ -580,14 +454,7 @@ class MessageValidatorTest {
     @DisplayName("provide one valid violation if number is less than decimal min")
     void provide_one_valid_violation_if_number_is_less_than_decimal_min() {
         minDecimalNumberTest(LESS_THAN_MIN, true, false);
-
-        assertEquals(1, violations.size());
-        ConstraintViolation violation = firstViolation();
-        assertEquals(LESS_THAN_MIN_MSG, format(violation.getMsgFormat(), violation.getParam(0),
-                                               violation.getParam(1)));
-        assertFieldPathIs(violation, VALUE);
-        assertTrue(violation.getViolationList()
-                            .isEmpty());
+        assertSingleViolation(LESS_THAN_MIN_MSG, VALUE);
     }
 
     /*
@@ -634,14 +501,7 @@ class MessageValidatorTest {
     @DisplayName("provide one valid violation if number is greater than decimal max")
     void provide_one_valid_violation_if_number_is_greater_than_decimal_max() {
         maxDecimalNumberTest(GREATER_THAN_MAX, true, false);
-
-        assertEquals(1, violations.size());
-        ConstraintViolation violation = firstViolation();
-        assertEquals(GREATER_MAX_MSG, format(violation.getMsgFormat(), violation.getParam(0),
-                                             violation.getParam(1)));
-        assertFieldPathIs(violation, VALUE);
-        assertTrue(violation.getViolationList()
-                            .isEmpty());
+        assertSingleViolation(GREATER_MAX_MSG, VALUE);
     }
 
     /*
@@ -654,8 +514,7 @@ class MessageValidatorTest {
         MinNumberFieldValue msg = MinNumberFieldValue.newBuilder()
                                                      .setValue(GREATER_THAN_MIN)
                                                      .build();
-        validate(msg);
-        assertIsValid(true);
+        assertValid(msg);
     }
 
     @Test
@@ -664,8 +523,7 @@ class MessageValidatorTest {
         MinNumberFieldValue msg = MinNumberFieldValue.newBuilder()
                                                      .setValue(EQUAL_MIN)
                                                      .build();
-        validate(msg);
-        assertIsValid(true);
+        assertValid(msg);
     }
 
     @Test
@@ -674,8 +532,7 @@ class MessageValidatorTest {
         MinNumberFieldValue msg = MinNumberFieldValue.newBuilder()
                                                      .setValue(LESS_THAN_MIN)
                                                      .build();
-        validate(msg);
-        assertIsValid(false);
+        assertNotValid(msg);
     }
 
     @Test
@@ -684,15 +541,7 @@ class MessageValidatorTest {
         MinNumberFieldValue msg = MinNumberFieldValue.newBuilder()
                                                      .setValue(LESS_THAN_MIN)
                                                      .build();
-
-        validate(msg);
-
-        assertEquals(1, violations.size());
-        ConstraintViolation violation = firstViolation();
-        assertEquals(LESS_THAN_MIN_MSG, format(violation.getMsgFormat(), violation.getParam(0)));
-        assertFieldPathIs(violation, VALUE);
-        assertTrue(violation.getViolationList()
-                            .isEmpty());
+        assertSingleViolation(msg, LESS_THAN_MIN_MSG, VALUE);
     }
 
     /*
@@ -705,8 +554,7 @@ class MessageValidatorTest {
         MaxNumberFieldValue msg = MaxNumberFieldValue.newBuilder()
                                                      .setValue(GREATER_THAN_MAX)
                                                      .build();
-        validate(msg);
-        assertIsValid(false);
+        assertNotValid(msg);
     }
 
     @Test
@@ -715,8 +563,7 @@ class MessageValidatorTest {
         MaxNumberFieldValue msg = MaxNumberFieldValue.newBuilder()
                                                      .setValue(EQUAL_MAX)
                                                      .build();
-        validate(msg);
-        assertIsValid(true);
+        assertValid(msg);
     }
 
     @Test
@@ -725,8 +572,7 @@ class MessageValidatorTest {
         MaxNumberFieldValue msg = MaxNumberFieldValue.newBuilder()
                                                      .setValue(LESS_THAN_MAX)
                                                      .build();
-        validate(msg);
-        assertIsValid(true);
+        assertValid(msg);
     }
 
     @Test
@@ -735,15 +581,7 @@ class MessageValidatorTest {
         MaxNumberFieldValue msg = MaxNumberFieldValue.newBuilder()
                                                      .setValue(GREATER_THAN_MAX)
                                                      .build();
-
-        validate(msg);
-
-        assertEquals(1, violations.size());
-        ConstraintViolation violation = firstViolation();
-        assertEquals(GREATER_MAX_MSG, format(violation.getMsgFormat(), violation.getParam(0)));
-        assertFieldPathIs(violation, VALUE);
-        assertTrue(violation.getViolationList()
-                            .isEmpty());
+        assertSingleViolation(msg, GREATER_MAX_MSG, VALUE);
     }
     /*
      * Digits option tests.
@@ -788,17 +626,9 @@ class MessageValidatorTest {
     @Test
     @DisplayName("provide one valid violation if integral digit count is greater than max")
     void provide_one_valid_violation_if_integral_digit_count_is_greater_than_max() {
+        String expectedErrMsg = "Number value is out of bounds, expected: <2 max digits>.<2 max digits>.";
         digitsCountTest(INT_DIGIT_COUNT_GREATER_THAN_MAX, false);
-
-        assertEquals(1, violations.size());
-        ConstraintViolation violation = firstViolation();
-        assertEquals(
-                "Number value is out of bounds, expected: <2 max digits>.<2 max digits>.",
-                format(violation.getMsgFormat(), violation.getParam(0), violation.getParam(1))
-        );
-        assertFieldPathIs(violation, VALUE);
-        assertTrue(violation.getViolationList()
-                            .isEmpty());
+        assertSingleViolation(expectedErrMsg, VALUE);
     }
 
     /*
@@ -811,8 +641,7 @@ class MessageValidatorTest {
         PatternStringFieldValue msg = PatternStringFieldValue.newBuilder()
                                                              .setEmail("valid.email@mail.com")
                                                              .build();
-        validate(msg);
-        assertIsValid(true);
+        assertValid(msg);
     }
 
     @Test
@@ -821,15 +650,14 @@ class MessageValidatorTest {
         PatternStringFieldValue msg = PatternStringFieldValue.newBuilder()
                                                              .setEmail("invalid email")
                                                              .build();
-        validate(msg);
-        assertIsValid(false);
+        assertNotValid(msg);
     }
 
     @Test
     @DisplayName("consider field is valid if PatternOption is not set")
     void consider_field_is_valid_if_no_pattern_option_set() {
-        validate(StringValue.getDefaultInstance());
-        assertIsValid(true);
+        StringValue msg = StringValue.getDefaultInstance();
+        assertValid(msg);
     }
 
     @Test
@@ -838,18 +666,9 @@ class MessageValidatorTest {
         PatternStringFieldValue msg = PatternStringFieldValue.newBuilder()
                                                              .setEmail("invalid email")
                                                              .build();
-
-        validate(msg);
-
-        assertEquals(1, violations.size());
-        ConstraintViolation violation = firstViolation();
-        assertEquals(MATCH_REGEXP_MSG, violation.getMsgFormat());
-        assertEquals(
-                "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$",
-                firstViolation().getParam(0));
-        assertFieldPathIs(violation, EMAIL);
-        assertTrue(violation.getViolationList()
-                            .isEmpty());
+        String expectedErrMsg = format(MATCH_REGEXP_MSG,
+                                       "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
+        assertSingleViolation(msg, expectedErrMsg, EMAIL);
     }
 
     /*
@@ -866,9 +685,7 @@ class MessageValidatorTest {
         EnclosedMessageFieldValue msg = EnclosedMessageFieldValue.newBuilder()
                                                                  .setOuterMsgField(enclosedMsg)
                                                                  .build();
-        validate(msg);
-
-        assertIsValid(true);
+        assertValid(msg);
     }
 
     @Test
@@ -880,9 +697,7 @@ class MessageValidatorTest {
         EnclosedMessageFieldValue msg = EnclosedMessageFieldValue.newBuilder()
                                                                  .setOuterMsgField(enclosedMsg)
                                                                  .build();
-        validate(msg);
-
-        assertIsValid(false);
+        assertNotValid(msg);
     }
 
     @Test
@@ -895,9 +710,7 @@ class MessageValidatorTest {
                 EnclosedMessageWithoutAnnotationFieldValue.newBuilder()
                                                           .setOuterMsgField(enclosedMsg)
                                                           .build();
-        validate(msg);
-
-        assertIsValid(true);
+        assertValid(msg);
     }
 
     @Test
@@ -905,9 +718,7 @@ class MessageValidatorTest {
     void consider_field_valid_if_it_is_not_set() {
         EnclosedMessageWithRequiredString msg = EnclosedMessageWithRequiredString.newBuilder()
                                                                                  .build();
-        validate(msg);
-
-        assertIsValid(true);
+        assertValid(msg);
     }
 
     @Test
@@ -956,9 +767,73 @@ class MessageValidatorTest {
     @Test
     @DisplayName("ignore custom invalid field message if validation is disabled")
     void ignore_custom_invalid_field_message_if_validation_is_disabled() {
-        validate(
-                EnclosedMessageFieldValueWithoutAnnotationFieldValueWithCustomInvalidMessage.getDefaultInstance());
-        assertIsValid(true);
+        Message msg = EnclosedMessageFieldValueWithoutAnnotationFieldValueWithCustomInvalidMessage.getDefaultInstance();
+        assertValid(msg);
+    }
+
+    @Nested
+    @DisplayName("propagate proper error message if custom message set and required")
+    class ErrorMessage {
+
+        @Test
+        @DisplayName("Message field is NOT set")
+        void propagate_proper_error_message_if_custom_message_set_and_required_Message_field_is_NOT_set() {
+            CustomMessageRequiredMsgFieldValue invalidMsg =
+                    CustomMessageRequiredMsgFieldValue.getDefaultInstance();
+            assertErrorMessage(invalidMsg);
+        }
+
+        @Test
+        @DisplayName("String field is NOT set")
+        void propagate_proper_error_message_if_custom_message_set_and_required_String_field_is_NOT_set() {
+            CustomMessageRequiredStringFieldValue invalidMsg =
+                    CustomMessageRequiredStringFieldValue.getDefaultInstance();
+            assertErrorMessage(invalidMsg);
+        }
+
+        @Test
+        @DisplayName("ByteString field is NOT set")
+        void propagate_proper_error_message_if_custom_message_set_and_required_ByteString_field_is_NOT_set() {
+            CustomMessageRequiredByteStringFieldValue invalidMsg =
+                    CustomMessageRequiredByteStringFieldValue.getDefaultInstance();
+            assertErrorMessage(invalidMsg);
+        }
+
+        @Test
+        @DisplayName("repeated field is NOT set")
+        void propagate_proper_error_message_if_custom_message_set_and_required_RepeatedMsg_field_is_NOT_set() {
+            CustomMessageRequiredRepeatedMsgFieldValue invalidMsg =
+                    CustomMessageRequiredRepeatedMsgFieldValue.getDefaultInstance();
+            assertErrorMessage(invalidMsg);
+        }
+
+        @Test
+        @DisplayName("Enum field is NOT set")
+        void propagate_proper_error_message_if_custom_message_set_and_required_Enum_field_is_NOT_set() {
+            CustomMessageRequiredEnumFieldValue invalidMsg =
+                    CustomMessageRequiredEnumFieldValue.getDefaultInstance();
+            assertErrorMessage(invalidMsg);
+        }
+
+        private void assertErrorMessage(Message message) {
+            assertNotValid(message);
+            Descriptors.Descriptor descriptor = message.getDescriptorForType();
+            String expectedErrorMessage = getCustomErrorMessage(descriptor);
+            checkErrorMessage(expectedErrorMessage);
+        }
+
+        private void checkErrorMessage(String expectedMessage) {
+            ConstraintViolation constraintViolation = firstViolation();
+            assertEquals(expectedMessage, constraintViolation.getMsgFormat());
+        }
+
+        private String getCustomErrorMessage(Descriptors.Descriptor descriptor) {
+            Descriptors.FieldDescriptor firstFieldDescriptor = descriptor.getFields()
+                                                                         .get(0);
+            return firstFieldDescriptor.getOptions()
+                                       .getExtension(OptionsProto.ifMissing)
+                                       .getMsgFormat();
+        }
     }
 
     @Nested
@@ -1045,14 +920,8 @@ class MessageValidatorTest {
             @Test
             @DisplayName("provide one valid violation if is not valid")
             void provide_one_valid_violation_if_entity_id_in_command_is_not_valid() {
-                validate(EntityIdMsgFieldValue.getDefaultInstance());
-
-                assertEquals(1, violations.size());
-                ConstraintViolation violation = firstViolation();
-                assertEquals(NO_VALUE_MSG, violation.getMsgFormat());
-                assertFieldPathIs(violation, VALUE);
-                assertTrue(violation.getViolationList()
-                                    .isEmpty());
+                EntityIdMsgFieldValue msg = EntityIdMsgFieldValue.getDefaultInstance();
+                assertSingleViolation(msg, NO_VALUE_MSG, VALUE);
             }
         }
 
@@ -1091,9 +960,10 @@ class MessageValidatorTest {
             @Test
             @DisplayName("ByteString")
             void find_out_that_entity_id_in_command_cannot_be_ByteString() {
-                EntityIdByteStringFieldValue msg = EntityIdByteStringFieldValue.newBuilder()
-                                                                               .setValue(newByteString())
-                                                                               .build();
+                EntityIdByteStringFieldValue msg = EntityIdByteStringFieldValue
+                        .newBuilder()
+                        .setValue(newByteString())
+                        .build();
                 assertNotValid(msg);
             }
 
@@ -1157,6 +1027,7 @@ class MessageValidatorTest {
         validate(msg);
         assertIsValid(true);
     }
+
     private void assertNotValid(Message msg) {
         validate(msg);
         assertIsValid(false);
@@ -1182,6 +1053,25 @@ class MessageValidatorTest {
                                      .isEmpty());
             }
         }
+    }
+
+    private void assertSingleViolation(Message message,
+                                       String expectedErrMsg,
+                                       String invalidFieldName) {
+        assertNotValid(message);
+        assertEquals(1, violations.size());
+        assertSingleViolation(expectedErrMsg, invalidFieldName);
+    }
+
+    /** Checks that a message is not valid and has a single violation. */
+    private void assertSingleViolation(String expectedErrMsg, String invalidFieldName) {
+        ConstraintViolation violation = firstViolation();
+        String actualErrorMessage = format(violation.getMsgFormat(), violation.getParamList()
+                                                                              .toArray());
+        assertEquals(expectedErrMsg, actualErrorMessage);
+        assertFieldPathIs(violation, invalidFieldName);
+        assertTrue(violation.getViolationList()
+                            .isEmpty());
     }
 
     private static void assertFieldPathIs(ConstraintViolation violation, String... expectedFields) {
