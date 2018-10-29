@@ -21,8 +21,6 @@
 package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
-import com.google.protobuf.Descriptors.Descriptor;
-import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
 
@@ -39,19 +37,18 @@ import static io.spine.validate.FieldValidatorFactory.create;
 @Internal
 public class MessageValidator {
 
-    private final Message message;
-    private final FieldContext messageContext;
+    private final MessageValue message;
 
-    private MessageValidator(Message message, FieldContext messageContext) {
+    private MessageValidator(MessageValue message) {
         this.message = message;
-        this.messageContext = messageContext;
     }
 
     /**
      * Creates a validator for a top-level message.
      */
     public static MessageValidator newInstance(Message message) {
-        return new MessageValidator(message, FieldContext.empty());
+        MessageValue messageValue = MessageValue.atTopLevel(message);
+        return new MessageValidator(messageValue);
     }
 
     /**
@@ -63,7 +60,8 @@ public class MessageValidator {
      *         the context of the message
      */
     static MessageValidator newInstance(Message message, FieldContext messageContext) {
-        return new MessageValidator(message, messageContext);
+        MessageValue messageValue = MessageValue.nestedIn(messageContext, message);
+        return new MessageValidator(messageValue);
     }
 
     /**
@@ -72,25 +70,18 @@ public class MessageValidator {
      */
     public List<ConstraintViolation> validate() {
         ImmutableList.Builder<ConstraintViolation> result = ImmutableList.builder();
-        validateAlternativeFields(message, result);
-        validateFields(message, result);
+        validateAlternativeFields(result);
+        validateFields(result);
         return result.build();
     }
 
-    private void validateAlternativeFields(Message message,
-                                           ImmutableList.Builder<ConstraintViolation> result) {
-        AlternativeFieldValidator altFieldValidator =
-                new AlternativeFieldValidator(message, messageContext);
+    private void validateAlternativeFields(ImmutableList.Builder<ConstraintViolation> result) {
+        AlternativeFieldValidator altFieldValidator = new AlternativeFieldValidator(message);
         result.addAll(altFieldValidator.validate());
     }
 
-    private void validateFields(Message message,
-                                ImmutableList.Builder<ConstraintViolation> result) {
-        Descriptor msgDescriptor = message.getDescriptorForType();
-        List<FieldDescriptor> fields = msgDescriptor.getFields();
-        for (FieldDescriptor field : fields) {
-            FieldContext fieldContext = messageContext.forChild(field);
-            FieldValue value = FieldValue.of(message.getField(field), fieldContext);
+    private void validateFields(ImmutableList.Builder<ConstraintViolation> result) {
+        for (FieldValue value : message.fields()) {
             FieldValidator<?> fieldValidator = create(value);
             List<ConstraintViolation> violations = fieldValidator.validate();
             result.addAll(violations);

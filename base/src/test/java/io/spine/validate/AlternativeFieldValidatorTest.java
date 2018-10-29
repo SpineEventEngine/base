@@ -33,8 +33,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @DisplayName("AlternativeFieldValidator should")
 class AlternativeFieldValidatorTest {
 
-    private static final FieldContext EMPTY_CONTEXT = FieldContext.empty();
-
     @Test
     @DisplayName("pass if one field populated")
     void pass_if_one_field_populated() {
@@ -88,7 +86,8 @@ class AlternativeFieldValidatorTest {
     }
 
     private static void assertValid(Message message, boolean valid) {
-        AlternativeFieldValidator validator = new AlternativeFieldValidator(message, EMPTY_CONTEXT);
+        MessageValue value = MessageValue.atTopLevel(message);
+        AlternativeFieldValidator validator = new AlternativeFieldValidator(value);
         List<? extends ConstraintViolation> violations = validator.validate();
         assertEquals(valid, violations.isEmpty());
     }
