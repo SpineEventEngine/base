@@ -75,16 +75,22 @@ class AlternativeFieldValidator implements Logging {
     private final FieldContext rootContext;
 
     /**
+     * The message to validate.
+     */
+    private final Message message;
+
+    /**
      * The list builder to accumulate violations.
      */
     private final ImmutableList.Builder<ConstraintViolation> violations = ImmutableList.builder();
 
-    AlternativeFieldValidator(Descriptor messageDescriptor, FieldContext rootContext) {
-        this.messageDescriptor = messageDescriptor;
+    AlternativeFieldValidator(Message message, FieldContext rootContext) {
+        this.message = message;
+        this.messageDescriptor = message.getDescriptorForType();
         this.rootContext = rootContext;
     }
 
-    List<? extends ConstraintViolation> validate(Message message) {
+    List<? extends ConstraintViolation> validate() {
         Map<FieldDescriptor, Object> options = messageDescriptor.getOptions()
                                                                 .getAllFields();
         for (FieldDescriptor optionDescriptor : options.keySet()) {

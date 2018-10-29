@@ -78,10 +78,9 @@ public class MessageValidator {
 
     private void validateAlternativeFields(Message message,
                                            ImmutableList.Builder<ConstraintViolation> result) {
-        Descriptor typeDescr = message.getDescriptorForType();
         AlternativeFieldValidator altFieldValidator =
-                new AlternativeFieldValidator(typeDescr, rootContext);
-        result.addAll(altFieldValidator.validate(message));
+                new AlternativeFieldValidator(message, rootContext);
+        result.addAll(altFieldValidator.validate());
     }
 
     private void validateFields(Message message,

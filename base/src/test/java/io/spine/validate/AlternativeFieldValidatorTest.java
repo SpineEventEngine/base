@@ -20,30 +20,20 @@
 
 package io.spine.validate;
 
-import com.google.protobuf.Descriptors.Descriptor;
+import com.google.protobuf.Message;
 import io.spine.test.validate.altfields.MessageWithMissingField;
 import io.spine.test.validate.altfields.PersonName;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("AlternativeFieldValidator should")
 class AlternativeFieldValidatorTest {
 
     private static final FieldContext EMPTY_CONTEXT = FieldContext.empty();
-
-    private AlternativeFieldValidator validator;
-
-    @BeforeEach
-    void setUp() {
-        Descriptor descriptor = PersonName.getDescriptor();
-        validator = new AlternativeFieldValidator(descriptor, EMPTY_CONTEXT);
-    }
 
     @Test
     @DisplayName("pass if one field populated")
@@ -51,8 +41,7 @@ class AlternativeFieldValidatorTest {
         PersonName fieldPopulated = PersonName.newBuilder()
                                               .setFirstName("Alexander")
                                               .build();
-        List<? extends ConstraintViolation> violations = validator.validate(fieldPopulated);
-        assertTrue(violations.isEmpty());
+        assertValid(fieldPopulated);
     }
 
     @Test
@@ -62,16 +51,14 @@ class AlternativeFieldValidatorTest {
                                                   .setHonorificPrefix("Mr.")
                                                   .setLastName("Yevsyukov")
                                                   .build();
-        List<? extends ConstraintViolation> violations = validator.validate(combinationDefined);
-        assertTrue(violations.isEmpty());
+        assertValid(combinationDefined);
     }
 
     @Test
     @DisplayName("fail if nothing defined")
     void fail_if_nothing_defined() {
         PersonName empty = PersonName.getDefaultInstance();
-        List<? extends ConstraintViolation> violations = validator.validate(empty);
-        assertFalse(violations.isEmpty());
+        assertNotValid(empty);
     }
 
     @Test
@@ -80,20 +67,29 @@ class AlternativeFieldValidatorTest {
         PersonName notRequiredPopulated = PersonName.newBuilder()
                                                     .setHonorificSuffix("I")
                                                     .build();
-        List<? extends ConstraintViolation> violations = validator.validate(notRequiredPopulated);
-        assertFalse(violations.isEmpty());
+        assertNotValid(notRequiredPopulated);
     }
 
     @Test
     @DisplayName("report missing fields")
     void report_missing_field() {
-        AlternativeFieldValidator testee =
-                new AlternativeFieldValidator(MessageWithMissingField.getDescriptor(),
-                                              EMPTY_CONTEXT);
         MessageWithMissingField msg = MessageWithMissingField.newBuilder()
                                                              .setPresent(true)
                                                              .build();
-        List<? extends ConstraintViolation> violations = testee.validate(msg);
-        assertFalse(violations.isEmpty());
+        assertValid(msg);
+    }
+
+    private static void assertValid(Message message) {
+        assertValid(message, true);
+    }
+
+    private static void assertNotValid(Message message) {
+        assertValid(message, false);
+    }
+
+    private static void assertValid(Message message, boolean valid) {
+        AlternativeFieldValidator validator = new AlternativeFieldValidator(message, EMPTY_CONTEXT);
+        List<? extends ConstraintViolation> violations = validator.validate();
+        assertEquals(valid, violations.isEmpty());
     }
 }
