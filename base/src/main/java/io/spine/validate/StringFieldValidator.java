@@ -43,7 +43,7 @@ class StringFieldValidator extends FieldValidator<String> {
      */
     StringFieldValidator(FieldValue fieldValue, boolean strict) {
         super(fieldValue, strict);
-        this.patternOption = optionValue(OptionsProto.pattern);
+        this.patternOption = fieldValue.valueOf(OptionsProto.pattern);
         this.regex = patternOption.getRegex();
     }
 

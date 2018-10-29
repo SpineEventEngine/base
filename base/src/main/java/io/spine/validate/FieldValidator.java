@@ -21,11 +21,8 @@
 package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
-import com.google.protobuf.DescriptorProtos.FieldOptions;
-import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import com.google.protobuf.Message;
 import io.spine.base.FieldPath;
-import io.spine.code.proto.Option;
 import io.spine.logging.Logging;
 import io.spine.option.IfInvalidOption;
 import io.spine.option.IfMissingOption;
@@ -49,7 +46,8 @@ abstract class FieldValidator<V> implements Logging {
     private static final String ENTITY_ID_REPEATED_FIELD_MSG =
             "Entity ID must not be a repeated field.";
 
-    private final FieldDeclaration field;
+    private final FieldValue value;
+    private final FieldDeclaration declaration;
     private final ImmutableList<V> values;
 
     private final List<ConstraintViolation> violations = newLinkedList();
@@ -68,19 +66,20 @@ abstract class FieldValidator<V> implements Logging {
     /**
      * Creates a new validator instance.
      *
-     * @param value
+     * @param fieldValue
      *         the value to validate
      * @param strict
      *         if {@code true} the validator would assume that the field
      */
-    protected FieldValidator(FieldValue value, boolean strict) {
-        this.field = value.declaration();
-        this.values = value.asList();
+    protected FieldValidator(FieldValue fieldValue, boolean strict) {
+        this.value = fieldValue;
+        this.declaration = fieldValue.declaration();
+        this.values = fieldValue.asList();
         this.strict = strict;
-        this.required = optionValue(OptionsProto.required);
-        this.ifMissingOption = optionValue(OptionsProto.ifMissing);
-        this.validate = optionValue(OptionsProto.valid);
-        this.ifInvalid = optionValue(OptionsProto.ifInvalid);
+        this.required = fieldValue.valueOf(OptionsProto.required);
+        this.ifMissingOption = fieldValue.valueOf(OptionsProto.ifMissing);
+        this.validate = fieldValue.valueOf(OptionsProto.valid);
+        this.ifInvalid = fieldValue.valueOf(OptionsProto.ifInvalid);
     }
 
     /**
@@ -93,7 +92,7 @@ abstract class FieldValidator<V> implements Logging {
     boolean fieldValueNotSet() {
         boolean valueNotSet =
                 values.isEmpty()
-                        || (field.isScalar() && isNotSet(values.get(0)));
+                        || (declaration.isScalar() && isNotSet(values.get(0)));
         return valueNotSet;
     }
 
@@ -159,7 +158,7 @@ abstract class FieldValidator<V> implements Logging {
      * @see #isRequiredId()
      */
     protected void validateEntityId() {
-        if (field.isRepeated()) {
+        if (declaration.isRepeated()) {
             ConstraintViolation violation = ConstraintViolation
                     .newBuilder()
                     .setMsgFormat(ENTITY_ID_REPEATED_FIELD_MSG)
@@ -251,24 +250,8 @@ abstract class FieldValidator<V> implements Logging {
         return msg;
     }
 
-    /**
-     * Obtains the option for the validated field.
-     *
-     * @param extension
-     *         an extension key used to obtain a validation option
-     * @param <T>
-     *         the type of the option value
-     */
-    protected final <T> Option<T> option(GeneratedExtension<FieldOptions, T> extension) {
-        return field.option(extension);
-    }
-
-    protected final <T> T optionValue(GeneratedExtension<FieldOptions, T> extension) {
-        return option(extension).value();
-    }
-
     private boolean shouldValidate() {
-        return field.isScalar() || validate;
+        return declaration.isScalar() || validate;
     }
 
     final IfInvalidOption ifInvalid() {
@@ -283,7 +266,7 @@ abstract class FieldValidator<V> implements Logging {
      * Returns {@code true} if the field is a required ID, {@code false} otherwise.
      */
     private boolean isRequiredId() {
-        boolean result = field.isCommandId() || isRequiredEntityId();
+        boolean result = declaration.isCommandId() || isRequiredEntityId();
         return result;
     }
 
@@ -297,9 +280,10 @@ abstract class FieldValidator<V> implements Logging {
      * @return {@code true} if the field is a required entity ID, {@code false} otherwise
      */
     private boolean isRequiredEntityId() {
-        boolean requiredSetExplicitly = option(OptionsProto.required).isExplicitlySet();
+        boolean requiredSetExplicitly = value.option(OptionsProto.required)
+                                             .isExplicitlySet();
         boolean notRequired = !required && requiredSetExplicitly;
-        return field.isEntityId() && !notRequired;
+        return declaration.isEntityId() && !notRequired;
     }
 
     /**
@@ -308,7 +292,7 @@ abstract class FieldValidator<V> implements Logging {
      * @return the field context
      */
     protected FieldContext getFieldContext() {
-        return field.context();
+        return value.context();
     }
 
     /** Returns a path to the current field. */
@@ -318,6 +302,6 @@ abstract class FieldValidator<V> implements Logging {
 
     /** Returns the declaration of the validated field. */
     protected FieldDeclaration field() {
-        return field;
+        return declaration;
     }
 }

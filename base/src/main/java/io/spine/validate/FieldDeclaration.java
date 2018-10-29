@@ -20,19 +20,14 @@
 
 package io.spine.validate;
 
-import com.google.protobuf.DescriptorProtos.FieldOptions;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
-import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import io.spine.base.CommandMessage;
 import io.spine.code.proto.FieldTypes2;
-import io.spine.code.proto.Option;
 import io.spine.option.EntityOption;
 import io.spine.option.OptionsProto;
 
-import java.util.Optional;
-
-import static io.spine.validate.rule.ValidationRuleOptions.getOptionValue;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Declaration of a Protobuf field.
@@ -43,32 +38,14 @@ import static io.spine.validate.rule.ValidationRuleOptions.getOptionValue;
  * {@link com.google.protobuf.Descriptors} instead of {@link com.google.protobuf.DescriptorProtos}.
  * The former descriptors provide a more powerful API.
  */
+//TODO:2018-10-29:dmytro.grankin: the class should be moved to `io.spine.code.proto`,
+// but the package already contains `FieldDeclaration`.
 final class FieldDeclaration {
 
     private final FieldDescriptor field;
-    private final FieldContext context;
 
-    FieldDeclaration(FieldContext context) {
-        this.field = context.getTarget();
-        this.context = context;
-    }
-
-    /**
-     * Obtains the desired option for the field.
-     *
-     * @param extension
-     *         an extension key used to obtain an option
-     * @param <T>
-     *         the type of the option value
-     */
-    <T> Option<T> option(GeneratedExtension<FieldOptions, T> extension) {
-        Optional<Option<T>> validationRuleOption = getOptionValue(context, extension);
-        if (validationRuleOption.isPresent()) {
-            return validationRuleOption.get();
-        }
-
-        Option<T> ownOption = Option.from(field, extension);
-        return ownOption;
+    FieldDeclaration(FieldDescriptor field) {
+        this.field = checkNotNull(field);
     }
 
     /**
@@ -117,15 +94,6 @@ final class FieldDeclaration {
         return isMap() || isRepeated();
     }
 
-    FieldDescriptor.JavaType javaType() {
-        if (!isMap()) {
-            return field.getJavaType();
-        }
-        FieldDescriptor.JavaType valuesType = FieldTypes2.valueDescriptor(field)
-                                                         .getJavaType();
-        return valuesType;
-    }
-
     boolean isRepeated() {
         return FieldTypes2.isRepeated(field);
     }
@@ -134,8 +102,8 @@ final class FieldDeclaration {
         return FieldTypes2.isMap(field);
     }
 
-    FieldContext context() {
-        return context;
+    FieldDescriptor descriptor() {
+        return field;
     }
 
     private boolean isEntityField() {

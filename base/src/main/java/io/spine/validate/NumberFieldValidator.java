@@ -62,13 +62,13 @@ abstract class NumberFieldValidator<V extends Number & Comparable<V>> extends Fi
      */
     NumberFieldValidator(FieldValue fieldValue) {
         super(fieldValue, false);
-        this.minDecimalOpt = optionValue(OptionsProto.decimalMin);
+        this.minDecimalOpt = fieldValue.valueOf(OptionsProto.decimalMin);
         this.isMinDecimalInclusive = minDecimalOpt.getInclusive();
-        this.maxDecimalOpt = optionValue(OptionsProto.decimalMax);
+        this.maxDecimalOpt = fieldValue.valueOf(OptionsProto.decimalMax);
         this.isMaxDecimalInclusive = maxDecimalOpt.getInclusive();
-        this.minOption = optionValue(OptionsProto.min);
-        this.maxOption = optionValue(OptionsProto.max);
-        this.digitsOption = optionValue(OptionsProto.digits);
+        this.minOption = fieldValue.valueOf(OptionsProto.min);
+        this.maxOption = fieldValue.valueOf(OptionsProto.max);
+        this.digitsOption = fieldValue.valueOf(OptionsProto.digits);
     }
 
     /** Converts a string representation to a number. */

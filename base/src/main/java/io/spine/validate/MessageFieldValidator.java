@@ -56,7 +56,7 @@ class MessageFieldValidator extends FieldValidator<Message> {
      */
     MessageFieldValidator(FieldValue fieldValue, boolean strict) {
         super(fieldValue, strict);
-        this.timeConstraint = optionValue(OptionsProto.when);
+        this.timeConstraint = fieldValue.valueOf(OptionsProto.when);
     }
 
     @Override
