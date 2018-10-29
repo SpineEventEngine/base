@@ -76,7 +76,7 @@ class AlternativeFieldValidatorTest {
         MessageWithMissingField msg = MessageWithMissingField.newBuilder()
                                                              .setPresent(true)
                                                              .build();
-        assertValid(msg);
+        assertNotValid(msg);
     }
 
     private static void assertValid(Message message) {
