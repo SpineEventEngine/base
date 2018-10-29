@@ -38,7 +38,6 @@ import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static io.spine.tools.compiler.annotation.Annotations.canIgnoreReturnValue;
-import static io.spine.tools.compiler.validation.ClassNames.getClassName;
 import static io.spine.tools.compiler.validation.ClassNames.getParameterClassName;
 import static io.spine.tools.compiler.validation.ClassNames.getStringClassName;
 import static io.spine.tools.compiler.validation.MethodConstructors.clearPrefix;
@@ -65,7 +64,6 @@ class SingularFieldMethodConstructor extends AbstractMethodConstructor implement
     private final String methodNamePart;
     private final FieldType fieldType;
     private final ClassName fieldClassName;
-    private final ClassName builderClassName;
     private final FieldDescriptorProto field;
 
     /**
@@ -81,7 +79,6 @@ class SingularFieldMethodConstructor extends AbstractMethodConstructor implement
         this.field = builder.getField();
         MessageTypeCache messageTypeCache = builder.getTypeCache();
         this.fieldClassName = getParameterClassName(field, messageTypeCache);
-        this.builderClassName = getClassName(builder.getJavaPackage(), builder.getJavaClass());
         FieldName fieldName = FieldName.of(field);
         this.fieldName = fieldName.javaCase();
         this.methodNamePart = fieldName.toCamelCase();
@@ -120,7 +117,7 @@ class SingularFieldMethodConstructor extends AbstractMethodConstructor implement
                 MethodSpec.methodBuilder(methodName)
                           .addAnnotation(canIgnoreReturnValue())
                           .addModifiers(Modifier.PUBLIC)
-                          .returns(builderClassName)
+                          .returns(builderClass())
                           .addParameter(parameter)
                           .addException(ValidationException.class)
                           .addStatement(descriptorCodeLine())
@@ -154,7 +151,7 @@ class SingularFieldMethodConstructor extends AbstractMethodConstructor implement
                 MethodSpec.methodBuilder(clearPrefix() + methodNamePart)
                           .addAnnotation(canIgnoreReturnValue())
                           .addModifiers(Modifier.PUBLIC)
-                          .returns(builderClassName)
+                          .returns(builderClass())
                           .addStatement(methodBody)
                           .addStatement(returnThis())
                           .build();
@@ -182,7 +179,7 @@ class SingularFieldMethodConstructor extends AbstractMethodConstructor implement
                 MethodSpec.methodBuilder(methodName)
                           .addAnnotation(canIgnoreReturnValue())
                           .addModifiers(Modifier.PUBLIC)
-                          .returns(builderClassName)
+                          .returns(builderClass())
                           .addParameter(parameter)
                           .addException(ValidationException.class)
                           .addException(ConversionException.class)

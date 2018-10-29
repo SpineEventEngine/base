@@ -41,7 +41,6 @@ import java.util.List;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type.TYPE_ENUM;
 import static io.spine.tools.compiler.annotation.Annotations.canIgnoreReturnValue;
-import static io.spine.tools.compiler.validation.ClassNames.getClassName;
 import static io.spine.tools.compiler.validation.ClassNames.getParameterClassName;
 import static io.spine.tools.compiler.validation.MethodConstructors.clearPrefix;
 import static io.spine.tools.compiler.validation.MethodConstructors.clearProperty;
@@ -76,7 +75,6 @@ class RepeatedFieldMethodConstructor extends AbstractMethodConstructor implement
     private final FieldType fieldType;
     private final String javaFieldName;
     private final String methodNamePart;
-    private final ClassName builderClassName;
     private final ClassName listElementClassName;
     private final FieldDescriptorProto fieldDescriptor;
     private final boolean isScalarOrEnum;
@@ -96,9 +94,6 @@ class RepeatedFieldMethodConstructor extends AbstractMethodConstructor implement
         FieldName fieldName = FieldName.of(fieldDescriptor);
         this.javaFieldName = fieldName.javaCase();
         this.methodNamePart = fieldName.toCamelCase();
-        String javaClass = builder.getJavaClass();
-        String javaPackage = builder.getJavaPackage();
-        this.builderClassName = getClassName(javaPackage, javaClass);
         MessageTypeCache messageTypeCache = builder.getTypeCache();
         this.listElementClassName = getParameterClassName(fieldDescriptor, messageTypeCache);
         this.isScalarOrEnum = isScalarType(fieldDescriptor) || isEnumType(fieldDescriptor);
@@ -196,7 +191,7 @@ class RepeatedFieldMethodConstructor extends AbstractMethodConstructor implement
         MethodSpec result = MethodSpec
                 .methodBuilder(methodName)
                 .addAnnotation(canIgnoreReturnValue())
-                .returns(builderClassName)
+                .returns(builderClass())
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(String.class, VALUE)
                 .addException(ValidationException.class)
@@ -228,7 +223,7 @@ class RepeatedFieldMethodConstructor extends AbstractMethodConstructor implement
         MethodSpec result = MethodSpec
                 .methodBuilder(methodName)
                 .addAnnotation(canIgnoreReturnValue())
-                .returns(builderClassName)
+                .returns(builderClass())
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(TypeName.INT, INDEX)
                 .addParameter(String.class, VALUE)
@@ -250,7 +245,7 @@ class RepeatedFieldMethodConstructor extends AbstractMethodConstructor implement
         MethodSpec result = MethodSpec
                 .methodBuilder(methodName)
                 .addAnnotation(canIgnoreReturnValue())
-                .returns(builderClassName)
+                .returns(builderClass())
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(String.class, VALUE)
                 .addException(ValidationException.class)
@@ -278,7 +273,7 @@ class RepeatedFieldMethodConstructor extends AbstractMethodConstructor implement
         MethodSpec result = MethodSpec
                 .methodBuilder(methodName)
                 .addAnnotation(canIgnoreReturnValue())
-                .returns(builderClassName)
+                .returns(builderClass())
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(parameter, VALUE)
                 .addException(ValidationException.class)
@@ -297,7 +292,7 @@ class RepeatedFieldMethodConstructor extends AbstractMethodConstructor implement
         MethodSpec result = MethodSpec
                 .methodBuilder(methodName)
                 .addAnnotation(canIgnoreReturnValue())
-                .returns(builderClassName)
+                .returns(builderClass())
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(listElementClassName, VALUE)
                 .addException(ValidationException.class)
@@ -324,7 +319,7 @@ class RepeatedFieldMethodConstructor extends AbstractMethodConstructor implement
         MethodSpec result = MethodSpec
                 .methodBuilder(methodName)
                 .addAnnotation(canIgnoreReturnValue())
-                .returns(builderClassName)
+                .returns(builderClass())
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(TypeName.INT, INDEX)
                 .addStatement(addValue)
@@ -340,7 +335,7 @@ class RepeatedFieldMethodConstructor extends AbstractMethodConstructor implement
         MethodSpec result = MethodSpec
                 .methodBuilder(methodName)
                 .addAnnotation(canIgnoreReturnValue())
-                .returns(builderClassName)
+                .returns(builderClass())
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(TypeName.INT, INDEX)
                 .addParameter(listElementClassName, VALUE)
@@ -359,7 +354,7 @@ class RepeatedFieldMethodConstructor extends AbstractMethodConstructor implement
                 .methodBuilder(clearPrefix() + methodNamePart)
                 .addAnnotation(canIgnoreReturnValue())
                 .addModifiers(Modifier.PUBLIC)
-                .returns(builderClassName)
+                .returns(builderClass())
                 .addStatement(clearField)
                 .addStatement(returnThis())
                 .build();

@@ -22,6 +22,8 @@ package io.spine.tools.compiler.validation;
 
 import com.squareup.javapoet.ClassName;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.tools.compiler.validation.ClassNames.getClassName;
 import static io.spine.tools.compiler.validation.MethodConstructors.createDescriptorStatement;
 
 /**
@@ -33,14 +35,23 @@ abstract class AbstractMethodConstructor implements MethodConstructor {
 
     /** The class name of the message containing the field. */
     private final ClassName messageClass;
+    private final ClassName builderClass;
 
     AbstractMethodConstructor(AbstractMethodConstructorBuilder builder) {
         this.fieldIndex = builder.getFieldIndex();
         this.messageClass = builder.getGenericClassName();
+        String javaPackage = checkNotNull(builder.getJavaPackage());
+        String javaClass = checkNotNull(builder.getJavaClass());
+        this.builderClass = getClassName(javaPackage, javaClass);
     }
 
     /** Returns the statement, which declares the descriptor for the field. */
     final String descriptorCodeLine() {
         return createDescriptorStatement(fieldIndex, messageClass);
+    }
+
+    /** Returns the class name of the validating builder. */
+    final ClassName builderClass() {
+        return builderClass;
     }
 }

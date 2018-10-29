@@ -21,7 +21,6 @@
 package io.spine.tools.compiler.validation;
 
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
-import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
 import io.spine.base.ConversionException;
@@ -74,7 +73,6 @@ class MapFieldMethodConstructor extends AbstractMethodConstructor implements Log
     private final TypeName keyTypeName;
     private final TypeName valueTypeName;
     private final MapFieldType fieldType;
-    private final ClassName builderClassName;
 
     /**
      * Creates the {@code MapFieldMethodConstructor}.
@@ -91,9 +89,6 @@ class MapFieldMethodConstructor extends AbstractMethodConstructor implements Log
         FieldName fieldName = FieldName.of(fieldDescriptor);
         this.propertyName = fieldName.toCamelCase();
         this.javaFieldName = fieldName.javaCase();
-        String javaClass = builder.getJavaClass();
-        String javaPackage = builder.getJavaPackage();
-        this.builderClassName = ClassNames.getClassName(javaPackage, javaClass);
         this.keyTypeName = fieldType.getKeyTypeName();
         this.valueTypeName = fieldType.getValueTypeName();
     }
@@ -154,7 +149,7 @@ class MapFieldMethodConstructor extends AbstractMethodConstructor implements Log
         MethodSpec result = MethodSpec
                 .methodBuilder(methodName)
                 .addAnnotation(canIgnoreReturnValue())
-                .returns(builderClassName)
+                .returns(builderClass())
                 .addModifiers(Modifier.PUBLIC)
                 .addException(ValidationException.class)
                 .addParameter(keyTypeName, KEY)
@@ -179,7 +174,7 @@ class MapFieldMethodConstructor extends AbstractMethodConstructor implements Log
         MethodSpec result = MethodSpec
                 .methodBuilder(methodName)
                 .addAnnotation(canIgnoreReturnValue())
-                .returns(builderClassName)
+                .returns(builderClass())
                 .addModifiers(Modifier.PUBLIC)
                 .addException(ValidationException.class)
                 .addException(ConversionException.class)
@@ -205,7 +200,7 @@ class MapFieldMethodConstructor extends AbstractMethodConstructor implements Log
                 .methodBuilder(methodName)
                 .addAnnotation(canIgnoreReturnValue())
                 .addModifiers(Modifier.PUBLIC)
-                .returns(builderClassName)
+                .returns(builderClass())
                 .addParameter(fieldType.getTypeName(), MAP_PARAM_NAME)
                 .addException(ValidationException.class)
                 .addStatement(descriptorCodeLine())
@@ -224,7 +219,7 @@ class MapFieldMethodConstructor extends AbstractMethodConstructor implements Log
                 .methodBuilder(methodName)
                 .addAnnotation(canIgnoreReturnValue())
                 .addModifiers(Modifier.PUBLIC)
-                .returns(builderClassName)
+                .returns(builderClass())
                 .addParameter(String.class, MAP_PARAM_NAME)
                 .addException(ValidationException.class)
                 .addException(ConversionException.class)
@@ -246,7 +241,7 @@ class MapFieldMethodConstructor extends AbstractMethodConstructor implements Log
                 .methodBuilder(removePrefix() + propertyName)
                 .addAnnotation(canIgnoreReturnValue())
                 .addModifiers(Modifier.PUBLIC)
-                .returns(builderClassName)
+                .returns(builderClass())
                 .addParameter(keyTypeName, KEY)
                 .addStatement(removeFromMap)
                 .addStatement(returnThis())
@@ -260,7 +255,7 @@ class MapFieldMethodConstructor extends AbstractMethodConstructor implements Log
                 .methodBuilder(clearPrefix() + propertyName)
                 .addAnnotation(canIgnoreReturnValue())
                 .addModifiers(Modifier.PUBLIC)
-                .returns(builderClassName)
+                .returns(builderClass())
                 .addStatement(clearMap)
                 .addStatement(returnThis())
                 .build();
