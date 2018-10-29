@@ -207,8 +207,8 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
     }
 
     private void validateResult(T message) throws ValidationException {
-        List<ConstraintViolation> violations = MessageValidator.newInstance()
-                                                               .validate(message);
+        List<ConstraintViolation> violations = MessageValidator.newInstance(message)
+                                                               .validate();
         checkViolations(violations);
     }
 

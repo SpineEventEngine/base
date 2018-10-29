@@ -21,13 +21,20 @@
 package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
+import com.google.protobuf.DescriptorProtos.FieldOptions;
+import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
+import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import com.google.protobuf.ProtocolMessageEnum;
+import io.spine.code.proto.FieldTypes2;
+import io.spine.code.proto.Option;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.validate.rule.ValidationRuleOptions.getOptionValue;
 
 /**
  * A field value to validate.
@@ -44,10 +51,12 @@ import static com.google.common.base.Preconditions.checkNotNull;
 class FieldValue {
 
     private final Object value;
+    private final FieldContext context;
     private final FieldDeclaration declaration;
 
-    private FieldValue(Object value, FieldDeclaration declaration) {
+    private FieldValue(Object value, FieldContext context, FieldDeclaration declaration) {
         this.value = value;
+        this.context = context;
         this.declaration = declaration;
     }
 
@@ -66,8 +75,9 @@ class FieldValue {
         Object value = rawValue instanceof ProtocolMessageEnum
                        ? ((ProtocolMessageEnum) rawValue).getValueDescriptor()
                        : rawValue;
-        FieldDeclaration declaration = new FieldDeclaration(context);
-        return new FieldValue(value, declaration);
+        FieldDescriptor fieldDescriptor = context.getTarget();
+        FieldDeclaration declaration = new FieldDeclaration(fieldDescriptor);
+        return new FieldValue(value, context, declaration);
     }
 
     /**
@@ -78,12 +88,44 @@ class FieldValue {
      * @return {@link JavaType} of {@linkplain #asList() list} elements
      */
     JavaType javaType() {
-        return declaration.javaType();
+        FieldDescriptor field = declaration.descriptor();
+        if (!declaration.isMap()) {
+            return field.getJavaType();
+        }
+        FieldDescriptor.JavaType valuesType = FieldTypes2.valueDescriptor(field)
+                                                         .getJavaType();
+        return valuesType;
     }
 
-    /** Returns the declaration of the value. */
-    FieldDeclaration declaration() {
-        return declaration;
+    /**
+     * Obtains the desired option for the field.
+     *
+     * @param option
+     *         an extension key used to obtain an option
+     * @param <T>
+     *         the type of the option value
+     */
+    <T> Option<T> option(GeneratedExtension<FieldOptions, T> option) {
+        Optional<Option<T>> validationRuleOption = getOptionValue(context, option);
+        if (validationRuleOption.isPresent()) {
+            return validationRuleOption.get();
+        }
+
+        Option<T> ownOption = Option.from(context.getTarget(), option);
+        return ownOption;
+    }
+
+    /**
+     * Obtains the value of the option.
+     *
+     * @param option
+     *         an extension key used to obtain an option
+     * @param <T>
+     *         the type of the option value
+     * @return the value of the option
+     */
+    <T> T valueOf(GeneratedExtension<FieldOptions, T> option) {
+        return option(option).value();
     }
 
     /**
@@ -105,5 +147,15 @@ class FieldValue {
             T result = (T) value;
             return ImmutableList.of(result);
         }
+    }
+
+    /** Returns the declaration of the value. */
+    FieldDeclaration declaration() {
+        return declaration;
+    }
+
+    /** Returns the context of the value. */
+    FieldContext context() {
+        return context;
     }
 }
