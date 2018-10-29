@@ -21,11 +21,8 @@
 package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
-import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.OneofDescriptor;
-import com.google.protobuf.Message;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,16 +36,16 @@ import static com.google.common.base.Preconditions.checkNotNull;
 class OneOfValidator {
 
     private final OneofDescriptor oneOf;
-    private final Message message;
+    private final MessageValue message;
 
-    OneOfValidator(OneofDescriptor oneOf, Message message) {
+    OneOfValidator(OneofDescriptor oneOf, MessageValue message) {
         this.oneOf = checkNotNull(oneOf);
         this.message = checkNotNull(message);
     }
 
     ImmutableList<ConstraintViolation> validate() {
         ImmutableList.Builder<ConstraintViolation> violations = ImmutableList.builder();
-        Optional<FieldDescriptor> populatedField = populatedField();
+        Optional<FieldValue> populatedField = message.valueOf(oneOf);
         if (!populatedField.isPresent()) {
             violations.add(noneFieldIsSet());
         } else {
@@ -58,21 +55,6 @@ class OneOfValidator {
         return violations.build();
     }
 
-    private List<ConstraintViolation> validateField(FieldDescriptor field) {
-        //TODO:2018-10-26:dmytro.grankin: implement
-        return Collections.emptyList();
-    }
-
-    /**
-     * Obtains the descriptor of the {@code OneOf} field, which was set.
-     *
-     * @return the populated field descriptor or {@code Optional.empty()} if none is populated
-     */
-    private Optional<FieldDescriptor> populatedField() {
-        FieldDescriptor field = message.getOneofFieldDescriptor(oneOf);
-        return Optional.ofNullable(field);
-    }
-
     private ConstraintViolation noneFieldIsSet() {
         ConstraintViolation requiredFieldNotFound =
                 ConstraintViolation.newBuilder()
@@ -80,5 +62,10 @@ class OneOfValidator {
                                    .addParam(oneOf.getName())
                                    .build();
         return requiredFieldNotFound;
+    }
+
+    private static List<ConstraintViolation> validateField(FieldValue field) {
+        FieldValidator<?> validator = FieldValidatorFactory.create(field);
+        return validator.validate();
     }
 }

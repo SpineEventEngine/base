@@ -71,7 +71,7 @@ public class MessageValidator {
     public List<ConstraintViolation> validate() {
         ImmutableList.Builder<ConstraintViolation> result = ImmutableList.builder();
         validateAlternativeFields(result);
-        result.addAll(validateOneOfFields(message));
+        result.addAll(validateOneOfFields());
         //TODO:2018-10-26:dmytro.grankin: exclude oneof fields from validated
         validateFields(result);
         return result.build();
@@ -93,14 +93,11 @@ public class MessageValidator {
     /**
      * Validates every {@code OneOf} declaration in the message.
      *
-     * @param message
-     *         the message to get {@code OneOf} declarations
-     * @return contraint violations of {@code OneOf} declarations
+     * @return constraint violations of {@code OneOf} declarations
      */
-    private static List<ConstraintViolation> validateOneOfFields(Message message) {
+    private List<ConstraintViolation> validateOneOfFields() {
         List<ConstraintViolation> violations = newArrayList();
-        List<OneofDescriptor> oneOfDeclarations = message.getDescriptorForType()
-                                                         .getOneofs();
+        List<OneofDescriptor> oneOfDeclarations = message.oneOfs();
         for (OneofDescriptor oneOf : oneOfDeclarations) {
             OneOfValidator validator = new OneOfValidator(oneOf, message);
             ImmutableList<ConstraintViolation> oneOfViolations = validator.validate();

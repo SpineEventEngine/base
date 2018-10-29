@@ -23,8 +23,10 @@ package io.spine.validate;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
+import com.google.protobuf.Descriptors.OneofDescriptor;
 import com.google.protobuf.Message;
 
+import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.Optional;
 
@@ -89,11 +91,20 @@ class MessageValue {
      */
     Optional<FieldValue> valueOf(String fieldName) {
         FieldDescriptor field = descriptor.findFieldByName(fieldName);
-        if (field == null) {
-            return Optional.empty();
-        }
-        FieldValue fieldValue = valueOf(field);
-        return Optional.of(fieldValue);
+        return valueOfNullable(field);
+    }
+
+    /**
+     * Obtains the value of a populated {@code OneOf} field.
+     *
+     * @param oneOf
+     *         the {@code OneOf} descriptor
+     * @return a value of the populated field or {@code Optional.empty()} if the message
+     *         doesn't contain the field of it was not populated
+     */
+    Optional<FieldValue> valueOf(OneofDescriptor oneOf) {
+        FieldDescriptor field = message.getOneofFieldDescriptor(oneOf);
+        return valueOfNullable(field);
     }
 
     /** Returns options of the message. */
@@ -101,6 +112,19 @@ class MessageValue {
         Map<FieldDescriptor, Object> options = descriptor.getOptions()
                                                          .getAllFields();
         return options;
+    }
+
+    /** Returns descriptors of {@code OneOfs} in the message. */
+    ImmutableList<OneofDescriptor> oneOfs() {
+        return ImmutableList.copyOf(descriptor.getOneofs());
+    }
+
+    private Optional<FieldValue> valueOfNullable(@Nullable FieldDescriptor field) {
+        if (field == null) {
+            return Optional.empty();
+        }
+        FieldValue fieldValue = valueOf(field);
+        return Optional.of(fieldValue);
     }
 
     private FieldValue valueOf(FieldDescriptor field) {
