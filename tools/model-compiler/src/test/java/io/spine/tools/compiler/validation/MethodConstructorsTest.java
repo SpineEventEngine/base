@@ -21,7 +21,10 @@
 package io.spine.tools.compiler.validation;
 
 import com.google.common.testing.NullPointerTester;
+import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.TypeName;
+import io.spine.code.proto.FieldName;
 import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,7 +32,8 @@ import org.junit.jupiter.api.Test;
 import static io.spine.tools.compiler.validation.MethodConstructors.createConvertSingularValue;
 import static io.spine.tools.compiler.validation.MethodConstructors.createDescriptorStatement;
 import static io.spine.tools.compiler.validation.MethodConstructors.createValidateStatement;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static java.lang.String.format;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("MethodConstructors utility class should")
 class MethodConstructorsTest extends UtilityClassTest<MethodConstructors> {
@@ -43,29 +47,33 @@ class MethodConstructorsTest extends UtilityClassTest<MethodConstructors> {
     @Test
     @DisplayName("return constructed description statement")
     void return_constructed_descriptor_statement() {
-        String result = createDescriptorStatement(0, ClassName.get(getClass()));
-        assertNotNull(result);
+        ClassName message = ClassName.get(getClass());
+        ClassName fieldDescriptor = ClassName.get(FieldDescriptor.class);
+        String result = createDescriptorStatement(0, message);
+        String expected = format("%s fieldDescriptor = %s.getDescriptor().getFields().get(0)",
+                                 fieldDescriptor, message);
+        assertEquals(expected, result);
     }
 
     @Test
     @DisplayName("return constructed validate statement")
     void return_constructed_validate_statement() {
-        String result = createValidateStatement(TEST_VALUE);
-        assertNotNull(result);
+        String name = "var";
+        String result = createValidateStatement(TEST_VALUE, name);
+        String expected = format("validate(fieldDescriptor, %s, \"%s\")", TEST_VALUE, name);
+        assertEquals(expected, result);
     }
 
     @Test
     @DisplayName("return constructed converted value statement")
     void return_constructed_converted_value_statement() {
-        String result = createConvertSingularValue(TEST_VALUE);
-        assertNotNull(result);
-    }
-
-    @Test
-    @DisplayName("return validate statement")
-    void return_validate_statement() {
-        String result = createConvertSingularValue(TEST_VALUE);
-        assertNotNull(result);
+        TypeName type = ClassName.get(getClass());
+        String convertedVariableSuffix = FieldName.of(TEST_VALUE)
+                                                  .toCamelCase();
+        String result = createConvertSingularValue(TEST_VALUE, type);
+        String expected = format("%s converted%s = convert(%s, %s.class)",
+                                 type, convertedVariableSuffix, TEST_VALUE, type);
+        assertEquals(expected, result);
     }
 
     @Override

@@ -21,7 +21,6 @@
 package io.spine.tools.compiler.validation;
 
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
-import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
@@ -153,7 +152,6 @@ class MapFieldMethodConstructor implements MethodConstructor, Logging {
 
     private MethodSpec createPutMethod() {
         String methodName = "put" + propertyName;
-        String descriptorCodeLine = createDescriptorStatement(fieldIndex, genericClassName);
         String mapToValidate = MAP_TO_VALIDATE +
                 "$T.singletonMap(" + KEY + ", " + VALUE + ')';
         String putStatement = format("%s.put%s(%s, %s)",
@@ -166,11 +164,10 @@ class MapFieldMethodConstructor implements MethodConstructor, Logging {
                 .addException(ValidationException.class)
                 .addParameter(keyTypeName, KEY)
                 .addParameter(valueTypeName, VALUE)
-                .addStatement(descriptorCodeLine, FieldDescriptor.class)
+                .addStatement(descriptorCodeLine())
                 .addStatement(mapToValidate, Map.class, keyTypeName,
                               valueTypeName, Collections.class)
-                .addStatement(createValidateStatement(MAP_TO_VALIDATE_PARAM_NAME),
-                              javaFieldName)
+                .addStatement(createValidateStatement(MAP_TO_VALIDATE_PARAM_NAME, javaFieldName))
                 .addStatement(putStatement)
                 .addStatement(returnThis())
                 .build();
@@ -179,7 +176,6 @@ class MapFieldMethodConstructor implements MethodConstructor, Logging {
 
     private MethodSpec createPutRawMethod() {
         String methodName = "putRaw" + propertyName;
-        String descriptorCodeLine = createDescriptorStatement(fieldIndex, genericClassName);
         String mapToValidate = MAP_TO_VALIDATE +
                 "$T.singletonMap(convertedKey, convertedValue)";
         String putStatement = format("%s.put%s(convertedKey, convertedValue)",
@@ -194,15 +190,12 @@ class MapFieldMethodConstructor implements MethodConstructor, Logging {
                 .addException(ConversionException.class)
                 .addParameter(String.class, KEY)
                 .addParameter(String.class, VALUE)
-                .addStatement(createConvertSingularValue(KEY),
-                              keyTypeName, keyTypeName)
-                .addStatement(createConvertSingularValue(VALUE),
-                              valueTypeName, valueTypeName)
-                .addStatement(descriptorCodeLine, FieldDescriptor.class)
+                .addStatement(createConvertSingularValue(KEY, keyTypeName))
+                .addStatement(createConvertSingularValue(VALUE, valueTypeName))
+                .addStatement(descriptorCodeLine())
                 .addStatement(mapToValidate, Map.class, keyTypeName,
                               valueTypeName, Collections.class)
-                .addStatement(createValidateStatement(MAP_TO_VALIDATE_PARAM_NAME),
-                              javaFieldName)
+                .addStatement(createValidateStatement(MAP_TO_VALIDATE_PARAM_NAME, javaFieldName))
                 .addStatement(putStatement)
                 .addStatement(returnThis())
                 .build();
@@ -210,7 +203,6 @@ class MapFieldMethodConstructor implements MethodConstructor, Logging {
     }
 
     private MethodSpec createPutAllMethod() {
-        String descriptorCodeLine = createDescriptorStatement(fieldIndex, genericClassName);
         String putAllStatement = format("%s.putAll%s(%s)",
                                         getMessageBuilder(), propertyName, MAP_PARAM_NAME);
         String methodName = fieldType.getSetterPrefix() + propertyName;
@@ -221,9 +213,8 @@ class MapFieldMethodConstructor implements MethodConstructor, Logging {
                 .returns(builderClassName)
                 .addParameter(fieldType.getTypeName(), MAP_PARAM_NAME)
                 .addException(ValidationException.class)
-                .addStatement(descriptorCodeLine, FieldDescriptor.class)
-                .addStatement(createValidateStatement(MAP_PARAM_NAME),
-                              javaFieldName)
+                .addStatement(descriptorCodeLine())
+                .addStatement(createValidateStatement(MAP_PARAM_NAME, javaFieldName))
                 .addStatement(putAllStatement)
                 .addStatement(returnThis())
                 .build();
@@ -231,7 +222,6 @@ class MapFieldMethodConstructor implements MethodConstructor, Logging {
     }
 
     private MethodSpec createPutAllRawMethod() {
-        String descriptorCodeLine = createDescriptorStatement(fieldIndex, genericClassName);
         String putAllStatement = format("%s.putAll%s(convertedValue)",
                                         getMessageBuilder(), propertyName);
         String methodName = fieldType.getSetterPrefix() + rawSuffix() + propertyName;
@@ -243,7 +233,7 @@ class MapFieldMethodConstructor implements MethodConstructor, Logging {
                 .addParameter(String.class, MAP_PARAM_NAME)
                 .addException(ValidationException.class)
                 .addException(ConversionException.class)
-                .addStatement(descriptorCodeLine, FieldDescriptor.class)
+                .addStatement(descriptorCodeLine())
                 .addStatement(createGetConvertedMapValue(),
                               Map.class, keyTypeName, valueTypeName,
                               keyTypeName, valueTypeName)
@@ -286,6 +276,10 @@ class MapFieldMethodConstructor implements MethodConstructor, Logging {
         String result = "final $T<$T, $T> convertedValue = " +
                 "convertToMap(map, $T.class, $T.class)";
         return result;
+    }
+
+    private String descriptorCodeLine() {
+        return createDescriptorStatement(fieldIndex, genericClassName);
     }
 
     /**

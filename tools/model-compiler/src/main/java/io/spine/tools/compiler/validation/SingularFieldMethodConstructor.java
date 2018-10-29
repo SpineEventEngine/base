@@ -21,7 +21,6 @@
 package io.spine.tools.compiler.validation;
 
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
-import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
@@ -119,8 +118,6 @@ class SingularFieldMethodConstructor implements MethodConstructor, Logging {
     private MethodSpec constructSetter() {
         log().debug("The setters construction for the singular field is started.");
         String methodName = fieldType.getSetterPrefix() + methodNamePart;
-        String descriptorCodeLine = createDescriptorStatement(fieldIndex,
-                                                              builderGenericClassName);
         ParameterSpec parameter = createParameterSpec(field, false);
 
         String setStatement = format("%s.%s(%s)", getMessageBuilder(), methodName, fieldName);
@@ -131,9 +128,8 @@ class SingularFieldMethodConstructor implements MethodConstructor, Logging {
                           .returns(builderClassName)
                           .addParameter(parameter)
                           .addException(ValidationException.class)
-                          .addStatement(descriptorCodeLine, FieldDescriptor.class)
-                          .addStatement(createValidateStatement(fieldName),
-                                        field.getName())
+                          .addStatement(descriptorCodeLine())
+                          .addStatement(createValidateStatement(fieldName, field.getName()))
                           .addStatement(setStatement)
                           .addStatement(returnThis())
                           .build();
@@ -178,8 +174,6 @@ class SingularFieldMethodConstructor implements MethodConstructor, Logging {
         log().debug("The raw setters construction is started.");
         String messageBuilderSetter = fieldType.getSetterPrefix() + methodNamePart;
         String methodName = messageBuilderSetter + rawSuffix();
-        String descriptorCodeLine = createDescriptorStatement(fieldIndex,
-                                                              builderGenericClassName);
         ParameterSpec parameter = createParameterSpec(field, true);
 
         String convertedVariableName = "convertedValue";
@@ -197,11 +191,11 @@ class SingularFieldMethodConstructor implements MethodConstructor, Logging {
                           .addParameter(parameter)
                           .addException(ValidationException.class)
                           .addException(ConversionException.class)
-                          .addStatement(descriptorCodeLine, FieldDescriptor.class)
+                          .addStatement(descriptorCodeLine())
                           .addStatement(convertedValue,
                                         fieldClassName, fieldClassName)
-                          .addStatement(createValidateStatement(convertedVariableName),
-                                        field.getName())
+                          .addStatement(createValidateStatement(convertedVariableName,
+                                                                field.getName()))
                           .addStatement(setStatement)
                           .addStatement(returnThis())
                           .build();
@@ -218,6 +212,11 @@ class SingularFieldMethodConstructor implements MethodConstructor, Logging {
         ParameterSpec result = ParameterSpec.builder(methodParamClass, paramName)
                                             .build();
         return result;
+    }
+
+    private String descriptorCodeLine() {
+        return createDescriptorStatement(fieldIndex,
+                                         builderGenericClassName);
     }
 
     /**
