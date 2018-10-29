@@ -22,6 +22,7 @@ package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Descriptors.OneofDescriptor;
+import io.spine.base.FieldPath;
 
 import java.util.List;
 import java.util.Optional;
@@ -56,10 +57,16 @@ class OneOfValidator {
     }
 
     private ConstraintViolation noneFieldIsSet() {
+        FieldPath oneOfPath = message.context()
+                                     .getFieldPath()
+                                     .toBuilder()
+                                     .addFieldName(oneOf.getName())
+                                     .build();
         ConstraintViolation requiredFieldNotFound =
                 ConstraintViolation.newBuilder()
                                    .setMsgFormat("None of the %s OneOf fields is set.")
                                    .addParam(oneOf.getName())
+                                   .setFieldPath(oneOfPath)
                                    .build();
         return requiredFieldNotFound;
     }

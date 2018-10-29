@@ -126,6 +126,11 @@ class MessageValue {
         return ImmutableList.copyOf(descriptor.getOneofs());
     }
 
+    /** Returns the context of the message. */
+    FieldContext context() {
+        return context;
+    }
+
     private Optional<FieldValue> valueOfNullable(@Nullable FieldDescriptor field) {
         if (field == null) {
             return Optional.empty();
