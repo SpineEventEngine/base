@@ -23,13 +23,10 @@ package io.spine.tools.compiler.validation;
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.TypeName;
-import io.spine.code.proto.FieldName;
 import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static io.spine.tools.compiler.validation.MethodConstructors.createConvertSingularValue;
 import static io.spine.tools.compiler.validation.MethodConstructors.createDescriptorStatement;
 import static io.spine.tools.compiler.validation.MethodConstructors.createValidateStatement;
 import static java.lang.String.format;
@@ -61,18 +58,6 @@ class MethodConstructorsTest extends UtilityClassTest<MethodConstructors> {
         String name = "var";
         String result = createValidateStatement(TEST_VALUE, name);
         String expected = format("validate(fieldDescriptor, %s, \"%s\")", TEST_VALUE, name);
-        assertEquals(expected, result);
-    }
-
-    @Test
-    @DisplayName("return constructed converted value statement")
-    void return_constructed_converted_value_statement() {
-        TypeName type = ClassName.get(getClass());
-        String convertedVariableSuffix = FieldName.of(TEST_VALUE)
-                                                  .toCamelCase();
-        String result = createConvertSingularValue(TEST_VALUE, type);
-        String expected = format("%s converted%s = convert(%s, %s.class)",
-                                 type, convertedVariableSuffix, TEST_VALUE, type);
         assertEquals(expected, result);
     }
 

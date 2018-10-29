@@ -40,6 +40,7 @@ import static com.google.common.collect.Lists.newArrayList;
 import static io.spine.tools.compiler.annotation.Annotations.canIgnoreReturnValue;
 import static io.spine.tools.compiler.validation.ClassNames.getParameterClassName;
 import static io.spine.tools.compiler.validation.ClassNames.getStringClassName;
+import static io.spine.tools.compiler.validation.ConvertStatement.convert;
 import static io.spine.tools.compiler.validation.MethodConstructors.clearPrefix;
 import static io.spine.tools.compiler.validation.MethodConstructors.clearProperty;
 import static io.spine.tools.compiler.validation.MethodConstructors.createValidateStatement;
@@ -168,9 +169,8 @@ class SingularFieldMethodConstructor extends AbstractMethodConstructor implement
         String methodName = messageBuilderSetter + rawSuffix();
         ParameterSpec parameter = createParameterSpec(field, true);
 
-        String convertedVariableName = "convertedValue";
-        String convertedValue = format("final $T %s = convert(%s, $T.class)",
-                                       convertedVariableName, fieldName);
+        ConvertStatement convertStatement = convert(fieldName, fieldClassName);
+        String convertedVariableName = convertStatement.convertedVariableName();
         String setStatement = format("%s.%s(%s)",
                                      getMessageBuilder(),
                                      messageBuilderSetter,
@@ -184,8 +184,7 @@ class SingularFieldMethodConstructor extends AbstractMethodConstructor implement
                           .addException(ValidationException.class)
                           .addException(ConversionException.class)
                           .addStatement(descriptorCodeLine())
-                          .addStatement(convertedValue,
-                                        fieldClassName, fieldClassName)
+                          .addStatement(convertStatement.value())
                           .addStatement(createValidateStatement(convertedVariableName,
                                                                 field.getName()))
                           .addStatement(setStatement)

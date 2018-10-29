@@ -42,9 +42,9 @@ import static com.google.common.collect.Lists.newArrayList;
 import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type.TYPE_ENUM;
 import static io.spine.tools.compiler.annotation.Annotations.canIgnoreReturnValue;
 import static io.spine.tools.compiler.validation.ClassNames.getParameterClassName;
+import static io.spine.tools.compiler.validation.ConvertStatement.convert;
 import static io.spine.tools.compiler.validation.MethodConstructors.clearPrefix;
 import static io.spine.tools.compiler.validation.MethodConstructors.clearProperty;
-import static io.spine.tools.compiler.validation.MethodConstructors.createConvertSingularValue;
 import static io.spine.tools.compiler.validation.MethodConstructors.createValidateStatement;
 import static io.spine.tools.compiler.validation.MethodConstructors.getMessageBuilder;
 import static io.spine.tools.compiler.validation.MethodConstructors.rawSuffix;
@@ -196,7 +196,7 @@ class RepeatedFieldMethodConstructor extends AbstractMethodConstructor implement
                 .addParameter(String.class, VALUE)
                 .addException(ValidationException.class)
                 .addException(ConversionException.class)
-                .addStatement(createConvertSingularValue(VALUE, listElementClassName))
+                .addStatement(convert(VALUE, listElementClassName).value())
                 .addStatement(descriptorCodeLine())
                 .addStatement(createValidateStatement(CONVERTED_VALUE, fieldDescriptor.getName()))
                 .addStatement(addValueStatement)
@@ -229,7 +229,7 @@ class RepeatedFieldMethodConstructor extends AbstractMethodConstructor implement
                 .addParameter(String.class, VALUE)
                 .addException(ValidationException.class)
                 .addException(ConversionException.class)
-                .addStatement(createConvertSingularValue(VALUE, listElementClassName))
+                .addStatement(convert(VALUE, listElementClassName).value())
                 .addStatement(descriptorCodeLine())
                 .addStatement(createValidateStatement(CONVERTED_VALUE, fieldDescriptor.getName()))
                 .addStatement(modificationStatement)

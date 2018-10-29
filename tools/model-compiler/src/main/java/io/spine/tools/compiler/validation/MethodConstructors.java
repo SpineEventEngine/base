@@ -23,8 +23,6 @@ package io.spine.tools.compiler.validation;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
-import com.squareup.javapoet.TypeName;
-import io.spine.code.proto.FieldName;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
@@ -69,26 +67,6 @@ final class MethodConstructors {
         checkNotNull(fieldValue);
         checkNotNull(fieldName);
         String result = CodeBlock.of("validate(fieldDescriptor, $N, $S)", fieldValue, fieldName)
-                                 .toString();
-        return result;
-    }
-
-    /**
-     * Creates the statement which returns the converted value.
-     *
-     * @param value
-     *         the value to convert
-     * @param type
-     *         the type of the value after conversion
-     * @return the constructed statement
-     */
-    static String createConvertSingularValue(String value, TypeName type) {
-        checkNotNull(value);
-        checkNotNull(type);
-        FieldName valueField = FieldName.of(value);
-        String convertedValue = "converted" + valueField.toCamelCase();
-        String result = CodeBlock.of("$T $N = convert($N, $T.class)",
-                                     type, convertedValue, value, type)
                                  .toString();
         return result;
     }
