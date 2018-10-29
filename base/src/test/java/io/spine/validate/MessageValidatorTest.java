@@ -111,10 +111,6 @@ class MessageValidatorTest {
     private static final double INT_DIGIT_COUNT_EQUAL_MAX = 12.5;
     private static final double INT_DIGIT_COUNT_LESS_THAN_MAX = 1.5;
 
-    private static final double FRACTIONAL_DIGIT_COUNT_GREATER_THAN_MAX = 1.123;
-    private static final double FRACTIONAL_DIGIT_COUNT_EQUAL_MAX = 1.12;
-    private static final double FRACTIONAL_DIGIT_COUNT_LESS_THAN_MAX = 1.0;
-
     @SuppressWarnings("DuplicateStringLiteralInspection")
     private static final String VALUE = "value";
     private static final String EMAIL = "email";
@@ -583,53 +579,6 @@ class MessageValidatorTest {
                                                      .build();
         assertSingleViolation(msg, GREATER_MAX_MSG, VALUE);
     }
-    /*
-     * Digits option tests.
-     */
-
-    @Test
-    @DisplayName("find out that integral digit count is greater than max")
-    void find_out_that_integral_digit_count_is_greater_than_max() {
-        digitsCountTest(INT_DIGIT_COUNT_GREATER_THAN_MAX, false);
-    }
-
-    @Test
-    @DisplayName("find out that integral digits count is equal to max")
-    void find_out_that_integral_digits_count_is_equal_to_max() {
-        digitsCountTest(INT_DIGIT_COUNT_EQUAL_MAX, true);
-    }
-
-    @Test
-    @DisplayName("find out that integral digit count is less than max")
-    void find_out_that_integral_digit_count_is_less_than_max() {
-        digitsCountTest(INT_DIGIT_COUNT_LESS_THAN_MAX, true);
-    }
-
-    @Test
-    @DisplayName("find out that fractional digit count is greater than max")
-    void find_out_that_fractional_digit_count_is_greater_than_max() {
-        digitsCountTest(FRACTIONAL_DIGIT_COUNT_GREATER_THAN_MAX, false);
-    }
-
-    @Test
-    @DisplayName("find out that fractional digit count is equal to max")
-    void find_out_that_fractional_digit_count_is_equal_to_max() {
-        digitsCountTest(FRACTIONAL_DIGIT_COUNT_EQUAL_MAX, true);
-    }
-
-    @Test
-    @DisplayName("find out that fractional digit count is less than max")
-    void find_out_that_fractional_digit_count_is_less_than_max() {
-        digitsCountTest(FRACTIONAL_DIGIT_COUNT_LESS_THAN_MAX, true);
-    }
-
-    @Test
-    @DisplayName("provide one valid violation if integral digit count is greater than max")
-    void provide_one_valid_violation_if_integral_digit_count_is_greater_than_max() {
-        String expectedErrMsg = "Number value is out of bounds, expected: <2 max digits>.<2 max digits>.";
-        digitsCountTest(INT_DIGIT_COUNT_GREATER_THAN_MAX, false);
-        assertSingleViolation(expectedErrMsg, VALUE);
-    }
 
     /*
      * String pattern option tests.
@@ -769,6 +718,71 @@ class MessageValidatorTest {
     void ignore_custom_invalid_field_message_if_validation_is_disabled() {
         Message msg = EnclosedMessageFieldValueWithoutAnnotationFieldValueWithCustomInvalidMessage.getDefaultInstance();
         assertValid(msg);
+    }
+
+    @Nested
+    @DisplayName("support DigitsOption and")
+    class DigitOption {
+
+        private static final double FRACTIONAL_DIGIT_COUNT_GREATER_THAN_MAX = 1.123;
+        private static final double FRACTIONAL_DIGIT_COUNT_EQUAL_MAX = 1.12;
+        private static final double FRACTIONAL_DIGIT_COUNT_LESS_THAN_MAX = 1.0;
+
+        @Test
+        @DisplayName("find out that integral digit count is greater than max")
+        void find_out_that_integral_digit_count_is_greater_than_max() {
+            Message msg = messageFor(INT_DIGIT_COUNT_GREATER_THAN_MAX);
+            assertNotValid(msg);
+        }
+
+        @Test
+        @DisplayName("find out that integral digits count is equal to max")
+        void find_out_that_integral_digits_count_is_equal_to_max() {
+            Message msg = messageFor(INT_DIGIT_COUNT_EQUAL_MAX);
+            assertValid(msg);
+        }
+
+        @Test
+        @DisplayName("find out that integral digit count is less than max")
+        void find_out_that_integral_digit_count_is_less_than_max() {
+            Message msg = messageFor(INT_DIGIT_COUNT_LESS_THAN_MAX);
+            assertValid(msg);
+        }
+
+        @Test
+        @DisplayName("find out that fractional digit count is greater than max")
+        void find_out_that_fractional_digit_count_is_greater_than_max() {
+            Message msg = messageFor(FRACTIONAL_DIGIT_COUNT_GREATER_THAN_MAX);
+            assertNotValid(msg);
+        }
+
+        @Test
+        @DisplayName("find out that fractional digit count is equal to max")
+        void find_out_that_fractional_digit_count_is_equal_to_max() {
+            Message msg = messageFor(FRACTIONAL_DIGIT_COUNT_EQUAL_MAX);
+            assertValid(msg);
+        }
+
+        @Test
+        @DisplayName("find out that fractional digit count is less than max")
+        void find_out_that_fractional_digit_count_is_less_than_max() {
+            Message msg = messageFor(FRACTIONAL_DIGIT_COUNT_LESS_THAN_MAX);
+            assertValid(msg);
+        }
+
+        @Test
+        @DisplayName("provide one valid violation if integral digit count is greater than max")
+        void provide_one_valid_violation_if_integral_digit_count_is_greater_than_max() {
+            String expectedErrMsg = "Number value is out of bounds, expected: <2 max digits>.<2 max digits>.";
+            Message msg = messageFor(INT_DIGIT_COUNT_GREATER_THAN_MAX);
+            assertSingleViolation(msg, expectedErrMsg, VALUE);
+        }
+
+        private Message messageFor(double value) {
+            return DigitsCountNumberFieldValue.newBuilder()
+                                              .setValue(value)
+                                              .build();
+        }
     }
 
     @Nested
@@ -1003,14 +1017,6 @@ class MessageValidatorTest {
                       DecimalMaxNotIncNumberFieldValue.newBuilder()
                                                       .setValue(value)
                                                       .build();
-        validate(msg);
-        assertIsValid(isValid);
-    }
-
-    private void digitsCountTest(double value, boolean isValid) {
-        Message msg = DigitsCountNumberFieldValue.newBuilder()
-                                                 .setValue(value)
-                                                 .build();
         validate(msg);
         assertIsValid(isValid);
     }
