@@ -40,7 +40,6 @@ import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type.TYPE_ENUM;
-import static io.spine.tools.compiler.annotation.Annotations.canIgnoreReturnValue;
 import static io.spine.tools.compiler.validation.ClassNames.getParameterClassName;
 import static io.spine.tools.compiler.validation.ConvertStatement.convert;
 import static io.spine.tools.compiler.validation.MethodConstructors.clearPrefix;
@@ -188,11 +187,7 @@ class RepeatedFieldMethodConstructor extends AbstractMethodConstructor implement
         String methodName = ADD_RAW_PREFIX + methodNamePart;
         String addValueStatement = getMessageBuilder() + '.'
                 + ADD_PREFIX + methodNamePart + "(convertedValue)";
-        MethodSpec result = MethodSpec
-                .methodBuilder(methodName)
-                .addAnnotation(canIgnoreReturnValue())
-                .returns(builderClass())
-                .addModifiers(Modifier.PUBLIC)
+        MethodSpec result = newBuilderSetter(methodName)
                 .addParameter(String.class, VALUE)
                 .addException(ValidationException.class)
                 .addException(ConversionException.class)
@@ -220,11 +215,7 @@ class RepeatedFieldMethodConstructor extends AbstractMethodConstructor implement
         String modificationStatement =
                 format("%s.%s%s(%s, convertedValue)",
                        getMessageBuilder(), realBuilderCallPrefix, methodNamePart, INDEX);
-        MethodSpec result = MethodSpec
-                .methodBuilder(methodName)
-                .addAnnotation(canIgnoreReturnValue())
-                .returns(builderClass())
-                .addModifiers(Modifier.PUBLIC)
+        MethodSpec result = newBuilderSetter(methodName)
                 .addParameter(TypeName.INT, INDEX)
                 .addParameter(String.class, VALUE)
                 .addException(ValidationException.class)
@@ -242,11 +233,7 @@ class RepeatedFieldMethodConstructor extends AbstractMethodConstructor implement
         String methodName = fieldType.getSetterPrefix() + rawSuffix() + methodNamePart;
         String addAllValues = getMessageBuilder()
                 + format(".addAll%s(%s)", methodNamePart, CONVERTED_VALUE);
-        MethodSpec result = MethodSpec
-                .methodBuilder(methodName)
-                .addAnnotation(canIgnoreReturnValue())
-                .returns(builderClass())
-                .addModifiers(Modifier.PUBLIC)
+        MethodSpec result = newBuilderSetter(methodName)
                 .addParameter(String.class, VALUE)
                 .addException(ValidationException.class)
                 .addException(ConversionException.class)
@@ -270,11 +257,7 @@ class RepeatedFieldMethodConstructor extends AbstractMethodConstructor implement
         String fieldName = fieldDescriptor.getName();
         String addAllValues = getMessageBuilder()
                 + format(".addAll%s(%s)", methodNamePart, VALUE);
-        MethodSpec result = MethodSpec
-                .methodBuilder(methodName)
-                .addAnnotation(canIgnoreReturnValue())
-                .returns(builderClass())
-                .addModifiers(Modifier.PUBLIC)
+        MethodSpec result = newBuilderSetter(methodName)
                 .addParameter(parameter, VALUE)
                 .addException(ValidationException.class)
                 .addStatement(descriptorCodeLine())
@@ -289,11 +272,7 @@ class RepeatedFieldMethodConstructor extends AbstractMethodConstructor implement
         String methodName = ADD_PREFIX + methodNamePart;
         String addValue = format("%s.%s%s(%s)",
                                  getMessageBuilder(), ADD_PREFIX, methodNamePart, VALUE);
-        MethodSpec result = MethodSpec
-                .methodBuilder(methodName)
-                .addAnnotation(canIgnoreReturnValue())
-                .returns(builderClass())
-                .addModifiers(Modifier.PUBLIC)
+        MethodSpec result = newBuilderSetter(methodName)
                 .addParameter(listElementClassName, VALUE)
                 .addException(ValidationException.class)
                 .addStatement(descriptorCodeLine())
@@ -316,11 +295,7 @@ class RepeatedFieldMethodConstructor extends AbstractMethodConstructor implement
         String methodName = removePrefix() + methodNamePart;
         String addValue = format("%s.%s%s(%s)", getMessageBuilder(),
                                  removePrefix(), methodNamePart, INDEX);
-        MethodSpec result = MethodSpec
-                .methodBuilder(methodName)
-                .addAnnotation(canIgnoreReturnValue())
-                .returns(builderClass())
-                .addModifiers(Modifier.PUBLIC)
+        MethodSpec result = newBuilderSetter(methodName)
                 .addParameter(TypeName.INT, INDEX)
                 .addStatement(addValue)
                 .addStatement(returnThis())
@@ -332,11 +307,7 @@ class RepeatedFieldMethodConstructor extends AbstractMethodConstructor implement
         String methodName = methodPrefix + methodNamePart;
         String modificationStatement = format("%s.%s%s(%s, %s)", getMessageBuilder(),
                                               methodPrefix, methodNamePart, INDEX, VALUE);
-        MethodSpec result = MethodSpec
-                .methodBuilder(methodName)
-                .addAnnotation(canIgnoreReturnValue())
-                .returns(builderClass())
-                .addModifiers(Modifier.PUBLIC)
+        MethodSpec result = newBuilderSetter(methodName)
                 .addParameter(TypeName.INT, INDEX)
                 .addParameter(listElementClassName, VALUE)
                 .addException(ValidationException.class)
@@ -350,11 +321,8 @@ class RepeatedFieldMethodConstructor extends AbstractMethodConstructor implement
 
     private MethodSpec createClearMethod() {
         String clearField = getMessageBuilder() + clearProperty(methodNamePart);
-        MethodSpec result = MethodSpec
-                .methodBuilder(clearPrefix() + methodNamePart)
-                .addAnnotation(canIgnoreReturnValue())
-                .addModifiers(Modifier.PUBLIC)
-                .returns(builderClass())
+        String methodName = clearPrefix() + methodNamePart;
+        MethodSpec result = newBuilderSetter(methodName)
                 .addStatement(clearField)
                 .addStatement(returnThis())
                 .build();

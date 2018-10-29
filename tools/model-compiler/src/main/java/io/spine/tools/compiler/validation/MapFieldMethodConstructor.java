@@ -36,7 +36,6 @@ import java.util.List;
 import java.util.Map;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static io.spine.tools.compiler.annotation.Annotations.canIgnoreReturnValue;
 import static io.spine.tools.compiler.validation.ConvertStatement.convert;
 import static io.spine.tools.compiler.validation.MethodConstructors.clearPrefix;
 import static io.spine.tools.compiler.validation.MethodConstructors.createValidateStatement;
@@ -146,10 +145,7 @@ class MapFieldMethodConstructor extends AbstractMethodConstructor implements Log
                 "$T.singletonMap(" + KEY + ", " + VALUE + ')';
         String putStatement = format("%s.put%s(%s, %s)",
                                      getMessageBuilder(), propertyName, KEY, VALUE);
-        MethodSpec result = MethodSpec
-                .methodBuilder(methodName)
-                .addAnnotation(canIgnoreReturnValue())
-                .returns(builderClass())
+        MethodSpec result = newBuilderSetter(methodName)
                 .addModifiers(Modifier.PUBLIC)
                 .addException(ValidationException.class)
                 .addParameter(keyTypeName, KEY)
@@ -171,11 +167,7 @@ class MapFieldMethodConstructor extends AbstractMethodConstructor implements Log
         String putStatement = format("%s.put%s(convertedKey, convertedValue)",
                                      getMessageBuilder(), propertyName);
 
-        MethodSpec result = MethodSpec
-                .methodBuilder(methodName)
-                .addAnnotation(canIgnoreReturnValue())
-                .returns(builderClass())
-                .addModifiers(Modifier.PUBLIC)
+        MethodSpec result = newBuilderSetter(methodName)
                 .addException(ValidationException.class)
                 .addException(ConversionException.class)
                 .addParameter(String.class, KEY)
@@ -196,11 +188,7 @@ class MapFieldMethodConstructor extends AbstractMethodConstructor implements Log
         String putAllStatement = format("%s.putAll%s(%s)",
                                         getMessageBuilder(), propertyName, MAP_PARAM_NAME);
         String methodName = fieldType.getSetterPrefix() + propertyName;
-        MethodSpec result = MethodSpec
-                .methodBuilder(methodName)
-                .addAnnotation(canIgnoreReturnValue())
-                .addModifiers(Modifier.PUBLIC)
-                .returns(builderClass())
+        MethodSpec result = newBuilderSetter(methodName)
                 .addParameter(fieldType.getTypeName(), MAP_PARAM_NAME)
                 .addException(ValidationException.class)
                 .addStatement(descriptorCodeLine())
@@ -215,11 +203,7 @@ class MapFieldMethodConstructor extends AbstractMethodConstructor implements Log
         String putAllStatement = format("%s.putAll%s(convertedValue)",
                                         getMessageBuilder(), propertyName);
         String methodName = fieldType.getSetterPrefix() + rawSuffix() + propertyName;
-        MethodSpec result = MethodSpec
-                .methodBuilder(methodName)
-                .addAnnotation(canIgnoreReturnValue())
-                .addModifiers(Modifier.PUBLIC)
-                .returns(builderClass())
+        MethodSpec result = newBuilderSetter(methodName)
                 .addParameter(String.class, MAP_PARAM_NAME)
                 .addException(ValidationException.class)
                 .addException(ConversionException.class)
@@ -237,11 +221,8 @@ class MapFieldMethodConstructor extends AbstractMethodConstructor implements Log
     private MethodSpec createRemoveMethod() {
         String removeFromMap = format("%s.remove%s(%s)",
                                       getMessageBuilder(), propertyName, KEY);
-        MethodSpec result = MethodSpec
-                .methodBuilder(removePrefix() + propertyName)
-                .addAnnotation(canIgnoreReturnValue())
-                .addModifiers(Modifier.PUBLIC)
-                .returns(builderClass())
+        String methodName = removePrefix() + propertyName;
+        MethodSpec result = newBuilderSetter(methodName)
                 .addParameter(keyTypeName, KEY)
                 .addStatement(removeFromMap)
                 .addStatement(returnThis())
@@ -251,11 +232,8 @@ class MapFieldMethodConstructor extends AbstractMethodConstructor implements Log
 
     private MethodSpec createClearMethod() {
         String clearMap = format("%s.clear%s()", getMessageBuilder(), propertyName);
-        MethodSpec result = MethodSpec
-                .methodBuilder(clearPrefix() + propertyName)
-                .addAnnotation(canIgnoreReturnValue())
-                .addModifiers(Modifier.PUBLIC)
-                .returns(builderClass())
+        String methodName = clearPrefix() + propertyName;
+        MethodSpec result = newBuilderSetter(methodName)
                 .addStatement(clearMap)
                 .addStatement(returnThis())
                 .build();

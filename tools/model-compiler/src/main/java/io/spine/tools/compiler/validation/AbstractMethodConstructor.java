@@ -21,8 +21,12 @@
 package io.spine.tools.compiler.validation;
 
 import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.MethodSpec;
+
+import javax.lang.model.element.Modifier;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.tools.compiler.annotation.Annotations.canIgnoreReturnValue;
 import static io.spine.tools.compiler.validation.ClassNames.getClassName;
 import static io.spine.tools.compiler.validation.MethodConstructors.createDescriptorStatement;
 
@@ -53,5 +57,13 @@ abstract class AbstractMethodConstructor implements MethodConstructor {
     /** Returns the class name of the validating builder. */
     final ClassName builderClass() {
         return builderClass;
+    }
+
+    final MethodSpec.Builder newBuilderSetter(String methodName) {
+        return MethodSpec
+                .methodBuilder(methodName)
+                .addAnnotation(canIgnoreReturnValue())
+                .addModifiers(Modifier.PUBLIC)
+                .returns(builderClass());
     }
 }

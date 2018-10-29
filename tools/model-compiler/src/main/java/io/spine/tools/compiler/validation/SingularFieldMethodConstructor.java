@@ -37,7 +37,6 @@ import java.util.Collection;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static io.spine.tools.compiler.annotation.Annotations.canIgnoreReturnValue;
 import static io.spine.tools.compiler.validation.ClassNames.getParameterClassName;
 import static io.spine.tools.compiler.validation.ClassNames.getStringClassName;
 import static io.spine.tools.compiler.validation.ConvertStatement.convert;
@@ -115,10 +114,7 @@ class SingularFieldMethodConstructor extends AbstractMethodConstructor implement
 
         String setStatement = format("%s.%s(%s)", getMessageBuilder(), methodName, fieldName);
         MethodSpec methodSpec =
-                MethodSpec.methodBuilder(methodName)
-                          .addAnnotation(canIgnoreReturnValue())
-                          .addModifiers(Modifier.PUBLIC)
-                          .returns(builderClass())
+                newBuilderSetter(methodName)
                           .addParameter(parameter)
                           .addException(ValidationException.class)
                           .addStatement(descriptorCodeLine())
@@ -148,11 +144,9 @@ class SingularFieldMethodConstructor extends AbstractMethodConstructor implement
         log().debug("The 'clear..()' method construction for the singular field is started.");
         String methodBody = getMessageBuilder() + clearProperty(methodNamePart);
 
+        String methodName = clearPrefix() + methodNamePart;
         MethodSpec methodSpec =
-                MethodSpec.methodBuilder(clearPrefix() + methodNamePart)
-                          .addAnnotation(canIgnoreReturnValue())
-                          .addModifiers(Modifier.PUBLIC)
-                          .returns(builderClass())
+                newBuilderSetter(methodName)
                           .addStatement(methodBody)
                           .addStatement(returnThis())
                           .build();
@@ -176,10 +170,7 @@ class SingularFieldMethodConstructor extends AbstractMethodConstructor implement
                                      messageBuilderSetter,
                                      convertedVariableName);
         MethodSpec methodSpec =
-                MethodSpec.methodBuilder(methodName)
-                          .addAnnotation(canIgnoreReturnValue())
-                          .addModifiers(Modifier.PUBLIC)
-                          .returns(builderClass())
+                newBuilderSetter(methodName)
                           .addParameter(parameter)
                           .addException(ValidationException.class)
                           .addException(ConversionException.class)
