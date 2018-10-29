@@ -27,7 +27,6 @@ import io.spine.annotation.Internal;
 
 import java.util.List;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static io.spine.validate.FieldValidatorFactory.create;
 
 /**
@@ -71,8 +70,7 @@ public class MessageValidator {
     public List<ConstraintViolation> validate() {
         ImmutableList.Builder<ConstraintViolation> result = ImmutableList.builder();
         validateAlternativeFields(result);
-        result.addAll(validateOneOfFields());
-        //TODO:2018-10-26:dmytro.grankin: exclude oneof fields from validated
+        validateOneOfFields(result);
         validateFields(result);
         return result.build();
     }
@@ -82,8 +80,17 @@ public class MessageValidator {
         result.addAll(altFieldValidator.validate());
     }
 
+    /**
+     * Validates fields except fields from {@code OneOf} declarations.
+     *
+     * <p>{@code OneOf} fields are validated {@linkplain #validateOneOfFields(ImmutableList.Builder)
+     * separately}.
+     *
+     * @param result
+     *         the builder of the message violations
+     */
     private void validateFields(ImmutableList.Builder<ConstraintViolation> result) {
-        for (FieldValue value : message.fields()) {
+        for (FieldValue value : message.fieldsExceptOneOfs()) {
             FieldValidator<?> fieldValidator = create(value);
             List<ConstraintViolation> violations = fieldValidator.validate();
             result.addAll(violations);
@@ -93,16 +100,15 @@ public class MessageValidator {
     /**
      * Validates every {@code OneOf} declaration in the message.
      *
-     * @return constraint violations of {@code OneOf} declarations
+     * @param result
+     *         the builder of the message violations
      */
-    private List<ConstraintViolation> validateOneOfFields() {
-        List<ConstraintViolation> violations = newArrayList();
+    private void validateOneOfFields(ImmutableList.Builder<ConstraintViolation> result) {
         List<OneofDescriptor> oneOfDeclarations = message.oneOfs();
         for (OneofDescriptor oneOf : oneOfDeclarations) {
             OneOfValidator validator = new OneOfValidator(oneOf, message);
             ImmutableList<ConstraintViolation> oneOfViolations = validator.validate();
-            violations.addAll(oneOfViolations);
+            result.addAll(oneOfViolations);
         }
-        return violations;
     }
 }

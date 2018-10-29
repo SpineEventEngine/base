@@ -72,10 +72,17 @@ class MessageValue {
         return new MessageValue(message, FieldContext.empty());
     }
 
-    /** Returns field values of the message. */
-    ImmutableList<FieldValue> fields() {
+    /**
+     * Obtains field values of the message.
+     *
+     * <p>Values of {@code OneOf} fields are filtered and not returned.
+     *
+     * @return values of message fields exluding {@code OneOf} fields
+     */
+    ImmutableList<FieldValue> fieldsExceptOneOfs() {
         ImmutableList<FieldValue> values = descriptor.getFields()
                                                      .stream()
+                                                     .filter(MessageValue::isNotOneOf)
                                                      .map(this::valueOf)
                                                      .collect(toImmutableList());
         return values;
@@ -131,5 +138,9 @@ class MessageValue {
         FieldContext fieldContext = context.forChild(field);
         FieldValue value = FieldValue.of(message.getField(field), fieldContext);
         return value;
+    }
+
+    private static boolean isNotOneOf(FieldDescriptor field) {
+        return field.getContainingOneof() == null;
     }
 }
