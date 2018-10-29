@@ -23,18 +23,18 @@ package io.spine.validate;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
+import com.google.protobuf.Descriptors.OneofDescriptor;
 import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
 
 import java.util.List;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static io.spine.validate.FieldValidatorFactory.create;
 
 /**
- * Validates messages according to Spine custom protobuf options and provides constraint
- * violations found.
- *
- * @author Alexander Litus
+ * Validates messages according to Spine custom Protobuf options and
+ * provides found constraint violations.
  */
 @Internal
 public class MessageValidator {
@@ -52,8 +52,9 @@ public class MessageValidator {
      * <p>Use this constructor for inner messages
      * (which are marked with "valid" option in Protobuf).
      *
-     * @param rootContext the context of the message field,
-     *                    which is the root for the messages to validate
+     * @param rootContext
+     *         the context of the message field,
+     *         which is the root for the messages to validate
      */
     static MessageValidator newInstance(FieldContext rootContext) {
         return new MessageValidator(rootContext);
@@ -67,11 +68,14 @@ public class MessageValidator {
      * Validates messages according to Spine custom protobuf options and returns constraint
      * violations found.
      *
-     * @param message a message to validate
+     * @param message
+     *         a message to validate
      */
     public List<ConstraintViolation> validate(Message message) {
         ImmutableList.Builder<ConstraintViolation> result = ImmutableList.builder();
         validateAlternativeFields(message, result);
+        result.addAll(validateOneOfFields(message));
+        //TODO:2018-10-26:dmytro.grankin: exclude oneof fields from validated
         validateFields(message, result);
         return result.build();
     }
@@ -95,5 +99,24 @@ public class MessageValidator {
             List<ConstraintViolation> violations = fieldValidator.validate();
             result.addAll(violations);
         }
+    }
+
+    /**
+     * Validates every {@code OneOf} declaration in the message.
+     *
+     * @param message
+     *         the message to get {@code OneOf} declarations
+     * @return contraint violations of {@code OneOf} declarations
+     */
+    private static List<ConstraintViolation> validateOneOfFields(Message message) {
+        List<ConstraintViolation> violations = newArrayList();
+        List<OneofDescriptor> oneOfDeclarations = message.getDescriptorForType()
+                                                         .getOneofs();
+        for (OneofDescriptor oneOf : oneOfDeclarations) {
+            OneOfValidator validator = new OneOfValidator(oneOf, message);
+            ImmutableList<ConstraintViolation> oneOfViolations = validator.validate();
+            violations.addAll(oneOfViolations);
+        }
+        return violations;
     }
 }

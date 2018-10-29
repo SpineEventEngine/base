@@ -71,6 +71,9 @@ import io.spine.test.validate.command.EntityIdLongFieldValue;
 import io.spine.test.validate.command.EntityIdMsgFieldValue;
 import io.spine.test.validate.command.EntityIdRepeatedFieldValue;
 import io.spine.test.validate.command.EntityIdStringFieldValue;
+import io.spine.test.validate.oneof.EveryNotRequired;
+import io.spine.test.validate.oneof.EveryRequired;
+import io.spine.test.validate.oneof.OneRequired;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -1091,21 +1094,61 @@ class MessageValidatorTest {
             @Test
             @DisplayName("ByteString")
             void find_out_that_entity_id_in_command_cannot_be_ByteString() {
-                EntityIdByteStringFieldValue msg = EntityIdByteStringFieldValue.newBuilder()
-                                                                               .setValue(newByteString())
-                                                                               .build();
+                EntityIdByteStringFieldValue msg =
+                        EntityIdByteStringFieldValue.newBuilder()
+                                                    .setValue(newByteString())
+                                                    .build();
                 assertNotValid(msg);
             }
 
             @Test
             @DisplayName("Float")
             void find_out_that_entity_id_in_command_cannot_be_float_number() {
-                @SuppressWarnings("MagicNumber") EntityIdDoubleFieldValue msg =
-                        EntityIdDoubleFieldValue.newBuilder()
-                                                .setValue(1.1)
-                                                .build();
+                EntityIdDoubleFieldValue msg = EntityIdDoubleFieldValue.newBuilder()
+                                                                       .setValue(1.1)
+                                                                       .build();
                 assertNotValid(msg);
             }
+        }
+    }
+
+    @Nested
+    @DisplayName("consider OneOf")
+    class OneOf {
+
+        @Test
+        @DisplayName("valid if a required field is set to a non-default value")
+        void validIfRequireFieldIsNotDefault() {
+            EveryRequired requiredIsNotDefault = EveryRequired.newBuilder()
+                                                              .setFirst(newUuid())
+                                                              .build();
+            assertValid(requiredIsNotDefault);
+        }
+
+        @Test
+        @DisplayName("invalid if a required field is set to the default value")
+        void invalidIfRequireFieldIsDefault() {
+            EveryRequired requiredIsDefault = EveryRequired.newBuilder()
+                                                           .setFirst("")
+                                                           .build();
+            assertNotValid(requiredIsDefault);
+        }
+
+        @Test
+        @DisplayName("valid if a non-required field is set to the default value")
+        void validIfNonRequiredIsDefault() {
+            OneRequired nonRequiredIsDefault = OneRequired.newBuilder()
+                                                          .setNonRequired("")
+                                                          .build();
+            assertValid(nonRequiredIsDefault);
+        }
+
+        @Test
+        @DisplayName("invalid if all fields are not required, but none is set")
+        void invalidIfNoneIsSet() {
+            EveryNotRequired noneIsSet = EveryNotRequired.newBuilder()
+                                                         .build();
+            assertNotValid(noneIsSet);
         }
     }
 
@@ -1157,6 +1200,7 @@ class MessageValidatorTest {
         validate(msg);
         assertIsValid(true);
     }
+
     private void assertNotValid(Message msg) {
         validate(msg);
         assertIsValid(false);
