@@ -30,9 +30,12 @@ import java.util.Optional;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Validates fields declared inside {@linkplain OneofDescriptor OneOf}.
+ * Validates a {@linkplain OneofDescriptor OneOf}.
  *
- * //TODO:2018-10-26:dmytro.grankin:  extent Javadoc
+ * <p>Only a single field from a {@code OneOf} is validated — the field that is actually set.
+ * If none of fields is set, a constraint violation is created.
+ *
+ * @see <a href="https://developers.google.com/protocol-buffers/docs/proto3#oneof">One Of documentation</a>
  */
 class OneOfValidator {
 
