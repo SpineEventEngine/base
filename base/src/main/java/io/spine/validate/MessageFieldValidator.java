@@ -36,6 +36,7 @@ import static io.spine.base.Time.getCurrentTime;
 import static io.spine.option.Time.FUTURE;
 import static io.spine.option.Time.TIME_UNDEFINED;
 import static io.spine.protobuf.AnyPacker.pack;
+import static io.spine.protobuf.Timestamps2.isLaterThan;
 import static io.spine.validate.Validate.isDefault;
 
 /**
@@ -143,14 +144,6 @@ class MessageFieldValidator extends FieldValidator<Message> {
                           : isLaterThan(now, /*than*/ timeToCheck);
         boolean isInvalid = !isValid;
         return isInvalid;
-    }
-
-    private static boolean isLaterThan(Timestamp t1, Timestamp t2) {
-        int result = Long.compare(t1.getSeconds(), t2.getSeconds());
-        result = (result == 0)
-                 ? Integer.compare(t1.getNanos(), t2.getNanos())
-                 : result;
-        return result > 0;
     }
 
     private ConstraintViolation newTimeViolation(Timestamp fieldValue) {
