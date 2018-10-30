@@ -35,8 +35,8 @@ import java.util.Collection;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static io.spine.code.proto.FieldTypes.isMap;
-import static io.spine.code.proto.FieldTypes.isRepeated;
+import static io.spine.code.proto.FieldTypesProto.isMap;
+import static io.spine.code.proto.FieldTypesProto.isRepeated;
 import static io.spine.tools.compiler.validation.ClassNames.getValidatorMessageClassName;
 
 /**

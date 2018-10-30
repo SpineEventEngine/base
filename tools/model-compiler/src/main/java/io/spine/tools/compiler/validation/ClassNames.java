@@ -29,7 +29,7 @@ import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.code.java.PrimitiveType.getWrapperClass;
-import static io.spine.code.proto.FieldTypes.trimTypeName;
+import static io.spine.code.proto.FieldTypesProto.trimTypeName;
 import static io.spine.code.proto.ScalarType.getJavaTypeName;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 import static java.lang.String.format;

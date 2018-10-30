@@ -35,11 +35,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("FieldTypes utility class should")
-class FieldTypesTest extends UtilityClassTest<FieldTypes> {
+@DisplayName("FieldTypesProto utility class should")
+class FieldTypesProtoTest extends UtilityClassTest<FieldTypesProto> {
 
-    FieldTypesTest() {
-        super(FieldTypes.class);
+    FieldTypesProtoTest() {
+        super(FieldTypesProto.class);
     }
 
     @Nested
@@ -49,30 +49,30 @@ class FieldTypesTest extends UtilityClassTest<FieldTypes> {
         @Test
         @DisplayName("is message")
         void isMessage() {
-            assertTrue(FieldTypes.isMessage(messageField().toProto()));
-            assertFalse(FieldTypes.isMessage(primitiveField().toProto()));
-            assertFalse(FieldTypes.isMessage(enumField().toProto()));
+            assertTrue(FieldTypesProto.isMessage(messageField().toProto()));
+            assertFalse(FieldTypesProto.isMessage(primitiveField().toProto()));
+            assertFalse(FieldTypesProto.isMessage(enumField().toProto()));
         }
 
         @Test
         @DisplayName("is repeated")
         void isRepeated() {
-            assertTrue(FieldTypes.isRepeated(repeatedField().toProto()));
-            assertFalse(FieldTypes.isRepeated(mapField().toProto()));
-            assertFalse(FieldTypes.isRepeated(singularField().toProto()));
+            assertTrue(FieldTypesProto.isRepeated(repeatedField().toProto()));
+            assertFalse(FieldTypesProto.isRepeated(mapField().toProto()));
+            assertFalse(FieldTypesProto.isRepeated(singularField().toProto()));
         }
 
         @Test
         @DisplayName("is map")
         void isMap() {
-            assertTrue(FieldTypes.isMap(mapField().toProto()));
-            assertFalse(FieldTypes.isMap(singularField().toProto()));
+            assertTrue(FieldTypesProto.isMap(mapField().toProto()));
+            assertFalse(FieldTypesProto.isMap(singularField().toProto()));
         }
     }
 
     @Test
     @DisplayName("obtain a map entry name")
     void obtainEntryName() {
-        assertEquals("MapFieldEntry", FieldTypes.getEntryNameFor(mapField().toProto()));
+        assertEquals("MapFieldEntry", FieldTypesProto.getEntryNameFor(mapField().toProto()));
     }
 }

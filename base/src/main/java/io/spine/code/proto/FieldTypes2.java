@@ -87,7 +87,7 @@ public final class FieldTypes2 {
     public static boolean isRepeated(FieldDescriptor field) {
         checkNotNull(field);
         FieldDescriptorProto proto = field.toProto();
-        return FieldTypes.isRepeated(proto);
+        return FieldTypesProto.isRepeated(proto);
     }
 
     /**
@@ -100,7 +100,7 @@ public final class FieldTypes2 {
     public static boolean isMap(FieldDescriptor field) {
         checkNotNull(field);
         FieldDescriptorProto proto = field.toProto();
-        return FieldTypes.isMap(proto);
+        return FieldTypesProto.isMap(proto);
     }
 
     /**

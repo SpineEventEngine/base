@@ -29,13 +29,13 @@ import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type.TYP
 /**
  * A utility to work with Protobuf {@linkplain FieldDescriptorProto fields}.
  */
-public final class FieldTypes {
+public final class FieldTypesProto {
 
     @SuppressWarnings("DuplicateStringLiteralInspection" /* The same string has different semantics. */)
     private static final String ENTRY_SUFFIX = "Entry";
 
     /** Prevents instantiation of this utility class . */
-    private FieldTypes() {
+    private FieldTypesProto() {
     }
 
     /**
