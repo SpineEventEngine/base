@@ -22,7 +22,7 @@ package io.spine.validate;
 
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
-import io.spine.code.proto.FieldTypes2;
+import io.spine.code.proto.FieldTypes;
 
 import java.util.Map;
 
@@ -122,8 +122,8 @@ class FieldValidatorFactory {
         if (value.isEmpty()) {
             return new EmptyMapFieldValidator(fieldContext, strict);
         }
-        JavaType type = FieldTypes2.valueDescriptor(fieldContext.getTarget())
-                                   .getJavaType();
+        JavaType type = FieldTypes.valueDescriptor(fieldContext.getTarget())
+                                  .getJavaType();
         FieldValidator<?> validator = createForLinear(type,
                                                       fieldContext,
                                                       value,

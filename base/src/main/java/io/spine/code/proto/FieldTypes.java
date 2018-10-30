@@ -32,7 +32,7 @@ import static com.google.protobuf.Descriptors.FieldDescriptor.Type.MESSAGE;
  * A utility to work with Protobuf {@linkplain FieldDescriptor fields}.
  */
 @SuppressWarnings("DuplicateStringLiteralInspection") // Duplication with unrelated modules.
-public final class FieldTypes2 {
+public final class FieldTypes {
 
     /**
      * The field of the {@code map} message type which represents the {@code map} key.
@@ -45,7 +45,7 @@ public final class FieldTypes2 {
     private static final String MAP_ENTRY_VALUE = "value";
 
     /** Prevents instantiation of this utility class. */
-    private FieldTypes2() {
+    private FieldTypes() {
     }
 
     /**
