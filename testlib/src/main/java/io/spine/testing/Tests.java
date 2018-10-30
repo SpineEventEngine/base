@@ -21,7 +21,6 @@
 package io.spine.testing;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.protobuf.Descriptors;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.FieldMask;
 import com.google.protobuf.Message;
@@ -29,7 +28,6 @@ import com.google.protobuf.Message;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.truth.Truth.assertThat;
@@ -145,8 +143,11 @@ public final class Tests {
      *
      * <p>Use it when it is needed to pass {@code null} to a method in tests so that no
      * warnings suppression is needed.
+     *
+     * @apiNote The method doesn't take {@code Class<T>} to keep
+     *         the test API small and convenient
      */
-    @SuppressWarnings("TypeParameterUnusedInFormals")
+    @SuppressWarnings("TypeParameterUnusedInFormals" /* See api note. */)
     public static <T> T nullRef() {
         T nullRef = null;
         return nullRef;
@@ -155,10 +156,12 @@ public final class Tests {
     /**
      * Asserts that the passed message has a field that matches the passed field mask.
      *
-     * @param message   the message to assert
-     * @param fieldMask which is matched against the message field
-     *
-     * @throws AssertionError if the check fails
+     * @param message
+     *         the message to assert
+     * @param fieldMask
+     *         which is matched against the message field
+     * @throws AssertionError
+     *         if the check fails
      */
     public static void assertMatchesMask(Message message, FieldMask fieldMask) {
         List<String> paths = fieldMask.getPathsList();
@@ -188,9 +191,12 @@ public final class Tests {
      *
      * <p>The assertion will be passed if the actual delta equals to the set one.
      *
-     * @param expectedValue expected value
-     * @param actualValue   actual value
-     * @param delta         the maximum expected difference between the values
+     * @param expectedValue
+     *         expected value
+     * @param actualValue
+     *         actual value
+     * @param delta
+     *         the maximum expected difference between the values
      */
     public static void assertInDelta(long expectedValue, long actualValue, long delta) {
         long actualDelta = abs(expectedValue - actualValue);
