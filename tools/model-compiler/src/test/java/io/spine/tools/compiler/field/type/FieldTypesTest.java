@@ -18,20 +18,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-group = 'io.spine.tools'
+package io.spine.tools.compiler.field.type;
 
-dependencies {
-    api gradleApi()
-    
-    implementation project(':base')
+import io.spine.testing.UtilityClassTest;
+import org.junit.jupiter.api.DisplayName;
 
-    testImplementation project(':testlib')
-    testImplementation project(':plugin-testlib')
-    testImplementation deps.test.mockito
-}
+@DisplayName("FieldTypes utility class should")
+class FieldTypesTest extends UtilityClassTest<FieldTypes> {
 
-sourceSets {
-    test {
-        resources.srcDirs += "$sourcesRootDir/test/resources"
+    FieldTypesTest() {
+        super(FieldTypes.class);
     }
 }

@@ -17,17 +17,38 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
-group = 'io.spine'
+syntax = "proto3";
 
-dependencies {
-    /*
-        Expose tools we use as transitive dependencies to simplify dependency management in
-        sub-projects.
-    */
-    api deps.build.protobuf
-    api deps.test.junit5Api
-    api deps.test.truth
-    api deps.test.guavaTestlib
-    api deps.test.mockito
-    api deps.test.hamcrest
+package spine.test.options;
+
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.spine.io";
+option java_package="io.spine.test.options";
+option java_multiple_files = true;
+option java_outer_classname = "EntityOptionsTestProto";
+
+
+message FullAccessAggregate {
+    option (entity).kind = AGGREGATE;
+    // Do not specify visibility, assuming FULL.
+
+    uint64 id = 1;
+    string name = 2;
+}
+
+message SubscribableAggregate {
+    option (entity).kind = AGGREGATE;
+    option (entity).visibility = SUBSCRIBE;
+
+    uint64 id = 1;
+    string description = 2;
+}
+
+message HiddenAggregate {
+    option (entity).kind = AGGREGATE;
+    option (entity).visibility = NONE;
+
+    string uuid = 1;
+    string secret = 2;
 }

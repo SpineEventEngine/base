@@ -36,8 +36,6 @@ import static java.lang.String.format;
 
 /**
  * Utility class for working with the {@code ClassName}s.
- *
- * @author Illia Shepilov
  */
 final class ClassNames {
 

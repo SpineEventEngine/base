@@ -18,39 +18,39 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.compiler.annotation;
+package io.spine.tools.compiler.check;
 
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
-import com.squareup.javapoet.AnnotationSpec;
-import com.squareup.javapoet.TypeName;
 import io.spine.testing.UtilityClassTest;
+import org.gradle.api.Project;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import javax.annotation.Generated;
+import static io.spine.tools.compiler.check.given.ProjectConfigurations.assertCompileTasksContain;
+import static io.spine.tools.compiler.check.given.ProjectConfigurations.assertCompileTasksEmpty;
+import static io.spine.tools.gradle.compiler.given.ModelCompilerTestEnv.newProject;
 
-import static io.spine.tools.compiler.annotation.Annotations.canIgnoreReturnValue;
-import static io.spine.tools.compiler.annotation.Annotations.generatedBySpineModelCompiler;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+@DisplayName("ProjectArguments utility class should")
+class ProjectArgumentsTest extends UtilityClassTest<ProjectArguments> {
 
-@DisplayName("Annotations utility class should")
-class AnnotationsTest extends UtilityClassTest<Annotations> {
+    private final Project project = newProject();
 
-    AnnotationsTest() {
-        super(Annotations.class);
+    ProjectArgumentsTest() {
+        super(ProjectArguments.class);
     }
 
     @Test
-    @DisplayName("provide Model Compiler annotation")
-    void ofModelCompiler() {
-        AnnotationSpec spec = generatedBySpineModelCompiler();
-        assertEquals(spec.type, TypeName.get(Generated.class));
+    @DisplayName("add arguments to Java compile tasks")
+    void add_args_to_java_compile_tasks_of_project() {
+        String firstArg = "firstArg";
+        String secondArg = "secondArg";
+        ProjectArguments.addArgsToJavaCompile(project, firstArg, secondArg);
+        assertCompileTasksContain(project, firstArg, secondArg);
     }
 
     @Test
-    @DisplayName("provide CanIgnoreReturnValue annotation")
-    void ofCanIgnoreReturnValue() {
-        AnnotationSpec spec = canIgnoreReturnValue();
-        assertEquals(spec.type, TypeName.get(CanIgnoreReturnValue.class));
+    @DisplayName("not add arguments if none is specified")
+    void add_no_args_if_none_specified() {
+        ProjectArguments.addArgsToJavaCompile(project);
+        assertCompileTasksEmpty(project);
     }
 }

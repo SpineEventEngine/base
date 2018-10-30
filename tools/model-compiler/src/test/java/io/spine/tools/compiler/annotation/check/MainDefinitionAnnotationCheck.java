@@ -27,8 +27,8 @@ import org.jboss.forge.roaster.model.source.JavaClassSource;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.compiler.annotation.check.Annotations.findSpiAnnotation;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class MainDefinitionAnnotationCheck implements SourceCheck {
 

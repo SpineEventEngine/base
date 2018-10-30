@@ -18,39 +18,31 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.compiler.annotation;
+package io.spine.tools.protoc;
 
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.squareup.javapoet.AnnotationSpec;
-import com.squareup.javapoet.TypeName;
-import io.spine.testing.UtilityClassTest;
+import com.squareup.javapoet.JavaFile;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import javax.annotation.Generated;
 
-import static io.spine.tools.compiler.annotation.Annotations.canIgnoreReturnValue;
-import static io.spine.tools.compiler.annotation.Annotations.generatedBySpineModelCompiler;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DisplayName("Annotations utility class should")
-class AnnotationsTest extends UtilityClassTest<Annotations> {
-
-    AnnotationsTest() {
-        super(Annotations.class);
-    }
+@DisplayName("MarkerInterfaceSpec should")
+class MarkerInterfaceSpecTest {
 
     @Test
-    @DisplayName("provide Model Compiler annotation")
-    void ofModelCompiler() {
-        AnnotationSpec spec = generatedBySpineModelCompiler();
-        assertEquals(spec.type, TypeName.get(Generated.class));
-    }
+    @DisplayName("generate interfaces")
+    void generate_interfaces() {
+        String packageName = "io.spine.test";
+        String interfaceName = "CustomerEvent";
+        JavaFile javaFile = new MarkerInterfaceSpec(packageName, interfaceName).toJavaCode();
 
-    @Test
-    @DisplayName("provide CanIgnoreReturnValue annotation")
-    void ofCanIgnoreReturnValue() {
-        AnnotationSpec spec = canIgnoreReturnValue();
-        assertEquals(spec.type, TypeName.get(CanIgnoreReturnValue.class));
+        AnnotationSpec generated = javaFile.typeSpec.annotations.get(0);
+        assertEquals(Generated.class.getName(), generated.type.toString());
+
+        assertEquals(packageName, javaFile.packageName);
+        assertEquals(interfaceName, javaFile.typeSpec.name);
     }
 }

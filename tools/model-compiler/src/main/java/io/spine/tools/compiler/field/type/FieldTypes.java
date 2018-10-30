@@ -26,12 +26,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Utility class for working with types of the Protobuf fields.
- *
- * @author Illia Shepilov
  */
-public class FieldTypes {
+public final class FieldTypes {
 
-    public static final String ENTRY_SUFFIX = "Entry";
+    private static final String ENTRY_SUFFIX = "Entry";
 
     /** Prevents instantiation of this utility class .*/
     private FieldTypes() {}

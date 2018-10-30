@@ -25,8 +25,8 @@ import io.spine.code.java.FileName;
 import io.spine.code.java.PackageName;
 import io.spine.code.proto.FieldName;
 import io.spine.tools.gradle.GradleProject;
-import org.junit.rules.TemporaryFolder;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -53,10 +53,10 @@ public class RejectionTestEnv {
     private RejectionTestEnv() {
     }
 
-    public static GradleProject newProjectWithRejectionsJavadoc(TemporaryFolder projectFolder) {
+    public static GradleProject newProjectWithRejectionsJavadoc(File projectFolder) {
         return GradleProject.newBuilder()
                             .setProjectName("rejections-javadoc")
-                            .setProjectFolder(projectFolder.getRoot())
+                            .setProjectFolder(projectFolder)
                             .createProto("javadoc_rejections.proto", rejectionWithJavadoc())
                             .build();
     }

@@ -32,10 +32,10 @@ import org.jboss.forge.roaster.model.source.JavaSource;
 import org.jboss.forge.roaster.model.source.MethodSource;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.tools.compiler.annotation.check.Annotations.findSpiAnnotation;
 import static io.spine.code.java.SimpleClassName.ofBuilder;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static io.spine.tools.compiler.annotation.check.Annotations.findSpiAnnotation;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class FieldAnnotationCheck implements SourceCheck {
 

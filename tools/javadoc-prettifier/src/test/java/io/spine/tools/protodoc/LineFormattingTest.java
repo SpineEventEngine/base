@@ -18,39 +18,38 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.compiler.annotation;
+package io.spine.tools.protodoc;
 
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
-import com.squareup.javapoet.AnnotationSpec;
-import com.squareup.javapoet.TypeName;
-import io.spine.testing.UtilityClassTest;
+import com.google.common.base.Joiner;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import javax.annotation.Generated;
+import java.util.Collections;
 
-import static io.spine.tools.compiler.annotation.Annotations.canIgnoreReturnValue;
-import static io.spine.tools.compiler.annotation.Annotations.generatedBySpineModelCompiler;
+import static java.lang.System.lineSeparator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DisplayName("Annotations utility class should")
-class AnnotationsTest extends UtilityClassTest<Annotations> {
+@DisplayName("LineFormatting should")
+class LineFormattingTest {
 
-    AnnotationsTest() {
-        super(Annotations.class);
-    }
+    private final FormattingAction formatting = new ALineFormatting();
 
     @Test
-    @DisplayName("provide Model Compiler annotation")
-    void ofModelCompiler() {
-        AnnotationSpec spec = generatedBySpineModelCompiler();
-        assertEquals(spec.type, TypeName.get(Generated.class));
+    @DisplayName("merge lines")
+    void merge_lines_correctly() {
+        String lineText = "a text in a single line";
+        int lineCount = 5;
+        Iterable<String> lines = Collections.nCopies(lineCount, lineText);
+        String linesAsString = Joiner.on(lineSeparator())
+                                     .join(lines);
+        assertEquals(linesAsString, formatting.execute(linesAsString));
     }
 
-    @Test
-    @DisplayName("provide CanIgnoreReturnValue annotation")
-    void ofCanIgnoreReturnValue() {
-        AnnotationSpec spec = canIgnoreReturnValue();
-        assertEquals(spec.type, TypeName.get(CanIgnoreReturnValue.class));
+    private static class ALineFormatting extends LineFormatting {
+
+        @Override
+        String formatLine(String line) {
+            return line;
+        }
     }
 }

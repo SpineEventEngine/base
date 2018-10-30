@@ -17,40 +17,48 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package io.spine.tools.reflections;
 
-package io.spine.tools.compiler.annotation;
-
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
-import com.squareup.javapoet.AnnotationSpec;
-import com.squareup.javapoet.TypeName;
-import io.spine.testing.UtilityClassTest;
+import org.gradle.api.Project;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import javax.annotation.Generated;
-
-import static io.spine.tools.compiler.annotation.Annotations.canIgnoreReturnValue;
-import static io.spine.tools.compiler.annotation.Annotations.generatedBySpineModelCompiler;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("Annotations utility class should")
-class AnnotationsTest extends UtilityClassTest<Annotations> {
+@DisplayName("Extension should")
+class ExtensionTest {
 
-    AnnotationsTest() {
-        super(Annotations.class);
+    private Project project;
+
+    @BeforeEach
+    void setUp() {
+        project = Given.newProject();
+        project.getPluginManager()
+               .apply(Given.REFLECTIONS_PLUGIN_ID);
     }
 
     @Test
-    @DisplayName("provide Model Compiler annotation")
-    void ofModelCompiler() {
-        AnnotationSpec spec = generatedBySpineModelCompiler();
-        assertEquals(spec.type, TypeName.get(Generated.class));
+    @DisplayName("return default targetDir if not set")
+    void return_default_targetDir_if_not_set() {
+        String dir = Extension.getTargetDir(project);
+
+        assertFalse(dir.trim()
+                       .isEmpty());
+        assertTrue(dir.startsWith(project.getProjectDir()
+                                         .getAbsolutePath()));
     }
 
     @Test
-    @DisplayName("provide CanIgnoreReturnValue annotation")
-    void ofCanIgnoreReturnValue() {
-        AnnotationSpec spec = canIgnoreReturnValue();
-        assertEquals(spec.type, TypeName.get(CanIgnoreReturnValue.class));
+    @DisplayName("return targetDir if set")
+    void return_targetDir_if_set() {
+        Extension extension = Extension.reflectionsPlugin(project);
+        extension.targetDir = "some target dir value";
+
+        String dir = Extension.getTargetDir(project);
+
+        assertEquals(extension.targetDir, dir);
     }
 }

@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 
-import static io.spine.test.compiler.annotation.EnumAnnotatorShouldProto.experimentalType;
+import static io.spine.test.compiler.annotation.EnumAnnotatorTestProto.experimentalType;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @DisplayName("EnumAnnotator should")
