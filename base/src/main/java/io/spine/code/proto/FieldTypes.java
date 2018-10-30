@@ -21,110 +21,127 @@
 package io.spine.code.proto;
 
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
+import com.google.protobuf.Descriptors.FieldDescriptor;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Label.LABEL_REPEATED;
-import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type.TYPE_MESSAGE;
+import static com.google.protobuf.Descriptors.FieldDescriptor.Type.ENUM;
+import static com.google.protobuf.Descriptors.FieldDescriptor.Type.MESSAGE;
 
 /**
- * A utility to work with Protobuf {@linkplain FieldDescriptorProto fields}.
+ * A utility to work with Protobuf {@linkplain FieldDescriptor fields}.
  */
+@SuppressWarnings("DuplicateStringLiteralInspection") // Duplication with unrelated modules.
 public final class FieldTypes {
 
-    @SuppressWarnings("DuplicateStringLiteralInspection" /* The same string has different semantics. */)
-    private static final String ENTRY_SUFFIX = "Entry";
+    /**
+     * The field of the {@code map} message type which represents the {@code map} key.
+     */
+    private static final String MAP_ENTRY_KEY = "key";
 
-    /** Prevents instantiation of this utility class . */
+    /**
+     * The field of the {@code map} message type which represents the {@code map} value.
+     */
+    private static final String MAP_ENTRY_VALUE = "value";
+
+    /** Prevents instantiation of this utility class. */
     private FieldTypes() {
     }
 
     /**
-     * Checks the Protobuf field and determines it is repeated field or not.
+     * Checks if the given field is of {@code message} type.
+     *
+     * @param field
+     *         the descriptor of the field to check
+     * @return {@code true} if the field is of {@code message} type, {@code false} otherwise
+     */
+    public static boolean isMessage(FieldDescriptor field) {
+        checkNotNull(field);
+        boolean isMessage = field.getType() == MESSAGE;
+        return isMessage;
+    }
+
+    /**
+     * Checks if the given field is of {@code enum} type.
+     *
+     * @param field
+     *         the descriptor of the field to check
+     * @return {@code true} if the field is of {@code enum} type, {@code false} otherwise
+     */
+    public static boolean isEnum(FieldDescriptor field) {
+        checkNotNull(field);
+        boolean isEnum = field.getType() == ENUM;
+        return isEnum;
+    }
+
+    /**
+     * Checks if the given field is a {@code repeated} proto field.
      *
      * <p>Although {@code map} fields technically count as {@code repeated}, this method will
      * return {@code false} for them.
      *
      * @param field
      *         the descriptor of the field to check
-     * @return {@code true} if field is repeated, {@code false} otherwise
+     * @return {@code true} if the field is a {@code repeated} proto field, {@code false} otherwise
      */
-    public static boolean isRepeated(FieldDescriptorProto field) {
+    public static boolean isRepeated(FieldDescriptor field) {
         checkNotNull(field);
-        boolean result = field.getLabel() == LABEL_REPEATED && !isMap(field);
-        return result;
+        FieldDescriptorProto proto = field.toProto();
+        return FieldTypesProto.isRepeated(proto);
     }
 
     /**
-     * Checks the Protobuf field and determines it is map field or not.
-     *
-     * <p>If a field is a map it is repeated message with the specific
-     * {@linkplain #getEntryNameFor(FieldDescriptorProto) type}.
+     * Checks if the given field is a {@code map} proto field.
      *
      * @param field
      *         the descriptor of the field to check
-     * @return {@code true} if field is map, {@code false} otherwise
+     * @return {@code true} if the field is a {@code map} proto field and {@code false} otherwise
      */
-    public static boolean isMap(FieldDescriptorProto field) {
+    public static boolean isMap(FieldDescriptor field) {
         checkNotNull(field);
-        if (field.getLabel() != LABEL_REPEATED) {
-            return false;
-        }
-        if (field.getType() != TYPE_MESSAGE) {
-            return false;
-        }
-        boolean result = field.getTypeName()
-                              .endsWith('.' + getEntryNameFor(field));
-        return result;
+        FieldDescriptorProto proto = field.toProto();
+        return FieldTypesProto.isMap(proto);
     }
 
     /**
-     * Constructs the entry name for the map field.
+     * Obtains the key descriptor for the {@code map} field.
      *
-     * <p>For example, proto field with name 'word_dictionary' has 'wordDictionary' json name.
-     * Every map field has corresponding entry type.
-     * For 'word_dictionary' it would be 'WordDictionaryEntry'
+     * <p>The descriptor type is {@link FieldDescriptor} because the map key technically is the
+     * field of the {@code ...Entry} {@code message} type.
      *
-     * @param mapField
-     *         the field to construct entry name
-     * @return the name of the map field
+     * @param field
+     *         the {@code map} field for which to obtain key descriptor
+     * @return the key descriptor for the specified {@code map} field
+     * @throws IllegalStateException
+     *         if the specified field is not a {@code map} proto field
      */
-    public static String getEntryNameFor(FieldDescriptorProto mapField) {
-        FieldName fieldName = FieldName.of(mapField);
-        return fieldName.toCamelCase() + ENTRY_SUFFIX;
+    public static FieldDescriptor keyDescriptor(FieldDescriptor field) {
+        checkArgument(isMap(field),
+                      "Trying to get key descriptor for the non-map field %s.",
+                      field.getName());
+        FieldDescriptor descriptor = field.getMessageType()
+                                          .findFieldByName(MAP_ENTRY_KEY);
+        return descriptor;
     }
 
     /**
-     * Checks the Protobuf field and determines it is message type or not.
+     * Obtains the value descriptor for the {@code map} field.
      *
-     * @param fieldDescriptor
-     *         the descriptor of the field to check
-     * @return {@code true} if it is message, {@code false} otherwise
+     * <p>The descriptor type is {@link FieldDescriptor} because the map value technically is the
+     * field of the {@code ...Entry} {@code message} type.
+     *
+     * @param field
+     *         the {@code map} field for which to obtain value descriptor
+     * @return the value descriptor for the specified {@code map} field
+     * @throws IllegalStateException
+     *         if the specified field is not a {@code map} proto field
      */
-    public static boolean isMessage(FieldDescriptorProto fieldDescriptor) {
-        checkNotNull(fieldDescriptor);
-        return fieldDescriptor.getType() == TYPE_MESSAGE;
-    }
-
-    /**
-     * Removes the leading dot from the Protobuf type name passed as {@code String}.
-     *
-     * <p>If there is no leading dots, returns the unmodified parameter.
-     *
-     * @param fieldDescriptor
-     *         the field descriptor whose type name to modify
-     * @return the type name without leading dot
-     */
-    public static String trimTypeName(FieldDescriptorProto fieldDescriptor) {
-        String typeName = fieldDescriptor.getTypeName();
-        checkNotNull(typeName);
-
-        if (typeName.isEmpty()) {
-            return typeName;
-        }
-        // it has a redundant dot in the beginning
-        if (typeName.charAt(0) == '.') {
-            return typeName.substring(1);
-        }
-        return typeName;
+    public static FieldDescriptor valueDescriptor(FieldDescriptor field) {
+        checkArgument(isMap(field),
+                      "Trying to get value descriptor for the non-map field %s.",
+                      field.getName());
+        FieldDescriptor descriptor = field.getMessageType()
+                                          .findFieldByName(MAP_ENTRY_VALUE);
+        return descriptor;
     }
 }

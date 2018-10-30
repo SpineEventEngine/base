@@ -20,11 +20,16 @@
 
 package io.spine.code.proto;
 
+import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import static com.google.protobuf.Descriptors.FieldDescriptor.Type.INT64;
+import static com.google.protobuf.Descriptors.FieldDescriptor.Type.STRING;
+import static io.spine.code.proto.FieldTypes.keyDescriptor;
+import static io.spine.code.proto.FieldTypes.valueDescriptor;
 import static io.spine.code.proto.given.Given.enumField;
 import static io.spine.code.proto.given.Given.mapField;
 import static io.spine.code.proto.given.Given.messageField;
@@ -33,9 +38,11 @@ import static io.spine.code.proto.given.Given.repeatedField;
 import static io.spine.code.proto.given.Given.singularField;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("FieldTypes utility class should")
+@SuppressWarnings("InnerClassMayBeStatic") // JUnit nested classes cannot be static.
+@DisplayName("FieldTypes utility should")
 class FieldTypesTest extends UtilityClassTest<FieldTypes> {
 
     FieldTypesTest() {
@@ -49,30 +56,62 @@ class FieldTypesTest extends UtilityClassTest<FieldTypes> {
         @Test
         @DisplayName("is message")
         void isMessage() {
-            assertTrue(FieldTypes.isMessage(messageField().toProto()));
-            assertFalse(FieldTypes.isMessage(primitiveField().toProto()));
-            assertFalse(FieldTypes.isMessage(enumField().toProto()));
+            assertTrue(FieldTypes.isMessage(messageField()));
+            assertFalse(FieldTypes.isMessage(primitiveField()));
+            assertFalse(FieldTypes.isMessage(enumField()));
         }
 
         @Test
         @DisplayName("is repeated")
         void isRepeated() {
-            assertTrue(FieldTypes.isRepeated(repeatedField().toProto()));
-            assertFalse(FieldTypes.isRepeated(mapField().toProto()));
-            assertFalse(FieldTypes.isRepeated(singularField().toProto()));
+            assertTrue(FieldTypes.isRepeated(repeatedField()));
+            assertFalse(FieldTypes.isRepeated(singularField()));
         }
 
         @Test
         @DisplayName("is map")
         void isMap() {
-            assertTrue(FieldTypes.isMap(mapField().toProto()));
-            assertFalse(FieldTypes.isMap(singularField().toProto()));
+            assertTrue(FieldTypes.isMap(mapField()));
+            assertFalse(FieldTypes.isMap(singularField()));
         }
     }
 
     @Test
-    @DisplayName("obtain a map entry name")
-    void obtainEntryName() {
-        assertEquals("MapFieldEntry", FieldTypes.getEntryNameFor(mapField().toProto()));
+    @DisplayName("not mark map field as repeated")
+    void notMarkMapAsRepeated() {
+        assertFalse(FieldTypes.isRepeated(mapField()));
+    }
+
+    @Test
+    @DisplayName("get key descriptor for map field")
+    void getKeyDescriptor() {
+        FieldDescriptor key = keyDescriptor(mapField());
+        assertEquals(INT64, key.getType());
+    }
+
+    @Test
+    @DisplayName("get value descriptor for map field")
+    void getValueDescriptor() {
+        FieldDescriptor value = valueDescriptor(mapField());
+        assertEquals(STRING, value.getType());
+    }
+
+    @SuppressWarnings({"CheckReturnValue", "ResultOfMethodCallIgnored"})
+    // Calling methods to throw exception.
+    @Nested
+    @DisplayName("throw IAE if")
+    class ThrowIaeIf {
+
+        @Test
+        @DisplayName("getting key descriptor from non-map field")
+        void getKeyForNonMap() {
+            assertThrows(IllegalArgumentException.class, () -> keyDescriptor(repeatedField()));
+        }
+
+        @Test
+        @DisplayName("getting value descriptor from non-map field")
+        void getValueForNonMap() {
+            assertThrows(IllegalArgumentException.class, () -> valueDescriptor(repeatedField()));
+        }
     }
 }

@@ -27,8 +27,8 @@ import io.spine.js.generate.type.ProtoParsersGenerator;
 import io.spine.type.TypeUrl;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.code.proto.FieldTypes2.isEnum;
-import static io.spine.code.proto.FieldTypes2.isMessage;
+import static io.spine.code.proto.FieldTypes.isEnum;
+import static io.spine.code.proto.FieldTypes.isMessage;
 
 /**
  * A helper class which creates a {@link FieldParser} instance for the passed field.
