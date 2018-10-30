@@ -99,7 +99,8 @@ class JavadocFormatterTest {
 
     private Path createJavaFile() throws IOException {
         String fileName = "JavadocFormatter_test_file.java";
-        Path filePath = Files.createFile(Paths.get(folder.getAbsolutePath(), fileName));
+        Path absoluteFilePath = Paths.get(folder.getAbsolutePath(), fileName);
+        Path filePath = Files.createFile(absoluteFilePath);
         return filePath;
     }
 }
