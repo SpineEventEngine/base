@@ -23,7 +23,7 @@ package io.spine.validate;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.base.CommandMessage;
-import io.spine.code.proto.FieldTypes2;
+import io.spine.code.proto.FieldTypes;
 import io.spine.option.EntityOption;
 import io.spine.option.OptionsProto;
 
@@ -95,11 +95,11 @@ final class FieldDeclaration {
     }
 
     boolean isRepeated() {
-        return FieldTypes2.isRepeated(field);
+        return FieldTypes.isRepeated(field);
     }
 
     boolean isMap() {
-        return FieldTypes2.isMap(field);
+        return FieldTypes.isMap(field);
     }
 
     FieldDescriptor descriptor() {
