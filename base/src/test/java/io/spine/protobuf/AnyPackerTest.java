@@ -36,7 +36,6 @@ import static io.spine.base.Identifier.newUuid;
 import static io.spine.protobuf.AnyPacker.pack;
 import static io.spine.protobuf.AnyPacker.unpack;
 import static io.spine.protobuf.AnyPacker.unpackFunc;
-import static io.spine.protobuf.TypeConverter.toMessage;
 import static io.spine.testing.DisplayNames.HAVE_PARAMETERLESS_CTOR;
 import static io.spine.testing.TestValues.newUuidValue;
 import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
@@ -50,7 +49,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class AnyPackerTest {
 
     /** A message with type URL standard to Google Protobuf. */
-    private final StringValue googleMsg = toMessage(newUuid());
+    private final StringValue googleMsg = StringValue.of(newUuid());
 
     /** A message with different type URL. */
     private final MessageToPack spineMsg = MessageToPack.newBuilder()
