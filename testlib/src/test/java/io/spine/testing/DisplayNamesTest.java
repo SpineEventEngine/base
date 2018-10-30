@@ -18,31 +18,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code;
+package io.spine.testing;
 
-import io.spine.code.Generation.ModelCompilerAnnotation;
-import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+@DisplayName("DisplayNames utility class should")
+class DisplayNamesTest extends UtilityClassTest<DisplayNames> {
 
-@DisplayName("Generation utility class should")
-class GenerationTest extends UtilityClassTest<Generation> {
-
-    GenerationTest() {
-        super(Generation.class);
-    }
-
-    @Test
-    @DisplayName("provide information for annotation spec.")
-    void byModelCompiler() {
-        ModelCompilerAnnotation annotation = Generation.compilerAnnotation();
-        assertNotNull(annotation);
-        assertFalse(annotation.getFieldName()
-                              .isEmpty());
-        assertFalse(annotation.getCodeBlock()
-                              .isEmpty());
+    DisplayNamesTest() {
+        super(DisplayNames.class);
     }
 }

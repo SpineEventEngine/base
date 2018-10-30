@@ -18,31 +18,37 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code;
+package io.spine.option;
 
-import io.spine.code.Generation.ModelCompilerAnnotation;
+import io.spine.option.EntityOption.Visibility;
+import io.spine.test.options.FullAccessAggregate;
+import io.spine.test.options.SubscribableAggregate;
 import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static io.spine.option.EntityOptions.getVisibility;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DisplayName("Generation utility class should")
-class GenerationTest extends UtilityClassTest<Generation> {
+/**
+ * See `spine/test/option/entity_options_should.proto` for definitions of types used in the tests.
+ */
+@DisplayName("EntityOptions utility class should")
+class EntityOptionsTest extends UtilityClassTest<EntityOptions> {
 
-    GenerationTest() {
-        super(Generation.class);
+    EntityOptionsTest() {
+        super(EntityOptions.class);
     }
 
     @Test
-    @DisplayName("provide information for annotation spec.")
-    void byModelCompiler() {
-        ModelCompilerAnnotation annotation = Generation.compilerAnnotation();
-        assertNotNull(annotation);
-        assertFalse(annotation.getFieldName()
-                              .isEmpty());
-        assertFalse(annotation.getCodeBlock()
-                              .isEmpty());
+    @DisplayName("assume full visibility when not defined")
+    void assume_full_visibility_when_not_defined() {
+        assertEquals(Visibility.FULL, getVisibility(FullAccessAggregate.class));
+    }
+
+    @Test
+    @DisplayName("get defined visibility")
+    void get_defined_visibility_value() {
+        assertEquals(Visibility.SUBSCRIBE, getVisibility(SubscribableAggregate.class));
     }
 }

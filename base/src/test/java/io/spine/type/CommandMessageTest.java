@@ -18,31 +18,40 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code;
+package io.spine.type;
 
-import io.spine.code.Generation.ModelCompilerAnnotation;
-import io.spine.testing.UtilityClassTest;
+import com.google.protobuf.Descriptors;
+import com.google.protobuf.StringValue;
+import io.spine.base.CommandMessage;
+import io.spine.base.given.CommandFromCommands;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static io.spine.testing.Tests.assertHasPrivateParameterlessCtor;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("Generation utility class should")
-class GenerationTest extends UtilityClassTest<Generation> {
+@DisplayName("CommandMessage should")
+class CommandMessageTest {
 
-    GenerationTest() {
-        super(Generation.class);
+    @Test
+    @DisplayName("have utility ctor for File")
+    void have_utility_ctor_for_File_class() {
+        assertHasPrivateParameterlessCtor(CommandMessage.File.class);
     }
 
     @Test
-    @DisplayName("provide information for annotation spec.")
-    void byModelCompiler() {
-        ModelCompilerAnnotation annotation = Generation.compilerAnnotation();
-        assertNotNull(annotation);
-        assertFalse(annotation.getFieldName()
-                              .isEmpty());
-        assertFalse(annotation.getCodeBlock()
-                              .isEmpty());
+    @DisplayName("tell commands file by descriptor")
+    void tell_commands_file_by_its_descriptor() {
+        Descriptors.FileDescriptor file = CommandFromCommands.getDescriptor()
+                                                             .getFile();
+        assertTrue(CommandMessage.File.predicate()
+                                      .test(file));
+
+        file = StringValue.getDescriptor()
+                          .getFile();
+
+        assertFalse(CommandMessage.File.predicate()
+                                       .test(file));
     }
 }

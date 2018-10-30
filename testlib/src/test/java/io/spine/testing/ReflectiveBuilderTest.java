@@ -18,31 +18,50 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code;
+package io.spine.testing;
 
-import io.spine.code.Generation.ModelCompilerAnnotation;
-import io.spine.testing.UtilityClassTest;
+import com.google.protobuf.Any;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import java.lang.reflect.Constructor;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@DisplayName("Generation utility class should")
-class GenerationTest extends UtilityClassTest<Generation> {
+@DisplayName("ReflectiveBuilder should")
+class ReflectiveBuilderTest {
 
-    GenerationTest() {
-        super(Generation.class);
+    @Test
+    @DisplayName("has the result class")
+    void has_result_class() {
+        ReflectiveBuilder<Any> builder =
+                new DummyBuilder().setResultClass(Any.class);
+        assertEquals(Any.class, builder.getResultClass());
     }
 
     @Test
-    @DisplayName("provide information for annotation spec.")
-    void byModelCompiler() {
-        ModelCompilerAnnotation annotation = Generation.compilerAnnotation();
-        assertNotNull(annotation);
-        assertFalse(annotation.getFieldName()
-                              .isEmpty());
-        assertFalse(annotation.getCodeBlock()
-                              .isEmpty());
+    @DisplayName("obtain a constructor")
+    void obtain_ctor() {
+        assertNotNull(new DummyBuilder().getConstructor());
+    }
+
+    private static class DummyBuilder extends ReflectiveBuilder<Any> {
+
+        @Override
+        protected Constructor<Any> getConstructor() {
+            Constructor<Any> ctor;
+            try {
+                ctor = Any.class.getDeclaredConstructor();
+            } catch (NoSuchMethodException e) {
+                throw new IllegalStateException(e);
+            }
+            return ctor;
+        }
+
+        @Override
+        public Any build() {
+            return Any.getDefaultInstance();
+        }
     }
 }

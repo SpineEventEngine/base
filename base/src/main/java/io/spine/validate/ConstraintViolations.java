@@ -36,10 +36,8 @@ import static java.lang.System.lineSeparator;
 
 /**
  * Utility class for working with {@link ConstraintViolation}s.
- *
- * @author Alexander Yevsyukov
  */
-public class ConstraintViolations {
+public final class ConstraintViolations {
 
     private ConstraintViolations() {
         // Prevent instantiation of this utility class.

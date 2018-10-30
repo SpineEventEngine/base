@@ -18,31 +18,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code;
+package io.spine.code.proto;
 
-import io.spine.code.Generation.ModelCompilerAnnotation;
-import io.spine.testing.UtilityClassTest;
+import com.google.protobuf.Descriptors.FileDescriptor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@DisplayName("Generation utility class should")
-class GenerationTest extends UtilityClassTest<Generation> {
+@DisplayName("TypeSet should")
+class TypeSetTest {
 
-    GenerationTest() {
-        super(Generation.class);
+    private static final FileSet fileSet = FileSet.load();
+
+    @Test
+    @DisplayName("obtain messages and enums from a file")
+    @SuppressWarnings("OptionalGetWithoutIsPresent") /* The file is present in resources. */
+    void obtain_messages_and_enums_from_a_file() {
+        FileDescriptor file = fileSet.tryFind(FileName.of("google/protobuf/descriptor.proto"))
+                                     .get();
+        TypeSet typeSet = TypeSet.messagesAndEnums(file);
+        assertFalse(typeSet.isEmpty());
     }
 
     @Test
-    @DisplayName("provide information for annotation spec.")
-    void byModelCompiler() {
-        ModelCompilerAnnotation annotation = Generation.compilerAnnotation();
-        assertNotNull(annotation);
-        assertFalse(annotation.getFieldName()
-                              .isEmpty());
-        assertFalse(annotation.getCodeBlock()
-                              .isEmpty());
+    @DisplayName("obtain message and enums")
+    void obtain_messages_and_enum_from_a_set() {
+        assertFalse(TypeSet.messagesAndEnums(fileSet)
+                           .isEmpty());
     }
 }

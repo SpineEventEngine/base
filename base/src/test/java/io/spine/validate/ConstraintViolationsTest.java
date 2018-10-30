@@ -17,32 +17,22 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package io.spine.validate;
 
-package io.spine.code;
-
-import io.spine.code.Generation.ModelCompilerAnnotation;
+import com.google.common.testing.NullPointerTester;
 import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+@DisplayName("ConstraintViolations utility class should")
+class ConstraintViolationsTest extends UtilityClassTest<ConstraintViolations> {
 
-@DisplayName("Generation utility class should")
-class GenerationTest extends UtilityClassTest<Generation> {
-
-    GenerationTest() {
-        super(Generation.class);
+    ConstraintViolationsTest() {
+        super(ConstraintViolations.class);
     }
 
-    @Test
-    @DisplayName("provide information for annotation spec.")
-    void byModelCompiler() {
-        ModelCompilerAnnotation annotation = Generation.compilerAnnotation();
-        assertNotNull(annotation);
-        assertFalse(annotation.getFieldName()
-                              .isEmpty());
-        assertFalse(annotation.getCodeBlock()
-                              .isEmpty());
+    @Override
+    protected void configure(NullPointerTester tester) {
+        super.configure(tester);
+        tester.setDefault(ConstraintViolation.class, ConstraintViolation.getDefaultInstance());
     }
 }

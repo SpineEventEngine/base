@@ -18,31 +18,37 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code;
+package io.spine.type;
 
-import io.spine.code.Generation.ModelCompilerAnnotation;
-import io.spine.testing.UtilityClassTest;
+import com.google.common.testing.NullPointerTester;
+import com.google.protobuf.Descriptors;
+import com.google.protobuf.StringValue;
+import io.spine.code.java.PackageName;
+import io.spine.code.java.SimpleClassName;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@DisplayName("Generation utility class should")
-class GenerationTest extends UtilityClassTest<Generation> {
+@DisplayName("ClassName should")
+class ClassNameTest {
 
-    GenerationTest() {
-        super(Generation.class);
+    @Test
+    @DisplayName("reject empty value")
+    void reject_empty_value() {
+        assertThrows(IllegalArgumentException.class,
+                     () -> ClassName.of(""));
     }
 
     @Test
-    @DisplayName("provide information for annotation spec.")
-    void byModelCompiler() {
-        ModelCompilerAnnotation annotation = Generation.compilerAnnotation();
-        assertNotNull(annotation);
-        assertFalse(annotation.getFieldName()
-                              .isEmpty());
-        assertFalse(annotation.getCodeBlock()
-                              .isEmpty());
+    @DisplayName(NOT_ACCEPT_NULLS)
+    void pass_null_tolerance_check() {
+        Descriptors.Descriptor descriptor = StringValue.getDescriptor();
+        new NullPointerTester()
+                .setDefault(SimpleClassName.class, SimpleClassName.ofMessage(descriptor))
+                .setDefault(PackageName.class, PackageName.resolve(descriptor.getFile()
+                                                                             .toProto()))
+                .testAllPublicStaticMethods(ClassName.class);
     }
 }

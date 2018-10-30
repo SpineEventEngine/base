@@ -18,31 +18,35 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code;
+package io.spine.value;
 
-import io.spine.code.Generation.ModelCompilerAnnotation;
-import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("Generation utility class should")
-class GenerationTest extends UtilityClassTest<Generation> {
-
-    GenerationTest() {
-        super(Generation.class);
-    }
+@DisplayName("ComparableStringValue should")
+class ComparableStringValueTest {
 
     @Test
-    @DisplayName("provide information for annotation spec.")
-    void byModelCompiler() {
-        ModelCompilerAnnotation annotation = Generation.compilerAnnotation();
-        assertNotNull(annotation);
-        assertFalse(annotation.getFieldName()
-                              .isEmpty());
-        assertFalse(annotation.getCodeBlock()
-                              .isEmpty());
+    @DisplayName("compare")
+    @SuppressWarnings("LocalVariableNamingConvention") /* shorter names are meaningful for this test */
+    void compare() {
+        TestVal a = new TestVal("a");
+        TestVal b = new TestVal("b");
+
+        assertTrue(a.compareTo(b) < 0);
+        assertTrue(b.compareTo(a) > 0);
+        assertEquals(0, a.compareTo(new TestVal("a")));
+    }
+
+    private static class TestVal extends ComparableStringValue<TestVal> {
+
+        private static final long serialVersionUID = 0L;
+
+        private TestVal(String value) {
+            super(value);
+        }
     }
 }

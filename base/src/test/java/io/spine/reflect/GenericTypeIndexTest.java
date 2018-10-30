@@ -18,31 +18,35 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code;
+package io.spine.reflect;
 
-import io.spine.code.Generation.ModelCompilerAnnotation;
-import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DisplayName("Generation utility class should")
-class GenerationTest extends UtilityClassTest<Generation> {
+@DisplayName("GenericTypeIndex should")
+class GenericTypeIndexTest {
 
-    GenerationTest() {
-        super(Generation.class);
+    @Test
+    @DisplayName("obtain generic argument assuming generic superclass")
+    void obtain_generic_argument_assuming_generic_superclass() {
+        Parametrized<Long, String> val = new Parametrized<Long, String>() {};
+        assertEquals(Long.class, Types.getArgument(val.getClass(), Base.class, 0));
+        assertEquals(String.class, Types.getArgument(val.getClass(), Base.class, 1));
     }
 
     @Test
-    @DisplayName("provide information for annotation spec.")
-    void byModelCompiler() {
-        ModelCompilerAnnotation annotation = Generation.compilerAnnotation();
-        assertNotNull(annotation);
-        assertFalse(annotation.getFieldName()
-                              .isEmpty());
-        assertFalse(annotation.getCodeBlock()
-                              .isEmpty());
+    @DisplayName("obtain generic argument via superclass")
+    void obtain_generic_argument_via_superclass() {
+        assertEquals(String.class, Types.getArgument(Leaf.class, Base.class, 0));
+        assertEquals(Float.class, Types.getArgument(Leaf.class, Base.class, 1));
     }
+
+    @SuppressWarnings({"EmptyClass", "unused"})
+    private static class Base<T, K> {}
+
+    private static class Parametrized<T, K> extends Base<T, K> {}
+
+    private static class Leaf extends Base<String, Float> {}
 }

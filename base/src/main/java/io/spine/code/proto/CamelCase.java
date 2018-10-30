@@ -24,10 +24,8 @@ import java.util.Iterator;
 
 /**
  * Utilities for working with {@code CamelCapitalization}.
- *
- * @author Alexander Yevsyukov
  */
-public class CamelCase {
+public final class CamelCase {
 
     /** Prevent instantiation of this utility class. */
     private CamelCase() {

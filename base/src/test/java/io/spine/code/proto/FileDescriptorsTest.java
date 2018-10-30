@@ -18,31 +18,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code;
+package io.spine.code.proto;
 
-import io.spine.code.Generation.ModelCompilerAnnotation;
+import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.Collection;
+
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@DisplayName("Generation utility class should")
-class GenerationTest extends UtilityClassTest<Generation> {
+@DisplayName("FileDescriptors utility class should")
+class FileDescriptorsTest extends UtilityClassTest<FileDescriptors> {
 
-    GenerationTest() {
-        super(Generation.class);
+    FileDescriptorsTest() {
+        super(FileDescriptors.class);
     }
 
     @Test
-    @DisplayName("provide information for annotation spec.")
-    void byModelCompiler() {
-        ModelCompilerAnnotation annotation = Generation.compilerAnnotation();
-        assertNotNull(annotation);
-        assertFalse(annotation.getFieldName()
-                              .isEmpty());
-        assertFalse(annotation.getCodeBlock()
-                              .isEmpty());
+    @DisplayName("load main set")
+    void load_main_set() {
+        Collection<FileDescriptorProto> fileSets = FileDescriptors.load();
+        assertFalse(fileSets.isEmpty());
     }
 }

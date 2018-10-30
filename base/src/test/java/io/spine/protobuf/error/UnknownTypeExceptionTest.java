@@ -18,31 +18,38 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code;
+package io.spine.protobuf.error;
 
-import io.spine.code.Generation.ModelCompilerAnnotation;
-import io.spine.testing.UtilityClassTest;
+import io.spine.type.UnknownTypeException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static io.spine.base.Identifier.newUuid;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("Generation utility class should")
-class GenerationTest extends UtilityClassTest<Generation> {
+@DisplayName("UnknownTypeException should")
+class UnknownTypeExceptionTest {
 
-    GenerationTest() {
-        super(Generation.class);
+    @Test
+    @DisplayName("have constructor with type name")
+    void have_ctor_with_type_name() {
+        String str = newUuid();
+        UnknownTypeException exception = new UnknownTypeException(str);
+
+        assertTrue(exception.getMessage()
+                            .contains(str));
     }
 
     @Test
-    @DisplayName("provide information for annotation spec.")
-    void byModelCompiler() {
-        ModelCompilerAnnotation annotation = Generation.compilerAnnotation();
-        assertNotNull(annotation);
-        assertFalse(annotation.getFieldName()
-                              .isEmpty());
-        assertFalse(annotation.getCodeBlock()
-                              .isEmpty());
+    @DisplayName("have constructor with type name and cause")
+    void have_ctor_with_type_name_and_cause() {
+        String str = newUuid();
+        RuntimeException cause = new RuntimeException("");
+        UnknownTypeException exception = new UnknownTypeException(str, cause);
+
+        assertTrue(exception.getMessage()
+                            .contains(str));
+        assertEquals(cause, exception.getCause());
     }
 }

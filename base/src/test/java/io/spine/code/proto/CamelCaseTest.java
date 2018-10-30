@@ -18,31 +18,52 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code;
+package io.spine.code.proto;
 
-import io.spine.code.Generation.ModelCompilerAnnotation;
+import com.google.common.collect.ImmutableList;
 import io.spine.testing.UtilityClassTest;
+import io.spine.value.StringTypeValue;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import java.util.List;
 
-@DisplayName("Generation utility class should")
-class GenerationTest extends UtilityClassTest<Generation> {
+import static io.spine.code.proto.CamelCase.convert;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-    GenerationTest() {
-        super(Generation.class);
+@DisplayName("CamelCase utility class should")
+class CamelCaseTest extends UtilityClassTest<CamelCase> {
+
+    CamelCaseTest() {
+        super(CamelCase.class);
     }
 
     @Test
-    @DisplayName("provide information for annotation spec.")
-    void byModelCompiler() {
-        ModelCompilerAnnotation annotation = Generation.compilerAnnotation();
-        assertNotNull(annotation);
-        assertFalse(annotation.getFieldName()
-                              .isEmpty());
-        assertFalse(annotation.getCodeBlock()
-                              .isEmpty());
+    @DisplayName("capitalize words")
+    void capitalize_words() {
+        assertEquals("CapitalizeWords", convert(new UnderName("capitalize_words")));
+    }
+
+    @Test
+    @DisplayName("not lowercase words")
+    void do_not_lowercase_words() {
+        assertEquals("TestHTTPRequest", convert(new UnderName("test_HTTP_request")));
+    }
+
+    /**
+     * A test value object.
+     */
+    private static class UnderName extends StringTypeValue implements UnderscoredName {
+
+        private static final long serialVersionUID = 0L;
+
+        private UnderName(String value) {
+            super(value);
+        }
+
+        @Override
+        public List<String> words() {
+            return ImmutableList.copyOf(value().split(WORD_SEPARATOR));
+        }
     }
 }

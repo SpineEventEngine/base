@@ -22,13 +22,13 @@ package io.spine.net;
 
 import com.google.common.truth.BooleanSubject;
 import io.spine.testing.UtilityClassTest;
-import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.net.InternetDomains.isValid;
 import static io.spine.net.InternetDomains.valueOf;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("InternetDomains utility class should")

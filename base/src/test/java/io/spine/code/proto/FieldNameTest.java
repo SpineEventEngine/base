@@ -18,31 +18,29 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code;
+package io.spine.code.proto;
 
-import io.spine.code.Generation.ModelCompilerAnnotation;
-import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DisplayName("Generation utility class should")
-class GenerationTest extends UtilityClassTest<Generation> {
+@DisplayName("FieldName should")
+class FieldNameTest {
 
-    GenerationTest() {
-        super(Generation.class);
+    private static final String PROTO_FIELD_NAME = "correct_java_name";
+
+    private final FieldName fieldName = FieldName.of(PROTO_FIELD_NAME);
+
+    @Test
+    @DisplayName("obtain javaCase")
+    void return_correct_java_field_name() {
+        assertEquals("correctJavaName", fieldName.javaCase());
     }
 
     @Test
-    @DisplayName("provide information for annotation spec.")
-    void byModelCompiler() {
-        ModelCompilerAnnotation annotation = Generation.compilerAnnotation();
-        assertNotNull(annotation);
-        assertFalse(annotation.getFieldName()
-                              .isEmpty());
-        assertFalse(annotation.getCodeBlock()
-                              .isEmpty());
+    @DisplayName("obtain CamelCase")
+    void return_correct_capitalized_java_name() {
+        assertEquals("CorrectJavaName", fieldName.toCamelCase());
     }
 }

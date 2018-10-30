@@ -18,31 +18,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code;
+package io.spine.code.java;
 
-import io.spine.code.Generation.ModelCompilerAnnotation;
-import io.spine.testing.UtilityClassTest;
+import com.google.common.testing.NullPointerTester;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 
-@DisplayName("Generation utility class should")
-class GenerationTest extends UtilityClassTest<Generation> {
-
-    GenerationTest() {
-        super(Generation.class);
-    }
+@DisplayName("FieldName should")
+class FieldNameTest {
 
     @Test
-    @DisplayName("provide information for annotation spec.")
-    void byModelCompiler() {
-        ModelCompilerAnnotation annotation = Generation.compilerAnnotation();
-        assertNotNull(annotation);
-        assertFalse(annotation.getFieldName()
-                              .isEmpty());
-        assertFalse(annotation.getCodeBlock()
-                              .isEmpty());
+    @DisplayName(NOT_ACCEPT_NULLS)
+    void pass_null_tolerance_check() {
+        new NullPointerTester()
+                .setDefault(io.spine.code.proto.FieldName.class,
+                            io.spine.code.proto.FieldName.of("value"))
+                .testStaticMethods(FieldName.class, NullPointerTester.Visibility.PACKAGE);
     }
 }
