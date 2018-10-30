@@ -268,11 +268,11 @@ public final class Identifier<I> {
      * @param <I>
      *         the type of the ID
      * @return <ul>
-     *         <li>for classes implementing {@link Message} &mdash; a Json form;
-     *         <li>for {@code String}, {@code Long}, {@code Integer} &mdash;
-     *         the result of {@link Object#toString()};
-     *         <li>for {@code null} ID &mdash; the {@link #NULL_ID};
-     *         <li>if the result is empty or blank string &mdash; the {@link #EMPTY_ID}.
+     *         <li>for classes implementing {@link Message} — a Json form;
+     *           <li>for {@code String}, {@code Long}, {@code Integer} —
+     *               the result of {@link Object#toString()};
+     *           <li>for {@code null} ID — the {@link #NULL_ID};
+     *           <li>if the result is empty or blank string — the {@link #EMPTY_ID}.
      *         </ul>
      * @throws IllegalArgumentException
      *         if the passed type isn't one of the above or
