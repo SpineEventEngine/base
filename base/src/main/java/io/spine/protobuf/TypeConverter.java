@@ -109,8 +109,8 @@ public final class TypeConverter {
      * @return the wrapped value
      */
     public static <T> Message toMessage(T value) {
-        // Must be checked at runtime
-        @SuppressWarnings("unchecked") Class<T> srcClass = (Class<T>) value.getClass();
+        @SuppressWarnings("unchecked" /* Must be checked at runtime. */)
+        Class<T> srcClass = (Class<T>) value.getClass();
         MessageCaster<Message, T> caster = MessageCaster.forType(srcClass);
         Message message = caster.toMessage(value);
         checkNotNull(message);
