@@ -21,13 +21,10 @@
 package io.spine.tools.compiler.validation;
 
 import com.google.common.testing.NullPointerTester;
-import com.google.protobuf.Descriptors.FieldDescriptor;
-import com.squareup.javapoet.ClassName;
 import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static io.spine.tools.compiler.validation.MethodConstructors.createDescriptorStatement;
 import static io.spine.tools.compiler.validation.MethodConstructors.createValidateStatement;
 import static java.lang.String.format;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -39,17 +36,6 @@ class MethodConstructorsTest extends UtilityClassTest<MethodConstructors> {
 
     MethodConstructorsTest() {
         super(MethodConstructors.class);
-    }
-
-    @Test
-    @DisplayName("return constructed description statement")
-    void return_constructed_descriptor_statement() {
-        ClassName message = ClassName.get(getClass());
-        ClassName fieldDescriptor = ClassName.get(FieldDescriptor.class);
-        String result = createDescriptorStatement(0, message);
-        String expected = format("%s fieldDescriptor = %s.getDescriptor().getFields().get(0)",
-                                 fieldDescriptor, message);
-        assertEquals(expected, result);
     }
 
     @Test

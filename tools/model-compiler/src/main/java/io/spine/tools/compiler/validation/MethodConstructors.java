@@ -38,23 +38,6 @@ final class MethodConstructors {
     }
 
     /**
-     * Creates the descriptor statement.
-     *
-     * @param index
-     *         the index of the field to validate
-     * @param messageClassName
-     *         the message class which contains field to validate
-     * @return the constructed statement
-     */
-    static String createDescriptorStatement(int index, ClassName messageClassName) {
-        checkNotNull(messageClassName);
-        String template = "$T fieldDescriptor = $T.getDescriptor().getFields().get($L)";
-        String result = CodeBlock.of(template, FieldDescriptor.class, messageClassName, index)
-                                 .toString();
-        return result;
-    }
-
-    /**
      * Creates the validate statement.
      *
      * @param fieldValue

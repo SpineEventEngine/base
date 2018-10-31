@@ -20,7 +20,9 @@
 
 package io.spine.tools.compiler.validation;
 
+import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 
 import javax.lang.model.element.Modifier;
@@ -28,7 +30,6 @@ import javax.lang.model.element.Modifier;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.compiler.annotation.Annotations.canIgnoreReturnValue;
 import static io.spine.tools.compiler.validation.ClassNames.getClassName;
-import static io.spine.tools.compiler.validation.MethodConstructors.createDescriptorStatement;
 
 /**
  * An abstract base for method constructors.
@@ -49,21 +50,35 @@ abstract class AbstractMethodConstructor implements MethodConstructor {
         this.builderClass = getClassName(javaPackage, javaClass);
     }
 
-    /** Returns the statement, which declares the descriptor for the field. */
+    /**
+     * Obtains the the statement, which declares the descriptor
+     * for the {@linkplain #fieldIndex field}.
+     *
+     * @return the constructed statement
+     */
     final String descriptorCodeLine() {
-        return createDescriptorStatement(fieldIndex, messageClass);
+        String template = "$T fieldDescriptor = $T.getDescriptor().getFields().get($L)";
+        String result = CodeBlock.of(template, FieldDescriptor.class, messageClass, fieldIndex)
+                                 .toString();
+        return result;
     }
 
-    /** Returns the class name of the validating builder. */
-    final ClassName builderClass() {
-        return builderClass;
-    }
-
+    /**
+     * Obtains a builder for a {@code public} method with a return type of a validating builder.
+     *
+     * @param methodName the name of the setter
+     * @return the pre-initialized method builder
+     */
     final MethodSpec.Builder newBuilderSetter(String methodName) {
         return MethodSpec
                 .methodBuilder(methodName)
                 .addAnnotation(canIgnoreReturnValue())
                 .addModifiers(Modifier.PUBLIC)
                 .returns(builderClass());
+    }
+
+    /** Returns the class name of the validating builder. */
+    private ClassName builderClass() {
+        return builderClass;
     }
 }
