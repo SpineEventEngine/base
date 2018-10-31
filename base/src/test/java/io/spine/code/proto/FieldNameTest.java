@@ -21,6 +21,7 @@
 package io.spine.code.proto;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -31,16 +32,53 @@ class FieldNameTest {
     private static final String PROTO_FIELD_NAME = "correct_java_name";
 
     private final FieldName fieldName = FieldName.of(PROTO_FIELD_NAME);
+    private final FieldName fieldNameWithNumbers = FieldName.of("hand22hand");
 
-    @Test
-    @DisplayName("obtain javaCase")
-    void return_correct_java_field_name() {
-        assertEquals("correctJavaName", fieldName.javaCase());
+    @Nested
+    @DisplayName("obtain CamelCase")
+    class CamelCase {
+
+        @Test
+        @DisplayName("of lower-cased letters")
+        void lowerCasedLetters() {
+            assertCamelCase("CorrectJavaName", fieldName);
+        }
+
+        @Test
+        @DisplayName("of lower-cased letters with a number")
+        void lowerCasedLettersAndNumbers() {
+            assertCamelCase("Hand22Hand", fieldNameWithNumbers);
+        }
+
+        @Test
+        @DisplayName("of capitalized name")
+        void capitalizedName() {
+            assertCamelCase("TypeURLString", FieldName.of("type_URL_string"));
+        }
+
+        private void assertCamelCase(String expectedCamelCase, FieldName fieldName) {
+            assertEquals(expectedCamelCase, fieldName.toCamelCase());
+        }
     }
 
-    @Test
-    @DisplayName("obtain CamelCase")
-    void return_correct_capitalized_java_name() {
-        assertEquals("CorrectJavaName", fieldName.toCamelCase());
+    @Nested
+    @DisplayName("obtain javaCase")
+    class JavaCase {
+
+        @Test
+        @DisplayName("of lower-cased letters")
+        void lowerCasedLetters() {
+            assertJavaCase("correctJavaName", fieldName);
+        }
+
+        @Test
+        @DisplayName("of lower-cased letters with a number")
+        void lowerCasedLettersAndNumbers() {
+            assertJavaCase("hand22Hand", fieldNameWithNumbers);
+        }
+
+        private void assertJavaCase(String expectedJavaCase, FieldName fieldName) {
+            assertEquals(expectedJavaCase, fieldName.javaCase());
+        }
     }
 }

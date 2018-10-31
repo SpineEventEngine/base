@@ -18,42 +18,60 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.compiler.field.type;
+package io.spine.code.proto;
 
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Label.LABEL_REPEATED;
+import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type.TYPE_MESSAGE;
 
 /**
- * Utility class for working with types of the Protobuf fields.
+ * A utility to work with Protobuf {@linkplain FieldDescriptorProto fields}.
  */
-public final class FieldTypes {
+public final class FieldTypesProto {
 
+    @SuppressWarnings("DuplicateStringLiteralInspection" /* The same string has different semantics. */)
     private static final String ENTRY_SUFFIX = "Entry";
 
-    /** Prevents instantiation of this utility class .*/
-    private FieldTypes() {}
+    /** Prevents instantiation of this utility class . */
+    private FieldTypesProto() {
+    }
 
     /**
      * Checks the Protobuf field and determines it is repeated field or not.
      *
-     * @param field the descriptor of the field to check
+     * <p>Although {@code map} fields technically count as {@code repeated}, this method will
+     * return {@code false} for them.
+     *
+     * @param field
+     *         the descriptor of the field to check
      * @return {@code true} if field is repeated, {@code false} otherwise
      */
     public static boolean isRepeated(FieldDescriptorProto field) {
         checkNotNull(field);
-        boolean result = field.getLabel() == FieldDescriptorProto.Label.LABEL_REPEATED;
+        boolean result = field.getLabel() == LABEL_REPEATED && !isMap(field);
         return result;
     }
 
     /**
      * Checks the Protobuf field and determines it is map field or not.
      *
-     * @param field the descriptor of the field to check
+     * <p>If a field is a map it is repeated message with the specific
+     * {@linkplain #getEntryNameFor(FieldDescriptorProto) type}.
+     *
+     * @param field
+     *         the descriptor of the field to check
      * @return {@code true} if field is map, {@code false} otherwise
      */
     public static boolean isMap(FieldDescriptorProto field) {
         checkNotNull(field);
+        if (field.getLabel() != LABEL_REPEATED) {
+            return false;
+        }
+        if (field.getType() != TYPE_MESSAGE) {
+            return false;
+        }
         boolean result = field.getTypeName()
                               .endsWith('.' + getEntryNameFor(field));
         return result;
@@ -66,31 +84,25 @@ public final class FieldTypes {
      * Every map field has corresponding entry type.
      * For 'word_dictionary' it would be 'WordDictionaryEntry'
      *
-     * @param mapField the field to construct entry name
+     * @param mapField
+     *         the field to construct entry name
      * @return the name of the map field
      */
-    @SuppressWarnings("DuplicateStringLiteralInspection")
-    // It cannot be used as the constant across the project.
-    // Although it has the equivalent literal they have the different meaning.
     public static String getEntryNameFor(FieldDescriptorProto mapField) {
-        checkNotNull(mapField);
-
-        String jsonName = mapField.getJsonName();
-        char capitalizedFirstSymbol = Character.toUpperCase(jsonName.charAt(0));
-        String remainingPart = jsonName.substring(1);
-
-        return capitalizedFirstSymbol + remainingPart + ENTRY_SUFFIX;
+        FieldName fieldName = FieldName.of(mapField);
+        return fieldName.toCamelCase() + ENTRY_SUFFIX;
     }
 
     /**
      * Checks the Protobuf field and determines it is message type or not.
      *
-     * @param fieldDescriptor the descriptor of the field to check
+     * @param fieldDescriptor
+     *         the descriptor of the field to check
      * @return {@code true} if it is message, {@code false} otherwise
      */
     public static boolean isMessage(FieldDescriptorProto fieldDescriptor) {
         checkNotNull(fieldDescriptor);
-        return fieldDescriptor.getType() == FieldDescriptorProto.Type.TYPE_MESSAGE;
+        return fieldDescriptor.getType() == TYPE_MESSAGE;
     }
 
     /**
@@ -98,7 +110,8 @@ public final class FieldTypes {
      *
      * <p>If there is no leading dots, returns the unmodified parameter.
      *
-     * @param fieldDescriptor the field descriptor whose type name to modify
+     * @param fieldDescriptor
+     *         the field descriptor whose type name to modify
      * @return the type name without leading dot
      */
     public static String trimTypeName(FieldDescriptorProto fieldDescriptor) {
@@ -108,7 +121,11 @@ public final class FieldTypes {
         if (typeName.isEmpty()) {
             return typeName;
         }
-        // it has a redundant dot in the beginning
+        String trimmedName = removeLeadingDot(typeName);
+        return trimmedName;
+    }
+
+    private static String removeLeadingDot(String typeName) {
         if (typeName.charAt(0) == '.') {
             return typeName.substring(1);
         }

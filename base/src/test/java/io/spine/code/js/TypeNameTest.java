@@ -24,9 +24,9 @@ import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Any;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.EnumDescriptor;
+import com.google.protobuf.Syntax;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import spine.test.code.js.FieldDescriptorsTest.TaskType;
 
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -52,9 +52,9 @@ class TypeNameTest {
     @Test
     @DisplayName("append `proto.` prefix to enum type")
     void appendPrefixToEnum() {
-        EnumDescriptor descriptor = TaskType.getDescriptor();
+        EnumDescriptor descriptor = Syntax.getDescriptor();
         TypeName typeName = TypeName.from(descriptor);
-        String expected = "proto.spine.test.code.js.TaskType";
+        String expected = "proto.google.protobuf.Syntax";
         assertEquals(expected, typeName.value());
     }
 }

@@ -37,9 +37,11 @@ import com.google.protobuf.UInt32Value;
 import com.google.protobuf.UInt64Value;
 import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.base.Identifier.newUuid;
+import static io.spine.protobuf.TypeConverter.toMessage;
 import static io.spine.protobuf.given.TypeConverterTestEnv.TaskStatus.SUCCESS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -56,123 +58,123 @@ class TypeConverterTest extends UtilityClassTest<TypeConverter> {
         tester.setDefault(Any.class, Any.getDefaultInstance());
     }
 
-    @Test
-    @DisplayName("map arbitrary message to itself")
-    void map_arbitrary_message_to_itself() {
-        Message message = StringValue.of(newUuid());
-        checkMapping(message, message);
+    @Nested
+    @DisplayName("map")
+    class Map {
+
+        @Test
+        @DisplayName("arbitrary message to itself")
+        void map_arbitrary_message_to_itself() {
+            Message message = StringValue.of(newUuid());
+            checkMapping(message, message);
+        }
+
+        @Test
+        @DisplayName("Int32Value to int")
+        void map_Int32Value_to_int() {
+            int rawValue = 42;
+            Message value = Int32Value.of(rawValue);
+            checkMapping(rawValue, value);
+        }
+
+        @Test
+        @DisplayName("Int64Value to int")
+        void map_Int64Value_to_long() {
+            long rawValue = 42;
+            Message value = Int64Value.of(rawValue);
+            checkMapping(rawValue, value);
+        }
+
+        @Test
+        @DisplayName("FloatValue to float")
+        void map_FloatValue_to_float() {
+            float rawValue = 42.0f;
+            Message value = FloatValue.of(rawValue);
+            checkMapping(rawValue, value);
+        }
+
+        @Test
+        @DisplayName("DoubleValue to double")
+        void map_DoubleValue_to_double() {
+            double rawValue = 42.0;
+            Message value = DoubleValue.of(rawValue);
+            checkMapping(rawValue, value);
+        }
+
+        @Test
+        @DisplayName("BoolValue to boolean")
+        void map_BoolValue_to_boolean() {
+            boolean rawValue = true;
+            Message value = BoolValue.of(rawValue);
+            checkMapping(rawValue, value);
+        }
+
+        @Test
+        @DisplayName("StringValue to String")
+        void map_StringValue_to_String() {
+            String rawValue = "Hello";
+            Message value = StringValue.of(rawValue);
+            checkMapping(rawValue, value);
+        }
+
+        @Test
+        @DisplayName("BytesValue to ByteString")
+        void map_BytesValue_to_ByteString() {
+            ByteString rawValue = ByteString.copyFrom("Hello!", Charsets.UTF_8);
+            Message value = BytesValue.of(rawValue);
+            checkMapping(rawValue, value);
+        }
+
+        @Test
+        @DisplayName("EnumValue to Enum")
+        void map_EnumValue_to_Enum() {
+            Message value = EnumValue.newBuilder()
+                                     .setName(SUCCESS.name())
+                                     .build();
+            checkMapping(SUCCESS, value);
+        }
+
+        @Test
+        @DisplayName("UInt32 to int")
+        void map_uint32_to_int() {
+            int value = 42;
+            UInt32Value wrapped = UInt32Value.of(value);
+            Any packed = AnyPacker.pack(wrapped);
+            int mapped = TypeConverter.toObject(packed, Integer.class);
+            assertEquals(value, mapped);
+        }
+
+        @Test
+        @DisplayName("UInt64 to int")
+        void map_uint64_to_long() {
+            long value = 42L;
+            UInt64Value wrapped = UInt64Value.of(value);
+            Any packed = AnyPacker.pack(wrapped);
+            long mapped = TypeConverter.toObject(packed, Long.class);
+            assertEquals(value, mapped);
+        }
+
+        private void checkMapping(Object javaObject,
+                                  Message protoObject) {
+            Any wrapped = AnyPacker.pack(protoObject);
+            Object mappedJavaObject = TypeConverter.toObject(wrapped, javaObject.getClass());
+            assertEquals(javaObject, mappedJavaObject);
+            Any restoredWrapped = TypeConverter.toAny(mappedJavaObject);
+            Message restored = AnyPacker.unpack(restoredWrapped);
+            assertEquals(protoObject, restored);
+        }
     }
 
-    @Test
-    @DisplayName("map Int32Value to int")
-    void map_Int32Value_to_int() {
-        int rowValue = 42;
-        Message value = Int32Value.newBuilder()
-                                  .setValue(rowValue)
-                                  .build();
-        checkMapping(rowValue, value);
-    }
+    @Nested
+    @DisplayName("convert")
+    class Convert {
 
-    @Test
-    @DisplayName("map Int64Value to int")
-    void map_Int64Value_to_long() {
-        long rowValue = 42;
-        Message value = Int64Value.newBuilder()
-                                  .setValue(rowValue)
-                                  .build();
-        checkMapping(rowValue, value);
-    }
-
-    @Test
-    @DisplayName("map FloatValue to float")
-    void map_FloatValue_to_float() {
-        float rowValue = 42.0f;
-        Message value = FloatValue.newBuilder()
-                                  .setValue(rowValue)
-                                  .build();
-        checkMapping(rowValue, value);
-    }
-
-    @Test
-    @DisplayName("map DoubleValue to double")
-    void map_DoubleValue_to_double() {
-        double rowValue = 42.0;
-        Message value = DoubleValue.newBuilder()
-                                   .setValue(rowValue)
-                                   .build();
-        checkMapping(rowValue, value);
-    }
-
-    @Test
-    @DisplayName("map BoolValue to boolean")
-    void map_BoolValue_to_boolean() {
-        boolean rowValue = true;
-        Message value = BoolValue.newBuilder()
-                                 .setValue(rowValue)
-                                 .build();
-        checkMapping(rowValue, value);
-    }
-
-    @Test
-    @DisplayName("map StringValue to String")
-    void map_StringValue_to_String() {
-        String rowValue = "Hello";
-        Message value = StringValue.newBuilder()
-                                   .setValue(rowValue)
-                                   .build();
-        checkMapping(rowValue, value);
-    }
-
-    @Test
-    @DisplayName("map BytesValue to ByteString")
-    void map_BytesValue_to_ByteString() {
-        ByteString rowValue = ByteString.copyFrom("Hello!", Charsets.UTF_8);
-        Message value = BytesValue.newBuilder()
-                                  .setValue(rowValue)
-                                  .build();
-        checkMapping(rowValue, value);
-    }
-
-    @Test
-    @DisplayName("map EnumValue to Enum")
-    void map_EnumValue_to_Enum() {
-        Message value = EnumValue.newBuilder()
-                                 .setName(SUCCESS.name())
-                                 .build();
-        checkMapping(SUCCESS, value);
-    }
-
-    @Test
-    @DisplayName("map UInt32 to int")
-    void map_uint32_to_int() {
-        int value = 42;
-        UInt32Value wrapped = UInt32Value.newBuilder()
-                                         .setValue(value)
-                                         .build();
-        Any packed = AnyPacker.pack(wrapped);
-        int mapped = TypeConverter.toObject(packed, Integer.class);
-        assertEquals(value, mapped);
-    }
-
-    @Test
-    @DisplayName("map UInt64 to int")
-    void map_uint64_to_long() {
-        long value = 42L;
-        UInt64Value wrapped = UInt64Value.newBuilder()
-                                         .setValue(value)
-                                         .build();
-        Any packed = AnyPacker.pack(wrapped);
-        long mapped = TypeConverter.toObject(packed, Long.class);
-        assertEquals(value, mapped);
-    }
-
-    private static void checkMapping(Object javaObject,
-                                     Message protoObject) {
-        Any wrapped = AnyPacker.pack(protoObject);
-        Object mappedJavaObject = TypeConverter.toObject(wrapped, javaObject.getClass());
-        assertEquals(javaObject, mappedJavaObject);
-        Any restoredWrapped = TypeConverter.toAny(mappedJavaObject);
-        Message restored = AnyPacker.unpack(restoredWrapped);
-        assertEquals(protoObject, restored);
+        @Test
+        @DisplayName("a value to a particular message")
+        void valueToParticularMessage() {
+            String stringValue = "a string value";
+            StringValue convertedValue = toMessage(stringValue, StringValue.class);
+            assertEquals(stringValue, convertedValue.getValue());
+        }
     }
 }

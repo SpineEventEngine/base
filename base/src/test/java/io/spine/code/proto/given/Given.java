@@ -18,11 +18,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.js.given;
+package io.spine.code.proto.given;
 
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import spine.test.code.js.FieldDescriptorsTest.FieldContainer;
+import io.spine.test.code.proto.FieldContainer;
 
 import java.util.List;
 

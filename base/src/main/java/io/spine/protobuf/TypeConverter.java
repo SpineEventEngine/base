@@ -106,19 +106,31 @@ public final class TypeConverter {
      *
      * @param value the {@link Object} value to convert
      * @param <T>   the converted object type
+     * @return the wrapped value
+     */
+    public static <T> Message toMessage(T value) {
+        @SuppressWarnings("unchecked" /* Must be checked at runtime. */)
+        Class<T> srcClass = (Class<T>) value.getClass();
+        MessageCaster<Message, T> caster = MessageCaster.forType(srcClass);
+        Message message = caster.toMessage(value);
+        checkNotNull(message);
+        return message;
+    }
+
+    /**
+     * Converts the given value to a corresponding Protobuf {@link Message} type.
+     *
+     * <p>Unlike {@link #toMessage(Object)}, casts the message to the specified class.
+     *
+     * @param value the {@link Object} value to convert
+     * @param <T>   the converted object type
      * @param <M>   the resulting message type
      * @return the wrapped value
      */
-    @SuppressWarnings("TypeParameterUnusedInFormals")
-    // Parameters are handled by MessageCaster, that we wrap by this method.
-    public static <T, M extends Message> M toMessage(T value) {
-        @SuppressWarnings("unchecked") // Must be checked at runtime
-        Class<T> srcClass = (Class<T>) value.getClass();
-        MessageCaster<M, T> caster = MessageCaster.forType(srcClass);
-        M message = caster.reverse()
-                          .convert(value);
-        checkNotNull(message);
-        return message;
+    public static <T, M extends Message> M toMessage(T value, Class<M> messageClass) {
+        checkNotNull(messageClass);
+        Message message = toMessage(value);
+        return messageClass.cast(message);
     }
 
     /**

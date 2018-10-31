@@ -34,7 +34,6 @@ import static io.spine.protobuf.MessageField.getFieldCount;
 import static io.spine.protobuf.MessageField.getFieldDescriptor;
 import static io.spine.protobuf.MessageField.getFieldName;
 import static io.spine.protobuf.MessageField.toAccessorMethodName;
-import static io.spine.protobuf.TypeConverter.toMessage;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -46,7 +45,7 @@ class MessageFieldTest {
     @SuppressWarnings("DuplicateStringLiteralInspection")
     private static final String STR_VALUE_FIELD_NAME = "value";
 
-    private final StringValue stringValue = toMessage(newUuid());
+    private final StringValue stringValue = StringValue.of(newUuid());
 
     @Test
     @DisplayName("accept positive index")

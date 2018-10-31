@@ -19,11 +19,11 @@
  */
 
 /**
- * The test environment classes for JavaScript code related tools.
+ * The test environment classes for Protobuf code related tools.
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault
-package io.spine.code.js.given;
+package io.spine.code.proto.given;
 
 import com.google.errorprone.annotations.CheckReturnValue;
 
