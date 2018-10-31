@@ -102,8 +102,15 @@ final class FieldDeclaration {
         return FieldTypes.isMap(field);
     }
 
-    FieldDescriptor descriptor() {
-        return field;
+    /** The {@link FieldDescriptor.JavaType JavaType} of the declaration. */
+    FieldDescriptor.JavaType javaType() {
+        return field.getJavaType();
+    }
+
+    /** Obtains the descriptor of the value of a map. */
+    FieldDeclaration valueDeclaration() {
+        FieldDescriptor valueDescriptor = FieldTypes.valueDescriptor(field);
+        return new FieldDeclaration(valueDescriptor);
     }
 
     private boolean isEntityField() {
