@@ -121,7 +121,11 @@ public final class FieldTypesProto {
         if (typeName.isEmpty()) {
             return typeName;
         }
-        // it has a redundant dot in the beginning
+        String trimmedName = removeLeadingDot(typeName);
+        return trimmedName;
+    }
+
+    private static String removeLeadingDot(String typeName) {
         if (typeName.charAt(0) == '.') {
             return typeName.substring(1);
         }
