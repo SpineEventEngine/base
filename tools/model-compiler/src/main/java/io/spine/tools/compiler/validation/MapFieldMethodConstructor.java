@@ -38,7 +38,6 @@ import java.util.Map;
 import static com.google.common.collect.Lists.newArrayList;
 import static io.spine.tools.compiler.validation.ConvertStatement.convert;
 import static io.spine.tools.compiler.validation.MethodConstructors.clearPrefix;
-import static io.spine.tools.compiler.validation.MethodConstructors.createValidateStatement;
 import static io.spine.tools.compiler.validation.MethodConstructors.getMessageBuilder;
 import static io.spine.tools.compiler.validation.MethodConstructors.rawSuffix;
 import static io.spine.tools.compiler.validation.MethodConstructors.removePrefix;
@@ -153,7 +152,7 @@ class MapFieldMethodConstructor extends AbstractMethodConstructor implements Log
                 .addStatement(descriptorCodeLine())
                 .addStatement(mapToValidate, Map.class, keyTypeName,
                               valueTypeName, Collections.class)
-                .addStatement(createValidateStatement(MAP_TO_VALIDATE_PARAM_NAME, javaFieldName))
+                .addStatement(validateStatement(MAP_TO_VALIDATE_PARAM_NAME, javaFieldName))
                 .addStatement(putStatement)
                 .addStatement(returnThis())
                 .build();
@@ -177,7 +176,7 @@ class MapFieldMethodConstructor extends AbstractMethodConstructor implements Log
                 .addStatement(descriptorCodeLine())
                 .addStatement(mapToValidate, Map.class, keyTypeName,
                               valueTypeName, Collections.class)
-                .addStatement(createValidateStatement(MAP_TO_VALIDATE_PARAM_NAME, javaFieldName))
+                .addStatement(validateStatement(MAP_TO_VALIDATE_PARAM_NAME, javaFieldName))
                 .addStatement(putStatement)
                 .addStatement(returnThis())
                 .build();
@@ -192,7 +191,7 @@ class MapFieldMethodConstructor extends AbstractMethodConstructor implements Log
                 .addParameter(fieldType.getTypeName(), MAP_PARAM_NAME)
                 .addException(ValidationException.class)
                 .addStatement(descriptorCodeLine())
-                .addStatement(createValidateStatement(MAP_PARAM_NAME, javaFieldName))
+                .addStatement(validateStatement(MAP_PARAM_NAME, javaFieldName))
                 .addStatement(putAllStatement)
                 .addStatement(returnThis())
                 .build();

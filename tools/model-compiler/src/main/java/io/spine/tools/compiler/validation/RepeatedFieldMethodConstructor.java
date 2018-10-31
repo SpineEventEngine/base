@@ -44,7 +44,6 @@ import static io.spine.tools.compiler.validation.ClassNames.getParameterClassNam
 import static io.spine.tools.compiler.validation.ConvertStatement.convert;
 import static io.spine.tools.compiler.validation.MethodConstructors.clearPrefix;
 import static io.spine.tools.compiler.validation.MethodConstructors.clearProperty;
-import static io.spine.tools.compiler.validation.MethodConstructors.createValidateStatement;
 import static io.spine.tools.compiler.validation.MethodConstructors.getMessageBuilder;
 import static io.spine.tools.compiler.validation.MethodConstructors.rawSuffix;
 import static io.spine.tools.compiler.validation.MethodConstructors.removePrefix;
@@ -193,7 +192,7 @@ class RepeatedFieldMethodConstructor extends AbstractMethodConstructor implement
                 .addException(ConversionException.class)
                 .addStatement(convert(VALUE, listElementClassName).value())
                 .addStatement(descriptorCodeLine())
-                .addStatement(createValidateStatement(CONVERTED_VALUE, fieldDescriptor.getName()))
+                .addStatement(validateStatement(CONVERTED_VALUE, fieldDescriptor.getName()))
                 .addStatement(addValueStatement)
                 .addStatement(returnThis())
                 .build();
@@ -222,7 +221,7 @@ class RepeatedFieldMethodConstructor extends AbstractMethodConstructor implement
                 .addException(ConversionException.class)
                 .addStatement(convert(VALUE, listElementClassName).value())
                 .addStatement(descriptorCodeLine())
-                .addStatement(createValidateStatement(CONVERTED_VALUE, fieldDescriptor.getName()))
+                .addStatement(validateStatement(CONVERTED_VALUE, fieldDescriptor.getName()))
                 .addStatement(modificationStatement)
                 .addStatement(returnThis())
                 .build();
@@ -242,7 +241,7 @@ class RepeatedFieldMethodConstructor extends AbstractMethodConstructor implement
                               listElementClassName,
                               listElementClassName)
                 .addStatement(descriptorCodeLine())
-                .addStatement(createValidateStatement(CONVERTED_VALUE, fieldDescriptor.getName()))
+                .addStatement(validateStatement(CONVERTED_VALUE, fieldDescriptor.getName()))
                 .addStatement(addAllValues)
                 .addStatement(returnThis())
                 .build();
@@ -261,7 +260,7 @@ class RepeatedFieldMethodConstructor extends AbstractMethodConstructor implement
                 .addParameter(parameter, VALUE)
                 .addException(ValidationException.class)
                 .addStatement(descriptorCodeLine())
-                .addStatement(createValidateStatement(VALUE, fieldName))
+                .addStatement(validateStatement(VALUE, fieldName))
                 .addStatement(addAllValues)
                 .addStatement(returnThis())
                 .build();
@@ -276,7 +275,7 @@ class RepeatedFieldMethodConstructor extends AbstractMethodConstructor implement
                 .addParameter(listElementClassName, VALUE)
                 .addException(ValidationException.class)
                 .addStatement(descriptorCodeLine())
-                .addStatement(createValidateStatement(VALUE, javaFieldName))
+                .addStatement(validateStatement(VALUE, javaFieldName))
                 .addStatement(addValue)
                 .addStatement(returnThis())
                 .build();
@@ -312,7 +311,7 @@ class RepeatedFieldMethodConstructor extends AbstractMethodConstructor implement
                 .addParameter(listElementClassName, VALUE)
                 .addException(ValidationException.class)
                 .addStatement(descriptorCodeLine())
-                .addStatement(createValidateStatement(VALUE, javaFieldName))
+                .addStatement(validateStatement(VALUE, javaFieldName))
                 .addStatement(modificationStatement)
                 .addStatement(returnThis())
                 .build();

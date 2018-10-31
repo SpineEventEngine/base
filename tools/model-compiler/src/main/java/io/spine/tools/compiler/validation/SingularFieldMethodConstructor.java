@@ -42,7 +42,6 @@ import static io.spine.tools.compiler.validation.ClassNames.getStringClassName;
 import static io.spine.tools.compiler.validation.ConvertStatement.convert;
 import static io.spine.tools.compiler.validation.MethodConstructors.clearPrefix;
 import static io.spine.tools.compiler.validation.MethodConstructors.clearProperty;
-import static io.spine.tools.compiler.validation.MethodConstructors.createValidateStatement;
 import static io.spine.tools.compiler.validation.MethodConstructors.getMessageBuilder;
 import static io.spine.tools.compiler.validation.MethodConstructors.rawSuffix;
 import static io.spine.tools.compiler.validation.MethodConstructors.returnThis;
@@ -118,7 +117,7 @@ class SingularFieldMethodConstructor extends AbstractMethodConstructor implement
                           .addParameter(parameter)
                           .addException(ValidationException.class)
                           .addStatement(descriptorCodeLine())
-                          .addStatement(createValidateStatement(fieldName, field.getName()))
+                          .addStatement(validateStatement(fieldName, field.getName()))
                           .addStatement(setStatement)
                           .addStatement(returnThis())
                           .build();
@@ -176,8 +175,8 @@ class SingularFieldMethodConstructor extends AbstractMethodConstructor implement
                           .addException(ConversionException.class)
                           .addStatement(descriptorCodeLine())
                           .addStatement(convertStatement.value())
-                          .addStatement(createValidateStatement(convertedVariableName,
-                                                                field.getName()))
+                          .addStatement(validateStatement(convertedVariableName,
+                                                          field.getName()))
                           .addStatement(setStatement)
                           .addStatement(returnThis())
                           .build();

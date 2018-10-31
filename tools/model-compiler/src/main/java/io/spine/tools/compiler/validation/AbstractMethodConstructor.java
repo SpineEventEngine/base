@@ -36,6 +36,9 @@ import static io.spine.tools.compiler.validation.ClassNames.getClassName;
  */
 abstract class AbstractMethodConstructor implements MethodConstructor {
 
+    /** The name of the {@code FieldDescriptor} variable. */
+    private static final String FIELD_DESCRIPTOR_NAME = "fieldDescriptor";
+
     private final int fieldIndex;
 
     /** The class name of the message containing the field. */
@@ -57,16 +60,19 @@ abstract class AbstractMethodConstructor implements MethodConstructor {
      * @return the constructed statement
      */
     final String descriptorCodeLine() {
-        String template = "$T fieldDescriptor = $T.getDescriptor().getFields().get($L)";
-        String result = CodeBlock.of(template, FieldDescriptor.class, messageClass, fieldIndex)
-                                 .toString();
-        return result;
+        String template = "$T $N = $T.getDescriptor().getFields().get($L)";
+        Class<FieldDescriptor> descriptorClass = FieldDescriptor.class;
+        CodeBlock codeBlock =
+                CodeBlock.of(template,
+                             descriptorClass, FIELD_DESCRIPTOR_NAME, messageClass, fieldIndex);
+        return codeBlock.toString();
     }
 
     /**
      * Obtains a builder for a {@code public} method with a return type of a validating builder.
      *
-     * @param methodName the name of the setter
+     * @param methodName
+     *         the name of the setter
      * @return the pre-initialized method builder
      */
     final MethodSpec.Builder newBuilderSetter(String methodName) {
@@ -80,5 +86,22 @@ abstract class AbstractMethodConstructor implements MethodConstructor {
     /** Returns the class name of the validating builder. */
     private ClassName builderClass() {
         return builderClass;
+    }
+
+    /**
+     * Creates the validate statement.
+     *
+     * @param fieldValue
+     *         the value to validate
+     * @param fieldName
+     *         the name of the field to validate
+     * @return the constructed statement
+     */
+    static String validateStatement(String fieldValue, String fieldName) {
+        checkNotNull(fieldValue);
+        checkNotNull(fieldName);
+        CodeBlock codeBlock = CodeBlock.of("validate($N, $N, $S)",
+                                           FIELD_DESCRIPTOR_NAME, fieldValue, fieldName);
+        return codeBlock.toString();
     }
 }

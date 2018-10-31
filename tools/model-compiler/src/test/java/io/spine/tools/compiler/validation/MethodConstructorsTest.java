@@ -23,28 +23,12 @@ package io.spine.tools.compiler.validation;
 import com.google.common.testing.NullPointerTester;
 import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
-import static io.spine.tools.compiler.validation.MethodConstructors.createValidateStatement;
-import static java.lang.String.format;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("MethodConstructors utility class should")
 class MethodConstructorsTest extends UtilityClassTest<MethodConstructors> {
 
-    private static final String TEST_VALUE = "testValue";
-
     MethodConstructorsTest() {
         super(MethodConstructors.class);
-    }
-
-    @Test
-    @DisplayName("return constructed validate statement")
-    void return_constructed_validate_statement() {
-        String name = "var";
-        String result = createValidateStatement(TEST_VALUE, name);
-        String expected = format("validate(fieldDescriptor, %s, \"%s\")", TEST_VALUE, name);
-        assertEquals(expected, result);
     }
 
     @Override

@@ -20,10 +20,6 @@
 
 package io.spine.tools.compiler.validation;
 
-import com.google.protobuf.Descriptors.FieldDescriptor;
-import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.CodeBlock;
-
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static java.lang.String.format;
@@ -35,23 +31,6 @@ final class MethodConstructors {
 
     /** Prevents instantiation of this utility class. */
     private MethodConstructors() {
-    }
-
-    /**
-     * Creates the validate statement.
-     *
-     * @param fieldValue
-     *         the value to validate
-     * @param fieldName
-     *         the name of the field to validate
-     * @return the constructed statement
-     */
-    static String createValidateStatement(String fieldValue, String fieldName) {
-        checkNotNull(fieldValue);
-        checkNotNull(fieldName);
-        String result = CodeBlock.of("validate(fieldDescriptor, $N, $S)", fieldValue, fieldName)
-                                 .toString();
-        return result;
     }
 
     /**
