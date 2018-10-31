@@ -116,7 +116,7 @@ class SingularFieldMethodConstructor extends AbstractMethodConstructor implement
                 newBuilderSetter(methodName)
                           .addParameter(parameter)
                           .addException(ValidationException.class)
-                          .addStatement(descriptorCodeLine())
+                          .addStatement(descriptorDeclaration())
                           .addStatement(validateStatement(fieldName, field.getName()))
                           .addStatement(setStatement)
                           .addStatement(returnThis())
@@ -173,7 +173,7 @@ class SingularFieldMethodConstructor extends AbstractMethodConstructor implement
                           .addParameter(parameter)
                           .addException(ValidationException.class)
                           .addException(ConversionException.class)
-                          .addStatement(descriptorCodeLine())
+                          .addStatement(descriptorDeclaration())
                           .addStatement(convertStatement.value())
                           .addStatement(validateStatement(convertedVariableName,
                                                           field.getName()))

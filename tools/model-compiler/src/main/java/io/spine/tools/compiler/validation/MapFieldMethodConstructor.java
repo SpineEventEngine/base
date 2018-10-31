@@ -149,7 +149,7 @@ class MapFieldMethodConstructor extends AbstractMethodConstructor implements Log
                 .addException(ValidationException.class)
                 .addParameter(keyTypeName, KEY)
                 .addParameter(valueTypeName, VALUE)
-                .addStatement(descriptorCodeLine())
+                .addStatement(descriptorDeclaration())
                 .addStatement(mapToValidate, Map.class, keyTypeName,
                               valueTypeName, Collections.class)
                 .addStatement(validateStatement(MAP_TO_VALIDATE_PARAM_NAME, javaFieldName))
@@ -173,7 +173,7 @@ class MapFieldMethodConstructor extends AbstractMethodConstructor implements Log
                 .addParameter(String.class, VALUE)
                 .addStatement(convert(KEY, keyTypeName).value())
                 .addStatement(convert(VALUE, valueTypeName).value())
-                .addStatement(descriptorCodeLine())
+                .addStatement(descriptorDeclaration())
                 .addStatement(mapToValidate, Map.class, keyTypeName,
                               valueTypeName, Collections.class)
                 .addStatement(validateStatement(MAP_TO_VALIDATE_PARAM_NAME, javaFieldName))
@@ -190,7 +190,7 @@ class MapFieldMethodConstructor extends AbstractMethodConstructor implements Log
         MethodSpec result = newBuilderSetter(methodName)
                 .addParameter(fieldType.getTypeName(), MAP_PARAM_NAME)
                 .addException(ValidationException.class)
-                .addStatement(descriptorCodeLine())
+                .addStatement(descriptorDeclaration())
                 .addStatement(validateStatement(MAP_PARAM_NAME, javaFieldName))
                 .addStatement(putAllStatement)
                 .addStatement(returnThis())
@@ -206,7 +206,7 @@ class MapFieldMethodConstructor extends AbstractMethodConstructor implements Log
                 .addParameter(String.class, MAP_PARAM_NAME)
                 .addException(ValidationException.class)
                 .addException(ConversionException.class)
-                .addStatement(descriptorCodeLine())
+                .addStatement(descriptorDeclaration())
                 .addStatement(createGetConvertedMapValue(),
                               Map.class, keyTypeName, valueTypeName,
                               keyTypeName, valueTypeName)

@@ -57,14 +57,15 @@ abstract class AbstractMethodConstructor implements MethodConstructor {
      * Obtains the the statement, which declares the descriptor
      * for the {@linkplain #fieldIndex field}.
      *
-     * @return the constructed statement
+     * @return the statement like
+     *         {@code FieldDescriptor fieldDescriptor = Msg.getDescriptor().getFields().get(0)}
      */
-    final String descriptorCodeLine() {
-        String template = "$T $N = $T.getDescriptor().getFields().get($L)";
-        Class<FieldDescriptor> descriptorClass = FieldDescriptor.class;
+    final String descriptorDeclaration() {
         CodeBlock codeBlock =
-                CodeBlock.of(template,
-                             descriptorClass, FIELD_DESCRIPTOR_NAME, messageClass, fieldIndex);
+                CodeBlock.builder()
+                         .add("$T $N = ", FieldDescriptor.class, FIELD_DESCRIPTOR_NAME)
+                         .add(getFieldDescriptor())
+                         .build();
         return codeBlock.toString();
     }
 
@@ -81,6 +82,12 @@ abstract class AbstractMethodConstructor implements MethodConstructor {
                 .addAnnotation(canIgnoreReturnValue())
                 .addModifiers(Modifier.PUBLIC)
                 .returns(builderClass());
+    }
+
+    /** Return the code block, which obtains the {@linkplain #fieldIndex field}. */
+    private CodeBlock getFieldDescriptor() {
+        return CodeBlock.of("$T.getDescriptor().getFields().get($L)",
+                            messageClass, fieldIndex);
     }
 
     /** Returns the class name of the validating builder. */
