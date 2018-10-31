@@ -40,14 +40,19 @@ class CamelCaseTest extends UtilityClassTest<CamelCase> {
 
     @Test
     @DisplayName("capitalize words")
-    void capitalize_words() {
-        assertEquals("CapitalizeWords", convert(new UnderName("capitalize_words")));
+    void capitalizeWords() {
+        assertConverted("CapitalizeWords", "capitalize_words");
     }
 
     @Test
     @DisplayName("not lowercase words")
-    void do_not_lowercase_words() {
-        assertEquals("TestHTTPRequest", convert(new UnderName("test_HTTP_request")));
+    void doNotLowercaseWords() {
+        assertConverted("TestHTTPRequest", "test_HTTP_request");
+    }
+
+    private static void assertConverted(String expectedCamelCase, String underscoredName) {
+        UnderscoredName name = new UnderName(underscoredName);
+        assertEquals(expectedCamelCase, convert(name));
     }
 
     /**

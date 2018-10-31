@@ -20,36 +20,39 @@
 
 package io.spine.code.proto;
 
-import java.util.Iterator;
+import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
+
+import java.util.Optional;
 
 /**
- * Utilities for working with {@code CamelCapitalization}.
+ * A declaration of a message {@linkplain FieldDescriptorProto field}.
  */
-public final class CamelCase {
+public class FieldDeclarationProto {
 
-    /** Prevent instantiation of this utility class. */
-    private CamelCase() {
+    private final FieldDescriptorProto descriptor;
+    private final AbstractMessageDeclaration originMessage;
+
+    public FieldDeclarationProto(FieldDescriptorProto descriptor,
+                                 AbstractMessageDeclaration originMessage) {
+        this.descriptor = descriptor;
+        this.originMessage = originMessage;
+    }
+
+    public FieldName name() {
+        return FieldName.of(descriptor);
+    }
+
+    public FieldDescriptorProto descriptor() {
+        return descriptor;
     }
 
     /**
-     * Converts an underscored name to {@code CamelCase} string.
+     * Obtains comments going before the field.
      *
-     * <p>Does not force lowercase conversion so that {@code "test_HTTP_request"} would become
-     * {@code "TestHTTPRequest"}.
+     * @return the leading field comments or {@code Optional.empty()} if there are no comments
      */
-    public static String convert(UnderscoredName name) {
-        Iterator<String> iterator = name.words()
-                                        .iterator();
-        StringBuilder builder = new StringBuilder(name.value()
-                                                      .length());
-        while (iterator.hasNext()) {
-            String word = iterator.next();
-            if (!word.isEmpty()) {
-                builder.append(Character.toUpperCase(word.charAt(0)))
-                       .append(word.substring(1));
-            }
-        }
-
-        return builder.toString();
+    public Optional<String> leadingComments() {
+        return originMessage.documentation()
+                            .getFieldLeadingComments(descriptor);
     }
 }

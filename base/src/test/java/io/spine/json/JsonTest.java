@@ -39,7 +39,6 @@ import static io.spine.base.Identifier.newUuid;
 import static io.spine.json.Json.fromJson;
 import static io.spine.json.Json.toCompactJson;
 import static io.spine.json.Json.toJson;
-import static io.spine.protobuf.TypeConverter.toMessage;
 import static java.lang.String.format;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -80,7 +79,7 @@ class JsonTest extends UtilityClassTest<Json> {
     @Test
     @DisplayName("print to JSON")
     void print_to_json() {
-        StringValue value = toMessage("print_to_json");
+        StringValue value = StringValue.of("print_to_json");
         assertFalse(toJson(value).isEmpty());
     }
 

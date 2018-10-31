@@ -28,7 +28,7 @@ import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeSpec;
 import io.spine.code.java.SimpleClassName;
 import io.spine.code.javadoc.JavadocText;
-import io.spine.code.proto.FieldDeclaration;
+import io.spine.code.proto.FieldDeclarationProto;
 import io.spine.code.proto.FieldName;
 import io.spine.code.proto.RejectionDeclaration;
 import io.spine.protobuf.Messages;
@@ -196,8 +196,8 @@ class RejectionBuilderWriter {
 
     private List<MethodSpec> setters() {
         List<MethodSpec> methods = newArrayList();
-        List<FieldDeclaration> fields = rejection.fields();
-        for (FieldDeclaration field : fields) {
+        List<FieldDeclarationProto> fields = rejection.fields();
+        for (FieldDeclarationProto field : fields) {
             FieldType fieldType = fieldTypeFactory.create(field.descriptor());
             MethodSpec setter = fieldSetter(field, fieldType);
             methods.add(setter);
@@ -205,7 +205,7 @@ class RejectionBuilderWriter {
         return methods;
     }
 
-    private MethodSpec fieldSetter(FieldDeclaration field,
+    private MethodSpec fieldSetter(FieldDeclarationProto field,
                                    FieldType fieldType) {
         FieldName fieldName = field.name();
         String parameterName = fieldName.javaCase();

@@ -26,10 +26,10 @@ import io.spine.js.generate.field.parser.FieldParser;
 import io.spine.js.generate.field.precondition.FieldPrecondition;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.code.proto.FieldTypes2.isMap;
-import static io.spine.code.proto.FieldTypes2.isRepeated;
-import static io.spine.code.proto.FieldTypes2.keyDescriptor;
-import static io.spine.code.proto.FieldTypes2.valueDescriptor;
+import static io.spine.code.proto.FieldTypes.isMap;
+import static io.spine.code.proto.FieldTypes.isRepeated;
+import static io.spine.code.proto.FieldTypes.keyDescriptor;
+import static io.spine.code.proto.FieldTypes.valueDescriptor;
 import static io.spine.js.generate.field.parser.FieldParsers.parserFor;
 import static io.spine.js.generate.field.precondition.FieldPreconditions.preconditionFor;
 

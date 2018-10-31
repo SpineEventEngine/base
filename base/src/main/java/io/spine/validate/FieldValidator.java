@@ -23,6 +23,7 @@ package io.spine.validate;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Message;
 import io.spine.base.FieldPath;
+import io.spine.code.proto.FieldDeclaration;
 import io.spine.logging.Logging;
 import io.spine.option.IfInvalidOption;
 import io.spine.option.IfMissingOption;
@@ -118,9 +119,9 @@ abstract class FieldValidator<V> implements Logging {
      *
      * <p>The flow of the validation is as follows:
      * <ol>
-     * <li>check the field to be set if it is {@code required};
-     * <li>validate the field as an Entity ID if required;
-     * <li>performs the {@linkplain #validateOwnRules() custom type-dependant validation}.
+     *     <li>check the field to be set if it is {@code required};
+     *     <li>validate the field as an Entity ID if required;
+     *     <li>performs the {@linkplain #validateOwnRules() custom type-dependant validation}.
      * </ol>
      *
      * @return a list of found {@linkplain ConstraintViolation constraint violations} is any

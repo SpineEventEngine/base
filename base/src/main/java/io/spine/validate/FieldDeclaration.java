@@ -23,7 +23,7 @@ package io.spine.validate;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.base.CommandMessage;
-import io.spine.code.proto.FieldTypes2;
+import io.spine.code.proto.FieldTypes;
 import io.spine.option.EntityOption;
 import io.spine.option.OptionsProto;
 
@@ -34,7 +34,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  * <p>The field can be declared in a message or enum.
  *
- * <p>Unlike {@link io.spine.code.proto.FieldDeclaration}, the class uses
+ * <p>Unlike {@link io.spine.code.proto.FieldDeclarationProto}, the class uses
  * {@link com.google.protobuf.Descriptors} instead of {@link com.google.protobuf.DescriptorProtos}.
  * The former descriptors provide a more powerful API.
  */
@@ -95,15 +95,22 @@ final class FieldDeclaration {
     }
 
     boolean isRepeated() {
-        return FieldTypes2.isRepeated(field);
+        return FieldTypes.isRepeated(field);
     }
 
     boolean isMap() {
-        return FieldTypes2.isMap(field);
+        return FieldTypes.isMap(field);
     }
 
-    FieldDescriptor descriptor() {
-        return field;
+    /** The {@link FieldDescriptor.JavaType JavaType} of the declaration. */
+    FieldDescriptor.JavaType javaType() {
+        return field.getJavaType();
+    }
+
+    /** Obtains the descriptor of the value of a map. */
+    FieldDeclaration valueDeclaration() {
+        FieldDescriptor valueDescriptor = FieldTypes.valueDescriptor(field);
+        return new FieldDeclaration(valueDescriptor);
     }
 
     private boolean isEntityField() {

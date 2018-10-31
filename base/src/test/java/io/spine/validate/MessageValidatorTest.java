@@ -86,7 +86,6 @@ import static com.google.protobuf.util.Timestamps.add;
 import static com.google.protobuf.util.Timestamps.subtract;
 import static io.spine.base.Identifier.newUuid;
 import static io.spine.base.Time.getCurrentTime;
-import static io.spine.protobuf.TypeConverter.toMessage;
 import static io.spine.validate.MessageValidatorTestEnv.FIFTY_NANOSECONDS;
 import static io.spine.validate.MessageValidatorTestEnv.SECONDS_IN_5_MINUTES;
 import static io.spine.validate.MessageValidatorTestEnv.ZERO_NANOSECONDS;
@@ -1141,7 +1140,7 @@ class MessageValidatorTest {
     }
 
     private static StringValue newStringValue() {
-        return toMessage(newUuid());
+        return StringValue.of(newUuid());
     }
 
     private static ByteString newByteString() {

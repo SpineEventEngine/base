@@ -20,6 +20,7 @@
 
 package io.spine.validate;
 
+import io.spine.code.proto.FieldDeclaration;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

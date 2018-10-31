@@ -26,7 +26,7 @@ import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import com.google.protobuf.ProtocolMessageEnum;
-import io.spine.code.proto.FieldTypes2;
+import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.Option;
 
 import java.util.List;
@@ -88,12 +88,11 @@ class FieldValue {
      * @return {@link JavaType} of {@linkplain #asList() list} elements
      */
     JavaType javaType() {
-        FieldDescriptor field = declaration.descriptor();
         if (!declaration.isMap()) {
-            return field.getJavaType();
+            return declaration.javaType();
         }
-        FieldDescriptor.JavaType valuesType = FieldTypes2.valueDescriptor(field)
-                                                         .getJavaType();
+        FieldDescriptor.JavaType valuesType = declaration.valueDeclaration()
+                                                         .javaType();
         return valuesType;
     }
 
