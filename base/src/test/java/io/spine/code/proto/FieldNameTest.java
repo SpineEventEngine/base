@@ -32,7 +32,7 @@ class FieldNameTest {
     private static final String PROTO_FIELD_NAME = "correct_java_name";
 
     private final FieldName fieldName = FieldName.of(PROTO_FIELD_NAME);
-    private final FieldName fieldNameWithNumbers = FieldName.of("hand2hand");
+    private final FieldName fieldNameWithNumbers = FieldName.of("hand22hand");
 
     @Nested
     @DisplayName("obtain CamelCase")
@@ -41,13 +41,23 @@ class FieldNameTest {
         @Test
         @DisplayName("of lower-cased letters")
         void lowerCasedLetters() {
-            assertEquals("CorrectJavaName", fieldName.toCamelCase());
+            assertCamelCase("CorrectJavaName", fieldName);
         }
 
         @Test
         @DisplayName("of lower-cased letters with a number")
         void lowerCasedLettersAndNumbers() {
-            assertEquals("Hand2Hand", fieldNameWithNumbers.toCamelCase());
+            assertCamelCase("Hand22Hand", fieldNameWithNumbers);
+        }
+
+        @Test
+        @DisplayName("of capitalized name")
+        void capitalizedName() {
+            assertCamelCase("TypeURLString", FieldName.of("type_URL_string"));
+        }
+
+        private void assertCamelCase(String expectedCamelCase, FieldName fieldName) {
+            assertEquals(expectedCamelCase, fieldName.toCamelCase());
         }
     }
 
@@ -58,13 +68,17 @@ class FieldNameTest {
         @Test
         @DisplayName("of lower-cased letters")
         void lowerCasedLetters() {
-            assertEquals("correctJavaName", fieldName.javaCase());
+            assertJavaCase("correctJavaName", fieldName);
         }
 
         @Test
         @DisplayName("of lower-cased letters with a number")
         void lowerCasedLettersAndNumbers() {
-            assertEquals("hand2Hand", fieldNameWithNumbers.javaCase());
+            assertJavaCase("hand22Hand", fieldNameWithNumbers);
+        }
+
+        private void assertJavaCase(String expectedJavaCase, FieldName fieldName) {
+            assertEquals(expectedJavaCase, fieldName.javaCase());
         }
     }
 }
