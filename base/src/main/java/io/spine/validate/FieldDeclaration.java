@@ -34,7 +34,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  * <p>The field can be declared in a message or enum.
  *
- * <p>Unlike {@link io.spine.code.proto.FieldDeclaration}, the class uses
+ * <p>Unlike {@link io.spine.code.proto.FieldDeclarationProto}, the class uses
  * {@link com.google.protobuf.Descriptors} instead of {@link com.google.protobuf.DescriptorProtos}.
  * The former descriptors provide a more powerful API.
  */

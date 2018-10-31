@@ -25,15 +25,15 @@ import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import java.util.Optional;
 
 /**
- * A declaration of a message field.
+ * A declaration of a message {@linkplain FieldDescriptorProto field}.
  */
-public class FieldDeclaration {
+public class FieldDeclarationProto {
 
     private final FieldDescriptorProto descriptor;
     private final AbstractMessageDeclaration originMessage;
 
-    public FieldDeclaration(FieldDescriptorProto descriptor,
-                            AbstractMessageDeclaration originMessage) {
+    public FieldDeclarationProto(FieldDescriptorProto descriptor,
+                                 AbstractMessageDeclaration originMessage) {
         this.descriptor = descriptor;
         this.originMessage = originMessage;
     }
