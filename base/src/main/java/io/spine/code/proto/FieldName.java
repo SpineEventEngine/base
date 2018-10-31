@@ -25,14 +25,13 @@ import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import io.spine.code.AbstractFieldName;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
  * A name of a message field.
- *
- * @author Alexander Yevsyukov
  */
 public final class FieldName extends AbstractFieldName implements UnderscoredName {
 
@@ -41,7 +40,14 @@ public final class FieldName extends AbstractFieldName implements UnderscoredNam
     /** A delimiter between a type name and a field name. */
     public static final String TYPE_SEPARATOR = ".";
 
-    private static final String WORD_SEPARATOR = "_";
+    /**
+     * The separator is an underscore or a digit.
+     *
+     * <p>A digit, instead of an underscore, should be kept in a word.
+     * So, the second group is not just {@code (\\d)}.
+     */
+    private static final String WORD_SEPARATOR = "(_)|((?<=\\d)|(?=\\d))";
+    private static final Pattern WORD_SEPARATOR_PATTERN = Pattern.compile(WORD_SEPARATOR);
 
     private FieldName(String value) {
         super(value);
@@ -65,10 +71,25 @@ public final class FieldName extends AbstractFieldName implements UnderscoredNam
 
     /**
      * Obtains immutable list of words used in the name of the field.
+     *
+     * <p>A word is a part of the name, the first letter of which should be capitalized
+     * when converting {@linkplain #toCamelCase() to CamelCase}.
+     *
+     * <p>So, the name is split by:
+     * <ul>
+     *   <li>an underscore excluding it from a word;</li>
+     *   <li>a digit leaving it in a word.</li>
+     * </ul>
+     *
+     * <p>The name is split in such a manner, because the Protobuf compiler does in the same manner
+     * during the conversion to CamelCase.
+     *
+     * @see <a href="https://github.com/protocolbuffers/protobuf/blob/master/src/google/protobuf/compiler/java/java_helpers.cc#L161">
+     *         Protoc Camel Case</a>
      */
     @Override
     public List<String> words() {
-        String[] words = value().split(WORD_SEPARATOR);
+        String[] words = WORD_SEPARATOR_PATTERN.split(value());
         ImmutableList<String> result = ImmutableList.copyOf(words);
         return result;
     }
@@ -77,7 +98,7 @@ public final class FieldName extends AbstractFieldName implements UnderscoredNam
      * Obtains the field name in {@code CamelCase}.
      */
     public String toCamelCase() {
-        String result = CamelCase.protocStyled(this);
+        String result = CamelCase.convert(this);
         return result;
     }
 

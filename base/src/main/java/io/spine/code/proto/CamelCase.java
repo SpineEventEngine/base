@@ -52,35 +52,4 @@ public final class CamelCase {
 
         return builder.toString();
     }
-
-    /**
-     * Converts an underscored name to {@code CamelCase} string in the same manner
-     * as Protobuf compiler does.
-     *
-     * <p>Unlike {@link #convert(UnderscoredName)}, capitalizes a letter going after a number,
-     * e.g. {@code p2p} to {@code P2P}.
-     *
-     * @see <a href="https://github.com/protocolbuffers/protobuf/blob/master/src/google/protobuf/compiler/java/java_helpers.cc#L161">
-     *         Protoc Camel Case</a>
-     */
-    @SuppressWarnings("MethodWithMultipleLoops" /* Keep specific logic inside one method. */ )
-    public static String protocStyled(UnderscoredName name) {
-        Iterator<String> iterator = name.words()
-                                        .iterator();
-        StringBuilder builder = new StringBuilder(name.value()
-                                                      .length());
-        while (iterator.hasNext()) {
-            String word = iterator.next();
-            boolean capitalizeNext = true;
-            for (char sourceChar : word.toCharArray()) {
-                char charToAppend = capitalizeNext
-                                    ? Character.toUpperCase(sourceChar)
-                                    : sourceChar;
-                builder.append(charToAppend);
-                capitalizeNext = Character.isDigit(sourceChar);
-            }
-        }
-
-        return builder.toString();
-    }
 }
