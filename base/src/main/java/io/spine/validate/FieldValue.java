@@ -26,6 +26,7 @@ import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import com.google.protobuf.ProtocolMessageEnum;
+import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.Option;
 
 import java.util.List;
