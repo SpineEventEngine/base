@@ -23,6 +23,7 @@ package io.spine.tools.compiler.descriptor;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
 import com.google.protobuf.InvalidProtocolBufferException;
+import io.spine.logging.Logging;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -40,7 +41,7 @@ import java.util.zip.ZipInputStream;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.io.ByteStreams.readFully;
 import static com.google.common.io.Files.createParentDirs;
 import static io.spine.code.proto.FileDescriptors.KNOWN_TYPES;
 import static io.spine.option.Options.registry;
@@ -51,7 +52,7 @@ import static io.spine.util.Exceptions.newIllegalStateException;
 /**
  * A descriptor set merger.
  */
-public final class Merger {
+public final class Merger implements Logging {
 
     private final ArchiveUnpacker fullUnpacker;
 
@@ -72,7 +73,6 @@ public final class Merger {
     public MergedDescriptorSet merge(Collection<File> files) {
         FileDescriptorSet merged = readAllDescriptors(files)
                 .stream()
-                .map(Merger::parseDescriptors)
                 .reduce(FileDescriptorSet.newBuilder(),
                         FileDescriptorSet.Builder::mergeFrom,
                         (right, left) -> right.addAllFile(left.getFileList()))
@@ -90,9 +90,10 @@ public final class Merger {
 
     }
 
-    private Set<byte[]> readAllDescriptors(Collection<File> dependencies) {
-        ImmutableSet.Builder<byte[]> result = ImmutableSet.builder();
+    private Set<FileDescriptorSet> readAllDescriptors(Collection<File> dependencies) {
+        ImmutableSet.Builder<FileDescriptorSet> result = ImmutableSet.builder();
         for (File file : dependencies) {
+            log().debug("Merging descriptors from `{}`.", file);
             if (file.isDirectory()) {
                 mergeDirectory(file)
                         .ifPresent(result::add);
@@ -109,7 +110,7 @@ public final class Merger {
         return result.build();
     }
 
-    private static Optional<byte[]> mergeDirectory(File directory) {
+    private static Optional<FileDescriptorSet> mergeDirectory(File directory) {
         File[] knownTypesFile = directory.listFiles(
                 (dir, name) -> KNOWN_TYPES.equals(name)
         );
@@ -124,7 +125,7 @@ public final class Merger {
         }
     }
 
-    private Optional<byte[]> readFromArchive(File archive) {
+    private Optional<FileDescriptorSet> readFromArchive(File archive) {
         try (
                 FileInputStream fileStream = new FileInputStream(archive);
                 ZipInputStream stream = new ZipInputStream(fileStream)
@@ -135,56 +136,64 @@ public final class Merger {
         }
     }
 
-    private Optional<byte[]> readFromArchive(ZipInputStream stream, File archive)
+    private Optional<FileDescriptorSet> readFromArchive(ZipInputStream stream, File archive)
             throws IOException {
         for (ZipEntry entry = stream.getNextEntry();
              entry != null;
              entry = stream.getNextEntry()) {
             if (KNOWN_TYPES.equals(entry.getName())) {
+                log().debug("Merging ZIP entry `{}` of size: {}.", entry, entry.getSize());
                 return readFromEntry(entry, stream, archive);
             }
         }
         return Optional.empty();
     }
 
-    private Optional<byte[]> readFromEntry(ZipEntry entry, ZipInputStream stream, File archive)
+    private Optional<FileDescriptorSet> readFromEntry(ZipEntry entry, ZipInputStream stream,
+                                                      File archive)
             throws IOException {
         @SuppressWarnings("NumericCastThatLosesPrecision") // The expected file should fit.
         int size = (int) entry.getSize();
-        if (size < 0) {
+        if (size < 0) { // Cannot read the entry size correctly.
             return readFromArchiveByUnpacking(archive);
         } else {
-            byte[] buffer = new byte[size];
-            int readBytes = stream.read(buffer);
-            checkState(size == readBytes,
-                       "Expected to read %d bytes, but actually read %d bytes.", size, readBytes);
-            return Optional.of(buffer);
+            return Optional.of(readFromCurrentEntry(stream, size));
         }
     }
 
-    private Optional<byte[]> readFromArchiveByUnpacking(File archive) {
-        Optional<byte[]> result = fullUnpacker.unpack(archive)
-                                              .stream()
-                                              .filter(file -> KNOWN_TYPES.equals(file.getName()))
-                                              .findAny()
-                                              .map(Merger::read);
+    private static FileDescriptorSet readFromCurrentEntry(ZipInputStream stream, int entrySize)
+            throws IOException {
+        byte[] buffer = new byte[entrySize];
+        readFully(stream, buffer);
+        FileDescriptorSet parsed = FileDescriptorSet.parseFrom(buffer);
+        return parsed;
+    }
+
+    private Optional<FileDescriptorSet> readFromArchiveByUnpacking(File archive) {
+        Optional<FileDescriptorSet> result = fullUnpacker
+                .unpack(archive)
+                .stream()
+                .filter(file -> KNOWN_TYPES.equals(file.getName()))
+                .findAny()
+                .map(Merger::read);
         return result;
     }
 
-    private static byte[] read(File file) {
+    private static FileDescriptorSet read(File file) {
         checkArgument(file.exists());
         Path path = file.toPath();
         try {
-            return Files.readAllBytes(path);
+            byte[] bytes = Files.readAllBytes(path);
+            return FileDescriptorSet.parseFrom(bytes);
         } catch (IOException e) {
             throw illegalStateWithCauseOf(e);
         }
     }
 
-    private static Optional<byte[]> readFromPlainFile(File file) {
+    private static Optional<FileDescriptorSet> readFromPlainFile(File file) {
         if (KNOWN_TYPES.equals(file.getName())) {
-            byte[] bytes = read(file);
-            return Optional.of(bytes);
+            FileDescriptorSet result = read(file);
+            return Optional.of(result);
         } else {
             return Optional.empty();
         }
