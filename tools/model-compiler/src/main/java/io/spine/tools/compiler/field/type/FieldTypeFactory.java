@@ -29,10 +29,10 @@ import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.protobuf.DescriptorProtos.DescriptorProto;
-import static io.spine.tools.compiler.field.type.FieldTypes.getEntryNameFor;
-import static io.spine.tools.compiler.field.type.FieldTypes.isMap;
-import static io.spine.tools.compiler.field.type.FieldTypes.isRepeated;
-import static io.spine.tools.compiler.field.type.FieldTypes.trimTypeName;
+import static io.spine.code.proto.FieldTypesProto.getEntryNameFor;
+import static io.spine.code.proto.FieldTypesProto.isMap;
+import static io.spine.code.proto.FieldTypesProto.isRepeated;
+import static io.spine.code.proto.FieldTypesProto.trimTypeName;
 
 /**
  * Factory for creation {@link FieldType} instances.

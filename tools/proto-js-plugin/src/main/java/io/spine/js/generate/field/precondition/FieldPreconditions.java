@@ -24,7 +24,7 @@ import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.js.generate.JsOutput;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.code.js.Fields.isMessage;
+import static io.spine.code.proto.FieldTypes.isMessage;
 
 /**
  * The helper which creates {@link FieldPrecondition} instances based on the field type.
