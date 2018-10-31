@@ -77,8 +77,8 @@ public final class FieldName extends AbstractFieldName implements UnderscoredNam
      *
      * <p>So, the name is split by:
      * <ul>
-     *   <li>an underscore excluding it from a word;</li>
-     *   <li>a digit leaving it in a word.</li>
+     *     <li>an underscore excluding it from a word;</li>
+     *     <li>a digit leaving it in a word.</li>
      * </ul>
      *
      * <p>The name is split in such a manner, because the Protobuf compiler does in the same manner
