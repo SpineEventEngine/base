@@ -32,12 +32,21 @@ public class FieldDeclarationProto {
     private final FieldDescriptorProto descriptor;
     private final AbstractMessageDeclaration originMessage;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param descriptor
+     *         the descriptor of the field
+     * @param originMessage
+     *         the message containing the field
+     */
     public FieldDeclarationProto(FieldDescriptorProto descriptor,
                                  AbstractMessageDeclaration originMessage) {
         this.descriptor = descriptor;
         this.originMessage = originMessage;
     }
 
+    /** Returns the name of the field. */
     public FieldName name() {
         return FieldName.of(descriptor);
     }

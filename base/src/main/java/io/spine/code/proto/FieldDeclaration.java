@@ -41,6 +41,12 @@ public final class FieldDeclaration {
 
     private final FieldDescriptor field;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param field
+     *         the descriptor of a field
+     */
     public FieldDeclaration(FieldDescriptor field) {
         this.field = checkNotNull(field);
     }
@@ -50,8 +56,8 @@ public final class FieldDeclaration {
      *
      * <p>An entity ID satisfies the following conditions:
      * <ul>
-     *     <li>Declared as the first field.</li>
-     *     <li>Named {@code id} or the name ends with {@code _id}.</li>
+     *     <li>Declared as the first field.
+     *     <li>Named {@code id} or the name ends with {@code _id}.
      *     <li>Declared inside an {@linkplain EntityOption#getKind() entity state message}.
      * </ul>
      *
@@ -91,10 +97,22 @@ public final class FieldDeclaration {
         return isMap() || isRepeated();
     }
 
+    /**
+     * Determines whether the field marked as {@code repeated}.
+     *
+     * <p>A map field is not considered repeated.
+     *
+     * @return {@code true} if the field is repeated, {@code false} otherwise
+     */
     public boolean isRepeated() {
         return FieldTypes.isRepeated(field);
     }
 
+    /**
+     * Determines whether the field is a {@code map}.
+     *
+     * @return {@code true} if the field is a {@code map}, {@code false} otherwise
+     */
     public boolean isMap() {
         return FieldTypes.isMap(field);
     }
