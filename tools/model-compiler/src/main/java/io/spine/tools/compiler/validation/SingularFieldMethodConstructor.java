@@ -39,7 +39,6 @@ import java.util.List;
 import static com.google.common.collect.Lists.newArrayList;
 import static io.spine.tools.compiler.validation.ClassNames.getParameterClassName;
 import static io.spine.tools.compiler.validation.ClassNames.getStringClassName;
-import static io.spine.tools.compiler.validation.ConvertStatement.convert;
 import static io.spine.tools.compiler.validation.MethodConstructors.clearPrefix;
 import static io.spine.tools.compiler.validation.MethodConstructors.clearProperty;
 import static io.spine.tools.compiler.validation.MethodConstructors.getMessageBuilder;
@@ -162,7 +161,7 @@ class SingularFieldMethodConstructor extends AbstractMethodConstructor implement
         String methodName = messageBuilderSetter + rawSuffix();
         ParameterSpec parameter = createParameterSpec(field, true);
 
-        ConvertStatement convertStatement = convert(fieldName, fieldClassName);
+        ConvertStatement convertStatement = ConvertStatement.of(fieldName, fieldClassName);
         String convertedVariableName = convertStatement.convertedVariableName();
         String setStatement = format("%s.%s(%s)",
                                      getMessageBuilder(),

@@ -36,7 +36,6 @@ import java.util.List;
 import java.util.Map;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static io.spine.tools.compiler.validation.ConvertStatement.convert;
 import static io.spine.tools.compiler.validation.MethodConstructors.clearPrefix;
 import static io.spine.tools.compiler.validation.MethodConstructors.getMessageBuilder;
 import static io.spine.tools.compiler.validation.MethodConstructors.rawSuffix;
@@ -171,8 +170,10 @@ class MapFieldMethodConstructor extends AbstractMethodConstructor implements Log
                 .addException(ConversionException.class)
                 .addParameter(String.class, KEY)
                 .addParameter(String.class, VALUE)
-                .addStatement(convert(KEY, keyTypeName).value())
-                .addStatement(convert(VALUE, valueTypeName).value())
+                .addStatement(ConvertStatement.of(KEY, keyTypeName)
+                                              .value())
+                .addStatement(ConvertStatement.of(VALUE, valueTypeName)
+                                              .value())
                 .addStatement(descriptorDeclaration())
                 .addStatement(mapToValidate, Map.class, keyTypeName,
                               valueTypeName, Collections.class)

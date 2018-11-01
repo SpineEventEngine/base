@@ -28,9 +28,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.validate.Validate.checkNameNotEmptyOrBlank;
 
 /**
- * A statement to convert a raw value.
+ * A statement to convert a {@linkplain String raw} value.
  *
- * @see io.spine.validate.AbstractValidatingBuilder#convert(String, java.lang.reflect.Type)}
+ * @see io.spine.validate.AbstractValidatingBuilder#convert(String, Class)
  */
 class ConvertStatement {
 
@@ -44,17 +44,20 @@ class ConvertStatement {
         this.type = checkNotNull(type);
     }
 
-    static ConvertStatement convert(String variableName, TypeName type) {
+    /** Creates the statement to convert the specified variable to the type. */
+    static ConvertStatement of(String variableName, TypeName type) {
         return new ConvertStatement(variableName, type);
     }
 
+    /** Obtains the value of the statement. */
     String value() {
-        String result = CodeBlock.of("$T $N = convert($N, $T.class)",
-                                     type, convertedVariableName(), variableName, type)
-                                 .toString();
+        CodeBlock codeBlock = CodeBlock.of("$T $N = convert($N, $T.class)",
+                                           type, convertedVariableName(), variableName, type);
+        String result = codeBlock.toString();
         return result;
     }
 
+    /** Returns the name of the variable, which is declared in the conversion statement. */
     String convertedVariableName() {
         FieldName valueField = FieldName.of(variableName);
         String convertedValue = "converted" + valueField.toCamelCase();
