@@ -30,7 +30,6 @@ import io.spine.protobuf.Messages;
 import io.spine.string.Stringifiers;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 
@@ -86,18 +85,19 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
     /**
      * Converts the passed `raw` value and returns it.
      *
-     * @param value   the value to convert
-     * @param typeOfV the key of the {@code StringifierRegistry} storage
-     *                to obtain the {@code Stringifier}
-     * @param <V>     the type of the converted value
+     * @param value
+     *         the value to convert
+     * @param valueClass
+     *         the {@code Class} of the value
+     * @param <V>
+     *         the type of the converted value
      * @return the converted value
-     * @throws ConversionException if passed value cannot be converted
+     * @throws ConversionException
+     *         if passed value cannot be converted
      */
-    @SuppressWarnings("TypeParameterUnusedInFormals")
-    // We're pretty safe as we pass the type value as the parameter.
-    protected <V> V convert(String value, Type typeOfV) throws ConversionException {
+    protected <V> V convert(String value, Class<V> valueClass) throws ConversionException {
         try {
-            V convertedValue = Stringifiers.fromString(value, typeOfV);
+            V convertedValue = Stringifiers.fromString(value, valueClass);
             return convertedValue;
         } catch (RuntimeException ex) {
             Throwable rootCause = getRootCause(ex);
@@ -108,13 +108,18 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
     /**
      * Converts the passed `raw` value to {@code Map}.
      *
-     * <p>Acts as a shortcut to {@linkplain #convert(String, Type) convert(String, Map)}.
+     * <p>Acts as a shortcut to {@linkplain #convert(String, java.lang.Class) convert(String, Map)}.
      *
-     * @param <K>        the type of the {@code Map} keys
-     * @param <V>        the type of the {@code Map} values
-     * @param value      the value to convert
-     * @param keyClass   the {@code Class} of the key
-     * @param valueClass the {@code Class} of the value
+     * @param <K>
+     *         the type of the {@code Map} keys
+     * @param <V>
+     *         the type of the {@code Map} values
+     * @param value
+     *         the value to convert
+     * @param keyClass
+     *         the {@code Class} of the key
+     * @param valueClass
+     *         the {@code Class} of the value
      * @return the converted value
      */
     protected <K, V> Map<K, V> convertToMap(String value, Class<K> keyClass, Class<V> valueClass) {
@@ -127,11 +132,14 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
     /**
      * Converts the passed `raw` value to {@code List}.
      *
-     * <p>Acts as a shortcut to {@linkplain #convert(String, Type) convert(String, List)}.
+     * <p>Acts as a shortcut to {@linkplain #convert(String, Class) convert(String, List)}.
      *
-     * @param <V>        the type of the {@code List} values
-     * @param value      the value to convert
-     * @param valueClass the {@code Class} of the list values
+     * @param <V>
+     *         the type of the {@code List} values
+     * @param value
+     *         the value to convert
+     * @param valueClass
+     *         the {@code Class} of the list values
      * @return the converted value
      */
     protected <V> List<V> convertToList(String value, Class<V> valueClass) {

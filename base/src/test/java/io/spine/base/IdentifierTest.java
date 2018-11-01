@@ -42,7 +42,6 @@ import static io.spine.base.Identifier.NULL_ID;
 import static io.spine.base.Identifier.newUuid;
 import static io.spine.protobuf.TypeConverter.toMessage;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
-import static io.spine.testing.TestValues.newUuidValue;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -217,7 +216,7 @@ class IdentifierTest {
         @DisplayName("wrapped Integer")
         void ofWrappedInteger() {
             Integer value = 1024;
-            Int32Value id = toMessage(value);
+            Int32Value id = Int32Value.of(value);
             String expected = value.toString();
 
             String actual = Identifier.toString(id);
@@ -229,7 +228,7 @@ class IdentifierTest {
         @DisplayName("wrapped Long")
         void ofWrappedLong() {
             Long value = 100500L;
-            Int64Value id = toMessage(value);
+            Int64Value id = Int64Value.of(value);
             String expected = value.toString();
 
             String actual = Identifier.toString(id);
@@ -243,12 +242,10 @@ class IdentifierTest {
             assertEquals(TEST_ID, Identifier.toString(TEST_ID));
         }
 
-
         @Test
         @DisplayName("wrapped String")
         void ofWrappedString() {
-
-            StringValue id = toMessage(TEST_ID);
+            StringValue id = StringValue.of(TEST_ID);
 
             String result = Identifier.toString(id);
 
@@ -258,7 +255,7 @@ class IdentifierTest {
         @Test
         @DisplayName("Message with string field")
         void ofMessage() {
-            StringValue id = toMessage(TEST_ID);
+            StringValue id = StringValue.of(TEST_ID);
 
             String result = Identifier.toString(id);
 
@@ -268,7 +265,7 @@ class IdentifierTest {
         @Test
         @DisplayName("Message with nested Message")
         void ofNestedMessage() {
-            StringValue value = toMessage(TEST_ID);
+            StringValue value = StringValue.of(TEST_ID);
             NestedMessageId idToConvert = NestedMessageId
                     .newBuilder()
                     .setId(value)
@@ -282,7 +279,7 @@ class IdentifierTest {
         @Test
         @DisplayName("Any")
         void ofAny() {
-            StringValue messageToWrap = toMessage(TEST_ID);
+            StringValue messageToWrap = StringValue.of(TEST_ID);
             Any any = AnyPacker.pack(messageToWrap);
 
             String result = Identifier.toString(any);
@@ -298,7 +295,7 @@ class IdentifierTest {
         String outerString = "outer_string";
         Integer number = 256;
 
-        StringValue nestedMessageString = toMessage(nestedString);
+        StringValue nestedMessageString = StringValue.of(nestedString);
         SeveralFieldsId idToConvert = SeveralFieldsId.newBuilder()
                                                      .setString(outerString)
                                                      .setNumber(number)
@@ -319,6 +316,7 @@ class IdentifierTest {
     @DisplayName(NOT_ACCEPT_NULLS)
     void nullCheck() {
         new NullPointerTester()
+                .setDefault(Any.class, AnyPacker.pack(StringValue.of(TEST_ID)))
                 .testAllPublicStaticMethods(Identifier.class);
     }
 
@@ -364,7 +362,7 @@ class IdentifierTest {
         void clazz() {
             assertThrows(
                     IllegalArgumentException.class,
-                    () ->  Identifier.getType(Float.class)
+                    () -> Identifier.getType(Float.class)
             );
         }
     }
@@ -376,36 +374,52 @@ class IdentifierTest {
         @Test
         @DisplayName("the field name is not `uuid`")
         void nameIsInvalid() {
-            assertThrows(IllegalStateException.class, () -> Identifier.generate(StringValue.class));
+            assertThrows(
+                    IllegalStateException.class,
+                    () -> Identifier.generate(StringValue.class)
+            );
         }
 
         @Test
         @DisplayName("it contains more than one field")
         void moreThanOneField() {
-            assertThrows(IllegalStateException.class, () -> Identifier.generate(Any.class));
+            assertThrows(
+                    IllegalStateException.class,
+                    () -> Identifier.generate(Any.class)
+            );
         }
 
         @Test
         @DisplayName("the field is not string")
         void fieldNotString() {
-            assertThrows(IllegalStateException.class, () -> Identifier.generate(Int32Value.class));
+            assertThrows(
+                    IllegalStateException.class,
+                    () -> Identifier.generate(Int32Value.class)
+            );
         }
     }
 
-    @Test
-    @DisplayName("unpack Any")
-    void unpackAny() {
-        StringValue id = newUuidValue();
-        assertEquals(id.getValue(), Identifier.toString(AnyPacker.pack(id)));
-    }
+    @Nested
+    @DisplayName("unpack")
+    class Unpack {
 
-    @Test
-    @DisplayName("do not unpack empty Any")
-    void rejectUnpackingEmptyAny() {
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> Identifier.unpack(Any.getDefaultInstance())
-        );
+        @Test
+        @DisplayName("Any with StringValue and cast")
+        void anyWithStringValue() {
+            StringValue testIdMessage = StringValue.of(TEST_ID);
+            Any any = AnyPacker.pack(testIdMessage);
+            String unpackedId = Identifier.unpack(any, String.class);
+            assertEquals(testIdMessage.getValue(), unpackedId);
+        }
+
+        @Test
+        @DisplayName("and throw if Any is empty")
+        void rejectEmptyAny() {
+            assertThrows(
+                    IllegalArgumentException.class,
+                    () -> Identifier.unpack(Any.getDefaultInstance())
+            );
+        }
     }
 
     @Test

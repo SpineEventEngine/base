@@ -24,8 +24,6 @@ import com.google.protobuf.ByteString;
 
 /**
  * Validates fields of type {@link ByteString}.
- *
- * @author Alexander Litus
  */
 class ByteStringFieldValidator extends FieldValidator<ByteString> {
 

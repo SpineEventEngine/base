@@ -40,8 +40,6 @@ import static io.spine.validate.Validate.isDefault;
 
 /**
  * Validates fields of type {@link Message}.
- *
- * @author Alexander Litus
  */
 class MessageFieldValidator extends FieldValidator<Message> {
 
@@ -62,7 +60,7 @@ class MessageFieldValidator extends FieldValidator<Message> {
                           Object fieldValues,
                           boolean strict) {
         super(fieldContext, toValueList(fieldValues), strict);
-        this.timeConstraint = getFieldOption(OptionsProto.when);
+        this.timeConstraint = optionValue(OptionsProto.when);
     }
 
     @Override

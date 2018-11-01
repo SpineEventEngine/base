@@ -23,8 +23,8 @@ package io.spine.tools.protodoc.given;
 import com.google.common.base.Joiner;
 import io.spine.tools.gradle.GradleProject;
 import io.spine.tools.protodoc.ProtoJavadocPlugin;
-import org.junit.rules.TemporaryFolder;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -34,7 +34,7 @@ import static com.google.common.collect.ImmutableList.of;
 import static io.spine.tools.gradle.TaskName.FORMAT_PROTO_DOC;
 import static java.lang.System.lineSeparator;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * A helper class for the {@link ProtoJavadocPlugin} testing.
@@ -57,7 +57,7 @@ public final class ProtoJavadocPluginTestEnv {
     }
 
     public static void formatAndAssert(String expectedContent, String contentToFormat,
-                                       TemporaryFolder folder) throws IOException {
+                                       File folder) throws IOException {
         Path formattedFilePath = format(contentToFormat, folder);
         List<String> formattedLines = Files.readAllLines(formattedFilePath, UTF_8);
         String mergedLines = Joiner.on(lineSeparator())
@@ -65,24 +65,23 @@ public final class ProtoJavadocPluginTestEnv {
         assertEquals(expectedContent, mergedLines);
     }
 
-    private static Path format(String fileContent, TemporaryFolder folder) {
+    private static Path format(String fileContent, File folder) {
         String sourceFile = MAIN_GEN_PROTO_LOCATION + "/TestSource.java";
 
         executeTask(sourceFile, folder, fileContent);
 
-        Path result = folder.getRoot()
-                            .toPath()
+        Path result = folder.toPath()
                             .resolve(sourceFile);
         return result;
     }
 
     private static void executeTask(String filePath,
-                                    TemporaryFolder folder,
+                                    File folder,
                                     String fileContent) {
         GradleProject project = GradleProject
                 .newBuilder()
                 .setProjectName("proto-javadoc-test")
-                .setProjectFolder(folder.getRoot())
+                .setProjectFolder(folder)
                 .createFile(filePath, of(fileContent))
                 .build();
         project.executeTask(FORMAT_PROTO_DOC);

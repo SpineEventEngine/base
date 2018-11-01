@@ -28,8 +28,8 @@ import org.jboss.forge.roaster.model.source.JavaSource;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.compiler.annotation.check.Annotations.findSpiAnnotation;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class NestedTypesAnnotationCheck implements SourceCheck {
 
@@ -39,9 +39,8 @@ public class NestedTypesAnnotationCheck implements SourceCheck {
         this.shouldBeAnnotated = shouldBeAnnotated;
     }
 
-    @Nullable
     @Override
-    public Void apply(@Nullable AbstractJavaSource<JavaClassSource> outerClass) {
+    public @Nullable Void apply(@Nullable AbstractJavaSource<JavaClassSource> outerClass) {
         checkNotNull(outerClass);
         for (JavaSource<?> nestedType : outerClass.getNestedTypes()) {
             AnnotationSource annotation = findSpiAnnotation(nestedType);

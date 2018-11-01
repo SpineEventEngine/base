@@ -27,6 +27,7 @@ import io.spine.code.proto.MessageDeclaration;
 import io.spine.logging.Logging;
 import io.spine.option.Options;
 import io.spine.type.TypeName;
+import io.spine.validate.rule.ValidationRules;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 
@@ -87,7 +88,7 @@ public final class ValidationRulesLookup {
             propsMap.put(typeName.value(), ruleTargets);
         }
 
-        String fileName = io.spine.validate.rules.ValidationRules.fileName();
+        String fileName = ValidationRules.fileName();
         log().debug("Writing the validation rules description to {}/{}.",
                     targetDir, fileName);
         PropertiesWriter writer = new PropertiesWriter(targetDir.getAbsolutePath(), fileName);

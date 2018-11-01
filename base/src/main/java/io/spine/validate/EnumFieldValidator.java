@@ -24,8 +24,6 @@ import com.google.protobuf.Descriptors.EnumValueDescriptor;
 
 /**
  * Validates fields of type {@link EnumValueDescriptor}.
- *
- * @author Dmitry Kashcheiev
  */
 class EnumFieldValidator extends FieldValidator<EnumValueDescriptor> {
 

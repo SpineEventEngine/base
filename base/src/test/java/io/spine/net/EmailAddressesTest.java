@@ -22,8 +22,8 @@ package io.spine.net;
 
 import com.google.common.truth.BooleanSubject;
 import io.spine.testing.UtilityClassTest;
-import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.net.EmailAddresses.isValid;

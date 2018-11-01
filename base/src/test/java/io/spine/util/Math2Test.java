@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Test;
 
 import static io.spine.util.Math2.floorDiv;
 import static io.spine.util.Math2.safeMultiply;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("Math2 utility class should")

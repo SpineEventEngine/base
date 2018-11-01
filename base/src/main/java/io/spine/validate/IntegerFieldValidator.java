@@ -24,8 +24,6 @@ import static java.lang.Math.abs;
 
 /**
  * Validates fields of {@link Integer} types.
- *
- * @author Alexander Litus
  */
 class IntegerFieldValidator extends NumberFieldValidator<Integer> {
 

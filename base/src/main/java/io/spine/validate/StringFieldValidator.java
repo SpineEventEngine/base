@@ -27,8 +27,6 @@ import static io.spine.protobuf.TypeConverter.toAny;
 
 /**
  * Validates fields of type {@link String}.
- *
- * @author Alexander Litus
  */
 class StringFieldValidator extends FieldValidator<String> {
 
@@ -47,7 +45,7 @@ class StringFieldValidator extends FieldValidator<String> {
                          Object fieldValues,
                          boolean strict) {
         super(fieldContext, FieldValidator.<String>toValueList(fieldValues), strict);
-        this.patternOption = getFieldOption(OptionsProto.pattern);
+        this.patternOption = optionValue(OptionsProto.pattern);
         this.regex = patternOption.getRegex();
     }
 

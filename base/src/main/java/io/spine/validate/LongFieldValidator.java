@@ -24,8 +24,6 @@ import static java.lang.Math.abs;
 
 /**
  * Validates fields of {@link Long} number types.
- *
- * @author Alexander Litus
  */
 class LongFieldValidator extends NumberFieldValidator<Long> {
 
