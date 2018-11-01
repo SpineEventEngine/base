@@ -81,13 +81,12 @@ public final class Merger implements Logging {
         return result;
     }
 
-    private static FileDescriptorSet parseDescriptors(byte[] fileDescriptorSet) {
+    private static FileDescriptorSet parseDescriptorSet(byte[] fileDescriptorSet) {
         try {
             return FileDescriptorSet.parseFrom(fileDescriptorSet, registry());
         } catch (InvalidProtocolBufferException e) {
             throw illegalStateWithCauseOf(e);
         }
-
     }
 
     private Set<FileDescriptorSet> readAllDescriptors(Collection<File> dependencies) {
@@ -165,7 +164,7 @@ public final class Merger implements Logging {
             throws IOException {
         byte[] buffer = new byte[entrySize];
         readFully(stream, buffer);
-        FileDescriptorSet parsed = FileDescriptorSet.parseFrom(buffer);
+        FileDescriptorSet parsed = parseDescriptorSet(buffer);
         return parsed;
     }
 
@@ -184,7 +183,7 @@ public final class Merger implements Logging {
         Path path = file.toPath();
         try {
             byte[] bytes = Files.readAllBytes(path);
-            return FileDescriptorSet.parseFrom(bytes);
+            return parseDescriptorSet(bytes);
         } catch (IOException e) {
             throw illegalStateWithCauseOf(e);
         }
