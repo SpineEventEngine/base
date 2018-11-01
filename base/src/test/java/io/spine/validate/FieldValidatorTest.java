@@ -173,7 +173,7 @@ public abstract class FieldValidatorTest<V> {
 
     private static void assertNotScalar(FieldValidator<?> validator) {
         FieldDeclaration declaration = validator.field();
-        assertTrue(declaration.isNotScalar());
+        assertTrue(declaration.isCollection());
     }
 
     private static <T> void assertEmpty(Collection<T> emptyIterable) {

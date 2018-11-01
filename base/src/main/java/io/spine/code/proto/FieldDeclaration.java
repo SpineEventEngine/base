@@ -80,21 +80,21 @@ public final class FieldDeclaration {
     }
 
     /**
-     * Determines whether the declaration is a scalar type.
+     * Determines whether the declaration is a singular value.
      *
      * @return {@code true} if the declaration neither map nor repeated, {@code false} otherwise
      */
-    public boolean isScalar() {
-        return !isMap() && !isRepeated();
+    public boolean isNotCollection() {
+        return !isCollection();
     }
 
     /**
-     * Determines whether the declaration is not a scalar type.
+     * Determines whether the declaration is a collection of items.
      *
      * @return {@code true} if the declaration either map or repeated, {@code false} otherwise
      */
-    public boolean isNotScalar() {
-        return !isScalar();
+    public boolean isCollection() {
+        return isMap() || isRepeated();
     }
 
     /**
