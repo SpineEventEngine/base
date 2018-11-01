@@ -56,22 +56,36 @@ public final class Merger implements Logging {
 
     private final ArchiveUnpacker fullUnpacker;
 
+    /**
+     * Creates a new instance of {@code Merger}.
+     *
+     * @param unpacker
+     *         an {@link ArchiveUnpacker} to tackle archive files which cannot be comprehended
+     *         via their ZIP tree
+     */
     public Merger(ArchiveUnpacker unpacker) {
         this.fullUnpacker = checkNotNull(unpacker);
     }
 
     /**
-     * Merges the contents of the given files into a single descriptor set.
+     * Merges the descriptors collected from a project dependencies.
      *
-     * <p>This method assumes that all the given files exist and contain instances of
-     * {@link FileDescriptorSet} Protobuf message.
+     * <p>If a dependency is descriptor set file (a file named
+     * {@link io.spine.code.proto.FileDescriptors#KNOWN_TYPES known_types.desc}), the descriptors
+     * of that file are added to the result descriptor set.
      *
-     * @param files
-     *         the files to merge
+     * <p>If a dependency is a directory, the mentioned file is looked up in the directory
+     * <b>root</b>.
+     *
+     * <p>If a dependency is a JAR (or ZIP) archive, the descriptor set is looked up in
+     * the <b>root</b> of the archive tree.
+     *
+     * @param dependencies
+     *         the dependency files to merge
      * @return the {@link MergedDescriptorSet}
      */
-    public MergedDescriptorSet merge(Collection<File> files) {
-        FileDescriptorSet merged = readAllDescriptors(files)
+    public MergedDescriptorSet merge(Collection<File> dependencies) {
+        FileDescriptorSet merged = readAllDescriptors(dependencies)
                 .stream()
                 .reduce(FileDescriptorSet.newBuilder(),
                         FileDescriptorSet.Builder::mergeFrom,
