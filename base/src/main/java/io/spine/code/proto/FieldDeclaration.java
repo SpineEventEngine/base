@@ -141,6 +141,15 @@ public final class FieldDeclaration {
         return "id".equals(name) || name.endsWith("_id");
     }
 
+    /**
+     * Determines whether the field is the first within a declaration.
+     *
+     * <p>The first field is declared at the top of the containing message,
+     * the last — at the bottom.
+     *
+     * @return {@code true} if the field is the first in the containing declaration,
+     *         {@code false} otherwise
+     */
     private boolean isFirstField() {
         return field.getIndex() == 0;
     }

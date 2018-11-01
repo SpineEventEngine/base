@@ -51,6 +51,7 @@ public class FieldDeclarationProto {
         return FieldName.of(descriptor);
     }
 
+    /** Returns the descriptor of the declaration. */
     public FieldDescriptorProto descriptor() {
         return descriptor;
     }
