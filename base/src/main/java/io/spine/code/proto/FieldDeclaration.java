@@ -94,7 +94,7 @@ public final class FieldDeclaration {
      * @return {@code true} if the declaration either map or repeated, {@code false} otherwise
      */
     public boolean isNotScalar() {
-        return isMap() || isRepeated();
+        return !isScalar();
     }
 
     /**
