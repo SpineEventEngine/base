@@ -22,17 +22,17 @@ package io.spine.validate;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
-import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
-import com.google.protobuf.Message;
 import io.spine.logging.Logging;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.validate.FieldValidatorFactory.createStrict;
 
 /**
@@ -64,29 +64,19 @@ class AlternativeFieldValidator implements Logging {
      */
     private static final Pattern WHITESPACE = Pattern.compile("\\s+");
 
-    /**
-     * The descriptor of the message we validate.
-     */
-    private final Descriptor messageDescriptor;
-
-    /**
-     * The descriptor context of the message we validate.
-     */
-    private final FieldContext rootContext;
+    private final MessageValue message;
 
     /**
      * The list builder to accumulate violations.
      */
     private final ImmutableList.Builder<ConstraintViolation> violations = ImmutableList.builder();
 
-    AlternativeFieldValidator(Descriptor messageDescriptor, FieldContext rootContext) {
-        this.messageDescriptor = messageDescriptor;
-        this.rootContext = rootContext;
+    AlternativeFieldValidator(MessageValue message) {
+        this.message = checkNotNull(message);
     }
 
-    List<? extends ConstraintViolation> validate(Message message) {
-        Map<FieldDescriptor, Object> options = messageDescriptor.getOptions()
-                                                                .getAllFields();
+    List<? extends ConstraintViolation> validate() {
+        Map<FieldDescriptor, Object> options = message.options();
         for (FieldDescriptor optionDescriptor : options.keySet()) {
             if (OPTION_REQUIRED_FIELD.equals(optionDescriptor.getName())) {
                 JavaType optionType = optionDescriptor.getJavaType();
@@ -94,7 +84,7 @@ class AlternativeFieldValidator implements Logging {
                     String requiredFieldExpression = (String) options.get(optionDescriptor);
                     ImmutableList<RequiredFieldOption> fieldOptions =
                             parse(requiredFieldExpression);
-                    if (!alternativeFound(message, fieldOptions)) {
+                    if (!alternativeFound(fieldOptions)) {
                         String msgFormat =
                                 "None of the fields match the `required_field` definition: %s";
                         ConstraintViolation requiredFieldNotFound =
@@ -129,11 +119,11 @@ class AlternativeFieldValidator implements Logging {
         return alternatives.build();
     }
 
-    private boolean alternativeFound(Message message, Iterable<RequiredFieldOption> fieldOptions) {
+    private boolean alternativeFound(Iterable<RequiredFieldOption> fieldOptions) {
         for (RequiredFieldOption option : fieldOptions) {
             boolean found = option.isCombination()
-                            ? checkCombination(message, option.getFieldNames())
-                            : checkField(message, option.getFieldName());
+                            ? checkCombination(option.getFieldNames())
+                            : checkField(option.getFieldName());
             if (found) {
                 return true;
             }
@@ -141,9 +131,9 @@ class AlternativeFieldValidator implements Logging {
         return false;
     }
 
-    private boolean checkField(Message message, String fieldName) {
-        FieldDescriptor field = messageDescriptor.findFieldByName(fieldName);
-        if (field == null) {
+    private boolean checkField(String fieldName) {
+        Optional<FieldValue> fieldValue = message.valueOf(fieldName);
+        if (!fieldValue.isPresent()) {
             ConstraintViolation notFound = ConstraintViolation
                     .newBuilder()
                     .setMsgFormat("Field %s not found")
@@ -152,10 +142,7 @@ class AlternativeFieldValidator implements Logging {
             violations.add(notFound);
             return false;
         }
-
-        FieldContext fieldContext = rootContext.forChild(field);
-        Object fieldValue = message.getField(field);
-        FieldValidator<?> fieldValidator = createStrict(fieldContext, fieldValue);
+        FieldValidator<?> fieldValidator = createStrict(fieldValue.get());
         List<ConstraintViolation> violations = fieldValidator.validate();
 
         // Do not add violations to the results because we have options.
@@ -164,9 +151,9 @@ class AlternativeFieldValidator implements Logging {
         return violations.isEmpty();
     }
 
-    private boolean checkCombination(Message message, ImmutableList<String> fieldNames) {
+    private boolean checkCombination(ImmutableList<String> fieldNames) {
         for (String fieldName : fieldNames) {
-            if (!checkField(message, fieldName)) {
+            if (!checkField(fieldName)) {
                 return false;
             }
         }

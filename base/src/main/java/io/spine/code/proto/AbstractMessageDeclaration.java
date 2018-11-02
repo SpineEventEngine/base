@@ -81,10 +81,10 @@ public abstract class AbstractMessageDeclaration {
      *
      * @return fields in the order of their declaration
      */
-    public ImmutableList<FieldDeclaration> fields() {
+    public ImmutableList<FieldDeclarationProto> fields() {
         return getMessage().getFieldList()
                            .stream()
-                           .map(fieldDescriptor -> new FieldDeclaration(fieldDescriptor, this))
+                           .map(fieldDescriptor -> new FieldDeclarationProto(fieldDescriptor, this))
                            .collect(toImmutableList());
     }
 

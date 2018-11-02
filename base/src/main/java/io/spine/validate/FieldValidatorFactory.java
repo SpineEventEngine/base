@@ -20,20 +20,12 @@
 
 package io.spine.validate;
 
-import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
-import io.spine.code.proto.FieldTypes;
 
-import java.util.Map;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
 
 /**
  * Creates {@link FieldValidator}s.
- *
- * @author Alexander Litus
  */
 class FieldValidatorFactory {
 
@@ -41,113 +33,50 @@ class FieldValidatorFactory {
         // Prevent instantiation of this utility class.
     }
 
-    /**
-     * Creates a new validator instance according to the field type and validates the field.
-     *
-     * <p>The target field of the resulting validator is represented with a linear data structure,
-     * i.e. not a map.
-     *
-     * @param fieldContext the context of the field to validate
-     * @param fieldValue   a value of the field to validate
-     * @param strict       if {@code true} validators would always assume that the field is
-     *                     required
-     */
-    private static FieldValidator<?> createForLinear(FieldContext fieldContext,
-                                                     Object fieldValue,
-                                                     boolean strict) {
-        JavaType fieldType = fieldContext.getTarget()
-                                         .getJavaType();
-        return createForLinear(fieldType,
-                               fieldContext,
-                               fieldValue,
-                               strict);
+    static FieldValidator<?> create(FieldValue fieldValue) {
+        return create(fieldValue, false);
+    }
+
+    static FieldValidator<?> createStrict(FieldValue fieldValue) {
+        return create(fieldValue, true);
     }
 
     /**
-     * Creates a new validator instance according to the field type and validates the field.
+     * Creates a new validator instance according to the type of the value.
      *
-     * <p>The target field of the resulting validator is represented with a linear data structure,
-     * i.e. not a map.
-     *
-     * @param fieldType    the required field type
-     * @param fieldContext the context of the field to create validator for
-     * @param fieldValue   a value of the field to validate
-     * @param strict       if {@code true} validators would always assume that the field is
-     *                     required
+     * @param fieldValue
+     *         a value of the field to validate
+     * @param strict
+     *         if {@code true} validators would always assume that the field is
      */
-    private static FieldValidator<?> createForLinear(JavaType fieldType,
-                                                     FieldContext fieldContext,
-                                                     Object fieldValue,
-                                                     boolean strict) {
-        checkNotNull(fieldType);
+    private static FieldValidator<?> create(FieldValue fieldValue, boolean strict) {
+        JavaType fieldType = fieldValue.javaType();
         switch (fieldType) {
             case MESSAGE:
-                return new MessageFieldValidator(fieldContext, fieldValue, strict);
+                return new MessageFieldValidator(fieldValue, strict);
             case INT:
-                return new IntegerFieldValidator(fieldContext, fieldValue);
+                return new IntegerFieldValidator(fieldValue);
             case LONG:
-                return new LongFieldValidator(fieldContext, fieldValue);
+                return new LongFieldValidator(fieldValue);
             case FLOAT:
-                return new FloatFieldValidator(fieldContext, fieldValue);
+                return new FloatFieldValidator(fieldValue);
             case DOUBLE:
-                return new DoubleFieldValidator(fieldContext, fieldValue);
+                return new DoubleFieldValidator(fieldValue);
             case STRING:
-                return new StringFieldValidator(fieldContext, fieldValue, strict);
+                return new StringFieldValidator(fieldValue, strict);
             case BYTE_STRING:
-                return new ByteStringFieldValidator(fieldContext, fieldValue);
+                return new ByteStringFieldValidator(fieldValue);
             case BOOLEAN:
-                return new BooleanFieldValidator(fieldContext, fieldValue);
+                return new BooleanFieldValidator(fieldValue);
             case ENUM:
-                return new EnumFieldValidator(fieldContext, fieldValue);
+                return new EnumFieldValidator(fieldValue);
             default:
-                throw fieldTypeIsNotSupported(fieldContext.getTarget());
+                throw fieldTypeIsNotSupported(fieldType);
         }
     }
 
-    /**
-     * Creates a new validator instance for a map field.
-     *
-     * @param fieldContext the context of the field to create validator for
-     * @param value        a value of the field to validate
-     * @param strict       if {@code true} validators would always assume that the field is
-     *                     required
-     */
-    private static FieldValidator<?> createForMap(FieldContext fieldContext,
-                                                  Map<?, ?> value,
-                                                  boolean strict) {
-        FieldDescriptor descriptor = fieldContext.getTarget();
-        checkArgument(descriptor.isMapField(),
-                      "Field %s is not a map field.",
-                      descriptor.getFullName());
-        if (value.isEmpty()) {
-            return new EmptyMapFieldValidator(fieldContext, strict);
-        }
-        JavaType type = FieldTypes.valueDescriptor(fieldContext.getTarget())
-                                  .getJavaType();
-        FieldValidator<?> validator = createForLinear(type,
-                                                      fieldContext,
-                                                      value,
-                                                      strict);
-        return validator;
-    }
-
-    static FieldValidator<?> create(FieldContext fieldContext,
-                                    Object fieldValue) {
-        return fieldValue instanceof Map
-               ? createForMap(fieldContext, (Map<?, ?>) fieldValue, false)
-               : createForLinear(fieldContext, fieldValue, false);
-    }
-
-    static FieldValidator<?> createStrict(FieldContext fieldContext,
-                                          Object fieldValue) {
-        return fieldValue instanceof Map
-               ? createForMap(fieldContext, (Map<?, ?>) fieldValue, true)
-               : createForLinear(fieldContext, fieldValue, true);
-    }
-
-    private static IllegalArgumentException fieldTypeIsNotSupported(FieldDescriptor descriptor) {
-        String msg = format("The field type is not supported for validation: %s",
-                            descriptor.getType());
+    private static IllegalArgumentException fieldTypeIsNotSupported(JavaType type) {
+        String msg = format("The field type is not supported for validation: %s", type);
         throw new IllegalArgumentException(msg);
     }
 }

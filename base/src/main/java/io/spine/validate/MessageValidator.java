@@ -21,8 +21,6 @@
 package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
-import com.google.protobuf.Descriptors.Descriptor;
-import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
 
@@ -39,59 +37,52 @@ import static io.spine.validate.FieldValidatorFactory.create;
 @Internal
 public class MessageValidator {
 
-    private final FieldContext rootContext;
+    private final MessageValue message;
 
-    /** Creates a new validator instance. */
-    public static MessageValidator newInstance() {
-        return new MessageValidator(FieldContext.empty());
+    private MessageValidator(MessageValue message) {
+        this.message = message;
     }
 
     /**
-     * Creates a new validator instance.
-     *
-     * <p>Use this constructor for inner messages
-     * (which are marked with "valid" option in Protobuf).
-     *
-     * @param rootContext the context of the message field,
-     *                    which is the root for the messages to validate
+     * Creates a validator for a top-level message.
      */
-    static MessageValidator newInstance(FieldContext rootContext) {
-        return new MessageValidator(rootContext);
+    public static MessageValidator newInstance(Message message) {
+        MessageValue messageValue = MessageValue.atTopLevel(message);
+        return new MessageValidator(messageValue);
     }
 
-    private MessageValidator(FieldContext rootContext) {
-        this.rootContext = rootContext;
+    /**
+     * Creates a validator for a message inside another message.
+     *
+     * @param message
+     *         the message to validate
+     * @param messageContext
+     *         the context of the message
+     */
+    static MessageValidator newInstance(Message message, FieldContext messageContext) {
+        MessageValue messageValue = MessageValue.nestedIn(messageContext, message);
+        return new MessageValidator(messageValue);
     }
 
     /**
      * Validates messages according to Spine custom protobuf options and returns constraint
      * violations found.
-     *
-     * @param message a message to validate
      */
-    public List<ConstraintViolation> validate(Message message) {
+    public List<ConstraintViolation> validate() {
         ImmutableList.Builder<ConstraintViolation> result = ImmutableList.builder();
-        validateAlternativeFields(message, result);
-        validateFields(message, result);
+        validateAlternativeFields(result);
+        validateFields(result);
         return result.build();
     }
 
-    private void validateAlternativeFields(Message message,
-                                           ImmutableList.Builder<ConstraintViolation> result) {
-        Descriptor typeDescr = message.getDescriptorForType();
-        AlternativeFieldValidator altFieldValidator =
-                new AlternativeFieldValidator(typeDescr, rootContext);
-        result.addAll(altFieldValidator.validate(message));
+    private void validateAlternativeFields(ImmutableList.Builder<ConstraintViolation> result) {
+        AlternativeFieldValidator altFieldValidator = new AlternativeFieldValidator(message);
+        result.addAll(altFieldValidator.validate());
     }
 
-    private void validateFields(Message message,
-                                ImmutableList.Builder<ConstraintViolation> result) {
-        Descriptor msgDescriptor = message.getDescriptorForType();
-        List<FieldDescriptor> fields = msgDescriptor.getFields();
-        for (FieldDescriptor field : fields) {
-            FieldContext fieldContext = rootContext.forChild(field);
-            Object value = message.getField(field);
-            FieldValidator<?> fieldValidator = create(fieldContext, value);
+    private void validateFields(ImmutableList.Builder<ConstraintViolation> result) {
+        for (FieldValue value : message.fields()) {
+            FieldValidator<?> fieldValidator = create(value);
             List<ConstraintViolation> violations = fieldValidator.validate();
             result.addAll(violations);
         }

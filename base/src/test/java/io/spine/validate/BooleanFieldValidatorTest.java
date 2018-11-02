@@ -20,7 +20,6 @@
 
 package io.spine.validate;
 
-import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Any;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import org.junit.jupiter.api.DisplayName;
@@ -34,9 +33,9 @@ class BooleanFieldValidatorTest {
     private final FieldDescriptor fieldDescriptor = Any.getDescriptor()
                                                        .getFields()
                                                        .get(0);
+    private final FieldContext fieldContext = FieldContext.create(fieldDescriptor);
     private final BooleanFieldValidator validator =
-            new BooleanFieldValidator(FieldContext.create(fieldDescriptor),
-                                      ImmutableList.of(false));
+            new BooleanFieldValidator(FieldValue.of(false, fieldContext));
 
     @Test
     @DisplayName("convert string to number")

@@ -30,11 +30,11 @@ class LongFieldValidator extends NumberFieldValidator<Long> {
     /**
      * Creates a new validator instance.
      *
-     * @param fieldContext the context of the field to validate
-     * @param fieldValues  values to validate
+     * @param fieldValue
+     *         the value to validate
      */
-    LongFieldValidator(FieldContext fieldContext, Object fieldValues) {
-        super(fieldContext, FieldValidator.<Long>toValueList(fieldValues));
+    LongFieldValidator(FieldValue fieldValue) {
+        super(fieldValue);
     }
 
     @Override

@@ -36,6 +36,7 @@ import static io.spine.base.Time.getCurrentTime;
 import static io.spine.option.Time.FUTURE;
 import static io.spine.option.Time.TIME_UNDEFINED;
 import static io.spine.protobuf.AnyPacker.pack;
+import static io.spine.protobuf.Timestamps2.isLaterThan;
 import static io.spine.validate.Validate.isDefault;
 
 /**
@@ -48,19 +49,14 @@ class MessageFieldValidator extends FieldValidator<Message> {
     /**
      * Creates a new validator instance.
      *
-     * @param fieldContext
-     *         the context of the field to validate
-     * @param fieldValues
-     *         values to validate
+     * @param fieldValue
+     *         the value to validate
      * @param strict
      *         if {@code true} the validator would assume that the field
-     *         is required even if the corresponding field option is not present
      */
-    MessageFieldValidator(FieldContext fieldContext,
-                          Object fieldValues,
-                          boolean strict) {
-        super(fieldContext, toValueList(fieldValues), strict);
-        this.timeConstraint = optionValue(OptionsProto.when);
+    MessageFieldValidator(FieldValue fieldValue, boolean strict) {
+        super(fieldValue, strict);
+        this.timeConstraint = fieldValue.valueOf(OptionsProto.when);
     }
 
     @Override
@@ -108,8 +104,8 @@ class MessageFieldValidator extends FieldValidator<Message> {
     }
 
     private void validateSingle(Message message) {
-        MessageValidator validator = MessageValidator.newInstance(getFieldContext());
-        List<ConstraintViolation> violations = validator.validate(message);
+        MessageValidator validator = MessageValidator.newInstance(message, getFieldContext());
+        List<ConstraintViolation> violations = validator.validate();
         if (!violations.isEmpty()) {
             addViolation(newValidViolation(message, violations));
         }
@@ -148,14 +144,6 @@ class MessageFieldValidator extends FieldValidator<Message> {
                           : isLaterThan(now, /*than*/ timeToCheck);
         boolean isInvalid = !isValid;
         return isInvalid;
-    }
-
-    private static boolean isLaterThan(Timestamp t1, Timestamp t2) {
-        int result = Long.compare(t1.getSeconds(), t2.getSeconds());
-        result = (result == 0)
-                 ? Integer.compare(t1.getNanos(), t2.getNanos())
-                 : result;
-        return result > 0;
     }
 
     private ConstraintViolation newTimeViolation(Timestamp fieldValue) {
