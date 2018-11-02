@@ -21,7 +21,6 @@
 package io.spine.tools.compiler.validation;
 
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
-import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
@@ -38,14 +37,10 @@ import java.util.Collection;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static io.spine.tools.compiler.annotation.Annotations.canIgnoreReturnValue;
-import static io.spine.tools.compiler.validation.ClassNames.getClassName;
 import static io.spine.tools.compiler.validation.ClassNames.getParameterClassName;
 import static io.spine.tools.compiler.validation.ClassNames.getStringClassName;
 import static io.spine.tools.compiler.validation.MethodConstructors.clearPrefix;
 import static io.spine.tools.compiler.validation.MethodConstructors.clearProperty;
-import static io.spine.tools.compiler.validation.MethodConstructors.createDescriptorStatement;
-import static io.spine.tools.compiler.validation.MethodConstructors.createValidateStatement;
 import static io.spine.tools.compiler.validation.MethodConstructors.getMessageBuilder;
 import static io.spine.tools.compiler.validation.MethodConstructors.rawSuffix;
 import static io.spine.tools.compiler.validation.MethodConstructors.returnThis;
@@ -59,17 +54,14 @@ import static java.lang.String.format;
  *
  * @author Illia Shepilov
  */
-class SingularFieldMethodConstructor implements MethodConstructor, Logging {
+class SingularFieldMethodConstructor extends AbstractMethodConstructor implements Logging {
 
     private static final String GETTER_PREFIX = "get";
 
-    private final int fieldIndex;
     private final String fieldName;
     private final String methodNamePart;
     private final FieldType fieldType;
     private final ClassName fieldClassName;
-    private final ClassName builderClassName;
-    private final ClassName builderGenericClassName;
     private final FieldDescriptorProto field;
 
     /**
@@ -80,14 +72,11 @@ class SingularFieldMethodConstructor implements MethodConstructor, Logging {
      */
     @SuppressWarnings("ConstantConditions") // See Javadoc above.
     private SingularFieldMethodConstructor(SingularFieldConstructorBuilder builder) {
-        super();
+        super(builder);
         this.fieldType = builder.getFieldType();
         this.field = builder.getField();
-        this.fieldIndex = builder.getFieldIndex();
-        this.builderGenericClassName = builder.getGenericClassName();
         MessageTypeCache messageTypeCache = builder.getTypeCache();
         this.fieldClassName = getParameterClassName(field, messageTypeCache);
-        this.builderClassName = getClassName(builder.getJavaPackage(), builder.getJavaClass());
         FieldName fieldName = FieldName.of(field);
         this.fieldName = fieldName.javaCase();
         this.methodNamePart = fieldName.toCamelCase();
@@ -119,21 +108,15 @@ class SingularFieldMethodConstructor implements MethodConstructor, Logging {
     private MethodSpec constructSetter() {
         log().debug("The setters construction for the singular field is started.");
         String methodName = fieldType.getSetterPrefix() + methodNamePart;
-        String descriptorCodeLine = createDescriptorStatement(fieldIndex,
-                                                              builderGenericClassName);
         ParameterSpec parameter = createParameterSpec(field, false);
 
         String setStatement = format("%s.%s(%s)", getMessageBuilder(), methodName, fieldName);
         MethodSpec methodSpec =
-                MethodSpec.methodBuilder(methodName)
-                          .addAnnotation(canIgnoreReturnValue())
-                          .addModifiers(Modifier.PUBLIC)
-                          .returns(builderClassName)
+                newBuilderSetter(methodName)
                           .addParameter(parameter)
                           .addException(ValidationException.class)
-                          .addStatement(descriptorCodeLine, FieldDescriptor.class)
-                          .addStatement(createValidateStatement(fieldName),
-                                        field.getName())
+                          .addStatement(descriptorDeclaration())
+                          .addStatement(validateStatement(fieldName, field.getName()))
                           .addStatement(setStatement)
                           .addStatement(returnThis())
                           .build();
@@ -159,11 +142,9 @@ class SingularFieldMethodConstructor implements MethodConstructor, Logging {
         log().debug("The 'clear..()' method construction for the singular field is started.");
         String methodBody = getMessageBuilder() + clearProperty(methodNamePart);
 
+        String methodName = clearPrefix() + methodNamePart;
         MethodSpec methodSpec =
-                MethodSpec.methodBuilder(clearPrefix() + methodNamePart)
-                          .addAnnotation(canIgnoreReturnValue())
-                          .addModifiers(Modifier.PUBLIC)
-                          .returns(builderClassName)
+                newBuilderSetter(methodName)
                           .addStatement(methodBody)
                           .addStatement(returnThis())
                           .build();
@@ -178,30 +159,23 @@ class SingularFieldMethodConstructor implements MethodConstructor, Logging {
         log().debug("The raw setters construction is started.");
         String messageBuilderSetter = fieldType.getSetterPrefix() + methodNamePart;
         String methodName = messageBuilderSetter + rawSuffix();
-        String descriptorCodeLine = createDescriptorStatement(fieldIndex,
-                                                              builderGenericClassName);
         ParameterSpec parameter = createParameterSpec(field, true);
 
-        String convertedVariableName = "convertedValue";
-        String convertedValue = format("final $T %s = convert(%s, $T.class)",
-                                       convertedVariableName, fieldName);
+        ConvertStatement convertStatement = ConvertStatement.of(fieldName, fieldClassName);
+        String convertedVariableName = convertStatement.convertedVariableName();
         String setStatement = format("%s.%s(%s)",
                                      getMessageBuilder(),
                                      messageBuilderSetter,
                                      convertedVariableName);
         MethodSpec methodSpec =
-                MethodSpec.methodBuilder(methodName)
-                          .addAnnotation(canIgnoreReturnValue())
-                          .addModifiers(Modifier.PUBLIC)
-                          .returns(builderClassName)
+                newBuilderSetter(methodName)
                           .addParameter(parameter)
                           .addException(ValidationException.class)
                           .addException(ConversionException.class)
-                          .addStatement(descriptorCodeLine, FieldDescriptor.class)
-                          .addStatement(convertedValue,
-                                        fieldClassName, fieldClassName)
-                          .addStatement(createValidateStatement(convertedVariableName),
-                                        field.getName())
+                          .addStatement(descriptorDeclaration())
+                          .addStatement(convertStatement.value())
+                          .addStatement(validateStatement(convertedVariableName,
+                                                          field.getName()))
                           .addStatement(setStatement)
                           .addStatement(returnThis())
                           .build();
