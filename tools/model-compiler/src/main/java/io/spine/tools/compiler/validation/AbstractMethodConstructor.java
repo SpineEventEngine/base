@@ -57,8 +57,8 @@ abstract class AbstractMethodConstructor implements MethodConstructor {
      * Obtains the the statement, which declares the descriptor
      * for the {@linkplain #fieldIndex field}.
      *
-     * @return the statement like
-     *         {@code FieldDescriptor fieldDescriptor = Msg.getDescriptor().getFields().get(0)}
+     * @return the statement like {@code
+     *         FieldDescriptor fieldDescriptor = Msg.getDescriptor().getFields().get(fieldIndex)}
      */
     final String descriptorDeclaration() {
         CodeBlock codeBlock =
