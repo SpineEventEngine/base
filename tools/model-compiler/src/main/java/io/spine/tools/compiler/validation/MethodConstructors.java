@@ -20,77 +20,17 @@
 
 package io.spine.tools.compiler.validation;
 
-import com.google.template.soy.SoyFileSet;
-import com.google.template.soy.data.SoyMapData;
-import com.google.template.soy.tofu.SoyTofu;
-import com.squareup.javapoet.ClassName;
-import io.spine.code.proto.FieldName;
-
-import java.net.URL;
-
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
-import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.lang.String.format;
 
 /**
  * Utility class for working with {@code MethodConstructor}s.
- *
- * @author Illia Shepilov
  */
 final class MethodConstructors {
 
-    private static final String TEMPLATE_PATH = "templates/method_constructors.soy";
-
-    private static final SoyTofu soyTofu = getSoyTofu();
-
     /** Prevents instantiation of this utility class. */
     private MethodConstructors() {
-    }
-
-    /**
-     * Creates the descriptor statement.
-     *
-     * @param index            the index of the field to validate
-     * @param messageClassName the message class which contains field to validate
-     * @return the constructed statement
-     */
-    static String createDescriptorStatement(int index, ClassName messageClassName) {
-        checkNotNull(messageClassName);
-        SoyMapData mapData = new SoyMapData("fieldIndex", index,
-                                            "messageClassName", messageClassName.toString());
-        String result = renderData(mapData, "io.spine.generation.descriptorStatement");
-        return result;
-    }
-
-    /**
-     * Creates the validate statement.
-     *
-     * @param fieldValue the value to validate
-     * @return the constructed statement
-     */
-    static String createValidateStatement(String fieldValue) {
-        checkNotNull(fieldValue);
-        SoyMapData mapData = new SoyMapData("fieldValue", fieldValue);
-        String result = renderData(mapData, "io.spine.generation.validateStatement");
-        return result;
-    }
-
-    /**
-     * Creates the statement which returns the converted value.
-     *
-     * @param value the value to convert
-     * @return the constructed statement
-     */
-    static String createConvertSingularValue(String value) {
-        checkNotNull(value);
-        // We pass capitalized name because this value is used with prefixes.
-        String fieldName = FieldName.of(value)
-                                    .toCamelCase();
-        SoyMapData mapData = new SoyMapData("javaFieldName", fieldName,
-                                            "valueToValidate", value);
-        String result = renderData(mapData, "io.spine.generation.convertedValueStatement");
-        return result;
     }
 
     /**
@@ -132,7 +72,8 @@ final class MethodConstructors {
     /**
      * Creates the {@code ... .clearProperty()} statement for the given property name.
      *
-     * @param propertyName the name of the property to clear
+     * @param propertyName
+     *         the name of the property to clear
      * @return the {@code String} representing the clear call
      */
     static String clearProperty(String propertyName) {
@@ -149,26 +90,5 @@ final class MethodConstructors {
      */
     static String getMessageBuilder() {
         return "getMessageBuilder()";
-    }
-
-    private static String renderData(SoyMapData mapData, String templateName) {
-        String result = soyTofu.newRenderer(templateName)
-                               .setData(mapData)
-                               .render();
-        return result;
-    }
-
-    private static SoyTofu getSoyTofu() {
-        URL resource = MethodConstructors.class.getClassLoader()
-                                               .getResource(TEMPLATE_PATH);
-        if (resource == null) {
-            String exMessage = format("The template file %s is not found.", TEMPLATE_PATH);
-            throw newIllegalStateException(exMessage);
-        }
-
-        SoyFileSet sfs = SoyFileSet.builder()
-                                   .add(resource)
-                                   .build();
-        return sfs.compileToTofu();
     }
 }

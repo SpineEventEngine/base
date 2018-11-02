@@ -41,6 +41,12 @@ public final class FieldDeclaration {
 
     private final FieldDescriptor field;
 
+    /**
+     * Creates a new instance.
+     *
+     * @param field
+     *         the descriptor of a field
+     */
     public FieldDeclaration(FieldDescriptor field) {
         this.field = checkNotNull(field);
     }
@@ -50,8 +56,8 @@ public final class FieldDeclaration {
      *
      * <p>An entity ID satisfies the following conditions:
      * <ul>
-     *     <li>Declared as the first field.</li>
-     *     <li>Named {@code id} or the name ends with {@code _id}.</li>
+     *     <li>Declared as the first field.
+     *     <li>Named {@code id} or the name ends with {@code _id}.
      *     <li>Declared inside an {@linkplain EntityOption#getKind() entity state message}.
      * </ul>
      *
@@ -74,27 +80,39 @@ public final class FieldDeclaration {
     }
 
     /**
-     * Determines whether the declaration is a scalar type.
+     * Determines whether the declaration is a singular value.
      *
      * @return {@code true} if the declaration neither map nor repeated, {@code false} otherwise
      */
-    public boolean isScalar() {
-        return !isMap() && !isRepeated();
+    public boolean isNotCollection() {
+        return !isCollection();
     }
 
     /**
-     * Determines whether the declaration is not a scalar type.
+     * Determines whether the declaration is a collection of items.
      *
      * @return {@code true} if the declaration either map or repeated, {@code false} otherwise
      */
-    public boolean isNotScalar() {
+    public boolean isCollection() {
         return isMap() || isRepeated();
     }
 
+    /**
+     * Determines whether the field marked as {@code repeated}.
+     *
+     * <p>A map field is not considered repeated.
+     *
+     * @return {@code true} if the field is repeated, {@code false} otherwise
+     */
     public boolean isRepeated() {
         return FieldTypes.isRepeated(field);
     }
 
+    /**
+     * Determines whether the field is a {@code map}.
+     *
+     * @return {@code true} if the field is a {@code map}, {@code false} otherwise
+     */
     public boolean isMap() {
         return FieldTypes.isMap(field);
     }
@@ -123,6 +141,15 @@ public final class FieldDeclaration {
         return "id".equals(name) || name.endsWith("_id");
     }
 
+    /**
+     * Determines whether the field is the first within a declaration.
+     *
+     * <p>The first field is declared at the top of the containing message,
+     * the last — at the bottom.
+     *
+     * @return {@code true} if the field is the first in the containing declaration,
+     *         {@code false} otherwise
+     */
     private boolean isFirstField() {
         return field.getIndex() == 0;
     }

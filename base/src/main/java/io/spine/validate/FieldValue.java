@@ -48,7 +48,7 @@ import static io.spine.validate.rule.ValidationRuleOptions.getOptionValue;
  * @see <a href="https://developers.google.com/protocol-buffers/docs/proto3#maps">
  *         Protobuf Maps</a>
  */
-class FieldValue {
+final class FieldValue {
 
     private final Object value;
     private final FieldContext context;

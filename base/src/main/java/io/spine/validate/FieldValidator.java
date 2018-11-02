@@ -93,7 +93,7 @@ abstract class FieldValidator<V> implements Logging {
     boolean fieldValueNotSet() {
         boolean valueNotSet =
                 values.isEmpty()
-                        || (declaration.isScalar() && isNotSet(values.get(0)));
+                        || (declaration.isNotCollection() && isNotSet(values.get(0)));
         return valueNotSet;
     }
 
@@ -252,7 +252,7 @@ abstract class FieldValidator<V> implements Logging {
     }
 
     private boolean shouldValidate() {
-        return declaration.isScalar() || validate;
+        return declaration.isNotCollection() || validate;
     }
 
     final IfInvalidOption ifInvalid() {

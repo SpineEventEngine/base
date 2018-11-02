@@ -26,6 +26,7 @@ import org.junit.jupiter.api.DisplayName;
 class FloatFieldValidatorTest extends NumberFieldValidatorTest<Float, FloatFieldValidator> {
 
     private static final float HALF = 0.5F;
+
     FloatFieldValidatorTest() {
         super(HALF, -HALF, new FloatFieldValidator(FieldValue.of(HALF, fieldContext)));
     }

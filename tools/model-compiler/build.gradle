@@ -35,10 +35,6 @@ dependencies {
     implementation project(':plugin-base')
     implementation project(':base')
 
-    implementation (group: 'com.google.template', name: 'soy', version: '2017-02-01') {
-        exclude group: 'com.google.guava'
-    }
-
     implementation deps.gen.javaPoet
 
     // A library for parsing Java sources.

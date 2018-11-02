@@ -36,7 +36,7 @@ import static com.google.common.collect.ImmutableList.toImmutableList;
 /**
  * A value of a {@link Message} to validate.
  */
-class MessageValue {
+final class MessageValue {
 
     private final Message message;
     private final Descriptor descriptor;
