@@ -24,19 +24,17 @@ import static java.lang.Math.abs;
 
 /**
  * Validates fields of {@link Float} types.
- *
- * @author Alexander Litus
  */
 class FloatFieldValidator extends FloatFieldValidatorBase<Float> {
 
     /**
      * Creates a new validator instance.
      *
-     * @param fieldContext the context of the field to validate
-     * @param fieldValues  values to validate
+     * @param fieldValue
+     *         the value to validate
      */
-    FloatFieldValidator(FieldContext fieldContext, Object fieldValues) {
-        super(fieldContext, FieldValidator.toValueList(fieldValues));
+    FloatFieldValidator(FieldValue fieldValue) {
+        super(fieldValue);
     }
 
     @Override

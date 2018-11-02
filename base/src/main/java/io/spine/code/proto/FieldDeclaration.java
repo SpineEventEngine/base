@@ -20,39 +20,144 @@
 
 package io.spine.code.proto;
 
-import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
+import com.google.protobuf.Descriptors.FieldDescriptor;
+import com.google.protobuf.Descriptors.FileDescriptor;
+import io.spine.base.CommandMessage;
+import io.spine.option.EntityOption;
+import io.spine.option.OptionsProto;
 
-import java.util.Optional;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A declaration of a message field.
+ * Declaration of a Protobuf field.
+ *
+ * <p>The field can be declared in a message or enum.
+ *
+ * <p>Unlike {@link io.spine.code.proto.FieldDeclarationProto}, the class uses
+ * {@link com.google.protobuf.Descriptors} instead of {@link com.google.protobuf.DescriptorProtos}.
+ * The former descriptors provide a more powerful API.
  */
-public class FieldDeclaration {
+public final class FieldDeclaration {
 
-    private final FieldDescriptorProto descriptor;
-    private final AbstractMessageDeclaration originMessage;
+    private final FieldDescriptor field;
 
-    public FieldDeclaration(FieldDescriptorProto descriptor,
-                            AbstractMessageDeclaration originMessage) {
-        this.descriptor = descriptor;
-        this.originMessage = originMessage;
-    }
-
-    public FieldName name() {
-        return FieldName.of(descriptor);
-    }
-
-    public FieldDescriptorProto descriptor() {
-        return descriptor;
+    /**
+     * Creates a new instance.
+     *
+     * @param field
+     *         the descriptor of a field
+     */
+    public FieldDeclaration(FieldDescriptor field) {
+        this.field = checkNotNull(field);
     }
 
     /**
-     * Obtains comments going before the field.
+     * Determines whether the field is an entity ID.
      *
-     * @return the leading field comments or {@code Optional.empty()} if there are no comments
+     * <p>An entity ID satisfies the following conditions:
+     * <ul>
+     *     <li>Declared as the first field.
+     *     <li>Named {@code id} or the name ends with {@code _id}.
+     *     <li>Declared inside an {@linkplain EntityOption#getKind() entity state message}.
+     * </ul>
+     *
+     * @return {@code true} if the field is an entity ID, {@code false} otherwise
      */
-    public Optional<String> leadingComments() {
-        return originMessage.documentation()
-                            .getFieldLeadingComments(descriptor);
+    public boolean isEntityId() {
+        return isFirstField() && matchesIdName() && isEntityField();
+    }
+
+    /**
+     * Determines whether the field is a command ID.
+     *
+     * <p>A command ID is the first field of a message declared in a
+     * {@link io.spine.base.CommandMessage.File command file}.
+     *
+     * @return {@code true} if the field is a command ID, {@code false} otherwise
+     */
+    public boolean isCommandId() {
+        return isFirstField() && isCommandsFile();
+    }
+
+    /**
+     * Determines whether the declaration is a singular value.
+     *
+     * @return {@code true} if the declaration neither map nor repeated, {@code false} otherwise
+     */
+    public boolean isNotCollection() {
+        return !isCollection();
+    }
+
+    /**
+     * Determines whether the declaration is a collection of items.
+     *
+     * @return {@code true} if the declaration either map or repeated, {@code false} otherwise
+     */
+    public boolean isCollection() {
+        return isMap() || isRepeated();
+    }
+
+    /**
+     * Determines whether the field marked as {@code repeated}.
+     *
+     * <p>A map field is not considered repeated.
+     *
+     * @return {@code true} if the field is repeated, {@code false} otherwise
+     */
+    public boolean isRepeated() {
+        return FieldTypes.isRepeated(field);
+    }
+
+    /**
+     * Determines whether the field is a {@code map}.
+     *
+     * @return {@code true} if the field is a {@code map}, {@code false} otherwise
+     */
+    public boolean isMap() {
+        return FieldTypes.isMap(field);
+    }
+
+    /** The {@link FieldDescriptor.JavaType JavaType} of the declaration. */
+    public FieldDescriptor.JavaType javaType() {
+        return field.getJavaType();
+    }
+
+    /** Obtains the descriptor of the value of a map. */
+    public FieldDeclaration valueDeclaration() {
+        FieldDescriptor valueDescriptor = FieldTypes.valueDescriptor(field);
+        return new FieldDeclaration(valueDescriptor);
+    }
+
+    private boolean isEntityField() {
+        EntityOption entityOption = field.getContainingType()
+                                         .getOptions()
+                                         .getExtension(OptionsProto.entity);
+        EntityOption.Kind entityKind = entityOption.getKind();
+        return entityKind.getNumber() > 0;
+    }
+
+    private boolean matchesIdName() {
+        String name = field.getName();
+        return "id".equals(name) || name.endsWith("_id");
+    }
+
+    /**
+     * Determines whether the field is the first within a declaration.
+     *
+     * <p>The first field is declared at the top of the containing message,
+     * the last — at the bottom.
+     *
+     * @return {@code true} if the field is the first in the containing declaration,
+     *         {@code false} otherwise
+     */
+    private boolean isFirstField() {
+        return field.getIndex() == 0;
+    }
+
+    private boolean isCommandsFile() {
+        FileDescriptor file = field.getFile();
+        boolean commandsFile = CommandMessage.File.predicate()
+                                                  .test(file);
+        return commandsFile;
     }
 }

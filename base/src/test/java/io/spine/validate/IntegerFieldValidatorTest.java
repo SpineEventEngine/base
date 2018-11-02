@@ -20,7 +20,6 @@
 
 package io.spine.validate;
 
-import com.google.common.collect.ImmutableList;
 import org.junit.jupiter.api.DisplayName;
 
 @DisplayName("IntegerFieldValidator should")
@@ -29,6 +28,6 @@ class IntegerFieldValidatorTest extends NumberFieldValidatorTest<Integer, Intege
     private static final int DOS = 2;
 
     IntegerFieldValidatorTest() {
-        super(DOS, -DOS, new IntegerFieldValidator(fieldContext, ImmutableList.of(DOS)));
+        super(DOS, -DOS, new IntegerFieldValidator(FieldValue.of(DOS, fieldContext)));
     }
 }

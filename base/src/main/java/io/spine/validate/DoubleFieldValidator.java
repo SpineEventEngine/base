@@ -30,11 +30,11 @@ final class DoubleFieldValidator extends FloatFieldValidatorBase<Double> {
     /**
      * Creates a new validator instance.
      *
-     * @param fieldContext the context of the field to validate
-     * @param fieldValues  values to validate
+     * @param fieldValue
+     *         the value to validate
      */
-    DoubleFieldValidator(FieldContext fieldContext, Object fieldValues) {
-        super(fieldContext, FieldValidator.toValueList(fieldValues));
+    DoubleFieldValidator(FieldValue fieldValue) {
+        super(fieldValue);
     }
 
     @Override

@@ -194,7 +194,7 @@ class FieldValidatorFactoryTest {
                                                          .get(0);
         FieldValidator<?> validator = create(field, emptyMap());
 
-        assertThat(validator, instanceOf(EmptyMapFieldValidator.class));
+        assertThat(validator, instanceOf(StringFieldValidator.class));
     }
 
     @Test
@@ -283,6 +283,7 @@ class FieldValidatorFactoryTest {
 
     private static FieldValidator<?> create(FieldDescriptor fieldDescriptor, Object value) {
         FieldContext context = FieldContext.create(fieldDescriptor);
-        return FieldValidatorFactory.create(context, value);
+        FieldValue wrappedValue = FieldValue.of(value, context);
+        return FieldValidatorFactory.create(wrappedValue);
     }
 }

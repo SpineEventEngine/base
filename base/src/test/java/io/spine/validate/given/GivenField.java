@@ -18,40 +18,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.validate;
+package io.spine.validate.given;
 
-import com.google.common.collect.ImmutableList;
+import com.google.protobuf.Descriptors.FieldDescriptor;
+import io.spine.test.validate.field.Message;
+import io.spine.validate.FieldContext;
 
-import java.util.Map;
+public class GivenField {
 
-/**
- * Performs the validation for a {@code map} field which has no values set.
- */
-final class EmptyMapFieldValidator extends FieldValidator<Map<?, ?>> {
-
-    /**
-     * Creates a new validator instance.
-     *
-     * @param fieldContext the context of the field to validate
-     * @param strict       if {@code true} the validator would assume that the field
-     *                     is required even if the corresponding option is not set
-     */
-    EmptyMapFieldValidator(FieldContext fieldContext, boolean strict) {
-        super(fieldContext, ImmutableList.<Map<?, ?>>of(), strict);
+    /** Prevents instantiation of this utility class. */
+    private GivenField() {
     }
 
-    @Override
-    protected boolean isNotSet(Map<?, ?> value) {
-        return value.isEmpty();
+    public static FieldContext mapContext() {
+        FieldDescriptor mapField = Message.getDescriptor()
+                                          .findFieldByName("map");
+        return FieldContext.create(mapField);
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * <p>Performs no action, as there are no specific rules for an empty map validation.
-     */
-    @Override
-    protected void validateOwnRules() {
-        // NoOp
+    public static FieldContext repeatedContext() {
+        FieldDescriptor repeatedField = Message.getDescriptor()
+                                               .findFieldByName("repeated");
+        return FieldContext.create(repeatedField);
+    }
+
+    public static FieldContext scalarContext() {
+        FieldDescriptor scalarField = Message.getDescriptor()
+                                             .findFieldByName("scalar");
+        return FieldContext.create(scalarField);
     }
 }

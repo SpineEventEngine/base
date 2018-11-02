@@ -18,16 +18,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.validate;
+/**
+ * The test environment classes for field validation.
+ */
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.validate.given;
 
-import org.junit.jupiter.api.DisplayName;
+import com.google.errorprone.annotations.CheckReturnValue;
 
-@DisplayName("FloatFieldValidator should")
-class FloatFieldValidatorTest extends NumberFieldValidatorTest<Float, FloatFieldValidator> {
-
-    private static final float HALF = 0.5F;
-
-    FloatFieldValidatorTest() {
-        super(HALF, -HALF, new FloatFieldValidator(FieldValue.of(HALF, fieldContext)));
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;

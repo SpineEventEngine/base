@@ -20,6 +20,7 @@
 
 package io.spine.validate;
 
+import io.spine.code.proto.FieldDeclaration;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -160,14 +161,19 @@ public abstract class FieldValidatorTest<V> {
     @DisplayName("flag repeated fields")
     void flag_repeated_fields() {
         FieldValidator<?> validator = uncheckedRepeatedFieldValidator(of());
-        assertTrue(validator.isRepeatedOrMap());
+        assertNotScalar(validator);
     }
 
     @Test
     @DisplayName("flag map fields")
     void flag_map_fields() {
         FieldValidator<?> validator = emptyMapFieldValidator();
-        assertTrue(validator.isRepeatedOrMap());
+        assertNotScalar(validator);
+    }
+
+    private static void assertNotScalar(FieldValidator<?> validator) {
+        FieldDeclaration declaration = validator.field();
+        assertTrue(declaration.isCollection());
     }
 
     private static <T> void assertEmpty(Collection<T> emptyIterable) {

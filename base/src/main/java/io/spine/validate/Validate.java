@@ -279,8 +279,8 @@ public final class Validate {
     public static void checkValid(Message message) throws ValidationException {
         checkNotNull(message);
 
-        List<ConstraintViolation> violations = MessageValidator.newInstance()
-                                                               .validate(message);
+        List<ConstraintViolation> violations = MessageValidator.newInstance(message)
+                                                               .validate();
         if (!violations.isEmpty()) {
             throw new ValidationException(violations);
         }
