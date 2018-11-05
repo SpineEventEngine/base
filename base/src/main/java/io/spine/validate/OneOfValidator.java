@@ -65,12 +65,12 @@ class OneOfValidator {
                                      .toBuilder()
                                      .addFieldName(oneOf.getName())
                                      .build();
-        ConstraintViolation requiredFieldNotFound =
-                ConstraintViolation.newBuilder()
-                                   .setMsgFormat("None of the %s OneOf fields is set.")
-                                   .addParam(oneOf.getName())
-                                   .setFieldPath(oneOfPath)
-                                   .build();
+        ConstraintViolation requiredFieldNotFound = ConstraintViolation
+                .newBuilder()
+                .setMsgFormat("None of the %s OneOf fields is set.")
+                .addParam(oneOf.getName())
+                .setFieldPath(oneOfPath)
+                .build();
         return requiredFieldNotFound;
     }
 

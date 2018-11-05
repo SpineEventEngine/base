@@ -999,35 +999,39 @@ class MessageValidatorTest {
         @Test
         @DisplayName("valid if a required field is set to a non-default value")
         void validIfRequireFieldIsNotDefault() {
-            EveryRequired requiredIsNotDefault = EveryRequired.newBuilder()
-                                                              .setFirst(newUuid())
-                                                              .build();
+            EveryRequired requiredIsNotDefault = EveryRequired
+                    .newBuilder()
+                    .setFirst(newUuid())
+                    .build();
             assertValid(requiredIsNotDefault);
         }
 
         @Test
         @DisplayName("invalid if a required field is set to the default value")
         void invalidIfRequireFieldIsDefault() {
-            EveryRequired requiredIsDefault = EveryRequired.newBuilder()
-                                                           .setFirst("")
-                                                           .build();
+            EveryRequired requiredIsDefault = EveryRequired
+                    .newBuilder()
+                    .setFirst("")
+                    .build();
             assertNotValid(requiredIsDefault);
         }
 
         @Test
         @DisplayName("valid if a non-required field is set to the default value")
         void validIfNonRequiredIsDefault() {
-            OneRequired nonRequiredIsDefault = OneRequired.newBuilder()
-                                                          .setNonRequired("")
-                                                          .build();
+            OneRequired nonRequiredIsDefault = OneRequired
+                    .newBuilder()
+                    .setNonRequired("")
+                    .build();
             assertValid(nonRequiredIsDefault);
         }
 
         @Test
         @DisplayName("invalid if all fields are not required, but none is set")
         void invalidIfNoneIsSet() {
-            EveryNotRequired noneIsSet = EveryNotRequired.newBuilder()
-                                                         .build();
+            EveryNotRequired noneIsSet = EveryNotRequired
+                    .newBuilder()
+                    .build();
             assertNotValid(noneIsSet);
         }
     }
