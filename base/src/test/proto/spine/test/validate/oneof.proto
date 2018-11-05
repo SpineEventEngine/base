@@ -41,11 +41,11 @@ message EveryRequired {
 message OneRequired {
     oneof fields {
         string required_val = 1 [(required) = true];
-        string non_required = 2 [(required) = false];
+        string optional = 2 [(required) = false];
     }
 }
 
-message EveryNotRequired {
+message EveryOptional {
     oneof fields {
         string first = 1 [(required) = false];
         string second = 2 [(required) = false];

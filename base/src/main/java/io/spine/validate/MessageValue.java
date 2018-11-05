@@ -75,7 +75,7 @@ final class MessageValue {
     /**
      * Obtains field values of the message.
      *
-     * <p>Values of {@code Oneof} fields are filtered and not returned.
+     * <p>Values of {@code Oneof} fields are filtered out and not returned.
      *
      * @return values of message fields excluding {@code Oneof} fields
      */
