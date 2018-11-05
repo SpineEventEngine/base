@@ -70,7 +70,7 @@ public class MessageValidator {
     public List<ConstraintViolation> validate() {
         ImmutableList.Builder<ConstraintViolation> result = ImmutableList.builder();
         validateAlternativeFields(result);
-        validateOneOfFields(result);
+        validateOneofFields(result);
         validateFields(result);
         return result.build();
     }
@@ -81,16 +81,16 @@ public class MessageValidator {
     }
 
     /**
-     * Validates fields except fields from {@code OneOf} declarations.
+     * Validates fields except fields from {@code Oneof} declarations.
      *
-     * <p>{@code OneOf} fields are validated {@linkplain #validateOneOfFields(ImmutableList.Builder)
+     * <p>{@code Oneof} fields are validated {@linkplain #validateOneofFields(ImmutableList.Builder)
      * separately}.
      *
      * @param result
      *         the builder of the message violations
      */
     private void validateFields(ImmutableList.Builder<ConstraintViolation> result) {
-        for (FieldValue value : message.fieldsExceptOneOfs()) {
+        for (FieldValue value : message.fieldsExceptOneofs()) {
             FieldValidator<?> fieldValidator = create(value);
             List<ConstraintViolation> violations = fieldValidator.validate();
             result.addAll(violations);
@@ -98,17 +98,17 @@ public class MessageValidator {
     }
 
     /**
-     * Validates every {@code OneOf} declaration in the message.
+     * Validates every {@code Oneof} declaration in the message.
      *
      * @param result
      *         the builder of the message violations
      */
-    private void validateOneOfFields(ImmutableList.Builder<ConstraintViolation> result) {
-        List<OneofDescriptor> oneOfDeclarations = message.oneOfs();
-        for (OneofDescriptor oneOf : oneOfDeclarations) {
-            OneOfValidator validator = new OneOfValidator(oneOf, message);
-            ImmutableList<ConstraintViolation> oneOfViolations = validator.validate();
-            result.addAll(oneOfViolations);
+    private void validateOneofFields(ImmutableList.Builder<ConstraintViolation> result) {
+        List<OneofDescriptor> oneofDescriptors = message.oneofDescriptors();
+        for (OneofDescriptor oneof : oneofDescriptors) {
+            OneofValidator validator = new OneofValidator(oneof, message);
+            ImmutableList<ConstraintViolation> oneofViolations = validator.validate();
+            result.addAll(oneofViolations);
         }
     }
 }

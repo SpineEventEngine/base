@@ -993,8 +993,8 @@ class MessageValidatorTest {
     }
 
     @Nested
-    @DisplayName("consider OneOf")
-    class OneOf {
+    @DisplayName("consider Oneof")
+    class Oneof {
 
         @Test
         @DisplayName("valid if a required field is set to a non-default value")

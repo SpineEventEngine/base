@@ -30,26 +30,26 @@ import java.util.Optional;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Validates a {@linkplain OneofDescriptor OneOf}.
+ * Validates a {@linkplain OneofDescriptor Oneof}.
  *
- * <p>Only a single field from a {@code OneOf} is validated — the field that is actually set.
+ * <p>Only a single field from a {@code Oneof} is validated — the field that is actually set.
  * If none of fields is set, a constraint violation is created.
  *
- * @see <a href="https://developers.google.com/protocol-buffers/docs/proto3#oneof">One Of documentation</a>
+ * @see <a href="https://developers.google.com/protocol-buffers/docs/proto3#oneof">Oneof documentation</a>
  */
-class OneOfValidator {
+class OneofValidator {
 
-    private final OneofDescriptor oneOf;
+    private final OneofDescriptor oneof;
     private final MessageValue message;
 
-    OneOfValidator(OneofDescriptor oneOf, MessageValue message) {
-        this.oneOf = checkNotNull(oneOf);
+    OneofValidator(OneofDescriptor oneof, MessageValue message) {
+        this.oneof = checkNotNull(oneof);
         this.message = checkNotNull(message);
     }
 
     ImmutableList<ConstraintViolation> validate() {
         ImmutableList.Builder<ConstraintViolation> violations = ImmutableList.builder();
-        Optional<FieldValue> populatedField = message.valueOf(oneOf);
+        Optional<FieldValue> populatedField = message.valueOf(oneof);
         if (!populatedField.isPresent()) {
             violations.add(noneFieldIsSet());
         } else {
@@ -60,16 +60,16 @@ class OneOfValidator {
     }
 
     private ConstraintViolation noneFieldIsSet() {
-        FieldPath oneOfPath = message.context()
+        FieldPath oneofPath = message.context()
                                      .getFieldPath()
                                      .toBuilder()
-                                     .addFieldName(oneOf.getName())
+                                     .addFieldName(oneof.getName())
                                      .build();
         ConstraintViolation requiredFieldNotFound = ConstraintViolation
                 .newBuilder()
-                .setMsgFormat("None of the %s OneOf fields is set.")
-                .addParam(oneOf.getName())
-                .setFieldPath(oneOfPath)
+                .setMsgFormat("None of the %s Oneof fields is set.")
+                .addParam(oneof.getName())
+                .setFieldPath(oneofPath)
                 .build();
         return requiredFieldNotFound;
     }

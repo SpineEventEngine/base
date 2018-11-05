@@ -75,14 +75,14 @@ final class MessageValue {
     /**
      * Obtains field values of the message.
      *
-     * <p>Values of {@code OneOf} fields are filtered and not returned.
+     * <p>Values of {@code Oneof} fields are filtered and not returned.
      *
-     * @return values of message fields exluding {@code OneOf} fields
+     * @return values of message fields excluding {@code Oneof} fields
      */
-    ImmutableList<FieldValue> fieldsExceptOneOfs() {
+    ImmutableList<FieldValue> fieldsExceptOneofs() {
         ImmutableList<FieldValue> values = descriptor.getFields()
                                                      .stream()
-                                                     .filter(MessageValue::isNotOneOf)
+                                                     .filter(MessageValue::isNotOneof)
                                                      .map(this::valueOf)
                                                      .collect(toImmutableList());
         return values;
@@ -102,15 +102,15 @@ final class MessageValue {
     }
 
     /**
-     * Obtains the value of a populated {@code OneOf} field.
+     * Obtains the value of a populated {@code Oneof} field.
      *
-     * @param oneOf
-     *         the {@code OneOf} descriptor
+     * @param oneof
+     *         the {@code Oneof} descriptor
      * @return a value of the populated field or {@code Optional.empty()} if the message
-     *         doesn't contain the field of it was not populated
+     *         doesn't contain the field or it was not populated
      */
-    Optional<FieldValue> valueOf(OneofDescriptor oneOf) {
-        FieldDescriptor field = message.getOneofFieldDescriptor(oneOf);
+    Optional<FieldValue> valueOf(OneofDescriptor oneof) {
+        FieldDescriptor field = message.getOneofFieldDescriptor(oneof);
         return valueOfNullable(field);
     }
 
@@ -121,8 +121,8 @@ final class MessageValue {
         return options;
     }
 
-    /** Returns descriptors of {@code OneOfs} in the message. */
-    ImmutableList<OneofDescriptor> oneOfs() {
+    /** Returns descriptors of {@code Oneof} declarations in the message. */
+    ImmutableList<OneofDescriptor> oneofDescriptors() {
         return ImmutableList.copyOf(descriptor.getOneofs());
     }
 
@@ -145,7 +145,7 @@ final class MessageValue {
         return value;
     }
 
-    private static boolean isNotOneOf(FieldDescriptor field) {
+    private static boolean isNotOneof(FieldDescriptor field) {
         return field.getContainingOneof() == null;
     }
 }
