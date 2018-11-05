@@ -30,6 +30,7 @@ import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 
@@ -106,10 +107,13 @@ final class MessageValue {
      *
      * @param oneof
      *         the {@code Oneof} descriptor
-     * @return a value of the populated field or {@code Optional.empty()} if the message
-     *         doesn't contain the field or it was not populated
+     * @return a value of the populated field
+     *         or {@code Optional.empty()} if the field was not populated
+     * @throws IllegalArgumentException
+     *         if the if the message doesn't declares this oneof
      */
     Optional<FieldValue> valueOf(OneofDescriptor oneof) {
+        checkArgument(oneofDescriptors().contains(oneof));
         FieldDescriptor field = message.getOneofFieldDescriptor(oneof);
         return valueOfNullable(field);
     }
