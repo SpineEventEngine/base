@@ -974,19 +974,20 @@ class MessageValidatorTest {
             @Test
             @DisplayName("ByteString")
             void find_out_that_entity_id_in_command_cannot_be_ByteString() {
-                EntityIdByteStringFieldValue msg =
-                        EntityIdByteStringFieldValue.newBuilder()
-                                                    .setValue(newByteString())
-                                                    .build();
+                EntityIdByteStringFieldValue msg = EntityIdByteStringFieldValue
+                        .newBuilder()
+                        .setValue(newByteString())
+                        .build();
                 assertNotValid(msg);
             }
 
             @Test
             @DisplayName("Float")
             void find_out_that_entity_id_in_command_cannot_be_float_number() {
-                EntityIdDoubleFieldValue msg = EntityIdDoubleFieldValue.newBuilder()
-                                                                       .setValue(1.1)
-                                                                       .build();
+                EntityIdDoubleFieldValue msg = EntityIdDoubleFieldValue
+                        .newBuilder()
+                        .setValue(1.1)
+                        .build();
                 assertNotValid(msg);
             }
         }
