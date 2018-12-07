@@ -31,10 +31,8 @@ import org.slf4j.Logger;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
-import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Sets.newHashSet;
 import static io.spine.code.proto.FileDescriptors.parseSkipStandard;
 import static java.util.stream.Collectors.toList;
@@ -51,9 +49,6 @@ class VBTypeLookup implements Logging {
 
     /** A map from Protobuf type name to Java class FQN. */
     private final TypeCache typeCache = new TypeCache();
-
-    /** A map from Protobuf type name to Protobuf FileDescriptorProto. */
-    private final Map<DescriptorProto, FileDescriptorProto> descriptorCache = newHashMap();
 
     VBTypeLookup(String descriptorSetFile) {
         this.descriptorSetFile = descriptorSetFile;
@@ -118,7 +113,7 @@ class VBTypeLookup implements Logging {
         ImmutableSet.Builder<FileDescriptorProto> result = ImmutableSet.builder();
         Collection<FileDescriptorProto> descriptors = fileDescriptors(descFilePath);
         for (FileDescriptorProto file : descriptors) {
-            typeCache.cacheTypes(file);
+            typeCache.loadFrom(file);
             log.debug("Found Protobuf file: {}", file.getName());
             result.add(file);
         }
@@ -138,9 +133,10 @@ class VBTypeLookup implements Logging {
      * @return descriptors excluding Protobuf and rejections descriptors
      */
     private static Collection<FileDescriptorProto> fileDescriptors(String descFilePath) {
-        return parseSkipStandard(descFilePath).stream()
-                                              .filter(descriptor -> !FileName.from(descriptor)
-                                                                             .isRejections())
-                                              .collect(toList());
+        List<FileDescriptorProto> files = parseSkipStandard(descFilePath);
+        return files.stream()
+                    .filter(descriptor -> !FileName.from(descriptor)
+                                                    .isRejections())
+                    .collect(toList());
     }
 }

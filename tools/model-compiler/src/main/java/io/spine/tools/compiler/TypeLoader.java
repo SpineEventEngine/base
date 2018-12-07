@@ -20,109 +20,172 @@
 
 package io.spine.tools.compiler;
 
-import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.EnumDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
+import com.google.protobuf.DescriptorProtos.FileOptions;
 import io.spine.code.java.SimpleClassName;
 import io.spine.logging.Logging;
 
+import java.util.List;
+
 /**
- * Loads types from the passed file descriptor.
+ * Loads type names into {@code TypeCache}.
  */
-class TypeLoader implements Logging {
+abstract class TypeLoader implements Logging {
 
+    /** The cache that we populate. */
     private final TypeCache cache;
-
-    private final FileDescriptorProto file;
-
+    /** The prefix which would be added to a Proto type name. */
     private final String protoPrefix;
+    /** The prefix which would be added to a Java type name. */
     private final String javaPrefix;
 
-    TypeLoader(TypeCache cache, FileDescriptorProto file) {
+    /**
+     * Loads types declared in the file into cache.
+     */
+    @SuppressWarnings("ClassReferencesSubclass") // we hide impl. details in simple hierarchy.
+    static void load(TypeCache cache, FileDescriptorProto file) {
+        FileLoader loader = new FileLoader(cache, file);
+        loader.load();
+    }
+
+    private TypeLoader(TypeCache cache, String protoPrefix, String javaPrefix) {
         this.cache = cache;
-        this.file = file;
-        this.protoPrefix = getProtoPackage(file);
-        this.javaPrefix = getJavaPackage(file);
+        this.protoPrefix = protoPrefix;
+        this.javaPrefix = javaPrefix;
     }
 
-    private static String getProtoPackage(FileDescriptorProto file) {
-        String sourceProtoPackage = file.getPackage();
-        return !sourceProtoPackage.isEmpty()
-               ? (sourceProtoPackage + '.')
-               : "";
-    }
-
-    private static String getJavaPackage(FileDescriptorProto file) {
-        DescriptorProtos.FileOptions options = file.getOptions();
-        String sourceJavaPackage = options.getJavaPackage();
-        StringBuilder javaPackageBuilder =
-                new StringBuilder(!sourceJavaPackage.isEmpty()
-                                  ? sourceJavaPackage + '.'
-                                  : "");
-
-        if (!options.getJavaMultipleFiles()) {
-            String singleFileSuffix = SimpleClassName.outerOf(file)
-                                                     .value();
-            javaPackageBuilder.append(singleFileSuffix)
-                              .append('.');
-        }
-
-        return javaPackageBuilder.toString();
+    /**
+     * Puts the key/value pair into the cache.
+     */
+    private void put(String key, String value) {
+        cache.put(key, value);
     }
 
     void load() {
-        log().debug("Caching all the types declared in the file: {}", file.getName());
         addMessageTypes();
-        cacheEnumTypes();
+        addEnumTypes();
     }
 
     private void addMessageTypes() {
-        file.getMessageTypeList()
-            .forEach(msgType -> addMessageType(msgType, protoPrefix, javaPrefix));
+        messageTypes().forEach(this::addMessageType);
     }
 
-    private void cacheEnumTypes() {
-        file.getEnumTypeList()
-            .forEach(enumType -> addEnumType(enumType, protoPrefix, javaPrefix));
+    private void addEnumTypes() {
+        enumTypes().forEach(this::addEnumType);
     }
 
-    private void addMessageType(DescriptorProto msg, String protoPrefix, String javaPrefix) {
+    abstract List<DescriptorProto> messageTypes();
+
+    abstract List<EnumDescriptorProto> enumTypes();
+
+    private void addMessageType(DescriptorProto msg) {
         String msgName = msg.getName();
         String key = protoPrefix + msgName;
         String value = javaPrefix + msgName;
         log().debug("Caching message type {}", msgName);
-        cache.put(key, value);
+        put(key, value);
         if (containsNestedTypes(msg)) {
-            addNestedTypes(msg, protoPrefix, javaPrefix);
+            addNestedTypes(msg);
         }
     }
 
-    //It's fine, as we are caching multiple nested types per message descriptor.
-    @SuppressWarnings("MethodWithMultipleLoops")
-    private void addNestedTypes(DescriptorProto msg, String protoPrefix, String javaPrefix) {
-        String msgName = msg.getName();
-        String nestedProtoPrefix = protoPrefix + msgName + '.';
-        String nestedJavaPrefix = javaPrefix + msgName + '.';
-        for (DescriptorProto nestedMsg : msg.getNestedTypeList()) {
-            addMessageType(nestedMsg, nestedProtoPrefix, nestedJavaPrefix);
-        }
-        for (EnumDescriptorProto enumType : msg.getEnumTypeList()) {
-            addEnumType(enumType, nestedProtoPrefix, nestedJavaPrefix);
-        }
-    }
-
-    private static boolean containsNestedTypes(DescriptorProto msg) {
-        return msg.getNestedTypeCount() > 0 || msg.getEnumTypeCount() > 0;
-    }
-
-    private void addEnumType(EnumDescriptorProto enumType,
-                             String protoPrefix,
-                             String javaPrefix) {
+    private void addEnumType(EnumDescriptorProto enumType) {
         String name = enumType.getName();
         log().debug("Caching enum type {}", name);
         String key = protoPrefix + name;
         String value = javaPrefix + name;
-        cache.put(key, value);
+        put(key, value);
+    }
+
+    static boolean containsNestedTypes(DescriptorProto msg) {
+        return msg.getNestedTypeCount() > 0 || msg.getEnumTypeCount() > 0;
+    }
+
+    @SuppressWarnings("ClassReferencesSubclass")
+    private void addNestedTypes(DescriptorProto msg) {
+        NestedTypeLoader nested = new NestedTypeLoader(this, msg);
+        nested.load();
+    }
+
+    /**
+     * Loads types from the passed file descriptor.
+     */
+    private static final class FileLoader extends TypeLoader {
+
+        private final FileDescriptorProto file;
+
+        private FileLoader(TypeCache cache, FileDescriptorProto file) {
+            super(cache, protoPrefix(file), javaPrefix(file));
+            this.file = file;
+            log().debug("Caching all the types declared in the file: {}", file.getName());
+        }
+
+        private static String protoPrefix(FileDescriptorProto file) {
+            String protoPackage = file.getPackage();
+            return !protoPackage.isEmpty()
+                   ? (protoPackage + '.')
+                   : "";
+        }
+
+        private static String javaPrefix(FileDescriptorProto file) {
+            FileOptions options = file.getOptions();
+            String javaPackage = options.getJavaPackage();
+            StringBuilder builder =
+                    new StringBuilder(!javaPackage.isEmpty()
+                                      ? javaPackage + '.'
+                                      : "");
+
+            if (!options.getJavaMultipleFiles()) {
+                String singleFileSuffix = SimpleClassName.outerOf(file)
+                                                         .value();
+                builder.append(singleFileSuffix)
+                       .append('.');
+            }
+
+            return builder.toString();
+        }
+
+        @Override
+        List<DescriptorProto> messageTypes() {
+            return file.getMessageTypeList();
+        }
+
+        @Override
+        List<EnumDescriptorProto> enumTypes() {
+            return file.getEnumTypeList();
+        }
+    }
+
+    /**
+     * Loads types nested under a message type declaration.
+     */
+    private static final class NestedTypeLoader extends TypeLoader {
+
+        private final DescriptorProto messageType;
+
+        private NestedTypeLoader(TypeLoader parent, DescriptorProto type) {
+            super(parent.cache, protoPrefix(parent, type), javaPrefix(parent, type));
+            this.messageType = type;
+        }
+
+        private static String protoPrefix(TypeLoader parent, DescriptorProto type) {
+            return parent.protoPrefix + type.getName() + '.';
+        }
+
+        private static String javaPrefix(TypeLoader parent, DescriptorProto type) {
+            return parent.javaPrefix + type.getName() + '.';
+        }
+
+        @Override
+        List<DescriptorProto> messageTypes() {
+            return messageType.getNestedTypeList();
+        }
+
+        @Override
+        List<EnumDescriptorProto> enumTypes() {
+            return messageType.getEnumTypeList();
+        }
     }
 }

@@ -41,8 +41,6 @@ import static io.spine.tools.compiler.validation.ClassNames.getValidatorMessageC
 
 /**
  * Serves as assembler for the generated methods based on the Protobuf message declaration.
- *
- * @author Illia Shepilov
  */
 class MethodGenerator {
 
@@ -135,8 +133,7 @@ class MethodGenerator {
         private MethodConstructor doCreate(AbstractMethodConstructorBuilder builder,
                                            FieldDescriptorProto field,
                                            int fieldIndex) {
-            FieldTypeFactory factory =
-                    new FieldTypeFactory(message, typeCache.getCachedTypes());
+            FieldTypeFactory factory = new FieldTypeFactory(message, typeCache.map());
             FieldType fieldType = factory.create(field);
             MethodConstructor methodConstructor =
                     builder.setField(field)

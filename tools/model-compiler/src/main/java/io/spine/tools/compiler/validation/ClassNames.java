@@ -32,6 +32,7 @@ import static io.spine.code.java.PrimitiveType.getWrapperClass;
 import static io.spine.code.proto.FieldTypesProto.trimTypeName;
 import static io.spine.code.proto.ScalarType.getJavaTypeName;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
+import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.lang.String.format;
 
 /**
@@ -56,13 +57,15 @@ final class ClassNames {
         checkNotNull(field);
         checkNotNull(cache);
 
-        String typeName = field.getTypeName();
-        if (typeName.isEmpty()) {
+        String declaredTypeName = field.getTypeName();
+        if (declaredTypeName.isEmpty()) {
             return getJavaTypeForScalarType(field);
         }
-        typeName = trimTypeName(field);
-        String parameterType = cache.getCachedTypes()
-                                    .get(typeName);
+        String typeName = trimTypeName(field);
+        String parameterType =
+                cache.javaType(typeName)
+                     .orElseThrow(() -> newIllegalStateException(
+                             "No Java type cached for type %s", typeName));
         return ClassName.bestGuess(parameterType);
     }
 
@@ -112,8 +115,7 @@ final class ClassNames {
         checkNotNull(typeCache);
         checkNotNull(typeName);
 
-        Collection<String> values = typeCache.getCachedTypes()
-                                             .values();
+        Collection<String> values = typeCache.javaTypes();
         String expectedClassName = javaPackage + '.' + typeName;
         for (String value : values) {
             if (value.equals(expectedClassName)) {

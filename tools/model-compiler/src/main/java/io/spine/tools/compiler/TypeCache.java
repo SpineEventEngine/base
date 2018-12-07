@@ -19,12 +19,14 @@
  */
 package io.spine.tools.compiler;
 
+import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.logging.Logging;
 import io.spine.tools.gradle.compiler.RejectionGenPlugin;
 
 import java.util.Map;
+import java.util.Optional;
 
 import static com.google.common.collect.Maps.newHashMap;
 
@@ -34,9 +36,9 @@ import static com.google.common.collect.Maps.newHashMap;
  *
  * @see RejectionGenPlugin
  */
-public class TypeCache implements Logging {
+public final class TypeCache implements Logging {
 
-    /** A map from Protobuf type name to Java class FQN. */
+    /** A map from a fully-qualified Protobuf type name to fully-qualified Java class name. */
     private final Map<String, String> types = newHashMap();
 
     /**
@@ -44,9 +46,8 @@ public class TypeCache implements Logging {
      *
      * @param file the descriptor of the file declaring types to cache
      */
-    public void cacheTypes(FileDescriptorProto file) {
-        TypeLoader loader = new TypeLoader(this, file);
-        loader.load();
+    public void loadFrom(FileDescriptorProto file) {
+        TypeLoader.load(this, file);
     }
 
     void put(String key, String value) {
@@ -59,9 +60,22 @@ public class TypeCache implements Logging {
      *
      * @return current cache contents
      */
-    public ImmutableMap<String, String> getCachedTypes() {
+    public ImmutableMap<String, String> map() {
         ImmutableMap<String, String> immutable = ImmutableMap.copyOf(types);
         return immutable;
     }
 
+    /**
+     * Obtains all Java types collected by the type of the call.
+     */
+    public ImmutableCollection<String> javaTypes() {
+        return map().values();
+    }
+
+    /**
+     * Obtains Java type name for the passed proto type name.
+     */
+    public Optional<String> javaType(String protoType) {
+        return Optional.ofNullable(types.get(protoType));
+    }
 }

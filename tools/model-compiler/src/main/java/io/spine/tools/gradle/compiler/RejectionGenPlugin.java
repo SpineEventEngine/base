@@ -180,7 +180,7 @@ public class RejectionGenPlugin extends SpinePlugin {
 
     private void collectAllMessageTypes(Iterable<FileDescriptorProto> files) {
         for (FileDescriptorProto file : files) {
-            typeCache.cacheTypes(file);
+            typeCache.loadFrom(file);
         }
     }
 
@@ -189,7 +189,7 @@ public class RejectionGenPlugin extends SpinePlugin {
         log.debug("Processing the file descriptors for the rejections {}", files);
         for (RejectionsFile file : files) {
             // We are sure that this is a rejections file because we got them filtered.
-            generateRejections(file, typeCache.getCachedTypes(), outDir, indent);
+            generateRejections(file, typeCache.map(), outDir, indent);
         }
     }
 

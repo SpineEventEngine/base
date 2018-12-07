@@ -32,8 +32,6 @@ import java.io.File;
  * Abstract base for Spine plugins.
  *
  * <p>Brings helper functionality to operate the Gradle build lifecycle.
- *
- * @author Alex Tymchenko
  */
 public abstract class SpinePlugin implements Plugin<Project> {
 

@@ -57,7 +57,7 @@ import static io.spine.option.OptionsProto.sPIType;
 /**
  * A factory for {@linkplain Annotator Annotators}.
  */
-public class AnnotatorFactory {
+public final class AnnotatorFactory {
 
     /**
      * Protobuf file descriptors to process.

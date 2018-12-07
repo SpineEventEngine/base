@@ -38,7 +38,6 @@ import org.slf4j.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.Map;
 
 import static com.squareup.javapoet.MethodSpec.constructorBuilder;
 import static io.spine.tools.compiler.annotation.Annotations.generatedBySpineModelCompiler;
