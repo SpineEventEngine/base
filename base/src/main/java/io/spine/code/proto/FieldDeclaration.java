@@ -21,6 +21,7 @@
 package io.spine.code.proto;
 
 import com.google.protobuf.Descriptors.FieldDescriptor;
+import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.base.CommandMessage;
 import io.spine.option.EntityOption;
@@ -117,8 +118,8 @@ public final class FieldDeclaration {
         return FieldTypes.isMap(field);
     }
 
-    /** The {@link FieldDescriptor.JavaType JavaType} of the declaration. */
-    public FieldDescriptor.JavaType javaType() {
+    /** Obtains the Java type of the declaration. */
+    public JavaType javaType() {
         return field.getJavaType();
     }
 
