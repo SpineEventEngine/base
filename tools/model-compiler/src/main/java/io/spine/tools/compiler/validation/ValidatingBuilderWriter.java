@@ -29,10 +29,8 @@ import com.squareup.javapoet.TypeSpec;
 import io.spine.code.Indent;
 import io.spine.code.java.SimpleClassName;
 import io.spine.logging.Logging;
-import io.spine.tools.compiler.MessageTypeCache;
+import io.spine.tools.compiler.TypeCache;
 import io.spine.validate.AbstractValidatingBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.lang.model.element.Modifier;
 import java.io.File;
@@ -52,12 +50,12 @@ class ValidatingBuilderWriter implements Logging {
 
     private final String targetDir;
     private final Indent indent;
-    private final MessageTypeCache messageTypeCache;
+    private final TypeCache typeCache;
 
-    ValidatingBuilderWriter(String targetDir, Indent indent, MessageTypeCache messageTypeCache) {
+    ValidatingBuilderWriter(String targetDir, Indent indent, TypeCache typeCache) {
         this.targetDir = targetDir;
         this.indent = indent;
-        this.messageTypeCache = messageTypeCache;
+        this.typeCache = typeCache;
     }
 
     /**
@@ -68,13 +66,13 @@ class ValidatingBuilderWriter implements Logging {
                     type.getJavaClass(), type.getJavaPackage());
 
         MethodGenerator methodsAssembler =
-                new MethodGenerator(type, messageTypeCache);
+                new MethodGenerator(type, typeCache);
         String javaClass = type.getJavaClass();
         String javaPackage = type.getJavaPackage();
         DescriptorProto descriptor = type.getDescriptor();
         ClassName messageClassName =
                 getValidatorMessageClassName(javaPackage,
-                                             messageTypeCache,
+                                             typeCache,
                                              descriptor.getName());
         ClassName messageBuilderClassName =
                 messageClassName.nestedClass(SimpleClassName.ofBuilder()

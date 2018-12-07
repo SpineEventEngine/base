@@ -24,10 +24,9 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import io.spine.code.Indent;
 import io.spine.logging.Logging;
-import io.spine.tools.compiler.MessageTypeCache;
+import io.spine.tools.compiler.TypeCache;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.Set;
@@ -88,7 +87,7 @@ public class VBuilderGenerator implements Logging {
 
         VBTypeLookup lookup = new VBTypeLookup(setFile.getPath());
         Set<VBType> allFound = lookup.collect();
-        MessageTypeCache typeCache = lookup.getTypeCache();
+        TypeCache typeCache = lookup.getTypeCache();
 
         Set<VBType> filtered = filter(classpathGenEnabled, allFound);
         if (filtered.isEmpty()) {
@@ -98,7 +97,7 @@ public class VBuilderGenerator implements Logging {
         }
     }
 
-    private void writeVBuilders(Set<VBType> builders, MessageTypeCache cache) {
+    private void writeVBuilders(Set<VBType> builders, TypeCache cache) {
         Logger log = log();
         ValidatingBuilderWriter writer =
                 new ValidatingBuilderWriter(targetDirPath, indent, cache);

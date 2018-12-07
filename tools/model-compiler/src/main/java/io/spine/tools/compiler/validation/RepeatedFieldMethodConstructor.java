@@ -30,7 +30,7 @@ import io.spine.base.ConversionException;
 import io.spine.code.proto.FieldName;
 import io.spine.code.proto.ScalarType;
 import io.spine.logging.Logging;
-import io.spine.tools.compiler.MessageTypeCache;
+import io.spine.tools.compiler.TypeCache;
 import io.spine.tools.compiler.field.type.FieldType;
 import io.spine.validate.ValidationException;
 
@@ -91,8 +91,8 @@ class RepeatedFieldMethodConstructor extends AbstractMethodConstructor implement
         FieldName fieldName = FieldName.of(fieldDescriptor);
         this.javaFieldName = fieldName.javaCase();
         this.methodNamePart = fieldName.toCamelCase();
-        MessageTypeCache messageTypeCache = builder.getTypeCache();
-        this.listElementClassName = getParameterClassName(fieldDescriptor, messageTypeCache);
+        TypeCache typeCache = builder.getTypeCache();
+        this.listElementClassName = getParameterClassName(fieldDescriptor, typeCache);
         this.isScalarOrEnum = isScalarType(fieldDescriptor) || isEnumType(fieldDescriptor);
     }
 

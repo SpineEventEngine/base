@@ -26,7 +26,7 @@ import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import io.spine.protobuf.Messages;
-import io.spine.tools.compiler.MessageTypeCache;
+import io.spine.tools.compiler.TypeCache;
 import io.spine.tools.compiler.field.type.FieldType;
 import io.spine.tools.compiler.field.type.FieldTypeFactory;
 
@@ -49,10 +49,10 @@ class MethodGenerator {
     private final String javaClass;
     private final String javaPackage;
     private final ClassName builderGenericClassName;
-    private final MessageTypeCache typeCache;
+    private final TypeCache typeCache;
     private final DescriptorProto message;
 
-    MethodGenerator(VBType type, MessageTypeCache typeCache) {
+    MethodGenerator(VBType type, TypeCache typeCache) {
         this.javaClass = type.getJavaClass();
         this.javaPackage = type.getJavaPackage();
         this.message = type.getDescriptor();

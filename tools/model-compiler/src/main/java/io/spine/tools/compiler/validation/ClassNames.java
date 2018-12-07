@@ -22,7 +22,7 @@ package io.spine.tools.compiler.validation;
 
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.squareup.javapoet.ClassName;
-import io.spine.tools.compiler.MessageTypeCache;
+import io.spine.tools.compiler.TypeCache;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -52,7 +52,7 @@ final class ClassNames {
      * @param cache the cache of the message types
      * @return the obtained {@code ClassName}
      */
-    static ClassName getParameterClassName(FieldDescriptorProto field, MessageTypeCache cache) {
+    static ClassName getParameterClassName(FieldDescriptorProto field, TypeCache cache) {
         checkNotNull(field);
         checkNotNull(cache);
 
@@ -106,7 +106,7 @@ final class ClassNames {
      * @throws IllegalArgumentException if the class of the validating builder is not found
      */
     static ClassName getValidatorMessageClassName(String javaPackage,
-                                                  MessageTypeCache typeCache,
+                                                  TypeCache typeCache,
                                                   String typeName) {
         checkNotNull(javaPackage);
         checkNotNull(typeCache);

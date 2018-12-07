@@ -31,8 +31,6 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
  * A Java package name.
- *
- * @author Alexander Yevsyukov
  */
 public final class PackageName extends StringTypeValue {
 

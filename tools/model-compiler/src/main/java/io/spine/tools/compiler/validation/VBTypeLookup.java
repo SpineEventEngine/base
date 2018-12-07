@@ -26,7 +26,7 @@ import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.code.java.PackageName;
 import io.spine.code.proto.FileName;
 import io.spine.logging.Logging;
-import io.spine.tools.compiler.MessageTypeCache;
+import io.spine.tools.compiler.TypeCache;
 import org.slf4j.Logger;
 
 import java.util.Collection;
@@ -50,7 +50,7 @@ class VBTypeLookup implements Logging {
     private final String descriptorSetFile;
 
     /** A map from Protobuf type name to Java class FQN. */
-    private final MessageTypeCache messageTypeCache = new MessageTypeCache();
+    private final TypeCache typeCache = new TypeCache();
 
     /** A map from Protobuf type name to Protobuf FileDescriptorProto. */
     private final Map<DescriptorProto, FileDescriptorProto> descriptorCache = newHashMap();
@@ -118,7 +118,7 @@ class VBTypeLookup implements Logging {
         ImmutableSet.Builder<FileDescriptorProto> result = ImmutableSet.builder();
         Collection<FileDescriptorProto> descriptors = fileDescriptors(descFilePath);
         for (FileDescriptorProto file : descriptors) {
-            messageTypeCache.cacheTypes(file);
+            typeCache.cacheTypes(file);
             log.debug("Found Protobuf file: {}", file.getName());
             result.add(file);
         }
@@ -126,8 +126,8 @@ class VBTypeLookup implements Logging {
         return result.build();
     }
 
-    MessageTypeCache getTypeCache() {
-        return messageTypeCache;
+    TypeCache getTypeCache() {
+        return typeCache;
     }
 
     /**
