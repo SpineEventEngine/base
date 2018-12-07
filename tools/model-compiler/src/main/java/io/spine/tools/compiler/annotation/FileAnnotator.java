@@ -44,8 +44,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  * <p>Annotates generated top-level definitions from a {@code .proto} file,
  * if a specified {@linkplain FileOptions file option} value is {@code true}.
- *
- * @author Dmytro Grankin
  */
 class FileAnnotator extends Annotator<FileOptions, FileDescriptorProto> {
 

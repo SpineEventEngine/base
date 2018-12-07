@@ -61,7 +61,6 @@ import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
  *
  * @param <O> the type of Protobuf option, which is managed by the annotator
  * @param <D> the proto descriptor type used to receive {@link #option} value
- * @author Dmytro Grankin
  */
 public abstract class Annotator<O extends ExtendableMessage, D extends GeneratedMessageV3> {
 
@@ -97,7 +96,6 @@ public abstract class Annotator<O extends ExtendableMessage, D extends Generated
         this.genProtoDir = checkNotNull(genProtoDir);
     }
 
-    @SuppressWarnings("AssignmentOrReturnOfFieldWithMutableType") // OK to return immutable impl.
     protected Iterable<FileDescriptorProto> fileDescriptors() {
         return fileDescriptors;
     }

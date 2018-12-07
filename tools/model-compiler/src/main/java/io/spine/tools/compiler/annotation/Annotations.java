@@ -30,8 +30,6 @@ import static io.spine.code.Generation.compilerAnnotation;
 
 /**
  * A factory for Java annotation specs.
- *
- * @author Dmytro Dashenkov
  */
 public final class Annotations {
 

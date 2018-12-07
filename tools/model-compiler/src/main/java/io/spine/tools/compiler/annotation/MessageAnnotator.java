@@ -36,10 +36,7 @@ import java.util.Optional;
  * A message annotator.
  *
  * <p>Annotates generated top-level messages from a {@code .proto} file,
- * if a specified {@linkplain com.google.protobuf.DescriptorProtos.MessageOptions message option}
- * value is {@code true}.
- *
- * @author Dmytro Grankin
+ * if a specified {@linkplain MessageOptions message option} value is {@code true}.
  */
 class MessageAnnotator extends TypeDefinitionAnnotator<MessageOptions, DescriptorProto> {
 

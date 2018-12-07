@@ -30,9 +30,6 @@ import java.util.stream.Stream;
  * Spine Model Compiler Gradle plugin.
  *
  * <p>Applies dependent plugins
- *
- * @author Alexander Litus
- * @author Mikhail Mikhaylov
  */
 public class ModelCompilerPlugin implements Plugin<Project>, Logging {
 

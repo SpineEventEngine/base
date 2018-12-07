@@ -28,11 +28,39 @@ option java_multiple_files = true;
 option java_outer_classname = "ValidationErrorProto";
 option java_package = "io.spine.validate";
 
-import "spine/validate/constraint_violation.proto";
+import "google/protobuf/any.proto";
+
+import "spine/base/field_path.proto";
 
 // An error indicating that a message did not pass validation.
 message ValidationError {
 
     // Validation constraint violations found by validator.
     repeated ConstraintViolation constraint_violation = 1;
+}
+
+// A validation constraint violation for a message field.
+message ConstraintViolation {
+
+    // An error message format string for this constraint violation.
+    //
+    // Contains `%s` format specifiers if the violation has one or more parameters.
+    //
+    string msg_format = 1;
+
+    // Parameters referenced by the format specifiers in the message format string.
+    repeated string param = 2;
+
+    // A path to an invalid field.
+    base.FieldPath field_path = 3;
+
+    // A value of an invalid field.
+    //
+    // Contains a corresponding wrapper message for primitives
+    // (google.protobuf.StringValue for "string" field type and so on).
+    //
+    google.protobuf.Any field_value = 4;
+
+    // Constraint violations for fields of this message field.
+    repeated ConstraintViolation violation = 5;
 }

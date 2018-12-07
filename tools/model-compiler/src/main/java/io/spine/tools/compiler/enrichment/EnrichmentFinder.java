@@ -24,16 +24,12 @@ import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.logging.Logging;
 import io.spine.type.TypeName;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
 
 /**
  * Finds event enrichment definitions for messages defined in a single proto file.
- *
- * @author Alexander Litus
- * @author Alex Tymchenko
  */
 class EnrichmentFinder implements Logging {
 

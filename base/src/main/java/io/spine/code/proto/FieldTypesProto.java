@@ -57,8 +57,7 @@ public final class FieldTypesProto {
     /**
      * Checks the Protobuf field and determines it is map field or not.
      *
-     * <p>If a field is a map it is repeated message with the specific
-     * {@linkplain #getEntryNameFor(FieldDescriptorProto) type}.
+     * <p>If a field is a map it is repeated message with the specific type.
      *
      * @param field
      *         the descriptor of the field to check

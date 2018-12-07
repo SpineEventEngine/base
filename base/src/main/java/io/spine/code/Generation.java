@@ -22,8 +22,6 @@ package io.spine.code;
 
 /**
  * Constants for code generation.
- *
- * @author Alexander Yevsyukov
  */
 public final class Generation {
 
