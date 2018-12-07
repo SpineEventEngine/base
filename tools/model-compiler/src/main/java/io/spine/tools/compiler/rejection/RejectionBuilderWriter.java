@@ -81,6 +81,9 @@ class RejectionBuilderWriter {
      * @return the {@code newInstance} specification
      */
     MethodSpec newBuilder() {
+        @SuppressWarnings("DuplicateStringLiteralInspection") // The duplicated string is in
+                // tests of the code which cannot share common constants with this class.
+                // For the time being let's keep it as is.
         JavadocText javadoc = JavadocText.fromEscaped("@return a new builder for the rejection")
                                          .withNewLine();
         return MethodSpec
@@ -205,11 +208,11 @@ class RejectionBuilderWriter {
         return methods;
     }
 
-    private MethodSpec fieldSetter(FieldDeclarationProto field,
-                                   FieldType fieldType) {
+    private MethodSpec fieldSetter(FieldDeclarationProto field, FieldType fieldType) {
         FieldName fieldName = field.name();
         String parameterName = fieldName.javaCase();
         String methodName = fieldType.getSetterPrefix() + fieldName.toCamelCase();
+        @SuppressWarnings("DuplicateStringLiteralInspection") // different semantics of gen'ed code.
         MethodSpec.Builder methodBuilder = MethodSpec
                 .methodBuilder(methodName)
                 .addModifiers(PUBLIC)

@@ -56,8 +56,6 @@ import static io.spine.option.OptionsProto.sPIType;
 
 /**
  * A factory for {@linkplain Annotator Annotators}.
- *
- * @author Alex Tymchenko
  */
 public class AnnotatorFactory {
 
