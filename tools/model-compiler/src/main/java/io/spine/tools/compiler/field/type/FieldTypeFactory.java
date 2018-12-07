@@ -19,6 +19,7 @@
  */
 package io.spine.tools.compiler.field.type;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 import com.squareup.javapoet.TypeName;
@@ -42,7 +43,7 @@ import static io.spine.code.proto.FieldTypesProto.trimTypeName;
 public class FieldTypeFactory {
 
     /** A map from Protobuf type name to Java class FQN. */
-    private final Map<String, String> messageTypeMap;
+    private final ImmutableMap<String, String> messageTypeMap;
     private final Iterable<DescriptorProto> messageNestedTypes;
 
     private static final String MAP_EXPECTED_ERROR_MESSAGE = "Map expected.";
@@ -53,7 +54,8 @@ public class FieldTypeFactory {
      * @param messageDescriptor the message descriptor to extract nested types
      * @param messageTypeMap    pre-scanned map with proto types and their appropriate Java classes
      */
-    public FieldTypeFactory(DescriptorProto messageDescriptor, Map<String, String> messageTypeMap) {
+    public FieldTypeFactory(DescriptorProto messageDescriptor,
+                            ImmutableMap<String, String> messageTypeMap) {
         this.messageTypeMap = messageTypeMap;
         this.messageNestedTypes = messageDescriptor.getNestedTypeList();
     }

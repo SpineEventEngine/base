@@ -19,6 +19,7 @@
  */
 package io.spine.tools.compiler.rejection;
 
+import com.google.common.collect.ImmutableMap;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
@@ -74,7 +75,7 @@ public class RejectionWriter implements Logging {
      */
     public RejectionWriter(RejectionDeclaration rejection,
                            File outputDirectory,
-                           Map<String, String> messageTypeMap,
+                           ImmutableMap<String, String> messageTypeMap,
                            Indent indent) {
         this.declaration = rejection;
         this.messageClass = toJavaPoetName(rejection.messageClass());

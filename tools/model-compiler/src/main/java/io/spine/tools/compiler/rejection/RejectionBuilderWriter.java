@@ -20,6 +20,7 @@
 
 package io.spine.tools.compiler.rejection;
 
+import com.google.common.collect.ImmutableMap;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
@@ -37,7 +38,6 @@ import io.spine.tools.compiler.field.type.FieldTypeFactory;
 import io.spine.validate.Validate;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import static com.google.common.collect.Lists.newArrayList;
@@ -67,7 +67,7 @@ class RejectionBuilderWriter {
     RejectionBuilderWriter(RejectionDeclaration rejection,
                            ClassName messageClass,
                            ClassName throwableClass,
-                           Map<String, String> messageTypeMap) {
+                           ImmutableMap<String, String> messageTypeMap) {
         this.rejection = rejection;
         this.messageClass = messageClass;
         this.throwableClass = throwableClass;

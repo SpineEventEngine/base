@@ -116,7 +116,7 @@ class MethodGenerator {
 
         /**
          * Returns the concrete method constructor according to
-         * the passed {@code FieldDescriptorProto}
+         * the passed {@code FieldDescriptorProto}.
          *
          * @param field the descriptor for the field
          * @param index the index of the field

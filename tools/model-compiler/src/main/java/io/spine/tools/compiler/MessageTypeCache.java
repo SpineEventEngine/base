@@ -101,7 +101,7 @@ public class MessageTypeCache implements Logging {
      *
      * @return current cache contents
      */
-    public Map<String, String> getCachedTypes() {
+    public ImmutableMap<String, String> getCachedTypes() {
         ImmutableMap<String, String> immutable = ImmutableMap.copyOf(cachedMessageTypes);
         return immutable;
     }

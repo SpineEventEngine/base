@@ -19,6 +19,7 @@
  */
 package io.spine.tools.gradle.compiler;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.code.Indent;
@@ -39,7 +40,6 @@ import org.slf4j.Logger;
 
 import java.io.File;
 import java.util.List;
-import java.util.Map;
 
 import static io.spine.code.proto.FileDescriptors.parse;
 import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
@@ -60,11 +60,6 @@ import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSetPath;
  * <p>Uses generated proto descriptors.
  *
  * <p>Logs a warning if there are no protobuf descriptors generated.
- *
- * @author Mikhail Mikhaylov
- * @author Alexander Yevsyukov
- * @author Alexander Litus
- * @author Alex Tymchenko
  */
 public class RejectionGenPlugin extends SpinePlugin {
 
@@ -140,37 +135,39 @@ public class RejectionGenPlugin extends SpinePlugin {
         log.debug("Rejection generation phase initialized with tasks: {}, {}", mainTask, testTask);
     }
 
+    /**
+     * Verifies if the descriptor set file exists. If not writes about this into the debug log.
+     */
+    private boolean fileExists(String descriptorSetFile) {
+        File setFile = new File(descriptorSetFile);
+        if (setFile.exists()) {
+            return true;
+        }
+        logMissingDescriptorSetFile(setFile);
+        return false;
+    }
+
     private void generateRejections(String mainFile, String targetFolder, Indent indent) {
-        Logger log = log();
-        File setFile = new File(mainFile);
-        if (!setFile.exists()) {
-            logMissingDescriptorSetFile(setFile);
+        if (!fileExists(mainFile)) {
             return;
         }
 
-        log.debug("Generating rejections from {}", mainFile);
+        log().debug("Generating rejections from {}", mainFile);
         List<FileDescriptorProto> mainFiles = parse(mainFile);
         collectAllMessageTypes(mainFiles);
         List<RejectionsFile> rejectionFiles = collect(mainFiles);
         doGenerate(rejectionFiles, targetFolder, indent);
     }
 
-    private void generateTestRejections(String mainFile, String testFile, String targetFolder,
+    private void generateTestRejections(String mainFile,
+                                        String testFile,
+                                        String targetFolder,
                                         Indent indent) {
-        Logger log = log();
-        File setFile = new File(mainFile);
-        if (!setFile.exists()) {
-            logMissingDescriptorSetFile(setFile);
+        if (!(fileExists(mainFile) && fileExists(testFile))) {
             return;
         }
 
-        File testSetFile = new File(testFile);
-        if (!testSetFile.exists()) {
-            logMissingDescriptorSetFile(testSetFile);
-            return;
-        }
-
-        log.debug("Generating test rejections from {}", testFile);
+        log().debug("Generating test rejections from {}", testFile);
 
         List<FileDescriptorProto> mainFiles = parse(mainFile);
         collectAllMessageTypes(mainFiles);
@@ -197,7 +194,7 @@ public class RejectionGenPlugin extends SpinePlugin {
     }
 
     private void generateRejections(RejectionsFile file,
-                                    Map<String, String> messageTypeMap,
+                                    ImmutableMap<String, String> messageTypeMap,
                                     String rejectionsRootDir,
                                     Indent indent) {
         Logger log = log();
