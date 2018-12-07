@@ -31,7 +31,6 @@ import io.spine.annotation.Beta;
 import io.spine.annotation.Experimental;
 import io.spine.annotation.Internal;
 import io.spine.annotation.SPI;
-import io.spine.code.proto.FileDescriptors;
 
 import java.io.File;
 import java.lang.annotation.Annotation;
@@ -40,6 +39,7 @@ import java.util.Collection;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static io.spine.code.proto.FileDescriptors.parseSkipStandard;
 import static io.spine.option.OptionsProto.beta;
 import static io.spine.option.OptionsProto.betaAll;
 import static io.spine.option.OptionsProto.betaType;
@@ -90,8 +90,7 @@ public final class AnnotatorFactory {
     public static void processDescriptorSetFile(File setFile,
                                                 String generatedProtoDir,
                                                 String generatedGrpcDir) {
-        Collection<FileDescriptorProto> descriptors =
-                FileDescriptors.parseSkipStandard(setFile.getPath());
+        Collection<FileDescriptorProto> descriptors = parseSkipStandard(setFile.getPath());
         AnnotatorFactory factory =
                 new AnnotatorFactory(descriptors, generatedProtoDir, generatedGrpcDir);
 
