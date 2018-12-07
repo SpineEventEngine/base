@@ -21,6 +21,7 @@
 package io.spine.tools.compiler.annotation;
 
 import com.google.common.collect.ImmutableList;
+import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import com.google.protobuf.GeneratedMessageV3;
@@ -147,6 +148,24 @@ public abstract class Annotator<O extends ExtendableMessage, D extends Generated
     }
 
     /**
+     * Annotates message class and MessageOrBuilder interface that correspond to the passed type.
+     */
+    protected final void annotateMessageTypes(DescriptorProto type, FileDescriptorProto file) {
+        SourceFile messageClass = SourceFile.forMessage(type, file);
+        annotate(messageClass);
+
+        SourceFile messageOrBuilderInterface = SourceFile.forMessageOrBuilder(type, file);
+        annotate(messageOrBuilderInterface);
+    }
+
+    /**
+     * Rewrites the file applying {@link TypeDeclarationAnnotation}.
+     */
+    protected final void annotate(SourceFile relativeSourcePath) {
+        rewriteSource(relativeSourcePath, new TypeDeclarationAnnotation());
+    }
+
+    /**
      * Obtains the value of {@link #option} in the specified descriptor.
      *
      * @param descriptor the descriptor to extract {@link #option} value.
@@ -168,28 +187,31 @@ public abstract class Annotator<O extends ExtendableMessage, D extends Generated
      * Rewrites a generated Java source with the specified
      * relative path after applying a {@link SourceVisitor}.
      *
-     * @param relativeSourcePath the relative path to a source file
-     * @param sourceVisitor      the source visitor
+     * @param relativeSourcePath
+     *         the relative path to a source file
+     * @param visitor
+     *         the source visitor
      */
-    protected <T extends JavaSource<T>> void rewriteSource(SourceFile relativeSourcePath,
-                                                           SourceVisitor<T> sourceVisitor) {
-        rewriteSource(genProtoDir, relativeSourcePath, sourceVisitor);
+    protected <T extends JavaSource<T>>
+    void rewriteSource(SourceFile relativeSourcePath, SourceVisitor<T> visitor) {
+        rewriteSource(genProtoDir, relativeSourcePath, visitor);
     }
-
     /**
      * Rewrites a Java source with the specified path after applying a {@link SourceVisitor}.
      *
      * <p>If the specified path does not exist, does nothing.
      *
-     * @param sourcePathPrefix the prefix for the relative source path
-     * @param sourcePath       the relative path to a source file
-     * @param sourceVisitor    the source visitor
+     * @param sourcePathPrefix
+     *         the prefix for the relative source path
+     * @param sourcePath
+     *         the relative path to a source file
+     * @param visitor
+     *         the source visitor
      */
     @SuppressWarnings("unchecked" /* There is no way to specify generic parameter
                                      for `AbstractJavaSource.class` value. */)
-    protected static <T extends JavaSource<T>> void rewriteSource(String sourcePathPrefix,
-                                                                  SourceFile sourcePath,
-                                                                  SourceVisitor<T> sourceVisitor) {
+    static <T extends JavaSource<T>>
+    void rewriteSource(String sourcePathPrefix, SourceFile sourcePath, SourceVisitor<T> visitor) {
         AbstractJavaSource<T> javaSource;
         Path absoluteSourcePath = Paths.get(sourcePathPrefix, sourcePath.toString());
 
@@ -204,7 +226,7 @@ public abstract class Annotator<O extends ExtendableMessage, D extends Generated
             throw illegalStateWithCauseOf(e);
         }
 
-        sourceVisitor.apply(javaSource);
+        visitor.apply(javaSource);
         String resultingSource = javaSource.toString();
         try {
             Files.write(absoluteSourcePath, ImmutableList.of(resultingSource), TRUNCATE_EXISTING);

@@ -38,8 +38,6 @@ import java.util.Optional;
  * <p>Annotates generated top-level enums from a {@code .proto} file,
  * if a specified {@linkplain com.google.protobuf.DescriptorProtos.EnumOptions enum option}
  * value is {@code true}.
- *
- * @author Dmytro Grankin
  */
 class EnumAnnotator extends TypeDefinitionAnnotator<EnumOptions, EnumDescriptorProto> {
 
@@ -67,7 +65,7 @@ class EnumAnnotator extends TypeDefinitionAnnotator<EnumOptions, EnumDescriptorP
 
     @Override
     protected void annotateDefinition(EnumDescriptorProto enumType, FileDescriptorProto file) {
-        SourceFile filePath = SourceFile.forEnum(enumType, file);
-        rewriteSource(filePath, new TypeDeclarationAnnotation());
+        SourceFile enumFile = SourceFile.forEnum(enumType, file);
+        annotate(enumFile);
     }
 }

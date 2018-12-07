@@ -112,13 +112,7 @@ class FileAnnotator extends Annotator<FileOptions, FileDescriptorProto> {
      */
     private void annotateMessages(FileDescriptorProto file) {
         for (DescriptorProto messageType : file.getMessageTypeList()) {
-            SourceFile messageClass =
-                    SourceFile.forMessage(messageType, file);
-            rewriteSource(messageClass, new TypeDeclarationAnnotation());
-
-            SourceFile messageOrBuilderClass =
-                    SourceFile.forMessageOrBuilder(messageType, file);
-            rewriteSource(messageOrBuilderClass, new TypeDeclarationAnnotation());
+            annotateMessageTypes(messageType, file);
         }
     }
 
@@ -133,7 +127,7 @@ class FileAnnotator extends Annotator<FileOptions, FileDescriptorProto> {
     private void annotateEnums(FileDescriptorProto file) {
         for (EnumDescriptorProto enumType : file.getEnumTypeList()) {
             SourceFile filePath = SourceFile.forEnum(enumType, file);
-            rewriteSource(filePath, new TypeDeclarationAnnotation());
+            annotate(filePath);
         }
     }
 

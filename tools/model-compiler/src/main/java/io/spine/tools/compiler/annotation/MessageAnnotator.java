@@ -24,7 +24,6 @@ import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.MessageOptions;
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
-import io.spine.code.java.SourceFile;
 import io.spine.option.Options;
 
 import java.lang.annotation.Annotation;
@@ -58,13 +57,8 @@ class MessageAnnotator extends TypeDefinitionAnnotator<MessageOptions, Descripto
     }
 
     @Override
-    protected void annotateDefinition(DescriptorProto definition,
-                                      FileDescriptorProto file) {
-        SourceFile messageClass = SourceFile.forMessage(definition, file);
-        rewriteSource(messageClass, new TypeDeclarationAnnotation());
-
-        SourceFile messageOrBuilderClass = SourceFile.forMessageOrBuilder(definition, file);
-        rewriteSource(messageOrBuilderClass, new TypeDeclarationAnnotation());
+    protected void annotateDefinition(DescriptorProto definition, FileDescriptorProto file) {
+        annotateMessageTypes(definition, file);
     }
 
     @Override
