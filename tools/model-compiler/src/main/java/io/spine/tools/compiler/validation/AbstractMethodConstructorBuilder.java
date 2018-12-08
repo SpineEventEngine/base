@@ -32,8 +32,6 @@ import static com.google.common.base.Preconditions.checkState;
 
 /**
  * An abstract base for the method constructor builders.
- *
- * @author Illia Shepilov
  */
 abstract class AbstractMethodConstructorBuilder<T extends MethodConstructor> {
 

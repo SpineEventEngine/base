@@ -65,8 +65,8 @@ class ValidatingBuilderWriter implements Logging {
         log().debug("Preparing to writing the {} class under the {} package",
                     type.getJavaClass(), type.getJavaPackage());
 
-        MethodGenerator methodsAssembler =
-                new MethodGenerator(type, typeCache);
+        MethodAssembler methodsAssembler =
+                new MethodAssembler(type, typeCache);
         String javaClass = type.getJavaClass();
         String javaPackage = type.getJavaPackage();
         DescriptorProto descriptor = type.getDescriptor();

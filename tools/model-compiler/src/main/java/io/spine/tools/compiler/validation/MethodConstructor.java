@@ -33,8 +33,6 @@ import java.util.Collection;
  * is used to reduce the complexity of the Java code generation.
  * And JavaPoet provides the {@code MethodSpec} class for helping
  * in the Java fields generation.
- *
- * @author Illia Shepilov
  */
 interface MethodConstructor {
 

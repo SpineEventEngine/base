@@ -42,7 +42,7 @@ import static io.spine.tools.compiler.validation.ClassNames.getValidatorMessageC
 /**
  * Serves as assembler for the generated methods based on the Protobuf message declaration.
  */
-class MethodGenerator {
+class MethodAssembler {
 
     private final String javaClass;
     private final String javaPackage;
@@ -50,7 +50,7 @@ class MethodGenerator {
     private final TypeCache typeCache;
     private final DescriptorProto message;
 
-    MethodGenerator(VBType type, TypeCache typeCache) {
+    MethodAssembler(VBType type, TypeCache typeCache) {
         this.javaClass = type.getJavaClass();
         this.javaPackage = type.getJavaPackage();
         this.message = type.getDescriptor();
@@ -76,19 +76,21 @@ class MethodGenerator {
     }
 
     private static MethodSpec createPrivateConstructor() {
-        MethodSpec result = MethodSpec.constructorBuilder()
-                                      .addModifiers(Modifier.PRIVATE)
-                                      .build();
+        MethodSpec result = MethodSpec
+                .constructorBuilder()
+                .addModifiers(Modifier.PRIVATE)
+                .build();
         return result;
     }
 
     private MethodSpec createNewBuilderMethod() {
         ClassName builderClass = ClassNames.getClassName(javaPackage, javaClass);
-        MethodSpec buildMethod = MethodSpec.methodBuilder(Messages.METHOD_NEW_BUILDER)
-                                           .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-                                           .returns(builderClass)
-                                           .addStatement("return new $T()", builderClass)
-                                           .build();
+        MethodSpec buildMethod = MethodSpec
+                .methodBuilder(Messages.METHOD_NEW_BUILDER)
+                .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+                .returns(builderClass)
+                .addStatement("return new $T()", builderClass)
+                .build();
         return buildMethod;
     }
 
