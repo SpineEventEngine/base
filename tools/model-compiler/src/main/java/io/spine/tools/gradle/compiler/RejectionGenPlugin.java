@@ -19,7 +19,6 @@
  */
 package io.spine.tools.gradle.compiler;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.code.Indent;
@@ -189,12 +188,12 @@ public class RejectionGenPlugin extends SpinePlugin {
         log.debug("Processing the file descriptors for the rejections {}", files);
         for (RejectionsFile file : files) {
             // We are sure that this is a rejections file because we got them filtered.
-            generateRejections(file, typeCache.map(), outDir, indent);
+            generateRejections(file, typeCache, outDir, indent);
         }
     }
 
     private void generateRejections(RejectionsFile file,
-                                    ImmutableMap<String, String> messageTypeMap,
+                                    TypeCache typeCache,
                                     String rejectionsRootDir,
                                     Indent indent) {
         Logger log = log();
@@ -213,7 +212,7 @@ public class RejectionGenPlugin extends SpinePlugin {
             // The name of the generated `ThrowableMessage` will be the same
             // as for the Protobuf message.
             log.debug("Processing rejection '{}'", rejection.getSimpleTypeName());
-            RejectionWriter writer = new RejectionWriter(rejection, outDir, messageTypeMap, indent);
+            RejectionWriter writer = new RejectionWriter(rejection, outDir, typeCache, indent);
             writer.write();
         }
     }
