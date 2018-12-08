@@ -42,6 +42,7 @@ import static java.util.stream.Collectors.toList;
  */
 class VBTypeLookup implements Logging {
 
+    @SuppressWarnings("DuplicateStringLiteralInspection")
     private static final String JAVA_CLASS_NAME_SUFFIX = "VBuilder";
 
     /** The path to descriptor set file. */

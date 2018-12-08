@@ -40,8 +40,6 @@ import static java.lang.String.format;
  *
  * <p>An instance-per-scope is usually created. E.g. test sources and main source are
  * generated with different instances of this class.
- *
- * @author Illia Shepilov
  */
 public class VBuilderGenerator implements Logging {
 

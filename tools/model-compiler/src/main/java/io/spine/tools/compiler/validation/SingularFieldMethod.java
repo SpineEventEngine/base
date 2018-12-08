@@ -51,8 +51,6 @@ import static java.lang.String.format;
  * validating builders generation based on the Protobuf message declaration.
  *
  * <p>Constructs the {@code MethodSpec} objects for the singular fields.
- *
- * @author Illia Shepilov
  */
 class SingularFieldMethod extends AbstractMethod implements Logging {
 

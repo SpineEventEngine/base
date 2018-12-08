@@ -43,8 +43,6 @@ import static io.spine.util.Exceptions.newIllegalArgumentException;
 
 /**
  * Class which writes generated validating builders to Java files.
- *
- * @author Illia Shepilov
  */
 class ValidatingBuilderWriter implements Logging {
 

@@ -53,8 +53,6 @@ import static java.lang.String.format;
  * A method constructor of the {@code MethodSpec} objects based on the Protobuf message declaration.
  *
  * <p>Constructs the {@code MethodSpec} objects for the repeated fields.
- *
- * @author Illia Shepilov
  */
 @SuppressWarnings("DuplicateStringLiteralInspection")
 // It cannot be used as the constant across the project.
