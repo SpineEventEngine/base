@@ -47,12 +47,11 @@ import static java.lang.String.format;
  * A method constructor of the {@code MethodSpec} objects based on the Protobuf message declaration.
  *
  * <p>Constructs the {@code MethodSpec} objects for the map fields.
- *
- * @author Illia Shepilov
  */
 class MapFieldMethodConstructor extends AbstractMethodConstructor implements Logging {
 
     private static final String KEY = "key";
+    @SuppressWarnings("DuplicateStringLiteralInspection") // specific semantic
     private static final String VALUE = "value";
     private static final String MAP_PARAM_NAME = "map";
     private static final String MAP_TO_VALIDATE_PARAM_NAME = "mapToValidate";
