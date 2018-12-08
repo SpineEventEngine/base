@@ -48,7 +48,7 @@ import static java.lang.String.format;
  *
  * <p>Constructs the {@code MethodSpec} objects for the map fields.
  */
-class MapFieldMethodConstructor extends AbstractMethodConstructor implements Logging {
+class MapFieldMethod extends AbstractMethod implements Logging {
 
     private static final String KEY = "key";
     @SuppressWarnings("DuplicateStringLiteralInspection") // specific semantic
@@ -78,7 +78,7 @@ class MapFieldMethodConstructor extends AbstractMethodConstructor implements Log
     @SuppressWarnings("ConstantConditions")
     // The fields are checked in the {@code #build()} method
     // of the {@code MapFieldMethodConstructorBuilder} class.
-    private MapFieldMethodConstructor(MapFieldMethodsConstructorBuilder builder) {
+    private MapFieldMethod(MapFieldMethodsBuilder builder) {
         super(builder);
         this.fieldType = (MapFieldType) builder.getFieldType();
         FieldDescriptorProto fieldDescriptor = builder.getField();
@@ -250,19 +250,19 @@ class MapFieldMethodConstructor extends AbstractMethodConstructor implements Log
      *
      * @return created builder
      */
-    static MapFieldMethodsConstructorBuilder newBuilder() {
-        return new MapFieldMethodsConstructorBuilder();
+    static MapFieldMethodsBuilder newBuilder() {
+        return new MapFieldMethodsBuilder();
     }
 
     /**
      * A builder for the {@code MapFieldMethodsConstructor} class.
      */
-    static class MapFieldMethodsConstructorBuilder
-            extends AbstractMethodConstructorBuilder<MapFieldMethodConstructor> {
+    static class MapFieldMethodsBuilder
+            extends AbstractMethodBuilder<MapFieldMethod> {
         @Override
-        MapFieldMethodConstructor build() {
+        MapFieldMethod build() {
             checkFields();
-            return new MapFieldMethodConstructor(this);
+            return new MapFieldMethod(this);
         }
     }
 }

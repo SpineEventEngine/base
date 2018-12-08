@@ -34,7 +34,7 @@ import static io.spine.tools.compiler.validation.ClassNames.getClassName;
 /**
  * An abstract base for method constructors.
  */
-abstract class AbstractMethodConstructor implements MethodConstructor {
+abstract class AbstractMethod implements MethodConstructor {
 
     /** The name of the {@code FieldDescriptor} variable. */
     private static final String FIELD_DESCRIPTOR_NAME = "fieldDescriptor";
@@ -45,7 +45,7 @@ abstract class AbstractMethodConstructor implements MethodConstructor {
     private final ClassName messageClass;
     private final ClassName builderClass;
 
-    AbstractMethodConstructor(AbstractMethodConstructorBuilder builder) {
+    AbstractMethod(AbstractMethodBuilder builder) {
         this.fieldIndex = builder.getFieldIndex();
         this.messageClass = builder.getGenericClassName();
         String javaPackage = checkNotNull(builder.getJavaPackage());

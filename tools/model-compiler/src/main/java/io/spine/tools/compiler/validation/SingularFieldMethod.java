@@ -54,7 +54,7 @@ import static java.lang.String.format;
  *
  * @author Illia Shepilov
  */
-class SingularFieldMethodConstructor extends AbstractMethodConstructor implements Logging {
+class SingularFieldMethod extends AbstractMethod implements Logging {
 
     private static final String GETTER_PREFIX = "get";
 
@@ -67,11 +67,11 @@ class SingularFieldMethodConstructor extends AbstractMethodConstructor implement
     /**
      * Constructs the instance by the passed builder.
      *
-     * <p>The passed builder {@linkplain SingularFieldConstructorBuilder#checkFields() ensures}
+     * <p>The passed builder {@linkplain io.spine.tools.compiler.validation.SingularFieldMethod.SingularFieldBuilder#checkFields() ensures}
      * non-null values of its fields prior to calling this constructor.
      */
     @SuppressWarnings("ConstantConditions") // See Javadoc above.
-    private SingularFieldMethodConstructor(SingularFieldConstructorBuilder builder) {
+    private SingularFieldMethod(SingularFieldBuilder builder) {
         super(builder);
         this.fieldType = builder.getFieldType();
         this.field = builder.getField();
@@ -199,20 +199,20 @@ class SingularFieldMethodConstructor extends AbstractMethodConstructor implement
      *
      * @return constructed builder
      */
-    static SingularFieldConstructorBuilder newBuilder() {
-        return new SingularFieldConstructorBuilder();
+    static SingularFieldBuilder newBuilder() {
+        return new SingularFieldBuilder();
     }
 
     /**
      * A builder class for the {@code SingularFieldMethodConstructor} class.
      */
-    static class SingularFieldConstructorBuilder
-            extends AbstractMethodConstructorBuilder<SingularFieldMethodConstructor> {
+    static class SingularFieldBuilder
+            extends AbstractMethodBuilder<SingularFieldMethod> {
 
         @Override
-        SingularFieldMethodConstructor build() {
+        SingularFieldMethod build() {
             checkFields();
-            return new SingularFieldMethodConstructor(this);
+            return new SingularFieldMethod(this);
         }
     }
 }

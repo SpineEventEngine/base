@@ -59,7 +59,7 @@ import static java.lang.String.format;
 @SuppressWarnings("DuplicateStringLiteralInspection")
 // It cannot be used as the constant across the project.
 // Although it has the equivalent literal they have the different meaning.
-class RepeatedFieldMethodConstructor extends AbstractMethodConstructor implements Logging {
+class RepeatedFieldMethod extends AbstractMethod implements Logging {
 
     private static final String VALUE = "value";
     private static final String INDEX = "index";
@@ -84,7 +84,7 @@ class RepeatedFieldMethodConstructor extends AbstractMethodConstructor implement
     @SuppressWarnings("ConstantConditions")
     // The fields are checked in the {@code #build()} method
     // of the {@code RepeatedFieldMethodsConstructorBuilder} class.
-    private RepeatedFieldMethodConstructor(RepeatedFieldMethodsConstructorBuilder builder) {
+    private RepeatedFieldMethod(RepeatedFieldMethodsBuilder builder) {
         super(builder);
         this.fieldType = builder.getFieldType();
         this.fieldDescriptor = builder.getField();
@@ -339,20 +339,20 @@ class RepeatedFieldMethodConstructor extends AbstractMethodConstructor implement
      *
      * @return created builder
      */
-    static RepeatedFieldMethodsConstructorBuilder newBuilder() {
-        return new RepeatedFieldMethodsConstructorBuilder();
+    static RepeatedFieldMethodsBuilder newBuilder() {
+        return new RepeatedFieldMethodsBuilder();
     }
 
     /**
      * A builder for the {@code RepeatedFieldMethodConstructor} class.
      */
-    static class RepeatedFieldMethodsConstructorBuilder
-            extends AbstractMethodConstructorBuilder<RepeatedFieldMethodConstructor> {
+    static class RepeatedFieldMethodsBuilder
+            extends AbstractMethodBuilder<RepeatedFieldMethod> {
 
         @Override
-        RepeatedFieldMethodConstructor build() {
+        RepeatedFieldMethod build() {
             checkFields();
-            return new RepeatedFieldMethodConstructor(this);
+            return new RepeatedFieldMethod(this);
         }
     }
 }

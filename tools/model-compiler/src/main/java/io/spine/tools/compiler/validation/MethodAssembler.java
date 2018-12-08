@@ -126,17 +126,17 @@ class MethodAssembler {
             return doCreate(builderFor(field), field, index);
         }
 
-        private AbstractMethodConstructorBuilder builderFor(FieldDescriptorProto field) {
+        private AbstractMethodBuilder builderFor(FieldDescriptorProto field) {
             if (isMap(field)) {
-                return MapFieldMethodConstructor.newBuilder();
+                return MapFieldMethod.newBuilder();
             }
             if (isRepeated(field)) {
-                return RepeatedFieldMethodConstructor.newBuilder();
+                return RepeatedFieldMethod.newBuilder();
             }
-            return SingularFieldMethodConstructor.newBuilder();
+            return SingularFieldMethod.newBuilder();
         }
 
-        private MethodConstructor doCreate(AbstractMethodConstructorBuilder builder,
+        private MethodConstructor doCreate(AbstractMethodBuilder builder,
                                            FieldDescriptorProto field,
                                            int fieldIndex) {
             FieldTypeFactory factory = new FieldTypeFactory(message, typeCache);
