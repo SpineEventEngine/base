@@ -133,7 +133,7 @@ class MethodGenerator {
         private MethodConstructor doCreate(AbstractMethodConstructorBuilder builder,
                                            FieldDescriptorProto field,
                                            int fieldIndex) {
-            FieldTypeFactory factory = new FieldTypeFactory(message, typeCache.map());
+            FieldTypeFactory factory = new FieldTypeFactory(message, typeCache);
             FieldType fieldType = factory.create(field);
             MethodConstructor methodConstructor =
                     builder.setField(field)
