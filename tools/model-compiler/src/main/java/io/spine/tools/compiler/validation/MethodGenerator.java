@@ -121,13 +121,17 @@ class MethodGenerator {
          * @return the method constructor instance
          */
         private MethodConstructor create(FieldDescriptorProto field, int index) {
+            return doCreate(builderFor(field), field, index);
+        }
+
+        private AbstractMethodConstructorBuilder builderFor(FieldDescriptorProto field) {
             if (isMap(field)) {
-                return doCreate(MapFieldMethodConstructor.newBuilder(), field, index);
+                return MapFieldMethodConstructor.newBuilder();
             }
             if (isRepeated(field)) {
-                return doCreate(RepeatedFieldMethodConstructor.newBuilder(), field, index);
+                return RepeatedFieldMethodConstructor.newBuilder();
             }
-            return doCreate(SingularFieldMethodConstructor.newBuilder(), field, index);
+            return SingularFieldMethodConstructor.newBuilder();
         }
 
         private MethodConstructor doCreate(AbstractMethodConstructorBuilder builder,
