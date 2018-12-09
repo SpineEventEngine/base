@@ -26,7 +26,7 @@ import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import io.spine.protobuf.Messages;
-import io.spine.tools.compiler.MessageTypeCache;
+import io.spine.tools.compiler.TypeCache;
 import io.spine.tools.compiler.field.type.FieldType;
 import io.spine.tools.compiler.field.type.FieldTypeFactory;
 
@@ -41,18 +41,16 @@ import static io.spine.tools.compiler.validation.ClassNames.getValidatorMessageC
 
 /**
  * Serves as assembler for the generated methods based on the Protobuf message declaration.
- *
- * @author Illia Shepilov
  */
-class MethodGenerator {
+class MethodAssembler {
 
     private final String javaClass;
     private final String javaPackage;
     private final ClassName builderGenericClassName;
-    private final MessageTypeCache typeCache;
+    private final TypeCache typeCache;
     private final DescriptorProto message;
 
-    MethodGenerator(VBType type, MessageTypeCache typeCache) {
+    MethodAssembler(VBType type, TypeCache typeCache) {
         this.javaClass = type.getJavaClass();
         this.javaPackage = type.getJavaPackage();
         this.message = type.getDescriptor();
@@ -78,19 +76,21 @@ class MethodGenerator {
     }
 
     private static MethodSpec createPrivateConstructor() {
-        MethodSpec result = MethodSpec.constructorBuilder()
-                                      .addModifiers(Modifier.PRIVATE)
-                                      .build();
+        MethodSpec result = MethodSpec
+                .constructorBuilder()
+                .addModifiers(Modifier.PRIVATE)
+                .build();
         return result;
     }
 
     private MethodSpec createNewBuilderMethod() {
         ClassName builderClass = ClassNames.getClassName(javaPackage, javaClass);
-        MethodSpec buildMethod = MethodSpec.methodBuilder(Messages.METHOD_NEW_BUILDER)
-                                           .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-                                           .returns(builderClass)
-                                           .addStatement("return new $T()", builderClass)
-                                           .build();
+        MethodSpec buildMethod = MethodSpec
+                .methodBuilder(Messages.METHOD_NEW_BUILDER)
+                .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+                .returns(builderClass)
+                .addStatement("return new $T()", builderClass)
+                .build();
         return buildMethod;
     }
 
@@ -116,27 +116,30 @@ class MethodGenerator {
 
         /**
          * Returns the concrete method constructor according to
-         * the passed {@code FieldDescriptorProto}
+         * the passed {@code FieldDescriptorProto}.
          *
          * @param field the descriptor for the field
          * @param index the index of the field
          * @return the method constructor instance
          */
         private MethodConstructor create(FieldDescriptorProto field, int index) {
-            if (isMap(field)) {
-                return doCreate(MapFieldMethodConstructor.newBuilder(), field, index);
-            }
-            if (isRepeated(field)) {
-                return doCreate(RepeatedFieldMethodConstructor.newBuilder(), field, index);
-            }
-            return doCreate(SingularFieldMethodConstructor.newBuilder(), field, index);
+            return doCreate(builderFor(field), field, index);
         }
 
-        private MethodConstructor doCreate(AbstractMethodConstructorBuilder builder,
+        private AbstractMethodBuilder builderFor(FieldDescriptorProto field) {
+            if (isMap(field)) {
+                return MapFieldMethod.newBuilder();
+            }
+            if (isRepeated(field)) {
+                return RepeatedFieldMethod.newBuilder();
+            }
+            return SingularFieldMethod.newBuilder();
+        }
+
+        private MethodConstructor doCreate(AbstractMethodBuilder builder,
                                            FieldDescriptorProto field,
                                            int fieldIndex) {
-            FieldTypeFactory factory =
-                    new FieldTypeFactory(message, typeCache.getCachedTypes());
+            FieldTypeFactory factory = new FieldTypeFactory(message, typeCache);
             FieldType fieldType = factory.create(field);
             MethodConstructor methodConstructor =
                     builder.setField(field)

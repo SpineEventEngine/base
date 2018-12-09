@@ -30,7 +30,7 @@ import io.spine.base.ConversionException;
 import io.spine.code.proto.FieldName;
 import io.spine.code.proto.ScalarType;
 import io.spine.logging.Logging;
-import io.spine.tools.compiler.MessageTypeCache;
+import io.spine.tools.compiler.TypeCache;
 import io.spine.tools.compiler.field.type.FieldType;
 import io.spine.validate.ValidationException;
 
@@ -53,13 +53,11 @@ import static java.lang.String.format;
  * A method constructor of the {@code MethodSpec} objects based on the Protobuf message declaration.
  *
  * <p>Constructs the {@code MethodSpec} objects for the repeated fields.
- *
- * @author Illia Shepilov
  */
 @SuppressWarnings("DuplicateStringLiteralInspection")
 // It cannot be used as the constant across the project.
 // Although it has the equivalent literal they have the different meaning.
-class RepeatedFieldMethodConstructor extends AbstractMethodConstructor implements Logging {
+class RepeatedFieldMethod extends AbstractMethod implements Logging {
 
     private static final String VALUE = "value";
     private static final String INDEX = "index";
@@ -84,15 +82,15 @@ class RepeatedFieldMethodConstructor extends AbstractMethodConstructor implement
     @SuppressWarnings("ConstantConditions")
     // The fields are checked in the {@code #build()} method
     // of the {@code RepeatedFieldMethodsConstructorBuilder} class.
-    private RepeatedFieldMethodConstructor(RepeatedFieldMethodsConstructorBuilder builder) {
+    private RepeatedFieldMethod(RepeatedFieldMethodsBuilder builder) {
         super(builder);
         this.fieldType = builder.getFieldType();
         this.fieldDescriptor = builder.getField();
         FieldName fieldName = FieldName.of(fieldDescriptor);
         this.javaFieldName = fieldName.javaCase();
         this.methodNamePart = fieldName.toCamelCase();
-        MessageTypeCache messageTypeCache = builder.getTypeCache();
-        this.listElementClassName = getParameterClassName(fieldDescriptor, messageTypeCache);
+        TypeCache typeCache = builder.getTypeCache();
+        this.listElementClassName = getParameterClassName(fieldDescriptor, typeCache);
         this.isScalarOrEnum = isScalarType(fieldDescriptor) || isEnumType(fieldDescriptor);
     }
 
@@ -339,20 +337,20 @@ class RepeatedFieldMethodConstructor extends AbstractMethodConstructor implement
      *
      * @return created builder
      */
-    static RepeatedFieldMethodsConstructorBuilder newBuilder() {
-        return new RepeatedFieldMethodsConstructorBuilder();
+    static RepeatedFieldMethodsBuilder newBuilder() {
+        return new RepeatedFieldMethodsBuilder();
     }
 
     /**
      * A builder for the {@code RepeatedFieldMethodConstructor} class.
      */
-    static class RepeatedFieldMethodsConstructorBuilder
-            extends AbstractMethodConstructorBuilder<RepeatedFieldMethodConstructor> {
+    static class RepeatedFieldMethodsBuilder
+            extends AbstractMethodBuilder<RepeatedFieldMethod> {
 
         @Override
-        RepeatedFieldMethodConstructor build() {
+        RepeatedFieldMethod build() {
             checkFields();
-            return new RepeatedFieldMethodConstructor(this);
+            return new RepeatedFieldMethod(this);
         }
     }
 }

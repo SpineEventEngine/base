@@ -23,16 +23,17 @@ import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 import com.squareup.javapoet.TypeName;
 import io.spine.code.proto.ScalarType;
+import io.spine.tools.compiler.TypeCache;
 
 import java.util.AbstractMap;
 import java.util.Map;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.protobuf.DescriptorProtos.DescriptorProto;
 import static io.spine.code.proto.FieldTypesProto.getEntryNameFor;
 import static io.spine.code.proto.FieldTypesProto.isMap;
 import static io.spine.code.proto.FieldTypesProto.isRepeated;
 import static io.spine.code.proto.FieldTypesProto.trimTypeName;
+import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
  * Factory for creation {@link FieldType} instances.
@@ -42,7 +43,7 @@ import static io.spine.code.proto.FieldTypesProto.trimTypeName;
 public class FieldTypeFactory {
 
     /** A map from Protobuf type name to Java class FQN. */
-    private final Map<String, String> messageTypeMap;
+    private final TypeCache typeCache;
     private final Iterable<DescriptorProto> messageNestedTypes;
 
     private static final String MAP_EXPECTED_ERROR_MESSAGE = "Map expected.";
@@ -50,12 +51,14 @@ public class FieldTypeFactory {
     /**
      * Creates new instance.
      *
-     * @param messageDescriptor the message descriptor to extract nested types
-     * @param messageTypeMap    pre-scanned map with proto types and their appropriate Java classes
+     * @param messageType
+     *         the message descriptor to extract nested types
+     * @param typeCache
+     *         pre-scanned map with proto types and their appropriate Java classes
      */
-    public FieldTypeFactory(DescriptorProto messageDescriptor, Map<String, String> messageTypeMap) {
-        this.messageTypeMap = messageTypeMap;
-        this.messageNestedTypes = messageDescriptor.getNestedTypeList();
+    public FieldTypeFactory(DescriptorProto messageType, TypeCache typeCache) {
+        this.typeCache = typeCache;
+        this.messageNestedTypes = messageType.getNestedTypeList();
     }
 
     /**
@@ -79,10 +82,12 @@ public class FieldTypeFactory {
         if (field.getType() == Type.TYPE_MESSAGE
                 || field.getType() == Type.TYPE_ENUM) {
             String typeName = trimTypeName(field);
-            String result = messageTypeMap.get(typeName);
-            checkNotNull(result,
-                         "Cannot find the field type name for %s of type %s",
-                         typeName, field.getType());
+            String result =
+                    typeCache.javaType(typeName)
+                             .orElseThrow(() -> newIllegalStateException(
+                                     "Cannot find the field type name for %s of type %s",
+                                     typeName, field.getType())
+                             );
             return result;
         } else {
             return ScalarType.getJavaTypeName(field.getType());

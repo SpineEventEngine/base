@@ -28,7 +28,7 @@ import io.spine.code.proto.FileName;
 import io.spine.code.proto.RejectionDeclaration;
 import io.spine.code.proto.RejectionsFile;
 import io.spine.code.proto.SourceFile;
-import io.spine.tools.compiler.MessageTypeCache;
+import io.spine.tools.compiler.TypeCache;
 import io.spine.tools.compiler.rejection.RejectionWriter;
 import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.SpinePlugin;
@@ -39,7 +39,6 @@ import org.slf4j.Logger;
 
 import java.io.File;
 import java.util.List;
-import java.util.Map;
 
 import static io.spine.code.proto.FileDescriptors.parse;
 import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
@@ -60,16 +59,11 @@ import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSetPath;
  * <p>Uses generated proto descriptors.
  *
  * <p>Logs a warning if there are no protobuf descriptors generated.
- *
- * @author Mikhail Mikhaylov
- * @author Alexander Yevsyukov
- * @author Alexander Litus
- * @author Alex Tymchenko
  */
 public class RejectionGenPlugin extends SpinePlugin {
 
     /** A map from Protobuf type name to Java class FQN. */
-    private final MessageTypeCache messageTypeCache = new MessageTypeCache();
+    private final TypeCache typeCache = new TypeCache();
 
     private List<RejectionsFile> collect(Iterable<FileDescriptorProto> files) {
         List<RejectionsFile> result = Lists.newLinkedList();
@@ -140,37 +134,39 @@ public class RejectionGenPlugin extends SpinePlugin {
         log.debug("Rejection generation phase initialized with tasks: {}, {}", mainTask, testTask);
     }
 
+    /**
+     * Verifies if the descriptor set file exists. If not writes about this into the debug log.
+     */
+    private boolean fileExists(String descriptorSetFile) {
+        File setFile = new File(descriptorSetFile);
+        if (setFile.exists()) {
+            return true;
+        }
+        logMissingDescriptorSetFile(setFile);
+        return false;
+    }
+
     private void generateRejections(String mainFile, String targetFolder, Indent indent) {
-        Logger log = log();
-        File setFile = new File(mainFile);
-        if (!setFile.exists()) {
-            logMissingDescriptorSetFile(setFile);
+        if (!fileExists(mainFile)) {
             return;
         }
 
-        log.debug("Generating rejections from {}", mainFile);
+        log().debug("Generating rejections from {}", mainFile);
         List<FileDescriptorProto> mainFiles = parse(mainFile);
         collectAllMessageTypes(mainFiles);
         List<RejectionsFile> rejectionFiles = collect(mainFiles);
         doGenerate(rejectionFiles, targetFolder, indent);
     }
 
-    private void generateTestRejections(String mainFile, String testFile, String targetFolder,
+    private void generateTestRejections(String mainFile,
+                                        String testFile,
+                                        String targetFolder,
                                         Indent indent) {
-        Logger log = log();
-        File setFile = new File(mainFile);
-        if (!setFile.exists()) {
-            logMissingDescriptorSetFile(setFile);
+        if (!(fileExists(mainFile) && fileExists(testFile))) {
             return;
         }
 
-        File testSetFile = new File(testFile);
-        if (!testSetFile.exists()) {
-            logMissingDescriptorSetFile(testSetFile);
-            return;
-        }
-
-        log.debug("Generating test rejections from {}", testFile);
+        log().debug("Generating test rejections from {}", testFile);
 
         List<FileDescriptorProto> mainFiles = parse(mainFile);
         collectAllMessageTypes(mainFiles);
@@ -183,7 +179,7 @@ public class RejectionGenPlugin extends SpinePlugin {
 
     private void collectAllMessageTypes(Iterable<FileDescriptorProto> files) {
         for (FileDescriptorProto file : files) {
-            messageTypeCache.cacheTypes(file);
+            typeCache.loadFrom(file);
         }
     }
 
@@ -192,12 +188,12 @@ public class RejectionGenPlugin extends SpinePlugin {
         log.debug("Processing the file descriptors for the rejections {}", files);
         for (RejectionsFile file : files) {
             // We are sure that this is a rejections file because we got them filtered.
-            generateRejections(file, messageTypeCache.getCachedTypes(), outDir, indent);
+            generateRejections(file, typeCache, outDir, indent);
         }
     }
 
     private void generateRejections(RejectionsFile file,
-                                    Map<String, String> messageTypeMap,
+                                    TypeCache typeCache,
                                     String rejectionsRootDir,
                                     Indent indent) {
         Logger log = log();
@@ -216,7 +212,7 @@ public class RejectionGenPlugin extends SpinePlugin {
             // The name of the generated `ThrowableMessage` will be the same
             // as for the Protobuf message.
             log.debug("Processing rejection '{}'", rejection.getSimpleTypeName());
-            RejectionWriter writer = new RejectionWriter(rejection, outDir, messageTypeMap, indent);
+            RejectionWriter writer = new RejectionWriter(rejection, outDir, typeCache, indent);
             writer.write();
         }
     }

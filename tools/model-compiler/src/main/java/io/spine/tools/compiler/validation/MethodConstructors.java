@@ -65,6 +65,7 @@ final class MethodConstructors {
      *
      * @return the {@code String} which represents the `return` statement
      */
+    @SuppressWarnings("DuplicateStringLiteralInspection") // different semantics of gen'ed code.
     static String returnThis() {
         return "return this";
     }
