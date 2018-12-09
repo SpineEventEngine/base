@@ -79,9 +79,10 @@ public final class ConstraintViolations {
 
         StringBuilder resultBuilder = new StringBuilder("Violation list:");
 
+        String newLine = lineSeparator();
         for (ConstraintViolation childViolation : violations) {
             String childViolationFormatted = toText(childViolation);
-            resultBuilder.append(lineSeparator())
+            resultBuilder.append(newLine)
                          .append(childViolationFormatted);
         }
         return resultBuilder.toString();
@@ -128,9 +129,10 @@ public final class ConstraintViolations {
 
         StringBuilder resultBuilder = new StringBuilder("Violations:");
 
+        String newLine = lineSeparator();
         for (ConstraintViolation childViolation : violations) {
             String childViolationFormatted = toText(format, childViolation);
-            resultBuilder.append(lineSeparator())
+            resultBuilder.append(newLine)
                          .append(childViolationFormatted);
         }
         return resultBuilder.toString();
