@@ -44,15 +44,14 @@ public class ValidationException extends RuntimeException {
     /**
      * List of the constraint violations, that were found during the validation.
      */
-    private final List<ConstraintViolation> constraintViolations;
+    private final ImmutableList<ConstraintViolation> constraintViolations;
 
     public ValidationException(Iterable<ConstraintViolation> violations) {
         super();
         this.constraintViolations = ImmutableList.copyOf(violations);
     }
 
-    @SuppressWarnings({"AssignmentOrReturnOfFieldWithMutableType" /* returns immutable impl. */,
-                       "unused" /* part of public API of the exception. */})
+    @SuppressWarnings({"unused" /* part of public API of the exception. */})
     public List<ConstraintViolation> getConstraintViolations() {
         return constraintViolations;
     }
