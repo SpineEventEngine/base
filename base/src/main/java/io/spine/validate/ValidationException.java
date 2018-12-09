@@ -34,9 +34,6 @@ import static java.util.stream.Collectors.toList;
 
 /**
  * An exception, thrown if a {@code Message} does not pass the validation.
- *
- * @author Illia Shepilov
- * @author Alex Tymchenko
  */
 public class ValidationException extends RuntimeException {
 
