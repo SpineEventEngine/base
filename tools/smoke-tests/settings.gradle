@@ -21,7 +21,7 @@
 include 'enrichment-lookup'
 include 'known-types'
 include 'validation-rules'
-include 'protoc-plugin'
+include 'model-compiler-tests'
 include 'rejection-generation'
 
 /*
