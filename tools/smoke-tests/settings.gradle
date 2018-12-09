@@ -18,11 +18,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-include 'enrichment-lookup'
-include 'known-types'
-include 'validation-rules'
+include 'enrichment-tests'
+include 'known-types-tests'
+include 'validation-tests'
 include 'model-compiler-tests'
-include 'rejection-generation'
+include 'rejection-tests'
 
 /*
  * Dependency links established with the Gradle included build.
