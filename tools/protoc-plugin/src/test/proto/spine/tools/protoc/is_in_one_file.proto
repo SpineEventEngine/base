@@ -29,14 +29,14 @@ option java_outer_classname = "IsInOneFileProto";
 option java_package = "io.spine.tools.protoc";
 
 message ProtocAddressUpdated {
-    option (is) = "io.spine.tools.protoc.ProtocCustomerEvent";
+    option (is).java_type = "io.spine.tools.protoc.ProtocCustomerEvent";
 
     string uid = 1;
     string new_address = 2;
 }
 
 message ProtocPlanUpdated {
-    option (is) = "io.spine.tools.protoc.ProtocCustomerEvent";
+    option (is).java_type = "io.spine.tools.protoc.ProtocCustomerEvent";
 
     string uid = 1;
     Plan new_plan = 2;
