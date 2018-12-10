@@ -18,18 +18,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * The versions of the libraries used.
- *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
- */
+package io.spine.tools.compiler.descriptor;
 
-final def SPINE_VERSION = '1.0.0-SNAPSHOT'
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-ext {
-    spineVersion = SPINE_VERSION
-    spineBaseVersion = SPINE_VERSION // Used by `filter-internal-javadoc.gradle`.
+import java.io.IOException;
 
-    versionToPublish = SPINE_VERSION
+@DisplayName("Merger should")
+class MergerTest {
+
+    @BeforeAll
+    static void setUp() throws IOException {
+
+    }
+
+    @Test
+    @DisplayName("merge descriptors from ZIP, folder, and standalone file")
+    void mergeFromAllSources() {
+    }
 }
