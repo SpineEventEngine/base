@@ -35,9 +35,6 @@ import java.util.List;
 /**
  * Custom {@linkplain java.nio.file.FileVisitor FileVisitor} which recursively deletes
  * the contents of the walked folder.
- *
- * @author Mikhail Mikhaylov
- * @author Alex Tymchenko
  */
 @SuppressWarnings("RefusedBequest")
 // As we define a completely different behavior for the visitor methods.

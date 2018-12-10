@@ -22,7 +22,7 @@ package io.spine.tools.compiler.validation;
 
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.squareup.javapoet.ClassName;
-import io.spine.tools.compiler.MessageTypeCache;
+import io.spine.tools.compiler.TypeCache;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -32,6 +32,7 @@ import static io.spine.code.java.PrimitiveType.getWrapperClass;
 import static io.spine.code.proto.FieldTypesProto.trimTypeName;
 import static io.spine.code.proto.ScalarType.getJavaTypeName;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
+import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.lang.String.format;
 
 /**
@@ -52,17 +53,19 @@ final class ClassNames {
      * @param cache the cache of the message types
      * @return the obtained {@code ClassName}
      */
-    static ClassName getParameterClassName(FieldDescriptorProto field, MessageTypeCache cache) {
+    static ClassName getParameterClassName(FieldDescriptorProto field, TypeCache cache) {
         checkNotNull(field);
         checkNotNull(cache);
 
-        String typeName = field.getTypeName();
-        if (typeName.isEmpty()) {
+        String declaredTypeName = field.getTypeName();
+        if (declaredTypeName.isEmpty()) {
             return getJavaTypeForScalarType(field);
         }
-        typeName = trimTypeName(field);
-        String parameterType = cache.getCachedTypes()
-                                    .get(typeName);
+        String typeName = trimTypeName(field);
+        String parameterType =
+                cache.javaType(typeName)
+                     .orElseThrow(() -> newIllegalStateException(
+                             "No Java type cached for type %s", typeName));
         return ClassName.bestGuess(parameterType);
     }
 
@@ -106,14 +109,13 @@ final class ClassNames {
      * @throws IllegalArgumentException if the class of the validating builder is not found
      */
     static ClassName getValidatorMessageClassName(String javaPackage,
-                                                  MessageTypeCache typeCache,
+                                                  TypeCache typeCache,
                                                   String typeName) {
         checkNotNull(javaPackage);
         checkNotNull(typeCache);
         checkNotNull(typeName);
 
-        Collection<String> values = typeCache.getCachedTypes()
-                                             .values();
+        Collection<String> values = typeCache.javaTypes();
         String expectedClassName = javaPackage + '.' + typeName;
         for (String value : values) {
             if (value.equals(expectedClassName)) {

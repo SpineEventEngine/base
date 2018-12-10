@@ -32,12 +32,12 @@ import io.spine.code.java.PackageName;
 import io.spine.code.javadoc.JavadocText;
 import io.spine.code.proto.RejectionDeclaration;
 import io.spine.logging.Logging;
+import io.spine.tools.compiler.TypeCache;
 import org.slf4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.Map;
 
 import static com.squareup.javapoet.MethodSpec.constructorBuilder;
 import static io.spine.tools.compiler.annotation.Annotations.generatedBySpineModelCompiler;
@@ -62,19 +62,18 @@ public class RejectionWriter implements Logging {
 
     /**
      * Creates a new instance.
-     *
-     * @param rejection
+     *  @param rejection
      *         a rejection declaration
      * @param outputDirectory
      *         a directory to write a Rejection
-     * @param messageTypeMap
+     * @param typeCache
      *         the Proto-to-Java names map
      * @param indent
-     *         indentation for the generated code
+     *          the indentation for generated source code
      */
     public RejectionWriter(RejectionDeclaration rejection,
                            File outputDirectory,
-                           Map<String, String> messageTypeMap,
+                           TypeCache typeCache,
                            Indent indent) {
         this.declaration = rejection;
         this.messageClass = toJavaPoetName(rejection.messageClass());
@@ -82,7 +81,7 @@ public class RejectionWriter implements Logging {
         this.builder = new RejectionBuilderWriter(rejection,
                                                   messageClass,
                                                   toJavaPoetName(rejection.throwableClass()),
-                                                  messageTypeMap);
+                                                  typeCache);
         this.indent = indent;
     }
 

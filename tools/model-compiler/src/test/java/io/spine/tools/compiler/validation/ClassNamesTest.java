@@ -25,7 +25,7 @@ import com.google.common.testing.NullPointerTester.Visibility;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.squareup.javapoet.ClassName;
 import io.spine.testing.UtilityClassTest;
-import io.spine.tools.compiler.MessageTypeCache;
+import io.spine.tools.compiler.TypeCache;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -56,9 +56,9 @@ class ClassNamesTest extends UtilityClassTest<ClassNames> {
     @Test
     @DisplayName("throw when generic class name is not found")
     void throw_exception_when_generic_class_name_is_not_found() {
-        MessageTypeCache messageTypeCache = new MessageTypeCache();
+        TypeCache typeCache = new TypeCache();
         assertThrows(IllegalArgumentException.class,
-                     () -> getValidatorMessageClassName(TEST_PACKAGE, messageTypeCache, "field"));
+                     () -> getValidatorMessageClassName(TEST_PACKAGE, typeCache, "field"));
     }
 
     @Test

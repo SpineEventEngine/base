@@ -32,12 +32,12 @@ import io.spine.code.proto.FieldDeclarationProto;
 import io.spine.code.proto.FieldName;
 import io.spine.code.proto.RejectionDeclaration;
 import io.spine.protobuf.Messages;
+import io.spine.tools.compiler.TypeCache;
 import io.spine.tools.compiler.field.type.FieldType;
 import io.spine.tools.compiler.field.type.FieldTypeFactory;
 import io.spine.validate.Validate;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import static com.google.common.collect.Lists.newArrayList;
@@ -67,12 +67,12 @@ class RejectionBuilderWriter {
     RejectionBuilderWriter(RejectionDeclaration rejection,
                            ClassName messageClass,
                            ClassName throwableClass,
-                           Map<String, String> messageTypeMap) {
+                           TypeCache typeCache) {
         this.rejection = rejection;
         this.messageClass = messageClass;
         this.throwableClass = throwableClass;
         this.name = SimpleClassName.ofBuilder();
-        this.fieldTypeFactory = new FieldTypeFactory(rejection.getMessage(), messageTypeMap);
+        this.fieldTypeFactory = new FieldTypeFactory(rejection.getMessage(), typeCache);
     }
 
     /**
@@ -81,6 +81,9 @@ class RejectionBuilderWriter {
      * @return the {@code newInstance} specification
      */
     MethodSpec newBuilder() {
+        @SuppressWarnings("DuplicateStringLiteralInspection") // The duplicated string is in
+                // tests of the code which cannot share common constants with this class.
+                // For the time being let's keep it as is.
         JavadocText javadoc = JavadocText.fromEscaped("@return a new builder for the rejection")
                                          .withNewLine();
         return MethodSpec
@@ -205,11 +208,11 @@ class RejectionBuilderWriter {
         return methods;
     }
 
-    private MethodSpec fieldSetter(FieldDeclarationProto field,
-                                   FieldType fieldType) {
+    private MethodSpec fieldSetter(FieldDeclarationProto field, FieldType fieldType) {
         FieldName fieldName = field.name();
         String parameterName = fieldName.javaCase();
         String methodName = fieldType.getSetterPrefix() + fieldName.toCamelCase();
+        @SuppressWarnings("DuplicateStringLiteralInspection") // different semantics of gen'ed code.
         MethodSpec.Builder methodBuilder = MethodSpec
                 .methodBuilder(methodName)
                 .addModifiers(PUBLIC)

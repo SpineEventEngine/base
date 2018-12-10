@@ -30,7 +30,6 @@ option java_package = "io.spine.base";
 
 import "google/protobuf/struct.proto";
 
-import "spine/validate/constraint_violation.proto";
 import "spine/validate/validation_error.proto";
 
 // Information on a technical error occurred in the system.

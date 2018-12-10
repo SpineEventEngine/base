@@ -41,10 +41,6 @@ import static java.lang.String.format;
 /**
  * Abstract base class for {@linkplain Annotator Annotators}
  * for a particular kind of type definition.
- *
- * @param <L> {@inheritDoc}
- * @param <D> {@inheritDoc}
- * @author Dmytro Grankin
  */
 abstract class TypeDefinitionAnnotator<L extends ExtendableMessage, D extends GeneratedMessageV3>
          extends Annotator<L, D> {
@@ -106,8 +102,8 @@ abstract class TypeDefinitionAnnotator<L extends ExtendableMessage, D extends Ge
      */
     protected abstract void annotateDefinition(D definition, FileDescriptorProto file);
 
-    static <T extends JavaSource<T>> JavaSource findNestedType(AbstractJavaSource<T> enclosingClass,
-                                                               String typeName) {
+    static <T extends JavaSource<T>>
+    JavaSource findNestedType(AbstractJavaSource<T> enclosingClass, String typeName) {
         for (JavaSource nestedType : enclosingClass.getNestedTypes()) {
             if (nestedType.getName()
                           .equals(typeName)) {

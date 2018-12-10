@@ -27,7 +27,7 @@ import com.squareup.javapoet.ParameterSpec;
 import io.spine.base.ConversionException;
 import io.spine.code.proto.FieldName;
 import io.spine.logging.Logging;
-import io.spine.tools.compiler.MessageTypeCache;
+import io.spine.tools.compiler.TypeCache;
 import io.spine.tools.compiler.field.type.FieldType;
 import io.spine.validate.ValidationException;
 import org.slf4j.Logger;
@@ -51,10 +51,8 @@ import static java.lang.String.format;
  * validating builders generation based on the Protobuf message declaration.
  *
  * <p>Constructs the {@code MethodSpec} objects for the singular fields.
- *
- * @author Illia Shepilov
  */
-class SingularFieldMethodConstructor extends AbstractMethodConstructor implements Logging {
+class SingularFieldMethod extends AbstractMethod implements Logging {
 
     private static final String GETTER_PREFIX = "get";
 
@@ -67,16 +65,16 @@ class SingularFieldMethodConstructor extends AbstractMethodConstructor implement
     /**
      * Constructs the instance by the passed builder.
      *
-     * <p>The passed builder {@linkplain SingularFieldConstructorBuilder#checkFields() ensures}
+     * <p>The passed builder {@linkplain io.spine.tools.compiler.validation.SingularFieldMethod.SingularFieldBuilder#checkFields() ensures}
      * non-null values of its fields prior to calling this constructor.
      */
     @SuppressWarnings("ConstantConditions") // See Javadoc above.
-    private SingularFieldMethodConstructor(SingularFieldConstructorBuilder builder) {
+    private SingularFieldMethod(SingularFieldBuilder builder) {
         super(builder);
         this.fieldType = builder.getFieldType();
         this.field = builder.getField();
-        MessageTypeCache messageTypeCache = builder.getTypeCache();
-        this.fieldClassName = getParameterClassName(field, messageTypeCache);
+        TypeCache typeCache = builder.getTypeCache();
+        this.fieldClassName = getParameterClassName(field, typeCache);
         FieldName fieldName = FieldName.of(field);
         this.fieldName = fieldName.javaCase();
         this.methodNamePart = fieldName.toCamelCase();
@@ -199,20 +197,20 @@ class SingularFieldMethodConstructor extends AbstractMethodConstructor implement
      *
      * @return constructed builder
      */
-    static SingularFieldConstructorBuilder newBuilder() {
-        return new SingularFieldConstructorBuilder();
+    static SingularFieldBuilder newBuilder() {
+        return new SingularFieldBuilder();
     }
 
     /**
      * A builder class for the {@code SingularFieldMethodConstructor} class.
      */
-    static class SingularFieldConstructorBuilder
-            extends AbstractMethodConstructorBuilder<SingularFieldMethodConstructor> {
+    static class SingularFieldBuilder
+            extends AbstractMethodBuilder<SingularFieldMethod> {
 
         @Override
-        SingularFieldMethodConstructor build() {
+        SingularFieldMethod build() {
             checkFields();
-            return new SingularFieldMethodConstructor(this);
+            return new SingularFieldMethod(this);
         }
     }
 }

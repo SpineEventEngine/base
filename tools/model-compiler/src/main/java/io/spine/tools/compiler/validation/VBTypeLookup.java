@@ -26,15 +26,13 @@ import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.code.java.PackageName;
 import io.spine.code.proto.FileName;
 import io.spine.logging.Logging;
-import io.spine.tools.compiler.MessageTypeCache;
+import io.spine.tools.compiler.TypeCache;
 import org.slf4j.Logger;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
-import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Sets.newHashSet;
 import static io.spine.code.proto.FileDescriptors.parseSkipStandard;
 import static java.util.stream.Collectors.toList;
@@ -44,16 +42,14 @@ import static java.util.stream.Collectors.toList;
  */
 class VBTypeLookup implements Logging {
 
+    @SuppressWarnings("DuplicateStringLiteralInspection")
     private static final String JAVA_CLASS_NAME_SUFFIX = "VBuilder";
 
     /** The path to descriptor set file. */
     private final String descriptorSetFile;
 
     /** A map from Protobuf type name to Java class FQN. */
-    private final MessageTypeCache messageTypeCache = new MessageTypeCache();
-
-    /** A map from Protobuf type name to Protobuf FileDescriptorProto. */
-    private final Map<DescriptorProto, FileDescriptorProto> descriptorCache = newHashMap();
+    private final TypeCache typeCache = new TypeCache();
 
     VBTypeLookup(String descriptorSetFile) {
         this.descriptorSetFile = descriptorSetFile;
@@ -118,7 +114,7 @@ class VBTypeLookup implements Logging {
         ImmutableSet.Builder<FileDescriptorProto> result = ImmutableSet.builder();
         Collection<FileDescriptorProto> descriptors = fileDescriptors(descFilePath);
         for (FileDescriptorProto file : descriptors) {
-            messageTypeCache.cacheTypes(file);
+            typeCache.loadFrom(file);
             log.debug("Found Protobuf file: {}", file.getName());
             result.add(file);
         }
@@ -126,8 +122,8 @@ class VBTypeLookup implements Logging {
         return result.build();
     }
 
-    MessageTypeCache getTypeCache() {
-        return messageTypeCache;
+    TypeCache getTypeCache() {
+        return typeCache;
     }
 
     /**
@@ -138,9 +134,10 @@ class VBTypeLookup implements Logging {
      * @return descriptors excluding Protobuf and rejections descriptors
      */
     private static Collection<FileDescriptorProto> fileDescriptors(String descFilePath) {
-        return parseSkipStandard(descFilePath).stream()
-                                              .filter(descriptor -> !FileName.from(descriptor)
-                                                                             .isRejections())
-                                              .collect(toList());
+        List<FileDescriptorProto> files = parseSkipStandard(descFilePath);
+        return files.stream()
+                    .filter(descriptor -> !FileName.from(descriptor)
+                                                    .isRejections())
+                    .collect(toList());
     }
 }
