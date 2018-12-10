@@ -506,7 +506,7 @@ extend google.protobuf.FileOptions {
     // When targeting Java, specify the name of a Java interface to be implemented by these
     // message types via `(every_is).java_type`.
     //
-    string every_is = 73946;
+    IsOption every_is = 73946;
 
     // reserved 73947 to 73970 for future use.
 }
