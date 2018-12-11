@@ -101,25 +101,19 @@ class MarkerInterfaceGeneratorTest {
         CodeGeneratorResponse response = processCodeGenRequest(filePath, descriptor);
         assertNotNull(response);
         List<File> files = response.getFileList();
-        assertEquals(3, files.size());
+        assertEquals(2, files.size());
         for (File file : files) {
             assertPackage(file);
 
             String name = file.getName();
             String insertionPoint = file.getInsertionPoint();
-            if (!insertionPoint.isEmpty()) {
-                String messageName = PROTO_PACKAGE + name.substring(name.lastIndexOf('/') + 1,
-                                                                    name.lastIndexOf('.'));
-                assertEquals(insertionPoint, format(INSERTION_POINT_IMPLEMENTS, messageName));
+            String messageName = PROTO_PACKAGE + name.substring(name.lastIndexOf('/') + 1,
+                                                                name.lastIndexOf('.'));
+            assertEquals(insertionPoint, format(INSERTION_POINT_IMPLEMENTS, messageName));
 
-                String content = file.getContent();
-                Matcher matcher = CUSTOMER_EVENT_INTERFACE_PATTERN.matcher(content);
-                assertTrue(matcher.matches());
-            } else {
-                String content = file.getContent();
-                Matcher matcher = CUSTOMER_EVENT_INTERFACE_DECL_PATTERN.matcher(content);
-                assertTrue(matcher.find());
-            }
+            String content = file.getContent();
+            Matcher matcher = CUSTOMER_EVENT_INTERFACE_PATTERN.matcher(content);
+            assertTrue(matcher.matches());
         }
     }
 
@@ -134,26 +128,18 @@ class MarkerInterfaceGeneratorTest {
         CodeGeneratorResponse response = processCodeGenRequest(filePath, descriptor);
         assertNotNull(response);
         List<File> files = response.getFileList();
-        assertEquals(4, files.size());
+        assertEquals(2, files.size());
         for (File file : files) {
             assertPackage(file);
 
             String name = file.getName();
             String insertionPoint = file.getInsertionPoint();
-            if (!insertionPoint.isEmpty()) {
-                String messageName = PROTO_PACKAGE +
-                        name.substring(name.lastIndexOf('/') + 1, name.lastIndexOf('.'));
-                assertEquals(format(INSERTION_POINT_IMPLEMENTS, messageName), insertionPoint);
-            }
-
+            assertFalse(insertionPoint.isEmpty());
             String content = file.getContent();
             if (name.endsWith("ProtocNameUpdated.java")) {
                 assertTrue(content.contains("Event,"));
             } else if (name.endsWith("ProtocUpdateName.java")) {
                 assertTrue(content.contains("Command,"));
-            } else {
-                assertTrue(CUSTOMER_EVENT_OR_COMMAND.matcher(name)
-                                                    .find());
             }
         }
     }
@@ -169,7 +155,7 @@ class MarkerInterfaceGeneratorTest {
         CodeGeneratorResponse response = processCodeGenRequest(filePath, descriptor);
         assertNotNull(response);
         List<File> files = response.getFileList();
-        assertEquals(3, files.size());
+        assertEquals(2, files.size());
         for (File file : files) {
             if (!haveSamePath(file, sourceWithPackage("ProtocCustomerEvent"))) {
                 assertFilePath(file, sourceWithPackage("EveryIsInOneFileProto"));
@@ -195,21 +181,16 @@ class MarkerInterfaceGeneratorTest {
         CodeGeneratorResponse response = processCodeGenRequest(filePath, descriptor);
         assertNotNull(response);
         List<File> files = response.getFileList();
-        assertEquals(3, files.size());
+        assertEquals(2, files.size());
         for (File file : files) {
-            if (file.getName()
-                    .endsWith("Event.java")) {
-                assertFalse(file.hasInsertionPoint());
-            } else {
-                assertFilePath(file, sourceWithPackage("IsInOneFileProto"));
+            assertFilePath(file, sourceWithPackage("IsInOneFileProto"));
 
-                String insertionPoint = file.getInsertionPoint();
-                assertTrue(insertionPoint.startsWith(format(INSERTION_POINT_IMPLEMENTS,
-                                                            PROTO_PACKAGE)));
-                String content = file.getContent();
-                Matcher matcher = CUSTOMER_EVENT_INTERFACE_PATTERN.matcher(content);
-                assertTrue(matcher.matches(), format("Unexpected inserted content: %s", content));
-            }
+            String insertionPoint = file.getInsertionPoint();
+            assertTrue(insertionPoint.startsWith(format(INSERTION_POINT_IMPLEMENTS,
+                                                        PROTO_PACKAGE)));
+            String content = file.getContent();
+            Matcher matcher = CUSTOMER_EVENT_INTERFACE_PATTERN.matcher(content);
+            assertTrue(matcher.matches(), format("Unexpected inserted content: %s", content));
         }
     }
 
