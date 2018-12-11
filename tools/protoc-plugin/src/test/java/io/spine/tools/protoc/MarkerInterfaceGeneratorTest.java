@@ -60,9 +60,11 @@ class MarkerInterfaceGeneratorTest {
             PackageName.of(MarkerInterfaceGeneratorTest.class);
     private static final Pattern CUSTOMER_EVENT_INTERFACE_PATTERN =
             compile("^\\s*io\\.spine\\.tools\\.protoc\\.ProtocCustomerEvent\\s*,\\s*$");
+    private static final Pattern PROJECT_EVENT_INTERFACE_PATTERN =
+            compile("^\\s*io\\.spine\\.tools\\.protoc\\.ProtocProjectEvent\\s*,\\s*$");
 
-    private static final Pattern CUSTOMER_EVENT_INTERFACE_DECL_PATTERN =
-            compile("public\\s+interface\\s+ProtocCustomerEvent\\s*extends\\s+Message\\s*\\{\\s*}");
+    private static final Pattern PROJECT_EVENT_INTERFACE_DECL_PATTERN =
+            compile("public\\s+interface\\s+ProtocProjectEvent\\s*extends\\s+Message\\s*\\{\\s*}");
 
     private static final Pattern CUSTOMER_EVENT_OR_COMMAND =
             compile("Customer(Command|Event)");
@@ -84,7 +86,7 @@ class MarkerInterfaceGeneratorTest {
 
     @Test
     @DisplayName("not accept nulls")
-    void not_accept_nulls() {
+    void notAcceptNulls() {
         new NullPointerTester()
                 .setDefault(CodeGeneratorRequest.class, CodeGeneratorRequest.getDefaultInstance())
                 .testAllPublicStaticMethods(MarkerInterfaceGenerator.class);
@@ -92,7 +94,7 @@ class MarkerInterfaceGeneratorTest {
 
     @Test
     @DisplayName("generate insertion point contents for EveryIs option")
-    void generate_insertion_point_contents_for_EveryIs_option() {
+    void generateInsertionPointContentsForEveryIsOption() {
         // Sample path; never resolved
         String filePath = "/proto/spine/tools/protoc/every_is_test.proto";
 
@@ -101,31 +103,25 @@ class MarkerInterfaceGeneratorTest {
         CodeGeneratorResponse response = processCodeGenRequest(filePath, descriptor);
         assertNotNull(response);
         List<File> files = response.getFileList();
-        assertEquals(3, files.size());
+        assertEquals(2, files.size());
         for (File file : files) {
             assertPackage(file);
 
             String name = file.getName();
             String insertionPoint = file.getInsertionPoint();
-            if (!insertionPoint.isEmpty()) {
-                String messageName = PROTO_PACKAGE + name.substring(name.lastIndexOf('/') + 1,
-                                                                    name.lastIndexOf('.'));
-                assertEquals(insertionPoint, format(INSERTION_POINT_IMPLEMENTS, messageName));
+            String messageName = PROTO_PACKAGE + name.substring(name.lastIndexOf('/') + 1,
+                                                                name.lastIndexOf('.'));
+            assertEquals(insertionPoint, format(INSERTION_POINT_IMPLEMENTS, messageName));
 
-                String content = file.getContent();
-                Matcher matcher = CUSTOMER_EVENT_INTERFACE_PATTERN.matcher(content);
-                assertTrue(matcher.matches());
-            } else {
-                String content = file.getContent();
-                Matcher matcher = CUSTOMER_EVENT_INTERFACE_DECL_PATTERN.matcher(content);
-                assertTrue(matcher.find());
-            }
+            String content = file.getContent();
+            Matcher matcher = CUSTOMER_EVENT_INTERFACE_PATTERN.matcher(content);
+            assertTrue(matcher.matches());
         }
     }
 
     @Test
     @DisplayName("generate insertion point contents for Is option")
-    void generate_insertion_point_contents_for_Is_option() {
+    void generateInsertionPointContentsForIsOption() {
         // Sample path; never resolved
         String filePath = "/proto/spine/tools/protoc/is_test.proto";
 
@@ -134,33 +130,25 @@ class MarkerInterfaceGeneratorTest {
         CodeGeneratorResponse response = processCodeGenRequest(filePath, descriptor);
         assertNotNull(response);
         List<File> files = response.getFileList();
-        assertEquals(4, files.size());
+        assertEquals(2, files.size());
         for (File file : files) {
             assertPackage(file);
 
             String name = file.getName();
             String insertionPoint = file.getInsertionPoint();
-            if (!insertionPoint.isEmpty()) {
-                String messageName = PROTO_PACKAGE +
-                        name.substring(name.lastIndexOf('/') + 1, name.lastIndexOf('.'));
-                assertEquals(format(INSERTION_POINT_IMPLEMENTS, messageName), insertionPoint);
-            }
-
+            assertFalse(insertionPoint.isEmpty());
             String content = file.getContent();
             if (name.endsWith("ProtocNameUpdated.java")) {
                 assertTrue(content.contains("Event,"));
             } else if (name.endsWith("ProtocUpdateName.java")) {
                 assertTrue(content.contains("Command,"));
-            } else {
-                assertTrue(CUSTOMER_EVENT_OR_COMMAND.matcher(name)
-                                                    .find());
             }
         }
     }
 
     @Test
     @DisplayName("generate insertion point contents for EveryIs in singe file")
-    void generate_insertion_point_contents_for_EveryIs_in_single_file() {
+    void generateInsertionPointContentsForEveryIsInSingleFile() {
         // Sample path; never resolved
         String filePath = "/proto/spine/tools/protoc/every_is_in_one_file.proto";
 
@@ -169,7 +157,7 @@ class MarkerInterfaceGeneratorTest {
         CodeGeneratorResponse response = processCodeGenRequest(filePath, descriptor);
         assertNotNull(response);
         List<File> files = response.getFileList();
-        assertEquals(3, files.size());
+        assertEquals(2, files.size());
         for (File file : files) {
             if (!haveSamePath(file, sourceWithPackage("ProtocCustomerEvent"))) {
                 assertFilePath(file, sourceWithPackage("EveryIsInOneFileProto"));
@@ -186,7 +174,7 @@ class MarkerInterfaceGeneratorTest {
 
     @Test
     @DisplayName("generate insertion point contents for Is in single file")
-    void generate_insertion_point_contents_for_Is_in_single_file() {
+    void generateInsertionPointContentsForIsInSingleFile() {
         // Sample path; never resolved
         String filePath = "/proto/spine/tools/protoc/is_in_one_file.proto";
 
@@ -195,27 +183,22 @@ class MarkerInterfaceGeneratorTest {
         CodeGeneratorResponse response = processCodeGenRequest(filePath, descriptor);
         assertNotNull(response);
         List<File> files = response.getFileList();
-        assertEquals(3, files.size());
+        assertEquals(2, files.size());
         for (File file : files) {
-            if (file.getName()
-                    .endsWith("Event.java")) {
-                assertFalse(file.hasInsertionPoint());
-            } else {
-                assertFilePath(file, sourceWithPackage("IsInOneFileProto"));
+            assertFilePath(file, sourceWithPackage("IsInOneFileProto"));
 
-                String insertionPoint = file.getInsertionPoint();
-                assertTrue(insertionPoint.startsWith(format(INSERTION_POINT_IMPLEMENTS,
-                                                            PROTO_PACKAGE)));
-                String content = file.getContent();
-                Matcher matcher = CUSTOMER_EVENT_INTERFACE_PATTERN.matcher(content);
-                assertTrue(matcher.matches(), format("Unexpected inserted content: %s", content));
-            }
+            String insertionPoint = file.getInsertionPoint();
+            assertTrue(insertionPoint.startsWith(format(INSERTION_POINT_IMPLEMENTS,
+                                                        PROTO_PACKAGE)));
+            String content = file.getContent();
+            Matcher matcher = CUSTOMER_EVENT_INTERFACE_PATTERN.matcher(content);
+            assertTrue(matcher.matches(), format("Unexpected inserted content: %s", content));
         }
     }
 
     @Test
     @DisplayName("generate EventMessage insertion points")
-    void generate_EventMessage_insertion_points() {
+    void generateEventMessageInsertionPoints() {
         // Sample path; never resolved
         String filePath = "/proto/spine/tools/protoc/test_events.proto";
 
@@ -235,7 +218,7 @@ class MarkerInterfaceGeneratorTest {
 
     @Test
     @DisplayName("generate CommandMessage insertion points")
-    void generate_CommandMessage_insertion_points() {
+    void generateCommandMessageInsertionPoints() {
         // Sample path; never resolved
         String filePath = "/proto/spine/tools/protoc/test_commands.proto";
 
@@ -255,7 +238,7 @@ class MarkerInterfaceGeneratorTest {
 
     @Test
     @DisplayName("generate RejectionMessage insertion points")
-    void generate_RejectionMessage_insertion_points() {
+    void generateRejectionMessageInsertionPoints() {
         // Sample path; never resolved
         String filePath = "/proto/spine/tools/protoc/test_rejections.proto";
 
@@ -275,7 +258,7 @@ class MarkerInterfaceGeneratorTest {
 
     @Test
     @DisplayName("not accept requests from old compiler")
-    void not_accept_requests_from_old_compiler() {
+    void notAcceptRequestsFromOldCompiler() {
         Version version = Version.newBuilder()
                                  .setMajor(2)
                                  .build();
@@ -291,7 +274,7 @@ class MarkerInterfaceGeneratorTest {
 
     @Test
     @DisplayName("not accept empty requests")
-    void not_accept_empty_requests() {
+    void notAcceptEmptyRequests() {
         Version version = Version.newBuilder()
                                  .setMajor(3)
                                  .build();
@@ -301,6 +284,74 @@ class MarkerInterfaceGeneratorTest {
                                     .build();
         assertThrows(IllegalArgumentException.class,
                      () -> codeGenerator.process(request));
+    }
+
+    @Test
+    @DisplayName("generate marker interfaces for (is) if `generate = true`")
+    void generateMarkersForIs() {
+        // Sample path; never resolved
+        String filePath = "/proto/spine/tools/protoc/is_generate.proto";
+
+        FileDescriptorProto descriptor = IsGeneratedProto.getDescriptor()
+                                                         .toProto();
+        CodeGeneratorResponse response = processCodeGenRequest(filePath, descriptor);
+        assertNotNull(response);
+        List<File> files = response.getFileList();
+        assertEquals(4, files.size());
+        for (File file : files) {
+            assertPackage(file);
+
+            String name = file.getName();
+            String insertionPoint = file.getInsertionPoint();
+            if (!insertionPoint.isEmpty()) {
+                String messageName = PROTO_PACKAGE +
+                        name.substring(name.lastIndexOf('/') + 1, name.lastIndexOf('.'));
+                assertEquals(format(INSERTION_POINT_IMPLEMENTS, messageName), insertionPoint);
+            }
+
+            String content = file.getContent();
+            if (name.endsWith("ProtocSurnameUpdated.java")) {
+                assertTrue(content.contains("Event,"));
+            } else if (name.endsWith("ProtocUpdateSurname.java")) {
+                assertTrue(content.contains("Command,"));
+            } else {
+                assertTrue(CUSTOMER_EVENT_OR_COMMAND.matcher(name)
+                                                    .find());
+            }
+        }
+    }
+
+    @Test
+    @DisplayName("generate marker interfaces for (every_is) if `generate = true`")
+    void generateMarkersForEveryIs() {
+        // Sample path; never resolved
+        String filePath = "/proto/spine/tools/protoc/every_is_generate.proto";
+
+        FileDescriptorProto descriptor = EveryIsGeneratedProto.getDescriptor()
+                                                              .toProto();
+        CodeGeneratorResponse response = processCodeGenRequest(filePath, descriptor);
+        assertNotNull(response);
+        List<File> files = response.getFileList();
+        assertEquals(3, files.size());
+        for (File file : files) {
+            assertPackage(file);
+
+            String name = file.getName();
+            String insertionPoint = file.getInsertionPoint();
+            if (!insertionPoint.isEmpty()) {
+                String messageName = PROTO_PACKAGE + name.substring(name.lastIndexOf('/') + 1,
+                                                                    name.lastIndexOf('.'));
+                assertEquals(insertionPoint, format(INSERTION_POINT_IMPLEMENTS, messageName));
+
+                String content = file.getContent();
+                Matcher matcher = PROJECT_EVENT_INTERFACE_PATTERN.matcher(content);
+                assertTrue(matcher.matches());
+            } else {
+                String content = file.getContent();
+                Matcher matcher = PROJECT_EVENT_INTERFACE_DECL_PATTERN.matcher(content);
+                assertTrue(matcher.find());
+            }
+        }
     }
 
     private CodeGeneratorResponse processCodeGenRequest(String filePath,

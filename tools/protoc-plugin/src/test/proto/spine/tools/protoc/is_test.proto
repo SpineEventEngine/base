@@ -28,17 +28,15 @@ option java_multiple_files = true;
 option java_outer_classname = "IsTestProto";
 option java_package = "io.spine.tools.protoc";
 
-import "google/protobuf/descriptor.proto";
-
 message ProtocNameUpdated {
-    option (is) = "io.spine.tools.protoc.ProtocCustomerEvent";
+    option (is).java_type = "io.spine.tools.protoc.ProtocCustomerEvent";
 
     string uid = 1;
     Name new_name = 2;
 }
 
 message ProtocUpdateName {
-    option (is) = "io.spine.tools.protoc.ProtocCustomerCommand";
+    option (is).java_type = "io.spine.tools.protoc.ProtocCustomerCommand";
 
     string uid = 1;
     Name new_name = 2;
