@@ -28,8 +28,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.Lists.newLinkedList;
-import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.util.Collections.singleton;
 
 /**
@@ -107,11 +107,8 @@ public final class FieldContext {
      * @return the target descriptor
      */
     FieldDescriptor getTarget() {
+        checkState(!descriptors.isEmpty(), "Empty context cannot have a target.");
         int targetIndex = descriptors.size() - 1;
-        if (targetIndex == -1) {
-            throw newIllegalStateException("Empty context cannot have a target.");
-        }
-
         return descriptors.get(targetIndex);
     }
 
