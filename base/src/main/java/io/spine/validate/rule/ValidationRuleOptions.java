@@ -35,7 +35,7 @@ import java.util.Optional;
 import static com.google.common.collect.ImmutableMap.builder;
 
 /**
- * Utilities for obtaining Protobuf options extracted from validation rules.
+ * Provides option value for a field mentioned in a validation rule.
  */
 public final class ValidationRuleOptions {
 
@@ -76,10 +76,7 @@ public final class ValidationRuleOptions {
     }
 
     /**
-     * {@code Builder} assembles a map from a field context
-     * to the options extracted from a validation rule.
-     *
-     * <p>Keys of the resulting map are field contexts for the fields of a validation rule targets.
+     * Assembles {@linkplain #options}.
      */
     private static class Builder {
 
