@@ -25,12 +25,23 @@ import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
 option java_multiple_files = true;
-option java_outer_classname = "ImplicitPackageTestProto";
+option java_outer_classname = "IsGeneratedProto";
 option java_package = "io.spine.tools.protoc";
 
-message PICreateUser {
-    option (is).java_type = "PIUserCommand";
-    option (is).generate = true;
+message ProtocSurnameUpdated {
+    option (is) = {java_type: "io.spine.tools.protoc.ProtocCustomerEvent" generate: true};
 
     string uid = 1;
+    Surname new_surname = 2;
+}
+
+message ProtocUpdateSurname {
+    option (is) = {java_type: "io.spine.tools.protoc.ProtocCustomerCommand" generate: true};
+
+    string uid = 1;
+    Surname new_surname = 2;
+}
+
+message Surname {
+    string value = 1;
 }

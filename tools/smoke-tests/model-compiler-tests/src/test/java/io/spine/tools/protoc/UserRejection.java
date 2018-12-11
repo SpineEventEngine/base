@@ -18,18 +18,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.tools.protoc;
+
 /**
- * The versions of the libraries used.
- *
- * This file is used in both module `build.gradle` scripts and in the integration tests,
- * as we want to manage the versions in a single source.
+ * This is a handcrafted interface to be implemented in a message class.
  */
+@SuppressWarnings("InterfaceNeverImplemented")
+    // Implemented in generated code. When project is not built, analyzer fails to acknowledge that.
+public interface UserRejection {
 
-final def SPINE_VERSION = '1.0.0-SNAPSHOT'
-
-ext {
-    spineVersion = SPINE_VERSION
-    spineBaseVersion = SPINE_VERSION // Used by `filter-internal-javadoc.gradle`.
-
-    versionToPublish = SPINE_VERSION
+    @SuppressWarnings("override")
+        // Cannot mark generated methods with `@Override` right now.
+    String getId();
 }
