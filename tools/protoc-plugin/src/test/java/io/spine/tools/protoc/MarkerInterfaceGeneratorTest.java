@@ -332,7 +332,6 @@ class MarkerInterfaceGeneratorTest {
         CodeGeneratorResponse response = processCodeGenRequest(filePath, descriptor);
         assertNotNull(response);
         List<File> files = response.getFileList();
-        System.out.println(files);
         assertEquals(3, files.size());
         for (File file : files) {
             assertPackage(file);
