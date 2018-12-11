@@ -84,7 +84,7 @@ class MarkerInterfaceGeneratorTest {
 
     @Test
     @DisplayName("not accept nulls")
-    void not_accept_nulls() {
+    void notAcceptNulls() {
         new NullPointerTester()
                 .setDefault(CodeGeneratorRequest.class, CodeGeneratorRequest.getDefaultInstance())
                 .testAllPublicStaticMethods(MarkerInterfaceGenerator.class);
@@ -92,7 +92,7 @@ class MarkerInterfaceGeneratorTest {
 
     @Test
     @DisplayName("generate insertion point contents for EveryIs option")
-    void generate_insertion_point_contents_for_EveryIs_option() {
+    void generateInsertionPointContentsForEveryIsOption() {
         // Sample path; never resolved
         String filePath = "/proto/spine/tools/protoc/every_is_test.proto";
 
@@ -125,7 +125,7 @@ class MarkerInterfaceGeneratorTest {
 
     @Test
     @DisplayName("generate insertion point contents for Is option")
-    void generate_insertion_point_contents_for_Is_option() {
+    void generateInsertionPointContentsForIsOption() {
         // Sample path; never resolved
         String filePath = "/proto/spine/tools/protoc/is_test.proto";
 
@@ -160,7 +160,7 @@ class MarkerInterfaceGeneratorTest {
 
     @Test
     @DisplayName("generate insertion point contents for EveryIs in singe file")
-    void generate_insertion_point_contents_for_EveryIs_in_single_file() {
+    void generateInsertionPointContentsForEveryIsInSingleFile() {
         // Sample path; never resolved
         String filePath = "/proto/spine/tools/protoc/every_is_in_one_file.proto";
 
@@ -186,7 +186,7 @@ class MarkerInterfaceGeneratorTest {
 
     @Test
     @DisplayName("generate insertion point contents for Is in single file")
-    void generate_insertion_point_contents_for_Is_in_single_file() {
+    void generateInsertionPointContentsForIsInSingleFile() {
         // Sample path; never resolved
         String filePath = "/proto/spine/tools/protoc/is_in_one_file.proto";
 
@@ -215,7 +215,7 @@ class MarkerInterfaceGeneratorTest {
 
     @Test
     @DisplayName("generate EventMessage insertion points")
-    void generate_EventMessage_insertion_points() {
+    void generateEventMessageInsertionPoints() {
         // Sample path; never resolved
         String filePath = "/proto/spine/tools/protoc/test_events.proto";
 
@@ -235,7 +235,7 @@ class MarkerInterfaceGeneratorTest {
 
     @Test
     @DisplayName("generate CommandMessage insertion points")
-    void generate_CommandMessage_insertion_points() {
+    void generateCommandMessageInsertionPoints() {
         // Sample path; never resolved
         String filePath = "/proto/spine/tools/protoc/test_commands.proto";
 
@@ -255,7 +255,7 @@ class MarkerInterfaceGeneratorTest {
 
     @Test
     @DisplayName("generate RejectionMessage insertion points")
-    void generate_RejectionMessage_insertion_points() {
+    void generateRejectionMessageInsertionPoints() {
         // Sample path; never resolved
         String filePath = "/proto/spine/tools/protoc/test_rejections.proto";
 
@@ -275,7 +275,7 @@ class MarkerInterfaceGeneratorTest {
 
     @Test
     @DisplayName("not accept requests from old compiler")
-    void not_accept_requests_from_old_compiler() {
+    void notAcceptRequestsFromOldCompiler() {
         Version version = Version.newBuilder()
                                  .setMajor(2)
                                  .build();
@@ -291,7 +291,7 @@ class MarkerInterfaceGeneratorTest {
 
     @Test
     @DisplayName("not accept empty requests")
-    void not_accept_empty_requests() {
+    void notAcceptEmptyRequests() {
         Version version = Version.newBuilder()
                                  .setMajor(3)
                                  .build();
