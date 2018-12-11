@@ -38,7 +38,7 @@ class AlternativeFieldValidatorTest {
 
     @Test
     @DisplayName("pass if one field populated")
-    void pass_if_one_field_populated() {
+    void oneFieldPopulated() {
         PersonName fieldPopulated = PersonName
                 .newBuilder()
                 .setFirstName("Alexander")
@@ -48,7 +48,7 @@ class AlternativeFieldValidatorTest {
 
     @Test
     @DisplayName("pass if combination defined")
-    void pass_if_combination_defined() {
+    void combinationDefined() {
         PersonName combinationDefined = PersonName
                 .newBuilder()
                 .setHonorificPrefix("Mr.")
@@ -59,14 +59,14 @@ class AlternativeFieldValidatorTest {
 
     @Test
     @DisplayName("fail if nothing defined")
-    void fail_if_nothing_defined() {
+    void nothingDefined() {
         PersonName empty = PersonName.getDefaultInstance();
         assertNotValid(empty);
     }
 
     @Test
     @DisplayName("fail if defined is not required")
-    void fail_if_defined_not_required() {
+    void definedNotRequired() {
         PersonName notRequiredPopulated = PersonName
                 .newBuilder()
                 .setHonorificSuffix("I")
@@ -76,7 +76,7 @@ class AlternativeFieldValidatorTest {
 
     @Test
     @DisplayName("report missing fields")
-    void report_missing_field() {
+    void missingFields() {
         MessageWithMissingField msg = MessageWithMissingField
                 .newBuilder()
                 .setPresent(true)
