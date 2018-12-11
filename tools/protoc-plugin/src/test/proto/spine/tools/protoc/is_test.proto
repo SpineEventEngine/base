@@ -28,8 +28,6 @@ option java_multiple_files = true;
 option java_outer_classname = "IsTestProto";
 option java_package = "io.spine.tools.protoc";
 
-import "google/protobuf/descriptor.proto";
-
 message ProtocNameUpdated {
     option (is).java_type = "io.spine.tools.protoc.ProtocCustomerEvent";
 
