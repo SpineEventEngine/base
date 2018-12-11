@@ -27,11 +27,13 @@ import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.compiler.PluginProtos.CodeGeneratorResponse.File;
 import io.spine.option.IsOption;
 import io.spine.option.Options;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.option.OptionsProto.everyIs;
 import static io.spine.option.OptionsProto.is;
 import static io.spine.tools.protoc.MarkerInterfaceSpec.prepareInterface;
@@ -43,17 +45,19 @@ import static io.spine.tools.protoc.MarkerInterfaceSpec.prepareInterface;
 final class MessageAndInterface {
 
     private final InsertionPoint messageFile;
-    private final UserMarkerInterface interfaceFile;
+    private final @Nullable UserMarkerInterface interfaceFile;
 
-    private MessageAndInterface(InsertionPoint messageFile, UserMarkerInterface interfaceFile) {
-        this.messageFile = messageFile;
+    private MessageAndInterface(InsertionPoint messageFile,
+                                @Nullable UserMarkerInterface interfaceFile) {
+        this.messageFile = checkNotNull(messageFile);
         this.interfaceFile = interfaceFile;
     }
 
     /**
      * Scans the given {@linkplain FileDescriptorProto file} for the {@code (every_is)} option.
      */
-    static Collection<CompilerOutput> scanFileOption(FileDescriptorProto file, DescriptorProto msg) {
+    static Collection<CompilerOutput> scanFileOption(FileDescriptorProto file,
+                                                     DescriptorProto msg) {
         Set<CompilerOutput> files = getEveryIs(file)
                 .map(option -> generateFile(file, msg, option))
                 .map(MessageAndInterface::asSet)
@@ -88,15 +92,22 @@ final class MessageAndInterface {
         MarkerInterfaceSpec interfaceSpec = prepareInterface(optionValue, file);
         UserMarkerInterface markerInterface = UserMarkerInterface.from(interfaceSpec);
         InsertionPoint message = InsertionPoint.implementInterface(file, msg, markerInterface);
-        MessageAndInterface result = new MessageAndInterface(message, markerInterface);
+        UserMarkerInterface interfaceToGenerate = optionValue.getGenerate()
+                                                  ? markerInterface
+                                                  : null;
+        MessageAndInterface result = new MessageAndInterface(message, interfaceToGenerate);
         return result;
     }
 
     /**
      * Converts the instance into the pair containing a message file and an interface file.
      */
-    Set<CompilerOutput> asSet() {
-        return ImmutableSet.of(messageFile, interfaceFile);
+    private Set<CompilerOutput> asSet() {
+        if (interfaceFile == null) {
+            return ImmutableSet.of(messageFile);
+        } else {
+            return ImmutableSet.of(messageFile, interfaceFile);
+        }
     }
 
     @Override
