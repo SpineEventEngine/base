@@ -30,25 +30,30 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * Tests handling of {@code required_field} proto option.
+ */
 @DisplayName("AlternativeFieldValidator should")
 class AlternativeFieldValidatorTest {
 
     @Test
     @DisplayName("pass if one field populated")
     void pass_if_one_field_populated() {
-        PersonName fieldPopulated = PersonName.newBuilder()
-                                              .setFirstName("Alexander")
-                                              .build();
+        PersonName fieldPopulated = PersonName
+                .newBuilder()
+                .setFirstName("Alexander")
+                .build();
         assertValid(fieldPopulated);
     }
 
     @Test
     @DisplayName("pass if combination defined")
     void pass_if_combination_defined() {
-        PersonName combinationDefined = PersonName.newBuilder()
-                                                  .setHonorificPrefix("Mr.")
-                                                  .setLastName("Yevsyukov")
-                                                  .build();
+        PersonName combinationDefined = PersonName
+                .newBuilder()
+                .setHonorificPrefix("Mr.")
+                .setLastName("Yevsyukov")
+                .build();
         assertValid(combinationDefined);
     }
 
@@ -62,18 +67,20 @@ class AlternativeFieldValidatorTest {
     @Test
     @DisplayName("fail if defined is not required")
     void fail_if_defined_not_required() {
-        PersonName notRequiredPopulated = PersonName.newBuilder()
-                                                    .setHonorificSuffix("I")
-                                                    .build();
+        PersonName notRequiredPopulated = PersonName
+                .newBuilder()
+                .setHonorificSuffix("I")
+                .build();
         assertNotValid(notRequiredPopulated);
     }
 
     @Test
     @DisplayName("report missing fields")
     void report_missing_field() {
-        MessageWithMissingField msg = MessageWithMissingField.newBuilder()
-                                                             .setPresent(true)
-                                                             .build();
+        MessageWithMissingField msg = MessageWithMissingField
+                .newBuilder()
+                .setPresent(true)
+                .build();
         assertNotValid(msg);
     }
 

@@ -91,9 +91,9 @@ final class FieldValue {
         if (!declaration.isMap()) {
             return declaration.javaType();
         }
-        FieldDescriptor.JavaType valuesType = declaration.valueDeclaration()
-                                                         .javaType();
-        return valuesType;
+        JavaType result = declaration.valueDeclaration()
+                                     .javaType();
+        return result;
     }
 
     /**
@@ -110,8 +110,8 @@ final class FieldValue {
             return validationRuleOption.get();
         }
 
-        Option<T> ownOption = Option.from(context.getTarget(), option);
-        return ownOption;
+        Option<T> result = Option.from(context.getTarget(), option);
+        return result;
     }
 
     /**

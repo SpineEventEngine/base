@@ -30,12 +30,10 @@ import java.util.Collection;
 import java.util.Properties;
 
 /**
- * Utilities for obtaining {@linkplain ValidationRule validation rules} known to the application.
+ * A collection of {@linkplain ValidationRule validation rules} known to the application.
  *
- * <p>During initialization of this class, definitions of validation rules are validated.
+ * <p>During initialization of this class, definitions of validation rules are verified.
  * If an invalid validation rule was found, a runtime exception will be thrown.
- *
- * @author Dmytro Grankin
  */
 public final class ValidationRules {
 
@@ -58,9 +56,7 @@ public final class ValidationRules {
      *
      * @return the immutable collection of validation rules
      */
-    @SuppressWarnings("ReturnOfCollectionOrArrayField") // It's OK to return
-                                                        // an immutable collection.
-    static ImmutableCollection<ValidationRule> getRules() {
+    static ImmutableCollection<ValidationRule> all() {
         return rules;
     }
 

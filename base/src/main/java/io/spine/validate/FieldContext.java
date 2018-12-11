@@ -37,8 +37,6 @@ import static java.util.Collections.singleton;
  *
  * <p>In particular, holds a hierarchy of field descriptors from
  * the top-level descriptor to the descriptor of the current field.
- *
- * @author Dmytro Grankin
  */
 @Internal
 public final class FieldContext {

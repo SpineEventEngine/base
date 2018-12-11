@@ -39,10 +39,8 @@ import static io.spine.validate.FieldValidatorFactory.createStrict;
  * Validates that one of the fields defined by the {@code required_field} option is present.
  *
  * See definition of {@code MessageOptions.required_field} in {@code validate.proto}.
- *
- * @author Alexander Yevsyukov
  */
-class AlternativeFieldValidator implements Logging {
+final class AlternativeFieldValidator implements Logging {
 
     /**
      * The name of the message option field.
@@ -165,7 +163,7 @@ class AlternativeFieldValidator implements Logging {
      *
      * <p>It can be either a field or combination of fields.
      */
-    private static class RequiredFieldOption {
+    private static final class RequiredFieldOption {
 
         private final @Nullable String fieldName;
         private final @Nullable ImmutableList<String> fieldNames;

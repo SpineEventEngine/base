@@ -60,13 +60,14 @@ public final class ValidationRuleOptions {
      * @return the {@code Optional} of option value
      *         or {@code Optional.empty()} if there is not option for the field descriptor
      */
-    public static <T> Optional<Option<T>> getOptionValue(FieldContext fieldContext,
-                                                         GeneratedExtension<FieldOptions, T> option) {
+    public static <T>
+    Optional<Option<T>> getOptionValue(FieldContext fieldContext,
+                                       GeneratedExtension<FieldOptions, T> option) {
         for (FieldContext context : options.keySet()) {
             if (fieldContext.hasSameTargetAndParent(context)) {
                 FieldOptions fieldOptions = options.get(context);
                 T optionValue = fieldOptions.getExtension(option);
-                // A option is set explicitly if it was found in validation rules
+                // A option is set explicitly if it was found in validation rules.
                 Option<T> fieldOption = Option.explicitlySet(optionValue);
                 return Optional.of(fieldOption);
             }
@@ -85,15 +86,15 @@ public final class ValidationRuleOptions {
         private final ImmutableMap.Builder<FieldContext, FieldOptions> state = builder();
 
         private ImmutableMap<FieldContext, FieldOptions> build() {
-            for (ValidationRule rule : ValidationRules.getRules()) {
+            for (ValidationRule rule : ValidationRules.all()) {
                 putAll(rule);
             }
             return state.build();
         }
 
-        private void putAll(ValidationRule validationRule) {
-            Descriptor ruleDescriptor = validationRule.getDescriptor();
-            Collection<FieldDescriptor> targets = validationRule.getTargets();
+        private void putAll(ValidationRule rule) {
+            Descriptor ruleDescriptor = rule.getDescriptor();
+            Collection<FieldDescriptor> targets = rule.getTargets();
             for (FieldDescriptor target : targets) {
                 put(ruleDescriptor, target);
             }
