@@ -39,12 +39,14 @@ import org.junit.jupiter.api.Test;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static io.spine.tools.protoc.InsertionPoint.INSERTION_POINT_IMPLEMENTS;
 import static java.lang.String.format;
 import static java.util.regex.Pattern.compile;
+import static java.util.stream.Collectors.toSet;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -343,6 +345,32 @@ class MarkerInterfaceGeneratorTest {
                 assertTrue(matcher.find());
             }
         }
+    }
+
+    @Test
+    @DisplayName("skip generation for types included in compilation but not requested to be generated")
+    void skipIncluded() {
+        FileDescriptorProto requestedTypes = UserProto.getDescriptor()
+                                                      .toProto();
+        FileDescriptorProto includedTypes = UserNameProto.getDescriptor()
+                                                         .toProto();
+        CodeGeneratorRequest request =
+                CodeGeneratorRequest.newBuilder()
+                                    .setCompilerVersion(version())
+                                    .addFileToGenerate("spine/tools/protoc/user.proto")
+                                    .addProtoFile(requestedTypes)
+                                    .addProtoFile(includedTypes)
+                                    .build();
+        CodeGeneratorResponse response = codeGenerator.process(request);
+        Set<String> generatedFiles = response.getFileList()
+                                             .stream()
+                                             .map(File::getName)
+                                             .collect(toSet());
+        assertTrue(generatedFiles.contains("io/spine/tools/protoc/User.java"));
+        assertTrue(generatedFiles.contains("io/spine/tools/protoc/LawSubject.java"));
+
+        assertFalse(generatedFiles.contains("io/spine/tools/protoc/UserName.java"));
+        assertFalse(generatedFiles.contains("io/spine/tools/protoc/Name.java"));
     }
 
     private CodeGeneratorResponse processCodeGenRequest(String filePath,
