@@ -43,8 +43,6 @@ import static io.spine.validate.ValidatingBuilder.GenericParameter.MESSAGE;
  *
  * @param <T> the type of the message to build
  * @param <B> the type of the message builder
- * @author Illia Shepilov
- * @author Alex Tymchenko
  */
 public interface ValidatingBuilder<T extends Message, B extends Message.Builder> {
 

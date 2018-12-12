@@ -20,7 +20,7 @@
 
 /**
  * Tests for handling validation violations are placed into a different package
- * to simulate usage from consuming code.
+ * to simulate usage of the public API.
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault

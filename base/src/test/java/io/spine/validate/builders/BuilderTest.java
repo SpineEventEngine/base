@@ -17,21 +17,33 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.validate;
 
-import com.google.protobuf.Any;
+package io.spine.validate.builders;
+
+import com.google.protobuf.Message;
+import io.spine.validate.ValidatingBuilder;
+import org.junit.jupiter.api.BeforeEach;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Validating builder for {@linkplain Any} messages.
+ * Abstract base for testing default VBuilders.
+ *
+ * @param <T> the type of the message produced by the builder
+ * @param <B> the type of the validating builder
  */
-public final class AnyVBuilder extends AbstractValidatingBuilder<Any, Any.Builder> {
+abstract class BuilderTest<T extends Message, B extends ValidatingBuilder<T, ?>> {
 
-    /** Prevents instantiation from the outside. */
-    private AnyVBuilder() {
-        super();
+    private B builder;
+
+    @BeforeEach
+    void setUp() {
+        builder = createBuilder();
     }
 
-    public static AnyVBuilder newBuilder() {
-        return new AnyVBuilder();
+    abstract B createBuilder();
+
+    protected B builder() {
+        return checkNotNull(builder, "builder is not initialized");
     }
 }

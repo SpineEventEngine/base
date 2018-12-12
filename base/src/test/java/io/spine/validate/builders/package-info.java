@@ -17,21 +17,15 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.validate;
-
-import com.google.protobuf.Any;
 
 /**
- * Validating builder for {@linkplain Any} messages.
+ * Tests of validating builders are placed into this package
+ * to simulate usage of the public API.
  */
-public final class AnyVBuilder extends AbstractValidatingBuilder<Any, Any.Builder> {
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.validate.builders;
 
-    /** Prevents instantiation from the outside. */
-    private AnyVBuilder() {
-        super();
-    }
+import com.google.errorprone.annotations.CheckReturnValue;
 
-    public static AnyVBuilder newBuilder() {
-        return new AnyVBuilder();
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;

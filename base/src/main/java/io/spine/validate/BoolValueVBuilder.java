@@ -24,8 +24,6 @@ import com.google.protobuf.BoolValue;
 
 /**
  * Validating builder for {@linkplain BoolValue} messages.
- *
- * @author Alex Tymchenko
  */
 public final class BoolValueVBuilder
         extends AbstractValidatingBuilder<BoolValue, BoolValue.Builder> {
