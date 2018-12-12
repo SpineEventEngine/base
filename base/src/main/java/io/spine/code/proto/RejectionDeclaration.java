@@ -55,7 +55,7 @@ public final class RejectionDeclaration extends AbstractMessageDeclaration {
     }
 
     /**
-     * Returns {@code true} if the class name ends with {@code "Rejections"},
+     * Returns {@code true} if the class name ends with {@code “Rejections”},
      * {@code false} otherwise.
      */
     public static boolean isValidOuterClassName(SimpleClassName className) {
