@@ -44,7 +44,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 @SuppressWarnings("DuplicateStringLiteralInspection")
 // The generated code duplicates the code used in test that checks it.
-public class MessageGenerator extends JsCodeGenerator {
+public class FromJsonMethod extends JsCodeGenerator {
 
     /**
      * The {@code fromJson} method name.
@@ -77,7 +77,7 @@ public class MessageGenerator extends JsCodeGenerator {
 
     private final Descriptor message;
 
-    private MessageGenerator(Descriptor message, JsOutput jsOutput) {
+    private FromJsonMethod(Descriptor message, JsOutput jsOutput) {
         super(jsOutput);
         this.message = message;
     }
@@ -91,10 +91,10 @@ public class MessageGenerator extends JsCodeGenerator {
      *         the {@code JsOutput} which accumulates all the generated lines
      * @return the new {@code MessageGenerator}
      */
-    public static MessageGenerator createFor(Descriptor message, JsOutput jsOutput) {
+    public static FromJsonMethod createFor(Descriptor message, JsOutput jsOutput) {
         checkNotNull(message);
         checkNotNull(jsOutput);
-        return new MessageGenerator(message, jsOutput);
+        return new FromJsonMethod(message, jsOutput);
     }
 
     /**

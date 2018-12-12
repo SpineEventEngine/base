@@ -31,8 +31,8 @@ import static io.spine.code.js.LibraryFile.KNOWN_TYPE_PARSERS;
 import static io.spine.js.generate.file.FileGenerator.COMMENT;
 import static io.spine.js.generate.given.Generators.assertContains;
 import static io.spine.js.generate.given.Given.file;
-import static io.spine.js.generate.message.MessageGenerator.FROM_JSON;
-import static io.spine.js.generate.message.MessageGenerator.FROM_OBJECT;
+import static io.spine.js.generate.message.FromJsonMethod.FROM_JSON;
+import static io.spine.js.generate.message.FromJsonMethod.FROM_OBJECT;
 
 @DisplayName("FileGenerator should")
 class FileGeneratorTest {

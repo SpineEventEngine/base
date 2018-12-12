@@ -27,7 +27,7 @@ import io.spine.code.js.FileName;
 import io.spine.js.generate.JsCodeGenerator;
 import io.spine.js.generate.JsOutput;
 import io.spine.js.generate.importado.JsImportGenerator;
-import io.spine.js.generate.message.MessageGenerator;
+import io.spine.js.generate.message.FromJsonMethod;
 
 import static io.spine.code.js.LibraryFile.KNOWN_TYPE_PARSERS;
 
@@ -42,7 +42,7 @@ public final class FileGenerator extends JsCodeGenerator {
     /**
      * The name of the {@code known_type_parsers.js} import.
      *
-     * <p>Visible so the other generators such as {@linkplain MessageGenerator message} or
+     * <p>Visible so the other generators such as {@linkplain FromJsonMethod message} or
      * {@linkplain io.spine.js.generate.field.FieldGenerator field} can use the import.
      */
     public static final String PARSERS_IMPORT_NAME = "known_type_parsers";
@@ -123,7 +123,7 @@ public final class FileGenerator extends JsCodeGenerator {
     @VisibleForTesting
     void generateMethods() {
         for (Descriptor message : file.getMessageTypes()) {
-            MessageGenerator generator = MessageGenerator.createFor(message, jsOutput());
+            FromJsonMethod generator = FromJsonMethod.createFor(message, jsOutput());
             generator.generate();
         }
     }

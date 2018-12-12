@@ -28,7 +28,7 @@ import io.spine.js.generate.field.parser.FieldParser;
 import io.spine.js.generate.field.precondition.FieldPrecondition;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.js.generate.message.MessageGenerator.FROM_OBJECT_ARG;
+import static io.spine.js.generate.message.FromJsonMethod.FROM_OBJECT_ARG;
 import static java.lang.String.format;
 
 /**

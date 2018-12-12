@@ -44,7 +44,7 @@ import static io.spine.js.generate.JsonParsersWriter.createFor;
 import static io.spine.js.generate.JsonParsersWriter.shouldSkip;
 import static io.spine.js.generate.given.FileWriters.assertFileContains;
 import static io.spine.js.generate.given.Given.project;
-import static io.spine.js.generate.message.MessageGenerator.FROM_JSON;
+import static io.spine.js.generate.message.FromJsonMethod.FROM_JSON;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static java.nio.file.Files.exists;
 import static org.junit.jupiter.api.Assertions.assertFalse;

@@ -24,7 +24,7 @@ import com.google.common.annotations.VisibleForTesting;
 import io.spine.code.js.FieldName;
 import io.spine.js.generate.field.parser.FieldParser;
 
-import static io.spine.js.generate.message.MessageGenerator.MESSAGE;
+import static io.spine.js.generate.message.FromJsonMethod.MESSAGE;
 
 /**
  * The generator for the {@code map} Protobuf fields.
