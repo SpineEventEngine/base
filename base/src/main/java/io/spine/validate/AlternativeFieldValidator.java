@@ -38,9 +38,7 @@ import static io.spine.validate.FieldValidatorFactory.createStrict;
 /**
  * Validates that one of the fields defined by the {@code required_field} option is present.
  *
- * See definition of {@code MessageOptions.required_field} in {@code validate.proto}.
- *
- * @author Alexander Yevsyukov
+ * See definition of {@code MessageOptions.required_field} in {@code options.proto}.
  */
 class AlternativeFieldValidator implements Logging {
 

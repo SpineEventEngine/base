@@ -21,6 +21,7 @@
 package io.spine.validate;
 
 import com.google.common.collect.ImmutableList;
+import com.google.protobuf.Descriptors.OneofDescriptor;
 import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
 
@@ -29,10 +30,8 @@ import java.util.List;
 import static io.spine.validate.FieldValidatorFactory.create;
 
 /**
- * Validates messages according to Spine custom protobuf options and provides constraint
- * violations found.
- *
- * @author Alexander Litus
+ * Validates messages according to Spine custom Protobuf options and
+ * provides found constraint violations.
  */
 @Internal
 public class MessageValidator {
@@ -71,6 +70,7 @@ public class MessageValidator {
     public List<ConstraintViolation> validate() {
         ImmutableList.Builder<ConstraintViolation> result = ImmutableList.builder();
         validateAlternativeFields(result);
+        validateOneofFields(result);
         validateFields(result);
         return result.build();
     }
@@ -80,11 +80,35 @@ public class MessageValidator {
         result.addAll(altFieldValidator.validate());
     }
 
+    /**
+     * Validates fields except fields from {@code Oneof} declarations.
+     *
+     * <p>{@code Oneof} fields are validated {@linkplain #validateOneofFields(ImmutableList.Builder)
+     * separately}.
+     *
+     * @param result
+     *         the builder of the message violations
+     */
     private void validateFields(ImmutableList.Builder<ConstraintViolation> result) {
-        for (FieldValue value : message.fields()) {
+        for (FieldValue value : message.fieldsExceptOneofs()) {
             FieldValidator<?> fieldValidator = create(value);
             List<ConstraintViolation> violations = fieldValidator.validate();
             result.addAll(violations);
+        }
+    }
+
+    /**
+     * Validates every {@code Oneof} declaration in the message.
+     *
+     * @param result
+     *         the builder of the message violations
+     */
+    private void validateOneofFields(ImmutableList.Builder<ConstraintViolation> result) {
+        List<OneofDescriptor> oneofDescriptors = message.oneofDescriptors();
+        for (OneofDescriptor oneof : oneofDescriptors) {
+            OneofValidator validator = new OneofValidator(oneof, message);
+            ImmutableList<ConstraintViolation> oneofViolations = validator.validate();
+            result.addAll(oneofViolations);
         }
     }
 }

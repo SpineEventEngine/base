@@ -39,12 +39,14 @@ import org.junit.jupiter.api.Test;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static io.spine.tools.protoc.InsertionPoint.INSERTION_POINT_IMPLEMENTS;
 import static java.lang.String.format;
 import static java.util.regex.Pattern.compile;
+import static java.util.stream.Collectors.toSet;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -95,8 +97,7 @@ class MarkerInterfaceGeneratorTest {
     @Test
     @DisplayName("generate insertion point contents for EveryIs option")
     void generateInsertionPointContentsForEveryIsOption() {
-        // Sample path; never resolved
-        String filePath = "/proto/spine/tools/protoc/every_is_test.proto";
+        String filePath = "spine/tools/protoc/every_is_test.proto";
 
         FileDescriptorProto descriptor = EveryIsTestProto.getDescriptor()
                                                          .toProto();
@@ -122,8 +123,7 @@ class MarkerInterfaceGeneratorTest {
     @Test
     @DisplayName("generate insertion point contents for Is option")
     void generateInsertionPointContentsForIsOption() {
-        // Sample path; never resolved
-        String filePath = "/proto/spine/tools/protoc/is_test.proto";
+        String filePath = "spine/tools/protoc/is_test.proto";
 
         FileDescriptorProto descriptor = IsTestProto.getDescriptor()
                                                     .toProto();
@@ -149,8 +149,7 @@ class MarkerInterfaceGeneratorTest {
     @Test
     @DisplayName("generate insertion point contents for EveryIs in singe file")
     void generateInsertionPointContentsForEveryIsInSingleFile() {
-        // Sample path; never resolved
-        String filePath = "/proto/spine/tools/protoc/every_is_in_one_file.proto";
+        String filePath = "spine/tools/protoc/every_is_in_one_file.proto";
 
         FileDescriptorProto descriptor = EveryIsInOneFileProto.getDescriptor()
                                                               .toProto();
@@ -175,8 +174,7 @@ class MarkerInterfaceGeneratorTest {
     @Test
     @DisplayName("generate insertion point contents for Is in single file")
     void generateInsertionPointContentsForIsInSingleFile() {
-        // Sample path; never resolved
-        String filePath = "/proto/spine/tools/protoc/is_in_one_file.proto";
+        String filePath = "spine/tools/protoc/is_in_one_file.proto";
 
         FileDescriptorProto descriptor = IsInOneFileProto.getDescriptor()
                                                          .toProto();
@@ -199,8 +197,7 @@ class MarkerInterfaceGeneratorTest {
     @Test
     @DisplayName("generate EventMessage insertion points")
     void generateEventMessageInsertionPoints() {
-        // Sample path; never resolved
-        String filePath = "/proto/spine/tools/protoc/test_events.proto";
+        String filePath = "spine/tools/protoc/test_events.proto";
 
         FileDescriptorProto descriptor = TestEventsProto.getDescriptor()
                                                         .toProto();
@@ -219,8 +216,7 @@ class MarkerInterfaceGeneratorTest {
     @Test
     @DisplayName("generate CommandMessage insertion points")
     void generateCommandMessageInsertionPoints() {
-        // Sample path; never resolved
-        String filePath = "/proto/spine/tools/protoc/test_commands.proto";
+        String filePath = "spine/tools/protoc/test_commands.proto";
 
         FileDescriptorProto descriptor = TestCommandsProto.getDescriptor()
                                                           .toProto();
@@ -239,8 +235,7 @@ class MarkerInterfaceGeneratorTest {
     @Test
     @DisplayName("generate RejectionMessage insertion points")
     void generateRejectionMessageInsertionPoints() {
-        // Sample path; never resolved
-        String filePath = "/proto/spine/tools/protoc/test_rejections.proto";
+        String filePath = "spine/tools/protoc/test_rejections.proto";
 
         FileDescriptorProto descriptor = Rejections.getDescriptor()
                                                    .toProto();
@@ -289,8 +284,7 @@ class MarkerInterfaceGeneratorTest {
     @Test
     @DisplayName("generate marker interfaces for (is) if `generate = true`")
     void generateMarkersForIs() {
-        // Sample path; never resolved
-        String filePath = "/proto/spine/tools/protoc/is_generate.proto";
+        String filePath = "spine/tools/protoc/is_generated.proto";
 
         FileDescriptorProto descriptor = IsGeneratedProto.getDescriptor()
                                                          .toProto();
@@ -324,8 +318,7 @@ class MarkerInterfaceGeneratorTest {
     @Test
     @DisplayName("generate marker interfaces for (every_is) if `generate = true`")
     void generateMarkersForEveryIs() {
-        // Sample path; never resolved
-        String filePath = "/proto/spine/tools/protoc/every_is_generate.proto";
+        String filePath = "spine/tools/protoc/every_is_generated.proto";
 
         FileDescriptorProto descriptor = EveryIsGeneratedProto.getDescriptor()
                                                               .toProto();
@@ -352,6 +345,32 @@ class MarkerInterfaceGeneratorTest {
                 assertTrue(matcher.find());
             }
         }
+    }
+
+    @Test
+    @DisplayName("skip generation for types included in compilation but not requested to be generated")
+    void skipIncluded() {
+        FileDescriptorProto requestedTypes = UserProto.getDescriptor()
+                                                      .toProto();
+        FileDescriptorProto includedTypes = UserNameProto.getDescriptor()
+                                                         .toProto();
+        CodeGeneratorRequest request =
+                CodeGeneratorRequest.newBuilder()
+                                    .setCompilerVersion(version())
+                                    .addFileToGenerate("spine/tools/protoc/user.proto")
+                                    .addProtoFile(requestedTypes)
+                                    .addProtoFile(includedTypes)
+                                    .build();
+        CodeGeneratorResponse response = codeGenerator.process(request);
+        Set<String> generatedFiles = response.getFileList()
+                                             .stream()
+                                             .map(File::getName)
+                                             .collect(toSet());
+        assertTrue(generatedFiles.contains("io/spine/tools/protoc/User.java"));
+        assertTrue(generatedFiles.contains("io/spine/tools/protoc/LawSubject.java"));
+
+        assertFalse(generatedFiles.contains("io/spine/tools/protoc/UserName.java"));
+        assertFalse(generatedFiles.contains("io/spine/tools/protoc/Name.java"));
     }
 
     private CodeGeneratorResponse processCodeGenRequest(String filePath,

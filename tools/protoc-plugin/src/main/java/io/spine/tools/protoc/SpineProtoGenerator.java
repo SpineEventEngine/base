@@ -35,6 +35,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Lists.newArrayListWithExpectedSize;
 import static com.google.common.collect.Sets.newHashSet;
+import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.partitioningBy;
 import static java.util.stream.Collectors.reducing;
@@ -72,8 +73,6 @@ import static java.util.stream.Collectors.toList;
  *
  * <p>If the {@code insertionPoint} field is present, the {@code name} field must also be present.
  * The {@code content} field contains the value to insert into the insertion point is this case.
- *
- * @author Dmytro Dashenkov
  */
 public abstract class SpineProtoGenerator {
 
@@ -128,10 +127,27 @@ public abstract class SpineProtoGenerator {
     public final CodeGeneratorResponse process(CodeGeneratorRequest request) {
         checkNotNull(request);
         checkCompilerVersion(request);
-        List<FileDescriptorProto> protoFiles = request.getProtoFileList();
-        checkArgument(!protoFiles.isEmpty(), "No files to generate provided.");
-        CodeGeneratorResponse response = process(protoFiles);
+        List<FileDescriptorProto> filesToGenerate = filesToGenerate(request);
+        CodeGeneratorResponse response = process(filesToGenerate);
         return response;
+    }
+
+    private static List<FileDescriptorProto> filesToGenerate(CodeGeneratorRequest request) {
+        List<String> fileNames = request.getFileToGenerateList();
+        checkArgument(!fileNames.isEmpty(), "No files to generate provided.");
+        List<FileDescriptorProto> filesToGenerate = newArrayListWithExpectedSize(fileNames.size());
+        for (String name : fileNames) {
+            FileDescriptorProto foundFile =
+                    request.getProtoFileList()
+                           .stream()
+                           .filter(file -> file.getName().equals(name))
+                           .findAny()
+                           .orElseThrow(() -> newIllegalStateException(
+                                   "Unable to find descriptor for file `%s`.", name
+                           ));
+            filesToGenerate.add(foundFile);
+        }
+        return filesToGenerate;
     }
 
     /**
