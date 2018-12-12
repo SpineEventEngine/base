@@ -160,22 +160,38 @@ public final class Tests {
      * at least once, e.g. for a mask of
      * <pre>
      * {@code
-     * mask {
-     *     paths: user.friends
-     * }
+     *     mask {
+     *         paths: friends
+     *     }
      * }
      * </pre>
-     * and a message
+     * and messages
      * <pre>
      * {@code
-     * message User {
-     *     string name = 1;
-     *     repeated User friends = 2;
-     * }
+     *     message Animal {
+     *         string kind = 1;
+     *     }
+     *
+     *     message User {
+     *         string name = 1;
+     *         repeated User friends = 2;
+     *         repeated Animal animals = 3;
+     *     }
      * }
      * </pre>
      *
      * the mask matches if a user has at least one friend.
+     *
+     * However, a mask
+     * <pre>
+     * {@code
+     *     mask {
+     *         paths: animals.kind
+     *     }
+     * }
+     * </pre>
+     * will never match against a user, since if a repeated field is a part of the mask,
+     * it should always be the last part of its path.
      *
      * @param message
      *         the message to assert
