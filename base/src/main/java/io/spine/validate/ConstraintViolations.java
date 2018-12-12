@@ -20,15 +20,7 @@
 
 package io.spine.validate;
 
-import com.google.protobuf.Message;
-import com.google.protobuf.ProtocolMessageEnum;
-import com.google.protobuf.Value;
-import io.spine.annotation.Internal;
-import io.spine.base.Error;
-import io.spine.type.MessageClass;
-
 import java.util.List;
-import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
