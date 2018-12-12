@@ -29,7 +29,7 @@ import com.google.protobuf.ProtocolMessageEnum;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.Option;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 
@@ -134,12 +134,15 @@ final class FieldValue {
      *         the type of the list elements
      * @return the value as a list
      */
-    @SuppressWarnings("unchecked" /* specific validator must call with its type */)
+    @SuppressWarnings({
+            "unchecked", // Specific validator must call with its type.
+            "ChainOfInstanceofChecks" // No other possible way to check the value type.
+    })
     <T> ImmutableList<T> asList() {
-        if (declaration.isRepeated()) {
-            List<T> result = (List<T>) value;
+        if (value instanceof Collection) {
+            Collection<T> result = (Collection<T>) value;
             return ImmutableList.copyOf(result);
-        } else if (declaration.isMap()) {
+        } else if (value instanceof Map) {
             Map<?, T> map = (Map<?, T>) value;
             return ImmutableList.copyOf(map.values());
         } else {
