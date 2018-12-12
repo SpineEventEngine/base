@@ -25,7 +25,6 @@ import com.google.protobuf.Any;
 import com.google.protobuf.FieldMask;
 import com.google.protobuf.Timestamp;
 import com.google.protobuf.util.FieldMaskUtil;
-import io.spine.testing.HospitalPolicy.PatientCondition;
 import io.spine.testing.given.TestsTestEnv.ClassThrowingExceptionInConstructor;
 import io.spine.testing.given.TestsTestEnv.ClassWithCtorWithArgs;
 import io.spine.testing.given.TestsTestEnv.ClassWithPrivateCtor;
@@ -38,7 +37,8 @@ import org.junit.jupiter.api.Test;
 import java.time.Instant;
 import java.util.UUID;
 
-import static io.spine.testing.HospitalPolicy.PatientCondition.*;
+import static io.spine.testing.HospitalPolicy.PatientCondition.CRITICAL;
+import static io.spine.testing.HospitalPolicy.PatientCondition.CRITICAL_BUT_STABLE;
 import static io.spine.testing.Tests.assertInDelta;
 import static io.spine.testing.Tests.assertMatchesMask;
 import static io.spine.testing.Tests.hasPrivateParameterlessCtor;
@@ -259,13 +259,13 @@ class TestsTest extends UtilityClassTest<Tests> {
 
             @DisplayName("not match absent repeated enum fields")
             @Test
-            void notMatchAbsentRepeatedEnumFields(){
+            void notMatchAbsentRepeatedEnumFields() {
                 HospitalPolicy emptyPolicy = HospitalPolicy
                         .newBuilder()
                         .build();
 
                 FieldMask fieldMask = FieldMaskUtil.fromFieldNumbers(HospitalPolicy.class, 1);
-                assertThrows(AssertionError.class, ()->assertMatchesMask(emptyPolicy, fieldMask));
+                assertThrows(AssertionError.class, () -> assertMatchesMask(emptyPolicy, fieldMask));
             }
 
             private Prescription prescribeFromCold() {
