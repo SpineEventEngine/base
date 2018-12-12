@@ -200,7 +200,7 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
      * @return the message built from the values set by the user
      */
     @Internal
-    public T internalBuild() {
+    public final T internalBuild() {
         @SuppressWarnings("unchecked")
         // OK, as real types of `B` are always generated to be compatible with `T`.
         T result = (T) getMessageBuilder().build();
