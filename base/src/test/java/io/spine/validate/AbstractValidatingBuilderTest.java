@@ -22,7 +22,10 @@ package io.spine.validate;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.truth.MapSubject;
+import com.google.protobuf.BoolValue;
+import com.google.protobuf.FloatValue;
 import com.google.protobuf.Int32Value;
 import com.google.protobuf.Timestamp;
 import com.google.protobuf.UInt32Value;
@@ -37,9 +40,12 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.truth.Truth.assertThat;
+import static io.spine.validate.AbstractValidatingBuilder.convertToList;
+import static io.spine.validate.AbstractValidatingBuilder.convertToMap;
 import static java.lang.String.format;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -51,25 +57,25 @@ class AbstractValidatingBuilderTest {
     @DisplayName("Convert a raw String to")
     class Convert {
 
-        Joiner joiner = Joiner.on(',');
+        private final Joiner joiner = Joiner.on(',');
 
         @Nested
         @DisplayName("Map")
         class OfMap {
 
+            /** Creates string representation of a map entry for the the passed key-value pair. */
             String entry(Object key, Object value) {
-                return format("\"%s\":\"%s\"", key, value);
+                return format("\"%s\":\"%s\"",
+                              Stringifiers.toString(key), Stringifiers.toString(value));
             }
 
             @Test
             @DisplayName("from string key-value")
-            void toMap() {
-                String mapStr = joiner.join(entry("key1", "123"),
-                                            entry("key2", "234"));
+            void stringKeyValue() {
+                String input = joiner.join(entry("key1", "123"), entry("key2", "234"));
 
-                UInt32ValueVBuilder builder = UInt32ValueVBuilder.newBuilder();
                 Map<String, UInt32Value> map =
-                        builder.convertToMap(mapStr, String.class, UInt32Value.class);
+                        convertToMap(input, String.class, UInt32Value.class);
 
                 MapSubject assertMap = assertThat(map);
 
@@ -87,12 +93,51 @@ class AbstractValidatingBuilderTest {
                                 .build()
                 );
             }
+
+            @Test
+            @DisplayName("from message-message key-value")
+            void messageKeyValue() {
+                FloatValue k1 = FloatValue
+                        .newBuilder()
+                        .setValue(3.14f)
+                        .build();
+                FloatValue k2 = FloatValue
+                        .newBuilder()
+                        .setValue(2.54f)
+                        .build();
+                Map<FloatValue, Boolean> inputMap = ImmutableMap.of(
+                        k1, Boolean.TRUE,
+                        k2, Boolean.FALSE
+                );
+
+                List<String> entries =
+                        inputMap.entrySet()
+                                .stream()
+                                .map(e -> entry(e.getKey(), e.getValue()))
+                                .collect(Collectors.toList());
+
+                String input = joiner.join(entries);
+
+                Map<FloatValue, BoolValue> output =
+                        convertToMap(input, FloatValue.class, BoolValue.class);
+
+                MapSubject assertOutput = assertThat(output);
+                assertOutput.containsEntry(k1, BoolValue.newBuilder()
+                                                        .setValue(true)
+                                                        .build());
+                assertOutput.containsEntry(k2, BoolValue.newBuilder()
+                                                        .setValue(false)
+                                                        .build());
+            }
         }
 
         @Nested
         @DisplayName("List")
         class ToList {
 
+            /**
+             * Wraps string representation of the passed object into quotes.
+             */
             String item(Object o) {
                 return format("\"%s\"", Stringifiers.toString(o));
             }
@@ -101,11 +146,11 @@ class AbstractValidatingBuilderTest {
              * Creates a test input string from the list of objects.
              */
             private String createInput(ImmutableList<?> items) {
-                ImmutableList<String> collect = items.stream()
-                                                     .map(this::item)
-                                                     .collect(toImmutableList());
-
-                return joiner.join(collect);
+                ImmutableList<String> strItems =
+                        items.stream()
+                             .map(this::item)
+                             .collect(toImmutableList());
+                return joiner.join(strItems);
             }
 
             @Test
@@ -113,11 +158,9 @@ class AbstractValidatingBuilderTest {
             void toList() {
                 ImmutableList<String> items =
                         ImmutableList.of("something", "entry1", "anything", "entry2");
-
                 String str = createInput(items);
 
-                StringValueVBuilder builder = StringValueVBuilder.newBuilder();
-                List<String> list = builder.convertToList(str, String.class);
+                List<String> list = convertToList(str, String.class);
 
                 assertThat(list).containsAllIn(items);
             }
@@ -126,13 +169,11 @@ class AbstractValidatingBuilderTest {
             @DisplayName("of messages")
             void toMessageList() {
                 Timestamp now = Time.getCurrentTime();
-                Timestamp then = Timestamps.add(now, Durations2.minutes(5));
-                ImmutableList<Timestamp> times = ImmutableList.of(now, then);
-
+                Timestamp soon = Timestamps.add(now, Durations2.minutes(5));
+                ImmutableList<Timestamp> times = ImmutableList.of(now, soon);
                 String str = createInput(times);
 
-                TimestampVBuilder builder = TimestampVBuilder.newBuilder();
-                List<Timestamp> list = builder.convertToList(str, Timestamp.class);
+                List<Timestamp> list = convertToList(str, Timestamp.class);
 
                 assertThat(list).containsAllIn(times);
             }
