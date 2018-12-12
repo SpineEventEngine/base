@@ -156,6 +156,27 @@ public final class Tests {
     /**
      * Asserts that the passed message has a field that matches the passed field mask.
      *
+     * <p>If the passed mask contains repeated message fields, asserts whether that field repeats
+     * at least once, e.g. for a mask of
+     * <pre>
+     * {@code
+     * mask {
+     *     paths: user.friends
+     * }
+     * }
+     * </pre>
+     * and a message
+     * <pre>
+     * {@code
+     * message User {
+     *     string name = 1;
+     *     repeated User friends = 2;
+     * }
+     * }
+     * </pre>
+     *
+     * the mask matches if a user has at least one friend.
+     *
      * @param message
      *         the message to assert
      * @param fieldMask
@@ -179,11 +200,11 @@ public final class Tests {
         // Assert that values match the field mask.
         for (FieldDescriptor field : fields) {
             if (field.isRepeated()) {
-                boolean pathsHasSuchField = paths.contains(field.getName());
-                if (pathsHasSuchField) {
-                    List<?> repeatedFieldValue = (List<?>) message.getField(field);
-                    boolean fieldValueAbsent = repeatedFieldValue.isEmpty();
-                    assertTrue(!fieldValueAbsent);
+                boolean maskHasSuchField = paths.contains(field.getName());
+                if (maskHasSuchField) {
+                    List repeatedFieldValue = (List) message.getField(field);
+                    boolean repeatsAtLeastOnce = repeatedFieldValue.isEmpty();
+                    assertTrue(!repeatsAtLeastOnce);
                 }
             } else {
                 assertEquals(message.hasField(field), paths.contains(field.getName()));
