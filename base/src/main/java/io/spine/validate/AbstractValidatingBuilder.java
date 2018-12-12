@@ -121,7 +121,9 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
      *         the {@code Class} of the value
      * @return the converted value
      */
-    protected <K, V> Map<K, V> convertToMap(String value, Class<K> keyClass, Class<V> valueClass) {
+    protected final <K, V> Map<K, V> convertToMap(String value,
+                                                  Class<K> keyClass,
+                                                  Class<V> valueClass) {
         Map<K, V> result = Stringifiers.newForMapOf(keyClass, valueClass)
                                        .reverse()
                                        .convert(value);
@@ -141,7 +143,7 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
      *         the {@code Class} of the list values
      * @return the converted value
      */
-    protected <V> List<V> convertToList(String value, Class<V> valueClass) {
+    protected final <V> List<V> convertToList(String value, Class<V> valueClass) {
         List<V> result = Stringifiers.newForListOf(valueClass)
                                      .reverse()
                                      .convert(value);
