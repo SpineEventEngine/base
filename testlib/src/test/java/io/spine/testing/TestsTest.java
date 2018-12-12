@@ -192,30 +192,24 @@ class TestsTest extends UtilityClassTest<Tests> {
 
             private final PatientId patientId = newPatient();
 
-            @DisplayName("match present repeated primitive fields")
+            @DisplayName("match existing repeated primitive fields")
             @Test
             void matchRepeatedPrimitiveFields() {
                 Prescription prescription = prescribeFromCold();
-
-                FieldMask fieldMask = FieldMaskUtil.fromFieldNumbers(Prescription.class,
-                                                                     1, 2);
+                FieldMask fieldMask = FieldMaskUtil.fromFieldNumbers(Prescription.class, 1, 2);
                 assertMatchesMask(prescription, fieldMask);
             }
 
             @DisplayName("not match absent repeated primitive fields")
             @Test
             void notMatchAbsentRepeatedPrimitiveFields() {
-                Prescription emptyPrescription = Prescription
-                        .newBuilder()
-                        .build();
-
+                Prescription emptyPrescription = Prescription.getDefaultInstance();
                 FieldMask fieldMask = FieldMaskUtil.fromFieldNumbers(Prescription.class, 2);
-
                 assertThrows(AssertionError.class,
                              () -> assertMatchesMask(emptyPrescription, fieldMask));
             }
 
-            @DisplayName("match present repeated non-default message fields")
+            @DisplayName("match existing repeated non-default message fields")
             @Test
             void matchRepeatedNonDefaultMessageFields() {
                 PrescriptionHistory history = PrescriptionHistory
@@ -223,10 +217,8 @@ class TestsTest extends UtilityClassTest<Tests> {
                         .addReceivedPrescription(prescribeFromCold())
                         .setPrescriptionReceiver(patientId)
                         .build();
-
-                FieldMask fieldMask = FieldMaskUtil.fromFieldNumbers(PrescriptionHistory.class,
-                                                                     1,
-                                                                     2);
+                FieldMask fieldMask =
+                        FieldMaskUtil.fromFieldNumbers(PrescriptionHistory.class, 1, 2);
                 assertMatchesMask(history, fieldMask);
             }
 
@@ -238,13 +230,12 @@ class TestsTest extends UtilityClassTest<Tests> {
                         .setPrescriptionReceiver(patientId)
                         .build();
 
-                FieldMask fieldMask = FieldMaskUtil.fromFieldNumbers(PrescriptionHistory.class,
-                                                                     1,
-                                                                     2);
+                FieldMask fieldMask =
+                        FieldMaskUtil.fromFieldNumbers(PrescriptionHistory.class, 1, 2);
                 assertThrows(AssertionError.class, () -> assertMatchesMask(history, fieldMask));
             }
 
-            @DisplayName("match present repeated enum fields")
+            @DisplayName("match existing repeated enum fields")
             @Test
             void matchPresentRepeatedEnumFields() {
                 HospitalPolicy policy = HospitalPolicy
@@ -260,10 +251,7 @@ class TestsTest extends UtilityClassTest<Tests> {
             @DisplayName("not match absent repeated enum fields")
             @Test
             void notMatchAbsentRepeatedEnumFields() {
-                HospitalPolicy emptyPolicy = HospitalPolicy
-                        .newBuilder()
-                        .build();
-
+                HospitalPolicy emptyPolicy = HospitalPolicy.getDefaultInstance();
                 FieldMask fieldMask = FieldMaskUtil.fromFieldNumbers(HospitalPolicy.class, 1);
                 assertThrows(AssertionError.class, () -> assertMatchesMask(emptyPolicy, fieldMask));
             }
