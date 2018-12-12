@@ -95,8 +95,7 @@ class MarkerInterfaceGeneratorTest {
     @Test
     @DisplayName("generate insertion point contents for EveryIs option")
     void generateInsertionPointContentsForEveryIsOption() {
-        // Sample path; never resolved
-        String filePath = "/proto/spine/tools/protoc/every_is_test.proto";
+        String filePath = "spine/tools/protoc/every_is_test.proto";
 
         FileDescriptorProto descriptor = EveryIsTestProto.getDescriptor()
                                                          .toProto();
@@ -122,8 +121,7 @@ class MarkerInterfaceGeneratorTest {
     @Test
     @DisplayName("generate insertion point contents for Is option")
     void generateInsertionPointContentsForIsOption() {
-        // Sample path; never resolved
-        String filePath = "/proto/spine/tools/protoc/is_test.proto";
+        String filePath = "spine/tools/protoc/is_test.proto";
 
         FileDescriptorProto descriptor = IsTestProto.getDescriptor()
                                                     .toProto();
@@ -149,8 +147,7 @@ class MarkerInterfaceGeneratorTest {
     @Test
     @DisplayName("generate insertion point contents for EveryIs in singe file")
     void generateInsertionPointContentsForEveryIsInSingleFile() {
-        // Sample path; never resolved
-        String filePath = "/proto/spine/tools/protoc/every_is_in_one_file.proto";
+        String filePath = "spine/tools/protoc/every_is_in_one_file.proto";
 
         FileDescriptorProto descriptor = EveryIsInOneFileProto.getDescriptor()
                                                               .toProto();
@@ -175,8 +172,7 @@ class MarkerInterfaceGeneratorTest {
     @Test
     @DisplayName("generate insertion point contents for Is in single file")
     void generateInsertionPointContentsForIsInSingleFile() {
-        // Sample path; never resolved
-        String filePath = "/proto/spine/tools/protoc/is_in_one_file.proto";
+        String filePath = "spine/tools/protoc/is_in_one_file.proto";
 
         FileDescriptorProto descriptor = IsInOneFileProto.getDescriptor()
                                                          .toProto();
@@ -199,8 +195,7 @@ class MarkerInterfaceGeneratorTest {
     @Test
     @DisplayName("generate EventMessage insertion points")
     void generateEventMessageInsertionPoints() {
-        // Sample path; never resolved
-        String filePath = "/proto/spine/tools/protoc/test_events.proto";
+        String filePath = "spine/tools/protoc/test_events.proto";
 
         FileDescriptorProto descriptor = TestEventsProto.getDescriptor()
                                                         .toProto();
@@ -219,8 +214,7 @@ class MarkerInterfaceGeneratorTest {
     @Test
     @DisplayName("generate CommandMessage insertion points")
     void generateCommandMessageInsertionPoints() {
-        // Sample path; never resolved
-        String filePath = "/proto/spine/tools/protoc/test_commands.proto";
+        String filePath = "spine/tools/protoc/test_commands.proto";
 
         FileDescriptorProto descriptor = TestCommandsProto.getDescriptor()
                                                           .toProto();
@@ -239,8 +233,7 @@ class MarkerInterfaceGeneratorTest {
     @Test
     @DisplayName("generate RejectionMessage insertion points")
     void generateRejectionMessageInsertionPoints() {
-        // Sample path; never resolved
-        String filePath = "/proto/spine/tools/protoc/test_rejections.proto";
+        String filePath = "spine/tools/protoc/test_rejections.proto";
 
         FileDescriptorProto descriptor = Rejections.getDescriptor()
                                                    .toProto();
@@ -289,8 +282,7 @@ class MarkerInterfaceGeneratorTest {
     @Test
     @DisplayName("generate marker interfaces for (is) if `generate = true`")
     void generateMarkersForIs() {
-        // Sample path; never resolved
-        String filePath = "/proto/spine/tools/protoc/is_generate.proto";
+        String filePath = "spine/tools/protoc/is_generated.proto";
 
         FileDescriptorProto descriptor = IsGeneratedProto.getDescriptor()
                                                          .toProto();
@@ -324,8 +316,7 @@ class MarkerInterfaceGeneratorTest {
     @Test
     @DisplayName("generate marker interfaces for (every_is) if `generate = true`")
     void generateMarkersForEveryIs() {
-        // Sample path; never resolved
-        String filePath = "/proto/spine/tools/protoc/every_is_generate.proto";
+        String filePath = "spine/tools/protoc/every_is_generated.proto";
 
         FileDescriptorProto descriptor = EveryIsGeneratedProto.getDescriptor()
                                                               .toProto();
