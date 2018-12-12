@@ -179,9 +179,15 @@ public final class Tests {
         // Assert that values match the field mask.
         for (FieldDescriptor field : fields) {
             if (field.isRepeated()) {
-                continue;
+                boolean pathsHasSuchField = paths.contains(field.getName());
+                if (pathsHasSuchField) {
+                    List<?> repeatedFieldValue = (List<?>) message.getField(field);
+                    boolean fieldValueAbsent = repeatedFieldValue.isEmpty();
+                    assertTrue(!fieldValueAbsent);
+                }
+            } else {
+                assertEquals(message.hasField(field), paths.contains(field.getName()));
             }
-            assertEquals(message.hasField(field), paths.contains(field.getName()));
         }
     }
 

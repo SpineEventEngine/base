@@ -31,3 +31,12 @@ dependencies {
     api deps.test.mockito
     api deps.test.hamcrest
 }
+
+protobuf {
+    // Configure the protoc executable
+    protoc {
+        // Download from repositories
+        artifact = "com.google.protobuf:protoc:$deps.versions.protobuf"
+    }
+
+}
