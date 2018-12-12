@@ -71,6 +71,9 @@ import io.spine.test.validate.command.EntityIdLongFieldValue;
 import io.spine.test.validate.command.EntityIdMsgFieldValue;
 import io.spine.test.validate.command.EntityIdRepeatedFieldValue;
 import io.spine.test.validate.command.EntityIdStringFieldValue;
+import io.spine.test.validate.oneof.EveryOptional;
+import io.spine.test.validate.oneof.EveryRequired;
+import io.spine.test.validate.oneof.OneRequired;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -981,12 +984,56 @@ class MessageValidatorTest {
             @Test
             @DisplayName("Float")
             void find_out_that_entity_id_in_command_cannot_be_float_number() {
-                @SuppressWarnings("MagicNumber") EntityIdDoubleFieldValue msg =
-                        EntityIdDoubleFieldValue.newBuilder()
-                                                .setValue(1.1)
-                                                .build();
+                EntityIdDoubleFieldValue msg = EntityIdDoubleFieldValue
+                        .newBuilder()
+                        .setValue(1.1)
+                        .build();
                 assertNotValid(msg);
             }
+        }
+    }
+
+    @Nested
+    @DisplayName("consider Oneof")
+    class Oneof {
+
+        @Test
+        @DisplayName("valid if a required field is set to a non-default value")
+        void validIfRequireFieldIsNotDefault() {
+            EveryRequired requiredIsNotDefault = EveryRequired
+                    .newBuilder()
+                    .setFirst(newUuid())
+                    .build();
+            assertValid(requiredIsNotDefault);
+        }
+
+        @Test
+        @DisplayName("invalid if a required field is set to the default value")
+        void invalidIfRequireFieldIsDefault() {
+            EveryRequired requiredIsDefault = EveryRequired
+                    .newBuilder()
+                    .setFirst("")
+                    .build();
+            assertNotValid(requiredIsDefault);
+        }
+
+        @Test
+        @DisplayName("valid if a non-required field is set to the default value")
+        void validIfOptionalIsDefault() {
+            OneRequired optionalIsDefault = OneRequired
+                    .newBuilder()
+                    .setOptional("")
+                    .build();
+            assertValid(optionalIsDefault);
+        }
+
+        @Test
+        @DisplayName("invalid if all fields are optional, but none is set")
+        void invalidIfNoneIsSet() {
+            EveryOptional noneIsSet = EveryOptional
+                    .newBuilder()
+                    .build();
+            assertNotValid(noneIsSet);
         }
     }
 
