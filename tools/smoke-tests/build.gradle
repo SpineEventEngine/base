@@ -53,17 +53,16 @@ buildscript {
     }
 }
 
-repositories {
-    mavenCentral()
-    mavenLocal()
-    jcenter()
-}
-
 allprojects {
     apply from: EXT
     apply plugin: 'java'
     apply plugin: 'jacoco'
     apply plugin: 'project-report'
+
+    repositories {
+        mavenLocal()
+        jcenter()
+    }
 }
 
 subprojects {
@@ -78,6 +77,7 @@ subprojects {
         compile "io.spine:spine-base:$spineVersion"
 
         testImplementation "io.spine:spine-testlib:$spineVersion"
+        testRuntimeOnly deps.test.junit5Runner
     }
 
     idea.module {
@@ -104,6 +104,14 @@ subprojects {
                          "$projectDir/src/test/java"
             resources.srcDirs "$projectDir/generated/test/resources"
         }
+    }
+
+    test {
+        useJUnitPlatform {
+            includeEngines 'junit-jupiter'
+        }
+
+        include "**/*Test.class"
     }
 }
 
