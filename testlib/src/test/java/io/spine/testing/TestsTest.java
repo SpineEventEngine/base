@@ -25,6 +25,7 @@ import com.google.protobuf.Any;
 import com.google.protobuf.FieldMask;
 import com.google.protobuf.Timestamp;
 import com.google.protobuf.util.FieldMaskUtil;
+import io.spine.testing.HospitalPolicy.PatientCondition;
 import io.spine.testing.given.TestsTestEnv.ClassThrowingExceptionInConstructor;
 import io.spine.testing.given.TestsTestEnv.ClassWithCtorWithArgs;
 import io.spine.testing.given.TestsTestEnv.ClassWithPrivateCtor;
@@ -35,7 +36,9 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
+import java.util.UUID;
 
+import static io.spine.testing.HospitalPolicy.PatientCondition.*;
 import static io.spine.testing.Tests.assertInDelta;
 import static io.spine.testing.Tests.assertMatchesMask;
 import static io.spine.testing.Tests.hasPrivateParameterlessCtor;
@@ -120,6 +123,7 @@ class TestsTest extends UtilityClassTest<Tests> {
     @Nested
     @DisplayName("Assert true")
     class AssertTrue {
+
         @Test
         @DisplayName("when true")
         void onTrue() {
@@ -181,6 +185,114 @@ class TestsTest extends UtilityClassTest<Tests> {
             assertThrows(AssertionError.class,
                          () -> assertMatchesMask(Timestamp.getDefaultInstance(), fieldMask));
         }
+
+        @Nested
+        @DisplayName("with repeated fields")
+        class RepeatedFields {
+
+            private final PatientId patientId = newPatient();
+
+            @DisplayName("match present repeated primitive fields")
+            @Test
+            void matchRepeatedPrimitiveFields() {
+                Prescription prescription = prescribeFromCold();
+
+                FieldMask fieldMask = FieldMaskUtil.fromFieldNumbers(Prescription.class,
+                                                                     1, 2);
+                assertMatchesMask(prescription, fieldMask);
+            }
+
+            @DisplayName("not match absent repeated primitive fields")
+            @Test
+            void notMatchAbsentRepeatedPrimitiveFields() {
+                Prescription emptyPrescription = Prescription
+                        .newBuilder()
+                        .build();
+
+                FieldMask fieldMask = FieldMaskUtil.fromFieldNumbers(Prescription.class, 2);
+
+                assertThrows(AssertionError.class,
+                             () -> assertMatchesMask(emptyPrescription, fieldMask));
+            }
+
+            @DisplayName("match present repeated non-default message fields")
+            @Test
+            void matchRepeatedNonDefaultMessageFields() {
+                PrescriptionHistory history = PrescriptionHistory
+                        .newBuilder()
+                        .addReceivedPrescription(prescribeFromCold())
+                        .setPrescriptionReceiver(patientId)
+                        .build();
+
+                FieldMask fieldMask = FieldMaskUtil.fromFieldNumbers(PrescriptionHistory.class,
+                                                                     1,
+                                                                     2);
+                assertMatchesMask(history, fieldMask);
+            }
+
+            @DisplayName("not match absent repeated message fields")
+            @Test
+            void notMatchAbsentRepeatedMessageFields() {
+                PrescriptionHistory history = PrescriptionHistory
+                        .newBuilder()
+                        .setPrescriptionReceiver(patientId)
+                        .build();
+
+                FieldMask fieldMask = FieldMaskUtil.fromFieldNumbers(PrescriptionHistory.class,
+                                                                     1,
+                                                                     2);
+                assertThrows(AssertionError.class, () -> assertMatchesMask(history, fieldMask));
+            }
+
+            @DisplayName("match present repeated enum fields")
+            @Test
+            void matchPresentRepeatedEnumFields() {
+                HospitalPolicy policy = HospitalPolicy
+                        .newBuilder()
+                        .addAcceptedCondition(CRITICAL)
+                        .addAcceptedCondition(CRITICAL_BUT_STABLE)
+                        .build();
+
+                FieldMask fieldMask = FieldMaskUtil.fromFieldNumbers(HospitalPolicy.class, 1);
+                assertMatchesMask(policy, fieldMask);
+            }
+
+            @DisplayName("not match absent repeated enum fields")
+            @Test
+            void notMatchAbsentRepeatedEnumFields(){
+                HospitalPolicy emptyPolicy = HospitalPolicy
+                        .newBuilder()
+                        .build();
+
+                FieldMask fieldMask = FieldMaskUtil.fromFieldNumbers(HospitalPolicy.class, 1);
+                assertThrows(AssertionError.class, ()->assertMatchesMask(emptyPolicy, fieldMask));
+            }
+
+            private Prescription prescribeFromCold() {
+                long currentTime = Instant.now()
+                                          .toEpochMilli();
+                Timestamp now = Timestamp
+                        .newBuilder()
+                        .setSeconds(currentTime)
+                        .build();
+                return Prescription
+                        .newBuilder()
+                        .setPrescribedOn(now)
+                        .addPrescribedDrug("Paracetamol")
+                        .addPrescribedDrug("Aspirin")
+                        .addPrescribedDrug("Tylenol")
+                        .build();
+            }
+
+            private PatientId newPatient() {
+                String uuid = UUID.randomUUID()
+                                  .toString();
+                return PatientId
+                        .newBuilder()
+                        .setValue(uuid)
+                        .build();
+            }
+        }
     }
 
     @Nested
@@ -199,7 +311,7 @@ class TestsTest extends UtilityClassTest<Tests> {
         void equalValues() {
             long expectedValue = getValue();
             @SuppressWarnings("UnnecessaryLocalVariable") // For readability of this test.
-            long actualValue = expectedValue;
+                    long actualValue = expectedValue;
             assertInDelta(expectedValue, actualValue, 0);
         }
 
