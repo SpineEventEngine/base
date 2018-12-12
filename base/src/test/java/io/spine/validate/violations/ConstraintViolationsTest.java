@@ -17,10 +17,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.validate;
+package io.spine.validate.violations;
 
 import com.google.common.testing.NullPointerTester;
 import io.spine.testing.UtilityClassTest;
+import io.spine.validate.ConstraintViolation;
+import io.spine.validate.ConstraintViolations;
 import org.junit.jupiter.api.DisplayName;
 
 @DisplayName("ConstraintViolations utility class should")
