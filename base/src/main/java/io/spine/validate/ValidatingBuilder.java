@@ -111,6 +111,7 @@ public interface ValidatingBuilder<T extends Message, B extends Message.Builder>
      * @param <B>          the generic type of returned value
      * @return the new instance of the builder
      */
+    @Internal
     @SuppressWarnings("OverlyBroadCatchBlock")   // OK, as the exception handling is the same.
     static <B extends ValidatingBuilder<?, ?>> B newInstance(Class<B> builderClass) {
         checkNotNull(builderClass);
