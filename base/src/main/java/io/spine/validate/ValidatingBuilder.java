@@ -25,6 +25,12 @@ import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
 
+import java.lang.reflect.Method;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.util.Exceptions.illegalStateWithCauseOf;
+import static io.spine.validate.AbstractValidatingBuilder.getNewBuilderMethod;
+
 /**
  * An interface for all validating builders.
  *
@@ -97,4 +103,27 @@ public interface ValidatingBuilder<T extends Message, B extends Message.Builder>
      */
     @Internal
     void clear();
+
+    /**
+     * Creates an instance of {@code ValidatingBuilder} by its type.
+     *
+     * @param builderClass the type of the {@code ValidatingBuilder} to instantiate
+     * @param <B>          the generic type of returned value
+     * @return the new instance of the builder
+     */
+    @SuppressWarnings("OverlyBroadCatchBlock")   // OK, as the exception handling is the same.
+    static <B extends ValidatingBuilder<?, ?>> B newInstance(Class<B> builderClass) {
+        checkNotNull(builderClass);
+
+        try {
+            Method newBuilderMethod = getNewBuilderMethod(builderClass);
+            Object raw = newBuilderMethod.invoke(null);
+
+            // By convention, `newBuilder()` always returns instances of `B`.
+            @SuppressWarnings("unchecked") B builder = (B) raw;
+            return builder;
+        } catch (Exception e) {
+            throw illegalStateWithCauseOf(e);
+        }
+    }
 }
