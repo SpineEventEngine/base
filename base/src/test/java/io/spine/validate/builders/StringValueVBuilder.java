@@ -24,9 +24,7 @@ import com.google.protobuf.StringValue;
 import io.spine.validate.AbstractValidatingBuilder;
 
 /**
- * Validating builder for {@linkplain StringValue} messages.
- *
- * @author Alex Tymchenko.
+ * A test environment validating builder for {@link StringValue} messages.
  */
 public final class StringValueVBuilder
         extends AbstractValidatingBuilder<StringValue, StringValue.Builder> {
