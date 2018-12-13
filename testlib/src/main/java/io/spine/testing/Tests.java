@@ -24,6 +24,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.FieldMask;
 import com.google.protobuf.Message;
+import org.junit.jupiter.api.Assertions;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
@@ -32,6 +33,8 @@ import java.util.List;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.truth.Truth.assertThat;
 import static java.lang.Math.abs;
+import static java.lang.String.format;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 /**
  * Utilities for testing.
@@ -156,6 +159,42 @@ public final class Tests {
     /**
      * Asserts that the passed message has a field that matches the passed field mask.
      *
+     * <p>If the passed mask contains repeated message fields, asserts whether that field repeats
+     * at least once, e.g. for a mask of
+     * <pre>
+     * {@code
+     *     mask {
+     *         paths: friends
+     *     }
+     * }
+     * </pre>
+     * and messages
+     * <pre>
+     * {@code
+     *     message Animal {
+     *         string kind = 1;
+     *     }
+     *
+     *     message User {
+     *         string name = 1;
+     *         repeated User friends = 2;
+     *         repeated Animal animals = 3;
+     *     }
+     * }
+     * </pre>
+     * the mask matches if a user has at least one friend.
+     *
+     * <p>However, a mask
+     * <pre>
+     * {@code
+     *     mask {
+     *         paths: animals.kind
+     *     }
+     * }
+     * </pre>
+     * will never match against a user, since if a repeated field is a part of the mask,
+     * it should always be the last part of its path.
+     *
      * @param message
      *         the message to assert
      * @param fieldMask
@@ -176,12 +215,22 @@ public final class Tests {
         // Assert that the passed field mask contains the field of this message type.
         assertThat(fieldNames).containsAllIn(paths);
 
-        // Assert that values match the field mask.
         for (FieldDescriptor field : fields) {
+            boolean maskHasSuchField = paths.contains(field.getName());
             if (field.isRepeated()) {
-                continue;
+                if (maskHasSuchField) {
+                    List<?> repeatedFieldValue = (List<?>) message.getField(field);
+                    boolean repeatsAtLeastOnce = repeatedFieldValue.isEmpty();
+                    assertFalse(repeatsAtLeastOnce,
+                                format("Field %s wasn't found in the specified message.",
+                                       field.getName()));
+                }
+            } else {
+                Assertions.assertEquals(message.hasField(field), maskHasSuchField,
+                                        format("Mismatch found between field %s in the " +
+                                                       "specified message and the mask.",
+                                               field.getName()));
             }
-            assertEquals(message.hasField(field), paths.contains(field.getName()));
         }
     }
 
