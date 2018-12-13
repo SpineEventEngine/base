@@ -179,7 +179,7 @@ public class ValidatingBuilderGenPlugin extends SpinePlugin {
             boolean allTypes = isGenerateValidatingBuildersFromClasspath(project);
             VBuilderGenerator generator =
                     new VBuilderGenerator(protoSrcDirPath, allTypes, targetDirPath, indent);
-            generator.processDescriptorSetFile(setFile);
+            generator.process(setFile);
         }
     }
 

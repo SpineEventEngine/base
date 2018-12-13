@@ -82,11 +82,11 @@ public class VBuilderGenerator implements Logging {
         this.indent = indent;
     }
 
-    public void processDescriptorSetFile(File setFile) {
+    public void process(File descriptorSetFile) {
         Logger log = log();
-        log.debug("Generating the validating builders from {}.", setFile);
+        log.debug("Generating the validating builders from {}.", descriptorSetFile);
 
-        VBTypeLookup lookup = new VBTypeLookup(setFile.getPath());
+        VBTypeLookup lookup = new VBTypeLookup(descriptorSetFile.getPath());
         Set<VBType> allFound = lookup.collect();
         TypeCache typeCache = lookup.getTypeCache();
 
