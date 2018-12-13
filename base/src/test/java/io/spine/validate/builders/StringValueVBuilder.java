@@ -17,21 +17,32 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.validate;
+package io.spine.validate.builders;
 
-import com.google.protobuf.Any;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import com.google.protobuf.StringValue;
+import io.spine.validate.AbstractValidatingBuilder;
 
 /**
- * Validating builder for {@linkplain Any} messages.
+ * Validating builder for {@linkplain StringValue} messages.
+ *
+ * @author Alex Tymchenko.
  */
-public final class AnyVBuilder extends AbstractValidatingBuilder<Any, Any.Builder> {
+public final class StringValueVBuilder
+        extends AbstractValidatingBuilder<StringValue, StringValue.Builder> {
 
     /** Prevents instantiation from the outside. */
-    private AnyVBuilder() {
+    private StringValueVBuilder() {
         super();
     }
 
-    public static AnyVBuilder newBuilder() {
-        return new AnyVBuilder();
+    public static StringValueVBuilder newBuilder() {
+        return new StringValueVBuilder();
+    }
+
+    @CanIgnoreReturnValue
+    public StringValueVBuilder setValue(String value) {
+        getMessageBuilder().setValue(value);
+        return this;
     }
 }

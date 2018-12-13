@@ -34,6 +34,7 @@ import io.spine.base.ConversionException;
 import io.spine.base.Time;
 import io.spine.protobuf.Durations2;
 import io.spine.string.Stringifiers;
+import io.spine.validate.builders.StringValueVBuilder;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
