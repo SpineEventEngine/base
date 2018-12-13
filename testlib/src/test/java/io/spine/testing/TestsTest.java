@@ -41,6 +41,7 @@ import static io.spine.testing.HospitalPolicy.ACCEPTED_CONDITION_FIELD_NUMBER;
 import static io.spine.testing.HospitalPolicy.PatientCondition.CRITICAL;
 import static io.spine.testing.HospitalPolicy.PatientCondition.CRITICAL_BUT_STABLE;
 import static io.spine.testing.Prescription.PRESCRIBED_DRUG_FIELD_NUMBER;
+import static io.spine.testing.Prescription.PRESCRIBED_ON_FIELD_NUMBER;
 import static io.spine.testing.Prescription.getDefaultInstance;
 import static io.spine.testing.PrescriptionHistory.PRESCRIPTION_RECEIVER_FIELD_NUMBER;
 import static io.spine.testing.PrescriptionHistory.RECEIVED_PRESCRIPTION_FIELD_NUMBER;
@@ -203,7 +204,7 @@ class TestsTest extends UtilityClassTest<Tests> {
                 Prescription prescription = prescribeFromCold();
                 FieldMask fieldMask = FieldMaskUtil.fromFieldNumbers(Prescription.class,
                                                                      PRESCRIBED_DRUG_FIELD_NUMBER,
-                                                                     PRESCRIBED_DRUG_FIELD_NUMBER);
+                                                                     PRESCRIBED_ON_FIELD_NUMBER);
                 assertMatchesMask(prescription, fieldMask);
             }
 
