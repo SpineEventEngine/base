@@ -57,24 +57,27 @@ public class VBuilderGenerator implements Logging {
 
     /**
      * Creates new instance of the generator.
-     *  @param targetDirPath
-     *        an absolute path to the folder, serving as a target for the generation for
-     *        the given scope
+     *
      * @param protoSrcDirPath
      *        an absolute path to the folder, containing the {@code .proto} files for
      *        the given scope
      * @param allTypes
      *        If {@code true}, all message types from the classpath will be included.
      *        If {@code false}, only messages types declared in the current module will be included.
+     * @param targetDirPath
+     *        an absolute path to the folder, serving as a target for the generation for
+     *        the given scope
      * @param indent
      *        indentation for the generated code
      */
-    public VBuilderGenerator(String targetDirPath,
-                             String protoSrcDirPath,
+    public VBuilderGenerator(String protoSrcDirPath,
                              boolean allTypes,
+                             String targetDirPath,
                              Indent indent) {
         this.targetDirPath = targetDirPath;
-        this.protoSrcDirPath = protoSrcDirPath;
+        this.protoSrcDirPath = protoSrcDirPath.endsWith(File.separator)
+                               ? protoSrcDirPath
+                               : protoSrcDirPath + File.separator;
         this.allTypes = allTypes;
         this.indent = indent;
     }
@@ -126,16 +129,9 @@ public class VBuilderGenerator implements Logging {
     }
 
     private Predicate<VBType> getPredicate() {
-        Predicate<VBType> result;
-        if (allTypes) {
-            result = type -> true;
-        } else {
-            String rootPath = protoSrcDirPath.endsWith(File.separator)
-                              ? protoSrcDirPath
-                              : protoSrcDirPath + File.separator;
-            result = new SourceProtoBelongsToModule(rootPath);
-        }
-        return result;
+        return allTypes
+               ? (type -> true)
+               : new SourceProtoBelongsToModule(protoSrcDirPath);
     }
 
     /**
@@ -150,10 +146,10 @@ public class VBuilderGenerator implements Logging {
         /**
          *  An absolute path to the root folder for the {@code .proto} files in the module.
          */
-        private final String rootPath;
+        private final String protoRoot;
 
-        private SourceProtoBelongsToModule(String rootPath) {
-            this.rootPath = rootPath;
+        private SourceProtoBelongsToModule(String protoRoot) {
+            this.protoRoot = protoRoot;
         }
 
         @Override
@@ -161,7 +157,7 @@ public class VBuilderGenerator implements Logging {
             checkNotNull(input);
 
             String path = input.getSourceProtoFile();
-            File protoFile = new File(rootPath + path);
+            File protoFile = new File(protoRoot + path);
             boolean belongsToModule = protoFile.exists();
             return belongsToModule;
         }
