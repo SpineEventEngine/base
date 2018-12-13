@@ -17,20 +17,25 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
+
 syntax = "proto3";
 
-package spine.tools.protoc;
+package spine.testing;
 
-import "spine/options.proto";
-
-option (type_url_prefix) = "type.spine.io";
+// Testlib module doesn't have a dependency on base, thus the use of Spine options, namely
+// (type_url) is omitted.
 option java_multiple_files = true;
-option java_outer_classname = "ImplicitPackageTestProto";
-option java_package = "io.spine.tools.protoc";
+option java_outer_classname = "PrescriptionProto";
+option java_package = "io.spine.testing";
 
-message PICreateUser {
-    option (is).java_type = "PIUserCommand";
-    option (is).generate = true;
+import "google/protobuf/timestamp.proto";
 
-    string uid = 1;
+// A prescription of a medication.
+message Prescription {
+
+    // The date when the prescription was given to a patient.
+    google.protobuf.Timestamp prescribed_on = 1;
+
+    // Names of prescribed drugs.
+    repeated string prescribed_drug = 2;
 }

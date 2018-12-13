@@ -31,3 +31,13 @@ dependencies {
     api deps.test.mockito
     api deps.test.hamcrest
 }
+
+/*
+ * This module declares protobuf messages and uses them in tests, hence the need for the Protobuf
+ * compiler
+ */
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:$deps.versions.protobuf"
+    }
+}

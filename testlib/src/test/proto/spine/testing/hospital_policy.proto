@@ -17,20 +17,34 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
+
 syntax = "proto3";
 
-package spine.tools.protoc;
+package spine.testing;
 
-import "spine/options.proto";
-
-option (type_url_prefix) = "type.spine.io";
+// Testlib module doesn't have a dependency on base, thus the use of Spine options, namely
+// (type_url) is omitted.
 option java_multiple_files = true;
-option java_outer_classname = "ImplicitPackageTestProto";
-option java_package = "io.spine.tools.protoc";
+option java_outer_classname = "HospitalPolicyProto";
+option java_package = "io.spine.testing";
 
-message PICreateUser {
-    option (is).java_type = "PIUserCommand";
-    option (is).generate = true;
+import "spine/testing/prescription.proto";
 
-    string uid = 1;
+// A policy that regulates kinds of patients accepted by the hospital.
+message HospitalPolicy {
+
+    // Conditions accepted by the hospital
+    repeated PatientCondition accepted_condition = 1;
+
+    enum PatientCondition {
+        UNDETERMINED = 0;
+        GOOD = 1;
+        SATISFACTORY = 2;
+        FAIR = 3;
+        SERIOUS_BUT_STABLE = 4;
+        SERIOUS = 5;
+        CRITICAL_BUT_STABLE = 6;
+        CRITICAL = 7;
+        DEAD = 8;
+    }
 }

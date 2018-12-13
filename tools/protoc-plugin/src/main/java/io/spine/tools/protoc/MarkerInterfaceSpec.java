@@ -29,6 +29,7 @@ import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
 import io.spine.code.java.PackageName;
 import io.spine.code.java.SourceFile;
+import io.spine.option.IsOption;
 
 import javax.annotation.Generated;
 import java.util.Objects;
@@ -61,15 +62,16 @@ final class MarkerInterfaceSpec {
         this.name = name;
     }
 
-    static MarkerInterfaceSpec prepareInterface(String optionValue,
+    static MarkerInterfaceSpec prepareInterface(IsOption optionValue,
                                                 FileDescriptorProto srcFile) {
+        String javaType = optionValue.getJavaType();
         MarkerInterfaceSpec spec;
-        if (optionValue.contains(delimiter())) {
-            spec = from(optionValue);
+        if (javaType.contains(delimiter())) {
+            spec = from(javaType);
         } else {
             String javaPackage = PackageName.resolve(srcFile)
                                             .value();
-            spec = new MarkerInterfaceSpec(javaPackage, optionValue);
+            spec = new MarkerInterfaceSpec(javaPackage, javaType);
         }
         return spec;
     }

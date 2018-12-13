@@ -23,11 +23,14 @@ package io.spine.validate;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
+import com.google.protobuf.Descriptors.OneofDescriptor;
 import com.google.protobuf.Message;
 
+import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 
@@ -70,10 +73,17 @@ final class MessageValue {
         return new MessageValue(message, FieldContext.empty());
     }
 
-    /** Returns field values of the message. */
-    ImmutableList<FieldValue> fields() {
+    /**
+     * Obtains field values of the message.
+     *
+     * <p>Values of {@code Oneof} fields are filtered out and not returned.
+     *
+     * @return values of message fields excluding {@code Oneof} fields
+     */
+    ImmutableList<FieldValue> fieldsExceptOneofs() {
         ImmutableList<FieldValue> values = descriptor.getFields()
                                                      .stream()
+                                                     .filter(MessageValue::isNotOneof)
                                                      .map(this::valueOf)
                                                      .collect(toImmutableList());
         return values;
@@ -89,11 +99,23 @@ final class MessageValue {
      */
     Optional<FieldValue> valueOf(String fieldName) {
         FieldDescriptor field = descriptor.findFieldByName(fieldName);
-        if (field == null) {
-            return Optional.empty();
-        }
-        FieldValue fieldValue = valueOf(field);
-        return Optional.of(fieldValue);
+        return valueOfNullable(field);
+    }
+
+    /**
+     * Obtains the value of a populated {@code Oneof} field.
+     *
+     * @param oneof
+     *         the {@code Oneof} descriptor
+     * @return a value of the populated field
+     *         or {@code Optional.empty()} if the field was not populated
+     * @throws IllegalArgumentException
+     *         if the if the message doesn't declares this oneof
+     */
+    Optional<FieldValue> valueOf(OneofDescriptor oneof) {
+        checkArgument(oneofDescriptors().contains(oneof));
+        FieldDescriptor field = message.getOneofFieldDescriptor(oneof);
+        return valueOfNullable(field);
     }
 
     /** Returns options of the message. */
@@ -103,9 +125,31 @@ final class MessageValue {
         return options;
     }
 
+    /** Returns descriptors of {@code Oneof} declarations in the message. */
+    ImmutableList<OneofDescriptor> oneofDescriptors() {
+        return ImmutableList.copyOf(descriptor.getOneofs());
+    }
+
+    /** Returns the context of the message. */
+    FieldContext context() {
+        return context;
+    }
+
+    private Optional<FieldValue> valueOfNullable(@Nullable FieldDescriptor field) {
+        if (field == null) {
+            return Optional.empty();
+        }
+        FieldValue fieldValue = valueOf(field);
+        return Optional.of(fieldValue);
+    }
+
     private FieldValue valueOf(FieldDescriptor field) {
         FieldContext fieldContext = context.forChild(field);
         FieldValue value = FieldValue.of(message.getField(field), fieldContext);
         return value;
+    }
+
+    private static boolean isNotOneof(FieldDescriptor field) {
+        return field.getContainingOneof() == null;
     }
 }

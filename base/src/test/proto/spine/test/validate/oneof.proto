@@ -19,18 +19,35 @@
 //
 syntax = "proto3";
 
-package spine.tools.protoc;
+package spine.test.validate;
 
 import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
 option java_multiple_files = true;
-option java_outer_classname = "ImplicitPackageTestProto";
-option java_package = "io.spine.tools.protoc";
+option java_outer_classname = "MessageValidatorTestOneofProto";
+option java_package = "io.spine.test.validate.oneof";
 
-message PICreateUser {
-    option (is).java_type = "PIUserCommand";
-    option (is).generate = true;
 
-    string uid = 1;
+// `oneof` declarations for `MessageValidatorTest`.
+
+message EveryRequired {
+    oneof fields {
+        string first = 1 [(required) = true];
+        string second = 2 [(required) = true];
+    }
+}
+
+message OneRequired {
+    oneof fields {
+        string required_val = 1 [(required) = true];
+        string optional = 2 [(required) = false];
+    }
+}
+
+message EveryOptional {
+    oneof fields {
+        string first = 1 [(required) = false];
+        string second = 2 [(required) = false];
+    }
 }

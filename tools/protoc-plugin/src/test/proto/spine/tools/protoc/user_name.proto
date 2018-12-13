@@ -25,12 +25,13 @@ import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
 option java_multiple_files = true;
-option java_outer_classname = "ImplicitPackageTestProto";
+option java_outer_classname = "UserNameProto";
 option java_package = "io.spine.tools.protoc";
 
-message PICreateUser {
-    option (is).java_type = "PIUserCommand";
-    option (is).generate = true;
+message UserName {
+    option (is).java_type = "Name";
 
-    string uid = 1;
+    string given_name = 1;
+
+    string family_name = 2;
 }

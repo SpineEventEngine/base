@@ -11,7 +11,7 @@ option java_multiple_files = true;
 
 // This file contains test command types.
 //
-// The name of the file matches the Spine convension. All the generated classes should implement
+// The name of the file matches the Spine convention. All the generated classes should implement
 // `io.spine.base.CommandMessage`.
 
 message CreateProject {

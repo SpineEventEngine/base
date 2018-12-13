@@ -29,13 +29,13 @@ option java_outer_classname = "IsTestProto";
 option java_package = "io.spine.tools.protoc";
 
 message PICustomerCreated {
-    option (is) = "io.spine.tools.protoc.PICustomerEvent";
+    option (is) = {java_type: "io.spine.tools.protoc.PICustomerEvent" generate: true};
 
     string uid = 1;
 }
 
 message PICreateCustomer {
-    option (is) = "io.spine.tools.protoc.PICustomerCommand";
+    option (is) = {java_type: "io.spine.tools.protoc.PICustomerCommand" generate: true};
 
     string uid = 1;
     CustomerName name = 2;
