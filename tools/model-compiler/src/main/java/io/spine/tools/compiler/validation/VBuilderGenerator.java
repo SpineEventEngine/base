@@ -100,7 +100,6 @@ public class VBuilderGenerator implements Logging {
     }
 
     private void generate(Set<VBType> builders, TypeCache cache) {
-        Logger log = log();
         ValidatingBuilderWriter writer =
                 new ValidatingBuilderWriter(targetDirPath, indent, cache);
 
@@ -108,18 +107,23 @@ public class VBuilderGenerator implements Logging {
             try {
                 writer.write(vb);
             } catch (RuntimeException e) {
-                String message =
-                        format("Cannot generate the validating builder for %s. %n" +
-                               "Error: %s", vb, e.toString());
-                // If debug level is enabled give it under this lever, otherwise WARN.
-                if (log.isDebugEnabled()) {
-                    log.debug(message, e);
-                } else {
-                    log.warn(message);
-                }
+                logError(vb, e);
             }
         }
-        log.debug("The validating builder generation is finished.");
+        log().debug("The validating builder generation is finished.");
+    }
+
+    private void logError(VBType vb, RuntimeException e) {
+        Logger log = log();
+        String message =
+                format("Cannot generate a validating builder for %s.%n" +
+                       "Error: %s", vb, e.toString());
+        // If debug level is enabled give it under this lever, otherwise WARN.
+        if (log.isDebugEnabled()) {
+            log.debug(message, e);
+        } else {
+            log.warn(message);
+        }
     }
 
     private Set<VBType> filter(Set<VBType> types) {
