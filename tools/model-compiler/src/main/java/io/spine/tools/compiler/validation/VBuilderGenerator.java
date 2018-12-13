@@ -76,7 +76,7 @@ public class VBuilderGenerator implements Logging {
                              Indent indent) {
         this.targetDirPath = targetDirPath;
         this.predicate = allTypes
-                         ? (type -> true)
+                         ? type -> true
                          : new BelongsToModule(protoSrcDirPath);
         this.indent = indent;
     }

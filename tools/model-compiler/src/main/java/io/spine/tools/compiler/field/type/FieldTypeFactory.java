@@ -85,8 +85,7 @@ public class FieldTypeFactory {
             String result =
                     typeCache.javaType(typeName)
                              .orElseThrow(() -> newIllegalStateException(
-                                     "Cannot find the field type name for %s of type %s",
-                                     typeName, field.getType())
+                                     "Cannot find type named `%s`", typeName)
                              );
             return result;
         } else {

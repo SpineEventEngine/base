@@ -21,6 +21,7 @@
 package io.spine.tools.gradle;
 
 import com.google.common.base.MoreObjects;
+import com.google.common.collect.ImmutableSet;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
@@ -33,7 +34,6 @@ import java.util.Collection;
 import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.ImmutableSet.copyOf;
 import static com.google.common.collect.Lists.newLinkedList;
 
 /**
@@ -174,7 +174,7 @@ public final class GradleTask {
          */
         public Builder withInputFiles(Path... inputs) {
             checkNotNull(inputs, "task inputs");
-            this.inputs.addAll(copyOf(inputs));
+            this.inputs.addAll(ImmutableSet.copyOf(inputs));
             return this;
         }
 
