@@ -38,20 +38,19 @@ import java.io.IOException;
 import java.nio.file.Files;
 
 import static io.spine.tools.compiler.annotation.Annotations.generatedBySpineModelCompiler;
-import static io.spine.tools.compiler.validation.ClassNames.getValidatorMessageClassName;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 
 /**
- * Class which writes generated validating builders to Java files.
+ * Generates source code for a Java class with Validating Builder for a message type.
  */
 class ValidatingBuilderWriter implements Logging {
 
-    private final String targetDir;
+    private final File rootDirectory;
     private final Indent indent;
     private final TypeCache typeCache;
 
     ValidatingBuilderWriter(String targetDir, Indent indent, TypeCache typeCache) {
-        this.targetDir = targetDir;
+        this.rootDirectory = new File(targetDir);
         this.indent = indent;
         this.typeCache = typeCache;
     }
@@ -63,21 +62,17 @@ class ValidatingBuilderWriter implements Logging {
         log().debug("Preparing to writing the {} class under the {} package",
                     type.getJavaClass(), type.getJavaPackage());
 
-        MethodAssembler methodsAssembler =
-                new MethodAssembler(type, typeCache);
         String javaClass = type.getJavaClass();
         String javaPackage = type.getJavaPackage();
         DescriptorProto descriptor = type.getDescriptor();
-        ClassName messageClassName =
-                getValidatorMessageClassName(javaPackage,
-                                             typeCache,
-                                             descriptor.getName());
+        ClassName messageClassName = typeCache.vBuilderParam(javaPackage, descriptor.getName());
+
         ClassName messageBuilderClassName =
                 messageClassName.nestedClass(SimpleClassName.ofBuilder()
                                                             .value());
 
-        File rootDirectory = new File(targetDir);
         TypeSpec.Builder classBuilder = TypeSpec.classBuilder(javaClass);
+        MethodAssembler methodsAssembler = new MethodAssembler(type, typeCache);
         TypeSpec javaClassToWrite =
                 setupClassContract(classBuilder,
                                    messageClassName,
@@ -88,7 +83,7 @@ class ValidatingBuilderWriter implements Logging {
 
         log().debug("Writing the {} class under the {} package",
                     type.getJavaClass(), type.getJavaPackage());
-        writeClass(rootDirectory, javaClassToWrite, javaPackage, indent);
+        writeClass(javaPackage, javaClassToWrite);
 
         log().debug("The {} class  was written under the {} package.", javaClass, javaPackage);
     }
@@ -109,17 +104,16 @@ class ValidatingBuilderWriter implements Logging {
         return typeBuilder;
     }
 
-    private void writeClass(File rootFolder, TypeSpec validator,
-                                   String javaPackage, Indent indent) {
+    private void writeClass(String javaPackage, TypeSpec classToCreate) {
         try {
-            Files.createDirectories(rootFolder.toPath());
-            JavaFile.builder(javaPackage, validator)
+            Files.createDirectories(rootDirectory.toPath());
+            JavaFile.builder(javaPackage, classToCreate)
                     .skipJavaLangImports(true)
                     .indent(indent.toString())
                     .build()
-                    .writeTo(rootFolder);
+                    .writeTo(rootDirectory);
         } catch (IOException e) {
-            String exMessage = String.format("%s was not written.", rootFolder);
+            String exMessage = String.format("%s was not written.", rootDirectory);
             log().warn(exMessage, e);
             throw newIllegalArgumentException(exMessage, e);
         }

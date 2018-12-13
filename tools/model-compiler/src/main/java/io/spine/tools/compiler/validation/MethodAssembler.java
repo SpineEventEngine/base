@@ -37,7 +37,6 @@ import java.util.List;
 import static com.google.common.collect.Lists.newArrayList;
 import static io.spine.code.proto.FieldTypesProto.isMap;
 import static io.spine.code.proto.FieldTypesProto.isRepeated;
-import static io.spine.tools.compiler.validation.ClassNames.getValidatorMessageClassName;
 
 /**
  * Serves as assembler for the generated methods based on the Protobuf message declaration.
@@ -56,8 +55,7 @@ class MethodAssembler {
         this.message = type.getDescriptor();
         this.typeCache = typeCache;
         String className = message.getName();
-        this.builderGenericClassName =
-                getValidatorMessageClassName(javaPackage, typeCache, className);
+        this.builderGenericClassName = typeCache.vBuilderParam(javaPackage, className);
     }
 
     /**

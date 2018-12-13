@@ -50,7 +50,7 @@ public class VBuilderGenerator implements Logging {
     private final String protoSrcDirPath;
 
     /** Controls the scope of validating builder generation. */
-    private final boolean classpathGenEnabled;
+    private final boolean allTypes;
 
     /** Indentation for the generated code. */
     private final Indent indent;
@@ -63,20 +63,19 @@ public class VBuilderGenerator implements Logging {
      * @param protoSrcDirPath
      *        an absolute path to the folder, containing the {@code .proto} files for
      *        the given scope
-     * @param classpathGenEnabled
-     *        If {@code true}, validating builders will be generated for all types from the
-     *        classpath.
-     *        If {@code false}, validating builders will be generated only for the current module.
+     * @param allTypes
+     *        If {@code true}, all message types from the classpath will be included.
+     *        If {@code false}, only messages types declared in the current module will be included.
      * @param indent
      *        indentation for the generated code
      */
     public VBuilderGenerator(String targetDirPath,
                              String protoSrcDirPath,
-                             boolean classpathGenEnabled,
+                             boolean allTypes,
                              Indent indent) {
         this.targetDirPath = targetDirPath;
         this.protoSrcDirPath = protoSrcDirPath;
-        this.classpathGenEnabled = classpathGenEnabled;
+        this.allTypes = allTypes;
         this.indent = indent;
     }
 
@@ -88,15 +87,15 @@ public class VBuilderGenerator implements Logging {
         Set<VBType> allFound = lookup.collect();
         TypeCache typeCache = lookup.getTypeCache();
 
-        Set<VBType> filtered = filter(classpathGenEnabled, allFound);
+        Set<VBType> filtered = filter(allFound);
         if (filtered.isEmpty()) {
             log.warn("No validating builders will be generated.");
         } else {
-            writeVBuilders(filtered, typeCache);
+            generate(filtered, typeCache);
         }
     }
 
-    private void writeVBuilders(Set<VBType> builders, TypeCache cache) {
+    private void generate(Set<VBType> builders, TypeCache cache) {
         Logger log = log();
         ValidatingBuilderWriter writer =
                 new ValidatingBuilderWriter(targetDirPath, indent, cache);
@@ -119,16 +118,16 @@ public class VBuilderGenerator implements Logging {
         log.debug("The validating builder generation is finished.");
     }
 
-    private Set<VBType> filter(boolean classpathGenEnabled, Set<VBType> types) {
-        Predicate<VBType> shouldWrite = getPredicate(classpathGenEnabled);
-        Iterable<VBType> filtered = Iterables.filter(types, shouldWrite::test);
+    private Set<VBType> filter(Set<VBType> types) {
+        Predicate<VBType> predicate = getPredicate();
+        Iterable<VBType> filtered = Iterables.filter(types, predicate::test);
         Set<VBType> result = ImmutableSet.copyOf(filtered);
         return result;
     }
 
-    private Predicate<VBType> getPredicate(boolean classpathGenEnabled) {
+    private Predicate<VBType> getPredicate() {
         Predicate<VBType> result;
-        if (classpathGenEnabled) {
+        if (allTypes) {
             result = type -> true;
         } else {
             String rootPath = protoSrcDirPath.endsWith(File.separator)

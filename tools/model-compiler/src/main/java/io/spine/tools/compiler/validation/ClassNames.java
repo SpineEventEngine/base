@@ -24,7 +24,6 @@ import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.squareup.javapoet.ClassName;
 import io.spine.tools.compiler.TypeCache;
 
-import java.util.Collection;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -33,7 +32,6 @@ import static io.spine.code.proto.FieldTypesProto.trimTypeName;
 import static io.spine.code.proto.ScalarType.getJavaTypeName;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 import static io.spine.util.Exceptions.newIllegalStateException;
-import static java.lang.String.format;
 
 /**
  * Utility class for working with the {@code ClassName}s.
@@ -97,33 +95,6 @@ final class ClassNames {
         checkNotNull(javaClass);
         ClassName className = ClassName.get(javaPackage, javaClass);
         return className;
-    }
-
-    /**
-     * Returns the {@code ClassName} for the generic parameter of the validating builder.
-     *
-     * @param javaPackage the package of the class
-     * @param typeCache   the cache of the message types
-     * @param typeName    the name of the type
-     * @return the constructed {@code ClassName}
-     * @throws IllegalArgumentException if the class of the validating builder is not found
-     */
-    static ClassName getValidatorMessageClassName(String javaPackage,
-                                                  TypeCache typeCache,
-                                                  String typeName) {
-        checkNotNull(javaPackage);
-        checkNotNull(typeCache);
-        checkNotNull(typeName);
-
-        Collection<String> values = typeCache.javaTypes();
-        String expectedClassName = javaPackage + '.' + typeName;
-        for (String value : values) {
-            if (value.equals(expectedClassName)) {
-                return ClassName.get(javaPackage, typeName);
-            }
-        }
-        String exMessage = format("The %s class is not found.", expectedClassName);
-        throw newIllegalArgumentException(exMessage);
     }
 
     /**

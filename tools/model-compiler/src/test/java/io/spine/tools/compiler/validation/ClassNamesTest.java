@@ -32,7 +32,6 @@ import org.junit.jupiter.api.Test;
 import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.getDefaultInstance;
 import static io.spine.tools.compiler.validation.ClassNames.getClassName;
 import static io.spine.tools.compiler.validation.ClassNames.getStringClassName;
-import static io.spine.tools.compiler.validation.ClassNames.getValidatorMessageClassName;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -58,7 +57,7 @@ class ClassNamesTest extends UtilityClassTest<ClassNames> {
     void throw_exception_when_generic_class_name_is_not_found() {
         TypeCache typeCache = new TypeCache();
         assertThrows(IllegalArgumentException.class,
-                     () -> getValidatorMessageClassName(TEST_PACKAGE, typeCache, "field"));
+                     () -> typeCache.vBuilderParam(TEST_PACKAGE, "field"));
     }
 
     @Test
