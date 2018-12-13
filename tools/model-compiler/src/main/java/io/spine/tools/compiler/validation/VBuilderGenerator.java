@@ -84,7 +84,7 @@ public class VBuilderGenerator implements Logging {
 
     public void process(File descriptorSetFile) {
         Logger log = log();
-        log.debug("Generating the validating builders from {}.", descriptorSetFile);
+        log.debug("Generating validating builders for types from {}.", descriptorSetFile);
 
         VBTypeLookup lookup = new VBTypeLookup(descriptorSetFile.getPath());
         Set<VBType> allFound = lookup.collect();
@@ -110,7 +110,7 @@ public class VBuilderGenerator implements Logging {
                 logError(vb, e);
             }
         }
-        log().debug("The validating builder generation is finished.");
+        log().debug("Validating builder generation is finished.");
     }
 
     private void logError(VBType vb, RuntimeException e) {
