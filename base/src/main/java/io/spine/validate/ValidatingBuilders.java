@@ -23,6 +23,7 @@ import java.lang.reflect.Method;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
+import static io.spine.validate.AbstractValidatingBuilder.getNewBuilderMethod;
 
 /**
  * Utility class for working with {@linkplain ValidatingBuilder validating builders}.
@@ -48,8 +49,7 @@ public final class ValidatingBuilders {
         checkNotNull(builderClass);
 
         try {
-            Method newBuilderMethod =
-                    ValidatingBuilder.TypeInfo.getNewBuilderMethod(builderClass);
+            Method newBuilderMethod = getNewBuilderMethod(builderClass);
             Object raw = newBuilderMethod.invoke(null);
 
             // By convention, `newBuilder()` always returns instances of `B`.

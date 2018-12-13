@@ -24,13 +24,6 @@ import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
-import io.spine.protobuf.Messages;
-import io.spine.reflect.GenericTypeIndex;
-
-import java.lang.reflect.Method;
-
-import static io.spine.util.Exceptions.illegalArgumentWithCauseOf;
-import static io.spine.validate.ValidatingBuilder.GenericParameter.MESSAGE;
 
 /**
  * An interface for all validating builders.
@@ -104,66 +97,4 @@ public interface ValidatingBuilder<T extends Message, B extends Message.Builder>
      */
     @Internal
     void clear();
-
-    /**
-     * Enumeration of generic type parameters of this interface.
-     */
-    enum GenericParameter implements GenericTypeIndex<ValidatingBuilder> {
-
-        /**
-         * The index of the declaration of the generic parameter type {@code <T>}
-         * in {@link ValidatingBuilder}.
-         */
-        MESSAGE(0),
-
-        /**
-         * The index of the declaration of the generic parameter type {@code <B>}
-         * in {@link ValidatingBuilder}.
-         */
-        MESSAGE_BUILDER(1);
-
-        private final int index;
-
-        GenericParameter(int index) {
-            this.index = index;
-        }
-
-        @Override
-        public int getIndex() {
-            return this.index;
-        }
-    }
-
-    /**
-     * Provides type information on classes implementing {@link ValidatingBuilder}.
-     */
-    class TypeInfo {
-
-        /** Prevent construction from outside. */
-        private TypeInfo() {
-        }
-
-        /**
-         * Retrieves the state class of the passed entity class.
-         *
-         * @param builderClass the builder class to inspect
-         * @param <T>          the state type
-         * @return the entity state class
-         */
-        public static <T extends Message> Class<T> getMessageClass(
-                Class<? extends ValidatingBuilder> builderClass) {
-            @SuppressWarnings("unchecked") // The type is ensured by the class declaration.
-            Class<T> result = (Class<T>)MESSAGE.getArgumentIn(builderClass);
-            return result;
-        }
-
-        // as the method names are the same, but methods are different.
-        public static Method getNewBuilderMethod(Class<? extends ValidatingBuilder<?, ?>> cls) {
-            try {
-                return cls.getMethod(Messages.METHOD_NEW_BUILDER);
-            } catch (NoSuchMethodException e) {
-                throw illegalArgumentWithCauseOf(e);
-            }
-        }
-    }
 }

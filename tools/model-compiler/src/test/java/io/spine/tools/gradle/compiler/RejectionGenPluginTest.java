@@ -20,6 +20,7 @@
 
 package io.spine.tools.gradle.compiler;
 
+import io.spine.protobuf.Messages;
 import io.spine.tools.gradle.GradleProject;
 import org.jboss.forge.roaster.Roaster;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
@@ -88,7 +89,9 @@ class RejectionGenPluginTest {
 
     private static void assertRejectionJavadoc(JavaClassSource rejection) {
         assertDoc(rejection, getExpectedClassComment());
-        assertMethodDoc(rejection, "newBuilder", "@return a new builder for the rejection");
+        assertMethodDoc(rejection,
+                        Messages.METHOD_NEW_BUILDER,
+                        "@return a new builder for the rejection");
     }
 
     private static void assertBuilderJavadoc(JavaClassSource builder) {

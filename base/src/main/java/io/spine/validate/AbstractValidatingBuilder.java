@@ -26,14 +26,17 @@ import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
 import io.spine.base.ConversionException;
 import io.spine.protobuf.Messages;
+import io.spine.reflect.GenericTypeIndex;
 import io.spine.string.Stringifiers;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Throwables.getRootCause;
+import static io.spine.util.Exceptions.illegalArgumentWithCauseOf;
 import static io.spine.validate.FieldValidatorFactory.create;
 
 /**
@@ -64,7 +67,7 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
     private @Nullable T originalState;
 
     protected AbstractValidatingBuilder() {
-        this.messageClass = TypeInfo.getMessageClass(getClass());
+        this.messageClass = getMessageClass(getClass());
         this.messageBuilder = createBuilder();
     }
 
@@ -226,6 +229,59 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
             throws ValidationException {
         if (!violations.isEmpty()) {
             throw new ValidationException(violations);
+        }
+    }
+
+    /**
+     * Obtains the class of the message produced by the builder.
+     */
+    private static <T extends Message> Class<T>
+    getMessageClass(Class<? extends ValidatingBuilder> builderClass) {
+        @SuppressWarnings("unchecked") // The type is ensured by the class declaration.
+                Class<T> result = (Class<T>)GenericParameter.MESSAGE.getArgumentIn(builderClass);
+        return result;
+    }
+
+    // as the method names are the same, but methods are different.
+
+    /**
+     * Obtains the raw method for creating new validating builder.
+     *
+     * <p>To simplify migration to Validating Builders, we use the same name which is used in
+     * Protobuf for obtaining a {@code Message.Builder}.
+     */
+    static Method getNewBuilderMethod(Class<? extends ValidatingBuilder<?, ?>> cls) {
+        try {
+            return cls.getMethod(Messages.METHOD_NEW_BUILDER);
+        } catch (NoSuchMethodException e) {
+            throw illegalArgumentWithCauseOf(e);
+        }
+    }
+
+    /**
+     * Enumeration of generic type parameters of {@link ValidatingBuilder}.
+     */
+    private enum GenericParameter implements GenericTypeIndex<ValidatingBuilder> {
+
+        /**
+         * The index of the declaration of the generic parameter type {@code <T>}.
+         */
+        MESSAGE(0),
+
+        /**
+         * The index of the declaration of the generic parameter type {@code <B>}.
+         */
+        MESSAGE_BUILDER(1);
+
+        private final int index;
+
+        GenericParameter(int index) {
+            this.index = index;
+        }
+
+        @Override
+        public int getIndex() {
+            return this.index;
         }
     }
 }
