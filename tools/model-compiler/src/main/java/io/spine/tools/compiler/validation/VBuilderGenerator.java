@@ -46,14 +46,14 @@ public class VBuilderGenerator implements Logging {
     /** Code will be generated into this directory. */
     private final String targetDirPath;
 
-    /** Source directory with proto files. */
-    private final String protoSrcDirPath;
-
-    /** Controls the scope of validating builder generation. */
-    private final boolean allTypes;
-
     /** Indentation for the generated code. */
     private final Indent indent;
+
+    /**
+     * The predicate for filtering types by module, or accepting all types,
+     * if the generation is requested for all types.
+     */
+    private final Predicate<VBType> predicate;
 
     /**
      * Creates new instance of the generator.
@@ -75,10 +75,9 @@ public class VBuilderGenerator implements Logging {
                              String targetDirPath,
                              Indent indent) {
         this.targetDirPath = targetDirPath;
-        this.protoSrcDirPath = protoSrcDirPath.endsWith(File.separator)
-                               ? protoSrcDirPath
-                               : protoSrcDirPath + File.separator;
-        this.allTypes = allTypes;
+        this.predicate = allTypes
+                         ? (type -> true)
+                         : new BelongsToModule(protoSrcDirPath);
         this.indent = indent;
     }
 
@@ -113,11 +112,17 @@ public class VBuilderGenerator implements Logging {
         log().debug("Validating builder generation is finished.");
     }
 
+    private Set<VBType> filter(Set<VBType> types) {
+        Iterable<VBType> filtered = Iterables.filter(types, predicate::test);
+        Set<VBType> result = ImmutableSet.copyOf(filtered);
+        return result;
+    }
+
     private void logError(VBType vb, RuntimeException e) {
         Logger log = log();
         String message =
                 format("Cannot generate a validating builder for %s.%n" +
-                       "Error: %s", vb, e.toString());
+                               "Error: %s", vb, e.toString());
         // If debug level is enabled give it under this lever, otherwise WARN.
         if (log.isDebugEnabled()) {
             log.debug(message, e);
@@ -126,35 +131,21 @@ public class VBuilderGenerator implements Logging {
         }
     }
 
-    private Set<VBType> filter(Set<VBType> types) {
-        Predicate<VBType> predicate = getPredicate();
-        Iterable<VBType> filtered = Iterables.filter(types, predicate::test);
-        Set<VBType> result = ImmutableSet.copyOf(filtered);
-        return result;
-    }
-
-    private Predicate<VBType> getPredicate() {
-        return allTypes
-               ? (type -> true)
-               : new SourceProtoBelongsToModule(protoSrcDirPath);
-    }
-
     /**
      * A predicate determining if the given {@linkplain VBType validating builder metadata}
      * has been collected from the source file in the specified module.
-     *
-     * <p>Each predicate instance requires to specify the root folder of Protobuf definitions
-     * for the module. This value is used to match the given {@code VBMetadata}.
      */
-    private static class SourceProtoBelongsToModule implements Predicate<VBType> {
+    private static class BelongsToModule implements Predicate<VBType> {
 
         /**
          *  An absolute path to the root folder for the {@code .proto} files in the module.
          */
-        private final String protoRoot;
+        private final String protoSrcDirPath;
 
-        private SourceProtoBelongsToModule(String protoRoot) {
-            this.protoRoot = protoRoot;
+        private BelongsToModule(String protoSrcDirPath) {
+            this.protoSrcDirPath = protoSrcDirPath.endsWith(File.separator)
+                             ? protoSrcDirPath
+                             : protoSrcDirPath + File.separator;
         }
 
         @Override
@@ -162,7 +153,7 @@ public class VBuilderGenerator implements Logging {
             checkNotNull(input);
 
             String path = input.getSourceProtoFile();
-            File protoFile = new File(protoRoot + path);
+            File protoFile = new File(protoSrcDirPath + path);
             boolean belongsToModule = protoFile.exists();
             return belongsToModule;
         }
