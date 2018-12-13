@@ -65,7 +65,8 @@ public class VBuilderGenerator implements Logging {
      *        the given scope
      * @param classpathGenEnabled
      *        If {@code true}, validating builders will be generated for all types from the
-     *        classpath. If {@code false}, validating builders will be generated only to the
+     *        classpath.
+     *        If {@code false}, validating builders will be generated only for the current module.
      * @param indent
      *        indentation for the generated code
      */

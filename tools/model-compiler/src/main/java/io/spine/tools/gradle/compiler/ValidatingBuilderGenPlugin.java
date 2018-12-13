@@ -55,32 +55,26 @@ import static io.spine.tools.gradle.compiler.Extension.isGenerateValidatingBuild
  * <p>Logs a warning if there are no Protobuf descriptors generated.
  *
  * <p>To switch off the generation of the validating builders
- * use the {@code generateValidatingBuilders} property as follows:
+ * use the {@code generateValidatingBuilders} property in the {@code modelCompiler} section
+ * of a Gradle build file:
  *
- * {@code
- * <pre>
+ * <pre>{@code
  * modelCompiler {
  *     generateValidatingBuilders = false
  * }
- * </pre>
- * }
+ * }</pre>
  *
- * <p>The default value is {@code true}.
+ * <p>The default value of the {@code generateValidatingBuilders} property is {@code true}.
  *
- * <p>The tabular indentation for the generated code is done with whitespaces.
- * To set the width please use the {@code indent} property as follows:
+ * <p>The indentation for the generated code is done with whitespaces. The default indentation is 4.
+ * To set another value, please use the {@code indent} property:
  *
- * {@code
- * <pre>
+ * <pre>{@code
  * modelCompiler {
  *     indent = 2
  * }
- * </pre>
- * }
+ * }</pre>
  *
- * <p>The default value is 4.
- *
- * @author Illia Shepilov
  * @see io.spine.validate.ValidatingBuilder
  * @see io.spine.validate.AbstractValidatingBuilder
  */
@@ -178,14 +172,14 @@ public class ValidatingBuilderGenPlugin extends SpinePlugin {
             File setFile = new File(descriptorPath);
             if (!setFile.exists()) {
                 plugin.logMissingDescriptorSetFile(setFile);
-            } else {
-                Indent indent = getIndent(project);
-                boolean genFromClasspath = isGenerateValidatingBuildersFromClasspath(project);
-                VBuilderGenerator generator =
-                        new VBuilderGenerator(targetDirPath, protoSrcDirPath, genFromClasspath,
-                                              indent);
-                generator.processDescriptorSetFile(setFile);
+                return;
             }
+
+            Indent indent = getIndent(project);
+            boolean allTypes = isGenerateValidatingBuildersFromClasspath(project);
+            VBuilderGenerator generator =
+                    new VBuilderGenerator(targetDirPath, protoSrcDirPath, allTypes, indent);
+            generator.processDescriptorSetFile(setFile);
         }
     }
 
