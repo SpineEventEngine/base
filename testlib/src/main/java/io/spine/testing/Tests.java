@@ -24,6 +24,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.FieldMask;
 import com.google.protobuf.Message;
+import org.junit.jupiter.api.Assertions;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
@@ -32,6 +33,8 @@ import java.util.List;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.truth.Truth.assertThat;
 import static java.lang.Math.abs;
+import static java.lang.String.format;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 /**
  * Utilities for testing.
@@ -179,10 +182,9 @@ public final class Tests {
      *     }
      * }
      * </pre>
-     *
      * the mask matches if a user has at least one friend.
      *
-     * However, a mask
+     * <p>However, a mask
      * <pre>
      * {@code
      *     mask {
@@ -213,17 +215,21 @@ public final class Tests {
         // Assert that the passed field mask contains the field of this message type.
         assertThat(fieldNames).containsAllIn(paths);
 
-        // Assert that values match the field mask.
         for (FieldDescriptor field : fields) {
+            boolean maskHasSuchField = paths.contains(field.getName());
             if (field.isRepeated()) {
-                boolean maskHasSuchField = paths.contains(field.getName());
                 if (maskHasSuchField) {
-                    List repeatedFieldValue = (List) message.getField(field);
+                    List<?> repeatedFieldValue = (List<?>) message.getField(field);
                     boolean repeatsAtLeastOnce = repeatedFieldValue.isEmpty();
-                    assertTrue(!repeatsAtLeastOnce);
+                    assertFalse(repeatsAtLeastOnce,
+                                format("Field %s wasn't found in the specified message.",
+                                       field.getName()));
                 }
             } else {
-                assertEquals(message.hasField(field), paths.contains(field.getName()));
+                Assertions.assertEquals(message.hasField(field), maskHasSuchField,
+                                        format("Mismatch found between field %s in the " +
+                                                       "specified message and the mask.",
+                                               field.getName()));
             }
         }
     }

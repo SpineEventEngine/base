@@ -37,8 +37,13 @@ import org.junit.jupiter.api.Test;
 import java.time.Instant;
 import java.util.UUID;
 
+import static io.spine.testing.HospitalPolicy.ACCEPTED_CONDITION_FIELD_NUMBER;
 import static io.spine.testing.HospitalPolicy.PatientCondition.CRITICAL;
 import static io.spine.testing.HospitalPolicy.PatientCondition.CRITICAL_BUT_STABLE;
+import static io.spine.testing.Prescription.PRESCRIBED_DRUG_FIELD_NUMBER;
+import static io.spine.testing.Prescription.getDefaultInstance;
+import static io.spine.testing.PrescriptionHistory.PRESCRIPTION_RECEIVER_FIELD_NUMBER;
+import static io.spine.testing.PrescriptionHistory.RECEIVED_PRESCRIPTION_FIELD_NUMBER;
 import static io.spine.testing.Tests.assertInDelta;
 import static io.spine.testing.Tests.assertMatchesMask;
 import static io.spine.testing.Tests.hasPrivateParameterlessCtor;
@@ -196,15 +201,18 @@ class TestsTest extends UtilityClassTest<Tests> {
             @Test
             void matchRepeatedPrimitiveFields() {
                 Prescription prescription = prescribeFromCold();
-                FieldMask fieldMask = FieldMaskUtil.fromFieldNumbers(Prescription.class, 1, 2);
+                FieldMask fieldMask = FieldMaskUtil.fromFieldNumbers(Prescription.class,
+                                                                     PRESCRIBED_DRUG_FIELD_NUMBER,
+                                                                     PRESCRIBED_DRUG_FIELD_NUMBER);
                 assertMatchesMask(prescription, fieldMask);
             }
 
             @DisplayName("not match absent repeated primitive fields")
             @Test
             void notMatchAbsentRepeatedPrimitiveFields() {
-                Prescription emptyPrescription = Prescription.getDefaultInstance();
-                FieldMask fieldMask = FieldMaskUtil.fromFieldNumbers(Prescription.class, 2);
+                Prescription emptyPrescription = getDefaultInstance();
+                FieldMask fieldMask = FieldMaskUtil.fromFieldNumbers(Prescription.class,
+                                                                     PRESCRIBED_DRUG_FIELD_NUMBER);
                 assertThrows(AssertionError.class,
                              () -> assertMatchesMask(emptyPrescription, fieldMask));
             }
@@ -218,7 +226,9 @@ class TestsTest extends UtilityClassTest<Tests> {
                         .setPrescriptionReceiver(patientId)
                         .build();
                 FieldMask fieldMask =
-                        FieldMaskUtil.fromFieldNumbers(PrescriptionHistory.class, 1, 2);
+                        FieldMaskUtil.fromFieldNumbers(PrescriptionHistory.class,
+                                                       PRESCRIPTION_RECEIVER_FIELD_NUMBER,
+                                                       RECEIVED_PRESCRIPTION_FIELD_NUMBER);
                 assertMatchesMask(history, fieldMask);
             }
 
@@ -231,7 +241,9 @@ class TestsTest extends UtilityClassTest<Tests> {
                         .build();
 
                 FieldMask fieldMask =
-                        FieldMaskUtil.fromFieldNumbers(PrescriptionHistory.class, 1, 2);
+                        FieldMaskUtil.fromFieldNumbers(PrescriptionHistory.class,
+                                                       PRESCRIPTION_RECEIVER_FIELD_NUMBER,
+                                                       RECEIVED_PRESCRIPTION_FIELD_NUMBER);
                 assertThrows(AssertionError.class, () -> assertMatchesMask(history, fieldMask));
             }
 
@@ -244,7 +256,9 @@ class TestsTest extends UtilityClassTest<Tests> {
                         .addAcceptedCondition(CRITICAL_BUT_STABLE)
                         .build();
 
-                FieldMask fieldMask = FieldMaskUtil.fromFieldNumbers(HospitalPolicy.class, 1);
+                FieldMask fieldMask =
+                        FieldMaskUtil.fromFieldNumbers(HospitalPolicy.class,
+                                                       ACCEPTED_CONDITION_FIELD_NUMBER);
                 assertMatchesMask(policy, fieldMask);
             }
 
@@ -252,7 +266,9 @@ class TestsTest extends UtilityClassTest<Tests> {
             @Test
             void notMatchAbsentRepeatedEnumFields() {
                 HospitalPolicy emptyPolicy = HospitalPolicy.getDefaultInstance();
-                FieldMask fieldMask = FieldMaskUtil.fromFieldNumbers(HospitalPolicy.class, 1);
+                FieldMask fieldMask =
+                        FieldMaskUtil.fromFieldNumbers(HospitalPolicy.class,
+                                                       ACCEPTED_CONDITION_FIELD_NUMBER);
                 assertThrows(AssertionError.class, () -> assertMatchesMask(emptyPolicy, fieldMask));
             }
 
@@ -299,7 +315,7 @@ class TestsTest extends UtilityClassTest<Tests> {
         void equalValues() {
             long expectedValue = getValue();
             @SuppressWarnings("UnnecessaryLocalVariable") // For readability of this test.
-            long actualValue = expectedValue;
+                    long actualValue = expectedValue;
             assertInDelta(expectedValue, actualValue, 0);
         }
 
