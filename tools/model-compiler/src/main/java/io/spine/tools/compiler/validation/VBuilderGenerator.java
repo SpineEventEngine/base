@@ -93,9 +93,10 @@ public class VBuilderGenerator implements Logging {
         Set<VBType> filtered = filter(allFound);
         if (filtered.isEmpty()) {
             log.warn("No validating builders will be generated.");
-        } else {
-            generate(filtered, typeCache);
+            return;
         }
+
+        generate(filtered, typeCache);
     }
 
     private void generate(Set<VBType> builders, TypeCache cache) {
