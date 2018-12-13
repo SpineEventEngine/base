@@ -316,7 +316,7 @@ class TestsTest extends UtilityClassTest<Tests> {
         void equalValues() {
             long expectedValue = getValue();
             @SuppressWarnings("UnnecessaryLocalVariable") // For readability of this test.
-                    long actualValue = expectedValue;
+            long actualValue = expectedValue;
             assertInDelta(expectedValue, actualValue, 0);
         }
 

@@ -30,10 +30,10 @@ option java_package = "io.spine.testing";
 
 import "google/protobuf/timestamp.proto";
 
-// A prescription of medication.
+// A prescription of a medication.
 message Prescription {
 
-    // Date the prescription was given to a patient.
+    // The date when the prescription was given to a patient.
     google.protobuf.Timestamp prescribed_on = 1;
 
     // Names of prescribed drugs.
