@@ -32,8 +32,6 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.google.common.collect.ImmutableMap.builder;
-
 /**
  * Provides option value for a field mentioned in a validation rule.
  */
@@ -80,7 +78,8 @@ public final class ValidationRuleOptions {
      */
     private static class Builder {
 
-        private final ImmutableMap.Builder<FieldContext, FieldOptions> state = builder();
+        private final ImmutableMap.Builder<FieldContext, FieldOptions> state =
+                ImmutableMap.builder();
 
         private ImmutableMap<FieldContext, FieldOptions> build() {
             for (ValidationRule rule : ValidationRules.all()) {

@@ -20,6 +20,7 @@
 
 package io.spine.validate;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Any;
 import com.google.protobuf.BoolValue;
 import com.google.protobuf.ByteString;
@@ -180,8 +181,7 @@ class FieldValidatorFactoryTest {
         FieldDescriptor field = MessageWithMapStringField.getDescriptor()
                                                          .getFields()
                                                          .get(0);
-        FieldValidator<?> validator = create(field,
-                                             of("key", "value"));
+        FieldValidator<?> validator = create(field, ImmutableMap.of("key", "value"));
 
         assertThat(validator, instanceOf(StringFieldValidator.class));
     }

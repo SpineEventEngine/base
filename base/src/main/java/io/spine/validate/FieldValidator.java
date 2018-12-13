@@ -31,7 +31,6 @@ import io.spine.option.OptionsProto;
 
 import java.util.List;
 
-import static com.google.common.collect.ImmutableList.copyOf;
 import static com.google.common.collect.Lists.newLinkedList;
 import static io.spine.validate.Validate.isNotDefault;
 
@@ -148,7 +147,7 @@ abstract class FieldValidator<V> implements Logging {
     protected abstract void validateOwnRules();
 
     private List<ConstraintViolation> assembleViolations() {
-        return copyOf(violations);
+        return ImmutableList.copyOf(violations);
     }
 
     /**

@@ -35,8 +35,6 @@ import java.util.Optional;
 import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.ImmutableMap.copyOf;
-import static com.google.common.collect.ImmutableMap.of;
 import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Maps.newHashMapWithExpectedSize;
 
@@ -52,17 +50,17 @@ public class TypeSet {
 
     /** Creates a new empty set. */
     private TypeSet() {
-        this(of(), of());
+        this(ImmutableMap.of(), ImmutableMap.of());
     }
 
     private TypeSet(Map<TypeName, MessageType> messageTypes, Map<TypeName, EnumType> enumTypes) {
-        this.messageTypes = copyOf(messageTypes);
-        this.enumTypes = copyOf(enumTypes);
+        this.messageTypes = ImmutableMap.copyOf(messageTypes);
+        this.enumTypes = ImmutableMap.copyOf(enumTypes);
     }
 
     private TypeSet(Builder builder) {
-        this(copyOf(builder.messageTypes),
-             copyOf(builder.enumTypes));
+        this(ImmutableMap.copyOf(builder.messageTypes),
+             ImmutableMap.copyOf(builder.enumTypes));
     }
 
     /**

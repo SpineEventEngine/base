@@ -23,11 +23,11 @@ package io.spine.code.proto;
 import com.google.common.collect.ImmutableList;
 import com.google.common.testing.NullPointerTester;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static io.spine.code.proto.FileName.of;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -39,45 +39,77 @@ class FileNameTest {
 
     @Test
     @DisplayName(NOT_ACCEPT_NULLS)
-    void pass_null_tolerance_check() {
+    void nullCheck() {
         new NullPointerTester().testStaticMethods(FileName.class,
                                                   NullPointerTester.Visibility.PACKAGE);
     }
 
     @Test
     @DisplayName("require standard extension")
-    void require_standard_extension() {
+    void requireStandardExtension() {
         assertThrows(IllegalArgumentException.class,
-                     () -> of("some_thing"));
+                     () -> FileName.of("some_thing"));
     }
 
     @Test
     @DisplayName("return words")
-    void return_words() {
-        List<String> words = of("some_file_name.proto").words();
+    void returnWords() {
+        List<String> words = FileName.of("some_file_name.proto").words();
 
         assertEquals(ImmutableList.of("some", "file", "name"), words);
     }
 
     @Test
     @DisplayName("calculate outer class name")
-    @SuppressWarnings("DuplicateStringLiteralInspection")
-    void calculate_outer_class_name() {
-        assertEquals("Rejections", of("rejections.proto").nameOnlyCamelCase());
-        assertEquals("ManyRejections", of("many_rejections.proto").nameOnlyCamelCase());
-        assertEquals("ManyMoreRejections", of("many_more_rejections.proto").nameOnlyCamelCase());
+    void calculateOuterClassName() {
+        assertEquals("Rejections", FileName.of("rejections.proto")
+                                           .nameOnlyCamelCase());
+        assertEquals("ManyRejections", FileName.of("many_rejections.proto")
+                                               .nameOnlyCamelCase());
+        assertEquals("ManyMoreRejections", FileName.of("many_more_rejections.proto")
+                                                   .nameOnlyCamelCase());
+    }
+
+    @Nested
+    @DisplayName("Calculate outer class name")
+    class OuterClassName {
+
+        @Test
+        @DisplayName("one word name")
+        void oneWord() {
+            assertConversion("Rejections", "rejections.proto");
+        }
+
+        @Test
+        @DisplayName("two words")
+        void twoWords() {
+            assertConversion("ManyRejections", "many_rejections.proto");
+        }
+
+        @Test
+        @DisplayName("three words")
+        void threeWords() {
+            assertConversion("ManyMoreRejections", "many_more_rejections.proto");
+        }
+
+        private void assertConversion(String expected, String fileName) {
+            String calculated = FileName.of(fileName)
+                                        .nameOnlyCamelCase();
+            assertEquals(expected, calculated);
+        }
     }
 
     @Test
     @DisplayName("return file name without extension")
-    void return_file_name_without_extension() {
-        assertEquals("package/commands", of("package/commands.proto").nameWithoutExtension());
+    void nameNoExtension() {
+        assertEquals("package/commands", FileName.of("package/commands.proto")
+                                                 .nameWithoutExtension());
     }
 
     @Test
     @DisplayName("tell commands file kind")
-    void tell_commands_file_kind() {
-        FileName commandsFile = of("my_commands.proto");
+    void commandsFile() {
+        FileName commandsFile = FileName.of("my_commands.proto");
 
         assertTrue(commandsFile.isCommands());
         assertFalse(commandsFile.isEvents());
@@ -86,8 +118,8 @@ class FileNameTest {
 
     @Test
     @DisplayName("tell events file kind")
-    void tell_events_file_kind() {
-        FileName eventsFile = of("project_events.proto");
+    void eventsFile() {
+        FileName eventsFile = FileName.of("project_events.proto");
 
         assertTrue(eventsFile.isEvents());
         assertFalse(eventsFile.isCommands());
@@ -96,8 +128,8 @@ class FileNameTest {
 
     @Test
     @DisplayName("tell rejection file kind")
-    void tell_rejections_file_kind() {
-        FileName rejectionsFile = of("rejections.proto");
+    void rejectionsFile() {
+        FileName rejectionsFile = FileName.of("rejections.proto");
 
         assertTrue(rejectionsFile.isRejections());
         assertFalse(rejectionsFile.isCommands());
