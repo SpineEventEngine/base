@@ -27,20 +27,18 @@ import io.spine.base.MessageFile.Predicate;
 import io.spine.base.RejectionMessage;
 
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.protobuf.DescriptorProtos.DescriptorProto;
 import static com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import static io.spine.tools.protoc.InsertionPoint.implementInterface;
 import static java.util.Optional.empty;
-import static java.util.stream.Stream.of;
 
 /**
  * A built-in marked interface.
  *
  * <p>This interface marks special message types, such as events, commands, etc.
- *
- * @author Dmytro Dashenkov
  */
 public class BuiltInMarkerInterface implements MarkerInterface {
 
@@ -69,9 +67,9 @@ public class BuiltInMarkerInterface implements MarkerInterface {
     static Optional<CompilerOutput> scanForBuiltIns(FileDescriptorProto file,
                                                     DescriptorProto message) {
         Optional<Type> foundInterface =
-                of(Type.values())
-                        .filter(contract -> contract.matches(file))
-                        .findFirst();
+                Stream.of(Type.values())
+                      .filter(contract -> contract.matches(file))
+                      .findFirst();
         if (!foundInterface.isPresent()) {
             return empty();
         }

@@ -45,7 +45,6 @@ import io.spine.type.TypeUrl;
 import java.util.Map.Entry;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.type.TypeUrl.of;
 
 /**
  * The generator which stores JSON parsers for the standard Protobuf types to the JS {@code Map}.
@@ -136,7 +135,6 @@ public final class ProtoParsersGenerator extends JsCodeGenerator {
      * Converts the {@linkplain Entry Java Map Entry} from the {@link #parsers} to the JS
      * {@code Map} entry.
      */
-    @SuppressWarnings("DuplicateStringLiteralInspection") // Duplication in different context.
     private static String jsMapEntry(Entry<TypeUrl, String> typeToParser) {
         TypeUrl typeUrl = typeToParser.getKey();
         String parserName = typeToParser.getValue();
@@ -149,21 +147,21 @@ public final class ProtoParsersGenerator extends JsCodeGenerator {
     private static ImmutableMap<TypeUrl, String> parsers() {
         ImmutableMap<TypeUrl, String> jsParserNames = ImmutableMap
                 .<TypeUrl, String>builder()
-                .put(of(BytesValue.class), "BytesValueParser")
-                .put(of(DoubleValue.class), "DoubleValueParser")
-                .put(of(FloatValue.class), "FloatValueParser")
-                .put(of(Int32Value.class), "Int32ValueParser")
-                .put(of(Int64Value.class), "Int64ValueParser")
-                .put(of(StringValue.class), "StringValueParser")
-                .put(of(UInt32Value.class), "UInt32ValueParser")
-                .put(of(UInt64Value.class), "UInt64ValueParser")
-                .put(of(Value.class), "ValueParser")
-                .put(of(ListValue.class), "ListValueParser")
-                .put(of(Empty.class), "EmptyParser")
-                .put(of(Timestamp.class), "TimestampParser")
-                .put(of(Duration.class), "DurationParser")
-                .put(of(FieldMask.class), "FieldMaskParser")
-                .put(of(Any.class), "AnyParser")
+                .put(TypeUrl.of(BytesValue.class), "BytesValueParser")
+                .put(TypeUrl.of(DoubleValue.class), "DoubleValueParser")
+                .put(TypeUrl.of(FloatValue.class), "FloatValueParser")
+                .put(TypeUrl.of(Int32Value.class), "Int32ValueParser")
+                .put(TypeUrl.of(Int64Value.class), "Int64ValueParser")
+                .put(TypeUrl.of(StringValue.class), "StringValueParser")
+                .put(TypeUrl.of(UInt32Value.class), "UInt32ValueParser")
+                .put(TypeUrl.of(UInt64Value.class), "UInt64ValueParser")
+                .put(TypeUrl.of(Value.class), "ValueParser")
+                .put(TypeUrl.of(ListValue.class), "ListValueParser")
+                .put(TypeUrl.of(Empty.class), "EmptyParser")
+                .put(TypeUrl.of(Timestamp.class), "TimestampParser")
+                .put(TypeUrl.of(Duration.class), "DurationParser")
+                .put(TypeUrl.of(FieldMask.class), "FieldMaskParser")
+                .put(TypeUrl.of(Any.class), "AnyParser")
                 .build();
         return jsParserNames;
     }
