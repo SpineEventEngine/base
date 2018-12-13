@@ -266,7 +266,7 @@ public final class FileDescriptors {
     private enum IsNotGoogleProto implements Predicate<FileDescriptorProto> {
         PREDICATE;
 
-        private static final String GOOGLE_PACKAGE = "com.google";
+        private static final String GOOGLE_PACKAGE = "google";
 
         @Override
         public boolean test(FileDescriptorProto file) {

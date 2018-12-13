@@ -56,38 +56,37 @@ class VBTypeLookup implements Logging {
     }
 
     /**
-     * Assembles the {@code VBMetadata}s.
-     *
-     * @return the {@code Set} of the assembled metadata for the validating builders.
+     * Collects types for which generated validating builders.
      */
-    Set<VBType> collect() {
+    ImmutableSet<VBType> collect() {
+        log().debug("Collecting types for all validating builders.");
+        Set<FileDescriptorProto> files = parseAndCollectTypes(descriptorSetFile);
+        ImmutableSet<VBType> allTypes = collect(files);
+        logTypesFound(allTypes);
+        return allTypes;
+    }
+
+    private void logTypesFound(Set<VBType> types) {
         Logger log = log();
-        log.debug("Collecting types for all validating builders.");
-        Set<FileDescriptorProto> fileDescriptors = parseAndCollectTypes(descriptorSetFile);
-        Set<VBType> result = newHashSet();
-        Set<VBType> allTypes = fromAllFiles(fileDescriptors);
-        result.addAll(allTypes);
-        if (result.size() == 1) {
-            VBType found = allTypes.iterator()
+        if (types.size() == 1) {
+            VBType found = types.iterator()
                                    .next();
             log.debug("One type found for generating validating builder: {}", found);
         } else {
-            log.debug("Types collected, {} validating builders will be generated.", result.size());
+            log.debug("Types collected, {} validating builders will be generated.", types.size());
         }
-        return ImmutableSet.copyOf(result);
     }
 
-    private Set<VBType> fromAllFiles(Iterable<FileDescriptorProto> files) {
+    private ImmutableSet<VBType> collect(Iterable<FileDescriptorProto> files) {
         log().debug("Obtaining the file-level metadata for the validating builders.");
         Set<VBType> result = newHashSet();
         for (FileDescriptorProto file : files) {
             List<DescriptorProto> messageDescriptors = file.getMessageTypeList();
             Set<VBType> metadataSet = createMetadata(messageDescriptors, file);
             result.addAll(metadataSet);
-
         }
         log().debug("The file-level metadata is obtained.");
-        return result;
+        return ImmutableSet.copyOf(result);
     }
 
     private static Set<VBType> createMetadata(Iterable<DescriptorProto> descriptors,
