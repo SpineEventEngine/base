@@ -62,7 +62,7 @@ class UseValidatingBuilderTest {
 
     @Test
     @DisplayName("recognize positive cases")
-    void recognize_positive_cases() {
+    void recognizePositiveCases() {
         Predicate<CharSequence> predicate =
                 Predicates.containsPattern(UseValidatingBuilder.SUMMARY)::apply;
         compilationTestHelper.expectErrorMessage("UseValidatingBuilderError", predicate::test);
@@ -72,7 +72,7 @@ class UseValidatingBuilderTest {
 
     @Test
     @DisplayName("recognize negative cases")
-    void recognize_negative_cases() {
+    void recognizeNegativeCases() {
         compilationTestHelper.addSourceFile("UseValidatingBuilderNegatives.java")
                              .doTest();
     }
