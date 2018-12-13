@@ -264,8 +264,11 @@ public final class FileDescriptors {
      * Verifies if a package of a file does not start with {@code "google"}.
      */
     private enum IsNotGoogleProto implements Predicate<FileDescriptorProto> {
+
         PREDICATE;
 
+        /** The constant of the company name prefix used in Google proto types. */
+        @SuppressWarnings("DuplicateStringLiteralInspection") // Encapsulated package name.
         private static final String GOOGLE_PACKAGE = "google";
 
         @Override
