@@ -147,6 +147,18 @@ public final class ProtoParsersGenerator extends JsCodeGenerator {
         return mapEntry;
     }
 
+    /**
+     * Composes a map from a type to corresponding JS parser class.
+     *
+     * <p>These parsers support standard
+     * <a href="https://developers.google.com/protocol-buffers/docs/proto3#json">
+     *     Proto 3 JSON Mapping</a>
+     *
+     * For the implementation of parsers, please see the resource file at this path:
+     * <pre>
+     *     proto-js-plugin/src/main/resources/io/spine/tools/protojs/knowntypes/known_types_parsers
+     * </pre>
+     */
     @SuppressWarnings("OverlyCoupledMethod") // Dependencies for the listed Protobuf types.
     private static ImmutableMap<TypeUrl, String> parsers() {
         ImmutableList<Class<? extends GeneratedMessageV3>> messageClasses =
