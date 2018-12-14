@@ -31,9 +31,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * A message type as declared in a proto file.
- *
- * @author Alexander Yevsyukov
- * @author Dmytro Dashenkov
  */
 @Internal
 public class MessageType extends Type<Descriptor, DescriptorProto> {

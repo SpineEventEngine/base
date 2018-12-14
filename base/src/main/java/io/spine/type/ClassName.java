@@ -42,6 +42,7 @@ import static com.google.common.collect.Lists.newLinkedList;
 public final class ClassName extends StringTypeValue {
 
     private static final long serialVersionUID = 0L;
+    private static final char OUTER_CLASS_DELIMITER = '$';
 
     private ClassName(String value) {
         super(checkNotNull(value));
@@ -131,7 +132,7 @@ public final class ClassName extends StringTypeValue {
      */
     public ClassName nestedClass(SimpleClassName className) {
         checkNotNull(className);
-        return of(value() + '$' + className);
+        return of(value() + OUTER_CLASS_DELIMITER + className);
     }
 
     /**
@@ -140,7 +141,7 @@ public final class ClassName extends StringTypeValue {
      * @return the simple name representation
      */
     public String toSimpleName() {
-        return value().replace('$', '.');
+        return value().replace(OUTER_CLASS_DELIMITER, '.');
     }
 
     private static ClassName construct(String typeName,
@@ -173,7 +174,7 @@ public final class ClassName extends StringTypeValue {
         Deque<String> parentClassNames = newLinkedList();
         Descriptor current = parent;
         while (current != null) {
-            parentClassNames.addFirst(current.getName() + '$');
+            parentClassNames.addFirst(current.getName() + OUTER_CLASS_DELIMITER);
             current = current.getContainingType();
         }
         String result = String.join("", parentClassNames);
@@ -188,7 +189,7 @@ public final class ClassName extends StringTypeValue {
         } else {
             String className = SimpleClassName.outerOf(file.toProto())
                                               .value();
-            return className + '$';
+            return className + OUTER_CLASS_DELIMITER;
         }
     }
 }
