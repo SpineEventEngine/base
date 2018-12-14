@@ -23,7 +23,7 @@ package io.spine.js.gradle;
 import io.spine.code.js.DefaultJsProject;
 import io.spine.code.js.Directory;
 import io.spine.code.proto.FileSet;
-import io.spine.js.generate.JsonParsersWriter;
+import io.spine.js.generate.parse.JsonParsersWriter;
 import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.SpinePlugin;
 import org.gradle.api.Action;

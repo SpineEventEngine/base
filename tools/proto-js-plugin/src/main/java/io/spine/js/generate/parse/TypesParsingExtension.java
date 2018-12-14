@@ -42,7 +42,7 @@ public final class TypesParsingExtension extends JsCodeGenerator {
      * The name of the {@code known_type_parsers.js} import.
      *
      * <p>Visible so the other generators such as {@linkplain FromJsonMethod message} or
-     * {@linkplain io.spine.js.generate.field.FieldGenerator field} can use the import.
+     * {@linkplain io.spine.js.generate.parse.field.FieldGenerator field} can use the import.
      */
     public static final String PARSERS_IMPORT_NAME = "known_type_parsers";
 
