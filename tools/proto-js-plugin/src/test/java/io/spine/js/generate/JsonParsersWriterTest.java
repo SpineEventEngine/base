@@ -23,19 +23,16 @@ package io.spine.js.generate;
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Any;
 import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.code.js.DefaultJsProject;
 import io.spine.code.js.Directory;
 import io.spine.code.js.FileName;
 import io.spine.code.proto.FileSet;
+import io.spine.js.generate.given.GivenProject;
 import io.spine.option.OptionsProto;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collection;
 
 import static io.spine.code.js.LibraryFile.KNOWN_TYPES;
@@ -43,59 +40,24 @@ import static io.spine.code.js.LibraryFile.KNOWN_TYPE_PARSERS;
 import static io.spine.js.generate.JsonParsersWriter.createFor;
 import static io.spine.js.generate.JsonParsersWriter.shouldSkip;
 import static io.spine.js.generate.given.FileWriters.assertFileContains;
-import static io.spine.js.generate.given.Given.project;
 import static io.spine.js.generate.message.FromJsonMethod.FROM_JSON;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static java.nio.file.Files.exists;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SuppressWarnings("DuplicateStringLiteralInspection") // Common test display names.
 @DisplayName("JsonParsersWriter should")
 class JsonParsersWriterTest {
 
-    private FileSet protoSources;
-    private Directory generatedProtoDir;
-    private JsonParsersWriter writer;
-
-    @BeforeEach
-    void setUp() {
-        DefaultJsProject project = project();
-        File descriptorSetFile = project.mainDescriptors();
-        generatedProtoDir = project.proto()
-                                   .mainJs();
-        protoSources = FileSet.parseOrEmpty(descriptorSetFile);
-        writer = createFor(generatedProtoDir, protoSources);
-    }
+    private final FileSet protoSources = GivenProject.protoSources();
+    private final Directory generatedProtoDir = GivenProject.protoSourcesRoot();
+    private final JsonParsersWriter writer = createFor(generatedProtoDir, protoSources);
 
     @Test
     @DisplayName(NOT_ACCEPT_NULLS)
     void passNullToleranceCheck() {
         new NullPointerTester().setDefault(Directory.class, generatedProtoDir)
+                               .setDefault(FileSet.class, protoSources)
                                .testAllPublicStaticMethods(JsonParsersWriter.class);
-    }
-
-    @Test
-    @DisplayName("check if there are files to process")
-    void checkFilesToProcess() {
-        assertTrue(writer.hasFilesToProcess());
-    }
-
-    @Test
-    @DisplayName("recognize there are no generated files to process")
-    void recognizeThereAreNoFiles() {
-        Directory nonExistentRoot = Directory.at(Paths.get("non-existent"));
-        JsonParsersWriter writer = createFor(nonExistentRoot, protoSources);
-        assertFalse(writer.hasFilesToProcess());
-    }
-
-    @Test
-    @DisplayName("recognize there are no known types to process")
-    void recognizeThereAreNoTypes() {
-        File nonExistentDescriptors = new File("non-existent");
-        FileSet emptyFileSet = FileSet.parseOrEmpty(nonExistentDescriptors);
-        JsonParsersWriter writer = createFor(generatedProtoDir, emptyFileSet);
-        assertFalse(writer.hasFilesToProcess());
     }
 
     @Test
@@ -118,8 +80,7 @@ class JsonParsersWriterTest {
     @DisplayName("write `fromJson` method into generated JS files")
     void writeFromJsonMethod() throws IOException {
         writer.writeFromJsonMethod();
-        FileSet fileSet = writer.fileSet();
-        checkProcessedFiles(fileSet);
+        checkProcessedFiles(protoSources);
     }
 
     @Test

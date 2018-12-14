@@ -58,7 +58,7 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
  *         message stored in a file.
  * </ol>
  */
-public final class JsonParsersWriter {
+public final class JsonParsersWriter extends FileSetEnhancement {
 
     /**
      * The path to the {@code known_type_parsers} resource which contains the parser definitions.
@@ -66,12 +66,8 @@ public final class JsonParsersWriter {
     private static final String PARSERS_RESOURCE =
             "io/spine/tools/protojs/knowntypes/known_type_parsers";
 
-    private final Directory generatedRoot;
-    private final FileSet fileSet;
-
     private JsonParsersWriter(Directory generatedRoot, FileSet fileSet) {
-        this.generatedRoot = generatedRoot;
-        this.fileSet = fileSet;
+        super(generatedRoot, fileSet);
     }
 
     public static JsonParsersWriter createFor(Directory generatedRoot, FileSet protoSources) {
@@ -82,30 +78,12 @@ public final class JsonParsersWriter {
 
     /**
      * Generates and writes the JS code necessary to parse proto messages from the JSON format.
-     *
-     * <p>Does nothing if there are no Protobuf files to process.
      */
-    public void write() {
-        if (!hasFilesToProcess()) {
-            return;
-        }
+    @Override
+    protected void processSources() {
         writeKnownTypes();
         writeKnownTypeParsers();
         writeFromJsonMethod();
-    }
-
-    /**
-     * Checks if the {@code JsonParsersWriter} has any files to process.
-     *
-     * <p>Will return {@code false} either if there are no known types to process or the generated
-     * files for them cannot be found.
-     *
-     * @return {@code true} if there are files to process and {@code false} otherwise
-     */
-    @VisibleForTesting
-    boolean hasFilesToProcess() {
-        boolean hasFilesToProcess = !fileSet.isEmpty() && generatedRoot.exists();
-        return hasFilesToProcess;
     }
 
     /**
@@ -119,9 +97,9 @@ public final class JsonParsersWriter {
     @VisibleForTesting
     void writeKnownTypes() {
         JsOutput jsOutput = new JsOutput();
-        KnownTypesGenerator generator = new KnownTypesGenerator(fileSet, jsOutput);
+        KnownTypesGenerator generator = new KnownTypesGenerator(fileSet(), jsOutput);
         generator.generate();
-        JsFile file = JsFile.createFor(generatedRoot, KNOWN_TYPES);
+        JsFile file = JsFile.createFor(generatedRoot(), KNOWN_TYPES);
         file.write(jsOutput);
     }
 
@@ -139,7 +117,7 @@ public final class JsonParsersWriter {
         JsOutput jsOutput = new JsOutput();
         ProtoParsersGenerator generator = new ProtoParsersGenerator(jsOutput);
         generator.generate();
-        JsFile file = JsFile.createFor(generatedRoot, KNOWN_TYPE_PARSERS);
+        JsFile file = JsFile.createFor(generatedRoot(), KNOWN_TYPE_PARSERS);
         file.append(jsOutput);
     }
 
@@ -153,7 +131,7 @@ public final class JsonParsersWriter {
         try (InputStream in = JsonParsersWriter.class
                 .getClassLoader()
                 .getResourceAsStream(PARSERS_RESOURCE)) {
-            Path path = generatedRoot.resolve(KNOWN_TYPE_PARSERS);
+            Path path = generatedRoot().resolve(KNOWN_TYPE_PARSERS);
             Files.copy(in, path, REPLACE_EXISTING);
         } catch (IOException e) {
             throw new IllegalStateException(e);
@@ -168,7 +146,7 @@ public final class JsonParsersWriter {
      */
     @VisibleForTesting
     void writeFromJsonMethod() {
-        for (FileDescriptor file : fileSet.files()) {
+        for (FileDescriptor file : fileSet().files()) {
             writeFromJsonMethod(file);
         }
     }
@@ -180,7 +158,7 @@ public final class JsonParsersWriter {
         JsOutput jsOutput = new JsOutput();
         TypesParsingExtension generator = new TypesParsingExtension(file, jsOutput);
         generator.generate();
-        JsFile jsFile = JsFile.createFor(generatedRoot, file);
+        JsFile jsFile = JsFile.createFor(generatedRoot(), file);
         jsFile.append(jsOutput);
     }
 
@@ -196,10 +174,5 @@ public final class JsonParsersWriter {
                                      .startsWith(GOOGLE_PROTOBUF_PACKAGE.packageName());
         boolean shouldSkip = isSpineOptions || isStandardType;
         return shouldSkip;
-    }
-
-    @VisibleForTesting
-    FileSet fileSet() {
-        return fileSet;
     }
 }

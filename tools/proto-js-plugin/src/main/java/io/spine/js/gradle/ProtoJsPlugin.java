@@ -132,6 +132,6 @@ public class ProtoJsPlugin extends SpinePlugin {
     private static void generateCode(Directory generatedRoot, File descriptors) {
         FileSet fileSet = parseOrEmpty(descriptors);
         JsonParsersWriter writer = JsonParsersWriter.createFor(generatedRoot, fileSet);
-        writer.write();
+        writer.perform();
     }
 }
