@@ -110,7 +110,7 @@ class JsOutputTest {
     @DisplayName("exit function body")
     void exitFunction() {
         jsOutput.enterMethod(METHOD_NAME, FUNCTION_ARG);
-        jsOutput.exitFunction();
+        jsOutput.exitMethod();
         String functionExit = "};";
         assertContains(jsOutput, functionExit);
         assertEquals(0, jsOutput.currentDepth());

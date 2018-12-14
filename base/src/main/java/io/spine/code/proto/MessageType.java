@@ -45,7 +45,10 @@ public class MessageType extends Type<Descriptor, DescriptorProto> {
         super(descriptor, descriptorProto, className, typeUrl);
     }
 
-    private static MessageType create(Descriptor descriptor) {
+    /**
+     * Creates a message type for the provided descriptor.
+     */
+    public static MessageType create(Descriptor descriptor) {
         DescriptorProto descriptorProto = descriptor.toProto();
         ClassName className = ClassName.from(descriptor);
         TypeUrl typeUrl = TypeUrl.from(descriptor);

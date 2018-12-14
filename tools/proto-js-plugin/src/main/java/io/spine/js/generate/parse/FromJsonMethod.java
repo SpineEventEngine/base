@@ -141,7 +141,7 @@ public class FromJsonMethod extends JsCodeGenerator {
         jsOutput().enterMethod(methodName, FROM_JSON_ARG);
         jsOutput().declareVariable("jsObject", "JSON.parse(" + FROM_JSON_ARG + ')');
         jsOutput().returnValue(typeName.value() + '.' + FROM_OBJECT + "(jsObject)");
-        jsOutput().exitFunction();
+        jsOutput().exitMethod();
     }
 
     /**
@@ -156,7 +156,7 @@ public class FromJsonMethod extends JsCodeGenerator {
         jsOutput().declareVariable(MESSAGE, "new " + typeName + "()");
         handleMessageFields();
         jsOutput().returnValue(MESSAGE);
-        jsOutput().exitFunction();
+        jsOutput().exitMethod();
     }
 
     /**

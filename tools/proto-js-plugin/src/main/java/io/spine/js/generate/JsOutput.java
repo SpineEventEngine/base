@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.lang.String.format;
 import static java.lang.String.join;
 import static java.lang.System.lineSeparator;
 
@@ -131,9 +132,20 @@ public final class JsOutput {
      * @param value
      *         the value to return
      */
-    public void returnValue(String value) {
+    public void returnValue(Object value) {
         checkNotNull(value);
         addLine("return " + value + ';');
+    }
+
+    /**
+     * Adds a {@code return} statement for the string literal.
+     *
+     * @param literalValue
+     *         the value of the string literal
+     */
+    public void returnString(String literalValue) {
+        String literal = format("'%s'", literalValue);
+        returnValue(literal);
     }
 
     /**
@@ -166,7 +178,7 @@ public final class JsOutput {
     /**
      * Exits method declaration.
      */
-    public void exitFunction() {
+    public void exitMethod() {
         currentDepth--;
         addLine("};");
     }
