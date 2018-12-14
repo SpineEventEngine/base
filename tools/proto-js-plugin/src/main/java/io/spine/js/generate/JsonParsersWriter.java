@@ -25,9 +25,9 @@ import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.js.Directory;
 import io.spine.code.js.FileName;
 import io.spine.code.proto.FileSet;
-import io.spine.js.generate.file.TypesParsingExtension;
-import io.spine.js.generate.type.KnownTypesGenerator;
-import io.spine.js.generate.type.ProtoParsersGenerator;
+import io.spine.js.generate.parse.KnownTypesGenerator;
+import io.spine.js.generate.parse.ProtoParsersGenerator;
+import io.spine.js.generate.parse.TypesParsingExtension;
 import io.spine.js.gradle.ProtoJsPlugin;
 
 import java.io.IOException;

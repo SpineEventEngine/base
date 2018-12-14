@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate.file;
+package io.spine.js.generate.parse;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.Descriptor;
@@ -27,7 +27,6 @@ import io.spine.code.js.FileName;
 import io.spine.js.generate.JsCodeGenerator;
 import io.spine.js.generate.JsOutput;
 import io.spine.js.generate.importado.JsImportGenerator;
-import io.spine.js.generate.message.FromJsonMethod;
 
 import static io.spine.code.js.LibraryFile.KNOWN_TYPE_PARSERS;
 

@@ -22,7 +22,7 @@ package io.spine.js.generate.field;
 
 import io.spine.code.js.FieldName;
 
-import static io.spine.js.generate.message.FromJsonMethod.MESSAGE;
+import static io.spine.js.generate.parse.FromJsonMethod.MESSAGE;
 
 /**
  * The generator of the ordinary proto field (i.e. non-{@code repeated} and non-{@code map}).

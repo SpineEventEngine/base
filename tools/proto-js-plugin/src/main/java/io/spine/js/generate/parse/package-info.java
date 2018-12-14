@@ -19,12 +19,12 @@
  */
 
 /**
- * The classes which generate the code to parse the proto messages from JSON in Javascript.
+ * The package contains classes, which generate the code
+ * for parsing of JavaScript objects from JSON.
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault
-package io.spine.js.generate.message;
+package io.spine.js.generate.parse;
 
-import com.google.errorprone.annotations.CheckReturnValue;
-
+import javax.annotation.CheckReturnValue;
 import javax.annotation.ParametersAreNonnullByDefault;

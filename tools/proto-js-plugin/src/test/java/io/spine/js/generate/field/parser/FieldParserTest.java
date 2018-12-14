@@ -34,7 +34,7 @@ import static io.spine.js.generate.given.Given.enumField;
 import static io.spine.js.generate.given.Given.messageField;
 import static io.spine.js.generate.given.Given.primitiveField;
 import static io.spine.js.generate.given.Given.timestampField;
-import static io.spine.js.generate.message.FromJsonMethod.FROM_OBJECT;
+import static io.spine.js.generate.parse.FromJsonMethod.FROM_OBJECT;
 
 @SuppressWarnings("DuplicateStringLiteralInspection")
 // Generated code duplication needed to check main class.
