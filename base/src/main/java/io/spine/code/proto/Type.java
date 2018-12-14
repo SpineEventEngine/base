@@ -22,8 +22,6 @@ package io.spine.code.proto;
 
 import com.google.common.base.Objects;
 import com.google.errorprone.annotations.Immutable;
-import com.google.protobuf.DescriptorProtos;
-import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.Descriptors.GenericDescriptor;
 import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
@@ -104,18 +102,17 @@ public abstract class Type<T extends GenericDescriptor, P extends Message> {
         return className;
     }
 
+    /**
+     * Obtains package for the corresinding Java type.
+     */
     public PackageName javaPackage() {
         return PackageName.of(javaClass());
     }
 
-    public SimpleClassName simpleJavaClassName() {
-        if (proto instanceof DescriptorProto) {
-            return SimpleClassName.ofMessage((DescriptorProto)proto);
-        } else {
-            //TODO:2018-12-14:alexander.yevsyukov: Handle the case with enums.
-            return null;
-        }
-    }
+    /**
+     * Obtains simple class name for corresponding Java type.
+     */
+    public abstract SimpleClassName simpleJavaClassName();
 
     @Override
     public boolean equals(Object o) {

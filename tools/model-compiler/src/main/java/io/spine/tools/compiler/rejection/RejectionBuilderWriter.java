@@ -174,7 +174,8 @@ class RejectionBuilderWriter {
     }
 
     private JavadocText classJavadoc() {
-        String rejectionName = rejection.getSimpleTypeName();
+        String rejectionName = rejection.simpleJavaClassName()
+                                        .value();
         String javadocText = CodeBlock
                 .builder()
                 .add("The builder for the {@code $L} rejection.", rejectionName)

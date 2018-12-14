@@ -22,6 +22,7 @@ package io.spine.tools.compiler.validation;
 
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
+import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
@@ -71,7 +72,7 @@ class RepeatedFieldMethod extends AbstractMethod implements Logging {
     private final String javaFieldName;
     private final String methodNamePart;
     private final ClassName listElementClassName;
-    private final FieldDescriptorProto fieldDescriptor;
+    private final FieldDescriptor field;
     private final boolean isScalarOrEnum;
 
     /**
@@ -85,13 +86,14 @@ class RepeatedFieldMethod extends AbstractMethod implements Logging {
     private RepeatedFieldMethod(RepeatedFieldMethodsBuilder builder) {
         super(builder);
         this.fieldType = builder.getFieldType();
-        this.fieldDescriptor = builder.getField();
-        FieldName fieldName = FieldName.of(fieldDescriptor);
+        this.field = builder.getField();
+        FieldDescriptorProto fdescr = field.toProto();
+        FieldName fieldName = FieldName.of(fdescr);
         this.javaFieldName = fieldName.javaCase();
         this.methodNamePart = fieldName.toCamelCase();
         TypeCache typeCache = builder.getTypeCache();
-        this.listElementClassName = getParameterClassName(fieldDescriptor, typeCache);
-        this.isScalarOrEnum = isScalarType(fieldDescriptor) || isEnumType(fieldDescriptor);
+        this.listElementClassName = getParameterClassName(fdescr, typeCache);
+        this.isScalarOrEnum = isScalarType(fdescr) || isEnumType(fdescr);
     }
 
     @Override
@@ -190,7 +192,7 @@ class RepeatedFieldMethod extends AbstractMethod implements Logging {
                 .addStatement(ConvertStatement.of(VALUE, listElementClassName)
                                               .value())
                 .addStatement(descriptorDeclaration())
-                .addStatement(validateStatement(CONVERTED_VALUE, fieldDescriptor.getName()))
+                .addStatement(validateStatement(CONVERTED_VALUE, field.getName()))
                 .addStatement(addValueStatement)
                 .addStatement(returnThis())
                 .build();
@@ -220,7 +222,7 @@ class RepeatedFieldMethod extends AbstractMethod implements Logging {
                 .addStatement(ConvertStatement.of(VALUE, listElementClassName)
                                               .value())
                 .addStatement(descriptorDeclaration())
-                .addStatement(validateStatement(CONVERTED_VALUE, fieldDescriptor.getName()))
+                .addStatement(validateStatement(CONVERTED_VALUE, field.getName()))
                 .addStatement(modificationStatement)
                 .addStatement(returnThis())
                 .build();
@@ -240,7 +242,7 @@ class RepeatedFieldMethod extends AbstractMethod implements Logging {
                               listElementClassName,
                               listElementClassName)
                 .addStatement(descriptorDeclaration())
-                .addStatement(validateStatement(CONVERTED_VALUE, fieldDescriptor.getName()))
+                .addStatement(validateStatement(CONVERTED_VALUE, field.getName()))
                 .addStatement(addAllValues)
                 .addStatement(returnThis())
                 .build();
@@ -252,7 +254,7 @@ class RepeatedFieldMethod extends AbstractMethod implements Logging {
         ClassName rawType = ClassName.get(List.class);
         ParameterizedTypeName parameter = ParameterizedTypeName.get(rawType,
                                                                     listElementClassName);
-        String fieldName = fieldDescriptor.getName();
+        String fieldName = field.getName();
         String addAllValues = getMessageBuilder()
                 + format(".addAll%s(%s)", methodNamePart, VALUE);
         MethodSpec result = newBuilderSetter(methodName)

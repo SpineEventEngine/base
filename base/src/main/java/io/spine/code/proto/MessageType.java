@@ -85,6 +85,11 @@ public class MessageType extends Type<Descriptor, DescriptorProto> {
         }
     }
 
+    @Override
+    public SimpleClassName simpleJavaClassName() {
+        return SimpleClassName.ofMessage(descriptor());
+    }
+
     /**
      * Verifies if this message is under the "google" package.
      */

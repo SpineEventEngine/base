@@ -21,6 +21,7 @@
 package io.spine.tools.compiler.validation;
 
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
+import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
@@ -60,7 +61,7 @@ class SingularFieldMethod extends AbstractMethod implements Logging {
     private final String methodNamePart;
     private final FieldType fieldType;
     private final ClassName fieldClassName;
-    private final FieldDescriptorProto field;
+    private final FieldDescriptor field;
 
     /**
      * Constructs the instance by the passed builder.
@@ -74,8 +75,8 @@ class SingularFieldMethod extends AbstractMethod implements Logging {
         this.fieldType = builder.getFieldType();
         this.field = builder.getField();
         TypeCache typeCache = builder.getTypeCache();
-        this.fieldClassName = getParameterClassName(field, typeCache);
-        FieldName fieldName = FieldName.of(field);
+        this.fieldClassName = getParameterClassName(field.toProto(), typeCache);
+        FieldName fieldName = FieldName.of(field.toProto());
         this.fieldName = fieldName.javaCase();
         this.methodNamePart = fieldName.toCamelCase();
     }
@@ -85,7 +86,7 @@ class SingularFieldMethod extends AbstractMethod implements Logging {
         Logger log = log();
         // The variable is used for tracing only.
         String javaFieldName = log.isTraceEnabled()
-                               ? FieldName.of(field)
+                               ? FieldName.of(field.toProto())
                                           .javaCase()
                                : null;
 
@@ -106,7 +107,7 @@ class SingularFieldMethod extends AbstractMethod implements Logging {
     private MethodSpec constructSetter() {
         log().debug("The setters construction for the singular field is started.");
         String methodName = fieldType.getSetterPrefix() + methodNamePart;
-        ParameterSpec parameter = createParameterSpec(field, false);
+        ParameterSpec parameter = createParameterSpec(field.toProto(), false);
 
         String setStatement = format("%s.%s(%s)", getMessageBuilder(), methodName, fieldName);
         MethodSpec methodSpec =
@@ -126,7 +127,7 @@ class SingularFieldMethod extends AbstractMethod implements Logging {
         log().debug("The getter construction for the singular field is started.");
         String methodName = GETTER_PREFIX + methodNamePart;
 
-        MethodSpec methodSpec =
+        @SuppressWarnings("DuplicateStringLiteralInspection") MethodSpec methodSpec =
                 MethodSpec.methodBuilder(methodName)
                           .addModifiers(Modifier.PUBLIC)
                           .returns(fieldClassName)
@@ -150,14 +151,11 @@ class SingularFieldMethod extends AbstractMethod implements Logging {
         return methodSpec;
     }
 
-    @SuppressWarnings("DuplicateStringLiteralInspection")
-    // It cannot be used as the constant across the project.
-    // Although it has the equivalent literal they have the different meaning.
     private MethodSpec constructRawSetter() {
         log().debug("The raw setters construction is started.");
         String messageBuilderSetter = fieldType.getSetterPrefix() + methodNamePart;
         String methodName = messageBuilderSetter + rawSuffix();
-        ParameterSpec parameter = createParameterSpec(field, true);
+        ParameterSpec parameter = createParameterSpec(field.toProto(), true);
 
         ConvertStatement convertStatement = ConvertStatement.of(fieldName, fieldClassName);
         String convertedVariableName = convertStatement.convertedVariableName();

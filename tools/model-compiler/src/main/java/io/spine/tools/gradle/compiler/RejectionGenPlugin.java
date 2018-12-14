@@ -26,7 +26,6 @@ import io.spine.code.java.SimpleClassName;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.RejectionType;
 import io.spine.code.proto.RejectionsFile;
-import io.spine.tools.compiler.TypeCache;
 import io.spine.tools.compiler.rejection.RejectionWriter;
 import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.SpinePlugin;
@@ -58,9 +57,6 @@ import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSetPath;
  * <p>Logs a warning if there are no protobuf descriptors generated.
  */
 public class RejectionGenPlugin extends SpinePlugin {
-
-    /** A map from Protobuf type name to Java class FQN. */
-    private final TypeCache typeCache = new TypeCache();
 
     /**
      * Applies the plug-in to a project.
@@ -153,12 +149,11 @@ public class RejectionGenPlugin extends SpinePlugin {
         log.debug("Processing the file descriptors for the rejections {}", files);
         for (RejectionsFile file : files) {
             // We are sure that this is a rejections file because we got them filtered.
-            generateRejections(file, typeCache, outDir, indent);
+            generateRejections(file, outDir, indent);
         }
     }
 
     private void generateRejections(RejectionsFile file,
-                                    TypeCache typeCache,
                                     String rejectionsRootDir,
                                     Indent indent) {
         Logger log = log();
@@ -166,7 +161,8 @@ public class RejectionGenPlugin extends SpinePlugin {
             log.debug(
                 "Generating rejections from file: `{}` javaPackage: `{}`, javaOuterClassName: `{}`",
                 file.getPath(),
-                PackageName.resolve(file.getDescriptor()),
+                PackageName.resolve(file.getDescriptor()
+                                        .toProto()),
                 SimpleClassName.outerOf(file.getDescriptor())
             );
         }
@@ -176,8 +172,8 @@ public class RejectionGenPlugin extends SpinePlugin {
         for (RejectionType rejection : rejections) {
             // The name of the generated `ThrowableMessage` will be the same
             // as for the Protobuf message.
-            log.debug("Processing rejection '{}'", rejection.getSimpleTypeName());
-            RejectionWriter writer = new RejectionWriter(rejection, outDir, typeCache, indent);
+            log.debug("Processing rejection '{}'", rejection.simpleJavaClassName());
+            RejectionWriter writer = new RejectionWriter(rejection, outDir, indent);
             writer.write();
         }
     }

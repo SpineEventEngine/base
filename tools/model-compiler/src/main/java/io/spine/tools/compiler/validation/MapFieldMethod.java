@@ -20,7 +20,7 @@
 
 package io.spine.tools.compiler.validation;
 
-import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
+import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
 import io.spine.base.ConversionException;
@@ -81,8 +81,8 @@ class MapFieldMethod extends AbstractMethod implements Logging {
     private MapFieldMethod(MapFieldMethodsBuilder builder) {
         super(builder);
         this.fieldType = (MapFieldType) builder.getFieldType();
-        FieldDescriptorProto fieldDescriptor = builder.getField();
-        FieldName fieldName = FieldName.of(fieldDescriptor);
+        FieldDescriptor field = builder.getField();
+        FieldName fieldName = FieldName.of(field.toProto());
         this.propertyName = fieldName.toCamelCase();
         this.javaFieldName = fieldName.javaCase();
         this.keyTypeName = fieldType.getKeyTypeName();

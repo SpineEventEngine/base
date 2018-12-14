@@ -21,7 +21,9 @@
 package io.spine.code.java;
 
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
+import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.Descriptor;
+import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.value.StringTypeValue;
 
@@ -54,11 +56,21 @@ public final class SimpleClassName extends StringTypeValue {
      * @param file a descriptor for file for which outer class name will be generated
      * @return outer class name
      */
-    public static SimpleClassName outerOf(FileDescriptor file) {
+    public static SimpleClassName outerOf(FileDescriptorProto file) {
         checkNotNull(file);
         String value = getOuterClassName(file);
         SimpleClassName result = new SimpleClassName(value);
         return result;
+    }
+
+    /**
+     * Creates an instance with the outer class name for the types declared in the file specified
+     * by the passed descriptor.
+     *
+     * @see #outerOf(com.google.protobuf.DescriptorProtos.FileDescriptorProto)
+     */
+    public static SimpleClassName outerOf(FileDescriptor file) {
+        return outerOf(file.toProto());
     }
 
     /**
@@ -90,7 +102,7 @@ public final class SimpleClassName extends StringTypeValue {
      * @param file a descriptor for file for which outer class name will be generated
      * @return non-qualified outer class name
      */
-    private static String getOuterClassName(FileDescriptor file) {
+    private static String getOuterClassName(FileDescriptorProto file) {
         checkNotNull(file);
         String outerClassNameFromOptions = file.getOptions()
                                                .getJavaOuterClassname();
@@ -134,6 +146,14 @@ public final class SimpleClassName extends StringTypeValue {
      */
     public static SimpleClassName ofMessage(Descriptor descriptor) {
         return ofMessage(descriptor.toProto());
+    }
+
+    /**
+     * Obtains a Java class name for an enum type.
+     */
+    public static SimpleClassName ofEnum(EnumDescriptor descriptor) {
+        SimpleClassName result = new SimpleClassName(descriptor.getName());
+        return result;
     }
 
     /**
