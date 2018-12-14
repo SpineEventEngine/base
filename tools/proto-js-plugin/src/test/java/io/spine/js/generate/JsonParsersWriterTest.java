@@ -54,17 +54,18 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @DisplayName("JsonParsersWriter should")
 class JsonParsersWriterTest {
 
-    private File descriptorSetFile;
+    private FileSet protoSources;
     private Directory generatedProtoDir;
     private JsonParsersWriter writer;
 
     @BeforeEach
     void setUp() {
         DefaultJsProject project = project();
-        descriptorSetFile = project.mainDescriptors();
+        File descriptorSetFile = project.mainDescriptors();
         generatedProtoDir = project.proto()
                                    .mainJs();
-        writer = createFor(generatedProtoDir, descriptorSetFile);
+        protoSources = FileSet.parseOrEmpty(descriptorSetFile);
+        writer = createFor(generatedProtoDir, protoSources);
     }
 
     @Test
@@ -84,7 +85,7 @@ class JsonParsersWriterTest {
     @DisplayName("recognize there are no generated files to process")
     void recognizeThereAreNoFiles() {
         Directory nonExistentRoot = Directory.at(Paths.get("non-existent"));
-        JsonParsersWriter writer = createFor(nonExistentRoot, descriptorSetFile);
+        JsonParsersWriter writer = createFor(nonExistentRoot, protoSources);
         assertFalse(writer.hasFilesToProcess());
     }
 
@@ -92,7 +93,8 @@ class JsonParsersWriterTest {
     @DisplayName("recognize there are no known types to process")
     void recognizeThereAreNoTypes() {
         File nonExistentDescriptors = new File("non-existent");
-        JsonParsersWriter writer = createFor(generatedProtoDir, nonExistentDescriptors);
+        FileSet emptyFileSet = FileSet.parseOrEmpty(nonExistentDescriptors);
+        JsonParsersWriter writer = createFor(generatedProtoDir, emptyFileSet);
         assertFalse(writer.hasFilesToProcess());
     }
 

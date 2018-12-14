@@ -30,7 +30,6 @@ import io.spine.js.generate.type.KnownTypesGenerator;
 import io.spine.js.generate.type.ProtoParsersGenerator;
 import io.spine.js.gradle.ProtoJsPlugin;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -40,7 +39,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.code.js.LibraryFile.KNOWN_TYPES;
 import static io.spine.code.js.LibraryFile.KNOWN_TYPE_PARSERS;
 import static io.spine.code.js.LibraryFile.SPINE_OPTIONS;
-import static io.spine.code.proto.FileSet.parseOrEmpty;
 import static io.spine.code.proto.ProtoPackage.GOOGLE_PROTOBUF_PACKAGE;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
@@ -76,11 +74,10 @@ public final class JsonParsersWriter {
         this.fileSet = fileSet;
     }
 
-    public static JsonParsersWriter createFor(Directory generatedRoot, File descriptorSetFile) {
+    public static JsonParsersWriter createFor(Directory generatedRoot, FileSet protoSources) {
         checkNotNull(generatedRoot);
-        checkNotNull(descriptorSetFile);
-        FileSet fileSet = parseOrEmpty(descriptorSetFile);
-        return new JsonParsersWriter(generatedRoot, fileSet);
+        checkNotNull(protoSources);
+        return new JsonParsersWriter(generatedRoot, protoSources);
     }
 
     /**

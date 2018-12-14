@@ -22,6 +22,7 @@ package io.spine.js.gradle;
 
 import io.spine.code.js.DefaultJsProject;
 import io.spine.code.js.Directory;
+import io.spine.code.proto.FileSet;
 import io.spine.js.generate.JsonParsersWriter;
 import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.SpinePlugin;
@@ -31,6 +32,7 @@ import org.gradle.api.Task;
 
 import java.io.File;
 
+import static io.spine.code.proto.FileSet.parseOrEmpty;
 import static io.spine.tools.gradle.TaskName.BUILD;
 import static io.spine.tools.gradle.TaskName.GENERATE_JSON_PARSERS;
 
@@ -128,7 +130,8 @@ public class ProtoJsPlugin extends SpinePlugin {
     }
 
     private static void generateCode(Directory generatedRoot, File descriptors) {
-        JsonParsersWriter writer = JsonParsersWriter.createFor(generatedRoot, descriptors);
+        FileSet fileSet = parseOrEmpty(descriptors);
+        JsonParsersWriter writer = JsonParsersWriter.createFor(generatedRoot, fileSet);
         writer.write();
     }
 }
