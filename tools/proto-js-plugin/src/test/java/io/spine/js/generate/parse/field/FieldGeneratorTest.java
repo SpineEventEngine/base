@@ -27,16 +27,16 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import static io.spine.js.generate.given.Generators.assertContains;
+import static io.spine.js.generate.parse.FromJsonMethod.FROM_OBJECT;
+import static io.spine.js.generate.parse.FromJsonMethod.FROM_OBJECT_ARG;
 import static io.spine.js.generate.parse.field.FieldGenerator.FIELD_VALUE;
 import static io.spine.js.generate.parse.field.MapFieldGenerator.ATTRIBUTE;
 import static io.spine.js.generate.parse.field.MapFieldGenerator.MAP_KEY;
 import static io.spine.js.generate.parse.field.RepeatedFieldGenerator.LIST_ITEM;
-import static io.spine.js.generate.given.Generators.assertContains;
-import static io.spine.js.generate.given.Given.mapField;
-import static io.spine.js.generate.given.Given.repeatedField;
-import static io.spine.js.generate.given.Given.singularField;
-import static io.spine.js.generate.parse.FromJsonMethod.FROM_OBJECT;
-import static io.spine.js.generate.parse.FromJsonMethod.FROM_OBJECT_ARG;
+import static io.spine.js.generate.parse.field.given.Given.mapField;
+import static io.spine.js.generate.parse.field.given.Given.repeatedField;
+import static io.spine.js.generate.parse.field.given.Given.singularField;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SuppressWarnings("DuplicateStringLiteralInspection")

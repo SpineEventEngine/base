@@ -18,13 +18,29 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.js.generate.parse.field.given;
+
 /**
- * The classes which generate the JS code working with known Protobuf types.
+ * The field of the {@code FieldContainer} type declared in {@code fields.proto}.
  */
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.js.generate.type;
+enum FieldContainerEntry {
 
-import com.google.errorprone.annotations.CheckReturnValue;
+    PRIMITIVE_FIELD("primitive_field"),
+    ENUM_FIELD("enum_field"),
+    MESSAGE_FIELD("message_field"),
+    TIMESTAMP_FIELD("timestamp_field"),
 
-import javax.annotation.ParametersAreNonnullByDefault;
+    SINGULAR_FIELD("singular_field"),
+    REPEATED_FIELD("repeated_field"),
+    MAP_FIELD("map_field");
+
+    private final String protoName;
+
+    FieldContainerEntry(String protoName) {
+        this.protoName = protoName;
+    }
+
+    String protoName() {
+        return protoName;
+    }
+}

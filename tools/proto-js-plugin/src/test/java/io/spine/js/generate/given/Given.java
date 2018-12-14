@@ -21,7 +21,6 @@
 package io.spine.js.generate.given;
 
 import com.google.protobuf.Descriptors.Descriptor;
-import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.js.DefaultJsProject;
 import io.spine.tools.gradle.GradleProject;
@@ -31,12 +30,6 @@ import java.io.File;
 import java.util.List;
 
 import static com.google.common.io.Files.createTempDir;
-import static io.spine.js.generate.given.FieldContainerEntry.ENUM_FIELD;
-import static io.spine.js.generate.given.FieldContainerEntry.MAP_FIELD;
-import static io.spine.js.generate.given.FieldContainerEntry.MESSAGE_FIELD;
-import static io.spine.js.generate.given.FieldContainerEntry.PRIMITIVE_FIELD;
-import static io.spine.js.generate.given.FieldContainerEntry.REPEATED_FIELD;
-import static io.spine.js.generate.given.FieldContainerEntry.TIMESTAMP_FIELD;
 import static io.spine.tools.gradle.TaskName.BUILD;
 import static java.util.Collections.singletonList;
 
@@ -57,40 +50,6 @@ public final class Given {
     public static Descriptor message() {
         Descriptor message = FieldContainer.getDescriptor();
         return message;
-    }
-
-    public static FieldDescriptor primitiveField() {
-        return field(PRIMITIVE_FIELD);
-    }
-
-    public static FieldDescriptor enumField() {
-        return field(ENUM_FIELD);
-    }
-
-    public static FieldDescriptor messageField() {
-        return field(MESSAGE_FIELD);
-    }
-
-    public static FieldDescriptor timestampField() {
-        return field(TIMESTAMP_FIELD);
-    }
-
-    public static FieldDescriptor singularField() {
-        return field(MESSAGE_FIELD);
-    }
-
-    public static FieldDescriptor repeatedField() {
-        return field(REPEATED_FIELD);
-    }
-
-    public static FieldDescriptor mapField() {
-        return field(MAP_FIELD);
-    }
-
-    private static FieldDescriptor field(FieldContainerEntry entry) {
-        String fieldName = entry.protoName();
-        FieldDescriptor field = message().findFieldByName(fieldName);
-        return field;
     }
 
     public static DefaultJsProject project() {

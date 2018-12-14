@@ -29,10 +29,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
+import static io.spine.js.generate.parse.field.given.Given.messageField;
+import static io.spine.js.generate.parse.field.given.Given.primitiveField;
+import static io.spine.js.generate.parse.field.given.Given.timestampField;
 import static io.spine.js.generate.parse.field.precondition.FieldPreconditions.preconditionFor;
-import static io.spine.js.generate.given.Given.messageField;
-import static io.spine.js.generate.given.Given.primitiveField;
-import static io.spine.js.generate.given.Given.timestampField;
 
 @DisplayName("FieldPreconditions utility should")
 class FieldPreconditionsTest extends UtilityClassTest<FieldPreconditions> {

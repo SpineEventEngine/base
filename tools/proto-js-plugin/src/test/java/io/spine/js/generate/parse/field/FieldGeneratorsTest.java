@@ -28,10 +28,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static com.google.common.truth.Truth.assertThat;
-import static io.spine.js.generate.given.Given.mapField;
-import static io.spine.js.generate.given.Given.messageField;
-import static io.spine.js.generate.given.Given.repeatedField;
+import static io.spine.js.generate.parse.field.given.Given.mapField;
+import static io.spine.js.generate.parse.field.given.Given.messageField;
+import static io.spine.js.generate.parse.field.given.Given.repeatedField;
 
 @DisplayName("FieldGenerators utility should")
 class FieldGeneratorsTest extends UtilityClassTest<FieldGenerators> {

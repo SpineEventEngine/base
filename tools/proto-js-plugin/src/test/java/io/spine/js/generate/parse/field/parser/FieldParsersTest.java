@@ -29,11 +29,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
+import static io.spine.js.generate.parse.field.given.Given.enumField;
+import static io.spine.js.generate.parse.field.given.Given.messageField;
+import static io.spine.js.generate.parse.field.given.Given.primitiveField;
+import static io.spine.js.generate.parse.field.given.Given.timestampField;
 import static io.spine.js.generate.parse.field.parser.FieldParsers.parserFor;
-import static io.spine.js.generate.given.Given.enumField;
-import static io.spine.js.generate.given.Given.messageField;
-import static io.spine.js.generate.given.Given.primitiveField;
-import static io.spine.js.generate.given.Given.timestampField;
 
 @DisplayName("FieldParsers utility should")
 class FieldParsersTest extends UtilityClassTest<FieldParsers> {
