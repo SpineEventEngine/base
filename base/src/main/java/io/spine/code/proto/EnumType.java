@@ -37,11 +37,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
 @Internal
 public final class EnumType extends Type<EnumDescriptor, EnumDescriptorProto> {
 
-    private EnumType(EnumDescriptor descriptor,
-                     EnumDescriptorProto descriptorProto,
-                     ClassName className,
-                     TypeUrl typeUrl) {
-        super(descriptor, descriptorProto, className, typeUrl);
+    private EnumType(EnumDescriptor descriptor) {
+        super(descriptor,
+              descriptor.toProto(),
+              ClassName.from(descriptor),
+              TypeUrl.from(descriptor));
     }
 
     @Override
@@ -50,10 +50,7 @@ public final class EnumType extends Type<EnumDescriptor, EnumDescriptorProto> {
     }
 
     private static EnumType create(EnumDescriptor descriptor) {
-        EnumDescriptorProto descriptorProto = descriptor.toProto();
-        ClassName className = ClassName.from(descriptor);
-        TypeUrl typeUrl = TypeUrl.from(descriptor);
-        return new EnumType(descriptor, descriptorProto, className, typeUrl);
+        return new EnumType(descriptor);
     }
 
     @SuppressWarnings("MethodWithMultipleLoops")

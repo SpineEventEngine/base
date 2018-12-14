@@ -48,18 +48,15 @@ public class MessageType extends Type<Descriptor, DescriptorProto> {
      */
     public static final String VBUILDER_SUFFIX = "VBuilder";
 
-    protected MessageType(Descriptor descriptor,
-                          DescriptorProto descriptorProto,
-                          ClassName className,
-                          TypeUrl typeUrl) {
-        super(descriptor, descriptorProto, className, typeUrl);
+    protected MessageType(Descriptor descriptor) {
+        super(descriptor,
+              descriptor.toProto(),
+              ClassName.from(descriptor),
+              TypeUrl.from(descriptor));
     }
 
     static MessageType create(Descriptor descriptor) {
-        DescriptorProto descriptorProto = descriptor.toProto();
-        ClassName className = ClassName.from(descriptor);
-        TypeUrl typeUrl = TypeUrl.from(descriptor);
-        return new MessageType(descriptor, descriptorProto, className, typeUrl);
+        return new MessageType(descriptor);
     }
 
     /**

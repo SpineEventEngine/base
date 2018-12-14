@@ -24,7 +24,6 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.Descriptor;
 import io.spine.code.java.SimpleClassName;
 import io.spine.type.ClassName;
-import io.spine.type.TypeUrl;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.Objects;
@@ -49,7 +48,7 @@ public final class RejectionType extends MessageType {
      *
      */
     RejectionType(Descriptor message) {
-        super(message, message.toProto(), ClassName.from(message), TypeUrl.from(message));
+        super(message);
         this.outerJavaClass = SimpleClassName.outerOf(message.getFile());
     }
 
