@@ -113,8 +113,7 @@ public class ProtoJsPlugin extends SpinePlugin {
         Directory generatedRoot = jsProject.proto()
                                            .mainJs();
         File descriptors = jsProject.mainDescriptors();
-        JsonParsersWriter writer = JsonParsersWriter.createFor(generatedRoot, descriptors);
-        writer.write();
+        generateCode(generatedRoot, descriptors);
     }
 
     /**
@@ -125,6 +124,10 @@ public class ProtoJsPlugin extends SpinePlugin {
         Directory generatedRoot = jsProject.proto()
                                            .testJs();
         File descriptors = jsProject.testDescriptors();
+        generateCode(generatedRoot, descriptors);
+    }
+
+    private static void generateCode(Directory generatedRoot, File descriptors) {
         JsonParsersWriter writer = JsonParsersWriter.createFor(generatedRoot, descriptors);
         writer.write();
     }
