@@ -58,7 +58,7 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
  *         message stored in a file.
  * </ol>
  */
-public final class JsonParsersWriter extends FileSetEnhancement {
+public final class ParsingOfObjects extends FileSetEnhancement {
 
     /**
      * The path to the {@code known_type_parsers} resource which contains the parser definitions.
@@ -66,14 +66,14 @@ public final class JsonParsersWriter extends FileSetEnhancement {
     private static final String PARSERS_RESOURCE =
             "io/spine/tools/protojs/knowntypes/known_type_parsers";
 
-    private JsonParsersWriter(Directory generatedRoot, FileSet fileSet) {
+    private ParsingOfObjects(Directory generatedRoot, FileSet fileSet) {
         super(generatedRoot, fileSet);
     }
 
-    public static JsonParsersWriter createFor(Directory generatedRoot, FileSet protoSources) {
+    public static ParsingOfObjects createFor(Directory generatedRoot, FileSet protoSources) {
         checkNotNull(generatedRoot);
         checkNotNull(protoSources);
-        return new JsonParsersWriter(generatedRoot, protoSources);
+        return new ParsingOfObjects(generatedRoot, protoSources);
     }
 
     /**
@@ -128,7 +128,7 @@ public final class JsonParsersWriter extends FileSetEnhancement {
      * {@link IllegalStateException}.
      */
     private void copyParsersCode() {
-        try (InputStream in = JsonParsersWriter.class
+        try (InputStream in = ParsingOfObjects.class
                 .getClassLoader()
                 .getResourceAsStream(PARSERS_RESOURCE)) {
             Path path = generatedRoot().resolve(KNOWN_TYPE_PARSERS);

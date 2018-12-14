@@ -23,7 +23,8 @@ package io.spine.js.gradle;
 import io.spine.code.js.DefaultJsProject;
 import io.spine.code.js.Directory;
 import io.spine.code.proto.FileSet;
-import io.spine.js.generate.parse.JsonParsersWriter;
+import io.spine.js.generate.FileSetEnhancement;
+import io.spine.js.generate.parse.ParsingOfObjects;
 import io.spine.js.generate.typeurl.TypeUrlsInFiles;
 import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.SpinePlugin;
@@ -132,9 +133,9 @@ public class ProtoJsPlugin extends SpinePlugin {
 
     private static void generateCode(Directory generatedRoot, File descriptors) {
         FileSet fileSet = parseOrEmpty(descriptors);
-        JsonParsersWriter writer = JsonParsersWriter.createFor(generatedRoot, fileSet);
-        writer.perform();
-        TypeUrlsInFiles typeUrlsInFiles = new TypeUrlsInFiles(generatedRoot, fileSet);
-        typeUrlsInFiles.perform();
+        FileSetEnhancement parsingEnhancement = ParsingOfObjects.createFor(generatedRoot, fileSet);
+        parsingEnhancement.perform();
+        FileSetEnhancement typeUrlsEnhancement = new TypeUrlsInFiles(generatedRoot, fileSet);
+        typeUrlsEnhancement.perform();
     }
 }
