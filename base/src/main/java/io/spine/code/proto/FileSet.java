@@ -36,13 +36,11 @@ import java.util.Optional;
 
 import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Maps.newHashMapWithExpectedSize;
+import static io.spine.code.proto.Linker.link;
 import static java.util.stream.Collectors.toList;
 
 /**
  * A set of proto files represented by their {@linkplain FileDescriptor descriptors}.
- *
- * @author Alexander Yevsyukov
- * @author Dmytro Dashenkov
  */
 @Internal
 public final class FileSet {
@@ -96,7 +94,7 @@ public final class FileSet {
      */
     private static FileSet parse(String descriptorSetFile) {
         Collection<FileDescriptorProto> files = FileDescriptors.parse(descriptorSetFile);
-        FileSet result = Linker.link(files);
+        FileSet result = link(files);
         return result;
     }
 
@@ -105,7 +103,7 @@ public final class FileSet {
      */
     public static FileSet load() {
         Collection<FileDescriptorProto> fileSets = FileDescriptors.load();
-        FileSet fileSet = Linker.link(fileSets);
+        FileSet fileSet = link(fileSets);
         return fileSet;
     }
 

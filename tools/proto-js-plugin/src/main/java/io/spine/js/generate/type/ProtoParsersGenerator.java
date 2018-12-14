@@ -20,16 +20,19 @@
 
 package io.spine.js.generate.type;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.UnmodifiableIterator;
 import com.google.protobuf.Any;
+import com.google.protobuf.BoolValue;
 import com.google.protobuf.BytesValue;
 import com.google.protobuf.DoubleValue;
 import com.google.protobuf.Duration;
 import com.google.protobuf.Empty;
 import com.google.protobuf.FieldMask;
 import com.google.protobuf.FloatValue;
+import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.Int32Value;
 import com.google.protobuf.Int64Value;
 import com.google.protobuf.ListValue;
@@ -45,6 +48,7 @@ import io.spine.type.TypeUrl;
 import java.util.Map.Entry;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.collect.ImmutableMap.toImmutableMap;
 
 /**
  * The generator which stores JSON parsers for the standard Protobuf types to the JS {@code Map}.
@@ -145,24 +149,30 @@ public final class ProtoParsersGenerator extends JsCodeGenerator {
 
     @SuppressWarnings("OverlyCoupledMethod") // Dependencies for the listed Protobuf types.
     private static ImmutableMap<TypeUrl, String> parsers() {
-        ImmutableMap<TypeUrl, String> jsParserNames = ImmutableMap
-                .<TypeUrl, String>builder()
-                .put(TypeUrl.of(BytesValue.class), "BytesValueParser")
-                .put(TypeUrl.of(DoubleValue.class), "DoubleValueParser")
-                .put(TypeUrl.of(FloatValue.class), "FloatValueParser")
-                .put(TypeUrl.of(Int32Value.class), "Int32ValueParser")
-                .put(TypeUrl.of(Int64Value.class), "Int64ValueParser")
-                .put(TypeUrl.of(StringValue.class), "StringValueParser")
-                .put(TypeUrl.of(UInt32Value.class), "UInt32ValueParser")
-                .put(TypeUrl.of(UInt64Value.class), "UInt64ValueParser")
-                .put(TypeUrl.of(Value.class), "ValueParser")
-                .put(TypeUrl.of(ListValue.class), "ListValueParser")
-                .put(TypeUrl.of(Empty.class), "EmptyParser")
-                .put(TypeUrl.of(Timestamp.class), "TimestampParser")
-                .put(TypeUrl.of(Duration.class), "DurationParser")
-                .put(TypeUrl.of(FieldMask.class), "FieldMaskParser")
-                .put(TypeUrl.of(Any.class), "AnyParser")
-                .build();
-        return jsParserNames;
+        ImmutableList<Class<? extends GeneratedMessageV3>> messageClasses =
+                ImmutableList.of(
+                        BoolValue.class,
+                        BytesValue.class,
+                        DoubleValue.class,
+                        FloatValue.class,
+                        StringValue.class,
+                        Int32Value.class,
+                        Int64Value.class,
+                        UInt32Value.class,
+                        UInt64Value.class,
+                        Value.class,
+                        ListValue.class,
+                        Empty.class,
+                        Timestamp.class,
+                        Duration.class,
+                        FieldMask.class,
+                        Any.class
+                );
+
+        ImmutableMap<TypeUrl, String> result =
+                messageClasses.stream()
+                              .collect(toImmutableMap(TypeUrl::of,
+                                                      cls -> cls.getSimpleName() + "Parser"));
+        return result;
     }
 }
