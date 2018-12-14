@@ -25,7 +25,7 @@ import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.js.Directory;
 import io.spine.code.js.FileName;
 import io.spine.code.proto.FileSet;
-import io.spine.js.generate.file.FileGenerator;
+import io.spine.js.generate.file.TypesParsingExtension;
 import io.spine.js.generate.type.KnownTypesGenerator;
 import io.spine.js.generate.type.ProtoParsersGenerator;
 import io.spine.js.gradle.ProtoJsPlugin;
@@ -172,16 +172,16 @@ public final class JsonParsersWriter {
     @VisibleForTesting
     void writeFromJsonMethod() {
         for (FileDescriptor file : fileSet.files()) {
-            writeIntoFile(file);
+            writeFromJsonMethod(file);
         }
     }
 
-    private void writeIntoFile(FileDescriptor file) {
+    private void writeFromJsonMethod(FileDescriptor file) {
         if (shouldSkip(file)) {
             return;
         }
         JsOutput jsOutput = new JsOutput();
-        FileGenerator generator = new FileGenerator(file, jsOutput);
+        TypesParsingExtension generator = new TypesParsingExtension(file, jsOutput);
         generator.generate();
         JsFile jsFile = JsFile.createFor(generatedRoot, file);
         jsFile.append(jsOutput);

@@ -28,24 +28,24 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.code.js.LibraryFile.KNOWN_TYPE_PARSERS;
-import static io.spine.js.generate.file.FileGenerator.COMMENT;
+import static io.spine.js.generate.file.TypesParsingExtension.COMMENT;
 import static io.spine.js.generate.given.Generators.assertContains;
 import static io.spine.js.generate.given.Given.file;
 import static io.spine.js.generate.message.FromJsonMethod.FROM_JSON;
 import static io.spine.js.generate.message.FromJsonMethod.FROM_OBJECT;
 
-@DisplayName("FileGenerator should")
-class FileGeneratorTest {
+@DisplayName("TypesParsingExtension should")
+class TypesParsingExtensionTest {
 
     private FileDescriptor file;
     private JsOutput jsOutput;
-    private FileGenerator generator;
+    private TypesParsingExtension generator;
 
     @BeforeEach
     void setUp() {
         file = file();
         jsOutput = new JsOutput();
-        generator = new FileGenerator(file, jsOutput);
+        generator = new TypesParsingExtension(file, jsOutput);
     }
 
     @Test
