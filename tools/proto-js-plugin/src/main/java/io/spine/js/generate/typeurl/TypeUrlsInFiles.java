@@ -22,8 +22,11 @@ package io.spine.js.generate.typeurl;
 
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.js.Directory;
+import io.spine.code.js.FileName;
 import io.spine.code.proto.FileSet;
 import io.spine.js.generate.FileSetEnhancement;
+
+import static io.spine.code.js.LibraryFile.SPINE_OPTIONS;
 
 /**
  * For each type in a {@link FileSet} generates a method to obtain the type URL.
@@ -37,8 +40,17 @@ public class TypeUrlsInFiles extends FileSetEnhancement {
     @Override
     protected void processSources() {
         for (FileDescriptor file : fileSet().files()) {
+            if (isSpineOptions(file)) {
+                return;
+            }
             TypeUrlsInFile inFile = new TypeUrlsInFile(file, generatedRoot());
             inFile.generateAndAppend();
         }
+    }
+
+    private static boolean isSpineOptions(FileDescriptor file) {
+        FileName fileName = FileName.from(file);
+        return SPINE_OPTIONS.fileName()
+                            .equals(fileName);
     }
 }

@@ -144,6 +144,7 @@ public final class JsOutput {
      *         the value of the string literal
      */
     public void returnString(String literalValue) {
+        checkNotNull(literalValue);
         String literal = format("'%s'", literalValue);
         returnValue(literal);
     }

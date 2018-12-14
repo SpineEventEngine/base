@@ -37,7 +37,11 @@ final class TypeUrlsInFile extends JsCodeGenerator {
     private final Directory generatedRoot;
 
     TypeUrlsInFile(FileDescriptor file, Directory generatedRoot) {
-        super(new JsOutput());
+        this(new JsOutput(), file, generatedRoot);
+    }
+
+    TypeUrlsInFile(JsOutput output, FileDescriptor file, Directory generatedRoot) {
+        super(output);
         this.file = file;
         this.generatedRoot = generatedRoot;
     }
@@ -47,6 +51,7 @@ final class TypeUrlsInFile extends JsCodeGenerator {
         TypeSet types = TypeSet.messagesAndEnums(file);
         for (Type<?, ?> type : types.types()) {
             TypeUrlMethod method = new TypeUrlMethod(type, jsOutput());
+            jsOutput().addEmptyLine();
             method.generate();
         }
     }

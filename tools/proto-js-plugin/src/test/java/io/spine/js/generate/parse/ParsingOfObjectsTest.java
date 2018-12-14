@@ -48,8 +48,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @DisplayName("ParsingOfObjects enhancement should")
 class ParsingOfObjectsTest {
 
-    private final FileSet protoSources = GivenProject.protoSources();
-    private final Directory generatedProtoDir = GivenProject.protoSourcesRoot();
+    private final FileSet protoSources = GivenProject.testFileSet();
+    private final Directory generatedProtoDir = GivenProject.testProtoSources();
     private final ParsingOfObjects writer = createFor(generatedProtoDir, protoSources);
 
     @Test
