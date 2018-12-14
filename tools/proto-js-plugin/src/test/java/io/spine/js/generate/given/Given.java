@@ -22,23 +22,11 @@ package io.spine.js.generate.given;
 
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.code.js.DefaultJsProject;
-import io.spine.tools.gradle.GradleProject;
 import spine.test.js.Fields.FieldContainer;
-
-import java.io.File;
-import java.util.List;
-
-import static com.google.common.io.Files.createTempDir;
-import static io.spine.tools.gradle.TaskName.BUILD;
-import static java.util.Collections.singletonList;
 
 public final class Given {
 
-    private static final String TASK_PROTO = "task.proto";
-    private static final String PROJECT_NAME = "proto-js-plugin-test";
-    private static final List<String> PROTO_FILES = singletonList(TASK_PROTO);
-
+    /** Prevents instantiation of this utility class. */
     private Given() {
     }
 
@@ -50,23 +38,5 @@ public final class Given {
     public static Descriptor message() {
         Descriptor message = FieldContainer.getDescriptor();
         return message;
-    }
-
-    public static DefaultJsProject project() {
-        File projectDir = createTempDir();
-        compileProject(projectDir);
-        DefaultJsProject project = DefaultJsProject.at(projectDir);
-        return project;
-    }
-
-    @SuppressWarnings("ResultOfMethodCallIgnored") // Method annotated with `@CanIgnoreReturnValue`.
-    private static void compileProject(File projectDir) {
-        GradleProject gradleProject = GradleProject
-                .newBuilder()
-                .setProjectName(PROJECT_NAME)
-                .setProjectFolder(projectDir)
-                .addProtoFiles(PROTO_FILES)
-                .build();
-        gradleProject.executeTask(BUILD);
     }
 }

@@ -20,14 +20,23 @@
 
 package io.spine.js.generate.given;
 
+import io.spine.code.js.DefaultJsProject;
 import io.spine.code.js.Directory;
 import io.spine.code.proto.FileSet;
+import io.spine.tools.gradle.GradleProject;
 
 import java.io.File;
+import java.util.List;
 
-import static io.spine.js.generate.given.Given.project;
+import static com.google.common.io.Files.createTempDir;
+import static io.spine.tools.gradle.TaskName.BUILD;
+import static java.util.Collections.singletonList;
 
 public final class GivenProject {
+
+    private static final String TASK_PROTO = "task.proto";
+    private static final String PROJECT_NAME = "proto-js-plugin-test";
+    private static final List<String> PROTO_FILES = singletonList(TASK_PROTO);
 
     /** Prevents instantiation of this utility class. */
     private GivenProject() {
@@ -41,5 +50,23 @@ public final class GivenProject {
     public static Directory protoSourcesRoot() {
         return project().proto()
                         .mainJs();
+    }
+
+    public static DefaultJsProject project() {
+        File projectDir = createTempDir();
+        compileProject(projectDir);
+        DefaultJsProject project = DefaultJsProject.at(projectDir);
+        return project;
+    }
+
+    @SuppressWarnings("ResultOfMethodCallIgnored") // Method annotated with `@CanIgnoreReturnValue`.
+    private static void compileProject(File projectDir) {
+        GradleProject gradleProject = GradleProject
+                .newBuilder()
+                .setProjectName(PROJECT_NAME)
+                .setProjectFolder(projectDir)
+                .addProtoFiles(PROTO_FILES)
+                .build();
+        gradleProject.executeTask(BUILD);
     }
 }
