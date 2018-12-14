@@ -18,11 +18,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.protodoc.given;
+package io.spine.tools.protodoc;
 
 import com.google.common.base.Joiner;
+import com.google.common.collect.ImmutableList;
 import io.spine.tools.gradle.GradleProject;
-import io.spine.tools.protodoc.ProtoJavadocPlugin;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,7 +30,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
-import static com.google.common.collect.ImmutableList.of;
 import static io.spine.tools.gradle.TaskName.FORMAT_PROTO_DOC;
 import static java.lang.System.lineSeparator;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -38,10 +37,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * A helper class for the {@link ProtoJavadocPlugin} testing.
- *
- * @author Dmytro Grankin
  */
-public final class ProtoJavadocPluginTestEnv {
+final class TestHelper {
 
     /**
      * The {@code protoJavadoc.mainGenProtoDir} value from the plugin configuration.
@@ -50,14 +47,12 @@ public final class ProtoJavadocPluginTestEnv {
      */
     private static final String MAIN_GEN_PROTO_LOCATION = "generated/main/java";
 
-    /**
-     * Prevents the utility class instantiation.
-     */
-    private ProtoJavadocPluginTestEnv() {
+    /** Prevents the utility class instantiation. */
+    private TestHelper() {
     }
 
-    public static void formatAndAssert(String expectedContent, String contentToFormat,
-                                       File folder) throws IOException {
+    static void formatAndAssert(String expectedContent, String contentToFormat, File folder)
+            throws IOException {
         Path formattedFilePath = format(contentToFormat, folder);
         List<String> formattedLines = Files.readAllLines(formattedFilePath, UTF_8);
         String mergedLines = Joiner.on(lineSeparator())
@@ -75,14 +70,12 @@ public final class ProtoJavadocPluginTestEnv {
         return result;
     }
 
-    private static void executeTask(String filePath,
-                                    File folder,
-                                    String fileContent) {
+    private static void executeTask(String filePath, File folder, String fileContent) {
         GradleProject project = GradleProject
                 .newBuilder()
                 .setProjectName("proto-javadoc-test")
                 .setProjectFolder(folder)
-                .createFile(filePath, of(fileContent))
+                .createFile(filePath, ImmutableList.of(fileContent))
                 .build();
         project.executeTask(FORMAT_PROTO_DOC);
     }

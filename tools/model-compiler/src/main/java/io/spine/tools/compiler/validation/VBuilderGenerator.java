@@ -59,25 +59,15 @@ public class VBuilderGenerator implements Logging {
      * Creates new instance of the generator.
      *
      * @param protoSrcDirPath
-     *        an absolute path to the folder, containing the {@code .proto} files for
-     *        the given scope
-     * @param allTypes
-     *        If {@code true}, all message types from the classpath will be included.
-     *        If {@code false}, only messages types declared in the current module will be included.
+     *        an absolute path to the folder, containing the {@code .proto} files
      * @param targetDirPath
-     *        an absolute path to the folder, serving as a target for the generation for
-     *        the given scope
+     *        an absolute path to the folder, serving as a target for the code generation
      * @param indent
      *        indentation for the generated code
      */
-    public VBuilderGenerator(String protoSrcDirPath,
-                             boolean allTypes,
-                             String targetDirPath,
-                             Indent indent) {
+    public VBuilderGenerator(String protoSrcDirPath, String targetDirPath, Indent indent) {
         this.targetDirPath = targetDirPath;
-        this.predicate = allTypes
-                         ? type -> true
-                         : new BelongsToModule(protoSrcDirPath);
+        this.predicate = new BelongsToModule(protoSrcDirPath);
         this.indent = indent;
     }
 

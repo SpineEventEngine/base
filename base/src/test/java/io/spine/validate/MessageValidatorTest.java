@@ -81,7 +81,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static com.google.common.collect.ImmutableList.copyOf;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.protobuf.util.Timestamps.add;
 import static com.google.protobuf.util.Timestamps.subtract;
@@ -1130,7 +1129,7 @@ class MessageValidatorTest {
         FieldPath path = violation.getFieldPath();
         ProtocolStringList actualFields = path.getFieldNameList();
         assertEquals(expectedFields.length, actualFields.size());
-        assertEquals(ImmutableList.copyOf(expectedFields), copyOf(actualFields));
+        assertEquals(ImmutableList.copyOf(expectedFields), ImmutableList.copyOf(actualFields));
     }
 
     private static Timestamp getFuture() {

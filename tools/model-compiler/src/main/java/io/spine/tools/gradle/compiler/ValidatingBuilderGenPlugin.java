@@ -45,7 +45,6 @@ import static io.spine.tools.gradle.compiler.Extension.getTargetTestGenValidator
 import static io.spine.tools.gradle.compiler.Extension.getTestDescriptorSetPath;
 import static io.spine.tools.gradle.compiler.Extension.getTestProtoSrcDir;
 import static io.spine.tools.gradle.compiler.Extension.isGenerateValidatingBuilders;
-import static io.spine.tools.gradle.compiler.Extension.isGenerateValidatingBuildersFromClasspath;
 
 /**
  * Plugin which generates validating builders based on the Protobuf Message definitions.
@@ -176,9 +175,8 @@ public class ValidatingBuilderGenPlugin extends SpinePlugin {
             }
 
             Indent indent = getIndent(project);
-            boolean allTypes = isGenerateValidatingBuildersFromClasspath(project);
             VBuilderGenerator generator =
-                    new VBuilderGenerator(protoSrcDirPath, allTypes, targetDirPath, indent);
+                    new VBuilderGenerator(protoSrcDirPath, targetDirPath, indent);
             generator.process(setFile);
         }
     }
