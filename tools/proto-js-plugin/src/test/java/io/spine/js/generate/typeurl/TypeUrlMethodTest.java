@@ -40,7 +40,7 @@ class TypeUrlMethodTest {
     @Test
     @DisplayName("provide TypeUrl for a message instance")
     void forInstance() {
-        String methodDeclaration = format("%s.typeUrl = function() {", type.name());
+        String methodDeclaration = format("proto.%s.typeUrl = function() {", type.name());
         String returnStatement = format("return '%s';", type.url());
         generator.generate();
         assertOutput().contains(methodDeclaration);
@@ -50,8 +50,8 @@ class TypeUrlMethodTest {
     @Test
     @DisplayName("provide TypeUrl for a message class")
     void forClass() {
-        String methodDeclaration = format("%s.prototype.typeUrl = function() {", type.name());
-        String returnStatement = format("return %s.typeUrl();", type.name());
+        String methodDeclaration = format("proto.%s.prototype.typeUrl = function() {", type.name());
+        String returnStatement = format("return proto.%s.typeUrl();", type.name());
         generator.generate();
         assertOutput().contains(methodDeclaration);
         assertOutput().contains(returnStatement);
