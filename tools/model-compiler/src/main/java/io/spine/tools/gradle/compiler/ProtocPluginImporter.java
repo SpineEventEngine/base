@@ -31,6 +31,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import static com.google.common.base.Preconditions.checkState;
+
 /**
  * A Gradle plugin which imports the Spine {@code protoc} plugin into the project.
  *
@@ -71,7 +73,9 @@ public class ProtocPluginImporter extends SpinePlugin {
         try (InputStream in = ProtocPluginImporter.class
                 .getClassLoader()
                 .getResourceAsStream(PROTOC_CONFIG_FILE_NAME);
-             FileOutputStream out = new FileOutputStream(configFile)) {
+             FileOutputStream out = new FileOutputStream(configFile)
+        ) {
+            checkState(in != null, "Unable to get resource " + PROTOC_CONFIG_FILE_NAME);
             int readByte = in.read();
             while (readByte >= 0) {
                 out.write(readByte);
