@@ -32,25 +32,25 @@ import java.nio.file.Path;
 
 import static com.google.common.io.Files.createTempDir;
 import static io.spine.code.js.FileName.of;
-import static io.spine.js.generate.JsFileWriter.createFor;
+import static io.spine.js.generate.JsFile.createFor;
 import static io.spine.js.generate.given.FileWriters.assertFileContains;
 import static io.spine.js.generate.given.FileWriters.assertFileNotContains;
 
-@DisplayName("JsFileWriter should")
-class JsFileWriterTest {
+@DisplayName("JsFile should")
+class JsFileTest {
 
     private static final FileName TASKS_JS = of("tasks.js");
     private static final String CREATE_TASK_1 = "createTask1();";
     private static final String CREATE_TASK_2 = "createTask2();";
 
-    private JsFileWriter writer;
+    private JsFile file;
     private Path filePath;
 
     @BeforeEach
     void setUp() {
         File tempDir = createTempDir();
         Directory directory = Directory.at(tempDir.toPath());
-        writer = createFor(directory, TASKS_JS);
+        file = createFor(directory, TASKS_JS);
         filePath = directory.resolve(TASKS_JS);
     }
 
@@ -58,7 +58,7 @@ class JsFileWriterTest {
     @DisplayName("write `JsOutput` to new file")
     void writeToFile() throws IOException {
         JsOutput testLine1 = generateCode(CREATE_TASK_1);
-        writer.write(testLine1);
+        file.write(testLine1);
         assertFileContains(filePath, CREATE_TASK_1);
     }
 
@@ -66,10 +66,10 @@ class JsFileWriterTest {
     @DisplayName("overwrite existing file")
     void overwriteExisting() throws IOException {
         JsOutput line1 = generateCode(CREATE_TASK_1);
-        writer.write(line1);
+        file.write(line1);
 
         JsOutput line2 = generateCode(CREATE_TASK_2);
-        writer.write(line2);
+        file.write(line2);
 
         assertFileNotContains(filePath, CREATE_TASK_1);
         assertFileContains(filePath, CREATE_TASK_2);
@@ -79,10 +79,10 @@ class JsFileWriterTest {
     @DisplayName("append `JsOutput` to existing file")
     void appendToFile() throws IOException {
         JsOutput line1 = generateCode(CREATE_TASK_1);
-        writer.write(line1);
+        file.write(line1);
 
         JsOutput line2 = generateCode(CREATE_TASK_2);
-        writer.append(line2);
+        file.append(line2);
 
         assertFileContains(filePath, CREATE_TASK_1);
         assertFileContains(filePath, CREATE_TASK_2);

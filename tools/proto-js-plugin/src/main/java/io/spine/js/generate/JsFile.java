@@ -38,40 +38,43 @@ import static java.nio.file.StandardOpenOption.CREATE;
 import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 
 /**
- * A tool for writing into JavaScript source files.
+ * An editable JavaScript file.
  *
  * <p>The class wraps all {@link IOException}s which occur during its operations in the
  * {@link IllegalStateException}.
  */
 @SuppressWarnings("WeakerAccess")
 // The class belongs to the public API of the package although now usage is only package-local.
-public final class JsFileWriter {
+public final class JsFile {
 
-    private final Path filePath;
+    /**
+     * The path to the file represented by the instance.
+     */
+    private final Path path;
 
-    private JsFileWriter(Path filePath) {
-        this.filePath = filePath;
+    private JsFile(Path path) {
+        this.path = path;
     }
 
     @VisibleForTesting
-    static JsFileWriter createFor(Directory directory, FileName fileName) {
+    static JsFile createFor(Directory directory, FileName fileName) {
         Path filePath = directory.resolve(fileName);
-        return new JsFileWriter(filePath);
+        return new JsFile(filePath);
     }
 
     /**
-     * Creates a {@code JsFileWriter} which will operate on the specified library file located in
+     * Creates a new instance which will operate on the specified library file located in
      * the specified directory.
      */
-    public static JsFileWriter createFor(Directory directory, LibraryFile libraryFile) {
+    public static JsFile createFor(Directory directory, LibraryFile libraryFile) {
         return createFor(directory, libraryFile.fileName());
     }
 
     /**
-     * Creates a {@code JsFileWriter} which will operate on the file pointed by the file descriptor
+     * Creates a new instance which will operate on the file pointed by the file descriptor
      * and located in the specified directory.
      */
-    public static JsFileWriter createFor(Directory directory, FileDescriptor file) {
+    public static JsFile createFor(Directory directory, FileDescriptor file) {
         FileName fileName = FileName.from(file);
         return createFor(directory, fileName);
     }
@@ -89,7 +92,7 @@ public final class JsFileWriter {
     public void write(JsOutput jsOutput) {
         checkNotNull(jsOutput);
         try {
-            Files.write(filePath,
+            Files.write(path,
                         ImmutableList.of(jsOutput.toString()),
                         Charsets.UTF_8,
                         CREATE, TRUNCATE_EXISTING);
@@ -109,7 +112,7 @@ public final class JsFileWriter {
     public void append(JsOutput jsOutput) {
         checkNotNull(jsOutput);
         try {
-            Files.write(filePath, ImmutableList.of(jsOutput.toString()), Charsets.UTF_8, APPEND);
+            Files.write(path, ImmutableList.of(jsOutput.toString()), Charsets.UTF_8, APPEND);
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }

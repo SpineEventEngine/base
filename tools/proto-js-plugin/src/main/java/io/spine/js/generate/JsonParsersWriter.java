@@ -124,8 +124,8 @@ public final class JsonParsersWriter {
         JsOutput jsOutput = new JsOutput();
         KnownTypesGenerator generator = new KnownTypesGenerator(fileSet, jsOutput);
         generator.generate();
-        JsFileWriter writer = JsFileWriter.createFor(generatedRoot, KNOWN_TYPES);
-        writer.write(jsOutput);
+        JsFile file = JsFile.createFor(generatedRoot, KNOWN_TYPES);
+        file.write(jsOutput);
     }
 
     /**
@@ -142,8 +142,8 @@ public final class JsonParsersWriter {
         JsOutput jsOutput = new JsOutput();
         ProtoParsersGenerator generator = new ProtoParsersGenerator(jsOutput);
         generator.generate();
-        JsFileWriter writer = JsFileWriter.createFor(generatedRoot, KNOWN_TYPE_PARSERS);
-        writer.append(jsOutput);
+        JsFile file = JsFile.createFor(generatedRoot, KNOWN_TYPE_PARSERS);
+        file.append(jsOutput);
     }
 
     /**
@@ -183,8 +183,8 @@ public final class JsonParsersWriter {
         JsOutput jsOutput = new JsOutput();
         FileGenerator generator = new FileGenerator(file, jsOutput);
         generator.generate();
-        JsFileWriter writer = JsFileWriter.createFor(generatedRoot, file);
-        writer.append(jsOutput);
+        JsFile jsFile = JsFile.createFor(generatedRoot, file);
+        jsFile.append(jsOutput);
     }
 
     /**
