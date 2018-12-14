@@ -49,10 +49,7 @@ public class MessageType extends Type<Descriptor, DescriptorProto> {
     public static final String VBUILDER_SUFFIX = "VBuilder";
 
     protected MessageType(Descriptor descriptor) {
-        super(descriptor,
-              descriptor.toProto(),
-              ClassName.from(descriptor),
-              TypeUrl.from(descriptor));
+        super(descriptor);
     }
 
     static MessageType create(Descriptor descriptor) {
@@ -62,7 +59,7 @@ public class MessageType extends Type<Descriptor, DescriptorProto> {
     /**
      * Collects all message types, including nested, declared in the passed file.
      */
-    public static TypeSet allFrom(FileDescriptor file) {
+    static TypeSet allFrom(FileDescriptor file) {
         checkNotNull(file);
         TypeSet.Builder result = TypeSet.newBuilder();
         for (Descriptor messageType : file.getMessageTypes()) {
@@ -80,6 +77,21 @@ public class MessageType extends Type<Descriptor, DescriptorProto> {
         for (Descriptor nestedType : type.getNestedTypes()) {
             addType(nestedType, set);
         }
+    }
+
+    @Override
+    public final DescriptorProto toProto() {
+        return descriptor().toProto();
+    }
+
+    @Override
+    public final TypeUrl url() {
+        return TypeUrl.from(descriptor());
+    }
+
+    @Override
+    public final ClassName javaClassName() {
+        return ClassName.from(descriptor());
     }
 
     @Override

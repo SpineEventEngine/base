@@ -45,15 +45,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public abstract class Type<T extends GenericDescriptor, P extends Message> {
 
     private final T descriptor;
-    private final P proto;
-    private final ClassName className;
-    private final TypeUrl url;
 
-    protected Type(T descriptor, P descriptorProto, ClassName javaClassName, TypeUrl url) {
+    protected Type(T descriptor) {
         this.descriptor = checkNotNull(descriptor);
-        this.proto = checkNotNull(descriptorProto);
-        this.url = url;
-        this.className = javaClassName;
     }
 
     /**
@@ -66,41 +60,36 @@ public abstract class Type<T extends GenericDescriptor, P extends Message> {
     /**
      * Obtains the proto message of the type descriptor.
      */
-    public P toProto() {
-        return this.proto;
-    }
+    public abstract P toProto();
 
     /**
      * Obtains the {@linkplain TypeName name} of this type.
      */
     public TypeName name() {
-        return url.toName();
+        return url().toName();
     }
 
     /**
      * Obtains the {@link TypeUrl} of this type.
      */
-    public TypeUrl url() {
-        return url;
-    }
+    public abstract TypeUrl url();
 
     /**
      * Loads the Java class representing this Protobuf type.
      */
     public Class<?> javaClass() {
+        String clsName = javaClassName().value();
         try {
-            return Class.forName(className.value());
+            return Class.forName(clsName);
         } catch (ClassNotFoundException e) {
-            throw new UnknownTypeException(className.value(), e);
+            throw new UnknownTypeException(clsName, e);
         }
     }
 
     /**
      * Obtains the name of the Java class representing this Protobuf type.
      */
-    public ClassName javaClassName() {
-        return className;
-    }
+    public abstract ClassName javaClassName();
 
     /**
      * Obtains package for the corresinding Java type.
@@ -123,11 +112,11 @@ public abstract class Type<T extends GenericDescriptor, P extends Message> {
             return false;
         }
         Type<?, ?> type = (Type<?, ?>) o;
-        return Objects.equal(proto, type.proto);
+        return Objects.equal(descriptor, type.descriptor);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(proto);
+        return Objects.hashCode(descriptor);
     }
 }

@@ -38,10 +38,22 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public final class EnumType extends Type<EnumDescriptor, EnumDescriptorProto> {
 
     private EnumType(EnumDescriptor descriptor) {
-        super(descriptor,
-              descriptor.toProto(),
-              ClassName.from(descriptor),
-              TypeUrl.from(descriptor));
+        super(descriptor);
+    }
+
+    @Override
+    public EnumDescriptorProto toProto() {
+        return descriptor().toProto();
+    }
+
+    @Override
+    public TypeUrl url() {
+        return TypeUrl.from(descriptor());
+    }
+
+    @Override
+    public ClassName javaClassName() {
+        return ClassName.from(descriptor());
     }
 
     @Override
