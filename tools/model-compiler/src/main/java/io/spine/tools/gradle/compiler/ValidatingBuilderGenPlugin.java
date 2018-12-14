@@ -176,7 +176,7 @@ public class ValidatingBuilderGenPlugin extends SpinePlugin {
 
             Indent indent = getIndent(project);
             VBuilderGenerator generator =
-                    new VBuilderGenerator(protoSrcDirPath, targetDirPath, indent);
+                    new VBuilderGenerator(targetDirPath, indent);
             generator.process(setFile);
         }
     }

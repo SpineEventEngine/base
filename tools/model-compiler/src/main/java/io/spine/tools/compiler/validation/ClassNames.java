@@ -60,6 +60,7 @@ final class ClassNames {
             return getJavaTypeForScalarType(field);
         }
         String typeName = trimTypeName(field);
+
         String parameterType =
                 cache.javaType(typeName)
                      .orElseThrow(() -> newIllegalStateException(

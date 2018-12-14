@@ -21,8 +21,8 @@
 package io.spine.code.java;
 
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
-import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.Descriptor;
+import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.value.StringTypeValue;
 
 import java.util.Optional;
@@ -32,8 +32,6 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
  * A {@link Class#getSimpleName() simple name} of a class.
- *
- * @author Alexander Yevsyukov
  */
 public final class SimpleClassName extends StringTypeValue {
 
@@ -56,7 +54,7 @@ public final class SimpleClassName extends StringTypeValue {
      * @param file a descriptor for file for which outer class name will be generated
      * @return outer class name
      */
-    public static SimpleClassName outerOf(FileDescriptorProto file) {
+    public static SimpleClassName outerOf(FileDescriptor file) {
         checkNotNull(file);
         String value = getOuterClassName(file);
         SimpleClassName result = new SimpleClassName(value);
@@ -70,7 +68,7 @@ public final class SimpleClassName extends StringTypeValue {
      * @return the value declared in the file options, or
      *         {@linkplain Optional#empty() empty Optional} if the option is not set
      */
-    public static Optional<SimpleClassName> declaredOuterClassName(FileDescriptorProto file) {
+    public static Optional<SimpleClassName> declaredOuterClassName(FileDescriptor file) {
         String className = file.getOptions()
                                .getJavaOuterClassname();
         if (className.isEmpty()) {
@@ -92,7 +90,7 @@ public final class SimpleClassName extends StringTypeValue {
      * @param file a descriptor for file for which outer class name will be generated
      * @return non-qualified outer class name
      */
-    private static String getOuterClassName(FileDescriptorProto file) {
+    private static String getOuterClassName(FileDescriptor file) {
         checkNotNull(file);
         String outerClassNameFromOptions = file.getOptions()
                                                .getJavaOuterClassname();

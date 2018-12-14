@@ -20,6 +20,7 @@
 
 package io.spine.tools.gradle.compiler;
 
+import io.spine.code.java.SimpleClassName;
 import io.spine.protobuf.Messages;
 import io.spine.tools.gradle.GradleProject;
 import org.jboss.forge.roaster.Roaster;
@@ -84,7 +85,10 @@ class RejectionGenPluginTest {
         File generatedFile = new File(projectAbsolutePath + rejectionsJavadocThrowableSource());
         JavaClassSource generatedSource = Roaster.parse(JavaClassSource.class, generatedFile);
         assertRejectionJavadoc(generatedSource);
-        assertBuilderJavadoc((JavaClassSource) generatedSource.getNestedType("Builder"));
+        assertBuilderJavadoc(
+                (JavaClassSource) generatedSource.getNestedType(SimpleClassName.ofBuilder()
+                                                                               .value())
+        );
     }
 
     private static void assertRejectionJavadoc(JavaClassSource rejection) {

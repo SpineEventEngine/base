@@ -19,15 +19,13 @@
  */
 package io.spine.tools.gradle.compiler;
 
-import com.google.common.collect.Lists;
-import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
+import com.google.common.collect.ImmutableSet;
 import io.spine.code.Indent;
 import io.spine.code.java.PackageName;
 import io.spine.code.java.SimpleClassName;
-import io.spine.code.proto.FileName;
-import io.spine.code.proto.RejectionDeclaration;
+import io.spine.code.proto.FileSet;
+import io.spine.code.proto.RejectionType;
 import io.spine.code.proto.RejectionsFile;
-import io.spine.code.proto.SourceFile;
 import io.spine.tools.compiler.TypeCache;
 import io.spine.tools.compiler.rejection.RejectionWriter;
 import io.spine.tools.gradle.GradleTask;
@@ -40,7 +38,6 @@ import org.slf4j.Logger;
 import java.io.File;
 import java.util.List;
 
-import static io.spine.code.proto.FileDescriptors.parse;
 import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
 import static io.spine.tools.gradle.TaskName.COMPILE_TEST_JAVA;
 import static io.spine.tools.gradle.TaskName.GENERATE_PROTO;
@@ -64,29 +61,6 @@ public class RejectionGenPlugin extends SpinePlugin {
 
     /** A map from Protobuf type name to Java class FQN. */
     private final TypeCache typeCache = new TypeCache();
-
-    private List<RejectionsFile> collect(Iterable<FileDescriptorProto> files) {
-        List<RejectionsFile> result = Lists.newLinkedList();
-        Logger log = log();
-        for (FileDescriptorProto file : files) {
-            FileName fn = FileName.from(file);
-            if (fn.isRejections()) {
-                log.debug("Found rejections file: {}", fn.value());
-
-                // See if the file content matches conventions.
-                SourceFile sourceFile = SourceFile.from(file);
-                if (sourceFile.isRejections()) {
-                    RejectionsFile rejectionsFile = RejectionsFile.from(sourceFile);
-                    result.add(rejectionsFile);
-                } else {
-                    log.error("Invalid rejections file: {}", file.getName());
-                }
-            }
-        }
-        log.debug("Found rejections in files: {}", result);
-
-        return result;
-    }
 
     /**
      * Applies the plug-in to a project.
@@ -152,9 +126,9 @@ public class RejectionGenPlugin extends SpinePlugin {
         }
 
         log().debug("Generating rejections from {}", mainFile);
-        List<FileDescriptorProto> mainFiles = parse(mainFile);
-        collectAllMessageTypes(mainFiles);
-        List<RejectionsFile> rejectionFiles = collect(mainFiles);
+
+        FileSet mainFiles = FileSet.parse(mainFile);
+        ImmutableSet<RejectionsFile> rejectionFiles = RejectionsFile.findAll(mainFiles);
         doGenerate(rejectionFiles, targetFolder, indent);
     }
 
@@ -168,19 +142,10 @@ public class RejectionGenPlugin extends SpinePlugin {
 
         log().debug("Generating test rejections from {}", testFile);
 
-        List<FileDescriptorProto> mainFiles = parse(mainFile);
-        collectAllMessageTypes(mainFiles);
+        FileSet testFiles = FileSet.parse(testFile);
 
-        List<FileDescriptorProto> testFiles = parse(testFile);
-        collectAllMessageTypes(testFiles);
-        List<RejectionsFile> rejectionFiles = collect(testFiles);
+        ImmutableSet<RejectionsFile> rejectionFiles = RejectionsFile.findAll(testFiles);
         doGenerate(rejectionFiles, targetFolder, indent);
-    }
-
-    private void collectAllMessageTypes(Iterable<FileDescriptorProto> files) {
-        for (FileDescriptorProto file : files) {
-            typeCache.loadFrom(file);
-        }
     }
 
     private void doGenerate(Iterable<RejectionsFile> files, String outDir, Indent indent) {
@@ -206,9 +171,9 @@ public class RejectionGenPlugin extends SpinePlugin {
             );
         }
 
-        List<RejectionDeclaration> rejections = file.getRejectionDeclarations();
+        List<RejectionType> rejections = file.getRejectionDeclarations();
         File outDir = new File(rejectionsRootDir);
-        for (RejectionDeclaration rejection : rejections) {
+        for (RejectionType rejection : rejections) {
             // The name of the generated `ThrowableMessage` will be the same
             // as for the Protobuf message.
             log.debug("Processing rejection '{}'", rejection.getSimpleTypeName());

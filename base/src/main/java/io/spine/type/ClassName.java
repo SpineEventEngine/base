@@ -42,7 +42,11 @@ import static com.google.common.collect.Lists.newLinkedList;
 public final class ClassName extends StringTypeValue {
 
     private static final long serialVersionUID = 0L;
-    private static final char OUTER_CLASS_DELIMITER = '$';
+
+    /**
+     * Separates nested class name from the name of the outer class in a fully-qualified name.
+     */
+    public static final char OUTER_CLASS_DELIMITER = '$';
 
     private ClassName(String value) {
         super(checkNotNull(value));
@@ -136,12 +140,15 @@ public final class ClassName extends StringTypeValue {
     }
 
     /**
-     * Converts the class name to a simple name by replacing all {@code $} by dots.
+     * Generates new class name taking this name and appending the passed suffix.
      *
-     * @return the simple name representation
+     * @param suffix non-empty suffix
+     * @return new class name
      */
-    public String toSimpleName() {
-        return value().replace(OUTER_CLASS_DELIMITER, '.');
+    public ClassName with(String suffix) {
+        checkNotNull(suffix);
+        checkArgument(!suffix.isEmpty(), "Suffix cannot be empty");
+        return of(value() + suffix);
     }
 
     private static ClassName construct(String typeName,
@@ -187,7 +194,7 @@ public final class ClassName extends StringTypeValue {
         if (multipleFiles) {
             return "";
         } else {
-            String className = SimpleClassName.outerOf(file.toProto())
+            String className = SimpleClassName.outerOf(file)
                                               .value();
             return className + OUTER_CLASS_DELIMITER;
         }

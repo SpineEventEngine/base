@@ -20,19 +20,16 @@
 
 package io.spine.tools.compiler.validation;
 
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Iterables;
+import com.google.common.collect.ImmutableCollection;
 import io.spine.code.Indent;
+import io.spine.code.proto.FileSet;
+import io.spine.code.proto.MessageType;
+import io.spine.code.proto.TypeSet;
 import io.spine.logging.Logging;
-import io.spine.tools.compiler.TypeCache;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 
 import java.io.File;
-import java.util.Set;
-import java.util.function.Predicate;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
 
 /**
@@ -50,24 +47,15 @@ public class VBuilderGenerator implements Logging {
     private final Indent indent;
 
     /**
-     * The predicate for filtering types by module, or accepting all types,
-     * if the generation is requested for all types.
-     */
-    private final Predicate<VBType> predicate;
-
-    /**
      * Creates new instance of the generator.
      *
-     * @param protoSrcDirPath
-     *        an absolute path to the folder, containing the {@code .proto} files
      * @param targetDirPath
      *        an absolute path to the folder, serving as a target for the code generation
      * @param indent
      *        indentation for the generated code
      */
-    public VBuilderGenerator(String protoSrcDirPath, String targetDirPath, Indent indent) {
+    public VBuilderGenerator(String targetDirPath, Indent indent) {
         this.targetDirPath = targetDirPath;
-        this.predicate = new BelongsToModule(protoSrcDirPath);
         this.indent = indent;
     }
 
@@ -75,77 +63,36 @@ public class VBuilderGenerator implements Logging {
         Logger log = log();
         log.debug("Generating validating builders for types from {}.", descriptorSetFile);
 
-        VBTypeLookup lookup = new VBTypeLookup(descriptorSetFile.getPath());
-        Set<VBType> allFound = lookup.collect();
-        TypeCache typeCache = lookup.getTypeCache();
+        FileSet fileSet = FileSet.parse(descriptorSetFile);
+        ImmutableCollection<MessageType> messageTypes = TypeSet.onlyMessages(fileSet);
 
-        Set<VBType> filtered = filter(allFound);
-        if (filtered.isEmpty()) {
-            log.warn("No validating builders will be generated.");
-            return;
-        }
-
-        generate(filtered, typeCache);
+        generate(messageTypes);
     }
 
-    private void generate(Set<VBType> builders, TypeCache cache) {
+    private void generate(ImmutableCollection<MessageType> messages) {
         ValidatingBuilderWriter writer =
-                new ValidatingBuilderWriter(targetDirPath, indent, cache);
+                new ValidatingBuilderWriter(targetDirPath, indent);
 
-        for (VBType vb : builders) {
+        for (MessageType messageType : messages) {
             try {
-                writer.write(vb);
+                writer.write(messageType);
             } catch (RuntimeException e) {
-                logError(vb, e);
+                logError(messageType, e);
             }
         }
         log().debug("Validating builder generation is finished.");
     }
 
-    private Set<VBType> filter(Set<VBType> types) {
-        Iterable<VBType> filtered = Iterables.filter(types, predicate::test);
-        Set<VBType> result = ImmutableSet.copyOf(filtered);
-        return result;
-    }
-
-    private void logError(VBType vb, RuntimeException e) {
+    private void logError(MessageType type, RuntimeException e) {
         Logger log = log();
         String message =
                 format("Cannot generate a validating builder for %s.%n" +
-                               "Error: %s", vb, e.toString());
+                               "Error: %s", type, e.toString());
         // If debug level is enabled give it under this lever, otherwise WARN.
         if (log.isDebugEnabled()) {
             log.debug(message, e);
         } else {
             log.warn(message);
-        }
-    }
-
-    /**
-     * A predicate determining if the given {@linkplain VBType validating builder metadata}
-     * has been collected from the source file in the specified module.
-     */
-    private static class BelongsToModule implements Predicate<VBType> {
-
-        /**
-         *  An absolute path to the root folder for the {@code .proto} files in the module.
-         */
-        private final String protoSrcDirPath;
-
-        private BelongsToModule(String protoSrcDirPath) {
-            this.protoSrcDirPath = protoSrcDirPath.endsWith(File.separator)
-                             ? protoSrcDirPath
-                             : protoSrcDirPath + File.separator;
-        }
-
-        @Override
-        public boolean test(@Nullable VBType input) {
-            checkNotNull(input);
-
-            String path = input.getSourceProtoFile();
-            File protoFile = new File(protoSrcDirPath + path);
-            boolean belongsToModule = protoFile.exists();
-            return belongsToModule;
         }
     }
 }

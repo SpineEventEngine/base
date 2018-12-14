@@ -34,6 +34,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Maps.newHashMapWithExpectedSize;
 import static io.spine.code.proto.Linker.link;
@@ -86,25 +88,40 @@ public final class FileSet {
      * Creates a new file set by parsing the passed descriptor set file.
      */
     public static FileSet parse(File descriptorSet) {
-        return parse(descriptorSet.getAbsolutePath());
+        checkNotNull(descriptorSet);
+        checkState(descriptorSet.exists(), "File %s does not exist.", descriptorSet);
+        return doParse(descriptorSet.getAbsolutePath());
+    }
+
+    /**
+     * Creates file set by parsing the descriptor set file with the passed name.
+     */
+    public static FileSet parse(String descriptorSetFile) {
+        checkNotNull(descriptorSetFile);
+        File file = new File(descriptorSetFile);
+        return parse(file);
+    }
+
+    public static FileSet parseSkipStandard(String descriptorSetFile) {
+        Collection<FileDescriptorProto> files =
+                FileDescriptors.parseSkipStandard(descriptorSetFile);
+        return link(files);
     }
 
     /**
      * Creates a new file set by parsing the passed descriptor set file.
      */
-    private static FileSet parse(String descriptorSetFile) {
+    private static FileSet doParse(String descriptorSetFile) {
         Collection<FileDescriptorProto> files = FileDescriptors.parse(descriptorSetFile);
-        FileSet result = link(files);
-        return result;
+        return link(files);
     }
 
     /**
      * Loads main file set from resources.
      */
     public static FileSet load() {
-        Collection<FileDescriptorProto> fileSets = FileDescriptors.load();
-        FileSet fileSet = link(fileSets);
-        return fileSet;
+        Collection<FileDescriptorProto> files = FileDescriptors.load();
+        return link(files);
     }
 
     /**

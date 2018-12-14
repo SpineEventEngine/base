@@ -21,6 +21,7 @@
 package io.spine.code.proto;
 
 import com.google.common.base.Objects;
+import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
@@ -82,6 +83,14 @@ public class TypeSet {
             result = result.union(messagesAndEnums(file));
         }
         return result;
+    }
+
+    public static ImmutableCollection<MessageType> onlyMessages(FileSet fileSet) {
+        TypeSet result = new TypeSet();
+        for (FileDescriptor file : fileSet.files()) {
+            result = result.union(MessageType.allFrom(file));
+        }
+        return result.messageTypes.values();
     }
 
     /**

@@ -21,6 +21,7 @@ package io.spine.code.proto;
 
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
+import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.annotation.Internal;
 import io.spine.io.ResourceFiles;
 import io.spine.logging.Logging;
@@ -258,6 +259,13 @@ public final class FileDescriptors {
                 throw illegalArgumentWithCauseOf(e);
             }
         }
+    }
+
+    /**
+     * Verifies if the passed file declares types under the "google" package.
+     */
+    static boolean isGoogle(FileDescriptor file) {
+        return !IsNotGoogleProto.PREDICATE.test(file.toProto());
     }
 
     /**

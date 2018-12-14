@@ -62,7 +62,8 @@ class FileNameTest {
     @Test
     @DisplayName("calculate outer class name")
     void calculateOuterClassName() {
-        assertEquals("Rejections", FileName.of("rejections.proto")
+        String expected = RejectionType.OUTER_CLASS_NAME_SUFFIX;
+        assertEquals(expected, FileName.of("rejections.proto")
                                            .nameOnlyCamelCase());
         assertEquals("ManyRejections", FileName.of("many_rejections.proto")
                                                .nameOnlyCamelCase());
@@ -77,7 +78,7 @@ class FileNameTest {
         @Test
         @DisplayName("one word name")
         void oneWord() {
-            assertConversion("Rejections", "rejections.proto");
+            assertConversion(RejectionType.OUTER_CLASS_NAME_SUFFIX, "rejections.proto");
         }
 
         @Test

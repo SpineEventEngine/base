@@ -32,9 +32,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * An enumeration type.
- *
- * @author Alexander Yevsyukov
- * @author Dmytro Dashenkov
  */
 @Internal
 public final class EnumType extends Type<EnumDescriptor, EnumDescriptorProto> {

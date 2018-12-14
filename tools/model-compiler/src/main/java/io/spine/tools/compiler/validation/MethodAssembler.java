@@ -21,41 +21,28 @@
 package io.spine.tools.compiler.validation;
 
 import com.google.common.collect.ImmutableList;
-import com.google.protobuf.DescriptorProtos.DescriptorProto;
-import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
+import io.spine.code.proto.FieldDeclaration;
+import io.spine.code.proto.MessageType;
 import io.spine.protobuf.Messages;
-import io.spine.tools.compiler.TypeCache;
 import io.spine.tools.compiler.field.type.FieldType;
-import io.spine.tools.compiler.field.type.FieldTypeFactory;
 
 import javax.lang.model.element.Modifier;
 import java.util.Collection;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static io.spine.code.proto.FieldTypesProto.isMap;
-import static io.spine.code.proto.FieldTypesProto.isRepeated;
 
 /**
  * Serves as assembler for the generated methods based on the Protobuf message declaration.
  */
 class MethodAssembler {
 
-    private final String javaClass;
-    private final String javaPackage;
-    private final ClassName builderGenericClassName;
-    private final TypeCache typeCache;
-    private final DescriptorProto message;
+    private final MessageType type;
 
-    MethodAssembler(VBType type, TypeCache typeCache) {
-        this.javaClass = type.getJavaClass();
-        this.javaPackage = type.getJavaPackage();
-        this.message = type.getDescriptor();
-        this.typeCache = typeCache;
-        String className = message.getName();
-        this.builderGenericClassName = typeCache.vBuilderParam(javaPackage, className);
+    MethodAssembler(MessageType messageType) {
+        this.type = messageType;
     }
 
     /**
@@ -82,7 +69,11 @@ class MethodAssembler {
     }
 
     private MethodSpec createNewBuilderMethod() {
-        ClassName builderClass = ClassNames.getClassName(javaPackage, javaClass);
+        ClassName builderClass =
+                ClassNames.getClassName(type.javaPackage()
+                                            .value(),
+                                        type.simpleJavaClassName()
+                                            .value());
         MethodSpec buildMethod = MethodSpec
                 .methodBuilder(Messages.METHOD_NEW_BUILDER)
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
@@ -96,7 +87,7 @@ class MethodAssembler {
         Factory factory = new Factory();
         ImmutableList.Builder<MethodSpec> result = ImmutableList.builder();
         int index = 0;
-        for (FieldDescriptorProto field : message.getFieldList()) {
+        for (FieldDeclaration field : type.fields()) {
             MethodConstructor method = factory.create(field, index);
             Collection<MethodSpec> methods = method.construct();
             result.addAll(methods);
@@ -120,33 +111,32 @@ class MethodAssembler {
          * @param index the index of the field
          * @return the method constructor instance
          */
-        private MethodConstructor create(FieldDescriptorProto field, int index) {
+        private MethodConstructor create(FieldDeclaration field, int index) {
             return doCreate(builderFor(field), field, index);
         }
 
-        private AbstractMethodBuilder builderFor(FieldDescriptorProto field) {
-            if (isMap(field)) {
+        private AbstractMethodBuilder builderFor(FieldDeclaration field) {
+            if (field.isMap()) {
                 return MapFieldMethod.newBuilder();
             }
-            if (isRepeated(field)) {
+            if (field.isRepeated()) {
                 return RepeatedFieldMethod.newBuilder();
             }
             return SingularFieldMethod.newBuilder();
         }
 
         private MethodConstructor doCreate(AbstractMethodBuilder builder,
-                                           FieldDescriptorProto field,
+                                           FieldDeclaration field,
                                            int fieldIndex) {
-            FieldTypeFactory factory = new FieldTypeFactory(message, typeCache);
-            FieldType fieldType = factory.create(field);
+            FieldType fieldType = FieldType.create(field);
             MethodConstructor methodConstructor =
-                    builder.setField(field)
+                    builder.setField(field.descriptor())
                            .setFieldType(fieldType)
                            .setFieldIndex(fieldIndex)
-                           .setJavaClass(javaClass)
-                           .setJavaPackage(javaPackage)
-                           .setBuilderGenericClassName(builderGenericClassName)
-                           .setTypeCache(typeCache)
+                           .setJavaClass(type.javaClass().getName())
+                           .setJavaPackage(type.javaPackage().value())
+                           .setBuilderGenericClassName(ClassName.bestGuess(type.builderClass()
+                                                                               .value()))
                            .build();
             return methodConstructor;
         }

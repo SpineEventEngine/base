@@ -20,6 +20,7 @@
 
 package io.spine.tools.compiler.rejection;
 
+import com.google.common.collect.ImmutableList;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
@@ -28,13 +29,11 @@ import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeSpec;
 import io.spine.code.java.SimpleClassName;
 import io.spine.code.javadoc.JavadocText;
-import io.spine.code.proto.FieldDeclarationProto;
+import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.FieldName;
-import io.spine.code.proto.RejectionDeclaration;
+import io.spine.code.proto.RejectionType;
 import io.spine.protobuf.Messages;
-import io.spine.tools.compiler.TypeCache;
 import io.spine.tools.compiler.field.type.FieldType;
-import io.spine.tools.compiler.field.type.FieldTypeFactory;
 import io.spine.validate.Validate;
 
 import java.util.List;
@@ -58,21 +57,18 @@ class RejectionBuilderWriter {
     private static final NoArgMethod newBuilder = new NoArgMethod(Messages.METHOD_NEW_BUILDER);
     private static final String BUILDER_FIELD = "builder";
 
-    private final RejectionDeclaration rejection;
+    private final RejectionType rejection;
     private final ClassName messageClass;
     private final ClassName throwableClass;
     private final SimpleClassName name;
-    private final FieldTypeFactory fieldTypeFactory;
 
-    RejectionBuilderWriter(RejectionDeclaration rejection,
+    RejectionBuilderWriter(RejectionType rejection,
                            ClassName messageClass,
-                           ClassName throwableClass,
-                           TypeCache typeCache) {
+                           ClassName throwableClass) {
         this.rejection = rejection;
         this.messageClass = messageClass;
         this.throwableClass = throwableClass;
         this.name = SimpleClassName.ofBuilder();
-        this.fieldTypeFactory = new FieldTypeFactory(rejection.getMessage(), typeCache);
     }
 
     /**
@@ -199,16 +195,16 @@ class RejectionBuilderWriter {
 
     private List<MethodSpec> setters() {
         List<MethodSpec> methods = newArrayList();
-        List<FieldDeclarationProto> fields = rejection.fields();
-        for (FieldDeclarationProto field : fields) {
-            FieldType fieldType = fieldTypeFactory.create(field.descriptor());
+        ImmutableList<FieldDeclaration> fields = rejection.fields();
+        for (FieldDeclaration field : fields) {
+            FieldType fieldType = FieldType.create(field);
             MethodSpec setter = fieldSetter(field, fieldType);
             methods.add(setter);
         }
         return methods;
     }
 
-    private MethodSpec fieldSetter(FieldDeclarationProto field, FieldType fieldType) {
+    private MethodSpec fieldSetter(FieldDeclaration field, FieldType fieldType) {
         FieldName fieldName = field.name();
         String parameterName = fieldName.javaCase();
         String methodName = fieldType.getSetterPrefix() + fieldName.toCamelCase();

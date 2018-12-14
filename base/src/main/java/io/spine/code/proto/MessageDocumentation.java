@@ -20,9 +20,10 @@
 
 package io.spine.code.proto;
 
-import com.google.protobuf.DescriptorProtos;
+import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
+import com.google.protobuf.DescriptorProtos.SourceCodeInfo;
 
 import java.util.Arrays;
 import java.util.List;
@@ -50,9 +51,9 @@ import static java.lang.String.format;
  */
 public class MessageDocumentation {
 
-    private final AbstractMessageDeclaration declaration;
+    private final MessageType declaration;
 
-    public MessageDocumentation(AbstractMessageDeclaration declaration) {
+    public MessageDocumentation(MessageType declaration) {
         this.declaration = declaration;
     }
 
@@ -86,7 +87,9 @@ public class MessageDocumentation {
      * @return the leading comments or empty {@code Optional} if there are no such comments
      */
     private Optional<String> getLeadingComments(LocationPath locationPath) {
-        if (!declaration.getFile()
+        if (!declaration.descriptor()
+                        .getFile()
+                        .toProto()
                         .hasSourceCodeInfo()) {
             String errMsg =
                     "To enable rejection generation, please configure the Gradle " +
@@ -95,7 +98,7 @@ public class MessageDocumentation {
             throw new IllegalStateException(errMsg);
         }
 
-        DescriptorProtos.SourceCodeInfo.Location location = getLocation(locationPath);
+        SourceCodeInfo.Location location = getLocation(locationPath);
         return location.hasLeadingComments()
                ? Optional.of(location.getLeadingComments())
                : Optional.empty();
@@ -127,46 +130,55 @@ public class MessageDocumentation {
         LocationPath locationPath = new LocationPath();
 
         locationPath.addAll(getMessageLocationPath());
-        locationPath.add(DescriptorProtos.DescriptorProto.FIELD_FIELD_NUMBER);
+        locationPath.add(DescriptorProto.FIELD_FIELD_NUMBER);
         locationPath.add(getFieldIndex(field));
         return locationPath;
     }
 
     private int getTopLevelMessageIndex() {
-        List<DescriptorProtos.DescriptorProto> messages = declaration.getFile()
-                                                                     .getMessageTypeList();
-        for (DescriptorProtos.DescriptorProto currentMessage : messages) {
-            if (currentMessage.equals(declaration.getMessage())) {
-                return messages.indexOf(declaration.getMessage());
+        List<DescriptorProto> messages = declaration.descriptor()
+                                                    .getFile()
+                                                    .toProto()
+                                                    .getMessageTypeList();
+        for (DescriptorProto currentMessage : messages) {
+            if (currentMessage.equals(declaration.descriptor()
+                                                 .toProto())) {
+                return messages.indexOf(declaration.descriptor()
+                                                   .toProto());
             }
         }
 
         String msg = format("The rejection file \"%s\" should contain \"%s\" rejection.",
-                            declaration.getFile()
+                            declaration.descriptor()
+                                       .toProto()
                                        .getName(),
-                            declaration.getMessage()
+                            declaration.descriptor()
+                                       .toProto()
                                        .getName());
         throw new IllegalStateException(msg);
     }
 
     private int getFieldIndex(FieldDescriptorProto field) {
-        return declaration.getMessage()
+        return declaration.descriptor()
+                          .toProto()
                           .getFieldList()
                           .indexOf(field);
     }
 
     /**
-     * Returns the {@link com.google.protobuf.DescriptorProtos.SourceCodeInfo.Location} for the
+     * Returns the {@link SourceCodeInfo.Location} for the
      * {@link LocationPath}.
      *
      * @param locationPath
      *         the location path
      * @return the location for the path
      */
-    private DescriptorProtos.SourceCodeInfo.Location getLocation(LocationPath locationPath) {
-        FileDescriptorProto declarationFile = declaration.getFile();
-        for (DescriptorProtos.SourceCodeInfo.Location location : declarationFile.getSourceCodeInfo()
-                                                                                .getLocationList()) {
+    private SourceCodeInfo.Location getLocation(LocationPath locationPath) {
+        FileDescriptorProto declarationFile = declaration.descriptor()
+                                                         .getFile()
+                                                         .toProto();
+        for (SourceCodeInfo.Location location : declarationFile.getSourceCodeInfo()
+                                                               .getLocationList()) {
             if (location.getPathList()
                         .equals(locationPath.getPath())) {
                 return location;

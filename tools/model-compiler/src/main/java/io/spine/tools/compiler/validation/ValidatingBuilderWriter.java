@@ -20,7 +20,6 @@
 
 package io.spine.tools.compiler.validation;
 
-import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
@@ -28,14 +27,15 @@ import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeSpec;
 import io.spine.code.Indent;
 import io.spine.code.java.SimpleClassName;
+import io.spine.code.proto.MessageType;
 import io.spine.logging.Logging;
-import io.spine.tools.compiler.TypeCache;
 import io.spine.validate.AbstractValidatingBuilder;
 
 import javax.lang.model.element.Modifier;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.Collection;
 
 import static io.spine.tools.compiler.annotation.Annotations.generatedBySpineModelCompiler;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
@@ -47,45 +47,53 @@ class ValidatingBuilderWriter implements Logging {
 
     private final File rootDirectory;
     private final Indent indent;
-    private final TypeCache typeCache;
 
-    ValidatingBuilderWriter(String targetDir, Indent indent, TypeCache typeCache) {
+    ValidatingBuilderWriter(String targetDir, Indent indent) {
         this.rootDirectory = new File(targetDir);
         this.indent = indent;
-        this.typeCache = typeCache;
     }
 
     /**
      * Writes the generated validating builders to Java file.
      */
-    void write(VBType type) {
-        log().debug("Preparing to writing the {} class under the {} package",
-                    type.getJavaClass(), type.getJavaPackage());
+    void write(MessageType type) {
+        io.spine.type.ClassName builderClass =
+                type.validatingBuilderClass()
+                    .orElseThrow(() -> newIllegalArgumentException(
+                            "Google message type is passed to " +
+                                    "validating builder generation: %s", type)
+                    );
 
-        String javaClass = type.getJavaClass();
-        String javaPackage = type.getJavaPackage();
-        DescriptorProto descriptor = type.getDescriptor();
-        ClassName messageClassName = typeCache.vBuilderParam(javaPackage, descriptor.getName());
+        log().debug("Creating spec. for class: {}", builderClass);
+
+        String javaClass = builderClass.value();
+        ClassName messageClassName = ClassName.get(type.javaClass());
+        String javaPackage = messageClassName.packageName();
 
         ClassName messageBuilderClassName =
                 messageClassName.nestedClass(SimpleClassName.ofBuilder()
                                                             .value());
 
+        Collection<MethodSpec> methods = collectMethods(type);
         TypeSpec.Builder classBuilder = TypeSpec.classBuilder(javaClass);
-        MethodAssembler methodsAssembler = new MethodAssembler(type, typeCache);
-        TypeSpec javaClassToWrite =
+        TypeSpec javaClassSpec =
                 setupClassContract(classBuilder,
                                    messageClassName,
                                    messageBuilderClassName,
-                                   methodsAssembler.createMethods())
+                                   methods)
                         .addAnnotation(generatedBySpineModelCompiler())
                         .build();
 
-        log().debug("Writing the {} class under the {} package",
-                    type.getJavaClass(), type.getJavaPackage());
-        writeClass(javaPackage, javaClassToWrite);
+        log().debug("Writing the {} class", javaClass);
 
-        log().debug("The {} class  was written under the {} package.", javaClass, javaPackage);
+        writeClass(javaPackage, javaClassSpec);
+
+        log().debug("The {} class created.", javaClass);
+    }
+
+    private static Collection<MethodSpec> collectMethods(MessageType type) {
+        MethodAssembler methodsAssembler = new MethodAssembler(type);
+        return methodsAssembler.createMethods();
     }
 
     private static TypeSpec.Builder setupClassContract(TypeSpec.Builder typeBuilder,

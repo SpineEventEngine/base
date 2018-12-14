@@ -20,7 +20,7 @@
 
 package io.spine.tools.compiler.validation;
 
-import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
+import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.squareup.javapoet.ClassName;
 import io.spine.tools.compiler.TypeCache;
 import io.spine.tools.compiler.field.type.FieldType;
@@ -40,7 +40,7 @@ abstract class AbstractMethodBuilder<T extends MethodConstructor> {
     private String javaPackage;
     private ClassName genericClassName;
     private TypeCache typeCache;
-    private FieldDescriptorProto field;
+    private FieldDescriptor field;
     private FieldType fieldType;
 
     /**
@@ -77,7 +77,7 @@ abstract class AbstractMethodBuilder<T extends MethodConstructor> {
         return this;
     }
 
-    AbstractMethodBuilder setField(FieldDescriptorProto field) {
+    AbstractMethodBuilder setField(FieldDescriptor field) {
         checkNotNull(field);
         this.field = field;
         return this;
@@ -120,7 +120,7 @@ abstract class AbstractMethodBuilder<T extends MethodConstructor> {
     }
 
     @Nullable
-    FieldDescriptorProto getField() {
+    FieldDescriptor getField() {
         return field;
     }
 

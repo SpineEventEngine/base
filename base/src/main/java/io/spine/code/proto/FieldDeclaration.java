@@ -26,21 +26,20 @@ import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.base.CommandMessage;
 import io.spine.option.EntityOption;
 import io.spine.option.OptionsProto;
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
+
+import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.code.proto.FieldTypesProto.trimTypeName;
 
 /**
- * Declaration of a Protobuf field.
- *
- * <p>The field can be declared in a message or enum.
- *
- * <p>Unlike {@link io.spine.code.proto.FieldDeclarationProto}, the class uses
- * {@link com.google.protobuf.Descriptors} instead of {@link com.google.protobuf.DescriptorProtos}.
- * The former descriptors provide a more powerful API.
+ * Declaration of a Protobuf message field.
  */
 public final class FieldDeclaration {
 
     private final FieldDescriptor field;
+    private final @MonotonicNonNull String leadingComments;
 
     /**
      * Creates a new instance.
@@ -50,6 +49,33 @@ public final class FieldDeclaration {
      */
     public FieldDeclaration(FieldDescriptor field) {
         this.field = checkNotNull(field);
+        this.leadingComments = null;
+    }
+
+    /**
+     * Creates a new instance which potentially can have leading comments.
+     */
+    public FieldDeclaration(FieldDescriptor field, MessageType message) {
+        this.field = checkNotNull(field);
+        this.leadingComments = message.documentation()
+                                      .leadingComments()
+                                      .orElse(null);
+    }
+
+    public FieldDescriptor descriptor() {
+        return field;
+    }
+
+    public String javaTypeName() {
+        FieldDescriptor.Type fieldType = field.getType();
+        if (fieldType == FieldDescriptor.Type.MESSAGE ||
+            fieldType == FieldDescriptor.Type.ENUM) {
+            String typeName = trimTypeName(field.toProto());
+            return typeName;
+        }
+
+        return ScalarType.getJavaTypeName(field.toProto()
+                                               .getType());
     }
 
     /**
@@ -160,5 +186,18 @@ public final class FieldDeclaration {
         boolean commandsFile = CommandMessage.File.predicate()
                                                   .test(file);
         return commandsFile;
+    }
+
+    /**
+     * Obtains comments going before the field.
+     *
+     * @return the leading field comments or {@code Optional.empty()} if there are no comments
+     */
+    public Optional<String> leadingComments() {
+        return Optional.ofNullable(leadingComments);
+    }
+
+    public FieldName name() {
+        return FieldName.of(field.toProto());
     }
 }

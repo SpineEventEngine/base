@@ -22,9 +22,13 @@ package io.spine.code.proto;
 
 import com.google.common.base.Objects;
 import com.google.errorprone.annotations.Immutable;
+import com.google.protobuf.DescriptorProtos;
+import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.Descriptors.GenericDescriptor;
 import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
+import io.spine.code.java.PackageName;
+import io.spine.code.java.SimpleClassName;
 import io.spine.type.ClassName;
 import io.spine.type.TypeName;
 import io.spine.type.TypeUrl;
@@ -98,6 +102,19 @@ public abstract class Type<T extends GenericDescriptor, P extends Message> {
      */
     public ClassName javaClassName() {
         return className;
+    }
+
+    public PackageName javaPackage() {
+        return PackageName.of(javaClass());
+    }
+
+    public SimpleClassName simpleJavaClassName() {
+        if (proto instanceof DescriptorProto) {
+            return SimpleClassName.ofMessage((DescriptorProto)proto);
+        } else {
+            //TODO:2018-12-14:alexander.yevsyukov: Handle the case with enums.
+            return null;
+        }
     }
 
     @Override

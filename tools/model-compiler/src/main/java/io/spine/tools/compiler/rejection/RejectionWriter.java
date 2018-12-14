@@ -30,7 +30,7 @@ import io.spine.base.ThrowableMessage;
 import io.spine.code.Indent;
 import io.spine.code.java.PackageName;
 import io.spine.code.javadoc.JavadocText;
-import io.spine.code.proto.RejectionDeclaration;
+import io.spine.code.proto.RejectionType;
 import io.spine.logging.Logging;
 import io.spine.tools.compiler.TypeCache;
 import org.slf4j.Logger;
@@ -41,6 +41,7 @@ import java.nio.file.Files;
 
 import static com.squareup.javapoet.MethodSpec.constructorBuilder;
 import static io.spine.tools.compiler.annotation.Annotations.generatedBySpineModelCompiler;
+import static io.spine.type.ClassName.OUTER_CLASS_DELIMITER;
 import static javax.lang.model.element.Modifier.FINAL;
 import static javax.lang.model.element.Modifier.PRIVATE;
 import static javax.lang.model.element.Modifier.PUBLIC;
@@ -53,7 +54,7 @@ public class RejectionWriter implements Logging {
 
     private static final NoArgMethod getMessageThrown = new NoArgMethod("getMessageThrown");
 
-    private final RejectionDeclaration declaration;
+    private final RejectionType declaration;
     private final ClassName messageClass;
     private final File outputDirectory;
 
@@ -71,7 +72,7 @@ public class RejectionWriter implements Logging {
      * @param indent
      *          the indentation for generated source code
      */
-    public RejectionWriter(RejectionDeclaration rejection,
+    public RejectionWriter(RejectionType rejection,
                            File outputDirectory,
                            TypeCache typeCache,
                            Indent indent) {
@@ -80,8 +81,8 @@ public class RejectionWriter implements Logging {
         this.outputDirectory = outputDirectory;
         this.builder = new RejectionBuilderWriter(rejection,
                                                   messageClass,
-                                                  toJavaPoetName(rejection.throwableClass()),
-                                                  typeCache);
+                                                  toJavaPoetName(rejection.throwableClass())
+        );
         this.indent = indent;
     }
 
@@ -207,6 +208,7 @@ public class RejectionWriter implements Logging {
     }
 
     private static ClassName toJavaPoetName(io.spine.type.ClassName className) {
-        return ClassName.bestGuess(className.toSimpleName());
+        String noDelimiterName = className.value().replace(OUTER_CLASS_DELIMITER, '.');
+        return ClassName.bestGuess(noDelimiterName);
     }
 }

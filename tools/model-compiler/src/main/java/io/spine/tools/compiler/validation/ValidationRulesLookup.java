@@ -21,9 +21,9 @@
 package io.spine.tools.compiler.validation;
 
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
-import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import io.spine.code.properties.PropertiesWriter;
-import io.spine.code.proto.MessageDeclaration;
+import io.spine.code.proto.FileSet;
+import io.spine.code.proto.MessageType;
 import io.spine.logging.Logging;
 import io.spine.option.Options;
 import io.spine.type.TypeName;
@@ -38,7 +38,6 @@ import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Maps.newHashMap;
-import static io.spine.code.proto.FileDescriptors.parseSkipStandard;
 import static io.spine.code.proto.SourceFile.allThat;
 import static io.spine.option.OptionsProto.validationOf;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
@@ -52,9 +51,6 @@ import static io.spine.util.Exceptions.newIllegalArgumentException;
  * <p>If a validation rule has more than one target, the entry will look like:
  *
  * <p>{@code foo.bar.ValidationRule=foo.bar.MessageOne.field_name,foo.bar.MessageTwo.field_name}.
- *
- * @author Dmytro Grankin
- * @author Alexander Yevsyukov
  */
 public final class ValidationRulesLookup {
 
@@ -70,19 +66,18 @@ public final class ValidationRulesLookup {
     }
 
     private static void findRulesAndWriteProperties(File setFile, File targetDir) {
-        List<FileDescriptorProto> files = parseSkipStandard(setFile.getPath());
-        List<MessageDeclaration> declarations = allThat(files, new IsValidationRule());
+        FileSet files = FileSet.parseSkipStandard(setFile.getPath());
+        List<MessageType> declarations = allThat(files, new IsValidationRule());
         writeProperties(declarations, targetDir);
     }
 
-    private static void writeProperties(Iterable<MessageDeclaration> ruleDeclarations,
-                                        File targetDir) {
+    private static void writeProperties(Iterable<MessageType> ruleDeclarations, File targetDir) {
         Map<String, String> propsMap = newHashMap();
-        for (MessageDeclaration declaration : ruleDeclarations) {
-            TypeName typeName = declaration.getTypeName();
+        for (MessageType declaration : ruleDeclarations) {
+            TypeName typeName = declaration.name();
             String ruleTargets =
-                    Options.option(declaration.getMessage(), validationOf)
-                           .orElseThrow(() -> newIllegalArgumentException(declaration.getTypeName()
+                    Options.option(declaration.descriptor(), validationOf)
+                           .orElseThrow(() -> newIllegalArgumentException(declaration.name()
                                                                                      .value())
                            );
             propsMap.put(typeName.value(), ruleTargets);

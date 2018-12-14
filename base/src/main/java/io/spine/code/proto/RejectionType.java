@@ -20,38 +20,37 @@
 
 package io.spine.code.proto;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.google.protobuf.Descriptors.Descriptor;
 import io.spine.code.java.SimpleClassName;
 import io.spine.type.ClassName;
+import io.spine.type.TypeUrl;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.Objects;
 
-import static com.google.protobuf.DescriptorProtos.DescriptorProto;
-import static com.google.protobuf.DescriptorProtos.FileDescriptorProto;
-
 /**
  * A code generation metadata on a rejection.
  */
-public final class RejectionDeclaration extends AbstractMessageDeclaration {
+public final class RejectionType extends MessageType {
 
     /**
      * The suffix for the outer class name for the generated rejection messages.
      */
-    private static final String OUTER_CLASS_NAME_SUFFIX = "Rejections";
+    @VisibleForTesting
+    static final String OUTER_CLASS_NAME_SUFFIX = "Rejections";
 
     private final SimpleClassName outerJavaClass;
 
     /**
      * Creates a new instance.
-     *
-     * @param message
+     *  @param message
      *         the declaration of the rejection message
-     * @param file
-     *         the file that contains the rejection
+     *
      */
-    RejectionDeclaration(DescriptorProto message, FileDescriptorProto file) {
-        super(message, file);
-        this.outerJavaClass = SimpleClassName.outerOf(file);
+    RejectionType(Descriptor message) {
+        super(message, message.toProto(), ClassName.from(message), TypeUrl.from(message));
+        this.outerJavaClass = SimpleClassName.outerOf(message.getFile());
     }
 
     /**
@@ -71,8 +70,8 @@ public final class RejectionDeclaration extends AbstractMessageDeclaration {
      * @return the fully qualified class name for the rejection message
      */
     public ClassName messageClass() {
-        ClassName outerClass = ClassName.of(getJavaPackage(), outerJavaClass);
-        return outerClass.nestedClass(getSimpleJavaClassName());
+        ClassName outerClass = ClassName.of(javaPackage(), outerJavaClass);
+        return outerClass.nestedClass(simpleJavaClassName());
     }
 
     /**
@@ -81,7 +80,7 @@ public final class RejectionDeclaration extends AbstractMessageDeclaration {
      * @return the fully qualified class name for a throwable message
      */
     public ClassName throwableClass() {
-        return ClassName.of(getJavaPackage().value() + '.' + getSimpleTypeName());
+        return ClassName.of(javaPackage().value() + '.' + descriptor().getName());
     }
 
     @Override
@@ -100,7 +99,7 @@ public final class RejectionDeclaration extends AbstractMessageDeclaration {
         if (!super.equals(obj)) {
             return false;
         }
-        RejectionDeclaration other = (RejectionDeclaration) obj;
+        RejectionType other = (RejectionType) obj;
         return Objects.equals(this.outerJavaClass, other.outerJavaClass);
     }
 }
