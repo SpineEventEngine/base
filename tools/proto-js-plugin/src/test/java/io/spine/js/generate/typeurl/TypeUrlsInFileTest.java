@@ -29,7 +29,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.js.generate.given.GivenProject.testProtoSources;
+import static io.spine.js.generate.given.GivenProject.mainProtoSources;
 
 @DisplayName("TypeUrlsInFile should")
 class TypeUrlsInFileTest {
@@ -71,6 +71,6 @@ class TypeUrlsInFileTest {
     }
 
     private TypeUrlsInFile newGenerator() {
-        return new TypeUrlsInFile(output, file, testProtoSources());
+        return new TypeUrlsInFile(output, file, mainProtoSources());
     }
 }

@@ -42,14 +42,14 @@ public final class GivenProject {
     private GivenProject() {
     }
 
-    public static FileSet testFileSet() {
-        File descriptorSetFile = project().testDescriptors();
+    public static FileSet mainFileSet() {
+        File descriptorSetFile = project().mainDescriptors();
         return FileSet.parseOrEmpty(descriptorSetFile);
     }
 
-    public static Directory testProtoSources() {
+    public static Directory mainProtoSources() {
         return project().proto()
-                        .testJs();
+                        .mainJs();
     }
 
     public static DefaultJsProject project() {

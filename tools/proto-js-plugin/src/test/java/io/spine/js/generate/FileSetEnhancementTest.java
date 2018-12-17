@@ -29,8 +29,8 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.nio.file.Paths;
 
-import static io.spine.js.generate.given.GivenProject.testFileSet;
-import static io.spine.js.generate.given.GivenProject.testProtoSources;
+import static io.spine.js.generate.given.GivenProject.mainFileSet;
+import static io.spine.js.generate.given.GivenProject.mainProtoSources;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("FileSetEnhancement should")
@@ -41,7 +41,7 @@ class FileSetEnhancementTest {
     @Test
     @DisplayName("check if there are files to process")
     void checkFilesToProcess() {
-        TestEnhancement enhancement = new TestEnhancement(testProtoSources(), testFileSet());
+        TestEnhancement enhancement = new TestEnhancement(mainProtoSources(), mainFileSet());
         assertPerformed(enhancement);
     }
 
@@ -49,7 +49,7 @@ class FileSetEnhancementTest {
     @DisplayName("recognize there are no generated files to process")
     void recognizeThereAreNoFiles() {
         Directory nonExistentRoot = Directory.at(Paths.get(MISSING_PATH));
-        TestEnhancement enhancement = new TestEnhancement(nonExistentRoot, testFileSet());
+        TestEnhancement enhancement = new TestEnhancement(nonExistentRoot, mainFileSet());
         assertNotPerformed(enhancement);
     }
 
@@ -58,7 +58,7 @@ class FileSetEnhancementTest {
     void recognizeThereAreNoTypes() {
         File nonExistentDescriptors = new File(MISSING_PATH);
         FileSet emptyFileSet = FileSet.parseOrEmpty(nonExistentDescriptors);
-        TestEnhancement enhancement = new TestEnhancement(testProtoSources(), emptyFileSet);
+        TestEnhancement enhancement = new TestEnhancement(mainProtoSources(), emptyFileSet);
         assertNotPerformed(enhancement);
     }
 
