@@ -39,7 +39,7 @@ public class RepeatedFieldType implements FieldType {
     private final TypeName typeName;
 
     /**
-     * Constructs the {@link RepeatedFieldType} based on component type.
+     * Constructs a new instance based on component type.
      *
      * @param componentTypeName the component type name
      */
@@ -47,9 +47,6 @@ public class RepeatedFieldType implements FieldType {
         this.typeName = constructTypeNameFor(componentTypeName);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public TypeName getTypeName() {
         return typeName;
@@ -58,8 +55,6 @@ public class RepeatedFieldType implements FieldType {
     /**
      * Returns "addAll" setter prefix,
      * used to initialize a repeated field using with a call to Protobuf message builder.
-     *
-     * @return {@inheritDoc}
      */
     @Override
     public String getSetterPrefix() {

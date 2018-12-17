@@ -37,7 +37,7 @@ public class SingularFieldType implements FieldType {
     private final TypeName typeName;
 
     /**
-     * Constructs the {@link SingularFieldType} based on field type name.
+     * Creates a new instance based on field type name.
      *
      * @param name the field type name
      */
@@ -45,9 +45,6 @@ public class SingularFieldType implements FieldType {
         this.typeName = constructTypeNameFor(name);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public TypeName getTypeName() {
         return typeName;
@@ -58,8 +55,6 @@ public class SingularFieldType implements FieldType {
      * used to initialize a singular field using a protobuf message builder.
      *
      * Call should be like `builder.setFieldName(FieldType)`.
-     *
-     * @return {@inheritDoc}
      */
     @Override
     public String getSetterPrefix() {

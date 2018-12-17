@@ -70,7 +70,7 @@ public final class RejectionType extends MessageType {
      */
     public ClassName messageClass() {
         ClassName outerClass = ClassName.of(javaPackage(), outerJavaClass);
-        return outerClass.nestedClass(simpleJavaClassName());
+        return outerClass.withNested(simpleJavaClassName());
     }
 
     /**
@@ -92,7 +92,7 @@ public final class RejectionType extends MessageType {
         if (this == obj) {
             return true;
         }
-        if (obj == null || getClass() != obj.getClass()) {
+        if (!(obj instanceof RejectionType)) {
             return false;
         }
         if (!super.equals(obj)) {

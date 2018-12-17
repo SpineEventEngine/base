@@ -61,7 +61,7 @@ public final class EnumType extends Type<EnumDescriptor, EnumDescriptorProto> {
         return SimpleClassName.ofEnum(descriptor());
     }
 
-    private static EnumType create(EnumDescriptor descriptor) {
+    static EnumType create(EnumDescriptor descriptor) {
         return new EnumType(descriptor);
     }
 

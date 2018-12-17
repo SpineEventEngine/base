@@ -26,6 +26,7 @@ import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.annotation.Internal;
 import io.spine.code.java.SimpleClassName;
+import io.spine.option.IsOption;
 import io.spine.type.ClassName;
 import io.spine.type.TypeUrl;
 
@@ -36,6 +37,7 @@ import java.util.function.Predicate;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.collect.Lists.newLinkedList;
+import static io.spine.util.Exceptions.newIllegalArgumentException;
 
 /**
  * A message type as declared in a proto file.
@@ -73,7 +75,8 @@ public class MessageType extends Type<Descriptor, DescriptorProto> {
                 .getMapEntry()) {
             return;
         }
-        set.add(create(type));
+        MessageType messageType = create(type);
+        set.add(messageType);
         for (Descriptor nestedType : type.getNestedTypes()) {
             addType(nestedType, set);
         }
@@ -100,7 +103,7 @@ public class MessageType extends Type<Descriptor, DescriptorProto> {
     }
 
     /**
-     * Verifies if this message is under the "google" package.
+     * Tells if this message is under the "google" package.
      */
     public boolean isGoogle() {
         FileDescriptor file = descriptor().getFile();
@@ -108,9 +111,32 @@ public class MessageType extends Type<Descriptor, DescriptorProto> {
         return result;
     }
 
+    /**
+     * Tells if this message type is not from "google" package, and is not an extension
+     * defined in "options.proto".
+     */
+    public boolean isCustom() {
+        if (isGoogle()) {
+            return false;
+        }
+
+        FileDescriptor optionsProto =
+                IsOption.getDescriptor()
+                        .getFile();
+
+        FileDescriptor file = descriptor().getFile();
+        return !isSame(optionsProto, file);
+    }
+
+    private static boolean isSame(FileDescriptor optionsProto,
+                                  FileDescriptor file) {
+        return file.getFullName().equals(optionsProto.getFullName()) &&
+                file.getPackage().equals(optionsProto.getPackage());
+    }
+
     public ClassName builderClass() {
 
-        ClassName result = javaClassName().nestedClass(SimpleClassName.ofBuilder());
+        ClassName result = javaClassName().withNested(SimpleClassName.ofBuilder());
         return result;
     }
 
@@ -125,6 +151,18 @@ public class MessageType extends Type<Descriptor, DescriptorProto> {
             return Optional.empty();
         }
         return Optional.of(javaClassName().with(VBUILDER_SUFFIX));
+    }
+
+    /**
+     * Obtains the name of a Validating Builder class for the type.
+     *
+     * @throws java.lang.IllegalStateException if the message type does not have a corresponding
+     *  a Validating Builder class, for example, because it's a Google Protobuf message
+     */
+    public ClassName getValidatingBuilderClass() {
+        return validatingBuilderClass()
+                .orElseThrow(() -> newIllegalArgumentException(
+                        "No validating builder class available for the type `%s`.", this));
     }
 
     /**

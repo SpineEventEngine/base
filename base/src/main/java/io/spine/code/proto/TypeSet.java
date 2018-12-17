@@ -44,7 +44,7 @@ import static com.google.common.collect.Maps.newHashMapWithExpectedSize;
  */
 @Internal
 @Immutable
-public class TypeSet {
+public final class TypeSet {
 
     private final ImmutableMap<TypeName, MessageType> messageTypes;
     private final ImmutableMap<TypeName, EnumType> enumTypes;
@@ -88,7 +88,8 @@ public class TypeSet {
     public static ImmutableCollection<MessageType> onlyMessages(FileSet fileSet) {
         TypeSet result = new TypeSet();
         for (FileDescriptor file : fileSet.files()) {
-            result = result.union(MessageType.allFrom(file));
+            TypeSet messageTypes = MessageType.allFrom(file);
+            result = result.union(messageTypes);
         }
         return result.messageTypes.values();
     }
@@ -200,7 +201,7 @@ public class TypeSet {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof TypeSet)) {
             return false;
         }
         TypeSet typeSet = (TypeSet) o;

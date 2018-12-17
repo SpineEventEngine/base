@@ -64,7 +64,7 @@ public class MessageDocumentation {
      */
     public Optional<String> leadingComments() {
         LocationPath messagePath = getMessageLocationPath();
-        return getLeadingComments(messagePath);
+        return leadingComments(messagePath);
     }
 
     /**
@@ -74,9 +74,9 @@ public class MessageDocumentation {
      *         the descriptor of the field
      * @return the field leading comments or {@code Optional.empty()} if there are no comments
      */
-    public Optional<String> getFieldLeadingComments(FieldDescriptorProto field) {
+    public Optional<String> fieldLeadingComments(FieldDescriptorProto field) {
         LocationPath fieldPath = getFieldLocationPath(field);
-        return getLeadingComments(fieldPath);
+        return leadingComments(fieldPath);
     }
 
     /**
@@ -86,7 +86,7 @@ public class MessageDocumentation {
      *         the location path to get leading comments
      * @return the leading comments or empty {@code Optional} if there are no such comments
      */
-    private Optional<String> getLeadingComments(LocationPath locationPath) {
+    private Optional<String> leadingComments(LocationPath locationPath) {
         if (!declaration.descriptor()
                         .getFile()
                         .toProto()

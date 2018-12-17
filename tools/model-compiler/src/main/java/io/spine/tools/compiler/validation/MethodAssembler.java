@@ -69,16 +69,17 @@ class MethodAssembler {
     }
 
     private MethodSpec createNewBuilderMethod() {
-        ClassName builderClass =
-                ClassNames.getClassName(type.javaPackage()
-                                            .value(),
-                                        type.simpleJavaClassName()
-                                            .value());
+        ClassName validatingBuilderClass =
+                ClassNames.getClassName(
+                        type.javaPackage()
+                            .value(),
+                        type.getValidatingBuilderClass()
+                            .value());
         MethodSpec buildMethod = MethodSpec
                 .methodBuilder(Messages.METHOD_NEW_BUILDER)
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-                .returns(builderClass)
-                .addStatement("return new $T()", builderClass)
+                .returns(validatingBuilderClass)
+                .addStatement("return new $T()", validatingBuilderClass)
                 .build();
         return buildMethod;
     }

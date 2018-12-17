@@ -134,7 +134,7 @@ public final class ClassName extends StringTypeValue {
      *         the name of the nested class to get
      * @return the nested class name
      */
-    public ClassName nestedClass(SimpleClassName className) {
+    public ClassName withNested(SimpleClassName className) {
         checkNotNull(className);
         return of(value() + OUTER_CLASS_DELIMITER + className);
     }

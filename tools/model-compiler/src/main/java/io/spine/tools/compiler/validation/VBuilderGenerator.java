@@ -21,6 +21,7 @@
 package io.spine.tools.compiler.validation;
 
 import com.google.common.collect.ImmutableCollection;
+import com.google.common.collect.ImmutableList;
 import io.spine.code.Indent;
 import io.spine.code.proto.FileSet;
 import io.spine.code.proto.MessageType;
@@ -30,6 +31,7 @@ import org.slf4j.Logger;
 
 import java.io.File;
 
+import static com.google.common.collect.ImmutableList.toImmutableList;
 import static java.lang.String.format;
 
 /**
@@ -65,8 +67,11 @@ public class VBuilderGenerator implements Logging {
 
         FileSet fileSet = FileSet.parse(descriptorSetFile);
         ImmutableCollection<MessageType> messageTypes = TypeSet.onlyMessages(fileSet);
-
-        generate(messageTypes);
+        ImmutableList<MessageType> customTypes =
+                messageTypes.stream()
+                            .filter(MessageType::isCustom)
+                            .collect(toImmutableList());
+        generate(customTypes);
     }
 
     private void generate(ImmutableCollection<MessageType> messages) {

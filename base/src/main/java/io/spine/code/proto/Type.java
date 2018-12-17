@@ -82,7 +82,7 @@ public abstract class Type<T extends GenericDescriptor, P extends Message> {
         try {
             return Class.forName(clsName);
         } catch (ClassNotFoundException e) {
-            throw new UnknownTypeException(clsName, e);
+            throw new UnknownTypeException(descriptor.getName(), e);
         }
     }
 
@@ -92,10 +92,12 @@ public abstract class Type<T extends GenericDescriptor, P extends Message> {
     public abstract ClassName javaClassName();
 
     /**
-     * Obtains package for the corresinding Java type.
+     * Obtains package for the corresponding Java type.
      */
     public PackageName javaPackage() {
-        return PackageName.of(javaClass());
+        PackageName result = PackageName.resolve(descriptor.getFile()
+                                                           .toProto());
+        return result;
     }
 
     /**
@@ -103,12 +105,20 @@ public abstract class Type<T extends GenericDescriptor, P extends Message> {
      */
     public abstract SimpleClassName simpleJavaClassName();
 
+    /**
+     * Returns the name of the type.
+     */
+    @Override
+    public String toString() {
+        return descriptor.getName();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof Type)) {
             return false;
         }
         Type<?, ?> type = (Type<?, ?>) o;

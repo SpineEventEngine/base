@@ -20,23 +20,32 @@
 
 package io.spine.code.proto;
 
+import com.google.common.base.Joiner;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.base.CommandMessage;
+import io.spine.logging.Logging;
 import io.spine.option.EntityOption;
 import io.spine.option.OptionsProto;
+import io.spine.type.ClassName;
+import io.spine.type.KnownTypes;
+import io.spine.type.TypeName;
+import io.spine.type.TypeUrl;
+import io.spine.type.UnknownTypeException;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.code.proto.FieldTypesProto.trimTypeName;
+import static java.lang.String.format;
 
 /**
  * Declaration of a Protobuf message field.
  */
-public final class FieldDeclaration {
+public final class FieldDeclaration implements Logging {
 
     private final FieldDescriptor field;
     private final @MonotonicNonNull String leadingComments;
@@ -58,7 +67,7 @@ public final class FieldDeclaration {
     public FieldDeclaration(FieldDescriptor field, MessageType message) {
         this.field = checkNotNull(field);
         this.leadingComments = message.documentation()
-                                      .leadingComments()
+                                      .fieldLeadingComments(field.toProto())
                                       .orElse(null);
     }
 
@@ -68,14 +77,46 @@ public final class FieldDeclaration {
 
     public String javaTypeName() {
         FieldDescriptor.Type fieldType = field.getType();
-        if (fieldType == FieldDescriptor.Type.MESSAGE ||
-            fieldType == FieldDescriptor.Type.ENUM) {
-            String typeName = trimTypeName(field.toProto());
-            return typeName;
+        if (fieldType == FieldDescriptor.Type.MESSAGE) {
+            return getMessageClassName();
+        }
+
+        if (fieldType == FieldDescriptor.Type.ENUM) {
+            return getEnumClassName();
         }
 
         return ScalarType.getJavaTypeName(field.toProto()
                                                .getType());
+    }
+
+    private String getMessageClassName() {
+        TypeName typeName = TypeName.from(field.getMessageType());
+        KnownTypes knownTypes = KnownTypes.instance();
+        try {
+            TypeUrl fieldTypeUrl = typeName.toUrl();
+            ClassName className = knownTypes.getClassName(fieldTypeUrl);
+            return className.value();
+        } catch (UnknownTypeException e) {
+            List<String> allUrls =
+                    knownTypes.getAllUrls()
+                              .stream()
+                              .map(TypeUrl::value)
+                              .sorted()
+                              .collect(Collectors.toList());
+            String newLine = format(",%n");
+            String message =
+                    format("Cannot find a type %s in the list of known types:%n%s",
+                           typeName,
+                           Joiner.on(newLine)
+                                 .join(allUrls));
+
+            throw new RuntimeException(message, e);
+        }
+    }
+
+    private String getEnumClassName() {
+        EnumType enumType = EnumType.create(field.getEnumType());
+        return enumType.javaClassName().value();
     }
 
     /**

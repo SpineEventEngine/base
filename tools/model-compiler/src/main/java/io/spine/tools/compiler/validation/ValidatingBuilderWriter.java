@@ -57,38 +57,36 @@ class ValidatingBuilderWriter implements Logging {
      * Writes the generated validating builders to Java file.
      */
     void write(MessageType type) {
-        io.spine.type.ClassName builderClass =
-                type.validatingBuilderClass()
-                    .orElseThrow(() -> newIllegalArgumentException(
-                            "Google message type is passed to " +
-                                    "validating builder generation: %s", type)
-                    );
+        String validatingBuilderClass = validatingBuilderClassName(type);
 
-        log().debug("Creating spec. for class: {}", builderClass);
+        log().debug("Creating spec. for class: {}", validatingBuilderClass);
 
-        String javaClass = builderClass.value();
-        ClassName messageClassName = ClassName.get(type.javaClass());
-        String javaPackage = messageClassName.packageName();
-
+        String javaPackage =
+                type.javaPackage()
+                    .value();
+        ClassName messageClass =
+                ClassName.get(javaPackage, type.simpleJavaClassName()
+                                               .value());
         ClassName messageBuilderClassName =
-                messageClassName.nestedClass(SimpleClassName.ofBuilder()
-                                                            .value());
-
+                messageClass.nestedClass(SimpleClassName.ofBuilder()
+                                                        .value());
         Collection<MethodSpec> methods = collectMethods(type);
-        TypeSpec.Builder classBuilder = TypeSpec.classBuilder(javaClass);
+        TypeSpec.Builder classBuilder = TypeSpec.classBuilder(validatingBuilderClass);
         TypeSpec javaClassSpec =
-                setupClassContract(classBuilder,
-                                   messageClassName,
-                                   messageBuilderClassName,
-                                   methods)
+                defineClass(classBuilder, messageClass, messageBuilderClassName, methods)
                         .addAnnotation(generatedBySpineModelCompiler())
                         .build();
 
-        log().debug("Writing the {} class", javaClass);
+        log().debug("Writing the {} class", validatingBuilderClass);
 
         writeClass(javaPackage, javaClassSpec);
 
-        log().debug("The {} class created.", javaClass);
+        log().debug("The {} class created.", validatingBuilderClass);
+    }
+
+    private static String validatingBuilderClassName(MessageType type) {
+        return type.getValidatingBuilderClass()
+                   .value();
     }
 
     private static Collection<MethodSpec> collectMethods(MessageType type) {
@@ -96,16 +94,16 @@ class ValidatingBuilderWriter implements Logging {
         return methodsAssembler.createMethods();
     }
 
-    private static TypeSpec.Builder setupClassContract(TypeSpec.Builder typeBuilder,
-                                                       ClassName messageClassParam,
-                                                       ClassName messageBuilderParam,
-                                                       Iterable<MethodSpec> methodSpecs) {
-        ClassName abstractBuilderTypeName = ClassName.get(AbstractValidatingBuilder.class);
+    private static TypeSpec.Builder defineClass(TypeSpec.Builder typeBuilder,
+                                                ClassName messageClass,
+                                                ClassName messageBuilderClass,
+                                                Iterable<MethodSpec> methodSpecs) {
+        ClassName abstractClassName = ClassName.get(AbstractValidatingBuilder.class);
 
         ParameterizedTypeName superClass =
-                ParameterizedTypeName.get(abstractBuilderTypeName,
-                                          messageClassParam,
-                                          messageBuilderParam);
+                ParameterizedTypeName.get(abstractClassName,
+                                          messageClass,
+                                          messageBuilderClass);
         typeBuilder.addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                    .superclass(superClass)
                    .addMethods(methodSpecs);
