@@ -21,43 +21,65 @@
 package io.spine.js.generate.typeurl;
 
 import com.google.common.truth.StringSubject;
-import com.google.protobuf.StringValue;
-import io.spine.code.proto.MessageType;
+import io.spine.code.proto.Type;
 import io.spine.js.generate.JsOutput;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
+import static io.spine.js.generate.typeurl.given.Given.enumType;
+import static io.spine.js.generate.typeurl.given.Given.messageType;
 import static java.lang.String.format;
 
 @DisplayName("TypeUrlMethod should")
 class TypeUrlMethodTest {
 
-    private final MessageType type = MessageType.create(StringValue.getDescriptor());
     private final JsOutput output = new JsOutput();
-    private final TypeUrlMethod generator = new TypeUrlMethod(type, output);
-
-    @Test
-    @DisplayName("provide TypeUrl for a message instance")
-    void forInstance() {
-        String methodDeclaration = format("proto.%s.typeUrl = function() {", type.name());
-        String returnStatement = format("return '%s';", type.url());
-        generator.generate();
-        assertOutput().contains(methodDeclaration);
-        assertOutput().contains(returnStatement);
-    }
 
     @Test
     @DisplayName("provide TypeUrl for a message class")
-    void forClass() {
-        String methodDeclaration = format("proto.%s.prototype.typeUrl = function() {", type.name());
-        String returnStatement = format("return proto.%s.typeUrl();", type.name());
-        generator.generate();
-        assertOutput().contains(methodDeclaration);
-        assertOutput().contains(returnStatement);
+    void forMessageClass() {
+        assertTypeUrlForClass(messageType());
+    }
+
+    @Test
+    @DisplayName("provide TypeUrl for a enum class")
+    void forEnumClass() {
+        assertTypeUrlForClass(enumType());
+    }
+
+    @Test
+    @DisplayName("not provide TypeUrl for a message instance")
+    void forMessageInstance() {
+        assertNoTypeUrlForInstance(messageType());
+    }
+
+    @Test
+    @DisplayName("not provide TypeUrl for a enum instance")
+    void forEnumInstance() {
+        assertNoTypeUrlForInstance(enumType());
     }
 
     private StringSubject assertOutput() {
         return assertThat(output.toString());
+    }
+
+    private void assertTypeUrlForClass(Type type) {
+        String methodDeclaration = format("proto.%s.typeUrl = function() {", type.name());
+        String returnStatement = format("return '%s';", type.url());
+        TypeUrlMethod method = newMethod(type);
+        method.generate();
+        assertOutput().contains(methodDeclaration);
+        assertOutput().contains(returnStatement);
+    }
+
+    private void assertNoTypeUrlForInstance(Type type) {
+        TypeUrlMethod method = newMethod(type);
+        method.generate();
+        assertOutput().doesNotContain(".prototype.");
+    }
+
+    private TypeUrlMethod newMethod(Type type) {
+        return new TypeUrlMethod(type, output);
     }
 }

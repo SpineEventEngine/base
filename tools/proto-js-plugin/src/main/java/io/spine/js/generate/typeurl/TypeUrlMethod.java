@@ -40,21 +40,13 @@ class TypeUrlMethod extends JsCodeGenerator {
         this.type = JsType.generatedFrom(type);
     }
 
+    /**
+     * Generates the static {@code typeUrl()} method for the type.
+     */
     @Override
     public void generate() {
         generateStaticMethod();
         jsOutput().addEmptyLine();
-        generateInstanceMethod();
-    }
-
-    /**
-     * Generates an instance method.
-     */
-    private void generateInstanceMethod() {
-        commentGenerated();
-        jsOutput().enterMethod(instanceMethodName());
-        jsOutput().returnValue(staticMethodName() + "()");
-        jsOutput().exitMethod();
     }
 
     /**
@@ -74,9 +66,5 @@ class TypeUrlMethod extends JsCodeGenerator {
 
     private String staticMethodName() {
         return type.staticMethod(METHOD_NAME);
-    }
-
-    private String instanceMethodName() {
-        return type.instanceMethod(METHOD_NAME);
     }
 }

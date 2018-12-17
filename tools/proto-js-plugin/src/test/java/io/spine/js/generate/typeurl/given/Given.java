@@ -18,13 +18,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * The test environment for various JavaScript generation tools.
- */
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.js.generate.given;
+package io.spine.js.generate.typeurl.given;
 
-import com.google.errorprone.annotations.CheckReturnValue;
+import com.google.protobuf.NullValue;
+import com.google.protobuf.StringValue;
+import io.spine.code.proto.EnumType;
+import io.spine.code.proto.MessageType;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+public final class Given {
+
+    /** Prevents instantiation of this utility class. */
+    private Given() {
+    }
+
+    public static MessageType messageType() {
+        return MessageType.create(StringValue.getDescriptor());
+    }
+
+    public static EnumType enumType() {
+        return EnumType.create(NullValue.getDescriptor());
+    }
+}
