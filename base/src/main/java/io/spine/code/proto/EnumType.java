@@ -20,7 +20,6 @@
 
 package io.spine.code.proto;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.DescriptorProtos.EnumDescriptorProto;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.EnumDescriptor;
@@ -47,8 +46,7 @@ public final class EnumType extends Type<EnumDescriptor, EnumDescriptorProto> {
         super(descriptor, descriptorProto, className, typeUrl);
     }
 
-    @VisibleForTesting
-    public static EnumType create(EnumDescriptor descriptor) {
+    private static EnumType create(EnumDescriptor descriptor) {
         EnumDescriptorProto descriptorProto = descriptor.toProto();
         ClassName className = ClassName.from(descriptor);
         TypeUrl typeUrl = TypeUrl.from(descriptor);

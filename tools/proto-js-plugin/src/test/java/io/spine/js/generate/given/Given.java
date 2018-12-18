@@ -20,9 +20,15 @@
 
 package io.spine.js.generate.given;
 
+import com.google.protobuf.Descriptors;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
+import io.spine.code.proto.Type;
+import io.spine.code.proto.TypeSet;
+import io.spine.type.TypeName;
 import spine.test.js.Fields.FieldContainer;
+
+import static io.spine.util.Exceptions.newIllegalStateException;
 
 public final class Given {
 
@@ -38,5 +44,14 @@ public final class Given {
     public static Descriptor message() {
         Descriptor message = FieldContainer.getDescriptor();
         return message;
+    }
+
+    public static Type typeFor(Descriptors.GenericDescriptor descriptor) {
+        TypeName typeName = TypeName.of(descriptor.getFullName());
+        FileDescriptor file = descriptor.getFile();
+        TypeSet typeSet = TypeSet.messagesAndEnums(file);
+        return typeSet
+                .find(typeName)
+                .orElseThrow(() -> newIllegalStateException("Cannot find Type %s.", typeName));
     }
 }

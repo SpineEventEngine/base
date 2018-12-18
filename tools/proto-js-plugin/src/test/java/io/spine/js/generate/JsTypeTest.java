@@ -22,10 +22,11 @@ package io.spine.js.generate;
 
 import com.google.protobuf.Any;
 import io.spine.code.js.TypeName;
-import io.spine.code.proto.MessageType;
+import io.spine.code.proto.Type;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static io.spine.js.generate.given.Given.typeFor;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("JsType should")
@@ -33,7 +34,7 @@ class JsTypeTest {
 
     private static final String METHOD_NAME = "method";
 
-    private final MessageType protoType = MessageType.create(Any.getDescriptor());
+    private final Type protoType = typeFor(Any.getDescriptor());
     private final JsType type = JsType.generatedFrom(protoType);
 
     @Test

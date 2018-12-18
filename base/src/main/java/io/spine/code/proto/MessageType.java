@@ -20,7 +20,6 @@
 
 package io.spine.code.proto;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
@@ -49,8 +48,7 @@ public class MessageType extends Type<Descriptor, DescriptorProto> {
     /**
      * Creates a message type for the provided descriptor.
      */
-    @VisibleForTesting
-    public static MessageType create(Descriptor descriptor) {
+    private static MessageType create(Descriptor descriptor) {
         DescriptorProto descriptorProto = descriptor.toProto();
         ClassName className = ClassName.from(descriptor);
         TypeUrl typeUrl = TypeUrl.from(descriptor);

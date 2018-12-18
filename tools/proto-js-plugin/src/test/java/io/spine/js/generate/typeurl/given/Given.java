@@ -20,10 +20,11 @@
 
 package io.spine.js.generate.typeurl.given;
 
+import com.google.protobuf.Descriptors.Descriptor;
+import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.NullValue;
 import com.google.protobuf.StringValue;
-import io.spine.code.proto.EnumType;
-import io.spine.code.proto.MessageType;
+import io.spine.code.proto.Type;
 
 public final class Given {
 
@@ -31,11 +32,13 @@ public final class Given {
     private Given() {
     }
 
-    public static MessageType messageType() {
-        return MessageType.create(StringValue.getDescriptor());
+    public static Type messageType() {
+        Descriptor descriptor = StringValue.getDescriptor();
+        return io.spine.js.generate.given.Given.typeFor(descriptor);
     }
 
-    public static EnumType enumType() {
-        return EnumType.create(NullValue.getDescriptor());
+    public static Type enumType() {
+        EnumDescriptor descriptor = NullValue.getDescriptor();
+        return io.spine.js.generate.given.Given.typeFor(descriptor);
     }
 }
