@@ -44,10 +44,9 @@ public abstract class FileSetEnhancement {
      * <p>Does nothing if there are no Protobuf files to process.
      */
     public final void perform() {
-        if (!hasFilesToProcess()) {
-            return;
+        if (hasFilesToProcess()) {
+            processSources();
         }
-        processSources();
     }
 
     /**
