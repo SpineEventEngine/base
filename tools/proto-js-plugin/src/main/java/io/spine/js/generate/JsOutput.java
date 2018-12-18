@@ -171,14 +171,14 @@ public final class JsOutput {
         checkNotNull(methodArgs);
         String argString = join(", ", methodArgs);
         addLine(methodName + " = function(" + argString + ") {");
-        currentDepth++;
+        increaseDepth();
     }
 
     /**
      * Exits method declaration.
      */
     public void exitMethod() {
-        currentDepth--;
+        decreaseDepth();
         addLine("};");
     }
 
@@ -197,9 +197,9 @@ public final class JsOutput {
      * Closes the current {@code if} block and enters the {@code else} block.
      */
     public void enterElseBlock() {
-        currentDepth--;
+        decreaseDepth();
         addLine("} else {");
-        currentDepth++;
+        increaseDepth();
     }
 
     /**
@@ -213,14 +213,14 @@ public final class JsOutput {
     public void enterBlock(String blockHeader) {
         checkNotNull(blockHeader);
         addLine(blockHeader + " {");
-        currentDepth++;
+        increaseDepth();
     }
 
     /**
      * Exits the {@code if}, {@code else} or custom block.
      */
     public void exitBlock() {
-        currentDepth--;
+        decreaseDepth();
         addLine("}");
     }
 
@@ -278,7 +278,7 @@ public final class JsOutput {
     public void exportMap(String mapName) {
         checkNotNull(mapName);
         addLine("module.exports." + mapName + " = new Map([");
-        currentDepth++;
+        increaseDepth();
     }
 
     /**
