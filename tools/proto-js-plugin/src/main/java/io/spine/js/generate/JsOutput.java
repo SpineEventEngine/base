@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.join;
 import static java.lang.System.lineSeparator;
@@ -91,7 +92,22 @@ public final class JsOutput {
     }
 
     /**
-     * Adds the line of code on the current depth.
+     * Appends the snippet to this output.
+     *
+     * @param codeSnippet
+     *         the code to add
+     */
+    public void addSnippet(CodeSnippet codeSnippet) {
+        JsOutput snippetOutput = codeSnippet.value();
+        checkArgument(indentation == snippetOutput.indentation,
+                      "Cannot merge code parts with different indentation.");
+        checkArgument(currentDepth == snippetOutput.currentDepth,
+                      "Cannot merge code parts with different depth.");
+        addLines(snippetOutput.codeLines);
+    }
+
+    /**
+     * Appends the line of code on the current depth.
      *
      * @param codeLine
      *         the code to add
@@ -103,7 +119,7 @@ public final class JsOutput {
     }
 
     /**
-     * Adds the line of code with and adjusts its depth.
+     * Appends the line of code with and adjusts its depth.
      *
      * @param codeLine
      *         the code to add
@@ -115,14 +131,14 @@ public final class JsOutput {
     }
 
     /**
-     * Adds the code snippet to the output.
+     * Appends the lines of code with and adjusts its depth.
      *
-     * @param codeSnippet
+     * @param lines
      *         the code to add
      */
-    public void addSnippet(CodeSnippet codeSnippet) {
-        checkNotNull(codeSnippet);
-        for (CodeLine line : codeSnippet.lines()) {
+    public void addLines(List<CodeLine> lines) {
+        checkNotNull(lines);
+        for (CodeLine line : lines) {
             addLine(line);
         }
     }

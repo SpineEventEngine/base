@@ -37,8 +37,8 @@ public class TypeUrlsInFiles extends FileSetEnhancement {
     @Override
     protected void processSources() {
         for (FileDescriptor file : fileSet().files()) {
-            TypeUrlsInFile inFile = new TypeUrlsInFile(file, generatedRoot());
-            inFile.generateAndAppend();
+            TypeUrlMethods typeUrlMethods = new TypeUrlMethods(file, generatedRoot());
+            typeUrlMethods.appendToFile();
         }
     }
 }

@@ -20,8 +20,6 @@
 
 package io.spine.js.generate;
 
-import com.google.common.collect.ImmutableList;
-
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
@@ -44,12 +42,12 @@ public class Method implements CodeSnippet {
     }
 
     @Override
-    public List<CodeLine> lines() {
-        return ImmutableList.<CodeLine>builder()
-                .add(declaration())
-                .addAll(body)
-                .add(ending())
-                .build();
+    public JsOutput value() {
+        JsOutput output = new JsOutput();
+        output.addLine(declaration());
+        output.addLines(body);
+        output.addLine(ending());
+        return output;
     }
 
     /**

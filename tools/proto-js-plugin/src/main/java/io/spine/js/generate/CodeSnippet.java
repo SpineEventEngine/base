@@ -20,15 +20,15 @@
 
 package io.spine.js.generate;
 
-import java.util.List;
-
 /**
  * A snippet of the code.
  */
 public interface CodeSnippet {
 
     /**
-     * Obtains the lines representing this snippet.
+     * Obtains code lines representing this snippet.
+     *
+     * @return always returns a new {@link JsOutput}
      */
-    List<CodeLine> lines();
+    JsOutput value();
 }
