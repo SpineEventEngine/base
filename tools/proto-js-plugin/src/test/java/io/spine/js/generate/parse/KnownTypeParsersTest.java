@@ -39,25 +39,25 @@ import static io.spine.code.js.LibraryFile.KNOWN_TYPES;
 import static io.spine.code.js.LibraryFile.KNOWN_TYPE_PARSERS;
 import static io.spine.js.generate.given.FileWriters.assertFileContains;
 import static io.spine.js.generate.parse.FromJsonMethod.FROM_JSON;
-import static io.spine.js.generate.parse.ParsingOfObjects.createFor;
-import static io.spine.js.generate.parse.ParsingOfObjects.shouldSkip;
+import static io.spine.js.generate.parse.KnownTypeParsers.createFor;
+import static io.spine.js.generate.parse.KnownTypeParsers.shouldSkip;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static java.nio.file.Files.exists;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("ParsingOfObjects enhancement should")
-class ParsingOfObjectsTest {
+@DisplayName("KnownTypeParsers enhancement should")
+class KnownTypeParsersTest {
 
     private final FileSet protoSources = GivenProject.mainFileSet();
     private final Directory generatedProtoDir = GivenProject.mainProtoSources();
-    private final ParsingOfObjects writer = createFor(generatedProtoDir, protoSources);
+    private final KnownTypeParsers writer = createFor(generatedProtoDir, protoSources);
 
     @Test
     @DisplayName(NOT_ACCEPT_NULLS)
     void passNullToleranceCheck() {
         new NullPointerTester().setDefault(Directory.class, generatedProtoDir)
                                .setDefault(FileSet.class, protoSources)
-                               .testAllPublicStaticMethods(ParsingOfObjects.class);
+                               .testAllPublicStaticMethods(KnownTypeParsers.class);
     }
 
     @Test
