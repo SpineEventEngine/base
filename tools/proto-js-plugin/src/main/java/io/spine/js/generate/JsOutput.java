@@ -76,9 +76,7 @@ public final class JsOutput {
      * Creates an instance of the {@code JsOutput} with the default indentation.
      */
     public JsOutput() {
-        this.codeLines = new ArrayList<>();
-        this.currentDepth = 0;
-        this.indentation = STANDARD_INDENTATION;
+        this(STANDARD_INDENTATION);
     }
 
     /**
