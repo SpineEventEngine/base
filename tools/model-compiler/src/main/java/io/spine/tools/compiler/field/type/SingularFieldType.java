@@ -27,10 +27,8 @@ import java.util.Optional;
 
 /**
  * Represents singular {@linkplain FieldType field type}.
- *
- * @author Dmytro Grankin
  */
-public class SingularFieldType implements FieldType {
+public final class SingularFieldType implements FieldType {
 
     private static final String SETTER_PREFIX = "set";
 
@@ -69,10 +67,5 @@ public class SingularFieldType implements FieldType {
                ? TypeName.get(boxedScalarPrimitive.get())
                          .unbox()
                : ClassName.bestGuess(name);
-    }
-
-    @Override
-    public String toString() {
-        return typeName.toString();
     }
 }

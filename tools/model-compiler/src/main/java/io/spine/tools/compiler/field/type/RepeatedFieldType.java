@@ -29,10 +29,8 @@ import java.util.Optional;
 
 /**
  * Represents repeated {@linkplain FieldType field type}.
- *
- * @author Dmytro Grankin
  */
-public class RepeatedFieldType implements FieldType {
+public final class RepeatedFieldType implements FieldType {
 
     private static final String SETTER_PREFIX = "addAll";
 

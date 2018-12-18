@@ -35,7 +35,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 /**
  * Represents map {@linkplain FieldType field type}.
  */
-public class MapFieldType implements FieldType {
+public final class MapFieldType implements FieldType {
 
     private static final String SETTER_PREFIX = "putAll";
 

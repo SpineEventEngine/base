@@ -21,17 +21,15 @@
 package io.spine.tools.compiler.validation;
 
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
-import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import io.spine.base.ConversionException;
+import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.FieldName;
-import io.spine.code.proto.ScalarType;
 import io.spine.logging.Logging;
-import io.spine.tools.compiler.TypeCache;
 import io.spine.tools.compiler.field.type.FieldType;
 import io.spine.validate.ValidationException;
 
@@ -39,9 +37,8 @@ import javax.lang.model.element.Modifier;
 import java.util.Collection;
 import java.util.List;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Lists.newArrayList;
-import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type.TYPE_ENUM;
-import static io.spine.tools.compiler.validation.ClassNames.getParameterClassName;
 import static io.spine.tools.compiler.validation.MethodConstructors.clearPrefix;
 import static io.spine.tools.compiler.validation.MethodConstructors.clearProperty;
 import static io.spine.tools.compiler.validation.MethodConstructors.getMessageBuilder;
@@ -55,18 +52,24 @@ import static java.lang.String.format;
  *
  * <p>Constructs the {@code MethodSpec} objects for the repeated fields.
  */
-@SuppressWarnings("DuplicateStringLiteralInspection")
-// It cannot be used as the constant across the project.
-// Although it has the equivalent literal they have the different meaning.
-class RepeatedFieldMethod extends AbstractMethod implements Logging {
+final class RepeatedFieldMethod extends AbstractMethod implements Logging {
 
+    @SuppressWarnings("DuplicateStringLiteralInspection")
+    // It cannot be used as the constant across the project.
+    // Although it has the equivalent literal they have the different meaning.
     private static final String VALUE = "value";
+    @SuppressWarnings("DuplicateStringLiteralInspection")
+    // It cannot be used as the constant across the project.
+    // Although it has the equivalent literal they have the different meaning.
     private static final String INDEX = "index";
+
     private static final String ADD_PREFIX = "add";
     private static final String SET_PREFIX = "set";
     private static final String ADD_RAW_PREFIX = "addRaw";
     private static final String SET_RAW_PREFIX = "setRaw";
     private static final String CONVERTED_VALUE = "convertedValue";
+
+    private static final String ADD_ALL_METHOD = ".addAll%s(%s)";
 
     private final FieldType fieldType;
     private final String javaFieldName;
@@ -80,20 +83,21 @@ class RepeatedFieldMethod extends AbstractMethod implements Logging {
      *
      * @param builder the {@code RepeatedFieldMethodConstructorBuilder} instance
      */
-    @SuppressWarnings("ConstantConditions")
+    //@SuppressWarnings("ConstantConditions")
     // The fields are checked in the {@code #build()} method
     // of the {@code RepeatedFieldMethodsConstructorBuilder} class.
     private RepeatedFieldMethod(RepeatedFieldMethodsBuilder builder) {
         super(builder);
-        this.fieldType = builder.getFieldType();
-        this.field = builder.getField();
+        this.fieldType = checkNotNull(builder.getFieldType());
+        this.field = checkNotNull(builder.getField());
         FieldDescriptorProto fdescr = field.toProto();
         FieldName fieldName = FieldName.of(fdescr);
         this.javaFieldName = fieldName.javaCase();
         this.methodNamePart = fieldName.toCamelCase();
-        TypeCache typeCache = builder.getTypeCache();
-        this.listElementClassName = getParameterClassName(fdescr, typeCache);
-        this.isScalarOrEnum = isScalarType(fdescr) || isEnumType(fdescr);
+        FieldDeclaration fieldDecl = new FieldDeclaration(field);
+        String fieldJavaClass = fieldDecl.javaTypeName();
+        this.listElementClassName = ClassName.bestGuess(fieldJavaClass);
+        this.isScalarOrEnum = fieldDecl.isScalar() || fieldDecl.isEnum();
     }
 
     @Override
@@ -116,8 +120,7 @@ class RepeatedFieldMethod extends AbstractMethod implements Logging {
 
         String methodName = "get" + methodNamePart;
         ClassName rawType = ClassName.get(List.class);
-        ParameterizedTypeName returnType = ParameterizedTypeName.get(rawType,
-                                                                     listElementClassName);
+        ParameterizedTypeName returnType = ParameterizedTypeName.get(rawType, listElementClassName);
         String returnStatement = format("return %s.get%sList()",
                                         getMessageBuilder(), methodNamePart);
         MethodSpec methodSpec = MethodSpec
@@ -162,23 +165,6 @@ class RepeatedFieldMethod extends AbstractMethod implements Logging {
             methods.add(createRemoveObjectByIndexMethod());
         }
         return methods;
-    }
-
-    private static boolean isScalarType(FieldDescriptorProto fieldDescriptor) {
-        boolean isScalarType = false;
-        Type type = fieldDescriptor.getType();
-        for (ScalarType scalarType : ScalarType.values()) {
-            if (scalarType.getProtoScalarType() == type) {
-                isScalarType = true;
-            }
-        }
-        return isScalarType;
-    }
-
-    private static boolean isEnumType(FieldDescriptorProto fieldDescriptor) {
-        Type type = fieldDescriptor.getType();
-        boolean result = type == TYPE_ENUM;
-        return result;
     }
 
     private MethodSpec createRawAddObjectMethod() {
@@ -232,7 +218,7 @@ class RepeatedFieldMethod extends AbstractMethod implements Logging {
     private MethodSpec createRawAddAllMethod() {
         String methodName = fieldType.getSetterPrefix() + rawSuffix() + methodNamePart;
         String addAllValues = getMessageBuilder()
-                + format(".addAll%s(%s)", methodNamePart, CONVERTED_VALUE);
+                + format(ADD_ALL_METHOD, methodNamePart, CONVERTED_VALUE);
         MethodSpec result = newBuilderSetter(methodName)
                 .addParameter(String.class, VALUE)
                 .addException(ValidationException.class)
@@ -256,7 +242,7 @@ class RepeatedFieldMethod extends AbstractMethod implements Logging {
                                                                     listElementClassName);
         String fieldName = field.getName();
         String addAllValues = getMessageBuilder()
-                + format(".addAll%s(%s)", methodNamePart, VALUE);
+                + format(ADD_ALL_METHOD, methodNamePart, VALUE);
         MethodSpec result = newBuilderSetter(methodName)
                 .addParameter(parameter, VALUE)
                 .addException(ValidationException.class)

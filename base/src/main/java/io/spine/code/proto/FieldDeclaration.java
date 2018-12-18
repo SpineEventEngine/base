@@ -40,11 +40,14 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.protobuf.Descriptors.FieldDescriptor.Type.ENUM;
+import static com.google.protobuf.Descriptors.FieldDescriptor.Type.MESSAGE;
 import static java.lang.String.format;
 
 /**
  * Declaration of a Protobuf message field.
  */
+@SuppressWarnings("ClassWithTooManyMethods") // OK as isSomething() methods are mutually exclusive.
 public final class FieldDeclaration implements Logging {
 
     private final FieldDescriptor field;
@@ -71,17 +74,31 @@ public final class FieldDeclaration implements Logging {
                                       .orElse(null);
     }
 
+    /**
+     * Obtains the name of the field.
+     */
+    public FieldName name() {
+        return FieldName.of(field.toProto());
+    }
+
+    /**
+     * Obtains descriptor of the field.
+     */
     public FieldDescriptor descriptor() {
         return field;
     }
 
+    /**
+     * Obtains fully-qualified name of the Java class that corresponds to the declared type
+     * of the field.
+     */
     public String javaTypeName() {
         FieldDescriptor.Type fieldType = field.getType();
-        if (fieldType == FieldDescriptor.Type.MESSAGE) {
+        if (fieldType == MESSAGE) {
             return getMessageClassName();
         }
 
-        if (fieldType == FieldDescriptor.Type.ENUM) {
+        if (fieldType == ENUM) {
             return getEnumClassName();
         }
 
@@ -145,6 +162,24 @@ public final class FieldDeclaration implements Logging {
      */
     public boolean isCommandId() {
         return isFirstField() && isCommandsFile();
+    }
+
+    /**
+     * Tells if the field is of scalar type.
+     */
+    public boolean isScalar() {
+        return ScalarType.isScalarType(field.toProto());
+    }
+
+    /**
+     * Tells if the field is of enum type.
+     */
+    public boolean isEnum() {
+        return field.getType() == ENUM;
+    }
+
+    public boolean isMessage() {
+        return field.getType() == MESSAGE;
     }
 
     /**
@@ -236,9 +271,5 @@ public final class FieldDeclaration implements Logging {
      */
     public Optional<String> leadingComments() {
         return Optional.ofNullable(leadingComments);
-    }
-
-    public FieldName name() {
-        return FieldName.of(field.toProto());
     }
 }
