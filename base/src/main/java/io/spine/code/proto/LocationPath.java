@@ -37,8 +37,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * integers}, that used to identify a
  * {@linkplain com.google.protobuf.DescriptorProtos.SourceCodeInfo.Location location} in
  * a ".proto" file.
- *
- * @author Dmytro Grankin
  */
 public class LocationPath {
 
@@ -101,7 +99,7 @@ public class LocationPath {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof LocationPath)) {
             return false;
         }
 
