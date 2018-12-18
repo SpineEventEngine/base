@@ -26,7 +26,7 @@ import io.spine.code.proto.FileSet;
 import io.spine.js.generate.FileSetEnhancement;
 
 /**
- * For each type in a {@link FileSet} generates a method to obtain the type URL.
+ * Generates a method to obtain a {@code TypeUrl} for each type in a {@link FileSet}.
  */
 public class TypeUrlsInFiles extends FileSetEnhancement {
 

@@ -27,7 +27,7 @@ import io.spine.js.generate.JsType;
 import io.spine.type.TypeUrl;
 
 /**
- * For a specific type generates a method providing {@code TypeUrl}.
+ * Generates a method providing {@code TypeUrl} for a specific type.
  */
 class TypeUrlMethod extends JsCodeGenerator {
 

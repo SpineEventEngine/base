@@ -20,7 +20,7 @@
 
 /**
  * The package contains classes, which generate the code
- * providing information about type URLs of particular definitions.
+ * providing information about type URLs of messages and enums.
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault

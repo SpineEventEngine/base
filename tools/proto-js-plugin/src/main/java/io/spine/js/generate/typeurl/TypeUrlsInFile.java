@@ -29,7 +29,9 @@ import io.spine.js.generate.JsFile;
 import io.spine.js.generate.JsOutput;
 
 /**
- * For each type in a file generates a method to obtain the type URL.
+ * Generates a method to obtain a {@code TypeUrl} for each type in a file.
+ *
+ * <p>The class handles messages and enums of any nesting level.
  */
 final class TypeUrlsInFile extends JsCodeGenerator {
 
