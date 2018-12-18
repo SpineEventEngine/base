@@ -32,20 +32,20 @@ import static io.spine.js.generate.given.Generators.assertContains;
 import static io.spine.js.generate.given.Given.file;
 import static io.spine.js.generate.parse.FromJsonMethod.FROM_JSON;
 import static io.spine.js.generate.parse.FromJsonMethod.FROM_OBJECT;
-import static io.spine.js.generate.parse.TypesParsingExtension.COMMENT;
+import static io.spine.js.generate.parse.TypeParsingExtension.COMMENT;
 
-@DisplayName("TypesParsingExtension should")
-class TypesParsingExtensionTest {
+@DisplayName("TypeParsingExtension should")
+class TypeParsingExtensionTest {
 
     private FileDescriptor file;
     private JsOutput jsOutput;
-    private TypesParsingExtension generator;
+    private TypeParsingExtension generator;
 
     @BeforeEach
     void setUp() {
         file = file();
         jsOutput = new JsOutput();
-        generator = new TypesParsingExtension(file, jsOutput);
+        generator = new TypeParsingExtension(file, jsOutput);
     }
 
     @Test

@@ -27,7 +27,7 @@ import io.spine.js.generate.parse.ProtoParsersGenerator;
 import io.spine.type.TypeUrl;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.js.generate.parse.TypesParsingExtension.PARSERS_IMPORT_NAME;
+import static io.spine.js.generate.parse.TypeParsingExtension.PARSERS_IMPORT_NAME;
 
 /**
  * The value parser for the proto fields of well-known {@code message} types.

@@ -156,7 +156,7 @@ public final class ParsingOfObjects extends FileSetEnhancement {
             return;
         }
         JsOutput jsOutput = new JsOutput();
-        TypesParsingExtension generator = new TypesParsingExtension(file, jsOutput);
+        TypeParsingExtension generator = new TypeParsingExtension(file, jsOutput);
         generator.generate();
         JsFile jsFile = JsFile.createFor(generatedRoot(), file);
         jsFile.append(jsOutput);

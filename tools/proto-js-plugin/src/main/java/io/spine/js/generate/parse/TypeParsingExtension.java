@@ -36,7 +36,7 @@ import static io.spine.code.js.LibraryFile.KNOWN_TYPE_PARSERS;
  * <p>The class generates the {@code fromJson} and {@code fromObject} methods for each message
  * declared in the {@link FileDescriptor}.
  */
-public final class TypesParsingExtension extends JsCodeGenerator {
+public final class TypeParsingExtension extends JsCodeGenerator {
 
     /**
      * The name of the {@code known_type_parsers.js} import.
@@ -63,7 +63,7 @@ public final class TypesParsingExtension extends JsCodeGenerator {
      * @param jsOutput
      *         the {@code JsOutput} to accumulate the generated JS code
      */
-    public TypesParsingExtension(FileDescriptor file, JsOutput jsOutput) {
+    public TypeParsingExtension(FileDescriptor file, JsOutput jsOutput) {
         super(jsOutput);
         this.file = file;
     }
