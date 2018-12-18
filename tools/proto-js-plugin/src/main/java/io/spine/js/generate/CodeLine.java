@@ -22,6 +22,10 @@ package io.spine.js.generate;
 
 import io.spine.code.Indent;
 
+import java.util.Objects;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * The JS code line.
  *
@@ -30,10 +34,20 @@ import io.spine.code.Indent;
  * <p>For example, the code inside the {@code if} block is one unit deeper than the {@code if}
  * declaration itself.
  */
-final class CodeLine {
+public final class CodeLine {
 
     private final String content;
     private final int depth;
+
+    /**
+     * Creates a new {@code CodeLine} without the zero depth.
+     *
+     * @param content
+     *         the JS code
+     */
+    public CodeLine(String content) {
+        this(content, 0);
+    }
 
     /**
      * Creates a new {@code CodeLine}.
@@ -43,9 +57,20 @@ final class CodeLine {
      * @param depth
      *         the depth of the code
      */
-    CodeLine(String content, int depth) {
+    public CodeLine(String content, int depth) {
+        checkNotNull(content);
         this.content = content;
         this.depth = depth;
+    }
+
+    /**
+     * Obtains the new code line by increasing the depth of this line.
+     *
+     * @param shiftBy
+     *         the value to increase the depth by
+     */
+    public CodeLine withIncreasedDepth(int shiftBy) {
+        return new CodeLine(content, depth + shiftBy);
     }
 
     /**
@@ -60,5 +85,28 @@ final class CodeLine {
         Indent indent = Indent.of(indentUnits);
         String result = indent + content;
         return result;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof CodeLine)) {
+            return false;
+        }
+        CodeLine codeLine = (CodeLine) o;
+        return depth == codeLine.depth &&
+                content.equals(codeLine.content);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(content, depth);
+    }
+
+    @Override
+    public String toString() {
+        return content;
     }
 }

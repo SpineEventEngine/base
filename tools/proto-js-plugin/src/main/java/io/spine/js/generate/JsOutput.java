@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static java.lang.String.format;
 import static java.lang.String.join;
 import static java.lang.System.lineSeparator;
 
@@ -104,6 +103,31 @@ public final class JsOutput {
     }
 
     /**
+     * Adds the line of code with and adjusts its depth.
+     *
+     * @param codeLine
+     *         the code to add
+     */
+    public void addLine(CodeLine codeLine) {
+        checkNotNull(codeLine);
+        CodeLine increasedDepthLine = codeLine.withIncreasedDepth(currentDepth);
+        codeLines.add(increasedDepthLine);
+    }
+
+    /**
+     * Adds the code snippet to the output.
+     *
+     * @param codeSnippet
+     *         the code to add
+     */
+    public void addSnippet(CodeSnippet codeSnippet) {
+        checkNotNull(codeSnippet);
+        for (CodeLine line : codeSnippet.lines()) {
+            addLine(line);
+        }
+    }
+
+    /**
      * Adds an empty line to the code.
      */
     public void addEmptyLine() {
@@ -132,7 +156,8 @@ public final class JsOutput {
      */
     public void returnValue(Object value) {
         checkNotNull(value);
-        addLine("return " + value + ';');
+        String line = Statements.returnValue(value);
+        addLine(line);
     }
 
     /**
@@ -143,8 +168,8 @@ public final class JsOutput {
      */
     public void returnString(String literalValue) {
         checkNotNull(literalValue);
-        String literal = format("'%s'", literalValue);
-        returnValue(literal);
+        String line = Statements.returnString(literalValue);
+        addLine(line);
     }
 
     /**

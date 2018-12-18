@@ -23,13 +23,23 @@ package io.spine.js.generate.typeurl;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
+import io.spine.code.proto.Type;
+import io.spine.js.generate.CodeLine;
 import io.spine.js.generate.JsOutput;
+import io.spine.js.generate.Method;
 import io.spine.type.TypeUrl;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.js.generate.given.GivenProject.mainProtoSources;
+import static io.spine.js.generate.typeurl.TypeUrlsInFile.typeUrlMethod;
+import static io.spine.js.generate.typeurl.given.Given.enumType;
+import static io.spine.js.generate.typeurl.given.Given.messageType;
+import static java.lang.String.format;
 
 @DisplayName("TypeUrlsInFile should")
 class TypeUrlsInFileTest {
@@ -38,35 +48,89 @@ class TypeUrlsInFileTest {
                                                     .getFile();
     private final JsOutput output = new JsOutput();
 
-    @Test
-    @DisplayName("generate TypeUrls for messages")
-    void messages() {
-        TypeUrlsInFile generator = newGenerator();
-        generator.generate();
-        assertOutHasTypeUrl(OuterMessage.getDescriptor());
-        assertOutHasTypeUrl(OuterMessage.NestedMessage.getDescriptor());
+    @Nested
+    @DisplayName("look up messages")
+    class LookUpMessages {
+
+        @Test
+        @DisplayName("declared at the top level")
+        void topLevel() {
+            TypeUrlsInFile generator = newGenerator();
+            generator.generate();
+            assertOutHasTypeUrl(OuterMessage.getDescriptor());
+        }
+
+        @Test
+        @DisplayName("nested in a message")
+        void nested() {
+            TypeUrlsInFile generator = newGenerator();
+            generator.generate();
+            assertOutHasTypeUrl(OuterMessage.NestedMessage.getDescriptor());
+        }
+
+        private void assertOutHasTypeUrl(Descriptor message) {
+            TypeUrl typeUrl = TypeUrl.from(message);
+            assertTypeUrlGenerated(typeUrl);
+        }
     }
 
-    @Test
-    @DisplayName("generate TypeUrls for enums")
-    void enums() {
-        TypeUrlsInFile generator = newGenerator();
-        generator.generate();
-        assertOutHasTypeUrl(TopLevelEnum.getDescriptor());
-        assertOutHasTypeUrl(OuterMessage.NestedEnum.getDescriptor());
+    @Nested
+    @DisplayName("look up enums")
+    class LookUpEnums {
+
+        @Test
+        @DisplayName("declared at the top level")
+        void topLevel() {
+            TypeUrlsInFile generator = newGenerator();
+            generator.generate();
+            assertOutHasTypeUrl(TopLevelEnum.getDescriptor());
+        }
+
+        @Test
+        @DisplayName("nested in a message")
+        void nested() {
+            TypeUrlsInFile generator = newGenerator();
+            generator.generate();
+            assertOutHasTypeUrl(OuterMessage.NestedEnum.getDescriptor());
+        }
+
+        private void assertOutHasTypeUrl(EnumDescriptor enumDescriptor) {
+            TypeUrl typeUrl = TypeUrl.from(enumDescriptor);
+            assertTypeUrlGenerated(typeUrl);
+        }
     }
 
-    private void assertOutHasTypeUrl(Descriptor message) {
-        TypeUrl typeUrl = TypeUrl.from(message);
-        assertOutHasTypeUrl(typeUrl);
+    @Nested
+    @DisplayName("generate the method")
+    class GenerateMethod {
+
+        @Test
+        @DisplayName("for a message class")
+        void forMessageClass() {
+            assertTypeUrlMethod(messageType());
+        }
+
+        @Test
+        @DisplayName("for a enum class")
+        void forEnumClass() {
+            assertTypeUrlMethod(enumType());
+        }
+
+        private void assertTypeUrlMethod(Type type) {
+            String methodDeclaration = format("proto.%s.typeUrl = function() {", type.name());
+            String returnStatement = format("return '%s';", type.url());
+            String endOfMethod = "};";
+            Method method = typeUrlMethod(type);
+            List<CodeLine> methodLines = method.lines();
+            assertThat(methodLines).containsExactly(
+                    new CodeLine(methodDeclaration),
+                    new CodeLine(returnStatement, 1),
+                    new CodeLine(endOfMethod)
+            );
+        }
     }
 
-    private void assertOutHasTypeUrl(EnumDescriptor enumDescriptor) {
-        TypeUrl typeUrl = TypeUrl.from(enumDescriptor);
-        assertOutHasTypeUrl(typeUrl);
-    }
-
-    private void assertOutHasTypeUrl(TypeUrl typeUrl) {
+    private void assertTypeUrlGenerated(TypeUrl typeUrl) {
         assertThat(output.toString()).contains(typeUrl.value());
     }
 
