@@ -103,6 +103,7 @@ class ValidationRulesLookupPluginTest {
                             .setProjectName(PROJECT_NAME)
                             .setProjectFolder(testProjectDir)
                             .createProto(protoFileName, protoFileLines)
+                            .enableDebug()
                             .build();
     }
 }
