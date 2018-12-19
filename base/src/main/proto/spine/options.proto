@@ -118,7 +118,22 @@ extend google.protobuf.FieldOptions {
 
     GoesOption goes = 73823;
 
-    // reserved 73824 to 73849 for future validation options.
+    // Indicates that a field can only be set once.
+    //
+    // A typical use-case would include a value of an ID, which doesn't change over the course of
+    // entities lifecycle.
+    //
+    // So for:
+    // message User {
+    //
+    //     UserId id = 1 [(set_once) = true];
+    // }
+    //
+    // The ID `id` doesn't change.
+    //
+    bool set_once = 73824;
+
+    // reserved 73825 to 73849 for future validation options.
 
     // API Annotations
     //-----------------
