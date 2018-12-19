@@ -50,13 +50,6 @@ public final class CodeLines {
     @VisibleForTesting
     static final String LINE_SEPARATOR = lineSeparator();
 
-    /**
-     * The modifier which is used to create variables.
-     *
-     * <p>Currently is set to ES6 {@code let}.
-     */
-    private static final String VARIABLE_MODIFIER = "let";
-
     private static final int STANDARD_INDENTATION = 2;
 
     /**
@@ -173,7 +166,7 @@ public final class CodeLines {
     public void declareVariable(String name, String value) {
         checkNotNull(name);
         checkNotNull(value);
-        addLine(VARIABLE_MODIFIER + ' ' + name + " = " + value + ';');
+        append(VariableDeclaration.initialized(name, value));
     }
 
     /**
