@@ -23,7 +23,6 @@ package io.spine.js.generate.parse;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.js.generate.JsOutput;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -32,46 +31,38 @@ import static io.spine.js.generate.given.Generators.assertContains;
 import static io.spine.js.generate.given.Given.file;
 import static io.spine.js.generate.parse.FromJsonMethod.FROM_JSON;
 import static io.spine.js.generate.parse.FromJsonMethod.FROM_OBJECT;
-import static io.spine.js.generate.parse.TypeParsingExtension.COMMENT;
+import static io.spine.js.generate.parse.TypeParsingSnippet.COMMENT;
 
 @DisplayName("TypeParsingExtension should")
-class TypeParsingExtensionTest {
+class TypeParsingSnippetTest {
 
-    private FileDescriptor file;
-    private JsOutput jsOutput;
-    private TypeParsingExtension generator;
-
-    @BeforeEach
-    void setUp() {
-        file = file();
-        jsOutput = new JsOutput();
-        generator = new TypeParsingExtension(file, jsOutput);
-    }
+    private final FileDescriptor file = file();
+    private final TypeParsingSnippet generator = new TypeParsingSnippet(file);
 
     @Test
     @DisplayName("generate explaining comment")
     void generateComment() {
-        generator.generateComment();
-        assertContains(jsOutput, COMMENT);
+        JsOutput comment = generator.generateComment();
+        assertContains(comment, COMMENT);
     }
 
     @Test
     @DisplayName("generate known type parsers imports")
     void generateImports() {
-        generator.generateParsersImport();
+        JsOutput snippet = generator.generateParsersImport();
         String knownTypeParsersImport = "require('../../" + KNOWN_TYPE_PARSERS + "');";
-        assertContains(jsOutput, knownTypeParsersImport);
+        assertContains(snippet, knownTypeParsersImport);
     }
 
     @Test
     @DisplayName("generate `fromJson` and `fromObject` methods for all messages in file")
     void generateMethods() {
-        generator.generateMethods();
+        JsOutput snippet = generator.generateMethods();
         for (Descriptor message : file.getMessageTypes()) {
             String fromJsonDeclaration = message.getFullName() + '.' + FROM_JSON;
-            assertContains(jsOutput, fromJsonDeclaration);
+            assertContains(snippet, fromJsonDeclaration);
             String fromObjectDeclaration = message.getFullName() + '.' + FROM_OBJECT;
-            assertContains(jsOutput, fromObjectDeclaration);
+            assertContains(snippet, fromObjectDeclaration);
         }
     }
 }

@@ -152,11 +152,9 @@ public final class KnownTypeParsers extends FileSetEnhancement {
         if (shouldSkip(file)) {
             return;
         }
-        JsOutput jsOutput = new JsOutput();
-        TypeParsingExtension generator = new TypeParsingExtension(file, jsOutput);
-        generator.generate();
+        TypeParsingSnippet typeParsingSnippet = new TypeParsingSnippet(file);
         JsFile jsFile = JsFile.createFor(generatedRoot(), file);
-        jsFile.append(jsOutput);
+        jsFile.append(typeParsingSnippet.value());
     }
 
     /**

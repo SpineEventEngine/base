@@ -92,18 +92,17 @@ public final class JsOutput {
     }
 
     /**
-     * Appends the snippet to this output.
+     * Appends another ouput to this output.
      *
-     * @param codeSnippet
+     * @param output
      *         the code to add
      */
-    public void addSnippet(CodeSnippet codeSnippet) {
-        JsOutput snippetOutput = codeSnippet.value();
-        checkArgument(indentation == snippetOutput.indentation,
+    public void addLinesFrom(JsOutput output) {
+        checkArgument(indentation == output.indentation,
                       "Cannot merge code parts with different indentation.");
-        checkArgument(currentDepth == snippetOutput.currentDepth,
+        checkArgument(currentDepth == output.currentDepth,
                       "Cannot merge code parts with different depth.");
-        addLines(snippetOutput.codeLines);
+        addLines(output.codeLines);
     }
 
     /**

@@ -24,7 +24,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.js.FileName;
-import io.spine.js.generate.JsCodeGenerator;
+import io.spine.js.generate.CodeSnippet;
 import io.spine.js.generate.JsOutput;
 import io.spine.js.generate.importado.JsImportGenerator;
 
@@ -36,7 +36,7 @@ import static io.spine.code.js.LibraryFile.KNOWN_TYPE_PARSERS;
  * <p>The class generates the {@code fromJson} and {@code fromObject} methods for each message
  * declared in the {@link FileDescriptor}.
  */
-public final class TypeParsingExtension extends JsCodeGenerator {
+public final class TypeParsingSnippet implements CodeSnippet {
 
     /**
      * The name of the {@code known_type_parsers.js} import.
@@ -60,11 +60,8 @@ public final class TypeParsingExtension extends JsCodeGenerator {
      *
      * @param file
      *         the {@code FileDescriptor} whose messages to process
-     * @param jsOutput
-     *         the {@code JsOutput} to accumulate the generated JS code
      */
-    public TypeParsingExtension(FileDescriptor file, JsOutput jsOutput) {
-        super(jsOutput);
+    public TypeParsingSnippet(FileDescriptor file) {
         this.file = file;
     }
 
@@ -83,19 +80,23 @@ public final class TypeParsingExtension extends JsCodeGenerator {
      * </ol>
      */
     @Override
-    public void generate() {
-        generateComment();
-        generateParsersImport();
-        generateMethods();
+    public JsOutput value() {
+        JsOutput out = new JsOutput();
+        out.addLinesFrom(generateComment());
+        out.addLinesFrom(generateParsersImport());
+        out.addLinesFrom(generateMethods());
+        return out;
     }
 
     /**
      * Generates comment explaining the generated code.
      */
     @VisibleForTesting
-    void generateComment() {
-        jsOutput().addEmptyLine();
-        jsOutput().addComment(COMMENT);
+    JsOutput generateComment() {
+        JsOutput comment = new JsOutput();
+        comment.addEmptyLine();
+        comment.addComment(COMMENT);
+        return comment;
     }
 
     /**
@@ -104,15 +105,17 @@ public final class TypeParsingExtension extends JsCodeGenerator {
      * <p>The import path is relative to the processed {@code file}.
      */
     @VisibleForTesting
-    void generateParsersImport() {
-        jsOutput().addEmptyLine();
+    JsOutput generateParsersImport() {
+        JsOutput snippet = new JsOutput();
+        snippet.addEmptyLine();
         FileName fileName = FileName.from(file);
         JsImportGenerator generator = JsImportGenerator
                 .newBuilder()
                 .setFileName(fileName)
-                .setJsOutput(jsOutput())
+                .setJsOutput(snippet)
                 .build();
         generator.importFile(KNOWN_TYPE_PARSERS.fileName(), PARSERS_IMPORT_NAME);
+        return snippet;
     }
 
     /**
@@ -120,10 +123,12 @@ public final class TypeParsingExtension extends JsCodeGenerator {
      * the file.
      */
     @VisibleForTesting
-    void generateMethods() {
+    JsOutput generateMethods() {
+        JsOutput snippet = new JsOutput();
         for (Descriptor message : file.getMessageTypes()) {
-            FromJsonMethod generator = FromJsonMethod.createFor(message, jsOutput());
+            FromJsonMethod generator = FromJsonMethod.createFor(message, snippet);
             generator.generate();
         }
+        return snippet;
     }
 }
