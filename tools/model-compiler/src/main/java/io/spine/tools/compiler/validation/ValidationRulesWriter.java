@@ -69,8 +69,9 @@ public final class ValidationRulesWriter implements Logging {
     private void findRulesAndWriteProperties() {
         _debug("Validation rules lookup started.");
         List<MessageType> declarations = files.findMessageTypes(new IsValidationRule());
+        _debug("Found declarations: {}", declarations.size());
         writeProperties(declarations);
-        _debug("Validation rules lookup complete.");
+        _debug("Validation rules written to directory: {}", targetDir);
     }
 
     private void writeProperties(List<MessageType> ruleDeclarations) {
