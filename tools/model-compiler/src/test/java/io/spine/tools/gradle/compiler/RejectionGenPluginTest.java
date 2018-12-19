@@ -41,7 +41,6 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collection;
 
-import static com.google.common.truth.Truth.assertThat;
 import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
 import static io.spine.tools.gradle.compiler.given.RejectionTestEnv.getExpectedBuilderClassComment;
 import static io.spine.tools.gradle.compiler.given.RejectionTestEnv.getExpectedClassComment;
