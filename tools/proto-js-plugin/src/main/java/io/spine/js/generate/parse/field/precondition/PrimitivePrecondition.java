@@ -20,7 +20,7 @@
 
 package io.spine.js.generate.parse.field.precondition;
 
-import io.spine.js.generate.JsOutput;
+import io.spine.js.generate.CodeLines;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -33,7 +33,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 final class PrimitivePrecondition implements FieldPrecondition {
 
-    private final JsOutput jsOutput;
+    private final CodeLines jsOutput;
 
     /**
      * Creates a new {@code PrimitivePrecondition}.
@@ -41,7 +41,7 @@ final class PrimitivePrecondition implements FieldPrecondition {
      * @param jsOutput
      *         the {@code JsOutput} which accumulates all the generated code
      */
-    PrimitivePrecondition(JsOutput jsOutput) {
+    PrimitivePrecondition(CodeLines jsOutput) {
         this.jsOutput = jsOutput;
     }
 

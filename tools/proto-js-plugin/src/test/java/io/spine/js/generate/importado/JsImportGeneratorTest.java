@@ -22,7 +22,7 @@ package io.spine.js.generate.importado;
 
 import com.google.common.testing.NullPointerTester;
 import io.spine.code.js.FileName;
-import io.spine.js.generate.JsOutput;
+import io.spine.js.generate.CodeLines;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -46,12 +46,12 @@ class JsImportGeneratorTest {
     private static final String IMPORT_NAME = "import_name";
     private static final String LIB_TO_IMPORT = "base64-lib";
 
-    private JsOutput jsOutput;
+    private CodeLines jsOutput;
     private JsImportGenerator generator;
 
     @BeforeEach
     void setUp() {
-        jsOutput = new JsOutput();
+        jsOutput = new CodeLines();
         generator = JsImportGenerator
                 .newBuilder()
                 .setFileName(FILE_PATH)

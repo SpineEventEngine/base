@@ -26,7 +26,7 @@ import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.js.FileName;
 import io.spine.code.js.TypeName;
 import io.spine.code.proto.FileSet;
-import io.spine.js.generate.JsOutput;
+import io.spine.js.generate.CodeLines;
 import io.spine.type.TypeUrl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -56,7 +56,7 @@ class KnownTypesMapTest {
     @Test
     @DisplayName("generate imports for known types")
     void generateImports() {
-        JsOutput output = new JsOutput();
+        CodeLines output = new CodeLines();
         generator.generateImports(output);
         FileDescriptor file = Any.getDescriptor()
                                  .getFile();
@@ -68,7 +68,7 @@ class KnownTypesMapTest {
     @Test
     @DisplayName("generate known types map")
     void generateKnownTypesMap() {
-        JsOutput snippet = generator.generateKnownTypesMap();
+        CodeLines snippet = generator.generateKnownTypesMap();
         TypeUrl typeUrl = TypeUrl.from(Any.getDescriptor());
         TypeName typeName = TypeName.from(ANY);
         String mapEntry = "['" + typeUrl + "', " + typeName + ']';

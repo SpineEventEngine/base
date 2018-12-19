@@ -57,7 +57,7 @@ class JsFileTest {
     @Test
     @DisplayName("write `JsOutput` to new file")
     void writeToFile() throws IOException {
-        JsOutput testLine1 = generateCode(CREATE_TASK_1);
+        CodeLines testLine1 = generateCode(CREATE_TASK_1);
         file.write(testLine1);
         assertFileContains(filePath, CREATE_TASK_1);
     }
@@ -65,10 +65,10 @@ class JsFileTest {
     @Test
     @DisplayName("overwrite existing file")
     void overwriteExisting() throws IOException {
-        JsOutput line1 = generateCode(CREATE_TASK_1);
+        CodeLines line1 = generateCode(CREATE_TASK_1);
         file.write(line1);
 
-        JsOutput line2 = generateCode(CREATE_TASK_2);
+        CodeLines line2 = generateCode(CREATE_TASK_2);
         file.write(line2);
 
         assertFileNotContains(filePath, CREATE_TASK_1);
@@ -78,18 +78,18 @@ class JsFileTest {
     @Test
     @DisplayName("append `JsOutput` to existing file")
     void appendToFile() throws IOException {
-        JsOutput line1 = generateCode(CREATE_TASK_1);
+        CodeLines line1 = generateCode(CREATE_TASK_1);
         file.write(line1);
 
-        JsOutput line2 = generateCode(CREATE_TASK_2);
+        CodeLines line2 = generateCode(CREATE_TASK_2);
         file.append(line2);
 
         assertFileContains(filePath, CREATE_TASK_1);
         assertFileContains(filePath, CREATE_TASK_2);
     }
 
-    private static JsOutput generateCode(String codeLine) {
-        JsOutput jsOutput = new JsOutput();
+    private static CodeLines generateCode(String codeLine) {
+        CodeLines jsOutput = new CodeLines();
         jsOutput.addLine(codeLine);
         return jsOutput;
     }

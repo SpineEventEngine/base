@@ -23,7 +23,7 @@ package io.spine.js.generate.parse.field.parser;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.code.js.TypeName;
-import io.spine.js.generate.JsOutput;
+import io.spine.js.generate.CodeLines;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.js.generate.parse.FromJsonMethod.FROM_OBJECT;
@@ -37,9 +37,9 @@ import static io.spine.js.generate.parse.FromJsonMethod.FROM_OBJECT;
 final class MessageFieldParser implements FieldParser {
 
     private final TypeName typeName;
-    private final JsOutput jsOutput;
+    private final CodeLines jsOutput;
 
-    private MessageFieldParser(TypeName typeName, JsOutput jsOutput) {
+    private MessageFieldParser(TypeName typeName, CodeLines jsOutput) {
         this.typeName = typeName;
         this.jsOutput = jsOutput;
     }
@@ -52,7 +52,7 @@ final class MessageFieldParser implements FieldParser {
      * @param jsOutput
      *         the {@code JsOutput} which accumulates all the generated code
      */
-    static MessageFieldParser createFor(FieldDescriptor field, JsOutput jsOutput) {
+    static MessageFieldParser createFor(FieldDescriptor field, CodeLines jsOutput) {
         checkNotNull(field);
         checkNotNull(jsOutput);
         Descriptor messageType = field.getMessageType();

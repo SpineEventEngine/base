@@ -22,7 +22,7 @@ package io.spine.js.generate.parse.field;
 
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.js.generate.JsOutput;
+import io.spine.js.generate.CodeLines;
 import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -36,7 +36,7 @@ import static io.spine.js.generate.parse.field.given.Given.repeatedField;
 @DisplayName("FieldGenerators utility should")
 class FieldGeneratorsTest extends UtilityClassTest<FieldGenerators> {
 
-    private JsOutput jsOutput;
+    private CodeLines jsOutput;
 
     FieldGeneratorsTest() {
         super(FieldGenerators.class);
@@ -49,7 +49,7 @@ class FieldGeneratorsTest extends UtilityClassTest<FieldGenerators> {
 
     @BeforeEach
     void setUp() {
-        jsOutput = new JsOutput();
+        jsOutput = new CodeLines();
     }
 
     @Test

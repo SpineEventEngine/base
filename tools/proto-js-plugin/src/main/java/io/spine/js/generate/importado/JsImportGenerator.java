@@ -22,8 +22,8 @@ package io.spine.js.generate.importado;
 
 import com.google.common.base.Strings;
 import io.spine.code.js.FileName;
+import io.spine.js.generate.CodeLines;
 import io.spine.js.generate.JsCodeGenerator;
-import io.spine.js.generate.JsOutput;
 
 import java.util.Collection;
 
@@ -78,7 +78,7 @@ public final class JsImportGenerator extends JsCodeGenerator {
     private final String importPrefix;
 
     /**
-     * The predefined imports which will be stored to the {@link JsOutput} when calling
+     * The predefined imports which will be stored to the {@link io.spine.js.generate.CodeLines} when calling
      * {@link #generate()}.
      */
     private final Collection<FileName> imports;
@@ -94,7 +94,7 @@ public final class JsImportGenerator extends JsCodeGenerator {
     }
 
     /**
-     * Put all the predefined imports specified on creation into the {@link JsOutput}.
+     * Put all the predefined imports specified on creation into the {@link io.spine.js.generate.CodeLines}.
      */
     @Override
     public void generate() {
@@ -168,7 +168,7 @@ public final class JsImportGenerator extends JsCodeGenerator {
 
         private FileName fileName;
         private Collection<FileName> imports;
-        private JsOutput jsOutput;
+        private CodeLines jsOutput;
 
         public Builder setFileName(FileName fileName) {
             checkNotNull(fileName);
@@ -182,7 +182,7 @@ public final class JsImportGenerator extends JsCodeGenerator {
             return this;
         }
 
-        public Builder setJsOutput(JsOutput jsOutput) {
+        public Builder setJsOutput(CodeLines jsOutput) {
             checkNotNull(jsOutput);
             this.jsOutput = jsOutput;
             return this;

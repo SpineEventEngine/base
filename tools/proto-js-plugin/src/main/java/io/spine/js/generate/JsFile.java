@@ -89,7 +89,7 @@ public final class JsFile {
      * @throws IllegalStateException
      *         if something went wrong when writing to file
      */
-    public void write(JsOutput jsOutput) {
+    public void write(CodeLines jsOutput) {
         checkNotNull(jsOutput);
         try {
             Files.write(path,
@@ -109,7 +109,7 @@ public final class JsFile {
      * @throws IllegalStateException
      *         if something went wrong when writing to file
      */
-    public void append(JsOutput jsOutput) {
+    public void append(CodeLines jsOutput) {
         checkNotNull(jsOutput);
         try {
             Files.write(path, ImmutableList.of(jsOutput.toString()), Charsets.UTF_8, APPEND);

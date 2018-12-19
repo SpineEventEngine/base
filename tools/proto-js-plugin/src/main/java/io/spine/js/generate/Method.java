@@ -42,8 +42,8 @@ public class Method implements CodeSnippet {
     }
 
     @Override
-    public JsOutput value() {
-        JsOutput output = new JsOutput();
+    public CodeLines value() {
+        CodeLines output = new CodeLines();
         output.addLine(declaration());
         output.addLines(body);
         output.addLine(ending());

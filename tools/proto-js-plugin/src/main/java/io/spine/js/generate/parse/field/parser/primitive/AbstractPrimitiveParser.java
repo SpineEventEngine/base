@@ -20,7 +20,7 @@
 
 package io.spine.js.generate.parse.field.parser.primitive;
 
-import io.spine.js.generate.JsOutput;
+import io.spine.js.generate.CodeLines;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -29,22 +29,22 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 abstract class AbstractPrimitiveParser implements PrimitiveParser {
 
-    private final JsOutput jsOutput;
+    private final CodeLines jsOutput;
 
     AbstractPrimitiveParser(Builder builder) {
         this.jsOutput = builder.jsOutput;
     }
 
-    JsOutput jsOutput() {
+    CodeLines jsOutput() {
         return jsOutput;
     }
 
     abstract static class Builder<B extends Builder<B>> implements PrimitiveParser.Builder<B> {
 
-        private JsOutput jsOutput;
+        private CodeLines jsOutput;
 
         @Override
-        public B setJsOutput(JsOutput jsOutput) {
+        public B setJsOutput(CodeLines jsOutput) {
             this.jsOutput = checkNotNull(jsOutput);
             return self();
         }

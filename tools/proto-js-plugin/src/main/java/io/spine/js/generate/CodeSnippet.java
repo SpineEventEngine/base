@@ -28,7 +28,7 @@ public interface CodeSnippet {
     /**
      * Obtains code lines representing this snippet.
      *
-     * @return always returns a new {@link JsOutput}
+     * @return always returns a new {@link CodeLines}
      */
-    JsOutput value();
+    CodeLines value();
 }

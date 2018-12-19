@@ -26,8 +26,8 @@ import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.js.FileName;
 import io.spine.code.js.TypeName;
 import io.spine.code.proto.FileSet;
+import io.spine.js.generate.CodeLines;
 import io.spine.js.generate.CodeSnippet;
-import io.spine.js.generate.JsOutput;
 import io.spine.js.generate.importado.JsImportGenerator;
 import io.spine.type.TypeUrl;
 
@@ -76,8 +76,8 @@ public final class KnownTypesMap implements CodeSnippet {
      * </ol>
      */
     @Override
-    public JsOutput value() {
-        JsOutput snippet = new JsOutput();
+    public CodeLines value() {
+        CodeLines snippet = new CodeLines();
         generateImports(snippet);
         snippet.addLinesFrom(generateKnownTypesMap());
         return snippet;
@@ -87,7 +87,7 @@ public final class KnownTypesMap implements CodeSnippet {
      * Generates import statements for all files declaring generated messages.
      */
     @VisibleForTesting
-    void generateImports(JsOutput output) {
+    void generateImports(CodeLines output) {
         Collection<FileDescriptor> files = fileSet.files();
         Set<FileName> imports = files.stream()
                                      .filter(file -> !file.getMessageTypes()
@@ -111,8 +111,8 @@ public final class KnownTypesMap implements CodeSnippet {
      * <p>The map is exported under the {@link #MAP_NAME}.
      */
     @VisibleForTesting
-    JsOutput generateKnownTypesMap() {
-        JsOutput snippet = new JsOutput();
+    CodeLines generateKnownTypesMap() {
+        CodeLines snippet = new CodeLines();
         snippet.addEmptyLine();
         snippet.exportMap(MAP_NAME);
         storeKnownTypes(snippet);
@@ -123,7 +123,7 @@ public final class KnownTypesMap implements CodeSnippet {
     /**
      * Stores known types to the declared {@code Map}.
      */
-    private void storeKnownTypes(JsOutput output) {
+    private void storeKnownTypes(CodeLines output) {
         Collection<FileDescriptor> files = fileSet.files();
         for (Iterator<FileDescriptor> it = files.iterator(); it.hasNext(); ) {
             FileDescriptor file = it.next();
@@ -137,7 +137,7 @@ public final class KnownTypesMap implements CodeSnippet {
      */
     private static void storeTypesFromFile(FileDescriptor file,
                                            boolean isLastFile,
-                                           JsOutput output) {
+                                           CodeLines output) {
         List<Descriptor> messages = file.getMessageTypes();
         for (Iterator<Descriptor> it = messages.iterator(); it.hasNext(); ) {
             Descriptor message = it.next();

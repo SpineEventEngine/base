@@ -22,7 +22,7 @@ package io.spine.js.generate.parse.field.precondition;
 
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.js.generate.JsOutput;
+import io.spine.js.generate.CodeLines;
 import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -37,7 +37,7 @@ import static io.spine.js.generate.parse.field.precondition.FieldPreconditions.p
 @DisplayName("FieldPreconditions utility should")
 class FieldPreconditionsTest extends UtilityClassTest<FieldPreconditions> {
 
-    private JsOutput jsOutput;
+    private CodeLines jsOutput;
 
     FieldPreconditionsTest() {
         super(FieldPreconditions.class);
@@ -50,7 +50,7 @@ class FieldPreconditionsTest extends UtilityClassTest<FieldPreconditions> {
 
     @BeforeEach
     void setUp() {
-        jsOutput = new JsOutput();
+        jsOutput = new CodeLines();
     }
 
     @Test

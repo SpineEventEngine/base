@@ -26,7 +26,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static io.spine.js.generate.JsOutput.LINE_SEPARATOR;
+import static io.spine.js.generate.CodeLines.LINE_SEPARATOR;
 import static io.spine.js.generate.given.Generators.assertContains;
 import static io.spine.js.generate.given.Generators.assertNotContains;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
@@ -34,8 +34,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SuppressWarnings("DuplicateStringLiteralInspection")
 // Generated code duplication needed to check main class.
-@DisplayName("JsOutput should")
-class JsOutputTest {
+@DisplayName("CodeLines should")
+class CodeLinesTest {
 
     private static final String LINE = "line";
     private static final String METHOD_NAME = "func";
@@ -46,11 +46,11 @@ class JsOutputTest {
     private static final String CUSTOM_BLOCK = "for (let i in values)";
     private static final String MAP_NAME = "mapName";
 
-    private JsOutput jsOutput;
+    private CodeLines jsOutput;
 
     @BeforeEach
     void setUp() {
-        jsOutput = new JsOutput();
+        jsOutput = new CodeLines();
     }
 
     @Test
@@ -62,7 +62,7 @@ class JsOutputTest {
     @Test
     @DisplayName("support custom indent")
     void setIndent() {
-        JsOutput jsOutput = new JsOutput(4);
+        CodeLines jsOutput = new CodeLines(4);
         jsOutput.increaseDepth();
         jsOutput.addLine(LINE);
         String expected = "    " + LINE;
@@ -214,7 +214,7 @@ class JsOutputTest {
     @Test
     @DisplayName("concatenate all lines of code with correct indent in `toString`")
     void provideToString() {
-        JsOutput jsOutput = new JsOutput();
+        CodeLines jsOutput = new CodeLines();
         jsOutput.addLine("line 1");
         jsOutput.increaseDepth();
         jsOutput.addLine("line 2");

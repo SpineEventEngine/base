@@ -43,7 +43,7 @@ import static java.lang.System.lineSeparator;
 @SuppressWarnings({"DuplicateStringLiteralInspection"
         /* The generated code duplicates the code used in test that checks it. */,
         "ClassWithTooManyMethods" /* A lot of simple utility methods for code generation. */})
-public final class JsOutput {
+public final class CodeLines {
 
     @VisibleForTesting
     static final String LINE_SEPARATOR = lineSeparator();
@@ -75,7 +75,7 @@ public final class JsOutput {
     /**
      * Creates an instance of the {@code JsOutput} with the default indentation.
      */
-    public JsOutput() {
+    public CodeLines() {
         this(STANDARD_INDENTATION);
     }
 
@@ -85,7 +85,7 @@ public final class JsOutput {
      * @param indentation
      *         the indentation to use
      */
-    public JsOutput(int indentation) {
+    public CodeLines(int indentation) {
         this.codeLines = new ArrayList<>();
         this.currentDepth = 0;
         this.indentation = indentation;
@@ -97,7 +97,7 @@ public final class JsOutput {
      * @param output
      *         the code to add
      */
-    public void addLinesFrom(JsOutput output) {
+    public void addLinesFrom(CodeLines output) {
         checkArgument(indentation == output.indentation,
                       "Cannot merge code parts with different indentation.");
         checkArgument(currentDepth == output.currentDepth,
@@ -171,18 +171,6 @@ public final class JsOutput {
     public void returnValue(Object value) {
         checkNotNull(value);
         String line = Statements.returnValue(value);
-        addLine(line);
-    }
-
-    /**
-     * Adds a {@code return} statement for the string literal.
-     *
-     * @param literalValue
-     *         the value of the string literal
-     */
-    public void returnString(String literalValue) {
-        checkNotNull(literalValue);
-        String line = Statements.returnString(literalValue);
         addLine(line);
     }
 

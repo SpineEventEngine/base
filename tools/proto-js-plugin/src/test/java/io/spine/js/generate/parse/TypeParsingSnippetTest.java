@@ -22,7 +22,7 @@ package io.spine.js.generate.parse;
 
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.js.generate.JsOutput;
+import io.spine.js.generate.CodeLines;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -42,14 +42,14 @@ class TypeParsingSnippetTest {
     @Test
     @DisplayName("generate explaining comment")
     void generateComment() {
-        JsOutput comment = generator.generateComment();
+        CodeLines comment = generator.generateComment();
         assertContains(comment, COMMENT);
     }
 
     @Test
     @DisplayName("generate known type parsers imports")
     void generateImports() {
-        JsOutput snippet = generator.generateParsersImport();
+        CodeLines snippet = generator.generateParsersImport();
         String knownTypeParsersImport = "require('../../" + KNOWN_TYPE_PARSERS + "');";
         assertContains(snippet, knownTypeParsersImport);
     }
@@ -57,7 +57,7 @@ class TypeParsingSnippetTest {
     @Test
     @DisplayName("generate `fromJson` and `fromObject` methods for all messages in file")
     void generateMethods() {
-        JsOutput snippet = generator.generateMethods();
+        CodeLines snippet = generator.generateMethods();
         for (Descriptor message : file.getMessageTypes()) {
             String fromJsonDeclaration = message.getFullName() + '.' + FROM_JSON;
             assertContains(snippet, fromJsonDeclaration);

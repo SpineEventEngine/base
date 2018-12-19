@@ -22,7 +22,7 @@ package io.spine.js.generate.parse.field.parser;
 
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.js.generate.JsOutput;
+import io.spine.js.generate.CodeLines;
 import io.spine.js.generate.parse.WellKnownTypeParsers;
 import io.spine.type.TypeUrl;
 
@@ -38,9 +38,9 @@ import static io.spine.js.generate.parse.TypeParsingSnippet.PARSERS_IMPORT_NAME;
 final class WellKnownFieldParser implements FieldParser {
 
     private final TypeUrl typeUrl;
-    private final JsOutput jsOutput;
+    private final CodeLines jsOutput;
 
-    private WellKnownFieldParser(TypeUrl typeUrl, JsOutput jsOutput) {
+    private WellKnownFieldParser(TypeUrl typeUrl, CodeLines jsOutput) {
         this.typeUrl = typeUrl;
         this.jsOutput = jsOutput;
     }
@@ -53,7 +53,7 @@ final class WellKnownFieldParser implements FieldParser {
      * @param jsOutput
      *         the {@code JsOutput} to store the generated code
      */
-    static WellKnownFieldParser createFor(FieldDescriptor field, JsOutput jsOutput) {
+    static WellKnownFieldParser createFor(FieldDescriptor field, CodeLines jsOutput) {
         checkNotNull(field);
         checkNotNull(jsOutput);
         Descriptor fieldType = field.getMessageType();

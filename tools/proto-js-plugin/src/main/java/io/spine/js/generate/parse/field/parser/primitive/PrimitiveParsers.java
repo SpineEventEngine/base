@@ -23,7 +23,7 @@ package io.spine.js.generate.parse.field.parser.primitive;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.Type;
-import io.spine.js.generate.JsOutput;
+import io.spine.js.generate.CodeLines;
 
 import java.util.Map;
 
@@ -71,7 +71,7 @@ public final class PrimitiveParsers {
      * @throws IllegalStateException
      *         if the parser for the specified type cannot be found
      */
-    public static PrimitiveParser createFor(Type fieldType, JsOutput jsOutput) {
+    public static PrimitiveParser createFor(Type fieldType, CodeLines jsOutput) {
         checkNotNull(fieldType);
         checkNotNull(jsOutput);
         PrimitiveParser.Builder parserBuilder = parsers.get(fieldType);

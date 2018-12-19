@@ -21,7 +21,7 @@
 package io.spine.js.generate.parse.field.precondition;
 
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.js.generate.JsOutput;
+import io.spine.js.generate.CodeLines;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.code.proto.FieldTypes.isMessage;
@@ -44,7 +44,7 @@ public final class FieldPreconditions {
      *         the {@code JsOutput} which will accumulate all the generated code
      * @return a {@code FieldPrecondition} of the appropriate type
      */
-    public static FieldPrecondition preconditionFor(FieldDescriptor field, JsOutput jsOutput) {
+    public static FieldPrecondition preconditionFor(FieldDescriptor field, CodeLines jsOutput) {
         checkNotNull(field);
         checkNotNull(jsOutput);
         if (isMessage(field)) {

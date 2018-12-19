@@ -22,7 +22,7 @@ package io.spine.js.generate.parse.field.parser;
 
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.js.generate.JsOutput;
+import io.spine.js.generate.CodeLines;
 import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -38,7 +38,7 @@ import static io.spine.js.generate.parse.field.parser.FieldParsers.parserFor;
 @DisplayName("FieldParsers utility should")
 class FieldParsersTest extends UtilityClassTest<FieldParsers> {
 
-    private JsOutput jsOutput;
+    private CodeLines jsOutput;
 
     FieldParsersTest() {
         super(FieldParsers.class);
@@ -51,7 +51,7 @@ class FieldParsersTest extends UtilityClassTest<FieldParsers> {
 
     @BeforeEach
     void setUp() {
-        jsOutput = new JsOutput();
+        jsOutput = new CodeLines();
     }
 
     @Test

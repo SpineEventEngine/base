@@ -24,8 +24,8 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.js.FileName;
+import io.spine.js.generate.CodeLines;
 import io.spine.js.generate.CodeSnippet;
-import io.spine.js.generate.JsOutput;
 import io.spine.js.generate.importado.JsImportGenerator;
 
 import static io.spine.code.js.LibraryFile.KNOWN_TYPE_PARSERS;
@@ -80,8 +80,8 @@ public final class TypeParsingSnippet implements CodeSnippet {
      * </ol>
      */
     @Override
-    public JsOutput value() {
-        JsOutput out = new JsOutput();
+    public CodeLines value() {
+        CodeLines out = new CodeLines();
         out.addLinesFrom(generateComment());
         out.addLinesFrom(generateParsersImport());
         out.addLinesFrom(generateMethods());
@@ -92,8 +92,8 @@ public final class TypeParsingSnippet implements CodeSnippet {
      * Generates comment explaining the generated code.
      */
     @VisibleForTesting
-    JsOutput generateComment() {
-        JsOutput comment = new JsOutput();
+    CodeLines generateComment() {
+        CodeLines comment = new CodeLines();
         comment.addEmptyLine();
         comment.addComment(COMMENT);
         return comment;
@@ -105,8 +105,8 @@ public final class TypeParsingSnippet implements CodeSnippet {
      * <p>The import path is relative to the processed {@code file}.
      */
     @VisibleForTesting
-    JsOutput generateParsersImport() {
-        JsOutput snippet = new JsOutput();
+    CodeLines generateParsersImport() {
+        CodeLines snippet = new CodeLines();
         snippet.addEmptyLine();
         FileName fileName = FileName.from(file);
         JsImportGenerator generator = JsImportGenerator
@@ -123,8 +123,8 @@ public final class TypeParsingSnippet implements CodeSnippet {
      * the file.
      */
     @VisibleForTesting
-    JsOutput generateMethods() {
-        JsOutput snippet = new JsOutput();
+    CodeLines generateMethods() {
+        CodeLines snippet = new CodeLines();
         for (Descriptor message : file.getMessageTypes()) {
             FromJsonMethod fromJsonMethod = FromJsonMethod.createFor(message);
             snippet.addLinesFrom(fromJsonMethod.value());

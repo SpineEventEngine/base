@@ -24,8 +24,8 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.code.js.TypeName;
+import io.spine.js.generate.CodeLines;
 import io.spine.js.generate.CodeSnippet;
-import io.spine.js.generate.JsOutput;
 import io.spine.js.generate.parse.field.FieldGenerator;
 import io.spine.js.generate.parse.field.FieldGenerators;
 
@@ -98,8 +98,8 @@ public class FromJsonMethod implements CodeSnippet {
      * {@code JsOutput} code lines.
      */
     @Override
-    public JsOutput value() {
-        JsOutput snippet = generateFromJsonMethod();
+    public CodeLines value() {
+        CodeLines snippet = generateFromJsonMethod();
         snippet.addLinesFrom(generateFromObjectMethod());
         return snippet;
     }
@@ -109,8 +109,8 @@ public class FromJsonMethod implements CodeSnippet {
      * functionality and then calls {@code fromObject} for the parsed JS object.
      */
     @VisibleForTesting
-    JsOutput generateFromJsonMethod() {
-        JsOutput snippet = new JsOutput();
+    CodeLines generateFromJsonMethod() {
+        CodeLines snippet = new CodeLines();
         snippet.addEmptyLine();
         addFromJsonCode(message, snippet);
         return snippet;
@@ -123,8 +123,8 @@ public class FromJsonMethod implements CodeSnippet {
      * <p>If the object is {@code null}, the returned value will be {@code null}.
      */
     @VisibleForTesting
-    JsOutput generateFromObjectMethod() {
-        JsOutput snippet = new JsOutput();
+    CodeLines generateFromObjectMethod() {
+        CodeLines snippet = new CodeLines();
         snippet.addEmptyLine();
         addFromObjectCode(message, snippet);
         return snippet;
@@ -133,7 +133,7 @@ public class FromJsonMethod implements CodeSnippet {
     /**
      * Adds the {@code fromJson} code to the {@code jsOutput}.
      */
-    private static void addFromJsonCode(Descriptor message, JsOutput output) {
+    private static void addFromJsonCode(Descriptor message, CodeLines output) {
         TypeName typeName = TypeName.from(message);
         String methodName = typeName.value() + '.' + FROM_JSON;
         output.enterMethod(methodName, FROM_JSON_ARG);
@@ -146,7 +146,7 @@ public class FromJsonMethod implements CodeSnippet {
      * Adds the {@code fromObject} code to the {@code jsOutput}.
      */
     @SuppressWarnings("DuplicateStringLiteralInspection") // Duplication in different context.
-    private static void addFromObjectCode(Descriptor message, JsOutput output) {
+    private static void addFromObjectCode(Descriptor message, CodeLines output) {
         TypeName typeName = TypeName.from(message);
         String methodName = typeName.value() + '.' + FROM_OBJECT;
         output.enterMethod(methodName, FROM_OBJECT_ARG);
@@ -161,7 +161,7 @@ public class FromJsonMethod implements CodeSnippet {
     /**
      * Adds the code checking that {@code fromObject} argument is not null.
      */
-    private static void checkParsedObject(JsOutput output) {
+    private static void checkParsedObject(CodeLines output) {
         output.ifNull(FROM_OBJECT_ARG);
         output.returnValue("null");
         output.exitBlock();
@@ -171,7 +171,7 @@ public class FromJsonMethod implements CodeSnippet {
      * Adds the code necessary to parse and set the message fields.
      */
     @VisibleForTesting
-    static void handleMessageFields(JsOutput output, Descriptor message) {
+    static void handleMessageFields(CodeLines output, Descriptor message) {
         for (FieldDescriptor field : message.getFields()) {
             output.addEmptyLine();
             FieldGenerator generator = FieldGenerators.createFor(field, output);

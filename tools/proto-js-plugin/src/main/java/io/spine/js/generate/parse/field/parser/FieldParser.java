@@ -20,15 +20,13 @@
 
 package io.spine.js.generate.parse.field.parser;
 
-import io.spine.js.generate.JsOutput;
-
 /**
  * The generator of the code which parses the field value from the JS object and stores it into
  * some variable.
  *
  * @apiNote
- * The descendants are supposed to operate on the provided {@link JsOutput}, so the interface
- * method is not returning any generated code.
+ * The descendants are supposed to operate on the provided {@link io.spine.js.generate.CodeLines},
+ * so the interface method is not returning any generated code.
  */
 public interface FieldParser {
 

@@ -25,9 +25,9 @@ import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.js.Directory;
 import io.spine.code.proto.Type;
 import io.spine.code.proto.TypeSet;
+import io.spine.js.generate.CodeLines;
 import io.spine.js.generate.CodeSnippet;
 import io.spine.js.generate.JsFile;
-import io.spine.js.generate.JsOutput;
 import io.spine.js.generate.JsType;
 import io.spine.js.generate.Method;
 import io.spine.type.TypeUrl;
@@ -52,8 +52,8 @@ final class TypeUrlMethods implements CodeSnippet {
     }
 
     @Override
-    public JsOutput value() {
-        JsOutput output = new JsOutput();
+    public CodeLines value() {
+        CodeLines output = new CodeLines();
         TypeSet types = TypeSet.messagesAndEnums(file);
         for (Type type : types.types()) {
             CodeSnippet method = typeUrlMethod(type);
@@ -68,7 +68,7 @@ final class TypeUrlMethods implements CodeSnippet {
      * Appends the snippet to the file.
      */
     void appendToFile() {
-        JsOutput output = value();
+        CodeLines output = value();
         JsFile jsFile = JsFile.createFor(generatedRoot, file);
         jsFile.append(output);
     }

@@ -38,8 +38,8 @@ import com.google.protobuf.Timestamp;
 import com.google.protobuf.UInt32Value;
 import com.google.protobuf.UInt64Value;
 import com.google.protobuf.Value;
+import io.spine.js.generate.CodeLines;
 import io.spine.js.generate.CodeSnippet;
-import io.spine.js.generate.JsOutput;
 import io.spine.type.TypeUrl;
 
 import java.util.Map.Entry;
@@ -95,8 +95,8 @@ public final class WellKnownTypeParsers implements CodeSnippet {
      * <p>The name of the exported map is the {@link #MAP_NAME}.
      */
     @Override
-    public JsOutput value() {
-        JsOutput out = new JsOutput();
+    public CodeLines value() {
+        CodeLines out = new CodeLines();
         out.addEmptyLine();
         out.exportMap(MAP_NAME);
         storeParsersToMap(out);
@@ -107,7 +107,7 @@ public final class WellKnownTypeParsers implements CodeSnippet {
     /**
      * Adds entries to the declared parsers {@code Map}.
      */
-    private static void storeParsersToMap(JsOutput output) {
+    private static void storeParsersToMap(CodeLines output) {
         ImmutableSet<Entry<TypeUrl, String>> entries = parsers.entrySet();
         for (UnmodifiableIterator<Entry<TypeUrl, String>> it = entries.iterator(); it.hasNext(); ) {
             Entry<TypeUrl, String> typeToParser = it.next();

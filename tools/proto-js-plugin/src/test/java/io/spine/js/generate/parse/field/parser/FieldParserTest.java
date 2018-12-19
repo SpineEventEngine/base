@@ -23,7 +23,7 @@ package io.spine.js.generate.parse.field.parser;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.EnumDescriptor;
 import io.spine.code.js.TypeName;
-import io.spine.js.generate.JsOutput;
+import io.spine.js.generate.CodeLines;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -44,11 +44,11 @@ class FieldParserTest {
     private static final String VALUE = "value";
     private static final String VARIABLE = "variable";
 
-    private JsOutput jsOutput;
+    private CodeLines jsOutput;
 
     @BeforeEach
     void setUp() {
-        jsOutput = new JsOutput();
+        jsOutput = new CodeLines();
     }
 
     @Test

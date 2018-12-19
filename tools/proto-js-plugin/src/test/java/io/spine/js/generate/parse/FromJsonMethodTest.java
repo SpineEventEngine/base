@@ -22,7 +22,7 @@ package io.spine.js.generate.parse;
 
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Descriptors.Descriptor;
-import io.spine.js.generate.JsOutput;
+import io.spine.js.generate.CodeLines;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -63,7 +63,7 @@ class FromJsonMethodTest {
     @Test
     @DisplayName("generate `fromJson` method for message")
     void generateFromJson() {
-        JsOutput snippet = generator.generateFromJsonMethod();
+        CodeLines snippet = generator.generateFromJsonMethod();
         String methodDeclaration = message.getFullName() + '.' + FROM_JSON;
         assertContains(snippet, methodDeclaration);
     }
@@ -71,7 +71,7 @@ class FromJsonMethodTest {
     @Test
     @DisplayName("parse JSON into JS object in `fromJson` method")
     void parseJsonIntoObject() {
-        JsOutput snippet = generator.generateFromJsonMethod();
+        CodeLines snippet = generator.generateFromJsonMethod();
         String parseStatement = "JSON.parse(" + FROM_JSON_ARG + ')';
         assertContains(snippet, parseStatement);
     }
@@ -79,7 +79,7 @@ class FromJsonMethodTest {
     @Test
     @DisplayName("generate `fromObject` method for message")
     void generateFromObject() {
-        JsOutput snippet = generator.generateFromObjectMethod();
+        CodeLines snippet = generator.generateFromObjectMethod();
         String methodDeclaration = message.getFullName() + '.' + FROM_OBJECT;
         assertContains(snippet, methodDeclaration);
     }
@@ -87,7 +87,7 @@ class FromJsonMethodTest {
     @Test
     @DisplayName("check parsed object for null in `fromObject` method")
     void checkJsObjectForNull() {
-        JsOutput snippet = generator.generateFromObjectMethod();
+        CodeLines snippet = generator.generateFromObjectMethod();
         String check = "if (" + FROM_OBJECT_ARG + " === null) {";
         assertContains(snippet, check);
     }
@@ -97,9 +97,9 @@ class FromJsonMethodTest {
     @DisplayName("handle message fields in `fromObject` method")
     void handleMessageFields() {
         FromJsonMethod generator = spy(this.generator);
-        JsOutput snippet = generator.generateFromObjectMethod();
+        CodeLines snippet = generator.generateFromObjectMethod();
         verify(generator, times(1))
-                .handleMessageFields(new JsOutput(), message);
+                .handleMessageFields(new CodeLines(), message);
         assertNotNull(snippet);
     }
 }

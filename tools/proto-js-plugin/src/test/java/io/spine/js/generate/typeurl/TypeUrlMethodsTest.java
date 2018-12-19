@@ -24,7 +24,7 @@ import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.proto.Type;
-import io.spine.js.generate.JsOutput;
+import io.spine.js.generate.CodeLines;
 import io.spine.js.generate.Method;
 import io.spine.type.TypeUrl;
 import org.junit.jupiter.api.DisplayName;
@@ -118,7 +118,7 @@ class TypeUrlMethodsTest {
     }
 
     private void assertHasTypeUrl(TypeUrl typeUrl) {
-        JsOutput out = typeUrlMethods().value();
+        CodeLines out = typeUrlMethods().value();
         assertThat(out.toString()).contains(typeUrl.value());
     }
 

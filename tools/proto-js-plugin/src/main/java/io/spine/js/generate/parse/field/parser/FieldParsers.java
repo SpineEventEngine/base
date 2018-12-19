@@ -22,7 +22,7 @@ package io.spine.js.generate.parse.field.parser;
 
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.js.generate.JsOutput;
+import io.spine.js.generate.CodeLines;
 import io.spine.js.generate.parse.WellKnownTypeParsers;
 import io.spine.type.TypeUrl;
 
@@ -48,7 +48,7 @@ public final class FieldParsers {
      *         the {@code JsOutput} to accumulate the generated code
      * @return the {@code FieldParser} of the appropriate type
      */
-    public static FieldParser parserFor(FieldDescriptor field, JsOutput jsOutput) {
+    public static FieldParser parserFor(FieldDescriptor field, CodeLines jsOutput) {
         checkNotNull(field);
         checkNotNull(jsOutput);
         if (isMessage(field)) {

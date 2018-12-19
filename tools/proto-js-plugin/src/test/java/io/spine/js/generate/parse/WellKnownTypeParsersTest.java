@@ -22,7 +22,7 @@ package io.spine.js.generate.parse;
 
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Timestamp;
-import io.spine.js.generate.JsOutput;
+import io.spine.js.generate.CodeLines;
 import io.spine.type.TypeUrl;
 import io.spine.validate.ValidationError;
 import org.junit.jupiter.api.DisplayName;
@@ -57,7 +57,7 @@ class WellKnownTypeParsersTest {
     @Test
     @DisplayName("generate known type parsers map")
     void generateParsersMap() {
-        JsOutput snippet = generator.value();
+        CodeLines snippet = generator.value();
         String mapEntry = "['type.googleapis.com/google.protobuf.Value', new ValueParser()]";
         assertContains(snippet, mapEntry);
     }
