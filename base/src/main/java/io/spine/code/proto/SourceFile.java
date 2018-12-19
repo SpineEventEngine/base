@@ -117,21 +117,4 @@ public class SourceFile extends AbstractSourceFile {
         return result.build();
     }
 
-    /**
-     * Obtains message declarations, that match the specified {@link Predicate} in all
-     * passed files.
-     *
-     * @param files     the file descriptors to scan
-     * @param predicate the predicate to test a message
-     * @return the message declarations
-     */
-    public static List<MessageType> allThat(FileSet files, Predicate<DescriptorProto> predicate) {
-        ImmutableList.Builder<MessageType> result = ImmutableList.builder();
-        for (FileDescriptor file : files.files()) {
-            SourceFile sourceFile = from(file);
-            Collection<MessageType> declarations = sourceFile.allThat(predicate);
-            result.addAll(declarations);
-        }
-        return result.build();
-    }
 }

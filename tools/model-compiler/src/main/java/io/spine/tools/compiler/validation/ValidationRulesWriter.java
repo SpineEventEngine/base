@@ -29,7 +29,6 @@ import io.spine.option.Options;
 import io.spine.type.TypeName;
 import io.spine.validate.rule.ValidationRules;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.slf4j.Logger;
 
 import java.io.File;
 import java.util.List;
@@ -38,7 +37,6 @@ import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Maps.newHashMap;
-import static io.spine.code.proto.SourceFile.allThat;
 import static io.spine.option.OptionsProto.validationOf;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 
@@ -52,26 +50,30 @@ import static io.spine.util.Exceptions.newIllegalArgumentException;
  *
  * <p>{@code foo.bar.ValidationRule=foo.bar.MessageOne.field_name,foo.bar.MessageTwo.field_name}.
  */
-public final class ValidationRulesLookup {
+public final class ValidationRulesWriter implements Logging {
 
-    /** Prevents instantiation of this utility class. */
-    private ValidationRulesLookup() {
+    private final FileSet files;
+    private final File targetDir;
+
+    private ValidationRulesWriter(File descriptorSetFile, File targetDir) {
+        this.files = FileSet.parseSkipStandard(descriptorSetFile.getPath());
+        this.targetDir = targetDir;
     }
 
     public static void processDescriptorSetFile(File descriptorSetFile, File targetDir) {
-        Logger log = log();
-        log.debug("Validation rules lookup started.");
-        findRulesAndWriteProperties(descriptorSetFile, targetDir);
-        log.debug("Validation rules lookup complete.");
+        ValidationRulesWriter writer =
+                new ValidationRulesWriter(descriptorSetFile, targetDir);
+        writer.findRulesAndWriteProperties();
     }
 
-    private static void findRulesAndWriteProperties(File setFile, File targetDir) {
-        FileSet files = FileSet.parseSkipStandard(setFile.getPath());
-        List<MessageType> declarations = allThat(files, new IsValidationRule());
-        writeProperties(declarations, targetDir);
+    private void findRulesAndWriteProperties() {
+        _debug("Validation rules lookup started.");
+        List<MessageType> declarations = files.findMessageTypes(new IsValidationRule());
+        writeProperties(declarations);
+        _debug("Validation rules lookup complete.");
     }
 
-    private static void writeProperties(Iterable<MessageType> ruleDeclarations, File targetDir) {
+    private void writeProperties(List<MessageType> ruleDeclarations) {
         Map<String, String> propsMap = newHashMap();
         for (MessageType declaration : ruleDeclarations) {
             TypeName typeName = declaration.name();
@@ -98,9 +100,5 @@ public final class ValidationRulesLookup {
             return Options.option(input, validationOf)
                           .isPresent();
         }
-    }
-
-    private static Logger log() {
-        return Logging.get(ValidationRulesLookup.class);
     }
 }

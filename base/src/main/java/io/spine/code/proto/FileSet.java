@@ -21,8 +21,10 @@
 package io.spine.code.proto;
 
 import com.google.common.base.MoreObjects;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.annotation.Internal;
@@ -33,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
@@ -122,6 +125,22 @@ public final class FileSet {
     public static FileSet load() {
         Collection<FileDescriptorProto> files = FileDescriptors.load();
         return link(files);
+    }
+
+    /**
+     * Obtains message declarations, that match the specified {@link java.util.function.Predicate}.
+     *
+     * @param predicate the predicate to test a message
+     * @return the message declarations
+     */
+    public List<MessageType> findMessageTypes(Predicate<DescriptorProto> predicate) {
+        ImmutableList.Builder<MessageType> result = ImmutableList.builder();
+        for (FileDescriptor file : files()) {
+            SourceFile sourceFile = SourceFile.from(file);
+            Collection<MessageType> declarations = sourceFile.allThat(predicate);
+            result.addAll(declarations);
+        }
+        return result.build();
     }
 
     /**

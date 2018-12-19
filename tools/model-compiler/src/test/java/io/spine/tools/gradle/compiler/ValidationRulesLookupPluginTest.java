@@ -40,7 +40,7 @@ import java.util.Map;
 import static io.spine.tools.gradle.TaskName.FIND_VALIDATION_RULES;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@ExtendWith(TempDirectory.class)
+//@ExtendWith(TempDirectory.class)
 @DisplayName("ValidationRulesLookupPlugin should")
 class ValidationRulesLookupPluginTest {
 
@@ -68,8 +68,11 @@ class ValidationRulesLookupPluginTest {
     private File testProjectDir;
 
     @BeforeEach
-    void setUp(@TempDir Path tempDirPath) {
-        testProjectDir = tempDirPath.toFile();
+    void setUp(
+//            @TempDir Path tempDirPath
+    ) {
+//        testProjectDir = tempDirPath.toFile();
+        testProjectDir = new File("/Users/sanders/Projects/Spine/_temp");
     }
 
     @Test

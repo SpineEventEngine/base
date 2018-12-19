@@ -21,7 +21,7 @@
 package io.spine.tools.gradle.compiler;
 
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
-import io.spine.tools.compiler.validation.ValidationRulesLookup;
+import io.spine.tools.compiler.validation.ValidationRulesWriter;
 import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.SpinePlugin;
 import org.gradle.api.Action;
@@ -44,9 +44,10 @@ import static io.spine.tools.gradle.compiler.Extension.getTestTargetGenResources
 /**
  * Finds Protobuf definitions of validation rules and creates a {@code .properties} file.
  *
- * <p>For the syntax of generated properties file please see {@link ValidationRulesLookup}.
+ * <p>For the syntax of generated properties file please see
+ * {@link io.spine.tools.compiler.validation.ValidationRulesWriter}.
  *
- * @see ValidationRulesLookup
+ * @see io.spine.tools.compiler.validation.ValidationRulesWriter
  */
 public class ValidationRulesLookupPlugin extends SpinePlugin {
 
@@ -99,7 +100,7 @@ public class ValidationRulesLookupPlugin extends SpinePlugin {
             logMissingDescriptorSetFile(setFile);
         } else {
             File targetDir = new File(targetDirectory);
-            ValidationRulesLookup.processDescriptorSetFile(setFile, targetDir);
+            ValidationRulesWriter.processDescriptorSetFile(setFile, targetDir);
         }
     }
 }
