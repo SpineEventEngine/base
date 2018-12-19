@@ -103,6 +103,7 @@ class ValidationRulesLookupPluginTest {
                             .setProjectName(PROJECT_NAME)
                             .setProjectFolder(testProjectDir)
                             .createProto(protoFileName, protoFileLines)
+                            //TODO:2018-12-19:alexander.yevsyukov: Disable debug after lookup bug is fixed.
                             .enableDebug()
                             .build();
     }
