@@ -39,6 +39,15 @@ class StatementTest {
     }
 
     @Test
+    @DisplayName("provide a map entry with string literal key")
+    void mapEntry() {
+        String key = "k";
+        String value = "v";
+        Statement mapEntry = Statement.mapEntry(key, value);
+        assertEquals("['k', v]", mapEntry.value());
+    }
+
+    @Test
     @DisplayName("convert to a code line")
     void toCodeLine() {
         Depth depth = Depth.of(1);

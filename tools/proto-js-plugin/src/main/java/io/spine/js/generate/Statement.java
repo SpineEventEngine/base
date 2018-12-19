@@ -24,6 +24,7 @@ import io.spine.code.Depth;
 import io.spine.value.StringTypeValue;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.lang.String.format;
 
 /**
  * A single-line statement.
@@ -46,6 +47,13 @@ public class Statement extends StringTypeValue {
     public static Statement comment(String commentText) {
         checkNotNull(commentText);
         return new Statement("// " + commentText);
+    }
+
+    public static Statement mapEntry(String key, Object value) {
+        checkNotNull(key);
+        checkNotNull(value);
+        String raw = format("['%s', %s]", key, value);
+        return new Statement(raw);
     }
 
     /**
