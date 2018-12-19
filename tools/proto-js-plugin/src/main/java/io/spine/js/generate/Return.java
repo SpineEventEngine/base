@@ -29,13 +29,7 @@ import static java.lang.String.format;
 public class Return extends CodeLine {
 
     private Return(String returnedValue) {
-        super(returnedValue);
-    }
-
-    @Override
-    public String content() {
-        String returnedValue = super.content();
-        return format("return %s;", returnedValue);
+        super(format("return %s;", returnedValue));
     }
 
     /**
