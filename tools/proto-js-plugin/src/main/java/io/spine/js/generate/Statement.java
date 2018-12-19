@@ -20,6 +20,7 @@
 
 package io.spine.js.generate;
 
+import io.spine.code.Depth;
 import io.spine.value.StringTypeValue;
 
 import static com.google.common.base.Preconditions.checkNotNull;

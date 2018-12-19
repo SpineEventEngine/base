@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate;
+package io.spine.code;
 
 import java.util.Objects;
 
@@ -27,12 +27,14 @@ import static com.google.common.base.Preconditions.checkArgument;
 /**
  * The depth of the code.
  *
- * <p>In other words, the depth is a number of {@linkplain io.spine.code.Indent indents}
+ * <p>In other words, the depth is a number of {@linkplain Indent indents}
  * to align the code with.
  *
  * <p>The value cannot be negative.
  */
 public class Depth {
+
+    private static final Depth ZERO = of(0);
 
     private final int value;
 
@@ -52,7 +54,7 @@ public class Depth {
      * Creates zero depth.
      */
     public static Depth zero() {
-        return of(0);
+        return ZERO;
     }
 
     /**
@@ -60,6 +62,20 @@ public class Depth {
      */
     public int value() {
         return value;
+    }
+
+    /**
+     * Obtains the depth by incrementing this depth.
+     */
+    public Depth incremented() {
+        return of(value + 1);
+    }
+
+    /**
+     * Obtains the depth by decrementing this depth.
+     */
+    public Depth decremented() {
+        return of(value - 1);
     }
 
     @Override

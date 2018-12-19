@@ -18,31 +18,51 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate;
+package io.spine.code;
 
-import io.spine.code.Depth;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@DisplayName("Statement should")
-class StatementTest {
+@DisplayName("Depth should")
+class DepthTest {
 
     @Test
-    @DisplayName("provide a comment")
-    void comment() {
-        String value = "A comment text";
-        Statement comment = Statement.comment(value);
-        assertEquals("// " + value, comment.value());
+    @DisplayName("not be negative")
+    void notNegative() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> Depth.of(-1)
+        );
     }
 
     @Test
-    @DisplayName("convert to a code line")
-    void toCodeLine() {
-        Depth depth = Depth.of(1);
-        Statement statement = Statement.of("callMethod();");
-        CodeLine codeLine = statement.toLine(depth);
-        assertEquals(' ' + statement.value(), codeLine.indent(1));
+    @DisplayName("provide incremented value")
+    void provideIncremented() {
+        Depth zero = Depth.zero();
+        Depth incremented = zero.incremented();
+        assertEquals(0, zero.value());
+        assertEquals(1, incremented.value());
+    }
+
+    @Test
+    @DisplayName("provide decremented value")
+    void provideDecremented() {
+        Depth five = Depth.of(5);
+        Depth decremented = five.decremented();
+        assertEquals(5, five.value());
+        assertEquals(4, decremented.value());
+    }
+
+    @Test
+    @DisplayName("not be decremented to a negative value")
+    void notAllowDecrementOfZero() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> Depth.zero()
+                           .decremented()
+        );
     }
 }

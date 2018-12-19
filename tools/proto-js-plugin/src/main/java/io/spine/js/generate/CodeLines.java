@@ -21,6 +21,7 @@
 package io.spine.js.generate;
 
 import com.google.common.annotations.VisibleForTesting;
+import io.spine.code.Depth;
 
 import java.util.ArrayList;
 import java.util.List;
