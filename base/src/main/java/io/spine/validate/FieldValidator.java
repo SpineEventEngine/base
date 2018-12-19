@@ -28,6 +28,7 @@ import io.spine.logging.Logging;
 import io.spine.option.IfInvalidOption;
 import io.spine.option.IfMissingOption;
 import io.spine.option.OptionsProto;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.List;
 
@@ -35,7 +36,7 @@ import static com.google.common.collect.Lists.newLinkedList;
 import static io.spine.validate.Validate.isNotDefault;
 
 /**
- * Validates messages according to Spine custom protobuf options and
+ * Validates fields according to Spine custom protobuf options and
  * provides constraint violations found.
  *
  * @param <V>
@@ -46,7 +47,14 @@ abstract class FieldValidator<V> implements Logging {
     private static final String ENTITY_ID_REPEATED_FIELD_MSG =
             "Entity ID must not be a repeated field.";
 
-    private final FieldValue value;
+    /**
+     * A value that the field that is being validated has had prior to validation.
+     *
+     * <p>Is {@code Nullable} because when a field is being validated for the first time,
+     * it can't have an existing value, and therefore considered {@code null}.
+     */
+    private final @Nullable FieldValue oldValue;
+    private final FieldValue desiredValue;
     private final FieldDeclaration declaration;
     private final ImmutableList<V> values;
 
@@ -56,6 +64,7 @@ abstract class FieldValidator<V> implements Logging {
     private final IfMissingOption ifMissingOption;
     private final boolean validate;
     private final IfInvalidOption ifInvalid;
+    private final boolean setOnce;
 
     /**
      * If set the validator would assume that the field is required even
@@ -66,13 +75,35 @@ abstract class FieldValidator<V> implements Logging {
     /**
      * Creates a new validator instance.
      *
+     * @param fieldValueChange
+     *         the change of the field to validate.
+     * @param strict
+     *         if {@code true} the validator would assume that the field
+     */
+    protected FieldValidator(FieldValueChange fieldValueChange, boolean strict) {
+        this.oldValue = fieldValueChange.oldValue();
+        this.desiredValue = fieldValueChange.newValue();
+        this.declaration = desiredValue.declaration();
+        this.values = desiredValue.asList();
+        this.strict = strict;
+        this.required = desiredValue.valueOf(OptionsProto.required);
+        this.ifMissingOption = desiredValue.valueOf(OptionsProto.ifMissing);
+        this.validate = desiredValue.valueOf(OptionsProto.valid);
+        this.ifInvalid = desiredValue.valueOf(OptionsProto.ifInvalid);
+        this.setOnce = desiredValue.valueOf(OptionsProto.setOnce);
+    }
+
+    /**
+     * Creates a new validator instance.
+     *
      * @param fieldValue
      *         the value to validate
      * @param strict
      *         if {@code true} the validator would assume that the field
      */
     protected FieldValidator(FieldValue fieldValue, boolean strict) {
-        this.value = fieldValue;
+        this.oldValue = null;
+        this.desiredValue = fieldValue;
         this.declaration = fieldValue.declaration();
         this.values = fieldValue.asList();
         this.strict = strict;
@@ -80,6 +111,7 @@ abstract class FieldValidator<V> implements Logging {
         this.ifMissingOption = fieldValue.valueOf(OptionsProto.ifMissing);
         this.validate = fieldValue.valueOf(OptionsProto.valid);
         this.ifInvalid = fieldValue.valueOf(OptionsProto.ifInvalid);
+        this.setOnce = fieldValue.valueOf(OptionsProto.setOnce);
     }
 
     /**
@@ -127,6 +159,7 @@ abstract class FieldValidator<V> implements Logging {
      */
     protected final List<ConstraintViolation> validate() {
         checkIfRequiredAndNotSet();
+        validateSetOnce();
         if (isRequiredId()) {
             validateEntityId();
         }
@@ -135,6 +168,24 @@ abstract class FieldValidator<V> implements Logging {
         }
         List<ConstraintViolation> result = assembleViolations();
         return result;
+    }
+
+    private void validateSetOnce() {
+        if (setOnce && this.oldValue != null) {
+            String fieldName = this.oldValue.declaration()
+                                            .name()
+                                            .javaCase();
+            ConstraintViolation setOnceViolation = ConstraintViolation
+                    .newBuilder()
+                    .setMsgFormat("%s has (set_once) = true, can't change its value from %s to %s")
+                    .addParam(fieldName)
+                    .addParam(this.oldValue.asList()
+                                           .toString())
+                    .addParam(this.desiredValue.asList()
+                                               .toString())
+                    .build();
+            addViolation(setOnceViolation);
+        }
     }
 
     /**
@@ -280,8 +331,8 @@ abstract class FieldValidator<V> implements Logging {
      * @return {@code true} if the field is a required entity ID, {@code false} otherwise
      */
     private boolean isRequiredEntityId() {
-        boolean requiredSetExplicitly = value.option(OptionsProto.required)
-                                             .isExplicitlySet();
+        boolean requiredSetExplicitly = desiredValue.option(OptionsProto.required)
+                                                    .isExplicitlySet();
         boolean notRequired = !required && requiredSetExplicitly;
         return declaration.isEntityId() && !notRequired;
     }
@@ -292,7 +343,7 @@ abstract class FieldValidator<V> implements Logging {
      * @return the field context
      */
     protected FieldContext getFieldContext() {
-        return value.context();
+        return desiredValue.context();
     }
 
     /** Returns a path to the current field. */
