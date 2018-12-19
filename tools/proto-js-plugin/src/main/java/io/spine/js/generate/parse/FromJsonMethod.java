@@ -139,8 +139,13 @@ public class FromJsonMethod implements Snippet {
         String methodName = typeName.value() + '.' + FROM_JSON;
         output.enterMethod(methodName, FROM_JSON_ARG);
         output.declareVariable("jsObject", "JSON.parse(" + FROM_JSON_ARG + ')');
-        output.returnValue(typeName.value() + '.' + FROM_OBJECT + "(jsObject)");
+        output.append(fromJsonReturn(typeName));
         output.exitMethod();
+    }
+
+    private static Return fromJsonReturn(TypeName typeName) {
+        String value = typeName.value() + '.' + FROM_OBJECT + "(jsObject)";
+        return Return.value(value);
     }
 
     /**
@@ -155,7 +160,7 @@ public class FromJsonMethod implements Snippet {
         output.addEmptyLine();
         output.declareVariable(MESSAGE, "new " + typeName + "()");
         handleMessageFields(output, message);
-        output.returnValue(MESSAGE);
+        output.append(Return.value(MESSAGE));
         output.exitMethod();
     }
 

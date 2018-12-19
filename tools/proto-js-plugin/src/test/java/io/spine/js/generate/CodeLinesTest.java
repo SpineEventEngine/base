@@ -115,14 +115,6 @@ class CodeLinesTest {
         assertEquals(0, jsOutput.currentDepth());
     }
 
-    @Test
-    @DisplayName("compose return statement")
-    void addReturn() {
-        jsOutput.returnValue(VALUE);
-        String returnStatement = "return " + VALUE + ';';
-        assertContains(jsOutput, returnStatement);
-    }
-
     @Nested
     @DisplayName("enter")
     class Enter {

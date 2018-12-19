@@ -177,18 +177,6 @@ public final class CodeLines {
     }
 
     /**
-     * Adds a {@code return} declaration.
-     *
-     * @param value
-     *         the value to return
-     */
-    public void returnValue(Object value) {
-        checkNotNull(value);
-        CodeLine line = Return.value(value);
-        append(line);
-    }
-
-    /**
      * Declares JS method and enters its body.
      *
      * @param methodName
