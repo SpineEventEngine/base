@@ -98,7 +98,7 @@ public class Method implements CodeSnippet {
         /**
          * Adds a line to the body of the method.
          */
-        public Builder addBodyLine(String line) {
+        public Builder appendBody(String line) {
             CodeLine codeLine = new CodeLine(line, 1);
             body.add(codeLine);
             return this;

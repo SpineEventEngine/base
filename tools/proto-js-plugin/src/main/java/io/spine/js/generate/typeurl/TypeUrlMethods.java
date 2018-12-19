@@ -80,7 +80,7 @@ final class TypeUrlMethods implements CodeSnippet {
         String methodName = jsType.staticMethod(METHOD_NAME);
         Method method = Method
                 .newBuilder(methodName)
-                .addBodyLine(returnString(typeUrl.value()))
+                .appendBody(returnString(typeUrl.value()))
                 .build();
         return method;
     }
