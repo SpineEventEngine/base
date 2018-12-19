@@ -29,7 +29,6 @@ import javax.lang.model.element.Modifier;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.compiler.annotation.Annotations.canIgnoreReturnValue;
-import static io.spine.tools.compiler.validation.ClassNames.getClassName;
 
 /**
  * An abstract base for method constructors.
@@ -50,7 +49,7 @@ abstract class AbstractMethod implements MethodConstructor {
         this.messageClass = builder.getGenericClassName();
         String javaPackage = checkNotNull(builder.getJavaPackage());
         String javaClass = checkNotNull(builder.getJavaClass());
-        this.builderClass = getClassName(javaPackage, javaClass);
+        this.builderClass = ClassName.get(javaPackage, javaClass);
     }
 
     /**

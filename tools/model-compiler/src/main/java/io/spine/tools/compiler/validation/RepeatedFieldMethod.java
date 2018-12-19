@@ -83,9 +83,6 @@ final class RepeatedFieldMethod extends AbstractMethod implements Logging {
      *
      * @param builder the {@code RepeatedFieldMethodConstructorBuilder} instance
      */
-    //@SuppressWarnings("ConstantConditions")
-    // The fields are checked in the {@code #build()} method
-    // of the {@code RepeatedFieldMethodsConstructorBuilder} class.
     private RepeatedFieldMethod(RepeatedFieldMethodsBuilder builder) {
         super(builder);
         this.fieldType = checkNotNull(builder.getFieldType());

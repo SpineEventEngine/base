@@ -22,7 +22,6 @@ package io.spine.tools.compiler.validation;
 
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.squareup.javapoet.ClassName;
-import io.spine.tools.compiler.TypeCache;
 import io.spine.tools.compiler.field.type.FieldType;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -39,7 +38,6 @@ abstract class AbstractMethodBuilder<T extends MethodConstructor> {
     private String javaClass;
     private String javaPackage;
     private ClassName genericClassName;
-    private TypeCache typeCache;
     private FieldDescriptor field;
     private FieldType fieldType;
 
@@ -68,12 +66,6 @@ abstract class AbstractMethodBuilder<T extends MethodConstructor> {
     AbstractMethodBuilder setJavaClass(String javaClass) {
         checkNotNull(javaClass);
         this.javaClass = javaClass;
-        return this;
-    }
-
-    AbstractMethodBuilder setTypeCache(TypeCache typeCache) {
-        checkNotNull(typeCache);
-        this.typeCache = typeCache;
         return this;
     }
 
@@ -115,11 +107,6 @@ abstract class AbstractMethodBuilder<T extends MethodConstructor> {
     }
 
     @Nullable
-    TypeCache getTypeCache() {
-        return typeCache;
-    }
-
-    @Nullable
     FieldDescriptor getField() {
         return field;
     }
@@ -135,7 +122,6 @@ abstract class AbstractMethodBuilder<T extends MethodConstructor> {
     final void checkFields() {
         checkNotNull(javaClass);
         checkNotNull(javaPackage);
-        checkNotNull(typeCache);
         checkNotNull(field);
         checkNotNull(genericClassName);
         checkNotNull(fieldType);

@@ -26,9 +26,9 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import io.spine.base.ConversionException;
+import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.FieldName;
 import io.spine.logging.Logging;
-import io.spine.tools.compiler.TypeCache;
 import io.spine.tools.compiler.field.type.FieldType;
 import io.spine.validate.ValidationException;
 import org.slf4j.Logger;
@@ -38,8 +38,6 @@ import java.util.Collection;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static io.spine.tools.compiler.validation.ClassNames.getParameterClassName;
-import static io.spine.tools.compiler.validation.ClassNames.getStringClassName;
 import static io.spine.tools.compiler.validation.MethodConstructors.clearPrefix;
 import static io.spine.tools.compiler.validation.MethodConstructors.clearProperty;
 import static io.spine.tools.compiler.validation.MethodConstructors.getMessageBuilder;
@@ -56,6 +54,7 @@ import static java.lang.String.format;
 class SingularFieldMethod extends AbstractMethod implements Logging {
 
     private static final String GETTER_PREFIX = "get";
+    private static final ClassName STRING_CLASS_NAME = ClassName.get(String.class);
 
     private final String fieldName;
     private final String methodNamePart;
@@ -74,11 +73,20 @@ class SingularFieldMethod extends AbstractMethod implements Logging {
         super(builder);
         this.fieldType = builder.getFieldType();
         this.field = builder.getField();
-        TypeCache typeCache = builder.getTypeCache();
-        this.fieldClassName = getParameterClassName(field.toProto(), typeCache);
+        FieldDeclaration fdecl = new FieldDeclaration(field);
+        this.fieldClassName = ClassName.bestGuess(fdecl.javaTypeName());
         FieldName fieldName = FieldName.of(field.toProto());
         this.fieldName = fieldName.javaCase();
         this.methodNamePart = fieldName.toCamelCase();
+    }
+
+    /**
+     * Returns the {@code ClassName} for the {@code String} class.
+     *
+     * @return the constructed {@code ClassName}
+     */
+    static ClassName stringClassName() {
+        return STRING_CLASS_NAME;
     }
 
     @Override
@@ -94,7 +102,7 @@ class SingularFieldMethod extends AbstractMethod implements Logging {
         List<MethodSpec> methods = newArrayList();
         methods.add(constructSetter());
 
-        if (!fieldClassName.equals(getStringClassName())) {
+        if (!fieldClassName.equals(stringClassName())) {
             methods.add(constructRawSetter());
         }
 
@@ -181,7 +189,7 @@ class SingularFieldMethod extends AbstractMethod implements Logging {
 
     private ParameterSpec createParameterSpec(FieldDescriptorProto field, boolean raw) {
         ClassName methodParamClass = raw
-                                     ? getStringClassName()
+                                     ? stringClassName()
                                      : fieldClassName;
         String paramName = FieldName.of(field)
                                     .javaCase();

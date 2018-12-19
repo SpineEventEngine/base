@@ -29,8 +29,8 @@ import static io.spine.util.Exceptions.newIllegalStateException;
 /**
  * Enumeration of the Protobuf scalar value types and corresponding Java types.
  *
- * <p>{@link FieldDescriptorProto.Type#TYPE_GROUP
- * Type.TYPE_GROUP} are NOT supported, so do not create an associated Java type for it.
+ * <p>{@code Type.TYPE_GROUP} is NOT supported, so do not create an associated
+ * Java type for it.
  *
  * @see <a href="https://developers.google.com/protocol-buffers/docs/proto3#scalar">
  * Protobuf scalar types</a>

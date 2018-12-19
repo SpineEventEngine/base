@@ -70,11 +70,9 @@ class MethodAssembler {
 
     private MethodSpec createNewBuilderMethod() {
         ClassName validatingBuilderClass =
-                ClassNames.getClassName(
-                        type.javaPackage()
-                            .value(),
-                        type.getValidatingBuilderClass()
-                            .value());
+                ClassName.get(type.javaPackage()
+                                  .value(), type.getValidatingBuilderClass()
+                                                .value());
         MethodSpec buildMethod = MethodSpec
                 .methodBuilder(Messages.METHOD_NEW_BUILDER)
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
