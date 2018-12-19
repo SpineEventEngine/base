@@ -20,6 +20,8 @@
 
 package io.spine.js.generate;
 
+import io.spine.code.Depth;
+
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
@@ -99,7 +101,8 @@ public class Method implements Snippet {
          * Adds a line to the body of the method.
          */
         public Builder appendBody(String line) {
-            IndentedLine codeLine = new IndentedLine(line, 1);
+            Depth bodyDepth = Depth.of(1);
+            IndentedLine codeLine = new IndentedLine(line, bodyDepth);
             body.add(codeLine);
             return this;
         }

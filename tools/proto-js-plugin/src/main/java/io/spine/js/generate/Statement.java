@@ -60,6 +60,6 @@ public class Statement extends StringTypeValue {
      * Converts the statement to a line with the specified depth.
      */
     public IndentedLine toLine(Depth depth) {
-        return new IndentedLine(value(), depth.value());
+        return new IndentedLine(value(), depth);
     }
 }

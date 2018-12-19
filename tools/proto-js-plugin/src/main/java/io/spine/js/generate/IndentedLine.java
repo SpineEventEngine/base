@@ -44,19 +44,7 @@ public final class IndentedLine extends CodeLine {
      *         the JS code
      */
     public IndentedLine(String content) {
-        this(content, 0);
-    }
-
-    /**
-     * Creates a new {@code IndentedLine}.
-     *
-     * @param content
-     *         the JS code
-     * @param depth
-     *         the depth of the code
-     */
-    public IndentedLine(String content, int depth) {
-        this(content, Depth.of(depth));
+        this(content, Depth.zero());
     }
 
     /**

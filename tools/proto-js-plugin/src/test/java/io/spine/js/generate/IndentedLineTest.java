@@ -20,6 +20,7 @@
 
 package io.spine.js.generate;
 
+import io.spine.code.Depth;
 import io.spine.code.Indent;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,7 +33,7 @@ class IndentedLineTest {
     @Test
     @DisplayName("create indent for code based on depth and indentation")
     void createIndent() {
-        int depth = 2;
+        Depth depth = Depth.of(2);
         IndentedLine codeLine = new IndentedLine("content", depth);
         Indent spacesPerDepth = Indent.of2();
         String result = codeLine.indent(spacesPerDepth);
