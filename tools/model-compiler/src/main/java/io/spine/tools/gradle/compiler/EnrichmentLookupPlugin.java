@@ -19,6 +19,7 @@
  */
 package io.spine.tools.gradle.compiler;
 
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import io.spine.tools.compiler.enrichment.EnrichmentLookup;
 import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.SpinePlugin;
@@ -48,39 +49,42 @@ import static io.spine.tools.gradle.compiler.Extension.getTestTargetGenResources
  * <p>There can be several event types:
  *
  * <p>{@code ENRICHMENT_TYPE_NAME=FIRST_EVENT_TYPE_NAME,SECOND_EVENT_TYPE_NAME}
- *
- * @author Alexander Litus
- * @author Alex Tymchenko
  */
 public class EnrichmentLookupPlugin extends SpinePlugin {
 
     @Override
     public void apply(Project project) {
-        Action<Task> mainScopeAction = mainScopeActionFor(project);
-        GradleTask findEnrichments =
-                newTask(FIND_ENRICHMENTS,
-                        mainScopeAction).insertAfterTask(COMPILE_JAVA)
-                                        .insertBeforeTask(PROCESS_RESOURCES)
-                                        .applyNowTo(project);
-        Action<Task> testScopeAction = testScopeActionFor(project);
-        GradleTask findTestEnrichments =
-                newTask(FIND_TEST_ENRICHMENTS,
-                        testScopeAction).insertAfterTask(COMPILE_TEST_JAVA)
-                                        .insertBeforeTask(PROCESS_TEST_RESOURCES)
-                                        .applyNowTo(project);
+        GradleTask mainTask = findEnrichments(project);
+        GradleTask testTask = findTestEnrichments(project);
+        _debug("Enrichment lookup phase initialized with tasks: {}, {}", mainTask, testTask);
+    }
 
-        String msg = "Enrichment lookup phase initialized with tasks: {}, {}";
-        log().debug(msg, findEnrichments, findTestEnrichments);
+    @CanIgnoreReturnValue
+    private GradleTask findEnrichments(Project project) {
+        Action<Task> mainScopeAction = mainScopeActionFor(project);
+        return newTask(FIND_ENRICHMENTS, mainScopeAction)
+                .insertAfterTask(COMPILE_JAVA)
+                .insertBeforeTask(PROCESS_RESOURCES)
+                .applyNowTo(project);
+    }
+
+    @CanIgnoreReturnValue
+    private GradleTask findTestEnrichments(Project project) {
+        Action<Task> testScopeAction = testScopeActionFor(project);
+        return newTask(FIND_TEST_ENRICHMENTS, testScopeAction)
+                .insertAfterTask(COMPILE_TEST_JAVA)
+                .insertBeforeTask(PROCESS_TEST_RESOURCES)
+                .applyNowTo(project);
     }
 
     private Action<Task> testScopeActionFor(Project project) {
-        log().debug("Initializing the enrichment lookup for the \"test\" source code");
+        _debug("Initializing the enrichment lookup for the \"test\" source code");
         return task -> findEnrichmentsAndWriteProps(getTestDescriptorSetPath(project),
                                                     getTestTargetGenResourcesDir(project));
     }
 
     private Action<Task> mainScopeActionFor(Project project) {
-        log().debug("Initializing the enrichment lookup for the \"main\" source code");
+        _debug("Initializing the enrichment lookup for the \"main\" source code");
         return task -> findEnrichmentsAndWriteProps(getMainDescriptorSetPath(project),
                                                     getMainTargetGenResourcesDir(project));
     }

@@ -20,6 +20,7 @@
 
 package io.spine.tools.gradle.compiler;
 
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import io.spine.tools.compiler.validation.ValidationRulesLookup;
 import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.SpinePlugin;
@@ -31,8 +32,6 @@ import java.io.File;
 
 import static io.spine.tools.gradle.TaskName.FIND_TEST_VALIDATION_RULES;
 import static io.spine.tools.gradle.TaskName.FIND_VALIDATION_RULES;
-import static io.spine.tools.gradle.TaskName.GENERATE_PROTO;
-import static io.spine.tools.gradle.TaskName.GENERATE_TEST_PROTO;
 import static io.spine.tools.gradle.TaskName.MERGE_DESCRIPTOR_SET;
 import static io.spine.tools.gradle.TaskName.MERGE_TEST_DESCRIPTOR_SET;
 import static io.spine.tools.gradle.TaskName.PROCESS_RESOURCES;
@@ -47,34 +46,37 @@ import static io.spine.tools.gradle.compiler.Extension.getTestTargetGenResources
  *
  * <p>For the syntax of generated properties file please see {@link ValidationRulesLookup}.
  *
- * @author Dmytro Grankin
  * @see ValidationRulesLookup
  */
 public class ValidationRulesLookupPlugin extends SpinePlugin {
 
     @Override
     public void apply(Project project) {
+        GradleTask mainTask = findRules(project);
+        GradleTask testTask = findTestRules(project);
+        _debug("Validation rules lookup phase initialized with tasks: {}, {}", mainTask, testTask);
+    }
 
+    @CanIgnoreReturnValue
+    private GradleTask findRules(Project project) {
         Action<Task> mainScopeAction = mainScopeActionFor(project);
-        GradleTask findRules =
-                newTask(FIND_VALIDATION_RULES, mainScopeAction)
-                        .insertAfterTask(MERGE_DESCRIPTOR_SET)
-                        .insertBeforeTask(PROCESS_RESOURCES)
-                        .applyNowTo(project);
+        return newTask(FIND_VALIDATION_RULES, mainScopeAction)
+                .insertAfterTask(MERGE_DESCRIPTOR_SET)
+                .insertBeforeTask(PROCESS_RESOURCES)
+                .applyNowTo(project);
+    }
 
+    @CanIgnoreReturnValue
+    private GradleTask findTestRules(Project project) {
         Action<Task> testScopeAction = testScopeActionFor(project);
-        GradleTask findTestRules =
-                newTask(FIND_TEST_VALIDATION_RULES, testScopeAction)
-                        .insertAfterTask(MERGE_TEST_DESCRIPTOR_SET)
-                        .insertBeforeTask(PROCESS_TEST_RESOURCES)
-                        .applyNowTo(project);
-
-        log().debug("Validation rules lookup phase initialized with tasks: {}, {}",
-                    findRules, findTestRules);
+        return newTask(FIND_TEST_VALIDATION_RULES, testScopeAction)
+                .insertAfterTask(MERGE_TEST_DESCRIPTOR_SET)
+                .insertBeforeTask(PROCESS_TEST_RESOURCES)
+                .applyNowTo(project);
     }
 
     private Action<Task> mainScopeActionFor(Project project) {
-        log().debug("Initializing the validation lookup for the `main` source code.");
+        _debug("Initializing the validation lookup for the `main` source code.");
         return task -> {
             String descriptorSetFile = getMainDescriptorSetPath(project);
             String targetResourcesDir = getMainTargetGenResourcesDir(project);
@@ -83,7 +85,7 @@ public class ValidationRulesLookupPlugin extends SpinePlugin {
     }
 
     private Action<Task> testScopeActionFor(Project project) {
-        log().debug("Initializing the validation lookup for the `test` source code.");
+        _debug("Initializing the validation lookup for the `test` source code.");
         return task -> {
             String descriptorSetPath = getTestDescriptorSetPath(project);
             String targetGenResourcesDir = getTestTargetGenResourcesDir(project);
