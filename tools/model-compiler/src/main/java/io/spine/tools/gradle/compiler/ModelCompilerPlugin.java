@@ -49,6 +49,10 @@ public class ModelCompilerPlugin implements Plugin<Project>, Logging {
         project.getExtensions()
                .create(extensionName(), Extension.class);
 
+        // Plugins that deal with Protobuf types must depend on `MERGE_DESCRIPTOR_SET` and
+        // `MERGE_TEST_DESCRIPTOR_SET` tasks to be able to access every declared type
+        // in the project classpath.
+
         Stream.of(new CleaningPlugin(),
                   new EnrichmentLookupPlugin(),
                   new RejectionGenPlugin(),

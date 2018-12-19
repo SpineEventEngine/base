@@ -37,6 +37,8 @@ import static io.spine.tools.gradle.TaskName.GENERATE_PROTO;
 import static io.spine.tools.gradle.TaskName.GENERATE_TEST_PROTO;
 import static io.spine.tools.gradle.TaskName.GENERATE_TEST_VALIDATING_BUILDERS;
 import static io.spine.tools.gradle.TaskName.GENERATE_VALIDATING_BUILDERS;
+import static io.spine.tools.gradle.TaskName.MERGE_DESCRIPTOR_SET;
+import static io.spine.tools.gradle.TaskName.MERGE_TEST_DESCRIPTOR_SET;
 import static io.spine.tools.gradle.compiler.Extension.getIndent;
 import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSetPath;
 import static io.spine.tools.gradle.compiler.Extension.getMainProtoSrcDir;
@@ -89,14 +91,9 @@ public class ValidatingBuilderGenPlugin extends SpinePlugin {
                              getTargetGenValidatorsRootDir(project),
                              getMainProtoSrcDir(project));
 
-        logDependingTask(
-                GENERATE_VALIDATING_BUILDERS,
-                         COMPILE_JAVA,
-                         GENERATE_PROTO);
-
         GradleTask generateValidator =
                 newTask(GENERATE_VALIDATING_BUILDERS, mainScopeAction)
-                        .insertAfterTask(GENERATE_PROTO)
+                        .insertAfterTask(MERGE_DESCRIPTOR_SET)
                         .insertBeforeTask(COMPILE_JAVA)
                         .applyNowTo(project);
         log.debug("Preparing to generate test validating builders.");
@@ -106,13 +103,9 @@ public class ValidatingBuilderGenPlugin extends SpinePlugin {
                              getTargetTestGenValidatorsRootDir(project),
                              getTestProtoSrcDir(project));
 
-        logDependingTask(GENERATE_TEST_VALIDATING_BUILDERS,
-                         COMPILE_TEST_JAVA,
-                         GENERATE_TEST_PROTO);
-
         GradleTask generateTestValidator =
                 newTask(GENERATE_TEST_VALIDATING_BUILDERS, testScopeAction)
-                        .insertAfterTask(GENERATE_TEST_PROTO)
+                        .insertAfterTask(MERGE_TEST_DESCRIPTOR_SET)
                         .insertBeforeTask(COMPILE_TEST_JAVA)
                         .applyNowTo(project);
         log.debug("Validating builders generation phase initialized with tasks: {}, {}.",

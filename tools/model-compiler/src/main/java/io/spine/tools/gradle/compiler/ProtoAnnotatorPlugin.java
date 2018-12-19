@@ -34,6 +34,8 @@ import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
 import static io.spine.tools.gradle.TaskName.COMPILE_TEST_JAVA;
 import static io.spine.tools.gradle.TaskName.GENERATE_PROTO;
 import static io.spine.tools.gradle.TaskName.GENERATE_TEST_PROTO;
+import static io.spine.tools.gradle.TaskName.MERGE_DESCRIPTOR_SET;
+import static io.spine.tools.gradle.TaskName.MERGE_TEST_DESCRIPTOR_SET;
 import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSetPath;
 import static io.spine.tools.gradle.compiler.Extension.getMainGenGrpcDir;
 import static io.spine.tools.gradle.compiler.Extension.getMainGenProtoDir;
@@ -177,16 +179,14 @@ public class ProtoAnnotatorPlugin extends SpinePlugin {
         Action<Task> task = newAction(getMainDescriptorSetPath(project), project, false);
         newTask(ANNOTATE_PROTO, task)
                 .insertBeforeTask(COMPILE_JAVA)
-                .insertAfterTask(GENERATE_PROTO)
+                .insertAfterTask(MERGE_DESCRIPTOR_SET)
                 .applyNowTo(project);
-        logDependingTask(ANNOTATE_PROTO, COMPILE_JAVA, GENERATE_PROTO);
 
         Action<Task> testTask = newAction(getTestDescriptorSetPath(project), project, true);
         newTask(ANNOTATE_TEST_PROTO, testTask)
                 .insertBeforeTask(COMPILE_TEST_JAVA)
-                .insertAfterTask(GENERATE_TEST_PROTO)
+                .insertAfterTask(MERGE_TEST_DESCRIPTOR_SET)
                 .applyNowTo(project);
-        logDependingTask(ANNOTATE_TEST_PROTO, COMPILE_TEST_JAVA, GENERATE_TEST_PROTO);
     }
 
     private Action<Task> newAction(String descriptorSetPath, Project project, boolean isTestTask) {

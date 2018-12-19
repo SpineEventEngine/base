@@ -33,6 +33,8 @@ import static io.spine.tools.gradle.TaskName.FIND_TEST_VALIDATION_RULES;
 import static io.spine.tools.gradle.TaskName.FIND_VALIDATION_RULES;
 import static io.spine.tools.gradle.TaskName.GENERATE_PROTO;
 import static io.spine.tools.gradle.TaskName.GENERATE_TEST_PROTO;
+import static io.spine.tools.gradle.TaskName.MERGE_DESCRIPTOR_SET;
+import static io.spine.tools.gradle.TaskName.MERGE_TEST_DESCRIPTOR_SET;
 import static io.spine.tools.gradle.TaskName.PROCESS_RESOURCES;
 import static io.spine.tools.gradle.TaskName.PROCESS_TEST_RESOURCES;
 import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSetPath;
@@ -52,21 +54,18 @@ public class ValidationRulesLookupPlugin extends SpinePlugin {
 
     @Override
     public void apply(Project project) {
-        logDependingTask(FIND_VALIDATION_RULES, PROCESS_RESOURCES, GENERATE_PROTO);
 
         Action<Task> mainScopeAction = mainScopeActionFor(project);
         GradleTask findRules =
                 newTask(FIND_VALIDATION_RULES, mainScopeAction)
-                        .insertAfterTask(GENERATE_PROTO)
+                        .insertAfterTask(MERGE_DESCRIPTOR_SET)
                         .insertBeforeTask(PROCESS_RESOURCES)
                         .applyNowTo(project);
-
-        logDependingTask(FIND_TEST_VALIDATION_RULES, PROCESS_TEST_RESOURCES, GENERATE_TEST_PROTO);
 
         Action<Task> testScopeAction = testScopeActionFor(project);
         GradleTask findTestRules =
                 newTask(FIND_TEST_VALIDATION_RULES, testScopeAction)
-                        .insertAfterTask(GENERATE_TEST_PROTO)
+                        .insertAfterTask(MERGE_TEST_DESCRIPTOR_SET)
                         .insertBeforeTask(PROCESS_TEST_RESOURCES)
                         .applyNowTo(project);
 

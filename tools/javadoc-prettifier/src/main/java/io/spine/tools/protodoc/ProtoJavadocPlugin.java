@@ -34,6 +34,8 @@ import static io.spine.tools.gradle.TaskName.FORMAT_PROTO_DOC;
 import static io.spine.tools.gradle.TaskName.FORMAT_TEST_PROTO_DOC;
 import static io.spine.tools.gradle.TaskName.GENERATE_PROTO;
 import static io.spine.tools.gradle.TaskName.GENERATE_TEST_PROTO;
+import static io.spine.tools.gradle.TaskName.MERGE_DESCRIPTOR_SET;
+import static io.spine.tools.gradle.TaskName.MERGE_TEST_DESCRIPTOR_SET;
 import static io.spine.tools.protodoc.Extension.getAbsoluteMainGenProtoDir;
 import static io.spine.tools.protodoc.Extension.getAbsoluteTestGenProtoDir;
 import static java.lang.String.format;
@@ -78,14 +80,12 @@ public class ProtoJavadocPlugin extends SpinePlugin {
                 .insertBeforeTask(COMPILE_JAVA)
                 .insertAfterTask(GENERATE_PROTO)
                 .applyNowTo(project);
-        logDependingTask(FORMAT_PROTO_DOC, COMPILE_JAVA, GENERATE_PROTO);
 
         Action<Task> testAction = createAction(project, TaskType.TEST);
         newTask(FORMAT_TEST_PROTO_DOC, testAction)
                 .insertBeforeTask(COMPILE_TEST_JAVA)
                 .insertAfterTask(GENERATE_TEST_PROTO)
                 .applyNowTo(project);
-        logDependingTask(FORMAT_TEST_PROTO_DOC, COMPILE_TEST_JAVA, GENERATE_TEST_PROTO);
     }
 
     private Action<Task> createAction(Project project, TaskType taskType) {

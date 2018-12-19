@@ -150,12 +150,13 @@ public class RejectionWriter implements Logging {
      * @return the class-level Javadoc content
      */
     private CodeBlock classJavadoc() {
-        JavadocText leadingComments = declaration.documentation()
-                                                 .leadingComments()
-                                                 .map(text -> JavadocText.fromUnescaped(text)
-                                                                         .inPreTags()
-                                                                         .withNewLine())
-                                                 .orElse(JavadocText.fromEscaped(""));
+        JavadocText leadingComments =
+                declaration.documentation()
+                           .leadingComments()
+                           .map(text -> JavadocText.fromUnescaped(text)
+                                                   .inPreTags()
+                                                   .withNewLine())
+                           .orElse(JavadocText.fromEscaped(""));
         PackageName rejectionPackage = declaration.javaPackage();
         CodeBlock sourceProtoNote = CodeBlock
                 .builder()

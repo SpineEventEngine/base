@@ -106,11 +106,11 @@ public abstract class Type<T extends GenericDescriptor, P extends Message> {
     public abstract SimpleClassName simpleJavaClassName();
 
     /**
-     * Returns the name of the type.
+     * Returns a fully-qualified name of the proto type.
      */
     @Override
     public String toString() {
-        return descriptor.getName();
+        return descriptor.getFullName();
     }
 
     @Override

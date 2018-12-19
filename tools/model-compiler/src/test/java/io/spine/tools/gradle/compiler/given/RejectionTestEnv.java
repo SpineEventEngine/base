@@ -74,13 +74,13 @@ public class RejectionTestEnv {
                 "option java_package = \"" + JAVA_PACKAGE + "\";",
                 "option java_multiple_files = false;",
 
-                "//" + CLASS_COMMENT,
+                "// " + CLASS_COMMENT,
                 "message " + REJECTION_NAME + " {",
 
-                    "//" + FIRST_FIELD_COMMENT,
+                    "// " + FIRST_FIELD_COMMENT,
                     "int32 " + FIRST_FIELD + " = 1; // Is not a part of Javadoc.",
 
-                    "//" + SECOND_FIELD_COMMENT,
+                    "// " + SECOND_FIELD_COMMENT,
                     "string " + SECOND_FIELD + " = 2;",
 
                     "bool hasNoComment = 3;",
@@ -108,6 +108,6 @@ public class RejectionTestEnv {
     }
 
     private static String wrappedInPreTag(String commentText) {
-        return "<pre>" + commentText + " </pre>";
+        return "<pre> " + commentText + " </pre>";
     }
 }

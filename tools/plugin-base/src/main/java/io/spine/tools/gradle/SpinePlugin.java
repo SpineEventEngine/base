@@ -69,20 +69,4 @@ public abstract class SpinePlugin implements Plugin<Project> {
         );
     }
 
-    protected void logDependingTask(TaskName taskName, TaskName beforeTask, TaskName afterTask) {
-        log().debug(
-                "Adding the Gradle task {} to the lifecycle: after {}, before {}",
-                taskName.getValue(),
-                afterTask.getValue(),
-                beforeTask.getValue()
-                );
-    }
-
-    protected void logDependingTask(TaskName taskName, TaskName beforeTask) {
-        log().debug(
-                "Adding the Gradle task {} to the lifecycle: before {}",
-                taskName.getValue(),
-                beforeTask.getValue()
-        );
-    }
 }

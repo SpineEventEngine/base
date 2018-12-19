@@ -29,7 +29,6 @@ import org.jboss.forge.roaster.model.source.JavaDocCapableSource;
 import org.jboss.forge.roaster.model.source.JavaDocSource;
 import org.jboss.forge.roaster.model.source.MethodSource;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,6 +41,7 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collection;
 
+import static com.google.common.truth.Truth.assertThat;
 import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
 import static io.spine.tools.gradle.compiler.given.RejectionTestEnv.getExpectedBuilderClassComment;
 import static io.spine.tools.gradle.compiler.given.RejectionTestEnv.getExpectedClassComment;
@@ -51,22 +51,20 @@ import static io.spine.tools.gradle.compiler.given.RejectionTestEnv.newProjectWi
 import static io.spine.tools.gradle.compiler.given.RejectionTestEnv.rejectionsJavadocThrowableSource;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-//@ExtendWith(TempDirectory.class)
+@ExtendWith(TempDirectory.class)
 @DisplayName("RejectionGenPlugin should")
 class RejectionGenPluginTest {
 
     private File testProjectDir;
 
     @BeforeEach
-    void setUp(
-//            @TempDir Path tempDirPath
-    ) {
-        testProjectDir = new File("/Users/sanders/Projects/Spine/_temp");
+    void setUp(@TempDir Path tempDirPath) {
+        testProjectDir = tempDirPath.toFile();
     }
 
     @Test
     @DisplayName("compile generated rejections")
-    void compile_generated_rejections() {
+    void compileGeneratedRejections() {
         Collection<String> files = Arrays.asList("test_rejections.proto",
                                                  "outer_class_by_file_name_rejections.proto",
                                                  "outer_class_set_rejections.proto",
@@ -80,9 +78,8 @@ class RejectionGenPluginTest {
     }
 
     @Test
-    @Disabled("... until KnownTypes issue with missing types is resolved.")
     @DisplayName("generate rejection Javadoc")
-    void generate_rejection_javadoc() throws FileNotFoundException {
+    void generateRejectionJavadoc() throws FileNotFoundException {
         GradleProject project = newProjectWithRejectionsJavadoc(testProjectDir);
         project.executeTask(COMPILE_JAVA);
         String projectAbsolutePath = testProjectDir.getAbsolutePath();
@@ -96,33 +93,33 @@ class RejectionGenPluginTest {
     }
 
     private static void assertRejectionJavadoc(JavaClassSource rejection) {
-        assertDoc(rejection, getExpectedClassComment());
-        assertMethodDoc(rejection,
-                        Messages.METHOD_NEW_BUILDER,
-                        "@return a new builder for the rejection");
+        assertDoc(getExpectedClassComment(), rejection);
+        assertMethodDoc("@return a new builder for the rejection", rejection,
+                        Messages.METHOD_NEW_BUILDER
+        );
     }
 
     private static void assertBuilderJavadoc(JavaClassSource builder) {
-        assertDoc(builder, getExpectedBuilderClassComment());
-        assertMethodDoc(builder, "build",
-                        "Creates the rejection from the builder and validates it.");
-        assertMethodDoc(builder, "setId", getExpectedFirstFieldComment());
-        assertMethodDoc(builder, "setRejectionMessage", getExpectedSecondFieldComment());
+        assertDoc(getExpectedBuilderClassComment(), builder);
+        assertMethodDoc("Creates the rejection from the builder and validates it.", builder, "build"
+        );
+        assertMethodDoc(getExpectedFirstFieldComment(), builder, "setId");
+        assertMethodDoc(getExpectedSecondFieldComment(), builder, "setRejectionMessage");
     }
 
-    private static void assertMethodDoc(JavaClassSource source,
-                                        String methodName,
-                                        String expectedComment) {
+    private static void assertMethodDoc(String expectedComment,
+                                        JavaClassSource source,
+                                        String methodName) {
         MethodSource<JavaClassSource> method = source.getMethods()
                                                      .stream()
                                                      .filter(m -> m.getName()
                                                                    .equals(methodName))
                                                      .findFirst()
                                                      .orElseThrow(IllegalStateException::new);
-        assertDoc(method, expectedComment);
+        assertDoc(expectedComment, method);
     }
 
-    private static void assertDoc(JavaDocCapableSource source, String expectedText) {
+    private static void assertDoc(String expectedText, JavaDocCapableSource source) {
         JavaDocSource javadoc = source.getJavaDoc();
         assertEquals(expectedText, javadoc.getFullText());
     }

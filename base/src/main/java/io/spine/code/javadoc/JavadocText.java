@@ -57,11 +57,12 @@ public class JavadocText extends StringTypeValue {
      * @return the text wrapped in the tags
      */
     public JavadocText inPreTags() {
-        String inTags = new StringBuilder(OPENING_PRE).append(LINE_SEPARATOR)
-                                                      .append(JavadocEscaper.escape(value()))
-                                                      .append(CLOSING_PRE)
-                                                      .append(LINE_SEPARATOR)
-                                                      .toString();
+        String inTags = new StringBuilder(OPENING_PRE)
+                .append(LINE_SEPARATOR)
+                .append(JavadocEscaper.escape(value()))
+                .append(CLOSING_PRE)
+                .append(LINE_SEPARATOR)
+                .toString();
         return new JavadocText(inTags);
     }
 

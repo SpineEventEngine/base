@@ -37,12 +37,12 @@ import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.ENUM;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.MESSAGE;
 import static java.lang.String.format;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Declaration of a Protobuf message field.
@@ -119,7 +119,7 @@ public final class FieldDeclaration implements Logging {
                               .stream()
                               .map(TypeUrl::value)
                               .sorted()
-                              .collect(Collectors.toList());
+                              .collect(toList());
             String newLine = format(",%n");
             String message =
                     format("Cannot find a type %s in the list of known types:%n%s",

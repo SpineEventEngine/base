@@ -39,10 +39,10 @@ import java.util.List;
 
 import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
 import static io.spine.tools.gradle.TaskName.COMPILE_TEST_JAVA;
-import static io.spine.tools.gradle.TaskName.GENERATE_PROTO;
 import static io.spine.tools.gradle.TaskName.GENERATE_REJECTIONS;
-import static io.spine.tools.gradle.TaskName.GENERATE_TEST_PROTO;
 import static io.spine.tools.gradle.TaskName.GENERATE_TEST_REJECTIONS;
+import static io.spine.tools.gradle.TaskName.MERGE_DESCRIPTOR_SET;
+import static io.spine.tools.gradle.TaskName.MERGE_TEST_DESCRIPTOR_SET;
 import static io.spine.tools.gradle.compiler.Extension.getIndent;
 import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSetPath;
 import static io.spine.tools.gradle.compiler.Extension.getTargetGenRejectionsRootDir;
@@ -78,10 +78,9 @@ public class RejectionGenPlugin extends SpinePlugin {
             generateRejections(mainFile, targetFolder, indent);
         };
 
-        logDependingTask(GENERATE_REJECTIONS, COMPILE_JAVA, GENERATE_PROTO);
         GradleTask mainTask =
                 newTask(GENERATE_REJECTIONS, mainScopeAction)
-                        .insertAfterTask(GENERATE_PROTO)
+                        .insertAfterTask(MERGE_DESCRIPTOR_SET)
                         .insertBeforeTask(COMPILE_JAVA)
                         .applyNowTo(project);
 
@@ -93,11 +92,10 @@ public class RejectionGenPlugin extends SpinePlugin {
             generateTestRejections(mainFile, testFile, targetFolder, indent);
         };
 
-        logDependingTask(GENERATE_TEST_REJECTIONS, COMPILE_TEST_JAVA, GENERATE_TEST_PROTO);
 
         GradleTask testTask =
                 newTask(GENERATE_TEST_REJECTIONS, testScopeAction)
-                        .insertAfterTask(GENERATE_TEST_PROTO)
+                        .insertAfterTask(MERGE_TEST_DESCRIPTOR_SET)
                         .insertBeforeTask(COMPILE_TEST_JAVA)
                         .applyNowTo(project);
 
