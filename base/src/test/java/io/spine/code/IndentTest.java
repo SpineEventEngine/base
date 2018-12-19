@@ -33,14 +33,14 @@ class IndentTest {
 
     @Test
     @DisplayName("prohibit negative values")
-    void prohibit_negative_value() {
+    void prohibitNegativeValue() {
         assertThrows(IllegalArgumentException.class,
                      () -> Indent.of(-1));
     }
 
     @Test
     @DisplayName("allow zero indent")
-    void allow_zero_indent() {
+    void allowZeroIndent() {
         Indent zeroIndent = Indent.of(0);
         assertEquals(0, zeroIndent.getSize());
         assertTrue(zeroIndent.toString()
@@ -49,7 +49,7 @@ class IndentTest {
 
     @Test
     @DisplayName("allow custom size")
-    void allow_custom_size() {
+    void allowCustomSize() {
         Indent ofThree = Indent.of(3);
         assertEquals(3, ofThree.getSize());
         assertEquals("   ", ofThree.toString());
@@ -57,7 +57,7 @@ class IndentTest {
 
     @Test
     @DisplayName("provide convenient methods")
-    void return_popular_constants() {
+    void returnPopularConstants() {
         assertEquals(2, Indent.of2()
                               .getSize());
         assertEquals(4, Indent.of4()
@@ -66,8 +66,17 @@ class IndentTest {
 
     @Test
     @DisplayName("return constant for popular values")
-    void return_constants_by_popular_values() {
+    void returnConstantsByPopularValues() {
         assertSame(Indent.of2(), Indent.of(2));
         assertSame(Indent.of4(), Indent.of(4));
+    }
+
+    @Test
+    @DisplayName("provide indent of specified depth")
+    void indentDepth() {
+        Indent indent = Indent.of4();
+        Depth depth = Depth.of(2);
+        Indent indentWithDepth = indent.ofDepth(depth);
+        assertEquals(8, indentWithDepth.getSize());
     }
 }

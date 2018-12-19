@@ -20,6 +20,7 @@
 
 package io.spine.js.generate;
 
+import io.spine.code.Depth;
 import io.spine.code.Indent;
 
 import java.util.Objects;
@@ -37,7 +38,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public final class CodeLine {
 
     private final String content;
-    private final int depth;
+    private final Depth depth;
 
     /**
      * Creates a new {@code CodeLine} without the zero depth.
@@ -60,7 +61,7 @@ public final class CodeLine {
     public CodeLine(String content, int depth) {
         checkNotNull(content);
         this.content = content;
-        this.depth = depth;
+        this.depth = Depth.of(depth);
     }
 
     /**
@@ -71,8 +72,8 @@ public final class CodeLine {
      * @return the {@code CodeLine} content with the correct indent
      */
     String indent(int spacesPerDepth) {
-        int indentUnits = depth * spacesPerDepth;
-        Indent indent = Indent.of(indentUnits);
+        Indent indent = Indent.of(spacesPerDepth)
+                              .ofDepth(depth);
         String result = indent + content;
         return result;
     }

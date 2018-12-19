@@ -77,4 +77,12 @@ public final class Indent extends StringTypeValue {
     public int getSize() {
         return size;
     }
+
+    /**
+     * Obtains the indent by of the specified depth.
+     */
+    public Indent ofDepth(Depth depth) {
+        int indentOfDepth = size * depth.value();
+        return of(indentOfDepth);
+    }
 }
