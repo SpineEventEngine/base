@@ -26,7 +26,7 @@ import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.js.FileName;
 import io.spine.code.js.TypeName;
 import io.spine.code.proto.FileSet;
-import io.spine.js.generate.JsCodeGenerator;
+import io.spine.js.generate.CodeSnippet;
 import io.spine.js.generate.JsOutput;
 import io.spine.js.generate.importado.JsImportGenerator;
 import io.spine.type.TypeUrl;
@@ -45,7 +45,7 @@ import static java.util.stream.Collectors.toSet;
  * <p>This class generates the map with all the known types written in the form of
  * "{@linkplain TypeUrl type-url}-to-JS-type", as well as the imports necessary to use the types.
  */
-public final class KnownTypesGenerator extends JsCodeGenerator {
+public final class KnownTypesMap implements CodeSnippet {
 
     /**
      * The exported map name.
@@ -57,16 +57,12 @@ public final class KnownTypesGenerator extends JsCodeGenerator {
     /**
      * Creates a new {@code KnownTypesGenerator}.
      *
-     * <p>All the known types will be acquired from the {@code fileSet} and the {@code jsOutput}
-     * accumulates the JS code lines.
+     * <p>All the known types will be acquired from the {@code fileSet}.
      *
      * @param fileSet
      *         the {@code FileSet} containing all the known types
-     * @param jsOutput
-     *         the {@code JsOutput} to accumulate the generated code
      */
-    public KnownTypesGenerator(FileSet fileSet, JsOutput jsOutput) {
-        super(jsOutput);
+    public KnownTypesMap(FileSet fileSet) {
         this.fileSet = fileSet;
     }
 
@@ -80,16 +76,18 @@ public final class KnownTypesGenerator extends JsCodeGenerator {
      * </ol>
      */
     @Override
-    public void generate() {
-        generateImports();
-        generateKnownTypesMap();
+    public JsOutput value() {
+        JsOutput snippet = new JsOutput();
+        generateImports(snippet);
+        snippet.addLinesFrom(generateKnownTypesMap());
+        return snippet;
     }
 
     /**
      * Generates import statements for all files declaring generated messages.
      */
     @VisibleForTesting
-    void generateImports() {
+    void generateImports(JsOutput output) {
         Collection<FileDescriptor> files = fileSet.files();
         Set<FileName> imports = files.stream()
                                      .filter(file -> !file.getMessageTypes()
@@ -99,7 +97,7 @@ public final class KnownTypesGenerator extends JsCodeGenerator {
         JsImportGenerator generator = JsImportGenerator
                 .newBuilder()
                 .setImports(imports)
-                .setJsOutput(jsOutput())
+                .setJsOutput(output)
                 .build();
         generator.generate();
     }
@@ -113,43 +111,40 @@ public final class KnownTypesGenerator extends JsCodeGenerator {
      * <p>The map is exported under the {@link #MAP_NAME}.
      */
     @VisibleForTesting
-    void generateKnownTypesMap() {
-        jsOutput().addEmptyLine();
-        jsOutput().exportMap(MAP_NAME);
-        storeKnownTypes();
-        jsOutput().quitMapDeclaration();
+    JsOutput generateKnownTypesMap() {
+        JsOutput snippet = new JsOutput();
+        snippet.addEmptyLine();
+        snippet.exportMap(MAP_NAME);
+        storeKnownTypes(snippet);
+        snippet.quitMapDeclaration();
+        return snippet;
     }
 
     /**
      * Stores known types to the declared {@code Map}.
      */
-    private void storeKnownTypes() {
+    private void storeKnownTypes(JsOutput output) {
         Collection<FileDescriptor> files = fileSet.files();
         for (Iterator<FileDescriptor> it = files.iterator(); it.hasNext(); ) {
             FileDescriptor file = it.next();
             boolean isLastFile = !it.hasNext();
-            storeTypesFromFile(file, isLastFile);
+            storeTypesFromFile(file, isLastFile, output);
         }
     }
 
     /**
      * Stores all message types declared in a file as known types {@code Map} entries.
      */
-    private void storeTypesFromFile(FileDescriptor file, boolean isLastFile) {
+    private static void storeTypesFromFile(FileDescriptor file,
+                                           boolean isLastFile,
+                                           JsOutput output) {
         List<Descriptor> messages = file.getMessageTypes();
         for (Iterator<Descriptor> it = messages.iterator(); it.hasNext(); ) {
             Descriptor message = it.next();
             boolean isLastMessage = !it.hasNext() && isLastFile;
-            addMapEntry(message, isLastMessage);
+            String mapEntry = jsMapEntry(message);
+            output.addMapEntry(mapEntry, isLastMessage);
         }
-    }
-
-    /**
-     * Converts the {@code message} to the {@code Map} entry and adds it to the {@link #jsOutput}.
-     */
-    private void addMapEntry(Descriptor message, boolean isLastMessage) {
-        String mapEntry = jsMapEntry(message);
-        jsOutput().addMapEntry(mapEntry, isLastMessage);
     }
 
     /**

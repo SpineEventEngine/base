@@ -36,8 +36,8 @@ import static io.spine.js.generate.given.Generators.assertContains;
 
 @SuppressWarnings("DuplicateStringLiteralInspection")
 // Duplication necessary to check main class code.
-@DisplayName("KnownTypesGenerator should")
-class KnownTypesGeneratorTest {
+@DisplayName("KnownTypesMap should")
+class KnownTypesMapTest {
 
     /**
      * {@link Any} type is used for tests as we known for sure it will be present among the
@@ -45,34 +45,33 @@ class KnownTypesGeneratorTest {
      */
     private static final Descriptor ANY = Any.getDescriptor();
 
-    private JsOutput jsOutput;
-    private KnownTypesGenerator generator;
+    private KnownTypesMap generator;
 
     @BeforeEach
     void setUp() {
         FileSet fileSet = FileSet.load();
-        jsOutput = new JsOutput();
-        generator = new KnownTypesGenerator(fileSet, jsOutput);
+        generator = new KnownTypesMap(fileSet);
     }
 
     @Test
     @DisplayName("generate imports for known types")
     void generateImports() {
-        generator.generateImports();
+        JsOutput output = new JsOutput();
+        generator.generateImports(output);
         FileDescriptor file = Any.getDescriptor()
                                  .getFile();
         FileName fileName = FileName.from(file);
         String taskImport = "require('./" + fileName + "');";
-        assertContains(jsOutput, taskImport);
+        assertContains(output, taskImport);
     }
 
     @Test
     @DisplayName("generate known types map")
     void generateKnownTypesMap() {
-        generator.generateKnownTypesMap();
+        JsOutput snippet = generator.generateKnownTypesMap();
         TypeUrl typeUrl = TypeUrl.from(Any.getDescriptor());
         TypeName typeName = TypeName.from(ANY);
         String mapEntry = "['" + typeUrl + "', " + typeName + ']';
-        assertContains(jsOutput, mapEntry);
+        assertContains(snippet, mapEntry);
     }
 }
