@@ -184,7 +184,7 @@ public final class CodeLines {
      */
     public void returnValue(Object value) {
         checkNotNull(value);
-        String line = Statements.returnValue(value);
+        CodeLine line = CodeLine.returnValue(value);
         addLine(line);
     }
 

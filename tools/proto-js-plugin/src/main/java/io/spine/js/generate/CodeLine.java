@@ -58,6 +58,25 @@ public class CodeLine {
         return new CodeLine(raw);
     }
 
+    /**
+     * Composes a statement returning a string literal.
+     */
+    public static CodeLine returnString(String literalValue) {
+        checkNotNull(literalValue);
+        String literal = format("'%s'", literalValue);
+        CodeLine result = returnValue(literal);
+        return result;
+    }
+
+    /**
+     * Composes a statement returning the value.
+     */
+    public static CodeLine returnValue(Object value) {
+        checkNotNull(value);
+        String statement = "return " + value + ';';
+        return new CodeLine(statement);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

@@ -20,10 +20,10 @@
 
 package io.spine.js.generate;
 
+import com.google.common.truth.StringSubject;
+import com.google.common.truth.Truth;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("CodeLine should")
 class CodeLineTest {
@@ -33,7 +33,7 @@ class CodeLineTest {
     void comment() {
         String value = "A comment text";
         CodeLine comment = CodeLine.comment(value);
-        assertEquals("// " + value, comment.content());
+        assertThat(comment).isEqualTo("// " + value);
     }
 
     @Test
@@ -42,6 +42,24 @@ class CodeLineTest {
         String key = "k";
         String value = "v";
         CodeLine mapEntry = CodeLine.mapEntry(key, value);
-        assertEquals("['k', v]", mapEntry.content());
+        assertThat(mapEntry).isEqualTo("['k', v]");
+    }
+
+    @Test
+    @DisplayName("provide a return statement")
+    void returnStatement() {
+        CodeLine line = CodeLine.returnValue(5);
+        assertThat(line).isEqualTo("return 5;");
+    }
+
+    @Test
+    @DisplayName("return a string literal")
+    void returnStringLiteral() {
+        CodeLine line = CodeLine.returnString("foo");
+        assertThat(line).isEqualTo("return 'foo';");
+    }
+
+    private static StringSubject assertThat(CodeLine line) {
+        return Truth.assertThat(line.content());
     }
 }
