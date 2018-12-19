@@ -120,14 +120,15 @@ public final class CodeLines {
     }
 
     /**
-     * Appends the statements to the end of the lines.
+     * Appends the code line and indents it to the current depth.
      *
-     * @param statement
-     *         the statement to append
+     * @param line
+     *         the line to append
      */
-    public void addStatement(Statement statement) {
-        IndentedLine line = statement.toLine(currentDepth);
-        addLine(line);
+    public void addLine(CodeLine line) {
+        checkNotNull(line);
+        IndentedLine indented = new IndentedLine(line.content(), currentDepth);
+        addLine(indented);
     }
 
     /**

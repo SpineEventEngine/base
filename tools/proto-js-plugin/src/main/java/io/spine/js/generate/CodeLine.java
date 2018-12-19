@@ -20,7 +20,10 @@
 
 package io.spine.js.generate;
 
+import java.util.Objects;
+
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.lang.String.format;
 
 /**
  * A line of a JavaScript code.
@@ -38,6 +41,38 @@ public class CodeLine {
 
     public String content() {
         return content;
+    }
+
+    /**
+     * Obtains the comment from the specified text.
+     */
+    public static CodeLine comment(String commentText) {
+        checkNotNull(commentText);
+        return new CodeLine("// " + commentText);
+    }
+
+    public static CodeLine mapEntry(String key, Object value) {
+        checkNotNull(key);
+        checkNotNull(value);
+        String raw = format("['%s', %s]", key, value);
+        return new CodeLine(raw);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof CodeLine)) {
+            return false;
+        }
+        CodeLine line = (CodeLine) o;
+        return content.equals(line.content);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(content);
     }
 
     @Override

@@ -20,22 +20,20 @@
 
 package io.spine.js.generate;
 
-import io.spine.code.Depth;
-import io.spine.code.Indent;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DisplayName("Statement should")
-class StatementTest {
+@DisplayName("CodeLine should")
+class CodeLineTest {
 
     @Test
     @DisplayName("provide a comment")
     void comment() {
         String value = "A comment text";
-        Statement comment = Statement.comment(value);
-        assertEquals("// " + value, comment.value());
+        CodeLine comment = CodeLine.comment(value);
+        assertEquals("// " + value, comment.content());
     }
 
     @Test
@@ -43,17 +41,7 @@ class StatementTest {
     void mapEntry() {
         String key = "k";
         String value = "v";
-        Statement mapEntry = Statement.mapEntry(key, value);
-        assertEquals("['k', v]", mapEntry.value());
-    }
-
-    @Test
-    @DisplayName("convert to a code line")
-    void toCodeLine() {
-        Depth depth = Depth.of(1);
-        Indent indent = Indent.of2();
-        Statement statement = Statement.of("callMethod();");
-        IndentedLine codeLine = statement.toLine(depth);
-        assertEquals(indent + statement.value(), codeLine.indent(indent));
+        CodeLine mapEntry = CodeLine.mapEntry(key, value);
+        assertEquals("['k', v]", mapEntry.content());
     }
 }

@@ -38,9 +38,9 @@ import com.google.protobuf.Timestamp;
 import com.google.protobuf.UInt32Value;
 import com.google.protobuf.UInt64Value;
 import com.google.protobuf.Value;
+import io.spine.js.generate.CodeLine;
 import io.spine.js.generate.CodeLines;
 import io.spine.js.generate.Snippet;
-import io.spine.js.generate.Statement;
 import io.spine.type.TypeUrl;
 
 import java.util.Map.Entry;
@@ -112,8 +112,8 @@ public final class WellKnownTypeParsers implements Snippet {
         for (UnmodifiableIterator<Entry<TypeUrl, String>> it = entries.iterator(); it.hasNext(); ) {
             Entry<TypeUrl, String> typeToParser = it.next();
             boolean isLastEntry = !it.hasNext();
-            Statement mapEntry = mapEntry(typeToParser);
-            output.addMapEntry(mapEntry.value(), isLastEntry);
+            CodeLine mapEntry = mapEntry(typeToParser);
+            output.addMapEntry(mapEntry.content(), isLastEntry);
         }
     }
 
@@ -122,11 +122,11 @@ public final class WellKnownTypeParsers implements Snippet {
      * {@code Map} entry.
      */
     @SuppressWarnings("DuplicateStringLiteralInspection") // Duplication in different context.
-    private static Statement mapEntry(Entry<TypeUrl, String> typeToParser) {
+    private static CodeLine mapEntry(Entry<TypeUrl, String> typeToParser) {
         TypeUrl typeUrl = typeToParser.getKey();
         String parserName = typeToParser.getValue();
         String newParserCall = "new " + parserName + "()";
-        Statement mapEntry = Statement.mapEntry(typeUrl.value(), newParserCall);
+        CodeLine mapEntry = CodeLine.mapEntry(typeUrl.value(), newParserCall);
         return mapEntry;
     }
 

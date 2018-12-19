@@ -26,9 +26,9 @@ import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.js.FileName;
 import io.spine.code.js.TypeName;
 import io.spine.code.proto.FileSet;
+import io.spine.js.generate.CodeLine;
 import io.spine.js.generate.CodeLines;
 import io.spine.js.generate.Snippet;
-import io.spine.js.generate.Statement;
 import io.spine.js.generate.importado.JsImportGenerator;
 import io.spine.type.TypeUrl;
 
@@ -142,8 +142,8 @@ public final class KnownTypesMap implements Snippet {
         for (Iterator<Descriptor> it = messages.iterator(); it.hasNext(); ) {
             Descriptor message = it.next();
             boolean isLastMessage = !it.hasNext() && isLastFile;
-            Statement mapEntry = mapEntry(message);
-            output.addMapEntry(mapEntry.value(), isLastMessage);
+            CodeLine mapEntry = mapEntry(message);
+            output.addMapEntry(mapEntry.content(), isLastMessage);
         }
     }
 
@@ -151,10 +151,10 @@ public final class KnownTypesMap implements Snippet {
      * Obtains type URL and JS type name of the {@code message} and creates a {@code Map} entry of
      * the "{@linkplain TypeUrl type-url}-to-JS-type" format.
      */
-    private static Statement mapEntry(Descriptor message) {
+    private static CodeLine mapEntry(Descriptor message) {
         TypeUrl typeUrl = TypeUrl.from(message);
         TypeName typeName = TypeName.from(message);
-        Statement mapEntry = Statement.mapEntry(typeUrl.value(), typeName);
+        CodeLine mapEntry = CodeLine.mapEntry(typeUrl.value(), typeName);
         return mapEntry;
     }
 }
