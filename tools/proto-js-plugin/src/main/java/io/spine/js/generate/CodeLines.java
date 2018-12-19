@@ -22,6 +22,7 @@ package io.spine.js.generate;
 
 import com.google.common.annotations.VisibleForTesting;
 import io.spine.code.Depth;
+import io.spine.code.Indent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +62,7 @@ public final class CodeLines {
     /**
      * The indentation of the code, i.e. how many spaces each depth level takes.
      */
-    private final int indentation;
+    private final Indent indentation;
 
     /**
      * The aggregator of the JS code.
@@ -71,7 +72,7 @@ public final class CodeLines {
     /**
      * The current depth of the code on which the next line will be added.
      */
-    private int currentDepth;
+    private Depth currentDepth;
 
     /**
      * Creates an instance of the {@code JsOutput} with the default indentation.
@@ -88,8 +89,8 @@ public final class CodeLines {
      */
     public CodeLines(int indentation) {
         this.codeLines = new ArrayList<>();
-        this.currentDepth = 0;
-        this.indentation = indentation;
+        this.currentDepth = Depth.zero();
+        this.indentation = Indent.of(indentation);
     }
 
     /**
@@ -125,8 +126,7 @@ public final class CodeLines {
      *         the statement to append
      */
     public void addStatement(Statement statement) {
-        Depth depth = Depth.of(currentDepth);
-        CodeLine line = statement.toLine(depth);
+        CodeLine line = statement.toLine(currentDepth);
         addLine(line);
     }
 
@@ -341,14 +341,14 @@ public final class CodeLines {
      * Manually increases the current depth.
      */
     public void increaseDepth() {
-        currentDepth++;
+        currentDepth = currentDepth.incremented();
     }
 
     /**
      * Manually decreases the current depth.
      */
     public void decreaseDepth() {
-        currentDepth--;
+        currentDepth = currentDepth.decremented();
     }
 
     /**
@@ -366,6 +366,6 @@ public final class CodeLines {
 
     @VisibleForTesting
     int currentDepth() {
-        return currentDepth;
+        return currentDepth.value();
     }
 }

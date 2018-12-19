@@ -40,7 +40,6 @@ class CodeLinesTest {
     private static final String LINE = "line";
     private static final String METHOD_NAME = "func";
     private static final String FUNCTION_ARG = "arg";
-    private static final String COMMENT = "comment";
     private static final String VALUE = "someValue";
     private static final String CONDITION = VALUE + " > 0";
     private static final String CUSTOM_BLOCK = "for (let i in values)";

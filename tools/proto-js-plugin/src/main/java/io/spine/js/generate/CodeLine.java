@@ -59,21 +59,32 @@ public final class CodeLine {
      *         the depth of the code
      */
     public CodeLine(String content, int depth) {
+        this(content, Depth.of(depth));
+    }
+
+    /**
+     * Creates a new {@code CodeLine}.
+     *
+     * @param content
+     *         the JS code
+     * @param depth
+     *         the depth of the code
+     */
+    public CodeLine(String content, Depth depth) {
         checkNotNull(content);
         this.content = content;
-        this.depth = Depth.of(depth);
+        this.depth = depth;
     }
 
     /**
      * Prepends the correct indent to the code line content.
      *
-     * @param spacesPerDepth
+     * @param indentPerDepth
      *         how many spaces are inserted per depth level
      * @return the {@code CodeLine} content with the correct indent
      */
-    String indent(int spacesPerDepth) {
-        Indent indent = Indent.of(spacesPerDepth)
-                              .ofDepth(depth);
+    String indent(Indent indentPerDepth) {
+        Indent indent = indentPerDepth.ofDepth(depth);
         String result = indent + content;
         return result;
     }

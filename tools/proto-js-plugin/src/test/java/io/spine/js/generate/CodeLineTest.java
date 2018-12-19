@@ -20,6 +20,7 @@
 
 package io.spine.js.generate;
 
+import io.spine.code.Indent;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -33,7 +34,7 @@ class CodeLineTest {
     void createIndent() {
         int depth = 2;
         CodeLine codeLine = new CodeLine("content", depth);
-        int spacesPerDepth = 2;
+        Indent spacesPerDepth = Indent.of2();
         String result = codeLine.indent(spacesPerDepth);
         String expected = "    content";
         assertEquals(expected, result);

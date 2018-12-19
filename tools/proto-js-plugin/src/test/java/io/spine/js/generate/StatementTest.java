@@ -21,6 +21,7 @@
 package io.spine.js.generate;
 
 import io.spine.code.Depth;
+import io.spine.code.Indent;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -41,8 +42,9 @@ class StatementTest {
     @DisplayName("convert to a code line")
     void toCodeLine() {
         Depth depth = Depth.of(1);
+        Indent indent = Indent.of2();
         Statement statement = Statement.of("callMethod();");
         CodeLine codeLine = statement.toLine(depth);
-        assertEquals(' ' + statement.value(), codeLine.indent(1));
+        assertEquals(indent + statement.value(), codeLine.indent(indent));
     }
 }
