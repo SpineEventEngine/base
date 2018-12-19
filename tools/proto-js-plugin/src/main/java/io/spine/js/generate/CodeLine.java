@@ -98,8 +98,8 @@ public final class CodeLine {
             return false;
         }
         CodeLine codeLine = (CodeLine) o;
-        return depth == codeLine.depth &&
-                content.equals(codeLine.content);
+        return content.equals(codeLine.content) &&
+                depth.equals(codeLine.depth);
     }
 
     @Override
