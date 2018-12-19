@@ -27,6 +27,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * An enhancement of generated Protobuf sources.
+ *
+ * <p>The class operates on the provided set of Protobuf files
+ * and enhances their JavaScript counterparts by generating additional code.
  */
 public abstract class FileSetEnhancement {
 
