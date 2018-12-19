@@ -24,7 +24,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.code.js.TypeName;
-import io.spine.js.generate.JsCodeGenerator;
+import io.spine.js.generate.CodeSnippet;
 import io.spine.js.generate.JsOutput;
 import io.spine.js.generate.parse.field.FieldGenerator;
 import io.spine.js.generate.parse.field.FieldGenerators;
@@ -42,7 +42,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 @SuppressWarnings("DuplicateStringLiteralInspection")
 // The generated code duplicates the code used in test that checks it.
-public class FromJsonMethod extends JsCodeGenerator {
+public class FromJsonMethod implements CodeSnippet {
 
     /**
      * The {@code fromJson} method name.
@@ -75,24 +75,20 @@ public class FromJsonMethod extends JsCodeGenerator {
 
     private final Descriptor message;
 
-    private FromJsonMethod(Descriptor message, JsOutput jsOutput) {
-        super(jsOutput);
+    private FromJsonMethod(Descriptor message) {
         this.message = message;
     }
 
     /**
-     * Creates the {@code MessageGenerator} for the given message and {@code JsOutput}.
+     * Creates a new instance.
      *
      * @param message
      *         the {@code Descriptor} of the message type which will be parsed in JS
-     * @param jsOutput
-     *         the {@code JsOutput} which accumulates all the generated lines
-     * @return the new {@code MessageGenerator}
+     * @return the new instance
      */
-    public static FromJsonMethod createFor(Descriptor message, JsOutput jsOutput) {
+    public static FromJsonMethod createFor(Descriptor message) {
         checkNotNull(message);
-        checkNotNull(jsOutput);
-        return new FromJsonMethod(message, jsOutput);
+        return new FromJsonMethod(message);
     }
 
     /**
@@ -102,9 +98,10 @@ public class FromJsonMethod extends JsCodeGenerator {
      * {@code JsOutput} code lines.
      */
     @Override
-    public void generate() {
-        generateFromJsonMethod();
-        generateFromObjectMethod();
+    public JsOutput value() {
+        JsOutput snippet = generateFromJsonMethod();
+        snippet.addLinesFrom(generateFromObjectMethod());
+        return snippet;
     }
 
     /**
@@ -112,10 +109,11 @@ public class FromJsonMethod extends JsCodeGenerator {
      * functionality and then calls {@code fromObject} for the parsed JS object.
      */
     @VisibleForTesting
-    void generateFromJsonMethod() {
-        jsOutput().addEmptyLine();
-        TypeName typeName = TypeName.from(message);
-        addFromJsonCode(typeName, jsOutput());
+    JsOutput generateFromJsonMethod() {
+        JsOutput snippet = new JsOutput();
+        snippet.addEmptyLine();
+        addFromJsonCode(message, snippet);
+        return snippet;
     }
 
     /**
@@ -125,16 +123,18 @@ public class FromJsonMethod extends JsCodeGenerator {
      * <p>If the object is {@code null}, the returned value will be {@code null}.
      */
     @VisibleForTesting
-    void generateFromObjectMethod() {
-        jsOutput().addEmptyLine();
-        TypeName typeName = TypeName.from(message);
-        addFromObjectCode(typeName);
+    JsOutput generateFromObjectMethod() {
+        JsOutput snippet = new JsOutput();
+        snippet.addEmptyLine();
+        addFromObjectCode(message, snippet);
+        return snippet;
     }
 
     /**
      * Adds the {@code fromJson} code to the {@code jsOutput}.
      */
-    private static void addFromJsonCode(TypeName typeName, JsOutput output) {
+    private static void addFromJsonCode(Descriptor message, JsOutput output) {
+        TypeName typeName = TypeName.from(message);
         String methodName = typeName.value() + '.' + FROM_JSON;
         output.enterMethod(methodName, FROM_JSON_ARG);
         output.declareVariable("jsObject", "JSON.parse(" + FROM_JSON_ARG + ')');
@@ -146,15 +146,16 @@ public class FromJsonMethod extends JsCodeGenerator {
      * Adds the {@code fromObject} code to the {@code jsOutput}.
      */
     @SuppressWarnings("DuplicateStringLiteralInspection") // Duplication in different context.
-    private void addFromObjectCode(TypeName typeName) {
+    private static void addFromObjectCode(Descriptor message, JsOutput output) {
+        TypeName typeName = TypeName.from(message);
         String methodName = typeName.value() + '.' + FROM_OBJECT;
-        jsOutput().enterMethod(methodName, FROM_OBJECT_ARG);
-        checkParsedObject(jsOutput());
-        jsOutput().addEmptyLine();
-        jsOutput().declareVariable(MESSAGE, "new " + typeName + "()");
-        handleMessageFields(jsOutput(), message);
-        jsOutput().returnValue(MESSAGE);
-        jsOutput().exitMethod();
+        output.enterMethod(methodName, FROM_OBJECT_ARG);
+        checkParsedObject(output);
+        output.addEmptyLine();
+        output.declareVariable(MESSAGE, "new " + typeName + "()");
+        handleMessageFields(output, message);
+        output.returnValue(MESSAGE);
+        output.exitMethod();
     }
 
     /**

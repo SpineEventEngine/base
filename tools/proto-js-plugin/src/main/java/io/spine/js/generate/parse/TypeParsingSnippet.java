@@ -126,8 +126,8 @@ public final class TypeParsingSnippet implements CodeSnippet {
     JsOutput generateMethods() {
         JsOutput snippet = new JsOutput();
         for (Descriptor message : file.getMessageTypes()) {
-            FromJsonMethod generator = FromJsonMethod.createFor(message, snippet);
-            generator.generate();
+            FromJsonMethod fromJsonMethod = FromJsonMethod.createFor(message);
+            snippet.addLinesFrom(fromJsonMethod.value());
         }
         return snippet;
     }

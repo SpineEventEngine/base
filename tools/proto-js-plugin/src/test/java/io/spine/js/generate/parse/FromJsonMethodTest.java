@@ -27,8 +27,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-
 import static io.spine.js.generate.given.Generators.assertContains;
 import static io.spine.js.generate.given.Given.message;
 import static io.spine.js.generate.parse.FromJsonMethod.FROM_JSON;
@@ -36,6 +34,7 @@ import static io.spine.js.generate.parse.FromJsonMethod.FROM_JSON_ARG;
 import static io.spine.js.generate.parse.FromJsonMethod.FROM_OBJECT;
 import static io.spine.js.generate.parse.FromJsonMethod.FROM_OBJECT_ARG;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -46,14 +45,12 @@ import static org.mockito.Mockito.verify;
 class FromJsonMethodTest {
 
     private Descriptor message;
-    private JsOutput jsOutput;
     private FromJsonMethod generator;
 
     @BeforeEach
-    void setUp() throws IOException {
+    void setUp() {
         message = message();
-        jsOutput = new JsOutput();
-        generator = FromJsonMethod.createFor(message, jsOutput);
+        generator = FromJsonMethod.createFor(message);
     }
 
     @Test
@@ -66,33 +63,33 @@ class FromJsonMethodTest {
     @Test
     @DisplayName("generate `fromJson` method for message")
     void generateFromJson() {
-        generator.generateFromJsonMethod();
+        JsOutput snippet = generator.generateFromJsonMethod();
         String methodDeclaration = message.getFullName() + '.' + FROM_JSON;
-        assertContains(jsOutput, methodDeclaration);
+        assertContains(snippet, methodDeclaration);
     }
 
     @Test
     @DisplayName("parse JSON into JS object in `fromJson` method")
     void parseJsonIntoObject() {
-        generator.generateFromJsonMethod();
+        JsOutput snippet = generator.generateFromJsonMethod();
         String parseStatement = "JSON.parse(" + FROM_JSON_ARG + ')';
-        assertContains(jsOutput, parseStatement);
+        assertContains(snippet, parseStatement);
     }
 
     @Test
     @DisplayName("generate `fromObject` method for message")
     void generateFromObject() {
-        generator.generateFromObjectMethod();
+        JsOutput snippet = generator.generateFromObjectMethod();
         String methodDeclaration = message.getFullName() + '.' + FROM_OBJECT;
-        assertContains(jsOutput, methodDeclaration);
+        assertContains(snippet, methodDeclaration);
     }
 
     @Test
     @DisplayName("check parsed object for null in `fromObject` method")
     void checkJsObjectForNull() {
-        generator.generateFromObjectMethod();
+        JsOutput snippet = generator.generateFromObjectMethod();
         String check = "if (" + FROM_OBJECT_ARG + " === null) {";
-        assertContains(jsOutput, check);
+        assertContains(snippet, check);
     }
 
     @SuppressWarnings("AccessStaticViaInstance") // For the testing purpose.
@@ -100,8 +97,9 @@ class FromJsonMethodTest {
     @DisplayName("handle message fields in `fromObject` method")
     void handleMessageFields() {
         FromJsonMethod generator = spy(this.generator);
-        generator.generateFromObjectMethod();
+        JsOutput snippet = generator.generateFromObjectMethod();
         verify(generator, times(1))
-                .handleMessageFields(jsOutput, message);
+                .handleMessageFields(new JsOutput(), message);
+        assertNotNull(snippet);
     }
 }
