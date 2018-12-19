@@ -23,7 +23,7 @@ package io.spine.js.generate;
 /**
  * A snippet of the code.
  */
-public interface CodeSnippet {
+public interface Snippet {
 
     /**
      * Obtains code lines representing this snippet.

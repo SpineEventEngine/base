@@ -25,7 +25,7 @@ import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.code.js.TypeName;
 import io.spine.js.generate.CodeLines;
-import io.spine.js.generate.CodeSnippet;
+import io.spine.js.generate.Snippet;
 import io.spine.js.generate.parse.field.FieldGenerator;
 import io.spine.js.generate.parse.field.FieldGenerators;
 
@@ -42,7 +42,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 @SuppressWarnings("DuplicateStringLiteralInspection")
 // The generated code duplicates the code used in test that checks it.
-public class FromJsonMethod implements CodeSnippet {
+public class FromJsonMethod implements Snippet {
 
     /**
      * The {@code fromJson} method name.

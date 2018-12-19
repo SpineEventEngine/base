@@ -27,7 +27,7 @@ import io.spine.code.js.FileName;
 import io.spine.code.js.TypeName;
 import io.spine.code.proto.FileSet;
 import io.spine.js.generate.CodeLines;
-import io.spine.js.generate.CodeSnippet;
+import io.spine.js.generate.Snippet;
 import io.spine.js.generate.importado.JsImportGenerator;
 import io.spine.type.TypeUrl;
 
@@ -45,7 +45,7 @@ import static java.util.stream.Collectors.toSet;
  * <p>This class generates the map with all the known types written in the form of
  * "{@linkplain TypeUrl type-url}-to-JS-type", as well as the imports necessary to use the types.
  */
-public final class KnownTypesMap implements CodeSnippet {
+public final class KnownTypesMap implements Snippet {
 
     /**
      * The exported map name.

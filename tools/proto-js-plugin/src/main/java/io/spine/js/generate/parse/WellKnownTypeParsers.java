@@ -39,7 +39,7 @@ import com.google.protobuf.UInt32Value;
 import com.google.protobuf.UInt64Value;
 import com.google.protobuf.Value;
 import io.spine.js.generate.CodeLines;
-import io.spine.js.generate.CodeSnippet;
+import io.spine.js.generate.Snippet;
 import io.spine.type.TypeUrl;
 
 import java.util.Map.Entry;
@@ -56,7 +56,7 @@ import static io.spine.type.TypeUrl.of;
  * <p>The parsers may be used to parse JSON via their {@code parse(value)} method.
  */
 @SuppressWarnings("OverlyCoupledClass") // Dependencies for the listed Protobuf types.
-public final class WellKnownTypeParsers implements CodeSnippet {
+public final class WellKnownTypeParsers implements Snippet {
 
     /**
      * The exported map name.

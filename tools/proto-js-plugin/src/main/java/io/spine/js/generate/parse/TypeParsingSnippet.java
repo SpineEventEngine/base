@@ -25,7 +25,7 @@ import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.js.FileName;
 import io.spine.js.generate.CodeLines;
-import io.spine.js.generate.CodeSnippet;
+import io.spine.js.generate.Snippet;
 import io.spine.js.generate.importado.JsImportGenerator;
 
 import static io.spine.code.js.LibraryFile.KNOWN_TYPE_PARSERS;
@@ -36,7 +36,7 @@ import static io.spine.code.js.LibraryFile.KNOWN_TYPE_PARSERS;
  * <p>The class generates the {@code fromJson} and {@code fromObject} methods for each message
  * declared in the {@link FileDescriptor}.
  */
-public final class TypeParsingSnippet implements CodeSnippet {
+public final class TypeParsingSnippet implements Snippet {
 
     /**
      * The name of the {@code known_type_parsers.js} import.

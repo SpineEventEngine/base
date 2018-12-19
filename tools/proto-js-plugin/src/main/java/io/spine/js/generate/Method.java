@@ -29,7 +29,7 @@ import static java.lang.String.join;
 /**
  * The declaration of a method in Javascript code.
  */
-public class Method implements CodeSnippet {
+public class Method implements Snippet {
 
     private final String name;
     private final List<String> arguments;
