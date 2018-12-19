@@ -53,7 +53,7 @@ class StatementTest {
         Depth depth = Depth.of(1);
         Indent indent = Indent.of2();
         Statement statement = Statement.of("callMethod();");
-        CodeLine codeLine = statement.toLine(depth);
+        IndentedLine codeLine = statement.toLine(depth);
         assertEquals(indent + statement.value(), codeLine.indent(indent));
     }
 }

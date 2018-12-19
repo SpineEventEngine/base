@@ -20,91 +20,24 @@
 
 package io.spine.js.generate;
 
-import io.spine.code.Depth;
-import io.spine.code.Indent;
-
-import java.util.Objects;
-
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * The JS code line.
+ * A line of a JavaScript code.
  *
- * <p>Consists of the code itself and the depth on which the code is located.
- *
- * <p>For example, the code inside the {@code if} block is one unit deeper than the {@code if}
- * declaration itself.
+ * <p>The line is not aware of {@linkplain IndentedLine indentation}.
  */
-public final class CodeLine {
+public class CodeLine {
 
     private final String content;
-    private final Depth depth;
 
-    /**
-     * Creates a new {@code CodeLine} without the zero depth.
-     *
-     * @param content
-     *         the JS code
-     */
     public CodeLine(String content) {
-        this(content, 0);
-    }
-
-    /**
-     * Creates a new {@code CodeLine}.
-     *
-     * @param content
-     *         the JS code
-     * @param depth
-     *         the depth of the code
-     */
-    public CodeLine(String content, int depth) {
-        this(content, Depth.of(depth));
-    }
-
-    /**
-     * Creates a new {@code CodeLine}.
-     *
-     * @param content
-     *         the JS code
-     * @param depth
-     *         the depth of the code
-     */
-    public CodeLine(String content, Depth depth) {
         checkNotNull(content);
         this.content = content;
-        this.depth = depth;
     }
 
-    /**
-     * Prepends the correct indent to the code line content.
-     *
-     * @param indentPerDepth
-     *         how many spaces are inserted per depth level
-     * @return the {@code CodeLine} content with the correct indent
-     */
-    String indent(Indent indentPerDepth) {
-        Indent indent = indentPerDepth.ofDepth(depth);
-        String result = indent + content;
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof CodeLine)) {
-            return false;
-        }
-        CodeLine codeLine = (CodeLine) o;
-        return content.equals(codeLine.content) &&
-                depth.equals(codeLine.depth);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(content, depth);
+    public String content() {
+        return content;
     }
 
     @Override

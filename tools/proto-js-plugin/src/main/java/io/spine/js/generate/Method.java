@@ -33,7 +33,7 @@ public class Method implements Snippet {
 
     private final String name;
     private final List<String> arguments;
-    private final List<CodeLine> body;
+    private final List<IndentedLine> body;
 
     private Method(Builder builder) {
         this.name = builder.name;
@@ -53,13 +53,13 @@ public class Method implements Snippet {
     /**
      * Declares JS method and enters its body.
      */
-    public CodeLine declaration() {
+    public IndentedLine declaration() {
         String argString = join(", ", arguments);
-        return new CodeLine(name + " = function(" + argString + ") {");
+        return new IndentedLine(name + " = function(" + argString + ") {");
     }
 
-    public CodeLine ending() {
-        return new CodeLine("};");
+    public IndentedLine ending() {
+        return new IndentedLine("};");
     }
 
     /**
@@ -79,7 +79,7 @@ public class Method implements Snippet {
     public static class Builder {
 
         private final String name;
-        private final List<CodeLine> body = newArrayList();
+        private final List<IndentedLine> body = newArrayList();
         private List<String> arguments = newArrayList();
 
         Builder(String name) {
@@ -99,7 +99,7 @@ public class Method implements Snippet {
          * Adds a line to the body of the method.
          */
         public Builder appendBody(String line) {
-            CodeLine codeLine = new CodeLine(line, 1);
+            IndentedLine codeLine = new IndentedLine(line, 1);
             body.add(codeLine);
             return this;
         }

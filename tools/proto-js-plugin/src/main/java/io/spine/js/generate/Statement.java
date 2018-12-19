@@ -59,7 +59,7 @@ public class Statement extends StringTypeValue {
     /**
      * Converts the statement to a line with the specified depth.
      */
-    public CodeLine toLine(Depth depth) {
-        return new CodeLine(value(), depth.value());
+    public IndentedLine toLine(Depth depth) {
+        return new IndentedLine(value(), depth.value());
     }
 }

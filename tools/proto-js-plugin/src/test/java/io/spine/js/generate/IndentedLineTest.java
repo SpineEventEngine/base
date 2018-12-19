@@ -26,14 +26,14 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DisplayName("CodeLine should")
-class CodeLineTest {
+@DisplayName("IndentedLine should")
+class IndentedLineTest {
 
     @Test
     @DisplayName("create indent for code based on depth and indentation")
     void createIndent() {
         int depth = 2;
-        CodeLine codeLine = new CodeLine("content", depth);
+        IndentedLine codeLine = new IndentedLine("content", depth);
         Indent spacesPerDepth = Indent.of2();
         String result = codeLine.indent(spacesPerDepth);
         String expected = "    content";

@@ -67,7 +67,7 @@ public final class CodeLines {
     /**
      * The aggregator of the JS code.
      */
-    private final List<CodeLine> codeLines;
+    private final List<IndentedLine> codeLines;
 
     /**
      * The current depth of the code on which the next line will be added.
@@ -115,7 +115,7 @@ public final class CodeLines {
      */
     public void addLine(String codeLine) {
         checkNotNull(codeLine);
-        CodeLine line = new CodeLine(codeLine, currentDepth);
+        IndentedLine line = new IndentedLine(codeLine, currentDepth);
         codeLines.add(line);
     }
 
@@ -126,7 +126,7 @@ public final class CodeLines {
      *         the statement to append
      */
     public void addStatement(Statement statement) {
-        CodeLine line = statement.toLine(currentDepth);
+        IndentedLine line = statement.toLine(currentDepth);
         addLine(line);
     }
 
@@ -136,7 +136,7 @@ public final class CodeLines {
      * @param codeLine
      *         the code to add
      */
-    public void addLine(CodeLine codeLine) {
+    public void addLine(IndentedLine codeLine) {
         checkNotNull(codeLine);
         codeLines.add(codeLine);
     }
@@ -147,9 +147,9 @@ public final class CodeLines {
      * @param lines
      *         the code to add
      */
-    public void addLines(List<CodeLine> lines) {
+    public void addLines(List<IndentedLine> lines) {
         checkNotNull(lines);
-        for (CodeLine line : lines) {
+        for (IndentedLine line : lines) {
             addLine(line);
         }
     }
