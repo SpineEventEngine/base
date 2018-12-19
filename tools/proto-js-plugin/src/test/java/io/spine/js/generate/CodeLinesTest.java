@@ -117,14 +117,6 @@ class CodeLinesTest {
     }
 
     @Test
-    @DisplayName("add comment")
-    void addComment() {
-        jsOutput.addComment(COMMENT);
-        String comment = "// " + COMMENT;
-        assertContains(jsOutput, comment);
-    }
-
-    @Test
     @DisplayName("compose return statement")
     void addReturn() {
         jsOutput.returnValue(VALUE);

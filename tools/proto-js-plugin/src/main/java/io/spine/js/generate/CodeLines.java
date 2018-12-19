@@ -118,6 +118,18 @@ public final class CodeLines {
     }
 
     /**
+     * Appends the statements to the end of the lines.
+     *
+     * @param statement
+     *         the statement to append
+     */
+    public void addStatement(Statement statement) {
+        Depth depth = Depth.of(currentDepth);
+        CodeLine line = statement.toLine(depth);
+        addLine(line);
+    }
+
+    /**
      * Appends the line of code to the output.
      *
      * @param codeLine
@@ -172,17 +184,6 @@ public final class CodeLines {
         checkNotNull(value);
         String line = Statements.returnValue(value);
         addLine(line);
-    }
-
-    /**
-     * Adds a comment to the code.
-     *
-     * @param comment
-     *         the comment text
-     */
-    public void addComment(String comment) {
-        checkNotNull(comment);
-        addLine("// " + comment);
     }
 
     /**
