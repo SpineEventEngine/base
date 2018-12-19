@@ -118,19 +118,18 @@ public final class JsOutput {
     }
 
     /**
-     * Appends the line of code with and adjusts its depth.
+     * Appends the line of code to the output.
      *
      * @param codeLine
      *         the code to add
      */
     public void addLine(CodeLine codeLine) {
         checkNotNull(codeLine);
-        CodeLine increasedDepthLine = codeLine.withIncreasedDepth(currentDepth);
-        codeLines.add(increasedDepthLine);
+        codeLines.add(codeLine);
     }
 
     /**
-     * Appends the lines of code with and adjusts its depth.
+     * Appends the line of code to the output.
      *
      * @param lines
      *         the code to add

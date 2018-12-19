@@ -64,16 +64,6 @@ public final class CodeLine {
     }
 
     /**
-     * Obtains the new code line by increasing the depth of this line.
-     *
-     * @param shiftBy
-     *         the value to increase the depth by
-     */
-    public CodeLine withIncreasedDepth(int shiftBy) {
-        return new CodeLine(content, depth + shiftBy);
-    }
-
-    /**
      * Prepends the correct indent to the code line content.
      *
      * @param spacesPerDepth
