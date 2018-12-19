@@ -25,7 +25,6 @@ import com.google.protobuf.Timestamp;
 import io.spine.js.generate.JsOutput;
 import io.spine.type.TypeUrl;
 import io.spine.validate.ValidationError;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -34,39 +33,32 @@ import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("ProtoParsersGenerator should")
-class ProtoParsersGeneratorTest {
+@DisplayName("WellKnownTypeParsers should")
+class WellKnownTypeParsersTest {
 
-    private JsOutput jsOutput;
-    private ProtoParsersGenerator generator;
-
-    @BeforeEach
-    void setUp() {
-        jsOutput = new JsOutput();
-        generator = new ProtoParsersGenerator(jsOutput);
-    }
+    private final WellKnownTypeParsers generator = new WellKnownTypeParsers();
 
     @Test
     @DisplayName(NOT_ACCEPT_NULLS)
     void passNullToleranceCheck() {
-        new NullPointerTester().testAllPublicStaticMethods(ProtoParsersGenerator.class);
+        new NullPointerTester().testAllPublicStaticMethods(WellKnownTypeParsers.class);
     }
 
     @Test
     @DisplayName("tell if parser for type URL is present")
     void tellIfHasParser() {
         TypeUrl timestamp = TypeUrl.of(Timestamp.class);
-        assertTrue(ProtoParsersGenerator.hasParser(timestamp));
+        assertTrue(WellKnownTypeParsers.hasParser(timestamp));
 
         TypeUrl validationError = TypeUrl.of(ValidationError.class);
-        assertFalse(ProtoParsersGenerator.hasParser(validationError));
+        assertFalse(WellKnownTypeParsers.hasParser(validationError));
     }
 
     @Test
     @DisplayName("generate known type parsers map")
     void generateParsersMap() {
-        generator.generate();
+        JsOutput snippet = generator.value();
         String mapEntry = "['type.googleapis.com/google.protobuf.Value', new ValueParser()]";
-        assertContains(jsOutput, mapEntry);
+        assertContains(snippet, mapEntry);
     }
 }

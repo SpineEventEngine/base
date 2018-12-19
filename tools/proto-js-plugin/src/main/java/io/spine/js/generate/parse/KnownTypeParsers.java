@@ -111,11 +111,9 @@ public final class KnownTypeParsers extends FileSetEnhancement {
     @VisibleForTesting
     void writeKnownTypeParsers() {
         copyParsersCode();
-        JsOutput jsOutput = new JsOutput();
-        ProtoParsersGenerator generator = new ProtoParsersGenerator(jsOutput);
-        generator.generate();
+        WellKnownTypeParsers generator = new WellKnownTypeParsers();
         JsFile file = JsFile.createFor(generatedRoot(), KNOWN_TYPE_PARSERS);
-        file.append(jsOutput);
+        file.append(generator.value());
     }
 
     /**

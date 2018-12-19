@@ -38,7 +38,7 @@ import com.google.protobuf.Timestamp;
 import com.google.protobuf.UInt32Value;
 import com.google.protobuf.UInt64Value;
 import com.google.protobuf.Value;
-import io.spine.js.generate.JsCodeGenerator;
+import io.spine.js.generate.CodeSnippet;
 import io.spine.js.generate.JsOutput;
 import io.spine.type.TypeUrl;
 
@@ -55,7 +55,7 @@ import static io.spine.type.TypeUrl.of;
  * <p>The parsers may be used to parse JSON via their {@code parse(value)} method.
  */
 @SuppressWarnings("OverlyCoupledClass") // Dependencies for the listed Protobuf types.
-public final class ProtoParsersGenerator extends JsCodeGenerator {
+public final class WellKnownTypeParsers implements CodeSnippet {
 
     /**
      * The exported map name.
@@ -73,16 +73,6 @@ public final class ProtoParsersGenerator extends JsCodeGenerator {
      * in the {@code known_type_parsers} resource.
      */
     private static final ImmutableMap<TypeUrl, String> parsers = parsers();
-
-    /**
-     * Creates a new {@code ProtoParsersGenerator}.
-     *
-     * @param jsOutput
-     *         the {@code JsOutput} which accumulates all the generated code
-     */
-    public ProtoParsersGenerator(JsOutput jsOutput) {
-        super(jsOutput);
-    }
 
     /**
      * Checks if the JSON parser for the following {@code TypeUrl} is available.
@@ -104,32 +94,26 @@ public final class ProtoParsersGenerator extends JsCodeGenerator {
      * <p>The name of the exported map is the {@link #MAP_NAME}.
      */
     @Override
-    public void generate() {
-        jsOutput().addEmptyLine();
-        jsOutput().exportMap(MAP_NAME);
-        storeParsersToMap();
-        jsOutput().quitMapDeclaration();
+    public JsOutput value() {
+        JsOutput out = new JsOutput();
+        out.addEmptyLine();
+        out.exportMap(MAP_NAME);
+        storeParsersToMap(out);
+        out.quitMapDeclaration();
+        return out;
     }
 
     /**
      * Adds entries to the declared parsers {@code Map}.
      */
-    private void storeParsersToMap() {
+    private static void storeParsersToMap(JsOutput output) {
         ImmutableSet<Entry<TypeUrl, String>> entries = parsers.entrySet();
         for (UnmodifiableIterator<Entry<TypeUrl, String>> it = entries.iterator(); it.hasNext(); ) {
             Entry<TypeUrl, String> typeToParser = it.next();
             boolean isLastEntry = !it.hasNext();
-            addMapEntry(typeToParser, isLastEntry);
+            String entryCodeLine = jsMapEntry(typeToParser);
+            output.addMapEntry(entryCodeLine, isLastEntry);
         }
-    }
-
-    /**
-     * Converts the {@linkplain #parsers parsers map} entry to the JS map entry and adds it to the
-     * generated code.
-     */
-    private void addMapEntry(Entry<TypeUrl, String> typeToParser, boolean isLastEntry) {
-        String mapEntry = jsMapEntry(typeToParser);
-        jsOutput().addMapEntry(mapEntry, isLastEntry);
     }
 
     /**
