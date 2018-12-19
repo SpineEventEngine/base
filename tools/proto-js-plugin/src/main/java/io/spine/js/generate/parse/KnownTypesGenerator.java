@@ -36,6 +36,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import static io.spine.js.generate.Statements.mapEntry;
 import static java.util.stream.Collectors.toSet;
 
 /**
@@ -158,7 +159,7 @@ public final class KnownTypesGenerator extends JsCodeGenerator {
     private static String jsMapEntry(Descriptor message) {
         TypeUrl typeUrl = TypeUrl.from(message);
         TypeName typeName = TypeName.from(message);
-        String mapEntry = "['" + typeUrl + "', " + typeName + ']';
+        String mapEntry = mapEntry(typeUrl.value(), typeName);
         return mapEntry;
     }
 }

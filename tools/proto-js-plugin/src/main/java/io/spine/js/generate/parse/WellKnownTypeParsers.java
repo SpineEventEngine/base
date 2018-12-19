@@ -45,6 +45,7 @@ import io.spine.type.TypeUrl;
 import java.util.Map.Entry;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.js.generate.Statements.mapEntry;
 import static io.spine.type.TypeUrl.of;
 
 /**
@@ -125,7 +126,7 @@ public final class WellKnownTypeParsers implements CodeSnippet {
         TypeUrl typeUrl = typeToParser.getKey();
         String parserName = typeToParser.getValue();
         String newParserCall = "new " + parserName + "()";
-        String mapEntry = "['" + typeUrl + "', " + newParserCall + ']';
+        String mapEntry = mapEntry(typeUrl.value(), newParserCall);
         return mapEntry;
     }
 

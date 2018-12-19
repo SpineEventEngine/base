@@ -50,4 +50,11 @@ public class Statements {
         String statement = "return " + value + ';';
         return statement;
     }
+
+    /**
+     * Composes a map entry with the string literal key.
+     */
+    public static String mapEntry(String key, Object value) {
+        return "['" + key + "', " + value + ']';
+    }
 }
