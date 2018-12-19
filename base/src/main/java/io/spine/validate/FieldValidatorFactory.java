@@ -33,43 +33,91 @@ class FieldValidatorFactory {
         // Prevent instantiation of this utility class.
     }
 
-    static FieldValidator<?> create(FieldValue fieldValue) {
-        return create(fieldValue, false);
+    /**
+     * Creates a new instance of a validator.
+     *
+     * <p>The exact type of the validator depends on the type of the field, the change of which
+     * is being validated.
+     *
+     * @param change
+     *         a change of the field value to validate
+     */
+    static FieldValidator<?> create(FieldValueChange change) {
+        return create(change, false);
     }
 
-    static FieldValidator<?> createStrict(FieldValue fieldValue) {
-        return create(fieldValue, true);
+    /**
+     * Creates a new instance of a validator, that assumes that the field that is being validated
+     * is required.
+     *
+     * <p>The exact type of the validator depends on the type of the field, the change of which
+     * is being validated.
+     *
+     * @param change
+     *         a change of the field value to validate
+     */
+    static FieldValidator<?> createStrict(FieldValueChange change) {
+        return create(change, true);
+    }
+
+    /**
+     * Creates a new instance of a validator.
+     *
+     * <p>The exact type fo the validator depends o the type of the field that is being validated.
+     *
+     * @param value
+     *         the value of the field to validate
+     */
+    static FieldValidator<?> create(FieldValue value) {
+        FieldValueChange change = FieldValueChange.firstValueEver(value);
+        return create(change, false);
+    }
+
+    /**
+     * Creates a new instance of a validator, that assumes that the field that is being validated
+     * is required.
+     *
+     * <p>The exact type of the validator depends on the type of the field, the change of which
+     * is being validated.
+     *
+     * @param value the value of the field to validate
+     *
+     */
+    static FieldValidator<?> createStrict(FieldValue value) {
+        FieldValueChange change = FieldValueChange.firstValueEver(value);
+        return create(change, true);
     }
 
     /**
      * Creates a new validator instance according to the type of the value.
      *
-     * @param fieldValue
+     * @param change
      *         a value of the field to validate
      * @param strict
      *         if {@code true} validators would always assume that the field is
      */
-    private static FieldValidator<?> create(FieldValue fieldValue, boolean strict) {
-        JavaType fieldType = fieldValue.javaType();
+    private static FieldValidator<?> create(FieldValueChange change, boolean strict) {
+        JavaType fieldType = change.newValue()
+                                   .javaType();
         switch (fieldType) {
             case MESSAGE:
-                return new MessageFieldValidator(fieldValue, strict);
+                return new MessageFieldValidator(change, strict);
             case INT:
-                return new IntegerFieldValidator(fieldValue);
+                return new IntegerFieldValidator(change);
             case LONG:
-                return new LongFieldValidator(fieldValue);
+                return new LongFieldValidator(change);
             case FLOAT:
-                return new FloatFieldValidator(fieldValue);
+                return new FloatFieldValidator(change);
             case DOUBLE:
-                return new DoubleFieldValidator(fieldValue);
+                return new DoubleFieldValidator(change);
             case STRING:
-                return new StringFieldValidator(fieldValue, strict);
+                return new StringFieldValidator(change, strict);
             case BYTE_STRING:
-                return new ByteStringFieldValidator(fieldValue);
+                return new ByteStringFieldValidator(change);
             case BOOLEAN:
-                return new BooleanFieldValidator(fieldValue);
+                return new BooleanFieldValidator(change);
             case ENUM:
-                return new EnumFieldValidator(fieldValue);
+                return new EnumFieldValidator(change);
             default:
                 throw fieldTypeIsNotSupported(fieldType);
         }

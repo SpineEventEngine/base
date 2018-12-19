@@ -157,10 +157,19 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
     public <V> void validate(FieldDescriptor descriptor, V fieldValue, String fieldName)
             throws ValidationException {
         FieldContext fieldContext = FieldContext.create(descriptor);
+        FieldValue currentValue = currentFieldValue(descriptor, fieldContext);
         FieldValue valueToValidate = FieldValue.of(fieldValue, fieldContext);
-        FieldValidator<?> validator = create(valueToValidate);
+        FieldValueChange change = FieldValueChange.of(currentValue, valueToValidate);
+        FieldValidator<?> validator = create(change);
         List<ConstraintViolation> violations = validator.validate();
         checkViolations(violations);
+    }
+
+    private FieldValue currentFieldValue(FieldDescriptor descriptor,
+                                         FieldContext fieldContext) {
+        return getMessageBuilder().hasField(descriptor) ?
+               FieldValue.of(messageBuilder.getField(descriptor), fieldContext) :
+               null;
     }
 
     /**

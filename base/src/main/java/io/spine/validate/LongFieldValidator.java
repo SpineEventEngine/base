@@ -30,6 +30,16 @@ class LongFieldValidator extends NumberFieldValidator<Long> {
     /**
      * Creates a new validator instance.
      *
+     * @param fieldValueChange
+     *         the change of the field to validate
+     */
+    LongFieldValidator(FieldValueChange fieldValueChange) {
+        super(fieldValueChange);
+    }
+
+    /**
+     * Creates a new validator instance.
+     *
      * @param fieldValue
      *         the value to validate
      */
