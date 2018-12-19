@@ -125,7 +125,7 @@ public final class CodeLines {
      * @param line
      *         the line to append
      */
-    public void addLine(CodeLine line) {
+    public void append(CodeLine line) {
         checkNotNull(line);
         IndentedLine indented = new IndentedLine(line.content(), currentDepth);
         addLine(indented);
@@ -184,8 +184,8 @@ public final class CodeLines {
      */
     public void returnValue(Object value) {
         checkNotNull(value);
-        CodeLine line = CodeLine.returnValue(value);
-        addLine(line);
+        CodeLine line = Return.value(value);
+        append(line);
     }
 
     /**

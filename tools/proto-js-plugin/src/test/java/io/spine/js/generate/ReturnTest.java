@@ -20,32 +20,32 @@
 
 package io.spine.js.generate;
 
-import com.google.common.truth.StringSubject;
-import com.google.common.truth.Truth;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-@DisplayName("CodeLine should")
-class CodeLineTest {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+@DisplayName("Return")
+class ReturnTest {
 
     @Test
-    @DisplayName("provide a comment")
-    void comment() {
-        String value = "A comment text";
-        CodeLine comment = CodeLine.comment(value);
-        assertThat(comment).isEqualTo("// " + value);
+    @DisplayName("an object")
+    void object() {
+        Return line = Return.value(5);
+        assertEquals("return 5;", line.content());
     }
 
     @Test
-    @DisplayName("provide a map entry with string literal key")
-    void mapEntry() {
-        String key = "k";
-        String value = "v";
-        CodeLine mapEntry = CodeLine.mapEntry(key, value);
-        assertThat(mapEntry).isEqualTo("['k', v]");
+    @DisplayName("a string literal")
+    void stringLiteral() {
+        Return line = Return.stringLiteral("foo");
+        assertEquals("return 'foo';", line.content());
     }
 
-    private static StringSubject assertThat(CodeLine line) {
-        return Truth.assertThat(line.content());
+    @Test
+    @DisplayName("null reference")
+    void nullValue() {
+        Return nullValue = Return.nullReference();
+        assertEquals("return null;", nullValue.content());
     }
 }

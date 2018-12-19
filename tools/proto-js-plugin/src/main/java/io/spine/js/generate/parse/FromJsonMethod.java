@@ -25,6 +25,7 @@ import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.code.js.TypeName;
 import io.spine.js.generate.CodeLines;
+import io.spine.js.generate.Return;
 import io.spine.js.generate.Snippet;
 import io.spine.js.generate.parse.field.FieldGenerator;
 import io.spine.js.generate.parse.field.FieldGenerators;
@@ -163,7 +164,7 @@ public class FromJsonMethod implements Snippet {
      */
     private static void checkParsedObject(CodeLines output) {
         output.ifNull(FROM_OBJECT_ARG);
-        output.returnValue("null");
+        output.append(Return.nullReference());
         output.exitBlock();
     }
 

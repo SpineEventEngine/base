@@ -96,7 +96,7 @@ public final class TypeParsingSnippet implements Snippet {
     CodeLines generateComment() {
         CodeLines snippet = new CodeLines();
         snippet.addEmptyLine();
-        snippet.addLine(comment(COMMENT));
+        snippet.append(comment(COMMENT));
         return snippet;
     }
 

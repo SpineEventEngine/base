@@ -20,63 +20,45 @@
 
 package io.spine.js.generate;
 
-import java.util.Objects;
-
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
 
 /**
- * A line of a JavaScript code.
- *
- * <p>The line is not aware of {@linkplain IndentedLine indentation}.
+ * A code line representing a {@code return} statement.
  */
-public class CodeLine {
+public class Return extends CodeLine {
 
-    private final String content;
-
-    public CodeLine(String content) {
-        checkNotNull(content);
-        this.content = content;
+    private Return(String returnedValue) {
+        super(returnedValue);
     }
 
+    @Override
     public String content() {
-        return content;
+        String returnedValue = super.content();
+        return format("return %s;", returnedValue);
     }
 
     /**
-     * Obtains the comment from the specified text.
+     * Composes a statement returning the value.
      */
-    public static CodeLine comment(String commentText) {
-        checkNotNull(commentText);
-        return new CodeLine("// " + commentText);
-    }
-
-    public static CodeLine mapEntry(String key, Object value) {
-        checkNotNull(key);
+    public static Return value(Object value) {
         checkNotNull(value);
-        String raw = format("['%s', %s]", key, value);
-        return new CodeLine(raw);
+        return new Return(value.toString());
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof CodeLine)) {
-            return false;
-        }
-        CodeLine line = (CodeLine) o;
-        return content.equals(line.content);
+    /**
+     * Composes a statement returning a string literal.
+     */
+    public static Return stringLiteral(String literal) {
+        checkNotNull(literal);
+        String quoted = format("'%s'", literal);
+        return new Return(quoted);
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(content);
-    }
-
-    @Override
-    public String toString() {
-        return content;
+    /**
+     * Composes a statement returning {@code null}.
+     */
+    public static Return nullReference() {
+        return value("null");
     }
 }

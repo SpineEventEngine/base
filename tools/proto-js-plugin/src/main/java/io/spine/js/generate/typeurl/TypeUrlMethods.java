@@ -30,11 +30,11 @@ import io.spine.js.generate.CodeLines;
 import io.spine.js.generate.JsFile;
 import io.spine.js.generate.JsType;
 import io.spine.js.generate.Method;
+import io.spine.js.generate.Return;
 import io.spine.js.generate.Snippet;
 import io.spine.type.TypeUrl;
 
 import static io.spine.js.generate.CodeLine.comment;
-import static io.spine.js.generate.CodeLine.returnString;
 
 /**
  * Generates a method to obtain a {@code TypeUrl} for each type in a file.
@@ -60,7 +60,7 @@ final class TypeUrlMethods implements Snippet {
         TypeSet types = TypeSet.messagesAndEnums(file);
         for (Type type : types.types()) {
             Snippet method = typeUrlMethod(type);
-            output.addLine(COMMENT);
+            output.append(COMMENT);
             output.addLinesFrom(method.value());
             output.addEmptyLine();
         }
@@ -81,7 +81,7 @@ final class TypeUrlMethods implements Snippet {
         TypeUrl typeUrl = type.url();
         JsType jsType = JsType.generatedFrom(type);
         String methodName = jsType.staticMethod(METHOD_NAME);
-        CodeLine returnStatement = returnString(typeUrl.value());
+        CodeLine returnStatement = Return.stringLiteral(typeUrl.value());
         Method method = Method
                 .newBuilder(methodName)
                 .appendBody(returnStatement.content())
