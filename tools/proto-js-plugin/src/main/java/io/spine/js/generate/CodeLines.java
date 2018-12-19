@@ -100,9 +100,9 @@ public final class CodeLines {
      *         the code to add
      */
     public void addLinesFrom(CodeLines output) {
-        checkArgument(indentation == output.indentation,
+        checkArgument(indentation.equals(output.indentation),
                       "Cannot merge code parts with different indentation.");
-        checkArgument(currentDepth == output.currentDepth,
+        checkArgument(currentDepth.equals(output.currentDepth),
                       "Cannot merge code parts with different depth.");
         addLines(output.codeLines);
     }
