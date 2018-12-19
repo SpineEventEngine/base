@@ -23,7 +23,6 @@ package io.spine.js.generate.parse;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.js.Directory;
-import io.spine.code.js.FileName;
 import io.spine.code.proto.FileSet;
 import io.spine.js.generate.FileSetEnhancement;
 import io.spine.js.generate.JsFile;
@@ -37,7 +36,6 @@ import java.nio.file.Path;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.code.js.LibraryFile.KNOWN_TYPES;
 import static io.spine.code.js.LibraryFile.KNOWN_TYPE_PARSERS;
-import static io.spine.code.js.LibraryFile.SPINE_OPTIONS;
 import static io.spine.code.proto.ProtoPackage.GOOGLE_PROTOBUF_PACKAGE;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
@@ -166,12 +164,8 @@ public final class KnownTypeParsers extends FileSetEnhancement {
      */
     @VisibleForTesting
     static boolean shouldSkip(FileDescriptor file) {
-        FileName fileName = FileName.from(file);
-        boolean isSpineOptions = SPINE_OPTIONS.fileName()
-                                              .equals(fileName);
         boolean isStandardType = file.getPackage()
                                      .startsWith(GOOGLE_PROTOBUF_PACKAGE.packageName());
-        boolean shouldSkip = isSpineOptions || isStandardType;
-        return shouldSkip;
+        return isStandardType;
     }
 }

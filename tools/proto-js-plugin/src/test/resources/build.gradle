@@ -76,5 +76,6 @@ protobuf {
 build.dependsOn compileProtoToJs
 
 dependencies {
+    protobuf "io.spine:spine-base:${spineVersion}"
     implementation "io.spine:spine-base:$spineVersion"
 }

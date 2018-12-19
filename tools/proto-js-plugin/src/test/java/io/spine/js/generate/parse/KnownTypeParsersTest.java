@@ -22,6 +22,7 @@ package io.spine.js.generate.parse;
 
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Any;
+import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.js.Directory;
 import io.spine.code.js.FileName;
@@ -34,6 +35,7 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.List;
 
 import static io.spine.code.js.LibraryFile.KNOWN_TYPES;
 import static io.spine.code.js.LibraryFile.KNOWN_TYPE_PARSERS;
@@ -43,6 +45,7 @@ import static io.spine.js.generate.parse.KnownTypeParsers.createFor;
 import static io.spine.js.generate.parse.KnownTypeParsers.shouldSkip;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static java.nio.file.Files.exists;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("KnownTypeParsers enhancement should")
@@ -87,7 +90,7 @@ class KnownTypeParsersTest {
     @DisplayName("not write `fromJson` method into Spine Options file")
     void skipSpineOptions() {
         FileDescriptor spineOptionsFile = OptionsProto.getDescriptor();
-        assertTrue(shouldSkip(spineOptionsFile));
+        assertFalse(shouldSkip(spineOptionsFile));
     }
 
     @Test
@@ -101,7 +104,8 @@ class KnownTypeParsersTest {
     private void checkProcessedFiles(FileSet fileSet) throws IOException {
         Collection<FileDescriptor> fileDescriptors = fileSet.files();
         for (FileDescriptor file : fileDescriptors) {
-            if (!shouldSkip(file)) {
+            List<Descriptor> messageTypes = file.getMessageTypes();
+            if (!shouldSkip(file) && !messageTypes.isEmpty()) {
                 checkFromJsonDeclared(file);
             }
         }
