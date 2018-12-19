@@ -30,6 +30,16 @@ class IntegerFieldValidator extends NumberFieldValidator<Integer> {
     /**
      * Creates a new validator instance.
      *
+     * @param valueChange
+     *         a change of the field to be validated
+     */
+    IntegerFieldValidator(FieldValueChange valueChange) {
+        super(valueChange);
+    }
+
+    /**
+     * Creates a new validator instance.
+     *
      * @param fieldValue
      *         the value to validate
      */
