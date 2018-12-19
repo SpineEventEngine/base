@@ -29,8 +29,6 @@ import io.spine.js.generate.JsOutput;
 import io.spine.js.generate.parse.field.FieldGenerator;
 import io.spine.js.generate.parse.field.FieldGenerators;
 
-import java.util.List;
-
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
@@ -117,7 +115,7 @@ public class FromJsonMethod extends JsCodeGenerator {
     void generateFromJsonMethod() {
         jsOutput().addEmptyLine();
         TypeName typeName = TypeName.from(message);
-        addFromJsonCode(typeName);
+        addFromJsonCode(typeName, jsOutput());
     }
 
     /**
@@ -136,12 +134,12 @@ public class FromJsonMethod extends JsCodeGenerator {
     /**
      * Adds the {@code fromJson} code to the {@code jsOutput}.
      */
-    private void addFromJsonCode(TypeName typeName) {
+    private static void addFromJsonCode(TypeName typeName, JsOutput output) {
         String methodName = typeName.value() + '.' + FROM_JSON;
-        jsOutput().enterMethod(methodName, FROM_JSON_ARG);
-        jsOutput().declareVariable("jsObject", "JSON.parse(" + FROM_JSON_ARG + ')');
-        jsOutput().returnValue(typeName.value() + '.' + FROM_OBJECT + "(jsObject)");
-        jsOutput().exitMethod();
+        output.enterMethod(methodName, FROM_JSON_ARG);
+        output.declareVariable("jsObject", "JSON.parse(" + FROM_JSON_ARG + ')');
+        output.returnValue(typeName.value() + '.' + FROM_OBJECT + "(jsObject)");
+        output.exitMethod();
     }
 
     /**
@@ -151,10 +149,10 @@ public class FromJsonMethod extends JsCodeGenerator {
     private void addFromObjectCode(TypeName typeName) {
         String methodName = typeName.value() + '.' + FROM_OBJECT;
         jsOutput().enterMethod(methodName, FROM_OBJECT_ARG);
-        checkParsedObject();
+        checkParsedObject(jsOutput());
         jsOutput().addEmptyLine();
         jsOutput().declareVariable(MESSAGE, "new " + typeName + "()");
-        handleMessageFields();
+        handleMessageFields(jsOutput(), message);
         jsOutput().returnValue(MESSAGE);
         jsOutput().exitMethod();
     }
@@ -162,21 +160,20 @@ public class FromJsonMethod extends JsCodeGenerator {
     /**
      * Adds the code checking that {@code fromObject} argument is not null.
      */
-    private void checkParsedObject() {
-        jsOutput().ifNull(FROM_OBJECT_ARG);
-        jsOutput().returnValue("null");
-        jsOutput().exitBlock();
+    private static void checkParsedObject(JsOutput output) {
+        output.ifNull(FROM_OBJECT_ARG);
+        output.returnValue("null");
+        output.exitBlock();
     }
 
     /**
      * Adds the code necessary to parse and set the message fields.
      */
     @VisibleForTesting
-    void handleMessageFields() {
-        List<FieldDescriptor> fields = message.getFields();
-        for (FieldDescriptor field : fields) {
-            jsOutput().addEmptyLine();
-            FieldGenerator generator = FieldGenerators.createFor(field, jsOutput());
+    static void handleMessageFields(JsOutput output, Descriptor message) {
+        for (FieldDescriptor field : message.getFields()) {
+            output.addEmptyLine();
+            FieldGenerator generator = FieldGenerators.createFor(field, output);
             generator.generate();
         }
     }

@@ -95,11 +95,13 @@ class FromJsonMethodTest {
         assertContains(jsOutput, check);
     }
 
+    @SuppressWarnings("AccessStaticViaInstance") // For the testing purpose.
     @Test
     @DisplayName("handle message fields in `fromObject` method")
     void handleMessageFields() {
         FromJsonMethod generator = spy(this.generator);
         generator.generateFromObjectMethod();
-        verify(generator, times(1)).handleMessageFields();
+        verify(generator, times(1))
+                .handleMessageFields(jsOutput, message);
     }
 }
