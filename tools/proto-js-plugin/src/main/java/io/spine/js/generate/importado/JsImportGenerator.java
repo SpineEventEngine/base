@@ -67,7 +67,7 @@ public final class JsImportGenerator extends JsCodeGenerator {
      * <p>The first placeholder is the import name and the second one represents the file to be
      * imported.
      */
-    private static final String NAMED_IMPORT_FORMAT = "let %s = " + IMPORT_FORMAT;
+    static final String NAMED_IMPORT_FORMAT = "let %s = " + IMPORT_FORMAT;
 
     /**
      * The value which is prepended to every import.
@@ -99,7 +99,7 @@ public final class JsImportGenerator extends JsCodeGenerator {
     @Override
     public void generate() {
         for (FileName fileToImport : imports) {
-            String importPath = importPrefix + fileToImport;
+            String importPath = importPath(fileToImport);
             String theImport = format(IMPORT_FORMAT, importPath);
             jsOutput().addLine(theImport);
         }
@@ -113,7 +113,7 @@ public final class JsImportGenerator extends JsCodeGenerator {
     public void importFile(FileName fileToImport, String importName) {
         checkNotNull(fileToImport);
         checkNotNull(importName);
-        String importPath = importPrefix + fileToImport;
+        String importPath = importPath(fileToImport);
         String namedImport = format(NAMED_IMPORT_FORMAT, importName, importPath);
         jsOutput().addLine(namedImport);
     }
@@ -141,6 +141,10 @@ public final class JsImportGenerator extends JsCodeGenerator {
         String pathToRoot = Strings.repeat(PARENT_DIR, fileLocationDepth);
         String result = pathToRoot.isEmpty() ? CURRENT_DIR : pathToRoot;
         return result;
+    }
+
+    private String importPath(FileName fileToImport) {
+        return importPrefix + fileToImport;
     }
 
     public static Builder newBuilder() {
