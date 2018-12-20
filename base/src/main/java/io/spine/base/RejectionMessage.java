@@ -21,7 +21,9 @@
 package io.spine.base;
 
 import com.google.errorprone.annotations.Immutable;
-import io.spine.base.MessageFile.Predicate;
+import io.spine.code.proto.MessageDeclaration;
+
+import java.util.function.Predicate;
 
 /**
  * A common interface for rejection messages.
@@ -37,9 +39,9 @@ public interface RejectionMessage extends EventMessage {
      * Provides a predicate which checks whether the given {@code MessageDeclaration} represents a
      * rejection message.
      *
-     * @return the {@code MessageAcceptor} for rejections
+     * @return the predicate to distinguish rejection messages
      */
-    static MessageAcceptor predicate() {
+    static Predicate<MessageDeclaration> predicate() {
         return messageDeclaration -> File.predicate()
                                          .test(messageDeclaration.getFile());
     }
@@ -57,7 +59,7 @@ public interface RejectionMessage extends EventMessage {
         private File() {
         }
 
-        public static Predicate predicate() {
+        public static io.spine.base.MessageFile.Predicate predicate() {
             return INSTANCE.predicate();
         }
 

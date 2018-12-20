@@ -21,7 +21,9 @@
 package io.spine.base;
 
 import com.google.errorprone.annotations.Immutable;
-import io.spine.base.MessageFile.Predicate;
+import io.spine.code.proto.MessageDeclaration;
+
+import java.util.function.Predicate;
 
 /**
  * A common interface for event messages.
@@ -37,9 +39,9 @@ public interface EventMessage extends SerializableMessage {
      * Provides a predicate which checks whether the given {@code MessageDeclaration} represents an
      * event message.
      *
-     * @return the {@code MessageAcceptor} for events
+     * @return the predicate to distinguish event messages
      */
-    static MessageAcceptor predicate() {
+    static Predicate<MessageDeclaration> predicate() {
         return messageDeclaration -> File.predicate()
                                          .test(messageDeclaration.getFile());
     }
@@ -56,7 +58,7 @@ public interface EventMessage extends SerializableMessage {
         private File() {
         }
 
-        public static Predicate predicate() {
+        public static io.spine.base.MessageFile.Predicate predicate() {
             return INSTANCE.predicate();
         }
 

@@ -23,12 +23,12 @@ package io.spine.tools.protoc;
 import com.google.protobuf.Message;
 import io.spine.base.CommandMessage;
 import io.spine.base.EventMessage;
-import io.spine.base.MessageAcceptor;
 import io.spine.base.RejectionMessage;
 import io.spine.base.UniqueId;
 import io.spine.code.proto.MessageDeclaration;
 
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.protobuf.DescriptorProtos.DescriptorProto;
@@ -90,6 +90,7 @@ public class BuiltInMarkerInterface implements MarkerInterface {
     /**
      * The enumeration of built-in interfaces.
      */
+    @SuppressWarnings("NonSerializableFieldInSerializableClass") // OK for enum.
     private enum Type {
 
         EVENT_MESSAGE(EventMessage.class, EventMessage.predicate()),
@@ -99,15 +100,15 @@ public class BuiltInMarkerInterface implements MarkerInterface {
         UNIQUE_ID(UniqueId.class, UniqueId.predicate());
 
         private final Class<? extends Message> interfaceClass;
-        private final MessageAcceptor acceptor;
+        private final Predicate<MessageDeclaration> predicate;
 
-        Type(Class<? extends Message> interfaceClass, MessageAcceptor acceptor) {
+        Type(Class<? extends Message> interfaceClass, Predicate<MessageDeclaration> predicate) {
             this.interfaceClass = interfaceClass;
-            this.acceptor = acceptor;
+            this.predicate = predicate;
         }
 
         public boolean matches(MessageDeclaration declaration) {
-            return acceptor.test(declaration);
+            return predicate.test(declaration);
         }
     }
 }

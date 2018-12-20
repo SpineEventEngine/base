@@ -21,7 +21,9 @@
 package io.spine.base;
 
 import com.google.errorprone.annotations.Immutable;
-import io.spine.base.MessageFile.Predicate;
+import io.spine.code.proto.MessageDeclaration;
+
+import java.util.function.Predicate;
 
 /**
  * A common interface for command messages.
@@ -37,9 +39,9 @@ public interface CommandMessage extends SerializableMessage {
      * Provides a predicate which checks whether the given {@code MessageDeclaration} represents a
      * command message.
      *
-     * @return the {@code MessageAcceptor} for commands
+     * @return the predicate to distinguish command messages
      */
-    static MessageAcceptor predicate() {
+    static Predicate<MessageDeclaration> predicate() {
         return messageDeclaration -> File.predicate()
                                          .test(messageDeclaration.getFile());
     }
@@ -57,7 +59,7 @@ public interface CommandMessage extends SerializableMessage {
         private File() {
         }
 
-        public static Predicate predicate() {
+        public static io.spine.base.MessageFile.Predicate predicate() {
             return INSTANCE.predicate();
         }
 

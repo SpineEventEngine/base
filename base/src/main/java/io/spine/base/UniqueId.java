@@ -22,6 +22,9 @@ package io.spine.base;
 
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Message;
+import io.spine.code.proto.MessageDeclaration;
+
+import java.util.function.Predicate;
 
 import static io.spine.base.UuidMessage.isUuidMessage;
 
@@ -53,11 +56,11 @@ public interface UniqueId<I extends Message> extends SerializableMessage {
 
     /**
      * Provides a predicate which checks whether the given {@code MessageDeclaration} represents an
-     * unique {@code string}-based identifier.
+     * {@code string}-based unique identifier.
      *
-     * @return the {@code MessageAcceptor} for unique identifiers
+     * @return the predicate to distinguish {@code string}-based unique identifiers
      */
-    static MessageAcceptor predicate() {
+    static Predicate<MessageDeclaration> predicate() {
         return messageDeclaration -> isUuidMessage(messageDeclaration.getMessage());
     }
 
