@@ -144,8 +144,13 @@ public final class ClassName extends StringTypeValue {
      * to the name separated with dots.
      */
     public ClassName toDotted() {
-        String withDots = value().replace(OUTER_CLASS_DELIMITER, DOT_SEPARATOR);
+        String withDots = toDotted(value());
         return of(withDots);
+    }
+
+    private static String toDotted(String outerDelimited) {
+        String result = outerDelimited.replace(OUTER_CLASS_DELIMITER, DOT_SEPARATOR);
+        return result;
     }
 
     /**
@@ -214,8 +219,24 @@ public final class ClassName extends StringTypeValue {
      */
     public SimpleClassName toSimple() {
         String fullName = toDotted().value();
-        int lastDotIndex = fullName.lastIndexOf(DOT_SEPARATOR);
-        String result = fullName.substring(lastDotIndex + 1);
+        String result = afterDot(fullName);
         return SimpleClassName.create(result);
+    }
+
+    private static String afterDot(String fullName) {
+        int lastDotIndex = fullName.lastIndexOf(DOT_SEPARATOR);
+        return fullName.substring(lastDotIndex + 1);
+    }
+
+    /**
+     * Converts a possibly nested class name into a nested name.
+     *
+     * <p>If the class is not nested, the returned value would be equivalent to a simple class name.
+     */
+    public NestedClassName toNested() {
+        String fullName = value();
+        String nameWithOuter = afterDot(fullName);
+        String dotted = toDotted(nameWithOuter);
+        return NestedClassName.create(dotted);
     }
 }

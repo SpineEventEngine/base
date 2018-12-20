@@ -62,11 +62,11 @@ class ValidatingBuilderWriter implements Logging {
 
         log().debug("Creating spec. for class: {}", validatingBuilderClass);
 
-        String javaPackage =
-                type.javaPackage()
-                    .value();
+        String javaPackage = type.javaPackage()
+                                 .value();
         ClassName messageClass =
-                ClassName.get(javaPackage, type.simpleJavaClassName()
+                ClassName.get(javaPackage, type.javaClassName()
+                                               .toNested()
                                                .value());
         ClassName messageBuilderClassName =
                 messageClass.nestedClass(SimpleClassName.ofBuilder()

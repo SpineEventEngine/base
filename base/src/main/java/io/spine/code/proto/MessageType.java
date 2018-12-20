@@ -135,7 +135,6 @@ public class MessageType extends Type<Descriptor, DescriptorProto> {
     }
 
     public ClassName builderClass() {
-
         ClassName result = javaClassName().withNested(SimpleClassName.ofBuilder());
         return result;
     }
