@@ -36,6 +36,10 @@ class StringFieldValidator extends FieldValidator<String> {
     /**
      * Creates a new validator instance.
      *
+     * <p>Returned validator validates the change of the field, as opposed to just a new value for
+     * it, like the {@linkplain #StringFieldValidator(FieldValue, boolean) the other constructor}.
+     *
+     *
      * @param fieldValueChange
      *         the change of the field value that is going to be validated
      * @param strict
@@ -50,6 +54,8 @@ class StringFieldValidator extends FieldValidator<String> {
 
     /**
      * Creates a new validator instance.
+     *
+     * <p>Returned validator validates the new specified value of the field.
      *
      * @param fieldValue
      *         the value to validate

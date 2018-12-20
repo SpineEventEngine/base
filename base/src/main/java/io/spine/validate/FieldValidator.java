@@ -75,6 +75,11 @@ abstract class FieldValidator<V> implements Logging {
     /**
      * Creates a new validator instance.
      *
+     * <p>Created validator validates the change of the value of the field.
+     * This constructor should be used when the previous value of the field is important for
+     * validation, as opposed to just the new value of the field, in which case {@linkplain
+     * #FieldValidator(FieldValue, boolean) this constructor} should be used.
+     *
      * @param fieldValueChange
      *         the change of the field to validate.
      * @param strict
