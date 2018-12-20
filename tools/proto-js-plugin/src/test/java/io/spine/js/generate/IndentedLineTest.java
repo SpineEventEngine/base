@@ -35,7 +35,7 @@ class IndentedLineTest {
     void createIndent() {
         Depth depth = Depth.of(2);
         Indent spacesPerDepth = Indent.of2();
-        IndentedLine line = new IndentedLine("content", depth, spacesPerDepth);
+        IndentedLine line = IndentedLine.of("content", depth, spacesPerDepth);
         String expected = "    content";
         assertEquals(expected, line.content());
     }

@@ -124,8 +124,8 @@ public final class CodeLines {
      */
     public void append(String codeLine) {
         checkNotNull(codeLine);
-        IndentedLine line = indented(codeLine);
-        codeLines.add(line);
+        IndentedLine indented = IndentedLine.of(codeLine, currentDepth, indentation);
+        codeLines.add(indented);
     }
 
     /**
@@ -136,7 +136,7 @@ public final class CodeLines {
      */
     public void append(CodeLine line) {
         checkNotNull(line);
-        IndentedLine indented = indented(line.content());
+        IndentedLine indented = IndentedLine.of(line, currentDepth, indentation);
         appendIndented(indented);
     }
 
@@ -294,10 +294,6 @@ public final class CodeLines {
      */
     public void decreaseDepth() {
         currentDepth = currentDepth.decremented();
-    }
-
-    private IndentedLine indented(String codeLine) {
-        return new IndentedLine(codeLine, currentDepth, indentation);
     }
 
     /**

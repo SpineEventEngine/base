@@ -40,26 +40,45 @@ final class IndentedLine extends CodeLine {
     private final Depth depth;
     /** The indent per a depth level. */
     private final Indent indent;
-    /** The value to prepend with indentation. */
-    private final String unaliagned;
+    /** The line to prepend with indentation. */
+    private final CodeLine unaliagned;
+
+    private IndentedLine(CodeLine unaligned, Depth depth, Indent indent) {
+        checkNotNull(unaligned);
+        checkNotNull(depth);
+        checkNotNull(indent);
+        this.unaliagned = unaligned;
+        this.depth = depth;
+        this.indent = indent;
+    }
 
     /**
      * Creates a new {@code IndentedLine}.
      *
-     * @param content
-     *         the JS code
+     * @param line
+     *         the line to be indented
      * @param depth
      *         the depth of the code
      * @param indent
      *         the indent per a depth level
      */
-    IndentedLine(String content, Depth depth, Indent indent) {
-        checkNotNull(content);
-        checkNotNull(depth);
-        checkNotNull(indent);
-        this.unaliagned = content;
-        this.depth = depth;
-        this.indent = indent;
+    static IndentedLine of(String line, Depth depth, Indent indent) {
+        RawLine rawLine = RawLine.of(line);
+        return of(rawLine, depth, indent);
+    }
+
+    /**
+     * Creates a new {@code IndentedLine}.
+     *
+     * @param line
+     *         the code line to be indented
+     * @param depth
+     *         the depth of the code
+     * @param indent
+     *         the indent per a depth level
+     */
+    static IndentedLine of(CodeLine line, Depth depth, Indent indent) {
+        return new IndentedLine(line, depth, indent);
     }
 
     /**
@@ -68,7 +87,7 @@ final class IndentedLine extends CodeLine {
     @Override
     public String content() {
         Indent totalIndent = indent.ofDepth(depth);
-        String result = totalIndent + unaliagned;
+        String result = totalIndent + unaliagned.content();
         return result;
     }
 
