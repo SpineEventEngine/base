@@ -21,7 +21,7 @@
 package io.spine.tools.check.vbuilder;
 
 import com.google.protobuf.AbstractMessage;
-import com.google.protobuf.StringValue;
+import io.spine.base.FieldPath;
 import io.spine.base.FieldPathVBuilder;
 import io.spine.validate.AbstractValidatingBuilder;
 
@@ -46,7 +46,7 @@ abstract class UseValidatingBuilderNegatives {
     /** This method is annotated suppressing the warning. */
     @SuppressWarnings("UseValidatingBuilder")
     void callUnderWarningSuppressed() {
-        StringValue.newBuilder();
+        FieldPath.newBuilder();
     }
 
     class SomeBuilder extends AbstractValidatingBuilder {
@@ -56,7 +56,7 @@ abstract class UseValidatingBuilderNegatives {
          * from {@code AbstractValidatingBuilder}.
          */
         void callInsideVBuilder() {
-            StringValue.newBuilder();
+            FieldPath.newBuilder();
         }
     }
 
@@ -64,7 +64,7 @@ abstract class UseValidatingBuilderNegatives {
 
         /** The call to builder is made inside a message class. */
         void callInsideMessage() {
-            StringValue.newBuilder();
+            FieldPath.newBuilder();
         }
     }
 }
