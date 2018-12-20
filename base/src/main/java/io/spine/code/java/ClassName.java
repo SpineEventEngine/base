@@ -46,7 +46,12 @@ public final class ClassName extends StringTypeValue {
      * Separates nested class name from the name of the outer class in a fully-qualified name.
      */
     public static final char OUTER_CLASS_DELIMITER = '$';
-    static final char DOT_SEPARATOR = '.';
+
+    /**
+     * Separates class name from package, and outer class name with nested when such a class is
+     * referenced as a parameter.
+     */
+    private static final char DOT_SEPARATOR = '.';
 
     private ClassName(String value) {
         super(checkNotNull(value));
@@ -148,7 +153,7 @@ public final class ClassName extends StringTypeValue {
         return of(withDots);
     }
 
-    private static String toDotted(String outerDelimited) {
+    static String toDotted(String outerDelimited) {
         String result = outerDelimited.replace(OUTER_CLASS_DELIMITER, DOT_SEPARATOR);
         return result;
     }
@@ -223,7 +228,7 @@ public final class ClassName extends StringTypeValue {
         return SimpleClassName.create(result);
     }
 
-    private static String afterDot(String fullName) {
+    static String afterDot(String fullName) {
         int lastDotIndex = fullName.lastIndexOf(DOT_SEPARATOR);
         return fullName.substring(lastDotIndex + 1);
     }
@@ -234,9 +239,6 @@ public final class ClassName extends StringTypeValue {
      * <p>If the class is not nested, the returned value would be equivalent to a simple class name.
      */
     public NestedClassName toNested() {
-        String fullName = value();
-        String nameWithOuter = afterDot(fullName);
-        String dotted = toDotted(nameWithOuter);
-        return NestedClassName.create(dotted);
+        return NestedClassName.create(this);
     }
 }

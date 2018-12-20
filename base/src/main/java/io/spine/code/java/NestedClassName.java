@@ -22,9 +22,6 @@ package io.spine.code.java;
 
 import io.spine.value.StringTypeValue;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
-
 /**
  * A name of a potentially nested class with outer class names separated with dots.
  *
@@ -38,10 +35,12 @@ public final class NestedClassName extends StringTypeValue {
         super(value);
     }
 
-    static NestedClassName create(String value) {
-        checkNotEmptyOrBlank(value);
-        int dotIndex = value.indexOf(ClassName.DOT_SEPARATOR);
-        checkArgument(dotIndex !=0, "Nested class name cannot start with a dot.");
-        return new NestedClassName(value);
+    /**
+     * Creates a new instance by fully-qualified name.
+     */
+    static NestedClassName create(ClassName className) {
+        String nameWithOuter = ClassName.afterDot(className.value());
+        String dotted = ClassName.toDotted(nameWithOuter);
+        return new NestedClassName(dotted);
     }
 }
