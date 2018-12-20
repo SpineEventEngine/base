@@ -84,9 +84,9 @@ public final class TypeParsingSnippet implements Snippet {
     @Override
     public CodeLines value() {
         CodeLines out = new CodeLines();
-        out.addLinesFrom(generateComment());
-        out.addLinesFrom(generateParsersImport());
-        out.addLinesFrom(generateMethods());
+        out.append(generateComment());
+        out.append(generateParsersImport());
+        out.append(generateMethods());
         return out;
     }
 
@@ -129,7 +129,7 @@ public final class TypeParsingSnippet implements Snippet {
         CodeLines snippet = new CodeLines();
         for (Descriptor message : file.getMessageTypes()) {
             FromJsonMethod fromJsonMethod = FromJsonMethod.createFor(message);
-            snippet.addLinesFrom(fromJsonMethod.value());
+            snippet.append(fromJsonMethod.value());
         }
         return snippet;
     }

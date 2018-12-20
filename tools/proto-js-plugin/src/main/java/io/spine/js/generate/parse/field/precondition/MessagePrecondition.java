@@ -67,7 +67,7 @@ final class MessagePrecondition implements FieldPrecondition {
         }
         jsOutput.ifNull(value);
         String mergeNull = String.format(mergeFieldFormat, "null");
-        jsOutput.addLine(mergeNull);
+        jsOutput.append(mergeNull);
         jsOutput.enterElseBlock();
     }
 

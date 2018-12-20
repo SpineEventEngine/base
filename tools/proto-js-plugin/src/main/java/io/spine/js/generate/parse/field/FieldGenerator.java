@@ -108,7 +108,7 @@ public abstract class FieldGenerator extends JsCodeGenerator {
     private void merge(String value) {
         String mergeFormat = mergeFormat();
         String setValue = format(mergeFormat, value);
-        jsOutput().addLine(setValue);
+        jsOutput().append(setValue);
     }
 
     /**

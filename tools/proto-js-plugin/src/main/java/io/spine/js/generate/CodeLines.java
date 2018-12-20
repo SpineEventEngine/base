@@ -98,7 +98,7 @@ public final class CodeLines {
      * @param appended
      *         the code to append
      */
-    public void addLinesFrom(CodeLines appended) {
+    public void append(CodeLines appended) {
         checkArgument(indentation.equals(appended.indentation),
                       "Cannot merge code parts with different indentation.");
         int depthDifference = currentDepth.value() - appended.currentDepth.value();
@@ -114,7 +114,7 @@ public final class CodeLines {
      * @param codeLine
      *         the code to add
      */
-    public void addLine(String codeLine) {
+    public void append(String codeLine) {
         checkNotNull(codeLine);
         IndentedLine line = new IndentedLine(codeLine, currentDepth);
         codeLines.add(line);
@@ -155,7 +155,7 @@ public final class CodeLines {
         checkNotNull(methodName);
         checkNotNull(methodArgs);
         String argString = join(", ", methodArgs);
-        addLine(methodName + " = function(" + argString + ") {");
+        append(methodName + " = function(" + argString + ") {");
         increaseDepth();
     }
 
@@ -164,7 +164,7 @@ public final class CodeLines {
      */
     public void exitMethod() {
         decreaseDepth();
-        addLine("};");
+        append("};");
     }
 
     /**
@@ -183,7 +183,7 @@ public final class CodeLines {
      */
     public void enterElseBlock() {
         decreaseDepth();
-        addLine("} else {");
+        append("} else {");
         increaseDepth();
     }
 
@@ -197,7 +197,7 @@ public final class CodeLines {
      */
     public void enterBlock(String blockHeader) {
         checkNotNull(blockHeader);
-        addLine(blockHeader + " {");
+        append(blockHeader + " {");
         increaseDepth();
     }
 
@@ -206,7 +206,7 @@ public final class CodeLines {
      */
     public void exitBlock() {
         decreaseDepth();
-        addLine("}");
+        append("}");
     }
 
     /**
@@ -262,7 +262,7 @@ public final class CodeLines {
      */
     public void exportMap(String mapName) {
         checkNotNull(mapName);
-        addLine("module.exports." + mapName + " = new Map([");
+        append("module.exports." + mapName + " = new Map([");
         increaseDepth();
     }
 
@@ -279,9 +279,9 @@ public final class CodeLines {
     public void addMapEntry(String entry, boolean isLast) {
         checkNotNull(entry);
         if (isLast) {
-            addLine(entry);
+            append(entry);
         } else {
-            addLine(entry + ',');
+            append(entry + ',');
         }
     }
 
@@ -290,7 +290,7 @@ public final class CodeLines {
      */
     public void quitMapDeclaration() {
         decreaseDepth();
-        addLine("]);");
+        append("]);");
     }
 
     /**

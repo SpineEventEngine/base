@@ -62,7 +62,7 @@ final class TypeUrlMethods implements Snippet {
         for (Type type : types.types()) {
             Snippet method = typeUrlMethod(type);
             output.append(COMMENT);
-            output.addLinesFrom(method.value());
+            output.append(method.value());
             output.append(emptyLine());
         }
         return output;

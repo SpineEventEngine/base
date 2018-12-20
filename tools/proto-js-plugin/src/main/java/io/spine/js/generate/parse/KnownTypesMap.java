@@ -81,7 +81,7 @@ public final class KnownTypesMap implements Snippet {
     public CodeLines value() {
         CodeLines snippet = new CodeLines();
         generateImports(snippet);
-        snippet.addLinesFrom(generateKnownTypesMap());
+        snippet.append(generateKnownTypesMap());
         return snippet;
     }
 

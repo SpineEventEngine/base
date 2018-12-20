@@ -31,11 +31,11 @@ public final class GivenLines {
 
     public static CodeLines withDifferentDepth(Depth initialDepth) {
         CodeLines lines = linesWithDepth(initialDepth);
-        lines.addLine("{");
+        lines.append("{");
         lines.increaseDepth();
-        lines.addLine("in the code block");
+        lines.append("in the code block");
         lines.decreaseDepth();
-        lines.addLine("}");
+        lines.append("}");
         return lines;
     }
 

@@ -71,7 +71,7 @@ class CodeLinesTest {
         Indent indent = Indent.of4();
         CodeLines jsOutput = new CodeLines(indent);
         jsOutput.increaseDepth();
-        jsOutput.addLine(LINE);
+        jsOutput.append(LINE);
         String expected = indent + LINE;
         assertEquals(expected, jsOutput.toString());
     }
@@ -160,7 +160,7 @@ class CodeLinesTest {
         void sameDepth() {
             CodeLines first = newCodeLines(FIRST_PART);
             CodeLines second = newCodeLines(SECOND_PART);
-            first.addLinesFrom(second);
+            first.append(second);
             String expected = FIRST_PART + LINE_SEPARATOR + SECOND_PART;
             assertThat(first.toString()).isEqualTo(expected);
         }
@@ -172,7 +172,7 @@ class CodeLinesTest {
             CodeLines second = newCodeLines(FIRST_PART, Indent.of4());
             assertThrows(
                     IllegalArgumentException.class,
-                    () -> first.addLinesFrom(second)
+                    () -> first.append(second)
             );
         }
 
@@ -200,7 +200,7 @@ class CodeLinesTest {
         private void assertMergedAndAligned(Depth firthDepth, Depth secondDepth) {
             CodeLines first = linesWithDepth(firthDepth);
             CodeLines second = GivenLines.withDifferentDepth(secondDepth);
-            first.addLinesFrom(second);
+            first.append(second);
             CodeLines expected = GivenLines.withDifferentDepth(firthDepth);
             assertEquals(expected, first);
         }
@@ -279,7 +279,7 @@ class CodeLinesTest {
     void provideToString() {
         CodeLines jsOutput = newCodeLines("line 1");
         jsOutput.increaseDepth();
-        jsOutput.addLine("line 2");
+        jsOutput.append("line 2");
         String output = jsOutput.toString();
         String expected = "line 1" + LINE_SEPARATOR + "  line 2";
         assertEquals(expected, output);
@@ -290,7 +290,7 @@ class CodeLinesTest {
      */
     private static CodeLines newCodeLines(String firstLine) {
         CodeLines lines = new CodeLines();
-        lines.addLine(firstLine);
+        lines.append(firstLine);
         return lines;
     }
 
@@ -299,7 +299,7 @@ class CodeLinesTest {
      */
     private static CodeLines newCodeLines(String firstLine, Indent indent) {
         CodeLines lines = new CodeLines(indent);
-        lines.addLine(firstLine);
+        lines.append(firstLine);
         return lines;
     }
 }

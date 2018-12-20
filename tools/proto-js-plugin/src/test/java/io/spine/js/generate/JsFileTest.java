@@ -90,7 +90,7 @@ class JsFileTest {
 
     private static CodeLines generateCode(String codeLine) {
         CodeLines jsOutput = new CodeLines();
-        jsOutput.addLine(codeLine);
+        jsOutput.append(codeLine);
         return jsOutput;
     }
 }

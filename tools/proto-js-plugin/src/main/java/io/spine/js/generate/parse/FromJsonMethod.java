@@ -104,7 +104,7 @@ public class FromJsonMethod implements Snippet {
     @Override
     public CodeLines value() {
         CodeLines snippet = generateFromJsonMethod();
-        snippet.addLinesFrom(generateFromObjectMethod());
+        snippet.append(generateFromObjectMethod());
         return snippet;
     }
 
@@ -117,7 +117,7 @@ public class FromJsonMethod implements Snippet {
         Method fromJson = fromJson(message);
         CodeLines lines = new CodeLines();
         lines.append(emptyLine());
-        lines.addLinesFrom(fromJson.value());
+        lines.append(fromJson.value());
         return lines;
     }
 

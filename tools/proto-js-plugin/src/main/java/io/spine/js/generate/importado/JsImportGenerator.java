@@ -101,7 +101,7 @@ public final class JsImportGenerator extends JsCodeGenerator {
         for (FileName fileToImport : imports) {
             String importPath = importPath(fileToImport);
             String theImport = format(IMPORT_FORMAT, importPath);
-            jsOutput().addLine(theImport);
+            jsOutput().append(theImport);
         }
     }
 
@@ -115,7 +115,7 @@ public final class JsImportGenerator extends JsCodeGenerator {
         checkNotNull(importName);
         String importPath = importPath(fileToImport);
         String namedImport = format(NAMED_IMPORT_FORMAT, importName, importPath);
-        jsOutput().addLine(namedImport);
+        jsOutput().append(namedImport);
     }
 
     /**
@@ -127,7 +127,7 @@ public final class JsImportGenerator extends JsCodeGenerator {
         checkNotNull(libToImport);
         checkNotNull(importName);
         String namedImport = format(NAMED_IMPORT_FORMAT, importName, libToImport);
-        jsOutput().addLine(namedImport);
+        jsOutput().append(namedImport);
     }
 
     /**
