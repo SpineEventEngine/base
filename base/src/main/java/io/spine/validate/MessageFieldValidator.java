@@ -20,6 +20,7 @@
 
 package io.spine.validate;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Any;
 import com.google.protobuf.Message;
@@ -67,6 +68,7 @@ class MessageFieldValidator extends FieldValidator<Message> {
      * @param strict
      *         if {@code true} the validator would assume that the field
      */
+    @VisibleForTesting
     MessageFieldValidator(FieldValue fieldValue, boolean strict) {
         super(fieldValue, strict);
         this.timeConstraint = fieldValue.valueOf(OptionsProto.when);
