@@ -254,9 +254,9 @@ class CodeLinesTest {
     @Test
     @DisplayName("join lines using comma")
     void joinLinesWithComma() {
-        CodeLine first = new RawLine("entry1");
-        CodeLine second = new RawLine("entry2");
-        CodeLine last = new RawLine("entry3");
+        CodeLine first = RawLine.of("entry1");
+        CodeLine second = RawLine.of("entry2");
+        CodeLine last = RawLine.of("entry3");
         List<CodeLine> lines = ImmutableList.of(first, second, last);
         CodeLines code = CodeLines.commaSeparated(lines);
         assertThat(code).contains(first + ",");

@@ -65,11 +65,11 @@ public class Method implements Snippet {
      */
     private RawLine declaration() {
         String argString = join(", ", arguments);
-        return new RawLine(name + " = function(" + argString + ") {");
+        return RawLine.of(name + " = function(" + argString + ") {");
     }
 
     private static RawLine ending() {
-        return new RawLine("};");
+        return RawLine.of("};");
     }
 
     /**
@@ -109,7 +109,7 @@ public class Method implements Snippet {
          * Appends a line to the body of the method.
          */
         public Builder appendToBody(String line) {
-            RawLine codeLine = new RawLine(line);
+            RawLine codeLine = RawLine.of(line);
             body.add(codeLine);
             return this;
         }

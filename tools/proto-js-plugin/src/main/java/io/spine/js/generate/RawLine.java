@@ -30,9 +30,13 @@ public class RawLine extends CodeLine {
 
     private final String content;
 
-    public RawLine(String content) {
-        checkNotNull(content);
+    RawLine(String content) {
         this.content = content;
+    }
+
+    public static RawLine of(String content) {
+        checkNotNull(content);
+        return new RawLine(content);
     }
 
     @Override
@@ -45,7 +49,8 @@ public class RawLine extends CodeLine {
      */
     public static CodeLine comment(String commentText) {
         checkNotNull(commentText);
-        return new RawLine("// " + commentText);
+        String raw = "// " + commentText;
+        return of(raw);
     }
 
     /**
@@ -55,13 +60,13 @@ public class RawLine extends CodeLine {
         checkNotNull(key);
         checkNotNull(value);
         String raw = format("['%s', %s]", key, value);
-        return new RawLine(raw);
+        return of(raw);
     }
 
     /**
      * Obtains an empty line.
      */
     public static CodeLine emptyLine() {
-        return new RawLine("");
+        return of("");
     }
 }
