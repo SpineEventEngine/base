@@ -29,6 +29,7 @@ import com.google.protobuf.compiler.PluginProtos.Version;
 import io.spine.base.CommandMessage;
 import io.spine.base.EventMessage;
 import io.spine.base.RejectionMessage;
+import io.spine.base.UniqueId;
 import io.spine.code.java.FileName;
 import io.spine.code.java.PackageName;
 import io.spine.code.java.SourceFile;
@@ -249,6 +250,38 @@ class MarkerInterfaceGeneratorTest {
 
             assertEquals(RejectionMessage.class.getName() + ',', file.getContent());
         }
+    }
+
+    @Test
+    @DisplayName("generate UniqueId insertion points")
+    void generateUniqueIdInsertionPoints() {
+        String filePath = "spine/tools/protoc/unique_ids.proto";
+
+        FileDescriptorProto descriptor = UniqueIds.getDescriptor()
+                                                  .toProto();
+        CodeGeneratorResponse response = processCodeGenRequest(filePath, descriptor);
+        assertNotNull(response);
+        List<File> files = response.getFileList();
+        assertEquals(1, files.size());
+        for (File file : files) {
+            assertTrue(file.hasInsertionPoint());
+            assertTrue(file.hasName());
+
+            assertEquals(UniqueId.class.getName() + ',', file.getContent());
+        }
+    }
+
+    @Test
+    @DisplayName("not generate UniqueId insertion points for non-ID messages")
+    void notGenerateUniqueIdForIncorrect() {
+        String filePath = "spine/tools/protoc/incorrect_ids.proto";
+
+        FileDescriptorProto descriptor = IncorrectIds.getDescriptor()
+                                                     .toProto();
+        CodeGeneratorResponse response = processCodeGenRequest(filePath, descriptor);
+        assertNotNull(response);
+        List<File> files = response.getFileList();
+        assertTrue(files.isEmpty());
     }
 
     @Test
