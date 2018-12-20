@@ -56,7 +56,7 @@ public final class ValidationRulesWriter implements Logging {
     private final File targetDir;
 
     private ValidationRulesWriter(File descriptorSetFile, File targetDir) {
-        this.files = FileSet.parseSkipStandard(descriptorSetFile.getPath());
+        this.files = FileSet.parse(descriptorSetFile.getPath());
         this.targetDir = targetDir;
     }
 
@@ -67,7 +67,7 @@ public final class ValidationRulesWriter implements Logging {
     }
 
     private void findRulesAndWriteProperties() {
-        _debug("Validation rules lookup started.");
+        _debug("Validation rules lookup started through {}.", files);
         List<MessageType> declarations = files.findMessageTypes(new IsValidationRule());
         _debug("Found declarations: {}", declarations.size());
         writeProperties(declarations);
@@ -93,13 +93,20 @@ public final class ValidationRulesWriter implements Logging {
         writer.write(propsMap);
     }
 
-    private static class IsValidationRule implements Predicate<DescriptorProto> {
+    private static class IsValidationRule implements Predicate<DescriptorProto>, Logging {
 
         @Override
         public boolean test(@Nullable DescriptorProto input) {
             checkNotNull(input);
-            return Options.option(input, validationOf)
-                          .isPresent();
+            boolean result = Options.option(input, validationOf)
+                                    .isPresent();
+            _debug("[IsValidationRule] Tested {} with the result of {}.", input.getName(), result);
+            return result;
+        }
+
+        @Override
+        public String toString() {
+            return "IsValidationRule predicate over DescriptorProto";
         }
     }
 }

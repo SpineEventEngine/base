@@ -27,6 +27,7 @@ import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.AbstractSourceFile;
 import io.spine.code.java.SimpleClassName;
+import io.spine.logging.Logging;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -40,7 +41,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * A Protobuf file which also gives access to its {@link FileDescriptorProto descriptor}.
  */
-public class SourceFile extends AbstractSourceFile {
+public class SourceFile extends AbstractSourceFile implements Logging {
 
     private final FileDescriptor descriptor;
 
@@ -107,6 +108,7 @@ public class SourceFile extends AbstractSourceFile {
         ImmutableList.Builder<MessageType> result = ImmutableList.builder();
         for (Descriptor messageType : descriptor.getMessageTypes()) {
             MessageType declaration = MessageType.create(messageType);
+            _debug("Testing {} to match {}", declaration, predicate);
             if (predicate.test(messageType.toProto())) {
                 result.add(declaration);
             }

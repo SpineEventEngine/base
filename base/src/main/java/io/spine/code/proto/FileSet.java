@@ -105,12 +105,6 @@ public final class FileSet {
         return parse(file);
     }
 
-    public static FileSet parseSkipStandard(String descriptorSetFile) {
-        Collection<FileDescriptorProto> files =
-                FileDescriptors.parseSkipStandard(descriptorSetFile);
-        return link(files);
-    }
-
     /**
      * Creates a new file set by parsing the passed descriptor set file.
      */

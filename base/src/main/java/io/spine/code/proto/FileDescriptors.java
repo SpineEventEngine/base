@@ -271,7 +271,7 @@ public final class FileDescriptors {
     /**
      * Verifies if a package of a file does not start with {@code "google"}.
      */
-    private enum IsNotGoogleProto implements Predicate<FileDescriptorProto> {
+    private enum IsNotGoogleProto implements Predicate<FileDescriptorProto>, Logging {
 
         PREDICATE;
 
@@ -284,6 +284,8 @@ public final class FileDescriptors {
             checkNotNull(file);
             boolean result = !file.getPackage()
                                   .startsWith(GOOGLE_PACKAGE);
+            _debug("[IsNotGoogleProto] Tested {} with package {}. The result is {}.",
+                   file.getName(), file.getPackage(), result);
             return result;
         }
 
