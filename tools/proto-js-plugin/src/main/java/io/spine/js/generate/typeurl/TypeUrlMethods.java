@@ -29,9 +29,9 @@ import io.spine.js.generate.CodeLine;
 import io.spine.js.generate.CodeLines;
 import io.spine.js.generate.JsFile;
 import io.spine.js.generate.JsType;
-import io.spine.js.generate.Method;
-import io.spine.js.generate.Return;
 import io.spine.js.generate.Snippet;
+import io.spine.js.generate.statement.Method;
+import io.spine.js.generate.statement.Return;
 import io.spine.type.TypeUrl;
 
 import static io.spine.js.generate.RawLine.comment;

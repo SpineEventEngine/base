@@ -18,43 +18,54 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate;
+package io.spine.js.generate.statement;
+
+import io.spine.js.generate.CodeLine;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
 
 /**
- * A declaration of a variable.
+ * A code line representing a {@code return} statement.
  */
-public class VariableDeclaration extends CodeLine {
+public class Return extends CodeLine {
 
     /**
-     * The modifier which is used to create variables.
-     *
-     * <p>Currently is set to ES6 {@code let}.
+     * The value to be returned.
      */
-    private static final String VARIABLE_MODIFIER = "let";
+    private final Object value;
 
-    private final String name;
-    private final String initializer;
+    private Return(Object returnedValue) {
+        this.value = returnedValue;
+    }
 
-    public VariableDeclaration(String name, String initializer) {
-        this.name = name;
-        this.initializer = initializer;
+    /**
+     * Composes a statement returning the value.
+     */
+    public static Return value(Object value) {
+        checkNotNull(value);
+        return new Return(value);
+    }
+
+    /**
+     * Composes a statement returning a string literal.
+     */
+    public static Return stringLiteral(String literal) {
+        checkNotNull(literal);
+        String quoted = format("'%s'", literal);
+        return new Return(quoted);
+    }
+
+    /**
+     * Composes a statement returning {@code null}.
+     */
+    public static Return nullReference() {
+        return value("null");
     }
 
     @Override
     public String content() {
-        String result = format("%s %s = %s;", VARIABLE_MODIFIER, name, initializer);
+        String result = format("return %s;", value);
         return result;
-    }
-
-    /**
-     * Obtains the declaration with the specified name, which is initialized to the value.
-     */
-    public static VariableDeclaration initialized(String name, String value) {
-        checkNotNull(name);
-        checkNotNull(value);
-        return new VariableDeclaration(name, value);
     }
 }

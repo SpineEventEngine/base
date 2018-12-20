@@ -18,9 +18,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate;
+package io.spine.js.generate.statement;
 
 import io.spine.code.Depth;
+import io.spine.js.generate.CodeLines;
+import io.spine.js.generate.IndentedLine;
+import io.spine.js.generate.Snippet;
 
 import java.util.List;
 

@@ -18,34 +18,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate;
+package io.spine.js.generate.statement;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DisplayName("Return")
-class ReturnTest {
+@DisplayName("VariableDeclaration should")
+class VariableDeclarationTest {
 
     @Test
-    @DisplayName("an object")
-    void object() {
-        Return line = Return.value(5);
-        assertEquals("return 5;", line.content());
-    }
-
-    @Test
-    @DisplayName("a string literal")
-    void stringLiteral() {
-        Return line = Return.stringLiteral("foo");
-        assertEquals("return 'foo';", line.content());
-    }
-
-    @Test
-    @DisplayName("null reference")
-    void nullValue() {
-        Return nullValue = Return.nullReference();
-        assertEquals("return null;", nullValue.content());
+    @DisplayName("be initialized")
+    void initialized() {
+        VariableDeclaration line = VariableDeclaration.initialized("someVariable", "someValue");
+        assertEquals("let someVariable = someValue;", line.content());
     }
 }

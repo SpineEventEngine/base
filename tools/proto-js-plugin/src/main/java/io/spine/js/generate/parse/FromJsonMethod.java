@@ -25,11 +25,11 @@ import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.code.js.TypeName;
 import io.spine.js.generate.CodeLines;
-import io.spine.js.generate.Return;
 import io.spine.js.generate.Snippet;
-import io.spine.js.generate.VariableDeclaration;
 import io.spine.js.generate.parse.field.FieldGenerator;
 import io.spine.js.generate.parse.field.FieldGenerators;
+import io.spine.js.generate.statement.Return;
+import io.spine.js.generate.statement.VariableDeclaration;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.js.generate.RawLine.emptyLine;

@@ -23,8 +23,8 @@ package io.spine.js.generate.parse.field.parser;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.js.generate.CodeLines;
-import io.spine.js.generate.VariableDeclaration;
 import io.spine.js.generate.parse.WellKnownTypeParsers;
+import io.spine.js.generate.statement.VariableDeclaration;
 import io.spine.type.TypeUrl;
 
 import static com.google.common.base.Preconditions.checkNotNull;

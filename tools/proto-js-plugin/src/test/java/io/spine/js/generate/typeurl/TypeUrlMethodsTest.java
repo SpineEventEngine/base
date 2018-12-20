@@ -25,7 +25,7 @@ import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.proto.Type;
 import io.spine.js.generate.CodeLines;
-import io.spine.js.generate.Method;
+import io.spine.js.generate.statement.Method;
 import io.spine.type.TypeUrl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
