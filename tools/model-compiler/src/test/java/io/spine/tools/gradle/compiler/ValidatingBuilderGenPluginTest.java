@@ -20,6 +20,7 @@
 
 package io.spine.tools.gradle.compiler;
 
+import com.google.common.collect.ImmutableList;
 import io.spine.tools.gradle.GradleProject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -29,8 +30,6 @@ import org.junitpioneer.jupiter.TempDirectory;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.List;
 
 import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
 
@@ -38,11 +37,20 @@ import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
 @DisplayName("ValidatingBuilderGenPlugin should")
 class ValidatingBuilderGenPluginTest {
 
+    /**
+     * The name of the directory under `test/resource` which will be used for creating
+     * the test project.
+     */
     private static final String PROJECT_NAME = "validators-gen-plugin-test";
-    private static final List<String> PROTO_FILES = Arrays.asList("identifiers.proto",
-                                                                  "attributes.proto",
-                                                                  "changes.proto",
-                                                                  "c/test_commands.proto");
+
+    /**
+     * Names of resource files under the resources "root".
+     */
+    private static final ImmutableList<String> PROTO_FILES =
+            ImmutableList.of("identifiers.proto",
+                             "attributes.proto",
+                             "changes.proto",
+                             "test_commands.proto");
 
     private File testProjectDir;
 
@@ -53,7 +61,7 @@ class ValidatingBuilderGenPluginTest {
 
     @Test
     @DisplayName("compile generated validators")
-    void compile_generated_validators() {
+    void compileGeneratedValidators() {
         GradleProject project =
                 GradleProject.newBuilder()
                              .setProjectName(PROJECT_NAME)
