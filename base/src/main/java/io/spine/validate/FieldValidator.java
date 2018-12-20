@@ -175,6 +175,12 @@ abstract class FieldValidator<V> implements Logging {
         return result;
     }
 
+    /**
+     * Validates whether a logic enforced by the {@code (set_once)} option.
+     *
+     * <p>If a field that is being validated already has any value, and there's an attempt to change
+     * it, a {@code ConstraintViolation} is generated.
+     */
     private void validateSetOnce() {
         if (setOnce && this.oldValue != null) {
             String fieldName = this.oldValue.declaration()
