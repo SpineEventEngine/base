@@ -20,6 +20,7 @@
 
 package io.spine.js.generate.statement;
 
+import io.spine.code.js.TypeName;
 import io.spine.js.generate.CodeLine;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -58,5 +59,15 @@ public class VariableDeclaration extends CodeLine {
         checkNotNull(name);
         checkNotNull(value);
         return new VariableDeclaration(name, value);
+    }
+
+    /**
+     * Obtains the declaration of a variable initialized by instantiation of the type.
+     */
+    public static VariableDeclaration newInstance(String name, TypeName type) {
+        checkNotNull(name);
+        checkNotNull(type);
+        String initializer = "new " + type + "()";
+        return initialized(name, initializer);
     }
 }

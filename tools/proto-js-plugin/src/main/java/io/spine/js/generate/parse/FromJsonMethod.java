@@ -172,8 +172,7 @@ public class FromJsonMethod implements Snippet {
     }
 
     private static VariableDeclaration initializedMessageInstance(TypeName typeName) {
-        String initializer = "new " + typeName + "()";
-        return VariableDeclaration.initialized(MESSAGE, initializer);
+        return VariableDeclaration.newInstance(MESSAGE, typeName);
     }
 
     /**

@@ -20,6 +20,8 @@
 
 package io.spine.js.generate.statement;
 
+import com.google.protobuf.Any;
+import io.spine.code.js.TypeName;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -29,9 +31,17 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class VariableDeclarationTest {
 
     @Test
-    @DisplayName("be initialized")
-    void initialized() {
+    @DisplayName("be initialized by value")
+    void initializedByValue() {
         VariableDeclaration line = VariableDeclaration.initialized("someVariable", "someValue");
         assertEquals("let someVariable = someValue;", line.content());
+    }
+
+    @Test
+    @DisplayName("be initialized by new instance")
+    void initializedByNewInstance() {
+        TypeName type = TypeName.from(Any.getDescriptor());
+        VariableDeclaration line = VariableDeclaration.newInstance("anyValue", type);
+        assertEquals("let anyValue = new proto.google.protobuf.Any();", line.content());
     }
 }
