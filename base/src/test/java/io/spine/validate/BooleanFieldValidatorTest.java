@@ -44,7 +44,7 @@ class BooleanFieldValidatorTest {
                                                            .get(0);
         FieldContext fieldContext = FieldContext.create(fieldDescriptor);
         FieldValue singleValue = FieldValue.of(false, fieldContext);
-        FieldValueChange change = FieldValueChange.firstValueEver(singleValue);
+        FieldValueChange change = FieldValueChange.withoutPreviousValue(singleValue);
         return new BooleanFieldValidator(change);
     }
 }

@@ -33,7 +33,7 @@ final class FieldValueChange {
      * <p>Nullable because when a field is set for the first time, old value has never existed
      * and can be considered {@code null}.
      */
-    private final @Nullable FieldValue oldValue;
+    private final @Nullable FieldValue previousValue;
 
     /**
      * A value that the field is going to obtain as a result of this change.
@@ -41,16 +41,13 @@ final class FieldValueChange {
     private final FieldValue newValue;
 
     /** Creates an instance of the field change from the given values. */
-    private FieldValueChange(@Nullable FieldValue oldValue, FieldValue newValue) {
-        this.oldValue = oldValue;
+    private FieldValueChange(@Nullable FieldValue previousValue, FieldValue newValue) {
+        this.previousValue = previousValue;
         this.newValue = newValue;
     }
 
     /**
      * Creates a new instance of a field change based on the specified values.
-     *
-     * <p>{@code oldValue} can be {@code null}, because a first time the field is set the old
-     * value does not exist, therefore can be considered {@code null}.
      *
      * @param oldValue
      *         a value that the field had before this change
@@ -58,7 +55,7 @@ final class FieldValueChange {
      *         a value that the field is going to have as a result of this change
      * @return a new instance of a field change
      */
-    public static FieldValueChange of(@Nullable FieldValue oldValue, FieldValue newValue) {
+    public static FieldValueChange of(FieldValue oldValue, FieldValue newValue) {
         return new FieldValueChange(oldValue, newValue);
     }
 
@@ -72,7 +69,7 @@ final class FieldValueChange {
      *         a value that the field is going to have as a result of this change
      * @return a new instance of a field change
      */
-    static FieldValueChange firstValueEver(FieldValue singleValue) {
+    static FieldValueChange withoutPreviousValue(FieldValue singleValue) {
         return new FieldValueChange(null, singleValue);
     }
 
@@ -87,7 +84,11 @@ final class FieldValueChange {
      * <p>Since an old value may not exist, e.g. when a field is being set for the first time,
      * a {@code null} may be returned.
      */
-    @Nullable FieldValue oldValue() {
-        return oldValue;
+    @Nullable FieldValue previousValue() {
+        return previousValue;
+    }
+
+    boolean isFirstTimeSet(){
+        return previousValue() == null;
     }
 }

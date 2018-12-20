@@ -69,7 +69,7 @@ class FieldValidatorFactory {
      *         the value of the field to validate
      */
     static FieldValidator<?> create(FieldValue value) {
-        FieldValueChange change = FieldValueChange.firstValueEver(value);
+        FieldValueChange change = FieldValueChange.withoutPreviousValue(value);
         return create(change, false);
     }
 
@@ -84,7 +84,7 @@ class FieldValidatorFactory {
      *
      */
     static FieldValidator<?> createStrict(FieldValue value) {
-        FieldValueChange change = FieldValueChange.firstValueEver(value);
+        FieldValueChange change = FieldValueChange.withoutPreviousValue(value);
         return create(change, true);
     }
 
