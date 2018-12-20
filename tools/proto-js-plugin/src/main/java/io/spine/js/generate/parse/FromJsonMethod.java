@@ -117,7 +117,7 @@ public class FromJsonMethod implements Snippet {
         Method fromJson = fromJson(message);
         CodeLines lines = new CodeLines();
         lines.append(emptyLine());
-        lines.append(fromJson.value());
+        lines.append(fromJson);
         return lines;
     }
 

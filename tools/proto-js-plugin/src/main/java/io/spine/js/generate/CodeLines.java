@@ -109,6 +109,13 @@ public final class CodeLines {
     }
 
     /**
+     * Appends the lines of the snippet.
+     */
+    public void append(Snippet snippet) {
+        append(snippet.value());
+    }
+
+    /**
      * Appends the line of code on the current depth.
      *
      * @param codeLine

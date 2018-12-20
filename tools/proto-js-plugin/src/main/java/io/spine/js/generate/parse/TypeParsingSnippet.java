@@ -129,7 +129,7 @@ public final class TypeParsingSnippet implements Snippet {
         CodeLines snippet = new CodeLines();
         for (Descriptor message : file.getMessageTypes()) {
             FromJsonMethod fromJsonMethod = FromJsonMethod.createFor(message);
-            snippet.append(fromJsonMethod.value());
+            snippet.append(fromJsonMethod);
         }
         return snippet;
     }
