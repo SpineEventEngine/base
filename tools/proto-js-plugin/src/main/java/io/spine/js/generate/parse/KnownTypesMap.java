@@ -37,7 +37,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-import static io.spine.js.generate.CodeLines.commaSeparated;
 import static io.spine.js.generate.RawLine.emptyLine;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
@@ -116,32 +115,34 @@ public final class KnownTypesMap implements Snippet {
     @VisibleForTesting
     CodeLines generateKnownTypesMap() {
         CodeLines snippet = new CodeLines();
+        CodeLines mapEntries = knownTypeEntries(fileSet.files());
         snippet.append(emptyLine());
         snippet.exportMap(MAP_NAME);
-        storeKnownTypes(snippet);
+        snippet.append(mapEntries);
         snippet.quitMapDeclaration();
         return snippet;
     }
 
-    /**
-     * Stores known types to the declared {@code Map}.
-     */
-    private void storeKnownTypes(CodeLines output) {
-        Collection<FileDescriptor> files = fileSet.files();
-        for (FileDescriptor file : files) {
-            storeTypesFromFile(file, output);
-        }
+    @VisibleForTesting
+    static CodeLines knownTypeEntries(Collection<FileDescriptor> files) {
+        List<CodeLine> mapEntries = files.stream()
+                                         .flatMap(file -> knownTypeEntries(file).stream())
+                                         .collect(toList());
+        return CodeLines.commaSeparated(mapEntries);
     }
 
     /**
-     * Stores all message types declared in a file as known types {@code Map} entries.
+     * Obtains {@linkplain #mapEntry(Descriptor) entries} to fill the known types with.
+     *
+     * @param file
+     *         the file to collect known types from
      */
-    private static void storeTypesFromFile(FileDescriptor file, CodeLines output) {
+    private static List<CodeLine> knownTypeEntries(FileDescriptor file) {
         List<Descriptor> messages = file.getMessageTypes();
         List<CodeLine> entries = messages.stream()
                                          .map(KnownTypesMap::mapEntry)
                                          .collect(toList());
-        output.append(commaSeparated(entries));
+        return entries;
     }
 
     /**

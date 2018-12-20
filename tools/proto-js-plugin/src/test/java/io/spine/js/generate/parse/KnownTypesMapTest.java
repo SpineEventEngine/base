@@ -20,9 +20,11 @@
 
 package io.spine.js.generate.parse;
 
+import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Any;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
+import com.google.protobuf.StringValue;
 import io.spine.code.js.FileName;
 import io.spine.code.js.TypeName;
 import io.spine.code.proto.FileSet;
@@ -31,6 +33,8 @@ import io.spine.type.TypeUrl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 import static io.spine.js.generate.given.Generators.assertContains;
 
@@ -44,6 +48,7 @@ class KnownTypesMapTest {
      * {@linkplain FileSet#load() types loaded from classpath}.
      */
     private static final Descriptor ANY = Any.getDescriptor();
+    private static final Descriptor STRING_VALUE = StringValue.getDescriptor();
 
     private KnownTypesMap generator;
 
@@ -66,12 +71,19 @@ class KnownTypesMapTest {
     }
 
     @Test
-    @DisplayName("generate known types map")
+    @DisplayName("generate known types map for several files")
     void generateKnownTypesMap() {
-        CodeLines snippet = generator.generateKnownTypesMap();
-        TypeUrl typeUrl = TypeUrl.from(Any.getDescriptor());
-        TypeName typeName = TypeName.from(ANY);
-        String mapEntry = "['" + typeUrl + "', " + typeName + ']';
-        assertContains(snippet, mapEntry);
+        List<FileDescriptor> files = ImmutableList.of(ANY.getFile(), STRING_VALUE.getFile());
+        CodeLines entries = KnownTypesMap.knownTypeEntries(files);
+        String expectedForAny = expectedEntry(ANY) + ',';
+        String expectedForString = expectedEntry(STRING_VALUE) + ',';
+        assertContains(entries, expectedForAny);
+        assertContains(entries, expectedForString);
+    }
+
+    private static String expectedEntry(Descriptor message) {
+        TypeUrl typeUrl = TypeUrl.from(message);
+        TypeName typeName = TypeName.from(message);
+        return "['" + typeUrl + "', " + typeName + ']';
     }
 }
