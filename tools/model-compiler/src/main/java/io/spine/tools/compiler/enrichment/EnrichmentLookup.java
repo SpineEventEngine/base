@@ -31,15 +31,11 @@ import java.util.Collection;
 import java.util.Map;
 
 import static com.google.common.collect.Maps.newHashMap;
-import static io.spine.code.proto.FileDescriptors.parseSkipStandard;
+import static io.spine.code.proto.FileDescriptors.parseSkipGoogle;
 
 /**
  * Parses descriptor set file and creates enrichments map for discovered enrichment
  * definitions.
- *
- * @author Alexander Litus
- * @author Alex Tymchenko
- * @author Alexander Yevsyukov
  */
 public class EnrichmentLookup {
 
@@ -53,7 +49,7 @@ public class EnrichmentLookup {
      * specified directory.
      */
     public static void processDescriptorSetFile(File setFile, String targetDir) {
-        Collection<FileDescriptorProto> files = parseSkipStandard(setFile.getPath());
+        Collection<FileDescriptorProto> files = parseSkipGoogle(setFile);
 
         Map<String, String> propsMap = findAll(files);
 

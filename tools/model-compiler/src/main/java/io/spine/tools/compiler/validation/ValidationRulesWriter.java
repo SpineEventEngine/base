@@ -56,7 +56,7 @@ public final class ValidationRulesWriter implements Logging {
     private final File targetDir;
 
     private ValidationRulesWriter(File descriptorSetFile, File targetDir) {
-        this.files = FileSet.parse(descriptorSetFile.getPath());
+        this.files = FileSet.parse(descriptorSetFile);
         this.targetDir = targetDir;
     }
 

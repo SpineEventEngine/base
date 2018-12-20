@@ -39,7 +39,7 @@ import java.util.Collection;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.isNullOrEmpty;
-import static io.spine.code.proto.FileDescriptors.parseSkipStandard;
+import static io.spine.code.proto.FileDescriptors.parseSkipGoogle;
 import static io.spine.option.OptionsProto.beta;
 import static io.spine.option.OptionsProto.betaAll;
 import static io.spine.option.OptionsProto.betaType;
@@ -87,10 +87,10 @@ public final class AnnotatorFactory {
         this.genGrpcDir = genGrpcDir;
     }
 
-    public static void processDescriptorSetFile(File setFile,
-                                                String generatedProtoDir,
-                                                String generatedGrpcDir) {
-        Collection<FileDescriptorProto> descriptors = parseSkipStandard(setFile.getPath());
+    public static void process(File descriptorSetFile,
+                               String generatedProtoDir,
+                               String generatedGrpcDir) {
+        Collection<FileDescriptorProto> descriptors = parseSkipGoogle(descriptorSetFile);
         AnnotatorFactory factory =
                 new AnnotatorFactory(descriptors, generatedProtoDir, generatedGrpcDir);
 

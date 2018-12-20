@@ -93,7 +93,7 @@ public final class FileSet {
     public static FileSet parse(File descriptorSet) {
         checkNotNull(descriptorSet);
         checkState(descriptorSet.exists(), "File %s does not exist.", descriptorSet);
-        return doParse(descriptorSet.getAbsolutePath());
+        return doParse(descriptorSet);
     }
 
     /**
@@ -108,7 +108,7 @@ public final class FileSet {
     /**
      * Creates a new file set by parsing the passed descriptor set file.
      */
-    private static FileSet doParse(String descriptorSetFile) {
+    private static FileSet doParse(File descriptorSetFile) {
         Collection<FileDescriptorProto> files = FileDescriptors.parse(descriptorSetFile);
         return link(files);
     }

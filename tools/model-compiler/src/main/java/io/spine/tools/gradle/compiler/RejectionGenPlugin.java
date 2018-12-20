@@ -72,7 +72,7 @@ public class RejectionGenPlugin extends SpinePlugin {
 
         Indent indent = getIndent(project);
         Action<Task> mainScopeAction = task -> {
-            String mainFile = getMainDescriptorSetPath(project);
+            File mainFile = new File(getMainDescriptorSetPath(project));
             String targetFolder = getTargetGenRejectionsRootDir(project);
 
             generateRejections(mainFile, targetFolder, indent);
@@ -85,8 +85,8 @@ public class RejectionGenPlugin extends SpinePlugin {
                         .applyNowTo(project);
 
         Action<Task> testScopeAction = task -> {
-            String mainFile = getMainDescriptorSetPath(project);
-            String testFile = getTestDescriptorSetPath(project);
+            File mainFile = new File(getMainDescriptorSetPath(project));
+            File testFile = new File(getTestDescriptorSetPath(project));
             String targetFolder = getTargetTestGenRejectionsRootDir(project);
 
             generateTestRejections(mainFile, testFile, targetFolder, indent);
@@ -105,16 +105,16 @@ public class RejectionGenPlugin extends SpinePlugin {
     /**
      * Verifies if the descriptor set file exists. If not writes about this into the debug log.
      */
-    private boolean fileExists(String descriptorSetFile) {
-        File setFile = new File(descriptorSetFile);
-        if (setFile.exists()) {
+    private boolean fileExists(File descriptorSetFile) {
+        if (descriptorSetFile.exists()) {
             return true;
         }
-        logMissingDescriptorSetFile(setFile);
+        logMissingDescriptorSetFile(descriptorSetFile);
         return false;
     }
 
-    private void generateRejections(String mainFile, String targetFolder, Indent indent) {
+    private void generateRejections(File mainFile, String targetFolder, Indent indent) {
+
         if (!fileExists(mainFile)) {
             return;
         }
@@ -126,8 +126,8 @@ public class RejectionGenPlugin extends SpinePlugin {
         doGenerate(rejectionFiles, targetFolder, indent);
     }
 
-    private void generateTestRejections(String mainFile,
-                                        String testFile,
+    private void generateTestRejections(File mainFile,
+                                        File testFile,
                                         String targetFolder,
                                         Indent indent) {
         if (!(fileExists(mainFile) && fileExists(testFile))) {
