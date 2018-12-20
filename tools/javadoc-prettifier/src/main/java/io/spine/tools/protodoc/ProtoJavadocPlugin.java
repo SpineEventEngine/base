@@ -34,8 +34,6 @@ import static io.spine.tools.gradle.TaskName.FORMAT_PROTO_DOC;
 import static io.spine.tools.gradle.TaskName.FORMAT_TEST_PROTO_DOC;
 import static io.spine.tools.gradle.TaskName.GENERATE_PROTO;
 import static io.spine.tools.gradle.TaskName.GENERATE_TEST_PROTO;
-import static io.spine.tools.gradle.TaskName.MERGE_DESCRIPTOR_SET;
-import static io.spine.tools.gradle.TaskName.MERGE_TEST_DESCRIPTOR_SET;
 import static io.spine.tools.protodoc.Extension.getAbsoluteMainGenProtoDir;
 import static io.spine.tools.protodoc.Extension.getAbsoluteTestGenProtoDir;
 import static java.lang.String.format;
