@@ -23,6 +23,7 @@ package io.spine.js.generate;
 import com.google.common.testing.NullPointerTester;
 import io.spine.code.Depth;
 import io.spine.code.Indent;
+import io.spine.js.generate.given.GivenLines;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -33,6 +34,7 @@ import static io.spine.js.generate.CodeLines.LINE_SEPARATOR;
 import static io.spine.js.generate.RawLine.comment;
 import static io.spine.js.generate.given.Generators.assertContains;
 import static io.spine.js.generate.given.Generators.assertNotContains;
+import static io.spine.js.generate.given.GivenLines.linesWithDepth;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -159,7 +161,8 @@ class CodeLinesTest {
             CodeLines first = newCodeLines(FIRST_PART);
             CodeLines second = newCodeLines(SECOND_PART);
             first.addLinesFrom(second);
-            assertThat(first.toString()).isEqualTo(FIRST_PART + LINE_SEPARATOR + SECOND_PART);
+            String expected = FIRST_PART + LINE_SEPARATOR + SECOND_PART;
+            assertThat(first.toString()).isEqualTo(expected);
         }
 
         @Test
@@ -171,6 +174,35 @@ class CodeLinesTest {
                     IllegalArgumentException.class,
                     () -> first.addLinesFrom(second)
             );
+        }
+
+        @Test
+        @DisplayName("and increase depth")
+        void increaseDepth() {
+            assertMergedAndAligned(Depth.of(2), Depth.zero());
+        }
+
+        @Test
+        @DisplayName("and decrease depth")
+        void decreaseDepth() {
+            assertMergedAndAligned(Depth.zero(), Depth.of(2));
+        }
+
+        /**
+         * Asserts that two {@link io.spine.js.generate.CodeLines} are merged
+         * and the depth of the appended lines is adjusted.
+         *
+         * @param firthDepth
+         *         the depth of lines to append to
+         * @param secondDepth
+         *         the depth of the appended lines
+         */
+        private void assertMergedAndAligned(Depth firthDepth, Depth secondDepth) {
+            CodeLines first = linesWithDepth(firthDepth);
+            CodeLines second = GivenLines.withDifferentDepth(secondDepth);
+            first.addLinesFrom(second);
+            CodeLines expected = GivenLines.withDifferentDepth(firthDepth);
+            assertEquals(expected, first);
         }
     }
 

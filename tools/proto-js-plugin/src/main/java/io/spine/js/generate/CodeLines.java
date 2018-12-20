@@ -26,6 +26,7 @@ import io.spine.code.Indent;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -87,17 +88,22 @@ public final class CodeLines {
     }
 
     /**
-     * Appends another ouput to this output.
+     * Appends another code lines to this code.
      *
-     * @param output
-     *         the code to add
+     * <p>If the appended lines have different depth, then their depth is adjusted
+     * to match the depth of the current lines.
+     *
+     * @param appended
+     *         the code to append
      */
-    public void addLinesFrom(CodeLines output) {
-        checkArgument(indentation.equals(output.indentation),
+    public void addLinesFrom(CodeLines appended) {
+        checkArgument(indentation.equals(appended.indentation),
                       "Cannot merge code parts with different indentation.");
-        checkArgument(currentDepth.equals(output.currentDepth),
-                      "Cannot merge code parts with different depth.");
-        addLines(output.codeLines);
+        int depthDifference = currentDepth.value() - appended.currentDepth.value();
+        for (IndentedLine appendedLine : appended.codeLines) {
+            IndentedLine adjusted = appendedLine.withIncreasedDepth(depthDifference);
+            appendIndented(adjusted);
+        }
     }
 
     /**
@@ -333,5 +339,23 @@ public final class CodeLines {
     @VisibleForTesting
     Indent indent() {
         return indentation;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof CodeLines)) {
+            return false;
+        }
+        CodeLines lines = (CodeLines) o;
+        return indentation.equals(lines.indentation) &&
+                codeLines.equals(lines.codeLines);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(indentation, codeLines);
     }
 }
