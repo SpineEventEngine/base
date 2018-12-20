@@ -23,8 +23,10 @@ package io.spine.tools.protoc;
 import com.google.protobuf.Message;
 import io.spine.base.CommandMessage;
 import io.spine.base.EventMessage;
-import io.spine.base.MessageFile.Predicate;
+import io.spine.base.MessageAcceptor;
 import io.spine.base.RejectionMessage;
+import io.spine.base.UniqueId;
+import io.spine.code.proto.MessageDeclaration;
 
 import java.util.Optional;
 
@@ -38,9 +40,7 @@ import static java.util.stream.Stream.of;
 /**
  * A built-in marked interface.
  *
- * <p>This interface marks special message types, such as events, commands, etc.
- *
- * @author Dmytro Dashenkov
+ * <p>This interface marks special message types, such as unique IDs, events, commands, etc.
  */
 public class BuiltInMarkerInterface implements MarkerInterface {
 
@@ -68,9 +68,10 @@ public class BuiltInMarkerInterface implements MarkerInterface {
      */
     static Optional<CompilerOutput> scanForBuiltIns(FileDescriptorProto file,
                                                     DescriptorProto message) {
+        MessageDeclaration declaration = MessageDeclaration.create(message, file);
         Optional<Type> foundInterface =
                 of(Type.values())
-                        .filter(contract -> contract.matches(file))
+                        .filter(contract -> contract.matches(declaration))
                         .findFirst();
         if (!foundInterface.isPresent()) {
             return empty();
@@ -91,28 +92,22 @@ public class BuiltInMarkerInterface implements MarkerInterface {
      */
     private enum Type {
 
-        EVENT_MESSAGE(EventMessage.class, EventMessage.File.predicate()),
-        COMMAND_MESSAGE(CommandMessage.class, CommandMessage.File.predicate()),
-        REJECTION_MESSAGE(RejectionMessage.class, RejectionMessage.File.predicate());
+        EVENT_MESSAGE(EventMessage.class, EventMessage.predicate()),
+        COMMAND_MESSAGE(CommandMessage.class, CommandMessage.predicate()),
+        REJECTION_MESSAGE(RejectionMessage.class, RejectionMessage.predicate()),
+
+        UNIQUE_ID(UniqueId.class, UniqueId.predicate());
 
         private final Class<? extends Message> interfaceClass;
-        private final Predicate filePredicate;
+        private final MessageAcceptor acceptor;
 
-        Type(Class<? extends Message> interfaceClass, Predicate filePredicate) {
+        Type(Class<? extends Message> interfaceClass, MessageAcceptor acceptor) {
             this.interfaceClass = interfaceClass;
-            this.filePredicate = filePredicate;
+            this.acceptor = acceptor;
         }
 
-        /**
-         * Checks if the given file contains messages of this interface.
-         *
-         * @param file
-         *         the file to check
-         * @return {@code true} if the given file contains messages of this type, {@code false}
-         *         otherwise
-         */
-        private boolean matches(FileDescriptorProto file) {
-            return filePredicate.test(file);
+        public boolean matches(MessageDeclaration declaration) {
+            return acceptor.test(declaration);
         }
     }
 }

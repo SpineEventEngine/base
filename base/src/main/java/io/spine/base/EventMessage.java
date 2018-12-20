@@ -29,11 +29,20 @@ import io.spine.base.MessageFile.Predicate;
  * <p>This interface is used by the Model Compiler for marking event messages.
  * By convention, event messages are defined in a proto file, which name ends
  * with {@code events.proto}.
- *
- * @author Alexander Yevsyukov
  */
 @Immutable
 public interface EventMessage extends SerializableMessage {
+
+    /**
+     * Provides a predicate which checks whether the given {@code MessageDeclaration} represents an
+     * event message.
+     *
+     * @return the {@code MessageAcceptor} for events
+     */
+    static MessageAcceptor predicate() {
+        return messageDeclaration -> File.predicate()
+                                         .test(messageDeclaration.getFile());
+    }
 
     /**
      * Provides the predicate for finding proto files with event message declarations.

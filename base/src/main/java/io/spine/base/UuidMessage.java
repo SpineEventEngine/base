@@ -20,13 +20,17 @@
 
 package io.spine.base;
 
-import com.google.protobuf.Descriptors;
+import com.google.protobuf.DescriptorProtos.DescriptorProto;
+import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
+import com.google.protobuf.Descriptors.Descriptor;
+import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
 import io.spine.protobuf.Messages;
 
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkState;
+import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type.TYPE_STRING;
 
 /**
  * A message containing a single string field with the {@linkplain #FIELD_NAME name}.
@@ -36,9 +40,9 @@ class UuidMessage<I extends Message> {
     private static final String FIELD_NAME = "uuid";
 
     private final Class<I> idClass;
-    private final Descriptors.FieldDescriptor uuidField;
+    private final FieldDescriptor uuidField;
 
-    private UuidMessage(Class<I> idClass, Descriptors.FieldDescriptor uuidField) {
+    private UuidMessage(Class<I> idClass, FieldDescriptor uuidField) {
         this.idClass = idClass;
         this.uuidField = uuidField;
     }
@@ -53,34 +57,56 @@ class UuidMessage<I extends Message> {
      * @return a new instance
      */
     static <I extends Message> UuidMessage<I> of(Class<I> idClass) {
-        Descriptors.Descriptor message = Messages.newInstance(idClass)
+        Descriptor message = Messages.newInstance(idClass)
                                                  .getDescriptorForType();
-        List<Descriptors.FieldDescriptor> fields = message.getFields();
-        checkState(fields.size() == 1, "A UUID message should have a single field.");
-        Descriptors.FieldDescriptor uuidField = fields.get(0);
-        checkUuidField(uuidField);
+        checkState(isUuidMessage(message),
+                   "A UUID message should have a single string field named %s.", FIELD_NAME);
+        List<FieldDescriptor> fields = message.getFields();
+        FieldDescriptor uuidField = fields.get(0);
         return new UuidMessage<>(idClass, uuidField);
     }
 
     /**
-     * Generates an instance of the UUID message.
+     * Generates an instance of the UUID message using a random string.
      *
      * @return a message instance with the initialized {@code uuid} field
      */
-    @SuppressWarnings("unchecked" /* It is OK as the builder is obtained by the specified class. */)
     I generate() {
+        return create(Identifier.newUuid());
+    }
+
+    /**
+     * Generates an instance of the UUID message from the passed value.
+     *
+     * @param value
+     *         a value to use
+     * @return a new instance with the {@code uuid} field initialized to the given value
+     */
+    @SuppressWarnings("unchecked") // It is OK as the builder is obtained by the specified class.
+    I create(String value) {
         Message initializedId = Messages.builderFor(idClass)
-                                        .setField(uuidField, Identifier.newUuid())
+                                        .setField(uuidField, value)
                                         .build();
         return (I) initializedId;
     }
 
-    private static void checkUuidField(Descriptors.FieldDescriptor field) {
-        boolean nameMatches = field.getName()
+    /**
+     * Checks if the given proto definition represents a {@code UuidMessage}.
+     */
+    static boolean isUuidMessage(DescriptorProto message) {
+        int fieldCount = message.getFieldCount();
+        if (fieldCount != 1) {
+            return false;
+        }
+        FieldDescriptorProto theField = message.getFieldList()
+                                               .get(0);
+        boolean nameMatches = theField.getName()
                                    .equals(FIELD_NAME);
-        boolean typeMatches = field.getType() == Descriptors.FieldDescriptor.Type.STRING;
-        boolean isUuidField = nameMatches && typeMatches;
-        checkState(isUuidField,
-                   "A UUID message should have a single string field named %s.", FIELD_NAME);
+        boolean typeMatches = theField.getType() == TYPE_STRING;
+        return nameMatches && typeMatches;
+    }
+
+    private static boolean isUuidMessage(Descriptor message) {
+        return isUuidMessage(message.toProto());
     }
 }

@@ -29,11 +29,20 @@ import io.spine.base.MessageFile.Predicate;
  * <p>This interface is used by the Model Compiler for marking rejection messages.
  * By convention, rejection messages are defined in a proto file, which name ends
  * with {@code rejections.proto}.
- *
- * @author Alexander Yevsyukov
  */
 @Immutable
 public interface RejectionMessage extends EventMessage {
+
+    /**
+     * Provides a predicate which checks whether the given {@code MessageDeclaration} represents a
+     * rejection message.
+     *
+     * @return the {@code MessageAcceptor} for rejections
+     */
+    static MessageAcceptor predicate() {
+        return messageDeclaration -> File.predicate()
+                                         .test(messageDeclaration.getFile());
+    }
 
     /**
      * Provides the predicate for finding proto files with rejection message declarations.

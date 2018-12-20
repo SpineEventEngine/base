@@ -39,8 +39,6 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  *
  * <p>Additionally to a {@linkplain DescriptorProto message descriptor},
  * includes information about the location of the declaration.
- *
- * @author Dmytro Grankin
  */
 public class MessageDeclaration extends AbstractMessageDeclaration {
 
@@ -63,12 +61,14 @@ public class MessageDeclaration extends AbstractMessageDeclaration {
     /**
      * Creates the declaration for the specified message.
      *
-     * @param message the descriptor of the top-level declaration of the message type
-     * @param file    the descriptor of the file containing the message
+     * @param message
+     *         the descriptor of the top-level declaration of the message type
+     * @param file
+     *         the descriptor of the file containing the message
      * @return the message declaration
      */
-    static MessageDeclaration create(DescriptorProto message,
-                                     FileDescriptorProto file) {
+    public static MessageDeclaration create(DescriptorProto message,
+                                            FileDescriptorProto file) {
         boolean fileContainsTarget = file.getMessageTypeList()
                                          .contains(message);
         if (!fileContainsTarget) {
@@ -120,7 +120,8 @@ public class MessageDeclaration extends AbstractMessageDeclaration {
     /**
      * Obtains the declaration for the specified nested message of the declaration.
      *
-     * @param nestedMessage the nested message from this declaration
+     * @param nestedMessage
+     *         the nested message from this declaration
      * @return the nested message declaration
      */
     private MessageDeclaration forNested(DescriptorProto nestedMessage) {
