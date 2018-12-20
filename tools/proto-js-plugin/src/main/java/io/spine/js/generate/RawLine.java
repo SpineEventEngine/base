@@ -30,7 +30,7 @@ public class RawLine extends CodeLine {
 
     private final String content;
 
-    RawLine(String content) {
+    private RawLine(String content) {
         this.content = content;
     }
 
