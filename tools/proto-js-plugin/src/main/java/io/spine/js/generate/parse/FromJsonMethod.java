@@ -32,6 +32,7 @@ import io.spine.js.generate.parse.field.FieldGenerator;
 import io.spine.js.generate.parse.field.FieldGenerators;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.js.generate.RawLine.emptyLine;
 
 /**
  * The generator of the {@code fromJson(json)} method for the given message type.
@@ -113,7 +114,7 @@ public class FromJsonMethod implements Snippet {
     @VisibleForTesting
     CodeLines generateFromJsonMethod() {
         CodeLines snippet = new CodeLines();
-        snippet.addEmptyLine();
+        snippet.append(emptyLine());
         addFromJsonCode(message, snippet);
         return snippet;
     }
@@ -127,7 +128,7 @@ public class FromJsonMethod implements Snippet {
     @VisibleForTesting
     CodeLines generateFromObjectMethod() {
         CodeLines snippet = new CodeLines();
-        snippet.addEmptyLine();
+        snippet.append(emptyLine());
         addFromObjectCode(message, snippet);
         return snippet;
     }
@@ -163,7 +164,7 @@ public class FromJsonMethod implements Snippet {
         String methodName = typeName.value() + '.' + FROM_OBJECT;
         output.enterMethod(methodName, FROM_OBJECT_ARG);
         checkParsedObject(output);
-        output.addEmptyLine();
+        output.append(emptyLine());
         output.append(initializedMessageInstance(typeName));
         handleMessageFields(output, message);
         output.append(Return.value(MESSAGE));
@@ -190,7 +191,7 @@ public class FromJsonMethod implements Snippet {
     @VisibleForTesting
     static void handleMessageFields(CodeLines output, Descriptor message) {
         for (FieldDescriptor field : message.getFields()) {
-            output.addEmptyLine();
+            output.append(emptyLine());
             FieldGenerator generator = FieldGenerators.createFor(field, output);
             generator.generate();
         }

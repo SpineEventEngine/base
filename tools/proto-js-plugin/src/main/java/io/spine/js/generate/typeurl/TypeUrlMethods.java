@@ -35,6 +35,7 @@ import io.spine.js.generate.Snippet;
 import io.spine.type.TypeUrl;
 
 import static io.spine.js.generate.RawLine.comment;
+import static io.spine.js.generate.RawLine.emptyLine;
 
 /**
  * Generates a method to obtain a {@code TypeUrl} for each type in a file.
@@ -62,7 +63,7 @@ final class TypeUrlMethods implements Snippet {
             Snippet method = typeUrlMethod(type);
             output.append(COMMENT);
             output.addLinesFrom(method.value());
-            output.addEmptyLine();
+            output.append(emptyLine());
         }
         return output;
     }

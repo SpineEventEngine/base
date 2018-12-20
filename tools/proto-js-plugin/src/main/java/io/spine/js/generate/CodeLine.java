@@ -24,6 +24,8 @@ import java.util.Objects;
 
 /**
  * A line of a Javascript code.
+ *
+ * <p>The line is not aware of {@linkplain IndentedLine indentation}.
  */
 public abstract class CodeLine {
 

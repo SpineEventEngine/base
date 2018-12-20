@@ -149,13 +149,6 @@ public final class CodeLines {
     }
 
     /**
-     * Adds an empty line to the code.
-     */
-    public void addEmptyLine() {
-        addLine("");
-    }
-
-    /**
      * Declares JS method and enters its body.
      *
      * @param methodName

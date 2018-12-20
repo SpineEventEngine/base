@@ -25,8 +25,8 @@ import com.google.common.truth.Truth;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-@DisplayName("CodeLine should")
-class CodeLineTest {
+@DisplayName("RawLine should")
+class RawLineTest {
 
     @Test
     @DisplayName("provide a comment")
@@ -43,6 +43,13 @@ class CodeLineTest {
         String value = "v";
         CodeLine mapEntry = RawLine.mapEntry(key, value);
         assertThat(mapEntry).isEqualTo("['k', v]");
+    }
+
+    @Test
+    @DisplayName("provide an empty line")
+    void emptyLine() {
+        CodeLine line = RawLine.emptyLine();
+        assertThat(line).isEqualTo("");
     }
 
     private static StringSubject assertThat(CodeLine line) {

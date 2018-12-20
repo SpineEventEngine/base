@@ -47,6 +47,7 @@ import io.spine.type.TypeUrl;
 import java.util.Map.Entry;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.js.generate.RawLine.emptyLine;
 import static io.spine.type.TypeUrl.of;
 
 /**
@@ -98,7 +99,7 @@ public final class WellKnownTypeParsers implements Snippet {
     @Override
     public CodeLines value() {
         CodeLines out = new CodeLines();
-        out.addEmptyLine();
+        out.append(emptyLine());
         out.exportMap(MAP_NAME);
         storeParsersToMap(out);
         out.quitMapDeclaration();

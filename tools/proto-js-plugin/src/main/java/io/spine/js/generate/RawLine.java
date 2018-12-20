@@ -25,8 +25,6 @@ import static java.lang.String.format;
 
 /**
  * A line of a JavaScript code represented by a string.
- *
- * <p>The line is not aware of {@linkplain IndentedLine indentation}.
  */
 public class RawLine extends CodeLine {
 
@@ -50,10 +48,20 @@ public class RawLine extends CodeLine {
         return new RawLine("// " + commentText);
     }
 
+    /**
+     * Obtains a map entry with the string literal key.
+     */
     public static CodeLine mapEntry(String key, Object value) {
         checkNotNull(key);
         checkNotNull(value);
         String raw = format("['%s', %s]", key, value);
         return new RawLine(raw);
+    }
+
+    /**
+     * Obtains an empty line.
+     */
+    public static CodeLine emptyLine() {
+        return new RawLine("");
     }
 }

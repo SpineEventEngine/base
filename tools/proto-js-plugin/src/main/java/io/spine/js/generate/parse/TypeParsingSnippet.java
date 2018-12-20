@@ -30,6 +30,7 @@ import io.spine.js.generate.importado.JsImportGenerator;
 
 import static io.spine.code.js.LibraryFile.KNOWN_TYPE_PARSERS;
 import static io.spine.js.generate.RawLine.comment;
+import static io.spine.js.generate.RawLine.emptyLine;
 
 /**
  * The generator of the {@code fromJson(json)} method for the given {@link FileDescriptor}.
@@ -95,7 +96,7 @@ public final class TypeParsingSnippet implements Snippet {
     @VisibleForTesting
     CodeLines generateComment() {
         CodeLines snippet = new CodeLines();
-        snippet.addEmptyLine();
+        snippet.append(emptyLine());
         snippet.append(comment(COMMENT));
         return snippet;
     }
@@ -108,7 +109,7 @@ public final class TypeParsingSnippet implements Snippet {
     @VisibleForTesting
     CodeLines generateParsersImport() {
         CodeLines snippet = new CodeLines();
-        snippet.addEmptyLine();
+        snippet.append(emptyLine());
         FileName fileName = FileName.from(file);
         JsImportGenerator generator = JsImportGenerator
                 .newBuilder()

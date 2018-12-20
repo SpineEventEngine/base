@@ -38,6 +38,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import static io.spine.js.generate.RawLine.emptyLine;
 import static java.util.stream.Collectors.toSet;
 
 /**
@@ -114,7 +115,7 @@ public final class KnownTypesMap implements Snippet {
     @VisibleForTesting
     CodeLines generateKnownTypesMap() {
         CodeLines snippet = new CodeLines();
-        snippet.addEmptyLine();
+        snippet.append(emptyLine());
         snippet.exportMap(MAP_NAME);
         storeKnownTypes(snippet);
         snippet.quitMapDeclaration();
