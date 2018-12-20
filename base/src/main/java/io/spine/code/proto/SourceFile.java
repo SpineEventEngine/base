@@ -51,7 +51,7 @@ public class SourceFile extends AbstractSourceFile implements Logging {
     }
 
     /**
-     * Creates instance for the passed file descriptor.
+     * Creates a new instance for the passed file descriptor.
      */
     public static SourceFile from(FileDescriptor file) {
         return new SourceFile(file);
