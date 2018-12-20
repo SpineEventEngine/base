@@ -167,11 +167,11 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
         checkViolations(violations);
     }
 
-    private @Nullable FieldValue currentFieldValue(FieldDescriptor descriptor,
+    private FieldValue currentFieldValue(FieldDescriptor descriptor,
                                                    FieldContext fieldContext) {
         FieldValue fieldValue = getMessageBuilder().hasField(descriptor) ?
                                 FieldValue.of(messageBuilder.getField(descriptor), fieldContext) :
-                                null;
+                                FieldValue.unsetValue(fieldContext);
         return fieldValue;
     }
 

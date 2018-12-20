@@ -20,20 +20,14 @@
 
 package io.spine.validate;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A change in a {@linkplain io.spine.validate.FieldValue value of a field}.
  */
 final class FieldValueChange {
 
-    /**
-     * A value that used to be the value of the field.
-     *
-     * <p>Nullable because when a field is set for the first time, old value has never existed
-     * and can be considered {@code null}.
-     */
-    private final @Nullable FieldValue previousValue;
+    /** A value that used to be the value of the field. */
+    private final FieldValue previousValue;
 
     /**
      * A value that the field is going to obtain as a result of this change.
@@ -41,7 +35,7 @@ final class FieldValueChange {
     private final FieldValue newValue;
 
     /** Creates an instance of the field change from the given values. */
-    private FieldValueChange(@Nullable FieldValue previousValue, FieldValue newValue) {
+    private FieldValueChange(FieldValue previousValue, FieldValue newValue) {
         this.previousValue = previousValue;
         this.newValue = newValue;
     }
@@ -81,14 +75,13 @@ final class FieldValueChange {
     /**
      * Returns a value that the field used to have before this change took place.
      *
-     * <p>Since an old value may not exist, e.g. when a field is being set for the first time,
-     * a {@code null} may be returned.
+     * <p>May be {@linkplain io.spine.validate.FieldValue#unsetValue(FieldContext) unset}.
      */
-    @Nullable FieldValue previousValue() {
+    FieldValue previousValue() {
         return previousValue;
     }
 
     boolean isFirstTimeSet(){
-        return previousValue() == null;
+        return !previousValue.isSet();
     }
 }
