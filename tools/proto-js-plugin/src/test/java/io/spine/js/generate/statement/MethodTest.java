@@ -57,8 +57,8 @@ class MethodTest {
     @DisplayName("assemble a method with body")
     void nonEmpty() {
         Method method = newMethod()
-                .appendBody("statement1;")
-                .appendBody("statement2;")
+                .appendToBody("statement1;")
+                .appendToBody("statement2;")
                 .build();
         String expectedRepresentation = expectedNoArgsDeclaration() + lineSeparator()
                 + "  statement1;" + lineSeparator()

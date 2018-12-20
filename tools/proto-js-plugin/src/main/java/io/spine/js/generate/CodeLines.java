@@ -93,6 +93,8 @@ public final class CodeLines {
      * <p>If the appended lines have different depth, then their depth is adjusted
      * to match the depth of the current lines.
      *
+     * <p>The depth is adjusted by the difference of current depths.
+     *
      * @param appended
      *         the code to append
      */
@@ -139,19 +141,6 @@ public final class CodeLines {
     public void appendIndented(IndentedLine codeLine) {
         checkNotNull(codeLine);
         codeLines.add(codeLine);
-    }
-
-    /**
-     * Appends the line of code to the output.
-     *
-     * @param lines
-     *         the code to add
-     */
-    public void addLines(List<IndentedLine> lines) {
-        checkNotNull(lines);
-        for (IndentedLine line : lines) {
-            appendIndented(line);
-        }
     }
 
     /**

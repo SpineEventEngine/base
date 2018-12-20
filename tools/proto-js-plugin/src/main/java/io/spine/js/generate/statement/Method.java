@@ -27,6 +27,7 @@ import io.spine.js.generate.Snippet;
 
 import java.util.List;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Lists.newArrayList;
 import static io.spine.validate.Validate.checkNotEmptyOrBlank;
 import static java.lang.String.join;
@@ -105,11 +106,20 @@ public class Method implements Snippet {
         }
 
         /**
-         * Adds a line to the body of the method.
+         * Appends a line to the body of the method.
          */
-        public Builder appendBody(String line) {
+        public Builder appendToBody(String line) {
             RawLine codeLine = new RawLine(line);
             body.add(codeLine);
+            return this;
+        }
+
+        /**
+         * Appends a line to the body of the method.
+         */
+        public Builder appendToBody(CodeLine line) {
+            checkNotNull(line);
+            body.add(line);
             return this;
         }
 

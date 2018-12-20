@@ -28,6 +28,7 @@ import io.spine.js.generate.CodeLines;
 import io.spine.js.generate.Snippet;
 import io.spine.js.generate.parse.field.FieldGenerator;
 import io.spine.js.generate.parse.field.FieldGenerators;
+import io.spine.js.generate.statement.Method;
 import io.spine.js.generate.statement.Return;
 import io.spine.js.generate.statement.VariableDeclaration;
 
@@ -113,10 +114,11 @@ public class FromJsonMethod implements Snippet {
      */
     @VisibleForTesting
     CodeLines generateFromJsonMethod() {
-        CodeLines snippet = new CodeLines();
-        snippet.append(emptyLine());
-        addFromJsonCode(message, snippet);
-        return snippet;
+        Method fromJson = fromJson(message);
+        CodeLines lines = new CodeLines();
+        lines.append(emptyLine());
+        lines.addLinesFrom(fromJson.value());
+        return lines;
     }
 
     /**
@@ -134,15 +136,15 @@ public class FromJsonMethod implements Snippet {
     }
 
     /**
-     * Adds the {@code fromJson} code to the {@code jsOutput}.
+     * Obtains {@code fromJson} method for the specified message.
      */
-    private static void addFromJsonCode(Descriptor message, CodeLines output) {
+    private static Method fromJson(Descriptor message) {
         TypeName typeName = TypeName.from(message);
         String methodName = typeName.value() + '.' + FROM_JSON;
-        output.enterMethod(methodName, FROM_JSON_ARG);
-        output.append(parsedValue());
-        output.append(fromJsonReturn(typeName));
-        output.exitMethod();
+        return Method.newBuilder(methodName)
+                     .appendToBody(parsedValue())
+                     .appendToBody(fromJsonReturn(typeName))
+                     .build();
     }
 
     private static VariableDeclaration parsedValue() {
