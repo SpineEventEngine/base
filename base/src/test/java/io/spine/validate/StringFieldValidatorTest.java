@@ -33,7 +33,6 @@ import org.junit.jupiter.api.DisplayName;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 
 @DisplayName("StringFieldValidator should")
 public class StringFieldValidatorTest extends FieldValidatorTest<String> {
@@ -124,6 +123,12 @@ public class StringFieldValidatorTest extends FieldValidatorTest<String> {
         return getValidatorForChangedField(SET_ONCE_FALSE_STRING_FIELD_DESC,
                                            previousValue,
                                            actualValue);
+    }
+
+    @Override
+    protected FieldValidator<?> setOnceChangeToSameValueValidator() {
+        String value = Identifier.newUuid();
+        return getValidatorForChangedField(SET_ONCE_STRING_FIELD_DESC, value, value);
     }
 
     @Override
