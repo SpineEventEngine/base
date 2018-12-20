@@ -77,8 +77,8 @@ public class VBuilderGenerator implements Logging {
     }
 
     private void generate(ImmutableCollection<MessageType> messages) {
-        ValidatingBuilderWriter writer =
-                new ValidatingBuilderWriter(targetDirPath, indent);
+        VBuilderWriter writer =
+                new VBuilderWriter(targetDirPath, indent);
 
         for (MessageType messageType : messages) {
             try {

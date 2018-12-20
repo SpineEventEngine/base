@@ -43,12 +43,12 @@ import static io.spine.util.Exceptions.newIllegalArgumentException;
 /**
  * Generates source code for a Java class with Validating Builder for a message type.
  */
-class ValidatingBuilderWriter implements Logging {
+class VBuilderWriter implements Logging {
 
     private final File rootDirectory;
     private final Indent indent;
 
-    ValidatingBuilderWriter(String targetDir, Indent indent) {
+    VBuilderWriter(String targetDir, Indent indent) {
         this.rootDirectory = new File(targetDir);
         this.indent = indent;
     }
