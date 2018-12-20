@@ -21,6 +21,7 @@
 package io.spine.validate;
 
 import com.google.protobuf.Descriptors.FieldDescriptor;
+import io.spine.base.Identifier;
 import io.spine.test.validate.MessageWithMapStringField;
 import io.spine.test.validate.MessageWithRepeatedRequiredValidatedStringField;
 import io.spine.test.validate.MessageWithRepeatedUnchekedStringField;
@@ -98,34 +99,28 @@ public class StringFieldValidatorTest extends FieldValidatorTest<String> {
 
     @Override
     protected FieldValidator<String> setOnceViolatedValidator() {
-        String previousValue = UUID.randomUUID()
-                                   .toString();
-        String actualValue = UUID.randomUUID()
-                                 .toString();
+        String previousValue = Identifier.newUuid();
+        String actualValue = Identifier.newUuid();
         return getValidatorForChangedField(SET_ONCE_STRING_FIELD_DESC, previousValue, actualValue);
     }
 
     @Override
     protected FieldValidator<?> setOnceValidatorWithPresetDefaultValue() {
         String previousValue = "";
-        String actualValue = UUID.randomUUID()
-                                 .toString();
+        String actualValue = Identifier.newUuid();
         return getValidatorForChangedField(SET_ONCE_STRING_FIELD_DESC, previousValue, actualValue);
     }
 
     @Override
     protected FieldValidator<?> validSetOnceValidator() {
-        String desiredValue = UUID.randomUUID()
-                                  .toString();
+        String desiredValue = Identifier.newUuid();
         return getValidator(SET_ONCE_STRING_FIELD_DESC, desiredValue);
     }
 
     @Override
     protected FieldValidator<?> setOnceFalseValidator() {
-        String previousValue = UUID.randomUUID()
-                                   .toString();
-        String actualValue = UUID.randomUUID()
-                                 .toString();
+        String previousValue = Identifier.newUuid();
+        String actualValue = Identifier.newUuid();
         return getValidatorForChangedField(SET_ONCE_FALSE_STRING_FIELD_DESC,
                                            previousValue,
                                            actualValue);
