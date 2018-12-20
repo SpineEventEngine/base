@@ -25,6 +25,7 @@ import io.spine.code.Depth;
 import io.spine.code.Indent;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -274,25 +275,6 @@ public final class CodeLines {
     }
 
     /**
-     * Adds an entry to the map.
-     *
-     * <p>Assumes that the cursor is currently inside the exported map declaration.
-     *
-     * @param entry
-     *         the entry to add
-     * @param isLast
-     *         whether this entry is last or there will be more
-     */
-    public void addMapEntry(String entry, boolean isLast) {
-        checkNotNull(entry);
-        if (isLast) {
-            append(entry);
-        } else {
-            append(entry + ',');
-        }
-    }
-
-    /**
      * Exits the exported map declaration.
      */
     public void quitMapDeclaration() {
@@ -312,6 +294,23 @@ public final class CodeLines {
      */
     public void decreaseDepth() {
         currentDepth = currentDepth.decremented();
+    }
+
+    /**
+     * Merges lines by addition of a comma to each line except the last one.
+     */
+    public static CodeLines commaSeparated(List<CodeLine> lines) {
+        checkNotNull(lines);
+        CodeLines code = new CodeLines();
+        for (Iterator<CodeLine> it = lines.iterator(); it.hasNext(); ) {
+            CodeLine line = it.next();
+            boolean isLast = !it.hasNext();
+            String editedLine = isLast
+                                ? line.content()
+                                : line.content() + ',';
+            code.append(editedLine);
+        }
+        return code;
     }
 
     /**

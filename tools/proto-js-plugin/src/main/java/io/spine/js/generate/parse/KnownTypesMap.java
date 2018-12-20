@@ -34,11 +34,12 @@ import io.spine.js.generate.importado.JsImportGenerator;
 import io.spine.type.TypeUrl;
 
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import static io.spine.js.generate.CodeLines.commaSeparated;
 import static io.spine.js.generate.RawLine.emptyLine;
+import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
 /**
@@ -127,26 +128,20 @@ public final class KnownTypesMap implements Snippet {
      */
     private void storeKnownTypes(CodeLines output) {
         Collection<FileDescriptor> files = fileSet.files();
-        for (Iterator<FileDescriptor> it = files.iterator(); it.hasNext(); ) {
-            FileDescriptor file = it.next();
-            boolean isLastFile = !it.hasNext();
-            storeTypesFromFile(file, isLastFile, output);
+        for (FileDescriptor file : files) {
+            storeTypesFromFile(file, output);
         }
     }
 
     /**
      * Stores all message types declared in a file as known types {@code Map} entries.
      */
-    private static void storeTypesFromFile(FileDescriptor file,
-                                           boolean isLastFile,
-                                           CodeLines output) {
+    private static void storeTypesFromFile(FileDescriptor file, CodeLines output) {
         List<Descriptor> messages = file.getMessageTypes();
-        for (Iterator<Descriptor> it = messages.iterator(); it.hasNext(); ) {
-            Descriptor message = it.next();
-            boolean isLastMessage = !it.hasNext() && isLastFile;
-            CodeLine mapEntry = mapEntry(message);
-            output.addMapEntry(mapEntry.content(), isLastMessage);
-        }
+        List<CodeLine> entries = messages.stream()
+                                         .map(KnownTypesMap::mapEntry)
+                                         .collect(toList());
+        output.append(commaSeparated(entries));
     }
 
     /**

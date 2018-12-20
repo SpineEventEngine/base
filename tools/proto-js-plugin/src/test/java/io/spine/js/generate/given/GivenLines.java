@@ -21,6 +21,7 @@
 package io.spine.js.generate.given;
 
 import io.spine.code.Depth;
+import io.spine.code.Indent;
 import io.spine.js.generate.CodeLines;
 
 public final class GivenLines {
@@ -44,6 +45,24 @@ public final class GivenLines {
         for (int i = 0; i < depth.value(); i++) {
             lines.increaseDepth();
         }
+        return lines;
+    }
+
+    /**
+     * Obtains code lines with the specified first line.
+     */
+    public static CodeLines newCodeLines(String firstLine) {
+        CodeLines lines = new CodeLines();
+        lines.append(firstLine);
+        return lines;
+    }
+
+    /**
+     * Obtains code lines with the specified first line.
+     */
+    public static CodeLines newCodeLines(String firstLine, Indent indent) {
+        CodeLines lines = new CodeLines(indent);
+        lines.append(firstLine);
         return lines;
     }
 }

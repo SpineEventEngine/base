@@ -22,7 +22,6 @@ package io.spine.js.generate.parse;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.UnmodifiableIterator;
 import com.google.protobuf.Any;
 import com.google.protobuf.BytesValue;
 import com.google.protobuf.DoubleValue;
@@ -44,11 +43,14 @@ import io.spine.js.generate.RawLine;
 import io.spine.js.generate.Snippet;
 import io.spine.type.TypeUrl;
 
+import java.util.List;
 import java.util.Map.Entry;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.js.generate.CodeLines.commaSeparated;
 import static io.spine.js.generate.RawLine.emptyLine;
 import static io.spine.type.TypeUrl.of;
+import static java.util.stream.Collectors.toList;
 
 /**
  * The generator which stores JSON parsers for the standard Protobuf types to the JS {@code Map}.
@@ -111,12 +113,11 @@ public final class WellKnownTypeParsers implements Snippet {
      */
     private static void storeParsersToMap(CodeLines output) {
         ImmutableSet<Entry<TypeUrl, String>> entries = parsers.entrySet();
-        for (UnmodifiableIterator<Entry<TypeUrl, String>> it = entries.iterator(); it.hasNext(); ) {
-            Entry<TypeUrl, String> typeToParser = it.next();
-            boolean isLastEntry = !it.hasNext();
-            CodeLine mapEntry = mapEntry(typeToParser);
-            output.addMapEntry(mapEntry.content(), isLastEntry);
-        }
+        List<CodeLine> entryLiterals = entries.stream()
+                                              .map(WellKnownTypeParsers::mapEntry)
+                                              .collect(toList());
+        CodeLines mergedLiterals = commaSeparated(entryLiterals);
+        output.append(mergedLiterals);
     }
 
     /**

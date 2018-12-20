@@ -20,7 +20,10 @@
 
 package io.spine.js.generate;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.testing.NullPointerTester;
+import com.google.common.truth.StringSubject;
+import com.google.common.truth.Truth;
 import io.spine.code.Depth;
 import io.spine.code.Indent;
 import io.spine.js.generate.given.GivenLines;
@@ -29,12 +32,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static com.google.common.truth.Truth.assertThat;
+import java.util.List;
+
 import static io.spine.js.generate.CodeLines.LINE_SEPARATOR;
 import static io.spine.js.generate.RawLine.comment;
 import static io.spine.js.generate.given.Generators.assertContains;
-import static io.spine.js.generate.given.Generators.assertNotContains;
 import static io.spine.js.generate.given.GivenLines.linesWithDepth;
+import static io.spine.js.generate.given.GivenLines.newCodeLines;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -162,7 +166,7 @@ class CodeLinesTest {
             CodeLines second = newCodeLines(SECOND_PART);
             first.append(second);
             String expected = FIRST_PART + LINE_SEPARATOR + SECOND_PART;
-            assertThat(first.toString()).isEqualTo(expected);
+            assertThat(first).isEqualTo(expected);
         }
 
         @Test
@@ -214,7 +218,7 @@ class CodeLinesTest {
         CodeLine comment = comment("The field...");
         lines.append(comment);
         String expected = lines.indent() + comment.content();
-        assertThat(lines.toString()).isEqualTo(expected);
+        assertThat(lines).isEqualTo(expected);
     }
 
     @Test
@@ -225,7 +229,7 @@ class CodeLinesTest {
         IndentedLine indentedLine = new IndentedLine("some code line", lineDepth);
         lines.appendIndented(indentedLine);
         Indent indent = lines.indent();
-        assertThat(lines.toString()).isEqualTo(indentedLine.indent(indent));
+        assertThat(lines).isEqualTo(indentedLine.indent(indent));
     }
 
     @Test
@@ -248,20 +252,17 @@ class CodeLinesTest {
     }
 
     @Test
-    @DisplayName("add entry to exported map")
-    void addMapEntry() {
-        jsOutput.exportMap(MAP_NAME);
-
-        String entry1 = "entry1";
-        jsOutput.addMapEntry(entry1, false);
-        String entry2 = "entry2";
-        jsOutput.addMapEntry(entry2, true);
-
-        String entry1WithComma = entry1 + ',';
-        String entry2WithComma = entry2 + ',';
-        assertContains(jsOutput, entry1WithComma);
-        assertContains(jsOutput, entry2);
-        assertNotContains(jsOutput, entry2WithComma);
+    @DisplayName("join lines using comma")
+    void joinLinesWithComma() {
+        CodeLine first = new RawLine("entry1");
+        CodeLine second = new RawLine("entry2");
+        CodeLine last = new RawLine("entry3");
+        List<CodeLine> lines = ImmutableList.of(first, second, last);
+        CodeLines code = CodeLines.commaSeparated(lines);
+        assertThat(code).contains(first + ",");
+        assertThat(code).contains(second + ",");
+        assertThat(code).contains(last.content());
+        assertThat(code).doesNotContain(last + ",");
     }
 
     @Test
@@ -285,21 +286,7 @@ class CodeLinesTest {
         assertEquals(expected, output);
     }
 
-    /**
-     * Obtains code lines with the specified first line.
-     */
-    private static CodeLines newCodeLines(String firstLine) {
-        CodeLines lines = new CodeLines();
-        lines.append(firstLine);
-        return lines;
-    }
-
-    /**
-     * Obtains code lines with the specified first line.
-     */
-    private static CodeLines newCodeLines(String firstLine, Indent indent) {
-        CodeLines lines = new CodeLines(indent);
-        lines.append(firstLine);
-        return lines;
+    private static StringSubject assertThat(CodeLines lines) {
+        return Truth.assertThat(lines.toString());
     }
 }
