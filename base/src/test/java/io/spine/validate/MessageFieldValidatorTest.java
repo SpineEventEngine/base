@@ -136,6 +136,12 @@ public class MessageFieldValidatorTest extends FieldValidatorTest<Message> {
     }
 
     @Override
+    protected FieldValidator<?> setOnceChangeToSameValueValidator() {
+        Timestamp now = now();
+        return getValidatorForChangedField(SET_ONCE_TIMESTAMP_FIELD_DESC, now, now);
+    }
+
+    @Override
     protected InvalidMessage newValue() {
         return InvalidMessage.newBuilder()
                              .setInvalidField("some non-empty string")

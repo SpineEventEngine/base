@@ -143,6 +143,16 @@ public abstract class FieldValidatorTest<V> {
     protected abstract FieldValidator<?> setOnceFalseValidator();
 
     /**
+     * Creates a validator for a field with {@code (set_once) = true}.
+     *
+     * <p>The field then is being set to the same value twice.
+     * This should result in a constraint violation.
+     *
+     * @return new instance of a field validator
+     */
+    protected abstract FieldValidator<?> setOnceChangeToSameValueValidator();
+
+    /**
      * Generates a new non-default valid value of the type of the validated field.
      */
     protected abstract V newValue();
@@ -243,6 +253,14 @@ public abstract class FieldValidatorTest<V> {
         FieldValidator<?> validator = setOnceFalseValidator();
         List<ConstraintViolation> violations = validator.validate();
         assertEmpty(violations);
+    }
+
+    @Test
+    @DisplayName("not allow fields that are (set_once) = true to be changed to the same value")
+    void testSetOnceChangeToSameValue() {
+        FieldValidator<?> validator = setOnceChangeToSameValueValidator();
+        List<ConstraintViolation> violations = validator.validate();
+        assertEquals(1, violations.size());
     }
 
     private static void assertNotScalar(FieldValidator<?> validator) {
