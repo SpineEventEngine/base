@@ -26,7 +26,9 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
- * A name of a nested class with outer class names separated with dots.
+ * A name of a potentially nested class with outer class names separated with dots.
+ *
+ * <p>A top level class name would have equal to {@link io.spine.code.java.SimpleClassName}.
  */
 public final class NestedClassName extends StringTypeValue {
 
@@ -41,10 +43,6 @@ public final class NestedClassName extends StringTypeValue {
         int dotIndex = value.indexOf(ClassName.DOT_SEPARATOR);
         checkArgument(dotIndex != -1, "Nested class name must be separated with dots.");
         checkArgument(dotIndex > 0, "Nested class name cannot start with a dot.");
-        checkArgument(value.indexOf(ClassName.OUTER_CLASS_DELIMITER) == -1,
-                      "Nested class name must be separated with dots, not " +
-                              ClassName.OUTER_CLASS_DELIMITER);
-
         return new NestedClassName(value);
     }
 }
