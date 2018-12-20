@@ -27,6 +27,7 @@ import io.spine.code.js.TypeName;
 import io.spine.js.generate.CodeLines;
 import io.spine.js.generate.Return;
 import io.spine.js.generate.Snippet;
+import io.spine.js.generate.VariableDeclaration;
 import io.spine.js.generate.parse.field.FieldGenerator;
 import io.spine.js.generate.parse.field.FieldGenerators;
 
@@ -138,9 +139,14 @@ public class FromJsonMethod implements Snippet {
         TypeName typeName = TypeName.from(message);
         String methodName = typeName.value() + '.' + FROM_JSON;
         output.enterMethod(methodName, FROM_JSON_ARG);
-        output.declareVariable("jsObject", "JSON.parse(" + FROM_JSON_ARG + ')');
+        output.append(parsedValue());
         output.append(fromJsonReturn(typeName));
         output.exitMethod();
+    }
+
+    private static VariableDeclaration parsedValue() {
+        String initializer = "JSON.parse(" + FROM_JSON_ARG + ')';
+        return VariableDeclaration.initialized("jsObject", initializer);
     }
 
     private static Return fromJsonReturn(TypeName typeName) {
@@ -158,10 +164,15 @@ public class FromJsonMethod implements Snippet {
         output.enterMethod(methodName, FROM_OBJECT_ARG);
         checkParsedObject(output);
         output.addEmptyLine();
-        output.declareVariable(MESSAGE, "new " + typeName + "()");
+        output.append(initializedMessageInstance(typeName));
         handleMessageFields(output, message);
         output.append(Return.value(MESSAGE));
         output.exitMethod();
+    }
+
+    private static VariableDeclaration initializedMessageInstance(TypeName typeName) {
+        String initializer = "new " + typeName + "()";
+        return VariableDeclaration.initialized(MESSAGE, initializer);
     }
 
     /**

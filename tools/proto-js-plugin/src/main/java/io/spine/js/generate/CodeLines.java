@@ -156,20 +156,6 @@ public final class CodeLines {
     }
 
     /**
-     * Declares a variable in the code.
-     *
-     * @param name
-     *         the variable name
-     * @param value
-     *         the value to assign to the variable
-     */
-    public void declareVariable(String name, String value) {
-        checkNotNull(name);
-        checkNotNull(value);
-        append(VariableDeclaration.initialized(name, value));
-    }
-
-    /**
      * Declares JS method and enters its body.
      *
      * @param methodName

@@ -20,7 +20,10 @@
 
 package io.spine.js.generate.parse.field.parser.primitive;
 
+import io.spine.js.generate.VariableDeclaration;
+
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.lang.String.format;
 
 /**
  * The generator of the code which parses the proto 64-bit numerical values from their JSON
@@ -42,7 +45,12 @@ final class LongParser extends AbstractPrimitiveParser {
     public void parseIntoVariable(String value, String variable) {
         checkNotNull(value);
         checkNotNull(variable);
-        jsOutput().declareVariable(variable, "parseInt(" + value + ')');
+        jsOutput().append(parsedVariable(variable, value));
+    }
+
+    private static VariableDeclaration parsedVariable(String name, String valueToParse) {
+        String initializer = format("parseInt(%s)", valueToParse);
+        return VariableDeclaration.initialized(name, initializer);
     }
 
     static Builder newBuilder() {

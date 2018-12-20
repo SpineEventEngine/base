@@ -24,6 +24,7 @@ import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.code.js.TypeName;
 import io.spine.js.generate.CodeLines;
+import io.spine.js.generate.VariableDeclaration;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -67,6 +68,11 @@ final class EnumFieldParser implements FieldParser {
     public void parseIntoVariable(String value, String variable) {
         checkNotNull(value);
         checkNotNull(variable);
-        jsOutput.declareVariable(variable, typeName.value() + '[' + value + ']');
+        jsOutput.append(parsedValue(variable, value));
+    }
+
+    private VariableDeclaration parsedValue(String name, String valueToParse) {
+        String initializer = typeName.value() + '[' + valueToParse + ']';
+        return VariableDeclaration.initialized(name, initializer);
     }
 }

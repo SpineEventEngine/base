@@ -20,6 +20,8 @@
 
 package io.spine.js.generate.parse.field.parser.primitive;
 
+import io.spine.js.generate.VariableDeclaration;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
@@ -40,7 +42,7 @@ final class IdentityParser extends AbstractPrimitiveParser {
     public void parseIntoVariable(String value, String variable) {
         checkNotNull(value);
         checkNotNull(variable);
-        jsOutput().declareVariable(variable, value);
+        jsOutput().append(VariableDeclaration.initialized(variable, value));
     }
 
     static Builder newBuilder() {

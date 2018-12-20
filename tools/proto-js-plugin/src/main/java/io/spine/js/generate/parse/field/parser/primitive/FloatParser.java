@@ -20,6 +20,8 @@
 
 package io.spine.js.generate.parse.field.parser.primitive;
 
+import io.spine.js.generate.VariableDeclaration;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
@@ -38,7 +40,12 @@ final class FloatParser extends AbstractPrimitiveParser {
     public void parseIntoVariable(String value, String variable) {
         checkNotNull(value);
         checkNotNull(variable);
-        jsOutput().declareVariable(variable, "parseFloat(" + value + ')');
+        jsOutput().append(parsedVariable(variable, value));
+    }
+
+    private static VariableDeclaration parsedVariable(String name, String valueToParse) {
+        String initializer = "parseFloat(" + valueToParse + ')';
+        return VariableDeclaration.initialized(name, initializer);
     }
 
     static Builder newBuilder() {

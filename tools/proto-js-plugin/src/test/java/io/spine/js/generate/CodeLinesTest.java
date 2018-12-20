@@ -89,14 +89,6 @@ class CodeLinesTest {
     }
 
     @Test
-    @DisplayName("declare variable")
-    void declareVariable() {
-        jsOutput.declareVariable("someVariable", "someValue");
-        String variableDeclaration = "let someVariable = someValue;";
-        assertContains(jsOutput, variableDeclaration);
-    }
-
-    @Test
     @DisplayName("declare function")
     void declareFunction() {
         jsOutput.enterMethod(METHOD_NAME, FUNCTION_ARG);
