@@ -20,9 +20,9 @@
 
 package io.spine.js.generate.statement;
 
-import io.spine.code.Depth;
+import io.spine.js.generate.CodeLine;
 import io.spine.js.generate.CodeLines;
-import io.spine.js.generate.IndentedLine;
+import io.spine.js.generate.RawLine;
 import io.spine.js.generate.Snippet;
 
 import java.util.List;
@@ -38,33 +38,37 @@ public class Method implements Snippet {
 
     private final String name;
     private final List<String> arguments;
-    private final List<IndentedLine> body;
+    private final List<CodeLine> bodyLines;
 
     private Method(Builder builder) {
         this.name = builder.name;
         this.arguments = builder.arguments;
-        this.body = builder.body;
+        this.bodyLines = builder.body;
     }
 
     @Override
     public CodeLines value() {
         CodeLines output = new CodeLines();
-        output.appendIndented(declaration());
-        output.addLines(body);
-        output.appendIndented(ending());
+        output.append(declaration());
+        output.increaseDepth();
+        for (CodeLine bodyLine : bodyLines) {
+            output.append(bodyLine);
+        }
+        output.decreaseDepth();
+        output.append(ending());
         return output;
     }
 
     /**
      * Declares JS method and enters its body.
      */
-    public IndentedLine declaration() {
+    private RawLine declaration() {
         String argString = join(", ", arguments);
-        return new IndentedLine(name + " = function(" + argString + ") {");
+        return new RawLine(name + " = function(" + argString + ") {");
     }
 
-    public IndentedLine ending() {
-        return new IndentedLine("};");
+    private static RawLine ending() {
+        return new RawLine("};");
     }
 
     /**
@@ -84,7 +88,7 @@ public class Method implements Snippet {
     public static class Builder {
 
         private final String name;
-        private final List<IndentedLine> body = newArrayList();
+        private final List<CodeLine> body = newArrayList();
         private List<String> arguments = newArrayList();
 
         Builder(String name) {
@@ -104,8 +108,7 @@ public class Method implements Snippet {
          * Adds a line to the body of the method.
          */
         public Builder appendBody(String line) {
-            Depth bodyDepth = Depth.of(1);
-            IndentedLine codeLine = new IndentedLine(line, bodyDepth);
+            RawLine codeLine = new RawLine(line);
             body.add(codeLine);
             return this;
         }

@@ -38,16 +38,6 @@ public final class IndentedLine extends RawLine {
     private final Depth depth;
 
     /**
-     * Creates a new {@code IndentedLine} without the zero depth.
-     *
-     * @param content
-     *         the JS code
-     */
-    public IndentedLine(String content) {
-        this(content, Depth.zero());
-    }
-
-    /**
      * Creates a new {@code IndentedLine}.
      *
      * @param content
