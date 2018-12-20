@@ -104,7 +104,7 @@ public final class CodeLines {
                       "Cannot merge code parts with different indentation.");
         int depthDifference = currentDepth.value() - appended.currentDepth.value();
         for (IndentedLine appendedLine : appended.codeLines) {
-            IndentedLine adjusted = appendedLine.withIncreasedDepth(depthDifference);
+            IndentedLine adjusted = appendedLine.adjustDepthBy(depthDifference);
             appendIndented(adjusted);
         }
     }

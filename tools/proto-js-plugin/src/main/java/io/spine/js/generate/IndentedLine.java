@@ -92,14 +92,14 @@ final class IndentedLine extends CodeLine {
     }
 
     /**
-     * Obtains a line with the depth increased by the specified value.
+     * Obtains a line with the depth adjusted by the specified value.
      *
-     * @param increaseBy
-     *         the value to increase the depth by
+     * @param depthChange
+     *         the value to adjust the depth by
      * @return a new line with increased depth
      */
-    IndentedLine withIncreasedDepth(int increaseBy) {
-        int newDepthValue = depth.value() + increaseBy;
+    IndentedLine adjustDepthBy(int depthChange) {
+        int newDepthValue = depth.value() + depthChange;
         Depth newDepth = Depth.of(newDepthValue);
         return new IndentedLine(unaliagned, newDepth, indent);
     }
