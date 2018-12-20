@@ -41,8 +41,7 @@ public final class NestedClassName extends StringTypeValue {
     static NestedClassName create(String value) {
         checkNotEmptyOrBlank(value);
         int dotIndex = value.indexOf(ClassName.DOT_SEPARATOR);
-        checkArgument(dotIndex != -1, "Nested class name must be separated with dots.");
-        checkArgument(dotIndex > 0, "Nested class name cannot start with a dot.");
+        checkArgument(dotIndex !=0, "Nested class name cannot start with a dot.");
         return new NestedClassName(value);
     }
 }
