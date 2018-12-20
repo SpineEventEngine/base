@@ -50,6 +50,7 @@ protobuf {
             task.generateDescriptorSet = true
             task.descriptorSetOptions.path = "$buildDir/descriptors/${task.sourceSet.name}/known_types.desc"
             task.descriptorSetOptions.includeImports = true
+            task.descriptorSetOptions.includeSourceCodeInfo = true
         }
     }
 }

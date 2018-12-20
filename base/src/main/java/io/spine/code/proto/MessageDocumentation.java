@@ -29,6 +29,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.lang.String.format;
 
 /**
@@ -91,11 +92,11 @@ public class MessageDocumentation {
                         .getFile()
                         .toProto()
                         .hasSourceCodeInfo()) {
-            String errMsg =
-                    "To enable rejection generation, please configure the Gradle " +
-                            "Protobuf plugin as follows: " +
-                            "`task.descriptorSetOptions.includeSourceInfo = true`.";
-            throw new IllegalStateException(errMsg);
+            throw newIllegalStateException(
+                    "Unable to obtain proto source code info. " +
+                    "Please configure the Gradle Protobuf plugin as follows:%n%s",
+                    "`task.descriptorSetOptions.includeSourceInfo = true`."
+            );
         }
 
         SourceCodeInfo.Location location = getLocation(locationPath);
