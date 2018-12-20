@@ -185,6 +185,7 @@ final class FieldValue {
         return context;
     }
 
+    /** Returns whether this field is set. Fields with default values are considered set. */
     boolean isSet() {
         return !asList().isEmpty();
     }

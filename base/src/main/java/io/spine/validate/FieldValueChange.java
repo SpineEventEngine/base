@@ -64,7 +64,9 @@ final class FieldValueChange {
      * @return a new instance of a field change
      */
     static FieldValueChange withoutPreviousValue(FieldValue singleValue) {
-        return new FieldValueChange(null, singleValue);
+        FieldContext context = singleValue.context();
+        FieldValue unset = FieldValue.unsetValue(context);
+        return new FieldValueChange(unset, singleValue);
     }
 
     /** Returns a value that the field is going to have as a result of this change. */
