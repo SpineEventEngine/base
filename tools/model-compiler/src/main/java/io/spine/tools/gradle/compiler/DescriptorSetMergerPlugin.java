@@ -39,7 +39,6 @@ import static io.spine.tools.gradle.ConfigurationName.TEST_RUNTIME;
 import static io.spine.tools.gradle.TaskName.GENERATE_PROTO;
 import static io.spine.tools.gradle.TaskName.GENERATE_TEST_PROTO;
 import static io.spine.tools.gradle.TaskName.GENERATE_TEST_VALIDATING_BUILDERS;
-import static io.spine.tools.gradle.TaskName.GENERATE_VALIDATING_BUILDERS;
 import static io.spine.tools.gradle.TaskName.MERGE_DESCRIPTOR_SET;
 import static io.spine.tools.gradle.TaskName.MERGE_TEST_DESCRIPTOR_SET;
 import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSetPath;

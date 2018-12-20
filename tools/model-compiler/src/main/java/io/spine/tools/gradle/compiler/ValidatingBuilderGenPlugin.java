@@ -33,8 +33,6 @@ import java.io.File;
 
 import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
 import static io.spine.tools.gradle.TaskName.COMPILE_TEST_JAVA;
-import static io.spine.tools.gradle.TaskName.GENERATE_PROTO;
-import static io.spine.tools.gradle.TaskName.GENERATE_TEST_PROTO;
 import static io.spine.tools.gradle.TaskName.GENERATE_TEST_VALIDATING_BUILDERS;
 import static io.spine.tools.gradle.TaskName.GENERATE_VALIDATING_BUILDERS;
 import static io.spine.tools.gradle.TaskName.MERGE_DESCRIPTOR_SET;
