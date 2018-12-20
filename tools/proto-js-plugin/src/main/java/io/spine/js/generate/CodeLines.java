@@ -121,16 +121,16 @@ public final class CodeLines {
     public void append(CodeLine line) {
         checkNotNull(line);
         IndentedLine indented = new IndentedLine(line.content(), currentDepth);
-        addLine(indented);
+        appendIndented(indented);
     }
 
     /**
-     * Appends the line of code to the output.
+     * Appends the code line without changing its depth.
      *
      * @param codeLine
      *         the code to add
      */
-    public void addLine(IndentedLine codeLine) {
+    public void appendIndented(IndentedLine codeLine) {
         checkNotNull(codeLine);
         codeLines.add(codeLine);
     }
@@ -144,7 +144,7 @@ public final class CodeLines {
     public void addLines(List<IndentedLine> lines) {
         checkNotNull(lines);
         for (IndentedLine line : lines) {
-            addLine(line);
+            appendIndented(line);
         }
     }
 

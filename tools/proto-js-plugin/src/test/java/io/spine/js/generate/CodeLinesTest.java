@@ -191,7 +191,7 @@ class CodeLinesTest {
         CodeLines lines = new CodeLines();
         Depth lineDepth = Depth.of(5);
         IndentedLine indentedLine = new IndentedLine("some code line", lineDepth);
-        lines.addLine(indentedLine);
+        lines.appendIndented(indentedLine);
         Indent indent = lines.indent();
         assertThat(lines.toString()).isEqualTo(indentedLine.indent(indent));
     }

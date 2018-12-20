@@ -49,9 +49,9 @@ public class Method implements Snippet {
     @Override
     public CodeLines value() {
         CodeLines output = new CodeLines();
-        output.addLine(declaration());
+        output.appendIndented(declaration());
         output.addLines(body);
-        output.addLine(ending());
+        output.appendIndented(ending());
         return output;
     }
 
