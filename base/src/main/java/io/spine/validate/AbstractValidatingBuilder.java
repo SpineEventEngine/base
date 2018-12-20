@@ -130,6 +130,7 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
         Map<K, V> result = Stringifiers.newForMapOf(keyClass, valueClass)
                                        .reverse()
                                        .convert(value);
+        checkNotNull(result);
         return result;
     }
 
@@ -150,6 +151,7 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
         List<V> result = Stringifiers.newForListOf(valueClass)
                                      .reverse()
                                      .convert(value);
+        checkNotNull(result);
         return result;
     }
 
@@ -165,11 +167,12 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
         checkViolations(violations);
     }
 
-    private FieldValue currentFieldValue(FieldDescriptor descriptor,
-                                         FieldContext fieldContext) {
-        return getMessageBuilder().hasField(descriptor) ?
-               FieldValue.of(messageBuilder.getField(descriptor), fieldContext) :
-               null;
+    private @Nullable FieldValue currentFieldValue(FieldDescriptor descriptor,
+                                                   FieldContext fieldContext) {
+        FieldValue fieldValue = getMessageBuilder().hasField(descriptor) ?
+                                FieldValue.of(messageBuilder.getField(descriptor), fieldContext) :
+                                null;
+        return fieldValue;
     }
 
     /**
