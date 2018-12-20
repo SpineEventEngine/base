@@ -121,7 +121,7 @@ extend google.protobuf.FieldOptions {
     // Indicates that a field can only be set once.
     //
     // A typical use-case would include a value of an ID, which doesn't change over the course of
-    // entities lifecycle.
+    // the life of an entity.
     //
     // So for:
     // message User {
@@ -129,7 +129,7 @@ extend google.protobuf.FieldOptions {
     //     UserId id = 1 [(set_once) = true];
     // }
     //
-    // The ID `id` doesn't change.
+    // Once set, the `id` field cannot be changed.
     //
     bool set_once = 73824;
 

@@ -20,6 +20,7 @@
 
 package io.spine.validate;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.FieldOptions;
 import com.google.protobuf.Descriptors.FieldDescriptor;
@@ -159,5 +160,13 @@ final class FieldValue {
     /** Returns the context of the value. */
     FieldContext context() {
         return context;
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects
+                .toStringHelper(this)
+                .add("Field value", value)
+                .toString();
     }
 }

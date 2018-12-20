@@ -25,7 +25,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 /**
  * A change in a {@linkplain io.spine.validate.FieldValue value of a field}.
  */
-public final class FieldValueChange {
+final class FieldValueChange {
 
     /**
      * A value that used to be the value of the field.
@@ -81,8 +81,13 @@ public final class FieldValueChange {
         return newValue;
     }
 
-    /** Returns a value that the field used to have before this change took place.*/
-    FieldValue oldValue() {
+    /**
+     * Returns a value that the field used to have before this change took place.
+     *
+     * <p>Since an old value may not exist, e.g. when a field is being set for the first time,
+     * a {@code null} may be returned.
+     */
+    @Nullable FieldValue oldValue() {
         return oldValue;
     }
 }

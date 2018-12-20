@@ -51,9 +51,9 @@ abstract class FieldValidator<V> implements Logging {
      * A value that the field that is being validated has had prior to validation.
      *
      * <p>Is {@code Nullable} because when a field is being validated for the first time,
-     * it can't have an existing value, and therefore considered {@code null}.
+     * it can't have an existing value, and, therefore, considered {@code null}.
      */
-    private final @Nullable FieldValue oldValue;
+    private final @Nullable FieldValue previousValue;
     private final FieldValue desiredValue;
     private final FieldDeclaration declaration;
     private final ImmutableList<V> values;
@@ -86,7 +86,7 @@ abstract class FieldValidator<V> implements Logging {
      *         if {@code true} the validator would assume that the field
      */
     protected FieldValidator(FieldValueChange fieldValueChange, boolean strict) {
-        this.oldValue = fieldValueChange.oldValue();
+        this.previousValue = fieldValueChange.oldValue();
         this.desiredValue = fieldValueChange.newValue();
         this.declaration = desiredValue.declaration();
         this.values = desiredValue.asList();
@@ -107,7 +107,7 @@ abstract class FieldValidator<V> implements Logging {
      *         if {@code true} the validator would assume that the field
      */
     protected FieldValidator(FieldValue fieldValue, boolean strict) {
-        this.oldValue = null;
+        this.previousValue = null;
         this.desiredValue = fieldValue;
         this.declaration = fieldValue.declaration();
         this.values = fieldValue.asList();
@@ -155,9 +155,9 @@ abstract class FieldValidator<V> implements Logging {
      *
      * <p>The flow of the validation is as follows:
      * <ol>
-     *     <li>check the field to be set if it is {@code required};
-     *     <li>validate the field as an Entity ID if required;
-     *     <li>performs the {@linkplain #validateOwnRules() custom type-dependant validation}.
+     * <li>check the field to be set if it is {@code required};
+     * <li>validate the field as an Entity ID if required;
+     * <li>performs the {@linkplain #validateOwnRules() custom type-dependant validation}.
      * </ol>
      *
      * @return a list of found {@linkplain ConstraintViolation constraint violations} is any
@@ -182,18 +182,16 @@ abstract class FieldValidator<V> implements Logging {
      * it, a {@code ConstraintViolation} is generated.
      */
     private void validateSetOnce() {
-        if (setOnce && this.oldValue != null) {
-            String fieldName = this.oldValue.declaration()
-                                            .name()
-                                            .javaCase();
+        if (setOnce && this.previousValue != null) {
+            String fieldName = this.previousValue.declaration()
+                                                 .name()
+                                                 .javaCase();
             ConstraintViolation setOnceViolation = ConstraintViolation
                     .newBuilder()
                     .setMsgFormat("%s has (set_once) = true, can't change its value from %s to %s")
                     .addParam(fieldName)
-                    .addParam(this.oldValue.asList()
-                                           .toString())
-                    .addParam(this.desiredValue.asList()
-                                               .toString())
+                    .addParam(this.previousValue.toString())
+                    .addParam(this.desiredValue.toString())
                     .build();
             addViolation(setOnceViolation);
         }
