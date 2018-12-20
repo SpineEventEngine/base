@@ -24,8 +24,8 @@ import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.SourceCodeInfo;
+import com.google.protobuf.Descriptors.Descriptor;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -64,8 +64,12 @@ public class MessageDocumentation {
      * @return the comments text or {@code Optional.empty()} if there are no comments
      */
     public Optional<String> leadingComments() {
-        LocationPath messagePath = getMessageLocationPath();
-        return leadingComments(messagePath);
+        LocationPath messagePath = messagePath();
+        if (declaration.isTopLevel()) {
+            return leadingComments(messagePath);
+        }
+        //TODO:2018-12-20:alexander.yevsyukov: Handle nested types.
+        return Optional.empty();
     }
 
     /**
@@ -76,7 +80,12 @@ public class MessageDocumentation {
      * @return the field leading comments or {@code Optional.empty()} if there are no comments
      */
     public Optional<String> fieldLeadingComments(FieldDescriptorProto field) {
-        LocationPath fieldPath = getFieldLocationPath(field);
+        //TODO:2018-12-20:alexander.yevsyukov: Handle nested types.
+        if (declaration.isNested()) {
+            return Optional.empty();
+        }
+
+        LocationPath fieldPath = fieldPath(field);
         return leadingComments(fieldPath);
     }
 
@@ -99,7 +108,7 @@ public class MessageDocumentation {
             );
         }
 
-        SourceCodeInfo.Location location = getLocation(locationPath);
+        SourceCodeInfo.Location location = toLocation(locationPath);
         return location.hasLeadingComments()
                ? Optional.of(location.getLeadingComments())
                : Optional.empty();
@@ -110,12 +119,34 @@ public class MessageDocumentation {
      *
      * @return the message location path
      */
-    private LocationPath getMessageLocationPath() {
-        return new LocationPath(
-                Arrays.asList(
-                        FileDescriptorProto.MESSAGE_TYPE_FIELD_NUMBER,
-                        getTopLevelMessageIndex())
+    private LocationPath messagePath() {
+        LocationPath path = new LocationPath();
+        path.add(FileDescriptorProto.MESSAGE_TYPE_FIELD_NUMBER);
+        if (declaration.isTopLevel()) {
+            path.add(getTopLevelMessageIndex());
+        }
+        return path;
+    }
+
+    private int getTopLevelMessageIndex() {
+        Descriptor descriptor = declaration.descriptor();
+
+        List<DescriptorProto> messages = descriptor.getFile()
+                                                   .toProto()
+                                                   .getMessageTypeList();
+        for (DescriptorProto currentMessage : messages) {
+            if (currentMessage.equals(descriptor.toProto())) {
+                return messages.indexOf(descriptor.toProto());
+            }
+        }
+
+        String msg = format("Unable to locate message `%s` in the file file `%s`.",
+                            descriptor.toProto()
+                                      .getName(),
+                            descriptor.toProto()
+                                      .getName()
         );
+        throw new IllegalStateException(msg);
     }
 
     /**
@@ -127,36 +158,13 @@ public class MessageDocumentation {
      *         the field to get location path
      * @return the field location path
      */
-    private LocationPath getFieldLocationPath(FieldDescriptorProto field) {
+    private LocationPath fieldPath(FieldDescriptorProto field) {
         LocationPath locationPath = new LocationPath();
 
-        locationPath.addAll(getMessageLocationPath());
+        locationPath.addAll(messagePath());
         locationPath.add(DescriptorProto.FIELD_FIELD_NUMBER);
         locationPath.add(getFieldIndex(field));
         return locationPath;
-    }
-
-    private int getTopLevelMessageIndex() {
-        List<DescriptorProto> messages = declaration.descriptor()
-                                                    .getFile()
-                                                    .toProto()
-                                                    .getMessageTypeList();
-        for (DescriptorProto currentMessage : messages) {
-            if (currentMessage.equals(declaration.descriptor()
-                                                 .toProto())) {
-                return messages.indexOf(declaration.descriptor()
-                                                   .toProto());
-            }
-        }
-
-        String msg = format("The rejection file \"%s\" should contain \"%s\" rejection.",
-                            declaration.descriptor()
-                                       .toProto()
-                                       .getName(),
-                            declaration.descriptor()
-                                       .toProto()
-                                       .getName());
-        throw new IllegalStateException(msg);
     }
 
     private int getFieldIndex(FieldDescriptorProto field) {
@@ -167,14 +175,13 @@ public class MessageDocumentation {
     }
 
     /**
-     * Returns the {@link SourceCodeInfo.Location} for the
-     * {@link LocationPath}.
+     * Converts {@link LocationPath} related to the message to {@link SourceCodeInfo.Location}.
      *
      * @param locationPath
      *         the location path
      * @return the location for the path
      */
-    private SourceCodeInfo.Location getLocation(LocationPath locationPath) {
+    private SourceCodeInfo.Location toLocation(LocationPath locationPath) {
         FileDescriptorProto declarationFile = declaration.descriptor()
                                                          .getFile()
                                                          .toProto();

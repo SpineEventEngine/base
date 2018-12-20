@@ -25,12 +25,13 @@ import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.annotation.Internal;
+import io.spine.code.java.ClassName;
 import io.spine.code.java.SimpleClassName;
 import io.spine.option.IsOption;
-import io.spine.code.java.ClassName;
 import io.spine.type.TypeUrl;
 
 import java.util.Deque;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
@@ -125,15 +126,35 @@ public class MessageType extends Type<Descriptor, DescriptorProto> {
                         .getFile();
 
         FileDescriptor file = descriptor().getFile();
-        return !isSame(optionsProto, file);
+        return !isSameFile(optionsProto, file);
     }
 
-    private static boolean isSame(FileDescriptor optionsProto,
-                                  FileDescriptor file) {
+    private static boolean isSameFile(FileDescriptor optionsProto, FileDescriptor file) {
         return file.getFullName().equals(optionsProto.getFullName()) &&
                 file.getPackage().equals(optionsProto.getPackage());
     }
 
+    /**
+     * Tells if this message is top-level in its file.
+     */
+    public boolean isTopLevel() {
+        Descriptor descriptor = descriptor();
+        List<Descriptor> topLevel = descriptor.getFile()
+                                              .getMessageTypes();
+        boolean result = topLevel.contains(descriptor);
+        return result;
+    }
+
+    /**
+     * Tells if this message is nested inside another message declaration.
+     */
+    public boolean isNested() {
+        return !isTopLevel();
+    }
+
+    /**
+     * Obtains the name of the builder class for this message type.
+     */
     public ClassName builderClass() {
         ClassName result = javaClassName().withNested(SimpleClassName.ofBuilder());
         return result;

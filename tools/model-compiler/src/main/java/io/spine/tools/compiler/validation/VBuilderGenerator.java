@@ -70,6 +70,8 @@ public class VBuilderGenerator implements Logging {
         ImmutableList<MessageType> customTypes =
                 messageTypes.stream()
                             .filter(MessageType::isCustom)
+                            //TODO:2018-12-20:alexander.yevsyukov: Support generation of nested builders.
+                            .filter(MessageType::isTopLevel)
                             .collect(toImmutableList());
         generate(customTypes);
     }
