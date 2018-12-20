@@ -40,6 +40,7 @@ import com.google.protobuf.UInt64Value;
 import com.google.protobuf.Value;
 import io.spine.js.generate.CodeLine;
 import io.spine.js.generate.CodeLines;
+import io.spine.js.generate.RawLine;
 import io.spine.js.generate.Snippet;
 import io.spine.type.TypeUrl;
 
@@ -126,7 +127,7 @@ public final class WellKnownTypeParsers implements Snippet {
         TypeUrl typeUrl = typeToParser.getKey();
         String parserName = typeToParser.getValue();
         String newParserCall = "new " + parserName + "()";
-        CodeLine mapEntry = CodeLine.mapEntry(typeUrl.value(), newParserCall);
+        CodeLine mapEntry = RawLine.mapEntry(typeUrl.value(), newParserCall);
         return mapEntry;
     }
 

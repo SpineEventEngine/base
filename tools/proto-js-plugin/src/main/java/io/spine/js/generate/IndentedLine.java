@@ -33,7 +33,7 @@ import java.util.Objects;
  * <p>For example, the code inside the {@code if} block is one unit deeper than the {@code if}
  * declaration itself.
  */
-public final class IndentedLine extends CodeLine {
+public final class IndentedLine extends RawLine {
 
     private final Depth depth;
 

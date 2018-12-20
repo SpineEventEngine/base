@@ -28,8 +28,13 @@ import static java.lang.String.format;
  */
 public class Return extends CodeLine {
 
-    private Return(String returnedValue) {
-        super(format("return %s;", returnedValue));
+    /**
+     * The value to be returned.
+     */
+    private final Object value;
+
+    private Return(Object returnedValue) {
+        this.value = returnedValue;
     }
 
     /**
@@ -37,7 +42,7 @@ public class Return extends CodeLine {
      */
     public static Return value(Object value) {
         checkNotNull(value);
-        return new Return(value.toString());
+        return new Return(value);
     }
 
     /**
@@ -54,5 +59,11 @@ public class Return extends CodeLine {
      */
     public static Return nullReference() {
         return value("null");
+    }
+
+    @Override
+    public String content() {
+        String result = format("return %s;", value);
+        return result;
     }
 }

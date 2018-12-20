@@ -20,37 +20,40 @@
 
 package io.spine.js.generate;
 
-import java.util.Objects;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static java.lang.String.format;
 
 /**
- * A line of a Javascript code.
+ * A line of a JavaScript code represented by a string.
+ *
+ * <p>The line is not aware of {@linkplain IndentedLine indentation}.
  */
-public abstract class CodeLine {
+public class RawLine extends CodeLine {
+
+    private final String content;
+
+    public RawLine(String content) {
+        checkNotNull(content);
+        this.content = content;
+    }
+
+    @Override
+    public String content() {
+        return content;
+    }
 
     /**
-     * Obtains the value of the line.
+     * Obtains the comment from the specified text.
      */
-    public abstract String content();
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof CodeLine)) {
-            return false;
-        }
-        CodeLine line = (CodeLine) o;
-        return content().equals(line.content());
+    public static CodeLine comment(String commentText) {
+        checkNotNull(commentText);
+        return new RawLine("// " + commentText);
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(content());
-    }
-
-    @Override
-    public String toString() {
-        return content();
+    public static CodeLine mapEntry(String key, Object value) {
+        checkNotNull(key);
+        checkNotNull(value);
+        String raw = format("['%s', %s]", key, value);
+        return new RawLine(raw);
     }
 }

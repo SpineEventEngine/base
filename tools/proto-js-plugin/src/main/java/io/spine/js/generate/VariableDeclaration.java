@@ -35,8 +35,18 @@ public class VariableDeclaration extends CodeLine {
      */
     private static final String VARIABLE_MODIFIER = "let";
 
-    private VariableDeclaration(String content) {
-        super(content);
+    private final String name;
+    private final String initializer;
+
+    public VariableDeclaration(String name, String initializer) {
+        this.name = name;
+        this.initializer = initializer;
+    }
+
+    @Override
+    public String content() {
+        String result = format("%s %s = %s;", VARIABLE_MODIFIER, name, initializer);
+        return result;
     }
 
     /**
@@ -45,7 +55,6 @@ public class VariableDeclaration extends CodeLine {
     public static VariableDeclaration initialized(String name, String value) {
         checkNotNull(name);
         checkNotNull(value);
-        String raw = format("%s %s = %s;", VARIABLE_MODIFIER, name, value);
-        return new VariableDeclaration(raw);
+        return new VariableDeclaration(name, value);
     }
 }

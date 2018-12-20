@@ -28,6 +28,7 @@ import io.spine.code.js.TypeName;
 import io.spine.code.proto.FileSet;
 import io.spine.js.generate.CodeLine;
 import io.spine.js.generate.CodeLines;
+import io.spine.js.generate.RawLine;
 import io.spine.js.generate.Snippet;
 import io.spine.js.generate.importado.JsImportGenerator;
 import io.spine.type.TypeUrl;
@@ -154,7 +155,7 @@ public final class KnownTypesMap implements Snippet {
     private static CodeLine mapEntry(Descriptor message) {
         TypeUrl typeUrl = TypeUrl.from(message);
         TypeName typeName = TypeName.from(message);
-        CodeLine mapEntry = CodeLine.mapEntry(typeUrl.value(), typeName);
+        CodeLine mapEntry = RawLine.mapEntry(typeUrl.value(), typeName);
         return mapEntry;
     }
 }

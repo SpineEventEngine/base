@@ -34,7 +34,7 @@ import io.spine.js.generate.Return;
 import io.spine.js.generate.Snippet;
 import io.spine.type.TypeUrl;
 
-import static io.spine.js.generate.CodeLine.comment;
+import static io.spine.js.generate.RawLine.comment;
 
 /**
  * Generates a method to obtain a {@code TypeUrl} for each type in a file.

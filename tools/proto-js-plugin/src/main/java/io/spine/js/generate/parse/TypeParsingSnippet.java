@@ -29,7 +29,7 @@ import io.spine.js.generate.Snippet;
 import io.spine.js.generate.importado.JsImportGenerator;
 
 import static io.spine.code.js.LibraryFile.KNOWN_TYPE_PARSERS;
-import static io.spine.js.generate.CodeLine.comment;
+import static io.spine.js.generate.RawLine.comment;
 
 /**
  * The generator of the {@code fromJson(json)} method for the given {@link FileDescriptor}.

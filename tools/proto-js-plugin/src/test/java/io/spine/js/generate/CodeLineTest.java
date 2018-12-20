@@ -32,7 +32,7 @@ class CodeLineTest {
     @DisplayName("provide a comment")
     void comment() {
         String value = "A comment text";
-        CodeLine comment = CodeLine.comment(value);
+        CodeLine comment = RawLine.comment(value);
         assertThat(comment).isEqualTo("// " + value);
     }
 
@@ -41,7 +41,7 @@ class CodeLineTest {
     void mapEntry() {
         String key = "k";
         String value = "v";
-        CodeLine mapEntry = CodeLine.mapEntry(key, value);
+        CodeLine mapEntry = RawLine.mapEntry(key, value);
         assertThat(mapEntry).isEqualTo("['k', v]");
     }
 
