@@ -25,6 +25,8 @@ import io.spine.code.Indent;
 
 import java.util.Objects;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * The JS code line.
  *
@@ -33,9 +35,13 @@ import java.util.Objects;
  * <p>For example, the code inside the {@code if} block is one unit deeper than the {@code if}
  * declaration itself.
  */
-final class IndentedLine extends RawLine {
+final class IndentedLine extends CodeLine {
 
     private final Depth depth;
+    /** The indent per a depth level. */
+    private final Indent indent;
+    /** The value to prepend with indentation. */
+    private final String unaliagned;
 
     /**
      * Creates a new {@code IndentedLine}.
@@ -44,10 +50,26 @@ final class IndentedLine extends RawLine {
      *         the JS code
      * @param depth
      *         the depth of the code
+     * @param indent
+     *         the indent per a depth level
      */
-    IndentedLine(String content, Depth depth) {
-        super(content);
+    IndentedLine(String content, Depth depth, Indent indent) {
+        checkNotNull(content);
+        checkNotNull(depth);
+        checkNotNull(indent);
+        this.unaliagned = content;
         this.depth = depth;
+        this.indent = indent;
+    }
+
+    /**
+     * Obtains the content of the line prepended with the indent.
+     */
+    @Override
+    public String content() {
+        Indent totalIndent = indent.ofDepth(depth);
+        String result = totalIndent + unaliagned;
+        return result;
     }
 
     /**
@@ -60,20 +82,7 @@ final class IndentedLine extends RawLine {
     IndentedLine withIncreasedDepth(int increaseBy) {
         int newDepthValue = depth.value() + increaseBy;
         Depth newDepth = Depth.of(newDepthValue);
-        return new IndentedLine(content(), newDepth);
-    }
-
-    /**
-     * Prepends the correct indent to the code line content.
-     *
-     * @param indentPerDepth
-     *         how many spaces are inserted per depth level
-     * @return the {@code IndentedLine} content with the correct indent
-     */
-    String indent(Indent indentPerDepth) {
-        Indent indent = indentPerDepth.ofDepth(depth);
-        String result = indent + content();
-        return result;
+        return new IndentedLine(unaliagned, newDepth, indent);
     }
 
     @Override

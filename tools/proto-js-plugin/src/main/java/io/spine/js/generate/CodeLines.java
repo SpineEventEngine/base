@@ -124,7 +124,7 @@ public final class CodeLines {
      */
     public void append(String codeLine) {
         checkNotNull(codeLine);
-        IndentedLine line = new IndentedLine(codeLine, currentDepth);
+        IndentedLine line = indented(codeLine);
         codeLines.add(line);
     }
 
@@ -136,7 +136,7 @@ public final class CodeLines {
      */
     public void append(CodeLine line) {
         checkNotNull(line);
-        IndentedLine indented = new IndentedLine(line.content(), currentDepth);
+        IndentedLine indented = indented(line.content());
         appendIndented(indented);
     }
 
@@ -296,6 +296,10 @@ public final class CodeLines {
         currentDepth = currentDepth.decremented();
     }
 
+    private IndentedLine indented(String codeLine) {
+        return new IndentedLine(codeLine, currentDepth, indentation);
+    }
+
     /**
      * Merges lines by addition of a comma to each line except the last one.
      */
@@ -321,7 +325,7 @@ public final class CodeLines {
     @Override
     public String toString() {
         String result = codeLines.stream()
-                                 .map(codeLine -> codeLine.indent(indentation))
+                                 .map(CodeLine::toString)
                                  .collect(Collectors.joining(LINE_SEPARATOR));
         return result;
     }

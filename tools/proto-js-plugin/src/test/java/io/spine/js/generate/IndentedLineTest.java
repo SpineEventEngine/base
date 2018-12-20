@@ -34,10 +34,9 @@ class IndentedLineTest {
     @DisplayName("create indent for code based on depth and indentation")
     void createIndent() {
         Depth depth = Depth.of(2);
-        IndentedLine codeLine = new IndentedLine("content", depth);
         Indent spacesPerDepth = Indent.of2();
-        String result = codeLine.indent(spacesPerDepth);
+        IndentedLine line = new IndentedLine("content", depth, spacesPerDepth);
         String expected = "    content";
-        assertEquals(expected, result);
+        assertEquals(expected, line.content());
     }
 }

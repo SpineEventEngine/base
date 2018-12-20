@@ -226,10 +226,10 @@ class CodeLinesTest {
     void appendIndentedLine() {
         CodeLines lines = new CodeLines();
         Depth lineDepth = Depth.of(5);
-        IndentedLine indentedLine = new IndentedLine("some code line", lineDepth);
-        lines.appendIndented(indentedLine);
         Indent indent = lines.indent();
-        assertThat(lines).isEqualTo(indentedLine.indent(indent));
+        IndentedLine indentedLine = new IndentedLine("some code line", lineDepth, indent);
+        lines.appendIndented(indentedLine);
+        assertThat(lines).isEqualTo(indentedLine.toString());
     }
 
     @Test
