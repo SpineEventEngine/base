@@ -23,11 +23,13 @@ package io.spine.js.generate.parse.field.parser;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.js.generate.CodeLines;
+import io.spine.js.generate.VariableDeclaration;
 import io.spine.js.generate.parse.WellKnownTypeParsers;
 import io.spine.type.TypeUrl;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.js.generate.parse.TypeParsingSnippet.PARSERS_IMPORT_NAME;
+import static java.lang.String.format;
 
 /**
  * The value parser for the proto fields of well-known {@code message} types.
@@ -36,6 +38,8 @@ import static io.spine.js.generate.parse.TypeParsingSnippet.PARSERS_IMPORT_NAME;
  * are present.
  */
 final class WellKnownFieldParser implements FieldParser {
+
+    private static final String PARSER_VARIABLE = "parser";
 
     private final TypeUrl typeUrl;
     private final CodeLines jsOutput;
@@ -71,8 +75,18 @@ final class WellKnownFieldParser implements FieldParser {
     public void parseIntoVariable(String value, String variable) {
         checkNotNull(value);
         checkNotNull(variable);
+        jsOutput.append(parserDeclaration());
+        jsOutput.append(parsedVariable(variable, value));
+    }
+
+    private VariableDeclaration parserDeclaration() {
         String parserMap = PARSERS_IMPORT_NAME + '.' + WellKnownTypeParsers.MAP_NAME;
-        jsOutput.declareVariable("parser", parserMap + ".get('" + typeUrl + "')");
-        jsOutput.declareVariable(variable, "parser.parse(" + value + ')');
+        String value = parserMap + ".get('" + typeUrl + "')";
+        return VariableDeclaration.initialized(PARSER_VARIABLE, value);
+    }
+
+    private static VariableDeclaration parsedVariable(String name, String valueToParse) {
+        String initializer = format("%s.parse(%s)", PARSER_VARIABLE, valueToParse);
+        return VariableDeclaration.initialized(name, initializer);
     }
 }
