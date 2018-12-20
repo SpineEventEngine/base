@@ -252,6 +252,8 @@ abstract class FieldValidator<V> implements Logging {
      * <p>If the field is repeated, it must have at least one value set, and all its values
      * must be valid.
      *
+     * <p>If the field is of a numeric type, it's always considered set.
+     *
      * <p>It is required to override {@link #isNotSet(Object)} method to use this one.
      */
     protected void checkIfRequiredAndNotSet() {

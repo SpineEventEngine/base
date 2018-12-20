@@ -112,11 +112,21 @@ abstract class NumberFieldValidator<V extends Number & Comparable<V>> extends Fi
         }
     }
 
+    /**
+     * Returns {@code false}.
+     *
+     * @implNote Attempting to define whether a numeric field is set or not is semantically
+     * incorrect, because the way to define whether a value is set or not is to compare it against
+     * its default value, which for numeric fields is {@code 0}, which is sometimes a desired and
+     * valid value for a field.
+     *
+     * <p>Therefore, numeric field value validation shouldn't be done with {@code required} option,
+     * and {@linkplain OptionsProto#decimalMin min} and
+     * {@linkplain io.spine.option.OptionsProto#decimalMax max} should be used instead.
+     */
     @Override
     protected boolean isNotSet(V value) {
-        int intValue = value.intValue();
-        boolean result = intValue == 0;
-        return result;
+        return false;
     }
 
     private void validateRangeOptions(V value) {

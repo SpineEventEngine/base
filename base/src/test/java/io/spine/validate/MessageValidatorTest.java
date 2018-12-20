@@ -900,26 +900,12 @@ class MessageValidatorTest {
             }
 
             @Test
-            @DisplayName("find out that Integer is NOT valid")
-            void find_out_that_Integer_entity_id_in_command_is_NOT_valid() {
-                EntityIdIntFieldValue msg = EntityIdIntFieldValue.getDefaultInstance();
-                assertNotValid(msg);
-            }
-
-            @Test
             @DisplayName("find out that Long is valid")
             void find_out_that_Long_entity_id_in_command_is_valid() {
                 EntityIdLongFieldValue msg = EntityIdLongFieldValue.newBuilder()
                                                                    .setValue(5)
                                                                    .build();
                 assertValid(msg);
-            }
-
-            @Test
-            @DisplayName("find out that Long is NOT valid")
-            void find_out_that_Long_entity_id_in_command_is_NOT_valid() {
-                EntityIdLongFieldValue msg = EntityIdLongFieldValue.getDefaultInstance();
-                assertNotValid(msg);
             }
 
             @Test
