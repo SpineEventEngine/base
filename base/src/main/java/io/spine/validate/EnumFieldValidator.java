@@ -44,6 +44,11 @@ class EnumFieldValidator extends FieldValidator<EnumValueDescriptor> {
         return result;
     }
 
+    @Override
+    protected boolean requiredAllowed() {
+        return true;
+    }
+
     /**
      * {@inheritDoc}
      *

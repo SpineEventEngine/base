@@ -45,6 +45,11 @@ class ByteStringFieldValidator extends FieldValidator<ByteString> {
         return result;
     }
 
+    @Override
+    protected boolean requiredAllowed() {
+        return true;
+    }
+
     /**
      * {@inheritDoc}
      *

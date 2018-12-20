@@ -150,6 +150,11 @@ abstract class NumberFieldValidator<V extends Number & Comparable<V>> extends Fi
         }
     }
 
+    @Override
+    protected boolean requiredAllowed() {
+        return false;
+    }
+
     private boolean notFitToDecimalMin(V value) {
         String minAsString = minDecimalOpt.getValue();
         if (minAsString.isEmpty()) {

@@ -101,4 +101,9 @@ class StringFieldValidator extends FieldValidator<String> {
         boolean result = value.isEmpty();
         return result;
     }
+
+    @Override
+    protected boolean requiredAllowed() {
+        return true;
+    }
 }

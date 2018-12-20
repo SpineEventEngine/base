@@ -159,6 +159,7 @@ abstract class FieldValidator<V> implements Logging {
     protected final List<ConstraintViolation> validate() {
         checkIfRequiredAndNotSet();
         validateSetOnce();
+        canBeRequired();
         if (isRequiredId()) {
             validateEntityId();
         }
@@ -169,6 +170,25 @@ abstract class FieldValidator<V> implements Logging {
         return result;
     }
 
+    private void canBeRequired() {
+        FieldValue desiredValue = fieldValueChange.newValue();
+        boolean requiredSetExplicitly = desiredValue.option(OptionsProto.required)
+                                                    .isExplicitlySet();
+        if (requiredSetExplicitly && !requiredAllowed()) {
+            log().warn("A field %s of type that can't be required was declared as" +
+                               "(required) = true", field().name());
+        }
+    }
+
+    /**
+     * Checks whether a field can be {@code (required) = true}.
+     *
+     * Validators can define that for their respective types
+     *
+     * @return whether a field that is being validated can be {@code required}
+     */
+    protected abstract boolean requiredAllowed();
+
     /**
      * Validates whether a logic enforced by the {@code (set_once)} option.
      *
@@ -176,7 +196,7 @@ abstract class FieldValidator<V> implements Logging {
      * it, a {@code ConstraintViolation} is generated.
      */
     @SuppressWarnings("ConstantConditions")
-        // `isFirstTimeSet` controls for `null`s.
+    // `isFirstTimeSet` controls for `null`s.
     private void validateSetOnce() {
         if (setOnce && !fieldValueChange.isFirstTimeSet()) {
             FieldValue previousValue = fieldValueChange.previousValue();

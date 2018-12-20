@@ -94,6 +94,11 @@ class MessageFieldValidator extends FieldValidator<Message> {
         return result;
     }
 
+    @Override
+    protected boolean requiredAllowed() {
+        return true;
+    }
+
     @SuppressWarnings("MethodOnlyUsedFromInnerClass") // Proper encapsulation here.
     private boolean isOfType(Class<? extends Message> type) {
         ImmutableList<Message> values = getValues();
