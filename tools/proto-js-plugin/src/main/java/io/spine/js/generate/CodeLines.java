@@ -50,7 +50,7 @@ public final class CodeLines {
     @VisibleForTesting
     static final String LINE_SEPARATOR = lineSeparator();
 
-    private static final int STANDARD_INDENTATION = 2;
+    private static final Indent STANDARD_INDENTATION = Indent.of2();
 
     /**
      * The indentation of the code, i.e. how many spaces each depth level takes.
@@ -80,10 +80,10 @@ public final class CodeLines {
      * @param indentation
      *         the indentation to use
      */
-    public CodeLines(int indentation) {
+    public CodeLines(Indent indentation) {
         this.codeLines = new ArrayList<>();
         this.currentDepth = Depth.zero();
-        this.indentation = Indent.of(indentation);
+        this.indentation = indentation;
     }
 
     /**
@@ -328,5 +328,10 @@ public final class CodeLines {
     @VisibleForTesting
     int currentDepth() {
         return currentDepth.value();
+    }
+
+    @VisibleForTesting
+    Indent indent() {
+        return indentation;
     }
 }

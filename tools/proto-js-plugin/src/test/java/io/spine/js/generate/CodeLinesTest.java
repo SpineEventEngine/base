@@ -21,16 +21,21 @@
 package io.spine.js.generate;
 
 import com.google.common.testing.NullPointerTester;
+import io.spine.code.Depth;
+import io.spine.code.Indent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import static com.google.common.truth.Truth.assertThat;
 import static io.spine.js.generate.CodeLines.LINE_SEPARATOR;
+import static io.spine.js.generate.RawLine.comment;
 import static io.spine.js.generate.given.Generators.assertContains;
 import static io.spine.js.generate.given.Generators.assertNotContains;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SuppressWarnings("DuplicateStringLiteralInspection")
 // Generated code duplication needed to check main class.
@@ -61,10 +66,11 @@ class CodeLinesTest {
     @Test
     @DisplayName("support custom indent")
     void setIndent() {
-        CodeLines jsOutput = new CodeLines(4);
+        Indent indent = Indent.of4();
+        CodeLines jsOutput = new CodeLines(indent);
         jsOutput.increaseDepth();
         jsOutput.addLine(LINE);
-        String expected = "    " + LINE;
+        String expected = indent + LINE;
         assertEquals(expected, jsOutput.toString());
     }
 
@@ -140,6 +146,56 @@ class CodeLinesTest {
         }
     }
 
+    @Nested
+    @DisplayName("append CodeLines")
+    class AppendCodeLines {
+
+        private static final String FIRST_PART = "first part";
+        private static final String SECOND_PART = "second part";
+
+        @Test
+        @DisplayName("of the same depth")
+        void sameDepth() {
+            CodeLines first = newCodeLines(FIRST_PART);
+            CodeLines second = newCodeLines(SECOND_PART);
+            first.addLinesFrom(second);
+            assertThat(first.toString()).isEqualTo(FIRST_PART + LINE_SEPARATOR + SECOND_PART);
+        }
+
+        @Test
+        @DisplayName("only of the same indent")
+        void notAllowDifferentIndents() {
+            CodeLines first = newCodeLines(FIRST_PART, Indent.of2());
+            CodeLines second = newCodeLines(FIRST_PART, Indent.of4());
+            assertThrows(
+                    IllegalArgumentException.class,
+                    () -> first.addLinesFrom(second)
+            );
+        }
+    }
+
+    @Test
+    @DisplayName("append an unaligned line")
+    void appendUnalignedLine() {
+        CodeLines lines = new CodeLines();
+        lines.increaseDepth();
+        CodeLine comment = comment("The field...");
+        lines.append(comment);
+        String expected = lines.indent() + comment.content();
+        assertThat(lines.toString()).isEqualTo(expected);
+    }
+
+    @Test
+    @DisplayName("append an indented line")
+    void appendIndentedLine() {
+        CodeLines lines = new CodeLines();
+        Depth lineDepth = Depth.of(5);
+        IndentedLine indentedLine = new IndentedLine("some code line", lineDepth);
+        lines.addLine(indentedLine);
+        Indent indent = lines.indent();
+        assertThat(lines.toString()).isEqualTo(indentedLine.indent(indent));
+    }
+
     @Test
     @DisplayName("exit block")
     void exitBlock() {
@@ -189,12 +245,29 @@ class CodeLinesTest {
     @Test
     @DisplayName("concatenate all lines of code with correct indent in `toString`")
     void provideToString() {
-        CodeLines jsOutput = new CodeLines();
-        jsOutput.addLine("line 1");
+        CodeLines jsOutput = newCodeLines("line 1");
         jsOutput.increaseDepth();
         jsOutput.addLine("line 2");
         String output = jsOutput.toString();
         String expected = "line 1" + LINE_SEPARATOR + "  line 2";
         assertEquals(expected, output);
+    }
+
+    /**
+     * Obtains code lines with the specified first line.
+     */
+    private static CodeLines newCodeLines(String firstLine) {
+        CodeLines lines = new CodeLines();
+        lines.addLine(firstLine);
+        return lines;
+    }
+
+    /**
+     * Obtains code lines with the specified first line.
+     */
+    private static CodeLines newCodeLines(String firstLine, Indent indent) {
+        CodeLines lines = new CodeLines(indent);
+        lines.addLine(firstLine);
+        return lines;
     }
 }
