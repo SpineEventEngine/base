@@ -40,7 +40,7 @@ import java.nio.file.Files;
 
 import static com.squareup.javapoet.MethodSpec.constructorBuilder;
 import static io.spine.tools.compiler.annotation.Annotations.generatedBySpineModelCompiler;
-import static io.spine.type.ClassName.OUTER_CLASS_DELIMITER;
+import static io.spine.code.java.ClassName.OUTER_CLASS_DELIMITER;
 import static javax.lang.model.element.Modifier.FINAL;
 import static javax.lang.model.element.Modifier.PRIVATE;
 import static javax.lang.model.element.Modifier.PUBLIC;
@@ -202,7 +202,7 @@ public class RejectionWriter implements Logging {
                         .build();
     }
 
-    private static ClassName toJavaPoetName(io.spine.type.ClassName className) {
+    private static ClassName toJavaPoetName(io.spine.code.java.ClassName className) {
         String noDelimiterName = className.value().replace(OUTER_CLASS_DELIMITER, '.');
         return ClassName.bestGuess(noDelimiterName);
     }

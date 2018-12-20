@@ -27,7 +27,7 @@ import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.annotation.Internal;
 import io.spine.code.java.SimpleClassName;
 import io.spine.option.IsOption;
-import io.spine.type.ClassName;
+import io.spine.code.java.ClassName;
 import io.spine.type.TypeUrl;
 
 import java.util.Deque;
@@ -146,11 +146,11 @@ public class MessageType extends Type<Descriptor, DescriptorProto> {
      * @return the class name of the builder, or empty optional if this message type is
      *         from the "google" package
      */
-    public Optional<ClassName> validatingBuilderClass() {
+    public Optional<SimpleClassName> validatingBuilderClass() {
         if (isGoogle()) {
             return Optional.empty();
         }
-        return Optional.of(javaClassName().with(VBUILDER_SUFFIX));
+        return Optional.of(javaClassName().toSimple().with(VBUILDER_SUFFIX));
     }
 
     /**
@@ -159,7 +159,7 @@ public class MessageType extends Type<Descriptor, DescriptorProto> {
      * @throws java.lang.IllegalStateException if the message type does not have a corresponding
      *  a Validating Builder class, for example, because it's a Google Protobuf message
      */
-    public ClassName getValidatingBuilderClass() {
+    public SimpleClassName getValidatingBuilderClass() {
         return validatingBuilderClass()
                 .orElseThrow(() -> newIllegalArgumentException(
                         "No validating builder class available for the type `%s`.", this));

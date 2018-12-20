@@ -28,7 +28,7 @@ import io.spine.base.CommandMessage;
 import io.spine.logging.Logging;
 import io.spine.option.EntityOption;
 import io.spine.option.OptionsProto;
-import io.spine.type.ClassName;
+import io.spine.code.java.ClassName;
 import io.spine.type.KnownTypes;
 import io.spine.type.TypeName;
 import io.spine.type.TypeUrl;

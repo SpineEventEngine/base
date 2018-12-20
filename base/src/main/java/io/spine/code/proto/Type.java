@@ -27,7 +27,7 @@ import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
 import io.spine.code.java.PackageName;
 import io.spine.code.java.SimpleClassName;
-import io.spine.type.ClassName;
+import io.spine.code.java.ClassName;
 import io.spine.type.TypeName;
 import io.spine.type.TypeUrl;
 import io.spine.type.UnknownTypeException;

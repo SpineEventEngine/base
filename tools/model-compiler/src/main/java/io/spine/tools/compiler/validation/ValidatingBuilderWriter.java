@@ -57,7 +57,8 @@ class ValidatingBuilderWriter implements Logging {
      * Writes the generated validating builders to Java file.
      */
     void write(MessageType type) {
-        String validatingBuilderClass = validatingBuilderClassName(type);
+        String validatingBuilderClass = type.getValidatingBuilderClass()
+                                            .value();
 
         log().debug("Creating spec. for class: {}", validatingBuilderClass);
 
@@ -82,11 +83,6 @@ class ValidatingBuilderWriter implements Logging {
         writeClass(javaPackage, javaClassSpec);
 
         log().debug("The {} class created.", validatingBuilderClass);
-    }
-
-    private static String validatingBuilderClassName(MessageType type) {
-        return type.getValidatingBuilderClass()
-                   .value();
     }
 
     private static Collection<MethodSpec> collectMethods(MessageType type) {
