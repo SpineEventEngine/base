@@ -42,8 +42,8 @@ public interface CommandMessage extends SerializableMessage {
      * @return the predicate to distinguish command messages
      */
     static Predicate<MessageDeclaration> predicate() {
-        return messageDeclaration -> File.predicate()
-                                         .test(messageDeclaration.getFile());
+        return messageDeclaration -> File.INSTANCE.predicate()
+                                                  .test(messageDeclaration.getFile());
     }
 
     /**
@@ -57,10 +57,6 @@ public interface CommandMessage extends SerializableMessage {
 
         /** Prevents instantiation of this utility class. */
         private File() {
-        }
-
-        public static io.spine.base.MessageFile.Predicate predicate() {
-            return INSTANCE.predicate();
         }
 
         /**
