@@ -59,10 +59,10 @@ final class InsertionPoint extends AbstractCompilerOutput {
         File.Builder file = prepareFile(containingFile, message);
         String messageFqn = containingFile.getPackage() + delimiter() + message.getName();
         String insertionPoint = format(INSERTION_POINT_IMPLEMENTS, messageFqn);
-        String fullInterfaceName =
+        String content =
                 markerInterface.name() + initGenericParams(markerInterface, message) + ',';
         File result = file.setInsertionPoint(insertionPoint)
-                          .setContent(fullInterfaceName)
+                          .setContent(content)
                           .build();
         return new InsertionPoint(result);
     }
