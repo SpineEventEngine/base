@@ -24,7 +24,6 @@ import io.spine.code.Indent;
 import io.spine.code.proto.MessageType;
 import io.spine.test.tools.validation.builder.VbtProject;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -47,7 +46,6 @@ class VBuilderCodeTest {
     }
 
     @Test
-    @Disabled("until merging of descriptor set files is available for tests")
     void writeTopLevelMessage() {
         MessageType type = MessageType.of(VbtProject.getDescriptor());
 
