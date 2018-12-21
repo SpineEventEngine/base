@@ -78,7 +78,7 @@ class MapFieldMethod extends AbstractMethod implements Logging {
     @SuppressWarnings("ConstantConditions")
     // The fields are checked in the {@code #build()} method
     // of the {@code MapFieldMethodConstructorBuilder} class.
-    private MapFieldMethod(MapFieldMethodsBuilder builder) {
+    private MapFieldMethod(Builder builder) {
         super(builder);
         this.fieldType = (MapFieldType) builder.getFieldType();
         FieldDescriptor field = builder.getField();
@@ -250,15 +250,14 @@ class MapFieldMethod extends AbstractMethod implements Logging {
      *
      * @return created builder
      */
-    static MapFieldMethodsBuilder newBuilder() {
-        return new MapFieldMethodsBuilder();
+    static Builder newBuilder() {
+        return new Builder();
     }
 
     /**
      * A builder for the {@code MapFieldMethodsConstructor} class.
      */
-    static class MapFieldMethodsBuilder
-            extends AbstractMethodBuilder<MapFieldMethod> {
+    static class Builder extends AbstractMethodBuilder<MapFieldMethod> {
         @Override
         MapFieldMethod build() {
             checkFields();

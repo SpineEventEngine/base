@@ -79,11 +79,20 @@ final class RepeatedFieldMethod extends AbstractMethod implements Logging {
     private final boolean isScalarOrEnum;
 
     /**
+     * Creates a new builder for the {@code RepeatedFieldMethodConstructor} class.
+     *
+     * @return created builder
+     */
+    static Builder newBuilder() {
+        return new Builder();
+    }
+
+    /**
      * Constructs the {@code RepeatedFieldMethodConstructor}.
      *
      * @param builder the {@code RepeatedFieldMethodConstructorBuilder} instance
      */
-    private RepeatedFieldMethod(RepeatedFieldMethodsBuilder builder) {
+    private RepeatedFieldMethod(Builder builder) {
         super(builder);
         this.fieldType = checkNotNull(builder.getFieldType());
         this.field = checkNotNull(builder.getField());
@@ -318,19 +327,9 @@ final class RepeatedFieldMethod extends AbstractMethod implements Logging {
     }
 
     /**
-     * Creates a new builder for the {@code RepeatedFieldMethodConstructor} class.
-     *
-     * @return created builder
-     */
-    static RepeatedFieldMethodsBuilder newBuilder() {
-        return new RepeatedFieldMethodsBuilder();
-    }
-
-    /**
      * A builder for the {@code RepeatedFieldMethodConstructor} class.
      */
-    static class RepeatedFieldMethodsBuilder
-            extends AbstractMethodBuilder<RepeatedFieldMethod> {
+    static class Builder extends AbstractMethodBuilder<RepeatedFieldMethod> {
 
         @Override
         RepeatedFieldMethod build() {

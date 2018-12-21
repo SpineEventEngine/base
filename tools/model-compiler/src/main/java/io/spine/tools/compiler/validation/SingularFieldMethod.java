@@ -65,11 +65,11 @@ class SingularFieldMethod extends AbstractMethod implements Logging {
     /**
      * Constructs the instance by the passed builder.
      *
-     * <p>The passed builder {@linkplain io.spine.tools.compiler.validation.SingularFieldMethod.SingularFieldBuilder#checkFields() ensures}
+     * <p>The passed builder {@linkplain io.spine.tools.compiler.validation.SingularFieldMethod.Builder#checkFields() ensures}
      * non-null values of its fields prior to calling this constructor.
      */
     @SuppressWarnings("ConstantConditions") // See Javadoc above.
-    private SingularFieldMethod(SingularFieldBuilder builder) {
+    private SingularFieldMethod(Builder builder) {
         super(builder);
         this.fieldType = builder.getFieldType();
         this.field = builder.getField();
@@ -203,15 +203,14 @@ class SingularFieldMethod extends AbstractMethod implements Logging {
      *
      * @return constructed builder
      */
-    static SingularFieldBuilder newBuilder() {
-        return new SingularFieldBuilder();
+    static Builder newBuilder() {
+        return new Builder();
     }
 
     /**
      * A builder class for the {@code SingularFieldMethodConstructor} class.
      */
-    static class SingularFieldBuilder
-            extends AbstractMethodBuilder<SingularFieldMethod> {
+    static class Builder extends AbstractMethodBuilder<SingularFieldMethod> {
 
         @Override
         SingularFieldMethod build() {

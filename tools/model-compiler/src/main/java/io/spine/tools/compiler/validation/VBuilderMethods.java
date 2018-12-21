@@ -43,7 +43,7 @@ final class VBuilderMethods {
         this.type = messageType;
     }
 
-    static Collection<MethodSpec> methodsOf(MessageType type) {
+    static ImmutableList<MethodSpec> methodsOf(MessageType type) {
         VBuilderMethods methods = new VBuilderMethods(type);
         return methods.all();
     }
