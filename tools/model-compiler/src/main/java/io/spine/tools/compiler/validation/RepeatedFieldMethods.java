@@ -237,8 +237,7 @@ final class RepeatedFieldMethods extends AbstractMethodGroup implements Logging 
     private MethodSpec addAllMethod() {
         String methodName = fieldType.getSetterPrefix() + methodNamePart;
         ClassName rawType = ClassName.get(List.class);
-        ParameterizedTypeName parameter = ParameterizedTypeName.get(rawType,
-                                                                    listElementClassName);
+        ParameterizedTypeName parameter = ParameterizedTypeName.get(rawType, listElementClassName);
         String fieldName = field.getName();
         String addAllValues = getMessageBuilder()
                 + format(ADD_ALL_METHOD, methodNamePart, VALUE);

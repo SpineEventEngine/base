@@ -121,8 +121,9 @@ final class VBuilderMethods {
                             .setField(field.descriptor())
                             .setFieldType(fieldType)
                             .setFieldIndex(index)
-                            .setJavaClass(type.javaClass()
-                                              .getName())
+                            // The name of the Validating Builder class.
+                            .setJavaClass(type.getValidatingBuilderClass()
+                                              .value())
                             .setJavaPackage(type.javaPackage()
                                                 .value())
                             .setGenericClassName(messageClass())
