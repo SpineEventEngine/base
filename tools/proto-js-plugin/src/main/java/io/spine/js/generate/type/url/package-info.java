@@ -24,7 +24,7 @@
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault
-package io.spine.js.generate.typeurl;
+package io.spine.js.generate.type.url;
 
 import javax.annotation.CheckReturnValue;
 import javax.annotation.ParametersAreNonnullByDefault;

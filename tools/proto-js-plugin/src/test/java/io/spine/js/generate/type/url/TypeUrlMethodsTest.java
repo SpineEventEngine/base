@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate.typeurl;
+package io.spine.js.generate.type.url;
 
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.EnumDescriptor;
@@ -26,6 +26,8 @@ import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.proto.Type;
 import io.spine.js.generate.CodeLines;
 import io.spine.js.generate.statement.Method;
+import io.spine.js.generate.typeurl.OuterMessage;
+import io.spine.js.generate.typeurl.TopLevelEnum;
 import io.spine.type.TypeUrl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -33,9 +35,9 @@ import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.js.generate.given.GivenProject.mainProtoSources;
-import static io.spine.js.generate.typeurl.TypeUrlMethods.typeUrlMethod;
-import static io.spine.js.generate.typeurl.given.Given.enumType;
-import static io.spine.js.generate.typeurl.given.Given.messageType;
+import static io.spine.js.generate.type.url.TypeUrlMethods.typeUrlMethod;
+import static io.spine.js.generate.type.url.given.Given.enumType;
+import static io.spine.js.generate.type.url.given.Given.messageType;
 import static java.lang.String.format;
 
 @DisplayName("TypeUrlsInFile should")

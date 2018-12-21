@@ -18,13 +18,27 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.js.generate.type.url;
+
+import com.google.protobuf.Descriptors.FileDescriptor;
+import io.spine.code.js.Directory;
+import io.spine.code.proto.FileSet;
+import io.spine.js.generate.FileSetEnhancement;
+
 /**
- * The test environment for generation of {@code TypeUrl} methods.
+ * Generates a method to obtain a {@code TypeUrl} for each type in a {@link FileSet}.
  */
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.js.generate.typeurl.given;
+public class TypeUrlsInFiles extends FileSetEnhancement {
 
-import com.google.errorprone.annotations.CheckReturnValue;
+    public TypeUrlsInFiles(Directory generatedRoot, FileSet fileSet) {
+        super(generatedRoot, fileSet);
+    }
 
-import javax.annotation.ParametersAreNonnullByDefault;
+    @Override
+    protected void processSources() {
+        for (FileDescriptor file : fileSet().files()) {
+            TypeUrlMethods typeUrlMethods = new TypeUrlMethods(file, generatedRoot());
+            typeUrlMethods.appendToFile();
+        }
+    }
+}
