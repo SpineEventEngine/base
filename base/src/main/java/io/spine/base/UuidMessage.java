@@ -58,7 +58,7 @@ class UuidMessage<I extends Message> {
      */
     static <I extends Message> UuidMessage<I> of(Class<I> idClass) {
         Descriptor message = Messages.newInstance(idClass)
-                                                 .getDescriptorForType();
+                                     .getDescriptorForType();
         checkState(isUuidMessage(message),
                    "A UUID message should have a single string field named %s.", FIELD_NAME);
         List<FieldDescriptor> fields = message.getFields();
