@@ -43,7 +43,7 @@ import static java.lang.String.format;
 public class VBuilderGenerator implements Logging {
 
     /** Code will be generated into this directory. */
-    private final String targetDirPath;
+    private final File targetDir;
 
     /** Indentation for the generated code. */
     private final Indent indent;
@@ -51,13 +51,13 @@ public class VBuilderGenerator implements Logging {
     /**
      * Creates new instance of the generator.
      *
-     * @param targetDirPath
+     * @param targetDir
      *        an absolute path to the folder, serving as a target for the code generation
      * @param indent
      *        indentation for the generated code
      */
-    public VBuilderGenerator(String targetDirPath, Indent indent) {
-        this.targetDirPath = targetDirPath;
+    public VBuilderGenerator(String targetDir, Indent indent) {
+        this.targetDir = new File(targetDir);
         this.indent = indent;
     }
 
@@ -80,7 +80,7 @@ public class VBuilderGenerator implements Logging {
 
         for (MessageType messageType : messages) {
             try {
-                VBuilderCode code = new VBuilderCode(targetDirPath, indent, messageType);
+                VBuilderCode code = new VBuilderCode(targetDir, indent, messageType);
                 code.write();
             } catch (RuntimeException e) {
                 logError(messageType, e);

@@ -107,7 +107,7 @@ public class SourceFile extends AbstractSourceFile implements Logging {
     public List<MessageType> allThat(Predicate<DescriptorProto> predicate) {
         ImmutableList.Builder<MessageType> result = ImmutableList.builder();
         for (Descriptor messageType : descriptor.getMessageTypes()) {
-            MessageType declaration = MessageType.create(messageType);
+            MessageType declaration = MessageType.of(messageType);
             _debug("Testing {} to match {}", declaration, predicate);
             if (predicate.test(messageType.toProto())) {
                 result.add(declaration);

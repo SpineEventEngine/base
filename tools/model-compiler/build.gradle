@@ -63,6 +63,19 @@ protobuf {
     protoc {
         artifact = deps.build.protoc
     }
+
+    generateProtoTasks {
+        all().each { final task ->
+            task.generateDescriptorSet = true
+            task.descriptorSetOptions.path = "$buildDir/descriptors/${task.sourceSet.name}/known_types.desc"
+            task.descriptorSetOptions.includeImports = true
+            task.descriptorSetOptions.includeSourceInfo = true
+        }
+    }
+}
+
+sourceSets {
+    main.java.srcDirs "$projectDir/generated/main/spine"
 }
 
 /**

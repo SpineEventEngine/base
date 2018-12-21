@@ -20,12 +20,14 @@
 
 package io.spine.tools.compiler.validation;
 
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeSpec;
 import io.spine.code.Indent;
+import io.spine.code.java.FileName;
 import io.spine.code.java.SimpleClassName;
 import io.spine.code.proto.MessageType;
 import io.spine.logging.Logging;
@@ -35,18 +37,21 @@ import javax.lang.model.element.Modifier;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Collection;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.compiler.annotation.Annotations.generatedBySpineModelCompiler;
 import static io.spine.tools.compiler.validation.VBuilderMethods.methodsOf;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
+import static java.lang.String.format;
 
 /**
  * Generates source code for a Java class with Validating Builder for a message type.
  */
 final class VBuilderCode implements Logging {
 
-    private final File rootDirectory;
+    private final File targetDir;
     private final Indent indent;
     private final MessageType type;
     private final SimpleClassName vbClass;
@@ -54,10 +59,10 @@ final class VBuilderCode implements Logging {
     private final TypeSpec.Builder classBuilder;
     private final String javaPackage;
 
-    VBuilderCode(String targetDir, Indent indent, MessageType type) {
-        this.rootDirectory = new File(targetDir);
-        this.indent = indent;
-        this.type = type;
+    VBuilderCode(File targetDir, Indent indent, MessageType type) {
+        this.targetDir = checkNotNull(targetDir);
+        this.indent = checkNotNull(indent);
+        this.type = checkNotNull(type);
         this.vbClass = type.getValidatingBuilderClass();
         this.classBuilder = TypeSpec.classBuilder(vbClass.value());
         this.javaPackage = type.javaPackage()
@@ -66,15 +71,19 @@ final class VBuilderCode implements Logging {
 
     /**
      * Writes the generated validating builders to Java file.
+     *
+     * @return the name of the generated file, which is used for testing
      */
-    void write() {
+    @CanIgnoreReturnValue
+    File write() {
         _debug("Creating spec. for class: {}", vbClass);
 
         TypeSpec javaClassSpec = defineClass()
                 .addAnnotation(generatedBySpineModelCompiler())
                 .build();
 
-        writeClass(javaPackage, javaClassSpec);
+        File created = writeClass(javaPackage, javaClassSpec);
+        return created;
     }
 
     private TypeSpec.Builder defineClass() {
@@ -103,20 +112,27 @@ final class VBuilderCode implements Logging {
                                                          .value());
     }
 
-    private void writeClass(String javaPackage, TypeSpec classToCreate) {
+    @CanIgnoreReturnValue
+    private File writeClass(String javaPackage, TypeSpec classToCreate) {
         _debug("Writing the {} class", vbClass);
         try {
-            Files.createDirectories(rootDirectory.toPath());
+            Path dir = targetDir.toPath();
+            Files.createDirectories(dir);
             JavaFile.builder(javaPackage, classToCreate)
                     .skipJavaLangImports(true)
                     .indent(indent.toString())
                     .build()
-                    .writeTo(rootDirectory);
+                    .writeTo(targetDir);
+
+            File createdFile = dir.resolve(FileName.forType(classToCreate.name)
+                                                   .value()).toFile();
+            _debug("The {} class created, written to file {}.", vbClass, createdFile);
+            return createdFile;
+
         } catch (IOException e) {
-            String exMessage = String.format("%s was not written.", rootDirectory);
-            log().warn(exMessage, e);
+            String exMessage = format("%s was not written.", targetDir);
+            _warn(exMessage, e);
             throw newIllegalArgumentException(exMessage, e);
         }
-        _debug("The {} class created.", vbClass);
     }
 }

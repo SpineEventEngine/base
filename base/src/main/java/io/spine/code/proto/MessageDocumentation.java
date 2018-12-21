@@ -20,16 +20,16 @@
 
 package io.spine.code.proto;
 
+import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
-import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.SourceCodeInfo;
 import com.google.protobuf.Descriptors.Descriptor;
+import io.spine.logging.Logging;
 
 import java.util.List;
 import java.util.Optional;
 
-import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.lang.String.format;
 
 /**
@@ -50,11 +50,12 @@ import static java.lang.String.format;
  * @see <a href="https://github.com/google/protobuf-gradle-plugin/blob/master/README.md#generate-descriptor-set-files">
  *         Protobuf plugin configuration</a>
  */
-public class MessageDocumentation {
+@Immutable
+public final class MessageDocumentation implements Logging {
 
     private final MessageType declaration;
 
-    public MessageDocumentation(MessageType declaration) {
+    MessageDocumentation(MessageType declaration) {
         this.declaration = declaration;
     }
 
@@ -72,22 +73,6 @@ public class MessageDocumentation {
         return Optional.empty();
     }
 
-    /**
-     * Obtains the leading comments for the field.
-     *
-     * @param field
-     *         the descriptor of the field
-     * @return the field leading comments or {@code Optional.empty()} if there are no comments
-     */
-    public Optional<String> fieldLeadingComments(FieldDescriptorProto field) {
-        //TODO:2018-12-20:alexander.yevsyukov: Handle nested types.
-        if (declaration.isNested()) {
-            return Optional.empty();
-        }
-
-        LocationPath fieldPath = fieldPath(field);
-        return leadingComments(fieldPath);
-    }
 
     /**
      * Obtains a leading comments by the {@link LocationPath}.
@@ -96,16 +81,15 @@ public class MessageDocumentation {
      *         the location path to get leading comments
      * @return the leading comments or empty {@code Optional} if there are no such comments
      */
-    private Optional<String> leadingComments(LocationPath locationPath) {
+    Optional<String> leadingComments(LocationPath locationPath) {
         if (!declaration.descriptor()
                         .getFile()
                         .toProto()
                         .hasSourceCodeInfo()) {
-            throw newIllegalStateException(
-                    "Unable to obtain proto source code info. " +
-                    "Please configure the Gradle Protobuf plugin as follows:%n%s",
-                    "`task.descriptorSetOptions.includeSourceInfo = true`."
-            );
+            _warn("Unable to obtain proto source code info. " +
+                            "Please configure the Gradle Protobuf plugin as follows:%n%s",
+                    "`task.descriptorSetOptions.includeSourceInfo = true`.");
+            return Optional.empty();
         }
 
         SourceCodeInfo.Location location = toLocation(locationPath);
@@ -119,7 +103,7 @@ public class MessageDocumentation {
      *
      * @return the message location path
      */
-    private LocationPath messagePath() {
+    LocationPath messagePath() {
         LocationPath path = new LocationPath();
         path.add(FileDescriptorProto.MESSAGE_TYPE_FIELD_NUMBER);
         if (declaration.isTopLevel()) {
@@ -147,31 +131,6 @@ public class MessageDocumentation {
                                       .getName()
         );
         throw new IllegalStateException(msg);
-    }
-
-    /**
-     * Returns the field {@link LocationPath} for a top-level message definition.
-     *
-     * <p>Protobuf extensions are not supported.
-     *
-     * @param field
-     *         the field to get location path
-     * @return the field location path
-     */
-    private LocationPath fieldPath(FieldDescriptorProto field) {
-        LocationPath locationPath = new LocationPath();
-
-        locationPath.addAll(messagePath());
-        locationPath.add(DescriptorProto.FIELD_FIELD_NUMBER);
-        locationPath.add(getFieldIndex(field));
-        return locationPath;
-    }
-
-    private int getFieldIndex(FieldDescriptorProto field) {
-        return declaration.descriptor()
-                          .toProto()
-                          .getFieldList()
-                          .indexOf(field);
     }
 
     /**

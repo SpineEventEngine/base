@@ -20,6 +20,7 @@
 
 package io.spine.code.proto;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.Descriptors.Descriptor;
@@ -51,11 +52,16 @@ public class MessageType extends Type<Descriptor, DescriptorProto> {
      */
     public static final String VBUILDER_SUFFIX = "VBuilder";
 
+    private final MessageDocumentation documentation;
+
+    @SuppressWarnings("ThisEscapedInObjectConstruction") // OK since fully initialized.
     protected MessageType(Descriptor descriptor) {
         super(descriptor);
+        this.documentation = new MessageDocumentation(this);
     }
 
-    static MessageType create(Descriptor descriptor) {
+    @VisibleForTesting // Otherwise package-private
+    public static MessageType of(Descriptor descriptor) {
         return new MessageType(descriptor);
     }
 
@@ -76,7 +82,7 @@ public class MessageType extends Type<Descriptor, DescriptorProto> {
                 .getMapEntry()) {
             return;
         }
-        MessageType messageType = create(type);
+        MessageType messageType = of(type);
         set.add(messageType);
         for (Descriptor nestedType : type.getNestedTypes()) {
             addType(nestedType, set);
@@ -217,7 +223,7 @@ public class MessageType extends Type<Descriptor, DescriptorProto> {
         ImmutableList<MessageType> result =
                 descriptor().getNestedTypes()
                             .stream()
-                            .map(MessageType::create)
+                            .map(MessageType::of)
                             .collect(toImmutableList());
         return result;
     }
@@ -226,7 +232,7 @@ public class MessageType extends Type<Descriptor, DescriptorProto> {
      * Obtains message documentation.
      */
     public MessageDocumentation documentation() {
-        return new MessageDocumentation(this);
+        return documentation;
     }
 
     /**

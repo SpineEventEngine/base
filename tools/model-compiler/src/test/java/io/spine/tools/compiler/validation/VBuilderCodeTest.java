@@ -18,44 +18,39 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.code.proto;
+package io.spine.tools.compiler.validation;
 
-import com.google.protobuf.Descriptors.Descriptor;
-import io.spine.net.Uri;
-import io.spine.net.Url;
+import io.spine.code.Indent;
+import io.spine.code.proto.MessageType;
+import io.spine.test.tools.validation.builder.VbtProject;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junitpioneer.jupiter.TempDirectory;
 
-import java.util.function.Function;
+import java.io.File;
+import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("MessageType should")
-class MessageTypeTest {
+@ExtendWith(TempDirectory.class)
+@DisplayName("VBuilderCode should")
+class VBuilderCodeTest {
 
-    @Nested
-    @DisplayName("Tell if")
-    class Tell {
+    private File targetDir;
 
-        @DisplayName("nested")
-        @Test
-        void nested() {
-            assertQuality(Uri.Protocol.getDescriptor(), MessageType::isNested);
-        }
-
-        @DisplayName("top-level")
-        @Test
-        void topLevel() {
-            assertQuality(Url.getDescriptor(), MessageType::isTopLevel);
-        }
-
-        /** Tests a certain method of {@code MessageType} created on the passed descriptor. */
-        void assertQuality(Descriptor descriptor, Function<MessageType, Boolean> method) {
-            MessageType type = MessageType.of(descriptor);
-            boolean result = method.apply(type);
-            assertTrue(result);
-        }
+    @BeforeEach
+    void setUp(@TempDirectory.TempDir Path tempDirPath) {
+        targetDir = tempDirPath.toFile();
     }
 
+    @Test
+    void writeTopLevelMessage() {
+        MessageType type = MessageType.of(VbtProject.getDescriptor());
+
+        VBuilderCode code = new VBuilderCode(targetDir, Indent.of4(), type);
+        File created = code.write();
+        assertTrue(created.exists());
+    }
 }
