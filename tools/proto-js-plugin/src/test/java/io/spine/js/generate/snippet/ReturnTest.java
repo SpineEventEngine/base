@@ -18,14 +18,34 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * The package contains statements to be used in generated JavaScript code.
- *
- * These statements are building blocks of the code.
- */
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.js.generate.statement;
+package io.spine.js.generate.snippet;
 
-import javax.annotation.CheckReturnValue;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+@DisplayName("Return")
+class ReturnTest {
+
+    @Test
+    @DisplayName("an object")
+    void object() {
+        Return line = Return.value(5);
+        assertEquals("return 5;", line.content());
+    }
+
+    @Test
+    @DisplayName("a string literal")
+    void stringLiteral() {
+        Return line = Return.stringLiteral("foo");
+        assertEquals("return 'foo';", line.content());
+    }
+
+    @Test
+    @DisplayName("null reference")
+    void nullValue() {
+        Return nullValue = Return.nullReference();
+        assertEquals("return null;", nullValue.content());
+    }
+}

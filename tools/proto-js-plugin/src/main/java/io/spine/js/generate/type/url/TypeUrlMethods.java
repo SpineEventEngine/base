@@ -30,8 +30,8 @@ import io.spine.js.generate.CodeLines;
 import io.spine.js.generate.FileWriter;
 import io.spine.js.generate.JsType;
 import io.spine.js.generate.Snippet;
-import io.spine.js.generate.statement.Method;
-import io.spine.js.generate.statement.Return;
+import io.spine.js.generate.snippet.Method;
+import io.spine.js.generate.snippet.Return;
 import io.spine.type.TypeUrl;
 
 import static io.spine.js.generate.RawLine.comment;

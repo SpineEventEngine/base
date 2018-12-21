@@ -28,9 +28,9 @@ import io.spine.js.generate.CodeLines;
 import io.spine.js.generate.Snippet;
 import io.spine.js.generate.field.FieldGenerator;
 import io.spine.js.generate.field.FieldGenerators;
-import io.spine.js.generate.statement.Method;
-import io.spine.js.generate.statement.Return;
-import io.spine.js.generate.statement.VariableDeclaration;
+import io.spine.js.generate.snippet.Method;
+import io.spine.js.generate.snippet.Return;
+import io.spine.js.generate.snippet.VariableDeclaration;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.js.generate.RawLine.emptyLine;

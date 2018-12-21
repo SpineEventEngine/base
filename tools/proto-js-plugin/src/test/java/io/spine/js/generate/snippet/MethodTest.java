@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate.statement;
+package io.spine.js.generate.snippet;
 
 import com.google.common.truth.StringSubject;
 import com.google.common.truth.Truth;
