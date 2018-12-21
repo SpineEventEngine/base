@@ -33,7 +33,6 @@ import "spine/options.proto";
 
 import "spine/net/email_address.proto";
 import "spine/net/url.proto";
-import "spine/people/person_name.proto";
 
 // This file defines messages for testing generation of validating builders.
 //
