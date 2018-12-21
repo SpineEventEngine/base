@@ -19,7 +19,7 @@
  */
 
 /**
- * The package contains standard elements of Javascript code such as statements and declarations.
+ * The package contains standard elements of Javascript code such as a statement or a declaration.
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault

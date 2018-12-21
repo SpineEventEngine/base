@@ -18,16 +18,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate;
+package io.spine.code.js;
 
-import io.spine.code.js.TypeName;
 import io.spine.code.proto.Type;
 import io.spine.type.TypeUrl;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * The type of a generated Protobuf declaration.
+ * A Javascript type generated from a Protobuf type.
  */
 public final class JsType {
 
