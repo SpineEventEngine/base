@@ -20,13 +20,15 @@
 
 /**
  * This package provides classes and interfaces for:
- * 
  * <ul>
  *     <li>Generating code of Validating Builders.
  *     See {@link io.spine.tools.compiler.validation.VBuilderGenerator}.
  *     <li>Collecting external validation constraints into a resource file.
  *     See {@link io.spine.tools.compiler.validation.ValidationRulesWriter}.
  * </ul>
+ *
+ * <p><a href = "https://github.com/square/javapoet">JavaPoet</a> library is used for
+ * Java code generation.
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault

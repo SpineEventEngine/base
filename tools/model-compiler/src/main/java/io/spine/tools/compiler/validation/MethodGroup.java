@@ -26,22 +26,11 @@ import java.util.Collection;
 
 /**
  * A group of methods related to certain aspect of generated Validating Builder.
- *
- * <p>A group may have one method, such as
- *
- * <p>As the validating builders are generated dynamically
- * according to the Protobuf message declaration
- * the <a href = "https://github.com/square/javapoet">JavaPoet</a> library
- * is used to reduce the complexity of the Java code generation.
- * And JavaPoet provides the {@code MethodSpec} class for helping
- * in the Java fields generation.
  */
 interface MethodGroup {
 
     /**
-     * Constructs the methods for the validators.
-     *
-     * @return the constructed methods
+     * Creates specs for the methods of the group.
      */
     Collection<MethodSpec> construct();
 }

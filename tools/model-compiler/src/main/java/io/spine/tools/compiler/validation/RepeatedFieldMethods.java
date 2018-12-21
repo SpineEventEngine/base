@@ -108,16 +108,14 @@ final class RepeatedFieldMethods extends AbstractMethodGroup implements Logging 
 
     @Override
     public Collection<MethodSpec> construct() {
-        _debug("The methods construction for the {} repeated field is started.",
-                    javaFieldName);
+        _debug("The methods construction for the {} repeated field is started.", javaFieldName);
 
         List<MethodSpec> methods = newArrayList();
         methods.add(createGetter());
         methods.addAll(createRepeatedMethods());
         methods.addAll(createRepeatedRawMethods());
 
-        _debug("The methods construction for the {} repeated field is finished.",
-                    javaFieldName);
+        _debug("The methods construction for the {} repeated field is finished.", javaFieldName);
         return methods;
     }
 
