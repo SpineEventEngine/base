@@ -20,26 +20,29 @@
 
 package io.spine.tools.compiler.validation;
 
+import com.google.common.collect.ImmutableList;
 import com.squareup.javapoet.MethodSpec;
+import io.spine.code.proto.MessageType;
+import io.spine.test.tools.validation.builder.VbtProject;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
-import java.util.Collection;
+import static com.google.common.truth.Truth.assertThat;
 
-/**
- * An interface for all {@code MethodSpec} constructors.
- *
- * <p>As the validating builders are generated dynamically
- * according to the Protobuf message declaration
- * the <a href = "https://github.com/square/javapoet">JavaPoet</a> library
- * is used to reduce the complexity of the Java code generation.
- * And JavaPoet provides the {@code MethodSpec} class for helping
- * in the Java fields generation.
- */
-interface MethodConstructor {
+@DisplayName("VBuilderMethods should")
+class VBuilderMethodsTest {
 
-    /**
-     * Constructs the methods for the validators.
-     *
-     * @return the constructed methods
-     */
-    Collection<MethodSpec> construct();
+    @Nested
+    @DisplayName("collect methods of")
+    class CollectMethods {
+
+        @Test
+        void topLevelMessage() {
+            MessageType type = MessageType.of(VbtProject.getDescriptor());
+
+            ImmutableList<MethodSpec> specs = VBuilderMethods.methodsOf(type);
+            assertThat(specs).isNotEmpty();
+        }
+    }
 }

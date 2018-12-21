@@ -18,16 +18,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.tools.compiler.validation;
+
+import com.squareup.javapoet.MethodSpec;
+
+import java.util.Collection;
+
 /**
- * Classes for generating code for rejections.
- *
- * <p><a href = "https://github.com/square/javapoet">JavaPoet</a> library is used for
- * Java code generation.
+ * A group of methods related to certain aspect of generated Validating Builder.
  */
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.tools.compiler.rejection;
+interface MethodGroup {
 
-import com.google.errorprone.annotations.CheckReturnValue;
-
-import javax.annotation.ParametersAreNonnullByDefault;
+    /**
+     * Creates specs for the methods of the group.
+     */
+    Collection<MethodSpec> generate();
+}

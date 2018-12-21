@@ -20,17 +20,19 @@
 
 package io.spine.code.proto;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.annotation.Internal;
+import io.spine.code.java.ClassName;
 import io.spine.code.java.SimpleClassName;
 import io.spine.option.IsOption;
-import io.spine.type.ClassName;
 import io.spine.type.TypeUrl;
 
 import java.util.Deque;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
@@ -50,11 +52,16 @@ public class MessageType extends Type<Descriptor, DescriptorProto> {
      */
     public static final String VBUILDER_SUFFIX = "VBuilder";
 
+    private final MessageDocumentation documentation;
+
+    @SuppressWarnings("ThisEscapedInObjectConstruction") // OK since fully initialized.
     protected MessageType(Descriptor descriptor) {
         super(descriptor);
+        this.documentation = new MessageDocumentation(this);
     }
 
-    static MessageType create(Descriptor descriptor) {
+    @VisibleForTesting // Otherwise package-private
+    public static MessageType of(Descriptor descriptor) {
         return new MessageType(descriptor);
     }
 
@@ -75,7 +82,7 @@ public class MessageType extends Type<Descriptor, DescriptorProto> {
                 .getMapEntry()) {
             return;
         }
-        MessageType messageType = create(type);
+        MessageType messageType = of(type);
         set.add(messageType);
         for (Descriptor nestedType : type.getNestedTypes()) {
             addType(nestedType, set);
@@ -125,17 +132,36 @@ public class MessageType extends Type<Descriptor, DescriptorProto> {
                         .getFile();
 
         FileDescriptor file = descriptor().getFile();
-        return !isSame(optionsProto, file);
+        return !isSameFile(optionsProto, file);
     }
 
-    private static boolean isSame(FileDescriptor optionsProto,
-                                  FileDescriptor file) {
+    private static boolean isSameFile(FileDescriptor optionsProto, FileDescriptor file) {
         return file.getFullName().equals(optionsProto.getFullName()) &&
                 file.getPackage().equals(optionsProto.getPackage());
     }
 
-    public ClassName builderClass() {
+    /**
+     * Tells if this message is top-level in its file.
+     */
+    public boolean isTopLevel() {
+        Descriptor descriptor = descriptor();
+        List<Descriptor> topLevel = descriptor.getFile()
+                                              .getMessageTypes();
+        boolean result = topLevel.contains(descriptor);
+        return result;
+    }
 
+    /**
+     * Tells if this message is nested inside another message declaration.
+     */
+    public boolean isNested() {
+        return !isTopLevel();
+    }
+
+    /**
+     * Obtains the name of the builder class for this message type.
+     */
+    public ClassName builderClass() {
         ClassName result = javaClassName().withNested(SimpleClassName.ofBuilder());
         return result;
     }
@@ -146,11 +172,11 @@ public class MessageType extends Type<Descriptor, DescriptorProto> {
      * @return the class name of the builder, or empty optional if this message type is
      *         from the "google" package
      */
-    public Optional<ClassName> validatingBuilderClass() {
+    public Optional<SimpleClassName> validatingBuilderClass() {
         if (isGoogle()) {
             return Optional.empty();
         }
-        return Optional.of(javaClassName().with(VBUILDER_SUFFIX));
+        return Optional.of(javaClassName().toSimple().with(VBUILDER_SUFFIX));
     }
 
     /**
@@ -159,7 +185,7 @@ public class MessageType extends Type<Descriptor, DescriptorProto> {
      * @throws java.lang.IllegalStateException if the message type does not have a corresponding
      *  a Validating Builder class, for example, because it's a Google Protobuf message
      */
-    public ClassName getValidatingBuilderClass() {
+    public SimpleClassName getValidatingBuilderClass() {
         return validatingBuilderClass()
                 .orElseThrow(() -> newIllegalArgumentException(
                         "No validating builder class available for the type `%s`.", this));
@@ -197,7 +223,7 @@ public class MessageType extends Type<Descriptor, DescriptorProto> {
         ImmutableList<MessageType> result =
                 descriptor().getNestedTypes()
                             .stream()
-                            .map(MessageType::create)
+                            .map(MessageType::of)
                             .collect(toImmutableList());
         return result;
     }
@@ -206,7 +232,7 @@ public class MessageType extends Type<Descriptor, DescriptorProto> {
      * Obtains message documentation.
      */
     public MessageDocumentation documentation() {
-        return new MessageDocumentation(this);
+        return documentation;
     }
 
     /**

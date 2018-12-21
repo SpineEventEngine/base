@@ -25,16 +25,16 @@ import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.DisplayName;
 
 @DisplayName("MethodConstructors utility class should")
-class MethodConstructorsTest extends UtilityClassTest<MethodConstructors> {
+class MethodsTest extends UtilityClassTest<Methods> {
 
-    MethodConstructorsTest() {
-        super(MethodConstructors.class);
+    MethodsTest() {
+        super(Methods.class);
     }
 
     @Override
     protected void configure(NullPointerTester tester) {
         super.configure(tester);
-        tester.testStaticMethods(MethodConstructors.class,
+        tester.testStaticMethods(Methods.class,
                                  NullPointerTester.Visibility.PACKAGE);
     }
 }

@@ -21,28 +21,31 @@
 package io.spine.code.proto;
 
 import com.google.common.base.Joiner;
+import com.google.protobuf.DescriptorProtos;
+import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.base.CommandMessage;
+import io.spine.code.java.ClassName;
 import io.spine.logging.Logging;
 import io.spine.option.EntityOption;
 import io.spine.option.OptionsProto;
-import io.spine.type.ClassName;
 import io.spine.type.KnownTypes;
 import io.spine.type.TypeName;
 import io.spine.type.TypeUrl;
 import io.spine.type.UnknownTypeException;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.ENUM;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.MESSAGE;
 import static java.lang.String.format;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Declaration of a Protobuf message field.
@@ -50,8 +53,10 @@ import static java.lang.String.format;
 @SuppressWarnings("ClassWithTooManyMethods") // OK as isSomething() methods are mutually exclusive.
 public final class FieldDeclaration implements Logging {
 
+    /** If known the message which declares the field. */
+    private final @MonotonicNonNull MessageType message;
+
     private final FieldDescriptor field;
-    private final @MonotonicNonNull String leadingComments;
 
     /**
      * Creates a new instance.
@@ -61,7 +66,7 @@ public final class FieldDeclaration implements Logging {
      */
     public FieldDeclaration(FieldDescriptor field) {
         this.field = checkNotNull(field);
-        this.leadingComments = null;
+        this.message = null;
     }
 
     /**
@@ -69,9 +74,7 @@ public final class FieldDeclaration implements Logging {
      */
     public FieldDeclaration(FieldDescriptor field, MessageType message) {
         this.field = checkNotNull(field);
-        this.leadingComments = message.documentation()
-                                      .fieldLeadingComments(field.toProto())
-                                      .orElse(null);
+        this.message = message;
     }
 
     /**
@@ -95,18 +98,18 @@ public final class FieldDeclaration implements Logging {
     public String javaTypeName() {
         FieldDescriptor.Type fieldType = field.getType();
         if (fieldType == MESSAGE) {
-            return getMessageClassName();
+            return messageClassName();
         }
 
         if (fieldType == ENUM) {
-            return getEnumClassName();
+            return enumClassName();
         }
 
         return ScalarType.getJavaTypeName(field.toProto()
                                                .getType());
     }
 
-    private String getMessageClassName() {
+    private String messageClassName() {
         TypeName typeName = TypeName.from(field.getMessageType());
         KnownTypes knownTypes = KnownTypes.instance();
         try {
@@ -119,7 +122,7 @@ public final class FieldDeclaration implements Logging {
                               .stream()
                               .map(TypeUrl::value)
                               .sorted()
-                              .collect(Collectors.toList());
+                              .collect(toList());
             String newLine = format(",%n");
             String message =
                     format("Cannot find a type %s in the list of known types:%n%s",
@@ -131,7 +134,7 @@ public final class FieldDeclaration implements Logging {
         }
     }
 
-    private String getEnumClassName() {
+    private String enumClassName() {
         EnumType enumType = EnumType.create(field.getEnumType());
         return enumType.javaClassName().value();
     }
@@ -270,6 +273,53 @@ public final class FieldDeclaration implements Logging {
      * @return the leading field comments or {@code Optional.empty()} if there are no comments
      */
     public Optional<String> leadingComments() {
+        @Nullable String leadingComments = fieldLeadingComments(field.toProto())
+                .orElse(null);
+
         return Optional.ofNullable(leadingComments);
+    }
+
+    /**
+     * Obtains the leading comments for the field.
+     *
+     * @param field
+     *         the descriptor of the field
+     * @return the field leading comments or {@code Optional.empty()} if there are no comments
+     */
+    public Optional<String> fieldLeadingComments(DescriptorProtos.FieldDescriptorProto field) {
+        //TODO:2018-12-20:alexander.yevsyukov: Handle nested types.
+        if (message.isNested()) {
+            return Optional.empty();
+        }
+
+        LocationPath fieldPath = fieldPath(field);
+        return message.documentation()
+                      .leadingComments(fieldPath);
+    }
+
+    /**
+     * Returns the field {@link LocationPath} for a top-level message definition.
+     *
+     * <p>Protobuf extensions are not supported.
+     *
+     * @param field
+     *         the field to get location path
+     * @return the field location path
+     */
+    private LocationPath fieldPath(DescriptorProtos.FieldDescriptorProto field) {
+        LocationPath locationPath = new LocationPath();
+
+        locationPath.addAll(message.documentation()
+                                   .messagePath());
+        locationPath.add(DescriptorProto.FIELD_FIELD_NUMBER);
+        locationPath.add(getFieldIndex(field));
+        return locationPath;
+    }
+
+    private int getFieldIndex(DescriptorProtos.FieldDescriptorProto field) {
+        return message.descriptor()
+                          .toProto()
+                          .getFieldList()
+                          .indexOf(field);
     }
 }

@@ -20,26 +20,42 @@
 
 package io.spine.code.proto;
 
-import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
-import io.spine.testing.UtilityClassTest;
+import com.google.protobuf.Descriptors.Descriptor;
+import io.spine.net.Uri;
+import io.spine.net.Url;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collection;
+import java.util.function.Function;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("FileDescriptors utility class should")
-class FileDescriptorsTest extends UtilityClassTest<FileDescriptors> {
+@DisplayName("MessageType should")
+class MessageTypeTest {
 
-    FileDescriptorsTest() {
-        super(FileDescriptors.class);
+    @Nested
+    @DisplayName("Tell if")
+    class Tell {
+
+        @DisplayName("nested")
+        @Test
+        void nested() {
+            assertQuality(Uri.Protocol.getDescriptor(), MessageType::isNested);
+        }
+
+        @DisplayName("top-level")
+        @Test
+        void topLevel() {
+            assertQuality(Url.getDescriptor(), MessageType::isTopLevel);
+        }
+
+        /** Tests a certain method of {@code MessageType} created on the passed descriptor. */
+        void assertQuality(Descriptor descriptor, Function<MessageType, Boolean> method) {
+            MessageType type = MessageType.of(descriptor);
+            boolean result = method.apply(type);
+            assertTrue(result);
+        }
     }
 
-    @Test
-    @DisplayName("load main set")
-    void loadMainSet() {
-        Collection<FileDescriptorProto> fileSets = FileDescriptors.load();
-        assertFalse(fileSets.isEmpty());
-    }
 }

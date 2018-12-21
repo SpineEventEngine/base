@@ -23,7 +23,7 @@ package io.spine.code.proto;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.Descriptor;
 import io.spine.code.java.SimpleClassName;
-import io.spine.type.ClassName;
+import io.spine.code.java.ClassName;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.Objects;

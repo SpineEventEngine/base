@@ -18,16 +18,40 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * Classes for generating code for rejections.
- *
- * <p><a href = "https://github.com/square/javapoet">JavaPoet</a> library is used for
- * Java code generation.
- */
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.tools.compiler.rejection;
+syntax = "proto3";
 
-import com.google.errorprone.annotations.CheckReturnValue;
+package spine.sample.validators;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+option java_package = "io.spine.tools.test.vbgen.command";
+option java_outer_classname = "CommandsProto";
+option java_multiple_files = true;
+
+import "identifiers.proto";
+import "changes.proto";
+
+message CreateBasicTask {
+
+    TaskId id = 1;
+
+    string description = 2;
+
+    reserved 3 to 10;
+}
+
+message UpdateTaskDescription {
+
+    TaskId id = 1;
+
+    map<string, DescriptionChange> description_changes = 2;
+
+    reserved 3 to 10;
+}
+
+message UpdateLabelDetails {
+
+    LabelId id = 1;
+
+    LabelDetailsChange label_details_changes = 2;
+
+    reserved 3 to 10;
+}

@@ -18,40 +18,29 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-syntax = "proto3";
+package io.spine.code.java;
 
-package spine.sample.validators;
+import io.spine.value.StringTypeValue;
 
-option java_package = "io.spine.sample.validators.c";
-option java_outer_classname = "CommandsProto";
-option java_multiple_files = true;
+/**
+ * A name of a potentially nested class with outer class names separated with dots.
+ *
+ * <p>A top level class name would have equal to {@link io.spine.code.java.SimpleClassName}.
+ */
+public final class NestedClassName extends StringTypeValue {
 
-import "identifiers.proto";
-import "changes.proto";
+    private static final long serialVersionUID = 0L;
 
-message CreateBasicTask {
+    private NestedClassName(String value) {
+        super(value);
+    }
 
-    TaskId id = 1;
-
-    string description = 2;
-
-    reserved 3 to 10;
-}
-
-message UpdateTaskDescription {
-
-    TaskId id = 1;
-
-    map<string, DescriptionChange> description_changes = 2;
-
-    reserved 3 to 10;
-}
-
-message UpdateLabelDetails {
-
-    LabelId id = 1;
-
-    LabelDetailsChange label_details_changes = 2;
-
-    reserved 3 to 10;
+    /**
+     * Creates a new instance by fully-qualified name.
+     */
+    static NestedClassName create(ClassName className) {
+        String nameWithOuter = ClassName.afterDot(className.value());
+        String dotted = ClassName.toDotted(nameWithOuter);
+        return new NestedClassName(dotted);
+    }
 }

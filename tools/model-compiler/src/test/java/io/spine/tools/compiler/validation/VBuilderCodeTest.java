@@ -18,12 +18,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.tools.gradle.compiler;
+package io.spine.tools.compiler.validation;
 
-import com.google.common.collect.ImmutableList;
-import io.spine.tools.gradle.GradleProject;
+import io.spine.code.Indent;
+import io.spine.code.proto.MessageType;
+import io.spine.test.tools.validation.builder.VbtProject;
+import io.spine.test.tools.validation.builder.VbtScalarFields;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junitpioneer.jupiter.TempDirectory;
@@ -31,43 +34,42 @@ import org.junitpioneer.jupiter.TempDirectory;
 import java.io.File;
 import java.nio.file.Path;
 
-import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(TempDirectory.class)
-@DisplayName("ValidatingBuilderGenPlugin should")
-class ValidatingBuilderGenPluginTest {
+@DisplayName("VBuilderCode should")
+class VBuilderCodeTest {
 
-    /**
-     * The name of the directory under `test/resource` which will be used for creating
-     * the test project.
-     */
-    private static final String PROJECT_NAME = "validators-gen-plugin-test";
-
-    /**
-     * Names of resource files under the resources "root".
-     */
-    private static final ImmutableList<String> PROTO_FILES =
-            ImmutableList.of("identifiers.proto",
-                             "attributes.proto",
-                             "changes.proto",
-                             "test_commands.proto");
-
-    private File testProjectDir;
+    private File targetDir;
 
     @BeforeEach
     void setUp(@TempDirectory.TempDir Path tempDirPath) {
-        testProjectDir = tempDirPath.toFile();
+        targetDir = tempDirPath.toFile();
     }
 
-    @Test
-    @DisplayName("compile generated validators")
-    void compileGeneratedValidators() {
-        GradleProject project =
-                GradleProject.newBuilder()
-                             .setProjectName(PROJECT_NAME)
-                             .setProjectFolder(testProjectDir)
-                             .addProtoFiles(PROTO_FILES)
-                             .build();
-        project.executeTask(COMPILE_JAVA);
+    @Nested
+    @DisplayName("generate code for top-level message")
+    class TopLevel {
+
+        @Test
+        @DisplayName("with message fields")
+        void messageFields() {
+            MessageType type = MessageType.of(VbtProject.getDescriptor());
+            assertGeneratesFor(type);
+        }
+
+        @Test
+        @DisplayName("with scalar fields")
+        void scalarFields() {
+            MessageType type = MessageType.of(VbtScalarFields.getDescriptor());
+            assertGeneratesFor(type);
+        }
+
+    }
+
+    private void assertGeneratesFor(MessageType type) {
+        VBuilderCode code = new VBuilderCode(targetDir, Indent.of4(), type);
+        File file = code.write();
+        assertTrue(file.exists());
     }
 }

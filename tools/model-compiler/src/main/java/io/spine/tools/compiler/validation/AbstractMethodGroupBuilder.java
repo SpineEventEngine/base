@@ -22,7 +22,6 @@ package io.spine.tools.compiler.validation;
 
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.squareup.javapoet.ClassName;
-import io.spine.tools.compiler.TypeCache;
 import io.spine.tools.compiler.field.type.FieldType;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -33,13 +32,12 @@ import static com.google.common.base.Preconditions.checkState;
 /**
  * An abstract base for the method constructor builders.
  */
-abstract class AbstractMethodBuilder<T extends MethodConstructor> {
+abstract class AbstractMethodGroupBuilder<T extends MethodGroup> {
 
     private int fieldIndex;
     private String javaClass;
     private String javaPackage;
     private ClassName genericClassName;
-    private TypeCache typeCache;
     private FieldDescriptor field;
     private FieldType fieldType;
 
@@ -53,43 +51,37 @@ abstract class AbstractMethodBuilder<T extends MethodConstructor> {
      */
     abstract T build();
 
-    AbstractMethodBuilder setFieldIndex(int fieldIndex) {
+    AbstractMethodGroupBuilder setFieldIndex(int fieldIndex) {
         checkArgument(fieldIndex >= 0);
         this.fieldIndex = fieldIndex;
         return this;
     }
 
-    AbstractMethodBuilder setJavaPackage(String javaPackage) {
+    AbstractMethodGroupBuilder setJavaPackage(String javaPackage) {
         checkNotNull(javaPackage);
         this.javaPackage = javaPackage;
         return this;
     }
 
-    AbstractMethodBuilder setJavaClass(String javaClass) {
+    AbstractMethodGroupBuilder setJavaClass(String javaClass) {
         checkNotNull(javaClass);
         this.javaClass = javaClass;
         return this;
     }
 
-    AbstractMethodBuilder setTypeCache(TypeCache typeCache) {
-        checkNotNull(typeCache);
-        this.typeCache = typeCache;
-        return this;
-    }
-
-    AbstractMethodBuilder setField(FieldDescriptor field) {
+    AbstractMethodGroupBuilder setField(FieldDescriptor field) {
         checkNotNull(field);
         this.field = field;
         return this;
     }
 
-    AbstractMethodBuilder setBuilderGenericClassName(ClassName genericClassName) {
+    AbstractMethodGroupBuilder setGenericClassName(ClassName genericClassName) {
         checkNotNull(genericClassName);
         this.genericClassName = genericClassName;
         return this;
     }
 
-    AbstractMethodBuilder setFieldType(FieldType fieldType) {
+    AbstractMethodGroupBuilder setFieldType(FieldType fieldType) {
         checkNotNull(fieldType);
         this.fieldType = fieldType;
         return this;
@@ -115,11 +107,6 @@ abstract class AbstractMethodBuilder<T extends MethodConstructor> {
     }
 
     @Nullable
-    TypeCache getTypeCache() {
-        return typeCache;
-    }
-
-    @Nullable
     FieldDescriptor getField() {
         return field;
     }
@@ -135,7 +122,6 @@ abstract class AbstractMethodBuilder<T extends MethodConstructor> {
     final void checkFields() {
         checkNotNull(javaClass);
         checkNotNull(javaPackage);
-        checkNotNull(typeCache);
         checkNotNull(field);
         checkNotNull(genericClassName);
         checkNotNull(fieldType);

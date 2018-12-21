@@ -28,9 +28,6 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
  * Enumeration of the Java primitives used for representing Proto scalar types.
- *
- * @author Dmytro Grankin
- * @author Alexander Yevsyukov
  */
 public enum PrimitiveType {
     INT(int.class, Integer.class),

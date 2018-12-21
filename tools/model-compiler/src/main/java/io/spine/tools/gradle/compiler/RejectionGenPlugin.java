@@ -39,10 +39,10 @@ import java.util.List;
 
 import static io.spine.tools.gradle.TaskName.COMPILE_JAVA;
 import static io.spine.tools.gradle.TaskName.COMPILE_TEST_JAVA;
-import static io.spine.tools.gradle.TaskName.GENERATE_PROTO;
 import static io.spine.tools.gradle.TaskName.GENERATE_REJECTIONS;
-import static io.spine.tools.gradle.TaskName.GENERATE_TEST_PROTO;
 import static io.spine.tools.gradle.TaskName.GENERATE_TEST_REJECTIONS;
+import static io.spine.tools.gradle.TaskName.MERGE_DESCRIPTOR_SET;
+import static io.spine.tools.gradle.TaskName.MERGE_TEST_DESCRIPTOR_SET;
 import static io.spine.tools.gradle.compiler.Extension.getIndent;
 import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSetPath;
 import static io.spine.tools.gradle.compiler.Extension.getTargetGenRejectionsRootDir;
@@ -72,32 +72,30 @@ public class RejectionGenPlugin extends SpinePlugin {
 
         Indent indent = getIndent(project);
         Action<Task> mainScopeAction = task -> {
-            String mainFile = getMainDescriptorSetPath(project);
+            File mainFile = new File(getMainDescriptorSetPath(project));
             String targetFolder = getTargetGenRejectionsRootDir(project);
 
             generateRejections(mainFile, targetFolder, indent);
         };
 
-        logDependingTask(GENERATE_REJECTIONS, COMPILE_JAVA, GENERATE_PROTO);
         GradleTask mainTask =
                 newTask(GENERATE_REJECTIONS, mainScopeAction)
-                        .insertAfterTask(GENERATE_PROTO)
+                        .insertAfterTask(MERGE_DESCRIPTOR_SET)
                         .insertBeforeTask(COMPILE_JAVA)
                         .applyNowTo(project);
 
         Action<Task> testScopeAction = task -> {
-            String mainFile = getMainDescriptorSetPath(project);
-            String testFile = getTestDescriptorSetPath(project);
+            File mainFile = new File(getMainDescriptorSetPath(project));
+            File testFile = new File(getTestDescriptorSetPath(project));
             String targetFolder = getTargetTestGenRejectionsRootDir(project);
 
             generateTestRejections(mainFile, testFile, targetFolder, indent);
         };
 
-        logDependingTask(GENERATE_TEST_REJECTIONS, COMPILE_TEST_JAVA, GENERATE_TEST_PROTO);
 
         GradleTask testTask =
                 newTask(GENERATE_TEST_REJECTIONS, testScopeAction)
-                        .insertAfterTask(GENERATE_TEST_PROTO)
+                        .insertAfterTask(MERGE_TEST_DESCRIPTOR_SET)
                         .insertBeforeTask(COMPILE_TEST_JAVA)
                         .applyNowTo(project);
 
@@ -107,16 +105,16 @@ public class RejectionGenPlugin extends SpinePlugin {
     /**
      * Verifies if the descriptor set file exists. If not writes about this into the debug log.
      */
-    private boolean fileExists(String descriptorSetFile) {
-        File setFile = new File(descriptorSetFile);
-        if (setFile.exists()) {
+    private boolean fileExists(File descriptorSetFile) {
+        if (descriptorSetFile.exists()) {
             return true;
         }
-        logMissingDescriptorSetFile(setFile);
+        logMissingDescriptorSetFile(descriptorSetFile);
         return false;
     }
 
-    private void generateRejections(String mainFile, String targetFolder, Indent indent) {
+    private void generateRejections(File mainFile, String targetFolder, Indent indent) {
+
         if (!fileExists(mainFile)) {
             return;
         }
@@ -128,8 +126,8 @@ public class RejectionGenPlugin extends SpinePlugin {
         doGenerate(rejectionFiles, targetFolder, indent);
     }
 
-    private void generateTestRejections(String mainFile,
-                                        String testFile,
+    private void generateTestRejections(File mainFile,
+                                        File testFile,
                                         String targetFolder,
                                         Indent indent) {
         if (!(fileExists(mainFile) && fileExists(testFile))) {

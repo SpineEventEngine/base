@@ -21,7 +21,7 @@
 package io.spine.sample.map.types;
 
 import com.google.common.base.Joiner;
-import io.spine.type.ClassName;
+import io.spine.code.java.ClassName;
 import io.spine.type.KnownTypes;
 import io.spine.type.TypeUrl;
 import org.junit.jupiter.api.BeforeEach;

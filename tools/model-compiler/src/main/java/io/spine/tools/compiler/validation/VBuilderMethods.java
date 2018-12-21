@@ -32,17 +32,20 @@ import javax.lang.model.element.Modifier;
 import java.util.Collection;
 import java.util.List;
 
-import static com.google.common.collect.Lists.newArrayList;
-
 /**
  * Serves as assembler for the generated methods based on the Protobuf message declaration.
  */
-class MethodAssembler {
+final class VBuilderMethods {
 
     private final MessageType type;
 
-    MethodAssembler(MessageType messageType) {
+    private VBuilderMethods(MessageType messageType) {
         this.type = messageType;
+    }
+
+    static ImmutableList<MethodSpec> methodsOf(MessageType type) {
+        VBuilderMethods methods = new VBuilderMethods(type);
+        return methods.all();
     }
 
     /**
@@ -50,17 +53,15 @@ class MethodAssembler {
      *
      * @return the generated methods
      */
-    Collection<MethodSpec> createMethods() {
-        List<MethodSpec> methods = newArrayList();
-
-        methods.add(createPrivateConstructor());
-        methods.add(createNewBuilderMethod());
-        methods.addAll(createFieldMethods());
-
-        return methods;
+    ImmutableList<MethodSpec> all() {
+        return ImmutableList.<MethodSpec>builder()
+                .add(privateConstructor())
+                .add(newBuilderMethod())
+                .addAll(fieldMethods())
+                .build();
     }
 
-    private static MethodSpec createPrivateConstructor() {
+    private static MethodSpec privateConstructor() {
         MethodSpec result = MethodSpec
                 .constructorBuilder()
                 .addModifiers(Modifier.PRIVATE)
@@ -68,29 +69,30 @@ class MethodAssembler {
         return result;
     }
 
-    private MethodSpec createNewBuilderMethod() {
-        ClassName validatingBuilderClass =
-                ClassNames.getClassName(
-                        type.javaPackage()
-                            .value(),
-                        type.getValidatingBuilderClass()
-                            .value());
+    private MethodSpec newBuilderMethod() {
+        ClassName vbClass = validatingBuilderClass();
         MethodSpec buildMethod = MethodSpec
                 .methodBuilder(Messages.METHOD_NEW_BUILDER)
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-                .returns(validatingBuilderClass)
-                .addStatement("return new $T()", validatingBuilderClass)
+                .returns(vbClass)
+                .addStatement("return new $T()", vbClass)
                 .build();
         return buildMethod;
     }
 
-    private List<MethodSpec> createFieldMethods() {
+    private ClassName validatingBuilderClass() {
+        return ClassName.get(type.javaPackage()
+                                 .value(), type.getValidatingBuilderClass()
+                                               .value());
+    }
+
+    private List<MethodSpec> fieldMethods() {
         Factory factory = new Factory();
         ImmutableList.Builder<MethodSpec> result = ImmutableList.builder();
         int index = 0;
         for (FieldDeclaration field : type.fields()) {
-            MethodConstructor method = factory.create(field, index);
-            Collection<MethodSpec> methods = method.construct();
+            MethodGroup method = factory.create(field, index);
+            Collection<MethodSpec> methods = method.generate();
             result.addAll(methods);
 
             ++index;
@@ -112,34 +114,36 @@ class MethodAssembler {
          * @param index the index of the field
          * @return the method constructor instance
          */
-        private MethodConstructor create(FieldDeclaration field, int index) {
-            return doCreate(builderFor(field), field, index);
+        private MethodGroup create(FieldDeclaration field, int index) {
+            FieldType fieldType = FieldType.create(field);
+            MethodGroup methodGroup =
+                    builderFor(field)
+                            .setField(field.descriptor())
+                            .setFieldType(fieldType)
+                            .setFieldIndex(index)
+                            // The name of the Validating Builder class.
+                            .setJavaClass(type.getValidatingBuilderClass()
+                                              .value())
+                            .setJavaPackage(type.javaPackage()
+                                                .value())
+                            .setGenericClassName(messageClass())
+                            .build();
+            return methodGroup;
         }
 
-        private AbstractMethodBuilder builderFor(FieldDeclaration field) {
+        private AbstractMethodGroupBuilder builderFor(FieldDeclaration field) {
             if (field.isMap()) {
-                return MapFieldMethod.newBuilder();
+                return MapFieldMethods.newBuilder();
             }
             if (field.isRepeated()) {
-                return RepeatedFieldMethod.newBuilder();
+                return RepeatedFieldMethods.newBuilder();
             }
-            return SingularFieldMethod.newBuilder();
+            return SingularFieldMethods.newBuilder();
         }
 
-        private MethodConstructor doCreate(AbstractMethodBuilder builder,
-                                           FieldDeclaration field,
-                                           int fieldIndex) {
-            FieldType fieldType = FieldType.create(field);
-            MethodConstructor methodConstructor =
-                    builder.setField(field.descriptor())
-                           .setFieldType(fieldType)
-                           .setFieldIndex(fieldIndex)
-                           .setJavaClass(type.javaClass().getName())
-                           .setJavaPackage(type.javaPackage().value())
-                           .setBuilderGenericClassName(ClassName.bestGuess(type.builderClass()
-                                                                               .value()))
-                           .build();
-            return methodConstructor;
+        private ClassName messageClass() {
+            return ClassName.bestGuess(type.javaClassName()
+                                           .value());
         }
     }
 }

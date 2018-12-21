@@ -32,7 +32,7 @@ import static io.spine.validate.Validate.checkNameNotEmptyOrBlank;
  *
  * @see io.spine.validate.AbstractValidatingBuilder#convert(String, Class)
  */
-class ConvertStatement {
+final class ConvertStatement {
 
     /** The name of the variable to convert. */
     private final String variableName;

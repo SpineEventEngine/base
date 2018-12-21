@@ -18,14 +18,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.type;
+package io.spine.code.java;
 
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.code.java.PackageName;
-import io.spine.code.java.SimpleClassName;
 import io.spine.value.StringTypeValue;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -34,6 +32,7 @@ import java.util.Deque;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Lists.newLinkedList;
+import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
  * A value object holding a fully-qualified Java class name.
@@ -47,6 +46,12 @@ public final class ClassName extends StringTypeValue {
      * Separates nested class name from the name of the outer class in a fully-qualified name.
      */
     public static final char OUTER_CLASS_DELIMITER = '$';
+
+    /**
+     * Separates class name from package, and outer class name with nested when such a class is
+     * referenced as a parameter.
+     */
+    private static final char DOT_SEPARATOR = '.';
 
     private ClassName(String value) {
         super(checkNotNull(value));
@@ -92,7 +97,7 @@ public final class ClassName extends StringTypeValue {
     public static ClassName of(PackageName packageName, SimpleClassName simpleClassName) {
         checkNotNull(packageName);
         checkNotNull(simpleClassName);
-        return new ClassName(packageName.value() + '.' + simpleClassName);
+        return new ClassName(packageName.value() + DOT_SEPARATOR + simpleClassName);
     }
 
     /**
@@ -140,14 +145,27 @@ public final class ClassName extends StringTypeValue {
     }
 
     /**
+     * Converts the name which may be a nested class name with {@link #OUTER_CLASS_DELIMITER}
+     * to the name separated with dots.
+     */
+    public ClassName toDotted() {
+        String withDots = toDotted(value());
+        return of(withDots);
+    }
+
+    static String toDotted(String outerDelimited) {
+        String result = outerDelimited.replace(OUTER_CLASS_DELIMITER, DOT_SEPARATOR);
+        return result;
+    }
+
+    /**
      * Generates new class name taking this name and appending the passed suffix.
      *
      * @param suffix non-empty suffix
      * @return new class name
      */
     public ClassName with(String suffix) {
-        checkNotNull(suffix);
-        checkArgument(!suffix.isEmpty(), "Suffix cannot be empty");
+        checkNotEmptyOrBlank(suffix);
         return of(value() + suffix);
     }
 
@@ -170,7 +188,7 @@ public final class ClassName extends StringTypeValue {
                              : javaPackage;
         String result = packageName.isEmpty()
                         ? ""
-                        : packageName + '.';
+                        : packageName + DOT_SEPARATOR;
         return result;
     }
 
@@ -198,5 +216,29 @@ public final class ClassName extends StringTypeValue {
                                               .value();
             return className + OUTER_CLASS_DELIMITER;
         }
+    }
+
+    /**
+     * Converts fully-qualified name to simple name. If the class is nested inside one or more
+     * classes, the most nested name will be returned.
+     */
+    public SimpleClassName toSimple() {
+        String fullName = toDotted().value();
+        String result = afterDot(fullName);
+        return SimpleClassName.create(result);
+    }
+
+    static String afterDot(String fullName) {
+        int lastDotIndex = fullName.lastIndexOf(DOT_SEPARATOR);
+        return fullName.substring(lastDotIndex + 1);
+    }
+
+    /**
+     * Converts a possibly nested class name into a nested name.
+     *
+     * <p>If the class is not nested, the returned value would be equivalent to a simple class name.
+     */
+    public NestedClassName toNested() {
+        return NestedClassName.create(this);
     }
 }

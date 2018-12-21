@@ -20,6 +20,7 @@
 
 package io.spine.tools.compiler.validation;
 
+import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.squareup.javapoet.ClassName;
@@ -38,13 +39,12 @@ import java.util.Collection;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.Lists.newArrayList;
-import static io.spine.tools.compiler.validation.MethodConstructors.clearPrefix;
-import static io.spine.tools.compiler.validation.MethodConstructors.clearProperty;
-import static io.spine.tools.compiler.validation.MethodConstructors.getMessageBuilder;
-import static io.spine.tools.compiler.validation.MethodConstructors.rawSuffix;
-import static io.spine.tools.compiler.validation.MethodConstructors.removePrefix;
-import static io.spine.tools.compiler.validation.MethodConstructors.returnThis;
+import static io.spine.tools.compiler.validation.Methods.clearPrefix;
+import static io.spine.tools.compiler.validation.Methods.clearProperty;
+import static io.spine.tools.compiler.validation.Methods.getMessageBuilder;
+import static io.spine.tools.compiler.validation.Methods.rawSuffix;
+import static io.spine.tools.compiler.validation.Methods.removePrefix;
+import static io.spine.tools.compiler.validation.Methods.returnThis;
 import static java.lang.String.format;
 
 /**
@@ -52,7 +52,7 @@ import static java.lang.String.format;
  *
  * <p>Constructs the {@code MethodSpec} objects for the repeated fields.
  */
-final class RepeatedFieldMethod extends AbstractMethod implements Logging {
+final class RepeatedFieldMethods extends AbstractMethodGroup implements Logging {
 
     @SuppressWarnings("DuplicateStringLiteralInspection")
     // It cannot be used as the constant across the project.
@@ -79,14 +79,20 @@ final class RepeatedFieldMethod extends AbstractMethod implements Logging {
     private final boolean isScalarOrEnum;
 
     /**
+     * Creates a new builder for the {@code RepeatedFieldMethodConstructor} class.
+     *
+     * @return created builder
+     */
+    static Builder newBuilder() {
+        return new Builder();
+    }
+
+    /**
      * Constructs the {@code RepeatedFieldMethodConstructor}.
      *
      * @param builder the {@code RepeatedFieldMethodConstructorBuilder} instance
      */
-    //@SuppressWarnings("ConstantConditions")
-    // The fields are checked in the {@code #build()} method
-    // of the {@code RepeatedFieldMethodsConstructorBuilder} class.
-    private RepeatedFieldMethod(RepeatedFieldMethodsBuilder builder) {
+    private RepeatedFieldMethods(Builder builder) {
         super(builder);
         this.fieldType = checkNotNull(builder.getFieldType());
         this.field = checkNotNull(builder.getField());
@@ -101,22 +107,18 @@ final class RepeatedFieldMethod extends AbstractMethod implements Logging {
     }
 
     @Override
-    public Collection<MethodSpec> construct() {
-        log().debug("The methods construction for the {} repeated field is started.",
-                    javaFieldName);
-
-        List<MethodSpec> methods = newArrayList();
-        methods.add(createGetter());
-        methods.addAll(createRepeatedMethods());
-        methods.addAll(createRepeatedRawMethods());
-
-        log().debug("The methods construction for the {} repeated field is finished.",
-                    javaFieldName);
-        return methods;
+    public Collection<MethodSpec> generate() {
+        _debug("The methods construction for the {} repeated field is started.", javaFieldName);
+        ImmutableList.Builder<MethodSpec> methods = methods()
+                .add(getter())
+                .addAll(repeatedMethods())
+                .addAll(repeatedRawMethods());
+        _debug("The methods construction for the {} repeated field is finished.", javaFieldName);
+        return methods.build();
     }
 
-    private MethodSpec createGetter() {
-        log().debug("The getter construction for the repeated field is started.");
+    private MethodSpec getter() {
+        _debug("The getter construction for the repeated field is started.");
 
         String methodName = "get" + methodNamePart;
         ClassName rawType = ClassName.get(List.class);
@@ -130,44 +132,41 @@ final class RepeatedFieldMethod extends AbstractMethod implements Logging {
                 .addStatement(returnStatement)
                 .build();
 
-        log().debug("The getter construction for the repeated field is finished.");
+        _debug("The getter construction for the repeated field is finished.");
         return methodSpec;
     }
 
-    private Collection<MethodSpec> createRepeatedRawMethods() {
-        log().debug("The raw methods construction for the repeated field is is started.");
-
-        List<MethodSpec> methods = newArrayList();
-        methods.add(createRawAddObjectMethod());
-        methods.add(createRawSetObjectByIndexMethod());
-        methods.add(createRawAddAllMethod());
-
+    private Collection<MethodSpec> repeatedRawMethods() {
+        _debug("The raw methods construction for the repeated field is is started.");
+        ImmutableList.Builder<MethodSpec> methods = methods()
+                .add(rawAddObjectMethod())
+                .add(rawSetObjectByIndexMethod())
+                .add(rawAddAllMethod());
         // Some methods are not available in Protobuf Message.Builder for scalar types.
         if (!isScalarOrEnum) {
             methods.add(createRawAddObjectByIndexMethod());
         }
 
-        log().debug("The raw methods construction for the repeated field is is finished.");
-        return methods;
+        _debug("The raw methods construction for the repeated field is is finished.");
+        return methods.build();
     }
 
-    private Collection<MethodSpec> createRepeatedMethods() {
-        List<MethodSpec> methods = newArrayList();
-
-        methods.add(createClearMethod());
-        methods.add(createAddObjectMethod());
-        methods.add(createSetObjectByIndexMethod());
-        methods.add(createAddAllMethod());
+    private Collection<MethodSpec> repeatedMethods() {
+        ImmutableList.Builder<MethodSpec> methods = methods()
+                .add(clearMethod())
+                .add(addObjectMethod())
+                .add(setObjectByIndexMethod())
+                .add(addAllMethod());
 
         // Some methods are not available in Protobuf Message.Builder for scalar types and enums.
         if (!isScalarOrEnum) {
-            methods.add(createAddObjectByIndexMethod());
-            methods.add(createRemoveObjectByIndexMethod());
+            methods.add(addObjectByIndexMethod())
+                   .add(removeObjectByIndexMethod());
         }
-        return methods;
+        return methods.build();
     }
 
-    private MethodSpec createRawAddObjectMethod() {
+    private MethodSpec rawAddObjectMethod() {
         String methodName = ADD_RAW_PREFIX + methodNamePart;
         String addValueStatement = getMessageBuilder() + '.'
                 + ADD_PREFIX + methodNamePart + "(convertedValue)";
@@ -190,7 +189,7 @@ final class RepeatedFieldMethod extends AbstractMethod implements Logging {
         return result;
     }
 
-    private MethodSpec createRawSetObjectByIndexMethod() {
+    private MethodSpec rawSetObjectByIndexMethod() {
         return modifyCollectionByIndexWithRaw(SET_RAW_PREFIX, SET_PREFIX);
     }
 
@@ -215,7 +214,7 @@ final class RepeatedFieldMethod extends AbstractMethod implements Logging {
         return result;
     }
 
-    private MethodSpec createRawAddAllMethod() {
+    private MethodSpec rawAddAllMethod() {
         String methodName = fieldType.getSetterPrefix() + rawSuffix() + methodNamePart;
         String addAllValues = getMessageBuilder()
                 + format(ADD_ALL_METHOD, methodNamePart, CONVERTED_VALUE);
@@ -235,11 +234,10 @@ final class RepeatedFieldMethod extends AbstractMethod implements Logging {
         return result;
     }
 
-    private MethodSpec createAddAllMethod() {
+    private MethodSpec addAllMethod() {
         String methodName = fieldType.getSetterPrefix() + methodNamePart;
         ClassName rawType = ClassName.get(List.class);
-        ParameterizedTypeName parameter = ParameterizedTypeName.get(rawType,
-                                                                    listElementClassName);
+        ParameterizedTypeName parameter = ParameterizedTypeName.get(rawType, listElementClassName);
         String fieldName = field.getName();
         String addAllValues = getMessageBuilder()
                 + format(ADD_ALL_METHOD, methodNamePart, VALUE);
@@ -254,14 +252,15 @@ final class RepeatedFieldMethod extends AbstractMethod implements Logging {
         return result;
     }
 
-    private MethodSpec createAddObjectMethod() {
+    private MethodSpec addObjectMethod() {
         String methodName = ADD_PREFIX + methodNamePart;
         String addValue = format("%s.%s%s(%s)",
                                  getMessageBuilder(), ADD_PREFIX, methodNamePart, VALUE);
+        String descriptorDeclaration = descriptorDeclaration();
         MethodSpec result = newBuilderSetter(methodName)
                 .addParameter(listElementClassName, VALUE)
                 .addException(ValidationException.class)
-                .addStatement(descriptorDeclaration())
+                .addStatement(descriptorDeclaration)
                 .addStatement(validateStatement(VALUE, javaFieldName))
                 .addStatement(addValue)
                 .addStatement(returnThis())
@@ -269,15 +268,15 @@ final class RepeatedFieldMethod extends AbstractMethod implements Logging {
         return result;
     }
 
-    private MethodSpec createAddObjectByIndexMethod() {
+    private MethodSpec addObjectByIndexMethod() {
         return modifyCollectionByIndex(ADD_PREFIX);
     }
 
-    private MethodSpec createSetObjectByIndexMethod() {
+    private MethodSpec setObjectByIndexMethod() {
         return modifyCollectionByIndex(SET_PREFIX);
     }
 
-    private MethodSpec createRemoveObjectByIndexMethod() {
+    private MethodSpec removeObjectByIndexMethod() {
         String methodName = removePrefix() + methodNamePart;
         String addValue = format("%s.%s%s(%s)", getMessageBuilder(),
                                  removePrefix(), methodNamePart, INDEX);
@@ -305,7 +304,7 @@ final class RepeatedFieldMethod extends AbstractMethod implements Logging {
         return result;
     }
 
-    private MethodSpec createClearMethod() {
+    private MethodSpec clearMethod() {
         String clearField = getMessageBuilder() + clearProperty(methodNamePart);
         String methodName = clearPrefix() + methodNamePart;
         MethodSpec result = newBuilderSetter(methodName)
@@ -321,24 +320,14 @@ final class RepeatedFieldMethod extends AbstractMethod implements Logging {
     }
 
     /**
-     * Creates a new builder for the {@code RepeatedFieldMethodConstructor} class.
-     *
-     * @return created builder
-     */
-    static RepeatedFieldMethodsBuilder newBuilder() {
-        return new RepeatedFieldMethodsBuilder();
-    }
-
-    /**
      * A builder for the {@code RepeatedFieldMethodConstructor} class.
      */
-    static class RepeatedFieldMethodsBuilder
-            extends AbstractMethodBuilder<RepeatedFieldMethod> {
+    static class Builder extends AbstractMethodGroupBuilder<RepeatedFieldMethods> {
 
         @Override
-        RepeatedFieldMethod build() {
+        RepeatedFieldMethods build() {
             checkFields();
-            return new RepeatedFieldMethod(this);
+            return new RepeatedFieldMethods(this);
         }
     }
 }

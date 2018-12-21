@@ -29,6 +29,7 @@ import io.spine.value.StringTypeValue;
 
 import java.util.Optional;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
@@ -46,6 +47,18 @@ public final class SimpleClassName extends StringTypeValue {
     }
 
     /**
+     * Creates a new instance.
+     *
+     * @param value cannot be null or empty, no other checking is performed
+     * @return new instance
+     */
+    static SimpleClassName create(String value) {
+        checkNotNull(value);
+        checkArgument(!value.isEmpty(), "Class name cannot be empty.");
+        return new SimpleClassName(value);
+    }
+
+    /**
      * Creates an instance with the outer class name for the types declared in the file specified
      * by the passed descriptor.
      *
@@ -59,7 +72,7 @@ public final class SimpleClassName extends StringTypeValue {
     public static SimpleClassName outerOf(FileDescriptorProto file) {
         checkNotNull(file);
         String value = getOuterClassName(file);
-        SimpleClassName result = new SimpleClassName(value);
+        SimpleClassName result = create(value);
         return result;
     }
 
@@ -128,7 +141,7 @@ public final class SimpleClassName extends StringTypeValue {
      */
     public static SimpleClassName messageOrBuilder(String typeName) {
         checkNotEmptyOrBlank(typeName);
-        SimpleClassName result = new SimpleClassName(typeName + OR_BUILDER_SUFFIX);
+        SimpleClassName result = create(typeName + OR_BUILDER_SUFFIX);
         return result;
     }
 
@@ -137,7 +150,7 @@ public final class SimpleClassName extends StringTypeValue {
      */
     public static SimpleClassName ofMessage(DescriptorProto descriptor) {
         checkNotNull(descriptor);
-        SimpleClassName result = new SimpleClassName(descriptor.getName());
+        SimpleClassName result = create(descriptor.getName());
         return result;
     }
 
@@ -152,7 +165,7 @@ public final class SimpleClassName extends StringTypeValue {
      * Obtains a Java class name for an enum type.
      */
     public static SimpleClassName ofEnum(EnumDescriptor descriptor) {
-        SimpleClassName result = new SimpleClassName(descriptor.getName());
+        SimpleClassName result = create(descriptor.getName());
         return result;
     }
 
@@ -162,5 +175,13 @@ public final class SimpleClassName extends StringTypeValue {
     public FileName toFileName() {
         FileName result = FileName.forType(value());
         return result;
+    }
+
+    /**
+     * Creates new instance with appended suffix.
+     */
+    public SimpleClassName with(String suffix) {
+        checkNotEmptyOrBlank(suffix);
+        return create(value() + suffix);
     }
 }
