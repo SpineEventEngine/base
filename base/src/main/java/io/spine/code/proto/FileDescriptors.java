@@ -19,6 +19,7 @@
  */
 package io.spine.code.proto;
 
+import com.google.common.collect.Lists;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
 import com.google.protobuf.Descriptors.FileDescriptor;
@@ -41,7 +42,6 @@ import java.util.function.Predicate;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Sets.newHashSet;
-import static com.google.common.collect.Streams.stream;
 import static io.spine.option.Options.registry;
 import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.util.stream.Collectors.toList;
@@ -136,12 +136,14 @@ public final class FileDescriptors {
      */
     static Set<FileDescriptorProto> load() {
         Iterator<URL> resources = ResourceFiles.loadAll(KNOWN_TYPES);
-        Set<FileDescriptorProto> files = stream(resources)
-                .map(FileDescriptors::loadFrom)
-                .flatMap(set -> set.getFileList()
-                                   .stream())
-                .filter(distinctBy(FileDescriptorProto::getName))
-                .collect(toSet());
+        List<URL> urls = Lists.newArrayList(resources);
+        Set<FileDescriptorProto> files =
+                urls.stream()
+                    .map(FileDescriptors::loadFrom)
+                    .flatMap(set -> set.getFileList()
+                                       .stream())
+                    .filter(distinctBy(FileDescriptorProto::getName))
+                    .collect(toSet());
         return files;
     }
 
