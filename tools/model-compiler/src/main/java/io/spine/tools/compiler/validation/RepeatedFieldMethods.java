@@ -165,8 +165,8 @@ final class RepeatedFieldMethods extends AbstractMethodGroup implements Logging 
 
         // Some methods are not available in Protobuf Message.Builder for scalar types and enums.
         if (!isScalarOrEnum) {
-            methods.add(createAddObjectByIndexMethod());
-            methods.add(createRemoveObjectByIndexMethod());
+            methods.add(addObjectByIndexMethod());
+            methods.add(removeObjectByIndexMethod());
         }
         return methods;
     }
@@ -274,7 +274,7 @@ final class RepeatedFieldMethods extends AbstractMethodGroup implements Logging 
         return result;
     }
 
-    private MethodSpec createAddObjectByIndexMethod() {
+    private MethodSpec addObjectByIndexMethod() {
         return modifyCollectionByIndex(ADD_PREFIX);
     }
 
@@ -282,7 +282,7 @@ final class RepeatedFieldMethods extends AbstractMethodGroup implements Logging 
         return modifyCollectionByIndex(SET_PREFIX);
     }
 
-    private MethodSpec createRemoveObjectByIndexMethod() {
+    private MethodSpec removeObjectByIndexMethod() {
         String methodName = removePrefix() + methodNamePart;
         String addValue = format("%s.%s%s(%s)", getMessageBuilder(),
                                  removePrefix(), methodNamePart, INDEX);

@@ -124,8 +124,7 @@ final class VBuilderCode implements Logging {
                     .build()
                     .writeTo(targetDir);
 
-            File createdFile = dir.resolve(FileName.forType(classToCreate.name)
-                                                   .value()).toFile();
+            File createdFile = resolve(javaPackage, classToCreate.name);
             _debug("The {} class created, written to file {}.", vbClass, createdFile);
             return createdFile;
 
@@ -134,5 +133,19 @@ final class VBuilderCode implements Logging {
             _warn(exMessage, e);
             throw newIllegalArgumentException(exMessage, e);
         }
+    }
+
+    /**
+     * Obtains the name of the generated file.
+     */
+    private File resolve(String javaPackage, String className) {
+        Path dir = targetDir.toPath();
+        if (!javaPackage.isEmpty()) {
+            for (String packageDir : javaPackage.split("\\.")) {
+                dir = dir.resolve(packageDir);
+            }
+        }
+        File result = dir.resolve(FileName.forType(className).value()).toFile();
+        return result;
     }
 }
