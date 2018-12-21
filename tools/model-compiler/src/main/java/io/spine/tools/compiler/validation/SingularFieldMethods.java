@@ -26,8 +26,8 @@ import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
+import com.squareup.javapoet.TypeName;
 import io.spine.base.ConversionException;
-import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.FieldName;
 import io.spine.logging.Logging;
 import io.spine.tools.compiler.field.type.FieldType;
@@ -57,7 +57,7 @@ class SingularFieldMethods extends AbstractMethodGroup implements Logging {
     private final String fieldName;
     private final String methodNamePart;
     private final FieldType fieldType;
-    private final ClassName fieldClassName;
+    private final TypeName fieldTypeName;
     private final FieldDescriptor field;
 
     /**
@@ -71,8 +71,7 @@ class SingularFieldMethods extends AbstractMethodGroup implements Logging {
         super(builder);
         this.fieldType = builder.getFieldType();
         this.field = builder.getField();
-        FieldDeclaration fdecl = new FieldDeclaration(field);
-        this.fieldClassName = ClassName.bestGuess(fdecl.javaTypeName());
+        this.fieldTypeName = fieldType.getTypeName();
         FieldName fieldName = FieldName.of(field.toProto());
         this.fieldName = fieldName.javaCase();
         this.methodNamePart = fieldName.toCamelCase();
@@ -95,7 +94,7 @@ class SingularFieldMethods extends AbstractMethodGroup implements Logging {
         ImmutableList.Builder<MethodSpec> methods = methods()
                 .add(setter());
 
-        if (!fieldClassName.equals(stringClassName())) {
+        if (!fieldTypeName.equals(stringClassName())) {
             methods.add(rawSetterMethod());
         }
 
@@ -131,7 +130,7 @@ class SingularFieldMethods extends AbstractMethodGroup implements Logging {
         @SuppressWarnings("DuplicateStringLiteralInspection") MethodSpec methodSpec =
                 MethodSpec.methodBuilder(methodName)
                           .addModifiers(Modifier.PUBLIC)
-                          .returns(fieldClassName)
+                          .returns(fieldTypeName)
                           .addStatement("return " + getMessageBuilder() + '.' + methodName + "()")
                           .build();
         _debug("The getter construction for the singular method is finished.");
@@ -158,7 +157,7 @@ class SingularFieldMethods extends AbstractMethodGroup implements Logging {
         String methodName = messageBuilderSetter + rawSuffix();
         ParameterSpec parameter = createParameterSpec(field.toProto(), true);
 
-        ConvertStatement convertStatement = ConvertStatement.of(fieldName, fieldClassName);
+        ConvertStatement convertStatement = ConvertStatement.of(fieldName, fieldTypeName);
         String convertedVariableName = convertStatement.convertedVariableName();
         String setStatement = format("%s.%s(%s)",
                                      getMessageBuilder(),
@@ -171,8 +170,7 @@ class SingularFieldMethods extends AbstractMethodGroup implements Logging {
                           .addException(ConversionException.class)
                           .addStatement(descriptorDeclaration())
                           .addStatement(convertStatement.value())
-                          .addStatement(validateStatement(convertedVariableName,
-                                                          field.getName()))
+                          .addStatement(validateStatement(convertedVariableName, field.getName()))
                           .addStatement(setStatement)
                           .addStatement(returnThis())
                           .build();
@@ -181,12 +179,12 @@ class SingularFieldMethods extends AbstractMethodGroup implements Logging {
     }
 
     private ParameterSpec createParameterSpec(FieldDescriptorProto field, boolean raw) {
-        ClassName methodParamClass = raw
+        TypeName methodParamType = raw
                                      ? stringClassName()
-                                     : fieldClassName;
+                                     : fieldTypeName;
         String paramName = FieldName.of(field)
                                     .javaCase();
-        ParameterSpec result = ParameterSpec.builder(methodParamClass, paramName)
+        ParameterSpec result = ParameterSpec.builder(methodParamType, paramName)
                                             .build();
         return result;
     }

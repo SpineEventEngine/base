@@ -23,8 +23,10 @@ package io.spine.tools.compiler.validation;
 import io.spine.code.Indent;
 import io.spine.code.proto.MessageType;
 import io.spine.test.tools.validation.builder.VbtProject;
+import io.spine.test.tools.validation.builder.VbtScalarFields;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junitpioneer.jupiter.TempDirectory;
@@ -45,10 +47,27 @@ class VBuilderCodeTest {
         targetDir = tempDirPath.toFile();
     }
 
-    @Test
-    void writeTopLevelMessage() {
-        MessageType type = MessageType.of(VbtProject.getDescriptor());
+    @Nested
+    @DisplayName("generate code for top-level message")
+    class TopLevel {
 
+        @Test
+        @DisplayName("with message fields")
+        void messageFields() {
+            MessageType type = MessageType.of(VbtProject.getDescriptor());
+            assertGeneratesFor(type);
+        }
+
+        @Test
+        @DisplayName("with scalar fields")
+        void scalarFields() {
+            MessageType type = MessageType.of(VbtScalarFields.getDescriptor());
+            assertGeneratesFor(type);
+        }
+
+    }
+
+    private void assertGeneratesFor(MessageType type) {
         VBuilderCode code = new VBuilderCode(targetDir, Indent.of4(), type);
         File file = code.write();
         assertTrue(file.exists());
