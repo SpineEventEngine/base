@@ -32,10 +32,7 @@ import java.util.Collection;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * Tests resolving of {@link com.google.protobuf.Descriptors.FileDescriptor FileDescriptor}s
- * using test resource file.
- *
- * <p>See {@code test/resources/main.desc}.
+ * Tests resolving of {@link com.google.protobuf.Descriptors.FileDescriptor FileDescriptor}s.
  */
 @DisplayName("Linker should")
 class LinkerTest {
@@ -51,7 +48,7 @@ class LinkerTest {
 
     @Test
     @DisplayName("resolve files")
-    void resolve_files() {
+    void resolveFiles() {
         FileSet resolved = linker.getResolved();
         assertTrue(resolved.size() > 0);
         assertTrue(resolved.containsAll(ImmutableList.of(
@@ -62,7 +59,7 @@ class LinkerTest {
 
     @Test
     @DisplayName("obtain partially resolved files")
-    void obtain_partial() {
+    void obtainPartial() {
         // No such in the given test data.
         assertTrue(linker.getPartiallyResolved()
                          .isEmpty());
@@ -70,7 +67,7 @@ class LinkerTest {
 
     @Test
     @DisplayName("obtain unresolved files")
-    void obtain_unresolved() {
+    void obtainUnresolved() {
         // No such in the given test data.
         assertTrue(linker.getUnresolved()
                          .isEmpty());
@@ -78,7 +75,7 @@ class LinkerTest {
 
     @Test
     @DisplayName("not leave remaining")
-    void do_not_leave_remaining() {
+    void doNotLeaveRemaining() {
         assertTrue(linker.getRemaining()
                          .isEmpty());
     }

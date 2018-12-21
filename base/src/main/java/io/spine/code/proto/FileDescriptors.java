@@ -134,7 +134,7 @@ public final class FileDescriptors {
      * @return the set of {@linkplain FileDescriptorProto file descriptors}
      *         contained in the loaded files
      */
-    public static Set<FileDescriptorProto> load() {
+    static Set<FileDescriptorProto> load() {
         Iterator<URL> resources = ResourceFiles.loadAll(KNOWN_TYPES);
         Set<FileDescriptorProto> files = stream(resources)
                 .map(FileDescriptors::loadFrom)
