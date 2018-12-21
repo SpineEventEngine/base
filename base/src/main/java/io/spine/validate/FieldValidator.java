@@ -176,7 +176,8 @@ abstract class FieldValidator<V> implements Logging {
                                                     .isExplicitlySet();
         if (requiredSetExplicitly && !requiredAllowed()) {
             log().warn("A field %s of type that can't be required was declared as" +
-                               "(required) = true", field().name());
+                               "(required) = true. See required option documentation in " +
+                               "the options.proto file.", field().name());
         }
     }
 
