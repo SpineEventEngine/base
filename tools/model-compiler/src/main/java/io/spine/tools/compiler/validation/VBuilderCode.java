@@ -38,75 +38,73 @@ import java.nio.file.Files;
 import java.util.Collection;
 
 import static io.spine.tools.compiler.annotation.Annotations.generatedBySpineModelCompiler;
+import static io.spine.tools.compiler.validation.VBuilderMethods.methodsOf;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 
 /**
  * Generates source code for a Java class with Validating Builder for a message type.
  */
-class VBuilderWriter implements Logging {
+final class VBuilderCode implements Logging {
 
     private final File rootDirectory;
     private final Indent indent;
+    private final MessageType type;
+    private final SimpleClassName vbClass;
 
-    VBuilderWriter(String targetDir, Indent indent) {
+    private final TypeSpec.Builder classBuilder;
+    private final String javaPackage;
+
+    VBuilderCode(String targetDir, Indent indent, MessageType type) {
         this.rootDirectory = new File(targetDir);
         this.indent = indent;
+        this.type = type;
+        this.vbClass = type.getValidatingBuilderClass();
+        this.classBuilder = TypeSpec.classBuilder(vbClass.value());
+        this.javaPackage = type.javaPackage()
+                               .value();
     }
 
     /**
      * Writes the generated validating builders to Java file.
      */
-    void write(MessageType type) {
-        String validatingBuilderClass = type.getValidatingBuilderClass()
-                                            .value();
+    void write() {
+        _debug("Creating spec. for class: {}", vbClass);
 
-        log().debug("Creating spec. for class: {}", validatingBuilderClass);
-
-        String javaPackage = type.javaPackage()
-                                 .value();
-        ClassName messageClass =
-                ClassName.get(javaPackage, type.javaClassName()
-                                               .toNested()
-                                               .value());
-        ClassName messageBuilderClassName =
-                messageClass.nestedClass(SimpleClassName.ofBuilder()
-                                                        .value());
-        Collection<MethodSpec> methods = collectMethods(type);
-        TypeSpec.Builder classBuilder = TypeSpec.classBuilder(validatingBuilderClass);
-        TypeSpec javaClassSpec =
-                defineClass(classBuilder, messageClass, messageBuilderClassName, methods)
-                        .addAnnotation(generatedBySpineModelCompiler())
-                        .build();
-
-        log().debug("Writing the {} class", validatingBuilderClass);
+        TypeSpec javaClassSpec = defineClass()
+                .addAnnotation(generatedBySpineModelCompiler())
+                .build();
 
         writeClass(javaPackage, javaClassSpec);
-
-        log().debug("The {} class created.", validatingBuilderClass);
     }
 
-    private static Collection<MethodSpec> collectMethods(MessageType type) {
-        MethodAssembler methodsAssembler = new MethodAssembler(type);
-        return methodsAssembler.createMethods();
-    }
-
-    private static TypeSpec.Builder defineClass(TypeSpec.Builder typeBuilder,
-                                                ClassName messageClass,
-                                                ClassName messageBuilderClass,
-                                                Iterable<MethodSpec> methodSpecs) {
-        ClassName abstractClassName = ClassName.get(AbstractValidatingBuilder.class);
+    private TypeSpec.Builder defineClass() {
+        ClassName baseClass = ClassName.get(AbstractValidatingBuilder.class);
+        ClassName messageClass = messageClass();
+        ClassName messageBuilderClass = builderClass();
+        Collection<MethodSpec> methods = methodsOf(type);
 
         ParameterizedTypeName superClass =
-                ParameterizedTypeName.get(abstractClassName,
-                                          messageClass,
-                                          messageBuilderClass);
-        typeBuilder.addModifiers(Modifier.PUBLIC, Modifier.FINAL)
-                   .superclass(superClass)
-                   .addMethods(methodSpecs);
-        return typeBuilder;
+                ParameterizedTypeName.get(baseClass, messageClass, messageBuilderClass);
+
+        classBuilder.addModifiers(Modifier.PUBLIC, Modifier.FINAL)
+                    .superclass(superClass)
+                    .addMethods(methods);
+        return classBuilder;
+    }
+
+    private ClassName messageClass() {
+        return ClassName.get(javaPackage, type.javaClassName()
+                                              .toNested()
+                                              .value());
+    }
+
+    private ClassName builderClass() {
+        return messageClass().nestedClass(SimpleClassName.ofBuilder()
+                                                         .value());
     }
 
     private void writeClass(String javaPackage, TypeSpec classToCreate) {
+        _debug("Writing the {} class", vbClass);
         try {
             Files.createDirectories(rootDirectory.toPath());
             JavaFile.builder(javaPackage, classToCreate)
@@ -119,5 +117,6 @@ class VBuilderWriter implements Logging {
             log().warn(exMessage, e);
             throw newIllegalArgumentException(exMessage, e);
         }
+        _debug("The {} class created.", vbClass);
     }
 }

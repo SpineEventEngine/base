@@ -26,8 +26,8 @@ option java_package = "io.spine.tools.test.vbgen.command";
 option java_outer_classname = "CommandsProto";
 option java_multiple_files = true;
 
-import "validators-gen-plugin-test/src/main/proto/identifiers.proto";
-import "validators-gen-plugin-test/src/main/proto/changes.proto";
+import "identifiers.proto";
+import "changes.proto";
 
 message CreateBasicTask {
 

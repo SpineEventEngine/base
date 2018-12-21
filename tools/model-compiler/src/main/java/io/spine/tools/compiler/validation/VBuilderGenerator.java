@@ -77,12 +77,11 @@ public class VBuilderGenerator implements Logging {
     }
 
     private void generate(ImmutableCollection<MessageType> messages) {
-        VBuilderWriter writer =
-                new VBuilderWriter(targetDirPath, indent);
 
         for (MessageType messageType : messages) {
             try {
-                writer.write(messageType);
+                VBuilderCode code = new VBuilderCode(targetDirPath, indent, messageType);
+                code.write();
             } catch (RuntimeException e) {
                 logError(messageType, e);
             }

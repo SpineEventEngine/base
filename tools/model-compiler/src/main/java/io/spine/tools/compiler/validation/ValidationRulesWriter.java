@@ -68,13 +68,23 @@ public final class ValidationRulesWriter implements Logging {
 
     private void findRulesAndWriteProperties() {
         _debug("Validation rules lookup started through {}.", files);
-        List<MessageType> declarations = files.findMessageTypes(new IsValidationRule());
-        _debug("Found declarations: {}", declarations.size());
+        List<MessageType> declarations = findRules();
         writeProperties(declarations);
         _debug("Validation rules written to directory: {}", targetDir);
     }
 
+    private List<MessageType> findRules() {
+        List<MessageType> declarations = files.findMessageTypes(new IsValidationRule());
+        _debug("Found declarations: {}", declarations.size());
+        return declarations;
+    }
+
     private void writeProperties(List<MessageType> ruleDeclarations) {
+        Map<String, String> propsMap = toMap(ruleDeclarations);
+        writeToFile(propsMap);
+    }
+
+    private static Map<String, String> toMap(List<MessageType> ruleDeclarations) {
         Map<String, String> propsMap = newHashMap();
         for (MessageType declaration : ruleDeclarations) {
             TypeName typeName = declaration.name();
@@ -85,7 +95,10 @@ public final class ValidationRulesWriter implements Logging {
                            );
             propsMap.put(typeName.value(), ruleTargets);
         }
+        return propsMap;
+    }
 
+    private void writeToFile(Map<String, String> propsMap) {
         String fileName = ValidationRules.fileName();
         log().debug("Writing the validation rules description to {}/{}.",
                     targetDir, fileName);
