@@ -92,7 +92,7 @@ public class VBuilderGenerator implements Logging {
     private void logError(MessageType type, RuntimeException e) {
         Logger log = log();
         String message =
-                format("Cannot generate a validating builder for %s.%n" +
+                format("Cannot generate a validating builder for `%s`.%n" +
                                "Error: %s", type, e.toString());
         // If debug level is enabled give it under this lever, otherwise WARN.
         if (log.isDebugEnabled()) {
