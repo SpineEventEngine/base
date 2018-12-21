@@ -27,9 +27,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static io.spine.js.generate.given.Generators.assertContains;
-import static io.spine.js.generate.parse.FromJsonMethod.FROM_OBJECT;
-import static io.spine.js.generate.parse.FromJsonMethod.FROM_OBJECT_ARG;
 import static io.spine.js.generate.field.FieldGenerator.FIELD_VALUE;
 import static io.spine.js.generate.field.MapFieldGenerator.ATTRIBUTE;
 import static io.spine.js.generate.field.MapFieldGenerator.MAP_KEY;
@@ -37,6 +34,9 @@ import static io.spine.js.generate.field.RepeatedFieldGenerator.LIST_ITEM;
 import static io.spine.js.generate.field.given.Given.mapField;
 import static io.spine.js.generate.field.given.Given.repeatedField;
 import static io.spine.js.generate.field.given.Given.singularField;
+import static io.spine.js.generate.given.Generators.assertContains;
+import static io.spine.js.generate.type.FromJsonMethod.FROM_OBJECT;
+import static io.spine.js.generate.type.FromJsonMethod.FROM_OBJECT_ARG;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SuppressWarnings("DuplicateStringLiteralInspection")

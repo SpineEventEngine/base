@@ -19,12 +19,11 @@
  */
 
 /**
- * The package contains classes, which generate the code
- * for parsing of JavaScript objects from JSON.
+ * The classes which generate Javascript code working with known Protobuf types.
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault
-package io.spine.js.generate.parse;
+package io.spine.js.generate.type;
 
 import javax.annotation.CheckReturnValue;
 import javax.annotation.ParametersAreNonnullByDefault;

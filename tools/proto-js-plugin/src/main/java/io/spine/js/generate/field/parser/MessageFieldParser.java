@@ -27,7 +27,7 @@ import io.spine.js.generate.CodeLines;
 import io.spine.js.generate.statement.VariableDeclaration;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.js.generate.parse.FromJsonMethod.FROM_OBJECT;
+import static io.spine.js.generate.type.FromJsonMethod.FROM_OBJECT;
 
 /**
  * The value parser for the proto fields of {@code message} type.

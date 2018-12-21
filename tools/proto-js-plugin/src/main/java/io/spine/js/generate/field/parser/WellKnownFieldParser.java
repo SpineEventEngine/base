@@ -23,12 +23,12 @@ package io.spine.js.generate.field.parser;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.js.generate.CodeLines;
-import io.spine.js.generate.parse.WellKnownTypeParsers;
 import io.spine.js.generate.statement.VariableDeclaration;
+import io.spine.js.generate.type.WellKnownTypeParsers;
 import io.spine.type.TypeUrl;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.js.generate.parse.TypeParsingSnippet.PARSERS_IMPORT_NAME;
+import static io.spine.js.generate.type.TypeParsingSnippet.PARSERS_IMPORT_NAME;
 import static java.lang.String.format;
 
 /**

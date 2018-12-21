@@ -28,13 +28,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static io.spine.js.generate.given.Generators.assertContains;
-import static io.spine.js.generate.parse.FromJsonMethod.FROM_OBJECT;
 import static io.spine.js.generate.field.given.Given.enumField;
 import static io.spine.js.generate.field.given.Given.messageField;
 import static io.spine.js.generate.field.given.Given.primitiveField;
 import static io.spine.js.generate.field.given.Given.timestampField;
 import static io.spine.js.generate.field.parser.FieldParsers.parserFor;
+import static io.spine.js.generate.given.Generators.assertContains;
+import static io.spine.js.generate.type.FromJsonMethod.FROM_OBJECT;
 
 @SuppressWarnings("DuplicateStringLiteralInspection")
 // Generated code duplication needed to check main class.

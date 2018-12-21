@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate.parse;
+package io.spine.js.generate.type;
 
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Any;

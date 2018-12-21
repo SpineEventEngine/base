@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate.parse;
+package io.spine.js.generate.type;
 
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Any;
@@ -40,9 +40,9 @@ import java.util.List;
 import static io.spine.code.js.LibraryFile.KNOWN_TYPES;
 import static io.spine.code.js.LibraryFile.KNOWN_TYPE_PARSERS;
 import static io.spine.js.generate.given.FileWriters.assertFileContains;
-import static io.spine.js.generate.parse.FromJsonMethod.FROM_JSON;
-import static io.spine.js.generate.parse.KnownTypeParsers.createFor;
-import static io.spine.js.generate.parse.KnownTypeParsers.shouldSkip;
+import static io.spine.js.generate.type.FromJsonMethod.FROM_JSON;
+import static io.spine.js.generate.type.KnownTypeParsers.createFor;
+import static io.spine.js.generate.type.KnownTypeParsers.shouldSkip;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static java.nio.file.Files.exists;
 import static org.junit.jupiter.api.Assertions.assertFalse;
