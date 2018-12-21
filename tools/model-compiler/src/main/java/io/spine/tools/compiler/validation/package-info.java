@@ -19,9 +19,14 @@
  */
 
 /**
- * Classes for generating code in relation to validation rules specified in a domain model.
- *
- * @author Alexander Yevsyukov
+ * This package provides classes and interfaces for:
+ * 
+ * <ul>
+ *     <li>Generating code of Validating Builders.
+ *     See {@link io.spine.tools.compiler.validation.VBuilderGenerator}.
+ *     <li>Collecting external validation constraints into a resource file.
+ *     See {@link io.spine.tools.compiler.validation.ValidationRulesWriter}.
+ * </ul>
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault
