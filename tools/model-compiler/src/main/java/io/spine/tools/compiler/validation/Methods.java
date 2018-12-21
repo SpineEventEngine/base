@@ -25,46 +25,30 @@ import static com.google.common.base.Preconditions.checkState;
 import static java.lang.String.format;
 
 /**
- * Utility class for working with {@code MethodConstructor}s.
+ * Utility class for working with method code generation.
  */
-final class MethodConstructors {
+final class Methods {
 
     /** Prevents instantiation of this utility class. */
-    private MethodConstructors() {
+    private Methods() {
     }
 
-    /**
-     * Returns the suffix for the `raw` methods of the `ValidatingBuilder` classes.
-     *
-     * @return the {@code String} which represents the raw suffix
-     */
+    /** Returns the suffix for the `raw` methods of the `ValidatingBuilder` classes. */
     static String rawSuffix() {
         return "Raw";
     }
 
-    /**
-     * Returns the prefix for the `clear` methods of the `ValidatingBuilder` classes.
-     *
-     * @return the {@code String} which represents the prefix for the `clear` methods
-     */
+    /** Returns the prefix for the `clear` methods of the `ValidatingBuilder` classes. */
     static String clearPrefix() {
         return "clear";
     }
 
-    /**
-     * Returns the prefix for the `remove` methods of the `ValidatingBuilder` classes.
-     *
-     * @return the {@code String} which represents the prefix for the `remove` methods
-     */
+    /** Returns the prefix for the `remove` methods of the `ValidatingBuilder` classes. */
     static String removePrefix() {
         return "remove";
     }
 
-    /**
-     * Returns the `return` statement for the methods of the `ValidatingBuilder` classes.
-     *
-     * @return the {@code String} which represents the `return` statement
-     */
+    /** Returns the `return` statement for the methods of the `ValidatingBuilder` classes.*/
     @SuppressWarnings("DuplicateStringLiteralInspection") // different semantics of gen'ed code.
     static String returnThis() {
         return "return this";
@@ -84,11 +68,7 @@ final class MethodConstructors {
         return format(".clear%s()", propertyName);
     }
 
-    /**
-     * Returns the getter code fragment of the predefined {@code Message.Builder}.
-     *
-     * @return the {@code String} which represents the pointer
-     */
+    /** Returns the getter code fragment of the predefined {@code Message.Builder}. */
     static String getMessageBuilder() {
         return "getMessageBuilder()";
     }

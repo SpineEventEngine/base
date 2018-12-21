@@ -86,7 +86,7 @@ public class VBuilderGenerator implements Logging {
                 logError(messageType, e);
             }
         }
-        log().debug("Validating builder generation is finished.");
+        _debug("Validating builder generation is finished.");
     }
 
     private void logError(MessageType type, RuntimeException e) {

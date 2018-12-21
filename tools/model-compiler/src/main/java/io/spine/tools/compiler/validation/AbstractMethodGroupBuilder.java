@@ -32,7 +32,7 @@ import static com.google.common.base.Preconditions.checkState;
 /**
  * An abstract base for the method constructor builders.
  */
-abstract class AbstractMethodBuilder<T extends MethodConstructor> {
+abstract class AbstractMethodGroupBuilder<T extends MethodGroup> {
 
     private int fieldIndex;
     private String javaClass;
@@ -51,37 +51,37 @@ abstract class AbstractMethodBuilder<T extends MethodConstructor> {
      */
     abstract T build();
 
-    AbstractMethodBuilder setFieldIndex(int fieldIndex) {
+    AbstractMethodGroupBuilder setFieldIndex(int fieldIndex) {
         checkArgument(fieldIndex >= 0);
         this.fieldIndex = fieldIndex;
         return this;
     }
 
-    AbstractMethodBuilder setJavaPackage(String javaPackage) {
+    AbstractMethodGroupBuilder setJavaPackage(String javaPackage) {
         checkNotNull(javaPackage);
         this.javaPackage = javaPackage;
         return this;
     }
 
-    AbstractMethodBuilder setJavaClass(String javaClass) {
+    AbstractMethodGroupBuilder setJavaClass(String javaClass) {
         checkNotNull(javaClass);
         this.javaClass = javaClass;
         return this;
     }
 
-    AbstractMethodBuilder setField(FieldDescriptor field) {
+    AbstractMethodGroupBuilder setField(FieldDescriptor field) {
         checkNotNull(field);
         this.field = field;
         return this;
     }
 
-    AbstractMethodBuilder setBuilderGenericClassName(ClassName genericClassName) {
+    AbstractMethodGroupBuilder setBuilderGenericClassName(ClassName genericClassName) {
         checkNotNull(genericClassName);
         this.genericClassName = genericClassName;
         return this;
     }
 
-    AbstractMethodBuilder setFieldType(FieldType fieldType) {
+    AbstractMethodGroupBuilder setFieldType(FieldType fieldType) {
         checkNotNull(fieldType);
         this.fieldType = fieldType;
         return this;

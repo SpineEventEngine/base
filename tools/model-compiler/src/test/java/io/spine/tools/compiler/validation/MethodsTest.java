@@ -20,26 +20,21 @@
 
 package io.spine.tools.compiler.validation;
 
-import com.squareup.javapoet.MethodSpec;
+import com.google.common.testing.NullPointerTester;
+import io.spine.testing.UtilityClassTest;
+import org.junit.jupiter.api.DisplayName;
 
-import java.util.Collection;
+@DisplayName("MethodConstructors utility class should")
+class MethodsTest extends UtilityClassTest<Methods> {
 
-/**
- * An interface for all {@code MethodSpec} constructors.
- *
- * <p>As the validating builders are generated dynamically
- * according to the Protobuf message declaration
- * the <a href = "https://github.com/square/javapoet">JavaPoet</a> library
- * is used to reduce the complexity of the Java code generation.
- * And JavaPoet provides the {@code MethodSpec} class for helping
- * in the Java fields generation.
- */
-interface MethodConstructor {
+    MethodsTest() {
+        super(Methods.class);
+    }
 
-    /**
-     * Constructs the methods for the validators.
-     *
-     * @return the constructed methods
-     */
-    Collection<MethodSpec> construct();
+    @Override
+    protected void configure(NullPointerTester tester) {
+        super.configure(tester);
+        tester.testStaticMethods(Methods.class,
+                                 NullPointerTester.Visibility.PACKAGE);
+    }
 }

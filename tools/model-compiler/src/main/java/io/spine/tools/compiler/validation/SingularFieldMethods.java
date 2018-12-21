@@ -38,11 +38,11 @@ import java.util.Collection;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static io.spine.tools.compiler.validation.MethodConstructors.clearPrefix;
-import static io.spine.tools.compiler.validation.MethodConstructors.clearProperty;
-import static io.spine.tools.compiler.validation.MethodConstructors.getMessageBuilder;
-import static io.spine.tools.compiler.validation.MethodConstructors.rawSuffix;
-import static io.spine.tools.compiler.validation.MethodConstructors.returnThis;
+import static io.spine.tools.compiler.validation.Methods.clearPrefix;
+import static io.spine.tools.compiler.validation.Methods.clearProperty;
+import static io.spine.tools.compiler.validation.Methods.getMessageBuilder;
+import static io.spine.tools.compiler.validation.Methods.rawSuffix;
+import static io.spine.tools.compiler.validation.Methods.returnThis;
 import static java.lang.String.format;
 
 /**
@@ -51,7 +51,7 @@ import static java.lang.String.format;
  *
  * <p>Constructs the {@code MethodSpec} objects for the singular fields.
  */
-class SingularFieldMethod extends AbstractMethod implements Logging {
+class SingularFieldMethods extends AbstractMethodGroup implements Logging {
 
     private static final String GETTER_PREFIX = "get";
     private static final ClassName STRING_CLASS_NAME = ClassName.get(String.class);
@@ -65,11 +65,11 @@ class SingularFieldMethod extends AbstractMethod implements Logging {
     /**
      * Constructs the instance by the passed builder.
      *
-     * <p>The passed builder {@linkplain io.spine.tools.compiler.validation.SingularFieldMethod.Builder#checkFields() ensures}
+     * <p>The passed builder {@linkplain SingularFieldMethods.Builder#checkFields() ensures}
      * non-null values of its fields prior to calling this constructor.
      */
     @SuppressWarnings("ConstantConditions") // See Javadoc above.
-    private SingularFieldMethod(Builder builder) {
+    private SingularFieldMethods(Builder builder) {
         super(builder);
         this.fieldType = builder.getFieldType();
         this.field = builder.getField();
@@ -113,7 +113,7 @@ class SingularFieldMethod extends AbstractMethod implements Logging {
     }
 
     private MethodSpec constructSetter() {
-        log().debug("The setters construction for the singular field is started.");
+        _debug("The setters construction for the singular field is started.");
         String methodName = fieldType.getSetterPrefix() + methodNamePart;
         ParameterSpec parameter = createParameterSpec(field.toProto(), false);
 
@@ -127,12 +127,12 @@ class SingularFieldMethod extends AbstractMethod implements Logging {
                           .addStatement(setStatement)
                           .addStatement(returnThis())
                           .build();
-        log().debug("The setters construction for the singular field is finished.");
+        _debug("The setters construction for the singular field is finished.");
         return methodSpec;
     }
 
     private MethodSpec constructGetter() {
-        log().debug("The getter construction for the singular field is started.");
+        _debug("The getter construction for the singular field is started.");
         String methodName = GETTER_PREFIX + methodNamePart;
 
         @SuppressWarnings("DuplicateStringLiteralInspection") MethodSpec methodSpec =
@@ -141,12 +141,12 @@ class SingularFieldMethod extends AbstractMethod implements Logging {
                           .returns(fieldClassName)
                           .addStatement("return " + getMessageBuilder() + '.' + methodName + "()")
                           .build();
-        log().debug("The getter construction for the singular method is finished.");
+        _debug("The getter construction for the singular method is finished.");
         return methodSpec;
     }
 
     private MethodSpec constructClearMethods() {
-        log().debug("The 'clear..()' method construction for the singular field is started.");
+        _debug("The 'clear..()' method construction for the singular field is started.");
         String methodBody = getMessageBuilder() + clearProperty(methodNamePart);
 
         String methodName = clearPrefix() + methodNamePart;
@@ -155,12 +155,12 @@ class SingularFieldMethod extends AbstractMethod implements Logging {
                           .addStatement(methodBody)
                           .addStatement(returnThis())
                           .build();
-        log().debug("The 'clear..()' method construction for the singular method is finished.");
+        _debug("The 'clear..()' method construction for the singular method is finished.");
         return methodSpec;
     }
 
     private MethodSpec constructRawSetter() {
-        log().debug("The raw setters construction is started.");
+        _debug("The raw setters construction is started.");
         String messageBuilderSetter = fieldType.getSetterPrefix() + methodNamePart;
         String methodName = messageBuilderSetter + rawSuffix();
         ParameterSpec parameter = createParameterSpec(field.toProto(), true);
@@ -183,7 +183,7 @@ class SingularFieldMethod extends AbstractMethod implements Logging {
                           .addStatement(setStatement)
                           .addStatement(returnThis())
                           .build();
-        log().debug("The raw setters construction is finished.");
+        _debug("The raw setters construction is finished.");
         return methodSpec;
     }
 
@@ -210,12 +210,12 @@ class SingularFieldMethod extends AbstractMethod implements Logging {
     /**
      * A builder class for the {@code SingularFieldMethodConstructor} class.
      */
-    static class Builder extends AbstractMethodBuilder<SingularFieldMethod> {
+    static class Builder extends AbstractMethodGroupBuilder<SingularFieldMethods> {
 
         @Override
-        SingularFieldMethod build() {
+        SingularFieldMethods build() {
             checkFields();
-            return new SingularFieldMethod(this);
+            return new SingularFieldMethods(this);
         }
     }
 }

@@ -100,7 +100,7 @@ public final class ValidationRulesWriter implements Logging {
 
     private void writeToFile(Map<String, String> propsMap) {
         String fileName = ValidationRules.fileName();
-        log().debug("Writing the validation rules description to {}/{}.",
+        _debug("Writing the validation rules description to {}/{}.",
                     targetDir, fileName);
         PropertiesWriter writer = new PropertiesWriter(targetDir.getAbsolutePath(), fileName);
         writer.write(propsMap);

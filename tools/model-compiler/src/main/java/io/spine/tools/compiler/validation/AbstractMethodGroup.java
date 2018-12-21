@@ -33,7 +33,7 @@ import static io.spine.tools.compiler.annotation.Annotations.canIgnoreReturnValu
 /**
  * An abstract base for method constructors.
  */
-abstract class AbstractMethod implements MethodConstructor {
+abstract class AbstractMethodGroup implements MethodGroup {
 
     /** The name of the {@code FieldDescriptor} variable. */
     private static final String FIELD_DESCRIPTOR_NAME = "fieldDescriptor";
@@ -44,7 +44,7 @@ abstract class AbstractMethod implements MethodConstructor {
     private final ClassName messageClass;
     private final ClassName builderClass;
 
-    AbstractMethod(AbstractMethodBuilder builder) {
+    AbstractMethodGroup(AbstractMethodGroupBuilder builder) {
         this.fieldIndex = builder.getFieldIndex();
         this.messageClass = builder.getGenericClassName();
         String javaPackage = checkNotNull(builder.getJavaPackage());

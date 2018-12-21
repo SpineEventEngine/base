@@ -91,7 +91,7 @@ final class VBuilderMethods {
         ImmutableList.Builder<MethodSpec> result = ImmutableList.builder();
         int index = 0;
         for (FieldDeclaration field : type.fields()) {
-            MethodConstructor method = factory.create(field, index);
+            MethodGroup method = factory.create(field, index);
             Collection<MethodSpec> methods = method.construct();
             result.addAll(methods);
 
@@ -114,9 +114,9 @@ final class VBuilderMethods {
          * @param index the index of the field
          * @return the method constructor instance
          */
-        private MethodConstructor create(FieldDeclaration field, int index) {
+        private MethodGroup create(FieldDeclaration field, int index) {
             FieldType fieldType = FieldType.create(field);
-            MethodConstructor methodConstructor =
+            MethodGroup methodGroup =
                     builderFor(field)
                             .setField(field.descriptor())
                             .setFieldType(fieldType)
@@ -127,17 +127,17 @@ final class VBuilderMethods {
                                                 .value())
                             .setBuilderGenericClassName(builderClass())
                             .build();
-            return methodConstructor;
+            return methodGroup;
         }
 
-        private AbstractMethodBuilder builderFor(FieldDeclaration field) {
+        private AbstractMethodGroupBuilder builderFor(FieldDeclaration field) {
             if (field.isMap()) {
-                return MapFieldMethod.newBuilder();
+                return MapFieldMethods.newBuilder();
             }
             if (field.isRepeated()) {
-                return RepeatedFieldMethod.newBuilder();
+                return RepeatedFieldMethods.newBuilder();
             }
-            return SingularFieldMethod.newBuilder();
+            return SingularFieldMethods.newBuilder();
         }
 
         private ClassName builderClass() {

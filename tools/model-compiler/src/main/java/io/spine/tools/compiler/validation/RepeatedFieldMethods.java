@@ -39,12 +39,12 @@ import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Lists.newArrayList;
-import static io.spine.tools.compiler.validation.MethodConstructors.clearPrefix;
-import static io.spine.tools.compiler.validation.MethodConstructors.clearProperty;
-import static io.spine.tools.compiler.validation.MethodConstructors.getMessageBuilder;
-import static io.spine.tools.compiler.validation.MethodConstructors.rawSuffix;
-import static io.spine.tools.compiler.validation.MethodConstructors.removePrefix;
-import static io.spine.tools.compiler.validation.MethodConstructors.returnThis;
+import static io.spine.tools.compiler.validation.Methods.clearPrefix;
+import static io.spine.tools.compiler.validation.Methods.clearProperty;
+import static io.spine.tools.compiler.validation.Methods.getMessageBuilder;
+import static io.spine.tools.compiler.validation.Methods.rawSuffix;
+import static io.spine.tools.compiler.validation.Methods.removePrefix;
+import static io.spine.tools.compiler.validation.Methods.returnThis;
 import static java.lang.String.format;
 
 /**
@@ -52,7 +52,7 @@ import static java.lang.String.format;
  *
  * <p>Constructs the {@code MethodSpec} objects for the repeated fields.
  */
-final class RepeatedFieldMethod extends AbstractMethod implements Logging {
+final class RepeatedFieldMethods extends AbstractMethodGroup implements Logging {
 
     @SuppressWarnings("DuplicateStringLiteralInspection")
     // It cannot be used as the constant across the project.
@@ -92,7 +92,7 @@ final class RepeatedFieldMethod extends AbstractMethod implements Logging {
      *
      * @param builder the {@code RepeatedFieldMethodConstructorBuilder} instance
      */
-    private RepeatedFieldMethod(Builder builder) {
+    private RepeatedFieldMethods(Builder builder) {
         super(builder);
         this.fieldType = checkNotNull(builder.getFieldType());
         this.field = checkNotNull(builder.getField());
@@ -329,12 +329,12 @@ final class RepeatedFieldMethod extends AbstractMethod implements Logging {
     /**
      * A builder for the {@code RepeatedFieldMethodConstructor} class.
      */
-    static class Builder extends AbstractMethodBuilder<RepeatedFieldMethod> {
+    static class Builder extends AbstractMethodGroupBuilder<RepeatedFieldMethods> {
 
         @Override
-        RepeatedFieldMethod build() {
+        RepeatedFieldMethods build() {
             checkFields();
-            return new RepeatedFieldMethod(this);
+            return new RepeatedFieldMethods(this);
         }
     }
 }
