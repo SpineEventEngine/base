@@ -32,33 +32,33 @@ import java.nio.file.Path;
 
 import static com.google.common.io.Files.createTempDir;
 import static io.spine.code.js.FileName.of;
-import static io.spine.js.generate.JsFile.createFor;
+import static io.spine.js.generate.FileWriter.createFor;
 import static io.spine.js.generate.given.FileWriters.assertFileContains;
 import static io.spine.js.generate.given.FileWriters.assertFileNotContains;
 
-@DisplayName("JsFile should")
-class JsFileTest {
+@DisplayName("FileWriter should")
+class FileWriterTest {
 
     private static final FileName TASKS_JS = of("tasks.js");
     private static final String CREATE_TASK_1 = "createTask1();";
     private static final String CREATE_TASK_2 = "createTask2();";
 
-    private JsFile file;
+    private FileWriter writer;
     private Path filePath;
 
     @BeforeEach
     void setUp() {
         File tempDir = createTempDir();
         Directory directory = Directory.at(tempDir.toPath());
-        file = createFor(directory, TASKS_JS);
+        writer = createFor(directory, TASKS_JS);
         filePath = directory.resolve(TASKS_JS);
     }
 
     @Test
-    @DisplayName("write `JsOutput` to new file")
+    @DisplayName("write code lines to new file")
     void writeToFile() throws IOException {
         CodeLines testLine1 = generateCode(CREATE_TASK_1);
-        file.write(testLine1);
+        writer.write(testLine1);
         assertFileContains(filePath, CREATE_TASK_1);
     }
 
@@ -66,23 +66,23 @@ class JsFileTest {
     @DisplayName("overwrite existing file")
     void overwriteExisting() throws IOException {
         CodeLines line1 = generateCode(CREATE_TASK_1);
-        file.write(line1);
+        writer.write(line1);
 
         CodeLines line2 = generateCode(CREATE_TASK_2);
-        file.write(line2);
+        writer.write(line2);
 
         assertFileNotContains(filePath, CREATE_TASK_1);
         assertFileContains(filePath, CREATE_TASK_2);
     }
 
     @Test
-    @DisplayName("append `JsOutput` to existing file")
+    @DisplayName("append code lines to existing file")
     void appendToFile() throws IOException {
         CodeLines line1 = generateCode(CREATE_TASK_1);
-        file.write(line1);
+        writer.write(line1);
 
         CodeLines line2 = generateCode(CREATE_TASK_2);
-        file.append(line2);
+        writer.append(line2);
 
         assertFileContains(filePath, CREATE_TASK_1);
         assertFileContains(filePath, CREATE_TASK_2);

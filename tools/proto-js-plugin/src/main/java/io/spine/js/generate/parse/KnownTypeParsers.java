@@ -25,7 +25,7 @@ import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.js.Directory;
 import io.spine.code.proto.FileSet;
 import io.spine.js.generate.FileSetEnhancement;
-import io.spine.js.generate.JsFile;
+import io.spine.js.generate.FileWriter;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -93,8 +93,8 @@ public final class KnownTypeParsers extends FileSetEnhancement {
     @VisibleForTesting
     void writeKnownTypes() {
         KnownTypesMap generator = new KnownTypesMap(fileSet());
-        JsFile file = JsFile.createFor(generatedRoot(), KNOWN_TYPES);
-        file.write(generator.value());
+        FileWriter writer = FileWriter.createFor(generatedRoot(), KNOWN_TYPES);
+        writer.write(generator.value());
     }
 
     /**
@@ -109,8 +109,8 @@ public final class KnownTypeParsers extends FileSetEnhancement {
     void writeKnownTypeParsers() {
         copyParsersCode();
         WellKnownTypeParsers generator = new WellKnownTypeParsers();
-        JsFile file = JsFile.createFor(generatedRoot(), KNOWN_TYPE_PARSERS);
-        file.append(generator.value());
+        FileWriter writer = FileWriter.createFor(generatedRoot(), KNOWN_TYPE_PARSERS);
+        writer.append(generator.value());
     }
 
     /**
@@ -148,8 +148,8 @@ public final class KnownTypeParsers extends FileSetEnhancement {
             return;
         }
         TypeParsingSnippet typeParsingSnippet = new TypeParsingSnippet(file);
-        JsFile jsFile = JsFile.createFor(generatedRoot(), file);
-        jsFile.append(typeParsingSnippet.value());
+        FileWriter writer = FileWriter.createFor(generatedRoot(), file);
+        writer.append(typeParsingSnippet.value());
     }
 
     /**

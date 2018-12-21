@@ -27,7 +27,7 @@ import io.spine.code.proto.Type;
 import io.spine.code.proto.TypeSet;
 import io.spine.js.generate.CodeLine;
 import io.spine.js.generate.CodeLines;
-import io.spine.js.generate.JsFile;
+import io.spine.js.generate.FileWriter;
 import io.spine.js.generate.JsType;
 import io.spine.js.generate.Snippet;
 import io.spine.js.generate.statement.Method;
@@ -72,9 +72,9 @@ final class TypeUrlMethods implements Snippet {
      * Appends the snippet to the file.
      */
     void appendToFile() {
-        CodeLines output = value();
-        JsFile jsFile = JsFile.createFor(generatedRoot, file);
-        jsFile.append(output);
+        CodeLines lines = value();
+        FileWriter writer = FileWriter.createFor(generatedRoot, file);
+        writer.append(lines);
     }
 
     @VisibleForTesting

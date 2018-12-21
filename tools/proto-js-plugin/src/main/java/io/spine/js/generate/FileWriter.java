@@ -38,35 +38,33 @@ import static java.nio.file.StandardOpenOption.CREATE;
 import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 
 /**
- * An editable JavaScript file.
+ * A writer of Javascript code into a file.
  *
  * <p>The class wraps all {@link IOException}s which occur during its operations in the
  * {@link IllegalStateException}.
  */
-@SuppressWarnings("WeakerAccess")
-// The class belongs to the public API of the package although now usage is only package-local.
-public final class JsFile {
+public final class FileWriter {
 
     /**
-     * The path to the file represented by the instance.
+     * The path of the file to write into.
      */
     private final Path path;
 
-    private JsFile(Path path) {
+    private FileWriter(Path path) {
         this.path = path;
     }
 
     @VisibleForTesting
-    static JsFile createFor(Directory directory, FileName fileName) {
+    static FileWriter createFor(Directory directory, FileName fileName) {
         Path filePath = directory.resolve(fileName);
-        return new JsFile(filePath);
+        return new FileWriter(filePath);
     }
 
     /**
      * Creates a new instance which will operate on the specified library file located in
      * the specified directory.
      */
-    public static JsFile createFor(Directory directory, LibraryFile libraryFile) {
+    public static FileWriter createFor(Directory directory, LibraryFile libraryFile) {
         return createFor(directory, libraryFile.fileName());
     }
 
@@ -74,7 +72,7 @@ public final class JsFile {
      * Creates a new instance which will operate on the file pointed by the file descriptor
      * and located in the specified directory.
      */
-    public static JsFile createFor(Directory directory, FileDescriptor file) {
+    public static FileWriter createFor(Directory directory, FileDescriptor file) {
         FileName fileName = FileName.from(file);
         return createFor(directory, fileName);
     }
@@ -112,7 +110,8 @@ public final class JsFile {
     public void append(CodeLines jsOutput) {
         checkNotNull(jsOutput);
         try {
-            Files.write(path, ImmutableList.of(jsOutput.toString()), Charsets.UTF_8, APPEND);
+            ImmutableList<String> linesToAppend = ImmutableList.of(jsOutput.toString());
+            Files.write(path, linesToAppend, Charsets.UTF_8, APPEND);
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
