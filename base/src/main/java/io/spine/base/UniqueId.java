@@ -41,7 +41,7 @@ import static io.spine.base.UuidMessage.isUuidMessage;
  *
  *         message ProjectId {
  *             // UUID-based generated value.
- *             string uuid = 1 [(required) = true];
+ *             string uuid = 1;
  *         }
  *     }
  * </pre>
