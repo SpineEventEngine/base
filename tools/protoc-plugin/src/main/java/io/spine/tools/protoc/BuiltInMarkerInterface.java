@@ -119,6 +119,14 @@ public class BuiltInMarkerInterface implements MarkerInterface {
             this.interfaceParams = MarkerInterfaceParameters.of(interfaceParams);
         }
 
+        /**
+         * Checks if a given message declaration matches the contract of this interface.
+         *
+         * @param declaration
+         *         the declaration to check
+         * @return {@code true} if a message declaration matches the interface contract,
+         *         {@code false} otherwise
+         */
         public boolean matches(MessageDeclaration declaration) {
             return predicate.test(declaration);
         }
