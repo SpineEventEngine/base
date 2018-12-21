@@ -27,15 +27,11 @@ import io.spine.io.ResourceFiles;
 import io.spine.logging.Logging;
 import org.slf4j.Logger;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URL;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -46,10 +42,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Sets.newHashSet;
 import static com.google.common.collect.Streams.stream;
-import static com.google.common.io.Files.createParentDirs;
 import static io.spine.option.Options.registry;
-import static io.spine.util.Exceptions.illegalArgumentWithCauseOf;
-import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
@@ -153,30 +146,6 @@ public final class FileDescriptors {
     }
 
     /**
-     * Merges the contents of the given files into a single descriptor set.
-     *
-     * <p>This method assumes that all the given files exist and contain instances of
-     * {@link FileDescriptorSet} Protobuf message.
-     *
-     * @param files
-     *         the file to merge
-     * @return the {@link MergedDescriptorSet}
-     */
-    public static MergedDescriptorSet merge(Collection<File> files) {
-        FileDescriptorSet merged = files
-                .stream()
-                .map(FileDescriptors::parse)
-                .flatMap(Collection::stream)
-                .distinct()
-                .reduce(FileDescriptorSet.newBuilder(),
-                        FileDescriptorSet.Builder::addFile,
-                        (right, left) -> right.addAllFile(left.getFileList()))
-                .build();
-        MergedDescriptorSet result = new MergedDescriptorSet(merged);
-        return result;
-    }
-
-    /**
      * Retrieves a {@link Predicate} on a given type {@code T}.
      *
      * <p>The predicate is satisfied (returns {@code true}) iff the result of applying the given
@@ -215,47 +184,6 @@ public final class FileDescriptors {
                     "Unable to load file descriptor set from %s.",
                     file
             );
-        }
-    }
-
-    /**
-     * A view on a {@link FileDescriptorSet} after merging.
-     */
-    public static final class MergedDescriptorSet {
-
-        private final FileDescriptorSet descriptorSet;
-
-        private MergedDescriptorSet(FileDescriptorSet descriptorSet) {
-            this.descriptorSet = descriptorSet;
-        }
-
-        /**
-         * Writes this descriptor set into the given file.
-         *
-         * <p>If the file exists, it will be overridden. Otherwise, the file (and all its parent
-         * directories if necessary) will be created.
-         *
-         * @param destination
-         *         the file to write this descriptor set into
-         */
-        public void writeTo(File destination) {
-            checkNotNull(destination);
-            prepareFile(destination);
-            try (OutputStream out = new BufferedOutputStream(new FileOutputStream(destination))) {
-                descriptorSet.writeTo(out);
-            } catch (IOException e) {
-                throw illegalStateWithCauseOf(e);
-            }
-        }
-
-        private static void prepareFile(File destination) {
-            try {
-                destination.delete();
-                createParentDirs(destination);
-                destination.createNewFile();
-            } catch (IOException e) {
-                throw illegalArgumentWithCauseOf(e);
-            }
         }
     }
 
