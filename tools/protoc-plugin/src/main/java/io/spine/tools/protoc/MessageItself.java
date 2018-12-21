@@ -25,7 +25,7 @@ import com.google.protobuf.DescriptorProtos.DescriptorProto;
 /**
  * The marker interface parameter whose value is the implementing {@code Message} itself.
  *
- * <p>For example, for {@code ProjectId} class, the value of the parameter will be:
+ * <p>For example, for the {@code ProjectId} class, the value of the parameter will be:
  * {@code ProjectId}.
  */
 final class MessageItself implements MarkerInterfaceParameter {
