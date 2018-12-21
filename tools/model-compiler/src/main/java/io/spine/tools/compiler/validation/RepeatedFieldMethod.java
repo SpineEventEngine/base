@@ -99,7 +99,7 @@ final class RepeatedFieldMethod extends AbstractMethod implements Logging {
 
     @Override
     public Collection<MethodSpec> construct() {
-        log().debug("The methods construction for the {} repeated field is started.",
+        _debug("The methods construction for the {} repeated field is started.",
                     javaFieldName);
 
         List<MethodSpec> methods = newArrayList();
@@ -107,13 +107,13 @@ final class RepeatedFieldMethod extends AbstractMethod implements Logging {
         methods.addAll(createRepeatedMethods());
         methods.addAll(createRepeatedRawMethods());
 
-        log().debug("The methods construction for the {} repeated field is finished.",
+        _debug("The methods construction for the {} repeated field is finished.",
                     javaFieldName);
         return methods;
     }
 
     private MethodSpec createGetter() {
-        log().debug("The getter construction for the repeated field is started.");
+        _debug("The getter construction for the repeated field is started.");
 
         String methodName = "get" + methodNamePart;
         ClassName rawType = ClassName.get(List.class);
@@ -127,12 +127,12 @@ final class RepeatedFieldMethod extends AbstractMethod implements Logging {
                 .addStatement(returnStatement)
                 .build();
 
-        log().debug("The getter construction for the repeated field is finished.");
+        _debug("The getter construction for the repeated field is finished.");
         return methodSpec;
     }
 
     private Collection<MethodSpec> createRepeatedRawMethods() {
-        log().debug("The raw methods construction for the repeated field is is started.");
+        _debug("The raw methods construction for the repeated field is is started.");
 
         List<MethodSpec> methods = newArrayList();
         methods.add(createRawAddObjectMethod());
@@ -144,7 +144,7 @@ final class RepeatedFieldMethod extends AbstractMethod implements Logging {
             methods.add(createRawAddObjectByIndexMethod());
         }
 
-        log().debug("The raw methods construction for the repeated field is is finished.");
+        _debug("The raw methods construction for the repeated field is is finished.");
         return methods;
     }
 
