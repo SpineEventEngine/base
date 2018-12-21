@@ -21,7 +21,7 @@
 package io.spine.js.generate.field.parser.primitive;
 
 import com.google.common.annotations.VisibleForTesting;
-import io.spine.js.generate.importado.JsImportGenerator;
+import io.spine.js.generate.snippet.JsImportGenerator;
 import io.spine.js.generate.snippet.VariableDeclaration;
 
 import static com.google.common.base.Preconditions.checkNotNull;

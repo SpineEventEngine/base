@@ -30,7 +30,7 @@ import io.spine.js.generate.CodeLine;
 import io.spine.js.generate.CodeLines;
 import io.spine.js.generate.RawLine;
 import io.spine.js.generate.Snippet;
-import io.spine.js.generate.importado.JsImportGenerator;
+import io.spine.js.generate.snippet.JsImportGenerator;
 import io.spine.type.TypeUrl;
 
 import java.util.Collection;
