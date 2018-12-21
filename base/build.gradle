@@ -36,6 +36,10 @@ dependencies {
     //noinspection GroovyAssignabilityCheck
     protobuf deps.build.protobuf
 
+    // Since we use `@CanIgnoreReturnValue` when annotating Validating Builders
+    // ErrorProne Annotations is part of our API. 
+    api deps.build.errorProneAnnotations
+    
     testImplementation project(path: ":testlib")
 }
 
