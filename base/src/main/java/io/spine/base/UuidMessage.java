@@ -101,7 +101,7 @@ class UuidMessage<I extends Message> {
         FieldDescriptorProto theField = message.getFieldList()
                                                .get(0);
         boolean nameMatches = theField.getName()
-                                   .equals(FIELD_NAME);
+                                      .equals(FIELD_NAME);
         boolean typeMatches = theField.getType() == TYPE_STRING;
         return nameMatches && typeMatches;
     }
