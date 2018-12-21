@@ -107,19 +107,19 @@ final class RepeatedFieldMethods extends AbstractMethodGroup implements Logging 
     }
 
     @Override
-    public Collection<MethodSpec> construct() {
+    public Collection<MethodSpec> generate() {
         _debug("The methods construction for the {} repeated field is started.", javaFieldName);
 
         List<MethodSpec> methods = newArrayList();
-        methods.add(createGetter());
-        methods.addAll(createRepeatedMethods());
-        methods.addAll(createRepeatedRawMethods());
+        methods.add(getter());
+        methods.addAll(repeatedMethods());
+        methods.addAll(repeatedRawMethods());
 
         _debug("The methods construction for the {} repeated field is finished.", javaFieldName);
         return methods;
     }
 
-    private MethodSpec createGetter() {
+    private MethodSpec getter() {
         _debug("The getter construction for the repeated field is started.");
 
         String methodName = "get" + methodNamePart;
@@ -138,7 +138,7 @@ final class RepeatedFieldMethods extends AbstractMethodGroup implements Logging 
         return methodSpec;
     }
 
-    private Collection<MethodSpec> createRepeatedRawMethods() {
+    private Collection<MethodSpec> repeatedRawMethods() {
         _debug("The raw methods construction for the repeated field is is started.");
 
         List<MethodSpec> methods = newArrayList();
@@ -155,13 +155,13 @@ final class RepeatedFieldMethods extends AbstractMethodGroup implements Logging 
         return methods;
     }
 
-    private Collection<MethodSpec> createRepeatedMethods() {
+    private Collection<MethodSpec> repeatedMethods() {
         List<MethodSpec> methods = newArrayList();
 
-        methods.add(createClearMethod());
-        methods.add(createAddObjectMethod());
-        methods.add(createSetObjectByIndexMethod());
-        methods.add(createAddAllMethod());
+        methods.add(clearMethod());
+        methods.add(addObjectMethod());
+        methods.add(setObjectByIndexMethod());
+        methods.add(addAllMethod());
 
         // Some methods are not available in Protobuf Message.Builder for scalar types and enums.
         if (!isScalarOrEnum) {
@@ -239,7 +239,7 @@ final class RepeatedFieldMethods extends AbstractMethodGroup implements Logging 
         return result;
     }
 
-    private MethodSpec createAddAllMethod() {
+    private MethodSpec addAllMethod() {
         String methodName = fieldType.getSetterPrefix() + methodNamePart;
         ClassName rawType = ClassName.get(List.class);
         ParameterizedTypeName parameter = ParameterizedTypeName.get(rawType,
@@ -258,14 +258,15 @@ final class RepeatedFieldMethods extends AbstractMethodGroup implements Logging 
         return result;
     }
 
-    private MethodSpec createAddObjectMethod() {
+    private MethodSpec addObjectMethod() {
         String methodName = ADD_PREFIX + methodNamePart;
         String addValue = format("%s.%s%s(%s)",
                                  getMessageBuilder(), ADD_PREFIX, methodNamePart, VALUE);
+        String descriptorDeclaration = descriptorDeclaration();
         MethodSpec result = newBuilderSetter(methodName)
                 .addParameter(listElementClassName, VALUE)
                 .addException(ValidationException.class)
-                .addStatement(descriptorDeclaration())
+                .addStatement(descriptorDeclaration)
                 .addStatement(validateStatement(VALUE, javaFieldName))
                 .addStatement(addValue)
                 .addStatement(returnThis())
@@ -277,7 +278,7 @@ final class RepeatedFieldMethods extends AbstractMethodGroup implements Logging 
         return modifyCollectionByIndex(ADD_PREFIX);
     }
 
-    private MethodSpec createSetObjectByIndexMethod() {
+    private MethodSpec setObjectByIndexMethod() {
         return modifyCollectionByIndex(SET_PREFIX);
     }
 
@@ -309,7 +310,7 @@ final class RepeatedFieldMethods extends AbstractMethodGroup implements Logging 
         return result;
     }
 
-    private MethodSpec createClearMethod() {
+    private MethodSpec clearMethod() {
         String clearField = getMessageBuilder() + clearProperty(methodNamePart);
         String methodName = clearPrefix() + methodNamePart;
         MethodSpec result = newBuilderSetter(methodName)

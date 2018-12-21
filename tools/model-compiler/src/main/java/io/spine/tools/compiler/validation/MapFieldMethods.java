@@ -90,7 +90,7 @@ class MapFieldMethods extends AbstractMethodGroup implements Logging {
     }
 
     @Override
-    public Collection<MethodSpec> construct() {
+    public Collection<MethodSpec> generate() {
         _debug("The methods construction for the map field {} is started.", javaFieldName);
         List<MethodSpec> methods = newArrayList();
         methods.add(createGetter());

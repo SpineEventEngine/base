@@ -92,7 +92,7 @@ final class VBuilderMethods {
         int index = 0;
         for (FieldDeclaration field : type.fields()) {
             MethodGroup method = factory.create(field, index);
-            Collection<MethodSpec> methods = method.construct();
+            Collection<MethodSpec> methods = method.generate();
             result.addAll(methods);
 
             ++index;
@@ -125,7 +125,7 @@ final class VBuilderMethods {
                                               .getName())
                             .setJavaPackage(type.javaPackage()
                                                 .value())
-                            .setBuilderGenericClassName(builderClass())
+                            .setGenericClassName(messageClass())
                             .build();
             return methodGroup;
         }
@@ -140,8 +140,8 @@ final class VBuilderMethods {
             return SingularFieldMethods.newBuilder();
         }
 
-        private ClassName builderClass() {
-            return ClassName.bestGuess(type.builderClass()
+        private ClassName messageClass() {
+            return ClassName.bestGuess(type.javaClassName()
                                            .value());
         }
     }

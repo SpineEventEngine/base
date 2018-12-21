@@ -60,10 +60,11 @@ abstract class AbstractMethodGroup implements MethodGroup {
      *         FieldDescriptor fieldDescriptor = Msg.getDescriptor().getFields().get(fieldIndex)}
      */
     final String descriptorDeclaration() {
+        CodeBlock getField = getFieldByIndex();
         CodeBlock codeBlock =
                 CodeBlock.builder()
                          .add("$T $N = ", FieldDescriptor.class, FIELD_DESCRIPTOR_NAME)
-                         .add(getFieldDescriptor())
+                         .add(getField)
                          .build();
         return codeBlock.toString();
     }
@@ -84,9 +85,8 @@ abstract class AbstractMethodGroup implements MethodGroup {
     }
 
     /** Return the code block, which obtains the {@linkplain #fieldIndex field}. */
-    private CodeBlock getFieldDescriptor() {
-        return CodeBlock.of("$T.getDescriptor().getFields().get($L)",
-                            messageClass, fieldIndex);
+    private CodeBlock getFieldByIndex() {
+        return CodeBlock.of("$T.getDescriptor().getFields().get($L)", messageClass, fieldIndex);
     }
 
     /** Returns the class name of the validating builder. */

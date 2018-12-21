@@ -32,5 +32,5 @@ interface MethodGroup {
     /**
      * Creates specs for the methods of the group.
      */
-    Collection<MethodSpec> construct();
+    Collection<MethodSpec> generate();
 }

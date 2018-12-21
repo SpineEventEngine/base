@@ -90,7 +90,7 @@ class SingularFieldMethods extends AbstractMethodGroup implements Logging {
     }
 
     @Override
-    public Collection<MethodSpec> construct() {
+    public Collection<MethodSpec> generate() {
         Logger log = log();
         // The variable is used for tracing only.
         String javaFieldName = log.isTraceEnabled()

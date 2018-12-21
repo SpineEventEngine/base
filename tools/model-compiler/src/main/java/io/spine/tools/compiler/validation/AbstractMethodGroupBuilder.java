@@ -75,7 +75,7 @@ abstract class AbstractMethodGroupBuilder<T extends MethodGroup> {
         return this;
     }
 
-    AbstractMethodGroupBuilder setBuilderGenericClassName(ClassName genericClassName) {
+    AbstractMethodGroupBuilder setGenericClassName(ClassName genericClassName) {
         checkNotNull(genericClassName);
         this.genericClassName = genericClassName;
         return this;
