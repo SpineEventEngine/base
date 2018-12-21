@@ -57,10 +57,10 @@ protobuf {
 
 sourceSets {
     main {
-        resources.srcDirs "$buildDir/descriptors/main"
+        resources.srcDirs += "$buildDir/descriptors/main"
     }
     test {
-        resources.srcDirs "$buildDir/descriptors/test"
+        resources.srcDirs += "$buildDir/descriptors/test"
     }
 }
 
