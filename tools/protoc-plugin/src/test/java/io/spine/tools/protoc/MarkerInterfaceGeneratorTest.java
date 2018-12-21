@@ -267,7 +267,8 @@ class MarkerInterfaceGeneratorTest {
             assertTrue(file.hasInsertionPoint());
             assertTrue(file.hasName());
 
-            assertEquals(UniqueId.class.getName() + ',', file.getContent());
+            String genericParam = '<' + ProjectId.class.getSimpleName() + '>';
+            assertEquals(UniqueId.class.getName() + genericParam + ',', file.getContent());
         }
     }
 

@@ -32,8 +32,6 @@ import static java.lang.String.format;
 /**
  * A {@link io.spine.tools.protoc.CompilerOutput CompilerOutput} item, which alters a generated
  * message class to implement a given marker interface.
- *
- * @author Dmytro Dashenkov
  */
 final class InsertionPoint extends AbstractCompilerOutput {
 
@@ -61,8 +59,10 @@ final class InsertionPoint extends AbstractCompilerOutput {
         File.Builder file = prepareFile(containingFile, message);
         String messageFqn = containingFile.getPackage() + delimiter() + message.getName();
         String insertionPoint = format(INSERTION_POINT_IMPLEMENTS, messageFqn);
+        String fullInterfaceName =
+                markerInterface.name() + initGenericParams(markerInterface, message) + ',';
         File result = file.setInsertionPoint(insertionPoint)
-                          .setContent(markerInterface.name() + ',')
+                          .setContent(fullInterfaceName)
                           .build();
         return new InsertionPoint(result);
     }
@@ -75,5 +75,12 @@ final class InsertionPoint extends AbstractCompilerOutput {
         File.Builder srcFile = File.newBuilder()
                                    .setName(uriStyleName);
         return srcFile;
+    }
+
+    private static String initGenericParams(MarkerInterface markerInterface,
+                                            DescriptorProto message) {
+        MarkerInterfaceParameters parameters = markerInterface.parameters();
+        String result = parameters.getAsStringFor(message);
+        return result;
     }
 }

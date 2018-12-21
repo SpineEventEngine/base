@@ -32,8 +32,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * <p>This interface is declared with an {@link io.spine.option.OptionsProto#is (is)} or
  * an {@link io.spine.option.OptionsProto#everyIs (every_is)} option. See the option doc for
  * details.
- *
- * @author Dmytro Dashenkov
  */
 final class UserMarkerInterface extends AbstractCompilerOutput implements MarkerInterface {
 
@@ -67,5 +65,13 @@ final class UserMarkerInterface extends AbstractCompilerOutput implements Marker
     @Override
     public String name() {
         return interfaceFqn;
+    }
+
+    /**
+     * Generic params are currently not supported for user-defined marker interfaces.
+     */
+    @Override
+    public MarkerInterfaceParameters parameters() {
+        return MarkerInterfaceParameters.empty();
     }
 }

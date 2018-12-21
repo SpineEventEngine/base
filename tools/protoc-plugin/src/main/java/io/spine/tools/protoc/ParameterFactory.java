@@ -21,19 +21,15 @@
 package io.spine.tools.protoc;
 
 /**
- * A marker interface extending {@link com.google.protobuf.Message}.
- *
- * @author Dmytro Dashenkov
+ * A convenience class for creating {@link MarkerInterfaceParameter} instances.
  */
-public interface MarkerInterface {
+final class ParameterFactory {
 
-    /**
-     * Obtains a fully-qualified name of the interface.
-     */
-    String name();
+    /** Prevents instantiation of this class. */
+    private ParameterFactory() {
+    }
 
-    /**
-     * Obtains the generic params of the interface.
-     */
-    MarkerInterfaceParameters parameters();
+    static MarkerInterfaceParameter messageItself() {
+        return new MessageItself();
+    }
 }

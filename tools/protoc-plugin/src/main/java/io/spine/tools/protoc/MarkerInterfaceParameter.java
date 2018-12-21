@@ -20,20 +20,21 @@
 
 package io.spine.tools.protoc;
 
+import com.google.protobuf.DescriptorProtos.DescriptorProto;
+
 /**
- * A marker interface extending {@link com.google.protobuf.Message}.
+ * The generic parameter of the {@link MarkerInterface}.
  *
- * @author Dmytro Dashenkov
+ * <p>Parameter value is presented as a {@code String} for usage in the generated code.
  */
-public interface MarkerInterface {
+interface MarkerInterfaceParameter {
 
     /**
-     * Obtains a fully-qualified name of the interface.
+     * Obtains a parameter value based on who is the marker interface implementor.
+     *
+     * @param implementor
+     *         the {@code Message} class implementing the marker interface
+     * @return the value of the generic parameter
      */
-    String name();
-
-    /**
-     * Obtains the generic params of the interface.
-     */
-    MarkerInterfaceParameters parameters();
+    String valueFor(DescriptorProto implementor);
 }

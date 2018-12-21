@@ -45,14 +45,17 @@ import static java.util.stream.Stream.of;
 public class BuiltInMarkerInterface implements MarkerInterface {
 
     private final Class<? extends Message> type;
+    private final MarkerInterfaceParameters genericParams;
 
-    private BuiltInMarkerInterface(Class<? extends Message> type) {
+    private BuiltInMarkerInterface(Class<? extends Message> type,
+                                   MarkerInterfaceParameters genericParams) {
         this.type = type;
+        this.genericParams = genericParams;
     }
 
-    private static BuiltInMarkerInterface from(Class<? extends Message> type) {
+    private static BuiltInMarkerInterface from(Type type) {
         checkNotNull(type);
-        return new BuiltInMarkerInterface(type);
+        return new BuiltInMarkerInterface(type.interfaceClass, type.interfaceParams);
     }
 
     /**
@@ -77,7 +80,7 @@ public class BuiltInMarkerInterface implements MarkerInterface {
             return empty();
         }
         Type type = foundInterface.get();
-        MarkerInterface markerInterface = from(type.interfaceClass);
+        MarkerInterface markerInterface = from(type);
         InsertionPoint insertionPoint = implementInterface(file, message, markerInterface);
         return Optional.of(insertionPoint);
     }
@@ -87,24 +90,33 @@ public class BuiltInMarkerInterface implements MarkerInterface {
         return type.getName();
     }
 
+    @Override
+    public MarkerInterfaceParameters parameters() {
+        return genericParams;
+    }
+
     /**
      * The enumeration of built-in interfaces.
      */
-    @SuppressWarnings("NonSerializableFieldInSerializableClass") // OK for enum.
+    @SuppressWarnings("NonSerializableFieldInSerializableClass") // OK for this enum.
     private enum Type {
 
         EVENT_MESSAGE(EventMessage.class, EventMessage.predicate()),
         COMMAND_MESSAGE(CommandMessage.class, CommandMessage.predicate()),
         REJECTION_MESSAGE(RejectionMessage.class, RejectionMessage.predicate()),
 
-        UNIQUE_ID(UniqueId.class, UniqueId.predicate());
+        UNIQUE_ID(UniqueId.class, UniqueId.predicate(), ParameterFactory.messageItself());
 
         private final Class<? extends Message> interfaceClass;
         private final Predicate<MessageDeclaration> predicate;
+        private final MarkerInterfaceParameters interfaceParams;
 
-        Type(Class<? extends Message> interfaceClass, Predicate<MessageDeclaration> predicate) {
+        Type(Class<? extends Message> interfaceClass,
+             Predicate<MessageDeclaration> predicate,
+             MarkerInterfaceParameter... interfaceParams) {
             this.interfaceClass = interfaceClass;
             this.predicate = predicate;
+            this.interfaceParams = MarkerInterfaceParameters.of(interfaceParams);
         }
 
         public boolean matches(MessageDeclaration declaration) {
