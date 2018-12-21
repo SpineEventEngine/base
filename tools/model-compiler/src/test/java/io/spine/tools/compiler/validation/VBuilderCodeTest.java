@@ -50,7 +50,7 @@ class VBuilderCodeTest {
         MessageType type = MessageType.of(VbtProject.getDescriptor());
 
         VBuilderCode code = new VBuilderCode(targetDir, Indent.of4(), type);
-        File created = code.write();
-        assertTrue(created.exists());
+        File file = code.write();
+        assertTrue(file.exists());
     }
 }
