@@ -20,6 +20,7 @@
 
 package io.spine.tools.compiler.validation;
 
+import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.squareup.javapoet.ClassName;
@@ -38,7 +39,6 @@ import java.util.Collection;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.Lists.newArrayList;
 import static io.spine.tools.compiler.validation.Methods.clearPrefix;
 import static io.spine.tools.compiler.validation.Methods.clearProperty;
 import static io.spine.tools.compiler.validation.Methods.getMessageBuilder;
@@ -109,14 +109,12 @@ final class RepeatedFieldMethods extends AbstractMethodGroup implements Logging 
     @Override
     public Collection<MethodSpec> generate() {
         _debug("The methods construction for the {} repeated field is started.", javaFieldName);
-
-        List<MethodSpec> methods = newArrayList();
-        methods.add(getter());
-        methods.addAll(repeatedMethods());
-        methods.addAll(repeatedRawMethods());
-
+        ImmutableList.Builder<MethodSpec> methods = methods()
+                .add(getter())
+                .addAll(repeatedMethods())
+                .addAll(repeatedRawMethods());
         _debug("The methods construction for the {} repeated field is finished.", javaFieldName);
-        return methods;
+        return methods.build();
     }
 
     private MethodSpec getter() {
@@ -140,38 +138,35 @@ final class RepeatedFieldMethods extends AbstractMethodGroup implements Logging 
 
     private Collection<MethodSpec> repeatedRawMethods() {
         _debug("The raw methods construction for the repeated field is is started.");
-
-        List<MethodSpec> methods = newArrayList();
-        methods.add(createRawAddObjectMethod());
-        methods.add(createRawSetObjectByIndexMethod());
-        methods.add(createRawAddAllMethod());
-
+        ImmutableList.Builder<MethodSpec> methods = methods()
+                .add(rawAddObjectMethod())
+                .add(rawSetObjectByIndexMethod())
+                .add(rawAddAllMethod());
         // Some methods are not available in Protobuf Message.Builder for scalar types.
         if (!isScalarOrEnum) {
             methods.add(createRawAddObjectByIndexMethod());
         }
 
         _debug("The raw methods construction for the repeated field is is finished.");
-        return methods;
+        return methods.build();
     }
 
     private Collection<MethodSpec> repeatedMethods() {
-        List<MethodSpec> methods = newArrayList();
-
-        methods.add(clearMethod());
-        methods.add(addObjectMethod());
-        methods.add(setObjectByIndexMethod());
-        methods.add(addAllMethod());
+        ImmutableList.Builder<MethodSpec> methods = methods()
+                .add(clearMethod())
+                .add(addObjectMethod())
+                .add(setObjectByIndexMethod())
+                .add(addAllMethod());
 
         // Some methods are not available in Protobuf Message.Builder for scalar types and enums.
         if (!isScalarOrEnum) {
-            methods.add(addObjectByIndexMethod());
-            methods.add(removeObjectByIndexMethod());
+            methods.add(addObjectByIndexMethod())
+                   .add(removeObjectByIndexMethod());
         }
-        return methods;
+        return methods.build();
     }
 
-    private MethodSpec createRawAddObjectMethod() {
+    private MethodSpec rawAddObjectMethod() {
         String methodName = ADD_RAW_PREFIX + methodNamePart;
         String addValueStatement = getMessageBuilder() + '.'
                 + ADD_PREFIX + methodNamePart + "(convertedValue)";
@@ -194,7 +189,7 @@ final class RepeatedFieldMethods extends AbstractMethodGroup implements Logging 
         return result;
     }
 
-    private MethodSpec createRawSetObjectByIndexMethod() {
+    private MethodSpec rawSetObjectByIndexMethod() {
         return modifyCollectionByIndexWithRaw(SET_RAW_PREFIX, SET_PREFIX);
     }
 
@@ -219,7 +214,7 @@ final class RepeatedFieldMethods extends AbstractMethodGroup implements Logging 
         return result;
     }
 
-    private MethodSpec createRawAddAllMethod() {
+    private MethodSpec rawAddAllMethod() {
         String methodName = fieldType.getSetterPrefix() + rawSuffix() + methodNamePart;
         String addAllValues = getMessageBuilder()
                 + format(ADD_ALL_METHOD, methodNamePart, CONVERTED_VALUE);

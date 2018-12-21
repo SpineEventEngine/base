@@ -20,6 +20,7 @@
 
 package io.spine.tools.compiler.validation;
 
+import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.squareup.javapoet.ClassName;
@@ -31,13 +32,10 @@ import io.spine.code.proto.FieldName;
 import io.spine.logging.Logging;
 import io.spine.tools.compiler.field.type.FieldType;
 import io.spine.validate.ValidationException;
-import org.slf4j.Logger;
 
 import javax.lang.model.element.Modifier;
 import java.util.Collection;
-import java.util.List;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static io.spine.tools.compiler.validation.Methods.clearPrefix;
 import static io.spine.tools.compiler.validation.Methods.clearProperty;
 import static io.spine.tools.compiler.validation.Methods.getMessageBuilder;
@@ -91,28 +89,23 @@ class SingularFieldMethods extends AbstractMethodGroup implements Logging {
 
     @Override
     public Collection<MethodSpec> generate() {
-        Logger log = log();
-        // The variable is used for tracing only.
-        String javaFieldName = log.isTraceEnabled()
-                               ? FieldName.of(field.toProto())
-                                          .javaCase()
-                               : null;
-
-        log.debug("The method construction for the {} singular field is started.", javaFieldName);
-        List<MethodSpec> methods = newArrayList();
-        methods.add(constructSetter());
+        String javaFieldName = FieldName.of(field.toProto())
+                                        .javaCase();
+        _debug("The method construction for the {} singular field is started.", javaFieldName);
+        ImmutableList.Builder<MethodSpec> methods = methods()
+                .add(setter());
 
         if (!fieldClassName.equals(stringClassName())) {
-            methods.add(constructRawSetter());
+            methods.add(rawSetterMethod());
         }
 
-        methods.add(constructGetter());
-        methods.add(constructClearMethods());
-        log.debug("The method construction for the {} singular field is finished.", javaFieldName);
-        return methods;
+        methods.add(getter())
+               .add(clearMethod());
+        _debug("The method construction for the {} singular field is finished.", javaFieldName);
+        return methods.build();
     }
 
-    private MethodSpec constructSetter() {
+    private MethodSpec setter() {
         _debug("The setters construction for the singular field is started.");
         String methodName = fieldType.getSetterPrefix() + methodNamePart;
         ParameterSpec parameter = createParameterSpec(field.toProto(), false);
@@ -131,7 +124,7 @@ class SingularFieldMethods extends AbstractMethodGroup implements Logging {
         return methodSpec;
     }
 
-    private MethodSpec constructGetter() {
+    private MethodSpec getter() {
         _debug("The getter construction for the singular field is started.");
         String methodName = GETTER_PREFIX + methodNamePart;
 
@@ -145,7 +138,7 @@ class SingularFieldMethods extends AbstractMethodGroup implements Logging {
         return methodSpec;
     }
 
-    private MethodSpec constructClearMethods() {
+    private MethodSpec clearMethod() {
         _debug("The 'clear..()' method construction for the singular field is started.");
         String methodBody = getMessageBuilder() + clearProperty(methodNamePart);
 
@@ -159,7 +152,7 @@ class SingularFieldMethods extends AbstractMethodGroup implements Logging {
         return methodSpec;
     }
 
-    private MethodSpec constructRawSetter() {
+    private MethodSpec rawSetterMethod() {
         _debug("The raw setters construction is started.");
         String messageBuilderSetter = fieldType.getSetterPrefix() + methodNamePart;
         String methodName = messageBuilderSetter + rawSuffix();

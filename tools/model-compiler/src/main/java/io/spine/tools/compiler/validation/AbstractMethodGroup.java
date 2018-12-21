@@ -20,6 +20,7 @@
 
 package io.spine.tools.compiler.validation;
 
+import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
@@ -50,6 +51,14 @@ abstract class AbstractMethodGroup implements MethodGroup {
         String javaPackage = checkNotNull(builder.getJavaPackage());
         String javaClass = checkNotNull(builder.getJavaClass());
         this.builderClass = ClassName.get(javaPackage, javaClass);
+    }
+
+    static ImmutableList.Builder<MethodSpec> methods() {
+        return ImmutableList.builder();
+    }
+
+    static ImmutableList<MethodSpec> methods(MethodSpec... spec) {
+        return ImmutableList.copyOf(spec);
     }
 
     /**

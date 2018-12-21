@@ -20,6 +20,7 @@
 
 package io.spine.tools.compiler.validation;
 
+import com.google.common.base.Splitter;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
@@ -141,7 +142,7 @@ final class VBuilderCode implements Logging {
     private File resolve(String javaPackage, String className) {
         Path dir = targetDir.toPath();
         if (!javaPackage.isEmpty()) {
-            for (String packageDir : javaPackage.split("\\.")) {
+            for (String packageDir :  Splitter.on('.').split(javaPackage)) {
                 dir = dir.resolve(packageDir);
             }
         }
