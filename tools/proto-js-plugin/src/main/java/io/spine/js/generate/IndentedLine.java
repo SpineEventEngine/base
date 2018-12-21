@@ -44,6 +44,7 @@ final class IndentedLine extends CodeLine {
     private final CodeLine unaliagned;
 
     private IndentedLine(CodeLine unaligned, Depth depth, Indent indent) {
+        super();
         checkNotNull(unaligned);
         checkNotNull(depth);
         checkNotNull(indent);

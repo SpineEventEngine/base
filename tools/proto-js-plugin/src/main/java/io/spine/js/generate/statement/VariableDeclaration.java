@@ -41,7 +41,8 @@ public class VariableDeclaration extends CodeLine {
     private final String name;
     private final String initializer;
 
-    public VariableDeclaration(String name, String initializer) {
+    private VariableDeclaration(String name, String initializer) {
+        super();
         this.name = name;
         this.initializer = initializer;
     }

@@ -36,6 +36,7 @@ public class Return extends CodeLine {
     private final Object value;
 
     private Return(Object returnedValue) {
+        super();
         this.value = returnedValue;
     }
 

@@ -31,6 +31,7 @@ public class RawLine extends CodeLine {
     private final String content;
 
     private RawLine(String content) {
+        super();
         this.content = content;
     }
 
