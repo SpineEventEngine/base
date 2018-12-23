@@ -283,6 +283,6 @@ class FieldValidatorFactoryTest {
     private static FieldValidator<?> create(FieldDescriptor fieldDescriptor, Object value) {
         FieldContext context = FieldContext.create(fieldDescriptor);
         FieldValue wrappedValue = FieldValue.of(value, context);
-        return FieldValidatorFactory.create(wrappedValue);
+        return wrappedValue.createValidator();
     }
 }

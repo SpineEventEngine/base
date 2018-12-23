@@ -37,7 +37,6 @@ import java.util.Map;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Throwables.getRootCause;
 import static io.spine.util.Exceptions.illegalArgumentWithCauseOf;
-import static io.spine.validate.FieldValidatorFactory.create;
 
 /**
  * Serves as an abstract base for all {@linkplain ValidatingBuilder validating builders}.
@@ -158,7 +157,7 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
             throws ValidationException {
         FieldContext fieldContext = FieldContext.create(descriptor);
         FieldValue valueToValidate = FieldValue.of(fieldValue, fieldContext);
-        FieldValidator<?> validator = create(valueToValidate);
+        FieldValidator<?> validator = valueToValidate.createValidator();
         List<ConstraintViolation> violations = validator.validate();
         checkViolations(violations);
     }

@@ -35,6 +35,7 @@ import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.validate.rule.ValidationRuleOptions.getOptionValue;
+import static java.lang.String.format;
 
 /**
  * A field value to validate.
@@ -78,6 +79,53 @@ final class FieldValue {
         FieldDescriptor fieldDescriptor = context.getTarget();
         FieldDeclaration declaration = new FieldDeclaration(fieldDescriptor);
         return new FieldValue(value, context, declaration);
+    }
+
+    FieldValidator<?> createValidator() {
+        return createValidator(false);
+    }
+
+    FieldValidator<?> createValidatorAssumingRequired() {
+        return createValidator(true);
+    }
+
+    /**
+     * Creates a new validator instance according to the type of the value.
+     *
+     * @param assumeRequired
+     *         if {@code true} validators would always assume that the field is required even
+     *         if the constraint is not set explicitly
+     */
+    @SuppressWarnings("OverlyComplexMethod")
+    private FieldValidator<?> createValidator(boolean assumeRequired) {
+        JavaType fieldType = javaType();
+        switch (fieldType) {
+            case MESSAGE:
+                return new MessageFieldValidator(this, assumeRequired);
+            case INT:
+                return new IntegerFieldValidator(this);
+            case LONG:
+                return new LongFieldValidator(this);
+            case FLOAT:
+                return new FloatFieldValidator(this);
+            case DOUBLE:
+                return new DoubleFieldValidator(this);
+            case STRING:
+                return new StringFieldValidator(this, assumeRequired);
+            case BYTE_STRING:
+                return new ByteStringFieldValidator(this);
+            case BOOLEAN:
+                return new BooleanFieldValidator(this);
+            case ENUM:
+                return new EnumFieldValidator(this);
+            default:
+                throw fieldTypeIsNotSupported(fieldType);
+        }
+    }
+
+    private static IllegalArgumentException fieldTypeIsNotSupported(JavaType type) {
+        String msg = format("The field type is not supported for validation: %s", type);
+        throw new IllegalArgumentException(msg);
     }
 
     /**
