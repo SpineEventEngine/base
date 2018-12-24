@@ -30,7 +30,7 @@ option java_multiple_files = true;
 
 import "google/protobuf/timestamp.proto";
 
-message IdWrongFields {
+message IdWrongFieldCount {
     string name = 1;
     google.protobuf.Timestamp timestamp = 2;
 }
