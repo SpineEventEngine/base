@@ -19,7 +19,7 @@
  */
 
 /**
- * This package contains the mechanism of generating marker interfaces for the Proto messages.
+ * This package contains the routines of generating marker interfaces for the Proto messages.
  */
 
 @CheckReturnValue
