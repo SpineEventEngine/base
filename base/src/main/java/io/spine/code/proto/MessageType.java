@@ -39,6 +39,7 @@ import java.util.function.Predicate;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.collect.Lists.newLinkedList;
+import static io.spine.code.proto.FileDescriptors.sameFiles;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 
 /**
@@ -132,12 +133,7 @@ public class MessageType extends Type<Descriptor, DescriptorProto> {
                         .getFile();
 
         FileDescriptor file = descriptor().getFile();
-        return !isSameFile(optionsProto, file);
-    }
-
-    private static boolean isSameFile(FileDescriptor optionsProto, FileDescriptor file) {
-        return file.getFullName().equals(optionsProto.getFullName()) &&
-                file.getPackage().equals(optionsProto.getPackage());
+        return !sameFiles(optionsProto, file);
     }
 
     /**
@@ -156,6 +152,22 @@ public class MessageType extends Type<Descriptor, DescriptorProto> {
      */
     public boolean isNested() {
         return !isTopLevel();
+    }
+
+    /**
+     * Tells if this message is a rejection.
+     */
+    public boolean isRejection() {
+        FileName file = FileName.from(descriptor().getFile());
+        boolean result = file.isRejections();
+        return result;
+    }
+
+    /**
+     * Tells if the message is not a rejection.
+     */
+    public boolean isNotRejection() {
+        return !isRejection();
     }
 
     /**

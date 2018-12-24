@@ -99,11 +99,11 @@ public final class JavadocEscaper {
         }
 
         /**
-         * Returns an {@link EscapeSequence} element if the beginning of the Javadoc
-         * text starts with an unescaped version of one of {@link EscapeSequence}.
+         * Returns an {@code EscapeSequence} element if the beginning of the Javadoc
+         * text starts with an unescaped version of one of {@code EscapeSequence}.
          *
          * @param javadocText the Javadoc text
-         * @return the {@link EscapeSequence} element
+         * @return the {@code EscapeSequence} element
          */
         public static EscapeSequence fromBeginningOf(String javadocText) {
             checkNotNull(javadocText);
