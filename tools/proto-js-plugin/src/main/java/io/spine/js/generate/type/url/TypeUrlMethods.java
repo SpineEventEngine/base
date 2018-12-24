@@ -23,7 +23,7 @@ package io.spine.js.generate.type.url;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.js.Directory;
-import io.spine.code.js.JsType;
+import io.spine.code.js.MethodReference;
 import io.spine.code.proto.Type;
 import io.spine.code.proto.TypeSet;
 import io.spine.js.generate.CodeLine;
@@ -80,8 +80,8 @@ final class TypeUrlMethods implements Snippet {
     @VisibleForTesting
     static Method typeUrlMethod(Type type) {
         TypeUrl typeUrl = type.url();
-        JsType jsType = JsType.generatedFrom(type);
-        String methodName = jsType.staticMethod(METHOD_NAME);
+        String methodName = MethodReference.onType(type, METHOD_NAME)
+                                           .value();
         CodeLine returnStatement = Return.stringLiteral(typeUrl.value());
         Method method = Method
                 .newBuilder(methodName)
