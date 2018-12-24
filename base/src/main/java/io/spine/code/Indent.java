@@ -81,7 +81,7 @@ public final class Indent extends StringTypeValue {
     /**
      * Obtains the indent by of the specified depth.
      */
-    public Indent ofDepth(Depth depth) {
+    public Indent ofDepth(IndentLevel depth) {
         int indentOfDepth = size * depth.value();
         return of(indentOfDepth);
     }

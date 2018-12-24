@@ -24,8 +24,8 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.testing.NullPointerTester;
 import com.google.common.truth.StringSubject;
 import com.google.common.truth.Truth;
-import io.spine.code.Depth;
 import io.spine.code.Indent;
+import io.spine.code.IndentLevel;
 import io.spine.js.generate.given.GivenLines;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -183,13 +183,13 @@ class CodeLinesTest {
         @Test
         @DisplayName("and increase depth")
         void increaseDepth() {
-            assertMergedAndAligned(Depth.of(2), Depth.zero());
+            assertMergedAndAligned(IndentLevel.of(2), IndentLevel.zero());
         }
 
         @Test
         @DisplayName("and decrease depth")
         void decreaseDepth() {
-            assertMergedAndAligned(Depth.zero(), Depth.of(2));
+            assertMergedAndAligned(IndentLevel.zero(), IndentLevel.of(2));
         }
 
         /**
@@ -201,7 +201,7 @@ class CodeLinesTest {
          * @param secondDepth
          *         the depth of the appended lines
          */
-        private void assertMergedAndAligned(Depth firthDepth, Depth secondDepth) {
+        private void assertMergedAndAligned(IndentLevel firthDepth, IndentLevel secondDepth) {
             CodeLines first = linesWithDepth(firthDepth);
             CodeLines second = GivenLines.withDifferentDepth(secondDepth);
             first.append(second);
@@ -225,7 +225,7 @@ class CodeLinesTest {
     @DisplayName("append an indented line")
     void appendIndentedLine() {
         CodeLines lines = new CodeLines();
-        Depth lineDepth = Depth.of(5);
+        IndentLevel lineDepth = IndentLevel.of(5);
         Indent indent = lines.indent();
         IndentedLine indentedLine = IndentedLine.of("some code line", lineDepth, indent);
         lines.appendIndented(indentedLine);

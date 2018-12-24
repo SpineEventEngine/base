@@ -26,23 +26,23 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@DisplayName("Depth should")
-class DepthTest {
+@DisplayName("IndentationLevel should")
+class IndentLevelTest {
 
     @Test
     @DisplayName("not be negative")
     void notNegative() {
         assertThrows(
                 IllegalArgumentException.class,
-                () -> Depth.of(-1)
+                () -> IndentLevel.of(-1)
         );
     }
 
     @Test
     @DisplayName("provide incremented value")
     void provideIncremented() {
-        Depth zero = Depth.zero();
-        Depth incremented = zero.incremented();
+        IndentLevel zero = IndentLevel.zero();
+        IndentLevel incremented = zero.incremented();
         assertEquals(0, zero.value());
         assertEquals(1, incremented.value());
     }
@@ -50,8 +50,8 @@ class DepthTest {
     @Test
     @DisplayName("provide decremented value")
     void provideDecremented() {
-        Depth five = Depth.of(5);
-        Depth decremented = five.decremented();
+        IndentLevel five = IndentLevel.of(5);
+        IndentLevel decremented = five.decremented();
         assertEquals(5, five.value());
         assertEquals(4, decremented.value());
     }
@@ -61,8 +61,8 @@ class DepthTest {
     void notAllowDecrementOfZero() {
         assertThrows(
                 IllegalArgumentException.class,
-                () -> Depth.zero()
-                           .decremented()
+                () -> IndentLevel.zero()
+                                 .decremented()
         );
     }
 }

@@ -75,7 +75,7 @@ class IndentTest {
     @DisplayName("provide indent of specified depth")
     void indentDepth() {
         Indent indent = Indent.of4();
-        Depth depth = Depth.of(2);
+        IndentLevel depth = IndentLevel.of(2);
         Indent indentWithDepth = indent.ofDepth(depth);
         assertEquals(8, indentWithDepth.getSize());
     }
