@@ -22,6 +22,10 @@ package io.spine.validate;
 
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
+import com.google.protobuf.Timestamp;
+import io.spine.protobuf.Timestamps2;
+import io.spine.test.validate.CustomMessageFieldSetOnceExplicitlyFalse;
+import io.spine.test.validate.CustomMessageFieldSetOncePresent;
 import io.spine.test.validate.InvalidMessage;
 import io.spine.test.validate.MessageWithMapMessageField;
 import io.spine.test.validate.MessageWithRepeatedRequiredValidatedMessageField;
@@ -30,11 +34,22 @@ import io.spine.test.validate.MessageWithRepeatedValidatedMessageField;
 import io.spine.test.validate.MessegeWithRepeatedRequiredMessageField;
 import org.junit.jupiter.api.DisplayName;
 
+import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 
 @DisplayName("MessageFieldValidator should")
 public class MessageFieldValidatorTest extends FieldValidatorTest<Message> {
+
+    private static final FieldDescriptor SET_ONCE_FALSE_TIMESTAMP_FIELD_DESC =
+            CustomMessageFieldSetOnceExplicitlyFalse.getDescriptor()
+                                                    .getFields()
+                                                    .get(0);
+
+    private static final FieldDescriptor SET_ONCE_TIMESTAMP_FIELD_DESC =
+            CustomMessageFieldSetOncePresent.getDescriptor()
+                                            .getFields()
+                                            .get(0);
 
     private static final FieldDescriptor UNCHECKED_FIELD_DESC =
             MessageWithRepeatedUnchekedMessageField.getDescriptor()
@@ -86,6 +101,38 @@ public class MessageFieldValidatorTest extends FieldValidatorTest<Message> {
     }
 
     @Override
+    protected FieldValidator<Message> setOnceViolatedValidator() {
+        Timestamp previousValue = now();
+        Timestamp desiredValue = previousValue.toBuilder()
+                                              .setNanos(60)
+                                              .build();
+        return getValidatorForChangedField(SET_ONCE_TIMESTAMP_FIELD_DESC,
+                                           previousValue,
+                                           desiredValue);
+    }
+
+    @Override
+    protected FieldValidator<?> validSetOnceValidator() {
+        Timestamp now = now();
+        return getValidator(SET_ONCE_TIMESTAMP_FIELD_DESC, now);
+    }
+
+    @Override
+    protected FieldValidator<?> setOnceFalseValidator() {
+        Timestamp now = now();
+        Timestamp later = now.toBuilder()
+                             .setNanos(60)
+                             .build();
+        return getValidatorForChangedField(SET_ONCE_FALSE_TIMESTAMP_FIELD_DESC, now, later);
+    }
+
+    @Override
+    protected FieldValidator<?> setOnceChangeToSameValueValidator() {
+        Timestamp now = now();
+        return getValidatorForChangedField(SET_ONCE_TIMESTAMP_FIELD_DESC, now, now);
+    }
+
+    @Override
     protected InvalidMessage newValue() {
         return InvalidMessage.newBuilder()
                              .setInvalidField("some non-empty string")
@@ -101,5 +148,19 @@ public class MessageFieldValidatorTest extends FieldValidatorTest<Message> {
                                                       Object rawValue) {
         FieldContext context = FieldContext.create(field);
         return new MessageFieldValidator(FieldValue.of(rawValue, context), false);
+    }
+
+    private static MessageFieldValidator getValidatorForChangedField(FieldDescriptor field,
+                                                                     Object previousValue,
+                                                                     Object desiredValue) {
+        FieldContext fieldContext = FieldContext.create(field);
+        FieldValue previous = FieldValue.of(previousValue, fieldContext);
+        FieldValue desired = FieldValue.of(desiredValue, fieldContext);
+        FieldValueChange change = FieldValueChange.of(previous, desired);
+        return new MessageFieldValidator(change, false);
+    }
+
+    private Timestamp now() {
+        return Timestamps2.fromInstant(Instant.now());
     }
 }

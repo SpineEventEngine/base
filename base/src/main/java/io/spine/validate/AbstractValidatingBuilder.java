@@ -158,8 +158,11 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
     public <V> void validate(FieldDescriptor descriptor, V fieldValue, String fieldName)
             throws ValidationException {
         FieldContext fieldContext = FieldContext.create(descriptor);
-        FieldValue valueToValidate = FieldValue.of(fieldValue, fieldContext);
-        FieldValidator<?> validator = valueToValidate.createValidator();
+        FieldValue currentValue = FieldValue.of(getMessageBuilder().getField(descriptor),
+                                                fieldContext);
+        FieldValue desiredValue = FieldValue.of(fieldValue, fieldContext);
+        FieldValueChange changeToValidate = FieldValueChange.of(currentValue, desiredValue);
+        FieldValidator<?> validator = changeToValidate.createValidator();
         List<ConstraintViolation> violations = validator.validate();
         checkViolations(violations);
     }
@@ -224,6 +227,28 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
         List<ConstraintViolation> violations = MessageValidator.newInstance(message)
                                                                .validate();
         checkViolations(violations);
+    }
+
+    @SuppressWarnings("unused")
+        // Called by all actual validating builder subclasses.
+    protected final void validateSetOnce(FieldDescriptor descriptor) throws ValidationException {
+        boolean setOnce = descriptor.getOptions()
+                                    .getExtension(OptionsProto.setOnce);
+        boolean valueAlreadySet = getMessageBuilder().hasField(descriptor);
+        if (setOnce && valueAlreadySet) {
+            throw setOnceViolation(descriptor);
+        }
+    }
+
+    private ValidationException setOnceViolation(FieldDescriptor descriptor) {
+        String fieldName = descriptor.getName();
+        ConstraintViolation setOnceViolation = ConstraintViolation
+                .newBuilder()
+                .setMsgFormat("Attempted to change a value of the field %s that has " +
+                              "(set_once) = true and is already set")
+                .addParam(fieldName)
+                .build();
+        return new ValidationException(ImmutableList.of(setOnceViolation));
     }
 
     private static void checkViolations(List<ConstraintViolation> violations)
