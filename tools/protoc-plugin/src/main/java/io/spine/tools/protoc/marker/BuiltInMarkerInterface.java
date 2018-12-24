@@ -73,8 +73,8 @@ public class BuiltInMarkerInterface implements MarkerInterface {
                                                     DescriptorProto message) {
         Optional<Type> foundInterface =
                 Stream.of(Type.values())
-                        .filter(contract -> contract.matches(message, file))
-                        .findFirst();
+                      .filter(contract -> contract.matches(message, file))
+                      .findFirst();
         if (!foundInterface.isPresent()) {
             return empty();
         }
