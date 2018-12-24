@@ -57,6 +57,23 @@ abstract class NumberFieldValidator<V extends Number & Comparable<V>> extends Fi
     /**
      * Creates a new validator instance.
      *
+     * @param fieldValueChange
+     *         the change of the field that is going to be validated
+     */
+    NumberFieldValidator(FieldValueChange fieldValueChange) {
+        super(fieldValueChange, false);
+        this.minDecimalOpt = fieldValueChange.newValue().valueOf(OptionsProto.decimalMin);
+        this.isMinDecimalInclusive = minDecimalOpt.getInclusive();
+        this.maxDecimalOpt = fieldValueChange.newValue().valueOf(OptionsProto.decimalMax);
+        this.isMaxDecimalInclusive = maxDecimalOpt.getInclusive();
+        this.minOption = fieldValueChange.newValue().valueOf(OptionsProto.min);
+        this.maxOption = fieldValueChange.newValue().valueOf(OptionsProto.max);
+        this.digitsOption = fieldValueChange.newValue().valueOf(OptionsProto.digits);
+    }
+
+    /**
+     * Creates a new validator instance.
+     *
      * @param fieldValue
      *         the value to validate
      */

@@ -30,16 +30,21 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 @DisplayName("BooleanFieldValidator should")
 class BooleanFieldValidatorTest {
 
-    private final FieldDescriptor fieldDescriptor = Any.getDescriptor()
-                                                       .getFields()
-                                                       .get(0);
-    private final FieldContext fieldContext = FieldContext.create(fieldDescriptor);
-    private final BooleanFieldValidator validator =
-            new BooleanFieldValidator(FieldValue.of(false, fieldContext));
+    private final BooleanFieldValidator validator = validator();
 
     @Test
     @DisplayName("convert string to number")
     void convert_string_to_number() {
         assertFalse(validator.isNotSet(false));
+    }
+
+    private static BooleanFieldValidator validator(){
+        FieldDescriptor fieldDescriptor = Any.getDescriptor()
+                                                           .getFields()
+                                                           .get(0);
+        FieldContext fieldContext = FieldContext.create(fieldDescriptor);
+        FieldValue singleValue = FieldValue.of(false, fieldContext);
+        FieldValueChange change = FieldValueChange.withoutPreviousValue(singleValue);
+        return new BooleanFieldValidator(change);
     }
 }

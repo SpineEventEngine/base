@@ -139,8 +139,8 @@ final class AlternativeFieldValidator implements Logging {
             violations.add(notFound);
             return false;
         }
-        FieldValidator<?> fieldValidator = fieldValue.get()
-                                                     .createValidatorAssumingRequired();
+        FieldValueChange change = FieldValueChange.withoutPreviousValue(fieldValue.get());
+        FieldValidator<?> fieldValidator = change.createValidatorAssumingRequired();
         List<ConstraintViolation> violations = fieldValidator.validate();
 
         // Do not add violations to the results because we have options.

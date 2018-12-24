@@ -60,6 +60,20 @@ class MessageFieldValidator extends FieldValidator<Message> {
         this.timeConstraint = fieldValue.valueOf(OptionsProto.when);
     }
 
+    /**
+     * Creates a new validator instance.
+     *
+     * @param fieldValueChange
+     *         the change of the field value to validate
+     * @param assumeRequired
+     *         if {@code true} the validator would assume that the field is required even if
+     *         such constraint is not explicitly set
+     */
+    MessageFieldValidator(FieldValueChange fieldValueChange, boolean assumeRequired) {
+        super(fieldValueChange, assumeRequired);
+        this.timeConstraint = fieldValueChange.newValue().valueOf(OptionsProto.when);
+    }
+
     @Override
     protected void validateOwnRules() {
         boolean validateFields = shouldValidateFields();
@@ -71,7 +85,7 @@ class MessageFieldValidator extends FieldValidator<Message> {
     }
 
     private boolean shouldValidateFields() {
-        return getValidateOption() && !fieldValueNotSet();
+        return getValidateOption() && !fieldValueNotSet(desiredValue());
     }
 
     @Override
