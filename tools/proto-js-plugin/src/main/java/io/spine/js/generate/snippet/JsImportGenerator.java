@@ -23,7 +23,7 @@ package io.spine.js.generate.snippet;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import io.spine.code.js.FileName;
-import io.spine.js.generate.CodeLines;
+import io.spine.js.generate.output.CodeLines;
 import io.spine.js.generate.JsCodeGenerator;
 
 import java.util.Collection;
@@ -78,7 +78,7 @@ public final class JsImportGenerator extends JsCodeGenerator {
     private final String importPrefix;
 
     /**
-     * The predefined imports which will be stored to the {@link io.spine.js.generate.CodeLines} when calling
+     * The predefined imports which will be stored to the {@link io.spine.js.generate.output.CodeLines} when calling
      * {@link #generate()}.
      */
     private final Collection<FileName> imports;
@@ -94,7 +94,7 @@ public final class JsImportGenerator extends JsCodeGenerator {
     }
 
     /**
-     * Put all the predefined imports specified on creation into the {@link io.spine.js.generate.CodeLines}.
+     * Put all the predefined imports specified on creation into the {@link io.spine.js.generate.output.CodeLines}.
      */
     @Override
     public void generate() {

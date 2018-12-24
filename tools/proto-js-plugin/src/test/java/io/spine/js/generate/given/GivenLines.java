@@ -22,7 +22,7 @@ package io.spine.js.generate.given;
 
 import io.spine.code.Indent;
 import io.spine.code.IndentLevel;
-import io.spine.js.generate.CodeLines;
+import io.spine.js.generate.output.CodeLines;
 
 public final class GivenLines {
 

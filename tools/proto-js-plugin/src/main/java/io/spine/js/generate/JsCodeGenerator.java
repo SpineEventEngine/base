@@ -20,8 +20,10 @@
 
 package io.spine.js.generate;
 
+import io.spine.js.generate.output.CodeLines;
+
 /**
- * The common base for JavaScript code generators which operate on the {@link CodeLines}.
+ * The common base for JavaScript code generators which operate on the {@link io.spine.js.generate.output.CodeLines}.
  */
 public abstract class JsCodeGenerator {
 

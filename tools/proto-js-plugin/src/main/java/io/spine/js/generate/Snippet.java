@@ -20,6 +20,8 @@
 
 package io.spine.js.generate;
 
+import io.spine.js.generate.output.CodeLines;
+
 /**
  * A snippet of the code.
  */
@@ -28,7 +30,7 @@ public interface Snippet {
     /**
      * Obtains code lines representing this snippet.
      *
-     * @return always returns a new {@link CodeLines}
+     * @return always returns a new {@link io.spine.js.generate.output.CodeLines}
      */
     CodeLines value();
 }

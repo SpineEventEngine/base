@@ -18,41 +18,41 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate;
+package io.spine.js.generate.output;
 
-import com.google.common.truth.StringSubject;
-import com.google.common.truth.Truth;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import java.util.Objects;
 
-@DisplayName("RawLine should")
-class RawLineTest {
+/**
+ * A line of a Javascript code.
+ *
+ * <p>The line is not aware of {@linkplain io.spine.js.generate.output.IndentedLine indentation}.
+ */
+public abstract class CodeLine {
 
-    @Test
-    @DisplayName("provide a comment")
-    void comment() {
-        String value = "A comment text";
-        CodeLine comment = RawLine.comment(value);
-        assertThat(comment).isEqualTo("// " + value);
+    /**
+     * Obtains the value of the line.
+     */
+    public abstract String content();
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof CodeLine)) {
+            return false;
+        }
+        CodeLine line = (CodeLine) o;
+        return content().equals(line.content());
     }
 
-    @Test
-    @DisplayName("provide a map entry with string literal key")
-    void mapEntry() {
-        String key = "k";
-        String value = "v";
-        CodeLine mapEntry = RawLine.mapEntry(key, value);
-        assertThat(mapEntry).isEqualTo("['k', v]");
+    @Override
+    public int hashCode() {
+        return Objects.hash(content());
     }
 
-    @Test
-    @DisplayName("provide an empty line")
-    void emptyLine() {
-        CodeLine line = RawLine.emptyLine();
-        assertThat(line).isEqualTo("");
-    }
-
-    private static StringSubject assertThat(CodeLine line) {
-        return Truth.assertThat(line.content());
+    @Override
+    public String toString() {
+        return content();
     }
 }

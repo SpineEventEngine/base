@@ -20,9 +20,9 @@
 
 package io.spine.js.generate.snippet;
 
-import io.spine.js.generate.CodeLine;
-import io.spine.js.generate.CodeLines;
-import io.spine.js.generate.RawLine;
+import io.spine.js.generate.output.CodeLine;
+import io.spine.js.generate.output.CodeLines;
+import io.spine.js.generate.output.RawLine;
 import io.spine.js.generate.Snippet;
 
 import java.util.List;

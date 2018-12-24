@@ -22,7 +22,7 @@ package io.spine.js.generate.type;
 
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
-import io.spine.js.generate.CodeLines;
+import io.spine.js.generate.output.CodeLines;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

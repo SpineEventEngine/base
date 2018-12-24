@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate;
+package io.spine.js.generate.output;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;

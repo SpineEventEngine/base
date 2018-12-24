@@ -27,16 +27,16 @@ import io.spine.code.js.MethodReference;
 import io.spine.code.js.TypeName;
 import io.spine.code.proto.Type;
 import io.spine.code.proto.TypeSet;
-import io.spine.js.generate.CodeLine;
-import io.spine.js.generate.CodeLines;
-import io.spine.js.generate.FileWriter;
+import io.spine.js.generate.output.CodeLine;
+import io.spine.js.generate.output.CodeLines;
+import io.spine.js.generate.output.FileWriter;
 import io.spine.js.generate.Snippet;
 import io.spine.js.generate.snippet.Method;
 import io.spine.js.generate.snippet.Return;
 import io.spine.type.TypeUrl;
 
-import static io.spine.js.generate.RawLine.comment;
-import static io.spine.js.generate.RawLine.emptyLine;
+import static io.spine.js.generate.output.RawLine.comment;
+import static io.spine.js.generate.output.RawLine.emptyLine;
 
 /**
  * Generates a method to obtain a {@code TypeUrl} for each type in a file.

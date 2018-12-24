@@ -22,7 +22,7 @@ package io.spine.js.generate.type;
 
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Timestamp;
-import io.spine.js.generate.CodeLines;
+import io.spine.js.generate.output.CodeLines;
 import io.spine.type.TypeUrl;
 import io.spine.validate.ValidationError;
 import org.junit.jupiter.api.DisplayName;

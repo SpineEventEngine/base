@@ -21,7 +21,7 @@
 package io.spine.js.generate.field;
 
 import io.spine.code.js.FieldName;
-import io.spine.js.generate.CodeLines;
+import io.spine.js.generate.output.CodeLines;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

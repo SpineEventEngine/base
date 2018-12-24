@@ -18,12 +18,26 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * The package contains standard elements of Javascript code such as a statement or a declaration.
- */
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.js.generate.snippet;
+package io.spine.js.generate.output;
 
-import javax.annotation.CheckReturnValue;
-import javax.annotation.ParametersAreNonnullByDefault;
+import io.spine.code.Indent;
+import io.spine.code.IndentLevel;
+import io.spine.js.generate.output.IndentedLine;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+@DisplayName("IndentedLine should")
+class IndentedLineTest {
+
+    @Test
+    @DisplayName("create indent for code based on depth and indentation")
+    void createIndent() {
+        IndentLevel depth = IndentLevel.of(2);
+        Indent spacesPerDepth = Indent.of2();
+        IndentedLine line = IndentedLine.of("content", depth, spacesPerDepth);
+        String expected = "    content";
+        assertEquals(expected, line.content());
+    }
+}

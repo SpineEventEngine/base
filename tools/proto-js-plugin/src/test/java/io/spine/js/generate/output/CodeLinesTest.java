@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate;
+package io.spine.js.generate.output;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.testing.NullPointerTester;
@@ -27,6 +27,10 @@ import com.google.common.truth.Truth;
 import io.spine.code.Indent;
 import io.spine.code.IndentLevel;
 import io.spine.js.generate.given.GivenLines;
+import io.spine.js.generate.output.CodeLine;
+import io.spine.js.generate.output.CodeLines;
+import io.spine.js.generate.output.IndentedLine;
+import io.spine.js.generate.output.RawLine;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -34,8 +38,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static io.spine.js.generate.CodeLines.LINE_SEPARATOR;
-import static io.spine.js.generate.RawLine.comment;
+import static io.spine.js.generate.output.CodeLines.LINE_SEPARATOR;
+import static io.spine.js.generate.output.RawLine.comment;
 import static io.spine.js.generate.given.Generators.assertContains;
 import static io.spine.js.generate.given.GivenLines.linesWithDepth;
 import static io.spine.js.generate.given.GivenLines.newCodeLines;
@@ -193,7 +197,7 @@ class CodeLinesTest {
         }
 
         /**
-         * Asserts that two {@link io.spine.js.generate.CodeLines} are merged
+         * Asserts that two {@link io.spine.js.generate.output.CodeLines} are merged
          * and the depth of the appended lines is adjusted.
          *
          * @param firthDepth

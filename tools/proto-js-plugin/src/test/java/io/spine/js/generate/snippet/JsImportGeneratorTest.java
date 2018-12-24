@@ -22,7 +22,7 @@ package io.spine.js.generate.snippet;
 
 import com.google.common.testing.NullPointerTester;
 import io.spine.code.js.FileName;
-import io.spine.js.generate.CodeLines;
+import io.spine.js.generate.output.CodeLines;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -23,7 +23,7 @@ package io.spine.js.generate.field.parser;
 import com.google.protobuf.Descriptors;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.code.proto.FieldDeclaration;
-import io.spine.js.generate.CodeLines;
+import io.spine.js.generate.output.CodeLines;
 import io.spine.js.generate.type.WellKnownTypeParsers;
 import io.spine.type.TypeUrl;
 

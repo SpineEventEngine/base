@@ -18,11 +18,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate;
+package io.spine.js.generate.output;
 
 import com.google.common.annotations.VisibleForTesting;
 import io.spine.code.Indent;
 import io.spine.code.IndentLevel;
+import io.spine.js.generate.Snippet;
 
 import java.util.ArrayList;
 import java.util.Iterator;

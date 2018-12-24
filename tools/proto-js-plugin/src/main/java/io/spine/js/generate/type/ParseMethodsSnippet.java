@@ -24,13 +24,13 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.js.FileName;
-import io.spine.js.generate.CodeLines;
+import io.spine.js.generate.output.CodeLines;
 import io.spine.js.generate.Snippet;
 import io.spine.js.generate.snippet.JsImportGenerator;
 
 import static io.spine.code.js.LibraryFile.KNOWN_TYPE_PARSERS;
-import static io.spine.js.generate.RawLine.comment;
-import static io.spine.js.generate.RawLine.emptyLine;
+import static io.spine.js.generate.output.RawLine.comment;
+import static io.spine.js.generate.output.RawLine.emptyLine;
 
 /**
  * The generator of the {@code fromJson(json)} method for the given {@link FileDescriptor}.

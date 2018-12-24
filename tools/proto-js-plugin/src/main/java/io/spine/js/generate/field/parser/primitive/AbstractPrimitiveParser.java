@@ -20,7 +20,7 @@
 
 package io.spine.js.generate.field.parser.primitive;
 
-import io.spine.js.generate.CodeLines;
+import io.spine.js.generate.output.CodeLines;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 

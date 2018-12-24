@@ -40,9 +40,9 @@ import com.google.protobuf.Timestamp;
 import com.google.protobuf.UInt32Value;
 import com.google.protobuf.UInt64Value;
 import com.google.protobuf.Value;
-import io.spine.js.generate.CodeLine;
-import io.spine.js.generate.CodeLines;
-import io.spine.js.generate.RawLine;
+import io.spine.js.generate.output.CodeLine;
+import io.spine.js.generate.output.CodeLines;
+import io.spine.js.generate.output.RawLine;
 import io.spine.js.generate.Snippet;
 import io.spine.type.TypeUrl;
 
@@ -50,8 +50,8 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.js.generate.CodeLines.commaSeparated;
-import static io.spine.js.generate.RawLine.emptyLine;
+import static io.spine.js.generate.output.CodeLines.commaSeparated;
+import static io.spine.js.generate.output.RawLine.emptyLine;
 import static com.google.common.collect.ImmutableMap.toImmutableMap;
 import static java.util.stream.Collectors.toList;
 

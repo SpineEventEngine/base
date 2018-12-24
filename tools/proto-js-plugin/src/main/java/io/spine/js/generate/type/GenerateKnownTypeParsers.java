@@ -24,7 +24,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.js.Directory;
 import io.spine.code.proto.FileSet;
-import io.spine.js.generate.FileWriter;
+import io.spine.js.generate.output.FileWriter;
 import io.spine.js.generate.GenerationTask;
 
 import java.io.IOException;

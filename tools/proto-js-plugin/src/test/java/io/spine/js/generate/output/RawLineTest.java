@@ -18,25 +18,43 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate;
+package io.spine.js.generate.output;
 
-import io.spine.code.Indent;
-import io.spine.code.IndentLevel;
+import com.google.common.truth.StringSubject;
+import com.google.common.truth.Truth;
+import io.spine.js.generate.output.CodeLine;
+import io.spine.js.generate.output.RawLine;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-@DisplayName("IndentedLine should")
-class IndentedLineTest {
+@DisplayName("RawLine should")
+class RawLineTest {
 
     @Test
-    @DisplayName("create indent for code based on depth and indentation")
-    void createIndent() {
-        IndentLevel depth = IndentLevel.of(2);
-        Indent spacesPerDepth = Indent.of2();
-        IndentedLine line = IndentedLine.of("content", depth, spacesPerDepth);
-        String expected = "    content";
-        assertEquals(expected, line.content());
+    @DisplayName("provide a comment")
+    void comment() {
+        String value = "A comment text";
+        CodeLine comment = RawLine.comment(value);
+        assertThat(comment).isEqualTo("// " + value);
+    }
+
+    @Test
+    @DisplayName("provide a map entry with string literal key")
+    void mapEntry() {
+        String key = "k";
+        String value = "v";
+        CodeLine mapEntry = RawLine.mapEntry(key, value);
+        assertThat(mapEntry).isEqualTo("['k', v]");
+    }
+
+    @Test
+    @DisplayName("provide an empty line")
+    void emptyLine() {
+        CodeLine line = RawLine.emptyLine();
+        assertThat(line).isEqualTo("");
+    }
+
+    private static StringSubject assertThat(CodeLine line) {
+        return Truth.assertThat(line.content());
     }
 }

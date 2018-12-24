@@ -22,7 +22,7 @@ package io.spine.js.generate.field;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import io.spine.js.generate.CodeLines;
+import io.spine.js.generate.output.CodeLines;
 import io.spine.js.generate.JsCodeGenerator;
 import io.spine.js.generate.field.parser.FieldParser;
 import io.spine.js.generate.field.precondition.FieldPrecondition;

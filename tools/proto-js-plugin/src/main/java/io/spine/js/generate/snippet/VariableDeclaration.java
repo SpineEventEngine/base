@@ -21,7 +21,7 @@
 package io.spine.js.generate.snippet;
 
 import io.spine.code.js.TypeName;
-import io.spine.js.generate.CodeLine;
+import io.spine.js.generate.output.CodeLine;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;

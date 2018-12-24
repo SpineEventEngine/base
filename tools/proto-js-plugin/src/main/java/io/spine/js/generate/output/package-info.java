@@ -18,41 +18,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate;
-
-import java.util.Objects;
-
 /**
- * A line of a Javascript code.
- *
- * <p>The line is not aware of {@linkplain IndentedLine indentation}.
+ * The package contains classes performing writing of Javascript code.
  */
-public abstract class CodeLine {
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.js.generate.output;
 
-    /**
-     * Obtains the value of the line.
-     */
-    public abstract String content();
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof CodeLine)) {
-            return false;
-        }
-        CodeLine line = (CodeLine) o;
-        return content().equals(line.content());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(content());
-    }
-
-    @Override
-    public String toString() {
-        return content();
-    }
-}
+import javax.annotation.CheckReturnValue;
+import javax.annotation.ParametersAreNonnullByDefault;

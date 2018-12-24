@@ -26,9 +26,9 @@ import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.js.FileName;
 import io.spine.code.js.TypeName;
 import io.spine.code.proto.FileSet;
-import io.spine.js.generate.CodeLine;
-import io.spine.js.generate.CodeLines;
-import io.spine.js.generate.RawLine;
+import io.spine.js.generate.output.CodeLine;
+import io.spine.js.generate.output.CodeLines;
+import io.spine.js.generate.output.RawLine;
 import io.spine.js.generate.Snippet;
 import io.spine.js.generate.snippet.JsImportGenerator;
 import io.spine.type.TypeUrl;
@@ -37,7 +37,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-import static io.spine.js.generate.RawLine.emptyLine;
+import static io.spine.js.generate.output.RawLine.emptyLine;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 

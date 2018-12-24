@@ -22,7 +22,7 @@ package io.spine.js.generate.field.precondition;
 
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Value;
-import io.spine.js.generate.CodeLines;
+import io.spine.js.generate.output.CodeLines;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 

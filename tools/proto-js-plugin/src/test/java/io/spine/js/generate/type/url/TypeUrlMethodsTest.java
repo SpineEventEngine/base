@@ -24,7 +24,7 @@ import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.proto.Type;
-import io.spine.js.generate.CodeLines;
+import io.spine.js.generate.output.CodeLines;
 import io.spine.js.generate.snippet.Method;
 import io.spine.js.generate.typeurl.OuterMessage;
 import io.spine.js.generate.typeurl.TopLevelEnum;
