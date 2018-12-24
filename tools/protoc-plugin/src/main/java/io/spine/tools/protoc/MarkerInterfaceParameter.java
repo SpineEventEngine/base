@@ -30,11 +30,11 @@ import com.google.protobuf.DescriptorProtos.DescriptorProto;
 interface MarkerInterfaceParameter {
 
     /**
-     * Obtains a parameter value based on who is the marker interface implementor.
+     * Obtains a parameter value based on who is the marker interface target.
      *
-     * @param implementor
+     * @param target
      *         the {@code Message} class implementing the marker interface
      * @return the value of the generic parameter
      */
-    String valueFor(DescriptorProto implementor);
+    String valueFor(DescriptorProto target);
 }

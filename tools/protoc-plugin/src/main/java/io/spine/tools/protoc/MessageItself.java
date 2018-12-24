@@ -31,7 +31,7 @@ import com.google.protobuf.DescriptorProtos.DescriptorProto;
 final class MessageItself implements MarkerInterfaceParameter {
 
     @Override
-    public String valueFor(DescriptorProto implementor) {
-        return implementor.getName();
+    public String valueFor(DescriptorProto target) {
+        return target.getName();
     }
 }
