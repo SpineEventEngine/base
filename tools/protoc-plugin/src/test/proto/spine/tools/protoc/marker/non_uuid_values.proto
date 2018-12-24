@@ -35,10 +35,10 @@ message IdWrongFieldCount {
     google.protobuf.Timestamp timestamp = 2;
 }
 
-message IdWrongType {
+message IdWrongFieldType {
     google.protobuf.Timestamp uuid = 1;
 }
 
-message IdWrongName {
+message IdWrongFieldName {
     string random_field = 1;
 }
