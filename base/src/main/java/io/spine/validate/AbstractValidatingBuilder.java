@@ -26,15 +26,17 @@ import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
 import io.spine.base.ConversionException;
 import io.spine.protobuf.Messages;
+import io.spine.reflect.GenericTypeIndex;
 import io.spine.string.Stringifiers;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Throwables.getRootCause;
-import static io.spine.validate.FieldValidatorFactory.create;
+import static io.spine.util.Exceptions.illegalArgumentWithCauseOf;
 
 /**
  * Serves as an abstract base for all {@linkplain ValidatingBuilder validating builders}.
@@ -64,7 +66,7 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
     private @Nullable T originalState;
 
     protected AbstractValidatingBuilder() {
-        this.messageClass = TypeInfo.getMessageClass(getClass());
+        this.messageClass = getMessageClass(getClass());
         this.messageBuilder = createBuilder();
     }
 
@@ -121,7 +123,9 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
      *         the {@code Class} of the value
      * @return the converted value
      */
-    protected <K, V> Map<K, V> convertToMap(String value, Class<K> keyClass, Class<V> valueClass) {
+    protected static <K, V> Map<K, V> convertToMap(String value,
+                                                   Class<K> keyClass,
+                                                   Class<V> valueClass) {
         Map<K, V> result = Stringifiers.newForMapOf(keyClass, valueClass)
                                        .reverse()
                                        .convert(value);
@@ -141,7 +145,7 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
      *         the {@code Class} of the list values
      * @return the converted value
      */
-    protected <V> List<V> convertToList(String value, Class<V> valueClass) {
+    protected static <V> List<V> convertToList(String value, Class<V> valueClass) {
         List<V> result = Stringifiers.newForListOf(valueClass)
                                      .reverse()
                                      .convert(value);
@@ -153,7 +157,7 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
             throws ValidationException {
         FieldContext fieldContext = FieldContext.create(descriptor);
         FieldValue valueToValidate = FieldValue.of(fieldValue, fieldContext);
-        FieldValidator<?> validator = create(valueToValidate);
+        FieldValidator<?> validator = valueToValidate.createValidator();
         List<ConstraintViolation> violations = validator.validate();
         checkViolations(violations);
     }
@@ -200,7 +204,7 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
      * @return the message built from the values set by the user
      */
     @Internal
-    public T internalBuild() {
+    public final T internalBuild() {
         @SuppressWarnings("unchecked")
         // OK, as real types of `B` are always generated to be compatible with `T`.
         T result = (T) getMessageBuilder().build();
@@ -224,6 +228,59 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
             throws ValidationException {
         if (!violations.isEmpty()) {
             throw new ValidationException(violations);
+        }
+    }
+
+    /**
+     * Obtains the class of the message produced by the builder.
+     */
+    private static <T extends Message> Class<T>
+    getMessageClass(Class<? extends ValidatingBuilder> builderClass) {
+        @SuppressWarnings("unchecked") // The type is ensured by the class declaration.
+                Class<T> result = (Class<T>)GenericParameter.MESSAGE.getArgumentIn(builderClass);
+        return result;
+    }
+
+    // as the method names are the same, but methods are different.
+
+    /**
+     * Obtains the raw method for creating new validating builder.
+     *
+     * <p>To simplify migration to Validating Builders, we use the same name which is used in
+     * Protobuf for obtaining a {@code Message.Builder}.
+     */
+    static Method getNewBuilderMethod(Class<? extends ValidatingBuilder<?, ?>> cls) {
+        try {
+            return cls.getMethod(Messages.METHOD_NEW_BUILDER);
+        } catch (NoSuchMethodException e) {
+            throw illegalArgumentWithCauseOf(e);
+        }
+    }
+
+    /**
+     * Enumeration of generic type parameters of {@link ValidatingBuilder}.
+     */
+    private enum GenericParameter implements GenericTypeIndex<ValidatingBuilder> {
+
+        /**
+         * The index of the declaration of the generic parameter type {@code <T>}.
+         */
+        MESSAGE(0),
+
+        /**
+         * The index of the declaration of the generic parameter type {@code <B>}.
+         */
+        MESSAGE_BUILDER(1);
+
+        private final int index;
+
+        GenericParameter(int index) {
+            this.index = index;
+        }
+
+        @Override
+        public int getIndex() {
+            return this.index;
         }
     }
 }

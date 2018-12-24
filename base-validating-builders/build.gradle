@@ -53,10 +53,6 @@ dependencies {
     compileClasspath spineBase
 }
 
-modelCompiler {
-    generateBuildersFromClasspath = true
-}
-
 sourceSets {
     main.java.srcDirs "$projectDir/generated/main/spine"
 }

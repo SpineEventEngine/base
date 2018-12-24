@@ -72,7 +72,7 @@ class SimpleClassNameTest {
     @DisplayName("obtain declared outer class name")
     void obtain_declared_outer_class_name() {
         Optional<SimpleClassName> className =
-                SimpleClassName.declaredOuterClassName(errorProto.toProto());
+                SimpleClassName.declaredOuterClassName(errorProto);
 
         assertTrue(className.isPresent());
         assertEquals(ERROR_PROTO, className.get()

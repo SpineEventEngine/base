@@ -20,6 +20,7 @@
 
 package io.spine.validate;
 
+import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Any;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Descriptors;
@@ -80,7 +81,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static com.google.common.collect.ImmutableList.copyOf;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.protobuf.util.Timestamps.add;
 import static com.google.protobuf.util.Timestamps.subtract;
@@ -97,7 +97,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SuppressWarnings({"ClassWithTooManyMethods", "OverlyCoupledClass", "OverlyComplexClass"})
+@SuppressWarnings({"ClassWithTooManyMethods", "OverlyCoupledClass"})
 @DisplayName("MessageValidator should")
 class MessageValidatorTest {
 
@@ -1129,7 +1129,7 @@ class MessageValidatorTest {
         FieldPath path = violation.getFieldPath();
         ProtocolStringList actualFields = path.getFieldNameList();
         assertEquals(expectedFields.length, actualFields.size());
-        assertEquals(copyOf(expectedFields), copyOf(actualFields));
+        assertEquals(ImmutableList.copyOf(expectedFields), ImmutableList.copyOf(actualFields));
     }
 
     private static Timestamp getFuture() {

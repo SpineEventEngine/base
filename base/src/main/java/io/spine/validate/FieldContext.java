@@ -28,25 +28,23 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.Lists.newLinkedList;
-import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.util.Collections.singleton;
 
 /**
- * A context of a {@link FieldDescriptor}.
- *
- * <p>In particular, holds a hierarchy of field descriptors from
- * the top-level descriptor to the descriptor of the current field.
- *
- * @author Dmytro Grankin
+ * Provides information about a proto field in the nesting hierarchy.
  */
 @Internal
 public final class FieldContext {
 
     /**
-     * Parent descriptors and the target descriptor of this context at the end.
+     * Descriptors of fields in the nesting hierarchy.
      *
-     * <p>E.g, we have the following declarations:
+     * <p>The list starts from the top-most field, and ends with the descriptor
+     * of the target field.
+     *
+     * <p>Suppose, we have the following declarations:
      * <pre>{@code
      * message User {
      *     UserId id = 1;
@@ -61,6 +59,10 @@ public final class FieldContext {
      * {@code [FieldDescriptor_for_id, FieldDescriptor_for_value]}.
      */
     private final List<FieldDescriptor> descriptors;
+
+    /**
+     * Provides field names in the nesting hierarchy.
+     */
     private final FieldPath fieldPath;
 
     private FieldContext(Iterable<FieldDescriptor> descriptors) {
@@ -105,11 +107,8 @@ public final class FieldContext {
      * @return the target descriptor
      */
     FieldDescriptor getTarget() {
+        checkState(!descriptors.isEmpty(), "Empty context cannot have a target.");
         int targetIndex = descriptors.size() - 1;
-        if (targetIndex == -1) {
-            throw newIllegalStateException("Empty context cannot have a target.");
-        }
-
         return descriptors.get(targetIndex);
     }
 

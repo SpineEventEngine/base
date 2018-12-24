@@ -33,14 +33,13 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.validate.FieldValidatorFactory.createStrict;
 
 /**
  * Validates that one of the fields defined by the {@code required_field} option is present.
  *
  * See definition of {@code MessageOptions.required_field} in {@code options.proto}.
  */
-class AlternativeFieldValidator implements Logging {
+final class AlternativeFieldValidator implements Logging {
 
     /**
      * The name of the message option field.
@@ -140,7 +139,8 @@ class AlternativeFieldValidator implements Logging {
             violations.add(notFound);
             return false;
         }
-        FieldValidator<?> fieldValidator = createStrict(fieldValue.get());
+        FieldValidator<?> fieldValidator = fieldValue.get()
+                                                     .createValidatorAssumingRequired();
         List<ConstraintViolation> violations = fieldValidator.validate();
 
         // Do not add violations to the results because we have options.
@@ -163,7 +163,7 @@ class AlternativeFieldValidator implements Logging {
      *
      * <p>It can be either a field or combination of fields.
      */
-    private static class RequiredFieldOption {
+    private static final class RequiredFieldOption {
 
         private final @Nullable String fieldName;
         private final @Nullable ImmutableList<String> fieldNames;

@@ -37,8 +37,6 @@ import java.util.Optional;
  * <p>Annotates a service in a generated Java source
  * if a specified {@linkplain com.google.protobuf.DescriptorProtos.ServiceOptions service option}
  * value is {@code true} for a service definition.
- *
- * @author Dmytro Grankin
  */
 class ServiceAnnotator extends Annotator<ServiceOptions, ServiceDescriptorProto> {
 

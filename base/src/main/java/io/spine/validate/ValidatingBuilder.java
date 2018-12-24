@@ -24,13 +24,12 @@ import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
-import io.spine.protobuf.Messages;
-import io.spine.reflect.GenericTypeIndex;
 
 import java.lang.reflect.Method;
 
-import static io.spine.util.Exceptions.illegalArgumentWithCauseOf;
-import static io.spine.validate.ValidatingBuilder.GenericParameter.MESSAGE;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.util.Exceptions.illegalStateWithCauseOf;
+import static io.spine.validate.AbstractValidatingBuilder.getNewBuilderMethod;
 
 /**
  * An interface for all validating builders.
@@ -43,8 +42,6 @@ import static io.spine.validate.ValidatingBuilder.GenericParameter.MESSAGE;
  *
  * @param <T> the type of the message to build
  * @param <B> the type of the message builder
- * @author Illia Shepilov
- * @author Alex Tymchenko
  */
 public interface ValidatingBuilder<T extends Message, B extends Message.Builder> {
 
@@ -108,64 +105,26 @@ public interface ValidatingBuilder<T extends Message, B extends Message.Builder>
     void clear();
 
     /**
-     * Enumeration of generic type parameters of this interface.
+     * Creates an instance of {@code ValidatingBuilder} by its type.
+     *
+     * @param builderClass the type of the {@code ValidatingBuilder} to instantiate
+     * @param <B>          the generic type of returned value
+     * @return the new instance of the builder
      */
-    enum GenericParameter implements GenericTypeIndex<ValidatingBuilder> {
+    @Internal
+    @SuppressWarnings("OverlyBroadCatchBlock")   // OK, as the exception handling is the same.
+    static <B extends ValidatingBuilder<?, ?>> B newInstance(Class<B> builderClass) {
+        checkNotNull(builderClass);
 
-        /**
-         * The index of the declaration of the generic parameter type {@code <T>}
-         * in {@link ValidatingBuilder}.
-         */
-        MESSAGE(0),
+        try {
+            Method newBuilderMethod = getNewBuilderMethod(builderClass);
+            Object raw = newBuilderMethod.invoke(null);
 
-        /**
-         * The index of the declaration of the generic parameter type {@code <B>}
-         * in {@link ValidatingBuilder}.
-         */
-        MESSAGE_BUILDER(1);
-
-        private final int index;
-
-        GenericParameter(int index) {
-            this.index = index;
-        }
-
-        @Override
-        public int getIndex() {
-            return this.index;
-        }
-    }
-
-    /**
-     * Provides type information on classes implementing {@link ValidatingBuilder}.
-     */
-    class TypeInfo {
-
-        /** Prevent construction from outside. */
-        private TypeInfo() {
-        }
-
-        /**
-         * Retrieves the state class of the passed entity class.
-         *
-         * @param builderClass the builder class to inspect
-         * @param <T>          the state type
-         * @return the entity state class
-         */
-        public static <T extends Message> Class<T> getMessageClass(
-                Class<? extends ValidatingBuilder> builderClass) {
-            @SuppressWarnings("unchecked") // The type is ensured by the class declaration.
-            Class<T> result = (Class<T>)MESSAGE.getArgumentIn(builderClass);
-            return result;
-        }
-
-        // as the method names are the same, but methods are different.
-        public static Method getNewBuilderMethod(Class<? extends ValidatingBuilder<?, ?>> cls) {
-            try {
-                return cls.getMethod(Messages.METHOD_NEW_BUILDER);
-            } catch (NoSuchMethodException e) {
-                throw illegalArgumentWithCauseOf(e);
-            }
+            // By convention, `newBuilder()` always returns instances of `B`.
+            @SuppressWarnings("unchecked") B builder = (B) raw;
+            return builder;
+        } catch (Exception e) {
+            throw illegalStateWithCauseOf(e);
         }
     }
 }

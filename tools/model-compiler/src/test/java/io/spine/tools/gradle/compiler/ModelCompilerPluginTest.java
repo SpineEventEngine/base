@@ -37,12 +37,12 @@ import static io.spine.tools.gradle.TaskName.FIND_ENRICHMENTS;
 import static io.spine.tools.gradle.TaskName.FIND_TEST_ENRICHMENTS;
 import static io.spine.tools.gradle.TaskName.FIND_TEST_VALIDATION_RULES;
 import static io.spine.tools.gradle.TaskName.FIND_VALIDATION_RULES;
-import static io.spine.tools.gradle.TaskName.GENERATE_PROTO;
 import static io.spine.tools.gradle.TaskName.GENERATE_REJECTIONS;
-import static io.spine.tools.gradle.TaskName.GENERATE_TEST_PROTO;
 import static io.spine.tools.gradle.TaskName.GENERATE_TEST_REJECTIONS;
 import static io.spine.tools.gradle.TaskName.GENERATE_TEST_VALIDATING_BUILDERS;
 import static io.spine.tools.gradle.TaskName.GENERATE_VALIDATING_BUILDERS;
+import static io.spine.tools.gradle.TaskName.MERGE_DESCRIPTOR_SET;
+import static io.spine.tools.gradle.TaskName.MERGE_TEST_DESCRIPTOR_SET;
 import static io.spine.tools.gradle.TaskName.PRE_CLEAN;
 import static io.spine.tools.gradle.TaskName.PROCESS_RESOURCES;
 import static io.spine.tools.gradle.TaskName.PROCESS_TEST_RESOURCES;
@@ -84,7 +84,7 @@ class ModelCompilerPluginTest {
     void add_task_generateRejections() {
         Task genRejections = task(GENERATE_REJECTIONS);
         assertNotNull(genRejections);
-        assertTrue(dependsOn(genRejections, GENERATE_PROTO));
+        assertTrue(dependsOn(genRejections, MERGE_DESCRIPTOR_SET));
         assertTrue(dependsOn(task(COMPILE_JAVA), genRejections));
     }
 
@@ -93,7 +93,7 @@ class ModelCompilerPluginTest {
     void add_task_generateTestRejections() {
         Task genTestRejections = task(GENERATE_TEST_REJECTIONS);
         assertNotNull(genTestRejections);
-        assertTrue(dependsOn(genTestRejections, GENERATE_TEST_PROTO));
+        assertTrue(dependsOn(genTestRejections, MERGE_TEST_DESCRIPTOR_SET));
         assertTrue(dependsOn(task(COMPILE_TEST_JAVA), genTestRejections));
     }
 
@@ -120,7 +120,7 @@ class ModelCompilerPluginTest {
     void add_task_findValidationRules() {
         Task find = task(FIND_VALIDATION_RULES);
         assertNotNull(find);
-        assertTrue(dependsOn(find, GENERATE_PROTO));
+        assertTrue(dependsOn(find, MERGE_DESCRIPTOR_SET));
         assertTrue(dependsOn(task(PROCESS_RESOURCES), find));
     }
 
@@ -129,7 +129,7 @@ class ModelCompilerPluginTest {
     void add_task_findTestValidationRules() {
         Task find = task(FIND_TEST_VALIDATION_RULES);
         assertNotNull(find);
-        assertTrue(dependsOn(find, GENERATE_TEST_PROTO));
+        assertTrue(dependsOn(find, MERGE_TEST_DESCRIPTOR_SET));
         assertTrue(dependsOn(task(PROCESS_TEST_RESOURCES), find));
     }
 
@@ -138,7 +138,7 @@ class ModelCompilerPluginTest {
     void add_task_generation_validating_builders() {
         Task genValidatingBuilders = task(GENERATE_VALIDATING_BUILDERS);
         assertNotNull(genValidatingBuilders);
-        assertTrue(dependsOn(genValidatingBuilders, GENERATE_PROTO));
+        assertTrue(dependsOn(genValidatingBuilders, MERGE_DESCRIPTOR_SET));
         assertTrue(dependsOn(task(COMPILE_JAVA), genValidatingBuilders));
     }
 
@@ -147,7 +147,7 @@ class ModelCompilerPluginTest {
     void add_task_generation_test_validating_builders() {
         Task genTestValidatingBuidlers = task(GENERATE_TEST_VALIDATING_BUILDERS);
         assertNotNull(genTestValidatingBuidlers);
-        assertTrue(dependsOn(genTestValidatingBuidlers, GENERATE_TEST_PROTO));
+        assertTrue(dependsOn(genTestValidatingBuidlers, MERGE_TEST_DESCRIPTOR_SET));
         assertTrue(dependsOn(task(COMPILE_TEST_JAVA), genTestValidatingBuidlers));
     }
 
@@ -156,7 +156,7 @@ class ModelCompilerPluginTest {
     void add_task_annotateProto() {
         Task annotateProto = task(ANNOTATE_PROTO);
         assertNotNull(annotateProto);
-        assertTrue(dependsOn(annotateProto, GENERATE_PROTO));
+        assertTrue(dependsOn(annotateProto, MERGE_DESCRIPTOR_SET));
         assertTrue(dependsOn(task(COMPILE_JAVA), annotateProto));
     }
 
@@ -165,7 +165,7 @@ class ModelCompilerPluginTest {
     void add_task_annotateTestProto() {
         Task annotateTestProto = task(ANNOTATE_TEST_PROTO);
         assertNotNull(annotateTestProto);
-        assertTrue(dependsOn(annotateTestProto, GENERATE_TEST_PROTO));
+        assertTrue(dependsOn(annotateTestProto, MERGE_TEST_DESCRIPTOR_SET));
         assertTrue(dependsOn(task(COMPILE_TEST_JAVA), annotateTestProto));
     }
 

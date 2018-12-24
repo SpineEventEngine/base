@@ -46,7 +46,7 @@ import static io.spine.tools.gradle.TaskName.GENERATE_TEST_PROTO;
 import static io.spine.tools.protodoc.BacktickFormatting.BACKTICK;
 import static io.spine.tools.protodoc.PreTagFormatting.CLOSING_PRE;
 import static io.spine.tools.protodoc.PreTagFormatting.OPENING_PRE;
-import static io.spine.tools.protodoc.given.ProtoJavadocPluginTestEnv.formatAndAssert;
+import static io.spine.tools.protodoc.TestHelper.formatAndAssert;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

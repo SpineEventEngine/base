@@ -29,7 +29,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
 
-import static io.spine.code.js.FileName.of;
 import static io.spine.js.generate.given.Generators.assertContains;
 import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
 import static java.util.Collections.singletonList;
@@ -40,8 +39,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @DisplayName("JsImportGenerator should")
 class JsImportGeneratorTest {
 
-    private static final FileName FILE_PATH = of("root1/test/commands_pb.js");
-    private static final FileName FILE_TO_IMPORT = of("root2/tools/tasks_pb.js");
+    private static final FileName FILE_PATH = FileName.of("root1/test/commands_pb.js");
+    private static final FileName FILE_TO_IMPORT = FileName.of("root2/tools/tasks_pb.js");
     private static final Collection<FileName> IMPORTS = singletonList(FILE_TO_IMPORT);
     private static final String IMPORT_NAME = "import_name";
     private static final String LIB_TO_IMPORT = "base64-lib";

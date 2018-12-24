@@ -20,28 +20,21 @@
 
 package io.spine.base;
 
-import com.google.common.reflect.TypeToken;
 import com.google.protobuf.Any;
 import com.google.protobuf.Int32Value;
 import com.google.protobuf.Int64Value;
 import com.google.protobuf.Message;
-import com.google.protobuf.MessageOrBuilder;
 import com.google.protobuf.StringValue;
 import io.spine.annotation.Internal;
 import io.spine.protobuf.AnyPacker;
 import io.spine.protobuf.Messages;
 import io.spine.protobuf.TypeConverter;
-import io.spine.string.Stringifier;
 import io.spine.string.StringifierRegistry;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import java.util.Collection;
-import java.util.Optional;
 import java.util.UUID;
-import java.util.regex.Pattern;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.protobuf.TextFormat.shortDebugString;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
@@ -59,9 +52,6 @@ public final class Identifier<I> {
 
     /** An empty ID string representation. */
     public static final String EMPTY_ID = "EMPTY";
-
-    private static final Pattern PATTERN_COLON_SPACE = Pattern.compile(": ");
-    private static final String EQUAL_SIGN = "=";
 
     private final Type type;
     private final I value;
@@ -272,7 +262,7 @@ public final class Identifier<I> {
      *           <li>for {@code String}, {@code Long}, {@code Integer} —
      *               the result of {@link Object#toString()};
      *           <li>for {@code null} ID — the {@link #NULL_ID};
-     *           <li>if the result is empty or blank string — the {@link #EMPTY_ID}.
+     *           <li>if the result is empty or a blank string — the {@link #EMPTY_ID}.
      *         </ul>
      * @throws IllegalArgumentException
      *         if the passed type isn't one of the above or
@@ -293,48 +283,6 @@ public final class Identifier<I> {
         }
 
         String result = identifier.toString();
-        return result;
-    }
-
-    private static String idMessageToString(Message message) {
-        checkNotNull(message);
-        String result;
-        StringifierRegistry registry = StringifierRegistry.getInstance();
-        Class<? extends Message> msgClass = message.getClass();
-        TypeToken<? extends Message> msgToken = TypeToken.of(msgClass);
-        java.lang.reflect.Type msgType = msgToken.getType();
-        Optional<Stringifier<Object>> optional = registry.get(msgType);
-        if (optional.isPresent()) {
-            Stringifier<Object> converter = optional.get();
-            result = converter.convert(message);
-        } else {
-            result = convert(message);
-        }
-        return result;
-    }
-
-    private static String convert(Message message) {
-        Collection<Object> values = message.getAllFields()
-                                           .values();
-        String result;
-        if (values.isEmpty()) {
-            result = EMPTY_ID;
-        } else if (values.size() == 1) {
-            Object object = values.iterator()
-                                  .next();
-            result = object instanceof Message
-                     ? idMessageToString((Message) object)
-                     : object.toString();
-        } else {
-            result = messageWithMultipleFieldsToString(message);
-        }
-        return result;
-    }
-
-    private static String messageWithMultipleFieldsToString(MessageOrBuilder message) {
-        String result = shortDebugString(message);
-        result = PATTERN_COLON_SPACE.matcher(result)
-                                    .replaceAll(EQUAL_SIGN);
         return result;
     }
 
@@ -374,7 +322,7 @@ public final class Identifier<I> {
                 break;
 
             case MESSAGE:
-                result = idMessageToString((Message) value);
+                result = MessageIdToString.toString((Message) value);
                 break;
             default:
                 throw newIllegalStateException("toString() is not supported for type: %s", type);
