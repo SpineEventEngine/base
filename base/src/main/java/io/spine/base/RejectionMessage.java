@@ -38,7 +38,7 @@ import java.util.function.BiPredicate;
 public interface RejectionMessage extends EventMessage {
 
     /**
-     * Provides a predicate which checks whether a given message declaration represents a
+     * Provides a predicate which checks whether the given message declaration represents a
      * rejection message.
      *
      * <p>The predicate accepts a message descriptor and the declaring file descriptor.

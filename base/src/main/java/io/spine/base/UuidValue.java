@@ -62,7 +62,7 @@ public interface UuidValue<I extends Message> extends SerializableMessage {
     String FIELD_NAME = "uuid";
 
     /**
-     * Provides a predicate which checks whether a given message declaration represents a
+     * Provides a predicate which checks whether the given message declaration represents a
      * UUID-based identifier.
      *
      * <p>The predicate accepts a message descriptor and the declaring file descriptor.

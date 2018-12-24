@@ -38,7 +38,7 @@ import java.util.function.BiPredicate;
 public interface CommandMessage extends SerializableMessage {
 
     /**
-     * Provides a predicate which checks whether a given message declaration represents a
+     * Provides a predicate which checks whether the given message declaration represents a
      * command message.
      *
      * <p>The predicate accepts a message descriptor and the declaring file descriptor.

@@ -38,7 +38,7 @@ import java.util.function.BiPredicate;
 public interface EventMessage extends SerializableMessage {
 
     /**
-     * Provides a predicate which checks whether a given message declaration represents an
+     * Provides a predicate which checks whether the given message declaration represents an
      * event message.
      *
      * <p>The predicate accepts a message descriptor and the declaring file descriptor.
