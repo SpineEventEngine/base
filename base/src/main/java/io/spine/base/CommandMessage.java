@@ -23,6 +23,7 @@ package io.spine.base;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
+import io.spine.base.MessageFile.Predicate;
 
 import java.util.function.BiPredicate;
 
@@ -62,7 +63,7 @@ public interface CommandMessage extends SerializableMessage {
         private File() {
         }
 
-        public static MessageFile.Predicate predicate() {
+        public static Predicate predicate() {
             return INSTANCE.predicate();
         }
 
