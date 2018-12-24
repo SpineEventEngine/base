@@ -20,6 +20,7 @@
 
 package io.spine.tools.gradle.compiler;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Files;
 import io.spine.tools.gradle.SpinePlugin;
 import org.gradle.api.Project;
@@ -30,20 +31,17 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import static com.google.common.collect.ImmutableMap.of;
+import static com.google.common.base.Preconditions.checkState;
 
 /**
  * A Gradle plugin which imports the Spine {@code protoc} plugin into the project.
  *
  * <p>This plugin requires the {@code com.google.protobuf} to be applied to the project.
- *
- * @author Dmytro Dashenkov
  */
 public class ProtocPluginImporter extends SpinePlugin {
 
     private static final String PROTOC_CONFIG_FILE_NAME = "spine-protoc.gradle";
 
-    @SuppressWarnings("DuplicateStringLiteralInspection") // The same string has different semantics
     private static final String PROTOBUF_PLUGIN_ID = "com.google.protobuf";
 
     @Override
@@ -55,7 +53,7 @@ public class ProtocPluginImporter extends SpinePlugin {
                    log.debug("Applying {} ({})",
                              PROTOC_CONFIG_FILE_NAME,
                              configFile.getAbsolutePath());
-                   project.apply(of("from", configFile.getAbsolutePath()));
+                   project.apply(ImmutableMap.of("from", configFile.getAbsolutePath()));
                    log.debug("Applied {}", PROTOC_CONFIG_FILE_NAME);
         });
     }
@@ -75,7 +73,9 @@ public class ProtocPluginImporter extends SpinePlugin {
         try (InputStream in = ProtocPluginImporter.class
                 .getClassLoader()
                 .getResourceAsStream(PROTOC_CONFIG_FILE_NAME);
-             FileOutputStream out = new FileOutputStream(configFile)) {
+             FileOutputStream out = new FileOutputStream(configFile)
+        ) {
+            checkState(in != null, "Unable to get resource " + PROTOC_CONFIG_FILE_NAME);
             int readByte = in.read();
             while (readByte >= 0) {
                 out.write(readByte);

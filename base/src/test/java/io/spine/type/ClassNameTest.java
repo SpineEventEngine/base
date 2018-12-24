@@ -23,6 +23,7 @@ package io.spine.type;
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Descriptors;
 import com.google.protobuf.StringValue;
+import io.spine.code.java.ClassName;
 import io.spine.code.java.PackageName;
 import io.spine.code.java.SimpleClassName;
 import org.junit.jupiter.api.DisplayName;

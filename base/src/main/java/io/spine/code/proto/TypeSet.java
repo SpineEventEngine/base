@@ -21,6 +21,7 @@
 package io.spine.code.proto;
 
 import com.google.common.base.Objects;
+import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
@@ -35,8 +36,6 @@ import java.util.Optional;
 import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.ImmutableMap.copyOf;
-import static com.google.common.collect.ImmutableMap.of;
 import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Maps.newHashMapWithExpectedSize;
 
@@ -45,24 +44,24 @@ import static com.google.common.collect.Maps.newHashMapWithExpectedSize;
  */
 @Internal
 @Immutable
-public class TypeSet {
+public final class TypeSet {
 
     private final ImmutableMap<TypeName, MessageType> messageTypes;
     private final ImmutableMap<TypeName, EnumType> enumTypes;
 
     /** Creates a new empty set. */
     private TypeSet() {
-        this(of(), of());
+        this(ImmutableMap.of(), ImmutableMap.of());
     }
 
     private TypeSet(Map<TypeName, MessageType> messageTypes, Map<TypeName, EnumType> enumTypes) {
-        this.messageTypes = copyOf(messageTypes);
-        this.enumTypes = copyOf(enumTypes);
+        this.messageTypes = ImmutableMap.copyOf(messageTypes);
+        this.enumTypes = ImmutableMap.copyOf(enumTypes);
     }
 
     private TypeSet(Builder builder) {
-        this(copyOf(builder.messageTypes),
-             copyOf(builder.enumTypes));
+        this(ImmutableMap.copyOf(builder.messageTypes),
+             ImmutableMap.copyOf(builder.enumTypes));
     }
 
     /**
@@ -84,6 +83,15 @@ public class TypeSet {
             result = result.union(messagesAndEnums(file));
         }
         return result;
+    }
+
+    public static ImmutableCollection<MessageType> onlyMessages(FileSet fileSet) {
+        TypeSet result = new TypeSet();
+        for (FileDescriptor file : fileSet.files()) {
+            TypeSet messageTypes = MessageType.allFrom(file);
+            result = result.union(messageTypes);
+        }
+        return result.messageTypes.values();
     }
 
     /**
@@ -193,7 +201,7 @@ public class TypeSet {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof TypeSet)) {
             return false;
         }
         TypeSet typeSet = (TypeSet) o;

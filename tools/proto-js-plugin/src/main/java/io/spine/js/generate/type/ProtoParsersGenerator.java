@@ -20,16 +20,19 @@
 
 package io.spine.js.generate.type;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.UnmodifiableIterator;
 import com.google.protobuf.Any;
+import com.google.protobuf.BoolValue;
 import com.google.protobuf.BytesValue;
 import com.google.protobuf.DoubleValue;
 import com.google.protobuf.Duration;
 import com.google.protobuf.Empty;
 import com.google.protobuf.FieldMask;
 import com.google.protobuf.FloatValue;
+import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.Int32Value;
 import com.google.protobuf.Int64Value;
 import com.google.protobuf.ListValue;
@@ -45,7 +48,7 @@ import io.spine.type.TypeUrl;
 import java.util.Map.Entry;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.type.TypeUrl.of;
+import static com.google.common.collect.ImmutableMap.toImmutableMap;
 
 /**
  * The generator which stores JSON parsers for the standard Protobuf types to the JS {@code Map}.
@@ -136,7 +139,6 @@ public final class ProtoParsersGenerator extends JsCodeGenerator {
      * Converts the {@linkplain Entry Java Map Entry} from the {@link #parsers} to the JS
      * {@code Map} entry.
      */
-    @SuppressWarnings("DuplicateStringLiteralInspection") // Duplication in different context.
     private static String jsMapEntry(Entry<TypeUrl, String> typeToParser) {
         TypeUrl typeUrl = typeToParser.getKey();
         String parserName = typeToParser.getValue();
@@ -145,26 +147,44 @@ public final class ProtoParsersGenerator extends JsCodeGenerator {
         return mapEntry;
     }
 
+    /**
+     * Composes a map from a type to corresponding JS parser class.
+     *
+     * <p>These parsers support standard
+     * <a href="https://developers.google.com/protocol-buffers/docs/proto3#json">
+     *     Proto 3 JSON Mapping</a>
+     *
+     * For the implementation of parsers, please see the resource file at this path:
+     * <pre>
+     *     proto-js-plugin/src/main/resources/io/spine/tools/protojs/knowntypes/known_types_parsers
+     * </pre>
+     */
     @SuppressWarnings("OverlyCoupledMethod") // Dependencies for the listed Protobuf types.
     private static ImmutableMap<TypeUrl, String> parsers() {
-        ImmutableMap<TypeUrl, String> jsParserNames = ImmutableMap
-                .<TypeUrl, String>builder()
-                .put(of(BytesValue.class), "BytesValueParser")
-                .put(of(DoubleValue.class), "DoubleValueParser")
-                .put(of(FloatValue.class), "FloatValueParser")
-                .put(of(Int32Value.class), "Int32ValueParser")
-                .put(of(Int64Value.class), "Int64ValueParser")
-                .put(of(StringValue.class), "StringValueParser")
-                .put(of(UInt32Value.class), "UInt32ValueParser")
-                .put(of(UInt64Value.class), "UInt64ValueParser")
-                .put(of(Value.class), "ValueParser")
-                .put(of(ListValue.class), "ListValueParser")
-                .put(of(Empty.class), "EmptyParser")
-                .put(of(Timestamp.class), "TimestampParser")
-                .put(of(Duration.class), "DurationParser")
-                .put(of(FieldMask.class), "FieldMaskParser")
-                .put(of(Any.class), "AnyParser")
-                .build();
-        return jsParserNames;
+        ImmutableList<Class<? extends GeneratedMessageV3>> messageClasses =
+                ImmutableList.of(
+                        BoolValue.class,
+                        BytesValue.class,
+                        DoubleValue.class,
+                        FloatValue.class,
+                        StringValue.class,
+                        Int32Value.class,
+                        Int64Value.class,
+                        UInt32Value.class,
+                        UInt64Value.class,
+                        Value.class,
+                        ListValue.class,
+                        Empty.class,
+                        Timestamp.class,
+                        Duration.class,
+                        FieldMask.class,
+                        Any.class
+                );
+
+        ImmutableMap<TypeUrl, String> result =
+                messageClasses.stream()
+                              .collect(toImmutableMap(TypeUrl::of,
+                                                      cls -> cls.getSimpleName() + "Parser"));
+        return result;
     }
 }

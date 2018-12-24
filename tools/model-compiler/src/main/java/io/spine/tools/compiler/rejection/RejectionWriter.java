@@ -30,9 +30,8 @@ import io.spine.base.ThrowableMessage;
 import io.spine.code.Indent;
 import io.spine.code.java.PackageName;
 import io.spine.code.javadoc.JavadocText;
-import io.spine.code.proto.RejectionDeclaration;
+import io.spine.code.proto.RejectionType;
 import io.spine.logging.Logging;
-import io.spine.tools.compiler.TypeCache;
 import org.slf4j.Logger;
 
 import java.io.File;
@@ -41,6 +40,7 @@ import java.nio.file.Files;
 
 import static com.squareup.javapoet.MethodSpec.constructorBuilder;
 import static io.spine.tools.compiler.annotation.Annotations.generatedBySpineModelCompiler;
+import static io.spine.code.java.ClassName.OUTER_CLASS_DELIMITER;
 import static javax.lang.model.element.Modifier.FINAL;
 import static javax.lang.model.element.Modifier.PRIVATE;
 import static javax.lang.model.element.Modifier.PUBLIC;
@@ -53,7 +53,7 @@ public class RejectionWriter implements Logging {
 
     private static final NoArgMethod getMessageThrown = new NoArgMethod("getMessageThrown");
 
-    private final RejectionDeclaration declaration;
+    private final RejectionType declaration;
     private final ClassName messageClass;
     private final File outputDirectory;
 
@@ -66,22 +66,17 @@ public class RejectionWriter implements Logging {
      *         a rejection declaration
      * @param outputDirectory
      *         a directory to write a Rejection
-     * @param typeCache
-     *         the Proto-to-Java names map
      * @param indent
      *          the indentation for generated source code
      */
-    public RejectionWriter(RejectionDeclaration rejection,
-                           File outputDirectory,
-                           TypeCache typeCache,
-                           Indent indent) {
+    public RejectionWriter(RejectionType rejection, File outputDirectory, Indent indent) {
         this.declaration = rejection;
         this.messageClass = toJavaPoetName(rejection.messageClass());
         this.outputDirectory = outputDirectory;
         this.builder = new RejectionBuilderWriter(rejection,
                                                   messageClass,
-                                                  toJavaPoetName(rejection.throwableClass()),
-                                                  typeCache);
+                                                  toJavaPoetName(rejection.throwableClass())
+        );
         this.indent = indent;
     }
 
@@ -94,7 +89,7 @@ public class RejectionWriter implements Logging {
             log.debug("Creating the output directory {}", outputDirectory.getPath());
             Files.createDirectories(outputDirectory.toPath());
 
-            String className = declaration.getSimpleJavaClassName()
+            String className = declaration.simpleJavaClassName()
                                           .value();
             log.debug("Constructing class {}", className);
             TypeSpec rejection =
@@ -110,8 +105,8 @@ public class RejectionWriter implements Logging {
                             .addType(builder.typeDeclaration())
                             .build();
             JavaFile javaFile =
-                    JavaFile.builder(declaration.getJavaPackage()
-                                                .toString(),
+                    JavaFile.builder(declaration.javaPackage()
+                                                .value(),
                                      rejection)
                             .skipJavaLangImports(true)
                             .indent(indent.toString())
@@ -126,7 +121,7 @@ public class RejectionWriter implements Logging {
 
     private MethodSpec constructor() {
         log().debug("Creating the constructor for the type '{}'",
-                    declaration.getSimpleJavaClassName());
+                    declaration.simpleJavaClassName());
         ParameterSpec builderParameter = builder.asParameter();
         CodeBlock buildRejectionMessage = builder.buildRejectionMessage();
         return constructorBuilder()
@@ -155,17 +150,18 @@ public class RejectionWriter implements Logging {
      * @return the class-level Javadoc content
      */
     private CodeBlock classJavadoc() {
-        JavadocText leadingComments = declaration.documentation()
-                                                 .leadingComments()
-                                                 .map(text -> JavadocText.fromUnescaped(text)
-                                                                         .inPreTags()
-                                                                         .withNewLine())
-                                                 .orElse(JavadocText.fromEscaped(""));
-        PackageName rejectionPackage = declaration.getJavaPackage();
+        JavadocText leadingComments =
+                declaration.documentation()
+                           .leadingComments()
+                           .map(text -> JavadocText.fromUnescaped(text)
+                                                   .inPreTags()
+                                                   .withNewLine())
+                           .orElse(JavadocText.fromEscaped(""));
+        PackageName rejectionPackage = declaration.javaPackage();
         CodeBlock sourceProtoNote = CodeBlock
                 .builder()
                 .add("Rejection based on proto type ")
-                .add("{@code $L.$L}", rejectionPackage, declaration.getSimpleJavaClassName())
+                .add("{@code $L.$L}", rejectionPackage, declaration.simpleJavaClassName())
                 .build();
         return CodeBlock
                 .builder()
@@ -206,7 +202,8 @@ public class RejectionWriter implements Logging {
                         .build();
     }
 
-    private static ClassName toJavaPoetName(io.spine.type.ClassName className) {
-        return ClassName.bestGuess(className.toSimpleName());
+    private static ClassName toJavaPoetName(io.spine.code.java.ClassName className) {
+        String noDelimiterName = className.value().replace(OUTER_CLASS_DELIMITER, '.');
+        return ClassName.bestGuess(noDelimiterName);
     }
 }

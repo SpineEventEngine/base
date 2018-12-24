@@ -28,7 +28,11 @@ option java_package = "io.spine.base";
 option java_outer_classname = "FieldPathProto";
 option java_multiple_files = true;
 
-// Field path is a set of message field names.
+// Field path provides field names of nested messages.
+//
+// The first entry in the names list is a name of a field in the root message.
+// The second entry is the name of the field in the nested message, and so on.
+//
 // For example, consider the following message declarations:
 //
 //     message CustomerAccount {
@@ -39,12 +43,11 @@ option java_multiple_files = true;
 //       string name = 1;
 //     }
 //
-// The field path for `name` field of the User message is ["user", "name"] set.
-//
-// So, the first entry in the names set is a name of a field in some root message,
-// the next one is a field found in the first one, and so on.
+// The field path for `name` field of the `User` message enclosed into the `CustomerAccount`
+// is ["user", "name"].
 //
 message FieldPath {
-    // Unqualified message field names.
+
+    // Unqualified field names.
     repeated string field_name = 1;
 }

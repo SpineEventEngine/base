@@ -21,22 +21,22 @@
 package io.spine.code.proto;
 
 import com.google.common.collect.ImmutableList;
-import com.google.protobuf.DescriptorProtos.DescriptorProto;
-import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
+import com.google.common.collect.ImmutableSet;
+import com.google.protobuf.Descriptors.Descriptor;
+import com.google.protobuf.Descriptors.FileDescriptor;
 
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.collect.ImmutableSet.toImmutableSet;
 
 /**
  * A proto file with declarations of {@linkplain io.spine.base.RejectionMessage rejections}.
- *
- * @author Alexander Yevsyukov
  */
 public final class RejectionsFile extends SourceFile {
 
-    private RejectionsFile(FileDescriptorProto descriptor) {
+    private RejectionsFile(FileDescriptor descriptor) {
         super(descriptor);
     }
 
@@ -54,13 +54,34 @@ public final class RejectionsFile extends SourceFile {
     /**
      * Obtains rejection messages declared in the file.
      */
-    public List<RejectionDeclaration> getRejectionDeclarations() {
-        ImmutableList.Builder<RejectionDeclaration> result = ImmutableList.builder();
-        FileDescriptorProto file = getDescriptor();
-        for (DescriptorProto type : getDescriptor().getMessageTypeList()) {
-            RejectionDeclaration declaration = new RejectionDeclaration(type, file);
+    public List<RejectionType> getRejectionDeclarations() {
+        ImmutableList.Builder<RejectionType> result = ImmutableList.builder();
+        FileDescriptor file = getDescriptor();
+        for (Descriptor type : file.getMessageTypes()) {
+            RejectionType declaration = new RejectionType(type);
             result.add(declaration);
         }
         return result.build();
+    }
+
+    private static boolean isRejections(FileDescriptor file) {
+        return FileName.from(file)
+                       .isRejections();
+    }
+
+    /**
+     * Obtains rejection files from the passed set of files.
+     */
+    public static ImmutableSet<RejectionsFile> findAll(FileSet fileSet) {
+        ImmutableSet<RejectionsFile> result =
+                fileSet.files()
+                       .stream()
+                       .filter(RejectionsFile::isRejections)
+                       .map(f -> {
+                           SourceFile sourceFile = SourceFile.from(f);
+                           return from(sourceFile);
+                       })
+                       .collect(toImmutableSet());
+        return result;
     }
 }

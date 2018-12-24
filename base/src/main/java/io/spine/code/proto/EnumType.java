@@ -25,32 +25,44 @@ import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.annotation.Internal;
-import io.spine.type.ClassName;
+import io.spine.code.java.SimpleClassName;
+import io.spine.code.java.ClassName;
 import io.spine.type.TypeUrl;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * An enumeration type.
- *
- * @author Alexander Yevsyukov
- * @author Dmytro Dashenkov
  */
 @Internal
 public final class EnumType extends Type<EnumDescriptor, EnumDescriptorProto> {
 
-    private EnumType(EnumDescriptor descriptor,
-                     EnumDescriptorProto descriptorProto,
-                     ClassName className,
-                     TypeUrl typeUrl) {
-        super(descriptor, descriptorProto, className, typeUrl);
+    private EnumType(EnumDescriptor descriptor) {
+        super(descriptor);
     }
 
-    private static EnumType create(EnumDescriptor descriptor) {
-        EnumDescriptorProto descriptorProto = descriptor.toProto();
-        ClassName className = ClassName.from(descriptor);
-        TypeUrl typeUrl = TypeUrl.from(descriptor);
-        return new EnumType(descriptor, descriptorProto, className, typeUrl);
+    @Override
+    public EnumDescriptorProto toProto() {
+        return descriptor().toProto();
+    }
+
+    @Override
+    public TypeUrl url() {
+        return TypeUrl.from(descriptor());
+    }
+
+    @Override
+    public ClassName javaClassName() {
+        return ClassName.from(descriptor());
+    }
+
+    @Override
+    public SimpleClassName simpleJavaClassName() {
+        return SimpleClassName.ofEnum(descriptor());
+    }
+
+    static EnumType create(EnumDescriptor descriptor) {
+        return new EnumType(descriptor);
     }
 
     @SuppressWarnings("MethodWithMultipleLoops")

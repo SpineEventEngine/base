@@ -51,11 +51,12 @@ class MessageFieldValidator extends FieldValidator<Message> {
      *
      * @param fieldValue
      *         the value to validate
-     * @param strict
-     *         if {@code true} the validator would assume that the field
+     * @param assumeRequired
+     *         if {@code true} the validator would assume that the field is required even if
+     *         such constraint is not explicitly set
      */
-    MessageFieldValidator(FieldValue fieldValue, boolean strict) {
-        super(fieldValue, strict);
+    MessageFieldValidator(FieldValue fieldValue, boolean assumeRequired) {
+        super(fieldValue, assumeRequired);
         this.timeConstraint = fieldValue.valueOf(OptionsProto.when);
     }
 

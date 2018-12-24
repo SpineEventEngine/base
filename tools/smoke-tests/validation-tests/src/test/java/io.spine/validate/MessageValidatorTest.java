@@ -41,20 +41,24 @@ class MessageValidatorTest {
     @DisplayName("validate according to validation rules")
     void validate_according_to_validation_rule() {
         String validValue = "any text";
-        InvalidMessage invalidMessage = InvalidMessage.newBuilder()
-                                                      .setInvalidField(validValue)
-                                                      .build();
-        FirstRuleTarget first = FirstRuleTarget.newBuilder()
-                                               .setCanBeValid(invalidMessage)
-                                               .build();
-        SecondRuleTarget second = SecondRuleTarget.newBuilder()
-                                                  .setCanBeValid(invalidMessage)
-                                                  .build();
-        RuleTargetAggregate aggregate = RuleTargetAggregate.newBuilder()
-                                                           .setFirst(first)
-                                                           .setSecond(second)
-                                                           .build();
-        validate(aggregate);
+        InvalidMessage invalidMessage = InvalidMessage
+                .newBuilder()
+                .setInvalidField(validValue)
+                .build();
+        FirstRuleTarget first = FirstRuleTarget
+                .newBuilder()
+                .setCanBeValid(invalidMessage)
+                .build();
+        SecondRuleTarget second = SecondRuleTarget
+                .newBuilder()
+                .setCanBeValid(invalidMessage)
+                .build();
+        RuleTargetAggregate aggregateState = RuleTargetAggregate
+                .newBuilder()
+                .setFirst(first)
+                .setSecond(second)
+                .build();
+        validate(aggregateState);
         assertIsValid();
     }
 

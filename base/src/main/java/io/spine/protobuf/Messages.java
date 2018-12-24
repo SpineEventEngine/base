@@ -33,10 +33,6 @@ import static java.lang.String.format;
 
 /**
  * Utility class for working with {@link Message} objects.
- *
- * @author Mikhail Melnik
- * @author Mikhail Mikhaylov
- * @author Alexander Yevsyukov
  */
 public final class Messages {
 

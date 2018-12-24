@@ -138,34 +138,36 @@ public class MessageGenerator extends JsCodeGenerator {
      */
     private void addFromJsonCode(TypeName typeName) {
         String methodName = typeName.value() + '.' + FROM_JSON;
-        jsOutput().enterMethod(methodName, FROM_JSON_ARG);
-        jsOutput().declareVariable("jsObject", "JSON.parse(" + FROM_JSON_ARG + ')');
-        jsOutput().returnValue(typeName.value() + '.' + FROM_OBJECT + "(jsObject)");
-        jsOutput().exitFunction();
+        JsOutput js = jsOutput();
+        js.enterMethod(methodName, FROM_JSON_ARG);
+        js.declareVariable("jsObject", "JSON.parse(" + FROM_JSON_ARG + ')');
+        js.returnValue(typeName.value() + '.' + FROM_OBJECT + "(jsObject)");
+        js.exitFunction();
     }
 
     /**
      * Adds the {@code fromObject} code to the {@code jsOutput}.
      */
-    @SuppressWarnings("DuplicateStringLiteralInspection") // Duplication in different context.
     private void addFromObjectCode(TypeName typeName) {
         String methodName = typeName.value() + '.' + FROM_OBJECT;
-        jsOutput().enterMethod(methodName, FROM_OBJECT_ARG);
+        JsOutput js = jsOutput();
+        js.enterMethod(methodName, FROM_OBJECT_ARG);
         checkParsedObject();
-        jsOutput().addEmptyLine();
-        jsOutput().declareVariable(MESSAGE, "new " + typeName + "()");
+        js.addEmptyLine();
+        js.declareVariable(MESSAGE, "new " + typeName + "()");
         handleMessageFields();
-        jsOutput().returnValue(MESSAGE);
-        jsOutput().exitFunction();
+        js.returnValue(MESSAGE);
+        js.exitFunction();
     }
 
     /**
      * Adds the code checking that {@code fromObject} argument is not null.
      */
     private void checkParsedObject() {
-        jsOutput().ifNull(FROM_OBJECT_ARG);
-        jsOutput().returnValue("null");
-        jsOutput().exitBlock();
+        JsOutput js = jsOutput();
+        js.ifNull(FROM_OBJECT_ARG);
+        js.returnValue("null");
+        js.exitBlock();
     }
 
     /**
@@ -174,9 +176,10 @@ public class MessageGenerator extends JsCodeGenerator {
     @VisibleForTesting
     void handleMessageFields() {
         List<FieldDescriptor> fields = message.getFields();
+        JsOutput js = jsOutput();
         for (FieldDescriptor field : fields) {
-            jsOutput().addEmptyLine();
-            FieldGenerator generator = FieldGenerators.createFor(field, jsOutput());
+            js.addEmptyLine();
+            FieldGenerator generator = FieldGenerators.createFor(field, js);
             generator.generate();
         }
     }

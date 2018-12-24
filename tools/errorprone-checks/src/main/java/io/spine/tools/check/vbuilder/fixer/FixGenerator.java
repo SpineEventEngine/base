@@ -32,6 +32,7 @@ import com.sun.tools.javac.code.Type;
 import com.sun.tools.javac.tree.JCTree.JCExpression;
 import com.sun.tools.javac.tree.JCTree.JCFieldAccess;
 import com.sun.tools.javac.tree.JCTree.JCIdent;
+import io.spine.code.proto.MessageType;
 
 import static com.google.errorprone.fixes.SuggestedFixes.prettyType;
 import static com.google.errorprone.util.ASTHelpers.enclosingClass;
@@ -131,7 +132,7 @@ class FixGenerator {
     private String generateVBuilderName() {
         Type type = getTypeOnWhichInvoked();
         String simpleName = prettyType(state, null, type);
-        String vBuilderName = simpleName + "VBuilder";
+        String vBuilderName = simpleName + MessageType.VBUILDER_SUFFIX;
         return vBuilderName;
     }
 

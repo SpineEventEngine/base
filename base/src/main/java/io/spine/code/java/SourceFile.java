@@ -34,8 +34,6 @@ import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
  * A Java source code file.
- *
- * @author Alexander Yevsyukov
  */
 public final class SourceFile extends AbstractSourceFile {
 

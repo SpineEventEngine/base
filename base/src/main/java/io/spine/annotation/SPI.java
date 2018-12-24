@@ -35,8 +35,6 @@ import java.lang.annotation.Target;
  *
  * <p>See "Effective Java 2nd Edition", chapter 2, item 1 for more info about
  * service provider framework pattern.
- *
- * @author Alexander Litus
  */
 @SPI
 @Retention(RetentionPolicy.SOURCE)

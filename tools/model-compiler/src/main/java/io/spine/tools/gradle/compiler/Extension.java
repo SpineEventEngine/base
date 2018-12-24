@@ -38,8 +38,6 @@ import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
  * A configuration for the {@link ModelCompilerPlugin}.
- *
- * @author Alex Tymchenko
  */
 @SuppressWarnings({
         "PublicField", "WeakerAccess" /* Expose fields as a Gradle extension */,
@@ -137,14 +135,6 @@ public class Extension {
      * The indent for the generated code in the validating builders.
      */
     public Indent indent = Indent.of4();
-
-    /**
-     * The flag which enables the generation of validating builders for all Protobuf
-     * messages in the classpath.
-     *
-     * <p>By default, only the Protobuf messages from the current module are generated.
-     */
-    public boolean generateBuildersFromClasspath = false;
 
     /**
      * The absolute paths to directories to delete.
@@ -265,20 +255,6 @@ public class Extension {
         Indent result = spineProtobuf(project).indent;
         log().debug("The current indent is {}", result.getSize());
         return result;
-    }
-
-    public static boolean isGenerateValidatingBuildersFromClasspath(Project project) {
-        boolean result = spineProtobuf(project).generateBuildersFromClasspath;
-        log().debug("Validating builder are generated from  {}",
-                    (result ? "the classpath" : "this module only"));
-        return result;
-    }
-
-    @SuppressWarnings({"InstanceMethodNamingConvention", "unused"})
-    public void setGenerateValidatingBuildersFromClasspath(boolean generateFromClasspath) {
-        this.generateBuildersFromClasspath = generateFromClasspath;
-        log().debug("Validating builder are set to be generated from  {}",
-                    (generateFromClasspath ? "the whole classpath" : "the current module only"));
     }
 
     @SuppressWarnings("unused")

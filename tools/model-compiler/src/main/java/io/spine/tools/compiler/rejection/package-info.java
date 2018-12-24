@@ -20,6 +20,9 @@
 
 /**
  * Classes for generating code for rejections.
+ *
+ * <p><a href = "https://github.com/square/javapoet">JavaPoet</a> library is used for
+ * Java code generation.
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault

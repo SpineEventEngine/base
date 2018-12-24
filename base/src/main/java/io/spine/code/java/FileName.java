@@ -29,8 +29,6 @@ import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
  * A Java file name.
- *
- * @author Alexander Yevsyukov
  */
 public final class FileName extends AbstractFileName<FileName> {
 

@@ -23,39 +23,30 @@ import com.google.common.base.MoreObjects;
 import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.collect.ImmutableList;
 import io.spine.string.Stringifiers;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.List;
-import java.util.function.Function;
 
 import static com.google.common.base.Joiner.on;
-import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.stream.Collectors.toList;
 
 /**
  * An exception, thrown if a {@code Message} does not pass the validation.
- *
- * @author Illia Shepilov
- * @author Alex Tymchenko
  */
-public class ValidationException extends RuntimeException {
+public final class ValidationException extends RuntimeException {
 
     private static final long serialVersionUID = 0L;
-
-    private static final Function<ConstraintViolation, String> TO_STRING_FN = new ToStringFn();
 
     /**
      * List of the constraint violations, that were found during the validation.
      */
-    private final List<ConstraintViolation> constraintViolations;
+    private final ImmutableList<ConstraintViolation> constraintViolations;
 
     public ValidationException(Iterable<ConstraintViolation> violations) {
-        super();
+        super("Validation constraints violated");
         this.constraintViolations = ImmutableList.copyOf(violations);
     }
 
-    @SuppressWarnings({"AssignmentOrReturnOfFieldWithMutableType" /* returns immutable impl. */,
-                       "unused" /* part of public API of the exception. */})
+    @SuppressWarnings({"unused" /* part of public API of the exception. */})
     public List<ConstraintViolation> getConstraintViolations() {
         return constraintViolations;
     }
@@ -63,28 +54,12 @@ public class ValidationException extends RuntimeException {
     @Override
     public String toString() {
         ToStringHelper helper = MoreObjects.toStringHelper(this);
-
-        String violationContent =
-                constraintViolations.isEmpty()
-                ? "[]"
-                : on(", ").join(constraintViolations.stream()
-                                                    .map(TO_STRING_FN)
-                                                    .collect(toList()));
-
+        List<String> violations =
+                constraintViolations.stream()
+                                    .map(Stringifiers::toString)
+                                    .collect(toList());
+        String violationContent = "[" + on(", ").join(violations) + ']';
         return helper.add("constraintViolations", violationContent)
                      .toString();
-    }
-
-    /**
-     * A function, transforming a {@linkplain ConstraintViolation constraint violation}
-     * into a {@code String}.
-     */
-    private static final class ToStringFn implements Function<ConstraintViolation, String> {
-        @Nullable
-        @Override
-        public String apply(@Nullable ConstraintViolation input) {
-            checkNotNull(input);
-            return Stringifiers.toString(input);
-        }
     }
 }

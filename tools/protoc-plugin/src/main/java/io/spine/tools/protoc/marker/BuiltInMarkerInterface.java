@@ -29,6 +29,7 @@ import io.spine.code.proto.MessageDeclaration;
 import io.spine.tools.protoc.CompilerOutput;
 
 import java.util.Optional;
+import java.util.stream.Stream;
 import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -36,7 +37,6 @@ import static com.google.protobuf.DescriptorProtos.DescriptorProto;
 import static com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import static io.spine.tools.protoc.marker.InsertionPoint.implementInterface;
 import static java.util.Optional.empty;
-import static java.util.stream.Stream.of;
 
 /**
  * A built-in marked interface.
@@ -74,7 +74,7 @@ public class BuiltInMarkerInterface implements MarkerInterface {
                                                     DescriptorProto message) {
         MessageDeclaration declaration = MessageDeclaration.create(message, file);
         Optional<Type> foundInterface =
-                of(Type.values())
+                Stream.of(Type.values())
                         .filter(contract -> contract.matches(declaration))
                         .findFirst();
         if (!foundInterface.isPresent()) {

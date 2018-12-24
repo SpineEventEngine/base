@@ -20,15 +20,7 @@
 
 package io.spine.validate;
 
-import com.google.protobuf.Message;
-import com.google.protobuf.ProtocolMessageEnum;
-import com.google.protobuf.Value;
-import io.spine.annotation.Internal;
-import io.spine.base.Error;
-import io.spine.type.MessageClass;
-
 import java.util.List;
-import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
@@ -39,8 +31,8 @@ import static java.lang.System.lineSeparator;
  */
 public final class ConstraintViolations {
 
+    /** Prevent instantiation of this utility class. */
     private ConstraintViolations() {
-        // Prevent instantiation of this utility class.
     }
 
     /**
@@ -77,11 +69,12 @@ public final class ConstraintViolations {
     public static String toText(Iterable<ConstraintViolation> violations) {
         checkNotNull(violations);
 
-        StringBuilder resultBuilder = new StringBuilder("Violation list:");
+        StringBuilder resultBuilder = new StringBuilder("Violations:");
 
+        String newLine = lineSeparator();
         for (ConstraintViolation childViolation : violations) {
             String childViolationFormatted = toText(childViolation);
-            resultBuilder.append(lineSeparator())
+            resultBuilder.append(newLine)
                          .append(childViolationFormatted);
         }
         return resultBuilder.toString();
@@ -128,9 +121,10 @@ public final class ConstraintViolations {
 
         StringBuilder resultBuilder = new StringBuilder("Violations:");
 
+        String newLine = lineSeparator();
         for (ConstraintViolation childViolation : violations) {
             String childViolationFormatted = toText(format, childViolation);
-            resultBuilder.append(lineSeparator())
+            resultBuilder.append(newLine)
                          .append(childViolationFormatted);
         }
         return resultBuilder.toString();

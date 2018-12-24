@@ -38,7 +38,7 @@ class FileDescriptorsTest extends UtilityClassTest<FileDescriptors> {
 
     @Test
     @DisplayName("load main set")
-    void load_main_set() {
+    void loadMainSet() {
         Collection<FileDescriptorProto> fileSets = FileDescriptors.load();
         assertFalse(fileSets.isEmpty());
     }
