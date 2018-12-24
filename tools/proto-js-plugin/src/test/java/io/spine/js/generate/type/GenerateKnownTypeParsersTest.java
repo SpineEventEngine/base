@@ -51,22 +51,22 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @DisplayName("GenerateKnownTypeParsers should")
 class GenerateKnownTypeParsersTest {
 
-    private final FileSet protoSources = GivenProject.mainFileSet();
+    private final FileSet fileSet = GivenProject.mainFileSet();
     private final Directory generatedProtoDir = GivenProject.mainProtoSources();
-    private final GenerateKnownTypeParsers writer = createFor(generatedProtoDir, protoSources);
+    private final GenerateKnownTypeParsers writer = createFor(generatedProtoDir);
 
     @Test
     @DisplayName(NOT_ACCEPT_NULLS)
     void passNullToleranceCheck() {
         new NullPointerTester().setDefault(Directory.class, generatedProtoDir)
-                               .setDefault(FileSet.class, protoSources)
+                               .setDefault(FileSet.class, fileSet)
                                .testAllPublicStaticMethods(GenerateKnownTypeParsers.class);
     }
 
     @Test
     @DisplayName("write known types map to JS file")
     void writeKnownTypes() {
-        writer.writeKnownTypes();
+        writer.writeKnownTypes(fileSet);
         Path knownTypes = generatedProtoDir.resolve(KNOWN_TYPES);
         assertTrue(exists(knownTypes));
     }
@@ -82,8 +82,8 @@ class GenerateKnownTypeParsersTest {
     @Test
     @DisplayName("write `fromJson` method into generated JS files")
     void writeFromJsonMethod() throws IOException {
-        writer.writeFromJsonMethod();
-        checkProcessedFiles(protoSources);
+        writer.writeFromJsonMethod(fileSet);
+        checkProcessedFiles(fileSet);
     }
 
     @Test

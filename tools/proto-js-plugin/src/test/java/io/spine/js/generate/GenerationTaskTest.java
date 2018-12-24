@@ -41,16 +41,16 @@ class GenerationTaskTest {
     @Test
     @DisplayName("check if there are files to process")
     void checkFilesToProcess() {
-        TestGenerationTask task = new TestGenerationTask(mainProtoSources(), mainFileSet());
-        assertPerformed(task);
+        TestGenerationTask task = new TestGenerationTask(mainProtoSources());
+        assertPerformed(task, mainFileSet());
     }
 
     @Test
     @DisplayName("recognize there are no generated files to process")
     void recognizeThereAreNoFiles() {
         Directory nonExistentRoot = Directory.at(Paths.get(MISSING_PATH));
-        TestGenerationTask task = new TestGenerationTask(nonExistentRoot, mainFileSet());
-        assertNotPerformed(task);
+        TestGenerationTask task = new TestGenerationTask(nonExistentRoot);
+        assertNotPerformed(task, mainFileSet());
     }
 
     @Test
@@ -58,21 +58,22 @@ class GenerationTaskTest {
     void recognizeThereAreNoTypes() {
         File nonExistentDescriptors = new File(MISSING_PATH);
         FileSet emptyFileSet = FileSet.parseOrEmpty(nonExistentDescriptors);
-        TestGenerationTask task = new TestGenerationTask(mainProtoSources(), emptyFileSet);
-        assertNotPerformed(task);
+        TestGenerationTask task = new TestGenerationTask(mainProtoSources());
+        assertNotPerformed(task, emptyFileSet);
     }
 
-    private static void assertPerformed(TestGenerationTask task) {
-        assertPerformed(task, true);
+    private static void assertPerformed(TestGenerationTask task, FileSet fileSet) {
+        assertPerformed(task, fileSet, true);
     }
 
-    private static void assertNotPerformed(TestGenerationTask task) {
-        assertPerformed(task, false);
+    private static void assertNotPerformed(TestGenerationTask task, FileSet fileSet) {
+        assertPerformed(task, fileSet, false);
     }
 
     private static void assertPerformed(TestGenerationTask task,
+                                        FileSet fileSet,
                                         boolean expectedToBePerformed) {
-        task.perform();
+        task.perform(fileSet);
         assertEquals(expectedToBePerformed, task.isSourcesProcessed());
     }
 }

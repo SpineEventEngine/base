@@ -25,6 +25,7 @@ import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.js.Directory;
 import io.spine.code.proto.FileSet;
 import io.spine.js.generate.GenerationTask;
+import io.spine.js.generate.Snippet;
 import io.spine.js.generate.output.FileWriter;
 
 import java.io.IOException;
@@ -62,24 +63,23 @@ public final class GenerateKnownTypeParsers extends GenerationTask {
     private static final String PARSERS_RESOURCE =
             "io/spine/tools/protojs/knowntypes/known_type_parsers";
 
-    private GenerateKnownTypeParsers(Directory generatedRoot, FileSet fileSet) {
-        super(generatedRoot, fileSet);
+    private GenerateKnownTypeParsers(Directory generatedRoot) {
+        super(generatedRoot);
     }
 
-    public static GenerateKnownTypeParsers createFor(Directory generatedRoot, FileSet protoSources) {
+    public static GenerateKnownTypeParsers createFor(Directory generatedRoot) {
         checkNotNull(generatedRoot);
-        checkNotNull(protoSources);
-        return new GenerateKnownTypeParsers(generatedRoot, protoSources);
+        return new GenerateKnownTypeParsers(generatedRoot);
     }
 
     /**
      * Generates and writes the JS code necessary to parse proto messages from the JSON format.
      */
     @Override
-    protected void processSources() {
-        writeKnownTypes();
+    protected void generateFor(FileSet fileSet) {
+        writeKnownTypes(fileSet);
         writeKnownTypeParsers();
-        writeFromJsonMethod();
+        writeFromJsonMethod(fileSet);
     }
 
     /**
@@ -91,8 +91,8 @@ public final class GenerateKnownTypeParsers extends GenerationTask {
      * <p>The file is written to the root of the generated messages location.
      */
     @VisibleForTesting
-    void writeKnownTypes() {
-        KnownTypesMap generator = new KnownTypesMap(fileSet());
+    void writeKnownTypes(FileSet fileSet) {
+        KnownTypesMap generator = new KnownTypesMap(fileSet);
         FileWriter writer = FileWriter.createFor(generatedRoot(), KNOWN_TYPES);
         writer.write(generator.value());
     }
@@ -133,12 +133,11 @@ public final class GenerateKnownTypeParsers extends GenerationTask {
     /**
      * Appends the {@code fromJson(json)} methods for all known types in the corresponding files.
      *
-     * <p>The standard Protobuf types and the
-     * {@linkplain io.spine.option.OptionsProto Spine Options} type are skipped.
+     * <p>The standard Protobuf types are skipped.
      */
     @VisibleForTesting
-    void writeFromJsonMethod() {
-        for (FileDescriptor file : fileSet().files()) {
+    void writeFromJsonMethod(FileSet fileSet) {
+        for (FileDescriptor file : fileSet.files()) {
             writeFromJsonMethod(file);
         }
     }
@@ -147,9 +146,9 @@ public final class GenerateKnownTypeParsers extends GenerationTask {
         if (shouldSkip(file)) {
             return;
         }
-        ParseMethodsSnippet typeParsingSnippet = new ParseMethodsSnippet(file);
+        Snippet parseMethodsSnippet = new ParseMethodsSnippet(file);
         FileWriter writer = FileWriter.createFor(generatedRoot(), file);
-        writer.append(typeParsingSnippet.value());
+        writer.append(parseMethodsSnippet.value());
     }
 
     /**

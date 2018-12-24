@@ -47,13 +47,13 @@ public class AppendTypeUrlGetter extends GenerationTask {
 
     private static final String METHOD_NAME = "typeUrl";
 
-    public AppendTypeUrlGetter(Directory generatedRoot, FileSet fileSet) {
-        super(generatedRoot, fileSet);
+    public AppendTypeUrlGetter(Directory generatedRoot) {
+        super(generatedRoot);
     }
 
     @Override
-    protected void processSources() {
-        for (FileDescriptor file : fileSet().files()) {
+    protected void generateFor(FileSet fileSet) {
+        for (FileDescriptor file : fileSet.files()) {
             processFile(file);
         }
     }

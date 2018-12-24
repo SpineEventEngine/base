@@ -31,12 +31,12 @@ public class TestGenerationTask extends GenerationTask {
 
     private boolean sourcesProcessed = false;
 
-    public TestGenerationTask(Directory generatedRoot, FileSet fileSet) {
-        super(generatedRoot, fileSet);
+    public TestGenerationTask(Directory generatedRoot) {
+        super(generatedRoot);
     }
 
     @Override
-    protected void processSources() {
+    protected void generateFor(FileSet fileSet) {
         sourcesProcessed = true;
     }
 

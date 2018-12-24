@@ -34,38 +34,31 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public abstract class GenerationTask {
 
     private final Directory generatedRoot;
-    private final FileSet fileSet;
 
-    protected GenerationTask(Directory generatedRoot, FileSet fileSet) {
+    protected GenerationTask(Directory generatedRoot) {
         this.generatedRoot = checkNotNull(generatedRoot);
-        this.fileSet = checkNotNull(fileSet);
     }
 
     /**
-     * {@linkplain #processSources() Enhances} generated sources.
+     * Generates code for the specified file set.
      *
-     * <p>Does nothing if there are no Protobuf files to process.
+     * @param fileSet
+     *         the Protobuf files to generate code for
      */
-    public final void perform() {
-        if (hasFilesToProcess()) {
-            processSources();
+    public final void perform(FileSet fileSet) {
+        checkNotNull(fileSet);
+        if (shouldPerform(fileSet)) {
+            generateFor(fileSet);
         }
     }
 
     /**
-     * Processes generated Protobuf {@link #fileSet() files}.
+     * Generates code for the Protobuf files.
      */
-    protected abstract void processSources();
+    protected abstract void generateFor(FileSet fileSet);
 
     /**
-     * Obtains files to be enhanced.
-     */
-    protected FileSet fileSet() {
-        return fileSet;
-    }
-
-    /**
-     * Obtains the root of the {@linkplain #fileSet() sources}.
+     * Obtains the root of the generated Protobuf sources.
      */
     protected Directory generatedRoot() {
         return generatedRoot;
@@ -79,7 +72,7 @@ public abstract class GenerationTask {
      *
      * @return {@code true} if there are files to process and {@code false} otherwise
      */
-    private boolean hasFilesToProcess() {
+    private boolean shouldPerform(FileSet fileSet) {
         boolean hasFilesToProcess = !fileSet.isEmpty() && generatedRoot.exists();
         return hasFilesToProcess;
     }
