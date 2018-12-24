@@ -23,11 +23,14 @@ package io.spine.base;
 import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
+import com.google.protobuf.Descriptors;
+import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Message;
 import io.spine.code.proto.MessageDeclaration;
 
 import java.util.function.Predicate;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type.TYPE_STRING;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
@@ -66,23 +69,7 @@ public interface UuidValue<I extends Message> extends SerializableMessage {
      * @return the predicate to distinguish UUID values
      */
     static Predicate<MessageDeclaration> predicate() {
-        return messageDeclaration -> isUuidValue(messageDeclaration.getMessage());
-    }
-
-    /**
-     * Checks if the given proto definition represents a {@code UuidValue}.
-     */
-    static boolean isUuidValue(DescriptorProto message) {
-        int fieldCount = message.getFieldCount();
-        if (fieldCount != 1) {
-            return false;
-        }
-        FieldDescriptorProto theField = message.getFieldList()
-                                               .get(0);
-        boolean nameMatches = theField.getName()
-                                      .equals(FIELD_NAME);
-        boolean typeMatches = theField.getType() == TYPE_STRING;
-        return nameMatches && typeMatches;
+        return new Matcher();
     }
 
     /**
@@ -102,5 +89,31 @@ public interface UuidValue<I extends Message> extends SerializableMessage {
         Class<I> thisClass = (Class<I>) this.getClass();
         UuidFactory<I> uuidFactory = UuidFactory.forClass(thisClass);
         return uuidFactory.newUuidOf(value);
+    }
+
+    /**
+     * Checks if the given message declaration matches the {@code UuidValue} contract.
+     */
+    class Matcher implements Predicate<MessageDeclaration> {
+
+        @Override
+        public boolean test(MessageDeclaration messageDeclaration) {
+            checkNotNull(messageDeclaration);
+            return test(messageDeclaration.getMessage());
+        }
+
+        public boolean test(DescriptorProto message) {
+            checkNotNull(message);
+            int fieldCount = message.getFieldCount();
+            if (fieldCount != 1) {
+                return false;
+            }
+            FieldDescriptorProto theField = message.getFieldList()
+                                                   .get(0);
+            boolean nameMatches = theField.getName()
+                                          .equals(FIELD_NAME);
+            boolean typeMatches = theField.getType() == TYPE_STRING;
+            return nameMatches && typeMatches;
+        }
     }
 }

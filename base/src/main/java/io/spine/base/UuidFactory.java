@@ -20,6 +20,7 @@
 
 package io.spine.base;
 
+import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
@@ -96,6 +97,7 @@ class UuidFactory<I extends Message> {
     }
 
     private static boolean isUuidValue(Descriptor message) {
-        return UuidValue.isUuidValue(message.toProto());
+        DescriptorProto messageProto = message.toProto();
+        return new UuidValue.Matcher().test(messageProto);
     }
 }
