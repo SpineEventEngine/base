@@ -437,8 +437,7 @@ class MarkerInterfaceGeneratorTest {
 
     private static void assertPackage(File generatedFile) {
         Path generatedFilePath = Paths.get(generatedFile.getName());
-        Path path = PACKAGE_NAME.toDirectory()
-                                .getPath();
-        assertTrue(generatedFilePath.startsWith(path));
+        assertTrue(generatedFilePath.startsWith(PACKAGE_NAME.toDirectory()
+                                                            .getPath()));
     }
 }
