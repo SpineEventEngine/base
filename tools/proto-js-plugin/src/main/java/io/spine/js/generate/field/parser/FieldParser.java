@@ -23,8 +23,8 @@ package io.spine.js.generate.field.parser;
 import com.google.protobuf.Descriptors;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.code.proto.FieldDeclaration;
-import io.spine.js.generate.JsOutput;
-import io.spine.js.generate.type.ProtoParsersGenerator;
+import io.spine.js.generate.CodeLines;
+import io.spine.js.generate.type.WellKnownTypeParsers;
 import io.spine.type.TypeUrl;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -68,7 +68,7 @@ public interface FieldParser {
         if (fdecl.isMessage()) {
             Descriptors.Descriptor message = field.getMessageType();
             TypeUrl typeUrl = TypeUrl.from(message);
-            boolean isWellKnownType = ProtoParsersGenerator.hasParser(typeUrl);
+            boolean isWellKnownType = WellKnownTypeParsers.hasParser(typeUrl);
             return isWellKnownType
                    ? WellKnownFieldParser.createFor(field, jsOutput)
                    : MessageFieldParser.createFor(field, jsOutput);

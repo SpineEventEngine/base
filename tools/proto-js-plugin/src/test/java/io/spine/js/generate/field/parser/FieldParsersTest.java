@@ -32,7 +32,7 @@ import static io.spine.js.generate.field.given.Given.enumField;
 import static io.spine.js.generate.field.given.Given.messageField;
 import static io.spine.js.generate.field.given.Given.primitiveField;
 import static io.spine.js.generate.field.given.Given.timestampField;
-import static io.spine.js.generate.field.parser.FieldParsers.parserFor;
+import static io.spine.js.generate.field.parser.FieldParser.parserFor;
 
 @DisplayName("FieldParsers utility should")
 class FieldParsersTest  {
