@@ -86,7 +86,7 @@ final class TypeUrlMethods implements Snippet {
         CodeLine returnStatement = returnTypeUrl(type);
         Method method = Method
                 .newBuilder(methodName)
-                .appendToBody(returnStatement.content())
+                .appendToBody(returnStatement)
                 .build();
         return method;
     }
