@@ -50,23 +50,23 @@ final class MarkerInterfaceParameters {
     }
 
     /**
-     * Initializes parameter values based on the interface implementor.
+     * Initializes parameter values based on the marker interface target.
      *
      * <p>The values are then concatenated to a {@code String} of generated code.
      *
      * <p>Example output: {@code <ProjectId, String>}.
      */
-    String getAsStringFor(DescriptorProto implementor) {
+    String getAsStringFor(DescriptorProto target) {
         if (params.isEmpty()) {
             return "";
         }
-        String result = '<' + initParams(implementor) + '>';
+        String result = '<' + initParams(target) + '>';
         return result;
     }
 
-    private String initParams(DescriptorProto implementor) {
+    private String initParams(DescriptorProto target) {
         return params.stream()
-                     .map(param -> param.valueFor(implementor))
+                     .map(param -> param.valueFor(target))
                      .collect(Collectors.joining(", "));
     }
 }
