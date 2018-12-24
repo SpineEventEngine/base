@@ -29,8 +29,8 @@ import java.util.stream.Collectors;
  * The generic parameters of the {@link MarkerInterface}.
  *
  * <p>Contrary to the type information contained in a {@link Class} instance, the
- * {@code MarkerInterfaceParameter} carry the logic of how to initialize itself based on the
- * interface implementor.
+ * {@code MarkerInterfaceParameter} carries the logic on how to initialize itself based on the
+ * marker interface target.
  */
 final class MarkerInterfaceParameters {
 
