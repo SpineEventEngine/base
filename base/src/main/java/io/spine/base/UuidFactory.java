@@ -89,7 +89,7 @@ class UuidFactory<I extends Message> {
      *
      * @param value
      *         a value to use
-     * @return a new instance with the {@code uuid} field initialized to the given value
+     * @return a new message instance with the {@code uuid} field initialized to the given value
      */
     @SuppressWarnings("unchecked") // It is OK as the builder is obtained by the specified class.
     I newUuidOf(String value) {
@@ -106,7 +106,7 @@ class UuidFactory<I extends Message> {
     }
 
     /**
-     * Checks that the given value is UUID-based.
+     * Checks that the passed value is a UUID-based string.
      *
      * <p>The check utilizes the Standard Java {@code UUID}
      * {@linkplain java.util.UUID#fromString(String) check on construction}.
@@ -115,7 +115,7 @@ class UuidFactory<I extends Message> {
      *         if the passed value is not a valid UUID string
      */
     @SuppressWarnings({"CheckReturnValue", "ResultOfMethodCallIgnored"})
-    // Just verify that object is constructed without errors.
+    // Just verify that the object is constructed without errors.
     private static void checkIsUuid(String value) {
         checkNotEmptyOrBlank(value);
         try {
