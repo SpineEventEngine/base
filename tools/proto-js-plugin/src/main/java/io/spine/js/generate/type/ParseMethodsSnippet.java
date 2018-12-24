@@ -38,7 +38,7 @@ import static io.spine.js.generate.RawLine.emptyLine;
  * <p>The class generates the {@code fromJson} and {@code fromObject} methods for each message
  * declared in the {@link FileDescriptor}.
  */
-public final class TypeParsingSnippet implements Snippet {
+public final class ParseMethodsSnippet implements Snippet {
 
     /**
      * The name of the {@code known_type_parsers.js} import.
@@ -63,7 +63,7 @@ public final class TypeParsingSnippet implements Snippet {
      * @param file
      *         the {@code FileDescriptor} whose messages to process
      */
-    public TypeParsingSnippet(FileDescriptor file) {
+    public ParseMethodsSnippet(FileDescriptor file) {
         this.file = file;
     }
 

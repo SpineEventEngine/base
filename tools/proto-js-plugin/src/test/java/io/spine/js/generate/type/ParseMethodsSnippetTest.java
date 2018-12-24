@@ -31,13 +31,13 @@ import static io.spine.js.generate.given.Generators.assertContains;
 import static io.spine.js.generate.given.Given.file;
 import static io.spine.js.generate.type.FromJsonMethod.FROM_JSON;
 import static io.spine.js.generate.type.FromJsonMethod.FROM_OBJECT;
-import static io.spine.js.generate.type.TypeParsingSnippet.COMMENT;
+import static io.spine.js.generate.type.ParseMethodsSnippet.COMMENT;
 
-@DisplayName("TypeParsingExtension should")
-class TypeParsingSnippetTest {
+@DisplayName("ParseMethodsSnippet should")
+class ParseMethodsSnippetTest {
 
     private final FileDescriptor file = file();
-    private final TypeParsingSnippet generator = new TypeParsingSnippet(file);
+    private final ParseMethodsSnippet generator = new ParseMethodsSnippet(file);
 
     @Test
     @DisplayName("generate explaining comment")

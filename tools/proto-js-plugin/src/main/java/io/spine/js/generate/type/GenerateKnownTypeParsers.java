@@ -147,7 +147,7 @@ public final class GenerateKnownTypeParsers extends GenerationTask {
         if (shouldSkip(file)) {
             return;
         }
-        TypeParsingSnippet typeParsingSnippet = new TypeParsingSnippet(file);
+        ParseMethodsSnippet typeParsingSnippet = new ParseMethodsSnippet(file);
         FileWriter writer = FileWriter.createFor(generatedRoot(), file);
         writer.append(typeParsingSnippet.value());
     }
