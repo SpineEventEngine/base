@@ -20,11 +20,13 @@
 
 package io.spine.validate;
 
+import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
 import io.spine.base.ConversionException;
+import io.spine.option.OptionsProto;
 import io.spine.protobuf.Messages;
 import io.spine.reflect.GenericTypeIndex;
 import io.spine.string.Stringifiers;
@@ -37,7 +39,6 @@ import java.util.Map;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Throwables.getRootCause;
 import static io.spine.util.Exceptions.illegalArgumentWithCauseOf;
-import static io.spine.validate.FieldValidatorFactory.create;
 
 /**
  * Serves as an abstract base for all {@linkplain ValidatingBuilder validating builders}.
@@ -130,7 +131,6 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
         Map<K, V> result = Stringifiers.newForMapOf(keyClass, valueClass)
                                        .reverse()
                                        .convert(value);
-        checkNotNull(result);
         return result;
     }
 
@@ -151,7 +151,6 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
         List<V> result = Stringifiers.newForListOf(valueClass)
                                      .reverse()
                                      .convert(value);
-        checkNotNull(result);
         return result;
     }
 
@@ -159,20 +158,10 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
     public <V> void validate(FieldDescriptor descriptor, V fieldValue, String fieldName)
             throws ValidationException {
         FieldContext fieldContext = FieldContext.create(descriptor);
-        FieldValue currentValue = currentFieldValue(descriptor, fieldContext);
         FieldValue valueToValidate = FieldValue.of(fieldValue, fieldContext);
-        FieldValueChange change = FieldValueChange.of(currentValue, valueToValidate);
-        FieldValidator<?> validator = create(change);
+        FieldValidator<?> validator = valueToValidate.createValidator();
         List<ConstraintViolation> violations = validator.validate();
         checkViolations(violations);
-    }
-
-    private FieldValue currentFieldValue(FieldDescriptor descriptor,
-                                                   FieldContext fieldContext) {
-        FieldValue fieldValue = getMessageBuilder().hasField(descriptor) ?
-                                FieldValue.of(messageBuilder.getField(descriptor), fieldContext) :
-                                FieldValue.unsetValue(fieldContext);
-        return fieldValue;
     }
 
     /**
@@ -235,6 +224,28 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
         List<ConstraintViolation> violations = MessageValidator.newInstance(message)
                                                                .validate();
         checkViolations(violations);
+    }
+
+    @SuppressWarnings("unused")
+        // Called by all actual validating builder subclasses.
+    protected final void validateSetOnce(FieldDescriptor descriptor) throws ValidationException {
+        boolean setOnce = descriptor.getOptions()
+                                    .getExtension(OptionsProto.setOnce);
+        boolean valueAlreadySet = getMessageBuilder().hasField(descriptor);
+        if (setOnce && valueAlreadySet) {
+            throw setOnceViolation(descriptor);
+        }
+    }
+
+    private static ValidationException setOnceViolation(FieldDescriptor descriptor) {
+        String fieldName = descriptor.getName();
+        ConstraintViolation setOnceViolation = ConstraintViolation
+                .newBuilder()
+                .setMsgFormat("Attempted to change a value of the field %s that has " +
+                              "(set_once) = true and is already set")
+                .addParam(fieldName)
+                .build();
+        return new ValidationException(ImmutableList.of(setOnceViolation));
     }
 
     private static void checkViolations(List<ConstraintViolation> violations)

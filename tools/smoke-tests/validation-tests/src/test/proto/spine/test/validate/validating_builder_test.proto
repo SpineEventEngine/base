@@ -93,9 +93,13 @@ message Project {
 
 message Task {
 
-    string id = 1 [(required) = true];
+    string id = 1 [(required) = true, (set_once) = true];
 
     string name = 2 [(required) = true];
+
+    TaskLabel label = 3 [(set_once) = true];
+
+    Member assignee = 4 [(set_once) = true];
 }
 
 message Member {
@@ -114,4 +118,11 @@ message Attachment {
     string title = 2 [(required) = true, (pattern).regex = ".*\\w+.*"];
 
     spine.net.Url url = 3 [(required) = true, (valid) = true];
+}
+
+enum TaskLabel {
+    NO_LABEL = 0;
+    OF_LITTLE_IMPORTANCE = 1;
+    IMPORTANT = 2;
+    CRITICAL = 3;
 }

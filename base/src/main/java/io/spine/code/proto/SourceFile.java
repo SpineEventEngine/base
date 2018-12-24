@@ -27,6 +27,7 @@ import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.AbstractSourceFile;
 import io.spine.code.java.SimpleClassName;
+import io.spine.logging.Logging;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -40,7 +41,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * A Protobuf file which also gives access to its {@link FileDescriptorProto descriptor}.
  */
-public class SourceFile extends AbstractSourceFile {
+public class SourceFile extends AbstractSourceFile implements Logging {
 
     private final FileDescriptor descriptor;
 
@@ -50,7 +51,7 @@ public class SourceFile extends AbstractSourceFile {
     }
 
     /**
-     * Creates instance for the passed file descriptor.
+     * Creates a new instance for the passed file descriptor.
      */
     public static SourceFile from(FileDescriptor file) {
         return new SourceFile(file);
@@ -106,7 +107,8 @@ public class SourceFile extends AbstractSourceFile {
     public List<MessageType> allThat(Predicate<DescriptorProto> predicate) {
         ImmutableList.Builder<MessageType> result = ImmutableList.builder();
         for (Descriptor messageType : descriptor.getMessageTypes()) {
-            MessageType declaration = MessageType.create(messageType);
+            MessageType declaration = MessageType.of(messageType);
+            _debug("Testing {} to match {}", declaration, predicate);
             if (predicate.test(messageType.toProto())) {
                 result.add(declaration);
             }
@@ -117,21 +119,4 @@ public class SourceFile extends AbstractSourceFile {
         return result.build();
     }
 
-    /**
-     * Obtains message declarations, that match the specified {@link Predicate} in all
-     * passed files.
-     *
-     * @param files     the file descriptors to scan
-     * @param predicate the predicate to test a message
-     * @return the message declarations
-     */
-    public static List<MessageType> allThat(FileSet files, Predicate<DescriptorProto> predicate) {
-        ImmutableList.Builder<MessageType> result = ImmutableList.builder();
-        for (FileDescriptor file : files.files()) {
-            SourceFile sourceFile = from(file);
-            Collection<MessageType> declarations = sourceFile.allThat(predicate);
-            result.addAll(declarations);
-        }
-        return result.build();
-    }
 }

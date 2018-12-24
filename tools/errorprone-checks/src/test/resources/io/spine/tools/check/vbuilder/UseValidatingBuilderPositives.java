@@ -20,45 +20,43 @@
 
 package io.spine.tools.check.vbuilder;
 
-import com.google.protobuf.Int32Value;
-import com.google.protobuf.StringValue;
+import io.spine.base.FieldPath;
+import io.spine.base.Error;
 
-import static com.google.protobuf.Int32Value.newBuilder;
+import static io.spine.base.FieldPath.newBuilder;
 
 /**
  * Contains statements for which the {@link UseValidatingBuilder} bug pattern should return a match.
  *
  * <p>Comments in this file should not be modified as they serve as indicator for the
  * {@link com.google.errorprone.CompilationTestHelper} Error Prone tool.
- *
- * @author Dmytro Kuzmin
  */
 class UseValidatingBuilderPositives {
 
-    StringValue stringValue = StringValue.getDefaultInstance();
+    Error value = Error.getDefaultInstance();
 
     void callNewBuilder() {
 
         // BUG: Diagnostic matches: UseValidatingBuilderError
-        StringValue.newBuilder();
+        Error.newBuilder();
     }
 
     void callNewBuilderWithArg() {
 
         // BUG: Diagnostic matches: UseValidatingBuilderError
-        StringValue.newBuilder(stringValue);
+        Error.newBuilder(value);
     }
 
     void callNewBuilderForType() {
 
         // BUG: Diagnostic matches: UseValidatingBuilderError
-        stringValue.newBuilderForType();
+        value.newBuilderForType();
     }
 
     void callToBuilder() {
 
         // BUG: Diagnostic matches: UseValidatingBuilderError
-        stringValue.toBuilder();
+        value.toBuilder();
     }
 
     void callNewBuilderStaticImported() {
@@ -68,9 +66,9 @@ class UseValidatingBuilderPositives {
     }
 
     void callNewBuilderWithArgStaticImported() {
-        Int32Value int32Value = Int32Value.getDefaultInstance();
+        FieldPath defaultInstance = FieldPath.getDefaultInstance();
 
         // BUG: Diagnostic matches: UseValidatingBuilderError
-        newBuilder(int32Value);
+        newBuilder(defaultInstance);
     }
 }

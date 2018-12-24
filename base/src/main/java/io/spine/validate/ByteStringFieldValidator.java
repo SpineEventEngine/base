@@ -30,13 +30,13 @@ class ByteStringFieldValidator extends FieldValidator<ByteString> {
     private static final String INVALID_ID_TYPE_MSG = "Entity ID field must not be a ByteString.";
 
     /**
-     * Creates a new instance of the validator.
+     * Creates a new validator instance.
      *
-     * @param fieldValueChange
-     *         the change of the value of the field to validate
+     * @param fieldValue
+     *         the value to validate
      */
-    ByteStringFieldValidator(FieldValueChange fieldValueChange) {
-        super(fieldValueChange, false);
+    ByteStringFieldValidator(FieldValue fieldValue) {
+        super(fieldValue, false);
     }
 
     @Override

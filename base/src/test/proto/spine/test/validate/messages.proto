@@ -68,24 +68,6 @@ message RequiredBooleanFieldValue {
     bool value = 1 [(required) = true];
 }
 
-// Messages for "set_once" option tests.
-
-message SetOnceStringFieldPresent {
-    string value = 1 [(set_once) = true];
-}
-
-message CustomMessageFieldSetOncePresent {
-    google.protobuf.Timestamp value = 1 [(set_once) = true];
-}
-
-message SetOnceStringFieldExplicitlyFalse {
-    string value = 1 [(set_once) = false];
-}
-
-message CustomMessageFieldSetOnceExplicitlyFalse {
-    google.protobuf.Timestamp value = 1 [(set_once) = false];
-}
-
 // Messages for "if_missing" option tests.
 
 message CustomMessageRequiredMsgFieldValue {

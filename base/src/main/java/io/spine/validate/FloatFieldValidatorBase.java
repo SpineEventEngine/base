@@ -32,16 +32,6 @@ abstract class FloatFieldValidatorBase<V extends Number & Comparable<V>>
     /**
      * Creates a new validator instance.
      *
-     * @param valueChange
-     *         the change of the field value to validate
-     */
-    FloatFieldValidatorBase(FieldValueChange valueChange) {
-        super(valueChange);
-    }
-
-    /**
-     * Creates a new validator instance.
-     *
      * @param fieldValue
      *         the value to validate
      */

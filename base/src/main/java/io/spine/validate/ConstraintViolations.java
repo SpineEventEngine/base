@@ -31,8 +31,8 @@ import static java.lang.System.lineSeparator;
  */
 public final class ConstraintViolations {
 
+    /** Prevent instantiation of this utility class. */
     private ConstraintViolations() {
-        // Prevent instantiation of this utility class.
     }
 
     /**
@@ -69,7 +69,7 @@ public final class ConstraintViolations {
     public static String toText(Iterable<ConstraintViolation> violations) {
         checkNotNull(violations);
 
-        StringBuilder resultBuilder = new StringBuilder("Violation list:");
+        StringBuilder resultBuilder = new StringBuilder("Violations:");
 
         String newLine = lineSeparator();
         for (ConstraintViolation childViolation : violations) {

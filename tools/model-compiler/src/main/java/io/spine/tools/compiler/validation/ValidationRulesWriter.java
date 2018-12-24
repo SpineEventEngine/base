@@ -29,7 +29,6 @@ import io.spine.option.Options;
 import io.spine.type.TypeName;
 import io.spine.validate.rule.ValidationRules;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.slf4j.Logger;
 
 import java.io.File;
 import java.util.List;
@@ -38,7 +37,6 @@ import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Maps.newHashMap;
-import static io.spine.code.proto.SourceFile.allThat;
 import static io.spine.option.OptionsProto.validationOf;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 
@@ -52,26 +50,41 @@ import static io.spine.util.Exceptions.newIllegalArgumentException;
  *
  * <p>{@code foo.bar.ValidationRule=foo.bar.MessageOne.field_name,foo.bar.MessageTwo.field_name}.
  */
-public final class ValidationRulesLookup {
+public final class ValidationRulesWriter implements Logging {
 
-    /** Prevents instantiation of this utility class. */
-    private ValidationRulesLookup() {
+    private final FileSet files;
+    private final File targetDir;
+
+    private ValidationRulesWriter(File descriptorSetFile, File targetDir) {
+        this.files = FileSet.parse(descriptorSetFile);
+        this.targetDir = targetDir;
     }
 
     public static void processDescriptorSetFile(File descriptorSetFile, File targetDir) {
-        Logger log = log();
-        log.debug("Validation rules lookup started.");
-        findRulesAndWriteProperties(descriptorSetFile, targetDir);
-        log.debug("Validation rules lookup complete.");
+        ValidationRulesWriter writer =
+                new ValidationRulesWriter(descriptorSetFile, targetDir);
+        writer.findRulesAndWriteProperties();
     }
 
-    private static void findRulesAndWriteProperties(File setFile, File targetDir) {
-        FileSet files = FileSet.parseSkipStandard(setFile.getPath());
-        List<MessageType> declarations = allThat(files, new IsValidationRule());
-        writeProperties(declarations, targetDir);
+    private void findRulesAndWriteProperties() {
+        _debug("Validation rules lookup started through {}.", files);
+        List<MessageType> declarations = findRules();
+        writeProperties(declarations);
+        _debug("Validation rules written to directory: {}", targetDir);
     }
 
-    private static void writeProperties(Iterable<MessageType> ruleDeclarations, File targetDir) {
+    private List<MessageType> findRules() {
+        List<MessageType> declarations = files.findMessageTypes(new IsValidationRule());
+        _debug("Found declarations: {}", declarations.size());
+        return declarations;
+    }
+
+    private void writeProperties(List<MessageType> ruleDeclarations) {
+        Map<String, String> propsMap = toMap(ruleDeclarations);
+        writeToFile(propsMap);
+    }
+
+    private static Map<String, String> toMap(List<MessageType> ruleDeclarations) {
         Map<String, String> propsMap = newHashMap();
         for (MessageType declaration : ruleDeclarations) {
             TypeName typeName = declaration.name();
@@ -82,25 +95,31 @@ public final class ValidationRulesLookup {
                            );
             propsMap.put(typeName.value(), ruleTargets);
         }
+        return propsMap;
+    }
 
+    private void writeToFile(Map<String, String> propsMap) {
         String fileName = ValidationRules.fileName();
-        log().debug("Writing the validation rules description to {}/{}.",
+        _debug("Writing the validation rules description to {}/{}.",
                     targetDir, fileName);
         PropertiesWriter writer = new PropertiesWriter(targetDir.getAbsolutePath(), fileName);
         writer.write(propsMap);
     }
 
-    private static class IsValidationRule implements Predicate<DescriptorProto> {
+    private static class IsValidationRule implements Predicate<DescriptorProto>, Logging {
 
         @Override
         public boolean test(@Nullable DescriptorProto input) {
             checkNotNull(input);
-            return Options.option(input, validationOf)
-                          .isPresent();
+            boolean result = Options.option(input, validationOf)
+                                    .isPresent();
+            _debug("[IsValidationRule] Tested {} with the result of {}.", input.getName(), result);
+            return result;
         }
-    }
 
-    private static Logger log() {
-        return Logging.get(ValidationRulesLookup.class);
+        @Override
+        public String toString() {
+            return "IsValidationRule predicate over DescriptorProto";
+        }
     }
 }

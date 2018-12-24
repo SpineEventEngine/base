@@ -36,34 +36,14 @@ class StringFieldValidator extends FieldValidator<String> {
     /**
      * Creates a new validator instance.
      *
-     * <p>Returned validator validates the change of the field, as opposed to just a new value for
-     * it, like the {@linkplain #StringFieldValidator(FieldValue, boolean) the other constructor}.
-     *
-     *
-     * @param fieldValueChange
-     *         the change of the field value that is going to be validated
-     * @param strict
-     *         if {@code true} the validator would assume that the field
-     */
-    StringFieldValidator(FieldValueChange fieldValueChange, boolean strict) {
-        super(fieldValueChange, strict);
-        this.patternOption = fieldValueChange.newValue()
-                                             .valueOf(OptionsProto.pattern);
-        this.regex = patternOption.getRegex();
-    }
-
-    /**
-     * Creates a new validator instance.
-     *
-     * <p>Returned validator validates the new specified value of the field.
-     *
      * @param fieldValue
      *         the value to validate
-     * @param strict
-     *         if {@code true} the validator would assume that the field
+     * @param assumeRequired
+     *         if {@code true} the validator would assume that the field is required even
+     *         if this constraint is not set explicitly
      */
-    StringFieldValidator(FieldValue fieldValue, boolean strict) {
-        super(fieldValue, strict);
+    StringFieldValidator(FieldValue fieldValue, boolean assumeRequired) {
+        super(fieldValue, assumeRequired);
         this.patternOption = fieldValue.valueOf(OptionsProto.pattern);
         this.regex = patternOption.getRegex();
     }
@@ -86,13 +66,13 @@ class StringFieldValidator extends FieldValidator<String> {
 
     private ConstraintViolation newViolation(String fieldValue) {
         String msg = getErrorMsgFormat(patternOption, patternOption.getMsgFormat());
-        ConstraintViolation violation =
-                ConstraintViolation.newBuilder()
-                                   .setMsgFormat(msg)
-                                   .addParam(regex)
-                                   .setFieldPath(getFieldPath())
-                                   .setFieldValue(toAny(fieldValue))
-                                   .build();
+        ConstraintViolation violation = ConstraintViolation
+                .newBuilder()
+                .setMsgFormat(msg)
+                .addParam(regex)
+                .setFieldPath(getFieldPath())
+                .setFieldValue(toAny(fieldValue))
+                .build();
         return violation;
     }
 

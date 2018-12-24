@@ -36,6 +36,10 @@ dependencies {
     //noinspection GroovyAssignabilityCheck
     protobuf deps.build.protobuf
 
+    // Since we use `@CanIgnoreReturnValue` when annotating Validating Builders
+    // ErrorProne Annotations is part of our API. 
+    api deps.build.errorProneAnnotations
+    
     testImplementation project(path: ":testlib")
 }
 
@@ -50,16 +54,17 @@ protobuf {
             task.generateDescriptorSet = true
             task.descriptorSetOptions.path = "$buildDir/descriptors/${task.sourceSet.name}/known_types.desc"
             task.descriptorSetOptions.includeImports = true
+            task.descriptorSetOptions.includeSourceInfo = true
         }
     }
 }
 
 sourceSets {
     main {
-        resources.srcDirs "$buildDir/descriptors/main"
+        resources.srcDirs += "$buildDir/descriptors/main"
     }
     test {
-        resources.srcDirs "$buildDir/descriptors/test"
+        resources.srcDirs += "$buildDir/descriptors/test"
     }
 }
 

@@ -33,7 +33,6 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.validate.FieldValidatorFactory.createStrict;
 
 /**
  * Validates that one of the fields defined by the {@code required_field} option is present.
@@ -140,9 +139,9 @@ final class AlternativeFieldValidator implements Logging {
             violations.add(notFound);
             return false;
         }
-        FieldValidator<?> fieldValidator = createStrict(fieldValue.get());
+        FieldValidator<?> fieldValidator = fieldValue.get()
+                                                     .createValidatorAssumingRequired();
         List<ConstraintViolation> violations = fieldValidator.validate();
-
         // Do not add violations to the results because we have options.
         // The violation would be that none of the field or combinations is defined.
 

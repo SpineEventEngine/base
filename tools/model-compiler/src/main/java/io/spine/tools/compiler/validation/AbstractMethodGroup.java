@@ -20,6 +20,7 @@
 
 package io.spine.tools.compiler.validation;
 
+import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
@@ -29,12 +30,11 @@ import javax.lang.model.element.Modifier;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.tools.compiler.annotation.Annotations.canIgnoreReturnValue;
-import static io.spine.tools.compiler.validation.ClassNames.getClassName;
 
 /**
  * An abstract base for method constructors.
  */
-abstract class AbstractMethod implements MethodConstructor {
+abstract class AbstractMethodGroup implements MethodGroup {
 
     /** The name of the {@code FieldDescriptor} variable. */
     private static final String FIELD_DESCRIPTOR_NAME = "fieldDescriptor";
@@ -45,12 +45,20 @@ abstract class AbstractMethod implements MethodConstructor {
     private final ClassName messageClass;
     private final ClassName builderClass;
 
-    AbstractMethod(AbstractMethodBuilder builder) {
+    AbstractMethodGroup(AbstractMethodGroupBuilder builder) {
         this.fieldIndex = builder.getFieldIndex();
         this.messageClass = builder.getGenericClassName();
         String javaPackage = checkNotNull(builder.getJavaPackage());
         String javaClass = checkNotNull(builder.getJavaClass());
-        this.builderClass = getClassName(javaPackage, javaClass);
+        this.builderClass = ClassName.get(javaPackage, javaClass);
+    }
+
+    static ImmutableList.Builder<MethodSpec> methods() {
+        return ImmutableList.builder();
+    }
+
+    static ImmutableList<MethodSpec> methods(MethodSpec... spec) {
+        return ImmutableList.copyOf(spec);
     }
 
     /**
@@ -61,10 +69,11 @@ abstract class AbstractMethod implements MethodConstructor {
      *         FieldDescriptor fieldDescriptor = Msg.getDescriptor().getFields().get(fieldIndex)}
      */
     final String descriptorDeclaration() {
+        CodeBlock getField = getFieldByIndex();
         CodeBlock codeBlock =
                 CodeBlock.builder()
                          .add("$T $N = ", FieldDescriptor.class, FIELD_DESCRIPTOR_NAME)
-                         .add(getFieldDescriptor())
+                         .add(getField)
                          .build();
         return codeBlock.toString();
     }
@@ -85,9 +94,8 @@ abstract class AbstractMethod implements MethodConstructor {
     }
 
     /** Return the code block, which obtains the {@linkplain #fieldIndex field}. */
-    private CodeBlock getFieldDescriptor() {
-        return CodeBlock.of("$T.getDescriptor().getFields().get($L)",
-                            messageClass, fieldIndex);
+    private CodeBlock getFieldByIndex() {
+        return CodeBlock.of("$T.getDescriptor().getFields().get($L)", messageClass, fieldIndex);
     }
 
     /** Returns the class name of the validating builder. */
@@ -109,6 +117,12 @@ abstract class AbstractMethod implements MethodConstructor {
         checkNotNull(fieldName);
         CodeBlock codeBlock = CodeBlock.of("validate($N, $N, $S)",
                                            FIELD_DESCRIPTOR_NAME, fieldValue, fieldName);
+        return codeBlock.toString();
+    }
+
+    /** Creates a statement that calls the {@code validateSetOnce} method. */
+    static String validateImmutable() {
+        CodeBlock codeBlock = CodeBlock.of("validateSetOnce($N)", FIELD_DESCRIPTOR_NAME);
         return codeBlock.toString();
     }
 }

@@ -27,8 +27,6 @@ import io.spine.annotation.Internal;
 
 import java.util.List;
 
-import static io.spine.validate.FieldValidatorFactory.create;
-
 /**
  * Validates messages according to Spine custom Protobuf options and
  * provides found constraint violations.
@@ -91,7 +89,7 @@ public class MessageValidator {
      */
     private void validateFields(ImmutableList.Builder<ConstraintViolation> result) {
         for (FieldValue value : message.fieldsExceptOneofs()) {
-            FieldValidator<?> fieldValidator = create(value);
+            FieldValidator<?> fieldValidator = value.createValidator();
             List<ConstraintViolation> violations = fieldValidator.validate();
             result.addAll(violations);
         }

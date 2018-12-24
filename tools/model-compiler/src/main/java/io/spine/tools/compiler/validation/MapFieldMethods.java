@@ -35,12 +35,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static com.google.common.collect.Lists.newArrayList;
-import static io.spine.tools.compiler.validation.MethodConstructors.clearPrefix;
-import static io.spine.tools.compiler.validation.MethodConstructors.getMessageBuilder;
-import static io.spine.tools.compiler.validation.MethodConstructors.rawSuffix;
-import static io.spine.tools.compiler.validation.MethodConstructors.removePrefix;
-import static io.spine.tools.compiler.validation.MethodConstructors.returnThis;
+import static io.spine.tools.compiler.validation.Methods.clearPrefix;
+import static io.spine.tools.compiler.validation.Methods.getMessageBuilder;
+import static io.spine.tools.compiler.validation.Methods.rawSuffix;
+import static io.spine.tools.compiler.validation.Methods.removePrefix;
+import static io.spine.tools.compiler.validation.Methods.returnThis;
 import static java.lang.String.format;
 
 /**
@@ -48,7 +47,7 @@ import static java.lang.String.format;
  *
  * <p>Constructs the {@code MethodSpec} objects for the map fields.
  */
-class MapFieldMethod extends AbstractMethod implements Logging {
+class MapFieldMethods extends AbstractMethodGroup implements Logging {
 
     private static final String KEY = "key";
     @SuppressWarnings("DuplicateStringLiteralInspection") // specific semantic
@@ -78,7 +77,7 @@ class MapFieldMethod extends AbstractMethod implements Logging {
     @SuppressWarnings("ConstantConditions")
     // The fields are checked in the {@code #build()} method
     // of the {@code MapFieldMethodConstructorBuilder} class.
-    private MapFieldMethod(MapFieldMethodsBuilder builder) {
+    private MapFieldMethods(Builder builder) {
         super(builder);
         this.fieldType = (MapFieldType) builder.getFieldType();
         FieldDescriptor field = builder.getField();
@@ -90,18 +89,19 @@ class MapFieldMethod extends AbstractMethod implements Logging {
     }
 
     @Override
-    public Collection<MethodSpec> construct() {
-        log().debug("The methods construction for the map field {} is started.", javaFieldName);
-        List<MethodSpec> methods = newArrayList();
-        methods.add(createGetter());
-        methods.addAll(createMapMethods());
-        methods.addAll(createRawMapMethods());
-        log().debug("The methods construction for the map field {} is finished.", javaFieldName);
+    public Collection<MethodSpec> generate() {
+        _debug("The methods construction for the map field {} is started.", javaFieldName);
+        List<MethodSpec> methods = methods()
+                .add(getter())
+                .addAll(mapMethods())
+                .addAll(rawMapMethods())
+                .build();
+        _debug("The methods construction for the map field {} is finished.", javaFieldName);
         return methods;
     }
 
-    private MethodSpec createGetter() {
-        log().debug("The getter construction for the map field is started.");
+    private MethodSpec getter() {
+        _debug("The getter construction for the map field is started.");
         String methodName = "get" + propertyName;
 
         String returnStatement = format("return %s.get%sMap()",
@@ -112,31 +112,33 @@ class MapFieldMethod extends AbstractMethod implements Logging {
                           .returns(fieldType.getTypeName())
                           .addStatement(returnStatement)
                           .build();
-        log().debug("The getter construction for the map field is finished.");
+        _debug("The getter construction for the map field is finished.");
         return methodSpec;
     }
 
-    private List<MethodSpec> createRawMapMethods() {
-        log().debug("The raw methods construction for the map field is started.");
-        List<MethodSpec> methods = newArrayList();
-        methods.add(createPutRawMethod());
-        methods.add(createPutAllRawMethod());
-        log().debug("The raw methods construction for the map field is finished.");
+    private List<MethodSpec> rawMapMethods() {
+        _debug("The raw methods construction for the map field is started.");
+        List<MethodSpec> methods = methods(
+                putRawMethod(),
+                putAllRawMethod()
+        );
+        _debug("The raw methods construction for the map field is finished.");
         return methods;
     }
 
-    private List<MethodSpec> createMapMethods() {
-        log().debug("The methods construction for the map field is started.");
-        List<MethodSpec> methods = newArrayList();
-        methods.add(createPutMethod());
-        methods.add(createClearMethod());
-        methods.add(createPutAllMethod());
-        methods.add(createRemoveMethod());
-        log().debug("The methods construction for the map field is finished.");
+    private List<MethodSpec> mapMethods() {
+        _debug("The methods construction for the map field is started.");
+        List<MethodSpec> methods = methods(
+                putMethod(),
+                clearMethod(),
+                putAllMethod(),
+                removeMethod()
+        );
+        _debug("The methods construction for the map field is finished.");
         return methods;
     }
 
-    private MethodSpec createPutMethod() {
+    private MethodSpec putMethod() {
         String methodName = "put" + propertyName;
         String mapToValidate = MAP_TO_VALIDATE +
                 "$T.singletonMap(" + KEY + ", " + VALUE + ')';
@@ -157,7 +159,7 @@ class MapFieldMethod extends AbstractMethod implements Logging {
         return result;
     }
 
-    private MethodSpec createPutRawMethod() {
+    private MethodSpec putRawMethod() {
         String methodName = "putRaw" + propertyName;
         String mapToValidate = MAP_TO_VALIDATE +
                 "$T.singletonMap(convertedKey, convertedValue)";
@@ -183,7 +185,7 @@ class MapFieldMethod extends AbstractMethod implements Logging {
         return result;
     }
 
-    private MethodSpec createPutAllMethod() {
+    private MethodSpec putAllMethod() {
         String putAllStatement = format("%s.putAll%s(%s)",
                                         getMessageBuilder(), propertyName, MAP_PARAM_NAME);
         String methodName = fieldType.getSetterPrefix() + propertyName;
@@ -198,7 +200,7 @@ class MapFieldMethod extends AbstractMethod implements Logging {
         return result;
     }
 
-    private MethodSpec createPutAllRawMethod() {
+    private MethodSpec putAllRawMethod() {
         String putAllStatement = format("%s.putAll%s(convertedValue)",
                                         getMessageBuilder(), propertyName);
         String methodName = fieldType.getSetterPrefix() + rawSuffix() + propertyName;
@@ -217,7 +219,7 @@ class MapFieldMethod extends AbstractMethod implements Logging {
         return result;
     }
 
-    private MethodSpec createRemoveMethod() {
+    private MethodSpec removeMethod() {
         String removeFromMap = format("%s.remove%s(%s)",
                                       getMessageBuilder(), propertyName, KEY);
         String methodName = removePrefix() + propertyName;
@@ -229,7 +231,7 @@ class MapFieldMethod extends AbstractMethod implements Logging {
         return result;
     }
 
-    private MethodSpec createClearMethod() {
+    private MethodSpec clearMethod() {
         String clearMap = format("%s.clear%s()", getMessageBuilder(), propertyName);
         String methodName = clearPrefix() + propertyName;
         MethodSpec result = newBuilderSetter(methodName)
@@ -250,19 +252,18 @@ class MapFieldMethod extends AbstractMethod implements Logging {
      *
      * @return created builder
      */
-    static MapFieldMethodsBuilder newBuilder() {
-        return new MapFieldMethodsBuilder();
+    static Builder newBuilder() {
+        return new Builder();
     }
 
     /**
      * A builder for the {@code MapFieldMethodsConstructor} class.
      */
-    static class MapFieldMethodsBuilder
-            extends AbstractMethodBuilder<MapFieldMethod> {
+    static class Builder extends AbstractMethodGroupBuilder<MapFieldMethods> {
         @Override
-        MapFieldMethod build() {
+        MapFieldMethods build() {
             checkFields();
-            return new MapFieldMethod(this);
+            return new MapFieldMethods(this);
         }
     }
 }

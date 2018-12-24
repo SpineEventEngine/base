@@ -63,9 +63,15 @@ public final class SingularFieldType implements FieldType {
         Optional<? extends Class<?>> boxedScalarPrimitive =
                 PrimitiveType.getWrapperClass(name);
 
-        return boxedScalarPrimitive.isPresent()
-               ? TypeName.get(boxedScalarPrimitive.get())
-                         .unbox()
-               : ClassName.bestGuess(name);
+        if (boxedScalarPrimitive.isPresent()) {
+            TypeName unboxed = TypeName.get(boxedScalarPrimitive.get())
+                                       .unbox();
+            return unboxed;
+        }
+
+        // Make a possibly nested class name use the dot notation.
+        String dottedName = name.replace('$', '.');
+        ClassName result = ClassName.bestGuess(dottedName);
+        return result;
     }
 }

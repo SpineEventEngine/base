@@ -20,12 +20,13 @@
 
 package io.spine.code.proto;
 
+import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
-import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.SourceCodeInfo;
+import com.google.protobuf.Descriptors.Descriptor;
+import io.spine.logging.Logging;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,11 +50,12 @@ import static java.lang.String.format;
  * @see <a href="https://github.com/google/protobuf-gradle-plugin/blob/master/README.md#generate-descriptor-set-files">
  *         Protobuf plugin configuration</a>
  */
-public class MessageDocumentation {
+@Immutable
+public final class MessageDocumentation implements Logging {
 
     private final MessageType declaration;
 
-    public MessageDocumentation(MessageType declaration) {
+    MessageDocumentation(MessageType declaration) {
         this.declaration = declaration;
     }
 
@@ -63,21 +65,14 @@ public class MessageDocumentation {
      * @return the comments text or {@code Optional.empty()} if there are no comments
      */
     public Optional<String> leadingComments() {
-        LocationPath messagePath = getMessageLocationPath();
-        return leadingComments(messagePath);
+        LocationPath messagePath = messagePath();
+        if (declaration.isTopLevel()) {
+            return leadingComments(messagePath);
+        }
+        //TODO:2018-12-20:alexander.yevsyukov: Handle nested types.
+        return Optional.empty();
     }
 
-    /**
-     * Obtains the leading comments for the field.
-     *
-     * @param field
-     *         the descriptor of the field
-     * @return the field leading comments or {@code Optional.empty()} if there are no comments
-     */
-    public Optional<String> fieldLeadingComments(FieldDescriptorProto field) {
-        LocationPath fieldPath = getFieldLocationPath(field);
-        return leadingComments(fieldPath);
-    }
 
     /**
      * Obtains a leading comments by the {@link LocationPath}.
@@ -86,19 +81,18 @@ public class MessageDocumentation {
      *         the location path to get leading comments
      * @return the leading comments or empty {@code Optional} if there are no such comments
      */
-    private Optional<String> leadingComments(LocationPath locationPath) {
+    Optional<String> leadingComments(LocationPath locationPath) {
         if (!declaration.descriptor()
                         .getFile()
                         .toProto()
                         .hasSourceCodeInfo()) {
-            String errMsg =
-                    "To enable rejection generation, please configure the Gradle " +
-                            "Protobuf plugin as follows: " +
-                            "`task.descriptorSetOptions.includeSourceInfo = true`.";
-            throw new IllegalStateException(errMsg);
+            _warn("Unable to obtain proto source code info. " +
+                            "Please configure the Gradle Protobuf plugin as follows:%n%s",
+                    "`task.descriptorSetOptions.includeSourceInfo = true`.");
+            return Optional.empty();
         }
 
-        SourceCodeInfo.Location location = getLocation(locationPath);
+        SourceCodeInfo.Location location = toLocation(locationPath);
         return location.hasLeadingComments()
                ? Optional.of(location.getLeadingComments())
                : Optional.empty();
@@ -109,71 +103,44 @@ public class MessageDocumentation {
      *
      * @return the message location path
      */
-    private LocationPath getMessageLocationPath() {
-        return new LocationPath(
-                Arrays.asList(
-                        FileDescriptorProto.MESSAGE_TYPE_FIELD_NUMBER,
-                        getTopLevelMessageIndex())
-        );
-    }
-
-    /**
-     * Returns the field {@link LocationPath} for a top-level message definition.
-     *
-     * <p>Protobuf extensions are not supported.
-     *
-     * @param field
-     *         the field to get location path
-     * @return the field location path
-     */
-    private LocationPath getFieldLocationPath(FieldDescriptorProto field) {
-        LocationPath locationPath = new LocationPath();
-
-        locationPath.addAll(getMessageLocationPath());
-        locationPath.add(DescriptorProto.FIELD_FIELD_NUMBER);
-        locationPath.add(getFieldIndex(field));
-        return locationPath;
+    LocationPath messagePath() {
+        LocationPath path = new LocationPath();
+        path.add(FileDescriptorProto.MESSAGE_TYPE_FIELD_NUMBER);
+        if (declaration.isTopLevel()) {
+            path.add(getTopLevelMessageIndex());
+        }
+        return path;
     }
 
     private int getTopLevelMessageIndex() {
-        List<DescriptorProto> messages = declaration.descriptor()
-                                                    .getFile()
-                                                    .toProto()
-                                                    .getMessageTypeList();
+        Descriptor descriptor = declaration.descriptor();
+
+        List<DescriptorProto> messages = descriptor.getFile()
+                                                   .toProto()
+                                                   .getMessageTypeList();
         for (DescriptorProto currentMessage : messages) {
-            if (currentMessage.equals(declaration.descriptor()
-                                                 .toProto())) {
-                return messages.indexOf(declaration.descriptor()
-                                                   .toProto());
+            if (currentMessage.equals(descriptor.toProto())) {
+                return messages.indexOf(descriptor.toProto());
             }
         }
 
-        String msg = format("The rejection file \"%s\" should contain \"%s\" rejection.",
-                            declaration.descriptor()
-                                       .toProto()
-                                       .getName(),
-                            declaration.descriptor()
-                                       .toProto()
-                                       .getName());
+        String msg = format("Unable to locate message `%s` in the file file `%s`.",
+                            descriptor.toProto()
+                                      .getName(),
+                            descriptor.toProto()
+                                      .getName()
+        );
         throw new IllegalStateException(msg);
     }
 
-    private int getFieldIndex(FieldDescriptorProto field) {
-        return declaration.descriptor()
-                          .toProto()
-                          .getFieldList()
-                          .indexOf(field);
-    }
-
     /**
-     * Returns the {@link SourceCodeInfo.Location} for the
-     * {@link LocationPath}.
+     * Converts {@link LocationPath} related to the message to {@link SourceCodeInfo.Location}.
      *
      * @param locationPath
      *         the location path
      * @return the location for the path
      */
-    private SourceCodeInfo.Location getLocation(LocationPath locationPath) {
+    private SourceCodeInfo.Location toLocation(LocationPath locationPath) {
         FileDescriptorProto declarationFile = declaration.descriptor()
                                                          .getFile()
                                                          .toProto();
