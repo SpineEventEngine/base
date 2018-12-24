@@ -33,9 +33,10 @@ import java.util.List;
 
 import static com.google.common.collect.Lists.newLinkedList;
 import static io.spine.validate.Validate.isNotDefault;
+import static java.lang.String.format;
 
 /**
- * Validates messages according to Spine custom protobuf options and
+ * Validates messages according to Spine custom Protobuf options and
  * provides constraint violations found.
  *
  * @param <V>
@@ -159,6 +160,15 @@ abstract class FieldValidator<V> implements Logging {
      * @see #isRequiredId()
      */
     protected void validateEntityId() {
+        if (canBeRequired()) {
+            String fieldType = this.field()
+                                   .descriptor()
+                                   .getMessageType()
+                                   .getName();
+            String errorMessage = format("Fields of type %s cannot be declared required",
+                                         fieldType);
+            log().warn(errorMessage);
+        }
         if (declaration.isRepeated()) {
             ConstraintViolation violation = ConstraintViolation
                     .newBuilder()
@@ -172,6 +182,16 @@ abstract class FieldValidator<V> implements Logging {
             addViolation(newViolation(ifMissingOption));
         }
     }
+
+    /**
+     * Determines whether the field that is being validated can be {@code required}.
+     *
+     * Since whether the field can or cannot be {@code required},  subclasses of
+     * {@code FieldValidator} define it themselves.
+     *
+     * @return {@code true if the field that is being validated can be required}
+     */
+    abstract boolean canBeRequired();
 
     /**
      * Returns {@code true} if the field has required attribute or validation is strict.

@@ -70,6 +70,11 @@ class MessageFieldValidator extends FieldValidator<Message> {
         BuiltInValidation.TIMESTAMP.validateIfApplies(this);
     }
 
+    @Override
+    boolean canBeRequired() {
+        return true;
+    }
+
     private boolean shouldValidateFields() {
         return getValidateOption() && !fieldValueNotSet();
     }
@@ -78,11 +83,6 @@ class MessageFieldValidator extends FieldValidator<Message> {
     protected boolean isNotSet(Message value) {
         boolean result = isDefault(value);
         return result;
-    }
-
-    @Override
-    protected boolean requiredAllowed() {
-        return true;
     }
 
     @SuppressWarnings("MethodOnlyUsedFromInnerClass") // Proper encapsulation here.

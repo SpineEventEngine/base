@@ -53,6 +53,11 @@ class StringFieldValidator extends FieldValidator<String> {
         checkIfMatchesToRegexp();
     }
 
+    @Override
+    boolean canBeRequired() {
+        return true;
+    }
+
     private void checkIfMatchesToRegexp() {
         if (regex.isEmpty()) {
             return;
@@ -80,10 +85,5 @@ class StringFieldValidator extends FieldValidator<String> {
     protected boolean isNotSet(String value) {
         boolean result = value.isEmpty();
         return result;
-    }
-
-    @Override
-    protected boolean requiredAllowed() {
-        return true;
     }
 }

@@ -45,7 +45,7 @@ class EnumFieldValidator extends FieldValidator<EnumValueDescriptor> {
     }
 
     @Override
-    protected boolean requiredAllowed() {
+    boolean canBeRequired() {
         return true;
     }
 

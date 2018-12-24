@@ -45,11 +45,6 @@ class ByteStringFieldValidator extends FieldValidator<ByteString> {
         return result;
     }
 
-    @Override
-    protected boolean requiredAllowed() {
-        return true;
-    }
-
     /**
      * {@inheritDoc}
      *
@@ -70,5 +65,11 @@ class ByteStringFieldValidator extends FieldValidator<ByteString> {
                 .setFieldPath(getFieldPath())
                 .build();
         addViolation(violation);
+    }
+
+    /** Returns {@code true}. */
+    @Override
+    boolean canBeRequired() {
+        return true;
     }
 }

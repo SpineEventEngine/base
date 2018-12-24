@@ -98,14 +98,17 @@ abstract class NumberFieldValidator<V extends Number & Comparable<V>> extends Fi
     /**
      * Returns {@code false}.
      *
-     * @implNote Attempting to define whether a numeric field is set or not is semantically
-     * incorrect, because the way to define whether a value is set or not is to compare it against
-     * its default value, which for numeric fields is {@code 0}, which is sometimes a desired and
-     * valid value for a field.
+     * <p>Numeric fields cannot be required, since enforcing their presence is impossible.
+     */
+    @Override
+    boolean canBeRequired() {
+        return false;
+    }
+
+    /**
+     * Returns {@code false}.
      *
-     * <p>Therefore, numeric field value validation shouldn't be done with {@code required} option,
-     * and {@linkplain OptionsProto#decimalMin min} and
-     * {@linkplain io.spine.option.OptionsProto#decimalMax max} should be used instead.
+     * <p>There's no way to define whether a Protobuf numeric field is {@code 0} or not set.
      */
     @Override
     protected boolean isNotSet(V value) {
@@ -131,11 +134,6 @@ abstract class NumberFieldValidator<V extends Number & Comparable<V>> extends Fi
             addViolation(newMinOrMaxViolation(value, maxOption, maxOption.getMsgFormat(),
                                               maxOption.getValue()));
         }
-    }
-
-    @Override
-    protected boolean requiredAllowed() {
-        return false;
     }
 
     private boolean notFitToDecimalMin(V value) {
