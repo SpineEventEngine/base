@@ -19,7 +19,7 @@
 //
 syntax = "proto3";
 
-package spine.tools.protoc;
+package spine.tools.protoc.marker;
 
 import "spine/options.proto";
 

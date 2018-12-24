@@ -58,7 +58,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @DisplayName("MarkerInterfaceGenerator should")
 class MarkerInterfaceGeneratorTest {
 
-    private static final String PROTO_PACKAGE = "spine.tools.protoc.";
+    private static final String PROTO_PACKAGE = "spine.tools.protoc.marker.";
 
     private static final PackageName PACKAGE_NAME =
             PackageName.of(MarkerInterfaceGeneratorTest.class);
