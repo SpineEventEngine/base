@@ -25,20 +25,9 @@ import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
 option java_package = "io.spine.tools.protoc";
-option java_outer_classname = "IncorrectIds";
+option java_outer_classname = "UuidValues";
 option java_multiple_files = true;
 
-import "google/protobuf/timestamp.proto";
-
-message NotId {
-    string name = 1;
-    google.protobuf.Timestamp timestamp = 2;
-}
-
-message IdWrongType {
-    google.protobuf.Timestamp uuid = 1;
-}
-
-message IdWrongName {
-    string random_field = 1;
+message ProjectId {
+    string uuid = 1;
 }

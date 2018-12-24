@@ -254,11 +254,11 @@ class MarkerInterfaceGeneratorTest {
 
     @Test
     @DisplayName("generate UuidValue insertion points")
-    void generateUniqueIdInsertionPoints() {
-        String filePath = "spine/tools/protoc/unique_ids.proto";
+    void generateUuidValueInsertionPoints() {
+        String filePath = "spine/tools/protoc/uuid_values.proto";
 
-        FileDescriptorProto descriptor = UniqueIds.getDescriptor()
-                                                  .toProto();
+        FileDescriptorProto descriptor = UuidValues.getDescriptor()
+                                                   .toProto();
         CodeGeneratorResponse response = processCodeGenRequest(filePath, descriptor);
         assertNotNull(response);
         List<File> files = response.getFileList();
@@ -273,12 +273,12 @@ class MarkerInterfaceGeneratorTest {
     }
 
     @Test
-    @DisplayName("not generate UuidValue insertion points for non-ID messages")
-    void notGenerateUniqueIdForIncorrect() {
-        String filePath = "spine/tools/protoc/incorrect_ids.proto";
+    @DisplayName("not generate UuidValue insertion points for non-eligible messages")
+    void notGenerateUuidValueForNonEligible() {
+        String filePath = "spine/tools/protoc/non_uuid_values.proto";
 
-        FileDescriptorProto descriptor = IncorrectIds.getDescriptor()
-                                                     .toProto();
+        FileDescriptorProto descriptor = NonUuidValues.getDescriptor()
+                                                      .toProto();
         CodeGeneratorResponse response = processCodeGenRequest(filePath, descriptor);
         assertNotNull(response);
         List<File> files = response.getFileList();
