@@ -23,6 +23,7 @@ package io.spine.tools.compiler.validation;
 import com.google.protobuf.Descriptors.Descriptor;
 import io.spine.code.Indent;
 import io.spine.code.proto.MessageType;
+import io.spine.test.tools.validation.builder.VbtProcess;
 import io.spine.test.tools.validation.builder.VbtProject;
 import io.spine.test.tools.validation.builder.VbtScalarFields;
 import org.junit.jupiter.api.BeforeEach;
@@ -69,7 +70,12 @@ class VBuilderCodeTest {
     @Nested
     @DisplayName("a message nested into another message")
     class NestedSecondLevel {
-        //TODO:2018-12-24:alexander.yevsyukov: Implement.
+
+        @Test
+        @DisplayName("2nd level")
+        void doSomething() {
+            assertGeneratesFor(VbtProcess.Point.getDescriptor());
+        }
     }
 
     private void assertGeneratesFor(Descriptor descriptor) {

@@ -142,8 +142,10 @@ final class VBuilderMethods {
         }
 
         private ClassName messageClass() {
-            return ClassName.bestGuess(type.javaClassName()
-                                           .value());
+            String fullyQualifiedDotted = type.javaClassName()
+                                              .toDotted()
+                                              .value();
+            return ClassName.bestGuess(fullyQualifiedDotted);
         }
     }
 }

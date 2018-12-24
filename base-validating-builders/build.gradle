@@ -57,6 +57,10 @@ sourceSets {
     main.java.srcDirs "$projectDir/generated/main/spine"
 }
 
+modelCompiler {
+    mainProtoSrcDir = "/Users/sanders/Projects/Spine/base/src/main/proto"
+}
+
 protobuf {
     generateProtoTasks {
         all().each {
@@ -98,7 +102,7 @@ build.doLast {
 }
 
 task cleanGenerated(type: Delete) {
-    delete = files("$projectDir/generated", buildersDir)
+    delete = files("$projectDir/generated", "$projectDir/build", "$projectDir/.spine", buildersDir)
 }
 
 clean.dependsOn cleanGenerated
