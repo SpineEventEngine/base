@@ -23,6 +23,7 @@ package io.spine.code.proto;
 import com.google.protobuf.Descriptors.Descriptor;
 import io.spine.net.Uri;
 import io.spine.net.Url;
+import io.spine.test.code.proto.rejections.TestRejections;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -56,6 +57,12 @@ class MessageTypeTest {
             boolean result = method.apply(type);
             assertTrue(result);
         }
-    }
 
+        @DisplayName("")
+        @Test
+        void rejection() {
+            MessageType type = MessageType.of(TestRejections.MttSampleRejection.getDescriptor());
+            assertTrue(type.isRejection());
+        }
+    }
 }
