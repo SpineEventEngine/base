@@ -145,9 +145,10 @@ class SingularFieldMethods extends AbstractMethodGroup implements Logging {
         String methodName = clearPrefix() + methodNamePart;
         MethodSpec methodSpec =
                 newBuilderSetter(methodName)
-                          .addStatement(methodBody)
-                          .addStatement(returnThis())
-                          .build();
+                        .addStatement(methodBody)
+                        .addStatement(validateSetOnce())
+                        .addStatement(returnThis())
+                        .build();
         _debug("The 'clear..()' method construction for the singular method is finished.");
         return methodSpec;
     }
