@@ -239,7 +239,7 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
                                                   .getName();
             String fieldName = descriptor.getName();
             log().warn("Error found in %s.%s. " +
-                               "Repeated and map fields can't be marked as (set_once)",
+                               "Repeated and map fields can't be marked as `(set_once) = true`",
                        containingTypeName,
                        fieldName);
             return;
@@ -247,16 +247,16 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
 
         boolean valueAlreadySet = getMessageBuilder().hasField(descriptor);
         if (setOnce && valueAlreadySet) {
-            throw setOnceViolation(descriptor);
+            throw violatedSetOnce(descriptor);
         }
     }
 
-    private static ValidationException setOnceViolation(FieldDescriptor descriptor) {
+    private static ValidationException violatedSetOnce(FieldDescriptor descriptor) {
         String fieldName = descriptor.getName();
         ConstraintViolation setOnceViolation = ConstraintViolation
                 .newBuilder()
-                .setMsgFormat("Attempted to change a value of the field %s that has " +
-                              "(set_once) = true and is already set")
+                .setMsgFormat("Attempted to change the value of the field %s which has " +
+                                      "`(set_once) = true` and is already set")
                 .addParam(fieldName)
                 .build();
         return new ValidationException(ImmutableList.of(setOnceViolation));
