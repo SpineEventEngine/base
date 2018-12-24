@@ -18,10 +18,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate.type.url;
+package io.spine.js.generate;
 
-import com.google.protobuf.Descriptors.Descriptor;
-import com.google.protobuf.Descriptors.EnumDescriptor;
+import com.google.protobuf.Descriptors;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.proto.Type;
 import io.spine.js.generate.output.CodeLines;
@@ -34,14 +33,13 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.js.generate.given.GivenProject.mainProtoSources;
-import static io.spine.js.generate.type.url.TypeUrlMethods.typeUrlMethod;
-import static io.spine.js.generate.type.url.given.Given.enumType;
-import static io.spine.js.generate.type.url.given.Given.messageType;
+import static io.spine.js.generate.AppendTypeUrlGetter.typeUrlMethod;
+import static io.spine.js.generate.given.Given.enumType;
+import static io.spine.js.generate.given.Given.messageType;
 import static java.lang.String.format;
 
-@DisplayName("TypeUrlsInFile should")
-class TypeUrlMethodsTest {
+@DisplayName("AppendTypeUrlGetter should")
+class AppendTypeUrlGetterTest {
 
     private final FileDescriptor file = OuterMessage.getDescriptor()
                                                     .getFile();
@@ -62,7 +60,7 @@ class TypeUrlMethodsTest {
             assertTypeUrl(OuterMessage.NestedMessage.getDescriptor());
         }
 
-        private void assertTypeUrl(Descriptor message) {
+        private void assertTypeUrl(Descriptors.Descriptor message) {
             TypeUrl typeUrl = TypeUrl.from(message);
             assertHasTypeUrl(typeUrl);
         }
@@ -84,7 +82,7 @@ class TypeUrlMethodsTest {
             assertOutHasTypeUrl(OuterMessage.NestedEnum.getDescriptor());
         }
 
-        private void assertOutHasTypeUrl(EnumDescriptor enumDescriptor) {
+        private void assertOutHasTypeUrl(Descriptors.EnumDescriptor enumDescriptor) {
             TypeUrl typeUrl = TypeUrl.from(enumDescriptor);
             assertHasTypeUrl(typeUrl);
         }
@@ -120,11 +118,7 @@ class TypeUrlMethodsTest {
     }
 
     private void assertHasTypeUrl(TypeUrl typeUrl) {
-        CodeLines out = typeUrlMethods().value();
+        CodeLines out = AppendTypeUrlGetter.typeUrlMethods(file);
         assertThat(out.toString()).contains(typeUrl.value());
-    }
-
-    private TypeUrlMethods typeUrlMethods() {
-        return new TypeUrlMethods(file, mainProtoSources());
     }
 }

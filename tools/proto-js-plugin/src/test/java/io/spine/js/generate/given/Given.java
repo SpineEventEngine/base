@@ -23,6 +23,8 @@ package io.spine.js.generate.given;
 import com.google.protobuf.Descriptors;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FileDescriptor;
+import com.google.protobuf.NullValue;
+import com.google.protobuf.StringValue;
 import io.spine.code.proto.Type;
 import io.spine.code.proto.TypeSet;
 import io.spine.type.TypeName;
@@ -53,5 +55,15 @@ public final class Given {
         return typeSet
                 .find(typeName)
                 .orElseThrow(() -> newIllegalStateException("Cannot find Type %s.", typeName));
+    }
+
+    public static Type messageType() {
+        Descriptor descriptor = StringValue.getDescriptor();
+        return typeFor(descriptor);
+    }
+
+    public static Type enumType() {
+        Descriptors.EnumDescriptor descriptor = NullValue.getDescriptor();
+        return typeFor(descriptor);
     }
 }

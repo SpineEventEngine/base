@@ -18,16 +18,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate.type.url;
+package io.spine.js.generate;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.js.Directory;
 import io.spine.code.js.MethodReference;
 import io.spine.code.js.TypeName;
+import io.spine.code.proto.FileSet;
 import io.spine.code.proto.Type;
 import io.spine.code.proto.TypeSet;
-import io.spine.js.generate.Snippet;
 import io.spine.js.generate.output.CodeLine;
 import io.spine.js.generate.output.CodeLines;
 import io.spine.js.generate.output.FileWriter;
@@ -39,24 +39,33 @@ import io.spine.type.TypeUrl;
 import static io.spine.js.generate.output.CodeLine.emptyLine;
 
 /**
- * Generates a method to obtain a {@code TypeUrl} for each type in a file.
+ * Generates a method to obtain a {@code TypeUrl} for each type in a {@link FileSet}.
  *
  * <p>The class handles messages and enums of any nesting level.
  */
-final class TypeUrlMethods implements Snippet {
+public class AppendTypeUrlGetter extends GenerationTask {
 
     private static final String METHOD_NAME = "typeUrl";
 
-    private final FileDescriptor file;
-    private final Directory generatedRoot;
-
-    TypeUrlMethods(FileDescriptor file, Directory generatedRoot) {
-        this.file = file;
-        this.generatedRoot = generatedRoot;
+    public AppendTypeUrlGetter(Directory generatedRoot, FileSet fileSet) {
+        super(generatedRoot, fileSet);
     }
 
     @Override
-    public CodeLines value() {
+    protected void processSources() {
+        for (FileDescriptor file : fileSet().files()) {
+            processFile(file);
+        }
+    }
+
+    private void processFile(FileDescriptor file) {
+        CodeLines typeUrlMethods = typeUrlMethods(file);
+        FileWriter writer = FileWriter.createFor(generatedRoot(), file);
+        writer.append(typeUrlMethods);
+    }
+
+    @VisibleForTesting
+    static CodeLines typeUrlMethods(FileDescriptor file) {
         CodeLines output = new CodeLines();
         TypeSet types = TypeSet.messagesAndEnums(file);
         for (Type type : types.types()) {
@@ -68,24 +77,14 @@ final class TypeUrlMethods implements Snippet {
         return output;
     }
 
-    /**
-     * Appends the snippet to the file.
-     */
-    void appendToFile() {
-        CodeLines lines = value();
-        FileWriter writer = FileWriter.createFor(generatedRoot, file);
-        writer.append(lines);
-    }
-
     @VisibleForTesting
     static Method typeUrlMethod(Type type) {
         TypeName typeName = TypeName.from(type.descriptor());
         String methodName = MethodReference.onType(typeName, METHOD_NAME)
                                            .value();
-        CodeLine returnStatement = returnTypeUrl(type);
         Method method = Method
                 .newBuilder(methodName)
-                .appendToBody(returnStatement)
+                .appendToBody(returnTypeUrl(type))
                 .build();
         return method;
     }
