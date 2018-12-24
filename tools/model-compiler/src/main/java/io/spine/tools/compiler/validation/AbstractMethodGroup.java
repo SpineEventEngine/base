@@ -121,7 +121,7 @@ abstract class AbstractMethodGroup implements MethodGroup {
     }
 
     /** Creates a statement that calls the {@code validateSetOnce} method. */
-    static String validateSetOnce() {
+    static String validateImmutable() {
         CodeBlock codeBlock = CodeBlock.of("validateSetOnce($N)", FIELD_DESCRIPTOR_NAME);
         return codeBlock.toString();
     }

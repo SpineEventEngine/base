@@ -112,14 +112,14 @@ class SingularFieldMethods extends AbstractMethodGroup implements Logging {
         String setStatement = format("%s.%s(%s)", getMessageBuilder(), methodName, fieldName);
         MethodSpec methodSpec =
                 newBuilderSetter(methodName)
-                          .addParameter(parameter)
-                          .addException(ValidationException.class)
-                          .addStatement(descriptorDeclaration())
-                          .addStatement(validateSetOnce())
-                          .addStatement(validateStatement(fieldName, field.getName()))
-                          .addStatement(setStatement)
-                          .addStatement(returnThis())
-                          .build();
+                        .addParameter(parameter)
+                        .addException(ValidationException.class)
+                        .addStatement(descriptorDeclaration())
+                        .addStatement(validateImmutable())
+                        .addStatement(validateStatement(fieldName, field.getName()))
+                        .addStatement(setStatement)
+                        .addStatement(returnThis())
+                        .build();
         _debug("The setters construction for the singular field is finished.");
         return methodSpec;
     }
@@ -145,8 +145,9 @@ class SingularFieldMethods extends AbstractMethodGroup implements Logging {
         String methodName = clearPrefix() + methodNamePart;
         MethodSpec methodSpec =
                 newBuilderSetter(methodName)
+                        .addStatement(descriptorDeclaration())
+                        .addStatement(validateImmutable())
                         .addStatement(methodBody)
-                        .addStatement(validateSetOnce())
                         .addStatement(returnThis())
                         .build();
         _debug("The 'clear..()' method construction for the singular method is finished.");
