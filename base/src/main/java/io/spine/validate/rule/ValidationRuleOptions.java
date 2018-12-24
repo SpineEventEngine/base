@@ -32,10 +32,8 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.google.common.collect.ImmutableMap.builder;
-
 /**
- * Utilities for obtaining Protobuf options extracted from validation rules.
+ * Provides option value for a field mentioned in a validation rule.
  */
 public final class ValidationRuleOptions {
 
@@ -60,13 +58,14 @@ public final class ValidationRuleOptions {
      * @return the {@code Optional} of option value
      *         or {@code Optional.empty()} if there is not option for the field descriptor
      */
-    public static <T> Optional<Option<T>> getOptionValue(FieldContext fieldContext,
-                                                         GeneratedExtension<FieldOptions, T> option) {
+    public static <T>
+    Optional<Option<T>> getOptionValue(FieldContext fieldContext,
+                                       GeneratedExtension<FieldOptions, T> option) {
         for (FieldContext context : options.keySet()) {
             if (fieldContext.hasSameTargetAndParent(context)) {
                 FieldOptions fieldOptions = options.get(context);
                 T optionValue = fieldOptions.getExtension(option);
-                // A option is set explicitly if it was found in validation rules
+                // A option is set explicitly if it was found in validation rules.
                 Option<T> fieldOption = Option.explicitlySet(optionValue);
                 return Optional.of(fieldOption);
             }
@@ -75,25 +74,23 @@ public final class ValidationRuleOptions {
     }
 
     /**
-     * {@code Builder} assembles a map from a field context
-     * to the options extracted from a validation rule.
-     *
-     * <p>Keys of the resulting map are field contexts for the fields of a validation rule targets.
+     * Assembles {@linkplain #options}.
      */
     private static class Builder {
 
-        private final ImmutableMap.Builder<FieldContext, FieldOptions> state = builder();
+        private final ImmutableMap.Builder<FieldContext, FieldOptions> state =
+                ImmutableMap.builder();
 
         private ImmutableMap<FieldContext, FieldOptions> build() {
-            for (ValidationRule rule : ValidationRules.getRules()) {
+            for (ValidationRule rule : ValidationRules.all()) {
                 putAll(rule);
             }
             return state.build();
         }
 
-        private void putAll(ValidationRule validationRule) {
-            Descriptor ruleDescriptor = validationRule.getDescriptor();
-            Collection<FieldDescriptor> targets = validationRule.getTargets();
+        private void putAll(ValidationRule rule) {
+            Descriptor ruleDescriptor = rule.getDescriptor();
+            Collection<FieldDescriptor> targets = rule.getTargets();
             for (FieldDescriptor target : targets) {
                 put(ruleDescriptor, target);
             }

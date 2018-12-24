@@ -21,6 +21,7 @@
 package io.spine.code.proto;
 
 import com.google.protobuf.ByteString;
+import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
 import static io.spine.util.Exceptions.newIllegalStateException;
@@ -28,10 +29,9 @@ import static io.spine.util.Exceptions.newIllegalStateException;
 /**
  * Enumeration of the Protobuf scalar value types and corresponding Java types.
  *
- * <p>{@link com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type#TYPE_GROUP
- * Type.TYPE_GROUP} are NOT supported, so do not create an associated Java type for it.
+ * <p>{@code Type.TYPE_GROUP} is NOT supported, so do not create an associated
+ * Java type for it.
  *
- * @author Dmytro Grankin
  * @see <a href="https://developers.google.com/protocol-buffers/docs/proto3#scalar">
  * Protobuf scalar types</a>
  */
@@ -84,6 +84,20 @@ public enum ScalarType {
         }
         throw newIllegalStateException("Protobuf type `%s` is not a scalar value type.",
                                        protoScalar);
+    }
+
+    /**
+     * Verifies if the passed field has scalar type.
+     */
+    public static boolean isScalarType(FieldDescriptorProto field) {
+        boolean isScalarType = false;
+        Type type = field.getType();
+        for (ScalarType scalarType : values()) {
+            if (scalarType.getProtoScalarType() == type) {
+                isScalarType = true;
+            }
+        }
+        return isScalarType;
     }
 
     public Type getProtoScalarType() {

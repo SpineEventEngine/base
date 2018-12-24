@@ -20,7 +20,8 @@
 
 package io.spine.tools.gradle.compiler;
 
-import io.spine.tools.compiler.validation.ValidationRulesLookup;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import io.spine.tools.compiler.validation.ValidationRulesWriter;
 import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.SpinePlugin;
 import org.gradle.api.Action;
@@ -31,8 +32,8 @@ import java.io.File;
 
 import static io.spine.tools.gradle.TaskName.FIND_TEST_VALIDATION_RULES;
 import static io.spine.tools.gradle.TaskName.FIND_VALIDATION_RULES;
-import static io.spine.tools.gradle.TaskName.GENERATE_PROTO;
-import static io.spine.tools.gradle.TaskName.GENERATE_TEST_PROTO;
+import static io.spine.tools.gradle.TaskName.MERGE_DESCRIPTOR_SET;
+import static io.spine.tools.gradle.TaskName.MERGE_TEST_DESCRIPTOR_SET;
 import static io.spine.tools.gradle.TaskName.PROCESS_RESOURCES;
 import static io.spine.tools.gradle.TaskName.PROCESS_TEST_RESOURCES;
 import static io.spine.tools.gradle.compiler.Extension.getMainDescriptorSetPath;
@@ -43,39 +44,40 @@ import static io.spine.tools.gradle.compiler.Extension.getTestTargetGenResources
 /**
  * Finds Protobuf definitions of validation rules and creates a {@code .properties} file.
  *
- * <p>For the syntax of generated properties file please see {@link ValidationRulesLookup}.
+ * <p>For the syntax of generated properties file please see
+ * {@link io.spine.tools.compiler.validation.ValidationRulesWriter}.
  *
- * @author Dmytro Grankin
- * @see ValidationRulesLookup
+ * @see io.spine.tools.compiler.validation.ValidationRulesWriter
  */
 public class ValidationRulesLookupPlugin extends SpinePlugin {
 
     @Override
     public void apply(Project project) {
-        logDependingTask(FIND_VALIDATION_RULES, PROCESS_RESOURCES, GENERATE_PROTO);
+        GradleTask mainTask = findRules(project);
+        GradleTask testTask = findTestRules(project);
+        _debug("Validation rules lookup phase initialized with tasks: {}, {}", mainTask, testTask);
+    }
 
+    @CanIgnoreReturnValue
+    private GradleTask findRules(Project project) {
         Action<Task> mainScopeAction = mainScopeActionFor(project);
-        GradleTask findRules =
-                newTask(FIND_VALIDATION_RULES, mainScopeAction)
-                        .insertAfterTask(GENERATE_PROTO)
-                        .insertBeforeTask(PROCESS_RESOURCES)
-                        .applyNowTo(project);
+        return newTask(FIND_VALIDATION_RULES, mainScopeAction)
+                .insertAfterTask(MERGE_DESCRIPTOR_SET)
+                .insertBeforeTask(PROCESS_RESOURCES)
+                .applyNowTo(project);
+    }
 
-        logDependingTask(FIND_TEST_VALIDATION_RULES, PROCESS_TEST_RESOURCES, GENERATE_TEST_PROTO);
-
+    @CanIgnoreReturnValue
+    private GradleTask findTestRules(Project project) {
         Action<Task> testScopeAction = testScopeActionFor(project);
-        GradleTask findTestRules =
-                newTask(FIND_TEST_VALIDATION_RULES, testScopeAction)
-                        .insertAfterTask(GENERATE_TEST_PROTO)
-                        .insertBeforeTask(PROCESS_TEST_RESOURCES)
-                        .applyNowTo(project);
-
-        log().debug("Validation rules lookup phase initialized with tasks: {}, {}",
-                    findRules, findTestRules);
+        return newTask(FIND_TEST_VALIDATION_RULES, testScopeAction)
+                .insertAfterTask(MERGE_TEST_DESCRIPTOR_SET)
+                .insertBeforeTask(PROCESS_TEST_RESOURCES)
+                .applyNowTo(project);
     }
 
     private Action<Task> mainScopeActionFor(Project project) {
-        log().debug("Initializing the validation lookup for the `main` source code.");
+        _debug("Initializing the validation lookup for the `main` source code.");
         return task -> {
             String descriptorSetFile = getMainDescriptorSetPath(project);
             String targetResourcesDir = getMainTargetGenResourcesDir(project);
@@ -84,7 +86,7 @@ public class ValidationRulesLookupPlugin extends SpinePlugin {
     }
 
     private Action<Task> testScopeActionFor(Project project) {
-        log().debug("Initializing the validation lookup for the `test` source code.");
+        _debug("Initializing the validation lookup for the `test` source code.");
         return task -> {
             String descriptorSetPath = getTestDescriptorSetPath(project);
             String targetGenResourcesDir = getTestTargetGenResourcesDir(project);
@@ -98,7 +100,7 @@ public class ValidationRulesLookupPlugin extends SpinePlugin {
             logMissingDescriptorSetFile(setFile);
         } else {
             File targetDir = new File(targetDirectory);
-            ValidationRulesLookup.processDescriptorSetFile(setFile, targetDir);
+            ValidationRulesWriter.processDescriptorSetFile(setFile, targetDir);
         }
     }
 }

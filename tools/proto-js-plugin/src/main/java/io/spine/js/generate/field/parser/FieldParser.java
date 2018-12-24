@@ -20,12 +20,21 @@
 
 package io.spine.js.generate.field.parser;
 
+import com.google.protobuf.Descriptors;
+import com.google.protobuf.Descriptors.FieldDescriptor;
+import io.spine.code.proto.FieldDeclaration;
+import io.spine.js.generate.JsOutput;
+import io.spine.js.generate.type.ProtoParsersGenerator;
+import io.spine.type.TypeUrl;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * The generator of the code which parses the field value from the JS object and stores it into
  * some variable.
  *
  * @apiNote
- * The descendants are supposed to operate on the provided {@link io.spine.js.generate.CodeLines},
+ * The descendants are supposed to operate on the provided {@link CodeLines},
  * so the interface method is not returning any generated code.
  */
 public interface FieldParser {
@@ -42,4 +51,31 @@ public interface FieldParser {
      *         the name of the variable to receive the parsed value
      */
     void parseIntoVariable(String value, String variable);
+
+    /**
+     * Creates a {@code FieldParser} for the given field.
+     *
+     * @param field
+     *         the descriptor of the field to create the parser for
+     * @param jsOutput
+     *         the lines to accumulate the generated code
+     * @return the {@code FieldParser} of the appropriate type
+     */
+    static FieldParser parserFor(FieldDescriptor field, CodeLines jsOutput) {
+        checkNotNull(field);
+        checkNotNull(jsOutput);
+        FieldDeclaration fdecl = new FieldDeclaration(field);
+        if (fdecl.isMessage()) {
+            Descriptors.Descriptor message = field.getMessageType();
+            TypeUrl typeUrl = TypeUrl.from(message);
+            boolean isWellKnownType = ProtoParsersGenerator.hasParser(typeUrl);
+            return isWellKnownType
+                   ? WellKnownFieldParser.createFor(field, jsOutput)
+                   : MessageFieldParser.createFor(field, jsOutput);
+        }
+        if (fdecl.isEnum()) {
+            return EnumFieldParser.createFor(field, jsOutput);
+        }
+        return PrimitiveFieldParser.createFor(field, jsOutput);
+    }
 }

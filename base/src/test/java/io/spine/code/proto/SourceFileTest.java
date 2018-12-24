@@ -21,8 +21,8 @@
 package io.spine.code.proto;
 
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
-import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.Descriptors.Descriptor;
+import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.test.compiler.message.Top;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,9 +38,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @DisplayName("SourceFile should")
 class SourceFileTest {
 
-    private static final FileDescriptorProto TEST_FILE_DESCRIPTOR = Top.getDescriptor()
-                                                                       .getFile()
-                                                                       .toProto();
+    private static final FileDescriptor TEST_FILE_DESCRIPTOR = Top.getDescriptor()
+                                                                  .getFile();
     private SourceFile sourceFile;
 
     @BeforeEach
@@ -54,14 +53,14 @@ class SourceFileTest {
         Descriptor nestedForNested = Top.NestedForTop.NestedForNested.getDescriptor();
         String expectedTypeName = nestedForNested.getFullName();
         String simpleTypeName = nestedForNested.getName();
-        MessageDeclaration result = findDeclaration(simpleTypeName);
-        assertEquals(expectedTypeName, result.getTypeName()
+        MessageType result = findDeclaration(simpleTypeName);
+        assertEquals(expectedTypeName, result.name()
                                              .value());
     }
 
-    private MessageDeclaration findDeclaration(String name) {
+    private MessageType findDeclaration(String name) {
         Predicate<DescriptorProto> predicate = new MessageWithName(name);
-        Collection<MessageDeclaration> searchResult = sourceFile.allThat(predicate);
+        Collection<MessageType> searchResult = sourceFile.allThat(predicate);
         assertEquals(searchResult.size(), 1);
         return searchResult.iterator()
                            .next();

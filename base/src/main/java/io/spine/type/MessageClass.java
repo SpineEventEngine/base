@@ -25,8 +25,6 @@ import io.spine.value.ClassTypeValue;
 
 /**
  * A base class for value objects storing references to message classes.
- *
- * @author Alexander Yevsyukov
  */
 public abstract class MessageClass<M extends Message> extends ClassTypeValue<M> {
 

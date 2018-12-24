@@ -25,7 +25,9 @@ import com.google.errorprone.annotations.Immutable;
 import com.google.protobuf.Descriptors.GenericDescriptor;
 import com.google.protobuf.Message;
 import io.spine.annotation.Internal;
-import io.spine.type.ClassName;
+import io.spine.code.java.PackageName;
+import io.spine.code.java.SimpleClassName;
+import io.spine.code.java.ClassName;
 import io.spine.type.TypeName;
 import io.spine.type.TypeUrl;
 import io.spine.type.UnknownTypeException;
@@ -33,27 +35,19 @@ import io.spine.type.UnknownTypeException;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A Protobuf type.
+ * A Protobuf type, such as a message or an enum.
  *
  * @param <T> the type of the type descriptor
  * @param <P> the type of the proto message of the descriptor
- * @author Alexander Yevsyukov
- * @author Dmytro Dashenkov
  */
 @Immutable(containerOf = {"T", "P"})
 @Internal
 public abstract class Type<T extends GenericDescriptor, P extends Message> {
 
     private final T descriptor;
-    private final P proto;
-    private final ClassName className;
-    private final TypeUrl url;
 
-    protected Type(T descriptor, P descriptorProto, ClassName javaClassName, TypeUrl url) {
+    protected Type(T descriptor) {
         this.descriptor = checkNotNull(descriptor);
-        this.proto = checkNotNull(descriptorProto);
-        this.url = url;
-        this.className = javaClassName;
     }
 
     /**
@@ -66,40 +60,57 @@ public abstract class Type<T extends GenericDescriptor, P extends Message> {
     /**
      * Obtains the proto message of the type descriptor.
      */
-    public P toProto() {
-        return this.proto;
-    }
+    public abstract P toProto();
 
     /**
      * Obtains the {@linkplain TypeName name} of this type.
      */
     public TypeName name() {
-        return url.toName();
+        return url().toName();
     }
 
     /**
      * Obtains the {@link TypeUrl} of this type.
      */
-    public TypeUrl url() {
-        return url;
-    }
+    public abstract TypeUrl url();
 
     /**
      * Loads the Java class representing this Protobuf type.
      */
     public Class<?> javaClass() {
+        String clsName = javaClassName().value();
         try {
-            return Class.forName(className.value());
+            return Class.forName(clsName);
         } catch (ClassNotFoundException e) {
-            throw new UnknownTypeException(className.value(), e);
+            throw new UnknownTypeException(descriptor.getName(), e);
         }
     }
 
     /**
      * Obtains the name of the Java class representing this Protobuf type.
      */
-    public ClassName javaClassName() {
-        return className;
+    public abstract ClassName javaClassName();
+
+    /**
+     * Obtains package for the corresponding Java type.
+     */
+    public PackageName javaPackage() {
+        PackageName result = PackageName.resolve(descriptor.getFile()
+                                                           .toProto());
+        return result;
+    }
+
+    /**
+     * Obtains simple class name for corresponding Java type.
+     */
+    public abstract SimpleClassName simpleJavaClassName();
+
+    /**
+     * Returns a fully-qualified name of the proto type.
+     */
+    @Override
+    public String toString() {
+        return descriptor.getFullName();
     }
 
     @Override
@@ -107,15 +118,15 @@ public abstract class Type<T extends GenericDescriptor, P extends Message> {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof Type)) {
             return false;
         }
         Type<?, ?> type = (Type<?, ?>) o;
-        return Objects.equal(proto, type.proto);
+        return Objects.equal(descriptor, type.descriptor);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(proto);
+        return Objects.hashCode(descriptor);
     }
 }

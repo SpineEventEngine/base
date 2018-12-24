@@ -23,8 +23,11 @@ package io.spine.code.proto;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
+import com.google.protobuf.Descriptors.Descriptor;
+import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.AbstractSourceFile;
 import io.spine.code.java.SimpleClassName;
+import io.spine.logging.Logging;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -34,31 +37,27 @@ import java.util.Optional;
 import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.code.proto.MessageDeclaration.create;
 
 /**
  * A Protobuf file which also gives access to its {@link FileDescriptorProto descriptor}.
- *
- * @author Alexander Yevsyukov
  */
-public class SourceFile extends AbstractSourceFile {
+public class SourceFile extends AbstractSourceFile implements Logging {
 
-    private final FileDescriptorProto descriptor;
+    private final FileDescriptor descriptor;
 
-    SourceFile(FileDescriptorProto descriptor) {
+    SourceFile(FileDescriptor descriptor) {
         super(toPath(descriptor));
         this.descriptor = descriptor;
     }
 
     /**
-     * Creates a new instance by the passed file descriptor.
+     * Creates a new instance for the passed file descriptor.
      */
-    public static SourceFile from(FileDescriptorProto file) {
-        SourceFile result = new SourceFile(file);
-        return result;
+    public static SourceFile from(FileDescriptor file) {
+        return new SourceFile(file);
     }
 
-    private static Path toPath(FileDescriptorProto file) {
+    private static Path toPath(FileDescriptor file) {
         checkNotNull(file);
         Path result = Paths.get(file.getName());
         return result;
@@ -73,7 +72,7 @@ public class SourceFile extends AbstractSourceFile {
      *         {@link io.spine.base.RejectionMessage.File#suffix() “rejections.proto”}.
      *     <li>The option {@code java_multiple_files} set to {@code false}.
      *     <li>Do not have the option {@code java_outer_classname} or have the value, which
-     *         ends with {@linkplain RejectionDeclaration#isValidOuterClassName(SimpleClassName)}
+     *         ends with {@linkplain RejectionType#isValidOuterClassName(SimpleClassName)}
      *         “Rejections”}.
      * </ul>
      */
@@ -91,50 +90,33 @@ public class SourceFile extends AbstractSourceFile {
             return true;
         }
 
-        boolean result = RejectionDeclaration.isValidOuterClassName(outerClass.get());
+        boolean result = RejectionType.isValidOuterClassName(outerClass.get());
         return result;
     }
 
     /**
      * Obtains descriptor of the file.
      */
-    public FileDescriptorProto getDescriptor() {
+    public FileDescriptor getDescriptor() {
         return descriptor;
     }
 
     /**
      * Obtains all message declarations that match the passed predicate.
      */
-    public List<MessageDeclaration> allThat(Predicate<DescriptorProto> predicate) {
-        ImmutableList.Builder<MessageDeclaration> result = ImmutableList.builder();
-        for (DescriptorProto messageType : descriptor.getMessageTypeList()) {
-            MessageDeclaration declaration = create(messageType, descriptor);
-            if (predicate.test(messageType)) {
+    public List<MessageType> allThat(Predicate<DescriptorProto> predicate) {
+        ImmutableList.Builder<MessageType> result = ImmutableList.builder();
+        for (Descriptor messageType : descriptor.getMessageTypes()) {
+            MessageType declaration = MessageType.of(messageType);
+            _debug("Testing {} to match {}", declaration, predicate);
+            if (predicate.test(messageType.toProto())) {
                 result.add(declaration);
             }
-            Collection<MessageDeclaration> allNested =
+            Collection<MessageType> allNested =
                     declaration.getAllNested(predicate);
             result.addAll(allNested);
         }
         return result.build();
     }
 
-    /**
-     * Obtains message declarations, that match the specified {@link Predicate} in all
-     * passed files.
-     *
-     * @param files     the file descriptors to scan
-     * @param predicate the predicate to test a message
-     * @return the message declarations
-     */
-    public static List<MessageDeclaration> allThat(Iterable<FileDescriptorProto> files,
-                                                   Predicate<DescriptorProto> predicate) {
-        ImmutableList.Builder<MessageDeclaration> result = ImmutableList.builder();
-        for (FileDescriptorProto file : files) {
-            SourceFile sourceFile = from(file);
-            Collection<MessageDeclaration> declarations = sourceFile.allThat(predicate);
-            result.addAll(declarations);
-        }
-        return result.build();
-    }
 }

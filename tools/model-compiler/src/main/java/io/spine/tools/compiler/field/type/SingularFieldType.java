@@ -27,17 +27,15 @@ import java.util.Optional;
 
 /**
  * Represents singular {@linkplain FieldType field type}.
- *
- * @author Dmytro Grankin
  */
-public class SingularFieldType implements FieldType {
+public final class SingularFieldType implements FieldType {
 
     private static final String SETTER_PREFIX = "set";
 
     private final TypeName typeName;
 
     /**
-     * Constructs the {@link SingularFieldType} based on field type name.
+     * Creates a new instance based on field type name.
      *
      * @param name the field type name
      */
@@ -45,9 +43,6 @@ public class SingularFieldType implements FieldType {
         this.typeName = constructTypeNameFor(name);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public TypeName getTypeName() {
         return typeName;
@@ -58,8 +53,6 @@ public class SingularFieldType implements FieldType {
      * used to initialize a singular field using a protobuf message builder.
      *
      * Call should be like `builder.setFieldName(FieldType)`.
-     *
-     * @return {@inheritDoc}
      */
     @Override
     public String getSetterPrefix() {
@@ -70,14 +63,15 @@ public class SingularFieldType implements FieldType {
         Optional<? extends Class<?>> boxedScalarPrimitive =
                 PrimitiveType.getWrapperClass(name);
 
-        return boxedScalarPrimitive.isPresent()
-               ? TypeName.get(boxedScalarPrimitive.get())
-                         .unbox()
-               : ClassName.bestGuess(name);
-    }
+        if (boxedScalarPrimitive.isPresent()) {
+            TypeName unboxed = TypeName.get(boxedScalarPrimitive.get())
+                                       .unbox();
+            return unboxed;
+        }
 
-    @Override
-    public String toString() {
-        return typeName.toString();
+        // Make a possibly nested class name use the dot notation.
+        String dottedName = name.replace('$', '.');
+        ClassName result = ClassName.bestGuess(dottedName);
+        return result;
     }
 }

@@ -21,44 +21,50 @@
 package io.spine.tools.check.vbuilder;
 
 import com.google.protobuf.AbstractMessage;
-import com.google.protobuf.StringValue;
+import io.spine.base.FieldPath;
+import io.spine.base.FieldPathVBuilder;
 import io.spine.validate.AbstractValidatingBuilder;
-import io.spine.validate.StringValueVBuilder;
 
-import static io.spine.validate.Int32ValueVBuilder.newBuilder;
+import static io.spine.base.ErrorVBuilder.newBuilder;
 
 /**
- * Contains statements for which the {@link UseValidatingBuilder} bug pattern should respond with
- * no match.
- *
- * @author Dmytro Kuzmin
+ * Contains statements for which the {@link UseValidatingBuilder} bug pattern should
+ * generate no warning.
  */
 abstract class UseValidatingBuilderNegatives {
 
+    /** This method calls generated VBuilder. */
     void callOnVBuilder() {
-        StringValueVBuilder.newBuilder();
+        FieldPathVBuilder.newBuilder();
     }
 
+    /** This method calls statically imported method of generated VBuilder. */
     void callOnVBuilderStaticImported() {
         newBuilder();
     }
 
+    /** This method is annotated suppressing the warning. */
     @SuppressWarnings("UseValidatingBuilder")
     void callUnderWarningSuppressed() {
-        StringValue.newBuilder();
+        FieldPath.newBuilder();
     }
 
     class SomeBuilder extends AbstractValidatingBuilder {
 
+        /**
+         * This method contains a call from a method, which is inside a class derived
+         * from {@code AbstractValidatingBuilder}.
+         */
         void callInsideVBuilder() {
-            StringValue.newBuilder();
+            FieldPath.newBuilder();
         }
     }
 
     abstract class SomeMessage extends AbstractMessage {
 
+        /** The call to builder is made inside a message class. */
         void callInsideMessage() {
-            StringValue.newBuilder();
+            FieldPath.newBuilder();
         }
     }
 }

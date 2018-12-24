@@ -20,6 +20,8 @@
 
 package io.spine.tools.gradle.compiler;
 
+import io.spine.code.java.SimpleClassName;
+import io.spine.protobuf.Messages;
 import io.spine.tools.gradle.GradleProject;
 import org.jboss.forge.roaster.Roaster;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
@@ -61,7 +63,7 @@ class RejectionGenPluginTest {
 
     @Test
     @DisplayName("compile generated rejections")
-    void compile_generated_rejections() {
+    void compileGeneratedRejections() {
         Collection<String> files = Arrays.asList("test_rejections.proto",
                                                  "outer_class_by_file_name_rejections.proto",
                                                  "outer_class_set_rejections.proto",
@@ -76,42 +78,47 @@ class RejectionGenPluginTest {
 
     @Test
     @DisplayName("generate rejection Javadoc")
-    void generate_rejection_javadoc() throws FileNotFoundException {
+    void generateRejectionJavadoc() throws FileNotFoundException {
         GradleProject project = newProjectWithRejectionsJavadoc(testProjectDir);
         project.executeTask(COMPILE_JAVA);
         String projectAbsolutePath = testProjectDir.getAbsolutePath();
         File generatedFile = new File(projectAbsolutePath + rejectionsJavadocThrowableSource());
         JavaClassSource generatedSource = Roaster.parse(JavaClassSource.class, generatedFile);
         assertRejectionJavadoc(generatedSource);
-        assertBuilderJavadoc((JavaClassSource) generatedSource.getNestedType("Builder"));
+        assertBuilderJavadoc(
+                (JavaClassSource) generatedSource.getNestedType(SimpleClassName.ofBuilder()
+                                                                               .value())
+        );
     }
 
     private static void assertRejectionJavadoc(JavaClassSource rejection) {
-        assertDoc(rejection, getExpectedClassComment());
-        assertMethodDoc(rejection, "newBuilder", "@return a new builder for the rejection");
+        assertDoc(getExpectedClassComment(), rejection);
+        assertMethodDoc("@return a new builder for the rejection", rejection,
+                        Messages.METHOD_NEW_BUILDER
+        );
     }
 
     private static void assertBuilderJavadoc(JavaClassSource builder) {
-        assertDoc(builder, getExpectedBuilderClassComment());
-        assertMethodDoc(builder, "build",
-                        "Creates the rejection from the builder and validates it.");
-        assertMethodDoc(builder, "setId", getExpectedFirstFieldComment());
-        assertMethodDoc(builder, "setRejectionMessage", getExpectedSecondFieldComment());
+        assertDoc(getExpectedBuilderClassComment(), builder);
+        assertMethodDoc("Creates the rejection from the builder and validates it.", builder, "build"
+        );
+        assertMethodDoc(getExpectedFirstFieldComment(), builder, "setId");
+        assertMethodDoc(getExpectedSecondFieldComment(), builder, "setRejectionMessage");
     }
 
-    private static void assertMethodDoc(JavaClassSource source,
-                                        String methodName,
-                                        String expectedComment) {
+    private static void assertMethodDoc(String expectedComment,
+                                        JavaClassSource source,
+                                        String methodName) {
         MethodSource<JavaClassSource> method = source.getMethods()
                                                      .stream()
                                                      .filter(m -> m.getName()
                                                                    .equals(methodName))
                                                      .findFirst()
                                                      .orElseThrow(IllegalStateException::new);
-        assertDoc(method, expectedComment);
+        assertDoc(expectedComment, method);
     }
 
-    private static void assertDoc(JavaDocCapableSource source, String expectedText) {
+    private static void assertDoc(String expectedText, JavaDocCapableSource source) {
         JavaDocSource javadoc = source.getJavaDoc();
         assertEquals(expectedText, javadoc.getFullText());
     }

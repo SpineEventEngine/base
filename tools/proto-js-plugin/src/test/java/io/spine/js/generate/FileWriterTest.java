@@ -31,7 +31,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 
 import static com.google.common.io.Files.createTempDir;
-import static io.spine.code.js.FileName.of;
 import static io.spine.js.generate.FileWriter.createFor;
 import static io.spine.js.generate.given.FileWriters.assertFileContains;
 import static io.spine.js.generate.given.FileWriters.assertFileNotContains;
@@ -39,7 +38,7 @@ import static io.spine.js.generate.given.FileWriters.assertFileNotContains;
 @DisplayName("FileWriter should")
 class FileWriterTest {
 
-    private static final FileName TASKS_JS = of("tasks.js");
+    private static final FileName TASKS_JS = FileName.of("tasks.js");
     private static final String CREATE_TASK_1 = "createTask1();";
     private static final String CREATE_TASK_2 = "createTask2();";
 

@@ -32,7 +32,7 @@ import static io.spine.js.generate.field.given.Given.enumField;
 import static io.spine.js.generate.field.given.Given.messageField;
 import static io.spine.js.generate.field.given.Given.primitiveField;
 import static io.spine.js.generate.field.given.Given.timestampField;
-import static io.spine.js.generate.field.parser.FieldParsers.parserFor;
+import static io.spine.js.generate.field.parser.FieldParser.parserFor;
 import static io.spine.js.generate.given.Generators.assertContains;
 import static io.spine.js.generate.type.FromJsonMethod.FROM_OBJECT;
 

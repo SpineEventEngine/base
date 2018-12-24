@@ -77,6 +77,9 @@ subprojects {
         // todo Spine issue: https://github.com/SpineEventEngine/base/issues/126
         compile "io.spine:spine-base:$spineVersion"
 
+        implementation deps.build.errorProneCore
+        implementation deps.build.errorProneAnnotations
+
         testImplementation "io.spine:spine-testlib:$spineVersion"
         testRuntimeOnly deps.test.junit5Runner
     }

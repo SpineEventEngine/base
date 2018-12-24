@@ -20,16 +20,22 @@
 
 package io.spine.tools.compiler.field.type;
 
+import com.google.protobuf.Descriptors.Descriptor;
+import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
+import io.spine.code.proto.FieldDeclaration;
 
+import java.util.AbstractMap;
 import java.util.Map;
+
+import static com.google.common.base.Preconditions.checkArgument;
 
 /**
  * Represents map {@linkplain FieldType field type}.
  */
-public class MapFieldType implements FieldType {
+public final class MapFieldType implements FieldType {
 
     private static final String SETTER_PREFIX = "putAll";
 
@@ -38,12 +44,11 @@ public class MapFieldType implements FieldType {
     private final TypeName valueTypeName;
 
     /**
-     * Constructs the {@link MapFieldType} based on
-     * the key and the value type names.
-     *
-     * @param entryTypeNames the entry containing the key and the value type names.
+     * Constructs the new instance based on the key and the value type names.
      */
-    MapFieldType(Map.Entry<TypeName, TypeName> entryTypeNames) {
+    MapFieldType(FieldDeclaration field) {
+        Map.Entry<TypeName, TypeName> entryTypeNames = getEntryTypeNames(field);
+
         this.keyTypeName = boxIfPrimitive(entryTypeNames.getKey());
         this.valueTypeName = boxIfPrimitive(entryTypeNames.getValue());
         this.typeName = ParameterizedTypeName.get(ClassName.get(Map.class),
@@ -51,9 +56,6 @@ public class MapFieldType implements FieldType {
                                                   valueTypeName);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public TypeName getTypeName() {
         return typeName;
@@ -73,7 +75,7 @@ public class MapFieldType implements FieldType {
      *
      * <p>Call should be like `builder.putAllFieldName({@link Map})`.
      *
-     * @return {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public String getSetterPrefix() {
@@ -92,4 +94,31 @@ public class MapFieldType implements FieldType {
     public String toString() {
         return typeName.toString();
     }
+
+    /**
+     * Returns the key and the value type names for the map field
+     * based on the passed nested types.
+     */
+    private static Map.Entry<TypeName, TypeName> getEntryTypeNames(FieldDeclaration mapField) {
+        checkArgument(mapField.isMap());
+
+        int keyFieldIndex = 0;
+        int valueFieldIndex = 1;
+
+        Descriptor mapEntry = mapField.descriptor()
+                                      .getMessageType();
+
+        FieldDescriptor keyField = mapEntry.getFields()
+                                           .get(keyFieldIndex);
+        FieldDescriptor valueField = mapEntry.getFields()
+                                             .get(valueFieldIndex);
+
+        TypeName keyTypeName = FieldType.create(new FieldDeclaration(keyField))
+                                        .getTypeName();
+        TypeName valueTypeName = FieldType.create(new FieldDeclaration(valueField))
+                                          .getTypeName();
+
+        return new AbstractMap.SimpleEntry<>(keyTypeName, valueTypeName);
+    }
+
 }

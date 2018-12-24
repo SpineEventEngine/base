@@ -41,6 +41,7 @@ import static java.lang.String.format;
  * @param <C> type of the {@linkplain io.spine.type.MessageClass} of {@code |M|}.
  * @param <R> type of an error code to use for error reporting; must be a Protobuf enum value
  */
+@SuppressWarnings("unused")
 @Internal
 public abstract class ExceptionFactory<E extends Exception,
                                        M extends Message,
@@ -93,31 +94,41 @@ public abstract class ExceptionFactory<E extends Exception,
     protected abstract E createException(String exceptionMsg, M message, Error error);
 
     private String formatExceptionMessage() {
-        return format("%s. Message class: %s. " +
-                              "See Error.getValidationError() for details.",
-                      getErrorText(), getMessageClass());
+        return format("%s. Message class: `%s`. %s.",
+                      getErrorText(), getMessageClass(), violationsText());
     }
 
     private Error createError() {
-        ValidationError validationError =
-                ValidationError.newBuilder()
-                               .addAllConstraintViolation(constraintViolations)
-                               .build();
+        ValidationError validationError = error();
         R errorCode = getErrorCode();
-        String typeName = errorCode.getDescriptorForType()
-                                   .getFullName();
-        String errorTextTemplate = getErrorText();
-        String violationsText = toText(constraintViolations);
-        String errorText = format("%s %s", errorTextTemplate, violationsText);
+        String errorType = errorCode.getDescriptorForType()
+                                    .getFullName();
+        String errorText = errorText();
 
         Error.Builder error = Error
                 .newBuilder()
-                .setType(typeName)
+                .setType(errorType)
                 .setCode(errorCode.getNumber())
                 .setValidationError(validationError)
                 .setMessage(errorText)
                 .putAllAttributes(getMessageTypeAttribute(message));
         return error.build();
+    }
+
+    private ValidationError error() {
+        return ValidationError.newBuilder()
+                              .addAllConstraintViolation(constraintViolations)
+                              .build();
+    }
+
+    private String errorText() {
+        String errorTextTemplate = getErrorText();
+        String violationsText = violationsText();
+        return format("%s %s", errorTextTemplate, violationsText);
+    }
+
+    private String violationsText() {
+        return toText(constraintViolations);
     }
 
     /**

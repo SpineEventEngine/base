@@ -28,8 +28,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Abstract base for source code objects on a file system.
- *
- * @author Alexander Yevsyukov
  */
 public abstract class FsObject {
 
@@ -68,7 +66,7 @@ public abstract class FsObject {
         if (this == obj) {
             return true;
         }
-        if (obj == null || getClass() != obj.getClass()) {
+        if (!(obj instanceof FsObject)) {
             return false;
         }
         FsObject other = (FsObject) obj;

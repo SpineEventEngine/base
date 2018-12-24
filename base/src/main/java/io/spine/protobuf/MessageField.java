@@ -95,7 +95,7 @@ public abstract class MessageField implements Serializable {
             Object result = method.invoke(message);
             return result;
         } catch (InvocationTargetException | IllegalAccessException e) {
-            throw (MessageFieldException) (new MessageFieldException(message).initCause(e));
+            throw (MessageFieldException) new MessageFieldException(message).initCause(e);
         }
     }
 

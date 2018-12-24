@@ -120,8 +120,7 @@ public abstract class Annotator<O extends ExtendableMessage, D extends Generated
 
     /**
      * Annotates the Java sources generated from the specified file descriptor
-     * if {@linkplain com.google.protobuf.DescriptorProtos.FileOptions#getJavaMultipleFiles()
-     * FileOptions#getJavaMultipleFiles()} is {@code false}.
+     * if {@code java_multiple_files} proto file option is set to {@code false}.
      *
      * @param fileDescriptor the file descriptor
      */
@@ -129,8 +128,7 @@ public abstract class Annotator<O extends ExtendableMessage, D extends Generated
 
     /**
      * Annotates the Java sources generated from the specified file descriptor
-     * if {@linkplain com.google.protobuf.DescriptorProtos.FileOptions#hasJavaMultipleFiles()
-     * FileOptions#hasJavaMultipleFiles()} is {@code true}.
+     * if {@code java_multiple_files} proto file option is {@code true}.
      *
      * @param fileDescriptor the file descriptor
      */

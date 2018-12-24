@@ -20,6 +20,7 @@
 package io.spine.tools.compiler.field.type;
 
 import com.squareup.javapoet.TypeName;
+import io.spine.code.proto.FieldDeclaration;
 
 /**
  * The type information of a field for a code-generation.
@@ -39,4 +40,18 @@ public interface FieldType {
      * @return the setter prefix
      */
     String getSetterPrefix();
+
+    /**
+     * Creates a an instances basing on the type of the field.
+     */
+    static FieldType create(FieldDeclaration field) {
+        if (field.isMap()) {
+            return new MapFieldType(field);
+        } else {
+            String fieldTypeName = field.javaTypeName();
+            return field.isRepeated()
+                   ? new RepeatedFieldType(fieldTypeName)
+                   : new SingularFieldType(fieldTypeName);
+        }
+    }
 }

@@ -21,6 +21,7 @@
 package io.spine.js.generate.snippet;
 
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
 import io.spine.code.js.FileName;
 import io.spine.js.generate.CodeLines;
 import io.spine.js.generate.JsCodeGenerator;
@@ -28,7 +29,6 @@ import io.spine.js.generate.JsCodeGenerator;
 import java.util.Collection;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.ImmutableList.copyOf;
 import static java.lang.String.format;
 import static java.util.Collections.emptyList;
 
@@ -178,7 +178,7 @@ public final class JsImportGenerator extends JsCodeGenerator {
 
         public Builder setImports(Collection<FileName> imports) {
             checkNotNull(imports);
-            this.imports = copyOf(imports);
+            this.imports = ImmutableList.copyOf(imports);
             return this;
         }
 

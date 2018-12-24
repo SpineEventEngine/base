@@ -30,7 +30,7 @@ import static io.spine.code.proto.FieldTypes.isMap;
 import static io.spine.code.proto.FieldTypes.isRepeated;
 import static io.spine.code.proto.FieldTypes.keyDescriptor;
 import static io.spine.code.proto.FieldTypes.valueDescriptor;
-import static io.spine.js.generate.field.parser.FieldParsers.parserFor;
+import static io.spine.js.generate.field.parser.FieldParser.parserFor;
 import static io.spine.js.generate.field.precondition.FieldPreconditions.preconditionFor;
 
 /**

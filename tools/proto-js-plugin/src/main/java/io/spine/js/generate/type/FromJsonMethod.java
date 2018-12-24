@@ -160,7 +160,6 @@ public class FromJsonMethod implements Snippet {
     /**
      * Adds the {@code fromObject} code to the {@code jsOutput}.
      */
-    @SuppressWarnings("DuplicateStringLiteralInspection") // Duplication in different context.
     private static void addFromObjectCode(Descriptor message, CodeLines output) {
         TypeName typeName = TypeName.from(message);
         String methodName = typeName.value() + '.' + FROM_OBJECT;

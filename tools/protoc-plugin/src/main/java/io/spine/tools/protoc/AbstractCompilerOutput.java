@@ -53,7 +53,7 @@ public abstract class AbstractCompilerOutput implements CompilerOutput {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof AbstractCompilerOutput)) {
             return false;
         }
         AbstractCompilerOutput output = (AbstractCompilerOutput) o;

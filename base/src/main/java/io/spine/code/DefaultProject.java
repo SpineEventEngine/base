@@ -104,7 +104,6 @@ public abstract class DefaultProject extends AbstractDirectory {
     /**
      * A root source code directory in a project or a module.
      */
-    @SuppressWarnings("DuplicateStringLiteralInspection") /* Tests use directory names. */
     public static class SourceRoot extends SourceDir {
 
         protected SourceRoot(DefaultProject parent, String name) {

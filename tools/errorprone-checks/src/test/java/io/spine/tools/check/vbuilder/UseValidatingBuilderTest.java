@@ -23,6 +23,7 @@ package io.spine.tools.check.vbuilder;
 import com.google.common.base.Predicates;
 import com.google.errorprone.CompilationTestHelper;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -50,6 +51,7 @@ import java.util.function.Predicate;
  * guide</a> to testing the custom checks.
  */
 @DisplayName("UseValidatingBuilder should")
+@Disabled("Until https://github.com/SpineEventEngine/base/issues/263 is resolved")
 class UseValidatingBuilderTest {
 
     private CompilationTestHelper compilationTestHelper;
@@ -62,7 +64,7 @@ class UseValidatingBuilderTest {
 
     @Test
     @DisplayName("recognize positive cases")
-    void recognize_positive_cases() {
+    void recognizePositiveCases() {
         Predicate<CharSequence> predicate =
                 Predicates.containsPattern(UseValidatingBuilder.SUMMARY)::apply;
         compilationTestHelper.expectErrorMessage("UseValidatingBuilderError", predicate::test);
@@ -72,7 +74,7 @@ class UseValidatingBuilderTest {
 
     @Test
     @DisplayName("recognize negative cases")
-    void recognize_negative_cases() {
+    void recognizeNegativeCases() {
         compilationTestHelper.addSourceFile("UseValidatingBuilderNegatives.java")
                              .doTest();
     }

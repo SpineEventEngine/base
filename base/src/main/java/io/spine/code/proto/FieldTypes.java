@@ -25,13 +25,11 @@ import com.google.protobuf.Descriptors.FieldDescriptor;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.protobuf.Descriptors.FieldDescriptor.Type.ENUM;
 import static com.google.protobuf.Descriptors.FieldDescriptor.Type.MESSAGE;
 
 /**
  * A utility to work with Protobuf {@linkplain FieldDescriptor fields}.
  */
-@SuppressWarnings("DuplicateStringLiteralInspection") // Duplication with unrelated modules.
 public final class FieldTypes {
 
     /**
@@ -42,6 +40,7 @@ public final class FieldTypes {
     /**
      * The field of the {@code map} message type which represents the {@code map} value.
      */
+    @SuppressWarnings("DuplicateStringLiteralInspection") // Duplication with unrelated modules.
     private static final String MAP_ENTRY_VALUE = "value";
 
     /** Prevents instantiation of this utility class. */
@@ -59,19 +58,6 @@ public final class FieldTypes {
         checkNotNull(field);
         boolean isMessage = field.getType() == MESSAGE;
         return isMessage;
-    }
-
-    /**
-     * Checks if the given field is of {@code enum} type.
-     *
-     * @param field
-     *         the descriptor of the field to check
-     * @return {@code true} if the field is of {@code enum} type, {@code false} otherwise
-     */
-    public static boolean isEnum(FieldDescriptor field) {
-        checkNotNull(field);
-        boolean isEnum = field.getType() == ENUM;
-        return isEnum;
     }
 
     /**
