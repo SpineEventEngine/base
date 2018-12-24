@@ -158,11 +158,8 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
     public <V> void validate(FieldDescriptor descriptor, V fieldValue, String fieldName)
             throws ValidationException {
         FieldContext fieldContext = FieldContext.create(descriptor);
-        FieldValue currentValue = FieldValue.of(getMessageBuilder().getField(descriptor),
-                                                fieldContext);
-        FieldValue desiredValue = FieldValue.of(fieldValue, fieldContext);
-        FieldValueChange changeToValidate = FieldValueChange.of(currentValue, desiredValue);
-        FieldValidator<?> validator = changeToValidate.createValidator();
+        FieldValue valueToValidate = FieldValue.of(fieldValue, fieldContext);
+        FieldValidator<?> validator = valueToValidate.createValidator();
         List<ConstraintViolation> violations = validator.validate();
         checkViolations(violations);
     }
@@ -240,7 +237,7 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
         }
     }
 
-    private ValidationException setOnceViolation(FieldDescriptor descriptor) {
+    private static ValidationException setOnceViolation(FieldDescriptor descriptor) {
         String fieldName = descriptor.getName();
         ConstraintViolation setOnceViolation = ConstraintViolation
                 .newBuilder()
@@ -256,28 +253,6 @@ public abstract class AbstractValidatingBuilder<T extends Message, B extends Mes
         if (!violations.isEmpty()) {
             throw new ValidationException(violations);
         }
-    }
-
-    @SuppressWarnings("unused")
-    // Called by all actual validating builder subclasses.
-    protected final void validateSetOnce(FieldDescriptor descriptor) throws ValidationException {
-        boolean setOnce = descriptor.getOptions()
-                                    .getExtension(OptionsProto.setOnce);
-        boolean valueAlreadySet = getMessageBuilder().hasField(descriptor);
-        if (setOnce && valueAlreadySet) {
-            throw setOnceViolation(descriptor);
-        }
-    }
-
-    private static ValidationException setOnceViolation(FieldDescriptor descriptor) {
-        String fieldName = descriptor.getName();
-        ConstraintViolation setOnceViolation = ConstraintViolation
-                .newBuilder()
-                .setMsgFormat("Attempted to change a value of the field %s that has " +
-                                      "(set_once) = true and is already set")
-                .addParam(fieldName)
-                .build();
-        return new ValidationException(ImmutableList.of(setOnceViolation));
     }
 
     /**

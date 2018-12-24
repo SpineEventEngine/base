@@ -37,16 +37,6 @@ final class DoubleFieldValidator extends FloatFieldValidatorBase<Double> {
         super(fieldValue);
     }
 
-    /**
-     * Creates a new validator instance.
-     *
-     * @param fieldValueChange
-     *         the value to validate
-     */
-    DoubleFieldValidator(FieldValueChange fieldValueChange) {
-        super(fieldValueChange);
-    }
-
     @Override
     protected Double toNumber(String value) {
         Double min = Double.valueOf(value);

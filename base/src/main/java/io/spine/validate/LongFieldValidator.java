@@ -37,10 +37,6 @@ class LongFieldValidator extends NumberFieldValidator<Long> {
         super(fieldValue);
     }
 
-    LongFieldValidator(FieldValueChange fieldValueChange){
-        super(fieldValueChange);
-    }
-
     @Override
     protected Long toNumber(String value) {
         Long number = Long.valueOf(value);

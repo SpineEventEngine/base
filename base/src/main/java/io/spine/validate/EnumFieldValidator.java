@@ -30,11 +30,11 @@ class EnumFieldValidator extends FieldValidator<EnumValueDescriptor> {
     /**
      * Creates a new validator instance.
      *
-     * @param fieldValueChange
-     *         the change of the field that is going to be validated
+     * @param fieldValue
+     *         the value to validate
      */
-    public EnumFieldValidator(FieldValueChange fieldValueChange) {
-        super(fieldValueChange, false);
+    protected EnumFieldValidator(FieldValue fieldValue) {
+        super(fieldValue, false);
     }
 
     @Override

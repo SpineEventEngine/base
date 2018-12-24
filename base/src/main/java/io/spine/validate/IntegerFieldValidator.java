@@ -37,16 +37,6 @@ class IntegerFieldValidator extends NumberFieldValidator<Integer> {
         super(fieldValue);
     }
 
-    /**
-     * Creates a new validator instance.
-     *
-     * @param fieldValueChange
-     *         the change of the field value to validate
-     */
-    IntegerFieldValidator(FieldValueChange fieldValueChange) {
-        super(fieldValueChange);
-    }
-
     @Override
     protected Integer toNumber(String value) {
         Integer number = Integer.valueOf(value);

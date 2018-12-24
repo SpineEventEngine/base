@@ -89,8 +89,7 @@ public class MessageValidator {
      */
     private void validateFields(ImmutableList.Builder<ConstraintViolation> result) {
         for (FieldValue value : message.fieldsExceptOneofs()) {
-            FieldValueChange change = FieldValueChange.withoutPreviousValue(value);
-            FieldValidator<?> fieldValidator = change.createValidator();
+            FieldValidator<?> fieldValidator = value.createValidator();
             List<ConstraintViolation> violations = fieldValidator.validate();
             result.addAll(violations);
         }
