@@ -21,66 +21,48 @@
 package io.spine.code.js;
 
 import io.spine.code.proto.Type;
-import io.spine.type.TypeUrl;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A Javascript type generated from a Protobuf type.
+ * A reference to a method.
  */
-public final class JsType {
+public class MethodReference {
 
-    /**
-     * The Protobuf type from which the type was generated.
-     */
+    /** The type declaring the method. */
     private final Type type;
+    /** The name of the method. */
+    private final String methodName;
+    /** Whether the method is defined on the prototype or not. */
+    private final boolean onPrototype;
 
-    private JsType(Type type) {
-        this.type = checkNotNull(type);
-    }
-
-    public static JsType generatedFrom(Type type) {
-        return new JsType(type);
-    }
-
-    /**
-     * Obtains the name of the type in the generated code.
-     */
-    public TypeName name() {
-        return TypeName.from(type.descriptor());
+    private MethodReference(Type type, String methodName, boolean onPrototype) {
+        checkNotNull(type);
+        checkNotNull(methodName);
+        this.type = type;
+        this.methodName = methodName;
+        this.onPrototype = onPrototype;
     }
 
     /**
-     * Obtains the URL of the type.
+     * Obtains the reference to the instance method of the specified type.
      */
-    public TypeUrl url() {
-        return type.url();
+    public static MethodReference onType(Type type, String methodName) {
+        return new MethodReference(type, methodName, false);
     }
 
     /**
-     * Obtains the reference to a static method of the type.
-     *
-     * @param methodName
-     *         the methodName of the method
+     * Obtains the reference to the static method of the specified type.
      */
-    public String staticMethod(String methodName) {
-        return name().value() + '.' + methodName;
+    public static MethodReference onPrototype(Type type, String methodName) {
+        return new MethodReference(type, methodName, true);
     }
 
-    /**
-     * Obtains the reference to an instance method of the type.
-     *
-     * @param methodName
-     *         the methodName of the method
-     */
-    public String instanceMethod(String methodName) {
-        return prototype() + '.' + methodName;
-    }
-
-    /**
-     * Obtains the reference to the prototype.
-     */
-    public String prototype() {
-        return name() + ".prototype";
+    public String value() {
+        TypeName typeName = TypeName.from(type.descriptor());
+        String delimiter = onPrototype
+                           ? ".prototype."
+                           : ".";
+        return typeName + delimiter + methodName;
     }
 }

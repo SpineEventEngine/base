@@ -28,38 +28,26 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DisplayName("JsType should")
-class JsTypeTest {
+@DisplayName("MethodReference should")
+class MethodReferenceTest {
 
     private static final String METHOD_NAME = "method";
 
-    private final Type protoType = MessageType.of(Any.getDescriptor());
-    private final JsType type = JsType.generatedFrom(protoType);
-
-    @Test
-    @DisplayName("provide name")
-    void name() {
-        TypeName typeName = type.name();
-        assertEquals("proto.google.protobuf.Any", typeName.value());
-    }
-
-    @Test
-    @DisplayName("provide reference to prototype")
-    void referencePrototype() {
-        assertEquals("proto.google.protobuf.Any.prototype", type.prototype());
-    }
+    private final Type type = MessageType.of(Any.getDescriptor());
 
     @Test
     @DisplayName("provide reference to an instance method")
     void instanceMethod() {
+        MethodReference reference = MethodReference.onType(type, METHOD_NAME);
         String expectedName = "proto.google.protobuf.Any.prototype.method";
-        assertEquals(expectedName, type.instanceMethod(METHOD_NAME));
+        assertEquals(expectedName, reference.value());
     }
 
     @Test
     @DisplayName("provide reference to a static method")
     void staticMethod() {
+        MethodReference reference = MethodReference.onPrototype(type, METHOD_NAME);
         String expectedName = "proto.google.protobuf.Any.method";
-        assertEquals(expectedName, type.staticMethod(METHOD_NAME));
+        assertEquals(expectedName, reference.value());
     }
 }

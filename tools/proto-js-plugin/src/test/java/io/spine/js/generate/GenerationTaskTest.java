@@ -22,7 +22,7 @@ package io.spine.js.generate;
 
 import io.spine.code.js.Directory;
 import io.spine.code.proto.FileSet;
-import io.spine.js.generate.given.TestEnhancement;
+import io.spine.js.generate.given.TestGenerationTask;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -33,24 +33,24 @@ import static io.spine.js.generate.given.GivenProject.mainFileSet;
 import static io.spine.js.generate.given.GivenProject.mainProtoSources;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DisplayName("FileSetEnhancement should")
-class FileSetEnhancementTest {
+@DisplayName("GenerationTask should")
+class GenerationTaskTest {
 
     private static final String MISSING_PATH = "non-existent";
 
     @Test
     @DisplayName("check if there are files to process")
     void checkFilesToProcess() {
-        TestEnhancement enhancement = new TestEnhancement(mainProtoSources(), mainFileSet());
-        assertPerformed(enhancement);
+        TestGenerationTask task = new TestGenerationTask(mainProtoSources(), mainFileSet());
+        assertPerformed(task);
     }
 
     @Test
     @DisplayName("recognize there are no generated files to process")
     void recognizeThereAreNoFiles() {
         Directory nonExistentRoot = Directory.at(Paths.get(MISSING_PATH));
-        TestEnhancement enhancement = new TestEnhancement(nonExistentRoot, mainFileSet());
-        assertNotPerformed(enhancement);
+        TestGenerationTask task = new TestGenerationTask(nonExistentRoot, mainFileSet());
+        assertNotPerformed(task);
     }
 
     @Test
@@ -58,21 +58,21 @@ class FileSetEnhancementTest {
     void recognizeThereAreNoTypes() {
         File nonExistentDescriptors = new File(MISSING_PATH);
         FileSet emptyFileSet = FileSet.parseOrEmpty(nonExistentDescriptors);
-        TestEnhancement enhancement = new TestEnhancement(mainProtoSources(), emptyFileSet);
-        assertNotPerformed(enhancement);
+        TestGenerationTask task = new TestGenerationTask(mainProtoSources(), emptyFileSet);
+        assertNotPerformed(task);
     }
 
-    private static void assertPerformed(TestEnhancement enhancement) {
-        assertPerformed(enhancement, true);
+    private static void assertPerformed(TestGenerationTask task) {
+        assertPerformed(task, true);
     }
 
-    private static void assertNotPerformed(TestEnhancement enhancement) {
-        assertPerformed(enhancement, false);
+    private static void assertNotPerformed(TestGenerationTask task) {
+        assertPerformed(task, false);
     }
 
-    private static void assertPerformed(TestEnhancement enhancement,
+    private static void assertPerformed(TestGenerationTask task,
                                         boolean expectedToBePerformed) {
-        enhancement.perform();
-        assertEquals(expectedToBePerformed, enhancement.isSourcesProcessed());
+        task.perform();
+        assertEquals(expectedToBePerformed, task.isSourcesProcessed());
     }
 }

@@ -70,13 +70,4 @@ class IndentTest {
         assertSame(Indent.of2(), Indent.of(2));
         assertSame(Indent.of4(), Indent.of(4));
     }
-
-    @Test
-    @DisplayName("provide indent of specified depth")
-    void indentDepth() {
-        Indent indent = Indent.of4();
-        Depth depth = Depth.of(2);
-        Indent indentWithDepth = indent.ofDepth(depth);
-        assertEquals(8, indentWithDepth.getSize());
-    }
 }

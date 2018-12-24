@@ -23,9 +23,9 @@ package io.spine.js.gradle;
 import io.spine.code.js.DefaultJsProject;
 import io.spine.code.js.Directory;
 import io.spine.code.proto.FileSet;
-import io.spine.js.generate.FileSetEnhancement;
-import io.spine.js.generate.type.KnownTypeParsers;
-import io.spine.js.generate.type.url.TypeUrlsInFiles;
+import io.spine.js.generate.GenerationTask;
+import io.spine.js.generate.type.GenerateKnownTypeParsers;
+import io.spine.js.generate.type.url.AppendTypeUrlGetter;
 import io.spine.tools.gradle.GradleTask;
 import io.spine.tools.gradle.SpinePlugin;
 import org.gradle.api.Action;
@@ -133,9 +133,9 @@ public class ProtoJsPlugin extends SpinePlugin {
 
     private static void generateCode(Directory generatedRoot, File descriptors) {
         FileSet fileSet = parseOrEmpty(descriptors);
-        FileSetEnhancement parsingEnhancement = KnownTypeParsers.createFor(generatedRoot, fileSet);
-        parsingEnhancement.perform();
-        FileSetEnhancement typeUrlsEnhancement = new TypeUrlsInFiles(generatedRoot, fileSet);
-        typeUrlsEnhancement.perform();
+        GenerationTask generateParsers = GenerateKnownTypeParsers.createFor(generatedRoot, fileSet);
+        generateParsers.perform();
+        GenerationTask appendTypeUrlGetter = new AppendTypeUrlGetter(generatedRoot, fileSet);
+        appendTypeUrlGetter.perform();
     }
 }

@@ -22,6 +22,7 @@ package io.spine.js.generate.type;
 
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Descriptors.Descriptor;
+import io.spine.code.js.TypeName;
 import io.spine.js.generate.CodeLines;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -64,7 +65,7 @@ class FromJsonMethodTest {
     @DisplayName("generate `fromJson` method for message")
     void generateFromJson() {
         CodeLines snippet = generator.generateFromJsonMethod();
-        String methodDeclaration = message.getFullName() + '.' + FROM_JSON;
+        String methodDeclaration = TypeName.from(message) + "." + FROM_JSON;
         assertContains(snippet, methodDeclaration);
     }
 
@@ -80,7 +81,7 @@ class FromJsonMethodTest {
     @DisplayName("generate `fromObject` method for message")
     void generateFromObject() {
         CodeLines snippet = generator.generateFromObjectMethod();
-        String methodDeclaration = message.getFullName() + '.' + FROM_OBJECT;
+        String methodDeclaration = TypeName.from(message) + "." + FROM_OBJECT;
         assertContains(snippet, methodDeclaration);
     }
 

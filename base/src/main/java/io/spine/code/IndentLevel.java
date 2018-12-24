@@ -25,57 +25,65 @@ import java.util.Objects;
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
- * The depth of the code.
- *
- * <p>In other words, the depth is a number of {@linkplain Indent indents}
- * to align the code with.
+ * An indent level, which determines a number of {@linkplain Indent indents} to align code with.
  *
  * <p>The value cannot be negative.
  */
-public class Depth {
+public class IndentLevel {
 
-    private static final Depth ZERO = of(0);
+    private static final IndentLevel ZERO = of(0);
 
     private final int value;
 
-    private Depth(int value) {
-        checkArgument(value >= 0, "Depth cannot be negative");
+    private IndentLevel(int value) {
+        checkArgument(value >= 0, "An indent level cannot be negative");
         this.value = value;
     }
 
     /**
-     * Creates depth of the specified value.
+     * Creates an indent level with the specified value.
      */
-    public static Depth of(int value) {
-        return new Depth(value);
+    public static IndentLevel of(int value) {
+        return new IndentLevel(value);
     }
 
     /**
-     * Creates zero depth.
+     * Creates the indent level of zero.
      */
-    public static Depth zero() {
+    public static IndentLevel zero() {
         return ZERO;
     }
 
     /**
-     * Obtains the value of the depth.
+     * Obtains the value of the indent  level.
      */
     public int value() {
         return value;
     }
 
     /**
-     * Obtains the depth by incrementing this depth.
+     * Obtains the indent level by incrementing this value.
      */
-    public Depth incremented() {
+    public IndentLevel incremented() {
         return of(value + 1);
     }
 
     /**
-     * Obtains the depth by decrementing this depth.
+     * Obtains the indent level by decrementing this value.
      */
-    public Depth decremented() {
+    public IndentLevel decremented() {
         return of(value - 1);
+    }
+
+    /**
+     * Obtains the total indent for the level.
+     *
+     * @param indentPerLevel
+     *         the indent per a level
+     */
+    public Indent totalIndent(Indent indentPerLevel) {
+        int totalSize = indentPerLevel.getSize() * value;
+        return Indent.of(totalSize);
     }
 
     @Override
@@ -83,10 +91,10 @@ public class Depth {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof Depth)) {
+        if (!(o instanceof IndentLevel)) {
             return false;
         }
-        Depth depth = (Depth) o;
+        IndentLevel depth = (IndentLevel) o;
         return value == depth.value;
     }
 

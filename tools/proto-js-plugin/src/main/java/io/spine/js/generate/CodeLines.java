@@ -21,8 +21,8 @@
 package io.spine.js.generate;
 
 import com.google.common.annotations.VisibleForTesting;
-import io.spine.code.Depth;
 import io.spine.code.Indent;
+import io.spine.code.IndentLevel;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -67,7 +67,7 @@ public final class CodeLines {
     /**
      * The current depth of the code on which the next line will be added.
      */
-    private Depth currentDepth;
+    private IndentLevel currentDepth;
 
     /**
      * Creates an instance of the {@code JsOutput} with the default indentation.
@@ -84,7 +84,7 @@ public final class CodeLines {
      */
     public CodeLines(Indent indentation) {
         this.codeLines = new ArrayList<>();
-        this.currentDepth = Depth.zero();
+        this.currentDepth = IndentLevel.zero();
         this.indentation = indentation;
     }
 

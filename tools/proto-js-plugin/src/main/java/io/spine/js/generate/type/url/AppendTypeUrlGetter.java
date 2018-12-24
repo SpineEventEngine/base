@@ -18,29 +18,27 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate.given;
+package io.spine.js.generate.type.url;
 
+import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.js.Directory;
 import io.spine.code.proto.FileSet;
-import io.spine.js.generate.FileSetEnhancement;
+import io.spine.js.generate.GenerationTask;
 
 /**
- * A test implementation of {@link FileSetEnhancement}.
+ * Generates a method to obtain a {@code TypeUrl} for each type in a {@link FileSet}.
  */
-public class TestEnhancement extends FileSetEnhancement {
+public class AppendTypeUrlGetter extends GenerationTask {
 
-    private boolean sourcesProcessed = false;
-
-    public TestEnhancement(Directory generatedRoot, FileSet fileSet) {
+    public AppendTypeUrlGetter(Directory generatedRoot, FileSet fileSet) {
         super(generatedRoot, fileSet);
     }
 
     @Override
     protected void processSources() {
-        sourcesProcessed = true;
-    }
-
-    public boolean isSourcesProcessed() {
-        return sourcesProcessed;
+        for (FileDescriptor file : fileSet().files()) {
+            TypeUrlMethods typeUrlMethods = new TypeUrlMethods(file, generatedRoot());
+            typeUrlMethods.appendToFile();
+        }
     }
 }

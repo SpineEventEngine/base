@@ -20,8 +20,8 @@
 
 package io.spine.js.generate.given;
 
-import io.spine.code.Depth;
 import io.spine.code.Indent;
+import io.spine.code.IndentLevel;
 import io.spine.js.generate.CodeLines;
 
 public final class GivenLines {
@@ -30,7 +30,7 @@ public final class GivenLines {
     private GivenLines() {
     }
 
-    public static CodeLines withDifferentDepth(Depth initialDepth) {
+    public static CodeLines withDifferentDepth(IndentLevel initialDepth) {
         CodeLines lines = linesWithDepth(initialDepth);
         lines.append("{");
         lines.increaseDepth();
@@ -40,7 +40,7 @@ public final class GivenLines {
         return lines;
     }
 
-    public static CodeLines linesWithDepth(Depth depth) {
+    public static CodeLines linesWithDepth(IndentLevel depth) {
         CodeLines lines = new CodeLines();
         for (int i = 0; i < depth.value(); i++) {
             lines.increaseDepth();

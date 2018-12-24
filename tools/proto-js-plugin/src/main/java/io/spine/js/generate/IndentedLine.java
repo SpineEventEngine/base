@@ -20,8 +20,8 @@
 
 package io.spine.js.generate;
 
-import io.spine.code.Depth;
 import io.spine.code.Indent;
+import io.spine.code.IndentLevel;
 
 import java.util.Objects;
 
@@ -37,13 +37,13 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 final class IndentedLine extends CodeLine {
 
-    private final Depth depth;
+    private final IndentLevel depth;
     /** The indent per a depth level. */
     private final Indent indent;
     /** The line to prepend with indentation. */
     private final CodeLine unaliagned;
 
-    private IndentedLine(CodeLine unaligned, Depth depth, Indent indent) {
+    private IndentedLine(CodeLine unaligned, IndentLevel depth, Indent indent) {
         super();
         checkNotNull(unaligned);
         checkNotNull(depth);
@@ -63,7 +63,7 @@ final class IndentedLine extends CodeLine {
      * @param indent
      *         the indent per a depth level
      */
-    static IndentedLine of(String line, Depth depth, Indent indent) {
+    static IndentedLine of(String line, IndentLevel depth, Indent indent) {
         RawLine rawLine = RawLine.of(line);
         return of(rawLine, depth, indent);
     }
@@ -78,7 +78,7 @@ final class IndentedLine extends CodeLine {
      * @param indent
      *         the indent per a depth level
      */
-    static IndentedLine of(CodeLine line, Depth depth, Indent indent) {
+    static IndentedLine of(CodeLine line, IndentLevel depth, Indent indent) {
         return new IndentedLine(line, depth, indent);
     }
 
@@ -87,7 +87,7 @@ final class IndentedLine extends CodeLine {
      */
     @Override
     public String content() {
-        Indent totalIndent = indent.ofDepth(depth);
+        Indent totalIndent = depth.totalIndent(indent);
         String result = totalIndent + unaliagned.content();
         return result;
     }
@@ -101,7 +101,7 @@ final class IndentedLine extends CodeLine {
      */
     IndentedLine adjustDepthBy(int depthChange) {
         int newDepthValue = depth.value() + depthChange;
-        Depth newDepth = Depth.of(newDepthValue);
+        IndentLevel newDepth = IndentLevel.of(newDepthValue);
         return new IndentedLine(unaliagned, newDepth, indent);
     }
 
