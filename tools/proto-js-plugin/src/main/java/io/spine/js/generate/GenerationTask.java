@@ -26,17 +26,17 @@ import io.spine.code.proto.FileSet;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * An enhancement of generated Protobuf sources.
+ * A generation task for Protobuf declarations.
  *
  * <p>The class operates on the provided set of Protobuf files
  * and enhances their JavaScript counterparts by generating additional code.
  */
-public abstract class FileSetEnhancement {
+public abstract class GenerationTask {
 
     private final Directory generatedRoot;
     private final FileSet fileSet;
 
-    protected FileSetEnhancement(Directory generatedRoot, FileSet fileSet) {
+    protected GenerationTask(Directory generatedRoot, FileSet fileSet) {
         this.generatedRoot = checkNotNull(generatedRoot);
         this.fileSet = checkNotNull(fileSet);
     }

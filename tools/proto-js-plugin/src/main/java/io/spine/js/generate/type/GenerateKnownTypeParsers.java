@@ -24,8 +24,8 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Descriptors.FileDescriptor;
 import io.spine.code.js.Directory;
 import io.spine.code.proto.FileSet;
-import io.spine.js.generate.FileSetEnhancement;
 import io.spine.js.generate.FileWriter;
+import io.spine.js.generate.GenerationTask;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -54,7 +54,7 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
  *         message stored in a file.
  * </ol>
  */
-public final class KnownTypeParsers extends FileSetEnhancement {
+public final class GenerateKnownTypeParsers extends GenerationTask {
 
     /**
      * The path to the {@code known_type_parsers} resource which contains the parser definitions.
@@ -62,14 +62,14 @@ public final class KnownTypeParsers extends FileSetEnhancement {
     private static final String PARSERS_RESOURCE =
             "io/spine/tools/protojs/knowntypes/known_type_parsers";
 
-    private KnownTypeParsers(Directory generatedRoot, FileSet fileSet) {
+    private GenerateKnownTypeParsers(Directory generatedRoot, FileSet fileSet) {
         super(generatedRoot, fileSet);
     }
 
-    public static KnownTypeParsers createFor(Directory generatedRoot, FileSet protoSources) {
+    public static GenerateKnownTypeParsers createFor(Directory generatedRoot, FileSet protoSources) {
         checkNotNull(generatedRoot);
         checkNotNull(protoSources);
-        return new KnownTypeParsers(generatedRoot, protoSources);
+        return new GenerateKnownTypeParsers(generatedRoot, protoSources);
     }
 
     /**
@@ -120,7 +120,7 @@ public final class KnownTypeParsers extends FileSetEnhancement {
      * {@link IllegalStateException}.
      */
     private void copyParsersCode() {
-        try (InputStream in = KnownTypeParsers.class
+        try (InputStream in = GenerateKnownTypeParsers.class
                 .getClassLoader()
                 .getResourceAsStream(PARSERS_RESOURCE)) {
             Path path = generatedRoot().resolve(KNOWN_TYPE_PARSERS);
