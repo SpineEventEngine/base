@@ -36,8 +36,6 @@ class StringFieldValidator extends FieldValidator<String> {
     /**
      * Creates a new validator instance.
      *
-     * <p>Returned validator validates the new specified value of the field.
-     *
      * @param fieldValue
      *         the value to validate
      * @param assumeRequired
