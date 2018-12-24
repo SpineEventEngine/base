@@ -46,7 +46,7 @@ abstract class FieldValidator<V> implements Logging {
     private static final String ENTITY_ID_REPEATED_FIELD_MSG =
             "Entity ID must not be a repeated field.";
 
-    private final FieldValue value;
+    private final FieldValueChange fieldValueChange;
     private final FieldDeclaration declaration;
     private final ImmutableList<V> values;
 
@@ -56,6 +56,7 @@ abstract class FieldValidator<V> implements Logging {
     private final IfMissingOption ifMissingOption;
     private final boolean validate;
     private final IfInvalidOption ifInvalid;
+    private final boolean setOnce;
 
     /**
      * If set the validator would assume that the field is required even
@@ -73,7 +74,7 @@ abstract class FieldValidator<V> implements Logging {
      *         if this constraint is not set explicitly
      */
     protected FieldValidator(FieldValue fieldValue, boolean assumeRequired) {
-        this.value = fieldValue;
+        this.fieldValueChange = FieldValueChange.withoutPreviousValue(fieldValue);
         this.declaration = fieldValue.declaration();
         this.values = fieldValue.asList();
         this.assumeRequired = assumeRequired;
@@ -81,6 +82,20 @@ abstract class FieldValidator<V> implements Logging {
         this.ifMissingOption = fieldValue.valueOf(OptionsProto.ifMissing);
         this.validate = fieldValue.valueOf(OptionsProto.valid);
         this.ifInvalid = fieldValue.valueOf(OptionsProto.ifInvalid);
+        this.setOnce = fieldValue.valueOf(OptionsProto.setOnce);
+    }
+
+    protected FieldValidator(FieldValueChange valueChange, boolean assumeRequired) {
+        this.fieldValueChange = valueChange;
+        FieldValue desiredValue = valueChange.newValue();
+        this.declaration = desiredValue.declaration();
+        this.values = desiredValue.asList();
+        this.assumeRequired = assumeRequired;
+        this.required = desiredValue.valueOf(OptionsProto.required);
+        this.ifMissingOption = desiredValue.valueOf(OptionsProto.ifMissing);
+        this.validate = desiredValue.valueOf(OptionsProto.valid);
+        this.ifInvalid = desiredValue.valueOf(OptionsProto.ifInvalid);
+        this.setOnce = desiredValue.valueOf(OptionsProto.setOnce);
     }
 
     /**
@@ -90,7 +105,8 @@ abstract class FieldValidator<V> implements Logging {
      *
      * @return {@code true} if the field value is not set and {@code false} otherwise
      */
-    boolean fieldValueNotSet() {
+    boolean fieldValueNotSet(FieldValue value) {
+        List<V> values = value.asList();
         boolean valueNotSet =
                 values.isEmpty()
                         || (declaration.isNotCollection() && isNotSet(values.get(0)));
@@ -128,6 +144,7 @@ abstract class FieldValidator<V> implements Logging {
      */
     protected final List<ConstraintViolation> validate() {
         checkIfRequiredAndNotSet();
+        validateSetOnce();
         if (isRequiredId()) {
             validateEntityId();
         }
@@ -136,6 +153,27 @@ abstract class FieldValidator<V> implements Logging {
         }
         List<ConstraintViolation> result = assembleViolations();
         return result;
+    }
+
+    private void validateSetOnce() {
+        FieldValue previousValue = fieldValueChange.previousValue();
+        FieldValue desiredValue = fieldValueChange.newValue();
+        boolean previousValueSet = !fieldValueNotSet(previousValue);
+        boolean desiredValueSet = !fieldValueNotSet(desiredValue);
+        boolean valueChanged = previousValueSet && desiredValueSet;
+        if(setOnce && valueChanged){
+            String fieldName = previousValue.declaration()
+                                            .name()
+                                            .javaCase();
+            ConstraintViolation setOnceViolation = ConstraintViolation
+                    .newBuilder()
+                    .setMsgFormat("%s has (set_once) = true, can't change its value from %s to %s")
+                    .addParam(fieldName)
+                    .addParam(previousValue.toString())
+                    .addParam(desiredValue.toString())
+                    .build();
+            addViolation(setOnceViolation);
+        }
     }
 
     /**
@@ -168,7 +206,7 @@ abstract class FieldValidator<V> implements Logging {
             addViolation(violation);
             return;
         }
-        if (fieldValueNotSet()) {
+        if (fieldValueNotSet(fieldValueChange.newValue())) {
             addViolation(newViolation(ifMissingOption));
         }
     }
@@ -204,7 +242,7 @@ abstract class FieldValidator<V> implements Logging {
             }
             return;
         }
-        if (fieldValueNotSet()) {
+        if (fieldValueNotSet(fieldValueChange.newValue())) {
             addViolation(newViolation(ifMissingOption));
         }
     }
@@ -281,8 +319,9 @@ abstract class FieldValidator<V> implements Logging {
      * @return {@code true} if the field is a required entity ID, {@code false} otherwise
      */
     private boolean isRequiredEntityId() {
-        boolean requiredSetExplicitly = value.option(OptionsProto.required)
-                                             .isExplicitlySet();
+        boolean requiredSetExplicitly = fieldValueChange.newValue()
+                                                        .option(OptionsProto.required)
+                                                        .isExplicitlySet();
         boolean notRequired = !required && requiredSetExplicitly;
         return declaration.isEntityId() && !notRequired;
     }
@@ -293,7 +332,7 @@ abstract class FieldValidator<V> implements Logging {
      * @return the field context
      */
     protected FieldContext getFieldContext() {
-        return value.context();
+        return fieldValueChange.newValue().context();
     }
 
     /** Returns a path to the current field. */
@@ -304,5 +343,9 @@ abstract class FieldValidator<V> implements Logging {
     /** Returns the declaration of the validated field. */
     protected FieldDeclaration field() {
         return declaration;
+    }
+
+    final FieldValue desiredValue(){
+        return fieldValueChange.newValue();
     }
 }

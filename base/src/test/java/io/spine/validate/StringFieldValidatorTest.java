@@ -21,11 +21,14 @@
 package io.spine.validate;
 
 import com.google.protobuf.Descriptors.FieldDescriptor;
+import io.spine.base.Identifier;
 import io.spine.test.validate.MessageWithMapStringField;
 import io.spine.test.validate.MessageWithRepeatedRequiredValidatedStringField;
 import io.spine.test.validate.MessageWithRepeatedUnchekedStringField;
 import io.spine.test.validate.MessageWithRepeatedValidatedStringField;
 import io.spine.test.validate.MessegeWithRepeatedRequiredStringField;
+import io.spine.test.validate.SetOnceStringFieldExplicitlyFalse;
+import io.spine.test.validate.SetOnceStringFieldPresent;
 import org.junit.jupiter.api.DisplayName;
 
 import java.util.Collections;
@@ -33,6 +36,16 @@ import java.util.List;
 
 @DisplayName("StringFieldValidator should")
 public class StringFieldValidatorTest extends FieldValidatorTest<String> {
+
+    private static final FieldDescriptor SET_ONCE_FALSE_STRING_FIELD_DESC =
+            SetOnceStringFieldExplicitlyFalse.getDescriptor()
+                                             .getFields()
+                                             .get(0);
+
+    private static final FieldDescriptor SET_ONCE_STRING_FIELD_DESC =
+            SetOnceStringFieldPresent.getDescriptor()
+                                     .getFields()
+                                     .get(0);
 
     private static final FieldDescriptor UNCHECKED_FIELD_DESC =
             MessageWithRepeatedUnchekedStringField.getDescriptor()
@@ -84,6 +97,34 @@ public class StringFieldValidatorTest extends FieldValidatorTest<String> {
     }
 
     @Override
+    protected FieldValidator<String> setOnceViolatedValidator() {
+        String previousValue = Identifier.newUuid();
+        String actualValue = Identifier.newUuid();
+        return getValidatorForChangedField(SET_ONCE_STRING_FIELD_DESC, previousValue, actualValue);
+    }
+
+    @Override
+    protected FieldValidator<?> validSetOnceValidator() {
+        String desiredValue = Identifier.newUuid();
+        return getValidator(SET_ONCE_STRING_FIELD_DESC, desiredValue);
+    }
+
+    @Override
+    protected FieldValidator<?> setOnceFalseValidator() {
+        String previousValue = Identifier.newUuid();
+        String actualValue = Identifier.newUuid();
+        return getValidatorForChangedField(SET_ONCE_FALSE_STRING_FIELD_DESC,
+                                           previousValue,
+                                           actualValue);
+    }
+
+    @Override
+    protected FieldValidator<?> setOnceChangeToSameValueValidator() {
+        String value = Identifier.newUuid();
+        return getValidatorForChangedField(SET_ONCE_STRING_FIELD_DESC, value, value);
+    }
+
+    @Override
     protected String newValue() {
         return "A";
     }
@@ -98,5 +139,15 @@ public class StringFieldValidatorTest extends FieldValidatorTest<String> {
         FieldContext fieldContext = FieldContext.create(field);
         return new StringFieldValidator(FieldValue.of(rawValue, fieldContext),
                                         false);
+    }
+
+    private static StringFieldValidator getValidatorForChangedField(FieldDescriptor field,
+                                                                    Object previousValue,
+                                                                    Object desiredValue) {
+        FieldContext fieldContext = FieldContext.create(field);
+        FieldValue previous = FieldValue.of(previousValue, fieldContext);
+        FieldValue desired = FieldValue.of(desiredValue, fieldContext);
+        FieldValueChange change = FieldValueChange.of(previous, desired);
+        return new StringFieldValidator(change, false);
     }
 }
