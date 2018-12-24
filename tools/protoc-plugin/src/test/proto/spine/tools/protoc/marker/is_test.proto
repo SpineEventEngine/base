@@ -25,14 +25,23 @@ import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
 option java_multiple_files = true;
-option java_outer_classname = "UserProto";
-option java_package = "io.spine.tools.protoc";
+option java_outer_classname = "IsTestProto";
+option java_package = "io.spine.tools.protoc.marker";
 
-import "spine/tools/protoc/user_name.proto";
+message ProtocNameUpdated {
+    option (is).java_type = "io.spine.tools.protoc.marker.ProtocCustomerEvent";
 
-message User {
-    option (is).java_type = "LawSubject";
-    option (is).generate = true;
+    string uid = 1;
+    Name new_name = 2;
+}
 
-    UserName name = 1;
+message ProtocUpdateName {
+    option (is).java_type = "io.spine.tools.protoc.marker.ProtocCustomerCommand";
+
+    string uid = 1;
+    Name new_name = 2;
+}
+
+message Name {
+    string value = 1;
 }

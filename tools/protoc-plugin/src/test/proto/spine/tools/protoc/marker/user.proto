@@ -25,13 +25,14 @@ import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
 option java_multiple_files = true;
-option java_outer_classname = "UserNameProto";
-option java_package = "io.spine.tools.protoc";
+option java_outer_classname = "UserProto";
+option java_package = "io.spine.tools.protoc.marker";
 
-message UserName {
-    option (is).java_type = "Name";
+import "spine/tools/protoc/marker/user_name.proto";
 
-    string given_name = 1;
+message User {
+    option (is).java_type = "LawSubject";
+    option (is).generate = true;
 
-    string family_name = 2;
+    UserName name = 1;
 }

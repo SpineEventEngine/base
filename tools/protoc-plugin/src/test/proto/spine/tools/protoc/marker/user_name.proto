@@ -24,10 +24,14 @@ package spine.tools.protoc;
 import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
-option java_package = "io.spine.tools.protoc";
-option java_outer_classname = "UuidValues";
 option java_multiple_files = true;
+option java_outer_classname = "UserNameProto";
+option java_package = "io.spine.tools.protoc.marker";
 
-message ProjectId {
-    string uuid = 1;
+message UserName {
+    option (is).java_type = "Name";
+
+    string given_name = 1;
+
+    string family_name = 2;
 }

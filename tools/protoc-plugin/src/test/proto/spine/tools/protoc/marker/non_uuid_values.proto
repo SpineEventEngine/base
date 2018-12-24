@@ -24,20 +24,21 @@ package spine.tools.protoc;
 import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
-option java_multiple_files = false;
-option java_outer_classname = "EveryIsInOneFileProto";
-option java_package = "io.spine.tools.protoc";
+option java_package = "io.spine.tools.protoc.marker";
+option java_outer_classname = "NonUuidValues";
+option java_multiple_files = true;
 
-option (every_is).java_type = "io.spine.tools.protoc.ProtocCustomerEvent";
+import "google/protobuf/timestamp.proto";
 
-message ProtocCustomerNotified {
-
-    string uid = 1;
-    string email_content = 2;
+message IdWrongFields {
+    string name = 1;
+    google.protobuf.Timestamp timestamp = 2;
 }
 
-message ProtocCustomerEmailReceived {
+message IdWrongType {
+    google.protobuf.Timestamp uuid = 1;
+}
 
-    string uid = 1;
-    string email_content = 2;
+message IdWrongName {
+    string random_field = 1;
 }

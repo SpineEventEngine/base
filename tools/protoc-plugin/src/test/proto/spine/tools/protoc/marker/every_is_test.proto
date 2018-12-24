@@ -24,27 +24,18 @@ package spine.tools.protoc;
 import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
-option java_multiple_files = false;
-option java_outer_classname = "IsInOneFileProto";
-option java_package = "io.spine.tools.protoc";
+option java_multiple_files = true;
+option java_outer_classname = "EveryIsTestProto";
+option java_package = "io.spine.tools.protoc.marker";
 
-message ProtocAddressUpdated {
-    option (is).java_type = "io.spine.tools.protoc.ProtocCustomerEvent";
+option (every_is).java_type = "io.spine.tools.protoc.marker.ProtocCustomerEvent";
 
-    string uid = 1;
-    string new_address = 2;
-}
-
-message ProtocPlanUpdated {
-    option (is).java_type = "io.spine.tools.protoc.ProtocCustomerEvent";
+message ProtocCustomerCreated {
 
     string uid = 1;
-    Plan new_plan = 2;
 }
 
-enum Plan {
-    PLAN_UNDEFINED = 0;
-    FREE = 1;
-    TRIAL = 2;
-    FULL = 3;
+message ProtocCustomerDeleted {
+
+    string uid = 1;
 }
