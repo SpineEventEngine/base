@@ -21,12 +21,15 @@
 package io.spine.base;
 
 import com.google.errorprone.annotations.Immutable;
+import com.google.protobuf.DescriptorProtos;
+import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.Message;
 import io.spine.code.proto.MessageDeclaration;
 
 import java.util.function.Predicate;
 
-import static io.spine.base.UuidMessage.isUuidMessage;
+import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type.TYPE_STRING;
+import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
  * A common interface for the {@code string}-based unique identifiers.
@@ -54,14 +57,32 @@ import static io.spine.base.UuidMessage.isUuidMessage;
 @Immutable
 public interface UuidValue<I extends Message> extends SerializableMessage {
 
+    String FIELD_NAME = "uuid";
+
     /**
-     * Provides a predicate which checks whether the given {@code MessageDeclaration} represents an
-     * {@code string}-based unique identifier.
+     * Provides a predicate which checks whether the given {@code MessageDeclaration} represents a
+     * UUID-based identifier.
      *
-     * @return the predicate to distinguish {@code string}-based unique identifiers
+     * @return the predicate to distinguish UUID values
      */
     static Predicate<MessageDeclaration> predicate() {
-        return messageDeclaration -> isUuidMessage(messageDeclaration.getMessage());
+        return messageDeclaration -> isUuidValue(messageDeclaration.getMessage());
+    }
+
+    /**
+     * Checks if the given proto definition represents a {@code UuidValue}.
+     */
+    static boolean isUuidValue(DescriptorProto message) {
+        int fieldCount = message.getFieldCount();
+        if (fieldCount != 1) {
+            return false;
+        }
+        DescriptorProtos.FieldDescriptorProto theField = message.getFieldList()
+                                                                .get(0);
+        boolean nameMatches = theField.getName()
+                                      .equals(FIELD_NAME);
+        boolean typeMatches = theField.getType() == TYPE_STRING;
+        return nameMatches && typeMatches;
     }
 
     /**
@@ -69,16 +90,17 @@ public interface UuidValue<I extends Message> extends SerializableMessage {
      */
     default I generate() {
         Class<I> thisClass = (Class<I>) this.getClass();
-        UuidMessage<I> uuidMessage = UuidMessage.of(thisClass);
-        return uuidMessage.generate();
+        UuidFactory<I> uuidFactory = UuidFactory.forClass(thisClass);
+        return uuidFactory.newUuid();
     }
 
     /**
-     * Generates a new identifier instance from the passed value.
+     * Creates a new identifier instance from the passed value.
      */
     default I of(String value) {
+        checkNotEmptyOrBlank(value);
         Class<I> thisClass = (Class<I>) this.getClass();
-        UuidMessage<I> uuidMessage = UuidMessage.of(thisClass);
-        return uuidMessage.create(value);
+        UuidFactory<I> uuidFactory = UuidFactory.forClass(thisClass);
+        return uuidFactory.newUuidOf(value);
     }
 }
