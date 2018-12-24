@@ -36,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class MessageTypeTest {
 
     @Nested
-    @DisplayName("Tell if")
+    @DisplayName("Tell if message is")
     class Tell {
 
         @DisplayName("nested")
@@ -58,7 +58,7 @@ class MessageTypeTest {
             assertTrue(result);
         }
 
-        @DisplayName("")
+        @DisplayName("a rejection")
         @Test
         void rejection() {
             MessageType type = MessageType.of(TestRejections.MttSampleRejection.getDescriptor());
