@@ -20,8 +20,6 @@
 
 package io.spine.validate;
 
-import com.google.common.annotations.VisibleForTesting;
-
 import static java.lang.Math.abs;
 
 /**
@@ -32,22 +30,21 @@ class IntegerFieldValidator extends NumberFieldValidator<Integer> {
     /**
      * Creates a new validator instance.
      *
-     * @param valueChange
-     *         a change of the field to be validated
+     * @param fieldValue
+     *         the value to validate
      */
-    IntegerFieldValidator(FieldValueChange valueChange) {
-        super(valueChange);
+    IntegerFieldValidator(FieldValue fieldValue) {
+        super(fieldValue);
     }
 
     /**
      * Creates a new validator instance.
      *
-     * @param fieldValue
-     *         the value to validate
+     * @param fieldValueChange
+     *         the change of the field value to validate
      */
-    @VisibleForTesting
-    IntegerFieldValidator(FieldValue fieldValue) {
-        super(fieldValue);
+    IntegerFieldValidator(FieldValueChange fieldValueChange) {
+        super(fieldValueChange);
     }
 
     @Override

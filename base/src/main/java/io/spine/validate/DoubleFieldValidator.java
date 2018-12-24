@@ -20,8 +20,6 @@
 
 package io.spine.validate;
 
-import com.google.common.annotations.VisibleForTesting;
-
 import static java.lang.Math.abs;
 
 /**
@@ -35,7 +33,6 @@ final class DoubleFieldValidator extends FloatFieldValidatorBase<Double> {
      * @param fieldValue
      *         the value to validate
      */
-    @VisibleForTesting
     DoubleFieldValidator(FieldValue fieldValue) {
         super(fieldValue);
     }
@@ -43,11 +40,11 @@ final class DoubleFieldValidator extends FloatFieldValidatorBase<Double> {
     /**
      * Creates a new validator instance.
      *
-     * @param valueChange
-     *         the change of the value of the field to validate
+     * @param fieldValueChange
+     *         the value to validate
      */
-    DoubleFieldValidator(FieldValueChange valueChange) {
-        super(valueChange);
+    DoubleFieldValidator(FieldValueChange fieldValueChange) {
+        super(fieldValueChange);
     }
 
     @Override

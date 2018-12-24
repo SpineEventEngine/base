@@ -22,6 +22,7 @@ package io.spine.validate;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
+import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldOptions;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
@@ -29,7 +30,6 @@ import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 import com.google.protobuf.ProtocolMessageEnum;
 import io.spine.code.proto.FieldDeclaration;
 import io.spine.code.proto.Option;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.Collection;
 import java.util.Map;
@@ -37,7 +37,6 @@ import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.validate.rule.ValidationRuleOptions.getOptionValue;
-import static java.lang.String.format;
 
 /**
  * A field value to validate.
@@ -57,7 +56,7 @@ final class FieldValue {
     private final FieldContext context;
     private final FieldDeclaration declaration;
 
-    private FieldValue(@Nullable Object value, FieldContext context, FieldDeclaration declaration) {
+    private FieldValue(Object value, FieldContext context, FieldDeclaration declaration) {
         this.value = value;
         this.context = context;
         this.declaration = declaration;
@@ -83,7 +82,6 @@ final class FieldValue {
         return new FieldValue(value, context, declaration);
     }
 
-
     /**
      * Creates a new instance of an unset field value.
      *
@@ -95,7 +93,10 @@ final class FieldValue {
         checkNotNull(context);
         FieldDescriptor descriptor = context.getTarget();
         FieldDeclaration declaration = new FieldDeclaration(descriptor);
-        return new FieldValue(null, context, declaration);
+        FieldDescriptorProto defaultValue = declaration.descriptor()
+                                                       .toProto()
+                                                       .getDefaultInstanceForType();
+        return new FieldValue(defaultValue, context, declaration);
     }
 
     /**
@@ -157,7 +158,7 @@ final class FieldValue {
             "ChainOfInstanceofChecks" // No other possible way to check the value type.
     })
     <T> ImmutableList<T> asList() {
-        if (value == null) {
+        if (isDefault()) {
             return ImmutableList.of();
         }
         if (value instanceof Collection) {
@@ -182,10 +183,16 @@ final class FieldValue {
         return context;
     }
 
+    private boolean isDefault(){
+        FieldDescriptorProto defaultValue = declaration.descriptor()
+                                                       .toProto()
+                                                       .getDefaultInstanceForType();
+        return value.equals(defaultValue);
+    }
+
     @SuppressWarnings("DuplicateStringLiteralInspection")
     @Override
     public String toString() {
-        Object value = this.value == null ? "unset" : this.value;
         return MoreObjects
                 .toStringHelper(this)
                 .add("Field value", value)

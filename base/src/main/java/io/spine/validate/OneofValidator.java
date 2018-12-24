@@ -75,7 +75,8 @@ class OneofValidator {
     }
 
     private static List<ConstraintViolation> validateField(FieldValue field) {
-        FieldValidator<?> validator = field.createValidator();
+        FieldValueChange change = FieldValueChange.withoutPreviousValue(field);
+        FieldValidator<?> validator = change.createValidator();
         return validator.validate();
     }
 }
