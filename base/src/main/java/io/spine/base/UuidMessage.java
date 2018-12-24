@@ -21,6 +21,7 @@
 package io.spine.base;
 
 import com.google.protobuf.Descriptors;
+import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
 import io.spine.protobuf.Messages;
 
@@ -29,16 +30,19 @@ import java.util.List;
 import static com.google.common.base.Preconditions.checkState;
 
 /**
- * A message containing a single string field with the {@linkplain #FIELD_NAME name}.
+ * A message containing a single string field named {@link #FIELD_NAME "uuid"}.
  */
 class UuidMessage<I extends Message> {
 
     private static final String FIELD_NAME = "uuid";
+    private static final String ERROR_MSG =
+            "A UUID-based identifier must be a message with one string field named `" +
+                    FIELD_NAME + "`.";
 
     private final Class<I> idClass;
-    private final Descriptors.FieldDescriptor uuidField;
+    private final FieldDescriptor uuidField;
 
-    private UuidMessage(Class<I> idClass, Descriptors.FieldDescriptor uuidField) {
+    private UuidMessage(Class<I> idClass, FieldDescriptor uuidField) {
         this.idClass = idClass;
         this.uuidField = uuidField;
     }
@@ -55,9 +59,9 @@ class UuidMessage<I extends Message> {
     static <I extends Message> UuidMessage<I> of(Class<I> idClass) {
         Descriptors.Descriptor message = Messages.newInstance(idClass)
                                                  .getDescriptorForType();
-        List<Descriptors.FieldDescriptor> fields = message.getFields();
-        checkState(fields.size() == 1, "A UUID message should have a single field.");
-        Descriptors.FieldDescriptor uuidField = fields.get(0);
+        List<FieldDescriptor> fields = message.getFields();
+        checkState(fields.size() == 1, ERROR_MSG);
+        FieldDescriptor uuidField = fields.get(0);
         checkUuidField(uuidField);
         return new UuidMessage<>(idClass, uuidField);
     }
@@ -75,12 +79,11 @@ class UuidMessage<I extends Message> {
         return (I) initializedId;
     }
 
-    private static void checkUuidField(Descriptors.FieldDescriptor field) {
+    private static void checkUuidField(FieldDescriptor field) {
         boolean nameMatches = field.getName()
                                    .equals(FIELD_NAME);
-        boolean typeMatches = field.getType() == Descriptors.FieldDescriptor.Type.STRING;
+        boolean typeMatches = field.getType() == FieldDescriptor.Type.STRING;
         boolean isUuidField = nameMatches && typeMatches;
-        checkState(isUuidField,
-                   "A UUID message should have a single string field named %s.", FIELD_NAME);
+        checkState(isUuidField, ERROR_MSG);
     }
 }
