@@ -31,8 +31,8 @@ import io.spine.js.generate.output.CodeLine;
 import io.spine.js.generate.output.CodeLines;
 import io.spine.js.generate.output.FileWriter;
 import io.spine.js.generate.Snippet;
-import io.spine.js.generate.snippet.Method;
-import io.spine.js.generate.snippet.Return;
+import io.spine.js.generate.output.snippet.Method;
+import io.spine.js.generate.output.snippet.Return;
 import io.spine.type.TypeUrl;
 
 import static io.spine.js.generate.output.RawLine.comment;

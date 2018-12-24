@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate.snippet;
+package io.spine.js.generate.output.snippet;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;

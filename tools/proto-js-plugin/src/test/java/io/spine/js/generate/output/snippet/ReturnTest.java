@@ -18,30 +18,34 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.js.generate.snippet;
+package io.spine.js.generate.output.snippet;
 
-import com.google.protobuf.Any;
-import io.spine.code.js.TypeName;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DisplayName("VariableDeclaration should")
-class VariableDeclarationTest {
+@DisplayName("Return")
+class ReturnTest {
 
     @Test
-    @DisplayName("be initialized by value")
-    void initializedByValue() {
-        VariableDeclaration line = VariableDeclaration.initialized("someVariable", "someValue");
-        assertEquals("let someVariable = someValue;", line.content());
+    @DisplayName("an object")
+    void object() {
+        Return line = Return.value(5);
+        assertEquals("return 5;", line.content());
     }
 
     @Test
-    @DisplayName("be initialized by new instance")
-    void initializedByNewInstance() {
-        TypeName type = TypeName.from(Any.getDescriptor());
-        VariableDeclaration line = VariableDeclaration.newInstance("anyValue", type);
-        assertEquals("let anyValue = new proto.google.protobuf.Any();", line.content());
+    @DisplayName("a string literal")
+    void stringLiteral() {
+        Return line = Return.stringLiteral("foo");
+        assertEquals("return 'foo';", line.content());
+    }
+
+    @Test
+    @DisplayName("null reference")
+    void nullValue() {
+        Return nullValue = Return.nullReference();
+        assertEquals("return null;", nullValue.content());
     }
 }

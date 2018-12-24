@@ -24,7 +24,7 @@ import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import io.spine.code.js.TypeName;
 import io.spine.js.generate.output.CodeLines;
-import io.spine.js.generate.snippet.VariableDeclaration;
+import io.spine.js.generate.output.snippet.VariableDeclaration;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
