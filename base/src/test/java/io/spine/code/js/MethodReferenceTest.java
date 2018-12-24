@@ -38,7 +38,7 @@ class MethodReferenceTest {
     @Test
     @DisplayName("provide reference to an instance method")
     void instanceMethod() {
-        MethodReference reference = MethodReference.onType(type, METHOD_NAME);
+        MethodReference reference = MethodReference.onPrototype(type, METHOD_NAME);
         String expectedName = "proto.google.protobuf.Any.prototype.method";
         assertEquals(expectedName, reference.value());
     }
@@ -46,7 +46,7 @@ class MethodReferenceTest {
     @Test
     @DisplayName("provide reference to a static method")
     void staticMethod() {
-        MethodReference reference = MethodReference.onPrototype(type, METHOD_NAME);
+        MethodReference reference = MethodReference.onType(type, METHOD_NAME);
         String expectedName = "proto.google.protobuf.Any.method";
         assertEquals(expectedName, reference.value());
     }
